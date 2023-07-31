@@ -2,168 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4DE7695C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5BF7695C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230323AbjGaMNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
+        id S229829AbjGaMNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbjGaMNa (ORCPT
+        with ESMTP id S229761AbjGaMNx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:13:30 -0400
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74D0D10DF;
-        Mon, 31 Jul 2023 05:13:27 -0700 (PDT)
-Received: from localhost.localdomain (unknown [125.120.146.22])
-        by mail-app2 (Coremail) with SMTP id by_KCgDHP8NMpcdkbRbaCg--.54964S4;
-        Mon, 31 Jul 2023 20:13:01 +0800 (CST)
-From:   Lin Ma <linma@zju.edu.cn>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, fw@strlen.de, yang.lee@linux.alibaba.com,
-        jgg@ziepe.ca, markzhang@nvidia.com, phaddad@nvidia.com,
-        yuancan@huawei.com, linma@zju.edu.cn, ohartoov@nvidia.com,
-        chenzhongjin@huawei.com, aharonl@nvidia.com, leon@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH net v1 1/2] netlink: let len field used to parse type-not-care nested attrs
-Date:   Mon, 31 Jul 2023 20:12:47 +0800
-Message-Id: <20230731121247.3972783-1-linma@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgDHP8NMpcdkbRbaCg--.54964S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr18JF45tF15Kw17GryUWrg_yoWrGFW5pF
-        Wvkryjyr9xGryxCr92kr1Iga4aqr18JrZ8GrZ8Xws7ZFs0g3srG34rWFnIva4I9F48Ja17
-        tF1YgrW3uF1UZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQvt
-        AUUUUU=
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 08:13:53 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1673210DF
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:13:50 -0700 (PDT)
+Received: from [127.0.1.1] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EAD045A4;
+        Mon, 31 Jul 2023 14:12:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690805566;
+        bh=X0B++9ZJoOGXr2Q9dYZmjqsgjlJ16PlZ4syKyoxQEkU=;
+        h=From:Date:Subject:To:Cc:From;
+        b=jQCblDDrSZz+fpDqp24KCffbYEAStw0+unrpLi3Fsz+doawB+Te+cbH+pFj8wBfOv
+         hRM6JPA1dynBc5l8OU7vqDmeF9xi8H7vrBIPnTqU+4wMDhaOwuag0rTU4OW7ihetRj
+         it5zcIb+2lUJirgWyUWbpPOG8nq/0PrpZwqOBif8=
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Date:   Mon, 31 Jul 2023 15:13:14 +0300
+Subject: [PATCH v3] drm/bridge: Add debugfs print for bridge chains
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230731-drm-bridge-chain-debugfs-v3-1-7d0739f3efa3@ideasonboard.com>
+X-B4-Tracking: v=1; b=H4sIAFmlx2QC/43NPQ7DIAwF4KtUzKUC54ekU+9RdYBgEg+BClrUK
+ srdSzJ3yPjs588LSxgJE7ueFhYxU6LgS6jOJzZM2o/IyZbMQEAlFEhu48xNJFs2pUCeWzTv0SU
+ ujBlkA+AapVk5f0Z09Nnp+6PkidIrxO/+KcttegDNkkvetbJ2TmHXC3sjizoFb4KO9jKEmW12h
+ qMeFE+11vV1Vau+hT/euq4/inZWbhcBAAA=
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4740;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=X0B++9ZJoOGXr2Q9dYZmjqsgjlJ16PlZ4syKyoxQEkU=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBkx6V3kIlljbcwEkPpF2jYccwrfJf2NhfvfkoG7
+ tcqoT6g4/aJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZMeldwAKCRD6PaqMvJYe
+ 9XIFEACiIy/bIIupSs7y53f++sShmKTkED5D7Bt5qFAz3fvk2/RehoLljivqMQZLW6S/8hBtRE1
+ zR1erINCV0M1cuWBnRZU3NBIOVWOtVo2ZGflzu+5TXNnmp2N447JLwEQtFGumBQ63Pf1MY6+qQv
+ IJZazVj8lLFhz607fWrUEAeJ/7B7f2iCc/e8pl+uHSMzcGZ62yhz4/OP6wICuuotSmrhk4JXUtb
+ M28p7hoTH5deQciOi6L/SS1Y/4p82eJtsIYtSPMW9z8548Ct+Ud5I4nZYL3F1vO+5ED/jNVYSsK
+ UQzzhPso0uQJp40dfnQyA1M/2P1T8vsyR9RZHDSonE8f7cxl9lFiNxeCEc2SJVmjjrLYNbxam22
+ yPBJo4bwLtirSTPqHPzmUm/P8r2N1qSSbx0sCStv6Z7a0JIzU/z8opb2T9INuF++AexY7n5C0g6
+ r+Kx/o9vvIfui7Oi9dJDDlVMI7E6E2DOKpPBsCNRsTcYKEN9S1jHqps6217Du8vqZ8v5aL1J7uf
+ B7rtanVfi6s8VWbQcOOXRm8hRDKd5s7sjVHiKbLjITp7am4TMRmHOdNi7Uc/NNOKaOvFIKgVedg
+ dNkvL5gXQClxfCwJ/Crq7TrC5tUQ7PTd8v1wBOnNAMeVGRkDF7InIOaWaWLhUEwvi9CXM79qF/l
+ 1zlw9L+tVGJhF0A==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently I found several manual parsing cases for nested attributes
-whose fix is rather trivial. The pattern for those like below
+DRM bridges are not visible to the userspace and it may not be
+immediately clear if the chain is somehow constructed incorrectly. I
+have had two separate instances of a bridge driver failing to do a
+drm_bridge_attach() call, resulting in the bridge connector not being
+part of the chain. In some situations this doesn't seem to cause issues,
+but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
 
-const struct nla_policy y[...] = {
-  ...
-  X	= { .type = NLA_NESTED },
-  ...
-}
+Add a debugfs file to print the bridge chains. For me, on this TI AM62
+based platform, I get the following output:
 
-nla_for_each_nested/attr(nla, tb[X], ...) {
-   // nla_type never used
-   ...
-   x = nla_data(nla) // directly access nla without length checking
-   ....
-}
+encoder[39]
+	bridge[0] type: 0, ops: 0x0
+	bridge[1] type: 0, ops: 0x0, OF: /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778
+	bridge[2] type: 0, ops: 0x3, OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b
+	bridge[3] type: 11, ops: 0x7, OF: /hdmi-connector:hdmi-connector
 
-One example can be found in discussion at:
-https://lore.kernel.org/all/20230723074504.3706691-1-linma@zju.edu.cn/
-
-In short, the very direct idea to fix such lengh-check-forgotten bug is
-add nla_len() checks like
-
-  if (nla_len(nla) < SOME_LEN)
-    return -EINVAL;
-
-However, this is tedious and just like Leon said: add another layer of
-cabal knowledge. The better solution should leverage the nla_policy and
-discard nlattr whose length is invalid when doing parsing. That is, we
-should defined a nested_policy for the X above like
-
-  X      = { NLA_POLICY_NESTED(Z) },
-
-But unfortunately, as said above, the nla_type is never used in such
-manual parsing cases, which means is difficult to defined a nested
-policy Z without breaking user space (they may put weird value in type
-of these nlattrs, we have no idea).
-
-To this end, this commit uses the len field in nla_policy crafty and
-allow the existing validate_nla checks such type-not-care nested attrs.
-In current implementation, for attribute with type NLA_NESTED, the len
-field used as the length of the nested_policy:
-
-	{ .type = NLA_NESTED, .nested_policy = policy, .len = maxattr }
-
-	_NLA_POLICY_NESTED(ARRAY_SIZE(policy) - 1, policy)
-
-If one nlattr does not provide policy, like the example X, this len
-field is not used. This means we can leverage this field for our end.
-This commit introduces one new macro named NLA_POLICY_NESTED_NO_TYPE
-and let validate_nla() to use the len field as a hint to check the
-nested attributes. Therefore, such manual parsing code can also define
-a nla_policy and take advantage of the validation within the existing
-parsers like nla_parse_deprecated..
-
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- include/net/netlink.h |  6 ++++++
- lib/nlattr.c          | 11 +++++++++++
- 2 files changed, 17 insertions(+)
+Changes in v3:
+- Use drm_for_each_bridge_in_chain()
+- Drop extra comment
+- Fix whitespace issue
+- Call drm_bridge_debugfs_init() only if the driver uses modeset
+- Drop #ifdef for drm_bridge_debugfs_init() declaration
+- Link to v2: https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v2-1-76df94347962@ideasonboard.com
 
-diff --git a/include/net/netlink.h b/include/net/netlink.h
-index b12cd957abb4..d825a5672161 100644
---- a/include/net/netlink.h
-+++ b/include/net/netlink.h
-@@ -229,6 +229,9 @@ enum nla_policy_validation {
-  *                         nested header (or empty); len field is used if
-  *                         nested_policy is also used, for the max attr
-  *                         number in the nested policy.
-+ *                         For NLA_NESTED whose nested nlattr is not necessary,
-+ *                         the len field will indicate the exptected length of
-+ *                         them for checking.
-  *    NLA_U8, NLA_U16,
-  *    NLA_U32, NLA_U64,
-  *    NLA_S8, NLA_S16,
-@@ -372,6 +375,9 @@ struct nla_policy {
- 	_NLA_POLICY_NESTED(ARRAY_SIZE(policy) - 1, policy)
- #define NLA_POLICY_NESTED_ARRAY(policy) \
- 	_NLA_POLICY_NESTED_ARRAY(ARRAY_SIZE(policy) - 1, policy)
-+/* not care about the nested attributes, just do length check */
-+#define NLA_POLICY_NESTED_NO_TYPE(length) \
-+	_NLA_POLICY_NESTED(length, NULL)
- #define NLA_POLICY_BITFIELD32(valid) \
- 	{ .type = NLA_BITFIELD32, .bitfield32_valid = valid }
+Changes in v2:
+- Fixed compilation issue when !CONFIG_OF
+- Link to v1: https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e890d@ideasonboard.com
+---
+ drivers/gpu/drm/drm_bridge.c  | 46 +++++++++++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/drm_debugfs.c |  3 +++
+ include/drm/drm_bridge.h      |  3 +++
+ 3 files changed, 52 insertions(+)
+
+diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+index c3d69af02e79..39e68e45bb12 100644
+--- a/drivers/gpu/drm/drm_bridge.c
++++ b/drivers/gpu/drm/drm_bridge.c
+@@ -27,8 +27,10 @@
+ #include <linux/mutex.h>
  
-diff --git a/lib/nlattr.c b/lib/nlattr.c
-index 489e15bde5c1..29a412b41d28 100644
---- a/lib/nlattr.c
-+++ b/lib/nlattr.c
-@@ -488,6 +488,18 @@ static int validate_nla(const struct nlattr *nla, int maxtype,
- 				 */
- 				return err;
- 			}
-+		} else if (pt->len) {
-+			/* length set without nested_policy, the len field will
-+			 * be used to check those nested attributes here,
-+			 * we will not do parse here but just validation as the
-+			 * consumers will do manual parsing.
-+			 */
-+			const struct nlattr *nla_nested;
-+			int rem;
+ #include <drm/drm_atomic_state_helper.h>
++#include <drm/drm_debugfs.h>
+ #include <drm/drm_bridge.h>
+ #include <drm/drm_encoder.h>
++#include <drm/drm_file.h>
+ #include <drm/drm_of.h>
+ #include <drm/drm_print.h>
+ 
+@@ -1345,6 +1347,50 @@ struct drm_bridge *of_drm_find_bridge(struct device_node *np)
+ EXPORT_SYMBOL(of_drm_find_bridge);
+ #endif
+ 
++#ifdef CONFIG_DEBUG_FS
++static int drm_bridge_chains_info(struct seq_file *m, void *data)
++{
++	struct drm_debugfs_entry *entry = m->private;
++	struct drm_device *dev = entry->dev;
++	struct drm_printer p = drm_seq_file_printer(m);
++	struct drm_mode_config *config = &dev->mode_config;
++	struct drm_encoder *encoder;
++	unsigned int bridge_idx = 0;
 +
-+			nla_for_each_attr(nla_nested, nla_data(nla), nla_len(nla), rem)
-+				if (nla_len(nla_nested) < pt->len)
-+					return -EINVAL;
- 		}
- 		break;
- 	case NLA_NESTED_ARRAY:
++	list_for_each_entry(encoder, &config->encoder_list, head) {
++		struct drm_bridge *bridge;
++
++		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
++
++		drm_for_each_bridge_in_chain(encoder, bridge) {
++			drm_printf(&p, "\tbridge[%u] type: %u, ops: %#x",
++				   bridge_idx, bridge->type, bridge->ops);
++
++#ifdef CONFIG_OF
++			if (bridge->of_node)
++				drm_printf(&p, ", OF: %pOFfc", bridge->of_node);
++#endif
++
++			drm_printf(&p, "\n");
++
++			bridge_idx++;
++		}
++	}
++
++	return 0;
++}
++
++static const struct drm_debugfs_info drm_bridge_debugfs_list[] = {
++	{ "bridge_chains", drm_bridge_chains_info, 0 },
++};
++
++void drm_bridge_debugfs_init(struct drm_minor *minor)
++{
++	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
++			      ARRAY_SIZE(drm_bridge_debugfs_list));
++}
++#endif
++
+ MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
+ MODULE_DESCRIPTION("DRM bridge infrastructure");
+ MODULE_LICENSE("GPL and additional rights");
+diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+index a3a488205009..3b1de2c61c89 100644
+--- a/drivers/gpu/drm/drm_debugfs.c
++++ b/drivers/gpu/drm/drm_debugfs.c
+@@ -31,6 +31,7 @@
+ 
+ #include <drm/drm_atomic.h>
+ #include <drm/drm_auth.h>
++#include <drm/drm_bridge.h>
+ #include <drm/drm_client.h>
+ #include <drm/drm_debugfs.h>
+ #include <drm/drm_device.h>
+@@ -274,6 +275,8 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
+ 
+ 	if (drm_drv_uses_atomic_modeset(dev)) {
+ 		drm_atomic_debugfs_init(minor);
++
++		drm_bridge_debugfs_init(minor);
+ 	}
+ 
+ 	if (drm_core_check_feature(dev, DRIVER_MODESET)) {
+diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+index bf964cdfb330..cb10ee108538 100644
+--- a/include/drm/drm_bridge.h
++++ b/include/drm/drm_bridge.h
+@@ -949,4 +949,7 @@ static inline struct drm_bridge *drmm_of_get_bridge(struct drm_device *drm,
+ }
+ #endif
+ 
++struct drm_minor;
++void drm_bridge_debugfs_init(struct drm_minor *minor);
++
+ #endif
+
+---
+base-commit: a0c64d153d687756c8719b8d10e609d62e1cb6fd
+change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
+
+Best regards,
 -- 
-2.17.1
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
