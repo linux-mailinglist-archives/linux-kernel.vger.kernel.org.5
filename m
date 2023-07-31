@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9325C7696A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4FF7696AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbjGaMpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
+        id S230355AbjGaMpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232861AbjGaMpc (ORCPT
+        with ESMTP id S232862AbjGaMpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Jul 2023 08:45:32 -0400
 Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7619E10E3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7624210EA;
         Mon, 31 Jul 2023 05:45:27 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36VCjGf3110639;
-        Mon, 31 Jul 2023 07:45:16 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36VCjHEa110648;
+        Mon, 31 Jul 2023 07:45:17 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690807516;
-        bh=eh6G0ASCqjw7aVLsjaZTovSD6uYBCw0N2aZ2dEim4zw=;
+        s=ti-com-17Q1; t=1690807517;
+        bh=Pcz6ABCUyvN0ow/G7gff5cRXMYJaFfXpriXkrpONG2M=;
         h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=F00qhFfTEc73ofkgO1DkfIeS5RJT++MewzL3OVSl5PBf9buyy829+GEMty+79iuxD
-         Yyvl7WrZ5xKtSRI8iOSpE4aZJUJ/7YmsTLObywDXjpLBz4UTzli5yU0d1IocSNzIAJ
-         uN20QG3/zTAMSIuaJlv+lhuNNdlPTbqsrXzmnGaM=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36VCjF2l031482
+        b=NIOdeyNEsts3asU+1/mlG5a6xs+imJ7L7O3otboOUm7GDplJnWDpKDp7yIgvRYcQ9
+         RSC12DM6/qxZR5UQf1LFXHp2TuZPpVjHQVJ4Ql5y7+o3ztluyFiti/BYKBAESPWzpL
+         53NNkErVWjzNeAiFqJZw3A55nDLH64ySQ7ywSEPI=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36VCjHjA021188
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 Jul 2023 07:45:16 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 31 Jul 2023 07:45:17 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 31
- Jul 2023 07:45:15 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2023 07:45:17 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 31 Jul 2023 07:45:15 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36VCjESe025081;
-        Mon, 31 Jul 2023 07:45:15 -0500
+ Frontend Transport; Mon, 31 Jul 2023 07:45:16 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36VCjGbk053803;
+        Mon, 31 Jul 2023 07:45:16 -0500
 From:   Jai Luthra <j-luthra@ti.com>
-Date:   Mon, 31 Jul 2023 18:14:39 +0530
-Subject: [PATCH 2/5] arm64: dts: ti: k3-am62a7-sk: Split vcc_3v3 regulators
+Date:   Mon, 31 Jul 2023 18:14:40 +0530
+Subject: [PATCH 3/5] arm64: dts: ti: k3-am62a7-sk: Drop i2c-1 to 100Khz
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20230731-mcasp_am62a-v1-2-8bd137ffa8f1@ti.com>
+Message-ID: <20230731-mcasp_am62a-v1-3-8bd137ffa8f1@ti.com>
 References: <20230731-mcasp_am62a-v1-0-8bd137ffa8f1@ti.com>
 In-Reply-To: <20230731-mcasp_am62a-v1-0-8bd137ffa8f1@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -58,22 +58,22 @@ To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         Will Deacon <will@kernel.org>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jai Luthra <j-luthra@ti.com>, Devarsh Thakkar <devarsht@ti.com>
+        Jai Luthra <j-luthra@ti.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1487; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=qEugwhrLwpSo3Rg2CZ+bSuPr12FfFiZlbT7SkiRKxmA=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBkx6zX2f6kb9auEhv1S6L2PMBqEVSXDYRVSmfZc
- uQFv0I8WHmJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZMes1wAKCRBD3pH5JJpx
- RRlhD/92OgSCvH1L21dBLLFxyxkRFl7J+DJTPXCdAvnEmDOZVv7BVfKdwCcHcle9mUFQMugZV72
- NtfxFkv4WpoSjAnSOQwOO4jH41uwHD7dSHsg3NLVu0WrCeYrOmdtHQ+wIeEjRp8R1qmktemau0t
- FvhjUFvxXtboo20qJoGV5C76r+RShdDOaF11LzeKs4b63sOakiWnNduFRefwql1x1sNh0MI7DZI
- wEQrZlh+chhjeGND0Iuvc7cRfjdTGI8lgdPD+3u06hXPj1Vf7aqORVFSIpwHDuq7Ph2KO47KU2I
- H/CJa8+zHewz+hfFewuMQSiBdpImri9tVEr+Qh/7jNwxTGTeAmJ+jiAUwS9EjxMPVWNigInCYi7
- W1dbOEmWwCegeQfFHHwuJfJv5AHumUy9vzBLCI6iwk/0hjUOtPZ5uw4G0U+L6tQ4B9gDZnmhW+B
- Q+AxQfvfcXQmS0fL9D+XXWbrBLO/uKM+DH/J7OPC3Q8xLJelwxYqij8hp3GVA9TkOtp6HymnBae
- YqG5WI8i0aI8qJzASASMzoxp6Fosg4AcV0wAbyLuvInd+WMaryI07QEtdvOQ95Kup/MNGaTda+8
- NytNbOu5IQbnEuceFtjmnhxE9ZAfW0Piu7dveYRF8C4mZ0snUZxvTi/r4GBGPf1L944s7NYpALq
- m6jVOC1hK0gXpwg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=959; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=aTOqwZxXdBJogA2nRpSO8Kb+qxM8xYZ25pTWUKPJOR8=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBkx6zYYMwzfaFYgA8QP+a3aNyGfWTL8VdXfwv36
+ gqCD/+RKQiJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZMes2AAKCRBD3pH5JJpx
+ RQDrEAC5pvCzWw3YO1K2zS5NfpF9tyEZNvtbKZBhfCyr8Ji/FUXPd1qLvKuj3LTjjse2a/AEgjc
+ 7fJA0/0nWOXNih/f8fJXHadwgtmDdpxijwBssBiXJJ61gQ+lsn0aWfRzTIy8RwxMr35MSm9YLPF
+ PO7iukHXWx+lVj2UKHzUURRVDFIIkufGjGGi9LQrvT1Kr8Zaw3BKNpzNhte4gOaKI2R3IBdc4hr
+ /lkdCq4MWO8Dc6u0x2tnfHyEjxJYWCccEfCw3Ns/Sn+MQA+bAgSbtk0jB7vuTO4Dvvu+A1seQwq
+ Qu5hB5I8VUMtLnw2Nfz0J0zZD/2gCwwRr/z1mMixKJtYpXVRtd+QNcSsC60SY4v2SFSv2mgy71T
+ MSWk1lC90H8tPdI9RgpZ2ihMOf7F2Akr6M6vFNERSTO/MKrGw2VKdSKDjvSpRaFX2knWYUmcYr9
+ m/B64bmDmbxxAI+PID0rBTAI7Fy/Y6Q9uK4aFJtzO8Yj6SpSX2Z4MdcuRf/rRzpQ2Pb5LexhM/X
+ oRaDMhWb/wuBNkbhOa+apP+21qoWNDD1V6hMwQJ8Tz/oS30hKt21tAzN5uUC1ODnZxM/QLSRae6
+ WRGJRZU4X8DoRinNiHNEtlOaL8Kl/1u9vyqLtRsqkGlbw2+bHrcKKXkPenVCZ/PBDAqwrK8k2XK
+ NsLFpw10vqMq9SA==
 X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
  fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
@@ -87,51 +87,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VCC_3V3_MAIN is the output of LM5141-Q1, and it serves as an input to
-TPS22965DSGT which produces VCC_3V3_SYS. [1]
+The TLV320AIC3106 audio codec is interfaced on the i2c-1 bus. With the
+default rate of 400Khz the i2c register writes fail to sync:
 
-Link: https://www.ti.com/lit/zip/sprr459 [1]
+[   36.026387] tlv320aic3x 1-001b: Unable to sync registers 0x16-0x16. -110
+[   38.101130] omap_i2c 20010000.i2c: controller timed out
+
+Dropping the rate to 100Khz fixes the issue.
+
 Signed-off-by: Jai Luthra <j-luthra@ti.com>
-Reviewed-by: Devarsh Thakkar <devarsht@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-index 133e32f7c6cc..9d34b8fe4ecb 100644
+index 9d34b8fe4ecb..752c2f640f63 100644
 --- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
 +++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-@@ -79,10 +79,10 @@ vcc_5v0: regulator-1 {
- 		regulator-boot-on;
- 	};
+@@ -338,7 +338,7 @@ &main_i2c1 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&main_i2c1_pins_default>;
+-	clock-frequency = <400000>;
++	clock-frequency = <100000>;
  
--	vcc_3v3_sys: regulator-2 {
-+	vcc_3v3_main: regulator-2 {
- 		/* output of LM5141-Q1 */
- 		compatible = "regulator-fixed";
--		regulator-name = "vcc_3v3_sys";
-+		regulator-name = "vcc_3v3_main";
- 		regulator-min-microvolt = <3300000>;
- 		regulator-max-microvolt = <3300000>;
- 		vin-supply = <&vmain_pd>;
-@@ -101,6 +101,17 @@ vdd_mmc1: regulator-3 {
- 		gpio = <&exp1 3 GPIO_ACTIVE_HIGH>;
- 	};
- 
-+	vcc_3v3_sys: regulator-4 {
-+		/* output of TPS222965DSGT */
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc_3v3_sys";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_3v3_main>;
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
- 	leds {
- 		compatible = "gpio-leds";
- 		pinctrl-names = "default";
+ 	exp1: gpio@22 {
+ 		compatible = "ti,tca6424";
 
 -- 
 2.41.0
