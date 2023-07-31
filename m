@@ -2,63 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5FC769D55
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC731769D67
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233626AbjGaQ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
+        id S233653AbjGaQ6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233591AbjGaQ53 (ORCPT
+        with ESMTP id S233735AbjGaQ54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:57:29 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A922E1729;
-        Mon, 31 Jul 2023 09:57:28 -0700 (PDT)
-Received: from jupiter.universe (dyndsl-091-248-210-008.ewe-ip-backbone.de [91.248.210.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 154256606FCD;
-        Mon, 31 Jul 2023 17:57:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690822647;
-        bh=6bj7q3XOaZvPQ3D5Rpuxi1xUU41U8fTcdodRo9gr6cE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IApEo06CLoOTI/+bDpJ3jlireiem32kItGql8+F4MK6pufskhhq3WdFUR8SmKvKPk
-         s4QgT45kZvAvV984+0JWSFthWTHDx7HKAztaAE6Tbr6H8uZ6rJo/bwS3asLS8/i2/I
-         A/MuaptY26x6o6KPihalOQc1wKOvDUnTZfALpdA+gq1lZQOlaSyC62hDr4KK9nYADm
-         yT02J8Omgsbf/1G14+Yuo3BTfqB5GsGb5PJ1DCSSV2i6eBzSAXA2kfU4iHp0TnGCvf
-         Uq2r2xTz9ohyZUVj5KtYjyBxawoSuTs9jjrAvsBWu+/RjHQ4hGgtxu7Op/B5EB1fGJ
-         PkCDHhpXQH6eA==
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id 274C9480099; Mon, 31 Jul 2023 18:57:25 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Serge Semin <fancer.lancer@gmail.com>
-Cc:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Simon Xue <xxm@rock-chips.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH v4 0/5] RK3588 PCIe2 support
-Date:   Mon, 31 Jul 2023 18:57:18 +0200
-Message-Id: <20230731165723.53069-1-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.40.1
+        Mon, 31 Jul 2023 12:57:56 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB46B1FDA
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:57:43 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36V5lNJJ017071;
+        Mon, 31 Jul 2023 11:57:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        PODMain02222019; bh=7tXYtuHPujqaVHNe1XUnRwtzdST6xCvteK767YL3cjc=; b=
+        WejIqFMAROEQlAOXVyi1lqXeaNMgfmBqJXKhpNwtVcwr4zPSjSjQ6xO8PsyeHmNl
+        +SG5J4Ux85UvpCZRHN8OL6Di8RufFUclI7+3k219Mjhl3gLNEOT7sD7qIze9QFMg
+        A+ciAKy/vMbnKLTvWDNFks2Cf2t0XFRJgpfbNvJUcRbQL/wMgXNWyZzItTt6kVZz
+        DWQ4wF0oR4i1yzfAWP15sB8Ul59vSZawA0/4ZSAzRdeglm7rjjpNqtWEMbyaav0t
+        TZNkZ2PoLYnKBBMR8TpTQxqceGfXs5NOKt+kph/JNARNMgheJRQWl/Bk3aAYLCis
+        gWEyjlXbYSJs01U5i0dGIg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s5gk1sg45-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 11:57:32 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 17:57:30 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Mon, 31 Jul 2023 17:57:30 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.107])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 013A7475;
+        Mon, 31 Jul 2023 16:57:29 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <tiwai@suse.com>
+CC:     <perex@perex.cz>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 1/9] ALSA: hda/cs35l56: Complete firmware reboot before calling cs_dsp_run()
+Date:   Mon, 31 Jul 2023 17:57:18 +0100
+Message-ID: <20230731165726.7940-2-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230731165726.7940-1-rf@opensource.cirrus.com>
+References: <20230731165726.7940-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain
+X-Proofpoint-GUID: 25uoaoNGsvz6CN9TtIiilzY2EMDVF4nX
+X-Proofpoint-ORIG-GUID: 25uoaoNGsvz6CN9TtIiilzY2EMDVF4nX
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,61 +68,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Move the call to cs_dsp_run() in cs35l56_hda_fw_load() so that it
+is after the CS35L56 has been reset/reinit'd and the regmap
+cache has been synced.
 
-This adds PCIe v2 support for RK3588. The series has been tested with
-the onboard RTL8125 network card on Rockchip RK3588 EVB1 (&pcie2x1l1)
-and Radxa Rock 5B (&pcie2x1l2).
+cs_dsp_run() syncs up ALSA control cache values with the DSP memory
+so this must not be done until the firmware has reinitialized.
 
-Changes since v3:
- * https://lore.kernel.org/all/20230717172651.64324-1-sebastian.reichel@collabora.com/
- * Remove unneeded quotes in patch 1 (msi handling)
- * Update patch description of patch 2 (interrupt names) adding information
-   about Rockchip specific parts
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l56_hda.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-Changes since v2:
- * https://lore.kernel.org/all/20230713171851.73052-1-sebastian.reichel@collabora.com/
- * Removed num-ib-windows/num-ob-windows/num-viewport from DT
- * Added patch making 'msi' irq optional, if 'msi-map' property is available
- * Updated binding according two discussion with Serge Semin, I provided two
-   options by adding one extra patch that should be squashed into the main
-   one or dropped depending on preferences from DT binding  maintainers.
- * Collected Reviewed-by/Tested-by from Jagan Teki
-
-Changes since v1:
- * https://lore.kernel.org/all/20230616170022.76107-1-sebastian.reichel@collabora.com/
- * Dropped patch adding 'RK3588' (queued by Rob)
- * Updated patch adding legacy-interrupt-controller according to comments
-   from Rob and Serge
-    - added missing additionalProperties: false
-    - added all properties to new required property
-    - removed useless quotes around interrupt-controller
-    - added Rob's Reviewed-by
- * Updated patch adding the missing RK356x/RK3588 interrupt names, so that it
-   provides more details about the interrupts
- * Updated the DT patch according to the comment from Jonas Karlman, so that
-   the addresses are in 32 bit address space starting at 0x40000000
-
-[0] https://lore.kernel.org/all/20230612171337.74576-1-sebastian.reichel@collabora.com/
-
-Thanks,
-
--- Sebastian
-
-Sebastian Reichel (5):
-  dt-bindings: PCI: dwc: improve msi handling
-  dt-bindings: PCI: dwc: rockchip: Fix interrupt-names issue
-  dt-bindings: PCI: dwc: rockchip: Use generic binding
-  dt-bindings: PCI: dwc: rockchip: Add missing
-    legacy-interrupt-controller
-  arm64: dts: rockchip: rk3588: add PCIe2 support
-
- .../bindings/pci/rockchip-dw-pcie.yaml        |  70 ++++++++++++
- .../devicetree/bindings/pci/snps,dw-pcie.yaml |  18 +++-
- arch/arm64/boot/dts/rockchip/rk3588.dtsi      |  51 +++++++++
- arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 102 ++++++++++++++++++
- 4 files changed, 237 insertions(+), 4 deletions(-)
-
+diff --git a/sound/pci/hda/cs35l56_hda.c b/sound/pci/hda/cs35l56_hda.c
+index 4c3279f61b94..c3acda2daeeb 100644
+--- a/sound/pci/hda/cs35l56_hda.c
++++ b/sound/pci/hda/cs35l56_hda.c
+@@ -562,12 +562,6 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
+ 	if (coeff_filename)
+ 		dev_dbg(cs35l56->base.dev, "Loaded Coefficients: %s\n", coeff_filename);
+ 
+-	ret = cs_dsp_run(&cs35l56->cs_dsp);
+-	if (ret) {
+-		dev_dbg(cs35l56->base.dev, "%s: cs_dsp_run ret %d\n", __func__, ret);
+-		goto err;
+-	}
+-
+ 	if (cs35l56->base.secured) {
+ 		ret = cs35l56_mbox_send(&cs35l56->base, CS35L56_MBOX_CMD_AUDIO_REINIT);
+ 		if (ret)
+@@ -591,6 +585,11 @@ static int cs35l56_hda_fw_load(struct cs35l56_hda *cs35l56)
+ 	regmap_clear_bits(cs35l56->base.regmap, CS35L56_PROTECTION_STATUS,
+ 			  CS35L56_FIRMWARE_MISSING);
+ 	cs35l56->base.fw_patched = true;
++
++	ret = cs_dsp_run(&cs35l56->cs_dsp);
++	if (ret)
++		dev_dbg(cs35l56->base.dev, "%s: cs_dsp_run ret %d\n", __func__, ret);
++
+ err:
+ 	pm_runtime_put(cs35l56->base.dev);
+ 	mutex_unlock(&cs35l56->base.irq_lock);
 -- 
-2.40.1
+2.30.2
 
