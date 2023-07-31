@@ -2,371 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9698976A44A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EB676A44F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:44:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231284AbjGaWn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 18:43:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52014 "EHLO
+        id S231202AbjGaWod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 18:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230526AbjGaWnQ (ORCPT
+        with ESMTP id S229452AbjGaWob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 18:43:16 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AC619AF;
-        Mon, 31 Jul 2023 15:43:14 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VMgiwl011895;
-        Mon, 31 Jul 2023 22:43:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=YQaob9C8fOQbAR+CFXkRhipAxk2RWvQMSKS6UDVx/vs=;
- b=LEoZl2JnmX/0+zpkAX+cdfnmbLsDORnZguvjBoXicpoChCDv32ns6agM3da5suTbhKuc
- EPpevqOuFAgm3yGIJnpWbhlv20V7eojP4GTkrGnC8Snqu6nqQUBa0Ofsnk8cT6Ek9YfC
- /RBilNRYTPurXbeHBPL11gLrvQ8lXpu6AvVeNyPCxLqMlvs2iegnAoYDK5NzpWV3L7UR
- Dz8qfpQGgsgkt6EaLPtaPR+dCtSLbM5xmvG4CVBHSVjaAGhAyY+tXd2AcRiMoM4fnTlc
- BnEyTiBNOfcYiGxf8V0ynoUWpJnLs2EulqVp5ib1vE1psFn0tMm/+S6Sx7MZEry9RIuD Fw== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6gs7gk5r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 22:43:03 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36VMh1kT020176
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 22:43:01 GMT
-Received: from hu-mdtipton-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 31 Jul 2023 15:43:01 -0700
-From:   Mike Tipton <quic_mdtipton@quicinc.com>
-To:     <djakov@kernel.org>, <gregkh@linuxfoundation.org>,
-        <rafael@kernel.org>, <corbet@lwn.net>
-CC:     <linux-pm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_okukatla@quicinc.com>,
-        <quic_viveka@quicinc.com>, <peterz@infradead.org>,
-        Mike Tipton <quic_mdtipton@quicinc.com>
-Subject: [PATCH v2 3/3] interconnect: Add debugfs test client
-Date:   Mon, 31 Jul 2023 15:42:47 -0700
-Message-ID: <20230731224247.10846-4-quic_mdtipton@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230731224247.10846-1-quic_mdtipton@quicinc.com>
-References: <20230731224247.10846-1-quic_mdtipton@quicinc.com>
+        Mon, 31 Jul 2023 18:44:31 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6D12102;
+        Mon, 31 Jul 2023 15:43:54 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VKMVFW001798;
+        Mon, 31 Jul 2023 22:43:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=qLVtAWDxssO83WVuWj3gGYNLr+kMLTnV4nRfwnDES+s=;
+ b=eUUPQskJwBnyGnmNyndEN6tpDcB7Lv4ZxlOjgCtTMpxHIS0gaip5wbsk+8jD+yrytKIZ
+ EQxdA/KkznFMuGK6KKZXyEc9ZKxXZ5tckZo6FVFIupR1Bql7FTGaVGj1GRQ1UZVwgmLX
+ TBiEL1dtfkUsFc+X3hPRUHmN449yfRBEO1nv9h/KfvnaVqWMsU2spK6w/X9DYxdFmYO9
+ UjaObyZ72yZFvjuWrYpA6IJ5LkyOPh6Jo+YKYOEDuAzJr8m2g5P6WsF5ornAZPg7hndi
+ Cp5FcWGUF47zBM+v1v3N3/CSwoFsfW5UFDl1uBoAeyWfA2/s706o+oE8VqaFFZoDBse7 jQ== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s4spc3r1m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Jul 2023 22:43:31 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36VMSRIb000605;
+        Mon, 31 Jul 2023 22:43:30 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2047.outbound.protection.outlook.com [104.47.57.47])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3s4s7bb9fv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Jul 2023 22:43:30 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hV7XMsBC1uAyMcl+ZSUDSl5BrvKsLDeLzUe8qWAQ9sw38ijxqmgH9dWTiencF6TYcX4gPPYnAno0v3IEsacfk70NUBEuhcILsNEcx/ZF8qXwr3NEzc+STVbz7Un/zJj7nN9AIVyiL/QbIieT2G0c7LwLHli1DNdxQB7gn5vrtBFxLjOYDrGgQIjfCUPK9nW4eDuZPGaXGfi+DqRxTGp5esMrhWlC495kLBbOECxvqgEcfOc2u2+MzgmZsawls5MXIaUadxhPIDDz5vaieXCxI49jDVSgwbDTpeW3gYMgFFisXGcg8V9YTDfg6UtB7j6cyvUK+kMGEVM0FXlMGxsbjg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qLVtAWDxssO83WVuWj3gGYNLr+kMLTnV4nRfwnDES+s=;
+ b=MfiB7WVwb9JAGYw3uZkdyux3UP7i2ji7Vc55dk72CvJHTuEqkXUXovEaJZuky9mDU4qfrscPcPxtrZ5qqB1FI4R0uhBknQJThh502VvWeZ1kngmb5fkprgg43xcrhFBr8QibYMieoQHV0U9Z3HTh5DjkC+vH/beAbv9m6ebOQ7LVCZHKgpdHhzRuCLDKWGo6+q4JRwdfocThOZX3ZYxOktLKIZ7ZT1LMwi5GJoQnJL+T9ysc9pfnSvg+SoW01Ec212tFoMUCTPJYG58cwSGLfv88Xv94qL4uSIGWUkKK9z5H4HI8jiUQ5mbKBoc8L6nzkgaA2a0JrFQIu11SyWAGQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qLVtAWDxssO83WVuWj3gGYNLr+kMLTnV4nRfwnDES+s=;
+ b=Q5eXO2AHMIZBGoLSlglxGF6PBR6KLOBH7ha4Vb0gxIcQfJiCpg8/cEnHknvUPzVbxWguX+aoXRvWPSss2dHajN3BGL0QfQmsRpybPLV8aAOWsa2OaiDa4hFj4EAx5lz5YdowsV12pHbcL9Eq8bTfIIiK30wk7Y/FZGyp4FdLjL8=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by SN4PR10MB5654.namprd10.prod.outlook.com (2603:10b6:806:20d::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6588.20; Mon, 31 Jul
+ 2023 22:43:28 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::2990:c166:9436:40e]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::2990:c166:9436:40e%6]) with mapi id 15.20.6631.043; Mon, 31 Jul 2023
+ 22:43:25 +0000
+Date:   Mon, 31 Jul 2023 18:43:22 -0400
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC] nfsd: don't hand out write delegations on O_WRONLY
+ opens
+Message-ID: <ZMg5CrlMPsDj95Ua@tissot.1015granger.net>
+References: <20230731-wdeleg-v1-1-f8fe1ce11b36@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731-wdeleg-v1-1-f8fe1ce11b36@kernel.org>
+X-ClientProxiedBy: CH0P221CA0020.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:610:11c::21) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 5bZh8_gippCLykqPuFm3fcFthvgHwXXm
-X-Proofpoint-ORIG-GUID: 5bZh8_gippCLykqPuFm3fcFthvgHwXXm
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|SN4PR10MB5654:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a424f06-68a7-4040-0e68-08db92178d66
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OaKM2S8Cqemac8UfzOjir2hVhv+wa9C1QRRYZJZUaRNyjK2NKbB1ApOXnE5LVt6wli0csm3Z4O68eq1v6yg7EG40UHin+R/bI/Xmv/nE1Yj8Xqytk4rXiLhRS60R1/zwCA5UT1sdNmI3xuArf9ht6WJXuN2smv4AMxFpoUqcRgY6yVdSejDAEcE+mT9f83C51Qg7eS/xUebc/a8R/s0YkPd7Eo4P70j4JjkLvvPFKNSrcbrInCc1/ujjf/P17Q5UfVBxcAPvEEC57K+bfi7zJuNxIaMIue9OVFLllwAWs0xqJrldE7em8o0bwFXaCsgW2RInQTLolMB1mEwvXphpWrIWzy/7BYKQuBSQzGHnUrOPYjJyU37jbaei+UObapcb2viPLK765tZEH1pANS6BdJHlgpfLfxBiNJtXesYwtNpCmKGVRLeke6FLg5a93S5FnZxMjEnZjV7hmsldsQJTB28HjTjhNSSkQ90l1ojC4Nprj1LBZvnnwHQqt+afmdzqRzX9aKSuO/y28dovp4yEV4sDrwbdUdgTkC9W362JBhE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(376002)(396003)(346002)(39860400002)(366004)(451199021)(66476007)(86362001)(8936002)(8676002)(5660300002)(6916009)(316002)(41300700001)(66946007)(66556008)(4326008)(54906003)(478600001)(2906002)(38100700002)(6666004)(6512007)(966005)(44832011)(9686003)(6486002)(26005)(6506007)(186003)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?j4ykoGBjHY/zhgyFz61uevVj9Ni5woqIwpiN2WfHfC/bcJOtE0KUdEekT0Ef?=
+ =?us-ascii?Q?tdd276UuVIuM+ZJxvr7W5NKxLIEdSDBKHdtOipP0pFpvEzM6MaD/ofztKVKQ?=
+ =?us-ascii?Q?t8tQqOc+znq/9030rNX7Z01PjGEwfunWMBCTWTQnWS3+1lO8ksz5uxEnuCKt?=
+ =?us-ascii?Q?2uLb0NiO8hCzudb7nMCdhKtNyRKn+3+S4Fh3181c4QTtjxH9LN4id/gRCvCW?=
+ =?us-ascii?Q?J51R2/j5FngrbSnUfnt3NPTndzOoYRjc7UnGiiptGTCKwkJMe8FmBAVweI/u?=
+ =?us-ascii?Q?4+VoZCRzHqNbBsGdTDRwi6vHusHdQswxJCONhjbSgTfZYFwfZ5ObNyLBK3nD?=
+ =?us-ascii?Q?g8fupsJ5vokyaZ+SFiowpkmdl3/bt1v6DTGT31J6qAqQdw4u0O1eeDnBa/yf?=
+ =?us-ascii?Q?K0Nx7B2rKXa6a7nA1AnxS32XHeE5QPflQCAoA9FowhAGbm/FZmH8zev/83Fb?=
+ =?us-ascii?Q?Nm6RCAhMzsWYJjahhPuBrukqqvxk6mjUhBo3ZatNoxFKGjKs+ddFk+UjY6F3?=
+ =?us-ascii?Q?J93IKaVON/cCv1a3+AELySoEhgL/Pz86X59Ac33qiRZ6I8HB4AHVCdy1m9sf?=
+ =?us-ascii?Q?U6iy76HyKdU/BrT0tGWlkSat1+B8JyLuiGmvkXx6+brfhCQlQOd8DHASXlen?=
+ =?us-ascii?Q?JcjI+9QpDAVsPNYwKMRz8+LkRYKtpeKNqmt3QSRu65Ha3/8Ujlo6Gp8RiPJR?=
+ =?us-ascii?Q?7v2FDLAWYndi4M1cMzLwRd17SGyNzpPoktVWcbrFEGOUndLSL3ZuVteBpeV6?=
+ =?us-ascii?Q?RnmHGj5SsYw77jrEQllWiEvijnXerS4DV+nqpsvEjmeDeFL/DBPuyOGo9v/l?=
+ =?us-ascii?Q?AuDsnZlzFXB29tq9iatUwT/YjEynzjDgrsBXadzJrnaLNKWIBtg2AEz5szqd?=
+ =?us-ascii?Q?uAidMNEpoCkwFvYfxNxGGk6Hiw67PenEoQv/X8Lw/fKsXNUFAXAdx62c6TWc?=
+ =?us-ascii?Q?UykTKeefKGMYvq8is9xzam983TW9vmY+Cz9VctZSxpaeDwq/IzAwW5h22e0/?=
+ =?us-ascii?Q?NADRfJOm5m1UerjwCXc0p1nd1xQzUs5izMRPPTYf+fcWJCQclWf+xeOPRnqq?=
+ =?us-ascii?Q?T9CZE/YOMxrNvA18gVBUupuajapUtpbJyvW2nSNa1exJr0yFNzTUWyOlK5B+?=
+ =?us-ascii?Q?XfUIHOBDYdFj6GVdYvUtU3pVTKnb12QYAWgFzJZiy+8+fZzR1HwY5dLGzGE+?=
+ =?us-ascii?Q?33SoH7iVqBF9WJ5F9NkxeCUKVQ5dIelhDVWncmVn5vev5FGIyOixgReySdOR?=
+ =?us-ascii?Q?uJQ7PofyohdBLtD6x5LyLCP+0hy4zZGw8u6mtCzU6z6u1WALDC0qe3xouXEa?=
+ =?us-ascii?Q?khqR7+Lks2VJ01PNxRORmqYkG+hifKcFoPvPLMvCCONhzHs/LzSUt9FgasGj?=
+ =?us-ascii?Q?wDYhSGd7JnXQVEryO4PIrUBq2cLO9dtOtFwEnomepj4zDC+VGIi9jfBXmiZz?=
+ =?us-ascii?Q?rti6VFbxBRVP9Sieajca0FaWT55eodCD+ikXU0qHKer/qLoKLNh+x55CNgFt?=
+ =?us-ascii?Q?EoYVGntGN7ecxRn1nVbGLJzNR+8cpeMOSO8Gg4lV2r3u5VmUvl2VYUUWsFxk?=
+ =?us-ascii?Q?Ra18bpixa8HEZKqhOR0I7JTYyPiPCwucsqOl3u+SvVGrbsI0uNdBfOxCjzKc?=
+ =?us-ascii?Q?GQ=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 8rRoQpAvKc1/E3WbKh7oOx9HeNlDk8GfFdq1VBYCC1Cj66jOGbJfArI/6lhHGuqFtmxo1SwryAAu76wxdMz5Y40S8dnCBf6lyM/vB+Jtm7KfCmQ2Fiuj/cYSH7FWC8OT1js7nePLvgVpl3+x1rQjCT2cOxsj0OeZnJfIWTpgLJBVkkGpdM9f66Gi9xfw/qZuHyFSapETtmlkLk4cxLjtQeM/uZh/a0GF/HiEbEFL5+RDhtPg3cnNdjr5oxodOQ1q5qX42LCW96GSzSUpP4NV74D0aHo2nQIk6GnQVkMb7CI0M7Z2L2BBc9Gvta7laip/1rOE+U29wfzdLnmu0dclQ+X9CdY/x/wj0r4B3elzXT5/jESS97TnxkPsTvqYK5NdvveMdoOC9cXiQxLa51TltPr/AnLdqvmsHV0bdJzljmYNl5BcCELQt6+ZzFFZMGvQkoYqM7wQM5JEAueS5e5dqa1kh151XUfPTtQq6dELaga5xeLosGT0BBV2TFc/VrieXW+WdaWDvb9fiy0/81Zi6XnsCWAHpybwLv2iTwZcWPY/s/rTVULJJDVPu1KQI6ezGWJ8ubCOkIo+LiuaaHinG7bY7y4OORNbEm6am8qqSjJqn1HWRNOlNqj7vVZVCyteRmP+6NEA9UCZ2+SEP5YH4yZyqhubPwwVm8rntfiABoca0bffKZva1jy07PZcS57JH8AFarqnJLcpTmHU4nik737BsT2ofMS0e8U2YlzvT8MnQGyIGqL7hqwsLmQj9zTWPSceQdiup83dYw0u4JQxj+AoH21qYMoILooGo7EcobQJsU6eMzpCekx1ZHkHwh6vGphIbqnCgtutw/e1KiiiUAiO0KPSwas3LCS50bl9SJKOAhDWsjU157/WujaCdEIF
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a424f06-68a7-4040-0e68-08db92178d66
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 22:43:25.8515
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cDcgDPRF6VGctHnru1v1dgJd/xjWU3fa6TzSyOTgFYIWMnbYJI+1FsnP3KkVvER6ncRgUKHHxUQLUmcLl9/JnA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR10MB5654
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-31_15,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- adultscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307310206
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 suspectscore=0
+ adultscore=0 mlxlogscore=681 spamscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307310206
+X-Proofpoint-ORIG-GUID: 76MT4lR_YYtyvYE_wAug9HFIGHx8qiHC
+X-Proofpoint-GUID: 76MT4lR_YYtyvYE_wAug9HFIGHx8qiHC
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's often useful during test, debug, and development to issue path
-votes from shell. Add a debugfs client for this purpose.
+On Mon, Jul 31, 2023 at 04:27:30PM -0400, Jeff Layton wrote:
+> I noticed that xfstests generic/001 was failing against linux-next nfsd.
 
-Example usage:
-	cd /sys/kernel/debug/interconnect/test-client/
+Only on NFSv4.2 mounts, I presume?
 
-	# Configure node endpoints for the path from CPU to DDR on
-	# qcom/sm8550.
-	echo chm_apps > src_node
-	echo ebi > dst_node
 
-	# Get path between src_node and dst_node. This is only
-	# necessary after updating the node endpoints.
-	echo 1 > get
+> The client would request a OPEN4_SHARE_ACCESS_WRITE open, and the server
+> would hand out a write delegation. The client would then try to use that
+> write delegation as the source stateid in a COPY or CLONE operation, and
+> the server would respond with NFS4ERR_STALE.
+> 
+> The problem is that the struct file associated with the delegation does
+> not necessarily have read permissions. It's handing out a write
+> delegation on what is effectively an O_WRONLY open. RFC 8881 states:
+> 
+>  "An OPEN_DELEGATE_WRITE delegation allows the client to handle, on its
+>   own, all opens."
+> 
+> Given that the client didn't request any read permissions, and that nfsd
+> didn't check for any, it seems wrong to give out a write delegation.
 
-	# Set desired BW to 1GBps avg and 2GBps peak.
-	echo 1000000 > avg_bw
-	echo 2000000 > peak_bw
+A client is, in fact, permitted to use a write delegation stateid
+in an otw READ operation. So, this makes sense to me.
 
-	# Vote for avg_bw and peak_bw on the latest path from "get".
-	# Voting for multiple paths is possible by repeating this
-	# process for different nodes endpoints.
-	echo 1 > commit
 
-Allowing userspace to directly enable and set bus rates can be dangerous
-So, following in the footsteps of the regmap [0] and clk [1] frameworks,
-keep these userspace controls compile-time disabled without Kconfig
-options to enable them. Enabling this will require code changes to
-define INTERCONNECT_ALLOW_WRITE_DEBUGFS.
+> Don't hand out a delegation if the client didn't request
+> OPEN4_SHARE_ACCESS_BOTH.
+> 
+> This fixes xfstest generic/001.
+> 
+> Closes: https://bugzilla.linux-nfs.org/show_bug.cgi?id=412
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-[0] commit 09c6ecd39410 ("regmap: Add support for writing to regmap registers via debugfs")
-[1] commit 37215da5553e ("clk: Add support for setting clk_rate via debugfs")
+I'm thinking this should be squashed into commit
+68a593f24a35 ("NFSD: Enable write delegation support").
 
-Signed-off-by: Mike Tipton <quic_mdtipton@quicinc.com>
----
- Documentation/driver-api/interconnect.rst |  25 ++++
- drivers/interconnect/Makefile             |   2 +-
- drivers/interconnect/core.c               |   3 +
- drivers/interconnect/debugfs-client.c     | 168 ++++++++++++++++++++++
- drivers/interconnect/internal.h           |   1 +
- 5 files changed, 198 insertions(+), 1 deletion(-)
- create mode 100644 drivers/interconnect/debugfs-client.c
 
-diff --git a/Documentation/driver-api/interconnect.rst b/Documentation/driver-api/interconnect.rst
-index 5ed4f57a6bac..a92d0f277a1f 100644
---- a/Documentation/driver-api/interconnect.rst
-+++ b/Documentation/driver-api/interconnect.rst
-@@ -113,3 +113,28 @@ through dot to generate diagrams in many graphical formats::
- 
-         $ cat /sys/kernel/debug/interconnect/interconnect_graph | \
-                 dot -Tsvg > interconnect_graph.svg
-+
-+The ``test-client`` directory provides interfaces for issuing BW requests to
-+any arbitrary path. Note that for safety reasons, this feature is disabled by
-+default without a Kconfig to enable it. Enabling it requires code changes to
-+``#define INTERCONNECT_ALLOW_WRITE_DEBUGFS``. Example usage::
-+
-+        cd /sys/kernel/debug/interconnect/test-client/
-+
-+        # Configure node endpoints for the path from CPU to DDR on
-+        # qcom/sm8550.
-+        echo chm_apps > src_node
-+        echo ebi > dst_node
-+
-+        # Get path between src_node and dst_node. This is only
-+        # necessary after updating the node endpoints.
-+        echo 1 > get
-+
-+        # Set desired BW to 1GBps avg and 2GBps peak.
-+        echo 1000000 > avg_bw
-+        echo 2000000 > peak_bw
-+
-+        # Vote for avg_bw and peak_bw on the latest path from "get".
-+        # Voting for multiple paths is possible by repeating this
-+        # process for different nodes endpoints.
-+        echo 1 > commit
-diff --git a/drivers/interconnect/Makefile b/drivers/interconnect/Makefile
-index 5604ce351a9f..d0888babb9a1 100644
---- a/drivers/interconnect/Makefile
-+++ b/drivers/interconnect/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- CFLAGS_core.o				:= -I$(src)
--icc-core-objs				:= core.o bulk.o
-+icc-core-objs				:= core.o bulk.o debugfs-client.o
- 
- obj-$(CONFIG_INTERCONNECT)		+= icc-core.o
- obj-$(CONFIG_INTERCONNECT_IMX)		+= imx/
-diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-index fc1461dfc61b..9e12bb5e523d 100644
---- a/drivers/interconnect/core.c
-+++ b/drivers/interconnect/core.c
-@@ -1116,6 +1116,9 @@ static int __init icc_init(void)
- 			    icc_debugfs_dir, NULL, &icc_summary_fops);
- 	debugfs_create_file("interconnect_graph", 0444,
- 			    icc_debugfs_dir, NULL, &icc_graph_fops);
-+
-+	icc_debugfs_client_init(icc_debugfs_dir);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/interconnect/debugfs-client.c b/drivers/interconnect/debugfs-client.c
-new file mode 100644
-index 000000000000..c41255cc44ca
---- /dev/null
-+++ b/drivers/interconnect/debugfs-client.c
-@@ -0,0 +1,168 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+#include <linux/debugfs.h>
-+#include <linux/interconnect.h>
-+#include <linux/platform_device.h>
-+
-+#include "internal.h"
-+
-+/*
-+ * This can be dangerous, therefore don't provide any real compile time
-+ * configuration option for this feature.
-+ * People who want to use this will need to modify the source code directly.
-+ */
-+#undef INTERCONNECT_ALLOW_WRITE_DEBUGFS
-+
-+#if defined(INTERCONNECT_ALLOW_WRITE_DEBUGFS) && defined(CONFIG_DEBUG_FS)
-+
-+static LIST_HEAD(debugfs_paths);
-+static DEFINE_MUTEX(debugfs_lock);
-+
-+static struct platform_device *pdev;
-+static struct icc_path *cur_path;
-+
-+static char *src_node;
-+static char *dst_node;
-+static u32 avg_bw;
-+static u32 peak_bw;
-+static u32 tag;
-+
-+struct debugfs_path {
-+	const char *src;
-+	const char *dst;
-+	struct icc_path *path;
-+	struct list_head list;
-+};
-+
-+static struct icc_path *get_path(const char *src, const char *dst)
-+{
-+	struct debugfs_path *path;
-+
-+	list_for_each_entry(path, &debugfs_paths, list) {
-+		if (!strcmp(path->src, src) && !strcmp(path->dst, dst))
-+			return path->path;
-+	}
-+
-+	return NULL;
-+}
-+
-+static int icc_get_set(void *data, u64 val)
-+{
-+	struct debugfs_path *debugfs_path;
-+	char *src, *dst;
-+	int ret = 0;
-+
-+	mutex_lock(&debugfs_lock);
-+
-+	rcu_read_lock();
-+	src = rcu_dereference(src_node);
-+	dst = rcu_dereference(dst_node);
-+
-+	/*
-+	 * If we've already looked up a path, then use the existing one instead
-+	 * of calling icc_get() again. This allows for updating previous BW
-+	 * votes when "get" is written to multiple times for multiple paths.
-+	 */
-+	cur_path = get_path(src, dst);
-+	if (cur_path) {
-+		rcu_read_unlock();
-+		goto out;
-+	}
-+
-+	src = kstrdup(src, GFP_KERNEL);
-+	dst = kstrdup(dst, GFP_KERNEL);
-+	rcu_read_unlock();
-+
-+	if (!src || !dst) {
-+		ret = -ENOMEM;
-+		goto err_free;
-+	}
-+
-+	cur_path = icc_get(&pdev->dev, src, dst);
-+	if (IS_ERR(cur_path)) {
-+		ret = PTR_ERR(cur_path);
-+		goto err_free;
-+	}
-+
-+	debugfs_path = kzalloc(sizeof(*debugfs_path), GFP_KERNEL);
-+	if (!debugfs_path) {
-+		ret = -ENOMEM;
-+		goto err_put;
-+	}
-+
-+	debugfs_path->path = cur_path;
-+	debugfs_path->src = src;
-+	debugfs_path->dst = dst;
-+	list_add_tail(&debugfs_path->list, &debugfs_paths);
-+
-+	goto out;
-+
-+err_put:
-+	icc_put(cur_path);
-+err_free:
-+	kfree(src);
-+	kfree(dst);
-+out:
-+	mutex_unlock(&debugfs_lock);
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(icc_get_fops, NULL, icc_get_set, "%llu\n");
-+
-+static int icc_commit_set(void *data, u64 val)
-+{
-+	int ret;
-+
-+	mutex_lock(&debugfs_lock);
-+
-+	if (IS_ERR_OR_NULL(cur_path)) {
-+		ret = PTR_ERR(cur_path);
-+		goto out;
-+	}
-+
-+	icc_set_tag(cur_path, tag);
-+	ret = icc_set_bw(cur_path, avg_bw, peak_bw);
-+out:
-+	mutex_unlock(&debugfs_lock);
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(icc_commit_fops, NULL, icc_commit_set, "%llu\n");
-+
-+int icc_debugfs_client_init(struct dentry *icc_dir)
-+{
-+	struct dentry *client_dir;
-+	int ret;
-+
-+	pdev = platform_device_alloc("icc-debugfs-client", PLATFORM_DEVID_NONE);
-+
-+	ret = platform_device_add(pdev);
-+	if (ret) {
-+		pr_err("%s: failed to add platform device: %d\n", __func__, ret);
-+		platform_device_put(pdev);
-+		return ret;
-+	}
-+
-+	client_dir = debugfs_create_dir("test_client", icc_dir);
-+
-+	debugfs_create_str("src_node", 0600, client_dir, &src_node);
-+	debugfs_create_str("dst_node", 0600, client_dir, &dst_node);
-+	debugfs_create_file("get", 0200, client_dir, NULL, &icc_get_fops);
-+	debugfs_create_u32("avg_bw", 0600, client_dir, &avg_bw);
-+	debugfs_create_u32("peak_bw", 0600, client_dir, &peak_bw);
-+	debugfs_create_u32("tag", 0600, client_dir, &tag);
-+	debugfs_create_file("commit", 0200, client_dir, NULL, &icc_commit_fops);
-+
-+	return 0;
-+}
-+
-+#else
-+
-+int icc_debugfs_client_init(struct dentry *icc_dir)
-+{
-+	return 0;
-+}
-+
-+#endif
-diff --git a/drivers/interconnect/internal.h b/drivers/interconnect/internal.h
-index 95d6ba27bf78..3b2cfd32e449 100644
---- a/drivers/interconnect/internal.h
-+++ b/drivers/interconnect/internal.h
-@@ -42,5 +42,6 @@ struct icc_path {
- };
- 
- struct icc_path *icc_get(struct device *dev, const char *src, const char *dst);
-+int icc_debugfs_client_init(struct dentry *icc_dir);
- 
- #endif
+> ---
+>  fs/nfsd/nfs4state.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+> index ef7118ebee00..9f1c90afed72 100644
+> --- a/fs/nfsd/nfs4state.c
+> +++ b/fs/nfsd/nfs4state.c
+> @@ -5462,6 +5462,8 @@ nfs4_set_delegation(struct nfsd4_open *open, struct nfs4_ol_stateid *stp,
+>  		return ERR_PTR(-EAGAIN);
+>  
+>  	if (open->op_share_access & NFS4_SHARE_ACCESS_WRITE) {
+> +		if (!(open->op_share_access & NFS4_SHARE_ACCESS_READ))
+> +			return ERR_PTR(-EBADF);
+
+			return ERR_PTR(-EAGAIN);
+
+might be more consistent with the other failure returns in this
+function.
+
+
+>  		nf = find_writeable_file(fp);
+>  		dl_type = NFS4_OPEN_DELEGATE_WRITE;
+>  	} else {
+> 
+> ---
+> base-commit: ec89391563792edd11d138a853901bce76d11f44
+> change-id: 20230731-wdeleg-bbdb6b25a3c6
+> 
+> Best regards,
+> -- 
+> Jeff Layton <jlayton@kernel.org>
+> 
+
 -- 
-2.17.1
-
+Chuck Lever
