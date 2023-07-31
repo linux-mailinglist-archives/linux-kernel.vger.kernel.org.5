@@ -2,166 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ABD07691AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575087691B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbjGaJ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50694 "EHLO
+        id S230351AbjGaJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231795AbjGaJ0d (ORCPT
+        with ESMTP id S229552AbjGaJ27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:26:33 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49340E7A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:26:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690795570; x=1722331570;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=5DroKSxtJt7ROa5ru6XtTRU2BpA/NiTBkY1GaPFsUQI=;
-  b=V3w7BvsWb6ULAIPLc4IumkP+1s9IPHFmmAwV6XI4r+nHLmP+Fn9sMXUr
-   4kk6neE3Nss+dz7QCdT4+65D5ktYr9hY9WfZs4uXuiEYH8oI5FG7tUau9
-   euUKDl1Y0/XDp38ApuSTUqUtTeyOU95Dhtd/KiaC1e0NKOCfO8gaGRiAn
-   ODo5GAz6WrG/cx4yBLh8gpQEX3BVSMfIWXZPyDM4F7wDHqpYawIxDpwRq
-   z7/kYHrKC/r5NXRQB+RkStiLHjmX4HETlX2s3qDYMqMC9Er6qZbzCKLS9
-   n+bAekdeOVWRzo/v5WNN4JA267WbGz6xmfDAxzpySh8njA+gcikT+CWK7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="372600334"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="372600334"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 02:26:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="731535642"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="731535642"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.208.223])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 02:26:04 -0700
-Message-ID: <1d10fab5-d375-79b8-122d-f3cb66f2d94a@intel.com>
-Date:   Mon, 31 Jul 2023 12:26:00 +0300
+        Mon, 31 Jul 2023 05:28:59 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0AA11B
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:28:57 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RDtBf1XbkzNmbm;
+        Mon, 31 Jul 2023 17:25:30 +0800 (CST)
+Received: from [10.174.177.243] (10.174.177.243) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 31 Jul 2023 17:28:54 +0800
+Message-ID: <d9694393-d916-0d7f-8fce-ac656de544de@huawei.com>
+Date:   Mon, 31 Jul 2023 17:28:53 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.1
-Subject: Re: [PATCH 1/1] perf dlfilter: Initialize addr_location before
- passing it to thread__find_symbol_fb()
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ian Rogers <irogers@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Disha Goel <disgoel@linux.vnet.ibm.com>,
-        Jiri Olsa <jolsa@kernel.org>, Kajol Jain <kjain@linux.ibm.com>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <ZL7ocEWxjRtWR80T@kernel.org>
- <CAP-5=fVy8cYrYH5EmdrJo0+q0CHj=chTxWYkieLi6LwTSjFCAQ@mail.gmail.com>
- <ZL7tv45K3zKqkHhZ@kernel.org>
- <d81c192a-49e1-b02a-b6e7-6c44927f041d@intel.com>
- <ZMJ7d7BUeva82rMm@kernel.org>
- <95590e6a-0747-a365-4de1-0ccd8fdfc257@intel.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH 4/4] arm64: tlb: set huge page size to stride for hugepage
 Content-Language: en-US
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <95590e6a-0747-a365-4de1-0ccd8fdfc257@intel.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Barry Song <21cnbao@gmail.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Mina Almasry <almasrymina@google.com>, <kirill@shutemov.name>,
+        <joel@joelfernandes.org>, <william.kucharski@oracle.com>,
+        <kaleshsingh@google.com>, <linux-mm@kvack.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230731074829.79309-1-wangkefeng.wang@huawei.com>
+ <20230731074829.79309-5-wangkefeng.wang@huawei.com>
+ <CAGsJ_4xvSyvskcKMptiwm+8eV-sgSWsJYgBEYpwQ2n=cHHNZ7Q@mail.gmail.com>
+ <CAGsJ_4yrsgJAzKq_-rPTnnr-AFXzgDK94m+WYxiAw4vq+TfGdA@mail.gmail.com>
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+In-Reply-To: <CAGsJ_4yrsgJAzKq_-rPTnnr-AFXzgDK94m+WYxiAw4vq+TfGdA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.177.243]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/23 22:18, Adrian Hunter wrote:
-> On 27/07/23 17:13, Arnaldo Carvalho de Melo wrote:
->> Em Tue, Jul 25, 2023 at 02:51:58PM +0300, Adrian Hunter escreveu:
->>> On 25/07/23 00:31, Arnaldo Carvalho de Melo wrote:
->>>> Em Mon, Jul 24, 2023 at 02:16:05PM -0700, Ian Rogers escreveu:
->>>>> On Mon, Jul 24, 2023 at 2:09 PM Arnaldo Carvalho de Melo
->>>>> <acme@kernel.org> wrote:
->>>>>>
->>>>>> As thread__find_symbol_fb() will end up calling thread__find_map() and
->>>>>> it in turn will call these on uninitialized memory:
->>>>>>
->>>>>>         maps__zput(al->maps);
->>>>>>         map__zput(al->map);
->>>>>>         thread__zput(al->thread);
->>>>>
->>>>> Normally there would be a addr_location__exit. It looks here like most
->>>>> values are copied in al_to_d_al, which copies reference counted values
->>>>> without doing appropriate gets. Perhaps add the gets in al_to_d_al and
->>>>> add the exit to make it clear there can't be addr_location related
->>>>> leaks here.
->>
->> Or just make al_to_d_al use strdups for the strings it gets from
->> reference counter structs.
->>
->> That or make the caller of ->resolve_address() provide a initialized
->> addr_location that it then exits.
-> 
-> OK, I will send a patch.
 
-2 patches plus yours:
 
-https://lore.kernel.org/linux-perf-users/20230731091857.10681-1-adrian.hunter@intel.com/T/#t
-
-> 
+On 2023/7/31 16:43, Barry Song wrote:
+> On Mon, Jul 31, 2023 at 4:33 PM Barry Song <21cnbao@gmail.com> wrote:
 >>
->> - Arnaldo
->>
->>>> I'll do that as well and add the addr_location__exit() then send a V2.
+>> On Mon, Jul 31, 2023 at 4:14 PM Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
 >>>
->>> The data is not valid outside the context of ->filter_event() or
->>> ->filter_event_early(), so the reference counts should not be changed.
->>> That probably needs to be made clearer in the documentation.
->>
->>
->>  
->>>>
->>>> - Arnaldo
->>>>  
->>>>> Thanks,
->>>>> Ian
->>>>>
->>>>>> Fixes: 0dd5041c9a0eaf8c ("perf addr_location: Add init/exit/copy functions")
->>>>>> Cc: Adrian Hunter <adrian.hunter@intel.com>
->>>>>> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
->>>>>> Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
->>>>>> Cc: Disha Goel <disgoel@linux.vnet.ibm.com>
->>>>>> Cc: Ian Rogers <irogers@google.com>
->>>>>> Cc: Jiri Olsa <jolsa@kernel.org>
->>>>>> Cc: Kajol Jain <kjain@linux.ibm.com>
->>>>>> Cc: Madhavan Srinivasan <maddy@linux.ibm.com>
->>>>>> Cc: Namhyung Kim <namhyung@kernel.org>
->>>>>> Link: https://lore.kernel.org/lkml/
->>>>>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
->>>>>> ---
->>>>>>  tools/perf/util/dlfilter.c | 1 +
->>>>>>  1 file changed, 1 insertion(+)
->>>>>>
->>>>>> diff --git a/tools/perf/util/dlfilter.c b/tools/perf/util/dlfilter.c
->>>>>> index 46f74b2344dbb34c..798a53d7e6c9dfc5 100644
->>>>>> --- a/tools/perf/util/dlfilter.c
->>>>>> +++ b/tools/perf/util/dlfilter.c
->>>>>> @@ -166,6 +166,7 @@ static __s32 dlfilter__resolve_address(void *ctx, __u64 address, struct perf_dlf
->>>>>>         if (!thread)
->>>>>>                 return -1;
->>>>>>
->>>>>> +       addr_location__init(&al);
->>>>>>         thread__find_symbol_fb(thread, d->sample->cpumode, address, &al);
->>>>>>
->>>>>>         al_to_d_al(&al, &d_al);
->>>>>> --
->>>>>> 2.37.1
->>>>>>
->>>>
+>>> It is better to use huge_page_size() for hugepage(HugeTLB) instead of
+>>> PAGE_SIZE for stride, which has been done in flush_pmd/pud_tlb_range(),
+>>> it could reduce the loop in __flush_tlb_range().
 >>>
+>>> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+>>> ---
+>>>   arch/arm64/include/asm/tlbflush.h | 21 +++++++++++----------
+>>>   1 file changed, 11 insertions(+), 10 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
+>>> index 412a3b9a3c25..25e35e6f8093 100644
+>>> --- a/arch/arm64/include/asm/tlbflush.h
+>>> +++ b/arch/arm64/include/asm/tlbflush.h
+>>> @@ -360,16 +360,17 @@ static inline void __flush_tlb_range(struct vm_area_struct *vma,
+>>>          dsb(ish);
+>>>   }
+>>>
+>>> -static inline void flush_tlb_range(struct vm_area_struct *vma,
+>>> -                                  unsigned long start, unsigned long end)
+>>> -{
+>>> -       /*
+>>> -        * We cannot use leaf-only invalidation here, since we may be invalidating
+>>> -        * table entries as part of collapsing hugepages or moving page tables.
+>>> -        * Set the tlb_level to 0 because we can not get enough information here.
+>>> -        */
+>>> -       __flush_tlb_range(vma, start, end, PAGE_SIZE, false, 0);
+>>> -}
+>>> +/*
+>>> + * We cannot use leaf-only invalidation here, since we may be invalidating
+>>> + * table entries as part of collapsing hugepages or moving page tables.
+>>> + * Set the tlb_level to 0 because we can not get enough information here.
+>>> + */
+>>> +#define flush_tlb_range(vma, start, end)                               \
+>>> +       __flush_tlb_range(vma, start, end,                              \
+>>> +                               ((vma)->vm_flags & VM_HUGETLB)          \
+>>> +                               ? huge_page_size(hstate_vma(vma))       \
+>>> +                               : PAGE_SIZE, false, 0)
+>>> +
+>>
+>> seems like a good idea.
+>>
+>> I wonder if a better implementation will be MMU_GATHER_PAGE_SIZE,  in this case,
+>> we are going to support stride for other large folios as well, such as thp.
 >>
 > 
+> BTW, in most cases we have already had right stride:
+> 
+> arch/arm64/include/asm/tlb.h has already this to get stride:
 
+MMU_GATHER_PAGE_SIZE works for tlb_flush, but flush_tlb_range()
+directly called without mmu_gather, see above 3 patches is to
+use correct flush_[hugetlb/pmd/pud]_tlb_range(also there are
+some other places, like get_clear_contig_flush/clear_flush on arm64),
+so enable MMU_GATHER_PAGE_SIZE for arm64 is independent thing, right?
+
+> 
+> static inline void tlb_flush(struct mmu_gather *tlb)
+> {
+>     struct vm_area_struct vma = TLB_FLUSH_VMA(tlb->mm, 0);
+>     bool last_level = !tlb->freed_tables;
+>     unsigned long stride = tlb_get_unmap_size(tlb);
+>     int tlb_level = tlb_get_level(tlb);
+> 
+>     /*
+>      * If we're tearing down the address space then we only care about
+>      * invalidating the walk-cache, since the ASID allocator won't
+>      * reallocate our ASID without invalidating the entire TLB.
+>    */
+>    if (tlb->fullmm) {
+>        if (!last_level)
+>             flush_tlb_mm(tlb->mm);
+>         return;
+>    }
+> 
+>     __flush_tlb_range(&vma, tlb->start, tlb->end, stride,
+>      last_level, tlb_level);
+> }
+> 
+>>>
+>>>   static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+>>>   {
+>>> --
+>>> 2.41.0
+>>>
+>>
+>> Thanks
+>> Barry
