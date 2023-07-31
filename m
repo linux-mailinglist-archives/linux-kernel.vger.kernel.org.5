@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6751769769
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CA176976F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232908AbjGaNXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:23:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
+        id S232943AbjGaNX6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:23:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbjGaNXS (ORCPT
+        with ESMTP id S229675AbjGaNXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:23:18 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB12410DF
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:23:17 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686f94328a4so2527178b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690809797; x=1691414597;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qWRJRiQjhcIU2rxsvfqdUS+hVCke4c8k+gpJmIwq2XM=;
-        b=Gj9CfjZZxP65634Ss1MxYKQeqAb4Qe3HXr46yVI6+wj860qJKhyy9kJ2ijW2riQ/CX
-         L8zKpjHJTz7g2mFwmLX2Oq1NsbQ6kc6iA7oK03mJnRWOTrS6kPwF/GwYvz39GhHWACE1
-         RWkK/jNANlY5EHHsqjubzBUu4IfGZ6dwrMZpVf/NL+tNsTtlz+/HT7MMwUHX61S7wj7e
-         KhIA6uhamwZeSIQgLZAGXa4TsmDhx2eaurdtYraP9QPSnE9gPKeF2+LxtEZ/75oDr1aV
-         Q61TfeTrVkg1hiBEfpANsYLu6xewla8AlhXX5dNJ1LOc9Z79k6xrgjO1OsAqu/VnTOVK
-         WA2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690809797; x=1691414597;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qWRJRiQjhcIU2rxsvfqdUS+hVCke4c8k+gpJmIwq2XM=;
-        b=IjKJb3s6eyyOnLcqI6qW/iVpbn3Mt60lMD9G5BZo7B7vzzdQ547LzebWFGW++X6UfB
-         hWOarD7fMQVGaH21eFV5vBXc+vv/f8hU4b22oIat5Fdgriz9/5OtRQu1RnG9m1A5QIou
-         d3WpCn71/K9ZKi3FtGiB4f3hSrwQatzJaVDgGPA1xBhlIxX3OXOe+B1GqjH8ifsPZgCl
-         WlcVoImwB9oni2U6xi37de4QYaB1eNuhvd7Ahim6NOjOqHoL+yccLRdZVVQKN7B0yNH0
-         YP5x6tK/A40nvkoL25YW5M3AythHdfN9Q7D5FOapEzbyu3Kugvg3v9ZjNnM3rypmakby
-         XZ4Q==
-X-Gm-Message-State: ABy/qLYkeQlkzZhd79qbrvvBW73DPm32Lm//IZVtUNnf9/ric9CEOX41
-        9ZdpyBwc9AE2W/N7gaibooTW
-X-Google-Smtp-Source: APBJJlEH1aib7CiVu5gcwf4AE0T5Y8leDtplNYz7rYhpebx0GRldV84W89ScmvX7OXBvA1czoT/14A==
-X-Received: by 2002:a05:6a00:2e8d:b0:667:d0ff:6a0f with SMTP id fd13-20020a056a002e8d00b00667d0ff6a0fmr11480177pfb.5.1690809797044;
-        Mon, 31 Jul 2023 06:23:17 -0700 (PDT)
-Received: from thinkpad ([117.193.209.129])
-        by smtp.gmail.com with ESMTPSA id u20-20020aa78394000000b0063f1a1e3003sm7624993pfm.166.2023.07.31.06.23.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 06:23:16 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 18:53:06 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Mon, 31 Jul 2023 09:23:53 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28728EB;
+        Mon, 31 Jul 2023 06:23:53 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 973EF5C00EE;
+        Mon, 31 Jul 2023 09:23:52 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 31 Jul 2023 09:23:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1690809832; x=1690896232; bh=Se
+        sJURo2GNIPxlgy2lU8LbgruKBtrrvOanK04f/Dc+s=; b=V/1rdpGPql22nPgVxI
+        u5FzGIJAqUQuZ/Mka1qBscZBPK+MRpt0wfyCiNuHXnSxwEsoT/8wewEjeK4iCxhS
+        1gssB0DgVUBMmYAh/aMwTvZ/qmTUQwGC9hB1iP3c43+f7i9JVHM7+M3QUdwWQUfT
+        daLF6XwGXefoMnoYl+yt351PG4+/FmkaPfJ9bhMJtC94UJpZepVnvNCZjz0Yn1hS
+        z2AoFV61CuXUxVFMWxiow+2UZJFK0QCmkSNkcVcsN1TBbfOAldHPkDzEf8pwObfS
+        kmGbaYPNFvI6ja0p+XAIg+YojC1wYWw2D7xFYs/0R8sURAudXP3hf+bR20Adz6Gc
+        7kIQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690809832; x=1690896232; bh=SesJURo2GNIPx
+        lgy2lU8LbgruKBtrrvOanK04f/Dc+s=; b=qd8Q2IvEWgefIl0snyxbIWWwf0p1q
+        W9Mx8W07ywXgqbh5n5Fb6mlmCA8q+gXW3j/xE3smcdyCBy0JCyeR8egnzC/nvD4f
+        4GnYCHK+H3fqJTFuPKZRhj0wiaf5TGKZ7dtDcnXGoDFaT+aJg9X5JLjSyq7PhELA
+        aHzdq7+6/iut94tgoQC2JY4nTGWZh4LBF+iGv9gebe/mGjHHI1zGlAD91nYsOCUt
+        fz83rd2327tJ1epaEeejCkQV5V+ygsf19Sy3/6j502UA5+KJ86AeA/H4eyiCyp7s
+        /s2QSWPsgto9gTyIywFRnb7dQOW3lx2TR2GKflHwduf3UNm3oV+PoOz8g==
+X-ME-Sender: <xms:6LXHZGKv4Kri1x0pCHIb7BcvBDfI1yNvQl2oPTv6qPgufTR0AywU3g>
+    <xme:6LXHZOLUipGM2VC8tucp9n4aay3R48F8MYPRZaC891Ep6X2-BGac-dAPqwSrVV6ba
+    zHLe8ZS8W8ukYSeOF4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeggdegtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeegteejkefgtdekteekvdeukedvudegjeehkeeuheegueekieeuffelffdthfeg
+    udenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:6LXHZGsIGOdpIibmKb0AtYhv1MDa-Of8I5PRnUcRwQA70kApIbSU0A>
+    <xmx:6LXHZLYjU85LO--02hRJksWV7RV_Tgg1S75Ymb6_E-JSBJcbAsQeYg>
+    <xmx:6LXHZNZ8h4dUyi5fwXcmZtdJ9Fbe8iZvGppehrJ8ljCaMkNPJrvEDg>
+    <xmx:6LXHZLPhVQXXvG8PhHMr2cgtN_Cj1YmpPN0CR5ZOj2F9qOzEiVi7JA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 524C5B6008F; Mon, 31 Jul 2023 09:23:52 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+Mime-Version: 1.0
+Message-Id: <0c948578-5cb1-4b4e-8fa6-9de1d658713b@app.fastmail.com>
+In-Reply-To: <20230731110239.107086-2-clamor95@gmail.com>
+References: <20230731110239.107086-1-clamor95@gmail.com>
+ <20230731110239.107086-2-clamor95@gmail.com>
+Date:   Mon, 31 Jul 2023 15:23:32 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Svyatoslav Ryhel" <clamor95@gmail.com>,
+        "Jonathan Cameron" <jic23@kernel.org>,
+        "Lars-Peter Clausen" <lars@metafoo.de>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Samu Onkalo" <samu.p.onkalo@nokia.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v2] PCI: dwc: Provide deinit callback for i.MX
-Message-ID: <20230731132306.GA6436@thinkpad>
-References: <20230731-pci-imx-regulator-cleanup-v2-1-fc8fa5c9893d@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230731-pci-imx-regulator-cleanup-v2-1-fc8fa5c9893d@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Subject: Re: [PATCH v1 1/2] dt-bindings: iio: light: add apds990x binding
+Content-Type: text/plain
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 12:55:01PM +0100, Mark Brown wrote:
-> The i.MX integration for the DesignWare PCI controller has a _host_exit()
-> operation which undoes everything that the _host_init() operation does but
-> does not wire this up as the host_deinit callback for the core, or call it
-> in any path other than suspend. This means that if we ever unwind the
-> initial probe of the device, for example because it fails, the regulator
-> core complains that the regulators for the device were left enabled:
-> 
-> imx6q-pcie 33800000.pcie: iATU: unroll T, 4 ob, 4 ib, align 64K, limit 16G
-> imx6q-pcie 33800000.pcie: Phy link never came up
-> imx6q-pcie 33800000.pcie: Phy link never came up
-> imx6q-pcie: probe of 33800000.pcie failed with error -110
-> ------------[ cut here ]------------
-> WARNING: CPU: 2 PID: 46 at drivers/regulator/core.c:2396 _regulator_put+0x110/0x128
-> 
-> Wire up the callback so that the core can clean up after itself.
-> 
-> Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Tested-by: Fabio Estevam <festevam@gmail.com>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+On Mon, Jul 31, 2023, at 13:02, Svyatoslav Ryhel wrote:
 
-Acked-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> +---
+> +$id: http://devicetree.org/schemas/iio/light/avago,apds990x.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Avago APDS990x ambient light and proximity sensor
+> +
 
-- Mani
+The APDS990x looks like a wildcard, which is not appropriate for
+the "compatible" property in DT, and should be replaced with a list
+of specific part numbers to which this applies.
 
-> ---
-> Changes in v2:
-> - Rebase onto v6.5-rc1.
-> - Link to v1: https://lore.kernel.org/r/20230703-pci-imx-regulator-cleanup-v1-1-b6c050ae2bad@kernel.org
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 27aaa2a6bf39..a18c20085e94 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -1040,6 +1040,7 @@ static void imx6_pcie_host_exit(struct dw_pcie_rp *pp)
->  
->  static const struct dw_pcie_host_ops imx6_pcie_host_ops = {
->  	.host_init = imx6_pcie_host_init,
-> +	.host_deinit = imx6_pcie_host_exit,
->  };
->  
->  static const struct dw_pcie_ops dw_pcie_ops = {
-> 
-> ---
-> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-> change-id: 20230703-pci-imx-regulator-cleanup-a17c8fd15ec5
-> 
-> Best regards,
-> -- 
-> Mark Brown <broonie@kernel.org>
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+    Arnd
