@@ -2,100 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8CA76A05A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F2776A05D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbjGaS0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
+        id S231699AbjGaS00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:26:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjGaS0Q (ORCPT
+        with ESMTP id S229585AbjGaS0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:26:16 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C4310E4;
-        Mon, 31 Jul 2023 11:26:14 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VIJX7i012157;
-        Mon, 31 Jul 2023 18:26:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Z7LdVphXCks6GiWOPlKZrBdmPfxG266TsB9xC6epCc0=;
- b=CiNpbE3VHUno+5Qo2hWHzuwlQcAb9wBjAK+MH3ttztrlAh48aoRNQCeHoJt97S1oNBlK
- X6bphMCLbKHIgItfZhZ8yDz9iCzd3R2jMNnfbbhYK0Nd7KtW2L12pr5+FqEcKKLzFwZk
- 60X1SeJZk/nM3PjrTUaVnz0L/1T6keb3mvIsD9zltaeVy4ld13w3gwJQBYoAC1vzPZCw
- y1JYr0zbXdJxHWWkGThkvFcpNv4Oo3/qXHBmhfRosuKDwDORghXbtgS2KBrrqDM0qM3j
- CrCjksbUVFcOXDaCo07/q3oZvzz47qOS4am5IjCBPVJ+a/Cl9W6SW+T/Ae056336FPhe ew== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6j4er0b3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 18:26:01 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36VIQ0Jq007297
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 18:26:00 GMT
-Received: from [10.110.123.68] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 11:25:59 -0700
-Message-ID: <6442edbc-a69c-ad1f-85f9-58013c3089d2@quicinc.com>
-Date:   Mon, 31 Jul 2023 11:25:58 -0700
+        Mon, 31 Jul 2023 14:26:23 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3534419AC
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:26:22 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-3490b737f9aso14105ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:26:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690827981; x=1691432781;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6LZEdaDlAMdQP6JhmjsArIuxox1zxEtjjTY2SzD6PsU=;
+        b=5fgkkTfZTjvrkPsV2OAsWS7fGDKlkOo6NBkGxlUad6Djf9YF4mNXTcZwmQCCLJ1nBy
+         ytvPZa3KoE6pLMDaS1L4gdmZaOfNzKXtsa1fikLeZSNL0jSNWYpUTY8GHiEMpPSUIhEf
+         GKZr2wZjg6oExHWyVPblSGkoydBcnRJu278I6bHizaXll85ZaXfkAb9ISQ34veJLXVin
+         H4LgRU66ITkpG1C45xmAlPZe5ifFrojIcI163nCjGKu3BAHmTrdfA2g91PJ4XmMzNAwE
+         6qNdJbd/ZgVe0FTRRBae2q8TCC7NnJ6KmTDr6JnJgqJf5rkyLUFJCut3v7Lu9kIPHxwj
+         tGnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690827981; x=1691432781;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6LZEdaDlAMdQP6JhmjsArIuxox1zxEtjjTY2SzD6PsU=;
+        b=Fzkc/zMuKDaJuBtxDo4e04kK/yRDQ85Xs6Vxj8vmSPDpubYQc2UZ/Vf38x2cdFXnpl
+         J18t5KcXzNsRxmZf6aAvXhMjPVN1Kv3K6/CtGLOC1Kcj5zQ8aUgOdKJZPjlll6NZKh0P
+         d5WpuqIM+r14vwImejhrCWsGIZZO0z2+GgMDGAtTWo6vBJnyFaqij704g5oZyiReUBQT
+         HZGQchIV6FuqjLta3d+R4F2QAhXvjExrKLT5EK+StZbge7LfR/NoS42mPoZE8ytoSdvI
+         nbJXNvO+a/40pC8lDcWXKEJAJ51v0JmvgmC2fcNDvwDbT+JOq338OvWJurUMg4R2UlYI
+         dLuA==
+X-Gm-Message-State: ABy/qLYNZ/3yql8R0vKMMVquBjEqowJ6VYVBV8rLfc5fxvCpmB7IVtyV
+        h6UcFuSuAMjuQsrXCYdahxPMCAxPPPkJTJ4Ad0P0Qw==
+X-Google-Smtp-Source: APBJJlHJ2q+Ibhsyd21GC77gr96XZana1MhNnQDJBDO6Init3JyGxBHBc9FYe6705xtGHxT1vNNwqYdqSlhzUk4wwtA=
+X-Received: by 2002:a05:6e02:16c5:b0:345:dcdf:206b with SMTP id
+ 5-20020a056e0216c500b00345dcdf206bmr693992ilx.25.1690827981339; Mon, 31 Jul
+ 2023 11:26:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v2 3/7] soc: qcom: add QCOM PBS driver
-Content-Language: en-US
-To:     Anjelique Melendez <quic_amelende@quicinc.com>, <pavel@ucw.cz>,
-        <lee@kernel.org>, <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <agross@kernel.org>, <andersson@kernel.org>
-CC:     <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
-        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
-        <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pwm@vger.kernel.org>
-References: <20230725193423.25047-1-quic_amelende@quicinc.com>
- <20230725193423.25047-4-quic_amelende@quicinc.com>
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-In-Reply-To: <20230725193423.25047-4-quic_amelende@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: jrHXpeQspC5uyKBLcLwVW7P-urskjFNM
-X-Proofpoint-ORIG-GUID: jrHXpeQspC5uyKBLcLwVW7P-urskjFNM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-31_12,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
- adultscore=0 malwarescore=0 mlxscore=0 mlxlogscore=875 lowpriorityscore=0
- impostorscore=0 priorityscore=1501 bulkscore=0 phishscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307310167
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-13-rananta@google.com>
+ <87jzulqz0v.wl-maz@kernel.org>
+In-Reply-To: <87jzulqz0v.wl-maz@kernel.org>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Mon, 31 Jul 2023 11:26:09 -0700
+Message-ID: <CAJHc60zGzAqWw2iZwNEG_bWERXkz_io7ae-K_tf_kh6xcOBxLA@mail.gmail.com>
+Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for unmap
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/25/2023 12:34 PM, Anjelique Melendez wrote:
-> +out:
-> +	mutex_unlock(&pbs->lock);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(qcom_pbs_trigger_event);
+On Thu, Jul 27, 2023 at 6:12=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
+:
+>
+> On Sat, 22 Jul 2023 03:22:51 +0100,
+> Raghavendra Rao Ananta <rananta@google.com> wrote:
+> >
+> > The current implementation of the stage-2 unmap walker traverses
+> > the given range and, as a part of break-before-make, performs
+> > TLB invalidations with a DSB for every PTE. A multitude of this
+> > combination could cause a performance bottleneck on some systems.
+> >
+> > Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
+> > invalidations until the entire walk is finished, and then
+> > use range-based instructions to invalidate the TLBs in one go.
+> > Condition deferred TLB invalidation on the system supporting FWB,
+> > as the optimization is entirely pointless when the unmap walker
+> > needs to perform CMOs.
+> >
+> > Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
+> > now serves the stage-2 unmap walker specifically, rather than
+> > acting generic.
+> >
+> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > ---
+> >  arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-----
+> >  1 file changed, 58 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.=
+c
+> > index 5ef098af1736..cf88933a2ea0 100644
+> > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pgta=
+ble_visit_ctx *ctx, kvm_pte_t n
+> >       smp_store_release(ctx->ptep, new);
+> >  }
+> >
+> > -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, st=
+ruct kvm_s2_mmu *mmu,
+> > -                        struct kvm_pgtable_mm_ops *mm_ops)
+> > +struct stage2_unmap_data {
+> > +     struct kvm_pgtable *pgt;
+> > +     bool defer_tlb_flush_init;
+> > +};
+> > +
+> > +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
+> > +{
+> > +     /*
+> > +      * If FEAT_TLBIRANGE is implemented, defer the individual
+> > +      * TLB invalidations until the entire walk is finished, and
+> > +      * then use the range-based TLBI instructions to do the
+> > +      * invalidations. Condition deferred TLB invalidation on the
+> > +      * system supporting FWB, as the optimization is entirely
+> > +      * pointless when the unmap walker needs to perform CMOs.
+> > +      */
+> > +     return system_supports_tlb_range() && stage2_has_fwb(pgt);
+> > +}
+> > +
+> > +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *unm=
+ap_data)
+> > +{
+> > +     bool defer_tlb_flush =3D __stage2_unmap_defer_tlb_flush(unmap_dat=
+a->pgt);
+> > +
+> > +     /*
+> > +      * Since __stage2_unmap_defer_tlb_flush() is based on alternative
+> > +      * patching and the TLBIs' operations behavior depend on this,
+> > +      * track if there's any change in the state during the unmap sequ=
+ence.
+> > +      */
+> > +     WARN_ON(unmap_data->defer_tlb_flush_init !=3D defer_tlb_flush);
+> > +     return defer_tlb_flush;
+>
+> I really don't understand what you're testing here. The ability to
+> defer TLB invalidation is a function of the system capabilities
+> (range+FWB) and a single flag that is only set on the host for pKVM.
+>
+> How could that change in the middle of the life of the system? if
+> further begs the question about the need for the unmap_data data
+> structure.
+>
+> It looks to me that we could simply pass the pgt pointer around and be
+> done with it. Am I missing something obvious?
+>
+From one of the previous comments [1] (used in a different context),
+I'm given to understand that since these feature checks are governed
+by alternative patching, they can potentially change (at runtime?). Is
+that not the case and I have misunderstood the idea in comment [1]
+entirely? Is it solely used for optimization purposes and set only
+once?
+If that's the case, I can get rid of the WARN_ON() and unmap_data.
 
-EXPORT_SYMBOL_GPL only please.
+- Raghavendra
 
--- 
----Trilok Soni
-
+[1]: https://lore.kernel.org/all/ZGPPj1AXS0Uah2Ug@linux.dev/
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
