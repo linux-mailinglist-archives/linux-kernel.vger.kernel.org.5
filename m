@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7606576895F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 02:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29439768965
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 02:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbjGaA0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 20:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38952 "EHLO
+        id S229701AbjGaAlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 20:41:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjGaA0l (ORCPT
+        with ESMTP id S229468AbjGaAlb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 20:26:41 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B861B2;
-        Sun, 30 Jul 2023 17:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1690763195;
-        bh=jVgBHko4/t4VVInw6sHfaCve6iYjTk+iGD9K7W3Ov68=;
-        h=Date:From:To:Cc:Subject:From;
-        b=invuTBDQNwM6PesMNBB//vWOz1iqarqra+if+jSzKfYezCRTCIJ8mjsPpoFGjcHQ8
-         9pm1Et5VrNWm/D5ST3W4q9nhocGZPbkn4+keiYCietBiY7F+ASBpMaUD/IRH5UxvsM
-         2Kk6tYEWN8BwaYBsTJx3GjTz48ZZgqf6B+A3Z+PNGoWERTI23u5gKpq14bIAU7Ghdd
-         liOkZXDnBei7CYvQIGXJOTu4HxakDINHToeLTE5mOK9UkGanx5fbOEv3BNfovYqlSd
-         5e28BUTsVRKkrRkcQhDkZ7RZCwVc34vnJI0WjwUrZxCUCete1rPKHakN5XyqnaetWr
-         JXS0zuXOkj8Cw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Sun, 30 Jul 2023 20:41:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F359E5A;
+        Sun, 30 Jul 2023 17:41:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RDfDp2FQ8z4wb8;
-        Mon, 31 Jul 2023 10:26:34 +1000 (AEST)
-Date:   Mon, 31 Jul 2023 10:26:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Tirthendu Sarkar <tirthendu.sarkar@intel.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20230731102631.39988412@canb.auug.org.au>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1293360DE7;
+        Mon, 31 Jul 2023 00:41:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93CDFC433C7;
+        Mon, 31 Jul 2023 00:41:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690764089;
+        bh=Id9w+26JcA3ovoOCmq873Dz/XimrlDDtDX+h2mPVv1Q=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=HVT1BwhXGDRxS21WFjAzyUa2Pv5ZOXtUdxpYAnQ7UFGX/YJcdaeoj4Wt+JbndEsxG
+         A4IM3UQW49xYTIatHVmWxi4zNuw50oJ0QGzrheIli5FOd6qDnnRl4f82ZwVU1HfNQU
+         rYLRqtroWcmk/pK3voKAwgvuZJcqug3cp+xPJGKB3mWym286roA69AKDRrnxWWR0b6
+         /ZN9oq46aB8mdxhcacOxIAIQyHrbjugOIz+qkQoDoUkrL1dRDshmN1tnlYSTHkOQGw
+         ocp/TczfNjQ6Vy30K7nWZAJ2bp4PQlL66mOsla5XoeaWU7JX1mEvMaMvbvBc5kTJLz
+         fsfGFOBgcEqug==
+Message-ID: <2b7e9239-fd48-0f74-f69b-e0039809c857@kernel.org>
+Date:   Mon, 31 Jul 2023 09:41:27 +0900
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/cX8lMK13kAw0SPqGo9uxz9X";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Scsi_bus_resume+0x0/0x90 returns -5 when resuming from s3 sleep
+To:     TW <dalzot@gmail.com>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     regressions@lists.linux.dev,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+References: <0e272abe-292d-d58f-cf80-55868e793abc@gmail.com>
+ <6b66dd9a-8bd5-2882-9168-8e6e0848c454@leemhuis.info>
+ <c70caa9e-164c-fee5-8f85-67f6d02373ab@kernel.org>
+ <b0ed86e0-3e4a-d4d1-7b9d-c57f20538a80@gmail.com>
+ <86435987-734e-c6c1-a857-1ba80da709fe@gmail.com>
+ <48bc1736-5e4e-3a9b-3715-60509c333bb1@kernel.org>
+ <f7e7b601-571f-bd2e-6410-a8a27e510c2f@gmail.com>
+ <40365501-283a-408b-3514-48c29db36861@kernel.org>
+ <d44e4057-0758-4cb8-ca29-02b5bb340b8b@gmail.com>
+Content-Language: en-US
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <d44e4057-0758-4cb8-ca29-02b5bb340b8b@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/cX8lMK13kAw0SPqGo9uxz9X
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 7/28/23 11:49, TW wrote:
+> Comparing to the 5.15 kernel which had almost no delay. They are HDDs 
+> though, it was working flawlessly earlier but didn't want to top post 
+> again. Tried a systemd suspend instead of from the Xfce4 logout menu and 
+> everything works as intended. So I'd say that it's fixed now.
 
-Hi all,
+I posted a proper patch and CC-ed you. A "Tested-by:" tag from you would be much
+appreciated (please use your full name in that case, instead of only "TW").
+Thanks.
 
-Today's linux-next merge of the net-next tree got a conflict in:
+> 
+> On 7/27/23 20:33, Damien Le Moal wrote:
+>> "Slow coming back" -> Compared to which version of the kernel ? Do you 
+>> have numbers ? If the devices are HDDs, resume will wait for these to 
+>> spin up. That takes a while (about 10s normally).
 
-  net/xdp/xsk.c
+-- 
+Damien Le Moal
+Western Digital Research
 
-between commit:
-
-  3c5b4d69c358 ("net: annotate data-races around sk->sk_mark")
-
-from the net tree and commit:
-
-  b7f72a30e9ac ("xsk: introduce wrappers and helpers for supporting multi-b=
-uffer in Tx path")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc net/xdp/xsk.c
-index b89adb52a977,4f1e0599146e..000000000000
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@@ -505,11 -682,22 +682,22 @@@ static struct sk_buff *xsk_build_skb(st
- =20
-  	skb->dev =3D dev;
-  	skb->priority =3D xs->sk.sk_priority;
- -	skb->mark =3D xs->sk.sk_mark;
- +	skb->mark =3D READ_ONCE(xs->sk.sk_mark);
-- 	skb_shinfo(skb)->destructor_arg =3D (void *)(long)desc->addr;
-  	skb->destructor =3D xsk_destruct_skb;
-+ 	xsk_set_destructor_arg(skb);
- =20
-  	return skb;
-+=20
-+ free_err:
-+ 	if (err =3D=3D -EAGAIN) {
-+ 		xsk_cq_cancel_locked(xs, 1);
-+ 	} else {
-+ 		xsk_set_destructor_arg(skb);
-+ 		xsk_drop_skb(skb);
-+ 		xskq_cons_release(xs->tx);
-+ 	}
-+=20
-+ 	return ERR_PTR(err);
-  }
- =20
-  static int __xsk_generic_xmit(struct sock *sk)
-
---Sig_/cX8lMK13kAw0SPqGo9uxz9X
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTG/7cACgkQAVBC80lX
-0GwVwgf/dK1xBNDlQv2abVMZNDtwbpTO1NdSgKgo8Tkk/OSHY300hlwYFdUn6d6S
-/LzMrQWTpNwIwspFQBK8pi6Dg5Gjehk/qfBhi29i7gYrby241a6tMnpEHhmmXL0L
-DGz5i6CYwg/Xc6eikgvgur+YNHUSiYL4HLFEWiqQRsyFJAckGMeLdUtDAKI7xZdh
-OkoS0/qWoz9QINd+E781h4BHWzRQy/zEFlis5VAgp+jYFuc0v0PeH8N6KC7SjKM1
-V+MiOrRZ2+cbgu2H+gUmXdYNH4WxUtani2+z7K+LtswUNDyyXwf7cGDWaaLiINTn
-HliM9U+vzUw0stX/SmoWeitM0dpeaw==
-=LGIa
------END PGP SIGNATURE-----
-
---Sig_/cX8lMK13kAw0SPqGo9uxz9X--
