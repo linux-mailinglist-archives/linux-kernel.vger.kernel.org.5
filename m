@@ -2,84 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77CE076A388
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB4876A396
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:00:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbjGaV6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
+        id S231732AbjGaWAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 18:00:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231731AbjGaV6O (ORCPT
+        with ESMTP id S231482AbjGaWAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:58:14 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F6FE8;
-        Mon, 31 Jul 2023 14:58:13 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fe110de46dso29448045e9.1;
-        Mon, 31 Jul 2023 14:58:12 -0700 (PDT)
+        Mon, 31 Jul 2023 18:00:02 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A14B8E7;
+        Mon, 31 Jul 2023 15:00:00 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so36045531fa.1;
+        Mon, 31 Jul 2023 15:00:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690840691; x=1691445491;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JW14MFDPt7O1rcxZlX3cjPvtcLYMaz4AwpOhoYK6iUw=;
-        b=NoikV3xA1O/NOK72COlWGTe4BOUUrbAnvaSMxJnyaErguIfABUUDmVFL0Ow82LSF/t
-         61OTPKrb8YnO0RQKXRQ0611KfYzRdXVGvLjA4Xjs7hurhUpAOx3hk3CZ6xwRv7hPqiRL
-         6oPir5NA51VhlU2/utl9iABuVnWBZsTcGCsYo25fPwJxFlxr+fUF5nUnQXLQq3VYGq+Q
-         W+hb2YpYga6Bmvpe4b/11q5EfKejbxyey5u4GfJBPJwrwOhhivqGygsK8rCUjB5E/z7J
-         IHa5gPpVlZ6DCv2O4EW8BCoYhi8MMP/e1tC8J+4MmAOccCtzmp+uCsiHbd3NCjYyBuqs
-         YrbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690840691; x=1691445491;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690840799; x=1691445599;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JW14MFDPt7O1rcxZlX3cjPvtcLYMaz4AwpOhoYK6iUw=;
-        b=MTAsS06W7Thc6DZ41nE0n4HPHpON7HWovqYdwSYrZKk76grH22pV8sZvu0wAZkcB1z
-         v8hioUAJWBF4JVH44xh0qgF5HdAUagOJeZOwA/oyaZQAZO+x77xCZHHgEkPtM2yp5t6Y
-         2VAHDCeLTHvWp3JVtO9LzS037RX0xl6ex469GWrjzc+ScPSVBKf/m9WXO4Vi52sgotJj
-         U0qvL0XITXHSFOZAeC6yQgjP0RV3LYxp3q9zUi/IFOz9tBUgF8XaQser7RJdudkVtdSk
-         q+Hxmy1sIgkS5wJmlgiVAO3/UEquFawp0DDkCPMNvVm/1JARaGRj/gtHij6AHDTQ0ooB
-         x2Eg==
-X-Gm-Message-State: ABy/qLbZY4e1CrYgFttlRfU6wSt16LCR4qx56/RFhZy7ThTU7OY8dC5k
-        sC5d6LG/mGnHc/e/cP17Fls=
-X-Google-Smtp-Source: APBJJlFi0UY75YZJevKOpFRyWSmg2oW4GKvdcQMMibjE0tT9Qjx44yT4rtUcFE8PJ2qzc1bU//TrpA==
-X-Received: by 2002:a7b:cc11:0:b0:3fe:1d34:908 with SMTP id f17-20020a7bcc11000000b003fe1d340908mr840278wmh.17.1690840691157;
-        Mon, 31 Jul 2023 14:58:11 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id 8-20020a05600c028800b003fb225d414fsm14945629wmk.21.2023.07.31.14.58.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 14:58:10 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 22:58:09 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>, Baoquan He <bhe@redhat.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v8 1/4] fs/proc/kcore: avoid bounce buffer for ktext data
-Message-ID: <27ad89fe-1b69-4d62-916f-d494b32c8ddf@lucifer.local>
-References: <fd39b0bfa7edc76d360def7d034baaee71d90158.1679566220.git.lstoakes@gmail.com>
- <ZHc2fm+9daF6cgCE@krava>
- <ZLqMtcPXAA8g/4JI@MiWiFi-R3L-srv>
- <86fd0ccb-f460-651f-8048-1026d905a2d6@redhat.com>
- <f10f06d4-9c82-41d3-a62a-09c62f254cfc@lucifer.local>
- <32b8c5e4-c8e3-0244-1b1a-ca33bd44f38a@redhat.com>
- <b8b05bb6-3d23-4e90-beb0-a256dbc32ef2@lucifer.local>
- <ZMgazd69Dj6Idy6H@krava>
- <ZMgjqJycJFsgvWOD@murray>
- <ZMgsnkax+SAt1zbl@krava>
+        bh=va3Hr//Iy6un0Gflh3lVoQezkuRZ1y6D/A+Si7I5RQY=;
+        b=qOEWF1aXanGlasHGN4tOlxdbOZ45FjOQlnuMlfoSh6LGTJH7GMhoU6WVb5wRfZ21ER
+         BDC55DvGgNAwHLmnxWoMbhtEWMiMsjbKjhraRxRN2u/8uH0wOjAmRow1+ZTBverzGeJ3
+         19MbLpL1lsLWn9h12OzowfZ3sLM1JrZoM6jqZeX5e9IUG8yLczNL7gGG2F5rQu+x48OY
+         R8ACCnHqTCJ3/RdE7CMfXrbU0ZWRuSZdne8tHZpMxtg2rpmWRIcD2271xUHE/b+GSss4
+         PbxRLYGNqdK+ncwCKcmM6iOsmpCvJs4F+Ne2V4u+ulerIFySvhBaQwt3MVE1ICJkgBNV
+         8Kiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690840799; x=1691445599;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=va3Hr//Iy6un0Gflh3lVoQezkuRZ1y6D/A+Si7I5RQY=;
+        b=So4/vb0BPL25NbeYwrZAAnExFM3MWvU0jGHibCCyr+nfjFiXY59OCVFIdD6FVBTI2f
+         5ugmQB2VWb4Dpd6sEXvQRfXZQn6Diu1ED1lfhrRBro8ZTxW5Xh8V2Fhi1hjVEow4oXZV
+         SHHHQhETiMTXgTeFNOp3uMJmfE9LfGtjMzfaNAzk/4XjxIJuTVPhf0q4VIL+uLhLBzdf
+         DPdgjYIg8bBH9g5u6gZLDkkakGEaoOocPBp6WD/RN4eJYMveLHYa+SdOV+xY63sxhu8C
+         DCgIpze/crlCOnbe82ESsMHaBBUOJeoSdCZ5/KJ2i7F+9tUOLu/WRcV1tZtQidbJiIM2
+         vBGQ==
+X-Gm-Message-State: ABy/qLblljKmhbTxeFEpcb2fndqoEd3PfgC2w1PirhWq5Wizwc664cCH
+        t5JiKUl21d98OgRy7OdcaLh2o5CxMRpiyrBrizTK8vNP
+X-Google-Smtp-Source: APBJJlFt1FDaf3Tfj2lH9M+bK7BuBkfyranBWqJMKAVmXgk/857+ZzH6Syb9LE8GgRnk3RpIgMEyfrsJcwNDdI/rbo4=
+X-Received: by 2002:a2e:b011:0:b0:2b6:9fdf:d8f4 with SMTP id
+ y17-20020a2eb011000000b002b69fdfd8f4mr833455ljk.29.1690840798696; Mon, 31 Jul
+ 2023 14:59:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMgsnkax+SAt1zbl@krava>
+References: <169078860386.173706.3091034523220945605.stgit@devnote2> <169078863449.173706.2322042687021909241.stgit@devnote2>
+In-Reply-To: <169078863449.173706.2322042687021909241.stgit@devnote2>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 31 Jul 2023 14:59:47 -0700
+Message-ID: <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a struct/union
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,24 +73,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:50:22PM +0200, Jiri Olsa wrote:
-> > Ummmm what? I can't! What repro are you seeing on x86, exactly?
+On Mon, Jul 31, 2023 at 12:30=E2=80=AFAM Masami Hiramatsu (Google)
+<mhiramat@kernel.org> wrote:
 >
-> # cat /proc/kallsyms | grep ksys_read
-> ffffffff8151e450 T ksys_read
+> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 >
-> # objdump -d  --start-address=0xffffffff8151e450 --stop-address=0xffffffff8151e460 /proc/kcore
+> Add btf_find_struct_member() API to search a member of a given data struc=
+ture
+> or union from the member's name.
 >
-> /proc/kcore:     file format elf64-x86-64
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  Changes in v3:
+>   - Remove simple input check.
+>   - Fix unneeded IS_ERR_OR_NULL() check for btf_type_by_id().
+>   - Move the code next to btf_get_func_param().
+>   - Use for_each_member() macro instead of for-loop.
+>   - Use btf_type_skip_modifiers() instead of btf_type_by_id().
+>  Changes in v4:
+>   - Use a stack for searching in anonymous members instead of nested call=
+.
+> ---
+>  include/linux/btf.h |    3 +++
+>  kernel/bpf/btf.c    |   40 ++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 43 insertions(+)
 >
-> objdump: Reading section load1 failed because: Bad address
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index 20e3a07eef8f..4b10d57ceee0 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -226,6 +226,9 @@ const struct btf_type *btf_find_func_proto(const char=
+ *func_name,
+>                                            struct btf **btf_p);
+>  const struct btf_param *btf_get_func_param(const struct btf_type *func_p=
+roto,
+>                                            s32 *nr);
+> +const struct btf_member *btf_find_struct_member(struct btf *btf,
+> +                                               const struct btf_type *ty=
+pe,
+> +                                               const char *member_name);
 >
+>  #define for_each_member(i, struct_type, member)                        \
+>         for (i =3D 0, member =3D btf_type_member(struct_type);      \
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index f7b25c615269..8d81a4ffa67b 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -958,6 +958,46 @@ const struct btf_param *btf_get_func_param(const str=
+uct btf_type *func_proto, s3
+>                 return NULL;
+>  }
 >
-> jirka
+> +#define BTF_ANON_STACK_MAX     16
+> +
+> +/*
+> + * Find a member of data structure/union by name and return it.
+> + * Return NULL if not found, or -EINVAL if parameter is invalid.
+> + */
+> +const struct btf_member *btf_find_struct_member(struct btf *btf,
+> +                                               const struct btf_type *ty=
+pe,
+> +                                               const char *member_name)
+> +{
+> +       const struct btf_type *anon_stack[BTF_ANON_STACK_MAX];
+> +       const struct btf_member *member;
+> +       const char *name;
+> +       int i, top =3D 0;
+> +
+> +retry:
+> +       if (!btf_type_is_struct(type))
+> +               return ERR_PTR(-EINVAL);
+> +
+> +       for_each_member(i, type, member) {
+> +               if (!member->name_off) {
+> +                       /* Anonymous union/struct: push it for later use =
+*/
+> +                       type =3D btf_type_skip_modifiers(btf, member->typ=
+e, NULL);
+> +                       if (type && top < BTF_ANON_STACK_MAX)
+> +                               anon_stack[top++] =3D type;
+> +               } else {
+> +                       name =3D btf_name_by_offset(btf, member->name_off=
+);
+> +                       if (name && !strcmp(member_name, name))
+> +                               return member;
+> +               }
+> +       }
+> +       if (top > 0) {
+> +               /* Pop from the anonymous stack and retry */
+> +               type =3D anon_stack[--top];
+> +               goto retry;
+> +       }
 
-Locally I don't see this issue. How odd. The bug doesn't manifest as a 'bad
-address' in the arm64 repros either. I wonder if this is something unrelated...
+Looks good, but I don't see a test case for this.
+The logic is a bit tricky. I'd like to have a selftest that covers it.
 
-In any case I have a candidate fix for the bug at
-https://lore.kernel.org/all/20230731215021.70911-1-lstoakes@gmail.com/ which
-should hopefully address the underlying issue with minimum change.
+You probably need to drop Alan's reviewed-by, since the patch is quite
+different from the time he reviewed it.
+
+Assuming that is addressed. How do we merge the series?
+The first 3 patches have serious conflicts with bpf trees.
+
+Maybe send the first 3 with extra selftest for above recursion
+targeting bpf-next then we can have a merge commit that Steven can pull
+into tracing?
+
+Or if we can have acks for patches 4-9 we can pull the whole set into bpf-n=
+ext.
