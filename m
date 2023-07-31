@@ -2,224 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23710768A63
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA63A768A66
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229592AbjGaDjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 23:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
+        id S229666AbjGaDly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 23:41:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjGaDjp (ORCPT
+        with ESMTP id S229469AbjGaDlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 23:39:45 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3408910B;
-        Sun, 30 Jul 2023 20:39:43 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 883C424DBC1;
-        Mon, 31 Jul 2023 11:39:41 +0800 (CST)
-Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 31 Jul
- 2023 11:39:41 +0800
-Received: from [192.168.60.107] (180.164.60.184) by EXMBX073.cuchost.com
- (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 31 Jul
- 2023 11:39:41 +0800
-Message-ID: <343abe09-a14e-a318-d749-3e28275585b8@starfivetech.com>
-Date:   Mon, 31 Jul 2023 11:39:40 +0800
+        Sun, 30 Jul 2023 23:41:52 -0400
+Received: from mail-yw1-x1144.google.com (mail-yw1-x1144.google.com [IPv6:2607:f8b0:4864:20::1144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B3C10B;
+        Sun, 30 Jul 2023 20:41:51 -0700 (PDT)
+Received: by mail-yw1-x1144.google.com with SMTP id 00721157ae682-583e91891aeso48158017b3.1;
+        Sun, 30 Jul 2023 20:41:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690774910; x=1691379710;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=llUncJ6XvCbCVRkShMXc33YP30OKZJvRpZvYC2tLhSU=;
+        b=fjQcJ5Os0GLC2NIOptOGGKWlgkoMvHgNzBh7voqbL0syWox3vFWTPbBb/wtGVAxboU
+         BGhIO1nHeTc4V4Wfjl0emVtEEdl1h8DLIHj0OYKh70PF0Yvd1g2fYM/eOlBOwcMvEdh1
+         yA1Ip9q11i9/PevHdbMeIbnl/yx/5oJflytYFMOhlk16e02xbc0719B3lZNfdbZ3Doy9
+         atfqAzIwY8Tx4U3gkxciMuMoBytOZpNiWZGlOrkwuhQd3a2ZbQDBCqwjFG+qaEHEy2iu
+         BcyRvRoWgQoXK2ZI280DBTnG6L0/bM27GS9h/1MbV7oxNL7RGAB0Wmbmm4UC9zTCfT6/
+         VGEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690774910; x=1691379710;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=llUncJ6XvCbCVRkShMXc33YP30OKZJvRpZvYC2tLhSU=;
+        b=FndiDHXbHIFHGGt9ULlL1kehZqyWN3ggwwu+pOqlGuoVlY+izHTZtqXL0V7DhJ9nEO
+         XuLwGjVhvQ68hal8DJBbjPHcNDzMcHDmPC1ErciMTBzZoIEkUTn8agTzO+e9fGRKQvTp
+         dZk93UVM9MWxZkus2WB0Fl4WmLRu9DQUZLNdrRalusKFXGtAFrhF8d2dJaDDbkJzbbXe
+         mOiiCq68FgqvwFPx0Ez5vsKAw7HoIgvv+cly+BwCumZJHZa5E7a8HT/94zPJxPfzH6ZK
+         SUFy5/LbPRZRPfIyOkPNGuwbiTTqR7hczbEWYyx0Oo9+JXYBuizfCsliCAiERwzdAAcc
+         cnSQ==
+X-Gm-Message-State: ABy/qLZ7bAuJgxzgqjuDJDAnqDLpW0qSFigIk56DTBvakpbQAIZ8hMH8
+        1TUXZhSCkMFFUj/mcXx60/NqgeLbOxXO6KasA68=
+X-Google-Smtp-Source: APBJJlHslHdUNzQb+zIUzFCaH4j0CZPvq2RJDTh0koAylOIa27++22Dkw+/kbvi8Sod48N6hcDTpvzFtWuVzRiZ3aGY=
+X-Received: by 2002:a0d:db87:0:b0:583:cf0f:152d with SMTP id
+ d129-20020a0ddb87000000b00583cf0f152dmr11597944ywe.6.1690774910623; Sun, 30
+ Jul 2023 20:41:50 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 2/6] media: admin-guide: Add starfive_camss.rst for
- Starfive Camera Subsystem
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <changhuang.liang@starfivetech.com>
-References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
- <20230619112838.19797-3-jack.zhu@starfivetech.com>
- <a108084b-8044-fe6f-9cb8-df1f3fc6fdfe@linaro.org>
- <20230727102328.GE5148@pendragon.ideasonboard.com>
-From:   Jack Zhu <jack.zhu@starfivetech.com>
-In-Reply-To: <20230727102328.GE5148@pendragon.ideasonboard.com>
+References: <20230727125125.1194376-1-imagedong@tencent.com>
+ <20230727125125.1194376-4-imagedong@tencent.com> <CANn89iKWTrgEp3QY34mNqVAx09fSxHUh+oHRTd6=aWurGS7qWA@mail.gmail.com>
+ <CADxym3YhjMv3Xkts99fiajq-cR-BqxDayKFzFZ1L49BNfFXkdw@mail.gmail.com>
+ <CADVnQynQ1Hw+Jh7pjdNw_Mo4tWZV8V_sA+L-o=O4uV+9Gv7Prg@mail.gmail.com>
+ <CADxym3Zqb2CCpJojGiT7gVL98GDdOmjxqLY6ApLeP2zZU1Kn3Q@mail.gmail.com>
+ <CANn89i+WnwgpGy4v=aXsjThPBA2FQzWx9Y=ycXWWGLDdtDHBig@mail.gmail.com>
+ <CADVnQy=OumgmsbsQ8QLhUiyUNN95Ay2guVjgGVVLH93QXanBSw@mail.gmail.com> <CADVnQynwrvdoEH2d7VVNSG6vHg8BC5ikz+PApOOMG4Eo3MqSww@mail.gmail.com>
+In-Reply-To: <CADVnQynwrvdoEH2d7VVNSG6vHg8BC5ikz+PApOOMG4Eo3MqSww@mail.gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Mon, 31 Jul 2023 11:41:38 +0800
+Message-ID: <CADxym3YgR36hoTEHUbCYUzYkiXpjnSuVEZWnvoqbMo8MoTCtnQ@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/3] net: tcp: check timeout by
+ icsk->icsk_timeout in tcp_retransmit_timer()
+To:     Neal Cardwell <ncardwell@google.com>
+Cc:     Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <imagedong@tencent.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [180.164.60.184]
-X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX073.cuchost.com
- (172.16.6.83)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On Sat, Jul 29, 2023 at 1:15=E2=80=AFAM Neal Cardwell <ncardwell@google.com=
+> wrote:
+>
+> On Fri, Jul 28, 2023 at 7:25=E2=80=AFAM Neal Cardwell <ncardwell@google.c=
+om> wrote:
+> >
+> > On Fri, Jul 28, 2023 at 1:50=E2=80=AFAM Eric Dumazet <edumazet@google.c=
+om> wrote:
+> > >
+> > > On Fri, Jul 28, 2023 at 8:25=E2=80=AFAM Menglong Dong <menglong8.dong=
+@gmail.com> wrote:
+> > > >
+> > > > On Fri, Jul 28, 2023 at 12:44=E2=80=AFPM Neal Cardwell <ncardwell@g=
+oogle.com> wrote:
+> > > > >
+> > > > > On Thu, Jul 27, 2023 at 7:57=E2=80=AFPM Menglong Dong <menglong8.=
+dong@gmail.com> wrote:
+> > > > > >
+> > > > > > On Fri, Jul 28, 2023 at 3:31=E2=80=AFAM Eric Dumazet <edumazet@=
+google.com> wrote:
+> > > > > > >
+> > > > > > > On Thu, Jul 27, 2023 at 2:52=E2=80=AFPM <menglong8.dong@gmail=
+.com> wrote:
+> > > > > > > >
+> > > > > > > > From: Menglong Dong <imagedong@tencent.com>
+> > > > > > > >
+> > > > > > > > In tcp_retransmit_timer(), a window shrunk connection will =
+be regarded
+> > > > > > > > as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX=
+'. This is not
+> > > > > > > > right all the time.
+> > > > > > > >
+> > > > > > > > The retransmits will become zero-window probes in tcp_retra=
+nsmit_timer()
+> > > > > > > > if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will=
+ come up to
+> > > > > > > > TCP_RTO_MAX sooner or later.
+> > > > > > > >
+> > > > > > > > However, the timer is not precise enough, as it base on tim=
+er wheel.
+> > > > > > > > Sorry that I am not good at timer, but I know the concept o=
+f time-wheel.
+> > > > > > > > The longer of the timer, the rougher it will be. So the tim=
+eout is not
+> > > > > > > > triggered after TCP_RTO_MAX, but 122877ms as I tested.
+> > > > > > > >
+> > > > > > > > Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' i=
+s always true
+> > > > > > > > once the RTO come up to TCP_RTO_MAX.
+> > > > > > > >
+> > > > > > > > Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->=
+icsk_timeout',
+> > > > > > > > which is exact the timestamp of the timeout.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Menglong Dong <imagedong@tencent.com>
+> > > > > > > > ---
+> > > > > > > >  net/ipv4/tcp_timer.c | 6 +++++-
+> > > > > > > >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > > > > > > >
+> > > > > > > > diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+> > > > > > > > index 470f581eedd4..3a20db15a186 100644
+> > > > > > > > --- a/net/ipv4/tcp_timer.c
+> > > > > > > > +++ b/net/ipv4/tcp_timer.c
+> > > > > > > > @@ -511,7 +511,11 @@ void tcp_retransmit_timer(struct sock =
+*sk)
+> > > > > > > >                                             tp->snd_una, tp=
+->snd_nxt);
+> > > > > > > >                 }
+> > > > > > > >  #endif
+> > > > > > > > -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RT=
+O_MAX) {
+> > > > > > > > +               /* It's a little rough here, we regard any =
+valid packet that
+> > > > > > > > +                * update tp->rcv_tstamp as the reply of th=
+e retransmitted
+> > > > > > > > +                * packet.
+> > > > > > > > +                */
+> > > > > > > > +               if ((u32)icsk->icsk_timeout - tp->rcv_tstam=
+p > TCP_RTO_MAX) {
+> > > > > > > >                         tcp_write_err(sk);
+> > > > > > > >                         goto out;
+> > > > > > > >                 }
+>
+> One potential pre-existing issue with this logic: if the connection is
+> restarting from idle, then tp->rcv_tstamp could already be a long time
+> (minutes or hours) in the past even on the first RTO, in which case
+> the very first RTO that found a zero tp->snd_wnd  would find this
+> check returns true, and would destroy the connection immediately. This
+> seems extremely brittle.
 
-Thank you for your comments.
+Yes, this scenario can happen and cause the connection
+break unexpectedly.
 
-On 2023/7/27 18:23, Laurent Pinchart wrote:
-> On Wed, Jul 26, 2023 at 12:26:18PM +0100, Bryan O'Donoghue wrote:
->> On 19/06/2023 12:28, Jack Zhu wrote:
->> > Add starfive_camss.rst file that documents the Starfive Camera
->> > Subsystem driver which is used for handing image sensor data.
->> > 
->> > Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
->> > ---
->> >   .../admin-guide/media/starfive_camss.rst      | 57 +++++++++++++++++++
->> >   .../media/starfive_camss_graph.dot            | 16 ++++++
->> >   .../admin-guide/media/v4l-drivers.rst         |  1 +
->> >   MAINTAINERS                                   |  1 +
->> >   4 files changed, 75 insertions(+)
->> >   create mode 100644 Documentation/admin-guide/media/starfive_camss.rst
->> >   create mode 100644 Documentation/admin-guide/media/starfive_camss_graph.dot
->> > 
->> > diff --git a/Documentation/admin-guide/media/starfive_camss.rst b/Documentation/admin-guide/media/starfive_camss.rst
->> > new file mode 100644
->> > index 000000000000..a6378849384f
->> > --- /dev/null
->> > +++ b/Documentation/admin-guide/media/starfive_camss.rst
->> > @@ -0,0 +1,57 @@
->> > +.. SPDX-License-Identifier: GPL-2.0
->> > +
->> > +.. include:: <isonum.txt>
->> > +
->> > +================================
->> > +Starfive Camera Subsystem driver
->> > +================================
->> > +
->> > +Introduction
->> > +------------
->> > +
->> > +This file documents the driver for the Starfive Camera Subsystem found on
->> > +Starfive JH7110 SoC. The driver is located under drivers/media/platform/
->> > +starfive.
->> > +
->> > +The driver implements V4L2, Media controller and v4l2_subdev interfaces.
->> > +Camera sensor using V4L2 subdev interface in the kernel is supported.
->> > +
->> > +The driver has been successfully used on the Gstreamer 1.18.5 with
->> > +v4l2src plugin.
->> > +
->> > +
->> > +Starfive Camera Subsystem hardware
->> > +----------------------------------
->> > +
->> > +The Starfive Camera Subsystem hardware consists of:
->> > +
->> > +- MIPI DPHY Receiver: receives mipi data from a MIPI camera sensor.
->> 
->> Feels like a terribe nit-pick but you have "mipi" and "MIPI" here. I'd 
->> be consistent with one - recommend MIPI throughout your documentation.
-> 
-> I'd drop the "mipi" and just write "data", not "MIPI data".
-> 
+>
+> AFAICT it would be safer to replace this logic with a call to the
+> standard tcp_write_timeout() logic that has a more robust check to see
+> if the connection should be destroyed.
 
-Ok, I will modify it.
+Yes, we need a more robust check here. But I think tcp_write_timeout()
+is not a good choice. The icsk->icsk_retransmits won't increase and
+can keep being 0 in this scenario, which makes tcp_write_timeout()
+always return 0.
 
->> > +- MIPI CSIRx Controller: is responsible for handling and decoding CSI2 protocol
-> 
-> It's "CSI-2", not "CSI2".
+Enn...let me think again.
 
-Ok, I will modify it.
-
-> 
->> > +  based camera sensor data stream.
->> > +- ISP: handles the image data streams from the MIPI CSIRx Controller.
->> 
->> Maybe you've done this elsewhere but, it would be worthwhile describing 
->> what the ISP does. Debayering ? 3As ? Just raw dumps ?
->> 
->> > +- VIN(Video In): a top-level module, is responsible for controlling power
->> > +  and clocks to other modules, dumps the input data to memory or transfers the
->> > +  input data to ISP.
-> 
-> A block diagram could be nice. Let me give it a try, based on my
-> understanding:
-> 
-> Starfive Camera Subsystem hardware
-> ----------------------------------
-> 
-> The Starfive Camera Subsystem hardware consists of::
-> 
->                 +---------------------------------------------+
->                 | VIN                                         |
->   +--------+    | +-------+   +-------+    +-----+            |
->   | Camera |----->| D-PHY |-->| CSI-2 |-+->| DMA |            |
->   | Sensor |    | |  RX   |   |  RX   | |  +-----+            |
->   +--------+    | +-------+   +-------+ |                     |
->                 |                       |  +-----+   +-----+  |
->                 |                       \->| ISP |-->| DMA |  |
->                 |                          +-----+   +-----+  |
->                 +---------------------------------------------+
-> 
-> - VIN (Video IN): The top-level module, responsible for controlling
->   power and clocks, and routing data between modules.
-> 
-> - D-PHY RX: The MIPI D-PHY receiver, receiving data from a MIPI CSI-2
->   camera sensor.
-> 
-> - CSI-2 RX: The MIPI CSI-2 receiver controller, responsible for decoding
->   the CSI-2 protocol.
-> 
-> - ISP: The ISP, processing raw Bayer data from the CSI-2 receiver and
->   producing YUV frames.
-> 
-> 
-> I haven't tried compiling this, so please fix formatting if anything is
-> wrong (and of course feel free to adapt the diagram and text).
-> 
-
-Ok, I will add a block diagram.
-
->> > +
->> > +
->> > +Topology
->> > +--------
->> > +
->> > +The media controller pipeline graph is as follows:
->> > +
->> > +.. _starfive_camss_graph:
->> > +
->> > +.. kernel-figure:: starfive_camss_graph.dot
->> > +    :alt:   starfive_camss_graph.dot
->> > +    :align: center
->> > +
->> > +The driver has 2 video devices:
->> > +
->> > +- stf_vin0_wr_video0: capture device for images directly from the VIN module.
->> 
->> OK so you can get the raw images.
->> 
->> > +- stf_vin0_isp0_video1: capture device for images without scaling.
->> > +
->> > +The driver has 3 subdevices:
->> > +
->> > +- stf_isp0: is responsible for all the isp operations.
->> > +- stf_vin0_wr: used to dump RAW images to memory.
->> > +- stf_vin0_isp0: used to capture images for the stf_vin0_isp0_video1 device.
->> 
->> But what is being output here ? RGB, jpeg, YUV ?
->> It would be worth adding a few bits of text to describe that so you 
->> don't have to dive into code to understand it.
-> 
-
--- 
-Regards,
-
-Jack Zhu
+>
+> neal
