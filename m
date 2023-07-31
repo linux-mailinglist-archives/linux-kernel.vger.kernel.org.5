@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 801B7769C76
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484B3769C73
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232446AbjGaQ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:28:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        id S233417AbjGaQ1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:27:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbjGaQ1m (ORCPT
+        with ESMTP id S233371AbjGaQ1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:27:42 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51272106;
-        Mon, 31 Jul 2023 09:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dU0TNTItAAq53ja17hrx8d+tgkyLwTjLd3CGYi7SCVg=; b=IQvivOIyFLJ0rRqcEK/y/ew/Qa
-        GTzQ+Wv3uaAkCg2eE6zbfNI/8TY7jYUtH8gwCBX2uLNYg1qYRgLtpf50OMX2f8R4PiMNheZTqaCMj
-        gsDnzbt6iLJ2ogPfXiy5B1yGJkpymooMhJLnbG1gOd9tnpO2ua60Bl8DFJ2nTGFo1jSDYU7EFAj6Z
-        qdcX8PhHtdN23Ph3fWI6pmQHf1lPPLdCk3F+8L8puTRHvzPNvH8Od98TqUEFlzVtPnejq2LoTBfEA
-        lI6xJpAV+tsOTRcnMbpLBFscQsxkrtJbeoPusjq4HlTexCFBs2auGsrQK1GkQ7QcaTFzOB70AuV+d
-        6z58ms9A==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQVjM-00Ct4d-0o;
-        Mon, 31 Jul 2023 16:26:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CDC5D300134;
-        Mon, 31 Jul 2023 18:26:46 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BEB55203C783E; Mon, 31 Jul 2023 18:26:46 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 18:26:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        dvhart@infradead.org, dave@stgolabs.net, andrealmeid@igalia.com,
-        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
-        hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de
-Subject: Re: [PATCH v1 03/14] futex: Flag conversion
-Message-ID: <20230731162646.GO29590@hirez.programming.kicks-ass.net>
-References: <20230721102237.268073801@infradead.org>
- <20230721105743.887106899@infradead.org>
- <87bkfsnja3.ffs@tglx>
+        Mon, 31 Jul 2023 12:27:32 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52DC1BC5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:27:10 -0700 (PDT)
+Received: from [192.168.2.174] (109-252-150-127.dynamic.spd-mgts.ru [109.252.150.127])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0168E6606FCD;
+        Mon, 31 Jul 2023 17:26:56 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690820818;
+        bh=3epO/QMQFTjkV49Ea0BqvxuXzjBbmCJzO0QJfElbI6o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=iVwVxs574lxQBIXji+t3KapEUuHgAWJm4noZ24H1GkeWlALhA/dhuYRnLHhXn85hr
+         0GsO4CM2/e7uawL9mH+uonCaQakYjYgV5llG0sRHbZxoMo9QKnRBwjTAhpUsLGUBMM
+         V93iptL7F/hQcD7Qr8g0C2rpPNHOwBsYohDpbpI7lbLaNSWI6ue9zZdEDL/loka3Vs
+         YJUmjFY7Gv9dgbMbnc+/hvi8IXTgEopyP4t3i0wlv0tVX+utY+RTwBVMdtr6rfhdNm
+         1oCshwmBR5EwYLxXuGAtJkkj4hprZqVgTq62aZJzv4V/KDDU37lIwWluGN8RiYfcd9
+         0BZmNQPtT1XdA==
+Message-ID: <ad63d777-b98a-6ca9-16b4-961014c6492f@collabora.com>
+Date:   Mon, 31 Jul 2023 19:26:54 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bkfsnja3.ffs@tglx>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.1
+Subject: Re: [PATCH v6 0/3] Add sync object UAPI support to VirtIO-GPU driver
+Content-Language: en-US
+To:     Gurchetan Singh <gurchetansingh@chromium.org>
+Cc:     Rob Clark <robdclark@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org,
+        David Airlie <airlied@redhat.com>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>,
+        Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
+        Emil Velikov <emil.velikov@collabora.com>
+References: <20230416115237.798604-1-dmitry.osipenko@collabora.com>
+ <141b928d-6165-f282-b8e6-f140cb09333d@collabora.com>
+ <CAAfnVBnrUotph4TYJVu9Bohqv3m80t90V34TNhh-Tspxwsj-ZQ@mail.gmail.com>
+ <CAF6AEGs4fuq4i8UJdO5hvgHTNhzFMKGZ87+w1oyvL0LAqWio6A@mail.gmail.com>
+ <CAAfnVBkLhYVaSG3U_QUZwXLFv-XT=9F2v2pgrCDQQBgNZ3MSWA@mail.gmail.com>
+ <a453d562-7e93-aef3-a533-171f572b6ee3@collabora.com>
+ <CAAfnVBmwVTBNx4GC2hiYQ9Ya8ufP_D8N0-JOzT2iPV9BYZhD9w@mail.gmail.com>
+ <CAF6AEGvWrUN9W9DKv45OT-MfYAS4D_bXa_Sb5ptgrMEf9WSSqA@mail.gmail.com>
+ <4c18744d-b6cd-d517-5726-104017d0764b@collabora.com>
+ <CAAfnVB=qOjM1EQUyxdczu9KOGjD0sieoTODohbHz4ZDN0mqojw@mail.gmail.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <CAAfnVB=qOjM1EQUyxdczu9KOGjD0sieoTODohbHz4ZDN0mqojw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 06:21:56PM +0200, Thomas Gleixner wrote:
-> On Fri, Jul 21 2023 at 12:22, Peter Zijlstra wrote:
-> > +
-> > +static inline bool futex_flags_valid(unsigned int flags)
-> > +{
-> > +	/* Only 64bit futexes for 64bit code */
-> > +	if (!IS_ENABLED(CONFIG_64BIT) || in_compat_syscall()) {
-> > +		if ((flags & FLAGS_SIZE_MASK) == FLAGS_SIZE_64)
-> > +			return false;
-> > +	}
-> > +
-> > +	/* Only 32bit futexes are implemented -- for now */
-> > +	if ((flags & FLAGS_SIZE_MASK) != FLAGS_SIZE_32)
-> > +		return false;
-> > +
-> > +	return true;
-> > +}
-> > +
-> > +static inline unsigned int futex_size(unsigned int flags)
-> > +{
-> > +	unsigned int size = flags & FLAGS_SIZE_MASK;
-> > +	return 1 << size; /* {0,1,2,3} -> {1,2,4,8} */
+On 7/29/23 01:03, Gurchetan Singh wrote:
+> On Wed, Jul 19, 2023 at 11:58 AM Dmitry Osipenko <
+> dmitry.osipenko@collabora.com> wrote:
 > 
-> Lacks a new line and the comment is both misplaced and kinda obvious, no?
+>> 27.06.2023 20:16, Rob Clark пишет:
+>> ...
+>>>> Now these are just suggestions, and while I think they are good, you
+>> can safely ignore them.
+>>>>
+>>>> But there's also the DRM requirements, which state "userspace side must
+>> be fully reviewed and tested to the standards of that user-space
+>> project.".  So I think to meet the minimum requirements, I think we should
+>> at-least have one of the following (not all, just one) reviewed:
+>>>>
+>>>> 1) venus using the new uapi
+>>>> 2) gfxstream vk using the new uapi
+>>>> 3) amdgpu nctx out of "draft" mode and using the new uapi.
+>>>> 4) virtio-intel using new uapi
+>>>> 5) turnip using your new uapi
+>>>
+>>> forgot to mention this earlier, but
+>>> https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/23533
+>>>
+>>> Dmitry, you can also add, if you haven't already:
+>>>
+>>> Tested-by: Rob Clark <robdclark@gmail.com>
+>>
+>> Gurchetan, Turnip Mesa virtio support is ready to be merged upstream,
+>> it's using this new syncobj UAPI. Could you please give yours r-b if you
+>> don't have objections?
+>>
+> 
+> Given that Turnip native contexts are reviewed using this UAPI, your change
+> does now meet the requirements and is ready to merge.
+> 
+> One thing I noticed is you might need explicit padding between
+> `num_out_syncobjs` and `in_syncobjs`.  Otherwise, feel free to add my
+> acked-by.
 
-Yeah, it was a more complicated transform at some point, I'll fix.
+The padding looks okay as-as, all the struct size and u64s are properly
+aligned. I'll merge the patch soon, thanks.
+
+-- 
+Best regards,
+Dmitry
+
