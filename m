@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A46676A183
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FE576A186
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbjGaTq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:46:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
+        id S230049AbjGaTsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbjGaTqr (ORCPT
+        with ESMTP id S229454AbjGaTsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:46:47 -0400
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2639E1BE7;
-        Mon, 31 Jul 2023 12:46:26 -0700 (PDT)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-b985-910f-39e1-703f.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:b985:910f:39e1:703f])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id EAA8B178227;
-        Mon, 31 Jul 2023 21:46:18 +0200 (CEST)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1690832779; bh=KWGiVMKtI706Wwo+DM5RpfJ8QcAflbLeZoJQleXTj7w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DCbut2Q1V/o96bevVJ5VH0tsE8RBOG34SkaIN2hyTrDSOvmqWteKWg9WSSEmkSDR/
-         7zEcP3LPJCP0C30n9bKPAcmiiYpu7Srh/GV83YQ3KdTEhs0WmTtBNg9apNXr3D4vM9
-         l+cuuubqpoexTeGXas2IjL8jUpRGjQ4lIgZ7qtkkxPLv/dtnfOM4sW9s/NJ/VXCJbW
-         bPmzFIP6+7hKJ/ThN/ccfBtqYIIyBpGyv67t5YdZ3SQFvyi67polQGKVblNs06g0Hr
-         I86Dg302FpL39M5+5q5pMGvrRpcg2f/33XsKuUuAZUtFISY1nQ6bvC7px1r0e4AGzy
-         6AOiYmUbWlVNw==
-Date:   Mon, 31 Jul 2023 21:46:18 +0200
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Mon, 31 Jul 2023 15:48:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A250A0;
+        Mon, 31 Jul 2023 12:48:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=G10afZyCNiaw2vu2jAC3R9gIyzTLIVHGE2tClR0IBw8=; b=kBp+2VJp5ZkwgOk6UXkI6Hycfa
+        6kT98WUmhx2HQkhtNUZTNNoe07jkAj4Lz4PjP+7r5FBs15S+dQQb2piYzaUHD0peDdc8WIdLQxMQK
+        DNFi0PDdxcs5CJoEXFHGSc7/TGeaYG1Ke5nrUTGoljolHji24RtvsxqdvE5A7itlLqUScknltKB3Z
+        zWy96M9RwO8SFgNHBjDdAjDnzHwsoV3IjCqVd1ylRCKJHShmoUN00v/rzC7LsqX7U0zpk2QAtFJhj
+        LWnDr4Thcm4PrDlyS5MM6o9h4m4nkIP9/R16jO8Ry8c5m88Uki668qErHNvG+0fkJkOImHmzuHHTb
+        jeL6dO4A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQYry-003T3N-E9; Mon, 31 Jul 2023 19:47:54 +0000
+Date:   Mon, 31 Jul 2023 20:47:54 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Brendan Sweeney <brs@rivosinc.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
-        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>
-Subject: Re: [PATCH v6 0/9] Allow dynamic allocation of software IO TLB
- bounce buffers
-Message-ID: <20230731214618.6e7cde05@meshulam.tesarici.cz>
-In-Reply-To: <20230731160409.GA8991@lst.de>
-References: <cover.1690459412.git.petr.tesarik.ext@huawei.com>
-        <20230731160409.GA8991@lst.de>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <anup@brainfault.org>,
+        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        =?iso-8859-1?Q?R=E9mi?= Denis-Courmont <remi@remlab.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Atish Patra <atishp@rivosinc.com>
+Subject: Re: [PATCH v4 09/10] tools: lib: perf: Implement riscv mmap support
+Message-ID: <ZMgP6hhD/k7QNQ3t@casper.infradead.org>
+References: <20230727141428.962286-1-alexghiti@rivosinc.com>
+ <20230727141428.962286-10-alexghiti@rivosinc.com>
+ <CAP-5=fU5XYXrVnRUidpwjV2LiTsdebfidL43_Qo4Z7TBxMsVGA@mail.gmail.com>
+ <CAHVXubgVAe1WsiZx5Ay+3KPK4u24k_vsnTwFFmBeVsHrGXwhfw@mail.gmail.com>
+ <CAHVXubj80rQRShuDS09BeTrfR6nux0A68EMWLbeat8fd_Y3YdA@mail.gmail.com>
+ <CAP-5=fWwzuGZ6a6Z38ndsb7gw7_uwS0a2VGXx08hMeiK8eZ91w@mail.gmail.com>
+ <CAHVXubjhM9C1fw_Us=8+RuSJbW0pacFAk9gp7j2=BtMUPy_Byw@mail.gmail.com>
+ <CAP-5=fUbiaVwSAhTbymyhdUPcVAXHiQZZexAOnrqid0LsPmfpw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fUbiaVwSAhTbymyhdUPcVAXHiQZZexAOnrqid0LsPmfpw@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,13 +78,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-V Mon, 31 Jul 2023 18:04:09 +0200
-Christoph Hellwig <hch@lst.de> naps=C3=A1no:
+On Mon, Jul 31, 2023 at 09:46:07AM -0700, Ian Rogers wrote:
+> On Mon, Jul 31, 2023 at 9:06 AM Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
+> > I have just had the answer internally (thanks to @Brendan Sweeney):
+> > csr modifications can alter how the memory is accessed (satp which
+> > changes the address space, sum which allows/disallows userspace
+> > access...), so we need the memory barrier to make sure the compiler
+> > does not reorder the memory accesses.
+> 
+> The conditions you mention shouldn't apply here though? Even if you
+> add a memory barrier for the compiler what is stopping the hardware
+> reordering loads and stores? If it absolutely has to be there then a
+> comment something like "There is a bug is riscv where the csrr
+> instruction can clobber memory breaking future reads and some how this
+> constraint fixes it by ... ".
 
-> I was just going to apply this, but patch 1 seems to have a non-trivial
-> conflict with the is_swiotlb_active removal in pci-dma.c.  Can you resend
-> against the current dma-mapping for-next tree?
+If the hardware doesn't know that writing to a csr can change how memory
+accesses are done and reorders memory accesses around that csr write,
+you've got a really broken piece of hardware on your hands ...
 
-Sure thing, will re-send tomorrow morning.
-
-Petr T
+I know nothing about risc-v, and maybe the definition says that you need
+to put a memory barrier before and/or after it in the instruction stream,
+but on all hardware I'm familiar with, writing to a CSR is an implicitly
+serialising operation.
