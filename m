@@ -2,179 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C92E2769659
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0D276965B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbjGaMa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52618 "EHLO
+        id S232288AbjGaMbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:31:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbjGaMaw (ORCPT
+        with ESMTP id S230299AbjGaMbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:30:52 -0400
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8898C10DF;
-        Mon, 31 Jul 2023 05:30:49 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VofLXKW_1690806644;
-Received: from 30.221.150.94(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VofLXKW_1690806644)
-          by smtp.aliyun-inc.com;
-          Mon, 31 Jul 2023 20:30:45 +0800
-Message-ID: <2dc21269-2fa0-ea39-454d-5f12a414bc13@linux.alibaba.com>
-Date:   Mon, 31 Jul 2023 20:30:43 +0800
+        Mon, 31 Jul 2023 08:31:31 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0F7B2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:31:30 -0700 (PDT)
+Received: from [192.168.2.174] (109-252-150-127.dynamic.spd-mgts.ru [109.252.150.127])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3665C6600357;
+        Mon, 31 Jul 2023 13:31:28 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690806689;
+        bh=uU9TE+QLz19uvUZurU8HLJAokwEE/NyJV1JP8aJE7Q8=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=jGdzaE/K4vcru342F4pVcqyo3uHT6ZQGWOB3RZlT908tYxz1BRt6sNaEeXxGAlr1Z
+         MCXlxmxxKYemkSHuo1IOqatIempLL2M6NdfejoSsXUtLVn6dNd83an3p6XRYzgHO0y
+         mNn3FyECXCG965wkM7m3iA9dZttOeoFwQEC88a4cTtBFX5iczxDx4iamWLDNDyNlHs
+         Ha0YNH/SzGFbZ35p5L12qiSgPknErRsfaNnnX2GyoGN+0BX9gPmgGQ7EYcSx9Ds+3m
+         /b2XpjewiTSLB5vxbFBcfiRnSAUVOt39v6YxePinpeMauzVswP1B0UrX2ovE1IHyK3
+         9ReNENytIfyOw==
+Message-ID: <e39905e4-74e5-4de7-626c-2f2794214813@collabora.com>
+Date:   Mon, 31 Jul 2023 15:31:25 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.11.2
-Subject: Re: [PATCH v5 3/5] perf test: Add pmu-event test for "Compat" and new
- event_field.
-To:     John Garry <john.g.garry@oracle.com>,
-        Ian Rogers <irogers@google.com>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
-References: <1690525040-77423-1-git-send-email-renyu.zj@linux.alibaba.com>
- <1690525040-77423-4-git-send-email-renyu.zj@linux.alibaba.com>
- <abeaafbe-2290-d272-ddd1-f358f7271edc@oracle.com>
-From:   Jing Zhang <renyu.zj@linux.alibaba.com>
-In-Reply-To: <abeaafbe-2290-d272-ddd1-f358f7271edc@oracle.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.1
+Subject: Re: [PATCH v14 02/12] drm/shmem-helper: Add pages_pin_count field
+Content-Language: en-US
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
+ <20230722234746.205949-3-dmitry.osipenko@collabora.com>
+ <20230725092709.51356f39@collabora.com>
+ <20230725103234.0c8923f1@collabora.com>
+ <4c5fa735-9bfd-f92a-8deb-888c7368f89e@collabora.com>
+In-Reply-To: <4c5fa735-9bfd-f92a-8deb-888c7368f89e@collabora.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/7/28 下午4:30, John Garry 写道:
-> On 28/07/2023 07:17, Jing Zhang wrote:
->> Add new event test for uncore system event which is used to verify the
->> functionality of "Compat" matching multiple identifiers and the new event
->> fields "EventIdCode" and "Type".
+On 7/31/23 15:27, Dmitry Osipenko wrote:
+> On 7/25/23 11:32, Boris Brezillon wrote:
+>>> Can we make it an atomic_t, so we can avoid taking the lock when the
+>>> GEM has already been pinned. That's something I need to be able to grab
+>>> a pin-ref in a path where the GEM resv lock is already held[1]. We could
+>>> of course expose the locked version,
+>> My bad, that's actually not true. The problem is not that I call
+>> drm_gem_shmem_pin() with the resv lock already held, but that I call
+>> drm_gem_shmem_pin() in a dma-signaling path where I'm not allowed to
+>> take a resv lock. I know for sure pin_count > 0, because all GEM objects
+>> mapped to a VM have their memory pinned right now, and this should
+>> stand until we decide to add support for live-GEM eviction, at which
+>> point we'll probably have a way to detect when a GEM is evicted, and
+>> avoid calling drm_gem_shmem_pin() on it.
 >>
+>> TLDR; I can't trade the atomic_t for a drm_gem_shmem_pin_locked(),
+>> because that wouldn't solve my problem. The other solution would be to
+>> add an atomic_t at the driver-GEM level, and only call
+>> drm_gem_shmem_[un]pin() on 0 <-> 1 transitions, but I thought using an
+>> atomic at the GEM-shmem level, to avoid locking when we can, would be
+>> beneficial to the rest of the eco-system. Let me know if that's not an
+>> option, and I'll go back to the driver-specific atomic_t.
 > 
-> Thanks for doing this. It looks ok. I just have a comment, below.
+> Could you please explain why do you need to pin GEM in a signal handler?
+> This is not something drivers usually do or need to do. You likely also
+> shouldn't need to detect that GEM is evicted in yours driver. I'd expect
+> that Panthor shouldn't differ from Panfrost in regards to how GEM memory
+> management is done and Panfrost doesn't need to do anything special.
 > 
+> Note that patch #14 makes locked pin/unpin functions public and turns
+> the unlocked variants into helpers, you'll be able to experiment with
+> these funcs in the Panthor driver.
 
-Thanks.
+correction: that's patch #10
 
->> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
->> ---
->>   .../pmu-events/arch/test/test_soc/sys/uncore.json  |  8 ++++
->>   tools/perf/tests/pmu-events.c                      | 55 ++++++++++++++++++++++
->>   2 files changed, 63 insertions(+)
->>
->> diff --git a/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json b/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
->> index c7e7528..879a0ae 100644
->> --- a/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
->> +++ b/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
->> @@ -12,5 +12,13 @@
->>              "EventName": "sys_ccn_pmu.read_cycles",
->>              "Unit": "sys_ccn_pmu",
->>              "Compat": "0x01"
->> +   },
->> +   {
->> +           "BriefDescription": "Counts total cache misses in first lookup result (high priority).",
->> +           "Type": "0x05",
->> +           "EventIdCode": "0x01",
->> +           "EventName": "sys_cmn_pmu.hnf_cache_miss",
->> +           "Unit": "arm_cmn",
->> +           "Compat": "434*;436*;43c*;43a01"
->>      }
->>   ]
->> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
->> index 1dff863b..e227dcd 100644
->> --- a/tools/perf/tests/pmu-events.c
->> +++ b/tools/perf/tests/pmu-events.c
->> @@ -255,9 +255,24 @@ struct perf_pmu_test_pmu {
->>       .matching_pmu = "uncore_sys_ccn_pmu",
->>   };
->>   +static const struct perf_pmu_test_event sys_cmn_pmu_hnf_cache_miss = {
->> +    .event = {
->> +        .name = "sys_cmn_pmu.hnf_cache_miss",
->> +        .event = "type=0x05,eventid=0x01",
->> +        .desc = "Counts total cache misses in first lookup result (high priority). Unit: uncore_arm_cmn ",
->> +        .topic = "uncore",
->> +        .pmu = "uncore_arm_cmn",
->> +        .compat = "434*;436*;43c*;43a01",
->> +    },
->> +    .alias_str = "type=0x5,eventid=0x1",
->> +    .alias_long_desc = "Counts total cache misses in first lookup result (high priority). Unit: uncore_arm_cmn ",
->> +    .matching_pmu = "uncore_arm_cmn_0",
->> +};
->> +
->>   static const struct perf_pmu_test_event *sys_events[] = {
->>       &sys_ddr_pmu_write_cycles,
->>       &sys_ccn_pmu_read_cycles,
->> +    &sys_cmn_pmu_hnf_cache_miss,
->>       NULL
->>   };
->>   @@ -699,6 +714,46 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
->>               &sys_ccn_pmu_read_cycles,
->>           },
->>       },
->> +    {
->> +        .pmu = {
->> +            .name = (char *)"uncore_arm_cmn_0",
->> +            .is_uncore = 1,
->> +            .id = (char *)"43401",
->> +        },
->> +        .aliases = {
->> +            &sys_cmn_pmu_hnf_cache_miss,
->> +        },
->> +    },
->> +    {
->> +        .pmu = {
->> +            .name = (char *)"uncore_arm_cmn_0",
->> +            .is_uncore = 1,
->> +            .id = (char *)"43602",
->> +        },
->> +        .aliases = {
->> +            &sys_cmn_pmu_hnf_cache_miss,
->> +        },
->> +    },
->> +    {
->> +        .pmu = {
->> +            .name = (char *)"uncore_arm_cmn_1",
-> 
-> Shouldn't this match some perf_pmu_test_event entry with same matching_pmu member? But is perf_pmu_test_event.matching_pmu member ever used for any checking???
+> In general, using atomic_t or kref should be a good thing to do, but
+> AFAICS it shouldn't bring benefits to the today's drm-shmem users. I'd
+> want to understand what you're trying to achieve in the Panthor driver.
 > 
 
-I need to double check because I was testing against 6.3-rc2.
+-- 
+Best regards,
+Dmitry
 
-Thanks,
-Jing
-
-> Thanks,
-> John
-> 
->> +            .is_uncore = 1,
->> +            .id = (char *)"43c03",
->> +        },
->> +        .aliases = {
->> +            &sys_cmn_pmu_hnf_cache_miss,
->> +        },
->> +    },
->> +    {
->> +        .pmu = {
->> +            .name = (char *)"uncore_arm_cmn_1",
->> +            .is_uncore = 1,
->> +            .id = (char *)"43a01",
->> +        },
->> +        .aliases = {
->> +            &sys_cmn_pmu_hnf_cache_miss,
->> +        },
->> +    }
->>   };
->>     /* Test that aliases generated are as expected */
