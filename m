@@ -2,53 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF54769974
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11EB9769977
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjGaO1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
+        id S230367AbjGaO1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjGaO0k (ORCPT
+        with ESMTP id S230121AbjGaO07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:26:40 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB9DB3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:26:39 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-113-23.bstnma.fios.verizon.net [173.48.113.23])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 36VEQ1cn023734
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 10:26:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1690813563; bh=PTB+zTOglEGcpDuJkH1oIlACcE/4uJ8LKymuEGrBhyE=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=dLJycWW2cI9QngrH0N5NBkecfzJoxlN/oeSUmvHK0Dk5Z15pz8QMBbV1TqCUx8Ng4
-         dO81MKpBvxKbfoYWZ/iugt+zhlo6nxE5ROapFTDQeqMVDmXJbaxk4nCNSzL2aarHMd
-         idY5MGWh8vRYalsejIVNn+Q/uf6w78s3eizchral9RI+NI0aEAXEtpX1ZGgs4c/PZv
-         kOJa+Eu05GEog3uSScBF23oqb8/TugKPqWIpJLXe/6eTO0srDiKtfwwVtgzZKglxdt
-         Uk4kihyD+QxxEE6uEnkIbUbAV5gH3nvslIYbIxdXTxdK6SfrKClnjBe7xgBhdQN1do
-         GBVr76cuKqv7Q==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3490715C04F1; Mon, 31 Jul 2023 10:26:01 -0400 (EDT)
-Date:   Mon, 31 Jul 2023 10:26:01 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
-Cc:     tjcw@cantab.net, linux-kernel@vger.kernel.org
-Subject: Re: vfat file system does not allow a space at the end of a
- directory name
-Message-ID: <20230731142601.GA903325@mit.edu>
-References: <CAC=wTOim6VZM7gKGQ8KuvbVSdmjyg=4G5sFbr+xY89ujPVOq8g@mail.gmail.com>
- <196f7191-5820-4480-99d3-e7ffc66e9c98@t-8ch.de>
+        Mon, 31 Jul 2023 10:26:59 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C969EB3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:26:57 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fe2048c910so9934165e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690813616; x=1691418416;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=d0amng8ESj5Ivn3+1Qpwn6F8c5hSHQtHpqsKrSaqmyM=;
+        b=uc+fd4z3doK5zO6DlkUKmP75VP+YhckG31qRdKmzMx3SfzHxgEvUG4TZJe3y+phASO
+         Vt6Vj2SpM+mhoB8FlaaLfSg4GvJr5glzyru4hhZn2/OF34PIdvyQuuXIC2o82IDlbMkT
+         lvFY0u9O1qGNbQKhcLXSslU6Vjv6a+4hxvgmthJJEMVtsaJzdLjgk1j/Kq9rQ4lHsJTR
+         Ep8xhUPTxZj6UgC7aru352SW/OnJsGkG03+RxM49bagpvN9UyEQbzbEjYCKCq+GDPMFr
+         ipmS+4dk5mg5xGqNuajn9l1LXxr1F4Lh8OtGHZ3MAO2L7rx6TLAp98U/lDNOZOVNjYLy
+         fd2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690813616; x=1691418416;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d0amng8ESj5Ivn3+1Qpwn6F8c5hSHQtHpqsKrSaqmyM=;
+        b=K1YA+v2JEzT4zFgm+w9wAjkKts/aEeMx2NENMkhZaEogtl8XxJ2s+EfRZOe9pyjrhc
+         wIypJoHM4RW4sfj2In4scRtGjGdGztcDGWnzt3PvILTHK+x7lx3HMN7NXh6Wbrqck7Xk
+         bVR90Lfe1jYb5cNG3R42qS0hvR4mHzDIK5KuRJP4QveoYybaTAvXea5mYS8u6M2gq+Xx
+         zvRxe9zpUa3z6p7ZuDN/3mzw0aZ2RKrwNzPYDWjsXumJgDuPdSnZgHyjuBkzMod7Lf0u
+         IgsJN0vFj7FM5dgjmfh5yF3KGSvxf8phXeBxYqnEbWb7xQse5WtXVfuVucQapgGU3Zox
+         af5Q==
+X-Gm-Message-State: ABy/qLYeVYr3CnFPlFGOQn9UKGaEw1NbrcUwM7du1XKheirkgzzyWAya
+        mie25CI8aA0ylg6MftAIw8wyWA==
+X-Google-Smtp-Source: APBJJlGzCyI+U5RVUU8FDM+eBfMc+3uCEUPv/aNqKzgnlSN7kdoPm8KbQdY/Zxi8dDL10HtPb67Ihw==
+X-Received: by 2002:adf:f70c:0:b0:313:f61c:42b2 with SMTP id r12-20020adff70c000000b00313f61c42b2mr5302957wrp.69.1690813616290;
+        Mon, 31 Jul 2023 07:26:56 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id a8-20020adfed08000000b0031417b0d338sm13274552wro.87.2023.07.31.07.26.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 07:26:56 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 17:26:53 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
+        Jordan Griege <jgriege@cloudflare.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
+Message-ID: <38c61917-98b5-4ca0-b04e-64f956ace6e4@kadam.mountain>
+References: <cover.1690332693.git.yan@cloudflare.com>
+ <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
+ <a76b300a-e472-4568-b734-37115927621d@moroto.mountain>
+ <ZMEqYOOBc1ZNcEER@debian.debian>
+ <bc3ec02d-4d4e-477a-b8a5-5245425326c6@kadam.mountain>
+ <ZMFFbChK/66/8XZd@debian.debian>
+ <8b681fe1-4cc6-4310-9f50-1cff868f8f7f@kadam.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <196f7191-5820-4480-99d3-e7ffc66e9c98@t-8ch.de>
+In-Reply-To: <8b681fe1-4cc6-4310-9f50-1cff868f8f7f@kadam.mountain>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,27 +94,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 07:55:39AM +0200, Thomas Weißschuh wrote:
-> On 2023-07-30 23:33:03+0100, Chris Ward wrote:
-> > I had a zip file (from downloading pictures from Google Photos) where
-> > some of the directory names had a space at the end. This unzipped fine
-> > on an ext4 file system, but gave errors when unpacking onto a USB key
-> > which had a FAT file system.
->
-> AFAIK this is a limitation in the FAT filesystem itself.
-> 
-> The problem is that FAT stores filenames in fixed width fields.
-> Unused space in these fields is filled with ' '.
-> This means that storing "foo", "foo " or "foo ". would all result in the
-> exact same result and it will be impossible to figure out the correct
-> one afterwards.
+I'm not a networking person, but I was looking at some use after free
+static checker warnings.
 
-Yeah, I'd argue that this is a misfeature in Google Photos; its
-product manager should strongly consider stripping trailing spaces
-from picture titles.
+Apparently the rule with xmit functions is that if they return a value
+> 15 then that means the skb was not freed.  Otherwise it's supposed to
+be freed.  So like NETDEV_TX_BUSY is 0x10 so it's not freed.
 
-Disclosure: I work for Google but not anywhere near the Google Photos
-product team, and this is my own opinion not Google's.  Feel free to
-file product feedback in the Google Photos app, though.  :-)
+This is checked with using the dev_xmit_complete() function.  So I feel
+like it would make sense for LWTUNNEL_XMIT_CONTINUE to return higher
+than 15.
 
-						- Ted
+Because that's the bug right?  The original code was assuming that
+everything besides LWTUNNEL_XMIT_DONE was freed.
+
+regards,
+dan carpenter
+
