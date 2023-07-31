@@ -2,163 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 983BC769F57
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEBD769F61
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbjGaRVX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 Jul 2023 13:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        id S233961AbjGaRWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:22:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233172AbjGaRVB (ORCPT
+        with ESMTP id S232800AbjGaRVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:21:01 -0400
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A133173D;
-        Mon, 31 Jul 2023 10:20:57 -0700 (PDT)
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-56c9237e0ffso332045eaf.0;
-        Mon, 31 Jul 2023 10:20:57 -0700 (PDT)
+        Mon, 31 Jul 2023 13:21:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D2D1BE9
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:21:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690824062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8NfShcrH5vNeU09yfaTlylFugR/gu1+MgjXGX+9Q5ac=;
+        b=LMoAJ+pM9MEEPOrRC9JdUH/4a+sIWt++2GkINyIZ7fvj634xw9jjMMPRXLKYUh8j11edKA
+        LS5s79y8GjdsO6yZzQsIxoRdY/149y0hZhtFYp6p87t4kFFh8zSl73ipoLJjlyXNnvEG7I
+        F5OGbuec1Ndqd6s6ey8gCPCbhou5EIo=
+Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
+ [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-348-c5ESEDuFNx2tC9oZaZy6qQ-1; Mon, 31 Jul 2023 13:21:01 -0400
+X-MC-Unique: c5ESEDuFNx2tC9oZaZy6qQ-1
+Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-585fb08172bso28821647b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:21:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690824057; x=1691428857;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690824060; x=1691428860;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Yp/WHB9NlxenQuZy7KyUcZW03h0kCKbBguoGc6IUG1I=;
-        b=kzDQsYFZKugKLa7hPSNnPfy3qPmf5fkylHLiM9X3DfZNV03+uzmMHo4j7Y4WIXMPEB
-         D4vosC42sPqDl9T6lJDNMkYqXmBdQ0mugr+jOEowCopowNrXNgdUcmxwZ8LEB6914q3N
-         T/e9+3U6c5eDuDATayHpm6I3kfUE/pw5yvLXk40uKc/FUVYLAursbYPG8GIiaVhghO/R
-         lVvfA5AXF19TDAjnOA8XTGrxztL5er93Db+KqWcAIYj93vxd/wi145AkTbUB0Sim1o4Q
-         +UxyMjYDfIscl+aVRYIOLBqLWlUsdL92VVaBwx9UfS2dQfq3eLT3TW5TSYKXGigf0nlY
-         KwmQ==
-X-Gm-Message-State: ABy/qLZFmUI02Q40mTGsAgsjz6/IYwbnaY13LrBDpPYiI9Yi2d474Hs1
-        7wXVNjLotbqZ20CUBMd08sooRNRuOz2kiEQ51Jc=
-X-Google-Smtp-Source: APBJJlGHg/RSPWHC0ZfSL1Bxu03CX8ZZZMh4G1nFHlCtr+YpOYxHlaRj+/cM3M7cZeI/9oh3o2TzRJ8Gf/+Emm0us9Y=
-X-Received: by 2002:a4a:d027:0:b0:563:3b56:5dc1 with SMTP id
- w7-20020a4ad027000000b005633b565dc1mr5054481oor.0.1690824056783; Mon, 31 Jul
- 2023 10:20:56 -0700 (PDT)
+        bh=8NfShcrH5vNeU09yfaTlylFugR/gu1+MgjXGX+9Q5ac=;
+        b=NCcVMELqT5eTGZyb+2gw7sPhbQ63vePEnxoA5nwrfi32l8VYvy89ZfWVX3FmDnzxXn
+         i1U302vLxwcBnYOe+CBOrbCczobAafreU40j/i3SO6uDxBMgyxIZ55hFIdsjsvcYKDEb
+         OEOodtpwRQ8PsuW7vJ1Xb4ac65QhKPlcCFlqr1pGwTFCS/amcBgO8JGbX7f1PMQiJSck
+         i1iieOi4mKfGy+cPd/CIA1UFRavzCiDwh+KTSYunEOiG6q7Cni2Q81zTW7BSXB/Qv66o
+         IueYm13kmxgO+4tnImgGy2PtTVGdTqinPPLErGYRQo/LlBRG+NDOu+EY7Z3H3jBirTku
+         Qt5g==
+X-Gm-Message-State: ABy/qLYaBSMpTCf3HrbsXkWp3sZWnvHWbvpdK8eJSaAE8+8zbkPCRWzB
+        D3Elw/wY0S5D32YY2qvldy+niNSPbgUd1Totxf7nwNdYA+t96FP9lXYSVwrzzmBCRSAUn4oSpus
+        IOYMkFqEWx9seHUd3mBiGlVz5
+X-Received: by 2002:a81:c24f:0:b0:583:4304:75a4 with SMTP id t15-20020a81c24f000000b00583430475a4mr10696713ywg.29.1690824060502;
+        Mon, 31 Jul 2023 10:21:00 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFbVJszIfUaYg4Uc4+wm7XQPO4r+bpFj464rdlreCyyKuJOaZIruagzYqntofPsjWen070/Bg==
+X-Received: by 2002:a81:c24f:0:b0:583:4304:75a4 with SMTP id t15-20020a81c24f000000b00583430475a4mr10696647ywg.29.1690824059920;
+        Mon, 31 Jul 2023 10:20:59 -0700 (PDT)
+Received: from vschneid.remote.csb ([149.12.7.81])
+        by smtp.gmail.com with ESMTPSA id 10-20020ac8208a000000b00401f7f23ab6sm3744764qtd.85.2023.07.31.10.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 10:20:59 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
+        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Juerg Haefliger <juerg.haefliger@canonical.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Dan Carpenter <error27@gmail.com>,
+        Chuang Wang <nashuiliang@gmail.com>,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Petr Mladek <pmladek@suse.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
+        Julian Pidancet <julian.pidancet@oracle.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Yair Podemsky <ypodemsk@redhat.com>
+Subject: Re: [RFC PATCH v2 06/20] tracing/filters: Optimise scalar vs
+ cpumask filtering when the user mask is a single CPU
+In-Reply-To: <b7cf996a-f443-402c-8e13-c5f25a964184@kadam.mountain>
+References: <20230720163056.2564824-1-vschneid@redhat.com>
+ <20230720163056.2564824-7-vschneid@redhat.com>
+ <20230729155547.35719a1f@rorschach.local.home>
+ <04f20e58-6b24-4f44-94e2-0d12324a30e4@kadam.mountain>
+ <20230731115453.395d20c6@gandalf.local.home>
+ <b7cf996a-f443-402c-8e13-c5f25a964184@kadam.mountain>
+Date:   Mon, 31 Jul 2023 18:20:49 +0100
+Message-ID: <xhsmhy1iwq9ou.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-References: <20230728145515.990749537@infradead.org> <20230728145808.902892871@infradead.org>
- <CAJZ5v0hi25zZ_SRnSk0r=7q=UFh1dsrWEao6225KZVWp3-ivDQ@mail.gmail.com>
- <20230728220109.GA3934165@hirez.programming.kicks-ass.net>
- <CAJZ5v0ir_VsvBi4KKhpcjQnVsTK-EXZJjNsk=Jp84HLvaspChw@mail.gmail.com> <20230731120200.GF29590@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230731120200.GF29590@hirez.programming.kicks-ass.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 31 Jul 2023 19:20:45 +0200
-Message-ID: <CAJZ5v0hQh2Pg_uXxj8KBRw3oLS1WdsU+rUafBAAq7dRdbRwYSA@mail.gmail.com>
-Subject: Re: [RFC][PATCH 2/3] cpuidle,teo: Improve NOHZ management
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, anna-maria@linutronix.de,
-        tglx@linutronix.de, frederic@kernel.org, gautham.shenoy@amd.com,
-        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 2:02 PM Peter Zijlstra <peterz@infradead.org> wrote:
+On 31/07/23 19:03, Dan Carpenter wrote:
+> On Mon, Jul 31, 2023 at 11:54:53AM -0400, Steven Rostedt wrote:
+>> On Mon, 31 Jul 2023 15:07:52 +0300
+>> Dan Carpenter <dan.carpenter@linaro.org> wrote:
+>>
+>> > On Sat, Jul 29, 2023 at 03:55:47PM -0400, Steven Rostedt wrote:
+>> > > > @@ -1761,6 +1761,11 @@ static int parse_pred(const char *str, void=
+ *data,
+>> > > >                                FILTER_PRED_FN_CPUMASK;
+>> > > >                } else if (field->filter_type =3D=3D FILTER_CPU) {
+>> > > >                        pred->fn_num =3D FILTER_PRED_FN_CPU_CPUMASK;
+>> > > > +		} else if (single) {
+>> > > > +			pred->op =3D pred->op =3D=3D OP_BAND ? OP_EQ : pred->op;
+>> > >
+>> > > Nit, the above can be written as:
+>> > >
+>> > >                  pred->op =3D pret->op !=3D OP_BAND ? : OP_EQ;
+>> > >
+>> >
+>> > Heh.  Those are not equivalent.  The right way to write this is:
+>>
+>> You mean because of my typo?
 >
-> On Mon, Jul 31, 2023 at 12:17:27PM +0200, Rafael J. Wysocki wrote:
+> No, I hadn't seen the s/pred/pret/ typo.  Your code does:
 >
-> > Something really simple like:
-> >
-> > 1. Check sched_cpu_util() (which is done by teo anyway).
-> > 2. If that is around 90% of the maximum CPU capacity, select the first
-> > non-polling idle state and be done (don't stop the tick as my other
-> > replay earlier today).
+>       if (pred->op !=3D OP_BAND)
+>               pred->op =3D true;
+>       else
+>               pred->op OP_EQ;
 >
-> So I really don't like using cpu_util() here, yes, 90% is a high number,
-> but it doesn't say *anything* about the idle duration. Remember, this is
-> a 32ms window, so 90% of that is 28.8ms.
-
-It doesn't have to say anything about the idle duration as long as it
-says something about the governor's "accuracy".
-
-If it is observed experimentally that the governor is generally likely
-to mispredict a deeper state if CPu utilization is about a certain
-threshold, then it makes sense to use this information to counter
-that.  That's how it is used today.
-
-And yes, you are right about the most immediate idle duration, but
-overall the rule that if the CPU utilization is high, then selecting
-deep idle states is not a good idea in general does seem to hold.
-
-> (not entirely accurate, since it's an exponential average, but that
-> doesn't change the overal argument, only some of the particulars)
+> Realy we should probably trigger a static checker warning any time
+> someone does a compare operations as part of a "x =3D comparison ?: bar;
+> Years ago, someone asked me to do that with regards to error codes like:
 >
-> That is, 90% util, at best, says there is no idle longer than 3.2 ms.
-> But that is still vastly longer than pretty much all residencies. Heck,
-> that is still 3 ticks worth of HZ=1000 ticks. So 90% util should not
-> preclude disabling the tick (at HZ=1000).
+>       return ret < 0 ?: -EINVAL;
 >
-> Now, typically this won't be the case, and at 90% you'll have lots of
-> small idles adding up to 3.2ms total idle. But the point is, you can't
-> tell the difference. And as such util is a horrible measure to use for
-> cpuidle.
-
-No it is not IMO, because idle is all about the combined outcome of
-multiple cycles.
-
-> > > If we track the tick+ bucket -- as
-> > > we must in order to say anything useful about it, then we can decide the
-> > > tick state before (as I do here) calling sleep_length().
-> > >
-> > > The timer-pull rework from Anna-Maria unfortunately makes the
-> > > tick_nohz_get_sleep_length() thing excessively expensive and it really
-> > > doesn't make sense to call it when we retain the tick.
-> > >
-> > > It's all a bit of a chicken-egg situation, cpuidle wants to know when
-> > > the next timer is, but telling when that is, wants to know if the tick
-> > > stays. We need to break that somehow -- I propose by not calling it when
-> > > we know we'll keep the tick.
-> >
-> > By selecting a state whose target residency will not be met, we lose
-> > on both energy and performance, so doing this really should be
-> > avoided, unless the state is really shallow in which case there may be
-> > no time for making this consideration.
+> but I don't remember the results.
 >
-> I'm not sure how that relates to what I propose above. By adding the
-> tick+ bucket we have more historical information as related to the tick
-> boundary, how does that make us select states we won't match residency
-> for?
 
-As stated in my last reply, the only case in which it makes a
-difference is when the deepest idle state's target residency is below
-the tick and I'm not really sure if that difference is demonstrably
-significant.
+FWIW this is caught by GCC:
 
-So I would do the following to start with:
+     error: the omitted middle operand in ?: will always be =E2=80=98true=
+=E2=80=99, suggest explicit middle operand [-Werror=3Dparentheses]
+     pred->op =3D pred->op !=3D OP_BAND ? : OP_EQ;
 
-1. Rearrange the teo code so that it considers all of the bins every
-time without calling tick_nohz_get_sleep_length().
 
-2. The sched_cpu_util() check will still be applied to the resulting
-candidate state as it is now.
+> regards,
+> dan carpenter
 
-3. If it finds that the candidate state is shallow enough (for
-instance, it is a polling state or the first non-polling one), it will
-return this state without calling tick_nohz_get_sleep_length() and
-stopping the tick.
-
-4. Otherwise it will call tick_nohz_get_sleep_length() to see what
-about timers and refine the selection (towards the shallower states)
-if need be.
-
-5. If the candidate state is not the deepest one and its target
-residency is below the tick, it will be returned and the tick will not
-be stopped.
-
-6. Otherwise, the candidate state will be returned and the tick will be stopped.
-
-If this still doesn't get us where we want to be, the extra bin can be
-added (as long as it makes a measurable difference).
