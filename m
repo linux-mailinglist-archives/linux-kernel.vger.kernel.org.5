@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3357A76962B
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE1A76962A
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbjGaMYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
+        id S232561AbjGaMYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232413AbjGaMX6 (ORCPT
+        with ESMTP id S231684AbjGaMX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:23:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FDF1999;
-        Mon, 31 Jul 2023 05:23:34 -0700 (PDT)
+        Mon, 31 Jul 2023 08:23:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7FD10E2;
+        Mon, 31 Jul 2023 05:23:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9964D610A5;
-        Mon, 31 Jul 2023 12:22:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 878CAC433C9;
-        Mon, 31 Jul 2023 12:22:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F33861119;
+        Mon, 31 Jul 2023 12:23:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60FDCC433C9;
+        Mon, 31 Jul 2023 12:23:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690806166;
-        bh=3r+Ls/gVtZTluVbbyjL7NWr763MsqurWoQRfwvHnGGI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u6aUq8ZLfcRtAIAHs3vF9XEhwPFh1u+IT3j/w6MRkJUtIG2XwT+T8hB6QXs5/amk9
-         b2P/KqiKeGONgD+sK+hUFubQnN4JKfdxDSln/NZeGVsErWab2k80BrXoVppSxjPgKm
-         PgeMKRtgqd5tB9mMrxjnRN5QZkuWfxJtMfen0NyUbmWUwXbDDensKG+l/lQzBjuL1p
-         tAMVjhiPkvi0gwH6Ue7RaXpB5JGZDGRs76p4whhUzL01Y2e819iKSaxiKn/NC1FCl4
-         SiS5Ixk+dqDmOn06iQ+vAbZ1FxOtV2m13TjLoaoP1QDj5vl2/fhpR1bSmwlIcDvcZZ
-         8WCIs8/68VsWw==
-From:   Christian Brauner <brauner@kernel.org>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH] fs: fix request_mask variable in generic_fillattr kerneldoc comment
-Date:   Mon, 31 Jul 2023 14:22:39 +0200
-Message-Id: <20230731-lasst-schnorren-54882e1416ec@brauner>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230731-mgctime-v1-1-1aa1177841ed@kernel.org>
-References: <20230731-mgctime-v1-1-1aa1177841ed@kernel.org>
+        s=k20201202; t=1690806201;
+        bh=vtiNe4G7rXfUPIV0oIeYWpUQbdzfz9IJ3ODvzvMPr8Q=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=sQQ9jYFpJBhowuZb2LUzf3LfMCUxkBWcgAj7cltelwHQIGRX8IQzivkClN2i9rm/f
+         IJ/QymMoYhRsdUKhv9A++TBcHETgIU8L5l2UyWlwzM1PNXNnMU/YkD1rpWWrqYUHxF
+         Zac3L5TfY5xMHVbqUiFzIveukUXt9R09FAycpqSb7zD1THki2HXttkrSk9uln+/7aU
+         bvxsuCDUxLCh8VPp6c85xra3A0LyrSEqrq7nxFKm8smzbeK1/Fh56E4e5jaSboZbDR
+         ySqAs2osdE/oMIR+Pue7t64cZ1/uyJy+7uyKXMa4qM7V/xvuLHOVamuH0B5XSzYbRr
+         WdUzhGiWmts0g==
+From:   Maxime Ripard <mripard@kernel.org>
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Emma Anholt <emma@anholt.net>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     =?utf-8?q?Ma=C3=ADra_Canal?= <mairacanal@riseup.net>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        dri-devel@lists.freedesktop.org, David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendan.higgins@linux.dev>
+In-Reply-To: <20230720-kms-kunit-actions-rework-v2-0-175017bd56ab@kernel.org>
+References: <20230720-kms-kunit-actions-rework-v2-0-175017bd56ab@kernel.org>
+Subject: Re: [PATCH v2 00/11] drm: kunit: Switch to kunit actions
+Message-Id: <169080619883.275106.14754848057224430260.b4-ty@kernel.org>
+Date:   Mon, 31 Jul 2023 14:23:18 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=859; i=brauner@kernel.org; h=from:subject:message-id; bh=3r+Ls/gVtZTluVbbyjL7NWr763MsqurWoQRfwvHnGGI=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaQcX948Q+rqm3CJ72b2+y+8Fba64zrVMKxZbMrKHb6Os9/b Wft86ChlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZjIc1aGv0L7O/eanJAQvrfn2uyN2Z 31D7n2pslMu+G/SGKre/PBkk2MDKuT3NTmcs96duDGT8dWlqe5Z2yZ2DnnZE73kpkz8au1JzMA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,25 +64,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 06:37:10 -0400, Jeff Layton wrote:
-> req_mask -> request_mask
+On Thu, 20 Jul 2023 13:15:45 +0200, Maxime Ripard wrote:
+> Since v6.5-rc1, kunit gained a devm/drmm-like mechanism that makes tests
+> resources much easier to cleanup.
 > 
+> This series converts the existing tests to use those new actions where
+> relevant.
 > 
+> Let me know what you think,
+> Maxime
+> 
+> [...]
 
-Applied to the vfs.ctime branch of the vfs/vfs.git tree.
-Patches in the vfs.ctime branch should appear in linux-next soon.
+Applied to drm/drm-misc (drm-misc-next).
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+Thanks!
+Maxime
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.ctime
-
-[1/1 FOLDED] fs: pass the request_mask to generic_fillattr
-      https://git.kernel.org/vfs/vfs/c/0f64b6ec05db
