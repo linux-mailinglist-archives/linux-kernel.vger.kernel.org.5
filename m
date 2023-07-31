@@ -2,90 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1C77694CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1907694D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbjGaL3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39870 "EHLO
+        id S231563AbjGaL32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjGaL3M (ORCPT
+        with ESMTP id S231386AbjGaL3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:29:12 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D897C3;
-        Mon, 31 Jul 2023 04:29:11 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B6B551EC05F5;
-        Mon, 31 Jul 2023 13:29:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1690802949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=VrPGlj5TATHkbHdFB5PvJ46ZUhYf3roC1FY9CSw84mo=;
-        b=BaZF2GrAggHVpH/btFtkO1x2MJx1gRSLxiZLpHGcsJyjYqquYuQSHxo08Gw2wyX5tmcMXl
-        1HtI7kUoFkfhiWjQKEbY9lMb1cQE0jf6Cstu7bRpm0wVqZfumyEuDraPryeU5WYnZdSHGt
-        NG/AISsV7E1UHgVmlH+U413cpJkmkfQ=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id XbaPTmi5uCVQ; Mon, 31 Jul 2023 11:29:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1690802946; bh=VrPGlj5TATHkbHdFB5PvJ46ZUhYf3roC1FY9CSw84mo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dVcu98usoipaL45pgASnXheXKzaRFYKBN55dIvyhs2J+3GxhIX6QHUG5+Nmy3eFvA
-         ptjyad2pdaJCsJBMiUGXLfxNHy0zoJuvI253OuJStSs7urBE/tV9R7g1bueboQzU5F
-         FnzWGMYo5tRgRukN5Bu5k74YV6svlh9PcrDo1XgidoSvXQucpaBmwv84tdmpOp+Dpq
-         7Vwej6ykeDamRnKpqdnn7c8JCC0BFdMhQskZHp5xsEGMwSafYsKtxgybVLC7/VzICp
-         mBYelfMFl6yRe0vQzyv+3v5sQFKpzXJ/0LqN14YmDEVhWmkAxOFdxKGAITyMbObBMg
-         Q/lUyovTP/5DZB9VcwtY2IHuKI7ezgTFvy9CDxUcMe8XCID2MDsPhCY4JejzkaaMar
-         HNFcxinL8RvrHHRjHVkQlLCUq1o3iMdvw6nbNhbsmOXgaaaQTIWK1uaiYg66ypFEyj
-         fKw4no5fXUVOV8868ZZY7WFX4Ie3OO0yW1uYxNThwaY64FD4FalH36knHPb3tMlt7H
-         HhSC+3MyRc0nqE1Mo6/MBmdtXP8IVhOwPxZMshXRnAfeAkJhlv/oehIUbg3NC6o8s4
-         rgA665CPQpBpVSzn26F+HCgDbAkCAcZPXKy0ACWWf7HbNNopR/azi7W9V+qfPvBTMi
-         BNwp/hL98J6lePqLoyqjc9wE=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        Mon, 31 Jul 2023 07:29:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F01CD;
+        Mon, 31 Jul 2023 04:29:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F3DE540E01A4;
-        Mon, 31 Jul 2023 11:28:46 +0000 (UTC)
-Date:   Mon, 31 Jul 2023 13:28:42 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Peter Jones <pjones@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v7 10/22] x86/decompressor: Use standard calling
- convention for trampoline
-Message-ID: <20230731112842.GBZMea6qLHW+aZL3fB@fat_crate.local>
-References: <20230728090916.1538550-1-ardb@kernel.org>
- <20230728090916.1538550-11-ardb@kernel.org>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EFCEF6106C;
+        Mon, 31 Jul 2023 11:29:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7509C433C9;
+        Mon, 31 Jul 2023 11:29:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690802963;
+        bh=PiUwuP1rRuNg85mBm3h0tfnKvyXwPsRiypzl3EEp98o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hjmk4pdiB5SU1jrvesiynxonXjfTlZOCjUBhJwE71PMHmLd9+Jwozq2QJtsiZy2ZU
+         +za4efC7uYUkgtzTqQO2BL5PL86cGvAsFvItct/o8uBQAI/Nb1GP2OAapGu+vjkGQb
+         AJoAY/mu4m2E2PsPeEWdt2SCa70V8HhoXFebIcdEIjUKhW+g3tn9GCVtcM2DlD8X6t
+         cAXJDT2kzd4W++ftLKBS1Smbdidi3FuDC1kX6g8qAZFurGcqJ/xAwbZnilLo9F6zqv
+         vrubxRuFuzg9NbHBWLqrAdojW5YeGnjZc4eDj852aQpRWxpStlU+/L3Pnm9WaV+hnN
+         DVryR1qgCrNow==
+Date:   Mon, 31 Jul 2023 16:59:19 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org, lgirdwood@gmail.com,
+        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/6] soundwire: bus: Allow SoundWire peripherals to
+ register IRQ handlers
+Message-ID: <ZMebD//fpy5TbYyH@matsya>
+References: <20230725102532.2567580-1-ckeepax@opensource.cirrus.com>
+ <20230725102532.2567580-2-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230728090916.1538550-11-ardb@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <20230725102532.2567580-2-ckeepax@opensource.cirrus.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -94,53 +63,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 11:09:04AM +0200, Ard Biesheuvel wrote:
-> Update the trampoline code so its arguments are passed via RDI and RSI,
-> which matches the ordinary SysV calling convention for x86_64. This will
-> allow this code to be called directly from C.
+On 25-07-23, 11:25, Charles Keepax wrote:
+> From: Lucas Tanure <tanureal@opensource.cirrus.com>
 > 
-> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> ---
->  arch/x86/boot/compressed/head_64.S | 26 +++++++++-----------
->  arch/x86/boot/compressed/pgtable.h |  2 +-
->  2 files changed, 12 insertions(+), 16 deletions(-)
+> Currently the in-band alerts for SoundWire peripherals can only
+> be communicated to the driver through the interrupt_callback
+> function. This however is slightly inconvient for devices that wish to
+> share IRQ handling code between SoundWire and I2C/SPI, the later would
+> normally register an IRQ handler with the IRQ subsystem. However there
+> is no reason the SoundWire in-band IRQs can not also be communicated
+> as an actual IRQ to the driver.
 > 
-> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-> index 1892679be2b6897a..491d985be75fd5b0 100644
-> --- a/arch/x86/boot/compressed/head_64.S
-> +++ b/arch/x86/boot/compressed/head_64.S
-> @@ -443,9 +443,9 @@ SYM_CODE_START(startup_64)
->  	movq	%r15, %rdi		/* pass struct boot_params pointer */
->  	call	paging_prepare
->  
-> -	/* Save the trampoline address in RCX */
-> -	movq	%rax, %rcx
-> -
-> +	/* Pass the trampoline address and boolean flag as args #1 and #2 */
-> +	movq	%rax, %rdi
-> +	movq	%rdx, %rsi
->  	leaq	TRAMPOLINE_32BIT_CODE_OFFSET(%rax), %rax
->  	call	*%rax
->  
-> @@ -534,15 +534,15 @@ SYM_FUNC_END(.Lrelocated)
->  /*
->   * This is the 32-bit trampoline that will be copied over to low memory.
->   *
-> - * ECX contains the base address of the trampoline memory.
-> - * Non zero RDX means trampoline needs to enable 5-level paging.
-> + * EDI contains the base address of the trampoline memory.
-> + * Non-zero ESI means trampoline needs to enable 5-level paging.
->   */
+> Add support for SoundWire peripherals to register a normal IRQ handler
+> to receive SoundWire in-band alerts, allowing code to be shared across
+> control buses. Note that we allow users to use both the
+> interrupt_callback and the IRQ handler, this is useful for devices which
+> must clear additional chip specific SoundWire registers that are not a
+> part of the normal IRQ flow, or the SoundWire specification.
 
-This is confusing - this talks about 32-bit and 32-bit registers but
-uses the 64-bit calling convention because it gets called by 64-bit
-code. Please add a short sentence clarifying that.
-
-Thx.
+Acked-by: Vinod Koul <vkoul@kernel.org>
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+~Vinod
