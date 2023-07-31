@@ -2,176 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8906769668
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA6A76966D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232093AbjGaMd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
+        id S232730AbjGaMep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232690AbjGaMdw (ORCPT
+        with ESMTP id S229922AbjGaMen (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:33:52 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C833810F5;
-        Mon, 31 Jul 2023 05:33:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690806806; x=1691411606; i=deller@gmx.de;
- bh=0RFDEXXQMPxJBQdMJHQn7D5WifSZ6l/L2WktkbceJyc=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=FXGk9moCw8qFnPcjSFfxssf06xB2w7SYR8UPNCKWRnYLOjxtepPLWJ1onxRzFeHeQOp+ApT
- ZdloVKFW6BctrAcKl3boCKaltVrEg05FJAMEGZ9JTRoL0XmvakhrDTGWCRLZ9VgU6WFYNq58p
- XD9GBC+8XPT8TYdHxvt7RwLju0T5qsERFCshKCzQRM6LlWTpxxc7mTOTNBDYrfNMIEJ5K3E0Z
- ik9Ny4gE5yarWwE6H8XWYfTgNnmSL9Mrx2s/jbx18XXJVsoQwvRFnELhp1kcBZmU9r1UbB6tH
- mOmKsf0fgrLd5uQX4G3HwID0IGuDIBuCM9bj4YfLNihfjlHTEz7Q==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.60] ([94.134.159.238]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MIwzA-1qAYrk2CD4-00KTWj; Mon, 31
- Jul 2023 14:33:26 +0200
-Message-ID: <6bd9ed23-5a79-879a-c9c1-0b3952fea0ad@gmx.de>
-Date:   Mon, 31 Jul 2023 14:33:24 +0200
+        Mon, 31 Jul 2023 08:34:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1123139;
+        Mon, 31 Jul 2023 05:34:41 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690806879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=26bNPteWLKWX+IXb6CXn0F6iXGIdt9GmgAnDVbyNoUc=;
+        b=uDXkw2Ay5rxDMiOgBXNnZOMctMLa1CZfO0YQ8FiSGypGhqCA3YfCB8QO2bcWKTBHwXPon1
+        4SG2jZnu7h2E7IgvCIIkNvArtILo3wCcp3CKPy5vKXHlEu9kl9xoiEgt2/OZrSk5zQt9qK
+        hhyYL1L7z2rvJwtBDzahacKFKUkKRQhzoI1+IG3DQTmICoVIKPsVfm8lRHhcYiLm/X/Yck
+        xPrqyPUakMrE+ZKueCEgPUEM1omfO9aN/m3xm7S88c+ATcmuN5rTFRnaSriVrj6PapaEe7
+        2T704/PZ4VFKJNeIGkqSvC/L8Han350umiQssr78hOhSnZRAm3MGYcH6f02J6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690806879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=26bNPteWLKWX+IXb6CXn0F6iXGIdt9GmgAnDVbyNoUc=;
+        b=1w9HP+LRa/uXwBirEj5ZNjtThhek9E5qaTN8T6DYClnfLEm8+4TGDNsMvPGktEuJjF8s8B
+        56/kKbxH3Nbb1oCQ==
+To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Subject: RE: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
+In-Reply-To: <BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR21MB1688.namprd21.prod.outlook.com>
+References: <20230728105650.565799744@linutronix.de>
+ <20230728120930.839913695@linutronix.de>
+ <BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR21MB1688.namprd21.prod.outlook.com>
+Date:   Mon, 31 Jul 2023 14:34:39 +0200
+Message-ID: <871qgop8dc.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: linux-next: Tree for Jul 13 (drivers/video/fbdev/ps3fb.c)
-Content-Language: en-US
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        linux-fbdev@vger.kernel.org,
-        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Geoff Levand <geoff@infradead.org>
-References: <20230713123710.5d7d81e4@canb.auug.org.au>
- <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
- <ZLYHtVuS7AElXcCb@debian.me> <874jm1jv9m.fsf@mail.lhotse>
-From:   Helge Deller <deller@gmx.de>
-In-Reply-To: <874jm1jv9m.fsf@mail.lhotse>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8JThjdBtX8FirEM7utDHiybc3BR1zxxlm3GKmGCUcmNv/w83edb
- otg9E/DNNBHl1ybbl0Dnt+KCqms2wgX2uWiHMlT0XaX/WaGBw57s9qbkwU/xJo/Gyaoilt9
- gfufL2w5I0drReRuUihbe4SuRPqukFP3MBOROScj4gMd13Q82B0WnIwBLjSOo4oRLNxgELH
- JvwRQszd9U8IqhRCFWcIQ==
-UI-OutboundReport: notjunk:1;M01:P0:17kHrss4C9E=;k7E/NjF47QPlMvlKSJpOftE6ES3
- eRQdZ5sMAmvlfdbcYe0RUVBfrF0dShKRZCnn9H325/YHm74NPQuf17UrPeY7bd0yrllcgkrwA
- W8Fu5/qiLBPE7P/fqNXtQNBtJZfU5K9Eo3ruUmxYHFlPx4IhSqmta6zUKWDdsVXqIhQSBYj7L
- QoQiOQdeyq7ABC0dfN7w8IIzRIMENta3BEMvBhjeicsAB9vdx8TbKEMvNi3EcEzSE/C1dTpC7
- Eyn8AisbqGP5x8PXb5AVNVkrrt6RBvbm3tmlBxeBT1o6vGJWFYavZGlPpu7oMmDzCqqgIHnM/
- Q1QdDEIXOalxLp13B6FYQ6dELenoh2DXSczYRV6evYF3sjSgCNRiRRcyaGWAkSZ9eYqw/mm2V
- faG+rsElF3AdGmX9vieh74jpKAzPcuRBSijhFLckSxCRm/SnV7JB1a3IcY3b/QklKV+oWorBC
- 43MRn3g7Gzkk0NtHPy9xf0iC+Ew/Ruyv/7aqJO0KsThjaEWoDt1zCsLr4IffMKFmI+AoysWpp
- uVAiQ832jrE4OgQS/wGWUvVCa3CgfY57XPXtvTPW7xUk0mvC/DYBoCfOYmOT7+SpKRIFah+N4
- rTgnIEBFuUXRrWgzS+31fxKaOVYRzKbXPOl3eXuVJecTSqYpGa9jv4lx37drxct3TKnkIQglU
- vYUjs9KwjoRfHXJwSgwKQPIntjdX9vBfRjpN4Qg3rk12K3dAbsOhBZNa0f4Wp60Fo4Qc7XOgD
- XKvQHZ2ldvjTXpTSbtwuqnjVCZsKVXxJmuh3x+i6XX4Skiw0Sp49xXhSDp0HchERv8Ftz5UwC
- u3yEtA0CmMr/VZd+6tfVMn6GoI8ddFaVNmSt698nqcQsSamUb8d9Y4r09HJywn9gAQmTnQjzn
- T1E2abpkKs/FAGBH1dYSC+7PmmHxNjgHDF08P/xKNEoMPn+MsLkLLUODHvYs0pCwQPgE4nKRz
- 8hULd2moGa4LLOVU4AhIfK4Nugg=
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/18/23 13:48, Michael Ellerman wrote:
-> Bagas Sanjaya <bagasdotme@gmail.com> writes:
->> On Thu, Jul 13, 2023 at 09:11:10AM -0700, Randy Dunlap wrote:
->>> on ppc64:
->>>
->>> In file included from ../include/linux/device.h:15,
->>>                   from ../arch/powerpc/include/asm/io.h:22,
->>>                   from ../include/linux/io.h:13,
->>>                   from ../include/linux/irq.h:20,
->>>                   from ../arch/powerpc/include/asm/hardirq.h:6,
->>>                   from ../include/linux/hardirq.h:11,
->>>                   from ../include/linux/interrupt.h:11,
->>>                   from ../drivers/video/fbdev/ps3fb.c:25:
->>> ../drivers/video/fbdev/ps3fb.c: In function 'ps3fb_probe':
->>> ../drivers/video/fbdev/ps3fb.c:1172:40: error: 'struct fb_info' has no=
- member named 'dev'
->>>   1172 |                  dev_driver_string(info->dev), dev_name(info-=
->dev),
->>>        |                                        ^~
->>> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'de=
-v_printk_index_wrap'
->>>    110 |                 _p_func(dev, fmt, ##__VA_ARGS__);            =
-           \
->>>        |                                     ^~~~~~~~~~~
->>> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'de=
-v_info'
->>>   1171 |         dev_info(info->device, "%s %s, using %u KiB of video =
-memory\n",
->>>        |         ^~~~~~~~
->>> ../drivers/video/fbdev/ps3fb.c:1172:61: error: 'struct fb_info' has no=
- member named 'dev'
->>>   1172 |                  dev_driver_string(info->dev), dev_name(info-=
->dev),
->>>        |                                                             ^=
-~
->>> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'de=
-v_printk_index_wrap'
->>>    110 |                 _p_func(dev, fmt, ##__VA_ARGS__);            =
-           \
->>>        |                                     ^~~~~~~~~~~
->>> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'de=
-v_info'
->>>   1171 |         dev_info(info->device, "%s %s, using %u KiB of video =
-memory\n",
->>>        |         ^~~~~~~~
->>>
->>>
->>
->> Hmm, there is no response from Thomas yet. I guess we should go with
->> reverting bdb616479eff419, right? Regardless, I'm adding this build reg=
-ression
->> to regzbot so that parties involved are aware of it:
->>
->> #regzbot ^introduced: bdb616479eff419
->> #regzbot title: build regression in PS3 framebuffer
+On Mon, Jul 31 2023 at 04:05, Michael Kelley wrote:
+>> +	/*
+>> +	 * The initial invocation from early_identify_cpu() happens before
+>> +	 * the APIC is mapped or X2APIC enabled. For establishing the
+>> +	 * topology, that's not required. Use the initial APIC ID.
+>> +	 */
+>> +	if (early)
+>> +		c->topo.apicid =3D c->topo.initial_apicid;
+>> +	else
+>> +		c->topo.apicid =3D read_apic_id();
 >
-> Does regzbot track issues in linux-next?
+> Using the value from the local APIC ID reg turns out to cause a problem in
+> some Hyper-V VM configurations.  If a VM has multiple L3 caches (probably
+> due to multiple NUMA nodes) and the # of CPUs in the span of the L3 cache
+> is not a power of 2, the APIC IDs for the CPUs in the span of the 1st L3 =
+cache
+> are sequential starting with 0.  But then there is a gap before starting =
+the
+> APIC IDs for the CPUs in the span of the 2nd L3 cache.  The gap is
+> repeated if there are additional L3 caches.
 >
-> They're not really regressions because they're not in a release yet.
->
-> Anyway I don't see where bdb616479eff419 comes from.
->
-> The issue was introduced by:
->
->    701d2054fa31 fbdev: Make support for userspace interfaces configurabl=
-e
->
-> The driver seems to only use info->dev in that one dev_info() line,
-> which seems purely cosmetic, so I think it could just be removed, eg:
->
-> diff --git a/drivers/video/fbdev/ps3fb.c b/drivers/video/fbdev/ps3fb.c
-> index d4abcf8aff75..a304a39d712b 100644
-> --- a/drivers/video/fbdev/ps3fb.c
-> +++ b/drivers/video/fbdev/ps3fb.c
-> @@ -1168,8 +1168,7 @@ static int ps3fb_probe(struct ps3_system_bus_devic=
-e *dev)
->
->   	ps3_system_bus_set_drvdata(dev, info);
->
-> -	dev_info(info->device, "%s %s, using %u KiB of video memory\n",
-> -		 dev_driver_string(info->dev), dev_name(info->dev),
-> +	dev_info(info->device, "using %u KiB of video memory\n",
->   		 info->fix.smem_len >> 10);
->
->   	task =3D kthread_run(ps3fbd, info, DEVICE_NAME);
->
+> The CPUID instruction executed on a guest vCPU correctly reports the APIC
+> IDs.  However, the ACPI MADT assigns the APIC IDs sequentially with no
+> gaps, and the guest firmware sets the APIC_ID register for each local APIC
+> to match the MADT.  When parse_topology() sets the apicid field based on
+> reading the local APIC ID register, the value it sets is different from t=
+he
+> initial_apicid value for CPUs in the span of the 2nd and subsequent L3
+> caches, because there's no gap in the APIC IDs read from the local APIC.
+> Linux boots and runs, but the topology is set up with the wrong span for
+> the L3 cache and for the associated scheduling domains.
 
-Can you please resend this as proper patch to fbdev and/or drm-misc mailin=
-g lists?
-As it is, it never showed up for me in patchwork...
+TBH. That's an insanity. MADT and the actual APIC ID determine the
+topology. So the gaps should be reflected in MADT and the actual APIC
+IDs should be set correctly if the intent is to provide topology
+information.
 
-Helge
+Just for the record. This hack works only on Intel today, because AMD
+init sets topo.apicid =3D read_apic_id() unconditionally. So this is
+inconsistent already, no?
+
+> The old code derives the apicid from the initial_apicid via the
+> phys_pkg_id() callback, so these bad Hyper-V VM configs skate by.  The
+> wrong value in the local APIC ID register and MADT does not affect
+> anything, except that the check in validate_apic_and_package_id() fails
+> during boot, and a set of "Firmware bug:" messages is correctly
+> output.
+
+So instead of fixing the firmware bugs, hyper-v just moves on and
+pretends that everything works fine, right?
+
+> Three thoughts:
+>
+> 1)  Are Hyper-V VMs the only place where the local APIC ID register might
+> have a bogus value?  Probably so, but you never know what might crawl
+> out.
+
+Define bogus. MADT is the primary source of information because that's
+how we know how many CPUs (APICs) are there and what their APIC ID is
+which we can use to wake them up. So there is a reasonable expectation
+that this information is consistent with the rest of the system.
+
+The Intel SDM clearly says in Vol 3A section 9.4.5 Identifying Logical
+Processors in an MP System:
+
+  "After the BIOS has completed the MP initialization protocol, each
+   logical processor can be uniquely identified by its local APIC
+   ID. Software can access these APIC IDs in either of the following
+   ways:"
+
+These ways include read from APIC, read MADT, read CPUID and implies
+that this must be consistent. For X2APIC it's actually written out:
+
+  "If the local APIC unit supports x2APIC and is operating in x2APIC
+   mode, 32-bit APIC ID can be read by executing a RDMSR instruction to
+   read the processor=E2=80=99s x2APIC ID register. This method is equivale=
+nt to
+   executing CPUID leaf 0BH described below."
+
+AMD has not been following that in the early 64bit systems as they moved
+the APIC ID space to start at 32 for the first CPU in the first socket
+for whatever reasons. But since then the kernel reads back the APIC ID
+on AMD systems into topo.apicid. But that was long ago and can easily be
+dealt with because at least the real APIC ID and the MADT/MPTABLE
+entries are consistent.
+
+Hypervisors have their own CPUID space to override functionality with
+their own magic stuff, but imposing their nutbolt ideas on the
+architectural part of the system is not only wrong, it's disrespectful
+against the OS developers who try to keep their system sane.
+
+> 2) The natural response is "Well, fix Hyper-V!"  I first had this convers=
+ation
+> with the Hyper-V team about 5 years ago.  Some cases of the problem were
+> fixed, but some cases remain unfixed.  It's a long story.
+>
+> 3)  Since Hyper-V code in Linux already has an override for the apic->rea=
+d()
+> function, it's possible to do a hack in that override so that apicid gets=
+ set to
+> the same value as initial_apicid, which matches the old code.  Here's the=
+ diff:
+
+This collides massively with the other work I'm doing, which uses the
+MADT provided information to actually evaluate various topology related
+things upfront and later during bringup. Thats badly needed because lots
+of todays infrastructure is based on heuristics and guesswork.
+
+But it seems I wasted a month on reworking all of this just to be
+stopped cold in the tracks by completely undocumented and unnecessary
+hyper-v abuse.
+
+So if Hyper-V insists on abusing the initial APIC ID as read from CPUID
+for topology information related to L3, then hyper-v should override the
+cache topology mechanism and not impose this insanity on the basic
+topology evaluation infrastructure.
+
+Yours seriously grumpy
+
+      tglx
