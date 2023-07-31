@@ -2,128 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AD1476995F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3305769965
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbjGaOWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        id S232749AbjGaOWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbjGaOV5 (ORCPT
+        with ESMTP id S232734AbjGaOWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:21:57 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504DA133;
-        Mon, 31 Jul 2023 07:21:53 -0700 (PDT)
-Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id B43D9211CC;
-        Mon, 31 Jul 2023 16:21:50 +0200 (CEST)
-From:   Francesco Dolcini <francesco@dolcini.it>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1 4/4] arm64: dts: ti: verdin-am62: dahlia: add sound card
-Date:   Mon, 31 Jul 2023 16:21:35 +0200
-Message-Id: <20230731142135.108477-5-francesco@dolcini.it>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230731142135.108477-1-francesco@dolcini.it>
-References: <20230731142135.108477-1-francesco@dolcini.it>
+        Mon, 31 Jul 2023 10:22:21 -0400
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2301998
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:22:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1690813333; x=1722349333;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Xk+rV1VysFJ/xOFgC1e08H4mMK1gFscEXdl1Drhgqvo=;
+  b=kF/AQ6m3+PgizUbI7YVpDxV8TcRNRg26jzIY5qBgLPrjzCgTtaSmDJpj
+   AsqotrTOBVsPl1ZQH1rc3Zu1Vv4ZLE3kmZ6iyoHtDxrnXdx0r3eRGZds6
+   06w/Io+sAG/5x55F2Cvpdwz5aXsTCZzJj/nEfcJ4Lm9D6qPoiONayoPiw
+   wHAFSmz5+rBI9slls9VHcH2FjBPsMaUgw1VifxClEW3M9YvYLY8oeW0kN
+   9n7vE79kCResli1iL7IESNBc6SjaQ4gVsP/JPdNQxb+yaXGwQ3xmstfmM
+   gk0bRRa8jCfRk3uqEwn3YvgcMgOP/lWeS4KGIYVNv466+t122fgeduQOd
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,244,1684792800"; 
+   d="scan'208";a="32207455"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 31 Jul 2023 16:22:10 +0200
+Received: from steina-w.localnet (unknown [10.123.53.21])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 69F5D280075;
+        Mon, 31 Jul 2023 16:22:10 +0200 (CEST)
+From:   Alexander Stein <alexander.stein@ew.tq-group.com>
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: Re: [PATCH v3] drm/bridge: Add debugfs print for bridge chains
+Date:   Mon, 31 Jul 2023 16:22:10 +0200
+Message-ID: <2704185.mvXUDI8C0e@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20230731-drm-bridge-chain-debugfs-v3-1-7d0739f3efa3@ideasonboard.com>
+References: <20230731-drm-bridge-chain-debugfs-v3-1-7d0739f3efa3@ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Francesco Dolcini <francesco.dolcini@toradex.com>
+Hi Tomi,
 
-Add WM8904 based analog sound card to Dahlia carrier board.
+Am Montag, 31. Juli 2023, 14:13:14 CEST schrieb Tomi Valkeinen:
+> DRM bridges are not visible to the userspace and it may not be
+> immediately clear if the chain is somehow constructed incorrectly. I
+> have had two separate instances of a bridge driver failing to do a
+> drm_bridge_attach() call, resulting in the bridge connector not being
+> part of the chain. In some situations this doesn't seem to cause issues,
+> but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
+>=20
+> Add a debugfs file to print the bridge chains. For me, on this TI AM62
+> based platform, I get the following output:
+>=20
+> encoder[39]
+> 	bridge[0] type: 0, ops: 0x0
+> 	bridge[1] type: 0, ops: 0x0, OF:
+> /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778 bridge[2] type: 0, ops: 0x=
+3,
+> OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b bridge[3] type: 11,
+> ops: 0x7, OF: /hdmi-connector:hdmi-connector
+>=20
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
----
- .../boot/dts/ti/k3-am62-verdin-dahlia.dtsi    | 53 +++++++++++++++++++
- 1 file changed, 53 insertions(+)
+Looks good:
+$ for dev in /sys/kernel/debug/dri/*; do cat $dev/bridge_chains; done
+cat: /sys/kernel/debug/dri/0/bridge_chains: No such file or directory
+encoder[36]
+        bridge[0] type: 0, ops: 0x0, OF: /soc@0/bus@32c00000/display-
+bridge@32fc4000:fsl,imx8mp-hdmi-pvi
+        bridge[1] type: 0, ops: 0x7, OF: /soc@0/bus@32c00000/
+hdmi@32fd8000:fsl,imx8mp-hdmi
+cat: /sys/kernel/debug/dri/128/bridge_chains: No such file or directory
+encoder[36]
+        bridge[0] type: 16, ops: 0x0, OF: /soc@0/bus@32c00000/
+dsi@32e60000:fsl,imx8mp-mipi-dsim
+        bridge[1] type: 10, ops: 0x3, OF: /soc@0/bus@30800000/i2c@30a30000/
+bridge@f:toshiba,tc9595
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
-index 3abd8d1d6761..e59235d6a8e6 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
-@@ -8,6 +8,43 @@
-  * https://www.toradex.com/products/carrier-board/dahlia-carrier-board-kit
-  */
- 
-+/ {
-+	reg_1v8_sw: regulator-1v8-sw {
-+		compatible = "regulator-fixed";
-+		regulator-max-microvolt = <1800000>;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-name = "On-carrier +V1.8_SW";
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,bitclock-master = <&codec_dai>;
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,frame-master = <&codec_dai>;
-+		simple-audio-card,name = "verdin-wm8904";
-+		simple-audio-card,routing =
-+			"Headphone Jack", "HPOUTL",
-+			"Headphone Jack", "HPOUTR",
-+			"IN2L", "Line In Jack",
-+			"IN2R", "Line In Jack",
-+			"Headphone Jack", "MICBIAS",
-+			"IN1L", "Headphone Jack";
-+		simple-audio-card,widgets =
-+			"Microphone", "Headphone Jack",
-+			"Headphone", "Headphone Jack",
-+			"Line", "Line In Jack";
-+
-+		codec_dai: simple-audio-card,codec {
-+			clocks = <&audio_refclk1>;
-+			sound-dai = <&wm8904_1a>;
-+		};
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&mcasp0>;
-+		};
-+	};
-+};
-+
- /* Verdin ETHs */
- &cpsw3g {
- 	status = "okay";
-@@ -46,6 +83,22 @@ &main_gpio0 {
- &main_i2c1 {
- 	status = "okay";
- 
-+	/* Audio Codec */
-+	wm8904_1a: audio-codec@1a {
-+		compatible = "wlf,wm8904";
-+		reg = <0x1a>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_i2s1_mclk>;
-+		#sound-dai-cells = <0>;
-+		clocks = <&audio_refclk1>;
-+		clock-names = "mclk";
-+		AVDD-supply = <&reg_1v8_sw>;
-+		CPVDD-supply = <&reg_1v8_sw>;
-+		DBVDD-supply = <&reg_1v8_sw>;
-+		DCVDD-supply = <&reg_1v8_sw>;
-+		MICVDD-supply = <&reg_1v8_sw>;
-+	};
-+
- 	/* Current measurement into module VCC */
- 	hwmon@40 {
- 		compatible = "ti,ina219";
--- 
-2.25.1
+
+Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+
+> ---
+> Changes in v3:
+> - Use drm_for_each_bridge_in_chain()
+> - Drop extra comment
+> - Fix whitespace issue
+> - Call drm_bridge_debugfs_init() only if the driver uses modeset
+> - Drop #ifdef for drm_bridge_debugfs_init() declaration
+> - Link to v2:
+> https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v2-1-76df9434=
+79
+> 62@ideasonboard.com
+>=20
+> Changes in v2:
+> - Fixed compilation issue when !CONFIG_OF
+> - Link to v1:
+> https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e=
+89
+> 0d@ideasonboard.com ---
+>  drivers/gpu/drm/drm_bridge.c  | 46
+> +++++++++++++++++++++++++++++++++++++++++++ drivers/gpu/drm/drm_debugfs.c=
+ |
+>  3 +++
+>  include/drm/drm_bridge.h      |  3 +++
+>  3 files changed, 52 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> index c3d69af02e79..39e68e45bb12 100644
+> --- a/drivers/gpu/drm/drm_bridge.c
+> +++ b/drivers/gpu/drm/drm_bridge.c
+> @@ -27,8 +27,10 @@
+>  #include <linux/mutex.h>
+>=20
+>  #include <drm/drm_atomic_state_helper.h>
+> +#include <drm/drm_debugfs.h>
+>  #include <drm/drm_bridge.h>
+>  #include <drm/drm_encoder.h>
+> +#include <drm/drm_file.h>
+>  #include <drm/drm_of.h>
+>  #include <drm/drm_print.h>
+>=20
+> @@ -1345,6 +1347,50 @@ struct drm_bridge *of_drm_find_bridge(struct
+> device_node *np) EXPORT_SYMBOL(of_drm_find_bridge);
+>  #endif
+>=20
+> +#ifdef CONFIG_DEBUG_FS
+> +static int drm_bridge_chains_info(struct seq_file *m, void *data)
+> +{
+> +	struct drm_debugfs_entry *entry =3D m->private;
+> +	struct drm_device *dev =3D entry->dev;
+> +	struct drm_printer p =3D drm_seq_file_printer(m);
+> +	struct drm_mode_config *config =3D &dev->mode_config;
+> +	struct drm_encoder *encoder;
+> +	unsigned int bridge_idx =3D 0;
+> +
+> +	list_for_each_entry(encoder, &config->encoder_list, head) {
+> +		struct drm_bridge *bridge;
+> +
+> +		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
+> +
+> +		drm_for_each_bridge_in_chain(encoder, bridge) {
+> +			drm_printf(&p, "\tbridge[%u] type: %u, ops:=20
+%#x",
+> +				   bridge_idx, bridge->type, bridge-
+>ops);
+> +
+> +#ifdef CONFIG_OF
+> +			if (bridge->of_node)
+> +				drm_printf(&p, ", OF: %pOFfc", bridge-
+>of_node);
+> +#endif
+> +
+> +			drm_printf(&p, "\n");
+> +
+> +			bridge_idx++;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct drm_debugfs_info drm_bridge_debugfs_list[] =3D {
+> +	{ "bridge_chains", drm_bridge_chains_info, 0 },
+> +};
+> +
+> +void drm_bridge_debugfs_init(struct drm_minor *minor)
+> +{
+> +	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
+> +			      ARRAY_SIZE(drm_bridge_debugfs_list));
+> +}
+> +#endif
+> +
+>  MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
+>  MODULE_DESCRIPTION("DRM bridge infrastructure");
+>  MODULE_LICENSE("GPL and additional rights");
+> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+> index a3a488205009..3b1de2c61c89 100644
+> --- a/drivers/gpu/drm/drm_debugfs.c
+> +++ b/drivers/gpu/drm/drm_debugfs.c
+> @@ -31,6 +31,7 @@
+>=20
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_auth.h>
+> +#include <drm/drm_bridge.h>
+>  #include <drm/drm_client.h>
+>  #include <drm/drm_debugfs.h>
+>  #include <drm/drm_device.h>
+> @@ -274,6 +275,8 @@ int drm_debugfs_init(struct drm_minor *minor, int
+> minor_id,
+>=20
+>  	if (drm_drv_uses_atomic_modeset(dev)) {
+>  		drm_atomic_debugfs_init(minor);
+> +
+> +		drm_bridge_debugfs_init(minor);
+>  	}
+>=20
+>  	if (drm_core_check_feature(dev, DRIVER_MODESET)) {
+> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> index bf964cdfb330..cb10ee108538 100644
+> --- a/include/drm/drm_bridge.h
+> +++ b/include/drm/drm_bridge.h
+> @@ -949,4 +949,7 @@ static inline struct drm_bridge
+> *drmm_of_get_bridge(struct drm_device *drm, }
+>  #endif
+>=20
+> +struct drm_minor;
+> +void drm_bridge_debugfs_init(struct drm_minor *minor);
+> +
+>  #endif
+>=20
+> ---
+> base-commit: a0c64d153d687756c8719b8d10e609d62e1cb6fd
+> change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
+>=20
+> Best regards,
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
 
