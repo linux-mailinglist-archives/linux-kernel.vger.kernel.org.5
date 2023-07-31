@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B06C76937F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE78076937E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbjGaKuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S231221AbjGaKu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbjGaKtw (ORCPT
+        with ESMTP id S230436AbjGaKtu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:49:52 -0400
+        Mon, 31 Jul 2023 06:49:50 -0400
 Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C3A10E0;
-        Mon, 31 Jul 2023 03:49:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6C510DD;
+        Mon, 31 Jul 2023 03:49:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1690800562; bh=JGGtMrE57kUvgv6mo7tmcpGnIHxi87n9B+IU2cOpSMI=;
+        t=1690800563; bh=ucpGdtrngWa5JzqKl0A4/BV0rC8meuk5XgXujtm+V8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IJxUcEUfQfpGEWROn7cdMw1hixU6L6YhjdHvvkDecF3rT8pSTQh5Tp0WTrjH/ydCS
-         aESRGHF6y5yzexM6bTS/U2k6OEDZ+wS9uzLm9vMd6b4VirHzdPamgRZ+xLQy/aSLDr
-         VNup9aq9QC0plDwmOo2wXbgbfTwRWZcOo1TfdsrA=
+        b=K72qV7FrPVP002HDxADN7m/xyBPa1V4f9gZyPcfPBk1OnCB7hL5kdE8t3olGoZGib
+         VsX0eibWzOKbfwNmaKq4s7AmwCFVwTkS+AJn/WCySwAzYVPxJEaiHhP+FPj4VVmYEt
+         7hBYlUGrlpSK3Dg6+kLuZ9mqxKuGS10rBFt/s0Bw=
 Received: from ld50.lan (unknown [101.88.28.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 17D3B6019D;
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id EEFD0601DA;
         Mon, 31 Jul 2023 18:49:22 +0800 (CST)
 From:   WANG Xuerui <kernel@xen0n.name>
 To:     Song Liu <song@kernel.org>
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         WANG Xuerui <git@xen0n.name>
-Subject: [PATCH 3/5] raid6: test: cosmetic cleanups for the test Makefile
-Date:   Mon, 31 Jul 2023 18:49:09 +0800
-Message-Id: <20230731104911.411964-4-kernel@xen0n.name>
+Subject: [PATCH 4/5] raid6: test: make sure all intermediate and artifact files are .gitignored
+Date:   Mon, 31 Jul 2023 18:49:10 +0800
+Message-Id: <20230731104911.411964-5-kernel@xen0n.name>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230731104911.411964-1-kernel@xen0n.name>
 References: <20230731104911.411964-1-kernel@xen0n.name>
@@ -51,79 +51,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: WANG Xuerui <git@xen0n.name>
 
-Use tabs/spaces consistently: hard tabs for marking recipe lines only,
-spaces for everything else.
-
-Also, the OPTFLAGS declaration actually included the tabs preceding the
-line comment, making compiler invocation lines unnecessarily long. As
-the entire block of declarations are meant for ad-hoc customization
-(otherwise they would probably make use of `?=` instead of `=`), move
-the "Adjust as desired" comment above the block too to fix the long
-invocation lines.
+Currently when the raid6test utility is built, the resulting binary and
+an int.uc file are not being ignored, which can get inadvertently
+committed as a result when one works on the raid6 code. Ignore them to
+make `git status` clean at all times.
 
 Signed-off-by: WANG Xuerui <git@xen0n.name>
 ---
- lib/raid6/test/Makefile | 31 ++++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ lib/raid6/test/.gitignore | 2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 lib/raid6/test/.gitignore
 
-diff --git a/lib/raid6/test/Makefile b/lib/raid6/test/Makefile
-index 4fb7700a741bd..143cda60faa12 100644
---- a/lib/raid6/test/Makefile
-+++ b/lib/raid6/test/Makefile
-@@ -6,14 +6,15 @@
- 
- pound := \#
- 
--CC	 = gcc
--OPTFLAGS = -O2			# Adjust as desired
--CFLAGS	 = -I.. -I ../../../include -g $(OPTFLAGS)
--LD	 = ld
--AWK	 = awk -f
--AR	 = ar
--RANLIB	 = ranlib
--OBJS	 = int1.o int2.o int4.o int8.o int16.o int32.o recov.o algos.o tables.o
-+# Adjust as desired
-+CC       = gcc
-+OPTFLAGS = -O2
-+CFLAGS   = -I.. -I ../../../include -g $(OPTFLAGS)
-+LD       = ld
-+AWK      = awk -f
-+AR       = ar
-+RANLIB   = ranlib
-+OBJS     = int1.o int2.o int4.o int8.o int16.o int32.o recov.o algos.o tables.o
- 
- ARCH := $(shell uname -m 2>/dev/null | sed -e /s/i.86/i386/)
- ifeq ($(ARCH),i386)
-@@ -37,9 +38,9 @@ endif
- ifeq ($(IS_X86),yes)
-         OBJS   += mmx.o sse1.o sse2.o avx2.o recov_ssse3.o recov_avx2.o avx512.o recov_avx512.o
-         CFLAGS += -DCONFIG_X86
--	CFLAGS += $(shell echo "vpmovm2b %k1, %zmm5" |          \
--		    gcc -c -x assembler - >/dev/null 2>&1 &&	\
--		    rm ./-.o && echo -DCONFIG_AS_AVX512=1)
-+        CFLAGS += $(shell echo "vpmovm2b %k1, %zmm5" |          \
-+                    gcc -c -x assembler - >/dev/null 2>&1 &&    \
-+                    rm ./-.o && echo -DCONFIG_AS_AVX512=1)
- else ifeq ($(HAS_NEON),yes)
-         OBJS   += neon.o neon1.o neon2.o neon4.o neon8.o recov_neon.o recov_neon_inner.o
-         CFLAGS += -DCONFIG_KERNEL_MODE_NEON=1
-@@ -63,12 +64,12 @@ endif
- %.uc: ../%.uc
- 	cp -f $< $@
- 
--all:	raid6.a raid6test
-+all: raid6.a raid6test
- 
- raid6.a: $(OBJS)
--	 rm -f $@
--	 $(AR) cq $@ $^
--	 $(RANLIB) $@
-+	rm -f $@
-+	$(AR) cq $@ $^
-+	$(RANLIB) $@
- 
- raid6test: test.c raid6.a
- 	$(CC) $(CFLAGS) -o raid6test $^
+diff --git a/lib/raid6/test/.gitignore b/lib/raid6/test/.gitignore
+new file mode 100644
+index 0000000000000..bb92e11396c6e
+--- /dev/null
++++ b/lib/raid6/test/.gitignore
+@@ -0,0 +1,2 @@
++/int.uc
++/raid6test
 -- 
 2.40.0
 
