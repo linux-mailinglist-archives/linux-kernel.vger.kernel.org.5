@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEB6976927D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A4076927E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbjGaJ5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40134 "EHLO
+        id S231934AbjGaJ5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:57:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbjGaJ4k (ORCPT
+        with ESMTP id S229637AbjGaJ4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:56:40 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F95E44
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:56:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690797375; x=1722333375;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=1oL+ZoSZBkg9yYNkBmf41Emceg10dKGbAKKXHudy5G0=;
-  b=HA7RNsa4+cpAwdBwl5KSk2NcfuzUiMZO1Glt9tRWqSInz1vfVddwyyTo
-   Fc/pZ5761mtapXXHmljG9SsBvNWbN8F0q1u9wAy7u8hBWtA3fwc1nW223
-   6hctjVAD94oqgNudjbaeoxQz8yb5ZGvkjKrTz59y9WUKgywkndjX8BuZn
-   u1qeKe2+KTd10eLgdbJkvPU3Vb7ZWfvTi2YUqV9gHAFOVWsmqTgWEQ63e
-   ZkkPvUKs2OX+HQ1LhFdyrLWxc57XntCuUJbM3KNY5GZ+TQFXLu4EhtAOL
-   spYLX/Z+Rq8F0WE3WCi8gMl6fL1ahfe3+weAgHBuz2TFE0dlY69Bpsusz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="366456225"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="366456225"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 02:56:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="974815497"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="974815497"
-Received: from naikshri-mobl7.ger.corp.intel.com (HELO localhost) ([10.252.36.230])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 02:56:08 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     sunran001@208suo.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] drm/i915: fix application of sizeof to pointer
-In-Reply-To: <442918910b90b9a8e2e5f8a3874fdb44@208suo.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230720073355.3196-1-xujianghui@cdjrlc.com>
- <442918910b90b9a8e2e5f8a3874fdb44@208suo.com>
-Date:   Mon, 31 Jul 2023 12:56:05 +0300
-Message-ID: <87leewxv4a.fsf@intel.com>
+        Mon, 31 Jul 2023 05:56:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942EEE49;
+        Mon, 31 Jul 2023 02:56:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2852360C20;
+        Mon, 31 Jul 2023 09:56:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7506C433C8;
+        Mon, 31 Jul 2023 09:56:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690797388;
+        bh=r6d0QvBm5c3aVqIjW/FjofLf6a13RLH6NmOQw7Kne68=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LYf2e2k2bvNFUNfHRA7/KmU1Qs9xCMChe2rHHHCrlhiMgB8lzjmPhSkk2Ba5+Upwz
+         sb9HnepDhjH0fIaoNcj6rZZMTomzNxJSJv232Q5A1hDDv+VNQ9Vs0XM8LtIq9Yt9GX
+         f4kohnPm2aQA1MmU48jz+StoQ+lQ7n1pp7f1OW8NYfQKGRMxvBnEIbr0+Q9kE+r9Fs
+         XIPNF/vfUtWtIDku22RV9vAJKoGuhO4y8/Sw4MC2AeL/ZNPW/Uoe2iKEqdmeH3sJdM
+         t5UuHOZTO2m1nHkvH8H0uKhm+Y8M5QXaf9iXqcjLUBLQKBblWEDNOph4LYTy+BzBxA
+         6Bd9Dpym9xRgA==
+Date:   Mon, 31 Jul 2023 10:56:23 +0100
+From:   Will Deacon <will@kernel.org>
+To:     guoren@kernel.org
+Cc:     David.Laight@ACULAB.COM, peterz@infradead.org, mingo@redhat.com,
+        longman@redhat.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: Re: [PATCH V2] asm-generic: ticket-lock: Optimize
+ arch_spin_value_unlocked
+Message-ID: <20230731095622.GA24621@willie-the-truck>
+References: <20230731023308.3748432-1-guoren@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731023308.3748432-1-guoren@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,40 +59,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 Jul 2023, sunran001@208suo.com wrote:
-> The coccinelle check report:
-> ./drivers/scsi/csiostor/csio_mb.c:1554:46-52: ERROR: application
-> of sizeof to pointer
-
-Please don't just assume coccinelle is right, and send "fixes" based on
-the cocci reports alone. You need to read and understand the code you're
-changing.
-
-
-BR,
-Jani.
-
->
-> Signed-off-by: Ran Sun <sunran001@208suo.com>
+On Sun, Jul 30, 2023 at 10:33:08PM -0400, guoren@kernel.org wrote:
+> From: Guo Ren <guoren@linux.alibaba.com>
+> 
+> The arch_spin_value_unlocked would cause an unnecessary memory
+> access to the contended value. Although it won't cause a significant
+> performance gap in most architectures, the arch_spin_value_unlocked
+> argument contains enough information. Thus, remove unnecessary
+> atomic_read in arch_spin_value_unlocked().
+> 
+> The caller of arch_spin_value_unlocked() could benefit from this
+> change. Currently, the only caller is lockref.
+> 
+> Signed-off-by: Guo Ren <guoren@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: David Laight <David.Laight@ACULAB.COM>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 > ---
->   drivers/gpu/drm/i915/i915_syncmap.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/i915/i915_syncmap.c 
-> b/drivers/gpu/drm/i915/i915_syncmap.c
-> index 60404dbb2e9f..4eeaf12be72d 100644
-> --- a/drivers/gpu/drm/i915/i915_syncmap.c
-> +++ b/drivers/gpu/drm/i915/i915_syncmap.c
-> @@ -282,7 +282,7 @@ static noinline int __sync_set(struct i915_syncmap 
-> **root, u64 id, u32 seqno)
->   			unsigned int above;
->
->   			/* Insert a join above the current layer */
-> -			next = kzalloc(sizeof(*next) + KSYNCMAP * sizeof(next),
-> +			next = kzalloc(sizeof(*next) + KSYNCMAP * sizeof(*next),
->   				       GFP_KERNEL);
->   			if (unlikely(!next))
->   				return -ENOMEM;
+> Changelog
+> V2:
+>  - Fixup commit log with Waiman advice.
+>  - Add Waiman comment in the commit msg.
+> ---
+>  include/asm-generic/spinlock.h | 16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Acked-by: Will Deacon <will@kernel.org>
+
+It would be nice to see some numbers showing this actually helps, though.
+
+Will
