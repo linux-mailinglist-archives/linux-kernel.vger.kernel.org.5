@@ -2,59 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F1907694D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D0A7694D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbjGaL32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40068 "EHLO
+        id S232533AbjGaL3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:29:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbjGaL3Z (ORCPT
+        with ESMTP id S230121AbjGaL3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:29:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69F01CD;
-        Mon, 31 Jul 2023 04:29:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 31 Jul 2023 07:29:38 -0400
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [185.185.170.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFD410D8;
+        Mon, 31 Jul 2023 04:29:31 -0700 (PDT)
+Received: from hillosipuli.retiisi.eu (82-181-192-243.bb.dnainternet.fi [82.181.192.243])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EFCEF6106C;
-        Mon, 31 Jul 2023 11:29:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7509C433C9;
-        Mon, 31 Jul 2023 11:29:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690802963;
-        bh=PiUwuP1rRuNg85mBm3h0tfnKvyXwPsRiypzl3EEp98o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hjmk4pdiB5SU1jrvesiynxonXjfTlZOCjUBhJwE71PMHmLd9+Jwozq2QJtsiZy2ZU
-         +za4efC7uYUkgtzTqQO2BL5PL86cGvAsFvItct/o8uBQAI/Nb1GP2OAapGu+vjkGQb
-         AJoAY/mu4m2E2PsPeEWdt2SCa70V8HhoXFebIcdEIjUKhW+g3tn9GCVtcM2DlD8X6t
-         cAXJDT2kzd4W++ftLKBS1Smbdidi3FuDC1kX6g8qAZFurGcqJ/xAwbZnilLo9F6zqv
-         vrubxRuFuzg9NbHBWLqrAdojW5YeGnjZc4eDj852aQpRWxpStlU+/L3Pnm9WaV+hnN
-         DVryR1qgCrNow==
-Date:   Mon, 31 Jul 2023 16:59:19 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, lgirdwood@gmail.com,
-        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/6] soundwire: bus: Allow SoundWire peripherals to
- register IRQ handlers
-Message-ID: <ZMebD//fpy5TbYyH@matsya>
-References: <20230725102532.2567580-1-ckeepax@opensource.cirrus.com>
- <20230725102532.2567580-2-ckeepax@opensource.cirrus.com>
+        (Authenticated sender: sailus)
+        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4RDwxj0bJ2z49Pyr;
+        Mon, 31 Jul 2023 14:29:28 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+        t=1690802969;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mx3rPlJKDFP2Fxu+9vXW7le8qWgIOGuOrFkJ0k6c1A0=;
+        b=ZUmBpj9NgHNJL3F8TJfRogLL72/5Chl5UDqZ7sNjh2Yf17BloZYQskYB3utZDliiDeu3M4
+        PzBtS+MG0WGD3xZp3OEjUZarP+dS6vBxQ99fpyRXh/z6OJI9BaICvA+ZpfTbqupwSZ5kLm
+        ENoz+BCMvSgZj6fwKiTnUFZ9Tnsaaath0fpG08s+kSSl9OR0vYKoX+j1R+khqwn2KCrVWu
+        kzQVJPgzEAFYNtUI6xBo0pjmukC3DPsZm/CON4pWeAGFOAu24+rKlS2H1DWWpxOFbUS3Rf
+        CO3lOEnmzUaaSC7G3hR6uKLol6isgXYFhAJxpC24bmPuLltfp9kfbL8qNWvyOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=lahtoruutu; t=1690802969;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mx3rPlJKDFP2Fxu+9vXW7le8qWgIOGuOrFkJ0k6c1A0=;
+        b=DobNKNkm7RYiXefm7CtVFtGfEikG1hjJJ6X0S9oDruKiPhaVSU7X1+DAEotyPkwjnlWqZD
+        yAXsuzfqvmcKhTQqMSP6IwrovlhxIa0QYGaMGf5NjBo1hwgk5pySHfKMLvW+U8+YDfchd7
+        Q8623IQ90e8fXuugkNvFEVA24SWPydBTQR9cr4BANu57j0DImsk2CiSdnsWgG0KpyQk3ID
+        cCevILZahAq+UXICHqmo0Wb4k6fKH4ZcFZv5wOtHLdNFsKkKJYjqIt36B/Unw2WxirhSaU
+        CVwliaB01CUh5NIWSmkGO0O+ZqPu9m4xFvSg8i7hlWRUzMgWOgJn4ItHhCrC1g==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1690802969; a=rsa-sha256;
+        cv=none;
+        b=AV2VfgDYcZrmWcdZXKmT47XwkFOUIDQx03FGkKWHv1YdftK033tMWOvNWah7J04egAMfVa
+        ti5ASP/eDM+VRfV4+XSP3QPEGmuRdDLiXrhcv/ApY+hmnz0Fa2FBaLkFs1T+AUU3rAaiAZ
+        +VXDw+718RapQSUzO1O60Ip55LU5R7+O0MpdIsMUb/GGXSfdiMiBp8lk011FbdCnB6G0eq
+        daE4QJjQkxiG65mWX6lykKaaj/lP37svG0N+Ur3Dk9YHOKrGf4NaS8HNCAstVZLsKeQehl
+        7IcdXjwlu5eFxjAhv0sG5DDtPEu6WNlQxGbZQKymJnXVl27NPAZm+QBJ10+V9A==
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 7DEE5634C95;
+        Mon, 31 Jul 2023 14:29:28 +0300 (EEST)
+Date:   Mon, 31 Jul 2023 11:29:28 +0000
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: dt-bindings: Convert Omnivision OV7251 to DT
+ schema
+Message-ID: <ZMebGFUTubMDvVDs@valkosipuli.retiisi.eu>
+References: <20230707210646.868758-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725102532.2567580-2-ckeepax@opensource.cirrus.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20230707210646.868758-1-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -63,25 +86,204 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-07-23, 11:25, Charles Keepax wrote:
-> From: Lucas Tanure <tanureal@opensource.cirrus.com>
-> 
-> Currently the in-band alerts for SoundWire peripherals can only
-> be communicated to the driver through the interrupt_callback
-> function. This however is slightly inconvient for devices that wish to
-> share IRQ handling code between SoundWire and I2C/SPI, the later would
-> normally register an IRQ handler with the IRQ subsystem. However there
-> is no reason the SoundWire in-band IRQs can not also be communicated
-> as an actual IRQ to the driver.
-> 
-> Add support for SoundWire peripherals to register a normal IRQ handler
-> to receive SoundWire in-band alerts, allowing code to be shared across
-> control buses. Note that we allow users to use both the
-> interrupt_callback and the IRQ handler, this is useful for devices which
-> must clear additional chip specific SoundWire registers that are not a
-> part of the normal IRQ flow, or the SoundWire specification.
+Hi Rob,
 
-Acked-by: Vinod Koul <vkoul@kernel.org>
+On Fri, Jul 07, 2023 at 03:06:46PM -0600, Rob Herring wrote:
+> Convert the OmniVision OV7251 Image Sensor binding to DT schema format.
+> 
+> vddd-supply was listed as required, but the example and actual user
+> don't have it. Also, the data brief says it has an internal regulator,
+> so perhaps it is truly optional.
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+
+Same comment on this than the ov5693/5 bindings: we should have
+link-frequency here. Although I guess it could be added by a separate
+patch (I can write one if you like).
+
+The driver already checks for this.
+
+> ---
+>  .../devicetree/bindings/media/i2c/ov7251.txt  |  52 ---------
+>  .../bindings/media/i2c/ovti,ov7251.yaml       | 105 ++++++++++++++++++
+>  2 files changed, 105 insertions(+), 52 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/media/i2c/ov7251.txt
+>  create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov7251.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ov7251.txt b/Documentation/devicetree/bindings/media/i2c/ov7251.txt
+> deleted file mode 100644
+> index 8281151f7493..000000000000
+> --- a/Documentation/devicetree/bindings/media/i2c/ov7251.txt
+> +++ /dev/null
+> @@ -1,52 +0,0 @@
+> -* Omnivision 1/7.5-Inch B&W VGA CMOS Digital Image Sensor
+> -
+> -The Omnivision OV7251 is a 1/7.5-Inch CMOS active pixel digital image sensor
+> -with an active array size of 640H x 480V. It is programmable through a serial
+> -I2C interface.
+> -
+> -Required Properties:
+> -- compatible: Value should be "ovti,ov7251".
+> -- clocks: Reference to the xclk clock.
+> -- clock-names: Should be "xclk".
+> -- clock-frequency: Frequency of the xclk clock.
+> -- enable-gpios: Chip enable GPIO. Polarity is GPIO_ACTIVE_HIGH. This corresponds
+> -  to the hardware pin XSHUTDOWN which is physically active low.
+> -- vdddo-supply: Chip digital IO regulator.
+> -- vdda-supply: Chip analog regulator.
+> -- vddd-supply: Chip digital core regulator.
+> -
+> -The device node shall contain one 'port' child node with a single 'endpoint'
+> -subnode for its digital output video port, in accordance with the video
+> -interface bindings defined in
+> -Documentation/devicetree/bindings/media/video-interfaces.txt.
+> -
+> -Example:
+> -
+> -	&i2c1 {
+> -		...
+> -
+> -		ov7251: camera-sensor@60 {
+> -			compatible = "ovti,ov7251";
+> -			reg = <0x60>;
+> -
+> -			enable-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
+> -			pinctrl-names = "default";
+> -			pinctrl-0 = <&camera_bw_default>;
+> -
+> -			clocks = <&clks 200>;
+> -			clock-names = "xclk";
+> -			clock-frequency = <24000000>;
+> -
+> -			vdddo-supply = <&camera_dovdd_1v8>;
+> -			vdda-supply = <&camera_avdd_2v8>;
+> -			vddd-supply = <&camera_dvdd_1v2>;
+> -
+> -			port {
+> -				ov7251_ep: endpoint {
+> -					clock-lanes = <1>;
+> -					data-lanes = <0>;
+> -					remote-endpoint = <&csi0_ep>;
+> -				};
+> -			};
+> -		};
+> -	};
+> diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov7251.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov7251.yaml
+> new file mode 100644
+> index 000000000000..8d939858d950
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov7251.yaml
+> @@ -0,0 +1,105 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/i2c/ovti,ov7251.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: OmniVision OV7251 Image Sensor
+> +
+> +description:
+> +  The Omnivision OV7251 is a 1/7.5-Inch CMOS active pixel digital image sensor
+> +  with an active array size of 640H x 480V. It is programmable through a serial
+> +  I2C interface.
+> +
+> +maintainers:
+> +  - Todor Tomov <todor.too@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: ovti,ov7251
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description: XCLK Input Clock
+> +
+> +  clock-names:
+> +    const: xclk
+> +
+> +  clock-frequency:
+> +    description: Frequency of the xclk clock in Hz.
+> +
+> +  vdda-supply:
+> +    description: Analog voltage supply, 2.8 volts
+> +
+> +  vddd-supply:
+> +    description: Digital core voltage supply, 1.2 volts
+> +
+> +  vdddo-supply:
+> +    description: Digital I/O voltage supply, 1.8 volts
+> +
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description:
+> +      Reference to the GPIO connected to the XSHUTDOWN pin, if any. Polarity
+> +      is GPIO_ACTIVE_HIGH.
+> +
+> +  port:
+> +    description: Digital Output Port
+> +    $ref: /schemas/graph.yaml#/$defs/port-base
+> +    additionalProperties: false
+> +
+> +    properties:
+> +      endpoint:
+> +        $ref: /schemas/media/video-interfaces.yaml#
+> +        unevaluatedProperties: false
+> +
+> +        properties:
+> +          clock-lanes:
+> +            maximum: 1
+> +
+> +          data-lanes:
+> +            maxItems: 1
+> +
+> +        required:
+> +          - data-lanes
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - vdddo-supply
+> +  - vdda-supply
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        camera@3c {
+> +            compatible = "ovti,ov7251";
+> +            reg = <0x3c>;
+> +            clocks = <&clks 1>;
+> +            clock-frequency = <24000000>;
+> +            vdddo-supply = <&ov7251_vdddo_1v8>;
+> +            vdda-supply = <&ov7251_vdda_2v8>;
+> +            vddd-supply = <&ov7251_vddd_1v5>;
+> +            enable-gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
+> +
+> +            port {
+> +                ov7251_ep: endpoint {
+> +                    remote-endpoint = <&csi0_ep>;
+> +                    clock-lanes = <1>;
+> +                    data-lanes = <0>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +...
+> -- 
+> 2.40.1
+> 
 
 -- 
-~Vinod
+Kind regards,
+
+Sakari Ailus
