@@ -2,60 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DFF7696BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315EE7696BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbjGaMsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
+        id S232851AbjGaMsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbjGaMs2 (ORCPT
+        with ESMTP id S232816AbjGaMrs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:48:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7250719A5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:47:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690807622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+5eFnfguwCDod1JiXQvQSHlRtViJAMop/KReTBW7wSY=;
-        b=Jdj4uHPFZ+ecmo+kUZWQRZCAAXiv3zZheiqUOy4y8/qRcAfnBqf1owLl/qIWt13OpRqsq9
-        cuX7bvJPMWQsuhg9E33LcaYKOb7wu8ta0IUBVuzAc6pIOaDpqLpJ5exGjjfk7HbzREwA5L
-        U7XQAJbfqrGx7QK3dRRQWQgIDpMFx3g=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-297-V-RfdZUpNw-PuaPUHVjlCg-1; Mon, 31 Jul 2023 08:46:59 -0400
-X-MC-Unique: V-RfdZUpNw-PuaPUHVjlCg-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9B7208030AC;
-        Mon, 31 Jul 2023 12:46:58 +0000 (UTC)
-Received: from dell-r430-03.lab.eng.brq2.redhat.com (dell-r430-03.lab.eng.brq2.redhat.com [10.37.153.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 98F9F492CA6;
-        Mon, 31 Jul 2023 12:46:51 +0000 (UTC)
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     terraluna977@gmail.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, imammedo@redhat.com, mst@redhat.com,
-        helgaas@kernel.org
-Subject: [PATCH QEMU] acpiphp: hack to send BusCheck to missing device on root bus
-Date:   Mon, 31 Jul 2023 14:46:49 +0200
-Message-Id: <20230731124649.2601384-1-imammedo@redhat.com>
-In-Reply-To: <20230729215009.GA820749@bhelgaas>
-References: <20230729215009.GA820749@bhelgaas>
-MIME-Version: 1.0
+        Mon, 31 Jul 2023 08:47:48 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053281BEC
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:47:29 -0700 (PDT)
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230731124711epoutp040672a0d3201dd87d4b2a1291523e4929~29JU51KzD0581105811epoutp04G
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:47:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230731124711epoutp040672a0d3201dd87d4b2a1291523e4929~29JU51KzD0581105811epoutp04G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1690807631;
+        bh=nbKWEanf4a/xZ1MFCZC3I9H5fUDOvIaLAmXBrH8FUm4=;
+        h=Subject:Reply-To:From:To:Date:References:From;
+        b=lQFMLQsvnY+3X3aZF+mmUgxPJJ+YByKcPeIjME6amz4opjrzmoH217PBbrdvENKzd
+         pZC+TmbeWfYOPCj1/ZoLIWTQp3+4QOldrGmN683321AQtoX9WSvFfiTe5W0TidVSy5
+         JeUqPrjiv05ZRTzA1beM0fR27IUScQTwq2oht1yE=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20230731124711epcas2p49be822d336488e8f3ac50b3b360168ef~29JUlZgDZ2322123221epcas2p46;
+        Mon, 31 Jul 2023 12:47:11 +0000 (GMT)
+Received: from epsmges2p2.samsung.com (unknown [182.195.36.90]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4RDygM0Hrfz4x9Pq; Mon, 31 Jul
+        2023 12:47:11 +0000 (GMT)
+X-AuditID: b6c32a46-6fdfa70000009cc5-94-64c7ad4eda76
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        38.AA.40133.E4DA7C46; Mon, 31 Jul 2023 21:47:10 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH v2 0/4] multi-page bvec configuration for integrity payload
+Reply-To: j-young.choi@samsung.com
+Sender: Jinyoung Choi <j-young.choi@samsung.com>
+From:   Jinyoung Choi <j-young.choi@samsung.com>
+To:     "axboe@kernel.dk" <axboe@kernel.dk>,
+        "kbusch@kernel.org" <kbusch@kernel.org>,
+        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
+        "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5@epcms2p5>
+Date:   Mon, 31 Jul 2023 21:47:10 +0900
+X-CMS-MailID: 20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5
+Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZdljTQtdv7fEUg4d3rC1W3+1ns5h1+zWL
+        xctDmhaTDl1jtNh7S9vi8q45bBbLj/9jslj3+j2LA4fH+XsbWTwuny312LSqk83j49NbLB59
+        W1YxenzeJOfRfqCbKYA9KtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE3
+        1VbJxSdA1y0zB+gkJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BeYFecWJucWle
+        ul5eaomVoYGBkSlQYUJ2xvaJj9kKPohWvDi9gqWBcZJgFyMHh4SAicS/5UAmF4eQwA5GifZz
+        R1hB4rwCghJ/dwh3MXJyCAt4S9zYvYsNxBYSUJI4t2YWI0TcQKLldhsLiM0moCex4/ludpA5
+        IgKfmSQu//jACpKQEOCVmNH+lAXClpbYvnwrI4StIfFjWS8zhC0qcXP1W3YY+/2x+VA1IhKt
+        985C1QhKPPi5GyouKXHo0Fc2iPvzJTYcCIQI10i0/XoPVa4vca1jI9haXgFfidvvG8HuZxFQ
+        lZi/cyITRI2LxIbHS8DizALyEtvfzmEGGcksoCmxfpc+xHRliSO3WCAq+CQ6Dv9lh3mqYeNv
+        rOwd854wQbSqSSxqMoIIy0h8PTwfqsRDYtHMCUwTGBVnIYJ5FpITZiGcsICReRWjWGpBcW56
+        arFRgRE8YpPzczcxglOmltsOxilvP+gdYmTiYDzEKMHBrCTCeyrgUIoQb0piZVVqUX58UWlO
+        avEhRlOg5ycyS4km5wOTdl5JvKGJpYGJmZmhuZGpgbmSOO+91rkpQgLpiSWp2ampBalFMH1M
+        HJxSDUzx5n+FDid9qZlke7ZRIeOVxHGuAK9HMw9+qjMueTxv4sXcV19jQ5c8fBi2RvXenzy9
+        Wz4Pd8j96PMNbb/Kba73KH1Wos9S+b61EyZPPHUmKWvi0a83ZdbcdnE2DqsS4jZpCuTjPXRd
+        6cHX7Rs3JDx40Nkx7V5/YMCfYomUrhQpzWLfwGKG22Xv418ubfn5enbr15wLE/fNz+ZZ9ZT/
+        yroDrOGf/Msv26a+VvC4IZsSnnksiW3ioanNu8L7QntyldhWNj12LNsve5JDpO1/vPyFLqYY
+        pYYt1bu5YgI4/uwQFs7Of+OptZHXY/asklM3rrnErrIq/XaqM6wta/7MxHgeqeTUrbsOcrUk
+        Nf22yVJiKc5INNRiLipOBADp8VpVIgQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5
+References: <CGME20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5@epcms2p5>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,93 +98,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A reproducer for [1], faking a missing device (supposedly root port)
-on root bus, and ability to send BusCheck to it.
+In the case of NVMe, it has an integrity payload consisting of one segment.
+So, rather than configuring SG_LIST, it was changed by direct DMA mapping.
 
-Usage:
-./qemu-system-x86_64 -monitor stdio -M q35 -cpu host -smp 4 -enable-kvm  -m 4G
-   -nographic
-   -monitor stdio
-   -snapshot
-   -serial file:/tmp/s
-   -kernel ~/builds/linux-2.6/arch/x86/boot/bzImage
-   -append 'root=/dev/sda1 console=ttyS0'
-   -device pcie-root-port,id=rp1,bus=pcie.0,chassis=0,addr=8
-   vm_disk_image
+The page-merge is not performed for the struct bio_vec when creating 
+a integrity payload in block.
+As a result, when creating an integrity paylaod beyond one page, each 
+struct bio_vec is generated, and its bv_len does not exceed the PAGESIZE.
 
-wait till it boots and then at monitor prompt hotplug a device
-(no hotplug will happen since hacked AML code will send only
-notify to missing device, but it's sufficient to reproduce kernel crash
-at commit [2]):
+To solve it, bio_integrity_add_page() should just add to the existing 
+bvec, similar to bio_add_page() and friends. 
 
-(qemu)  device_add e1000e,bus=rp1
+(ref: https://lore.kernel.org/linux-nvme/yq18rewbmay.fsf@ca-mkp.ca.oracle.com/T/#t)
 
-observe in guest logs:
-[  612.277651] BUG: kernel NULL pointer dereference, address: 0000000000000018
-[...]
-[  612.277798]  ? pci_assign_unassigned_bridge_resources+0x1f/0x260
-[  612.277804]  ? pcibios_allocate_dev_resources+0x3c/0x2a0
-[  612.277809]  enable_slot+0x21f/0x3e0
-[  612.277816]  acpiphp_hotplug_notify+0x13d/0x260
-[  612.277822]  ? __pfx_acpiphp_hotplug_notify+0x10/0x10
-[  612.277827]  acpi_device_hotplug+0xbc/0x540
-[  612.277834]  acpi_hotplug_work_fn+0x15/0x20
-[  612.277839]  process_one_work+0x1f7/0x370
-[  612.277845]  worker_thread+0x45/0x3b0
-[  612.277850]  ? __pfx_worker_thread+0x10/0x10
-[  612.277854]  kthread+0xdc/0x110
-[  612.277860]  ? __pfx_kthread+0x10/0x10
-[  612.277866]  ret_from_fork+0x28/0x40
-[  612.277871]  ? __pfx_kthread+0x10/0x10
-[  612.277876]  ret_from_fork_asm+0x1b/0x30
 
-1)
-  Link: https://lore.kernel.org/r/11fc981c-af49-ce64-6b43-3e282728bd1a@gmail.com
-2)
-  commit 40613da52b13fb ("PCI: acpiphp: Reassign resources on bridge if necessary")
-Signed-off-by: Igor Mammedov <imammedo@redhat.com>
----
- hw/i386/acpi-build.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+Tested like this:
 
-diff --git a/hw/i386/acpi-build.c b/hw/i386/acpi-build.c
-index 9c74fa17ad..f6c2584289 100644
---- a/hw/i386/acpi-build.c
-+++ b/hw/i386/acpi-build.c
-@@ -1784,11 +1784,18 @@ build_dsdt(GArray *table_data, BIOSLinker *linker,
-         if (pci_host) {
-             PCIBus *bus = PCI_HOST_BRIDGE(pci_host)->bus;
-             Aml *scope = aml_scope("PCI0");
-+            Aml *dev;
-             /* Scan all PCI buses. Generate tables to support hotplug. */
-             build_append_pci_bus_devices(scope, bus);
-             if (object_property_find(OBJECT(bus), ACPI_PCIHP_PROP_BSEL)) {
-                 build_append_pcihp_slots(scope, bus);
-             }
-+
-+            /* nonexisting PCI device */
-+            dev = aml_device("RPX");
-+            aml_append(dev, aml_name_decl("_ADR", aml_int(0x100000)));
-+            aml_append(scope, dev);
-+
-             aml_append(sb_scope, scope);
-         }
-     }
-@@ -1852,12 +1859,8 @@ build_dsdt(GArray *table_data, BIOSLinker *linker,
-         scope =  aml_scope("_GPE");
-         {
-             method = aml_method("_E01", 0, AML_NOTSERIALIZED);
--            if (has_pcnt) {
--                aml_append(method,
--                    aml_acquire(aml_name("\\_SB.PCI0.BLCK"), 0xFFFF));
--                aml_append(method, aml_call0("\\_SB.PCI0.PCNT"));
--                aml_append(method, aml_release(aml_name("\\_SB.PCI0.BLCK")));
--            }
-+            /* send BusCheck to non-present PCI device */
-+            aml_append(method, aml_notify(aml_name("\\_SB.PCI0.RPX"), aml_int(0)));
-             aml_append(scope, method);
-         }
-         aml_append(dsdt, scope);
+- Format (support pi)
+$ sudo nvme format /dev/nvme2n1 --force -n 1 -i 1 -p 0 -m 0 -l 1 -r
+
+- Run FIO
+[global]
+ioengine=libaio
+group_reporting
+
+[job]
+bs=512k
+iodepth=256
+rw=write
+numjobs=8
+direct=1
+runtime=10s
+filename=/dev/nvme2n1
+
+- Result
+...
+[   93.496218] nvme2n1: I/O Cmd(0x1) @ LBA 62464, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.496227] protection error, dev nvme2n1, sector 62464 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.538788] nvme2n1: I/O Cmd(0x1) @ LBA 6144, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.538798] protection error, dev nvme2n1, sector 6144 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.566231] nvme2n1: I/O Cmd(0x1) @ LBA 124928, 1024 blocks, I/O Error (sct 0x0 / sc 0x4)
+[   93.566241] I/O error, dev nvme2n1, sector 124928 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.694147] nvme2n1: I/O Cmd(0x1) @ LBA 64512, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.694155] protection error, dev nvme2n1, sector 64512 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+[   93.694299] nvme2n1: I/O Cmd(0x1) @ LBA 5120, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
+[   93.694305] protection error, dev nvme2n1, sector 5120 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
+...
+
+Changes to v1:
+- add a patch to modify the location of the bi_size update code.
+- split a patch (create multi-page bvecs in bio_integirty_add_page()).
+
+Jinyoung Choi (4):
+  block: make bvec_try_merge_hw_page() non-static
+  bio-integrity: Sets the payload size in bio_integrity_add_page()
+  bio-integrity: cleanup adding integrity pages to bip's bvec.
+  bio-integrity: create multi-page bvecs in bio_integrity_add_page()
+
+ block/bio-integrity.c               | 49 ++++++++++++++++-------------
+ block/bio.c                         |  2 +-
+ block/blk.h                         |  4 +++
+ drivers/md/dm-crypt.c               |  1 -
+ drivers/nvme/host/ioctl.c           |  1 -
+ drivers/nvme/target/io-cmd-bdev.c   |  3 +-
+ drivers/target/target_core_iblock.c |  3 +-
+ 7 files changed, 35 insertions(+), 28 deletions(-)
+
 -- 
-2.39.3
-
+2.34.1
