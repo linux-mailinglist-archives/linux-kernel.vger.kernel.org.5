@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DED22769F04
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4133769F33
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231548AbjGaRLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 13:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
+        id S233947AbjGaRQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233096AbjGaRLW (ORCPT
+        with ESMTP id S231977AbjGaRPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:11:22 -0400
+        Mon, 31 Jul 2023 13:15:33 -0400
 Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED8D35AD;
-        Mon, 31 Jul 2023 10:07:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDAF43C06;
+        Mon, 31 Jul 2023 10:13:17 -0700 (PDT)
 Received: from authenticated-user (box.trvn.ru [194.87.146.52])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 46F38423EC;
+        by box.trvn.ru (Postfix) with ESMTPSA id BB66742448;
         Mon, 31 Jul 2023 22:06:44 +0500 (+05)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1690823204; bh=SqI9LjfeszS9ddVacQJ7LtuNyQ3l163VDzjnQYL9Q40=;
+        t=1690823205; bh=HLdHaCzNIuTqc3Vf74S9Nlpt5i1D7838FDtfMaKxzCI=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=g6zR/XVazhALC4nulmfaGhnwbyMy2/zChe8zRaYWc89r+NOxXf035dTWQ70FRfXSz
-         3JblA6EWnKn0qEo8xU+T9iWAo59mwW7GsGS/6gmeL992Rik1PbVPVqcPx9O6Zqsg2l
-         jEIYj0LfPUPUAYJLi/ThJvikSmoo6ZHeEUJi6MIoAMXwMlUjg5v16GJrL2kxXXtt2a
-         6WVFg2puXisyARFeG/55gB13aGbK2BTa02bI99turBhjGqLATCKQQpHbnNQhyO4h3B
-         VPKLykE2bvlx30H1HOO6alCuoLbrTBc2aEEQSI5yysUPcCFp1l9neOUuA6jYSzUi9R
-         IEhWZjup1xpfA==
+        b=PxiqGKe8XQyLiXt4t3zbAw2ROQgzDZXdx0Pvsvd3a8TNoVJtq0AJcYne8h4kSlE1K
+         ye2H1rV+UmjebJtbWZF0BROdGGpB+8LnUXwRdX662gPZPf1KV+5OtJpDa5ypfnpsDo
+         prFMmftTH5Ax1hQeeODAP4jlWX7h3cZqu3G7H/nXolL1Ifu9BIkQpbXkkEiQHL4wHF
+         c3DzOAtExO+8L2o66kzybJmEYPuOBNPBVnOC6EtQ8iyypTMluwOkqFrr1+VWAnTcoI
+         YKFU8TUkc755UrvkybA0GFPEWBs3+bhjhrdItChwINuT2YXeQWgqECLcYdl0/A/Vyn
+         uQpeDnRNvS17w==
 From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Mon, 31 Jul 2023 22:06:24 +0500
-Subject: [PATCH v2 1/4] dt-bindings: power: supply: Add pm8916 VM-BMS
+Date:   Mon, 31 Jul 2023 22:06:25 +0500
+Subject: [PATCH v2 2/4] dt-bindings: power: supply: Add pm8916 LBC
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230731-pm8916-bms-lbc-v2-1-82a4ebb39c16@trvn.ru>
+Message-Id: <20230731-pm8916-bms-lbc-v2-2-82a4ebb39c16@trvn.ru>
 References: <20230731-pm8916-bms-lbc-v2-0-82a4ebb39c16@trvn.ru>
 In-Reply-To: <20230731-pm8916-bms-lbc-v2-0-82a4ebb39c16@trvn.ru>
 To:     Sebastian Reichel <sre@kernel.org>,
@@ -45,20 +45,20 @@ To:     Sebastian Reichel <sre@kernel.org>,
 Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2880; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=SqI9LjfeszS9ddVacQJ7LtuNyQ3l163VDzjnQYL9Q40=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBkx+oiPbrolN3UUSZJIri35XiJtmfD8tp8lTac2
- X5NBdDqwEaJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZMfqIgAKCRBDHOzuKBm/
- dU80D/4vI6j6cEVM8l7Fac5uOv6qkfOXFlQHhT/pjzxvHQblu80F0I1vrtb1xy5Yjr3WZZr+pFW
- 3vr69pO3Iipg3BQsufH8EtUkCsBInA+QGJhqB5ifb1+kFdg75KNye4AGUjD/3uN7fca/aBJGvVD
- Cfj1sWoEj3FOf8x4avsOMuSMZwfInZxKYb1tdfjZBYyz5R2kNxTq442Jo7l1vdiKBRU0hB286oe
- SKuNtXLOHRgExOkp6ESwh+Co+oaUcFGV+AVo46u97HcvJxz3A0lq/t+El9KeLYjm5GCpY+sEbL4
- EWO+yB5z6fpT0k22I9HDaisT+4MJ1iuSJq7YI9Nv+eXXqZE1vzWUIPiXK6CZuu/bOcWh9xBF5dj
- oqW3uJMV4WPVjzpQgGWOJSZDqXYWrG+kUA1AUa4OcrpHFFfCeoXr32Udw4C2OPnZc2j6bbTen+E
- rZ3V13QPzqc8CjsqhtFeDnk7adzpuIMV3Rt6z2WHb6XArDCKLl59V6RIkh3/HVUW5+PFYP3lF+0
- FUal/N+p1VJ8BTTmtyBvOYbjhI8LoH0R6vVE32g9aHZnCzh5lox1Q1Ksn/JSzQUiuyRuFRpFCCm
- qIscNERcs7fgcTEqeksDgSO+lsY/OTKW05/S7BquVyjWJw2H+ctVqizNE23p35m/JsoL/cPpPRG
- MHRFmMu7jSgR59g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4457; i=nikita@trvn.ru;
+ h=from:subject:message-id; bh=HLdHaCzNIuTqc3Vf74S9Nlpt5i1D7838FDtfMaKxzCI=;
+ b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBkx+oiPNHbV3Ry0e5+TA2hM+W09MNJ4w/zpmF8m
+ ITChVEKV4iJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZMfqIgAKCRBDHOzuKBm/
+ dYXWD/9X0rvSde5YKjw7JouJWAQayzXhYs1gYGPo/qWBkHwAiC++dC7nEPMeN5YMRoeyWgpIhAF
+ I0lndxy6V7vNmZHHyn6GxSUsUE6+LW6OcC+y94lUYPpG/h8HDc163JF/Pm2/GLmgXIJ0FsDNY2m
+ hLn7PjpAmB1LDRNmWsZ/IgTVFpSs9ymZiU1CCRNq81UXVT781yYi0GOMo5UG36FjMJN1CJo/E7a
+ eDzyIDZ9opmxO1k7y6bC9TpqBsJASSvlNhb7dY70FnWgTJkfnhNSDK4U8zkPjRGJ4uo37nIV5AF
+ +X3HQhrnPhovnEXp+/1Kho4DxXRVfWxjubW1deidvqIvR9e8kwU4EUAaDN0iaICeIJ+ufjva0t7
+ SlKDUfg0LTRqYoPf3szE/Rmfc6oJFtEE+y3XQcznDdV5WHps8qDlWitfzRCp7yzuEvXvFHFwax5
+ KVQz6antCsDoEeIYNYTOOfUeq+q/wg0tGe1KAp6djM1Qem42UiD/9U7ZnZXOrqhlejg0WYes3Xu
+ PY6T+4IgcJMO7K/ulKPX1oAth/s8r6pVYWixdhVDTdWglc9ECaV82S3vQszUZsGEOrTNUYkCB9G
+ hkRgvV4gUaA4ZjhD3d+BEWlruID6GmlZ63gniBXdidBN420xu9zYTcF3DWlken4hfsmy0fmukrA
+ gRyDexEkJSYCLWQ==
 X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
  fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,75 +71,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qualcomm Voltage Mode BMS is a battery monitoring block in PM8916 PMIC.
+Qualcomm Linear Battery Charger is a CC/CV charger block in PM8916 PMIC.
 Document it's DT binding.
 
 Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 ---
-v2: Describe all interrupts. (Conor)
+v2: List all interrupts (Conor)
 ---
- .../bindings/power/supply/qcom,pm8916-bms-vm.yaml  | 83 ++++++++++++++++++++++
- 1 file changed, 83 insertions(+)
+ .../bindings/power/supply/qcom,pm8916-lbc.yaml     | 128 +++++++++++++++++++++
+ 1 file changed, 128 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.yaml b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.yaml
+diff --git a/Documentation/devicetree/bindings/power/supply/qcom,pm8916-lbc.yaml b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-lbc.yaml
 new file mode 100644
-index 000000000000..ad764e69ab57
+index 000000000000..cdf14e5ed119
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-bms-vm.yaml
-@@ -0,0 +1,83 @@
++++ b/Documentation/devicetree/bindings/power/supply/qcom,pm8916-lbc.yaml
+@@ -0,0 +1,128 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/power/supply/qcom,pm8916-bms-vm.yaml#
++$id: http://devicetree.org/schemas/power/supply/qcom,pm8916-lbc.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Qualcomm Voltage Mode BMS
++title: Qualcomm Linear Battery Charger
 +
 +maintainers:
 +  - Nikita Travkin <nikita@trvn.ru>
 +
 +description:
-+  Voltage Mode BMS is a hardware block found in some Qualcomm PMICs
-+  such as pm8916. This block performs battery voltage monitoring.
++  Linear Battery Charger hardware block, found in some Qualcomm PMICs
++  such as pm8916. Implements a simple, autonomous CC/CV charger.
 +
 +allOf:
 +  - $ref: power-supply.yaml#
 +
 +properties:
 +  compatible:
-+    const: qcom,pm8916-bms-vm
++    const: qcom,pm8916-lbc
 +
 +  reg:
-+    maxItems: 1
++    items:
++      - description: Charger
++      - description: Battery
++      - description: USB
++      - description: MISC
++
++  reg-names:
++    items:
++      - const: chgr
++      - const: bat_if
++      - const: usb
++      - const: misc
 +
 +  interrupts:
 +    items:
-+      - description: BMS FSM left S3 mode
-+      - description: BMS FSM entered S2 mode
-+      - description: OCV measured in S3 mode
-+      - description: OCV below threshold
-+      - description: FIFO update done
-+      - description: BMS FSM switched state
++      - description: Battery detection
++      - description: Fast charging
++      - description: Charging failed
++      - description: Charging done
++      - description: Battery present
++      - description: Battery temperature OK
++      - description: USB coarse detection
++      - description: USB IN valid
++      - description: Charger gone
++      - description: Overtemperature
 +
 +  interrupt-names:
 +    items:
-+      - const: cv_leave
-+      - const: cv_enter
-+      - const: ocv_good
-+      - const: ocv_thr
-+      - const: fifo
-+      - const: state_chg
++      - const: vbat_det
++      - const: fast_chg
++      - const: chg_fail
++      - const: chg_done
++      - const: bat_pres
++      - const: temp_ok
++      - const: coarse_det
++      - const: usb_vbus
++      - const: chg_gone
++      - const: overtemp
++
++  qcom,fast-charge-safe-voltage:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 4000000
++    maximum: 4775000
++    description:
++      Maximum safe battery voltage in uV; May be pre-set by bootloader,
++      in which case, setting this will harmlessly fail.
++
++  qcom,fast-charge-safe-current:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 90000
++    maximum: 1440000
++    description:
++      Maximum safe battery charge current in uA; May be pre-set by
++      bootloader, in which case setting this will harmlessly fail.
 +
 +  monitored-battery: true
-+
-+  power-supplies: true
 +
 +required:
 +  - compatible
 +  - reg
 +  - interrupts
 +  - interrupt-names
-+  - monitored-battery
++  - qcom,fast-charge-safe-voltage
++  - qcom,fast-charge-safe-current
 +
 +additionalProperties: false
 +
@@ -150,24 +184,35 @@ index 000000000000..ad764e69ab57
 +      #address-cells = <1>;
 +      #size-cells = <0>;
 +
-+      battery@4000 {
-+        compatible = "qcom,pm8916-bms-vm";
-+        reg = <0x4000>;
-+        interrupts = <0x0 0x40 0 IRQ_TYPE_EDGE_RISING>,
-+                     <0x0 0x40 1 IRQ_TYPE_EDGE_RISING>,
-+                     <0x0 0x40 2 IRQ_TYPE_EDGE_RISING>,
-+                     <0x0 0x40 3 IRQ_TYPE_EDGE_RISING>,
-+                     <0x0 0x40 4 IRQ_TYPE_EDGE_RISING>,
-+                     <0x0 0x40 5 IRQ_TYPE_EDGE_RISING>;
-+        interrupt-names = "cv_leave",
-+                          "cv_enter",
-+                          "ocv_good",
-+                          "ocv_thr",
-+                          "fifo",
-+                          "state_chg";
++      charger@1000 {
++        compatible = "qcom,pm8916-lbc";
++        reg = <0x1000>, <0x1200>, <0x1300>, <0x1600>;
++        reg-names = "chgr", "bat_if", "usb", "misc";
 +
++        interrupts = <0x0 0x10 0 IRQ_TYPE_EDGE_BOTH>,
++                     <0x0 0x10 5 IRQ_TYPE_EDGE_BOTH>,
++                     <0x0 0x10 6 IRQ_TYPE_EDGE_BOTH>,
++                     <0x0 0x10 7 IRQ_TYPE_EDGE_BOTH>,
++                     <0x0 0x12 0 IRQ_TYPE_EDGE_BOTH>,
++                     <0x0 0x12 1 IRQ_TYPE_EDGE_BOTH>,
++                     <0x0 0x13 0 IRQ_TYPE_EDGE_BOTH>,
++                     <0x0 0x13 1 IRQ_TYPE_EDGE_BOTH>,
++                     <0x0 0x13 2 IRQ_TYPE_EDGE_BOTH>,
++                     <0x0 0x13 4 IRQ_TYPE_EDGE_BOTH>;
++        interrupt-names = "vbat_det",
++                          "fast_chg",
++                          "chg_fail",
++                          "chg_done",
++                          "bat_pres",
++                          "temp_ok",
++                          "coarse_det",
++                          "usb_vbus",
++                          "chg_gone",
++                          "overtemp";
 +        monitored-battery = <&battery>;
-+        power-supplies = <&pm8916_charger>;
++
++        qcom,fast-charge-safe-current = <900000>;
++        qcom,fast-charge-safe-voltage = <4300000>;
 +      };
 +    };
 
