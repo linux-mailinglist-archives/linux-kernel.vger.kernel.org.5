@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E160776A125
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A621776A123
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbjGaTXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
+        id S231713AbjGaTW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:22:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGaTXf (ORCPT
+        with ESMTP id S231537AbjGaTWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:23:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165111BC5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:22:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690831351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3XHpXZQfPdcBCB40xD4cQo5HE4yndD5B/+tRyE4teEw=;
-        b=VQAdpjcAeN6YItaZAm5NoKnli4N0JB5kcuBz2IoiPSgZMfTyRC5UGRMsfMbwWOTCAf6cyM
-        8KRWfa3VpYcar5nlCIwpXKhLQ9AT8VBnqqxWeHuOfhoqkszqdiGAbD/6EtlAGMYnRjycLM
-        34NJ0iFZkGis9Gx7uWbOEf8lLCYQ4sM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-264-1GyVyPnDMXylJRZAX9HgyQ-1; Mon, 31 Jul 2023 15:22:29 -0400
-X-MC-Unique: 1GyVyPnDMXylJRZAX9HgyQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fe25f8c4bfso3230625e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:22:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690831348; x=1691436148;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3XHpXZQfPdcBCB40xD4cQo5HE4yndD5B/+tRyE4teEw=;
-        b=ZoAmmtLkt68H+KD6Ozg0+vAdPCqQ4iaHkwC50W4Ga0wUIQXAmX2sWZnFmDJ6LjWpeP
-         xqnAPYn2Zvk/7IdYvJzMiEyoZcinCSnTKCjmBtP3iK9bDVGlqaTRcQ9I402FWLCV+sTd
-         zAPhfJ0hG78Zqy0j9Y7+Zgk2urMcZv3fClnNdAWcLq6AfKa7Tu1pXvBbVjVXvmxgAvCs
-         ytXG5cM+oV9U72aJgPB3c5xAfWo/ZX9y+slz+wh3E3t4LHshubxigP0C138GAqvFp//B
-         VgWIadCzVpz8Pcnbvd2wLqh9Wz+Ls/J+fXAe8oN3QeV8HlvDnxzpLLKvoUZ/rx5q0kkr
-         OwNg==
-X-Gm-Message-State: ABy/qLYgLy1WIz2CoPNG9e4GmINpcXaFOcLn3Wq37k36AauChTi1nQHY
-        9Xo8zbikwgCyiin9/b4AH4HtASS2LnupGT/8um8q/yvHB8uYn7cSWMhe9A12xAYQG9s278+luHz
-        nbbiWl5GSGw2fByZnmm5J5lun
-X-Received: by 2002:a5d:5389:0:b0:313:ea59:7ded with SMTP id d9-20020a5d5389000000b00313ea597dedmr527975wrv.24.1690831348687;
-        Mon, 31 Jul 2023 12:22:28 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlE3VWK9O6PVe8wtmdproWt76/+jiswldybLURzUXx9vkkftywxOeU5n+v/yJOUJccBkcxNCsQ==
-X-Received: by 2002:a5d:5389:0:b0:313:ea59:7ded with SMTP id d9-20020a5d5389000000b00313ea597dedmr527965wrv.24.1690831348285;
-        Mon, 31 Jul 2023 12:22:28 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c723:4c00:5c85:5575:c321:cea3? (p200300cbc7234c005c855575c321cea3.dip0.t-ipconnect.de. [2003:cb:c723:4c00:5c85:5575:c321:cea3])
-        by smtp.gmail.com with ESMTPSA id i15-20020adffdcf000000b003145559a691sm13875824wrs.41.2023.07.31.12.22.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 12:22:27 -0700 (PDT)
-Message-ID: <9a26ce23-9ac7-b111-b700-db0905203c73@redhat.com>
-Date:   Mon, 31 Jul 2023 21:22:26 +0200
+        Mon, 31 Jul 2023 15:22:47 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B5FE7;
+        Mon, 31 Jul 2023 12:22:44 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VIqSMR017918;
+        Mon, 31 Jul 2023 19:22:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=ESgIBhM8PclVUNk0F/NZo2cL3NGm1V+s4RPf/RAUiSY=;
+ b=aNY9WktTs6LBTGZ3Vci8QN3vGFyFOq15yC3ut2ACZpXbAJ6Z6Tv4nCzl/pt/6QUTFChs
+ kL77vaWunMzriLa4HM0ZnZbT/IvIMFdhGH9et8hDsnVVLqW/Yhgrjwjpcfe9TPbe1y7I
+ 3to19GOOGMEdUGp3fCKHfZfpHEvqumkiXOkelfy+dnC+q3qee246VYvtiTaD9nF8ot6P
+ z8avBt0cNTBttIyjDpUibBmq+0TCVp0edgLfPYfx0a1hivecq0uqg8tv20IJHoKHZCDz
+ zVhJwDliRe7WiCormfJhjPNcNPWU8MnfXzyKeGMzIWTdJSgzjsg5WDXAFbUVmbm6Z3AN zA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6j4er3f0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 19:22:31 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36VJMVPK002178
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 19:22:31 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 31 Jul 2023 12:22:30 -0700
+Date:   Mon, 31 Jul 2023 12:22:29 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+CC:     Anjelique Melendez <quic_amelende@quicinc.com>, <pavel@ucw.cz>,
+        <lee@kernel.org>, <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <luca.weiss@fairphone.com>, <u.kleine-koenig@pengutronix.de>,
+        <quic_subbaram@quicinc.com>, <linux-leds@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pwm@vger.kernel.org>
+Subject: Re: [PATCH v2 3/7] soc: qcom: add QCOM PBS driver
+Message-ID: <20230731192229.GH1428172@hu-bjorande-lv.qualcomm.com>
+References: <20230725193423.25047-1-quic_amelende@quicinc.com>
+ <20230725193423.25047-4-quic_amelende@quicinc.com>
+ <de3b4739-5446-c1ab-571f-a36c4aff5e0f@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>
-References: <20230727212845.135673-1-david@redhat.com>
- <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
- <412bb30f-0417-802c-3fc4-a4e9d5891c5d@redhat.com>
- <66e26ad5-982e-fe2a-e4cd-de0e552da0ca@redhat.com> <ZMfc9+/44kViqjeN@x1n>
- <a3349cdb-f76f-eb87-4629-9ccba9f435a1@redhat.com>
- <CAHk-=wiREarX5MQx9AppxPzV6jXCCQRs5KVKgHoGYwATRL6nPg@mail.gmail.com>
- <a453d403-fc96-e4a0-71ee-c61d527e70da@redhat.com>
- <CAHk-=whxpKc_zOiJ9n-MA9s0wxvU9vRST+iuNYGkHHB6ux48Rg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
- fallout
-In-Reply-To: <CAHk-=whxpKc_zOiJ9n-MA9s0wxvU9vRST+iuNYGkHHB6ux48Rg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <de3b4739-5446-c1ab-571f-a36c4aff5e0f@linaro.org>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 87JFBv1-jbwAmph4uY8cNJX3TGlBepgm
+X-Proofpoint-ORIG-GUID: 87JFBv1-jbwAmph4uY8cNJX3TGlBepgm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-31_13,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ adultscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ impostorscore=0 priorityscore=1501 bulkscore=0 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307310175
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -99,27 +83,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.07.23 21:07, Linus Torvalds wrote:
-> On Mon, 31 Jul 2023 at 12:00, David Hildenbrand <david@redhat.com> wrote:
->>
->> So in the "!writable" case, we would always call
->> get_user_pages_unlocked() and never honor NUMA faults.
+On Wed, Jul 26, 2023 at 05:36:08PM +0200, Konrad Dybcio wrote:
+> On 25.07.2023 21:34, Anjelique Melendez wrote:
+> > +struct pbs_dev *get_pbs_client_device(struct device *dev)
+> > +{
+> > +	struct device_node *pbs_dev_node;
+> > +	struct platform_device *pdev;
+> > +	struct pbs_dev *pbs;
+> > +
+> > +	pbs_dev_node = of_parse_phandle(dev->of_node, "qcom,pbs", 0);
+> > +	if (!pbs_dev_node) {
+> > +		dev_err(dev, "Missing qcom,pbs property\n");
+> > +		return ERR_PTR(-ENODEV);
+> > +	}
+> > +
+> > +	pdev = of_find_device_by_node(pbs_dev_node);
+> > +	if (!pdev) {
+> > +		dev_err(dev, "Unable to find PBS dev_node\n");
+> > +		pbs = ERR_PTR(-EPROBE_DEFER);
+> > +		goto out;
+> > +	}
+> > +
+> > +	pbs = platform_get_drvdata(pdev);
+> > +	if (!pbs) {
+> This check seems unnecessary, the PBS driver would have had to fail
+> probing if set_drvdata never got called.
 > 
-> Ok, so kvm doesn't just use the fast version. Oh well. It was an idea..
 
-Certainly an interesting one, thanks for thinking about possible 
-alternatives! Unfortunately, KVM is an advanced GUP user to managed 
-secondary MMUs.
+That's not necessarily the case, the platform_device will exist before
+the probe function has been invoked. So checking this sounds
+appropriate.
 
-I'll get the FOLL_HONOR_NUMA_FAULT patches ready tomorrow and we can 
-discuss if that looks better.
+But if we have a valid link, but no drvdata, perhaps it would be more
+appropriate to return -EPROBE_DEFER?
 
-(btw, the whole reasoning about "HW would refuse to use these pages" was 
-exactly the whole reason I went into the FOLL_FORCE direction ... but 
-it's really better to make FOLL_FORCE deal with VMA protection only)
-
--- 
-Cheers,
-
-David / dhildenb
-
+Regards,
+Bjorn
