@@ -2,145 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E103A76A0F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7FF76A0FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbjGaTOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:14:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
+        id S231483AbjGaTSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjGaTOw (ORCPT
+        with ESMTP id S229831AbjGaTR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:14:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB3D1BD2;
-        Mon, 31 Jul 2023 12:14:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D443B6129E;
-        Mon, 31 Jul 2023 19:14:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32AE9C433C7;
-        Mon, 31 Jul 2023 19:14:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690830885;
-        bh=SyJU7Qt2aBIN4OyFcC5oEmHd0DxKwQmqDlVAGFvHAGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mfZY9GbnMx+aOUhNak8hhNx+W4RQngWJkELmDVGW8q222cnSMnvbobDN1oms+zhPq
-         cbVaocl89DiKxBWlHYimi8lIVjOKKdGuWYEqGxdADX6HTYgNkF/bhaNpRm+5thXsSY
-         95pSQw5/dAnIbHeWNjq0VSi+To/RKfwFY9qNzU6d/4/eUCt6xAJXOAcUW5q+AntKar
-         0ORk/O7jvBbHgP4x2jVPEcuU93ljKLAk2vQDp2COzlYpPQo/dsMr+jYANsNy2HLrST
-         UBrBWz75Wxw3pzn3gUxpb0wnlkuByXvUEP/1l3Fv5WdcsVQuTaTpKYdvVRdwI4VJOk
-         N5mKreLQOiTOQ==
-Date:   Mon, 31 Jul 2023 20:14:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Hal Feng <hal.feng@starfivetech.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Xingyu Wu <xingyu.wu@starfivetech.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] ASoC: starfive: Add JH7110 PWM-DAC driver
-Message-ID: <9b03c7ed-845c-494b-8c40-10d1fe923b15@sirena.org.uk>
-References: <20230731032829.127864-1-hal.feng@starfivetech.com>
- <20230731032829.127864-3-hal.feng@starfivetech.com>
+        Mon, 31 Jul 2023 15:17:57 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D80198
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:17:55 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-26837895fbbso3582056a91.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:17:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690831075; x=1691435875;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AGAYQ6rkGNakus8aaZ27EffaPf8koLaE5zk7B3NOHKA=;
+        b=qrJY0Klv+4UzTgq2qYvXPy0Gu8GFrnOBl6OuqmHfe58+FxcoISbPqN83EVQR5HcLep
+         yn0KBsNNUg665ksTDv4vw8YcLtYvkvQ5t/rq+ybBRdoT0esVyMxL/8S20egk5pgZRhNU
+         FD91NiVFDrK8T71qFQPypzva3n2Qz6X4h4mN7hFkyWnNUvahmSgaANHdxlAWqvDuUpOQ
+         OHyPO/g0MrQfKZXJ08ahYpwf2zX3ZP4OAKd9XwDl2wJzsE1LSiT9ikl5GKxtKuGUtG7F
+         H/bnuGRntBakaGlF1tri8f7aM56TQRBRJjioWO0Zti6vBkYDji1nTwvMoqXXMwmHT3Am
+         Y6Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690831075; x=1691435875;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AGAYQ6rkGNakus8aaZ27EffaPf8koLaE5zk7B3NOHKA=;
+        b=bUvp443EnrvZnH1t7ETTYbEVCHsI3gKCQ8xZxv5EPyMmn6EsDwnNcuWhe/XAcPg9r1
+         cu4Jz0NZKXHaFZ+9GKuOKZdraibb52GZX9iDpcMTWKelnSWG1UTXq3Lq3zcf4w3doViZ
+         CVi1GO+bN4rg+6ZH4kurlXeCpk/pcC9JKRpCgWweZRcstKA/8zXOVCA1vv4qMaVolRwt
+         RNDDjlfNEfu68EHfrjf4jEf6dgVgGOuRQRUZO5VBn0bwfXEOxrgpaWilQ1rUuoYDi8Qs
+         6Ivib+Uz6MNW2nmC58c4HuZZsdspAQl48ZFWJPidLx2ba46jurLnApphKjWsJdfGl1Do
+         vWFA==
+X-Gm-Message-State: ABy/qLbzL6odWhIdFAvKRxphQcWHJroopg4y98y5hyWGeiYbaE0Yzrmq
+        fUMMCipqGk8Bi5S4d4Am7F1VRyT84G+0hfvrtek=
+X-Google-Smtp-Source: APBJJlHUmRwgZuBFyJqq72afSFC17MG7jYOYutm75qVNi3iKrzt5R33otMmJajGFL0kyeyJXsU+5PippGX+BAAB3+2k=
+X-Received: by 2002:a17:90a:6b84:b0:268:5477:811c with SMTP id
+ w4-20020a17090a6b8400b002685477811cmr10799436pjj.23.1690831075200; Mon, 31
+ Jul 2023 12:17:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7WRSfejFGo+r56WO"
-Content-Disposition: inline
-In-Reply-To: <20230731032829.127864-3-hal.feng@starfivetech.com>
-X-Cookie: Single tasking: Just Say No.
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Received: by 2002:a05:7301:370f:b0:d3:5d2d:c3e7 with HTTP; Mon, 31 Jul 2023
+ 12:17:54 -0700 (PDT)
+Reply-To: Dr.catherine_chan@hotmail.com
+From:   catherine chan <michaelgere001@gmail.com>
+Date:   Mon, 31 Jul 2023 21:17:54 +0200
+Message-ID: <CAHXSnz-5zvKitiwRBj-g+ezDFpSW=LtsXAQ7gdLYFahwcSqFmg@mail.gmail.com>
+Subject: Re:Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+-- 
+ Hello! How are you? Please forgive me if my application is not
+acceptable by your kind person, I saw your email and I want to talk to
+you directly by mail. I would appreciate it if you could send me an
+email when you receive it.
 
---7WRSfejFGo+r56WO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 31, 2023 at 11:28:28AM +0800, Hal Feng wrote:
-
-> +static const struct jh7110_ct_pwmdac pwmdac_ct_data_shift[] = {
-> +	{ .name = "left 0 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_0 },
-> +	{ .name = "left 1 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_1 },
-> +	{ .name = "left 2 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_2 },
-> +	{ .name = "left 3 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_3 },
-> +	{ .name = "left 4 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_4 },
-> +	{ .name = "left 5 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_5 },
-> +	{ .name = "left 6 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_6 },
-> +	{ .name = "left 7 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_7 }
-> +};
-
-It's not clear to me why this is user selectable - what does the control
-do?
-
-> +static int jh7110_pwmdac_put(struct snd_kcontrol *kcontrol,
-> +			     struct snd_ctl_elem_value *ucontrol,
-> +			     int pwmdac_ct)
-> +{
-> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-> +	struct jh7110_pwmdac_dev *dev = snd_soc_component_get_drvdata(component);
-> +	int sel = ucontrol->value.enumerated.item[0];
-> +	unsigned int items;
-
-> +	if (pwmdac_ct == PWMDAC_CT_SHIFT)
-> +		dev->shift = pwmdac_ct_shift[sel].vals;
-> +	else if (pwmdac_ct == PWMDAC_CT_DUTY_CYCLE)
-> +		dev->duty_cycle = pwmdac_ct_duty_cycle[sel].vals;
-> +	else if (pwmdac_ct == PWMDAC_CT_DATA_CHANGE)
-> +		dev->data_change = pwmdac_ct_data_change[sel].vals;
-> +	else if (pwmdac_ct == PWMDAC_CT_DATA_MODE)
-> +		dev->data_mode = pwmdac_ct_data_mode[sel].vals;
-> +	else if (pwmdac_ct == PWMDAC_CT_DATA_SHIFT)
-> +		dev->data_shift = pwmdac_ct_data_shift[sel].vals;
-> +
-> +	return 0;
-> +}
-
-_put() operations should return 1 if the control value changes so event
-generation works - please test a card using this driver with the
-mixer-test selftest, it'll identify this and a bunch of other potential
-issues.
-
-> +static int jh7110_pwmdac_component_probe(struct snd_soc_component *component)
-> +{
-> +	snd_soc_add_component_controls(component, jh7110_pwmdac_snd_controls,
-> +				       ARRAY_SIZE(jh7110_pwmdac_snd_controls));
-> +	return 0;
-> +}
-
-The driver can just point to the controls from the _driver struct and
-skip having a probe() function.
-
-
---7WRSfejFGo+r56WO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTICB4ACgkQJNaLcl1U
-h9Bkogf7B5sn9Y3g1mTAAspid/NHj9EJnpyylKVFcCH8D0UOo11qJLylO7cb8DQw
-3M6ifjvdgMPSgZiwoshQnv3dS0yPr422sWUV65Dnm9pI0lwju9mFo4mh6i0zexdi
-AvQWj6reLoNjF1zn3ZSLU0qkqSTxaOebz1O9RkldqqmbcVixM4sLJOoDzhb5K76O
-lfD2y7zU3/GBt/+OwRObmMLz/AlrPbPkT2YF+0txEYEIitxWHgMoqJFWJI9cdg9I
-8WBjG+5nh/yKozj2EYOEGhKNjBegDGOOp/7sqWdUMdrkRNdtczS3sp5/jRHLv6ph
-1AMqKDncC9OfgKfFLfJy2saNmIxWlg==
-=JSoy
------END PGP SIGNATURE-----
-
---7WRSfejFGo+r56WO--
+Waiting for your prompt response
+Greetings,
