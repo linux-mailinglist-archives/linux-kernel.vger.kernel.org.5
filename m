@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33836768D32
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11226768D37
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbjGaHJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
+        id S231150AbjGaHKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbjGaHJe (ORCPT
+        with ESMTP id S231139AbjGaHJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:09:34 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C3C44B5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:07:56 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-4fe2503e3easo3402314e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:07:56 -0700 (PDT)
+        Mon, 31 Jul 2023 03:09:51 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8893630F6;
+        Mon, 31 Jul 2023 00:08:18 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fb4146e8fcso28260395e9.0;
+        Mon, 31 Jul 2023 00:08:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690787224; x=1691392024;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E3GEO4RHgr782gFDfrXsNOCR5xhrbUR8zBK5vFyqF5E=;
-        b=Rc40TX9h6wZPcD4/Qk4hipl9QOUWj7zPJ56nQ40/W7Lv7xJ/LnPtsgfrcYG7CsVtqL
-         cZIywVB3P9gTDZMhJsqcj1tHmd0xe7hBwv1jgTrS0YOzOU04EBCRNFOcjB3XSDqCOoNH
-         XwO/wzfWeVj/9aua7LcTg/PNxJ2UTAZEWGcPTO9ud/dSctnT4HlJwI/+0fAaEy5nyKj5
-         LNrccKndSO4A+v5TQ3Y1of0HaPwo6J1F1dFwnTsMY8XXFNamx3XRpR91q7porR8ytbAo
-         Bp8zSRaeDeu6UbGr0yXLPiWvU/viaGMpszhq9eeEjv08I/hSlvsHo2zeJZUX08yFUYge
-         owkA==
+        d=gmail.com; s=20221208; t=1690787265; x=1691392065;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CrTsz8QawI4NoHoGnNEcszB2yjFUPV7z0R4z7qGc2Tg=;
+        b=cMmkR/Nw8pe8AaKpbaRL9SRljMNQBv8XEvvy+xwdGDc8CoC16Gq1t8q9XujyqUD/ZV
+         CUgid/Kb7nQkFFOoxbmNtkMficwKnJFW84MToIfcNr4PKT+chcVnL2hcP4DGV+QgLFwB
+         8LjSwkGKTQ4OAfxSKEQ34VPvLWjkx8jycS70ciiudM8pbgACJuS2d0t0Kral8K9qcYLV
+         pXeoexF57S6kZAKrr6mCo8zX2mAx/9NLP5iKEBfZqEoRHC5+ZUmeWPoFPkHX6Q7GVK2G
+         l93oNndBLwckSonT2e3EDf/TfD3b4rCDyKAseHe3FD3gqJecPNGzhDsKXcrTSwBgDPIg
+         cw3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690787224; x=1691392024;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E3GEO4RHgr782gFDfrXsNOCR5xhrbUR8zBK5vFyqF5E=;
-        b=ARDXnMSQQzdoLv1F6cHowKA4IZU3LTKj9y6KxoVvoOmB9Qf+CKBfrFTIgjn6oSoFoi
-         JmWT9yofescyuXrfAEHb7PkDJPmlDeVxuwRAbyQnmYio0C64MWVyfqFu5E7USWZQeBfo
-         llgmZ6d3lkLNKJMsGwGMgnQr5FoAP2Ajfz3CvxX/XJCDcdt7XdDRWlIf6PzP49MGtXxJ
-         i1UVNACwGDfZMI2o+w14B9sNfKOAPoO3SrTZW0DSKFfAzJ6JefoWJctstcvnOwYc08gH
-         nA1kXiDSPrPSh/bkQCx17qNla5ok34J8jWXPpSesMZ83YQEND1W1NiM5crae71hOvs5e
-         53XA==
-X-Gm-Message-State: ABy/qLZkQ0JrWLVGKL3G+SJfmU9R+x9lbpl673n2dWXUR5PNelBw6TeI
-        M6RHc2U05bS+mFouD7Wmaac0DQ==
-X-Google-Smtp-Source: APBJJlEuVCd0Zgv+jcQEVHsaTSJmHxRvVHkkUHmBcQwGVrRV0K834hzUCA/TiZwhIbeesOa0of3eqA==
-X-Received: by 2002:ac2:5e3a:0:b0:4f8:4245:ed57 with SMTP id o26-20020ac25e3a000000b004f84245ed57mr4677010lfg.35.1690787223945;
-        Mon, 31 Jul 2023 00:07:03 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id p4-20020a056402044400b00521d2f7459fsm5121651edw.49.2023.07.31.00.07.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 00:07:03 -0700 (PDT)
-Message-ID: <d4ade8f3-6fbf-5524-8e12-f7b6065df30f@linaro.org>
-Date:   Mon, 31 Jul 2023 09:06:59 +0200
+        d=1e100.net; s=20221208; t=1690787265; x=1691392065;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=CrTsz8QawI4NoHoGnNEcszB2yjFUPV7z0R4z7qGc2Tg=;
+        b=jZuapdHVeUeUQxoUH6yusp62cAZtbbr9j685rE7yZ6ZpOywHZWoM/mWkt7uHmxKpni
+         NIifse6HZ3coT2hDCIHhGgfd/XUSqHsgzPiLYM46bv5jqMceEnEafznQ29/YuqAhQhNj
+         JX7ILHUCsLU2wrDRWqYPYpddxgnSp1jhnAyo2VgTLxi0+PaIm1jFPlG6ifDLtv3dlHNO
+         +TD3AhBt9YO79pmZSa8Mojm7U8AzniAJ0H0Cr/o14hzdOU6bqf6G5N5SBzW9SfoxkRdz
+         YrVzQZJ/k6Y/q8zj0mEx8Zyc7hAt1SgJomRmvQmg8XGB3ldr4cg/bBvXyZVBUyXA1lAD
+         NdlA==
+X-Gm-Message-State: ABy/qLZlxQt+cWgCTe2yFIcvjjb9dpoYGIc05A3/ai5F5pTDmv8gM2MQ
+        +Ug8twcvFaw9PCUVpX76+04=
+X-Google-Smtp-Source: APBJJlF2YjxFQlhdr/gdJJSW3Aeoej8UVQHl6XofWSLbtf0ibd+hIaZrJHGyDSVNaUsCo46L6b1LYA==
+X-Received: by 2002:a7b:c44a:0:b0:3fb:c060:9698 with SMTP id l10-20020a7bc44a000000b003fbc0609698mr8041465wmi.5.1690787265337;
+        Mon, 31 Jul 2023 00:07:45 -0700 (PDT)
+Received: from khadija-virtual-machine.localdomain ([39.41.65.235])
+        by smtp.gmail.com with ESMTPSA id l10-20020a05600c1d0a00b003fd2d3462fcsm15114098wms.1.2023.07.31.00.07.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 00:07:44 -0700 (PDT)
+From:   Khadija Kamran <kamrankhadijadj@gmail.com>
+To:     paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org, selinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jmorris@namei.org, serge@hallyn.com,
+        linux-security-module@vger.kernel.org, apparmor@lists.ubuntu.com,
+        john.johansen@canonical.com, alison.schofield@intel.com,
+        ztarkhani@microsoft.com
+Cc:     Khadija Kamran <kamrankhadijadj@gmail.com>
+Subject: [PATCH 0/2] lsm: change security_capget LSM hook
+Date:   Mon, 31 Jul 2023 12:07:30 +0500
+Message-Id: <cover.1690786466.git.kamrankhadijadj@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH 2/3] dt-bindings: arm: sunxi: document Orange Pi Zero 3
- board name
-Content-Language: en-US
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     Icenowy Zheng <uwu@icenowy.me>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20230731011725.7228-1-andre.przywara@arm.com>
- <20230731011725.7228-3-andre.przywara@arm.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230731011725.7228-3-andre.przywara@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2023 03:17, Andre Przywara wrote:
-> The Orange Pi Zero 3 board is an updated version of the Zero 2 board.
-> It uses a SoC called H618, which just seems to be an H616 with more L2
-> cache.
-> 
-> Add the board/SoC compatible string pair to the list of known boards.
-> 
+Change security_capget LSM hook's target parameter to constant and split
+cap_capget decalration line to multiple lines.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Khadija Kamran (2):
+  lsm: change 'target' parameter to 'const' in security_capget LSM hook
+  lsm: split cap_capget() declaration to multiple lines
 
-Best regards,
-Krzysztof
+ include/linux/lsm_hook_defs.h | 2 +-
+ include/linux/security.h      | 7 ++++---
+ kernel/capability.c           | 2 +-
+ security/apparmor/lsm.c       | 2 +-
+ security/commoncap.c          | 2 +-
+ security/security.c           | 2 +-
+ security/selinux/hooks.c      | 2 +-
+ 7 files changed, 10 insertions(+), 9 deletions(-)
+
+-- 
+2.34.1
 
