@@ -2,87 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAB97697FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F308769801
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbjGaNrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
+        id S230501AbjGaNsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbjGaNrg (ORCPT
+        with ESMTP id S231637AbjGaNrz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:47:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D500170C;
-        Mon, 31 Jul 2023 06:47:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=phaaJIZq1BLWmPqCytuBa+h2XJylFF98eK0c+HuebO4=; b=Fr1NrfcLzdpJVpmcOBL17zaxcV
-        zEYs26Dbdcqza8yQ2T/gXt6eJXboPEJDuFGznraLpotq5X7rjBlo3FpAmzHfseZRvk68l8JasNeG0
-        +WtScm3eUB5qzFnSVptSpdbfn3qDJe20ysVK0l4UYj/pksK8xkHmndNPZ00AHymM1PT3Pm8xhyoDY
-        P+N/gRHEh7Tq3zv150c3HLMnk43p8seEmT9AypoQn+WvEN1JpoUi0OMnBGLkKxGj2S7ARg8vVk7DS
-        ncdBCZlrKI1aVZGJJBi4u8phMp2+tpPtCrQZpp5BoEk7L6K4hd2fVmDuvQ7SjuHtMjV1S1M4MQvp1
-        CtbLs/0Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qQTEs-001wMI-Lv; Mon, 31 Jul 2023 13:47:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        Mon, 31 Jul 2023 09:47:55 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BDC198E
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:47:47 -0700 (PDT)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1qQTF5-0006St-4V; Mon, 31 Jul 2023 15:47:23 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F9B93001DD;
-        Mon, 31 Jul 2023 15:47:10 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EB506203EA053; Mon, 31 Jul 2023 15:47:09 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 15:47:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
-        selinux@vger.kernel.org,
-        Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
-        daniel@ffwll.ch, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        acme@kernel.org
-Subject: Re: [PATCH v3 0/4] mm: convert to vma_is_initial_heap/stack()
-Message-ID: <20230731134709.GJ29590@hirez.programming.kicks-ass.net>
-References: <20230728050043.59880-1-wangkefeng.wang@huawei.com>
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 454F01FEF91;
+        Mon, 31 Jul 2023 13:47:19 +0000 (UTC)
+Date:   Mon, 31 Jul 2023 15:47:18 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Markus Schneider-Pargmann <msp@baylibre.com>
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        Vivek Yadav <vivek.2311@samsung.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH v4 0/6] can: tcan4x5x: Introduce tcan4552/4553
+Message-ID: <20230731-issuing-unshackle-20c6cbcbca98-mkl@pengutronix.de>
+References: <20230728141923.162477-1-msp@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7hokiv2uomu6txmp"
 Content-Disposition: inline
-In-Reply-To: <20230728050043.59880-1-wangkefeng.wang@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230728141923.162477-1-msp@baylibre.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 01:00:39PM +0800, Kefeng Wang wrote:
 
-> Kefeng Wang (4):
->   mm: factor out VMA stack and heap checks
->   drm/amdkfd: use vma_is_initial_stack() and vma_is_initial_heap()
->   selinux: use vma_is_initial_stack() and vma_is_initial_heap()
->   perf/core: use vma_is_initial_stack() and vma_is_initial_heap()
-> 
->  drivers/gpu/drm/amd/amdkfd/kfd_svm.c |  5 +----
->  fs/proc/task_mmu.c                   | 24 ++++----------------
->  fs/proc/task_nommu.c                 | 15 +------------
->  include/linux/mm.h                   | 25 +++++++++++++++++++++
->  kernel/events/core.c                 | 33 ++++++++++------------------
->  security/selinux/hooks.c             |  7 ++----
->  6 files changed, 44 insertions(+), 65 deletions(-)
+--7hokiv2uomu6txmp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On 28.07.2023 16:19:17, Markus Schneider-Pargmann wrote:
+> Hi everyone,
+>=20
+> This series introduces two new chips tcan-4552 and tcan-4553. The
+> generic driver works in general but needs a few small changes. These are
+> caused by the removal of wake and state pins.
+>=20
+> v4 updates the printks to use '%pe'.
+
+Applied to linux-can-next/testing.
+
+Thanks,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--7hokiv2uomu6txmp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmTHu2MACgkQvlAcSiqK
+BOg63gf/cPN6GYr1ujcAtB5q3AHV/GbjB+1Bp8DkT1yzWjXkcPXvm44qr9AnhbBX
+qF1UX4whquSeRDoKursw4/5h1THtdYHGIeM+kRa4jPUxB78b3i1AHWhMkuQQP/5h
+RXn57V6mIqdFdF1VVAl7/y8fxj7JLLTwoaFIDjjuW5E5aXxLEnNmT2rs5Y/OMG2Z
+jeG5Eip0Qu73qCBpVGUh0Wckya+K1b5xwQ2+BauCEzBg4/oCRx9RyIk7awlR6d26
+FxZ9nan7AjmkrW/cury9qKGQLdfM31myDypXRl7+C4esJ00KDUvOJlt01E/THvaG
+2NS6tk/FiCDV5Otlq3OmGaRfnuVLlA==
+=9Hzu
+-----END PGP SIGNATURE-----
+
+--7hokiv2uomu6txmp--
