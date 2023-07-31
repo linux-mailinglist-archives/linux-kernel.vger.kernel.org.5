@@ -2,51 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1FF1768BE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D083768BEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbjGaGXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 02:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
+        id S230168AbjGaGY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 02:24:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbjGaGXk (ORCPT
+        with ESMTP id S229454AbjGaGYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 02:23:40 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C12E1BE;
-        Sun, 30 Jul 2023 23:23:37 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8AxDOtoU8dkLgINAA--.25556S3;
-        Mon, 31 Jul 2023 14:23:36 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxF81nU8dk_vFBAA--.39321S3;
-        Mon, 31 Jul 2023 14:23:35 +0800 (CST)
-Subject: Re: [PATCH] gpio: loongson: add firmware offset parse support
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn, zhuyinbo@loongson.cn
-References: <20230711092328.26598-1-zhuyinbo@loongson.cn>
- <CAMRc=MeJfWO+munPQGLtODEXyiS0g=MTm2E71etCLng1HXOq-A@mail.gmail.com>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <bdecbe48-3406-098e-ef73-9989d6275a74@loongson.cn>
-Date:   Mon, 31 Jul 2023 14:23:35 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 31 Jul 2023 02:24:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4FEE57
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 23:24:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690784650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dFujNs0s393AKJL9Pn5KqZK/kd8R31aOCdV5SggcTOg=;
+        b=hlMZvrHUZ0ceVW2AbwDnradUhsukm3myNM4W8cJ2dqvBxYyfGKbCQa3yhAN3UJuvWex7x5
+        ashdEW5y8YslYnKywRSjBvUlsCbaFfYvQb+f8raeoTbxxrNugE+Avof1EuqprOHgW9tr0K
+        OStdBJfUYAGGut6Gj9BzzLFkwbP4s1s=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-680-w_1BH6QbNN-PifihR7a7ig-1; Mon, 31 Jul 2023 02:24:08 -0400
+X-MC-Unique: w_1BH6QbNN-PifihR7a7ig-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1bb83eb84e5so45322235ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 23:24:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690784647; x=1691389447;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dFujNs0s393AKJL9Pn5KqZK/kd8R31aOCdV5SggcTOg=;
+        b=WXcuYWQarKEtfluqD9ykdTO8uxz2we1uS8mpmpbLnuwADmOJG6g3BaK+/GHOASx1Ve
+         NNGVxyXsWTrjTpjrmm7py28wjoJCwF0T66wduCRVJq3NZJ2f2I5IICkIIkZUGzleh0SV
+         MDtyEIH+IUiRrr/6Cr7IPmTTq6DdeuK054jKvCkCEgyLTDwXVtCwVvhN9dg576KUTYfO
+         mDTuLJobvv0tL9PuocoAiuCAaFqjiL4awofzpdd4EWS00H7S/M0tobchGxVl5OUwFmtf
+         K0rIaOVZ9QbuHOCa+M0kKFBlcCGlyGRDtIPwtbZdTRhTGiB3BE2jdSrR8xbuc+hDQKWU
+         uw9g==
+X-Gm-Message-State: ABy/qLYtoejr2mOVEKmJ7Pa++8ip8X5GDc8/3s/nv4hZo8sREMJtwqqR
+        8WhJ1Dhn58W9WQ+w5lrI7VJLbAwXDRomgNC5XQ3mPb+Z6qoqEwCA/gQC0mVrX97ZTJ+nH6aeaBe
+        xC4qdunLNhBFxDZr4O9chhtGa
+X-Received: by 2002:a17:902:6b88:b0:1b8:16c7:a786 with SMTP id p8-20020a1709026b8800b001b816c7a786mr7837690plk.4.1690784647320;
+        Sun, 30 Jul 2023 23:24:07 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH7mH2Qi6DFfl6DwSxvSKUPeZPkzsuIKf9buf/HUaThSCbGhjgk9r38CsiEE+rud7IO8Nb3ow==
+X-Received: by 2002:a17:902:6b88:b0:1b8:16c7:a786 with SMTP id p8-20020a1709026b8800b001b816c7a786mr7837667plk.4.1690784647016;
+        Sun, 30 Jul 2023 23:24:07 -0700 (PDT)
+Received: from [10.72.112.185] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id v5-20020a170902b7c500b001b5247cac3dsm7590352plz.110.2023.07.30.23.24.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 23:24:06 -0700 (PDT)
+Message-ID: <66cd33fd-5d92-915e-e7ac-9eb564936eab@redhat.com>
+Date:   Mon, 31 Jul 2023 14:24:01 +0800
 MIME-Version: 1.0
-In-Reply-To: <CAMRc=MeJfWO+munPQGLtODEXyiS0g=MTm2E71etCLng1HXOq-A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH net-next V4 2/3] virtio_net: support per queue interrupt
+ coalesce command
+To:     Gavin Li <gavinl@nvidia.com>, mst@redhat.com,
+        xuanzhuo@linux.alibaba.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, jiri@nvidia.com, dtatulea@nvidia.com
+Cc:     gavi@nvidia.com, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Heng Qi <hengqi@linux.alibaba.com>
+References: <20230725130709.58207-1-gavinl@nvidia.com>
+ <20230725130709.58207-3-gavinl@nvidia.com>
 Content-Language: en-US
+From:   Jason Wang <jasowang@redhat.com>
+In-Reply-To: <20230725130709.58207-3-gavinl@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxF81nU8dk_vFBAA--.39321S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,175 +90,26 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-在 2023/7/29 下午9:48, Bartosz Golaszewski 写道:
-> On Tue, Jul 11, 2023 at 11:23 AM Yinbo Zhu <zhuyinbo@loongson.cn> wrote:
->>
->> Some platforms contain multiple GPIO chips that with different offset
->> addresses, if using acpi_device_id or of_device_id's data domain to
->> initialize GPIO chip and different compatibles need to be added, but
->> this addition is unnecessary because these GPIO chips are compatible
->> with each other. Therefore, this driver adds support for parsing the
->> necessary offset elements of GPIO chips from firmware to fix such
->> issue.
->>
-> 
-> The commit message is hard to parse, it took me a long while trying to
-> figure out what it's saying. Why not: "Loongson GPIO controllers come
-> in multiple variants that are compatible except for certain register
-> offset values. Add support for device properties allowing to specify
-> them in ACPI or DT."
-
-
-okay, I will use this commit log, thanks your summarize.
-
-> 
->> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
->> ---
->>   drivers/gpio/gpio-loongson-64bit.c | 71 +++++++++++++++++++++++++++---
->>   1 file changed, 64 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/gpio/gpio-loongson-64bit.c b/drivers/gpio/gpio-loongson-64bit.c
->> index 06213bbfabdd..7f92cb6205b2 100644
->> --- a/drivers/gpio/gpio-loongson-64bit.c
->> +++ b/drivers/gpio/gpio-loongson-64bit.c
->> @@ -26,6 +26,7 @@ struct loongson_gpio_chip_data {
->>          unsigned int            conf_offset;
->>          unsigned int            out_offset;
->>          unsigned int            in_offset;
->> +       unsigned int            inten_offset;
->>   };
->>
->>   struct loongson_gpio_chip {
->> @@ -117,7 +118,17 @@ static void loongson_gpio_set(struct gpio_chip *chip, unsigned int pin, int valu
->>
->>   static int loongson_gpio_to_irq(struct gpio_chip *chip, unsigned int offset)
->>   {
->> +       unsigned int u;
->>          struct platform_device *pdev = to_platform_device(chip->parent);
->> +       struct loongson_gpio_chip *lgpio = to_loongson_gpio_chip(chip);
->> +
->> +       if (lgpio->chip_data->mode == BIT_CTRL_MODE) {
->> +               u = readl(lgpio->reg_base + lgpio->chip_data->inten_offset + offset / 32 * 4);
->> +               u |= BIT(offset % 32);
->> +               writel(u, lgpio->reg_base + lgpio->chip_data->inten_offset + offset / 32 * 4);
->> +       } else {
->> +               writeb(1, lgpio->reg_base + lgpio->chip_data->inten_offset + offset);
->> +       }
->>
->>          return platform_get_irq(pdev, offset);
->>   }
->> @@ -127,11 +138,30 @@ static int loongson_gpio_init(struct device *dev, struct loongson_gpio_chip *lgp
->>   {
->>          int ret;
->>          u32 ngpios;
->> +       unsigned int io_width;
->>
->>          lgpio->reg_base = reg_base;
->> +       if (device_property_read_u32(dev, "ngpios", &ngpios) || !ngpios)
->> +               return -EINVAL;
->> +
->> +       ret = DIV_ROUND_UP(ngpios, 8);
->> +       switch (ret) {
->> +       case 1 ... 2:
->> +               io_width = ret;
->> +               break;
->> +       case 3 ... 4:
->> +               io_width = 0x4;
->> +               break;
->> +       case 5 ... 8:
->> +               io_width = 0x8;
->> +               break;
->> +       default:
->> +               dev_err(dev, "unsupported io width\n");
->> +               return -EINVAL;
->> +       }
->>
->>          if (lgpio->chip_data->mode == BIT_CTRL_MODE) {
->> -               ret = bgpio_init(&lgpio->chip, dev, 8,
->> +               ret = bgpio_init(&lgpio->chip, dev, io_width,
->>                                  lgpio->reg_base + lgpio->chip_data->in_offset,
->>                                  lgpio->reg_base + lgpio->chip_data->out_offset,
->>                                  NULL, NULL,
->> @@ -151,16 +181,35 @@ static int loongson_gpio_init(struct device *dev, struct loongson_gpio_chip *lgp
->>                  spin_lock_init(&lgpio->lock);
->>          }
->>
->> -       device_property_read_u32(dev, "ngpios", &ngpios);
->> -
->> -       lgpio->chip.can_sleep = 0;
->>          lgpio->chip.ngpio = ngpios;
->> -       lgpio->chip.label = lgpio->chip_data->label;
->> -       lgpio->chip.to_irq = loongson_gpio_to_irq;
->> +       lgpio->chip.can_sleep = 0;
->> +       if (lgpio->chip_data->label)
->> +               lgpio->chip.label = lgpio->chip_data->label;
->> +       else
->> +               lgpio->chip.label = kstrdup(to_platform_device(dev)->name, GFP_KERNEL);
->> +
->> +       if (lgpio->chip_data->inten_offset)
->> +               lgpio->chip.to_irq = loongson_gpio_to_irq;
->>
->>          return devm_gpiochip_add_data(dev, &lgpio->chip, lgpio);
->>   }
->>
->> +static int loongson_gpio_get_props(struct device *dev,
->> +                                   struct loongson_gpio_chip *lgpio)
->> +{
->> +       const struct loongson_gpio_chip_data *d = lgpio->chip_data;
->> +
->> +       if (device_property_read_u32(dev, "loongson,gpio-conf-offset", (u32 *)&d->conf_offset)
->> +           || device_property_read_u32(dev, "loongson,gpio-in-offset", (u32 *)&d->in_offset)
->> +           || device_property_read_u32(dev, "loongson,gpio-out-offset", (u32 *)&d->out_offset)
->> +           || device_property_read_u32(dev, "loongson,gpio-ctrl-mode", (u32 *)&d->mode))
-> 
-> These need to be first specified in DT bindings. Please do it in a
-> separate patch.
-> 
-> Bart
+在 2023/7/25 21:07, Gavin Li 写道:
+> Add interrupt_coalesce config in send_queue and receive_queue to cache user
+> config.
+>
+> Send per virtqueue interrupt moderation config to underlying device in
+> order to have more efficient interrupt moderation and cpu utilization of
+> guest VM.
+>
+> Additionally, address all the VQs when updating the global configuration,
+> as now the individual VQs configuration can diverge from the global
+> configuration.
+>
+> Signed-off-by: Gavin Li <gavinl@nvidia.com>
+> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> Reviewed-by: Heng Qi <hengqi@linux.alibaba.com>
 
 
-okay, I got it.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Thanks,
-Yinbo
-
-> 
->> +               return -EINVAL;
->> +
->> +       device_property_read_u32(dev, "loongson,gpio-inten-offset", (u32 *)&d->inten_offset);
->> +
->> +       return 0;
->> +}
->> +
->>   static int loongson_gpio_probe(struct platform_device *pdev)
->>   {
->>          void __iomem *reg_base;
->> @@ -172,7 +221,12 @@ static int loongson_gpio_probe(struct platform_device *pdev)
->>          if (!lgpio)
->>                  return -ENOMEM;
->>
->> -       lgpio->chip_data = device_get_match_data(dev);
->> +       lgpio->chip_data = devm_kzalloc(dev, sizeof(*lgpio->chip_data), GFP_KERNEL);
->> +       if (!lgpio->chip_data)
->> +               return -ENOMEM;
->> +
->> +       if (loongson_gpio_get_props(dev, lgpio))
->> +               lgpio->chip_data = device_get_match_data(dev);
->>
->>          reg_base = devm_platform_ioremap_resource(pdev, 0);
->>          if (IS_ERR(reg_base))
->> @@ -215,6 +269,9 @@ static const struct acpi_device_id loongson_gpio_acpi_match[] = {
->>                  .id = "LOON0002",
->>                  .driver_data = (kernel_ulong_t)&loongson_gpio_ls7a_data,
->>          },
->> +       {
->> +               .id = "LOON0007",
->> +       },
->>          {}
->>   };
->>   MODULE_DEVICE_TABLE(acpi, loongson_gpio_acpi_match);
->> --
->> 2.31.1
->>
+Thanks
 
