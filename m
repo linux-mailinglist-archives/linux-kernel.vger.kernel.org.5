@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F76769FE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793A1769FEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbjGaR73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 13:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37978 "EHLO
+        id S231449AbjGaSAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:00:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbjGaR71 (ORCPT
+        with ESMTP id S231416AbjGaSAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:59:27 -0400
-X-Greylist: delayed 80324 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 31 Jul 2023 10:59:15 PDT
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AA21712;
-        Mon, 31 Jul 2023 10:59:14 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id E483D100FBF66;
-        Mon, 31 Jul 2023 19:59:12 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 82F56260B28; Mon, 31 Jul 2023 19:59:12 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 19:59:12 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Alistair Francis <alistair23@gmail.com>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH] PCI/DOE: Expose the DOE protocols via sysfs
-Message-ID: <20230731175912.GB19517@wunner.de>
-References: <20230725035755.2621507-1-alistair.francis@wdc.com>
- <20230725163046.GA23990@wunner.de>
- <20230727093857.000017aa@Huawei.com>
+        Mon, 31 Jul 2023 14:00:52 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC43F1718
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:00:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690826439; x=1722362439;
+  h=from:to:subject:in-reply-to:references:date:message-id:
+   mime-version;
+  bh=QbkxgA/pf/PcX6vqJaarB8VSWiv9u71mrRQ721B6FLc=;
+  b=A/KpDU5jnGS9BdVxIFsMIQuSq1U5Gkv1wikQNunAwAulX6wCx0qjE9VK
+   rBHMMdJVuXPlmFi6iiB+TRZLutQUjhdD5lYMb04fpCOMMkI+ZEGMgRMTX
+   b87vGXMB49H1AAxVOHeeLCZEEXpS2ZLd7otW/vwpMbhKRkGy/YYJjlirN
+   e25j8AIYSbQ62Z5mjo4TAwzguVxxeWmIqbQfFnUHrk/TtFNkfLszkHihN
+   GpV/zGpIYHGpy3ybKNniroT9sgGPGDo7Zc4FgG1E4b5uiOwkX6ih0BTyS
+   oBTSwlD+v80kUA61ipjzohPj5mhN8HylX4VPglgwGJz4H3lKRMwtudOFk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="367991676"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="367991676"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 11:00:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="818456913"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="818456913"
+Received: from ubik.fi.intel.com (HELO localhost) ([10.237.72.184])
+  by FMSMGA003.fm.intel.com with ESMTP; 31 Jul 2023 11:00:36 -0700
+From:   Alexander Shishkin <alexander.shishkin@linux.intel.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ravi Shankar <ravi.v.shankar@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sohil Mehta <sohil.mehta@intel.com>,
+        alexander.shishkin@linux.intel.com
+Subject: Re: [PATCH v3 00/12] Enable Linear Address Space Separation support
+In-Reply-To: <20230609183632.48706-1-alexander.shishkin@linux.intel.com>
+References: <20230609183632.48706-1-alexander.shishkin@linux.intel.com>
+Date:   Mon, 31 Jul 2023 21:00:35 +0300
+Message-ID: <87wmygx8os.fsf@ubik.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230727093857.000017aa@Huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 09:38:57AM +0100, Jonathan Cameron wrote:
-> On Tue, 25 Jul 2023 18:30:46 +0200 Lukas Wunner <lukas@wunner.de> wrote:
-> > Do have plans for
-> > either of that or what's the motivation to use sysfs?
-[...]
-> I can see it would also be useful for things that will poke from
-> userspace because they aren't expected to run in production (and hence
-> hopefully don't care about potential races etc). CXL compliance
-> comes to mind - I don't think we ever want to carry kernel code for that.
+Alexander Shishkin <alexander.shishkin@linux.intel.com> writes:
 
-FWIW, USB4/Thunderbolt does have kernel code for DMA testing with a
-special dongle (drivers/thunderbolt/dma_test.c) as well as code for
-lane margining, so there *is* some precedent for that... :)
+> Changes from v2[5]:
+> - Added myself to the SoB chain
 
-  config USB4_DEBUGFS_MARGINING
-	bool "Expose receiver lane margining operations under USB4 ports (DANGEROUS)"
-	depends on DEBUG_FS
-	depends on USB4_DEBUGFS_WRITE
-	help
-	  Enables hardware and software based receiver lane margining support
-	  under each USB4 port. Used for electrical quality and robustness
-	  validation during manufacturing. Should not be enabled by distro
-	  kernels.
+Gentle ping.
 
-Thanks,
-
-Lukas
+Regards,
+--
+Alex
