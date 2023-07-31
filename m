@@ -2,52 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 164AF7689EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DDA7689FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229729AbjGaCSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 22:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60276 "EHLO
+        id S229769AbjGaC2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 22:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjGaCSx (ORCPT
+        with ESMTP id S229538AbjGaC2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 22:18:53 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F4719C;
-        Sun, 30 Jul 2023 19:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=MJVYuhAb1PMeAMctMHtXz002wNdYX1zjbVlmQqllQe4=; b=TnyTZSp2ZbZx6j7bnbvUtBogDV
-        jsU/iP8GxRvnlqA6920VzFiGmbpqFdjQu6BHb2j5jhzXi46SMJGdfj00NN1cQYkJ0BlevyxEjeLuS
-        7ln/SLHPWK84DaOS33gme+N0iV1eOfDAX3Neyuca7anE15X02uljDKt5jN7tlx+z+Qyw8OKljGiUA
-        FwJjsaXzG00KlcLm8yKk/Q5YyOUxVXJJzhjRot+UnNsbsM7myKFooT6JuMm0MzX0C+b16oG3bcKFc
-        6XweI7aFBgMI4ygAkIl3qJghoKOywiBCotbJRYt3CjGkI/txs+mwMW+EZfvsWvKbKFD79CCU+k+Y/
-        F0iWl4AA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQIUf-00DVVk-0R;
-        Mon, 31 Jul 2023 02:18:45 +0000
-Message-ID: <2f743117-f0a7-9eec-ac8c-53c2468057ad@infradead.org>
-Date:   Sun, 30 Jul 2023 19:18:43 -0700
+        Sun, 30 Jul 2023 22:28:18 -0400
+X-Greylist: delayed 313 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 30 Jul 2023 19:28:17 PDT
+Received: from out-91.mta0.migadu.com (out-91.mta0.migadu.com [IPv6:2001:41d0:1004:224b::5b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F69E50
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 19:28:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH -next] RDMA/irdma: Fix one kernel-doc comment
-Content-Language: en-US
-To:     Yang Li <yang.lee@linux.alibaba.com>, mustafa.ismail@intel.com,
-        shiraz.saleem@intel.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Abaci Robot <abaci@linux.alibaba.com>
-References: <20230731015915.34867-1-yang.lee@linux.alibaba.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230731015915.34867-1-yang.lee@linux.alibaba.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bcheng.me; s=key1;
+        t=1690770178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
+        bh=vPdtbQm8V9rffwx3H/n5X0xB5XkYDYWRBPxYwhIjFQg=;
+        b=Ga2lLIX8txBBTAhb6Vh9WsLKy8gRdcayGbTIR1oOmEkMjeg9cN0aiR9rYHBzMeBkH0WQBQ
+        thUlBvoInIT3yF5fHdiKvBSF/119c5VscmewD77XgXOQto9ou7VAsPx+Q+Cc8l03a0ivc+
+        z9kywYIjqmSjfwPBcL+l4R3+EV7hTsb9LAcEC9ofq04MSSGIj6OeCCvf7J7aA3CrcGbiST
+        /X2WZ5M/0t4HBjqH4e0WU/o9POJWTpBDqJpjIgYrwrA2QjjFiGVXCoQnCnE80L3te0zsDh
+        tfXhITxicxpahrtVYqMrp8OiEHqgCpqhxBephjSPZfE7/pn1ShoXWMkBq49CvA==
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Date:   Sun, 30 Jul 2023 22:22:55 -0400
+Subject: Re: [PATCH v2] ACPI: resource: Add a quirk for Lenovo Yoga 7 14ARB7
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   "Benjamin Cheng" <ben@bcheng.me>
+To:     <mario.limonciello@amd.com>
+Cc:     <git@augustwikerfors.se>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rafael@kernel.org>,
+        <regressions@lists.linux.dev>
+Message-Id: <CUFZQ0PV3664.3HDBJ1V15F1E8@gold>
+In-Reply-To: <20230728191408.18141-1-mario.limonciello@amd.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,38 +51,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Would it be possible to include a similar quirk for the Lenovo ThinkBook
+13s G4 ARB?
 
+a9c4a912b7dc ("ACPI: resource: Remove "Zen" specific match and quirks")
+doesn't break the keyboard on this model, but makes it very sluggish and
+unresponsive.
 
-On 7/30/23 18:59, Yang Li wrote:
-> Remove description of @free_hwcqp in irdma_destroy_cqp().
-> to silence the warning:
-> 
-> drivers/infiniband/hw/irdma/hw.c:580: warning: Excess function parameter 'free_hwcqp' description in 'irdma_destroy_cqp'
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6028
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  drivers/infiniband/hw/irdma/hw.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
-> index eaf196985f49..7cbdd5433dba 100644
-> --- a/drivers/infiniband/hw/irdma/hw.c
-> +++ b/drivers/infiniband/hw/irdma/hw.c
-> @@ -571,7 +571,6 @@ static void irdma_destroy_irq(struct irdma_pci_f *rf,
->  /**
->   * irdma_destroy_cqp  - destroy control qp
->   * @rf: RDMA PCI function
-> - * @free_hwcqp: 1 if hw cqp should be freed
->   *
->   * Issue destroy cqp request and
->   * free the resources associated with the cqp
-
--- 
-~Randy
+Adding the following entry fixes the issue for me:
+static const struct dmi_system_id lenovo_laptop[] =3D {
+	{
+		.ident =3D "Lenovo Yoga 7 14ARB7",
+		.matches =3D {
+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+			DMI_MATCH(DMI_PRODUCT_NAME, "82QF"),
+		},
+	},
+			DMI_MATCH(DMI_PRODUCT_NAME, "82QF"),
+		},
+	},
++	{
++		.ident =3D "Lenovo ThinkBook 13s G4 ARB",
++		.matches =3D {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "21AS"),
++		},
++	},
+	{ }
+};
