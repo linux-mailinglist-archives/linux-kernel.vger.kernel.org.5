@@ -2,104 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1727076A350
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BC676A360
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229486AbjGaVuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
+        id S231679AbjGaVvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbjGaVuL (ORCPT
+        with ESMTP id S231504AbjGaVu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:50:11 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30071133
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:50:10 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bb83eb84e5so52200065ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:50:10 -0700 (PDT)
+        Mon, 31 Jul 2023 17:50:56 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80589E7;
+        Mon, 31 Jul 2023 14:50:33 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fbc5d5742eso54961405e9.3;
+        Mon, 31 Jul 2023 14:50:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690840209; x=1691445009;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=R2QJFD2XHgTI1kJ5wD8vqBTFZZRvLtV3pZ4w1UH3Oa8=;
-        b=tSLTmu+DLBufAzFzbicDIcqEm2TuolEf1DapzPi+gTM4FHXli52KWx81A5zuk/YCxr
-         l/OlTy/M2QsL/+aaVuZ/hYb5nYSSERYjNp13FI8HYqXm9WQmG25RmZxIsRM/Z7zSspZU
-         JeMXBEyXp4E2GhE+/oU7uxeo5vA7VEgDwo3z8s1TIqOjvBy9PB/UOIPUcDQqZ2yvrlDS
-         tD1vLJn5szUm3mkfyZtKLdz/qI26XfZV9AjJ3HuKY1kp9JjckDUfZYJ6zw6f2Uc034NJ
-         WHPzXkiGbDSZiEmxmUdXhZElFyFTVHyycIhHVC0+v52tpuADk55LDDgQL5cDUbXmgDrC
-         Rygw==
+        d=gmail.com; s=20221208; t=1690840232; x=1691445032;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LzzSGKWkmVAwS6+5gn2kW/zuOpGQRDh54S2FzorJoyA=;
+        b=Gh6QtEjOYwj9odnsjh1f9DapsMkYw7zBcT5m9Kd1gaN0YupuuaRA1tt+K3+L1M0cAN
+         +iRFN3msBWUF/UKb2JDD+6GJI2Gv1MpevVryLb9Bdoci+QBKe5pT1Wnv8UJK1ofVufOb
+         xeETko2BcN4dMLmlLu7ea6ABxmGItWChPuqDD1x9cUqb5NUk/8kVlI50gFWAC4FIgthg
+         WykjFjx6566tCwyrYocar6zjVxbZ7lNyX5ar+4lNWJQ7d9yEO/PAgOrNAibQMW6T2vPX
+         2q5ZT1t0X6cQnwloXqZRTBwwiJ4F+bpq6IzkWzbzTq3MGZKXR6b1Dil1dLPiW+t7xm03
+         L/Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690840209; x=1691445009;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R2QJFD2XHgTI1kJ5wD8vqBTFZZRvLtV3pZ4w1UH3Oa8=;
-        b=QD4339gcZTkqdhxjeqaelvDMoQPggNx9ytp1c7lH/57LhhydbaIqr3jc/Sr/AdJBQ0
-         Vft8uL8P6nekWtUdaYGc29t25Gi9iHNozAEsN36uapuDyEZicGf0xHEyxdSXzb1hL+0q
-         z27jusDahGYCfcKmbuZqTEY96ZXzQdrJEAP8/DAeQ5qPW2r7O4dctcDFcfBoGlFulvSq
-         ulcBerb8zagCUbh3FdRCUhOwcTBWS1pQUa2YcPIO/Roq9VvXCT7RCy6thlDLZfN6ubOF
-         Qf3JjqPDvq2RwdzL43TuRuHUkKElYrKzKllO6dCR5qMBMg+/OkJCq1GO30GIsOXsQPZ/
-         17AA==
-X-Gm-Message-State: ABy/qLYp6ov6Z2KHBXWCywJ7OqGBlYRvaZ0h/MXFj/IJL9HTCzUxkMd+
-        wBauLJi0sfCRmhsY5RQ8zzQx0P1NNqE=
-X-Google-Smtp-Source: APBJJlHF5b1qBy7lIC09fHisk5z7a6GWyFDId8WOrl6w4SB5XD3HwWcrOpZcO/fkStMRmvg1ofrSPaEq5SU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:f68b:b0:1b8:a552:c8c9 with SMTP id
- l11-20020a170902f68b00b001b8a552c8c9mr47142plg.13.1690840209652; Mon, 31 Jul
- 2023 14:50:09 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 14:50:07 -0700
-In-Reply-To: <87tttpr6qy.wl-maz@kernel.org>
-Mime-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-3-rananta@google.com>
- <87tttpr6qy.wl-maz@kernel.org>
-Message-ID: <ZMgsjx8dwKd4xBGe@google.com>
-Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690840232; x=1691445032;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LzzSGKWkmVAwS6+5gn2kW/zuOpGQRDh54S2FzorJoyA=;
+        b=E957p7m1n4ECUvhYapME1VVCeave8eJhoB0ZmhLlngqp/d5fX4WbMjwi4DinVxWuZv
+         LSa5LhRrJFgx0rdcbmPYNDAUw6GJCccOUAXQRpc1IOwircYR/pBwvNzAWPLUUp0/anHf
+         iZxmHMCgk/MjOp2+3gHyQ5CCMOcZC86ckIJhtCN1NK915JvqdQRwsFciOn4fldL2mh19
+         moRqyQAuBwUc3rTW6jGtrfq6Wzd9vWBt9tIufi8BHt2Rvxi4qp+jsauLGaTqEEJYaFKj
+         qH6ehPMepF4U2+ff2jGvCWc75RmZId4z+4y+khJcZXKN2tAFd1SKRu7Dnwg2Qj3UMwPE
+         mn2g==
+X-Gm-Message-State: ABy/qLaO/GaqZypvHCNgazW7dDBf9AVm2ow/U4iQwVlcRQZr2UiiWONO
+        vde3TKXKqLfyGM9qpb1X/ywBuAeQ+Ds=
+X-Google-Smtp-Source: APBJJlGkZeJD/ErBNLIHuV84FQDDzVLXS/9Ndpi2HOQ7+mZlSHPebNAIlPGdzhNi1ilsx784crY0JQ==
+X-Received: by 2002:a7b:cd1a:0:b0:3fc:92:73d6 with SMTP id f26-20020a7bcd1a000000b003fc009273d6mr854436wmj.11.1690840231335;
+        Mon, 31 Jul 2023 14:50:31 -0700 (PDT)
+Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.googlemail.com with ESMTPSA id d12-20020a1c730c000000b003fa999cefc0sm12123626wmb.36.2023.07.31.14.50.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 14:50:30 -0700 (PDT)
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Baoquan He <bhe@redhat.com>, Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>,
+        Will Deacon <will@kernel.org>, Mike Galbraith <efault@gmx.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
+        ardb@kernel.org, David Hildenbrand <david@redhat.com>,
+        Linux regression tracking <regressions@leemhuis.info>,
+        regressions@lists.linux.dev, Matthew Wilcox <willy@infradead.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Lorenzo Stoakes <lstoakes@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH] fs/proc/kcore: reinstate bounce buffer for KCORE_TEXT regions
+Date:   Mon, 31 Jul 2023 22:50:21 +0100
+Message-ID: <20230731215021.70911-1-lstoakes@gmail.com>
+X-Mailer: git-send-email 2.41.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023, Marc Zyngier wrote:
-> On Sat, 22 Jul 2023 03:22:41 +0100,
-> Raghavendra Rao Ananta <rananta@google.com> wrote:
-> > 
-> > Stop depending on CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL and opt to
-> > standardize on kvm_arch_flush_remote_tlbs() since it avoids
-> > duplicating the generic TLB stats across architectures that implement
-> > their own remote TLB flush.
-> > 
-> > This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
-> > path, but that is a small cost in comparison to flushing remote TLBs.
-> 
-> Well, there is no such thing as a "remote TLB" anyway. We either have
-> a non-shareable or inner-shareable invalidation. The notion of remote
-> would imply that we track who potentially has a TLB, which we
-> obviously don't.
+Some architectures do not populate the entire range categorised by
+KCORE_TEXT, so we must ensure that the kernel address we read from is
+valid.
 
-Maybe kvm_arch_flush_vm_tlbs()?  The "remote" part is misleading even on x86 when
-running on Hyper-V, as the flush may be done via a single hypercall and by kicking
-"remote" vCPUs.
+Unfortunately there is no solution currently available to do so with a
+purely iterator solution so reinstate the bounce buffer in this instance so
+we can use copy_from_kernel_nofault() in order to avoid page faults when
+regions are unmapped.
+
+This change partly reverts commit 2e1c0170771e ("fs/proc/kcore: avoid
+bounce buffer for ktext data"), reinstating the bounce buffer, but adapts
+the code to continue to use an iterator.
+
+Fixes: 2e1c0170771e ("fs/proc/kcore: avoid bounce buffer for ktext data")
+Reported-by: Jiri Olsa <olsajiri@gmail.com>
+Closes: https://lore.kernel.org/all/ZHc2fm+9daF6cgCE@krava
+Cc: stable@vger.kernel.org
+Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+---
+ fs/proc/kcore.c | 26 +++++++++++++++++++++++++-
+ 1 file changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+index 9cb32e1a78a0..3bc689038232 100644
+--- a/fs/proc/kcore.c
++++ b/fs/proc/kcore.c
+@@ -309,6 +309,8 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
+ 
+ static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
+ {
++	struct file *file = iocb->ki_filp;
++	char *buf = file->private_data;
+ 	loff_t *fpos = &iocb->ki_pos;
+ 	size_t phdrs_offset, notes_offset, data_offset;
+ 	size_t page_offline_frozen = 1;
+@@ -554,11 +556,22 @@ static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 			fallthrough;
+ 		case KCORE_VMEMMAP:
+ 		case KCORE_TEXT:
++			/*
++			 * Sadly we must use a bounce buffer here to be able to
++			 * make use of copy_from_kernel_nofault(), as these
++			 * memory regions might not always be mapped on all
++			 * architectures.
++			 */
++			if (copy_from_kernel_nofault(buf, (void *)start, tsz)) {
++				if (iov_iter_zero(tsz, iter) != tsz) {
++					ret = -EFAULT;
++					goto out;
++				}
+ 			/*
+ 			 * We use _copy_to_iter() to bypass usermode hardening
+ 			 * which would otherwise prevent this operation.
+ 			 */
+-			if (_copy_to_iter((char *)start, tsz, iter) != tsz) {
++			} else if (_copy_to_iter(buf, tsz, iter) != tsz) {
+ 				ret = -EFAULT;
+ 				goto out;
+ 			}
+@@ -595,6 +608,10 @@ static int open_kcore(struct inode *inode, struct file *filp)
+ 	if (ret)
+ 		return ret;
+ 
++	filp->private_data = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	if (!filp->private_data)
++		return -ENOMEM;
++
+ 	if (kcore_need_update)
+ 		kcore_update_ram();
+ 	if (i_size_read(inode) != proc_root_kcore->size) {
+@@ -605,9 +622,16 @@ static int open_kcore(struct inode *inode, struct file *filp)
+ 	return 0;
+ }
+ 
++static int release_kcore(struct inode *inode, struct file *file)
++{
++	kfree(file->private_data);
++	return 0;
++}
++
+ static const struct proc_ops kcore_proc_ops = {
+ 	.proc_read_iter	= read_kcore_iter,
+ 	.proc_open	= open_kcore,
++	.proc_release	= release_kcore,
+ 	.proc_lseek	= default_llseek,
+ };
+ 
+-- 
+2.41.0
+
