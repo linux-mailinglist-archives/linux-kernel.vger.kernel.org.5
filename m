@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB758768953
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 02:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795BF768955
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 02:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjGaAMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 20:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
+        id S229584AbjGaAN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 20:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjGaAMw (ORCPT
+        with ESMTP id S229445AbjGaAN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 20:12:52 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AA5CA
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 17:12:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690762371; x=1722298371;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Lp12deWGU3L97PQtj9u0jC0+/FGeAGK2Q+TCQNbbrCQ=;
-  b=X/A9q/xcG0tCt13m6hRwP3RnHI81GyS1N0TIZiCnrRjFvLXCU6aiW0PG
-   mpG5smMO3ehRekIBgdlXzNThnwXpcAcQmiXpKg+wMFFtMsP5BEzhCPm9p
-   bjkoZ4RVeYQWlCnNXOCGVCJJBwg5QPlt0/ENJCUgtWUnrp3CQrNVHgZLI
-   +s9Emq2mHgi5Xy6bfu3RfUaDZScgAg+h/SQrMeot4S5kUJw7t1YRHW762
-   Wg0AxgL/kgho18xJMG63XF9+fOhgoMQm1xeadRMboroacTbXmqe/Ywuue
-   0crOt4cvAr1q2qZ27lKfx1zBRCIoE3+iEwMvziLu3vjJTo08wgMTy2xdd
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="371594951"
-X-IronPort-AV: E=Sophos;i="6.01,243,1684825200"; 
-   d="scan'208";a="371594951"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2023 17:12:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="842014098"
-X-IronPort-AV: E=Sophos;i="6.01,243,1684825200"; 
-   d="scan'208";a="842014098"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 30 Jul 2023 17:12:47 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qQGWk-0004qN-1z;
-        Mon, 31 Jul 2023 00:12:46 +0000
-Date:   Mon, 31 Jul 2023 08:11:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Usama Arif <usama.arif@bytedance.com>, linux-mm@kvack.org,
-        muchun.song@linux.dev, mike.kravetz@oracle.com, rppt@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        fam.zheng@bytedance.com, liangma@liangbit.com,
-        simon.evans@bytedance.com, punit.agrawal@bytedance.com,
-        Usama Arif <usama.arif@bytedance.com>
-Subject: Re: [v2 6/6] mm: hugetlb: Skip initialization of struct pages freed
- later by HVO
-Message-ID: <202307310817.Y6ZmhLsV-lkp@intel.com>
-References: <20230730151606.2871391-7-usama.arif@bytedance.com>
+        Sun, 30 Jul 2023 20:13:57 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605DFE1;
+        Sun, 30 Jul 2023 17:13:56 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-cb19b1b9a36so4123145276.0;
+        Sun, 30 Jul 2023 17:13:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690762435; x=1691367235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YxcxzYh+eRe0jLj17RGPzPTU9bsNELCXWRjDPqz5Xds=;
+        b=iIX3rm27Srf9Kp7m4EZr5m4I5D8l2keT3jNRf1MtDyaC2p2aNg25S7WXO9GPJlxumN
+         A1qXNtJ6D9+gLiwvUWIVcKu3Nnjc2JYr9VkTfGH1JDHNS0gVvF3iYwikBmvg/dlMQOHE
+         rOjLSHxxEE7N7+9KdzfjI651X6ZcMv7VYWAKgIqLVqvOrv4WtLEgMw6UI8J5lDHHM3vk
+         pvxOgz6qzHvl0rfl8SNznjTcGz5ZeYb7uPG+Zmqz6Xa3SBwYQYcaxGz7dLNaggNpGE/E
+         9QQkj9682Mr+dQfgz9s37/s+eDWrYM/lAbSnlWl9ME743mS7xsjOspwa2RUIuFBHVf5n
+         mZUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690762435; x=1691367235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YxcxzYh+eRe0jLj17RGPzPTU9bsNELCXWRjDPqz5Xds=;
+        b=bMNnL624OtEdZP8MoIf5IjgnmzoRUQbmOjKMy19j0tHl28fKTI5XT3pDlCfGbREMhR
+         oNj8eeDcRpYGBEOASNoNlJoCWXh3BdcWOb3S9JjS2CAK5J4mIjtUDgZUA3l7tQp0PNkc
+         Voy/GNlOisJEzXf/Pu7qOaoJ4/4URd+c6N1d6UBpvSPsVyW7W/PJxYM7jXy31blnZJSm
+         qTzIcY8udIqMbgbSPIklVqwHrQBT/Qdbo4OXuw7Z0kVyDunep0ycGtyvDT+OdtXxJlWv
+         27F1qTlgU8ZmR8iOqKC7IUNawy/tBOdhsaJdaT6HZ4y/KPvvRN+GGl+OW8FP7ViURXqt
+         zYOQ==
+X-Gm-Message-State: ABy/qLZo09+NtOJBti/pcAN7VjTTiJsSAdaCY+mZgL6php3XwutHmDzo
+        tSoHHgGW5Eynm6O2uZV6ZDTe/r2CrG06AogyjyM=
+X-Google-Smtp-Source: APBJJlGsIy3HmZ1rOv1QWKk8I7vFIuCtffLci+mjycRk1R/nR0bx1Cpc3iOx+dyG8M6B5F30izeTav6/m9uTk4xlwDE=
+X-Received: by 2002:a25:e758:0:b0:d0e:b924:8e20 with SMTP id
+ e85-20020a25e758000000b00d0eb9248e20mr7598351ybh.22.1690762435501; Sun, 30
+ Jul 2023 17:13:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230730151606.2871391-7-usama.arif@bytedance.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230730012905.643822-1-boqun.feng@gmail.com> <20230730012905.643822-2-boqun.feng@gmail.com>
+ <CANiq72nf4N_HXOAZupM_Gq=c0jg-L__YUQtx4fSRpNuRqt4JAw@mail.gmail.com>
+ <AWaNaTAJOJWWnEqJGgGsUTg8NiFGODsiRHl2OJRPb6XvWdXR8IuH7AjLgFn0OH1m_UZKHAcDFoElSPNXKQvgahydWGy3sE4lGEH2W9S-Kdg=@protonmail.com>
+ <ZMbqBfEI9CuT0FUe@boqun-archlinux>
+In-Reply-To: <ZMbqBfEI9CuT0FUe@boqun-archlinux>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 31 Jul 2023 02:13:44 +0200
+Message-ID: <CANiq72=iUJ7WT7BFJH_U3AGg=7a5=zA2VOv=LOycR_XRph1Qdw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] rust: allocator: Prevent mis-aligned allocation
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Dariusz Sosnowski <dsosnowski@dsosnowski.pl>,
+        Geoffrey Thomas <geofft@ldpreload.com>,
+        Fox Chen <foxhlchen@gmail.com>,
+        John Baublitz <john.m.baublitz@gmail.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
+        Andreas Hindborg <nmi@metaspace.dk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Usama,
+On Mon, Jul 31, 2023 at 12:54=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> =
+wrote:
+>
+> Good to know, thanks!
 
-kernel test robot noticed the following build errors:
+Yeah, thanks Bj=C3=B6rn!
 
-[auto build test ERROR on akpm-mm/mm-everything]
+> Agreed. It's better. So reword as below:
+>
+> // Note: Although these are *safe* functions, but they are called by the
+> // compiler with the parameters that obey the same `GlobalAlloc`
+> // function safety requirements: size and align should form a valid
+> // layout, and size is greater than 0.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Usama-Arif/mm-hugetlb-Skip-prep-of-tail-pages-when-HVO-is-enabled/20230730-231750
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230730151606.2871391-7-usama.arif%40bytedance.com
-patch subject: [v2 6/6] mm: hugetlb: Skip initialization of struct pages freed later by HVO
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20230731/202307310817.Y6ZmhLsV-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230731/202307310817.Y6ZmhLsV-lkp@intel.com/reproduce)
++1, thanks!
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307310817.Y6ZmhLsV-lkp@intel.com/
+Applied to `rust-fixes`, but please feel free to send `Reviewed-by`s.
 
-All errors (new ones prefixed by >>):
-
-   aarch64-linux-ld: mm/hugetlb.o: in function `__alloc_bootmem_huge_page':
-   hugetlb.c:(.init.text+0x574): undefined reference to `vmemmap_optimize_enabled'
-   aarch64-linux-ld: mm/hugetlb.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `vmemmap_optimize_enabled' which may bind externally can not be used when making a shared object; recompile with -fPIC
-   hugetlb.c:(.init.text+0x574): dangerous relocation: unsupported relocation
->> aarch64-linux-ld: hugetlb.c:(.init.text+0x594): undefined reference to `vmemmap_optimize_enabled'
-   aarch64-linux-ld: hugetlb.c:(.init.text+0x59c): undefined reference to `vmemmap_optimize_enabled'
-   aarch64-linux-ld: hugetlb.c:(.init.text+0x634): undefined reference to `vmemmap_optimize_enabled'
-   aarch64-linux-ld: mm/hugetlb.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `vmemmap_optimize_enabled' which may bind externally can not be used when making a shared object; recompile with -fPIC
-   hugetlb.c:(.init.text+0x634): dangerous relocation: unsupported relocation
-   aarch64-linux-ld: hugetlb.c:(.init.text+0x650): undefined reference to `vmemmap_optimize_enabled'
-   aarch64-linux-ld: mm/hugetlb.o:hugetlb.c:(.init.text+0x658): more undefined references to `vmemmap_optimize_enabled' follow
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+Miguel
