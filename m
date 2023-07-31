@@ -2,76 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BC276A106
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4D576A109
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjGaTUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
+        id S230087AbjGaTUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbjGaTUN (ORCPT
+        with ESMTP id S230093AbjGaTUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:20:13 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF3AE5F
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:20:12 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-563f4e49ff9so2889258a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690831212; x=1691436012;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AGAYQ6rkGNakus8aaZ27EffaPf8koLaE5zk7B3NOHKA=;
-        b=GqB/qdhTxxyrpfgSKIpQh97Dk1UMHlEa6GMjIym1JR9gaxNdxDyTaOb+1j6YPM+RAj
-         wE1c0gqZ1WTzXyVxGj3Zrtwhn3pCJmNXA6/P5ZJFm8uPywxskWxY/LvN6Te6q6L0yPCZ
-         ZDxtAKINDmFEqEX2z5OH3bbFBTiIMl/7pgV9fL6ekXIZ0EzKKNLaPCO88YektkU4vB12
-         QC4x+6FrJEDN0KVGAwi7ILcOwjN0OgsdSC5PTZ82SyiInHiQMGjQeKTZHMhyLtcxzqDm
-         xjWSAkas0iJdFCGFj08qVu69OS3ytUfJKu9bc79AFsS/2zsPu1eAxr/xnEzHittALpvR
-         T3kA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690831212; x=1691436012;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AGAYQ6rkGNakus8aaZ27EffaPf8koLaE5zk7B3NOHKA=;
-        b=IZX5qbXyvRpCVuHApCgmZuvYse7dxxwVc8CahXrijPf612NTVWjcOEJdxPtC7CSYS/
-         QfSTiVdlZt7oau2Mr4LxjpxuCvmUScEiSTmAvtRa7pw6845u2MnkkPTy8pF8EDqK5J+N
-         TcPbpjj5WvycXE3E0QFw1yhJOduPD0W07AYvEPWuO2GtyGdLBnkCWz/o6O2EpJIL/hLP
-         mF5HUviScixJFnCvC1g6vUkqNHoOrIiW86Kbq+ce/haufB1/nm0+M8qgy4g2sbEPRoMG
-         Xf2uBS7qnOKQW6Y15MWWYDtncmjxqnxFiXl7FWcU0wlrfxALnYkZsBrWirgRvadgrg5S
-         wBgw==
-X-Gm-Message-State: ABy/qLZFuP7DpZfpndYAHFRwqkcqbzLSgfcaY/o0ffWkE0vXvt8mNkbo
-        EINtxZYUimLSt3l72vogSlP83yyMKxGqsQKfOqwAWY7n0EM=
-X-Google-Smtp-Source: APBJJlE9tXomkGDl6B+X5zzVamRr+k1A1H3T9g5qwZex8PsTkCtguD+GC8pFCyYdLyNmkGr4Ebb3T4QphnooKOSf4oM=
-X-Received: by 2002:a17:90a:f318:b0:263:9661:a35c with SMTP id
- ca24-20020a17090af31800b002639661a35cmr10000687pjb.8.1690831211934; Mon, 31
- Jul 2023 12:20:11 -0700 (PDT)
+        Mon, 31 Jul 2023 15:20:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE561713;
+        Mon, 31 Jul 2023 12:20:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=7kEonDGMduTbFsCil+eszqrNrb5nrnY+6n0LGU5HhHA=; b=Wz6DDGLEoUvHSzKosfdPLNuAx6
+        pXzK5fDBMLzFxdrzFewsUb1Lr3/dW14cR14Wa3XBkxzL+dYZGrYJ7gWZhgWVr7Q5I5Tl6WWpv/w+7
+        45Zrya0kQ+Bi7L5Pe2IpLcc6aUA+qJYMpb+nBBo/j+Sj2OS9zTqo3Jo2zk4AdNTiIBj//QH61/SvS
+        7sNEHNYkvPMNtO67KQNvk54Nq9kcR140qlDdm1ebt67M/ZqM6voGTbaa61kZ9iE/MCYWR61O5smiT
+        S0kZfVowlGQpc9n4WuK3UsLH7XkISpISXB5SUfVdmKjJmcKJRrguPeCEYo74GlgveOrKsdlTeUixB
+        DQclJDog==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQYRB-003LT8-T5; Mon, 31 Jul 2023 19:20:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3951A3002CE;
+        Mon, 31 Jul 2023 21:20:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 07A8E203C783E; Mon, 31 Jul 2023 21:20:13 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 21:20:12 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        dvhart@infradead.org, dave@stgolabs.net, andrealmeid@igalia.com,
+        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
+        hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de
+Subject: Re: [PATCH v1 02/14] futex: Extend the FUTEX2 flags
+Message-ID: <20230731192012.GA11704@hirez.programming.kicks-ass.net>
+References: <20230721102237.268073801@infradead.org>
+ <20230721105743.819362688@infradead.org>
+ <87edkonjrk.ffs@tglx>
+ <87mszcm0zw.ffs@tglx>
 MIME-Version: 1.0
-Received: by 2002:a05:7300:7492:b0:dc:d560:dc43 with HTTP; Mon, 31 Jul 2023
- 12:20:11 -0700 (PDT)
-Reply-To: Dr.catherine_chan@hotmail.com
-From:   catherine chan <williamsoscar698@gmail.com>
-Date:   Mon, 31 Jul 2023 21:20:11 +0200
-Message-ID: <CAM8NFUTFmqT-kq4q6JLKSBrz-uVg6sMQbmoDTZLYeQUnfNKN9A@mail.gmail.com>
-Subject: Re:Hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mszcm0zw.ffs@tglx>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
- Hello! How are you? Please forgive me if my application is not
-acceptable by your kind person, I saw your email and I want to talk to
-you directly by mail. I would appreciate it if you could send me an
-email when you receive it.
+On Mon, Jul 31, 2023 at 07:42:11PM +0200, Thomas Gleixner wrote:
 
-Waiting for your prompt response
-Greetings,
+> Aargh. This is really nasty to make FUTEX2_64 0x3 and abuse it to test
+> the flags for validity. Intuitive and obvious is something else.
+
+Like so then?
+
+--- a/include/uapi/linux/futex.h
++++ b/include/uapi/linux/futex.h
+@@ -57,6 +57,8 @@
+ 			/*	0x40 */
+ #define FUTEX2_PRIVATE		FUTEX_PRIVATE_FLAG
+ 
++#define FUTEX2_SIZE_MASK	0x03
++
+ /* do not use */
+ #define FUTEX_32		FUTEX2_32 /* historical accident :-( */
+ 
+--- a/kernel/futex/syscalls.c
++++ b/kernel/futex/syscalls.c
+@@ -183,7 +183,7 @@ SYSCALL_DEFINE6(futex, u32 __user *, uad
+ 	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
+ }
+ 
+-#define FUTEX2_MASK (FUTEX2_64 | FUTEX2_PRIVATE)
++#define FUTEX2_MASK (FUTEX2_SIZE_MASK | FUTEX2_PRIVATE)
+ 
+ /**
+  * futex_parse_waitv - Parse a waitv array from userspace
+@@ -208,11 +208,11 @@ static int futex_parse_waitv(struct fute
+ 			return -EINVAL;
+ 
+ 		if (!IS_ENABLED(CONFIG_64BIT) || in_compat_syscall()) {
+-			if ((aux.flags & FUTEX2_64) == FUTEX2_64)
++			if ((aux.flags & FUTEX2_SIZE_MASK) == FUTEX2_64)
+ 				return -EINVAL;
+ 		}
+ 
+-		if ((aux.flags & FUTEX2_64) != FUTEX2_32)
++		if ((aux.flags & FUTEX2_SIZE_MASK) != FUTEX2_32)
+ 			return -EINVAL;
+ 
+ 		futexv[i].w.flags = aux.flags;
