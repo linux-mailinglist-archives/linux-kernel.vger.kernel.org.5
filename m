@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D42AD769C94
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA0A769CDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbjGaQdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:33:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36774 "EHLO
+        id S233498AbjGaQhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:37:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232782AbjGaQcx (ORCPT
+        with ESMTP id S229830AbjGaQhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:32:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6880DF;
-        Mon, 31 Jul 2023 09:32:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Mon, 31 Jul 2023 12:37:32 -0400
+X-Greylist: delayed 817 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 31 Jul 2023 09:36:55 PDT
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E462702;
+        Mon, 31 Jul 2023 09:36:55 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 54D3B61212;
-        Mon, 31 Jul 2023 16:32:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB5FAC433C7;
-        Mon, 31 Jul 2023 16:32:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690821171;
-        bh=9APW6kjAiEHu5U4FuEto4YMwT8x/YGo6oRwvtvD7SiQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V8Bz0h4obauNPZ7sMNXGHjPqUq/cyyXApUk90A/MSRkLEAmzjHzJYuvH/Ww2o4u4s
-         jPkB5FD7qQ9kUYIJv19SDXnWvN8XXvlxZzXFgBuf4A2pjUVF8gQNhD2lY3D/2Sp1xE
-         CpRoc7SFLc1GZiG4+kF7PMoLtqI5ncSd1EfLUHIKvtOy2eQIVFDj5hNmSuMTHhIv5a
-         CdTOSVFsWVQOh3Wnq60SwYSRFOifTdQmQvnAYlyepH3xmgJws7MFdOAgDNXuBa/y0B
-         YQI3tW87kRUnddAPm1kLe+TfxHbJc4J1UJZQEhRlXRyKe/tVXnv+GeS/EngU4hqVRO
-         hODkDanX4jmTw==
-Date:   Mon, 31 Jul 2023 09:35:57 -0700
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Mukesh Ojha <quic_mojha@quicinc.com>
-Cc:     Komal Bajaj <quic_kbajaj@quicinc.com>, agross@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] nvmem: sec-qfprom: Add Qualcomm secure QFPROM
- support
-Message-ID: <wst227b45le3ql6ctkdiyiynae7ipy3gqiz6ibhbxau4bogb5o@w25vnllnwnw7>
-References: <20230724083849.8277-1-quic_kbajaj@quicinc.com>
- <20230724083849.8277-3-quic_kbajaj@quicinc.com>
- <9f417fea-38cf-942b-514e-99b47f27c544@quicinc.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id C808F2C5;
+        Mon, 31 Jul 2023 16:36:27 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net C808F2C5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1690821387; bh=vT9+AdeVvhBOv2Sa89E+y1k/NCghCUjoEhjX3awobsU=;
+        h=From:To:Subject:In-Reply-To:References:Date:From;
+        b=PUd0WzC3pMwP2yuVngqdFIeoxUAIY3w3F3IYhmYoXZAgpAFsC2XUfm24zxmkkYh3Y
+         1Bv/fELc8rknnCcqQzBSnCa4DZo2Bt0vi8izGXaXZYK6n8pWe79UF2Jg99NYMLIQaZ
+         XktX579Hjb1xKvGUm7ZDA57mqPqNRJ/PI/DXJTutBFM4QOY1hmtZoaog5c5u4gPEF/
+         LfrGghcSHtRX/rtIS/2p8YQyK/PrLA+BjE35RDWYTcgZp/3P34chG0gCbZUbSVdkCl
+         7gFYyfnnhtUO9spxXF7Y27Ti2buKO2V6+rYS+I0tkT0qvpCeNAbn0wnVYwFHvsKtGr
+         nHlrJOjvEUKqA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Costa Shulyupin <costa.shul@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alex Shi <alexs@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Costa Shulyupin <costa.shul@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Wu XiangCheng <bobwxc@email.cn>,
+        Paul Cercueil <paul@crapouillou.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH] docs: move mips under arch
+In-Reply-To: <20230725043835.2249678-1-costa.shul@redhat.com>
+References: <20230725043835.2249678-1-costa.shul@redhat.com>
+Date:   Mon, 31 Jul 2023 10:36:27 -0600
+Message-ID: <87pm48ca2c.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9f417fea-38cf-942b-514e-99b47f27c544@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 12:09:07PM +0530, Mukesh Ojha wrote:
-> On 7/24/2023 2:08 PM, Komal Bajaj wrote:
-[..]
-> > diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
-> > index f82431ec8aef..e248d3daadf3 100644
-> > --- a/drivers/nvmem/Makefile
-> > +++ b/drivers/nvmem/Makefile
-> > @@ -44,6 +44,8 @@ obj-$(CONFIG_NVMEM_NINTENDO_OTP)	+= nvmem-nintendo-otp.o
-> >   nvmem-nintendo-otp-y			:= nintendo-otp.o
-> >   obj-$(CONFIG_NVMEM_QCOM_QFPROM)		+= nvmem_qfprom.o
-> >   nvmem_qfprom-y				:= qfprom.o
-> > +obj-$(CONFIG_NVMEM_QCOM_SEC_QFPROM)	+= nvmem_sec_qfprom.o
-> > +nvmem_sec_qfprom-y			:= sec-qfprom.o
-> 
-> Are we just doing this for just renaming the object ?
-> 
+Costa Shulyupin <costa.shul@redhat.com> writes:
 
-Correct.
+> and fix all in-tree references.
+>
+> Architecture-specific documentation is being moved into Documentation/arch/
+> as a way of cleaning up the top-level documentation directory and making
+> the docs hierarchy more closely match the source hierarchy.
+>
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+> ---
+>  Documentation/arch/index.rst                                  | 2 +-
+>  Documentation/{ => arch}/mips/booting.rst                     | 0
+>  Documentation/{ => arch}/mips/features.rst                    | 0
+>  Documentation/{ => arch}/mips/index.rst                       | 0
+>  Documentation/{ => arch}/mips/ingenic-tcu.rst                 | 0
+>  Documentation/devicetree/bindings/timer/ingenic,tcu.yaml      | 2 +-
+>  Documentation/translations/zh_CN/arch/index.rst               | 2 +-
+>  Documentation/translations/zh_CN/{ => arch}/mips/booting.rst  | 4 ++--
+>  Documentation/translations/zh_CN/{ => arch}/mips/features.rst | 4 ++--
+>  Documentation/translations/zh_CN/{ => arch}/mips/index.rst    | 4 ++--
+>  .../translations/zh_CN/{ => arch}/mips/ingenic-tcu.rst        | 4 ++--
+>  MAINTAINERS                                                   | 2 +-
+>  12 files changed, 12 insertions(+), 12 deletions(-)
+>  rename Documentation/{ => arch}/mips/booting.rst (100%)
+>  rename Documentation/{ => arch}/mips/features.rst (100%)
+>  rename Documentation/{ => arch}/mips/index.rst (100%)
+>  rename Documentation/{ => arch}/mips/ingenic-tcu.rst (100%)
+>  rename Documentation/translations/zh_CN/{ => arch}/mips/booting.rst (92%)
+>  rename Documentation/translations/zh_CN/{ => arch}/mips/features.rst (65%)
+>  rename Documentation/translations/zh_CN/{ => arch}/mips/index.rst (79%)
+>  rename Documentation/translations/zh_CN/{ => arch}/mips/ingenic-tcu.rst (97%)
 
-> >   obj-$(CONFIG_NVMEM_RAVE_SP_EEPROM)	+= nvmem-rave-sp-eeprom.o
-> >   nvmem-rave-sp-eeprom-y			:= rave-sp-eeprom.o
-> >   obj-$(CONFIG_NVMEM_RMEM) 		+= nvmem-rmem.o
-> > diff --git a/drivers/nvmem/sec-qfprom.c b/drivers/nvmem/sec-qfprom.c
-[..]
-> > +static int sec_qfprom_reg_read(void *context, unsigned int reg, void *_val, size_t bytes)
-> > +{
-> > +	struct sec_qfprom *priv = context;
-> > +	unsigned int i;
-> > +	u8 *val = _val;
-> > +	u32 read_val;
-> > +	u8 *tmp;
-> > +
-> > +	for (i = 0; i < bytes; i++, reg++) {
-> > +		if (i == 0 || reg % 4 == 0) {
-> > +			if (qcom_scm_io_readl(priv->base + (reg & ~3), &read_val)) {
-> > +				dev_err(priv->dev, "Couldn't access fuse register\n");
-> > +				return -EINVAL;
-> > +			}
-> > +			tmp = (u8 *)&read_val;
-> > +		}
-> > +
-> > +		val[i] = tmp[reg & 3];
-> > +	}
-> 
-> Getting secure read from fuse region is fine here, since we have to read
-> 4 byte from trustzone, but this restriction of reading is also there
-> for sm8{4|5}50 soc's where byte by byte reading is protected and granularity
-> set to 4 byte (qfprom_reg_read() in drivers/nvmem/qfprom.c)
-> is will result in abort, in  that case this function need to export this
-> logic.
-> 
+Applied, thanks.
 
-If qfprom needs similar treatment, then let's land this first and then
-consider generalizing (i.e. move to some library code) this - or if
-infeasible, just fix qfprom_reg_read().
-
-Regards,
-Bjorn
+jon
