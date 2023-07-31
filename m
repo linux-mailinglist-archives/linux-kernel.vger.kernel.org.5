@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7882876A24A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96DF376A24B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbjGaU7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:59:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
+        id S230462AbjGaVA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbjGaU65 (ORCPT
+        with ESMTP id S229674AbjGaVAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:58:57 -0400
+        Mon, 31 Jul 2023 17:00:25 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81CA01996
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:58:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9334198C
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:00:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 180E461298
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:58:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 261EDC433C7;
-        Mon, 31 Jul 2023 20:58:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 671BD612DC
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 21:00:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C39E0C433C9;
+        Mon, 31 Jul 2023 21:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690837135;
-        bh=r5eukuyVDYrGLrNULe36nyXrnyzoReTEKShm4Q8CiuA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dCt+PG6O2oxSwfiG6ExP2KO9J0t7rdhKRbVUFewtDhwE1LAbAJYzX8EWR1LE2sh5v
-         gHgaCR6zrK9ZpYFSVVdvhgFH3L1P5+2jCytQ/okSBzgjGy9vXGKQxitU4tXzmNbOdj
-         jZWkd+WUc52ICEK1F1IxEl/IYq1/8lpqRP3dC6XsISK73poSKpXKv0KvyRFCgYK0pC
-         pm3JbaSFAUp3kTofXmIy5P1FVJljLXcs0BCO10yATOYNONfHqyrwxvaYcbu3u5afsD
-         MYvOX4PwewYY7bpkwaEU3NOYYI+HRnSKb+octG2CFPrIAuzcwhebDg1PLOI0Mjx9Qx
-         Xnvlml+b5BgKQ==
-Date:   Mon, 31 Jul 2023 13:58:54 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Tahsin Erdogan <trdgn@amazon.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tun: avoid high-order page allocation for packet header
-Message-ID: <20230731135854.3628918b@kernel.org>
-In-Reply-To: <20230726030936.1587269-1-trdgn@amazon.com>
-References: <20230726030936.1587269-1-trdgn@amazon.com>
+        s=k20201202; t=1690837223;
+        bh=hM4O6rd3rl2nwdrbPLh8e5AU2fMHoSthFtiO7uEZj/0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DPedMuDbMyQ1WoVFNvox8yvkEgD6C6Ml10kIE3g2XgLeIwwxeI6xs6Xg18nKVWayw
+         FqjjZkcP9a7aW5hpwGur4GWzysoL8jgGU+rC4l3VrAQB/HNWU7s4A0M0imuSci8gFx
+         fpA8pJ8nWC46FGGv/HmQlBKgbyzcdT+qhdhhiG0SzsIWAVHWAGccjawM2036gcdN4h
+         bcoWa7a7b/GEnN7b835EPcIfV+HJpsDWrMRMbe6X/YK8E/o72pRBpV23oVd9HFM6oM
+         CHdW48Ff5iysxrYSYy1iFy4e7QmK1XQd0sGE1gjMHhTBwOctkL1P1UZwQS/Un8EL2s
+         1nWD4oGKbL79w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9E9BFC595C0;
+        Mon, 31 Jul 2023 21:00:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] net: remove duplicate INDIRECT_CALLABLE_DECLARE
+ of udp[6]_ehashfn
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169083722364.15571.7926775828310116758.git-patchwork-notify@kernel.org>
+Date:   Mon, 31 Jul 2023 21:00:23 +0000
+References: <20230731-indir-call-v1-1-4cd0aeaee64f@isovalent.com>
+In-Reply-To: <20230731-indir-call-v1-1-4cd0aeaee64f@isovalent.com>
+To:     Lorenz Bauer <lmb@isovalent.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        martin.lau@kernel.org, kuniyu@amazon.com, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.lau@linux.dev
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,20 +60,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 Jul 2023 20:09:36 -0700 Tahsin Erdogan wrote:
-> @@ -1838,6 +1838,9 @@ static ssize_t tun_get_user(struct tun_struct *tun, struct tun_file *tfile,
->  			 */
->  			zerocopy = false;
->  		} else {
-> +			if (linear == 0)
-> +				linear = min_t(size_t, good_linear, copylen);
+Hello:
 
-nit: would you mind changing to !linear instead of linear == 0 ?
+This patch was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-Also - I don't see linear explicitly getting set to 0. What guarantees
-that? What's the story there?
+On Mon, 31 Jul 2023 11:42:53 +0200 you wrote:
+> There are already INDIRECT_CALLABLE_DECLARE in the hashtable
+> headers, no need to declare them again.
+> 
+> Fixes: 0f495f761722 ("net: remove duplicate reuseport_lookup functions")
+> Suggested-by: Martin Lau <martin.lau@linux.dev>
+> Signed-off-by: Lorenz Bauer <lmb@isovalent.com>
+> 
+> [...]
 
-Otherwise seems reasonable. One more allocation but hopefully nobody
-will notice.
+Here is the summary with links:
+  - [bpf-next] net: remove duplicate INDIRECT_CALLABLE_DECLARE of udp[6]_ehashfn
+    https://git.kernel.org/bpf/bpf-next/c/74bdfab4fd7c
+
+You are awesome, thank you!
 -- 
-pw-bot: cr
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
