@@ -2,255 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B82BA76A212
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEC576A210
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbjGaUjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56538 "EHLO
+        id S230285AbjGaUjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjGaUjM (ORCPT
+        with ESMTP id S230162AbjGaUjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:39:12 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6379EE5F
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:39:10 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-c4cb4919bb9so5114277276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:39:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690835949; x=1691440749;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LlRYd4YMaajQ0xXPSbk9pEmLduWsiZdsNXzqgUFeIsA=;
-        b=5MbruZmoSbLb/zevKa240hssKFM2XzUyqhw7ssvcHHJn4mIGQrY5W6LzNX3jVU5Yek
-         6G7+IOxVUZJW3+htvGee1hd+VBFSESt2reHypW5zUrGo7OFYCblkvY9QojFjK5SHEx8Y
-         WA7f4kY2MyQwkXeeqQPzVGwzDk5puAdNQm+9zuvD0IUsGvOKBXEiBObLg3S59mQPwd1k
-         9/+BXGy+1X4GJqMGmP7sEPJiEnEbgg0Lwf4N4PqgpCev5KPsGeLie9kacRGpmuzN/IbE
-         0k/CzLV0QLp+vN7jSB/6RAP8c6/UgU8jNUr629eyRG0iiQqCwZPPF/gcslcx2gjMhI7C
-         H8hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690835949; x=1691440749;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LlRYd4YMaajQ0xXPSbk9pEmLduWsiZdsNXzqgUFeIsA=;
-        b=W+XIHEQOCPxMZp9Y0z3vT30ETNg2QpKFmNQCJe8MtQe4ylMIyH0zjnOjkLeg9Wqly3
-         7MNU3N28RF6Gq4gihZplUEIXKBuO63JeFehTsxHKHaTNiGEZT5Hpo52k/ha1vC01Ql2O
-         K4uZsNFOOKQmpwglZvoJzaB5nEGcWurmXyyNAWEKr/Y/z6qmNGtePVBpq2rnmIu4+s97
-         3s70slNOQLWsHoZQvNXTjMiuti1sPX3+8BrNelz/bkmNYOzuRquhWjLd3iJKfbjtr0Dc
-         U2KWy7wRIy9rTvsLpJq4KXdBRoNQPxruppAPB/MU9DOKHoDmRlp6kR7pIPXRNJeao2YO
-         uO6g==
-X-Gm-Message-State: ABy/qLYKSb1VLkJohJ5ntD8GWx4dim20QlnnmPc3lN7J8GOzDCspJVwz
-        C0Da5BSHWkvpy4oHw8S+/9GHJW/+gaSwoQv/wYf2/Q==
-X-Google-Smtp-Source: APBJJlFu2UEwyyq7d3CDSqXwCOLCd4McJ8AzkctZiKIZQEhb6BKbLMy0406YWzEI58g3jYog+ildUQfmSA0lq2oxJm0=
-X-Received: by 2002:a5b:750:0:b0:d0c:fd53:aaae with SMTP id
- s16-20020a5b0750000000b00d0cfd53aaaemr10065125ybq.2.1690835949388; Mon, 31
- Jul 2023 13:39:09 -0700 (PDT)
+        Mon, 31 Jul 2023 16:39:08 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761861BCF
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:39:05 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690835943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6aXZQTsMiC63g2UstCGyW0ZPrqeg5a29N7/rbS4gUX0=;
+        b=uvmHYaMxDIpydrhcn2USjKudVJPgjhgSTzRoo46MGI9Cl/ChQvrkp1Y3jHGwLAQiKSWGv4
+        YOmCbTUx9HTIlxQLZoQXUdF7NHlcVq0MseX0dZC6a94RbyB6oTPNQiex9jhFotXJY6Dr5I
+        FXEhphuG+YPc1yRJDhVZlw3rADy9hb4sv39DcE19sLzCTcRgHXbFa6bBlQEzsTotd5tBEk
+        9Z7YDfrhxISHativFRrBRCMEt31LUGvOMcMz0nvt2G1ZmQE7dMvrybwITvc/G8p1bopNLm
+        SjDNY/Pk64xpeO6ufWzqe8CYevaXDtrh0zk+RGIKjy//m+ov5OGa6x9AeVaUNw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690835943;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6aXZQTsMiC63g2UstCGyW0ZPrqeg5a29N7/rbS4gUX0=;
+        b=dKOLlqe8D2bwXxKlXegTUOU7R+qgro9NnOI1RGfg0YP7ouKnm7bDmaSD67hAfjNOhfAhQ1
+        +As79U9J1XpaCfDw==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v2 1/8] printk: Add non-BKL (nbcon) console basic
+ infrastructure
+In-Reply-To: <ZMfVyOKbYZKG9nUJ@alley>
+References: <20230728000233.50887-1-john.ogness@linutronix.de>
+ <20230728000233.50887-2-john.ogness@linutronix.de>
+ <ZMPU8YPHzJ8Q2V9W@alley> <87o7jv92tt.fsf@jogness.linutronix.de>
+ <ZMfVyOKbYZKG9nUJ@alley>
+Date:   Mon, 31 Jul 2023 22:45:00 +0206
+Message-ID: <87cz07ak9n.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <20230731171233.1098105-7-surenb@google.com> <20230731203032.z66gjqv5p4y662zo@revolver>
-In-Reply-To: <20230731203032.z66gjqv5p4y662zo@revolver>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 31 Jul 2023 13:38:58 -0700
-Message-ID: <CAJuCfpHjzVeFYnZU-TRwnec3R4KZp+4c=hMk323d57TpDB32Hw@mail.gmail.com>
-Subject: Re: [PATCH 6/6] mm: move vma locking out of vma_prepare
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, torvalds@linux-foundation.org,
-        jannh@google.com, willy@infradead.org, david@redhat.com,
-        peterx@redhat.com, ldufour@linux.ibm.com, vbabka@suse.cz,
-        michel@lespinasse.org, jglisse@google.com, mhocko@suse.com,
-        hannes@cmpxchg.org, dave@stgolabs.net, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org, Lorenzo Stoakes <lstoakes@gmail.com>,
-        Linus Torvalds <torvalds@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 1:30=E2=80=AFPM Liam R. Howlett <Liam.Howlett@oracl=
-e.com> wrote:
+On 2023-07-31, Petr Mladek <pmladek@suse.com> wrote:
+>>> #define have_serialized_console (have_legacy_console || have_boot_console)
+>> 
+>> This macro is not about having a serialized console. The first
+>> sentence in the comment describes it best. It is just to signal if we
+>> need to do the console lock/unlock dance to generate console output.
+>> 
+>> Something like "need_bkl_dance" would be a better name, but it
+>> doesn't sound very technical.
 >
-> Adding Lorenzo since this also touches vma_merge() again..
+> I see.
 >
-> * Suren Baghdasaryan <surenb@google.com> [230731 13:12]:
-> > vma_prepare() is currently the central place where vmas are being locke=
-d
-> > before vma_complete() applies changes to them. While this is convenient=
-,
-> > it also obscures vma locking and makes it hard to follow the locking ru=
-les.
-> > Move vma locking out of vma_prepare() and take vma locks explicitly at =
-the
-> > locations where vmas are being modified.
->
-> I get the idea of locking closer to the edits, but vma_merge() is very
-> hard to follow.  It was worse when it was two functions and much larger,
-> but adding this into vma_merge() is difficult to validate.
->
-> We still set vma =3D <another vma> in places, so that adds to the
-> difficulty of ensuring the end result is all VMAs that will be
-> modified/removed have been locked...and the 'locking rules' are also
-> obscured.
->
-> It's also annoying that this doesn't fully allow you to follow the
-> locking anyways.  dup_anon_vma() still locks internally, with good
-> reason, but it's still not clear that the VMA is locked when looking at
-> this.
->
-> That being said, I did go through each case and it looks like it locks
-> the correct VMA(s) to me.
+> Question: Will console_lock() serialize the early-boot handling
+> 	of non-BKL conosles? I mean the direct flush in vprintk_emit().
 
-Thanks!
-Yeah, it took me some time to ensure the locking there is correct. If
-you see a better alternative to make the locking more obvious I'm open
-to suggestions. I accept that locking in vma_merge() is not easy to
-follow.
+Initially there will be no nbcon consoles that support CON_BOOT. This
+means that there are no nbcon consoles in "early boot". The only reason
+that nbcon consoles and legacy boot consoles would co-exist (aside from
+the brief moment before boot consoles are unregistered) is if
+keep_bootcon is used.
 
+As long as a boot console is registered, nbcon consoles are also bound
+to console_lock() serialization. We have no choice until we can safely
+link boot consoles to regular consoles.
+
+I think this will be ok for the first release. The 8250 will not become
+less reliable in early boot. And once the boot console is unregistered,
+the 8250 nbcon console will be able to fly.
+
+> At lest, the v1 patch set called cons_atomic_flush() in vprintk_emit()
+> without taking outside console_lock().
+
+Yes. But in the v1 patch set, console_is_usable() returns false for
+nbcon consoles if there is a boot console registered. So the
+cons_atomic_flush() in vprintk_emit() would not end up printing
+anything.
+
+As per your v1 feedback, that check will no longer be in
+console_is_usable(), but instead will be further out in higher level
+code.
+
+> If console_lock never serializes non-BKL consoles then I rather would define:
 >
-> Reviewed-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+> 	#define serialized_nbcon (have_nbcon && have_boot_console)
+> and use:
 >
-> >
-> > Suggested-by: Linus Torvalds <torvalds@linuxfoundation.org>
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> >  mm/mmap.c | 26 ++++++++++++++++----------
-> >  1 file changed, 16 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/mm/mmap.c b/mm/mmap.c
-> > index 850a39dee075..e59d83cb1d7a 100644
-> > --- a/mm/mmap.c
-> > +++ b/mm/mmap.c
-> > @@ -476,16 +476,6 @@ static inline void init_vma_prep(struct vma_prepar=
-e *vp,
-> >   */
-> >  static inline void vma_prepare(struct vma_prepare *vp)
-> >  {
-> > -     vma_start_write(vp->vma);
-> > -     if (vp->adj_next)
-> > -             vma_start_write(vp->adj_next);
-> > -     if (vp->insert)
-> > -             vma_start_write(vp->insert);
-> > -     if (vp->remove)
-> > -             vma_start_write(vp->remove);
-> > -     if (vp->remove2)
-> > -             vma_start_write(vp->remove2);
-> > -
-> >       if (vp->file) {
-> >               uprobe_munmap(vp->vma, vp->vma->vm_start, vp->vma->vm_end=
-);
-> >
-> > @@ -650,6 +640,7 @@ int vma_expand(struct vma_iterator *vmi, struct vm_=
-area_struct *vma,
-> >       bool remove_next =3D false;
-> >       struct vma_prepare vp;
-> >
-> > +     vma_start_write(vma);
-> >       if (next && (vma !=3D next) && (end =3D=3D next->vm_end)) {
-> >               int ret;
-> >
-> > @@ -657,6 +648,7 @@ int vma_expand(struct vma_iterator *vmi, struct vm_=
-area_struct *vma,
-> >               ret =3D dup_anon_vma(vma, next);
-> >               if (ret)
-> >                       return ret;
-> > +             vma_start_write(next);
-> >       }
-> >
-> >       init_multi_vma_prep(&vp, vma, NULL, remove_next ? next : NULL, NU=
-LL);
-> > @@ -708,6 +700,8 @@ int vma_shrink(struct vma_iterator *vmi, struct vm_=
-area_struct *vma,
-> >       if (vma_iter_prealloc(vmi))
-> >               return -ENOMEM;
-> >
-> > +     vma_start_write(vma);
-> > +
-> >       init_vma_prep(&vp, vma);
-> >       vma_prepare(&vp);
-> >       vma_adjust_trans_huge(vma, start, end, 0);
-> > @@ -946,10 +940,12 @@ struct vm_area_struct *vma_merge(struct vma_itera=
-tor *vmi, struct mm_struct *mm,
-> >       /* Can we merge both the predecessor and the successor? */
-> >       if (merge_prev && merge_next &&
-> >           is_mergeable_anon_vma(prev->anon_vma, next->anon_vma, NULL)) =
-{
-> > +             vma_start_write(next);
-> >               remove =3D next;                          /* case 1 */
-> >               vma_end =3D next->vm_end;
-> >               err =3D dup_anon_vma(prev, next);
-> >               if (curr) {                             /* case 6 */
-> > +                     vma_start_write(curr);
-> >                       remove =3D curr;
-> >                       remove2 =3D next;
-> >                       if (!next->anon_vma)
-> > @@ -958,6 +954,7 @@ struct vm_area_struct *vma_merge(struct vma_iterato=
-r *vmi, struct mm_struct *mm,
-> >       } else if (merge_prev) {                        /* case 2 */
-> >               if (curr) {
-> >                       err =3D dup_anon_vma(prev, curr);
-> > +                     vma_start_write(curr);
-> >                       if (end =3D=3D curr->vm_end) {      /* case 7 */
-> >                               remove =3D curr;
-> >                       } else {                        /* case 5 */
-> > @@ -969,6 +966,7 @@ struct vm_area_struct *vma_merge(struct vma_iterato=
-r *vmi, struct mm_struct *mm,
-> >               res =3D next;
-> >               if (prev && addr < prev->vm_end) {      /* case 4 */
-> >                       vma_end =3D addr;
-> > +                     vma_start_write(next);
-> >                       adjust =3D next;
-> >                       adj_start =3D -(prev->vm_end - addr);
-> >                       err =3D dup_anon_vma(next, prev);
-> > @@ -983,6 +981,7 @@ struct vm_area_struct *vma_merge(struct vma_iterato=
-r *vmi, struct mm_struct *mm,
-> >                       vma_pgoff =3D next->vm_pgoff - pglen;
-> >                       if (curr) {                     /* case 8 */
-> >                               vma_pgoff =3D curr->vm_pgoff;
-> > +                             vma_start_write(curr);
-> >                               remove =3D curr;
-> >                               err =3D dup_anon_vma(next, curr);
-> >                       }
-> > @@ -996,6 +995,8 @@ struct vm_area_struct *vma_merge(struct vma_iterato=
-r *vmi, struct mm_struct *mm,
-> >       if (vma_iter_prealloc(vmi))
-> >               return NULL;
-> >
-> > +     vma_start_write(vma);
-> > +
-> >       init_multi_vma_prep(&vp, vma, adjust, remove, remove2);
-> >       VM_WARN_ON(vp.anon_vma && adjust && adjust->anon_vma &&
-> >                  vp.anon_vma !=3D adjust->anon_vma);
-> > @@ -2373,6 +2374,9 @@ int __split_vma(struct vma_iterator *vmi, struct =
-vm_area_struct *vma,
-> >       if (new->vm_ops && new->vm_ops->open)
-> >               new->vm_ops->open(new);
-> >
-> > +     vma_start_write(vma);
-> > +     vma_start_write(new);
-> > +
-> >       init_vma_prep(&vp, vma);
-> >       vp.insert =3D new;
-> >       vma_prepare(&vp);
-> > @@ -3078,6 +3082,8 @@ static int do_brk_flags(struct vma_iterator *vmi,=
- struct vm_area_struct *vma,
-> >               if (vma_iter_prealloc(vmi))
-> >                       goto unacct_fail;
-> >
-> > +             vma_start_write(vma);
-> > +
-> >               init_vma_prep(&vp, vma);
-> >               vma_prepare(&vp);
-> >               vma_adjust_trans_huge(vma, vma->vm_start, addr + len, 0);
-> > --
-> > 2.41.0.487.g6d72f3e995-goog
-> >
+>   + "have_legacy_console" when console lock/unlock dance is neded.
+>
+>   + "serialize_nbcon" the non-BKL consoles need to be serialized
+>
+> IMHO, it will be more clear what is going on.
+
+We have 3 scenarios that I would like to easily identify using global
+variable(s).
+
+1. There are only nbcon consoles. The console lock never needs to be
+taken.
+
+2. There are nbcon consoles and regular legacy consoles. The console
+lock must be taken to serialize only the regular legacy consoles. There
+are separate code paths (without the console lock) that will take care
+of nbcon atomic printing and nbcon threaded printing.
+
+3. There are nbcon consoles and boot consoles. The console lock must be
+taken to serialize all consoles.
+
+Perhaps rather than using 2 booleans and a macro, we just use a single
+atomic_t that describes the console serialization mode? The effect is
+the same, but maybe it makes the intention of the code a bit easier to
+understand?
+
+SERMOD_BOOTCON      = 0,
+SERMOD_WITH_LEGACY  = 1,
+SERMOD_ONLY_NBCON   = 2,
+
+Or maybe describe the modes based on their behavior rather than their
+condition:
+
+SERMOD_ONLY_CONSOLE_LOCK  = 0,
+SERMOD_ALSO_CONSOLE_LOCK  = 1,
+SERMOD_NO_CONSOLE_LOCK    = 2,
+
+>>>    + Update console_flush_all() description. Mention that it flushes
+>>>      only serialized consoles
+>> 
+>> Agreed. It is only responsible for bkl dance flushing.
+>
+> Will it flush only legacy consoles? Or will it flush also non-BKL
+> consoles during the early boot?
+
+It will also flush nbcon consoles if a boot console is registered.
+
+> I think that it is wrong even after adding the nbcon check. The code
+> looks like this at the end of this patchset:
+>
+> 			/*
+> 			 * If consoles are not usable, it cannot be expected
+> 			 * that they make forward progress, so only increment
+> 			 * @diff for usable consoles.
+> 			 */
+> 			if (!console_is_usable(c))
+> 				continue;
+>
+> 			if (flags & CON_NBCON)
+> 				printk_seq = nbcon_seq_read(c);
+> 			else if (locked)
+> 				printk_seq = c->seq;
+> 			else
+> 				continue;
+>
+> I guess that the "else-continue" path will never happen. But when
+> it happens then pr_flush() would ignore a usable console and it looks
+> wrong.
+
+My reason for keeping the "if locked" was to remind the developer that
+the console lock must be held in order to safely read @console->seq. But
+you are right that it makes things look awkward. I will just change the
+code to:
+
+			if (flags & CON_NBCON)
+				printk_seq = nbcon_seq_read(c);
+			else
+				printk_seq = c->seq;
+
+There is already a comment at the console_lock() explaining why it is
+taken. That is enough.
+
+John
