@@ -2,139 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 149AA7693CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECB37693CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbjGaKzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
+        id S231538AbjGaKzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232251AbjGaKyR (ORCPT
+        with ESMTP id S232493AbjGaKzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:54:17 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4091FC1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:52:51 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe3c7f16bbso476940e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:52:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690800770; x=1691405570;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YTLUtM1uWZf53dgnQ6whEyYV6zi8TUCbRr9vAqETA1s=;
-        b=c2znP9PqoUorM4mVOlSUImCWst2Akz0RKqIQTFlxtfoGouf3V5vxm5hHMrSfnvDk6w
-         iDc4W5LnbB8iO+6WqVkf1RJdjQO32tqDY1dhkOWB0ANLE4YhrnKbBs4JF6r2KV8Pzivc
-         jQOgK+j45HGgFkpAAWtybbT4gQ7oOPSqXhJPicHnHQN0Z5weybYA6T/IU1VWScZvn7KX
-         tIjnWGS2ICUTkl2NEzOl2HgmS7eo4JzdvdDXbuC2myxbpHM0E0c5lFdeZ4CN8Fw+i0ay
-         TUmWIG/0NWdBV8kZPwnIDC4/kh0eEBkXCaRouwBUcsKg90sRppXNWGBzLN6b33UOEQ2c
-         gXpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690800770; x=1691405570;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YTLUtM1uWZf53dgnQ6whEyYV6zi8TUCbRr9vAqETA1s=;
-        b=hoVXug4kBi4dQn6QuXBAILUofk7z3iKzqoj94CeU60cyND7pInldPV4eQYv1Nr5Xhi
-         eCvgxYOiRJ0kGJnmKI4sHmlOVaOYCVB4nEOH8LJwv3aZwQMdgwP1GAflOWGh1QaBNtWT
-         LwWLHc/j7zt8YwgYuYGvXs9+mf7EGn1Bxx8VHz4IqvMjfJsWx+0Fs06HjJzQjnPesjw3
-         Pg0oPypeQoqTHpLffLwqRcqg1C8aVfti26RjXe4/DNlq6DCYNnFWNINj1vQDTsAaN7gc
-         YoDV3WKRSUPE+2gPDLfQlFOgxQ/NgGpD98DEcAzc6X6/T43sIzun7z9z21ur2BPqyPG/
-         KhEQ==
-X-Gm-Message-State: ABy/qLYGmAQ4l0X2z515Hv2W00pvNGTWmkxqBSwM7qTyctswv0u/E0/F
-        TOIG6f+bMEgydhvZfcZeNQquHQ==
-X-Google-Smtp-Source: APBJJlFUWxcYKuU4u5a9LhTmgvs672pkK9fpTe5+I1nUPTF3TwHcgrZ/chLYFhXXkWRkqkIq7c/ZRQ==
-X-Received: by 2002:ac2:5f43:0:b0:4fe:17d6:af2b with SMTP id 3-20020ac25f43000000b004fe17d6af2bmr4626221lfz.42.1690800770093;
-        Mon, 31 Jul 2023 03:52:50 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id p13-20020a05651238cd00b004fdc7ec5cbesm2016936lft.300.2023.07.31.03.52.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 03:52:49 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Mon, 31 Jul 2023 12:52:26 +0200
-Subject: [PATCH v2 10/10] clk: qcom: smd-rpm: Move CPUSS_GNoC clock to
- interconnect
+        Mon, 31 Jul 2023 06:55:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFA010CA
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:54:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3B27961014
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:54:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A361DC433CA;
+        Mon, 31 Jul 2023 10:54:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690800857;
+        bh=qUUzChgXILMkFs1qWKm4e4VSQjq2/07zqiCyUPEce64=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Bpo27gCLeApYVC+LxJkQhZV6u6aMqrQ9Pw3VirBR82fLXG5agwvEbP1A4OkV2Csu7
+         onVLKYnpcZ0XZdTTIzvyPyNzCuLaF2wL4TmFyHluL5MMbk2leqIoBClHHWoT2AgR6M
+         a0SCaRzxUNri8L/pCZ2qzb4Qs1cXhAtnbSFi7+NPVvYxaW/dTBJVxpMop7Qm8bVyV0
+         aEw/FU31nRu4VOMhgEWtjObGu+kohpyQdMm5Ylxl3IiqIJFqzT7cA5X0f5hWAPS8nC
+         s/KdcalhfsP8tBiHlS7JIoIU9WTrAg1clXwh/RNeEsu1QejlozrPOKhaqhsiKz8WBq
+         aU+W6RR/KsiyA==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-4fe216edaf7so3401808e87.0;
+        Mon, 31 Jul 2023 03:54:17 -0700 (PDT)
+X-Gm-Message-State: ABy/qLY8X9v8le9Nkanj9wSSvDJdbB9Bxlrtf6sWYYoQHrhWeeT+Ys4L
+        Wy2IT5mbdyzYoXPLmPNk0jtm+8dOU9vj8zxkq+c=
+X-Google-Smtp-Source: APBJJlElcOX/PyaOy/9AdG1EcRLk+Vjf8P0kGiXIhfqI2S1kn+HgBkMGaspKUnSHCkMd8ybRaEMbhhiGxq97FbzdEWw=
+X-Received: by 2002:a05:6512:12d4:b0:4fe:28cd:b3f with SMTP id
+ p20-20020a05651212d400b004fe28cd0b3fmr1654733lfg.5.1690800855622; Mon, 31 Jul
+ 2023 03:54:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230726-topic-icc_coeff-v2-10-8c91c6c76076@linaro.org>
-References: <20230726-topic-icc_coeff-v2-0-8c91c6c76076@linaro.org>
-In-Reply-To: <20230726-topic-icc_coeff-v2-0-8c91c6c76076@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690800744; l=1713;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=f1Gofilxti3i0Q7jqaHJvi76S1Nc3UXIB2Lux0RrHdA=;
- b=ZIUV/H1zLb4P75oFYqUV+xIVsQu0TlDVvSL9C1x+GsN0LHv5u4f9SllLH2OqfGr/3ZjJQuUnU
- BySvUlyDYmXDqr5yX2+veu8TCUSf9we2B7P1Hh2PHBTmHK/Cs2tC7mI
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230731-synquacer-net-v3-1-944be5f06428@kernel.org>
+In-Reply-To: <20230731-synquacer-net-v3-1-944be5f06428@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 31 Jul 2023 12:54:03 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXF_AZ9bFWHPjDURkZUdAdrX0Qh2Q03FNYq99pfrJGtFjQ@mail.gmail.com>
+Message-ID: <CAMj1kXF_AZ9bFWHPjDURkZUdAdrX0Qh2Q03FNYq99pfrJGtFjQ@mail.gmail.com>
+Subject: Re: [PATCH v3] net: netsec: Ignore 'phy-mode' on SynQuacer in DT mode
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Jassi Brar <jaswinder.singh@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As it turns out, it's yet another interconnect bus clock. Move it
-there.
+On Mon, 31 Jul 2023 at 12:48, Mark Brown <broonie@kernel.org> wrote:
+>
+> As documented in acd7aaf51b20 ("netsec: ignore 'phy-mode' device
+> property on ACPI systems") the SocioNext SynQuacer platform ships with
+> firmware defining the PHY mode as RGMII even though the physical
+> configuration of the PHY is for TX and RX delays.  Since bbc4d71d63549bc
+> ("net: phy: realtek: fix rtl8211e rx/tx delay config") this has caused
+> misconfiguration of the PHY, rendering the network unusable.
+>
+> This was worked around for ACPI by ignoring the phy-mode property but
+> the system is also used with DT.  For DT instead if we're running on a
+> SynQuacer force a working PHY mode, as well as the standard EDK2
+> firmware with DT there are also some of these systems that use u-boot
+> and might not initialise the PHY if not netbooting.  Newer firmware
+> imagaes for at least EDK2 are available from Linaro so print a warning
+> when doing this.
+>
+> Fixes: 533dd11a12f6 ("net: socionext: Add Synquacer NetSec driver")
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/clk/qcom/clk-smd-rpm.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
 
-diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
-index 9b5411932594..4a23f6d3eddd 100644
---- a/drivers/clk/qcom/clk-smd-rpm.c
-+++ b/drivers/clk/qcom/clk-smd-rpm.c
-@@ -567,6 +567,16 @@ static const struct clk_smd_rpm *sm_qnoc_icc_clks[] = {
- 	&clk_smd_rpm_bus_2_snoc_clk,
- };
- 
-+static const struct clk_smd_rpm *qcm2290_icc_clks[] = {
-+	&clk_smd_rpm_bimc_clk,
-+	&clk_smd_rpm_bus_1_cnoc_clk,
-+	&clk_smd_rpm_mmnrt_clk,
-+	&clk_smd_rpm_mmrt_clk,
-+	&clk_smd_rpm_qup_clk,
-+	&clk_smd_rpm_bus_2_snoc_clk,
-+	&clk_smd_rpm_cpuss_gnoc_clk,
-+};
-+
- static struct clk_smd_rpm *msm8909_clks[] = {
- 	[RPM_SMD_QPIC_CLK]		= &clk_smd_rpm_qpic_clk,
- 	[RPM_SMD_QPIC_CLK_A]		= &clk_smd_rpm_qpic_a_clk,
-@@ -1182,15 +1192,13 @@ static struct clk_smd_rpm *qcm2290_clks[] = {
- 	[RPM_SMD_PKA_A_CLK] = &clk_smd_rpm_pka_a_clk,
- 	[RPM_SMD_BIMC_GPU_CLK] = &clk_smd_rpm_bimc_gpu_clk,
- 	[RPM_SMD_BIMC_GPU_A_CLK] = &clk_smd_rpm_bimc_gpu_a_clk,
--	[RPM_SMD_CPUSS_GNOC_CLK] = &clk_smd_rpm_cpuss_gnoc_clk,
--	[RPM_SMD_CPUSS_GNOC_A_CLK] = &clk_smd_rpm_cpuss_gnoc_a_clk,
- };
- 
- static const struct rpm_smd_clk_desc rpm_clk_qcm2290 = {
- 	.clks = qcm2290_clks,
- 	.num_clks = ARRAY_SIZE(qcm2290_clks),
--	.icc_clks = sm_qnoc_icc_clks,
--	.num_icc_clks = ARRAY_SIZE(sm_qnoc_icc_clks)
-+	.icc_clks = qcm2290_icc_clks,
-+	.num_icc_clks = ARRAY_SIZE(qcm2290_icc_clks)
- };
- 
- static const struct of_device_id rpm_smd_clk_match_table[] = {
-
--- 
-2.41.0
-
+> ---
+> Changes in v3:
+> - Typo fixes.
+> - Link to v2: https://lore.kernel.org/r/20230728-synquacer-net-v2-1-aea4d4f32b26@kernel.org
+>
+> Changes in v2:
+> - Unlike ACPI force what appears to be the correct mode, there are
+>   u-boot firmwares which might not configure the PHY.
+> - Link to v1: https://lore.kernel.org/r/20230727-synquacer-net-v1-1-4d7f5c4cc8d9@kernel.org
+> ---
+>  drivers/net/ethernet/socionext/netsec.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
+> index 2d7347b71c41..0dcd6a568b06 100644
+> --- a/drivers/net/ethernet/socionext/netsec.c
+> +++ b/drivers/net/ethernet/socionext/netsec.c
+> @@ -1851,6 +1851,17 @@ static int netsec_of_probe(struct platform_device *pdev,
+>                 return err;
+>         }
+>
+> +       /*
+> +        * SynQuacer is physically configured with TX and RX delays
+> +        * but the standard firmware claimed otherwise for a long
+> +        * time, ignore it.
+> +        */
+> +       if (of_machine_is_compatible("socionext,developer-box") &&
+> +           priv->phy_interface != PHY_INTERFACE_MODE_RGMII_ID) {
+> +               dev_warn(&pdev->dev, "Outdated firmware reports incorrect PHY mode, overriding\n");
+> +               priv->phy_interface = PHY_INTERFACE_MODE_RGMII_ID;
+> +       }
+> +
+>         priv->phy_np = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
+>         if (!priv->phy_np) {
+>                 dev_err(&pdev->dev, "missing required property 'phy-handle'\n");
+>
+> ---
+> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+> change-id: 20230727-synquacer-net-e241f34baceb
+>
+> Best regards,
+> --
+> Mark Brown <broonie@kernel.org>
+>
