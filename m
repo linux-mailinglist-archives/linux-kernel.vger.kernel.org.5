@@ -2,126 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1DA76A0F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E103A76A0F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjGaTOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50038 "EHLO
+        id S231321AbjGaTOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbjGaTOe (ORCPT
+        with ESMTP id S229839AbjGaTOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:14:34 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F300BE4B
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:14:33 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 98e67ed59e1d1-267f870e6ffso2844913a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:14:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690830873; x=1691435673;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v3KFf9AewUDstKJtKahowIoTFXcs3ACJtvJL1LnzLQE=;
-        b=R4ECufchNtK/yhPlyf4sGYL8V5B+uXGSidl3ahjnSvpiPX3iU4WZA65G2qcOiFdOdi
-         YRaz9KEl5H9NNtFdiGr3Ym71um3II5QBozgntrAwGtIwXjt0sPVmj8GeXi9yz2YMmPIF
-         5jQqHKiuSN53YlnzoAqX7UIi8aRHw3rBgBcVaN0n/eSoRr3lJAKsDH/UK8z84zDVRhA/
-         5ncgUbdzyeE3WZaReml9geU5ffHhAO9en6S1dDTA9t9iQXIrHuXdVRFcFRMT+7p+HJm0
-         0T3ettaqC5QYeOyW961TZ5cPJV/k8TKmiMlRx3wpuGzX34GlujJaCVCCJXkOA+oZjwUE
-         Eg2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690830873; x=1691435673;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v3KFf9AewUDstKJtKahowIoTFXcs3ACJtvJL1LnzLQE=;
-        b=GnHK+8ZB9kGtPCUKKPBOzV013rpnmlHZQNLd3Cx1clv16x8DspvIfoWWo/SAHoutNH
-         J9ddZ0niBy2gol+DGoEk7a5pLeDMrv46fGADzICJ9YsQF6eA0eSI/q2OnCd+U5yRcuNx
-         LdmXviKhr4ytvn1rWcNxiVBjlSz4pKurjYWwluXRi/KAWS+VOoOyteZQdM2OUGB5ZLd3
-         89a5czk+tDeUvsv3v/t4IMmIkzQKkYmVB1REURMDho5fqvywpP4ZRycaH8AV0FsXLZ4S
-         CrYaP7GQfKaFDLdVSb8yWI72S4XRy2tfXyKptq6EZpiPIH1Ex0Dt8Azw1RnYycG8DWEk
-         74/Q==
-X-Gm-Message-State: ABy/qLY909T/GwBP5IDH+q1x09GBxJmOATpee52j/BnYL9IuBFRWbuZM
-        6CzgQY8hU3TY7vdc0slYA2TrrYzHhKk=
-X-Google-Smtp-Source: APBJJlGpic85aZ6FAqeDMx+H5QOs+4tD2CfvaSFNWpXHz9uuMsoQeZZw0lPIau9SgZi73iZ7apZ15g==
-X-Received: by 2002:a17:90a:3e4e:b0:268:29cb:f93a with SMTP id t14-20020a17090a3e4e00b0026829cbf93amr10384986pjm.1.1690830873110;
-        Mon, 31 Jul 2023 12:14:33 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:4a3a])
-        by smtp.gmail.com with ESMTPSA id m8-20020a170902bb8800b001b8a3dd5a4asm8909383pls.283.2023.07.31.12.14.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 12:14:32 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 31 Jul 2023 09:14:31 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>, Dave Airlie <airlied@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: arm32 build warnings in workqueue.c
-Message-ID: <ZMgIF_6zCqB0LfjN@slm.duckdns.org>
-References: <CAPM=9twNnV4zMCvrPkw3H-ajZOH-01JVh_kDrxdPYQErz8ZTdA@mail.gmail.com>
- <CAHk-=wi=eDN4Ub0qSN27ztBAvHSXCyiY2stu3_XbTpYpQX4x7w@mail.gmail.com>
- <ZJX27JDyrgvdeCe4@slm.duckdns.org>
- <ZMdu1YqUI7VIEq1y@alley>
- <CAHk-=wiJSzSkF-FDcHydR61Q3_q4xCiqq37tfXdijaCxsDF86Q@mail.gmail.com>
+        Mon, 31 Jul 2023 15:14:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB3D1BD2;
+        Mon, 31 Jul 2023 12:14:46 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D443B6129E;
+        Mon, 31 Jul 2023 19:14:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32AE9C433C7;
+        Mon, 31 Jul 2023 19:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690830885;
+        bh=SyJU7Qt2aBIN4OyFcC5oEmHd0DxKwQmqDlVAGFvHAGo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mfZY9GbnMx+aOUhNak8hhNx+W4RQngWJkELmDVGW8q222cnSMnvbobDN1oms+zhPq
+         cbVaocl89DiKxBWlHYimi8lIVjOKKdGuWYEqGxdADX6HTYgNkF/bhaNpRm+5thXsSY
+         95pSQw5/dAnIbHeWNjq0VSi+To/RKfwFY9qNzU6d/4/eUCt6xAJXOAcUW5q+AntKar
+         0ORk/O7jvBbHgP4x2jVPEcuU93ljKLAk2vQDp2COzlYpPQo/dsMr+jYANsNy2HLrST
+         UBrBWz75Wxw3pzn3gUxpb0wnlkuByXvUEP/1l3Fv5WdcsVQuTaTpKYdvVRdwI4VJOk
+         N5mKreLQOiTOQ==
+Date:   Mon, 31 Jul 2023 20:14:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Hal Feng <hal.feng@starfivetech.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] ASoC: starfive: Add JH7110 PWM-DAC driver
+Message-ID: <9b03c7ed-845c-494b-8c40-10d1fe923b15@sirena.org.uk>
+References: <20230731032829.127864-1-hal.feng@starfivetech.com>
+ <20230731032829.127864-3-hal.feng@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7WRSfejFGo+r56WO"
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wiJSzSkF-FDcHydR61Q3_q4xCiqq37tfXdijaCxsDF86Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230731032829.127864-3-hal.feng@starfivetech.com>
+X-Cookie: Single tasking: Just Say No.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Mon, Jul 31, 2023 at 11:40:04AM -0700, Linus Torvalds wrote:
-> So I think the whole "gdb debug info" argument is complete garbage,
-> and was never true at all. If you want gdb to know about these
-> constants, you just do the same thing that gdb users already have to
-> do for other things.
+--7WRSfejFGo+r56WO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-When manually debugging with gdb, figuring out these constants might not add
-too much overhead on top but nowadays there are many other tools which can
-benefit from having the source of truth available to them directly from the
-kernel.
+On Mon, Jul 31, 2023 at 11:28:28AM +0800, Hal Feng wrote:
 
-For example, it's a lot easier to write non-trivial debug scripts with drgn
-(https://github.com/osandov/drgn) and it's not too unusual to have a
-collection of bcc / bpftrace scripts for diagnosing common problems. They of
-course don't have any interface stability expectations. However, there's no
-reason to make using them unnecessarily painful given how useful they are.
-Having constant values included in the kernel debug info makes it a lot
-easier to use these tools and removes a silly source of subtle problems.
+> +static const struct jh7110_ct_pwmdac pwmdac_ct_data_shift[] = {
+> +	{ .name = "left 0 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_0 },
+> +	{ .name = "left 1 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_1 },
+> +	{ .name = "left 2 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_2 },
+> +	{ .name = "left 3 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_3 },
+> +	{ .name = "left 4 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_4 },
+> +	{ .name = "left 5 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_5 },
+> +	{ .name = "left 6 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_6 },
+> +	{ .name = "left 7 bit", .vals = PWMDAC_DATA_LEFT_SHIFT_BIT_7 }
+> +};
 
-> And honestly, I don't understand why anybody seriously believes that
-> those WORK_STRUCT constants are somehow very important. We have many
-> *much* more fundamental constants that are #define's. Thinking that
-> WORK_OFFQ_CANCELING needs special gdb understanding when we have
-> PAGE_SIZE that does not seems entirely crazy to me.
+It's not clear to me why this is user selectable - what does the control
+do?
 
-PAGE_SIZE is easily available through _SC_PAGE_SIZE, so that particular one
-is never a real problem (and a lot of tools have pre-defined helpers for it
-and similarly important constants) but yeah there are other constants which
-I sometimes wish were available through debug info.
+> +static int jh7110_pwmdac_put(struct snd_kcontrol *kcontrol,
+> +			     struct snd_ctl_elem_value *ucontrol,
+> +			     int pwmdac_ct)
+> +{
+> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
+> +	struct jh7110_pwmdac_dev *dev = snd_soc_component_get_drvdata(component);
+> +	int sel = ucontrol->value.enumerated.item[0];
+> +	unsigned int items;
 
-It may be difficult to argue specifically for WORK_OFFQ_CANCELING in
-isolation as it is directly derived from __WORK_OFFQ_CANCELNG, so no problem
-there, but I hope you can see that having these constants available in debug
-info in general is useful.
+> +	if (pwmdac_ct == PWMDAC_CT_SHIFT)
+> +		dev->shift = pwmdac_ct_shift[sel].vals;
+> +	else if (pwmdac_ct == PWMDAC_CT_DUTY_CYCLE)
+> +		dev->duty_cycle = pwmdac_ct_duty_cycle[sel].vals;
+> +	else if (pwmdac_ct == PWMDAC_CT_DATA_CHANGE)
+> +		dev->data_change = pwmdac_ct_data_change[sel].vals;
+> +	else if (pwmdac_ct == PWMDAC_CT_DATA_MODE)
+> +		dev->data_mode = pwmdac_ct_data_mode[sel].vals;
+> +	else if (pwmdac_ct == PWMDAC_CT_DATA_SHIFT)
+> +		dev->data_shift = pwmdac_ct_data_shift[sel].vals;
+> +
+> +	return 0;
+> +}
 
-Even here, the value of __WORK_OFFQ_CANCELING is dependent on
-CONFIG_DEBUG_OBJECTS_WORK. It's not a strong case as the option is pretty
-specifically for debugging but if one is to actually debug or monitor
-workqueue using external visibility tools, this can easily lead to mistakes.
+_put() operations should return 1 if the control value changes so event
+generation works - please test a card using this driver with the
+mixer-test selftest, it'll identify this and a bunch of other potential
+issues.
 
-Thanks.
+> +static int jh7110_pwmdac_component_probe(struct snd_soc_component *component)
+> +{
+> +	snd_soc_add_component_controls(component, jh7110_pwmdac_snd_controls,
+> +				       ARRAY_SIZE(jh7110_pwmdac_snd_controls));
+> +	return 0;
+> +}
 
--- 
-tejun
+The driver can just point to the controls from the _driver struct and
+skip having a probe() function.
+
+
+--7WRSfejFGo+r56WO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTICB4ACgkQJNaLcl1U
+h9Bkogf7B5sn9Y3g1mTAAspid/NHj9EJnpyylKVFcCH8D0UOo11qJLylO7cb8DQw
+3M6ifjvdgMPSgZiwoshQnv3dS0yPr422sWUV65Dnm9pI0lwju9mFo4mh6i0zexdi
+AvQWj6reLoNjF1zn3ZSLU0qkqSTxaOebz1O9RkldqqmbcVixM4sLJOoDzhb5K76O
+lfD2y7zU3/GBt/+OwRObmMLz/AlrPbPkT2YF+0txEYEIitxWHgMoqJFWJI9cdg9I
+8WBjG+5nh/yKozj2EYOEGhKNjBegDGOOp/7sqWdUMdrkRNdtczS3sp5/jRHLv6ph
+1AMqKDncC9OfgKfFLfJy2saNmIxWlg==
+=JSoy
+-----END PGP SIGNATURE-----
+
+--7WRSfejFGo+r56WO--
