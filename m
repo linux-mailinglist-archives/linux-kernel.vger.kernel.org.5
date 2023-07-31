@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8C3768C82
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:01:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AABA768C85
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbjGaHA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
+        id S230334AbjGaHBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjGaHA5 (ORCPT
+        with ESMTP id S230338AbjGaHBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:00:57 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299C2185
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:00:56 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qQMtS-0004SZ-1N; Mon, 31 Jul 2023 09:00:38 +0200
-Message-ID: <de822fa6-16ca-381c-2cdf-7e983f29945b@pengutronix.de>
-Date:   Mon, 31 Jul 2023 09:00:29 +0200
+        Mon, 31 Jul 2023 03:01:04 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135C9187
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:01:03 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so1419250a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:01:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690786861; x=1691391661;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IojnIhTxwDoiGRw6GG+eJSBPl+3xl09aBo0KzjuVzS0=;
+        b=oLm22SxCaphI5C9ydJ7XHKfuqylUyeM1W6tZyJW0BOAFrz7UdMUfqoRNQYY4qlFF2h
+         nvxwBTiC7oAhyoq7sBryMh1IeFP+NBhkta+oKZm4e1a4S9LSZGSria3+spRv5DEcpJ4M
+         /K8jay5Rmupd6P5zhXwXyJmRQD5BvqwR3gjGAYxzKHVQKAqM/hI15sMRiLqYb6IMJK54
+         VglqUvnB4KYCQl7/uVTFBZLWIQ9BSj39Bi//cBnwYK2FGlmV12iVOh+szC5glLZf9zz/
+         j/N8+DSbzud3An7Gg2w5+Sms06TnvovZtLbW24Kth0ydtYRUJRq5wcFDoMwY6HMccXXn
+         Sw7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690786861; x=1691391661;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IojnIhTxwDoiGRw6GG+eJSBPl+3xl09aBo0KzjuVzS0=;
+        b=T4ahBQsZ3CcGruATHPhECajOR7vI+ten0vvWBEXMC9VgfDaN9k/pRFURf2sB1lgsvj
+         StH/Xf23LqzqsVXUIwE7oKGinyCzAHaTkJ5NDQAqknuR9d1QEYKIQSzWbBRvvnflLBx0
+         R2kUevydr/4Nj/WM2uq405vb8btxWupOXW2aFLxErDcpMJZ4jgoJyyNE6vFqCxenUvyj
+         VhEptFj/POEdEUOMNt1nkuoWitcDcqZfn3vWbdLDqIYVAgj7wkgK/UvEbfeWOdqJ3tVR
+         texClgnkyRX3hETcJPA47vo1jlVjeaL2REyf9znC5r7qBz245269f+Cv81C8FuBM2AVz
+         8ojQ==
+X-Gm-Message-State: ABy/qLbaEzZ5jrNZY+BPSG+8FIyxo4KnfcfLnpffg5ZkkrrcSybHhb9p
+        eieZaLDzTcLRUqovDHRCbsoGRKRopRkIFrGLZ5w=
+X-Google-Smtp-Source: APBJJlH3FTTDgMYbDFJtYuSq2IGsUBxUZNnUhWxs0tXcd+LbJGecLN+M+i5aP2q+etOOS7MVfh6UtA==
+X-Received: by 2002:a05:6402:1a27:b0:522:45db:48e1 with SMTP id be7-20020a0564021a2700b0052245db48e1mr7521041edb.31.1690786841216;
+        Mon, 31 Jul 2023 00:00:41 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id u18-20020aa7d0d2000000b0051e0f21c43fsm5128339edo.31.2023.07.31.00.00.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 00:00:40 -0700 (PDT)
+Message-ID: <a037a8d3-9ba4-80ee-b34e-9a795ebb6e5b@linaro.org>
+Date:   Mon, 31 Jul 2023 09:00:38 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.1
-Subject: Re: [PATCH v2] net: stmmac: correct MAC propagation delay
-Content-Language: en-US, de-DE
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, kernel test robot <lkp@intel.com>
-References: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
- <ZMGIuKVP7BEotbrn@hoboy.vegasvil.org>
- <729dd79e-83aa-0237-1edd-1662a6ae28cd@pengutronix.de>
- <ZMJy6yt4CL250x6Q@hoboy.vegasvil.org>
-From:   Johannes Zink <j.zink@pengutronix.de>
-In-Reply-To: <ZMJy6yt4CL250x6Q@hoboy.vegasvil.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v3 6/8] soc: qcom: socinfo: adjust the position of QDU1010
+Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230731061325.26431-1-quic_tengfan@quicinc.com>
+ <20230731061325.26431-7-quic_tengfan@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230731061325.26431-7-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: j.zink@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
-
-On 7/27/23 15:36, Richard Cochran wrote:
-> On Thu, Jul 27, 2023 at 09:20:10AM +0200, Johannes Zink wrote:
->> Hi Richard,
->>
->> On 7/26/23 22:57, Richard Cochran wrote:
->>> On Mon, Jul 24, 2023 at 12:01:31PM +0200, Johannes Zink wrote:
->>>
->>> Earlier versions of the IP core return zero from these...
->>>
->>>> +#define	PTP_TS_INGR_LAT	0x68	/* MAC internal Ingress Latency */
->>>> +#define	PTP_TS_EGR_LAT	0x6c	/* MAC internal Egress Latency */
->>>
->>
->> good catch. Gonna send a v3 with a check to and set the values for dwmac v5 only.
+On 31/07/2023 08:13, Tengfei Fan wrote:
+> Adjust the position of QDU1010, so that QDU1010 have
+> same sequence with QCOM_ID_QDU1010 in bindings file.
 > 
-> AFAICT there is no feature bit that indicates the presence or absence
-> of these two registers.
-> 
-> Are you sure that *all* v5 IP cores have these?
-> 
-> I am not sure.
+> Change-Id: I86d46eca55e877aaa1fd948db99b41ae138a3129
 
-I cannot tell for sure either, since I have datasheets for the i.MX8MP only. 
-Maybe Kurt has some insights here, as he has additional hardware available for 
-testing?
+Please run scripts/checkpatch.pl and fix reported warnings. Some
+warnings can be ignored, but the code here looks like it needs a fix.
+Feel free to get in touch if the warning is not clear.
 
-Nevertheless, I am going to add a guard to only use the correction codepath on 
-i.MX8MP in v3 for the time being, we can add other hardware later trivially if 
-they support doing this.
-
-Best regards
-Johannes
-
+> ---
+>  drivers/soc/qcom/socinfo.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Thanks,
-> Richard
-> 
-> 
+> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+> index 4d49945b3a35..ad7699b401a8 100644
+> --- a/drivers/soc/qcom/socinfo.c
+> +++ b/drivers/soc/qcom/socinfo.c
+> @@ -405,8 +405,8 @@ static const struct soc_id soc_id[] = {
+>  	{ qcom_board_id(SA8775P) },
+>  	{ qcom_board_id(QRU1000) },
+>  	{ qcom_board_id(QDU1000) },
+> -	{ qcom_board_id(QDU1010) },
+>  	{ qcom_board_id(IPQ5019) },
 
--- 
-Pengutronix e.K.                | Johannes Zink                  |
-Steuerwalder Str. 21            | https://www.pengutronix.de/    |
-31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
-Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
+Same comment as on previous patch.
+
+> +	{ qcom_board_id(QDU1010) },
+
+Best regards,
+Krzysztof
 
