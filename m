@@ -2,166 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 581A2769BC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5878C769BBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbjGaQDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39740 "EHLO
+        id S233284AbjGaQDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233396AbjGaQDS (ORCPT
+        with ESMTP id S233335AbjGaQDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:03:18 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DCD1BF
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:03:15 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso52251735e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:03:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690819394; x=1691424194;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wjX9vqrNZsVo8pAJHyJfBfDqvLmz9Q9LwcwZTP61/cs=;
-        b=kYzWRu4k1QcGoE6XKlByF3TqlwnnuXUy4dR/Gmke34HiIojnc6bDt5mnmDrOMIanBC
-         QUevvvfek0A0kIhfRLCo8R/86BFpovIiHnnInbzwZivWg2DRSm+X5e15n19MoM8ITjcG
-         /+J6EfoaBtyNvPh2Yg2/K4Zf7rrxdQB0bQhvIF9F1h5QqrkpNHuKfSzod4rrLRa1ifOB
-         nEUhBA9+KaGfeeecCMie9MebsjXRqYzaUgOSq09dmjhabu7gzNjGo+iXkB9N7h9h4gTU
-         J2wpszV9xtd4d81pKysjcOiYL/WmjuQhdAci9fviFugAru1L92cwlrTrGrXfizKWktqj
-         yppQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690819394; x=1691424194;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wjX9vqrNZsVo8pAJHyJfBfDqvLmz9Q9LwcwZTP61/cs=;
-        b=XbhKiEnn+fEbYhRx1oJwggA3lw9MZiup0yn6Fgf69GOlTWum2Jc2GEg74OXV6/kWhZ
-         6a0G62L+CD6TAobyPcWwVUcAKGWMms6/mZm56brblEqu1kKPeuAZiI0YBXi/dQvotAfj
-         73YEYiPAOCz6rwwSj/pDCyYxmlfbsVZR7CCVe8EKIcsEla6jSKjZuFmjIK6n4fX6C23g
-         r+r+cnTLgBFEqnqhhq6ZjJiKxQiz5A7StTyfD6xpiVvgUuLd8z6dhaTYB4gmApO34SMn
-         L637pHpQTafU8jIglK0Qyt8KT7z1ek/EE7lHqT4PEuArXK3ssECdIwGxtN1v+cPhZDyy
-         IUxA==
-X-Gm-Message-State: ABy/qLYa1oX+z2WwAsJFT9nDRx6ZKnTE4i2Y2/qzBLaS3pfwb832MSNT
-        ZA3POUnsKOdBP/szoKycMieTNw==
-X-Google-Smtp-Source: APBJJlH9s43EMKigyuVBab9J9RMVZV2UplPMJan+41yuvFpRsQzS559KIDbR9x9cZ2CPnZZf/f6ReA==
-X-Received: by 2002:a1c:7505:0:b0:3fc:2e8:ea8b with SMTP id o5-20020a1c7505000000b003fc02e8ea8bmr295454wmc.28.1690819394291;
-        Mon, 31 Jul 2023 09:03:14 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id v18-20020a05600c215200b003fe0bb31a6asm8872643wml.43.2023.07.31.09.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 09:03:13 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 19:03:04 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        Mon, 31 Jul 2023 12:03:09 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D52C18E
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:03:08 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id AC2AB68AA6; Mon, 31 Jul 2023 18:03:05 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 18:03:05 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 06/20] tracing/filters: Optimise scalar vs cpumask
- filtering when the user mask is a single CPU
-Message-ID: <b7cf996a-f443-402c-8e13-c5f25a964184@kadam.mountain>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-7-vschneid@redhat.com>
- <20230729155547.35719a1f@rorschach.local.home>
- <04f20e58-6b24-4f44-94e2-0d12324a30e4@kadam.mountain>
- <20230731115453.395d20c6@gandalf.local.home>
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev
+Subject: Re: [PATCH] dma-mapping: move arch_dma_set_mask() declaration to
+ header
+Message-ID: <20230731160305.GC8931@lst.de>
+References: <20230727122608.2507415-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731115453.395d20c6@gandalf.local.home>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230727122608.2507415-1-arnd@kernel.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:54:53AM -0400, Steven Rostedt wrote:
-> On Mon, 31 Jul 2023 15:07:52 +0300
-> Dan Carpenter <dan.carpenter@linaro.org> wrote:
-> 
-> > On Sat, Jul 29, 2023 at 03:55:47PM -0400, Steven Rostedt wrote:
-> > > > @@ -1761,6 +1761,11 @@ static int parse_pred(const char *str, void *data,
-> > > >  				FILTER_PRED_FN_CPUMASK;
-> > > >  		} else if (field->filter_type == FILTER_CPU) {
-> > > >  			pred->fn_num = FILTER_PRED_FN_CPU_CPUMASK;
-> > > > +		} else if (single) {
-> > > > +			pred->op = pred->op == OP_BAND ? OP_EQ : pred->op;  
-> > > 
-> > > Nit, the above can be written as:
-> > > 
-> > > 			pred->op = pret->op != OP_BAND ? : OP_EQ;
-> > >   
-> > 
-> > Heh.  Those are not equivalent.  The right way to write this is:
-> 
-> You mean because of my typo?
+Thanks,
 
-No, I hadn't seen the s/pred/pret/ typo.  Your code does:
-
-	if (pred->op != OP_BAND)
-		pred->op = true;
-	else
-		pred->op OP_EQ;
-
-Realy we should probably trigger a static checker warning any time
-someone does a compare operations as part of a "x = comparison ?: bar;
-Years ago, someone asked me to do that with regards to error codes like:
-
-	return ret < 0 ?: -EINVAL;
-
-but I don't remember the results.
-
-regards,
-dan carpenter
-
+applied to the dma-mapping tree for 6.6.
