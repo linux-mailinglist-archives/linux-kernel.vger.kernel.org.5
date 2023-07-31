@@ -2,104 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D42EB769656
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92E2769659
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231922AbjGaMa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:30:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
+        id S232613AbjGaMa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231137AbjGaMa0 (ORCPT
+        with ESMTP id S232615AbjGaMaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:30:26 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31818B2;
-        Mon, 31 Jul 2023 05:30:25 -0700 (PDT)
-Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RDyD04VMjzNmcQ;
-        Mon, 31 Jul 2023 20:26:56 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 31 Jul 2023 20:30:21 +0800
-Subject: Re: [PATCH v2] ext4: Fix rec_len verify error
-To:     zhangshida <starzhangzsd@gmail.com>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <zhangshida@kylinos.cn>
-References: <20230731010104.1781335-1-zhangshida@kylinos.cn>
-From:   Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <558eed4b-3817-671e-48f1-3f9933486876@huawei.com>
-Date:   Mon, 31 Jul 2023 20:30:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 31 Jul 2023 08:30:52 -0400
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8898C10DF;
+        Mon, 31 Jul 2023 05:30:49 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VofLXKW_1690806644;
+Received: from 30.221.150.94(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VofLXKW_1690806644)
+          by smtp.aliyun-inc.com;
+          Mon, 31 Jul 2023 20:30:45 +0800
+Message-ID: <2dc21269-2fa0-ea39-454d-5f12a414bc13@linux.alibaba.com>
+Date:   Mon, 31 Jul 2023 20:30:43 +0800
 MIME-Version: 1.0
-In-Reply-To: <20230731010104.1781335-1-zhangshida@kylinos.cn>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.34]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500005.china.huawei.com (7.192.104.229)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH v5 3/5] perf test: Add pmu-event test for "Compat" and new
+ event_field.
+To:     John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1690525040-77423-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1690525040-77423-4-git-send-email-renyu.zj@linux.alibaba.com>
+ <abeaafbe-2290-d272-ddd1-f358f7271edc@oracle.com>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <abeaafbe-2290-d272-ddd1-f358f7271edc@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/31 9:01, zhangshida wrote:
-> From: Shida Zhang <zhangshida@kylinos.cn>
+
+
+在 2023/7/28 下午4:30, John Garry 写道:
+> On 28/07/2023 07:17, Jing Zhang wrote:
+>> Add new event test for uncore system event which is used to verify the
+>> functionality of "Compat" matching multiple identifiers and the new event
+>> fields "EventIdCode" and "Type".
+>>
 > 
-> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> a problem occurred when more than 13 million files were directly created
-> under a directory:
-> 
-> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
-> 
-> When enough files are created, the fake_dirent->reclen will be 0xffff.
-> it doesn't equal to the blocksize 65536, i.e. 0x10000.
-> 
-> But it is not the same condition when blocksize equals to 4k.
-> when enough file are created, the fake_dirent->reclen will be 0x1000.
-> it equals to the blocksize 4k, i.e. 0x1000.
-> 
-> The problem seems to be related to the limitation of the 16-bit field
-> when the blocksize is set to 64k. To address this, Modify the check so
-> as to handle it properly.
+> Thanks for doing this. It looks ok. I just have a comment, below.
 > 
 
-Thanks for the patch. It works and looks good to me.
+Thanks.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+>> Signed-off-by: Jing Zhang <renyu.zj@linux.alibaba.com>
+>> ---
+>>   .../pmu-events/arch/test/test_soc/sys/uncore.json  |  8 ++++
+>>   tools/perf/tests/pmu-events.c                      | 55 ++++++++++++++++++++++
+>>   2 files changed, 63 insertions(+)
+>>
+>> diff --git a/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json b/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
+>> index c7e7528..879a0ae 100644
+>> --- a/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
+>> +++ b/tools/perf/pmu-events/arch/test/test_soc/sys/uncore.json
+>> @@ -12,5 +12,13 @@
+>>              "EventName": "sys_ccn_pmu.read_cycles",
+>>              "Unit": "sys_ccn_pmu",
+>>              "Compat": "0x01"
+>> +   },
+>> +   {
+>> +           "BriefDescription": "Counts total cache misses in first lookup result (high priority).",
+>> +           "Type": "0x05",
+>> +           "EventIdCode": "0x01",
+>> +           "EventName": "sys_cmn_pmu.hnf_cache_miss",
+>> +           "Unit": "arm_cmn",
+>> +           "Compat": "434*;436*;43c*;43a01"
+>>      }
+>>   ]
+>> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+>> index 1dff863b..e227dcd 100644
+>> --- a/tools/perf/tests/pmu-events.c
+>> +++ b/tools/perf/tests/pmu-events.c
+>> @@ -255,9 +255,24 @@ struct perf_pmu_test_pmu {
+>>       .matching_pmu = "uncore_sys_ccn_pmu",
+>>   };
+>>   +static const struct perf_pmu_test_event sys_cmn_pmu_hnf_cache_miss = {
+>> +    .event = {
+>> +        .name = "sys_cmn_pmu.hnf_cache_miss",
+>> +        .event = "type=0x05,eventid=0x01",
+>> +        .desc = "Counts total cache misses in first lookup result (high priority). Unit: uncore_arm_cmn ",
+>> +        .topic = "uncore",
+>> +        .pmu = "uncore_arm_cmn",
+>> +        .compat = "434*;436*;43c*;43a01",
+>> +    },
+>> +    .alias_str = "type=0x5,eventid=0x1",
+>> +    .alias_long_desc = "Counts total cache misses in first lookup result (high priority). Unit: uncore_arm_cmn ",
+>> +    .matching_pmu = "uncore_arm_cmn_0",
+>> +};
+>> +
+>>   static const struct perf_pmu_test_event *sys_events[] = {
+>>       &sys_ddr_pmu_write_cycles,
+>>       &sys_ccn_pmu_read_cycles,
+>> +    &sys_cmn_pmu_hnf_cache_miss,
+>>       NULL
+>>   };
+>>   @@ -699,6 +714,46 @@ static int __test_uncore_pmu_event_aliases(struct perf_pmu_test_pmu *test_pmu)
+>>               &sys_ccn_pmu_read_cycles,
+>>           },
+>>       },
+>> +    {
+>> +        .pmu = {
+>> +            .name = (char *)"uncore_arm_cmn_0",
+>> +            .is_uncore = 1,
+>> +            .id = (char *)"43401",
+>> +        },
+>> +        .aliases = {
+>> +            &sys_cmn_pmu_hnf_cache_miss,
+>> +        },
+>> +    },
+>> +    {
+>> +        .pmu = {
+>> +            .name = (char *)"uncore_arm_cmn_0",
+>> +            .is_uncore = 1,
+>> +            .id = (char *)"43602",
+>> +        },
+>> +        .aliases = {
+>> +            &sys_cmn_pmu_hnf_cache_miss,
+>> +        },
+>> +    },
+>> +    {
+>> +        .pmu = {
+>> +            .name = (char *)"uncore_arm_cmn_1",
+> 
+> Shouldn't this match some perf_pmu_test_event entry with same matching_pmu member? But is perf_pmu_test_event.matching_pmu member ever used for any checking???
+> 
 
-> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
-> ---
-> v1->v2:
->   Use a better way to check the condition, as suggested by Andreas.
+I need to double check because I was testing against 6.3-rc2.
+
+Thanks,
+Jing
+
+> Thanks,
+> John
 > 
->  fs/ext4/namei.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 0caf6c730ce3..fffed95f8531 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
->  	struct ext4_dir_entry *dp;
->  	struct dx_root_info *root;
->  	int count_offset;
-> +	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
->  
-> -	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
-> +	if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == blocksize)
->  		count_offset = 8;
->  	else if (le16_to_cpu(dirent->rec_len) == 12) {
->  		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
-> 
+>> +            .is_uncore = 1,
+>> +            .id = (char *)"43c03",
+>> +        },
+>> +        .aliases = {
+>> +            &sys_cmn_pmu_hnf_cache_miss,
+>> +        },
+>> +    },
+>> +    {
+>> +        .pmu = {
+>> +            .name = (char *)"uncore_arm_cmn_1",
+>> +            .is_uncore = 1,
+>> +            .id = (char *)"43a01",
+>> +        },
+>> +        .aliases = {
+>> +            &sys_cmn_pmu_hnf_cache_miss,
+>> +        },
+>> +    }
+>>   };
+>>     /* Test that aliases generated are as expected */
