@@ -2,339 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D9C769D19
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C50769D1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbjGaQq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48668 "EHLO
+        id S233461AbjGaQrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:47:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233472AbjGaQqX (ORCPT
+        with ESMTP id S231727AbjGaQrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:46:23 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC0F199F
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:46:20 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40a47e8e38dso1091cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:46:20 -0700 (PDT)
+        Mon, 31 Jul 2023 12:47:07 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9601725
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:47:05 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d29a5f7dc74so3251998276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:47:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690821979; x=1691426779;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gkpC0Z6fXatXUM3fvGCV0DX0YQXZ+FgSizXvrR3qNcg=;
-        b=I12WSGpJOpsDMDhj94QiNWmOcnD++i//xN3g8WNRRYIaq7wNEVgQ/39SRQHRvovnit
-         h2vvgUh4MuDCVr3+4Zl0pzxrJ9smosJUCufdI46/Fir0puaQGACh/fJSXwlO2eadbcmm
-         xAiTRYYy+xuMxRo2lHQsJY6+yZi80MWQDw2R70j5VHEICqELGG60E3KLv1QWTstv/z6F
-         QUO8dcSMqKjOduCsiGGI1KBAvIw2GjltRXwRMMOhTOzf48yUldVbrU9fUS0df3cMBnKB
-         9v7RovMbt5hyoQydYi5F0Go4Nbw+ufBnfHLD13bENVdrE9TtArU8y1XIbqxgvdUUPatd
-         FkNQ==
+        d=linaro.org; s=google; t=1690822024; x=1691426824;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h7ZXjsSf6tAx3asGVuiQEd3Ci5WeA7f/UBUv+GtyjM4=;
+        b=Oi1i6jM8nzX93JTx8OvFmNPBz2M9Gio9in1+4mGVdM6m5tOmiSLU4ou38JSDnA1Hps
+         t90ZACmussYKUOhQyfuuJ+YP7A7T3MnjOO/ddJX6s/h2HQmSns4AitIW1HJgp0YvPHtz
+         3NxI0u3ZDLAl3bTHm8uSIB56qpp02RMuh2INWYYexoINldBbCWnpM/BFCRANlcONABod
+         Hq2l47f9857JKBTDDWLZR9o3N9ON1hV3Dqbo/u9/DBpiwlCiFH4swxqHgpAEBhyfFWmV
+         kngYR7FEeKbDMgSdCJizFXgwGFoCL0sNGkAqVUNEoDUmBULn3jGXWIwEAjp6KD/nE3f7
+         gzQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690821979; x=1691426779;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gkpC0Z6fXatXUM3fvGCV0DX0YQXZ+FgSizXvrR3qNcg=;
-        b=CdpgD8yrGdyxu7HMzwQWvgTmmNEhYwGgMrSkBX2sR8W4DA8gIjbtziczNbJ9pZrU2r
-         KJFx82d5VrenGJELf7WsIr+xENTQyUAmTOsVtakJGdr9MZI5b6HIl+71J+hA4iJwi0hQ
-         B8Uc/OivQFUHRCRkHKuE6xeUeykSZPGnfk1jBbc3JVkwLbt8XpYaPSbtUkADbQrYr1JU
-         RsOsUUsn4UDMKxcsc5a+fn+7qACUBxA7bohulPrI7rgZc/28WBNbDWEI+f9Ij/H0nElg
-         3IR6g8DqBpnLsPaFOIxOacXrETlqFgGGxQMxY5UeIN6Xi+57vOvtpb1/x0fB81lh42fh
-         r2vw==
-X-Gm-Message-State: ABy/qLYa6wJkYMYSMWbLB7m5FjIVipFqVlAE10xsGuqB6P0cBmK4nKF9
-        EXwXdyiYK0dlmL8foGdQzVXzalc9wwiFjZq6Fv7Hzg==
-X-Google-Smtp-Source: APBJJlFFKZot7tLmdlKAC+vAUwI73rHoer0fQPHGa9/7EiPcRQmCTdlv/b+YtQMfESODC5FmbFtM9/UiMsXuONiKC2g=
-X-Received: by 2002:ac8:7f84:0:b0:40f:c60d:1c79 with SMTP id
- z4-20020ac87f84000000b0040fc60d1c79mr134422qtj.28.1690821979504; Mon, 31 Jul
- 2023 09:46:19 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690822024; x=1691426824;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h7ZXjsSf6tAx3asGVuiQEd3Ci5WeA7f/UBUv+GtyjM4=;
+        b=NpkonwGC8lJ18kF4MZHPaDq/oRS7bJm6WH+6JQIngrPw/4Xuqk+CB8pG162x7o8rNN
+         gVaJiWgh3t4lfgeDy+4OojGHYEBrTfCIKGfnxaIsy9DqHr9fFRN5C+a8OXVdCPKV0hkX
+         HawaQ/zxvwrGXRjbzCwMloX24CReT8PkP+O4pqk7c/KDtv8gObtUEV+2k4h/TnxWo/3n
+         8127dfPaEZxBaDKzUa97P0oj4wuuZItMXkXCxC8ZXwGpTkyr7SeLH/cCoEJfNEsqFsp7
+         6x9nBtPZpK+VP7xyQWIjiVyyo/3Px7OGdBYoIYqqXWmFLKcgtUC45+4U6pG1o9keAHmp
+         2FTw==
+X-Gm-Message-State: ABy/qLbK13VjnrWI8aFuwXmKzx+HTqCFEHLVgI4undpJTWnt7ILLWYgY
+        brx+lowZdPnZrDCaBRYjiOs68A==
+X-Google-Smtp-Source: APBJJlHVe2UaaJO5B3mXn0KZ2J3l9/YGEMBEIweiAfnQG0XXkjGfV3tG9f+7QAVSm9AamtiyGtuHzA==
+X-Received: by 2002:a25:734c:0:b0:d00:bc21:a504 with SMTP id o73-20020a25734c000000b00d00bc21a504mr12166149ybc.40.1690822024631;
+        Mon, 31 Jul 2023 09:47:04 -0700 (PDT)
+Received: from fedora (072-189-067-006.res.spectrum.com. [72.189.67.6])
+        by smtp.gmail.com with ESMTPSA id z13-20020a25ad8d000000b00d0c698ed6b6sm2509866ybi.41.2023.07.31.09.47.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 09:47:03 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 12:47:01 -0400
+From:   William Breathitt Gray <william.gray@linaro.org>
+To:     Patrick Whewell <patrick.whewell@sightlineapplications.com>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Venkata Narendra Kumar Gutta <vnkgutta@codeaurora.org>,
+        Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: qcom: gcc-sm8250: Fix gcc_sdcc2_apps_clk_src
+Message-ID: <ZMflhQubbITCBKlF@fedora>
+References: <20230728191423.13837-1-patrick.whewell@sightlineapplications.com>
 MIME-Version: 1.0
-References: <20230727141428.962286-1-alexghiti@rivosinc.com>
- <20230727141428.962286-10-alexghiti@rivosinc.com> <CAP-5=fU5XYXrVnRUidpwjV2LiTsdebfidL43_Qo4Z7TBxMsVGA@mail.gmail.com>
- <CAHVXubgVAe1WsiZx5Ay+3KPK4u24k_vsnTwFFmBeVsHrGXwhfw@mail.gmail.com>
- <CAHVXubj80rQRShuDS09BeTrfR6nux0A68EMWLbeat8fd_Y3YdA@mail.gmail.com>
- <CAP-5=fWwzuGZ6a6Z38ndsb7gw7_uwS0a2VGXx08hMeiK8eZ91w@mail.gmail.com> <CAHVXubjhM9C1fw_Us=8+RuSJbW0pacFAk9gp7j2=BtMUPy_Byw@mail.gmail.com>
-In-Reply-To: <CAHVXubjhM9C1fw_Us=8+RuSJbW0pacFAk9gp7j2=BtMUPy_Byw@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 31 Jul 2023 09:46:07 -0700
-Message-ID: <CAP-5=fUbiaVwSAhTbymyhdUPcVAXHiQZZexAOnrqid0LsPmfpw@mail.gmail.com>
-Subject: Re: [PATCH v4 09/10] tools: lib: perf: Implement riscv mmap support
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Brendan Sweeney <brs@rivosinc.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atishp@atishpatra.org>,
-        Anup Patel <anup@brainfault.org>,
-        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        =?UTF-8?Q?R=C3=A9mi_Denis=2DCourmont?= <remi@remlab.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Atish Patra <atishp@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/rOFXeJeJEPIpyxN"
+Content-Disposition: inline
+In-Reply-To: <20230728191423.13837-1-patrick.whewell@sightlineapplications.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 9:06=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc=
-.com> wrote:
->
-> On Mon, Jul 31, 2023 at 5:10=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > On Mon, Jul 31, 2023 at 3:27=E2=80=AFAM Alexandre Ghiti <alexghiti@rivo=
-sinc.com> wrote:
-> > >
-> > > On Mon, Jul 31, 2023 at 12:15=E2=80=AFPM Alexandre Ghiti <alexghiti@r=
-ivosinc.com> wrote:
-> > > >
-> > > > Hi Ian,
-> > > >
-> > > > On Fri, Jul 28, 2023 at 7:53=E2=80=AFPM Ian Rogers <irogers@google.=
-com> wrote:
-> > > > >
-> > > > > On Thu, Jul 27, 2023 at 7:28=E2=80=AFAM Alexandre Ghiti <alexghit=
-i@rivosinc.com> wrote:
-> > > > > >
-> > > > > > riscv now supports mmaping hardware counters so add what's need=
-ed to
-> > > > > > take advantage of that in libperf.
-> > > > > >
-> > > > > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > > > > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > > > > > Reviewed-by: Atish Patra <atishp@rivosinc.com>
-> > > > > > ---
-> > > > > >  tools/lib/perf/mmap.c | 65 +++++++++++++++++++++++++++++++++++=
-++++++++
-> > > > > >  1 file changed, 65 insertions(+)
-> > > > > >
-> > > > > > diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
-> > > > > > index 0d1634cedf44..378a163f0554 100644
-> > > > > > --- a/tools/lib/perf/mmap.c
-> > > > > > +++ b/tools/lib/perf/mmap.c
-> > > > > > @@ -392,6 +392,71 @@ static u64 read_perf_counter(unsigned int =
-counter)
-> > > > > >
-> > > > > >  static u64 read_timestamp(void) { return read_sysreg(cntvct_el=
-0); }
-> > > > > >
-> > > > > > +#elif __riscv_xlen =3D=3D 64
-> > > > >
-> > > > > This is something of an odd guard, perhaps:
-> > > > > #elif defined(__riscv) && __riscv_xlen =3D=3D 64
-> > > > >
-> > > > > That way it is more intention revealing that this is riscv code. =
-Could
-> > > > > you add a comment relating to the __riscv_xlen ?
-> > > >
-> > > > I guess Andrew answered that already.
-> > > >
-> >
-> > Not sure. I still think it looks weird:
-> > ...
-> > #if defined(__i386__) || defined(__x86_64__)
-> > ...
-> > #elif defined(__aarch64__)
-> > ...
-> > #elif __riscv_xlen =3D=3D 64
-> > ...
-> > #else
-> > static u64 read_perf_counter(unsigned int counter __maybe_unused) { ret=
-urn 0; }
-> > static u64 read_timestamp(void) { return 0; }
-> > #endif
-> >
-> > The first two are clearly #ifdef-ing architecture specific assembly
-> > code, under what conditions I get RISC-V code  =C2=AF\(=E3=83=84)/=C2=
-=AF At least worth
-> > a comment like "csrr is only available when you have xlens of 64
-> > because ..."
->
-> __riscv_xlen indicates riscv64, which is the only target of this
-> patchset. But if you prefer, I don't mind adding back the
-> defined(__riscv) if I re-spin a new version.
 
-This kind of begs the question as to why there is no __riscv64 ifdef.
-The issue with xlen is it isn't intention revealing so for regular
-people trying to understand the code it would be nice to document it.
+--/rOFXeJeJEPIpyxN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> >
-> > > > >
-> > > > > > +
-> > > > > > +/* TODO: implement rv32 support */
-> > > > > > +
-> > > > > > +#define CSR_CYCLE      0xc00
-> > > > > > +#define CSR_TIME       0xc01
-> > > > > > +
-> > > > > > +#define csr_read(csr)                                         =
- \
-> > > > > > +({                                                            =
- \
-> > > > > > +       register unsigned long __v;                            =
- \
-> > > > > > +               __asm__ __volatile__ ("csrr %0, " #csr         =
- \
-> > > > > > +                : "=3Dr" (__v) :                              =
-   \
-> > > > > > +                : "memory");                                  =
- \
-> > > > >
-> > > > > To avoid the macro pasting that could potentially go weird, could=
- this be:
-> > > > >
-> > > > > __asm__ __volatile__ ("csrr %0, %1",
-> > > > >   : "=3Dr"(__v) /* outputs */
-> > > > >   : "i"(csr) /* inputs */
-> > > > >   : "memory" /* clobbers */)
-> > >
-> > > Forgot to answer this one: it compiles, but I have to admit that I
-> > > don't understand the difference and if that's correct (all macros in
-> > > arch/riscv/include/asm/csr.h use # to do this) and what benefits it
-> > > brings. Can you elaborate more on things that could "go weird"?
-> >
-> > So rather than use an input constraint for the asm block you are using
-> > the C preprocessor to paste in the csr argument. If csr is something
-> > like "1" then it looks good and you'll get "csrr %0,1". If you pass
-> > something like "1 << 31" then that will be pasted as "csrr %0, 1 <<
-> > 31" and that starts to get weird in the context of being in the
-> > assembler where it is unlikely the C operators work. Using the input
-> > constraint avoids this, causes the C compiler to check the type of the
-> > argument and you'll probably get more intelligible error messages as a
-> > consequence.
-> >
->
-> Thanks. So if I'm not mistaken, in this exact context, given we only
-> use csr_read() through the csr_read_num() function, it seems ok right?
+On Fri, Jul 28, 2023 at 12:14:23PM -0700, Patrick Whewell wrote:
+> Set .flags =3D CLK_OPS_PARENT_ENABLE to fix "gcc_sdcc2_apps_clk_src: rcg
+> didn't update its configuration" error.
+>=20
+> Signed-off-by: Patrick Whewell <patrick.whewell@sightlineapplications.com>
+> Fixes: 3e5770921a88 ("clk: qcom: gcc: Add global clock controller driver =
+for SM8250")
 
-So you've formed a cargo cult and the justification is not wanting to
-stop a copy-paste chain from somewhere else. This code itself will be
-copy-pasted and we go to some ends to encourage that by placing parts
-of it in include/uapi/linux/perf_event.h. It seems better to catch
-this issue early rather than propagate it.
+The error appears resolved when tested on my Open-Q 865 SOM.
 
-> > >
-> > > Thanks again,
-> > >
-> > > Alex
-> > >
-> > > > >
-> > > > > Also, why is this clobbering memory? Worth adding a comment.
-> > > >
-> > > > No idea, I see that it is also done this way in
-> > > > arch/riscv/include/asm/csr.h. @Atish Kumar Patra , @Palmer Dabbelt =
-?
-> >
-> > It would seem to make sense then not to have a memory constraint until
-> > we know why we're doing it?
-> >
->
-> I have just had the answer internally (thanks to @Brendan Sweeney):
-> csr modifications can alter how the memory is accessed (satp which
-> changes the address space, sum which allows/disallows userspace
-> access...), so we need the memory barrier to make sure the compiler
-> does not reorder the memory accesses.
+Tested-by: William Breathitt Gray <william.gray@linaro.org>
 
-The conditions you mention shouldn't apply here though? Even if you
-add a memory barrier for the compiler what is stopping the hardware
-reordering loads and stores? If it absolutely has to be there then a
-comment something like "There is a bug is riscv where the csrr
-instruction can clobber memory breaking future reads and some how this
-constraint fixes it by ... ".
+> ---
+>  drivers/clk/qcom/gcc-sm8250.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/clk/qcom/gcc-sm8250.c b/drivers/clk/qcom/gcc-sm8250.c
+> index b6cf4bc88d4d..d3c75bb55946 100644
+> --- a/drivers/clk/qcom/gcc-sm8250.c
+> +++ b/drivers/clk/qcom/gcc-sm8250.c
+> @@ -721,6 +721,7 @@ static struct clk_rcg2 gcc_sdcc2_apps_clk_src =3D {
+>  		.name =3D "gcc_sdcc2_apps_clk_src",
+>  		.parent_data =3D gcc_parent_data_4,
+>  		.num_parents =3D ARRAY_SIZE(gcc_parent_data_4),
+> +		.flags =3D CLK_OPS_PARENT_ENABLE,
+>  		.ops =3D &clk_rcg2_floor_ops,
+>  	},
+>  };
+> --=20
+> 2.25.1
+>=20
 
-Thanks,
-Ian
+--/rOFXeJeJEPIpyxN
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> Thanks,
->
-> Alex
->
-> > Thanks,
-> > Ian
-> >
-> > > >
-> > > > Thanks for your comments!
-> > > >
-> > > > Alex
-> > > >
-> > > > >
-> > > > > Thanks,
-> > > > > Ian
-> > > > >
-> > > > > > +                __v;                                          =
- \
-> > > > > > +})
-> > > > > > +
-> > > > > > +static unsigned long csr_read_num(int csr_num)
-> > > > > > +{
-> > > > > > +#define switchcase_csr_read(__csr_num, __val)           {\
-> > > > > > +       case __csr_num:                                 \
-> > > > > > +               __val =3D csr_read(__csr_num);            \
-> > > > > > +               break; }
-> > > > > > +#define switchcase_csr_read_2(__csr_num, __val)         {\
-> > > > > > +       switchcase_csr_read(__csr_num + 0, __val)        \
-> > > > > > +       switchcase_csr_read(__csr_num + 1, __val)}
-> > > > > > +#define switchcase_csr_read_4(__csr_num, __val)         {\
-> > > > > > +       switchcase_csr_read_2(__csr_num + 0, __val)      \
-> > > > > > +       switchcase_csr_read_2(__csr_num + 2, __val)}
-> > > > > > +#define switchcase_csr_read_8(__csr_num, __val)         {\
-> > > > > > +       switchcase_csr_read_4(__csr_num + 0, __val)      \
-> > > > > > +       switchcase_csr_read_4(__csr_num + 4, __val)}
-> > > > > > +#define switchcase_csr_read_16(__csr_num, __val)        {\
-> > > > > > +       switchcase_csr_read_8(__csr_num + 0, __val)      \
-> > > > > > +       switchcase_csr_read_8(__csr_num + 8, __val)}
-> > > > > > +#define switchcase_csr_read_32(__csr_num, __val)        {\
-> > > > > > +       switchcase_csr_read_16(__csr_num + 0, __val)     \
-> > > > > > +       switchcase_csr_read_16(__csr_num + 16, __val)}
-> > > > > > +
-> > > > > > +       unsigned long ret =3D 0;
-> > > > > > +
-> > > > > > +       switch (csr_num) {
-> > > > > > +       switchcase_csr_read_32(CSR_CYCLE, ret)
-> > > > > > +       default:
-> > > > > > +               break;
-> > > > > > +       }
-> > > > > > +
-> > > > > > +       return ret;
-> > > > > > +#undef switchcase_csr_read_32
-> > > > > > +#undef switchcase_csr_read_16
-> > > > > > +#undef switchcase_csr_read_8
-> > > > > > +#undef switchcase_csr_read_4
-> > > > > > +#undef switchcase_csr_read_2
-> > > > > > +#undef switchcase_csr_read
-> > > > > > +}
-> > > > > > +
-> > > > > > +static u64 read_perf_counter(unsigned int counter)
-> > > > > > +{
-> > > > > > +       return csr_read_num(CSR_CYCLE + counter);
-> > > > > > +}
-> > > > > > +
-> > > > > > +static u64 read_timestamp(void)
-> > > > > > +{
-> > > > > > +       return csr_read_num(CSR_TIME);
-> > > > > > +}
-> > > > > > +
-> > > > > >  #else
-> > > > > >  static u64 read_perf_counter(unsigned int counter __maybe_unus=
-ed) { return 0; }
-> > > > > >  static u64 read_timestamp(void) { return 0; }
-> > > > > > --
-> > > > > > 2.39.2
-> > > > > >
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZMflhQAKCRC1SFbKvhIj
+K9WPAP0emuG0IfFbFUcbSGg1pjaD2RVmEmR/aMnY01eGm19zWAEAs+swj1y6j371
+lccbKAQk14M5ORRzmO+997ZF5u5uNQQ=
+=LLqT
+-----END PGP SIGNATURE-----
+
+--/rOFXeJeJEPIpyxN--
