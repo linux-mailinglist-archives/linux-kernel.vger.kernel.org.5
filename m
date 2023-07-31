@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B31B768C7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8C3768C82
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbjGaHAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41594 "EHLO
+        id S230328AbjGaHA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229637AbjGaHAW (ORCPT
+        with ESMTP id S230317AbjGaHA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:00:22 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41E60139
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:00:20 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso542112466b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690786819; x=1691391619;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FLczK7UnzTXBkdngha4qugd7Z1WvrzaSRJmMQUFq/zI=;
-        b=wVsSDlu5px/NHDcygjhFU3sxEhDkVBE7wjmtQIUHJRN6xo8jGKE/Clj35BISa0rEH8
-         eqd+4c5wrArsywyPfz4V2Bs5FXzB5zfXHeetcXDjfqG/LXstMvmo6eu2urIYPr6Yed7q
-         uG7IVMrE7oAaNddFT0zFDwe8vh1cmfBKPySA5dPC34000oOjwWdlE+MTmB3k++2rqydH
-         R9iVGfyvgBWxCkWckiEFSNlm99YZvrfpOk6OJHnj2YcbGT3yaR4I/hNQNq1q/h0FzGw3
-         WoPX7F6A5yniPzK2xVr2ACNZ5a5Dp/ANnL9obTlDtC/BJ/IAVo41XcJHNmNbAvP9jHU1
-         VPww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690786819; x=1691391619;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FLczK7UnzTXBkdngha4qugd7Z1WvrzaSRJmMQUFq/zI=;
-        b=Bel6C+o7zMaJiNA0DegN2Ki8iPoAfFs6dkZ0SBJX/cgyZJcMUrfKMlr4asLp3pn6aq
-         I9uHS92x5mqK5xJ/hB6kaRCaScaIELIbAZg30wR35WR5InJqpCLPkcJGVJhgf6uBtTMJ
-         bY6YxM4Hkbx20UtM4ERi2SOjRBtCwcS0yag1s7CAKZRUkjKWv+v9iaUVqy8+l5Qq/813
-         EZybhcZ2aBW0dC7LAJfTI6bOf80Ahw2TF1UswbAfjfid4Y6BROw+Xt9lMibl26U8VZ8E
-         yOsY01NPjyrQKAkch6Y12GQOMpdzd6Yy7ME2hhHVHP6ezAuENQQom/a/iZwoIdoFu26Q
-         BnOg==
-X-Gm-Message-State: ABy/qLbvVwJ2GRshGaDbpDJYI56x5IP3eQqFxDr4+odLVWnBaXi7iIny
-        ULhl6crwcwQwHaHCyzbsFFqnrA==
-X-Google-Smtp-Source: APBJJlHcoYt9E5GckYloeoqeVHbDHt4I7nkv/gj6v0Axi+VIFpjGxQk2+NLbWtFvzcXypJ5QAAxFOg==
-X-Received: by 2002:a17:906:1d05:b0:992:13c7:563 with SMTP id n5-20020a1709061d0500b0099213c70563mr6224968ejh.75.1690786818674;
-        Mon, 31 Jul 2023 00:00:18 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id si15-20020a170906cecf00b00992e265495csm5753427ejb.212.2023.07.31.00.00.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 00:00:18 -0700 (PDT)
-Message-ID: <981a79ee-5258-eb76-020a-765f5f39866f@linaro.org>
-Date:   Mon, 31 Jul 2023 09:00:16 +0200
+        Mon, 31 Jul 2023 03:00:57 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299C2185
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:00:56 -0700 (PDT)
+Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qQMtS-0004SZ-1N; Mon, 31 Jul 2023 09:00:38 +0200
+Message-ID: <de822fa6-16ca-381c-2cdf-7e983f29945b@pengutronix.de>
+Date:   Mon, 31 Jul 2023 09:00:29 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.1
-Subject: Re: [PATCH v3 5/8] dt-bindings: arm: qcom,ids: Adjust the position of
- QCOM_ID_QDU1010
-Content-Language: en-US
-To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
-        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
-        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230731061325.26431-1-quic_tengfan@quicinc.com>
- <20230731061325.26431-6-quic_tengfan@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230731061325.26431-6-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v2] net: stmmac: correct MAC propagation delay
+Content-Language: en-US, de-DE
+To:     Richard Cochran <richardcochran@gmail.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        patchwork-jzi@pengutronix.de, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, kernel test robot <lkp@intel.com>
+References: <20230719-stmmac_correct_mac_delay-v2-1-3366f38ee9a6@pengutronix.de>
+ <ZMGIuKVP7BEotbrn@hoboy.vegasvil.org>
+ <729dd79e-83aa-0237-1edd-1662a6ae28cd@pengutronix.de>
+ <ZMJy6yt4CL250x6Q@hoboy.vegasvil.org>
+From:   Johannes Zink <j.zink@pengutronix.de>
+In-Reply-To: <ZMJy6yt4CL250x6Q@hoboy.vegasvil.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
+X-SA-Exim-Mail-From: j.zink@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2023 08:13, Tengfei Fan wrote:
-> Adjust the position of QCOM_ID_QDU1010, so that there is a coherent
-> sequence of numbers.
+Hi Richard,
+
+On 7/27/23 15:36, Richard Cochran wrote:
+> On Thu, Jul 27, 2023 at 09:20:10AM +0200, Johannes Zink wrote:
+>> Hi Richard,
+>>
+>> On 7/26/23 22:57, Richard Cochran wrote:
+>>> On Mon, Jul 24, 2023 at 12:01:31PM +0200, Johannes Zink wrote:
+>>>
+>>> Earlier versions of the IP core return zero from these...
+>>>
+>>>> +#define	PTP_TS_INGR_LAT	0x68	/* MAC internal Ingress Latency */
+>>>> +#define	PTP_TS_EGR_LAT	0x6c	/* MAC internal Egress Latency */
+>>>
+>>
+>> good catch. Gonna send a v3 with a check to and set the values for dwmac v5 only.
 > 
-> Change-Id: Id083e1ecc92c063c1a07a81c66dcb034020964b0
-
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
-
-> ---
->  include/dt-bindings/arm/qcom,ids.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> AFAICT there is no feature bit that indicates the presence or absence
+> of these two registers.
 > 
-> diff --git a/include/dt-bindings/arm/qcom,ids.h b/include/dt-bindings/arm/qcom,ids.h
-> index bcbe9ee2cdaf..977c235ed0d9 100644
-> --- a/include/dt-bindings/arm/qcom,ids.h
-> +++ b/include/dt-bindings/arm/qcom,ids.h
-> @@ -249,8 +249,8 @@
->  #define QCOM_ID_SA8775P			534
->  #define QCOM_ID_QRU1000			539
->  #define QCOM_ID_QDU1000			545
-> -#define QCOM_ID_QDU1010			587
->  #define QCOM_ID_IPQ5019			569
+> Are you sure that *all* v5 IP cores have these?
+> 
+> I am not sure.
 
-I don't think this change is needed. Isn't IPQ5019 going away?
+I cannot tell for sure either, since I have datasheets for the i.MX8MP only. 
+Maybe Kurt has some insights here, as he has additional hardware available for 
+testing?
 
+Nevertheless, I am going to add a guard to only use the correction codepath on 
+i.MX8MP in v3 for the time being, we can add other hardware later trivially if 
+they support doing this.
 
-Best regards,
-Krzysztof
+Best regards
+Johannes
+
+> 
+> Thanks,
+> Richard
+> 
+> 
+
+-- 
+Pengutronix e.K.                | Johannes Zink                  |
+Steuerwalder Str. 21            | https://www.pengutronix.de/    |
+31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
+Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
 
