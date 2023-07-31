@@ -2,132 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFE176A1A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1D776A1A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbjGaT7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:59:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
+        id S230141AbjGaUBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbjGaT7d (ORCPT
+        with ESMTP id S229519AbjGaUB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:59:33 -0400
-X-Greylist: delayed 7633 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 31 Jul 2023 12:59:31 PDT
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A384219A2;
-        Mon, 31 Jul 2023 12:59:31 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 4A1F6300011A4;
-        Mon, 31 Jul 2023 21:59:30 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 22117274439; Mon, 31 Jul 2023 21:59:30 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 21:59:30 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     bhelgaas@google.com, alex.williamson@redhat.com,
-        treding@nvidia.com, jonathanh@nvidia.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vsethi@nvidia.com, kthota@nvidia.com, mmaddireddy@nvidia.com,
-        sagar.tv@gmail.com
-Subject: Re: [PATCH V3] PCI: pciehp: Disable ACS Source Validation during
- hot-remove
-Message-ID: <20230731195930.GA13000@wunner.de>
-References: <20230111190533.29979-1-vidyas@nvidia.com>
- <20230730191519.3124390-1-vidyas@nvidia.com>
- <20230730194026.GA19962@wunner.de>
- <7880aa6e-9fc5-c026-138f-42bef3c48b69@nvidia.com>
+        Mon, 31 Jul 2023 16:01:28 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796908F;
+        Mon, 31 Jul 2023 13:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690833687; x=1722369687;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5oGbXYGj4vcg8CCQuePDiYFktmYReAlAj/YZnxzjeD0=;
+  b=VkSFNtZBA5HOuUJzC3R1icmDvQPvaAovL+TfbO/EOpgzDgV/6PRUzgr9
+   u+7wxsxHJYvHKyFr/VuFl4kD8aBzaq4rSJvuvcruOkq/tViFjvAsv6hs9
+   /yDs0vdFZL/bhDKTbkrgygq/7K6gNXNI2ZqDFEqO8Barq/w8ZsSRLrZaX
+   i1Jn2qKPMl3qnCrMnpVsIMab34i/ojQDL1pxPwC+OSnFS7k4CBQ1nEbJ7
+   8VO/9v+SWnsMIMzNQ+PKSYDyaCdKDoRxiNw71khvFggIM3nLoZ09dDvCK
+   ywU6CBpj2eV/Cqn5J+P8V8DlPmLVP30DH4052Hc9+yNS+hgtY71//AQ4v
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435428394"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="435428394"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:01:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="1059115379"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="1059115379"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP; 31 Jul 2023 13:01:17 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qQZ4t-003ufD-1R;
+        Mon, 31 Jul 2023 23:01:15 +0300
+Date:   Mon, 31 Jul 2023 23:01:15 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Kees Cook <keescook@chromium.org>, Nuno Sa <nuno.sa@analog.com>
+Subject: Re: [PATCH v3 2/4] iio: core: Add opaque_struct_size() helper and
+ use it
+Message-ID: <ZMgTCzslTd2REumj@smile.fi.intel.com>
+References: <20230724110204.46285-1-andriy.shevchenko@linux.intel.com>
+ <20230724110204.46285-3-andriy.shevchenko@linux.intel.com>
+ <20230729124618.67e89fff@jic23-huawei>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7880aa6e-9fc5-c026-138f-42bef3c48b69@nvidia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230729124618.67e89fff@jic23-huawei>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 01:32:27AM +0530, Vidya Sagar wrote:
-> On 7/31/2023 1:10 AM, Lukas Wunner wrote:
-> > On Mon, Jul 31, 2023 at 12:45:19AM +0530, Vidya Sagar wrote:
-> > > PCIe 6.0, 6.12.1.1 specifies that downstream devices are permitted to
-> > > send upstream messages before they have been assigned a bus number and
-> > > such messages have a Requester ID with Bus number set to 00h.
-> > > If the Downstream port has ACS Source Validation enabled, these messages
-> > > will be detected as ACS violation error.
-> > > 
-> > > Hence, disable ACS Source Validation in the bridge device during
-> > > hot-remove operation and re-enable it after enumeration of the
-> > > downstream hierarchy but before binding the respective device drivers.
-> > 
-> > What are these messages that are sent before assignment of a bus number?
+On Sat, Jul 29, 2023 at 12:46:18PM +0100, Jonathan Cameron wrote:
+> On Mon, 24 Jul 2023 14:02:02 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+
+...
+
+> > + * Note, when @s is 0, the alignment @a is added to the sizeof(*(@p))
+> > + * and the result, depending on the @a, may be way off the initial size.
 > 
-> One example is the DRS (Device Readiness Status) message.
+> How often is this true?  A quick and dirty grep suggests at least 2 so perhaps
+> worth retaining the old behaviour.
 
-Please mention that in the commit message.
+You mean that the sizeof(_some_grepped_struct_) is much less than an alignment
+in those uses?
 
-
-> > What's the user-visible issue that occurs when they're blocked?
+> Can we take that into account?  Maybe something like
 > 
-> I'm not sure about the issue one can observe when they are blocked, but, we
-> have seen one issue when they are not blocked. When an endpoint sends a DRS
-> message and an ACS violation is raised for it, the system can trigger DPC
-> (Downstream Port Containment) if it is configured to do so for ACS
-> violations. Once the DPC is released after handling it, system would go for
-> link-up again, which results in root port receiving DRS once again from the
-> endpoint and the cycle continues.
+> #define opaque_struct_size(p, a, s) ((s) ? size_add(ALIGN(sizeof(*(p)), (a)), (s)): sizeof(*p)) 
 
-As an alternative to disabling ACS, have you explored masking ACS
-Violations (PCI_ERR_UNC_ACSV) upon de-enumeration of a device and
-unmasking them after assignment of a bus number?
+(s) will be evaluated twice, not good. So, not in this form.
 
-That would alleviate concerns that disabling ACS Source Validation
-weakens security (because it doesn't have to be disabled in the
-first place).
+> Or do it at the call site below.
 
-You'd need to clear the ACS Violation Status bit in the Uncorrectable
-Error Status Register though after assignment of a bus number,
-in addition to unmasking it, because that bit is still set despite
-the error being masked.
+Looks much better to me.
 
-The kernel affords a generous 60 sec timeout for devices to become
-ready (PCIE_RESET_READY_POLL_MS) and is not dependent on DRS messages
-coming through, so blocking them with ACS shouldn't cause issues.
+...
 
+> 	if (sizeof_priv)
+> 		alloc_size = opaque_struct_size(iio_dev_opaque, IIO_DMA_MINALIGN, sizeof_priv);
+> 	else
+> 		alloc_size = sizeof(struct iio_dev_opaque);
 
-> > Doesn't disabling Source Validation introduce a security hole because the
-> > device may spoof messages before Source Validation is re-enabled?
+Right.
+
+...
+
+> > -	indio_dev->priv = (char *)iio_dev_opaque +
+> > -		ALIGN(sizeof(struct iio_dev_opaque), IIO_DMA_MINALIGN);
+> > +	indio_dev->priv = opaque_struct_data(iio_dev_opaque, IIO_DMA_MINALIGN);
 > 
-> Agree, but this concern is already/has always been  there during boot
-> scenario where the link-up happens first and the ACS is enabled at a later
-> point and endpoint can spoof messages in between if it wishes so.
+> Would have been safer if original code set this to NULL if
+> sizeof_priv == 0
 
-The problem is that devices may be removed only logically (via sysfs
-"power" attribute or Attention Button) and still remain in the system
-physically.  They may spoof messages until they're physically removed
-or the hotplug slot is brought up again.
+Yeah, original code and proposed change has no difference in this sense.
+
+> A driver doing that should never have used iio_priv() but nicer if it was
+> NULL rather than off the end of the allocation.
+
+Agree.
+But looking at the above, I would rather see that in a form of
+
+	if (...)
+		priv = opaque_struct_data(...);
+	else
+		priv = NULL;
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-> > PCIe r6.1 sec 6.12.1.1 does indeed point out that the downstream device
-> > is *permitted* to send these messages but the Implementation Note
-> > does *not* prescribe that Source Validation shall be disabled to let them
-> > through.  It merely points out that the messages may be filtered if
-> > Source Validation is enabled.
-> 
-> Could you please elaborate on the filtering part. Do you expect this to be
-> implemented in the hardware or software?
-
-By "filtered" I meant that TLPs are blocked by ACS.  Sorry for the
-confusing word choice.
-
-Thanks,
-
-Lukas
