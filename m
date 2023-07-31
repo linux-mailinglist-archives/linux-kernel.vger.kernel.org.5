@@ -2,194 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E55769FF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 532C5769FF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjGaSCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        id S231618AbjGaSC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbjGaSCM (ORCPT
+        with ESMTP id S231267AbjGaSC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:02:12 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46711718
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:02:05 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-40c72caec5cso31691cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:02:05 -0700 (PDT)
+        Mon, 31 Jul 2023 14:02:56 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF5DE4E
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:02:55 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe2503e3easo4572961e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:02:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690826525; x=1691431325;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X0gCxxFfGpH7+EO1EgURYZAY2bdhrbnISyF1lBRoK6A=;
-        b=qZXJd0+ffo+L4HQlrADJFOpNsrtneEkEjKGaCenKWHHQEco9dlSNxersD+gpofApiW
-         o02MZh+LdJtBnpNbTaunNFo/yrUZVDlYroTi00ctwRDARSeVylQBSOGLLV6g3BPsFik1
-         4KZESg4WwqRH2heMDI/gKOTA96YxqAHdeR6cwsxRS352/fhcTvniO25FMpqKBC+vkbG+
-         7U3kQrA7UwBFicH5pD7tews8lYXa8aG2Rtx/WHVJ50zWYGSnD/DEpHGm5+dNWqrCjKzK
-         vrB7i6HMlTdlHH7oSEErO/ezx1jdtNdTdwaGk/ao8HCv4z3XUdYfTfahIP4mt6yralea
-         cWuQ==
+        d=linux-foundation.org; s=google; t=1690826574; x=1691431374;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sbvUvGljtEHmYL7qi+HXkrNPoFOxFR5BvYu2TjHTwr0=;
+        b=D9E3ZcdecHW/AeFtZ+rCyYRCgHd0EAWCQWVnJetVe9U1Clq/ZnJaJrwTDKMMR3Fmf5
+         UXD34A6gN2F/PSEALsGXpwpUVIwSnPxQeOKMAHBIh62cfyrlXiQ1rLHGKVKtEeobsXeZ
+         YDya2STnECp5Gel9dceP0mS/Kmtlorb/H51OU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690826525; x=1691431325;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X0gCxxFfGpH7+EO1EgURYZAY2bdhrbnISyF1lBRoK6A=;
-        b=AEZFup83YU6n3gE9kuOtcOmOYjZXG+XXKOCTYtfp6UUKfz1gG2SrMF2Ni2pXENc1n9
-         VmLRBGM2Q5+S3B+bUbiLtwvwJXYPFMUXh2JY7UDI2QLS2qUQC044jd9Lrzh8L+xIvKyO
-         jI9UpDsd9dk8Ud1/80EJIqD6liuX5qTMxPX6k3AYmeiBLhNR6P7DfP3PJcdGYkioqosn
-         ZlRRr75BkiA9dfSFWzeSTLfoR4HofTyaKCGMBnlZJX40hdf01qa0aIl6uhruBkwh/Xb1
-         iR2CZnKdYU4ukbVm0f4Tujgr32yLGK2lbbrjBACMhFTaPnl17wsShDbMt0RkXqXWc3b4
-         1XAw==
-X-Gm-Message-State: ABy/qLYk0lxY49qK3ZQ9hvTuFWD3iPfYVuNKEYlrSePewFmv8GsEcXiA
-        RCKRKTO9JsMQZ4iX95hWC1HiKTZHTSSuc//nWFtVnA==
-X-Google-Smtp-Source: APBJJlEBpxAr+gWpuQ40S4Mxoz6DvPL1ZVwppPhat0hf9uVLuJsVRwWK349Eb3xEO5XCaxjIBjS+YDqgeGbyrEVO6AI=
-X-Received: by 2002:a05:622a:104d:b0:403:9572:e37f with SMTP id
- f13-20020a05622a104d00b004039572e37fmr425212qte.22.1690826524611; Mon, 31 Jul
- 2023 11:02:04 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690826574; x=1691431374;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sbvUvGljtEHmYL7qi+HXkrNPoFOxFR5BvYu2TjHTwr0=;
+        b=QUdZVF0ePaUypxsdIx5Q/+9k38nIVR5oT9rFgzzkfQTkrXN/ELpRuQyTcMeUSEalnn
+         XIfMExwtwhFDQalsZGhaTrf5EdWUcQ+E/lY0d3PcAs5xWW3VEC8WDVoGSOflYLQbS1yp
+         jmX8OZIDm1+zgFPLikpRxRr+qwLIZFKmqKl08rJ1BclwYy1FgpDCk5eqFHsxHE1XmzGD
+         komkLvqMQ1H5lFdKFBstx9NvZoiHRopCHkZEaVAz5Wu4VC6ccenL1VxRfECc05AhIQSI
+         DVuEfm9Z8FVr52+VILz789m2J4pferVI8yjwOuljDmivX68Wl+pvJWm95YoJXaCwXXkH
+         Akyg==
+X-Gm-Message-State: ABy/qLaN5c6+2FZ2O5c8MLa+q40yZmjN6b4ewGHvPmvJoHgK+H16VLqX
+        bAgZdXKsQt5xWgXB3ze9wrFpauGWYuQQJmq6AOcCYw==
+X-Google-Smtp-Source: APBJJlF6dbwLQb837FZeJ62/1PZ9C/4JmR/8AqKQJuZaHxJ/Y3D3zSSIOJAXfDLM0g/cyQ8v67doDQ==
+X-Received: by 2002:a05:6512:2e9:b0:4fe:819:b0ed with SMTP id m9-20020a05651202e900b004fe0819b0edmr381442lfq.46.1690826574088;
+        Mon, 31 Jul 2023 11:02:54 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id y19-20020ac24473000000b004fe0f0eff15sm2173609lfl.191.2023.07.31.11.02.53
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 11:02:53 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4fe41f7c7ffso197413e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:02:53 -0700 (PDT)
+X-Received: by 2002:ac2:4e07:0:b0:4fe:ec5:2698 with SMTP id
+ e7-20020ac24e07000000b004fe0ec52698mr498383lfr.50.1690826573309; Mon, 31 Jul
+ 2023 11:02:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-9-rananta@google.com>
- <87o7jxr06t.wl-maz@kernel.org> <87lef1qzim.wl-maz@kernel.org>
-In-Reply-To: <87lef1qzim.wl-maz@kernel.org>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 31 Jul 2023 11:01:53 -0700
-Message-ID: <CAJHc60xC-Bs-0uoqkytDVcwHTxVnW7eyVxfHhO0mRrupVbdaYg@mail.gmail.com>
-Subject: Re: [PATCH v7 08/12] KVM: arm64: Define kvm_tlb_flush_vmid_range()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
-        Shaoqin Huang <shahuang@redhat.com>
+References: <20230731171233.1098105-1-surenb@google.com> <20230731171233.1098105-2-surenb@google.com>
+In-Reply-To: <20230731171233.1098105-2-surenb@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 31 Jul 2023 11:02:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
+Message-ID: <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mm: enable page walking API to lock vmas during the walk
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
+        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
+        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
+        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
+        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 6:01=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
-:
+On Mon, 31 Jul 2023 at 10:12, Suren Baghdasaryan <surenb@google.com> wrote:
 >
-> On Thu, 27 Jul 2023 13:47:06 +0100,
-> Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > On Sat, 22 Jul 2023 03:22:47 +0100,
-> > Raghavendra Rao Ananta <rananta@google.com> wrote:
-> > >
-> > > Implement the helper kvm_tlb_flush_vmid_range() that acts
-> > > as a wrapper for range-based TLB invalidations. For the
-> > > given VMID, use the range-based TLBI instructions to do
-> > > the job or fallback to invalidating all the TLB entries.
-> > >
-> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > > Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > > Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> > > ---
-> > >  arch/arm64/include/asm/kvm_pgtable.h | 10 ++++++++++
-> > >  arch/arm64/kvm/hyp/pgtable.c         | 20 ++++++++++++++++++++
-> > >  2 files changed, 30 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/includ=
-e/asm/kvm_pgtable.h
-> > > index 8294a9a7e566..5e8b1ff07854 100644
-> > > --- a/arch/arm64/include/asm/kvm_pgtable.h
-> > > +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> > > @@ -754,4 +754,14 @@ enum kvm_pgtable_prot kvm_pgtable_stage2_pte_pro=
-t(kvm_pte_t pte);
-> > >   *    kvm_pgtable_prot format.
-> > >   */
-> > >  enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte);
-> > > +
-> > > +/**
-> > > + * kvm_tlb_flush_vmid_range() - Invalidate/flush a range of TLB entr=
-ies
-> > > + *
-> > > + * @mmu:   Stage-2 KVM MMU struct
-> > > + * @addr:  The base Intermediate physical address from which to inva=
-lidate
-> > > + * @size:  Size of the range from the base to invalidate
-> > > + */
-> > > +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
-> > > +                           phys_addr_t addr, size_t size);
-> > >  #endif     /* __ARM64_KVM_PGTABLE_H__ */
-> > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtabl=
-e.c
-> > > index aa740a974e02..5d14d5d5819a 100644
-> > > --- a/arch/arm64/kvm/hyp/pgtable.c
-> > > +++ b/arch/arm64/kvm/hyp/pgtable.c
-> > > @@ -670,6 +670,26 @@ static bool stage2_has_fwb(struct kvm_pgtable *p=
-gt)
-> > >     return !(pgt->flags & KVM_PGTABLE_S2_NOFWB);
-> > >  }
-> > >
-> > > +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
-> > > +                           phys_addr_t addr, size_t size)
-> > > +{
-> > > +   unsigned long pages, inval_pages;
-> > > +
-> > > +   if (!system_supports_tlb_range()) {
-> > > +           kvm_call_hyp(__kvm_tlb_flush_vmid, mmu);
-> > > +           return;
-> > > +   }
-> > > +
-> > > +   pages =3D size >> PAGE_SHIFT;
-> > > +   while (pages > 0) {
-> > > +           inval_pages =3D min(pages, MAX_TLBI_RANGE_PAGES);
-> > > +           kvm_call_hyp(__kvm_tlb_flush_vmid_range, mmu, addr, inval=
-_pages);
-> > > +
-> > > +           addr +=3D inval_pages << PAGE_SHIFT;
-> > > +           pages -=3D inval_pages;
-> > > +   }
-> > > +}
-> > > +
-> >
-> > This really shouldn't live in pgtable.c. This code gets linked into
-> > the EL2 object. What do you think happens if, for some reason, this
-> > gets called *from EL2*?
->
-> Ah, actually, nothing too bad would happen, as we convert the
-> kvm_call_hyp() into a function call.
->
-> But still, we don't need two copies of this stuff, and it can live in
-> mmu.c.
->
-But since we have a couple of references in pgtable.c to
-kvm_tlb_flush_vmid_range(), wouldn't that be an (linking) issue if we
-moved the definition to mmu.c?
+> -               walk_page_vma(vma, &subpage_walk_ops, NULL);
+> +               walk_page_vma(vma, &subpage_walk_ops, true, NULL);
 
-ld: error: undefined symbol: __kvm_nvhe_kvm_tlb_flush_vmid_range
->>> referenced by pgtable.c:1148 (./arch/arm64/kvm/hyp/nvhe/../pgtable.c:11=
-48)
->>>               arch/arm64/kvm/hyp/nvhe/kvm_nvhe.o:(__kvm_nvhe_kvm_pgtabl=
-e_stage2_unmap) in archive vmlinux.a
-...
+Rather than add a new argument to the walk_page_*() functions, I
+really think you should just add the locking rule to the 'const struct
+mm_walk_ops' structure.
 
-Or is there some other way to make it work?
+The locking rule goes along with the rules for what you are actually
+doing, after all. Plus it would actually make it all much more legible
+when it's not just some random "true/false" argument, but a an actual
 
-- Raghavendra
+        .write_lock = 1
 
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+in the ops definition.
+
+Yes, yes, that might mean that some ops might need duplicating in case
+you really have a walk that sometimes takes the lock, and sometimes
+doesn't, but that is odd to begin with.
+
+The only such case I found from a quick look was the very strange
+queue_pages_range() case. Is it really true that do_mbind() needs the
+write-lock, but do_migrate_pages() does not?
+
+And if they really are that different maybe they should have different walk_ops?
+
+Maybe there were other cases that I didn't notice.
+
+>                 error = walk_page_range(current->mm, start, end,
+> -                               &prot_none_walk_ops, &new_pgprot);
+> +                               &prot_none_walk_ops, true, &new_pgprot);
+
+This looks odd. You're adding vma locking to a place that didn't do it before.
+
+Yes, the mmap semaphore is held for writing, but this particular walk
+doesn't need it as far as I can tell.
+
+In fact, this feels like that walker should maybe *verify* that it's
+held for writing, but not try to write it again?
+
+Maybe the "lock_vma" flag should be a tri-state:
+
+ - lock for reading (no-op per vma), verify that the mmap sem is held
+for reading
+
+ - lock for reading (no-op per vma), but with mmap sem held for
+writing (this kind of "check before doing changes" walker)
+
+ - lock for writing (with mmap sem obviously needs to be held for writing)
+
+>         mmap_assert_locked(walk.mm);
+> +       if (lock_vma)
+> +               vma_start_write(vma);
+
+So I think this should also be tightened up, and something like
+
+        switch (ops->locking) {
+        case WRLOCK:
+                vma_start_write(vma);
+                fallthrough;
+        case WRLOCK_VERIFY:
+                mmap_assert_write_locked(mm);
+                break;
+        case RDLOCK:
+                mmap_assert_locked(walk.mm);
+        }
+
+because we shouldn't have a 'vma_start_write()' without holding the
+mmap sem for *writing*, and the above would also allow that
+mprotect_fixup() "walk to see if we can merge, verify that it was
+already locked" thing.
+
+Hmm?
+
+NOTE! The above names are just completely made up. I dcon't think it
+should actually be some "WRLOCK" enum. There are probably much better
+names. Take the above as a "maybe something kind of in this direction"
+rather than "do it exactly like this".
+
+            Linus
