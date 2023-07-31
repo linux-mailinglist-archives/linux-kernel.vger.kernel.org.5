@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FC776A4D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BD676A4D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjGaX2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 19:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47186 "EHLO
+        id S231139AbjGaX2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 19:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbjGaX2D (ORCPT
+        with ESMTP id S230332AbjGaX2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 19:28:03 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2F590
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690846056; x=1691450856; i=efault@gmx.de;
- bh=2Br0UNIeQx4jGOtMFO6+6aow679ug/8pzGo46WVpO3M=;
- h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
- b=S5xufcShWB7QBbEWbYFHUjyk5bayNf5dUjZSUgryK2N/sOlW/gTnxtQFaiJJr9b0apNyOT9
- lXwwJKT2roYhxutblor4uaL2DLLdjlpsgq4TQyV3I9y8z+fF1KVpBGIqKyab6FooFmM9qrIrI
- VDvwgenrCizBFYOZCsMKtWnhedidg4SFuX3pSLOTiJdehOEUvyyfCaYFo7uaeZldWmRkOdix2
- 1iO0zwosXWXLP/XUwotwIh6FI28FzL6LQNo2277+2TtlNYS4o4jsPt51snXTDkUNjTlapv9gZ
- mfLWheubJjqgGxWaqW1ZhdWEDNXQmI7hHXU9VmYp0ypmy6y2p59A==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer-2.fritz.box ([185.191.216.56]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N8ofO-1pon9i0xXC-015mgb; Tue, 01
- Aug 2023 01:27:36 +0200
-Message-ID: <42ad26cb6c98e028a331f5d73abf85bd965ff89d.camel@gmx.de>
-Subject: Re: arm64: perf test 26 rpi4 oops
-From:   Mike Galbraith <efault@gmx.de>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>, Will Deacon <will@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
-        ardb@kernel.org
-Date:   Tue, 01 Aug 2023 01:27:34 +0200
-In-Reply-To: <CAA5enKYaZ-daLeL3amr2QrQjtUdK=P8B+VbJdea7cB77QWY-eQ@mail.gmail.com>
-References: <b39c62d29a431b023e98959578ba87e96af0e030.camel@gmx.de>
-         <20230728141852.GA21718@willie-the-truck>
-         <8c56256399e2e6c41bc574749d6170d5529f24fc.camel@gmx.de>
-         <20230731104340.GA24767@willie-the-truck>
-         <20230731115207.GB24767@willie-the-truck>
-         <CAA5enKaUYehLZGL3abv4rsS7caoUG-pN9wF3R+qek-DGNZufbA@mail.gmail.com>
-         <CAA5enKYaZ-daLeL3amr2QrQjtUdK=P8B+VbJdea7cB77QWY-eQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Mon, 31 Jul 2023 19:28:37 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02801194
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:28:34 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99357737980so791110966b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1690846112; x=1691450912;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2GbKQbR8WQDKm/09hjFJLqAkFDHcK7ngIt0eeXc/7M4=;
+        b=ZekSgBZkAavLHGGah0w31PCLHlAqS/S9ypHQf2oGzr6j+sNI2t9uQ/p9xkhUBiSnXM
+         WgV/J3qKPl0g/CG0GqD/ITJtAYWXtykxHf6PJhd6gKD4vdcSQC0yFuOrPFUoIv2P1NXP
+         wU7sML2VwwbarztWTEem8URdK5+0BOJKp7y0A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690846112; x=1691450912;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2GbKQbR8WQDKm/09hjFJLqAkFDHcK7ngIt0eeXc/7M4=;
+        b=jL1EC705i9VFLKXIbBTUZ9DrB2ADxh5LQFXta4R7ZARvqBws1qhAuo0K/ezPz0zwXJ
+         5m5/PURhMlh0WufJxqr+805mlwVcHNxGvIWQJCMM+mYpMlfbOuIegjZ9Qkr0mURfEfxj
+         NBHt2Fxlit/JunIs7i1eZa/JGSS6Wxj8GZ5JUSmK2+bkfre0+TwWvAqA6DGVUWRYkjY9
+         S3Lv7XpVqck9tGQW03jEjkjBp5H0IkHCMuQSRIl9gy8k2Yj2rHNmXlCKeaboFgUajcoD
+         DDUaYzf6sL5UqRkUQREGPnJ849J8nbZ/GaiSFdacyMhGMnAlARPaNJpcS2olBiozJY0H
+         5fzQ==
+X-Gm-Message-State: ABy/qLYkstFTY1ZSS7hnjRoCEZY3Mcdzn2cdTuT30WNBJ3ADBzWBYBuc
+        R8ygQgMSgMXaQkTdqR9e2/hBK/WV8OUvViK1XI1cQzK1
+X-Google-Smtp-Source: APBJJlFkUY3MPB4JE8eYQ4mbXfixatIUl6d964+dUGuOr2ufCo0CyFJMrKMssOMe3InZTyDnziCRFw==
+X-Received: by 2002:a17:907:2be2:b0:993:fba5:cdf1 with SMTP id gv34-20020a1709072be200b00993fba5cdf1mr880668ejc.22.1690846112324;
+        Mon, 31 Jul 2023 16:28:32 -0700 (PDT)
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com. [209.85.128.49])
+        by smtp.gmail.com with ESMTPSA id v5-20020a170906564500b00992e4d8cc89sm6814238ejr.57.2023.07.31.16.28.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 16:28:30 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-3fe078dcc3aso32350345e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:28:30 -0700 (PDT)
+X-Received: by 2002:adf:f9cf:0:b0:316:ff0e:81b6 with SMTP id
+ w15-20020adff9cf000000b00316ff0e81b6mr941858wrr.32.1690846110462; Mon, 31 Jul
+ 2023 16:28:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:xwbf54OnizOtLbO9xE+7iRb6p7kVOq4hu3VRAFYweWoBZpkOf5s
- Lm49RTh6EG7wQ4/KFSubYOqKhvc+wIdKUb3uKA6CGCj83ZJLYlTTt7v8hUQTI08d6wOwqUQ
- XoO6JF3u7Kn80yKAPknlBxlfmx9K6CvThB0F/q0brw9KbWr6xFRcDVet2TtmozJyRYQLR/X
- ucg1rt8e/VgNHlSyrp28g==
-UI-OutboundReport: notjunk:1;M01:P0:593Ady+9XfU=;DvqB7G05tb1/hcNFdIwDCzlFYES
- YT9ZrZtSPyw81MkJpeQWVQdIT3I0OfNqRsErhaoUMP+qoiOh7rcqO8ETiscbmZpswGqn/uFV/
- +DbzbANmgzlj26hbcexU5SUkb5z6eTDGZiC7p8JUHctl9jfEHhFXf+RswLP5caiSXMetcLm/T
- 8d7vg2UtDadpcXASgQBo8ye+SY6nqAjjusx3JjngMhrs00Znj7e3nN21C2/3YzV+rBhTITQza
- 1KdFoDg64uiBQSZNKoMDcK2NkDyugfTxzCrhL5pbivipVwxg7vZdhXCmw+F88k9W9/2GTJ51g
- 0b4qOB3ZUdQelvMX6wirc5NNi5iX+25xX2ZGBoUdfAMtpaec+pkIqA8q/+q4XL9TYXTXcZ5SC
- BttpS85HMhaD/vb0/V9ELTDaqxcQNnvNdJRDG4hX0jwK/JO5vtpoq9CucaaSvnVkyy6Tvgh78
- bT3zn6uiyDyLIChNakkTjnqN8jilWdl8sv1g6bUIXDc4aJzA5WcjDTq/KOFukfUilB5+jJX6S
- Sylo2AMXEKTV0Q3LjWqW+kOe/aGLNdm7f2If/V8ktJPl81S8vkSZq3OEzYcaTUl2FodzPqyuV
- d1B0Lb9g8TEG4CeLo/Dg9MpMV+E5pAfGPXmgsCA64/WWWa8bsnXjKtboi7lKOeSPFq8p3hZJp
- +mD0JSU+DGEPvC4dIuuIMz3NfuauAnztyJvDb5nXM/5ewDHP1MlqBcGd9KH5EFiA0YpRlUisa
- EuUNkH7Ml+1nIceAcYLvsvk3Q3sSQWCyqthYHuyJaiAFrjCiLeBFJ/bjS8H2TDJCb6KfbKeMB
- 7UuqiMkYDUS5BI08Mu+rSkeMlwz+cw0ZTNhZQSvVwpNjq+qgZn6DKsitbH+ZgjyVcvc696w1h
- 3PPIZ6lRnylx3UO5pK2KzRcf6mtctPvNCNXZFmyHfwUKoPBPLNs2ClVSwIKGzgeiDL4KTscZ7
- HBwwlQpMy3BXouVMJM/O90o6LF0=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230727183805.69c36d6e@g14> <b1dd27df-744b-3977-0a86-f5dde8e24288@amd.com>
+ <20230727193949.55c18805@g14> <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
+ <20230727195019.41abb48d@g14> <67eefe98-e6df-e152-3169-44329e22478d@amd.com>
+ <20230727200527.4080c595@g14> <CAHk-=whqT0PxBazwfjWwoHQQFzZt50tV6Jfgq3iYceKMJtyuUg@mail.gmail.com>
+ <CUGAV1Y993FB.1O2Q691015Z2C@seitikki> <CAHk-=whphk8Jp=NYmnm7Qv+vZ6ScYCz+rV8a2G1nD-AQY3z+mQ@mail.gmail.com>
+ <105b9d13-cedd-7d3c-1f29-2c65199f1de7@amd.com> <CAHk-=why64j-K4e1VxKwx7o6FiGjcXEnu1Pz+1QnNTBCv9AGyA@mail.gmail.com>
+ <fd3cc87a-97ec-00ea-e480-f6597664c13a@amd.com>
+In-Reply-To: <fd3cc87a-97ec-00ea-e480-f6597664c13a@amd.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 31 Jul 2023 16:28:13 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whPvSJH=H9eHZbJQ+sxC-AVDvrgJ+M14fD3K5A+5s=zVA@mail.gmail.com>
+Message-ID: <CAHk-=whPvSJH=H9eHZbJQ+sxC-AVDvrgJ+M14fD3K5A+5s=zVA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] tpm: disable hwrng for fTPM on some AMD designs
+To:     "Limonciello, Mario" <mario.limonciello@amd.com>
+Cc:     linux@dominikbrodowski.net, Jarkko Sakkinen <jarkko@kernel.org>,
+        Daniil Stas <daniil.stas@posteo.net>,
+        James.Bottomley@hansenpartnership.com, Jason@zx2c4.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@leemhuis.info, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-07-31 at 22:54 +0100, Lorenzo Stoakes wrote:
+On Mon, 31 Jul 2023 at 14:57, Limonciello, Mario
+<mario.limonciello@amd.com> wrote:
 >
-> Posted a fix at:-
->
-> https://lore.kernel.org/all/20230731215021.70911-1-lstoakes@gmail.com/
->
-> Please give that a go and indicate whether that resolves the issue.
+> Are you thinking then to unregister the tpm hwrng "sometime" after boot?
 
-Yup, that fixed the oops issue.
+No, I was more thinking that instead of registering it as a randomness
+source, you'd just do a one-time
 
-	-Mike
+    tpm_get_random(..);
+    add_hwgenerator_randomness(..);
+
+and leave it at that.
+
+Even if there is some stutter due to some crazy firmware
+implementation for reading the random data, at boot time nobody will
+notice it.
+
+           Linus
