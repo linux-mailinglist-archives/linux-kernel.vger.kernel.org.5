@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3513176A4B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9083676A4B6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232160AbjGaXSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 19:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40190 "EHLO
+        id S232051AbjGaXSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 19:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231928AbjGaXRf (ORCPT
+        with ESMTP id S231927AbjGaXRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 19:17:35 -0400
+        Mon, 31 Jul 2023 19:17:34 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5B5172A
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5660A1BE6
         for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:17:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 18F1261363
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 706AE61375
         for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:17:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89A26C433CA;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD696C433CB;
         Mon, 31 Jul 2023 23:17:08 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qQc8R-003fQR-1f;
+        id 1qQc8R-003fR1-2K;
         Mon, 31 Jul 2023 19:17:07 -0400
-Message-ID: <20230731231707.328710408@goodmis.org>
+Message-ID: <20230731231707.538436821@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Mon, 31 Jul 2023 19:16:46 -0400
+Date:   Mon, 31 Jul 2023 19:16:47 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Ajay Kaher <akaher@vmware.com>,
-        Ching-lin Yu <chinglinyu@google.com>
-Subject: [for-next][PATCH 12/15] eventfs: Implement functions to create files and dirs when accessed
+        Ching-lin Yu <chinglinyu@google.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [for-next][PATCH 13/15] eventfs: Implement removal of meta data from eventfs
 References: <20230731231634.031452225@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,208 +53,208 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ajay Kaher <akaher@vmware.com>
 
-Add create_file() and create_dir() functions to create the files and
-directories respectively when they are accessed. The functions will be
-called from the lookup operation of the inode_operations or from the open
-function of file_operations.
+When events are removed from tracefs, the eventfs must be aware of this.
+The eventfs_remove() removes the meta data from eventfs so that it will no
+longer create the files associated with that event.
 
-Link: https://lkml.kernel.org/r/1690568452-46553-8-git-send-email-akaher@vmware.com
+When an instance is removed from tracefs, eventfs_remove_events_dir() will
+remove and clean up the entire "events" directory.
+
+The helper function eventfs_remove_rec() is used to clean up and free the
+associated data from eventfs for both of the added functions. SRCU is used
+to protect the lists of meta data stored in the eventfs. The eventfs_mutex
+is used to protect the content of the items in the list.
+
+As lookups may be happening as deletions of events are made, the freeing
+of dentry/inodes and relative information is done after the SRCU grace
+period has passed.
+
+Link: https://lkml.kernel.org/r/1690568452-46553-9-git-send-email-akaher@vmware.com
 
 Signed-off-by: Ajay Kaher <akaher@vmware.com>
 Co-developed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Tested-by: Ching-lin Yu <chinglinyu@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202305030611.Kas747Ev-lkp@intel.com/
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- fs/tracefs/event_inode.c | 61 +++++++++++++++++++++++++++++++--
- fs/tracefs/inode.c       | 74 ++++++++++++++++++++++++++++++++++++++++
- fs/tracefs/internal.h    |  3 ++
- 3 files changed, 136 insertions(+), 2 deletions(-)
+ fs/tracefs/event_inode.c | 143 +++++++++++++++++++++++++++++++++++++++
+ include/linux/tracefs.h  |   4 ++
+ 2 files changed, 147 insertions(+)
 
 diff --git a/fs/tracefs/event_inode.c b/fs/tracefs/event_inode.c
-index 24d645c61029..5240bd2c81e7 100644
+index 5240bd2c81e7..da8d2e73cc47 100644
 --- a/fs/tracefs/event_inode.c
 +++ b/fs/tracefs/event_inode.c
-@@ -101,7 +101,34 @@ static struct dentry *create_file(const char *name, umode_t mode,
- 				  struct dentry *parent, void *data,
- 				  const struct file_operations *fop)
- {
--	return NULL;
-+	struct tracefs_inode *ti;
-+	struct dentry *dentry;
-+	struct inode *inode;
-+
-+	if (!(mode & S_IFMT))
-+		mode |= S_IFREG;
-+
-+	if (WARN_ON_ONCE(!S_ISREG(mode)))
-+		return NULL;
-+
-+	dentry = eventfs_start_creating(name, parent);
-+
-+	if (IS_ERR(dentry))
-+		return dentry;
-+
-+	inode = tracefs_get_inode(dentry->d_sb);
-+	if (unlikely(!inode))
-+		return eventfs_failed_creating(dentry);
-+
-+	inode->i_mode = mode;
-+	inode->i_fop = fop;
-+	inode->i_private = data;
-+
-+	ti = get_tracefs(inode);
-+	ti->flags |= TRACEFS_EVENT_INODE;
-+	d_instantiate(dentry, inode);
-+	fsnotify_create(dentry->d_parent->d_inode, dentry);
-+	return eventfs_end_creating(dentry);
- };
+@@ -198,6 +198,14 @@ void eventfs_set_ef_status_free(struct dentry *dentry)
+ 	if (!ef)
+ 		goto out;
  
- /**
-@@ -123,7 +150,31 @@ static struct dentry *create_file(const char *name, umode_t mode,
-  */
- static struct dentry *create_dir(const char *name, struct dentry *parent, void *data)
- {
--	return NULL;
-+	struct tracefs_inode *ti;
-+	struct dentry *dentry;
-+	struct inode *inode;
-+
-+	dentry = eventfs_start_creating(name, parent);
-+	if (IS_ERR(dentry))
-+		return dentry;
-+
-+	inode = tracefs_get_inode(dentry->d_sb);
-+	if (unlikely(!inode))
-+		return eventfs_failed_creating(dentry);
-+
-+	inode->i_mode = S_IFDIR | S_IRWXU | S_IRUGO | S_IXUGO;
-+	inode->i_op = &eventfs_root_dir_inode_operations;
-+	inode->i_fop = &eventfs_file_operations;
-+	inode->i_private = data;
-+
-+	ti = get_tracefs(inode);
-+	ti->flags |= TRACEFS_EVENT_INODE;
-+
-+	inc_nlink(inode);
-+	d_instantiate(dentry, inode);
-+	inc_nlink(dentry->d_parent->d_inode);
-+	fsnotify_mkdir(dentry->d_parent->d_inode, dentry);
-+	return eventfs_end_creating(dentry);
- }
- 
- /**
-@@ -234,6 +285,12 @@ create_dentry(struct eventfs_file *ef, struct dentry *parent, bool lookup)
- 	} else {
- 		/* A race here, should try again (unless freed) */
- 		invalidate = true;
-+
-+		/*
-+		 * Should never happen unless we get here due to being freed.
-+		 * Otherwise it means two dentries exist with the same name.
-+		 */
-+		WARN_ON_ONCE(!ef->is_freed);
- 	}
- 	mutex_unlock(&eventfs_mutex);
- 	if (invalidate)
-diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
-index 4acc4b4dfd22..d9273066f25f 100644
---- a/fs/tracefs/inode.c
-+++ b/fs/tracefs/inode.c
-@@ -474,6 +474,80 @@ struct dentry *tracefs_end_creating(struct dentry *dentry)
- 	return dentry;
- }
- 
-+/**
-+ * eventfs_start_creating - start the process of creating a dentry
-+ * @name: Name of the file created for the dentry
-+ * @parent: The parent dentry where this dentry will be created
-+ *
-+ * This is a simple helper function for the dynamically created eventfs
-+ * files. When the directory of the eventfs files are accessed, their
-+ * dentries are created on the fly. This function is used to start that
-+ * process.
-+ */
-+struct dentry *eventfs_start_creating(const char *name, struct dentry *parent)
-+{
-+	struct dentry *dentry;
-+	int error;
-+
-+	error = simple_pin_fs(&trace_fs_type, &tracefs_mount,
-+			      &tracefs_mount_count);
-+	if (error)
-+		return ERR_PTR(error);
-+
 +	/*
-+	 * If the parent is not specified, we create it in the root.
-+	 * We need the root dentry to do this, which is in the super
-+	 * block. A pointer to that is in the struct vfsmount that we
-+	 * have around.
++	 * If ef was freed, then the LSB bit is set for d_fsdata.
++	 * But this should not happen, as it should still have a
++	 * ref count that prevents it. Warn in case it does.
 +	 */
-+	if (!parent)
-+		parent = tracefs_mount->mnt_root;
++	if (WARN_ON_ONCE((unsigned long)ef & 1))
++		goto out;
 +
-+	if (unlikely(IS_DEADDIR(parent->d_inode)))
-+		dentry = ERR_PTR(-ENOENT);
-+	else
-+		dentry = lookup_one_len(name, parent, strlen(name));
+ 	dentry->d_fsdata = NULL;
+ 	ef->dentry = NULL;
+ out:
+@@ -656,3 +664,138 @@ int eventfs_add_file(const char *name, umode_t mode,
+ 	mutex_unlock(&eventfs_mutex);
+ 	return 0;
+ }
 +
-+	if (!IS_ERR(dentry) && dentry->d_inode) {
-+		dput(dentry);
-+		dentry = ERR_PTR(-EEXIST);
++static void free_ef(struct rcu_head *head)
++{
++	struct eventfs_file *ef = container_of(head, struct eventfs_file, rcu);
++
++	kfree(ef->name);
++	kfree(ef->ei);
++	kfree(ef);
++}
++
++/**
++ * eventfs_remove_rec - remove eventfs dir or file from list
++ * @ef: eventfs_file to be removed.
++ * @head: to create list of eventfs_file to be deleted
++ * @level: to check recursion depth
++ *
++ * The helper function eventfs_remove_rec() is used to clean up and free the
++ * associated data from eventfs for both of the added functions.
++ */
++static void eventfs_remove_rec(struct eventfs_file *ef, struct list_head *head, int level)
++{
++	struct eventfs_file *ef_child;
++
++	if (!ef)
++		return;
++	/*
++	 * Check recursion depth. It should never be greater than 3:
++	 * 0 - events/
++	 * 1 - events/group/
++	 * 2 - events/group/event/
++	 * 3 - events/group/event/file
++	 */
++	if (WARN_ON_ONCE(level > 3))
++		return;
++
++	if (ef->ei) {
++		/* search for nested folders or files */
++		list_for_each_entry_srcu(ef_child, &ef->ei->e_top_files, list,
++					 lockdep_is_held(&eventfs_mutex)) {
++			eventfs_remove_rec(ef_child, head, level + 1);
++		}
 +	}
 +
-+	if (IS_ERR(dentry))
-+		simple_release_fs(&tracefs_mount, &tracefs_mount_count);
-+
-+	return dentry;
++	list_del_rcu(&ef->list);
++	list_add_tail(&ef->del_list, head);
 +}
 +
 +/**
-+ * eventfs_failed_creating - clean up a failed eventfs dentry creation
-+ * @dentry: The dentry to clean up
++ * eventfs_remove - remove eventfs dir or file from list
++ * @ef: eventfs_file to be removed.
 + *
-+ * If after calling eventfs_start_creating(), a failure is detected, the
-+ * resources created by eventfs_start_creating() needs to be cleaned up. In
-+ * that case, this function should be called to perform that clean up.
++ * This function acquire the eventfs_mutex lock and call eventfs_remove_rec()
 + */
-+struct dentry *eventfs_failed_creating(struct dentry *dentry)
++void eventfs_remove(struct eventfs_file *ef)
 +{
++	struct eventfs_file *tmp;
++	LIST_HEAD(ef_del_list);
++	struct dentry *dentry_list = NULL;
++	struct dentry *dentry;
++
++	if (!ef)
++		return;
++
++	mutex_lock(&eventfs_mutex);
++	eventfs_remove_rec(ef, &ef_del_list, 0);
++	list_for_each_entry_safe(ef, tmp, &ef_del_list, del_list) {
++		if (ef->dentry) {
++			unsigned long ptr = (unsigned long)dentry_list;
++
++			/* Keep the dentry from being freed yet */
++			dget(ef->dentry);
++
++			/*
++			 * Paranoid: The dget() above should prevent the dentry
++			 * from being freed and calling eventfs_set_ef_status_free().
++			 * But just in case, set the link list LSB pointer to 1
++			 * and have eventfs_set_ef_status_free() check that to
++			 * make sure that if it does happen, it will not think
++			 * the d_fsdata is an event_file.
++			 *
++			 * For this to work, no event_file should be allocated
++			 * on a odd space, as the ef should always be allocated
++			 * to be at least word aligned. Check for that too.
++			 */
++			WARN_ON_ONCE(ptr & 1);
++
++			ef->dentry->d_fsdata = (void *)(ptr | 1);
++			dentry_list = ef->dentry;
++			ef->dentry = NULL;
++		}
++		call_srcu(&eventfs_srcu, &ef->rcu, free_ef);
++	}
++	mutex_unlock(&eventfs_mutex);
++
++	while (dentry_list) {
++		unsigned long ptr;
++
++		dentry = dentry_list;
++		ptr = (unsigned long)dentry->d_fsdata & ~1UL;
++		dentry_list = (struct dentry *)ptr;
++		dentry->d_fsdata = NULL;
++		d_invalidate(dentry);
++		mutex_lock(&eventfs_mutex);
++		/* dentry should now have at least a single reference */
++		WARN_ONCE((int)d_count(dentry) < 1,
++			  "dentry %p less than one reference (%d) after invalidate\n",
++			  dentry, d_count(dentry));
++		mutex_unlock(&eventfs_mutex);
++		dput(dentry);
++	}
++}
++
++/**
++ * eventfs_remove_events_dir - remove eventfs dir or file from list
++ * @dentry: events's dentry to be removed.
++ *
++ * This function remove events main directory
++ */
++void eventfs_remove_events_dir(struct dentry *dentry)
++{
++	struct tracefs_inode *ti;
++	struct eventfs_inode *ei;
++
++	if (!dentry || !dentry->d_inode)
++		return;
++
++	ti = get_tracefs(dentry->d_inode);
++	if (!ti || !(ti->flags & TRACEFS_EVENT_INODE))
++		return;
++
++	ei = ti->private;
++	d_invalidate(dentry);
 +	dput(dentry);
-+	simple_release_fs(&tracefs_mount, &tracefs_mount_count);
-+	return NULL;
++	kfree(ei);
 +}
-+
-+/**
-+ * eventfs_end_creating - Finish the process of creating a eventfs dentry
-+ * @dentry: The dentry that has successfully been created.
-+ *
-+ * This function is currently just a place holder to match
-+ * eventfs_start_creating(). In case any synchronization needs to be added,
-+ * this function will be used to implement that without having to modify
-+ * the callers of eventfs_start_creating().
-+ */
-+struct dentry *eventfs_end_creating(struct dentry *dentry)
-+{
-+	return dentry;
-+}
-+
- /**
-  * tracefs_create_file - create a file in the tracefs filesystem
-  * @name: a pointer to a string containing the name of the file to create.
-diff --git a/fs/tracefs/internal.h b/fs/tracefs/internal.h
-index 9bfad9d95a4a..69c2b1d87c46 100644
---- a/fs/tracefs/internal.h
-+++ b/fs/tracefs/internal.h
-@@ -21,6 +21,9 @@ struct dentry *tracefs_start_creating(const char *name, struct dentry *parent);
- struct dentry *tracefs_end_creating(struct dentry *dentry);
- struct dentry *tracefs_failed_creating(struct dentry *dentry);
- struct inode *tracefs_get_inode(struct super_block *sb);
-+struct dentry *eventfs_start_creating(const char *name, struct dentry *parent);
-+struct dentry *eventfs_failed_creating(struct dentry *dentry);
-+struct dentry *eventfs_end_creating(struct dentry *dentry);
- void eventfs_set_ef_status_free(struct dentry *dentry);
+diff --git a/include/linux/tracefs.h b/include/linux/tracefs.h
+index 54c9cbd0389b..009072792fa3 100644
+--- a/include/linux/tracefs.h
++++ b/include/linux/tracefs.h
+@@ -40,6 +40,10 @@ int eventfs_add_events_file(const char *name, umode_t mode,
+ 			 struct dentry *parent, void *data,
+ 			 const struct file_operations *fops);
  
- #endif /* _TRACEFS_INTERNAL_H */
++void eventfs_remove(struct eventfs_file *ef);
++
++void eventfs_remove_events_dir(struct dentry *dentry);
++
+ struct dentry *tracefs_create_file(const char *name, umode_t mode,
+ 				   struct dentry *parent, void *data,
+ 				   const struct file_operations *fops);
 -- 
 2.40.1
