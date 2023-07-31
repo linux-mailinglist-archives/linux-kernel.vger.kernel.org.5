@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F66768F5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:01:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E063768F5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjGaIBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55888 "EHLO
+        id S231776AbjGaIBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231709AbjGaIBX (ORCPT
+        with ESMTP id S231742AbjGaIBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:01:23 -0400
+        Mon, 31 Jul 2023 04:01:36 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9390F1A4;
-        Mon, 31 Jul 2023 01:01:22 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36V67hTT013159;
-        Mon, 31 Jul 2023 08:01:20 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD07D1B5;
+        Mon, 31 Jul 2023 01:01:26 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36V67dxr030758;
+        Mon, 31 Jul 2023 08:01:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=tza/04nGQjpLvjR63KIzASE8F31Zumbxryow2C422N0=;
- b=I9o3B29MI2RM1amvtX1YWkie3mDm5twuVzFMe6kpntie6rx3o7JGJwXBr0MBmm+1+RI/
- aH1qk4OHwzVPWIwysqHJhg4xhHCDYAML6vmeEyUHl0nLbbETAfQLEmTzjwvOqderyTJe
- z5iZ7P/am/oUP8mc9qOiW7vAGLzQdSjadhZbao9UlhNtt3rgVE7awWXm0s5dxksc/l9y
- uhc8JzztebbdyuL+whwO/gR7XyZDA/heiCPmw3XmEaBDvq0CDcWCpnq9orl2tRVFaMdu
- peETyL3Xx4NPSVGNuBQdC/7aN+S+02HERHwVVaSiczfUelwPftah/DoxCOk8fdIRwyYO rw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4v2djwta-1
+ bh=hIBaTf88xkXzIcn2ATMyixBg1DpKzyUuE/dO9RYYZVk=;
+ b=IgUQSlRymXzM8thgVB72oh8FKD2/ANc2bOgDLnCUVTrAzP3zbgS+5QIJHNCMhXT/0LAg
+ +BSehXphCrfQPQlxKKhqnLpRUxlXdyczh1K9qFPE+54kvIEkZ2jbsSgS4UGYdWAcRtbP
+ KFu6cq2VmsP2mrrrKeluQnuvc8TMQYdMHDSpAVgwmKscir4uIBfT57pxWdg4ocBS1alK
+ SNoubkX3aSFAsMaLzw3FtVCNuoATobhWouQw3Tjw97Bmjj0A+se0exTHhYMmL5smfxCw
+ 6cniPN10S8CVqfs2UUxiOY9DIFMBhHhUOjOJbaBEs8iLWw+1sZvwJfMAfEpXhy6pfX0D dA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4ucejyf8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 08:01:19 +0000
+        Mon, 31 Jul 2023 08:01:24 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36V81IUY021368
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36V81NRC023785
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 08:01:18 GMT
+        Mon, 31 Jul 2023 08:01:23 GMT
 Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 31 Jul 2023 01:01:13 -0700
+ 15.2.1118.30; Mon, 31 Jul 2023 01:01:17 -0700
 From:   Tengfei Fan <quic_tengfan@quicinc.com>
 To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
         <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -49,9 +49,9 @@ CC:     <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
         <kernel@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Tengfei Fan <quic_tengfan@quicinc.com>
-Subject: [PATCH v4 1/6] dt-bindings: qcom,pdc: add qcom,sm4450-pdc compatible
-Date:   Mon, 31 Jul 2023 16:00:38 +0800
-Message-ID: <20230731080043.38552-2-quic_tengfan@quicinc.com>
+Subject: [PATCH v4 2/6] dt-bindings: arm: qcom: Document SM4450 SoC and boards
+Date:   Mon, 31 Jul 2023 16:00:39 +0800
+Message-ID: <20230731080043.38552-3-quic_tengfan@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230731080043.38552-1-quic_tengfan@quicinc.com>
 References: <20230731080043.38552-1-quic_tengfan@quicinc.com>
@@ -62,15 +62,15 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: yigDPzIYdKB1ec_Ribt0ay8kUfhj_b9a
-X-Proofpoint-ORIG-GUID: yigDPzIYdKB1ec_Ribt0ay8kUfhj_b9a
+X-Proofpoint-GUID: ppsQxzi5w4iGl45wEE8yRtEZgK0ZtUYI
+X-Proofpoint-ORIG-GUID: ppsQxzi5w4iGl45wEE8yRtEZgK0ZtUYI
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- mlxlogscore=798 malwarescore=0 lowpriorityscore=0 clxscore=1015
- adultscore=0 impostorscore=0 bulkscore=0 mlxscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 priorityscore=1501 spamscore=0 phishscore=0 suspectscore=0
+ impostorscore=0 malwarescore=0 adultscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=823 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2306200000 definitions=main-2307310070
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
@@ -82,26 +82,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document qcom,sm4450-pdc compatible for support SM4450 DT upstream.
+Document the SM4450 SoC binding and also the boards using it.
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 ---
- .../devicetree/bindings/interrupt-controller/qcom,pdc.yaml       | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/arm/qcom.yaml | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-index a106ba6e810b..bf7648f55125 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
-@@ -34,6 +34,7 @@ properties:
-           - qcom,sdm845-pdc
-           - qcom,sdx55-pdc
-           - qcom,sdx65-pdc
-+          - qcom,sm4450-pdc
-           - qcom,sm6350-pdc
-           - qcom,sm8150-pdc
-           - qcom,sm8250-pdc
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index a6f7ef4f0830..b1f2f015c127 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -72,6 +72,7 @@ description: |
+         sdx65
+         sdx75
+         sm4250
++        sm4450
+         sm6115
+         sm6115p
+         sm6125
+@@ -903,6 +904,11 @@ properties:
+           - const: qcom,qrb4210
+           - const: qcom,sm4250
+ 
++      - items:
++          - enum:
++              - qcom,sm4450-qrd
++          - const: qcom,sm4450
++
+       - items:
+           - enum:
+               - fxtec,pro1x
 -- 
 2.17.1
 
