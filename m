@@ -2,80 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4CB6769B19
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79428769B26
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232449AbjGaPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:48:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        id S232489AbjGaPtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232743AbjGaPsH (ORCPT
+        with ESMTP id S229545AbjGaPsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:48:07 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D47210D
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:48:06 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso43305595e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:48:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690818485; x=1691423285;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ea29XW2Oj6uA5+J/+a6EhPg6MOWcuGpScRnndteK92U=;
-        b=e2ZwWZgLNcH8SGcedF39ZGAunxZFRDJYoJJpY5ulm9q5lgR1UyglSAhgtwgo/JYiAQ
-         XV1bYqm3hhqWdk5qj36SgCliJ44gzZ/uAZLBIOQ0izMWQYR+3YeVeun1NKDM1GLHTJGy
-         N2K56LMuAFq6F5mOQL3NJSLX1dpDRXvHR5KQDmKjmfOTyCP+QzZW8EiI6cZAU7+en3HM
-         +BawqRHXgUFO+bK2pWcBw8RLRNHutC6+hbkptmruNs4LVFIevo4Jyv1z9D9bZHrBTImp
-         WDrqSmb5jdAu25MSTtaoRYiwjOEsdkS/HTSmwRUzBkVGrLC9N9SpKtOPo85/NqTufiiU
-         chIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690818485; x=1691423285;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ea29XW2Oj6uA5+J/+a6EhPg6MOWcuGpScRnndteK92U=;
-        b=RQ1iF/fTDXL7v9wUgwbUHnWDH6EnUvf3hkxO74nAjGLVdDLPLiP+wtB9zUvdy345cB
-         jamidlNOjrIjE7EsZIFhfFgV+XGaaPsshH3d4ydMf5e1fhH/8+olsopHiD4XTqynRIPH
-         wxd9zM9dmY1xfBTekJ0aHksjAiA4Yl1oYOBAtt9oCxbb259G0R7jCEBQ326rAqdJz+kD
-         pKq/AlS/d/gpZDE743B9UAFZncQIpq6ThvYP+/gCCenHgJUwzXjflEKo6/no0SauWrZF
-         bFxN12pEyeDJSSwixiQyGiOrk1rgSLpMi64S7ZBZ+56DiAQD9o4LaaTzLdLb0lWQoebG
-         leQA==
-X-Gm-Message-State: ABy/qLYyBU8/+mEJAN2BSQ7l4VjZ0gK2HEIOBeIQUML5ytrjYZotcFgD
-        nzQCNCdLUhgaTwdpzfOAwGl5Aw==
-X-Google-Smtp-Source: APBJJlFHABHv2mXYYls1027lw8mNbIKOOxpDTaFUjQSeRtPCCAP0xOgS7nk+2w4RRUx62OlTIVSMzA==
-X-Received: by 2002:a1c:7310:0:b0:3fb:e189:3532 with SMTP id d16-20020a1c7310000000b003fbe1893532mr260226wmb.20.1690818485042;
-        Mon, 31 Jul 2023 08:48:05 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id m10-20020a7bca4a000000b003fbc0a49b57sm11799628wml.6.2023.07.31.08.48.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 08:48:04 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Alexandre Mergnat <amergnat@baylibre.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Guillaume La Roque <glaroque@baylibre.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Conor Dooley <conor.dooley@microchip.com>
-In-Reply-To: <20230711-startek_display-v4-0-fb1d53bfdef6@baylibre.com>
-References: <20230711-startek_display-v4-0-fb1d53bfdef6@baylibre.com>
-Subject: Re: (subset) [PATCH v4 0/3] Add startek-kd070fhfid015 display
- support
-Message-Id: <169081848410.590715.3216306012234783278.b4-ty@linaro.org>
-Date:   Mon, 31 Jul 2023 17:48:04 +0200
+        Mon, 31 Jul 2023 11:48:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D64188
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:48:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690818528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bdw1u0UgivtOuM/ZUVOI9YZuGeR4kVBk9GgPaRb/C2Q=;
+        b=BVnC/4BVp3sAm48kQYtjVlICmRUND4lsCAkiZ4O+nSe8rrMCspC030IbSt/YtOFGTH6hCe
+        oiu9PtPH1PjRUCNfJ3EKI406XjI6ulSxE7BDYsWK+466Fa3t6pBHib2Jc9a+zSLjNtaI1o
+        czQddf9i+4N9CboJf5Gd1qJBS4ijhc/d4MvD+3KPuoBL8Hsa+5Um3mTs7PFxNXNECNhxVd
+        jUnx3hSFZlPCntmQ+afft4Rtkry7AeYEvORfNzcikjgw6rx3pVX6+2ichOL+NWsZgLdwH+
+        Ivko6eFTHe/IgkvGI1AW5bouP9isY90XTmGHvXjUZ2+zULsdxvKo1/FeHfP9qw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690818528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bdw1u0UgivtOuM/ZUVOI9YZuGeR4kVBk9GgPaRb/C2Q=;
+        b=Ve/yiMrGO8T2J+Jgy8Qe+F+DIBaJH5YHHl24EEylR65GHiPgWiX1HdS4A3nnqCaJcRJppJ
+        2DXfpvKNhV8+2bCQ==
+To:     Juergen Gross <jgross@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: Re: [patch V2 50/58] x86/apic: Provide common init infrastructure
+In-Reply-To: <b4f0e874-1e35-e523-8e5a-710bc54af52d@suse.com>
+References: <20230724131206.500814398@linutronix.de>
+ <20230724132047.554355840@linutronix.de>
+ <abfa4548-4367-d8fa-f23f-b2ca4a912258@suse.com> <87v8e0nskd.ffs@tglx>
+ <b4f0e874-1e35-e523-8e5a-710bc54af52d@suse.com>
+Date:   Mon, 31 Jul 2023 17:48:47 +0200
+Message-ID: <87pm48nktc.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -86,26 +65,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jul 31 2023 at 15:10, Juergen Gross wrote:
+> On 31.07.23 15:01, Thomas Gleixner wrote:
+>>>    apic_driver(xen_pv_apic);
+>> 
+>> I wonder whether this explicit install is actually needed at all.
+>> Shouldn't the driver be installed via the APIC probing mechanism
+>> automagically?
+>
+> Only in case x86_init.irq.intr_mode_init is set appropriately. Today it is
+> a nop for Xen PV, but that can be changed. I'll have a look.
 
-On Mon, 31 Jul 2023 17:08:55 +0200, Alexandre Mergnat wrote:
-> Add the support of the Startek KD070FHFID015 panel.
-> It's a 7-inch TFT LCD display with a resolution of 1024 x 600 pixels.
-> 
-> I use this display plugged to my mt8365-evk board.
-> 
-> This serie come from a bigger one [1]. Then I addressed the previous
-> comments for the related commits here.
-> 
-> [...]
-
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
-
-[1/3] dt-bindings: display: panel: add startek kd070fhfid015 support
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=5ede23d12b442750ba1298913cf3ce572f1b79d3
-[2/3] drm/panel: Support for startek-kd070fhfid015 MIPI-DSI panel
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=69312a77cd13e36f87378dfe83480b671ebf9216
-
--- 
-Neil
-
+You could simply set that callback to default_setup_apic_routing() and
+be done with it.
