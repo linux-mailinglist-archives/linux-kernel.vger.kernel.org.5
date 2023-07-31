@@ -2,342 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 068D6768A34
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB01D768A37
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbjGaDFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 23:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46572 "EHLO
+        id S229866AbjGaDGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 23:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjGaDFF (ORCPT
+        with ESMTP id S229469AbjGaDGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 23:05:05 -0400
-Received: from mx1.zhaoxin.com (MX1.ZHAOXIN.COM [210.0.225.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C982E68
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 20:05:01 -0700 (PDT)
-X-ASG-Debug-ID: 1690772696-086e23186b028e0001-xx1T2L
-Received: from ZXSHMBX1.zhaoxin.com (ZXSHMBX1.zhaoxin.com [10.28.252.163]) by mx1.zhaoxin.com with ESMTP id JxPU5Z9VaPBfy4dB (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 31 Jul 2023 11:04:56 +0800 (CST)
-X-Barracuda-Envelope-From: LeoLiu-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Received: from ZXBJMBX03.zhaoxin.com (10.29.252.7) by ZXSHMBX1.zhaoxin.com
- (10.28.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Mon, 31 Jul
- 2023 11:04:56 +0800
-Received: from [192.168.111.204] (125.76.214.122) by ZXBJMBX03.zhaoxin.com
- (10.29.252.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.16; Mon, 31 Jul
- 2023 11:04:55 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.163
-Message-ID: <5930f9bc-7a38-696e-231d-6d8b7ef55dbf@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 192.168.111.204
-Date:   Mon, 31 Jul 2023 11:04:54 +0800
+        Sun, 30 Jul 2023 23:06:19 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B2DE78;
+        Sun, 30 Jul 2023 20:06:18 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99bed101b70so458783866b.3;
+        Sun, 30 Jul 2023 20:06:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690772776; x=1691377576;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D606U3uDf6w3bbhM/rK79vcRAhDwXEDhhPdXtqS0M5Q=;
+        b=cea8lGBegRT1HxwWNcESWead++JoVzkcXrXWN0bjGQ1mYXU45vgHNRYjPGDd4GQWI3
+         DWmxKZcKsQIqpFcXzz33AnJYzk5pEwqXzVQORC9b0PXBoXDBNHVZzsZ77YD5hnf2Dmw/
+         NZ1TaE1Xovog70pshC/xuGj67eAZytlp/78k+Kug8fsuwlHPZpN3eJmzkMmnbN+O7MyC
+         O5f0FDtThW2hVpNYBeQnAOzTHeS/O0A+cGMPzX1jrmzk5cPrsv4cBR4RRL4hQYviwlCu
+         XerNF/c8T3WznvzFAfKLva2Rp/vgsNY+nIwW9hHVwHvdpY8dMLE0jZ5hn98JFObI8kM5
+         EEwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690772776; x=1691377576;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D606U3uDf6w3bbhM/rK79vcRAhDwXEDhhPdXtqS0M5Q=;
+        b=Zv/YuqYkoayWURY5OQzCVufXPiPxxQRjUae0yhoasGTka5iWzymFgTSQY18N7gno5k
+         VwEm9uIQG/5b/VT3DRiMsu5R0LcoCzdeaDjnW5dTgDhLiqMT9pTHMilbQgHOJj4FaEJf
+         1uTmBR3rYMoojBzTjEtsNts/wt0CVud9cuN5y19QqfmtrzuEMEwkjO6F/JAN4JKDwVob
+         hLJYSCKb18MpXvIBXtsXn+tjxMkQbOVmHOVtuj7oc3t9e4AsnvtTsHOjkiZcPbarfExw
+         G8mX6tJQn93hcit7sISXr90rNve29FjhquiiqfsFwfysvH15m8JXWseEub1MbSuofTze
+         O8vA==
+X-Gm-Message-State: ABy/qLZhZU7XOi2VMH6lRPb4NRv/JRvDv5Ztl7Or+4LTlyPGKKJjaiEi
+        Fo7Zz/65nE1Q/Jdx8bz4uKUwy1ymJ8fwNjR30IpKQoplR9o=
+X-Google-Smtp-Source: APBJJlFGRBZ+ZNhS108diq25FC+VPPxGLi+EWF0rjz6HdcGpWjHclqGmirUV/unhV/vANsVk2+wPxcbbHPIPMlK2BTA=
+X-Received: by 2002:a17:906:cc50:b0:99b:bc51:8ca3 with SMTP id
+ mm16-20020a170906cc5000b0099bbc518ca3mr6730182ejb.1.1690772776324; Sun, 30
+ Jul 2023 20:06:16 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] hwrng: add Zhaoxin HW RNG driver
-To:     Martin Kaiser <lists@kaiser.cx>
-X-ASG-Orig-Subj: Re: [PATCH] hwrng: add Zhaoxin HW RNG driver
-CC:     <olivia@selenic.com>, <herbert@gondor.apana.org.au>,
-        <jiajie.ho@starfivetech.com>, <conor.dooley@microchip.com>,
-        <mmyangfl@gmail.com>, <jenny.zhang@starfivetech.com>,
-        <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <leoliu@zhaoxin.com>, <CobeChen@zhaoxin.com>,
-        <YunShen@zhaoxin.com>, <TonyWWang@zhaoxin.com>
-References: <20230726113553.1965627-1-LeoLiu-oc@zhaoxin.com>
- <20230726121301.kbkskd23mwoptvvx@viti.kaiser.cx>
-From:   LeoLiu-oc <leoliu-oc@zhaoxin.com>
-In-Reply-To: <20230726121301.kbkskd23mwoptvvx@viti.kaiser.cx>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [125.76.214.122]
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- ZXBJMBX03.zhaoxin.com (10.29.252.7)
-X-Barracuda-Connect: ZXSHMBX1.zhaoxin.com[10.28.252.163]
-X-Barracuda-Start-Time: 1690772696
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.35:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 9106
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.112103
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
+ <20230729134318.1694467-4-keguang.zhang@gmail.com> <CANvTkNbss+ovB_nXYvAXT9dZt4H1KsF41EQ4f3zHf1dEnpdreA@mail.gmail.com>
+In-Reply-To: <CANvTkNbss+ovB_nXYvAXT9dZt4H1KsF41EQ4f3zHf1dEnpdreA@mail.gmail.com>
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+Date:   Mon, 31 Jul 2023 11:06:00 +0800
+Message-ID: <CAJhJPsUVXGxEjWU5eWK-cZz39BU9u+9Kxm8N2ONxOgRk6ts83w@mail.gmail.com>
+Subject: Re: [PATCH 03/17] MIPS: dts: Add basic DT support for Loongson-1 boards
+To:     Du Huanpeng <u74147@gmail.com>
+Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 31, 2023 at 1:11=E2=80=AFAM Du Huanpeng <u74147@gmail.com> wrot=
+e:
+>
+> Keguang Zhang <keguang.zhang@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=882=
+9=E6=97=A5=E5=91=A8=E5=85=AD 21:45=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > Add initial devicetree for Loongson-1 boards, including
+> > LSGZ_1B_DEV and SMARTLOONG_1C board.
+> > These basic DTs contain CPU, clock and core INTC.
+> >
+> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > ---
+> >  arch/mips/boot/dts/Makefile                   |  1 +
+> >  arch/mips/boot/dts/loongson/Makefile          |  3 +
+> >  arch/mips/boot/dts/loongson/loongson1.dtsi    | 22 ++++++
+> >  arch/mips/boot/dts/loongson/loongson1b.dtsi   | 75 +++++++++++++++++++
+> >  arch/mips/boot/dts/loongson/loongson1c.dtsi   | 29 +++++++
+> >  arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   | 25 +++++++
+> >  arch/mips/boot/dts/loongson/smartloong_1c.dts | 25 +++++++
+> >  7 files changed, 180 insertions(+)
+> >  create mode 100644 arch/mips/boot/dts/loongson/loongson1.dtsi
+> >  create mode 100644 arch/mips/boot/dts/loongson/loongson1b.dtsi
+> >  create mode 100644 arch/mips/boot/dts/loongson/loongson1c.dtsi
+> >  create mode 100644 arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
+> >  create mode 100644 arch/mips/boot/dts/loongson/smartloong_1c.dts
+> >
+> > diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+> > index 928f38a79dff..2e040b1ba97b 100644
+> > --- a/arch/mips/boot/dts/Makefile
+> > +++ b/arch/mips/boot/dts/Makefile
+> > @@ -6,6 +6,7 @@ subdir-$(CONFIG_FIT_IMAGE_FDT_BOSTON)   +=3D img
+> >  subdir-$(CONFIG_MACH_INGENIC)          +=3D ingenic
+> >  subdir-$(CONFIG_LANTIQ)                        +=3D lantiq
+> >  subdir-$(CONFIG_MACH_LOONGSON64)       +=3D loongson
+> > +subdir-$(CONFIG_MACH_LOONGSON32)       +=3D loongson
+> >  subdir-$(CONFIG_SOC_VCOREIII)          +=3D mscc
+> >  subdir-$(CONFIG_MIPS_MALTA)            +=3D mti
+> >  subdir-$(CONFIG_LEGACY_BOARD_SEAD3)    +=3D mti
+> > diff --git a/arch/mips/boot/dts/loongson/Makefile b/arch/mips/boot/dts/=
+loongson/Makefile
+> > index 5c6433e441ee..9d95f1351d5f 100644
+> > --- a/arch/mips/boot/dts/loongson/Makefile
+> > +++ b/arch/mips/boot/dts/loongson/Makefile
+> > @@ -6,4 +6,7 @@ dtb-$(CONFIG_MACH_LOONGSON64)   +=3D loongson64c_8core_=
+rs780e.dtb
+> >  dtb-$(CONFIG_MACH_LOONGSON64)  +=3D loongson64g_4core_ls7a.dtb
+> >  dtb-$(CONFIG_MACH_LOONGSON64)  +=3D loongson64v_4core_virtio.dtb
+> >
+> > +dtb-$(CONFIG_LOONGSON1B_LSGZ_DEV)      +=3D lsgz_1b_dev.dtb
+> > +dtb-$(CONFIG_LOONGSON1C_SMARTLOONG)    +=3D smartloong_1c.dtb
+> > +
+> >  obj-$(CONFIG_BUILTIN_DTB)      +=3D $(addsuffix .o, $(dtb-y))
+> > diff --git a/arch/mips/boot/dts/loongson/loongson1.dtsi b/arch/mips/boo=
+t/dts/loongson/loongson1.dtsi
+> > new file mode 100644
+> > index 000000000000..a2b5c828bbbd
+> > --- /dev/null
+> > +++ b/arch/mips/boot/dts/loongson/loongson1.dtsi
+> > @@ -0,0 +1,22 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> > + */
+> > +
+> > +/dts-v1/;
+> > +
+> > +#include <dt-bindings/clock/loongson,ls1x-clk.h>
+> > +#include <dt-bindings/interrupt-controller/irq.h>
+> > +
+> > +/ {
+> > +       #address-cells =3D <1>;
+> > +       #size-cells =3D <1>;
+> > +
+> > +       cpu_intc: interrupt-controller {
+> > +               compatible =3D "mti,cpu-interrupt-controller";
+> > +               #address-cells =3D <0>;
+> > +
+> > +               interrupt-controller;
+> > +               #interrupt-cells =3D <1>;
+> > +       };
+> > +};
+> > diff --git a/arch/mips/boot/dts/loongson/loongson1b.dtsi b/arch/mips/bo=
+ot/dts/loongson/loongson1b.dtsi
+> > new file mode 100644
+> > index 000000000000..784ae9b6572d
+> > --- /dev/null
+> > +++ b/arch/mips/boot/dts/loongson/loongson1b.dtsi
+> > @@ -0,0 +1,75 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> > + */
+> > +
+> > +/dts-v1/;
+> > +#include "loongson1.dtsi"
+> > +
+> > +/ {
+> > +       cpus {
+> > +               #address-cells =3D <1>;
+> > +               #size-cells =3D <0>;
+> > +
+> > +               cpu@0 {
+> > +                       device_type =3D "cpu";
+> > +                       reg =3D <0>;
+> > +                       #clock-cells =3D <1>;
+> > +                       clocks =3D <&clkc LS1X_CLKID_CPU>;
+> > +                       operating-points-v2 =3D <&cpu_opp_table>;
+> > +               };
+> > +       };
+> > +
+> > +       cpu_opp_table: opp-table {
+> > +               compatible =3D "operating-points-v2";
+> > +               opp-shared;
+> > +
+> > +               opp-44000000 {
+> > +                       opp-hz =3D /bits/ 64 <44000000>;
+> > +               };
+> > +               opp-47142000 {
+> > +                       opp-hz =3D /bits/ 64 <47142000>;
+> > +               };
+> > +               opp-50769000 {
+> > +                       opp-hz =3D /bits/ 64 <50769000>;
+> > +               };
+> > +               opp-55000000 {
+> > +                       opp-hz =3D /bits/ 64 <55000000>;
+> > +               };
+> > +               opp-60000000 {
+> > +                       opp-hz =3D /bits/ 64 <60000000>;
+> > +               };
+> > +               opp-66000000 {
+> > +                       opp-hz =3D /bits/ 64 <66000000>;
+> > +               };
+> > +               opp-73333000 {
+> > +                       opp-hz =3D /bits/ 64 <73333000>;
+> > +               };
+> > +               opp-82500000 {
+> > +                       opp-hz =3D /bits/ 64 <82500000>;
+> > +               };
+> > +               opp-94285000 {
+> > +                       opp-hz =3D /bits/ 64 <94285000>;
+> > +               };
+> > +               opp-110000000 {
+> > +                       opp-hz =3D /bits/ 64 <110000000>;
+> > +               };
+> > +               opp-132000000 {
+> > +                       opp-hz =3D /bits/ 64 <132000000>;
+> > +               };
+> > +               opp-165000000 {
+> > +                       opp-hz =3D /bits/ 64 <165000000>;
+> > +               };
+> > +               opp-220000000 {
+> > +                       opp-hz =3D /bits/ 64 <220000000>;
+> > +               };
+> > +       };
+> > +
+> > +       clkc: clock-controller@1fe78030 {
+> > +               compatible =3D "loongson,ls1b-clk";
+> > +               reg =3D <0x1fe78030 0x8>;
+> > +
+> > +               clocks =3D <&xtal>;
+> > +               #clock-cells =3D <1>;
+> > +       };
+> > +};
+> > diff --git a/arch/mips/boot/dts/loongson/loongson1c.dtsi b/arch/mips/bo=
+ot/dts/loongson/loongson1c.dtsi
+> > new file mode 100644
+> > index 000000000000..d552e1668984
+> > --- /dev/null
+> > +++ b/arch/mips/boot/dts/loongson/loongson1c.dtsi
+> > @@ -0,0 +1,29 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> > + */
+> > +
+> > +/dts-v1/;
+> > +#include "loongson1.dtsi"
+> > +
+> > +/ {
+> > +       cpus {
+> > +               #address-cells =3D <1>;
+> > +               #size-cells =3D <0>;
+> > +
+> > +               cpu@0 {
+> > +                       device_type =3D "cpu";
+> > +                       reg =3D <0>;
+> > +                       #clock-cells =3D <1>;
+> > +                       clocks =3D <&clkc LS1X_CLKID_CPU>;
+> > +               };
+> > +       };
+> > +
+> > +       clkc: clock-controller@1fe78030 {
+> > +               compatible =3D "loongson,ls1c-clk";
+> > +               reg =3D <0x1fe78030 0x8>;
+> > +
+> > +               clocks =3D <&xtal>;
+> > +               #clock-cells =3D <1>;
+> > +       };
+> > +};
+> > diff --git a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts b/arch/mips/bo=
+ot/dts/loongson/lsgz_1b_dev.dts
+> > new file mode 100644
+> > index 000000000000..d12c723b0a2b
+> > --- /dev/null
+> > +++ b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
+> > @@ -0,0 +1,25 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> > + */
+> > +
+> > +/dts-v1/;
+> > +
+> > +#include "loongson1b.dtsi"
+> > +
+> > +/ {
+> > +       compatible =3D "loongson,lsgz-1b-dev", "loongson,ls1b";
+> > +       model =3D "LSGZ_1B_DEV Board";
+> > +
+> > +       memory@0 {
+> > +               device_type =3D "memory";
+> > +               reg =3D <0x0 0x4000000>;
+> > +       };
+> > +
+> > +       xtal: xtal {
+> for your information, hope it helps:
+> in <devicetree-specification-v0.4.pdf> Page: 8
+> The name of a node should be somewhat generic, reflecting the function
+> of the device and not its precise programming model. If appropriate,
+>  the name should be one of the following choices:
+> ... clock ...
+>
+Will fix this.
+Thanks!
+
+> > +               compatible =3D "fixed-clock";
+> > +               clock-frequency =3D <33000000>;
+> > +               clock-output-names =3D "xtal";
+> > +               #clock-cells =3D <0>;
+> > +       };
+> > +};
+> > diff --git a/arch/mips/boot/dts/loongson/smartloong_1c.dts b/arch/mips/=
+boot/dts/loongson/smartloong_1c.dts
+> > new file mode 100644
+> > index 000000000000..64e869acfd86
+> > --- /dev/null
+> > +++ b/arch/mips/boot/dts/loongson/smartloong_1c.dts
+> > @@ -0,0 +1,25 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * Copyright (c) 2023 Keguang Zhang <keguang.zhang@gmail.com>
+> > + */
+> > +
+> > +/dts-v1/;
+> > +
+> > +#include "loongson1c.dtsi"
+> > +
+> > +/ {
+> > +       compatible =3D "loongmasses,smartloong-1c", "loongson,ls1c";
+> > +       model =3D "Smartloong_1C Board";
+> > +
+> > +       memory@0 {
+> > +               device_type =3D "memory";
+> > +               reg =3D <0x0 0x2000000>;
+> > +       };
+> > +
+> > +       xtal: xtal {
+> > +               compatible =3D "fixed-clock";
+> > +               clock-frequency =3D <24000000>;
+> > +               clock-output-names =3D "xtal";
+> > +               #clock-cells =3D <0>;
+> > +       };
+> > +};
+> > --
+> > 2.39.2
+> >
+>
+> ---
+> Du Huanpeng
 
 
-在 2023/7/26 20:13, Martin Kaiser 写道:
-> Hi,
-> 
-> some quick remarks. Feel free to correct me if I misunderstood
-> something.
-> 
-Thank you very much for your advice, I will fix them in the next version.
 
-> LeoLiu-oc (LeoLiu-oc@zhaoxin.com) wrote:
-> 
->> From: leoliu-oc <leoliu-oc@zhaoxin.com>
-> 
->> Add support for Zhaoxin HW RNG.
-> 
->> Signed-off-by: leoliu-oc <leoliu-oc@zhaoxin.com>
->> ---
->>   drivers/char/hw_random/Kconfig       |  13 +++
->>   drivers/char/hw_random/Makefile      |   1 +
->>   drivers/char/hw_random/via-rng.c     |  17 ++--
->>   drivers/char/hw_random/zhaoxin-rng.c | 116 +++++++++++++++++++++++++++
->>   4 files changed, 139 insertions(+), 8 deletions(-)
->>   create mode 100644 drivers/char/hw_random/zhaoxin-rng.c
-> 
->> diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
->> index e0b3786ca51b..3b3c00e87b7b 100644
->> --- a/drivers/char/hw_random/Kconfig
->> +++ b/drivers/char/hw_random/Kconfig
->> @@ -150,6 +150,19 @@ config HW_RANDOM_VIA
-> 
->>   	  If unsure, say Y.
-> 
->> +config HW_RANDOM_ZHAOXIN
->> +	tristate "Zhaoxin HW Random Number Generator support"
->> +	depends on X86
-> 
-> depends on X86 || COMPILE_TEST >
-Thanks for your advice. I will add it in the next version.
+--=20
+Best regards,
 
->> +	default HW_RANDOM
->> +	help
->> +	  This driver provides kernel-side support for the Random Number
->> +	  Generator hardware found on Zhaoxin based motherboards.
->> +
->> +	  To compile this driver as a module, choose M here: the
->> +	  module will be called zhaoxin-rng.
->> +
->> +	  If unsure, say Y.
->> +
->>   config HW_RANDOM_IXP4XX
->>   	tristate "Intel IXP4xx NPU HW Pseudo-Random Number Generator support"
->>   	depends on ARCH_IXP4XX || COMPILE_TEST
->> diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
->> index 32549a1186dc..ef5b3ae0794d 100644
->> --- a/drivers/char/hw_random/Makefile
->> +++ b/drivers/char/hw_random/Makefile
->> @@ -14,6 +14,7 @@ obj-$(CONFIG_HW_RANDOM_GEODE) += geode-rng.o
->>   obj-$(CONFIG_HW_RANDOM_N2RNG) += n2-rng.o
->>   n2-rng-y := n2-drv.o n2-asm.o
->>   obj-$(CONFIG_HW_RANDOM_VIA) += via-rng.o
->> +obj-$(CONFIG_HW_RANDOM_ZHAOXIN) += zhaoxin-rng.o
->>   obj-$(CONFIG_HW_RANDOM_EXYNOS) += exynos-trng.o
->>   obj-$(CONFIG_HW_RANDOM_IXP4XX) += ixp4xx-rng.o
->>   obj-$(CONFIG_HW_RANDOM_OMAP) += omap-rng.o
->> diff --git a/drivers/char/hw_random/via-rng.c b/drivers/char/hw_random/via-rng.c
->> index a9a0a3b09c8b..33a6e2fdacd1 100644
->> --- a/drivers/char/hw_random/via-rng.c
->> +++ b/drivers/char/hw_random/via-rng.c
->> @@ -135,7 +135,7 @@ static int via_rng_init(struct hwrng *rng)
->>   	 * is always enabled if CPUID rng_en is set.  There is no
->>   	 * RNG configuration like it used to be the case in this
->>   	 * register */
->> -	if (((c->x86 == 6) && (c->x86_model >= 0x0f))  || (c->x86 > 6)){
->> +	if ((c->x86 == 6) && (c->x86_model >= 0x0f)) {
->>   		if (!boot_cpu_has(X86_FEATURE_XSTORE_EN)) {
->>   			pr_err(PFX "can't enable hardware RNG "
->>   				"if XSTORE is not enabled\n");
->> @@ -191,13 +191,20 @@ static struct hwrng via_rng = {
->>   	.data_read	= via_rng_data_read,
->>   };
-> 
->> +static const struct x86_cpu_id via_rng_cpu_ids[] = {
->> +	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 6, X86_FEATURE_XSTORE, NULL),
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(x86cpu, via_rng_cpu_ids);
-> 
->>   static int __init via_rng_mod_init(void)
->>   {
->>   	int err;
-> 
->> -	if (!boot_cpu_has(X86_FEATURE_XSTORE))
->> +	if (!x86_match_cpu(via_rng_cpu_ids)) {
->> +		pr_err(PFX "The CPU isn't support XSTORE.\n");
-> 
-> doesn't support
-> 
-> Generally: Should we print an error message if our driver doesn't
-> support this cpu? It seems that most other callers of x86_match_cpu
-> simply return without an error message.
->Agree with you. I will remove it in the next version.
-
->>   		return -ENODEV;
->> +	}
-> 
->>   	pr_info("VIA RNG detected\n");
->>   	err = hwrng_register(&via_rng);
->> @@ -217,11 +224,5 @@ static void __exit via_rng_mod_exit(void)
->>   }
->>   module_exit(via_rng_mod_exit);
-> 
->> -static struct x86_cpu_id __maybe_unused via_rng_cpu_id[] = {
->> -	X86_MATCH_FEATURE(X86_FEATURE_XSTORE, NULL),
->> -	{}
->> -};
->> -MODULE_DEVICE_TABLE(x86cpu, via_rng_cpu_id);
->> -
->>   MODULE_DESCRIPTION("H/W RNG driver for VIA CPU with PadLock");
->>   MODULE_LICENSE("GPL");
->> diff --git a/drivers/char/hw_random/zhaoxin-rng.c b/drivers/char/hw_random/zhaoxin-rng.c
->> new file mode 100644
->> index 000000000000..2e657b227c5b
->> --- /dev/null
->> +++ b/drivers/char/hw_random/zhaoxin-rng.c
->> @@ -0,0 +1,116 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +/*
->> + * RNG driver for Zhaoxin RNGs
->> + *
->> + * Copyright 2005 (c) MontaVista Software, Inc.
-> 
-> Should this be Copyright 2023 by you? >
-OK, I will add Copyright information correctly in the next version.
-
->> + *
->> + * with the majority of the code coming from:
->> + *
->> + * Hardware driver for the Intel/AMD/VIA Random Number Generators (RNG)
->> + * (c) Copyright 2003 Red Hat Inc <jgarzik@redhat.com>
->> + *
->> + * derived from
->> + *
->> + * Hardware driver for the AMD 768 Random Number Generator (RNG)
->> + * (c) Copyright 2001 Red Hat Inc
->> + *
->> + * derived from
->> + *
->> + * Hardware driver for Intel i810 Random Number Generator (RNG)
->> + * Copyright 2000,2001 Jeff Garzik <jgarzik@pobox.com>
->> + * Copyright 2000,2001 Philipp Rumpf <prumpf@mandrakesoft.com>
->> + *
->> + * This file is licensed under  the terms of the GNU General Public
->> + * License version 2. This program is licensed "as is" without any
->> + * warranty of any kind, whether express or implied.
->> + */
->> +
->> +#include <crypto/padlock.h>
->> +#include <linux/module.h>
->> +#include <linux/kernel.h>
->> +#include <linux/hw_random.h>
->> +#include <linux/delay.h>
->> +#include <linux/io.h>
->> +#include <linux/cpufeature.h>
->> +#include <asm/cpu_device_id.h>
->> +#include <asm/fpu/api.h>
->> +
->> +enum {
->> +	ZHAOXIN_RNG_CHUNK_8		= 0x00, /* 64 rand bits, 64 stored bits*/
->> +	ZHAOXIN_RNG_CHUNK_4		= 0x01, /* 32 rand bits, 32 stored bits */
->> +	ZHAOXIN_RNG_CHUNK_2		= 0x02, /* 16 rand bits, 32 stored bits */
->> +	ZHAOXIN_RNG_CHUNK_1		= 0x03, /* 8 rand bits, 32 stored bits */
->> +	ZHAOXIN_RNG_MAX_SIZE		= (128*1024),
->> +};
->> +
->> +static int zhaoxin_rng_init(struct hwrng *rng)
->> +{
->> +	if (!boot_cpu_has(X86_FEATURE_XSTORE_EN)) {
->> +		pr_err(PFX "can't enable hardware RNG if XSTORE is not enabled\n");
->> +		return -ENODEV;
->> +	}
-> 
-> Can't we check this when the driver is loaded? (This init function here
-> is called when the rng becomes active.) >
-The XSTORE feature has two related macro definitions,X86_FEATURE_XSTORE 
-and X86_FEATURE_XSTORE_EN.Indicates that the XSTORE feature is present 
-and enabled,respectively. X86_FEATURE_XSTORE has been checked when the 
-driver is loaded. X86_FEATURE_XSTORE_EN is placed in the init function 
-to check whether it is enabled.
-
-This is also a reference to other driver, such as via-rng.c.
-
->> +	return 0;
->> +}
->> +
->> +static inline int rep_xstore(size_t size, size_t factor, void *result)
->> +{
->> +	__asm__ __volatile__ (
->> +	"movq %0, %%rcx\n"
->> +	"movq %1, %%rdx\n"
->> +	"movq %2, %%rdi\n"
->> +	".byte 0xf3, 0x0f, 0xa7, 0xc0"
->> +	:
->> +	: "r"(size), "r"(factor), "r"(result)
->> +	: "%rcx", "%rdx", "%rdi", "memory");
->> +
->> +	return 0;
->> +}
->> +
->> +static int zhaoxin_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
->> +{
->> +	if (max > ZHAOXIN_RNG_MAX_SIZE)
->> +		max = ZHAOXIN_RNG_MAX_SIZE;
->> +	rep_xstore(max, ZHAOXIN_RNG_CHUNK_1, data);
->> +	return max;
->> +}
->> +
->> +static struct hwrng zhaoxin_rng = {
->> +	.name   = "zhaoxin",
->> +	.init   = zhaoxin_rng_init,
->> +	.read   = zhaoxin_rng_read,
->> +};
->> +
->> +static const struct x86_cpu_id zhaoxin_rng_cpu_ids[] = {
->> +	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 6, X86_FEATURE_XSTORE, NULL),
->> +	X86_MATCH_VENDOR_FAM_FEATURE(ZHAOXIN, 7, X86_FEATURE_XSTORE, NULL),
->> +	X86_MATCH_VENDOR_FAM_FEATURE(CENTAUR, 7, X86_FEATURE_XSTORE, NULL),
->> +	{}
->> +};
->> +MODULE_DEVICE_TABLE(x86cpu, zhaoxin_rng_cpu_ids);
->> +
->> +static int __init zhaoxin_rng_mod_init(void)
->> +{
->> +	int err;
->> +
->> +	if (!x86_match_cpu(zhaoxin_rng_cpu_ids)) {
->> +		pr_err(PFX "The CPU isn't support XSTORE.\n");
-> 
-> Yet again, is this really an error?
-> 
-Yes, as discussed above. I will fix it in the next version.
-
->> +		return -ENODEV;
->> +	}
->> +
->> +	pr_info("Zhaoxin RNG detected\n");
->> +	err = hwrng_register(&zhaoxin_rng);
->> +	if (err)
->> +		pr_err(PFX "RNG registering failed (%d)\n", err);
->> +
->> +	return err;
->> +}
->> +module_init(zhaoxin_rng_mod_init);
->> +
->> +static void __exit zhaoxin_rng_mod_exit(void)
->> +{
->> +	hwrng_unregister(&zhaoxin_rng);
->> +}
->> +module_exit(zhaoxin_rng_mod_exit);
->> +MODULE_DESCRIPTION("H/W RNG driver for Zhaoxin CPU");
->> +MODULE_AUTHOR("YunShen@zhaoxin.com");
->> +MODULE_LICENSE("GPL");
->> -- 
->> 2.34.1
-> 
-> Best regards,
-> Martin
+Keguang Zhang
