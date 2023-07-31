@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53C19769D35
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F304A769D38
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbjGaQyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52486 "EHLO
+        id S233578AbjGaQzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:55:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbjGaQy3 (ORCPT
+        with ESMTP id S233571AbjGaQzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:54:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA3B19AF;
-        Mon, 31 Jul 2023 09:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PjItUIkCI0I/tP6BHRrvgMnMVmybDiMWc/8ahzNK1Yo=; b=AjwLXfW0vRm7dfkKk8o/DHhOWH
-        c7hxfSfIc/MOQZveHcyB03KDci4sBZV4+M2L8SqC3mmgrCcss8AzbRnXRWPncy0cdiMkHsAOv13jF
-        vD23leXiiOWfvnMo8iBJX0pyRTvm/mEUfML5QXvdEhRxaSHvCtUY22JWv4ZwpUAKpwAGn8xT2GvML
-        jpxvL8cn4O0WwkN6FivsK17oxbScAkGTLWQ4jgGn/jrFrZMdddPtTZcaGN6mKv7qt07/wzkbXN37V
-        VRI6zgclVkLsQgU7GlYAeYAH+Ojt+AjBGDdU59n2xwERE/lx6dKka7b+ttU4ceBAS2sOpeRKvRAi8
-        3Y0B18Sw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qQW9u-002kk1-Q7; Mon, 31 Jul 2023 16:54:15 +0000
-Date:   Mon, 31 Jul 2023 17:54:14 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Rongwei Wang <rongwei.wang@linux.alibaba.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org,
-        "xuyu@linux.alibaba.com" <xuyu@linux.alibaba.com>
-Subject: Re: [PATCH RFC v2 0/4] Add support for sharing page tables across
- processes (Previously mshare)
-Message-ID: <ZMfnNpQIkXXs1W02@casper.infradead.org>
-References: <cover.1682453344.git.khalid.aziz@oracle.com>
- <74fe50d9-9be9-cc97-e550-3ca30aebfd13@linux.alibaba.com>
- <ZMeoHoM8j/ric0Bh@casper.infradead.org>
- <ae3bbfba-4207-ec5b-b4dd-ea63cb52883d@redhat.com>
- <9faea1cf-d3da-47ff-eb41-adc5bd73e5ca@linux.alibaba.com>
- <d3d03475-7977-fc55-188d-7df350ee0f29@redhat.com>
- <ZMfjmhaqVZyZNNMW@casper.infradead.org>
- <c1f3c78d-b1eb-5c1c-83aa-35901800498f@redhat.com>
+        Mon, 31 Jul 2023 12:55:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDEA71728;
+        Mon, 31 Jul 2023 09:55:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 74CA96123A;
+        Mon, 31 Jul 2023 16:55:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C182C433C8;
+        Mon, 31 Jul 2023 16:54:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690822499;
+        bh=P+oZaYwkspIaNJxLa9jftp8BzKB/m6+tOlqYJtPkrv8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=lZhTM58/UsAB7ghAERsf/f2VKck7rHwk4a29K7eBveq/fkUzLUIxsJzg+nzCl69uF
+         XW7wkrLRDvCuuCPcMGbdN2Rz8illQSPfAc/J0x2h21xWzQbsKFidB5mklaeLONcHi/
+         f68Hko0+LxX7gglkr8ey32Wt33KU+DLHwa5GUUzG/giKw9AptTvtH1ZRTHQJlmbjQa
+         BOOf1ytXM190mCZTL2VwE+XF7JB6PY1cILASQsnZOvG8j8GMM24lExSYAD/yl76cbc
+         NbwYpr/6wGXNar3QDMX4Cc347Ld6s2c/ryVzxHA4ShnAwNjXA9fB1E4imN0iJTzA2C
+         Uzai8WiNb60ag==
+Date:   Mon, 31 Jul 2023 11:54:57 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
+        imx@lists.linux.dev, kw@linux.com, leoyang.li@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        mani@kernel.org, minghuan.lian@nxp.com, mingkai.hu@nxp.com,
+        robh+dt@kernel.org, roy.zang@nxp.com, shawnguo@kernel.org,
+        zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v5 1/2] PCI: dwc: Implement general suspend/resume
+ functionality for L2/L3 transitionse
+Message-ID: <20230731165457.GA13422@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c1f3c78d-b1eb-5c1c-83aa-35901800498f@redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZMPjiBYQV20N5kdu@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 06:48:47PM +0200, David Hildenbrand wrote:
-> On 31.07.23 18:38, Matthew Wilcox wrote:
-> > On Mon, Jul 31, 2023 at 06:30:22PM +0200, David Hildenbrand wrote:
-> > > Assume we do do the page table sharing at mmap time, if the flags are right.
-> > > Let's focus on the most common:
-> > > 
-> > > mmap(memfd, PROT_READ | PROT_WRITE, MAP_SHARED)
-> > > 
-> > > And doing the same in each and every process.
+On Fri, Jul 28, 2023 at 11:49:28AM -0400, Frank Li wrote:
+> On Fri, Jul 28, 2023 at 09:02:38PM +0530, Manivannan Sadhasivam wrote:
+> > On Mon, Jul 24, 2023 at 05:58:29PM -0400, Frank Li wrote:
+> > > Introduced helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
+> > > Added API pme_turn_off and exit_from_l2 for managing L2/L3 state transitions.
+> > > ...
+
+> > > +static void dw_pcie_set_dstate(struct dw_pcie *pci, pci_power_t dstate)
+> > > +{
+> > > +	u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_PM);
+> > > +	u16 val;
+> > > +
+> > > +	val = dw_pcie_readw_dbi(pci, offset + PCI_PM_CTRL);
+> > > +	val &= ~PCI_PM_CTRL_STATE_MASK;
+> > > +	val |= ((u16 __force)dstate) & PCI_PM_CTRL_STATE_MASK;
 > > 
-> > That may be the most common in your usage, but for a database, you're
-> > looking at two usage scenarios.  Postgres calls mmap() on the database
-> > file itself so that all processes share the kernel page cache.
-> > Some Commercial Databases call mmap() on a hugetlbfs file so that all
-> > processes share the same userspace buffer cache.  Other Commecial
-> > Databases call shmget() / shmat() with SHM_HUGETLB for the exact
-> > same reason.
+> > Why can't just,
+> > 
+> > val |= dstate;
 > 
-> I remember you said that postgres might be looking into using shmem as well,
-> maybe I am wrong.
-
-No, I said that postgres was also interested in sharing page tables.
-I don't think they have any use for shmem.
-
-> memfd/hugetlb/shmem could all be handled alike, just "arbitrary filesystems"
-> would require more work.
-
-But arbitrary filesystems was one of the origin use cases; where the
-database is stored on a persistent memory filesystem, and neither the
-kernel nor userspace has a cache.  The Postgres & Commercial Database
-use-cases collapse into the same case, and we want to mmap the files
-directly and share the page tables.
-
-> > This is why I proposed mshare().  Anyone can use it for anything.
-> > We have such a diverse set of users who want to do stuff with shared
-> > page tables that we should not be tying it to memfd or any other
-> > filesystem.  Not to mention that it's more flexible; you can map
-> > individual 4kB files into it and still get page table sharing.
+> fixed a build warning.
 > 
-> That's not what the current proposal does, or am I wrong?
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307211904.zExw4Q8H-lkp@intel.com/
 
-I think you're wrong, but I haven't had time to read the latest patches.
+This is the sparse warning from the lkp URL:
 
-> Also, I'm curious, is that a real requirement in the database world?
+  sparse warnings: (new ones prefixed by >>)
+  >> drivers/pci/controller/dwc/pcie-designware-host.c:824:13: sparse: sparse: invalid assignment: |=
+  >> drivers/pci/controller/dwc/pcie-designware-host.c:824:13: sparse:    left side has type unsigned int
+  >> drivers/pci/controller/dwc/pcie-designware-host.c:824:13: sparse:    right side has type restricted pci_power_t
 
-I don't know.  It's definitely an advantage that falls out of the design
-of mshare.
+We have a zillion of those warnings already (try "make C=2 drivers/pci/").
+
+Personally I think it's better to omit the ugly cast and live with the
+warning for now.  Someday somebody will figure a better way to use
+pci_power_t that will fix all these warnings at once.  I'd rather wait
+for that fix than clutter all the uses with casts like this.
+
+Bjorn
