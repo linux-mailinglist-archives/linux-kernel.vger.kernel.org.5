@@ -2,77 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9753C769514
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 799E176951E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbjGaLk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
+        id S230457AbjGaLmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbjGaLk0 (ORCPT
+        with ESMTP id S230152AbjGaLm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:40:26 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEB2A6;
-        Mon, 31 Jul 2023 04:40:25 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-686b643df5dso2989121b3a.1;
-        Mon, 31 Jul 2023 04:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690803625; x=1691408425;
-        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NbHaBnPJTBufVAwcPj+/e51E470qMaDLfU8RAgBBrSo=;
-        b=Oqhj9+7q02O+W9LRy4/w9ygddowj5YGZdAuQcQiAKx8xsYNHClcRtsbok6QS0FT7o5
-         EnqTLOZQ2khabaT7z9Y7sb4fRTsSVX1bDX522xRb1/pB6hkHuKktWo6tgpdO5UrJ+mVa
-         yamBHZxv6GhHgFm+mFHhNbceYYuLchQPstzfFsuHCcE4ahCOp+1jICpS8uWPKscCPIK2
-         lf51aYlmtmTfGIhtv1APtO6vSJrqsEq029SRG5gJ1Ak717eq5rbbpcAyxJaiRocDTPzT
-         +PTy+sMzbnntJxzHX6SLblNYGLcritk1DuTMBjbjSc7spgbtTQ4U357QI6CCDHdnBlZt
-         V/zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690803625; x=1691408425;
-        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NbHaBnPJTBufVAwcPj+/e51E470qMaDLfU8RAgBBrSo=;
-        b=IvNVIG+IiCG58ug5YHoZoqa5d1wKnMPhu+3GSzywyni9sku/DLloZ8S2jeeZ4aIk9z
-         08J7hdh/jB13i+fLVhKOry5OcRkZ/fGkEBm0MZgo5Ot4o9+VrJiTq4gfRkSsbHPxthPU
-         94+kMDkWxg8FU1PzDdop/fNNZ5TKLWtbcNpQx3blgqOmrb9ak5Cp9mkoqk5SaT09EaFq
-         qjhFWIp46WpmWarE1dsotfZElmho+lsAcmc6/PeBWii7XTbxRcl67sDO8TuqPCilxMv0
-         xC+HmUbtz4gzNPQs67FMN4ARivdK7ZOlunCFEQPAqxzvc7Wbzknqz5iD0NNlTR7n3Y9o
-         DvJA==
-X-Gm-Message-State: ABy/qLadRyCLiiGPa3NW043+GEZdszw1v2fZXNYNuZ3hkjxpx1lnORe0
-        IUC/5KZf2QiEBOwgjerVg1E=
-X-Google-Smtp-Source: APBJJlExlIfJlZY/sSBlcw6EfNRGkZZTwEkZ+JAJ9sqSSJViGVx+t05/p99K9MXZ7/FpPZdW7zHT8w==
-X-Received: by 2002:a05:6a20:9151:b0:13b:79dc:4538 with SMTP id x17-20020a056a20915100b0013b79dc4538mr9899227pzc.62.1690803625084;
-        Mon, 31 Jul 2023 04:40:25 -0700 (PDT)
-Received: from [10.90.34.137] ([203.208.167.147])
-        by smtp.gmail.com with ESMTPSA id e11-20020a63ae4b000000b00563962dbc70sm792422pgp.58.2023.07.31.04.40.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 04:40:24 -0700 (PDT)
-Message-ID: <e106ee62-8b4b-59bc-d7ec-510c0c75c30a@gmail.com>
-Date:   Mon, 31 Jul 2023 19:40:16 +0800
+        Mon, 31 Jul 2023 07:42:29 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F076CA1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:42:27 -0700 (PDT)
+Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9668B2E4;
+        Mon, 31 Jul 2023 13:41:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690803683;
+        bh=kXAeucgHM8pQRaW5d1hxlWWePTwnI/+HQ2wiDfbJf2k=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=myQxQ28nNpoPcrTwJUNxEnxaz/PfNtLQ6yH5NSneBXVY/ekqyX6kr2wNcG6cv+x04
+         WM0xB4VI50WMDJDwZ/2LKseroOpun0Oa98zZateS+RBNeNpKI1LxFFSpNB6A0u4o/7
+         fbepTTmDYwRMiZfa6xgOA1Kqn/a6n6ANbiUTZ7eg=
+Message-ID: <f490e6ed-4553-445e-21a8-82f8baeda15b@ideasonboard.com>
+Date:   Mon, 31 Jul 2023 14:42:20 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.1
-Subject: Re: [PATCH 03/11] maple_tree: Add some helper functions
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
- <20230726080916.17454-4-zhangpeng.00@bytedance.com>
- <20230726150252.x56owgz3ikujzicu@revolver>
-Cc:     peterz@infradead.org, mathieu.desnoyers@efficios.com,
-        brauner@kernel.org, Peng Zhang <zhangpeng.00@bytedance.com>,
-        surenb@google.com, linux-kernel@vger.kernel.org, npiggin@gmail.com,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        akpm@linux-foundation.org, corbet@lwn.net, willy@infradead.org,
-        linux-mm@kvack.org, avagin@gmail.com, michael.christie@oracle.com
-From:   Peng Zhang <perlyzhang@gmail.com>
-In-Reply-To: <20230726150252.x56owgz3ikujzicu@revolver>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] drm/bridge: Add debugfs print for bridge chains
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230721-drm-bridge-chain-debugfs-v2-1-76df94347962@ideasonboard.com>
+ <20230725113718.GE31069@pendragon.ideasonboard.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+In-Reply-To: <20230725113718.GE31069@pendragon.ideasonboard.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,170 +62,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/7/26 23:02, Liam R. Howlett 写道:
-> * Peng Zhang <zhangpeng.00@bytedance.com> [230726 04:10]:
->> Add some helper functions so that their parameters are maple node
->> instead of maple enode, these functions will be used later.
+On 25/07/2023 14:37, Laurent Pinchart wrote:
+> Hi Tomi,
+> 
+> Thank you for the patch.
+> 
+> On Fri, Jul 21, 2023 at 06:01:39PM +0300, Tomi Valkeinen wrote:
+>> DRM bridges are not visible to the userspace and it may not be
+>> immediately clear if the chain is somehow constructed incorrectly. I
+>> have had two separate instances of a bridge driver failing to do a
+>> drm_bridge_attach() call, resulting in the bridge connector not being
+>> part of the chain. In some situations this doesn't seem to cause issues,
+>> but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
 >>
->> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+>> Add a debugfs file to print the bridge chains. For me, on this TI AM62
+>> based platform, I get the following output:
+>>
+>> encoder[39]
+>> 	bridge[0] type: 0, ops: 0x0
+>> 	bridge[1] type: 0, ops: 0x0, OF: /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778
+>> 	bridge[2] type: 0, ops: 0x3, OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b
+>> 	bridge[3] type: 11, ops: 0x7, OF: /hdmi-connector:hdmi-connector
+> 
+> Names would be more readable than numbers, but I'm not sure that's
+> really worth it. It can always be improved on top if desired.
+
+For type and ops? I agree, but it might also make the output more 
+cluttered. To be honest, I'm not sure if type and ops are useful here, I 
+just felt that I should print something else than just the OF node =).
+
+>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 >> ---
->>   lib/maple_tree.c | 71 +++++++++++++++++++++++++++++++++++++-----------
->>   1 file changed, 55 insertions(+), 16 deletions(-)
+>> Changes in v2:
+>> - Fixed compilation issue when !CONFIG_OF
+>> - Link to v1: https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e890d@ideasonboard.com
+>> ---
+>>   drivers/gpu/drm/drm_bridge.c  | 50 +++++++++++++++++++++++++++++++++++++++++++
+>>   drivers/gpu/drm/drm_debugfs.c |  3 +++
+>>   include/drm/drm_bridge.h      |  5 +++++
+>>   3 files changed, 58 insertions(+)
 >>
->> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
->> index e0e9a87bdb43..da3a2fb405c0 100644
->> --- a/lib/maple_tree.c
->> +++ b/lib/maple_tree.c
->> @@ -164,6 +164,11 @@ static inline int mt_alloc_bulk(gfp_t gfp, size_t size, void **nodes)
->>   	return kmem_cache_alloc_bulk(maple_node_cache, gfp, size, nodes);
->>   }
+>> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+>> index c3d69af02e79..d3eb62d5ef3b 100644
+>> --- a/drivers/gpu/drm/drm_bridge.c
+>> +++ b/drivers/gpu/drm/drm_bridge.c
+>> @@ -27,8 +27,10 @@
+>>   #include <linux/mutex.h>
 >>   
->> +static inline void mt_free_one(struct maple_node *node)
+>>   #include <drm/drm_atomic_state_helper.h>
+>> +#include <drm/drm_debugfs.h>
+>>   #include <drm/drm_bridge.h>
+>>   #include <drm/drm_encoder.h>
+>> +#include <drm/drm_file.h>
+>>   #include <drm/drm_of.h>
+>>   #include <drm/drm_print.h>
+>>   
+>> @@ -1345,6 +1347,54 @@ struct drm_bridge *of_drm_find_bridge(struct device_node *np)
+>>   EXPORT_SYMBOL(of_drm_find_bridge);
+>>   #endif
+>>   
+>> +#ifdef CONFIG_DEBUG_FS
+>> +static int drm_bridge_chains_info(struct seq_file *m, void *data)
 >> +{
->> +	kmem_cache_free(maple_node_cache, node);
->> +}
->> +
+>> +	struct drm_debugfs_entry *entry = m->private;
+>> +	struct drm_device *dev = entry->dev;
+>> +	struct drm_printer p = drm_seq_file_printer(m);
+>> +	struct drm_mode_config *config = &dev->mode_config;
 > 
-> There is a place in mas_destroy() that could use this if it is added.
-I will make changes accordingly. It's not done here because it doesn't
-seem to be relevant to the theme of this patchset.
-> 
->>   static inline void mt_free_bulk(size_t size, void __rcu **nodes)
->>   {
->>   	kmem_cache_free_bulk(maple_node_cache, size, (void **)nodes);
->> @@ -432,18 +437,18 @@ static inline unsigned long mte_parent_slot_mask(unsigned long parent)
->>   }
->>   
->>   /*
->> - * mas_parent_type() - Return the maple_type of the parent from the stored
->> - * parent type.
->> - * @mas: The maple state
->> - * @enode: The maple_enode to extract the parent's enum
->> + * ma_parent_type() - Return the maple_type of the parent from the stored parent
->> + * type.
->> + * @mt: The maple tree
->> + * @node: The maple_node to extract the parent's enum
->>    * Return: The node->parent maple_type
->>    */
->>   static inline
->> -enum maple_type mas_parent_type(struct ma_state *mas, struct maple_enode *enode)
->> +enum maple_type ma_parent_type(struct maple_tree *mt, struct maple_node *node)
-> 
-> I was trying to keep ma_* prefix to mean the first argument is
-> maple_node and mt_* to mean maple_tree.  I wasn't entirely successful
-> with this and I do see why you want to use ma_, but maybe reverse the
-> arguments here?
-I just think it is redundant to construct maple enode through
-node->parent in order to adapt the parameters of mte_*. So ma_* are
-introduced to avoid meaningless construction.
+> As Alexander reported, there's a crash for GPU drivers, as mode_config
+> isn't initialized in that case. I would skip creating the debugfs entry
+> if DRIVER_MODESET isn't set.
 
+Yes, makes sense.
+
+>> +	struct drm_encoder *encoder;
+>> +	unsigned int bridge_idx = 0;
+>> +
+>> +	list_for_each_entry(encoder, &config->encoder_list, head) {
+>> +		struct drm_bridge *bridge;
+>> +
+>> +		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
+>> +
+>> +		bridge = drm_bridge_chain_get_first_bridge(encoder);
+>> +
+>> +		while (bridge) {
 > 
->>   {
->>   	unsigned long p_type;
+> Would drm_for_each_bridge_in_chain() help ?
+
+Yes.
+
+>> +			drm_printf(&p, "\tbridge[%u] type: %u, ops: %#x",
+>> +				   bridge_idx, bridge->type, bridge->ops);
+>> +
+>> +#ifdef CONFIG_OF
+>> +			if (bridge->of_node)
+>> +				drm_printf(&p, ", OF: %pOFfc", bridge->of_node);
+>> +#endif
+>> +
+>> +			drm_printf(&p, "\n");
+>> +
+>> +			bridge_idx++;
+>> +			bridge = drm_bridge_get_next_bridge(bridge);
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +/* any use in debugfs files to dump individual planes/crtc/etc? */
+> 
+> Those can easily be listed from userspace, so I don't think that's
+> needed.
+
+Oops. That comment is not supposed to be there. It was a copy-paste error.
+
+>> +static const struct drm_debugfs_info drm_bridge_debugfs_list[] = {
+>> +	{"bridge_chains", drm_bridge_chains_info, 0},
+> 
+> Missing spaces after '{' and before '}'.
+
+Yep.
+
+>> +};
+>> +
+>> +void drm_bridge_debugfs_init(struct drm_minor *minor)
+>> +{
+>> +	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
+>> +			      ARRAY_SIZE(drm_bridge_debugfs_list));
+>> +}
+>> +#endif
+>> +
+>>   MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
+>>   MODULE_DESCRIPTION("DRM bridge infrastructure");
+>>   MODULE_LICENSE("GPL and additional rights");
+>> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+>> index c90dbcffa0dc..3e89559d68cd 100644
+>> --- a/drivers/gpu/drm/drm_debugfs.c
+>> +++ b/drivers/gpu/drm/drm_debugfs.c
+>> @@ -31,6 +31,7 @@
 >>   
->> -	p_type = (unsigned long)mte_to_node(enode)->parent;
->> +	p_type = (unsigned long)node->parent;
->>   	if (WARN_ON(p_type & MAPLE_PARENT_ROOT))
->>   		return 0;
+>>   #include <drm/drm_atomic.h>
+>>   #include <drm/drm_auth.h>
+>> +#include <drm/drm_bridge.h>
+>>   #include <drm/drm_client.h>
+>>   #include <drm/drm_debugfs.h>
+>>   #include <drm/drm_device.h>
+>> @@ -272,6 +273,8 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
 >>   
->> @@ -451,7 +456,7 @@ enum maple_type mas_parent_type(struct ma_state *mas, struct maple_enode *enode)
->>   	p_type &= ~mte_parent_slot_mask(p_type);
->>   	switch (p_type) {
->>   	case MAPLE_PARENT_RANGE64: /* or MAPLE_PARENT_ARANGE64 */
->> -		if (mt_is_alloc(mas->tree))
->> +		if (mt_is_alloc(mt))
->>   			return maple_arange_64;
->>   		return maple_range_64;
+>>   	drm_debugfs_add_files(minor->dev, drm_debugfs_list, DRM_DEBUGFS_ENTRIES);
+>>   
+>> +	drm_bridge_debugfs_init(minor);
+>> +
+>>   	if (drm_drv_uses_atomic_modeset(dev)) {
+>>   		drm_atomic_debugfs_init(minor);
 >>   	}
->> @@ -459,6 +464,19 @@ enum maple_type mas_parent_type(struct ma_state *mas, struct maple_enode *enode)
->>   	return 0;
+>> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+>> index bf964cdfb330..60dbee6bd1e6 100644
+>> --- a/include/drm/drm_bridge.h
+>> +++ b/include/drm/drm_bridge.h
+>> @@ -949,4 +949,9 @@ static inline struct drm_bridge *drmm_of_get_bridge(struct drm_device *drm,
 >>   }
+>>   #endif
 >>   
->> +/*
->> + * mas_parent_type() - Return the maple_type of the parent from the stored
->> + * parent type.
->> + * @mas: The maple state
->> + * @enode: The maple_enode to extract the parent's enum
->> + * Return: The node->parent maple_type
->> + */
->> +static inline
->> +enum maple_type mas_parent_type(struct ma_state *mas, struct maple_enode *enode)
->> +{
->> +	return ma_parent_type(mas->tree, mte_to_node(enode));
->> +}
->> +
->>   /*
->>    * mas_set_parent() - Set the parent node and encode the slot
->>    * @enode: The encoded maple node.
->> @@ -499,14 +517,14 @@ void mas_set_parent(struct ma_state *mas, struct maple_enode *enode,
->>   }
->>   
->>   /*
->> - * mte_parent_slot() - get the parent slot of @enode.
->> - * @enode: The encoded maple node.
->> + * ma_parent_slot() - get the parent slot of @node.
->> + * @node: The maple node.
->>    *
->> - * Return: The slot in the parent node where @enode resides.
->> + * Return: The slot in the parent node where @node resides.
->>    */
->> -static inline unsigned int mte_parent_slot(const struct maple_enode *enode)
->> +static inline unsigned int ma_parent_slot(const struct maple_node *node)
->>   {
->> -	unsigned long val = (unsigned long)mte_to_node(enode)->parent;
->> +	unsigned long val = (unsigned long)node->parent;
->>   
->>   	if (val & MA_ROOT_PARENT)
->>   		return 0;
->> @@ -519,15 +537,36 @@ static inline unsigned int mte_parent_slot(const struct maple_enode *enode)
->>   }
->>   
->>   /*
->> - * mte_parent() - Get the parent of @node.
->> - * @node: The encoded maple node.
->> + * mte_parent_slot() - get the parent slot of @enode.
->> + * @enode: The encoded maple node.
->> + *
->> + * Return: The slot in the parent node where @enode resides.
->> + */
->> +static inline unsigned int mte_parent_slot(const struct maple_enode *enode)
->> +{
->> +	return ma_parent_slot(mte_to_node(enode));
->> +}
->> +
->> +/*
->> + * ma_parent() - Get the parent of @node.
->> + * @node: The maple node.
->> + *
->> + * Return: The parent maple node.
->> + */
->> +static inline struct maple_node *ma_parent(const struct maple_node *node)
+>> +#ifdef CONFIG_DEBUG_FS
 > 
-> I had a lot of these helpers before, but they eventually became used so
-> little that I dropped them.
-Just for not wanting to construct maple enode. It's not really a
-problem.
-> 
->> +{
->> +	return (void *)((unsigned long)(node->parent) & ~MAPLE_NODE_MASK);
->> +}
+> You could drop the conditional compilation, it wouldn't hurt.
+
+I used the same style as in drm_crtc_internal.h. But you're right, the 
+ifdef doesn't really do much here.
+
+>> +struct drm_minor;
+>> +void drm_bridge_debugfs_init(struct drm_minor *minor);
+>> +#endif
 >> +
->> +/*
->> + * mte_parent() - Get the parent of @enode.
->> + * @enode: The encoded maple node.
->>    *
->>    * Return: The parent maple node.
->>    */
->>   static inline struct maple_node *mte_parent(const struct maple_enode *enode)
->>   {
->> -	return (void *)((unsigned long)
->> -			(mte_to_node(enode)->parent) & ~MAPLE_NODE_MASK);
->> +	return ma_parent(mte_to_node(enode));
->>   }
->>   
->>   /*
->> -- 
->> 2.20.1
+>>   #endif
 >>
+>> ---
+>> base-commit: c7a472297169156252a50d76965eb36b081186e2
+>> change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
+> 
+
+  Tomi
+
