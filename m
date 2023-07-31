@@ -2,138 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6B17696F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 943677696F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbjGaM7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43268 "EHLO
+        id S232506AbjGaNAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:00:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjGaM7q (ORCPT
+        with ESMTP id S232507AbjGaNAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:59:46 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24A210E9
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:59:44 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c1d03e124so87479166b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:59:44 -0700 (PDT)
+        Mon, 31 Jul 2023 09:00:30 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E61810B
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:00:28 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe110de46dso24190895e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:00:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690808383; x=1691413183;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OjNUiGbK+r1sXqp9L+BG2Nwgnyi0n65xn60LuBTJ+Lo=;
-        b=ipE2GeHmGakEq92kZfr0zFwxnvW8Bm1NtgHlVo+VScWEywfWmiDQZ30e6NG4kzr8Nf
-         l0HE/lQrsj5Jw9gxLxsslNaqp3ue3LjUCFI3vNJ/mtEqCWHys0ED+BtfsA72/y3BZN1t
-         5NsQiqcsJSsiyrQdFUOpbUGliSd8ViYY+SiE6hZhgqWiIxApRkzMzWxjSB/ZnkMBB6BB
-         PvwHuEHVwhryClOh22M2lQ9jJHEeQYrDD0TzSFip7j8EyukgjkANeivDoC3zFJk9yYLn
-         9IiFw18Gu7fwb/OswNV5n1JITJ2O+Ia054m+SwYrVGFaZauSsFthBZlaknIg+WZR/+3I
-         dSaA==
+        d=linaro.org; s=google; t=1690808427; x=1691413227;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=FUbObSzDV+OWr4/4hJgHfjmLuyqz0P8gKph4x0lk8p0=;
+        b=ZyoV5UooYVUTAvAW/QiUxtIzNygDCdr44co6iAnDwRE+YEjUIgZT+lQr4MA5YH80qU
+         8zHR7nB1A0Uu9wYLBLbOeGEc8+eimdmxx5PGGaw/ZUC13rHB5Qyrnrh6t0H9U3/3dIQk
+         yKJ+FktL7/SjFvJoy0e8VdmG+GX/Qvu35pp1N/XRfX12wFSrqQ01oz5xo/2reKdC+8m9
+         X0S3KlN6eMlt/ixdGSKwuc6tsXcRoLstdB6nJBds67VyYSyviq+WVEntTWSbCTwHK2xt
+         4sDRPlDOR3VRbPuWfmcarXdL87uL6R5GWC5TkSI7JHfxFYVW76fsSWaSX8v/IHPaNnns
+         avxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690808383; x=1691413183;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OjNUiGbK+r1sXqp9L+BG2Nwgnyi0n65xn60LuBTJ+Lo=;
-        b=M40lif9YMKC42/0MaRL4QrD46zA8u6U1uZVzXABL4Yh1LUWGff/ge3hDsoyRG9TpRK
-         d0MDtGUf2fjBGkj1rJvJOgad+PaQ3K8DCof0GSNYeKrp7ci/H/CwwpFOLvH7a/0aoQXE
-         cfF1ZypMeFcTxewqbYY7/xFiOnAcMI9pvgJVE8tgyUJQ5IJE0EN2kbJF2IKZGh2/itJN
-         rOEOkldJmyQdmLtWXGz6aX1VYovLh4Gydls7dBlUgC4uK7wgBtmYaDjfiTyUIWFU3CyF
-         hVVnP/ohC0bwrLjuWRY2swZDYbbyGatdE1/htYUG2Pxbf3kWi9G3KaeOxlTeb+6SNp0Y
-         kgbA==
-X-Gm-Message-State: ABy/qLbvU7ZCaQFKcjYLB6+dWHzunGP2N0I6t/c9ApQ0h9tcT8HtRtvW
-        111SmKuGx5K+hRoGk38St1Xrow==
-X-Google-Smtp-Source: APBJJlH0RcpsHNdXqhQRW836eEcHu4DeD0tlvaSETRKyEWM2zSPKYNVvCssy+KLB5iMuHppPVtBekw==
-X-Received: by 2002:a17:906:768d:b0:99b:cd0e:a805 with SMTP id o13-20020a170906768d00b0099bcd0ea805mr5645412ejm.37.1690808383337;
-        Mon, 31 Jul 2023 05:59:43 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id um6-20020a170906cf8600b009930c61dc0esm6112815ejb.92.2023.07.31.05.59.41
+        d=1e100.net; s=20221208; t=1690808427; x=1691413227;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FUbObSzDV+OWr4/4hJgHfjmLuyqz0P8gKph4x0lk8p0=;
+        b=Kk/ugnZKB3LYOEKGOm/RKL7FAUyXEsBv8/n1Epz6seoWJKb4EdHBirlSjMQJmdrCn6
+         RMR/9y54bEITD3arIfODCp8Xx/0mI3G+U4rikPHEfMErhXBPmyQ3ymLhqLubPeYyjXy9
+         bT+Rvx6T5F4kIPQMw4ibdadr7CkrGbMqkT70xBYHheMi47k6xmWYu34YPRdWFRik7xgo
+         gnTcknjofURWeUDxdSINOQJdZVqCSMYeaRdOJ9c++lTqvloCit8Y/BrZlC0VHZkaJXbz
+         /Qbhl9n8WGB99MKglfU53qZZjLdvTqfwYio1M4qU390xYSHNJ+3FPuAru4UrMBlQdXD1
+         iNTg==
+X-Gm-Message-State: ABy/qLZ26pf3JnhScOmz0TO4WRaLD/Lo2BY6us59Z/Jnjy0DGe3kK+NA
+        jc2iqME6MjyaN77qaG0h5Hp307HR0LhbKzgjQw4sy6h/
+X-Google-Smtp-Source: APBJJlGvNG1zjeg8VNyk3eXXTmbmkaUleTZJkL+2T26lqfmtvgn0n2SEbPFEhrwy7g46uuDI9Aq9fQ==
+X-Received: by 2002:a05:600c:2946:b0:3fe:6f7:60aa with SMTP id n6-20020a05600c294600b003fe06f760aamr6452963wmd.12.1690808427221;
+        Mon, 31 Jul 2023 06:00:27 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:f723:b60b:92cd:4df4? ([2a01:e0a:982:cbb0:f723:b60b:92cd:4df4])
+        by smtp.gmail.com with ESMTPSA id f21-20020a7bcc15000000b003fd32074e74sm14246579wmh.31.2023.07.31.06.00.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 05:59:42 -0700 (PDT)
-Message-ID: <fdc513a3-c0e0-c57d-5c9a-8da6fa2f54e2@linaro.org>
-Date:   Mon, 31 Jul 2023 14:59:41 +0200
+        Mon, 31 Jul 2023 06:00:26 -0700 (PDT)
+Message-ID: <dde2774e-6f0b-21d0-e9c9-4a5bd1eac4e8@linaro.org>
+Date:   Mon, 31 Jul 2023 15:00:25 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v3 2/2] i2c: Add GPIO-based hotplug gate
+ Thunderbird/102.12.0
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] drm/panel: Add prepare_prev_first flag to Visionox
+ VTDR6130
 Content-Language: en-US
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Svyatoslav Ryhel <clamor95@gmail.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230729160857.6332-1-clamor95@gmail.com>
- <20230729160857.6332-3-clamor95@gmail.com>
- <25858c22-ef92-2136-67ef-0d27364c1600@linaro.org>
- <ZMbcb0yuTz6l6BYh@qmqm.qmqm.pl>
- <b9183dfc-8e8a-9602-f31c-5de9e27acb88@linaro.org>
- <ZMd1qI7RjQhpI8zO@qmqm.qmqm.pl>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <ZMd1qI7RjQhpI8zO@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     quic_abhinavk@quicinc.com, quic_parellan@quicinc.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+Organization: Linaro Developer Services
+In-Reply-To: <20230725-visionox-vtdr-prev-first-v1-1-3bc44cec7dc6@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2023 10:49, Michał Mirosław wrote:
-> On Mon, Jul 31, 2023 at 08:58:14AM +0200, Krzysztof Kozlowski wrote:
->> On 30/07/2023 23:55, Michał Mirosław wrote:
->>> On Sun, Jul 30, 2023 at 10:30:56PM +0200, Krzysztof Kozlowski wrote:
->>>> On 29/07/2023 18:08, Svyatoslav Ryhel wrote:
->>>>> From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
->>>>>
->>>>> Implement driver for hot-plugged I2C busses, where some devices on
->>>>> a bus are hot-pluggable and their presence is indicated by GPIO line.
->>> [...] 
->>>>> +	priv->irq = platform_get_irq(pdev, 0);
->>>>> +	if (priv->irq < 0)
->>>>> +		return dev_err_probe(&pdev->dev, priv->irq,
->>>>> +				     "failed to get IRQ %d\n", priv->irq);
->>>>> +
->>>>> +	ret = devm_request_threaded_irq(&pdev->dev, priv->irq, NULL,
->>>>> +					i2c_hotplug_interrupt,
->>>>> +					IRQF_ONESHOT | IRQF_SHARED,
->>>>
->>>> Shared IRQ with devm is a recipe for disaster. Are you sure this is a
->>>> shared one? You have a remove() function which also points that it is
->>>> not safe. You can:
->>>> 1. investigate to be sure it is 100% safe (please document why do you
->>>> think it is safe)
->>>
->>> Could you elaborate on what is unsafe in using devm with shared
->>> interrupts (as compared to non-shared or not devm-managed)?
->>>
->>> The remove function is indeed reversing the order of cleanup. The
->>> shutdown path can be fixed by removing `remove()` and adding
->>> `devm_add_action_or_reset(...deactivate)` before the IRQ is registered.
->> Shared interrupt might be triggered easily by other device between
->> remove() and irq release function (devm_free_irq() or whatever it is
->> called).
+Hi,
+
+On 26/07/2023 00:56, Jessica Zhang wrote:
+> Due to a recent introduction of the pre_enable_prev_first bridge flag [1],
+> the panel driver will be probed before the DSI is enabled, causing the
+> DCS commands to fail to send.
 > 
-> This is no different tham a non-shared interrupt that can be triggered
-> by the device being removed. Since devres will release the IRQ first,
-> before freeing the driver data, the interrupt hander will see consistent
-> driver-internal state. (The difference between remove() and devres
-> release phase is that for the latter sysfs files are already removed.)
+> Ensure that DSI is enabled before panel probe by setting the
+> prepare_prev_first flag for the panel.
 
-True, therefore non-devm interrupts are recommended also in such case.
-Maybe one of my solutions is actually not recommended.
+Well this is specific to MSM DSI driver, it's not related at all to the panel.
 
-However if done right, driver with non-shared interrupts, is expected to
-disable interrupts in remove(), thus there is no risk. We have big
-discussions in the past about it, so feel free to dig through LKML to
-read more about. Anyway shared and devm is a clear no go.
+Neil
 
-Best regards,
-Krzysztof
+> 
+> [1] commit 4fb912e5e190 ("drm/bridge: Introduce pre_enable_prev_first to alter bridge init order")
+> 
+> Fixes: 2349183d32d8 ("drm/panel: add visionox vtdr6130 DSI panel driver")
+> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> ---
+>   drivers/gpu/drm/panel/panel-visionox-vtdr6130.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+> index bb0dfd86ea67..e1363e128e7e 100644
+> --- a/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+> +++ b/drivers/gpu/drm/panel/panel-visionox-vtdr6130.c
+> @@ -296,6 +296,7 @@ static int visionox_vtdr6130_probe(struct mipi_dsi_device *dsi)
+>   	dsi->format = MIPI_DSI_FMT_RGB888;
+>   	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_NO_EOT_PACKET |
+>   			  MIPI_DSI_CLOCK_NON_CONTINUOUS;
+> +	ctx->panel.prepare_prev_first = true;
+>   
+>   	drm_panel_init(&ctx->panel, dev, &visionox_vtdr6130_panel_funcs,
+>   		       DRM_MODE_CONNECTOR_DSI);
+> 
+> ---
+> base-commit: 28a5c036b05fc5c935cc72d76abd3589825ea9cd
+> change-id: 20230717-visionox-vtdr-prev-first-e00ae02eec9f
+> 
+> Best regards,
 
