@@ -2,116 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3167696E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:58:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BD87696E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231516AbjGaM57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:57:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42172 "EHLO
+        id S232211AbjGaM6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:58:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbjGaM55 (ORCPT
+        with ESMTP id S230265AbjGaM6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:57:57 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB2DE63
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:57:56 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbc63c2e84so49862765e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:57:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690808275; x=1691413075;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=zfmsPCP2I6k+qdFuK2670aEPuYwMRT2natN5YFB+JCQ=;
-        b=qs/t7fLgi/4WqpgqbAXdmOP9OR7T8KsSjKO/i6AMhWM8idvSjwQ242zn9N2uuLXI3O
-         bBSH32jD0EM8kl7BCayHbYqqJ6YiMcz+rNPyhSQQZHwrNmgh8ZYAHoO11E9tzy47edwr
-         4TBVcmU5pPDmtrS+33it8pIOdVfsKrnI2NmEIZj3c1SEIalp4oC2LVcSJDncmX5bl1XU
-         8+M9uUR9sVar+QHL5Rxx4MIl3AK1+0D1QPX/vSZi2zZ3tRSJf8PgB2E3HJIw34bXUnLC
-         foZA3PoI4n+RCJWCBjupcfenaoypaJt8C3CRqni+zly3vBbWIG8PkIC8LuzHP9llc1ou
-         IfYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690808275; x=1691413075;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zfmsPCP2I6k+qdFuK2670aEPuYwMRT2natN5YFB+JCQ=;
-        b=BCFR7RX8/wgUq2lmPemH9MuIpiEcVi7LQICw8aco+cKGEcbpxenwm1ArdKmLXV8Wnk
-         KpPmh3XohAAgNBnQBuQTwrTxi1ZORO4VQz+78DB1fSwzU4HwFprEnP5bTshDk0Fchiem
-         y3BtnLv52xkTUCDH+HCxlkijNhd4fhuz1SHjZaKFyMbUXXKm1NmvAgelKSHDkNL32DsV
-         ZBrnbVDVaIXQnMBWtm/LaXmYNWXxbzje8cLrCRGgZzHpcmbYwkyRLA11CV1iWcc6n//U
-         ulf4Xiq5lat2IklTY420wpk8Jy74gFhjuh9IGU1yYYuigEGriD4O8cEhE2lR55ljy7pV
-         5GeA==
-X-Gm-Message-State: ABy/qLa9NEZGfXB3fCqft4Ui91pz7Lb0MW8cCWrZJEACeZI+7TUmjsqV
-        FCx/Gb4HFSfTHfsJpY44k6011g==
-X-Google-Smtp-Source: APBJJlH0MESteO5H6VCiRz/Wz4r2+C1E0kSnz02b8KrJkg6gVlOH36HJIQyF10gGEqTu0YhggMVgVg==
-X-Received: by 2002:a1c:7c08:0:b0:3f9:8c3:6805 with SMTP id x8-20020a1c7c08000000b003f908c36805mr8230100wmc.7.1690808275142;
-        Mon, 31 Jul 2023 05:57:55 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:f723:b60b:92cd:4df4? ([2a01:e0a:982:cbb0:f723:b60b:92cd:4df4])
-        by smtp.gmail.com with ESMTPSA id u22-20020a05600c211600b003fbcdba1a63sm11448877wml.12.2023.07.31.05.57.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 05:57:54 -0700 (PDT)
-Message-ID: <b0001583-250c-f0ca-3410-ecfda7afd505@linaro.org>
-Date:   Mon, 31 Jul 2023 14:57:53 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2 3/3] arm64: defconfig: enable STARTEK KD070FHFID015
- panel
-Content-Language: en-US
-To:     Alexandre Mergnat <amergnat@baylibre.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        Mon, 31 Jul 2023 08:58:16 -0400
+Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [5.144.164.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFE5E78;
+        Mon, 31 Jul 2023 05:58:12 -0700 (PDT)
+Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 0A1F5201B8;
+        Mon, 31 Jul 2023 14:58:09 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 14:58:08 +0200
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     David Wronek <davidwronek@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Guillaume La Roque <glaroque@baylibre.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230711-startek_display-v2-0-87bc7bdec6e9@baylibre.com>
- <20230711-startek_display-v2-3-87bc7bdec6e9@baylibre.com>
-Organization: Linaro Developer Services
-In-Reply-To: <20230711-startek_display-v2-3-87bc7bdec6e9@baylibre.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        cros-qcom-dts-watchers@chromium.org
+Subject: Re: [PATCH v4 0/7] Add initial support for SM7125 and Xiaomi SM7125
+ platform
+Message-ID: <kzdqrhzegfvon6o4xzlqrabhrx432qmqv55r5vp6v5cpy7oyip@d5bbegprhnrq>
+Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>, 
+        David Wronek <davidwronek@gmail.com>, Andy Gross <agross@kernel.org>, 
+        Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+        Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+        Conor Dooley <conor+dt@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
+        Stephen Boyd <sboyd@kernel.org>, Taniya Das <quic_tdas@quicinc.com>, 
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+        linux-clk@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, 
+        phone-devel@vger.kernel.org, cros-qcom-dts-watchers@chromium.org
+References: <20230723190725.1619193-1-davidwronek@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230723190725.1619193-1-davidwronek@gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/07/2023 11:07, Alexandre Mergnat wrote:
-> Build Startek KD070FHFID015 panel driver. This MIPI-DSI display
-> can be used for the mt8365-evk board for example.
+On 2023-07-23 21:05:01, David Wronek wrote:
+> This series introduces support for the Qualcomm SM7125 SoC and the
+> Xiaomi SM7125 platform.
 > 
-> Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
+> Signed-off-by: David Wronek <davidwronek@gmail.com>
 > ---
->   arch/arm64/configs/defconfig | 1 +
->   1 file changed, 1 insertion(+)
+> Changes in v2:
+> - Allow qcom,board-id and qcom,msm-id properties
+> - Use QCOM_SCM_VMID_MSS_MSA definition
+> - Change initial regulator modes from LPM to HPM
+> - Move status to the bottom of nodes
+> - Fix up PM6150 interrupts
+> - Move clk patch to beginning of series
+> - Fix up copyright
+> - Take ownership of all commits with permission
+> - Link to v1: https://lore.kernel.org/all/20230704163848.169853-2-davidwronek@gmail.com/
 > 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index 0777bcae9104..cb24a3d1219b 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -816,6 +816,7 @@ CONFIG_DRM_PANEL_EDP=m
->   CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
->   CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
->   CONFIG_DRM_PANEL_SITRONIX_ST7703=m
-> +CONFIG_DRM_PANEL_STARTEK_KD070FHFID015=m
->   CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
->   CONFIG_DRM_PANEL_VISIONOX_VTDR6130=m
->   CONFIG_DRM_LONTIUM_LT8912B=m
+> Changes in v3:
+> - Disable pm6150 rtc by default
+> - Fix wrong pm8150l PMIC in joyeuse dts
+> - Link to v2: https://lore.kernel.org/all/20230706124339.134272-1-davidwronek@gmail.com/
 > 
+> Changes in v4:
+> - Fix key-vol-down node name
+> - Link to v3: https://lore.kernel.org/all/20230715091932.161507-1-davidwronek@gmail.com/
+> 
+> ---
+> David Wronek (7):
+>   clk: qcom: gcc-sc7180: Fix up gcc_sdcc2_apps_clk_src
+>   dt-bindings: arm: qcom,ids: Add SoC ID for SM7125
+>   dt-bindings: arm: qcom: Document SM7125 and xiaomi,joyeuse board
+>   soc: qcom: socinfo: Add SoC ID for SM7125
+>   arm64: dts: qcom: pm6150: Add resin and rtc nodes
+>   arm64: dts: qcom: Add SM7125 device tree
+>   arm64: dts: qcom: Add support for the Xiaomi SM7125 platform
+> 
+>  .../devicetree/bindings/arm/qcom.yaml         |   7 +
+>  arch/arm64/boot/dts/qcom/Makefile             |   1 +
+>  arch/arm64/boot/dts/qcom/pm6150.dtsi          |  16 +
+>  .../boot/dts/qcom/sm7125-xiaomi-joyeuse.dts   |  16 +
+>  .../boot/dts/qcom/sm7125-xiaomi-miatoll.dtsi  | 423 ++++++++++++++++++
 
-This should be applied by the Mediatek ARM64 maintainer,
+As brought up on IRC, making it official review by reposting it here on
+the lists: Since mi+atoll seems to be a community made-up name, perhaps
+this file should just be named sm7125-xiomi-common.dtsi, matching
+similar Xiaomi and OnePlus devices with shared DTSI?
 
-Neil
+Otherwise, just like Sony devices where an official board name _is
+known_ the device DTS file should have been named
+sm7125-xiaomi-miatoll-joyeuse.dts instead?
+
+- Marijn
+
+>  arch/arm64/boot/dts/qcom/sm7125.dtsi          |  16 +
+>  drivers/clk/qcom/gcc-sc7180.c                 |   1 +
+>  drivers/soc/qcom/socinfo.c                    |   1 +
+>  include/dt-bindings/arm/qcom,ids.h            |   1 +
+>  9 files changed, 482 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sm7125-xiaomi-joyeuse.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sm7125-xiaomi-miatoll.dtsi
+>  create mode 100644 arch/arm64/boot/dts/qcom/sm7125.dtsi
+> 
+> -- 
+> 2.41.0
+> 
