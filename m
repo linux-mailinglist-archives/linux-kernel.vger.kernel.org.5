@@ -2,69 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8ED769C20
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50393769C23
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232457AbjGaQS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52048 "EHLO
+        id S232507AbjGaQT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232398AbjGaQSy (ORCPT
+        with ESMTP id S232204AbjGaQT0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:18:54 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02797A7;
-        Mon, 31 Jul 2023 09:18:53 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-267ffa55791so2613866a91.1;
-        Mon, 31 Jul 2023 09:18:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690820332; x=1691425132;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DGIzVhnJPbm+Nw+mt1LCyglB+QvUWCQ9474FaGPAigo=;
-        b=VdZY+kXtGJwVpHXJD7caV6QNH7Ee/ilU4EvYrzONNg3QKG7DrSu8mcBhDjAet8bBBz
-         CY7QBiD5WBB9WGjh7omoQ79zzTMoz6OIsULB2hy//LBzzdbzvel2hT4VDQcsdgRERrvZ
-         C3wFGpiMPJwVTbalEdKf7GciyVMGRmG+1TJjlC3cQ1FClEhvbpNGfiCDmtLyK4qegy91
-         r7OfFkSq2Mb6IDi3KRMc+05Tfqg4lSfI9EUJvc17EpEqixMDK5N4joaI67Ov+oIZY3Ts
-         zEseng6qeWievYXHaodtEH3wbDYZzhSHThpiCx9G6FdennlVkqG7jaZngSSN4+2VX+f8
-         TWAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690820332; x=1691425132;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DGIzVhnJPbm+Nw+mt1LCyglB+QvUWCQ9474FaGPAigo=;
-        b=lXQLLrf/81kYyYOhjbs+sjOjblY7ZoZYqjhFRYfzxa4bRGGsDP0qEhb5rpTQiJXIlG
-         DdBn1VWUoXJxg+Eb75odQro1KlCL3PY6uof0rokXuSi+z6/pSOpzvrWtE8uNWNUnh1/s
-         3Gp8grSSrJhQ4aRWr1gXLNTGAEjrpKzKOxYU3farFDEqKH0BbemjQiguQETr2qFMT2Dm
-         baFvBf8cA8nBHSNzfEh3RWfL6R29nuYbeyu/ElxpbvR+Vw2yV2wru5maluVC/YPU+/RK
-         zK/Fy674q5H+IsoDVKnXUnqXg/VD9tpcZUbdlRpCjAWq7/vJS0A7cd3BzBy4ijxFRDSl
-         yJUQ==
-X-Gm-Message-State: ABy/qLYAsKpbqCVeQM5BSA4tQRSz/rb/1dFbMt3b7a6r9WPHgRu3edRp
-        dr6EflfgiYGxVJrDtx73jxQ=
-X-Google-Smtp-Source: APBJJlHqgN+TetC9g6IVIv9YNfULp4eS8gpke4gHB71X+/4e9AUl1WeMZbj1EumDThjJ1RxQGVwGDg==
-X-Received: by 2002:a17:90b:1917:b0:268:1376:d501 with SMTP id mp23-20020a17090b191700b002681376d501mr8597401pjb.5.1690820332278;
-        Mon, 31 Jul 2023 09:18:52 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:6d25:c0f1:d8d5:201c])
-        by smtp.gmail.com with ESMTPSA id bu5-20020a17090aee4500b00268dac826d4sm787380pjb.0.2023.07.31.09.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 09:18:51 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 09:18:49 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: Re: [PATCH 04/10] input: serport: remove casts from tty->disc_data
-Message-ID: <ZMfe6YCPiyjzJBoe@google.com>
-References: <20230731080244.2698-1-jirislaby@kernel.org>
- <20230731080244.2698-5-jirislaby@kernel.org>
+        Mon, 31 Jul 2023 12:19:26 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B13197;
+        Mon, 31 Jul 2023 09:19:23 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Voh64HD_1690820359;
+Received: from 30.27.83.39(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Voh64HD_1690820359)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 00:19:21 +0800
+Message-ID: <9faea1cf-d3da-47ff-eb41-adc5bd73e5ca@linux.alibaba.com>
+Date:   Tue, 1 Aug 2023 00:19:18 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731080244.2698-5-jirislaby@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FSL_HELO_FAKE,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH RFC v2 0/4] Add support for sharing page tables across
+ processes (Previously mshare)
+Content-Language: en-US
+To:     David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org,
+        "xuyu@linux.alibaba.com" <xuyu@linux.alibaba.com>
+References: <cover.1682453344.git.khalid.aziz@oracle.com>
+ <74fe50d9-9be9-cc97-e550-3ca30aebfd13@linux.alibaba.com>
+ <ZMeoHoM8j/ric0Bh@casper.infradead.org>
+ <ae3bbfba-4207-ec5b-b4dd-ea63cb52883d@redhat.com>
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <ae3bbfba-4207-ec5b-b4dd-ea63cb52883d@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,17 +50,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 10:02:38AM +0200, Jiri Slaby (SUSE) wrote:
-> tty->disc_data is 'void *', so there is no need to cast from that.
-> Therefore remove the casts and assign the pointer directly.
-> 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: linux-input@vger.kernel.org
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+On 2023/7/31 20:50, David Hildenbrand wrote:
+> On 31.07.23 14:25, Matthew Wilcox wrote:
+>> On Mon, Jul 31, 2023 at 12:35:00PM +0800, Rongwei Wang wrote:
+>>> Hi Matthew
+>>>
+>>> May I ask you another question about mshare under this RFC? I 
+>>> remember you
+>>> said you will redesign the mshare to per-vma not per-mapping 
+>>> (apologize if
+>>> remember wrongly) in last time MM alignment session. And I also 
+>>> refer to you
+>>> to re-code this part in our internal version (based on this RFC). It 
+>>> seems
+>>> that per VMA will can simplify the structure of pgtable sharing, even
+>>> doesn't care the different permission of file mapping. these are 
+>>> advantages
+>>> (maybe) that I can imagine. But IMHO, It seems not a strongly reason to
+>>> switch per-mapping to per-vma.
+>>>
+>>> And I can't imagine other considerations of upstream. Can you share the
+>>> reason why redesigning in a per-vma way, due to integation with 
+>>> hugetlbfs
+>>> pgtable sharing or anonymous page sharing?
+>>
+>> It was David who wants to make page table sharing be per-VMA.  I think
+>> he is advocating for the wrong approach.  In any case, I don't have time
+>> to work on mshare and Khalid is on leave until September, so I don't
+>> think anybody is actively working on mshare.
+>
+> Not that I also don't have any time to look into this, but my comment 
+> essentially was that we should try decoupling page table sharing 
+> (reduce memory consumption, shorter rmap walk) from the 
+> mprotect(PROT_READ) use case.
 
-Thanks.
+Hi David, Matthew
 
--- 
-Dmitry
+Thanks for your reply.
+
+Uh, sorry, I can't imagine the relative between decouping page table 
+sharing with per-VMA design. And I think mprotect(PROT_READ) has to 
+modify all sharing page tables of related tasks. It seems that I miss 
+something about per-VMA from your words.
+
+BTW, I can imagine a corner case to show the defect (maybe) of 
+per-mapping. If we create a range of page table sharing by 
+memfd_create(), and a child also own this range of page table sharing. 
+But this child process can not create page table sharing base on the 
+same fd after mumap() this range (same mapping but different vma area). 
+Of course, per-VMA is better choice that can continue to create page 
+table sharing base on original fd. That's because new mm struct created 
+in this way. I guess that is a type of decoupling you said?
+
+It's just corner case. I am not sure how important it is.
+
+>
+> For page table sharing I was wondering whether there could be ways to 
+> just have that done semi-automatically. Similar to how it's done for 
+> hugetlb. There are some clear limitations: mappings < PMD_SIZE won't 
+> be able to benefit.
+>
+> It's still unclear whether that is a real limitation. Some use cases 
+> were raised (put all user space library mappings into a shared area), 
+> but I realized that these conflict with MAP_PRIVATE requirements of 
+> such areas. Maybe I'm wrong and this is easily resolved.
+>
+> At least it's not the primary use case that was raised. For the 
+> primary use cases (VMs, databases) that map huge areas, it might not 
+> be a limitation.
+>
+>
+> Regarding mprotect(PROT_READ), my point was that mprotect() is most 
+> probably the wrong tool to use (especially, due to signal handling). 
+> Instead, I was suggesting having a way to essentially protect pages in 
+> a shmem file -- and get notified whenever wants to write to such a 
+> page either via the page tables or via write() and friends. We do have 
+> the write-notify infrastructure for filesystems in place that we might 
+> extend/reuse.
+I am poor in filesystem. The write-notify sounds a good idea. Maybe I 
+need some times to digest this.
+> That mechanism could benefit from shared page tables by having to do 
+> less rmap walks.
+>
+> Again, I don't have time to look into that (just like everybody else 
+> as it appears) and might miss something important. Just sharing my 
+> thoughts that I raised in the call.
+
+Your words are very helpful to me. I try to design our internal version 
+about this feature in a right way.
+
+Thanks again.
+
