@@ -2,112 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B08769D44
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0455769D46
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbjGaQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
+        id S233613AbjGaQzz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 Jul 2023 12:55:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233599AbjGaQzf (ORCPT
+        with ESMTP id S230503AbjGaQzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:55:35 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC32A19B2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:55:29 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe2503e3easo4461104e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690822528; x=1691427328;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RpT8nlEbctAiS0l82doDIjU49cpafv/Kh1hBxCyIFMo=;
-        b=Rw05xMgeodHctFTvKIC6laouQfNYMrrCy85KAbY3jUEwE/zAzGSE7inbQ1dCSG3OvU
-         nJ6lmmm58KV+hhoYyFvzr/6gVyymsQPXPkO8eBpKoGGitA6MHsDcLVT6ile8EKsu5wAc
-         Ux7AxuAPnCOrxOoQRMg4BtENAtstKNE2jWV887AvuHdhi94vHi+gLKHvJRGYjF/JKFm+
-         p5TvphCnkP8CGtAiQgSb5N+D5Llrz5PrfGODaO14DFc2R8f/SDIkTqy8kq0SD+qFifqC
-         ciK2YXicb6C0aTPVn3pECwELMaVncon34fL8AoOsKI2g/0tCmXXKFTs/1sLMjtOqwNq9
-         vUPg==
+        Mon, 31 Jul 2023 12:55:48 -0400
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E70119AC;
+        Mon, 31 Jul 2023 09:55:47 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-56cae50792fso136036eaf.1;
+        Mon, 31 Jul 2023 09:55:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690822528; x=1691427328;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RpT8nlEbctAiS0l82doDIjU49cpafv/Kh1hBxCyIFMo=;
-        b=HBqphF9LDjC3TeLbuwo2NrAcpSV2H5ooKR1XMrhSiwqVJcMDx6rUrtkmtzqF8D6sk+
-         lFSPss+ue2btBxcgCZ9Z50tLknPAq9/C1dyEGZxv9xykBrKW6vC7SkvdOkNwrFLrUQ5q
-         BoyRMssELgB8AWebFytw8GrpRQ9tZY+ZppXJ27sJUWzgPPXnk3V919QeMsg3c8isQwVv
-         FnkN+QbSq5uy906YQzqryZYvdJ3X1ERPVt9m10Q6yBG0mDn2cjHdZibDkYwq8Im4L0ms
-         AGuheeE8d1HbDoyFGBh05cNlWsSH37VYfPhpPGPMnnwpZUmrfQ88YvGNy5YBSXguYMNi
-         uH1g==
-X-Gm-Message-State: ABy/qLY5qHm67TeSI3yGiGvIqOFXrbycT0nNhgEI4eJstR9bmUtrkzZO
-        KCRcvKKdblHRP3Xi38lfTaGd3DXFdAQtWCS1654=
-X-Google-Smtp-Source: APBJJlEH5+oK+Q7hPPqgktOZNUuPZU1PTqLvEGDjNa8eYUYojlkbc2qdz2IzV3gGcoZzoec2GACWHQ==
-X-Received: by 2002:ac2:5e6b:0:b0:4f8:5905:8e0a with SMTP id a11-20020ac25e6b000000b004f859058e0amr240314lfr.6.1690822527751;
-        Mon, 31 Jul 2023 09:55:27 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id s4-20020a170906c30400b009926928d486sm6374444ejz.35.2023.07.31.09.55.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 09:55:27 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Banajit Goswami <bgoswami@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH] ASoC: codecs: rx-macro: Enable RX path clock to match POST_PMD
-Date:   Mon, 31 Jul 2023 18:55:22 +0200
-Message-Id: <20230731165522.328301-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1690822546; x=1691427346;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vf/vHavd8WCAV3ynHx7GUS+EaCXK1BuHx/QKXm3Tmus=;
+        b=Wf+AIl6335kuP+FG0+vzJ5pWLYFarOJ7LYj3BhVNm/9GOSHQRiXPyiDuYDJt1ZQv8f
+         IyaOprJK+M1Fr6OFTHmHp7tnVzKBIS9KGLhjD6diKpL3JTKZJhtWZz+gurLTNKrM0/eJ
+         yK4Vf+AjvGsKynYUqyZrapREf649GIh3d0MxISOc1XYDmWkKMgojVH6GLAPkBfWOX882
+         orwFaTJNqG7zdWiEiO+cfcjzSqiYecXUWjfWG/2TrKXBKGiqGprHLXxHmaZBQSNv+J4L
+         Ph0GMJbRFtM4AGPggz7xmxc/msX1rVzzsskMet4D8FTOMszt/vG4aiFokAYUOfCVAAS9
+         exig==
+X-Gm-Message-State: ABy/qLZkwyN5Ce2iYQVGjdArNzEA2PB2jQlI31ZjIlAHSj1m1jjsExpN
+        hKbdbV9O3KVfqaQdrA3k14LHM6b32v3gzNwBHko=
+X-Google-Smtp-Source: APBJJlFPbJDXgXDJrWJIpqhgxzLM9ROIAn5ViN7gcFEt/UOjRZtA33fSg4eKKpL0l1X8qbXWjTL/nu8HF76dLoHlFY0=
+X-Received: by 2002:a05:6820:1686:b0:56c:5e21:c730 with SMTP id
+ bc6-20020a056820168600b0056c5e21c730mr6421174oob.1.1690822546674; Mon, 31 Jul
+ 2023 09:55:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230728145515.990749537@infradead.org> <20230728145808.835742568@infradead.org>
+ <CAJZ5v0gNqEuqvV0RtrXiDDGtvKB2hronLwAU8jnmuGppKmyDxA@mail.gmail.com>
+ <20230729084417.GB3945851@hirez.programming.kicks-ass.net>
+ <CAJZ5v0iVKRY5-YvQmMbZ3+eZNHJgXt=CoYedNueAJyT9+Ld5Dg@mail.gmail.com>
+ <20230731090935.GB29590@hirez.programming.kicks-ass.net> <CAJZ5v0jh5oozZm7OvN9j1iHtzYQzPMOJ=Nt0HaJKYyJ218Cezw@mail.gmail.com>
+ <20230731113850.GE29590@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230731113850.GE29590@hirez.programming.kicks-ass.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 31 Jul 2023 18:55:35 +0200
+Message-ID: <CAJZ5v0h+KC+uMiOE4m4Dp4=iHMkekutk+B+cwb0de8Fvswv6jA@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/3] cpuidle: Inject tick boundary state
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, anna-maria@linutronix.de,
+        tglx@linutronix.de, frederic@kernel.org, gautham.shenoy@amd.com,
+        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+        linux-pm@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver disables RX path clock in SND_SOC_DAPM_POST_PMD of
-rx_macro_enable_interp_clk() and rx_macro_enable_mix_path().  Make the
-code symmetrical by enabling the clock in SND_SOC_DAPM_PRE_PMU.  This
-also matches downstream Qualcomm driver for Qualcomm SM8550 SoC.
+On Mon, Jul 31, 2023 at 1:39 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Jul 31, 2023 at 12:35:20PM +0200, Rafael J. Wysocki wrote:
+>
+> > > So I agree with 1.
+> > >
+> > > I do not agree with 2. Disabling the tick is costly, doubly so with the
+> > > timer-pull thing, but even today. Simply disabling it because we picked
+> > > the deepest idle state, irrespective of the expected duration is wrong
+> > > as it will incur this significant cost.
+> > >
+> > > With 3 there is the question of how we get the expected sleep duration;
+> > > this is especially important with timer-pull, where we have this
+> > > chicken-and-egg thing.
+> > >
+> > > Notably: tick_nohz_get_sleep_length() wants to know if the tick gets
+> > > disabled
+> >
+> > Well, it shouldn't.  Or at least it didn't before.
+>
+> Correct, this is new in the timer-pull thing.
+>
+> > It is expected to produce two values, one with the tick stopped (this
+> > is the return value of the function) and the other with the tick
+> > ticking (this is the one written under the address passed as the arg).
+> > This cannot depend on whether or not the tick will be stopped.  Both
+> > are good to know.
+> >
+> > Now, I understand that getting these two values may be costly, so
+> > there is an incentive to avoid calling it, but then the governor needs
+> > to figure this out from its crystal ball and so care needs to be taken
+> > to limit the possible damage in case the crystal ball is not right.
+>
+> If we can get the governor to decide the tick state up-front we can
+> avoid a lot of the expensive parts.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- sound/soc/codecs/lpass-rx-macro.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+I claim that in the vast majority of cases this is the same as
+deciding the state.
 
-diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-index 685ca95ef4a9..a758ef4f575a 100644
---- a/sound/soc/codecs/lpass-rx-macro.c
-+++ b/sound/soc/codecs/lpass-rx-macro.c
-@@ -2529,6 +2529,9 @@ static int rx_macro_enable_interp_clk(struct snd_soc_component *component,
- 						      CDC_RX_PATH_PGA_MUTE_MASK, 0x1);
- 			snd_soc_component_write_field(component, dsm_reg,
- 						      CDC_RX_RXn_DSM_CLK_EN_MASK, 0x1);
-+			snd_soc_component_update_bits(component, main_reg,
-+						      CDC_RX_PATH_CLK_EN_MASK,
-+						      CDC_RX_PATH_CLK_ENABLE);
- 			snd_soc_component_update_bits(component, rx_cfg2_reg,
- 					CDC_RX_RXn_HPF_CUT_FREQ_MASK, 0x03);
- 			rx_macro_load_compander_coeff(component, rx, interp_idx, event);
-@@ -2595,6 +2598,9 @@ static int rx_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
- 		rx_macro_enable_interp_clk(component, event, w->shift);
-+		snd_soc_component_update_bits(component, mix_reg,
-+					      CDC_RX_RXn_MIX_CLK_EN_MASK,
-+					      CDC_RX_RXn_MIX_CLK_EN_MASK);
- 		break;
- 	case SND_SOC_DAPM_POST_PMU:
- 		snd_soc_component_write(component, gain_reg,
--- 
-2.34.1
+The case when it is not is when the target residency of the deepest
+idle state is below the tick period length and the governor is about
+to select that state.  According to the data I've seen so far this is
+a tiny fraction of all the cases.
 
+> > > and cpuilde wants to use tick_nohz_get_sleep_length() to
+> > > determine if to disable the tick. This cycle needs to be broken for
+> > > timer-pull.
+> > >
+> > > Hence my proposal to introduce the extra tick state, that allows fixing
+> > > both 2 and 3.
+> >
+> > I'm not sure about 3 TBH.
+> >
+> > Say there are 2 idle states, one shallow (say its target residency is
+> > 10 us) and one deep (say its target residency is T = 2 * TICK_NSEC).
+>
+> This is the easy case and that actually 'works' today.
+
+But this is my case 3 which you said you didn't agree with.  I don't
+see why it needs to be fixed.
+
+> The interesting case is where your deepest state has a target residency that
+> is below the tick (because for HZ=100, we have a 10ms tick and pretty
+> much all idle states are below that).
+
+What about HZ=1000, though?
+
+> In that case you cannot tell the difference between I'm good to use this
+> state and I'm good to disable the tick and still use this state.
+
+No, you don't, but is it really worth the fuss?
+
+The state is high-latency anyway and tick_nohz_get_sleep_length()
+needs to be called anyway in that case in order to determine if a
+shallower state wouldn't be better.  At this point the statistics have
+already told the governor otherwise and a misprediction would be a
+double loss.
+
+So yes, you can gain performance by avoiding to call
+tick_nohz_get_sleep_length(), but then you can also lose it by
+selecting a state that is too deep (and that can be determined exactly
+with respect to timers).
