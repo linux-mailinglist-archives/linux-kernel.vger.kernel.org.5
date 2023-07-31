@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC9476995E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20F676995A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232565AbjGaOWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36628 "EHLO
+        id S232268AbjGaOWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:22:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbjGaOV5 (ORCPT
+        with ESMTP id S229660AbjGaOV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Jul 2023 10:21:57 -0400
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50313B6;
+Received: from mail11.truemail.it (mail11.truemail.it [IPv6:2001:4b7e:0:8::81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50640183;
         Mon, 31 Jul 2023 07:21:53 -0700 (PDT)
 Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id 3DA3620798;
+        by mail11.truemail.it (Postfix) with ESMTPA id BAFD1207C7;
         Mon, 31 Jul 2023 16:21:49 +0200 (CEST)
 From:   Francesco Dolcini <francesco@dolcini.it>
 To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -24,12 +24,12 @@ To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
-Cc:     Jai Luthra <j-luthra@ti.com>, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: [PATCH v1 1/4] arm64: dts: ti: k3-am62x: Enable AUDIO_REFCLKx
-Date:   Mon, 31 Jul 2023 16:21:32 +0200
-Message-Id: <20230731142135.108477-2-francesco@dolcini.it>
+Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 2/4] arm64: dts: ti: verdin-am62: Set I2S_1 MCLK rate
+Date:   Mon, 31 Jul 2023 16:21:33 +0200
+Message-Id: <20230731142135.108477-3-francesco@dolcini.it>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230731142135.108477-1-francesco@dolcini.it>
 References: <20230731142135.108477-1-francesco@dolcini.it>
@@ -44,77 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jai Luthra <j-luthra@ti.com>
+From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-On AM62-based SoCs the AUDIO_REFCLKx clocks can be used as an input to
-external peripherals when configured through CTRL_MMR, so add the
-clock nodes.
+Set AUDIO_EXT_REFCLK1, used as I2S_1_MCLK on Verdin AM62 family, to 25MHz
+(this is the only valid option according to TI [1]).
 
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
+[1] https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1188051/am625-audio_ext_refclk1-clock-output---dts-support/4476322#4476322
+
 Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 ---
- arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 18 ++++++++++++++++++
- arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-index 33b6aadc9083..3a1b387bbf49 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-main.dtsi
-@@ -60,6 +60,24 @@ epwm_tbclk: clock@4130 {
- 			reg = <0x4130 0x4>;
- 			#clock-cells = <1>;
- 		};
-+
-+		audio_refclk0: clock@82e0 {
-+			compatible = "ti,am62-audio-refclk";
-+			reg = <0x82e0 0x4>;
-+			clocks = <&k3_clks 157 0>;
-+			assigned-clocks = <&k3_clks 157 0>;
-+			assigned-clock-parents = <&k3_clks 157 8>;
-+			#clock-cells = <0>;
-+		};
-+
-+		audio_refclk1: clock@82e4 {
-+			compatible = "ti,am62-audio-refclk";
-+			reg = <0x82e4 0x4>;
-+			clocks = <&k3_clks 157 10>;
-+			assigned-clocks = <&k3_clks 157 10>;
-+			assigned-clock-parents = <&k3_clks 157 18>;
-+			#clock-cells = <0>;
-+		};
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+index 57dd061911ab..b686a1caeec4 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
+@@ -758,6 +758,11 @@ AM62X_MCU_IOPAD(0x0028, PIN_OUTPUT,       0) /* (C5) WKUP_UART0_TXD  */ /* SODIM
  	};
+ };
  
- 	dmss: bus@48000000 {
-diff --git a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-index 8397cb80f559..30b163a9b248 100644
---- a/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62a-main.dtsi
-@@ -60,6 +60,24 @@ epwm_tbclk: clock-controller@4130 {
- 			reg = <0x4130 0x4>;
- 			#clock-cells = <1>;
- 		};
++/* VERDIN I2S_1_MCLK */
++&audio_refclk1 {
++	assigned-clock-rates = <25000000>;
++};
 +
-+		audio_refclk0: clock@82e0 {
-+			compatible = "ti,am62-audio-refclk";
-+			reg = <0x82e0 0x4>;
-+			clocks = <&k3_clks 157 0>;
-+			assigned-clocks = <&k3_clks 157 0>;
-+			assigned-clock-parents = <&k3_clks 157 8>;
-+			#clock-cells = <0>;
-+		};
-+
-+		audio_refclk1: clock@82e4 {
-+			compatible = "ti,am62-audio-refclk";
-+			reg = <0x82e4 0x4>;
-+			clocks = <&k3_clks 157 10>;
-+			assigned-clocks = <&k3_clks 157 10>;
-+			assigned-clock-parents = <&k3_clks 157 18>;
-+			#clock-cells = <0>;
-+		};
- 	};
- 
- 	dmss: bus@48000000 {
+ &cpsw3g {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_rgmii1>;
 -- 
 2.25.1
 
