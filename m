@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD9D76A4C9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B590676A4C6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjGaXWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 19:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
+        id S230496AbjGaXVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 19:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230407AbjGaXWc (ORCPT
+        with ESMTP id S229604AbjGaXVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 19:22:32 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491E81725;
-        Mon, 31 Jul 2023 16:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=0VwbE9w1enjcPt7/IUT5th5f1ZIeAHMgI/cQbU9ZQ2A=; b=W1MEZXbMSYUAoRpiX2J1gLUs6J
-        QNI3LZBl83MsiVfSkFwwVlVnz2w0CjvDmoqTdQ8gv+SYMSY2r0HtouhhUB5uUd+LbZmAPgaiaUlmS
-        qdipmFFr0Fl+4bPXWd4UhqXWIVGZCOf3ciB+VlGAJfo5GzvNp3rD3yDx66pCe1iWS42hN31arU9sa
-        IiveAdR1+sND6wubHmrrJpaPk4dF3Dr3DfIv01LVVDOX/64l05bpRsU+oOai73TB5NyG9wjVzoLyD
-        Z2lRPFbkS7szaMiGpw9aktwsF7+uOWMEn0cLp1cv6Jb49B1tHCwiPsSAfrVHqSNiea89JcJ+8JHFI
-        ZoPiTwJw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQcDK-00HZ0e-1R;
-        Mon, 31 Jul 2023 23:22:10 +0000
-Message-ID: <fb977502-ec9b-c847-6b9c-049bd226f4b1@infradead.org>
-Date:   Mon, 31 Jul 2023 16:22:09 -0700
+        Mon, 31 Jul 2023 19:21:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA9E124;
+        Mon, 31 Jul 2023 16:21:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9832961350;
+        Mon, 31 Jul 2023 23:21:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67782C433C8;
+        Mon, 31 Jul 2023 23:21:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690845681;
+        bh=UeWtxD2MNERE0o3Lgj+lel/LnXy0KcpgccXB7U/54GU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f2oGgg9S3yIz52yJ7KNAtSVDd8dYYhn20eIwS9yNT9+YUUGJJlSr5iT2D82QWdou/
+         z2i6XKFo7XK7rwBoyhAJBVLjPn+/fMFRdRmtJHOwY7tTb/I987iDV88Bhha5nKFOGt
+         2m3UpTw0JTVCbVQi6tSHtvyVu6jJh5W7mJHPMm7rOelLGWpN2ausWEuqoZo6iE9Ebw
+         IFoqiGwOSdiVSoyR25kCBgTscGEZCqx2plhcLnMHVSRo1RJ5HmNpw4pCRJRcZ0gX9N
+         hIPlc6DqKRj9FydH4kMok/z2VSe9RHOsilQpFrdb7zLPqw8Adxv/cAMQShpK5JLCTe
+         2fxOKi7k/qv4A==
+Date:   Mon, 31 Jul 2023 16:24:26 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Praveenkumar I <quic_ipkumar@quicinc.com>
+Cc:     agross@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_varada@quicinc.com, quic_clew@quicinc.com
+Subject: Re: [PATCH v2] soc: qcom: qmi_encdec: Restrict string length in
+ decode
+Message-ID: <educjx3enypc4r5pzjb7vopaf2df2s4kzkpqsyecoysxws5422@arrsgt6vjej2>
+References: <20230731100311.2506271-1-quic_ipkumar@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] fbdev/ps3fb: Build without kernel device
-Content-Language: en-US
-To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
-        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        sam@ravnborg.org, javierm@redhat.com, bagasdotme@gmail.com,
-        rd.dunlab@gmail.com, regressions@leemhuis.info,
-        sfr@canb.auug.org.au
-Cc:     linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, regressions@lists.linux.dev,
-        linux-next@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20230731175535.11345-1-tzimmermann@suse.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230731175535.11345-1-tzimmermann@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731100311.2506271-1-quic_ipkumar@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,72 +57,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/31/23 10:55, Thomas Zimmermann wrote:
-> Use fb_info() to print status message at the end of the probe function,
-> which avoids decoding the devices. fb_info() works with or without an
-> fbdev kernel device. Fixes the following error:
+On Mon, Jul 31, 2023 at 03:33:11PM +0530, Praveenkumar I wrote:
+> The QMI TLV value for strings in a lot of qmi element info structures
+> account for null terminated strings with MAX_LEN + 1. If a string is
+> actually MAX_LEN + 1 length, this will cause an out of bounds access
+> when the NULL character is appended in decoding.
 > 
-> ../drivers/video/fbdev/ps3fb.c: In function 'ps3fb_probe':
-> ../drivers/video/fbdev/ps3fb.c:1172:40: error: 'struct fb_info' has no member named 'dev'
->  1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
->       |                                        ^~
-> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
->   110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
->       |                                     ^~~~~~~~~~~
-> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
->  1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
->       |         ^~~~~~~~
-> ../drivers/video/fbdev/ps3fb.c:1172:61: error: 'struct fb_info' has no member named 'dev'
->  1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
->       |                                                             ^~
-> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
->   110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
->       |                                     ^~~~~~~~~~~
-> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
->  1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
->       |         ^~~~~~~~
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Closes: https://lore.kernel.org/lkml/ccc63065-2976-88ef-1211-731330bf2866@infradead.org/
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Fixes: 701d2054fa31 ("fbdev: Make support for userspace interfaces configurable")
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Sam Ravnborg <sam@ravnborg.org>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Javier Martinez Canillas <javierm@redhat.com>
-> Cc: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Bagas Sanjaya <bagasdotme@gmail.com>
-> Cc: Thorsten Leemhuis <regressions@leemhuis.info>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-fbdev@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
+> Fixes: 9b8a11e82615 ("soc: qcom: Introduce QMI encoder/decoder")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Chris Lew <quic_clew@quicinc.com>
+> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+The signed-off-by list says that Chris certified the patch's origin
+first, then you took it, certified the origin and submitted it to the
+mailing list.
 
-Thanks.
+This matches reality, but you lost Chris' authorship in the process,
+please add that back.
+
+Thanks,
+Bjorn
 
 > ---
->  drivers/video/fbdev/ps3fb.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
+> [v2]:
+> 	Added Fixes and Cc: stable
 > 
-> diff --git a/drivers/video/fbdev/ps3fb.c b/drivers/video/fbdev/ps3fb.c
-> index 5aedc30c5f7e..64d291d6b153 100644
-> --- a/drivers/video/fbdev/ps3fb.c
-> +++ b/drivers/video/fbdev/ps3fb.c
-> @@ -1168,9 +1168,7 @@ static int ps3fb_probe(struct ps3_system_bus_device *dev)
+>  drivers/soc/qcom/qmi_encdec.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/qmi_encdec.c b/drivers/soc/qcom/qmi_encdec.c
+> index b7158e3c3a0b..5c7161b18b72 100644
+> --- a/drivers/soc/qcom/qmi_encdec.c
+> +++ b/drivers/soc/qcom/qmi_encdec.c
+> @@ -534,8 +534,8 @@ static int qmi_decode_string_elem(const struct qmi_elem_info *ei_array,
+>  		decoded_bytes += rc;
+>  	}
 >  
->  	ps3_system_bus_set_drvdata(dev, info);
->  
-> -	dev_info(info->device, "%s %s, using %u KiB of video memory\n",
-> -		 dev_driver_string(info->dev), dev_name(info->dev),
-> -		 info->fix.smem_len >> 10);
-> +	fb_info(info, "using %u KiB of video memory\n", info->fix.smem_len >> 10);
->  
->  	task = kthread_run(ps3fbd, info, DEVICE_NAME);
->  	if (IS_ERR(task)) {
-
--- 
-~Randy
+> -	if (string_len > temp_ei->elem_len) {
+> -		pr_err("%s: String len %d > Max Len %d\n",
+> +	if (string_len >= temp_ei->elem_len) {
+> +		pr_err("%s: String len %d >= Max Len %d\n",
+>  		       __func__, string_len, temp_ei->elem_len);
+>  		return -ETOOSMALL;
+>  	} else if (string_len > tlv_len) {
+> -- 
+> 2.34.1
+> 
