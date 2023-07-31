@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4587693B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02A307693B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbjGaKyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        id S229632AbjGaKyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232053AbjGaKxh (ORCPT
+        with ESMTP id S229843AbjGaKyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:53:37 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA751BDB
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:52:35 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso6932935e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:52:35 -0700 (PDT)
+        Mon, 31 Jul 2023 06:54:05 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41DB21FC6
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:52:37 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso6932971e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:52:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690800753; x=1691405553;
+        d=linaro.org; s=google; t=1690800755; x=1691405555;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SyCiXkI6QRxT+Oa2T9MJLKBFuocjUwBVkwW1HGRN0Ho=;
-        b=oTuXgKxcrjmDmz/vd223QsDybin2mMNw85Qpe/BHUdzP3EJIOONTA3KDbmuqr6UvOs
-         K3hkBZxZvH+CrWqW6xdM75qca26NAIcRsyhdi8CwjDo+k79+asbgBKqFfcoOZCBWpObp
-         9KzqSxaGfZLeq6PWQnyZNH0+QW8zjTYWCzCwp+ysilSJl6vQHCzJCrHnZjwD66eB+zAc
-         yS0KiMU7rfvCUu7ATFmmk9/Kzx7sl8mL19IDfy+VM0Z874GkT/IuSIakzpFrWvJf3ADF
-         tZ1yZXruy7OHNTxtEAvnPXHFuRjAgcSOmfaWUl7A3lWgVjcIla4F1UkQEHZymhlqo+IL
-         xhOQ==
+        bh=CvcdgSAVOaO6olnZ2J7zbPhjDUv8IMKoyG5dIGy7pps=;
+        b=GvfLD9e6+fc2ShIbqGqZQ42tgyVrv/DAKmNMAbQfyPTnm7CaJCrR6tWPhZ7lJwJy4u
+         GOQVGD9dt+nbRZhMmFrgmbp6JSpIrXzhWiT1XbVGlhqK8V3SmiL2w3BKZzFCCxJiMTIO
+         srIXvs94lea6zukhWr4NV3q8gU93imlJ6eIafuZUO3Pkwwgsxqzq9Tu7zuhzIOkreRUy
+         PSj3/cRkluM73TQ9h9sMn2ygSaXwYAcyUOlKnWWKomn6mpQaaT4/i1F1CwQXUtrbYu2L
+         g9H+LtooiMJWJr4xtJ/WdEe1dMt8nfEJSYavYs5il7aC6U6IkpsQFaUJvdk5n76RqKoz
+         e9iQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690800753; x=1691405553;
+        d=1e100.net; s=20221208; t=1690800755; x=1691405555;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SyCiXkI6QRxT+Oa2T9MJLKBFuocjUwBVkwW1HGRN0Ho=;
-        b=OmdFI1J6lGjfW7UjAGcj1hEcn4qKk+gFD1tKXyN04c6C801SZClCPuLKoFO+jAhf9W
-         3G/3wUE+DzCY5gYlWn/jqWbqtGpleaWQ+Crq/ZmJV3bqmaSFIGxybf6bJQ+RKbDOTR35
-         0fa+4XvveFK9tT3ZR2Wb1GpVe3GTjkq5u+ssIybXHhhJsE7uJlUw8/L89WhNH0LkWrIg
-         DpJuoRIGGt9bySNqyBXuWjspd8bsaTEnNYnfiF0EC8s3EYBiXPJ70vc90YW4j5cTjL6h
-         qp+tk6aDzyAYScIsxOAGcVdftSKUaEYH6ir2RbAZH7z5m8mOKbzcojPHEf5k6D4ok5kP
-         Tt6A==
-X-Gm-Message-State: ABy/qLboncufZPrxFtkuwJelFjp/ml+wVdQlefXeaCJtUHnpT+Q36MSm
-        TnYcVnbeoU4P/dwRMcH4eA2o94AWI4YaWBqguGsWIg==
-X-Google-Smtp-Source: APBJJlEkWx1UspnMOC4K6OlN6pUWWcihfTOd+aLAalf5gRPomz0lkaLo1QYzVqiO0ebewCDQ124Buw==
-X-Received: by 2002:a05:6512:70c:b0:4fb:7675:1ff9 with SMTP id b12-20020a056512070c00b004fb76751ff9mr4987276lfs.9.1690800753268;
-        Mon, 31 Jul 2023 03:52:33 -0700 (PDT)
+        bh=CvcdgSAVOaO6olnZ2J7zbPhjDUv8IMKoyG5dIGy7pps=;
+        b=OxkfOiZ3sYESbCUG/jcS32hYK0Iw1H3zoNdTDcJoOpQIS1fnbBi90DbBtfcwffBSzo
+         PLpM+4MOe95Nr//OLiqXPQoMylm7N5cN+LdSyD7gCXkHQiS1O+FpGBLg6umsUSRIk6XT
+         7obrmcXcveSPw5SGpc7foAcvhiOS9XcRqCEN/JAwdjG5dz0pKcDY1dWJl2BsNbnx4+cV
+         LUUcElpsaWTWeljwj3oi/YCrb9chlYweXzLxsPYCY2FZrY+gMoUsoICOv/C7x+Vcu2HY
+         rtRD+DShvqNZnDTGKQj1hwINnWohk0S39EmjigiWYDSXcfEaXaZiaO17LIvDFxulJezq
+         CT2g==
+X-Gm-Message-State: ABy/qLZx+k+Tni70z4RpbvvBoDP9Zul0itiMamCLW6V/mJ40H7y27b+t
+        l2DESqgRJOhbt/b8SZXEEbZhDQ==
+X-Google-Smtp-Source: APBJJlE7A/+g6cMD48kIZh3qptol9zZSpFMAkpJROi49Ka6Mw2U6bHRKuqRIIc2dTxZNBbj6gCmnKA==
+X-Received: by 2002:a05:6512:3b87:b0:4fd:c84f:30d4 with SMTP id g7-20020a0565123b8700b004fdc84f30d4mr6894360lfv.36.1690800755127;
+        Mon, 31 Jul 2023 03:52:35 -0700 (PDT)
 Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id p13-20020a05651238cd00b004fdc7ec5cbesm2016936lft.300.2023.07.31.03.52.31
+        by smtp.gmail.com with ESMTPSA id p13-20020a05651238cd00b004fdc7ec5cbesm2016936lft.300.2023.07.31.03.52.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 03:52:32 -0700 (PDT)
+        Mon, 31 Jul 2023 03:52:34 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Mon, 31 Jul 2023 12:52:19 +0200
-Subject: [PATCH v2 03/10] interconnect: qcom: icc-rpm: Let nodes drive
- their own bus clock
+Date:   Mon, 31 Jul 2023 12:52:20 +0200
+Subject: [PATCH v2 04/10] interconnect: qcom: icc-rpm: Check for
+ node-specific rate coefficients
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230726-topic-icc_coeff-v2-3-8c91c6c76076@linaro.org>
+Message-Id: <20230726-topic-icc_coeff-v2-4-8c91c6c76076@linaro.org>
 References: <20230726-topic-icc_coeff-v2-0-8c91c6c76076@linaro.org>
 In-Reply-To: <20230726-topic-icc_coeff-v2-0-8c91c6c76076@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -70,11 +70,11 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690800744; l=4308;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690800744; l=2228;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=nSSCPCfi3ZZHojNecOL8pN1yRNY2ZL7Z9o4VoBkikQE=;
- b=iJSMtQp2Z2z2ss433XEhkkMGwAkdLDrkvHQX6vhXeClylbRp70A9lJV66giz8PV1T32pRph+F
- O+PVjr2sNN5AWsUf2c68aHFiOH/8NcW5POz+TNiBPWoe/J5CbUZL32C
+ bh=S37fCoemtVls+bqCyB1WrEUAA8XbCS2lHy+GvBs398k=;
+ b=0pE89gmxzA/dtumdl6wHpZPUVAjNHE5L/6tePRYe4ztfP5d7jhE8RxiAbTU+d2b3211sukzD1
+ 8L0VhxQg2qWAXJ83p/xZ+l9R1QMXH5bRg/GpXXF3wJQ04PEU2VqCQfs
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -87,124 +87,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If this hardware couldn't get messier, some nodes are supposed to drive
-their own bus clock.. Presumably to connect to some intermediate
-interface between the node itself and the bus it's (supposed to be)
-connected to.
-
-Expand the node struct with the necessary data and hook up the
-allocations & calculations.
-
-To save on memory (not very many nodes have their own clocks), allocate
-a pointer to an array instead of allocating an array within
-qcom_icc_node.
-
-Note that the node-specific AB/IB coefficients contribute (by design)
-to both the node-level and the bus-level aggregation.
+Some nodes may have different coefficients than the general values for
+bus they're attached to. Check for that and use them if present.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/interconnect/qcom/icc-rpm.c | 48 +++++++++++++++++++++++++++++++------
- drivers/interconnect/qcom/icc-rpm.h |  2 ++
- 2 files changed, 43 insertions(+), 7 deletions(-)
+ drivers/interconnect/qcom/icc-rpm.c | 10 +++++++---
+ drivers/interconnect/qcom/icc-rpm.h |  6 ++++++
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/interconnect/qcom/icc-rpm.c b/drivers/interconnect/qcom/icc-rpm.c
-index f1d8ed354718..f0e575c95b49 100644
+index f0e575c95b49..91eb428385f6 100644
 --- a/drivers/interconnect/qcom/icc-rpm.c
 +++ b/drivers/interconnect/qcom/icc-rpm.c
-@@ -411,6 +411,33 @@ static int qcom_icc_set(struct icc_node *src, struct icc_node *dst)
- 		qp->bus_clk_rate[QCOM_SMD_RPM_SLEEP_STATE] = sleep_rate;
- 	}
+@@ -300,11 +300,15 @@ static u64 qcom_icc_calc_rate(struct qcom_icc_provider *qp, struct qcom_icc_node
+ 	else
+ 		agg_avg_rate = qn->sum_avg[ctx];
  
-+	/* Handle the node-specific clock */
-+	if (!src_qn->bus_clk_desc)
-+		return 0;
-+
-+	active_rate = qcom_icc_calc_rate(qp, src_qn, QCOM_SMD_RPM_ACTIVE_STATE);
-+	sleep_rate = qcom_icc_calc_rate(qp, src_qn, QCOM_SMD_RPM_SLEEP_STATE);
-+
-+	if (active_rate != src_qn->bus_clk_rate[QCOM_SMD_RPM_ACTIVE_STATE]) {
-+		ret = qcom_icc_rpm_set_bus_rate(src_qn->bus_clk_desc, QCOM_SMD_RPM_ACTIVE_STATE,
-+						active_rate);
-+		if (ret)
-+			return ret;
-+
-+		/* Cache the rate after we've successfully committed it to RPM */
-+		src_qn->bus_clk_rate[QCOM_SMD_RPM_ACTIVE_STATE] = active_rate;
-+	}
-+
-+	if (sleep_rate != src_qn->bus_clk_rate[QCOM_SMD_RPM_SLEEP_STATE]) {
-+		ret = qcom_icc_rpm_set_bus_rate(src_qn->bus_clk_desc, QCOM_SMD_RPM_SLEEP_STATE,
-+						sleep_rate);
-+		if (ret)
-+			return ret;
-+
-+		/* Cache the rate after we've successfully committed it to RPM */
-+		src_qn->bus_clk_rate[QCOM_SMD_RPM_SLEEP_STATE] = sleep_rate;
-+	}
-+
- 	return 0;
- }
+-	/* Check if the node has a specific coefficient first*/
+-	if (qp->ab_coeff)
++	/* Check if the node has a specific coefficient first */
++	if (qn->ab_coeff)
++		agg_avg_rate = mult_frac(qn->ab_coeff, agg_avg_rate, 100);
++	else if (qp->ab_coeff)
+ 		agg_avg_rate = mult_frac(qp->ab_coeff, agg_avg_rate, 100);
  
-@@ -531,24 +558,31 @@ int qnoc_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	for (i = 0; i < num_nodes; i++) {
-+		struct qcom_icc_node *qn = qnodes[i];
- 		size_t j;
- 
--		node = icc_node_create(qnodes[i]->id);
-+		if (qn->bus_clk_desc) {
-+			qn->bus_clk_rate = devm_kcalloc(dev, QCOM_SMD_RPM_STATE_NUM,
-+							sizeof(*qn->bus_clk_rate),
-+							GFP_KERNEL);
-+		}
-+
-+		node = icc_node_create(qn->id);
- 		if (IS_ERR(node)) {
- 			ret = PTR_ERR(node);
- 			goto err_remove_nodes;
- 		}
- 
--		node->name = qnodes[i]->name;
--		node->data = qnodes[i];
-+		node->name = qn->name;
-+		node->data = qn;
- 		icc_node_add(node, provider);
- 
--		for (j = 0; j < qnodes[i]->num_links; j++)
--			icc_link_create(node, qnodes[i]->links[j]);
-+		for (j = 0; j < qn->num_links; j++)
-+			icc_link_create(node, qn->links[j]);
- 
- 		/* Set QoS registers (we only need to do it once, generally) */
--		if (qnodes[i]->qos.ap_owned &&
--		    qnodes[i]->qos.qos_mode != NOC_QOS_MODE_INVALID) {
-+		if (qn->qos.ap_owned &&
-+		    qn->qos.qos_mode != NOC_QOS_MODE_INVALID) {
- 			ret = qcom_icc_qos_set(node);
- 			if (ret)
- 				return ret;
+-	if (qp->ib_coeff)
++	if (qn->ab_coeff)
++		agg_peak_rate = mult_frac(100, qn->max_peak[ctx], qn->ib_coeff);
++	else if (qp->ib_coeff)
+ 		agg_peak_rate = mult_frac(100, qn->max_peak[ctx], qp->ib_coeff);
+ 	else
+ 		agg_peak_rate = qn->max_peak[ctx];
 diff --git a/drivers/interconnect/qcom/icc-rpm.h b/drivers/interconnect/qcom/icc-rpm.h
-index 5e7d6a4fd2f3..835b83cfb548 100644
+index 835b83cfb548..1a26a7b82166 100644
 --- a/drivers/interconnect/qcom/icc-rpm.h
 +++ b/drivers/interconnect/qcom/icc-rpm.h
-@@ -97,6 +97,7 @@ struct qcom_icc_qos {
-  * @num_links: the total number of @links
-  * @channels: number of channels at this node (e.g. DDR channels)
-  * @buswidth: width of the interconnect between a node and the bus (bytes)
-+ * @bus_clk_desc: a pointer to a rpm_clk_resource description of bus clocks
-  * @sum_avg: current sum aggregate value of all avg bw requests
-  * @max_peak: current max aggregate value of all peak bw requests
+@@ -103,6 +103,9 @@ struct qcom_icc_qos {
   * @mas_rpm_id:	RPM id for devices that are bus masters
-@@ -110,6 +111,7 @@ struct qcom_icc_node {
- 	u16 num_links;
- 	u16 channels;
- 	u16 buswidth;
-+	const struct rpm_clk_resource *bus_clk_desc;
- 	u64 sum_avg[QCOM_SMD_RPM_STATE_NUM];
- 	u64 max_peak[QCOM_SMD_RPM_STATE_NUM];
+  * @slv_rpm_id:	RPM id for devices that are bus slaves
+  * @qos: NoC QoS setting parameters
++ * @ab_coeff: a percentage-based coefficient for compensating the AB calculations
++ * @ib_coeff: an inverse-percentage-based coefficient for compensating the IB calculations
++ * @bus_clk_rate: a pointer to an array containing bus clock rates in Hz
+  */
+ struct qcom_icc_node {
+ 	unsigned char *name;
+@@ -117,6 +120,9 @@ struct qcom_icc_node {
  	int mas_rpm_id;
+ 	int slv_rpm_id;
+ 	struct qcom_icc_qos qos;
++	u16 ab_coeff;
++	u16 ib_coeff;
++	u32 *bus_clk_rate;
+ };
+ 
+ struct qcom_icc_desc {
 
 -- 
 2.41.0
