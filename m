@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB7F769D68
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5FC769D55
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbjGaQ61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55374 "EHLO
+        id S233626AbjGaQ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233720AbjGaQ5y (ORCPT
+        with ESMTP id S233591AbjGaQ53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:57:54 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F36B1FD0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:57:42 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36VEwHWb032490;
-        Mon, 31 Jul 2023 11:57:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=D
-        pc3VbtcgH5dw2bWcYGHp9VKyHItpm8FBtHXtotTc7Q=; b=MojlI1S3wPIbyJ55f
-        49XlhCZuOfQGuaxFAp0kHUVxb8Nb97wV1mS95+8frqoBDjAkl80nKdOkEAna6Laz
-        mk6FD/mk/cp0YqsEX89vfqlrbOJPSxZoVKw3tOz7PqL4jcGADkRM/fsXAGroguiU
-        0qxNIcrjtvpjM+HtPa3unJOVjz95VoEe+25oJJ2pOm6uQ+Tfzo0Rd+P/kvrnQE9d
-        dfv3o4kWevy+l/cfDlVGAhFNVXFfkQSNaNmmaBz/JyzA2E9w6Mhe2xHq1gB6oy67
-        +/kqAs7MAdpfUGl6d0i4Yk8L/y96TVIk8jCZTBBSZg0xWdRypm6Vpn3Hpsg6wU2p
-        KfCZw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s4y6jsqap-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 11:57:31 -0500 (CDT)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 17:57:29 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.30 via Frontend Transport; Mon, 31 Jul 2023 17:57:29 +0100
-Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.107])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A3E4D45D;
-        Mon, 31 Jul 2023 16:57:29 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <tiwai@suse.com>
-CC:     <perex@perex.cz>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 0/9] ALSA: hda/cs35l56: Various bugfixes
-Date:   Mon, 31 Jul 2023 17:57:17 +0100
-Message-ID: <20230731165726.7940-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 31 Jul 2023 12:57:29 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A922E1729;
+        Mon, 31 Jul 2023 09:57:28 -0700 (PDT)
+Received: from jupiter.universe (dyndsl-091-248-210-008.ewe-ip-backbone.de [91.248.210.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 154256606FCD;
+        Mon, 31 Jul 2023 17:57:27 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690822647;
+        bh=6bj7q3XOaZvPQ3D5Rpuxi1xUU41U8fTcdodRo9gr6cE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IApEo06CLoOTI/+bDpJ3jlireiem32kItGql8+F4MK6pufskhhq3WdFUR8SmKvKPk
+         s4QgT45kZvAvV984+0JWSFthWTHDx7HKAztaAE6Tbr6H8uZ6rJo/bwS3asLS8/i2/I
+         A/MuaptY26x6o6KPihalOQc1wKOvDUnTZfALpdA+gq1lZQOlaSyC62hDr4KK9nYADm
+         yT02J8Omgsbf/1G14+Yuo3BTfqB5GsGb5PJ1DCSSV2i6eBzSAXA2kfU4iHp0TnGCvf
+         Uq2r2xTz9ohyZUVj5KtYjyBxawoSuTs9jjrAvsBWu+/RjHQ4hGgtxu7Op/B5EB1fGJ
+         PkCDHhpXQH6eA==
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 274C9480099; Mon, 31 Jul 2023 18:57:25 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Serge Semin <fancer.lancer@gmail.com>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Simon Xue <xxm@rock-chips.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        kernel@collabora.com
+Subject: [PATCH v4 0/5] RK3588 PCIe2 support
+Date:   Mon, 31 Jul 2023 18:57:18 +0200
+Message-Id: <20230731165723.53069-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: PWwIvLfDyaxyiRD9TvkGHVEfMWz1iJpP
-X-Proofpoint-ORIG-GUID: PWwIvLfDyaxyiRD9TvkGHVEfMWz1iJpP
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,25 +66,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A collection of various bugfixes to the cs35l56 driver.
+Hi,
 
-Richard Fitzgerald (9):
-  ALSA: hda/cs35l56: Complete firmware reboot before calling
-    cs_dsp_run()
-  ALSA: hda/cs35l56: Do not mark cache dirty after REINIT
-  ALSA: hda/cs35l56: Call cs_dsp_power_down() before reloading firmware
-  ALSA: hda/cs35l56: Always power-up and start cs_dsp
-  ALSA: hda/cs35l56: Call cs_dsp_power_down() before calling
-    cs_dsp_remove()
-  ALSA: hda/cs35l56: cs_dsp_power_down() on cs35l56_hda_fw_load() error
-    path
-  ALSA: hda/cs35l56: Do not download firmware over existing RAM firmware
-  ALSA: hda/cs35l56: Fail if .bin not found and firmware not patched
-  ALSA: hda/cs35l56: Reject I2C alias addresses
+This adds PCIe v2 support for RK3588. The series has been tested with
+the onboard RTL8125 network card on Rockchip RK3588 EVB1 (&pcie2x1l1)
+and Radxa Rock 5B (&pcie2x1l2).
 
- sound/pci/hda/cs35l56_hda.c | 91 ++++++++++++++++++++++++++-----------
- 1 file changed, 65 insertions(+), 26 deletions(-)
+Changes since v3:
+ * https://lore.kernel.org/all/20230717172651.64324-1-sebastian.reichel@collabora.com/
+ * Remove unneeded quotes in patch 1 (msi handling)
+ * Update patch description of patch 2 (interrupt names) adding information
+   about Rockchip specific parts
+
+Changes since v2:
+ * https://lore.kernel.org/all/20230713171851.73052-1-sebastian.reichel@collabora.com/
+ * Removed num-ib-windows/num-ob-windows/num-viewport from DT
+ * Added patch making 'msi' irq optional, if 'msi-map' property is available
+ * Updated binding according two discussion with Serge Semin, I provided two
+   options by adding one extra patch that should be squashed into the main
+   one or dropped depending on preferences from DT binding  maintainers.
+ * Collected Reviewed-by/Tested-by from Jagan Teki
+
+Changes since v1:
+ * https://lore.kernel.org/all/20230616170022.76107-1-sebastian.reichel@collabora.com/
+ * Dropped patch adding 'RK3588' (queued by Rob)
+ * Updated patch adding legacy-interrupt-controller according to comments
+   from Rob and Serge
+    - added missing additionalProperties: false
+    - added all properties to new required property
+    - removed useless quotes around interrupt-controller
+    - added Rob's Reviewed-by
+ * Updated patch adding the missing RK356x/RK3588 interrupt names, so that it
+   provides more details about the interrupts
+ * Updated the DT patch according to the comment from Jonas Karlman, so that
+   the addresses are in 32 bit address space starting at 0x40000000
+
+[0] https://lore.kernel.org/all/20230612171337.74576-1-sebastian.reichel@collabora.com/
+
+Thanks,
+
+-- Sebastian
+
+Sebastian Reichel (5):
+  dt-bindings: PCI: dwc: improve msi handling
+  dt-bindings: PCI: dwc: rockchip: Fix interrupt-names issue
+  dt-bindings: PCI: dwc: rockchip: Use generic binding
+  dt-bindings: PCI: dwc: rockchip: Add missing
+    legacy-interrupt-controller
+  arm64: dts: rockchip: rk3588: add PCIe2 support
+
+ .../bindings/pci/rockchip-dw-pcie.yaml        |  70 ++++++++++++
+ .../devicetree/bindings/pci/snps,dw-pcie.yaml |  18 +++-
+ arch/arm64/boot/dts/rockchip/rk3588.dtsi      |  51 +++++++++
+ arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 102 ++++++++++++++++++
+ 4 files changed, 237 insertions(+), 4 deletions(-)
 
 -- 
-2.30.2
+2.40.1
 
