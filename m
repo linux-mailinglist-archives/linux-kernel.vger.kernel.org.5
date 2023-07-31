@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A02B476A051
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8CA76A05A
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbjGaSY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
+        id S230274AbjGaS0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:26:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbjGaSY0 (ORCPT
+        with ESMTP id S229585AbjGaS0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:24:26 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B0161BC3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:24:18 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-583f048985bso64132377b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:24:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690827857; x=1691432657;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1/EEbSVk8mYUaE0SN2Bc3r0yvzs2EUpAITVg+S9v2GQ=;
-        b=7KjY1kSiElTJJuWBtAviRpp0weoOhE9oS4UCQPAuEZZZEIwV/BvF4nUtoWY0vI52sc
-         xoW23xcaYg72EmDFuPZnPGybPBO9COaGwV2/7T0gpn39T86VkIxqalsDeeo2bzfjEWTj
-         ECm7AYM4CNa0RriXcN/bgaFRDqe6S1IzGkjjQCyXMttNvTMKx8aehMEQ08onWOMQLakS
-         bl7pV2sGnTHeC36WawODw2/ZoURh+EAnUGUV/oqTPIrDmJ1j9l+4hndcrrr+hDaQrElA
-         pE0uAhThPdNIF+bYSgtfG34z3QcqblFsh1qxblqtIgwVvqZaudQDJoE8nrdZgCLf1YbR
-         yz0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690827857; x=1691432657;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1/EEbSVk8mYUaE0SN2Bc3r0yvzs2EUpAITVg+S9v2GQ=;
-        b=khXnYHP34GKkTdB63j8jPUbJHnINsWwf0kpwc+ShdxaVMR0LmVXfzH9+bgQlS8hhvB
-         t/9ikSZFusYAM70ErEdCvsDWBFNAkV4HnWYYZNq/yFvYoKcEmcgD/cPInGJLuua8pFZE
-         Bx7b0d+VAOmVoCB3X899u/80YsA7XSjQpzlOLnjpbueuHQbRK9SgqeEw/k/nKTQwi+0u
-         4yH52TLAVVqcSAqJs64obajOVIsktk83R1ZHXaie56GMnxfYuOQ4YjwWRZ6dVpLpPpmo
-         +fTVnVwAznx3VTzlB5A4o++g7SLMfOZA9Z5TWfaUWBoDp5Hdn40z0aJU6mquDKFsEl7B
-         JC3g==
-X-Gm-Message-State: ABy/qLZEIDW0AXvppNf33TDH2wkmusOCvdJD6TNcsO8v5koz8gpnSmgM
-        1HWXn0e+gGTRHoEB3PY5we9GMHgNSOo=
-X-Google-Smtp-Source: APBJJlHfP3UCtqpjLxnNoRj1P91ZUliT249SqC2lLpi/z81MpLIjgiv9NNNd9grIXWF0TSe6XS87mDvlqn0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:a784:0:b0:577:d5b:7ce3 with SMTP id
- e126-20020a81a784000000b005770d5b7ce3mr84601ywh.9.1690827857409; Mon, 31 Jul
- 2023 11:24:17 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 11:24:15 -0700
-In-Reply-To: <ZMf1TkrUjP6+/VSC@google.com>
-Mime-Version: 1.0
-References: <20230626182016.4127366-1-mizhang@google.com> <20230626182016.4127366-3-mizhang@google.com>
- <ec65c77a-3499-6278-f352-9bbe25a44b96@infradead.org> <ZMf1TkrUjP6+/VSC@google.com>
-Message-ID: <ZMf8T8kdiDJlqtmS@google.com>
-Subject: Re: [PATCH v2 2/6] KVM: Documentation: Update the field name gfns and
- its description in kvm_mmu_page
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 14:26:16 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18C4310E4;
+        Mon, 31 Jul 2023 11:26:14 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VIJX7i012157;
+        Mon, 31 Jul 2023 18:26:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Z7LdVphXCks6GiWOPlKZrBdmPfxG266TsB9xC6epCc0=;
+ b=CiNpbE3VHUno+5Qo2hWHzuwlQcAb9wBjAK+MH3ttztrlAh48aoRNQCeHoJt97S1oNBlK
+ X6bphMCLbKHIgItfZhZ8yDz9iCzd3R2jMNnfbbhYK0Nd7KtW2L12pr5+FqEcKKLzFwZk
+ 60X1SeJZk/nM3PjrTUaVnz0L/1T6keb3mvIsD9zltaeVy4ld13w3gwJQBYoAC1vzPZCw
+ y1JYr0zbXdJxHWWkGThkvFcpNv4Oo3/qXHBmhfRosuKDwDORghXbtgS2KBrrqDM0qM3j
+ CrCjksbUVFcOXDaCo07/q3oZvzz47qOS4am5IjCBPVJ+a/Cl9W6SW+T/Ae056336FPhe ew== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6j4er0b3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 18:26:01 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36VIQ0Jq007297
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 18:26:00 GMT
+Received: from [10.110.123.68] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 11:25:59 -0700
+Message-ID: <6442edbc-a69c-ad1f-85f9-58013c3089d2@quicinc.com>
+Date:   Mon, 31 Jul 2023 11:25:58 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v2 3/7] soc: qcom: add QCOM PBS driver
+Content-Language: en-US
+To:     Anjelique Melendez <quic_amelende@quicinc.com>, <pavel@ucw.cz>,
+        <lee@kernel.org>, <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>
+CC:     <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
+        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
+        <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>
+References: <20230725193423.25047-1-quic_amelende@quicinc.com>
+ <20230725193423.25047-4-quic_amelende@quicinc.com>
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <20230725193423.25047-4-quic_amelende@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: jrHXpeQspC5uyKBLcLwVW7P-urskjFNM
+X-Proofpoint-ORIG-GUID: jrHXpeQspC5uyKBLcLwVW7P-urskjFNM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-31_12,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1011
+ adultscore=0 malwarescore=0 mlxscore=0 mlxlogscore=875 lowpriorityscore=0
+ impostorscore=0 priorityscore=1501 bulkscore=0 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307310167
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023, Mingwei Zhang wrote:
-> On Mon, Jun 26, 2023, Randy Dunlap wrote:
-> > Hi--
-> > 
-> > On 6/26/23 11:20, Mingwei Zhang wrote:
-> > > Update the field 'gfns' in kvm_mmu_page to 'shadowed_translation' to be
-> > > consistent with the code. Also update the corresponding 'gfns' in the
-> > > comments. The more detailed description of 'shadowed_translation' is
-> > > already inlined in the data structure definition, so no need to duplicate
-> > > the text but simply just update the names.
-> > > 
-> > > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > > Reviewed-by: Kai Huang <kai.huang@intel.com>
-> > > ---
-> > >  Documentation/virt/kvm/x86/mmu.rst | 9 +++++----
-> > >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
-> > > index 561efa8ec7d7..4c9044b4dc6c 100644
-> > > --- a/Documentation/virt/kvm/x86/mmu.rst
-> > > +++ b/Documentation/virt/kvm/x86/mmu.rst
-> > > @@ -221,11 +221,12 @@ Shadow pages contain the following information:
-> > >      at __pa(sp2->spt).  sp2 will point back at sp1 through parent_pte.
-> > >      The spt array forms a DAG structure with the shadow page as a node, and
-> > >      guest pages as leaves.
-> > > -  gfns:
-> > > -    An array of 512 guest frame numbers, one for each present pte.  Used to
-> > > -    perform a reverse map from a pte to a gfn. When role.direct is set, any
-> > > +  shadowed_translation:
-> > > +    An array of 512 shadow translation entries, one for each present pte. Used
-> > > +    to perform a reverse map from a pte to a gfn. When role.direct is set, any
-> > >      element of this array can be calculated from the gfn field when used, in
-> > > -    this case, the array of gfns is not allocated. See role.direct and gfn.
-> > > +    this case, the array of shadowed_translation is not allocated. See
-> > 
-> > I cannot parse the before version nor the after version of this sentence (new version):
-> > 
-> >                                                   When role.direct is set, any
-> >     element of this array can be calculated from the gfn field when used, in
-> >     this case, the array of shadowed_translation is not allocated.
-> > 
-> > 
-> 
-> Sorry for the late reply.  Why is it not parsed? It just means that when
-> role.direct is set, do not use gfns. The gfn can be calculated from the
-> base address + offset. The base address here is the 'gfn' field in
-> kvm_mmu_page.
+On 7/25/2023 12:34 PM, Anjelique Melendez wrote:
+> +out:
+> +	mutex_unlock(&pbs->lock);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(qcom_pbs_trigger_event);
 
-It's a bit of a run-on sentence with confusing pronoun usage.  How about this?
+EXPORT_SYMBOL_GPL only please.
 
-  When role.direct is set, the shadow_translation array is not allocated as the
-  per-SPTE gfn is simply an offset from the base gfn, and KVM doesn't track
-  access permissions for direct shadow pages.
+-- 
+---Trilok Soni
+
