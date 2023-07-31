@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D478876915E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:17:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE1E1769167
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232197AbjGaJRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
+        id S229717AbjGaJSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbjGaJQx (ORCPT
+        with ESMTP id S232181AbjGaJRk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:16:53 -0400
+        Mon, 31 Jul 2023 05:17:40 -0400
 Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2042.outbound.protection.outlook.com [40.107.6.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D187A137;
-        Mon, 31 Jul 2023 02:16:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C98197;
+        Mon, 31 Jul 2023 02:16:51 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kzDID2kn1EM62pVgMlwgQZeybZTkZUs9m1jpggpv3HUodvsilx0nhvqJMyaDDfiWbCdXaAzXG1G8G7QJQWp1vxKRr5aUtu4PnzG60mN731QVM3evrt2dYt45/UVgV872e+fhnpxVU5bQEPPaK3CwDA8iA6muB25qSXw/INrwsJnNjEHD6znwog321dtfnMjLza//7NN1RkEiNZR4oeezusvS5oZT+R4ZgjR/Hc/vst9QQG1AcNhuQLrbJUsIO2AtBV/sg4OqqW8akc3LIb5HYQFPE5WbZPcdaIPH/fUEXTasWsHbvUj+OxPi+Z4x6IUlBkWjLYyazDMoxLyLBINuww==
+ b=gyUOR5WeyCM5q+5PF0YiOGuK0sXFnJ8xdKjA0THY/nzIFHqNGoqXuiehRfgZEPPqrLBcjV9bqqqfpJvf3/p9gZRH4gtKUt4UK7Z3chcuZ3H+uZcdbjws6FCYuQQS0k2kRYBTC0xwrO2iN0NkqgFgPr+IO3n1QD4pKDdEzax7ZjNSuLwdxUwIaziL7o6iUaN5tPtT+tKf5WxBst+VojIfEm6IKJDv+lzEMq4L4DbCb1IzdYS5xSQ2Ia3w+gcFKwTyOYG7PB6MQJWxAbucjJbbN5p3bufOB908Yr91Y5LXyEtjDdbInvo2mdyHtht2GNjgiCYaqX24gd7jnlOuFqIyMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YzR7EcT5tGaWk6WMsxMCxCakyxk8ndhKpBh/sECspak=;
- b=GVoTpQKJj8XbmJ/SKWTvxLVFk6Aeq2tAD7HTB7nGHsznQPTVJJqySPT2Flf/olHZJzdYpLKv36L4F0F3yjpTO5Lqu5u7qITt1oZnIXMdlvyJXQeCfB4tmaR68LZMXJOhJgfN6e9re1MUVT6D9bucfWzzCLLeESZU8wAEMsh+IsUFcLxEtEzAIEenbBhJ+MaDT/lCI4ZboXBryWuqMJZtiL2jKLFurDGd31uk0my5vQwaAUkFrIhYRcfWntkUCJZV3YMp+6R92TC5yrh7+RpXuDwy79vLKbmLjlZYXazbsTF9zbS52Ha/axQ2iUDnXTfhZnHTXPuBQlyKMH6ExHagkw==
+ bh=NwfGeWX9xq+vcN6WAF1CVNsr8hWKROMKoG6lgX56xxc=;
+ b=DmoE3iOqymDXv0tn10zPp8eEJWPc+SCML4h5M9IBnq8n+6n98MOOeXyCU/drUih1ETasYxkJa/pl7ALH3vx1KvnP/ss/Jl8OPx5kKW+Ux2eKkROILk5ymzP6XVdXfsVgz7wTzW+lcq90mjTe1fDFKxV/34M5Z9Fvtx9BO/zexlelAqQLkkCFIuWCfVYUBVpiuz4IAlE21U+1EuBb/P3JQINp8FUWjnFXT0O2FD40vHx137YJSJBEYnCjL2hMlPomNhyK2sjUcaq5W+qqBnYRVuE9X6aBXYZfwnQ0KwyvlbdJYU69koWjLC/H9POAx1w8/Px8QZgdct7WXUIxRTA78A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YzR7EcT5tGaWk6WMsxMCxCakyxk8ndhKpBh/sECspak=;
- b=WFJO6DrTrNBBS3POJK7ixWwjbMeVvZUMe0VybpjuvZc2lzpGIl+Vu34MRyHdjDvi9Vyy3ZjMm42TZ//MMP8aC6bilfMubQ2e4Sa/L3Je7a9fkGFPhsiJ8uB6jTdXOOQhJqOYQAlekwSWshchIIHOgnF4Y73ZtsQuVNm5QpALexU=
+ bh=NwfGeWX9xq+vcN6WAF1CVNsr8hWKROMKoG6lgX56xxc=;
+ b=C9lXXm0peAAYg29PwjC0SCGHa4ZXNRGuYl/XYrBjaYaGCB+j3e7MTsfgcXviLlbHlxHbu5nApOI6JqyD5MC51E4N1sonioZp4FfYEBSzew074+tVXmBEQJoxNH3YyErQy45dFuxjK4H5s12oBJutuNZ1FFD1OoKleWNTPU7Nvkw=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=oss.nxp.com;
 Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
  by GV1PR04MB9085.eurprd04.prod.outlook.com (2603:10a6:150:20::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.42; Mon, 31 Jul
- 2023 09:16:43 +0000
+ 2023 09:16:44 +0000
 Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
  ([fe80::74e7:6384:dbdc:e936]) by AM9PR04MB8954.eurprd04.prod.outlook.com
  ([fe80::74e7:6384:dbdc:e936%5]) with mapi id 15.20.6631.043; Mon, 31 Jul 2023
- 09:16:43 +0000
+ 09:16:44 +0000
 From:   "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
 To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
         davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
         pabeni@redhat.com, richardcochran@gmail.com
 Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Subject: [PATCH net-next v5 07/11] net: phy: nxp-c45-tja11xx: read egress ts on TJA1120
-Date:   Mon, 31 Jul 2023 12:16:15 +0300
-Message-Id: <20230731091619.77961-8-radu-nicolae.pirea@oss.nxp.com>
+Subject: [PATCH net-next v5 08/11] net: phy: nxp-c45-tja11xx: handle FUSA irq
+Date:   Mon, 31 Jul 2023 12:16:16 +0300
+Message-Id: <20230731091619.77961-9-radu-nicolae.pirea@oss.nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230731091619.77961-1-radu-nicolae.pirea@oss.nxp.com>
 References: <20230731091619.77961-1-radu-nicolae.pirea@oss.nxp.com>
@@ -62,52 +62,52 @@ MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|GV1PR04MB9085:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6af6e3f7-9f42-4cce-f4c5-08db91a6db88
+X-MS-Office365-Filtering-Correlation-Id: b2996c67-c524-4a96-4dbe-08db91a6dc07
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v4e9E/XpliMa6KYOd2wiTY8eNlkh7YKQmCbeNybV9G3BW7i1qfPsEJFpnya4r7ULOVbhpjQ+RC5VTwt0IUcCd9DU2VEbm4qNI3Yvc01QJcoWgNBnWNBY0cx9nowjwf8lO+6dTek43gQtki5yUdrdbUa/ezHOE5HdzI/bIrFLLz8eHCBVKGMnkg/6VKXNax9Aa0aHO1PmUBZOzHHa9WNn8FAuYb3pyZsrWjTeOACt4JmbSi+OHdRHc6cZkTOPbR7AFaJPa8TRNeLrvq9mnuxWmedy1X99EWCUg9rve8QfOEVFEK5Z+CB0/VUfjlhAbLUKYlYydnJkYH+Z0S9+9x5KvPEPWDlbgC2q6GZndftBoUsjk7oEJeTDjUd1vaFy/G+/DLtMTr/xMl7biNon6KSSIphoRoLvbrLfto5cd/mkCUcZvgQlXUyv3ZTtZ5katmgjgeQRmKNgprADCMxuPC1jeM3OPLnV/ThmEX08CygSEF3tMOKghY1xYOnYS6Y0m+gr4A+1O2zl8I0tUG6H/bNEH6wja4+J4UbjPg2/ZoFAWn+V1KHyz/uWjhTm8kqF/pctl0LrFS4VLUuZb63nYcUkNE1JAoUCpOLSWjidqmMHsv8jPam3j/A4KnSAqjSkn1Oh
+X-Microsoft-Antispam-Message-Info: I33lHCvXQHV2RvZ1GR5GYRNuCL9eKbEjvy08ITlWww38Df87LCa0ffqCZYq6up81Mh4H7jHZbCwsV7OpoAznLJNHGDd6yT2vJJKA0wI/mwJUVzH26OwIRFGpxxYgIPMUu7iE5QUK1++hAjwKuzX8A9DHwaYeBoDLtpDzdP1gRYOovKQ5K17gvUhJiHwXB0hGcU8r+pThNrKwQdfGjBrP0bzA3OwO5aYuQiofWmoGAXL1zDx1oIcUn/k011a/kgzL+oPOwHBbSz0LBnmjnMHjLHpdCeRIJc5MoY3KyA3mAhwf8HZMYJWC+YA8FyvOUVI6RkaXsntcxxSKnWpO7ONv/5x8Qb7xkTzitSUesLa8lkHywyWzwFFB3g8tM0qnStm/EycMKDszpBGoHMexMrZm46PM+51Wj1opzRUk8v4z1AU4XQ9Qe330sgeool/qoEzA2Yl7SPkHrMg2TW0laj/5e+GH2hZipSx7lJ9TjnkTBAig46y7w8ajTLnB8eomAE9vfNwyAqehQ0Ey8kczTTdLISqr/fq67uecsgMHbPao5gH+x51omfstxInWQeyvXft7VLJfMoL0+Gp8UVFIi3H1z14hf2xdSUFRK035kclpOjo7BQpo8neeCW/1QuDBz47P
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(136003)(39860400002)(346002)(366004)(451199021)(66476007)(86362001)(41300700001)(8676002)(8936002)(316002)(5660300002)(4326008)(7416002)(66946007)(66556008)(38350700002)(478600001)(2906002)(38100700002)(6666004)(6512007)(52116002)(6486002)(6506007)(1076003)(26005)(83380400001)(186003)(2616005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mdqiTdc2M9IzNAHQAT0ppG8bDVskT5xoNffavzZdMDMM3hYYtbq99LiIootF?=
- =?us-ascii?Q?aqsRSY+rZhoFlQLmFuLhrHsa/U62FaHsXdYkPDg5Ol7xD2wk82sGO7H4DM/z?=
- =?us-ascii?Q?plnZIIMaqymbRh3wsKBvD9cCUbDHJNn7EeZ+f4+RzKVL0ECq4jvYQAAn4E1j?=
- =?us-ascii?Q?0s8f8a0cW6RvEWC+ZLkuGA9u4qzWQotyUT30yt4I8e/MIgaAjE1S7GAt5E6T?=
- =?us-ascii?Q?CjwbMAJm2NPshamioEW4oS8xIlETivXIprLaBHJIXBtsAy+YkNFD8IxL8yCf?=
- =?us-ascii?Q?nwoaeX3qoKF3JhyMPcMenrHXAIB5/AXbBvSrNgK9oVPoDSJ2e/7biFaFAyze?=
- =?us-ascii?Q?zT1IpKc+wXeokAHBCnn0xcOVC/4vQO5RNObxaZtxmN3HhIMn5gsuZDH9it90?=
- =?us-ascii?Q?NJU3LVoz+JSuV4dDVWyTwsA7GLMWyW74OdTNZim/7G2xQf/tgqsaGEaN4tWc?=
- =?us-ascii?Q?M9xyFeqk3tWKef67e9wWiYpKtv9OT7eQpsFRo+nDCoVqKbJyevo4Ulpzte56?=
- =?us-ascii?Q?COGIPpBt5ch78P2FvizO3cymzVqckqcBCW+3NvL0LLsJma9P/lv4ZYEche65?=
- =?us-ascii?Q?QFh342x9U9lPFIxkPjf+BuI/LPY6TKTyHoTTpDTSQnQbJK3VWwh+vWjw8hTm?=
- =?us-ascii?Q?9fdqo3NobiwJaz+cWU2bMPqzKjrdwWeiqJ2X6IbTNejMAr4qdra+aMWAjXNV?=
- =?us-ascii?Q?J6X1ikHj6mV70jw2ZW5pfFsNDTXpKi/P7MbKScZOVva8wwZK1RrmGAbLxhg6?=
- =?us-ascii?Q?hAXDcdn2treuOfT31bVuoWBrSDXmCCHtgDxRwYJv5tdoGy0441+8pjhQ3brr?=
- =?us-ascii?Q?23vTRGcbuq3ztmz6w/8Uy0IHxkyfLfuDMlmwiegEDZBoxIbDaxP0rcYlaxB3?=
- =?us-ascii?Q?MlCC0U8OYSlWMsr/SB44juxn3IuWrcUB2yaoVkCJ89iS++mHq1yfUojuRtuQ?=
- =?us-ascii?Q?6C0fQ9CuF19waENb6p6USFi/r+GjYVYzV7S/IXpqkh2948UI251sdJfF/pcR?=
- =?us-ascii?Q?D8S9Iqhmr5nHOTHkTPI7nXkuYExAymfNPbSwuJq+l4q10EZPYAxV8MK4KLzZ?=
- =?us-ascii?Q?hDp6nhSO7roHRIpVVSEnBFLCSnd1d88xR3H156o23kIfrXQDxDRMi4D4R3AZ?=
- =?us-ascii?Q?gSyyfn8nL4CrB/3Wu4nOvkLEyJz1ROGLjeyZqd25imLGOy5HxMYwgUUA4NdE?=
- =?us-ascii?Q?dVk5uIsM4QZthhY9+AU0c3Tn94ZnNHmXNP24cA0z0l80InwUbFNisDVD+hF7?=
- =?us-ascii?Q?FBrQOebXQSD6382Ii1mtHiQ/NS9TU5wjM/LUTI3kE7nezv6fZWC0RB1SnoAp?=
- =?us-ascii?Q?6iQWa+GiuaWB0DCd65rvyQRWznb4DnNaMDvay1aGwu9GpgprnN313IXC0yz4?=
- =?us-ascii?Q?GQYhBLAHLhgxQqZndt9u9znjCCwHBkFe+Dy9euTjlJQKAxGXLp8f3ebDltvd?=
- =?us-ascii?Q?Tjs3KFwO6A2u95oUuQITYSYyXhfJnFBjQbexkofYnPzftCk9x3wO8j+LDa6y?=
- =?us-ascii?Q?vh8i6WswJFKR0HC0JjFtm8zQCdmuvJkGy0puH85hycXoNHpZkMGKZ1+lUtkl?=
- =?us-ascii?Q?367tAk/dhYCwBPEgmul53OnnnExrEQH/3FrcPejVzOT40NYaeOboPp9sPax5?=
- =?us-ascii?Q?jQ=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eYC34yxvO6sKHJc4u44GKO+MK31+OJ4Ez8zmh6rWjljRAdedrczYPZaGpaZ4?=
+ =?us-ascii?Q?UfzHM7xviHw1ebPZU8xc1kjdI7dxLri09eTlt11j1dZZVzbM4VYV40BlbDrd?=
+ =?us-ascii?Q?8ARa2G3CX0pjKbGFapcd4KUydDnO/R3Z/ajezAjKS2n0RWfQ+dQWjg507tDD?=
+ =?us-ascii?Q?X85ILqvU00qrD6h9bsVs5n85tRxKSa+2dtEs7/gJm8ruc2W2hYjpuZ+mXHQJ?=
+ =?us-ascii?Q?djG6aIS+fHnPNvhwhntOMsvENAQ4ZIep4X3d/49hejKV339Rvam5zVWSzT+R?=
+ =?us-ascii?Q?ySBQuyJyP+LIbXx2SfMLmT/cpMNvtB/64SYIabyxWX8gZRqMvt1j7WrP36rU?=
+ =?us-ascii?Q?pRnK8SferiHvRrjmonDb2mEQlT8xkeGWQqRlVd2eaJgNttf+Qvlt6CZihbim?=
+ =?us-ascii?Q?6HpPyVaLiwfeZciZG3s5iCh/IsxDma+jduZsgyknbkWWM7s2kAfBcAFcZAya?=
+ =?us-ascii?Q?io/ha5Qu3r2e0CWrEzXdbLqaDVLCbsuoeISmu0s8OdzwPur/RfEdNSHynEa2?=
+ =?us-ascii?Q?6qlJsaHLV88GcU+NbyTzLwFWDiDCjwCf38bx7Ms5Xs3+R/W2Eywf2xnGUxx1?=
+ =?us-ascii?Q?qy1S5JJhumTAxY6Mk063LEqX6I+6Z2hppW5srgneQyfoG+zmKnXPouEiyjfE?=
+ =?us-ascii?Q?yUYd5t9bQrAmZmK876txyEG+GLxkX9x5QQb3oHh2xMsYf/rDlPG+pzRK/rdB?=
+ =?us-ascii?Q?Cl92+YU6zuabNXjkB7WPvWrNef7kdqE25Dz0JCo/k/hotgTuQxhZMh44I+jS?=
+ =?us-ascii?Q?9ZkTWRd1aUSJ0ADGO+CgL1W7ShLJTYH6iL757gD3xSXlxMBytYOdBKUUYlAP?=
+ =?us-ascii?Q?LmcqSZnn/UEZOa5am96AjJjs8hH/EGhZS+xKei7rYzg9q2FOP9kY6VaXjqwT?=
+ =?us-ascii?Q?RdsUnHs3Xp+jevLJiIQUIPeQgu80fi6psc5fIjSL+VaisSYguIkpStKiwPkT?=
+ =?us-ascii?Q?U0JD08wC59c60uIiQqXxaIvlBVneuyRpRlKZvZVbSJ06tl7wYbLG16y7GMpM?=
+ =?us-ascii?Q?VP5hWnwnq6KH22FkGlCzM2K91EsYvQNVTiYoXUCeJfi7f63jBV6R845IMSQZ?=
+ =?us-ascii?Q?NCqmjJlQYGTq1gTBeK769tXC+sfgQgMR/gJXjwmRQSMGRQ0ILHmJ7r5F/D8y?=
+ =?us-ascii?Q?+TZ9t2xEJVj2P2rPIyxMhKUibEGaXDdiWvTAJVZ+uxPalRoHW7+GZWW3d+wH?=
+ =?us-ascii?Q?4gu56+c7NGC2t9fZgw+Pkbjk/t1lRKiKeHUAt+N4qCxJvk0BGHCdfOvEQjKQ?=
+ =?us-ascii?Q?2rfs+82d+0WssF7Vw1Ne/d9o0wJJGaedIFpPOTnwvjfe0n0N8FOhCz2bOFfO?=
+ =?us-ascii?Q?ciPU1P1ZSA6vpqpjK+7Bah+BxB14zU9FrlXRZNE++330iNvRRz2kx0dLd0pZ?=
+ =?us-ascii?Q?EsGcsgEBXtWpvVoWcYbvX5gXwe20+3n8nc6bR4bWIiSmc31udeTwDr8kwuOq?=
+ =?us-ascii?Q?uBTHyPTep5UJ6aPL8+4hOniKkZguYOdZ/DbHVThIjUzh53GViG39iXGlVGlb?=
+ =?us-ascii?Q?oZ5IabBqUJqoQpmQ8g1SXQZMq7sok2G585MSVVug7Mq/yF90xfFK+uksfcjU?=
+ =?us-ascii?Q?igiJe8W8xu4UFvqdUHIsFWPxHvRU9a2u4Q42BpdsbVxabSbffk1Fm46Eg80t?=
+ =?us-ascii?Q?kw=3D=3D?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6af6e3f7-9f42-4cce-f4c5-08db91a6db88
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2996c67-c524-4a96-4dbe-08db91a6dc07
 X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 09:16:43.8043
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 09:16:44.6732
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vmX+8bq4Hrz3GauWynBxh35w5WGgJCwKGJcdpiYkc9xC+JBydeAxBpd+MxuBREHrYNMDIXHWdpm8IkTev7ymducmTMguBJSriVmXDaSprxE=
+X-MS-Exchange-CrossTenant-UserPrincipalName: LkE2zjvP/T6JBpl49uTzSHKN9kJ+UTN2TGXnWw4P3dGXVvKyFWBcKj0utYliehO50G/rAasvQZldhhxs9W/aMvLKgxzgEH4wwF2Io8Cp+8E=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR04MB9085
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
@@ -118,231 +118,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The egress timestamp FIFO/circular buffer work different on TJA1120 than
-TJA1103.
-
-For TJA1103 the new timestamp should be manually moved from the FIFO to
-the hardware buffer before checking if the timestamp is valid.
-
-For TJA1120 the hardware will move automatically the new timestamp
-from the FIFO to the buffer and the user should check the valid bit, read
-the timestamp and unlock the buffer by writing any of the buffer
-registers(which are read only).
-
-Another change for the TJA1120 is the behaviour of the EGR TS IRQ bit.
-This bit was a self-clear bit for TJA1103, but now should be cleared
-before reading the timestamp.
+TJA1120 and TJA1103 have a set of functional safety hardware tests
+executed after every reset, and when the tests are done, the IRQ line is
+asserted. For the moment, the purpose of these handlers is to acknowledge
+the IRQ and not to check the FUSA tests status.
 
 Signed-off-by: Radu Pirea (NXP OSS) <radu-nicolae.pirea@oss.nxp.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 ---
- drivers/net/phy/nxp-c45-tja11xx.c | 110 +++++++++++++++++++++++++-----
- 1 file changed, 92 insertions(+), 18 deletions(-)
+ drivers/net/phy/nxp-c45-tja11xx.c | 79 ++++++++++++++++++++++++++++++-
+ 1 file changed, 77 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/phy/nxp-c45-tja11xx.c b/drivers/net/phy/nxp-c45-tja11xx.c
-index 8393c17a83cc..e596ffcf8683 100644
+index e596ffcf8683..a52067da9dbf 100644
 --- a/drivers/net/phy/nxp-c45-tja11xx.c
 +++ b/drivers/net/phy/nxp-c45-tja11xx.c
 @@ -29,6 +29,11 @@
  
  #define TJA1120_VEND1_EXT_TS_MODE	0x1012
  
-+#define TJA1120_EGRESS_TS_DATA_S	0x9060
-+#define TJA1120_EGRESS_TS_END		0x9067
-+#define TJA1120_TS_VALID		BIT(0)
-+#define TJA1120_MORE_TS			BIT(15)
++#define TJA1120_GLOBAL_INFRA_IRQ_ACK	0x2C08
++#define TJA1120_GLOBAL_INFRA_IRQ_EN	0x2C0A
++#define TJA1120_GLOBAL_INFRA_IRQ_STATUS	0x2C0C
++#define TJA1120_DEV_BOOT_DONE		BIT(1)
 +
- #define VEND1_PHY_IRQ_ACK		0x80A0
- #define VEND1_PHY_IRQ_EN		0x80A1
+ #define TJA1120_EGRESS_TS_DATA_S	0x9060
+ #define TJA1120_EGRESS_TS_END		0x9067
+ #define TJA1120_TS_VALID		BIT(0)
+@@ -39,6 +44,9 @@
  #define VEND1_PHY_IRQ_STATUS		0x80A2
-@@ -59,6 +64,12 @@
- #define VEND1_PORT_ABILITIES		0x8046
- #define PTP_ABILITY			BIT(3)
+ #define PHY_IRQ_LINK_EVENT		BIT(1)
  
-+#define VEND1_PORT_FUNC_IRQ_EN		0x807A
-+#define PTP_IRQS			BIT(3)
++#define VEND1_ALWAYS_ACCESSIBLE		0x801F
++#define FUSA_PASS			BIT(4)
 +
-+#define VEND1_PTP_IRQ_ACK		0x9008
-+#define EGR_TS_IRQ			BIT(1)
-+
- #define VEND1_PORT_INFRA_CONTROL	0xAC00
- #define PORT_INFRA_CONTROL_EN		BIT(14)
- 
-@@ -158,6 +169,8 @@
- 
- #define NXP_C45_SKB_CB(skb)	((struct nxp_c45_skb_cb *)(skb)->cb)
- 
-+struct nxp_c45_phy;
-+
- struct nxp_c45_skb_cb {
- 	struct ptp_header *header;
- 	unsigned int type;
-@@ -243,7 +256,10 @@ struct nxp_c45_phy_data {
- 	int n_stats;
- 	u8 ptp_clk_period;
- 	bool ext_ts_both_edges;
-+	bool ack_ptp_irq;
- 	void (*counters_enable)(struct phy_device *phydev);
-+	bool (*get_egressts)(struct nxp_c45_phy *priv,
-+			     struct nxp_c45_hwts *hwts);
+ #define VEND1_PHY_CONTROL		0x8100
+ #define PHY_CONFIG_EN			BIT(14)
+ #define PHY_START_OP			BIT(0)
+@@ -262,6 +270,8 @@ struct nxp_c45_phy_data {
+ 			     struct nxp_c45_hwts *hwts);
  	void (*ptp_init)(struct phy_device *phydev);
  	void (*ptp_enable)(struct phy_device *phydev, bool enable);
++	void (*nmi_handler)(struct phy_device *phydev,
++			    irqreturn_t *irq_status);
  };
-@@ -499,21 +515,11 @@ static void nxp_c45_get_extts(struct nxp_c45_phy *priv,
- 		      regmap->vend1_ext_trg_ctrl, RING_DONE);
+ 
+ struct nxp_c45_phy {
+@@ -1162,6 +1172,37 @@ static int nxp_c45_config_intr(struct phy_device *phydev)
+ 					  VEND1_PHY_IRQ_EN, PHY_IRQ_LINK_EVENT);
  }
  
--static bool nxp_c45_get_hwtxts(struct nxp_c45_phy *priv,
--			       struct nxp_c45_hwts *hwts)
-+static void nxp_c45_read_egress_ts(struct nxp_c45_phy *priv,
-+				   struct nxp_c45_hwts *hwts)
- {
- 	const struct nxp_c45_regmap *regmap = nxp_c45_get_regmap(priv->phydev);
- 	struct phy_device *phydev = priv->phydev;
--	bool valid;
--	u16 reg;
--
--	mutex_lock(&priv->ptp_lock);
--	phy_write_mmd(priv->phydev, MDIO_MMD_VEND1, VEND1_EGR_RING_CTRL,
--		      RING_DONE);
--	reg = phy_read_mmd(priv->phydev, MDIO_MMD_VEND1, VEND1_EGR_RING_DATA_0);
--	valid = !!(reg & RING_DATA_0_TS_VALID);
--	if (!valid)
--		goto nxp_c45_get_hwtxts_out;
- 
- 	hwts->domain_number =
- 		nxp_c45_read_reg_field(phydev, &regmap->domain_number);
-@@ -527,12 +533,72 @@ static bool nxp_c45_get_hwtxts(struct nxp_c45_phy *priv,
- 		nxp_c45_read_reg_field(phydev, &regmap->nsec_29_16) << 16;
- 	hwts->sec = nxp_c45_read_reg_field(phydev, &regmap->sec_1_0);
- 	hwts->sec |= nxp_c45_read_reg_field(phydev, &regmap->sec_4_2) << 2;
++static int tja1103_config_intr(struct phy_device *phydev)
++{
++	int ret;
++
++	/* We can't disable the FUSA IRQ for TJA1103, but we can clean it up. */
++	ret = phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_ALWAYS_ACCESSIBLE,
++			    FUSA_PASS);
++	if (ret)
++		return ret;
++
++	return nxp_c45_config_intr(phydev);
 +}
 +
-+static bool nxp_c45_get_hwtxts(struct nxp_c45_phy *priv,
-+			       struct nxp_c45_hwts *hwts)
++static int tja1120_config_intr(struct phy_device *phydev)
 +{
-+	bool valid;
-+	u16 reg;
- 
-+	mutex_lock(&priv->ptp_lock);
-+	phy_write_mmd(priv->phydev, MDIO_MMD_VEND1, VEND1_EGR_RING_CTRL,
-+		      RING_DONE);
-+	reg = phy_read_mmd(priv->phydev, MDIO_MMD_VEND1, VEND1_EGR_RING_DATA_0);
-+	valid = !!(reg & RING_DATA_0_TS_VALID);
-+	if (!valid)
-+		goto nxp_c45_get_hwtxts_out;
++	int ret;
 +
-+	nxp_c45_read_egress_ts(priv, hwts);
- nxp_c45_get_hwtxts_out:
- 	mutex_unlock(&priv->ptp_lock);
- 	return valid;
- }
- 
-+static bool tja1120_egress_ts_is_valid(struct phy_device *phydev)
-+{
-+	bool valid;
-+	u16 reg;
++	if (phydev->interrupts == PHY_INTERRUPT_ENABLED)
++		ret = phy_set_bits_mmd(phydev, MDIO_MMD_VEND1,
++				       TJA1120_GLOBAL_INFRA_IRQ_EN,
++				       TJA1120_DEV_BOOT_DONE);
++	else
++		ret = phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1,
++					 TJA1120_GLOBAL_INFRA_IRQ_EN,
++					 TJA1120_DEV_BOOT_DONE);
++	if (ret)
++		return ret;
 +
-+	reg = phy_read_mmd(phydev, MDIO_MMD_VEND1, TJA1120_EGRESS_TS_DATA_S);
-+	valid = !!(reg & TJA1120_TS_VALID);
-+
-+	return valid;
++	return nxp_c45_config_intr(phydev);
 +}
 +
-+static bool tja1120_get_hwtxts(struct nxp_c45_phy *priv,
-+			       struct nxp_c45_hwts *hwts)
-+{
-+	struct phy_device *phydev = priv->phydev;
-+	bool more_ts;
-+	bool valid;
-+	u16 reg;
-+
-+	mutex_lock(&priv->ptp_lock);
-+	reg = phy_read_mmd(phydev, MDIO_MMD_VEND1, TJA1120_EGRESS_TS_END);
-+	more_ts = !!(reg & TJA1120_MORE_TS);
-+	valid = tja1120_egress_ts_is_valid(phydev);
-+	if (!valid) {
-+		if (!more_ts)
-+			goto tja1120_get_hwtxts_out;
-+
-+		/* Bug workaround for TJA1120 engineering samples: move the
-+		 * new timestamp from the FIFO to the buffer.
-+		 */
-+		phy_write_mmd(phydev, MDIO_MMD_VEND1,
-+			      TJA1120_EGRESS_TS_END, TJA1120_TS_VALID);
-+		valid = tja1120_egress_ts_is_valid(phydev);
-+		if (!valid)
-+			goto tja1120_get_hwtxts_out;
-+	}
-+	nxp_c45_read_egress_ts(priv, hwts);
-+	phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1, TJA1120_EGRESS_TS_DATA_S,
-+			   TJA1120_TS_VALID);
-+tja1120_get_hwtxts_out:
-+	mutex_unlock(&priv->ptp_lock);
-+	return valid;
-+}
-+
- static void nxp_c45_process_txts(struct nxp_c45_phy *priv,
- 				 struct nxp_c45_hwts *txts)
+ static irqreturn_t nxp_c45_handle_interrupt(struct phy_device *phydev)
  {
-@@ -571,6 +637,7 @@ static void nxp_c45_process_txts(struct nxp_c45_phy *priv,
- static long nxp_c45_do_aux_work(struct ptp_clock_info *ptp)
- {
- 	struct nxp_c45_phy *priv = container_of(ptp, struct nxp_c45_phy, caps);
-+	const struct nxp_c45_phy_data *data = nxp_c45_get_data(priv->phydev);
- 	bool poll_txts = nxp_c45_poll_txts(priv->phydev);
- 	struct skb_shared_hwtstamps *shhwtstamps_rx;
- 	struct ptp_clock_event event;
-@@ -582,7 +649,7 @@ static long nxp_c45_do_aux_work(struct ptp_clock_info *ptp)
- 	u32 ts_raw;
- 
- 	while (!skb_queue_empty_lockless(&priv->tx_queue) && poll_txts) {
--		txts_valid = nxp_c45_get_hwtxts(priv, &hwts);
-+		txts_valid = data->get_egressts(priv, &hwts);
- 		if (unlikely(!txts_valid)) {
- 			/* Still more skbs in the queue */
- 			reschedule = true;
-@@ -1111,13 +1178,16 @@ static irqreturn_t nxp_c45_handle_interrupt(struct phy_device *phydev)
+ 	const struct nxp_c45_phy_data *data = nxp_c45_get_data(phydev);
+@@ -1193,6 +1234,8 @@ static irqreturn_t nxp_c45_handle_interrupt(struct phy_device *phydev)
  		ret = IRQ_HANDLED;
  	}
  
--	/* There is no need for ACK.
--	 * The irq signal will be asserted until the EGR TS FIFO will be
--	 * emptied.
--	 */
- 	irq = nxp_c45_read_reg_field(phydev, &data->regmap->irq_egr_ts_status);
- 	if (irq) {
--		while (nxp_c45_get_hwtxts(priv, &hwts))
-+		/* If ack_ptp_irq is false, the IRQ bit is self-clear and will
-+		 * be cleared when the EGR TS FIFO is empty. Otherwise, the
-+		 * IRQ bit should be cleared before reading the timestamp,
-+		 */
-+		if (data->ack_ptp_irq)
-+			phy_write_mmd(phydev, MDIO_MMD_VEND1,
-+				      VEND1_PTP_IRQ_ACK, EGR_TS_IRQ);
-+		while (data->get_egressts(priv, &hwts))
- 			nxp_c45_process_txts(priv, &hwts);
++	data->nmi_handler(phydev, &ret);
++
+ 	return ret;
+ }
  
- 		ret = IRQ_HANDLED;
-@@ -1588,7 +1658,9 @@ static const struct nxp_c45_phy_data tja1103_phy_data = {
- 	.n_stats = ARRAY_SIZE(tja1103_hw_stats),
- 	.ptp_clk_period = PTP_CLK_PERIOD_100BT1,
- 	.ext_ts_both_edges = false,
-+	.ack_ptp_irq = false,
- 	.counters_enable = tja1103_counters_enable,
-+	.get_egressts = nxp_c45_get_hwtxts,
+@@ -1599,6 +1642,21 @@ static void tja1103_ptp_enable(struct phy_device *phydev, bool enable)
+ 				 PORT_PTP_CONTROL_BYPASS);
+ }
+ 
++static void tja1103_nmi_handler(struct phy_device *phydev,
++				irqreturn_t *irq_status)
++{
++	int ret;
++
++	ret = phy_read_mmd(phydev, MDIO_MMD_VEND1,
++			   VEND1_ALWAYS_ACCESSIBLE);
++	if (ret & FUSA_PASS) {
++		phy_write_mmd(phydev, MDIO_MMD_VEND1,
++			      VEND1_ALWAYS_ACCESSIBLE,
++			      FUSA_PASS);
++		*irq_status = IRQ_HANDLED;
++	}
++}
++
+ static const struct nxp_c45_regmap tja1103_regmap = {
+ 	.vend1_ptp_clk_period	= 0x1104,
+ 	.vend1_event_msg_filt	= 0x1148,
+@@ -1663,6 +1721,7 @@ static const struct nxp_c45_phy_data tja1103_phy_data = {
+ 	.get_egressts = nxp_c45_get_hwtxts,
  	.ptp_init = tja1103_ptp_init,
  	.ptp_enable = tja1103_ptp_enable,
++	.nmi_handler = tja1103_nmi_handler,
  };
-@@ -1684,7 +1756,9 @@ static const struct nxp_c45_phy_data tja1120_phy_data = {
- 	.n_stats = ARRAY_SIZE(tja1120_hw_stats),
- 	.ptp_clk_period = PTP_CLK_PERIOD_1000BT1,
- 	.ext_ts_both_edges = true,
-+	.ack_ptp_irq = true,
- 	.counters_enable = tja1120_counters_enable,
-+	.get_egressts = tja1120_get_hwtxts,
+ 
+ static void tja1120_counters_enable(struct phy_device *phydev)
+@@ -1697,6 +1756,21 @@ static void tja1120_ptp_enable(struct phy_device *phydev, bool enable)
+ 				   PTP_ENABLE);
+ }
+ 
++static void tja1120_nmi_handler(struct phy_device *phydev,
++				irqreturn_t *irq_status)
++{
++	int ret;
++
++	ret = phy_read_mmd(phydev, MDIO_MMD_VEND1,
++			   TJA1120_GLOBAL_INFRA_IRQ_STATUS);
++	if (ret & TJA1120_DEV_BOOT_DONE) {
++		phy_write_mmd(phydev, MDIO_MMD_VEND1,
++			      TJA1120_GLOBAL_INFRA_IRQ_ACK,
++			      TJA1120_DEV_BOOT_DONE);
++		*irq_status = IRQ_HANDLED;
++	}
++}
++
+ static const struct nxp_c45_regmap tja1120_regmap = {
+ 	.vend1_ptp_clk_period	= 0x1020,
+ 	.vend1_event_msg_filt	= 0x9010,
+@@ -1761,6 +1835,7 @@ static const struct nxp_c45_phy_data tja1120_phy_data = {
+ 	.get_egressts = tja1120_get_hwtxts,
  	.ptp_init = tja1120_ptp_init,
  	.ptp_enable = tja1120_ptp_enable,
++	.nmi_handler = tja1120_nmi_handler,
  };
+ 
+ static struct phy_driver nxp_c45_driver[] = {
+@@ -1773,7 +1848,7 @@ static struct phy_driver nxp_c45_driver[] = {
+ 		.soft_reset		= nxp_c45_soft_reset,
+ 		.config_aneg		= genphy_c45_config_aneg,
+ 		.config_init		= nxp_c45_config_init,
+-		.config_intr		= nxp_c45_config_intr,
++		.config_intr		= tja1103_config_intr,
+ 		.handle_interrupt	= nxp_c45_handle_interrupt,
+ 		.read_status		= genphy_c45_read_status,
+ 		.suspend		= genphy_c45_pma_suspend,
+@@ -1797,7 +1872,7 @@ static struct phy_driver nxp_c45_driver[] = {
+ 		.soft_reset		= nxp_c45_soft_reset,
+ 		.config_aneg		= genphy_c45_config_aneg,
+ 		.config_init		= nxp_c45_config_init,
+-		.config_intr		= nxp_c45_config_intr,
++		.config_intr		= tja1120_config_intr,
+ 		.handle_interrupt	= nxp_c45_handle_interrupt,
+ 		.read_status		= genphy_c45_read_status,
+ 		.suspend		= genphy_c45_pma_suspend,
 -- 
 2.34.1
 
