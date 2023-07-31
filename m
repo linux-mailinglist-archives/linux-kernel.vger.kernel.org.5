@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C19ED76A206
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAFE76A203
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229853AbjGaUgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
+        id S229978AbjGaUfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:35:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230162AbjGaUgM (ORCPT
+        with ESMTP id S229928AbjGaUfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:36:12 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1991A1BD9
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:36:06 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-407db3e9669so19781cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:36:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690835765; x=1691440565;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8WbRt22akgzv4PmYRoTv7Z60VgxgxYtdGWVmvWN3QQU=;
-        b=S48GXM2S/zOssa/4HGYWA/fi14zXxpeMV2F4C7CVir22G8F1rsCFPMpbbATKKTGtDB
-         64U04V9zqc3NX/KcDqqznzevwdH+LBQzjjWkXhUJhWjREYzmjnwgZfC3FYc5IrYNUBlm
-         LY/EUvpLCfaeKdgtW8bCez7DItwI3/PYoIvy7INGK7YD0YSomsBbivsNBTVfKNu4nBdo
-         xivL5QLBIY+NVve5Wz1jLiXbHQ5tlLXN7oYO0s/LfS46XwncPU8xO8zWDxBIMO3Easl+
-         guS7RQ3/hKev8L86c/bpFnn92PLQF1TIWg60T0w21WW/l5BAv1hI0kYaSnXEA5R3MsmC
-         +C9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690835765; x=1691440565;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8WbRt22akgzv4PmYRoTv7Z60VgxgxYtdGWVmvWN3QQU=;
-        b=lkAfTwKoPLddK7emoyAiO2tBNcUYoEfwyFUJanBuFB++pqNgOGb+lgOSBQuI/NTTG0
-         AeuOpKCVIbnHdxOqGuB289UAfmekjYwQiSrt8LT+3H2jRXiGHAjkczRyeJpA+EQ0PAdm
-         Gf9ABxM3gF5cPLlfCu7RVyQwOKAkc/97QzFaKRy0robRy978XDqVo71xaAXHekwjH2Pw
-         vwMfzeEVvHl+i/VXeVVTqRFOS3Ntgm03ixpFxPStCULc7yiL9mxIHN+c2ZD/N6p2wr31
-         B1YnmvxkLViuxxK7ft5T1GinAGJK9pZ20sKCrRWjuA01kLJty/S7GYWFY9AJG8OL3o4l
-         84mQ==
-X-Gm-Message-State: ABy/qLbN60EleyFjSAdqTQEuzClQQkkpdmtiepbC3uWjByfyIUf0Bb0r
-        BdXnDdmCAZXgQLLACM/0+RCcP5gnYb9g2qDJgu34eA==
-X-Google-Smtp-Source: APBJJlEmoOsErptso+JLUNi7GHGxX5qEgT6biVyV0lbNK73KMKgCiYEb0JJeNHAmZZOJJPW+PoidP5ENk119vh3duf0=
-X-Received: by 2002:ac8:7f02:0:b0:407:4aa8:c5ba with SMTP id
- f2-20020ac87f02000000b004074aa8c5bamr366494qtk.14.1690835765004; Mon, 31 Jul
- 2023 13:36:05 -0700 (PDT)
+        Mon, 31 Jul 2023 16:35:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B198172A;
+        Mon, 31 Jul 2023 13:35:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690835741; x=1722371741;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=il+OrpNJkCiZXQXCAjNwn2LSF5pF/7jhhD8JXlD/k1Q=;
+  b=lM4ae2yqx264rXk/G+jjkyTYzh9nYppQPp5OBGQ0aftWry10fq33z0s8
+   xT0bUdgFLJZ3sCc3wNI89yEzIig1womQcFH2gEBNkgT1n79GT/VD3cc57
+   E1GgYOFcdFWx3MHAZ5nG5+zCEM5CxBA9873uPQZRbhjKVh0LiDU0t65Dl
+   2WCMQM8u3JU+/9s6yU+ELO1mokaiW/0K4gAnKkM7o6Rn2R14gl/lxvcBg
+   pUrRNZgrGVWwfwJhBAebSmQgn+0EMrmHXJrVY7FpR6OFQPW0CnkT2FeSb
+   i8MlwaYAPf7+v2vO2SZR8xlio16I5bdoiQGB729BA/sarZZo69UpgtrIk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="354043394"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="354043394"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:35:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852170252"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="852170252"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.61])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 31 Jul 2023 13:35:38 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "mingo@redhat.com" <mingo@redhat.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>
+Subject: Re: [PATCH v3 03/28] x86/sgx: Add 'struct sgx_epc_lru_lists' to
+ encapsulate lru list(s)
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+ <20230712230202.47929-4-haitao.huang@linux.intel.com>
+ <CU4GHCJTRKLZ.1RK23NWPHJGNI@seitikki>
+ <op.17794m01wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4f5496d2e0ea8edba430e7de7304bdd840616146.camel@intel.com>
+ <op.18lc2zw6wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <9ffb02a3344807f2c173fe8c7cb000cd6c7843b6.camel@intel.com>
+Date:   Mon, 31 Jul 2023 15:35:36 -0500
 MIME-Version: 1.0
-References: <20230729004144.1054885-1-seanjc@google.com>
-In-Reply-To: <20230729004144.1054885-1-seanjc@google.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Mon, 31 Jul 2023 14:35:29 -0600
-Message-ID: <CAOUHufaK1zibYzOxUGWgYatLnts+fOG6X8fBAwtGA_S6cdDxMw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: Wrap kvm_{gfn,hva}_range.pte in a per-action union
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.18yrhmgswjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <9ffb02a3344807f2c173fe8c7cb000cd6c7843b6.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 6:41=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> Wrap kvm_{gfn,hva}_range.pte in a union so that future notifier events ca=
-n
-> pass event specific information up and down the stack without needing to
-> constantly expand and churn the APIs.  Lockless aging of SPTEs will pass
-> around a bitmap, and support for memory attributes will pass around the
-> new attributes for the range.
->
-> Add a "KVM_NO_ARG" placeholder to simplify handling events without an
-> argument (creating a dummy union variable is midly annoying).
->
-> Opportunstically drop explicit zero-initialization of the "pte" field, as
-> omitting the field (now a union) has the same effect.
->
-> Cc: Yu Zhao <yuzhao@google.com>
-> Link: https://lore.kernel.org/all/CAOUHufagkd2Jk3_HrVoFFptRXM=3DhX2CV8f+M=
--dka-hJU4bP8kw@mail.gmail.com
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+On Mon, 24 Jul 2023 18:31:58 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-Acked-by: Yu Zhao <yuzhao@google.com>
+...
+>> > Although briefly mentioned in the first patch, it would be better to  
+>> put
+>> > more
+>> > background about the "reclaimable" and "non-reclaimable" thing here,
+>> > focusing on
+>> > _why_ we need multiple LRUs (presumably you mean two lists:  
+>> reclaimable
+>> > and non-
+>> > reclaimable).
+>> >
+>> Sure I can add a little more background to introduce the
+>> reclaimable/unreclaimable concept. But why we need multiple LRUs would  
+>> be
+>> self-evident in later patches, not sure I will add details here.
+>
+> In this case people will need to go to that patch to get some idea  
+> first.  It
+> doesn't seem hurt if you can explain why you need multiple LRUs here  
+> first.
+>
+Will add.
+
+...
+>
+> I didn't get the CHECK in my testing.  Not sure why.
+>
+> Anyway, I guess the comment can be useful if it is to explain why we  
+> need to use
+> spinlock or whatever lock.  But
+>
+> 	/* Must acquire this lock to access */
+>
+> doesn't explain why at all, thus doesn't look helpful to me.
+>
+> I guess you either need a better comment, or just remove it (it's  
+> obvious that a
+> lot of kernel code doesn't have a comment around spinlock_t).
+>
+
+I'll remove the comments.
+Thanks
+Haitao
