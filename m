@@ -2,169 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 543CA769355
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B382276935D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbjGaKpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37146 "EHLO
+        id S230032AbjGaKq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:46:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbjGaKpE (ORCPT
+        with ESMTP id S229510AbjGaKq1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:45:04 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 186471A7;
-        Mon, 31 Jul 2023 03:45:03 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        Mon, 31 Jul 2023 06:46:27 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FFB51A7;
+        Mon, 31 Jul 2023 03:46:25 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2B4106606EF9;
-        Mon, 31 Jul 2023 11:45:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690800302;
-        bh=/xy20Cx4V6EcMmCM8zDIAQr6l+aYKGfHtIlKmzg8S3o=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=kH/YeZhuGKaOtHqLEoRX/qQ2/e9rZ3Jpmfi9GcY3R2995jNbEbKVZNs/UqnReqGu2
-         ZylGZdK8yb8QsXtB7Y9/rJjINZBL/056DWM1UZBL6KTZlWt23VcctporE2HHOURKSi
-         EABlVob6ZwWjO92I4tZkaDXN5YJaBNTVCZgwU0x93VUzmRWLo0xI+nqPOcOz052+lh
-         NPi0RsiUYDXKeSTpCE2ePfHEXRxuyjXP68dPEAzT2oKn2ZyUrkg+TFfhsTJdaQzSYv
-         q53//+H1ZZ4GdwywQjETz+n9DH+zSqAFm3o7ZTfRMDyssICFVBePj7hTQq/5M4GvfD
-         eOSJmovLnmX3w==
-Message-ID: <fc142ae5-bc96-ca95-eb96-e54d6d9cdb22@collabora.com>
-Date:   Mon, 31 Jul 2023 12:44:58 +0200
+        by smtp-out2.suse.de (Postfix) with ESMTPS id CF64C1F385;
+        Mon, 31 Jul 2023 10:46:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1690800383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A4Z9iV8WUq8OgKp1VPZMtqr/fdl1VBql1c/Mb0w5bXo=;
+        b=Exj3kmfQTKCKpyIZnjdm9Mvz5gBVaux+NQ6wJw5l7I7rO3L4maLcSiuzI2p7Q49IBMjetL
+        xe/MgKMLgGJtpRwvOslM6mLQQujpQPOcqs/XyjVIehZ+ZSbLNMDJPVw0mXY1GidYtYVxz8
+        C1A0i0a9YpceiH1Z58NOjfTiBXIuwvs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1690800383;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A4Z9iV8WUq8OgKp1VPZMtqr/fdl1VBql1c/Mb0w5bXo=;
+        b=h0sQyUjlm33c+qAKcpveXNGpf70sdzLYqGQ7a1iNdlCd37LicU72PtLA0VpXiauhLfiXN0
+        dPr7yXhCsG53prDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 220C7133F7;
+        Mon, 31 Jul 2023 10:46:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id z0FUB/+Qx2RKZAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 31 Jul 2023 10:46:23 +0000
+Message-ID: <703da7eb-d08a-3eca-1b98-b5895e41d53b@suse.cz>
+Date:   Mon, 31 Jul 2023 12:46:22 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 5/6] ASoC: dt-bindings: mediatek,mt7986-wm8960: add
- mt7986-wm8960 document
+ Thunderbird/102.13.1
+Subject: Re: [RFC PATCH v11 11/29] security: Export
+ security_inode_init_security_anon() for use by KVM
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20230718234512.1690985-1-seanjc@google.com>
+ <20230718234512.1690985-12-seanjc@google.com>
 Content-Language: en-US
-To:     =?UTF-8?B?TWFzbyBIdWFuZyAo6buD5Yqg56u5KQ==?= 
-        <Maso.Huang@mediatek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chenxiangrui@huaqin.corp-partner.google.com" 
-        <chenxiangrui@huaqin.corp-partner.google.com>,
-        =?UTF-8?B?VHJldm9yIFd1ICjlkLPmlofoia8p?= <Trevor.Wu@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?UTF-8?B?QWxsZW4tS0ggQ2hlbmcgKOeoi+WGoOWLsik=?= 
-        <Allen-KH.Cheng@mediatek.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "perex@perex.cz" <perex@perex.cz>, "arnd@arndb.de" <arnd@arndb.de>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-References: <20230728090819.18038-1-maso.huang@mediatek.com>
- <20230728090819.18038-6-maso.huang@mediatek.com>
- <8e207baf-4a85-71f1-8ea3-08eab438b7cd@collabora.com>
- <ebfc016f57ec50ea8026efdce575813a75676b5c.camel@mediatek.com>
- <4aa7dd33239d568cfdf46f1e403bdeeef947726a.camel@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <4aa7dd33239d568cfdf46f1e403bdeeef947726a.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230718234512.1690985-12-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 31/07/23 08:42, Maso Huang (黃加竹) ha scritto:
-> On Fri, 2023-07-28 at 18:16 +0800, Maso Huang wrote:
->> On Fri, 2023-07-28 at 11:55 +0200, AngeloGioacchino Del Regno wrote:
->>> Il 28/07/23 11:08, Maso Huang ha scritto:
->>>> Add document for mt7986 board with wm8960.
->>>>
->>>> Signed-off-by: Maso Huang <maso.huang@mediatek.com>
->>>> ---
->>>>    .../sound/mediatek,mt7986-wm8960.yaml         | 53
->>>> +++++++++++++++++++
->>>>    1 file changed, 53 insertions(+)
->>>>    create mode 100644
->>>> Documentation/devicetree/bindings/sound/mediatek,mt7986-
->>>> wm8960.yaml
->>>>
->>>> diff --git
->>>> a/Documentation/devicetree/bindings/sound/mediatek,mt7986-
->>>> wm8960.yaml
->>>> b/Documentation/devicetree/bindings/sound/mediatek,mt7986-
->>>> wm8960.yaml
->>>> new file mode 100644
->>>> index 000000000000..76394f7e5502
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/sound/mediatek,mt7986-
->>>> wm8960.yaml
->>>> @@ -0,0 +1,53 @@
->>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>> +%YAML 1.2
->>>> +---
->>>> +$id:
->>>>
-> https://urldefense.com/v3/__http://devicetree.org/schemas/sound/mediatek,mt7986-wm8960.yaml*__;Iw!!CTRNKA9wMg0ARbw!lu4Z6pJeRiL7-8l4T3ptqUCM54FnHTBiyh5KWBNqSjl6mOOI7WmzHpWEd-ZSZ-2NJ4Cs9PPaAF_75ywo2SKW16MPPRaROt0$
->>>>   
->>>>   
->>>> +$schema:
->>>>
-> https://urldefense.com/v3/__http://devicetree.org/meta-schemas/core.yaml*__;Iw!!CTRNKA9wMg0ARbw!lu4Z6pJeRiL7-8l4T3ptqUCM54FnHTBiyh5KWBNqSjl6mOOI7WmzHpWEd-ZSZ-2NJ4Cs9PPaAF_75ywo2SKW16MPttZILAo$
->>>>   
->>>>   
->>>> +
->>>> +title: MediaTek MT7986 sound card with WM8960 codec
->>>> +
->>>> +maintainers:
->>>> +  - Maso Huang <maso.huang@mediatek.com>
->>>> +
->>>> +properties:
->>>> +  compatible:
->>>> +    const: mediatek,mt7986-wm8960-machine
->>>
->>> mediatek,mt7986-wm8960-sound looks better.
->>>
->>> After which,
->>>
->>> Reviewed-by: AngeloGioacchino Del Regno <
->>> angelogioacchino.delregno@collabora.com>
->>>
->>>
->>
->> Hi Angelo,
->>
->> Thanks for your review.
->> I'll change the compatible to "mediatek,mt7986-wm8960-sound" in v4
->> patch.
->>
->> Best regards,
->> Maso
->>
-> 
-> Hi Angelo,
-> 
-> One more question for this compatible.
-> 
-> The suffix "machine" means alsa machine driver for mt7986-wm8960. It
-> might be better to use "machine" here.
-> 
-> Or you prefer "sound" than "machine"?
-> 
-> Best regards,
-> Maso
+On 7/19/23 01:44, Sean Christopherson wrote:
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-I prefer "sound" because of consistency with other MediaTek machine driver
-compatible strings.
+Process wise this will probably be frowned upon when done separately, so I'd
+fold it in the patch using the export, seems to be the next one.
 
-Regards,
-Angelo
+> ---
+>  security/security.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/security/security.c b/security/security.c
+> index b720424ca37d..7fc78f0f3622 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1654,6 +1654,7 @@ int security_inode_init_security_anon(struct inode *inode,
+>  	return call_int_hook(inode_init_security_anon, 0, inode, name,
+>  			     context_inode);
+>  }
+> +EXPORT_SYMBOL_GPL(security_inode_init_security_anon);
+>  
+>  #ifdef CONFIG_SECURITY_PATH
+>  /**
+
