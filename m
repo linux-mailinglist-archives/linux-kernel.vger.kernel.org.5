@@ -2,65 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C4B7689F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F39A768A00
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbjGaC0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 22:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
+        id S229773AbjGaCax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 22:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbjGaC0N (ORCPT
+        with ESMTP id S229538AbjGaCav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 22:26:13 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841D019C
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 19:26:12 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1b8b4749013so32053105ad.2
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 19:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690770372; x=1691375172;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+5+YDtWOqzo4ntCd+ygrleNLdsHAxAxplxj1dQXMQFU=;
-        b=hdJPCLFD6ReyKmnF/ug9HWb5kg1E28UUAXXmv8egdv9xxQkThiVfhuSHBKmF7GcLJD
-         lhpwd2oUOws2qM2/rEbDiRyFv1IucwhwfzTIt4/O/SKIWXY9mQYhw99Q0h2PsOnEAWU4
-         hFZTS8t2EorHlPm3R+hQ1pPRGYQdl1+11bA0mTG0HyVq7mUAgFCyvyjQncueSRbQyduw
-         hwC5rj21ZjjZKYNu/aSYwhMGHzxNos8+BBmczhTwhqCcoXxelfG9vkziu5n4rag4hO0R
-         ndzen1kWIQCX3T7uJid61z356RElByaco+/nuR/bD61S6nE/+6GWbazNeTOZvYYIO0Ok
-         tcZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690770372; x=1691375172;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+5+YDtWOqzo4ntCd+ygrleNLdsHAxAxplxj1dQXMQFU=;
-        b=keAwdvoxhBqIOdf+UYksZAitIyewOl/f1glhiBWTRy9+tJKruKoYc1vjpUWXPVV1WA
-         rfSjf5TwxxGDq/njWpyOC4y9e5UTmk1RKrtTY6a3sxMbAu643IDt/5PMVrQLkOQRwhTp
-         AxG/mqEjBr3kGoWLbxoyLOsw4zrh/UjBQETz44KSjjiOC1GgmBIJAdwbs7XV5FxAoDiG
-         1jHFKcp7VwNb+ExV5njGWoxHMsA4qs8CTodRXT4ixeQqQ3YLnj9mlAw8rE3rVzUdJphF
-         7LR8kSSSr9KMoZuPO8xH1iktjlzfivyswEcWo1Hns4TRNB6/YomcAGnpp2zKvzqxfdAx
-         LD9Q==
-X-Gm-Message-State: ABy/qLZP0H5Zvypocl5vj4vIbfpc0AzBPlSfipOpBHXkrN8aEe7tDq/Z
-        3XfMmSmyCCXn+P5QuT+3B/eA+dBF+LAcZ8uF
-X-Google-Smtp-Source: APBJJlF+vu+opgQ1dCnvS8yu4mP20sj7AQijKvtoK4+KiXtKJ9FGp/UBhR3wdrI/NYwby8rzAkp0Og==
-X-Received: by 2002:a17:902:ea0d:b0:1b8:6cac:ffe8 with SMTP id s13-20020a170902ea0d00b001b86cacffe8mr9713516plg.51.1690770371714;
-        Sun, 30 Jul 2023 19:26:11 -0700 (PDT)
-Received: from rajgad.hsd1.ca.comcast.net ([2601:204:df00:9cd0:f50b:8f24:acc4:e5c])
-        by smtp.gmail.com with ESMTPSA id g6-20020a170902740600b001b03842ab78sm7233993pll.89.2023.07.30.19.26.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 19:26:11 -0700 (PDT)
-From:   Atul Raut <rauji.raut@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH] ipc:msg: Replace zero-length arrays with DECLARE_FLEX_ARRAY() helper
-Date:   Sun, 30 Jul 2023 19:25:57 -0700
-Message-Id: <20230731022557.25598-1-rauji.raut@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 30 Jul 2023 22:30:51 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148FBE4E;
+        Sun, 30 Jul 2023 19:30:50 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RDj036rbXz4f3nq6;
+        Mon, 31 Jul 2023 10:30:43 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP2 (Coremail) with SMTP id Syh0CgC3ltTUHMdkCiyOPA--.31595S4;
+        Mon, 31 Jul 2023 10:30:46 +0800 (CST)
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+To:     song@kernel.org, yukuai3@huawei.com
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yukuai1@huaweicloud.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: [PATCH -next] md/raid10: fix a 'conf->barrier' leakage in raid10_takeover()
+Date:   Mon, 31 Jul 2023 10:28:00 +0800
+Message-Id: <20230731022800.1424902-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-CM-TRANSID: Syh0CgC3ltTUHMdkCiyOPA--.31595S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur1rGr15JrW8GF4DKw48WFg_yoW8Gw4rpa
+        1IgF13Zr43Cas8Aw1DX34DCFyrtayDGrW8Ca93u3s8ZF13tFZ3K3y5XFW5WFWDuF95Jw1D
+        tFn8C3yrAFyjgFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+        xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,32 +58,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replacing zero-length arrays with C99 flexible-array members
-because they are deprecated.
-Use the new DECLARE_FLEX_ARRAY() auxiliary macro instead of defining
-a zero-length array.
+From: Yu Kuai <yukuai3@huawei.com>
 
-This fixes warnings such as:
-./ipc/msg.c:981:6-11: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
+After commit 4d27e927344a ("md: don't quiesce in mddev_suspend()"),
+'conf->barrier' will be leaked in the case that raid10 takeover raid0:
 
-Signed-off-by: Atul Raut <rauji.raut@gmail.com>
+level_store
+ pers->takeover -> raid10_takeover
+  raid10_takeover_raid0
+   WRITE_ONCE(conf->barrier, 1)
+
+mddev_suspend
+// still raid0
+mddev->pers = pers
+// switch to raid10
+mddev_resume
+// resume without suspend
+
+After the above commit, mddev_resume() will not decrease 'conf->barrier'
+that is set in raid10_takeover_raid0().
+
+Fix this problem by remove the setting of 'conf->barrier' from
+raid10_takeover_raid0().
+
+By the way, this problem is found while I'm trying to make
+mddev_suspend/resume() to be independent from raid personalities. rai10
+is the only personality to use reference count in the quiesce() callback
+and this problem is only related to raid10.
+
+Fixes: 4d27e927344a ("md: don't quiesce in mddev_suspend()")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- ipc/msg.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/raid10.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/ipc/msg.c b/ipc/msg.c
-index fd08b3cb36d7..300c126faf2d 100644
---- a/ipc/msg.c
-+++ b/ipc/msg.c
-@@ -978,7 +978,7 @@ SYSCALL_DEFINE4(msgsnd, int, msqid, struct msgbuf __user *, msgp, size_t, msgsz,
+diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+index 16aa9d735880..7704a4c7f469 100644
+--- a/drivers/md/raid10.c
++++ b/drivers/md/raid10.c
+@@ -4417,7 +4417,6 @@ static void *raid10_takeover_raid0(struct mddev *mddev, sector_t size, int devs)
+ 				rdev->new_raid_disk = rdev->raid_disk * 2;
+ 				rdev->sectors = size;
+ 			}
+-		WRITE_ONCE(conf->barrier, 1);
+ 	}
  
- struct compat_msgbuf {
- 	compat_long_t mtype;
--	char mtext[1];
-+	DECLARE_FLEX_ARRAY(char, mtext);
- };
- 
- long compat_ksys_msgsnd(int msqid, compat_uptr_t msgp,
+ 	return conf;
 -- 
-2.34.1
+2.39.2
 
