@@ -2,123 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EBE769D2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370DB769D33
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233532AbjGaQwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51342 "EHLO
+        id S233564AbjGaQyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:54:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbjGaQwD (ORCPT
+        with ESMTP id S233559AbjGaQyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:52:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8712AA6;
-        Mon, 31 Jul 2023 09:52:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1939F61230;
-        Mon, 31 Jul 2023 16:52:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E0D0C433C8;
-        Mon, 31 Jul 2023 16:52:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690822321;
-        bh=CGzW4Z4n87oXkmDgD3NYNy1uk7m9r4O9fbpQ0K4fcrw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JwP2f6UiI/vu1DP9is9j8UII+ounDJXNS96unDEUTuoypnss/KVF645UcDhKT1oX+
-         MxD72lxig3/MfG2acIqu6QYXzcHTRD5Gu2QeJ6BWlTu+W14gikM9dg20Pvkl4iGC+G
-         Wb3fiR6p4u6l0Lw05mRLbxTf3rRvNlY/kN5F1TO9wnosooHIRdQdF2wn+c9Fk0QW8T
-         sEteJiW0DkcJXo8tJiRf+5rIuQbj1/OEKValoXbf/8RXyTqb50vvXO7t4kezgIE4mw
-         /TrUY9WAxRAxGCdWYmP88TLvkiq7acc2xKsWUdoHC2bewk8jBZdMPE/Ua1P2QOVY4t
-         L2Af9fI3xDQMw==
-Date:   Mon, 31 Jul 2023 09:51:59 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Md Danish Anwar <a0501179@ti.com>
-Cc:     MD Danish Anwar <danishanwar@ti.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Roger Quadros <rogerq@kernel.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>, <nm@ti.com>, <srk@ti.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v12 06/10] net: ti: icssg-prueth: Add ICSSG ethernet
- driver
-Message-ID: <20230731095159.3b7e3b75@kernel.org>
-In-Reply-To: <8790da4f-1378-410c-f637-f85ca4d34604@ti.com>
-References: <20230727112827.3977534-1-danishanwar@ti.com>
-        <20230727112827.3977534-7-danishanwar@ti.com>
-        <20230728172419.702b4ac0@kernel.org>
-        <8790da4f-1378-410c-f637-f85ca4d34604@ti.com>
+        Mon, 31 Jul 2023 12:54:04 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 825341728;
+        Mon, 31 Jul 2023 09:53:59 -0700 (PDT)
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 36VGrYmN017834;
+        Mon, 31 Jul 2023 18:53:34 +0200
+Date:   Mon, 31 Jul 2023 18:53:34 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Zhangjin Wu <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        tanyuan@tinylab.org
+Subject: Re: [PATCH 1/4] selftests/nolibc: drop unused test helpers
+Message-ID: <20230731165334.GA17823@1wt.eu>
+References: <20230731073243.21265-1-falcon@tinylab.org>
+ <20230731110226.115351-1-falcon@tinylab.org>
+ <e7ec15d7-0152-4e69-920f-ffb1983e1011@t-8ch.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e7ec15d7-0152-4e69-920f-ffb1983e1011@t-8ch.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 16:49:59 +0530 Md Danish Anwar wrote:
-> There are five error handling cases in xmit().
-> 
-> 1. DMA Mapping the linear buffer -- If we fail to map dma, we will return
-> NETDEV_TX_OK and goto drop_free_skb which will free the skb and drop the packet.
-> 
-> 2. Allocating descriptor for linear buffer -- If we fail to allocate descriptor
-> this means it is a occupancy issue and we will goto drop_stop_q_busy which will
-> stop queue and return NETDEV_TX_BUSY.
-> 
-> 3. Allocating descriptor when skb is fragmented. -- If we fail to allocate
-> descriptor when skb is fragmented, we will goto drop_stop_q which will stop the
-> queue, free the descriptor, free the skb, drop the packet and return NETDEV_TX_OK.
+Hi guys,
 
-This one should be BUSY, right? goto free_desc_stop_q_busy
+On Mon, Jul 31, 2023 at 05:30:23PM +0200, Thomas Weißschuh wrote:
 
-> 4. DMA mapping for fragment. -- If DMA mapping for fragment fails, we will go
-> to drop_free_descs which will free the descriptor, free the skb, drop the
-> packet and return NETDEV_TX_OK.
+> > > > > > Why not a simple 'static __attribute__((unused))' line, then, no need to
+> > > > > > add them again next time.
+> > > > > > 
+> > > > > >     -static int expect_zr(int expr, int llen)
+> > > > > >     +static __attribute__((unused))
+> > > > > >     +int expect_zr(int expr, int llen)
+> > > > > >      {
+> > > > > 
+> > > > > Personally I don't like having dead code lying around that needs to be
+> > > > > maintained and skipped over while reading.
+> > > > > It's not a given that we will need those helpers in the future at all.
+> > > > >
+> > > > 
+> > > > It is reasonable in some degree from current status, especially for
+> > > > these ones are newly added, but let us think about these scenes: when we
+> > > > would drop or change some test cases in the future and the helpers may
+> > > > would be not referenced by any test cases in a short time, and warnings
+> > > > there, but some other cases may be added later to use them again ...
+> > > 
+> > > That doesn't seem very likely.
+> > > Did it happen recently?
+> > >
+> > 
+> > Yeah, it did happen, but I can not remember which one, a simple statistic
+> > does show it may be likely:
 > 
-> 5. Tx push failed. -- If tx push fails we will goto drop_free_descs which will
-> free the descriptor, free the skb, drop the packet and return.
+> I can't find it.
 > 
-> We will only stop queue in case 2 and 3 where we failed to allocate descriptor.
-> In case 1, 4 and 5 we are encountering dma mapping error, so for these cases we
-> will not stop the queue.
+> >     $ grep EXPECT_ -ur tools/testing/selftests/nolibc/nolibc-test.c | grep -v define | sed -e 's/.*\(EXPECT_[A-Z0-9]*\).*/\1/g' | sort | uniq -c | sort -k 1 -g -r
+> >          55 EXPECT_EQ
+> >          37 EXPECT_SYSER
+> >          21 EXPECT_SYSZR
+> >          11 EXPECT_SYSNE
+> >           9 EXPECT_VFPRINTF
+> >           4 EXPECT_PTRGT
+> >           4 EXPECT_GE
+> >           3 EXPECT_STRZR
+> >           3 EXPECT_NE
+> >           3 EXPECT_LT
+> >           3 EXPECT_GT
+> >           2 EXPECT_STRNZ
+> >           2 EXPECT_STREQ
+> >           2 EXPECT_PTRLT
+> >           1 EXPECT_SYSER2
+> >           1 EXPECT_SYSEQ
+> >           1 EXPECT_PTRNZ
+> >           1 EXPECT_PTRNE
+> >           1 EXPECT_PTRER2
+> >           1 EXPECT_PTRER
+> >           1 EXPECT_PTREQ
+> > 
+> > 7 helpers are only used by once, another 3 helpers are used twice, and
+> > another 4 are only used by three times.
 > 
-> Below will be my goto labels.
-> 
-> drop_stop_q:
-> 	netif_tx_stop_queue(netif_txq);
-> 
-> drop_free_descs:
-> 	prueth_xmit_free(tx_chn, first_desc);
-> 
-> drop_free_skb:
-> 	dev_kfree_skb_any(skb);
-> 
-> 	/* error */
-> 	ndev->stats.tx_dropped++;
-> 	netdev_err(ndev, "tx: error: %d\n", ret);
-> 
-> 	return ret;
+> Why can't we just drop them when they are not used anymore?
 
-free_desc_stop_q_busy:
- 	prueth_xmit_free(tx_chn, first_desc);
-> drop_stop_q_busy:
-> 	netif_tx_stop_queue(netif_txq);
-> 	return NETDEV_TX_BUSY;
+Actually we don't know if they're used or not given that the purpose of
+the nolibc-test.c file is for it to be easy to add new tests, and the
+collection of macros above serves this purpose. It's not just a series
+of test but rather a small test framework. So the fact that right now
+no single test uses some of them doesn't mean that someone else will
+not have to reimplement them in two months.
+
+However I share your concern that the file has become ugly over time.
+I've recently been wondering why we wouldn't move all that to an external
+include file. It could also encourage us to differentiate between the
+macros used to only evaluate a result, and the tests themselves, as
+we'd be certain that none of them could call a test function directly.
+
+> > Btw, just thought about gc-section, do we need to further remove dead code/data
+> > in the binary? I don't think it is necessary for nolibc-test itself, but with
+> > '-Wl,--gc-sections -Wl,--print-gc-sections' may be a good helper to show us
+> > which ones should be dropped or which ones are wrongly declared as public?
+> > 
+> > Just found '-O3 + -Wl,--gc-section + -Wl,--print-gc-sections' did tell
+> > us something as below:
+> > 
+> >     removing unused section '.text.nolibc_raise'
+> >     removing unused section '.text.nolibc_memmove'
+> >     removing unused section '.text.nolibc_abort'
+> >     removing unused section '.text.nolibc_memcpy'
+> >     removing unused section '.text.__stack_chk_init'
+> >     removing unused section '.text.is_setting_valid'
+
+Just a note Zhangjin, it would really help if you wouldn't mix different
+topics in mails. It's easy enough to start a separate thread since it's
+a completely separate one here.
+
+> > These info may help us further add missing 'static' keyword or find
+> > another method to to drop the wrongly used status of some functions from
+> > the code side.
+> > 
+> > It is very easy to add the missing 'static' keyword for is_setting_valid(), but
+> > for __stack_chk_init(), is it ok for us to convert it to 'static' and remove
+> > the 'weak' attrbute and even the 'section' attribute? seems it is only used by
+> > our _start_c() currently.
+> 
+> Making is_setting_valid(), __stack_chk_init() seems indeed useful.
+> Also all the run_foo() test functions.
+
+Most of them could theoretically be turned to static. *But* it causes a
+problem which is that it will multiply their occurrences in multi-unit
+programs, and that's in part why we've started to use weak instead. Also
+if you run through gdb and want to mark a break point, you won't have the
+symbol when it's static, and the code will appear at multiple locations,
+which is really painful. I'd instead really prefer to avoid static when
+we don't strictly want to inline the code, and prefer weak when possible
+because we know many of them will be dropped at link time (and that's
+the exact purpose).
+
+Thanks,
+Willy
