@@ -2,145 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695AD76907F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A7CD769081
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbjGaIkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49550 "EHLO
+        id S231388AbjGaIlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231642AbjGaIjT (ORCPT
+        with ESMTP id S231356AbjGaIkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:39:19 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9ECE10F0;
-        Mon, 31 Jul 2023 01:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=fpzWiCemt8iyK69nP61qCLs36MXwZ+pdOr4ITT1eya0=; b=haZPeO5LdCP8/cngv1IF8GYnCB
-        JpI6Oqi+D5JWYV1zV+UjHB17TpOjFoeZZzwl1VQafULr2qvZRn/XoTAXSHIEjVqtWdVCMz8RpuO6N
-        o6gFWkRf/SJGeERduYeO8nm11vdejRYzeBlpu8QN5MxNjuAxE/FZHwOrcL+9NtHTnvsc1MUJqDMMt
-        cXSljNq6m1mtzPD90yydTLSCGm866aXjcZtAE+wJufjf9+QUNmVjm+JGAx/+tmp3PNtX1yf4QYSqg
-        JOn2InDeSov1ckzUOPpiLvTZO86uQ3G/hx3/Us7Jx/uXyo6lci2OF1mLPe6VF9vpF6DDFvT+Y5p5m
-        u2OKnHLQ==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQOQ6-00EYvK-1x;
-        Mon, 31 Jul 2023 08:38:26 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Yangbo Lu <yangbo.lu@nxp.com>, Joshua Kinard <kumba@gentoo.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org (open list),
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-modules@vger.kernel.org
-Subject: [PATCH 5/5] modules: only allow symbol_get of EXPORT_SYMBOL_GPL modules
-Date:   Mon, 31 Jul 2023 10:38:06 +0200
-Message-Id: <20230731083806.453036-6-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230731083806.453036-1-hch@lst.de>
-References: <20230731083806.453036-1-hch@lst.de>
+        Mon, 31 Jul 2023 04:40:39 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C128719A8
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:39:01 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fb4146e8deso48816185e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690792738; x=1691397538;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=8iu5cp8Y1GY0uNruSlKQJ5tGFR1JHk9Mos4NpUwA/wg=;
+        b=yZuwdwFmisXPSEluH2zX2tYetrzxIzHXt9nfphWuS3Rf5Lu8PgHpR7Qs8WYXv3VWFr
+         szsvlIuBbmmG26gM7Ig8uuqXbYTresYPNFI6yPhCcQ+Y3igG/69JB0BZvn5DTWAd6ZEl
+         PHzI/u0UNIJcHWOh9VAWUZHJAdzKhql0+6yEPoPqdG3OZh7zu0+qZliBxy/xdyPpgj6a
+         NviyD9nIPsiYeY5C7rJRYzw/L6tFxcbyl3QvZbTVBqDIud09m89s3KY7FZ357dlwJc/d
+         8LNMNMiQQ+RS1qb+ebVDqhabrperJaDIDJgkhGfSOSQ6LwDE7GD7uKjpZN23CG8trwqL
+         caGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690792738; x=1691397538;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8iu5cp8Y1GY0uNruSlKQJ5tGFR1JHk9Mos4NpUwA/wg=;
+        b=WKadIhgBIz9VHzFrTFsbQsH4e6lBZ7q2r7zlBu8R+2t3FEYSgjODSXf4ptl4e8tGI7
+         hpGtdR6tDvHrq4L3TndouVWPhkf9w5ZJNmO1S011iahDBHDrw5tFRFrL2Lvy2ifiGL9y
+         YLPBQcHea7suBzZPqoTOd0vFEVAwrdhNwXWvLqrWGg1+V11WIf6vF0q3USW5bZXCPULh
+         HeXybnZv9aRpsQqtnAPGsg9w7bKwKf4yBruIevnmAwqeXshs33YsvCeKoXBz/ZPIv9Sx
+         +0hPCm4DOixRyL47Y4Dppkpvs9PKn9MWKqjCNoPeRyGlkd7PLqn5woQpE1saF13kWS8J
+         giOQ==
+X-Gm-Message-State: ABy/qLbJ4f8ERWqc3n225pA+lyRLQH9wWqm+gkGY1qDJ9a3C2YHj1LAJ
+        o4QReBQqI8qOglafYM/LupYNrQ==
+X-Google-Smtp-Source: APBJJlGe9+f3abgBiBGI/g3dK5e3z6k6mz+gPWGjUfyhIP1sP/oWUqrsh6ruhgXBgfkMGwgCW1OLrw==
+X-Received: by 2002:a1c:f70c:0:b0:3fc:80a:cf63 with SMTP id v12-20020a1cf70c000000b003fc080acf63mr7980848wmh.38.1690792737906;
+        Mon, 31 Jul 2023 01:38:57 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:14b8:9aa7:6bf0:256d? ([2a01:e0a:982:cbb0:14b8:9aa7:6bf0:256d])
+        by smtp.gmail.com with ESMTPSA id 9-20020a05600c020900b003fe1cb874afsm3963566wmi.18.2023.07.31.01.38.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 01:38:57 -0700 (PDT)
+Message-ID: <aee8b25a-217d-a63c-d2b9-3b7a9c4cd248@linaro.org>
+Date:   Mon, 31 Jul 2023 10:38:56 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] usb: typec: nb7vpq904m: Add an error handling path in
+ nb7vpq904m_probe()
+Content-Language: en-US
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-usb@vger.kernel.org
+References: <9118954765821ea9f1179883602b4eca63e91749.1689716381.git.christophe.jaillet@wanadoo.fr>
+Organization: Linaro Developer Services
+In-Reply-To: <9118954765821ea9f1179883602b4eca63e91749.1689716381.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It has recently come to my attention that nvidia is circumventing the
-protection added in 262e6ae7081d ("modules: inherit
-TAINT_PROPRIETARY_MODULE") by importing exports from their propriertary
-modules into an allegedly GPL licensed module and then rexporting them.
+On 18/07/2023 23:40, Christophe JAILLET wrote:
+> In case of error in the nb7vpq904m_probe() probe function, some resources
+> need to be freed, as already done in the remove function.
+> 
+> Add the missing error handling path and adjust code accordingly.
+> 
+> Fixes: 88d8f3ac9c67 ("usb: typec: add support for the nb7vpq904m Type-C Linear Redriver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+> This changes the order with some devm_ allocated resources. I hope this is
+> fine. At least it is consistent with the remove function.
+> ---
+>   drivers/usb/typec/mux/nb7vpq904m.c | 25 ++++++++++++++++++-------
+>   1 file changed, 18 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/mux/nb7vpq904m.c b/drivers/usb/typec/mux/nb7vpq904m.c
+> index 80e580d50129..4d1122d95013 100644
+> --- a/drivers/usb/typec/mux/nb7vpq904m.c
+> +++ b/drivers/usb/typec/mux/nb7vpq904m.c
+> @@ -463,16 +463,18 @@ static int nb7vpq904m_probe(struct i2c_client *client)
+>   
+>   	ret = nb7vpq904m_register_bridge(nb7);
+>   	if (ret)
+> -		return ret;
+> +		goto err_disable_gpio;
+>   
+>   	sw_desc.drvdata = nb7;
+>   	sw_desc.fwnode = dev->fwnode;
+>   	sw_desc.set = nb7vpq904m_sw_set;
+>   
+>   	nb7->sw = typec_switch_register(dev, &sw_desc);
+> -	if (IS_ERR(nb7->sw))
+> -		return dev_err_probe(dev, PTR_ERR(nb7->sw),
+> -				     "Error registering typec switch\n");
+> +	if (IS_ERR(nb7->sw)) {
+> +		ret = dev_err_probe(dev, PTR_ERR(nb7->sw),
+> +				    "Error registering typec switch\n");
+> +		goto err_disable_gpio;
+> +	}
+>   
+>   	retimer_desc.drvdata = nb7;
+>   	retimer_desc.fwnode = dev->fwnode;
+> @@ -480,12 +482,21 @@ static int nb7vpq904m_probe(struct i2c_client *client)
+>   
+>   	nb7->retimer = typec_retimer_register(dev, &retimer_desc);
+>   	if (IS_ERR(nb7->retimer)) {
+> -		typec_switch_unregister(nb7->sw);
+> -		return dev_err_probe(dev, PTR_ERR(nb7->retimer),
+> -				     "Error registering typec retimer\n");
+> +		ret = dev_err_probe(dev, PTR_ERR(nb7->retimer),
+> +				    "Error registering typec retimer\n");
+> +		goto err_switch_unregister;
+>   	}
+>   
+>   	return 0;
+> +
+> +err_switch_unregister:
+> +	typec_switch_unregister(nb7->sw);
+> +
+> +err_disable_gpio:
+> +	gpiod_set_value(nb7->enable_gpio, 0);
+> +	regulator_disable(nb7->vcc_supply);
+> +
+> +	return ret;
+>   }
+>   
+>   static void nb7vpq904m_remove(struct i2c_client *client)
 
-Given that symbol_get was only ever inteded for tightly cooperating
-modules using very internal symbols it is logical to restrict it to
-being used on EXPORY_SYMBOL_GPL and prevent nvidia from costly DMCA
-circumvention of access controls law suites.
 
-All symbols except for four used through symbol_get were already exported
-as EXPORT_SYMBOL_GPL, and the remaining four ones were switched over in
-the preparation patches.
-
-Fixes: 262e6ae7081d ("modules: inherit TAINT_PROPRIETARY_MODULE")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- kernel/module/internal.h |  1 +
- kernel/module/main.c     | 17 ++++++++++++-----
- 2 files changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/module/internal.h b/kernel/module/internal.h
-index c8b7b4dcf7820d..add687c2abde8b 100644
---- a/kernel/module/internal.h
-+++ b/kernel/module/internal.h
-@@ -93,6 +93,7 @@ struct find_symbol_arg {
- 	/* Input */
- 	const char *name;
- 	bool gplok;
-+	bool gplonly;
- 	bool warn;
- 
- 	/* Output */
-diff --git a/kernel/module/main.c b/kernel/module/main.c
-index 59b1d067e52890..85d3f00ca65758 100644
---- a/kernel/module/main.c
-+++ b/kernel/module/main.c
-@@ -281,6 +281,8 @@ static bool find_exported_symbol_in_section(const struct symsearch *syms,
- 
- 	if (!fsa->gplok && syms->license == GPL_ONLY)
- 		return false;
-+	if (fsa->gplonly && syms->license != GPL_ONLY)
-+		return false;
- 
- 	sym = bsearch(fsa->name, syms->start, syms->stop - syms->start,
- 			sizeof(struct kernel_symbol), cmp_name);
-@@ -776,8 +778,9 @@ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
- void __symbol_put(const char *symbol)
- {
- 	struct find_symbol_arg fsa = {
--		.name	= symbol,
--		.gplok	= true,
-+		.name		= symbol,
-+		.gplok		= true,
-+		.gplonly	= true,
- 	};
- 
- 	preempt_disable();
-@@ -1289,14 +1292,18 @@ static void free_module(struct module *mod)
- void *__symbol_get(const char *symbol)
- {
- 	struct find_symbol_arg fsa = {
--		.name	= symbol,
--		.gplok	= true,
--		.warn	= true,
-+		.name		= symbol,
-+		.gplok		= true,
-+		.gplonly	= true,
-+		.warn		= true,
- 	};
- 
- 	preempt_disable();
- 	if (!find_symbol(&fsa) || strong_try_module_get(fsa.owner)) {
- 		preempt_enable();
-+		if (fsa.gplonly)
-+			pr_warn("failing symbol_get of non-GPLONLY symbol %s.\n",
-+				symbol);
- 		return NULL;
- 	}
- 	preempt_enable();
--- 
-2.39.2
-
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
