@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 598F3768A2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95B1768A2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbjGaCwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 22:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
+        id S229836AbjGaDBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 23:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjGaCwX (ORCPT
+        with ESMTP id S229730AbjGaDBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 22:52:23 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0531FE47;
-        Sun, 30 Jul 2023 19:52:22 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bcd6c0282so635042666b.1;
-        Sun, 30 Jul 2023 19:52:21 -0700 (PDT)
+        Sun, 30 Jul 2023 23:01:20 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F493E54;
+        Sun, 30 Jul 2023 20:01:19 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bf91956cdso256570466b.3;
+        Sun, 30 Jul 2023 20:01:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690771940; x=1691376740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690772477; x=1691377277;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sLKpbSPGzXDuDP4SHea1EinIC04xetUtSoOaZK7zadI=;
-        b=TIUk1xsJFtc/l1rkYdG1pQM7UONNtqxRPkuH29DeHBA3RYK88MDM3fdhyAL3UpWqAN
-         3PePMM62m3sNz9z8xLjzpz2Fdy5mmep8Ic9ixGyw42cjUmxceDuN0thJaZqe0BSex32l
-         SOUgBP6TfjUvX6p6Yw7PWQ/zsbtDPu3pG0T2NyKntDUW69+9J8jcGeGcFkk/msujXFE5
-         bEi/IEZkFpDw54AaMMFtIrE0lIHB3jzMeqwA1zAwn8B/vgfAe15/kQ2vtw2+/dYfUJM2
-         YMNf5rVO+HynIBmPeSggR8VZqi3LJEGfE22iYvUu4vKfLmLNHvyzVdNUcRviDG5mCkOT
-         snbA==
+        bh=ecUeirOJHielqU2V2QVVlEgRhDgcv2ltG9OUNcEijcA=;
+        b=nX0e097CSjr22VDhuIDIPeIgbVAIX7YH0gJQP2A8blXy9F7xn5KBxQEPuE9+Fu45LY
+         ODMVDuVEfhL2Scjm7EpqDwGICiM4WUi7Zdcs0UhNKc8+wJ4RmyO1VBXfyBj1vTDgvWp0
+         Z2wgpBN8g4pnkwqgNf+5mXk/pxk9/xSH4jR2SzVkKBO3SmMRYXuvCddZS7phDlXDn1yG
+         04X0DlzOWQWc9DXrREXThstgiHgGH3K5D1kppiJqqwMzrZzJRzfl/44HcnrFwb51x2um
+         xZf20gYYCbuM0UZGkEFYYXNbQt4HZ5fRl/NlcANSqD3zfzyT28skJmiHjjBmmYt/O8jD
+         UyuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690771940; x=1691376740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690772477; x=1691377277;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sLKpbSPGzXDuDP4SHea1EinIC04xetUtSoOaZK7zadI=;
-        b=NFL7YJS219luG9SFd6B90RjJ98cn2X7YX1GkIUXOtRxsXUADT3VJi2YioFWkOBKSIi
-         pd69vGyj3RFlwxSLrH6eMscC3OYZ8UjqumxNCa9UcDB05sslaVzqUmC7KaayUI9KI1pl
-         PibJZFwqqOdrNJmCRLQKbBB1KU49311mQuQiegY821HipzBIUu9oHaidoogmP6JswRm0
-         cxPsQcDV2fMrSydWNIxdE+weyXStLzWUWQHd+hWgiroS9xc6Jta2gKCfKgWtOujUKUqF
-         vgxzMMKq/yGTdDtfve3wLRhrQyGFF4fVMAUYAW89aCefUqx/s1YgCu5AaVAukI/tcL1I
-         BrbQ==
-X-Gm-Message-State: ABy/qLYMmnwknYf6gCn5hQbQ1LSpiRNofCvhQaW7AWUno8WvNSwRhGor
-        8teExbyfiAjO0C+BRwXr+LICuPKM3ae1SoapAyc=
-X-Google-Smtp-Source: APBJJlEN2cSvwOt5awG0AZZHeBr3zDivNmi+GZamrE/u79nfCP/SKQTNWjC9vvTZ4cd+LlzKGlRBvL+eXBNs5K8DgYw=
-X-Received: by 2002:a17:907:7819:b0:99b:f392:10b1 with SMTP id
- la25-20020a170907781900b0099bf39210b1mr6092103ejc.37.1690771940131; Sun, 30
- Jul 2023 19:52:20 -0700 (PDT)
+        bh=ecUeirOJHielqU2V2QVVlEgRhDgcv2ltG9OUNcEijcA=;
+        b=Y/S/kiM+G8QO/3KcqM98pfFoPvxSg9X+ltJi4jMpotmjSl5BExOzk5VRlngTzoEmKd
+         abPafLY6JEN9x5lf02uIWzmNUCGpGpDfVNux/kvrJXkjdCZXMtHIn2CM9Km5ilPMHXHF
+         Apy3Cdf0trr8ZleMCM/VKaQGSe3qVhKvYm2ujyWtyaHi+0jW68l8OaHNLeCTYTPaTxFS
+         JIUYXHQAriqdg2UqpPbqDx+jrDVA/0zMLp2JIWlz9NmCh2peapKWWHhr+932iLxtlsmz
+         m/rURThU67/+PBbpfsRZNLyDrICUUYP8QxXBT3WVoLpxt5bT6LiNvjiQ2z6W2EmbYHIi
+         gPaQ==
+X-Gm-Message-State: ABy/qLbBMBcHHoFcpfwrpL568iwJ1jP7R9yR6UiB+2Ry394DbYptctPf
+        AFN9C2Tiv85ZmwNqb8TGvM4=
+X-Google-Smtp-Source: APBJJlEM6I/lSlKGXZQNa4yMbGUH/reP8m1tygmzdl+8XpVkEnwdqvfxsZZFN8QbbZqBxg1jMF+CRQ==
+X-Received: by 2002:a17:907:7817:b0:99b:627f:9c0d with SMTP id la23-20020a170907781700b0099b627f9c0dmr4835252ejc.27.1690772477455;
+        Sun, 30 Jul 2023 20:01:17 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id v25-20020a17090606d900b00992e265a22dsm5500004ejb.136.2023.07.30.20.01.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 20:01:16 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1309727C0054;
+        Sun, 30 Jul 2023 23:01:15 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Sun, 30 Jul 2023 23:01:15 -0400
+X-ME-Sender: <xms:-iPHZNeKPJdM5RYXr36b7F9wTaxdAPi-tIdd5S1lQAu_v_m3ipS_pQ>
+    <xme:-iPHZLNjroExiln0MvVR1zH-LI1UnDkkxybu_5Fly89L7O7L-JWte6uLS4pucqAxR
+    NWV2IvWLldvytJAew>
+X-ME-Received: <xmr:-iPHZGidN_9kjyY47ntasgX3wkPLaetLB3rFI7KPOqXcJLBwfboj3GwmZXA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjedvgdeiiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:-iPHZG_h3DJ28HVkmVU4xt8O5frYly_iCXN5KkwwiRp8aK59mz04Lw>
+    <xmx:-iPHZJt6LWt0DLOWai32HJfrH0oCDeNgkZ_WuepiPiCkX9Whuu0KJA>
+    <xmx:-iPHZFEST3C9a8ZDb7FlxAJycDRkBtSAO-QhTUqFf0m9-bs0RLy-LA>
+    <xmx:-yPHZKnpI9DMQjnLdnCtA3Ldfy0KNmbTOn6oUzfiCIZfJXmNys87xg>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 30 Jul 2023 23:01:14 -0400 (EDT)
+Date:   Sun, 30 Jul 2023 20:00:33 -0700
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Benno Lossin <benno.lossin@proton.me>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Andreas Hindborg <nmi@metaspace.dk>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Asahi Lina <lina@asahilina.net>
+Subject: Re: [PATCH v3 08/13] rust: init: Add functions to create array
+ initializers
+Message-ID: <ZMcj0TswxyCu5hpd@boqun-archlinux>
+References: <20230729090838.225225-1-benno.lossin@proton.me>
+ <20230729090838.225225-9-benno.lossin@proton.me>
 MIME-Version: 1.0
-References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
- <20230729134318.1694467-7-keguang.zhang@gmail.com> <551ac5ae-2ccf-0a7e-46df-e1b05e8163cc@linaro.org>
-In-Reply-To: <551ac5ae-2ccf-0a7e-46df-e1b05e8163cc@linaro.org>
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-Date:   Mon, 31 Jul 2023 10:52:03 +0800
-Message-ID: <CAJhJPsW+WkdA1kXBn=J2biAUn_GXH8PiBmsZ9UKSYJaWvK0Oog@mail.gmail.com>
-Subject: Re: [PATCH 06/17] MIPS: loongson32: Convert platform IRQ driver to DT
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230729090838.225225-9-benno.lossin@proton.me>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -74,42 +107,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30, 2023 at 4:24=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 29/07/2023 15:43, Keguang Zhang wrote:
-> > This patch enables Loongson-1 irqchip driver
-> > by adding platform INTC device nodes.
-> > And drop the legacy platform IRQ driver accordingly.
-> >
-> > Based on previous patch by Jiaxun Yang.
-> >
-> > Link: https://lore.kernel.org/all/20190411121915.8040-3-jiaxun.yang@fly=
-goat.com
-> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > ---
-> >  arch/mips/boot/dts/loongson/loongson1.dtsi  |  53 ++++++
-> >  arch/mips/boot/dts/loongson/loongson1c.dtsi |  13 ++
->
-> DTS is always separate from the drivers.
+On Sat, Jul 29, 2023 at 09:10:02AM +0000, Benno Lossin wrote:
+[...]
+> +/// Initializes an array by initializing each element via the provided initializer.
+> +///
+> +/// # Examples
+> +///
+> +/// ```rust
+> +/// use kernel::{sync::{Arc, Mutex}, init::pin_init_array_from_fn, new_mutex};
+> +/// let array: Arc<[Mutex<usize>; 1_000_000_000]>=
 
-Got it. Will do.
->
-> >  arch/mips/loongson32/common/Makefile        |   2 +-
-> >  arch/mips/loongson32/common/irq.c           | 191 --------------------
-> >  arch/mips/loongson32/init.c                 |   5 +
-> >  5 files changed, 72 insertions(+), 192 deletions(-)
-> >  delete mode 100644 arch/mips/loongson32/common/irq.c
-> >
->
->
->
-> Best regards,
-> Krzysztof
->
+This is nice, but (if I got my math correct) it requires ~30G memory on
+a 64bit machine, and when this example got generated as a kunit test,
+my poor VM took forever to finish it ;-) ;-) ;-) Maybe descrease it to,
+say, 1000?
 
+Regards,
+Boqun
 
---=20
-Best regards,
-
-Keguang Zhang
+> +///     Arc::pin_init(pin_init_array_from_fn(|i| new_mutex!(i))).unwrap();
+> +/// assert_eq!(array.len(), 1_000_000_000);
+> +/// ```
+[...]
