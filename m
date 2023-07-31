@@ -2,74 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA63A768A66
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D73768A68
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjGaDly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 23:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
+        id S229604AbjGaDrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 23:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbjGaDlw (ORCPT
+        with ESMTP id S229469AbjGaDrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 23:41:52 -0400
-Received: from mail-yw1-x1144.google.com (mail-yw1-x1144.google.com [IPv6:2607:f8b0:4864:20::1144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B3C10B;
-        Sun, 30 Jul 2023 20:41:51 -0700 (PDT)
-Received: by mail-yw1-x1144.google.com with SMTP id 00721157ae682-583e91891aeso48158017b3.1;
-        Sun, 30 Jul 2023 20:41:51 -0700 (PDT)
+        Sun, 30 Jul 2023 23:47:14 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8911E53;
+        Sun, 30 Jul 2023 20:47:12 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bc02bd4eafso10246055ad.1;
+        Sun, 30 Jul 2023 20:47:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690774910; x=1691379710;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=llUncJ6XvCbCVRkShMXc33YP30OKZJvRpZvYC2tLhSU=;
-        b=fjQcJ5Os0GLC2NIOptOGGKWlgkoMvHgNzBh7voqbL0syWox3vFWTPbBb/wtGVAxboU
-         BGhIO1nHeTc4V4Wfjl0emVtEEdl1h8DLIHj0OYKh70PF0Yvd1g2fYM/eOlBOwcMvEdh1
-         yA1Ip9q11i9/PevHdbMeIbnl/yx/5oJflytYFMOhlk16e02xbc0719B3lZNfdbZ3Doy9
-         atfqAzIwY8Tx4U3gkxciMuMoBytOZpNiWZGlOrkwuhQd3a2ZbQDBCqwjFG+qaEHEy2iu
-         BcyRvRoWgQoXK2ZI280DBTnG6L0/bM27GS9h/1MbV7oxNL7RGAB0Wmbmm4UC9zTCfT6/
-         VGEA==
+        d=gmail.com; s=20221208; t=1690775232; x=1691380032;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0+Iq8rjthuWxB9vm3ZVIy+baoDKsYpVrmoMrfb4dLKY=;
+        b=YStm9bVWepmcQguvBLejF2BBxgRQqDiSzZ3kCJaYEePpdHArTHnp/xb1yJZo6Oekwy
+         KPpLCt1fGbbA5gZfZNdZO9ozUCa+//Z4YC5wNkrR0VVZTPVmJvLk9O0Ml9drDsB+rYMA
+         R0SO51OiSS0wxj3AL6PBGxheppHXcW6ZaL/x5HS3jfIqXv+STFIE/RuwWBVBBynzQ+aQ
+         BqG6M1h6U9HwQk6wZ8KiPZ4akXnSgixTE0ZTiDKHvt7GFMSMpXUFheIMLbhw5PVwNLmd
+         uafLu7StnqFFyzk2ayMT/tJ1RsYePwCaT74eqh9Hx06vJ+M6r2iXEX65/aH01XyDsF7O
+         LsmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690774910; x=1691379710;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=llUncJ6XvCbCVRkShMXc33YP30OKZJvRpZvYC2tLhSU=;
-        b=FndiDHXbHIFHGGt9ULlL1kehZqyWN3ggwwu+pOqlGuoVlY+izHTZtqXL0V7DhJ9nEO
-         XuLwGjVhvQ68hal8DJBbjPHcNDzMcHDmPC1ErciMTBzZoIEkUTn8agTzO+e9fGRKQvTp
-         dZk93UVM9MWxZkus2WB0Fl4WmLRu9DQUZLNdrRalusKFXGtAFrhF8d2dJaDDbkJzbbXe
-         mOiiCq68FgqvwFPx0Ez5vsKAw7HoIgvv+cly+BwCumZJHZa5E7a8HT/94zPJxPfzH6ZK
-         SUFy5/LbPRZRPfIyOkPNGuwbiTTqR7hczbEWYyx0Oo9+JXYBuizfCsliCAiERwzdAAcc
-         cnSQ==
-X-Gm-Message-State: ABy/qLZ7bAuJgxzgqjuDJDAnqDLpW0qSFigIk56DTBvakpbQAIZ8hMH8
-        1TUXZhSCkMFFUj/mcXx60/NqgeLbOxXO6KasA68=
-X-Google-Smtp-Source: APBJJlHslHdUNzQb+zIUzFCaH4j0CZPvq2RJDTh0koAylOIa27++22Dkw+/kbvi8Sod48N6hcDTpvzFtWuVzRiZ3aGY=
-X-Received: by 2002:a0d:db87:0:b0:583:cf0f:152d with SMTP id
- d129-20020a0ddb87000000b00583cf0f152dmr11597944ywe.6.1690774910623; Sun, 30
- Jul 2023 20:41:50 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690775232; x=1691380032;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0+Iq8rjthuWxB9vm3ZVIy+baoDKsYpVrmoMrfb4dLKY=;
+        b=QwGUNJdV9PRnMOTFj0Gj5GozbErQ5VJ6u4D+onRuFxiSQCoWJsJAIYt7leV8H2sxFv
+         sfxZxT+cUQ1F5o6yZEOKrCkHb2u6CAN5pyXv0aR8lHd8uyyuUzTMUjZXCjbwXR1QfJ4T
+         fBZrg5+0Qus1MIMQrh2F8c4zNaH8djlUHrqA5rWjqy9skpbGBAJM4VXMDPoQZEojuSTD
+         3H6TboC/rsb/AVIOwZ2lLisVptRn9Z2fqete8dN+7okVAvCXgUJt03hPvw8/dG6lrq8n
+         HFUd6AeMFLRda5dPns/0NIP8ibEsgW6SkwqWDl+xvPJ0nsInT1WASNOkEVI3bdDTX4eB
+         vdhw==
+X-Gm-Message-State: ABy/qLZhFao1DgcZ5iG9+fRhLzZDs6viFHmdU7I+IHcSCyMxJ+DWlMJE
+        tbGzjBZwf8za8BNUr1zciyE=
+X-Google-Smtp-Source: APBJJlFTyP6ZfRWoW3McU9rAP40CAOmt4Cfdu3V0g/Fm6FNad28/o1TXHMe2Q5WqQPKReghuDGX0cg==
+X-Received: by 2002:a17:902:eccf:b0:1b5:694:b1a9 with SMTP id a15-20020a170902eccf00b001b50694b1a9mr10899480plh.32.1690775232164;
+        Sun, 30 Jul 2023 20:47:12 -0700 (PDT)
+Received: from [192.168.1.121] ([65.129.146.152])
+        by smtp.gmail.com with ESMTPSA id ix13-20020a170902f80d00b001b9d7c8f44dsm7325338plb.182.2023.07.30.20.47.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 20:47:11 -0700 (PDT)
+Message-ID: <ec2a2031-366d-c6c1-ff11-accd1cccae8f@gmail.com>
+Date:   Sun, 30 Jul 2023 21:47:11 -0600
 MIME-Version: 1.0
-References: <20230727125125.1194376-1-imagedong@tencent.com>
- <20230727125125.1194376-4-imagedong@tencent.com> <CANn89iKWTrgEp3QY34mNqVAx09fSxHUh+oHRTd6=aWurGS7qWA@mail.gmail.com>
- <CADxym3YhjMv3Xkts99fiajq-cR-BqxDayKFzFZ1L49BNfFXkdw@mail.gmail.com>
- <CADVnQynQ1Hw+Jh7pjdNw_Mo4tWZV8V_sA+L-o=O4uV+9Gv7Prg@mail.gmail.com>
- <CADxym3Zqb2CCpJojGiT7gVL98GDdOmjxqLY6ApLeP2zZU1Kn3Q@mail.gmail.com>
- <CANn89i+WnwgpGy4v=aXsjThPBA2FQzWx9Y=ycXWWGLDdtDHBig@mail.gmail.com>
- <CADVnQy=OumgmsbsQ8QLhUiyUNN95Ay2guVjgGVVLH93QXanBSw@mail.gmail.com> <CADVnQynwrvdoEH2d7VVNSG6vHg8BC5ikz+PApOOMG4Eo3MqSww@mail.gmail.com>
-In-Reply-To: <CADVnQynwrvdoEH2d7VVNSG6vHg8BC5ikz+PApOOMG4Eo3MqSww@mail.gmail.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Mon, 31 Jul 2023 11:41:38 +0800
-Message-ID: <CADxym3YgR36hoTEHUbCYUzYkiXpjnSuVEZWnvoqbMo8MoTCtnQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 3/3] net: tcp: check timeout by
- icsk->icsk_timeout in tcp_retransmit_timer()
-To:     Neal Cardwell <ncardwell@google.com>
-Cc:     Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <imagedong@tencent.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Soheil Hassas Yeganeh <soheil@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Scsi_bus_resume+0x0/0x90 returns -5 when resuming from s3 sleep
+To:     Damien Le Moal <dlemoal@kernel.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Cc:     regressions@lists.linux.dev,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+References: <0e272abe-292d-d58f-cf80-55868e793abc@gmail.com>
+ <6b66dd9a-8bd5-2882-9168-8e6e0848c454@leemhuis.info>
+ <c70caa9e-164c-fee5-8f85-67f6d02373ab@kernel.org>
+ <b0ed86e0-3e4a-d4d1-7b9d-c57f20538a80@gmail.com>
+ <86435987-734e-c6c1-a857-1ba80da709fe@gmail.com>
+ <48bc1736-5e4e-3a9b-3715-60509c333bb1@kernel.org>
+ <f7e7b601-571f-bd2e-6410-a8a27e510c2f@gmail.com>
+ <40365501-283a-408b-3514-48c29db36861@kernel.org>
+ <d44e4057-0758-4cb8-ca29-02b5bb340b8b@gmail.com>
+ <2b7e9239-fd48-0f74-f69b-e0039809c857@kernel.org>
+Content-Language: en-US
+From:   TW <dalzot@gmail.com>
+In-Reply-To: <2b7e9239-fd48-0f74-f69b-e0039809c857@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -80,110 +86,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 1:15=E2=80=AFAM Neal Cardwell <ncardwell@google.com=
-> wrote:
->
-> On Fri, Jul 28, 2023 at 7:25=E2=80=AFAM Neal Cardwell <ncardwell@google.c=
-om> wrote:
-> >
-> > On Fri, Jul 28, 2023 at 1:50=E2=80=AFAM Eric Dumazet <edumazet@google.c=
-om> wrote:
-> > >
-> > > On Fri, Jul 28, 2023 at 8:25=E2=80=AFAM Menglong Dong <menglong8.dong=
-@gmail.com> wrote:
-> > > >
-> > > > On Fri, Jul 28, 2023 at 12:44=E2=80=AFPM Neal Cardwell <ncardwell@g=
-oogle.com> wrote:
-> > > > >
-> > > > > On Thu, Jul 27, 2023 at 7:57=E2=80=AFPM Menglong Dong <menglong8.=
-dong@gmail.com> wrote:
-> > > > > >
-> > > > > > On Fri, Jul 28, 2023 at 3:31=E2=80=AFAM Eric Dumazet <edumazet@=
-google.com> wrote:
-> > > > > > >
-> > > > > > > On Thu, Jul 27, 2023 at 2:52=E2=80=AFPM <menglong8.dong@gmail=
-.com> wrote:
-> > > > > > > >
-> > > > > > > > From: Menglong Dong <imagedong@tencent.com>
-> > > > > > > >
-> > > > > > > > In tcp_retransmit_timer(), a window shrunk connection will =
-be regarded
-> > > > > > > > as timeout if 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX=
-'. This is not
-> > > > > > > > right all the time.
-> > > > > > > >
-> > > > > > > > The retransmits will become zero-window probes in tcp_retra=
-nsmit_timer()
-> > > > > > > > if the 'snd_wnd=3D=3D0'. Therefore, the icsk->icsk_rto will=
- come up to
-> > > > > > > > TCP_RTO_MAX sooner or later.
-> > > > > > > >
-> > > > > > > > However, the timer is not precise enough, as it base on tim=
-er wheel.
-> > > > > > > > Sorry that I am not good at timer, but I know the concept o=
-f time-wheel.
-> > > > > > > > The longer of the timer, the rougher it will be. So the tim=
-eout is not
-> > > > > > > > triggered after TCP_RTO_MAX, but 122877ms as I tested.
-> > > > > > > >
-> > > > > > > > Therefore, 'tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX' i=
-s always true
-> > > > > > > > once the RTO come up to TCP_RTO_MAX.
-> > > > > > > >
-> > > > > > > > Fix this by replacing the 'tcp_jiffies32' with '(u32)icsk->=
-icsk_timeout',
-> > > > > > > > which is exact the timestamp of the timeout.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Menglong Dong <imagedong@tencent.com>
-> > > > > > > > ---
-> > > > > > > >  net/ipv4/tcp_timer.c | 6 +++++-
-> > > > > > > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > > > > > > >
-> > > > > > > > diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-> > > > > > > > index 470f581eedd4..3a20db15a186 100644
-> > > > > > > > --- a/net/ipv4/tcp_timer.c
-> > > > > > > > +++ b/net/ipv4/tcp_timer.c
-> > > > > > > > @@ -511,7 +511,11 @@ void tcp_retransmit_timer(struct sock =
-*sk)
-> > > > > > > >                                             tp->snd_una, tp=
-->snd_nxt);
-> > > > > > > >                 }
-> > > > > > > >  #endif
-> > > > > > > > -               if (tcp_jiffies32 - tp->rcv_tstamp > TCP_RT=
-O_MAX) {
-> > > > > > > > +               /* It's a little rough here, we regard any =
-valid packet that
-> > > > > > > > +                * update tp->rcv_tstamp as the reply of th=
-e retransmitted
-> > > > > > > > +                * packet.
-> > > > > > > > +                */
-> > > > > > > > +               if ((u32)icsk->icsk_timeout - tp->rcv_tstam=
-p > TCP_RTO_MAX) {
-> > > > > > > >                         tcp_write_err(sk);
-> > > > > > > >                         goto out;
-> > > > > > > >                 }
->
-> One potential pre-existing issue with this logic: if the connection is
-> restarting from idle, then tp->rcv_tstamp could already be a long time
-> (minutes or hours) in the past even on the first RTO, in which case
-> the very first RTO that found a zero tp->snd_wnd  would find this
-> check returns true, and would destroy the connection immediately. This
-> seems extremely brittle.
+Oh excellent I'll go do that now.
 
-Yes, this scenario can happen and cause the connection
-break unexpectedly.
-
->
-> AFAICT it would be safer to replace this logic with a call to the
-> standard tcp_write_timeout() logic that has a more robust check to see
-> if the connection should be destroyed.
-
-Yes, we need a more robust check here. But I think tcp_write_timeout()
-is not a good choice. The icsk->icsk_retransmits won't increase and
-can keep being 0 in this scenario, which makes tcp_write_timeout()
-always return 0.
-
-Enn...let me think again.
-
->
-> neal
+On 7/30/23 18:41, Damien Le Moal wrote:
+> I posted a proper patch and CC-ed you. A "Tested-by:" tag from you 
+> would be much appreciated (please use your full name in that case, 
+> instead of only "TW"). Thanks.
