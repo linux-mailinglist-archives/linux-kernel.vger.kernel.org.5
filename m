@@ -2,160 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 532C5769FF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9278C769FF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbjGaSC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40862 "EHLO
+        id S231594AbjGaSDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231267AbjGaSC4 (ORCPT
+        with ESMTP id S229871AbjGaSDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:02:56 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF5DE4E
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:02:55 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe2503e3easo4572961e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:02:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690826574; x=1691431374;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=sbvUvGljtEHmYL7qi+HXkrNPoFOxFR5BvYu2TjHTwr0=;
-        b=D9E3ZcdecHW/AeFtZ+rCyYRCgHd0EAWCQWVnJetVe9U1Clq/ZnJaJrwTDKMMR3Fmf5
-         UXD34A6gN2F/PSEALsGXpwpUVIwSnPxQeOKMAHBIh62cfyrlXiQ1rLHGKVKtEeobsXeZ
-         YDya2STnECp5Gel9dceP0mS/Kmtlorb/H51OU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690826574; x=1691431374;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sbvUvGljtEHmYL7qi+HXkrNPoFOxFR5BvYu2TjHTwr0=;
-        b=QUdZVF0ePaUypxsdIx5Q/+9k38nIVR5oT9rFgzzkfQTkrXN/ELpRuQyTcMeUSEalnn
-         XIfMExwtwhFDQalsZGhaTrf5EdWUcQ+E/lY0d3PcAs5xWW3VEC8WDVoGSOflYLQbS1yp
-         jmX8OZIDm1+zgFPLikpRxRr+qwLIZFKmqKl08rJ1BclwYy1FgpDCk5eqFHsxHE1XmzGD
-         komkLvqMQ1H5lFdKFBstx9NvZoiHRopCHkZEaVAz5Wu4VC6ccenL1VxRfECc05AhIQSI
-         DVuEfm9Z8FVr52+VILz789m2J4pferVI8yjwOuljDmivX68Wl+pvJWm95YoJXaCwXXkH
-         Akyg==
-X-Gm-Message-State: ABy/qLaN5c6+2FZ2O5c8MLa+q40yZmjN6b4ewGHvPmvJoHgK+H16VLqX
-        bAgZdXKsQt5xWgXB3ze9wrFpauGWYuQQJmq6AOcCYw==
-X-Google-Smtp-Source: APBJJlF6dbwLQb837FZeJ62/1PZ9C/4JmR/8AqKQJuZaHxJ/Y3D3zSSIOJAXfDLM0g/cyQ8v67doDQ==
-X-Received: by 2002:a05:6512:2e9:b0:4fe:819:b0ed with SMTP id m9-20020a05651202e900b004fe0819b0edmr381442lfq.46.1690826574088;
-        Mon, 31 Jul 2023 11:02:54 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id y19-20020ac24473000000b004fe0f0eff15sm2173609lfl.191.2023.07.31.11.02.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 11:02:53 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-4fe41f7c7ffso197413e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:02:53 -0700 (PDT)
-X-Received: by 2002:ac2:4e07:0:b0:4fe:ec5:2698 with SMTP id
- e7-20020ac24e07000000b004fe0ec52698mr498383lfr.50.1690826573309; Mon, 31 Jul
- 2023 11:02:53 -0700 (PDT)
+        Mon, 31 Jul 2023 14:03:37 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CC9E4E;
+        Mon, 31 Jul 2023 11:03:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=b6B0HYLtewPCtZDDCJN1W60jRqsHU7Vz+hikYlsFepk=; b=LDp2D+a/MfR8lAfnFHyEg+mUr/
+        xb62Gcg8pWH0vgh9mpgWeSx5CU331hvlCcVOaPnUFxDYwOvYdStT2E6Yt5YSdDGdIL5l5kJOBcwxF
+        6/7KvPdY9qjKUlIV8B7y2z8MUWHAMT9km+Pw8vRvB5OxmFwNnCXxCqlMcQFTKN9eJhPDAvYuSknBq
+        GrisXn87vqQcxfQ1Oj0kjXT5xa1f/LD1UtlEhydVDEZd39dtqKIN7U2/3jt7cypLEvUjFQ3nv1XEl
+        slZBt7y/iPYk3x/+mBXzVWQrhI31I8FXkI1DwYq1xnMWbmX+X8lFFK47ptN74E3L5sIZsySQsDbXn
+        KDGjf81w==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQXEn-00CzRm-0i;
+        Mon, 31 Jul 2023 18:03:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A4E333002CE;
+        Mon, 31 Jul 2023 20:03:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 88956203C242E; Mon, 31 Jul 2023 20:03:20 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 20:03:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        dvhart@infradead.org, dave@stgolabs.net, andrealmeid@igalia.com,
+        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
+        hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de
+Subject: Re: [PATCH v1 11/14] futex: Implement FUTEX2_NUMA
+Message-ID: <20230731180320.GR29590@hirez.programming.kicks-ass.net>
+References: <20230721102237.268073801@infradead.org>
+ <20230721105744.434742902@infradead.org>
+ <87pm48m19m.ffs@tglx>
 MIME-Version: 1.0
-References: <20230731171233.1098105-1-surenb@google.com> <20230731171233.1098105-2-surenb@google.com>
-In-Reply-To: <20230731171233.1098105-2-surenb@google.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 31 Jul 2023 11:02:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
-Message-ID: <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
-Subject: Re: [PATCH 1/6] mm: enable page walking API to lock vmas during the walk
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
-        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
-        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pm48m19m.ffs@tglx>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 at 10:12, Suren Baghdasaryan <surenb@google.com> wrote:
->
-> -               walk_page_vma(vma, &subpage_walk_ops, NULL);
-> +               walk_page_vma(vma, &subpage_walk_ops, true, NULL);
+On Mon, Jul 31, 2023 at 07:36:21PM +0200, Thomas Gleixner wrote:
+> On Fri, Jul 21 2023 at 12:22, Peter Zijlstra wrote:
+> >  struct futex_hash_bucket *futex_hash(union futex_key *key)
+> >  {
+> > -	u32 hash = jhash2((u32 *)key, offsetof(typeof(*key), both.offset) / 4,
+> > +	u32 hash = jhash2((u32 *)key,
+> > +			  offsetof(typeof(*key), both.offset) / sizeof(u32),
+> >  			  key->both.offset);
+> > +	int node = key->both.node;
+> >  
+> > -	return &futex_queues[hash & (futex_hashsize - 1)];
+> > +	if (node == -1) {
+> > +		/*
+> > +		 * In case of !FLAGS_NUMA, use some unused hash bits to pick a
+> > +		 * node -- this ensures regular futexes are interleaved across
+> > +		 * the nodes and avoids having to allocate multiple
+> > +		 * hash-tables.
+> > +		 *
+> > +		 * NOTE: this isn't perfectly uniform, but it is fast and
+> > +		 * handles sparse node masks.
+> > +		 */
+> > +		node = (hash >> futex_hashshift) % nr_node_ids;
+> 
+> Is nr_node_ids guaranteed to be stable after init? It's marked
+> __read_mostly, but not __ro_after_init.
 
-Rather than add a new argument to the walk_page_*() functions, I
-really think you should just add the locking rule to the 'const struct
-mm_walk_ops' structure.
+AFAICT it is only ever written to in setup_nr_node_ids() and that is all
+__init code. So I'm thinking this could/should indeed be
+__ro_after_init. Esp. so since it is an exported variable.
 
-The locking rule goes along with the rules for what you are actually
-doing, after all. Plus it would actually make it all much more legible
-when it's not just some random "true/false" argument, but a an actual
+Mike?
 
-        .write_lock = 1
+> > +		if (!node_possible(node)) {
+> > +			node = find_next_bit_wrap(node_possible_map.bits,
+> > +						  nr_node_ids, node);
+> > +		}
+> > +	}
+> > +
+> > +	return &futex_queues[node][hash & (futex_hashsize - 1)];
+> >  }
+> >  	fshared = flags & FLAGS_SHARED;
+> > +	size = futex_size(flags);
+> >  
+> >  	/*
+> >  	 * The futex address must be "naturally" aligned.
+> >  	 */
+> >  	key->both.offset = address % PAGE_SIZE;
+> > -	if (unlikely((address % sizeof(u32)) != 0))
+> > +	if (unlikely((address % size) != 0))
+> >  		return -EINVAL;
+> 
+> Hmm. Shouldn't that have changed with the allowance of the 1 and 2 byte
+> futexes?
 
-in the ops definition.
+That patches comes after this.. :-)
 
-Yes, yes, that might mean that some ops might need duplicating in case
-you really have a walk that sometimes takes the lock, and sometimes
-doesn't, but that is odd to begin with.
+But I do have an open question here; do we want FUTEX2_NUMA futexes
+aligned at futex_size or double that? That is, what do we want the
+alignment of:
 
-The only such case I found from a quick look was the very strange
-queue_pages_range() case. Is it really true that do_mbind() needs the
-write-lock, but do_migrate_pages() does not?
+struct futex_numa_32 {
+	u32 val;
+	u32 node;
+};
 
-And if they really are that different maybe they should have different walk_ops?
+to be? Having that u64 aligned will guarantee these two values end up in
+the same page, having them u32 aligned (as per this patch) allows for
+them to be split.
 
-Maybe there were other cases that I didn't notice.
+The current paths don't care, we don't hold locks, but perhaps it makes
+sense to be conservative.
 
->                 error = walk_page_range(current->mm, start, end,
-> -                               &prot_none_walk_ops, &new_pgprot);
-> +                               &prot_none_walk_ops, true, &new_pgprot);
+> >  	address -= key->both.offset;
+> >  
+> > -	if (unlikely(!access_ok(uaddr, sizeof(u32))))
+> > +	if (flags & FLAGS_NUMA)
+> > +		size *= 2;
+> > +
+> > +	if (unlikely(!access_ok(uaddr, size)))
+> >  		return -EFAULT;
+> >  
+> >  	if (unlikely(should_fail_futex(fshared)))
+> >  		return -EFAULT;
+> >  
+> > +	key->both.node = -1;
+> 
+> Please put this into an else path.
 
-This looks odd. You're adding vma locking to a place that didn't do it before.
+Can do, but I figured the compiler could figure it out through dead
+store elimitation or somesuch pass.
 
-Yes, the mmap semaphore is held for writing, but this particular walk
-doesn't need it as far as I can tell.
+> > +	if (flags & FLAGS_NUMA) {
+> > +		void __user *naddr = uaddr + size/2;
+> 
+> size / 2;
+> 
+> > +
+> > +		if (futex_get_value(&node, naddr, flags))
+> > +			return -EFAULT;
+> > +
+> > +		if (node == -1) {
+> > +			node = numa_node_id();
+> > +			if (futex_put_value(node, naddr, flags))
+> > +				return -EFAULT;
+> > +		}
+> > +
+> > +		if (node >= MAX_NUMNODES || !node_possible(node))
+> > +			return -EINVAL;
+> 
+> That's clearly an else path too. No point in checking whether
+> numa_node_id() is valid.
 
-In fact, this feels like that walker should maybe *verify* that it's
-held for writing, but not try to write it again?
+No, this also checks if the value we read from userspace is valid.
 
-Maybe the "lock_vma" flag should be a tri-state:
+Only when the value we read from userspace is -1 do we set
+numa_node_id(), otherwise we take the value as read, which then must be
+a valid value.
 
- - lock for reading (no-op per vma), verify that the mmap sem is held
-for reading
+> > +		key->both.node = node;
+> > +	}
+> >  
+> > +static inline unsigned int futex_size(unsigned int flags)
+> > +{
+> > +	unsigned int size = flags & FLAGS_SIZE_MASK;
+> > +	return 1 << size; /* {0,1,2,3} -> {1,2,4,8} */
+> > +}
+> > +
+> >  static inline bool futex_flags_valid(unsigned int flags)
+> >  {
+> >  	/* Only 64bit futexes for 64bit code */
+> > @@ -77,13 +83,19 @@ static inline bool futex_flags_valid(uns
+> >  	if ((flags & FLAGS_SIZE_MASK) != FLAGS_SIZE_32)
+> >  		return false;
+> >  
+> > -	return true;
+> > -}
+> > +	/*
+> > +	 * Must be able to represent both NUMA_NO_NODE and every valid nodeid
+> > +	 * in a futex word.
+> > +	 */
+> > +	if (flags & FLAGS_NUMA) {
+> > +		int bits = 8 * futex_size(flags);
+> > +		u64 max = ~0ULL;
+> > +		max >>= 64 - bits;
+> Your newline key is broken, right?
 
- - lock for reading (no-op per vma), but with mmap sem held for
-writing (this kind of "check before doing changes" walker)
 
- - lock for writing (with mmap sem obviously needs to be held for writing)
 
->         mmap_assert_locked(walk.mm);
-> +       if (lock_vma)
-> +               vma_start_write(vma);
 
-So I think this should also be tightened up, and something like
 
-        switch (ops->locking) {
-        case WRLOCK:
-                vma_start_write(vma);
-                fallthrough;
-        case WRLOCK_VERIFY:
-                mmap_assert_write_locked(mm);
-                break;
-        case RDLOCK:
-                mmap_assert_locked(walk.mm);
-        }
+Yes :-)
 
-because we shouldn't have a 'vma_start_write()' without holding the
-mmap sem for *writing*, and the above would also allow that
-mprotect_fixup() "walk to see if we can merge, verify that it was
-already locked" thing.
-
-Hmm?
-
-NOTE! The above names are just completely made up. I dcon't think it
-should actually be some "WRLOCK" enum. There are probably much better
-names. Take the above as a "maybe something kind of in this direction"
-rather than "do it exactly like this".
-
-            Linus
+> > +		if (nr_node_ids >= max)
+> > +			return false;
+> > +	}
