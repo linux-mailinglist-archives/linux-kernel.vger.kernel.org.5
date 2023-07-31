@@ -2,156 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F47E76A343
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6BB76A321
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:42:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbjGaVrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
+        id S231325AbjGaVmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:42:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjGaVrp (ORCPT
+        with ESMTP id S229612AbjGaVmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:47:45 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C174114;
-        Mon, 31 Jul 2023 14:47:43 -0700 (PDT)
-Received: from [192.168.105.249] ([75.104.94.137])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 36VLiSLD3093143
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Mon, 31 Jul 2023 14:44:34 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 36VLiSLD3093143
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023071101; t=1690839952;
-        bh=Hg2XSL3316ANoXYXjd63x+cCNIVtiqBW14cv6sKLqfM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=OJyzPW65vrM8sDH6eNGy+5kWbcB7PMYBpzWhQpIWkaAZClwYLyiR8q3r0h24DHa+i
-         plc1tYwGV1X0jnVZoHyMcH21g4d3T5nrZNciwkD9pXyPp9eyd7deKj5//687qepUUN
-         GajcQAPfiwt5T7KF3w3EDPjhuU+UOb+SXF0Ey3xPLdCdh2vlXfVnIDfD1LR2iQn1Q3
-         +p5bLyY/BkC4u9rExXSQvakREpl4pn+K6rV/GzfnNnDvo8xR1x7/0XAWYi0JZGxsUi
-         6sYcbHmh6hzcml78uw2uhAQKsHCzb+/6sFfciH7vXjmIcsvNRtd0H0JUkcPZnEheRh
-         J+lI/W952JXBg==
-Message-ID: <4ccbf0e9-716d-dfe0-537c-210e5455418c@zytor.com>
-Date:   Mon, 31 Jul 2023 14:44:20 -0700
+        Mon, 31 Jul 2023 17:42:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAD8130;
+        Mon, 31 Jul 2023 14:42:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 53D50612F2;
+        Mon, 31 Jul 2023 21:42:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94784C433C7;
+        Mon, 31 Jul 2023 21:42:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690839736;
+        bh=Iu978Lm0V72u8OFjnPHx80yu7uDx5IJV9cwyHqcixlY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pND/HZjsDfEoMrstHlrtfbI0w5JkC46OzgkAIBjPDJ5gMO0tsBHnZn/5Y0F/FaIUi
+         EjTijss5T1pBEyg5GYPgMb894tDOEJv0G3xzy/cvTzUe4W9y/iZHDmTaqJSpF1D7Yg
+         YBKkYZXhYQB2jo8BVxm3g+vmI7EWOUdBCwZ4q6k4Yjsg6Tm0xEWTPihJche2AU4WU3
+         aE73vJpjboSRWpCU/Wd8kQSsjAS12YxBun/6x668Drzh5W8wu7Rhs892wJXfPoM367
+         tPodV2RomJMGMhUHdK7dPoZ6+/GD9nXPdGgnCuDkMLqPhtceeymTeIs5AUYAB5uzR8
+         FMXwxUZ2OAXUA==
+Date:   Mon, 31 Jul 2023 14:45:21 -0700
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>,
+        Rob Herring <robh@kernel.org>,
+        Andy Gross <andy.gross@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Craig Tatlor <ctatlor97@gmail.com>
+Subject: Re: [PATCH v2] ARM: dts: qcom: msm8974: correct qfprom node size
+Message-ID: <ff6fwomoik6kz4jtbm5jac7jahrtcia5fb6dj5ykxg7xt574sn@ti42sevqj6pk>
+References: <20230130-msm8974-qfprom-v2-1-3839cf41d9ee@z3ntu.xyz>
+ <866f1f66-8845-2453-ab9c-d125e23ae758@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v9 29/36] x86/fred: FRED entry/exit and dispatch code
-Content-Language: en-US
-To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@Oracle.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Jim Mattson <jmattson@google.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        Breno Leitao <leitao@debian.org>,
-        Nikunj A Dadhania <nikunj@amd.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ze Gao <zegao2021@gmail.com>, Fei Li <fei1.li@intel.com>,
-        Conghui <conghui.chen@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Jane Malalane <jane.malalane@citrix.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Yantengsi <siyanteng@loongson.cn>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Sathvika Vasireddy <sv@linux.ibm.com>
-References: <20230731064119.3870-1-xin3.li@intel.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20230731064119.3870-1-xin3.li@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <866f1f66-8845-2453-ab9c-d125e23ae758@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/23 23:41, Xin Li wrote:
-> +
-> +static DEFINE_FRED_HANDLER(fred_sw_interrupt_user)
-> +{
-> +	/*
-> +	 * In compat mode INT $0x80 (32bit system call) is
-> +	 * performance-critical. Handle it first.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_IA32_EMULATION) &&
-> +	    likely(regs->vector == IA32_SYSCALL_VECTOR)) {
-> +		regs->orig_ax = regs->ax;
-> +		regs->ax = -ENOSYS;
-> +		return do_int80_syscall_32(regs);
-> +	}
+On Thu, Jun 15, 2023 at 08:20:41PM +0200, Konrad Dybcio wrote:
+> On 15.06.2023 20:17, Luca Weiss wrote:
+> > From: Craig Tatlor <ctatlor97@gmail.com>
+> > 
+> > The qfprom actually has size 0x3000, so adjust the reg.
+> > 
+> > Note that the non-ECC-corrected qfprom can be found at 0xfc4b8000
+> > (-0x4000). The current reg points to the ECC-corrected qfprom block
+> > which should have equivalent values at all offsets compared to the
+> > non-corrected version.
+> > 
+> > [luca@z3ntu.xyz: extract to standalone patch and adjust for review
+> > comments]
+> > 
+> > Fixes: c59ffb519357 ("arm: dts: msm8974: Add thermal zones, tsens and qfprom nodes")
+> > Signed-off-by: Craig Tatlor <ctatlor97@gmail.com>
+> > Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> > ---
+> Not sure of the actual size of the region, maybe Bjorn can help..
+> 
+> Downstream 3.10 suggests 0x60F0, 0x20F0 after adjusting for the ECC offset
+> 
 
-We can presumably drop the early out here as well...
+There is indeed 0x3000 bytes until the next region, but afaict the
+corrected ECC values only cover the first 0x800 bytes thereof.
 
-> +
-> +	/*
-> +	 * Some software exceptions can also be triggered as
-> +	 * int instructions, for historical reasons.
-> +	 */
-> +	switch (regs->vector) {
-> +	case X86_TRAP_BP:
-> +	case X86_TRAP_OF:
-> +		fred_emulate_trap(regs);
-> +		break;
-> +	default:
-> +		regs->vector = X86_TRAP_GP;
-> +		fred_emulate_fault(regs);
-> +		break;
-> +	}
-> +}
-> +
+Can you please let me know if this patch fixes a problem, or just
+makes the numbers look better?
 
+Regards,
+Bjorn
+
+> Konrad
+> > Changes in v2:
+> > - Keep base offset but expand reg from 0x1000 to 0x3000 (Konrad)
+> > - Link to v1: https://lore.kernel.org/r/20230130-msm8974-qfprom-v1-1-975aa0e5e083@z3ntu.xyz
+> > ---
+> >  arch/arm/boot/dts/qcom-msm8974.dtsi | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/arm/boot/dts/qcom-msm8974.dtsi b/arch/arm/boot/dts/qcom-msm8974.dtsi
+> > index 7ed0d925a4e9..3156fe25967f 100644
+> > --- a/arch/arm/boot/dts/qcom-msm8974.dtsi
+> > +++ b/arch/arm/boot/dts/qcom-msm8974.dtsi
+> > @@ -1194,7 +1194,7 @@ restart@fc4ab000 {
+> >  
+> >  		qfprom: qfprom@fc4bc000 {
+> >  			compatible = "qcom,msm8974-qfprom", "qcom,qfprom";
+> > -			reg = <0xfc4bc000 0x1000>;
+> > +			reg = <0xfc4bc000 0x3000>;
+> >  			#address-cells = <1>;
+> >  			#size-cells = <1>;
+> >  
+> > 
+> > ---
+> > base-commit: 858fd168a95c5b9669aac8db6c14a9aeab446375
+> > change-id: 20230130-msm8974-qfprom-619c0e8f26eb
+> > 
+> > Best regards,
