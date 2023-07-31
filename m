@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C85576A36B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5200676A379
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbjGaVzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33164 "EHLO
+        id S231667AbjGaVzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbjGaVzM (ORCPT
+        with ESMTP id S231745AbjGaVzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:55:12 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483FAE7
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Cc:Content-ID:Content-Description;
-        bh=FIptszZmgcaYmAx7y0JpsujrAUL7Y7YD2A5iHLSUAmc=; b=2XZUYaS1aVtHllSy4I2iUi3TPL
-        ZRA4uuv9UawIzO8BqCzXK1O/YMAPo8dIAVAFlx2FOIaNM+za7ZOG+3bDP4UWcRiIELX+HUzF7/vjf
-        e9aD6i+LxcGMRdxx9/0GZcfZOBcjESah5j80fIIehCXQeltrSY6DiWLUyQ5VNrSHmwobF3aqbfTvK
-        XOZ14owKxIvCEMuAvtKXAnCcXD7AOXaYx9SHmj+RTy61lg7ZQveVUVlS7zsOGfMVfHXvJWMToiJpD
-        ECjkDPe/duKF/q6JwYWLevtVuzK1PrfVMKEWXPtMSym8vTlAKb9BkFx7ItCIYJbIZ5L+oYBqslnUC
-        BNeMsSxw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQaqz-00HR71-1d;
-        Mon, 31 Jul 2023 21:55:03 +0000
-Message-ID: <59512f64-6d7c-14d7-579a-a04572b27cff@infradead.org>
-Date:   Mon, 31 Jul 2023 14:54:58 -0700
+        Mon, 31 Jul 2023 17:55:37 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FFD1FF0;
+        Mon, 31 Jul 2023 14:55:28 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id D9D515C019E;
+        Mon, 31 Jul 2023 17:55:25 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 31 Jul 2023 17:55:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1690840525; x=1690926925; bh=r3NTgG4qLC
+        9ZQhYXCs1UXPjCX4mwEQOdjG4bzdifxkI=; b=vZylnhrkSW7MBNL5YAgTv8djUG
+        eySXV57dXy3KGxs0C8lSaKf0v5rs+upnskhR4UugPFDd/W+bbDyTeQShUAtOSHdE
+        FljVCmrDRsw0+IOasPj44TCglOZ9puA8wEa7tTGeEhYnhuEZvhZhO7s5y3YNmbui
+        f/4OcLGnD/7UX0+qb/RTsQR72lLyOhwcHRUfsHuUREu0Cl9u/xmxfSfVe7oTH0tV
+        vfi4ZpIKRpLY8o/Oz4Bmuy761Haq+bE9/y1wXy/jJz6L1HrPnHDATfWUtY+HzKx4
+        GrrKI7QlGp3Dv5YyKqO8C4Mv4o/FVsCAULc+OAuCvFgbI3wesULxHyBs/dpg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690840525; x=1690926925; bh=r3NTgG4qLC9ZQ
+        hYXCs1UXPjCX4mwEQOdjG4bzdifxkI=; b=dNQcqzLXz1LBlJZBUinplkmVHEYaC
+        ssgVLtML0avz4wnTdONP2fhO/yK9kgveKbr4UW7zU9NVsFOjRGTWpj29lWMdgZpC
+        2SSWPNoL3n44oIZG2duAeUpbRnDArEllrLsmZQXZ98AzaCv0hAOqeuAXL6GJsSZS
+        MN3uubIVLporrz3mz4jIClUzXo/PSatE8OVgtxEYx38j0zCT7IRTzE+UeLyf/XJQ
+        zLcWq6S8sVjQNxyfgVW/OWb4ubpKKCIZxYEKOS+4hjvb65SBxOvAPn2hc90n2xDC
+        qvZABoJcR8vmyRhbs+ySwLx9pzxTtUKkD6EXBt6t6kVh2D2ZaKVZZv52w==
+X-ME-Sender: <xms:zS3IZLWjb92NwR5GZ8puc815lBR224UFEow8unK-5X6X5EhqFdV9Vw>
+    <xme:zS3IZDlub75xmfd-BONhJojF66BrHlPRXiZKAyNU7Ef7advln21kDEejf1Kx8b03X
+    sO-7OyXtIG4ldByOQ>
+X-ME-Received: <xmr:zS3IZHZ8ZTQdabAjdXdWHV6x7Z8zLiSwFezT1fkrDyu_-oL0zpOX5Yp5-FRHcZUdXdSxh6KIqTPZYba2Z30mHZ2j9dCKkrEBXqrdFxi59W4gGg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeehgddtfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecufghrlhcuvffnffculddvfedmnecujfgurhephffvve
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeetueektdeuhfefvefggfevge
+    ffgfekfefhkeekteffheevtddvhedukeehffeltdenucffohhmrghinhepkhgvrhhnvghl
+    rdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:zS3IZGVus9IQwwMDzSpZik9RMZ5Cy8R-7SKBaFWNaXNj_zjlBjBpGA>
+    <xmx:zS3IZFmD9IIr6YS-Otm5u3Is1JCUlsVYIBQgwr050KyB-lfPJ4CFCw>
+    <xmx:zS3IZDd_EDViJFvd6Xp3HvLs0-ySSXL_5WwHBi_sWvPaoBcpWg0H1g>
+    <xmx:zS3IZHlmPvQR-H5ide7b-Z0EHJ18dXzLCM5hvZQg12QUKeDBogIEwQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 31 Jul 2023 17:55:24 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     kadlec@netfilter.org, davem@davemloft.net, pabeni@redhat.com,
+        dxu@dxuuu.xyz, ast@kernel.org, edumazet@google.com,
+        pablo@netfilter.org, kuba@kernel.org, fw@strlen.de
+Cc:     netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH] netfilter: bpf: Only define get_proto_defrag_hook() if necessary
+Date:   Mon, 31 Jul 2023 15:55:00 -0600
+Message-ID: <b128b6489f0066db32c4772ae4aaee1480495929.1690840454.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6/6] mtd: ubi: provide NVMEM layer over UBI volumes
-Content-Language: en-US
-To:     Daniel Golle <daniel@makrotopia.org>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-References: <cover.1690823629.git.daniel@makrotopia.org>
- <2bd2368ff137dbac2282f366efa9b5d16046f2f1.1690823629.git.daniel@makrotopia.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <2bd2368ff137dbac2282f366efa9b5d16046f2f1.1690823629.git.daniel@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Before, we were getting this warning:
 
+  net/netfilter/nf_bpf_link.c:32:1: warning: 'get_proto_defrag_hook' defined but not used [-Wunused-function]
 
-On 7/31/23 12:14, Daniel Golle wrote:
-> diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-> index 2ed77b7b3fcb5..45d939bbfa853 100644
-> --- a/drivers/mtd/ubi/Kconfig
-> +++ b/drivers/mtd/ubi/Kconfig
-> @@ -104,4 +104,16 @@ config MTD_UBI_BLOCK
->  
->  	   If in doubt, say "N".
->  
-> +config MTD_UBI_NVMEM
-> +	tristate "UBI virtual NVMEM"
-> +	default n
-> +	depends on NVMEM
-> +	help
-> +	   This option enabled an additional driver exposing UBI volumes as NVMEM
+Guard the definition with CONFIG_NF_DEFRAG_IPV[4|6].
 
-	               enables
+Fixes: 91721c2d02d3 ("netfilter: bpf: Support BPF_F_NETFILTER_IP_DEFRAG in netfilter link")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202307291213.fZ0zDmoG-lkp@intel.com/
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ net/netfilter/nf_bpf_link.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> +	   providers, intended for platforms where UBI is part of the firmware
-> +	   specification and used to store also e.g. MAC addresses or board-
-> +	   specific Wi-Fi calibration data.
-> +
-> +	   If in doubt, say "N".
-
-and Kconfig help text should be indented with one tab + 2 spaces
-according to coding-style.rst.
-
-> +
->  endif # MTD_UBI
-
+diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+index 8fe594bbc7e2..e502ec00b2fe 100644
+--- a/net/netfilter/nf_bpf_link.c
++++ b/net/netfilter/nf_bpf_link.c
+@@ -28,6 +28,7 @@ struct bpf_nf_link {
+ 	const struct nf_defrag_hook *defrag_hook;
+ };
+ 
++#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+ static const struct nf_defrag_hook *
+ get_proto_defrag_hook(struct bpf_nf_link *link,
+ 		      const struct nf_defrag_hook __rcu *global_hook,
+@@ -68,6 +69,7 @@ get_proto_defrag_hook(struct bpf_nf_link *link,
+ 
+ 	return hook;
+ }
++#endif
+ 
+ static int bpf_nf_enable_defrag(struct bpf_nf_link *link)
+ {
 -- 
-~Randy
+2.41.0
+
