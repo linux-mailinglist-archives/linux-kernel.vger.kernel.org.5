@@ -2,121 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC2A76A189
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F6D76A18B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbjGaTwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:52:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
+        id S229932AbjGaTyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:54:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjGaTwn (ORCPT
+        with ESMTP id S229815AbjGaTyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:52:43 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E168CA0;
-        Mon, 31 Jul 2023 12:52:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690833161; x=1722369161;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=xqmlNqtY5MAvTWtEPT/Gz6q8D0HC/50BGqD/OuVYrlU=;
-  b=dgvRTABlA6fkv1WT6oPRu0+7WsO2BWeJvZHxzGatOxuJk0bTUaknXdA/
-   RWgUCqsWAIcZ2z7zB2LC5o06CQvLpsvC+BLuwXsVie6Qfx7TTPb27pG6v
-   Xz3XavWG4/7Z8+pJ2bAyEoo1w5zxztvlOo+RrAvW/0hxOF6p+cCHKWks5
-   TiffVIcm+XSEb7jmJXGBpvx0SCR5RC1tJNgkQY6sjLOxJMk5dpzelCd2w
-   P1QIuaIdgFzy424CZFYDlgC5U4fk5/BW7n+6Hb48y1HkdkYCcZOdjA68g
-   2VZXfCc82W5suZJB8BxLPCGbIDHC9ja16KLMGpoQTfkm9P7FsshE/fvUX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="368017911"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="368017911"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 12:52:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="793851078"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="793851078"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP; 31 Jul 2023 12:52:38 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qQYwX-003cO8-0K;
-        Mon, 31 Jul 2023 22:52:37 +0300
-Date:   Mon, 31 Jul 2023 22:52:36 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Mark Gross <markgross@kernel.org>, Armin Wolf <W_Armin@gmx.de>
-Subject: Re: [RFC PATCH v1] platform/x86: wmi: Do not register driver with
- invalid GUID
-Message-ID: <ZMgRBKm85DbY+WIm@smile.fi.intel.com>
-References: <20230715211604.1272227-1-pobrn@protonmail.com>
- <efe4b91f-2602-2115-738e-bb99b42ec5b6@redhat.com>
- <pjVZC4te3dWaMwoS7jB1-n4z390Ohz0mvuCCUZHwiXlZVMjzwySf_DMa49RDmbhzfvkzRY3FI8zQ0xltNimu-GpBAqJ2Kc3SENu_fwJDJ7E=@protonmail.com>
- <ZMOSO5HgpurayDsN@smile.fi.intel.com>
- <wg3zDdNbblZ43zsIf667-fzagNaEDu7WRuCUeLmIQWc68QcIsDF6nw1wCCbzy1NzmaKvXipcVt2oNJAqRvhxdzgLScwnB3KIts_OajtNROM=@protonmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <wg3zDdNbblZ43zsIf667-fzagNaEDu7WRuCUeLmIQWc68QcIsDF6nw1wCCbzy1NzmaKvXipcVt2oNJAqRvhxdzgLScwnB3KIts_OajtNROM=@protonmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 15:54:45 -0400
+Received: from abi149hd127.arn1.oracleemaildelivery.com (abi149hd127.arn1.oracleemaildelivery.com [129.149.84.127])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8545C19A2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:54:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=oci-arn1-20220924;
+ d=augustwikerfors.se;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=ApYvMZAdcht4TuxINHU06qR0evDmcGeYdQJ2jN5Iu0M=;
+ b=uPbrlxINyTbk0xDEKLNPuEnPz00ELPAqDUwA60Mnc5KrPVOefmisSQxRSdnP/8++FfunUihhi3jp
+   E6jmO95xJvBfzMzYerhgygg/2hGP5Fb9/byedmopUEhI38ts+ETtPMye2YnqO49UTNJknvR2HIae
+   YBwyRZNBxP3BhlVhmJsoZZiGMbH5rEaB4a3yaN75L35mPoG46919Y22GZp4E4i+vV2jgslUN6mT+
+   PuQ0+jYT4m8LdsLWXiHRuAqaAEmTJP7sK+WOpNceGIjbweHnNV0ELWssPZ51CWmdczk4BXYQ/Y9V
+   +nJLO1wmg+h2hYu94nMt7x50D+kgbFBWv0TLYw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=prod-arn-20211201;
+ d=arn1.rp.oracleemaildelivery.com;
+ h=Date:To:From:Subject:Message-Id:MIME-Version:Sender;
+ bh=ApYvMZAdcht4TuxINHU06qR0evDmcGeYdQJ2jN5Iu0M=;
+ b=ZE9p12PndKQU3/xYesCzM4nZrIddzZyNh5tJgaBGsp8/qf7nyc0GwMi6BfmN55K5DqBT4NV5czKx
+   6bokZCKWigwbp33rGHN1U4uS9erP6dVZh4SOjkAIwVKIBz9kuTEiH5MEw0PvVwFufk8Ow0CeRAKM
+   WN9NST+ScUgY9gRT1GNYm6sY7SMzndeqslqBxGk0ATsYuuz686yui9orUeHd5IXfX9u6G+eKNWS7
+   Z+evzo/3jC+oyiKD3PAhBCazsIsKPvMpqU2kGeZv7LVcttiw683uAv1ut7yo07wixSQCc1JHZFgC
+   J3G/y8n9uFWIr0qiJaTXw9Zi5i6b0e2FfqSqfQ==
+Received: by omta-ad1-fd2-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com
+ (Oracle Communications Messaging Server 8.1.0.1.20230629 64bit (built Jun 29
+ 2023))
+ with ESMTPS id <0RYO009JYFB7CG00@omta-ad1-fd2-401-eu-stockholm-1.omtaad1.vcndparn.oraclevcn.com>
+ for linux-kernel@vger.kernel.org; Mon, 31 Jul 2023 19:54:43 +0000 (GMT)
+Message-id: <040c5788-1a7b-26ea-23cc-ba239c76efa9@augustwikerfors.se>
+Date:   Mon, 31 Jul 2023 21:54:39 +0200
+MIME-version: 1.0
+Subject: Re: [PATCH] nvme: Don't fail to resume if NSIDs change
+Content-language: en-US
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>, axboe@fb.com,
+        hch@lst.de, sagi@grimberg.me, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, nilskruse97@gmail.com,
+        David.Chang@amd.com
+References: <20230731185103.18436-1-mario.limonciello@amd.com>
+ <ZMgHE2wu4T4OfrTR@kbusch-mbp>
+From:   August Wikerfors <git@augustwikerfors.se>
+In-reply-to: <ZMgHE2wu4T4OfrTR@kbusch-mbp>
+Content-type: text/plain; charset=UTF-8; format=flowed
+Content-transfer-encoding: 7bit
+Reporting-Meta: AAGxKd0J+EDPNkJxyVSwXV8t9u0oYmwvO47EmDb/N7KkuuHQNewGDNL7XqL4XvXk
+ NwsfeuoNmYe+xIBGUiBBiGydppa6afCXI4mXSqMYQSzh0LCpRHGRYZp0Z5pPSV6m
+ 2vaC2y+J9jEyN6SPceOCs3Vg1rRCQvcDm1dEl3ZkN/xO2Faw6zrFobjfsuLvsln3
+ KKs9Mo5OffjrhiWe5ePAH9jDWhU2nqSH1/sJVsLJFq0+nD+CT0cDtLxv9XKtizQ4
+ hcaCnH0vbhSesqKz9/2AqSCDNdEw3tPMSxItvf17VWrIlWfODo9+F+9rhkkjlQQY
+ kWzIWjuG6T6xoIEKYCPKnt58pZX071TeN3MsCSlgwNgIHqrHf9bFe2beuK5JDDq6
+ PJWbWqoi7OI/KMhB1MhQq5QKcXkLcbBBKsYTrrrQWVqW8F68E1xYqk15kvWxcHFj OSBNOg==
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 02:39:07PM +0000, Barnabás Pőcze wrote:
-> 2023. július 28., péntek 12:02 keltezéssel, Andy Shevchenko <andriy.shevchenko@linux.intel.com> írta:
-> > On Thu, Jul 27, 2023 at 10:54:26PM +0000, Barnabás Pőcze wrote:
-> > > 2023. július 26., szerda 10:45 keltezéssel, Hans de Goede <hdegoede@redhat.com> írta:
-> > > > On 7/15/23 23:24, Barnabás Pőcze wrote:
-
-...
-
-> > > > I think that having an additional check like the one which you
-> > > > propose has some value too, even if it is just to cover drivers
-> > > > which for some reason don't use `MODULE_DEVICE_TABLE()`, but IMHO
-> > > > the most important check to have is a check in file2alias.c .
-> > >
-> > > Okay... any tips on how to avoid copying `uuid_is_valid()`?
-> > 
-> > I think I already told the rough design: we need to split uuid.c to three
-> > files: libuuid.h, libuuid.c uuid.c and libuuid.c should be built twice:
-> > once for uuid.c and once for file2alias.c. libuuid.h should contain the
-> > definitions file2alias.c is using.  Something like that.
+On 2023-07-31 21:10, Keith Busch wrote:
+> On Mon, Jul 31, 2023 at 01:51:03PM -0500, Mario Limonciello wrote:
+>> Samsung PM9B1 has problems after resume because NSID has changed.
+>> This has been reported in the past on OEM varities of PM9B1 parts
+>> and fixed by firmware updates on 'some' of those parts.
+>>
+>> However this same issue also happens on 'retail' PM9B1 parts which
+>> Samsung has not released firmware updates for.
+>>
+>> As the check has been relaxed at startup for multiple disks with
+>> duplicate NSIDs with commit ac522fc6c3165 ("nvme: don't reject
+>> probe due to duplicate IDs for single-ported PCIe devices") also
+>> relax the check that runs on resume for NSIDs and mark them bogus
+>> if this occurs on resume.
 > 
-> What is not clear at all to me is how includes should be handled. `uuid_is_valid()`
-> uses `isxdigit()`, which is found in different header files based on whether it is
-> a kernel or user space build.
-
-It may be conditional build or some other tricks (I haven't investigated
-myself, though). Alternatively libuuid.c can be included in the other
-C-file.
-
-> > > Another idea I had was that maybe `struct wmi_device_id::guid_string` needs to be
-> > > changed to be `guid_t` and then `GUID_INIT()` or something similar could be used
-> > > to initialize it. That way it is impossible to mess up the format. The only downside
-> > > I can see is that guid is no longer "grep-able".
-> > 
-> > Strictly speaking you may not do that because it's a (semi-)ABI.
+> How could the driver tell the difference between the device needing a
+> quirk compared to a rapid delete-create-attach namespace sequence?
+> Proceeding with the namespace now may get dirty writes intended for the
+> previous namespace, corrupting the new one.
 > 
-> Why is that the case?
+> The commit you mentioned tries to constrain allowing duplication where
+> we can reasonably assume the quirk is needed. If we need to do similiar
+> for this condition, one possible constraint might be that the device
+> doesn't report OACS bit 3 (Namespace Management).
 
-As a developer of that idea you should prove that it won't break any of all
-possible user configurations (for example, first that comes to my mind is
-multi-version modules: when kernel is not signed, but it might be not the
-case, you need to research and convince us that there will be no breakage).
+It looks like that would work for the PM9B1:
+> $ sudo nvme id-ctrl -H /dev/nvme0
+> [...] > oacs      : 0x17
+>   [10:10] : 0   Lockdown Command and Feature Not Supported
+>   [9:9] : 0     Get LBA Status Capability Not Supported
+>   [8:8] : 0     Doorbell Buffer Config Not Supported
+>   [7:7] : 0     Virtualization Management Not Supported
+>   [6:6] : 0     NVMe-MI Send and Receive Not Supported
+>   [5:5] : 0     Directives Not Supported
+>   [4:4] : 0x1   Device Self-test Supported
+>   [3:3] : 0     NS Management and Attachment Not Supported
+>   [2:2] : 0x1   FW Commit and Download Supported
+>   [1:1] : 0x1   Format NVM Supported
+>   [0:0] : 0x1   Security Send and Receive Supported
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Regards,
+August Wikerfors
