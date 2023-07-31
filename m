@@ -2,79 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FEB769002
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E3B76900C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231356AbjGaIW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
+        id S230348AbjGaIYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231264AbjGaIVn (ORCPT
+        with ESMTP id S229510AbjGaIYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:21:43 -0400
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21FC3170A;
-        Mon, 31 Jul 2023 01:21:36 -0700 (PDT)
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-3fb4146e8deso48693565e9.0;
-        Mon, 31 Jul 2023 01:21:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690791694; x=1691396494;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CGrOiQUjR65DkbtD6EqnfPx/Pruzs918gvMQ/Htu0IU=;
-        b=fmWJmECZICb1j7AsHvQ+DSk6HnniZRcwSCCSN9NJohukOXWCXxUhHFwVhLdHnhVxO3
-         Wuw+FrlzLF99Ok4kwFUArilcJmlFZVn2mZO9qOyyZZlkOdYrjjYKvyvwoM9FNxxSQ6RO
-         gX1RRW/qBEF1zK9BPWwU1NMn2VNrKPJ761/E5LShTauoLqKu2eXueFl3vb1uD5yL84yK
-         Uy9leb84eqhp4N9s7H1xKJ4weUSggAnQgUtukvm+7ej6iiRocdmRSk5JABD5s2+/CvMH
-         3H0CNajFeCc5H5dutVQgBFFMNGhqpEhbFAxb/Jkjk2F+Q+aHgOh9ehJ0dvkFRHYD9HqU
-         vp/A==
-X-Gm-Message-State: ABy/qLZ+x2gOV0izhEV5WLXjoU5mp2NVSentbhDJE1doX/41Er72qMs0
-        pp6AYcBwsbo7SDsCxznvze0=
-X-Google-Smtp-Source: APBJJlFhSq9Zp/+1SqFu8GEkJVvPqTbdXliiUNmZnVCfFl4nKgfWFG9TdDL1dgA7/Ygyk/EPvIgzwQ==
-X-Received: by 2002:a05:600c:2296:b0:3fe:ad3:b066 with SMTP id 22-20020a05600c229600b003fe0ad3b066mr7565312wmf.41.1690791694356;
-        Mon, 31 Jul 2023 01:21:34 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id b17-20020adfde11000000b003143765e207sm12294324wrm.49.2023.07.31.01.21.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 01:21:33 -0700 (PDT)
-Message-ID: <a16816d3-f49e-7c10-e7d3-fdb38fc2fcb7@kernel.org>
-Date:   Mon, 31 Jul 2023 10:21:32 +0200
+        Mon, 31 Jul 2023 04:24:05 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4F4100;
+        Mon, 31 Jul 2023 01:23:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1690791814;
+        bh=o4ZP7HQGo4gMjq/hTymI7aXSSPaGkBsKhC2IAgsvtG8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qsbab1ZwOC6tk39x6en9ADZqisxvSVTNqk5Cw8rEXrso4FXN3+2R6qYIvbfrQAneK
+         ZycHCRorkLU0jDCRQaXf2YPV9k2xN5roj/kF79i70f0t8bflo0laIBoWtsAzttoe3S
+         1THqY4S/2WoJx3M9R+x7MFuMWKaa+/HToYeSFlS0=
+Date:   Mon, 31 Jul 2023 10:23:33 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Zhangjin Wu <falcon@tinylab.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, tanyuan@tinylab.org, w@1wt.eu
+Subject: Re: [PATCH 1/4] selftests/nolibc: drop unused test helpers
+Message-ID: <0d441f70-bdc3-4aa1-b392-6ec170c9a5bb@t-8ch.de>
+References: <7d8dee88-16af-464f-b7f3-55b77dbc3c46@t-8ch.de>
+ <20230731073243.21265-1-falcon@tinylab.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 00/10] tty: minor cleanups
-Content-Language: en-US
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230731080244.2698-1-jirislaby@kernel.org>
- <20230731-dimple-creed-192b053bc4a9-mkl@pengutronix.de>
-From:   Jiri Slaby <jirislaby@kernel.org>
-In-Reply-To: <20230731-dimple-creed-192b053bc4a9-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230731073243.21265-1-falcon@tinylab.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31. 07. 23, 10:15, Marc Kleine-Budde wrote:
-> On 31.07.2023 10:02:34, Jiri Slaby (SUSE) wrote:
->>    can: slcan: remove casts from tty->disc_data
+On 2023-07-31 15:32:43+0800, Zhangjin Wu wrote:
+> Hi, Thomas
 > 
-> You can do the same for drivers/net/can/can327.c
+> > Note:
+> > 
+> > It seems your mail client does not add the prefix "Re: " to responses.
+> > Is that intentional?
+> >
+> 
+> I use a lightweight 'b4 + git send-email' method to reply emails,
+> sometimes, I forgot manually adding the 'Re: ' prefix, perhaps I should
+> write a simple script to do that or carefully check the Subject title
+> everytime, Thanks!
 
-OK. And in net/nfc/nci/uart.c and that all should be it.
+Now there are two "Re: " prefixes :-)
 
-thanks,
--- 
-js
-suse labs
+My understanding is that there is exactly one "Re: " prefix iff the
+message is any response at all.
 
+> > On 2023-07-31 14:48:26+0800, Zhangjin Wu wrote:
+> > > Hi, Thomas
+> > > 
+> > > > As we want to enable compiler warnings in the future these would be
+> > > > reported as unused functions.
+> > > > 
+> > > > If we need them in the future they are easy to recreate from their still
+> > > > existing siblings.
+> > > > 
+> > > > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> > > > ---
+> > > >  tools/testing/selftests/nolibc/nolibc-test.c | 99 ----------------------------
+> > > >  1 file changed, 99 deletions(-)
+> > > > 
+> > > > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> > > > index 03b1d30f5507..53e2d448eded 100644
+> > > > --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> > > > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> > > > @@ -161,31 +161,6 @@ static void result(int llen, enum RESULT r)
+> > > >   * of failures, thus either 0 or 1.
+> > > >   */
+> > > >  
+> > > > -#define EXPECT_ZR(cond, expr)				\
+> > > > -	do { if (!(cond)) result(llen, SKIPPED); else ret += expect_zr(expr, llen); } while (0)
+> > > > -
+> > > > -static int expect_zr(int expr, int llen)
+> > > > -{
+> > > 
+> > > Why not a simple 'static __attribute__((unused))' line, then, no need to
+> > > add them again next time.
+> > > 
+> > >     -static int expect_zr(int expr, int llen)
+> > >     +static __attribute__((unused))
+> > >     +int expect_zr(int expr, int llen)
+> > >      {
+> > 
+> > Personally I don't like having dead code lying around that needs to be
+> > maintained and skipped over while reading.
+> > It's not a given that we will need those helpers in the future at all.
+> >
+> 
+> It is reasonable in some degree from current status, especially for
+> these ones are newly added, but let us think about these scenes: when we
+> would drop or change some test cases in the future and the helpers may
+> would be not referenced by any test cases in a short time, and warnings
+> there, but some other cases may be added later to use them again ...
+
+That doesn't seem very likely.
+Did it happen recently?
+
+> I'm ok to drop these ones, but another patch may be required to add
+> 'static __attribute__((unused))' for all of the currently used ones,
+> otherwise, there will be warnings randomly by a test case change or
+> drop.
+
+Then we just drop the helper when we don't need it anymore.
+
+I also dislike the __attribute__ spam to be honest.
+
+> Or even further, is it possible to merge some of them to some more
+> generic helpers like the ones used from the selftest.h in your last RFC
+> patchset?
+
+Something like this will indeed be part of the KTAP rework.
+But it's a change for another time.
+
+Thomas
