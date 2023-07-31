@@ -2,114 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2B976A44D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDCF76A452
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbjGaWnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 18:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52082 "EHLO
+        id S231573AbjGaWou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 18:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbjGaWni (ORCPT
+        with ESMTP id S229671AbjGaWon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 18:43:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DE21FD3;
-        Mon, 31 Jul 2023 15:43:27 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690843404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=33Fq0Wu+LfDasDHlhoRJ+tEuyTqh8mt568Pu/UPLqZ0=;
-        b=PHQpaRnDsOkNetg825gd7IMakLKEP04uFP8GjAkP881xDRNXfPSgpbfOr3P/ZzLgdLAcog
-        t84/0kkZB8NqGFR3FI2hQNvWMOLbKioKkFwRxkdH20Fa27GvDIm0eywiEooeOxvDwJnTUQ
-        7sULS3F2uUNKXpQByKioVMv0LN8JAUeUK56WYbfHkE8OeeH297dNymSbkyU4DVgQAASEBL
-        RJovwWu7lOUgjmS/tGHcenWqOndXgJvUa/6STM+ARb/+OlxVyQ4tkiV4DBd8inkCx83kIq
-        OyRIsZ33PKZchkj8QQIzWFKvLakZfO/1wjzytu0JTjG2FzHcVCS/YC3y6O7T1g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690843404;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=33Fq0Wu+LfDasDHlhoRJ+tEuyTqh8mt568Pu/UPLqZ0=;
-        b=PRvRmlunvV0e6RaleyV3C7+1OWJpkshHGoUIFIKaYZat4z36ufWvuSv5CP4m/eqDs0eWe2
-        zwip5a5ebJA1mqCA==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        dvhart@infradead.org, dave@stgolabs.net, andrealmeid@igalia.com,
-        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
-        hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de
-Subject: Re: [PATCH v1 02/14] futex: Extend the FUTEX2 flags
-In-Reply-To: <20230731213341.GB51835@hirez.programming.kicks-ass.net>
-References: <20230721102237.268073801@infradead.org>
- <20230721105743.819362688@infradead.org> <87edkonjrk.ffs@tglx>
- <87mszcm0zw.ffs@tglx>
- <20230731192012.GA11704@hirez.programming.kicks-ass.net>
- <87a5vbn5r0.ffs@tglx>
- <20230731213341.GB51835@hirez.programming.kicks-ass.net>
-Date:   Tue, 01 Aug 2023 00:43:24 +0200
-Message-ID: <87y1ivln1v.ffs@tglx>
+        Mon, 31 Jul 2023 18:44:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9041BF5;
+        Mon, 31 Jul 2023 15:44:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F71A6132F;
+        Mon, 31 Jul 2023 22:44:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D0ABC433C9;
+        Mon, 31 Jul 2023 22:44:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690843446;
+        bh=yMfEQxMz10YeYVrq5kAiqUPTJVeuhElSeAlUF9m51Ug=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=c6AE4ZO3XIeFcMTLntZ2MmNNrkUZENXMn+feHFS4sRM7cyxAzS5MNmLZaR8hxotXu
+         zEwlqXZ85B3QmGIrg/j+cw94qWbo7iusBknpcot/DlpWrstH2cTBwpFE1HwroJpSef
+         S73iT7lR+COrpyxkFtPxbj9+QFQaOeVwOWtuSzoneMxv2qa5UxJT1QL9be0Cn+kmkK
+         xSFFQQcjNWPEelEwwESKIfaZP2fCKHMG5gep8vq5gdWx+ODwtAEjhdgUCvwAYUj7/L
+         jxJzTYg9u0aFr8mPz823ik+RUkQ/L2KDOJkFcbNIXBAVcdiglbvW1QPYJuU21JqqPd
+         ZKEqACIVBzhsg==
+Message-ID: <bd3dc956d7b43f34ee458992919c5afd71abd3d3.camel@kernel.org>
+Subject: Re: [PATCH RFC] nfsd: don't hand out write delegations on O_WRONLY
+ opens
+From:   Jeff Layton <jlayton@kernel.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 31 Jul 2023 18:44:04 -0400
+In-Reply-To: <169084147821.32308.9286837678268595107@noble.neil.brown.name>
+References: <20230731-wdeleg-v1-1-f8fe1ce11b36@kernel.org>
+         <169084147821.32308.9286837678268595107@noble.neil.brown.name>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31 2023 at 23:33, Peter Zijlstra wrote:
-> On Mon, Jul 31, 2023 at 11:14:11PM +0200, Thomas Gleixner wrote:
->> --- a/include/uapi/linux/futex.h
->> +++ b/include/uapi/linux/futex.h
->> @@ -74,7 +74,12 @@
->>  struct futex_waitv {
->>  	__u64 val;
->>  	__u64 uaddr;
->> -	__u32 flags;
->> +	union {
->> +		__u32	flags;
->> +		__u32	size	: 2,
->> +				: 5,
->> +			private	: 1;
->> +	};
->>  	__u32 __reserved;
->>  };
->
-> Durr, I'm not sure I remember if that does the right thing across
-> architectures -- might just work. But I'm fairly sure this isn't the
-> only case of a field in a flags thing in our APIs. Although obviously
-> I can't find another case in a hurry :/
+On Tue, 2023-08-01 at 08:11 +1000, NeilBrown wrote:
+> On Tue, 01 Aug 2023, Jeff Layton wrote:
+> > I noticed that xfstests generic/001 was failing against linux-next nfsd=
+.
+> >=20
+> > The client would request a OPEN4_SHARE_ACCESS_WRITE open, and the serve=
+r
+> > would hand out a write delegation. The client would then try to use tha=
+t
+> > write delegation as the source stateid in a COPY or CLONE operation, an=
+d
+> > the server would respond with NFS4ERR_STALE.
+> >=20
+> > The problem is that the struct file associated with the delegation does
+> > not necessarily have read permissions. It's handing out a write
+> > delegation on what is effectively an O_WRONLY open. RFC 8881 states:
+> >=20
+> >  "An OPEN_DELEGATE_WRITE delegation allows the client to handle, on its
+> >   own, all opens."
+> >=20
+> > Given that the client didn't request any read permissions, and that nfs=
+d
+> > didn't check for any, it seems wrong to give out a write delegation.
+> >=20
+> > Don't hand out a delegation if the client didn't request
+> > OPEN4_SHARE_ACCESS_BOTH.
+> >=20
+> > This fixes xfstest generic/001.
+> >=20
+> > Closes: https://bugzilla.linux-nfs.org/show_bug.cgi?id=3D412
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  fs/nfsd/nfs4state.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >=20
+> > diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+> > index ef7118ebee00..9f1c90afed72 100644
+> > --- a/fs/nfsd/nfs4state.c
+> > +++ b/fs/nfsd/nfs4state.c
+> > @@ -5462,6 +5462,8 @@ nfs4_set_delegation(struct nfsd4_open *open, stru=
+ct nfs4_ol_stateid *stp,
+> >  		return ERR_PTR(-EAGAIN);
+> > =20
+> >  	if (open->op_share_access & NFS4_SHARE_ACCESS_WRITE) {
+> > +		if (!(open->op_share_access & NFS4_SHARE_ACCESS_READ))
+> > +			return ERR_PTR(-EBADF);
+> <bikeshed>
+> The actual error code returned by nfs4_set_delegation() is ignored -
+> only the fact of an error is relevant.
+> Given that, how did you choose -EBADF.  nfsd doesn't use file
+> descriptors, and doesn't use EBADF anywhere else.
+> Given that you have just tested access, EACCES might be justifiable.
+> But I would prefer if nfs4_set_delegation() returns NULL if it could not
+> find or create a delegation, without bothering with giving a reason.
+> </bikeshed>
+>=20
 
-I know, but that doesn't make these things more readable and neither an
-argument against doing it for futex2 :)
+I chose EBADF because the fcntl code uses it for similar purposes. From
+the manpage:
 
-> Also, sys_futex_{wake,wait}() have this thing as a syscall argument,
-> surely you don't want to put this union there as well?
+EBADF	cmd is F_SETLK or F_SETLKW and the file descriptor open      =20
+	mode doesn't match with the type of lock requested.
 
-Why not? The anon union does not break the ABI unless I'm missing
-something. Existing user space can still use 'flags' and people who care
-about readability can use the bitfield, no?
+We're requesting a "lock" here in a delegation, so this made some sense
+to me. I'm not particular here though. If another error makes more
+sense, then that's fine.
 
-Its inside struct futex_waitv and not an explicit syscall argument, right?
 
-> I'd much prefer to just keep the 'unsigned int flags' thing and perhaps
-> put a comment on-top of the '#define FUTEX2_*' thingies. Note that
-> having it a field instead of a bunch of flags makes sense, since you can
-> only have a single size, not a combination of sizes.
+> Reviewed-by: NeilBrown <neilb@suse.de>
+>=20
 
-I'm aware of that by now :)
+Thanks!
 
-Still that explicit bitfield does neither need comments nor does it
-leave room for interpretation.
+> NeilBrown
+>=20
+> >  		nf =3D find_writeable_file(fp);
+> >  		dl_type =3D NFS4_OPEN_DELEGATE_WRITE;
+> >  	} else {
+> >=20
+> > ---
+> > base-commit: ec89391563792edd11d138a853901bce76d11f44
+> > change-id: 20230731-wdeleg-bbdb6b25a3c6
+> >=20
+> > Best regards,
+> > --=20
+> > Jeff Layton <jlayton@kernel.org>
+> >=20
+> >=20
+>=20
 
-Thanks,
-
-        tglx
+--=20
+Jeff Layton <jlayton@kernel.org>
