@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A9C76929B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DA176929D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:59:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232396AbjGaJ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
+        id S232383AbjGaJ7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230359AbjGaJ6l (ORCPT
+        with ESMTP id S232278AbjGaJ7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:58:41 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B61B2115
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:57:43 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5221f3affe4so5815918a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:57:43 -0700 (PDT)
+        Mon, 31 Jul 2023 05:59:01 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F055C1AD
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:58:38 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-3fe12baec61so19319035e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690797462; x=1691402262;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1690797517; x=1691402317;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KuWBFCHnpavR+uWZCU4/e6Sz+oK71FihdZ9BIB+RC3Y=;
-        b=VXokx3YdZziuf0563Ipki4nEt3pLAjvdLB420+OvDFfu3LcUlzWqwjvH/FLB1vEgFa
-         d36eEG9PpTJ/BB0YMsJrnVShxDhufEINJE32dzFMe9B2QFjC3br7kM2tyuXrjDD0f0Aa
-         24c1nAXSO4R3SA9ovqpVrHlttsPH40HEJ5Y+cwI8gfrVw4f/+HecNVOe3MIdd4P3HkRl
-         eiUqUIYFLj06UT2WfxJg7TmgjCC6zQH9xNgA1x4qvFiSVc5XsbWg2xk1V8YcjT9N5UT3
-         ySXTQhTB1ra54Mz+enGkFPY2bjDgaV+/nqp5F2bd4GYIKnTAuJewmsEQt7LbpoKAs94w
-         34FQ==
+        bh=rg2nsL33DJP3APkKNMN9PVz8TJV+b2lWQs0h39zCPdk=;
+        b=D0CoOihB3i7vfd0NMuE+IHCa036Obg/hpIa5zSSxwWWza07mstlN8/upTS0yoIfuj5
+         Qg6dODVcwzceCYpXrF9g1tFAA/I5TkGckqYyQuqoOY7h7H0xpUa/Jd7z85nZ7QUDxHhc
+         EArzckJn73/0IGSJWZllm5YnLABbccWDAZuGWIqaxhgHdV5D4D2OsVvwAvIrVPQX2Qv4
+         hb9cBaMHMop6CgT1oMVocppR0fAnA+DzmcgTrl2FHd8Kt7EHyOpaayst2z/RsELa0BYm
+         wniLBlCyEK/MXeK86TQdiWtXsaBVqE4tyCt+/TqHDQMEzlR3+fhP4JbYGru2veBQQ4vL
+         p0lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690797462; x=1691402262;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690797517; x=1691402317;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KuWBFCHnpavR+uWZCU4/e6Sz+oK71FihdZ9BIB+RC3Y=;
-        b=GVYr5vzsNK1cCbJqn1cPdDRrVkmYmwXlsUcmm9oMesgX/C1QarE8UXyni188asI+xk
-         uuyN25TbXAIIUA/Jvw33h1rgk6liG/qtDj+VxHhNCXtS6NOhiPeYSRb6UUEwCrDgkWPu
-         4+4Wc6f3bypPI7297NipP8vqZhEtYi106yY5JuIJzNambjuWg7b/5PEP5lyGILPVlwY+
-         pf4QXHJGexte5X2K5//NlGdE27pCA82cmwFPZJ7yonLNEdrnzxn8/5v10mqQtEtrFhTL
-         CKnwYrFfWa0fitgB0WvLvUl1vzY8HvUZO0tMe4yugQLRnHGClUQeesMTXTqafPuFZqNX
-         bbew==
-X-Gm-Message-State: ABy/qLbpS+eH+BOy+oqlJh3SfdTWjzvfcPCOrl4zeSJ6TKlYJUJ8jDwF
-        WGJpwmJdqk2SM0ZQfwc2E0NMLQ==
-X-Google-Smtp-Source: APBJJlFskb8gG/g6HOjBS3IXkfNSsbAoR0XYL3/jDv5ziDX5FMRSyVwa1NEpmhuXVijhFvYTJ2yj+w==
-X-Received: by 2002:a17:907:a072:b0:99b:efc8:51d with SMTP id ia18-20020a170907a07200b0099befc8051dmr5456986ejc.21.1690797462029;
-        Mon, 31 Jul 2023 02:57:42 -0700 (PDT)
-Received: from krzk-bin.. ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id kq6-20020a170906abc600b009828e26e519sm5860678ejb.122.2023.07.31.02.57.41
+        bh=rg2nsL33DJP3APkKNMN9PVz8TJV+b2lWQs0h39zCPdk=;
+        b=BrfPUXZ2yukPjVFUIyHn9zIz+ZYKvFSbwh9ZJ/XdHrZhwc0MPUcbeurZVQsZ8LX+RK
+         nDBi21eBSJcVYaaVyJd6lIlKODTZ8uaNih1xSTf+On5CIWjHpkD2kq5MPzt6N479LZwn
+         nIa4f4qIVMvbpmrOoAVicgx2aLUdLlmzHlg0HTudkoDApG6jAbpqpRUcge1NysVkjEGg
+         bwzZoQ/YZCsyWlgn3ws2RP5ZiSFbejBAsrmqCYAWlwxe1VPeZLCTr1gcL6JENKY7g1Ro
+         P5x+Vxi6Zcve4s/Nh8+7GoLHxbXhlCuTUItxjsMJm2J7VuJ8OD49dW8wV1lpzRl1tXtp
+         WHdQ==
+X-Gm-Message-State: ABy/qLaDugF5qQnSFg8PCm1WzvB1hlcZNNkHM2Flegphq94xeHi+eNnA
+        OTspobaynlsLpFHdUs96+NBiRQ==
+X-Google-Smtp-Source: APBJJlHWatIum20TrxpJEWJ1w3MDJ0L8YbqPTf426+yes4pyrdIxTQM3BwWTW5meZG9v5qeIpdgvMQ==
+X-Received: by 2002:adf:e586:0:b0:316:f24b:597a with SMTP id l6-20020adfe586000000b00316f24b597amr6780410wrm.46.1690797517412;
+        Mon, 31 Jul 2023 02:58:37 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id i17-20020a5d55d1000000b003143be36d99sm12568762wrw.58.2023.07.31.02.58.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 02:57:41 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 8/8] ARM: dts: samsung: s5pv210-galaxys: switch sound card to audio-routing
-Date:   Mon, 31 Jul 2023 11:57:30 +0200
-Message-Id: <20230731095730.204567-8-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230731095730.204567-1-krzysztof.kozlowski@linaro.org>
-References: <20230731095730.204567-1-krzysztof.kozlowski@linaro.org>
+        Mon, 31 Jul 2023 02:58:36 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     Russell King <linux@armlinux.org.uk>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230717225623.3214384-1-robh@kernel.org>
+References: <20230717225623.3214384-1-robh@kernel.org>
+Subject: Re: [PATCH] ARM: meson: Drop unused includes
+Message-Id: <169079751641.200989.17748164958378497482.b4-ty@linaro.org>
+Date:   Mon, 31 Jul 2023 11:58:36 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,70 +77,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"samsung,audio-routing" property is being deprecated, so switch to
-generic "audio-routing".
+Hi,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm/boot/dts/samsung/s5pv210-galaxys.dts | 37 +++++++++----------
- 1 file changed, 18 insertions(+), 19 deletions(-)
+On Mon, 17 Jul 2023 16:56:23 -0600, Rob Herring wrote:
+> of_platform.h is not needed, so drop it.
+> 
+> 
 
-diff --git a/arch/arm/boot/dts/samsung/s5pv210-galaxys.dts b/arch/arm/boot/dts/samsung/s5pv210-galaxys.dts
-index 532d3f5bceb1..879294412381 100644
---- a/arch/arm/boot/dts/samsung/s5pv210-galaxys.dts
-+++ b/arch/arm/boot/dts/samsung/s5pv210-galaxys.dts
-@@ -101,33 +101,32 @@ sound {
- 		headset-detect-gpios = <&gph0 6 GPIO_ACTIVE_LOW>;
- 		headset-key-gpios = <&gph3 6 GPIO_ACTIVE_HIGH>;
- 
--		samsung,audio-routing =
--			"HP", "HPOUT1L",
--			"HP", "HPOUT1R",
-+		audio-routing = "HP", "HPOUT1L",
-+				"HP", "HPOUT1R",
- 
--			"SPK", "SPKOUTLN",
--			"SPK", "SPKOUTLP",
-+				"SPK", "SPKOUTLN",
-+				"SPK", "SPKOUTLP",
- 
--			"RCV", "HPOUT2N",
--			"RCV", "HPOUT2P",
-+				"RCV", "HPOUT2N",
-+				"RCV", "HPOUT2P",
- 
--			"LINE", "LINEOUT2N",
--			"LINE", "LINEOUT2P",
-+				"LINE", "LINEOUT2N",
-+				"LINE", "LINEOUT2P",
- 
--			"IN1LP", "Main Mic",
--			"IN1LN", "Main Mic",
-+				"IN1LP", "Main Mic",
-+				"IN1LN", "Main Mic",
- 
--			"IN1RP", "Headset Mic",
--			"IN1RN", "Headset Mic",
-+				"IN1RP", "Headset Mic",
-+				"IN1RN", "Headset Mic",
- 
--			"IN2LN", "FM In",
--			"IN2RN", "FM In",
-+				"IN2LN", "FM In",
-+				"IN2RN", "FM In",
- 
--			"Modem Out", "Modem TX",
--			"Modem RX", "Modem In",
-+				"Modem Out", "Modem TX",
-+				"Modem RX", "Modem In",
- 
--			"Bluetooth SPK", "TX",
--			"RX", "Bluetooth Mic";
-+				"Bluetooth SPK", "TX",
-+				"RX", "Bluetooth Mic";
- 
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&headset_det &earpath_sel>;
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.6/arm-mach)
+
+[1/1] ARM: meson: Drop unused includes
+      https://git.kernel.org/amlogic/c/b5bd2ccac2d5b2830c1d59e759e5e35e50639b99
+
+These changes has been applied on the intermediate git tree [1].
+
+The v6.6/arm-mach branch will then be sent via a formal Pull Request to the Linux SoC maintainers
+for inclusion in their intermediate git branches in order to be sent to Linus during
+the next merge window, or sooner if it's a set of fixes.
+
+In the cases of fixes, those will be merged in the current release candidate
+kernel and as soon they appear on the Linux master branch they will be
+backported to the previous Stable and Long-Stable kernels [2].
+
+The intermediate git branches are merged daily in the linux-next tree [3],
+people are encouraged testing these pre-release kernels and report issues on the
+relevant mailing-lists.
+
+If problems are discovered on those changes, please submit a signed-off-by revert
+patch followed by a corrective changeset.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+
 -- 
-2.34.1
+Neil
 
