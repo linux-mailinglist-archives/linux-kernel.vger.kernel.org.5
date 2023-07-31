@@ -2,81 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B75476A2CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C849576A2D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231391AbjGaVbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
+        id S230238AbjGaVbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbjGaVaq (ORCPT
+        with ESMTP id S229840AbjGaVbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:30:46 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5820319A4;
-        Mon, 31 Jul 2023 14:30:18 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VLTKU1015630;
-        Mon, 31 Jul 2023 21:30:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Up7tl0qt0HQUQxtc3m8aLw88GzHGZyI41BmbxGn0+Rg=;
- b=cmRZWd4Tbdo17n3fEThbWNC6DPhf/oiVdrmw2DVE9HK0jIMYNOuTxzvy649wwkCKQ1j7
- G9vkKTCuC0gYD3eypgC7nod/BxnxdbeW2odp1qYuI26AtBznXmrS8+PDaXV/ppofdQ+p
- uO0ryC66a8xKRWhsOU+14zPsGAba6b6WhroWIlp/E2Ib58UFYpTX0MLOkH6SixXlAk4F
- ct7ihkaMscpqu1wv+DzcjHzTdofR9Jh/rYV9K0YQw2XaXuVcmVLl05pHT0GZg9REm2W+
- UxkVzTREFwgSNLWrHSM44DJ9NVVBChwJDk967m/Hg7E/w7UIPj7CjyN+23KX0TMEum0V Dw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6fak8qcm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 21:30:11 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36VLUAED016647
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 21:30:10 GMT
-Received: from [192.168.142.6] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 14:30:10 -0700
-Message-ID: <e4592feb-3878-b0eb-61e4-fb6dfc358e1a@quicinc.com>
-Date:   Mon, 31 Jul 2023 14:29:44 -0700
+        Mon, 31 Jul 2023 17:31:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ED51FD3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:30:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 86096612F0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 21:30:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E7A9CC4339A;
+        Mon, 31 Jul 2023 21:30:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690839022;
+        bh=6ln8+1FepUmEq0n1wC3+z9xd4PEXVx5YzvZK+JmHd/Q=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=CE8z3JqfEwiFZrU9AhZttfPlEoyX1m+bdAygorM+41Y6doM/yXzXSlauAvzEFVfa2
+         gyWJtC5Pu4tNkCiUyAszW+LWLJEBBVIvF/666RU06YOuD+CCuakHGDxbVCImIfuEJL
+         rpEQy6Dgje5vgyBwK63vZpG01LWs2X4VgIByMeoxkBNQRziGnzr3dXn9NZAQRLGvRo
+         VYyNOAHlp9I/e5Ne7l4Li4EqdooS5WY7zOUtMM5aIau+fowRzMBQiTnE7IVbua0Jm1
+         Um0Yxm+eAczuRBnCTkgHIA8bx1tUFYCM+KM8MKrw1RLktkMV20MIrpPIaCdq2WvQ78
+         +kC+43eb2kSWg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D001FC595C0;
+        Mon, 31 Jul 2023 21:30:22 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] soc: qcom: aoss: Move length requirements from caller
-Content-Language: en-US
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-CC:     Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
-References: <20230731041013.2950307-1-quic_bjorande@quicinc.com>
- <20230731041013.2950307-2-quic_bjorande@quicinc.com>
-From:   Chris Lew <quic_clew@quicinc.com>
-In-Reply-To: <20230731041013.2950307-2-quic_bjorande@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: roTXaohgMY-WI2SQze1t3CVll6O2G3BE
-X-Proofpoint-GUID: roTXaohgMY-WI2SQze1t3CVll6O2G3BE
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-31_15,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 bulkscore=0
- phishscore=0 malwarescore=0 spamscore=0 clxscore=1011 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307310195
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] devlink: Remove unused extern declaration
+ devlink_port_region_destroy()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169083902284.31832.11392552376480505400.git-patchwork-notify@kernel.org>
+Date:   Mon, 31 Jul 2023 21:30:22 +0000
+References: <20230728132113.32888-1-yuehaibing@huawei.com>
+In-Reply-To: <20230728132113.32888-1-yuehaibing@huawei.com>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     jiri@resnulli.us, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,24 +60,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 28 Jul 2023 21:21:13 +0800 you wrote:
+> devlink_port_region_destroy() is never implemented since
+> commit 544e7c33ec2f ("net: devlink: Add support for port regions").
+> 
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> ---
+>  include/net/devlink.h | 2 --
+>  1 file changed, 2 deletions(-)
+
+Here is the summary with links:
+  - [net-next] devlink: Remove unused extern declaration devlink_port_region_destroy()
+    https://git.kernel.org/netdev/net-next/c/2628d40899d1
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-On 7/30/2023 9:10 PM, Bjorn Andersson wrote:
-> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
->   	/* The message RAM only implements 32-bit accesses */
->   	__iowrite32_copy(qmp->msgram + qmp->offset + sizeof(u32),
-> -			 data, len / sizeof(u32));
-> -	writel(len, qmp->msgram + qmp->offset);
-> +			 buf, sizeof(buf) / sizeof(u32));
-> +	writel(sizeof(buf), qmp->msgram + qmp->offset);
->   
-
-Looks like we are telling the firmware the packet size will always be 
-QMP_MSG_LEN?
-
-This should be ok but might be a problem when debugging. The AOSS 
-firmware only logs size of the message instead of the full string 
-because of memory constraints.
-
-We would normally match the firmware and host logs based on size, but 
-won't be able to differentiate this way with a fixed size.
