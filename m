@@ -2,89 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7EE7697F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEAB97697FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjGaNrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40806 "EHLO
+        id S229955AbjGaNrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbjGaNrJ (ORCPT
+        with ESMTP id S230354AbjGaNrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:47:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB161708;
-        Mon, 31 Jul 2023 06:47:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690811228; x=1722347228;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=nHF5W/WdqQq71KtethdkPzIq2ti8gzSk3md7KHrp0EI=;
-  b=AZS3RVNUF987Fp/el6o6nuIeFVXyOmTx5Spgh761j5Y0GOzQddmDVnCG
-   YYn1eM+KGyY7Cu9vTDAPX47mpa7nmXHwmkbj8dGBAnVfXs1z/QJLycTXE
-   97GlBK6fpA3iYOtA/4/8qof22vGiyuvgB/Cx57SpQESF21ilIqNgPFzNC
-   FNSPJ6g47nWCRvurdTHcsdDAwj3fgDCwDUtMQeGgagS9caWX6OUM78WwB
-   o6+69Flsh7ltuEFT3rpDOHxmRLnWHuC7IINs5Hoi/eFLbju6Jv4vFzDUB
-   n9mMRSZU1H7HUvj//fRpfm7Jr8R9KxYul182Miiv6cYFpN61aOE6wzL0T
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435331032"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="435331032"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 06:47:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="1058936280"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="1058936280"
-Received: from nikithas-mobl.amr.corp.intel.com (HELO [10.212.216.144]) ([10.212.216.144])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 06:47:06 -0700
-Message-ID: <af4c8d30-7072-6196-a467-bc8c8dbb5a2f@linux.intel.com>
-Date:   Mon, 31 Jul 2023 06:47:05 -0700
+        Mon, 31 Jul 2023 09:47:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D500170C;
+        Mon, 31 Jul 2023 06:47:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=phaaJIZq1BLWmPqCytuBa+h2XJylFF98eK0c+HuebO4=; b=Fr1NrfcLzdpJVpmcOBL17zaxcV
+        zEYs26Dbdcqza8yQ2T/gXt6eJXboPEJDuFGznraLpotq5X7rjBlo3FpAmzHfseZRvk68l8JasNeG0
+        +WtScm3eUB5qzFnSVptSpdbfn3qDJe20ysVK0l4UYj/pksK8xkHmndNPZ00AHymM1PT3Pm8xhyoDY
+        P+N/gRHEh7Tq3zv150c3HLMnk43p8seEmT9AypoQn+WvEN1JpoUi0OMnBGLkKxGj2S7ARg8vVk7DS
+        ncdBCZlrKI1aVZGJJBi4u8phMp2+tpPtCrQZpp5BoEk7L6K4hd2fVmDuvQ7SjuHtMjV1S1M4MQvp1
+        CtbLs/0Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQTEs-001wMI-Lv; Mon, 31 Jul 2023 13:47:11 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F9B93001DD;
+        Mon, 31 Jul 2023 15:47:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EB506203EA053; Mon, 31 Jul 2023 15:47:09 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 15:47:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-perf-users@vger.kernel.org,
+        selinux@vger.kernel.org,
+        Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com, airlied@gmail.com,
+        daniel@ffwll.ch, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        acme@kernel.org
+Subject: Re: [PATCH v3 0/4] mm: convert to vma_is_initial_heap/stack()
+Message-ID: <20230731134709.GJ29590@hirez.programming.kicks-ass.net>
+References: <20230728050043.59880-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
-Content-Language: en-US
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-References: <20230728105650.565799744@linutronix.de>
- <20230728120930.839913695@linutronix.de>
- <BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR21MB1688.namprd21.prod.outlook.com>
-From:   Arjan van de Ven <arjan@linux.intel.com>
-In-Reply-To: <BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR21MB1688.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728050043.59880-1-wangkefeng.wang@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/30/2023 9:05 PM, Michael Kelley (LINUX) wrote:
-> Does anyone have suggestions on a different way to handle
-> this that's better than the above diff?  Other thoughts?
+On Fri, Jul 28, 2023 at 01:00:39PM +0800, Kefeng Wang wrote:
 
-how badly do you need xapic ? Meaning, can x2apic just be used instead always
+> Kefeng Wang (4):
+>   mm: factor out VMA stack and heap checks
+>   drm/amdkfd: use vma_is_initial_stack() and vma_is_initial_heap()
+>   selinux: use vma_is_initial_stack() and vma_is_initial_heap()
+>   perf/core: use vma_is_initial_stack() and vma_is_initial_heap()
+> 
+>  drivers/gpu/drm/amd/amdkfd/kfd_svm.c |  5 +----
+>  fs/proc/task_mmu.c                   | 24 ++++----------------
+>  fs/proc/task_nommu.c                 | 15 +------------
+>  include/linux/mm.h                   | 25 +++++++++++++++++++++
+>  kernel/events/core.c                 | 33 ++++++++++------------------
+>  security/selinux/hooks.c             |  7 ++----
+>  6 files changed, 44 insertions(+), 65 deletions(-)
 
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
