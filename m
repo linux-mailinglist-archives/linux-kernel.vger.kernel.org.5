@@ -2,146 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6420A769B9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D765C769B96
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233144AbjGaP7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34928 "EHLO
+        id S232951AbjGaP6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233024AbjGaP66 (ORCPT
+        with ESMTP id S229896AbjGaP6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:58:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177A31721
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690819094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4fe6hbS0UUlu2v7dj0yh2sFuv9miEav3h35iCM+LzrA=;
-        b=aUQq25fVqVWRGJcq14zax3WJWOdERpcRUDxaubSMjuwjb4gcPLAOGJbyxtCDwkniCKlJ3A
-        34Ri8Ndk4IgrJ6ACHR9Izl47SEjcAo7ESiNsQo6KC2L9xOGNOPqpvy7Vg35yslyEbhA5Ms
-        /snhZhML6Csfbsbcb9TXSuqmd5USAgY=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-487-3AKa9B-0P9W7TE3lABdOBg-1; Mon, 31 Jul 2023 11:58:12 -0400
-X-MC-Unique: 3AKa9B-0P9W7TE3lABdOBg-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-99bfe6a531bso158725066b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:58:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690819091; x=1691423891;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4fe6hbS0UUlu2v7dj0yh2sFuv9miEav3h35iCM+LzrA=;
-        b=Bf/BxKr2/2EEUBLn2lFvWu+rRtExXci31aT/nXUEC9a6URLmrIKNRSEY9CjmFogPWj
-         scDtD/zTrbWwmCpVvD1aq5vLl8aUcOXV2aWi550uQDjlvtKLTvRruwNl4gXcMOmW6Jgp
-         j5MA6yW344EGEhqCT4nD2pHm+OAdkKin9mP3rp+jgCD3m6ZY/Qu3iIEhn73KSLf7VRhL
-         gc3ureamed4NlQUWehzCXEQ4C/zsduP3DVKUqg4MX3KBJNks5oiECIGB9eDIjdoNuVfT
-         RqpE5eZ3AJkUOsGdnaBleFjZ0bpufrA/lAr6V5DHh9h7jvSm1OBqteL8yk8DU6NH5bCm
-         HABg==
-X-Gm-Message-State: ABy/qLbSjmK8GHBfq6pRlTFjn8ZZyc9taFjRM54pCj2LKlfhwK0sRapc
-        fNxl/6CD6G31hISxdAl81ahegC0NSGIXUYgsGOVvrLh2Jzi1j2H/Qyg/XVl/O8SKFnRQnA0UPwR
-        fG9EWNVTa7/zIchWMmRU3dJpu
-X-Received: by 2002:a17:906:11:b0:993:f744:d235 with SMTP id 17-20020a170906001100b00993f744d235mr164005eja.6.1690819091656;
-        Mon, 31 Jul 2023 08:58:11 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlE4qcb0DCH0D/UYAr1wihMNcJs7WXVHvdtoT78VyrDkWJveoJUy2CwgTeDnMx93k7Ts+Uy66g==
-X-Received: by 2002:a17:906:11:b0:993:f744:d235 with SMTP id 17-20020a170906001100b00993f744d235mr163994eja.6.1690819091362;
-        Mon, 31 Jul 2023 08:58:11 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id f21-20020a170906139500b00992dcae806bsm6371003ejc.5.2023.07.31.08.58.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 08:58:10 -0700 (PDT)
-Message-ID: <eb356cf1-c661-930b-2175-427a59267d1f@redhat.com>
-Date:   Mon, 31 Jul 2023 17:58:08 +0200
+        Mon, 31 Jul 2023 11:58:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9342511B;
+        Mon, 31 Jul 2023 08:58:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 27E19611FC;
+        Mon, 31 Jul 2023 15:58:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 075BBC433C7;
+        Mon, 31 Jul 2023 15:58:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690819124;
+        bh=R1G04hta+saztdfdrFiAoSHpGKl0V0AP6qVL7ELtNro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OP8BfhoEG5YnNRPnRTDoXNpryf59JCNmvEbP/jVRlE+we9YGAZNCDAB/FslU1Yy9s
+         FhD1ATE37t/1vfHy/Bg9Ez9+mB8wrrATlEH1pAk5odqQNyQrZxv2PwBPLvrVZGoMy7
+         Tncwhoi0jOhtm+VDWY/NJxve7zq5s+CmRUQ8Wmmg=
+Date:   Mon, 31 Jul 2023 17:58:41 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
+        isaac.true@canonical.com, jesse.sung@canonical.com,
+        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Lech Perczak <lech.perczak@camlingroup.com>
+Subject: Re: [PATCH v9 06/10] serial: sc16is7xx: fix regression with GPIO
+ configuration
+Message-ID: <2023073105-elevation-canister-2777@gregkh>
+References: <20230725142343.1724130-1-hugo@hugovil.com>
+ <20230725142343.1724130-7-hugo@hugovil.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Quentin Perret <qperret@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-7-seanjc@google.com> <ZMOJgnyzzUNIx+Tn@google.com>
- <ZMRXVZYaJ9wojGtS@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RFC PATCH v11 06/29] KVM: Introduce KVM_SET_USER_MEMORY_REGION2
-In-Reply-To: <ZMRXVZYaJ9wojGtS@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725142343.1724130-7-hugo@hugovil.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/23 02:03, Sean Christopherson wrote:
-> KVM would need to do multiple uaccess reads, but that's not a big
-> deal.  Am I missing something, or did past us just get too clever and
-> miss the obvious solution?
+On Tue, Jul 25, 2023 at 10:23:38AM -0400, Hugo Villeneuve wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> 
+> Commit 679875d1d880 ("sc16is7xx: Separate GPIOs from modem control lines")
+> and commit 21144bab4f11 ("sc16is7xx: Handle modem status lines")
+> changed the function of the GPIOs pins to act as modem control
+> lines without any possibility of selecting GPIO function.
+> 
+> As a consequence, applications that depends on GPIO lines configured
+> by default as GPIO pins no longer work as expected.
+> 
+> Also, the change to select modem control lines function was done only
+> for channel A of dual UART variants (752/762). This was not documented
+> in the log message.
+> 
+> Allow to specify GPIO or modem control line function in the device
+> tree, and for each of the ports (A or B).
+> 
+> Do so by using the new device-tree property named
+> "nxp,modem-control-line-ports" (property added in separate patch).
+> 
+> When registering GPIO chip controller, mask-out GPIO pins declared as
+> modem control lines according to this new DT property.
+> 
+> Fixes: 679875d1d880 ("sc16is7xx: Separate GPIOs from modem control lines")
+> Fixes: 21144bab4f11 ("sc16is7xx: Handle modem status lines")
+> Cc: <stable@vger.kernel.org> # 6.1.x: 95982fad dt-bindings: sc16is7xx: Add property to change GPIO function
+> Cc: <stable@vger.kernel.org> # 6.1.x: 1584d572 serial: sc16is7xx: refactor GPIO controller registration
+> Cc: <stable@vger.kernel.org> # 6.1.x: ac2caa5a serial: sc16is7xx: remove obsolete out_thread label
+> Cc: <stable@vger.kernel.org> # 6.1.x: d90961ad serial: sc16is7xx: mark IOCONTROL register as volatile
+> Cc: <stable@vger.kernel.org> # 6.1.x: 6dae3bad serial: sc16is7xx: fix broken port 0 uart init
 
-You would have to introduce struct kvm_userspace_memory_region2 anyway, 
-though not a new ioctl, for two reasons:
+Where are these git commit ids from?  I don't see them in Linus's tree,
+how are they supposed to be picked up by the stable developers if they
+are not valid ones?
 
-1) the current size of the struct is part of the userspace API via the 
-KVM_SET_USER_MEMORY_REGION #define, so introducing a new struct is the 
-easiest way to preserve this
+confused,
 
-2) the struct can (at least theoretically) enter the ABI of a shared 
-library, and such mismatches are really hard to detect and resolve.  So 
-it's better to add the padding to a new struct, and keep struct 
-kvm_userspace_memory_region backwards-compatible.
-
-
-As to whether we should introduce a new ioctl: doing so makes 
-KVM_SET_USER_MEMORY_REGION's detection of bad flags a bit more robust; 
-it's not like we cannot introduce new flags at all, of course, but 
-having out-of-bounds reads as a side effect of new flags is a bit nasty. 
-  Protecting programs from their own bugs gets into diminishing returns 
-very quickly, but introducing a new ioctl can make exploits a bit harder 
-when struct kvm_userspace_memory_region is on the stack and adjacent to 
-an attacker-controlled location.
-
-Paolo
-
+greg k-h
