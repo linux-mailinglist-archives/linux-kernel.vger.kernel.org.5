@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D97D176894E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 01:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB758768953
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 02:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229552AbjG3Xum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 19:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
+        id S229511AbjGaAMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 20:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjG3Xul (ORCPT
+        with ESMTP id S229445AbjGaAMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 19:50:41 -0400
-Received: from ale.deltatee.com (ale.deltatee.com [204.191.154.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8634210C0;
-        Sun, 30 Jul 2023 16:50:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:From:References:Cc:To:
-        MIME-Version:Date:Message-ID:content-disposition;
-        bh=FVsm7XR5gyD3MmGf40bx/+LP6XG63Sd/Pb98sroNX+0=; b=Pwizs9VhPURkngamp5j03F2HZb
-        wDmxLfwou6NxEh4deJei7d1+l+mIoNhPDLeCGbdd/asUvPAoVTeF1ESYx+3WhOxFY0yAzaVbtJ3Pp
-        P1kVY/PCF7uSpLEfBuCWXXywYnqfxWweu+xO7z69+/fa5sPD2/xLyL2Pnuw3ZMMSn3u4TuSSXhuJ9
-        5iUNlJpx/kuUw6UcTGpZTtKDnx3ZYDo5kFGwEbPGu3Ixu1E5gH4AfAJx2S0b4sdZAX+czi4mQWyL4
-        KP99IfaRg6xrO9RT/d2Qz+ssfo+9CP/JlzPkmrCBKCZifNILYE97hgoaA5hAw1d4zN02kfKg4U3jO
-        YNm0HAjw==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <logang@deltatee.com>)
-        id 1qQGBF-00F0SV-Ve; Sun, 30 Jul 2023 17:50:34 -0600
-Message-ID: <ff871e8d-c5b0-99ed-0a44-385d70c503c2@deltatee.com>
-Date:   Sun, 30 Jul 2023 17:50:32 -0600
+        Sun, 30 Jul 2023 20:12:52 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39AA5CA
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 17:12:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690762371; x=1722298371;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Lp12deWGU3L97PQtj9u0jC0+/FGeAGK2Q+TCQNbbrCQ=;
+  b=X/A9q/xcG0tCt13m6hRwP3RnHI81GyS1N0TIZiCnrRjFvLXCU6aiW0PG
+   mpG5smMO3ehRekIBgdlXzNThnwXpcAcQmiXpKg+wMFFtMsP5BEzhCPm9p
+   bjkoZ4RVeYQWlCnNXOCGVCJJBwg5QPlt0/ENJCUgtWUnrp3CQrNVHgZLI
+   +s9Emq2mHgi5Xy6bfu3RfUaDZScgAg+h/SQrMeot4S5kUJw7t1YRHW762
+   Wg0AxgL/kgho18xJMG63XF9+fOhgoMQm1xeadRMboroacTbXmqe/Ywuue
+   0crOt4cvAr1q2qZ27lKfx1zBRCIoE3+iEwMvziLu3vjJTo08wgMTy2xdd
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="371594951"
+X-IronPort-AV: E=Sophos;i="6.01,243,1684825200"; 
+   d="scan'208";a="371594951"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2023 17:12:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="842014098"
+X-IronPort-AV: E=Sophos;i="6.01,243,1684825200"; 
+   d="scan'208";a="842014098"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Jul 2023 17:12:47 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qQGWk-0004qN-1z;
+        Mon, 31 Jul 2023 00:12:46 +0000
+Date:   Mon, 31 Jul 2023 08:11:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Usama Arif <usama.arif@bytedance.com>, linux-mm@kvack.org,
+        muchun.song@linux.dev, mike.kravetz@oracle.com, rppt@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        fam.zheng@bytedance.com, liangma@liangbit.com,
+        simon.evans@bytedance.com, punit.agrawal@bytedance.com,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: Re: [v2 6/6] mm: hugetlb: Skip initialization of struct pages freed
+ later by HVO
+Message-ID: <202307310817.Y6ZmhLsV-lkp@intel.com>
+References: <20230730151606.2871391-7-usama.arif@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-To:     Chengfeng Ye <dg573847474@gmail.com>, vkoul@kernel.org
-Cc:     yuyunbo519@gmail.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, christophe.jaillet@wanadoo.fr
-References: <20230729175952.4068-1-dg573847474@gmail.com>
-Content-Language: en-CA
-From:   Logan Gunthorpe <logang@deltatee.com>
-In-Reply-To: <20230729175952.4068-1-dg573847474@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: dg573847474@gmail.com, vkoul@kernel.org, yuyunbo519@gmail.com, dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, christophe.jaillet@wanadoo.fr
-X-SA-Exim-Mail-From: logang@deltatee.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230730151606.2871391-7-usama.arif@bytedance.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
-Subject: Re: [PATCH v2] dmaengine: plx_dma: Fix potential deadlock on
- &plxdev->ring_lock
-X-SA-Exim-Version: 4.2.1 (built Sat, 13 Feb 2021 17:57:42 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Usama,
 
+kernel test robot noticed the following build errors:
 
-On 7/29/23 11:59, Chengfeng Ye wrote:
-> As plx_dma_process_desc() is invoked by both tasklet plx_dma_desc_task()
-> under softirq context and plx_dma_tx_status() callback that executed under
-> process context, the lock aquicision of &plxdev->ring_lock inside
-> plx_dma_process_desc() should disable irq otherwise deadlock could happen
-> if the irq preempts the execution of process context code while the lock
-> is held in process context on the same CPU.
-> 
-> Possible deadlock scenario:
-> plx_dma_tx_status()
->     -> plx_dma_process_desc()
->     -> spin_lock(&plxdev->ring_lock)
->         <tasklet softirq>
->         -> plx_dma_desc_task()
->         -> plx_dma_process_desc()
->         -> spin_lock(&plxdev->ring_lock) (deadlock here)
-> 
-> This flaw was found by an experimental static analysis tool I am developing
-> for irq-related deadlock.
-> 
-> The lock was changed from spin_lock_bh() to spin_lock() by a previous patch
-> for performance concern but unintentionally brought this potential deadlock
-> problem.
-> 
-> This patch reverts back to spin_lock_bh() to fix the deadlock problem.
-> 
-> Fixes: 1d05a0bdb420 ("dmaengine: plx_dma: Move spin_lock_bh() to spin_lock()")
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-> 
+[auto build test ERROR on akpm-mm/mm-everything]
 
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+url:    https://github.com/intel-lab-lkp/linux/commits/Usama-Arif/mm-hugetlb-Skip-prep-of-tail-pages-when-HVO-is-enabled/20230730-231750
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20230730151606.2871391-7-usama.arif%40bytedance.com
+patch subject: [v2 6/6] mm: hugetlb: Skip initialization of struct pages freed later by HVO
+config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20230731/202307310817.Y6ZmhLsV-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230731/202307310817.Y6ZmhLsV-lkp@intel.com/reproduce)
 
-Thanks!
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307310817.Y6ZmhLsV-lkp@intel.com/
 
-Logan
+All errors (new ones prefixed by >>):
+
+   aarch64-linux-ld: mm/hugetlb.o: in function `__alloc_bootmem_huge_page':
+   hugetlb.c:(.init.text+0x574): undefined reference to `vmemmap_optimize_enabled'
+   aarch64-linux-ld: mm/hugetlb.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `vmemmap_optimize_enabled' which may bind externally can not be used when making a shared object; recompile with -fPIC
+   hugetlb.c:(.init.text+0x574): dangerous relocation: unsupported relocation
+>> aarch64-linux-ld: hugetlb.c:(.init.text+0x594): undefined reference to `vmemmap_optimize_enabled'
+   aarch64-linux-ld: hugetlb.c:(.init.text+0x59c): undefined reference to `vmemmap_optimize_enabled'
+   aarch64-linux-ld: hugetlb.c:(.init.text+0x634): undefined reference to `vmemmap_optimize_enabled'
+   aarch64-linux-ld: mm/hugetlb.o: relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol `vmemmap_optimize_enabled' which may bind externally can not be used when making a shared object; recompile with -fPIC
+   hugetlb.c:(.init.text+0x634): dangerous relocation: unsupported relocation
+   aarch64-linux-ld: hugetlb.c:(.init.text+0x650): undefined reference to `vmemmap_optimize_enabled'
+   aarch64-linux-ld: mm/hugetlb.o:hugetlb.c:(.init.text+0x658): more undefined references to `vmemmap_optimize_enabled' follow
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
