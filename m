@@ -2,183 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B217694B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99ABA7694A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232607AbjGaLV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34650 "EHLO
+        id S232525AbjGaLVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbjGaLVq (ORCPT
+        with ESMTP id S231773AbjGaLVD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:21:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC7910CA
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690802454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=47HAhqvJlrFOjF3d3mT+sXNh9SqjQbM0s/wrTjkOtJg=;
-        b=i884zA/q0qcP8cVnklnRkqGFucfkUGfvK7wvaYeRfGvH0v5btCjeJko+jL59jUXEjgv2qJ
-        MPRE9bRchFfjhtldOnlZjW/z4MQfoKk9X3i254FEmWGuMp6bis0uH3kD2TJVA9OVvafBdu
-        cvHkLTqJEERxMkTOxNDOZBYeEqHfCf8=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-333-hK5rRkUDPQi-qvdSn2CHoA-1; Mon, 31 Jul 2023 07:20:52 -0400
-X-MC-Unique: hK5rRkUDPQi-qvdSn2CHoA-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-63d09e8bc06so33398406d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:20:52 -0700 (PDT)
+        Mon, 31 Jul 2023 07:21:03 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5119E10C0;
+        Mon, 31 Jul 2023 04:20:59 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bc02bd4eafso12782515ad.1;
+        Mon, 31 Jul 2023 04:20:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690802459; x=1691407259;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GbS8Qlfzn1Dgn19TT0BgR1SE8o6tzPgDzghenWvydYU=;
+        b=sRCcK4ssYdzJDLDSbo0yHQAjwvp0lQNsICeu+cMBU7PpbD1tn7ltLqdRMuaXo69ayJ
+         hKcB5meML4awt66h7oX0OgMARkqHoPr76z5ch4UtcllKCW1Zgy+NXGdgTSfZowFLCfFI
+         ZSIKC9ktL/ddceCz6m25B3eZpOR7HhyEBnt1tZmAfKOAk3xHvA8GvPBK+sjwwPs6kvJX
+         OCBoPKG608FjwEDZn59JhhR8/oyG1praX41izhWO2bzLUIMZIYb37vaihS2VqE392TiT
+         gIs9HQvUrqUZaKk1W0GYZ3Gr38VZbYvblaDljdOpyIdBU01Uc8bQjwKmj2Pe2segDZ7a
+         bGvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690802452; x=1691407252;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=47HAhqvJlrFOjF3d3mT+sXNh9SqjQbM0s/wrTjkOtJg=;
-        b=jrOhfHz1VpWTg6brCxcz5BDV5WDHWuNzJSucRInd8zL5surDtCJTQz4bf5mjMyMsfP
-         IgGTY8G64FIDhG4PvTtUIvkGXxf7cBwY3KkfHDWOWAv3/aBtZ4DIp9un4CDVP406l4sK
-         0MzMY1iKM9gcT+ZnwSc9mnZW3OEpk59BR+iJLrUu9sKCCwNNlcqJAb85g9lrv4whMcbD
-         nbtDRlpbWEc5C7Sp1tlVjUEO1ipbY35cxQnviAEbLIee37mn06Ml2c2i0oTxuef/PMKb
-         bcbt+jBpy2gQ89lIdK15dGNrJXLFgZa/uX6wASpIWFBC03mvDdgA6k1Q5mAa3J7CbUYf
-         tuyg==
-X-Gm-Message-State: ABy/qLbWsOryvyBF3YN7tWTz6hnC2wK+Ldlpm0v4xjmbzsWdOllGRLJ8
-        mprxOGrezEODmEl9vRwupKLlOQJejhkxxtzLyJARlcAFmyTly5IHb7O5sC/80yIQGicLW5Wzydn
-        PW/xR/twboGp2wp/0B3xKSbFL
-X-Received: by 2002:a0c:e14d:0:b0:634:20f:471c with SMTP id c13-20020a0ce14d000000b00634020f471cmr6609355qvl.14.1690802451988;
-        Mon, 31 Jul 2023 04:20:51 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGQmknuNkpt4OdqMMs+lcZsPQfXQHCOzlkWOeCIE2fDz4iRThyIeyibV6Yi3WqcRw7uGfKfaw==
-X-Received: by 2002:a0c:e14d:0:b0:634:20f:471c with SMTP id c13-20020a0ce14d000000b00634020f471cmr6609334qvl.14.1690802451661;
-        Mon, 31 Jul 2023 04:20:51 -0700 (PDT)
-Received: from vschneid.remote.csb ([149.12.7.81])
-        by smtp.gmail.com with ESMTPSA id n2-20020a0ce542000000b0061b5dbf1994sm3583834qvm.146.2023.07.31.04.20.42
+        d=1e100.net; s=20221208; t=1690802459; x=1691407259;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GbS8Qlfzn1Dgn19TT0BgR1SE8o6tzPgDzghenWvydYU=;
+        b=hB/bPrememDDZgFkUQiJvdrvm+KAcKvXFKbJ8RamjicLfcEZVjnio/XTP0DGi+JsFd
+         3wk978d7ja4Ovk5ahFmFjDfop/fG7iDoDvFouNrbyjj2PfQxsm0fQAsg4qCOobsPnjJM
+         VTRJuu+6QrahIthiojM6RumjWuZ95FGcPSiOGI71BBqy30Jod3aGfb7LXmHsGW3z+PhB
+         X8xjNpzJBdlXs4vpHBV+bBCFgEeHJeyKNWgKt7PYsjF7JAcrb30+mSIQgu/svHTB7NPP
+         VS+UoxVmcYlC6zXc3cVkV2LVx66peIsNevyyiurUbeRE3nUNQDrKyRsqVtp0Un2IQH1W
+         pteQ==
+X-Gm-Message-State: ABy/qLZUvthxFh53K5UWBXVIRdyoaGQDu6jFeyX7o4ZJFPkAFWXn6yzk
+        ikQfAHV3h9phandXA7Fo1Jqi+kBCqJ7c6A==
+X-Google-Smtp-Source: APBJJlHv2G80hlFmeMpv+4Stl2gbXUp1TxFjAU/Su1Dbul/HlEpmoIKIGA+9ssxjhFXnsCAIJQx4lA==
+X-Received: by 2002:a17:902:c407:b0:1bb:dbec:40ba with SMTP id k7-20020a170902c40700b001bbdbec40bamr12244217plk.16.1690802458589;
+        Mon, 31 Jul 2023 04:20:58 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id e6-20020a170902cf4600b001b8c6890623sm8382932plg.7.2023.07.31.04.20.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 04:20:51 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kvm@vger.kernel.org, linux-mm@kvack.org,
-        bpf@vger.kernel.org, x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 06/20] tracing/filters: Optimise scalar vs
- cpumask filtering when the user mask is a single CPU
-In-Reply-To: <20230729155547.35719a1f@rorschach.local.home>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
- <20230720163056.2564824-7-vschneid@redhat.com>
- <20230729155547.35719a1f@rorschach.local.home>
-Date:   Mon, 31 Jul 2023 12:20:41 +0100
-Message-ID: <xhsmh1qgos4xi.mognet@vschneid.remote.csb>
+        Mon, 31 Jul 2023 04:20:58 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 2B5F380001D5; Mon, 31 Jul 2023 18:20:53 +0700 (WIB)
+Date:   Mon, 31 Jul 2023 18:20:53 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     "Dr. Greg" <greg@enjellic.com>, paul@paul-moore.com
+Cc:     linux-security-module@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: TSEM feedback.
+Message-ID: <ZMeZFRz/lH8Uz2mX@debian.me>
+References: <20230731103822.GA4093@wind.enjellic.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8e9Ag2A/xFjBJvzI"
+Content-Disposition: inline
+In-Reply-To: <20230731103822.GA4093@wind.enjellic.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/07/23 15:55, Steven Rostedt wrote:
-> On Thu, 20 Jul 2023 17:30:42 +0100
-> Valentin Schneider <vschneid@redhat.com> wrote:
->
->> Steven noted that when the user-provided cpumask contains a single CPU,
->> then the filtering function can use a scalar as input instead of a
->> full-fledged cpumask.
->>
->> When the mask contains a single CPU, directly re-use the unsigned field
->> predicate functions. Transform '&' into '==' beforehand.
->>
->> Suggested-by: Steven Rostedt <rostedt@goodmis.org>
->> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
->> ---
->>  kernel/trace/trace_events_filter.c | 7 ++++++-
->>  1 file changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
->> index 2fe65ddeb34ef..54d642fabb7f1 100644
->> --- a/kernel/trace/trace_events_filter.c
->> +++ b/kernel/trace/trace_events_filter.c
->> @@ -1750,7 +1750,7 @@ static int parse_pred(const char *str, void *data,
->>               * then we can treat it as a scalar input.
->>               */
->>              single = cpumask_weight(pred->mask) == 1;
->> -		if (single && field->filter_type == FILTER_CPUMASK) {
->> +		if (single && field->filter_type != FILTER_CPU) {
->>                      pred->val = cpumask_first(pred->mask);
->>                      kfree(pred->mask);
->>              }
->> @@ -1761,6 +1761,11 @@ static int parse_pred(const char *str, void *data,
->>                              FILTER_PRED_FN_CPUMASK;
->>              } else if (field->filter_type == FILTER_CPU) {
->>                      pred->fn_num = FILTER_PRED_FN_CPU_CPUMASK;
->> +		} else if (single) {
->> +			pred->op = pred->op == OP_BAND ? OP_EQ : pred->op;
->
-> Nit, the above can be written as:
->
->                       pred->op = pret->op != OP_BAND ? : OP_EQ;
->
 
-That's neater, thanks!
+--8e9Ag2A/xFjBJvzI
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> -- Steve
->
->
->> +			pred->fn_num = select_comparison_fn(pred->op, field->size, false);
->> +			if (pred->op == OP_NE)
->> +				pred->not = 1;
->>              } else {
->>                      switch (field->size) {
->>                      case 8:
+On Mon, Jul 31, 2023 at 05:38:22AM -0500, Dr. Greg wrote:
+> Good morning Paul, I hope this note finds your week starting well.
+>=20
+> We submitted the patches for the V2 release of TSEM three weeks ago.
+>=20
+> We received some feedback from Randy Dunlap on some documentations
+> issues that we went on to address.
+>=20
+> Haven't heard any reflections from you.  Was just wondering if you
+> were swamped or had possibly missed the submission?  We didn't include
+> you as a copy on the notion that you didn't need two sets of patches
+> landing in your inbox.
+>=20
+> You can find the series with the following lore link:
+>=20
+> https://lore.kernel.org/linux-security-module/20230710102319.19716-1-greg=
+@enjellic.com/T/#t
+>=20
+> Will look forward to any reflections you might have.
 
+OK, please reroll with all reviews addressed.
+
+As for the documentation, it seems that you missed Cc'ing
+linux-doc@vger.kernel.org list, hence I didn't see your series. In any case,
+run ``scripts/get_maintainer.pl`` to find maintainers, potential reviewers,
+and lists that should have received your patch (series).
+
+Last but not least, it'd been great if you can also link to public Git
+repo containing your series (you already have the repo locally when
+developing the series, right?), so I can simply ``git pull`` when about
+to review yours.
+
+See you in v2!
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--8e9Ag2A/xFjBJvzI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZMeZDwAKCRD2uYlJVVFO
+o5G2AP44MMyRCB5jI3G18XNUpGnaFZJZ+ZByyOHDT8GlgPHXiQD+LC+N301nHZ9d
+ssPqQozSwvnWKLLtcfOQ0u00wFgV8w4=
+=I09p
+-----END PGP SIGNATURE-----
+
+--8e9Ag2A/xFjBJvzI--
