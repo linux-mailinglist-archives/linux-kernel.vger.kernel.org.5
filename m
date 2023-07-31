@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D9576972B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44BA76972F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232766AbjGaNH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:07:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47384 "EHLO
+        id S231337AbjGaNIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbjGaNHL (ORCPT
+        with ESMTP id S231774AbjGaNHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:07:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EFED19A1;
-        Mon, 31 Jul 2023 06:06:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 48D726114E;
-        Mon, 31 Jul 2023 13:05:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D6A9C433C8;
-        Mon, 31 Jul 2023 13:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690808745;
-        bh=ejuYroiiwipxR4dunI4bi/87YX/fRkCJNQkz4ShUrEA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UdpthuuNV3oDz82oelKQEMy3FCcBAH6sGGtWW+oTZYkLij06psSHvxUwaJsK3v3oz
-         KXTsLnsJ0BJkq2p4wODCRZ0VRT0YgDjnfuKwDKyaYyTS1Pjro0359VKft6BMWu4jOe
-         dEyEgrTjztThzGFkEcBbAQJTjqcdc5W/MbYL21a8jNBHeHUgbhtgy7ouymW4ppSF8e
-         iGW2VGV2ADlulP16QKVh3HR33tmpLKkP9SiK+Ym2o0t/DMTlQaRK+8tBjDxxEprVUL
-         MF2mpdpg0Zj2ltmsx0z+yr3V5bFzl4myj7GazGQSysvqsf96mon3ni5tMtEXJN3Vsh
-         o4CjT6vyf9bHA==
-Date:   Mon, 31 Jul 2023 14:05:39 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, mark.rutland@arm.com,
-        Mark Brown <broonie@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Rob Herring <robh@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH V13 - RESEND 00/10] arm64/perf: Enable branch stack
- sampling
-Message-ID: <20230731130538.GA24881@willie-the-truck>
-References: <20230711082455.215983-1-anshuman.khandual@arm.com>
+        Mon, 31 Jul 2023 09:07:48 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641AF1FD7;
+        Mon, 31 Jul 2023 06:07:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690808833; x=1722344833;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=dxI4YScDLo8YpeDgT4DDfRErG18F4mdrsXlfYWF5Ri0=;
+  b=m1Da1eb93WmmvLXy4/VJkk9UZwtyc7I/r2gbOjanrxiLy4akDvqVF0Vv
+   ld6r398oRxDrxKrU2r+pZQwekQMbzKAlEs8bro0/Wa5WFO6mckzS5km5G
+   sCejbvOnT5PnqPblLA5m3BgYpxmFWiMKjNkmXbiRr6aKwJeoSgGLsIPAQ
+   km7gHUl7U2knEVDuk5oIByVqi/Ss9uGzkeXEN/hp0DSZ6gRIJgS5Pfcqq
+   VPNTo7xE5Q0/XsDNUxZr/QhUMms+KkqdaVE+cBzaI6D+A5HU51sts1+LU
+   d+t5L1co+hsHBh2m0G7ltBEnSTGjtzdptupGA/6dWUNwnM0Rey9zE8XAM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366495603"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="366495603"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 06:06:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="678334713"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="678334713"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 31 Jul 2023 06:06:44 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qQSbS-00057z-1S;
+        Mon, 31 Jul 2023 13:06:29 +0000
+Date:   Mon, 31 Jul 2023 21:06:10 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     LeoLiu-oc <LeoLiu-oc@zhaoxin.com>, olivia@selenic.com,
+        herbert@gondor.apana.org.au, jiajie.ho@starfivetech.com,
+        conor.dooley@microchip.com, martin@kaiser.cx, mmyangfl@gmail.com,
+        jenny.zhang@starfivetech.com, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, leoliu@zhaoxin.com,
+        CobeChen@zhaoxin.com, YunShen@zhaoxin.com, TonyWWang@zhaoxin.com,
+        leoliu-oc <leoliu-oc@zhaoxin.com>
+Subject: Re: [PATCH v2 2/2] hwrng: add Zhaoxin HW RNG driver
+Message-ID: <202307312040.d5kTGcBX-lkp@intel.com>
+References: <20230731084515.2057375-3-LeoLiu-oc@zhaoxin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230711082455.215983-1-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20230731084515.2057375-3-LeoLiu-oc@zhaoxin.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,106 +70,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anshuman,
+Hi LeoLiu-oc,
 
-On Tue, Jul 11, 2023 at 01:54:45PM +0530, Anshuman Khandual wrote:
-> This series enables perf branch stack sampling support on arm64 platform
-> via a new arch feature called Branch Record Buffer Extension (BRBE). All
-> relevant register definitions could be accessed here.
-> 
-> https://developer.arm.com/documentation/ddi0601/2021-12/AArch64-Registers
-> 
-> This series applies on 6.5-rc1.
-> 
-> Changes in V13:
+kernel test robot noticed the following build errors:
 
-I had a go at reviewing this series and, aside from the macro issue I've
-already pointed out, I really struggled with the way that you've put the
-series together:
+[auto build test ERROR on char-misc/char-misc-testing]
+[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus herbert-cryptodev-2.6/master linus/master v6.5-rc4 next-20230731]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-  - You incrementally introduce dead code, forcing the reviewer to keep
-    previous patches in their head awaiting for a caller to come along
-    later.
+url:    https://github.com/intel-lab-lkp/linux/commits/LeoLiu-oc/hwrng-via-rng-convert-to-x86_cpu_id-probing/20230731-164950
+base:   char-misc/char-misc-testing
+patch link:    https://lore.kernel.org/r/20230731084515.2057375-3-LeoLiu-oc%40zhaoxin.com
+patch subject: [PATCH v2 2/2] hwrng: add Zhaoxin HW RNG driver
+config: openrisc-randconfig-r003-20230731 (https://download.01.org/0day-ci/archive/20230731/202307312040.d5kTGcBX-lkp@intel.com/config)
+compiler: or1k-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230731/202307312040.d5kTGcBX-lkp@intel.com/reproduce)
 
-    Example: Patch 4 literally just adds a new struct to the kernel.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307312040.d5kTGcBX-lkp@intel.com/
 
-  - You change arch/arm/, where this driver shouldn't even be _compiled_
-    despite adding CONFIG_ARM64_BRBE.
+All errors (new ones prefixed by >>):
 
-    Example: Patch 5 adds some BRBE stubs to
-             arch/arm/include/asm/arm_pmuv3.h
+>> drivers/char/hw_random/zhaoxin-rng.c:16:10: fatal error: asm/cpu_device_id.h: No such file or directory
+      16 | #include <asm/cpu_device_id.h>
+         |          ^~~~~~~~~~~~~~~~~~~~~
+   compilation terminated.
 
-  - You undo/rework code that was introduced earlier in the series
 
-    Example: armv8pmu_branch_read() is introduced as a useless stub in
-             patch 5, rewritten in patch 6 and then rewritten again in
-	     patch 10. Why should I waste time reviewing three versions
-	     of this function?
+vim +16 drivers/char/hw_random/zhaoxin-rng.c
 
-  - You make unrelated cosmetic changes to the existing code inside
-    patches adding new features.
+  > 16	#include <asm/cpu_device_id.h>
+    17	#include <asm/fpu/api.h>
+    18	
 
-    Example: Patch 5 randomly removes some comments from the existing
-             code.
-
-  - The commit messages are, at best, useless and err more on the side
-    of nonsensical.
-
-    Example: Look at patch 3:
-
-    | This updates 'struct arm_pmu' for branch stack sampling support being added
-    | later. This adds an element 'reg_trbidr' to capture BRBE attribute details.
-    | These updates here will help in tracking any branch stack sampling support.
-    |
-    | This also enables perf branch stack sampling event on all 'struct arm pmu',
-    | supporting the feature but after removing the current gate that blocks such
-    | events unconditionally in armpmu_event_init(). Instead a quick probe can be
-    | initiated via arm_pmu->has_branch_stack to ascertain the support.
-
-    If I remove everything that isn't just describing the code, I'm left with:
-
-    - 'reg_trbidr' captures BRBE attribute details
-    - These updates here will help in tracking any branch stack sampling support.
-    - perf branch stack sampling event is now enabled when it is supported
-    - Probing is quick
-
-    But crucial information is missing:
-
-    * What is BRBE?
-    * What is a BRBE attribute?
-    * How are the details of an attribute captured?
-    * How do these "updates" (which ones?) help in tracking branch stack sampling?
-    * What is being tracked and why?
-    * How quick is the probing and why do we care?
-    * What is the perf branch stack sampling event and what does it mean
-      to enable it? Does it offer something useful to the user?
-    * Why do we want any of this?
-
-(these examples are not intended to be an exhaustive list of things that
-need fixing)
-
-Overall, this makes the code needlessly difficult to review. However, I
-don't reckon it's too much effort on your side to fix the things above.
-You've been doing this for long enough (on the author and reviewer side)
-that I hope you see what I'm getting at. If not, try reviewing your own
-patches right before you hit 'git send-email'; I pretty much always find
-a problem with my own code that way.
-
-So, please, can you post a v14 which:
-
-  1. Fixes the broken register access macros
-  2. Adds some meaningful tests at the end of the series
-  3. Squashes the new driver code (i.e. at least everything in
-     arm_brbe.c and possibly just everything under drivers/perf/) down
-     into a single patch
-  4. Does any _necessary_ cleanup or refactoring at the start of the
-     series, leaving out cosmetic stuff for now
-  5. Rewrites the commit messages following the guidelines in
-     submitting-patches.rst. You don't need to talk about specific C
-     expressions; we have the code for that already and if it's doing
-     something subtle then you can add a comment.
-  6. Resolves the open CYCLES_COUNT issue from Yang and Suzuki
-
-Cheers,
-
-Will
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
