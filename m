@@ -2,126 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD82769AF2
+	by mail.lfdr.de (Postfix) with ESMTP id 75ECB769AF1
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbjGaPkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        id S232228AbjGaPkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232148AbjGaPkI (ORCPT
+        with ESMTP id S230511AbjGaPkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:40:08 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DAA1713;
-        Mon, 31 Jul 2023 08:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=M7bzdQSRGVpDVr3CMEAqQUVUanffXqBwkJftx8SZ7Bc=; b=0xRtmmCs2S3Ooou5AhnJSgbCxl
-        sGNMPkdFcml+cmxF036cHSY9wkSGVo/9sKJKol2rMPqebpHh+5D/7YJxjGhuVQGDYqyBKWugvbBdF
-        5IqTvgceGfqkZ7A8+93tycJ8SwP8xLfMXox01P7tt4Uqnb7FwpkRong7c8C5RGBM1QONIZt1gWdz6
-        b2zNG5GvQvXxwMvEIXQrVWSNuhfoMFWVWeRwxkpa4148T4ZO4HSqN7sBorgcUidAfxtlXyEXweevy
-        2CwIpqt6KrAScTSHFzPVOfPN7OrE08oN3f3JmlBR6wMcTLEG7+urR4YgQvzqyIEBTDbdScKJ1TjmT
-        UErXI09w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45756)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qQUzy-0002n5-1m;
-        Mon, 31 Jul 2023 16:39:54 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qQUzx-0008Aw-4m; Mon, 31 Jul 2023 16:39:53 +0100
-Date:   Mon, 31 Jul 2023 16:39:53 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <ZMfVyT1QEFad1iOn@shell.armlinux.org.uk>
-References: <20230731102254.2c9868ca@canb.auug.org.au>
+        Mon, 31 Jul 2023 11:40:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E041198B;
+        Mon, 31 Jul 2023 08:40:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 149D9611B9;
+        Mon, 31 Jul 2023 15:40:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82B8AC433C7;
+        Mon, 31 Jul 2023 15:40:05 +0000 (UTC)
+Date:   Mon, 31 Jul 2023 11:40:03 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ze Gao <zegao2021@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: Re: [RFC PATCH v2 3/3] libtraceevent: use the new prev_state_char
+ instead in tracepoint sched_switch
+Message-ID: <20230731114003.43842c8e@gandalf.local.home>
+In-Reply-To: <20230726121618.19198-4-zegao@tencent.com>
+References: <20230726121618.19198-1-zegao@tencent.com>
+        <20230726121618.19198-4-zegao@tencent.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731102254.2c9868ca@canb.auug.org.au>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 10:22:54AM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the net-next tree got a conflict in:
-> 
->   net/dsa/port.c
-> 
-> between commit:
-> 
->   9945c1fb03a3 ("net: dsa: fix older DSA drivers using phylink")
-> 
-> from the net tree and commit:
-> 
->   a88dd7538461 ("net: dsa: remove legacy_pre_march2020 detection")
-> 
-> from the net-next tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc net/dsa/port.c
-> index 2f6195d7b741,c63cbfbe6489..000000000000
-> --- a/net/dsa/port.c
-> +++ b/net/dsa/port.c
-> @@@ -1720,22 -1686,8 +1686,15 @@@ int dsa_port_phylink_create(struct dsa_
->   	if (err)
->   		mode = PHY_INTERFACE_MODE_NA;
->   
-> - 	/* Presence of phylink_mac_link_state or phylink_mac_an_restart is
-> - 	 * an indicator of a legacy phylink driver.
-> - 	 */
-> - 	if (ds->ops->phylink_mac_link_state ||
-> - 	    ds->ops->phylink_mac_an_restart)
-> - 		dp->pl_config.legacy_pre_march2020 = true;
-> - 
->  -	if (ds->ops->phylink_get_caps)
->  +	if (ds->ops->phylink_get_caps) {
->   		ds->ops->phylink_get_caps(ds, dp->index, &dp->pl_config);
->  +	} else {
->  +		/* For legacy drivers */
->  +		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
->  +			  dp->pl_config.supported_interfaces);
->  +		__set_bit(PHY_INTERFACE_MODE_GMII,
->  +			  dp->pl_config.supported_interfaces);
->  +	}
->   
->   	pl = phylink_create(&dp->pl_config, of_fwnode_handle(dp->dn),
->   			    mode, &dsa_port_phylink_mac_ops);
+On Wed, 26 Jul 2023 20:16:18 +0800
+Ze Gao <zegao2021@gmail.com> wrote:
 
-LGTM, thanks.
+> Since the sched_switch tracepoint introduces a new variable to
+> report sched-out task state in symbolic char, we switch to use
+> that instead to spare from knowing internal implementations
+> in kernel.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+This needs to be changed to check if the "prev_state_char" field exists,
+and if not, then it must use the old method. Same for perf. The tools must
+work with older kernels.
+
+-- Steve
+
+> 
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> ---
+>  plugins/plugin_sched_switch.c | 29 ++++-------------------------
+>  1 file changed, 4 insertions(+), 25 deletions(-)
+> 
+> diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
+> index 8752cae..5dbdc28 100644
+> --- a/plugins/plugin_sched_switch.c
+> +++ b/plugins/plugin_sched_switch.c
+> @@ -9,27 +9,6 @@
+>  #include "event-parse.h"
+>  #include "trace-seq.h"
+>  
+> -static void write_state(struct trace_seq *s, int val)
+> -{
+> -	const char states[] = "SDTtZXxW";
+> -	int found = 0;
+> -	int i;
+> -
+> -	for (i = 0; i < (sizeof(states) - 1); i++) {
+> -		if (!(val & (1 << i)))
+> -			continue;
+> -
+> -		if (found)
+> -			trace_seq_putc(s, '|');
+> -
+> -		found = 1;
+> -		trace_seq_putc(s, states[i]);
+> -	}
+> -
+> -	if (!found)
+> -		trace_seq_putc(s, 'R');
+> -}
+> -
+>  static void write_and_save_comm(struct tep_format_field *field,
+>  				struct tep_record *record,
+>  				struct trace_seq *s, int pid)
+> @@ -97,10 +76,10 @@ static int sched_switch_handler(struct trace_seq *s,
+>  	trace_seq_printf(s, "%lld ", val);
+>  
+>  	if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) ==
+> 0)
+> -		trace_seq_printf(s, "[%d] ", (int) val);
+> +		trace_seq_printf(s, "[%d] ", (short) val);
+>  
+> -	if (tep_get_field_val(s,  event, "prev_state", record, &val, 1)
+> == 0)
+> -		write_state(s, val);
+> +	if (tep_get_field_val(s,  event, "prev_state_char", record,
+> &val, 1) == 0)
+> +		trace_seq_putc(s, (char) val);
+>  
+>  	trace_seq_puts(s, " ==> ");
+>  
+> @@ -115,7 +94,7 @@ static int sched_switch_handler(struct trace_seq *s,
+>  	trace_seq_printf(s, "%lld", val);
+>  
+>  	if (tep_get_field_val(s, event, "next_prio", record, &val, 1) ==
+> 0)
+> -		trace_seq_printf(s, " [%d]", (int) val);
+> +		trace_seq_printf(s, " [%d]", (short) val);
+>  
+>  	return 0;
+>  }
+
