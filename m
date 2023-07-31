@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAC2769988
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:32:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF3F76998D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbjGaOcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42196 "EHLO
+        id S232051AbjGaOcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjGaOb4 (ORCPT
+        with ESMTP id S230504AbjGaOb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:31:56 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F99D3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:31:54 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3178dd771ceso3200308f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:31:54 -0700 (PDT)
+        Mon, 31 Jul 2023 10:31:57 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB54411C
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:31:55 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3177163aa97so4843429f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:31:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690813913; x=1691418713;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=C2IHwKYnLNDMWdLQxEd/SU6Gdll+SBIjNHACmkW+1QA=;
-        b=1Qf5eCcJY8sevNEC/HX5WLYyVc+EFCLz9jXCySaH7tyM+geGe1kMnUSZ+/E4BYlCXh
-         W3edA2AXUuC5BKOj8XrvmeNHJ7WP9ifEwtiPu9Tp52dWyoTMnISkGQ2qmyD9p1xONMr5
-         4Bk0RYDmiJ15bYd4a/yLPTy3t6ButwFW8Nbvo7Jfz2/DmxwFcxSZws9UYQOZwlg7Vh+2
-         Q7hOkVEUUL/dc8XEUfKogGjybD4/mRfnbWugqUafRzXXZPCgu13+WLkgjrSpg6zwrC9k
-         DosdBrNSqNpCpIF9hP6S4tkKVcWLAxPo1+Rb9h/BoUFYP5nABGsShjPI9gJuopM3lz8s
-         UPEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690813913; x=1691418713;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690813914; x=1691418714;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=C2IHwKYnLNDMWdLQxEd/SU6Gdll+SBIjNHACmkW+1QA=;
-        b=GRBvi7s7x4OJgzvFqikZ14BlXXjHFFg09igTdyw/HFc/43loDyVI/AqHOATCtOEDEw
-         gYGzCOK/9bPtc72jFRBN8Xl41cIZp4FMoCeD9xj3HgikjhkB6Ad4og+Bpy/7lESEtEZ5
-         MsFWKjH1RVyz2m1MEeh22Aq0zhFVmcEV2+J3Um5cagacQQdZ4p8vE9eImOqx9+xAfoae
-         oy72B3Np99HVMDyPMerAhbHtNHHEaYrR0n5GxgP1RRTtSYhIKZijv3jUohmSzyZWtfPV
-         62sVMhiD5XIiy4BrmBN08DOaQgGb+doktIy6fjrBxmS0JiJoS2xPckGADMCoOC9yxQwD
-         ttDQ==
-X-Gm-Message-State: ABy/qLaD6xwFLhOAmgvGxHiwQf5H31LR5jthafLNfeBH3z3WX+ujnVQq
-        D7F99UHk6WZDdF/DL//wKEPoRA==
-X-Google-Smtp-Source: APBJJlH00VTTAnNgAW+4jvAVqrnGVXcPWqJGW20E2ovP93Zlr7ToKwpkPaYdKeXrn2KrLbF/uGp/ZQ==
-X-Received: by 2002:a5d:53d1:0:b0:317:3b13:94c3 with SMTP id a17-20020a5d53d1000000b003173b1394c3mr3768wrw.41.1690813912679;
-        Mon, 31 Jul 2023 07:31:52 -0700 (PDT)
+        bh=8Ye7/VW9cCinL56beHP9cBXIlGvn2H6A5gltzFR9xZA=;
+        b=igQzoWr1vYjzOo46/BtQNE9CysTmQlLyhA+/wst+Od/HFtUmVc0mepBRDzGu13F8e5
+         2wxL+oPNEspqPtR6ZgY2c+3TxCWIyCYw88iEKJHUq7zma8cLlZfyZvRwA5VhCelcWUpR
+         BXxGB4DqWIjhQNA7PYZh17iAd387hEXRX7q1nInTgHUdlS2D3SmvhPvGEAoT6mTF/K5O
+         5f/QXcLp4E3KmjdoF8ApC7VR5lQp2VXbVFaqW5dVwzhtqLrpqiTazilca5Nbt/x2lB2Q
+         oRKh1wVwtf1ohzgPHYm8M8+SeAqcFMekDfMvAs022PeDR9OMtAKUMG0NoEOD1sfT7Q6T
+         AdDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690813914; x=1691418714;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8Ye7/VW9cCinL56beHP9cBXIlGvn2H6A5gltzFR9xZA=;
+        b=MXw7dJBPkdFJ5hDaDFYJa8Hv2FoAmE4YXiYkxOW9UuuZvxN/iPl4sB7uiwF6ecHmtD
+         f0aiCX3ClNU3PAGarcPruYyj2yCzyxexRRwNYr9cK+9AiZckmzdZxN7bHmM5MANf7nlc
+         vDGHxv2bFa15K/rwChl9d2qsqc732GqjF9OiR/SfW4hmCdMwsoefTZbPlrUhANsQ8ZW/
+         oX94vyEHaD9iiTspU8a77/Opz53ejifmo7vtpmEHD5O20ju1vG9A/vncI2k26SPuKbAu
+         rwg5SZtPsNfrAzItWjeAeCDUgm8yCgsJgSfUvPBaaTSUNvoYDUugSqDXgWXEB/XzALyx
+         dVIQ==
+X-Gm-Message-State: ABy/qLb5+NAUBBY3eAx8HTvJawuFqCjkkn7DglP35PyRpsm6rZyL6OVF
+        6dFHtZCiPMDoizMutpUjgLLScQ==
+X-Google-Smtp-Source: APBJJlG6QJgGCbwJCPNmuvbi4+G/7ZFPi+htK//Xdcz865dxC4Te6P8Ta3huIlfE8MlCZ5g+O00GdQ==
+X-Received: by 2002:adf:ec05:0:b0:313:ded8:f346 with SMTP id x5-20020adfec05000000b00313ded8f346mr10488wrn.22.1690813914111;
+        Mon, 31 Jul 2023 07:31:54 -0700 (PDT)
 Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id i8-20020adfefc8000000b0030ada01ca78sm13301675wrp.10.2023.07.31.07.31.51
+        by smtp.googlemail.com with ESMTPSA id i8-20020adfefc8000000b0030ada01ca78sm13301675wrp.10.2023.07.31.07.31.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 07:31:52 -0700 (PDT)
+        Mon, 31 Jul 2023 07:31:53 -0700 (PDT)
 From:   Alexandre Mergnat <amergnat@baylibre.com>
-Subject: [PATCH v3 0/3] Add startek-kd070fhfid015 display support
-Date:   Mon, 31 Jul 2023 16:31:44 +0200
-Message-Id: <20230711-startek_display-v3-0-dc847e6b359b@baylibre.com>
+Date:   Mon, 31 Jul 2023 16:31:45 +0200
+Subject: [PATCH v3 1/3] dt-bindings: display: panel: add startek
+ kd070fhfid015 support
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIANDFx2QC/4WNXQuCMBhG/4rsuoWbuGlX/Y+I2MdrvrSmbDYS8
- b83vQyiy/PAc85CIgSESE7FQgIkjDj4DNWhIKZX/g4UbWbCS16VkjEaJxUmeNwsxtGpmbZ1Y7m
- oO6GVIvmlVQSqg/Kmzz//ci6PY4AO33vmcs3cY5yGMO/VxLb1dyAxWlImqpZJDbZq6rNWs0Md4
- GiGJ9l0if9R8KxopDZSWzAC2i/Fuq4f9McorwkBAAA=
+Message-Id: <20230711-startek_display-v3-1-dc847e6b359b@baylibre.com>
+References: <20230711-startek_display-v3-0-dc847e6b359b@baylibre.com>
+In-Reply-To: <20230711-startek_display-v3-0-dc847e6b359b@baylibre.com>
 To:     Neil Armstrong <neil.armstrong@linaro.org>,
         Sam Ravnborg <sam@ravnborg.org>,
         David Airlie <airlied@gmail.com>,
@@ -78,23 +78,23 @@ Cc:     AngeloGioacchino Del Regno
         Alexandre Mergnat <amergnat@baylibre.com>,
         Conor Dooley <conor.dooley@microchip.com>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2339; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=i6hwF/bJpJiGLlOquFWKnen03Rk1zyVrmixDTCRPG84=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBkx8XXu3CXuIBVE4+ylx3SVjuGG6Y/iHPbGE8oiaZd
- ttt09YuJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZMfF1wAKCRArRkmdfjHURUCED/
- 0dUeD68t5MIIs++03ZpXnCgWOUMbzXPT9Qjuw7VUV4cixKxnp8cjGoF+e8V3RWOTx8y2WuUqcP6kDm
- PFEWU7yRd6D/vbNIvB07ueoF0Hk2rRRZWHCaGXNAr3KGI2Kb3NIPzQp0m4uk/f32vIUQDX2olHT+hK
- gRxi6aQVqHPSnvz09aqghcOuLC9z8dF0YAUtdfb4INILqTOfgKT9CEdlwXfpttt02fdofnXtf5u9P1
- Je1C5yRBe4MDTZuIJDCu5Z5tSqIzkBlIcjLcFVJO3U5KhoCHkMKF+CGOWnIBL4JVjSzPh7QnZ9vdtp
- Pg6ECNV1fg+ny4AD3JzSQHthyIISd9VTeyMCvY2VHiKMUvEQJqzHsWgME+vK7NOTQ7967dPW1AGha0
- eSxSrzBgmKHdgR7sfeeOboqGNQsNiJ57dgZB9zJiuuNxbmsC0mVICdjJlM4Ht6x5UhahUBgjeztMe+
- Lk92bEnejpMUa2tOyHX0SMwOSnM5RoA3Dhor9S2ZyQI8fzUm8BBfQBTsEkU2d9T+f7WBt/pXFIpXfM
- iYRQ/XeLFDBnTxq3yOqj3nkoseI/VY3aG1xzndpOrdb9u73Uc3y1XLOZ/Ir+GeRC/DAWJ/01ez1xAW
- 3syFP+w29gsfhsIBwI384Whi0a4UkpYKGxbOBKLib9NvaYcUkk0rAz7pPL3Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2211; i=amergnat@baylibre.com;
+ h=from:subject:message-id; bh=602in0caqHCjA6zQgFgfTHmUoHJFTSnnwXSt1PAlxS0=;
+ b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBkx8XXBqSOiQ0tkYiNDhu8PeKrtLIX65043CaAnJZj
+ VN49SnWJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZMfF1wAKCRArRkmdfjHURUuNEA
+ C1gf11Elqe8ZepmWNfS9E98JTgyvI1jalaJ5lcSb2p2XdHS0Jn2/dZnnt4pe6zuL0R/9hYDjXcph3l
+ AFwoQ+klfWI3cW5+cAuU2uGuUiibDieL6C0AswvKlda4YAZbu1cetpdj8IDpC3DmiQKwzZsFFIKY8d
+ NZ2BychTi9BgN7WJ9oNcCghPQuwjX7ifPLWPry1lcyJVMlQJPbLuc0/KQyg6JloCFjD7x2fNt9QM8e
+ KXLTGNDiqScKrtnjpbdie5JEMXUhSoz3Dy+LYvWGZlol3IWWmSV5bmTb5N8Mly4Ygxt3UzuWA4QT0m
+ tSVAkrqhkMWcbQCvIElFwVbSAVakDt3pqTANb0BChDEv7200nKesg8teq7dPcvs+bTYJo4TKA9GxMY
+ D5vK3VuUtzJrsa5+fOCmYwk9rpXnoD4r3xeh04yrIvqh4i0MUaaq+6xYtgXVqUZsJzYizZP/97scOf
+ P3OuxUUjKP86hyPXW5RsBphs8zUfQ8EE+1SMbPZ0ylufkM0aeYWWu1jRorRHwdLM1IMUR+jFDQC45R
+ aKt+nhkEMmwWzY9tKpjI0gV55NEzhVpVB77W4E9YJfmRkRXp3Cj9AOQuRuQIwGnhXsicnXgqBmk0iJ
+ FBUOGMqAMeilL53CbvnOUnGnYa33dP/RgvrjT3GWKasSdgxarEygRvlAjQNA==
 X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
  fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -102,62 +102,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the support of the Startek KD070FHFID015 panel.
-It's a 7-inch TFT LCD display with a resolution of 1024 x 600 pixels.
+The Startek KD070FHFID015 is a 7-inch TFT LCD display with a resolution
+of 1024 x 600 pixels.
 
-I use this display plugged to my mt8365-evk board.
-
-This serie come from a bigger one [1]. Then I addressed the previous
-comments for the related commits here.
-
-[1]: https://lore.kernel.org/all/20230220-display-v1-0-45cbc68e188b@baylibre.com/
-
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
 ---
-Changes in v3:
-- Remove spurious line.
-- Remove useless ops (enable and disable).
-- Remove brightness value init because it is set right after
-  using mipi_dsi_dcs_get_display_brightness(...).
-- Link to v2: https://lore.kernel.org/r/20230711-startek_display-v2-0-87bc7bdec6e9@baylibre.com
+ .../display/panel/startek,kd070fhfid015.yaml       | 69 ++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-Changes in v2:
-- Replace "dcdc-gpio" by "enable-gpio" because this pin enable the
-  Power IC supply. Also, this property come from panel-common.
-- Remove height-mm and width-mm since they are useless here.
-- Re-order elements in the stk_panel structure for readability.
-- Link to v1: https://lore.kernel.org/r/20230711-startek_display-v1-0-163917bed385@baylibre.com
+diff --git a/Documentation/devicetree/bindings/display/panel/startek,kd070fhfid015.yaml b/Documentation/devicetree/bindings/display/panel/startek,kd070fhfid015.yaml
+new file mode 100644
+index 000000000000..d817f998cddc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/startek,kd070fhfid015.yaml
+@@ -0,0 +1,69 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/startek,kd070fhfid015.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Startek Electronic Technology Co. kd070fhfid015 7 inch TFT LCD panel
++
++maintainers:
++  - Alexandre Mergnat <amergnat@baylibre.com>
++
++allOf:
++  - $ref: panel-common.yaml#
++
++properties:
++  compatible:
++    const: startek,kd070fhfid015
++
++  enable-gpios: true
++
++  iovcc-supply:
++    description: Reference to the regulator powering the panel IO pins.
++
++  reg:
++    maxItems: 1
++    description: DSI virtual channel
++
++  reset-gpios: true
++
++  port: true
++
++  power-supply: true
++
++additionalProperties: false
++
++required:
++  - compatible
++  - enable-gpios
++  - iovcc-supply
++  - reg
++  - reset-gpios
++  - port
++  - power-supply
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    dsi0 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        panel@0 {
++            compatible = "startek,kd070fhfid015";
++            reg = <0>;
++            enable-gpios = <&pio 67 GPIO_ACTIVE_HIGH>;
++            reset-gpios = <&pio 20 GPIO_ACTIVE_HIGH>;
++            iovcc-supply = <&mt6357_vsim1_reg>;
++            power-supply = <&vsys_lcm_reg>;
++
++            port {
++                panel_in: endpoint {
++                    remote-endpoint = <&dsi_out>;
++                };
++            };
++        };
++    };
++
++...
 
-Changes in v1:
-- Fix typos in the driver.
-- Merge 2 regulators in one bulk variable in the driver.
-- Remove backlight enable/disable from the driver because it's already
-  managed by the backlight core.
-- Move hardcoded values from function to the generic structure in the
-  driver.
-- Remove unnecessary function (stk_panel_del).
-- Replace some functions by macro to increase the readability.
-- Link to parent serie: [1]
-
----
-Alexandre Mergnat (2):
-      dt-bindings: display: panel: add startek kd070fhfid015 support
-      arm64: defconfig: enable STARTEK KD070FHFID015 panel
-
-Guillaume La Roque (1):
-      drm/panel: Support for startek-kd070fhfid015 MIPI-DSI panel
-
- .../display/panel/startek,kd070fhfid015.yaml       |  69 ++++
- arch/arm64/configs/defconfig                       |   1 +
- drivers/gpu/drm/panel/Kconfig                      |  11 +
- drivers/gpu/drm/panel/Makefile                     |   1 +
- .../gpu/drm/panel/panel-startek-kd070fhfid015.c    | 412 +++++++++++++++++++++
- 5 files changed, 494 insertions(+)
----
-base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-change-id: 20230711-startek_display-958d265f6baa
-
-Best regards,
 -- 
-Alexandre Mergnat <amergnat@baylibre.com>
+2.25.1
 
