@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9F3769959
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD1476995F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:22:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbjGaOV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36634 "EHLO
+        id S232447AbjGaOWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbjGaOV5 (ORCPT
+        with ESMTP id S230049AbjGaOV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Jul 2023 10:21:57 -0400
 Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50834186;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504DA133;
         Mon, 31 Jul 2023 07:21:53 -0700 (PDT)
 Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-        by mail11.truemail.it (Postfix) with ESMTPA id 3D26620F45;
+        by mail11.truemail.it (Postfix) with ESMTPA id B43D9211CC;
         Mon, 31 Jul 2023 16:21:50 +0200 (CEST)
 From:   Francesco Dolcini <francesco@dolcini.it>
 To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -27,9 +27,9 @@ To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
 Cc:     Francesco Dolcini <francesco.dolcini@toradex.com>,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/4] arm64: dts: ti: verdin-am62: dev: add sound card
-Date:   Mon, 31 Jul 2023 16:21:34 +0200
-Message-Id: <20230731142135.108477-4-francesco@dolcini.it>
+Subject: [PATCH v1 4/4] arm64: dts: ti: verdin-am62: dahlia: add sound card
+Date:   Mon, 31 Jul 2023 16:21:35 +0200
+Message-Id: <20230731142135.108477-5-francesco@dolcini.it>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230731142135.108477-1-francesco@dolcini.it>
 References: <20230731142135.108477-1-francesco@dolcini.it>
@@ -46,49 +46,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-Add NAU8822 based analog sound card to Development carrier board.
+Add WM8904 based analog sound card to Dahlia carrier board.
 
 Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 ---
- .../arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi | 45 +++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ .../boot/dts/ti/k3-am62-verdin-dahlia.dtsi    | 53 +++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-index 846caee7dfa4..8f4ca7d3cad5 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dev.dtsi
-@@ -8,6 +8,42 @@
-  * https://www.toradex.com/products/carrier-board/verdin-development-board-kit
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
+index 3abd8d1d6761..e59235d6a8e6 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-dahlia.dtsi
+@@ -8,6 +8,43 @@
+  * https://www.toradex.com/products/carrier-board/dahlia-carrier-board-kit
   */
  
 +/ {
++	reg_1v8_sw: regulator-1v8-sw {
++		compatible = "regulator-fixed";
++		regulator-max-microvolt = <1800000>;
++		regulator-min-microvolt = <1800000>;
++		regulator-name = "On-carrier +V1.8_SW";
++	};
++
 +	sound {
 +		compatible = "simple-audio-card";
 +		simple-audio-card,bitclock-master = <&codec_dai>;
 +		simple-audio-card,format = "i2s";
 +		simple-audio-card,frame-master = <&codec_dai>;
-+		simple-audio-card,name = "verdin-nau8822";
++		simple-audio-card,name = "verdin-wm8904";
 +		simple-audio-card,routing =
-+			"Headphones", "LHP",
-+			"Headphones", "RHP",
-+			"Speaker", "LSPK",
-+			"Speaker", "RSPK",
-+			"Line Out", "AUXOUT1",
-+			"Line Out", "AUXOUT2",
-+			"LAUX", "Line In",
-+			"RAUX", "Line In",
-+			"LMICP", "Mic In",
-+			"RMICP", "Mic In";
++			"Headphone Jack", "HPOUTL",
++			"Headphone Jack", "HPOUTR",
++			"IN2L", "Line In Jack",
++			"IN2R", "Line In Jack",
++			"Headphone Jack", "MICBIAS",
++			"IN1L", "Headphone Jack";
 +		simple-audio-card,widgets =
-+			"Headphones", "Headphones",
-+			"Line Out", "Line Out",
-+			"Speaker", "Speaker",
-+			"Microphone", "Mic In",
-+			"Line", "Line In";
++			"Microphone", "Headphone Jack",
++			"Headphone", "Headphone Jack",
++			"Line", "Line In Jack";
 +
 +		codec_dai: simple-audio-card,codec {
 +			clocks = <&audio_refclk1>;
-+			sound-dai = <&nau8822_1a>;
++			sound-dai = <&wm8904_1a>;
 +		};
 +
 +		simple-audio-card,cpu {
@@ -99,23 +100,30 @@ index 846caee7dfa4..8f4ca7d3cad5 100644
 +
  /* Verdin ETHs */
  &cpsw3g {
- 	pinctrl-names = "default";
-@@ -65,6 +101,15 @@ &main_gpio0 {
+ 	status = "okay";
+@@ -46,6 +83,22 @@ &main_gpio0 {
  &main_i2c1 {
  	status = "okay";
  
 +	/* Audio Codec */
-+	nau8822_1a: audio-codec@1a {
-+		compatible = "nuvoton,nau8822";
++	wm8904_1a: audio-codec@1a {
++		compatible = "wlf,wm8904";
 +		reg = <0x1a>;
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&pinctrl_i2s1_mclk>;
 +		#sound-dai-cells = <0>;
++		clocks = <&audio_refclk1>;
++		clock-names = "mclk";
++		AVDD-supply = <&reg_1v8_sw>;
++		CPVDD-supply = <&reg_1v8_sw>;
++		DBVDD-supply = <&reg_1v8_sw>;
++		DCVDD-supply = <&reg_1v8_sw>;
++		MICVDD-supply = <&reg_1v8_sw>;
 +	};
 +
- 	/* IO Expander */
- 	gpio_expander_21: gpio@21 {
- 		compatible = "nxp,pcal6416";
+ 	/* Current measurement into module VCC */
+ 	hwmon@40 {
+ 		compatible = "ti,ina219";
 -- 
 2.25.1
 
