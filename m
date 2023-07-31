@@ -2,92 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB0E76A46D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF0D76A470
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbjGaXBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 19:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59578 "EHLO
+        id S229522AbjGaXCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 19:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjGaXBs (ORCPT
+        with ESMTP id S230301AbjGaXCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 19:01:48 -0400
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA62810FE;
-        Mon, 31 Jul 2023 16:01:46 -0700 (PDT)
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RFDJT1NmgzCY;
-        Tue,  1 Aug 2023 01:01:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1690844505; bh=coqy55HefL/fdeEF6y/6iJl2PiJntoSRxKXFxaiXquI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IvFhlDJluxwsMCw2RZplNa9mCAeTUF9ac8QKHcWPVUHyEpQzWsB/oUYg4mr5tJGp2
-         Hcmk5Y53yIJVQyA9kanW2SAqoc9JWrI6wzYytBigvNrPqfgLb1AV8LfXTRj/YVT3pB
-         W4Kh4BOBgKNUzSwzaZHOrZv0CjJw1f/Oy0QoSI7RACQk49kN7x2hLJjaz5lvMpnukF
-         vvfnlaQr/GHcOZ9prIkuGxQw4bHhwRJiZW+U48u7bmLHyTiaW2qk83u84Xm0UUEhiu
-         J4bBx4yH0fBJd1sJYrJwwter6yXc46Q3huziYRzpXAJWaLlT1pQG5Nlri7afSJeuV1
-         DfTKYXy5e92xw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.8 at mail
-Date:   Tue, 1 Aug 2023 01:01:43 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Andi Shyti <andi.shyti@kernel.org>
-Cc:     Svyatoslav Ryhel <clamor95@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] i2c: Add GPIO-based hotplug gate
-Message-ID: <ZMg9VwKxXBm94YRl@qmqm.qmqm.pl>
-References: <20230729160857.6332-1-clamor95@gmail.com>
- <20230729160857.6332-3-clamor95@gmail.com>
- <20230730202507.ojwinyjsx7ygyavp@intel.intel>
- <ZMbgIovV7lxlgd5T@qmqm.qmqm.pl>
+        Mon, 31 Jul 2023 19:02:04 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2C31BEB
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:02:01 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5222b917e0cso7387128a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:02:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google; t=1690844519; x=1691449319;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4WL3gOAOsh8o0LXKeeq1iHRytJLE+8+Td/rKsOuxt3c=;
+        b=ifhJ1b6gnzdlfV3hSa51bPaBs3eS8DGeEYJ1X56dUdEAsywWSe+UBM5K8J0teZorOw
+         ZCeoSk2Wpbudv9QJbyUSVS61XtzgkEZLhUMfJhWJ/kMLB46f6ozvmjwPE8zS0H2Q+aBI
+         xVI7E+FKWFVFUFnmjndaHdAva+vDU9TxrTfD0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690844519; x=1691449319;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4WL3gOAOsh8o0LXKeeq1iHRytJLE+8+Td/rKsOuxt3c=;
+        b=eVfM+eayA7baeEaUEU7zRZBX+cis/iRUakQjKE1WITHKL+cSsFx1g3KuaaQkMwLEa/
+         5cRPzPUtrY2MU7vJHeW3D9Ta+bVAbelb+XTbUyMnsCykZy8gm9Du92ZZdJGR9eIrB8CZ
+         NsNLsEHCj2hwBqBGi+M1Hf2JQDo3S3mk8UpWHoKOROR7zU3MIUaQaFCEJBAleBTncEFO
+         nk7ymC3WnIc7NhcMCXQhqCcUOW5CXnTd/kWAfwCHv5YZ+yO07KNn+DVLO6oBXKOWS5kT
+         PB3RauEnDghmJOFnIm2jx2jHXC38u3M0g/EQuIOyK0M5DnbEti478o7PVKUlYVXzS8qP
+         PHNQ==
+X-Gm-Message-State: ABy/qLaIk3hl/yecK5JETCJfRmvJx+6WDHT1Oks4HCyrCiPMauahOtVN
+        TC1kEV5iv+DGM7cSiu3QdTUgc/7QWWqZp9GtQbEz0w==
+X-Google-Smtp-Source: APBJJlEArhe0cg2s67OkddzWHVkNzo44OpuZEBQ6YwO/CmvBOYKNaeen/qZXTJVAZN+WLMX4ggG5P4BVbhYZgzuz5ew=
+X-Received: by 2002:a05:6402:14d1:b0:522:ba6c:9b1b with SMTP id
+ f17-20020a05640214d100b00522ba6c9b1bmr880560edx.26.1690844519499; Mon, 31 Jul
+ 2023 16:01:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZMbgIovV7lxlgd5T@qmqm.qmqm.pl>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <cover.1690332693.git.yan@cloudflare.com> <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
+ <266ab56e-ae83-7ddc-618e-3af228df81bd@linux.dev> <CAO3-Pbon7tCdChnK9kZ4992C-AFPvE5gTDWre6dQT9npEMxS2Q@mail.gmail.com>
+ <2f285967-6cc0-c492-6a79-edc233c1368e@linux.dev>
+In-Reply-To: <2f285967-6cc0-c492-6a79-edc233c1368e@linux.dev>
+From:   Yan Zhai <yan@cloudflare.com>
+Date:   Mon, 31 Jul 2023 18:01:48 -0500
+Message-ID: <CAO3-PboZ5eQUbL3UO1HsaQ0s5CyS0ch=ksFVP1R6s8zv0+FTAg@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
+To:     Martin KaFai Lau <martin.lau@linux.dev>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
+        Jordan Griege <jgriege@cloudflare.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 12:11:47AM +0200, Micha³ Miros³aw wrote:
-> On Sun, Jul 30, 2023 at 10:25:07PM +0200, Andi Shyti wrote:
-> > On Sat, Jul 29, 2023 at 07:08:57PM +0300, Svyatoslav Ryhel wrote:
-> > > +static int i2c_hotplug_activate(struct i2c_hotplug_priv *priv)
-> [...]
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	if (priv->adap.algo_data)
-> > > +		return 0;
-> [...]
-> > > +	ret = i2c_add_adapter(&priv->adap);
-> > > +	if (!ret)
-> > > +		priv->adap.algo_data = (void *)1;
-> > 
-> > You want to set algo_data to "1" in order to keep the
-> > activate/deactivate ordering.
-> > 
-> > But if we fail to add the adapter, what's the point to keep it
-> > active?
-> 
-> The code above does "if we added the adapter, remember we did so".
-> IOW, if we failed to add the adapter we don't set the mark so that
-> the next interrupt edge can trigger another try. Also we prevent
-> trying to remove an adapter we didn't successfully add.
+On Mon, Jul 31, 2023 at 5:11=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.=
+dev> wrote:
+>
+> On 7/31/23 2:35 PM, Yan Zhai wrote:
+> > On Fri, Jul 28, 2023 at 5:02=E2=80=AFPM Martin KaFai Lau <martin.lau@li=
+nux.dev> wrote:
+> >>
+> >> On 7/25/23 6:08 PM, Yan Zhai wrote:
+> >>> skb_do_redirect returns various of values: error code (negative),
+> >>> 0 (success), and some positive status code, e.g. NET_XMIT_CN,
+> >>> NET_RX_DROP. Commit 3a0af8fd61f9 ("bpf: BPF for lightweight tunnel
+> >>> infrastructure") didn't check the return code correctly, so positive
+> >>> values are propagated back along call chain:
+> >>>
+> >>>     ip_finish_output2
+> >>>       -> bpf_xmit
+> >>>         -> run_lwt_bpf
+> >>>           -> skb_do_redirect
+> >>
+> >>   From looking at skb_do_redirect, the skb_do_redirect should have con=
+sumed the
+> >> skb except for the -EAGAIN return value. afaik, -EAGAIN could only hap=
+pen by
+> >> using the bpf_redirect_peer helper. lwt does not have the bpf_redirect=
+_peer
+> >> helper available, so there is no -EAGAIN case in lwt. iow, skb_do_redi=
+rect
+> >> should have always consumed the skb in lwt. or did I miss something?
+> >>
+> >> If that is the case, it feels like the fix should be in run_lwt_bpf() =
+and the
+> >> "if (ret =3D=3D 0)" test in run_lwt_bpf() is unnecessary?
+> >>
+> >>                          ret =3D skb_do_redirect(skb);
+> >>                          if (ret =3D=3D 0)
+> >>                                  ret =3D BPF_REDIRECT;
+> >>
+> >>
+> > Just fixing skb redirect return code won't be sufficient. I realized
+> > there are other return paths that need to be treated, e.g. bpf reroute
+> > path also directly returns dev_queue_xmit status. I plan to check for
+> > LWTUNNEL_XMIT_CONTINUE (and change it to a value that does not
+> > conflict with NET_RX_DROP and NET_XMIT_DROP) in the next revision. On
+> > the other hand, the return value of NETDEV_TX_BUSY is another hassle.
+>
+> I suspect we are talking about different things or I am still missing som=
+ething.
+>
+> I was thinking skb_do_redirect() should have always consumed the skb and
+> bpf_xmit should always return LWTUNNEL_XMIT_DONE also (instead of
+> LWTUNNEL_XMIT_CONTINUE described in the this patch commit message). It is=
+ what
+> sch_handle_egress() is doing also. Could you explain how is it different =
+from
+> the skb_do_redirect usage in sch_handle_egress() or you are suggesting th=
+e
+> current sch_handle_egress() has the issue too also?
+>
+I think we were not on the same page. You are absolutely right that
+skb_do_redirect should consume the packet anyway. The difference
+between your proposal and this patch is that this patch returns errno
+or LWTUNNEL_XMIT_DONE, and yours does not even return errno. Both
+approaches fix the issue of "redirect to down device crashes the
+kernel".
 
-Maybe the function's name is misleading? We could find a better one.
-Activation/deactivation in this driver means "initialize/shutdown the
-hotplugged bus" and is done in response to an edge (triggering an
-interrupt) of the hotplug-detect signal.
+What I commented was an exact same issue at different location: BPF
+reroute may trigger the crash as well, since it also returns
+dev_queue_xmit status in bpf_xmit. Need to fix this, or instead fixing
+LWTUNNEL_XMIT_CONTINUE value and correct the behavior at lwtunnel_xmit
+rather than bpf_xmit.
 
-Best Regards
-Micha³ Miros³aw
+Yan
+
+>
+> > As Dan suggested, packets might not have been freed when this is
+> > returned from drivers. The caller of dev_queue_xmit might need to free
+> > skb when this happens.
+> >
+> > Yan
+>
