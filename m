@@ -2,117 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 531B676A0D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F4A76A0D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbjGaTGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
+        id S231219AbjGaTHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229911AbjGaTGW (ORCPT
+        with ESMTP id S229527AbjGaTHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:06:22 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAE01FCE
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:06:02 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-307d20548adso4357665f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:06:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690830360; x=1691435160;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=l2WxsWAHvSSljtKQmToghU/ZBm1ZT8P5v2Qhy5RjWOk=;
-        b=FivhBWf5dm+70AtLuhtGSDQWg5T17ddlB5XsAt1myLyxWnKFK+8Xk7iV1BUtuFBhSU
-         ZrSydZjVrkpQbWaZJhZJq+tEpQExDh5AB2N8rT9kJJrbMgXZl8P95YSKDKTB8S2vEBeA
-         v1YOpMOWdBt995jFr1PtnzTDjoeJMPF/hE9QM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690830360; x=1691435160;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=l2WxsWAHvSSljtKQmToghU/ZBm1ZT8P5v2Qhy5RjWOk=;
-        b=Ri+mbDbwNFzvv5ugQnjcKIp1sF18Eo55OmSMZcHctbagn+oNE8RjS0Y2pftXg7xUV+
-         G8zveswvoFWvL/N9fbYMQ4kehClQ6rKX2833df061b6m7UUx+g54dzAPiK5VQjB6P5YW
-         0bWyr8nE8arnlO90sc8lqlxWAHK/ouTXtNbml4uhVit0sGOE8KRT0aQjpVi6dRaO13mq
-         2MXsZcqpV61bv/YQGYGdHOFYGARq1M5N6hMk3TBk8/tuPb/scit6HRP3eJ8nRWBmnrRy
-         feovs9UEf2bVbitch7JdBxHFF+KqcYfGlxihiDoTxlWOzZB/fXADtbyVT6N9vjEmd14I
-         bYag==
-X-Gm-Message-State: ABy/qLY9Toqs4yXs4tZ16M+aMdO1lr17H3kx9WJ9pD6Ijp2TAmQDhucY
-        JbVjAb/UdIpZ5HwhCEJpbAQgbsp1qnXgSNNUl9EWKFUd
-X-Google-Smtp-Source: APBJJlE4Csyg0yMK0OdDeJqYDhxPVHdvkldwBz58psy24sBvc/NHgEDwsE25EiDdAin7ACOHwnGUKA==
-X-Received: by 2002:adf:e50e:0:b0:315:adf3:67db with SMTP id j14-20020adfe50e000000b00315adf367dbmr462795wrm.59.1690830360585;
-        Mon, 31 Jul 2023 12:06:00 -0700 (PDT)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id k19-20020aa7c053000000b005222c6fb512sm5729036edo.1.2023.07.31.12.05.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 12:06:00 -0700 (PDT)
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5222bc91838so7234077a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:05:59 -0700 (PDT)
-X-Received: by 2002:aa7:dcc3:0:b0:522:31d5:ee8e with SMTP id
- w3-20020aa7dcc3000000b0052231d5ee8emr691287edu.8.1690830358999; Mon, 31 Jul
- 2023 12:05:58 -0700 (PDT)
+        Mon, 31 Jul 2023 15:07:07 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B4D170A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:07:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690830426; x=1722366426;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=WFQTb1NoH4KJdQpchKq81lKoH+q0eGAYNJVtt8gGVKI=;
+  b=YdoIf0ycrdd608TCljL9JYEBMvKJa2hbNkfTdKvkYJt9J0Vbv63omCe2
+   rb0JDINWupwWK81W62ZS8BWdSfh9ShljdHh2tHYI5QKXW8W6WM94HLw+w
+   HdDR0Sle1GQcZwt9h7pj70PJVKkBGaumahmx/e0YyjIREnsyooBNlEh/r
+   VBIWFMW3TA41AlV4iU9MCLd0DFS9cVqGoYQFufOja/T6iJKY2ygAtfxWL
+   9gZkYOzCm8XGjTTI1N5aA3gAEUBxSv4Ri+yIz6e9Kn6Tpt/doreb9g44D
+   2kkRngF+wtJLkQoCB1L88G0cbRjArpJB85hbGIe/3z1kzcOLSHfSijxFP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="359142187"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="359142187"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 12:07:05 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="902244547"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="902244547"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 31 Jul 2023 12:07:04 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qQYER-0005J1-2r;
+        Mon, 31 Jul 2023 19:07:03 +0000
+Date:   Tue, 1 Aug 2023 03:06:45 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/fam01-next20230731 2/3]
+ arch/sparc/mm/init_64.c:3073:31: error: array subscript -1 is outside array
+ bounds of 'char[]'
+Message-ID: <202308010320.Wqt7lyc4-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230727183805.69c36d6e@g14> <b1dd27df-744b-3977-0a86-f5dde8e24288@amd.com>
- <20230727193949.55c18805@g14> <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
- <20230727195019.41abb48d@g14> <67eefe98-e6df-e152-3169-44329e22478d@amd.com>
- <20230727200527.4080c595@g14> <CAHk-=whqT0PxBazwfjWwoHQQFzZt50tV6Jfgq3iYceKMJtyuUg@mail.gmail.com>
- <CUGAV1Y993FB.1O2Q691015Z2C@seitikki>
-In-Reply-To: <CUGAV1Y993FB.1O2Q691015Z2C@seitikki>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 31 Jul 2023 12:05:41 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whphk8Jp=NYmnm7Qv+vZ6ScYCz+rV8a2G1nD-AQY3z+mQ@mail.gmail.com>
-Message-ID: <CAHk-=whphk8Jp=NYmnm7Qv+vZ6ScYCz+rV8a2G1nD-AQY3z+mQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] tpm: disable hwrng for fTPM on some AMD designs
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Daniil Stas <daniil.stas@posteo.net>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        James.Bottomley@hansenpartnership.com, Jason@zx2c4.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        regressions@leemhuis.info, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 at 03:53, Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> I quickly carved up a patch (attached), which is only compile tested
-> because I do not have any AMD hardware at hand.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/fam01-next20230731
+head:   fe48117f31afb2a3804b91b382a77a4e6d3b4351
+commit: 1e1ad1e6266067981cd3119d43b132d5370c0976 [2/3] Makefile: Enable -Warray-bounds
+config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230801/202308010320.Wqt7lyc4-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230801/202308010320.Wqt7lyc4-lkp@intel.com/reproduce)
 
-Is there some way to just see "this is a fTPM"?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308010320.Wqt7lyc4-lkp@intel.com/
 
-Because honestly, even if AMD is the one that has had stuttering
-issues, the bigger argument is that there is simply no _point_ in
-supporting randomness from a firmware source.
+All errors (new ones prefixed by >>):
 
-There is no way anybody should believe that a firmware TPM generates
-better randomness than we do natively.
+   arch/sparc/mm/init_64.c: In function 'arch_hugetlb_valid_size':
+   arch/sparc/mm/init_64.c:355:24: error: variable 'hv_pgsz_idx' set but not used [-Werror=unused-but-set-variable]
+     355 |         unsigned short hv_pgsz_idx;
+         |                        ^~~~~~~~~~~
+   arch/sparc/mm/init_64.c: At top level:
+   arch/sparc/mm/init_64.c:2630:6: error: no previous prototype for 'vmemmap_free' [-Werror=missing-prototypes]
+    2630 | void vmemmap_free(unsigned long start, unsigned long end,
+         |      ^~~~~~~~~~~~
+   In function 'kernel_lds_init',
+       inlined from 'report_memory' at arch/sparc/mm/init_64.c:3085:2:
+>> arch/sparc/mm/init_64.c:3073:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
+    3073 |         code_resource.end   = compute_kern_paddr(_etext - 1);
+         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from arch/sparc/include/asm/sections.h:6,
+                    from include/linux/interrupt.h:21,
+                    from include/linux/kernel_stat.h:9,
+                    from include/linux/cgroup.h:26,
+                    from include/linux/hugetlb.h:10,
+                    from arch/sparc/mm/init_64.c:16:
+   include/asm-generic/sections.h: In function 'report_memory':
+   include/asm-generic/sections.h:35:32: note: at offset -1 into object '_etext' of size [0, 9223372036854775807]
+      35 | extern char _text[], _stext[], _etext[];
+         |                                ^~~~~~
+   In function 'kernel_lds_init',
+       inlined from 'report_memory' at arch/sparc/mm/init_64.c:3085:2:
+   arch/sparc/mm/init_64.c:3075:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
+    3075 |         data_resource.end   = compute_kern_paddr(_edata - 1);
+         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/asm-generic/sections.h: In function 'report_memory':
+   include/asm-generic/sections.h:36:32: note: at offset -1 into object '_edata' of size [0, 9223372036854775807]
+      36 | extern char _data[], _sdata[], _edata[];
+         |                                ^~~~~~
+   In function 'kernel_lds_init',
+       inlined from 'report_memory' at arch/sparc/mm/init_64.c:3085:2:
+   arch/sparc/mm/init_64.c:3077:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
+    3077 |         bss_resource.end    = compute_kern_paddr(_end - 1);
+         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/asm-generic/sections.h: In function 'report_memory':
+   include/asm-generic/sections.h:41:13: note: at offset -1 into object '_end' of size [0, 9223372036854775807]
+      41 | extern char _end[];
+         |             ^~~~
+   cc1: all warnings being treated as errors
 
-And there are many reasons to _not_ believe it. The AMD problem is
-just the most user-visible one.
 
-Now, I'm not saying that a fTPM needs to be disabled in general - but
-I really feel like we should just do
+vim +3073 arch/sparc/mm/init_64.c
 
- static int tpm_add_hwrng(struct tpm_chip *chip)
- {
-        if (!IS_ENABLED(CONFIG_HW_RANDOM_TPM))
-                return 0;
-        // If it's not hardware, don't treat it as such
-        if (tpm_is_fTPM(chip))
-                return 0;
-        [...]
+f6d4fb5cc0475c bob picco 2014-03-03  3069  
+f6d4fb5cc0475c bob picco 2014-03-03  3070  static void __init kernel_lds_init(void)
+f6d4fb5cc0475c bob picco 2014-03-03  3071  {
+f6d4fb5cc0475c bob picco 2014-03-03  3072  	code_resource.start = compute_kern_paddr(_text);
+f6d4fb5cc0475c bob picco 2014-03-03 @3073  	code_resource.end   = compute_kern_paddr(_etext - 1);
+f6d4fb5cc0475c bob picco 2014-03-03  3074  	data_resource.start = compute_kern_paddr(_etext);
+f6d4fb5cc0475c bob picco 2014-03-03  3075  	data_resource.end   = compute_kern_paddr(_edata - 1);
+f6d4fb5cc0475c bob picco 2014-03-03  3076  	bss_resource.start  = compute_kern_paddr(__bss_start);
+f6d4fb5cc0475c bob picco 2014-03-03  3077  	bss_resource.end    = compute_kern_paddr(_end - 1);
+f6d4fb5cc0475c bob picco 2014-03-03  3078  }
+f6d4fb5cc0475c bob picco 2014-03-03  3079  
 
-and be done with it.
+:::::: The code at line 3073 was first introduced by commit
+:::::: f6d4fb5cc0475c36437a618db31cbb7f2bf7c282 sparc64 - add mem to iomem resource
 
-But hey, if we have no way to see that whole "this is firmware
-emulation", then just blocking AMD might be the only way.
+:::::: TO: bob picco <bpicco@meloft.net>
+:::::: CC: David S. Miller <davem@davemloft.net>
 
-               Linus
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
