@@ -2,151 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA6C769B11
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95597769B24
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232428AbjGaPr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:47:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
+        id S232552AbjGaPst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjGaPrY (ORCPT
+        with ESMTP id S232557AbjGaPsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:47:24 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE854E57;
-        Mon, 31 Jul 2023 08:47:23 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe389d6f19so1553740e87.3;
-        Mon, 31 Jul 2023 08:47:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690818442; x=1691423242;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ABZh1xz4n6wuJf1UZhlFRWHEBKIhLTjdbX5I0EQWrCs=;
-        b=fSwFWkvhfCC6nHRRWXxDB0k59t7O9AYCvs+ae07YpC7D6PcxOp7BdFPLNtWeGb4Fdz
-         wGHX0O86FGkl3r7hPwNaGSL8yPtLD0a995rOr64KRFzOodWqKD53z0pdEmXcS0ECkBHB
-         tVxaJy2KHqLL31jRxlsQz15+yuZx4/wcK0DeDJHMIJiecc3RFcZEt8e/kXd2duxPH2GJ
-         QJMFDXWWPuWw3+LPBncbkiax3Zs1LivJUK3j5uyssFaAgiNGgerQ6cNN1cWnS7o9dVr2
-         4iignrmbEAntlYFXzebve04wmC65Xv1oq3nEhFEibh37R77U0vR9xbSH+ldd1Ln/6f5G
-         D5+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690818442; x=1691423242;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:subject:cc:to:from:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ABZh1xz4n6wuJf1UZhlFRWHEBKIhLTjdbX5I0EQWrCs=;
-        b=f9y+iExwwdwYrJDSRXGJBIc82DSWEsv7UM02j+nYKjPlcay35MVTd0R9IsCdprv9Mq
-         P+czQG1z5gA5EKJaSllcjVvjExrsqFmRa/Q4x/fTY7VKmc5SYcuS/T/27uxLOaeb4ZIx
-         5xmVqr3D5GW41XgjjJkmZsXrUDXiO30N44nlASLFVPtrfTE6NIQK5cwfo7G+ZJAcpUo4
-         7OmvZV8V6TxILpXMfkjm0zd47zqCAQwXxOpCdtJX3+tYWKyi2Z47H1WJ6MMJ/sZx1OIX
-         2lt9Zve6oPrRXkZC8nrGGi9jAPnP4kA+WVks0WGDzUl95WpK22FMq+VTuebkNbrlP+Fa
-         /Azw==
-X-Gm-Message-State: ABy/qLYLU//2e/jWAjuU53oGv3W1KPCcm8m25t2xZ0EyNfkkce/J7Id/
-        ziK/mSLS4/ExLLiR+VC5+XE=
-X-Google-Smtp-Source: APBJJlHev/F2QvCssa3rzFT8WFT/xaYyjd6AmItAIopq/blmw1EN/cScn24nT8oET8fR0vJl1FcXDg==
-X-Received: by 2002:a19:4f54:0:b0:4fb:89f2:278e with SMTP id a20-20020a194f54000000b004fb89f2278emr149583lfk.68.1690818441527;
-        Mon, 31 Jul 2023 08:47:21 -0700 (PDT)
-Received: from akanner-r14. ([77.222.27.66])
-        by smtp.gmail.com with ESMTPSA id z21-20020a19f715000000b004fdc6f03c6dsm2119808lfe.37.2023.07.31.08.47.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 08:47:20 -0700 (PDT)
-Message-ID: <64c7d788.190a0220.3c2cf.5d7f@mx.google.com>
-X-Google-Original-Message-ID: <ZMfXhFYDHKnqn7cX@akanner-r14.>
-Date:   Mon, 31 Jul 2023 18:47:16 +0300
-From:   Andrew Kanner <andrew.kanner@gmail.com>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, brouer@redhat.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com,
-        John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH v3] drivers: net: prevent tun_get_user() to exceed xdp
- size limits
-References: <20230725155403.796-1-andrew.kanner@gmail.com>
- <CACGkMEt=Cd8J995+0k=6MT1Pj=Fk9E_r2eZREptLt2osj_H-hA@mail.gmail.com>
- <ab722ec1-ae45-af1f-b869-e7339402c852@redhat.com>
- <179979e6-eb8a-0300-5445-999b9366250a@gmail.com>
- <0c06b067-349c-9fe2-2cc3-36c149fd5277@gmail.com>
- <CACGkMEsYzd1FphP-Ym9T9YjA9ZNBw7Mnw5xQ75dytQMJxDK3cg@mail.gmail.com>
- <220fc36ba1086c1390ba087d08561b61762c965a.camel@redhat.com>
- <3659ea35-8d03-aae7-53c0-09181bb1b69d@redhat.com>
- <64c30249.2e0a0220.f779a.1c31@mx.google.com>
- <cf1ef905-fa48-df3a-2d3c-37d7a1e79b8e@gmail.com>
+        Mon, 31 Jul 2023 11:48:40 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F6B188;
+        Mon, 31 Jul 2023 08:48:33 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2804F5C01AF;
+        Mon, 31 Jul 2023 11:48:32 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 31 Jul 2023 11:48:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690818512; x=1690904912; bh=27RrpVb0fJrKV
+        16IE46CaVHMUvzfYPXPG/0myoO6SvA=; b=0ScKz1Um7XPgRQfzP3imVy6eQKowp
+        CAS7y6PTQeU5jRZV3jC2/+2nRIzYiM/IhsG0Iu2duwmuqjwW1SUOnIaspOxtK8zb
+        22D3y7i1l2+Nnnx9mjGi/IoWO07+++Ne9MmOtWjPDZfBBirk9rxPhyXYVXSzdi7Y
+        hUXp0miove+RoScyeXR/pvr3hrtG4lo3rq6RG/uPYKSHKylil/J/vMgtYeJ3n9kW
+        qPz2nPEOkJKBp47/o5aiiv4sqDzNW2OzkA75k42bgFF07SWySzaRZNzjW7sMGYUm
+        U92BigqhOHpblkjV+WTHjSJKu4oECc48nlZwa6Cy0Ym6nd1U1g8tFdXFQ==
+X-ME-Sender: <xms:z9fHZBXMuQHqUL5mtsFYDtzJ7cByzvUnrNOZLHzJm4tJlsoXaxVsKA>
+    <xme:z9fHZBnfyEqdQ2pTsT86ZLZjunMLIOdSNlkuibGGLOERMtGlhjQDAy6-hBYM_TlQG
+    Lse_UpDUQ4aoZ0>
+X-ME-Received: <xmr:z9fHZNbLY6BdiHHCD7j6zMzw-Yb3zcqEKntThq8ivMVgioO3A7-b6z66l_sP>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeggdeilecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpefhffejgefhjeehjeevheevhfetveevfefgueduueeivdeijeeihfegheeljefg
+    ueenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:z9fHZEV6y7XijHDOtZXmiXL4Jf3H-caRWrAgDrACnaZORlnPDV7r9g>
+    <xmx:z9fHZLnRXAESmhq3FwoDgIW0HX_Yno0P7y9oXOieIER9x5BqBneVsw>
+    <xmx:z9fHZBceZD6WKs6cgHiKdLm7qkQp91rkaUc4A3IoUybnTJG11bOemA>
+    <xmx:0NfHZEi29yN6UeRHXSHbMf1zIX8vsIQC9DzGdVU7v6t65zW7JYkbjA>
+Feedback-ID: i494840e7:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 31 Jul 2023 11:48:30 -0400 (EDT)
+Date:   Mon, 31 Jul 2023 18:48:01 +0300
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc:     petrm@nvidia.com, razor@blackwall.org,
+        Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH v1 01/11] selftests: forwarding:
+ custom_multipath_hash.sh: add cleanup for SIGTERM sent by timeout
+Message-ID: <ZMfXsVAfpizMKH/U@shredder>
+References: <ZL6OljQubhVtQjcD@shredder>
+ <cab8ea8a-98f4-ef9b-4215-e2a93cccaab1@alu.unizg.hr>
+ <ZMEQGIOQXv6so30x@shredder>
+ <a9b6d9f5-14ae-a931-ab7b-d31b5e40f5df@alu.unizg.hr>
+ <ZMYXABUN9OzfN5D3@shredder>
+ <da3f4f4e-47a7-25be-fa61-aebeba1d8d0c@alu.unizg.hr>
+ <ZMdouQRypZCGZhV0@shredder>
+ <2f203995-5ae0-13bc-d1a6-997c2b36a2b8@alu.unizg.hr>
+ <ZMei0VMIH/l1GzVM@shredder>
+ <cadad022-b241-398d-c79d-187596356a72@alu.unizg.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cf1ef905-fa48-df3a-2d3c-37d7a1e79b8e@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <cadad022-b241-398d-c79d-187596356a72@alu.unizg.hr>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 06:11:57PM -0600, David Ahern wrote:
-> On 7/27/23 5:48 PM, Andrew Kanner wrote:
-> > 
-> > Thanks, everyone.
-> > 
-> > If we summarize the discussion - there are 3 issues here:
-> > 1. tun_can_build_skb() doesn't count XDP_PACKET_HEADROOM (minor and
-> >    most trivial)
-> > 2. WARN_ON_ONCE from net/core/filter.c, which may be too strict / not
-> >    needed at all.
-> > 3. strange behaviour with reallocationg SKB (65007 -> 131072)
+On Mon, Jul 31, 2023 at 05:13:37PM +0200, Mirsad Todorovac wrote:
+> You can add:
 > 
-> I believe that happens because of the current skb size and the need to
-> expand it to account for the XDP headroom makes the allocation go over
-> 64kB. Since tun is given the packet via a write call there are no header
-> markers to allocate separate space for headers and data (e.g. like TCP
-> does with 32kB data segments).
+> Tested-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
 
+Added your tags to all 17 patches. Available here:
+https://github.com/idosch/linux/tree/submit/selftests_fix_v2
 
-Yes, this is exactly what you suspected. In pskb_expand_head() ->
-kmalloc_reserve() I have these values initially:
-(gdb) p *size
-$13 = 65408
-(gdb) p obj_size
-$16 = 65728
+Will submit later this week (most likely on Wednesday) after I verify
+they don't cause other regressions.
 
-and it will do:
-    data = kmalloc_reserve(&size, gfp_mask, NUMA_NO_NODE, NULL);
-...
-	obj_size = SKB_HEAD_ALIGN(*size);
-...
-	*size = obj_size = kmalloc_size_roundup(obj_size);
-
-(gdb) p *size
-$22 = 131072
-
-So this is kmalloc_size_roundup() doing this math with the following:
-   /* Above the smaller buckets, size is a multiple of page size. */                                                                                                                           │
-   if (size > KMALLOC_MAX_CACHE_SIZE)                                                                                                                                                          │
-      return PAGE_SIZE << get_order(size);
-
-> > 
-> > I can check these issues. I have to dive a little deeper with 2-3,
-> > most likely with kgdb and syzkaller repro. But seems this is not
-> > somewhat urgent and lives quite a long time without being noticed.
-> > 
-> > BTW: Attached the ftrace logs using the original syzkaller repro
-> > (starting with tun_get_user()). They answer Jesper's question about
-> > contiguous physical memory allocation (kmem_cache_alloc_node() /
-> > kmalloc_reserve()). But I'll check it one more time before submitting
-> > a new PATCH V4 or another patch / patch series.
-> > 
-> 
-
-I see no other bugs in math, so not sure wether it should be fixed. Is
-it ok and expected to roundup the memory allocation?
-
-
--- 
-Andrew Kanner
+Thanks for testing and reporting.
