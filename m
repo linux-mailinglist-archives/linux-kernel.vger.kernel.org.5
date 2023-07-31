@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6924676A486
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5343B76A488
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjGaXJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 19:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34470 "EHLO
+        id S231774AbjGaXJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 19:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbjGaXJY (ORCPT
+        with ESMTP id S231773AbjGaXJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 19:09:24 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB441BDB;
-        Mon, 31 Jul 2023 16:09:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=aPb5lDChIqfPMvwsibTI6iiSscbrWxn/ZOI0E80W52g=; b=t3zStTyTjRAu54dTUV7IgHJULD
-        whMKO8pdGNdJNVJKiiZuFAeR+XJUqtjwFS+1W5IKKFkVF0ZxHAPT4camP4YE4GoIyXxiCOZkVf66z
-        YV89XyfSzJPKbVczfjOGvZNmHxsWlMztiN9iMqUIzK6NWI4vWbUbxaS6kAt2aqkjL8qoqPKmnLdgg
-        C63HPaYGIJwDCYYKVTqVKv9HkVZmbpHt/jDhZH1/cQkWu2w+jzc+VgRgPjDUF5lfpNGpV1Un1639u
-        hZ1lU957IFf3i0pHHOrSG+Oc+izDB8GWndZIqCtKfLQUU9fuovAQXxREmec197YUiLv3ce/LZ9ur1
-        UKG9m7Yg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQc0p-00HXu0-2W;
-        Mon, 31 Jul 2023 23:09:15 +0000
-Message-ID: <f07f6326-59cb-d6ee-f327-39bdb3977141@infradead.org>
-Date:   Mon, 31 Jul 2023 16:09:12 -0700
+        Mon, 31 Jul 2023 19:09:33 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E62E1BD7;
+        Mon, 31 Jul 2023 16:09:31 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-403b30c7377so27948551cf.1;
+        Mon, 31 Jul 2023 16:09:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690844970; x=1691449770;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2kO3L0ytrxVYNBLqwpAPV0dlFfKaVuZu/hK4nzSzzOY=;
+        b=ArSz2NreawND8tZ7x8CoGw3GUy7PbWGw2+X2lTSBRr+WGBKEsl/80cG5cNFpb+6158
+         4gEe26+QIVjZf13/2w9vKPCf7GuFcYB5ERXi9bz9qY0W0o36t/3BOa7bd29KI3sUvH5W
+         +u4HATk6Bh4FOudE31fKcu/X2A6B0T81rUZPcyAFS2BvLzVqYXQCtJmk/7HTCYcmjXBY
+         zQphWdGRAZs5apipJRP6JS4oTc9fEnmh6qPXjWWNjuBrjH4afTs7FiiRzUZGtVVE69yi
+         kOC5yTdomL/PohTaowKD2o6eL3FaxNk25ILSWvLYYG9SRpdHkuUsstXkqnJm3N5RuJSy
+         Fyow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690844970; x=1691449770;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2kO3L0ytrxVYNBLqwpAPV0dlFfKaVuZu/hK4nzSzzOY=;
+        b=KC3DW464PFwR4oVTJzSWGGjnCCIkfcQ292qXQu6e19ijYTFeAw7O8VuUF4DzJZzdnT
+         uovZshiMF00uVTimihctxmeJccRzMKnWdvZnIT/FSP+lP18S1eBP6PX1lc0JVxLAhZ1C
+         HcNRk+UinQ+mjQgKr63JneywCXL7YfGpCKrc2ltbpmDt/L66VTjrllV0hdO+LhjAvdCP
+         FW8PoMrGx1x1+HjHClD3OGEiDFES5DMIyzUdDu6nJzMzNvrtmAEqCpEHZbus6YQreBbw
+         gJy3GdaVELFToLFicHGQad8H2M7zFq29X/shjnfGd4ooa9IX45KcQPM4GfpDjR3e2hSv
+         PjsA==
+X-Gm-Message-State: ABy/qLbGalx91HTxYP6ecNmWdYvL+vGwugTBjwcd9gnQchlJ4eO82qHL
+        3BKDCdUER4+Mg5uR1smsYVY=
+X-Google-Smtp-Source: APBJJlFHBtztdKD+2gJCwTLu4PI6FbwHH5IMJbWWjIOxgupndKdUT3+PLwWEG+w2HjV4Pf1yZCAlQw==
+X-Received: by 2002:a05:622a:11cf:b0:400:a5de:172 with SMTP id n15-20020a05622a11cf00b00400a5de0172mr14092974qtk.4.1690844970036;
+        Mon, 31 Jul 2023 16:09:30 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id d7-20020ac86147000000b0040399fb5ef3sm3984507qtm.0.2023.07.31.16.09.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 16:09:29 -0700 (PDT)
+Message-ID: <75f66d50-3bc5-5c39-1478-0e835ba4b899@gmail.com>
+Date:   Mon, 31 Jul 2023 16:09:26 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] usb: typec: mux: intel: Add dependency on USB_COMMON
+Subject: Re: [net-next PATCH v3 4/5] net: dsa: qca8k: move qca8xxx hol fixup
+ to separate function
 Content-Language: en-US
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rajat Khandelwal <rajat.khandelwal@linux.intel.com>
-References: <20230731131210.43158-1-heikki.krogerus@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230731131210.43158-1-heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Christian Marangi <ansuelsmth@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Atin Bainada <hi@atinb.me>,
+        Michal Kubiak <michal.kubiak@intel.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230730074113.21889-1-ansuelsmth@gmail.com>
+ <20230730074113.21889-4-ansuelsmth@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230730074113.21889-4-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/31/23 06:12, Heikki Krogerus wrote:
-> This fixes an undefined reference to `usb_debug_root' issue
-> when USB_COMMON is not enabled.
+On 7/30/23 00:41, Christian Marangi wrote:
+> Move qca8xxx hol fixup to separate function to tidy things up and to
+> permit using a more efficent loop in future patch.
 > 
-> Fixes: 0a453dc9f260 ("usb: typec: intel_pmc_mux: Expose IOM port status to debugfs")
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Closes: https://lore.kernel.org/lkml/c3bb8781-676d-2448-cfbb-62e29f1f570b@infradead.org/
-> Cc: Rajat Khandelwal <rajat.khandelwal@linux.intel.com>
-> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  drivers/usb/typec/mux/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
-> index 784b9d8107e9b..65da61150ba78 100644
-> --- a/drivers/usb/typec/mux/Kconfig
-> +++ b/drivers/usb/typec/mux/Kconfig
-> @@ -29,6 +29,7 @@ config TYPEC_MUX_INTEL_PMC
->  	tristate "Intel PMC mux control"
->  	depends on ACPI
->  	depends on INTEL_SCU_IPC
-> +	select USB_COMMON
->  	select USB_ROLE_SWITCH
->  	help
->  	  Driver for USB muxes controlled by Intel PMC FW. Intel PMC FW can
-
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-~Randy
+Florian
+
