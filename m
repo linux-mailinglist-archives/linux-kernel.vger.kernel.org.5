@@ -2,53 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9702C768A5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23710768A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjGaDfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 23:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53990 "EHLO
+        id S229592AbjGaDjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 23:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjGaDfA (ORCPT
+        with ESMTP id S229469AbjGaDjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 23:35:00 -0400
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC26199
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 20:34:58 -0700 (PDT)
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a3df1d46e5so7266151b6e.3
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 20:34:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690774497; x=1691379297;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eNn46kxg48m+Q5oWGr+r8mpJ1OOx1r1wF8Gt6l4ZDzw=;
-        b=JtK57n9iesbHo/KE4CQa7WnA4OJFmdKdN74Lrsi3h5mM7JlF0/cOkxUzwhv3p6u3wy
-         t/wAt3l9YX+qA+DrjZ4Q10CJ5dFfaFU8/3Q0a4G10wh4yq129WE9/MfHXXXc9Vztpse6
-         Sm2j04HXJig6BQrZvqh/WorEhPmZepy4Xe+Y7ojxYg75yIgpXCXUrOb14qKpDt6gI70o
-         fJv/m+aQiNEaTIASSp0w4vrlh/Nx0kLbt9FQ78+5pqt8PopEDmnDlsnW6lJs9RZ3R+20
-         I/xqgZa158sLYyylVC0tBQkgFOKnaJCcQtYAOmkTrCXHaeIqqVDt4EfzRCznz5ilnM7H
-         wW3g==
-X-Gm-Message-State: ABy/qLbm5c+yFE5SdINI11mskQS46g87YwwPnkKPC0p7X8UKbHJAhEXR
-        7miB3F6yhrxEIQsWqScUCxnZTkcvQJk0rxcNRNcq3x9oeFtR
-X-Google-Smtp-Source: APBJJlEZebHKiiADqjSYSifoPxsJOxzd9K6nGEmHSsFY8PSZQvn/2D2VpKn+ESfRoYFYgPIMFC4LcL0doQYHFZBfAR+leFnYYTEG
+        Sun, 30 Jul 2023 23:39:45 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3408910B;
+        Sun, 30 Jul 2023 20:39:43 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 883C424DBC1;
+        Mon, 31 Jul 2023 11:39:41 +0800 (CST)
+Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 31 Jul
+ 2023 11:39:41 +0800
+Received: from [192.168.60.107] (180.164.60.184) by EXMBX073.cuchost.com
+ (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 31 Jul
+ 2023 11:39:41 +0800
+Message-ID: <343abe09-a14e-a318-d749-3e28275585b8@starfivetech.com>
+Date:   Mon, 31 Jul 2023 11:39:40 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:158c:b0:3a4:1f25:7508 with SMTP id
- t12-20020a056808158c00b003a41f257508mr17127033oiw.0.1690774497775; Sun, 30
- Jul 2023 20:34:57 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 20:34:57 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000055d5e90601c01dee@google.com>
-Subject: [syzbot] [ext4?] WARNING: locking bug in ext4_xattr_inode_update_ref (2)
-From:   syzbot <syzbot+6699abaff302165de416@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v7 2/6] media: admin-guide: Add starfive_camss.rst for
+ Starfive Camera Subsystem
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <changhuang.liang@starfivetech.com>
+References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
+ <20230619112838.19797-3-jack.zhu@starfivetech.com>
+ <a108084b-8044-fe6f-9cb8-df1f3fc6fdfe@linaro.org>
+ <20230727102328.GE5148@pendragon.ideasonboard.com>
+From:   Jack Zhu <jack.zhu@starfivetech.com>
+In-Reply-To: <20230727102328.GE5148@pendragon.ideasonboard.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX073.cuchost.com
+ (172.16.6.83)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,105 +69,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Laurent,
 
-syzbot found the following issue on:
+Thank you for your comments.
 
-HEAD commit:    0ba5d0720577 Add linux-next specific files for 20230726
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1747a881a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f33fb77ef67a25e1
-dashboard link: https://syzkaller.appspot.com/bug?extid=6699abaff302165de416
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1217c65ea80000
+On 2023/7/27 18:23, Laurent Pinchart wrote:
+> On Wed, Jul 26, 2023 at 12:26:18PM +0100, Bryan O'Donoghue wrote:
+>> On 19/06/2023 12:28, Jack Zhu wrote:
+>> > Add starfive_camss.rst file that documents the Starfive Camera
+>> > Subsystem driver which is used for handing image sensor data.
+>> > 
+>> > Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
+>> > ---
+>> >   .../admin-guide/media/starfive_camss.rst      | 57 +++++++++++++++++++
+>> >   .../media/starfive_camss_graph.dot            | 16 ++++++
+>> >   .../admin-guide/media/v4l-drivers.rst         |  1 +
+>> >   MAINTAINERS                                   |  1 +
+>> >   4 files changed, 75 insertions(+)
+>> >   create mode 100644 Documentation/admin-guide/media/starfive_camss.rst
+>> >   create mode 100644 Documentation/admin-guide/media/starfive_camss_graph.dot
+>> > 
+>> > diff --git a/Documentation/admin-guide/media/starfive_camss.rst b/Documentation/admin-guide/media/starfive_camss.rst
+>> > new file mode 100644
+>> > index 000000000000..a6378849384f
+>> > --- /dev/null
+>> > +++ b/Documentation/admin-guide/media/starfive_camss.rst
+>> > @@ -0,0 +1,57 @@
+>> > +.. SPDX-License-Identifier: GPL-2.0
+>> > +
+>> > +.. include:: <isonum.txt>
+>> > +
+>> > +================================
+>> > +Starfive Camera Subsystem driver
+>> > +================================
+>> > +
+>> > +Introduction
+>> > +------------
+>> > +
+>> > +This file documents the driver for the Starfive Camera Subsystem found on
+>> > +Starfive JH7110 SoC. The driver is located under drivers/media/platform/
+>> > +starfive.
+>> > +
+>> > +The driver implements V4L2, Media controller and v4l2_subdev interfaces.
+>> > +Camera sensor using V4L2 subdev interface in the kernel is supported.
+>> > +
+>> > +The driver has been successfully used on the Gstreamer 1.18.5 with
+>> > +v4l2src plugin.
+>> > +
+>> > +
+>> > +Starfive Camera Subsystem hardware
+>> > +----------------------------------
+>> > +
+>> > +The Starfive Camera Subsystem hardware consists of:
+>> > +
+>> > +- MIPI DPHY Receiver: receives mipi data from a MIPI camera sensor.
+>> 
+>> Feels like a terribe nit-pick but you have "mipi" and "MIPI" here. I'd 
+>> be consistent with one - recommend MIPI throughout your documentation.
+> 
+> I'd drop the "mipi" and just write "data", not "MIPI data".
+> 
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2fa09c6312ae/disk-0ba5d072.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7361000a4380/vmlinux-0ba5d072.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/48a015458a58/bzImage-0ba5d072.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/405ee39c557d/mount_0.gz
+Ok, I will modify it.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6699abaff302165de416@syzkaller.appspotmail.com
+>> > +- MIPI CSIRx Controller: is responsible for handling and decoding CSI2 protocol
+> 
+> It's "CSI-2", not "CSI2".
 
-------------[ cut here ]------------
-Looking for class "&ea_inode->i_rwsem" with key ext4_fs_type, but found a different class "&sb->s_type->i_mutex_key" with the same key
-WARNING: CPU: 0 PID: 5364 at kernel/locking/lockdep.c:940 look_up_lock_class+0xad/0x120 kernel/locking/lockdep.c:940
-Modules linked in:
-CPU: 0 PID: 5364 Comm: syz-executor.3 Not tainted 6.5.0-rc3-next-20230726-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-RIP: 0010:look_up_lock_class+0xad/0x120 kernel/locking/lockdep.c:940
-Code: 59 49 8b 14 24 48 81 fa a0 d9 49 90 74 4c 80 3d 43 17 60 04 00 75 43 48 c7 c7 00 82 6c 8a c6 05 33 17 60 04 01 e8 03 f2 16 f7 <0f> 0b eb 2c 89 74 24 04 e8 36 ae e7 f9 8b 74 24 04 48 c7 c7 40 81
-RSP: 0018:ffffc90004a4f008 EFLAGS: 00010082
-RAX: 0000000000000000 RBX: ffffffff918a53c0 RCX: 0000000000000000
-RDX: ffff88802a8ebb80 RSI: ffffffff814d5b56 RDI: 0000000000000001
-RBP: ffffffff8cc46c78 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff888066815e00
-R13: ffff888066815e00 R14: 0000000000000000 R15: 0000000000000000
-FS:  00007f046301d6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020002000 CR3: 000000002a7c9000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- register_lock_class+0xbd/0x1320 kernel/locking/lockdep.c:1292
- __lock_acquire+0x13c/0x5de0 kernel/locking/lockdep.c:5021
- lock_acquire kernel/locking/lockdep.c:5761 [inline]
- lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
- down_write+0x93/0x200 kernel/locking/rwsem.c:1573
- inode_lock include/linux/fs.h:771 [inline]
- ext4_xattr_inode_update_ref+0xa6/0x5c0 fs/ext4/xattr.c:1042
- ext4_xattr_inode_inc_ref fs/ext4/xattr.c:1088 [inline]
- ext4_xattr_inode_inc_ref_all fs/ext4/xattr.c:1115 [inline]
- ext4_xattr_block_set+0x2305/0x30e0 fs/ext4/xattr.c:2159
- ext4_xattr_set_handle+0xd6e/0x1420 fs/ext4/xattr.c:2456
- ext4_xattr_set+0x149/0x370 fs/ext4/xattr.c:2558
- __vfs_setxattr+0x173/0x1d0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:235
- __vfs_setxattr_locked+0x17e/0x250 fs/xattr.c:296
- vfs_setxattr+0x146/0x350 fs/xattr.c:322
- do_setxattr+0x142/0x170 fs/xattr.c:630
- setxattr+0x159/0x170 fs/xattr.c:653
- path_setxattr+0x1a3/0x1d0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xc4/0x160 fs/xattr.c:684
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f046c07cb29
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f046301d0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 00007f046c19c050 RCX: 00007f046c07cb29
-RDX: 00000000200005c0 RSI: 0000000020000180 RDI: 00000000200000c0
-RBP: 00007f046c0c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000002000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f046c19c050 R15: 00007ffd0e4f6698
- </TASK>
+Ok, I will modify it.
 
+> 
+>> > +  based camera sensor data stream.
+>> > +- ISP: handles the image data streams from the MIPI CSIRx Controller.
+>> 
+>> Maybe you've done this elsewhere but, it would be worthwhile describing 
+>> what the ISP does. Debayering ? 3As ? Just raw dumps ?
+>> 
+>> > +- VIN(Video In): a top-level module, is responsible for controlling power
+>> > +  and clocks to other modules, dumps the input data to memory or transfers the
+>> > +  input data to ISP.
+> 
+> A block diagram could be nice. Let me give it a try, based on my
+> understanding:
+> 
+> Starfive Camera Subsystem hardware
+> ----------------------------------
+> 
+> The Starfive Camera Subsystem hardware consists of::
+> 
+>                 +---------------------------------------------+
+>                 | VIN                                         |
+>   +--------+    | +-------+   +-------+    +-----+            |
+>   | Camera |----->| D-PHY |-->| CSI-2 |-+->| DMA |            |
+>   | Sensor |    | |  RX   |   |  RX   | |  +-----+            |
+>   +--------+    | +-------+   +-------+ |                     |
+>                 |                       |  +-----+   +-----+  |
+>                 |                       \->| ISP |-->| DMA |  |
+>                 |                          +-----+   +-----+  |
+>                 +---------------------------------------------+
+> 
+> - VIN (Video IN): The top-level module, responsible for controlling
+>   power and clocks, and routing data between modules.
+> 
+> - D-PHY RX: The MIPI D-PHY receiver, receiving data from a MIPI CSI-2
+>   camera sensor.
+> 
+> - CSI-2 RX: The MIPI CSI-2 receiver controller, responsible for decoding
+>   the CSI-2 protocol.
+> 
+> - ISP: The ISP, processing raw Bayer data from the CSI-2 receiver and
+>   producing YUV frames.
+> 
+> 
+> I haven't tried compiling this, so please fix formatting if anything is
+> wrong (and of course feel free to adapt the diagram and text).
+> 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Ok, I will add a block diagram.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>> > +
+>> > +
+>> > +Topology
+>> > +--------
+>> > +
+>> > +The media controller pipeline graph is as follows:
+>> > +
+>> > +.. _starfive_camss_graph:
+>> > +
+>> > +.. kernel-figure:: starfive_camss_graph.dot
+>> > +    :alt:   starfive_camss_graph.dot
+>> > +    :align: center
+>> > +
+>> > +The driver has 2 video devices:
+>> > +
+>> > +- stf_vin0_wr_video0: capture device for images directly from the VIN module.
+>> 
+>> OK so you can get the raw images.
+>> 
+>> > +- stf_vin0_isp0_video1: capture device for images without scaling.
+>> > +
+>> > +The driver has 3 subdevices:
+>> > +
+>> > +- stf_isp0: is responsible for all the isp operations.
+>> > +- stf_vin0_wr: used to dump RAW images to memory.
+>> > +- stf_vin0_isp0: used to capture images for the stf_vin0_isp0_video1 device.
+>> 
+>> But what is being output here ? RGB, jpeg, YUV ?
+>> It would be worth adding a few bits of text to describe that so you 
+>> don't have to dive into code to understand it.
+> 
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+-- 
+Regards,
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Jack Zhu
