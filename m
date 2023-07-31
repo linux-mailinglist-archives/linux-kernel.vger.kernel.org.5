@@ -2,92 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E94C9769A73
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97B5769A60
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbjGaPJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S232813AbjGaPIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbjGaPJb (ORCPT
+        with ESMTP id S230133AbjGaPIs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:09:31 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C161119BB
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:09:21 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36VDp2Qn022362;
-        Mon, 31 Jul 2023 10:08:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=PODMain02222019; bh=Sgj8HRPTlGuwo3T
-        29LBXapIwqz/RNdE/KoELg/AckWM=; b=p//P01Wve+x7MDXRKwrlVP+x3O5ZtpM
-        Cm3/dGEzFUVzG0gOPhIMRfxii7DsQB83EG5PNMuYreV2UCq7KgbPoP2vurk7NGXd
-        vWGq8KzIieYK1aLEPh7FteUtCD10FT6bxA+zU91UemvWerdxVZZvCuBqe5JJPbce
-        UJYmr2zx/5ESE43n4XXX6E4Be9Kb0dxQzmnFgAUs9o6AxCiMqS/Pwc8z+TsWEYJ0
-        +S8myoiDcXyVet1RsPkpmLNVC6u75GJ2PUWF1OHEPke04OlnccIEt9pM+m2qvBRa
-        bLmx8ijIwiqu+oDJa3O/L4LWTTc0aXkIN7X38hNsFt4oFvdPEeAq3NA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3s5gk1sbtu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 10:08:42 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 16:08:40 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.30 via Frontend
- Transport; Mon, 31 Jul 2023 16:08:40 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 81B1045D;
-        Mon, 31 Jul 2023 15:08:40 +0000 (UTC)
-Date:   Mon, 31 Jul 2023 15:08:40 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <patches@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: wm8960: Make automatic the default clocking
- mode
-Message-ID: <20230731150840.GO103419@ediswmail.ad.cirrus.com>
-References: <20230731-asoc-wm8960-clk-v1-0-69f9ffa2b10a@kernel.org>
- <20230731-asoc-wm8960-clk-v1-2-69f9ffa2b10a@kernel.org>
+        Mon, 31 Jul 2023 11:08:48 -0400
+Received: from smtp.gentoo.org (dev.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF4910EB;
+        Mon, 31 Jul 2023 08:08:46 -0700 (PDT)
+Message-ID: <c545bc4f-6fe9-eca4-535e-2380fd639ea3@gentoo.org>
+Date:   Mon, 31 Jul 2023 11:08:41 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230731-asoc-wm8960-clk-v1-2-69f9ffa2b10a@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: jqdVLszwbwFFuOD7Q_qAbKMDhDYEhfA4
-X-Proofpoint-ORIG-GUID: jqdVLszwbwFFuOD7Q_qAbKMDhDYEhfA4
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH 3/5] rtc: ds1685: use EXPORT_SYMBOL_GPL for
+ ds1685_rtc_poweroff
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-modules@vger.kernel.org
+References: <20230731083806.453036-1-hch@lst.de>
+ <20230731083806.453036-4-hch@lst.de>
+From:   Joshua Kinard <kumba@gentoo.org>
+In-Reply-To: <20230731083806.453036-4-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:47:03AM +0100, Mark Brown wrote:
-> The wm8960 driver supports an automatic clocking mode which will use the
-> MCLK directly where possible and fall back to the PLL if there is no
-> suitable configuration directly using the MCLK.  Clock 0 will be used by
-> the generic cards when configuring things, currently this is a MCLK only
-> mode but using AUTO mode would be more functional.  Since the driver
-> still prefers to use MCLK directly where possible there should be no
-> negative impact on systems which are able to use MCLK directly.
+On 7/31/2023 04:38, Christoph Hellwig wrote:
+> ds1685_rtc_poweroff is only used externally via symbol_get, which was
+> only ever intended for very internal symbols like this one.  Use
+> EXPORT_SYMBOL_GPL for it so that symbol_get can enforce only being used
+> on EXPORT_SYMBOL_GPL symbols.
 > 
-> As far as I can see nothing is using the system clock as part of the
-> ABI, the only reference I can see to a mode in a machine driver is the
-> Freescale i.MX card which uses the automatic mode with an explicit in
-> kernel call using the constant so will be unaffected.
-> 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
+>   drivers/rtc/rtc-ds1685.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rtc/rtc-ds1685.c b/drivers/rtc/rtc-ds1685.c
+> index 0f707be0eb87fa..04dbf35cf3b706 100644
+> --- a/drivers/rtc/rtc-ds1685.c
+> +++ b/drivers/rtc/rtc-ds1685.c
+> @@ -1432,7 +1432,7 @@ ds1685_rtc_poweroff(struct platform_device *pdev)
+>   		unreachable();
+>   	}
+>   }
+> -EXPORT_SYMBOL(ds1685_rtc_poweroff);
+> +EXPORT_SYMBOL_GPL(ds1685_rtc_poweroff);
+>   /* ----------------------------------------------------------------------- */
+>   
+>   
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Acked-by: Joshua Kinard <kumba@gentoo.org>
 
-Thanks,
-Charles
