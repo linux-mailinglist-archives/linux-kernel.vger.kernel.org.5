@@ -2,119 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 279D9769B0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FA6C769B11
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbjGaPpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:45:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54220 "EHLO
+        id S232428AbjGaPr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjGaPpt (ORCPT
+        with ESMTP id S229570AbjGaPrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:45:49 -0400
-Received: from ustc.edu.cn (email.ustc.edu.cn [IPv6:2001:da8:d800::8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 988BE170A;
-        Mon, 31 Jul 2023 08:45:46 -0700 (PDT)
+        Mon, 31 Jul 2023 11:47:24 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE854E57;
+        Mon, 31 Jul 2023 08:47:23 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe389d6f19so1553740e87.3;
+        Mon, 31 Jul 2023 08:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Message-ID:Date:
-        MIME-Version:User-Agent:Subject:To:Cc:References:From:
-        In-Reply-To:Content-Type:Content-Transfer-Encoding; bh=vFtCHrIgi
-        gSbtoNV1mnQVn3W557qU3XL1eHMMQCtsxQ=; b=PnDU1XgfaWjFE0R/iRY8ZcwRU
-        PjF2z+Wk29ng5gv49OSFr41GNTf65fqJWqn7Huyen1+xoHtIeLwBZAF6xoTxNxRZ
-        0jGAyVnVPUc2GFTo2bDCnab2avuPJu9z69eqpWqf3CDIcZHRF4uR9A4XexwkYqIW
-        h5ePxnbDqU1FyLL47w=
-Received: from [192.168.199.152] (unknown [180.158.176.68])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHNJAZ18dkdd_iAA--.31594S2;
-        Mon, 31 Jul 2023 23:45:29 +0800 (CST)
-Message-ID: <544b7f95-4b34-654d-a57b-3791a6f4fd5f@mail.ustc.edu.cn>
-Date:   Mon, 31 Jul 2023 23:45:29 +0800
+        d=gmail.com; s=20221208; t=1690818442; x=1691423242;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ABZh1xz4n6wuJf1UZhlFRWHEBKIhLTjdbX5I0EQWrCs=;
+        b=fSwFWkvhfCC6nHRRWXxDB0k59t7O9AYCvs+ae07YpC7D6PcxOp7BdFPLNtWeGb4Fdz
+         wGHX0O86FGkl3r7hPwNaGSL8yPtLD0a995rOr64KRFzOodWqKD53z0pdEmXcS0ECkBHB
+         tVxaJy2KHqLL31jRxlsQz15+yuZx4/wcK0DeDJHMIJiecc3RFcZEt8e/kXd2duxPH2GJ
+         QJMFDXWWPuWw3+LPBncbkiax3Zs1LivJUK3j5uyssFaAgiNGgerQ6cNN1cWnS7o9dVr2
+         4iignrmbEAntlYFXzebve04wmC65Xv1oq3nEhFEibh37R77U0vR9xbSH+ldd1Ln/6f5G
+         D5+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690818442; x=1691423242;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:subject:cc:to:from:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ABZh1xz4n6wuJf1UZhlFRWHEBKIhLTjdbX5I0EQWrCs=;
+        b=f9y+iExwwdwYrJDSRXGJBIc82DSWEsv7UM02j+nYKjPlcay35MVTd0R9IsCdprv9Mq
+         P+czQG1z5gA5EKJaSllcjVvjExrsqFmRa/Q4x/fTY7VKmc5SYcuS/T/27uxLOaeb4ZIx
+         5xmVqr3D5GW41XgjjJkmZsXrUDXiO30N44nlASLFVPtrfTE6NIQK5cwfo7G+ZJAcpUo4
+         7OmvZV8V6TxILpXMfkjm0zd47zqCAQwXxOpCdtJX3+tYWKyi2Z47H1WJ6MMJ/sZx1OIX
+         2lt9Zve6oPrRXkZC8nrGGi9jAPnP4kA+WVks0WGDzUl95WpK22FMq+VTuebkNbrlP+Fa
+         /Azw==
+X-Gm-Message-State: ABy/qLYLU//2e/jWAjuU53oGv3W1KPCcm8m25t2xZ0EyNfkkce/J7Id/
+        ziK/mSLS4/ExLLiR+VC5+XE=
+X-Google-Smtp-Source: APBJJlHev/F2QvCssa3rzFT8WFT/xaYyjd6AmItAIopq/blmw1EN/cScn24nT8oET8fR0vJl1FcXDg==
+X-Received: by 2002:a19:4f54:0:b0:4fb:89f2:278e with SMTP id a20-20020a194f54000000b004fb89f2278emr149583lfk.68.1690818441527;
+        Mon, 31 Jul 2023 08:47:21 -0700 (PDT)
+Received: from akanner-r14. ([77.222.27.66])
+        by smtp.gmail.com with ESMTPSA id z21-20020a19f715000000b004fdc6f03c6dsm2119808lfe.37.2023.07.31.08.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 08:47:20 -0700 (PDT)
+Message-ID: <64c7d788.190a0220.3c2cf.5d7f@mx.google.com>
+X-Google-Original-Message-ID: <ZMfXhFYDHKnqn7cX@akanner-r14.>
+Date:   Mon, 31 Jul 2023 18:47:16 +0300
+From:   Andrew Kanner <andrew.kanner@gmail.com>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, brouer@redhat.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com,
+        John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH v3] drivers: net: prevent tun_get_user() to exceed xdp
+ size limits
+References: <20230725155403.796-1-andrew.kanner@gmail.com>
+ <CACGkMEt=Cd8J995+0k=6MT1Pj=Fk9E_r2eZREptLt2osj_H-hA@mail.gmail.com>
+ <ab722ec1-ae45-af1f-b869-e7339402c852@redhat.com>
+ <179979e6-eb8a-0300-5445-999b9366250a@gmail.com>
+ <0c06b067-349c-9fe2-2cc3-36c149fd5277@gmail.com>
+ <CACGkMEsYzd1FphP-Ym9T9YjA9ZNBw7Mnw5xQ75dytQMJxDK3cg@mail.gmail.com>
+ <220fc36ba1086c1390ba087d08561b61762c965a.camel@redhat.com>
+ <3659ea35-8d03-aae7-53c0-09181bb1b69d@redhat.com>
+ <64c30249.2e0a0220.f779a.1c31@mx.google.com>
+ <cf1ef905-fa48-df3a-2d3c-37d7a1e79b8e@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Question] int3 instruction generates a #UD in SEV VM
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        linux-coco@lists.linux.dev
-References: <8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn>
- <ZMfFaF2M6Vrh/QdW@google.com> <4ebb3e20-a043-8ad3-ef6c-f64c2443412c@amd.com>
-From:   wuzongyong <wuzongyo@mail.ustc.edu.cn>
-In-Reply-To: <4ebb3e20-a043-8ad3-ef6c-f64c2443412c@amd.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LkAmygDHNJAZ18dkdd_iAA--.31594S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF1fJrWxWw1kAF1kCryxuFg_yoW8uFy7pF
-        Z7ta4YyFsrGr1kAr12yr48Za4Fv39xJFsrXrn8J3s8AayUZas2gFWI9rZ8A3WDZrWfWw1j
-        qa4IqrZru39rArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUy2b7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwV
-        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI48JMxC20s02
-        6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
-        I_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
-        6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj4
-        0_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j
-        6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jeXdbUUUUU=
-X-CM-SenderInfo: pzx200xj1rqzxdloh3xvwfhvlgxou0/
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <cf1ef905-fa48-df3a-2d3c-37d7a1e79b8e@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 27, 2023 at 06:11:57PM -0600, David Ahern wrote:
+> On 7/27/23 5:48 PM, Andrew Kanner wrote:
+> > 
+> > Thanks, everyone.
+> > 
+> > If we summarize the discussion - there are 3 issues here:
+> > 1. tun_can_build_skb() doesn't count XDP_PACKET_HEADROOM (minor and
+> >    most trivial)
+> > 2. WARN_ON_ONCE from net/core/filter.c, which may be too strict / not
+> >    needed at all.
+> > 3. strange behaviour with reallocationg SKB (65007 -> 131072)
+> 
+> I believe that happens because of the current skb size and the need to
+> expand it to account for the XDP headroom makes the allocation go over
+> 64kB. Since tun is given the packet via a write call there are no header
+> markers to allocate separate space for headers and data (e.g. like TCP
+> does with 32kB data segments).
 
-On 2023/7/31 23:03, Tom Lendacky wrote:
-> On 7/31/23 09:30, Sean Christopherson wrote:
->> On Sat, Jul 29, 2023, wuzongyong wrote:
->>> Hi,
->>> I am writing a firmware in Rust to support SEV based on project td-shim[1].
->>> But when I create a SEV VM (just SEV, no SEV-ES and no SEV-SNP) with the firmware,
->>> the linux kernel crashed because the int3 instruction in int3_selftest() cause a
->>> #UD.
->>
->> ...
->>
->>> BTW, if a create a normal VM without SEV by qemu & OVMF, the int3 instruction always generates a
->>> #BP.
->>> So I am confused now about the behaviour of int3 instruction, could anyone help to explain the behaviour?
->>> Any suggestion is appreciated!
->>
->> Have you tried my suggestions from the other thread[*]?
-Firstly, I'm sorry for sending muliple mails with the same content. I thought the mails I sent previously 
-didn't be sent successfully.
-And let's talk the problem here.
->>
->>    : > > I'm curious how this happend. I cannot find any condition that would
->>    : > > cause the int3 instruction generate a #UD according to the AMD's spec.
->>    :
->>    : One possibility is that the value from memory that gets executed diverges from the
->>    : value that is read out be the #UD handler, e.g. due to patching (doesn't seem to
->>    : be the case in this test), stale cache/tlb entries, etc.
->>    :
->>    : > > BTW, it worked nomarlly with qemu and ovmf.
->>    : >
->>    : > Does this happen every time you boot the guest with your firmware? What
->>    : > processor are you running on?
->>    :
-Yes, every time.
-The processor I used is EPYC 7T83.
->>    : And have you ruled out KVM as the culprit?  I.e. verified that KVM is NOT injecting
->>    : a #UD.  That obviously shouldn't happen, but it should be easy to check via KVM
->>    : tracepoints.
->
-> I have a feeling that KVM is injecting the #UD, but it will take instrumenting KVM to see which path the #UD is being injected from.
->
-> Wu Zongyo, can you add some instrumentation to figure that out if the trace points towards KVM injecting the #UD?
-Ok, I will try to do that.
->
-> Thanks,
-> Tom
->
->>
->> [*] https://lore.kernel.org/all/ZMFd5kkehlkIfnBA@google.com
 
+Yes, this is exactly what you suspected. In pskb_expand_head() ->
+kmalloc_reserve() I have these values initially:
+(gdb) p *size
+$13 = 65408
+(gdb) p obj_size
+$16 = 65728
+
+and it will do:
+    data = kmalloc_reserve(&size, gfp_mask, NUMA_NO_NODE, NULL);
+...
+	obj_size = SKB_HEAD_ALIGN(*size);
+...
+	*size = obj_size = kmalloc_size_roundup(obj_size);
+
+(gdb) p *size
+$22 = 131072
+
+So this is kmalloc_size_roundup() doing this math with the following:
+   /* Above the smaller buckets, size is a multiple of page size. */                                                                                                                           │
+   if (size > KMALLOC_MAX_CACHE_SIZE)                                                                                                                                                          │
+      return PAGE_SIZE << get_order(size);
+
+> > 
+> > I can check these issues. I have to dive a little deeper with 2-3,
+> > most likely with kgdb and syzkaller repro. But seems this is not
+> > somewhat urgent and lives quite a long time without being noticed.
+> > 
+> > BTW: Attached the ftrace logs using the original syzkaller repro
+> > (starting with tun_get_user()). They answer Jesper's question about
+> > contiguous physical memory allocation (kmem_cache_alloc_node() /
+> > kmalloc_reserve()). But I'll check it one more time before submitting
+> > a new PATCH V4 or another patch / patch series.
+> > 
+> 
+
+I see no other bugs in math, so not sure wether it should be fixed. Is
+it ok and expected to roundup the memory allocation?
+
+
+-- 
+Andrew Kanner
