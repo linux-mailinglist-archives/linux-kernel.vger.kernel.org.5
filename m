@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E83AC76A0A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 657AE76A0CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjGaStk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37318 "EHLO
+        id S231278AbjGaTFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbjGaSti (ORCPT
+        with ESMTP id S230049AbjGaTE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:49:38 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82BD189
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:49:36 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3178dd771ceso3436491f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:49:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google; t=1690829375; x=1691434175;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tSrMC3+SJ0egYG0f2gwoLknFT0dgY+FAasCFfQTvvxk=;
-        b=TPZP/yMbUeQTiuSSmHPaXqzypxoYzjL9bpLQpl0sY8BgdmcRkvH9tlSaOBGz+GX6Rw
-         r7vFIC1zKA9ozOF6N2GPcB4UABRxXkHaRMY4XC4SVCpUl6dpAGWvWd5MVy3+9ZC0O4yV
-         65rxWUeZOu5KUypxo2o9f9h4X+VtKC6wRMJ6U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690829375; x=1691434175;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tSrMC3+SJ0egYG0f2gwoLknFT0dgY+FAasCFfQTvvxk=;
-        b=Mg+T7+34zt88XJ8lmP2H2sh9qZRgfqOqzAPS6rDP7o8OPIZNTFEA7c8MN/D2TRJpjY
-         k88arDvxVC5oJ3n9ewWHCg0W2GsMrwcrrFvBkB7rXYYn2s20Cy3a9Tso/A7lERhyk8AE
-         Xum5Ny/mRNClTwcbLjfAZvZOx36OdQS5dn1Tzpe3tybXmMZFq1q0cmIK3mlZf46lXQEW
-         Qo872XEaFot/RcOoFttoMkZsLvaaAdlVchU/rpmemMaSZFnm6pFCta55Np8L5BDtCRh4
-         yhYaZ4KBAWC/YTaIu7rimtLRVuA8jBO/wnfm3TwqEtxw32xbyFSMRDPq0Ys2K+Dbu7zr
-         kPSQ==
-X-Gm-Message-State: ABy/qLaXPFDex3fjh90lzixkP2QlFHCPNmKAvdyJqA6tcTVPAGejFrf2
-        i8WumyUNG5GmLa0Ia2060l3b+4gIUyx8cTd0acCQzg==
-X-Google-Smtp-Source: APBJJlG8lpE2Wep4n8q70FSDhNYglqbro4R4N+ED2lPckUBzblETeT3zfGStQ8Fmi6wsQImptsOjPaXADGtytwcF2v8=
-X-Received: by 2002:adf:ec0d:0:b0:314:3b9c:f02f with SMTP id
- x13-20020adfec0d000000b003143b9cf02fmr463450wrn.49.1690829375213; Mon, 31 Jul
- 2023 11:49:35 -0700 (PDT)
+        Mon, 31 Jul 2023 15:04:57 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A42A1711;
+        Mon, 31 Jul 2023 12:04:56 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id 1e1f3776e05a7fc3; Mon, 31 Jul 2023 21:04:54 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 6B8216620E2;
+        Mon, 31 Jul 2023 21:04:54 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>
+Subject: [PATCH v3 0/3] cpuidle: teo: Avoid stopping scheduler tick too often
+Date:   Mon, 31 Jul 2023 20:49:33 +0200
+Message-ID: <4515817.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
-References: <20230710183338.58531-1-ivan@cloudflare.com> <2023071039-negate-stalemate-6987@gregkh>
- <CABWYdi39+TJd1qV3nWs_eYc7XMC0RvxG22ihfq7rzuPaNvn1cQ@mail.gmail.com>
- <CAOQ4uxiFhkSM2pSNLCE6cLz6mhYOvk5D7vDsghVTqy9cDqeqew@mail.gmail.com> <20230731134615.delje45enx3tkyco@quack3>
-In-Reply-To: <20230731134615.delje45enx3tkyco@quack3>
-From:   Ivan Babrou <ivan@cloudflare.com>
-Date:   Mon, 31 Jul 2023 11:49:24 -0700
-Message-ID: <CABWYdi3s35QZXSeb95XUeLyOkM66po603-ows1n3np=Lt4g1nw@mail.gmail.com>
-Subject: Re: [PATCH] kernfs: attach uuid for every kernfs and report it in fsid
-To:     Jan Kara <jack@suse.cz>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fsdevel@vger.kernel.org, kernel-team@cloudflare.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrjeeggddutdekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgeffhfdujeelhfdtgeffkeetudfhtefhhfeiteethfekvefgvdfgfeeikeeigfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprghnnhgrqdhmrghrihgrsehlihhnuhhtrhho
+ nhhigidruggvpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrghjvghtrghnrdhpuhgthhgrlhhskhhisegrrhhmrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 6:46=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
-> > I agree. I think it was a good decision.
-> > I have some followup questions though.
-> >
-> > I guess your use case cares about the creation of cgroups?
-> > as long as the only way to create a cgroup is via vfs
-> > vfs_mkdir() -> ... cgroup_mkdir()
-> > fsnotify_mkdir() will be called.
-> > Is that a correct statement?
-> > Because if not, then explicit fsnotify_mkdir() calls may be needed
-> > similar to tracefs/debugfs.
-> >
-> > I don't think that the statement holds for dieing cgroups,
-> > so explicit fsnotify_rmdir() are almost certainly needed to make
-> > inotify/fanotify monitoring on cgroups complete.
->
-> Yeah, as Ivan writes, we should already have all that is needed to
-> generate CREATE and DELETE events for the cgroup filesystem. In theory
-> inotify or fanotify for inodes could be already used with cgroupfs now.
-> Thus I have no objection to providing fsid for it so that filesystem-wide
-> notifications can be used for it as well. Feel free to add:
->
-> Acked-by: Jan Kara <jack@suse.cz>
->
-> to your patch.
+Hi Folks,
 
-Thank you, I just sent v2:
+Patch [1/3] in this series is a v3 of this patch posted last week:
 
-* https://lore.kernel.org/linux-fsdevel/20230731184731.64568-1-ivan@cloudfl=
-are.com/
+https://lore.kernel.org/linux-pm/4506480.LvFx2qVVIh@kreacher/
+
+Patch [2/3] (this is the second version of it) addresses some bail out paths
+in teo_select() in which the scheduler tick may be stopped unnecessarily too.
+
+Patch [3/3] replaces a structure field with a local variable (while at it)
+and it is the same as its previous version.
+
+According to this message:
+
+https://lore.kernel.org/linux-pm/CAJZ5v0jJxHj65r2HXBTd3wfbZtsg=_StzwO1kA5STDnaPe_dWA@mail.gmail.com/
+
+this series significantly reduces the number of cases in which the governor
+requests stopping the tick when the selected idle state is shallow, which is
+incorrect.
+
+Thanks!
+
+
+
