@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E059576923B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3814476923F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229833AbjGaJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:48:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
+        id S231881AbjGaJsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232334AbjGaJru (ORCPT
+        with ESMTP id S232390AbjGaJrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:47:50 -0400
+        Mon, 31 Jul 2023 05:47:51 -0400
 Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545D71998
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:47:06 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso11199905e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:47:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69082199E
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:47:07 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fbc59de009so39632245e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:47:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690796825; x=1691401625;
+        d=linaro.org; s=google; t=1690796826; x=1691401626;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=NAl2fAmeLK7v8jeOjXAM9Im6T80pzlX2872jJ9ooxQg=;
-        b=ddol+HfsOqAeoaUJW+6b1004uCV99ldu9gXwPlEqLzDDDzBr0jgA6y05HpRIjmQA84
-         ypR7Tf1zF7E+8fTjXwucCOYQZkybryy2dHC18aZDgfiy06ygo1nK59QDGHTdttTvqkMQ
-         rx64WsTpsFRy5SFlX2O78Dmi+KSCwKsjXy6jEaNUW0yh3257sORVWELFezeW0C5zKeOa
-         CLR8YQDYMbkfYQ2J12d0BhhS2E0uO2168SR2TP0QBq8dS/yAma+YaWj1+Mt0mBo6qimq
-         kDtLRheC+kTguXNFoypuG47A69tI7mK2hiVrtnJ0OG0+rRVoNshYtIwyqXp3UZB9OGOh
-         UffQ==
+        bh=qx7Ls/SUOBXHVBMm8UX7N73qmM8FPDs70MQuXYK8erU=;
+        b=JAdysYxRIWOzqApA2SmEt9RWP1U+gNpa3LGWAnRD1ZSpjjmjWF1rTf348gp25MwZTs
+         eUhb1n9y3CMue2/wKWSGdmXmY+rhTeESB1stJ4bwstrmZ1bt9KsOA7FnXFAVDHVCjS/+
+         NCYPny2e/JAvrc3JfSnm8Zem5wDEiK8onfu01IXtk4r55rTnKRwXVhj6TtcaRKs9nmOJ
+         8UAdrsTnGpZQRMW8Re6aQT7kOkRK8/qObNnjUNxDqZBEsBcT0OV5Y5ch9xL5z5//ehyT
+         d87jXIF7Jdr8n/K36BZDEW9Din2sDqATKOwyVBok62pVe9QOyePcHATrEEvBPRwsLfs5
+         4SGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690796825; x=1691401625;
+        d=1e100.net; s=20221208; t=1690796826; x=1691401626;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NAl2fAmeLK7v8jeOjXAM9Im6T80pzlX2872jJ9ooxQg=;
-        b=C6spXEU37EldrV3KgPvPHcefHEbkzdbdYucqU/7HlLIe+qpA7gbzFvx84ZMhh85wgD
-         oqxdPOs3uMk56+grfo0YpPx1veiuyGJVje50GrAvtOByXUM6E4ePwjjvNGCuvuMej6oh
-         vzbG72ukz9/Io50+raoDf8k5cgZtZb8EkoPpXBbJOBPgglStHvnCJu8X6fwL38VI6+Bn
-         QN/7A672ZFYxsD932UYHIxP6iDeeIgK+pb0ceCxwM6uAlcoV/5Io4M/bJThc0Zu4tt50
-         vu4mwqpXKWdfDQX8g2yfkxE8p7j/aeQwTbHQCWcQ9xQsvsXgpHycMOuEowvQJxZEvNxp
-         uORA==
-X-Gm-Message-State: ABy/qLaiHOSI1E9LD9f8wq87L8BqwqP+zudnnTOuirwvBIUSJ8IgoGIj
-        UbmBJygyegc9DYpPCDBbV8Zkzg==
-X-Google-Smtp-Source: APBJJlHg2vtNWlg6yP5U99HmeGF+jcWS21EQ/z4CZR4xWJgc03pK6mCEBXO+hfddwRa9kvtHMGMRRg==
-X-Received: by 2002:a1c:ed02:0:b0:3fa:8c68:4aba with SMTP id l2-20020a1ced02000000b003fa8c684abamr7857704wmh.25.1690796824720;
-        Mon, 31 Jul 2023 02:47:04 -0700 (PDT)
+        bh=qx7Ls/SUOBXHVBMm8UX7N73qmM8FPDs70MQuXYK8erU=;
+        b=MA5Og2kkxwEHOxS93jPf+FAsiCq0fZdtPIEGOxwdyOi6pvAlvE332GKy25drAwG2Po
+         zig/rjsYIRpF+TyNVJP93MYsd+pD5jbD7Hca4B8Wegnqlm6gSehSEF5z63LON6RZALr9
+         ul21aYPD9kcr/jdhrGQ1JmTKlKE7R0ljNNP9pJCo+cIb5X6gOJPE0jeJnzojFijkTW7z
+         /6WXJX7xx/zeeH+a+Uh6rvPM5ImljnPukw9aq3OU1fod//azAlLToiKryVTKTGfj/0g3
+         R5E8RUH9FE0aPmvTYPH6RupTf/NAKgDoIZJBVW25EePeQ4FGTI9hcpsvxzYSmzjQpCSC
+         U6LA==
+X-Gm-Message-State: ABy/qLb+qySH4Su/l19zqU0wiqE7lZ/GfxfiLPjV5cS6vmka5KGtVbbM
+        NFPNdlbSvJ7gvdA9ISmJ8+1xfg==
+X-Google-Smtp-Source: APBJJlGMyipzlfbtXhIMjkoYwIcc3r5BAUwgU9QryvtjkDAzuhRSAYVeC8mZ1DYyi797G4rwyvzJYg==
+X-Received: by 2002:a05:600c:230b:b0:3fc:e00:5282 with SMTP id 11-20020a05600c230b00b003fc0e005282mr6426612wmo.0.1690796825930;
+        Mon, 31 Jul 2023 02:47:05 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id p9-20020a5d48c9000000b0031433443265sm12556878wrs.53.2023.07.31.02.47.03
+        by smtp.gmail.com with ESMTPSA id p9-20020a5d48c9000000b0031433443265sm12556878wrs.53.2023.07.31.02.47.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 02:47:04 -0700 (PDT)
+        Mon, 31 Jul 2023 02:47:05 -0700 (PDT)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
 To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -60,19 +60,19 @@ To:     Rob Herring <robh+dt@kernel.org>,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230725142703.157547-1-krzysztof.kozlowski@linaro.org>
-References: <20230725142703.157547-1-krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH] arm64: dts: amlogic: meson-g12b-bananapi: switch to
- enable-gpios
-Message-Id: <169079682340.186625.9070463566453438311.b4-ty@linaro.org>
-Date:   Mon, 31 Jul 2023 11:47:03 +0200
+In-Reply-To: <20230731093615.148949-1-krzysztof.kozlowski@linaro.org>
+References: <20230731093615.148949-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v2] arm64: dts: amlogic: drop redundant status=okay in
+ sound nodes
+Message-Id: <169079682486.186625.15061697732696889400.b4-ty@linaro.org>
+Date:   Mon, 31 Jul 2023 11:47:04 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,18 +82,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Tue, 25 Jul 2023 16:27:03 +0200, Krzysztof Kozlowski wrote:
-> The recommended name for enable GPIOs property in regulator-gpio is
-> enable-gpios.  This is also required by bindings:
-> 
->   meson-g12b-bananapi-cm4-cm4io.dtb: regulator-vddio-c: Unevaluated properties are not allowed ('enable-gpio' was unexpected)
+On Mon, 31 Jul 2023 11:36:15 +0200, Krzysztof Kozlowski wrote:
+> status=okay is by default.
 > 
 > 
 
 Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.6/arm64-dt)
 
-[1/1] arm64: dts: amlogic: meson-g12b-bananapi: switch to enable-gpios
-      https://git.kernel.org/amlogic/c/01457f6fd40b45b6dd394c75317da812bf585a97
+[1/1] arm64: dts: amlogic: drop redundant status=okay in sound nodes
+      https://git.kernel.org/amlogic/c/3eced2a20ad5692af6f3f05e89a682c6378a7a74
 
 These changes has been applied on the intermediate git tree [1].
 
