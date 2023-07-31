@@ -2,216 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F35768AFE
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 07:15:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01E9768B03
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 07:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbjGaFO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 01:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
+        id S229800AbjGaFUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 01:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbjGaFO5 (ORCPT
+        with ESMTP id S229488AbjGaFUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 01:14:57 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1421B1A5;
-        Sun, 30 Jul 2023 22:14:55 -0700 (PDT)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36V3ilEd003349;
-        Mon, 31 Jul 2023 05:14:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=yZwONjKHySnDZRuapdHrCNlECA9A+ypflVHU3EdKGfM=;
- b=HOeyL1Z+DENmiQ0yjNW6kuIg2JsIb+iIhg0HrxqBP54f4zrV12psj3Bshxx4CcICj/0w
- gGLtl7shc2zcjjzdAbJbOGikawy1VD9bb719UZb2w501pKWBuqCrlTr9fAYOnQfBQnm9
- AhSZQU+OLxAk+4orBayBJ23VDZdnvTAHPuXY5AREbMoLbz6n/vR5naloTztIlzX3WCXb
- te9IZWFOfBvvZVrVj5gAtky6uYUmDcCvXORtdfRq7MKn200Ow6i6sZRk4A5MLB1Aq9IT
- wZvMUgnBnlGX0QL6sS3glb4jXIBRC7bPsR4t2C38jePFZP8wTfnOXBJquDC0JgeqEiXw dA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4v2djmh8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 05:14:52 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36V5EpSW020030
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 05:14:51 GMT
-Received: from [10.201.206.238] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 30 Jul
- 2023 22:14:44 -0700
-Message-ID: <4d278763-153c-bb9c-56d4-4b262ed2cc99@quicinc.com>
-Date:   Mon, 31 Jul 2023 10:44:41 +0530
+        Mon, 31 Jul 2023 01:20:19 -0400
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A891AC;
+        Sun, 30 Jul 2023 22:20:17 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-4fe27849e6aso2291124e87.1;
+        Sun, 30 Jul 2023 22:20:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690780815; x=1691385615;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1PCaV7jz4ZhQusEGOkRMQPvD1GkLtKnvc9bqZW1yacw=;
+        b=YYnYrbEVxNRqPGDdLmkffSNKNSqUgMBz2W56nZ+ZvcO90FjsPp2xD6rwT3YFTHEq9F
+         GBxWMbmjVLT3sYpTcz7QJMxuXPgaK52eflphBE3+7tnM6vlgR8Vhc/lubIYR8EBSQXrY
+         36byq++4eBa60p7pLwPWpHCim6YkwvWKIqZpJWc8jfJUIRTLjwmskgDPjtEO7PPiqV68
+         36n3LSkySAZ5zvVZ/XtnDZVTMtepZ6VNPTpMGeO5wy9IwmInLdeSqT8H403QGptc3aOi
+         NEXF7qUPfu7Py0jRT1v5rZ/FfXQs57Dh7i9B9kD58p8rpE9CAxXbaSDVLKCgalFv0QTv
+         d1Yg==
+X-Gm-Message-State: ABy/qLbi3QaLY1n/jdSLNnR55a/5YcJtqt3kS7KJqRegia2edJ7SAlLm
+        jxdC3xShwz63F3O8wi4OznDE9CRPF9E=
+X-Google-Smtp-Source: APBJJlGK6TLfK80q1RYfkwG2/SJEzHxRS0T9UKRwbX9NrS83Sc9RKwlda1+Sn43xdx2oArIubQhClw==
+X-Received: by 2002:a19:8c09:0:b0:4fe:1e74:3f3a with SMTP id o9-20020a198c09000000b004fe1e743f3amr4545975lfd.58.1690780814940;
+        Sun, 30 Jul 2023 22:20:14 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id l22-20020a1c7916000000b003fe22da3bc5sm803508wme.42.2023.07.30.22.20.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 22:20:14 -0700 (PDT)
+Message-ID: <e411e3c4-37ae-f5ea-b50b-4a5c0718c857@kernel.org>
+Date:   Mon, 31 Jul 2023 07:20:13 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.2
-Subject: Re: [PATCH v4 07/11] firmware: qcom_scm: ipq5332: add msa lock/unlock
- support
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ath5k: Fix debugfs_create_dir error checking
 Content-Language: en-US
-To:     Guru Das Srinagesh <quic_gurus@quicinc.com>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mathieu.poirier@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <quic_eberman@quicinc.com>, <kvalo@kernel.org>,
-        <loic.poulain@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
-        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
-        <quic_varada@quicinc.com>
-References: <20230728063412.1641856-1-quic_mmanikan@quicinc.com>
- <20230728063412.1641856-8-quic_mmanikan@quicinc.com>
- <20230729003037.GA25463@quicinc.com>
-From:   Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
-In-Reply-To: <20230729003037.GA25463@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Atul Raut <rauji.raut@gmail.com>, mickflemm@gmail.com,
+        mcgrof@kernel.org, kvalo@kernel.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20230731023820.26571-1-rauji.raut@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20230731023820.26571-1-rauji.raut@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 4X2b7Cp-hv2RsNuR-_Oq4m9KWeOVgaIu
-X-Proofpoint-ORIG-GUID: 4X2b7Cp-hv2RsNuR-_Oq4m9KWeOVgaIu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- mlxlogscore=999 malwarescore=0 lowpriorityscore=0 clxscore=1015
- adultscore=0 impostorscore=0 bulkscore=0 mlxscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307310048
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 31. 07. 23, 4:38, Atul Raut wrote:
+> The debugfs_create_dir function returns ERR_PTR
+> in case of error and the correct way to check an
+> error is 'IS_ERR' inline function.
+> This patch will replace the null-comparison with IS_ERR
+> 
+> This issue was found with the help of Coccinelle.
+> ./drivers/net/wireless/ath/ath5k/debug.c:985:6-12: Wrong debugfs call error processing on line 985
+> 
+> Signed-off-by: Atul Raut <rauji.raut@gmail.com>
+> ---
+>   drivers/net/wireless/ath/ath5k/debug.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath5k/debug.c b/drivers/net/wireless/ath/ath5k/debug.c
+> index 4b41160e5d38..08058b3f7e22 100644
+> --- a/drivers/net/wireless/ath/ath5k/debug.c
+> +++ b/drivers/net/wireless/ath/ath5k/debug.c
+> @@ -982,7 +982,7 @@ ath5k_debug_init_device(struct ath5k_hw *ah)
+>   	ah->debug.level = ath5k_debug;
+>   
+>   	phydir = debugfs_create_dir("ath5k", ah->hw->wiphy->debugfsdir);
+> -	if (!phydir)
+> +	if (IS_ERR(phydir))
 
+Already fixed by:
+https://patchwork.kernel.org/project/linux-wireless/patch/20230714081619.2032-1-duminjie@vivo.com/
 
-On 7/29/2023 6:00 AM, Guru Das Srinagesh wrote:
-> On Jul 28 2023 12:04, Manikanta Mylavarapu wrote:
->> IPQ5332 user pd remoteproc firmwares need to be locked
->> with MSA(modem secure access) features. This patch add
->> support to lock/unlock MSA features.
->>
->> Signed-off-by: Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
->> ---
->> Changes in v4:
->> 	- Rebased on linux-next
->>
->>   drivers/firmware/qcom_scm.c            | 78 ++++++++++++++++++++++++++
->>   drivers/firmware/qcom_scm.h            |  2 +
->>   include/linux/firmware/qcom/qcom_scm.h |  2 +
->>   3 files changed, 82 insertions(+)
->>
->> diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
->> index 3bc8c63a997f..2275cf7bc887 100644
->> --- a/drivers/firmware/qcom_scm.c
->> +++ b/drivers/firmware/qcom_scm.c
->> @@ -676,6 +676,84 @@ bool qcom_scm_pas_supported(u32 peripheral)
->>   }
->>   EXPORT_SYMBOL(qcom_scm_pas_supported);
->>   
->> +/**
->> + * qcom_scm_msa_lock() - Lock given peripheral firmware region as MSA
->> + *
->> + * @peripheral:	peripheral id
->> + *
->> + * Return 0 on success.
->> + */
->> +int qcom_scm_msa_lock(u32 peripheral)
->> +{
->> +	int ret;
->> +	struct qcom_scm_desc desc = {
->> +		.svc = QCOM_SCM_SVC_PIL,
->> +		.cmd = QCOM_SCM_MSA_LOCK,
->> +		.arginfo = QCOM_SCM_ARGS(1),
->> +		.args[0] = peripheral,
->> +		.owner = ARM_SMCCC_OWNER_SIP,
->> +	};
->> +	struct qcom_scm_res res;
->> +
->> +	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_PIL,
->> +					  QCOM_SCM_MSA_LOCK))
->> +		return 0;
->> +
->> +	ret = qcom_scm_clk_enable();
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = qcom_scm_bw_enable();
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = qcom_scm_call(__scm->dev, &desc, &res);
->> +	qcom_scm_bw_disable();
->> +	qcom_scm_clk_disable();
->> +
->> +	return ret ? : res.result[0];
->> +}
->> +EXPORT_SYMBOL(qcom_scm_msa_lock);
-> 
-> Could you please convert this to EXPORT_SYMBOL_GPL?
-> 
-Ok, sure.
+-- 
+js
+suse labs
 
->> +
->> +/**
->> + * qcom_scm_msa_unlock() - Unlock given peripheral MSA firmware region
->> + *
->> + * @peripheral:	peripheral id
->> + *
->> + * Return 0 on success.
->> + */
->> +int qcom_scm_msa_unlock(u32 peripheral)
->> +{
->> +	int ret;
->> +	struct qcom_scm_desc desc = {
->> +		.svc = QCOM_SCM_SVC_PIL,
->> +		.cmd = QCOM_SCM_MSA_UNLOCK,
->> +		.arginfo = QCOM_SCM_ARGS(1),
->> +		.args[0] = peripheral,
->> +		.owner = ARM_SMCCC_OWNER_SIP,
->> +	};
->> +	struct qcom_scm_res res;
->> +
->> +	if (!__qcom_scm_is_call_available(__scm->dev, QCOM_SCM_SVC_PIL,
->> +					  QCOM_SCM_MSA_UNLOCK))
->> +		return 0;
->> +
->> +	ret = qcom_scm_clk_enable();
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = qcom_scm_bw_enable();
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = qcom_scm_call(__scm->dev, &desc, &res);
->> +	qcom_scm_bw_disable();
->> +	qcom_scm_clk_disable();
->> +
->> +	return ret ? : res.result[0];
->> +}
->> +EXPORT_SYMBOL(qcom_scm_msa_unlock);
-> 
-> This one too?
-> 
-Ok, sure.
-
-> Reference: [1]
-> The whole driver has now moved to using EXPORT_SYMBOL_GPL() now.
-> 
-> [1] https://lore.kernel.org/lkml/19d9ac0bf79f957574ef9b3b73246ea0113cc0fd.1690503893.git.quic_gurus@quicinc.com/
-> 
-> Thank you.
-> 
-> Guru Das.
-
-Thanks & Regards,
-Manikanta.
