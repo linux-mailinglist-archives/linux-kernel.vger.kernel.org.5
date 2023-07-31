@@ -2,144 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8001B76A4F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA3ED76A4FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbjGaXqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 19:46:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52478 "EHLO
+        id S230120AbjGaXrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 19:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbjGaXqn (ORCPT
+        with ESMTP id S229850AbjGaXq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 19:46:43 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21716E5D
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:46:42 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3110ab7110aso5255238f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690847200; x=1691452000;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mKy5jhge1ThZxYuKVzWR6NJXyjCfAL7R6EKNS/gYYcg=;
-        b=PCgctvhZtvsnjctsCDCFhXav7VCXmOB5xbGlS8l7E9REFtdcMSOR7cxfAA+zXVY0sZ
-         SqBR9icyH3nE7TbNcqSxbumY5HxPX4Ta9Pz5QiC/PPIhq/cDCRRNcYv8ffQ2414xiYWp
-         PS90IfWZlT+F5lt07KbB7gIHdOPeX5hXdliCY+Skk84XMO7ENKfrZzSFI1bXhwHRqAmx
-         od21aTQgIW2PBX79HDpa/owrTjtzpOLeFSyb4muQlDI+nywYUnP6aUoFFZHUTsFMaJHk
-         HxIZG7v43Zac9j40XrGAp+MYl6v23tdBzathXt3renda96sZ5Q7AuSca2afihM6SBuqT
-         TDfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690847200; x=1691452000;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mKy5jhge1ThZxYuKVzWR6NJXyjCfAL7R6EKNS/gYYcg=;
-        b=Scz7/BovTklEewhdCXc71KPsq1LfrierTQi1oLDEQb4ol6QgKWjJnkqStU7ao3J+mZ
-         xeIESuRymXjIySL8hwjBEJmhYPvV7M1psfv3fM9D6P3eBv86V+WzQGl/M4LUC7RZnqoz
-         VvD/6bUbnHpCbU98lV3HADmC4TDzxRpu+gfPpWyVaYz13X4iBM8f868RPm0owxKz5ARs
-         yZhhb9T2QJ9y7dvj/MQ6iaMfvyHXHO/7Ak4IQx+5833ijhZPY3OY3EP+8OZVcGsLgiUc
-         IBqwZISJImUHyRUlY5nvGCnqSJnqUQERi2KcTSo5sc4PYIBTQ7OQDq54R/zfnzraBYQW
-         8P+g==
-X-Gm-Message-State: ABy/qLauM6FCeCdl9LytI95M05YzcNvV+Fzo8uYFiqqAo4hvmQsmb4nV
-        L2mWE40vGT3dL5nKlL9zMiFJU+lFCnWara+X9Ft3Vg==
-X-Google-Smtp-Source: APBJJlFGUYIU+wOyt1NBLOOIcQwBc7lzgzRFhGFfyCA0DxnJ2P7PbcDice062zz9wvT80OQ0qNPZVDUe4QhSBJUH2bQ=
-X-Received: by 2002:adf:e291:0:b0:317:67bf:3376 with SMTP id
- v17-20020adfe291000000b0031767bf3376mr905138wri.57.1690847200504; Mon, 31 Jul
- 2023 16:46:40 -0700 (PDT)
+        Mon, 31 Jul 2023 19:46:56 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23AF1E7C;
+        Mon, 31 Jul 2023 16:46:55 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VNQIT8014107;
+        Mon, 31 Jul 2023 23:46:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=HE87F8f+rEZfMqN7IxCafKBAXA6f/kM48CtBdJPVbO0=;
+ b=ORmvvi4eC6yrctwqeQcRkTxcMDLpxRlEdTzbVuhaeDYRcsms6Yi8nfbaERNo7TtFE7/m
+ mzjMaF30bOOzzSyhqwXFkndO/BoOLRC/+/assGreQXbfeHB8UmWtxUnsXJEur8G/fPRy
+ qaVbtrNo7RalQNYNLoVOojdGYd2KN2fW14iSlnYwjkqKgFI1VpbpZ6AHkZLD+nYPwIBp
+ p02OLYtH8h7wwUwWBPxVK/l5HNUKR9FID4465yDpq0bkVGLEhKnlDNaEbqxJ8oFF64dM
+ 8yBZgBNB1h/EX1e4bDFXm5Pi2UoJlq1Ynh6q+xqLwKo5TEecovstw/LVC+qG6Ih6CepB ig== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6a2va8y1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 23:46:50 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36VNknUg004568
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 23:46:49 GMT
+Received: from [192.168.142.6] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 16:46:48 -0700
+Message-ID: <71460c5f-2aac-67b0-3779-d748f9e512aa@quicinc.com>
+Date:   Mon, 31 Jul 2023 16:46:48 -0700
 MIME-Version: 1.0
-References: <20230731174613.4133167-1-davidai@google.com> <20230731174613.4133167-3-davidai@google.com>
- <afac2810-f93e-eda5-975e-041ac4b908b5@infradead.org>
-In-Reply-To: <afac2810-f93e-eda5-975e-041ac4b908b5@infradead.org>
-From:   David Dai <davidai@google.com>
-Date:   Mon, 31 Jul 2023 16:46:29 -0700
-Message-ID: <CABN1KCJ0dfVBGdL0dd=ES2gmFJEgm89ArBsXWDC4hE4TZehk=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] cpufreq: add virtual-cpufreq driver
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Quentin Perret <qperret@google.com>,
-        Masami Hiramatsu <mhiramat@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        Gupta Pankaj <pankaj.gupta@amd.com>,
-        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] soc: qcom: aoss: Move length requirements from caller
+Content-Language: en-US
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+CC:     Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
+References: <20230731041013.2950307-1-quic_bjorande@quicinc.com>
+ <20230731041013.2950307-2-quic_bjorande@quicinc.com>
+ <e4592feb-3878-b0eb-61e4-fb6dfc358e1a@quicinc.com>
+ <20230731231014.GI1428172@hu-bjorande-lv.qualcomm.com>
+From:   Chris Lew <quic_clew@quicinc.com>
+In-Reply-To: <20230731231014.GI1428172@hu-bjorande-lv.qualcomm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: gtdIssoZJu70iXyKmnIHOTRi2T8Zb4Oc
+X-Proofpoint-GUID: gtdIssoZJu70iXyKmnIHOTRi2T8Zb4Oc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-31_16,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ spamscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307310215
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
 
-Thanks for reviewing,
 
-On Mon, Jul 31, 2023 at 3:02=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
->
->
->
-> On 7/31/23 10:46, David Dai wrote:
-> > diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-> > index f429b9b37b76..3977ca796747 100644
-> > --- a/drivers/cpufreq/Kconfig
-> > +++ b/drivers/cpufreq/Kconfig
-> > @@ -217,6 +217,21 @@ config CPUFREQ_DT
-> >
-> >         If in doubt, say N.
-> >
-> > +config CPUFREQ_VIRT
-> > +        tristate "Virtual cpufreq driver"
-> > +     depends on OF
-> > +     select PM_OPP
-> > +        help
->
-> The 4 lines above should be indented with one tab (not 8 spaces).
+On 7/31/2023 4:10 PM, Bjorn Andersson wrote:
+> On Mon, Jul 31, 2023 at 02:29:44PM -0700, Chris Lew wrote:
+>>
+>>
+>> On 7/30/2023 9:10 PM, Bjorn Andersson wrote:
+>>> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
+>>>    	/* The message RAM only implements 32-bit accesses */
+>>>    	__iowrite32_copy(qmp->msgram + qmp->offset + sizeof(u32),
+>>> -			 data, len / sizeof(u32));
+>>> -	writel(len, qmp->msgram + qmp->offset);
+>>> +			 buf, sizeof(buf) / sizeof(u32));
+>>> +	writel(sizeof(buf), qmp->msgram + qmp->offset);
+>>
+>> Looks like we are telling the firmware the packet size will always be
+>> QMP_MSG_LEN?
+>>
+>> This should be ok but might be a problem when debugging. The AOSS firmware
+>> only logs size of the message instead of the full string because of memory
+>> constraints.
+>>
+> 
+> Until now ipa_power_retention() has been passing 36 here, everyone else
+> 64, so it is ok.
+> 
+>> We would normally match the firmware and host logs based on size, but won't
+>> be able to differentiate this way with a fixed size.
+> 
+> I don't mind us changing it to ALIGN(len, 4), but as that would change
+> the current behavior I'd like to do so in a subsequent patch.
+> 
+> Speaking of behavior, is 64 the max message size? We inherited the 64
+> from the initial downstream implementation, but qmp->size is quite a bit
+> bigger.
+> 
 
-Ok.
+The max message size the firmware can handle is 0x64, so 100 bytes, but 
+I haven't seen any messages go above 64 bytes.
 
->
-> > +       This adds a virtualized cpufreq driver for guest kernels that
-> > +       read/writes to a MMIO region for a virtualized cpufreq device t=
-o
->
->           reads/writes to an MMIO region
-
-Will fix these, thanks!
-David
-
->
-> > +       communicate with the host. It sends frequency updates to the ho=
-st
-> > +       which gets used as a hint to schedule vCPU threads and select C=
-PU
-> > +       frequency. If a VM does not support a virtualized FIE such as A=
-MUs,
-> > +       it updates the frequency scaling factor by polling host CPU fre=
-quency
-> > +       to enable accurate Per-Entity Load Tracking for tasks running i=
-n the guest.
-> > +
-> > +       If in doubt, say N.
->
-> --
-> ~Randy
+> Regards,
+> Bjorn
