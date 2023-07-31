@@ -2,50 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 315E8768ED7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34F5768ED6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231586AbjGaHcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        id S231625AbjGaHcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:32:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231473AbjGaHbf (ORCPT
+        with ESMTP id S231481AbjGaHbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Jul 2023 03:31:35 -0400
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D474EDC;
-        Mon, 31 Jul 2023 00:30:37 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VoaPEop_1690788632;
-Received: from 30.240.113.95(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VoaPEop_1690788632)
-          by smtp.aliyun-inc.com;
-          Mon, 31 Jul 2023 15:30:34 +0800
-Message-ID: <375a0706-b76e-e8a8-cdac-ed628af6643c@linux.alibaba.com>
-Date:   Mon, 31 Jul 2023 15:30:31 +0800
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2669610C;
+        Mon, 31 Jul 2023 00:30:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B872760F07;
+        Mon, 31 Jul 2023 07:30:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BE2DC433C7;
+        Mon, 31 Jul 2023 07:30:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690788639;
+        bh=ZxqLQEDqyrTI+b7ozLCG2peyd8pHZudlPd6y62zwtWQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=hpZUtMBGR106BHm0aj2xR7/CzYRk5wdguE7xIfK2kjju17dMC1Ve8PY4G1GNYkn8P
+         2LV0DgD+0uZ2JB2OfOKjP2TNXSwEacmeNU3iq2kQ+BM124AGnkMCwl8LK9dVJYNTbC
+         eFZeK+jAz/1F9dBubKz5HaIaUNZyIsrk24FSMnmUWFXms6R1GFjXeVNp/oo5KiJ3di
+         U3q5sCGsPnRGezK13vAsoxDPYLDL5D05+ljYET+h3qXjCOkCteT/bH7ZnIA/brGmOm
+         pqUNLdUbGklzV2bIIs7RMX7T6iRZx6uu6BEa2Kx/6E0Ss/2t35rnt8vNq0+atuBnuJ
+         dnNS988aIFc4A==
+From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To:     linux-trace-kernel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        mhiramat@kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a struct/union
+Date:   Mon, 31 Jul 2023 16:30:34 +0900
+Message-Id: <169078863449.173706.2322042687021909241.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <169078860386.173706.3091034523220945605.stgit@devnote2>
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.1
-Subject: Re: [PATCH v6 0/4] drivers/perf: add Synopsys DesignWare PCIe PMU
- driver support
-Content-Language: en-US
-To:     Will Deacon <will@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
-        yangyicong@huawei.com, baolin.wang@linux.alibaba.com,
-        robin.murphy@arm.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com
-References: <20230725205955.GA665326@bhelgaas>
- <634f4762-cf2e-4535-f369-4032d65093f0@linux.alibaba.com>
- <20230728133926.GC21394@willie-the-truck>
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <20230728133926.GC21394@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,73 +59,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
+Add btf_find_struct_member() API to search a member of a given data structure
+or union from the member's name.
 
-On 2023/7/28 21:39, Will Deacon wrote:
-> On Thu, Jul 27, 2023 at 11:45:22AM +0800, Shuai Xue wrote:
->>
->>
->> On 2023/7/26 04:59, Bjorn Helgaas wrote:
->>> On Mon, Jul 24, 2023 at 10:18:07AM +0100, Jonathan Cameron wrote:
->>>> On Mon, 24 Jul 2023 10:34:08 +0800
->>>> Shuai Xue <xueshuai@linux.alibaba.com> wrote:
->>>>> On 2023/7/10 20:04, Shuai Xue wrote:
->>>>>> On 2023/6/16 16:39, Shuai Xue wrote:  
->>>>>>> On 2023/6/6 15:49, Shuai Xue wrote:  
->>>
->>>>>>>> This patchset adds the PCIe Performance Monitoring Unit (PMU) driver support
->>>>>>>> for T-Head Yitian 710 SoC chip. Yitian 710 is based on the Synopsys PCI Express
->>>>>>>> Core controller IP which provides statistics feature.
->>>
->>>> ...
->>>> Really a question for Bjorn I think, but here is my 2 cents...
->>>>
->>>> The problem here is that we need to do that fundamental redesign of the
->>>> way the PCI ports drivers work.  I'm not sure there is a path to merging
->>>> this until that is done.  The bigger problem is that I'm not sure anyone
->>>> is actively looking at that yet.  I'd like to look at this (as I have
->>>> the same problem for some other drivers), but it is behind various
->>>> other things on my todo list.
->>>>
->>>> Bjorn might be persuaded on a temporary solution, but that would come
->>>> with some maintenance problems, particularly when we try to do it
->>>> 'right' in the future.  Maybe adding another service driver would be
->>>> a stop gap as long as we know we won't keep doing so for ever. Not sure.
->>>
->>> I think the question here is around the for_each_pci_dev() in
->>> __dwc_pcie_pmu_probe()?  I don't *like* that because of the
->>> assumptions it breaks (autoload doesn't work, hotplug doesn't work),
->>> but:
->>>
->>>   - There are several other drivers that also do this,
->>>   - I don't have a better suggest for any of them,
->>>   - It's not a drivers/pci thing, so not really up to me anyway,
->>>
->>> so I don't have any problem with this being merged as-is, as long as
->>> you can live with the limitations.
->>>
->>> I don't think this series does anything to work around those
->>> limitations, i.e., it doesn't make up fake device IDs for module
->>> loading or fake events for hotplug, so it seems like we could improve
->>> the implementation later if we ever have a way to do it.
->>>
->>> Bjorn
->>
->> + Will
->>
->> Ok, thank you for confirmation, Bjorn. Then it comes to perf driver parts and
->> it is really a question for @Will I think.
->>
->> What's your opinion about merging this patch set, @Will?
-> 
-> No fundamental objection from me, but I'll have a closer look when you
-> post a version addressing the feedback from Jonathan and Yicong.
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ Changes in v3:
+  - Remove simple input check.
+  - Fix unneeded IS_ERR_OR_NULL() check for btf_type_by_id().
+  - Move the code next to btf_get_func_param().
+  - Use for_each_member() macro instead of for-loop.
+  - Use btf_type_skip_modifiers() instead of btf_type_by_id().
+ Changes in v4:
+  - Use a stack for searching in anonymous members instead of nested call.
+---
+ include/linux/btf.h |    3 +++
+ kernel/bpf/btf.c    |   40 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 43 insertions(+)
 
-Thanks for your input! I appreciate that you don't have any fundamental objections
-to merging the patch set. I'll definitely take into account the feedback from Jonathan
-and Yicong before posting a revised version.
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index 20e3a07eef8f..4b10d57ceee0 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -226,6 +226,9 @@ const struct btf_type *btf_find_func_proto(const char *func_name,
+ 					   struct btf **btf_p);
+ const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
+ 					   s32 *nr);
++const struct btf_member *btf_find_struct_member(struct btf *btf,
++						const struct btf_type *type,
++						const char *member_name);
+ 
+ #define for_each_member(i, struct_type, member)			\
+ 	for (i = 0, member = btf_type_member(struct_type);	\
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index f7b25c615269..8d81a4ffa67b 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -958,6 +958,46 @@ const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s3
+ 		return NULL;
+ }
+ 
++#define BTF_ANON_STACK_MAX	16
++
++/*
++ * Find a member of data structure/union by name and return it.
++ * Return NULL if not found, or -EINVAL if parameter is invalid.
++ */
++const struct btf_member *btf_find_struct_member(struct btf *btf,
++						const struct btf_type *type,
++						const char *member_name)
++{
++	const struct btf_type *anon_stack[BTF_ANON_STACK_MAX];
++	const struct btf_member *member;
++	const char *name;
++	int i, top = 0;
++
++retry:
++	if (!btf_type_is_struct(type))
++		return ERR_PTR(-EINVAL);
++
++	for_each_member(i, type, member) {
++		if (!member->name_off) {
++			/* Anonymous union/struct: push it for later use */
++			type = btf_type_skip_modifiers(btf, member->type, NULL);
++			if (type && top < BTF_ANON_STACK_MAX)
++				anon_stack[top++] = type;
++		} else {
++			name = btf_name_by_offset(btf, member->name_off);
++			if (name && !strcmp(member_name, name))
++				return member;
++		}
++	}
++	if (top > 0) {
++		/* Pop from the anonymous stack and retry */
++		type = anon_stack[--top];
++		goto retry;
++	}
++
++	return NULL;
++}
++
+ #define BTF_SHOW_MAX_ITER	10
+ 
+ #define BTF_KIND_BIT(kind)	(1ULL << kind)
 
-
-Best Regards,
-Cheers.
-Shuai
