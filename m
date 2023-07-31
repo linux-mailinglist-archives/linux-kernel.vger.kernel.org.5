@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 777A2768AE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 06:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A22768AE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 07:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjGaE7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 00:59:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
+        id S229744AbjGaFEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 01:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjGaE7e (ORCPT
+        with ESMTP id S229379AbjGaFEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 00:59:34 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57066199
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 21:59:32 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9923833737eso594946566b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 21:59:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1690779571; x=1691384371;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qrkIJKgEcmeXoLAMKXgkeWr+wYG1LbeUQ4DUDd8TYUQ=;
-        b=H92v2l8E1+qkgukj/ixKmKteN7oXuA7+mZgNN2l5FDV8Js/JFNl6fMIzlXzkDhngrs
-         l5Njlm5XevTNBR5R1+8YTV8fr64E3+QHyDLCIJ5XWGKCkk8rLWFeod2LFukGz2V6KgAn
-         orW3hXo7HBl/TJzR52YbVUlEMmGbOz2cTOzMfJRTJRgMCNrmphNc//3Gb6MOyOi5wh3V
-         LStUiCASK5LhYzfLBWETFgCtiuBDDUk08Xda/Slx0gTveWrkT8OVlgYFbdAyhLTMwGYW
-         EiC+0vaB7Tcwmb8mZKfr8DwuNK7nRPxD7q0rrp6oKsjjtSBK1yKxbIRsHoJzbCkCHSCH
-         JUew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690779571; x=1691384371;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qrkIJKgEcmeXoLAMKXgkeWr+wYG1LbeUQ4DUDd8TYUQ=;
-        b=QtKhl8fdkN3Kt45+BAeIpuJpZbHviIl01tvwWTEeaAnuGg442AeLPYIZXPNwNmrvgi
-         bHZuU0U7/+TQ6ufTVTYpPDjTgT/i8b6DR1sG2IgGCrff1fyfRLx8riTEDo8LCoo/9gg+
-         B2m8pl8qm+98/kI5f4WDUmJbJj1zUNQDeF334DTOD+XhOXgcVWuDbKL0Yt6S4hG6W5yi
-         T7haqDI0bgzL202SgnChMpNXzumYs3tGl2v9Y/6/D7WgjrybxKmQFfOIVZnbsliFu7K7
-         WONOFTI6RMfNyz/dCoGAp9GVlYNw5S47on0lqDJxD3z6gGPrHvdn7L/jSATAHgwX881Z
-         u2cA==
-X-Gm-Message-State: ABy/qLYCaUvXAp/uR47lzZwTTcmi3DE53QHLlzo9M26Wzk94ngN/J/mZ
-        r8/b+MwIuOQlEvEd8Bu9NVIvbzFGqz+lc0A6o5q1uLNR
-X-Google-Smtp-Source: APBJJlGhMvZTNm0GlL8lkhSvFfHj6APHkNyBEpWtPj/xowbLABPG7/cpya4zTqBWZlsgrLTkaUYZXg==
-X-Received: by 2002:a17:906:54:b0:99b:d243:157c with SMTP id 20-20020a170906005400b0099bd243157cmr6320493ejg.31.1690779570675;
-        Sun, 30 Jul 2023 21:59:30 -0700 (PDT)
-Received: from [10.0.2.15] ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id u17-20020a1709060b1100b00992bea2e9d2sm5644603ejg.62.2023.07.30.21.59.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Jul 2023 21:59:30 -0700 (PDT)
-Message-ID: <d41b6bfe-f968-764c-3e3c-a4550c3eee17@tuxon.dev>
-Date:   Mon, 31 Jul 2023 07:59:27 +0300
+        Mon, 31 Jul 2023 01:04:36 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CB51BF;
+        Sun, 30 Jul 2023 22:04:34 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36V4iGxL018972;
+        Mon, 31 Jul 2023 05:04:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=TcMnLnc/KdAeHdH42ftkVYIT3tPuoTwENsJK/nuaSqk=;
+ b=GRf1z0MfbJtNriUXrz4cYj2TAoZANx1ilpD9+hlD0aVCbhvCjsnotgvMWAzyBiGMKCjg
+ pM3pS3yQpE7aNf8DarZ9kV/7Hv+JJ7iMtwf4eDJZN7H6iRwVuf2G+cYKy4WwfepL0Otc
+ TmRcoDXfHaz9qzhtGJhJpAkEcflpv62PsJ9pRj+U0ZHGpbAsBd/xD8bCIXtvEYph7Ehr
+ iT/1xw0Ux8SpwLZaREjYJX+MHI69cE9A0ibLYZoWDy6DLAo2j6mWbNfC8tImU2sVfDlQ
+ +itxwczyf0GB3ZvUbJ3T3i3W+KJXqg1wxdt2yFyxe8f5Y+3Rx0mz+A38pnha0xyPFKXQ Ng== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4uat2n6y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 05:04:30 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36V54TKS031441
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 05:04:29 GMT
+Received: from [10.201.206.238] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 30 Jul
+ 2023 22:04:22 -0700
+Message-ID: <58e66ef8-25ff-9d66-da41-52f686480dc0@quicinc.com>
+Date:   Mon, 31 Jul 2023 10:34:19 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] MAINTAINERS: update Claudiu Beznea's email address
-To:     Conor Dooley <conor@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
-        nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com
-References: <20230714183852.8370-1-claudiu.beznea@tuxon.dev>
- <20230728-hypertext-nullify-50c9f318db85@spud>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [PATCH v4 09/11] remoteproc: qcom: Add Hexagon based multipd
+ rproc driver
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mathieu.poirier@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <quic_eberman@quicinc.com>, <kvalo@kernel.org>,
+        <loic.poulain@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>
+CC:     <quic_srichara@quicinc.com>, <quic_sjaganat@quicinc.com>,
+        <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
+        <quic_varada@quicinc.com>
+References: <20230728063412.1641856-1-quic_mmanikan@quicinc.com>
+ <20230728063412.1641856-10-quic_mmanikan@quicinc.com>
+ <117f6341-55d7-601b-203f-8a09dd4bb22f@linaro.org>
 Content-Language: en-US
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230728-hypertext-nullify-50c9f318db85@spud>
-Content-Type: text/plain; charset=UTF-8
+From:   Manikanta Mylavarapu <quic_mmanikan@quicinc.com>
+In-Reply-To: <117f6341-55d7-601b-203f-8a09dd4bb22f@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ZzqXozlKprTkbGbxntLcEqOIZPGLW9q8
+X-Proofpoint-GUID: ZzqXozlKprTkbGbxntLcEqOIZPGLW9q8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 mlxlogscore=903 suspectscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 impostorscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307310046
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -78,133 +93,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 28.07.2023 18:36, Conor Dooley wrote:
-> Claudiu,
+On 7/28/2023 1:57 PM, Krzysztof Kozlowski wrote:
+> On 28/07/2023 08:34, Manikanta Mylavarapu wrote:
+>> +
+>> +static int q6_get_inbound_irq(struct qcom_q6v5 *q6,
+>> +			      struct platform_device *pdev,
+>> +			      const char *int_name,
+>> +			      int index, int *pirq,
+>> +			      irqreturn_t (*handler)(int irq, void *data))
+>> +{
+>> +	int ret, irq;
+>> +	char *interrupt, *tmp = (char *)int_name;
+>> +	struct q6_wcss *wcss = q6->rproc->priv;
+>> +
+>> +	irq = platform_get_irq(pdev, index);
+>> +	if (irq < 0) {
+>> +		if (irq != -EPROBE_DEFER)
 > 
-> On Fri, Jul 14, 2023 at 09:38:52PM +0300, Claudiu Beznea wrote:
->> Update MAINTAINERS entries with a valid email address as the Microchip
->> one is no longer valid.
+> Still not good... I think I am saying this the third time: drop this
+> eprobe defer dance. It is not needed. Just open the definition of
+> dev_err_probe().
 > 
-> I'm not sure how you want this patch to get to the soc tree (I figure it
-> should grow a cc to the soc maintainer alias & be resent) but in the
-> meantime I applied this directly to at91-next so that at least patches
-> generated against linux-next will arrive in your inbox.
+Yeah, somehow it's missed. I will drop.
 
-Thanks, Conor!
+Thanks & Regards,
+Manikanta.
 
+>> +			return dev_err_probe(&pdev->dev, irq,
+>> +					     "failed to retrieve %s IRQ: %d\n",
+>> +					     int_name, irq);
+>> +	}
+>> +
 > 
-> Thanks,
-> Conor.
 > 
->>
->> Signed-off-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
->> ---
->>  MAINTAINERS | 22 +++++++++++-----------
->>  1 file changed, 11 insertions(+), 11 deletions(-)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 3be1bdfe8ecc..0be71ca1cbb2 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -2337,7 +2337,7 @@ F:	drivers/phy/mediatek/
->>  ARM/MICROCHIP (ARM64) SoC support
->>  M:	Conor Dooley <conor@kernel.org>
->>  M:	Nicolas Ferre <nicolas.ferre@microchip.com>
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>  S:	Supported
->>  T:	git https://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git
->> @@ -2346,7 +2346,7 @@ F:	arch/arm64/boot/dts/microchip/
->>  ARM/Microchip (AT91) SoC support
->>  M:	Nicolas Ferre <nicolas.ferre@microchip.com>
->>  M:	Alexandre Belloni <alexandre.belloni@bootlin.com>
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>  S:	Supported
->>  W:	http://www.linux4sam.org
->> @@ -3248,7 +3248,7 @@ F:	include/uapi/linux/atm*
->>  
->>  ATMEL MACB ETHERNET DRIVER
->>  M:	Nicolas Ferre <nicolas.ferre@microchip.com>
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  S:	Supported
->>  F:	drivers/net/ethernet/cadence/
->>  
->> @@ -13778,7 +13778,7 @@ F:	Documentation/devicetree/bindings/serial/atmel,at91-usart.yaml
->>  F:	drivers/spi/spi-at91-usart.c
->>  
->>  MICROCHIP AUDIO ASOC DRIVERS
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
->>  S:	Supported
->>  F:	Documentation/devicetree/bindings/sound/atmel*
->> @@ -13801,7 +13801,7 @@ S:	Maintained
->>  F:	drivers/crypto/atmel-ecc.*
->>  
->>  MICROCHIP EIC DRIVER
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>  S:	Supported
->>  F:	Documentation/devicetree/bindings/interrupt-controller/microchip,sama7g5-eic.yaml
->> @@ -13874,7 +13874,7 @@ F:	drivers/video/fbdev/atmel_lcdfb.c
->>  F:	include/video/atmel_lcdc.h
->>  
->>  MICROCHIP MCP16502 PMIC DRIVER
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>  S:	Supported
->>  F:	Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
->> @@ -13901,7 +13901,7 @@ F:	Documentation/devicetree/bindings/mtd/atmel-nand.txt
->>  F:	drivers/mtd/nand/raw/atmel/*
->>  
->>  MICROCHIP OTPC DRIVER
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>  S:	Supported
->>  F:	Documentation/devicetree/bindings/nvmem/microchip,sama7g5-otpc.yaml
->> @@ -13940,7 +13940,7 @@ F:	Documentation/devicetree/bindings/fpga/microchip,mpf-spi-fpga-mgr.yaml
->>  F:	drivers/fpga/microchip-spi.c
->>  
->>  MICROCHIP PWM DRIVER
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>  L:	linux-pwm@vger.kernel.org
->>  S:	Supported
->> @@ -13956,7 +13956,7 @@ F:	drivers/iio/adc/at91-sama5d2_adc.c
->>  F:	include/dt-bindings/iio/adc/at91-sama5d2_adc.h
->>  
->>  MICROCHIP SAMA5D2-COMPATIBLE SHUTDOWN CONTROLLER
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  S:	Supported
->>  F:	Documentation/devicetree/bindings/power/reset/atmel,sama5d2-shdwc.yaml
->>  F:	drivers/power/reset/at91-sama5d2_shdwc.c
->> @@ -13973,7 +13973,7 @@ S:	Supported
->>  F:	drivers/spi/spi-atmel.*
->>  
->>  MICROCHIP SSC DRIVER
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->>  S:	Supported
->>  F:	Documentation/devicetree/bindings/misc/atmel-ssc.txt
->> @@ -14002,7 +14002,7 @@ F:	drivers/usb/gadget/udc/atmel_usba_udc.*
->>  
->>  MICROCHIP WILC1000 WIFI DRIVER
->>  M:	Ajay Singh <ajay.kathat@microchip.com>
->> -M:	Claudiu Beznea <claudiu.beznea@microchip.com>
->> +M:	Claudiu Beznea <claudiu.beznea@tuxon.dev>
->>  L:	linux-wireless@vger.kernel.org
->>  S:	Supported
->>  F:	drivers/net/wireless/microchip/wilc1000/
->> -- 
->> 2.39.2
->>
+> 
+> Best regards,
+> Krzysztof
+> 
