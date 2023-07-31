@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4FF7696AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F022D7696AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbjGaMpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
+        id S232820AbjGaMp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232862AbjGaMpc (ORCPT
+        with ESMTP id S232869AbjGaMpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:45:32 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7624210EA;
-        Mon, 31 Jul 2023 05:45:27 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36VCjHEa110648;
-        Mon, 31 Jul 2023 07:45:17 -0500
+        Mon, 31 Jul 2023 08:45:36 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B7B10EB;
+        Mon, 31 Jul 2023 05:45:28 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36VCjIjX093269;
+        Mon, 31 Jul 2023 07:45:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690807517;
-        bh=Pcz6ABCUyvN0ow/G7gff5cRXMYJaFfXpriXkrpONG2M=;
+        s=ti-com-17Q1; t=1690807519;
+        bh=REWNbZ8SiItHavRu5Xr75liX4rtZu7yd+LUYVSVGB60=;
         h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=NIOdeyNEsts3asU+1/mlG5a6xs+imJ7L7O3otboOUm7GDplJnWDpKDp7yIgvRYcQ9
-         RSC12DM6/qxZR5UQf1LFXHp2TuZPpVjHQVJ4Ql5y7+o3ztluyFiti/BYKBAESPWzpL
-         53NNkErVWjzNeAiFqJZw3A55nDLH64ySQ7ywSEPI=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36VCjHjA021188
+        b=Jy/oOn/dfEp+4XB25I9VVOw/ZDspRfViImY9nchj7RRzrI2u1TeGatHccLgsuzPDQ
+         /5hQAe2jZ4fudL5ukLRc1bhnSlKunrTQKfMfBAvuz37kIkAc1A9BNZespy6HMoXQzg
+         6ayDaG65QRT66Qco21b6bzslm+vVzKHt/FbBgzy8=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36VCjI8Y031525
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 Jul 2023 07:45:17 -0500
-Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 31 Jul 2023 07:45:18 -0500
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 31
- Jul 2023 07:45:17 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ Jul 2023 07:45:18 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 31 Jul 2023 07:45:16 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36VCjGbk053803;
-        Mon, 31 Jul 2023 07:45:16 -0500
+ Frontend Transport; Mon, 31 Jul 2023 07:45:18 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36VCjHxj007902;
+        Mon, 31 Jul 2023 07:45:18 -0500
 From:   Jai Luthra <j-luthra@ti.com>
-Date:   Mon, 31 Jul 2023 18:14:40 +0530
-Subject: [PATCH 3/5] arm64: dts: ti: k3-am62a7-sk: Drop i2c-1 to 100Khz
+Date:   Mon, 31 Jul 2023 18:14:41 +0530
+Subject: [PATCH 4/5] arm64: dts: ti: k3-am62a7-sk: Enable audio on AM62A
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20230731-mcasp_am62a-v1-3-8bd137ffa8f1@ti.com>
+Message-ID: <20230731-mcasp_am62a-v1-4-8bd137ffa8f1@ti.com>
 References: <20230731-mcasp_am62a-v1-0-8bd137ffa8f1@ti.com>
 In-Reply-To: <20230731-mcasp_am62a-v1-0-8bd137ffa8f1@ti.com>
 To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
@@ -58,61 +58,152 @@ To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
         Will Deacon <will@kernel.org>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jai Luthra <j-luthra@ti.com>
+        Jai Luthra <j-luthra@ti.com>,
+        Jayesh Choudhary <j-choudhary@ti.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=959; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=aTOqwZxXdBJogA2nRpSO8Kb+qxM8xYZ25pTWUKPJOR8=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBkx6zYYMwzfaFYgA8QP+a3aNyGfWTL8VdXfwv36
- gqCD/+RKQiJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZMes2AAKCRBD3pH5JJpx
- RQDrEAC5pvCzWw3YO1K2zS5NfpF9tyEZNvtbKZBhfCyr8Ji/FUXPd1qLvKuj3LTjjse2a/AEgjc
- 7fJA0/0nWOXNih/f8fJXHadwgtmDdpxijwBssBiXJJ61gQ+lsn0aWfRzTIy8RwxMr35MSm9YLPF
- PO7iukHXWx+lVj2UKHzUURRVDFIIkufGjGGi9LQrvT1Kr8Zaw3BKNpzNhte4gOaKI2R3IBdc4hr
- /lkdCq4MWO8Dc6u0x2tnfHyEjxJYWCccEfCw3Ns/Sn+MQA+bAgSbtk0jB7vuTO4Dvvu+A1seQwq
- Qu5hB5I8VUMtLnw2Nfz0J0zZD/2gCwwRr/z1mMixKJtYpXVRtd+QNcSsC60SY4v2SFSv2mgy71T
- MSWk1lC90H8tPdI9RgpZ2ihMOf7F2Akr6M6vFNERSTO/MKrGw2VKdSKDjvSpRaFX2knWYUmcYr9
- m/B64bmDmbxxAI+PID0rBTAI7Fy/Y6Q9uK4aFJtzO8Yj6SpSX2Z4MdcuRf/rRzpQ2Pb5LexhM/X
- oRaDMhWb/wuBNkbhOa+apP+21qoWNDD1V6hMwQJ8Tz/oS30hKt21tAzN5uUC1ODnZxM/QLSRae6
- WRGJRZU4X8DoRinNiHNEtlOaL8Kl/1u9vyqLtRsqkGlbw2+bHrcKKXkPenVCZ/PBDAqwrK8k2XK
- NsLFpw10vqMq9SA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3223; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=dG2HlAj0l/1W60yjegoZ/2iv6cKF7jPAMqCN6mCOBY4=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBkx6zZGx5RcQzTMV6Ys4Bf4X3FQDRT0nblAoDK4
+ dvuUodt/KOJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZMes2QAKCRBD3pH5JJpx
+ RYAAEADUIHRRuii1SMVK3yeXk8VTimTs9TFeDAfkMFs7YSPoi21B5/TqqldLW5NYc5u9bUO2kg+
+ Cv1IzmAwIT4BbaAmIdgqp6kEYVenOlN0o/L4nAX5w41XDWb2zbnJgkxuxZO0NALxyG3daDQjwvx
+ 36S5jIwZVq8ob56grsZ2Y8oo0Dt8h1WxaiXn5Gmvr/nU2F+Ajw4uWqzxJxT1Nihin4XDjSdDmVT
+ XmluOBs/lpEPzqQU401rcCZb9rpQbD4HEeg2mhvXZQZiI2JXZRNtxFLwNbeu2SEgZc/jBe0XArN
+ GllPi/JpHrlkhMc1ioKimjLGvUYPYDcZhh2TrCHLtMfM5BDfX+C1d3alG4zIBVXBWygduUqkL2h
+ DSbBepUygYQXtobqTMdeye+q/GeR2blVwrVIo7FdNg/uDtOsz/EqS5ZjOjueqq7rDtT8W/Lg7Ha
+ Azj5rF5OpO6BxAlrc3EEydRs1D8BnRASGxszHUn3XblNM8BBsyx5CvxgtPuw6NQWMSnX1SKYcw4
+ XaP0Z0Q5Yohg8Rg8eHzvTBFqQ404hEPcoXT/aDLFbCUyDRrkf4/XwK2JJgTrT3WjzDbZv+GDqKK
+ 4CXqV/D0advWLb0oQ0DT16gYvVMaVvYmSRd8DnD0rZOSqopqYkXYBm7g3PZxeWuVyVDpOJwZ8jG
+ BBQOJI47/EQgK3g==
 X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
  fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TLV320AIC3106 audio codec is interfaced on the i2c-1 bus. With the
-default rate of 400Khz the i2c register writes fail to sync:
+Add nodes for audio codec and sound card, enable the audio serializer
+(McASP1) under use and update pinmux.
 
-[   36.026387] tlv320aic3x 1-001b: Unable to sync registers 0x16-0x16. -110
-[   38.101130] omap_i2c 20010000.i2c: controller timed out
-
-Dropping the rate to 100Khz fixes the issue.
-
+Link: https://www.ti.com/lit/zip/sprr459
 Signed-off-by: Jai Luthra <j-luthra@ti.com>
+Reviewed-by: Jayesh Choudhary <j-choudhary@ti.com>
 ---
- arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 77 +++++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-index 9d34b8fe4ecb..752c2f640f63 100644
+index 752c2f640f63..5f68d2eefe0f 100644
 --- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
 +++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-@@ -338,7 +338,7 @@ &main_i2c1 {
- 	status = "okay";
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_i2c1_pins_default>;
--	clock-frequency = <400000>;
-+	clock-frequency = <100000>;
+@@ -125,6 +125,41 @@ led-0 {
+ 			default-state = "off";
+ 		};
+ 	};
++
++	tlv320_mclk: clk-0 {
++		#clock-cells = <0>;
++		compatible = "fixed-clock";
++		clock-frequency = <12288000>;
++	};
++
++	codec_audio: sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "AM62Ax-SKEVM";
++		simple-audio-card,widgets =
++			"Headphone",	"Headphone Jack",
++			"Line",		"Line In",
++			"Microphone",	"Microphone Jack";
++		simple-audio-card,routing =
++			"Headphone Jack",	"HPLOUT",
++			"Headphone Jack",	"HPROUT",
++			"LINE1L",		"Line In",
++			"LINE1R",		"Line In",
++			"MIC3R",		"Microphone Jack",
++			"Microphone Jack",	"Mic Bias";
++		simple-audio-card,format = "dsp_b";
++		simple-audio-card,bitclock-master = <&sound_master>;
++		simple-audio-card,frame-master = <&sound_master>;
++		simple-audio-card,bitclock-inversion;
++
++		simple-audio-card,cpu {
++			sound-dai = <&mcasp1>;
++		};
++
++		sound_master: simple-audio-card,codec {
++			sound-dai = <&tlv320aic3106>;
++			clocks = <&tlv320_mclk>;
++		};
++	};
+ };
  
- 	exp1: gpio@22 {
- 		compatible = "ti,tca6424";
+ &mcu_pmx0 {
+@@ -230,6 +265,15 @@ AM62AX_IOPAD(0x130, PIN_INPUT, 0) /* (AB17) RGMII1_TXC */
+ 			AM62AX_IOPAD(0x12c, PIN_INPUT, 0) /* (W16) RGMII1_TX_CTL */
+ 		>;
+ 	};
++
++	main_mcasp1_pins_default: main-mcasp1-pins-default {
++		pinctrl-single,pins = <
++			AM62AX_IOPAD(0x090, PIN_INPUT, 2) /* (L19) GPMC0_BE0n_CLE.MCASP1_ACLKX */
++			AM62AX_IOPAD(0x098, PIN_INPUT, 2) /* (R18) GPMC0_WAIT0.MCASP1_AFSX */
++			AM62AX_IOPAD(0x08c, PIN_OUTPUT, 2) /* (K19) GPMC0_WEn.MCASP1_AXR0 */
++			AM62AX_IOPAD(0x084, PIN_INPUT, 2) /* (L18) GPMC0_ADVn_ALE.MCASP1_AXR2 */
++		>;
++	};
+ };
+ 
+ &mcu_pmx0 {
+@@ -359,6 +403,19 @@ exp1: gpio@22 {
+ 				   "MCASP1_FET_SEL", "UART1_FET_SEL",
+ 				   "PD_I2C_IRQ", "IO_EXP_TEST_LED";
+ 	};
++
++	tlv320aic3106: audio-codec@1b {
++		#sound-dai-cells = <0>;
++		compatible = "ti,tlv320aic3106";
++		reg = <0x1b>;
++		ai3x-micbias-vg = <1>;	/* 2.0V */
++
++		/* Regulators */
++		AVDD-supply = <&vcc_3v3_sys>;
++		IOVDD-supply = <&vcc_3v3_sys>;
++		DRVDD-supply = <&vcc_3v3_sys>;
++		DVDD-supply = <&buck5>;
++	};
+ };
+ 
+ &sdhci1 {
+@@ -434,3 +491,23 @@ cpsw3g_phy0: ethernet-phy@0 {
+ 		ti,min-output-impedance;
+ 	};
+ };
++
++&mcasp1 {
++	status = "okay";
++	#sound-dai-cells = <0>;
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcasp1_pins_default>;
++
++	op-mode = <0>;          /* MCASP_IIS_MODE */
++	tdm-slots = <2>;
++
++	serial-dir = <  /* 0: INACTIVE, 1: TX, 2: RX */
++	       1 0 2 0
++	       0 0 0 0
++	       0 0 0 0
++	       0 0 0 0
++	>;
++	tx-num-evt = <32>;
++	rx-num-evt = <32>;
++};
 
 -- 
 2.41.0
