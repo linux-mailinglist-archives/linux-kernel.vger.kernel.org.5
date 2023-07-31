@@ -2,59 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 061C576953F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D75CD769545
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbjGaLu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:50:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
+        id S232025AbjGaLwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:52:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230363AbjGaLu4 (ORCPT
+        with ESMTP id S230400AbjGaLwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:50:56 -0400
+        Mon, 31 Jul 2023 07:52:14 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369B2F5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:50:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3168A1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:52:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C901E61085
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:50:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE103C433C8;
-        Mon, 31 Jul 2023 11:50:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6015F6108A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:52:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 556C0C433C7;
+        Mon, 31 Jul 2023 11:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690804255;
-        bh=AOWwhYv+t8CDvyhND2LxS4NNrNKJuWikV9QiBFJH92s=;
+        s=k20201202; t=1690804332;
+        bh=/AYjU/vSc3wf9r50UiRvnk6wekIDVhhqPGjM9BKbUvM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uL2XhCM5GgiizRO+1NueJqOprVve9jG9ZNiTVFaZmlT0Q/zpwS7OIGkH1wOpYJzo7
-         qRZ3NRfxvT0zTMbGLyJBm8HEDAzDE1VXzpskPjW9Z6koCwUQOj5yZKHR+1uBw6j1rn
-         mqu+TreQdXB+3DlMYLWHSARGlScVJQ5XQf3CG4lN2fqdQjsYkmtsO0n1jAABoOItNk
-         yTG4BJbMlq8NUZhH6CTPE2kfSEIYlVlVwkzKKeY73KOAAHsw1WyQH8K/e84e2ePbqv
-         RtzsDIHhnQ3Ulw1hrtEaBMOf8RZPDpmzuEN04Y89w3ZWgWgoU4pF2vlmlUFYS+g80n
-         kWNXkGQ/y6fjg==
-Date:   Mon, 31 Jul 2023 12:50:48 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jiaxin Yu <jiaxin.yu@mediatek.com>
-Cc:     andrzej.hajda@intel.com, neil.armstrong@linaro.org,
-        robert.foss@linaro.org, Laurent.pinchart@ideasonboard.com,
-        kuninori.morimoto.gx@renesas.com,
-        angelogioacchino.delregno@collabora.com, nfraprado@collabora.com,
-        chunxu.li@mediatek.com, ajye_huang@compal.corp-partner.google.com,
-        allen-kh.cheng@mediatek.com, dri-devel@lists.freedesktop.org,
-        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [v3 2/3] ASoC: mediatek: mt8186: correct the HDMI widgets
-Message-ID: <25e6ab45-ecad-4bc3-bf4d-983243c939ad@sirena.org.uk>
-References: <20230730180803.22570-1-jiaxin.yu@mediatek.com>
- <20230730180803.22570-3-jiaxin.yu@mediatek.com>
+        b=uOZiL0RyBDUTJLSxZ0mRr+gonZxxr6TOEGZCatCGirdCYF8+tXOl2htserQD1w+mh
+         29XRnZzirppyUvjMarv7AeHmVlBkgu8x/xwDDtD/cjXchBnZ/SCPJ1wLMSoGYoUDII
+         wH8fwU6kDSs1D4INE5cyiL4GFh2saaWdyFF/gurKJGcM6K4rhYB3/ZeJvDLlCiaGF/
+         6edvTP7S41kHDODYBKj6VHG5WqS1KHdwfoCbMzfVMZcOiMjr6wvovZ669HJjlWVTb4
+         wZcCfhzysCfAGvxIoL8SnhPscOvQrwQWGdgSKoAWfxQZH19mOCVCQwdIr0fV3g2Qbw
+         4ECQVtwMgYpKg==
+Date:   Mon, 31 Jul 2023 12:52:07 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Mike Galbraith <efault@gmx.de>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, lstoakes@gmail.com,
+        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
+        ardb@kernel.org
+Subject: Re: arm64: perf test 26 rpi4 oops
+Message-ID: <20230731115207.GB24767@willie-the-truck>
+References: <b39c62d29a431b023e98959578ba87e96af0e030.camel@gmx.de>
+ <20230728141852.GA21718@willie-the-truck>
+ <8c56256399e2e6c41bc574749d6170d5529f24fc.camel@gmx.de>
+ <20230731104340.GA24767@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="m510aG4cVtaJEGRZ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230730180803.22570-3-jiaxin.yu@mediatek.com>
-X-Cookie: Single tasking: Just Say No.
+In-Reply-To: <20230731104340.GA24767@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -65,31 +61,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 31, 2023 at 11:43:40AM +0100, Will Deacon wrote:
+> [+Lorenzo, Kefeng and others]
+> 
+> On Sun, Jul 30, 2023 at 06:09:15PM +0200, Mike Galbraith wrote:
+> > On Fri, 2023-07-28 at 15:18 +0100, Will Deacon wrote:
+> > >
+> > > Looking at this quickly with Mark, the most likely explanation is that
+> > > a bogus kernel address is being passed as the source pointer to
+> > > copy_to_user().
+> > 
+> > 'start' in read_kcore_iter() is bogus a LOT when running perf test 26,
+> > and that back to at least 5.15.  Seems removal of bogon-proofing gave a
+> > toothless old bug teeth, but seemingly only to perf test 26.  Rummaging
+> > around with crash vmlinux /proc/kcore seems to be bogon free anyway.
+> > 
+> > Someone should perhaps take a peek at perf.  Bogons aside, it also
+> > doesn't seem to care deeply about kernel response.  Whether the kernel
+> > oops or I bat 945 bogons aside, it says 'OK'.  That seems a tad odd.
+> 
+> Aha, so I think I triggered the issue you're seeing under QEMU (log
+> below). perf (unhelpfully) doesn't have stable test numbers, so it's
+> test 21 in my case. However, it only explodes if I run it as root, since
+> /proc/kcore is 0400 on my system.
+> 
+> The easiest way to trigger the problem is simply:
+> 
+> # objdump -d /proc/kcore
+> 
+> Looking at the history, I wonder whether this is because of a combination
+> of:
+> 
+> e025ab842ec3 ("mm: remove kern_addr_valid() completely")
+> 
+> which removed the kern_addr_valid() check on the basis that kcore used
+> copy_from_kernel_nofault() anyway, and:
+> 
+> 2e1c0170771e ("fs/proc/kcore: avoid bounce buffer for ktext data")
+> 
+> which replaced the copy_from_kernel_nofault() with _copy_to_user().
+> 
+> So with both of those applied, we're missing the address check on arm64.
 
---m510aG4cVtaJEGRZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Digging into this a little more, the fault occurs because kcore is
+treating everything from '_text' to '_end' as KCORE_TEXT and expects it
+to be mapped linearly. However, there's plenty of stuff we _don't_ map
+in that range on arm64 (e.g. .head.text, the pKVM hypervisor, the entry
+trampoline) so kcore is broken.
 
-On Mon, Jul 31, 2023 at 02:08:02AM +0800, Jiaxin Yu wrote:
+One hack is to limit KCORE_TEXT to actually point at the kernel text
+(see below), but this is a user-visible change in behaviour for things
+like .data so I think it would be better to restore the old behaviour
+of handling the faults.
 
-> Use SND_SOC_DAPM_LINE instead of SND_SOC_DAPM_OUTPUT to trigger
-> DAPM events to hdmi-codec when userspace control the DPAM pin.
+Lorenzo?
 
-Why?
+Will
 
---m510aG4cVtaJEGRZ
-Content-Type: application/pgp-signature; name="signature.asc"
+--->8
 
------BEGIN PGP SIGNATURE-----
+diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+index 9cb32e1a78a0..3696a209c1ec 100644
+--- a/fs/proc/kcore.c
++++ b/fs/proc/kcore.c
+@@ -635,7 +635,7 @@ static struct kcore_list kcore_text;
+  */
+ static void __init proc_kcore_text_init(void)
+ {
+-       kclist_add(&kcore_text, _text, _end - _text, KCORE_TEXT);
++       kclist_add(&kcore_text, _stext, _etext - _stext, KCORE_TEXT);
+ }
+ #else
+ static void __init proc_kcore_text_init(void)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTHoBcACgkQJNaLcl1U
-h9DXVgf9HxthKv6tquZ80eqHswbBmda73YJgF+PneFtfjX5EUD8siEFTvhlHJOPb
-itkNuLs0xwuvU/ocou1TJ3JVkd4SlhXF2AQUB2MKqUJlOMYiEthVhAj2RWNMEMWb
-M6hNPAHydcz2O6rmMD0wknYpUUHLE+1Xv3EXeMZEKYLh8qZlrfstrqI1s/fhuQaJ
-TmQTCMTZ8AmSRgZ9ENPYon30oN6/7qeEvKbyW+PnOTCqSv/Zhz1pOVf21YoY2nhO
-94QnTgSNXrSZINA/rfNDUwEvG2W/OY4N/hb+gKf6qbraNOVxbw1o//Cc2tfTTWlL
-P2wCPNxJJXNDAizWmcN9zeH3ZZ4Iqg==
-=H16t
------END PGP SIGNATURE-----
-
---m510aG4cVtaJEGRZ--
