@@ -2,169 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED8376A324
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B5476A327
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbjGaVm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
+        id S231341AbjGaVnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbjGaVmU (ORCPT
+        with ESMTP id S231599AbjGaVnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:42:20 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ECBD8
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:42:19 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bbbc4ae328so38341525ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:42:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690839739; x=1691444539;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AU1Eyv4/z0dADLWEV1nEcRpLxJELbihGWkSyugO3ex8=;
-        b=zHV044O9XwNQjgOLB3AfcpUidtjFsHSm7411oU0FzT/hBIi1OVCl2irlR0nDqKL8Cv
-         hr4KfnJvAQ8KZYVTxOCRf7feP1xd884smGeXDTwo1Mxw39juIFwqargVifxiYkX3oNFO
-         jGZAeL3BraA/GHqzFzm8zichi53qOSusN9afNCtFEmHZFTDQ5+1SlvbReoCXw9xfn3Sq
-         Nxy3SDA+osZfzK8FprhkAlPfPKaV+dJMo4N5DxnhbU6aEOE2yJsGxe0D1EjnOIUEkic5
-         iFCs47k5rbIbFAbkVkjH6/FwH8n0Jz0vylbUDue6VIQodFOLNkamKR23aV4KPT1WaTb8
-         1QIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690839739; x=1691444539;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=AU1Eyv4/z0dADLWEV1nEcRpLxJELbihGWkSyugO3ex8=;
-        b=YdbmcadNu6AtkaIsbUQeGeYUkPyC5z1sGV3UY4dPx7FvQ0vmmXTjhgYIU+KpwieDY8
-         z5xuKhRWnEN0rRwl+Pxy4MlC85vB3gmYWeQu+HiBB5+13x2s0Kk8SUZVV6YKJ6yz1bF0
-         r6kDkn/f/KwB2Ds/FEhslXTafFy4g9i94wj4hTDmxRPF4ldjIeuz8i99YWHkWCQVwtOo
-         nytikgxhGx8Lfscqi0SO58RisHBymZecxJ95u067Sw20Dr4mzdO1cXsN2UF1okyiEkpP
-         SBQiFoh56FPJ8I9iWOeDURW2nuQAHsIvPLbt+riANyQi3lkDHtiCU/2rOZtZhvjDM6VE
-         HiWg==
-X-Gm-Message-State: ABy/qLbhH/gpkR9LT3qSgekvHssVBcbMl8u10TLofgLDSdck2kVGPWNu
-        3ArXKbhrioFiardcZVc7F7keV6sGieY=
-X-Google-Smtp-Source: APBJJlGvM6eC2793heXvfSouAIwfR2kqtZard40LOvURGFRGLCXd0Mte19jhWawRDx9GHaLxbY3CRW2x+Q4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:dac4:b0:1bb:91c9:d334 with SMTP id
- q4-20020a170902dac400b001bb91c9d334mr42299plx.0.1690839739050; Mon, 31 Jul
- 2023 14:42:19 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 14:42:17 -0700
-In-Reply-To: <CAJHc60wtc2Usei3hKj1ykVRvBZFFCBOHMi9HCxnNvGK2dPFApA@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-2-rananta@google.com>
- <87v8e5r6s6.wl-maz@kernel.org> <CAJHc60wtc2Usei3hKj1ykVRvBZFFCBOHMi9HCxnNvGK2dPFApA@mail.gmail.com>
-Message-ID: <ZMgqueePlmKvgUId@google.com>
-Subject: Re: [PATCH v7 01/12] KVM: Rename kvm_arch_flush_remote_tlb() to kvm_arch_flush_remote_tlbs()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
-        "Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?=" <philmd@linaro.org>,
-        Shaoqin Huang <shahuang@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 17:43:07 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0202C1B6;
+        Mon, 31 Jul 2023 14:42:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 872BF612F1;
+        Mon, 31 Jul 2023 21:42:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8826C433C8;
+        Mon, 31 Jul 2023 21:42:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690839772;
+        bh=7Pgr19ArQ0gDdQeiSh5sHbgpFbT91RPMzKTA2NuuCrA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=JZn7lY+LJnLklKMLsiGUt1k0YITiexxtrKluHQzcusotorCb/dBpHyfAO55P1QGNN
+         L4tvkqXsF/kvyElNQ+Z+w98p6gU0wnITEZ3v6mTnHrH623XfEhUR1QFTa4qcqHcvVu
+         sAEDH/Bw+OzfCd9KnJwI17ueNituUBsr54bMwAF37coNid3B/IJOKuYhfbG3mA8ATg
+         1Xb+Q1LlCKJHVm6cBUwFRWDeX/gN0b0/SgCn7f1pq2HAX2Z6Mm7Rt4HuhNSz7JO/0Q
+         JkfC75C3SPxxyj/GoRN1INRV85jSRH54eK1T8p6hwsHL3u4qf4gQqO/TDxuVXFNBPA
+         WFU9f0UqtIVbw==
+Date:   Mon, 31 Jul 2023 16:42:51 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Igor Mammedov <imammedo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, terraluna977@gmail.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org, mst@redhat.com,
+        rafael@kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH 1/1] PCI: acpiphp:: use
+ pci_assign_unassigned_bridge_resources() only if bus->self not NULL
+Message-ID: <20230731214251.GA25106@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731144418.1d9c2baf@imammedo.users.ipa.redhat.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023, Raghavendra Rao Ananta wrote:
-> On Thu, Jul 27, 2023 at 3:24=E2=80=AFAM Marc Zyngier <maz@kernel.org> wro=
-te:
-> >
-> > On Sat, 22 Jul 2023 03:22:40 +0100,
-> > Raghavendra Rao Ananta <rananta@google.com> wrote:
-> > >
-> > > From: David Matlack <dmatlack@google.com>
-> > >
-> > > Rename kvm_arch_flush_remote_tlb() and the associated macro
-> > > __KVM_HAVE_ARCH_FLUSH_REMOTE_TLB to kvm_arch_flush_remote_tlbs() and
-> > > __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS respectively.
-> > >
-> > > Making the name plural matches kvm_flush_remote_tlbs() and makes it m=
-ore
-> > > clear that this function can affect more than one remote TLB.
-> > >
-> > > No functional change intended.
-> > >
-> > > Signed-off-by: David Matlack <dmatlack@google.com>
-> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > > Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > > Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
-> > > Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> > > ---
-> > >  arch/mips/include/asm/kvm_host.h | 4 ++--
-> > >  arch/mips/kvm/mips.c             | 2 +-
-> > >  arch/x86/include/asm/kvm_host.h  | 4 ++--
-> > >  include/linux/kvm_host.h         | 4 ++--
-> > >  virt/kvm/kvm_main.c              | 2 +-
-> > >  5 files changed, 8 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm=
-/kvm_host.h
-> > > index 04cedf9f8811..9b0ad8f3bf32 100644
-> > > --- a/arch/mips/include/asm/kvm_host.h
-> > > +++ b/arch/mips/include/asm/kvm_host.h
-> > > @@ -896,7 +896,7 @@ static inline void kvm_arch_sched_in(struct kvm_v=
-cpu *vcpu, int cpu) {}
-> > >  static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
-> > >  static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {=
-}
-> > >
-> > > -#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLB
-> > > -int kvm_arch_flush_remote_tlb(struct kvm *kvm);
-> > > +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
-> > > +int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
-> >
-> > How about making this prototype global? I don't see a point in having
-> > it per-architecture, specially as you are adding arm64 to that mix in
-> > the following patch.
-> >
-> We can make it global, but I'm not sure what was the intention of the
-> original author. My guess is that he was following the same style that
-> we have for some of the other kvm_arch_*() functions
-> (kvm_arch_free_vm() for example)?
+On Mon, Jul 31, 2023 at 02:44:18PM +0200, Igor Mammedov wrote:
+> On Sat, 29 Jul 2023 16:50:09 -0500 Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Fri, Jul 28, 2023 at 11:32:16AM +0200, Igor Mammedov wrote:
+> > > On Thu, 27 Jul 2023 12:41:02 -0500 Bjorn Helgaas <helgaas@kernel.org> wrote:  
+> > > > On Wed, Jul 26, 2023 at 02:35:18PM +0200, Igor Mammedov wrote:  
+> > > > > Commit [1] switched acpiphp hotplug to use
+> > > > >    pci_assign_unassigned_bridge_resources()
+> > > > > which depends on bridge being available, however in some cases
+> > > > > when acpiphp is in use, enable_slot() can get a slot without
+> > > > > bridge associated.
+> > > > >   1. legitimate case of hotplug on root bus
+> > > > >       (likely not exiting on real hw, but widely used in virt world)
+> > > > >   2. broken firmware, that sends 'Bus check' events to non
+> > > > >      existing root ports (Dell Inspiron 7352/0W6WV0), which somehow
+> > > > >      endup at acpiphp:enable_slot(..., bridge = 0) and with bus
+> > > > >      without bridge assigned to it.    
 
-Heh, KVM has a *lot* of code that was written with questionable style.  I a=
-gree
-with Marc, I can't think of a single reason not to have the definition in c=
-ommon
-code.  Declaring the function doesn't preclude a "static inline" implementa=
-tion,
-and we could even keep the prototype under an #ifdef, e.g.=20
+> > >   2: last round of logs with debug patch /before 40613da5, with 40613da5, and after/
+> > >       https://lore.kernel.org/r/46437825-3bd0-2f8a-12d8-98a2b54d7c22@gmail.com/
+> > > 
+> > > here dmesg shows 1st correct port
+> > >  ACPI: \_SB_.PCI0.RP03: acpiphp_glue: Bus check in hotplug_event(): bridge: 000000000dad0b34
+> > > and then later on
+> > >  ACPI: \_SB_.PCI0.RP07: acpiphp_glue: Bus check in hotplug_event(): bridge: 0000000000000000
+> > >  ACPI: \_SB_.PCI0.RP08: acpiphp_glue: Bus check in hotplug_event(): bridge: 0000000000000000
+> > > which aren't recognized as bridge  
+> > 
+> > Thanks, that does seem a little suspect.  ACPI r6.5 sec 5.6.6 says
+> > that when OSPM handles a Bus Check, it should "perform a Plug and Play
+> > re-enumeration operation on the device tree starting from the point
+> > where it has been notified."
+> > 
+> > PCI devices are enumerated by doing PCI config reads.  It would make
+> > sense to re-enumerate a PCI hierarchy starting with a PCI device
+> > that's already known to the OS, e.g., by scanning the secondary bus of
+> > a PCI-to-PCI bridge.
+> > 
+> > I think there are two problems here:
+> > 
+> >   1) The platform shouldn't send a Bus Check notification to a PCI
+> >      device that doesn't exist.  How could the OS re-enumerate
+> >      starting there?
+> 
+> in case of reported laptop, DSDT provides Device Descriptors
+> for not existing root-ports.
+> 
+> OSPM can't do anything with it but to pass Notify event to
+> PCI bus-specific enumeration mechanism, and it's upto PCI subsystem
+> to discard/ignore Notify() on this ACPI node.
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 9d3ac7720da9..5ac64f933547 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1484,6 +1484,8 @@ static inline int kvm_arch_flush_remote_tlb(struct kv=
-m *kvm)
- {
-        return -ENOTSUPP;
- }
-+#else
-+int kvm_arch_flush_remote_tlb(struct kvm *kvm);
- #endif
-=20
- #ifdef __KVM_HAVE_ARCH_NONCOHERENT_DMA
+That seems backwards to me, but we have a fair bit of ACPI and PCI
+stuff that's backwards.
 
+> >   2) Linux runs acpiphp_hotplug_notify() for Bus Checks to
+> >      non-existent PCI devices when it ignore them; reasoning below.
+> > 
+> > We call acpiphp_enumerate_slots() in this path, which happens before
+> > any of the PCI devices on the root bus have been enumerated:
+> > 
+> >   pci_register_host_bridge
+> >     pcibios_add_bus(root bus)
+> >       acpi_pci_add_bus
+> >         acpiphp_enumerate_slots(pci_bus *bus)
+> >           acpi_walk_namespace(acpiphp_add_context)
+> >             acpiphp_add_context(struct acpiphp_bridge *)
+> >               acpi_evaluate_integer("_ADR")
+> >               acpiphp_init_context
+> >                 context->hp.notify = acpiphp_hotplug_notify
+> > 
+> > So now we've already looked at RP03, RP07, and RP08, and set up the
+> > .notify() handler for all of them.  Since we haven't scanned the bus
+> > yet, we don't know that RP03 exists and RP07 and RP08 do not.
+> 
+> While ACPI doesn't forbid firmware to describe non-existing RP,
+> the PCIe hostbridge can't hotplug extra root ports. (and QEMU
+> follows PCIe design in this respect on 'q35' machine).
+> 
+> However when it comes to hotplug on QEMU's 'pc' machine
+> (hotplug on root bus), each slot has "Augmented Device
+> Descriptors", that includes un-populated slots leading to
+> the presence of .notify() handler on such slots.
+> 
+> Then later on when device is hotplugged, a Notify(,1/*DeviceCheck*/)
+> is sent to previously empty slot and from there on PCI subsystem
+> re-enumerates either a single device or a bridge hierarchy
+> (from the parent context).
+> 
+> So I'd assume that we need to have .notify() handler for all slots
+> that are described in DSDT (present and non present).
+
+Just from a "beautiful design" perspective, it seems suboptimal for
+the ACPI device tree to have to include Device objects for all
+possible hot-added devices.
+
+I would expect hot-add to be handled via a Bus Check to the *parent*
+of a new device, so the device tree would only need to describe
+hardware that's present at boot.  That would mean pci_root.c would
+have some .notify() handler, but I don't see anything there.
+
+I don't know if platforms really implement Root Port hot-add (maybe
+qemu?), but if they do, I could believe they might do it via Notify to
+an ACPI Device for a non-present hardware device.  I wouldn't know
+whether that's the intent of the spec, or just a reaction to something
+that happened to work with existing OSes.
+
+> >   $ qemu-system-x86_64 -M pc -m 512M -monitor stdio -cpu host --enable-kvm -kernel arch/x86/boot/bzImage -drive format=raw,file=ubuntu.img -append "root=/dev/sda1"
+> >   (qemu) device_add e1000
+> > 
+> > (For posterity, replacing "-monitor stdio" with "-nographic -monitor
+> > telnet:localhost:7001,server,nowait,nodelay" and adding
+> > "console=ttyS0,115200n8" to the -append made it easier to see the
+> > crash details.)
+> 
+> I've not put extra arguments, because there is a lot of ways
+> one can configure/use monitor/serial options.
+> 
+> But specifying full command line like yours will be useful
+> for anyone who doesn't have any experience with QEMU CLI.
+
+Yep, that's the audience :)  I want to make it as easy as reasonably
+possible for non-qemu experts to repro things.
+
+> > I really wish we didn't have such different resource assignment paths
+> > depending on whether the device is on a root bus or deeper in the
+> > hierarchy.  But we can't fix that now, so this seems like the right
+> > thing.
+> 
+> I've looked at possibility of making 
+>   pci_assign_unassigned_bridge_resources()
+> work without bridge pointer, but it looks not viable as it's
+> a bridge dedicated function which on top of rearranging
+> resources, also disables/reprograms/enables bridge.
+> 
+> If there are ideas how to make it better,
+> I can pick it up and try to implement.
+> 
+> Testing shows that pci_assign_unassigned_bridge_resources()
+> isn't ideal since it releases all resources before reassigning
+> and then if the later fails bridge stays in mis-configured
+> state (attempt to recover results in failing BAR assignment
+> to children devices).
+> It's not issue in case of
+>   root-port -> 1 child device hotplug
+> since root port hadn't any working device[s] behind it.
+> But in case of hotplug into PCI bridge, that leaves
+> pre-existing devices behind the bridge broken (SHPC and acpiphp case).
+
+Yeah, it's a complicated mess.  That's why I didn't think this would
+be a viable fix in the short term.
+
+Bjorn
