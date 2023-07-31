@@ -2,72 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AA6769551
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E93769556
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbjGaLzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53034 "EHLO
+        id S231901AbjGaL4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjGaLzK (ORCPT
+        with ESMTP id S232077AbjGaL4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:55:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39391A3;
-        Mon, 31 Jul 2023 04:55:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 74B796104B;
-        Mon, 31 Jul 2023 11:55:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 018F9C433C8;
-        Mon, 31 Jul 2023 11:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690804507;
-        bh=OiQLH0Ur4QsXIAElfzydLwPQ911lsGirTGBgpfbRwNo=;
-        h=From:Date:Subject:To:Cc:From;
-        b=Gp8L3cIX/YchDpHcrZzplSGCO8NXaBnSbRvUxa3GZznPnFhCRO5PRqKIzdfMcsafl
-         0ssi9FO0gguKNjm0m1avf5B+hwol66ttDYEOKY9MshYsPb+lNhHaTAxniHyAFo+76l
-         U4YZcunUoaFQterr8PMZbezMfOJvRZwelQpd+WU2sa96EkWfZsaMh+gkiRp/pEx7eS
-         dg4ZfQOHvguQz7PY/mV1JwRRRWy1UYxlEq9OBumUz+m0B1i0HGAUG3bfsNIIbqeHkv
-         DeD20tiKBAJGkSVSoDIYGeJ/JGMI0MFdhWzhl/7Sjgug/bHUeiuylQ6s1qVXP2ijtT
-         4U7UbQN4g1eDA==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Mon, 31 Jul 2023 12:55:01 +0100
-Subject: [PATCH RESEND v2] PCI: dwc: Provide deinit callback for i.MX
+        Mon, 31 Jul 2023 07:56:03 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881FBE68;
+        Mon, 31 Jul 2023 04:55:59 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VBdaI6022016;
+        Mon, 31 Jul 2023 11:55:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=qHBp4S0vXvjXdtL9T2yqLOyzOu6JR+RCmAuqtz3oATI=;
+ b=PRL2Py6acpx6CEWblmiyaSymSgQTSspw5jTVmUoT/zaNCgUT34P/T+pVy9UT+M4jFq1d
+ LcIJqj84lO1cS2kmZCwGkj3ZO0GH6VRpISKyR0vgJ2i1A3R3cN0ni5JM0MfkyhGFUAIj
+ 3K1Bj9wrOzVnlC15vzu9+YiOuOUWWPejvduUN+o0EMeIxgYubz2WIXC2W6z+dznXbJaB
+ IEf7NDwVOsnA9RuTVnksVqbItvLZ2XvSOjo+Oyn5JhFeQsAsRZ7I5DWIWQeymii+paUo
+ CmZp6aiHlk5LHyoKCwEH6nooWwwWCDfKVHmz3q7WUJlyAqJRb6snSOtSEpKENsi480+3 +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s6bj11mty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 11:55:33 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36VBeaa3026148;
+        Mon, 31 Jul 2023 11:55:32 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s6bj11msy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 11:55:32 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36VB8GSU015538;
+        Mon, 31 Jul 2023 11:55:31 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s5e3mjt2u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 11:55:30 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36VBtSqK23528166
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Jul 2023 11:55:29 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2BEB20043;
+        Mon, 31 Jul 2023 11:55:28 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 676AB20040;
+        Mon, 31 Jul 2023 11:55:28 +0000 (GMT)
+Received: from [9.144.146.219] (unknown [9.144.146.219])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 31 Jul 2023 11:55:28 +0000 (GMT)
+Message-ID: <c2ac9fce-8967-6b5a-8cc3-ff5de5150a09@linux.ibm.com>
+Date:   Mon, 31 Jul 2023 13:55:28 +0200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 00/10] Introduce SMT level and add PowerPC support
+To:     Thomas Gleixner <tglx@linutronix.de>, linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        dave.hansen@linux.intel.com, mingo@redhat.com, bp@alien8.de,
+        rui.zhang@intel.com
+References: <20230705145143.40545-1-ldufour@linux.ibm.com>
+ <87tttoqxft.ffs@tglx>
+Content-Language: en-US
+From:   Laurent Dufour <ldufour@linux.ibm.com>
+In-Reply-To: <87tttoqxft.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: -WSL2ggfwRiYmP9_bsW-zeZdPnGYqxSI
+X-Proofpoint-GUID: 3GAGWt4nw0RLj7-HH_Q5bFHD7idPBBwp
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230731-pci-imx-regulator-cleanup-v2-1-fc8fa5c9893d@kernel.org>
-To:     Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-099c9
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1930; i=broonie@kernel.org;
- h=from:subject:message-id; bh=OiQLH0Ur4QsXIAElfzydLwPQ911lsGirTGBgpfbRwNo=;
- b=owEBbAGT/pANAwAKASTWi3JdVIfQAcsmYgBkx6EXdxRz1dTT/OShq0p+bzBjHKJQarXXyyX7DZCP
- xpUHn0OJATIEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZMehFwAKCRAk1otyXVSH0Jz6B/
- j7M6pqTOungd9oa6NmOq9Ps6fa/WLCmxbVm2DutkAeWjfVtQm6MWoFNnSceaavenIn8HH/DgjResM0
- nQZ+NlYhtGiHe+c1aN5TNFF9iQD9/CvMXCCdTdLLIOEiiVrhHdrAYbZWg5ehxOK9GfX1kkWjkAufiX
- 2f/PsZtlkEuC2p4EAu6IKnWBVEx2PCLyhVa7jA91NUunHp7N7x75M1K+7FojQN77eVH2H57Tx4XaO2
- ooNhdHd+eD0HuP1DZ4NmtDJaHZcb+JhjzYMO8ONSTDOY686nUxQ0zlHSYmAd4NbRBRADsxpeNUUvY4
- E12cGp1MIDUKg37LH2H6omLcwUOLQ=
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-31_05,2023-07-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 clxscore=1011
+ adultscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307310104
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,51 +97,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX integration for the DesignWare PCI controller has a _host_exit()
-operation which undoes everything that the _host_init() operation does but
-does not wire this up as the host_deinit callback for the core, or call it
-in any path other than suspend. This means that if we ever unwind the
-initial probe of the device, for example because it fails, the regulator
-core complains that the regulators for the device were left enabled:
 
-imx6q-pcie 33800000.pcie: iATU: unroll T, 4 ob, 4 ib, align 64K, limit 16G
-imx6q-pcie 33800000.pcie: Phy link never came up
-imx6q-pcie 33800000.pcie: Phy link never came up
-imx6q-pcie: probe of 33800000.pcie failed with error -110
-------------[ cut here ]------------
-WARNING: CPU: 2 PID: 46 at drivers/regulator/core.c:2396 _regulator_put+0x110/0x128
 
-Wire up the callback so that the core can clean up after itself.
+Le 28/07/2023 à 09:58, Thomas Gleixner a écrit :
+> Laurent, Michael!
+> 
+> On Wed, Jul 05 2023 at 16:51, Laurent Dufour wrote:
+>> I'm taking over the series Michael sent previously [1] which is smartly
+>> reviewing the initial series I sent [2].  This series is addressing the
+>> comments sent by Thomas and me on the Michael's one.
+> 
+> Thanks for getting this into shape.
+> 
+> I've merged it into:
+> 
+>     git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/core
+> 
+> and tagged it at patch 7 for consumption into the powerpc tree, so the
+> powerpc specific changes can be applied there on top:
+> 
+>     git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-core-for-ppc-23-07-28
 
-Reviewed-by: Richard Zhu <hongxing.zhu@nxp.com>
-Tested-by: Fabio Estevam <festevam@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
-Changes in v2:
-- Rebase onto v6.5-rc1.
-- Link to v1: https://lore.kernel.org/r/20230703-pci-imx-regulator-cleanup-v1-1-b6c050ae2bad@kernel.org
----
- drivers/pci/controller/dwc/pci-imx6.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-index 27aaa2a6bf39..a18c20085e94 100644
---- a/drivers/pci/controller/dwc/pci-imx6.c
-+++ b/drivers/pci/controller/dwc/pci-imx6.c
-@@ -1040,6 +1040,7 @@ static void imx6_pcie_host_exit(struct dw_pcie_rp *pp)
- 
- static const struct dw_pcie_host_ops imx6_pcie_host_ops = {
- 	.host_init = imx6_pcie_host_init,
-+	.host_deinit = imx6_pcie_host_exit,
- };
- 
- static const struct dw_pcie_ops dw_pcie_ops = {
-
----
-base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-change-id: 20230703-pci-imx-regulator-cleanup-a17c8fd15ec5
-
-Best regards,
--- 
-Mark Brown <broonie@kernel.org>
-
+Thanks Thomas!
