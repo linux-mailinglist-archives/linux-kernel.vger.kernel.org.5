@@ -2,116 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF32476960D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9DB76960C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbjGaMUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:20:49 -0400
+        id S232424AbjGaMUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:20:37 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232403AbjGaMUg (ORCPT
+        with ESMTP id S231336AbjGaMUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:20:36 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6CA1724
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:20:19 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4f95bf5c493so7073631e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690806017; x=1691410817;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rHNF9IdXEoScQDQd4iXA1YdLLJSZxC/415F/i5Utx2I=;
-        b=pbYr8hnfKrNxskEMiBKtY9WoNxPZdEO6NUf+LFeHvwPAPEOkdiAreUI+6hlhyiaJ2c
-         UBi6TsKJclWbiGCdX0ujIow0StXJofPMFXbxi7dsqcckpBTOwI4kIJ5K13STB+/z/+kh
-         hWrvgDFOADjGY13x9MwNqaqYccyjHFjHQLzwq6sZWZSULiUDRsXM8V+Jfxib/mO/odst
-         hOckbn2l1+mrkXznYH7nIk8lnmUn6rMwpv3fhMBmr71gk3kxWN9wfnEeQqX8EXe/sTcy
-         9G2K/j20ecXAvLZXpv1s++zJN8KDGSJdzzoWrBYH4Et/Rrd0CraS+xDv9etBHGZm8VHL
-         TjnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690806017; x=1691410817;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rHNF9IdXEoScQDQd4iXA1YdLLJSZxC/415F/i5Utx2I=;
-        b=YcPgZeluPQeqFHHaOBg9H4NROnFRGqZcaRX0cITlOBbEaz2Ice0BN579lK7FiGYT2k
-         8B8g2VJim7hOCrtGuPD4iE9U1rirY13P+77bVPuwpsn8hBpIk5X6a+qGgPmRQF7mFrn5
-         VtY+wp7wNeNzRijF4aJVOlkgPd6trtfDbisoqYlb/DGzt8vNkiF5JrPmj738NTXU+7TV
-         sMmZ6GIhu9ntDOBup0ARxdu3NnJY7SHAREmIdf2tdAZMMBKf+BL51v0W/l26vuxFdm1t
-         BX035GWeYcV2TUZRejZ8QhYL550zsTnP3Y8HtdPZlaZfymaxUfwG+ABuSxEHCcHS5+Ii
-         TzNA==
-X-Gm-Message-State: ABy/qLYJLtLBqGCaIOpE2Y+KCGFoK+28qUa2EAsEzy60cJNeOezOfPSE
-        q3/DtWF38yNoOffDkPZ5Ra3AlQ==
-X-Google-Smtp-Source: APBJJlHfTowJT4LROWlOLymbpAVr38gTWPW6Gp01dIw8lSG0zl6H2bPPyZ0IO3yHbijO5RfwOc5g2w==
-X-Received: by 2002:a19:ca03:0:b0:4fb:8771:e898 with SMTP id a3-20020a19ca03000000b004fb8771e898mr4618363lfg.15.1690806017288;
-        Mon, 31 Jul 2023 05:20:17 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id u9-20020a056512040900b004fe11366146sm2079096lfk.51.2023.07.31.05.20.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 05:20:16 -0700 (PDT)
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+        Mon, 31 Jul 2023 08:20:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748C31997
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:20:16 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D89731F460;
+        Mon, 31 Jul 2023 12:20:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690806014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4CAp73pPEUY7P+2mBrNLMuna63aiMRN98+0jGbp+50I=;
+        b=jfcb7Sv5cy0te/8+JH5QKbOK2bpa28olYfdrkq0sLI9XtExLaPY140K38pxjKPVlY8INSu
+        MznqIeKwbpOA7qq0GvIPevLE39lpRZovl3oVd8tl3aJ/p4vfsu9E+NqUpg7kR7YnmwUUmW
+        1SXQuSmgJP25tCUB97+RBPys7wA3NUw=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 83E5C133F7;
+        Mon, 31 Jul 2023 12:20:14 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 5WJzHv6mx2RSFgAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 31 Jul 2023 12:20:14 +0000
+Message-ID: <98d68bd9-fbb9-f084-a99b-48d7b277a413@suse.com>
 Date:   Mon, 31 Jul 2023 14:20:13 +0200
-Subject: [PATCH 2/2] clk: qcom: smd-rpm: Set XO rate and CLK_IS_CRITICAL on
- PCNoC
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230731-topic-pcnoc-v1-2-452dd36d11d7@linaro.org>
-References: <20230731-topic-pcnoc-v1-0-452dd36d11d7@linaro.org>
-In-Reply-To: <20230731-topic-pcnoc-v1-0-452dd36d11d7@linaro.org>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690806013; l=1116;
- i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=+W0uIDuc/JsKDaPo6r8vR/8nsAtUZyS7FUGMmEfo4sQ=;
- b=mjwDmDZetZpVGG08tKYROcePohsp0mFSBaoaPmoS+I42e75UwmMpBAtQaRO1wE4gCVsp35qwu
- +RSHWqkWae7DtQHj3asvZcO0yGj1KBGNZWS3l/6f78yCHljSYvF/9AK
-X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
- pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20230724131206.500814398@linutronix.de>
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [patch V2 00/58] x86/apic: Decrapification and static calls
+In-Reply-To: <20230724131206.500814398@linutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------byrOS0jxfQFNYVntzoFARnej"
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On all supported SoCs to date, the PCNoC (a.k.a CNoC_PERIPH) clock must
-be always-on as long as the APSS is online and only has to run
-at 19.2 MHz. Define it to be as such in the ACTIVE domain.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------byrOS0jxfQFNYVntzoFARnej
+Content-Type: multipart/mixed; boundary="------------IaCw00JmXknyDfp71FZeMdHV";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Wei Liu <wei.liu@kernel.org>, Arjan van de Ven <arjan@linux.intel.com>,
+ Michael Kelley <mikelley@microsoft.com>,
+ Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Message-ID: <98d68bd9-fbb9-f084-a99b-48d7b277a413@suse.com>
+Subject: Re: [patch V2 00/58] x86/apic: Decrapification and static calls
+References: <20230724131206.500814398@linutronix.de>
+In-Reply-To: <20230724131206.500814398@linutronix.de>
 
-Some SoCs use that clock for bus scaling, while others just need it for
-reaching the hardware. This commit will hurt neither.
+--------------IaCw00JmXknyDfp71FZeMdHV
+Content-Type: multipart/mixed; boundary="------------CwfYPtZdvYe0X8VyZcNYUcIK"
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
----
- drivers/clk/qcom/clk-smd-rpm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--------------CwfYPtZdvYe0X8VyZcNYUcIK
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
-index ebb8d9aac89d..0191fc0dd7da 100644
---- a/drivers/clk/qcom/clk-smd-rpm.c
-+++ b/drivers/clk/qcom/clk-smd-rpm.c
-@@ -455,7 +455,7 @@ DEFINE_CLK_SMD_RPM_BRANCH(aggre2_noc, QCOM_SMD_RPM_AGGR_CLK, 2, 1000);
- DEFINE_CLK_SMD_RPM(aggre1_noc, QCOM_SMD_RPM_AGGR_CLK, 1);
- DEFINE_CLK_SMD_RPM(aggre2_noc, QCOM_SMD_RPM_AGGR_CLK, 2);
- 
--DEFINE_CLK_SMD_RPM_BUS(pcnoc, 0);
-+DEFINE_CLK_SMD_RPM_BUS_A(pcnoc, 0, 19200000, CLK_IS_CRITICAL);
- DEFINE_CLK_SMD_RPM_BUS(snoc, 1);
- DEFINE_CLK_SMD_RPM_BUS(sysmmnoc, 2);
- DEFINE_CLK_SMD_RPM_BUS(cnoc, 2);
+T24gMjQuMDcuMjMgMTU6MzMsIFRob21hcyBHbGVpeG5lciB3cm90ZToNCj4gSGkhDQo+IA0K
+PiBUaGlzIGlzIHRoZSBmb2xsb3cgdXAgdG86DQo+IA0KPiAgICBodHRwczovL2xvcmUua2Vy
+bmVsLm9yZy9sa21sLzIwMjMwNzE3MjIzMDQ5LjMyNzg2NTk4MUBsaW51dHJvbml4LmRlDQo+
+IA0KPiB3aGljaCBhZGRyZXNzZXMgdGhlIHJldmlldyBmZWVkYmFjayBhbmQgc29tZSBtaW5v
+ciAwZGF5LXJvYm90IGZhbGxvdXQuDQo+IA0KPiBUTERSOiBUaGlzIGNsZWFucyB1cCBhY2Ny
+dWVkIGFuZCBwYXJ0aWFsbHkgdW51c2VkIGd1bmsgaW4gb3JkZXIgdG8gY29udmVydA0KPiB0
+aGUgQVBJQyBjYWxsYmFja3MgdG8gc3RhdGljIGNhbGxzLg0KPiANCj4gVGhlIGNoYW5nZXMg
+dnMuIFYxOg0KPiANCj4gICAgLSBGaXhlZCB0aGUgbWlub3IgZmFsbG91dCByZXBvcnRlZCBi
+eSBNaWNoYWVsIGFuZCBQZXRlcg0KPiANCj4gICAgLSBNb3BwZWQgdXAgWEVOL1BWIGV2ZW4g
+bW9yZSAtIEp1ZXJnZW4NCj4gDQo+ICAgIC0gRml4ZWQgdXAgYSBwbGFjZSB3aGljaCBzdGls
+bCB3cm90ZSBpbnRvIG1wX2xhcGljX2FkZHIgZGlyZWN0bHkgaW4NCj4gICAgICBtcHBhcnNl
+DQo+IA0KPiAgICAtIEFkZHJlc3NlZCAwZGF5IGZhbGxvdXQgb24gMzJiaXQgd2l0aCBLVk0g
+Z3Vlc3QgZW5hYmxlZCBhbmQgbG9jYWwgQVBJQw0KPiAgICAgIGRpc2FibGVkLiBTaWdoIQ0K
+PiANCj4gVGhlIHNlcmllcyBpcyBhbHNvIGF2YWlsYWJsZSBmcm9tIGdpdDoNCj4gDQo+ICAg
+IGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90Z2x4L2Rl
+dmVsLmdpdCBhcGljLXN0YXRpYy1jYWxsLXYyDQo+IA0KDQpXaXRoIHRoZSBjaGFuZ2VzIHN1
+Z2dlc3RlZCBmb3IgcGF0Y2hlcyAxNiBhbmQgNTAgdGhpcyBzZXJpZXMgc2VlbXMgdG8gd29y
+aw0KZmluZSBmb3IgWGVuIFBWIChkb20wIGFuZCBkb21VKS4NCg0KDQpKdWVyZ2VuDQo=
+--------------CwfYPtZdvYe0X8VyZcNYUcIK
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
--- 
-2.41.0
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------CwfYPtZdvYe0X8VyZcNYUcIK--
+
+--------------IaCw00JmXknyDfp71FZeMdHV--
+
+--------------byrOS0jxfQFNYVntzoFARnej
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTHpv0FAwAAAAAACgkQsN6d1ii/Ey9W
+0Qf/XMWAoAyOj8/TSVBPW/R8OfK6iXvb+yt6WT+B1CeYe6cH9ZEo9Zp5TaeRlFKaFyJkQYt5JNYU
+JF6Fh+s1SWm29nJQrXal2fi3qh8pwbyxm4kY3Wzo7TEQSbCFHyt6Y8mAqqAMCnFnEjnaKxYlXS31
+1yrPK266WGmLRtFtvX7CZersvGfCW1UgOzQ5ot1y5eVICYf+TAqz/2wREggwGPYRKdJziFPq833I
+qrtDefPxbFSfpPG3ujqQVwQzfZJpQ6uXY2Oh9ajkOF86o77dRMe3PvZ58zudN+WhikVuacYwxvKa
+0bBcueAUY3LlmJeUfnveCy1/vY/XB4byp6mgRKnEnw==
+=cj4U
+-----END PGP SIGNATURE-----
+
+--------------byrOS0jxfQFNYVntzoFARnej--
