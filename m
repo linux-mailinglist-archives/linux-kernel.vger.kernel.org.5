@@ -2,69 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 930FF76A272
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B1676A278
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbjGaVIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38520 "EHLO
+        id S231222AbjGaVMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230195AbjGaVIT (ORCPT
+        with ESMTP id S229771AbjGaVMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:08:19 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868AB12B
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:08:15 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-268541d2947so2771441a91.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:08:15 -0700 (PDT)
+        Mon, 31 Jul 2023 17:12:15 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A067B12B;
+        Mon, 31 Jul 2023 14:12:11 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso17827305e9.0;
+        Mon, 31 Jul 2023 14:12:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690837695; x=1691442495;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=IRIxzkj/mYkqmKG6xRHKL20yhyzoztjP/DiaXxaQUwI=;
-        b=knWBLO2AQOj9qzOHTgm9wJ7q7hdFRfoRMP3hLqTefy1ffrpd+gauB6gby/WwkIDbLy
-         vYhJIAZhDgBI3IlAei+VlGC3/uhdMZ2lwHs2SU+C1SaCttK76IWvNol7ICb6yJNQ7eFZ
-         UvBHIuUjP+BdP6/H31vpIxQOYTT0cjs4kv2rQ/KvVcUFJeVeYIH7ZDmWVOcckjNQ6bJt
-         XXpNoucitz1/Pm/CKGAAYuZUv1lSRx3uEHBjM46AeANGFeKTgUwrkaXgpZ3P6KODfNPF
-         nQX3Ki+au+nTPSL0SbBadvlmN3b5fiyK28jHxLREi/9shRYPzLGbE+FfHT1Et6y8VXT9
-         eCrg==
+        d=gmail.com; s=20221208; t=1690837930; x=1691442730;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cvkb1F7VeYbirXxnx/x7mD/WcXLmaxSiQihg0hXEQQg=;
+        b=n6g/Ss/sQPMvbjMnTYF1MCm9NoGwZgq3AjRvB60EV0FmBknxJfICpj44Pem09ppRkq
+         qa4NY/S6KJcLWi7LxkIYsEU4g8rC5AbvkESnrRTLhmqwCwskgG8wHfk4EnCUzxvbM2MV
+         vjjGgiW6tZ2dFXnwyr3vgm6ZVeFQJ/pgYDV5Wa+tBA6mRJ98WL1IOAORLRi6wds8DW6W
+         N4DmL2+PAgJ9HYqR7MsGyIxV4f9u7675wZiWx/crev+xl7+uq5P4mbdsbD5uUs3cSP0b
+         r8RwVS2Qo1oEzDTaV4BOk/2HL+2m9LbZCj3MebBKFb+ya633bL71ddA5H9aLd28l9pQW
+         SFMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690837695; x=1691442495;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IRIxzkj/mYkqmKG6xRHKL20yhyzoztjP/DiaXxaQUwI=;
-        b=RjFGzB4BdBYmuvMTEPKdUkRKxRBskuaWQAgxfXLh+Nm8OTm120j1d72ovvo++BnPcX
-         hUvCXl79xDQgZLm6/M+TMFUAToe+Q5FE+3Vp9YD7deSZxXuHcHPOxOkexcP7HhhplIJQ
-         xg9ihulirfLzUAhLT3cP3M0S3fSBSfo8G85vFeyM1kq5PozKFMivfd+AGuv8yV/o5Qs3
-         thQmZJ+lCz7rL1vTG+X7wkn0Bpj7dT54Oosz9nRdWA017WgXgzNG4CdbisWZZhbMjFtv
-         LH2wDhJbqKVTX/qeaAvXwZ488HeWAcQ7Lw3U2fpIZAd7zq6L4FjNgYDFEczOd9n+adfM
-         DmxQ==
-X-Gm-Message-State: ABy/qLaqzlaPIiPRfyzzTlYGVjBl0dLtwb+6dauRikjdV1bFX5Mym6sk
-        LamI2EjRZnRd/zhI9LjNwQGn4nVZD8ca3nrGta1h7hX2mjM=
-X-Google-Smtp-Source: APBJJlEIhII9e/oCHP7R4mP1dRJJ3sLRcKSn4WIB4nz60mB7jDXICUu0bVjtGozY5aLYGJ3BF0LGVU0tqurEl36Z4Ec=
-X-Received: by 2002:a17:90b:4c0a:b0:268:1745:b61 with SMTP id
- na10-20020a17090b4c0a00b0026817450b61mr8871077pjb.34.1690837694838; Mon, 31
- Jul 2023 14:08:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <b39c62d29a431b023e98959578ba87e96af0e030.camel@gmx.de>
- <20230728141852.GA21718@willie-the-truck> <8c56256399e2e6c41bc574749d6170d5529f24fc.camel@gmx.de>
- <20230731104340.GA24767@willie-the-truck> <20230731115207.GB24767@willie-the-truck>
-In-Reply-To: <20230731115207.GB24767@willie-the-truck>
+        d=1e100.net; s=20221208; t=1690837930; x=1691442730;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cvkb1F7VeYbirXxnx/x7mD/WcXLmaxSiQihg0hXEQQg=;
+        b=BdwBb7Dwjw1eGxspUbV4Gyg6ES/d/7qU866dh67m9nHkQCM/7FLFmzp7ML1UIMTQkn
+         RQMhLUk3yXEDU2cOCVDq8HoSuG8G5uw1nOUbj6v56JMYxMI4W6sLLK+nrsbxwgz57wfJ
+         xitDDcW7AuqaLX7A1g6nsGLGvzZVYlyJo9wwKI2GbVs0VSP8wBHnjxphvI4upBbt2w2x
+         KoP72T3QZK6gzxFRq1ctqnBZ37cH0KKSHI06Bk52KVzBfV+Tty18R7TuPlUMU1Oaxv7b
+         Dg7aGHRaQeyyEnpZnNbipykmMYyoz+pB+crcFD12pHnGDgq1T9DkBw1es9Wkt51IG/wI
+         /zoQ==
+X-Gm-Message-State: ABy/qLZnhUxJuDeCrLYqxp3IrGK3NlQjDQOirNjeaC3QrbiYSqo/Vs0O
+        N2f4vDGlds/cyaD9FPTGHjI=
+X-Google-Smtp-Source: APBJJlFMnVUrPHPp6WA73ZZia48T89g5i5rzrlvGXpGuYDrSD6cjZj2jDc2G7hW1ghXlOExCwxVujA==
+X-Received: by 2002:a1c:741a:0:b0:3fd:29cf:20c5 with SMTP id p26-20020a1c741a000000b003fd29cf20c5mr935074wmc.7.1690837929823;
+        Mon, 31 Jul 2023 14:12:09 -0700 (PDT)
+Received: from localhost ([2a00:23c5:dc8c:8701:8213:500:1aa9:44da])
+        by smtp.gmail.com with ESMTPSA id v25-20020a05600c215900b003fc02a410d0sm14815152wml.48.2023.07.31.14.12.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 14:12:09 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 22:12:08 +0100
 From:   Lorenzo Stoakes <lstoakes@gmail.com>
-Date:   Mon, 31 Jul 2023 22:08:03 +0100
-Message-ID: <CAA5enKaUYehLZGL3abv4rsS7caoUG-pN9wF3R+qek-DGNZufbA@mail.gmail.com>
-Subject: Re: arm64: perf test 26 rpi4 oops
-To:     Will Deacon <will@kernel.org>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
-        ardb@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+To:     Jiri Olsa <olsajiri@gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>, Baoquan He <bhe@redhat.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v8 1/4] fs/proc/kcore: avoid bounce buffer for ktext data
+Message-ID: <ZMgjqJycJFsgvWOD@murray>
+References: <cover.1679566220.git.lstoakes@gmail.com>
+ <fd39b0bfa7edc76d360def7d034baaee71d90158.1679566220.git.lstoakes@gmail.com>
+ <ZHc2fm+9daF6cgCE@krava>
+ <ZLqMtcPXAA8g/4JI@MiWiFi-R3L-srv>
+ <86fd0ccb-f460-651f-8048-1026d905a2d6@redhat.com>
+ <f10f06d4-9c82-41d3-a62a-09c62f254cfc@lucifer.local>
+ <32b8c5e4-c8e3-0244-1b1a-ca33bd44f38a@redhat.com>
+ <b8b05bb6-3d23-4e90-beb0-a256dbc32ef2@lucifer.local>
+ <ZMgazd69Dj6Idy6H@krava>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMgazd69Dj6Idy6H@krava>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,111 +86,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 at 12:52, Will Deacon <will@kernel.org> wrote:
->
-> On Mon, Jul 31, 2023 at 11:43:40AM +0100, Will Deacon wrote:
-> > [+Lorenzo, Kefeng and others]
-> >
-> > On Sun, Jul 30, 2023 at 06:09:15PM +0200, Mike Galbraith wrote:
-> > > On Fri, 2023-07-28 at 15:18 +0100, Will Deacon wrote:
+On Mon, Jul 31, 2023 at 10:34:21PM +0200, Jiri Olsa wrote:
+> On Mon, Jul 31, 2023 at 08:40:24PM +0100, Lorenzo Stoakes wrote:
+> > On Mon, Jul 31, 2023 at 09:24:50PM +0200, David Hildenbrand wrote:
+> > > On 31.07.23 21:21, Lorenzo Stoakes wrote:
+> > > > On Mon, Jul 24, 2023 at 08:23:55AM +0200, David Hildenbrand wrote:
+> > > > > Hi,
+> > > > >
+> > > > > >
+> > > > > > I met this too when I executed below command to trigger a kcore reading.
+> > > > > > I wanted to do a simple testing during system running and got this.
+> > > > > >
+> > > > > >     makedumpfile --mem-usage /proc/kcore
+> > > > > >
+> > > > > > Later I tried your above objdump testing, it corrupted system too.
+> > > > > >
+> > > > >
+> > > > > What do you mean with "corrupted system too" --  did it not only fail to
+> > > > > dump the system, but also actually harmed the system?
+> > > > >
+> > > > > @Lorenzo do you plan on reproduce + fix, or should we consider reverting
+> > > > > that change?
+> > > > >
+> > > > > --
+> > > > > Cheers,
+> > > > >
+> > > > > David / dhildenb
+> > > > >
 > > > >
-> > > > Looking at this quickly with Mark, the most likely explanation is that
-> > > > a bogus kernel address is being passed as the source pointer to
-> > > > copy_to_user().
+> > > > Apologies I mised this, I have been very busy lately not least with book :)
+> > > >
+> > > > Concerning, I will take a look as I get a chance. I think the whole series
+> > > > would have to be reverted which would be... depressing... as other patches
+> > > > in series eliminates the bounce buffer altogether.
+> > > >
 > > >
-> > > 'start' in read_kcore_iter() is bogus a LOT when running perf test 26,
-> > > and that back to at least 5.15.  Seems removal of bogon-proofing gave a
-> > > toothless old bug teeth, but seemingly only to perf test 26.  Rummaging
-> > > around with crash vmlinux /proc/kcore seems to be bogon free anyway.
+> > > I spotted
 > > >
-> > > Someone should perhaps take a peek at perf.  Bogons aside, it also
-> > > doesn't seem to care deeply about kernel response.  Whether the kernel
-> > > oops or I bat 945 bogons aside, it says 'OK'.  That seems a tad odd.
+> > > https://lkml.kernel.org/r/069dd40aa71e634b414d07039d72467d051fb486.camel@gmx.de
+> > >
 > >
-> > Aha, so I think I triggered the issue you're seeing under QEMU (log
-> > below). perf (unhelpfully) doesn't have stable test numbers, so it's
-> > test 21 in my case. However, it only explodes if I run it as root, since
-> > /proc/kcore is 0400 on my system.
+> > Find that slightly confusing, they talk about just reveritng the patch but then
+> > also add a kern_addr_valid()?
 > >
-> > The easiest way to trigger the problem is simply:
+> > I'm also confused about people talking about just reverting the patch, as
+> > 4c91c07c93bb drops the bounce buffer altogether... presumably they mean
+> > reverting both?
 > >
-> > # objdump -d /proc/kcore
-> >
-> > Looking at the history, I wonder whether this is because of a combination
-> > of:
-> >
-> > e025ab842ec3 ("mm: remove kern_addr_valid() completely")
-> >
-> > which removed the kern_addr_valid() check on the basis that kcore used
-> > copy_from_kernel_nofault() anyway, and:
-> >
-> > 2e1c0170771e ("fs/proc/kcore: avoid bounce buffer for ktext data")
-> >
-> > which replaced the copy_from_kernel_nofault() with _copy_to_user().
-> >
-> > So with both of those applied, we're missing the address check on arm64.
+> > Clearly this is an arm64 thing (obviously), I have some arm64 hardware let me
+> > see if I can repro...
 >
-> Digging into this a little more, the fault occurs because kcore is
-> treating everything from '_text' to '_end' as KCORE_TEXT and expects it
-> to be mapped linearly. However, there's plenty of stuff we _don't_ map
-> in that range on arm64 (e.g. .head.text, the pKVM hypervisor, the entry
-> trampoline) so kcore is broken.
->
-> One hack is to limit KCORE_TEXT to actually point at the kernel text
-> (see below), but this is a user-visible change in behaviour for things
-> like .data so I think it would be better to restore the old behaviour
-> of handling the faults.
->
-> Lorenzo?
+> I see the issue on x86
 
-FYI there is a parallel discussion at
-https://lore.kernel.org/all/ZHc2fm+9daF6cgCE@krava/ :)
-
-[sorry lei isn't playing ball so will have to reply from gmail,
-apologies if this breaks formatting]
-
-It'd be a real pity to have to revert that behaviour, as using a
-bounce buffer is such a hack and means you have to iterate through a
-page at a time...
-Either that or a change such that for KCORE_TEXT specifically we
-reinstate the bounce buffer and use copy_from_kernel_nofault().
-
-It definitely is a bug in kcore to have ranges of memory that are not
-mapped marked as readable. What kind of behaviour changes do you
-anticipate exactly with your prospective change re: .data? The
-fallthroughs?
-
-kcore as a whole needs some love and attention I think.
-
-An alternative is to implement some version of
-copy_from_kernel_nofault() in the iterator code.
-
-However TL;DR - I think we probably do need a semi-revert and to just
-make the ktext do a bounce buffer thing. I definitely want to keep the
-use of iterators so I would really not want to revert anything else.
-
+Ummmm what? I can't! What repro are you seeing on x86, exactly?
 
 >
-> Will
+> >
+> > Baoquan, Jiri - are you reverting more than just the one commit? And does doing
+> > this go from not working -> working? Or from not working (worst case oops) ->
+> > error?
 >
-> --->8
+> yes, I used to revert all 4 patches
 >
-> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-> index 9cb32e1a78a0..3696a209c1ec 100644
-> --- a/fs/proc/kcore.c
-> +++ b/fs/proc/kcore.c
-> @@ -635,7 +635,7 @@ static struct kcore_list kcore_text;
->   */
->  static void __init proc_kcore_text_init(void)
->  {
-> -       kclist_add(&kcore_text, _text, _end - _text, KCORE_TEXT);
-> +       kclist_add(&kcore_text, _stext, _etext - _stext, KCORE_TEXT);
->  }
->  #else
->  static void __init proc_kcore_text_init(void)
+> I did quick check and had to revert 2 more patches to get clean revert
 >
+> 38b138abc355 Revert "fs/proc/kcore: avoid bounce buffer for ktext data"
+> e2c3b418d365 Revert "fs/proc/kcore: convert read_kcore() to read_kcore_iter()"
+> d8bc432cb314 Revert "iov_iter: add copy_page_to_iter_nofault()"
+> bf2c6799f68c Revert "iov_iter: Kill ITER_PIPE"
+> ccf4b2c5c5ce Revert "mm: vmalloc: convert vread() to vread_iter()"
+> de400d383a7e Revert "mm/vmalloc: replace the ternary conditional operator with min()"
+>
+> jirka
 
+That's quite a few more reverts and obviously not an acceptable solution here.
 
---
-Lorenzo Stoakes
-https://ljs.io
+Looking at
+https://lore.kernel.org/all/CAA5enKaUYehLZGL3abv4rsS7caoUG-pN9wF3R+qek-DGNZufbA@mail.gmail.com
+a parallel thread on this, it looks like the issue is that we are no longer
+using a no-fault kernel copy in KCORE_TEXT path and arm64 doesn't map everything
+in the text range.
+
+Solution would be to reinstate the bounce buffer in this case (ugh). Longer term
+solution I think would be to create some iterator helper that does no fault
+copies from the kernel.
+
+I will try to come up with a semi-revert that keeps the iterator stuff but
+keeps a hideous bounce buffer for the KCORE_TEXT bit with a comment
+explaining why...
