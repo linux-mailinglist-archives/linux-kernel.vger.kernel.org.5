@@ -2,113 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5262F768FFA
+	by mail.lfdr.de (Postfix) with ESMTP id 0B852768FF9
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbjGaIVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39282 "EHLO
+        id S231975AbjGaIVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231336AbjGaIVT (ORCPT
+        with ESMTP id S231455AbjGaIVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:21:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC05E7A;
-        Mon, 31 Jul 2023 01:20:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Mon, 31 Jul 2023 04:21:20 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0A0FA
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:20:42 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 8073A1F45F;
+        Mon, 31 Jul 2023 08:20:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690791641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1lcqkPyNuGvb+x3SXfQDkaOxh3KnSlIJc1HaZt8923Q=;
+        b=HjjDW8EIxdfZHArVLsCu1zI481/CkE0IKDgKG/j5prhI35M9o3U17rAB2XB8cagxO8Rrrw
+        IJj8A/v/PsHFR5jswJbXzWgGmaFfZHYwUJXZCdfPFQOtb+LHqtX82uzd1XDfH0rWc0QxsU
+        vAl2q/5nmxXdgqyp/TRnNuxepqF9p4g=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CF30160F99;
-        Mon, 31 Jul 2023 08:20:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3E9D4C433AD;
-        Mon, 31 Jul 2023 08:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690791623;
-        bh=iFw1eTT0uqbhzj8JDGSr0fgbWXoLNoGg8HGa6Krj/BE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=pdzuiheNxcAIUt7dl4VvftR6KVgfb4WfHYzXw7S4BW3HMeL0KMuaUJegDV4ye1i2q
-         xt+IXuw4p4K/OydDVMCVezK9Voc5opQc2n1uQHW+pCcF2S8wyiKFcuPa64UxEPUtvQ
-         G1Iwdhc79AaODYjflPpqOtbjQJnp2U4Fo+ECkhcQA/WYz7nibFltasYOX6TfOGyiQm
-         DkftOEw0qo8qS7YQ1KRXR6FKZrHxTFzDS6vQd6ySIF1lkhclBxDg0VactJ9YcERA3Q
-         lruw6F4hQjhGdeD4QZ4puijNgB6y1lT949oNG2pypUD5bnAAqPINZFgkA0SmN19lHN
-         qOipMmAtNgTCQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B4A1E96AC0;
-        Mon, 31 Jul 2023 08:20:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        by relay2.suse.de (Postfix) with ESMTPS id 0F4EF2C142;
+        Mon, 31 Jul 2023 08:20:41 +0000 (UTC)
+Date:   Mon, 31 Jul 2023 10:20:37 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dave Airlie <airlied@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: arm32 build warnings in workqueue.c
+Message-ID: <ZMdu1YqUI7VIEq1y@alley>
+References: <CAPM=9twNnV4zMCvrPkw3H-ajZOH-01JVh_kDrxdPYQErz8ZTdA@mail.gmail.com>
+ <CAHk-=wi=eDN4Ub0qSN27ztBAvHSXCyiY2stu3_XbTpYpQX4x7w@mail.gmail.com>
+ <ZJX27JDyrgvdeCe4@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 net-next] net: flow_dissector: Use 64bits for used_keys
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169079162310.10005.11385616493848955483.git-patchwork-notify@kernel.org>
-Date:   Mon, 31 Jul 2023 08:20:23 +0000
-References: <20230728232215.2071351-1-rkannoth@marvell.com>
-In-Reply-To: <20230728232215.2071351-1-rkannoth@marvell.com>
-To:     Ratheesh Kannoth <rkannoth@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vladimir.oltean@nxp.com, claudiu.manoil@nxp.com,
-        alexandre.belloni@bootlin.com, andrew@lunn.ch,
-        f.fainelli@gmail.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, olteanv@gmail.com,
-        michael.chan@broadcom.com, rajur@chelsio.com,
-        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        taras.chornyi@plvision.eu, saeedm@nvidia.com, leon@kernel.org,
-        idosch@nvidia.com, petrm@nvidia.com, horatiu.vultur@microchip.com,
-        lars.povlsen@microchip.com, Steen.Hegelund@microchip.com,
-        daniel.machon@microchip.com, simon.horman@corigine.com,
-        aelior@marvell.com, manishc@marvell.com, ecree.xilinx@gmail.com,
-        habetsm.xilinx@gmail.com, peppe.cavallaro@st.com,
-        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        mcoquelin.stm32@gmail.com, pablo@netfilter.org,
-        kadlec@netfilter.org, fw@strlen.de,
-        muhammad.husaini.zulkifli@intel.com, coreteam@netfilter.org,
-        ioana.ciornei@nxp.com, wojciech.drewek@intel.com,
-        gerhard@engleder-embedded.com, oss-drivers@corigine.com,
-        shenjian15@huawei.com, wentao.jia@corigine.com,
-        linux-net-drivers@amd.com, huangguangbin2@huawei.com,
-        hui.zhou@corigine.com, linux-rdma@vger.kernel.org,
-        louis.peens@corigine.com, zdoychev@maxlinear.com,
-        intel-wired-lan@lists.osuosl.org, wenjuan.geng@corigine.com,
-        grygorii.strashko@ti.com, kurt@linutronix.de,
-        UNGLinuxDriver@microchip.com, netfilter-devel@vger.kernel.org,
-        lanhao@huawei.com, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, shmulik.ladkani@gmail.com,
-        d-tatianin@yandex-team.ru,
-        linux-stm32@st-md-mailman.stormreply.com, jdamato@fastly.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZJX27JDyrgvdeCe4@slm.duckdns.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Sat, 29 Jul 2023 04:52:15 +0530 you wrote:
-> As 32bits of dissector->used_keys are exhausted,
-> increase the size to 64bits.
+On Fri 2023-06-23 09:47:56, Tejun Heo wrote:
+> Hello,
 > 
-> This is base change for ESP/AH flow dissector patch.
-> Please find patch and discussions at
-> https://lore.kernel.org/netdev/ZMDNjD46BvZ5zp5I@corigine.com/T/#t
+> On Fri, Jun 23, 2023 at 11:24:16AM -0700, Linus Torvalds wrote:
+> ...
+> >   enum {
+> >         [..]
+> >         WORK_STRUCT_FLAG_BITS   = WORK_STRUCT_COLOR_SHIFT +
+> >                 WORK_STRUCT_COLOR_BITS,
+> >         [..]
+> >         WORK_STRUCT_FLAG_MASK   = (1UL << WORK_STRUCT_FLAG_BITS) - 1,
+> >         WORK_STRUCT_WQ_DATA_MASK = ~WORK_STRUCT_FLAG_MASK,
+> >   }
+> > 
+> > Anyway, that code absolutely has to be fixed. Using enums for types is
+> > wrong, wrong, wrong. You should consider an enum to be a weakly typed
+> > integer expression with some specific advantages (the automatic
+> > incrementing at definition time, and the compiler being able to limit
+> > ranges in switch() statements and maybe doing limited type warnings
+> > elsewhere)
 > 
-> [...]
+> The only benefit I care about is it being visible in the type system and
+> thus in debug info whether that's the usual one or BTF. This makes a huge
+> difference in tracing, monitoring and debugging. For one off's, it's fine to
+> track down the define values. For something more sophisticated (e.g.
+> non-trivial drgn, bcc and other BPF programs), the macro constants are a
+> source of sadness and a really dumb and insidious one.
 
-Here is the summary with links:
-  - [v3,net-next] net: flow_dissector: Use 64bits for used_keys
-    https://git.kernel.org/netdev/net-next/c/2b3082c6ef3b
+Would it help to use const variables?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> > +/* Convenience constants - of type 'unsigned long', not 'enum'! */
+> > +#define WORK_OFFQ_CANCELING	(1ul << __WORK_OFFQ_CANCELING)
 
+static const WORK_OFFQ_CANCELING = 1ul << __WORK_OFFQ_CANCELING;
 
+It is kind of nasty as well. But it defines the right type and should
+be visible in debuginfo. Well, it is usable only for local variables.
+
+Best Regards,
+Petr
