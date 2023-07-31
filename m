@@ -2,127 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAFE76A203
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF36176A20E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229978AbjGaUfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:35:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
+        id S229952AbjGaUis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbjGaUfn (ORCPT
+        with ESMTP id S229550AbjGaUiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:35:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B198172A;
-        Mon, 31 Jul 2023 13:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690835741; x=1722371741;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=il+OrpNJkCiZXQXCAjNwn2LSF5pF/7jhhD8JXlD/k1Q=;
-  b=lM4ae2yqx264rXk/G+jjkyTYzh9nYppQPp5OBGQ0aftWry10fq33z0s8
-   xT0bUdgFLJZ3sCc3wNI89yEzIig1womQcFH2gEBNkgT1n79GT/VD3cc57
-   E1GgYOFcdFWx3MHAZ5nG5+zCEM5CxBA9873uPQZRbhjKVh0LiDU0t65Dl
-   2WCMQM8u3JU+/9s6yU+ELO1mokaiW/0K4gAnKkM7o6Rn2R14gl/lxvcBg
-   pUrRNZgrGVWwfwJhBAebSmQgn+0EMrmHXJrVY7FpR6OFQPW0CnkT2FeSb
-   i8MlwaYAPf7+v2vO2SZR8xlio16I5bdoiQGB729BA/sarZZo69UpgtrIk
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="354043394"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="354043394"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:35:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852170252"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="852170252"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.61])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 31 Jul 2023 13:35:38 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "mingo@redhat.com" <mingo@redhat.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "tj@kernel.org" <tj@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>
-Subject: Re: [PATCH v3 03/28] x86/sgx: Add 'struct sgx_epc_lru_lists' to
- encapsulate lru list(s)
-References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
- <20230712230202.47929-4-haitao.huang@linux.intel.com>
- <CU4GHCJTRKLZ.1RK23NWPHJGNI@seitikki>
- <op.17794m01wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4f5496d2e0ea8edba430e7de7304bdd840616146.camel@intel.com>
- <op.18lc2zw6wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <9ffb02a3344807f2c173fe8c7cb000cd6c7843b6.camel@intel.com>
-Date:   Mon, 31 Jul 2023 15:35:36 -0500
+        Mon, 31 Jul 2023 16:38:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C42C198;
+        Mon, 31 Jul 2023 13:38:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ISelzNfwyo+LcVPzu+i+zMJl2RrP3z4luSWxJvJvqhk=; b=ecUqOk1P/oc9OcuXHSZ4MXiHaz
+        s/PUYhO4jddknCn7BxNh6AzglP5ru5XtyE4NPHgTggJ0hBrG/vFhkvbG5IJbN1J7hGM0EDaSwc+pQ
+        TsZc+j9vY2HQCy+iTROBNCUObuLKlTx3SROOpnfU/3kMNRKFdtDEEXomOVD/pJcUfyog6zrUK/ISn
+        regdYt0O7+gGqlcThcy60t/PrOiRSerwdcBtDt1m4wQGOE4knIxa9iQKHqmL9w58KiZAnE9IT07Ub
+        1nty92Qo1vZPqkwYQTLkzX3ueFVI5MOeL/cKXq8eA/gAQ8Ryd1hzXRsM73GsRhoxl8qgKPID3F/cN
+        IJkuQY5g==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQZey-00HJ3x-0X;
+        Mon, 31 Jul 2023 20:38:32 +0000
+Date:   Mon, 31 Jul 2023 13:38:32 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Joshua Kinard <kumba@gentoo.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-modules@vger.kernel.org
+Subject: Re: [PATCH 5/5] modules: only allow symbol_get of EXPORT_SYMBOL_GPL
+ modules
+Message-ID: <ZMgbyNKnotCMyB+f@bombadil.infradead.org>
+References: <20230731083806.453036-1-hch@lst.de>
+ <20230731083806.453036-6-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.18yrhmgswjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <9ffb02a3344807f2c173fe8c7cb000cd6c7843b6.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731083806.453036-6-hch@lst.de>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 24 Jul 2023 18:31:58 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+On Mon, Jul 31, 2023 at 10:38:06AM +0200, Christoph Hellwig wrote:
+> ---
+>  kernel/module/internal.h |  1 +
+>  kernel/module/main.c     | 17 ++++++++++++-----
+>  2 files changed, 13 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/module/internal.h b/kernel/module/internal.h
+> index c8b7b4dcf7820d..add687c2abde8b 100644
+> --- a/kernel/module/internal.h
+> +++ b/kernel/module/internal.h
+> @@ -93,6 +93,7 @@ struct find_symbol_arg {
+>  	/* Input */
+>  	const char *name;
+>  	bool gplok;
+> +	bool gplonly;
 
-...
->> > Although briefly mentioned in the first patch, it would be better to  
->> put
->> > more
->> > background about the "reclaimable" and "non-reclaimable" thing here,
->> > focusing on
->> > _why_ we need multiple LRUs (presumably you mean two lists:  
->> reclaimable
->> > and non-
->> > reclaimable).
->> >
->> Sure I can add a little more background to introduce the
->> reclaimable/unreclaimable concept. But why we need multiple LRUs would  
->> be
->> self-evident in later patches, not sure I will add details here.
->
-> In this case people will need to go to that patch to get some idea  
-> first.  It
-> doesn't seem hurt if you can explain why you need multiple LRUs here  
-> first.
->
-Will add.
+We'd want to add here a reason or something like that to allow the
+caller to know why we failed if we want to provide feedback.
 
-...
->
-> I didn't get the CHECK in my testing.  Not sure why.
->
-> Anyway, I guess the comment can be useful if it is to explain why we  
-> need to use
-> spinlock or whatever lock.  But
->
-> 	/* Must acquire this lock to access */
->
-> doesn't explain why at all, thus doesn't look helpful to me.
->
-> I guess you either need a better comment, or just remove it (it's  
-> obvious that a
-> lot of kernel code doesn't have a comment around spinlock_t).
->
+>  	bool warn;
+>  
+>  	/* Output */
+> diff --git a/kernel/module/main.c b/kernel/module/main.c
+> index 59b1d067e52890..85d3f00ca65758 100644
+> --- a/kernel/module/main.c
+> +++ b/kernel/module/main.c
+> @@ -281,6 +281,8 @@ static bool find_exported_symbol_in_section(const struct symsearch *syms,
+>  
+>  	if (!fsa->gplok && syms->license == GPL_ONLY)
+>  		return false;
+> +	if (fsa->gplonly && syms->license != GPL_ONLY)
 
-I'll remove the comments.
-Thanks
-Haitao
+And set it here to something other than perhaps a default of NOT_FOUND.
+
+> +		return false;
+>  
+>  	sym = bsearch(fsa->name, syms->start, syms->stop - syms->start,
+>  			sizeof(struct kernel_symbol), cmp_name);
+> @@ -776,8 +778,9 @@ SYSCALL_DEFINE2(delete_module, const char __user *, name_user,
+> @@ -1289,14 +1292,18 @@ static void free_module(struct module *mod)
+>  void *__symbol_get(const char *symbol)
+>  {
+>  	struct find_symbol_arg fsa = {
+> -		.name	= symbol,
+> -		.gplok	= true,
+> -		.warn	= true,
+> +		.name		= symbol,
+> +		.gplok		= true,
+> +		.gplonly	= true,
+> +		.warn		= true,
+>  	};
+>  
+>  	preempt_disable();
+>  	if (!find_symbol(&fsa) || strong_try_module_get(fsa.owner)) {
+>  		preempt_enable();
+> +		if (fsa.gplonly)
+> +			pr_warn("failing symbol_get of non-GPLONLY symbol %s.\n",
+
+Because here fsa.gplonly is always true here so the above warn will
+print even if a symbol is just not found.
+
+  Luis
