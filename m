@@ -2,220 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0B77692DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEED67692E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231744AbjGaKPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:15:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52628 "EHLO
+        id S231958AbjGaKR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbjGaKPa (ORCPT
+        with ESMTP id S229996AbjGaKRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:15:30 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072C3E5F
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:15:25 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc59de009so39878015e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:15:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690798523; x=1691403323;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EG3iuoYl2Yyk7UzsEc9LvQqrnR5PB3HBwoWOS4ckXVc=;
-        b=JwLZ45qZwpOVPkXVdWIjIpyNCmwYH3dD8Ou7rl1pivlSHmOAShFMtPSrushNT6kmaq
-         0dvPQPJk9qUs4AvASoH4gYvejhe/vSpJ4yXyYZyySjdQGekmCa/rEJCpbcQYWU/E8P3S
-         AlJhoAOq/XPyByQrKiIkNk/OrNEA5ye2AzKSbO1oFASt+UzRwFIPWKYe3WuZmxeQvDGd
-         /Fldg0QEg6p7DZ7btLj4ScOMseJMGHIDA9pso+oYxo3L4B91PFlYyvSd5DbmYHBcFOoi
-         vHMqeQ0nYL/ARSHDJmf9aL3oEsBkBmeXhnms5OSIg/VaUgDVI2kRDsctBYp8rqkmYenw
-         IuqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690798523; x=1691403323;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EG3iuoYl2Yyk7UzsEc9LvQqrnR5PB3HBwoWOS4ckXVc=;
-        b=HzI8AlsM3qdedSoNIxYJiIKzsyYrr8zt8gaWQQeOt+LL82EchOrzJRy6q3ct288Hq0
-         ybnhMKLPPNPVnArXTq+vKwhoyKba/pm2q9gG222TT97zOqza2e6kxB6vtBJDZSNyi3wQ
-         Cy38nQ3U6Iy0AWuS3NaqIJ9G+yPpjtsOzMVqD+JpGJorS3+Dr9zCtE0iZAv7Stngq5Vx
-         esSAGMGBFNE5p3UubDKiM9rmJ9CVjzjzq5BBT77QiBBAyogKnQzWoVjpysfyHazmOHTv
-         BbacR5MvOYJGPIuAdiITSqbBcZIsQMZI9Cc0HmeADV+d8HF8CAr6nCkf5s7f4/ACztDn
-         1sUA==
-X-Gm-Message-State: ABy/qLaEWK+6f7wcfZ0LCLRdJsjmEcdokz/JVMYHNbHks5SJAnQEXG8p
-        nnprfMO9/BLRnIxK76sGwHwSbkxvwGdoe/iavhwxGg==
-X-Google-Smtp-Source: APBJJlFxSlRHvyoI0m2LL342krCpCaswj8cTM0vLfwdYwEDfTBUig6/z+ede7/AhGalI5Gom70ZQdsAskFXQlQqiPT4=
-X-Received: by 2002:a5d:43c3:0:b0:30f:af19:81f3 with SMTP id
- v3-20020a5d43c3000000b0030faf1981f3mr5506063wrr.41.1690798523303; Mon, 31 Jul
- 2023 03:15:23 -0700 (PDT)
+        Mon, 31 Jul 2023 06:17:15 -0400
+Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1464CE65;
+        Mon, 31 Jul 2023 03:17:12 -0700 (PDT)
+Received: from [192.168.0.107] (unknown [111.197.209.91])
+        by APP-03 (Coremail) with SMTP id rQCowACHj8fxicdkWHydDw--.11897S2;
+        Mon, 31 Jul 2023 18:16:17 +0800 (CST)
+Message-ID: <572ad471-8a0b-95e2-1112-c55f42e5594b@iscas.ac.cn>
+Date:   Mon, 31 Jul 2023 18:16:16 +0800
 MIME-Version: 1.0
-References: <20230727141428.962286-1-alexghiti@rivosinc.com>
- <20230727141428.962286-10-alexghiti@rivosinc.com> <CAP-5=fU5XYXrVnRUidpwjV2LiTsdebfidL43_Qo4Z7TBxMsVGA@mail.gmail.com>
-In-Reply-To: <CAP-5=fU5XYXrVnRUidpwjV2LiTsdebfidL43_Qo4Z7TBxMsVGA@mail.gmail.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Mon, 31 Jul 2023 12:15:12 +0200
-Message-ID: <CAHVXubgVAe1WsiZx5Ay+3KPK4u24k_vsnTwFFmBeVsHrGXwhfw@mail.gmail.com>
-Subject: Re: [PATCH v4 09/10] tools: lib: perf: Implement riscv mmap support
-To:     Ian Rogers <irogers@google.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] riscv: Handle zicsr/zifencei issue between gcc and
+ binutils
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atishp@atishpatra.org>,
-        Anup Patel <anup@brainfault.org>,
-        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        =?UTF-8?Q?R=C3=A9mi_Denis=2DCourmont?= <remi@remlab.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Atish Patra <atishp@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, stable@vger.kernel.org,
+        Guo Ren <guoren@kernel.org>
+References: <20230726174524.340952-1-xingmingzheng@iscas.ac.cn>
+ <20230726-outclass-parade-2ccea9f6688a@spud>
+ <10231b81-ea42-26d0-4c11-92851229e658@iscas.ac.cn>
+ <20230726-armchair-evasive-427dd245a9fe@spud>
+ <20230727-briskness-sappy-e2d9e4c1ef36@spud>
+ <d75ef570-c0ad-cea4-687a-d02b560aa676@iscas.ac.cn>
+ <20230729-chaps-coauthor-95557d86b189@spud>
+Content-Language: en-US
+From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Organization: ISCAS
+In-Reply-To: <20230729-chaps-coauthor-95557d86b189@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: rQCowACHj8fxicdkWHydDw--.11897S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr45Gw18tryDtw17KFyDKFg_yoW8Zw43pF
+        4kCFyDGry5Xw1xGw4xJ34UWry0yr4rJay5Jr45W3WUAryUAFy0grykXw1Ygr1DArs5tw10
+        vr1093WDZwn8JFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvCb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xK
+        xwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7IU56c_DUUUUU==
+X-Originating-IP: [111.197.209.91]
+X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiCQkJCmTHZrJ09wAAs3
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+On 7/30/23 01:48, Conor Dooley wrote:
+> On Sun, Jul 30, 2023 at 01:36:49AM +0800, Mingzheng Xing wrote:
+>
+>> I reproduced the error with gcc-12.2.0 and binutils-2.35. I tried a
+>> different solution, which I think makes the logic easier. Showing
+>> the new patch code:
+> It is indeed simpler, neat.
+>
+>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> index 4c07b9189c86..a6fa1eed895c 100644
+>> --- a/arch/riscv/Kconfig
+>> +++ b/arch/riscv/Kconfig
+>> @@ -569,25 +569,24 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
+>>
+>>   config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+>>          def_bool y
+>> -       # https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
+>> -       depends on AS_IS_GNU && AS_VERSION >= 23800
+>> +       depends on AS_IS_GNU && AS_VERSION >= 23600
+>>          help
+>> -         Newer binutils versions default to ISA spec version 20191213 which
+>> -         moves some instructions from the I extension to the Zicsr and Zifencei
+>> -         extensions.
+>> +         Binutils has supported zicsr and zifencei extensions since version 2.36,
+>> +         try to adapt to the changes by using explicit zicsr and zifencei via
+>> +         -march.
+> This sentence no longer makes sense to me, the motivation for why we are
+> doing this is lost. Please preserve the link & explanation about the
+> 20191213 version of the spec, adding to it the commentary about how we
+> can relax the check to 2.36, since that makes our lives easier.
+>
+> The rest of this looks fine to me, if you resubmit I'll look at it
+> further on Monday.
 
-On Fri, Jul 28, 2023 at 7:53=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
->
-> On Thu, Jul 27, 2023 at 7:28=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosi=
-nc.com> wrote:
-> >
-> > riscv now supports mmaping hardware counters so add what's needed to
-> > take advantage of that in libperf.
-> >
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> > Reviewed-by: Atish Patra <atishp@rivosinc.com>
-> > ---
-> >  tools/lib/perf/mmap.c | 65 +++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 65 insertions(+)
-> >
-> > diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
-> > index 0d1634cedf44..378a163f0554 100644
-> > --- a/tools/lib/perf/mmap.c
-> > +++ b/tools/lib/perf/mmap.c
-> > @@ -392,6 +392,71 @@ static u64 read_perf_counter(unsigned int counter)
-> >
-> >  static u64 read_timestamp(void) { return read_sysreg(cntvct_el0); }
-> >
-> > +#elif __riscv_xlen =3D=3D 64
->
-> This is something of an odd guard, perhaps:
-> #elif defined(__riscv) && __riscv_xlen =3D=3D 64
->
-> That way it is more intention revealing that this is riscv code. Could
-> you add a comment relating to the __riscv_xlen ?
+I updated it in v3 [1]. Thanks for your review.
 
-I guess Andrew answered that already.
+[1] https://lore.kernel.org/all/20230731095936.23397-1-xingmingzheng@iscas.ac.cn
 
->
-> > +
-> > +/* TODO: implement rv32 support */
-> > +
-> > +#define CSR_CYCLE      0xc00
-> > +#define CSR_TIME       0xc01
-> > +
-> > +#define csr_read(csr)                                          \
-> > +({                                                             \
-> > +       register unsigned long __v;                             \
-> > +               __asm__ __volatile__ ("csrr %0, " #csr          \
-> > +                : "=3Dr" (__v) :                                 \
-> > +                : "memory");                                   \
->
-> To avoid the macro pasting that could potentially go weird, could this be=
-:
->
-> __asm__ __volatile__ ("csrr %0, %1",
->   : "=3Dr"(__v) /* outputs */
->   : "i"(csr) /* inputs */
->   : "memory" /* clobbers */)
->
-> Also, why is this clobbering memory? Worth adding a comment.
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-No idea, I see that it is also done this way in
-arch/riscv/include/asm/csr.h. @Atish Kumar Patra , @Palmer Dabbelt ?
-
-Thanks for your comments!
-
-Alex
-
->
-> Thanks,
-> Ian
->
-> > +                __v;                                           \
-> > +})
-> > +
-> > +static unsigned long csr_read_num(int csr_num)
-> > +{
-> > +#define switchcase_csr_read(__csr_num, __val)           {\
-> > +       case __csr_num:                                 \
-> > +               __val =3D csr_read(__csr_num);            \
-> > +               break; }
-> > +#define switchcase_csr_read_2(__csr_num, __val)         {\
-> > +       switchcase_csr_read(__csr_num + 0, __val)        \
-> > +       switchcase_csr_read(__csr_num + 1, __val)}
-> > +#define switchcase_csr_read_4(__csr_num, __val)         {\
-> > +       switchcase_csr_read_2(__csr_num + 0, __val)      \
-> > +       switchcase_csr_read_2(__csr_num + 2, __val)}
-> > +#define switchcase_csr_read_8(__csr_num, __val)         {\
-> > +       switchcase_csr_read_4(__csr_num + 0, __val)      \
-> > +       switchcase_csr_read_4(__csr_num + 4, __val)}
-> > +#define switchcase_csr_read_16(__csr_num, __val)        {\
-> > +       switchcase_csr_read_8(__csr_num + 0, __val)      \
-> > +       switchcase_csr_read_8(__csr_num + 8, __val)}
-> > +#define switchcase_csr_read_32(__csr_num, __val)        {\
-> > +       switchcase_csr_read_16(__csr_num + 0, __val)     \
-> > +       switchcase_csr_read_16(__csr_num + 16, __val)}
-> > +
-> > +       unsigned long ret =3D 0;
-> > +
-> > +       switch (csr_num) {
-> > +       switchcase_csr_read_32(CSR_CYCLE, ret)
-> > +       default:
-> > +               break;
-> > +       }
-> > +
-> > +       return ret;
-> > +#undef switchcase_csr_read_32
-> > +#undef switchcase_csr_read_16
-> > +#undef switchcase_csr_read_8
-> > +#undef switchcase_csr_read_4
-> > +#undef switchcase_csr_read_2
-> > +#undef switchcase_csr_read
-> > +}
-> > +
-> > +static u64 read_perf_counter(unsigned int counter)
-> > +{
-> > +       return csr_read_num(CSR_CYCLE + counter);
-> > +}
-> > +
-> > +static u64 read_timestamp(void)
-> > +{
-> > +       return csr_read_num(CSR_TIME);
-> > +}
-> > +
-> >  #else
-> >  static u64 read_perf_counter(unsigned int counter __maybe_unused) { re=
-turn 0; }
-> >  static u64 read_timestamp(void) { return 0; }
-> > --
-> > 2.39.2
-> >
