@@ -2,133 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F396876A0C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F7F76A0CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbjGaTE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
+        id S231430AbjGaTFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjGaTE4 (ORCPT
+        with ESMTP id S231324AbjGaTFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:04:56 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F882170A;
-        Mon, 31 Jul 2023 12:04:55 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 32ce0183077fd9b9; Mon, 31 Jul 2023 21:04:52 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 314E16620E2;
-        Mon, 31 Jul 2023 21:04:52 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>
-Subject: [PATCH v3 3/3] cpuidle: teo: Drop utilized from struct teo_cpu
-Date:   Mon, 31 Jul 2023 21:04:41 +0200
-Message-ID: <1953519.PYKUYFuaPT@kreacher>
-In-Reply-To: <4515817.LvFx2qVVIh@kreacher>
-References: <4515817.LvFx2qVVIh@kreacher>
+        Mon, 31 Jul 2023 15:05:16 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA921BEF;
+        Mon, 31 Jul 2023 12:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690830309; x=1722366309;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3HaLW+YJQkDqjakHwU6yyex4wVfQOsIcRsqp+3k46gw=;
+  b=eSFsHZof8hNwfMBNEUH+YNZBuRL73NFYH4IETjbKmGY7MjwmVg67VSPn
+   mUVOYg6oJRX8b1aDT5bKI0DhZr3KxTNfBm63uQz8/zi139k3rvoYPQUM7
+   o9rwryokQm4P+cWDKj0aXKnfLsdL9EZSGf4LyPtBAcJcrRNKcNGapcSYf
+   WPw94v+QEFrjJe9ApJLrA4a3UtyzF5DUGfoTl69CwxxB32gMBpkpnlR4y
+   tthBHWocwLlWFhS3sarmuDjGxOF2CVExCAoRJmqfai+iB3iksj0uOIgqm
+   r9kF7/TqC+R9PDrpC68pQJW2C/GnJ+VpXVJB3NDzc+AJyctHFPv3W//PO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="354029269"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="354029269"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 12:05:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="974996260"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="974996260"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 12:05:05 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 7EDAF11F9B6;
+        Mon, 31 Jul 2023 22:05:02 +0300 (EEST)
+Date:   Mon, 31 Jul 2023 19:05:02 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Satish Nagireddy <satish.nagireddy@getcruise.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/9] media: i2c: ds90ub9x3: Fix sub-device matching
+Message-ID: <ZMgF3pxyx+BCXNN+@kekkonen.localdomain>
+References: <20230731-fpdlink-additions-v3-0-8acfc49c215a@ideasonboard.com>
+ <20230731-fpdlink-additions-v3-1-8acfc49c215a@ideasonboard.com>
+ <20230731144356.GA30939@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrjeeggddutdelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopegrnhhnrgdqmhgrrhhirgeslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopehfrhgv
- uggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgrjhgvthgrnhdrphhutghhrghlshhkihesrghrmhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731144356.GA30939@pendragon.ideasonboard.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Hi Laurent,
 
-Because the utilized field in struct teo_cpu is only used locally in
-teo_select(), replace it with a local variable in that function.
+On Mon, Jul 31, 2023 at 05:43:56PM +0300, Laurent Pinchart wrote:
+> Hi Tomi,
+> 
+> Thank you for the patch.
+> 
+> On Mon, Jul 31, 2023 at 04:24:35PM +0300, Tomi Valkeinen wrote:
+> > 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode
+> 
+> s/^/Commit /
+> 
+> > matching") recently changed how async sub-device matching works. This
+> > breaks the UB9x3 drivers, as they set the subdev.fwnode to an endpoint.
+> > Afaiu, the fix is simply to not set subdev.fwnode at all.
+> > 
+> > Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
+> > Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> > Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> 
+> Sakari, was the v4l2-async series meant to break these drivers ? I
+> understand the two series got merged for the same kernel version, is
+> this a merge conflict, or is there an issue in the v4l2-async rework ?
 
-No intentional functional impact.
+The ds90ub9xx drivers were merged after I had written the patch that
+converted all drivers and I didn't remember to revisit it.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+If you look at the patch, it's doing very similar things than the patch in
+the Fixes: tag.
 
-v2 -> v3: No changes
+There's also a workaround for sub-device drivers (that register async
+sub-devices) but not for drivers that register a notifier. It probably
+doesn't make sense to add a workaround for those how, rather remove the one
+that exists (after some time).
 
-v1 -> v2: New patch
+-- 
+Kind regards,
 
----
- drivers/cpuidle/governors/teo.c |    9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
-
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -187,7 +187,6 @@ struct teo_bin {
-  * @next_recent_idx: Index of the next @recent_idx entry to update.
-  * @recent_idx: Indices of bins corresponding to recent "intercepts".
-  * @util_threshold: Threshold above which the CPU is considered utilized
-- * @utilized: Whether the last sleep on the CPU happened while utilized
-  */
- struct teo_cpu {
- 	s64 time_span_ns;
-@@ -197,7 +196,6 @@ struct teo_cpu {
- 	int next_recent_idx;
- 	int recent_idx[NR_RECENT];
- 	unsigned long util_threshold;
--	bool utilized;
- };
- 
- static DEFINE_PER_CPU(struct teo_cpu, teo_cpus);
-@@ -366,6 +364,7 @@ static int teo_select(struct cpuidle_dri
- 	int idx0 = 0, idx = -1;
- 	bool alt_intercepts, alt_recent;
- 	ktime_t delta_tick;
-+	bool cpu_utilized;
- 	s64 duration_ns;
- 	int i;
- 
-@@ -391,13 +390,13 @@ static int teo_select(struct cpuidle_dri
- 			goto out_tick;
- 	}
- 
--	cpu_data->utilized = teo_cpu_is_utilized(dev->cpu, cpu_data);
-+	cpu_utilized = teo_cpu_is_utilized(dev->cpu, cpu_data);
- 	/*
- 	 * If the CPU is being utilized over the threshold and there are only 2
- 	 * states to choose from, the metrics need not be considered, so choose
- 	 * the shallowest non-polling state and exit.
- 	 */
--	if (drv->state_count < 3 && cpu_data->utilized) {
-+	if (drv->state_count < 3 && cpu_utilized) {
- 		/* The CPU is utilized, so assume a short idle duration. */
- 		duration_ns = teo_middle_of_bin(0, drv);
- 		/*
-@@ -562,7 +561,7 @@ static int teo_select(struct cpuidle_dri
- 	 * been stopped already and the shallower state's target residency is
- 	 * not sufficiently large.
- 	 */
--	if (cpu_data->utilized) {
-+	if (cpu_utilized) {
- 		s64 span_ns;
- 
- 		i = teo_find_shallower_state(drv, dev, idx, duration_ns, true);
-
-
-
+Sakari Ailus
