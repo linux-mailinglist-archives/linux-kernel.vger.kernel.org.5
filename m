@@ -2,229 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFAF576955E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960F976956E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:02:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbjGaL5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54876 "EHLO
+        id S231742AbjGaMCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbjGaL5s (ORCPT
+        with ESMTP id S230177AbjGaMCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:57:48 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69091A2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:57:44 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fb4146e8fcso30403325e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:57:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690804663; x=1691409463;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=84p6LuV3kqjsQ38caNmFY0hjFJK8gje0eg9gedCk7+E=;
-        b=GTz2z46rZqYVBJe9xcSwdI+7QtxocDHZoo1lTcR4gcdpTVNr5ydA/TjcdzI0hykclb
-         L7disChATKsEVPF6u4hk7xRzikjXvpe7rgFduzn65xRa4llxH4UELN6kJHB1RsdqGlnC
-         CYQOP6CdntIsoXUlK7fUHOyKLvYhRp4wp0YkCVk0X4cItoCIRXYN8BBD9ouZqBX/EY6P
-         ixzwbtZ18fTtR0HzOLz+QOUfZJNH1nHp/u/H3fON9ulfoQlX83OtHvmyg23yYZ7s82Aa
-         gIbAA0DTaGmlGjxGumCPYF0TYh0NOvda6E4bScxmSxtoLzgFpY17O2jwV1Ti8pqqvKuP
-         4BQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690804663; x=1691409463;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=84p6LuV3kqjsQ38caNmFY0hjFJK8gje0eg9gedCk7+E=;
-        b=U6nvRbvqCQzYjbmKOxzitf9w6dYHgp4uEv67Y+EbyQJXBRtoglbS4F+Hh9ib7PFrL5
-         aCdnVoYij4Ar8MYg+d3EHkFGvWBTuUy1F0PXX2U6/gFnuRo+us06s/ibFp0eX8/PFqAu
-         h5XRiGAD9/iudfW7KUKwe8VLSVrrK3RUO7xPNZlFFMp0zVyBhdiPjY/nsudBxZPohFqk
-         LtByj++jhNy9pv7hrqfJ1ntCwT0r78Wm1zVwgMxpUqyB/HU4jiKvDdv4RyoEjUm6LVG9
-         w5CLetbo3gUQoT24UwHLdBvNqECj+BBDjbk+RizIiqO21TVyHM79hd6z4KJQNutKSi5Z
-         N1Sg==
-X-Gm-Message-State: ABy/qLb8k8oE3f6y7ePOEeKfxZjyqcusWiwX9sUH38a7QKB7uuUbDp9v
-        sCT6f19ORKwbzfDjuZAo6qE6iA==
-X-Google-Smtp-Source: APBJJlEN1GtAehJzUvlmGfJJ54bjKPXWoI0vErW/9yKQPWUAvNebPH2c1X7TzLGxGDgOuuPnzoBd8A==
-X-Received: by 2002:a05:600c:20c4:b0:3f7:e660:cdc5 with SMTP id y4-20020a05600c20c400b003f7e660cdc5mr7884275wmm.9.1690804662970;
-        Mon, 31 Jul 2023 04:57:42 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id z19-20020a1c4c13000000b003fe20db88ebsm2894966wmf.31.2023.07.31.04.57.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 04:57:42 -0700 (PDT)
-Message-ID: <0de4d9fe-39ac-5efa-8344-428f0074adeb@baylibre.com>
-Date:   Mon, 31 Jul 2023 13:57:41 +0200
+        Mon, 31 Jul 2023 08:02:19 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0486E118
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:02:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690804938; x=1722340938;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TxVEE+RDmFPfYpBZxp/lPsIAG0lDwzsaVJF72iXWIhc=;
+  b=U8epYWkYNzyV4nMmvis6LZDBQaAdLPOGK5mNXNseJj5mcypDgh5IJsGv
+   9xWEF0eO8GU+idwvvSqm9Cr7EloZxtf0vBJFtjcbGtnHyb5EgzmQ0ETPT
+   RPGL81ljDQvc5WueAJvEZzCfcI+GImF4+bHyCAjBn500fRE7Z82bWkoOt
+   Cexa+JTmYLpHdJfK0ExL8ON5IQpHUFtLnXq+d04P9G25iBCjJ//1HpDVy
+   DWqkR/GHCd1J7o3WcX2F0UzBr2lsveQR1h6RZCgoBHV/sUNiImHaOweUm
+   Ho6YmJlTUyIDbfOqACFdPxsdhwKhoGolidzlr22q47b+h12yieDeAiqOv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="348597402"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="348597402"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 05:02:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="852009165"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="852009165"
+Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 05:02:14 -0700
+From:   Alexander Usyskin <alexander.usyskin@intel.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Tomas Winkler <tomas.winkler@intel.com>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Vitaly Lubart <vitaly.lubart@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Subject: [PATCH v2] mtd: fix use-after-free in mtd release
+Date:   Mon, 31 Jul 2023 14:58:36 +0300
+Message-Id: <20230731115836.542747-1-alexander.usyskin@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND v6 09/11] drm/mediatek: gamma: Add support for
- 12-bit LUT and MT8195
-Content-Language: en-US
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, chunkuang.hu@kernel.org
-Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
-        matthias.bgg@gmail.com, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, wenst@chromium.org,
-        kernel@collabora.com, ehristev@collabora.com,
-        "Jason-JH . Lin" <jason-jh.lin@mediatek.com>
-References: <20230727094633.22505-1-angelogioacchino.delregno@collabora.com>
- <20230727094633.22505-10-angelogioacchino.delregno@collabora.com>
- <ec66e067-642e-1512-3e4b-b51065ccc75d@baylibre.com>
- <8b9769f3-8a7c-3607-ca9a-09443cfbc9d9@collabora.com>
- <0b9d62d0-5958-2b0f-03d7-9e91e026c33d@baylibre.com>
- <4e0bcb82-03f7-66de-19ec-9cc23f95ddad@collabora.com>
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <4e0bcb82-03f7-66de-19ec-9cc23f95ddad@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I case of partition device_unregister() in mtd_device_release()
+calls mtd_release() which frees mtd_info structure for partition.
+All code after device_unregister in mtd_device_release thus
+uses already freed memory.
 
+Move part of code to mtd_release() and restict mtd->dev cleanup
+to non-partion object.
+For partition object such cleanup have no sense as partition
+mtd_info is removed.
 
-On 31/07/2023 12:27, AngeloGioacchino Del Regno wrote:
-> Il 28/07/23 14:58, Alexandre Mergnat ha scritto:
->> Hi Angelo
->>
->> On 27/07/2023 15:06, AngeloGioacchino Del Regno wrote:
->>>>> +/* For 10 bit LUT layout, R/G/B are in the same register */
->>>>>   #define DISP_GAMMA_LUT_10BIT_R            GENMASK(29, 20)
->>>>>   #define DISP_GAMMA_LUT_10BIT_G            GENMASK(19, 10)
->>>>>   #define DISP_GAMMA_LUT_10BIT_B            GENMASK(9, 0)
->>>>> +/* For 12 bit LUT layout, R/G are in LUT, B is in LUT1 */
->>>>
->>>> As I understood from the application processor registers (v0.4), R/G 
->>>> are in LUT, B is in LUT1 for 10bit and 12bit for MT8195. Can you 
->>>> check please to be sure ?
->>>>
->>>
->>> That's right, but here I'm implying that 10-bit LUT is only for older 
->>> SoCs, and
->>> all of them have got the same register layout with one LUT register 
->>> for R, G, B,
->>> while all the new SoCs, which have got 12-bits LUT support, have got 
->>> the new
->>> register layout with two LUT registers (and multiple banks).
->>> Infact, the MT8195 SoC was added here with 12-bits LUT support only 
->>> (as the LUT
->>> parameters extraction is easily handled by the 
->>> drm_color_lut_extract() function).
->>>
->>> The alternative would've been to add two compatibles, like
->>> "mediatek,mt8195-disp-gamma-10bits" and 
->>> "mediatek,mt8195-disp-gamma-12bits",
->>> or a boolean property like "mediatek,lut-12bits" which would appear 
->>> literally
->>> everywhere starting from a certain point in time (since there's no 
->>> reason to
->>> use 10-bits LUT on MT8195, that starts now!).
->>>
->>> Even then, consider the complication in code, where 
->>> mtk_gamma_set_common()
->>> would have to handle:
->>> - 10-bits, layout A
->>> - 10-bits, layout B -> but fallback to layout A if this is AAL
->>> - 12-bits layout
->>>
->>> is_aal = !(gamma && gamma->data);
->>>
->>> for_each_bank()
->>> {
->>>      if (num_lut_banks > 1) write_num_bank();
->>>
->>>      for (i = 0; i < lut_bank_size; i++) {
->>>          .......
->>>
->>>          if (!lut_diff || (i % 2 == 0)) {
->>>              if (lut_bits == 12 || (lut_bits == 10 && layout_b)) {
->>>                  ... setup word[0],[1] ...
->>>              } else if (layout_b && !is_aal) {
->>>                  ...setup word[0],[1]...
->>>              } else {
->>>                  ...setup word[0]
->>>              }
->>>          } else {
->>>               ^^^ almost repeat the same ^^^
->>>          }
->>>          writel(word[0], (...));
->>>          if (lut_bits == 12 || (lut_bits == 10 && layout_b) && !is_aal)
->>>              writel(word[i] (....));
->>>      }
->>> }
->>>
->>> probe() {
->>>      if (of_property_read_bool(dev->of_node, "mediatek,lut-12bits") ||
->>>          data->supports_only_12bits)
->>>          priv->lut_bits = 12;
->>>      else
->>>          priv->lut_bits = 10;
->>> }
->>>
->>> ...at least, that's the implementation that I would do to solve your 
->>> concern,
->>> which isn't *too bad*, but still, a big question arises here...
->>>
->>>
->>> Why should we care about supporting *both* 10-bit and 12-bit Gamma 
->>> LUTs on
->>> the *same* SoC?
->>>
->>>
->>> A 12-bit LUT gives us more precision and there's no penalty if we 
->>> want to
->>> convert a 10-bit LUT to a 12-bits one, as we're simply "ignoring" the 
->>> value
->>> of two bits per component (no expensive calculation involved)...
->>>
->>> Is there anything that I'm underestimating here?
->>
->> Thanks for you explanation !
->> I think your choice is not bad, but it's not clear that MT8195 10 bit 
->> LUT isn't supported at all.
->> So, IMHO, the first solution is to support it like you explained it 
->> above, and the second solution is to add comment somewhere to clarify 
->> that driver doesn't support 10 bit LUT if the SoC is able to use 12 
->> bit LUT, like MT8195 10 bit.
->>
->> Is that relevant ? :D
->>
-> 
-> Even though the same as whhat I'm doing here was already done before, as 
-> the
-> current 10-bits LUT support ignores 9-bits LUT support, I can add a 
-> comment to
-> the code:
-> 
-> /*
->   * SoCs supporting 12-bits LUTs are using a new register layout that does
->   * always support (by HW) both 12-bits and 10-bits LUT but, on those, we
->   * ignore the support for 10-bits in this driver and always use 12-bits.
->   *
->   * Summarizing:
->   * - SoC HW support 9/10-bits LUT only
->   *   - Old register layout
->   *     - 10-bits LUT supported
->   *     - 9-bits LUT not supported
->   * - SoC HW support both 10/12bits LUT
->   *   - New register layout
->   *    - 12-bits LUT supported
->   *    - 10-its LUT not supported
->   */
-> 
-> Where the SoCs supporting 9-bits and 10-bits: mt6795, 8173, 8192,others and
-> 12-bits are 8195, 8186, others.. of course.
-> 
-> Would that work for you?
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
+Fixes: 19bfa9ebebb5 ("mtd: use refcount to prevent corruption")
+Reviewed-by: Tomas Winkler <tomas.winkler@intel.com>
+Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+---
 
-Sound good for me. After that:
+V2: Fix commit messsge wording
 
-Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+---
+ drivers/mtd/mtdcore.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 2466ea466466..46f15f676491 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -93,6 +93,9 @@ static void mtd_release(struct device *dev)
+ 	struct mtd_info *mtd = dev_get_drvdata(dev);
+ 	dev_t index = MTD_DEVT(mtd->index);
+ 
++	idr_remove(&mtd_idr, mtd->index);
++	of_node_put(mtd_get_of_node(mtd));
++
+ 	if (mtd_is_partition(mtd))
+ 		release_mtd_partition(mtd);
+ 
+@@ -103,6 +106,7 @@ static void mtd_release(struct device *dev)
+ static void mtd_device_release(struct kref *kref)
+ {
+ 	struct mtd_info *mtd = container_of(kref, struct mtd_info, refcnt);
++	bool is_partition = mtd_is_partition(mtd);
+ 
+ 	debugfs_remove_recursive(mtd->dbg.dfs_dir);
+ 
+@@ -111,11 +115,13 @@ static void mtd_device_release(struct kref *kref)
+ 
+ 	device_unregister(&mtd->dev);
+ 
+-	/* Clear dev so mtd can be safely re-registered later if desired */
+-	memset(&mtd->dev, 0, sizeof(mtd->dev));
+-
+-	idr_remove(&mtd_idr, mtd->index);
+-	of_node_put(mtd_get_of_node(mtd));
++	/*
++	 *  Clear dev so mtd can be safely re-registered later if desired.
++	 *  Should not be done for partition,
++	 *  as it was already destroyed in device_unregister().
++	 */
++	if (!is_partition)
++		memset(&mtd->dev, 0, sizeof(mtd->dev));
+ 
+ 	module_put(THIS_MODULE);
+ }
 -- 
-Regards,
-Alexandre
+2.34.1
+
