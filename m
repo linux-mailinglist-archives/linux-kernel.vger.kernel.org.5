@@ -2,136 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1C7769FCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EDC5769FD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjGaRyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 13:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35264 "EHLO
+        id S230272AbjGaRzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjGaRya (ORCPT
+        with ESMTP id S229701AbjGaRzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:54:30 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8791EFF
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:54:29 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686b879f605so3172042b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:54:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690826069; x=1691430869;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ye1hBUjkNRk39gbDG705nkaSiiZ5DkFSScU/cjrv98U=;
-        b=yD59vn9kqIM2hU9m6M6C5eYC4+NgiocCNfCOTTv2AfStv9/CAubB/d7o5PgACopPv8
-         8uWIzKfh1TGzdd/7w4E1rL5mrr6gAN9Dl40sy7HmU5fW2avaWsp9viSmnLI2TZ1cAGXW
-         wADO2+xJ10Sic7OVzGWoB0L9ACqz3C8cbNVTl0Xl9LfFDCXkF/QzlSXhskTo5QMuHEXY
-         I0p4bB03w3aKxnzVvRx74a3sX6VtB5HXT4eL/v3LWM49QN23Y2+YmY4OSyqS9Z+X8OBp
-         5xxacTaZB9U2+LoCB9PE06OBW/AhKDIg8fuxZjsKhmTj88yw237yz2K2+Um/mroMWROR
-         MRqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690826069; x=1691430869;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ye1hBUjkNRk39gbDG705nkaSiiZ5DkFSScU/cjrv98U=;
-        b=fbLOZHlTWJstaXgr87YRY+Thf1ObZZBnonL8sgSFRg3MkDwQwkGEeHy8aEwUefktc+
-         i9O1IA1cIb35eEZeOxGSPlOh5g3czG+ny9I7lCw3BNKaAXfCkftFeg6TrWKc4N/cqh7Z
-         qGMcDC8lWLv8eD8sOIBGuAYp2+RMTgdao5Qrl2xVFJeCDmndcPHmw2d+hyofLlZSFf0c
-         n53yJYx/qA7aKtJngT54kJmAyDP3Rcx9Um+68bFrDOvP20/QMIwKcmJ+6Rt1OBKTPTmF
-         zGuJ5hBOnR6UCNAGyHMp/BkyyjF1XXNfBqHJhLUuFkVud6IdI722z1eZR7oRib8yABIP
-         Jb8Q==
-X-Gm-Message-State: ABy/qLaqfJ2OwT5vOkm8YQyQIlLKSNtcycBZLCo4ZMAtsuNghWxTo3sQ
-        PCTaG/G9AV5MrCbqdO7xF9UODw==
-X-Google-Smtp-Source: APBJJlEbEnRkq29IMUQ+Kip8yG6iM7uCvIqvaT6P3hXS9+YRDB58ekn1I7Jthg7ZpOUWG0IsWJ7r7w==
-X-Received: by 2002:a05:6a21:7182:b0:133:b3a9:90d with SMTP id wq2-20020a056a21718200b00133b3a9090dmr10372183pzb.36.1690826068797;
-        Mon, 31 Jul 2023 10:54:28 -0700 (PDT)
-Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
-        by smtp.gmail.com with ESMTPSA id q23-20020a637517000000b0055b4307963dsm2001743pgc.23.2023.07.31.10.54.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 10:54:27 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 17:54:22 +0000
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kai Huang <kai.huang@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>
-Subject: Re: [PATCH v2 2/6] KVM: Documentation: Update the field name gfns
- and its description in kvm_mmu_page
-Message-ID: <ZMf1TkrUjP6+/VSC@google.com>
-References: <20230626182016.4127366-1-mizhang@google.com>
- <20230626182016.4127366-3-mizhang@google.com>
- <ec65c77a-3499-6278-f352-9bbe25a44b96@infradead.org>
+        Mon, 31 Jul 2023 13:55:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219B8184;
+        Mon, 31 Jul 2023 10:55:41 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C64F22205E;
+        Mon, 31 Jul 2023 17:55:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690826139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=blrHYZH6S+MmbSDFCHnNDxEACT0tP3PtmP/NQlgF3tk=;
+        b=wcMYO8XndgLwG5p/OyuY3UpiE0l+0HMY2x1/SXrwph3joT1jV78ELTxvq5rSvQ59fT3Nan
+        eVT4LzQfnb4JQ5uE96bTIJoDTJElJZ/UjRyNF0RReDUZWsvNZAUGxD0/USFcwUfsyQ21JS
+        NbhXgR+O31ACU0arIv6SxAIQFGfSIjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690826139;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=blrHYZH6S+MmbSDFCHnNDxEACT0tP3PtmP/NQlgF3tk=;
+        b=YfZcOQKWYqRzLZYjV6sNoImbAU2dOa4BJTDS23JpYYytINavTcuFq9l4WepVwHoUXqYIVV
+        MSoFkLnJEEaHv6Dg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6FDA1133F7;
+        Mon, 31 Jul 2023 17:55:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id If54Gpv1x2SGOgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 31 Jul 2023 17:55:39 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, sam@ravnborg.org, javierm@redhat.com,
+        bagasdotme@gmail.com, rd.dunlab@gmail.com,
+        regressions@leemhuis.info, sfr@canb.auug.org.au
+Cc:     linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, regressions@lists.linux.dev,
+        linux-next@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH] fbdev/ps3fb: Build without kernel device
+Date:   Mon, 31 Jul 2023 19:55:00 +0200
+Message-ID: <20230731175535.11345-1-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ec65c77a-3499-6278-f352-9bbe25a44b96@infradead.org>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 26, 2023, Randy Dunlap wrote:
-> Hi--
-> 
-> On 6/26/23 11:20, Mingwei Zhang wrote:
-> > Update the field 'gfns' in kvm_mmu_page to 'shadowed_translation' to be
-> > consistent with the code. Also update the corresponding 'gfns' in the
-> > comments. The more detailed description of 'shadowed_translation' is
-> > already inlined in the data structure definition, so no need to duplicate
-> > the text but simply just update the names.
-> > 
-> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
-> > Reviewed-by: Kai Huang <kai.huang@intel.com>
-> > ---
-> >  Documentation/virt/kvm/x86/mmu.rst | 9 +++++----
-> >  1 file changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
-> > index 561efa8ec7d7..4c9044b4dc6c 100644
-> > --- a/Documentation/virt/kvm/x86/mmu.rst
-> > +++ b/Documentation/virt/kvm/x86/mmu.rst
-> > @@ -221,11 +221,12 @@ Shadow pages contain the following information:
-> >      at __pa(sp2->spt).  sp2 will point back at sp1 through parent_pte.
-> >      The spt array forms a DAG structure with the shadow page as a node, and
-> >      guest pages as leaves.
-> > -  gfns:
-> > -    An array of 512 guest frame numbers, one for each present pte.  Used to
-> > -    perform a reverse map from a pte to a gfn. When role.direct is set, any
-> > +  shadowed_translation:
-> > +    An array of 512 shadow translation entries, one for each present pte. Used
-> > +    to perform a reverse map from a pte to a gfn. When role.direct is set, any
-> >      element of this array can be calculated from the gfn field when used, in
-> > -    this case, the array of gfns is not allocated. See role.direct and gfn.
-> > +    this case, the array of shadowed_translation is not allocated. See
-> 
-> I cannot parse the before version nor the after version of this sentence (new version):
-> 
->                                                   When role.direct is set, any
->     element of this array can be calculated from the gfn field when used, in
->     this case, the array of shadowed_translation is not allocated.
-> 
-> 
+Use fb_info() to print status message at the end of the probe function,
+which avoids decoding the devices. fb_info() works with or without an
+fbdev kernel device. Fixes the following error:
 
-Sorry for the late reply.  Why is it not parsed? It just means that when
-role.direct is set, do not use gfns. The gfn can be calculated from the
-base address + offset. The base address here is the 'gfn' field in
-kvm_mmu_page.
+../drivers/video/fbdev/ps3fb.c: In function 'ps3fb_probe':
+../drivers/video/fbdev/ps3fb.c:1172:40: error: 'struct fb_info' has no member named 'dev'
+ 1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
+      |                                        ^~
+../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
+  110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+      |                                     ^~~~~~~~~~~
+../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
+ 1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
+      |         ^~~~~~~~
+../drivers/video/fbdev/ps3fb.c:1172:61: error: 'struct fb_info' has no member named 'dev'
+ 1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
+      |                                                             ^~
+../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
+  110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+      |                                     ^~~~~~~~~~~
+../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
+ 1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
+      |         ^~~~~~~~
 
-> > +    role.direct and gfn.
-> >    root_count:
-> >      A counter keeping track of how many hardware registers (guest cr3 or
-> >      pdptrs) are now pointing at the page.  While this counter is nonzero, the
-> 
-> -- 
-> ~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Closes: https://lore.kernel.org/lkml/ccc63065-2976-88ef-1211-731330bf2866@infradead.org/
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Fixes: 701d2054fa31 ("fbdev: Make support for userspace interfaces configurable")
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+Cc: Helge Deller <deller@gmx.de>
+Cc: Javier Martinez Canillas <javierm@redhat.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Thorsten Leemhuis <regressions@leemhuis.info>
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-fbdev@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+---
+ drivers/video/fbdev/ps3fb.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/video/fbdev/ps3fb.c b/drivers/video/fbdev/ps3fb.c
+index 5aedc30c5f7e..64d291d6b153 100644
+--- a/drivers/video/fbdev/ps3fb.c
++++ b/drivers/video/fbdev/ps3fb.c
+@@ -1168,9 +1168,7 @@ static int ps3fb_probe(struct ps3_system_bus_device *dev)
+ 
+ 	ps3_system_bus_set_drvdata(dev, info);
+ 
+-	dev_info(info->device, "%s %s, using %u KiB of video memory\n",
+-		 dev_driver_string(info->dev), dev_name(info->dev),
+-		 info->fix.smem_len >> 10);
++	fb_info(info, "using %u KiB of video memory\n", info->fix.smem_len >> 10);
+ 
+ 	task = kthread_run(ps3fbd, info, DEVICE_NAME);
+ 	if (IS_ERR(task)) {
+-- 
+2.41.0
+
