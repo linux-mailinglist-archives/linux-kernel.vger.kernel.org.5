@@ -2,120 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BD97695BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4DE7695C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbjGaMLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
+        id S230323AbjGaMNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbjGaMLp (ORCPT
+        with ESMTP id S229713AbjGaMNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:11:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB931703;
-        Mon, 31 Jul 2023 05:11:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B78860DF6;
-        Mon, 31 Jul 2023 12:11:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 514E0C433C7;
-        Mon, 31 Jul 2023 12:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690805489;
-        bh=naFJbgINelM2717nXbRFhss56yWnfCySmFfjHVRWHwU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n3iL8vOllRKgjSqkNh56bsU6zYgHtsTCCLV7IfOKnA51FJtax59oMDDLBmrZRbw8W
-         9xbM9ECDdl8ZicSwC2jCo442D6I1vTontuWZF8w26nh6qwGDlEwTNH/32JHyVKq269
-         qcbbGgMJ0W9Ddhs+Z+4k1AcDcOVC/jlQMa9Z9dQuMmVGO6N/ZvYHDdgb+/5JwxwDHk
-         XaewpWQ5Q/w7lw7TiG/6MyBJjK6tv8OE6y1L9HoDZa7qvyoqCjUuVMigGeAPAklmD/
-         foVuBEJxgF3CX+HqEYQQZ2Upu+6iXeTPb9KLTInzh/rcEgxav4Vfq3dCLsfuJ6ST1N
-         1BEc4CdSyBMVg==
-Date:   Mon, 31 Jul 2023 14:11:26 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Jai Luthra <j-luthra@ti.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Benoit Parrot <bparrot@ti.com>,
-        Vaishnav Achath <vaishnav.a@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>, nm@ti.com,
-        devarsht@ti.com
-Subject: Re: [PATCH v8 00/16] CSI2RX support on J721E and AM62
-Message-ID: <zf34tzgluu7x44b7ehpqui4svhcs5kg7hfzurgventninpazam@yullzakyrwxy>
-References: <20230731-upstream_csi-v8-0-fb7d3661c2c9@ti.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5md2j5cen42xfvab"
-Content-Disposition: inline
-In-Reply-To: <20230731-upstream_csi-v8-0-fb7d3661c2c9@ti.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 08:13:30 -0400
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 74D0D10DF;
+        Mon, 31 Jul 2023 05:13:27 -0700 (PDT)
+Received: from localhost.localdomain (unknown [125.120.146.22])
+        by mail-app2 (Coremail) with SMTP id by_KCgDHP8NMpcdkbRbaCg--.54964S4;
+        Mon, 31 Jul 2023 20:13:01 +0800 (CST)
+From:   Lin Ma <linma@zju.edu.cn>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, fw@strlen.de, yang.lee@linux.alibaba.com,
+        jgg@ziepe.ca, markzhang@nvidia.com, phaddad@nvidia.com,
+        yuancan@huawei.com, linma@zju.edu.cn, ohartoov@nvidia.com,
+        chenzhongjin@huawei.com, aharonl@nvidia.com, leon@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH net v1 1/2] netlink: let len field used to parse type-not-care nested attrs
+Date:   Mon, 31 Jul 2023 20:12:47 +0800
+Message-Id: <20230731121247.3972783-1-linma@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgDHP8NMpcdkbRbaCg--.54964S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr18JF45tF15Kw17GryUWrg_yoWrGFW5pF
+        Wvkryjyr9xGryxCr92kr1Iga4aqr18JrZ8GrZ8Xws7ZFs0g3srG34rWFnIva4I9F48Ja17
+        tF1YgrW3uF1UZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+        6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUQvt
+        AUUUUU=
+X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Recently I found several manual parsing cases for nested attributes
+whose fix is rather trivial. The pattern for those like below
 
---5md2j5cen42xfvab
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+const struct nla_policy y[...] = {
+  ...
+  X	= { .type = NLA_NESTED },
+  ...
+}
 
-Hi,
+nla_for_each_nested/attr(nla, tb[X], ...) {
+   // nla_type never used
+   ...
+   x = nla_data(nla) // directly access nla without length checking
+   ....
+}
 
-On Mon, Jul 31, 2023 at 01:59:18PM +0530, Jai Luthra wrote:
+One example can be found in discussion at:
+https://lore.kernel.org/all/20230723074504.3706691-1-linma@zju.edu.cn/
 
-> This series adds support for CSI2 capture on J721E. It includes some
-> fixes to the Cadence CSI2RX driver, and adds the TI CSI2RX wrapper driver.
->=20
-> This is a V8 of the below V7 series,
-> https://lore.kernel.org/all/20230314115516.667-1-vaishnav.a@ti.com/
->=20
-> Since Pratyush moved out of TI, Vaishnav & I have been working on
-> this driver, and I will be maintaining it upstream.
->=20
-> J721E CSI2RX driver can also be extended to support multi-stream
-> capture, filtering different CSI Virtual Channels (VC) or Data Types
-> (DT) to different DMA channels. A WIP series based on v7 is available
-> for reference at https://github.com/jailuthra/linux/commits/csi_multi_wip
->=20
-> I will rebase the multi-stream patches on the current series (v8) and
-> post them as RFC in the coming weeks.
->=20
-> Testing logs: https://gist.github.com/jailuthra/eaeb3af3c65b67e1bc0d5db28=
-180131d
->=20
-> Signed-off-by: Jai Luthra <j-luthra@ti.com>
+In short, the very direct idea to fix such lengh-check-forgotten bug is
+add nla_len() checks like
 
-For patches 1-14:
-Reviewed-by: Maxime Ripard <mripard@kernel.org>
+  if (nla_len(nla) < SOME_LEN)
+    return -EINVAL;
 
-Thanks!
-Maxime
+However, this is tedious and just like Leon said: add another layer of
+cabal knowledge. The better solution should leverage the nla_policy and
+discard nlattr whose length is invalid when doing parsing. That is, we
+should defined a nested_policy for the X above like
 
---5md2j5cen42xfvab
-Content-Type: application/pgp-signature; name="signature.asc"
+  X      = { NLA_POLICY_NESTED(Z) },
 
------BEGIN PGP SIGNATURE-----
+But unfortunately, as said above, the nla_type is never used in such
+manual parsing cases, which means is difficult to defined a nested
+policy Z without breaking user space (they may put weird value in type
+of these nlattrs, we have no idea).
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMek7gAKCRDj7w1vZxhR
-xQJhAP92ui3wC2Fzxysvom9q9py3uK3FF/4avQZJbp5v4JFL9QEAkUk+pBCriUUO
-lR24dHTFZ+jKITMFUgp0h8yL2mxtyg0=
-=XvwT
------END PGP SIGNATURE-----
+To this end, this commit uses the len field in nla_policy crafty and
+allow the existing validate_nla checks such type-not-care nested attrs.
+In current implementation, for attribute with type NLA_NESTED, the len
+field used as the length of the nested_policy:
 
---5md2j5cen42xfvab--
+	{ .type = NLA_NESTED, .nested_policy = policy, .len = maxattr }
+
+	_NLA_POLICY_NESTED(ARRAY_SIZE(policy) - 1, policy)
+
+If one nlattr does not provide policy, like the example X, this len
+field is not used. This means we can leverage this field for our end.
+This commit introduces one new macro named NLA_POLICY_NESTED_NO_TYPE
+and let validate_nla() to use the len field as a hint to check the
+nested attributes. Therefore, such manual parsing code can also define
+a nla_policy and take advantage of the validation within the existing
+parsers like nla_parse_deprecated..
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+---
+ include/net/netlink.h |  6 ++++++
+ lib/nlattr.c          | 11 +++++++++++
+ 2 files changed, 17 insertions(+)
+
+diff --git a/include/net/netlink.h b/include/net/netlink.h
+index b12cd957abb4..d825a5672161 100644
+--- a/include/net/netlink.h
++++ b/include/net/netlink.h
+@@ -229,6 +229,9 @@ enum nla_policy_validation {
+  *                         nested header (or empty); len field is used if
+  *                         nested_policy is also used, for the max attr
+  *                         number in the nested policy.
++ *                         For NLA_NESTED whose nested nlattr is not necessary,
++ *                         the len field will indicate the exptected length of
++ *                         them for checking.
+  *    NLA_U8, NLA_U16,
+  *    NLA_U32, NLA_U64,
+  *    NLA_S8, NLA_S16,
+@@ -372,6 +375,9 @@ struct nla_policy {
+ 	_NLA_POLICY_NESTED(ARRAY_SIZE(policy) - 1, policy)
+ #define NLA_POLICY_NESTED_ARRAY(policy) \
+ 	_NLA_POLICY_NESTED_ARRAY(ARRAY_SIZE(policy) - 1, policy)
++/* not care about the nested attributes, just do length check */
++#define NLA_POLICY_NESTED_NO_TYPE(length) \
++	_NLA_POLICY_NESTED(length, NULL)
+ #define NLA_POLICY_BITFIELD32(valid) \
+ 	{ .type = NLA_BITFIELD32, .bitfield32_valid = valid }
+ 
+diff --git a/lib/nlattr.c b/lib/nlattr.c
+index 489e15bde5c1..29a412b41d28 100644
+--- a/lib/nlattr.c
++++ b/lib/nlattr.c
+@@ -488,6 +488,18 @@ static int validate_nla(const struct nlattr *nla, int maxtype,
+ 				 */
+ 				return err;
+ 			}
++		} else if (pt->len) {
++			/* length set without nested_policy, the len field will
++			 * be used to check those nested attributes here,
++			 * we will not do parse here but just validation as the
++			 * consumers will do manual parsing.
++			 */
++			const struct nlattr *nla_nested;
++			int rem;
++
++			nla_for_each_attr(nla_nested, nla_data(nla), nla_len(nla), rem)
++				if (nla_len(nla_nested) < pt->len)
++					return -EINVAL;
+ 		}
+ 		break;
+ 	case NLA_NESTED_ARRAY:
+-- 
+2.17.1
+
