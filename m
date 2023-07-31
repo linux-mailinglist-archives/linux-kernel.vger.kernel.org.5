@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D386E76A292
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B24C76A295
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbjGaVXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42196 "EHLO
+        id S231266AbjGaVX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbjGaVXN (ORCPT
+        with ESMTP id S231153AbjGaVX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:23:13 -0400
+        Mon, 31 Jul 2023 17:23:26 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF7D10F6;
-        Mon, 31 Jul 2023 14:23:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFF81BCD;
+        Mon, 31 Jul 2023 14:23:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E992A612D6;
-        Mon, 31 Jul 2023 21:23:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BC87C433C7;
-        Mon, 31 Jul 2023 21:23:06 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C89C612A4;
+        Mon, 31 Jul 2023 21:23:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D351EC433C7;
+        Mon, 31 Jul 2023 21:23:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690838591;
-        bh=ZyA51bf3achAwAj2WEOOfH6Xvl1Jq7XbarWlRr1GV6k=;
+        s=k20201202; t=1690838602;
+        bh=zal/nhqEkOd2DBAsf4yglySl397XzFBXNWifX5Rkvrs=;
         h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=N7cxUo1zYeR4rSIsnRiuYIS+RQTYSdjVxVZWRXFS1Bp6govWyRXIp+cVgD6psTcbS
-         qnZqkgqFS3ROqhqlOSxl3jgwzHNbX5PVvycEraKiE2los3UWqAdqeVPLRs9+W0Zl9c
-         cfvVhSr938IxwMAUZk5fBI8iHSpkAikoMh2LPspmHBfiDZPYFzlBTntMI3yuF8owAD
-         Xof0aH2mMZB6U30HHIeTG6yCw1vtAoKdVwgj27s7ldHxFkT3ta1cQgDarKnEbpYVlT
-         kdXj0ev17IJNCaRzC2LO3u6YcrWKwbmVVSquVfoAlfM+BtAWg9zA6iDIEREtHvV2wk
-         xpLZKTKWPb4JQ==
-Message-ID: <aaf1aba2-a757-d9c8-77c9-182ed1aaed35@kernel.org>
-Date:   Mon, 31 Jul 2023 23:23:04 +0200
+        b=FfTKhsh3KSdUtzVHpvcQkBLUfxMmAfCQMC4gvRGdj3OY/0KZuxzXgbR7kW30ydjqY
+         uO5LFQdsLhzc8NxAj4jvS78si/is4drRcBrjhmP+ftRVLJKxKqEa98zqmfnZroqudj
+         MwzTXuGV4zjSJmI/8kMH4RFFctQMMCW6IjnQZEiuSO1wpdLmv0IL8ATqc2Nk0iT6k7
+         A63LW+PbevWozYpKCBDxs6Tdb9uNzbTirbraCmS/Pg9AwuwqdQj+2ndsH4EVPm1tw6
+         DgknfhATdR/T7l2p42I6efAb72XlRw7mLB4b7mPjrDgij+wBc6+WhKhVFT8y0lXG1F
+         EvjUBcjwGb3+A==
+Message-ID: <ac212920-286c-1ef5-fd40-a59717f59a92@kernel.org>
+Date:   Mon, 31 Jul 2023 23:23:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.1
-Subject: Re: [PATCH 03/33] iris: vidc: add v4l2 wrapper file
+Subject: Re: [PATCH 02/33] iris: vidc: add core functions
 Content-Language: en-US
 To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
         stanimir.k.varbanov@gmail.com, agross@kernel.org,
@@ -47,9 +47,9 @@ To:     Vikash Garodia <quic_vgarodia@quicinc.com>,
         linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org
 Cc:     quic_dikshita@quicinc.com
 References: <1690550624-14642-1-git-send-email-quic_vgarodia@quicinc.com>
- <1690550624-14642-4-git-send-email-quic_vgarodia@quicinc.com>
+ <1690550624-14642-3-git-send-email-quic_vgarodia@quicinc.com>
 From:   Krzysztof Kozlowski <krzk@kernel.org>
-In-Reply-To: <1690550624-14642-4-git-send-email-quic_vgarodia@quicinc.com>
+In-Reply-To: <1690550624-14642-3-git-send-email-quic_vgarodia@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -63,217 +63,126 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 28/07/2023 15:23, Vikash Garodia wrote:
-> Here is the implementation of v4l2 wrapper functions for all
-> v4l2 IOCTLs.
+> From: Dikshita Agarwal <quic_dikshita@quicinc.com>
 > 
-> Signed-off-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
-> Signed-off-by: Vikash Garodia <quic_vgarodia@quicinc.com>
-> ---
->  .../platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h    |  77 ++
->  .../platform/qcom/iris/vidc/src/msm_vidc_v4l2.c    | 953 +++++++++++++++++++++
->  2 files changed, 1030 insertions(+)
->  create mode 100644 drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h
->  create mode 100644 drivers/media/platform/qcom/iris/vidc/src/msm_vidc_v4l2.c
-> 
-> diff --git a/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h
-> new file mode 100644
-> index 0000000..3766c9d
-> --- /dev/null
-> +++ b/drivers/media/platform/qcom/iris/vidc/inc/msm_vidc_v4l2.h
-> @@ -0,0 +1,77 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#ifndef _MSM_VIDC_V4L2_H_
-> +#define _MSM_VIDC_V4L2_H_
-> +
-> +#include <linux/fs.h>
-> +#include <linux/poll.h>
-> +#include <media/v4l2-ctrls.h>
-> +#include <media/v4l2-dev.h>
-> +#include <media/v4l2-ioctl.h>
-> +
-> +int msm_v4l2_open(struct file *filp);
-> +int msm_v4l2_close(struct file *filp);
-> +int msm_v4l2_querycap(struct file *filp, void *fh,
-> +		      struct v4l2_capability *cap);
-> +int msm_v4l2_enum_fmt(struct file *file, void *fh,
-> +		      struct v4l2_fmtdesc *f);
-> +int msm_v4l2_try_fmt(struct file *file, void *fh,
-> +		     struct v4l2_format *f);
-> +int msm_v4l2_s_fmt(struct file *file, void *fh,
-> +		   struct v4l2_format *f);
-> +int msm_v4l2_g_fmt(struct file *file, void *fh,
-> +		   struct v4l2_format *f);
-> +int msm_v4l2_s_selection(struct file *file, void *fh,
-> +			 struct v4l2_selection *s);
-> +int msm_v4l2_g_selection(struct file *file, void *fh,
-> +			 struct v4l2_selection *s);
-> +int msm_v4l2_s_parm(struct file *file, void *fh,
-> +		    struct v4l2_streamparm *a);
-> +int msm_v4l2_g_parm(struct file *file, void *fh,
-> +		    struct v4l2_streamparm *a);
-> +int msm_v4l2_reqbufs(struct file *file, void *fh,
-> +		     struct v4l2_requestbuffers *b);
-> +int msm_v4l2_querybuf(struct file *file, void *fh,
-> +		      struct v4l2_buffer *b);
-> +int msm_v4l2_create_bufs(struct file *filp, void *fh,
-> +			 struct v4l2_create_buffers *b);
-> +int msm_v4l2_prepare_buf(struct file *filp, void *fh,
-> +			 struct v4l2_buffer *b);
-> +int msm_v4l2_qbuf(struct file *file, void *fh,
-> +		  struct v4l2_buffer *b);
-> +int msm_v4l2_dqbuf(struct file *file, void *fh,
-> +		   struct v4l2_buffer *b);
-> +int msm_v4l2_streamon(struct file *file, void *fh,
-> +		      enum v4l2_buf_type i);
-> +int msm_v4l2_streamoff(struct file *file, void *fh,
-> +		       enum v4l2_buf_type i);
-> +int msm_v4l2_subscribe_event(struct v4l2_fh *fh,
-> +			     const struct v4l2_event_subscription *sub);
-> +int msm_v4l2_unsubscribe_event(struct v4l2_fh *fh,
-> +			       const struct v4l2_event_subscription *sub);
-> +int msm_v4l2_try_decoder_cmd(struct file *file, void *fh,
-> +			     struct v4l2_decoder_cmd *enc);
-> +int msm_v4l2_decoder_cmd(struct file *file, void *fh,
-> +			 struct v4l2_decoder_cmd *dec);
-> +int msm_v4l2_try_encoder_cmd(struct file *file, void *fh,
-> +			     struct v4l2_encoder_cmd *enc);
-> +int msm_v4l2_encoder_cmd(struct file *file, void *fh,
-> +			 struct v4l2_encoder_cmd *enc);
-> +int msm_v4l2_enum_framesizes(struct file *file, void *fh,
-> +			     struct v4l2_frmsizeenum *fsize);
-> +int msm_v4l2_enum_frameintervals(struct file *file, void *fh,
-> +				 struct v4l2_frmivalenum *fival);
-> +int msm_v4l2_queryctrl(struct file *file, void *fh,
-> +		       struct v4l2_queryctrl *ctrl);
-> +int msm_v4l2_querymenu(struct file *file, void *fh,
-> +		       struct v4l2_querymenu *qmenu);
-> +unsigned int msm_v4l2_poll(struct file *filp,
-> +			   struct poll_table_struct *pt);
-> +void msm_v4l2_m2m_device_run(void *priv);
-> +void msm_v4l2_m2m_job_abort(void *priv);
-> +
-> +#endif // _MSM_VIDC_V4L2_H_
-> diff --git a/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_v4l2.c b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_v4l2.c
-> new file mode 100644
-> index 0000000..6dfb18b
-> --- /dev/null
-> +++ b/drivers/media/platform/qcom/iris/vidc/src/msm_vidc_v4l2.c
-> @@ -0,0 +1,953 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-> + */
-> +
-> +#include "msm_vidc.h"
-> +#include "msm_vidc_core.h"
-> +#include "msm_vidc_debug.h"
-> +#include "msm_vidc_driver.h"
-> +#include "msm_vidc_inst.h"
-> +#include "msm_vidc_internal.h"
-> +#include "msm_vidc_v4l2.h"
-> +
-> +static struct msm_vidc_inst *get_vidc_inst(struct file *filp, void *fh)
-> +{
-> +	if (!filp || !filp->private_data)
-> +		return NULL;
-> +	return container_of(filp->private_data,
-> +					struct msm_vidc_inst, fh);
-> +}
-> +
-> +unsigned int msm_v4l2_poll(struct file *filp, struct poll_table_struct *pt)
-> +{
-> +	int poll = 0;
-> +	struct msm_vidc_inst *inst = get_vidc_inst(filp, NULL);
-> +
-> +	inst = get_inst_ref(g_core, inst);
-> +	if (!inst) {
-> +		d_vpr_e("%s: invalid instance\n", __func__);
+> This implements the platform driver methods, file
+> operations and v4l2 registration.
 
-This does not look like Linux coding style. Don't create your own
-abstraction layer over Linux internal API. Use standard Linux functions
-which will behave better and scale along with kernel development.
 
-> +		return POLLERR;
-> +	}
-> +	if (is_session_error(inst)) {
-> +		i_vpr_e(inst, "%s: inst in error state\n", __func__);
-
-i_vpr_e is so obvious for every kernel developer... Please, no.
-
-> +		poll = POLLERR;
-> +		goto exit;
+> +
+> +	core->debugfs_parent = msm_vidc_devm_debugfs_get(&pdev->dev);
+> +	if (!core->debugfs_parent)
+> +		d_vpr_h("Failed to create debugfs for msm_vidc\n");
+> +
+> +	rc = msm_vidc_devm_init_core(&pdev->dev, core);
+> +	if (rc) {
+> +		d_vpr_e("%s: init core failed with %d\n", __func__, rc);
+> +		goto init_core_failed;
 > +	}
 > +
-> +	poll = msm_vidc_poll((void *)inst, filp, pt);
-> +	if (poll)
-> +		goto exit;
-> +
-> +exit:
-> +	put_inst(inst);
-> +	return poll;
-> +}
-> +
-> +int msm_v4l2_open(struct file *filp)
-> +{
-> +	struct video_device *vdev = video_devdata(filp);
-> +	struct msm_video_device *vid_dev =
-> +		container_of(vdev, struct msm_video_device, vdev);
-> +	struct msm_vidc_core *core = video_drvdata(filp);
-> +	struct msm_vidc_inst *inst;
-> +
-> +	inst = msm_vidc_open(core, vid_dev->type);
-> +	if (!inst) {
-> +		d_vpr_e("Failed to create instance, type = %d\n",
-> +			vid_dev->type);
-> +		return -ENOMEM;
-> +	}
-> +	filp->private_data = &inst->fh;
-> +	return 0;
-> +}
-> +
-> +int msm_v4l2_close(struct file *filp)
-> +{
-> +	int rc = 0;
-> +	struct msm_vidc_inst *inst;
-> +
-> +	inst = get_vidc_inst(filp, NULL);
-> +	if (!inst) {
-> +		d_vpr_e("%s: invalid instance\n", __func__);
-> +		return -EINVAL;
+> +	rc = msm_vidc_init_platform(core);
+> +	if (rc) {
+> +		d_vpr_e("%s: init platform failed with %d\n", __func__, rc);
+> +		rc = -EINVAL;
+> +		goto init_plat_failed;
 > +	}
 > +
-> +	rc = msm_vidc_close(inst);
-> +	filp->private_data = NULL;
+> +	rc = msm_vidc_init_resources(core);
+> +	if (rc) {
+> +		d_vpr_e("%s: init resource failed with %d\n", __func__, rc);
+> +		goto init_res_failed;
+
+NAK.
+
+return dev_err_probe.
+
+> +	}
+> +
+> +	rc = msm_vidc_init_core_caps(core);
+> +	if (rc) {
+> +		d_vpr_e("%s: init core caps failed with %d\n", __func__, rc);
+> +		goto init_res_failed;
+> +	}
+> +
+> +	rc = msm_vidc_init_instance_caps(core);
+> +	if (rc) {
+> +		d_vpr_e("%s: init inst cap failed with %d\n", __func__, rc);
+> +		goto init_inst_caps_fail;
+> +	}
+> +
+> +	core->debugfs_root = msm_vidc_debugfs_init_core(core);
+> +	if (!core->debugfs_root)
+> +		d_vpr_h("Failed to init debugfs core\n");
+> +
+> +	d_vpr_h("populating sub devices\n");
+> +	/*
+> +	 * Trigger probe for each sub-device i.e. qcom,msm-vidc,context-bank.
+> +	 * When msm_vidc_probe is called for each sub-device, parse the
+> +	 * context-bank details.
+> +	 */
+> +	rc = of_platform_populate(pdev->dev.of_node, msm_vidc_dt_match, NULL,
+> +				  &pdev->dev);
+> +	if (rc) {
+> +		d_vpr_e("Failed to trigger probe for sub-devices\n");
+> +		goto sub_dev_failed;
+> +	}
+> +
+> +	rc = v4l2_device_register(&pdev->dev, &core->v4l2_dev);
+> +	if (rc) {
+> +		d_vpr_e("Failed to register v4l2 device\n");
+> +		goto v4l2_reg_failed;
+> +	}
+> +
+> +	/* setup the decoder device */
+> +	rc = msm_vidc_register_video_device(core, MSM_VIDC_DECODER, nr);
+> +	if (rc) {
+> +		d_vpr_e("Failed to register video decoder\n");
+> +		goto dec_reg_failed;
+> +	}
+> +
+> +	/* setup the encoder device */
+> +	rc = msm_vidc_register_video_device(core, MSM_VIDC_ENCODER, nr + 1);
+> +	if (rc) {
+> +		d_vpr_e("Failed to register video encoder\n");
+> +		goto enc_reg_failed;
+> +	}
+> +
+> +	rc = venus_hfi_queue_init(core);
+> +	if (rc) {
+> +		d_vpr_e("%s: interface queues init failed\n", __func__);
+> +		goto queues_init_failed;
+> +	}
+> +
+> +	rc = msm_vidc_core_init(core);
+> +	if (rc) {
+> +		d_vpr_e("%s: sys init failed\n", __func__);
+> +		goto core_init_failed;
+> +	}
+> +
+> +	d_vpr_h("%s(): succssful\n", __func__);
+
+No need, drop.
+
+> +
 > +	return rc;
-> +}
 > +
-> +int msm_v4l2_querycap(struct file *filp, void *fh,
-> +		      struct v4l2_capability *cap)
-> +{
-> +	struct msm_vidc_inst *inst = get_vidc_inst(filp, fh);
-> +	int rc = 0;
-> +
-> +	inst = get_inst_ref(g_core, inst);
-> +	if (!inst || !cap) {
-> +		d_vpr_e("%s: invalid instance\n", __func__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	client_lock(inst, __func__);
+> +core_init_failed:
+> +	venus_hfi_queue_deinit(core);
+> +queues_init_failed:
+> +	of_platform_depopulate(&pdev->dev);
+> +sub_dev_failed:
+> +	msm_vidc_unregister_video_device(core, MSM_VIDC_ENCODER);
+> +enc_reg_failed:
+> +	msm_vidc_unregister_video_device(core, MSM_VIDC_DECODER);
+> +dec_reg_failed:
+> +	v4l2_device_unregister(&core->v4l2_dev);
+> +v4l2_reg_failed:
+> +init_inst_caps_fail:
+> +init_res_failed:
+> +init_plat_failed:
+> +init_core_failed:
 
-? So we don't know what's this? Mutex? Spinlock? Own reinvented lock?
-
-> +	inst_lock(inst, __func__);
-
-Neither this?
-
-No, don't create your own abstractions over standard API.
+Ykes! No. This code needs more work.
 
 Best regards,
 Krzysztof
