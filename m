@@ -2,127 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C4576A1D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA2C76A1D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbjGaU1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        id S230339AbjGaU1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGaU1h (ORCPT
+        with ESMTP id S230188AbjGaU1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:27:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB23133;
+        Mon, 31 Jul 2023 16:27:38 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C111723;
         Mon, 31 Jul 2023 13:27:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B0674612CB;
-        Mon, 31 Jul 2023 20:27:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65EFAC433C8;
-        Mon, 31 Jul 2023 20:27:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690835255;
-        bh=TmbK524pfD8a3wRy4IrVFirwLTHysXeU3Jn2VfJulsQ=;
-        h=From:Date:Subject:To:Cc:From;
-        b=ZygBj+AMp4tlhH/6B20I9e1AhTXK71uW09MNLzKXq76l23R7Mg9jrQnRNzzM4i/E1
-         sQ63hOBkya0hX/N3/K8T8Rntb/gub/FnoDiZDtYUF5mXY54evXtIVilNRPkLE2PdyQ
-         VZyevRaH4LdtW7kpXgSXy/Pp+PqYo3vcmpgDVtj1M4PvDPKu/XV/5m4BSG4UZKb5mI
-         qic/XjjFtTL+uxKMADZqHIdPAHmtBD6qv0ySSVAbAiA9Sw6/0RHXD8NvygSMVbVJVI
-         4hrmXLVlIffiQ1NRS7B7SCk6VmWUBas21L7cmEzedzY/OGh17chuobRvwgQSkODitG
-         y6i5lM9SCkXEA==
-From:   Jeff Layton <jlayton@kernel.org>
-Date:   Mon, 31 Jul 2023 16:27:30 -0400
-Subject: [PATCH RFC] nfsd: don't hand out write delegations on O_WRONLY
- opens
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="369124347"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="369124347"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:27:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="678449692"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="678449692"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga003.jf.intel.com with ESMTP; 31 Jul 2023 13:27:34 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andy@kernel.org>)
+        id 1qQZUL-004oIS-0k;
+        Mon, 31 Jul 2023 23:27:33 +0300
+Date:   Mon, 31 Jul 2023 23:27:32 +0300
+From:   Andy Shevchenko <andy@kernel.org>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 14/42] power: reset: Add a driver for the ep93xx reset
+Message-ID: <ZMgZNOm2okw47Gaa@smile.fi.intel.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+ <20230605-ep93xx-v3-14-3d63a5f1103e@maquefel.me>
+ <ZLq0Z0QgBdCoDpV+@smile.fi.intel.com>
+ <7788b12515f7e00b4bb0a04da30fc7fd0fdb8d51.camel@maquefel.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230731-wdeleg-v1-1-f8fe1ce11b36@kernel.org>
-X-B4-Tracking: v=1; b=H4sIADEZyGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDc2ND3fKU1JzUdN2kpJQksyQj00TjZDMloOKCotS0zAqwQdFKQW7OSrG
- 1tQCgK1ToXQAAAA==
-To:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1768; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=TmbK524pfD8a3wRy4IrVFirwLTHysXeU3Jn2VfJulsQ=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBkyBk2u6nbq3M7Vqj+uN7GKDpu6v5UE5FoFoEKa
- yTCfF3CqKSJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZMgZNgAKCRAADmhBGVaC
- FVydEADOE1IOAcbwePjD7rmhaUtW4W+4f6uA28DwVoHhLJAsP9GGCijdqeSXpoY3js0bbRKdc8L
- Eoi7FdsYcZw0pncyx2GAtQUlvu7V5i2cpucu/o568T3PN86cGBbDhKDuF3lAKYcSSsXLG7iQkaj
- 0uw5z6nQCH8BI3dazkQoKphuKx1WZIWe0d+VfTsPxa1ScFZdSlQv/cwsU5SCEKFzu/DhIu4mIsS
- qdfMdZG6ca7ooVQzqjWTPt7UXEtsDBZRgynVIM8SRNObMwqL1vlMxFuzmipcM4L5v6hjPczhsvb
- Khkupqd0imwdmmGP+XTKlrcB7Qvfji+0Zo3GeP7RF1jQPF5knHTap2JDhR2fpIzZHhtOR3igJNd
- UW8yWYM7nwqVZXYyP9oHyuOkDAbeM643X9EMWQlGjw1Bcqw028eIztoCYdo+/6FnUqnBKs+MqSR
- t7LfxQyNFTZYzHLF3GWjUC48nZcmJrKIlYAqp2zlxR0FBbm83aS6TtsIxyO8ldt0qq1ueYHNL61
- bm8NHW52sHaPOTeXALLNUD2eArsdKlctGhoMYLqtPJTeHVZdsAFVe/YAxbGKc4ziN89eVvE2z1n
- 40KAchXnqJBhCAhQNqfdxJfqzlP9REpNL2UbwlSxbRjeVcGcUhZn9At8Q204lsAByaERVwo1YgG
- zSgGf4Y2vSBdGBQ==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7788b12515f7e00b4bb0a04da30fc7fd0fdb8d51.camel@maquefel.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed that xfstests generic/001 was failing against linux-next nfsd.
+On Fri, Jul 28, 2023 at 04:53:19PM +0300, Nikita Shubin wrote:
+> On Fri, 2023-07-21 at 19:37 +0300, Andy Shevchenko wrote:
+> > On Thu, Jul 20, 2023 at 02:29:14PM +0300, Nikita Shubin via B4 Relay
+> > wrote:
 
-The client would request a OPEN4_SHARE_ACCESS_WRITE open, and the server
-would hand out a write delegation. The client would then try to use that
-write delegation as the source stateid in a COPY or CLONE operation, and
-the server would respond with NFS4ERR_STALE.
+...
 
-The problem is that the struct file associated with the delegation does
-not necessarily have read permissions. It's handing out a write
-delegation on what is effectively an O_WRONLY open. RFC 8881 states:
+> > > +// SPDX-License-Identifier: (GPL-2.0)
+> > 
+> > Are you sure this is correct form? 
+> 
+> Should it be // SPDX-License-Identifier: GPL-2.0+ ?
 
- "An OPEN_DELEGATE_WRITE delegation allows the client to handle, on its
-  own, all opens."
+I don't know, ask your Legal department or your lawyer.
 
-Given that the client didn't request any read permissions, and that nfsd
-didn't check for any, it seems wrong to give out a write delegation.
+(note that the 2.0-only and 2.0-or-later are different)
 
-Don't hand out a delegation if the client didn't request
-OPEN4_SHARE_ACCESS_BOTH.
+I'm talking only about the form, not about the licence itself.
 
-This fixes xfstest generic/001.
+> > Have you checked your patches?
+> 
+> Could you please be more specific:
+> $ scripts/checkpatch.pl -f drivers/power/reset/ep93xx-restart.c
+> total: 0 errors, 0 warnings, 86 lines checked
+> 
+> $ git format-patch -1 51f03c64b8fde79fb16b146d87769b7508b6d114 --stdout
+> | scripts/checkpatch.pl -
+> WARNING: please write a help paragraph that fully describes the config
+> symbol
+> ...
+> WARNING: added, moved or deleted file(s), does MAINTAINERS need
+> updating?
+> 
+> I don't see any license complains...
 
-Closes: https://bugzilla.linux-nfs.org/show_bug.cgi?id=412
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/nfsd/nfs4state.c | 2 ++
- 1 file changed, 2 insertions(+)
+checkpatch is not the ideal tool...
 
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index ef7118ebee00..9f1c90afed72 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -5462,6 +5462,8 @@ nfs4_set_delegation(struct nfsd4_open *open, struct nfs4_ol_stateid *stp,
- 		return ERR_PTR(-EAGAIN);
- 
- 	if (open->op_share_access & NFS4_SHARE_ACCESS_WRITE) {
-+		if (!(open->op_share_access & NFS4_SHARE_ACCESS_READ))
-+			return ERR_PTR(-EBADF);
- 		nf = find_writeable_file(fp);
- 		dl_type = NFS4_OPEN_DELEGATE_WRITE;
- 	} else {
+> checkpatch.pl is working as intented as:
+> 
+> $ scripts/checkpatch.pl -f drivers/power/reset/ep93xx-restart.c
+> WARNING: 'SPDX-License-Identifier: (FOOOO)' is not supported in
+> LICENSES/...
+> #1: FILE: drivers/power/reset/ep93xx-restart.c:1:
+> +// SPDX-License-Identifier: (FOOOO)
 
----
-base-commit: ec89391563792edd11d138a853901bce76d11f44
-change-id: 20230731-wdeleg-bbdb6b25a3c6
+https://kernel.org/doc/html/latest/process/license-rules.html
+doesn't mention your format.
 
-Best regards,
 -- 
-Jeff Layton <jlayton@kernel.org>
+With Best Regards,
+Andy Shevchenko
+
 
