@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 709AE7692FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5537D7692FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbjGaKU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55630 "EHLO
+        id S232420AbjGaKUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232483AbjGaKUM (ORCPT
+        with ESMTP id S232166AbjGaKUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:20:12 -0400
+        Mon, 31 Jul 2023 06:20:08 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28C77E5A;
-        Mon, 31 Jul 2023 03:19:48 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 10:19:46 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C063173D;
+        Mon, 31 Jul 2023 03:19:49 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 10:19:47 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1690798787;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YrO9hhJgtNLYgb+mpIYPx1bgPRK8x56azMuQtTzFB8c=;
-        b=VOGA/bKyhdvuS+Jxbu6rrL/S6CnsjhFYYtrCyZGVa1qwa22ogAMf+Y16sHe+tU4uiNTk5Z
-        CYssB2ZgGC0kaEJ+sdDMy0Qqk8qszTpn5kcUeIT1o52DKUfAUaqzPzNVAxd4gMj07OHtKR
-        IY86OXb+jsVfMHegXu3QNtP6OXrIF+w8Wd+mhC8z3Cj58S9AuGjkEpt9yEmVXRekIqF0d+
-        TiJ4EGR/tryziVzTpSr5t4fpfftI+h7VpimQ4tQzoQYZOrz/cfc1OW9amiD1q3EosisrJu
-        rfeFcttXU4iMwN+JEIFNFbo6BExOZRQi9OH89p9le96pYlKYAdQwiUIbe8ZRtw==
+        bh=QsRNsjRfTmn24aGFtC3YGXjM0MgO+nfS6Z39o8zwtlQ=;
+        b=M5VNR6GDdDVgNHgIHq2nRSCW9cH/hoap5+ZT7X4r04coB3h9E8A5JYt7RpsDVJ/AfUYh8i
+        WuJRV4o8bkR4wjWW+kscSs2mwKPiGEVqrVe2VohkDlYf5hF3wPHr5GJ/3gDW2s2cob3Pkz
+        8ZfXIo4pst1KNKagJkxHkY1QefVo5YISwO/i1Rupcq4g6HE2tIBe6XliC7Pm8nGBfBvfcK
+        iCdcR1kfCPwJDjEDYo/j9BjU2Nm21w2KTOhx7KT9ZOrKF2i7jzLwsSQrgDlzZZm3zn2YQ/
+        m8SkBYeRIHmqFvscFUqAIKRnhLqmp8IPuQVflSEALbE9Ih0kt6SqssHdvJwMdQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1690798787;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,26 +36,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YrO9hhJgtNLYgb+mpIYPx1bgPRK8x56azMuQtTzFB8c=;
-        b=u/rfeT5P17N6n6SBNX3zsKHUDLziwmSdWlgeG5GasOqnOGeJUkkCJGf+VyRdnCqy9J6se2
-        KZBztAi5wz5g7VBg==
-From:   "tip-bot2 for Chen Yu" <tip-bot2@linutronix.de>
+        bh=QsRNsjRfTmn24aGFtC3YGXjM0MgO+nfS6Z39o8zwtlQ=;
+        b=oFzMs+pAY8xrvxelmyhz3LapbJAozYWn+qv3NgbzKdRdvE8jvxYjXYLP4TPYxQpO1y9FI4
+        3MROx4jyMpyewWBg==
+From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/topology: Align group flags when removing
- degenerate domain
-Cc:     Yicong Yang <yangyicong@huawei.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Chen Yu <yu.c.chen@intel.com>,
+Subject: [tip: sched/core] sched/fair: remove util_est boosting
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>, x86@kernel.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230713013133.2314153-1-yu.c.chen@intel.com>
-References: <20230713013133.2314153-1-yu.c.chen@intel.com>
+In-Reply-To: <20230706135144.324311-1-vincent.guittot@linaro.org>
+References: <20230706135144.324311-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Message-ID: <169079878649.28540.7562287481060360832.tip-bot2@tip-bot2>
+Message-ID: <169079878708.28540.11161051369114712527.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -72,47 +68,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     4efcc8bc7e08c09c58a2f5cbc2096fbda5b7cf5e
-Gitweb:        https://git.kernel.org/tip/4efcc8bc7e08c09c58a2f5cbc2096fbda5b7cf5e
-Author:        Chen Yu <yu.c.chen@intel.com>
-AuthorDate:    Thu, 13 Jul 2023 09:31:33 +08:00
+Commit-ID:     c2e164ac33f75e0acb93004960c73bd9166d3d35
+Gitweb:        https://git.kernel.org/tip/c2e164ac33f75e0acb93004960c73bd9166d3d35
+Author:        Vincent Guittot <vincent.guittot@linaro.org>
+AuthorDate:    Thu, 06 Jul 2023 15:51:44 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 26 Jul 2023 12:28:51 +02:00
+CommitterDate: Wed, 26 Jul 2023 12:28:50 +02:00
 
-sched/topology: Align group flags when removing degenerate domain
+sched/fair: remove util_est boosting
 
-The flags of the child of a given scheduling domain are used to initialize
-the flags of its scheduling groups. When the child of a scheduling domain
-is degenerated, the flags of its local scheduling group need to be updated
-to align with the flags of its new child domain.
+There is no need to use runnable_avg when estimating util_est and that
+even generates wrong behavior because one includes blocked tasks whereas
+the other one doesn't. This can lead to accounting twice the waking task p,
+once with the blocked runnable_avg and another one when adding its
+util_est.
 
-The flag SD_SHARE_CPUCAPACITY was aligned in
-Commit bf2dc42d6beb ("sched/topology: Propagate SMT flags when removing degenerate domain").
-Further generalize this alignment so other flags can be used later, such as
-in cluster-based task wakeup. [1]
+cpu's runnable_avg is already used when computing util_avg which is then
+compared with util_est.
 
-Reported-by: Yicong Yang <yangyicong@huawei.com>
-Suggested-by: Ricardo Neri <ricardo.neri@intel.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+In some situation, feec will not select prev_cpu but another one on the
+same performance domain because of higher max_util
+
+Fixes: 7d0583cf9ec7 ("sched/fair, cpufreq: Introduce 'runnable boosting'")
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
-Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
-Link: https://lore.kernel.org/r/20230713013133.2314153-1-yu.c.chen@intel.com
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Link: https://lore.kernel.org/r/20230706135144.324311-1-vincent.guittot@linaro.org
 ---
- kernel/sched/topology.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/sched/fair.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 7cfcfe5..05a5bc6 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -722,8 +722,7 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index d3df5b1..f55b0a7 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7320,9 +7320,6 @@ cpu_util(int cpu, struct task_struct *p, int dst_cpu, int boost)
  
- 			if (parent->parent) {
- 				parent->parent->child = tmp;
--				if (tmp->flags & SD_SHARE_CPUCAPACITY)
--					parent->parent->groups->flags |= SD_SHARE_CPUCAPACITY;
-+				parent->parent->groups->flags = tmp->flags;
- 			}
+ 		util_est = READ_ONCE(cfs_rq->avg.util_est.enqueued);
  
- 			/*
+-		if (boost)
+-			util_est = max(util_est, runnable);
+-
+ 		/*
+ 		 * During wake-up @p isn't enqueued yet and doesn't contribute
+ 		 * to any cpu_rq(cpu)->cfs.avg.util_est.enqueued.
