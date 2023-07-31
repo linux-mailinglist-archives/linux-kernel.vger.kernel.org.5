@@ -2,126 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 601A6768A59
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9702C768A5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbjGaDc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 23:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
+        id S229927AbjGaDfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 23:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGaDcY (ORCPT
+        with ESMTP id S229544AbjGaDfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 23:32:24 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AFB189;
-        Sun, 30 Jul 2023 20:32:22 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-522294c0d5bso5280543a12.2;
-        Sun, 30 Jul 2023 20:32:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690774341; x=1691379141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qN7NEm8kJ8Lg4BhAheGJ8bEapl5h32Ub6hisYq5saj8=;
-        b=k9s2U5iYbLF9Q9em+E7+oVYuLwHwh3AmH0cKkLWUSo//TF6EVRN7cYz8ULkqwIHMMk
-         2CZmiqKbXZdWLOfpPO08TQ9+2tk18cMltEYrFNkSgZnkTcKp4PyKW/B4v0kMcpWneP5N
-         Mqmhly+u+N0AwwTNFZ1m7twxiA//DzwdgpWW+muKx9MIvhyBMvJae3Fq49sBSmb2RegU
-         2wXS0hr2HgCBk634Mo1NZMBuuiooiAAMxy/dQ3kTEiVuPEXcaxHetmpQWWJXYm5XzLXy
-         Q6cMKkNYieJGmWS2axFFpPhhzIOHtc2IXrVxfiV5FiAfLUA2VzRCQrd5ZyZVtI2pUtzk
-         x+Ow==
+        Sun, 30 Jul 2023 23:35:00 -0400
+Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC26199
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 20:34:58 -0700 (PDT)
+Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a3df1d46e5so7266151b6e.3
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 20:34:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690774341; x=1691379141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qN7NEm8kJ8Lg4BhAheGJ8bEapl5h32Ub6hisYq5saj8=;
-        b=C3zP5+9HDLnzyEfxG5xJzpxsJz3QQdJiz5zQYH0tMnxYgZjN/mYth+S/tDf/wpmkBL
-         I9uAzYRQmS96xaRNAdamox3R0UGOBtOAOmSLbdjLY0zYaPFSKS5zAvaPoxs/qX8ZFwlw
-         4AF00wFeD/mATwAyfHl9JT1jX57hiaRJJlbd07KoG0pRmiLa+Z1sSvTG1stgc0lYL0A9
-         G8rn+cw0PUEgZI+veZ39BCFGtybShhVT5Gta+H9oJKp1q+MzzQV2ith4pFlYiF4tDh7+
-         FM9Lz197LLZSo2ZpeXBz9lSTcxSikzsfA6085gOj91ySexmjRyx9tkPNTM/yDtjclUTS
-         8LtQ==
-X-Gm-Message-State: ABy/qLaXITlSMXCbMcY7BI0fjtrj5YZzZKVhMBf3J49dH2ede2F5Z69M
-        tEDjnFT/NIMMYLp4bM4ljWRkBCA4voaeltv/1Bg=
-X-Google-Smtp-Source: APBJJlFRYHJwJWavld9Z7LIKd9SdNykbKrJzbQCOcMnNmAKp4Gf7qQUrpy7gt3vIZKJIxZzoya+XNXJtdLXJ2EyeBsc=
-X-Received: by 2002:a17:906:768d:b0:993:ce9d:6fc1 with SMTP id
- o13-20020a170906768d00b00993ce9d6fc1mr5398653ejm.3.1690774341113; Sun, 30 Jul
- 2023 20:32:21 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690774497; x=1691379297;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eNn46kxg48m+Q5oWGr+r8mpJ1OOx1r1wF8Gt6l4ZDzw=;
+        b=JtK57n9iesbHo/KE4CQa7WnA4OJFmdKdN74Lrsi3h5mM7JlF0/cOkxUzwhv3p6u3wy
+         t/wAt3l9YX+qA+DrjZ4Q10CJ5dFfaFU8/3Q0a4G10wh4yq129WE9/MfHXXXc9Vztpse6
+         Sm2j04HXJig6BQrZvqh/WorEhPmZepy4Xe+Y7ojxYg75yIgpXCXUrOb14qKpDt6gI70o
+         fJv/m+aQiNEaTIASSp0w4vrlh/Nx0kLbt9FQ78+5pqt8PopEDmnDlsnW6lJs9RZ3R+20
+         I/xqgZa158sLYyylVC0tBQkgFOKnaJCcQtYAOmkTrCXHaeIqqVDt4EfzRCznz5ilnM7H
+         wW3g==
+X-Gm-Message-State: ABy/qLbm5c+yFE5SdINI11mskQS46g87YwwPnkKPC0p7X8UKbHJAhEXR
+        7miB3F6yhrxEIQsWqScUCxnZTkcvQJk0rxcNRNcq3x9oeFtR
+X-Google-Smtp-Source: APBJJlEZebHKiiADqjSYSifoPxsJOxzd9K6nGEmHSsFY8PSZQvn/2D2VpKn+ESfRoYFYgPIMFC4LcL0doQYHFZBfAR+leFnYYTEG
 MIME-Version: 1.0
-References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
- <20230729134318.1694467-8-keguang.zhang@gmail.com> <2ee2336c-d54f-6fb7-0142-8d0e08cce25b@linaro.org>
- <CAJhJPsXbW-JkzPTH+fHW3PD9J9+s0_F3Fbs3sb44tC12iTCk-Q@mail.gmail.com>
-In-Reply-To: <CAJhJPsXbW-JkzPTH+fHW3PD9J9+s0_F3Fbs3sb44tC12iTCk-Q@mail.gmail.com>
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-Date:   Mon, 31 Jul 2023 11:32:04 +0800
-Message-ID: <CAJhJPsXT+T7z4Av6tsQX00CAh8p6r-2ypggY+_iDufZhxToAWQ@mail.gmail.com>
-Subject: Re: [PATCH 07/17] MIPS: loongson32: Convert UART platform device to DT
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
+X-Received: by 2002:a05:6808:158c:b0:3a4:1f25:7508 with SMTP id
+ t12-20020a056808158c00b003a41f257508mr17127033oiw.0.1690774497775; Sun, 30
+ Jul 2023 20:34:57 -0700 (PDT)
+Date:   Sun, 30 Jul 2023 20:34:57 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000055d5e90601c01dee@google.com>
+Subject: [syzbot] [ext4?] WARNING: locking bug in ext4_xattr_inode_update_ref (2)
+From:   syzbot <syzbot+6699abaff302165de416@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:04=E2=80=AFAM Keguang Zhang <keguang.zhang@gmail=
-.com> wrote:
->
-> On Sun, Jul 30, 2023 at 4:26=E2=80=AFPM Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
-> >
-> > On 29/07/2023 15:43, Keguang Zhang wrote:
-> > > Add UART device nodes for Loongson-1 boards,
-> > > and drop the legacy platform devices and data accordingly.
-> > >
-> > > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > > ---
-> > >  arch/mips/boot/dts/loongson/loongson1.dtsi    | 54 +++++++++++++++++=
-++
-> >
-> > Same problem - DTS is always separate. It seems you made this mistake
-> > everywhere, so entire patchset needs to be fixed. Keep all DTS - your
-> > base board and extending it - at the end of the patchset and squash it.
-> > There is little point to add new DTS in steps (e.g. first add incomplet=
-e
-> > broken DTS and then immediately fix it... no, instead just add correct
-> > and complete DTS).
-> >
-> Sorry. I thought it would be easier to review for split patches.
-> Thanks for the explanation.
-> Will send v2 with one complete DTS.
+Hello,
 
-Hello Thomas,
-May I ask your opinion about the way to delete the obsolete platform device=
-s?
-Should I delete them in one patch? Or in separated patches?
-Thanks!
+syzbot found the following issue on:
 
-> >
-> > Best regards,
-> > Krzysztof
-> >
->
->
-> --
-> Best regards,
->
-> Keguang Zhang
+HEAD commit:    0ba5d0720577 Add linux-next specific files for 20230726
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1747a881a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f33fb77ef67a25e1
+dashboard link: https://syzkaller.appspot.com/bug?extid=6699abaff302165de416
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1217c65ea80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2fa09c6312ae/disk-0ba5d072.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7361000a4380/vmlinux-0ba5d072.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/48a015458a58/bzImage-0ba5d072.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/405ee39c557d/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6699abaff302165de416@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+Looking for class "&ea_inode->i_rwsem" with key ext4_fs_type, but found a different class "&sb->s_type->i_mutex_key" with the same key
+WARNING: CPU: 0 PID: 5364 at kernel/locking/lockdep.c:940 look_up_lock_class+0xad/0x120 kernel/locking/lockdep.c:940
+Modules linked in:
+CPU: 0 PID: 5364 Comm: syz-executor.3 Not tainted 6.5.0-rc3-next-20230726-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+RIP: 0010:look_up_lock_class+0xad/0x120 kernel/locking/lockdep.c:940
+Code: 59 49 8b 14 24 48 81 fa a0 d9 49 90 74 4c 80 3d 43 17 60 04 00 75 43 48 c7 c7 00 82 6c 8a c6 05 33 17 60 04 01 e8 03 f2 16 f7 <0f> 0b eb 2c 89 74 24 04 e8 36 ae e7 f9 8b 74 24 04 48 c7 c7 40 81
+RSP: 0018:ffffc90004a4f008 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: ffffffff918a53c0 RCX: 0000000000000000
+RDX: ffff88802a8ebb80 RSI: ffffffff814d5b56 RDI: 0000000000000001
+RBP: ffffffff8cc46c78 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff888066815e00
+R13: ffff888066815e00 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f046301d6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020002000 CR3: 000000002a7c9000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ register_lock_class+0xbd/0x1320 kernel/locking/lockdep.c:1292
+ __lock_acquire+0x13c/0x5de0 kernel/locking/lockdep.c:5021
+ lock_acquire kernel/locking/lockdep.c:5761 [inline]
+ lock_acquire+0x1ae/0x510 kernel/locking/lockdep.c:5726
+ down_write+0x93/0x200 kernel/locking/rwsem.c:1573
+ inode_lock include/linux/fs.h:771 [inline]
+ ext4_xattr_inode_update_ref+0xa6/0x5c0 fs/ext4/xattr.c:1042
+ ext4_xattr_inode_inc_ref fs/ext4/xattr.c:1088 [inline]
+ ext4_xattr_inode_inc_ref_all fs/ext4/xattr.c:1115 [inline]
+ ext4_xattr_block_set+0x2305/0x30e0 fs/ext4/xattr.c:2159
+ ext4_xattr_set_handle+0xd6e/0x1420 fs/ext4/xattr.c:2456
+ ext4_xattr_set+0x149/0x370 fs/ext4/xattr.c:2558
+ __vfs_setxattr+0x173/0x1d0 fs/xattr.c:201
+ __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:235
+ __vfs_setxattr_locked+0x17e/0x250 fs/xattr.c:296
+ vfs_setxattr+0x146/0x350 fs/xattr.c:322
+ do_setxattr+0x142/0x170 fs/xattr.c:630
+ setxattr+0x159/0x170 fs/xattr.c:653
+ path_setxattr+0x1a3/0x1d0 fs/xattr.c:672
+ __do_sys_setxattr fs/xattr.c:688 [inline]
+ __se_sys_setxattr fs/xattr.c:684 [inline]
+ __x64_sys_setxattr+0xc4/0x160 fs/xattr.c:684
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f046c07cb29
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f046301d0c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 00007f046c19c050 RCX: 00007f046c07cb29
+RDX: 00000000200005c0 RSI: 0000000020000180 RDI: 00000000200000c0
+RBP: 00007f046c0c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000002000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f046c19c050 R15: 00007ffd0e4f6698
+ </TASK>
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
---=20
-Best regards,
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Keguang Zhang
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
