@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F00176A219
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E30B76A21E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbjGaUlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57512 "EHLO
+        id S230011AbjGaUo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjGaUla (ORCPT
+        with ESMTP id S229535AbjGaUoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:41:30 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC55E75;
-        Mon, 31 Jul 2023 13:41:29 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690836088;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BTxPMB3V133cgzwz17m6DmWwRtesGt+jhqpdIH5ALoQ=;
-        b=0G8BQSRxV7478DeJ/esCuK54evV9NQCPC4ID96ymAA03ofm8kvZ4nsCn+DSgeW8XJsJY8W
-        zq+UbN2szW1PdZUdeqsbf36Zf7VLeoc4xsqb8PJ+iBS2a0D0IbQO+j1XWWCQrDosRG3Ryi
-        IQW4zSl88x4G+daZbw5QVfdTPYrwM9RWEOqrIvQh0cWhcVTsMVZ0lUlJGeNE/chKw4FY9p
-        g65UGbWCbjfotggxaInr71hJBvC1Ny43kpiio468+BQwCCC4rTesKnIlouhjuqAFlcP693
-        QrvjJtK35uy1mUdxLSDHT3KtzKBMe8hU8Iys9QYd+yqqXpbtMgNCHmo2/8DKCQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690836088;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BTxPMB3V133cgzwz17m6DmWwRtesGt+jhqpdIH5ALoQ=;
-        b=/FhSHnIwquFqCkm7XmxX3HCzSElSAB8dpvKfGEw71LcWF5A9ynlFHoO5mKwt/pnm9jEBod
-        QbfR97sGl4l9hnAg==
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: RE: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
-In-Reply-To: <BYAPR21MB168857E160C70BC76665FE6FD705A@BYAPR21MB1688.namprd21.prod.outlook.com>
-References: <20230728105650.565799744@linutronix.de>
- <20230728120930.839913695@linutronix.de>
- <BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR21MB1688.namprd21.prod.outlook.com>
- <871qgop8dc.ffs@tglx>
- <BYAPR21MB168857E160C70BC76665FE6FD705A@BYAPR21MB1688.namprd21.prod.outlook.com>
-Date:   Mon, 31 Jul 2023 22:41:27 +0200
-Message-ID: <87jzufn79k.ffs@tglx>
+        Mon, 31 Jul 2023 16:44:25 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4253690;
+        Mon, 31 Jul 2023 13:44:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690836265; x=1722372265;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=hu8JTDbJqIGr3TfklVY/QtEKkWMtllj5IhBurxsIJkA=;
+  b=Ct9injIDoK03Q/rBDHWho/HkWMn9PamCrsNn8oYxp2dOiyTR5MoTeAXM
+   1N94JNUF2oYCz0O08eahMoSUV7nnYgg3c9rFMxIsEAMvWgwpilS/gQRcx
+   EXgELVBV/7UNX9AeTCQawZ05ftOl7fqnmEWyx+Xck1hbGvYHYFAHNtupi
+   /YXqZLuIwGuMNPkD3zfYbQI7uRwzsEIV4KyF/E6rt1efIqXNyHSSIYS/Q
+   3lCS0wwKqLqYZGCVfwJyFJP+FLlWTkPFR54MTwU/V9gNpEpNwkcsevnkP
+   /P95Kg4Rf0EwsuthLPoGGR6jjTphTpB+HYU1fMXmzpAxJDQMWT9jD5V0/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="371831414"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="371831414"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:43:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852171619"
+X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
+   d="scan'208";a="852171619"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.61])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 31 Jul 2023 13:43:55 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     dave.hansen@linux.intel.com, tj@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        cgroups@vger.kernel.org, "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc:     kai.huang@intel.com, reinette.chatre@intel.com,
+        "Kristen Carlson Accardi" <kristen@linux.intel.com>,
+        zhiquan1.li@intel.com, seanjc@google.com
+Subject: Re: [PATCH v3 04/28] x86/sgx: Use sgx_epc_lru_lists for existing
+ active page list
+References: <20230712230202.47929-1-haitao.huang@linux.intel.com>
+ <20230712230202.47929-5-haitao.huang@linux.intel.com>
+ <CU4GIFHMTA8N.2GV3WIA7HAVOE@seitikki>
+Date:   Mon, 31 Jul 2023 15:43:54 -0500
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.18yrvgbvwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CU4GIFHMTA8N.2GV3WIA7HAVOE@seitikki>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31 2023 at 16:25, Michael Kelley wrote:
-> From: Thomas Gleixner <tglx@linutronix.de> Sent: Monday, July 31, 2023 5:35 AM
->> Define bogus. MADT is the primary source of information because that's
->> how we know how many CPUs (APICs) are there and what their APIC ID is
->> which we can use to wake them up. So there is a reasonable expectation
->> that this information is consistent with the rest of the system.
+On Mon, 17 Jul 2023 07:47:01 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
+
+> On Wed Jul 12, 2023 at 11:01 PM UTC, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>
+>> Replace the existing sgx_active_page_list and its spinlock with
+>> a global sgx_epc_lru_lists struct.
 >
-> Commit d49597fd3bc7 "x86/cpu: Deal with broken firmware (VMWare/Xen)"
-> mentions VMware and XEN implementations that violate the spec.  The
-> commit is from late 2016.  Have these bad systems aged out and no longer
-> need accommodation?
+> Similarly as the previous patch, I would extend this story a tiny
+> bit forward to see the connection with the follow-up patches.
+>
+Sure
 
-They do, but this commit explicitely uses the MADT/real APIC ID value:
+I also feel it may flow better by moving all changes related to  
+'unreclaimable' such as owner field for VA, flags for types of owners,  
+storing unreclaimables to LRU, etc. to later after all changes dealing  
+with reclaimables are introduced. The unreclaimables are only of concern  
+when OOM is involved so it'd be better to do them right before OOM.
 
-     c->initial_apicid = apicid;
-
-So the new mechanics are accomodating for those, right?
-
-Thanks,
-
-        tglx
+Thanks
+Haitao
