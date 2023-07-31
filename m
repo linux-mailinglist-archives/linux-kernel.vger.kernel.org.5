@@ -2,95 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84221768F25
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:46:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9730B768F0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbjGaHqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
+        id S230044AbjGaHj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:39:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjGaHq2 (ORCPT
+        with ESMTP id S230216AbjGaHjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:46:28 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526EAFB
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:46:26 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BB4FBE000C;
-        Mon, 31 Jul 2023 07:46:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690789584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RzcoTOLofuT5l+F4dsnq95rIrhWtOgZ0f/pwXq6XCE4=;
-        b=KObbDznBnsplRWxyhwVqdnRPjnADo5d9EIZsP0fXIZGpIoBhjzpO9Mtg8to6BQCOrxL8Kz
-        zec8azFwupM46dqsGbtVyorEpXp9fuZqpEmz8XqWU1g5E3S7mR2SjzrTKz+USUH9OoByhV
-        XFlzhlqtlEFB9cDRwuqEoW0RrRdi10nKoOjJBFNDBkXSVbQYMvW5QrZT9wkXIbHQXBYb0v
-        pHGh3yj9HC7EdyNPfQQDHrpXFQyYqJu0xVqzor+vq5BsnU9X8Ur3CkS95ffI4+VV1rpaqQ
-        9ghYJS95Eh5jhv6az3KBu2nNIwz/IlHL4l7HGE+PWTz5Y+ZmzxpHQn+el+yUEA==
-Date:   Mon, 31 Jul 2023 09:46:19 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     Zheng Zhang <zheng.zhang@email.ucr.edu>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Vitaly Lubart <vitaly.lubart@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Subject: Re: kernel BUG in __put_mtd_device
-Message-ID: <20230731094619.760e92a6@xps-13>
-In-Reply-To: <89021294.889167.1690781715755.JavaMail.zimbra@nod.at>
-References: <CAC_GQSpE5nbj7Lt=8sXu8GoSQTRd+=fpZb_zpVKQOJ4MxRHzsw@mail.gmail.com>
-        <89021294.889167.1690781715755.JavaMail.zimbra@nod.at>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 31 Jul 2023 03:39:19 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7E410B
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:39:17 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RDqpt3wCPzrS3Q;
+        Mon, 31 Jul 2023 15:38:14 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 31 Jul 2023 15:39:13 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Mina Almasry <almasrymina@google.com>, <kirill@shutemov.name>,
+        <joel@joelfernandes.org>, <william.kucharski@oracle.com>,
+        <kaleshsingh@google.com>, <linux-mm@kvack.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH 0/4] mm: mremap: fix move page tables
+Date:   Mon, 31 Jul 2023 15:48:25 +0800
+Message-ID: <20230731074829.79309-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+The first three patches use correct flush tlb functions when move page
+tables, and patch 4 is a small optimization for hugepage on arm64.
 
-richard@nod.at wrote on Mon, 31 Jul 2023 07:35:15 +0200 (CEST):
+Kefeng Wang (4):
+  mm: hugetlb: use flush_hugetlb_tlb_range() in
+    move_hugetlb_page_tables()
+  mm: mremap: use flush_pmd_tlb_range() in move_normal_pmd()
+  mm: mremap: use flush_pud_tlb_range in move_normal_pud()
+  arm64: tlb: set huge page size to stride for hugepage
 
-> ----- Urspr=C3=BCngliche Mail -----
-> > Von: "Zheng Zhang" <zheng.zhang@email.ucr.edu>
-> > An: "Miquel Raynal" <miquel.raynal@bootlin.com>, "richard" <richard@nod=
-.at>, "Vignesh Raghavendra" <vigneshr@ti.com>,
-> > "linux-mtd" <linux-mtd@lists.infradead.org>, "linux-kernel" <linux-kern=
-el@vger.kernel.org>
-> > Gesendet: Montag, 31. Juli 2023 01:27:09
-> > Betreff: kernel BUG in __put_mtd_device =20
->=20
-> > Miquel, Richard, Vignesh  and  to whom it may concern:
-> >=20
-> > Hello! We have found a bug in MTD driver in the Linux kernel version 6.=
-2.0
-> > by Syzkaller with our own templates.
-> > It's triggered for multiple times. Unfortunately, it doesn't generate a
-> > reproducer.
-> > Attached is the report, log generated by syzkaller.
-> > Please let me know if there is any additional information that I can
-> > provide to help debug this issue. =20
->=20
-> Isn't this related to "[PATCH] mtd: fix use-after-free in mtd release"?
+ arch/arm64/include/asm/tlbflush.h | 21 +++++++++++----------
+ mm/hugetlb.c                      |  4 ++--
+ mm/mremap.c                       |  4 ++--
+ 3 files changed, 15 insertions(+), 14 deletions(-)
 
-Yes, probably, we received two patches regarding the same issue, but so
-far no agreement on them because none fully fixes the issue
-apparently...
+-- 
+2.41.0
 
-Thanks,
-Miqu=C3=A8l
