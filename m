@@ -2,41 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 370DB769D33
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C19769D35
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbjGaQyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52060 "EHLO
+        id S233569AbjGaQyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233559AbjGaQyE (ORCPT
+        with ESMTP id S231769AbjGaQy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:54:04 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 825341728;
-        Mon, 31 Jul 2023 09:53:59 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 36VGrYmN017834;
-        Mon, 31 Jul 2023 18:53:34 +0200
-Date:   Mon, 31 Jul 2023 18:53:34 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Zhangjin Wu <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        tanyuan@tinylab.org
-Subject: Re: [PATCH 1/4] selftests/nolibc: drop unused test helpers
-Message-ID: <20230731165334.GA17823@1wt.eu>
-References: <20230731073243.21265-1-falcon@tinylab.org>
- <20230731110226.115351-1-falcon@tinylab.org>
- <e7ec15d7-0152-4e69-920f-ffb1983e1011@t-8ch.de>
+        Mon, 31 Jul 2023 12:54:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA3B19AF;
+        Mon, 31 Jul 2023 09:54:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PjItUIkCI0I/tP6BHRrvgMnMVmybDiMWc/8ahzNK1Yo=; b=AjwLXfW0vRm7dfkKk8o/DHhOWH
+        c7hxfSfIc/MOQZveHcyB03KDci4sBZV4+M2L8SqC3mmgrCcss8AzbRnXRWPncy0cdiMkHsAOv13jF
+        vD23leXiiOWfvnMo8iBJX0pyRTvm/mEUfML5QXvdEhRxaSHvCtUY22JWv4ZwpUAKpwAGn8xT2GvML
+        jpxvL8cn4O0WwkN6FivsK17oxbScAkGTLWQ4jgGn/jrFrZMdddPtTZcaGN6mKv7qt07/wzkbXN37V
+        VRI6zgclVkLsQgU7GlYAeYAH+Ojt+AjBGDdU59n2xwERE/lx6dKka7b+ttU4ceBAS2sOpeRKvRAi8
+        3Y0B18Sw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQW9u-002kk1-Q7; Mon, 31 Jul 2023 16:54:15 +0000
+Date:   Mon, 31 Jul 2023 17:54:14 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Rongwei Wang <rongwei.wang@linux.alibaba.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org,
+        "xuyu@linux.alibaba.com" <xuyu@linux.alibaba.com>
+Subject: Re: [PATCH RFC v2 0/4] Add support for sharing page tables across
+ processes (Previously mshare)
+Message-ID: <ZMfnNpQIkXXs1W02@casper.infradead.org>
+References: <cover.1682453344.git.khalid.aziz@oracle.com>
+ <74fe50d9-9be9-cc97-e550-3ca30aebfd13@linux.alibaba.com>
+ <ZMeoHoM8j/ric0Bh@casper.infradead.org>
+ <ae3bbfba-4207-ec5b-b4dd-ea63cb52883d@redhat.com>
+ <9faea1cf-d3da-47ff-eb41-adc5bd73e5ca@linux.alibaba.com>
+ <d3d03475-7977-fc55-188d-7df350ee0f29@redhat.com>
+ <ZMfjmhaqVZyZNNMW@casper.infradead.org>
+ <c1f3c78d-b1eb-5c1c-83aa-35901800498f@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e7ec15d7-0152-4e69-920f-ffb1983e1011@t-8ch.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+In-Reply-To: <c1f3c78d-b1eb-5c1c-83aa-35901800498f@redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,119 +59,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys,
-
-On Mon, Jul 31, 2023 at 05:30:23PM +0200, Thomas Weißschuh wrote:
-
-> > > > > > Why not a simple 'static __attribute__((unused))' line, then, no need to
-> > > > > > add them again next time.
-> > > > > > 
-> > > > > >     -static int expect_zr(int expr, int llen)
-> > > > > >     +static __attribute__((unused))
-> > > > > >     +int expect_zr(int expr, int llen)
-> > > > > >      {
-> > > > > 
-> > > > > Personally I don't like having dead code lying around that needs to be
-> > > > > maintained and skipped over while reading.
-> > > > > It's not a given that we will need those helpers in the future at all.
-> > > > >
-> > > > 
-> > > > It is reasonable in some degree from current status, especially for
-> > > > these ones are newly added, but let us think about these scenes: when we
-> > > > would drop or change some test cases in the future and the helpers may
-> > > > would be not referenced by any test cases in a short time, and warnings
-> > > > there, but some other cases may be added later to use them again ...
+On Mon, Jul 31, 2023 at 06:48:47PM +0200, David Hildenbrand wrote:
+> On 31.07.23 18:38, Matthew Wilcox wrote:
+> > On Mon, Jul 31, 2023 at 06:30:22PM +0200, David Hildenbrand wrote:
+> > > Assume we do do the page table sharing at mmap time, if the flags are right.
+> > > Let's focus on the most common:
 > > > 
-> > > That doesn't seem very likely.
-> > > Did it happen recently?
-> > >
+> > > mmap(memfd, PROT_READ | PROT_WRITE, MAP_SHARED)
+> > > 
+> > > And doing the same in each and every process.
 > > 
-> > Yeah, it did happen, but I can not remember which one, a simple statistic
-> > does show it may be likely:
+> > That may be the most common in your usage, but for a database, you're
+> > looking at two usage scenarios.  Postgres calls mmap() on the database
+> > file itself so that all processes share the kernel page cache.
+> > Some Commercial Databases call mmap() on a hugetlbfs file so that all
+> > processes share the same userspace buffer cache.  Other Commecial
+> > Databases call shmget() / shmat() with SHM_HUGETLB for the exact
+> > same reason.
 > 
-> I can't find it.
+> I remember you said that postgres might be looking into using shmem as well,
+> maybe I am wrong.
+
+No, I said that postgres was also interested in sharing page tables.
+I don't think they have any use for shmem.
+
+> memfd/hugetlb/shmem could all be handled alike, just "arbitrary filesystems"
+> would require more work.
+
+But arbitrary filesystems was one of the origin use cases; where the
+database is stored on a persistent memory filesystem, and neither the
+kernel nor userspace has a cache.  The Postgres & Commercial Database
+use-cases collapse into the same case, and we want to mmap the files
+directly and share the page tables.
+
+> > This is why I proposed mshare().  Anyone can use it for anything.
+> > We have such a diverse set of users who want to do stuff with shared
+> > page tables that we should not be tying it to memfd or any other
+> > filesystem.  Not to mention that it's more flexible; you can map
+> > individual 4kB files into it and still get page table sharing.
 > 
-> >     $ grep EXPECT_ -ur tools/testing/selftests/nolibc/nolibc-test.c | grep -v define | sed -e 's/.*\(EXPECT_[A-Z0-9]*\).*/\1/g' | sort | uniq -c | sort -k 1 -g -r
-> >          55 EXPECT_EQ
-> >          37 EXPECT_SYSER
-> >          21 EXPECT_SYSZR
-> >          11 EXPECT_SYSNE
-> >           9 EXPECT_VFPRINTF
-> >           4 EXPECT_PTRGT
-> >           4 EXPECT_GE
-> >           3 EXPECT_STRZR
-> >           3 EXPECT_NE
-> >           3 EXPECT_LT
-> >           3 EXPECT_GT
-> >           2 EXPECT_STRNZ
-> >           2 EXPECT_STREQ
-> >           2 EXPECT_PTRLT
-> >           1 EXPECT_SYSER2
-> >           1 EXPECT_SYSEQ
-> >           1 EXPECT_PTRNZ
-> >           1 EXPECT_PTRNE
-> >           1 EXPECT_PTRER2
-> >           1 EXPECT_PTRER
-> >           1 EXPECT_PTREQ
-> > 
-> > 7 helpers are only used by once, another 3 helpers are used twice, and
-> > another 4 are only used by three times.
-> 
-> Why can't we just drop them when they are not used anymore?
+> That's not what the current proposal does, or am I wrong?
 
-Actually we don't know if they're used or not given that the purpose of
-the nolibc-test.c file is for it to be easy to add new tests, and the
-collection of macros above serves this purpose. It's not just a series
-of test but rather a small test framework. So the fact that right now
-no single test uses some of them doesn't mean that someone else will
-not have to reimplement them in two months.
+I think you're wrong, but I haven't had time to read the latest patches.
 
-However I share your concern that the file has become ugly over time.
-I've recently been wondering why we wouldn't move all that to an external
-include file. It could also encourage us to differentiate between the
-macros used to only evaluate a result, and the tests themselves, as
-we'd be certain that none of them could call a test function directly.
+> Also, I'm curious, is that a real requirement in the database world?
 
-> > Btw, just thought about gc-section, do we need to further remove dead code/data
-> > in the binary? I don't think it is necessary for nolibc-test itself, but with
-> > '-Wl,--gc-sections -Wl,--print-gc-sections' may be a good helper to show us
-> > which ones should be dropped or which ones are wrongly declared as public?
-> > 
-> > Just found '-O3 + -Wl,--gc-section + -Wl,--print-gc-sections' did tell
-> > us something as below:
-> > 
-> >     removing unused section '.text.nolibc_raise'
-> >     removing unused section '.text.nolibc_memmove'
-> >     removing unused section '.text.nolibc_abort'
-> >     removing unused section '.text.nolibc_memcpy'
-> >     removing unused section '.text.__stack_chk_init'
-> >     removing unused section '.text.is_setting_valid'
-
-Just a note Zhangjin, it would really help if you wouldn't mix different
-topics in mails. It's easy enough to start a separate thread since it's
-a completely separate one here.
-
-> > These info may help us further add missing 'static' keyword or find
-> > another method to to drop the wrongly used status of some functions from
-> > the code side.
-> > 
-> > It is very easy to add the missing 'static' keyword for is_setting_valid(), but
-> > for __stack_chk_init(), is it ok for us to convert it to 'static' and remove
-> > the 'weak' attrbute and even the 'section' attribute? seems it is only used by
-> > our _start_c() currently.
-> 
-> Making is_setting_valid(), __stack_chk_init() seems indeed useful.
-> Also all the run_foo() test functions.
-
-Most of them could theoretically be turned to static. *But* it causes a
-problem which is that it will multiply their occurrences in multi-unit
-programs, and that's in part why we've started to use weak instead. Also
-if you run through gdb and want to mark a break point, you won't have the
-symbol when it's static, and the code will appear at multiple locations,
-which is really painful. I'd instead really prefer to avoid static when
-we don't strictly want to inline the code, and prefer weak when possible
-because we know many of them will be dropped at link time (and that's
-the exact purpose).
-
-Thanks,
-Willy
+I don't know.  It's definitely an advantage that falls out of the design
+of mshare.
