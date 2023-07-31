@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB72C769239
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E059576923B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231312AbjGaJsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:48:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
+        id S229833AbjGaJs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:48:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbjGaJrt (ORCPT
+        with ESMTP id S232334AbjGaJru (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:47:49 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CE2198B
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:47:04 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-31771a876b5so3559776f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:47:04 -0700 (PDT)
+        Mon, 31 Jul 2023 05:47:50 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545D71998
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:47:06 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fe1e1142caso11199905e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:47:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690796823; x=1691401623;
+        d=linaro.org; s=google; t=1690796825; x=1691401625;
         h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B3jeQqtdJ+xfjOfxyUM9KLeeRJlgR/RPuZkZZLraWVo=;
-        b=Lcy7iZWcAKSK7Co1/sU6mHmXnehE48FMUKNb6F4F2PKRo0seDDTM68ow+2oz/V2zWL
-         8XarAdfAzRsuk1BTXZJaW7ltrFHmWZF0phNBMfXWVi2HSE36Z0elazDEyeKiAhxHZXG0
-         kWsGFpMbtbjUhiUHAHz1xg1VLSAjLhCCG1c/qBlQkEIk5RF5muyVTChYaz5HP4cf3wj7
-         C5ZnqKir/LA1mSrK4cF1KeywFwGiRt+cGP9vV+nOEiLWA2J+0+OCAczky3FRZWSkO58m
-         7fjaP3Dy7J694lOb2DV7O39D+G9XFoOtTdnqzQpZaiNtMsBuwthfjadrhNHvXwjyENDV
-         DkPw==
+         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NAl2fAmeLK7v8jeOjXAM9Im6T80pzlX2872jJ9ooxQg=;
+        b=ddol+HfsOqAeoaUJW+6b1004uCV99ldu9gXwPlEqLzDDDzBr0jgA6y05HpRIjmQA84
+         ypR7Tf1zF7E+8fTjXwucCOYQZkybryy2dHC18aZDgfiy06ygo1nK59QDGHTdttTvqkMQ
+         rx64WsTpsFRy5SFlX2O78Dmi+KSCwKsjXy6jEaNUW0yh3257sORVWELFezeW0C5zKeOa
+         CLR8YQDYMbkfYQ2J12d0BhhS2E0uO2168SR2TP0QBq8dS/yAma+YaWj1+Mt0mBo6qimq
+         kDtLRheC+kTguXNFoypuG47A69tI7mK2hiVrtnJ0OG0+rRVoNshYtIwyqXp3UZB9OGOh
+         UffQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690796823; x=1691401623;
+        d=1e100.net; s=20221208; t=1690796825; x=1691401625;
         h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B3jeQqtdJ+xfjOfxyUM9KLeeRJlgR/RPuZkZZLraWVo=;
-        b=XKMVYqxJSN5zAsokjEzsd4ZRX3WvLbv526UKH23WLXB7naRgg7wQaLMNSwhopFjg/Q
-         FPnzVcVSl+UH2BL2CpJmvXosHYm5WkU2D6hDjVC7qc40Ohl9DxS51ZuPGIKqToecEobm
-         o3tZnB97ASJADziWrdp3CxhTGB8wpORwhZNvnzvwawaiaLS6hoeUY4wlzv1ueB1/LNOo
-         0E3dgWaTe4k2khlX9tr/nhClTxSrwJxBQ5QWZmLcelj6wwKyVJ15xzhqIfpjFcUDHD3u
-         G2H68+q66YeKhu6p7KEhpJpeaUUmY6gwEX2djF5KrdPdiV1tsohgaHKOs6emrUXHTrLX
-         b3FQ==
-X-Gm-Message-State: ABy/qLZuhCtD0yOscEFDVqKYoPPMww6WBAGL1Sy/xoDbsiPzQrHi9Ifa
-        /LBol45f/v2q4R2iyzyEcu294Q==
-X-Google-Smtp-Source: APBJJlE9GV5VXePjkzprQQPzxJuy0/dp3j7sdBNJqwP9u2j2XDsIsGtHGZFenkjZpzlvYoHVQHLPiA==
-X-Received: by 2002:a5d:5145:0:b0:317:5fef:1bf4 with SMTP id u5-20020a5d5145000000b003175fef1bf4mr6369009wrt.53.1690796823332;
-        Mon, 31 Jul 2023 02:47:03 -0700 (PDT)
+        bh=NAl2fAmeLK7v8jeOjXAM9Im6T80pzlX2872jJ9ooxQg=;
+        b=C6spXEU37EldrV3KgPvPHcefHEbkzdbdYucqU/7HlLIe+qpA7gbzFvx84ZMhh85wgD
+         oqxdPOs3uMk56+grfo0YpPx1veiuyGJVje50GrAvtOByXUM6E4ePwjjvNGCuvuMej6oh
+         vzbG72ukz9/Io50+raoDf8k5cgZtZb8EkoPpXBbJOBPgglStHvnCJu8X6fwL38VI6+Bn
+         QN/7A672ZFYxsD932UYHIxP6iDeeIgK+pb0ceCxwM6uAlcoV/5Io4M/bJThc0Zu4tt50
+         vu4mwqpXKWdfDQX8g2yfkxE8p7j/aeQwTbHQCWcQ9xQsvsXgpHycMOuEowvQJxZEvNxp
+         uORA==
+X-Gm-Message-State: ABy/qLaiHOSI1E9LD9f8wq87L8BqwqP+zudnnTOuirwvBIUSJ8IgoGIj
+        UbmBJygyegc9DYpPCDBbV8Zkzg==
+X-Google-Smtp-Source: APBJJlHg2vtNWlg6yP5U99HmeGF+jcWS21EQ/z4CZR4xWJgc03pK6mCEBXO+hfddwRa9kvtHMGMRRg==
+X-Received: by 2002:a1c:ed02:0:b0:3fa:8c68:4aba with SMTP id l2-20020a1ced02000000b003fa8c684abamr7857704wmh.25.1690796824720;
+        Mon, 31 Jul 2023 02:47:04 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id p9-20020a5d48c9000000b0031433443265sm12556878wrs.53.2023.07.31.02.47.02
+        by smtp.gmail.com with ESMTPSA id p9-20020a5d48c9000000b0031433443265sm12556878wrs.53.2023.07.31.02.47.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 02:47:02 -0700 (PDT)
+        Mon, 31 Jul 2023 02:47:04 -0700 (PDT)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Xianwei Zhao <xianwei.zhao@amlogic.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+To:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>
-In-Reply-To: <20230707003710.2667989-1-xianwei.zhao@amlogic.com>
-References: <20230707003710.2667989-1-xianwei.zhao@amlogic.com>
-Subject: Re: (subset) [PATCH V2 0/4] Power: C3: add power domain driver
-Message-Id: <169079682229.186625.2257818167689381488.b4-ty@linaro.org>
-Date:   Mon, 31 Jul 2023 11:47:02 +0200
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230725142703.157547-1-krzysztof.kozlowski@linaro.org>
+References: <20230725142703.157547-1-krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH] arm64: dts: amlogic: meson-g12b-bananapi: switch to
+ enable-gpios
+Message-Id: <169079682340.186625.9070463566453438311.b4-ty@linaro.org>
+Date:   Mon, 31 Jul 2023 11:47:03 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -79,20 +82,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Fri, 07 Jul 2023 08:37:06 +0800, Xianwei Zhao wrote:
-> First patch is that Use 'name' instead of 'index' as criterion.
-> The  variate 'index' could be equal to zero in some SoCs. Such as C3 SoC,
-> PWRC_C3_NNA_ID be defined zero.
+On Tue, 25 Jul 2023 16:27:03 +0200, Krzysztof Kozlowski wrote:
+> The recommended name for enable GPIOs property in regulator-gpio is
+> enable-gpios.  This is also required by bindings:
 > 
-> Other patchs adds power controller driver support for Amlogic C3 SoC.
-> The power domains registers can be accessed in the secure world only.
+>   meson-g12b-bananapi-cm4-cm4io.dtb: regulator-vddio-c: Unevaluated properties are not allowed ('enable-gpio' was unexpected)
 > 
-> [...]
+> 
 
 Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.6/arm64-dt)
 
-[4/4] arm64: dts: add support for C3 power domain controller
-      https://git.kernel.org/amlogic/c/22a9b2a488c3f0937fe0c57c96176cbea0953c20
+[1/1] arm64: dts: amlogic: meson-g12b-bananapi: switch to enable-gpios
+      https://git.kernel.org/amlogic/c/01457f6fd40b45b6dd394c75317da812bf585a97
 
 These changes has been applied on the intermediate git tree [1].
 
