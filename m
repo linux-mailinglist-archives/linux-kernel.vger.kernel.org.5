@@ -2,111 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CEB769B3D
+	by mail.lfdr.de (Postfix) with ESMTP id E09C4769B3E
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbjGaPuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:50:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
+        id S230341AbjGaPuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbjGaPup (ORCPT
+        with ESMTP id S232463AbjGaPup (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Jul 2023 11:50:45 -0400
-Received: from sendmail.purelymail.com (sendmail.purelymail.com [34.202.193.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E2C188
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:50:44 -0700 (PDT)
-DKIM-Signature: a=rsa-sha256; b=DMi77ear/iZF1UDc+VOzM2c7AtwCSig4GAd85tFsfDcAeXP2E0L34dIJokY4Em/Tlo4xLIKWjtIFLZoOXzUyAY4KB+otQ7aex7+sc0es9ElO0eBNjSgh6ijys1/cyl9yHBJUgD+9uS8qmdFXbgrZgJt71Dx0dejar9znxDwedoFvN+9HW2ShH2JTnvPdzY3LCWYp7s0Vi94ZsXYmTrVw6hJNhVxjBnyXmmksHS45viVscrcBhVLha29cTP/SnWjMwa4L2vKSOkUoevJd/7Y5l87pin2gXOSDxkdZXMFYOR9pO1b26OMgTQQJjwmyTeztSLIbViBuNUjaP3cBvvFqMQ==; s=purelymail1; d=iskren.info; v=1; bh=eNdJS1WJkEMJiLxhmli0JSlZQRMNa/96vjAbAJHmhoU=; h=Received:Subject:To:From;
-DKIM-Signature: a=rsa-sha256; b=Q9GpMGbQj8hvBCF5gmgA0xSnJmBsCgbcfv+1IQPKwvp9qCsq0hPLMt868WCQekcq0R9UBTK6uSdSc7YNMIR1v5eFDqUUQ6WPh6wQ92I93ZWOqKwoQ8ObAa6EyMFlXu9Hlt/lNbjAkKNmp3xapqPfrlVi11A9QaRismj96MVcLx4I474uJeI4/31wxLfdz7odwJKqeyXVzsm7aCRfhnImqByU3kXj1MEflm80Vp9F72IX/9X+LR8BvkKK5O9SbM9wgrj/wgItl1S0OS3znk/Ew6245N1jvitPwEN1jSnvF8z2Ed7Cn01SAN9ysQEIWL4RYTQyuB3PvuCyaZFnp8YhTA==; s=purelymail1; d=purelymail.com; v=1; bh=eNdJS1WJkEMJiLxhmli0JSlZQRMNa/96vjAbAJHmhoU=; h=Feedback-ID:Received:Subject:To:From;
-Feedback-ID: 10275:2339:null:purelymail
-X-Pm-Original-To: linux-kernel@vger.kernel.org
-Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id -1185265924;
-          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
-          Mon, 31 Jul 2023 15:49:41 +0000 (UTC)
-Message-ID: <95135e09-75d2-fea1-775b-1233a83349a1@iskren.info>
-Date:   Mon, 31 Jul 2023 18:49:37 +0300
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3287C10D;
+        Mon, 31 Jul 2023 08:50:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C52DA60F8F;
+        Mon, 31 Jul 2023 15:50:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC684C433C8;
+        Mon, 31 Jul 2023 15:50:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690818643;
+        bh=aQ84qJHrAZ40UiW1q1IWOTdlB3S2mI1+Mg4IcIqIPn0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fIjITbopI018cFasOjcLib5EFNMvVylRFULj4q1yUsec4DfYN+WTQbThB1z5kCPpR
+         lgrNKgcEBNhhbq6w4r0E1ZdnHKuTtIeQUD5W/Csj7WyOIX+us0g0PQsk0XnFHVzd/N
+         5vvZX+Rs63E3+btJtbe4FGT+na9OueanAifZDyuc=
+Date:   Mon, 31 Jul 2023 17:50:40 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
+        isaac.true@canonical.com, jesse.sung@canonical.com,
+        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        stable@vger.kernel.org, Lech Perczak <lech.perczak@camlingroup.com>
+Subject: Re: [PATCH v9 02/10] serial: sc16is7xx: mark IOCONTROL register as
+ volatile
+Message-ID: <2023073108-footboard-chooser-d20e@gregkh>
+References: <20230725142343.1724130-1-hugo@hugovil.com>
+ <20230725142343.1724130-3-hugo@hugovil.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/4] Add optional properties to MAX17040
-To:     Svyatoslav Ryhel <clamor95@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matheus Castello <matheus@castello.eng.br>,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Stefan Hansson <newbie13xd@gmail.com>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20230731073613.10394-1-clamor95@gmail.com>
-Content-Language: en-US
-From:   Iskren Chernev <me@iskren.info>
-In-Reply-To: <20230731073613.10394-1-clamor95@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230725142343.1724130-3-hugo@hugovil.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/31/23 10:36, Svyatoslav Ryhel wrote:
-> Extend properties supported by max17040 fuel gauge if it is accompanied
-> by different devices.
+On Tue, Jul 25, 2023 at 10:23:34AM -0400, Hugo Villeneuve wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 > 
-> If max17040 is coupled with a charger, pass charger status since it should
-> match and max17040 has no dedicated status detection ability.
+> Bit SRESET (3) is cleared when a reset operation is completed. Having
+> the IOCONTROL register as non-volatile will always read SRESET as 1,
+> which is incorrect.
 > 
-> max17040_get_online can be reused for PRESENT property since if it is
-> online it must be present.
+> Also, if IOCONTROL register is not a volatile register, the upcoming
+> patch "serial: sc16is7xx: fix regression with GPIO configuration"
+> doesn't work when setting some shared GPIO lines as modem control
+> lines.
 > 
-> Finally, max17040 may be coupled with a dedicated thermal sensor which
-> monitors battery temperature so lets add support for iio channel to match
-> hw setup. With that said, the driver got dependency on CONFIG_IIO which
-> was added to Kconfig. All defconfigs apart s5pv210_defconfig have IIO
-> already enabled so only s5pv210_defconfig needed adjustment.
+> Therefore mark IOCONTROL register as a volatile register.
+> 
+> Cc: <stable@vger.kernel.org> # 6.1.x
 
-[whole series]
-Reviewed-by: Iskren Chernev <me@iskren.info>
+Why 6.1.y?  What commit does this fix?
 
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
+> Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
 > ---
-> Changes from v2:
-> - documentation: fixed typo i2c0 > i2c
-> - added dependency on CONFIG_IIO
-> - enabled CONFIG_IIO for s5pv210_defconfig to avoid regressions (all other
->   defconfigs which include max17040 already have IIO enabled)
+>  drivers/tty/serial/sc16is7xx.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Changes from v1:
-> - documentation: dropped monitored-battery and power-supplies (inherited
->   from inclusion)
-> - dropped passing charger health as battery health
-> - dropped patch for simple battery cell support
-> - switched iio_read_channel_raw to iio_read_channel_processed_scale
-> - switched iio_channel_get to devm_iio_channel_get
-> - re-organized implementation of temp channel (implemented in way 
->   *_get_optional functions usually act)
-> ---
-> 
-> Svyatoslav Ryhel (4):
->   dt-bindings: power: supply: maxim,max17040: update properties
->   power: max17040: pass status property from supplier
->   power: max17040: get thermal data from adc if available
->   ARM: configs: s5pv210_defconfig: enable IIO required by MAX17040
-> 
->  .../bindings/power/supply/maxim,max17040.yaml | 31 +++++++++++++++++++
->  arch/arm/configs/s5pv210_defconfig            |  1 +
->  drivers/power/supply/Kconfig                  |  2 +-
->  drivers/power/supply/max17040_battery.c       | 27 ++++++++++++++++
->  4 files changed, 60 insertions(+), 1 deletion(-)
-> 
+> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+> index 8ae2afc76a9b..306ae512b38a 100644
+> --- a/drivers/tty/serial/sc16is7xx.c
+> +++ b/drivers/tty/serial/sc16is7xx.c
+> @@ -488,6 +488,7 @@ static bool sc16is7xx_regmap_volatile(struct device *dev, unsigned int reg)
+>  	case SC16IS7XX_TXLVL_REG:
+>  	case SC16IS7XX_RXLVL_REG:
+>  	case SC16IS7XX_IOSTATE_REG:
+> +	case SC16IS7XX_IOCONTROL_REG:
+>  		return true;
+>  	default:
+>  		break;
+
+Is this the same as this change:
+	https://lore.kernel.org/all/20230724034727.17335-1-hui.wang@canonical.com/
+
+confused,
+
+greg k-h
