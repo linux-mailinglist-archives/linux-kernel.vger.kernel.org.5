@@ -2,50 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C4C76979F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AFA7697A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbjGaN3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
+        id S231883AbjGaNcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbjGaN3s (ORCPT
+        with ESMTP id S229555AbjGaNcT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:29:48 -0400
-Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39ED10E3;
-        Mon, 31 Jul 2023 06:29:43 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VoglcAp_1690810177;
-Received: from 172.20.10.3(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VoglcAp_1690810177)
-          by smtp.aliyun-inc.com;
-          Mon, 31 Jul 2023 21:29:39 +0800
-Message-ID: <9fb82ade-e8a4-8b8a-25f3-b71dadc6dab1@linux.alibaba.com>
-Date:   Mon, 31 Jul 2023 21:29:35 +0800
+        Mon, 31 Jul 2023 09:32:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974D210E3;
+        Mon, 31 Jul 2023 06:32:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 23D926114E;
+        Mon, 31 Jul 2023 13:32:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B793C433C7;
+        Mon, 31 Jul 2023 13:32:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690810337;
+        bh=z+uAjZVNhz3LyIsdekBiHKjrJt8GwMtkgIpTiC3PAhA=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=kB01tzMRm0xGd46a/lcgXTdh7oLikepiXWJAdD8VSwE9ZBAEkWDo+TYXbogvXBgP9
+         AJ23A5d3Fq/rXkUPkZCk5FG6x+6wOgw05LSZhm/8oVNWbI1jQroLbsuHh3cscmQdt2
+         uRVnuLARcsiT1T1ydr16yNHdd7BwJUtENHPlZzBTzf+vtIX1GV9NmaO/ARfykaAFGt
+         m2NUtScqaxIMg7yiLb5xXR8tVV9P70OWi+gKX9fUuwToBmzCpKqv5jLqJNaDZsSM6U
+         O1ANB4DWnkC/flvt651yNsmqv6JmkQRc6yEgpwoXoHL+DKrdzi9C8ZtxDg1smtXDqI
+         ZhypNn1sURM7Q==
+Received: (nullmailer pid 2855850 invoked by uid 1000);
+        Mon, 31 Jul 2023 13:32:15 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [syzbot] [erofs?] [fat?] WARNING in erofs_kill_sb
-To:     Christian Brauner <brauner@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     syzbot <syzbot+69c477e882e44ce41ad9@syzkaller.appspotmail.com>,
-        chao@kernel.org, huyue2@coolpad.com, jack@suse.cz,
-        jefflexu@linux.alibaba.com, linkinjeon@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
-        syzkaller-bugs@googlegroups.com, xiang@kernel.org
-References: <000000000000f43cab0601c3c902@google.com>
- <20230731093744.GA1788@lst.de>
- <9b57e5f7-62b6-fd65-4dac-a71c9dc08abc@linux.alibaba.com>
- <20230731111622.GA3511@lst.de>
- <20230731-augapfel-penibel-196c3453f809@brauner>
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <20230731-augapfel-penibel-196c3453f809@brauner>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     conor+dt@kernel.org, openbmc@lists.ozlabs.org, robh+dt@kernel.org,
+        tali.perry1@gmail.com, benjaminfair@google.com,
+        linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        yuenn@google.com, linux-kernel@vger.kernel.org, joel@jms.id.au,
+        krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
+        venture@google.com, avifishman70@gmail.com
+In-Reply-To: <20230731122323.172834-2-tmaimon77@gmail.com>
+References: <20230731122323.172834-1-tmaimon77@gmail.com>
+ <20230731122323.172834-2-tmaimon77@gmail.com>
+Message-Id: <169081033533.2855823.7340412529584491141.robh@kernel.org>
+Subject: Re: [PATCH v4 1/2] dt-binding: pinctrl: Add NPCM8XX pinctrl and
+ GPIO documentation
+Date:   Mon, 31 Jul 2023 07:32:15 -0600
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -53,56 +64,42 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 2023/7/31 20:43, Christian Brauner wrote:
-> On Mon, Jul 31, 2023 at 01:16:22PM +0200, Christoph Hellwig wrote:
->> On Mon, Jul 31, 2023 at 06:58:14PM +0800, Gao Xiang wrote:
->>> Previously, deactivate_locked_super() or .kill_sb() will only be
->>> called after fill_super is called, and .s_magic will be set at
->>> the very beginning of erofs_fc_fill_super().
->>>
->>> After ("fs: open block device after superblock creation"), such
->>> convension is changed now.  Yet at a quick glance,
->>>
->>> WARN_ON(sb->s_magic != EROFS_SUPER_MAGIC);
->>>
->>> in erofs_kill_sb() can be removed since deactivate_locked_super()
->>> will also be called if setup_bdev_super() is falled.  I'd suggest
->>> that removing this WARN_ON() in the related commit, or as
->>> a following commit of the related branch of the pull request if
->>> possible.
->>
->> Agreed.  I wonder if we should really call into ->kill_sb before
->> calling into fill_super, but I need to carefull look into the
->> details.
+On Mon, 31 Jul 2023 15:23:22 +0300, Tomer Maimon wrote:
+> Added device tree binding documentation for Nuvoton Arbel BMC NPCM8XX
+> pinmux and GPIO controller.
 > 
-> I think checking for s_magic in erofs kill sb is wrong as it introduces
-> a dependency on both fill_super() having been called and that s_magic is
-> initialized first. If someone reorders erofs_kill_sb() such that s_magic
-> is only filled in once everything else succeeded it would cause the same
-> bug. That doesn't sound nice to me.
-
-Many many years ago, strange .kill_sb called on our smartphone products
-without proper call chain.  That was why it was added and s_magic was
-initialized first and at least it reminds a slight behavior change for
-us (this time).
-
-Anyway, I also think it's almost useless upstream so I'm fine to drop
-this WARN_ON().
-
-Thanks,
-Gao Xiang
-
+> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+> ---
+>  .../pinctrl/nuvoton,npcm845-pinctrl.yaml      | 215 ++++++++++++++++++
+>  1 file changed, 215 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml
 > 
-> I think ->fill_super() should only be called after successfull
-> superblock allocation and after the device has been successfully opened.
-> Just as this code does now. So ->kill_sb() should only be called after
-> we're guaranteed that ->fill_super() has been called.
-> 
-> We already mostly express that logic through the fs_context object.
-> Anything that's allocated in fs_context->init_fs_context() is freed in
-> fs_context->free() before fill_super() is called. After ->fill_super()
-> is called fs_context->s_fs_info will have been transferred to
-> sb->s_fs_info and will have to be killed via ->kill_sb().
-> 
-> Does that make sense?
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml:77:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml: patternProperties: '-mux' does not match '[\\^$()*@]'
+	hint: Fixed strings belong in 'properties', not 'patternProperties'
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230731122323.172834-2-tmaimon77@gmail.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
