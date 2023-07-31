@@ -2,159 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D75769A03
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A70CE769A0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233037AbjGaOs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:48:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
+        id S232180AbjGaOt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbjGaOsX (ORCPT
+        with ESMTP id S232790AbjGaOtz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:48:23 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8A3E46;
-        Mon, 31 Jul 2023 07:48:22 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bbc64f9a91so38719395ad.0;
-        Mon, 31 Jul 2023 07:48:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690814902; x=1691419702;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=ioQL3amGVFLHt+/XGqLPUSH2Ac7t4cUjcuuZe7CDhps=;
-        b=QXOHxzzuyuUtqTlbPoNx72xTFBCt4zZ0MKzi6DYZWP4ezcq2zpqDOuQGvfzCa3rtlO
-         csVPph93/gOpNYSkPl28LvYmLtnSgxoGFKtWBD/yljuXMYeK+4LG7f4bekGAPrmfgzZa
-         J0ivuHNQ7XX/FhXjMZenLZLWq8sIxX2dRZEcDazdA3aXVUW3oSlxmnzWTc/15VedFvYm
-         GaVre329hqL52cKtTlgBXrpeQ58JTMiPuC+WQO3MB3IE/TKYCU7gk4qkdpHpoCoHvVHJ
-         hssp55EMDEcFtgjMuIMBMiJtHnKbqyFBOqsvIQy8LTJ54mt3anXO2doZQWkvAGR+KxeK
-         y+IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690814902; x=1691419702;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ioQL3amGVFLHt+/XGqLPUSH2Ac7t4cUjcuuZe7CDhps=;
-        b=bDB66d/O4xTXpDMynvbeM/Z5RQPqYB0TReoPagxurGPp5qo1cu4cZwj04cgulCCrUK
-         /pe8TSPEBNyS+ivTb0vZS/qO4V9nTeGD6nUIOFJQjPqpXApT1tkZljVdwAa6aPEmxWHq
-         bODtrvDdLDPygVx1iNefMDNXB0iYLt/iNaGe18VOtxBZIyCHnaibtnII8WVvO6gAlnnn
-         muGowu/EOVoNdtzj1ypEEn8vC7QaSYSx4ISQAYafMeJlSBEVXM0sRI8x0wgpkoTS59QN
-         3FUNeT+LiTowCeEy9fkpZnclDfgdQDZNNWpMCXkyAQa+K+OWFv9yb+3vL21h5rqn7qfb
-         dJLQ==
-X-Gm-Message-State: ABy/qLbGF4uxPxVRUs16Xj94jDIX0pc+Nur56HB0Nl35SK7vCdWOd/ok
-        9FZsmv2d20u5/SFJIl9BXIU=
-X-Google-Smtp-Source: APBJJlFIMiYtJ40DXimsHlznA5C1s6kQTYjo1ggDLkpx7oEl19AIO/ozOOqVA8moiico0A3dpFbXrA==
-X-Received: by 2002:a17:902:7486:b0:1b9:c205:a876 with SMTP id h6-20020a170902748600b001b9c205a876mr11031747pll.29.1690814901553;
-        Mon, 31 Jul 2023 07:48:21 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id e16-20020a17090301d000b001b8b2fb52d4sm8666302plh.203.2023.07.31.07.48.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 07:48:21 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
-Date:   Mon, 31 Jul 2023 07:48:19 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
- 6.4.7-rc1 review)
+        Mon, 31 Jul 2023 10:49:55 -0400
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2085.outbound.protection.outlook.com [40.107.15.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28F96DB;
+        Mon, 31 Jul 2023 07:49:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LESSaq7aIHFdIjsKrn43KI8RWrEAtn6FGA/egeYtGlU6cefM2ahMXxqbC0+yQAkJ2FYdxXKD/tFlZZkLqp3ugK//sDR5ApjzhMN0DpPeqTjA85Nz4C2b/p+RLpR83OKLe54/94vq8bfP20lnowv3igh5j11/56BErD6HJEYSDoW1zjw69XucqSJYJywMvAmxD3S7SgNFOTsLz2EtpA+fLe7lcZ/2l1DJMMGYQ+3+WH59tFiyGvv3oGm0trQpLkp5+a8yRvqBWRB7Ev6NlDP4wHOuEsaXU3J1BYazlJ4iR3I/g3gIDkVjYMS9jN5b3eTXFpgoAQu7zkPKLS9Yxn0/4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=fMz2ic80jKLUGFx02+nO9tYDqCExhxkXc8XH+8i7/LI=;
+ b=d7+Q/C1+GGOqH1iWd0MBOd/gRivm2m7bf/uzppTXiMNoyqxtA61HjLaFzbbKCAvk5HNoGjnoAVO8HzXJS6NtYwYB/QN9LZgPZeXMH0c80YCa1xHW5LDvQu4qkfmmjUAxxTPKff4dmKzDBdpNIbISWg+rzAN1AO/Ww282GbgA66iWN0YV+ugrwO9QBBo2NplX4pkf6URzHqPu0q1izREmKZiGaGJm2K+AYRI27r6PMNDTcLkhKQU+RKQu8qBUVNur+yUjRfrYlWjSpjNoK55hONnHucLJyj/xdV1hc9+KgzBNa2UJhiDDC260t13ZBq/O4aMIaTJ7hCeksJOUCyi11Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fMz2ic80jKLUGFx02+nO9tYDqCExhxkXc8XH+8i7/LI=;
+ b=hvSxZyplMTOW4KBT3o6KcRch3sdgnHcPUj9OsXbpkkxRBQmL5htZLVI0UQKmpCJHh3dnKzoWmcH93JLy4B1AvOSloqZjbWHdP40NAHS3BmcriAFPOjMQ3jRuhcEEyhFaaVXn0BcVHev/UtgrQwbhEx/49G0DMncz1xaJDAY2p6c=
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by DB9PR04MB8329.eurprd04.prod.outlook.com (2603:10a6:10:24c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.43; Mon, 31 Jul
+ 2023 14:49:51 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::d0d5:3604:98da:20b1]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::d0d5:3604:98da:20b1%7]) with mapi id 15.20.6631.043; Mon, 31 Jul 2023
+ 14:49:51 +0000
+From:   Frank Li <frank.li@nxp.com>
+To:     Frank Li <frank.li@nxp.com>, "vkoul@kernel.org" <vkoul@kernel.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "imx@lists.linux.dev" <imx@lists.linux.dev>,
+        Joy Zou <joy.zou@nxp.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Shenwei Wang <shenwei.wang@nxp.com>
+Subject: Re: [PATCH v10 00/12] dmaengine: edma: add freescale edma v3 support
+Thread-Topic: [PATCH v10 00/12] dmaengine: edma: add freescale edma v3 support
+Thread-Index: AQHZsQVXM1FpPyzRF0Gwh5jsC8U2uq/BdBoAgBKmXmA=
+Date:   Mon, 31 Jul 2023 14:49:51 +0000
+Message-ID: <AM6PR04MB4838854FDD93B0DDCC541F3A8805A@AM6PR04MB4838.eurprd04.prod.outlook.com>
+References: <20230707190029.476005-1-Frank.Li@nxp.com>
+ <ZLglBiSz0meJm5os@lizhi-Precision-Tower-5810>
+In-Reply-To: <ZLglBiSz0meJm5os@lizhi-Precision-Tower-5810>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-References: <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
- <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
- <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
- <20230731141934.GK29590@hirez.programming.kicks-ass.net>
- <20230731143954.GB37820@hirez.programming.kicks-ass.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230731143954.GB37820@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM6PR04MB4838:EE_|DB9PR04MB8329:EE_
+x-ms-office365-filtering-correlation-id: 2598e100-9e5a-4c09-c3f4-08db91d5651a
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lwn0H0wLczzfGdanJ6qXR2YGhI06cJWDcXOzpgVrQU7apxm9EnpmGGqsjgU66Q/IY8rJdzyawlm657FiOlLBHKk/Cs0cpxrHoegSmy0XsQI3qFDfUb2Ytp/WSPgJEB1+EjKZxqm1ss3m7qcZlB1KW72XwRidcclSAG0R/f0laTEXeWBgwE7oCtedm1nIzR7H+k/TShwfhfOq6FHhoKFF4kO1ZX/m6CJQrvqgMc+cGMMzhh1HAW8fGeX/rTKjO5OrqIcz3Gwm+tHkYxNE1/lgpD5K0aNg3BL5Ot6myKaTJ9T9HWTFgOqk/XFc2TOYaEtoKgwjLZK3of+SwdNsh2C85MYWwyVzsWmhtarPT+ue6ylv2mVT5minSWnHnVbdSq34t3Z42g4pWjn6uN1ZovZtlcM5OXkHapRGoDj2DQfj2ElF/lA0OusZVm6Jo0VzAzRaAwJxu6qeGmeS26JQCIvF7CUL7a3KJS8Ya9cTEdGj8lpIxzXJuLhMIR9FrRXPZDsIVqthEckw0EcIcjfuEpDrmb5Q4uaU/PSO512MKKTKuSR21biqnm/1UXFYFMvBT3chbX4L0pCRsaV4wXDi55LJVxZiuYoGC80Jq/RZdY68tFPDz808qJbk+lMSi3GTCKXN
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(136003)(366004)(376002)(396003)(346002)(451199021)(9686003)(7696005)(55016003)(55236004)(26005)(6506007)(83380400001)(186003)(44832011)(33656002)(76116006)(66946007)(66556008)(52536014)(41300700001)(122000001)(54906003)(110136005)(38070700005)(86362001)(66476007)(316002)(4326008)(5660300002)(64756008)(66446008)(8676002)(8936002)(38100700002)(2906002)(71200400001)(478600001)(4744005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?B/wikKlvBae+lc7ef1tOCX0DO6llbUPCpTYy2dxwQRBvvVVH3RHD1Uq8tK4n?=
+ =?us-ascii?Q?9KpyVU+Rr9+2QA8D4buEGXBWLDuV86Xb/dGkMu6VeT3a/cJvX/abbSOyVefO?=
+ =?us-ascii?Q?J1/shPhRhtC3lWc03uP2nSA/wALpvbPeKK5SHjokZQNEXraBS+wXoPcVbMXw?=
+ =?us-ascii?Q?W8AzvZ4MfPFmnf+fAnQlpoZtBrDRmW6ZRTEfe8QSbi2kmIa0e0svvoW4veei?=
+ =?us-ascii?Q?ELIySL27BFy8RtzCdVEesk4ecZWDS/GD2jSd2d8zpBDM5sn1jiKJbaM813Pp?=
+ =?us-ascii?Q?94tDdXdvwO5zzRdv20nncco/cbPMzUyz7fj3gatpm+o5VIY8dk2jOzVoBCBp?=
+ =?us-ascii?Q?CxLD0nf6eXhxXLksAUDaiuRq1h6ZZJxQGhd87+7W+N/sMmyT6R0Yb3kwYrjv?=
+ =?us-ascii?Q?tPk7JcHHMnz2xbjcWIjqsAC6e+QooXW01z/WzvaSmPtyUfMelpAqwc2lXK2X?=
+ =?us-ascii?Q?cmfImh3tfhfCL1u0X9+bE+nrwzyrYOlx4b7O17nnDPeCk1q0zTcwfx4xQjo6?=
+ =?us-ascii?Q?UjWoYH/9qnN8uNgps4gVlPwxgLB+Evi9Dqgz/PEJLT+vEWcsjcT4wpXr4M4F?=
+ =?us-ascii?Q?eZVN3Xz7j0SnAL2M2YD/Cq8WDR1VvdPa95YtfO9zr2LVDRrMLkRQWoqFygzu?=
+ =?us-ascii?Q?jfpAh++Zt+3meHVoXbxGPr6OPllzHNFZLGaM8q3PoIPnX4XujZePZYzY2p4w?=
+ =?us-ascii?Q?L3GkNraBaERoiiAWLqDDikzXwpWZ+byL+r4twHgBmXniHEuKUzmEjmrqpTH9?=
+ =?us-ascii?Q?TpOkyjkJ0aDqxAPvLTEI8prgZABBJz8LTwwFsKe6zwld85D+JMty5O4j+X2U?=
+ =?us-ascii?Q?QYU397eLHTwKMS6f8AEQ2zyZ/xvioAvpac07InTFnXtOVZ+4+BoK1tYIyT/v?=
+ =?us-ascii?Q?MogB1AHRzTSHcm4BO2wRAg2jBuXvkCud+m77HfBdzqK1ha84ou5bspJdRshA?=
+ =?us-ascii?Q?ZGhjzOI2ruWnPvPTL8EZyYRGhXN3BHvqCoxBasLfGTPqQBt3ZVvWyoW2Mfzq?=
+ =?us-ascii?Q?bb3XTAHDqhcsUPS7/YABLCMUoZpp8N5Yw+qfL7s3+ziNAitSChLMrFjwtMk+?=
+ =?us-ascii?Q?EUlTfvSlRd7foB34MGb/ZnXOtyZqWQmQRUVljSGadu6PNGnsFJh0X2C42LgO?=
+ =?us-ascii?Q?t2OX30xjmK3RMYgtnTR0O38qYgoA19B2UcgDfzyOJHu4s/Q2XtXGqum+NBkR?=
+ =?us-ascii?Q?iKf3MTghOJpbyX3Be+XxcN1X59nRbjAHEY3lTvsnXxmdg4+LdkwYA0dSo1Dw?=
+ =?us-ascii?Q?UGGNcwr5y11HLTkgqhvcdKYAwGH2CVb/R1tXO9mP8SKGtn5A9kl0Bc3f/o/5?=
+ =?us-ascii?Q?17cz2GxhKndSe/UuZPpcmKlh2Q7ktaSAZYGyIw2VxsRrgcux8E+je1QD7+QK?=
+ =?us-ascii?Q?WMS8JrtqyKd+jNlJXVB1l1wyERdYHRs4SqaZmU6BaHf9YdptBkAsuzRDPU5d?=
+ =?us-ascii?Q?U4Y+nGpEjLKs5oVKywvuRYoq6kcW/6Cc+r440idPZarggcMKzgD7dajJhtCS?=
+ =?us-ascii?Q?i7WBvYP9SsmJVLX4iwM+KvwjHgvCC5TqMQAGHCEdz36td0ZMHTkLXv97Bmuq?=
+ =?us-ascii?Q?yWn5VrpQ0IqJNiPLNao=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2598e100-9e5a-4c09-c3f4-08db91d5651a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jul 2023 14:49:51.3355
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XyKPDcmNNHFh/iQh/YFWINSDpYNMm2PUx0BqjskdUiCIatPqKqULrM9HYVExt7NZ5AMo3uzlssArc907C47bVA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8329
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/23 07:39, Peter Zijlstra wrote:
-> On Mon, Jul 31, 2023 at 04:19:34PM +0200, Peter Zijlstra wrote:
->> On Sat, Jul 29, 2023 at 09:00:02PM -0700, Guenter Roeck wrote:
->>> On 7/27/23 16:18, Joel Fernandes wrote:
->>>
->>> [ ... ]
->>>
->>>>> I freely confess that I am having a hard time imagining what would
->>>>> be CPU dependent in that code.  Timing, maybe?  Whatever the reason,
->>>>> I am not seeing these failures in my testing.
->>>>>
->>>>> So which of the following Kconfig options is defined in your .config?
->>>>> CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
->>>>>
->>>>> If you have more than one of them, could you please apply this patch
->>>>> and show me the corresponding console output from the resulting hang?
->>>>
->>>> FWIW, I am not able to repro this issue either. If a .config can be shared of the problem system, I can try it out to see if it can be reproduced on my side.
->>>>
->>>
->>> I managed to bisect the problem. See bisect log below. Bisect repeated twice.
->>> so it should be reliable. I don't really understand it, but the following
->>> reverts fix the problem. This is on top of next-20230721 because next-20230728
->>> crashes immediately in my tests.
->>>
->>> 0caafe9b94ab (HEAD) Revert "sched/fair: Remove sched_feat(START_DEBIT)"
->>> 518bdbd39fdb Revert "sched/fair: Add lag based placement"
->>> a011162c3e32 Revert "sched/fair: Implement an EEVDF-like scheduling policy"
->>> df579720bf98 Revert "sched/fair: Commit to lag based placement"
->>> aac459a7e738 Revert "sched/smp: Use lag to simplify cross-runqueue placement"
->>> 8d686eb173e1 Revert "sched/fair: Commit to EEVDF"
->>> 486474c50f95 Revert "sched/debug: Rename sysctl_sched_min_granularity to sysctl_sched_base_slice"
->>> 79e94d67d08a Revert "sched/fair: Propagate enqueue flags into place_entity()"
->>> ae867bc97b71 (tag: next-20230721) Add linux-next specific files for 20230721
->>>
->>> For context: x86 images (32 and 64 bit) in -next tend to hang at
->>>
->>> [    2.309323] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
->>> [    2.311634] Running RCU-tasks wait API self tests
->>>
->>> The hang is not seen with every boot; it happens roughly about once every
->>> 10 boot attempts. It is not CPU dependent as I initially thought.
->>>
->>> Configuration file is at http://server.roeck-us.net/qemu/x86-next/config.
->>> Example qemu command line:
->>
->> Hurmph, let me see if I can reproduce on next-20230731 (not having the
->> older next thingies around).
-> 
-> I've taken your config above, and the rootfs.ext2 and run-sh from x86/.
-> I've then modified run-sh to use:
-> 
->    qemu-system-x86_64 -enable-kvm -cpu host
-> 
-> What I'm seeing is that some boots get stuck at:
-> 
-> [    0.608230] Running RCU-tasks wait API self tests
-> 
-> Is this the right 'problem' ?
-> 
 
 
-Yes, exactly.
+> -----Original Message-----
+> From: Frank Li <Frank.li@nxp.com>
+> On Fri, Jul 07, 2023 at 03:00:17PM -0400, Frank Li wrote:
+> > This patch series introduces support for the eDMA version 3 from
+> > Freescale. The eDMA v3 brings alterations in the register layout,
+> > particularly, the separation of channel control registers into
+> > different channels. The Transfer Control Descriptor (TCD) layout,
+> > however, remains identical with only the offset being changed.
+>=20
+> @vkoul:
+>   Do you have chance to check these patches again? I fixed all problem
+> that you said.
+>   All audio parts of i.MX8x and i.MX9 was dependent on these patches.
+>=20
 
-Thanks,
-Guenter
+@vkoul
+ 	Ping
+
+> Frank
+>=20
+> >
 
