@@ -2,92 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB3B76A4E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D228276A4EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbjGaXfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 19:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
+        id S231409AbjGaXhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 19:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbjGaXfu (ORCPT
+        with ESMTP id S229522AbjGaXhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 19:35:50 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1294E7C
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:35:47 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bbbbb77b38so29704615ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:35:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690846547; x=1691451347;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D44fwITHqOzKSCX1s1m0Tgwi/dhRYO0oEqL/14QyVoc=;
-        b=RwgIt1duiUrRhjEcURhmbIveMW2obdPCNKGXb6SyeOvHZR0826BdFgBW+m39HFLPso
-         DUH8zr7KlwmOome+VI658BCVSPsYShfq76RTIv/qDbzdvVlK6bbDyWg2ac11a4Lb5GSx
-         mRm852k8BHW+7xljYLcen7D//++6wkauB/7aIELd9IJpFuurGVkBys27y8t9XO7vJ7c0
-         eFDIf3rxQekq7ycwxaAn7CaPxlHyXyvGhxyy8huCl5UjG1KeCDdrBSdsahbKecU0YC3b
-         MRpnY3ZRRfPK/OynMXEOC+06dUQUb4Tvi/2n8rZa1LBaTQz7GpDMtmWUcH8fVJ1voAMq
-         QEfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690846547; x=1691451347;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D44fwITHqOzKSCX1s1m0Tgwi/dhRYO0oEqL/14QyVoc=;
-        b=cBjhxubWfkqeMCg4Mdp2HVdFAFiPVjnwnwL/qTlt3yf8VPgavN+5YuLOqhMeK//sdL
-         qjzmBtKky/cTWM7m+orl8DWyj68gE1PTFdA6kQpINvMWUzS0lNk2eqH/NdiOgfL68ATc
-         +WQF/pKOeT9yO6fmrpAU2nnbBLCbNmpfd0RJfnYi1jD1r6IRlT5tImOp+9Cb3vo+Pysr
-         V3EkQjUR/cscHm3o8x+DKK2Y9lqBBX03gquF+Pc1u81bs56gTHBKFZ2wUrIHesYyZJbj
-         19GELI6YC9v56aUDTPiAPLPccmuQVJHKILB67O0g5/OILPYUj3MUjEMPOW/OgYQn5ga1
-         hDCQ==
-X-Gm-Message-State: ABy/qLYLPzm5Ymp8EZSjusVPIf1jLYMDj1rwdFuefCfcVOvDZrx1P4OB
-        lJ+GVYpa8jx3zkXM22NjY1Q=
-X-Google-Smtp-Source: APBJJlGkgRGdtXar33TqGJe8AU5ERPlszqjEvb5w1jHguWNFfg5SU4jBQWLitU/ykPh/9ruK+HIEJQ==
-X-Received: by 2002:a17:903:1107:b0:1b8:5a32:2345 with SMTP id n7-20020a170903110700b001b85a322345mr10857206plh.22.1690846547133;
-        Mon, 31 Jul 2023 16:35:47 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:4a3a])
-        by smtp.gmail.com with ESMTPSA id b10-20020a170902d50a00b001b890b3bbb1sm9071400plg.211.2023.07.31.16.35.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 16:35:46 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 31 Jul 2023 13:35:45 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Aaron Tomlin <atomlin@atomlin.com>
-Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
-        peterz@infradead.org
-Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
-Message-ID: <ZMhFUbL42Ycyc2tI@slm.duckdns.org>
-References: <20230729135334.566138-1-atomlin@atomlin.com>
+        Mon, 31 Jul 2023 19:37:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C049EE;
+        Mon, 31 Jul 2023 16:37:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E599E61354;
+        Mon, 31 Jul 2023 23:37:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1C48C433C7;
+        Mon, 31 Jul 2023 23:37:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690846659;
+        bh=oP455tz/501J6ojdg0NqFIQl/IO5aRvk8q00hQauJeY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=IeR1NaW581Gnj9+9ruzWMGS7gKQf4i9eT/CwrK8jWsbwgBV+A8mIdlBnAeto35ci5
+         grvsKbGzY8Nn+XVvoX29E+LMKDIXqnP+MsZBCL/4riisXOUG+Nu3RG1E+C7ZJE6p+D
+         DzkKA97CqUhIqg7vzzNj5ydnU5iq+qYfViJ3SqyCtHZ7Jk6UeS1vffEqCbBJMFpSxY
+         DTm2P5STE7JaEZ75rOLzz9DGF0PCFihRVRrQqTPvuPAaBtgq1ar8iLk8BWoJ4XTE9K
+         VWU07JQXcUfSIzAc4c4hiltf3wUesSpM3VmCL8cQY1fpFo4XT7+WKRH/9Sv2jD51eh
+         i2XF2M8xM6hiw==
+Message-ID: <596886b409e1f2037c507397e82fbca6a3ea685a.camel@kernel.org>
+Subject: Re: [PATCH RFC] nfsd: don't hand out write delegations on O_WRONLY
+ opens
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 31 Jul 2023 19:37:37 -0400
+In-Reply-To: <ZMg5CrlMPsDj95Ua@tissot.1015granger.net>
+References: <20230731-wdeleg-v1-1-f8fe1ce11b36@kernel.org>
+         <ZMg5CrlMPsDj95Ua@tissot.1015granger.net>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230729135334.566138-1-atomlin@atomlin.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 2023-07-31 at 18:43 -0400, Chuck Lever wrote:
+> On Mon, Jul 31, 2023 at 04:27:30PM -0400, Jeff Layton wrote:
+> > I noticed that xfstests generic/001 was failing against linux-next nfsd=
+.
+>=20
+> Only on NFSv4.2 mounts, I presume?
+>=20
 
-On Sat, Jul 29, 2023 at 02:53:32PM +0100, Aaron Tomlin wrote:
-> It can be useful to identify a rescue kworker since their CPU affinity
-> cannot be modified and their initial CPU assignment can be safely ignored.
+Correct.
 
-You really shouldn't be setting affinities on kworkers manually. There's no
-way of knowing which kworker is going to execute which workqueue. Please use
-the attributes API and sysfs interface to modify per-workqueue worker
-attributes. If that's not sufficient and you need finer grained control, the
-right thing to do is using kthread_worker which gives you a dedicated
-kthread that you can manipulate as appropriate.
+>=20
+> > The client would request a OPEN4_SHARE_ACCESS_WRITE open, and the serve=
+r
+> > would hand out a write delegation. The client would then try to use tha=
+t
+> > write delegation as the source stateid in a COPY or CLONE operation, an=
+d
+> > the server would respond with NFS4ERR_STALE.
+> >=20
+> > The problem is that the struct file associated with the delegation does
+> > not necessarily have read permissions. It's handing out a write
+> > delegation on what is effectively an O_WRONLY open. RFC 8881 states:
+> >=20
+> >  "An OPEN_DELEGATE_WRITE delegation allows the client to handle, on its
+> >   own, all opens."
+> >=20
+> > Given that the client didn't request any read permissions, and that nfs=
+d
+> > didn't check for any, it seems wrong to give out a write delegation.
+>=20
+> A client is, in fact, permitted to use a write delegation stateid
+> in an otw READ operation. So, this makes sense to me.
+>=20
 
-Thanks.
+Good.
 
--- 
-tejun
+>=20
+> > Don't hand out a delegation if the client didn't request
+> > OPEN4_SHARE_ACCESS_BOTH.
+> >=20
+> > This fixes xfstest generic/001.
+> >=20
+> > Closes: https://bugzilla.linux-nfs.org/show_bug.cgi?id=3D412
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+>=20
+> I'm thinking this should be squashed into commit
+> 68a593f24a35 ("NFSD: Enable write delegation support").
+>=20
+
+Sounds great to me.
+
+>=20
+> > ---
+> >  fs/nfsd/nfs4state.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >=20
+> > diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+> > index ef7118ebee00..9f1c90afed72 100644
+> > --- a/fs/nfsd/nfs4state.c
+> > +++ b/fs/nfsd/nfs4state.c
+> > @@ -5462,6 +5462,8 @@ nfs4_set_delegation(struct nfsd4_open *open, stru=
+ct nfs4_ol_stateid *stp,
+> >  		return ERR_PTR(-EAGAIN);
+> > =20
+> >  	if (open->op_share_access & NFS4_SHARE_ACCESS_WRITE) {
+> > +		if (!(open->op_share_access & NFS4_SHARE_ACCESS_READ))
+> > +			return ERR_PTR(-EBADF);
+>=20
+> 			return ERR_PTR(-EAGAIN);
+>=20
+> might be more consistent with the other failure returns in this
+> function.
+>=20
+
+Shrug, it doesn't matter much. A distinctive error is nice for debugging
+purposes though.
+
+>=20
+> >  		nf =3D find_writeable_file(fp);
+> >  		dl_type =3D NFS4_OPEN_DELEGATE_WRITE;
+> >  	} else {
+> >=20
+> > ---
+> > base-commit: ec89391563792edd11d138a853901bce76d11f44
+> > change-id: 20230731-wdeleg-bbdb6b25a3c6
+> >=20
+> > Best regards,
+> > --=20
+> > Jeff Layton <jlayton@kernel.org>
+> >=20
+>=20
+
+--=20
+Jeff Layton <jlayton@kernel.org>
