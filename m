@@ -2,169 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC33E769ACD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2468B769ACF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbjGaPae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
+        id S231504AbjGaPbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:31:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjGaPac (ORCPT
+        with ESMTP id S231445AbjGaPa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:30:32 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DCA10E3;
-        Mon, 31 Jul 2023 08:30:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1690817424;
-        bh=7PwxTw3aSVah1GIOmec1TC/G/sFMEfwrvAppv6sZQi8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hdHvZIMW32fYbk3AZr/ZfaIzQBJP11N0nSWLA8+ZD1VT4NwIM9VGY8OSZ241nEbR8
-         PHowpI/lpl0aoDNKEK7mZUf7zxky7FZiU/ZR2KGri/DYL39Ab0t55lwKdQije/3VwT
-         PV/DPzVJlpe/egcdVNw4DDTfwtLugcXpJB+NWK+A=
-Date:   Mon, 31 Jul 2023 17:30:23 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     w@1wt.eu, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        tanyuan@tinylab.org
-Subject: Re: [PATCH 1/4] selftests/nolibc: drop unused test helpers
-Message-ID: <e7ec15d7-0152-4e69-920f-ffb1983e1011@t-8ch.de>
-References: <20230731073243.21265-1-falcon@tinylab.org>
- <20230731110226.115351-1-falcon@tinylab.org>
+        Mon, 31 Jul 2023 11:30:57 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492521706;
+        Mon, 31 Jul 2023 08:30:56 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-486556dea4dso1842097e0c.1;
+        Mon, 31 Jul 2023 08:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690817455; x=1691422255;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wa+EHVPYFxWshTbLbd58AgbMzRqBuVXOS26vxhPYpwM=;
+        b=aEV5sjsMUnvoV0E+toEisFDZLy6/QMeYxuDPnT/Vw27FABa8voo+HdsTEbNIYnZmOR
+         h86Z/LMWOnhzXgajV3lTCKqtEv2aYPRsTlBj6N21gRv5yPx50wWQ3Qdk4udsykD/vNay
+         NvvXuj7HowxR4I73FaUTnakDGrfZqimt+xez7RQpYkvSfRfJLqQYcmqYv+p70fJIIcp7
+         Fwp1x7D6iZgvbAB1xGQBUqIjLm0ROR1rv29QG1iytQBOhwDzeStiB1Jjm/jqIxUi2SoR
+         dT+UGw4s+VUrqTYDMSHuS7BhaY5X96WaZGjA+Z6DVOUZv2YaUE2KRAloQnKKU5SdT0ff
+         Khyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690817455; x=1691422255;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wa+EHVPYFxWshTbLbd58AgbMzRqBuVXOS26vxhPYpwM=;
+        b=LEPuOOztfIVWMN9ycPUPUmTg+tAOQwe/MlWBm04AuD9H0s00+IuHtNtA0JIicy5sFA
+         t82l1fjoshYi0ARzEH3ad6dau+iec6WdDVNH8fIoVCVn1SlvFfDt0azekvOSn7m+Szat
+         Y0ujgAXzGE0+pV1lGdlyHQnlfHBvvCBPnEo6SlJRdY+GIbF1iiaF0lqHoY9YU5e8hqn3
+         xhlvJatM9RiAe2ucQA0eP30Qh6KjspzPxfkw3ayaFDJwuzJiLs52TmjXSN+Ake8r4/k0
+         9Hv6/Qjju3VGIz/kR5wYnShJkNi/zTPSfm1czaLSi+GhdBtP6Hh3Ba8eldsUx21dKn8O
+         LDrQ==
+X-Gm-Message-State: ABy/qLaZcjNCrD03cC5sU5oWHGhqMrtXKzn9hZzOXLFctUtEttaI8cMz
+        hjRMY3T69yjk+VRvhm02cIy97wukPT92RtUqO5c=
+X-Google-Smtp-Source: APBJJlH3j3Ls1d2b/Us99EP4gh0TrfPemGSqonWkJRVdaJP421w1azcanGu5I4Swj3YjLKlnMuRSaivchB262YmhD9I=
+X-Received: by 2002:a1f:c1d4:0:b0:481:2dec:c27 with SMTP id
+ r203-20020a1fc1d4000000b004812dec0c27mr359840vkf.1.1690817455219; Mon, 31 Jul
+ 2023 08:30:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731110226.115351-1-falcon@tinylab.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230725035755.2621507-1-alistair.francis@wdc.com>
+ <20230725163046.GA23990@wunner.de> <20230727093857.000017aa@Huawei.com>
+In-Reply-To: <20230727093857.000017aa@Huawei.com>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Mon, 31 Jul 2023 11:30:29 -0400
+Message-ID: <CAKmqyKOj9JxKcGbEEiTv_nxQSh+7cM-4uz6Z5uGFYdZyjeQ_5Q@mail.gmail.com>
+Subject: Re: [PATCH] PCI/DOE: Expose the DOE protocols via sysfs
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Lukas Wunner <lukas@wunner.de>, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-31 19:02:26+0800, Zhangjin Wu wrote:
-> Hi, Willy
-
-Thomas here :-)
-
-> > > > > Why not a simple 'static __attribute__((unused))' line, then, no need to
-> > > > > add them again next time.
-> > > > > 
-> > > > >     -static int expect_zr(int expr, int llen)
-> > > > >     +static __attribute__((unused))
-> > > > >     +int expect_zr(int expr, int llen)
-> > > > >      {
-> > > > 
-> > > > Personally I don't like having dead code lying around that needs to be
-> > > > maintained and skipped over while reading.
-> > > > It's not a given that we will need those helpers in the future at all.
-> > > >
-> > > 
-> > > It is reasonable in some degree from current status, especially for
-> > > these ones are newly added, but let us think about these scenes: when we
-> > > would drop or change some test cases in the future and the helpers may
-> > > would be not referenced by any test cases in a short time, and warnings
-> > > there, but some other cases may be added later to use them again ...
-> > 
-> > That doesn't seem very likely.
-> > Did it happen recently?
+On Thu, Jul 27, 2023 at 4:39=E2=80=AFAM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Tue, 25 Jul 2023 18:30:46 +0200
+> Lukas Wunner <lukas@wunner.de> wrote:
+>
+> > On Tue, Jul 25, 2023 at 01:57:55PM +1000, Alistair Francis wrote:
+> > > The PCIe 6 specification added support for the Data Object Exchange (=
+DOE).
+> > > When DOE is supported the Discovery Data Object Protocol must be
+> > > implemented. The protocol allows a requester to obtain information ab=
+out
+> > > the other DOE protocols supported by the device.
+> > >
+> > > The kernel is already querying the DOE protocols supported and cachei=
+ng
+> > > the values. This patch exposes the values via sysfs. This will allow
+> > > userspace to determine which DOE protocols are supported by the PCIe
+> > > device.
 > >
-> 
-> Yeah, it did happen, but I can not remember which one, a simple statistic
-> does show it may be likely:
-
-I can't find it.
-
->     $ grep EXPECT_ -ur tools/testing/selftests/nolibc/nolibc-test.c | grep -v define | sed -e 's/.*\(EXPECT_[A-Z0-9]*\).*/\1/g' | sort | uniq -c | sort -k 1 -g -r
->          55 EXPECT_EQ
->          37 EXPECT_SYSER
->          21 EXPECT_SYSZR
->          11 EXPECT_SYSNE
->           9 EXPECT_VFPRINTF
->           4 EXPECT_PTRGT
->           4 EXPECT_GE
->           3 EXPECT_STRZR
->           3 EXPECT_NE
->           3 EXPECT_LT
->           3 EXPECT_GT
->           2 EXPECT_STRNZ
->           2 EXPECT_STREQ
->           2 EXPECT_PTRLT
->           1 EXPECT_SYSER2
->           1 EXPECT_SYSEQ
->           1 EXPECT_PTRNZ
->           1 EXPECT_PTRNE
->           1 EXPECT_PTRER2
->           1 EXPECT_PTRER
->           1 EXPECT_PTREQ
-> 
-> 7 helpers are only used by once, another 3 helpers are used twice, and
-> another 4 are only used by three times.
-
-Why can't we just drop them when they are not used anymore?
-
-> > > I'm ok to drop these ones, but another patch may be required to add
-> > > 'static __attribute__((unused))' for all of the currently used ones,
-> > > otherwise, there will be warnings randomly by a test case change or
-> > > drop.
-> > 
-> > Then we just drop the helper when we don't need it anymore.
-> > 
-> > I also dislike the __attribute__ spam to be honest.
+> > Just dumping the list of supported protocols into dmesg might be simple=
+r,
+> > unless you intend to add mechanisms to actually use certain DOE mailbox=
+es
+> > from user space or expose the information in lspci.  Do have plans for
+> > either of that or what's the motivation to use sysfs?
 > >
-> 
-> Me too, but it does help sometimes ;-)
-> 
-> > > Or even further, is it possible to merge some of them to some more
-> > > generic helpers like the ones used from the selftest.h in your last RFC
-> > > patchset?
-> > 
-> > Something like this will indeed be part of the KTAP rework.
-> > But it's a change for another time.
-> 
-> Yes, this may be a better solution to such warnings.
-> 
-> Btw, just thought about gc-section, do we need to further remove dead code/data
-> in the binary? I don't think it is necessary for nolibc-test itself, but with
-> '-Wl,--gc-sections -Wl,--print-gc-sections' may be a good helper to show us
-> which ones should be dropped or which ones are wrongly declared as public?
-> 
-> Just found '-O3 + -Wl,--gc-section + -Wl,--print-gc-sections' did tell
-> us something as below:
-> 
->     removing unused section '.text.nolibc_raise'
->     removing unused section '.text.nolibc_memmove'
->     removing unused section '.text.nolibc_abort'
->     removing unused section '.text.nolibc_memcpy'
->     removing unused section '.text.__stack_chk_init'
->     removing unused section '.text.is_setting_valid'
-> 
-> These info may help us further add missing 'static' keyword or find
-> another method to to drop the wrongly used status of some functions from
-> the code side.
-> 
-> It is very easy to add the missing 'static' keyword for is_setting_valid(), but
-> for __stack_chk_init(), is it ok for us to convert it to 'static' and remove
-> the 'weak' attrbute and even the 'section' attribute? seems it is only used by
-> our _start_c() currently.
+>
+> I can answer this one in rather than waiting for Alastair to see it
+> (given I was involved in shooting down the earlier proposal :(
+>
+> At least partly motivated by providing the info for lspci which
+> I agree with being a useful addition for debug etc.
+> https://github.com/pciutils/pciutils/pull/152
 
-Making is_setting_valid(), __stack_chk_init() seems indeed useful.
-Also all the run_foo() test functions.
+Yep, a big benefit is lspci or other userspace tools to be able to see
+what DOE protocols are supported.
 
-> For the left ones, some are related to libgcc for divide by zero or the other
-> divide functions, which may be not possible to drop in code side, but for
-> memmove/memset, it is able to add -ffreestanding in our nolibc-test like -Wall
-> and only wrap the 'weak' attribute with '#if __STDC_HOSTED__ == 1', for the ARM
-> specific one, '#ifdef __ARM_EABI__'.
+I also have plans to expose DOE mailboxes to userspace. That way we
+can run the SPDM requester code (using libspdm) in userspace to
+communicate with devices using SPDM. That will allow device
+authentication for example.
 
-That seems very excessive.
+>
+> I can see it would also be useful for things that will poke from
+> userspace because they aren't expected to run in production (and hence
+> hopefully don't care about potential races etc). CXL compliance
+> comes to mind - I don't think we ever want to carry kernel code for that.
 
-> And even further, the '_start_c()' should be 'static' too, perhaps the above
-> issues are worth a new patchset, If you agree, will send a new patchset to fix
-> up them.
+That too!
 
-_start_c(), too.
+>
+> Jonathan
+>
+>
+>
+> > I think I'd rather want everything in doe.c (#ifdef'ed to CONFIG_SYSFS)
+> > and only make dev_attr_doe_proto public.
+
+It seemed like all of the sysf was in this file, which is why I added
+it there. I'm happy to move it if that's preferred though
+
+Alistair
+
+> >
+> > Thanks,
+> >
+> > Lukas
+> >
+>
