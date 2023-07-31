@@ -2,147 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAF476A067
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DDE076A069
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbjGaS2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S231816AbjGaS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231734AbjGaS22 (ORCPT
+        with ESMTP id S231990AbjGaS3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:28:28 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5571BE6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:28:22 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f14865fcc0so583e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:28:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690828099; x=1691432899;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cvfVGN64Yz22QUMEBnQLTws3rVwIXcDs5eogAVL6yuM=;
-        b=z1d5+UX7XYBLc5qbQyuMw7rWEEKuv2TQFDcTMCZ6OV4JkvucedodvmaabpBkiF44d0
-         m/K4p72gyDMp/ymng1FfGjNxxLqdWr4rM+5kOb/xEGRcsc6O5kRrOZ0x99PgeXO5tsrZ
-         mXMxNykbv1E4JGmc/iCdFFGCyPi409p4eQVstzRXuL8rBbavGJhkyByuZKOrEDqUQj2L
-         eIs1MA1ciAq5BQmFXw9kX/VhN1rYNqGyThqGPy3TXg+9zdJaEH+MY+v5p9dtCnhVa8HK
-         SZA2IKzTZ/IA5Ra7Mv9sOeSFLfxzaThxsISmQUv8TDtkYA1VQxtPj9lStP5WTEOk/laO
-         sQ4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690828099; x=1691432899;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cvfVGN64Yz22QUMEBnQLTws3rVwIXcDs5eogAVL6yuM=;
-        b=bjzNhTJ45YUIBcx3X2B+nlCBuofxSDbb/CTMgBPDgltzexQYD0A8ndOPJMqiE1lCb2
-         Xd01Ugm+C75qx1XRo8es/5F8swUN55EsxcwUeMWemz8AjCheZHjaxMicQgnfwSbeIWj4
-         o0Ms7fCOtdb/zS1fD9+RpoiO/wDkPHWGG/jMZSkOgm/NuB87opF15SLLB9Vh+JDFf86v
-         Uqyoera1folvdfMqiqiTf+TNm6aoSRKmo1p5N1PlBm4oJq+GSJdYABUHDL3Au7tA1o8F
-         h6/sRRLeco9gbPwulof7Do/ntMQbg3LpXpJzzrSyW9nHhzcnjvlLV59b8zXT8T5GJXF0
-         dtCA==
-X-Gm-Message-State: ABy/qLY+3CltJ8gMTVXIfs3WuLX+nQo/LID/Lr4sJIqegUyl+ZuDJDvD
-        8MFgyre2p9YZPOz9zZJjg2lqrMH5d6r1o1MIuso/fg==
-X-Google-Smtp-Source: APBJJlGXOlSonsATZcgcpwFmcM1bdURp+WkSA0XT9NFQlazdeHmtW8WNMTeMww29uH2H2bA9q7rX/l1S5/AL6zE3Ugo=
-X-Received: by 2002:a19:f010:0:b0:4fd:eb37:7983 with SMTP id
- p16-20020a19f010000000b004fdeb377983mr119542lfc.1.1690828099374; Mon, 31 Jul
- 2023 11:28:19 -0700 (PDT)
+        Mon, 31 Jul 2023 14:29:00 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDE51FC6;
+        Mon, 31 Jul 2023 11:28:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1690828125; bh=7NrEnQxXICxhw0/8TiGcDTN7V2/dgz44Rd+KTW46XH8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WbV3E8IWxUYOWeDUuQprLuCoGp3MIH2ALt16eJfJgVko1lMHMfHWC1jmiYvSjN0O4
+         b1V5XB2JI+/jDUhYUmKEBd3dyrEygjp2OCzKOJp/6sVEIWMGYYquL4W5BivSXmzQas
+         alFvO0/zWI/cx29RXEiZDfLEUYGTluJQM/cAzzyY=
+Date:   Mon, 31 Jul 2023 20:28:44 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Yuan Tan <tanyuan@tinylab.org>
+Cc:     w@1wt.eu, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] selftests/nolibc: add testcase for pipe
+Message-ID: <51b39ee9-7645-4759-9cc0-3cfe721a2757@t-8ch.de>
+References: <cover.1690733545.git.tanyuan@tinylab.org>
+ <9221753abe0509ef5cbb474a31873012e0e40706.1690733545.git.tanyuan@tinylab.org>
+ <a4899657-7d7b-4786-8903-8f51e438535d@t-8ch.de>
+ <C3AF612281F87D1A+733ce5c0d1efe1f81423e6885203d92cdb4eaee7.camel@tinylab.org>
+ <2ba88bae-2986-4e70-9828-824d7b140277@t-8ch.de>
+ <D55D0905148FA2ED+f06092bae15b312ff1b29ad170fb656b89722b30.camel@tinylab.org>
 MIME-Version: 1.0
-References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
- <169057267580.180586.15710177655506555147.stgit@dwillia2-xfh.jf.intel.com>
- <CAMkAt6r=r_utT6sd_LD-2rO-GpH4zd1D04p04P8WF51BKX-JMg@mail.gmail.com> <64c7f7ddd777c_51ad029436@dwillia2-xfh.jf.intel.com.notmuch>
-In-Reply-To: <64c7f7ddd777c_51ad029436@dwillia2-xfh.jf.intel.com.notmuch>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Mon, 31 Jul 2023 12:28:07 -0600
-Message-ID: <CAMkAt6rotv3UtPifmsRK6wQ-Gh0LjZTnkzK-Gce0SdRz-iN+gg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] virt: sevguest: Add TSM key support for SNP_{GET, GET_EXT}_REPORT
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     dhowells@redhat.com, Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, peterz@infradead.org,
-        linux-coco@lists.linux.dev, keyrings@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D55D0905148FA2ED+f06092bae15b312ff1b29ad170fb656b89722b30.camel@tinylab.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > >
-> > > +static int sev_auth_new(struct tsm_key_payload *t, void *provider_data)
-> > > +{
-> > > +       struct snp_guest_dev *snp_dev = provider_data;
-> > > +       const int report_size = SZ_16K;
-> > > +       const int ext_size =
-> > > +               PAGE_ALIGN_DOWN(TSM_DATA_MAX - report_size - sizeof(*t));
-> > > +       int ret;
-> > > +
-> > > +       if (t->pubkey_len != 64)
-> > > +               return -EINVAL;
-> >
-> > Magic number?
-> >
-> > We only support asymmetric keys with public keys exactly equal to 64
-> > bytes? Is that only p256? SNP uses p384 can we atleast allow that
-> > curve too? But why not let userspace what key type they want to use?
->
-> The kernel has no control here. See Table 20 MSG_REPORT_REQ Message
-> Structure (https://www.amd.com/system/files/TechDocs/56860.pdf)
->
-> ...only 64-byte payloads are accepted. I assume one could specify less
-> than 64-bytes and zero-fill the rest, but that's a contract between the
-> requester and the attester.
+On 2023-08-01 02:01:36+0800, Yuan Tan wrote:
+> Hi Thomas,
+> On Mon, 2023-07-31 at 17:41 +0200, Thomas Weißschuh wrote:
+> > On 2023-07-31 20:35:28+0800, Yuan Tan wrote:
+> > > On Mon, 2023-07-31 at 08:10 +0200, Thomas Weißschuh wrote:
+> > > > On 2023-07-31 13:51:00+0800, Yuan Tan wrote:
+> > > > > Add a testcase of pipe that child process sends message to
+> > > > > parent
+> > > > > process.
+> > > > 
+> > > > Thinking about it some more:
+> > > > 
+> > > > What's the advantage of going via a child process?
+> > > > The pipe should work the same within the same process.
+> > > > 
+> > > 
+> > > The pipe is commonly used for process communication, and I think as
+> > > a
+> > > test case it is supposed to cover the most common scenarios.
+> > 
+> > The testcase is supposed to cover the code of nolibc.
+> > It should be the *minimal* amount of code to be reasonable sure that
+> > the
+> > code in nolibc does the correct thing.
+> > If pipe() returns a value that behaves like a pipe I see no reason to
+> > doubt it will also survive fork().
+> > 
+> > Validating that would mean testing the kernel and not nolibc.
+> > For the kernel there are different testsuites.
+> > 
+> > Less code means less work for everyone involved, now and in the
+> > future.
+> > 
+> 
+> It's a good point and I never thought about this aspect.
+> 
+> I wonder whether the code below is enough?
+> 
+> static int test_pipe(void)
+> {
+> 	int pipefd[2];
+> 
+> 	if (pipe(pipefd) == -1)
+> 		return 1;
+> 
+> 	close(pipefd[0]);
+> 	close(pipefd[1]);
+> 
+> 	return 0;
+> }
 
-Great, we can then name this const.
+That is very barebones.
 
-Yes that's why typically the public key, any context, and nonce would
-be hashed. Then we can include the digest into the report.
+If accidentally a wrong syscall number was used and the used syscall
+would not take any arguments this test would still succeed.
 
->
-> >
-> > > +
-> > > +       if (t->auth_blob_format[0] &&
-> > > +           strcmp(t->auth_blob_format, "extended") != 0)
-> > > +               return -EINVAL;
-> > > +
-> > > +       if (t->auth_blob_format[0]) {
-> > > +               u8 *buf __free(kvfree) =
-> > > +                       kvzalloc(report_size + ext_size, GFP_KERNEL);
-> > > +
-> > > +               struct snp_ext_report_req req = {
-> > > +                       .data = { .vmpl = t->privlevel },
-> > > +                       .certs_address = (__u64)buf + report_size,
-> > > +                       .certs_len = ext_size,
-> > > +               };
-> > > +               memcpy(&req.data.user_data, t->pubkey, 64);
-> >
-> > Again without any freshness from the remote party, of what use is this
-> > attestation report?
->
-> This interface is just marshaling the same data that could be retrieved
-> via SNP_GET_REPORT ioctl on the sevguest chardev today. So I would point
-> you back to vendor documentation for how this report is used. See "VM
-> Launch and Attestation" here:
->
-> https://www.amd.com/system/files/TechDocs/SEV-SNP-strengthening-vm-isolation-with-integrity-protection-and-more.pdf
->
-> I am just here to stanch the proliferation of new chardevs and new
-> ioctls for this TSM-common operation. This effort was started when TDX
-> patches showed up to take a 64-byte input payload and wrap it in a
-> attestation report with its own chardev and ioctls.
+Keeping the write-read-cycle from the previous revision would test that
+nicely. Essentially the same code as before but without the fork().
 
-The way this is currently setup suggests that a user should add a
-pubkey with the 'keyctl add tsm ...'. But if a user does this as
-described here it won't allow them to set up a secure protocol with a
-remote entity.
-
-I think a user could abuse the naming of this system to do the correct
-thing by using 'keyctl add tsm ..' over data which is not a public key
-and is instead a digest of some public key with additional protocol
-data.
+> 
+> And I forgot to add this line:
+> 
+> 	CASE_TEST(pipe); EXPECT_SYSZR(1, test_pipe()); break;
+> 
+> I will add it in next patch.
+> 
