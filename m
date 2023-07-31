@@ -2,147 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEA376900F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3854B769010
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbjGaIYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42260 "EHLO
+        id S229863AbjGaIYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230128AbjGaIYM (ORCPT
+        with ESMTP id S229469AbjGaIYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:24:12 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D470BFA
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:23:59 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe07f0636bso6734439e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:23:59 -0700 (PDT)
+        Mon, 31 Jul 2023 04:24:31 -0400
+Received: from mail-yw1-x1143.google.com (mail-yw1-x1143.google.com [IPv6:2607:f8b0:4864:20::1143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAFB11C;
+        Mon, 31 Jul 2023 01:24:28 -0700 (PDT)
+Received: by mail-yw1-x1143.google.com with SMTP id 00721157ae682-583b3aa4f41so45454677b3.2;
+        Mon, 31 Jul 2023 01:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690791838; x=1691396638;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=blXee+dDBQ47fnSeiUMVWE7fTOyc9C8HdxZlOvJbcv0=;
-        b=Ex3Bn7EExzLV4MN9C/nljzAJjFQ0zSVGSQ9Md9FbJrIf6utaec9gFlJwhCuHmHlWPA
-         z/wYprbtI9UOQfnUINErG0ap3FASEceipLsOyG4wfIf3urG/BHMSLh231sfK2CPk35Gu
-         B4j1Z23v6SDCEbv7BTR/eISuTukq1WA8VLx67QixBkz/9fsF2pEjQi96EtDxdmF7Flpd
-         EtjhGoHWdY+JNwr+mUIqRxGdp0qqaW0Cr/ITLKy/LxRZyGIDGCg7jISLCbMcgjijrDit
-         GzZvr5WIjtxBS7cFBceYXjZkArcXCIfs4NlQezsRzPlqeWlcABxi8BmPyc98BY1y96gH
-         bGhQ==
+        d=gmail.com; s=20221208; t=1690791868; x=1691396668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+9aBHCaVBve/PqXGtBjK3ffvPKhcImg3qkI2In3ZhF4=;
+        b=XMkJKINBc9dC70yNRJVeY4bWAgD6J4rSXig/yzLmlHc9fFl4ZL80kzOb4/omuKrCUq
+         NGSzFZ5O9114KatZZlHfL4a0dIn7v69UfiOPmJDQ2ljFT4oVMrHtvCbE5I102Ffjcv8s
+         ZpREaQynYtrErrdbVLZzDHUdZqp10YWrsEAuRv28DAMSRaLwV0SXTL2FqnizKaC66EY9
+         mhuEhdHv3HBXtLRZ96MVlv50XA6PLinB5Epmgjz1ANl8SmmlruiE82tEKae10c4Xtjk0
+         Y32aNmJUxLdW8Tq17H34CL7vP5pxjUVZ+tQeVztEnCrmMcMhA4WDNBQDiiR/+AckP7zH
+         6WXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690791838; x=1691396638;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=blXee+dDBQ47fnSeiUMVWE7fTOyc9C8HdxZlOvJbcv0=;
-        b=RPVNi3b7gt9cLNpJG4F716FVrT5KbBmsayrNzQ/S+1XfamYMCPEuJDwhxp3W1qnReJ
-         NIB6Cq6YD+Xo3cO3igAvIY/7W/ooN4CmMrxbiAoXY58nVCja+YwTg/j3ueUKdr55TbAq
-         sV3/1Wc0uxPcW4xN+OQZgkWez9BhjY6jkaF/VkbxjP+OlTBJ7iUOh/0az0fRMYK/x9ew
-         HZDRR+vy51fwopjgxttQLPT3boIaNQhZ+AMw8wCfYkkbIjNhm/1Q2dWxl61Mfd+/6hDA
-         RgO16bT9I0Q7SpzYiVRjpglNYdZGpAW1JQTgBIs44Qa/ejWnY7xL2Rq1M5XbbDUNs5jV
-         CRfQ==
-X-Gm-Message-State: ABy/qLbPWZCc4TeeeouON+GGCw7QyEs78smlt+4laGgxoAupDSMkbm8K
-        IxLeDv0fhG7EYrtw4AjMmjMc7tWMa+4W6e8E6RtU3Q==
-X-Google-Smtp-Source: APBJJlGKE2DVLe149kchpBqjbs1hE92ofyR6T5tdMJPbmCVveeORAYPo6+BcOsrUK12AR94Q9JRlZg==
-X-Received: by 2002:a19:9146:0:b0:4fb:7b4c:d38c with SMTP id y6-20020a199146000000b004fb7b4cd38cmr4754003lfj.60.1690791838163;
-        Mon, 31 Jul 2023 01:23:58 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id u23-20020ac24c37000000b004fcdea129basm1977429lfq.94.2023.07.31.01.23.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 01:23:57 -0700 (PDT)
-Message-ID: <2c43966d-33da-107a-ff47-370e3e27a99a@linaro.org>
-Date:   Mon, 31 Jul 2023 10:23:56 +0200
+        d=1e100.net; s=20221208; t=1690791868; x=1691396668;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+9aBHCaVBve/PqXGtBjK3ffvPKhcImg3qkI2In3ZhF4=;
+        b=fmxwRpl2ayNt2575pLwgIeqY9+6Xd6K8aQKbhfqN4l4R6rqBro2Reh284e4LaduZyx
+         TipZTR2f1TveLWWeLn6BXgIHEill8uJ+OhOMt1ZEPOt4MTKdXVN32bDLD8MDd5u01eGv
+         ewQ7Q+30UbCwfDdIlxKZzpRpSnyDAyaPXB2UiJ9ByOWvL276NqhuB5fJ6F7tnxHQnG/l
+         IzU3bZDAZX7tY2aYNEM4CE6Nq9RMJShcyPCfNwUPtPUVIlq2kQS52e6g3Les77shFBnA
+         Gcnn1BV1gpFtSzS/XWeQ+V60e96GIvGWMS8OkhFBfoWYflkXsL9/98oH8EyPurJol1uN
+         0QVQ==
+X-Gm-Message-State: ABy/qLa2/mgNI4K67tf3vV7mUu8cAEHRVGnLsImymYnuPjLqQNQDWJXR
+        Zlz/3opDYqm32Iv55vvz43UvI2T24qODBIo50l4=
+X-Google-Smtp-Source: APBJJlGwNdAn69QYMnsHfJ7RFvsipGf3S/askUMaCMz5yLPThPs4U5a97T2VneH6yiUn4Dz/eTvEEZYa6DUA6xUEY7g=
+X-Received: by 2002:a81:838a:0:b0:576:d65d:2802 with SMTP id
+ t132-20020a81838a000000b00576d65d2802mr9913666ywf.3.1690791868068; Mon, 31
+ Jul 2023 01:24:28 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] soc: qcom: aoss: Tidy up qmp_send() callers
-Content-Language: en-US
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Chris Lew <quic_clew@quicinc.com>
-Cc:     Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
+References: <20230727125125.1194376-1-imagedong@tencent.com>
+ <20230727125125.1194376-4-imagedong@tencent.com> <CANn89iKWTrgEp3QY34mNqVAx09fSxHUh+oHRTd6=aWurGS7qWA@mail.gmail.com>
+ <CADxym3YhjMv3Xkts99fiajq-cR-BqxDayKFzFZ1L49BNfFXkdw@mail.gmail.com>
+ <CADVnQynQ1Hw+Jh7pjdNw_Mo4tWZV8V_sA+L-o=O4uV+9Gv7Prg@mail.gmail.com>
+ <CADxym3Zqb2CCpJojGiT7gVL98GDdOmjxqLY6ApLeP2zZU1Kn3Q@mail.gmail.com>
+ <CANn89i+WnwgpGy4v=aXsjThPBA2FQzWx9Y=ycXWWGLDdtDHBig@mail.gmail.com> <CADVnQy=OumgmsbsQ8QLhUiyUNN95Ay2guVjgGVVLH93QXanBSw@mail.gmail.com>
+In-Reply-To: <CADVnQy=OumgmsbsQ8QLhUiyUNN95Ay2guVjgGVVLH93QXanBSw@mail.gmail.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Mon, 31 Jul 2023 16:24:16 +0800
+Message-ID: <CADxym3YyMiO+zMD4zj03YPM3FBi-1LHi6gSD2XT8pyAMM096pg@mail.gmail.com>
+Subject: Re: [PATCH net-next 3/3] net: tcp: check timeout by
+ icsk->icsk_timeout in tcp_retransmit_timer()
+To:     Neal Cardwell <ncardwell@google.com>
+Cc:     Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+        kuba@kernel.org, pabeni@redhat.com, dsahern@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org
-References: <20230731041013.2950307-1-quic_bjorande@quicinc.com>
- <20230731041013.2950307-5-quic_bjorande@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230731041013.2950307-5-quic_bjorande@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        Menglong Dong <imagedong@tencent.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Soheil Hassas Yeganeh <soheil@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.07.2023 06:10, Bjorn Andersson wrote:
-> With qmp_send() handling variable length messages and string formatting
-> he callers of qmp_send() can be cleaned up to not care about these
-> things.
-> 
-> Drop the QMP_MSG_LEN sized buffers and use the message formatting, as
-> appropriate.
-> 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
-If Alex is okay with that going through qcom:
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-
-One nit below.
-
+On Fri, Jul 28, 2023 at 10:25=E2=80=AFPM Neal Cardwell <ncardwell@google.co=
+m> wrote:
+>
+> On Fri, Jul 28, 2023 at 1:50=E2=80=AFAM Eric Dumazet <edumazet@google.com=
+> wrote:
 [...]
+>
+> In that packetdrill case AFAICT that is the ZWP timer firing, and the
+> sender sends a ZWP.
+>
+> I think maybe Menglong is looking more at something like the following
+> scenario, where at the time the RTO timer fires the data sender finds
+> the tp->snd_wnd is zero, so it sends a retransmit of the
+> lowest-sequence data packet.
+>
+> Here is a packetdrill case and the tcpdump trace on an upstream
+> net-next kernel... I have not worked out all the details at the end,
+> but perhaps it can help move the discussion forward:
+>
+>
+> ~/packetdrill/gtests/net/tcp/receiver_window# cat rwin-rto-zero-window.pk=
+t
+> // Test how sender reacts to unexpected arrival rwin of 0.
+>
+> `../common/defaults.sh`
+>
+> // Create a socket.
+>     0 socket(..., SOCK_STREAM, IPPROTO_TCP) =3D 3
+>    +0 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) =3D 0
+>    +0 bind(3, ..., ...) =3D 0
+>    +0 listen(3, 1) =3D 0
+>
+> // Establish a connection.
+>   +.1 < S 0:0(0) win 65535 <mss 1000,nop,nop,sackOK,nop,wscale 6>
+>    +0 > S. 0:0(0) ack 1 win 65535 <mss 1460,nop,nop,sackOK,nop,wscale 14>
+>   +.1 < . 1:1(0) ack 1 win 457
+>    +0 accept(3, ..., ...) =3D 4
+>
+>    +0 write(4, ..., 20000) =3D 20000
+>    +0 > P. 1:10001(10000) ack 1
+>
+> // TLP
+>   +.2 > . 10001:11001(1000) ack 1
+> // Receiver has retracted rwin to 0
+> // (perhaps from the 2023 proposed OOM code?).
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+> // RTO, and in tcp_retransmit_timer() we see the receiver window is zero,
+> // so we take the special f (!tp->snd_wnd...) code path.
+>   +.2 > . 1:1001(1000) ack 1
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+>   +.5 > . 1:1001(1000) ack 1
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+>  +1.2 > . 1:1001(1000) ack 1
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+>  +2.4 > . 1:1001(1000) ack 1
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+>  +4.8 > . 1:1001(1000) ack 1
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+>  +9.6 > . 1:1001(1000) ack 1
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+> +19.2 > . 1:1001(1000) ack 1
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+> +38.4 > . 1:1001(1000) ack 1
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+> +76.8 > . 1:1001(1000) ack 1
+>   +.1 < . 1:1(0) ack 1 win 0
+>
+> +120 > . 1:1001(1000) ack 1
+>  +.1 < . 1:1(0) ack 1 win 0
+>
+> +120 > . 1:1001(1000) ack 1
+>  +.1 < . 1:1(0) ack 1001 win 1000
+>
+> // Received non-zero window update. Send more data.
+>   +0 > P. 1001:3001(2000) ack 1
+>  +.1 < . 1:1(0) ack 3001 win 1000
+>
+> ----------
+> When I run that script on a net-next kernel I see the rounding up of
+> the RTO to 122 secs rather than 120 secs, but for whatever reason the
+> script does not cause the socket to die early...
+>
 
-> -	snprintf(buf, sizeof(buf),
-> -		 "{class: volt_flr, event:zero_temp, res:%s, value:%s}",
-> -			qmp_cdev->name,
-> -			cdev_state ? "on" : "off");
-> -
-> -	ret = qmp_send(qmp_cdev->qmp, buf);
-> -
-> +	ret = qmp_send(qmp_cdev->qmp, "{class: volt_flr, event:zero_temp, res:%s, value:%s}",
-There's a space after the first colon but not after the subsequent
-ones.
+I think I know the reason now. Without the 2nd patches that I send
+in this series, the ACK can't update the rwin to 0, as it will be ignored
+in tcp_may_update_window().
 
-Konrad
+However, you can send an ACK that acknowledges the new data
+to update the rwin to 0. I modified your script, and it can die as we
+excepted:
+
+// Test how sender reacts to unexpected arrival rwin of 0.
+
+`../common/defaults.sh`
+
+// Create a socket.
+    0 socket(..., SOCK_STREAM, IPPROTO_TCP) =3D 3
+   +0 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) =3D 0
+   +0 bind(3, ..., ...) =3D 0
+   +0 listen(3, 1) =3D 0
+
+// Establish a connection.
+  +.1 < S 0:0(0) win 65535 <mss 1000,nop,nop,sackOK,nop,wscale 6>
+   +0 > S. 0:0(0) ack 1 win 65535 <mss 1440,nop,nop,sackOK,nop,wscale 8>
+  +.1 < . 1:1(0) ack 1 win 457
+   +0 accept(3, ..., ...) =3D 4
+
+   +0 write(4, ..., 20000) =3D 20000
+   +0 > P. 1:10001(10000) ack 1
+
+// Update the window to 0. "ack 0 win 0" won't update the window, as it
+// will be ignored by tcp_may_update_window()
+  +.1 < . 1:1(0) ack 1001 win 0
+
+// RTO, and in tcp_retransmit_timer() we see the receiver window is zero,
+// so we take the special f (!tp->snd_wnd...) code path.
+  +.2 > . 1001:2001(1000) ack 1
+  +.1 < . 1:1(0) ack 1001 win 0
+
+  +.5 > . 1001:2001(1000) ack 1
+  +.1 < . 1:1(0) ack 1001 win 0
+
+ +1.2 > . 1001:2001(1000) ack 1
+  +.1 < . 1:1(0) ack 1001 win 0
+
+ +2.4 > . 1001:2001(1000) ack 1
+  +.1 < . 1:1(0) ack 1001 win 0
+
+ +4.8 > . 1001:2001(1000) ack 1
+  +.1 < . 1:1(0) ack 1001 win 0
+
+ +9.6 > . 1001:2001(1000) ack 1
+  +.1 < . 1:1(0) ack 1001 win 0
+
++19.2 > . 1001:2001(1000) ack 1
+  +.1 < . 1:1(0) ack 1001 win 0
+
++38.4 > . 1001:2001(1000) ack 1
+  +.1 < . 1:1(0) ack 1001 win 0
+
++76.8 > . 1001:2001(1000) ack 1
+  +.1 < . 1:1(0) ack 1001 win 0
+
+// socket will die in tcp_retransmit_timer() in the
+// "tcp_jiffies32 - tp->rcv_tstamp > TCP_RTO_MAX" code path.
+// Following retransmit won't happen.
++120 > . 1001:2001(1000) ack 1
+ +.1 < . 1:1(0) ack 1001 win 0
+---------------------------------------------------------------------------=
+---
+
+I don't know how to check the die of socket with
+packetdrill, so I checked it by:
+  ss -nitme | grep 8080 | grep on
+And I can see the socket die after timeout of the 120seconds
+timer.
+
+$ packetdrill ./rwin-rto-zero-window.pkt
+./rwin-rto-zero-window.pkt:55: error handling packet: Timed out
+waiting for packet
+
+
+> The tcpdump trace:
+>
+>  tcpdump -ttt -n -i any port 8080 &
+>
+> ->
+>
+> ~/packetdrill/gtests/net/tcp/receiver_window#
+> ../../packetdrill/packetdrill rwin-rto-zero-window.pkt
+>  00:01:01.370344 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [S], seq 0, win 65535, options [mss
+> 1000,nop,nop,sackOK,nop,wscale 6], length 0
+>  00:00:00.000096 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [S.], seq 3847169154, ack 1, win 65535, options [mss
+> 1460,nop,nop,sackOK,nop,wscale 14], length 0
+>  00:00:00.100277 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 457, length 0
+>  00:00:00.000090 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [P.], seq 1:2001, ack 1, win 4, length 2000: HTTP
+>  00:00:00.000006 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [P.], seq 2001:4001, ack 1, win 4, length 2000: HTTP
+>  00:00:00.000003 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [P.], seq 4001:6001, ack 1, win 4, length 2000: HTTP
+>  00:00:00.000002 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [P.], seq 6001:8001, ack 1, win 4, length 2000: HTTP
+>  00:00:00.000001 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [P.], seq 8001:10001, ack 1, win 4, length 2000: HTTP
+>  00:00:00.209131 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 10001:11001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100190 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:00:00.203824 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100175 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:00:00.507835 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100192 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:00:01.115858 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100182 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:00:02.331747 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100198 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:00:04.955980 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100197 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:00:09.627985 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100179 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:00:19.355725 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100203 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:00:42.395633 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100202 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:01:17.724059 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100201 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:02:02.779516 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100229 tun0  In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1, win 0, length 0
+>  00:02:02.779828 tun0  Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 1:1001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.100230 ?     In  IP 192.0.2.1.51231 > 192.168.56.132.8080:
+> Flags [.], ack 1001, win 1000, length 0
+>  00:00:00.000034 ?     Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 11001:12001, ack 1, win 4, length 1000: HTTP
+>  00:00:00.000005 ?     Out IP 192.168.56.132.8080 > 192.0.2.1.51231:
+> Flags [.], seq 12001:13001, ack 1, win 4, length 1000: HTTP
+>
+> rwin-rto-zero-window.pkt:62: error handling packet: live packet field
+> tcp_psh: expected: 1 (0x1) vs actual: 0 (0x0)
+> script packet: 405.390244 P. 1001:3001(2000) ack 1
+> actual packet: 405.390237 . 11001:13001(2000) ack 1 win 4
