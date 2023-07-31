@@ -2,64 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 157E4769C15
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4305769C05
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjGaQQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:16:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
+        id S230466AbjGaQN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:13:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjGaQQC (ORCPT
+        with ESMTP id S230147AbjGaQNZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:16:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB8A10CC;
-        Mon, 31 Jul 2023 09:15:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690820152; x=1722356152;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=uDqz4QbIPBx8qkdOShBFJqN2xE5FJpN2fMynEKpHsOs=;
-  b=AeeYNd+rehl3Y/eHzRigdGOTceY7EFY/9KHFULpXqcp8Dqha7hTlIXRS
-   gdwulUWkvBOpMn/s5oznhDU+upep6Z+ls69guqsFnuszuy14Ku7XOEVig
-   28zD7VKvuX0SV/ajM6Od4JqnEC6rNt+izKeiRrG6lkMn6Fi2kNOb0Kk5A
-   XmdIjaKtyaz47n596oSXeqEa33BdBPIDRKF1SNUJvM6WVJbh/S34oZ/hu
-   0mroQbmVimfjydSMzNIboSiwf/FaNTfkqUU/2mqsJ6gDxZZ/JN+EaV8JC
-   EOjdbh1edOCCVzBX5nb5hpQp+k5M86QXSYJ+USVcSpC+LLt4JcZv8/3+k
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="371772690"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="371772690"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 09:13:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852107020"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="852107020"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 31 Jul 2023 09:13:11 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qQVWB-0005Dn-0D;
-        Mon, 31 Jul 2023 16:13:11 +0000
-Date:   Tue, 1 Aug 2023 00:12:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jindong Yue <jindong.yue@nxp.com>, lpieralisi@kernel.org,
-        kw@linux.com, robh@kernel.org, bhelgaas@google.com,
-        hongxing.zhu@nxp.com, l.stach@pengutronix.de
-Cc:     oe-kbuild-all@lists.linux.dev, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: imx6: Support building it as a module
-Message-ID: <202307312343.O4nBKjOL-lkp@intel.com>
-References: <20230731082623.975824-1-jindong.yue@nxp.com>
+        Mon, 31 Jul 2023 12:13:25 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4518197;
+        Mon, 31 Jul 2023 09:13:24 -0700 (PDT)
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VDTJk4029569;
+        Mon, 31 Jul 2023 16:13:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=yZZt31EVjU1TjyEribw3s1baro1HCBxKlNL1G2OTKTc=;
+ b=y1o7rNwR/ujBQXNsH/aZ/lwc/WB8Qx2GZZN7Apag1JN29SpJZVgdl4l6ZUh3TN5tOmG1
+ 3b26isxs9PBNJpTp41du5/LCtBrjmlorYZ5KC1l/vGcejXD37gCd2Gh4XXme3TEQEOBL
+ OyPLg7NFpSGOOHznkO/SpHFs6zhQgeV8df5FI/qazlW/qn4dqPZOUglMe2KzfUMRtlXP
+ WvEF2RWZLHLjCjINR64FrNp+CLzYiMIjSkC65Ca7+Eejtc/dqTpA5gHvGKCqTVqsLzhx
+ p/fw++b8zsJzXwMVr21Rhwh53fBlkEbWv2U728xEB6s21wyJSTKLEUnyPU8bXvtVkAka UQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3s4ttd30ua-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Jul 2023 16:13:08 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 36VG5SRx000799;
+        Mon, 31 Jul 2023 16:13:07 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3s4s74ugpc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Jul 2023 16:13:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bqKGyfyxOwx4BnnOHb9vzIBRD05haGxhIul+zBK8SCxzvqSXDllv9n3bnWdupSQ1WvD3i9+t9g8y60V+1c6KCo/y2HYIkHbOvJ6KDUwMwZmH03TkJUi+u2+D2FQC/mLD+XJB3iQA6IjCggudOu6r2iRoqvd6+eqr6w64u9W2aXstAuGbENNzuPoBuxuDCE6Mtm2oJb6JbfJy0hXU/gXvVA/WUU0zxWnDYn3T4uhhSDqTdx7IwbncJDFyBz41lK/HriKLE8hLWs5KMhpyldHO1rLDArJz0yzoz9YDmy8FUD3fpC4brtbwEAp+tWf7WgkAtZx0JDrH/1s3Plw7og4DUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yZZt31EVjU1TjyEribw3s1baro1HCBxKlNL1G2OTKTc=;
+ b=KoUtzxegFFOgypvvhp1lVswnZyNO/u5AP5gD/+bmJu1Y8bC0WiQh+Ut2+4PR2wFx8ftb8vKQACRFHznHsxAeu4V7RbWOoPGfGdQRZ11Jw95sc47mk+UnplvmQIFGqjR0rrZrS7G+R3IbgKP/4ec3dQV4tad9Z4K9l1XzJm8nixfNd9WmqzoLm9/xPsMhHsjCSB2tqu89XBDWmBeZ8K5tmTNuc9KFkLm+g4KiwFViz8d94w1MfTngbq4Nq2OWXy1w4bgD0oXCA1SWVWOJjFNihQqgvTwEJScp43ZxHUeY9e1f29sRI9c4eZ+CPT1crHY1a7Qa1GlC4bAl2dkVVPBhyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yZZt31EVjU1TjyEribw3s1baro1HCBxKlNL1G2OTKTc=;
+ b=AN8MfDVa7xek/lFY+cL9Ca/hyAR+PBtWW0xn1pO0sUzpBKyNoCdv/Hr5IZsqhYQRPK/W54oVDuY5SFBTqnsLm1Vd1LGASeXYVuTnxRAoG/Gd2Sjb61EZk5tzmSHhbwsm5IWBvZHWH/jadF7DyK275w+nSHT76jz0zn9BVnLe1sY=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by CH3PR10MB7140.namprd10.prod.outlook.com (2603:10b6:610:123::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.43; Mon, 31 Jul
+ 2023 16:13:05 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2dff:95b6:e767:d012]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::2dff:95b6:e767:d012%4]) with mapi id 15.20.6631.041; Mon, 31 Jul 2023
+ 16:13:05 +0000
+To:     Wang Jinchao <wangjinchao@xfusion.com>
+Cc:     Hannes Reinecke <hare@suse.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stone.xulei@xfusion.com>
+Subject: Re: [PATCH] scsi: aic7xxx: fix firmware build fatal error
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq15y60rren.fsf@ca-mkp.ca.oracle.com>
+References: <ZK0XIj6XzY5MCvtd@fedora>
+Date:   Mon, 31 Jul 2023 12:12:58 -0400
+In-Reply-To: <ZK0XIj6XzY5MCvtd@fedora> (Wang Jinchao's message of "Tue, 11 Jul
+        2023 16:47:30 +0800")
+Content-Type: text/plain
+X-ClientProxiedBy: LO4P302CA0037.GBRP302.PROD.OUTLOOK.COM
+ (2603:10a6:600:317::9) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731082623.975824-1-jindong.yue@nxp.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|CH3PR10MB7140:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5ce09f89-850f-4a36-8d31-08db91e1058c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SoUUNbfWO2SLusnJBXTw7gkXinJFTAJo7DARY9wNjzUVMc5uS/YBJDNsVe6lfQe6/sKeNIPdY8iVikvJ1CiYYp1d1mCmCi4l1iqBSNWM8cC2EESRTM8GciFCHxbBRx4vBQlPWmXSM/gbhbBHWCWUfY3L1pOJlxQpl+OXSa/uMiyC+5HJ8XDPctKTuzJTVc2L9E14f2hUUyBXE7cvvtsJMiE7tx9MLo9VdhR5IagqpYN15Z96evcQsNgV5L8XAL54N8PW76NfPyfPvAPnNW+4yXwgKdFszt8fyuD1Rknu/gUTz+s6FfuLMRqr0LY3k2tzplaraHTY/wHBRKeCZ3ViG7SRqEzIM+llARnreVaqgwZCYhgoNAHXb0FYEbc0snS7+1CPibh6cFsGx6YtS1bK00RRCwv2cRhXnNrMNkgvxkvh501HGUO9sc7/BtXEKVpqFmj95LWH+iIbMMuChK0L3uuaq/cQ+URGfNdOrjO3Gh216GpqSlR6VijCj0dhBetgsQnh9WeluT1Sv1teYevYNH38OZwqM3p7ydKOqQY+w+dTHKZw0KBRsRil//tswHzy
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(366004)(396003)(376002)(346002)(39860400002)(451199021)(5660300002)(8936002)(186003)(8676002)(6506007)(316002)(26005)(478600001)(4326008)(66946007)(66476007)(6916009)(54906003)(66556008)(6666004)(36916002)(6486002)(6512007)(41300700001)(86362001)(4744005)(2906002)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aaFPYTU5spFzKh+M78PWtk0G3fIl8ttiaaTYOoSYv3XiWdOGBS13TEbs0MY9?=
+ =?us-ascii?Q?uhCejNUwgkJoJevxKqVJjdU9S3tytLS6OtZF0AGctWv1ejYjLtyuHKCO671S?=
+ =?us-ascii?Q?iHNX5Ng4QK+r0lbW7+dNZKZjZLrAkNcZY0lv2BvPyVtUJcCWWFom3cUT1G2K?=
+ =?us-ascii?Q?zUY30FYtAGkGn+1lE2Cu/O2Fq5vG+WXSZbOH0k1zG0pxXoMUd6QheOQwAl6I?=
+ =?us-ascii?Q?kYmXTdkwLFPWES26IUh1/uLEQwbq9MSqf7tbjmaL1AYvFQBHUi0LBnHLuOpJ?=
+ =?us-ascii?Q?Ybzg2uWvCRId0csM5CAdY773leOvFi7RUYECGTbhceBa7NWs9X+NbjP68dD/?=
+ =?us-ascii?Q?ClKzylbzT/pL38UlyODU4Ha9GWulS3Hsc3547WShjycfnbNxnXz1ZWzDTwdb?=
+ =?us-ascii?Q?p/cl/zTyuKvMRYUXspL3NJf9kDwY4fjUTQJCnOVVivZGMg+3TBPJRnLKBCq5?=
+ =?us-ascii?Q?0ztTpXYQMYCY16CtaT2MbpBwIMNd/VoUIb93uhlY5XcLd+LBWdbSuTDLaTcW?=
+ =?us-ascii?Q?1exQ4M3P4JMchooc2M3x2OAQ0WfKyZCGCbqKlLRM4y3wBMH5l9zgIE2tDVQU?=
+ =?us-ascii?Q?Y86iUdQdcMKOKS4DfQwQXDBHBYlvQr2o5QLftoB48qWLrzjLoyu3rYfiv0D2?=
+ =?us-ascii?Q?tU9ucdi0fNOSCHQiCYZzJLQdleBmdyM01A8pgG3NdjFnJJjvDtd6fAir3CUU?=
+ =?us-ascii?Q?YRzt7rlo/cj0DyyDTWrfOof7ALpIUCuL0SC8FnxOInZc3tYU97ZmpTTwXwEN?=
+ =?us-ascii?Q?DHjR0F/q/f+VmdlwDFvjpvtSmXEXuQzUJxlUkoRgs+zZLBZ+CaEYR0J/FdVm?=
+ =?us-ascii?Q?JGgEVQ1UeshzGAoRz2SMHvusyQ5b4ddWwq649B6FYWHTSoIImy4MC5XlHDPd?=
+ =?us-ascii?Q?/QmFCnpklHiPsv8W28iEZgWb+wXL0ad7pqLQAYGFQXOnbxa02X/JqR5KurwD?=
+ =?us-ascii?Q?jQPDjS34fRS72rxhNOWwWQLzXCAHNdNYD30qfaBfJUpugjt+izGnKIx/BdL2?=
+ =?us-ascii?Q?cfJfIk1N1KCWvGFZ253k0lShi9xs17xE+PYXdpLpYsOI4P65i6Rh+yTsqYwe?=
+ =?us-ascii?Q?oju21OXL3FIkZepeaTyP/QiOZyRkxbTwpufacq9C1cUSGTzpo0yvhKGi9pSU?=
+ =?us-ascii?Q?JNLqiqiZY/DMTK1Ts+hfl5A5lSTer98r2FgUCxtVs/AVi9Un/97clFLjgAGT?=
+ =?us-ascii?Q?U2OURyIICwiGgMpcPdS1I1RnOJKHR1/ptgN787xR4VX0sj/VMCm41mm8u8f/?=
+ =?us-ascii?Q?jZHoXJZIRThSzmP0qIyQYDeIPzX0itK1LK46NA5uMKYEHnOqecxDPntj0+8c?=
+ =?us-ascii?Q?kMZrgsKToEUkImbdYRjihxJHFp3gZvjZXdFfyuD99dpePk4ITuuCaQxUyu7u?=
+ =?us-ascii?Q?cLZzh0NEOLOgcSLVBaRClJf7HbSnvPiJtAMEjMyRvzF1GxQc/X1LG7UnKkwS?=
+ =?us-ascii?Q?4wcoma8TSi9WI8Wi4Y8RGeLafOTst6dTkW/5PbKvJvp1ti1Lvd/DDa6LcwRh?=
+ =?us-ascii?Q?V9h++cjL1pQIJy3nW6yHEuFqk1IFOac7IQmO5VQGh9BLZl46F23LNgiigRrk?=
+ =?us-ascii?Q?JfVsmiRTbt9TzZyHaZ5WzxI2O9jXswfOI6ZmuL9mmnHwta/BHDPa1P3OKv4t?=
+ =?us-ascii?Q?2A=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 71Wr8RrCqmhIkN1iJ/+Xmm2/U9jvtzR9rpmJZQIBFshA2xG0ZJQVdfz/YonzXzjQLIxagwGT9mDNkBp85wMamQBjNKx4cxNC+VePxbHFb2Bp6J8DL69aPuDkpI5UntgnRMeq6LHfYNQcIp2A94Kl9MT9ix1ao9qQbs44HHjQpURNNBY8DK3ZlunIRPt8ImZjcYoldKuGJdrWZTTgU0I0vRH0XJvFeY8Utfn9mXGPNXIhoBUMJSP++Jmf1Os5NxAUmEt5U8bsNzjmlmjTd2IX1nwdxXPEQYP9SiPBZxbgSlQRiGv65IWjC0wOfp+mtO6VbAZjZgiER+MZstlQplp2wZLeVadpoH6lplGI4629i3+C6he50W3Sj/NZwXFbvzUxGw+Vk9UXhA2O03RnMOrGryi+NYGn0v1Q20PYNMG7P4YdOezue22aLwubrD2hwp+mirCiIn1FShSUg/yuKjV8Q+y8oKLxGpZGoucETVbAIpXuxYsCrb8NK8AWRkWD1uL2wQ9RBkbRIRtP09Yam5pmLxz7NriZir9l7jVMJa4KtE17zqPu2ReCd7Fzlwk8SjDq5m32eH7QVmjJEe2pHeFDGKaPFTY0sZIkUZucGlxPwtKK95IidVptxn7mpnl9wpOGrPp/jYF8ej2umnMWhvNaRV1c4fHHTg/CRun0Fj7wRP1zVKy8ujebsfp59D5fDHkRKOEH+GObABHwm0DeguA7kdrPIsB5GQ9f44bcJF/JUhIS61FRropIUla9Ik9pzoVyFpWdr90H84VXCH/WJdDJDvZeqngFS4MnOY0Sf3zHi5sMmMCiSGU5vjeOR91Cpl1A/X93UbfPINfMuu1oHXcYfwjV2xJNvP6CYAa6mPz3SbY=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ce09f89-850f-4a36-8d31-08db91e1058c
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 16:13:05.1060
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mPnwkf9Pdj/kflbnstom2uIkUS4V9phEJF8/zYBHfF7+oHtZKoeoUmhy0lW/omO2gQgY7ueFdx75MANTNva2e3O7e7aeMN7KacuuxwQej9o=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7140
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-31_09,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 suspectscore=0
+ mlxlogscore=939 malwarescore=0 mlxscore=0 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2307310146
+X-Proofpoint-GUID: ReZiOG41N-8PnpMiLVtxYaT16zWhWgQj
+X-Proofpoint-ORIG-GUID: ReZiOG41N-8PnpMiLVtxYaT16zWhWgQj
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,133 +150,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jindong,
 
-kernel test robot noticed the following build errors:
+Wang,
 
-[auto build test ERROR on pci/next]
-[also build test ERROR on pci/for-linus linus/master v6.5-rc4 next-20230731]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> When building with CONFIG_AIC7XXX_BUILD_FIRMWARE=y, two fatal errors
+> are reported as shown below:
+>> aicasm_gram.tab.c:203:10: fatal error: aicasm_gram.tab.h:
+>> No such file or directory
+>> aicasm_macro_gram.tab.c:167:10: fatal error: aicasm_macro_gram.tab.h:
+>> No such file or directory
+> Fix these issues to make randconfig builds more reliable.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Jindong-Yue/PCI-imx6-Support-building-it-as-a-module/20230731-162411
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20230731082623.975824-1-jindong.yue%40nxp.com
-patch subject: [PATCH] PCI: imx6: Support building it as a module
-config: riscv-allmodconfig (https://download.01.org/0day-ci/archive/20230731/202307312343.O4nBKjOL-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230731/202307312343.O4nBKjOL-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307312343.O4nBKjOL-lkp@intel.com/
-
-All errors (new ones prefixed by >>, old ones prefixed by <<):
-
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_rr.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_wrr.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_wlc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_fo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_ovf.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lblc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lblcr.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_dh.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_sh.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_sed.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_nq.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_twos.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_ftp.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_pe_sip.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_defrag_ipv4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_reject_ipv4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/iptable_nat.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/iptable_raw.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ipip.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_gre.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_vti.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ah4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/esp4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/xfrm4_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tunnel4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/inet_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tcp_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/raw_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_algo.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_user.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/unix/unix_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/ip6table_raw.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/ip6table_nat.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_defrag_ipv6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_reject_ipv6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ah6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/esp6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/xfrm6_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/tunnel6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/mip6.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/sit.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ip6_udp_tunnel.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ar9331.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_brcm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_dsa.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_gswip.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_hellcreek.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ksz.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_lan9303.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_mtk.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_none.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ocelot.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ocelot_8021q.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_qca.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rtl4_a.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rtl8_4.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rzn1_a5psw.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_sja1105.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_trailer.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_xrs700x.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/8021q/8021q.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/xdp/xsk_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_crypto_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_token_test.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/key/af_key.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/nf_conntrack_bridge.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtables.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_broute.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_filter.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_nat.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/bridge.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/sunrpc.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/auth_gss/auth_rpcgss.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/auth_gss/rpcsec_gss_krb5.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/kcm/kcm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/atm.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/lec.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/mpoa.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/sctp/sctp_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/tipc/diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/smc/smc_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/chnl_net.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif_socket.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif_usb.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/6lowpan/6lowpan.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/6lowpan/ieee802154_6lowpan.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/ieee802154_socket.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci_spi.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nfc_digital.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/vmw_vsock/vsock_diag.o
-WARNING: modpost: missing MODULE_DESCRIPTION() in net/hsr/hsr.o
->> ERROR: modpost: "dw_pcie_ep_raise_msix_irq" [drivers/pci/controller/dwc/pci-imx6.ko] undefined!
+Applied to 6.6/scsi-staging, thanks!
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Martin K. Petersen	Oracle Linux Engineering
