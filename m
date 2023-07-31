@@ -2,56 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA232768B8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29795768B89
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjGaGIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 02:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
+        id S229990AbjGaGHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 02:07:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230053AbjGaGHz (ORCPT
+        with ESMTP id S229509AbjGaGHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 02:07:55 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B93F910C6;
-        Sun, 30 Jul 2023 23:07:48 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8AxlPCyT8dkq_8MAA--.31150S3;
-        Mon, 31 Jul 2023 14:07:47 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx5sywT8dkJe1BAA--.20979S3;
-        Mon, 31 Jul 2023 14:07:45 +0800 (CST)
-Subject: Re: [PATCH v13 2/2] spi: loongson: add bus driver for the loongson
- spi controller
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        zhuyinbo@loongson.cn
-References: <20230613075834.5219-1-zhuyinbo@loongson.cn>
- <20230613075834.5219-3-zhuyinbo@loongson.cn>
- <3822f248-39dc-fb8d-321a-7b6c833cbb3e@loongson.cn>
- <2264c9bd-76fb-4a99-b655-f4c7bc2a1d45@sirena.org.uk>
- <8ad55123-fbf2-2b0f-faba-f71bb89c7fb1@loongson.cn>
- <67b74e69-f660-43e3-831f-47dbe0fea6fa@sirena.org.uk>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <35724895-6b50-eea1-cc3a-5ad82c501920@loongson.cn>
-Date:   Mon, 31 Jul 2023 14:07:44 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Mon, 31 Jul 2023 02:07:52 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90555125;
+        Sun, 30 Jul 2023 23:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1690783665; bh=1nomeP1d9ikYEOkL1+aGr38oYfkTSthNlpvoN0QtBd0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KbgfJVeiaXReoQ/ZakEwOW07+K2iNobv2eFdQl4mm1tHeoST8umilwHxO6gtXJZZJ
+         94ah6d3/RyJtgel6+X/fJCtKZQ/kYeg0ISroCmBW+1jYAD4WVQy/Brs2vk3HPtszav
+         GnHdP2ZgC89WRii++KcyS4fQ2EbK6or9mLiakXxA=
+Date:   Mon, 31 Jul 2023 08:07:44 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Yuan Tan <tanyuan@tinylab.org>
+Cc:     w@1wt.eu, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] tools/nolibc: add pipe() and pipe2() support
+Message-ID: <f5bcb0b3-7165-4e06-a5a5-9535d5ce3c4e@t-8ch.de>
+References: <cover.1690733545.git.tanyuan@tinylab.org>
+ <23019c9ad3a63d7026a60df8bc41934c3e74e564.1690733545.git.tanyuan@tinylab.org>
 MIME-Version: 1.0
-In-Reply-To: <67b74e69-f660-43e3-831f-47dbe0fea6fa@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Dx5sywT8dkJe1BAA--.20979S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23019c9ad3a63d7026a60df8bc41934c3e74e564.1690733545.git.tanyuan@tinylab.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,55 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/7/28 下午8:31, Mark Brown 写道:
-> On Fri, Jul 28, 2023 at 11:36:48AM +0800, Yinbo Zhu wrote:
->> 在 2023/7/27 下午7:37, Mark Brown 写道:
->>> On Thu, Jul 27, 2023 at 11:09:16AM +0800, Yinbo Zhu wrote:
+On 2023-07-31 13:50:45+0800, Yuan Tan wrote:
+> According to manual page [1], posix spec [2] and source code like
+> arch/mips/kernel/syscall.c, for historic reasons, the sys_pipe() syscall
+> on some architectures has an unusual calling convention.  It returns
+> results in two registers which means there is no need for it to do
+> verify the validity of a userspace pointer argument.  Historically that
+> used to be expensive in Linux.  These days the performance advantage is
+> negligible.
 > 
->>>> Friendly ping ?
+> Nolibc doesn't support the unusual calling convention above, luckily
+> Linux provides a generic sys_pipe2() with an additional flags argument
+> from 2.6.27. If flags is 0, then pipe2() is the same as pipe(). So here
+> we use sys_pipe2() to implement the pipe().
 > 
->>> Please don't send content free pings and please allow a reasonable time
->>> for review.  People get busy, go on holiday, attend conferences and so
->>> on so unless there is some reason for urgency (like critical bug fixes)
->>> please allow at least a couple of weeks for review.  If there have been
->>> review comments then people may be waiting for those to be addressed.
+> pipe2() is also provided to allow users to use flags argument on demand.
 > 
->> Sorry, my community experience is poor.  How many weeks does the
->> community usually take to review ?  and this time that I waited for six
->> weeks and then ping.
+> [1]: https://man7.org/linux/man-pages/man2/pipe.2.html
+> [2]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/pipe.html
 > 
-> The delay here is probably fine - the above is a form letter that I send
-> whenever people ping so it tries to cover all eventualities.  How long
-> to leave things depends a bit on what the change is, an urgent bugfix is
-> going to be different from a spelling fix in a comment.
-
-
-okay, I got it.
-
+> Suggested-by: Zhangjin Wu <falcon@tinylab.org>
+> Link: https://lore.kernel.org/all/20230729100401.GA4577@1wt.eu/
+> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
+> ---
+>  tools/include/nolibc/sys.h | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 > 
->>> Sending content free pings adds to the mail volume (if they are seen at
->>> all) which is often the problem and since they can't be reviewed
->>> directly if something has gone wrong you'll have to resend the patches
->>> anyway, so sending again is generally a better approach though there are
->>> some other maintainers who like them - if in doubt look at how patches
->>> for the subsystem are normally handled.
+> diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
+> index 8bfe7db20b80..9fec09c22dbe 100644
+> --- a/tools/include/nolibc/sys.h
+> +++ b/tools/include/nolibc/sys.h
+> @@ -752,6 +752,30 @@ int open(const char *path, int flags, ...)
+>  }
+>  
+>  
+> +/*
+> + * int pipe2(int pipefd[2], int flags);
+> + * int pipe(int pipefd[2]);
+> + */
+> +
+> +static __attribute__((unused))
+> +int sys_pipe2(int pipefd[2], int flags)
+> +{
+> +	return my_syscall2(__NR_pipe, pipefd, flags);
+> +}
+
+Should be __NR_pipe2.
+
+> +static __attribute__((unused))
+> +int pipe2(int pipefd[2], int flags)
+> +{
+> +	return __sysret(sys_pipe2(pipefd, flags));
+> +}
+> +
+> +static __attribute__((unused))
+> +int pipe(int pipefd[2])
+> +{
+> +	pipe2(pipefd, 0);
+> +}
+> +
+> +
+>  /*
+>   * int prctl(int option, unsigned long arg2, unsigned long arg3,
+>   *                       unsigned long arg4, unsigned long arg5);
+> -- 
+> 2.34.1
 > 
->> Sorry, I don't got it, that free ping usually only needs to be sent to
->> the subsystem maintainer?
-> 
->> Not recommended to use free ping?  or resend the same patch.  If the
->> patch does not need to be modified, does it require sending the same
->> patch ?  And the version number remains the same?
-> 
-> I'm saying it's generally better to ping by resending the patch.
-> Typically keeping the same version number makes sense when doing that -
-> people normally say [PATCH RESEND vN] in the subject line.
-
-
-okay, I got it
-
-Thanks,
-Yinbo
-
