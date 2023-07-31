@@ -2,93 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D532C7697B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A0F7697B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232158AbjGaNe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:34:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
+        id S232235AbjGaNfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjGaNe5 (ORCPT
+        with ESMTP id S230080AbjGaNfU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:34:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86E21709
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:34:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690810449;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fzwvrlH1XSGlWSe56Wopyn1B7OdltVaU2XLlAlxd74o=;
-        b=LQGYG3xcfo0dwWCQA3mNYVrTyjyQ3MFjW2r3cmq3Gct7cCz1U0BRyK3tq0th98P90LeIsO
-        d5jLtnWI9dNdI86JSQtJBNEwF5WoVsdHRWDNJASjvj/nJeSgv/LfCv5DPMosJnM353rLN5
-        7g7tU2Ng80Mb0ys2vmW6AhqP3ANK+IE=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-342-facAzEGHPVC7lcet0k7VTQ-1; Mon, 31 Jul 2023 09:34:05 -0400
-X-MC-Unique: facAzEGHPVC7lcet0k7VTQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 31 Jul 2023 09:35:20 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81E0170A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:35:19 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 31911382C965;
-        Mon, 31 Jul 2023 13:34:04 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 87D58C57964;
-        Mon, 31 Jul 2023 13:34:02 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch>
-References: <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch> <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch> <20230718160737.52c68c73@kernel.org> <000000000000881d0606004541d1@google.com> <0000000000001416bb06004ebf53@google.com> <792238.1690667367@warthog.procyon.org.uk> <831028.1690791233@warthog.procyon.org.uk>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     dhowells@redhat.com, Jakub Kicinski <kuba@kernel.org>,
-        syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>,
-        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id E56EC6606FD9;
+        Mon, 31 Jul 2023 14:35:16 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690810517;
+        bh=vXYdwuWWssmuPwqUqCNDUS6WYl7HIDaFQxEbS2ZYzH0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=jO2JHy7n1CCI+MkmkIVqAgz4PNh61jcXkFQb66KzT/xDlFGZ+LU1DyoikiYVWjU/I
+         Eml2fnnNVguX7xXwEW3i+en8wZq86SeJSqZato8HOMB5H3wjnrUW9ev3hnmiRYaJOy
+         b4TfWAYgkYmNYuCoYbZhTLLjzxSx0ImX3A8+53m5W7jIGbBBHfHVVhaSynQXjgrxGt
+         /gNrXOzu6J1yj7GhWAS1bDsVSn+eSAFI/IdWtJwY9FSem1/jE3sWaWbtYAdCs+bzEp
+         bFwlVNYC1q/ZUWmwAfaCSD+R9wZRsGsRTDX2bHd73DM4789qG/Wvkb3KE5MLl2QJIm
+         djbkgGr70V4fg==
+Message-ID: <3c6f6ca4-c563-525e-e773-3539678956ae@collabora.com>
+Date:   Mon, 31 Jul 2023 15:35:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1125141.1690810441.1@warthog.procyon.org.uk>
-Date:   Mon, 31 Jul 2023 14:34:01 +0100
-Message-ID: <1125142.1690810441@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] ASoC: mediatek: mt8188-mt6359: support dynamic
+ pinctrl
+Content-Language: en-US
+To:     Trevor Wu <trevor.wu@mediatek.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz,
+        matthias.bgg@gmail.com
+Cc:     alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230725035304.2864-1-trevor.wu@mediatek.com>
+ <20230725035304.2864-2-trevor.wu@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230725035304.2864-2-trevor.wu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
+Il 25/07/23 05:53, Trevor Wu ha scritto:
+> To avoid power leakage, it is recommended to replace the default pinctrl
+> state with dynamic pinctrl since certain audio pinmux functions can
+> remain in a HIGH state even when audio is disabled. Linking pinctrl with
+> DAPM using SND_SOC_DAPM_PINCTRL will ensure that audio pins remain in
+> GPIO mode by default and only switch to an audio function when necessary.
+> 
+> Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
 
-> Is the MSG_CONFIRM needed to trigger this?
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-It's not actually necessary.  The syz test was doing it.
-
-> Is this indeed trivially sidestepped if downgrading from splicing to
-> regular copying with fragmentation?
-
-That works.  The logging looks like:
-
-==>splice_to_socket() 5535
-udp_sendmsg(8,8)
-__ip_append_data(copy=-1,len=8, mtu=8192 skblen=8189 maxfl=8188)
-copy 8 = 9 - 0 - 1 - 0
-length 8 -= 8 + 0
-<==splice_to_socket() = 8
-
-It looks like pagedlen being non-zero might be the issue.
-
-David
 
