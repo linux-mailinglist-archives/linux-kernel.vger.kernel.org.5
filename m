@@ -2,122 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BD8768D4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7092F768D4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbjGaHKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49846 "EHLO
+        id S231302AbjGaHKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbjGaHKF (ORCPT
+        with ESMTP id S230407AbjGaHKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Jul 2023 03:10:05 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC851705;
-        Mon, 31 Jul 2023 00:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1690787296;
-        bh=q0/RMbeUsJRr/8U7rBQr1RX1EBgUx1jztSSJWUG/bOI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X0FqEYXbuvzgRsmhAkZyTtlI8dK/tAlt4VDJmHEoz9E2dpUcdD335TpxL9bjogV0Y
-         bJJO30dWC+I2WTuIqEpYi80yZJ5I1lagZnBFFfkhluq7P3dmbhBaNUMyobxZ3OUQo2
-         h9IaB47Ip7Mdv+Y8a+fLrGvtAmRajbJyHw3Z9Bq0=
-Date:   Mon, 31 Jul 2023 09:08:15 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, tanyuan@tinylab.org, w@1wt.eu
-Subject: Re: [PATCH 1/4] selftests/nolibc: drop unused test helpers
-Message-ID: <7d8dee88-16af-464f-b7f3-55b77dbc3c46@t-8ch.de>
-References: <20230731-nolibc-warnings-v1-1-74973d2a52d7@weissschuh.net>
- <20230731064826.16584-1-falcon@tinylab.org>
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86D2170C;
+        Mon, 31 Jul 2023 00:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=HZ0fHzEF1IDA+OwOdO/wmBaqmw
+        f+RwsFGQXCDRt3W0lBlu8eY3r3mavsFYM5RrvZa0KqhnmYBowCNI2otSBFOQ3TkcDi3YJHAgH1Jtp
+        zJxNE+ou/nIc/fqDXKZv8u2Tz9BhILnnt3Ow4RrqTXKNywErYltNSwsDwzDwsZu7J+waCP8mU2XJf
+        cOPrYPfLbxX30XiOiXKO7ZLNVYVixsd5vF9GOgcSifscuZlTrfSkZIYlzXXw7yz/H0rZ+7aQrl+m1
+        wWgpXihx/+Nm/TBzDwexehREoLjp/wkWqLquWpYQewgfTZ7G3iMnyS1caIrvnUEDpIWdFFI8QNo/X
+        7CmrZFXg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQN0r-00EGuv-1j;
+        Mon, 31 Jul 2023 07:08:17 +0000
+Date:   Mon, 31 Jul 2023 00:08:17 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Kelvin Cao <kelvin.cao@microchip.com>
+Cc:     vkoul@kernel.org, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, logang@deltatee.com,
+        George.Ge@microchip.com, christophe.jaillet@wanadoo.fr,
+        hch@infradead.org
+Subject: Re: [PATCH v6 1/1] dmaengine: switchtec-dma: Introduce Switchtec DMA
+ engine PCI driver
+Message-ID: <ZMdd4SpqhLnOxqwb@infradead.org>
+References: <20230728200327.96496-1-kelvin.cao@microchip.com>
+ <20230728200327.96496-2-kelvin.cao@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230731064826.16584-1-falcon@tinylab.org>
+In-Reply-To: <20230728200327.96496-2-kelvin.cao@microchip.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Note:
+Looks good:
 
-It seems your mail client does not add the prefix "Re: " to responses.
-Is that intentional?
-
-On 2023-07-31 14:48:26+0800, Zhangjin Wu wrote:
-> Hi, Thomas
-> 
-> > As we want to enable compiler warnings in the future these would be
-> > reported as unused functions.
-> > 
-> > If we need them in the future they are easy to recreate from their still
-> > existing siblings.
-> > 
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> > ---
-> >  tools/testing/selftests/nolibc/nolibc-test.c | 99 ----------------------------
-> >  1 file changed, 99 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-> > index 03b1d30f5507..53e2d448eded 100644
-> > --- a/tools/testing/selftests/nolibc/nolibc-test.c
-> > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
-> > @@ -161,31 +161,6 @@ static void result(int llen, enum RESULT r)
-> >   * of failures, thus either 0 or 1.
-> >   */
-> >  
-> > -#define EXPECT_ZR(cond, expr)				\
-> > -	do { if (!(cond)) result(llen, SKIPPED); else ret += expect_zr(expr, llen); } while (0)
-> > -
-> > -static int expect_zr(int expr, int llen)
-> > -{
-> 
-> Why not a simple 'static __attribute__((unused))' line, then, no need to
-> add them again next time.
-> 
->     -static int expect_zr(int expr, int llen)
->     +static __attribute__((unused))
->     +int expect_zr(int expr, int llen)
->      {
-
-Personally I don't like having dead code lying around that needs to be
-maintained and skipped over while reading.
-It's not a given that we will need those helpers in the future at all.
-
-Thomas
-
-> 
-> Thanks,
-> Zhangjin
-> 
-> > -	int ret = !(expr == 0);
-> > -
-> > -	llen += printf(" = %d ", expr);
-> > -	result(llen, ret ? FAIL : OK);
-> > -	return ret;
-> > -}
-> > -
-> > -
-> > -#define EXPECT_NZ(cond, expr, val)			\
-> > -	do { if (!(cond)) result(llen, SKIPPED); else ret += expect_nz(expr, llen; } while (0)
-> > -
-> > -static int expect_nz(int expr, int llen)
-> > -{
-> > -	int ret = !(expr != 0);
-> > -
-> > -	llen += printf(" = %d ", expr);
-> > -	result(llen, ret ? FAIL : OK);
-> > -	return ret;
-> > -}
-> > -
-> > [...]
-> > -- 
-> > 2.41.0
-> > 
-> > 
+Reviewed-by: Christoph Hellwig <hch@lst.de>
