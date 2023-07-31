@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0BF769911
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F11769918
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbjGaOKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
+        id S231974AbjGaOKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:10:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjGaOKM (ORCPT
+        with ESMTP id S231629AbjGaOKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:10:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C23E6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:09:29 -0700 (PDT)
+        Mon, 31 Jul 2023 10:10:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAC71716
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:09:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690812568;
+        s=mimecast20190719; t=1690812590;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WD2g6uj+bczangBD0M6t4+N3tf+625pl7skoKavki5M=;
-        b=Y84A6mWPWtvvUcZ2pGjEdrM7DMoJB5bX57excPX1Nkirrx7SOBWBnbKAym3/nRg0z7ByrR
-        Nr6kWKuoROJOI48oaEmVYjVPlCRC9Y8iEyIN2zOeq+2+PpZ0luhvBtY7pGNRnALJ0Rl6Ci
-        /n1z3AmBR1JjvxH3TamiO5SFbH/+DQA=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=l+Mv5r6t8pSNTy6u7u7r06N3KDg61cGhEe9E1jY0jkI=;
+        b=daqE8zc24Dgw7t9kJw1Yx4CYN6Ot24eKAX50m1CKHX8PIgbRv1uYluEVDwroskIx7E1tVZ
+        u2EzoMfcXhANkfayW0P+JFnyv+cWItTE6B8cDBzoWKHZe1RqquKeXKf8EmLf62T5avmGOQ
+        j28GblU+eQHAGrioym7BJgnImtqB6hA=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-336-tPcVfcK5OgiBdw8aFneG-g-1; Mon, 31 Jul 2023 10:09:27 -0400
-X-MC-Unique: tPcVfcK5OgiBdw8aFneG-g-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2b8405aace3so40683991fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:09:26 -0700 (PDT)
+ us-mta-557-7lSF6NPMM9OGk2ChR5Av2g-1; Mon, 31 Jul 2023 10:09:48 -0400
+X-MC-Unique: 7lSF6NPMM9OGk2ChR5Av2g-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-76c95663db4so216888685a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:09:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690812565; x=1691417365;
+        d=1e100.net; s=20221208; t=1690812587; x=1691417387;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WD2g6uj+bczangBD0M6t4+N3tf+625pl7skoKavki5M=;
-        b=KxdPyR22O77swLOnUgHHZd7orCcyajp0Z9OA9EjOdRaqXXS8ERzJ/4kGWCdNSL1AWD
-         vFtd8vd2brFRIQ1gMj9OIRhvZWcR2T/myjOycjDm4PMQD7M2nJomIqNFBNkIIs/foMY2
-         dDM+IwCxwrDk0+Zo/K43NX4RAyEwwisDyuh3sQx0j+kkWCyqQyqHSm7KuLLnd9QJDptL
-         YqfLdVxdvQLbAirgXw/foSqAXHUuUYb8uBnNdKNKc7ktQy070bKEpGckxXKvEvoj4Twr
-         4nBfd2B6HpWaySWS6awRS+dCylzAFUS7ttbip1vo02mBuSCiYr1KPF1LX/Z87DSoX/qI
-         sIWQ==
-X-Gm-Message-State: ABy/qLYc9UFyi3GuRWiNQBdrv7Gul7MBtprDFVqwLVRSYWpeghUGXyRv
-        Yyb3CHjJodG+Si3XdT5g3RbmhhUhmg6eQoIYPtGUmWIG0lmH9jS2yE6gGyrOPT9YjO6TdwJk9II
-        avbZqkgFOOPNj2m+c1RjYSPfs
-X-Received: by 2002:a2e:3e07:0:b0:2b9:dd5d:5d0c with SMTP id l7-20020a2e3e07000000b002b9dd5d5d0cmr35013lja.52.1690812565533;
-        Mon, 31 Jul 2023 07:09:25 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlF97yOz7HL49mkqe4euZC2DWJ1w3zEkXD2P098ai/agoHgCZ9grdbaWYw8ZmQ8KTF5KXSvw7A==
-X-Received: by 2002:a2e:3e07:0:b0:2b9:dd5d:5d0c with SMTP id l7-20020a2e3e07000000b002b9dd5d5d0cmr35001lja.52.1690812565150;
-        Mon, 31 Jul 2023 07:09:25 -0700 (PDT)
+        bh=l+Mv5r6t8pSNTy6u7u7r06N3KDg61cGhEe9E1jY0jkI=;
+        b=USaJhcU3yd5CzMRLe6RBKWrfTGLLu0jH4TKA1BECBW7jBkOcQIJ45g9YgJcZqgHj0p
+         ttdu1V/tvB3TmzZXHf0lB7lzoUx0DSr/biTFN6waaz9SaThlCvCCdKaGLzi/+niyci4z
+         nvGBASCgvqcpe+dPQ4tGznvFr5Acate5Vc9jlFKSyo/foPyfIt+OTLRnu0vKz+uxbl2q
+         5Rx+fdCZHPIKPoV5GB7Qmp2olOIW0dIR+E+7eUhQKbdXuUhD1WfiVJvHXmIyK3fjkepp
+         gx0U8VzpMFYhcXBC5wyK5X+9ECg7Ps0kKMa3W58Wpi3TDmtvXpTKBvZeUO9XLI5FU78c
+         qfOA==
+X-Gm-Message-State: ABy/qLYbC/zPA/iQ5Cap9UsbCTUniHs0H+Aivrk6U0YUarWdWrFtGTjU
+        RGsD77S3TM+qj4SQd7B19pmPJzCoh2K0GflWK/lIkTVdSzz8lB4VU1134BkNTXjz71iXRjUiuvj
+        Pq2AmsxRgUaxiag8dZXHUjb3B
+X-Received: by 2002:a05:620a:4727:b0:765:3e81:e74c with SMTP id bs39-20020a05620a472700b007653e81e74cmr11407595qkb.21.1690812587625;
+        Mon, 31 Jul 2023 07:09:47 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHIB/WwtEub8ysCiYcNlnMAPnvf2FYgsJFgo7Z+WgYzFftVBdtNg6b6tXRvs2eiCYRKYRnpNA==
+X-Received: by 2002:a05:620a:4727:b0:765:3e81:e74c with SMTP id bs39-20020a05620a472700b007653e81e74cmr11407577qkb.21.1690812587414;
+        Mon, 31 Jul 2023 07:09:47 -0700 (PDT)
 Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id m17-20020a170906849100b00992d70f8078sm6206032ejx.106.2023.07.31.07.09.23
+        by smtp.gmail.com with ESMTPSA id 22-20020a05620a06d600b00767ceac979asm3318877qky.42.2023.07.31.07.09.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 07:09:23 -0700 (PDT)
-Message-ID: <f4497997-83eb-3739-f3b9-e674aec97e08@redhat.com>
-Date:   Mon, 31 Jul 2023 16:09:22 +0200
+        Mon, 31 Jul 2023 07:09:40 -0700 (PDT)
+Message-ID: <7a28e9aa-46a1-e072-2101-5392cd21a5f0@redhat.com>
+Date:   Mon, 31 Jul 2023 16:09:37 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.12.0
-Subject: Re: [PATCH v3] ACPI: scan: Create platform device for CS35L56
+Subject: Re: [PATCH v3 1/3] platform/x86: wmi-bmof: Use
+ device_create_bin_file()
 Content-Language: en-US
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>, rafael@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, patches@opensource.cirrus.com,
-        Simon Trimmer <simont@opensource.cirrus.com>
-References: <20230728111345.7224-1-rf@opensource.cirrus.com>
+To:     Armin Wolf <W_Armin@gmx.de>, markgross@kernel.org, thomas@t-8ch.de
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230730204550.3402-1-W_Armin@gmx.de>
 From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20230728111345.7224-1-rf@opensource.cirrus.com>
+In-Reply-To: <20230730204550.3402-1-W_Armin@gmx.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
@@ -85,33 +84,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 7/28/23 13:13, Richard Fitzgerald wrote:
-> From: Simon Trimmer <simont@opensource.cirrus.com>
+On 7/30/23 22:45, Armin Wolf wrote:
+> Use device_create_bin_file() instead of sysfs_create_bin_file()
+> to avoid having to access the device kobject.
 > 
-> The ACPI device CSC3556 is a Cirrus Logic CS35L56 mono amplifier which
-> is used in multiples, and can be connected either to I2C or SPI.
+> Tested on a ASUS PRIME B650-PLUS.
 > 
-> There will be multiple instances under the same Device() node. Add it
-> to ignore_serial_bus_ids and handle it in the serial-multi-instantiate
-> driver.
-> 
-> There can be a 5th I2cSerialBusV2, but this is an alias address and doesn't
-> represent a real device. Ignore this by having a dummy 5th entry in the
-> serial-multi-instantiate instance list with the name of a non-existent
-> driver, on the same pattern as done for bsg2150.
-> 
-> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+> Tested-by: Thomas Weißschuh <linux@weissschuh.net>
+> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
 
-Thank you for your patch, I've applied this patch to my fixes
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=fixes
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Note it will show up in my fixes branch once I've pushed my
+Note it will show up in my review-hans branch once I've pushed my
 local branch there, which might take a while.
 
-I will include this patch in my next fixes pull-req to Linus
-for the current kernel development cycle.
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
 Regards,
 
@@ -119,54 +112,36 @@ Hans
 
 
 
-
 > ---
->  drivers/acpi/scan.c                             |  1 +
->  drivers/platform/x86/serial-multi-instantiate.c | 14 ++++++++++++++
->  2 files changed, 15 insertions(+)
+> Changes since v1:
+> - add Reviewed-by and Tested-by tags
+> ---
+>  drivers/platform/x86/wmi-bmof.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index 5b145f1aaa1b..87e385542576 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -1714,6 +1714,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
->  		{"BSG1160", },
->  		{"BSG2150", },
->  		{"CSC3551", },
-> +		{"CSC3556", },
->  		{"INT33FE", },
->  		{"INT3515", },
->  		/* Non-conforming _HID for Cirrus Logic already released */
-> diff --git a/drivers/platform/x86/serial-multi-instantiate.c b/drivers/platform/x86/serial-multi-instantiate.c
-> index 2c2abf69f049..8158e3cf5d6d 100644
-> --- a/drivers/platform/x86/serial-multi-instantiate.c
-> +++ b/drivers/platform/x86/serial-multi-instantiate.c
-> @@ -329,6 +329,19 @@ static const struct smi_node cs35l41_hda = {
->  	.bus_type = SMI_AUTO_DETECT,
->  };
->  
-> +static const struct smi_node cs35l56_hda = {
-> +	.instances = {
-> +		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		{ "cs35l56-hda", IRQ_RESOURCE_AUTO, 0 },
-> +		/* a 5th entry is an alias address, not a real device */
-> +		{ "cs35l56-hda_dummy_dev" },
-> +		{}
-> +	},
-> +	.bus_type = SMI_AUTO_DETECT,
-> +};
-> +
->  /*
->   * Note new device-ids must also be added to ignore_serial_bus_ids in
->   * drivers/acpi/scan.c: acpi_device_enumeration_by_parent().
-> @@ -337,6 +350,7 @@ static const struct acpi_device_id smi_acpi_ids[] = {
->  	{ "BSG1160", (unsigned long)&bsg1160_data },
->  	{ "BSG2150", (unsigned long)&bsg2150_data },
->  	{ "CSC3551", (unsigned long)&cs35l41_hda },
-> +	{ "CSC3556", (unsigned long)&cs35l56_hda },
->  	{ "INT3515", (unsigned long)&int3515_data },
->  	/* Non-conforming _HID for Cirrus Logic already released */
->  	{ "CLSA0100", (unsigned long)&cs35l41_hda },
+> diff --git a/drivers/platform/x86/wmi-bmof.c b/drivers/platform/x86/wmi-bmof.c
+> index 80137afb9753..d0516cacfcb5 100644
+> --- a/drivers/platform/x86/wmi-bmof.c
+> +++ b/drivers/platform/x86/wmi-bmof.c
+> @@ -75,7 +75,7 @@ static int wmi_bmof_probe(struct wmi_device *wdev, const void *context)
+>  	priv->bmof_bin_attr.read = read_bmof;
+>  	priv->bmof_bin_attr.size = priv->bmofdata->buffer.length;
+> 
+> -	ret = sysfs_create_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
+> +	ret = device_create_bin_file(&wdev->dev, &priv->bmof_bin_attr);
+>  	if (ret)
+>  		goto err_free;
+> 
+> @@ -90,7 +90,7 @@ static void wmi_bmof_remove(struct wmi_device *wdev)
+>  {
+>  	struct bmof_priv *priv = dev_get_drvdata(&wdev->dev);
+> 
+> -	sysfs_remove_bin_file(&wdev->dev.kobj, &priv->bmof_bin_attr);
+> +	device_remove_bin_file(&wdev->dev, &priv->bmof_bin_attr);
+>  	kfree(priv->bmofdata);
+>  }
+> 
+> --
+> 2.39.2
+> 
 
