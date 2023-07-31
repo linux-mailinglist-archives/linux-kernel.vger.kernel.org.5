@@ -2,154 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E82E768FA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E2E768F85
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231835AbjGaIIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33704 "EHLO
+        id S231693AbjGaIEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232030AbjGaIID (ORCPT
+        with ESMTP id S231700AbjGaIEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:08:03 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B213C2111;
-        Mon, 31 Jul 2023 01:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=OvDeU
-        hri4hMYcdVAW/0ip7PXQ5yfuGa2bCViMpSRGnM=; b=eL+EBubr9NeQNaH0ugcfk
-        z+Us5EfSb9fKASSSdkLMFHcIqyEeEfZtXLW05EhHfdTumWlq22Bw19M8DNiy6MG1
-        fptlcSVmBDN2KefBqZ5dUCG204vVlJqbe1J/euke2IBEu0ejfUqaGm3Am3pa13iZ
-        l9k9oORuJVwkOd5y1Y5hYM=
-Received: from localhost.localdomain (unknown [39.144.138.187])
-        by zwqz-smtp-mta-g3-3 (Coremail) with SMTP id _____wBXyzBNYMdkPmzZBg--.18258S2;
-        Mon, 31 Jul 2023 15:18:38 +0800 (CST)
-From:   xingtong_wu@163.com
-To:     pavel@ucw.cz, lee@kernel.org, henning.schild@siemens.com,
-        hdegoede@redhat.com, xingtong.wu@siemens.com,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] leds: simatic-ipc-leds-gpio: add support for module BX-59A
-Date:   Mon, 31 Jul 2023 15:18:33 +0800
-Message-Id: <20230731071833.4725-1-xingtong_wu@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230731071424.4663-1-xingtong_wu@163.com>
-References: <20230731071424.4663-1-xingtong_wu@163.com>
+        Mon, 31 Jul 2023 04:04:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4143212A;
+        Mon, 31 Jul 2023 01:02:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CCFA660F6D;
+        Mon, 31 Jul 2023 08:02:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A87FC433C7;
+        Mon, 31 Jul 2023 08:02:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690790567;
+        bh=sz0W8TWwDCZSDXacy5qFJ8iQI502iNXILpE0ymuNVfw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tHPODxfZybRK3y1v2GMX5qW2Chercg8j0kZLxqtYuf4czbNMsMrljy0T4IY/CZUvo
+         0rwPYkpCnCMzd3HyJtmhzOmqgASIBO2L9YZ/hrJOE+9+vjNOsVXzvL8IQDv6NF+BNw
+         b5VKtXikVdg/M+RXn/15gjCNUfhYrLl1qBL2lDvMHNDm4wYIjCPzAQcmKjlWFw4ECG
+         H9zPdvPT7G+SO038mok1a2ug8jTfMqcAQJN18AYY5OWgR5uXUoTPNcejZNq6ZDvVvA
+         tHOcY7BakONs8OObQyR6OInxJaMfwgdHxDZqNTxZmF/7AB6uPKsJS1hKM1Nsd9dfcZ
+         KjrIb4ILGEH7Q==
+From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Subject: [PATCH 00/10] tty: minor cleanups
+Date:   Mon, 31 Jul 2023 10:02:34 +0200
+Message-ID: <20230731080244.2698-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wBXyzBNYMdkPmzZBg--.18258S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXr1kurWUJw15XF13XFykAFb_yoWrXFy5pF
-        nrJ39YkFW5JF17tw13CFW7ZF93u3WxKr97tFZrGa90q3Wjvr10qF9rAFW3XFZ5J3ykuF17
-        GF4rtFyUuF4DAwUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jHg4hUUUUU=
-X-Originating-IP: [39.144.138.187]
-X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/xtbCfhO90GDcO8jYDwAAsY
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "xingtong.wu" <xingtong.wu@siemens.com>
+This is another round of minor cleanups in the tty/serial/related
+drivers.
 
-This is used for the Siemens Simatic IPC BX-59A, which has its LEDs
-connected to GPIOs provided by the Nuvoton NCT6126D
+Jiri Slaby (SUSE) (10):
+  serial: move WARN_ON() in uart_write() to the condition
+  Bluetooth: rfcomm: remove casts from tty->driver_data
+  tty: hvsi: remove an extra variable from hvsi_write()
+  input: serport: remove casts from tty->disc_data
+  can: slcan: remove casts from tty->disc_data
+  serial: altera_jtaguart: switch status to u32
+  speakup: switch to unsigned iterator in spk_ttyio_receive_buf2()
+  misc: ti-st: remove forward declarations and make st_int_recv() static
+  misc: ti-st: remove ptr from recv functions
+  misc: ti-st: don't check for tty data == NULL
 
-Signed-off-by: xingtong.wu <xingtong.wu@siemens.com>
----
- .../leds/simple/simatic-ipc-leds-gpio-core.c  |  1 +
- .../simple/simatic-ipc-leds-gpio-f7188x.c     | 42 ++++++++++++++++---
- 2 files changed, 37 insertions(+), 6 deletions(-)
+ drivers/accessibility/speakup/spk_ttyio.c |  2 +-
+ drivers/input/serio/serport.c             | 10 +++++-----
+ drivers/misc/ti-st/st_core.c              | 11 +++--------
+ drivers/misc/ti-st/st_kim.c               |  9 +--------
+ drivers/net/can/slcan/slcan-core.c        |  8 ++++----
+ drivers/tty/hvc/hvsi.c                    |  3 +--
+ drivers/tty/serial/altera_jtaguart.c      |  2 +-
+ drivers/tty/serial/serial_core.c          |  8 ++------
+ net/bluetooth/rfcomm/tty.c                | 22 +++++++++++-----------
+ 9 files changed, 29 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/leds/simple/simatic-ipc-leds-gpio-core.c b/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-index c552ea73ed9d..10dca208d8cc 100644
---- a/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-+++ b/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-@@ -58,6 +58,7 @@ int simatic_ipc_leds_gpio_probe(struct platform_device *pdev,
- 	case SIMATIC_IPC_DEVICE_127E:
- 	case SIMATIC_IPC_DEVICE_227G:
- 	case SIMATIC_IPC_DEVICE_BX_21A:
-+	case SIMATIC_IPC_DEVICE_BX_59A:
- 		break;
- 	default:
- 		return -ENODEV;
-diff --git a/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c b/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-index 583a6b6c7c22..a5b544b20857 100644
---- a/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-+++ b/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-@@ -17,7 +17,10 @@
- 
- #include "simatic-ipc-leds-gpio.h"
- 
--static struct gpiod_lookup_table simatic_ipc_led_gpio_table = {
-+static struct gpiod_lookup_table *led_lookup_table;
-+static struct gpiod_lookup_table *led_lookup_table_extra;
-+
-+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_227g = {
- 	.dev_id = "leds-gpio",
- 	.table = {
- 		GPIO_LOOKUP_IDX("gpio-f7188x-2", 0, NULL, 0, GPIO_ACTIVE_LOW),
-@@ -30,7 +33,7 @@ static struct gpiod_lookup_table simatic_ipc_led_gpio_table = {
- 	},
- };
- 
--static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra = {
-+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra_227g = {
- 	.dev_id = NULL, /* Filled during initialization */
- 	.table = {
- 		GPIO_LOOKUP_IDX("gpio-f7188x-3", 6, NULL, 6, GPIO_ACTIVE_HIGH),
-@@ -39,16 +42,43 @@ static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra = {
- 	},
- };
- 
-+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_bx_59a = {
-+	.dev_id = "leds-gpio",
-+	.table = {
-+		GPIO_LOOKUP_IDX("gpio-f7188x-2", 0, NULL, 0, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-2", 3, NULL, 1, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-5", 3, NULL, 2, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-5", 2, NULL, 3, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-7", 7, NULL, 4, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-7", 4, NULL, 5, GPIO_ACTIVE_LOW),
-+		{} /* Terminating entry */
-+	}
-+};
-+
- static int simatic_ipc_leds_gpio_f7188x_probe(struct platform_device *pdev)
- {
--	return simatic_ipc_leds_gpio_probe(pdev, &simatic_ipc_led_gpio_table,
--					   &simatic_ipc_led_gpio_table_extra);
-+	const struct simatic_ipc_platform *plat = pdev->dev.platform_data;
-+
-+	switch (plat->devmode) {
-+	case SIMATIC_IPC_DEVICE_227G:
-+		led_lookup_table = &simatic_ipc_led_gpio_table_227g;
-+		led_lookup_table_extra = &simatic_ipc_led_gpio_table_extra_227g;
-+		break;
-+	case SIMATIC_IPC_DEVICE_BX_59A:
-+		led_lookup_table = &simatic_ipc_led_gpio_table_bx_59a;
-+		break;
-+	default:
-+		return -ENODEV;
-+	}
-+
-+	return simatic_ipc_leds_gpio_probe(pdev, led_lookup_table,
-+					   led_lookup_table_extra);
- }
- 
- static int simatic_ipc_leds_gpio_f7188x_remove(struct platform_device *pdev)
- {
--	return simatic_ipc_leds_gpio_remove(pdev, &simatic_ipc_led_gpio_table,
--					    &simatic_ipc_led_gpio_table_extra);
-+	return simatic_ipc_leds_gpio_remove(pdev, led_lookup_table,
-+					    led_lookup_table_extra);
- }
- 
- static struct platform_driver simatic_ipc_led_gpio_driver = {
 -- 
-2.25.1
+2.41.0
 
