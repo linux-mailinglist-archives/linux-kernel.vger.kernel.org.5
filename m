@@ -2,57 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C46E7694C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660A97694C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbjGaL1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
+        id S231247AbjGaL1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:27:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjGaL1T (ORCPT
+        with ESMTP id S230344AbjGaL1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:27:19 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB99C9
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:27:18 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RDwsz6y5Lz1GDJw;
-        Mon, 31 Jul 2023 19:26:15 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 31 Jul 2023 19:27:14 +0800
-Message-ID: <70e81ce8-a27a-325f-68d1-836532ed2ba0@huawei.com>
-Date:   Mon, 31 Jul 2023 19:27:14 +0800
+        Mon, 31 Jul 2023 07:27:30 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E518F125;
+        Mon, 31 Jul 2023 04:27:24 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8Dxg_CamsdkXjgNAA--.31654S3;
+        Mon, 31 Jul 2023 19:27:22 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx7yOXmsdk11lCAA--.2410S3;
+        Mon, 31 Jul 2023 19:27:19 +0800 (CST)
+Message-ID: <cd1a8791-a524-8813-c70d-2adb4e6c5471@loongson.cn>
+Date:   Mon, 31 Jul 2023 19:27:19 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH 4/4] arm64: tlb: set huge page size to stride for hugepage
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V2] asm-generic: ticket-lock: Optimize
+ arch_spin_value_unlocked
 Content-Language: en-US
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Mina Almasry <almasrymina@google.com>, <kirill@shutemov.name>,
-        <joel@joelfernandes.org>, <william.kucharski@oracle.com>,
-        <kaleshsingh@google.com>, <linux-mm@kvack.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230731074829.79309-1-wangkefeng.wang@huawei.com>
- <20230731074829.79309-5-wangkefeng.wang@huawei.com>
- <ZMeW5jcsYgisxsoJ@arm.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <ZMeW5jcsYgisxsoJ@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     guoren@kernel.org, David.Laight@ACULAB.COM, will@kernel.org,
+        peterz@infradead.org, mingo@redhat.com, longman@redhat.com
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
+References: <20230731023308.3748432-1-guoren@kernel.org>
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <20230731023308.3748432-1-guoren@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Cx7yOXmsdk11lCAA--.2410S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7CFW5Zw13CrWDAF4rWF18Xrc_yoW8Kw1Upr
+        98CFs3AF47CFykZFZFyF42vr1rJwsF9r18ur90gwn2yFsrX3s5KanY9rn0vr1jk3WxKrsx
+        XFW2gFy5uayjyFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcbAwUU
+        UUU
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -61,24 +69,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2023/7/31 19:11, Catalin Marinas wrote:
-> On Mon, Jul 31, 2023 at 03:48:29PM +0800, Kefeng Wang wrote:
->> +/*
->> + * We cannot use leaf-only invalidation here, since we may be invalidating
->> + * table entries as part of collapsing hugepages or moving page tables.
->> + * Set the tlb_level to 0 because we can not get enough information here.
->> + */
->> +#define flush_tlb_range(vma, start, end)				\
->> +	__flush_tlb_range(vma, start, end,				\
->> +				((vma)->vm_flags & VM_HUGETLB)		\
->> +				? huge_page_size(hstate_vma(vma))	\
->> +				: PAGE_SIZE, false, 0)
+在 2023/7/31 10:33, guoren@kernel.org 写道:
+> From: Guo Ren <guoren@linux.alibaba.com>
 > 
-> This won't work if we use the contiguous PTE to get 64K hugetlb pages on
-> a 4K base page configuration. The 16 base pages in the range would have
-> to be invalidated individually (the contig PTE bit is just a hint, the
-> hardware may or may not take it into account).
+> The arch_spin_value_unlocked would cause an unnecessary memory
+> access to the contended value. Although it won't cause a significant
+> performance gap in most architectures, the arch_spin_value_unlocked
+> argument contains enough information. Thus, remove unnecessary
+> atomic_read in arch_spin_value_unlocked().
+> 
+> The caller of arch_spin_value_unlocked() could benefit from this
+> change. Currently, the only caller is lockref.
+> 
+> Signed-off-by: Guo Ren <guoren@kernel.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: David Laight <David.Laight@ACULAB.COM>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> ---
+> Changelog
+> V2:
+>  - Fixup commit log with Waiman advice.
+>  - Add Waiman comment in the commit msg.
+> ---
+>  include/asm-generic/spinlock.h | 16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/asm-generic/spinlock.h b/include/asm-generic/spinlock.h
+> index fdfebcb050f4..90803a826ba0 100644
+> --- a/include/asm-generic/spinlock.h
+> +++ b/include/asm-generic/spinlock.h
+> @@ -68,11 +68,18 @@ static __always_inline void arch_spin_unlock(arch_spinlock_t *lock)
+>  	smp_store_release(ptr, (u16)val + 1);
+>  }
+>  
+> +static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
+> +{
+> +	u32 val = lock.counter;
+> +
+> +	return ((val >> 16) == (val & 0xffff));
+> +}
+I do not know much about lock, will it be cached in register without memory
+access again like READ_ONCE or atomic_read?
 
-Got it, the contig huge page is depended on hardware implementation,
-but for normal hugepage(2M/1G), we could use this, right?
-> 
+Regards
+Bibo Mao
+> +
+>  static __always_inline int arch_spin_is_locked(arch_spinlock_t *lock)
+>  {
+> -	u32 val = atomic_read(lock);
+> +	arch_spinlock_t val = READ_ONCE(*lock);
+>  
+> -	return ((val >> 16) != (val & 0xffff));
+> +	return !arch_spin_value_unlocked(val);
+>  }
+>  
+>  static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
+> @@ -82,11 +89,6 @@ static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
+>  	return (s16)((val >> 16) - (val & 0xffff)) > 1;
+>  }
+>  
+> -static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
+> -{
+> -	return !arch_spin_is_locked(&lock);
+> -}
+> -
+>  #include <asm/qrwlock.h>
+>  
+>  #endif /* __ASM_GENERIC_SPINLOCK_H */
+
