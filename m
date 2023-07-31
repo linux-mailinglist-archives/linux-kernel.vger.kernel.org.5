@@ -2,76 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D678D769D9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291F7769E2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233640AbjGaRDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 13:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
+        id S233849AbjGaRFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232255AbjGaRDL (ORCPT
+        with ESMTP id S233911AbjGaRFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:03:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE23F1735;
-        Mon, 31 Jul 2023 10:03:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8CB4461206;
-        Mon, 31 Jul 2023 17:03:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 736B5C433C8;
-        Mon, 31 Jul 2023 17:03:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690822990;
-        bh=prqbrDd1eQM/ciCHGjg5jabFwA3khIZ739HC/mJfYHA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eejfjuhP7BADOW/epFaY0YfjeuaoWC587CNl3oKWWdwOxmI0MU+TyGgtJXmHlqCu/
-         JhG19cnizr15/Rf1nokDUwJ7XmHWQEwam5PLQRCe9oGui4E2/VZTpOaCgWWQpiqnWh
-         UJWmVic5qArl8bC1Ok05bwLblI5knX5lUpgBvZdxefR2zSeCrf+8tcU1arh0/IhLW0
-         Pw20j9T6LSKcVe/WzfNCH46TB3HgonSpus5jUudJcqIXigCb/JvutafnJcvT3n9lQI
-         apNl4dP39mJQaYZ6zrNsF23izQHNgo/wc49RfA2NvwobOFdIowpoas69DSRIPj3jNb
-         WUwe3W5r6g4Xw==
-Date:   Mon, 31 Jul 2023 19:03:07 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Chris Morgan <macroalpha82@gmail.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        cros-qcom-dts-watchers@chromium.org, linux-input@vger.kernel.org,
-        hsinyi@google.com, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        devicetree@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        yangcong5@huaqin.corp-partner.google.com
-Subject: Re: [PATCH v3 02/10] drm/panel: Check for already prepared/enabled
- in drm_panel
-Message-ID: <kuctj2p353nsae24lrhcymqqpfajbc7qoqly63zpwvdp6lgu3b@kk4gpzsapxnn>
-References: <20230725203545.2260506-1-dianders@chromium.org>
- <20230725133443.v3.2.I59b417d4c29151cc2eff053369ec4822b606f375@changeid>
- <snx3fzvf3icauri2xuigydvpqxtzhp34mptdxvifi7jswm2evy@sx7jr7zwvjw5>
- <CAD=FV=VcsTik+HD11xeDM2Jq9ispcX0-j5QtK8D1qUkrGabRGg@mail.gmail.com>
- <i3cbgrc365lwscwux2itho6uv74ji3hsjuge4zoxfnlnhacyqc@r73mmifyxffj>
- <CADcbR4JB0h8fByM2Z6diByvWaFprW9GDapBNt+YLWr9-vKoe7A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dtkqu6ml752thbrc"
-Content-Disposition: inline
-In-Reply-To: <CADcbR4JB0h8fByM2Z6diByvWaFprW9GDapBNt+YLWr9-vKoe7A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Mon, 31 Jul 2023 13:05:00 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878C019A1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:04:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d3563cb3748so520802276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:04:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690823044; x=1691427844;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KfSgWNMsFhJfp3i+4pg02RKqbKjloChlJGxRUeeMH+8=;
+        b=XmxsSZ8YI1gTXEnTcgvYTdFsp7D/Gtnnl+yTAX1w8hl10rqnm0I2V0S1CRpdRB0nIq
+         DbUwMq/ZmN1VWeIcZgVvFGltYhB6Xf0Dr9C5TLMvkQU4xTHNB1OHqklHixYf/XqiRiL8
+         D+efNUrTdedEpvVEg6ZlmoO1BhLwXwzhYaFQ2Kji8qkCvEBH/m/mUxuHBcrR/kXMtxUW
+         8GiV3bb9VhJjaJ2zKE596RYBDeSSbSKtkVq9Z9tTnW+Jnl7/Bk+2hncZuuZyzXycRMoG
+         E6WZIFuMQhTTsoJXgRaSgq9ARNAcGMJDvJ0POZ4SMvMbH8RN5fkcH/U4Lm0JuR47ecd/
+         2WnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690823044; x=1691427844;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KfSgWNMsFhJfp3i+4pg02RKqbKjloChlJGxRUeeMH+8=;
+        b=lA9lzDMzsXVm3y6ixEBxHw50gYlYFqMURGhLvk4epy3ibEr/dI39BkXXYKNpNVGRh7
+         +k2P0I6UmOAnzJI/JPYBTsUdkZCBHkZgROaA0IzDSvYQ6r+FoeVkEwcotQeRfUG4h7SV
+         ppqgFktHXbmUnF8lmWu1YgTuLvMXDuR3H1wAHwmUIPbjRDMXZpAcces+0S6sLcKvZlq6
+         +twiLQob4vRO1KRzJ19IznVFo9O3uengM+BiuSabs7KFnXwHFSvfbJsHD1Cz6ey3YISe
+         JsLPC/01PNXp08Dl2UB2dPZvm4fTDqsFwRdw8/vJHeKPp76tYM0CwxxqF9YUB2dC5Ekx
+         U1Qw==
+X-Gm-Message-State: ABy/qLYNWDSEq6hkJmmD9wBtZ3TS1i6yAq6Gr93OBE8lPtuZuq2bvvRn
+        A56wGdSfAjw4SSLPB43jo028nH80580=
+X-Google-Smtp-Source: APBJJlES9j9tNYULGAVq4lgAnEqvnPcEJ6pz6+LhC1e/NDHHnYuoI1LUAaGS4uysn5IBZCe1/Lm/mrJsitU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:11ca:b0:d09:b19:fe2c with SMTP id
+ n10-20020a05690211ca00b00d090b19fe2cmr63513ybu.12.1690823044560; Mon, 31 Jul
+ 2023 10:04:04 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 10:04:02 -0700
+In-Reply-To: <20230731-91b64a6b787ba7e23b285785@orel>
+Mime-Version: 1.0
+References: <20230729003643.1053367-1-seanjc@google.com> <20230729003643.1053367-10-seanjc@google.com>
+ <20230731-91b64a6b787ba7e23b285785@orel>
+Message-ID: <ZMfpgu8bHH0jA8Si@google.com>
+Subject: Re: [PATCH v4 09/34] KVM: selftests: Add a selftest for guest prints
+ and formatted asserts
+From:   Sean Christopherson <seanjc@google.com>
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Thomas Huth <thuth@redhat.com>,
+        "Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?=" <philmd@linaro.org>,
+        Aaron Lewis <aaronlewis@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,53 +76,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jul 31, 2023, Andrew Jones wrote:
+> On Fri, Jul 28, 2023 at 05:36:18PM -0700, Sean Christopherson wrote:
+> > From: Aaron Lewis <aaronlewis@google.com>
+> > 
+> > Add a test to exercise the various features in KVM selftest's local
+> > snprintf() and compare them to LIBC's snprintf() to ensure they behave
+> > the same.
+> > 
+> > This is not an exhaustive test.  KVM's local snprintf() does not
+> > implement all the features LIBC does, e.g. KVM's local snprintf() does
+> > not support floats or doubles, so testing for those features were
+> > excluded.
+> > 
+> > Testing was added for the features that are expected to work to
+> > support a minimal version of printf() in the guest.
+> > 
+> > Signed-off-by: Aaron Lewis <aaronlewis@google.com>
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  tools/testing/selftests/kvm/Makefile          |   1 +
+> >  .../testing/selftests/kvm/guest_print_test.c  | 223 ++++++++++++++++++
+> >  2 files changed, 224 insertions(+)
+> >  create mode 100644 tools/testing/selftests/kvm/guest_print_test.c
+> 
+> I added this diff to this patch
+> 
+> diff --git a/tools/testing/selftests/kvm/guest_print_test.c b/tools/testing/selftests/kvm/guest_print_test.c
+> index 3a9a5db9794e..602a23ea9f01 100644
+> --- a/tools/testing/selftests/kvm/guest_print_test.c
+> +++ b/tools/testing/selftests/kvm/guest_print_test.c
+> @@ -115,7 +115,7 @@ static void run_test(struct kvm_vcpu *vcpu, const char *expected_printf,
+>         while (1) {
+>                 vcpu_run(vcpu);
+>  
+> -               TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
+> +               TEST_ASSERT(run->exit_reason == UCALL_EXIT_REASON,
+>                             "Unexpected exit reason: %u (%s),\n",
+>                             run->exit_reason,
+>                             exit_reason_str(run->exit_reason));
+> @@ -161,7 +161,7 @@ static void test_limits(void)
+>         run = vcpu->run;
+>         vcpu_run(vcpu);
+>  
+> -       TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
+> +       TEST_ASSERT(run->exit_reason == UCALL_EXIT_REASON,
+>                     "Unexpected exit reason: %u (%s),\n",
+>                     run->exit_reason,
+>                     exit_reason_str(run->exit_reason));
+> diff --git a/tools/testing/selftests/kvm/include/ucall_common.h b/tools/testing/selftests/kvm/include/ucall_common.h
+> index 4cf69fa8bfba..4adf526dc378 100644
+> --- a/tools/testing/selftests/kvm/include/ucall_common.h
+> +++ b/tools/testing/selftests/kvm/include/ucall_common.h
+> @@ -6,8 +6,19 @@
+>   */
+>  #ifndef SELFTEST_KVM_UCALL_COMMON_H
+>  #define SELFTEST_KVM_UCALL_COMMON_H
+> +#include <linux/kvm.h>
+>  #include "test_util.h"
+>  
+> +#if defined(__aarch64__)
+> +#define UCALL_EXIT_REASON      KVM_EXIT_MMIO
+> +#elif defined(__x86_64__)
+> +#define UCALL_EXIT_REASON      KVM_EXIT_IO
+> +#elif defined(__s390x__)
+> +#define UCALL_EXIT_REASON      KVM_EXIT_S390_SIEIC
+> +#elif defined(__riscv)
+> +#define UCALL_EXIT_REASON      KVM_EXIT_RISCV_SBI
+> +#endif
+> +
+>  /* Common ucalls */
+>  enum {
+>         UCALL_NONE,
+> 
+> and then compiled the test for riscv and it passed. I also ran all other
+> riscv tests successfully.
 
---dtkqu6ml752thbrc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Can I have your SoB for the ucall_common.h patch?  I'll write a changelog and fold
+in a separate prep patch for that change.
 
-Hi,
+> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > index f65889f5a083..f2a8b3262f17 100644
+> > --- a/tools/testing/selftests/kvm/Makefile
+> > +++ b/tools/testing/selftests/kvm/Makefile
+> > @@ -123,6 +123,7 @@ TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+> >  TEST_GEN_PROGS_x86_64 += demand_paging_test
+> >  TEST_GEN_PROGS_x86_64 += dirty_log_test
+> >  TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
+> > +TEST_GEN_PROGS_x86_64 += guest_print_test
 
-On Mon, Jul 31, 2023 at 11:33:22AM -0500, Chris Morgan wrote:
-> In my case a few different panel drivers disable the regulators in the
-> unprepare/disable routines.
+Argh, this is why ARM didn't fail for me, the test was only built for x86.  I'll
+double check that ARM works with the above, and also enable the test for all
+architectures.  If the printf stuff doesn't work on s390, then we definitely want
+to know before this is fully merged.
 
-And that's totally fine.
-
-> For at least the Rockchip DSI implementations for some reason the
-> panel gets unprepared more than once, which triggers an unbalanced
-> regulator disable.
-
-"For some reason" being that DW-DSI apparently finds it ok to bypass any
-kind of abstraction and randomly calling panel functions by itself:
-
-https://elixir.bootlin.com/linux/v6.4.7/source/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c#L868
-
-It looks like it's fixed it current drm-misc-next though.
-
-> Obviously though the correct course of action is to fix the reason why
-> the panel is disabled more than once, but that's at least the root
-> cause of this behavior on the few panels I've worked with.
-
-Like I said we already have a commit on the way to fix that, so it
-shouldn't be an issue anymore.
-
-I stand by what I was saying earlier though, I think it's mostly
-cargo-cult or drivers being very wrong. If anything, the DW-DSI stuff
-made me even more convinced that we shouldn't even entertain that idea
-:)
-
-Maxime
-
---dtkqu6ml752thbrc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMfpSwAKCRDj7w1vZxhR
-xSIXAQCizbGTVxHYDBO+tfnKn70WkSNp3OzkFHZtJzhXUbG9NQD9HpsTG6Ik+ohd
-AXiX0xz1UvP/to/HW6CpWv7tiS5uDAw=
-=pXP0
------END PGP SIGNATURE-----
-
---dtkqu6ml752thbrc--
+Thanks Drew!
