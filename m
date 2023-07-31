@@ -2,59 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 799E176951E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB46769522
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbjGaLmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
+        id S231299AbjGaLpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230152AbjGaLm3 (ORCPT
+        with ESMTP id S230152AbjGaLpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:42:29 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F076CA1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:42:27 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9668B2E4;
-        Mon, 31 Jul 2023 13:41:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690803683;
-        bh=kXAeucgHM8pQRaW5d1hxlWWePTwnI/+HQ2wiDfbJf2k=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=myQxQ28nNpoPcrTwJUNxEnxaz/PfNtLQ6yH5NSneBXVY/ekqyX6kr2wNcG6cv+x04
-         WM0xB4VI50WMDJDwZ/2LKseroOpun0Oa98zZateS+RBNeNpKI1LxFFSpNB6A0u4o/7
-         fbepTTmDYwRMiZfa6xgOA1Kqn/a6n6ANbiUTZ7eg=
-Message-ID: <f490e6ed-4553-445e-21a8-82f8baeda15b@ideasonboard.com>
-Date:   Mon, 31 Jul 2023 14:42:20 +0300
+        Mon, 31 Jul 2023 07:45:36 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24923A1;
+        Mon, 31 Jul 2023 04:45:35 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-77ac14ff51bso179730939f.3;
+        Mon, 31 Jul 2023 04:45:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690803934; x=1691408734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3qqk/kt6+Ga7PWsdfCK1cL1LbXt2AwvGMSRMyEpCfxI=;
+        b=okzYRkktr+nRrSVtBCUlShJ4iEpZ4pP6gbHywAWdvOlXSUoGQKdU1X0HWGYabemgKH
+         ytJtYPBeUmdTwPScRayYq5tIJ7ak5hhR0ew7NKN/Yo+fqw8AZAX2VpLThA7e6RhhpeGw
+         hnmLHI7Y6YN/pNZbqjNKJQBi5RKYL1MV2iktpmMb4E2/ruFT59/jbxVqJXmmQHo2/HAT
+         05fUJ8tb3NGegcZhmZjThREc4+fFBqwwcSiAz4nVC7Ez4xC/5904A9vnR4KY8kqEX+rD
+         kIxNYijsDgmpEmDesKraaqvWv9+SAElTQ+yLhbTsaQfeADCySqlFkzj9r8xzKkC/A4Td
+         PyhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690803934; x=1691408734;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3qqk/kt6+Ga7PWsdfCK1cL1LbXt2AwvGMSRMyEpCfxI=;
+        b=OC1cFdOLl0qG1hJyPlTdxK7NBPhhi901H4f6LjrbJ5Db2Yb2XSiHlMNz5QNsMNWAPW
+         x7B+q4zAxSYXueXdRlJ6gdx/6sFB71FCR8YhhFS3fyhlgH0r+kfeqdGXfR2elTK/RglJ
+         QXA7Ms3Fl4lNBqYvVIh1jIX+CZvV88eEYncmzG2r6FQUcEANtgoBo18rugZR+PAwUomr
+         AJ485S5s0IPLqh0X3sCIhqC0l8wous+gQhyBBM7whgWp00xygVj6DTYbVmoc3xmw6Afl
+         EU7v1nRo9qWVOkG+Pd/PSGF/CpyS/gO7ABYyI0TwC/OhXYjydpx5GSW/Ul5bOseqX79Z
+         ODwg==
+X-Gm-Message-State: ABy/qLZ2ccpquaAp54WxzUxJldHawzCvorizs7mxGue86zkPzoICoClX
+        7vwPhd7u2g+sE4dbrlmqNJM73K/Rp4K9iXSd0aw=
+X-Google-Smtp-Source: APBJJlFrThYBjex3opWL4ObHhYJCyDIqwz8yyEyTGf1e1HNfu2R5yX7uSTL8+3rOH2emiyhCqRd8wSTGDCFWcr7gH1E=
+X-Received: by 2002:a05:6602:8b:b0:786:26f0:3092 with SMTP id
+ h11-20020a056602008b00b0078626f03092mr7456305iob.3.1690803934488; Mon, 31 Jul
+ 2023 04:45:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2] drm/bridge: Add debugfs print for bridge chains
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230721-drm-bridge-chain-debugfs-v2-1-76df94347962@ideasonboard.com>
- <20230725113718.GE31069@pendragon.ideasonboard.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <20230725113718.GE31069@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230702203429.237615-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20230702203429.237615-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <ZMZ6XB6gX2kFd/Nt@xhacker> <CA+V-a8u3F_XDjBfVVVvNMfjrni8pgpcRgbVt6_Ax1TmG2fJdEg@mail.gmail.com>
+ <20230731-tribute-splashing-6a90f443cefe@wendy>
+In-Reply-To: <20230731-tribute-splashing-6a90f443cefe@wendy>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Mon, 31 Jul 2023 12:45:08 +0100
+Message-ID: <CA+V-a8uHAQBZJBVtLbhxczwAAZYcVSRz+CGoQX0EmPDU5OxEFA@mail.gmail.com>
+Subject: Re: [PATCH v10 3/6] riscv: mm: dma-noncoherent: nonstandard cache
+ operations support
+To:     Conor Dooley <conor.dooley@microchip.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Guo Ren <guoren@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-riscv@lists.infradead.org,
+        Christoph Hellwig <hch@infradead.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,185 +87,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/07/2023 14:37, Laurent Pinchart wrote:
-> Hi Tomi,
-> 
-> Thank you for the patch.
-> 
-> On Fri, Jul 21, 2023 at 06:01:39PM +0300, Tomi Valkeinen wrote:
->> DRM bridges are not visible to the userspace and it may not be
->> immediately clear if the chain is somehow constructed incorrectly. I
->> have had two separate instances of a bridge driver failing to do a
->> drm_bridge_attach() call, resulting in the bridge connector not being
->> part of the chain. In some situations this doesn't seem to cause issues,
->> but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
->>
->> Add a debugfs file to print the bridge chains. For me, on this TI AM62
->> based platform, I get the following output:
->>
->> encoder[39]
->> 	bridge[0] type: 0, ops: 0x0
->> 	bridge[1] type: 0, ops: 0x0, OF: /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778
->> 	bridge[2] type: 0, ops: 0x3, OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b
->> 	bridge[3] type: 11, ops: 0x7, OF: /hdmi-connector:hdmi-connector
-> 
-> Names would be more readable than numbers, but I'm not sure that's
-> really worth it. It can always be improved on top if desired.
+Hi Conor,
 
-For type and ops? I agree, but it might also make the output more 
-cluttered. To be honest, I'm not sure if type and ops are useful here, I 
-just felt that I should print something else than just the OF node =).
+On Mon, Jul 31, 2023 at 12:39=E2=80=AFPM Conor Dooley
+<conor.dooley@microchip.com> wrote:
+>
+> On Mon, Jul 31, 2023 at 12:30:43PM +0100, Lad, Prabhakar wrote:
+> > On Sun, Jul 30, 2023 at 4:09=E2=80=AFPM Jisheng Zhang <jszhang@kernel.o=
+rg> wrote:
+> > > On Sun, Jul 02, 2023 at 09:34:26PM +0100, Prabhakar wrote:
+> > > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> > > > +config RISCV_NONSTANDARD_CACHE_OPS
+> > > > +     bool
+> > > > +     depends on RISCV_DMA_NONCOHERENT
+> > > > +     help
+> > > > +       This enables function pointer support for non-standard nonc=
+oherent
+> > > > +       systems to handle cache management.
+> > >
+> > > Per Documentation/riscv/patch-acceptance.rst:
+> > >
+> > > "we'll only consider patches for extensions that either:
+> > >
+> > > - Have been officially frozen or ratified by the RISC-V Foundation, o=
+r
+> > > - Have been implemented in hardware that is widely available, per sta=
+ndard
+> > >   Linux practice."
+> > >
+> > > I'm not sure which item this patch series belongs to.
+> > >
+> > Maybe Conor can help me here ;)
+>
+> I'm not entirely sure why you need my help, it's your company that
+> manufactures the SoC that needs this after all.. I think Emil already
+> pointed out that it was the latter of the two. I guess it is not an
+> "extension" in the strictest sense of the word, but it fills the same
+> gap as one, so /shrug.
+>
+Aaha I was wondering If there had to be an additional entry here to
+fit this case, but if it already does fit in ignore me. Thanks for the
+clarification.
 
->> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
->> ---
->> Changes in v2:
->> - Fixed compilation issue when !CONFIG_OF
->> - Link to v1: https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e890d@ideasonboard.com
->> ---
->>   drivers/gpu/drm/drm_bridge.c  | 50 +++++++++++++++++++++++++++++++++++++++++++
->>   drivers/gpu/drm/drm_debugfs.c |  3 +++
->>   include/drm/drm_bridge.h      |  5 +++++
->>   3 files changed, 58 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
->> index c3d69af02e79..d3eb62d5ef3b 100644
->> --- a/drivers/gpu/drm/drm_bridge.c
->> +++ b/drivers/gpu/drm/drm_bridge.c
->> @@ -27,8 +27,10 @@
->>   #include <linux/mutex.h>
->>   
->>   #include <drm/drm_atomic_state_helper.h>
->> +#include <drm/drm_debugfs.h>
->>   #include <drm/drm_bridge.h>
->>   #include <drm/drm_encoder.h>
->> +#include <drm/drm_file.h>
->>   #include <drm/drm_of.h>
->>   #include <drm/drm_print.h>
->>   
->> @@ -1345,6 +1347,54 @@ struct drm_bridge *of_drm_find_bridge(struct device_node *np)
->>   EXPORT_SYMBOL(of_drm_find_bridge);
->>   #endif
->>   
->> +#ifdef CONFIG_DEBUG_FS
->> +static int drm_bridge_chains_info(struct seq_file *m, void *data)
->> +{
->> +	struct drm_debugfs_entry *entry = m->private;
->> +	struct drm_device *dev = entry->dev;
->> +	struct drm_printer p = drm_seq_file_printer(m);
->> +	struct drm_mode_config *config = &dev->mode_config;
-> 
-> As Alexander reported, there's a crash for GPU drivers, as mode_config
-> isn't initialized in that case. I would skip creating the debugfs entry
-> if DRIVER_MODESET isn't set.
-
-Yes, makes sense.
-
->> +	struct drm_encoder *encoder;
->> +	unsigned int bridge_idx = 0;
->> +
->> +	list_for_each_entry(encoder, &config->encoder_list, head) {
->> +		struct drm_bridge *bridge;
->> +
->> +		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
->> +
->> +		bridge = drm_bridge_chain_get_first_bridge(encoder);
->> +
->> +		while (bridge) {
-> 
-> Would drm_for_each_bridge_in_chain() help ?
-
-Yes.
-
->> +			drm_printf(&p, "\tbridge[%u] type: %u, ops: %#x",
->> +				   bridge_idx, bridge->type, bridge->ops);
->> +
->> +#ifdef CONFIG_OF
->> +			if (bridge->of_node)
->> +				drm_printf(&p, ", OF: %pOFfc", bridge->of_node);
->> +#endif
->> +
->> +			drm_printf(&p, "\n");
->> +
->> +			bridge_idx++;
->> +			bridge = drm_bridge_get_next_bridge(bridge);
->> +		}
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +/* any use in debugfs files to dump individual planes/crtc/etc? */
-> 
-> Those can easily be listed from userspace, so I don't think that's
-> needed.
-
-Oops. That comment is not supposed to be there. It was a copy-paste error.
-
->> +static const struct drm_debugfs_info drm_bridge_debugfs_list[] = {
->> +	{"bridge_chains", drm_bridge_chains_info, 0},
-> 
-> Missing spaces after '{' and before '}'.
-
-Yep.
-
->> +};
->> +
->> +void drm_bridge_debugfs_init(struct drm_minor *minor)
->> +{
->> +	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
->> +			      ARRAY_SIZE(drm_bridge_debugfs_list));
->> +}
->> +#endif
->> +
->>   MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
->>   MODULE_DESCRIPTION("DRM bridge infrastructure");
->>   MODULE_LICENSE("GPL and additional rights");
->> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
->> index c90dbcffa0dc..3e89559d68cd 100644
->> --- a/drivers/gpu/drm/drm_debugfs.c
->> +++ b/drivers/gpu/drm/drm_debugfs.c
->> @@ -31,6 +31,7 @@
->>   
->>   #include <drm/drm_atomic.h>
->>   #include <drm/drm_auth.h>
->> +#include <drm/drm_bridge.h>
->>   #include <drm/drm_client.h>
->>   #include <drm/drm_debugfs.h>
->>   #include <drm/drm_device.h>
->> @@ -272,6 +273,8 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
->>   
->>   	drm_debugfs_add_files(minor->dev, drm_debugfs_list, DRM_DEBUGFS_ENTRIES);
->>   
->> +	drm_bridge_debugfs_init(minor);
->> +
->>   	if (drm_drv_uses_atomic_modeset(dev)) {
->>   		drm_atomic_debugfs_init(minor);
->>   	}
->> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
->> index bf964cdfb330..60dbee6bd1e6 100644
->> --- a/include/drm/drm_bridge.h
->> +++ b/include/drm/drm_bridge.h
->> @@ -949,4 +949,9 @@ static inline struct drm_bridge *drmm_of_get_bridge(struct drm_device *drm,
->>   }
->>   #endif
->>   
->> +#ifdef CONFIG_DEBUG_FS
-> 
-> You could drop the conditional compilation, it wouldn't hurt.
-
-I used the same style as in drm_crtc_internal.h. But you're right, the 
-ifdef doesn't really do much here.
-
->> +struct drm_minor;
->> +void drm_bridge_debugfs_init(struct drm_minor *minor);
->> +#endif
->> +
->>   #endif
->>
->> ---
->> base-commit: c7a472297169156252a50d76965eb36b081186e2
->> change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
-> 
-
-  Tomi
-
+Cheers,
+Prabhakar
