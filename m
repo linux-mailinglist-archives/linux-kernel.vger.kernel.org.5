@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F49769425
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 721C576942C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231373AbjGaLE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
+        id S231611AbjGaLFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231160AbjGaLEY (ORCPT
+        with ESMTP id S231494AbjGaLFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:04:24 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D857098;
-        Mon, 31 Jul 2023 04:04:23 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36VB48XA090400;
-        Mon, 31 Jul 2023 06:04:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690801449;
-        bh=2s7y4x9ALMJcAPeRMbH4B/6pgYS7LMpTQw6PM++pX/Y=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=kGDIAOS1gKI6fAu3Z2m5UlAhjf/zYtgOB2Ef4XSgqqNsKWLOC9XF3bX9Obd+C3dVl
-         FVirPQJoXTi45ZqfuxCj0GwpTplkmPulcLCWYQhQU/hQRo4VwqaYalX409UdH5JQjW
-         OZdVQuctl5zusU/gktlt2WsP1rgCk5YOh5jJQZdI=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36VB48f2025022
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 Jul 2023 06:04:08 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 31
- Jul 2023 06:04:08 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 31 Jul 2023 06:04:08 -0500
-Received: from [172.24.227.112] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36VB43it026616;
-        Mon, 31 Jul 2023 06:04:04 -0500
-Message-ID: <bb60a183-8f05-34cb-d26e-15405a19da27@ti.com>
-Date:   Mon, 31 Jul 2023 16:34:03 +0530
+        Mon, 31 Jul 2023 07:05:38 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E3A1AC
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:05:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 476DC6100F
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:05:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BA7EC433C8;
+        Mon, 31 Jul 2023 11:05:29 +0000 (UTC)
+Date:   Mon, 31 Jul 2023 12:05:25 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Mina Almasry <almasrymina@google.com>, kirill@shutemov.name,
+        joel@joelfernandes.org, william.kucharski@oracle.com,
+        kaleshsingh@google.com, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] mm: mremap: use flush_pmd_tlb_range() in
+ move_normal_pmd()
+Message-ID: <ZMeVdcNcp76L8bOG@arm.com>
+References: <20230731074829.79309-1-wangkefeng.wang@huawei.com>
+ <20230731074829.79309-3-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 0/4] Add peripherals for J784S4
-Content-Language: en-US
-To:     Nishanth Menon <nm@ti.com>
-CC:     <vigneshr@ti.com>, <s-vadapalli@ti.com>, <afd@ti.com>,
-        <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <rogerq@kernel.org>, <a-bhatia1@ti.com>, <r-ravikumar@ti.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230728050859.7370-1-j-choudhary@ti.com>
- <20230728211217.mipwoira57g7dcc6@moody>
-From:   Jayesh Choudhary <j-choudhary@ti.com>
-In-Reply-To: <20230728211217.mipwoira57g7dcc6@moody>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731074829.79309-3-wangkefeng.wang@huawei.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nishanth,
-
-On 29/07/23 02:42, Nishanth Menon wrote:
-> On 10:38-20230728, Jayesh Choudhary wrote:
->> This series adds support for:
->> - SERDES, WIZ DT nodes, Serdes lane control mux
->> - DSS and DisplayPort-0 nodes
->>
->> This support DEPENDS upon another series which was introduced as part
->> of discussion in v5. That series[1] moves the ti-serdes headers file
->> from bindings to "arch/arm64/boot/dts/ti". (That series is merged in
->> linux-next tree)
->>
->> Changelog v6->v7:
->> - change compatible for scm_conf to 'simple-bus'
->> - drop main_cpsw node due to driver dependency on [2]
->>
-
-[...]
-
->>
->> v5 patch link:
->> <https://lore.kernel.org/all/20230721132029.123881-1-j-choudhary@ti.com/>
->>
->> [1]: <https://lore.kernel.org/all/20230721125732.122421-1-j-choudhary@ti.com/>
->> [2]: <https://lore.kernel.org/all/20230605154153.24025-1-afd@ti.com/>
->>
->> Rahul T R (2):
->>    arm64: dts: ti: k3-j784s4-main: Add DSS and DP-bridge node
->>    arm64: dts: ti: k3-j784s4-evm: Enable DisplayPort-0
->>
+On Mon, Jul 31, 2023 at 03:48:27PM +0800, Kefeng Wang wrote:
+> Archs may need to do special things when flushing thp tlb,
+> so use the more applicable flush_pud_tlb_range() instead of
+> flush_tlb_range().
 > 
-> Could you enable AM69-SK as well? is there anything stopping it being part of the series?
+> Fixes: 2c91bd4a4e2e ("mm: speed up mremap by 20x on large regions")
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  mm/mremap.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/mm/mremap.c b/mm/mremap.c
+> index 11e06e4ab33b..1883205fa22b 100644
+> --- a/mm/mremap.c
+> +++ b/mm/mremap.c
+> @@ -284,7 +284,7 @@ static bool move_normal_pmd(struct vm_area_struct *vma, unsigned long old_addr,
+>  	VM_BUG_ON(!pmd_none(*new_pmd));
+>  
+>  	pmd_populate(mm, new_pmd, pmd_pgtable(pmd));
+> -	flush_tlb_range(vma, old_addr, old_addr + PMD_SIZE);
+> +	flush_pmd_tlb_range(vma, old_addr, old_addr + PMD_SIZE);
 
-Okay I will add support for AM69-SK too.
+I don't think that's correct for arm64. The assumption in the
+flush_p*d_tlb_range() was that they are called only for block mappings
+at that p*d level (and we use FEAT_TTL on arm64 indicating that the leaf
+level is level 2 for pmd, 1 for pud). IIUC move_normal_pmd() is only
+called for table pmds which would have a leaf level of 3 (the pte).
 
-Thanks,
--Jayesh
+Same for the next patch doing the equivalent for the pud.
+
+-- 
+Catalin
