@@ -2,124 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA9F769D8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5898769D94
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbjGaRCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 13:02:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58164 "EHLO
+        id S233381AbjGaRDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:03:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233756AbjGaRBh (ORCPT
+        with ESMTP id S233759AbjGaRCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:01:37 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF6C19A8;
-        Mon, 31 Jul 2023 10:01:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Content-Type:Mime-Version:
-        References:In-Reply-To:Message-Id:Cc:To:From:Date:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=FBR9wwJom4r3orNjJ+5M5NZ9MSmemWUz/1G0E48j3D8=; b=uUfi28sR89tS7ntMPW/X1j5gdV
-        KHonWqU8nMPRmN1n96lPiZqsN4LX0Y8wM/O1lxzRoLQ0FSkamVNv8M0TeuDbAdE6d/9FGy8mzHTVl
-        3krYsrGgOz+4y3Xs+ga1USPJ7lh/T45/dJhRV8QODlrui5qrT3sHkNzav77277iNbcOw=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:33912 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qQWGS-0006im-Eh; Mon, 31 Jul 2023 13:01:00 -0400
-Date:   Mon, 31 Jul 2023 13:00:59 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Lech Perczak <lech.perczak@camlingroup.com>,
-        andy.shevchenko@gmail.com
-Message-Id: <20230731130059.f098bed0f6a9957fe4444758@hugovil.com>
-In-Reply-To: <2023073159-follow-resume-cc9b@gregkh>
-References: <20230725142343.1724130-1-hugo@hugovil.com>
-        <20230725142343.1724130-10-hugo@hugovil.com>
-        <2023073159-follow-resume-cc9b@gregkh>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+        Mon, 31 Jul 2023 13:02:48 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E3E1FE8
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:02:21 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79095499a17so122509039f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:02:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690822941; x=1691427741;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AE5derB4eYbJpu/3vlhDztTOvurVy780ibA6vwMtb3Y=;
+        b=VnMjq5NLh25g6mPkexSFg2g5BH4qNjmX6r9sRd/qWRH/FqYXKiwN1+3gTZGm7yEAl8
+         +I2ZeCyk8HXFLHIvwtG8actJJvSVpdq5rttjGK943fe9dTUk2xh+ftl4HNHr2udaP7EC
+         Bbd6SqBjZy1+rSPsKVD+ckemrsQTZ8xFYnMJWMEqKOe/Oi3qiZBSbfYWMm81nkRs6tr5
+         z4jFohx5QymVVDAXv4k57QKaUbZj45RmcJNp7sIJl11FM6NgJhrClZLa2ULrdZVVkPGP
+         yiEKkwxMCN3pM2EDwy/qumoiWTuGhyDfG62+EirwzFWS8g79rjKh9s/gVSvUqywD/T8C
+         rOKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690822941; x=1691427741;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AE5derB4eYbJpu/3vlhDztTOvurVy780ibA6vwMtb3Y=;
+        b=Dt3XjfL4bjvbKx9/vOzRPfiKj9/bOHsZO5kEiyx2ZUh5KqHmxiy2yIIXAMF7H3a6jK
+         gllhulzwro2Wp4/kZ94JU0mDnC9c52S4Yyonhx0THrv/fmaFGRYr80L0AnUOljc21pdO
+         kF9RHwPmBPdLT7EBhYLfpGo+TJ4hIecSLyPt+Qk+F1/77J7360szOqkcYRELgtr7aIT2
+         7acwOqhodRx7bAdKoy/4QdHDkhpMCYvhUYgNslx97Z1RE+JgyFVmM/bH17MWtV/1bRcE
+         4gQjoyHNIEDHx4WhkyoUzV9kTBtRD0Vx1dvV3N7YEnC2Rm9EDbujiASOJ7rgWrwWzbkv
+         AJbg==
+X-Gm-Message-State: ABy/qLZrBisXPytUmHcqbNLkMGXr6S6rgINHjqaSVAxjQzjNSwSY16dE
+        jrmxNOS5BtGXsDTWEVAiwKxwFfGo9BSANaT3m9LMOQ==
+X-Google-Smtp-Source: APBJJlGa/BnG7+9y8fiFHMf9MT0+f91Pzk1wLWmfZlMTD1SqFOIw8O5CX6tTd7srL4YNkxR3Sme+uxIEQ5JSfpNbp50=
+X-Received: by 2002:a6b:7d06:0:b0:786:f47b:c063 with SMTP id
+ c6-20020a6b7d06000000b00786f47bc063mr9332620ioq.21.1690822940844; Mon, 31 Jul
+ 2023 10:02:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230727011612.2721843-1-zhangpeng362@huawei.com> <20230727011612.2721843-3-zhangpeng362@huawei.com>
+In-Reply-To: <20230727011612.2721843-3-zhangpeng362@huawei.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 31 Jul 2023 19:01:43 +0200
+Message-ID: <CAG_fn=Vm2-sckXeFhbbXekm+ENCjUnuX2rGb-gtPAZifS4NaWA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: kmsan: use helper macro offset_in_page()
+To:     Peng Zhang <zhangpeng362@huawei.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, elver@google.com,
+        dvyukov@google.com, kasan-dev@googlegroups.com,
+        akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
+        sunnanyong@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
-Subject: Re: [PATCH v9 09/10] serial: sc16is7xx: add post reset delay
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 17:57:50 +0200
-Greg KH <gregkh@linuxfoundation.org> wrote:
-
-> On Tue, Jul 25, 2023 at 10:23:41AM -0400, Hugo Villeneuve wrote:
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > 
-> > Make sure we wait at least 3us before initiating communication with
-> > the device after reset.
-> 
-> That says what you do, but not _why_ you do it?
-
-You are right, it is not clear. I will add a note that it is
-recommended to do so by the manufacturer in the device datasheet.
-
-> Please read the kernel documentation again for how to write a good
-> changelog text.  It's usually the hardest part of submitting a patch.
-
-Yes.
-
-
-> > Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
-> > ---
-> >  drivers/tty/serial/sc16is7xx.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-> > index 49213be60baf..718e982e1efe 100644
-> > --- a/drivers/tty/serial/sc16is7xx.c
-> > +++ b/drivers/tty/serial/sc16is7xx.c
-> > @@ -1526,6 +1526,12 @@ static int sc16is7xx_probe(struct device *dev,
-> >  	regmap_write(s->regmap, SC16IS7XX_IOCONTROL_REG << SC16IS7XX_REG_SHIFT,
-> >  			SC16IS7XX_IOCONTROL_SRESET_BIT);
-> >  
-> > +	/*
-> > +	 * After reset, the host must wait at least 3us before initializing a
-> > +	 * communication with the device.
-> > +	 */
-> > +	usleep_range(5, 10);
-> 
-> 5, 10 is NOT 3us.
-
-In v3, Andy Shevchenko suggested "I would put (5, 10) instead to relax
-a bit the scheduler."
-
-Should I add a comment to that effect:
-
-/*
- * After reset, the datasheet indicates that the host must wait at least
- * 3us before initializing a communication with the device.
- * Use (5, 10) range to relax the scheduler.
- */
-
-?
-
-Hugo.
-
+On Thu, Jul 27, 2023 at 3:16=E2=80=AFAM 'Peng Zhang' via kasan-dev
+<kasan-dev@googlegroups.com> wrote:
+>
+> From: ZhangPeng <zhangpeng362@huawei.com>
+>
+> Use helper macro offset_in_page() to improve code readability. No
+> functional modification involved.
+>
+> Signed-off-by: ZhangPeng <zhangpeng362@huawei.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
