@@ -2,56 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDCF76A452
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB59A76A455
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbjGaWou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 18:44:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
+        id S229650AbjGaWrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 18:47:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjGaWon (ORCPT
+        with ESMTP id S229437AbjGaWrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 18:44:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9041BF5;
-        Mon, 31 Jul 2023 15:44:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Mon, 31 Jul 2023 18:47:12 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2125D19A4
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:47:11 -0700 (PDT)
+Received: from [192.168.2.174] (109-252-150-127.dynamic.spd-mgts.ru [109.252.150.127])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F71A6132F;
-        Mon, 31 Jul 2023 22:44:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D0ABC433C9;
-        Mon, 31 Jul 2023 22:44:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690843446;
-        bh=yMfEQxMz10YeYVrq5kAiqUPTJVeuhElSeAlUF9m51Ug=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=c6AE4ZO3XIeFcMTLntZ2MmNNrkUZENXMn+feHFS4sRM7cyxAzS5MNmLZaR8hxotXu
-         zEwlqXZ85B3QmGIrg/j+cw94qWbo7iusBknpcot/DlpWrstH2cTBwpFE1HwroJpSef
-         S73iT7lR+COrpyxkFtPxbj9+QFQaOeVwOWtuSzoneMxv2qa5UxJT1QL9be0Cn+kmkK
-         xSFFQQcjNWPEelEwwESKIfaZP2fCKHMG5gep8vq5gdWx+ODwtAEjhdgUCvwAYUj7/L
-         jxJzTYg9u0aFr8mPz823ik+RUkQ/L2KDOJkFcbNIXBAVcdiglbvW1QPYJuU21JqqPd
-         ZKEqACIVBzhsg==
-Message-ID: <bd3dc956d7b43f34ee458992919c5afd71abd3d3.camel@kernel.org>
-Subject: Re: [PATCH RFC] nfsd: don't hand out write delegations on O_WRONLY
- opens
-From:   Jeff Layton <jlayton@kernel.org>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 31 Jul 2023 18:44:04 -0400
-In-Reply-To: <169084147821.32308.9286837678268595107@noble.neil.brown.name>
-References: <20230731-wdeleg-v1-1-f8fe1ce11b36@kernel.org>
-         <169084147821.32308.9286837678268595107@noble.neil.brown.name>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8EFBD6606FC2;
+        Mon, 31 Jul 2023 23:47:08 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690843629;
+        bh=3iLo+/X9Y+dd0aWL6FQv0wmSSpmb4uuYk6gaieZ7DU4=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=UNFEriavW1MbAfrmjfwXHPQBEkxiaSm45DZJJmk+ktPi+ftYrSpmjkvZ6jgcuP8ZJ
+         HSgMyPYLvLp4Ig903kkkxHqXqlonWSmhC68fntkjnSot59ipMYp56+rtJ/VWd7FKYi
+         WxN6k+1bvPBIxEWgOTJstnh6q/ePg3F3Eq6rlzVezXhWGJPOEhIiUi5VBEXV1GhyQL
+         fNWGD9h4T6JwOPfKqezBP4fQSeFeAsjC9/1vSMU+6L1Mx/9P+nZ/vtB8E2kQH0CH4h
+         hJBWcKuHzCljtCOLxgjPNt6CRhviJNtiNnaJ70TJMO52RhaUZlIgraMZcsu0x6Srgo
+         O3ITQGhRrxLSA==
+Message-ID: <c2ffc32d-d042-2ab1-b25c-07582e22859e@collabora.com>
+Date:   Tue, 1 Aug 2023 01:47:06 +0300
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.1
+Subject: Re: [PATCH v6 3/3] drm/virtio: Support sync objects
+Content-Language: en-US
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+To:     David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>,
+        Pierre-Eric Pelloux-Prayer <pierre-eric.pelloux-prayer@amd.com>,
+        Emil Velikov <emil.velikov@collabora.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20230416115237.798604-1-dmitry.osipenko@collabora.com>
+ <20230416115237.798604-4-dmitry.osipenko@collabora.com>
+In-Reply-To: <20230416115237.798604-4-dmitry.osipenko@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,95 +65,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-01 at 08:11 +1000, NeilBrown wrote:
-> On Tue, 01 Aug 2023, Jeff Layton wrote:
-> > I noticed that xfstests generic/001 was failing against linux-next nfsd=
-.
-> >=20
-> > The client would request a OPEN4_SHARE_ACCESS_WRITE open, and the serve=
-r
-> > would hand out a write delegation. The client would then try to use tha=
-t
-> > write delegation as the source stateid in a COPY or CLONE operation, an=
-d
-> > the server would respond with NFS4ERR_STALE.
-> >=20
-> > The problem is that the struct file associated with the delegation does
-> > not necessarily have read permissions. It's handing out a write
-> > delegation on what is effectively an O_WRONLY open. RFC 8881 states:
-> >=20
-> >  "An OPEN_DELEGATE_WRITE delegation allows the client to handle, on its
-> >   own, all opens."
-> >=20
-> > Given that the client didn't request any read permissions, and that nfs=
-d
-> > didn't check for any, it seems wrong to give out a write delegation.
-> >=20
-> > Don't hand out a delegation if the client didn't request
-> > OPEN4_SHARE_ACCESS_BOTH.
-> >=20
-> > This fixes xfstest generic/001.
-> >=20
-> > Closes: https://bugzilla.linux-nfs.org/show_bug.cgi?id=3D412
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> >  fs/nfsd/nfs4state.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >=20
-> > diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-> > index ef7118ebee00..9f1c90afed72 100644
-> > --- a/fs/nfsd/nfs4state.c
-> > +++ b/fs/nfsd/nfs4state.c
-> > @@ -5462,6 +5462,8 @@ nfs4_set_delegation(struct nfsd4_open *open, stru=
-ct nfs4_ol_stateid *stp,
-> >  		return ERR_PTR(-EAGAIN);
-> > =20
-> >  	if (open->op_share_access & NFS4_SHARE_ACCESS_WRITE) {
-> > +		if (!(open->op_share_access & NFS4_SHARE_ACCESS_READ))
-> > +			return ERR_PTR(-EBADF);
-> <bikeshed>
-> The actual error code returned by nfs4_set_delegation() is ignored -
-> only the fact of an error is relevant.
-> Given that, how did you choose -EBADF.  nfsd doesn't use file
-> descriptors, and doesn't use EBADF anywhere else.
-> Given that you have just tested access, EACCES might be justifiable.
-> But I would prefer if nfs4_set_delegation() returns NULL if it could not
-> find or create a delegation, without bothering with giving a reason.
-> </bikeshed>
->=20
+On 4/16/23 14:52, Dmitry Osipenko wrote:
+> Add sync object DRM UAPI support to VirtIO-GPU driver. Sync objects
+> support is needed by native context VirtIO-GPU Mesa drivers, it also will
+> be used by Venus and Virgl contexts.
+> 
+> Reviewed-by; Emil Velikov <emil.velikov@collabora.com>
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> ---
+>  drivers/gpu/drm/virtio/virtgpu_drv.c    |   3 +-
+>  drivers/gpu/drm/virtio/virtgpu_submit.c | 219 ++++++++++++++++++++++++
+>  include/uapi/drm/virtgpu_drm.h          |  16 +-
+>  3 files changed, 236 insertions(+), 2 deletions(-)
 
-I chose EBADF because the fcntl code uses it for similar purposes. From
-the manpage:
+Applied to misc-next
 
-EBADF	cmd is F_SETLK or F_SETLKW and the file descriptor open      =20
-	mode doesn't match with the type of lock requested.
+Made a minor comment change that was requested by Geert Uytterhoeven and
+took into account that outfence now could be NULL after the recent
+virtio-gpu changes
 
-We're requesting a "lock" here in a delegation, so this made some sense
-to me. I'm not particular here though. If another error makes more
-sense, then that's fine.
+-- 
+Best regards,
+Dmitry
 
-
-> Reviewed-by: NeilBrown <neilb@suse.de>
->=20
-
-Thanks!
-
-> NeilBrown
->=20
-> >  		nf =3D find_writeable_file(fp);
-> >  		dl_type =3D NFS4_OPEN_DELEGATE_WRITE;
-> >  	} else {
-> >=20
-> > ---
-> > base-commit: ec89391563792edd11d138a853901bce76d11f44
-> > change-id: 20230731-wdeleg-bbdb6b25a3c6
-> >=20
-> > Best regards,
-> > --=20
-> > Jeff Layton <jlayton@kernel.org>
-> >=20
-> >=20
->=20
-
---=20
-Jeff Layton <jlayton@kernel.org>
