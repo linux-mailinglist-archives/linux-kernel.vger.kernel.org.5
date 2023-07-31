@@ -2,85 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C40BF76A355
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEDC976A367
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 23:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231510AbjGaVu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 17:50:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        id S231375AbjGaVw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 17:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbjGaVu0 (ORCPT
+        with ESMTP id S229612AbjGaVwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 17:50:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B525171E
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 14:50:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 20834612FE
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 21:50:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 724C2C433C7;
-        Mon, 31 Jul 2023 21:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690840222;
-        bh=b7GuPhvW+caI+IgBWtWJ288PaFDgBloQho1XulayYdI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ol7eUez+aCTR8lYkr8Yoj5YdkJCqNqaJDaj9lBmx3+uy1iG6N6KqPlh2SZIXiofFi
-         zkSq8i7oIbuMcbWmd0aT1hzav6Unend6SLdlX70LNc3b0utPOKnXruLZqBp1hxogHG
-         +FyYQOJg4BhkwG/kinsFqrrXPFNJNREvYSLAo0Feym/w+scXvn+MfSZsXHHUTZLptH
-         UpduFoeK/w8lHkJM1CN6pySgHkBojTEYhOr/E0uhMSdOgF0IHwrgwdXaebAoaw+f64
-         +Evqmr+l6h6ROr40ERDC6BlCofwEMyoKAKtDIASvxm1InIvDQfmWQXDopNDB9picL4
-         N0DLr0SKK0QAg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4CCBDE96ABF;
-        Mon, 31 Jul 2023 21:50:22 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 31 Jul 2023 17:52:25 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E21CE7;
+        Mon, 31 Jul 2023 14:52:21 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3175f17a7baso4494091f8f.0;
+        Mon, 31 Jul 2023 14:52:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690840339; x=1691445139;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LgpOpS8zPiMqsk7e0dzu/7DJUbx/2+7u802O0JxbEFU=;
+        b=j9/na9J/IBRpLUmvKS2qVcLRYaHgOiOoVAVGyNW4LiHJQPz/vJiOFosZi4eXivz/HZ
+         h6Knd33uYpyoLsr+5B0j24rQZ/sY4DY49h4L0Gz78wCz5KLyRKSPfEUCnyfdcHVLgAi1
+         trIDXt6IwyJtJE3r5W36skOjI0sEdERY+eJIi+1Hlj2DUug6gMp75tpD+HcnvxEg2cE4
+         xlmTpHuK9CrfQG2o1G78oBlwxo+K0B544ZOUNZcBaIJQIEGK4wUIOmpiDTBpJPhppyxw
+         FTfm3v27OLir9Cii64rjzyIgq8PAHq8J7BD85jTCAQMQbHXGYIZLHDEJhK7MdE5/hVG0
+         lUJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690840339; x=1691445139;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LgpOpS8zPiMqsk7e0dzu/7DJUbx/2+7u802O0JxbEFU=;
+        b=GrLhNN0NBeMOqIEpWooM5O2anG/xlAPJ7ywVI4LNO7V2X+6eUEPuVv4nDZ9pr2ppBd
+         FMrvhPQjtPGmMcT2XOCisRrrkVzltVYT51oGfUs9kHNrzdoRLjM6jBwc3WExv3Z3i1tr
+         /kCzz4IH7vVVTplR+dmmh+n4eweW73o7f94hlL0THWbJ+LK9688NIMTovag7LKOX9xbI
+         MZaQ/896vNjHZhbzSh8G0SySlv5sQQyrnwCRpefc+i7VZUjHOB4CDdPxK9sw1Ob89UMS
+         YF9zwodWb+o2LM6sv0ncGXsNLsxx3Zk8Cc63UdNl/i/BecvpqDo8ufIZwg15Z7seb4q9
+         jbPA==
+X-Gm-Message-State: ABy/qLbDBg61PHPXDtGsgITXb0mNBgwdpXcWWZWageLQ4m6efqaIQ9iC
+        ddNyzG3eZcP07gtbvq4lHgCuYC6uc2A=
+X-Google-Smtp-Source: APBJJlHzrakuoVmqaVDMP5XX3A7XiukrqeVKsSpvrDgq2ptFhGBlv2rfpe6hvj8AANvXW1CXzXFZwQ==
+X-Received: by 2002:a5d:5259:0:b0:313:ee2e:dae1 with SMTP id k25-20020a5d5259000000b00313ee2edae1mr689304wrc.18.1690840339311;
+        Mon, 31 Jul 2023 14:52:19 -0700 (PDT)
+Received: from tom-HP-ZBook-Fury-15-G7-Mobile-Workstation.station (net-188-217-59-106.cust.vodafonedsl.it. [188.217.59.106])
+        by smtp.gmail.com with ESMTPSA id q20-20020a1709060e5400b00992b3ea1ee4sm6858783eji.149.2023.07.31.14.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 14:52:18 -0700 (PDT)
+From:   Tommaso Merciai <tomm.merciai@gmail.com>
+Cc:     sakari.ailus@linux.intel.com, linuxfancy@googlegroups.com,
+        Tommaso Merciai <tomm.merciai@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: dt-bindings: ov5693: fix maintainer email address
+Date:   Mon, 31 Jul 2023 23:52:15 +0200
+Message-Id: <20230731215215.3045794-1-tomm.merciai@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] vsock: Remove unused function declarations
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169084022230.13504.17004715594026718607.git-patchwork-notify@kernel.org>
-Date:   Mon, 31 Jul 2023 21:50:22 +0000
-References: <20230729122036.32988-1-yuehaibing@huawei.com>
-In-Reply-To: <20230729122036.32988-1-yuehaibing@huawei.com>
-To:     Yue Haibing <yuehaibing@huawei.com>
-Cc:     bryantan@vmware.com, vdasa@vmware.com, pv-drivers@vmware.com,
-        sgarzare@redhat.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Switch my mail address from a company mail to a personal one.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Signed-off-by: Tommaso Merciai <tomm.merciai@gmail.com>
+---
+ Documentation/devicetree/bindings/media/i2c/ovti,ov5693.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Sat, 29 Jul 2023 20:20:36 +0800 you wrote:
-> These are never implemented since introduction in
-> commit d021c344051a ("VSOCK: Introduce VM Sockets")
-> 
-> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
-> ---
->  net/vmw_vsock/vmci_transport.h | 3 ---
->  1 file changed, 3 deletions(-)
-
-Here is the summary with links:
-  - [net-next] vsock: Remove unused function declarations
-    https://git.kernel.org/netdev/net-next/c/634e44971981
-
-You are awesome, thank you!
+diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov5693.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov5693.yaml
+index 359dc08440a8..d3df4fde34ba 100644
+--- a/Documentation/devicetree/bindings/media/i2c/ovti,ov5693.yaml
++++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov5693.yaml
+@@ -8,7 +8,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ title: Omnivision OV5693 CMOS Sensor
+ 
+ maintainers:
+-  - Tommaso Merciai <tommaso.merciai@amarulasolutions.com>
++  - Tommaso Merciai <tomm.merciai@gmail.com>
+ 
+ description: |
+   The Omnivision OV5693 is a high performance, 1/4-inch, 5 megapixel, CMOS
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
