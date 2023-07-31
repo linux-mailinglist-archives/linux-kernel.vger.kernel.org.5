@@ -2,83 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF9D76A039
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3D576A03E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbjGaST5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
+        id S231293AbjGaSUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjGaSTz (ORCPT
+        with ESMTP id S231343AbjGaSUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:19:55 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC50F119;
-        Mon, 31 Jul 2023 11:19:54 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VGnCgQ024787;
-        Mon, 31 Jul 2023 18:19:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=1m8chiVrC0BiaOwGhXbnzapyxsLvLZAjLiFngURK47I=;
- b=bNIQoUEexb8ib1bD7euvpxaN+LAbGaHlKLDpYOF2C5QhkYwmlXJHlEPdZDum4b8GXstr
- tVPPeRsIST2VtKAwsy0Pk7+m1+lLgWnFiM8zqyXgpVKuOQpInFDHWDu7gUc74MtM+M0t
- MrcvSA7m60ScCZ8+kt54qRA/OdB2bN+s/GzfLL3jbS3cr4m4qXM7AUIOuEhzReDY1tPu
- HY6T1IvriKFFdCW1siuraAWj7uFsGkkMaYiAhoW4FFblTyOCwSrblHUM3vZyoPijmJ6o
- zTvhXHCl3iVk35UACUHY1CfFamI1Alz+KdKqxdTj+bvEpg6453II7a0aiDRUi/v4a1pa Ug== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4uxscqj0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 18:19:41 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36VIJRMW022223
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 18:19:27 GMT
-Received: from [10.110.93.66] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 11:19:26 -0700
-Message-ID: <c8161fb4-fa35-b2dd-6bfa-968ce7d4ead7@quicinc.com>
-Date:   Mon, 31 Jul 2023 11:19:25 -0700
+        Mon, 31 Jul 2023 14:20:05 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A1419AA;
+        Mon, 31 Jul 2023 11:20:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9AC0C6125A;
+        Mon, 31 Jul 2023 18:20:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BD9BC433B9;
+        Mon, 31 Jul 2023 18:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690827601;
+        bh=AL8IQvRuROckVk8brJfkavPt8PtZd1aJDIS2DkRo6uA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oxEq1KPXwyVC1XodEZWtEzrbM+XLI07D7cJOSKzt1Oscom6oVTU1lwGFJPA5F6uBJ
+         6qL57Cigp7iSIR5GUFKTHhgLDYNw3s54jdNApWbMEkaJC1YsJcasDjaQaL1O05SJLG
+         Ic7ZS7rI9/EYJGe/xRS02qJvdI7YVFP9rsSQPB3ATnZHbcgg4UREZfWCOip439fA4E
+         LsoQccIbooMH6I3oBljrgyoic0cSzMrliwPNcPedoz8+sg+mqGYXJLTuIN5Bcm0RX9
+         QVLPR5U1qki9AeiFZHYj3Cx1t+mlEniOJJbXyxG6y60zJggaAbh70ayc3X/OvNqKg2
+         QSiXoG2n1eSnw==
+Date:   Mon, 31 Jul 2023 11:19:59 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Joshua Kinard <kumba@gentoo.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org (open list),
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-modules@vger.kernel.org
+Subject: Re: [PATCH 2/5] net: enetc: use EXPORT_SYMBOL_GPL for
+ enetc_phc_index
+Message-ID: <20230731111959.7403238c@kernel.org>
+In-Reply-To: <20230731083806.453036-3-hch@lst.de>
+References: <20230731083806.453036-1-hch@lst.de>
+        <20230731083806.453036-3-hch@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH v2 1/7] dt-bindings: soc: qcom: Add qcom-pbs bindings
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <pavel@ucw.cz>, <lee@kernel.org>, <thierry.reding@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>
-CC:     <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
-        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
-        <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-pwm@vger.kernel.org>
-References: <20230725193423.25047-1-quic_amelende@quicinc.com>
- <20230725193423.25047-2-quic_amelende@quicinc.com>
- <367ea415-6b33-248d-6725-de7330b3984b@linaro.org>
-From:   Anjelique Melendez <quic_amelende@quicinc.com>
-In-Reply-To: <367ea415-6b33-248d-6725-de7330b3984b@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: sYl_3TNi85lCE9oluGEGUp1AmD0_pRFj
-X-Proofpoint-GUID: sYl_3TNi85lCE9oluGEGUp1AmD0_pRFj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-31_12,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- malwarescore=0 clxscore=1015 impostorscore=0 mlxlogscore=999
- suspectscore=0 bulkscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307310166
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,55 +68,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 31 Jul 2023 10:38:03 +0200 Christoph Hellwig wrote:
+> enetc_phc_index is only used via symbol_get, which was only ever
+> intended for very internal symbols like this one.  Use EXPORT_SYMBOL_GPL
+> for it so that symbol_get can enforce only being used on
+> EXPORT_SYMBOL_GPL symbols.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-
-On 7/26/2023 12:53 AM, Krzysztof Kozlowski wrote:
-> On 25/07/2023 21:34, Anjelique Melendez wrote:
->> Add binding for the Qualcomm Programmable Boot Sequencer device.
->>
->> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
->> ---
->>  .../bindings/soc/qcom/qcom-pbs.yaml           | 40 +++++++++++++++++++
->>  1 file changed, 40 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom-pbs.yaml
-> 
-> 
-> Again not tested.
-> 
-> Also, you missed comments. :(
-> 
-> This is a friendly reminder during the review process.
-> 
-> It seems my previous comments were not fully addressed. Maybe my
-> feedback got lost between the quotes, maybe you just forgot to apply it.
-> Please go back to the previous discussion and either implement all
-> requested changes or keep discussing them.
-> 
-> Thank you.
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-Hi Krzysztof,
-
-Sorry about the testing, found that my dt_binding_checker was out dated and that
-is why it has not been picking up those dt_binding errors :/ 
-
-I went back to take a look at the original comments I missed and just wanted to
-list them for a quick double check.
-
-1. Rename binding to be qcom,pbs so that it matches compatible
-2. Include Soc specific compatibles i.e. 
-   compatible:
-     items:
-       - enum:
-         - qcom,pmi632-pbs
-       - const: qcom,pbs
-3. Fix the example node
-
-Thanks,
-Anjelique
-
-   
-
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
