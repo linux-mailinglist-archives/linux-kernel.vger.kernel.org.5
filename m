@@ -2,125 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D6576950D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9753C769514
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjGaLjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46410 "EHLO
+        id S230352AbjGaLk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjGaLjL (ORCPT
+        with ESMTP id S229724AbjGaLk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:39:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68209A1;
-        Mon, 31 Jul 2023 04:39:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GfCDZly9m5cEnUMLI6BBT5Bp8X7DDKZH+I1z9AVhN6c=; b=g417rfymXApz8Vy9HCwYkEW4xI
-        UTgl7xs0QKhbqhrxhcKMIpPqyAF9nIbqXZjOTMfl+GicpBturDJ5itYF2PQPJoUn4kFvUlVJl3h0E
-        AM/o0azCSGg0256spxOImhQCpUDzAQwXSjwDO8tJmcyNIuKUMugrHnk3CreQz7Eu7csT274KtG9X4
-        +CFv7dRftdMZZipEw+VpPzf1G34GG0iPJbMJhyUUNyCVcB3SsL7+ZNJria9+CreO3r9z/Qw72hmC/
-        MxcXdM/rmoRf0KGdPVbw8+dyNeQVtVYd8SOroeyDZ29IgpENedJDJI6Gyth9h5xS2tbhieQkuUykH
-        0+T1A9Pw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qQREh-001Ons-Iw; Mon, 31 Jul 2023 11:38:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F317E3002CE;
-        Mon, 31 Jul 2023 13:38:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DB69A206A36EE; Mon, 31 Jul 2023 13:38:50 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 13:38:50 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     anna-maria@linutronix.de, tglx@linutronix.de, frederic@kernel.org,
-        gautham.shenoy@amd.com, linux-kernel@vger.kernel.org,
-        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Subject: Re: [RFC][PATCH 1/3] cpuidle: Inject tick boundary state
-Message-ID: <20230731113850.GE29590@hirez.programming.kicks-ass.net>
-References: <20230728145515.990749537@infradead.org>
- <20230728145808.835742568@infradead.org>
- <CAJZ5v0gNqEuqvV0RtrXiDDGtvKB2hronLwAU8jnmuGppKmyDxA@mail.gmail.com>
- <20230729084417.GB3945851@hirez.programming.kicks-ass.net>
- <CAJZ5v0iVKRY5-YvQmMbZ3+eZNHJgXt=CoYedNueAJyT9+Ld5Dg@mail.gmail.com>
- <20230731090935.GB29590@hirez.programming.kicks-ass.net>
- <CAJZ5v0jh5oozZm7OvN9j1iHtzYQzPMOJ=Nt0HaJKYyJ218Cezw@mail.gmail.com>
+        Mon, 31 Jul 2023 07:40:26 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEB2A6;
+        Mon, 31 Jul 2023 04:40:25 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-686b643df5dso2989121b3a.1;
+        Mon, 31 Jul 2023 04:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690803625; x=1691408425;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NbHaBnPJTBufVAwcPj+/e51E470qMaDLfU8RAgBBrSo=;
+        b=Oqhj9+7q02O+W9LRy4/w9ygddowj5YGZdAuQcQiAKx8xsYNHClcRtsbok6QS0FT7o5
+         EnqTLOZQ2khabaT7z9Y7sb4fRTsSVX1bDX522xRb1/pB6hkHuKktWo6tgpdO5UrJ+mVa
+         yamBHZxv6GhHgFm+mFHhNbceYYuLchQPstzfFsuHCcE4ahCOp+1jICpS8uWPKscCPIK2
+         lf51aYlmtmTfGIhtv1APtO6vSJrqsEq029SRG5gJ1Ak717eq5rbbpcAyxJaiRocDTPzT
+         +PTy+sMzbnntJxzHX6SLblNYGLcritk1DuTMBjbjSc7spgbtTQ4U357QI6CCDHdnBlZt
+         V/zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690803625; x=1691408425;
+        h=content-transfer-encoding:in-reply-to:from:cc:references:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NbHaBnPJTBufVAwcPj+/e51E470qMaDLfU8RAgBBrSo=;
+        b=IvNVIG+IiCG58ug5YHoZoqa5d1wKnMPhu+3GSzywyni9sku/DLloZ8S2jeeZ4aIk9z
+         08J7hdh/jB13i+fLVhKOry5OcRkZ/fGkEBm0MZgo5Ot4o9+VrJiTq4gfRkSsbHPxthPU
+         94+kMDkWxg8FU1PzDdop/fNNZ5TKLWtbcNpQx3blgqOmrb9ak5Cp9mkoqk5SaT09EaFq
+         qjhFWIp46WpmWarE1dsotfZElmho+lsAcmc6/PeBWii7XTbxRcl67sDO8TuqPCilxMv0
+         xC+HmUbtz4gzNPQs67FMN4ARivdK7ZOlunCFEQPAqxzvc7Wbzknqz5iD0NNlTR7n3Y9o
+         DvJA==
+X-Gm-Message-State: ABy/qLadRyCLiiGPa3NW043+GEZdszw1v2fZXNYNuZ3hkjxpx1lnORe0
+        IUC/5KZf2QiEBOwgjerVg1E=
+X-Google-Smtp-Source: APBJJlExlIfJlZY/sSBlcw6EfNRGkZZTwEkZ+JAJ9sqSSJViGVx+t05/p99K9MXZ7/FpPZdW7zHT8w==
+X-Received: by 2002:a05:6a20:9151:b0:13b:79dc:4538 with SMTP id x17-20020a056a20915100b0013b79dc4538mr9899227pzc.62.1690803625084;
+        Mon, 31 Jul 2023 04:40:25 -0700 (PDT)
+Received: from [10.90.34.137] ([203.208.167.147])
+        by smtp.gmail.com with ESMTPSA id e11-20020a63ae4b000000b00563962dbc70sm792422pgp.58.2023.07.31.04.40.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 04:40:24 -0700 (PDT)
+Message-ID: <e106ee62-8b4b-59bc-d7ec-510c0c75c30a@gmail.com>
+Date:   Mon, 31 Jul 2023 19:40:16 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jh5oozZm7OvN9j1iHtzYQzPMOJ=Nt0HaJKYyJ218Cezw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.1
+Subject: Re: [PATCH 03/11] maple_tree: Add some helper functions
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+References: <20230726080916.17454-1-zhangpeng.00@bytedance.com>
+ <20230726080916.17454-4-zhangpeng.00@bytedance.com>
+ <20230726150252.x56owgz3ikujzicu@revolver>
+Cc:     peterz@infradead.org, mathieu.desnoyers@efficios.com,
+        brauner@kernel.org, Peng Zhang <zhangpeng.00@bytedance.com>,
+        surenb@google.com, linux-kernel@vger.kernel.org, npiggin@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        akpm@linux-foundation.org, corbet@lwn.net, willy@infradead.org,
+        linux-mm@kvack.org, avagin@gmail.com, michael.christie@oracle.com
+From:   Peng Zhang <perlyzhang@gmail.com>
+In-Reply-To: <20230726150252.x56owgz3ikujzicu@revolver>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 12:35:20PM +0200, Rafael J. Wysocki wrote:
 
-> > So I agree with 1.
-> >
-> > I do not agree with 2. Disabling the tick is costly, doubly so with the
-> > timer-pull thing, but even today. Simply disabling it because we picked
-> > the deepest idle state, irrespective of the expected duration is wrong
-> > as it will incur this significant cost.
-> >
-> > With 3 there is the question of how we get the expected sleep duration;
-> > this is especially important with timer-pull, where we have this
-> > chicken-and-egg thing.
-> >
-> > Notably: tick_nohz_get_sleep_length() wants to know if the tick gets
-> > disabled
+
+在 2023/7/26 23:02, Liam R. Howlett 写道:
+> * Peng Zhang <zhangpeng.00@bytedance.com> [230726 04:10]:
+>> Add some helper functions so that their parameters are maple node
+>> instead of maple enode, these functions will be used later.
+>>
+>> Signed-off-by: Peng Zhang <zhangpeng.00@bytedance.com>
+>> ---
+>>   lib/maple_tree.c | 71 +++++++++++++++++++++++++++++++++++++-----------
+>>   1 file changed, 55 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+>> index e0e9a87bdb43..da3a2fb405c0 100644
+>> --- a/lib/maple_tree.c
+>> +++ b/lib/maple_tree.c
+>> @@ -164,6 +164,11 @@ static inline int mt_alloc_bulk(gfp_t gfp, size_t size, void **nodes)
+>>   	return kmem_cache_alloc_bulk(maple_node_cache, gfp, size, nodes);
+>>   }
+>>   
+>> +static inline void mt_free_one(struct maple_node *node)
+>> +{
+>> +	kmem_cache_free(maple_node_cache, node);
+>> +}
+>> +
 > 
-> Well, it shouldn't.  Or at least it didn't before.
-
-Correct, this is new in the timer-pull thing.
-
-> It is expected to produce two values, one with the tick stopped (this
-> is the return value of the function) and the other with the tick
-> ticking (this is the one written under the address passed as the arg).
-> This cannot depend on whether or not the tick will be stopped.  Both
-> are good to know.
+> There is a place in mas_destroy() that could use this if it is added.
+I will make changes accordingly. It's not done here because it doesn't
+seem to be relevant to the theme of this patchset.
 > 
-> Now, I understand that getting these two values may be costly, so
-> there is an incentive to avoid calling it, but then the governor needs
-> to figure this out from its crystal ball and so care needs to be taken
-> to limit the possible damage in case the crystal ball is not right.
-
-If we can get the governor to decide the tick state up-front we can
-avoid a lot of the expensive parts.
-
-> > and cpuilde wants to use tick_nohz_get_sleep_length() to
-> > determine if to disable the tick. This cycle needs to be broken for
-> > timer-pull.
-> >
-> > Hence my proposal to introduce the extra tick state, that allows fixing
-> > both 2 and 3.
+>>   static inline void mt_free_bulk(size_t size, void __rcu **nodes)
+>>   {
+>>   	kmem_cache_free_bulk(maple_node_cache, size, (void **)nodes);
+>> @@ -432,18 +437,18 @@ static inline unsigned long mte_parent_slot_mask(unsigned long parent)
+>>   }
+>>   
+>>   /*
+>> - * mas_parent_type() - Return the maple_type of the parent from the stored
+>> - * parent type.
+>> - * @mas: The maple state
+>> - * @enode: The maple_enode to extract the parent's enum
+>> + * ma_parent_type() - Return the maple_type of the parent from the stored parent
+>> + * type.
+>> + * @mt: The maple tree
+>> + * @node: The maple_node to extract the parent's enum
+>>    * Return: The node->parent maple_type
+>>    */
+>>   static inline
+>> -enum maple_type mas_parent_type(struct ma_state *mas, struct maple_enode *enode)
+>> +enum maple_type ma_parent_type(struct maple_tree *mt, struct maple_node *node)
 > 
-> I'm not sure about 3 TBH.
+> I was trying to keep ma_* prefix to mean the first argument is
+> maple_node and mt_* to mean maple_tree.  I wasn't entirely successful
+> with this and I do see why you want to use ma_, but maybe reverse the
+> arguments here?
+I just think it is redundant to construct maple enode through
+node->parent in order to adapt the parameters of mte_*. So ma_* are
+introduced to avoid meaningless construction.
+
 > 
-> Say there are 2 idle states, one shallow (say its target residency is
-> 10 us) and one deep (say its target residency is T = 2 * TICK_NSEC).
-
-This is the easy case and that actually 'works' today. The
-interesting case is where your deepest state has a target residency that
-is below the tick (because for HZ=100, we have a 10ms tick and pretty
-much all idle states are below that).
-
-In that case you cannot tell the difference between I'm good to use this
-state and I'm good to disable the tick and still use this state.
-
-
+>>   {
+>>   	unsigned long p_type;
+>>   
+>> -	p_type = (unsigned long)mte_to_node(enode)->parent;
+>> +	p_type = (unsigned long)node->parent;
+>>   	if (WARN_ON(p_type & MAPLE_PARENT_ROOT))
+>>   		return 0;
+>>   
+>> @@ -451,7 +456,7 @@ enum maple_type mas_parent_type(struct ma_state *mas, struct maple_enode *enode)
+>>   	p_type &= ~mte_parent_slot_mask(p_type);
+>>   	switch (p_type) {
+>>   	case MAPLE_PARENT_RANGE64: /* or MAPLE_PARENT_ARANGE64 */
+>> -		if (mt_is_alloc(mas->tree))
+>> +		if (mt_is_alloc(mt))
+>>   			return maple_arange_64;
+>>   		return maple_range_64;
+>>   	}
+>> @@ -459,6 +464,19 @@ enum maple_type mas_parent_type(struct ma_state *mas, struct maple_enode *enode)
+>>   	return 0;
+>>   }
+>>   
+>> +/*
+>> + * mas_parent_type() - Return the maple_type of the parent from the stored
+>> + * parent type.
+>> + * @mas: The maple state
+>> + * @enode: The maple_enode to extract the parent's enum
+>> + * Return: The node->parent maple_type
+>> + */
+>> +static inline
+>> +enum maple_type mas_parent_type(struct ma_state *mas, struct maple_enode *enode)
+>> +{
+>> +	return ma_parent_type(mas->tree, mte_to_node(enode));
+>> +}
+>> +
+>>   /*
+>>    * mas_set_parent() - Set the parent node and encode the slot
+>>    * @enode: The encoded maple node.
+>> @@ -499,14 +517,14 @@ void mas_set_parent(struct ma_state *mas, struct maple_enode *enode,
+>>   }
+>>   
+>>   /*
+>> - * mte_parent_slot() - get the parent slot of @enode.
+>> - * @enode: The encoded maple node.
+>> + * ma_parent_slot() - get the parent slot of @node.
+>> + * @node: The maple node.
+>>    *
+>> - * Return: The slot in the parent node where @enode resides.
+>> + * Return: The slot in the parent node where @node resides.
+>>    */
+>> -static inline unsigned int mte_parent_slot(const struct maple_enode *enode)
+>> +static inline unsigned int ma_parent_slot(const struct maple_node *node)
+>>   {
+>> -	unsigned long val = (unsigned long)mte_to_node(enode)->parent;
+>> +	unsigned long val = (unsigned long)node->parent;
+>>   
+>>   	if (val & MA_ROOT_PARENT)
+>>   		return 0;
+>> @@ -519,15 +537,36 @@ static inline unsigned int mte_parent_slot(const struct maple_enode *enode)
+>>   }
+>>   
+>>   /*
+>> - * mte_parent() - Get the parent of @node.
+>> - * @node: The encoded maple node.
+>> + * mte_parent_slot() - get the parent slot of @enode.
+>> + * @enode: The encoded maple node.
+>> + *
+>> + * Return: The slot in the parent node where @enode resides.
+>> + */
+>> +static inline unsigned int mte_parent_slot(const struct maple_enode *enode)
+>> +{
+>> +	return ma_parent_slot(mte_to_node(enode));
+>> +}
+>> +
+>> +/*
+>> + * ma_parent() - Get the parent of @node.
+>> + * @node: The maple node.
+>> + *
+>> + * Return: The parent maple node.
+>> + */
+>> +static inline struct maple_node *ma_parent(const struct maple_node *node)
+> 
+> I had a lot of these helpers before, but they eventually became used so
+> little that I dropped them.
+Just for not wanting to construct maple enode. It's not really a
+problem.
+> 
+>> +{
+>> +	return (void *)((unsigned long)(node->parent) & ~MAPLE_NODE_MASK);
+>> +}
+>> +
+>> +/*
+>> + * mte_parent() - Get the parent of @enode.
+>> + * @enode: The encoded maple node.
+>>    *
+>>    * Return: The parent maple node.
+>>    */
+>>   static inline struct maple_node *mte_parent(const struct maple_enode *enode)
+>>   {
+>> -	return (void *)((unsigned long)
+>> -			(mte_to_node(enode)->parent) & ~MAPLE_NODE_MASK);
+>> +	return ma_parent(mte_to_node(enode));
+>>   }
+>>   
+>>   /*
+>> -- 
+>> 2.20.1
+>>
