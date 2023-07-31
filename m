@@ -2,120 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E35FE768A7E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62007768A80
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 05:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjGaD4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 23:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58896 "EHLO
+        id S229724AbjGaD6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 23:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbjGaD42 (ORCPT
+        with ESMTP id S229492AbjGaD6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 23:56:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB525A1;
-        Sun, 30 Jul 2023 20:56:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sun, 30 Jul 2023 23:58:19 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F48AD;
+        Sun, 30 Jul 2023 20:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690775896;
+        bh=MeLLwg7NtC51pUH0tkJRisJExxHLv7iXcYqosGvk0pQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=s/Dz5dE/OHnoREwN5UtyL+B4GH5ET79LGTTZvnGtwRg7AKfxevXLOVonAVBCeW80y
+         GcnBgH4g5wXsX117EkIjzzGCCXufKZ2is3Ud24U60BGg8fTEI6xVNc66maA1JnMweV
+         mdgZziSipKdwV0LBbZSSE8alXARComM0dOAQIXOFn1xDpV+pojEde3+F15O698a0Ma
+         Evyn3JuMrJJ7dNqpATf7wmw/oFkDoO8j8+W0ghyQ/ZN/UvHskvaEfCX6/aCc8XnCX/
+         W5dDIfHUqBwW3GpKRlEKQ2oUzsMP3hWDcfQp6DLkCXJKmuF6/iWw0RHvN2WFjYuZb8
+         LP5rQqSr9OVPA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4908860E76;
-        Mon, 31 Jul 2023 03:56:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A1EC433C8;
-        Mon, 31 Jul 2023 03:56:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690775786;
-        bh=OJhn2xh0Hfg1VR6jCYxqu97VlvKqXau4QUVC3H/VpVs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Bt0kTBL5rC6oktQ6YlvrvzpycSs6N3qpWDMOAWUNbeGy1lpvMysg453/Mt3SnQ1uQ
-         WOZkBMj1Kt37nO3YmqbdcpcsSkMVZCtq+iQWgZcvEenHy8qx362QHQirjrPU4rbqUB
-         84f17+GK8xt/mYIwr3lXlz686vNTHoLArMgIuZn+o+3dPjV/u1YyHb/j8Q+V6dU5E1
-         v/6e74i9ch5zl7Wb+MCh1QrBDANJeQbXVomOC+01qYO2qxlR++bLFpB2GRSoSBEvMN
-         xgWSsthsC+iDpNeokq3a58c7dvDr7Oq7Hhr+kvN1FVMekwRrkQMU0K7N42oBy9IdkC
-         NGngKjBuNZHsQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4C66ACE1067; Sun, 30 Jul 2023 20:56:26 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 20:56:26 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
-Message-ID: <11c3e209-d703-4528-acb9-63e5c9c1a16d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <ZMJWet00+9yIl/9c@duo.ucw.cz>
- <78722041-D1F7-45FA-BA1C-41B92209BA6C@joelfernandes.org>
- <0751f5a8-2727-4a08-8bb8-50bbd4244c9c@paulmck-laptop>
- <67eba84a-ae24-2983-a756-463f39f3ca71@roeck-us.net>
- <ebe4a969-8a24-4bb8-8dbe-f77db89f65c9@paulmck-laptop>
- <2f4b012e-1f95-30aa-3f43-c31e84cb2c42@roeck-us.net>
- <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
- <6d45f1d0-25e5-8603-0fbb-73374be00503@roeck-us.net>
- <bfa768e7-fc4f-4511-ad3a-67772f41d50c@paulmck-laptop>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RDkx36Mpqz4wqW;
+        Mon, 31 Jul 2023 13:58:15 +1000 (AEST)
+Date:   Mon, 31 Jul 2023 13:58:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Jeff Layton <jlayton@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the vfs-brauner tree
+Message-ID: <20230731135813.1423c4fe@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bfa768e7-fc4f-4511-ad3a-67772f41d50c@paulmck-laptop>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/LvQdkfjq9FTHFs8=aaKoYQM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30, 2023 at 08:54:46PM -0700, Paul E. McKenney wrote:
-> On Thu, Jul 27, 2023 at 09:22:52PM -0700, Guenter Roeck wrote:
-> > On 7/27/23 13:33, Paul E. McKenney wrote:
-> > [ ... ]
-> > 
-> > > So which of the following Kconfig options is defined in your .config?
-> > > CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
-> > > 
-> > 
-> > Only CONFIG_TASKS_RCU. I added another log message after call_rcu_tasks().
-> > It never returns from that function.
-> > 
-> > [    1.168993] Running RCU synchronous self tests
-> > [    1.169219] Running RCU synchronous self tests
-> > [    1.285795] smpboot: CPU0: Intel Xeon Processor (Cascadelake) (family: 0x6, model: 0x55, stepping: 0x6)
-> > [    1.302827] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
-> > [    1.304526] Running RCU Tasks wait API self tests
-> > 
-> > ... and then nothing for at least 10 minutes (then I gave up and stopped the test).
-> > 
-> > Qemu command line:
-> > 
-> > qemu-system-x86_64 -kernel \
-> >      arch/x86/boot/bzImage -M q35 -cpu Cascadelake-Server -no-reboot \
-> >      -snapshot -device e1000e,netdev=net0 -netdev user,id=net0 -m 256 \
-> >      -drive file=rootfs.iso,format=raw,if=ide,media=cdrom \
-> >      --append "earlycon=uart8250,io,0x3f8,9600n8 panic=-1 slub_debug=FZPUA root=/dev/sr0 rootwait console=ttyS0 noreboot" \
-> >      -d unimp,guest_errors -nographic -monitor none
-> > 
-> > Again, this doesn't happen all the time. With Cascadelake-Server
-> > I see it maybe once every 5 boot attempts. I tried with qemu v8.0
-> > and v8.1. Note that it does seem to happen with various CPU types,
-> > only for some it seems to me more likely to happen (so maybe the
-> > CPU type was a red herring). It does seem to depend on the system
-> > load, and happen more often if the system is under heavy load.
-> 
-> Hmmm...  What kernel are you using as your qemu/KVM hypervisor?
+--Sig_/LvQdkfjq9FTHFs8=aaKoYQM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Never mind, I now see your bisection result.  Good show, thank you!!!
+Hi all,
 
-						Thanx, Paul
+After merging the vfs-brauner tree, today's linux-next build (htmldocs)
+produced this warning:
 
-> And I echo Joel's requests for your .config file.
-> 
-> 							Thanx, Paul
+fs/stat.c:79: warning: Function parameter or member 'request_mask' not desc=
+ribed in 'generic_fillattr'
+
+Introduced by commit
+
+  0a6ab6dc6958 ("fs: pass the request_mask to generic_fillattr")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/LvQdkfjq9FTHFs8=aaKoYQM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTHMVUACgkQAVBC80lX
+0GwNCAf8CwfiPwJxCrhQwgK3gjLa497OeXlTAaauDDEaAMS68hpPN+Edgrf+kkHG
+HSdwEFAc6zc4EZ4kEv0AL8ZZ/1nFQw5B+0N1wlzW4Zb+kwiBPUzHe3QQ8kkmZLUl
+aO2YT4Ykh3A3Rr+9ifjITFERlMAcP3NSQSqZ+b/DVPke6ToYX3nE8y+7vrJT5duB
++GkuCvkJXlQHK+ZtOqc0dGxVTs6acvHeGPfPy7lqUj7d4cjUGYWpCwiE29Cb9AoX
+H5cDI1F0Id/zSvEkMsb8/DvxaCn2jlZ+Otvj8w9KvbaeH7WVMNMYIM4eG/Lakaxz
+D65K/8mBEb8RoLIn6rQvJSAvrMupgw==
+=KVCF
+-----END PGP SIGNATURE-----
+
+--Sig_/LvQdkfjq9FTHFs8=aaKoYQM--
