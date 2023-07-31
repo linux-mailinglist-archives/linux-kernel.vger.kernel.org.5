@@ -2,141 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AA3768C52
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:52:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB54768C69
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbjGaGwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 02:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37012 "EHLO
+        id S229716AbjGaGyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 02:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjGaGvv (ORCPT
+        with ESMTP id S229500AbjGaGyc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 02:51:51 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A3110DF
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 23:51:33 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fba8f2197bso6258869e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 23:51:33 -0700 (PDT)
+        Mon, 31 Jul 2023 02:54:32 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C519011C
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 23:54:29 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so8658306a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 23:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690786292; x=1691391092;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1690786468; x=1691391268;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=o8Rt9blDQLbjFIHhQ775musDPPuWgqdGNon+UjeozlQ=;
-        b=fqhNILd+G7sGwNQlon4vl9xMCV6KAcUtPxN24oYplZasC7CtsAlFLVBv5++5X5dzFp
-         IOC/b4f1zMXq/3oLeGbPyq890Xckf7fHOKPQQDZD1NL74HfWyBtbpj8hENbbjbRaL6KU
-         8tuTCwgsPJ3tCoFe2sLbdywFgjb8F2/bJqCSsqmpXqOa6q5MTJPnF6VVxpoFm9SpeM4M
-         eFXzddmikCTVURpjEZmStARjJjMJX3hzQ1/JT9AJhYlRhxHlx2tyuRcJ3noAnFpAUJYA
-         xCmFBusTVRUQMXnCgxysie4DN38J0BoICESMKHHmhMMte3lFQRKqLfvdOkvSiqzfvNEs
-         AsYA==
+        bh=4qUpAieG+xE08h9GZl+Gc2LW4JHHh2vTdj6E2mVehSY=;
+        b=QZQhRAtBIIZv+wMv6Lxz/k+jf0zqv0L4vBqgBg37tCl2/VZ2sjNccomO1Bbl3DcCBY
+         8aTMsta4hgFyt4+y2HEPbVx1/RwJh9suiK4o8EGnaIImBnM0L3hz5FJTMKluDfGrAsfH
+         5a5/i0Oy8MkSl03+PbLPMXMJqL1dMpKiDj7YtBb+lctxZ+iuWNwp/YbcaV5k70W7QJrL
+         fN9W/W5Ygb/zGvzJ5n0uHRMl/cqeexeZwBHtEOSKuQlE2tFZqQRl4Ogcyhns6/dQHEpl
+         3gKLQ3AHcA6MAIex5cr6tr5IRJlN+kCeLO7EzTdz0Rhd+dW9CmkCcQPCbWS0wWGpRuFJ
+         DyaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690786292; x=1691391092;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690786468; x=1691391268;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o8Rt9blDQLbjFIHhQ775musDPPuWgqdGNon+UjeozlQ=;
-        b=bmbo+syvkEluvuf6SRlOa91mv2YweHwEtk1sYr+lH63DTrsE9DFxPSsqWpBZLbZatZ
-         DeW1XgjSKTVXHH0rUDG53awNbmF02zmk4/xFd93fIvacEAFAcAZhBABTBnCiMFWXsHoW
-         cJ2Y1O/yWD21x+nP2IOo4N8+g1EdgUh4AFBcSmBOW2IowSjuT+seWL3sSiE5fdmY6YZx
-         JdphzJuyfSz7i5dwRS5RVfM+mNQq6P07/8l6GrdD+o/2ntpL9ndSCn3khk9N3KCizyyz
-         7+AUUSJ9mkomjMprOKaToqPATVw6DaMHg4tvKLx/UsupcNw4nKkF+24oWS49GyZPUYvP
-         HsCA==
-X-Gm-Message-State: ABy/qLZlTVUtFgiD+kg0ExnNTlRcHhOxgj040qUMuFyCvar/YAQcbKfJ
-        YH5k6we3Ai1k45gtAqw7b89dFA==
-X-Google-Smtp-Source: APBJJlElJZxCgxmaPXKU3Ke4gYodUSFZNQP8VMTA3nl9zumxbtQsFjGBQzPgy40Hem3vm5x84sulWQ==
-X-Received: by 2002:a05:6512:3b0b:b0:4f8:4512:c846 with SMTP id f11-20020a0565123b0b00b004f84512c846mr6074831lfv.49.1690786291811;
-        Sun, 30 Jul 2023 23:51:31 -0700 (PDT)
+        bh=4qUpAieG+xE08h9GZl+Gc2LW4JHHh2vTdj6E2mVehSY=;
+        b=g7aQhgUkwEgiBDaBvUdB2vaeGDRA4Ou50apQd2v6/9o32hPd83JFi5kehWsYUHAj+E
+         0m85GMdA/OLtBEWHh4734rify2XVjXmVStCuPgf9ktGyyR3L+shEqFpqIF54hOaLdAxN
+         ALDEh9qs1HKCNBqbYNtt353gG0i9vAEAxtePsGHKyyWdhuUuUfhCH5wy5QKeGhHwoV5A
+         49oKV3SkMELP+NPZPGqHaFNJbhD7cekr5YCVcogVJlElXUR+OThRaj/VC1A3IM6ei03v
+         xzJLh+AbANhIepvOqr4JpOiTKK0X+Z0rRNfuKmVIfnwSi4m0QopW7nzivTGIsdZmdcdd
+         JRxA==
+X-Gm-Message-State: ABy/qLY3cH0PyQL+stxU/b0Im2gfev5HHHpJPyK8LnTn/FLenOQ4EC4f
+        +awgHs6jxlniI7q0oFhOo+AJxQ==
+X-Google-Smtp-Source: APBJJlGCmJaHU50ObdvcR/6bwTGIuiXDtnox3Cuhxi7HnSlDCaucG+LhabDEzLzNd3EdVAvCwUifNw==
+X-Received: by 2002:aa7:db52:0:b0:522:abaf:1b0b with SMTP id n18-20020aa7db52000000b00522abaf1b0bmr7501888edt.18.1690786467642;
+        Sun, 30 Jul 2023 23:54:27 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.183])
-        by smtp.gmail.com with ESMTPSA id j25-20020a170906255900b0099b4d86fbccsm5803011ejb.141.2023.07.30.23.51.29
+        by smtp.gmail.com with ESMTPSA id e12-20020a50ec8c000000b0051e0eba608bsm4953487edr.19.2023.07.30.23.54.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Jul 2023 23:51:31 -0700 (PDT)
-Message-ID: <be25dead-89f0-8859-d182-84754ad8bfc0@linaro.org>
-Date:   Mon, 31 Jul 2023 08:51:28 +0200
+        Sun, 30 Jul 2023 23:54:27 -0700 (PDT)
+Message-ID: <0617841a-5d1f-b703-daa9-fedba148a05d@linaro.org>
+Date:   Mon, 31 Jul 2023 08:54:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.1
-Subject: Re: [PATCH V3 4/5] ASoC: codecs: aw88261 device related operation
- functions
-To:     wangweidong.a@awinic.com
-Cc:     13916275206@139.com, alsa-devel@alsa-project.org,
-        broonie@kernel.org, ckeepax@opensource.cirrus.com,
-        colin.i.king@gmail.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, doug@schmorgal.com, fido_max@inbox.ru,
-        herve.codina@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        liweilei@awinic.com, perex@perex.cz, povik+lin@cutebit.org,
-        rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
-        shumingf@realtek.com, tiwai@suse.com, trix@redhat.com,
-        yijiangtao@awinic.com, zhangjianming@awinic.com
-References: <7cdd4825-c0da-f60e-bbef-970bea48dc95@linaro.org>
- <20230731064154.4137-1-wangweidong.a@awinic.com>
+Subject: Re: [PATCH v1] arm64: dts: qcom: sc7280: Add PCIe0 node
 Content-Language: en-US
+To:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>,
+        manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com,
+        "reviewer:ARM/QUALCOMM CHROMEBOOK SUPPORT" 
+        <cros-qcom-dts-watchers@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+References: <1690540760-20191-1-git-send-email-quic_krichai@quicinc.com>
+ <17c2ba50-3b72-523c-d92b-1ecbf9be7450@linaro.org>
+ <f3d5c72d-90d3-b091-f995-5ad0bf93ae1d@quicinc.com>
+ <a2024453-e749-b659-52a0-83ded8bb5c38@linaro.org>
+ <1cfdf3c4-6e4f-e73d-c711-3890ceabb69d@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230731064154.4137-1-wangweidong.a@awinic.com>
+In-Reply-To: <1cfdf3c4-6e4f-e73d-c711-3890ceabb69d@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2023 08:41, wangweidong.a@awinic.com wrote:
+On 31/07/2023 07:29, Krishna Chaitanya Chundru wrote:
 > 
->>> +
->>> +	return 0;
->>> +}
->>> +
->>> +int aw88261_dev_init(struct aw88261_device *aw_dev, struct aw_container *aw_cfg)
+> On 7/28/2023 9:27 PM, Krzysztof Kozlowski wrote:
+>> On 28/07/2023 17:10, Krishna Chaitanya Chundru wrote:
+>>> On 7/28/2023 5:33 PM, Krzysztof Kozlowski wrote:
+>>>> On 28/07/2023 12:39, Krishna chaitanya chundru wrote:
+>>>>> Add PCIe dtsi node for PCIe0 controller on sc7280 platform.
+>>>>>
+>>>>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>>>> Thank you for your patch. There is something to discuss/improve.
+>>>>
+>>>>
+>>>>> +		pcie0_phy: phy@1c06000 {
+>>>>> +			compatible = "qcom,sm8250-qmp-gen3x1-pcie-phy";
+>>>>> +			reg = <0 0x01c06000 0 0x1c0>;
+>>>>> +			#address-cells = <2>;
+>>>>> +			#size-cells = <2>;
+>>>>> +			ranges;
+>>>>> +			clocks = <&gcc GCC_PCIE_0_AUX_CLK>,
+>>>>> +				 <&gcc GCC_PCIE_0_CFG_AHB_CLK>,
+>>>>> +				 <&gcc GCC_PCIE_CLKREF_EN>,
+>>>>> +				 <&gcc GCC_PCIE0_PHY_RCHNG_CLK>;
+>>>>> +			clock-names = "aux", "cfg_ahb", "ref", "refgen";
+>>>>> +
+>>>>> +			resets = <&gcc GCC_PCIE_0_PHY_BCR>;
+>>>>> +			reset-names = "phy";
+>>>>> +
+>>>>> +			assigned-clocks = <&gcc GCC_PCIE0_PHY_RCHNG_CLK>;
+>>>>> +			assigned-clock-rates = <100000000>;
+>>>>> +
+>>>>> +			status = "disabled";
+>>>>> +
+>>>>> +			pcie0_lane: phy@1c0e6200 {
+>>>> Isn't this old-style of bindings? Wasn't there a change? On what tree
+>>>> did you base it?
+>> The work was here:
+>> https://lore.kernel.org/all/20230324022514.1800382-5-dmitry.baryshkov@linaro.org/
+>>
+>> But I don't remember the status.
+>>
+>>> Let me rebase and send it again.
+>> This anyway looks like wrong compatible. You used sm8250.
 > 
->> You already used this function in patch #3, so your order of patches is
->> confusing.
-> 
-> Do I need to change the order of patch? 
-> Do I neeed to put aw88261_device.c aw88261_device.h in patch #3 and 
-> put aw88261.c aw88261.h in patch #4?
-> Is that how you change the order?
+> The patch was send on latest linux-next only and the above change is not 
+> merged yet.
 
-Your patchset should be logically ordered, so first you add bindings
-(because it must be before their users), then you one piece, then other
-etc. I understand that only the last patch will make everything
-buildable, but still code should be added before its user/caller.
-
-...
+I don't think we will want old DTS syntax... but this actually depends
+on the status of Dmitry's patchset.
 
 > 
->>> +
->>> +	switch (chip_id) {
->>> +	case AW88261_CHIP_ID:
->>> +		ret = aw_dev_init((*aw_dev));
->>> +		break;
->>> +	default:
->>> +		ret = -EINVAL;
->>> +		dev_err((*aw_dev)->dev, "unsupported device");
->>> +		break;
->>> +	}
->>> +
->>> +	return ret;
->>> +}
->>> +
->>> +MODULE_DESCRIPTION("AW88261 device");
->>> +MODULE_LICENSE("GPL v2");
+> We are using the same compatible string as sm8250 because the phy is 
+> same both from hardware and software perspective for sm8250.
 > 
->> Wait, is this a module? Does not look complete. I already saw one
->> module, so what is this for? For which module?
+> that is why we are using the same compatible string.
 > 
-> Can it be changed to MODULE_DESCRIPTION("AW88261 device lib")?
+> Can you let me know if we want create a separate compatible string for 
+> this even though  we are using same phy?
 
-If this is a module, then it can. If this is not a module, then why
-would you ever like to do it?
-
-> The function in the aw88261_device.c file, which I used in the aw88261.c file.
-
-Functions are not modules.
+https://elixir.bootlin.com/linux/v6.1-rc1/source/Documentation/devicetree/bindings/writing-bindings.rst#42
 
 
 Best regards,
