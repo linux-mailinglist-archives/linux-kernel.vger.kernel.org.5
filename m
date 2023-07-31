@@ -2,93 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D5CE769BFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157E4769C15
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjGaQMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:12:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
+        id S231458AbjGaQQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230199AbjGaQMo (ORCPT
+        with ESMTP id S229746AbjGaQQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:12:44 -0400
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B1E1BE;
-        Mon, 31 Jul 2023 09:12:43 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1B18E5C018D;
-        Mon, 31 Jul 2023 12:12:43 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Mon, 31 Jul 2023 12:12:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690819963; x=1690906363; bh=Nd
-        NmSxtlFsEMzoXcqa9Y1UrUq7PfRm3QMd0u0om9fwo=; b=ii9PkP06rCG12PbQ2X
-        Yjg/A+IYqX36u8EBJpq/Ing971sRR6zrDbZ6cT1ddBVFDrkrHDi+wWFkxCJBwktB
-        aSzd4r8TcIHtXtga+FV1aQa923Yn18Uh0LDtKfNgLUtk2u0B3h/WFyo+9i+0+hOF
-        mP3vh2bF3KWScKLCs6F96G76psUFmE+qwVnic/I/8ghy8LNna0JWBQpr4xf/nQOt
-        UVC3ikGyElg7ltzFCMaM1hjI3Mkgc5dE3SFjrgFggPX0pWhLFq7p60IxzR+tfqc4
-        XkA64vCjTOuRswlr65nxf84YUbI22Rq40WGYCOJEnqo2cDt9mrADY87s8i98Si97
-        2S7g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690819963; x=1690906363; bh=NdNmSxtlFsEMz
-        oXcqa9Y1UrUq7PfRm3QMd0u0om9fwo=; b=Hxxvyo0t9jvGwDZlFnhWVPwW+PdpP
-        Ff63Sv8xYnqbbghP5b3W7QMVJxmlmdJxb1b0geAXuBJwlVStdSmPJkrxe8rgLy/x
-        olGLR3r06sole5M96I9tdJjblMcQh17TJW982jatrpc7UeMaop3oMN/X+GehqdUL
-        h6bVwKxf+KM6nMsI/pzGTIH0CsdqDS08HoVm2cUf2OsrTlN0AYyG2NJ9i2u8Y0T3
-        PkDlc0mK+wGm+PEAepV/g2+0gPzQQWTGct/5cMgqPVPIZ3b6qGHOeY1RtBRh9Wz8
-        89a50cKliSeZ/9kyzpm3xQRfrhN1SeIxFL4WSHyfOi0KQaKiWE2hrGjfg==
-X-ME-Sender: <xms:et3HZCa6FHXngCxgyIwTfWWjMqnIcmZNjLijdTOE5tS2ADDbgj7DTw>
-    <xme:et3HZFaCD1A3x6nJ_uo6himS446LXjaG7FabdbWupvIp8rXFW7yEiKQnzxtCSKLUP
-    VqNotbj-bmFKLiZ5EA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeggdejgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:et3HZM8aXLj441YrdJfaYQmHnkuA_cWHQxPX7Id1BFE3L-kBb9gxhw>
-    <xmx:et3HZErQBL2LeDKbJZnxbw9YF4pd62Z-vqBTkHFtWh-3DjE-nV62qQ>
-    <xmx:et3HZNrvqjrgswqcQjqUbwIxHN-CzeSm_lQzki3y49oDpbWUY_A5-w>
-    <xmx:e93HZO4YLyawrhuukjcb3GSGHVJABSzKKVTY7yR_1CX0n1U6qc7e2A>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A74B6B60089; Mon, 31 Jul 2023 12:12:42 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <86b73242-94bb-4537-92ec-51da02127848@app.fastmail.com>
-In-Reply-To: <20230731083806.453036-2-hch@lst.de>
-References: <20230731083806.453036-1-hch@lst.de>
- <20230731083806.453036-2-hch@lst.de>
-Date:   Mon, 31 Jul 2023 18:12:22 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Christoph Hellwig" <hch@lst.de>,
-        "Luis Chamberlain" <mcgrof@kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Daniel Mack" <daniel@zonque.org>,
-        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
-        "Robert Jarzmik" <robert.jarzmik@free.fr>,
-        "Ulf Hansson" <ulf.hansson@linaro.org>,
-        "Yangbo Lu" <yangbo.lu@nxp.com>, "Joshua Kinard" <kumba@gentoo.org>
-Cc:     "Daniel Vetter" <daniel.vetter@ffwll.ch>,
-        linux-arm-kernel@lists.infradead.org,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "linux-mmc @ vger . kernel . org" <linux-mmc@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>, linux-rtc@vger.kernel.org,
-        linux-modules@vger.kernel.org
-Subject: Re: [PATCH 1/5] ARM/pxa: use EXPORT_SYMBOL_GPL for sharpsl_battery_kick
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        Mon, 31 Jul 2023 12:16:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB8A10CC;
+        Mon, 31 Jul 2023 09:15:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690820152; x=1722356152;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uDqz4QbIPBx8qkdOShBFJqN2xE5FJpN2fMynEKpHsOs=;
+  b=AeeYNd+rehl3Y/eHzRigdGOTceY7EFY/9KHFULpXqcp8Dqha7hTlIXRS
+   gdwulUWkvBOpMn/s5oznhDU+upep6Z+ls69guqsFnuszuy14Ku7XOEVig
+   28zD7VKvuX0SV/ajM6Od4JqnEC6rNt+izKeiRrG6lkMn6Fi2kNOb0Kk5A
+   XmdIjaKtyaz47n596oSXeqEa33BdBPIDRKF1SNUJvM6WVJbh/S34oZ/hu
+   0mroQbmVimfjydSMzNIboSiwf/FaNTfkqUU/2mqsJ6gDxZZ/JN+EaV8JC
+   EOjdbh1edOCCVzBX5nb5hpQp+k5M86QXSYJ+USVcSpC+LLt4JcZv8/3+k
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="371772690"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="371772690"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 09:13:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852107020"
+X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
+   d="scan'208";a="852107020"
+Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 31 Jul 2023 09:13:11 -0700
+Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qQVWB-0005Dn-0D;
+        Mon, 31 Jul 2023 16:13:11 +0000
+Date:   Tue, 1 Aug 2023 00:12:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jindong Yue <jindong.yue@nxp.com>, lpieralisi@kernel.org,
+        kw@linux.com, robh@kernel.org, bhelgaas@google.com,
+        hongxing.zhu@nxp.com, l.stach@pengutronix.de
+Cc:     oe-kbuild-all@lists.linux.dev, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: imx6: Support building it as a module
+Message-ID: <202307312343.O4nBKjOL-lkp@intel.com>
+References: <20230731082623.975824-1-jindong.yue@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731082623.975824-1-jindong.yue@nxp.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -96,50 +67,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023, at 10:38, Christoph Hellwig wrote:
-> sharpsl_battery_kick is only used via symbol_get, which was only ever
-> intended for very internal symbols like this one.  Use EXPORT_SYMBOL_GPL
-> for it so that symbol_get can enforce only being used on
-> EXPORT_SYMBOL_GPL symbols.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Hi Jindong,
 
-The reasoning makes sense, and the patch looks good, so feel
-free to take this through your tree.
+kernel test robot noticed the following build errors:
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+[auto build test ERROR on pci/next]
+[also build test ERROR on pci/for-linus linus/master v6.5-rc4 next-20230731]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Or let me know if you want a better fix. Since sharpsl_pm.c and
-spitz.c are no longer loadable modules and just get linked together
-these days, I think the variant below would be simpler (this could
-be cleanup up further, endlessly, of course):
+url:    https://github.com/intel-lab-lkp/linux/commits/Jindong-Yue/PCI-imx6-Support-building-it-as-a-module/20230731-162411
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20230731082623.975824-1-jindong.yue%40nxp.com
+patch subject: [PATCH] PCI: imx6: Support building it as a module
+config: riscv-allmodconfig (https://download.01.org/0day-ci/archive/20230731/202307312343.O4nBKjOL-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230731/202307312343.O4nBKjOL-lkp@intel.com/reproduce)
 
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -518,17 +518,6 @@ static struct gpiod_lookup_table spitz_ads7846_gpio_table = {
-        },
- };
- 
--static void spitz_bl_kick_battery(void)
--{
--       void (*kick_batt)(void);
--
--       kick_batt = symbol_get(sharpsl_battery_kick);
--       if (kick_batt) {
--               kick_batt();
--               symbol_put(sharpsl_battery_kick);
--       }
--}
--
- static struct gpiod_lookup_table spitz_lcdcon_gpio_table = {
-        .dev_id = "spi2.1",
-        .table = {
-@@ -556,7 +545,7 @@ static struct corgi_lcd_platform_data spitz_lcdcon_info = {
-        .max_intensity          = 0x2f,
-        .default_intensity      = 0x1f,
-        .limit_mask             = 0x0b,
--       .kick_battery           = spitz_bl_kick_battery,
-+       .kick_battery           = sharpsl_battery_kick,
- };
- 
- static struct spi_board_info spitz_spi_devices[] = {
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202307312343.O4nBKjOL-lkp@intel.com/
+
+All errors (new ones prefixed by >>, old ones prefixed by <<):
+
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_rr.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_wrr.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_wlc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_fo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_ovf.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lblc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_lblcr.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_dh.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_sh.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_sed.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_nq.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_twos.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_ftp.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/netfilter/ipvs/ip_vs_pe_sip.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_defrag_ipv4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/nf_reject_ipv4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/iptable_nat.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/netfilter/iptable_raw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ipip.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_gre.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ip_vti.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/ah4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/esp4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/xfrm4_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tunnel4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/inet_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/tcp_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/udp_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv4/raw_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_algo.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/xfrm/xfrm_user.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/unix/unix_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/ip6table_raw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/ip6table_nat.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_defrag_ipv6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/netfilter/nf_reject_ipv6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ah6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/esp6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/xfrm6_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/tunnel6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/mip6.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/sit.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ipv6/ip6_udp_tunnel.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ar9331.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_brcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_dsa.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_gswip.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_hellcreek.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ksz.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_lan9303.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_mtk.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_none.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ocelot.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_ocelot_8021q.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_qca.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rtl4_a.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rtl8_4.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_rzn1_a5psw.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_sja1105.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_trailer.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/dsa/tag_xrs700x.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/8021q/8021q.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/xdp/xsk_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_crypto_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/mptcp/mptcp_token_test.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/packet/af_packet_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/key/af_key.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/nf_conntrack_bridge.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtables.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_broute.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_filter.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/netfilter/ebtable_nat.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/bridge/bridge.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/sunrpc.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/auth_gss/auth_rpcgss.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sunrpc/auth_gss/rpcsec_gss_krb5.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/kcm/kcm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/atm.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/lec.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/atm/mpoa.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/sctp/sctp_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/tipc/diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/smc/smc_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/chnl_net.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif_socket.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/caif/caif_usb.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/6lowpan/6lowpan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/6lowpan/ieee802154_6lowpan.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/ieee802154/ieee802154_socket.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nci/nci_spi.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/nfc/nfc_digital.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/vmw_vsock/vsock_diag.o
+WARNING: modpost: missing MODULE_DESCRIPTION() in net/hsr/hsr.o
+>> ERROR: modpost: "dw_pcie_ep_raise_msix_irq" [drivers/pci/controller/dwc/pci-imx6.ko] undefined!
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
