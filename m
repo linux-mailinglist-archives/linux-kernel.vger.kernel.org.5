@@ -2,104 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F03976979A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94C4C76979F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbjGaN20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
+        id S231993AbjGaN3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233000AbjGaN2D (ORCPT
+        with ESMTP id S231515AbjGaN3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:28:03 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5FD4171F;
-        Mon, 31 Jul 2023 06:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=z3FGDGVTFrElSVM7fG1oVI/2ZdLRjgqGQNhHfwty3ro=; b=gT1/elGv8pRKZcUAdG87anzivd
-        bQYyicftn/s4ecFExe79VFyXXKm4PsJXltInnPUVRyGqMwTQ5IqeaWlri5k9m69YCNyncH6jcww5b
-        0pavFKpPHmrYlleE9z4EDEBH1CsBhFD2t1pneT8PYLnICc5sGq3LnOjG3uuDRBK159PCKsg/vkBMo
-        68hYTVV+3ZXkOGHemrthHSfQXmpNG93pwA+tsAQi7uJFAZYtmhkOvyJXYxZy7BRyewjSXTSmcUf4N
-        F4yFzoc4Ag4BpxLQW3b4n+w+OMxW0RbfqdbNTXOoWnagtjDMHfTiPS9aoJz8QFwzVk/tA8rR+s4Xo
-        3f+UcpXg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQSvb-00CjRi-2p;
-        Mon, 31 Jul 2023 13:27:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CD30C3001DD;
-        Mon, 31 Jul 2023 15:27:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BB3622058B54B; Mon, 31 Jul 2023 15:27:14 +0200 (CEST)
-Date:   Mon, 31 Jul 2023 15:27:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: Re: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
-Message-ID: <20230731132714.GH29590@hirez.programming.kicks-ass.net>
-References: <20230728105650.565799744@linutronix.de>
- <20230728120930.839913695@linutronix.de>
- <BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR21MB1688.namprd21.prod.outlook.com>
- <871qgop8dc.ffs@tglx>
+        Mon, 31 Jul 2023 09:29:48 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39ED10E3;
+        Mon, 31 Jul 2023 06:29:43 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VoglcAp_1690810177;
+Received: from 172.20.10.3(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VoglcAp_1690810177)
+          by smtp.aliyun-inc.com;
+          Mon, 31 Jul 2023 21:29:39 +0800
+Message-ID: <9fb82ade-e8a4-8b8a-25f3-b71dadc6dab1@linux.alibaba.com>
+Date:   Mon, 31 Jul 2023 21:29:35 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871qgop8dc.ffs@tglx>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [syzbot] [erofs?] [fat?] WARNING in erofs_kill_sb
+To:     Christian Brauner <brauner@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     syzbot <syzbot+69c477e882e44ce41ad9@syzkaller.appspotmail.com>,
+        chao@kernel.org, huyue2@coolpad.com, jack@suse.cz,
+        jefflexu@linux.alibaba.com, linkinjeon@kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
+        syzkaller-bugs@googlegroups.com, xiang@kernel.org
+References: <000000000000f43cab0601c3c902@google.com>
+ <20230731093744.GA1788@lst.de>
+ <9b57e5f7-62b6-fd65-4dac-a71c9dc08abc@linux.alibaba.com>
+ <20230731111622.GA3511@lst.de>
+ <20230731-augapfel-penibel-196c3453f809@brauner>
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20230731-augapfel-penibel-196c3453f809@brauner>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 02:34:39PM +0200, Thomas Gleixner wrote:
 
-> This collides massively with the other work I'm doing, which uses the
-> MADT provided information to actually evaluate various topology related
-> things upfront and later during bringup. Thats badly needed because lots
-> of todays infrastructure is based on heuristics and guesswork.
+
+On 2023/7/31 20:43, Christian Brauner wrote:
+> On Mon, Jul 31, 2023 at 01:16:22PM +0200, Christoph Hellwig wrote:
+>> On Mon, Jul 31, 2023 at 06:58:14PM +0800, Gao Xiang wrote:
+>>> Previously, deactivate_locked_super() or .kill_sb() will only be
+>>> called after fill_super is called, and .s_magic will be set at
+>>> the very beginning of erofs_fc_fill_super().
+>>>
+>>> After ("fs: open block device after superblock creation"), such
+>>> convension is changed now.  Yet at a quick glance,
+>>>
+>>> WARN_ON(sb->s_magic != EROFS_SUPER_MAGIC);
+>>>
+>>> in erofs_kill_sb() can be removed since deactivate_locked_super()
+>>> will also be called if setup_bdev_super() is falled.  I'd suggest
+>>> that removing this WARN_ON() in the related commit, or as
+>>> a following commit of the related branch of the pull request if
+>>> possible.
+>>
+>> Agreed.  I wonder if we should really call into ->kill_sb before
+>> calling into fill_super, but I need to carefull look into the
+>> details.
 > 
-> But it seems I wasted a month on reworking all of this just to be
-> stopped cold in the tracks by completely undocumented and unnecessary
-> hyper-v abuse.
+> I think checking for s_magic in erofs kill sb is wrong as it introduces
+> a dependency on both fill_super() having been called and that s_magic is
+> initialized first. If someone reorders erofs_kill_sb() such that s_magic
+> is only filled in once everything else succeeded it would cause the same
+> bug. That doesn't sound nice to me.
+
+Many many years ago, strange .kill_sb called on our smartphone products
+without proper call chain.  That was why it was added and s_magic was
+initialized first and at least it reminds a slight behavior change for
+us (this time).
+
+Anyway, I also think it's almost useless upstream so I'm fine to drop
+this WARN_ON().
+
+Thanks,
+Gao Xiang
+
 > 
-> So if Hyper-V insists on abusing the initial APIC ID as read from CPUID
-> for topology information related to L3, then hyper-v should override the
-> cache topology mechanism and not impose this insanity on the basic
-> topology evaluation infrastructure.
-
-So I'm very tempted to suggest you continue with the topology rewrite
-and let Hyper-V keep the pieces. They're very clearly violating the SDM.
-
-Thing as they stand are untenable, the whole topology thing as it exists
-today is an untenable shitshow.
-
-Michael, is there anything you can do early (as in MADT parse early) to
-fix up the APIC-IDs?
+> I think ->fill_super() should only be called after successfull
+> superblock allocation and after the device has been successfully opened.
+> Just as this code does now. So ->kill_sb() should only be called after
+> we're guaranteed that ->fill_super() has been called.
+> 
+> We already mostly express that logic through the fs_context object.
+> Anything that's allocated in fs_context->init_fs_context() is freed in
+> fs_context->free() before fill_super() is called. After ->fill_super()
+> is called fs_context->s_fs_info will have been transferred to
+> sb->s_fs_info and will have to be killed via ->kill_sb().
+> 
+> Does that make sense?
