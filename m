@@ -2,120 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E68E076A1D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBFBF76A1D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbjGaUXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47966 "EHLO
+        id S230019AbjGaUYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGaUXr (ORCPT
+        with ESMTP id S229452AbjGaUYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:23:47 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2271723
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:23:46 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7748ca56133so44398639f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:23:46 -0700 (PDT)
+        Mon, 31 Jul 2023 16:24:35 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0723E133
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:24:34 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-ca4a6e11f55so3928828276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:24:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690835026; x=1691439826;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oGlGpw5Q9q73Ldn1HOpDYO0OQxBN9y2wWaW04aAn3Sk=;
-        b=Tzp6pkj2CuiwN5T1cb6RwqAagJWZcZvIWhojOmZqsie7v+OMp3a42BkMHG4DsZYbKG
-         JX6vDuwGJ0pF1vlwG8N+kns4UsUCyfy1wrYHeeJ6XSiLVu7AEcyYPIusG4cwY3hIs11d
-         qk1xcXcs7N34m6JIPDF+z3ZnMXQObG47f0meQ=
+        d=google.com; s=20221208; t=1690835073; x=1691439873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v1ItbffeIwZatJkOZRxPmlzNWTmdUBzSgiuAZZzzuKQ=;
+        b=BxOFecJBQJRZe+ru1tsCnhNh41LoO0SH1sfYo82MsHDKiV5uzmMH2HV+rTpo0iS9Je
+         XV6gP/58PgpC3Qr9n/EHWn6ilLCXZ0j9zjGEuHGAWO/Dz6IBJh1Kqt1StNOfp8+RpXOI
+         GgEwLhTUHO5jAGIIo5EWWUn+PqTCnm7yVoYaltoik4VvIWD+HzhCG5VdajSSGM04voKL
+         /cPaXj9R9e+qsqDunrlt6YB9rpDt1SdwAazZ1v0AZKoFj84PdW4QKh/8/zzdEgBccfUS
+         VHVuaJOHKMS2G0RqmsfSypuvki1rMJ0MQkde+syLEvRa/yQqbkmnT1tZLFvyyRjOS6YP
+         vv+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690835026; x=1691439826;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oGlGpw5Q9q73Ldn1HOpDYO0OQxBN9y2wWaW04aAn3Sk=;
-        b=GbEDsIiPaNT3aZuhPDGVjB0h0t7L5Z2FF3RFJnSm/0RVMrrA05WMmfWGrEIafHFF3j
-         uLmZaY8TBF6O/do5rABC3QMaLHXdpGGC6Sx3gwP3pl6k/qYC1g8dMzcBrg4wxqjy/p3q
-         J9XmN1lp2+kUo9mKoH/4NV0ZhnOZ1w5PBZ66qNl2qyYX4DU4mmnxiSgbbNuZY7Lvfo40
-         95/g9mO5cODi6Bcppwnf5l+0OKIYw7EN4e4nTgQhw4hZOP8NX4Vu55zfrRWicc0rGXu5
-         FAR3P3EVOfIK5Ox4O7qXfELsn5/LNiqAP6R2tfANpR1uFrqQ5u2sqJf72FQxTRQ7ZObV
-         aQTQ==
-X-Gm-Message-State: ABy/qLZPNEqZrlHEQPjUxXLunyWa9vdH+WYc9Wcng9cefjBy81myaCtF
-        e7z2lt9NqlFZ5SQDLeCu/hxb3A==
-X-Google-Smtp-Source: APBJJlGgAux994dW83HtYTYpLYqmK0Zrk10pegL7O2Y8RxVDCrof5T1fCXszRhNuvGJTRoXVR7UiwQ==
-X-Received: by 2002:a6b:c9d3:0:b0:788:2d78:813c with SMTP id z202-20020a6bc9d3000000b007882d78813cmr8761031iof.0.1690835026049;
-        Mon, 31 Jul 2023 13:23:46 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id j12-20020a02cb0c000000b004290985a1efsm3239825jap.43.2023.07.31.13.23.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 13:23:45 -0700 (PDT)
-Message-ID: <1471f593-1ff5-902a-a045-9241feda7bd0@linuxfoundation.org>
-Date:   Mon, 31 Jul 2023 14:23:45 -0600
+        d=1e100.net; s=20221208; t=1690835073; x=1691439873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v1ItbffeIwZatJkOZRxPmlzNWTmdUBzSgiuAZZzzuKQ=;
+        b=eqFo3QnOrYT7Ye0POZ6RC4X07Afh79xhPrVHeDif7NhFNqWqx0TrkUJmgV3/WqlblI
+         KbAHZFOCWG22DX0q0k9qc7Efm+fcwPHy5Rbxltysx9S19viWlGPErnL9FdLCqcocVo+J
+         gzwnN3zKsus+qzj9TLth6StU4FETP7DlxXe0W2oNiktgQHb4+k/HAZR3uwNW0Y2l64JD
+         CQMqmoKrRYh6kF3jKzRx2/2fEGGh84CV9JIGmsO1iag74TGXEqUQR9zl/I/0jhQC8tKg
+         h0t8YoXu/w+2BGa5rRMwK6ghSPBE32Ck1mXq1blUdXsua5CtCHssHtwk7tNsc2uXb9rR
+         1gIQ==
+X-Gm-Message-State: ABy/qLYafm4u1UyMyNQ6YPn10MLBhVHCVVxRbvY/DPbvOije2aEzA0aC
+        +vlIbv/MPLzVmjruKhWQT+cCayKT2kpNQUrNlgm8Yw==
+X-Google-Smtp-Source: APBJJlGuj8kX+bBpv83ZDzm2NJ6dmZvExyNUG7wdBXD6gLrKUP8Lg+v96RvFbCwdUYG16WEMseHl5z4ySmZTFe1KZeo=
+X-Received: by 2002:a25:54b:0:b0:d09:2cba:bcac with SMTP id
+ 72-20020a25054b000000b00d092cbabcacmr8248520ybf.65.1690835072954; Mon, 31 Jul
+ 2023 13:24:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RESEND PATCH v2] selftests:connector: Fix input argument error
- paths to skip
-Content-Language: en-US
-To:     shuah@kernel.org, Liam.Howlett@oracle.com,
-        anjali.k.kulkarni@oracle.com, kuba@kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230729002403.4278-1-skhan@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230729002403.4278-1-skhan@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230731171233.1098105-1-surenb@google.com> <20230731171233.1098105-2-surenb@google.com>
+ <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
+ <CAJuCfpFWOknMsBmk1RwsX9_0-eZBoF+cy=P-E7xAmOWyeo4rvA@mail.gmail.com> <CAHk-=wiFXOJ_6mnuP5h3ZKNM1+SBNZFZz9p8hyS8NaYUGLioEg@mail.gmail.com>
+In-Reply-To: <CAHk-=wiFXOJ_6mnuP5h3ZKNM1+SBNZFZz9p8hyS8NaYUGLioEg@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 31 Jul 2023 13:24:21 -0700
+Message-ID: <CAJuCfpG4Yk65b=0TLfGRqrO7VpY3ZaYKqbBjEP+45ViC9zySVQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mm: enable page walking API to lock vmas during the walk
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
+        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
+        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
+        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
+        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/28/23 18:24, Shuah Khan wrote:
-> Fix input argument parsing paths to skip from their error legs.
-> This fix helps to avoid false test failure reports without running
-> the test.
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> ---
-> v2: Removed root check based on Anjali's review comments.
-> Add netdev to RESEND
-> 
->   tools/testing/selftests/connector/proc_filter.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
-> index 4fe8c6763fd8..4a825b997666 100644
-> --- a/tools/testing/selftests/connector/proc_filter.c
-> +++ b/tools/testing/selftests/connector/proc_filter.c
-> @@ -248,7 +248,7 @@ int main(int argc, char *argv[])
->   
->   	if (argc > 2) {
->   		printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
-> -		exit(1);
-> +		exit(KSFT_SKIP);
->   	}
->   
->   	if (argc == 2) {
-> @@ -256,7 +256,7 @@ int main(int argc, char *argv[])
->   			filter = 1;
->   		} else {
->   			printf("Valid option : -f (for filter feature)\n");
-> -			exit(1);
-> +			exit(KSFT_SKIP);
->   		}
->   	}
->   
+On Mon, Jul 31, 2023 at 12:33=E2=80=AFPM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Mon, 31 Jul 2023 at 12:31, Suren Baghdasaryan <surenb@google.com> wrot=
+e:
+> >
+> > I got the idea but a couple of modifications, if I may.
+>
+> Ack, sounds sane to me.
 
-Hi Jakub,
+Ok, I'll wait for more feedback today and will post an update tomorrow. Tha=
+nks!
 
-I sent v2 for patch 3 in the series. Do you want me to send the
-entire series again with this revised 3rd patch.
-
-thanks,
--- Shuah
-
+>
+>              Linus
