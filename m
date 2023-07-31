@@ -2,114 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5410768F58
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448B9768F79
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbjGaIBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55876 "EHLO
+        id S230323AbjGaID5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbjGaIBT (ORCPT
+        with ESMTP id S230169AbjGaIDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:01:19 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D2A1A6
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:01:17 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso6664643e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:01:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690790476; x=1691395276;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=4ZJyyR5UkSIkbNzLDxUFgZlK0epBYEkLSwL7lh7NFYg=;
-        b=VJ/SH9e9NWBiMUykekdq4JoiAr+d39zotqVMF87s/c72fd2plgyJn7Z6FkRmHZCfBa
-         xHDkHp8If1EKABPpcoJ9MhUrhaAP8iecrbAszB7v9tvCJQZd0s0LbS7xOIiRPWWOVfFg
-         bFvo+QFNeV3ogUZeACUuFwWgBcV62TSuAaP9iTRgXw0tKjkAwq3/xk/z2c1ipqujHWRx
-         z2QVaJB/6XQ+C2lG7AWk0233RaloSCJSNzK7/MxzxaqKX3AA0FkcxHNEcGVTZTDsBYAJ
-         1sEnQQtRuIvsTr5JxrTpseVygKcEUDK+VrjrKi33LkHQ9zCFYvQUk/IxLhIntNqdH7Yz
-         tngg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690790476; x=1691395276;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4ZJyyR5UkSIkbNzLDxUFgZlK0epBYEkLSwL7lh7NFYg=;
-        b=XSIcJQEzVwbJ+iPcVXz5x86yjDnMF1ZydOo4o28JG3txswxV3MaGNAMwb+UBNiGTxG
-         5EK3CmWt8IPZ214CZtEdQvT03MWNw1FAKauErzWtdohmqGv3DU93y83TwMMg2hwzU70A
-         1hW4hdgWOXZS8BPX2UEJpMLR59Wjo2VtxkjXpJzXXIVY73EWL5i+gkQa+1QrWafFEFjW
-         T3llEWPzkh+RbK1m7jRI39Zd7ZiDRu9IHWd9pPJ2IoJK92JvwzC1w8/q/qU0PRwsyFOC
-         zB1OhOTezk95+AhJPWJrhRLDbmIOyaQW3fzCBXSDSmJhuZJz6h9YgIF3iX06r+TOSqJS
-         WbMQ==
-X-Gm-Message-State: ABy/qLZLuIlgngqaHPesA/7OsxqDD15m0b+jJggtOTDSfD6yL2z1qM0K
-        nq9V834aIFBWi4ya1jhKXiepZQ==
-X-Google-Smtp-Source: APBJJlESbSBGLmVFVtV6llF+oXx5bVANgdysF302QO3LesDU3K/q98qUm/j8zIJQ8B95pKOad1n4Sw==
-X-Received: by 2002:a19:7b1e:0:b0:4fd:8976:5fc9 with SMTP id w30-20020a197b1e000000b004fd89765fc9mr4679184lfc.23.1690790475974;
-        Mon, 31 Jul 2023 01:01:15 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id y7-20020ac24207000000b004fbc6a8ad08sm1971878lfh.306.2023.07.31.01.01.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 01:01:15 -0700 (PDT)
-Message-ID: <13c78778-cb27-d29e-6f7e-74ddcd9f635a@linaro.org>
-Date:   Mon, 31 Jul 2023 10:01:14 +0200
+        Mon, 31 Jul 2023 04:03:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DB5E7B
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:02:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690790523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=72q4lz0Tbh4St16jS4aYSQ3HaSSrFI82ffLJTmWDSLw=;
+        b=f5UPxKLU7Eo6z+8PGAT/IXHPceZ6fF7PQQ5N/+mHvnGot5UF6jeLDhsCLFpX5/TQvwJV5Q
+        AdvDwiwrSS0mBV0XZuD3EGqjEkkwoW39F5XZ11Qi7vSTJMzlttxbGql6wyFRvIqIq50ESg
+        wC9L+nYQikx/5hfzWWjSJi2J1lI+vY8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-25-zUkbplYRNM6ni_8dlaLNPQ-1; Mon, 31 Jul 2023 04:01:57 -0400
+X-MC-Unique: zUkbplYRNM6ni_8dlaLNPQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 355331044593;
+        Mon, 31 Jul 2023 08:01:57 +0000 (UTC)
+Received: from butterfly.localnet (unknown [10.45.224.115])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 91DEE2166B25;
+        Mon, 31 Jul 2023 08:01:55 +0000 (UTC)
+From:   Oleksandr Natalenko <oleksandr@redhat.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "GR-QLogic-Storage-Upstream@marvell.com" 
+        <GR-QLogic-Storage-Upstream@marvell.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jozef Bacik <jobacik@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>,
+        Rob Evers <revers@redhat.com>
+Subject: Re: [PATCH 1/3] scsi: qedf: do not touch __user pointer in
+ qedf_dbg_stop_io_on_error_cmd_read() directly
+Date:   Mon, 31 Jul 2023 10:01:46 +0200
+Message-ID: <2690368.mvXUDI8C0e@redhat.com>
+Organization: Red Hat
+In-Reply-To: <314512939ebd44508b767d799e7c30af@AcuMS.aculab.com>
+References: <20230728065819.139694-1-oleksandr@redhat.com>
+ <20230728065819.139694-2-oleksandr@redhat.com>
+ <314512939ebd44508b767d799e7c30af@AcuMS.aculab.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: msm8916-samsung-e5: Add touchscreen
-To:     "Lin, Meng-Bo" <linmengbo0689@protonmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-References: <20230730025315.8579-1-linmengbo0689@protonmail.com>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230730025315.8579-1-linmengbo0689@protonmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: multipart/signed; boundary="nextPart12254412.O9o76ZdvQC";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -117,33 +74,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.07.2023 04:55, Lin, Meng-Bo wrote:
-> Similar to A5, E5 uses a Melfas MMS345L touchscreen that is connected to
-> blsp_i2c5. Add it to the device tree.
-> 
-> Signed-off-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
-> ---
->  .../boot/dts/qcom/msm8916-samsung-e5.dts      | 21 +++++++++++++++++++
->  1 file changed, 21 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-e5.dts b/arch/arm64/boot/dts/qcom/msm8916-samsung-e5.dts
-> index 777eb934eb4b..bf0d128666d0 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8916-samsung-e5.dts
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-e5.dts
-> @@ -22,3 +22,24 @@ / {
->  	compatible = "samsung,e5", "qcom,msm8916";
->  	chassis-type = "handset";
->  };
-> +
-> +&blsp_i2c5 {
-> +	status = "okay";
-> +
-> +	touchscreen@48 {
-> +		compatible = "melfas,mms345l";
-> +		reg = <0x48>;
-> +
-> +		interrupt-parent = <&tlmm>;
-> +		interrupts = <13 IRQ_TYPE_EDGE_FALLING>;
-interrupts-extended?
+--nextPart12254412.O9o76ZdvQC
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@redhat.com>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date: Mon, 31 Jul 2023 10:01:46 +0200
+Message-ID: <2690368.mvXUDI8C0e@redhat.com>
+Organization: Red Hat
+In-Reply-To: <314512939ebd44508b767d799e7c30af@AcuMS.aculab.com>
+MIME-Version: 1.0
 
-Konrad
+Hello.
+
+On p=C3=A1tek 28. =C4=8Dervence 2023 17:23:25 CEST David Laight wrote:
+> From: Oleksandr Natalenko
+> > Sent: 28 July 2023 07:58
+> >=20
+> > The qedf_dbg_stop_io_on_error_cmd_read() function invokes sprintf()
+> > directly on a __user pointer, which may crash the kernel.
+> >=20
+> > Avoid doing that by using a small on-stack buffer for sprintf()
+> > and then calling simple_read_from_buffer() which does a proper
+> > copy_to_user() call.
+> >=20
+> > Fixes: 61d8658b4a ("scsi: qedf: Add QLogic FastLinQ offload FCoE driver=
+ framework.")
+> ...
+> > diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_=
+debugfs.c
+> > index a3ed681c8ce3f..4d1b99569d490 100644
+> > --- a/drivers/scsi/qedf/qedf_debugfs.c
+> > +++ b/drivers/scsi/qedf/qedf_debugfs.c
+> > @@ -185,18 +185,17 @@ qedf_dbg_stop_io_on_error_cmd_read(struct file *f=
+ilp, char __user *buffer,
+> >  				   size_t count, loff_t *ppos)
+> >  {
+> >  	int cnt;
+> > +	char cbuf[7];
+> >  	struct qedf_dbg_ctx *qedf_dbg =3D
+> >  				(struct qedf_dbg_ctx *)filp->private_data;
+> >  	struct qedf_ctx *qedf =3D container_of(qedf_dbg,
+> >  	    struct qedf_ctx, dbg_ctx);
+> >=20
+> >  	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "entered\n");
+> > -	cnt =3D sprintf(buffer, "%s\n",
+> > +	cnt =3D sprintf(cbuf, "%s\n",
+> >  	    qedf->stop_io_on_error ? "true" : "false");
+>=20
+> You've made cbuf[] exactly just big enough.
+> If anyone breathes on this code it could overflow.
+> You really should use scnprintf() for safety.
+
+OK, I'll do scnprintf(cbuf, sizeof(cbuf), ...) in the next version of the s=
+ubmission.
+
+Thanks.
+
+> >=20
+> > -	cnt =3D min_t(int, count, cnt - *ppos);
+> > -	*ppos +=3D cnt;
+> > -	return cnt;
+> > +	return simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
+>=20
+> Or just:
+> 	if (gedf->stop_on_error)
+> 		return simple_read_from_buffer(buffer, count, ppos, "true\n", 5);
+> 	return simple_read_from_buffer(buffer, count, ppos, "false\n", 6);
+>=20
+> 	David
+>=20
+> =09
+> >  }
+> >=20
+> >  static ssize_t
+> > --
+> > 2.41.0
+>=20
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
+ 1PT, UK
+> Registration No: 1397386 (Wales)
+>=20
+>=20
+
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+Principal Software Maintenance Engineer
+--nextPart12254412.O9o76ZdvQC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEENQb0bxzeq+SMr0+vn464/xkP+AUFAmTHamoACgkQn464/xkP
++AVoaxAAsIK3mp8cRHCNhDUwV8SW2DusW6fa2ghZXpiTxGGH+MjnInxI6YjFZpct
+XcrMfoGnX4zX08G3hzwkzLVstZb2aMoqw1eXmpKKfTewzYoAms8z7pjZ3oSeQ7Hm
+D0vKDRADZQVrgjiUlOUS+MFJ5N7OjASUZsspvpCH1A1RRo77psoWw/ajqZAZ1vTh
+mVCvtH1vCVRpTDmBoRQqrYPOpYsGvG5mTqQDH6elXdgnFYsFZKcCfCPxnHHx6cj7
+UviTy/PaP+wJaUUzZ33nqYykwfVZyF2KNkSgkQUJPfAzg2QToQBIGUAospXrz8fN
+PxNXTh6/Lc4iFum44YQJnJZVDjf1HbJDxFOqf+n2TGo8N3pMAihK/C34A9zOvNy6
+UuSxMdLL/kAdJo/B6m/FaiqilPnbAdFboVgRM5L8EnTvGAqA2EimSsDQe2N6Y2DS
+4WNLExHc57tUuicrxPa20j9yPzS3sgv/wk1nIWCpxvB6Zo5NOuGoiOl0HL1am++d
+IpWZ+2cNFS6qUKphFrNW7upDjbESe6Jz1ayAtSW3InCQG2JHda4uIbAzzKSbodG8
+ozKIv0EqAFMv0dxdkRHoI7Mi5wwCeghuVfaj+mChcOVkvkasXWuyZFlm8m6mZJzA
+0HETWDvkWilgOn9B7oafgDXy5i60gSuJVF+TioDkMR4a8qpicsQ=
+=4nAH
+-----END PGP SIGNATURE-----
+
+--nextPart12254412.O9o76ZdvQC--
+
+
+
