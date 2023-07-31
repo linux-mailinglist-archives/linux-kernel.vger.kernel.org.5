@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 535E47690F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BFC7690F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230150AbjGaJAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
+        id S230332AbjGaJAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjGaJAI (ORCPT
+        with ESMTP id S229379AbjGaJAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:00:08 -0400
+        Mon, 31 Jul 2023 05:00:10 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACB6B7;
-        Mon, 31 Jul 2023 02:00:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E3283;
+        Mon, 31 Jul 2023 02:00:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6E75660F94;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E97D160F2A;
+        Mon, 31 Jul 2023 09:00:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D068C433CB;
         Mon, 31 Jul 2023 09:00:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAF5FC433C7;
-        Mon, 31 Jul 2023 09:00:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690794006;
-        bh=Ae5cwFiKpnoFn/0C354AUzKQGPHUNIO2/eAg222GTVM=;
+        s=k20201202; t=1690794008;
+        bh=HRgq8PnvNhpR3/55CfJPsOVwTF/5PMq6rz6tiVpFMTo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hVLeMKnhpi6dglyr2Mpxhzj7fUyZI9TqiLI4iOVRhFvIjgUyOXpfVSapas+oXGyfG
-         CPOiU2NxqAUZE03BtRmYMkk5yS2QSDDTp9PmzYs/6I1+/7glkbW0GBaE+Lm6K58tRq
-         ommegD8nFdBbUEnHU0WxX6dTS+q4btrFydwmn0gRkCfBAK8qy5M7TNVYbfrXJWcmqf
-         NMFUq1DXu/WBq86PBbwJVEpn5cn7t893EEcFMpKZXAxXM9cFaRo5tY74P9zLkh4zeP
-         YY4CgYbzo3RqvRJCxkpma/p4JF6WqnoPc86nRNvEuD9J8uaYHdi7VHFOwc0jBQbEuk
-         gxq2pJdd1LJWA==
+        b=BoZMXKWU9tJV0tkUTimjGAOnp/MFr3ph4Zf4a8PGkLvW6F0Oxnaua4udM0PgNYt7m
+         dGIaSrax3BqYQ1bexEKE+N3UU8KRFm3ggetszu7MqISTcb1BaEEXVNaaaxGeAfIJ2F
+         fPQJRFKLoXBcyD4LsJACB25PTHxCi+K/MqrR82ZPbeYlGsuh9/3wb35CV8ZNF2bEZT
+         1G7/NSK8WwG49sA3hcrjt6KSvwGGX+pH/3FP6UsRtx8N4R5CPX1Q1L9NNFJeimIOax
+         0cL+weqnv4CPLSxs2zR+KqomYmuGrw+o91lp/dLDNd9PPLFMoXoGa5kkH8r1wZCjfz
+         ET+6PKS68AYNA==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Subject: [PATCH 1/7] tty: synclink_gt: convert CALC_REGADDR() macro to an inline
-Date:   Mon, 31 Jul 2023 10:59:56 +0200
-Message-ID: <20230731090002.15680-2-jirislaby@kernel.org>
+Subject: [PATCH 2/7] tty: synclink_gt: drop global slgt_driver_name array
+Date:   Mon, 31 Jul 2023 10:59:57 +0200
+Message-ID: <20230731090002.15680-3-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230731090002.15680-1-jirislaby@kernel.org>
 References: <20230731090002.15680-1-jirislaby@kernel.org>
@@ -55,90 +55,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It makes the code more readable and less error-prone as the result is
-returned and not stored in a variable newly defined inside the macro.
-
-Note that cast to 'unsigned long' and back to 'void *' was eliminated as
-info->reg_addr is 'char *' already (so the addition is per bytes
-already).
-
-This nicely cleans up the callers too.
+It's used on one place, so put the containing string there directly.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 ---
- drivers/tty/synclink_gt.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+ drivers/tty/synclink_gt.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/tty/synclink_gt.c b/drivers/tty/synclink_gt.c
-index 16e469e581ec..00efed2c139e 100644
+index 00efed2c139e..c2ab7ecf0900 100644
 --- a/drivers/tty/synclink_gt.c
 +++ b/drivers/tty/synclink_gt.c
-@@ -3734,47 +3734,47 @@ module_exit(slgt_exit);
-  * register access routines
+@@ -88,7 +88,6 @@
+  * module identification
   */
+ static char *driver_name     = "SyncLink GT";
+-static char *slgt_driver_name = "synclink_gt";
+ static char *tty_dev_prefix  = "ttySLG";
+ MODULE_LICENSE("GPL");
+ #define MAX_DEVICES 32
+@@ -3683,7 +3682,7 @@ static int __init slgt_init(void)
  
--#define CALC_REGADDR() \
--	unsigned long reg_addr = ((unsigned long)info->reg_addr) + addr; \
--	if (addr >= 0x80) \
--		reg_addr += (info->port_num) * 32; \
--	else if (addr >= 0x40)	\
--		reg_addr += (info->port_num) * 16;
-+static inline void __iomem *calc_regaddr(struct slgt_info *info,
-+					 unsigned int addr)
-+{
-+	void __iomem *reg_addr = info->reg_addr + addr;
-+
-+	if (addr >= 0x80)
-+		reg_addr += info->port_num * 32;
-+	else if (addr >= 0x40)
-+		reg_addr += info->port_num * 16;
-+
-+	return reg_addr;
-+}
+ 	/* Initialize the tty_driver structure */
  
- static __u8 rd_reg8(struct slgt_info *info, unsigned int addr)
- {
--	CALC_REGADDR();
--	return readb((void __iomem *)reg_addr);
-+	return readb(calc_regaddr(info, addr));
- }
- 
- static void wr_reg8(struct slgt_info *info, unsigned int addr, __u8 value)
- {
--	CALC_REGADDR();
--	writeb(value, (void __iomem *)reg_addr);
-+	writeb(value, calc_regaddr(info, addr));
- }
- 
- static __u16 rd_reg16(struct slgt_info *info, unsigned int addr)
- {
--	CALC_REGADDR();
--	return readw((void __iomem *)reg_addr);
-+	return readw(calc_regaddr(info, addr));
- }
- 
- static void wr_reg16(struct slgt_info *info, unsigned int addr, __u16 value)
- {
--	CALC_REGADDR();
--	writew(value, (void __iomem *)reg_addr);
-+	writew(value, calc_regaddr(info, addr));
- }
- 
- static __u32 rd_reg32(struct slgt_info *info, unsigned int addr)
- {
--	CALC_REGADDR();
--	return readl((void __iomem *)reg_addr);
-+	return readl(calc_regaddr(info, addr));
- }
- 
- static void wr_reg32(struct slgt_info *info, unsigned int addr, __u32 value)
- {
--	CALC_REGADDR();
--	writel(value, (void __iomem *)reg_addr);
-+	writel(value, calc_regaddr(info, addr));
- }
- 
- static void rdma_reset(struct slgt_info *info)
+-	serial_driver->driver_name = slgt_driver_name;
++	serial_driver->driver_name = "synclink_gt";
+ 	serial_driver->name = tty_dev_prefix;
+ 	serial_driver->major = ttymajor;
+ 	serial_driver->minor_start = 64;
 -- 
 2.41.0
 
