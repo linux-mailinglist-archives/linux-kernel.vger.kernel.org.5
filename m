@@ -2,60 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED66769FC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AE6769FDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbjGaRv2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 Jul 2023 13:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33880 "EHLO
+        id S230148AbjGaR6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:58:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjGaRv0 (ORCPT
+        with ESMTP id S229604AbjGaR6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:51:26 -0400
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61DCADC;
-        Mon, 31 Jul 2023 10:51:25 -0700 (PDT)
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6b9da57da6bso545885a34.0;
-        Mon, 31 Jul 2023 10:51:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690825884; x=1691430684;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f+JkNS7y6iFOYB1q8wNZKe6z0SLxh9/YAsuQt8DVUlU=;
-        b=W4teAq+sJXzofOL2vvcyV2wEx/noc+AZfji6PJ9k3CpUkkRIIHcOd5rGpda2ccN+Je
-         b8h5s91og1BYq1jUdDbzcQoaH1HvXpqXrG1gHZwtWKUB770mWhsOtwVrpHvBpE7q/5AK
-         Vjid8tgoP0Io0YMcL/tY6za9xFfwOIXiVTsC+0Wv9JrhJJs+bH6e5d1ZFR0VSjuJ6Eec
-         GWpHljsxsu6A2lOA5hkIRBpfI4UE5ZlRHBtifZhFCZuaFIlsJI7EBc4Aljsn5adUblab
-         aDLzQP/cb5hsr3nye/mXEbv1w7Pfsf2Mo8aHrSJSn3TF9mMltpjSBFVYLTSKGuEzQYKT
-         blQw==
-X-Gm-Message-State: ABy/qLal9vkbfcIpH8ak0BnyfUEVx9zg24tjC7t2uKVuKqMx/5jBcopF
-        maPPEQgnLxTiAVslzwFXPZT+RDDINwdu8dDXBJA=
-X-Google-Smtp-Source: APBJJlHPE8yzXNkDF8Fe+crD1Fgd+0FV2ylqSdty85TQsHTVp9mS34JQ3hj55nLyT1+WPWG9azUhWjRJBs+Rxq13AZk=
-X-Received: by 2002:a05:6870:1697:b0:1be:ec3c:1ef with SMTP id
- j23-20020a056870169700b001beec3c01efmr2918523oae.0.1690825884678; Mon, 31 Jul
- 2023 10:51:24 -0700 (PDT)
+        Mon, 31 Jul 2023 13:58:53 -0400
+X-Greylist: delayed 402 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 31 Jul 2023 10:58:50 PDT
+Received: from smtp.uniroma2.it (smtp.uniroma2.it [160.80.6.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E06BE4E;
+        Mon, 31 Jul 2023 10:58:50 -0700 (PDT)
+Received: from localhost.localdomain ([160.80.103.126])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 36VHpZNe005077
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 31 Jul 2023 19:51:36 +0200
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: [net-next 0/2] seg6: add NEXT-C-SID support for SRv6 End.X behavior
+Date:   Mon, 31 Jul 2023 19:51:15 +0200
+Message-Id: <20230731175117.17376-1-andrea.mayer@uniroma2.it>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20230728145515.990749537@infradead.org> <8b6b73a7-aff4-21e-5c55-294fcf67934e@linutronix.de>
-In-Reply-To: <8b6b73a7-aff4-21e-5c55-294fcf67934e@linutronix.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 31 Jul 2023 19:51:13 +0200
-Message-ID: <CAJZ5v0jJxHj65r2HXBTd3wfbZtsg=_StzwO1kA5STDnaPe_dWA@mail.gmail.com>
-Subject: Re: [RFC][PATCH 0/3] cpuidle,teo: Improve TEO tick decisions
-To:     Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, rafael@kernel.org,
-        tglx@linutronix.de, frederic@kernel.org, gautham.shenoy@amd.com,
-        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
-        linux-pm@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,66 +51,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 1:47 PM Anna-Maria Behnsen
-<anna-maria@linutronix.de> wrote:
->
-> Hi,
->
-> On Fri, 28 Jul 2023, Peter Zijlstra wrote:
->
-> > Hi,
-> >
-> > Wanted to send this yesterday, but my home server died and took everything
-> > down :/
-> >
-> > These patches are lightly tested but appear to behave as expected.
-> >
-> >
->
-> As I was asked to see if the patches of Raphael improve the behavior, I
-> rerun the tests with Raphaels v2 as well as with Peters RFC patchset. Here
-> are the results (compared to upstream):
+In the Segment Routing (SR) architecture a list of instructions, called
+segments, can be added to the packet headers to influence the forwarding and
+processing of the packets in an SR enabled network.
 
-Thanks for the numbers!
+Considering the Segment Routing over IPv6 data plane (SRv6) [1], the segment
+identifiers (SIDs) are IPv6 addresses (128 bits) and the segment list (SID
+List) is carried in the Segment Routing Header (SRH). A segment may correspond
+to a "behavior" that is executed by a node when the packet is received.
+The Linux kernel currently supports a large subset of the behaviors described
+in [2] (e.g., End, End.X, End.T and so on).
 
->                         upstream                raphael v2              peter RFC
->
-> Idle Total              2533    100.00%         1183    100.00%         5563    100.00%
-> x >= 4ms                1458    57.56%          1151    97.30%          3385    60.85%
-> 4ms> x >= 2ms           91      3.59%           12      1.01%           133     2.39%
-> 2ms > x >= 1ms          56      2.21%           3       0.25%           80      1.44%
-> 1ms > x >= 500us        64      2.53%           1       0.08%           98      1.76%
-> 500us > x >= 250us      73      2.88%           0       0.00%           113     2.03%
-> 250us > x >=100us       76      3.00%           2       0.17%           106     1.91%
-> 100us > x >= 50us       33      1.30%           4       0.34%           75      1.35%
-> 50us > x >= 25us        39      1.54%           4       0.34%           152     2.73%
-> 25us > x >= 10us        199     7.86%           4       0.34%           404     7.26%
-> 10us > x > 5us          156     6.16%           0       0.00%           477     8.57%
-> 5us > x                 288     11.37%          2       0.17%           540     9.71%
->
-> tick_nohz_next_event()
-> count                   8839790                 6142079                 36623
->
-> Raphaels Approach still does the tick_nohz_get_sleep_length() execution
-> unconditional. It executes ~5000 times more tick_nohz_next_event() as the
-> tick is stopped. This relation improved massively in Peters approach
-> (factor is ~7).
+In some SRv6 scenarios, the number of segments carried by the SID List may
+increase dramatically, reducing the MTU (Maximum Transfer Unit) size and/or
+limiting the processing power of legacy hardware devices (due to longer IPv6
+headers).
 
-So I'm drawing slightly different conclusions from the above.
+The NEXT-C-SID mechanism [3] extends the SRv6 architecture by providing several
+ways to efficiently represent the SID List.
+By leveraging the NEXT-C-SID, is it possible to encode several SRv6 segments
+within a single 128 bit SID address (also referenced as Compressed SID
+Container). In this way, the length of the SID List can be drastically reduced.
 
-First, because there are different numbers of idle cycles in each
-case, I think it only makes sense to look at the percentages.
+The NEXT-C-SID mechanism is built upon the "flavors" framework defined in [2].
+This framework is already supported by the Linux SRv6 subsystem and is used to
+modify and/or extend a subset of existing behaviors.
 
-So in both the "upstream" and "Peter RFC" cases there is a significant
-percentage of times when the tick was stopped and the measure idle
-duration was below 25 us (25.39% and 25.54%, respectively), whereas in
-the "Rafael v2" case that is only 0.51% of times (not even 1%).  This
-means a huge improvement to me, because all of these cases mean that
-the governor incorrectly told the idle loop to stop the tick (it must
-have selected a shallow state and so it should have not stopped the
-tick in those cases).  To me, this clearly means fixing a real bug in
-the governor.
+In this patchset, we extend the SRv6 End.X behavior in order to support the
+NEXT-C-SID mechanism.
 
-Now, I said in the changelog of my v1 that the goal was not to reduce
-the number of tick_nohz_get_sleep_length() invocations, so I'm not
-sure why it is regarded as a comparison criteria.
+In details, the patchset is made of:
+ - patch 1/2: add NEXT-C-SID support for SRv6 End.X behavior;
+ - patch 2/2: add selftest for NEXT-C-SID in SRv6 End.X behavior.
+
+
+From the user space perspective, we do not need to change the iproute2 code to
+support the NEXT-C-SID flavor for the SRv6 End.X behavior. However, we will
+update the man page considering the NEXT-C-SID flavor applied to the SRv6 End.X
+behavior in a separate patch.
+
+Comments, improvements and suggestions are always appreciated.
+
+Thank you all,
+Andrea
+
+[1] - https://datatracker.ietf.org/doc/html/rfc8754
+[2] - https://datatracker.ietf.org/doc/html/rfc8986
+[3] - https://datatracker.ietf.org/doc/html/draft-ietf-spring-srv6-srh-compression 
+
+Andrea Mayer (1):
+  seg6: add NEXT-C-SID support for SRv6 End.X behavior
+
+Paolo Lungaroni (1):
+  selftests: seg6: add selftest for NEXT-C-SID flavor in SRv6 End.X
+    behavior
+
+ net/ipv6/seg6_local.c                         |  108 +-
+ tools/testing/selftests/net/Makefile          |    1 +
+ .../net/srv6_end_x_next_csid_l3vpn_test.sh    | 1213 +++++++++++++++++
+ 3 files changed, 1302 insertions(+), 20 deletions(-)
+ create mode 100755 tools/testing/selftests/net/srv6_end_x_next_csid_l3vpn_test.sh
+
+-- 
+2.20.1
+
