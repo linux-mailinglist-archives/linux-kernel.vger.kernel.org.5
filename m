@@ -2,153 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D99776A1D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C4576A1D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjGaUZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
+        id S230284AbjGaU1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGaUZi (ORCPT
+        with ESMTP id S229452AbjGaU1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:25:38 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB16F1723
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:25:36 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 31 Jul 2023 16:27:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB23133;
+        Mon, 31 Jul 2023 13:27:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 673BF22081;
-        Mon, 31 Jul 2023 20:25:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1690835135; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ze17HiLYmlitxQUSBxKO+kA7SK1x6NA+Ycpu61wlnOI=;
-        b=NKRbwq2Xtq0Ett2CNRWDR/zGeXi2dVVh80Gu5/0280TgrP025KQs2qtUGlJThEac78tFfe
-        Heo5S5GbGe/bngL6Jwd7D1lOX2CN1UuuQEnL+Gdx7W2K55QKdsM5PncTtadAiIh4Zcw15C
-        YORGvzvXJAFUHq9NpM6+SuXyUw2Xqq8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1690835135;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ze17HiLYmlitxQUSBxKO+kA7SK1x6NA+Ycpu61wlnOI=;
-        b=jHZI6MvHbgo0G3ou1hoUBBP0stk0XWVu1d1hZ+jmI4R/ZsSu0vslWTiDQH3hb2lyn0Q4EQ
-        5C6k4kCJgsxMh1Cg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 507C61322C;
-        Mon, 31 Jul 2023 20:25:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id JkX0Er8YyGQ/dwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 31 Jul 2023 20:25:35 +0000
-Message-ID: <30d2c07a-e928-64f0-361e-60f8a05db815@suse.cz>
-Date:   Mon, 31 Jul 2023 22:25:35 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B0674612CB;
+        Mon, 31 Jul 2023 20:27:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65EFAC433C8;
+        Mon, 31 Jul 2023 20:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690835255;
+        bh=TmbK524pfD8a3wRy4IrVFirwLTHysXeU3Jn2VfJulsQ=;
+        h=From:Date:Subject:To:Cc:From;
+        b=ZygBj+AMp4tlhH/6B20I9e1AhTXK71uW09MNLzKXq76l23R7Mg9jrQnRNzzM4i/E1
+         sQ63hOBkya0hX/N3/K8T8Rntb/gub/FnoDiZDtYUF5mXY54evXtIVilNRPkLE2PdyQ
+         VZyevRaH4LdtW7kpXgSXy/Pp+PqYo3vcmpgDVtj1M4PvDPKu/XV/5m4BSG4UZKb5mI
+         qic/XjjFtTL+uxKMADZqHIdPAHmtBD6qv0ySSVAbAiA9Sw6/0RHXD8NvygSMVbVJVI
+         4hrmXLVlIffiQ1NRS7B7SCk6VmWUBas21L7cmEzedzY/OGh17chuobRvwgQSkODitG
+         y6i5lM9SCkXEA==
+From:   Jeff Layton <jlayton@kernel.org>
+Date:   Mon, 31 Jul 2023 16:27:30 -0400
+Subject: [PATCH RFC] nfsd: don't hand out write delegations on O_WRONLY
+ opens
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] mm: compaction: fix endless looping over same migrate
- block
-Content-Language: en-US
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20230731172450.1632195-1-hannes@cmpxchg.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230731172450.1632195-1-hannes@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Message-Id: <20230731-wdeleg-v1-1-f8fe1ce11b36@kernel.org>
+X-B4-Tracking: v=1; b=H4sIADEZyGQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDc2ND3fKU1JzUdN2kpJQksyQj00TjZDMloOKCotS0zAqwQdFKQW7OSrG
+ 1tQCgK1ToXQAAAA==
+To:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1768; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=TmbK524pfD8a3wRy4IrVFirwLTHysXeU3Jn2VfJulsQ=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBkyBk2u6nbq3M7Vqj+uN7GKDpu6v5UE5FoFoEKa
+ yTCfF3CqKSJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZMgZNgAKCRAADmhBGVaC
+ FVydEADOE1IOAcbwePjD7rmhaUtW4W+4f6uA28DwVoHhLJAsP9GGCijdqeSXpoY3js0bbRKdc8L
+ Eoi7FdsYcZw0pncyx2GAtQUlvu7V5i2cpucu/o568T3PN86cGBbDhKDuF3lAKYcSSsXLG7iQkaj
+ 0uw5z6nQCH8BI3dazkQoKphuKx1WZIWe0d+VfTsPxa1ScFZdSlQv/cwsU5SCEKFzu/DhIu4mIsS
+ qdfMdZG6ca7ooVQzqjWTPt7UXEtsDBZRgynVIM8SRNObMwqL1vlMxFuzmipcM4L5v6hjPczhsvb
+ Khkupqd0imwdmmGP+XTKlrcB7Qvfji+0Zo3GeP7RF1jQPF5knHTap2JDhR2fpIzZHhtOR3igJNd
+ UW8yWYM7nwqVZXYyP9oHyuOkDAbeM643X9EMWQlGjw1Bcqw028eIztoCYdo+/6FnUqnBKs+MqSR
+ t7LfxQyNFTZYzHLF3GWjUC48nZcmJrKIlYAqp2zlxR0FBbm83aS6TtsIxyO8ldt0qq1ueYHNL61
+ bm8NHW52sHaPOTeXALLNUD2eArsdKlctGhoMYLqtPJTeHVZdsAFVe/YAxbGKc4ziN89eVvE2z1n
+ 40KAchXnqJBhCAhQNqfdxJfqzlP9REpNL2UbwlSxbRjeVcGcUhZn9At8Q204lsAByaERVwo1YgG
+ zSgGf4Y2vSBdGBQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/23 19:24, Johannes Weiner wrote:
-> During stress testing, the following situation was observed:
-> 
->      70 root      39  19       0      0      0 R 100.0   0.0 959:29.92 khugepaged
->  310936 root      20   0   84416  25620    512 R  99.7   1.5 642:37.22 hugealloc
-> 
-> Tracing shows isolate_migratepages_block() endlessly looping over the
-> first block in the DMA zone:
-> 
->        hugealloc-310936  [001] ..... 237297.415718: mm_compaction_finished: node=0 zone=DMA      order=9 ret=no_suitable_page
->        hugealloc-310936  [001] ..... 237297.415718: mm_compaction_isolate_migratepages: range=(0x1 ~ 0x400) nr_scanned=513 nr_taken=0
->        hugealloc-310936  [001] ..... 237297.415718: mm_compaction_finished: node=0 zone=DMA      order=9 ret=no_suitable_page
->        hugealloc-310936  [001] ..... 237297.415718: mm_compaction_isolate_migratepages: range=(0x1 ~ 0x400) nr_scanned=513 nr_taken=0
->        hugealloc-310936  [001] ..... 237297.415718: mm_compaction_finished: node=0 zone=DMA      order=9 ret=no_suitable_page
->        hugealloc-310936  [001] ..... 237297.415718: mm_compaction_isolate_migratepages: range=(0x1 ~ 0x400) nr_scanned=513 nr_taken=0
->        hugealloc-310936  [001] ..... 237297.415718: mm_compaction_finished: node=0 zone=DMA      order=9 ret=no_suitable_page
->        hugealloc-310936  [001] ..... 237297.415718: mm_compaction_isolate_migratepages: range=(0x1 ~ 0x400) nr_scanned=513 nr_taken=0
-> 
-> The problem is that the functions tries to test and set the skip bit
-> once on the block, to avoid skipping on its own skip-set, using
-> pageblock_aligned() on the pfn as a test. But because this is the DMA
-> zone which starts at pfn 1, this is never true for the first block,
-> and the skip bit isn't set or tested at all. As a result,
-> fast_find_migrateblock() returns the same pageblock over and over.
-> 
-> If the pfn isn't pageblock-aligned, also check if it's the start of
-> the zone to ensure test-and-set-exactly-once on unaligned ranges.
-> 
-> Thanks to Vlastimil Babka for the help in debugging this.
-> 
-> Fixes: 90ed667c03fe ("Revert "Revert "mm/compaction: fix set skip in fast_find_migrateblock""")
+I noticed that xfstests generic/001 was failing against linux-next nfsd.
 
-Yeah I suggested this commit for Fixes: as before the commit (or the
-previous, reverted attempt) the skip would be set in
-fast_find_migrateblock() so even though the issue of not handling unaligned
-zones properly is older, it wouldn't cause an endless loop otherwise. Since
-90ed667c03fe is rc1, we don't need stable.
+The client would request a OPEN4_SHARE_ACCESS_WRITE open, and the server
+would hand out a write delegation. The client would then try to use that
+write delegation as the source stateid in a COPY or CLONE operation, and
+the server would respond with NFS4ERR_STALE.
 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+The problem is that the struct file associated with the delegation does
+not necessarily have read permissions. It's handing out a write
+delegation on what is effectively an O_WRONLY open. RFC 8881 states:
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+ "An OPEN_DELEGATE_WRITE delegation allows the client to handle, on its
+  own, all opens."
 
-> ---
->  mm/compaction.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index dbc9f86b1934..eacca2794e47 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -912,11 +912,12 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->  
->  		/*
->  		 * Check if the pageblock has already been marked skipped.
-> -		 * Only the aligned PFN is checked as the caller isolates
-> +		 * Only the first PFN is checked as the caller isolates
->  		 * COMPACT_CLUSTER_MAX at a time so the second call must
->  		 * not falsely conclude that the block should be skipped.
->  		 */
-> -		if (!valid_page && pageblock_aligned(low_pfn)) {
-> +		if (!valid_page && (pageblock_aligned(low_pfn) ||
-> +				    low_pfn == cc->zone->zone_start_pfn)) {
->  			if (!isolation_suitable(cc, page)) {
->  				low_pfn = end_pfn;
->  				folio = NULL;
-> @@ -2002,7 +2003,8 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
->  		 * before making it "skip" so other compaction instances do
->  		 * not scan the same block.
->  		 */
-> -		if (pageblock_aligned(low_pfn) &&
-> +		if ((pageblock_aligned(low_pfn) ||
-> +		     low_pfn == cc->zone->zone_start_pfn) &&
->  		    !fast_find_block && !isolation_suitable(cc, page))
->  			continue;
->  
+Given that the client didn't request any read permissions, and that nfsd
+didn't check for any, it seems wrong to give out a write delegation.
+
+Don't hand out a delegation if the client didn't request
+OPEN4_SHARE_ACCESS_BOTH.
+
+This fixes xfstest generic/001.
+
+Closes: https://bugzilla.linux-nfs.org/show_bug.cgi?id=412
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+ fs/nfsd/nfs4state.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index ef7118ebee00..9f1c90afed72 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -5462,6 +5462,8 @@ nfs4_set_delegation(struct nfsd4_open *open, struct nfs4_ol_stateid *stp,
+ 		return ERR_PTR(-EAGAIN);
+ 
+ 	if (open->op_share_access & NFS4_SHARE_ACCESS_WRITE) {
++		if (!(open->op_share_access & NFS4_SHARE_ACCESS_READ))
++			return ERR_PTR(-EBADF);
+ 		nf = find_writeable_file(fp);
+ 		dl_type = NFS4_OPEN_DELEGATE_WRITE;
+ 	} else {
+
+---
+base-commit: ec89391563792edd11d138a853901bce76d11f44
+change-id: 20230731-wdeleg-bbdb6b25a3c6
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
 
