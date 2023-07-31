@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C44769B1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CB6769B19
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbjGaPsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55430 "EHLO
+        id S232449AbjGaPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232487AbjGaPsO (ORCPT
+        with ESMTP id S232743AbjGaPsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:48:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B3710D;
-        Mon, 31 Jul 2023 08:48:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 210FF611BD;
-        Mon, 31 Jul 2023 15:48:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAAFBC433C8;
-        Mon, 31 Jul 2023 15:48:05 +0000 (UTC)
-Date:   Mon, 31 Jul 2023 11:48:03 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
-        x86@kernel.org, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Jason Baron <jbaron@akamai.com>,
-        Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Juerg Haefliger <juerg.haefliger@canonical.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Dan Carpenter <error27@gmail.com>,
-        Chuang Wang <nashuiliang@gmail.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Petr Mladek <pmladek@suse.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Song Liu <song@kernel.org>,
-        Julian Pidancet <julian.pidancet@oracle.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Thomas =?UTF-8?B?V2Vpw59zY2h1aA==?= <linux@weissschuh.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Yair Podemsky <ypodemsk@redhat.com>
-Subject: Re: [RFC PATCH v2 02/20] tracing/filters: Enable filtering a
- cpumask field by another cpumask
-Message-ID: <20230731114803.019158b9@gandalf.local.home>
-In-Reply-To: <xhsmh4jlks4yw.mognet@vschneid.remote.csb>
-References: <20230720163056.2564824-1-vschneid@redhat.com>
-        <20230720163056.2564824-3-vschneid@redhat.com>
-        <20230726194148.4jhyqqbtn3qqqqsq@treble>
-        <20230729150901.25b9ae0c@rorschach.local.home>
-        <xhsmh4jlks4yw.mognet@vschneid.remote.csb>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 31 Jul 2023 11:48:07 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D47210D
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:48:06 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso43305595e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690818485; x=1691423285;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ea29XW2Oj6uA5+J/+a6EhPg6MOWcuGpScRnndteK92U=;
+        b=e2ZwWZgLNcH8SGcedF39ZGAunxZFRDJYoJJpY5ulm9q5lgR1UyglSAhgtwgo/JYiAQ
+         XV1bYqm3hhqWdk5qj36SgCliJ44gzZ/uAZLBIOQ0izMWQYR+3YeVeun1NKDM1GLHTJGy
+         N2K56LMuAFq6F5mOQL3NJSLX1dpDRXvHR5KQDmKjmfOTyCP+QzZW8EiI6cZAU7+en3HM
+         +BawqRHXgUFO+bK2pWcBw8RLRNHutC6+hbkptmruNs4LVFIevo4Jyv1z9D9bZHrBTImp
+         WDrqSmb5jdAu25MSTtaoRYiwjOEsdkS/HTSmwRUzBkVGrLC9N9SpKtOPo85/NqTufiiU
+         chIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690818485; x=1691423285;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ea29XW2Oj6uA5+J/+a6EhPg6MOWcuGpScRnndteK92U=;
+        b=RQ1iF/fTDXL7v9wUgwbUHnWDH6EnUvf3hkxO74nAjGLVdDLPLiP+wtB9zUvdy345cB
+         jamidlNOjrIjE7EsZIFhfFgV+XGaaPsshH3d4ydMf5e1fhH/8+olsopHiD4XTqynRIPH
+         wxd9zM9dmY1xfBTekJ0aHksjAiA4Yl1oYOBAtt9oCxbb259G0R7jCEBQ326rAqdJz+kD
+         pKq/AlS/d/gpZDE743B9UAFZncQIpq6ThvYP+/gCCenHgJUwzXjflEKo6/no0SauWrZF
+         bFxN12pEyeDJSSwixiQyGiOrk1rgSLpMi64S7ZBZ+56DiAQD9o4LaaTzLdLb0lWQoebG
+         leQA==
+X-Gm-Message-State: ABy/qLYyBU8/+mEJAN2BSQ7l4VjZ0gK2HEIOBeIQUML5ytrjYZotcFgD
+        nzQCNCdLUhgaTwdpzfOAwGl5Aw==
+X-Google-Smtp-Source: APBJJlFHABHv2mXYYls1027lw8mNbIKOOxpDTaFUjQSeRtPCCAP0xOgS7nk+2w4RRUx62OlTIVSMzA==
+X-Received: by 2002:a1c:7310:0:b0:3fb:e189:3532 with SMTP id d16-20020a1c7310000000b003fbe1893532mr260226wmb.20.1690818485042;
+        Mon, 31 Jul 2023 08:48:05 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id m10-20020a7bca4a000000b003fbc0a49b57sm11799628wml.6.2023.07.31.08.48.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 08:48:04 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Alexandre Mergnat <amergnat@baylibre.com>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Guillaume La Roque <glaroque@baylibre.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Conor Dooley <conor.dooley@microchip.com>
+In-Reply-To: <20230711-startek_display-v4-0-fb1d53bfdef6@baylibre.com>
+References: <20230711-startek_display-v4-0-fb1d53bfdef6@baylibre.com>
+Subject: Re: (subset) [PATCH v4 0/3] Add startek-kd070fhfid015 display
+ support
+Message-Id: <169081848410.590715.3216306012234783278.b4-ty@linaro.org>
+Date:   Mon, 31 Jul 2023 17:48:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 12:19:51 +0100
-Valentin Schneider <vschneid@redhat.com> wrote:
-> >
-> > Also, when you do an empty for loop:
-> >
-> >       for (; str[i] && str[i] != '}'; i++);
-> >
-> > Always put the semicolon on the next line, otherwise it is really easy
-> > to think that the next line is part of the for loop. That is, instead
-> > of the above, do:
-> >
-> >       for (; str[i] && str[i] != '}'; i++)
-> >               ;
-> >  
+Hi,
+
+On Mon, 31 Jul 2023 17:08:55 +0200, Alexandre Mergnat wrote:
+> Add the support of the Startek KD070FHFID015 panel.
+> It's a 7-inch TFT LCD display with a resolution of 1024 x 600 pixels.
 > 
-> Interestingly I don't think I've ever encountered that variant, usually
-> having an empty line (which this lacks) and the indentation level is enough
-> to identify these - regardless, I'll change it.
+> I use this display plugged to my mt8365-evk board.
+> 
+> This serie come from a bigger one [1]. Then I addressed the previous
+> comments for the related commits here.
+> 
+> [...]
 
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
 
-Do a "git grep -B1 -e '^\s*;\s*$'"
+[1/3] dt-bindings: display: panel: add startek kd070fhfid015 support
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=5ede23d12b442750ba1298913cf3ce572f1b79d3
+[2/3] drm/panel: Support for startek-kd070fhfid015 MIPI-DSI panel
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=69312a77cd13e36f87378dfe83480b671ebf9216
 
-You'll find that it is quite common.
-
-Thanks,
-
--- Steve
+-- 
+Neil
 
