@@ -2,65 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDF076A007
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8017076A009
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231544AbjGaSJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43476 "EHLO
+        id S231757AbjGaSJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbjGaSJU (ORCPT
+        with ESMTP id S229778AbjGaSJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:09:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EBD51726
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:09:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DE8EA6126E
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 18:09:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14A0FC433C9;
-        Mon, 31 Jul 2023 18:09:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690826958;
-        bh=Eb18bMMUZkKagNn+C4Y50Vy1Cg7bID/NgVClslAn604=;
-        h=Date:From:To:Subject:From;
-        b=kGUeEmNeMlQm8cde18GWfz871eP9XzNOV1eKzxczNFR2m/8BDMOCdft3OffkNOnQJ
-         DEZU2fzWRt4WsX6BVw7uRb5aMSr+tjS3T7WXhJzT1n8qOMJvqgvuwAmowOpb+EMywr
-         +G2YQb5LL64+HaOtUEL/PCO1e+GQIwKnJcJDb75xwoxb5MZCv04QM+gdrGB0/o41vK
-         4ZwhWnVsdSzqHGFRUdii+kygT7VHfcdRa1MEAF6xI5esaeow584BWGYqAyJAyXvh31
-         0IjpKQzH+shPfvvuZSnZx4G2pfQ5ByueMz9mmF9JxdcUDalRDwJj5/obPyJF+Wxntb
-         mbTkhz71lN0zA==
-Date:   Mon, 31 Jul 2023 11:09:16 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     llvm@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Prebuilt LLVM 17.0.0-rc1 uploaded
-Message-ID: <20230731180916.GA2401456@dev-arch.thelio-3990X>
+        Mon, 31 Jul 2023 14:09:47 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98156114
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:09:46 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686ed1d2594so4613626b3a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690826986; x=1691431786;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jsZuyWI7KZo8u5qJzHB8Iz3lEzRGHNZVcfdqiF9Lvpw=;
+        b=jHT/3E4k+ZMsjPoI7EWJeUciVPKM2GbnIsWVlXcBuTMjkDWc2zpXFeJfw/SGFQKWEO
+         76fzzV8a71neETZ9OPJgOy0OZURYoY2nKsyo2PT7OsqzcBeVjUgHKvGhTZ7Du2hVTlKv
+         tqeMl+1mGIh/MBiSRunWoI3kDwCh77ZYoCovhezGwJ0ywBBbqQyKYRxacx+o0euAF5Kf
+         qmHMSdFYsXd4wZr56Gr+LpkQQXFFWZUnpM813tkRYrOYzQa6vDCHvCEYCI5ppdBRoHYI
+         bWy6hCReDgVCKIuDGvi334qQHbZ9mePoi3by2d0d98NxLk1sLnVgBa4zpNH9o151K9dw
+         DCvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690826986; x=1691431786;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jsZuyWI7KZo8u5qJzHB8Iz3lEzRGHNZVcfdqiF9Lvpw=;
+        b=XiDnLHYcnCny6YGsG99hKqL3H6jGyeOMHIqEabiRoPzxqpz7c+rihvbYJFxOOxmpJ4
+         D+hgy+XRNccSp5oIBNmpuaa2brmJs9ofB+Bpzj7CdOXeo9lO8yx7XaAAhyX6x+LcZKkh
+         K2y1rIePJIXuak1lESfrCTks2hm62qMA0jl5BcY7HZP7VLp7y+5kNek071ZnEFRp5ADg
+         kuWRWZ/zbowj80IAuEUQAMlXAPcDU0AyBDP9YbPtxkIN8vuM/6najER7+E1Hd+6sJKkM
+         vMFrddN9UGCQBqkz/ea109dwAR2QfGsd9GEYNmBQWCkpTy/2b9oHX7Ij1Yojc/LnTklA
+         1T3Q==
+X-Gm-Message-State: ABy/qLaQFDeoPNFcvXg8so1On1KQds9PmWAuHpama1rbJRIQA/NSi4/X
+        XsZ4zUEhxV/fkI1mxL7yVf7Fsw==
+X-Google-Smtp-Source: APBJJlETe73WrPLwmV4zXtqNT0+WhORRDNEW3QAd4H8MUg505KZPUmBNy2WrHTO+JRYA8+zWLAFd9A==
+X-Received: by 2002:a05:6a21:2724:b0:137:74f8:62ee with SMTP id rm36-20020a056a21272400b0013774f862eemr10080254pzb.18.1690826985931;
+        Mon, 31 Jul 2023 11:09:45 -0700 (PDT)
+Received: from google.com (60.89.247.35.bc.googleusercontent.com. [35.247.89.60])
+        by smtp.gmail.com with ESMTPSA id k10-20020aa7820a000000b006862e7f4648sm8107079pfi.99.2023.07.31.11.09.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 11:09:44 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 18:09:40 +0000
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kai Huang <kai.huang@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>
+Subject: Re: [PATCH v2 3/6] KVM: Documentation: Add the missing description
+ for ptep in kvm_mmu_page
+Message-ID: <ZMf45A9QU54GXEKd@google.com>
+References: <20230626182016.4127366-1-mizhang@google.com>
+ <20230626182016.4127366-4-mizhang@google.com>
+ <ZJr/yoWzV7gHMuaG@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZJr/yoWzV7gHMuaG@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Tue, Jun 27, 2023, Sean Christopherson wrote:
+> On Mon, Jun 26, 2023, Mingwei Zhang wrote:
+> > Add the missing description for ptep in kvm_mmu_page description. ptep is
+> > used when TDP MMU is enabled and it shares the storage with parent_ptes.
+> > Update the doc to help readers to get up-to-date info.
+> > 
+> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> > ---
+> >  Documentation/virt/kvm/x86/mmu.rst | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
+> > index 4c9044b4dc6c..5cd6cd5e8926 100644
+> > --- a/Documentation/virt/kvm/x86/mmu.rst
+> > +++ b/Documentation/virt/kvm/x86/mmu.rst
+> > @@ -237,6 +237,11 @@ Shadow pages contain the following information:
+> >      parent_ptes points at this single spte, otherwise, there exists multiple
+> >      sptes pointing at this page and (parent_ptes & ~0x1) points at a data
+> >      structure with a list of parent sptes.
+> > +  ptep:
+> > +    The reverse mapping for the pte pointing at this page's spt. This field is
+> 
+> I don't think describing "reverse mapping" is necessary, and it's arguably even
+> misleading.  A "reverse mapping" typically provides a way to find mappings given
+> a (guest) physical address.  The TDP MMU doesn't bother with reverse mappings
+> because there is exactly one possible mapping for any given gfn.  The "ptep" exists
+> specifically to expedite zapping a single TDP MMU shadow page, i.e. allows zapping
+> without having to traverse the paging tree.
+> 
+> The ptep field is just a pointer at the SPTE, no more no less.  Something like
+> this?
+> 
+>   ptep:
+>     The kernel virtual address of the SPTE that points at this shadow page.
+>     Used exclusively by the TDP MMU, this field is a union with parent_ptes.
+> 
 
-I have built and uploaded a prebuilt version of LLVM 17.0.0-rc1 to
-https://mirrors.edge.kernel.org/pub/tools/llvm/.
+Sure, I can this version instead. Technically, it is still a reverse
+mapping, but yeah, I agree that introducing this one is confusing.
 
-As with Linux -rc releases, this is not the final version that will
-ship. If you run across any issues, especially ones that were not
-present in earlier LLVM releases, please consider reporting them to us
-so that we have a chance to investigate and fix them before the final
-release.
-
-Cheers,
-Nathan
+> > +    used in replace of parent_ptes when TDP MMU is used. In TDP MMU, each
+> > +    non-root shadow page will have one parent, while each root shadow page has
+> > +    no parent. Note that this field is a union with parent_ptes.
+> >    unsync:
+> >      If true, then the translations in this page may not match the guest's
+> >      translation.  This is equivalent to the state of the tlb when a pte is
+> > -- 
+> > 2.41.0.162.gfafddb0af9-goog
+> > 
