@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9D9768F9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00C5A768F9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231918AbjGaIGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:06:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
+        id S231922AbjGaIG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230357AbjGaIEd (ORCPT
+        with ESMTP id S230169AbjGaIEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 31 Jul 2023 04:04:33 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEB61724;
-        Mon, 31 Jul 2023 01:03:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329321726;
+        Mon, 31 Jul 2023 01:03:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 02E4160F77;
-        Mon, 31 Jul 2023 08:03:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3261DC433C9;
-        Mon, 31 Jul 2023 08:03:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A7E8D60F30;
+        Mon, 31 Jul 2023 08:03:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D742FC433C7;
+        Mon, 31 Jul 2023 08:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690790583;
-        bh=6sCzu84ZbNFeuecmBcFu3cCZGqCgnMZYTlY4wKquDdg=;
+        s=k20201202; t=1690790585;
+        bh=T3RQZEVjTUZC7k/WLvQaJ7ITDbA5hvLXPQp0OeU6JrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sqIK16KsZ0ZT6eMsToQp0hx9VJoCyerLkUrrq/zljD3OZLcpyVXHWxxKBfkVHHuz1
-         gv/u+bm+Krjnb+eCyXAHaTpu0ukPWjDM+jissvtq3y4bgIzRbcLBadshpgfNaZDCxc
-         UB3CLZVCMeQ4A/cxnkgxaEgOizu/uyUGwN5pCtcwxczcyYbwhrl3UsAr3tEsMI0Kyf
-         3aGdzyLzyPbMy3eJpW3F7vsJjMefg62ukSiF2I5/a2/zCxV1Vy4vLqCw1EwogcO2Rc
-         GgyZtf0ZCutLbe4Lhnh669GJ54MOasDH2gpdyDNXeztYxOQq5ejehL5CRmUz68WNsV
-         CrvDFIDjW+Hxg==
+        b=CNwYGjhcyLi8C4NJpFWurdq5mW5ku7Ny666lC5umnleK884pj1POi11FdwHUEZGuD
+         HUJa6+IIstHWyakiconglNzRx9ZcGO9fbyShhH6R3cnJIBWTWM0T6Ay70nFuC0mRK4
+         K7exCSnkq9/P3FqcG80Kfk/05TqPFEi+ma29tggvBoI5lE9pgflhbue5b50Y9i0GPu
+         sMgJcn7mCbJoxmLm55bzdJPABvG/0r8PGPtzZh5oafDauSgxbLfO4MeyKLaHd51nmg
+         M1RhAyFZldrdqvlIm9qm+EAZ0jvU5aCzZUgQaJCpx3ev49E3I5UGQ8awZZGkXeyaTa
+         BYnLqoovmVzzg==
 From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
         Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 08/10] misc: ti-st: remove forward declarations and make st_int_recv() static
-Date:   Mon, 31 Jul 2023 10:02:42 +0200
-Message-ID: <20230731080244.2698-9-jirislaby@kernel.org>
+Subject: [PATCH 09/10] misc: ti-st: remove ptr from recv functions
+Date:   Mon, 31 Jul 2023 10:02:43 +0200
+Message-ID: <20230731080244.2698-10-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230731080244.2698-1-jirislaby@kernel.org>
 References: <20230731080244.2698-1-jirislaby@kernel.org>
@@ -56,40 +56,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-st_kim_recv() is already declared in linux/ti_wilink_st.h. Given that is
-already included in st_core.c, drop the re-declaration from there.
+ptr is the same as data, so use ptr directly as a parameter and drop the
+useless local variable.
 
-st_int_recv() is used only in st_core.c and the forward declaration is
-not needed. So drop the declaration and make the function static.
+Likely, the two were introduced to have a different type. But 'char' and
+'unsigned char' are the same in the kernel for a long time.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 Cc: Arnd Bergmann <arnd@arndb.de>
 ---
  drivers/misc/ti-st/st_core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/misc/ti-st/st_kim.c  | 4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/misc/ti-st/st_core.c b/drivers/misc/ti-st/st_core.c
-index 01d2257deea4..389901276ce3 100644
+index 389901276ce3..e2add50b191c 100644
 --- a/drivers/misc/ti-st/st_core.c
 +++ b/drivers/misc/ti-st/st_core.c
-@@ -16,8 +16,6 @@
- 
- #include <linux/ti_wilink_st.h>
- 
--extern void st_kim_recv(void *, const unsigned char *, long);
--void st_int_recv(void *, const unsigned char *, long);
- /*
-  * function pointer pointing to either,
-  * st_kim_recv during registration to receive fw download responses
-@@ -225,7 +223,7 @@ static inline void st_wakeup_ack(struct st_data_s *st_gdata,
-  *	HCI-Events, ACL, SCO, 4 types of HCI-LL PM packets
+@@ -224,9 +224,8 @@ static inline void st_wakeup_ack(struct st_data_s *st_gdata,
   *	CH-8 packets from FM, CH-9 packets from GPS cores.
   */
--void st_int_recv(void *disc_data,
-+static void st_int_recv(void *disc_data,
- 	const unsigned char *data, long count)
+ static void st_int_recv(void *disc_data,
+-	const unsigned char *data, long count)
++	const unsigned char *ptr, long count)
  {
- 	char *ptr;
+-	char *ptr;
+ 	struct st_proto_s *proto;
+ 	unsigned short payload_len = 0;
+ 	int len = 0;
+@@ -235,7 +234,6 @@ static void st_int_recv(void *disc_data,
+ 	struct st_data_s *st_gdata = (struct st_data_s *)disc_data;
+ 	unsigned long flags;
+ 
+-	ptr = (char *)data;
+ 	/* tty_receive sent null ? */
+ 	if (unlikely(ptr == NULL) || (st_gdata == NULL)) {
+ 		pr_err(" received null from TTY ");
+diff --git a/drivers/misc/ti-st/st_kim.c b/drivers/misc/ti-st/st_kim.c
+index f2f6cab97c08..8c801897ffa2 100644
+--- a/drivers/misc/ti-st/st_kim.c
++++ b/drivers/misc/ti-st/st_kim.c
+@@ -128,15 +128,13 @@ static inline int kim_check_data_len(struct kim_data_s *kim_gdata, int len)
+  *	tty_receive and hence the logic
+  */
+ static void kim_int_recv(struct kim_data_s *kim_gdata,
+-	const unsigned char *data, long count)
++	const unsigned char *ptr, long count)
+ {
+-	const unsigned char *ptr;
+ 	int len = 0;
+ 	unsigned char *plen;
+ 
+ 	pr_debug("%s", __func__);
+ 	/* Decode received bytes here */
+-	ptr = data;
+ 	if (unlikely(ptr == NULL)) {
+ 		pr_err(" received null from TTY ");
+ 		return;
 -- 
 2.41.0
 
