@@ -2,416 +2,530 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE850768993
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 03:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0C4768997
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 03:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229712AbjGaBZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 21:25:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48320 "EHLO
+        id S229637AbjGaB0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 21:26:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjGaBZt (ORCPT
+        with ESMTP id S229437AbjGaB0q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 21:25:49 -0400
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C32D1A4
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 18:25:47 -0700 (PDT)
-X-UUID: a81924b758d144878e1e8fcdaa4d5fe0-20230731
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.28,REQID:3b788908-5e65-4ed2-8e8c-ea46e7604ad0,IP:5,U
-        RL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:10
-X-CID-INFO: VERSION:1.1.28,REQID:3b788908-5e65-4ed2-8e8c-ea46e7604ad0,IP:5,URL
-        :0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:10
-X-CID-META: VersionHash:176cd25,CLOUDID:94237ed2-cd77-4e67-bbfd-aa4eaace762f,B
-        ulkID:230731090635B7ZKYZ86,BulkQuantity:2,Recheck:0,SF:24|17|19|44|102,TC:
-        nil,Content:0,EDM:5,IP:-2,URL:1,File:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:
-        0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,
-        TF_CID_SPAM_FSD
-X-UUID: a81924b758d144878e1e8fcdaa4d5fe0-20230731
-X-User: zhanghao1@kylinos.cn
-Received: from localhost.localdomain [(111.48.58.12)] by mailgw
-        (envelope-from <zhanghao1@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1861378066; Mon, 31 Jul 2023 09:25:40 +0800
-From:   zhanghao1 <zhanghao1@kylinos.cn>
-To:     virtualization@lists.linux-foundation.org
-Cc:     mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-        linux-kernel@vger.kernel.org, zhanghao1 <zhanghao1@kylinos.cn>
-Subject: [PATCH] virtio: a new vcpu watchdog driver
-Date:   Mon, 31 Jul 2023 09:25:12 +0800
-Message-Id: <20230731012512.235085-1-zhanghao1@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
+        Sun, 30 Jul 2023 21:26:46 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2116.outbound.protection.outlook.com [40.107.117.116])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 090B21A4
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 18:26:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AosDkCPij8c/W7miGvzF/befMz9hwhwyU8XdtoEPxALCPKt6ZLfk7XPmvmZCs1HAQzHfc2mD7iS87ebOK7uwTBN2kPiIQmBCQUHrNk7t288DLzob+uGoE67aEejNVUAFcSeL5RwlVrgx/vQfScJtxKcstAcYeQlcEMmW6JJYCM6COhygYAZc+SRyGOa/A6iFX7S9BzJ3b+KX5gv3Rzrs59jiXU3Tb+8suhC/Bub7ovRowpgWpiA7IaLxH5Ksd+VXdQl8TeWO34lkroCa3cvBbGhAvcvsW4+nj2I1abSbLaFtWmqvASCAuFnWpaybQ0TU17Q79PEu9Czyu7gaUNN7gQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ftiKlnChgzmimxdE4psm15pqfVbdud4EXNSyw1WZaRQ=;
+ b=W/6jXNLhKICta371JPKj5V7YbHGL64Df5U4UwS1QMpAG7aN/U6o3RtggnXUdfVgfRoOjQb1jka5xJS6TomEhZbjK9uGnTILPRLh/Tl2ol08R+PCj8pvsUpaJjEJOR2Yoa1bVcMyCxC3F06cHwXIcOp1gMRsbtH/lgmZk+GPT6Ow2D0uSIwl5k4j78TbVYiIPZ0CucGV4TnITgEklxkzcTQQjpkwFi3vqshxIcAIDKNBTtE4jPIYKEPqIL6fwY6U32N9udaPdIY7F6zmC621irNy7Lwxyt2xvh3/1Q786kM9IZnQIHQJ2ElogUEi+jyFwccM+Q6w/gaS6V/VNS4mNxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ftiKlnChgzmimxdE4psm15pqfVbdud4EXNSyw1WZaRQ=;
+ b=hmKEqBxf/PjiJx7kOnt5Gyh8omMJPVhwr+lbn3hRBjGav7UniIt1xnGft4SU9baFa703sy6dQGafOMHNuPX6mXK8IM5VAINS/S7EMbdqyMPki7EoAsPdB2QcEXO6mUS3tf8M4gHuZgCOUT2gHaMVCJ8mQKtHjx26tzA7qdzSbiqjd477GcdMPCh+jnnkZA0aEl5IwA27gT3CW7fMckCSCmVoNn4HVksizFcr53mqc4uYeIFbszBLp7eYky8rOIe4BXNAftEMz/j3RpMntcp6hNUe54ggUmXFh5a2uR0m8Q7iey6n50EH5kzK4JFEXx5IARpE9N/oC93VkJltNZfhzw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3017.apcprd06.prod.outlook.com (2603:1096:100:3a::16)
+ by TYSPR06MB6648.apcprd06.prod.outlook.com (2603:1096:400:472::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.43; Mon, 31 Jul
+ 2023 01:26:35 +0000
+Received: from SL2PR06MB3017.apcprd06.prod.outlook.com
+ ([fe80::c78b:9b1d:f28c:4233]) by SL2PR06MB3017.apcprd06.prod.outlook.com
+ ([fe80::c78b:9b1d:f28c:4233%4]) with mapi id 15.20.6631.039; Mon, 31 Jul 2023
+ 01:26:35 +0000
+From:   Wu Bo <bo.wu@vivo.com>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, wubo.oduw@gmail.com,
+        Wu Bo <bo.wu@vivo.com>
+Subject: [PATCH 1/1] f2fs: move fiemap to use iomap framework
+Date:   Mon, 31 Jul 2023 09:26:26 +0800
+Message-Id: <20230731012626.6843-1-bo.wu@vivo.com>
+X-Mailer: git-send-email 2.35.3
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-ClientProxiedBy: TYCP286CA0116.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:29c::8) To SL2PR06MB3017.apcprd06.prod.outlook.com
+ (2603:1096:100:3a::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3017:EE_|TYSPR06MB6648:EE_
+X-MS-Office365-Filtering-Correlation-Id: 26b3b995-8eb2-4452-e82f-08db91652e19
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vWslCMhZhIkjMpCdMucvPXhUqc6Qf+AaaesRoLaRgwXNd8humqMEnE2vE8bqdzTRsiFE5GkBI8ahRkQQgafUqilUBCYj4c8IG4THcKZwG/+lMETzvaZ7upIVw/+4+Tdn5lFgpXpchjRYxjohOOAsaPz/Sk2q0sNBGbwJUi1o13n5Hta3f0+CCQb9JoAG///DGEiOtia79NkCBSTY39warI/Ro7qF/pVcqGY1llj64xpKmtuEiYwT15MMjOsbem3ah6d5DUHVnhYMO6OMl6GBd+qGMu6dbXlzZeX7FTfPPSGRiWkoFK48CF5wdsrOQsvhHTSzL/TzOINmy6Q79SMSiBh6ZTtFDV0QtTxQnr+tk7znwZCz2+9UCavQqjcn+HWSKWZp1Nc6aVVDD08UIWxYYVffFuvJA8hycpbxvYn//d4kc1KhRKBTengKPa3jRjsdnhi8AetfuoAkDokfIISF1yzfNDDC5wNuO5rXeKo6PWlDAJRb76BIi2697K7LwW/AA/fjN5oUVnQTvnNXkYifuNffmfF/oADP2GvyUmRnD6Hb+tgP4mMAXsMeoHA2en6AgdUSDVvA7PKxx252tkC74RPh+Pndy6r6Avw80fZU+sLqEuCoeJMKztqzt4KFRKBL
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3017.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39850400004)(376002)(366004)(136003)(396003)(451199021)(2616005)(5660300002)(36756003)(30864003)(38100700002)(38350700002)(2906002)(26005)(83380400001)(478600001)(8676002)(186003)(1076003)(6506007)(8936002)(316002)(6512007)(6666004)(6486002)(41300700001)(86362001)(52116002)(66946007)(110136005)(4326008)(66556008)(66476007)(107886003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/NukmiCsyo6wKUu6S2YM4bFEjqg1CWiQ4uVuyJ++4g9UJeb+7x3yNkNteWQU?=
+ =?us-ascii?Q?0CNCChN15L2BTeqrBtE3KzzOnmDEIjxpja1/4rlnAzwQaQHXW6zWspfC9fng?=
+ =?us-ascii?Q?AvpBNV8vguSLR9RojUYYkrvnNaO9I3h6K3Pp0MxgxDmr8XW0pbqfbfFwhG87?=
+ =?us-ascii?Q?WsSZ/XqmJLolV1/NeDCZdR6yGgiKPKHy1MbNoexFYMDHrH1JkXYmUMfk873d?=
+ =?us-ascii?Q?hDzxZT4DuCoYuOnT6HwuoFNykJkpNOaI13lCCD8Ao4vDKVLEks+cBapnRlRi?=
+ =?us-ascii?Q?2zfZnidZGiUaVH4ze6sSfPmJ+8NWqpwzBbDEtb63dSouEZeKQ0mfQk7O4Y08?=
+ =?us-ascii?Q?tk8w18JWfcq4bP8mJo4HCFTW4zUF3MbNoxPkytImJHXV7bPuteEo4PqPsKIU?=
+ =?us-ascii?Q?p/EYFo/1hh/p9UbpBoK/qQ3VTXeVGAVboiMgYuVu2rFEeJ7LduMooZG/8r1p?=
+ =?us-ascii?Q?lVDKX7ngWpehoY5H+BnBwoJn1vI/chbNU+Xlm873tcjUwhGYL6x0JzQUVGjf?=
+ =?us-ascii?Q?bXS3HarLlleo+RX5HnaaXtfkgOEIwt4U0BDD6SPOAkLlDkoCYX0WX8FFsVGU?=
+ =?us-ascii?Q?ELjVmfsy02442lYOIzZr/bSoltYG2//7YBicJxgxCwtzE9i3m5sw3aMsglza?=
+ =?us-ascii?Q?d9SBJZoo1g8Rx5wnb0vJpr5bMAs/9vgA63FWWebU0HYIai3rCbo/B4Jq7hV5?=
+ =?us-ascii?Q?Z2zB2VJmWX0V0ZpW5DOish/6nuHEh+Wcf+TMn2d2ll7lHpywdz7VAXjFiR6/?=
+ =?us-ascii?Q?l0Cr27FybPT/kGo/M9daAjpZAFpQ5XKukC1T+1JfN37UnOq06lF7aUQq3KfR?=
+ =?us-ascii?Q?Z+0h+HLZMizMlGaaf76Lo7xPQw7nXCv9cLh+TosWbbLRRYlrlL5QplZEdkN3?=
+ =?us-ascii?Q?HKNWvGf9XicNG9NcTZcqQgkXc4ivOJFoGKSEJtlIE9++eKbG1BNwI2Br91Zz?=
+ =?us-ascii?Q?M4tZAdWQppp0X4/wPZcnKrSxhl5HNQCvo6oaxzSZSBK/LUI3IVVpY7v8gra6?=
+ =?us-ascii?Q?FfRwfb+jj4vHBMQ6UuvAX621iHcc21X9a0Lwgm+iT8r6nWquEvMzQ0yqw/uU?=
+ =?us-ascii?Q?Kj39vgskTUzk/BXoUzaN/+Fkuza1fGvVJatD5an12kovA5FRR1AJQVoMZAW4?=
+ =?us-ascii?Q?IV41VTtC9Ku9oHRAZRkcyyM5KgQ8XmaKjUAFQIAJEwerTLXRSNpXkfuCmDNA?=
+ =?us-ascii?Q?6ioFjBIqVSYpIiaUJhOBPuaiaHap5XKl74FUCY8Xaz1+fGHn93+eQiRsZR4/?=
+ =?us-ascii?Q?avzEYMO68JfJELwitbXOX4Y2/rn5bqfgYqqKkYwgDu1yK/QweSJ7erXiqEDW?=
+ =?us-ascii?Q?OUVQJHmO91RUB+AQR+Y+Nt5ZrP4EiaCrMFFIe/8AnbpWcjDDKzbKPFgygFdK?=
+ =?us-ascii?Q?TD/A7tPRmOkKmpwruC1xqySXS0lEmv32lXfQV6mxEL/YxanNWHB0u3beCW/j?=
+ =?us-ascii?Q?iuOZXQDwWGBAQ9LDST4h4i8k0UiBI3mXEYVEA2jh4T/t5uJlHLLVidx9B3FA?=
+ =?us-ascii?Q?W7O7Frp0Jq8yKrD00l3Wnnbgv9S83dmX2fK5s6GsVEMowASArKzav6+MKKU2?=
+ =?us-ascii?Q?VIzzzJICo0zEBXQQ2MY6byabIxnJfPjPt/aeSZSy?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26b3b995-8eb2-4452-e82f-08db91652e19
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3017.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 01:26:35.6526
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: einWBue4IyzsI6+WyiBuuQOJCZD2rrnYGZgUpp+4URJCFyJduO4RoKotF8OLXK9y76m4WoteITOVg963ZyODFw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6648
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new virtio pci driver is added for listening to vcpus
-inside guest. Each vcpu creates a corresponding thread to
-periodically send data to qemu's back-end watchdog device.
-If a vCPU is in the stall state, data cannot be sent to
-back-end virtio device. As a result, the back-end device
-can detect that the guest is in the stall state.
+This patch has been tested with xfstests by running 'kvm-xfstests -c
+f2fs -g auto' with and without this patch; no regressions were seen.
 
-The driver is mainly used with the back-end watchdog device of qemu.
+Some tests fail both before and after, and the test results are:
+f2fs/default: 683 tests, 9 failures, 226 skipped, 30297 seconds
+  Failures: generic/050 generic/064 generic/250 generic/252 generic/459
+      generic/506 generic/563 generic/634 generic/635
 
-The qemu backend watchdog device is implemented as follow:
-https://lore.kernel.org/qemu-devel/20230705081813.411526-1-zhanghao1@kylinos.cn/
-
-Signed-off-by: zhanghao1 <zhanghao1@kylinos.cn>
+Signed-off-by: Wu Bo <bo.wu@vivo.com>
 ---
- drivers/virtio/Kconfig                      |   9 +
- drivers/virtio/Makefile                     |   1 +
- drivers/virtio/virtio_vcpu_stall_detector.c | 299 ++++++++++++++++++++
- 3 files changed, 309 insertions(+)
- create mode 100644 drivers/virtio/virtio_vcpu_stall_detector.c
+ fs/f2fs/data.c   | 238 ++++++++++++++++++++---------------------------
+ fs/f2fs/f2fs.h   |   8 +-
+ fs/f2fs/inline.c |  20 ++--
+ 3 files changed, 120 insertions(+), 146 deletions(-)
 
-diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
-index 0a53a61231c2..869323e345a1 100644
---- a/drivers/virtio/Kconfig
-+++ b/drivers/virtio/Kconfig
-@@ -173,4 +173,13 @@ config VIRTIO_DMA_SHARED_BUFFER
- 	 This option adds a flavor of dma buffers that are backed by
- 	 virtio resources.
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index 5882afe71d82..2d0be051a875 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1599,12 +1599,14 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
+ 	unsigned int maxblocks = map->m_len;
+ 	struct dnode_of_data dn;
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
++	unsigned int cluster_size = F2FS_I(inode)->i_cluster_size;
++	unsigned int cluster_mask = cluster_size - 1;
+ 	int mode = map->m_may_create ? ALLOC_NODE : LOOKUP_NODE;
+ 	pgoff_t pgofs, end_offset, end;
+-	int err = 0, ofs = 1;
+-	unsigned int ofs_in_node, last_ofs_in_node;
++	int err = 0, ofs = 1, append = 0;
++	unsigned int ofs_in_node, last_ofs_in_node, ofs_in_cluster;
+ 	blkcnt_t prealloc;
+-	block_t blkaddr;
++	block_t blkaddr, start_addr;
+ 	unsigned int start_pgofs;
+ 	int bidx = 0;
+ 	bool is_hole;
+@@ -1691,6 +1693,7 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
+ 			map->m_flags |= F2FS_MAP_NEW;
+ 	} else if (is_hole) {
+ 		if (f2fs_compressed_file(inode) &&
++		    blkaddr == COMPRESS_ADDR &&
+ 		    f2fs_sanity_check_cluster(&dn) &&
+ 		    (flag != F2FS_GET_BLOCK_FIEMAP ||
+ 		     IS_ENABLED(CONFIG_F2FS_CHECK_FS))) {
+@@ -1712,6 +1715,18 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
+ 					*map->m_next_pgofs = pgofs + 1;
+ 				goto sync_out;
+ 			}
++			if (f2fs_compressed_file(inode) &&
++			    blkaddr == COMPRESS_ADDR) {
++				/* split consecutive cluster */
++				if (map->m_len) {
++					dn.ofs_in_node--;
++					goto sync_out;
++				}
++				pgofs++;
++				dn.ofs_in_node++;
++				append = 1;
++				goto next_block;
++			}
+ 			break;
+ 		default:
+ 			/* for defragment case */
+@@ -1750,6 +1765,10 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
+ 		goto sync_out;
+ 	}
  
-+config VIRTIO_VCPU_WATCHDOG
-+	tristate "Virtio vcpu watchdog driver"
-+	depends on VIRTIO_PCI
-+	help
-+	 When this driver is bound inside a KVM guest, it will
-+	 periodically "pet" an PCI virtio watchdog device from each vCPU
-+	 and allow the host to detect vCPU stalls.
++	/* 1 cluster 1 extent, split consecutive cluster */
++	if (append && !((dn.ofs_in_node + 1) & cluster_mask))
++		goto sync_out;
 +
-+	 If you do not intend to run this kernel as a guest, say N.
- endif # VIRTIO_MENU
-diff --git a/drivers/virtio/Makefile b/drivers/virtio/Makefile
-index 8e98d24917cc..c7341f078a34 100644
---- a/drivers/virtio/Makefile
-+++ b/drivers/virtio/Makefile
-@@ -12,3 +12,4 @@ obj-$(CONFIG_VIRTIO_INPUT) += virtio_input.o
- obj-$(CONFIG_VIRTIO_VDPA) += virtio_vdpa.o
- obj-$(CONFIG_VIRTIO_MEM) += virtio_mem.o
- obj-$(CONFIG_VIRTIO_DMA_SHARED_BUFFER) += virtio_dma_buf.o
-+obj-$(CONFIG_VIRTIO_VCPU_WATCHDOG) += virtio_vcpu_stall_detector.o
-diff --git a/drivers/virtio/virtio_vcpu_stall_detector.c b/drivers/virtio/virtio_vcpu_stall_detector.c
-new file mode 100644
-index 000000000000..58344ca528be
---- /dev/null
-+++ b/drivers/virtio/virtio_vcpu_stall_detector.c
-@@ -0,0 +1,299 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+//
-+// VCPU stall detector.
-+// Copyright (C) Kylin Software, 2023
+ skip:
+ 	dn.ofs_in_node++;
+ 	pgofs++;
+@@ -1832,6 +1851,20 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
+ 		if (map->m_next_extent)
+ 			*map->m_next_extent = pgofs + 1;
+ 	}
 +
-+#include <linux/cpu.h>
-+#include <linux/init.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
++	if (flag == F2FS_GET_BLOCK_FIEMAP && f2fs_compressed_file(inode)) {
++		ofs_in_node = round_down(dn.ofs_in_node, cluster_size);
++		ofs_in_cluster = dn.ofs_in_node & cluster_mask;
++		start_addr = data_blkaddr(dn.inode, dn.node_page, ofs_in_node);
++		if (start_addr == COMPRESS_ADDR) {
++			map->m_flags |= F2FS_MAP_ENCODED;
++			map->m_len += append;
++			/* End of a cluster */
++			if (blkaddr == NULL_ADDR || blkaddr == NEW_ADDR)
++				map->m_len += cluster_size - ofs_in_cluster;
++		}
++	}
 +
-+#include <linux/device.h>
-+#include <linux/interrupt.h>
-+#include <linux/module.h>
-+#include <linux/nmi.h>
-+#include <uapi/linux/virtio_ids.h>
-+#include <linux/virtio_config.h>
-+#include <linux/param.h>
-+#include <linux/percpu.h>
-+#include <linux/slab.h>
+ 	f2fs_put_dnode(&dn);
+ unlock_out:
+ 	if (map->m_may_create) {
+@@ -1952,37 +1985,10 @@ static int f2fs_xattr_fiemap(struct inode *inode,
+ 	return (err < 0 ? err : 0);
+ }
+ 
+-static loff_t max_inode_blocks(struct inode *inode)
+-{
+-	loff_t result = ADDRS_PER_INODE(inode);
+-	loff_t leaf_count = ADDRS_PER_BLOCK(inode);
+-
+-	/* two direct node blocks */
+-	result += (leaf_count * 2);
+-
+-	/* two indirect node blocks */
+-	leaf_count *= NIDS_PER_BLOCK;
+-	result += (leaf_count * 2);
+-
+-	/* one double indirect node block */
+-	leaf_count *= NIDS_PER_BLOCK;
+-	result += leaf_count;
+-
+-	return result;
+-}
+-
+ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 		u64 start, u64 len)
+ {
+-	struct f2fs_map_blocks map;
+-	sector_t start_blk, last_blk;
+-	pgoff_t next_pgofs;
+-	u64 logical = 0, phys = 0, size = 0;
+-	u32 flags = 0;
+-	int ret = 0;
+-	bool compr_cluster = false, compr_appended;
+-	unsigned int cluster_size = F2FS_I(inode)->i_cluster_size;
+-	unsigned int count_in_cluster = 0;
++	int ret;
+ 	loff_t maxbytes;
+ 
+ 	if (fieinfo->fi_flags & FIEMAP_FLAG_CACHE) {
+@@ -1991,10 +1997,6 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 			return ret;
+ 	}
+ 
+-	ret = fiemap_prep(inode, fieinfo, start, &len, FIEMAP_FLAG_XATTR);
+-	if (ret)
+-		return ret;
+-
+ 	inode_lock(inode);
+ 
+ 	maxbytes = max_file_blocks(inode) << F2FS_BLKSIZE_BITS;
+@@ -2011,110 +2013,9 @@ int f2fs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 		goto out;
+ 	}
+ 
+-	if (f2fs_has_inline_data(inode) || f2fs_has_inline_dentry(inode)) {
+-		ret = f2fs_inline_data_fiemap(inode, fieinfo, start, len);
+-		if (ret != -EAGAIN)
+-			goto out;
+-	}
+-
+-	if (bytes_to_blks(inode, len) == 0)
+-		len = blks_to_bytes(inode, 1);
+-
+-	start_blk = bytes_to_blks(inode, start);
+-	last_blk = bytes_to_blks(inode, start + len - 1);
+-
+-next:
+-	memset(&map, 0, sizeof(map));
+-	map.m_lblk = start_blk;
+-	map.m_len = bytes_to_blks(inode, len);
+-	map.m_next_pgofs = &next_pgofs;
+-	map.m_seg_type = NO_CHECK_TYPE;
+-
+-	if (compr_cluster) {
+-		map.m_lblk += 1;
+-		map.m_len = cluster_size - count_in_cluster;
+-	}
+-
+-	ret = f2fs_map_blocks(inode, &map, F2FS_GET_BLOCK_FIEMAP);
+-	if (ret)
+-		goto out;
+-
+-	/* HOLE */
+-	if (!compr_cluster && !(map.m_flags & F2FS_MAP_FLAGS)) {
+-		start_blk = next_pgofs;
+-
+-		if (blks_to_bytes(inode, start_blk) < blks_to_bytes(inode,
+-						max_inode_blocks(inode)))
+-			goto prep_next;
+-
+-		flags |= FIEMAP_EXTENT_LAST;
+-	}
+-
+-	compr_appended = false;
+-	/* In a case of compressed cluster, append this to the last extent */
+-	if (compr_cluster && ((map.m_flags & F2FS_MAP_DELALLOC) ||
+-			!(map.m_flags & F2FS_MAP_FLAGS))) {
+-		compr_appended = true;
+-		goto skip_fill;
+-	}
+-
+-	if (size) {
+-		flags |= FIEMAP_EXTENT_MERGED;
+-		if (IS_ENCRYPTED(inode))
+-			flags |= FIEMAP_EXTENT_DATA_ENCRYPTED;
+-
+-		ret = fiemap_fill_next_extent(fieinfo, logical,
+-				phys, size, flags);
+-		trace_f2fs_fiemap(inode, logical, phys, size, flags, ret);
+-		if (ret)
+-			goto out;
+-		size = 0;
+-	}
+-
+-	if (start_blk > last_blk)
+-		goto out;
+-
+-skip_fill:
+-	if (map.m_pblk == COMPRESS_ADDR) {
+-		compr_cluster = true;
+-		count_in_cluster = 1;
+-	} else if (compr_appended) {
+-		unsigned int appended_blks = cluster_size -
+-						count_in_cluster + 1;
+-		size += blks_to_bytes(inode, appended_blks);
+-		start_blk += appended_blks;
+-		compr_cluster = false;
+-	} else {
+-		logical = blks_to_bytes(inode, start_blk);
+-		phys = __is_valid_data_blkaddr(map.m_pblk) ?
+-			blks_to_bytes(inode, map.m_pblk) : 0;
+-		size = blks_to_bytes(inode, map.m_len);
+-		flags = 0;
+-
+-		if (compr_cluster) {
+-			flags = FIEMAP_EXTENT_ENCODED;
+-			count_in_cluster += map.m_len;
+-			if (count_in_cluster == cluster_size) {
+-				compr_cluster = false;
+-				size += blks_to_bytes(inode, 1);
+-			}
+-		} else if (map.m_flags & F2FS_MAP_DELALLOC) {
+-			flags = FIEMAP_EXTENT_UNWRITTEN;
+-		}
+-
+-		start_blk += bytes_to_blks(inode, size);
+-	}
++	ret = iomap_fiemap(inode, fieinfo, start, len, &f2fs_iomap_report_ops);
+ 
+-prep_next:
+-	cond_resched();
+-	if (fatal_signal_pending(current))
+-		ret = -EINTR;
+-	else
+-		goto next;
+ out:
+-	if (ret == 1)
+-		ret = 0;
+-
+ 	inode_unlock(inode);
+ 	return ret;
+ }
+@@ -4266,3 +4167,66 @@ static int f2fs_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ const struct iomap_ops f2fs_iomap_ops = {
+ 	.iomap_begin	= f2fs_iomap_begin,
+ };
 +
-+#define VCPU_STALL_REG_STATUS		(0x00)
-+#define VCPU_STALL_REG_LOAD_CNT		(0x04)
-+#define VCPU_STALL_REG_CURRENT_CNT	(0x08)
-+#define VCPU_STALL_REG_CLOCK_FREQ_HZ	(0x0C)
-+#define VCPU_STALL_REG_LEN		(0x10)
-+#define VCPU_STALL_REG_TIMEOUT_SEC	(0x14)
-+
-+#define VCPU_STALL_DEFAULT_CLOCK_HZ	(10)
-+#define VCPU_STALL_MAX_CLOCK_HZ		(100)
-+#define VCPU_STALL_DEFAULT_TIMEOUT_SEC	(8)
-+#define VCPU_STALL_MAX_TIMEOUT_SEC	(600)
-+
-+struct vcpu_stall_detect_config {
-+	u32 clock_freq_hz;
-+	u32 stall_timeout_sec;
-+
-+	enum cpuhp_state hp_online;
-+};
-+
-+struct vcpu_stall_priv {
-+	struct hrtimer vcpu_hrtimer;
-+	struct virtio_device *vdev;
-+	u32 cpu_id;
-+};
-+
-+struct vcpu_stall {
-+	struct vcpu_stall_priv *priv;
-+	struct virtqueue *vq;
-+	spinlock_t lock;
-+	struct pet_event {
-+		u32 cpu_id;
-+		bool is_initialized;
-+		u32 ticks;
-+	} pet_event;
-+};
-+
-+static const struct virtio_device_id vcpu_stall_id_table[] = {
-+	{ VIRTIO_ID_WATCHDOG, VIRTIO_DEV_ANY_ID },
-+	{ 0, },
-+};
-+
-+/* The vcpu stall configuration structure which applies to all the CPUs */
-+static struct vcpu_stall_detect_config vcpu_stall_config;
-+static struct vcpu_stall *vcpu_stall;
-+
-+static struct vcpu_stall_priv __percpu *vcpu_stall_detectors;
-+
-+static enum hrtimer_restart
-+vcpu_stall_detect_timer_fn(struct hrtimer *hrtimer)
++static int f2fs_iomap_begin_report(struct inode *inode, loff_t offset,
++				   loff_t length, unsigned int flags,
++				   struct iomap *iomap, struct iomap *srcmap)
 +{
-+	u32 ticks, ping_timeout_ms;
-+	struct scatterlist sg;
-+	int unused, err = 0;
++	struct f2fs_map_blocks map = {0};
++	pgoff_t next_pgofs = 0;
++	int err;
 +
-+	struct vcpu_stall_priv *vcpu_stall_detector =
-+		this_cpu_ptr(vcpu_stall->priv);
++	if (f2fs_has_inline_data(inode) || f2fs_has_inline_dentry(inode)) {
++		err = f2fs_inline_data_fiemap(inode, iomap, offset, length);
++		if (err != -EAGAIN)
++			return err;
++	}
 +
-+	/* Reload the stall detector counter register every
-+	 * `ping_timeout_ms` to prevent the virtual device
-+	 * from decrementing it to 0. The virtual device decrements this
-+	 * register at 'clock_freq_hz' frequency.
++	map.m_lblk = bytes_to_blks(inode, offset);
++	map.m_len = bytes_to_blks(inode, offset + length - 1) - map.m_lblk + 1;
++	map.m_next_pgofs = &next_pgofs;
++	map.m_seg_type = NO_CHECK_TYPE;
++	err = f2fs_map_blocks(inode, &map, F2FS_GET_BLOCK_FIEMAP);
++	if (err)
++		return err;
++	/*
++	 * When inline encryption is enabled, sometimes I/O to an encrypted file
++	 * has to be broken up to guarantee DUN contiguity.  Handle this by
++	 * limiting the length of the mapping returned.
 +	 */
-+	ticks = vcpu_stall_config.clock_freq_hz *
-+				vcpu_stall_config.stall_timeout_sec;
++	map.m_len = fscrypt_limit_io_blocks(inode, map.m_lblk, map.m_len);
 +
-+	spin_lock(&vcpu_stall->lock);
-+	while (virtqueue_get_buf(vcpu_stall->vq, &unused))
-+		;
-+	vcpu_stall->pet_event.ticks = cpu_to_virtio32(vcpu_stall_detector->vdev, ticks);
-+	vcpu_stall->pet_event.is_initialized = true;
-+	vcpu_stall->pet_event.cpu_id = vcpu_stall_detector->cpu_id;
++	if (WARN_ON_ONCE(map.m_pblk == COMPRESS_ADDR))
++		return -EINVAL;
 +
-+	sg_init_one(&sg, &vcpu_stall->pet_event, sizeof(vcpu_stall->pet_event));
-+	err = virtqueue_add_outbuf(vcpu_stall->vq, &sg, 1, vcpu_stall, GFP_ATOMIC);
-+	if (!err)
-+		virtqueue_kick(vcpu_stall->vq);
++	iomap->offset = blks_to_bytes(inode, map.m_lblk);
++	if (map.m_flags & F2FS_MAP_FLAGS)
++		iomap->length = blks_to_bytes(inode, map.m_len);
 +	else
-+		pr_err("cpu:%d failed to add outbuf, err:%d\n", vcpu_stall_detector->cpu_id, err);
++		iomap->length = blks_to_bytes(inode, next_pgofs) -
++				iomap->offset;
 +
-+	spin_unlock(&vcpu_stall->lock);
++	if (map.m_pblk == NEW_ADDR) {
++		/* f2fs treat pre-alloc & delay-alloc blocks the same way */
++		iomap->type = IOMAP_UNWRITTEN;
++		iomap->addr = IOMAP_NULL_ADDR;
++	} else if (map.m_pblk == NULL_ADDR) {
++		iomap->type = IOMAP_HOLE;
++		iomap->addr = IOMAP_NULL_ADDR;
++	} else {
++		iomap->type = IOMAP_MAPPED;
++		iomap->flags |= IOMAP_F_MERGED;
++		iomap->bdev = map.m_bdev;
++		iomap->addr = blks_to_bytes(inode, map.m_pblk);
++	}
 +
-+	ping_timeout_ms = vcpu_stall_config.stall_timeout_sec *
-+			  MSEC_PER_SEC / 2;
-+	hrtimer_forward_now(hrtimer,
-+			    ms_to_ktime(ping_timeout_ms));
-+	return HRTIMER_RESTART;
++	cond_resched();
++	if (fatal_signal_pending(current))
++		return -EINTR;
++	else
++		return 0;
 +}
 +
-+static int start_stall_detector_cpu(unsigned int cpu)
-+{
-+	u32 ticks, ping_timeout_ms;
-+	struct scatterlist sg;
-+	struct hrtimer *vcpu_hrtimer;
-+	int err = 0;
-+
-+	struct vcpu_stall_priv *vcpu_stall_detector =
-+		this_cpu_ptr(vcpu_stall->priv);
-+
-+	vcpu_stall_detector->cpu_id = cpu;
-+
-+	vcpu_hrtimer = &vcpu_stall_detector->vcpu_hrtimer;
-+
-+	/* Compute the number of ticks required for the stall detector
-+	 * counter register based on the internal clock frequency and the
-+	 * timeout value given from the device tree.
-+	 */
-+	ticks = vcpu_stall_config.clock_freq_hz *
-+		vcpu_stall_config.stall_timeout_sec;
-+	vcpu_stall->pet_event.ticks = cpu_to_virtio32(vcpu_stall_detector->vdev, ticks);
-+
-+	/* Pet the stall detector at half of its expiration timeout
-+	 * to prevent spurious resets.
-+	 */
-+	ping_timeout_ms = vcpu_stall_config.stall_timeout_sec *
-+			  MSEC_PER_SEC / 2;
-+
-+	hrtimer_init(vcpu_hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	vcpu_hrtimer->function = vcpu_stall_detect_timer_fn;
-+
-+	vcpu_stall->pet_event.is_initialized = true;
-+
-+	spin_lock(&vcpu_stall->lock);
-+	vcpu_stall->pet_event.cpu_id = cpu;
-+	sg_init_one(&sg, &vcpu_stall->pet_event, sizeof(vcpu_stall->pet_event));
-+	err = virtqueue_add_outbuf(vcpu_stall->vq, &sg, 1, vcpu_stall, GFP_ATOMIC);
-+	if (!err)
-+		virtqueue_kick(vcpu_stall->vq);
-+
-+	spin_unlock(&vcpu_stall->lock);
-+
-+	hrtimer_start(vcpu_hrtimer, ms_to_ktime(ping_timeout_ms),
-+		      HRTIMER_MODE_REL_PINNED);
-+	return err;
-+}
-+
-+static int stop_stall_detector_cpu(unsigned int cpu)
-+{
-+	int err = 0;
-+	struct scatterlist sg;
-+
-+	struct vcpu_stall_priv *vcpu_stall_detector =
-+		per_cpu_ptr(vcpu_stall_detectors, cpu);
-+
-+	/* Disable the stall detector for the current CPU */
-+	hrtimer_cancel(&vcpu_stall_detector->vcpu_hrtimer);
-+	vcpu_stall->pet_event.is_initialized = false;
-+	vcpu_stall->pet_event.cpu_id = cpu;
-+
-+	spin_lock(&vcpu_stall->lock);
-+	sg_init_one(&sg, &vcpu_stall->pet_event, sizeof(vcpu_stall->pet_event));
-+	err = virtqueue_add_outbuf(vcpu_stall->vq, &sg, 1, vcpu_stall, GFP_ATOMIC);
-+	if (!err)
-+		virtqueue_kick(vcpu_stall->vq);
-+
-+	spin_unlock(&vcpu_stall->lock);
-+
-+	return err;
-+}
-+
-+static int vcpu_stall_detect_probe(struct virtio_device *vdev)
-+{
-+	int ret, cpu;
-+	u32 clock_freq_hz = VCPU_STALL_DEFAULT_CLOCK_HZ;
-+	u32 stall_timeout_sec = VCPU_STALL_DEFAULT_TIMEOUT_SEC;
-+
-+	vcpu_stall = kzalloc(sizeof(struct vcpu_stall), GFP_KERNEL);
-+	if (!vcpu_stall) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+	vdev->priv = vcpu_stall;
-+
-+	vcpu_stall->priv = devm_alloc_percpu(&vdev->dev,
-+					typeof(struct vcpu_stall_priv));
-+	if (!vcpu_stall->priv) {
-+		ret = -ENOMEM;
-+		goto failed_priv;
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		struct vcpu_stall_priv *priv;
-+
-+		priv = per_cpu_ptr(vcpu_stall->priv, cpu);
-+		priv->vdev = vdev;
-+	}
-+
-+	ret = virtio_cread_feature(vdev, VCPU_STALL_REG_CLOCK_FREQ_HZ,
-+						struct vcpu_stall_detect_config, clock_freq_hz,
-+						&clock_freq_hz);
-+	if (ret || !clock_freq_hz) {
-+		if (!(clock_freq_hz > 0 &&
-+		      clock_freq_hz < VCPU_STALL_MAX_CLOCK_HZ)) {
-+			dev_warn(&vdev->dev, "clk out of range\n");
-+			clock_freq_hz = VCPU_STALL_DEFAULT_CLOCK_HZ;
-+		}
-+	}
-+	ret = virtio_cread_feature(vdev, VCPU_STALL_REG_TIMEOUT_SEC,
-+						struct vcpu_stall_detect_config, stall_timeout_sec,
-+						&stall_timeout_sec);
-+	if (ret || !stall_timeout_sec) {
-+		if (!(stall_timeout_sec > 0 &&
-+		      stall_timeout_sec < VCPU_STALL_MAX_TIMEOUT_SEC)) {
-+			dev_warn(&vdev->dev, "stall timeout out of range\n");
-+			stall_timeout_sec = VCPU_STALL_DEFAULT_TIMEOUT_SEC;
-+		}
-+	}
-+
-+	vcpu_stall_config = (struct vcpu_stall_detect_config) {
-+		.clock_freq_hz		= clock_freq_hz,
-+		.stall_timeout_sec	= stall_timeout_sec
-+	};
-+
-+	/* find virtqueue for guest to send pet event to host */
-+	vcpu_stall->vq = virtio_find_single_vq(vdev, NULL, "pet-event");
-+	if (IS_ERR(vcpu_stall->vq)) {
-+		dev_err(&vdev->dev, "failed to find vq\n");
-+		goto failed_priv;
-+	}
-+
-+	spin_lock_init(&vcpu_stall->lock);
-+
-+	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN,
-+				"virt/vcpu_stall_detector:online",
-+				start_stall_detector_cpu,
-+				stop_stall_detector_cpu);
-+	if (ret < 0) {
-+		dev_err(&vdev->dev, "failed to install cpu hotplug\n");
-+		goto failed_priv;
-+	}
-+
-+	vcpu_stall_config.hp_online = ret;
-+	return 0;
-+
-+
-+failed_priv:
-+	kfree(vcpu_stall);
-+err:
-+	return ret;
-+}
-+
-+static void vcpu_stall_detect_remove(struct virtio_device *vdev)
-+{
-+	int cpu;
-+
-+	cpuhp_remove_state(vcpu_stall_config.hp_online);
-+
-+	for_each_possible_cpu(cpu)
-+		stop_stall_detector_cpu(cpu);
-+}
-+
-+static unsigned int features_legacy[] = {
-+	VCPU_STALL_REG_STATUS, VCPU_STALL_REG_LOAD_CNT, VCPU_STALL_REG_CURRENT_CNT,
-+	VCPU_STALL_REG_CLOCK_FREQ_HZ, VCPU_STALL_REG_LEN, VCPU_STALL_REG_TIMEOUT_SEC
++const struct iomap_ops f2fs_iomap_report_ops = {
++	.iomap_begin	= f2fs_iomap_begin_report,
 +};
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index c7cb2177b252..64a2bf58bd67 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -25,6 +25,7 @@
+ #include <linux/quotaops.h>
+ #include <linux/part_stat.h>
+ #include <crypto/hash.h>
++#include <linux/iomap.h>
+ 
+ #include <linux/fscrypt.h>
+ #include <linux/fsverity.h>
+@@ -680,8 +681,9 @@ struct extent_tree_info {
+ #define F2FS_MAP_NEW		(1U << 0)
+ #define F2FS_MAP_MAPPED		(1U << 1)
+ #define F2FS_MAP_DELALLOC	(1U << 2)
++#define F2FS_MAP_ENCODED	(1U << 3)
+ #define F2FS_MAP_FLAGS		(F2FS_MAP_NEW | F2FS_MAP_MAPPED |\
+-				F2FS_MAP_DELALLOC)
++				F2FS_MAP_DELALLOC | F2FS_MAP_ENCODED)
+ 
+ struct f2fs_map_blocks {
+ 	struct block_device *m_bdev;	/* for multi-device dio */
+@@ -4109,6 +4111,7 @@ extern const struct inode_operations f2fs_symlink_inode_operations;
+ extern const struct inode_operations f2fs_encrypted_symlink_inode_operations;
+ extern const struct inode_operations f2fs_special_inode_operations;
+ extern struct kmem_cache *f2fs_inode_entry_slab;
++extern const struct iomap_ops f2fs_iomap_report_ops;
+ 
+ /*
+  * inline.c
+@@ -4139,8 +4142,7 @@ bool f2fs_empty_inline_dir(struct inode *dir);
+ int f2fs_read_inline_dir(struct file *file, struct dir_context *ctx,
+ 			struct fscrypt_str *fstr);
+ int f2fs_inline_data_fiemap(struct inode *inode,
+-			struct fiemap_extent_info *fieinfo,
+-			__u64 start, __u64 len);
++		struct iomap *iomap, __u64 start, __u64 len);
+ 
+ /*
+  * shrinker.c
+diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+index 4638fee16a91..c1afc3414231 100644
+--- a/fs/f2fs/inline.c
++++ b/fs/f2fs/inline.c
+@@ -767,11 +767,9 @@ int f2fs_read_inline_dir(struct file *file, struct dir_context *ctx,
+ }
+ 
+ int f2fs_inline_data_fiemap(struct inode *inode,
+-		struct fiemap_extent_info *fieinfo, __u64 start, __u64 len)
++		struct iomap *iomap, __u64 start, __u64 len)
+ {
+ 	__u64 byteaddr, ilen;
+-	__u32 flags = FIEMAP_EXTENT_DATA_INLINE | FIEMAP_EXTENT_NOT_ALIGNED |
+-		FIEMAP_EXTENT_LAST;
+ 	struct node_info ni;
+ 	struct page *ipage;
+ 	int err = 0;
+@@ -792,8 +790,14 @@ int f2fs_inline_data_fiemap(struct inode *inode,
+ 	}
+ 
+ 	ilen = min_t(size_t, MAX_INLINE_DATA(inode), i_size_read(inode));
+-	if (start >= ilen)
++	if (start >= ilen) {
++		/* stop iomap iterator */
++		iomap->offset = start;
++		iomap->length = len;
++		iomap->addr = IOMAP_NULL_ADDR;
++		iomap->type = IOMAP_HOLE;
+ 		goto out;
++	}
+ 	if (start + len < ilen)
+ 		ilen = start + len;
+ 	ilen -= start;
+@@ -805,8 +809,12 @@ int f2fs_inline_data_fiemap(struct inode *inode,
+ 	byteaddr = (__u64)ni.blk_addr << inode->i_sb->s_blocksize_bits;
+ 	byteaddr += (char *)inline_data_addr(inode, ipage) -
+ 					(char *)F2FS_INODE(ipage);
+-	err = fiemap_fill_next_extent(fieinfo, start, byteaddr, ilen, flags);
+-	trace_f2fs_fiemap(inode, start, byteaddr, ilen, flags, err);
++	iomap->addr = byteaddr;
++	iomap->type = IOMAP_INLINE;
++	iomap->flags = 0;
++	iomap->offset = start;
++	iomap->length = ilen;
 +
-+
-+static unsigned int features[] = {
-+	VCPU_STALL_REG_STATUS, VCPU_STALL_REG_LOAD_CNT, VCPU_STALL_REG_CURRENT_CNT,
-+	VCPU_STALL_REG_CLOCK_FREQ_HZ, VCPU_STALL_REG_LEN, VCPU_STALL_REG_TIMEOUT_SEC
-+};
-+
-+static struct virtio_driver vcpu_stall_detect_driver = {
-+	.feature_table	= features,
-+	.feature_table_size = ARRAY_SIZE(features),
-+	.feature_table_legacy	= features_legacy,
-+	.feature_table_size_legacy	= ARRAY_SIZE(features_legacy),
-+	.driver.name	= KBUILD_MODNAME,
-+	.driver.owner	= THIS_MODULE,
-+	.id_table =	vcpu_stall_id_table,
-+	.probe  = vcpu_stall_detect_probe,
-+	.remove = vcpu_stall_detect_remove,
-+};
-+
-+module_virtio_driver(vcpu_stall_detect_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DEVICE_TABLE(virtio, vcpu_stall_id_table);
-+MODULE_AUTHOR("zhanghao1 <zhanghao1@kylinos.cn>");
-+MODULE_DESCRIPTION("VCPU stall detector");
+ out:
+ 	f2fs_put_page(ipage, 1);
+ 	return err;
 -- 
-2.25.1
+2.35.3
 
-
-No virus found
-		Checked by Hillstone Network AntiVirus
