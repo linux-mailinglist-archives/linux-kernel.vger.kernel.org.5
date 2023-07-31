@@ -2,134 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 195117692A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DDD7692A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjGaKD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
+        id S231995AbjGaKDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231926AbjGaKC5 (ORCPT
+        with ESMTP id S232662AbjGaKDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:02:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4394D10E2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:00:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 17F7C60B9A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:00:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3578AC433C8;
-        Mon, 31 Jul 2023 10:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690797630;
-        bh=XCQvNKE9hpAYSiyaw/udDhcxeHfFBfchLzpPzQ88kPw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tk7S0+HEPzUlDT0NV8HEFWCeMMNs/Ut0Jl0zO0166GMfWAxuf1soVrttH9oZ5vUs3
-         M9Pfdfa2XLuncjtmAhGOA+24jgHComfIjVDazWicnV/kTXcItdC463gmereD2Mp0Fd
-         SknmabB7MwGcd8kqe824CVM/ID4y6BVr5NUEQsTM+kuo44LHV00jyCjO7hkD6lMPS3
-         XXZMDhxeY2Ntc4qUT2FkInY6YLOz8oj7H+q6nsf5zPzvyv8XnaLC6WlaGqc7GWIaVL
-         gdqXVSYNCkYPvI43CevbY7Yf+uMZNIVSw0KIlFBcMIkWTL9VwbpR2XlthFdjp7DLxQ
-         UJ0lxKIsrbwLQ==
-Date:   Mon, 31 Jul 2023 12:00:26 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Lin Ma <linma@zju.edu.cn>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, daniel.machon@microchip.com, petrm@nvidia.com,
-        peter.p.waskiewicz.jr@intel.com, jeffrey.t.kirsher@intel.com,
-        alexander.h.duyck@intel.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v1] net: dcb: choose correct policy to parse
- DCB_ATTR_BCN
-Message-ID: <ZMeGOiANXBqDTBWm@kernel.org>
-References: <20230731045216.3779420-1-linma@zju.edu.cn>
+        Mon, 31 Jul 2023 06:03:23 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A0D212B;
+        Mon, 31 Jul 2023 03:01:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
+ s=s31663417; t=1690797681; x=1691402481; i=quwenruo.btrfs@gmx.com;
+ bh=V7HRW53KRWNHhAT0gF6aXTpowH2/0UDPGsm5OAQvR8g=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=aH5wZtUKVATqzjgJIFbOSMUWK69Y8h/8V9njrZ0clUzxllv/+2ZauVdQfELtlK49+AJeOg+
+ g+lZNIoVGUOFdVfYBvDmdMRDWUJqpkb1GKYZnFX2WGwIZ6piuEMtUgaAu0upB3/cKRtgXFgzH
+ dZD0hZ2cViuy5Nm0Ytrt6uWix5/snWvOU+VqJQtCd2HQRIYaJ0stFyfda8i2/J/n82GteNUmh
+ yn12FxfCwYdRzIYXExgUpA2ii/p7MRimjGai/QNe0SAWZplbhJQfr8+d1yhirHz3v1lpuozwH
+ XxwxYc3vy1gC0UyJBkJq5+aQTEoWiJrEaBYly/svsapb/mP48/5w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MqJmF-1q3VHX2dXf-00nPXT; Mon, 31
+ Jul 2023 12:01:21 +0200
+Message-ID: <f294c55b-3855-9ec3-c66c-a698747f22e0@gmx.com>
+Date:   Mon, 31 Jul 2023 18:01:14 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731045216.3779420-1-linma@zju.edu.cn>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, johannes.thumshirn@wdc.com,
+        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000a3d67705ff730522@google.com>
+ <000000000000f2ca8f0601bef9ca@google.com> <20230731073707.GA31980@lst.de>
+ <358fab94-4eaa-4977-dd69-fc39810f18e0@gmx.com>
+ <ZMeC6BPCBT/5NR+S@infradead.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+In-Reply-To: <ZMeC6BPCBT/5NR+S@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:zBKcaGb0CWrRXLgnJA+3HH9Aj96Q7RaMehaENnaq8Lwzthhxqmv
+ Ejv9Pz/Mzfs2gRHyWwQy2hktw6Br3wzlOsdFxj2XadZvSglxl7GJDYZ2pMizFFpd8uwSJEG
+ R6cSanyPf5wJFY0aBTSnnvhWppXbA6ESl/dP/nIaWzSUyiZrB9ZJpmZWTqqKnox424NKXsa
+ IgB/ZtHVCXGHXDPQ8MrJw==
+UI-OutboundReport: notjunk:1;M01:P0:n8+oEF7hq+E=;i1eT+AAs9D8O1pXMFlD46dGvTCY
+ TOo6LIhJ/h+qprRkzVsKgzNAUcMP9Th4c9vLsWirV1bxe7CIV/D4NVkcIHIr8NyOe0LALFEo+
+ Iyihy9MwcZixExe1kMqOTL938yYHmMAagTkjbKcb5dPm1CMWTt0gt9kES8ydCqs4MX4rTHY9E
+ Ggc2kQjdj6sZbUEeZGUNPjKk9vQXJocOETGzTUM0YKPYNsm7FH0IJbn8AWkNZk4dXZu6pAQ5p
+ dAY+3z1UVbBMp+vDOPapzGXiwgZCfyYx9o5IWFbaDO6ovDd0a5EXRTZyJ7nPW/Jbp7KJjsEc2
+ b3S36wbqMj+tyxEB7bDa0kZwedG2qKJf0T3C8VM4ukix2MxToPXJ0XQEhN5WJT1dXSM4WEETH
+ dPYGyUnnDlNq+6aWIWU928UfjIgvAjjlDaNUN9thxZV5T+mNd7rDrNcBCZmpywL7z5zWHOLcU
+ 74qP0zaHNuJdBkvMcUbNIk4rr7U3rnzCnSnEYGuGgC4/OvnjhMfddji5AlNNezJ98WuyjUK/O
+ Xxzcz+5iosuf3JpFQWVLXtiBUuaO+WMMgfIrxAgZiRZRRLJHZQzBNPpp/3HFXBk5+B582wmez
+ xVIJkei8gocvHIA2/zKPofeq0KKwq0LZj6uFW+2w0I8lPjxERZZJPRgmrmO3k6UzdlY5vHfAu
+ HO8QIED3vyzeLJtD7b9MTma3EtHlm03gTuVJmCUe7lp2zkHs+1Vor4fOuIWJskn0WXBzacS+T
+ 3FznuhUMBoyBJ8zPKvnU1TYWdoJHFG8oUcMvUvUdXMk4XYMUHRwdCU+cULan9fakzh4ojDGKc
+ bsjZ+NP+dN0BFIXTPCzcGN/UxyWDgl5snDYsiz6jZAHbwLXDGb+FnZg5kg4Y9xZrCBnIrR3pe
+ p2O7qZV/pjXUx0w3a3yplAkK0XkVQu8ihDL+cwg4gt2pxomDLdgeLWMXlaqRGEg8pcPKO+cWt
+ RKT75dQy689hk6tjvsdOD9IC0dI=
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 12:52:16PM +0800, Lin Ma wrote:
-> The dcbnl_bcn_setcfg uses erroneous policy to parse tb[DCB_ATTR_BCN],
-> which is introduced in commit 859ee3c43812 ("DCB: Add support for DCB
-> BCN"). Please see the comment in below code
-> 
-> static int dcbnl_bcn_setcfg(...)
-> {
->   ...
->   ret = nla_parse_nested_deprecated(..., dcbnl_pfc_up_nest, .. )
->   // !!! dcbnl_pfc_up_nest for attributes
->   //  DCB_PFC_UP_ATTR_0 to DCB_PFC_UP_ATTR_ALL in enum dcbnl_pfc_up_attrs
->   ...
->   for (i = DCB_BCN_ATTR_RP_0; i <= DCB_BCN_ATTR_RP_7; i++) {
->   // !!! DCB_BCN_ATTR_RP_0 to DCB_BCN_ATTR_RP_7 in enum dcbnl_bcn_attrs
->     ...
->     value_byte = nla_get_u8(data[i]);
->     ...
->   }
->   ...
->   for (i = DCB_BCN_ATTR_BCNA_0; i <= DCB_BCN_ATTR_RI; i++) {
->   // !!! DCB_BCN_ATTR_BCNA_0 to DCB_BCN_ATTR_RI in enum dcbnl_bcn_attrs
->   ...
->     value_int = nla_get_u32(data[i]);
->   ...
->   }
->   ...
-> }
-> 
-> That is, the nla_parse_nested_deprecated uses dcbnl_pfc_up_nest
-> attributes to parse nlattr defined in dcbnl_pfc_up_attrs. But the
-> following access code fetch each nlattr as dcbnl_bcn_attrs attributes.
-> By looking up the associated nla_policy for dcbnl_bcn_attrs. We can find
-> the beginning part of these two policies are "same".
-> 
-> static const struct nla_policy dcbnl_pfc_up_nest[...] = {
-> 	[DCB_PFC_UP_ATTR_0]   = {.type = NLA_U8},
-> 	[DCB_PFC_UP_ATTR_1]   = {.type = NLA_U8},
-> 	[DCB_PFC_UP_ATTR_2]   = {.type = NLA_U8},
-> 	[DCB_PFC_UP_ATTR_3]   = {.type = NLA_U8},
-> 	[DCB_PFC_UP_ATTR_4]   = {.type = NLA_U8},
-> 	[DCB_PFC_UP_ATTR_5]   = {.type = NLA_U8},
-> 	[DCB_PFC_UP_ATTR_6]   = {.type = NLA_U8},
-> 	[DCB_PFC_UP_ATTR_7]   = {.type = NLA_U8},
-> 	[DCB_PFC_UP_ATTR_ALL] = {.type = NLA_FLAG},
-> };
-> 
-> static const struct nla_policy dcbnl_bcn_nest[...] = {
-> 	[DCB_BCN_ATTR_RP_0]         = {.type = NLA_U8},
-> 	[DCB_BCN_ATTR_RP_1]         = {.type = NLA_U8},
-> 	[DCB_BCN_ATTR_RP_2]         = {.type = NLA_U8},
-> 	[DCB_BCN_ATTR_RP_3]         = {.type = NLA_U8},
-> 	[DCB_BCN_ATTR_RP_4]         = {.type = NLA_U8},
-> 	[DCB_BCN_ATTR_RP_5]         = {.type = NLA_U8},
-> 	[DCB_BCN_ATTR_RP_6]         = {.type = NLA_U8},
-> 	[DCB_BCN_ATTR_RP_7]         = {.type = NLA_U8},
-> 	[DCB_BCN_ATTR_RP_ALL]       = {.type = NLA_FLAG},
-> 	// from here is somewhat different
-> 	[DCB_BCN_ATTR_BCNA_0]       = {.type = NLA_U32},
->         ...
->         [DCB_BCN_ATTR_ALL]          = {.type = NLA_FLAG},
-> };
-> 
-> Therefore, the current code is buggy and this
-> nla_parse_nested_deprecated could overflow the dcbnl_pfc_up_nest and use
-> the adjacent nla_policy to parse attributes from DCB_BCN_ATTR_BCNA_0.
-> 
-> This patch use correct dcbnl_bcn_nest policy to parse the
-> tb[DCB_ATTR_BCN] nested TLV.
-> 
-> Fixes: 859ee3c43812 ("DCB: Add support for DCB BCN")
-> Signed-off-by: Lin Ma <linma@zju.edu.cn>
 
-Reviewed-by: Simon Horman <horms@kernel.org>
 
+On 2023/7/31 17:46, Christoph Hellwig wrote:
+> Thanks.  I've not been able to reproduce it on the apparent bisection
+> commit for more than half an hour, but running it on the originally
+> reported commit reproduces it after a few minutes.  I'll see if I
+> can come up with a better bisection.
+>
+
+I checked the related code, and didn't find anything obvious.
+
+But there is a chance that the image is intentionally corrupted so that
+we got a reloc root but incorrect root owner.
+
+Thus I sent out a patch to make that triggering ASSERT() to a more
+graceful exit:
+
+https://lore.kernel.org/linux-btrfs/24881cc9caf738f6248232709d7357d3186773=
+b5.1690782754.git.wqu@suse.com/T/#u
+
+Although I never got the C reproducer to trigger, thus no confirmation
+on that.
+
+Thanks,
+Qu
