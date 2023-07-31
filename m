@@ -2,69 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 373C976943C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E4776943F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbjGaLIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55242 "EHLO
+        id S232132AbjGaLIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232075AbjGaLIL (ORCPT
+        with ESMTP id S231516AbjGaLIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:08:11 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D606E76;
-        Mon, 31 Jul 2023 04:08:09 -0700 (PDT)
+        Mon, 31 Jul 2023 07:08:30 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2E3E78;
+        Mon, 31 Jul 2023 04:08:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690801689; x=1722337689;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=wmHhhDZYj/HzDaojK6j8984a8pR+yl+cuphjT9plJ/I=;
-  b=IMPt2f5ecdyuxNXngky+ZOAdFsuyXpO3Xd05vGrxM6cSAIiv4ljCWVCT
-   PEhOJTjDx1YHhjgtbXM9jjIM5a+0n6HcO8CoTMHWGWdbynsWx0ozqMGqQ
-   g7WDrEhrCkaqd70HbmNNEIo9aWAVdO9s/rv7UC9iDBSHSKbJV2B8+BDbW
-   jKgLt8MqmFtEf5xvLSg8STiuSnO6kcVNEMBf5ctv3dkKelCYHLzonXv/B
-   veYLf6Sbmg5i4APNRqEHqNwIjUI/3VI4umbJ6aC+m5Ukjit5nVzNQjBzj
-   sQDEvCS8HPHAd5Z074xl23S10CRvJdvK5CfShTfAAXgGqSOEavSUSoE8B
+  t=1690801708; x=1722337708;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qgnwtWhbjFgSb/5GdbOTZT6iLncUhLzvzU+UhREi7mA=;
+  b=YXspNeg6G8Lgipgnzri93Mb+AhSSYT02Ldfc8iXpHeOwag/foH3vH+Fm
+   5XKjyka8kCd/xCDGaI6g03N5Di/AvPSInsaybGL1JxfUGP5UXcjW2xgRC
+   J0ZSggVO2g1YkdT6bBOHDZmq4Akb3MTWqNCxGzXPx2oUPvTUmOaOwWkq0
+   HsyJ9WaD4PUx7cZu7QSXG65dqZhF9YXZ9YM9VygLUQQOXIWAZ1B/qA43F
+   gKPZsUzrke57sdlGRC8/NSOBH0+ML5RpcDBgZHlusR6dg1rmoPC/sz1Lw
+   G2dnxoU3GAEgCpLX9ruTg5DEZtzyJD3r0EEqr3ZbeEflwdQN6v0+Cx5DN
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="435293007"
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="399936113"
 X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="435293007"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 04:08:08 -0700
+   d="scan'208";a="399936113"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 04:08:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="852001627"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="852001627"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.208.223])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 04:08:04 -0700
-Message-ID: <4ec5cf9e-130d-4259-420f-420508186858@intel.com>
-Date:   Mon, 31 Jul 2023 14:08:00 +0300
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="871644682"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 31 Jul 2023 04:08:27 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 31 Jul 2023 14:08:24 +0300
+Date:   Mon, 31 Jul 2023 14:08:24 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     gregkh@linuxfoundation.org, linux@roeck-us.net, kyletso@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v1] usb: typec: tcpm: Fix response to vsafe0V event
+Message-ID: <ZMeWKDi99T6tBRg8@kuha.fi.intel.com>
+References: <20230712085722.1414743-1-badhri@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.1
-Subject: Re: [PATCH v3 4/7] perf record: Track sideband events for all CPUs
- when tracing selected CPUs
-Content-Language: en-US
-To:     Yang Jihong <yangjihong1@huawei.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, irogers@google.com, kan.liang@linux.intel.com,
-        james.clark@arm.com, tmricht@linux.ibm.com, ak@linux.intel.com,
-        anshuman.khandual@arm.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20230722093219.174898-1-yangjihong1@huawei.com>
- <20230722093219.174898-5-yangjihong1@huawei.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20230722093219.174898-5-yangjihong1@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230712085722.1414743-1-badhri@google.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,140 +62,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/07/23 12:32, Yang Jihong wrote:
-> User space tasks can migrate between CPUs, we need to track side-band
-> events for all CPUs.
+Hi,
+
+I'm sorry to keep you waiting.
+
+On Wed, Jul 12, 2023 at 08:57:22AM +0000, Badhri Jagan Sridharan wrote:
+> Do not transition to SNK_UNATTACHED state when receiving vsafe0v event
+> while in SNK_HARD_RESET_WAIT_VBUS. Ignore VBUS off events as well as
+> in some platforms VBUS off can be signalled more than once.
 > 
-> The specific scenarios are as follows:
+> [143515.364753] Requesting mux state 1, usb-role 2, orientation 2
+> [143515.365520] pending state change SNK_HARD_RESET_SINK_OFF -> SNK_HARD_RESET_SINK_ON @ 650 ms [rev3 HARD_RESET]
+> [143515.632281] CC1: 0 -> 0, CC2: 3 -> 0 [state SNK_HARD_RESET_SINK_OFF, polarity 1, disconnected]
+> [143515.637214] VBUS on
+> [143515.664985] VBUS off
+> [143515.664992] state change SNK_HARD_RESET_SINK_OFF -> SNK_HARD_RESET_WAIT_VBUS [rev3 HARD_RESET]
+> [143515.665564] VBUS VSAFE0V
+> [143515.665566] state change SNK_HARD_RESET_WAIT_VBUS -> SNK_UNATTACHED [rev3 HARD_RESET]
 > 
->          CPU0                                 CPU1
->   perf record -C 0 start
->                               taskA starts to be created and executed
->                                 -> PERF_RECORD_COMM and PERF_RECORD_MMAP
->                                    events only deliver to CPU1
->                               ......
->                                 |
->                           migrate to CPU0
->                                 |
->   Running on CPU0    <----------/
->   ...
-> 
->   perf record -C 0 stop
-> 
-> Now perf samples the PC of taskA. However, perf does not record the
-> PERF_RECORD_COMM and PERF_RECORD_MMAP events of taskA.
-> Therefore, the comm and symbols of taskA cannot be parsed.
-> 
-> The solution is to record sideband events for all CPUs when tracing
-> selected CPUs. Because this modifies the default behavior, add related
-> comments to the perf record man page.
-> 
-> The sys_perf_event_open invoked is as follows:
-> 
->   # perf --debug verbose=3 record -e cpu-clock -C 1 true
->   <SNIP>
->   Opening: cpu-clock
->   ------------------------------------------------------------
->   perf_event_attr:
->     type                             1 (PERF_TYPE_SOFTWARE)
->     size                             136
->     config                           0 (PERF_COUNT_SW_CPU_CLOCK)
->     { sample_period, sample_freq }   4000
->     sample_type                      IP|TID|TIME|CPU|PERIOD|IDENTIFIER
->     read_format                      ID|LOST
->     disabled                         1
->     inherit                          1
->     freq                             1
->     sample_id_all                    1
->     exclude_guest                    1
->   ------------------------------------------------------------
->   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 5
->   Opening: dummy:u
->   ------------------------------------------------------------
->   perf_event_attr:
->     type                             1 (PERF_TYPE_SOFTWARE)
->     size                             136
->     config                           0x9 (PERF_COUNT_SW_DUMMY)
->     { sample_period, sample_freq }   1
->     sample_type                      IP|TID|TIME|CPU|IDENTIFIER
->     read_format                      ID|LOST
->     inherit                          1
->     exclude_kernel                   1
->     exclude_hv                       1
->     mmap                             1
->     comm                             1
->     task                             1
->     sample_id_all                    1
->     exclude_guest                    1
->     mmap2                            1
->     comm_exec                        1
->     ksymbol                          1
->     bpf_event                        1
->   ------------------------------------------------------------
->   sys_perf_event_open: pid -1  cpu 0  group_fd -1  flags 0x8 = 6
->   sys_perf_event_open: pid -1  cpu 1  group_fd -1  flags 0x8 = 7
->   sys_perf_event_open: pid -1  cpu 2  group_fd -1  flags 0x8 = 9
->   sys_perf_event_open: pid -1  cpu 3  group_fd -1  flags 0x8 = 10
->   sys_perf_event_open: pid -1  cpu 4  group_fd -1  flags 0x8 = 11
->   sys_perf_event_open: pid -1  cpu 5  group_fd -1  flags 0x8 = 12
->   sys_perf_event_open: pid -1  cpu 6  group_fd -1  flags 0x8 = 13
->   sys_perf_event_open: pid -1  cpu 7  group_fd -1  flags 0x8 = 14
->   <SNIP>
-> 
-> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+> Fixes: 28b43d3d746b ("usb: typec: tcpm: Introduce vsafe0v for vbus")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
 > ---
->  tools/perf/Documentation/perf-record.txt |  3 +++
->  tools/perf/builtin-record.c              | 14 +++++++++++++-
->  2 files changed, 16 insertions(+), 1 deletion(-)
+>  drivers/usb/typec/tcpm/tcpm.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-> index 680396c56bd1..dac53ece51ab 100644
-> --- a/tools/perf/Documentation/perf-record.txt
-> +++ b/tools/perf/Documentation/perf-record.txt
-> @@ -388,6 +388,9 @@ comma-separated list with no space: 0,1. Ranges of CPUs are specified with -: 0-
->  In per-thread mode with inheritance mode on (default), samples are captured only when
->  the thread executes on the designated CPUs. Default is to monitor all CPUs.
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 829d75ebab42..cc1d83926497 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -5349,6 +5349,10 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
+>  		/* Do nothing, vbus drop expected */
+>  		break;
 >  
-> +User space tasks can migrate between CPUs, so when tracing selected CPUs,
-> +a dummy event is created to track sideband for all CPUs.
+> +	case SNK_HARD_RESET_WAIT_VBUS:
+> +		/* Do nothing, its OK to receive vbus off events */
+> +		break;
 > +
->  -B::
->  --no-buildid::
->  Do not save the build ids of binaries in the perf.data files. This skips
-> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-> index 3ff9d972225e..4e8e97928f05 100644
-> --- a/tools/perf/builtin-record.c
-> +++ b/tools/perf/builtin-record.c
-> @@ -912,6 +912,7 @@ static int record__config_tracking_events(struct record *rec)
->  {
->  	struct record_opts *opts = &rec->opts;
->  	struct evlist *evlist = rec->evlist;
-> +	bool system_wide = false;
->  	struct evsel *evsel;
->  
->  	/*
-> @@ -921,7 +922,18 @@ static int record__config_tracking_events(struct record *rec)
->  	 */
->  	if (opts->target.initial_delay || target__has_cpu(&opts->target) ||
->  	    perf_pmus__num_core_pmus() > 1) {
-> -		evsel = evlist__findnew_tracking_event(evlist, false);
-> +
-> +		/*
-> +		 * User space tasks can migrate between CPUs, so when tracing
-> +		 * selected CPUs, sideband for all CPUs is still needed.
-> +		 *
-> +		 * If all (non-dummy) evsel have exclude_user,
-> +		 * system_wide is not needed.
-> +		 */
-> +		if (!!opts->target.cpu_list && !opts->all_kernel)
+>  	default:
+>  		if (port->pwr_role == TYPEC_SINK && port->attached)
+>  			tcpm_set_state(port, SNK_UNATTACHED, tcpm_wait_for_discharge(port));
+> @@ -5395,6 +5399,9 @@ static void _tcpm_pd_vbus_vsafe0v(struct tcpm_port *port)
+>  	case SNK_DEBOUNCED:
+>  		/*Do nothing, still waiting for VSAFE5V for connect */
+>  		break;
+> +	case SNK_HARD_RESET_WAIT_VBUS:
+> +		/* Do nothing, its OK to receive vbus off events */
+> +		break;
+>  	default:
+>  		if (port->pwr_role == TYPEC_SINK && port->auto_vbus_discharge_enabled)
+>  			tcpm_set_state(port, SNK_UNATTACHED, 0);
+> 
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> -- 
+> 2.41.0.255.g8b1d071c50-goog
 
-Not everyone uses all-kernel.  Can we check the evsels are either dummy
-or exclude_user?
-
-> +			system_wide = true;
-> +
-> +		evsel = evlist__findnew_tracking_event(evlist, system_wide);
->  		if (!evsel)
->  			return -ENOMEM;
->  
-
+-- 
+heikki
