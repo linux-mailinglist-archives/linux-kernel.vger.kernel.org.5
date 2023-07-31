@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B44BA76972F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E58769732
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbjGaNIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
+        id S232693AbjGaNIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbjGaNHs (ORCPT
+        with ESMTP id S232560AbjGaNI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:07:48 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641AF1FD7;
-        Mon, 31 Jul 2023 06:07:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690808833; x=1722344833;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dxI4YScDLo8YpeDgT4DDfRErG18F4mdrsXlfYWF5Ri0=;
-  b=m1Da1eb93WmmvLXy4/VJkk9UZwtyc7I/r2gbOjanrxiLy4akDvqVF0Vv
-   ld6r398oRxDrxKrU2r+pZQwekQMbzKAlEs8bro0/Wa5WFO6mckzS5km5G
-   sCejbvOnT5PnqPblLA5m3BgYpxmFWiMKjNkmXbiRr6aKwJeoSgGLsIPAQ
-   km7gHUl7U2knEVDuk5oIByVqi/Ss9uGzkeXEN/hp0DSZ6gRIJgS5Pfcqq
-   VPNTo7xE5Q0/XsDNUxZr/QhUMms+KkqdaVE+cBzaI6D+A5HU51sts1+LU
-   d+t5L1co+hsHBh2m0G7ltBEnSTGjtzdptupGA/6dWUNwnM0Rey9zE8XAM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366495603"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="366495603"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 06:06:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="678334713"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="678334713"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 31 Jul 2023 06:06:44 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qQSbS-00057z-1S;
-        Mon, 31 Jul 2023 13:06:29 +0000
-Date:   Mon, 31 Jul 2023 21:06:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     LeoLiu-oc <LeoLiu-oc@zhaoxin.com>, olivia@selenic.com,
-        herbert@gondor.apana.org.au, jiajie.ho@starfivetech.com,
-        conor.dooley@microchip.com, martin@kaiser.cx, mmyangfl@gmail.com,
-        jenny.zhang@starfivetech.com, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, leoliu@zhaoxin.com,
-        CobeChen@zhaoxin.com, YunShen@zhaoxin.com, TonyWWang@zhaoxin.com,
-        leoliu-oc <leoliu-oc@zhaoxin.com>
-Subject: Re: [PATCH v2 2/2] hwrng: add Zhaoxin HW RNG driver
-Message-ID: <202307312040.d5kTGcBX-lkp@intel.com>
-References: <20230731084515.2057375-3-LeoLiu-oc@zhaoxin.com>
+        Mon, 31 Jul 2023 09:08:28 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1967C1BE5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:07:47 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe28f92d8eso2619358e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690808865; x=1691413665;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sloIk4WWUeov37xdllLzD6j7lRUmJiAHMp2I8RnM0nQ=;
+        b=PXIv4WwQfZUPVLFdmtmO6wanYZ+Ol6lwdLMgNcjYxT4+ZPqxs1vC98OJfVI/kKv+Bp
+         ST/1YvhrXuSdz0U9bdNcG7TNHoDor8Cd67JVrK0Igz9dCCvFJ3DeAHky/y/zV68f7jnb
+         /CTpftBeqjrEpoD4Fy9Pq6/nCMBZLob334QXhnlOdXchs02ZrYO5HYY/DW002vpSwQ1N
+         LbfAphyjIITncn82tuK5vOnTYSfzjAq5LlTA1IrWISZgtPdHLAfBZGC7AlQzFZcOFWsT
+         tc/+hq8KF8lVA5DkC43KllU9fg0KeBJw5vHgP/4QIfij3QOntAT+kGm/3Fwj+ahdSRk5
+         t9zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690808865; x=1691413665;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sloIk4WWUeov37xdllLzD6j7lRUmJiAHMp2I8RnM0nQ=;
+        b=P5ATI9bY5UrNu+lL2THePpPYefaWngF0o9bFEkmVRTeNc5Kc0XCqsbPamWe7chd1Vp
+         mZNajtMQ6272QsP8xZeTvKjUXKWrr+qsKk1S8nuaAFncPLsw5EV1J0N0rYzUKh8BuE7I
+         bR2Cf/pwAoVprJ3mge/qsp8amMo3wWXI7VJKXD3Tv+ulX1R88N+/T+WmUHMjqBcdPytD
+         yrsIJmLNBiYSUaLOBUz8n5/d5tq/Frk7qcB+N1qe5V8Xvlr9mjDCLaiTo2gRYqaI4wlA
+         6uwAL6Lrjb0RZc1joMfDaq2wbJ/G8MACuni5EX6CmBLjeuGKwCKATofN+B37TDPFUmNw
+         kL9w==
+X-Gm-Message-State: ABy/qLb8MDzZgB2Kwz3xNHw1WlqbYSfiwL6SogYCdJE3bDJ1EPJcdcSM
+        5xghtXHJGbKCJ+HeXdN0I0rPwiDK3WMA7XqHPCFe/A==
+X-Google-Smtp-Source: APBJJlF8otKcRiEBYT+w5swQvKj8Vmx/DdTyLNpFy7XON+JoUQyxVul5eQy7lVIbhbUN5//cv00xJntHIwYuqlbtBa8=
+X-Received: by 2002:a05:6512:358c:b0:4fe:3e89:fcb2 with SMTP id
+ m12-20020a056512358c00b004fe3e89fcb2mr141079lfr.34.1690808865288; Mon, 31 Jul
+ 2023 06:07:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731084515.2057375-3-LeoLiu-oc@zhaoxin.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20230731-synquacer-net-v3-1-944be5f06428@kernel.org> <CAMj1kXF_AZ9bFWHPjDURkZUdAdrX0Qh2Q03FNYq99pfrJGtFjQ@mail.gmail.com>
+In-Reply-To: <CAMj1kXF_AZ9bFWHPjDURkZUdAdrX0Qh2Q03FNYq99pfrJGtFjQ@mail.gmail.com>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Mon, 31 Jul 2023 16:07:09 +0300
+Message-ID: <CAC_iWjKL0ejVAeZfcY7unc2KeM73+_jzXdZ=cn0=XOrYMikfQw@mail.gmail.com>
+Subject: Re: [PATCH v3] net: netsec: Ignore 'phy-mode' on SynQuacer in DT mode
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,43 +72,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi LeoLiu-oc,
+On Mon, 31 Jul 2023 at 13:54, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Mon, 31 Jul 2023 at 12:48, Mark Brown <broonie@kernel.org> wrote:
+> >
+> > As documented in acd7aaf51b20 ("netsec: ignore 'phy-mode' device
+> > property on ACPI systems") the SocioNext SynQuacer platform ships with
+> > firmware defining the PHY mode as RGMII even though the physical
+> > configuration of the PHY is for TX and RX delays.  Since bbc4d71d63549bc
+> > ("net: phy: realtek: fix rtl8211e rx/tx delay config") this has caused
+> > misconfiguration of the PHY, rendering the network unusable.
+> >
+> > This was worked around for ACPI by ignoring the phy-mode property but
+> > the system is also used with DT.  For DT instead if we're running on a
+> > SynQuacer force a working PHY mode, as well as the standard EDK2
+> > firmware with DT there are also some of these systems that use u-boot
+> > and might not initialise the PHY if not netbooting.  Newer firmware
+> > imagaes for at least EDK2 are available from Linaro so print a warning
+> > when doing this.
+> >
+> > Fixes: 533dd11a12f6 ("net: socionext: Add Synquacer NetSec driver")
+> > Signed-off-by: Mark Brown <broonie@kernel.org>
+>
+> Acked-by: Ard Biesheuvel <ardb@kernel.org>
+>
+> > ---
+> > Changes in v3:
+> > - Typo fixes.
+> > - Link to v2: https://lore.kernel.org/r/20230728-synquacer-net-v2-1-aea4d4f32b26@kernel.org
+> >
+> > Changes in v2:
+> > - Unlike ACPI force what appears to be the correct mode, there are
+> >   u-boot firmwares which might not configure the PHY.
+> > - Link to v1: https://lore.kernel.org/r/20230727-synquacer-net-v1-1-4d7f5c4cc8d9@kernel.org
+> > ---
+> >  drivers/net/ethernet/socionext/netsec.c | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/socionext/netsec.c b/drivers/net/ethernet/socionext/netsec.c
+> > index 2d7347b71c41..0dcd6a568b06 100644
+> > --- a/drivers/net/ethernet/socionext/netsec.c
+> > +++ b/drivers/net/ethernet/socionext/netsec.c
+> > @@ -1851,6 +1851,17 @@ static int netsec_of_probe(struct platform_device *pdev,
+> >                 return err;
+> >         }
+> >
+> > +       /*
+> > +        * SynQuacer is physically configured with TX and RX delays
+> > +        * but the standard firmware claimed otherwise for a long
+> > +        * time, ignore it.
+> > +        */
+> > +       if (of_machine_is_compatible("socionext,developer-box") &&
+> > +           priv->phy_interface != PHY_INTERFACE_MODE_RGMII_ID) {
+> > +               dev_warn(&pdev->dev, "Outdated firmware reports incorrect PHY mode, overriding\n");
+> > +               priv->phy_interface = PHY_INTERFACE_MODE_RGMII_ID;
+> > +       }
+> > +
+> >         priv->phy_np = of_parse_phandle(pdev->dev.of_node, "phy-handle", 0);
+> >         if (!priv->phy_np) {
+> >                 dev_err(&pdev->dev, "missing required property 'phy-handle'\n");
+> >
+> > ---
+> > base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+> > change-id: 20230727-synquacer-net-e241f34baceb
+> >
+> > Best regards,
+> > --
+> > Mark Brown <broonie@kernel.org>
+> >
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on char-misc/char-misc-testing]
-[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus herbert-cryptodev-2.6/master linus/master v6.5-rc4 next-20230731]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/LeoLiu-oc/hwrng-via-rng-convert-to-x86_cpu_id-probing/20230731-164950
-base:   char-misc/char-misc-testing
-patch link:    https://lore.kernel.org/r/20230731084515.2057375-3-LeoLiu-oc%40zhaoxin.com
-patch subject: [PATCH v2 2/2] hwrng: add Zhaoxin HW RNG driver
-config: openrisc-randconfig-r003-20230731 (https://download.01.org/0day-ci/archive/20230731/202307312040.d5kTGcBX-lkp@intel.com/config)
-compiler: or1k-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230731/202307312040.d5kTGcBX-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202307312040.d5kTGcBX-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/char/hw_random/zhaoxin-rng.c:16:10: fatal error: asm/cpu_device_id.h: No such file or directory
-      16 | #include <asm/cpu_device_id.h>
-         |          ^~~~~~~~~~~~~~~~~~~~~
-   compilation terminated.
-
-
-vim +16 drivers/char/hw_random/zhaoxin-rng.c
-
-  > 16	#include <asm/cpu_device_id.h>
-    17	#include <asm/fpu/api.h>
-    18	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
