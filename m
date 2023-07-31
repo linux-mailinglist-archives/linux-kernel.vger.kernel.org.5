@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBB57769378
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B06C76937F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbjGaKuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
+        id S231875AbjGaKuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231582AbjGaKto (ORCPT
+        with ESMTP id S231339AbjGaKtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:49:44 -0400
+        Mon, 31 Jul 2023 06:49:52 -0400
 Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7114C1FD0;
-        Mon, 31 Jul 2023 03:49:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C3A10E0;
+        Mon, 31 Jul 2023 03:49:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1690800560; bh=Vrcj0+W95eie0atm7f7h2d141pVyQYj9rZE2KYcFCZM=;
+        t=1690800562; bh=JGGtMrE57kUvgv6mo7tmcpGnIHxi87n9B+IU2cOpSMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CkjBneP7eskEHDv3Pg696FP1Dy8ttxrr7xM6KKCmz40bL4sW/8VCSDP+eJ3DyZNXq
-         oj4vFIeohtyX7C2zPy6tCjPDUZfAKKlmW29q3O7huLckR38wUri1qYpUHTjPZW2yaG
-         uMRbv/AAbAd28/jhu4HXSFyOFC30Yq/7HlVgG/Zs=
+        b=IJxUcEUfQfpGEWROn7cdMw1hixU6L6YhjdHvvkDecF3rT8pSTQh5Tp0WTrjH/ydCS
+         aESRGHF6y5yzexM6bTS/U2k6OEDZ+wS9uzLm9vMd6b4VirHzdPamgRZ+xLQy/aSLDr
+         VNup9aq9QC0plDwmOo2wXbgbfTwRWZcOo1TfdsrA=
 Received: from ld50.lan (unknown [101.88.28.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 9DEF46018C;
-        Mon, 31 Jul 2023 18:49:20 +0800 (CST)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 17D3B6019D;
+        Mon, 31 Jul 2023 18:49:22 +0800 (CST)
 From:   WANG Xuerui <kernel@xen0n.name>
 To:     Song Liu <song@kernel.org>
 Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
         WANG Xuerui <git@xen0n.name>
-Subject: [PATCH 2/5] raid6: guard the tables.c include of <linux/export.h> with __KERNEL__
-Date:   Mon, 31 Jul 2023 18:49:08 +0800
-Message-Id: <20230731104911.411964-3-kernel@xen0n.name>
+Subject: [PATCH 3/5] raid6: test: cosmetic cleanups for the test Makefile
+Date:   Mon, 31 Jul 2023 18:49:09 +0800
+Message-Id: <20230731104911.411964-4-kernel@xen0n.name>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230731104911.411964-1-kernel@xen0n.name>
 References: <20230731104911.411964-1-kernel@xen0n.name>
@@ -51,30 +51,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: WANG Xuerui <git@xen0n.name>
 
-The export directives for the tables are already emitted with __KERNEL__
-guards, but the <linux/export.h> include is not, causing errors when
-building the raid6test program. Guard this include too to fix the
-raid6test build.
+Use tabs/spaces consistently: hard tabs for marking recipe lines only,
+spaces for everything else.
+
+Also, the OPTFLAGS declaration actually included the tabs preceding the
+line comment, making compiler invocation lines unnecessarily long. As
+the entire block of declarations are meant for ad-hoc customization
+(otherwise they would probably make use of `?=` instead of `=`), move
+the "Adjust as desired" comment above the block too to fix the long
+invocation lines.
 
 Signed-off-by: WANG Xuerui <git@xen0n.name>
 ---
- lib/raid6/mktables.c | 2 ++
- 1 file changed, 2 insertions(+)
+ lib/raid6/test/Makefile | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/lib/raid6/mktables.c b/lib/raid6/mktables.c
-index f02e10fa62381..3be03793237c2 100644
---- a/lib/raid6/mktables.c
-+++ b/lib/raid6/mktables.c
-@@ -56,7 +56,9 @@ int main(int argc, char *argv[])
- 	uint8_t v;
- 	uint8_t exptbl[256], invtbl[256];
+diff --git a/lib/raid6/test/Makefile b/lib/raid6/test/Makefile
+index 4fb7700a741bd..143cda60faa12 100644
+--- a/lib/raid6/test/Makefile
++++ b/lib/raid6/test/Makefile
+@@ -6,14 +6,15 @@
  
-+	printf("#ifdef __KERNEL__\n");
- 	printf("#include <linux/export.h>\n");
-+	printf("#endif\n");
- 	printf("#include <linux/raid/pq.h>\n");
+ pound := \#
  
- 	/* Compute multiplication table */
+-CC	 = gcc
+-OPTFLAGS = -O2			# Adjust as desired
+-CFLAGS	 = -I.. -I ../../../include -g $(OPTFLAGS)
+-LD	 = ld
+-AWK	 = awk -f
+-AR	 = ar
+-RANLIB	 = ranlib
+-OBJS	 = int1.o int2.o int4.o int8.o int16.o int32.o recov.o algos.o tables.o
++# Adjust as desired
++CC       = gcc
++OPTFLAGS = -O2
++CFLAGS   = -I.. -I ../../../include -g $(OPTFLAGS)
++LD       = ld
++AWK      = awk -f
++AR       = ar
++RANLIB   = ranlib
++OBJS     = int1.o int2.o int4.o int8.o int16.o int32.o recov.o algos.o tables.o
+ 
+ ARCH := $(shell uname -m 2>/dev/null | sed -e /s/i.86/i386/)
+ ifeq ($(ARCH),i386)
+@@ -37,9 +38,9 @@ endif
+ ifeq ($(IS_X86),yes)
+         OBJS   += mmx.o sse1.o sse2.o avx2.o recov_ssse3.o recov_avx2.o avx512.o recov_avx512.o
+         CFLAGS += -DCONFIG_X86
+-	CFLAGS += $(shell echo "vpmovm2b %k1, %zmm5" |          \
+-		    gcc -c -x assembler - >/dev/null 2>&1 &&	\
+-		    rm ./-.o && echo -DCONFIG_AS_AVX512=1)
++        CFLAGS += $(shell echo "vpmovm2b %k1, %zmm5" |          \
++                    gcc -c -x assembler - >/dev/null 2>&1 &&    \
++                    rm ./-.o && echo -DCONFIG_AS_AVX512=1)
+ else ifeq ($(HAS_NEON),yes)
+         OBJS   += neon.o neon1.o neon2.o neon4.o neon8.o recov_neon.o recov_neon_inner.o
+         CFLAGS += -DCONFIG_KERNEL_MODE_NEON=1
+@@ -63,12 +64,12 @@ endif
+ %.uc: ../%.uc
+ 	cp -f $< $@
+ 
+-all:	raid6.a raid6test
++all: raid6.a raid6test
+ 
+ raid6.a: $(OBJS)
+-	 rm -f $@
+-	 $(AR) cq $@ $^
+-	 $(RANLIB) $@
++	rm -f $@
++	$(AR) cq $@ $^
++	$(RANLIB) $@
+ 
+ raid6test: test.c raid6.a
+ 	$(CC) $(CFLAGS) -o raid6test $^
 -- 
 2.40.0
 
