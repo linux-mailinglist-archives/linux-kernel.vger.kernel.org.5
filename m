@@ -2,158 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D87A7769270
+	by mail.lfdr.de (Postfix) with ESMTP id 91DB776926F
 	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbjGaJzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
+        id S230306AbjGaJzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:55:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbjGaJyg (ORCPT
+        with ESMTP id S231904AbjGaJyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:54:36 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E8F1B3;
-        Mon, 31 Jul 2023 02:54:14 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 36V9s2H4017246;
-        Mon, 31 Jul 2023 04:54:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690797242;
-        bh=M4kurL0krUI/VoC/6+ZREpjmoi2fExunt2SmgJRPaf0=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=vQNaqFOy5rPUxZClxaQrTfnCM2n1iYn2RQ4PIER0j91Euku2qhsqpUK2JjUvYBnwf
-         3D9SIRr04aGJRqbCcTuSJsN5lHO2ZHlXY6dXiOGzXMZbIWYX3/+CyodkcVkMq6crug
-         7LWSJwNJPAHAxbLF8pDpY/poI3F43ZioibIZIXk4=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 36V9s2SC010827
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 Jul 2023 04:54:02 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 31
- Jul 2023 04:54:02 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 31 Jul 2023 04:54:02 -0500
-Received: from [172.24.227.147] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 36V9ruFF028228;
-        Mon, 31 Jul 2023 04:53:56 -0500
-Message-ID: <903337d5-2421-be7a-8b0b-9b684944f6a6@ti.com>
-Date:   Mon, 31 Jul 2023 15:24:00 +0530
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 15/16] media: dt-bindings: Add TI J721E CSI2RX
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, <nm@ti.com>,
-        <devarsht@ti.com>, Vaishnav Achath <vaishnav.a@ti.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Benoit Parrot <bparrot@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        <devicetree@vger.kernel.org>,
+        Mon, 31 Jul 2023 05:54:37 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8621E1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:54:17 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2b9f0b7af65so4873581fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:54:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690797256; x=1691402056;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cxvMJvHLwBTrnKLZye8TDFSPJgpR7pa1aGrAgRySAk4=;
+        b=rtxydgC1gFkvb5mqPWXFSGiFQRPsbQ0ZaibVcnD1NSUYqfMl0IbHDE0rCfdx3TSuyc
+         4M1Z5QR+NtQATWMNhrJNKlnjdWRI4M7goXuhgKl+R00xg9rpExLyylcY8A7BSj3eoPHZ
+         POI7qCIIzpTRxbdyu4uJ/jxh/lwh9R7B47azI8gKpNUh5Kr5s3PRNCBNVVAxd/Q0Rpbs
+         tGnuL55lb6MdiLk8YfpzRgboQXBgiXSGCnE1WTB2nYGjyC81FTX8eqwAowB7h5FfJzKQ
+         Oer64uWIj27ehrTEWAOB0u8KMCF05uQXQGLfPAXY87TF38kdnSPB2iMH5A0+XBbklU8m
+         rZaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690797256; x=1691402056;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cxvMJvHLwBTrnKLZye8TDFSPJgpR7pa1aGrAgRySAk4=;
+        b=Yb7YPaKdolb1fFcxCFdzPBdIAhta1iUkmW/+LJ6D3qWs1K9wIRaD8MwT/SJNK3UNYi
+         2A+hjDE+sCTAw7UkUovEwv15lsdU+hWVE33X27A8PstOiVgXrRDlYX5x0sPog3F0pxqO
+         KweOidHUoivKWcQnqZm/LKgMBNz2PuNCBE7IdTjTbfiyPnjREGm/N9fgLdBvztXkYwlt
+         Em1R0mh3SQHsT6+iv3U1VMtsJhFrHZUiY07jC+7m5k+bw85dnWDsbPMom2Ppzle2h89+
+         TDysaUxB12BVQ0+JrhMjpoaZPJIQxg30gsW7v7aD4C49dMtCTBZKPuCGPDvEYoalFVBx
+         iqhg==
+X-Gm-Message-State: ABy/qLZl++G2YpOgzX6g1Rrd1q94zJHTFZ6r/s6NLqF0qN+e6K4K7ZDc
+        f87SCmbfzK8Qs0uXZ1btmKdp7g==
+X-Google-Smtp-Source: APBJJlE7wQhXoweE/t+BJZjOJ+eAu06Zax8HzFnpro0zdCZ7/Ym8zCBK2Y/a+Ib5XLFFPG0rO8fENw==
+X-Received: by 2002:a2e:9a82:0:b0:2b6:da88:a2d0 with SMTP id p2-20020a2e9a82000000b002b6da88a2d0mr6613063lji.47.1690797255881;
+        Mon, 31 Jul 2023 02:54:15 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id h17-20020adffd51000000b0031455482d1fsm12543726wrs.47.2023.07.31.02.54.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 02:54:15 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Xianwei Zhao <xianwei.zhao@amlogic.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230731-upstream_csi-v8-0-fb7d3661c2c9@ti.com>
- <20230731-upstream_csi-v8-15-fb7d3661c2c9@ti.com>
- <169079588075.2176682.10224087620577481487.robh@kernel.org>
-From:   Jai Luthra <j-luthra@ti.com>
-In-Reply-To: <169079588075.2176682.10224087620577481487.robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>
+In-Reply-To: <20230707003710.2667989-1-xianwei.zhao@amlogic.com>
+References: <20230707003710.2667989-1-xianwei.zhao@amlogic.com>
+Subject: Re: (subset) [PATCH V2 0/4] Power: C3: add power domain driver
+Message-Id: <169079725498.195351.12929338822608058749.b4-ty@linaro.org>
+Date:   Mon, 31 Jul 2023 11:54:14 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hi,
 
-On 31/07/23 15:01, Rob Herring wrote:
+On Fri, 07 Jul 2023 08:37:06 +0800, Xianwei Zhao wrote:
+> First patch is that Use 'name' instead of 'index' as criterion.
+> The  variate 'index' could be equal to zero in some SoCs. Such as C3 SoC,
+> PWRC_C3_NNA_ID be defined zero.
 > 
-> On Mon, 31 Jul 2023 13:59:33 +0530, Jai Luthra wrote:
->> From: Pratyush Yadav <p.yadav@ti.com>
->>
->> TI's J721E uses the Cadence CSI2RX and DPHY peripherals to facilitate
->> capture over a CSI-2 bus. The TI CSI2RX platform driver glues all the
->> parts together.
->>
->> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
->> Signed-off-by: Jai Luthra <j-luthra@ti.com>
->> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->> Reviewed-by: Rob Herring <robh@kernel.org>
->> ---
->> v7->v8:
->> - Drop "Device Tree Bindings" from title
->> - Rename "Wrapper" to "Shim" in title as that is the name referred in
->>    the TRM and other places
->> - Update maintainer to myself
->> - Drop items from compatible as only a single element is present
->> - Rename compatible to "ti,j721e-csi2rx-shim" to distinguish from the
->>    SoC-specific CSI2RX bridge compatible
->>
->>   .../bindings/media/ti,j721e-csi2rx-shim.yaml       | 100 +++++++++++++++++++++
->>   1 file changed, 100 insertions(+)
->>
+> Other patchs adds power controller driver support for Amlogic C3 SoC.
+> The power domains registers can be accessed in the secure world only.
 > 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/ti,j721e-csi2rx-shim.yaml:
-> Error in referenced schema matching $id: http://devicetree.org/schemas/media/cdns,csi2rx.yaml
-> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/media/ti,j721e-csi2rx-shim.example.dtb: ticsi2rx@4500000: csi-bridge@4504000: False schema does not allow {'compatible': ['ti,j721e-csi2rx', 'cdns,csi2rx'], 'reg': [[72368128, 4096]], 'clocks': [[4294967295, 26, 2], [4294967295, 26, 0], [4294967295, 26, 2], [4294967295, 26, 2], [4294967295, 26, 3], [4294967295, 26, 3]], 'clock-names': ['sys_clk', 'p_clk', 'pixel_if0_clk', 'pixel_if1_clk', 'pixel_if2_clk', 'pixel_if3_clk'], 'phys': [[4294967295]], 'phy-names': ['dphy'], 'ports': {'#address-cells': [[1]], '#size-cells': [[0]], 'port@0': {'reg': [[0]], 'endpoint': {'remote-endpoint': [[4294967295]], 'bus-type': [[4]], 'clock-lanes': [[0]], 'data-lanes': [[1, 2]]}}}}
-> 	from schema $id: http://devicetree.org/schemas/media/ti,j721e-csi2rx-shim.yaml#
-> Documentation/devicetree/bindings/media/ti,j721e-csi2rx-shim.example.dtb: /example-0/ticsi2rx@4500000/csi-bridge@4504000: failed to match any schema with compatible: ['ti,j721e-csi2rx', 'cdns,csi2rx']
-> Documentation/devicetree/bindings/media/ti,j721e-csi2rx-shim.example.dtb: /example-0/ticsi2rx@4500000/csi-bridge@4504000: failed to match any schema with compatible: ['ti,j721e-csi2rx', 'cdns,csi2rx']
-> 
-> doc reference errors (make refcheckdocs):
-> 
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230731-upstream_csi-v8-15-fb7d3661c2c9@ti.com
-> 
-> The base for the series is generally the latest rc1. A different dependency
-> should be noted in *this* patch.
+> [...]
 
-Sorry I missed this warning from v7.
+Thanks, Applied to https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git (v6.6/drivers-genpd)
 
-This patch depends on 9536cc949235 ("media: dt-bindings: cadence-csi2rx: 
-Convert to DT schema") which is part of linux-next.
+[1/4] soc: amlogic: use name instead of index as criterion
+      https://git.kernel.org/amlogic/c/fadf18180022743ff74b1f6ca4f3cff462ddaddb
+[2/4] dt-bindings: power: add Amlogic C3 power domains
+      https://git.kernel.org/amlogic/c/83b03d62939c46c118a8d722f07ae03a87967b00
+[3/4] soc: c3: Add support for power domains controller
+      https://git.kernel.org/amlogic/c/77e2f4e3cbd5cde442d05a7bdb6cd01565bead6d
 
-The base for this series should be linux-next/master 
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 
-instead of 6.5-rc1.
+These changes has been applied on the intermediate git tree [1].
 
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your schema.
-> 
+The v6.6/drivers-genpd branch will then be sent via a formal Pull Request to the Linux SoC maintainers
+for inclusion in their intermediate git branches in order to be sent to Linus during
+the next merge window, or sooner if it's a set of fixes.
+
+In the cases of fixes, those will be merged in the current release candidate
+kernel and as soon they appear on the Linux master branch they will be
+backported to the previous Stable and Long-Stable kernels [2].
+
+The intermediate git branches are merged daily in the linux-next tree [3],
+people are encouraged testing these pre-release kernels and report issues on the
+relevant mailing-lists.
+
+If problems are discovered on those changes, please submit a signed-off-by revert
+patch followed by a corrective changeset.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/amlogic/linux.git
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 
 -- 
-Thanks,
-Jai
+Neil
 
-GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
