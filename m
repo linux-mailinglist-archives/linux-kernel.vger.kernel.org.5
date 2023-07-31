@@ -2,186 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F2776A05D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C36376A060
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbjGaS00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
+        id S230452AbjGaS1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjGaS0X (ORCPT
+        with ESMTP id S230264AbjGaS1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:26:23 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3534419AC
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:26:22 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-3490b737f9aso14105ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:26:22 -0700 (PDT)
+        Mon, 31 Jul 2023 14:27:09 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95E510CE;
+        Mon, 31 Jul 2023 11:27:07 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-403b3213d8aso29227601cf.0;
+        Mon, 31 Jul 2023 11:27:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690827981; x=1691432781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1690828027; x=1691432827;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6LZEdaDlAMdQP6JhmjsArIuxox1zxEtjjTY2SzD6PsU=;
-        b=5fgkkTfZTjvrkPsV2OAsWS7fGDKlkOo6NBkGxlUad6Djf9YF4mNXTcZwmQCCLJ1nBy
-         ytvPZa3KoE6pLMDaS1L4gdmZaOfNzKXtsa1fikLeZSNL0jSNWYpUTY8GHiEMpPSUIhEf
-         GKZr2wZjg6oExHWyVPblSGkoydBcnRJu278I6bHizaXll85ZaXfkAb9ISQ34veJLXVin
-         H4LgRU66ITkpG1C45xmAlPZe5ifFrojIcI163nCjGKu3BAHmTrdfA2g91PJ4XmMzNAwE
-         6qNdJbd/ZgVe0FTRRBae2q8TCC7NnJ6KmTDr6JnJgqJf5rkyLUFJCut3v7Lu9kIPHxwj
-         tGnw==
+        bh=dlds1JSHqdvGEcoD53cMNrPoiV5pobOGiP/ZwpDCtn0=;
+        b=P1aF1FixjZ4baIYKYQcJMUVQaSeaTglgrEdiuYk5riBlYLQpN+E+EYDI+6kbnReSwW
+         rzac9hbGX0DzvG8WeU3ewBjK3U6HX10Ih8FMGBve2TOiVsY8YuqzDXHUBxkpNiHo4HwG
+         bDvPKUO3p+BreKfyAg1KDl8W8wiKZ/79POOAAywzP+HLlmTiiB0x/Hm7Aooac3U+qBzk
+         KzAQd/2WYcm8j8V425Hepnc60xRDcXrPBB82JlKj7ybFl78LrajuCbuBdd5g5AvMmGJm
+         0WyUmekI1W7w3+i0ZgQjZblbhGeNeQWrBlnLWte33GTcyQ4BaVeAFPTKNIGXTFrVUJGZ
+         q3Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690827981; x=1691432781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6LZEdaDlAMdQP6JhmjsArIuxox1zxEtjjTY2SzD6PsU=;
-        b=Fzkc/zMuKDaJuBtxDo4e04kK/yRDQ85Xs6Vxj8vmSPDpubYQc2UZ/Vf38x2cdFXnpl
-         J18t5KcXzNsRxmZf6aAvXhMjPVN1Kv3K6/CtGLOC1Kcj5zQ8aUgOdKJZPjlll6NZKh0P
-         d5WpuqIM+r14vwImejhrCWsGIZZO0z2+GgMDGAtTWo6vBJnyFaqij704g5oZyiReUBQT
-         HZGQchIV6FuqjLta3d+R4F2QAhXvjExrKLT5EK+StZbge7LfR/NoS42mPoZE8ytoSdvI
-         nbJXNvO+a/40pC8lDcWXKEJAJ51v0JmvgmC2fcNDvwDbT+JOq338OvWJurUMg4R2UlYI
-         dLuA==
-X-Gm-Message-State: ABy/qLYNZ/3yql8R0vKMMVquBjEqowJ6VYVBV8rLfc5fxvCpmB7IVtyV
-        h6UcFuSuAMjuQsrXCYdahxPMCAxPPPkJTJ4Ad0P0Qw==
-X-Google-Smtp-Source: APBJJlHJ2q+Ibhsyd21GC77gr96XZana1MhNnQDJBDO6Init3JyGxBHBc9FYe6705xtGHxT1vNNwqYdqSlhzUk4wwtA=
-X-Received: by 2002:a05:6e02:16c5:b0:345:dcdf:206b with SMTP id
- 5-20020a056e0216c500b00345dcdf206bmr693992ilx.25.1690827981339; Mon, 31 Jul
- 2023 11:26:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-13-rananta@google.com>
- <87jzulqz0v.wl-maz@kernel.org>
-In-Reply-To: <87jzulqz0v.wl-maz@kernel.org>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 31 Jul 2023 11:26:09 -0700
-Message-ID: <CAJHc60zGzAqWw2iZwNEG_bWERXkz_io7ae-K_tf_kh6xcOBxLA@mail.gmail.com>
-Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for unmap
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690828027; x=1691432827;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dlds1JSHqdvGEcoD53cMNrPoiV5pobOGiP/ZwpDCtn0=;
+        b=Bi4duX0Wn1M3cPpqAu65AXw34AOUv+hyuJvNnAJWpJt0zf53GB9K1wjrDTtnjP5PIJ
+         uJVlaGng3FaKUEP53MEuW/KgXsUW6PfgAAZDH4C7UWJLO07VqjehoJi4Jlh7G/VSpG0M
+         pgS4nNCTI8NxhHME5kAO1n0AriZVmtGnbtrjAyoGGtYzZaGTcJmJxgZsH4rBNmoFyhuD
+         3opP1MuanXsfNvNTuVsKMTxrsMUP3rgaKo7sRF1nbM2RCgpxpeQjPQuVmrnk7yEa+Sc0
+         mWGQHOi1E/VsUERKeZSr7DuN87OzdmpCnKwZ3rgnEC85raVF6qMJGxnFOB9iFIFhL4WJ
+         GXQw==
+X-Gm-Message-State: ABy/qLZ3HpmkkVlm3IWHtsuycUwCwBygs+tOEzN6ohHHoboBJLErYpos
+        8A1+YOahz8VhCSaPO9hviKA=
+X-Google-Smtp-Source: APBJJlHExGsd6nGILbuTvECZzdZBY3jFS8hu+E6pTEriShJKCMmQSHY57RF73HuiIyswSqG7MoBXlg==
+X-Received: by 2002:ac8:7e94:0:b0:3ff:2923:48a with SMTP id w20-20020ac87e94000000b003ff2923048amr15303100qtj.3.1690828026873;
+        Mon, 31 Jul 2023 11:27:06 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id l6-20020ac84586000000b00400aa8592d1sm1916807qtn.36.2023.07.31.11.27.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 11:27:06 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 14:27:06 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Gustavo Luiz Duarte <gustavold@gmail.com>, netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>,
+        Breno Leitao <leitao@debian.org>,
+        Willem de Bruijn <willemb@google.com>,
+        linux-kernel@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Message-ID: <64c7fcfa3d428_17de01294e8@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20230731145713.178509-1-gustavold@gmail.com>
+References: <20230731145713.178509-1-gustavold@gmail.com>
+Subject: RE: [PATCH] net: ipmr: Call ipmr_ioctl() directly from
+ ipmr_sk_ioctl()
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 6:12=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
-:
->
-> On Sat, 22 Jul 2023 03:22:51 +0100,
-> Raghavendra Rao Ananta <rananta@google.com> wrote:
-> >
-> > The current implementation of the stage-2 unmap walker traverses
-> > the given range and, as a part of break-before-make, performs
-> > TLB invalidations with a DSB for every PTE. A multitude of this
-> > combination could cause a performance bottleneck on some systems.
-> >
-> > Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
-> > invalidations until the entire walk is finished, and then
-> > use range-based instructions to invalidate the TLBs in one go.
-> > Condition deferred TLB invalidation on the system supporting FWB,
-> > as the optimization is entirely pointless when the unmap walker
-> > needs to perform CMOs.
-> >
-> > Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
-> > now serves the stage-2 unmap walker specifically, rather than
-> > acting generic.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-----
-> >  1 file changed, 58 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.=
-c
-> > index 5ef098af1736..cf88933a2ea0 100644
-> > --- a/arch/arm64/kvm/hyp/pgtable.c
-> > +++ b/arch/arm64/kvm/hyp/pgtable.c
-> > @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pgta=
-ble_visit_ctx *ctx, kvm_pte_t n
-> >       smp_store_release(ctx->ptep, new);
-> >  }
-> >
-> > -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, st=
-ruct kvm_s2_mmu *mmu,
-> > -                        struct kvm_pgtable_mm_ops *mm_ops)
-> > +struct stage2_unmap_data {
-> > +     struct kvm_pgtable *pgt;
-> > +     bool defer_tlb_flush_init;
-> > +};
-> > +
-> > +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
-> > +{
-> > +     /*
-> > +      * If FEAT_TLBIRANGE is implemented, defer the individual
-> > +      * TLB invalidations until the entire walk is finished, and
-> > +      * then use the range-based TLBI instructions to do the
-> > +      * invalidations. Condition deferred TLB invalidation on the
-> > +      * system supporting FWB, as the optimization is entirely
-> > +      * pointless when the unmap walker needs to perform CMOs.
-> > +      */
-> > +     return system_supports_tlb_range() && stage2_has_fwb(pgt);
-> > +}
-> > +
-> > +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *unm=
-ap_data)
-> > +{
-> > +     bool defer_tlb_flush =3D __stage2_unmap_defer_tlb_flush(unmap_dat=
-a->pgt);
-> > +
-> > +     /*
-> > +      * Since __stage2_unmap_defer_tlb_flush() is based on alternative
-> > +      * patching and the TLBIs' operations behavior depend on this,
-> > +      * track if there's any change in the state during the unmap sequ=
-ence.
-> > +      */
-> > +     WARN_ON(unmap_data->defer_tlb_flush_init !=3D defer_tlb_flush);
-> > +     return defer_tlb_flush;
->
-> I really don't understand what you're testing here. The ability to
-> defer TLB invalidation is a function of the system capabilities
-> (range+FWB) and a single flag that is only set on the host for pKVM.
->
-> How could that change in the middle of the life of the system? if
-> further begs the question about the need for the unmap_data data
-> structure.
->
-> It looks to me that we could simply pass the pgt pointer around and be
-> done with it. Am I missing something obvious?
->
-From one of the previous comments [1] (used in a different context),
-I'm given to understand that since these feature checks are governed
-by alternative patching, they can potentially change (at runtime?). Is
-that not the case and I have misunderstood the idea in comment [1]
-entirely? Is it solely used for optimization purposes and set only
-once?
-If that's the case, I can get rid of the WARN_ON() and unmap_data.
+Gustavo Luiz Duarte wrote:
+> Call ipmr_ioctl()/ip6mr_ioctl() directly from ipmr_sk_ioctl()/ip6mr_sk_ioctl()
+> and avoid sk_prot->ioctl function pointer indirection.
+> 
+> Also, delete the sock_ioctl_inout() helper as it is no longer needed.
+> 
+> Signed-off-by: Gustavo Luiz Duarte <gustavold@gmail.com>
+> Suggested-by: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> ---
+>  include/linux/mroute6.h | 33 ++++++++++++++++++++++++++-------
+>  include/net/sock.h      |  2 --
+>  net/core/sock.c         | 20 --------------------
+>  net/ipv4/ipmr.c         | 33 ++++++++++++++++++++++++++-------
+>  4 files changed, 52 insertions(+), 36 deletions(-)
 
-- Raghavendra
+The helper function does save some LoC, it seems.
 
-[1]: https://lore.kernel.org/all/ZGPPj1AXS0Uah2Ug@linux.dev/
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+My comment came during review of the series. Now that that is in,
+fine to leave as is, imho.
