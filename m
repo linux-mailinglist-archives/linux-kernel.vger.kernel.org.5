@@ -2,69 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0D276965B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4134476965D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbjGaMbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:31:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
+        id S232650AbjGaMbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbjGaMbb (ORCPT
+        with ESMTP id S232642AbjGaMbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:31:31 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0F7B2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:31:30 -0700 (PDT)
-Received: from [192.168.2.174] (109-252-150-127.dynamic.spd-mgts.ru [109.252.150.127])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3665C6600357;
-        Mon, 31 Jul 2023 13:31:28 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690806689;
-        bh=uU9TE+QLz19uvUZurU8HLJAokwEE/NyJV1JP8aJE7Q8=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=jGdzaE/K4vcru342F4pVcqyo3uHT6ZQGWOB3RZlT908tYxz1BRt6sNaEeXxGAlr1Z
-         MCXlxmxxKYemkSHuo1IOqatIempLL2M6NdfejoSsXUtLVn6dNd83an3p6XRYzgHO0y
-         mNn3FyECXCG965wkM7m3iA9dZttOeoFwQEC88a4cTtBFX5iczxDx4iamWLDNDyNlHs
-         Ha0YNH/SzGFbZ35p5L12qiSgPknErRsfaNnnX2GyoGN+0BX9gPmgGQ7EYcSx9Ds+3m
-         /b2XpjewiTSLB5vxbFBcfiRnSAUVOt39v6YxePinpeMauzVswP1B0UrX2ovE1IHyK3
-         9ReNENytIfyOw==
-Message-ID: <e39905e4-74e5-4de7-626c-2f2794214813@collabora.com>
-Date:   Mon, 31 Jul 2023 15:31:25 +0300
+        Mon, 31 Jul 2023 08:31:41 -0400
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81639E66;
+        Mon, 31 Jul 2023 05:31:39 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vogfr9A_1690806695;
+Received: from 30.221.150.94(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0Vogfr9A_1690806695)
+          by smtp.aliyun-inc.com;
+          Mon, 31 Jul 2023 20:31:36 +0800
+Message-ID: <6581496b-57e8-d5bf-ae3e-fb466ed5dff9@linux.alibaba.com>
+Date:   Mon, 31 Jul 2023 20:31:33 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.1
-Subject: Re: [PATCH v14 02/12] drm/shmem-helper: Add pages_pin_count field
-Content-Language: en-US
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-References: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
- <20230722234746.205949-3-dmitry.osipenko@collabora.com>
- <20230725092709.51356f39@collabora.com>
- <20230725103234.0c8923f1@collabora.com>
- <4c5fa735-9bfd-f92a-8deb-888c7368f89e@collabora.com>
-In-Reply-To: <4c5fa735-9bfd-f92a-8deb-888c7368f89e@collabora.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH v5 4/5] perf jevents: Add support for Arm CMN PMU aliasing
+To:     John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1690525040-77423-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1690525040-77423-5-git-send-email-renyu.zj@linux.alibaba.com>
+ <01f793eb-6373-e6c0-a712-9e08ee3c91c8@oracle.com>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <01f793eb-6373-e6c0-a712-9e08ee3c91c8@oracle.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,47 +53,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/23 15:27, Dmitry Osipenko wrote:
-> On 7/25/23 11:32, Boris Brezillon wrote:
->>> Can we make it an atomic_t, so we can avoid taking the lock when the
->>> GEM has already been pinned. That's something I need to be able to grab
->>> a pin-ref in a path where the GEM resv lock is already held[1]. We could
->>> of course expose the locked version,
->> My bad, that's actually not true. The problem is not that I call
->> drm_gem_shmem_pin() with the resv lock already held, but that I call
->> drm_gem_shmem_pin() in a dma-signaling path where I'm not allowed to
->> take a resv lock. I know for sure pin_count > 0, because all GEM objects
->> mapped to a VM have their memory pinned right now, and this should
->> stand until we decide to add support for live-GEM eviction, at which
->> point we'll probably have a way to detect when a GEM is evicted, and
->> avoid calling drm_gem_shmem_pin() on it.
+
+
+在 2023/7/28 下午4:17, John Garry 写道:
+> On 28/07/2023 07:17, Jing Zhang wrote:
+>> Currently just add aliases for part of Arm CMN PMU events which are
+>> general and compatible for any SoC and CMN-ANY.
 >>
->> TLDR; I can't trade the atomic_t for a drm_gem_shmem_pin_locked(),
->> because that wouldn't solve my problem. The other solution would be to
->> add an atomic_t at the driver-GEM level, and only call
->> drm_gem_shmem_[un]pin() on 0 <-> 1 transitions, but I thought using an
->> atomic at the GEM-shmem level, to avoid locking when we can, would be
->> beneficial to the rest of the eco-system. Let me know if that's not an
->> option, and I'll go back to the driver-specific atomic_t.
+>> "Compat" value "434*;436*;43c*;43a*" means it is compatible with all
 > 
-> Could you please explain why do you need to pin GEM in a signal handler?
-> This is not something drivers usually do or need to do. You likely also
-> shouldn't need to detect that GEM is evicted in yours driver. I'd expect
-> that Panthor shouldn't differ from Panfrost in regards to how GEM memory
-> management is done and Panfrost doesn't need to do anything special.
+> As mentioned in patch 1/5, a comma-separated list seems a better delimiter to me
 > 
-> Note that patch #14 makes locked pin/unpin functions public and turns
-> the unlocked variants into helpers, you'll be able to experiment with
-> these funcs in the Panthor driver.
-
-correction: that's patch #10
-
-> In general, using atomic_t or kref should be a good thing to do, but
-> AFAICS it shouldn't bring benefits to the today's drm-shmem users. I'd
-> want to understand what you're trying to achieve in the Panthor driver.
+>> CMN600/CMN650/CMN700/Ci700.
+> 
+> It would be good if you could provide a link to where you got these events. I think that it is the publicly available CMN TRM document.
 > 
 
--- 
-Best regards,
-Dmitry
+Ok, will do.
 
+Thanks,
+Jing
+
+>>
+>> Signed-off-by: Jing Zhang<renyu.zj@linux.alibaba.com>
+> 
+> Apart from comments, above:
+> 
+> Reviewed-by: John Garry <john.g.garry@oracle.com>
