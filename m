@@ -2,155 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3F7769A4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C09769A55
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbjGaPE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        id S232691AbjGaPGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGaPEZ (ORCPT
+        with ESMTP id S229483AbjGaPGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:04:25 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2060.outbound.protection.outlook.com [40.107.93.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0121CE78;
-        Mon, 31 Jul 2023 08:04:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L6G6Jp47lEhsBeCXX/oAoMEzbibLHzsZhtuNKlyW/T0GU0aXm5MZLcOEBhB+T9YJfdQefu1YYWuH+Xdj71gmJrpPOL4NbgoSvv1JQe53uh34pTpi8xVrETl7tZWZq1bbn+p32vEAZ2Em/LO0GBJH4im1f22C17Upxf/orkCfK/hfJ9zoEfiMD/oBoT3ovYhK3qzx6yCL2VLkuUcmeAQLXHsd56Fyxi8excR9k8gLG1seZDgYPqHe8UsqosvSgTc8nwaSd/LVVriBShC9B0fZrKNu8CqzT/cTpQHna0iGDIzJV3F2lHgqrAMDrpPdXeMLCI/BQ2CLLfbKhietccODTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7Bazck+NSeWS8nQUxV63068N65y644YleC1gT1b/6Hs=;
- b=gJP6oX+0NWJHXUsMp3R+4XsRktogMP38eJseQoz23gHzUHkWEm3y6OM9ZOmc6x6lJ/wr5hy49zTUh4dT/CxYRhtH/SRDYUK/YsyCMZVJ2F1MdET0FHoo1tAu7I14EkMJy7p5eQJ1Et6+Rnz3E0TduNuYbqaenswwVrbMIBvZOUblkUawyAQNUJ31WU8ZA5pyv2fzSGGDQ9Wl+Iy7AsQJZ+NfHGgePOuWqzIkLSfvf/EZyFV1yojI/lSWkHVxaIohYox3BvxRhLhEyh7vPoLWRaIqdscqQWRe8qMM6KnIDlzOU0DoyUGM3PuqqkOAEoolRsLF94JxfD8PhtPPuT8ryw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7Bazck+NSeWS8nQUxV63068N65y644YleC1gT1b/6Hs=;
- b=A/bLWs5DHGfNVorZL0MUvfyhsId7QIGgj83MEseDYpY37Rm0gV2eMmsgcVnYEdobB31R5FABMnFEGSPDRcQxXQjtWNNETZPyfVDBLS9xGYobL9+VAp29D+rRzY1XznC71oPY7ivvqOn/TzA+4fO7IiVU4S/BO/JmakYRa0Pqa+0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
- by SJ0PR12MB6830.namprd12.prod.outlook.com (2603:10b6:a03:47c::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.39; Mon, 31 Jul
- 2023 15:04:17 +0000
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::1352:c7fd:4b4b:cc18]) by BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::1352:c7fd:4b4b:cc18%7]) with mapi id 15.20.6631.042; Mon, 31 Jul 2023
- 15:04:16 +0000
-Message-ID: <7f451eb2-6e62-9e49-c47a-e0de59cc7ebf@amd.com>
-Date:   Mon, 31 Jul 2023 10:04:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] blk-iocost: fix seq_printf compile type mismatch error
-Content-Language: en-US
-To:     Tejun Heo <tj@kernel.org>
-Cc:     josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        amd <amd@localhost.localdomain>
-References: <20230717141852.153965-1-carlos.bilbao@amd.com>
- <93557f79-c12c-3c3f-2c25-9ba50a618daa@amd.com>
- <ZLstYbAzqkqwIRzy@slm.duckdns.org>
-From:   Carlos Bilbao <carlos.bilbao@amd.com>
-In-Reply-To: <ZLstYbAzqkqwIRzy@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA1P222CA0058.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:2c1::9) To BL1PR12MB5874.namprd12.prod.outlook.com
- (2603:10b6:208:396::17)
+        Mon, 31 Jul 2023 11:06:43 -0400
+Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D474610D8;
+        Mon, 31 Jul 2023 08:06:40 -0700 (PDT)
+Received: from xmz-huawei.. (unknown [111.197.209.91])
+        by APP-03 (Coremail) with SMTP id rQCowACnrcW2zcdkoZmtDw--.21850S2;
+        Mon, 31 Jul 2023 23:05:27 +0800 (CST)
+From:   Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+To:     Conor Dooley <conor@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     Bin Meng <bmeng@tinylab.org>, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        stable@vger.kernel.org, Guo Ren <guoren@kernel.org>,
+        Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+Subject: [PATCH] riscv: Handle zicsr/zifencei issue between gcc and binutils
+Date:   Mon, 31 Jul 2023 23:05:11 +0800
+Message-Id: <20230731150511.38140-1-xingmingzheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230731095534.22842-1-xingmingzheng@iscas.ac.cn>
+References: <20230731095534.22842-1-xingmingzheng@iscas.ac.cn>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|SJ0PR12MB6830:EE_
-X-MS-Office365-Filtering-Correlation-Id: 02e1cf49-ba02-4374-fc24-08db91d768dd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GWqOhZ9RBVCZ54ygffNM2LG4BZT5oUnjNyLMEo3WXe76pIc3lnI1vEtOxZS/Qmk+r6cNcxpISdKC8m81s8qRGtMHNtehKBgxYsoOSwitRCUCJM/qlf03gMKQgMH03UUwQy59tyaxNhk77Mqx2/LuZL2gf6IVRzhmYLO86igbRYde2xKuVBpJXY3tL09saXe7Xs7ehRHsOyoPa11YpDnsTmLpLUMCoFsxJ8h9QhquGn5JRX9a+2J/I2h5NYxImi2OcuAOONJNkDdQISyEXor4JLD+29UpdPImgdQE3Nr9N34wFsn4taz2I6FdmFJFu7BDgxT9P1dK2WsdPQwNuWaJbeSUWj48dtjm6N3VsnSTFxn9lWl6052sKfasfUv7cEMkU1IgoSwVJ1XOxo7Er+C/BjSTpofjWLVQ+ZSpgl4HZgG5R+PbR30QllWi9tPnK705Luxwm1mqTr9n9/ghx0dmur/JSI9auO/soLZTarExCbA3bvMiRBYYoGemV8yfEP9ifJf69Enl2oeq3BNxBG1mNcdMhOOkb+KckDts52UEZd4GLKjFJxJl94TfNuIWbEVFYI20wJ0xPgDxeVmdOsgDFuewgvCagjQe7UMqixpSr1Qu6NgkmzUuOzQaCeRZo5Vl+OOA3MZ/UAOxKx1nqaakeg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(39860400002)(136003)(396003)(346002)(376002)(451199021)(966005)(6512007)(6486002)(36756003)(53546011)(2616005)(26005)(6506007)(186003)(44832011)(66946007)(66556008)(41300700001)(31696002)(66476007)(86362001)(316002)(4326008)(5660300002)(6916009)(8676002)(8936002)(31686004)(2906002)(478600001)(38100700002)(4744005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?YXpxRmxIZ2FCdmV2M21abjVIRWVRMEM1aS9oZ2dXQXgzRG5GYVNhc1BJMEF0?=
- =?utf-8?B?d2gyQ3daOWFGVVFzWjZjTGtDYUJYd1hXMUs0SVdFR2VKYUxYM1lYQWoxd0ln?=
- =?utf-8?B?QS8xems0NThTVjByZkNQYUVJS1pJTzBmWHFGNGNYRHVsaGxFazkrLzBaWlVj?=
- =?utf-8?B?aE1EWTZiTUpDb2xUb0svZkhia3JDdFl0M1RUZGlzZ1lZRTc0OFJXemxSMkEw?=
- =?utf-8?B?VzdXckIyZVlhaE5lR0xGKzQ5QWZtSTBQeFU4QXpST0I5RHJFMmFmNW1KY09Q?=
- =?utf-8?B?bmdtK1E5amtlbWphSU5lODlyUXNQTnJpZXh6RksxUEdiR2JRL0tONjVZYTlo?=
- =?utf-8?B?N1ZxRmtLT0dyZUxhRGxkdEVDalBvdENObGJsbG9LRTJtc3V1a0NHVHhFMzUv?=
- =?utf-8?B?V1JFV2RPNU5BU3BheHNjWUFoMjZBRW9ualcyL2RzdWFLekY4S3lJSzBzeDMr?=
- =?utf-8?B?V09SY214MFA1djhpaG5rU3E0N2RKUTQwZEpuYnJZZS9RS3RIaHFQM0dOOCtw?=
- =?utf-8?B?Rzk0Y1p0dFVsRFE5blpicTUycFgvZ2l2a1VabHB6aUlwYzIveUpyY3RqK2tI?=
- =?utf-8?B?SWNEVzIyR2YvcS9wRDVYZDZyZTBxU1ZRbmF2bXFtaFFxWTY3UUVCaVYxcmRa?=
- =?utf-8?B?YzUvOTN3OTRpWWcvMEpESFdOZHlySENreGJIWGZMVGFhTU5USUZFZm1CWG0v?=
- =?utf-8?B?ZFJObnlQY1VUZ3N3UjIrK2NWOTBIZGNGakUzQVRnNmFtYjhDK3F1VEhXamxz?=
- =?utf-8?B?aFJmVmsybmJnM296WXRwSXoyUjRnWVZCbk1yQ0FDRk5XZlNKaHZJT3FoZFky?=
- =?utf-8?B?c3dyaDFMaTVDLzdkRzZXVENWaGQzMHJaYy96TmpGTnlFN3ZudGlpVEZBbTNi?=
- =?utf-8?B?dEZsdW0vNHJLL1NxRTZtd2dXZWgxd1NJVkdaSmdYUSs3eUNjZjA1a2RpSi9Q?=
- =?utf-8?B?VW1Jd3ZMU25MT3VhQzlMYlROUk5vamhrNEp1Vlo0NzU2b3IxQ3lZc3I2M1h3?=
- =?utf-8?B?dFZOa1VhbWRZZ3VjdjlEWDg0VitVWTNDYW9uZ2cvc05kNHJISUdaZUVwZkMv?=
- =?utf-8?B?YTRKYXNKelpyZUp3ekRYVmMxZlZjS2dBQ2hYMThBRlBsdmwyeUNZR3RpUlZB?=
- =?utf-8?B?R0tZZWxMMWlLdmlzaVlUVDk4RkFxRGMyL2N6czJGd3paaTFKOEpsazdVL2lE?=
- =?utf-8?B?blIxaW1WR1owc2huQ2RBK1hxb21zM0NGZEsveE5Cc1ZFM21wdFB3aVFweGtm?=
- =?utf-8?B?UkxGM2pkUVgrcHArcWU0QlYweE0zVE5XNVJqNWR6OU84TkZmN2lSYmVxdnB5?=
- =?utf-8?B?OVNTSklWYSs4WWhYekhMZUJrU2oyTUZHM2s2YkN2QzhkOGJVZ2N4VzVXMDg4?=
- =?utf-8?B?RzNQckdncEV5OGsvYmphMndvNncxY1hQYThEVEVZOUNMdVJZWHNzUWk1TkMw?=
- =?utf-8?B?N3RyTFRRcUd4b2ZNWDk1Wk1zS1NmSjB1VUlCVzByUE1kcDJYV3dGcmozVE8r?=
- =?utf-8?B?R2xONkNvVHAwUWNEZkJrdzFiZUlYUkl1enRHdmlMTkhJV0tCV0s0T0J5WmFp?=
- =?utf-8?B?U2E0NHNRb1R2UzhXVGpuR0hENUpYYStBK3RhYlozaURES0U5VjhVZDFPSVhs?=
- =?utf-8?B?KzA5eEE4YloxUjQwb2NwNGZXUlBjZGVrM2VFSUozNXFvRzJVSEJRd0tCaHNQ?=
- =?utf-8?B?eHhSWjZDVGZzZjM3WlErcU54N3VhckNjaTNSV2NrNzVrUVZLVTYwczN1Q1FQ?=
- =?utf-8?B?ZTBZSHl5QXMwQkdYVzJPSkp6OXQ3anBYR1JNeTViUXNpdm1yYmk0RlZJd3RU?=
- =?utf-8?B?TW43aGN0UXZOem4vdk52dFZtNy83RnRDcHNLbjA5aTBvem5Rd2tNREJNaFAr?=
- =?utf-8?B?ZEVlOWI0aEdjV2M1bmkwdGpBb2tUVTlYWVpRZlQ4alBIazliU2poeFNhbS9F?=
- =?utf-8?B?RjQ5QWhUOGVqVDBUeTRVcm5tTVZtQk9GcmxQRmY4WEFDN0FoYU1yWnQyN25r?=
- =?utf-8?B?c1JweG5hQzJvY0kwL2FKL0MzUTV4YjM2ZXA0ckxBTWJhSTZBRlVEVWtFS2Yv?=
- =?utf-8?B?eDEzZ20zY1ZhUWhweXlvSUFPS3ViYlVDY0ZoRktMc28yakpDRjFNWThnZ0lk?=
- =?utf-8?Q?azckWv3XhsyLT5ORwOsb74AAR?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02e1cf49-ba02-4374-fc24-08db91d768dd
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 15:04:16.8277
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D/uTICzlknux4WeQqidk22kkoKQ33iBL6HkMIwNshmHMa4iY0UiHNPxZ9o+vXPp0iMfnePlFxiXFgpQEzZjWvw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6830
-X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: rQCowACnrcW2zcdkoZmtDw--.21850S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuw4UGFyrury5GFWfKF1rJFb_yoW7ZFyUpr
+        W3CFyDCr4Fga18Gr1fAw1UWw1Yyrs3J3ySgFW0kw1UGrnxJFyDKr9Yyw17XFyUZFn2grZ0
+        vw1S9anYg3ZrAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+        ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
+        XdbUUUUUU==
+X-Originating-IP: [111.197.209.91]
+X-CM-SenderInfo: 50lqwzhlqj6xxhqjqxpvfd2hldfou0/1tbiBwgJCmTHvEwkBQAAs+
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/21/23 20:14, Tejun Heo wrote:
-> On Fri, Jul 21, 2023 at 05:32:04PM -0500, Carlos Bilbao wrote:
->> On 7/17/23 9:18 AM, Carlos Bilbao wrote:
->>> From: amd <amd@localhost.localdomain>
->>>
->>> Fix two type mismatch errors encountered while compiling blk-iocost.c with
->>> GCC version 13.1.1 that involved constant operator WEIGHT_ONE. Cast the
->>> result of the division operation to (unsigned int) to match the expected
->>> format specifier %u in two seq_printf invocations.
->>>
->>> Reviewed-by: Carlos Bilbao <carlos.bilbao@amd.com>
->> This should have been:
->>
->> Signed-off-by: Carlos Bilbao <carlos.bilbao@amd.com>
-> 
-> Carlos, can you please retest the current linus#master?
-> 
+Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default ISA spec to the newer
+20191213 version which moves some instructions from the I extension to the
+Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
+that version, we should explicitly specifying Zicsr and Zifencei via -march
+to cope with the new changes. but this only occurs when binutils >= 2.36
+and GCC >= 11.1.0. It's a different story when binutils < 2.36.
 
-Yes, that version compiled successfully without changes in my compiler. The
-kernel that gave me said error was a custom v6.1.0-rc4 (Obtained from:
-https://github.com/coconut-svsm/linux/tree/svsm-host)
+binutils-2.36 supports the Zifencei extension[2] and splits Zifencei and
+Zicsr from I[3]. GCC-11.1.0 is particular[4] because it add support Zicsr
+and Zifencei extension for -march. binutils-2.35 does not support the
+Zifencei extension, and does not need to specify Zicsr and Zifencei when
+working with GCC >= 12.1.0.
 
-> Thanks.
-> 
+To make our lives easier, let's relax the check to binutils >= 2.36 in
+CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. For the other two cases,
+where clang < 17 or GCC < 11.1.0, we will deal with them in
+CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC.
 
-Thanks,
-Carlos
+For more information, please refer to:
+commit 6df2a016c0c8 ("riscv: fix build with binutils 2.38")
+commit e89c2e815e76 ("riscv: Handle zicsr/zifencei issues between clang and binutils")
+Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc [0]
+Link: https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd [1]
+Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=5a1b31e1e1cee6e9f1c92abff59cdcfff0dddf30 [2]
+Link: https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=729a53530e86972d1143553a415db34e6e01d5d2 [3]
+Link: https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=b03be74bad08c382da47e048007a78fa3fb4ef49 [4]
+Link: https://lore.kernel.org/all/20230308220842.1231003-1-conor@kernel.org
+Link: https://lore.kernel.org/all/20230223220546.52879-1-conor@kernel.org
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Mingzheng Xing <xingmingzheng@iscas.ac.cn>
+---
+ arch/riscv/Kconfig                     | 32 +++++++++++++++-----------
+ arch/riscv/kernel/compat_vdso/Makefile |  8 ++++++-
+ 2 files changed, 26 insertions(+), 14 deletions(-)
+
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 4c07b9189c86..10e7a7ad175a 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -570,24 +570,30 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
+ config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+ 	def_bool y
+ 	# https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=aed44286efa8ae8717a77d94b51ac3614e2ca6dc
+-	depends on AS_IS_GNU && AS_VERSION >= 23800
+-	help
+-	  Newer binutils versions default to ISA spec version 20191213 which
+-	  moves some instructions from the I extension to the Zicsr and Zifencei
+-	  extensions.
++	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=98416dbb0a62579d4a7a4a76bab51b5b52fec2cd
++	depends on AS_IS_GNU && AS_VERSION >= 23600
++	help
++	  Binutils-2.38 and GCC-12.1.0 bumped the default ISA spec to the newer
++	  20191213 version, which moves some instructions from the I extension to
++	  the Zicsr and Zifencei extensions. This requires explicitly specifying
++	  Zicsr and Zifencei when binutils >= 2.38 or GCC >= 12.1.0. Zicsr
++	  and Zifencei are supported in binutils from version 2.36 onwards.
++	  To make life easier, and avoid forcing toolchains that default to a
++	  newer ISA spec to version 2.2, relax the check to binutils >= 2.36.
++	  For clang < 17 or GCC < 11.1.0, for which this is not possible, this is
++	  dealt with in CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC.
+ 
+ config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
+ 	def_bool y
+ 	depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
+ 	# https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943c0c0d4498694e15bf8a16
+-	depends on CC_IS_CLANG && CLANG_VERSION < 170000
+-	help
+-	  Certain versions of clang do not support zicsr and zifencei via -march
+-	  but newer versions of binutils require it for the reasons noted in the
+-	  help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. This
+-	  option causes an older ISA spec compatible with these older versions
+-	  of clang to be passed to GAS, which has the same result as passing zicsr
+-	  and zifencei to -march.
++	# https://gcc.gnu.org/git/?p=gcc.git;a=commit;h=b03be74bad08c382da47e048007a78fa3fb4ef49
++	depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC && GCC_VERSION < 110100)
++	help
++	  Certain versions of clang and GCC do not support zicsr and zifencei via
++	  -march. This option causes an older ISA spec compatible with these older
++	  versions of clang and GCC to be passed to GAS, which has the same result
++	  as passing zicsr and zifencei to -march.
+ 
+ config FPU
+ 	bool "FPU support"
+diff --git a/arch/riscv/kernel/compat_vdso/Makefile b/arch/riscv/kernel/compat_vdso/Makefile
+index 189345773e7e..b86e5e2c3aea 100644
+--- a/arch/riscv/kernel/compat_vdso/Makefile
++++ b/arch/riscv/kernel/compat_vdso/Makefile
+@@ -11,7 +11,13 @@ compat_vdso-syms += flush_icache
+ COMPAT_CC := $(CC)
+ COMPAT_LD := $(LD)
+ 
+-COMPAT_CC_FLAGS := -march=rv32g -mabi=ilp32
++# binutils 2.35 does not support the zifencei extension, but in the ISA
++# spec 20191213, G stands for IMAFD_ZICSR_ZIFENCEI.
++ifdef CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
++	COMPAT_CC_FLAGS := -march=rv32g -mabi=ilp32
++else
++	COMPAT_CC_FLAGS := -march=rv32imafd -mabi=ilp32
++endif
+ COMPAT_LD_FLAGS := -melf32lriscv
+ 
+ # Disable attributes, as they're useless and break the build.
+-- 
+2.34.1
+
