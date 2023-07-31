@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E93769556
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4D18769552
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbjGaL4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53738 "EHLO
+        id S231442AbjGaLzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232077AbjGaL4D (ORCPT
+        with ESMTP id S229986AbjGaLzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:56:03 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881FBE68;
-        Mon, 31 Jul 2023 04:55:59 -0700 (PDT)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VBdaI6022016;
-        Mon, 31 Jul 2023 11:55:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=qHBp4S0vXvjXdtL9T2yqLOyzOu6JR+RCmAuqtz3oATI=;
- b=PRL2Py6acpx6CEWblmiyaSymSgQTSspw5jTVmUoT/zaNCgUT34P/T+pVy9UT+M4jFq1d
- LcIJqj84lO1cS2kmZCwGkj3ZO0GH6VRpISKyR0vgJ2i1A3R3cN0ni5JM0MfkyhGFUAIj
- 3K1Bj9wrOzVnlC15vzu9+YiOuOUWWPejvduUN+o0EMeIxgYubz2WIXC2W6z+dznXbJaB
- IEf7NDwVOsnA9RuTVnksVqbItvLZ2XvSOjo+Oyn5JhFeQsAsRZ7I5DWIWQeymii+paUo
- CmZp6aiHlk5LHyoKCwEH6nooWwwWCDfKVHmz3q7WUJlyAqJRb6snSOtSEpKENsi480+3 +w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s6bj11mty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 11:55:33 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36VBeaa3026148;
-        Mon, 31 Jul 2023 11:55:32 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s6bj11msy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 11:55:32 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36VB8GSU015538;
-        Mon, 31 Jul 2023 11:55:31 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s5e3mjt2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 11:55:30 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36VBtSqK23528166
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 Jul 2023 11:55:29 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D2BEB20043;
-        Mon, 31 Jul 2023 11:55:28 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 676AB20040;
-        Mon, 31 Jul 2023 11:55:28 +0000 (GMT)
-Received: from [9.144.146.219] (unknown [9.144.146.219])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 31 Jul 2023 11:55:28 +0000 (GMT)
-Message-ID: <c2ac9fce-8967-6b5a-8cc3-ff5de5150a09@linux.ibm.com>
-Date:   Mon, 31 Jul 2023 13:55:28 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 00/10] Introduce SMT level and add PowerPC support
-To:     Thomas Gleixner <tglx@linutronix.de>, linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        dave.hansen@linux.intel.com, mingo@redhat.com, bp@alien8.de,
-        rui.zhang@intel.com
-References: <20230705145143.40545-1-ldufour@linux.ibm.com>
- <87tttoqxft.ffs@tglx>
-Content-Language: en-US
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-In-Reply-To: <87tttoqxft.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -WSL2ggfwRiYmP9_bsW-zeZdPnGYqxSI
-X-Proofpoint-GUID: 3GAGWt4nw0RLj7-HH_Q5bFHD7idPBBwp
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 31 Jul 2023 07:55:41 -0400
+Received: from forward501b.mail.yandex.net (forward501b.mail.yandex.net [IPv6:2a02:6b8:c02:900:1:45:d181:d501])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AFD1A4
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 04:55:38 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net [IPv6:2a02:6b8:c14:c83:0:640:84f9:0])
+        by forward501b.mail.yandex.net (Yandex) with ESMTP id BBC595E6CB;
+        Mon, 31 Jul 2023 14:55:36 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id YtOFgmgWpKo0-KjdseJcn;
+        Mon, 31 Jul 2023 14:55:35 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maquefel.me; s=mail; t=1690804536;
+        bh=T92X+EUlvoAMejkCYSSobL4yVNXCuJQ8ClSXRwBBscE=;
+        h=References:Date:In-Reply-To:Cc:To:From:Subject:Message-ID;
+        b=cqR0tmSOK/p/Ol82ofhZt4rIB52qEUzA4yZThe2ErgfRRGvDlqlwlEb8UxuK6Im6m
+         9UIp14u8ss6Nyr2pahp4y70CpcBv1DKpKHLwUd2UEym2lFClnBg5yr+38sekadk9KV
+         p/Fha8cLk6a0U1QwSr9v2N4ILNCAqsg9L61wIDI8=
+Authentication-Results: mail-nwsmtp-smtp-production-main-45.sas.yp-c.yandex.net; dkim=pass header.i=@maquefel.me
+Message-ID: <e89067eed9055cd0f299bc6bb8e40a61232abfc0.camel@maquefel.me>
+Subject: Re: [PATCH v3 35/42] ARM: dts: ep93xx: add ts7250 board
+From:   Nikita Shubin <nikita.shubin@maquefel.me>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lennert Buytenhek <kernel@wantstofly.org>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Michael Peters <mpeters@embeddedts.com>,
+        Kris Bahnsen <kris@embeddedts.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 31 Jul 2023 14:55:34 +0300
+In-Reply-To: <CACRpkdYA2MLdX5xY-rTcKyKH2eFXZyHHXcX9G-vdWT5GmChwaA@mail.gmail.com>
+References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
+         <20230605-ep93xx-v3-35-3d63a5f1103e@maquefel.me>
+         <4b0f8b39-bec5-6f5d-1b98-8145e334ed94@linaro.org>
+         <2c7e838ae4e49b72185626935f886d07895e8192.camel@maquefel.me>
+         <CACRpkdYA2MLdX5xY-rTcKyKH2eFXZyHHXcX9G-vdWT5GmChwaA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.3 
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-31_05,2023-07-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 clxscore=1011
- adultscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307310104
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Linus!
 
+On Sat, 2023-07-29 at 22:59 +0200, Linus Walleij wrote:
+> On Mon, Jul 24, 2023 at 3:45=E2=80=AFPM Nikita Shubin
+> <nikita.shubin@maquefel.me> wrote:
+>=20
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 nand-controller@60000000 {
+> > >=20
+> > > Where is this address? It does not work like that. If this is
+> > > part of
+> > > SoC, then should be in DTSI and part of soc node. If not, then it
+> > > is
+> > > some other bus which needs some description. Top-level is not a
+> > > bus.
+> > >=20
+> >=20
+> > It's some kind of EBI, but it doesn't need a driver it is
+> > transparent
+> > on ts7250, the logic is controlled through installed CPLD.
+> >=20
+> > The EBI it self is a part of the SoC through:
+> >=20
+> > https://elixir.bootlin.com/linux/v6.5-rc3/source/arch/arm/mach-ep93xx/s=
+oc.h#L35
+> >=20
+> > EP93XX_CS0_PHYS_BASE_ASYNC to EP93XX_CS0_PHYS_BASE_SYNC.
+> >=20
+> > So for ts7250 this includes:
+> >=20
+> > - NAND
+> > - m48t86
+> > - watchdog
+> >=20
+> > I don't even know how to represent it correctly, would "simple-bus"
+> > with "ranges" defined suit here, so it will represent hierarchy but
+> > won't do anything ?
+>=20
+> Check how I solved this on the IXP4xx EBI for an example:
+> Documentation/devicetree/bindings/memory-controllers/intel,ixp4xx-
+> expansion-bus-controller.yaml
+>=20
+> Top level bus inside soc:
+> arch/arm/boot/dts/intel/ixp/intel-ixp4xx.dtsi
+> Example platform:
+> arch/arm/boot/dts/intel/ixp/intel-ixp42x-linksys-nslu2.dts
+>=20
+> Notice chip select number in first cell.
+>=20
+> I think you want to do something similar here?
 
-Le 28/07/2023 à 09:58, Thomas Gleixner a écrit :
-> Laurent, Michael!
-> 
-> On Wed, Jul 05 2023 at 16:51, Laurent Dufour wrote:
->> I'm taking over the series Michael sent previously [1] which is smartly
->> reviewing the initial series I sent [2].  This series is addressing the
->> comments sent by Thomas and me on the Michael's one.
-> 
-> Thanks for getting this into shape.
-> 
-> I've merged it into:
-> 
->     git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/core
-> 
-> and tagged it at patch 7 for consumption into the powerpc tree, so the
-> powerpc specific changes can be applied there on top:
-> 
->     git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-core-for-ppc-23-07-28
+Thank you - it looks like what i need !
 
-Thanks Thomas!
+>=20
+> Yours,
+> Linus Walleij
+
