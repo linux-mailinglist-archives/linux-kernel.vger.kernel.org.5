@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 803E1768B8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A357C768B93
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbjGaGI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 02:08:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S229897AbjGaGKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 02:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjGaGIZ (ORCPT
+        with ESMTP id S229833AbjGaGKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 02:08:25 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E09110DC;
-        Sun, 30 Jul 2023 23:08:21 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 76FCD809E;
-        Mon, 31 Jul 2023 06:08:20 +0000 (UTC)
-Date:   Mon, 31 Jul 2023 09:08:19 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, afd@ti.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
-Subject: Re: [PATCH v7 0/2] dt-bindings: omap: Convert omap.txt to yaml
-Message-ID: <20230731060819.GD5194@atomide.com>
-References: <20230515074512.66226-1-andreas@kemnade.info>
- <20230613193257.267ad763@aktux>
- <37ef78ee-b290-ecfb-504d-cef5653d23f2@linaro.org>
- <20230616185320.61b33510@aktux>
+        Mon, 31 Jul 2023 02:10:02 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DE0CA;
+        Sun, 30 Jul 2023 23:10:01 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A156E67373; Mon, 31 Jul 2023 08:09:57 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 08:09:57 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     chengming.zhou@linux.dev
+Cc:     axboe@kernel.dk, hch@lst.de, ming.lei@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhouchengming@bytedance.com, hare@suse.de
+Subject: Re: [PATCH v2 1/4] blk-flush: flush_rq should inherit first_rq's
+ cmd_flags
+Message-ID: <20230731060957.GA30409@lst.de>
+References: <20230725130102.3030032-1-chengming.zhou@linux.dev> <20230725130102.3030032-2-chengming.zhou@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230616185320.61b33510@aktux>
+In-Reply-To: <20230725130102.3030032-2-chengming.zhou@linux.dev>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -44,28 +41,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andreas Kemnade <andreas@kemnade.info> [230616 16:53]:
-> On Tue, 13 Jun 2023 20:43:55 +0200
-> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+On Tue, Jul 25, 2023 at 09:00:59PM +0800, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
 > 
-> > On 13/06/2023 19:32, Andreas Kemnade wrote:
-> > > Hi,
-> > > 
-> > > any action still expected from my side?
-> > > people gave R-bys...
-> > > So looks like it is ready for the dt-folks to pick it up.
-> > >   
-> > 
-> > It's SoC file, isn't it? Then goes via SoC tree.
-> > 
-> Apparently there was confusion about it. Quoting
-> Tony:"And thanks for getting the
-> omap.yaml conversion going, that will get merged by the dt folks."
-> 
-> I am fine with either, 
+> The cmd_flags in blk_kick_flush() should inherit the original request's
+> cmd_flags, but the current code looks buggy to me:
 
-OK I'll apply this into omap-for-v6.6/dt-bindings thanks.
+Should it?  I know the code is kinda trying to do it, but does it really
+make sense?  Adding Hannes who originally added this inheritance and
+discussing the details below:
 
-Regards,
+>  	flush_rq->cmd_flags = REQ_OP_FLUSH | REQ_PREFLUSH;
+> -	flush_rq->cmd_flags |= (flags & REQ_DRV) | (flags & REQ_FAILFAST_MASK);
+> +	flush_rq->cmd_flags |= (first_rq->cmd_flags & REQ_DRV) |
+> +			       (first_rq->cmd_flags & REQ_FAILFAST_MASK);
 
-Tony
+Two cases here:
+
+ 1) REQ_FAILFAST_MASK:  I don't think this is actually set on flush request
+    currently, and even if it was applying it to the flush that serves more
+    than a single originating command seems wrong to me.
+ 2) REQ_DRV is only set by drivers that have seen a bio.  For dm this
+    is used as REQ_DM_POLL_LIST which should never be set for a flush/fua
+    request.  For nvme-mpath it is REQ_NVME_MPATH, which is set in the
+    bio based driver and used for decision making in the I/O completion
+    handler.  So I guess this one actually does need to get passed
+    through.
+
