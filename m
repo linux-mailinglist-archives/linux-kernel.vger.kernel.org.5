@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F28769349
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0653A76934F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbjGaKlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
+        id S229924AbjGaKnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:43:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjGaKlF (ORCPT
+        with ESMTP id S229445AbjGaKnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:41:05 -0400
+        Mon, 31 Jul 2023 06:43:23 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F81130
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:41:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D15971A7;
+        Mon, 31 Jul 2023 03:43:22 -0700 (PDT)
 Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3C8026606EF9;
-        Mon, 31 Jul 2023 11:41:02 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 192446606EF9;
+        Mon, 31 Jul 2023 11:43:20 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690800062;
-        bh=AD0xM5TbkJOF1DaqZosstaIniOVK0pNX8OlY2oIsZ8w=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=LoXc5BLfUHcWp1lgzM44kV042UHPOt62ewFmaDuc5RqD82q/pGna95pPyCNeT27oY
-         V5aMvLn1gnkvTqr93fo/rarSgwlCZ+rmMcrwvcpCiLwWv+Zv3NuEONOAWFgxCwWvOr
-         YpqrL63stRZUlJtttBTR8A+4DMwfk3/kvKXasW770ilN5rIJPLxo+I8VZTtVplwz5d
-         /bQSSdEtvWxUfISpFpuN0S/Kk6OZXbovzECKeE+g6K34POrTKSGaWiE2K2/mNQe5mL
-         IGAEAoL3BdhpOBcXJOBU//ocLcptFVc/5id9l7MoPwesixvMkux+VLew2+/3GUGerS
-         ZqoQ4bFo62uyw==
-Message-ID: <a3b55c69-bf80-72b1-013d-8a97d2c211fa@collabora.com>
-Date:   Mon, 31 Jul 2023 12:40:59 +0200
+        s=mail; t=1690800201;
+        bh=ptgtKRZHz9m08pFGdSOUsCJDYP/pYOSuWW3+Fc/rwY4=;
+        h=Date:Subject:To:References:From:In-Reply-To:From;
+        b=N0AyWZONptSpzY6GYIkhAun32R28SJB3I0GRYaShUMJPiPFyQ87ITe0vaN57+zrQd
+         7hoBInXqVu1NnXqLMSaugJgIioMr5C7SU3gr5iZEcj6Ifda2xvx2rrSZIurLz3g5Hb
+         dKkxes3MLIGxZkl6CA1TekBtQJ2kAYd1ZWFN6fKJPUfDspG3lV4JqZ/MO8851ru1uK
+         g8xs8OdaNrPmP2cQyT/5nJm8Fo3nv6nb65EZYCq7p2SytXSSP77gTSpGjM6ppRLpRc
+         6urXA2EBEa/y8Mqxk+KbYChq/uMrpDJTE1pEOvZ2Bmxd9AxLD/y6cTyy5KNOe9kRUP
+         NI9yQaPMHK6UA==
+Message-ID: <eeaa3d0c-2f47-3eb1-52b4-742889a7f8fb@collabora.com>
+Date:   Mon, 31 Jul 2023 12:43:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH RESEND v6 03/11] drm/mediatek: gamma: Support SoC specific
- LUT size
+Subject: Re: [PATCH 03/12] ASoC: dt-bindings: mediatek,mt8188-mt6359: use
+ common sound card
 Content-Language: en-US
-To:     =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "ehristev@collabora.com" <ehristev@collabora.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-References: <20230727094633.22505-1-angelogioacchino.delregno@collabora.com>
- <20230727094633.22505-4-angelogioacchino.delregno@collabora.com>
- <e9bb287ea6177568c16ed0dc91a2d4f2c9d433e3.camel@mediatek.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Rohit kumar <quic_rohkumar@quicinc.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Rao Mandadapu <srivasam@codeaurora.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Trevor Wu <trevor.wu@mediatek.com>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230731094303.185067-1-krzysztof.kozlowski@linaro.org>
+ <20230731094303.185067-4-krzysztof.kozlowski@linaro.org>
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <e9bb287ea6177568c16ed0dc91a2d4f2c9d433e3.camel@mediatek.com>
+In-Reply-To: <20230731094303.185067-4-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -72,227 +83,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 31/07/23 09:49, CK Hu (胡俊光) ha scritto:
-> Hi, Angelo:
+Il 31/07/23 11:42, Krzysztof Kozlowski ha scritto:
+> The mediatek,mt8188-mt6359 Linux sound machine driver requires the
+> "model" property, so binding was incomplete.  Reference the common sound
+> card properties to fix that which also allows to remove duplicated
+> property definitions.  Leave the relevant parts of "audio-routing"
+> description.
 > 
-> On Thu, 2023-07-27 at 11:46 +0200, AngeloGioacchino Del Regno wrote:
->> Newer SoCs support a bigger Gamma LUT table: wire up a callback
->> to retrieve the correct LUT size for each different Gamma IP.
->>
->> Co-developed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->> [Angelo: Rewritten commit message/description + porting]
->> Signed-off-by: AngeloGioacchino Del Regno <
->> angelogioacchino.delregno@collabora.com>
->> Reviewed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->> ---
->>   drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  1 +
->>   drivers/gpu/drm/mediatek/mtk_disp_gamma.c   | 25 ++++++++++++++++++-
->> --
->>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c     |  4 ++--
->>   drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |  1 -
->>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c |  1 +
->>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |  9 ++++++++
->>   6 files changed, 35 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
->> b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
->> index 75045932353e..e554b19f4830 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
->> +++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
->> @@ -53,6 +53,7 @@ void mtk_gamma_clk_disable(struct device *dev);
->>   void mtk_gamma_config(struct device *dev, unsigned int w,
->>   		      unsigned int h, unsigned int vrefresh,
->>   		      unsigned int bpc, struct cmdq_pkt *cmdq_pkt);
->> +unsigned int mtk_gamma_get_lut_size(struct device *dev);
->>   void mtk_gamma_set(struct device *dev, struct drm_crtc_state
->> *state);
->>   void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
->> struct drm_crtc_state *state);
->>   void mtk_gamma_start(struct device *dev);
->> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> index ce6f2499b891..b25ba209e7a4 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
->> @@ -25,10 +25,12 @@
->>   #define DISP_GAMMA_LUT				0x0700
->>   
->>   #define LUT_10BIT_MASK				0x03ff
->> +#define LUT_SIZE_DEFAULT			512
->>   
->>   struct mtk_disp_gamma_data {
->>   	bool has_dither;
->>   	bool lut_diff;
->> +	u16 lut_size;
->>   };
->>   
->>   /*
->> @@ -55,6 +57,17 @@ void mtk_gamma_clk_disable(struct device *dev)
->>   	clk_disable_unprepare(gamma->clk);
->>   }
->>   
->> +unsigned int mtk_gamma_get_lut_size(struct device *dev)
->> +{
->> +	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
->> +	unsigned int lut_size = LUT_SIZE_DEFAULT;
->> +
->> +	if (gamma && gamma->data)
->> +		lut_size = gamma->data->lut_size;
->> +
->> +	return lut_size;
->> +}
->> +
->>   void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
->> struct drm_crtc_state *state)
->>   {
->>   	struct mtk_disp_gamma *gamma = dev_get_drvdata(dev);
->> @@ -62,6 +75,7 @@ void mtk_gamma_set_common(struct device *dev, void
->> __iomem *regs, struct drm_crt
->>   	struct drm_color_lut *lut;
->>   	void __iomem *lut_base;
->>   	bool lut_diff;
->> +	u16 lut_size;
->>   	u32 word;
->>   	u32 diff[3] = {0};
->>   
->> @@ -69,17 +83,20 @@ void mtk_gamma_set_common(struct device *dev,
->> void __iomem *regs, struct drm_crt
->>   	if (!state->gamma_lut)
->>   		return;
->>   
->> -	if (gamma && gamma->data)
->> +	if (gamma && gamma->data) {
->>   		lut_diff = gamma->data->lut_diff;
->> -	else
->> +		lut_size = gamma->data->lut_size;
->> +	} else {
->>   		lut_diff = false;
->> +		lut_size = LUT_SIZE_DEFAULT;
->> +	}
->>   
->>   	reg = readl(regs + DISP_GAMMA_CFG);
->>   	reg = reg | GAMMA_LUT_EN;
->>   	writel(reg, regs + DISP_GAMMA_CFG);
->>   	lut_base = regs + DISP_GAMMA_LUT;
->>   	lut = (struct drm_color_lut *)state->gamma_lut->data;
->> -	for (i = 0; i < MTK_LUT_SIZE; i++) {
->> +	for (i = 0; i < lut_size; i++) {
->>   		if (!lut_diff || (i % 2 == 0)) {
->>   			word = (((lut[i].red >> 6) & LUT_10BIT_MASK) <<
->> 20) +
->>   				(((lut[i].green >> 6) & LUT_10BIT_MASK)
->> << 10) +
->> @@ -196,10 +213,12 @@ static int mtk_disp_gamma_remove(struct
->> platform_device *pdev)
->>   
->>   static const struct mtk_disp_gamma_data mt8173_gamma_driver_data = {
->>   	.has_dither = true,
->> +	.lut_size = 512,
->>   };
->>   
->>   static const struct mtk_disp_gamma_data mt8183_gamma_driver_data = {
->>   	.lut_diff = true,
->> +	.lut_size = 512,
->>   };
->>   
->>   static const struct of_device_id mtk_disp_gamma_driver_dt_match[] =
->> {
->> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->> b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->> index d40142842f85..0df62b076f49 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->> @@ -958,8 +958,8 @@ int mtk_drm_crtc_create(struct drm_device
->> *drm_dev,
->>   		mtk_crtc->ddp_comp[i] = comp;
->>   
->>   		if (comp->funcs) {
->> -			if (comp->funcs->gamma_set)
->> -				gamma_lut_size = MTK_LUT_SIZE;
->> +			if (comp->funcs->gamma_set && comp->funcs-
->>> gamma_get_lut_size)
->> +				gamma_lut_size =
->> mtk_ddp_gamma_get_lut_size(comp);
-> 
-> In this patch, for AAL, the gamma_lut_size is not defined.
-> 
-
-It is defined: AAL will call mtk_gamma_set_common(), which will use
-the "DEFAULT" (512) LUT size if no platform data was provided and the
-platform data can only come from the mtk_gamma driver - so, if the
-call to mtk_gamma_set_common() comes from mtk_aal, it will use 512.
-
-P.S.: The call to drm_mode_crtc_set_gamma_size() is performed only if
-       gamma_lut_size > 0.
-
-Regards,
-Angelo
-
-> Regards,
-> CK
-> 
->>   
->>   			if (comp->funcs->ctm_set)
->>   				has_ctm = true;
->> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
->> b/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
->> index 3e9046993d09..b2e50292e57d 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
->> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
->> @@ -10,7 +10,6 @@
->>   #include "mtk_drm_ddp_comp.h"
->>   #include "mtk_drm_plane.h"
->>   
->> -#define MTK_LUT_SIZE	512
->>   #define MTK_MAX_BPC	10
->>   #define MTK_MIN_BPC	3
->>   
->> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
->> b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
->> index f114da4d36a9..c77af2e4000f 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
->> @@ -322,6 +322,7 @@ static const struct mtk_ddp_comp_funcs ddp_dsi =
->> {
->>   static const struct mtk_ddp_comp_funcs ddp_gamma = {
->>   	.clk_enable = mtk_gamma_clk_enable,
->>   	.clk_disable = mtk_gamma_clk_disable,
->> +	.gamma_get_lut_size = mtk_gamma_get_lut_size,
->>   	.gamma_set = mtk_gamma_set,
->>   	.config = mtk_gamma_config,
->>   	.start = mtk_gamma_start,
->> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
->> b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
->> index febcaeef16a1..c1355960e195 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
->> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
->> @@ -67,6 +67,7 @@ struct mtk_ddp_comp_funcs {
->>   	void (*layer_config)(struct device *dev, unsigned int idx,
->>   			     struct mtk_plane_state *state,
->>   			     struct cmdq_pkt *cmdq_pkt);
->> +	unsigned int (*gamma_get_lut_size)(struct device *dev);
->>   	void (*gamma_set)(struct device *dev,
->>   			  struct drm_crtc_state *state);
->>   	void (*bgclr_in_on)(struct device *dev);
->> @@ -186,6 +187,14 @@ static inline void
->> mtk_ddp_comp_layer_config(struct mtk_ddp_comp *comp,
->>   		comp->funcs->layer_config(comp->dev, idx, state,
->> cmdq_pkt);
->>   }
->>   
->> +static inline unsigned int mtk_ddp_gamma_get_lut_size(struct
->> mtk_ddp_comp *comp)
->> +{
->> +	if (comp->funcs && comp->funcs->gamma_get_lut_size)
->> +		return comp->funcs->gamma_get_lut_size(comp->dev);
->> +
->> +	return 0;
->> +}
->> +
->>   static inline void mtk_ddp_gamma_set(struct mtk_ddp_comp *comp,
->>   				     struct drm_crtc_state *state)
->>   {
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
