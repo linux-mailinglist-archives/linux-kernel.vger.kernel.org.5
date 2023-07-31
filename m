@@ -2,56 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF201768ED4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315E8768ED7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjGaHcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
+        id S231586AbjGaHcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbjGaHbe (ORCPT
+        with ESMTP id S231473AbjGaHbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:31:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA7F2D7E;
-        Mon, 31 Jul 2023 00:30:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B6C0560F1E;
-        Mon, 31 Jul 2023 07:30:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22CCAC433C7;
-        Mon, 31 Jul 2023 07:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690788629;
-        bh=SVaKMsm5wi9MtePH615CD5h2bQfFDb6xVagKrZjtk0U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LdZJ7fD3T+xhrnDmL+T7tHHUuFYDGmrM0yS8YzfN7su2DNxMmUwE6wd0weiynMwWM
-         bZtsOuDuv09Q99o9hdOxijhLTUDclWHnM3cBEoOw5kIGaAZijCZrOpAqfIPG4ANZ+2
-         Lv62sx5inwIHaXGJYAc3vjj4m2SLW4vZH6LFTL6IWyz8Wd9AxUNb24y8xWLWRkKrXw
-         md/vTfZyIR3H2GN3e9nsdrJsR0DqveTwZ+9uOOwPfF0/ScgqnrE/sIHs48vzdeZAgr
-         2SANoGKJTxFs+ncRbd5UV7l9YfrukVMYifnrtCenO1uU5LL3NlIv/oE0z2lcoM/6lL
-         oqo1JY5YBc4OQ==
-From:   "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To:     linux-trace-kernel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        mhiramat@kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf@vger.kernel.org, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH v4 2/9] bpf/btf: tracing: Move finding func-proto API and getting func-param API to BTF
-Date:   Mon, 31 Jul 2023 16:30:24 +0900
-Message-Id: <169078862446.173706.13484451284649857042.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <169078860386.173706.3091034523220945605.stgit@devnote2>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-User-Agent: StGit/0.19
+        Mon, 31 Jul 2023 03:31:35 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D474EDC;
+        Mon, 31 Jul 2023 00:30:37 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VoaPEop_1690788632;
+Received: from 30.240.113.95(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VoaPEop_1690788632)
+          by smtp.aliyun-inc.com;
+          Mon, 31 Jul 2023 15:30:34 +0800
+Message-ID: <375a0706-b76e-e8a8-cdac-ed628af6643c@linux.alibaba.com>
+Date:   Mon, 31 Jul 2023 15:30:31 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.1
+Subject: Re: [PATCH v6 0/4] drivers/perf: add Synopsys DesignWare PCIe PMU
+ driver support
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        chengyou@linux.alibaba.com, kaishen@linux.alibaba.com,
+        yangyicong@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        rdunlap@infradead.org, mark.rutland@arm.com,
+        zhuo.song@linux.alibaba.com
+References: <20230725205955.GA665326@bhelgaas>
+ <634f4762-cf2e-4535-f369-4032d65093f0@linux.alibaba.com>
+ <20230728133926.GC21394@willie-the-truck>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <20230728133926.GC21394@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,188 +53,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Move generic function-proto find API and getting function parameter API
-to BTF library code from trace_probe.c. This will avoid redundant efforts
-on different feature.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v3:
-  - Remove perameter check.
-  - Fix a typo.
-  - Add a type check for btf_get_func_param() and add comment for that.
-  - Use bpf_find_btf_id() and add bpf_put().
-  - Move the code before btf_show() related code.
----
- include/linux/btf.h        |    4 ++++
- kernel/bpf/btf.c           |   47 +++++++++++++++++++++++++++++++++++++++++
- kernel/trace/trace_probe.c |   50 +++++++++-----------------------------------
- 3 files changed, 61 insertions(+), 40 deletions(-)
+On 2023/7/28 21:39, Will Deacon wrote:
+> On Thu, Jul 27, 2023 at 11:45:22AM +0800, Shuai Xue wrote:
+>>
+>>
+>> On 2023/7/26 04:59, Bjorn Helgaas wrote:
+>>> On Mon, Jul 24, 2023 at 10:18:07AM +0100, Jonathan Cameron wrote:
+>>>> On Mon, 24 Jul 2023 10:34:08 +0800
+>>>> Shuai Xue <xueshuai@linux.alibaba.com> wrote:
+>>>>> On 2023/7/10 20:04, Shuai Xue wrote:
+>>>>>> On 2023/6/16 16:39, Shuai Xue wrote:  
+>>>>>>> On 2023/6/6 15:49, Shuai Xue wrote:  
+>>>
+>>>>>>>> This patchset adds the PCIe Performance Monitoring Unit (PMU) driver support
+>>>>>>>> for T-Head Yitian 710 SoC chip. Yitian 710 is based on the Synopsys PCI Express
+>>>>>>>> Core controller IP which provides statistics feature.
+>>>
+>>>> ...
+>>>> Really a question for Bjorn I think, but here is my 2 cents...
+>>>>
+>>>> The problem here is that we need to do that fundamental redesign of the
+>>>> way the PCI ports drivers work.  I'm not sure there is a path to merging
+>>>> this until that is done.  The bigger problem is that I'm not sure anyone
+>>>> is actively looking at that yet.  I'd like to look at this (as I have
+>>>> the same problem for some other drivers), but it is behind various
+>>>> other things on my todo list.
+>>>>
+>>>> Bjorn might be persuaded on a temporary solution, but that would come
+>>>> with some maintenance problems, particularly when we try to do it
+>>>> 'right' in the future.  Maybe adding another service driver would be
+>>>> a stop gap as long as we know we won't keep doing so for ever. Not sure.
+>>>
+>>> I think the question here is around the for_each_pci_dev() in
+>>> __dwc_pcie_pmu_probe()?  I don't *like* that because of the
+>>> assumptions it breaks (autoload doesn't work, hotplug doesn't work),
+>>> but:
+>>>
+>>>   - There are several other drivers that also do this,
+>>>   - I don't have a better suggest for any of them,
+>>>   - It's not a drivers/pci thing, so not really up to me anyway,
+>>>
+>>> so I don't have any problem with this being merged as-is, as long as
+>>> you can live with the limitations.
+>>>
+>>> I don't think this series does anything to work around those
+>>> limitations, i.e., it doesn't make up fake device IDs for module
+>>> loading or fake events for hotplug, so it seems like we could improve
+>>> the implementation later if we ever have a way to do it.
+>>>
+>>> Bjorn
+>>
+>> + Will
+>>
+>> Ok, thank you for confirmation, Bjorn. Then it comes to perf driver parts and
+>> it is really a question for @Will I think.
+>>
+>> What's your opinion about merging this patch set, @Will?
+> 
+> No fundamental objection from me, but I'll have a closer look when you
+> post a version addressing the feedback from Jonathan and Yicong.
 
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index dbfe41a09c4b..20e3a07eef8f 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -222,6 +222,10 @@ const struct btf_type *
- btf_resolve_size(const struct btf *btf, const struct btf_type *type,
- 		 u32 *type_size);
- const char *btf_type_str(const struct btf_type *t);
-+const struct btf_type *btf_find_func_proto(const char *func_name,
-+					   struct btf **btf_p);
-+const struct btf_param *btf_get_func_param(const struct btf_type *func_proto,
-+					   s32 *nr);
- 
- #define for_each_member(i, struct_type, member)			\
- 	for (i = 0, member = btf_type_member(struct_type);	\
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index b9b0eb1189bb..f7b25c615269 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -911,6 +911,53 @@ static const struct btf_type *btf_type_skip_qualifiers(const struct btf *btf,
- 	return t;
- }
- 
-+/*
-+ * Find a function proto type by name, and return the btf_type with its btf
-+ * in *@btf_p. Return NULL if not found.
-+ * Note that caller has to call btf_put(*@btf_p) after using the btf_type.
-+ */
-+const struct btf_type *btf_find_func_proto(const char *func_name, struct btf **btf_p)
-+{
-+	const struct btf_type *t;
-+	s32 id;
-+
-+	id = bpf_find_btf_id(func_name, BTF_KIND_FUNC, btf_p);
-+	if (id < 0)
-+		return NULL;
-+
-+	/* Get BTF_KIND_FUNC type */
-+	t = btf_type_by_id(*btf_p, id);
-+	if (!t || !btf_type_is_func(t))
-+		goto err;
-+
-+	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
-+	t = btf_type_by_id(*btf_p, t->type);
-+	if (!t || !btf_type_is_func_proto(t))
-+		goto err;
-+
-+	return t;
-+err:
-+	btf_put(*btf_p);
-+	return NULL;
-+}
-+
-+/*
-+ * Get function parameter with the number of parameters.
-+ * This can return NULL if the function has no parameters.
-+ * It can return -EINVAL if the @func_proto is not a function proto type.
-+ */
-+const struct btf_param *btf_get_func_param(const struct btf_type *func_proto, s32 *nr)
-+{
-+	if (!btf_type_is_func_proto(func_proto))
-+		return ERR_PTR(-EINVAL);
-+
-+	*nr = btf_type_vlen(func_proto);
-+	if (*nr > 0)
-+		return (const struct btf_param *)(func_proto + 1);
-+	else
-+		return NULL;
-+}
-+
- #define BTF_SHOW_MAX_ITER	10
- 
- #define BTF_KIND_BIT(kind)	(1ULL << kind)
-diff --git a/kernel/trace/trace_probe.c b/kernel/trace/trace_probe.c
-index ecbe28f8d676..21a228d88ebb 100644
---- a/kernel/trace/trace_probe.c
-+++ b/kernel/trace/trace_probe.c
-@@ -361,38 +361,6 @@ static const char *type_from_btf_id(struct btf *btf, s32 id)
- 	return NULL;
- }
- 
--static const struct btf_type *find_btf_func_proto(const char *funcname,
--						  struct btf **btf_p)
--{
--	const struct btf_type *t;
--	struct btf *btf = NULL;
--	s32 id;
--
--	if (!funcname)
--		return ERR_PTR(-EINVAL);
--
--	id = bpf_find_btf_id(funcname, BTF_KIND_FUNC, &btf);
--	if (id <= 0)
--		return ERR_PTR(-ENOENT);
--
--	/* Get BTF_KIND_FUNC type */
--	t = btf_type_by_id(btf, id);
--	if (!t || !btf_type_is_func(t))
--		goto err;
--
--	/* The type of BTF_KIND_FUNC is BTF_KIND_FUNC_PROTO */
--	t = btf_type_by_id(btf, t->type);
--	if (!t || !btf_type_is_func_proto(t))
--		goto err;
--
--	*btf_p = btf;
--	return t;
--
--err:
--	btf_put(btf);
--	return ERR_PTR(-ENOENT);
--}
--
- static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr,
- 						   struct btf **btf_p, bool tracepoint)
- {
-@@ -403,12 +371,13 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
- 	if (!funcname || !nr)
- 		return ERR_PTR(-EINVAL);
- 
--	t = find_btf_func_proto(funcname, &btf);
--	if (IS_ERR(t))
-+	t = btf_find_func_proto(funcname, &btf);
-+	if (!t)
- 		return (const struct btf_param *)t;
- 
--	*nr = btf_type_vlen(t);
--	param = (const struct btf_param *)(t + 1);
-+	param = btf_get_func_param(t, nr);
-+	if (IS_ERR_OR_NULL(param))
-+		goto err;
- 
- 	/* Hide the first 'data' argument of tracepoint */
- 	if (tracepoint) {
-@@ -421,6 +390,7 @@ static const struct btf_param *find_btf_func_param(const char *funcname, s32 *nr
- 		return param;
- 	}
- 
-+err:
- 	btf_put(btf);
- 	return NULL;
- }
-@@ -496,8 +466,8 @@ static const struct fetch_type *parse_btf_retval_type(
- 
- 	if (ctx->funcname) {
- 		/* Do not use ctx->btf, because it must be used with ctx->param */
--		t = find_btf_func_proto(ctx->funcname, &btf);
--		if (!IS_ERR(t)) {
-+		t = btf_find_func_proto(ctx->funcname, &btf);
-+		if (t) {
- 			typestr = type_from_btf_id(btf, t->type);
- 			btf_put(btf);
- 		}
-@@ -512,8 +482,8 @@ static bool is_btf_retval_void(const char *funcname)
- 	struct btf *btf;
- 	bool ret;
- 
--	t = find_btf_func_proto(funcname, &btf);
--	if (IS_ERR(t))
-+	t = btf_find_func_proto(funcname, &btf);
-+	if (!t)
- 		return false;
- 
- 	ret = (t->type == 0);
+Thanks for your input! I appreciate that you don't have any fundamental objections
+to merging the patch set. I'll definitely take into account the feedback from Jonathan
+and Yicong before posting a revised version.
 
+
+Best Regards,
+Cheers.
+Shuai
