@@ -2,130 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99ABA7694A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10DD7694B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjGaLVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
+        id S232529AbjGaLVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 07:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231773AbjGaLVD (ORCPT
+        with ESMTP id S232571AbjGaLV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:21:03 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5119E10C0;
-        Mon, 31 Jul 2023 04:20:59 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bc02bd4eafso12782515ad.1;
-        Mon, 31 Jul 2023 04:20:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690802459; x=1691407259;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=GbS8Qlfzn1Dgn19TT0BgR1SE8o6tzPgDzghenWvydYU=;
-        b=sRCcK4ssYdzJDLDSbo0yHQAjwvp0lQNsICeu+cMBU7PpbD1tn7ltLqdRMuaXo69ayJ
-         hKcB5meML4awt66h7oX0OgMARkqHoPr76z5ch4UtcllKCW1Zgy+NXGdgTSfZowFLCfFI
-         ZSIKC9ktL/ddceCz6m25B3eZpOR7HhyEBnt1tZmAfKOAk3xHvA8GvPBK+sjwwPs6kvJX
-         OCBoPKG608FjwEDZn59JhhR8/oyG1praX41izhWO2bzLUIMZIYb37vaihS2VqE392TiT
-         gIs9HQvUrqUZaKk1W0GYZ3Gr38VZbYvblaDljdOpyIdBU01Uc8bQjwKmj2Pe2segDZ7a
-         bGvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690802459; x=1691407259;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GbS8Qlfzn1Dgn19TT0BgR1SE8o6tzPgDzghenWvydYU=;
-        b=hB/bPrememDDZgFkUQiJvdrvm+KAcKvXFKbJ8RamjicLfcEZVjnio/XTP0DGi+JsFd
-         3wk978d7ja4Ovk5ahFmFjDfop/fG7iDoDvFouNrbyjj2PfQxsm0fQAsg4qCOobsPnjJM
-         VTRJuu+6QrahIthiojM6RumjWuZ95FGcPSiOGI71BBqy30Jod3aGfb7LXmHsGW3z+PhB
-         X8xjNpzJBdlXs4vpHBV+bBCFgEeHJeyKNWgKt7PYsjF7JAcrb30+mSIQgu/svHTB7NPP
-         VS+UoxVmcYlC6zXc3cVkV2LVx66peIsNevyyiurUbeRE3nUNQDrKyRsqVtp0Un2IQH1W
-         pteQ==
-X-Gm-Message-State: ABy/qLZUvthxFh53K5UWBXVIRdyoaGQDu6jFeyX7o4ZJFPkAFWXn6yzk
-        ikQfAHV3h9phandXA7Fo1Jqi+kBCqJ7c6A==
-X-Google-Smtp-Source: APBJJlHv2G80hlFmeMpv+4Stl2gbXUp1TxFjAU/Su1Dbul/HlEpmoIKIGA+9ssxjhFXnsCAIJQx4lA==
-X-Received: by 2002:a17:902:c407:b0:1bb:dbec:40ba with SMTP id k7-20020a170902c40700b001bbdbec40bamr12244217plk.16.1690802458589;
-        Mon, 31 Jul 2023 04:20:58 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id e6-20020a170902cf4600b001b8c6890623sm8382932plg.7.2023.07.31.04.20.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 04:20:58 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 2B5F380001D5; Mon, 31 Jul 2023 18:20:53 +0700 (WIB)
-Date:   Mon, 31 Jul 2023 18:20:53 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     "Dr. Greg" <greg@enjellic.com>, paul@paul-moore.com
-Cc:     linux-security-module@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: TSEM feedback.
-Message-ID: <ZMeZFRz/lH8Uz2mX@debian.me>
-References: <20230731103822.GA4093@wind.enjellic.com>
+        Mon, 31 Jul 2023 07:21:28 -0400
+Received: from lahtoruutu.iki.fi (lahtoruutu.iki.fi [IPv6:2a0b:5c81:1c1::37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205DA19A1;
+        Mon, 31 Jul 2023 04:21:16 -0700 (PDT)
+Received: from hillosipuli.retiisi.eu (82-181-192-243.bb.dnainternet.fi [82.181.192.243])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by lahtoruutu.iki.fi (Postfix) with ESMTPSA id 4RDwm11Lfxz49Pyr;
+        Mon, 31 Jul 2023 14:21:05 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=lahtoruutu;
+        t=1690802467;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0yTUDvKr9KLJ6gBlgIFt0nRAFsoBYNTAi9NRqIkWAVs=;
+        b=AYI5iHHUBmc01ZiU7KqvPtIs4wGSE7vI+4Li73ZPtdwHGysuYtisKNz1RCt6gbkbHzHmSo
+        iesBV8KPLWj3hHXHfDev76TMOOoige9pF3e5Xel3hbfkcgzfeBaikLW957V48XhR37MuEK
+        ETFwRhT3mpleJfqSFTdhZ8iig7WZEyNQGIZPVtFtNSnSvQcj68GurDoHi5ZWI4F964AN1n
+        BcniA5OO6U+LtNI8bYRlqo0hoJyuCV+/LWmxDrZrzUmbkMvz8HgpZg/+V1ISl3t8lT1s01
+        k+Z0Y3xKD8IKVwTRqicfSCwUsYmS35r4CRjli1rPIxTBS/DiLPkEmslv9/MnzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=lahtoruutu; t=1690802467;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0yTUDvKr9KLJ6gBlgIFt0nRAFsoBYNTAi9NRqIkWAVs=;
+        b=HAfq68Aq+b99nBng9aVkropwlrnjCcqaNtoRYITdsQe9etLceD09vCESqZrqjaA8CwpACC
+        WEAmhy2fq2WdZZQ4vhWexMBFsPe16SrR09wmxHHk4/bknq4nyugb0r07J50inqNQaG/rdC
+        hdwxSe0y2rf8qyEAr2hOk1IZHBjgW0pbUBu+T7HKhW/HshVRmUchm48BKwvpbSCgAlKz1I
+        iWsm19mWR/iAbNCqZK/mhBioBsff4WKk+nDE2CWGeIPNlaYlHnBuc40bTwoiZNmPf30gq9
+        tX6OdSOjIxfL14Y2RJHge4V6+1VYbmqqxJWhcN7aPiTlJ1TondA2YV9gi3Zkqw==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Seal: i=1; s=lahtoruutu; d=iki.fi; t=1690802467; a=rsa-sha256;
+        cv=none;
+        b=wLTcZStgf+OVjSvMjtGKMLiN6mVJZN2XZsvK95TuF3IMgEYRmmTNNS4P0HYQ74Szh5+tEb
+        yy9TuluHhSdDkYs2nY4H+LwkXxWOR081H/snDEYNkGNBO74VG0bE+WfKcVo47+4sj3bkZC
+        TkVItmMuqxfh1xlOSPvRfQEWwwirp0jO3KoJsDRZEPhm9KKUsgIi4yQcWik/skv+HjMgeM
+        gAt19b+XyKRrwvyjMfGRm/aK7jSm1oI+RQQS+E4WBsyfJXhfVhbFLPOLpn33o99ivFqTle
+        tx+xRNQE8eLTmf+cnCqNNdgdaaFWwsEMmvyYTFisGGTCxswer2FT/DhYXa/Qnw==
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id A9F60634C95;
+        Mon, 31 Jul 2023 14:21:04 +0300 (EEST)
+Date:   Mon, 31 Jul 2023 11:21:04 +0000
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Dafna Hirschfeld <dafna@fastmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Tommaso Merciai <tommaso.merciai@amarulasolutions.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] media: dt-bindings: Merge OV5695 into OV5693 binding
+Message-ID: <ZMeZIGyD+ET6gaox@valkosipuli.retiisi.eu>
+References: <20230707210604.868002-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="8e9Ag2A/xFjBJvzI"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731103822.GA4093@wind.enjellic.com>
+In-Reply-To: <20230707210604.868002-1-robh@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
---8e9Ag2A/xFjBJvzI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jul 07, 2023 at 03:06:04PM -0600, Rob Herring wrote:
+> The OV5695 binding is almost the same as the OV5693 binding. The only
+> difference is 'clock-names' is defined for OV5695. However, the lack of
+> clock-names is an omission as the Linux OV5693 driver expects the same
+> 'xvclk' clock name.
+> 
+> 'link-frequencies' is required by OV5693, but not OV5695. Just drop it
+> from being required. Expressing it conditionally would be ugly. It
+> shouldn't really be required either as the driver only supports 1
+> frequency anyways.
 
-On Mon, Jul 31, 2023 at 05:38:22AM -0500, Dr. Greg wrote:
-> Good morning Paul, I hope this note finds your week starting well.
->=20
-> We submitted the patches for the V2 release of TSEM three weeks ago.
->=20
-> We received some feedback from Randy Dunlap on some documentations
-> issues that we went on to address.
->=20
-> Haven't heard any reflections from you.  Was just wondering if you
-> were swamped or had possibly missed the submission?  We didn't include
-> you as a copy on the notion that you didn't need two sets of patches
-> landing in your inbox.
->=20
-> You can find the series with the following lore link:
->=20
-> https://lore.kernel.org/linux-security-module/20230710102319.19716-1-greg=
-@enjellic.com/T/#t
->=20
-> Will look forward to any reflections you might have.
+The correct way to address this would appear to be to add link-frequencies
+for both of these devices. I think I've seen one or two sensors of this
+class (raw, CSI-2/parallel, external clock etc.) with link frequencies
+documented as "fixed" --- which is probably a documentation issue more than
+anything else.
 
-OK, please reroll with all reviews addressed.
+Also see:
+<URL:https://hverkuil.home.xs4all.nl/spec/driver-api/camera-sensor.html#handling-clocks>.
 
-As for the documentation, it seems that you missed Cc'ing
-linux-doc@vger.kernel.org list, hence I didn't see your series. In any case,
-run ``scripts/get_maintainer.pl`` to find maintainers, potential reviewers,
-and lists that should have received your patch (series).
+-- 
+Kind regards,
 
-Last but not least, it'd been great if you can also link to public Git
-repo containing your series (you already have the repo locally when
-developing the series, right?), so I can simply ``git pull`` when about
-to review yours.
-
-See you in v2!
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---8e9Ag2A/xFjBJvzI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZMeZDwAKCRD2uYlJVVFO
-o5G2AP44MMyRCB5jI3G18XNUpGnaFZJZ+ZByyOHDT8GlgPHXiQD+LC+N301nHZ9d
-ssPqQozSwvnWKLLtcfOQ0u00wFgV8w4=
-=I09p
------END PGP SIGNATURE-----
-
---8e9Ag2A/xFjBJvzI--
+Sakari Ailus
