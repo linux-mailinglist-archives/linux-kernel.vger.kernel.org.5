@@ -2,54 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE38768F18
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 961E0768F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbjGaHmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
+        id S231356AbjGaHnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:43:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbjGaHmA (ORCPT
+        with ESMTP id S230091AbjGaHnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:42:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A89EBB2;
-        Mon, 31 Jul 2023 00:41:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D24A60F4D;
-        Mon, 31 Jul 2023 07:41:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4073EC433C7;
-        Mon, 31 Jul 2023 07:41:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690789318;
-        bh=nKEbD8eSLXpzWcsAbvuZ7Gnjw2FwxIoFI2vEY1JlN74=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=TlitBY7ePjpw186uUTOis32pmfSrTQSyg/cI0FYzY2jcLizChxWJQZUSDFV4UypMT
-         G6kJHU8dAwjNZ2VlD+SDvrW9C1W8ElWZ4R3R+qeCnnrAk0y4Ep0v4yCTv9+BkfoehA
-         cMbIZXR3zhQcE5/hy7AY8RrJ5LDTKgdCpScQpV5Fk3cEk5XMMLRmR4SEzFoDHBdtBG
-         XnVNn648bIomG8FOQB9Lfv0oPYI2K9R/1N7grkjVfxRevO9S0KsqllO670C4NP9coh
-         qUM9hcXHDa33uQYE6aZ1vC10o4Jl/C+C7uMBUZnPx6NS7Ij0NKcQNSXV/FIzithUVb
-         jia9hJBFTF8ag==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Abaci Robot <abaci@linux.alibaba.com>
-In-Reply-To: <20230731015915.34867-1-yang.lee@linux.alibaba.com>
-References: <20230731015915.34867-1-yang.lee@linux.alibaba.com>
-Subject: Re: [PATCH -next] RDMA/irdma: Fix one kernel-doc comment
-Message-Id: <169078931544.92919.1279214592846732486.b4-ty@kernel.org>
-Date:   Mon, 31 Jul 2023 10:41:55 +0300
+        Mon, 31 Jul 2023 03:43:14 -0400
+Received: from out28-195.mail.aliyun.com (out28-195.mail.aliyun.com [115.124.28.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F7583;
+        Mon, 31 Jul 2023 00:43:12 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0779505|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0237288-0.000924996-0.975346;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=26;RT=26;SR=0;TI=SMTPD_---.U4fOa9R_1690789380;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.U4fOa9R_1690789380)
+          by smtp.aliyun-inc.com;
+          Mon, 31 Jul 2023 15:43:03 +0800
+From:   wangweidong.a@awinic.com
+To:     krzysztof.kozlowski@linaro.org
+Cc:     13916275206@139.com, alsa-devel@alsa-project.org,
+        broonie@kernel.org, ckeepax@opensource.cirrus.com,
+        colin.i.king@gmail.com, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, doug@schmorgal.com, fido_max@inbox.ru,
+        herve.codina@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        liweilei@awinic.com, perex@perex.cz, povik+lin@cutebit.org,
+        rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
+        shumingf@realtek.com, tiwai@suse.com, trix@redhat.com,
+        wangweidong.a@awinic.com, yijiangtao@awinic.com,
+        zhangjianming@awinic.com
+Subject: Re: [PATCH V3 4/5] ASoC: codecs: aw88261 device related operation functions
+Date:   Mon, 31 Jul 2023 15:43:00 +0800
+Message-ID: <20230731074300.6200-1-wangweidong.a@awinic.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <be25dead-89f0-8859-d182-84754ad8bfc0@linaro.org>
+References: <be25dead-89f0-8859-d182-84754ad8bfc0@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,20 +50,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thank you very much for your advice
 
-On Mon, 31 Jul 2023 09:59:15 +0800, Yang Li wrote:
-> Remove description of @free_hwcqp in irdma_destroy_cqp().
-> to silence the warning:
-> 
-> drivers/infiniband/hw/irdma/hw.c:580: warning: Excess function parameter 'free_hwcqp' description in 'irdma_destroy_cqp'
-> 
-> 
+On 31/07/2023 08:51, krzysztof.kozlowski@linaro.org wrote:
+> On 31/07/2023 08:41, wangweidong.a@awinic.com wrote:
+>> 
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +int aw88261_dev_init(struct aw88261_device *aw_dev, struct aw_container *aw_cfg)
+>> 
+>>> You already used this function in patch #3, so your order of patches is
+>>> confusing.
+>> 
+>> Do I need to change the order of patch? 
+>> Do I neeed to put aw88261_device.c aw88261_device.h in patch #3 and 
+>> put aw88261.c aw88261.h in patch #4?
+>> Is that how you change the order?
 
-Applied, thanks!
+> Your patchset should be logically ordered, so first you add bindings
+> (because it must be before their users), then you one piece, then other
+> etc. I understand that only the last patch will make everything
+> buildable, but still code should be added before its user/caller.
 
-[1/1] RDMA/irdma: Fix one kernel-doc comment
-      https://git.kernel.org/rdma/rdma/c/d43ea9c3d52f2e
+Thank you very much for your suggestion. 
+Do I need to keep the Makefile and kconfig files in a separate patch?
+
+...
+
+>> 
+>>>> +
+>>>> +	switch (chip_id) {
+>>>> +	case AW88261_CHIP_ID:
+>>>> +		ret = aw_dev_init((*aw_dev));
+>>>> +		break;
+>>>> +	default:
+>>>> +		ret = -EINVAL;
+>>>> +		dev_err((*aw_dev)->dev, "unsupported device");
+>>>> +		break;
+>>>> +	}
+>>>> +
+>>>> +	return ret;
+>>>> +}
+>>>> +
+>>>> +MODULE_DESCRIPTION("AW88261 device");
+>>>> +MODULE_LICENSE("GPL v2");
+>> 
+>>> Wait, is this a module? Does not look complete. I already saw one
+>>> module, so what is this for? For which module?
+>> 
+>> Can it be changed to MODULE_DESCRIPTION("AW88261 device lib")?
+
+> If this is a module, then it can. If this is not a module, then why
+> would you ever like to do it?
+
+>> The function in the aw88261_device.c file, which I used in the aw88261.c file.
+
+> Functions are not modules.
+
+Thank you very much for your suggestion. 
+I will delete MODULE_DESCRIPTION and MODULE_LICENSE
 
 Best regards,
--- 
-Leon Romanovsky <leon@kernel.org>
+Weidong Wang
