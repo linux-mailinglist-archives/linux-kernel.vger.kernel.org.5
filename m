@@ -2,131 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACFE876A201
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19ED76A206
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbjGaUfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54640 "EHLO
+        id S229853AbjGaUgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjGaUfh (ORCPT
+        with ESMTP id S230162AbjGaUgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:35:37 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DD8118
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:35:36 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC47C612A4
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:35:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0647C433C8;
-        Mon, 31 Jul 2023 20:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690835735;
-        bh=SqoZhNkMbULZnSpK8mWm/QgqaYLUyltlcxLo45LuySM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=rccM63VZ46bK2fuV/vc1E6kASLsXmhqw0Lw7Ufc09lcQJSp1VDFeRS5CNcznXnpi/
-         nHoEGklyyK7dLDG+CyWtUUu2KjhPaB2LFQy0TMmbvDk3nvE1Z9SXZ2hvhhCnnpXM8f
-         hCa63pkPTl0IquhDW7+T2pXi6mS06aRZawnjwOA4ot6+U6VvJwBtrxynFOX8MwoCr/
-         khJ48UUxKIs9ztfEomQ9mPzXB9ycT6/Q1QI2A6vVeqFbhchsTG6sNfubhvkpQfoxbA
-         2wm8t5uB47QAiQhKNqfSx+9Y0agft6WqMdlJzK+nDIt/lKJIo1hwieXqkMLwsohFSd
-         Q3jJ2f9DhPdZA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>, Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: pxa: remove use of symbol_get()
-Date:   Mon, 31 Jul 2023 22:34:57 +0200
-Message-Id: <20230731203527.424561-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Mon, 31 Jul 2023 16:36:12 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1991A1BD9
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:36:06 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-407db3e9669so19781cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:36:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690835765; x=1691440565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8WbRt22akgzv4PmYRoTv7Z60VgxgxYtdGWVmvWN3QQU=;
+        b=S48GXM2S/zOssa/4HGYWA/fi14zXxpeMV2F4C7CVir22G8F1rsCFPMpbbATKKTGtDB
+         64U04V9zqc3NX/KcDqqznzevwdH+LBQzjjWkXhUJhWjREYzmjnwgZfC3FYc5IrYNUBlm
+         LY/EUvpLCfaeKdgtW8bCez7DItwI3/PYoIvy7INGK7YD0YSomsBbivsNBTVfKNu4nBdo
+         xivL5QLBIY+NVve5Wz1jLiXbHQ5tlLXN7oYO0s/LfS46XwncPU8xO8zWDxBIMO3Easl+
+         guS7RQ3/hKev8L86c/bpFnn92PLQF1TIWg60T0w21WW/l5BAv1hI0kYaSnXEA5R3MsmC
+         +C9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690835765; x=1691440565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8WbRt22akgzv4PmYRoTv7Z60VgxgxYtdGWVmvWN3QQU=;
+        b=lkAfTwKoPLddK7emoyAiO2tBNcUYoEfwyFUJanBuFB++pqNgOGb+lgOSBQuI/NTTG0
+         AeuOpKCVIbnHdxOqGuB289UAfmekjYwQiSrt8LT+3H2jRXiGHAjkczRyeJpA+EQ0PAdm
+         Gf9ABxM3gF5cPLlfCu7RVyQwOKAkc/97QzFaKRy0robRy978XDqVo71xaAXHekwjH2Pw
+         vwMfzeEVvHl+i/VXeVVTqRFOS3Ntgm03ixpFxPStCULc7yiL9mxIHN+c2ZD/N6p2wr31
+         B1YnmvxkLViuxxK7ft5T1GinAGJK9pZ20sKCrRWjuA01kLJty/S7GYWFY9AJG8OL3o4l
+         84mQ==
+X-Gm-Message-State: ABy/qLbN60EleyFjSAdqTQEuzClQQkkpdmtiepbC3uWjByfyIUf0Bb0r
+        BdXnDdmCAZXgQLLACM/0+RCcP5gnYb9g2qDJgu34eA==
+X-Google-Smtp-Source: APBJJlEmoOsErptso+JLUNi7GHGxX5qEgT6biVyV0lbNK73KMKgCiYEb0JJeNHAmZZOJJPW+PoidP5ENk119vh3duf0=
+X-Received: by 2002:ac8:7f02:0:b0:407:4aa8:c5ba with SMTP id
+ f2-20020ac87f02000000b004074aa8c5bamr366494qtk.14.1690835765004; Mon, 31 Jul
+ 2023 13:36:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230729004144.1054885-1-seanjc@google.com>
+In-Reply-To: <20230729004144.1054885-1-seanjc@google.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Mon, 31 Jul 2023 14:35:29 -0600
+Message-ID: <CAOUHufaK1zibYzOxUGWgYatLnts+fOG6X8fBAwtGA_S6cdDxMw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: Wrap kvm_{gfn,hva}_range.pte in a per-action union
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Fri, Jul 28, 2023 at 6:41=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> Wrap kvm_{gfn,hva}_range.pte in a union so that future notifier events ca=
+n
+> pass event specific information up and down the stack without needing to
+> constantly expand and churn the APIs.  Lockless aging of SPTEs will pass
+> around a bitmap, and support for memory attributes will pass around the
+> new attributes for the range.
+>
+> Add a "KVM_NO_ARG" placeholder to simplify handling events without an
+> argument (creating a dummy union variable is midly annoying).
+>
+> Opportunstically drop explicit zero-initialization of the "pte" field, as
+> omitting the field (now a union) has the same effect.
+>
+> Cc: Yu Zhao <yuzhao@google.com>
+> Link: https://lore.kernel.org/all/CAOUHufagkd2Jk3_HrVoFFptRXM=3DhX2CV8f+M=
+-dka-hJU4bP8kw@mail.gmail.com
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-The spitz board file uses the obscure symbol_get() function
-to optionally call a function from sharpsl_pm.c if that is
-built. However, the two files are always built together
-these days, and have been for a long time, so this can
-be changed to a normal function call.
-
-Link: https://lore.kernel.org/lkml/20230731162639.GA9441@lst.de/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-This should get merged along with Christoph's other
-patches for updating the symbol_get() references to
-use EXPORT_SYMBOL_GPL().
----
- arch/arm/mach-pxa/sharpsl_pm.c |  2 --
- arch/arm/mach-pxa/spitz.c      | 14 +-------------
- 2 files changed, 1 insertion(+), 15 deletions(-)
-
-diff --git a/arch/arm/mach-pxa/sharpsl_pm.c b/arch/arm/mach-pxa/sharpsl_pm.c
-index d29bdcd5270e0..72fa2e3fd3531 100644
---- a/arch/arm/mach-pxa/sharpsl_pm.c
-+++ b/arch/arm/mach-pxa/sharpsl_pm.c
-@@ -216,8 +216,6 @@ void sharpsl_battery_kick(void)
- {
- 	schedule_delayed_work(&sharpsl_bat, msecs_to_jiffies(125));
- }
--EXPORT_SYMBOL(sharpsl_battery_kick);
--
- 
- static void sharpsl_battery_thread(struct work_struct *private_)
- {
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index b88ab6d007b68..dd6d66c913701 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -9,7 +9,6 @@
-  */
- 
- #include <linux/kernel.h>
--#include <linux/module.h>	/* symbol_get ; symbol_put */
- #include <linux/platform_device.h>
- #include <linux/delay.h>
- #include <linux/gpio_keys.h>
-@@ -518,17 +517,6 @@ static struct gpiod_lookup_table spitz_ads7846_gpio_table = {
- 	},
- };
- 
--static void spitz_bl_kick_battery(void)
--{
--	void (*kick_batt)(void);
--
--	kick_batt = symbol_get(sharpsl_battery_kick);
--	if (kick_batt) {
--		kick_batt();
--		symbol_put(sharpsl_battery_kick);
--	}
--}
--
- static struct gpiod_lookup_table spitz_lcdcon_gpio_table = {
- 	.dev_id = "spi2.1",
- 	.table = {
-@@ -556,7 +544,7 @@ static struct corgi_lcd_platform_data spitz_lcdcon_info = {
- 	.max_intensity		= 0x2f,
- 	.default_intensity	= 0x1f,
- 	.limit_mask		= 0x0b,
--	.kick_battery		= spitz_bl_kick_battery,
-+	.kick_battery		= sharpsl_battery_kick,
- };
- 
- static struct spi_board_info spitz_spi_devices[] = {
--- 
-2.39.2
-
+Acked-by: Yu Zhao <yuzhao@google.com>
