@@ -2,217 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2757176A3D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE1476A3DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 00:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbjGaWB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 18:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37780 "EHLO
+        id S231424AbjGaWCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 18:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbjGaWBZ (ORCPT
+        with ESMTP id S231699AbjGaWCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 18:01:25 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3B3E7;
-        Mon, 31 Jul 2023 15:01:23 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VLwXFS016950;
-        Mon, 31 Jul 2023 22:01:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=ZKuuw9w5ifG4P0sHYJV7PKrRqM0pn2V9g4jGAH/q1CQ=;
- b=fuiSU7iq5XKvlvNBrfwQH14XzxpoOU8iR+DYG1yLgpvXXlUAfE6fo8xRN/XNlafASsG+
- u1nhgJ1f1mky4ylpqo/m3+TJwnpXWYlHL95NRj2Fle8anFt7evBDYT6fTP5Em7JyfP85
- YbcSlnMa9C0ZS1oticyN5bdPX0mFds0nGrnKBX3wPPHhdYzPVMx8yLiQJqiml4w+R0uM
- Rn/sKiD+3xaepphilqNQCtT4+O4yf+bCY2racprOQJ/UYC/ljkeKU60VtSr7xSw+It8n
- 5zM9Calmn9bTHRVZNItXUD//epDkbUGV+liC/bIGcnfvqJhNjrenk328T9VWBacAiQlH yA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6a2va2uu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 22:01:08 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36VM17gN020773
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 22:01:07 GMT
-Received: from hu-djaggi-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 31 Jul 2023 15:01:05 -0700
-From:   Deepti Jaggi <quic_djaggi@quicinc.com>
-To:     <james.morse@arm.com>, <mchehab@kernel.org>, <rric@kernel.org>,
-        <bp@alien8.de>, <tony.luck@intel.com>
-CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, <quic_psodagud@quicinc.com>
-Subject: [PATCH] EDAC/device: Add sysfs notification for UE,CE count change
-Date:   Mon, 31 Jul 2023 15:00:59 -0700
-Message-ID: <20230731220059.28474-1-quic_djaggi@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 31 Jul 2023 18:02:19 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A364139
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:02:17 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bb119be881so42802275ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 15:02:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690840937; x=1691445737;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sZXwDT7lSpqyD7OTKZuyX3OzGyE3jIs1AadqKpDkW4k=;
+        b=tOj5Wt8YaFbV9ywN8nWXCNvxhO7wQxvdH1VuIunjBBAFvrIRXATc1vv1fhcuEb/L70
+         6vI9iaVn3df/+UxPaojvO5Rgor46IcxGgiooU1s5haTR0pdIPEwSRwcvZPAXGyFiH3bw
+         yaFnfDJ4DE+SoVu9fyI8CWeoD2XZ2V0l7OrojyOM4pj17/rkfyxy9wlEneag46uAQUZ6
+         FYmKPIhBnvgFvsP3VgHD5an3SyGSlka7JM5wUfGW++JWly0Ywc3x1k5DWdL3frlpoAfc
+         VHK8LiITN+JKqZJy9ty314CUeJBBEZGXdkDUPtSeoOOnQYNH5vnTVmuxi6DPv/+A/NJk
+         VRXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690840937; x=1691445737;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sZXwDT7lSpqyD7OTKZuyX3OzGyE3jIs1AadqKpDkW4k=;
+        b=bkHlERn+reR6h1gDg+LQmZ++IID64PCVmBLvBjau+LcnUQpde7QUbdsHBW4qgAt44w
+         k3pTQyiDgxigdkvgpTVP7kQDOgibvVrfUz7JfxHJRoNs5fmXLBTk4/Nb1FUbCgH+U/3Y
+         Pg07dKqCHcdBwCFJdL7AC94dLIwA3ya3sr7trCbbc6IuPWFj/bP2oLZ860AgLUHENub3
+         P0qbRJtBfpt0uHBIm0trxmSwSUiOSWr3UrqWikdJWEOyfiidhwcFrYW3bdnLbbsH+bKK
+         GL2TqvHTxEAx5fabI2SGzYIFYJ7bsd4brXJLS0v7U0cAcSAbxABpXxEJVsDOLd8EoLxd
+         phdA==
+X-Gm-Message-State: ABy/qLbxcfmyfZctKah9JGXg+0oyv0UHEASQ3Gh0s0Dxk5BUyuCSgd6/
+        fYyswHOVio01piBAUOqhOtNggg==
+X-Google-Smtp-Source: APBJJlG/7TIXArFl9nzqfXiuLGmMf5q7GAr+Ricr4oDD2rfNy25Ng3+2Iw3hd1zL6TZ5ztIEFXv3mQ==
+X-Received: by 2002:a17:902:cec7:b0:1bc:6c8:cded with SMTP id d7-20020a170902cec700b001bc06c8cdedmr8032979plg.67.1690840936879;
+        Mon, 31 Jul 2023 15:02:16 -0700 (PDT)
+Received: from google.com (176.13.105.34.bc.googleusercontent.com. [34.105.13.176])
+        by smtp.gmail.com with ESMTPSA id f16-20020a170902ce9000b001b016313b1dsm9052782plg.86.2023.07.31.15.02.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 15:02:16 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 22:02:12 +0000
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kai Huang <kai.huang@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Ben Gardon <bgardon@google.com>, Xu Yilun <yilun.xu@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>
+Subject: Re: [PATCH v2 5/6] KVM: Documentation: Add the missing description
+ for mmu_valid_gen into kvm_mmu_page
+Message-ID: <ZMgvZA+4FhtWB4Dl@google.com>
+References: <20230626182016.4127366-1-mizhang@google.com>
+ <20230626182016.4127366-6-mizhang@google.com>
+ <ZJsKsQNWVq4zNmGk@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: _V7HVJ6fP_rLUG02FJu5wXEzZdadHSUy
-X-Proofpoint-GUID: _V7HVJ6fP_rLUG02FJu5wXEzZdadHSUy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-31_15,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 adultscore=0 bulkscore=0
- spamscore=0 phishscore=0 mlxscore=0 mlxlogscore=849 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307310200
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZJsKsQNWVq4zNmGk@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A daemon running in user space collects information on correctable
-and uncorrectable errors from EDAC driver by reading corresponding
-sysfs entries and takes appropriate action.
-This patch adds support for user space daemon to wait on poll() until
-the sysfs entries for UE count and CE count change and then read updated
-counts instead of continuously monitoring the sysfs entries for
-any changes.
+On Tue, Jun 27, 2023, Sean Christopherson wrote:
+> On Mon, Jun 26, 2023, Mingwei Zhang wrote:
+> > Add the description for mmu_valid_gen into kvm_mmu_page description.
+> > mmu_valid_gen is used in shadow MMU for fast zapping. Update the doc to
+> > reflect that.
+> > 
+> > Signed-off-by: Mingwei Zhang <mizhang@google.com>
+> > Reviewed-by: Kai Huang <kai.huang@intel.com>
+> > ---
+> >  Documentation/virt/kvm/x86/mmu.rst | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/Documentation/virt/kvm/x86/mmu.rst b/Documentation/virt/kvm/x86/mmu.rst
+> > index 97d695207e11..cc4bd190c93d 100644
+> > --- a/Documentation/virt/kvm/x86/mmu.rst
+> > +++ b/Documentation/virt/kvm/x86/mmu.rst
+> > @@ -208,6 +208,10 @@ Shadow pages contain the following information:
+> >      The page is not backed by a guest page table, but its first entry
+> >      points to one.  This is set if NPT uses 5-level page tables (host
+> >      CR4.LA57=1) and is shadowing L1's 4-level NPT (L1 CR4.LA57=1).
+> > +  mmu_valid_gen:
+> > +    Used by comparing against kvm->arch.mmu_valid_gen to check whether the
+> 
+> This needs to explain what the generation is, and where it comes from.
+> 
+>   The MMU generation of this page, used to effect a "fast" zap of all MMU pages
+>   across all roots.  To zap all pages in all roots without blocking vCPUs, e.g.
+>   when deleting a memslot, KVM updates the per-VM valid MMU generation to mark
+>   all existing pages and roots invalid/obsolete.  Obsolete pages can't be used,
+>   e.g. vCPUs must load a new, valid root before re-entering the guest.
+> 
+>   The MMU generation is only ever '0' or '1', as slots_lock must be held until
+>   all obsolete pages are zapped and freed, i.e. there is exactly one valid
+>   generation and (at most) one invalid generation.
+> 
+>   Note, the TDP MMU doesn't use mmu_gen as non-root TDP MMU pages are reachable
+>   only from their owning root, whereas all pages for shadow MMUs are reachable
+>   via the hash map.  The TDP MMU uses role.invalid to track obsolete roots.
 
-Signed-off-by: Deepti Jaggi <quic_djaggi@quicinc.com>
----
- drivers/edac/edac_device.c       | 16 ++++++++++++++++
- drivers/edac/edac_device.h       |  8 ++++++++
- drivers/edac/edac_device_sysfs.c | 20 ++++++++++++++++++++
- 3 files changed, 44 insertions(+)
-
-diff --git a/drivers/edac/edac_device.c b/drivers/edac/edac_device.c
-index 8c4d947fb848..7b7aec4da6b9 100644
---- a/drivers/edac/edac_device.c
-+++ b/drivers/edac/edac_device.c
-@@ -587,12 +587,20 @@ void edac_device_handle_ce_count(struct edac_device_ctl_info *edac_dev,
- 	if (instance->nr_blocks > 0) {
- 		block = instance->blocks + block_nr;
- 		block->counters.ce_count += count;
-+
-+		/* Notify block sysfs attribute change */
-+		if (block->kn_ce)
-+			sysfs_notify_dirent(block->kn_ce);
- 	}
- 
- 	/* Propagate the count up the 'totals' tree */
- 	instance->counters.ce_count += count;
- 	edac_dev->counters.ce_count += count;
- 
-+	/* Notify instance sysfs attribute change */
-+	if (instance->kn_ce)
-+		sysfs_notify_dirent(instance->kn_ce);
-+
- 	if (edac_device_get_log_ce(edac_dev))
- 		edac_device_printk(edac_dev, KERN_WARNING,
- 				   "CE: %s instance: %s block: %s count: %d '%s'\n",
-@@ -633,12 +641,20 @@ void edac_device_handle_ue_count(struct edac_device_ctl_info *edac_dev,
- 	if (instance->nr_blocks > 0) {
- 		block = instance->blocks + block_nr;
- 		block->counters.ue_count += count;
-+
-+		/* Notify block sysfs attribute change */
-+		if (block->kn_ue)
-+			sysfs_notify_dirent(block->kn_ue);
- 	}
- 
- 	/* Propagate the count up the 'totals' tree */
- 	instance->counters.ue_count += count;
- 	edac_dev->counters.ue_count += count;
- 
-+	/* Notify instance sysfs attribute change */
-+	if (instance->kn_ue)
-+		sysfs_notify_dirent(instance->kn_ue);
-+
- 	if (edac_device_get_log_ue(edac_dev))
- 		edac_device_printk(edac_dev, KERN_EMERG,
- 				   "UE: %s instance: %s block: %s count: %d '%s'\n",
-diff --git a/drivers/edac/edac_device.h b/drivers/edac/edac_device.h
-index fc2d2c218064..459514ea549e 100644
---- a/drivers/edac/edac_device.h
-+++ b/drivers/edac/edac_device.h
-@@ -127,6 +127,10 @@ struct edac_device_block {
- 
- 	/* edac sysfs device control */
- 	struct kobject kobj;
-+
-+	/* kern fs node for block ue_count and ce count attributes*/
-+	struct kernfs_node *kn_ue;
-+	struct kernfs_node *kn_ce;
- };
- 
- /* device instance control structure */
-@@ -141,6 +145,10 @@ struct edac_device_instance {
- 
- 	/* edac sysfs device control */
- 	struct kobject kobj;
-+
-+	/* kern fs node for block ue_count and ce count attributes*/
-+	struct kernfs_node *kn_ue;
-+	struct kernfs_node *kn_ce;
- };
- 
- 
-diff --git a/drivers/edac/edac_device_sysfs.c b/drivers/edac/edac_device_sysfs.c
-index 5e7593753799..d1e04a9296c7 100644
---- a/drivers/edac/edac_device_sysfs.c
-+++ b/drivers/edac/edac_device_sysfs.c
-@@ -562,6 +562,13 @@ static int edac_device_create_block(struct edac_device_ctl_info *edac_dev,
- 	}
- 	kobject_uevent(&block->kobj, KOBJ_ADD);
- 
-+	/*
-+	 * Save kernfs pointer for ue count and ce count
-+	 * to notify from any context when attributes change
-+	 */
-+	block->kn_ue = sysfs_get_dirent(block->kobj.sd, "ue_count");
-+	block->kn_ce = sysfs_get_dirent(block->kobj.sd, "ce_count");
-+
- 	return 0;
- 
- 	/* Error unwind stack */
-@@ -594,6 +601,9 @@ static void edac_device_delete_block(struct edac_device_ctl_info *edac_dev,
- 		}
- 	}
- 
-+	block->kn_ue = NULL;
-+	block->kn_ce = NULL;
-+
- 	/* unregister this block's kobject, SEE:
- 	 *	edac_device_ctrl_block_release() callback operation
- 	 */
-@@ -660,6 +670,13 @@ static int edac_device_create_instance(struct edac_device_ctl_info *edac_dev,
- 	edac_dbg(4, "Registered instance %d '%s' kobject\n",
- 		 idx, instance->name);
- 
-+	/*
-+	 * Save kernfs pointer for ue count and ce count
-+	 * to notify from any context when attributes change
-+	 */
-+	instance->kn_ue = sysfs_get_dirent(instance->kobj.sd, "ue_count");
-+	instance->kn_ce = sysfs_get_dirent(instance->kobj.sd, "ce_count");
-+
- 	return 0;
- 
- 	/* error unwind stack */
-@@ -682,6 +699,9 @@ static void edac_device_delete_instance(struct edac_device_ctl_info *edac_dev,
- 
- 	instance = &edac_dev->instances[idx];
- 
-+	instance->kn_ue = NULL;
-+	instance->kn_ce = NULL;
-+
- 	/* unregister all blocks in this instance */
- 	for (i = 0; i < instance->nr_blocks; i++)
- 		edac_device_delete_block(edac_dev, &instance->blocks[i]);
--- 
-2.31.1
-
+Sean, thanks for the detailed explanation. I will pick the most of the
+content and get into the next version.
+> 
+> And then big bonus points if you add
+> 
+>   Page Role
+>   =========
+> 
+> to explain the purpose of the role, and how/when it's used in the shadow MMU versus
+> the TDP MMU.  The shadow MMU's use of a hash map is a fundemental aspect that really
+> should be documented here.
+> 
+> > +    shadow page is obsolete thus a convenient variable for fast zapping.
+> > +    Note that TDP MMU does not use mmu_valid_gen.
+> >    gfn:
+> >      Either the guest page table containing the translations shadowed by this
+> >      page, or the base page frame for linear translations.  See role.direct.
+> > -- 
+> > 2.41.0.162.gfafddb0af9-goog
+> > 
