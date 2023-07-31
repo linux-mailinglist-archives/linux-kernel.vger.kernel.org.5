@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EC67689E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC897689ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229459AbjGaCNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 22:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
+        id S229707AbjGaCS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 22:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjGaCNa (ORCPT
+        with ESMTP id S229379AbjGaCS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 22:13:30 -0400
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50C7E50
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 19:13:29 -0700 (PDT)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b9f057f6daso7905413a34.0
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 19:13:29 -0700 (PDT)
+        Sun, 30 Jul 2023 22:18:26 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FEB19C;
+        Sun, 30 Jul 2023 19:18:25 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-686be3cbea0so3192573b3a.0;
+        Sun, 30 Jul 2023 19:18:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690769905; x=1691374705;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YGe7yeLSCJNtOm6KMm1pCwSHsNpi9wZaHI6nfPlQl3c=;
+        b=h5K+DYPqZFC60a4cycOBBwDw5B5aIbHbzVUDTSJ6TmYOhMYUesVIXYk0R0JFkg2WgX
+         BqzQ34i+6GjiKS6oRSCiLl0ic6J9PuUs4c4QS6euPm/SL7qBhmuS6/kg/TKZzh+lNtD5
+         K/cb62Lbuse0dW9UGOxZCzJrJBqDiopp9TjAJysFCOBEUGMBIf6InBjVzAcMwhwVWWjN
+         OzOpHhxABYLhKR/ifh3OWwHVUjQX04a8Yf/2GsLMwiWsRj4Msd08iBqmJZ7caPgi1w9J
+         rV8j/ceCuCZ1VYT+la25Uut6MLD8MoUE5y1wia1maBSuWyvnORxdF6JL1mnTNKn0/Wma
+         xr1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690769609; x=1691374409;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GPkgU757mcAfVErB4JqXmP6kqt1Ainnk7Zov9FfgpnM=;
-        b=as8SJJJItNktXHJhDYsmRgAduWey9F/N/vumcPCFnd9/q/ywFxvfSq+NGgyKIGxYR7
-         vBh6Lmg/6SwgpfvgeRw+13UrLtBJkOklrUgg4UhDTtO0mZDUR3XClUbMM5eFUS2XGVNo
-         Nt4VuKTdmSy+X/g1Sntci5+Wy9Yenk1EEgzB9rdcH9Jh7RZ6Y93tnHM9dBw8Jhm58Aoc
-         tMx6oe7HOjxVs5gl41MaRplOR6Xs29O4AoPV6kjU3PO7j56ViIZZxe53yRkv9l5a2HZ7
-         9MUrV77QihzA2DxNLU8LfkOVBQZ4o3TVPqU1fnAISyHy4OHr6h4o77IvrdESBniehvHB
-         EooQ==
-X-Gm-Message-State: ABy/qLbUTb1fR3wLt8ry3BXke3yeaFkflbu0VfDRU00mPrKf16KPyMZb
-        X/XCFkuvZR8JjTxtvnsLzEf9VujDir3UpD9pWVcD1WODZSTW
-X-Google-Smtp-Source: APBJJlGXOGBA2AgNlWNY31LIsNq0WRqp6IlSCViwbyXiU2fsMGi3dC8fkFp/KA9wRkqtorpwD5/slNt3e/VUr55xOY+neabpk0dh
+        d=1e100.net; s=20221208; t=1690769905; x=1691374705;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YGe7yeLSCJNtOm6KMm1pCwSHsNpi9wZaHI6nfPlQl3c=;
+        b=BAe1vPwjkaS/yJyWuLuePiCuGvcMyhwmnDGSIMnoQxuj5P0bXR6OtL574ChxzC487p
+         Y7IgGSdgm0Cf7My7x7KDt4pKEPhUinbSOqQg0y0Obl/pQrtAcoT+ieaNGNUyqkZ+FBP2
+         AfI7klSDfRud9lB4wb5EmbpCjICtFRM5QTvLe4zkOuNX4PK2SK/Nu6NpLKDZCkyzkxfr
+         050nHCB1+bxHn3s5jvKz32kCFQ0kKQiPJ6xAhqr1eOxXbFtxSXNKeV84F+BKwy/PzdSS
+         Ylug0Ede4S9aAbJjIL3ZtPPJNRpkZAUrwdNBndDxoOp66Ce6wdM92fO3GckeiRloRRPR
+         FUtA==
+X-Gm-Message-State: ABy/qLbe1pkPCKZhvQHCIQXoQYRe9fbmx1yAKVC/ayGcRcTsxPjwWuno
+        yDnTv60UkFC8ImGRcfiwEGz6RI/heo/PT6yN
+X-Google-Smtp-Source: APBJJlFEz/QKJPg44Ka8GKBHJeWwG0oxzm4iA/VEL0cm8A0/7em09GsIoQpzhFflx+zfO6TcGfEObQ==
+X-Received: by 2002:a05:6a20:3d21:b0:10b:bf2d:71bb with SMTP id y33-20020a056a203d2100b0010bbf2d71bbmr9643953pzi.27.1690769905200;
+        Sun, 30 Jul 2023 19:18:25 -0700 (PDT)
+Received: from rajgad.hsd1.ca.comcast.net ([2601:204:df00:9cd0:f50b:8f24:acc4:e5c])
+        by smtp.gmail.com with ESMTPSA id y1-20020aa78041000000b00686bcfb5a34sm6460022pfm.124.2023.07.30.19.18.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 19:18:24 -0700 (PDT)
+From:   Atul Raut <rauji.raut@gmail.com>
+To:     deller@gmx.de
+Cc:     linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] fbdev/amifb: Replace zero-length arrays with DECLARE_FLEX_ARRAY() helper
+Date:   Sun, 30 Jul 2023 19:18:08 -0700
+Message-Id: <20230731021808.24997-1-rauji.raut@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:76b3:b0:1bb:3cab:49b0 with SMTP id
- dx51-20020a05687076b300b001bb3cab49b0mr10439028oab.6.1690769609114; Sun, 30
- Jul 2023 19:13:29 -0700 (PDT)
-Date:   Sun, 30 Jul 2023 19:13:29 -0700
-In-Reply-To: <000000000000a3d67705ff730522@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f2ca8f0601bef9ca@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
-From:   syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, hch@lst.de,
-        johannes.thumshirn@wdc.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Replacing zero-length arrays with C99 flexible-array members
+because they are deprecated. Use the new DECLARE_FLEX_ARRAY()
+auxiliary macro instead of defining a zero-length array.
 
-commit 85724171b302914bb8999b9df091fd4616a36eb7
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Tue May 23 08:40:18 2023 +0000
+This fixes warnings such as:
+./drivers/video/fbdev/amifb.c:690:6-10: WARNING use flexible-array member instead (https://www.kernel.org/doc/html/latest/process/deprecated.html#zero-length-and-one-element-arrays)
 
-    btrfs: fix the btrfs_get_global_root return value
+Signed-off-by: Atul Raut <rauji.raut@gmail.com>
+---
+ drivers/video/fbdev/amifb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12343ac5a80000
-start commit:   d192f5382581 Merge tag 'arm64-fixes' of git://git.kernel.o..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11343ac5a80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16343ac5a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a4507c291b5ab5d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae97a827ae1c3336bbb4
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1230cc11a80000
+diff --git a/drivers/video/fbdev/amifb.c b/drivers/video/fbdev/amifb.c
+index d88265dbebf4..f216b2c702a1 100644
+--- a/drivers/video/fbdev/amifb.c
++++ b/drivers/video/fbdev/amifb.c
+@@ -687,7 +687,7 @@ struct fb_var_cursorinfo {
+ 	__u16 height;
+ 	__u16 xspot;
+ 	__u16 yspot;
+-	__u8 data[1];			/* field with [height][width]        */
++	DECLARE_FLEX_ARRAY(__u8, data);	/* field with [height][width]        */
+ };
+ 
+ struct fb_cursorstate {
+-- 
+2.34.1
 
-Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
-Fixes: 85724171b302 ("btrfs: fix the btrfs_get_global_root return value")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
