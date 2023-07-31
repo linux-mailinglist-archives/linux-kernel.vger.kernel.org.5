@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C601876930A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAA7769302
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjGaKXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:23:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
+        id S232508AbjGaKWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjGaKXw (ORCPT
+        with ESMTP id S232390AbjGaKVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:23:52 -0400
-X-Greylist: delayed 1184 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 31 Jul 2023 03:23:42 PDT
-Received: from mxout70.expurgate.net (mxout70.expurgate.net [194.37.255.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B317E78
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:23:42 -0700 (PDT)
+        Mon, 31 Jul 2023 06:21:42 -0400
+X-Greylist: delayed 1038 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 31 Jul 2023 03:21:16 PDT
+Received: from mxout70.expurgate.net (mxout70.expurgate.net [91.198.224.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0002198C
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:21:16 -0700 (PDT)
 Received: from [127.0.0.1] (helo=localhost)
         by relay.expurgate.net with smtp (Exim 4.92)
         (envelope-from <prvs=6590db4e63=fe@dev.tdt.de>)
-        id 1qQPkq-0074df-Bv
+        id 1qQPkq-00G4dA-CP
         for linux-kernel@vger.kernel.org; Mon, 31 Jul 2023 12:03:56 +0200
 Received: from [195.243.126.94] (helo=securemail.tdt.de)
         by relay.expurgate.net with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <fe@dev.tdt.de>)
-        id 1qQPkp-0074ZW-VV
-        for linux-kernel@vger.kernel.org; Mon, 31 Jul 2023 12:03:55 +0200
+        id 1qQPkq-00A50N-0C
+        for linux-kernel@vger.kernel.org; Mon, 31 Jul 2023 12:03:56 +0200
 Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id A812C240050
+        by securemail.tdt.de (Postfix) with ESMTP id E996F240040
         for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:03:54 +0200 (CEST)
 Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 6B60524004B;
+        by securemail.tdt.de (Postfix) with ESMTP id A1FA524004D;
         Mon, 31 Jul 2023 12:03:54 +0200 (CEST)
 Received: from localhost.localdomain (unknown [10.2.3.40])
-        by mail.dev.tdt.de (Postfix) with ESMTPSA id E9C61312A1;
-        Mon, 31 Jul 2023 12:03:53 +0200 (CEST)
+        by mail.dev.tdt.de (Postfix) with ESMTPSA id 69F3C21055;
+        Mon, 31 Jul 2023 12:03:54 +0200 (CEST)
 From:   Florian Eckert <fe@dev.tdt.de>
 To:     mturquette@baylibre.com, sboyd@kernel.org, yzhu@maxlinear.com,
         rtanwar@maxlinear.com, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
 Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Eckert.Florian@googlemail.com
-Subject: [PATCH 1/2] clk: mxl: add mxl,control-gate dts property
-Date:   Mon, 31 Jul 2023 12:03:48 +0200
-Message-ID: <20230731100349.184553-2-fe@dev.tdt.de>
+Subject: [PATCH 2/2] dt-bindings: clock: intel,cgu-lgm: add mxl,control-gate option
+Date:   Mon, 31 Jul 2023 12:03:49 +0200
+Message-ID: <20230731100349.184553-3-fe@dev.tdt.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20230731100349.184553-1-fe@dev.tdt.de>
 References: <20230731100349.184553-1-fe@dev.tdt.de>
@@ -55,82 +55,58 @@ X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Content-Transfer-Encoding: quoted-printable
-X-purgate: clean
 X-purgate-type: clean
-X-purgate-ID: 151534::1690797836-25E01C1B-4C3D6A58/0/0
+X-purgate-ID: 151534::1690797836-3F48EA8C-6873251E/0/0
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gate clocks can be controlled either from this cgu clk driver or directly
-from power management driver/daemon. It is dependent on the power
-policy/profile requirements of the end product. To take control of gate
-clks from this driver.
-
-Until now, the source code had to be changed for this purpose by adding
-the flag 'GATE_CLK_HW' to the LGM_GATE macro in the source file
-'drivers/clk/x86/clk-lgm.c'.
-
-This can be better handled via the device tree, so that the source no
-longer needs to be changed. For this purpose, a new option
-'mxl,control-gate' is added, which specifies that the gate is controlled
-by this driver.
+Add the new option 'mxl,control-gate'. Gate clocks can be controlled
+either from this cgu clk driver or directly from power management
+driver/daemon. It is dependent on the power policy/profile requirements
+of the end product. To take control of gate clks from this driver, add th=
+e
+name of the gate to this <mxl,control-gate> devicetree property.
+Please refer to 'drivers/clk/x86/clk-lgm.c' source file for the gate name=
+s.
 
 Signed-off-by: Florian Eckert <fe@dev.tdt.de>
 ---
- drivers/clk/x86/clk-cgu.c | 30 +++++++++++++++++-------------
- 1 file changed, 17 insertions(+), 13 deletions(-)
+ .../devicetree/bindings/clock/intel,cgu-lgm.yaml      | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/clk/x86/clk-cgu.c b/drivers/clk/x86/clk-cgu.c
-index 89b53f280aee..cb4e92ea54bf 100644
---- a/drivers/clk/x86/clk-cgu.c
-+++ b/drivers/clk/x86/clk-cgu.c
-@@ -339,6 +339,8 @@ int lgm_clk_register_branches(struct lgm_clk_provider=
- *ctx,
- {
- 	struct clk_hw *hw;
- 	unsigned int idx;
-+	const char *name;
-+	unsigned int count, i;
+diff --git a/Documentation/devicetree/bindings/clock/intel,cgu-lgm.yaml b=
+/Documentation/devicetree/bindings/clock/intel,cgu-lgm.yaml
+index 76609a390429..755d13a65477 100644
+--- a/Documentation/devicetree/bindings/clock/intel,cgu-lgm.yaml
++++ b/Documentation/devicetree/bindings/clock/intel,cgu-lgm.yaml
+@@ -28,6 +28,16 @@ properties:
+   '#clock-cells':
+     const: 1
 =20
- 	for (idx =3D 0; idx < nr_clk; idx++, list++) {
- 		switch (list->type) {
-@@ -355,19 +357,21 @@ int lgm_clk_register_branches(struct lgm_clk_provid=
-er *ctx,
- 			hw =3D lgm_clk_register_fixed_factor(ctx, list);
- 			break;
- 		case CLK_TYPE_GATE:
--			if (list->gate_flags & GATE_CLK_HW) {
--				hw =3D lgm_clk_register_gate(ctx, list);
--			} else {
--				/*
--				 * GATE_CLKs can be controlled either from
--				 * CGU clk driver i.e. this driver or directly
--				 * from power management driver/daemon. It is
--				 * dependent on the power policy/profile requirements
--				 * of the end product. To override control of gate
--				 * clks from this driver, provide NULL for this index
--				 * of gate clk provider.
--				 */
--				hw =3D NULL;
-+			/* Check if cgu should control the gate clock */
-+			hw =3D NULL;
-+			count =3D of_property_count_strings(ctx->np,
-+							  "mxl,control-gate");
-+			if (count <=3D 0)
-+				break;
-+			for (i =3D 0; i < count; i++) {
-+				of_property_read_string_index(ctx->np,
-+							      "mxl,control-gate",
-+							      i, &name);
-+				if (!strncmp(list->name, name, strlen(list->name))) {
-+					dev_err(ctx->dev, "enable gate control for %s\n",
-+						list->name);
-+					hw =3D lgm_clk_register_gate(ctx, list);
-+				}
- 			}
- 			break;
++    mxl,control-gate:
++      description:
++        Gate clocks can be controlled either from this cgu clk driver or
++        directly from power management driver/daemon. It is dependent on=
+ the
++        power policy/profile requirements of the end product. To take
++        control of gate clks from this driver, add the name of the gate
++        to this <mxl,control-gate> devicetree property. Please refer to
++        drivers/clk/x86/clk-lgm.c source file for the gate names.
++      $ref: /schemas/types.yaml#/definitions/string-array
++
+ required:
+   - compatible
+   - reg
+@@ -41,6 +51,7 @@ examples:
+         compatible =3D "intel,cgu-lgm";
+         reg =3D <0xe0200000 0x33c>;
+         #clock-cells =3D <1>;
++        mxl,control-gate =3D "g_gptc0", "g_gptc1";
+     };
 =20
+ ...
 --=20
 2.30.2
 
