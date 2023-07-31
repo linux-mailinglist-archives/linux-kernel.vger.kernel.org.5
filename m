@@ -2,292 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D3E76992A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94ECA769917
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:10:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbjGaONP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
+        id S229851AbjGaOKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbjGaOMv (ORCPT
+        with ESMTP id S231731AbjGaOKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:12:51 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275DEB3;
-        Mon, 31 Jul 2023 07:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690812770; x=1722348770;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Jt+Kf1a8TwG/spRuMs893nE/LfcM2cJ0n2VetEP0YVg=;
-  b=L5ykAgagBzQ32N3xNp3RIZgcBk90UFYMga2AyqPoWmUmHg1IwEVSbhW6
-   G3Ja0AQjn6LpaKL3BeOm6sOkfO18lzfV+PBNIy8eW5ZMc2CBcHZ31S/dE
-   dPXPZE6Em9oAn7lk9KF5ltRm0C2MEK3vwJl5j6BZO1wVJ1Hgjzhub7AN5
-   R/PyZCDOOywoFZU3BhFIl+R+gcv0bzR+z7WIIKkK2N3GMXWwHOnVvTvZu
-   Zh8oCuHNVRBbu5xiBArXh4RQVJzrT0O99BKPhNMllG7G/ci3qo9OvpbMk
-   0YO0Zr/EK0ow6h2De1AolQBr9vrKDaKE2qJDD3QDODU7Tt/w5Sxds3H0f
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="455403669"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="455403669"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 07:12:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="728324359"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="728324359"
-Received: from jkrzyszt-mobl2.ger.corp.intel.com (HELO jkrzyszt-mobl2.intranet) ([10.213.1.128])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 07:12:46 -0700
-From:   Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-To:     Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-Subject: [PATCH v3 3/3] kunit: Allow kunit test modules to use test filtering
-Date:   Mon, 31 Jul 2023 16:10:25 +0200
-Message-ID: <20230731141021.2854827-8-janusz.krzysztofik@linux.intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230731141021.2854827-5-janusz.krzysztofik@linux.intel.com>
-References: <20230731141021.2854827-5-janusz.krzysztofik@linux.intel.com>
+        Mon, 31 Jul 2023 10:10:39 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4071618C;
+        Mon, 31 Jul 2023 07:10:35 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RF0Tb3KjxzVjvT;
+        Mon, 31 Jul 2023 22:08:51 +0800 (CST)
+Received: from localhost (10.174.179.215) by canpemm500007.china.huawei.com
+ (7.192.104.62) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 31 Jul
+ 2023 22:10:32 +0800
+From:   Yue Haibing <yuehaibing@huawei.com>
+To:     <marcelo.leitner@gmail.com>, <lucien.xin@gmail.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <yuehaibing@huawei.com>
+CC:     <linux-sctp@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net-next] sctp: Remove unused function declarations
+Date:   Mon, 31 Jul 2023 22:10:30 +0800
+Message-ID: <20230731141030.32772-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-External tools, e.g., Intel GPU tools (IGT), support execution of
-individual selftests provided by kernel modules.  That could be also
-applicable to kunit test modules if they provided test filtering.  But
-test filtering is now possible only when kunit code is built into the
-kernel.  Moreover, a filter can be specified only at boot time, then
-reboot is required each time a different filter is needed.
+These declarations are never implemented since beginning of git history.
 
-Build the test filtering code also when kunit is configured as a module,
-expose test filtering functions to other kunit source files, and use them
-in kunit module notifier callback functions.  Userspace can then reload
-the kunit module with a value of the filter_glob parameter tuned to a
-specific kunit test module every time it wants to limit the scope of tests
-executed on that module load.  Make the kunit.filter_glob parameter
-visible in sysfs for user convenience.
-
-v3: Fix CONFIG_GLOB, required by filtering fuctions, not selected when
-    building as a module.
-v2: Fix new name of a structure moved to kunit namespace not updated
-    across all uses.
-
-Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 ---
- include/kunit/test.h | 13 +++++++++++++
- lib/kunit/Kconfig    |  2 +-
- lib/kunit/executor.c | 42 ++++++++++++++++++++++--------------------
- lib/kunit/test.c     | 22 ++++++++++++++++++++++
- 4 files changed, 58 insertions(+), 21 deletions(-)
+ include/net/sctp/sm.h      | 3 ---
+ include/net/sctp/structs.h | 2 --
+ 2 files changed, 5 deletions(-)
 
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 6d693f21a4833..14ff12e72252a 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -190,6 +190,12 @@ struct kunit_suite {
- 	int suite_init_err;
- };
+diff --git a/include/net/sctp/sm.h b/include/net/sctp/sm.h
+index f37c7a558d6d..64c42bd56bb2 100644
+--- a/include/net/sctp/sm.h
++++ b/include/net/sctp/sm.h
+@@ -156,7 +156,6 @@ sctp_state_fn_t sctp_sf_do_6_2_sack;
+ sctp_state_fn_t sctp_sf_autoclose_timer_expire;
  
-+/* Stores an array of suites, end points one past the end */
-+struct kunit_suite_set {
-+	struct kunit_suite * const *start;
-+	struct kunit_suite * const *end;
-+};
-+
- /**
-  * struct kunit - represents a running instance of a test.
-  *
-@@ -238,6 +244,7 @@ static inline void kunit_set_failure(struct kunit *test)
+ /* Prototypes for utility support functions.  */
+-__u8 sctp_get_chunk_type(struct sctp_chunk *chunk);
+ const struct sctp_sm_table_entry *sctp_sm_lookup_event(
+ 					struct net *net,
+ 					enum sctp_event_type event_type,
+@@ -166,8 +165,6 @@ int sctp_chunk_iif(const struct sctp_chunk *);
+ struct sctp_association *sctp_make_temp_asoc(const struct sctp_endpoint *,
+ 					     struct sctp_chunk *,
+ 					     gfp_t gfp);
+-__u32 sctp_generate_verification_tag(void);
+-void sctp_populate_tie_tags(__u8 *cookie, __u32 curTag, __u32 hisTag);
  
- bool kunit_enabled(void);
- const char *kunit_action(void);
-+const char *kunit_filter_glob(void);
- 
- void kunit_init_test(struct kunit *test, const char *name, char *log);
- 
-@@ -248,6 +255,12 @@ size_t kunit_suite_num_test_cases(struct kunit_suite *suite);
- unsigned int kunit_test_case_num(struct kunit_suite *suite,
- 				 struct kunit_case *test_case);
- 
-+struct kunit_suite_set
-+kunit_filter_suites(const struct kunit_suite_set *suite_set,
-+		    const char *filter_glob,
-+		    int *err);
-+void kunit_free_suite_set(struct kunit_suite_set suite_set);
-+
- int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_suites);
- 
- void __kunit_test_suites_exit(struct kunit_suite **suites, int num_suites);
-diff --git a/lib/kunit/Kconfig b/lib/kunit/Kconfig
-index 626719b95badd..68a6daec0aef1 100644
---- a/lib/kunit/Kconfig
-+++ b/lib/kunit/Kconfig
-@@ -4,7 +4,7 @@
- 
- menuconfig KUNIT
- 	tristate "KUnit - Enable support for unit tests"
--	select GLOB if KUNIT=y
-+	select GLOB
- 	help
- 	  Enables support for kernel unit tests (KUnit), a lightweight unit
- 	  testing and mocking framework for the Linux kernel. These tests are
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index d1c0616569dfd..49fe40cc8f1af 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -25,14 +25,17 @@ const char *kunit_action(void)
- 	return action_param;
- }
- 
--#if IS_BUILTIN(CONFIG_KUNIT)
+ /* Prototypes for chunk-building functions.  */
+ struct sctp_chunk *sctp_make_init(const struct sctp_association *asoc,
+diff --git a/include/net/sctp/structs.h b/include/net/sctp/structs.h
+index 5c72d1864dd6..5a24d6d8522a 100644
+--- a/include/net/sctp/structs.h
++++ b/include/net/sctp/structs.h
+@@ -1122,8 +1122,6 @@ void sctp_outq_free(struct sctp_outq*);
+ void sctp_outq_tail(struct sctp_outq *, struct sctp_chunk *chunk, gfp_t);
+ int sctp_outq_sack(struct sctp_outq *, struct sctp_chunk *);
+ int sctp_outq_is_empty(const struct sctp_outq *);
+-void sctp_outq_restart(struct sctp_outq *);
 -
- static char *filter_glob_param;
- 
--module_param_named(filter_glob, filter_glob_param, charp, 0);
-+module_param_named(filter_glob, filter_glob_param, charp, 0400);
- MODULE_PARM_DESC(filter_glob,
- 		"Filter which KUnit test suites/tests run at boot-time, e.g. list* or list*.*del_test");
- 
-+const char *kunit_filter_glob(void)
-+{
-+	return filter_glob_param;
-+}
-+
- /* glob_match() needs NULL terminated strings, so we need a copy of filter_glob_param. */
- struct kunit_test_filter {
- 	char *suite_glob;
-@@ -96,16 +99,7 @@ kunit_filter_tests(const struct kunit_suite *const suite, const char *test_glob)
- 	return copy;
- }
- 
--static char *kunit_shutdown;
--core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
--
--/* Stores an array of suites, end points one past the end */
--struct suite_set {
--	struct kunit_suite * const *start;
--	struct kunit_suite * const *end;
--};
--
--static void kunit_free_suite_set(struct suite_set suite_set)
-+void kunit_free_suite_set(struct kunit_suite_set suite_set)
- {
- 	struct kunit_suite * const *suites;
- 
-@@ -114,13 +108,14 @@ static void kunit_free_suite_set(struct suite_set suite_set)
- 	kfree(suite_set.start);
- }
- 
--static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
--					    const char *filter_glob,
--					    int *err)
-+struct kunit_suite_set
-+kunit_filter_suites(const struct kunit_suite_set *suite_set,
-+		    const char *filter_glob,
-+		    int *err)
- {
- 	int i;
- 	struct kunit_suite **copy, *filtered_suite;
--	struct suite_set filtered;
-+	struct kunit_suite_set filtered;
- 	struct kunit_test_filter filter;
- 
- 	const size_t max = suite_set->end - suite_set->start;
-@@ -155,6 +150,11 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
- 	return filtered;
- }
- 
-+#if IS_BUILTIN(CONFIG_KUNIT)
-+
-+static char *kunit_shutdown;
-+core_param(kunit_shutdown, kunit_shutdown, charp, 0644);
-+
- static void kunit_handle_shutdown(void)
- {
- 	if (!kunit_shutdown)
-@@ -169,7 +169,7 @@ static void kunit_handle_shutdown(void)
- 
- }
- 
--static void kunit_exec_run_tests(struct suite_set *suite_set)
-+static void kunit_exec_run_tests(struct kunit_suite_set *suite_set)
- {
- 	size_t num_suites = suite_set->end - suite_set->start;
- 
-@@ -179,7 +179,7 @@ static void kunit_exec_run_tests(struct suite_set *suite_set)
- 	__kunit_test_suites_init(suite_set->start, num_suites);
- }
- 
--static void kunit_exec_list_tests(struct suite_set *suite_set)
-+static void kunit_exec_list_tests(struct kunit_suite_set *suite_set)
- {
- 	struct kunit_suite * const *suites;
- 	struct kunit_case *test_case;
-@@ -195,7 +195,9 @@ static void kunit_exec_list_tests(struct suite_set *suite_set)
- 
- int kunit_run_all_tests(void)
- {
--	struct suite_set suite_set = {__kunit_suites_start, __kunit_suites_end};
-+	struct kunit_suite_set suite_set = {
-+		__kunit_suites_start, __kunit_suites_end,
-+	};
- 	int err = 0;
- 	if (!kunit_enabled()) {
- 		pr_info("kunit: disabled\n");
-diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-index 413d9fd364a8d..bfc2f65bd1dae 100644
---- a/lib/kunit/test.c
-+++ b/lib/kunit/test.c
-@@ -757,6 +757,22 @@ EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
- #ifdef CONFIG_MODULES
- static void kunit_module_init(struct module *mod)
- {
-+	struct kunit_suite_set suite_set = {
-+		mod->kunit_suites, mod->kunit_suites + mod->num_kunit_suites,
-+	};
-+	int err = 0;
-+
-+	suite_set = kunit_filter_suites(&suite_set,
-+					kunit_filter_glob() ?: "*.*", &err);
-+	if (err) {
-+		pr_err("kunit module: error filtering suites: %d\n",
-+		       err);
-+		kfree(suite_set.start);
-+		suite_set.start = NULL;
-+	}
-+	mod->kunit_suites = (struct kunit_suite **)suite_set.start;
-+	mod->num_kunit_suites = suite_set.end - suite_set.start;
-+
- 	if (mod->num_kunit_suites > 0) {
- 		pr_info("KTAP version 1\n");
- 		pr_info("1..%d\n", mod->num_kunit_suites);
-@@ -767,7 +783,13 @@ static void kunit_module_init(struct module *mod)
- 
- static void kunit_module_exit(struct module *mod)
- {
-+	struct kunit_suite_set suite_set = {
-+		mod->kunit_suites, mod->kunit_suites + mod->num_kunit_suites,
-+	};
-+
- 	__kunit_test_suites_exit(mod->kunit_suites, mod->num_kunit_suites);
-+	if (suite_set.start)
-+		kunit_free_suite_set(suite_set);
- }
- 
- static int kunit_module_notify(struct notifier_block *nb, unsigned long val,
+ void sctp_retransmit(struct sctp_outq *q, struct sctp_transport *transport,
+ 		     enum sctp_retransmit_reason reason);
+ void sctp_retransmit_mark(struct sctp_outq *, struct sctp_transport *, __u8);
 -- 
-2.41.0
+2.34.1
 
