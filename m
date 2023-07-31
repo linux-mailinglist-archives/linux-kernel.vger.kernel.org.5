@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D29769691
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CBE769694
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbjGaMnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32960 "EHLO
+        id S231322AbjGaMoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbjGaMnk (ORCPT
+        with ESMTP id S231253AbjGaMoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:43:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E205BE46;
-        Mon, 31 Jul 2023 05:43:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 794EB61138;
-        Mon, 31 Jul 2023 12:43:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD173C433C8;
-        Mon, 31 Jul 2023 12:43:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690807418;
-        bh=EJYQmky5MRQWTs/BzAO6qxitvyCrK779971jP7CGnMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QQib0nQAlua30FPPY+CgnForzZCp0adBhrIDFMwqUnm+OcklNSq1YjanT0axZ8Xc6
-         eSC/Mf0F2nnX3QNMBzATOwqQubXDFvHWjig7fbnLPueuYLZpS3wHyQHMQHQ9OzwogC
-         AwCJ+I0libuB3dz+lUjrMpUNlIJIwGnpuAaUP4HhZcZkCP0e1vw9QPM1kRhqQ5VrVD
-         A3DWwLek2OnG4hCUNl7Bj+bguc0YyPIAqCq0KKfgY38kgbS4AqR3B+l8ChNP2mWomZ
-         aduUaCu6TDn1Mvip2q09x+j1/JvMGSCLtKuKz3BIvHrD2/+h/rtOmFUd+/ZjZbsVrd
-         7q4USvLDI/8jg==
-Date:   Mon, 31 Jul 2023 14:43:33 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        syzbot <syzbot+69c477e882e44ce41ad9@syzkaller.appspotmail.com>,
-        chao@kernel.org, huyue2@coolpad.com, jack@suse.cz,
-        jefflexu@linux.alibaba.com, linkinjeon@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
-        syzkaller-bugs@googlegroups.com, xiang@kernel.org
-Subject: Re: [syzbot] [erofs?] [fat?] WARNING in erofs_kill_sb
-Message-ID: <20230731-augapfel-penibel-196c3453f809@brauner>
-References: <000000000000f43cab0601c3c902@google.com>
- <20230731093744.GA1788@lst.de>
- <9b57e5f7-62b6-fd65-4dac-a71c9dc08abc@linux.alibaba.com>
- <20230731111622.GA3511@lst.de>
+        Mon, 31 Jul 2023 08:44:09 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0622E46;
+        Mon, 31 Jul 2023 05:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690807440; x=1691412240; i=deller@gmx.de;
+ bh=Ett9X0jsrsgrwDS6JF0aUQXmEsbC9Ju+HRz8v9VHpf0=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=KCfoDEKpfrgYNK/oeCttNkSWKYY7PISouCDVFRlWfeUVj0U3EHTLp+0tvtKrWakTzHzgiUC
+ V04xVf3WZyDn3dZYvoSsWDwcs7hymV6aLnG5CjZIVprSD5VDChVQ19ejIeS+obuKRb4RUkFOh
+ IYAPY4dQCZ8cFVNJK3ddjjDjP0IrLQRc/7+I0JGKrg8WlczDSS3sUIGlb6QogHHD0fr8FF6XX
+ LPQvc0KeMov0zxAHPUJLn/++Vf5TMnM/vukvB7uNY8d6CFZKBVhnmXtbBw4pWZ2XwAeuDs3tq
+ 2v5wOkzL8m7+evpZ5rm7H7UgQd5AQaO6a/U1QN6nX3itt+/YF0UQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.159.238]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MIdiZ-1qcG6M3fm9-00EhN6; Mon, 31
+ Jul 2023 14:43:59 +0200
+Message-ID: <f84bbc50-2cd1-833d-7e99-e669cfc17c74@gmx.de>
+Date:   Mon, 31 Jul 2023 14:43:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230731111622.GA3511@lst.de>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/1] fbdev: mmp: fix value check in mmphw_probe()
+Content-Language: en-US
+To:     Yuanjun Gong <ruc_gongyuanjun@163.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Lisa Du <cldu@marvell.com>, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230727170318.18412-1-ruc_gongyuanjun@163.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20230727170318.18412-1-ruc_gongyuanjun@163.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:EWktxHK2pXb/uzLePyiOujXAmpX7rdBW66Gt7Ig1/sEBnAwiEvx
+ bzjDu49BhucQSZWleC2XQNoASGz1/grBLsB7TZqQ2kxKe/X5or1owGDTQGQmfikpK2dkqMC
+ FRf0YIsZpY1fnwk3R8t13t9wFZYXD2g/bD8vkd86e6Yz2zvAjIzTzx6cqvwUpnPCTFYpQRi
+ 8VH4A7V541z4uVYdAHJTg==
+UI-OutboundReport: notjunk:1;M01:P0:juz6mdP1klo=;LOJz6O8knWygtmqjGiIEI6XwyS1
+ vi/+iNVpY57sgRndt7MHyb4s5I5O1MhTHRFvlchhO0LgVeav7bWsSHRXA+Gmc5lyog5MTf5Uo
+ Ow4/G7POV3BL1jVSyJyCPOxJQ6PPyOUH8r1TiOIQE21GRy6D4uQC2egTrzbM27WVgAONBHY+q
+ cbx762NkSJVn2kLA9FgVEHk19+rhXa8C8VBQVWaXI4xx1vqJS+lAU3GG15ZMsHIXNl8yk7Z7c
+ 3mHHiDTpI5vhW7Hpy1SvhUwPchS/vC3iAbniWP1uhd63ifuRIQDMjqOmjvo/9u5uX2QREwhTI
+ mYeEzTjjn28NyVQsERmoZUFrkdhiNanmHa/ymvBeSw5lO2bhb5pJ7xqXSyni8VREayvR/Xv1a
+ kbKACL8G7RMl6/Q/ymc4Z164eG1S2+8dpIkSgW4haMep1zSAtS3RvalxaN96zRrzWHthFi25N
+ gRcGylWWL8vC257jnDajrGCfSVckN9UDgG8NNuvejJUFibbEm0WxMx5g+oEKFJRIH+j+2YqcP
+ 5xJj55n6epFIQmOCSgPKJY2Y0I2yIIazpMKvSRMzafGIEjROLeHHe28dw5i4UkwhVXSTuFl8L
+ CS8X8tGeR0379mDqNM3/R1oMFKGA3JbyC4bfquDSY12dE0Uj5eoDBf+z+ZkJ6r0Dd3NfbfDQT
+ 5beTjO2kfoqGPCnJuEFIo0yoO6KEC4bX6/iuMfAJqYOJULwA4FRkL2AY1rAIJIM4ZgrGDW7hy
+ rd/nN2LLnQu1grTvUnkwEQyEqtWHWfAHkJ8u9T8Lhxza5FZe9MpF0C7i503rmI8UuzpxdmYEM
+ 4ddCwY02xJ+q5ieJEIOXdB223saFD26KbRlB3NbHdelzjCpNWBH+/xzryKFo3ZG5c24pOz8SI
+ 6ctMYWNxUQoOd8Ttqo0ka58vugJ3RGycf6XA8nrVJiHrXXrdprS+p6UCjSUQrv1QzaelH2pBu
+ SmGG9umZhcxtzvi0YifIbpQu2FQ=
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 01:16:22PM +0200, Christoph Hellwig wrote:
-> On Mon, Jul 31, 2023 at 06:58:14PM +0800, Gao Xiang wrote:
-> > Previously, deactivate_locked_super() or .kill_sb() will only be
-> > called after fill_super is called, and .s_magic will be set at
-> > the very beginning of erofs_fc_fill_super().
-> >
-> > After ("fs: open block device after superblock creation"), such
-> > convension is changed now.  Yet at a quick glance,
-> >
-> > WARN_ON(sb->s_magic != EROFS_SUPER_MAGIC);
-> >
-> > in erofs_kill_sb() can be removed since deactivate_locked_super()
-> > will also be called if setup_bdev_super() is falled.  I'd suggest
-> > that removing this WARN_ON() in the related commit, or as
-> > a following commit of the related branch of the pull request if
-> > possible.
-> 
-> Agreed.  I wonder if we should really call into ->kill_sb before
-> calling into fill_super, but I need to carefull look into the
-> details.
+On 7/27/23 19:03, Yuanjun Gong wrote:
+> in mmphw_probe(), check the return value of clk_prepare_enable()
+> and return the error code if clk_prepare_enable() returns an
+> unexpected value.
+>
+> Fixes: d63028c38905 ("video: mmp display controller support")
+> Signed-off-by: Yuanjun Gong <ruc_gongyuanjun@163.com>
 
-I think checking for s_magic in erofs kill sb is wrong as it introduces
-a dependency on both fill_super() having been called and that s_magic is
-initialized first. If someone reorders erofs_kill_sb() such that s_magic
-is only filled in once everything else succeeded it would cause the same
-bug. That doesn't sound nice to me.
+applied.
+Thanks!
+Helge
 
-I think ->fill_super() should only be called after successfull
-superblock allocation and after the device has been successfully opened.
-Just as this code does now. So ->kill_sb() should only be called after
-we're guaranteed that ->fill_super() has been called.
+> ---
+>   drivers/video/fbdev/mmp/hw/mmp_ctrl.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/video/fbdev/mmp/hw/mmp_ctrl.c b/drivers/video/fbdev=
+/mmp/hw/mmp_ctrl.c
+> index 51fbf02a0343..76b50b6c98ad 100644
+> --- a/drivers/video/fbdev/mmp/hw/mmp_ctrl.c
+> +++ b/drivers/video/fbdev/mmp/hw/mmp_ctrl.c
+> @@ -519,7 +519,9 @@ static int mmphw_probe(struct platform_device *pdev)
+>   			      "unable to get clk %s\n", mi->clk_name);
+>   		goto failed;
+>   	}
+> -	clk_prepare_enable(ctrl->clk);
+> +	ret =3D clk_prepare_enable(ctrl->clk);
+> +	if (ret)
+> +		goto failed;
+>
+>   	/* init global regs */
+>   	ctrl_set_default(ctrl);
 
-We already mostly express that logic through the fs_context object.
-Anything that's allocated in fs_context->init_fs_context() is freed in
-fs_context->free() before fill_super() is called. After ->fill_super()
-is called fs_context->s_fs_info will have been transferred to
-sb->s_fs_info and will have to be killed via ->kill_sb().
-
-Does that make sense?
