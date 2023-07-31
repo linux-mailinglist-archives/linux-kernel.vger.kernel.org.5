@@ -2,148 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F4A76A0D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C80876A0DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbjGaTHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
+        id S230421AbjGaTHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjGaTHH (ORCPT
+        with ESMTP id S231465AbjGaTH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:07:07 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B4D170A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:07:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690830426; x=1722366426;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=WFQTb1NoH4KJdQpchKq81lKoH+q0eGAYNJVtt8gGVKI=;
-  b=YdoIf0ycrdd608TCljL9JYEBMvKJa2hbNkfTdKvkYJt9J0Vbv63omCe2
-   rb0JDINWupwWK81W62ZS8BWdSfh9ShljdHh2tHYI5QKXW8W6WM94HLw+w
-   HdDR0Sle1GQcZwt9h7pj70PJVKkBGaumahmx/e0YyjIREnsyooBNlEh/r
-   VBIWFMW3TA41AlV4iU9MCLd0DFS9cVqGoYQFufOja/T6iJKY2ygAtfxWL
-   9gZkYOzCm8XGjTTI1N5aA3gAEUBxSv4Ri+yIz6e9Kn6Tpt/doreb9g44D
-   2kkRngF+wtJLkQoCB1L88G0cbRjArpJB85hbGIe/3z1kzcOLSHfSijxFP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="359142187"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="359142187"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 12:07:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="902244547"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="902244547"
-Received: from lkp-server02.sh.intel.com (HELO 953e8cd98f7d) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 31 Jul 2023 12:07:04 -0700
-Received: from kbuild by 953e8cd98f7d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qQYER-0005J1-2r;
-        Mon, 31 Jul 2023 19:07:03 +0000
-Date:   Tue, 1 Aug 2023 03:06:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars:testing/fam01-next20230731 2/3]
- arch/sparc/mm/init_64.c:3073:31: error: array subscript -1 is outside array
- bounds of 'char[]'
-Message-ID: <202308010320.Wqt7lyc4-lkp@intel.com>
+        Mon, 31 Jul 2023 15:07:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F0C11BEF;
+        Mon, 31 Jul 2023 12:07:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C24C61277;
+        Mon, 31 Jul 2023 19:07:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B762C433CA;
+        Mon, 31 Jul 2023 19:07:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690830438;
+        bh=nmClbRXgHNUMiULKcf/Jk+DyC9Yg7VyUEy4VtDl2IjU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qNrewbNAX17gBaT9Awc7kLxyeODJt9zjauiKu558BxEajhl+UBhYRZwqRx6cWeHYn
+         /zuVvbQaNBiuopq/kD+gx3SiMgrrB4MgcqFzkwka4tmMi/XAbA2FIpu1zJo3jHGMFS
+         jhyimOaJ5FACsZvRjzfBSFnEPlg+YWjqbMAHWa9UE/JGz7oIMYGNYBV6v2pi6RxtNy
+         TeakImoXcXW120Qu2jjSuApH00LkcbYkihQNLUz9k0og5rn3y7lNctSODiL9scopmi
+         iB0tVmAKbMsbEb2SJqgvXUVTq2OVJTiNE9RZH6YtQ8C4wGrxz5CbDS2228aNpuQVLk
+         0MIPw+3+S2ZKg==
+Date:   Mon, 31 Jul 2023 21:07:06 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Joel Granados <joel.granados@gmail.com>
+Cc:     mcgrof@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Kees Cook <keescook@chromium.org>,
+        "D. Wythe" <alibuda@linux.alibaba.com>, mptcp@lists.linux.dev,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Paolo Abeni <pabeni@redhat.com>, coreteam@netfilter.org,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        bridge@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        Joerg Reuter <jreuter@yaina.de>, Julian Anastasov <ja@ssi.bg>,
+        David Ahern <dsahern@kernel.org>,
+        netfilter-devel@vger.kernel.org, Wen Gu <guwen@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-sctp@vger.kernel.org, Tony Lu <tonylu@linux.alibaba.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Florian Westphal <fw@strlen.de>, willy@infradead.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-rdma@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Simon Horman <horms@verge.net.au>,
+        Mat Martineau <martineau@kernel.org>, josh@joshtriplett.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Eric Dumazet <edumazet@google.com>, linux-hams@vger.kernel.org,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Xin Long <lucien.xin@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        Joel Granados <j.granados@samsung.com>
+Subject: Re: [PATCH v2 03/14] sysctl: Add ctl_table_size to ctl_table_header
+Message-ID: <ZMgGWm4sT+VqDZ3u@kernel.org>
+References: <20230731071728.3493794-1-j.granados@samsung.com>
+ <20230731071728.3493794-4-j.granados@samsung.com>
+ <ZMf9vZpGE98oM9W2@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <ZMf9vZpGE98oM9W2@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/fam01-next20230731
-head:   fe48117f31afb2a3804b91b382a77a4e6d3b4351
-commit: 1e1ad1e6266067981cd3119d43b132d5370c0976 [2/3] Makefile: Enable -Warray-bounds
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230801/202308010320.Wqt7lyc4-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230801/202308010320.Wqt7lyc4-lkp@intel.com/reproduce)
+On Mon, Jul 31, 2023 at 08:30:34PM +0200, Simon Horman wrote:
+> On Mon, Jul 31, 2023 at 09:17:17AM +0200, Joel Granados wrote:
+> > The new ctl_table_size element will hold the size of the ctl_table
+> > arrays contained in the ctl_table_header. This value should eventually
+> > be passed by the callers to the sysctl register infrastructure. And
+> > while this commit introduces the variable, it does not set nor use it
+> > because that requires case by case considerations for each caller.
+> > 
+> > It provides two important things: (1) A place to put the
+> > result of the ctl_table array calculation when it gets introduced for
+> > each caller. And (2) the size that will be used as the additional
+> > stopping criteria in the list_for_each_table_entry macro (to be added
+> > when all the callers are migrated)
+> > 
+> > Signed-off-by: Joel Granados <j.granados@samsung.com>
+> > ---
+> >  include/linux/sysctl.h | 14 ++++++++++++--
+> >  1 file changed, 12 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+> > index 59d451f455bf..33252ad58ebe 100644
+> > --- a/include/linux/sysctl.h
+> > +++ b/include/linux/sysctl.h
+> > @@ -159,12 +159,22 @@ struct ctl_node {
+> >  	struct ctl_table_header *header;
+> >  };
+> >  
+> > -/* struct ctl_table_header is used to maintain dynamic lists of
+> > -   struct ctl_table trees. */
+> > +/**
+> > + * struct ctl_table_header - maintains dynamic lists of struct ctl_table trees
+> > + * @ctl_table: pointer to the first element in ctl_table array
+> > + * @ctl_table_size: number of elements pointed by @ctl_table
+> > + * @used: The entry will never be touched when equal to 0.
+> > + * @count: Upped every time something is added to @inodes and downed every time
+> > + *         something is removed from inodes
+> > + * @nreg: When nreg drops to 0 the ctl_table_header will be unregistered.
+> > + * @rcu: Delays the freeing of the inode. Introduced with "unfuck proc_sysctl ->d_compare()"
+> > + *
+> > + */
+> 
+> Hi Joel,
+> 
+> Please consider also adding kernel doc entries for the other fields of
+> struct ctl_table_header. According to ./scripts/kernel-doc -none
+> they are:
+> 
+>   unregistering
+>   ctl_table_arg
+>   root
+>   set
+>   parent
+>   node
+>   inodes
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308010320.Wqt7lyc4-lkp@intel.com/
+Sorry, I now realise that I made the same comment on v1.
+And I didn't see your response to that until after I wrote the above.
 
-All errors (new ones prefixed by >>):
-
-   arch/sparc/mm/init_64.c: In function 'arch_hugetlb_valid_size':
-   arch/sparc/mm/init_64.c:355:24: error: variable 'hv_pgsz_idx' set but not used [-Werror=unused-but-set-variable]
-     355 |         unsigned short hv_pgsz_idx;
-         |                        ^~~~~~~~~~~
-   arch/sparc/mm/init_64.c: At top level:
-   arch/sparc/mm/init_64.c:2630:6: error: no previous prototype for 'vmemmap_free' [-Werror=missing-prototypes]
-    2630 | void vmemmap_free(unsigned long start, unsigned long end,
-         |      ^~~~~~~~~~~~
-   In function 'kernel_lds_init',
-       inlined from 'report_memory' at arch/sparc/mm/init_64.c:3085:2:
->> arch/sparc/mm/init_64.c:3073:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
-    3073 |         code_resource.end   = compute_kern_paddr(_etext - 1);
-         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from arch/sparc/include/asm/sections.h:6,
-                    from include/linux/interrupt.h:21,
-                    from include/linux/kernel_stat.h:9,
-                    from include/linux/cgroup.h:26,
-                    from include/linux/hugetlb.h:10,
-                    from arch/sparc/mm/init_64.c:16:
-   include/asm-generic/sections.h: In function 'report_memory':
-   include/asm-generic/sections.h:35:32: note: at offset -1 into object '_etext' of size [0, 9223372036854775807]
-      35 | extern char _text[], _stext[], _etext[];
-         |                                ^~~~~~
-   In function 'kernel_lds_init',
-       inlined from 'report_memory' at arch/sparc/mm/init_64.c:3085:2:
-   arch/sparc/mm/init_64.c:3075:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
-    3075 |         data_resource.end   = compute_kern_paddr(_edata - 1);
-         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/asm-generic/sections.h: In function 'report_memory':
-   include/asm-generic/sections.h:36:32: note: at offset -1 into object '_edata' of size [0, 9223372036854775807]
-      36 | extern char _data[], _sdata[], _edata[];
-         |                                ^~~~~~
-   In function 'kernel_lds_init',
-       inlined from 'report_memory' at arch/sparc/mm/init_64.c:3085:2:
-   arch/sparc/mm/init_64.c:3077:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
-    3077 |         bss_resource.end    = compute_kern_paddr(_end - 1);
-         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/asm-generic/sections.h: In function 'report_memory':
-   include/asm-generic/sections.h:41:13: note: at offset -1 into object '_end' of size [0, 9223372036854775807]
-      41 | extern char _end[];
-         |             ^~~~
-   cc1: all warnings being treated as errors
-
-
-vim +3073 arch/sparc/mm/init_64.c
-
-f6d4fb5cc0475c bob picco 2014-03-03  3069  
-f6d4fb5cc0475c bob picco 2014-03-03  3070  static void __init kernel_lds_init(void)
-f6d4fb5cc0475c bob picco 2014-03-03  3071  {
-f6d4fb5cc0475c bob picco 2014-03-03  3072  	code_resource.start = compute_kern_paddr(_text);
-f6d4fb5cc0475c bob picco 2014-03-03 @3073  	code_resource.end   = compute_kern_paddr(_etext - 1);
-f6d4fb5cc0475c bob picco 2014-03-03  3074  	data_resource.start = compute_kern_paddr(_etext);
-f6d4fb5cc0475c bob picco 2014-03-03  3075  	data_resource.end   = compute_kern_paddr(_edata - 1);
-f6d4fb5cc0475c bob picco 2014-03-03  3076  	bss_resource.start  = compute_kern_paddr(__bss_start);
-f6d4fb5cc0475c bob picco 2014-03-03  3077  	bss_resource.end    = compute_kern_paddr(_end - 1);
-f6d4fb5cc0475c bob picco 2014-03-03  3078  }
-f6d4fb5cc0475c bob picco 2014-03-03  3079  
-
-:::::: The code at line 3073 was first introduced by commit
-:::::: f6d4fb5cc0475c36437a618db31cbb7f2bf7c282 sparc64 - add mem to iomem resource
-
-:::::: TO: bob picco <bpicco@meloft.net>
-:::::: CC: David S. Miller <davem@davemloft.net>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> 
+> >  struct ctl_table_header {
+> >  	union {
+> >  		struct {
+> >  			struct ctl_table *ctl_table;
+> > +			int ctl_table_size;
+> >  			int used;
+> >  			int count;
+> >  			int nreg;
+> > -- 
+> > 2.30.2
+> > 
