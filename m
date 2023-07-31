@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE69769D49
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB7F769D68
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbjGaQ4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
+        id S231517AbjGaQ61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbjGaQ4c (ORCPT
+        with ESMTP id S233720AbjGaQ5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:56:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27391722;
-        Mon, 31 Jul 2023 09:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690822591; x=1722358591;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=U7roQ+XUWlcaav2uFYpJOY2fwBdNYfkUnYbQlW3JYsQ=;
-  b=nHgM+gjCTDnDrNVY/ToZPx1YbypoRAnl1HmS+nVGAytNemgFVHrp9Ljt
-   q/Fzpk/RI4EAoGyhBBGhK2z5FVVaCENJoUzvSQedgqUVKiDpiM4VKnKEd
-   FI93+PvLNFjb4C013RHpJlu7KR5+qLI5lCO+cCQbk9CD6DOQI29otroyl
-   Jn8pHi2oic8xRFpbPPCFiW8e0eDmoZSLEaFBYCBAXQyrZCCi/Goi6pYIM
-   1aD9TPqklwSv8REB7AKnaoRDFut33KzNy/xiwU0rkK7Fl6Nvff9PSpksg
-   9Ohdr7aOVe/Itie275038CLOMBf732tUBGgz6t/e51oso33JC7krPKz7d
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="348671180"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="348671180"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 09:56:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="852115896"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="852115896"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.229.233])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 09:56:04 -0700
-Date:   Mon, 31 Jul 2023 09:56:04 -0700
-From:   Alison Schofield <alison.schofield@intel.com>
-To:     Khadija Kamran <kamrankhadijadj@gmail.com>
-Cc:     ztarkhani@microsoft.com, Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] lsm: add comment block for security_sk_classify_flow LSM
- hook
-Message-ID: <ZMfnpPe3WCHgSDFQ@aschofie-mobl2>
-References: <ZMfG/w5FWqCGE4pn@gmail.com>
+        Mon, 31 Jul 2023 12:57:54 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F36B1FD0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:57:42 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36VEwHWb032490;
+        Mon, 31 Jul 2023 11:57:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=D
+        pc3VbtcgH5dw2bWcYGHp9VKyHItpm8FBtHXtotTc7Q=; b=MojlI1S3wPIbyJ55f
+        49XlhCZuOfQGuaxFAp0kHUVxb8Nb97wV1mS95+8frqoBDjAkl80nKdOkEAna6Laz
+        mk6FD/mk/cp0YqsEX89vfqlrbOJPSxZoVKw3tOz7PqL4jcGADkRM/fsXAGroguiU
+        0qxNIcrjtvpjM+HtPa3unJOVjz95VoEe+25oJJ2pOm6uQ+Tfzo0Rd+P/kvrnQE9d
+        dfv3o4kWevy+l/cfDlVGAhFNVXFfkQSNaNmmaBz/JyzA2E9w6Mhe2xHq1gB6oy67
+        +/kqAs7MAdpfUGl6d0i4Yk8L/y96TVIk8jCZTBBSZg0xWdRypm6Vpn3Hpsg6wU2p
+        KfCZw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3s4y6jsqap-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 11:57:31 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 17:57:29 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.30 via Frontend Transport; Mon, 31 Jul 2023 17:57:29 +0100
+Received: from EDIN4L06LR3.ad.cirrus.com (EDIN4L06LR3.ad.cirrus.com [198.61.64.107])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A3E4D45D;
+        Mon, 31 Jul 2023 16:57:29 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <tiwai@suse.com>
+CC:     <perex@perex.cz>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 0/9] ALSA: hda/cs35l56: Various bugfixes
+Date:   Mon, 31 Jul 2023 17:57:17 +0100
+Message-ID: <20230731165726.7940-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMfG/w5FWqCGE4pn@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: PWwIvLfDyaxyiRD9TvkGHVEfMWz1iJpP
+X-Proofpoint-ORIG-GUID: PWwIvLfDyaxyiRD9TvkGHVEfMWz1iJpP
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 07:36:47PM +0500, Khadija Kamran wrote:
-> security_sk_classify_flow LSM hook has no comment block. Add a comment
-> block with a brief description of LSM hook and its function parameters.
+A collection of various bugfixes to the cs35l56 driver.
 
-When referring to functions, in the one line commit message, or here
-in the commit log, it is customary to add the parenthesis to be clear
-it is a function name.
+Richard Fitzgerald (9):
+  ALSA: hda/cs35l56: Complete firmware reboot before calling
+    cs_dsp_run()
+  ALSA: hda/cs35l56: Do not mark cache dirty after REINIT
+  ALSA: hda/cs35l56: Call cs_dsp_power_down() before reloading firmware
+  ALSA: hda/cs35l56: Always power-up and start cs_dsp
+  ALSA: hda/cs35l56: Call cs_dsp_power_down() before calling
+    cs_dsp_remove()
+  ALSA: hda/cs35l56: cs_dsp_power_down() on cs35l56_hda_fw_load() error
+    path
+  ALSA: hda/cs35l56: Do not download firmware over existing RAM firmware
+  ALSA: hda/cs35l56: Fail if .bin not found and firmware not patched
+  ALSA: hda/cs35l56: Reject I2C alias addresses
 
-ie. security_sk_classify_flow()
+ sound/pci/hda/cs35l56_hda.c | 91 ++++++++++++++++++++++++++-----------
+ 1 file changed, 65 insertions(+), 26 deletions(-)
 
-> 
-> Signed-off-by: Khadija Kamran <kamrankhadijadj@gmail.com>
-> ---
->  security/security.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/security/security.c b/security/security.c
-> index d5ff7ff45b77..ffc5519e49cd 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -4396,6 +4396,13 @@ void security_sk_clone(const struct sock *sk, struct sock *newsk)
->  }
->  EXPORT_SYMBOL(security_sk_clone);
->  
-> +/**
-> + * security_sk_classify_flow() - Set a flow's secid based on socket
-> + * @sk:  original socket
-           ^errant space
+-- 
+2.30.2
 
-> + * @flic: target flow
-> + *
-> + * Set the target flow's secid to socket's secid.
-> + */
->  void security_sk_classify_flow(struct sock *sk, struct flowi_common *flic)
->  {
->  	call_void_hook(sk_getsecid, sk, &flic->flowic_secid);
-> -- 
-> 2.34.1
-> 
