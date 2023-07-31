@@ -2,102 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFDA768F0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22691768F28
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbjGaHjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47376 "EHLO
+        id S231545AbjGaHtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:49:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbjGaHjV (ORCPT
+        with ESMTP id S229716AbjGaHtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:39:21 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E33125
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:39:19 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RDqp763FHzVjdw;
-        Mon, 31 Jul 2023 15:37:35 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 31 Jul 2023 15:39:16 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Mina Almasry <almasrymina@google.com>, <kirill@shutemov.name>,
-        <joel@joelfernandes.org>, <william.kucharski@oracle.com>,
-        <kaleshsingh@google.com>, <linux-mm@kvack.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH 4/4] arm64: tlb: set huge page size to stride for hugepage
-Date:   Mon, 31 Jul 2023 15:48:29 +0800
-Message-ID: <20230731074829.79309-5-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230731074829.79309-1-wangkefeng.wang@huawei.com>
-References: <20230731074829.79309-1-wangkefeng.wang@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 03:49:00 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1FA11A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:48:58 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 644821F460;
+        Mon, 31 Jul 2023 07:48:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690789737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HRb+iEVyNyN5bs1NAVsrke/3KjePmDp7FMxC2kJDGy0=;
+        b=LqCeOtVpBwY1mFcCcfdNqT9AKJNRgsVG1Q9RhRWsjsINFRETefQqztpL39lrNwRtBwbUzH
+        UcOMoV1OKMjdVdI9pii1HIK4Ptky4ZAZsbKsF3yNlsmGbck4gEhhEs2Ma5FklmDkqc2MiV
+        grhjiUlOwnVoxYriTQBp4kXKmE0oTAo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690789737;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HRb+iEVyNyN5bs1NAVsrke/3KjePmDp7FMxC2kJDGy0=;
+        b=rQ0kmr9WQ7mFuVmPIMYQBEBQ75lPn12PZwvwygFI/CtSBwTVoQwaP7ZL3sg8RtPPuP0gQk
+        SpmUPKosDcHfwADg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E8A67133F7;
+        Mon, 31 Jul 2023 07:48:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id QGHMN2hnx2R3DAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 07:48:56 +0000
+Date:   Mon, 31 Jul 2023 09:48:55 +0200
+Message-ID: <87v8e0bjx4.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Cc:     <perex@perex.cz>, <tiwai@suse.com>,
+        <pierre-louis.bossart@linux.intel.com>,
+        <zhangyiqun@phytium.com.cn>, <peter.ujfalusi@linux.intel.com>,
+        <broonie@kernel.org>, <chenhuacai@kernel.org>,
+        <cezary.rojewski@intel.com>, <siyanteng@loongson.cn>,
+        <amadeuszx.slawinski@linux.intel.com>, <evan.quan@amd.com>,
+        <jasontao@glenfly.com>, <kai.vehmanen@linux.intel.com>,
+        <ranjani.sridharan@linux.intel.com>, <mkumard@nvidia.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <CobeChen@zhaoxin.com>, <TimGuo@zhaoxin.com>,
+        <LeoLiu-oc@zhaoxin.com>
+Subject: Re: [PATCH] ALSA: hda: Zhaoxin: Add HDAC PCI IDs and HDMI Codec Vendor IDs
+In-Reply-To: <20230731055932.4336-1-TonyWWang-oc@zhaoxin.com>
+References: <20230731055932.4336-1-TonyWWang-oc@zhaoxin.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is better to use huge_page_size() for hugepage(HugeTLB) instead of
-PAGE_SIZE for stride, which has been done in flush_pmd/pud_tlb_range(),
-it could reduce the loop in __flush_tlb_range().
+On Mon, 31 Jul 2023 07:59:32 +0200,
+Tony W Wang-oc wrote:
+> @@ -1044,6 +1044,16 @@ void azx_stop_chip(struct azx *chip)
+>  }
+>  EXPORT_SYMBOL_GPL(azx_stop_chip);
+>  
+> +static void azx_rirb_zxdelay(struct azx *chip, int enable)
 
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
- arch/arm64/include/asm/tlbflush.h | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+It'd be helpful to have a brief function description.  It doesn't do
+any delaying but flip something instead, right?
 
-diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-index 412a3b9a3c25..25e35e6f8093 100644
---- a/arch/arm64/include/asm/tlbflush.h
-+++ b/arch/arm64/include/asm/tlbflush.h
-@@ -360,16 +360,17 @@ static inline void __flush_tlb_range(struct vm_area_struct *vma,
- 	dsb(ish);
- }
- 
--static inline void flush_tlb_range(struct vm_area_struct *vma,
--				   unsigned long start, unsigned long end)
--{
--	/*
--	 * We cannot use leaf-only invalidation here, since we may be invalidating
--	 * table entries as part of collapsing hugepages or moving page tables.
--	 * Set the tlb_level to 0 because we can not get enough information here.
--	 */
--	__flush_tlb_range(vma, start, end, PAGE_SIZE, false, 0);
--}
-+/*
-+ * We cannot use leaf-only invalidation here, since we may be invalidating
-+ * table entries as part of collapsing hugepages or moving page tables.
-+ * Set the tlb_level to 0 because we can not get enough information here.
-+ */
-+#define flush_tlb_range(vma, start, end)				\
-+	__flush_tlb_range(vma, start, end,				\
-+				((vma)->vm_flags & VM_HUGETLB)		\
-+				? huge_page_size(hstate_vma(vma))	\
-+				: PAGE_SIZE, false, 0)
-+
- 
- static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end)
- {
--- 
-2.41.0
+> +{
+> +	if (chip->remap_diu_addr) {
+> +		if (!enable)
+> +			writel(0x0, (char *)chip->remap_diu_addr + 0x490a8);
+> +		else
+> +			writel(0x1000000, (char *)chip->remap_diu_addr + 0x490a8);
 
+Avoid magic numbers, but define them.
+
+> @@ -1103,9 +1113,14 @@ irqreturn_t azx_interrupt(int irq, void *dev_id)
+>  			azx_writeb(chip, RIRBSTS, RIRB_INT_MASK);
+>  			active = true;
+>  			if (status & RIRB_INT_RESPONSE) {
+> -				if (chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND)
+> +				if ((chip->driver_caps & AZX_DCAPS_CTX_WORKAROUND) ||
+> +					(chip->driver_caps & AZX_DCAPS_RIRB_PRE_DELAY)) {
+> +					azx_rirb_zxdelay(chip, 1);
+>  					udelay(80);
+
+Calling it here looks a bit misleading, especially because it's paired
+with a later call.  Better to put another if block that matches with
+both calls consistently.
+
+> +				}
+>  				snd_hdac_bus_update_rirb(bus);
+> +				if (chip->driver_caps & AZX_DCAPS_RIRB_PRE_DELAY)
+> +					azx_rirb_zxdelay(chip, 0);
+
+I meant this one.
+
+> @@ -145,6 +146,7 @@ struct azx {
+>  
+>  	/* GTS present */
+>  	unsigned int gts_present:1;
+> +	void __iomem *remap_diu_addr;
+
+This is a completely different thing, give some comment.
+
+
+> +static int azx_init_pci_zx(struct azx *chip)
+> +{
+> +	struct snd_card *card = chip->card;
+> +	unsigned int diu_reg;
+> +	struct pci_dev *diu_pci = NULL;
+> +
+> +	diu_pci = pci_get_device(PCI_VENDOR_ID_ZHAOXIN, 0x3a03, NULL);
+> +	if (!diu_pci) {
+> +		dev_err(card->dev, "hda no KX-5000 device.\n");
+> +		return -ENXIO;
+> +	}
+> +	pci_read_config_dword(diu_pci, PCI_BASE_ADDRESS_0, &diu_reg);
+> +	chip->remap_diu_addr = ioremap(diu_reg, 0x50000);
+> +	dev_info(card->dev, "hda %x %p\n", diu_reg, chip->remap_diu_addr);
+> +	return 0;
+
+Missing pci_dev_put()?
+
+> @@ -1360,6 +1385,10 @@ static void azx_free(struct azx *chip)
+>  	hda->init_failed = 1; /* to be sure */
+>  	complete_all(&hda->probe_wait);
+>  
+> +	if (chip->driver_type == AZX_DRIVER_ZHAOXINHDMI) {
+> +		azx_free_pci_zx(chip);
+> +	}
+
+Superfluous parentheses.
+
+> @@ -1876,6 +1906,10 @@ static int azx_first_init(struct azx *chip)
+>  		bus->access_sdnctl_in_dword = 1;
+>  	}
+>  
+> +	chip->remap_diu_addr = NULL;
+> +	if (chip->driver_type == AZX_DRIVER_ZHAOXINHDMI)
+> +		azx_init_pci_zx(chip);
+
+No error check?  It doesn't look too serious even if the driver
+continues to load, though.
+
+> --- a/sound/pci/hda/patch_hdmi.c
+> +++ b/sound/pci/hda/patch_hdmi.c
+> @@ -4501,6 +4501,8 @@ static int patch_gf_hdmi(struct hda_codec *codec)
+>  	return 0;
+>  }
+>  
+> +static int patch_zx_hdmi(struct hda_codec *codec) { return patch_gf_hdmi(codec); }
+
+Don't put in a single line.
+Or, if it's the very same function, you can rather call patch_gf_hdmi
+directly in the table.
+
+
+thanks,
+
+Takashi
