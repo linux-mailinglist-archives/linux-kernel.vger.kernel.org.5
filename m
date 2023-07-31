@@ -2,91 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF6E7689F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A787689F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbjGaCYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 22:24:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33202 "EHLO
+        id S229492AbjGaCYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 22:24:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbjGaCYB (ORCPT
+        with ESMTP id S229743AbjGaCYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 22:24:01 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709B5E4E
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 19:24:00 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-58451ecf223so43197307b3.1
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 19:24:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1690770239; x=1691375039;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rk52475ZbL9s7/hfzBOCB7Jm9cqV9XCvqs/zZ6NPZQI=;
-        b=A3y2ViIQXJShjd6wDFcAEALxDEVLj6N3sTEKT8sUWmBs34mm+rMeempLoiJIHa2zG1
-         tq3ygHbhY5MtzqqQCTATOvrkevDCft1psD9WA8pO1bif5w+Mb7BdG7R1BXaUypurKP6N
-         g03kK0r+XdXPzLPGHeG06LmfIVx2cLQkeC2AjGzFoU4YcNA8Nxqq8aw4eqAsgs65KMCM
-         E8+EUgd3D4lVZdIytzC2PTGefQ+Vkr4duSJ1jgxH4sh0qgaB3oykGeOKjIP6oF6TAThh
-         6Bhc+gO/TsWAcQ6u+Tz7+gk2BaiCiB/FFi/8iu7mAA0vi9YAMcRL8UqAFtbCCLshinPx
-         fwow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690770239; x=1691375039;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rk52475ZbL9s7/hfzBOCB7Jm9cqV9XCvqs/zZ6NPZQI=;
-        b=Te4c5SeqYBxfXhKMJfm8I2RQpf73PKmjzfmAaIbAQijiaiEXsG8Xdm0ap5H8U0WlrG
-         1F1og+J3549odqyJ7TpTEKETtiWO5dDF4i1OdC+6H8QdsYxr9JJr2jbxJCmBiUn6lbJF
-         r1u7JWycYil445hIFAnk5BIUpbK+Y+rzxevb/y/MKRci2ib7QGkzEUbZUc6YfpS0Ar3i
-         pioWdgNWd31IzkZuGZkqg1N6GM8ixFB5Itzp2/yrkgD/3Nu+IqrRX3vd5X0njCt+4DL5
-         WRzyjutkPB1duL/tuzO98EMVupQD9KEkCdNCTdPgobiQwlTjhC/bwFBJBEL1Otyz1Pw1
-         9ztw==
-X-Gm-Message-State: ABy/qLbbNaizkgI3tRhkz8GIjpHqQZxmdzRWf7GgK28XZlRYSJiwzBqh
-        KjvRAteOg+aksy9jWFWPX1cj67aH8fSqRkj8Qh/R
-X-Google-Smtp-Source: APBJJlF/Wa6E65w9i694QuPBH13WOZNSoYTN04HjKpK8cAA2FZgHoTfFjHgOfV3D0dQqbSGb2eRDPI/L7r/b+0q3F3Q=
-X-Received: by 2002:a81:74d4:0:b0:577:1909:ee15 with SMTP id
- p203-20020a8174d4000000b005771909ee15mr8587315ywc.6.1690770239668; Sun, 30
- Jul 2023 19:23:59 -0700 (PDT)
+        Sun, 30 Jul 2023 22:24:09 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62676E4E;
+        Sun, 30 Jul 2023 19:24:06 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.9.158])
+        by gateway (Coremail) with SMTP id _____8BxXetFG8dk0+EMAA--.25521S3;
+        Mon, 31 Jul 2023 10:24:05 +0800 (CST)
+Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c5FG8dkiKtBAA--.41295S2;
+        Mon, 31 Jul 2023 10:24:05 +0800 (CST)
+From:   Bibo Mao <maobibo@loongson.cn>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] KVM: selftests: use unified time type for comparison
+Date:   Mon, 31 Jul 2023 10:24:05 +0800
+Message-Id: <20230731022405.854884-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20230726191036.14324-1-dtatulea@nvidia.com>
-In-Reply-To: <20230726191036.14324-1-dtatulea@nvidia.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Mon, 31 Jul 2023 10:23:48 +0800
-Message-ID: <CACycT3vzcEXfB4OBgP4GF=F+j21gs8WDyepkZQWYwnYFTURbpQ@mail.gmail.com>
-Subject: Re: [PATCH] virtio-vdpa: Fix cpumask memory leak in virtio_vdpa_find_vqs()
-To:     Dragos Tatulea <dtatulea@nvidia.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>, stable@vger.kernel.org,
-        Gal Pressman <gal@nvidia.com>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Cx_c5FG8dkiKtBAA--.41295S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Ww4kXr4rZFyDGFykuw15trc_yoW8uFW5pr
+        Z7A3s0kr4rtr93tr1xJr1q9FyrKws8GrW8GF1kGr40yr45JFs3tFs7GFy7Xr4rurWfX39I
+        vay0kr4UCa10yacCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AK
+        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j1WlkUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 3:11=E2=80=AFAM Dragos Tatulea <dtatulea@nvidia.com=
-> wrote:
->
-> From: Gal Pressman <gal@nvidia.com>
->
-> Free the cpumask allocated by create_affinity_masks() before returning
-> from the function.
->
-> Fixes: 3dad56823b53 ("virtio-vdpa: Support interrupt affinity spreading m=
-echanism")
-> Signed-off-by: Gal Pressman <gal@nvidia.com>
-> Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
+With test case kvm_page_table_test, start time is acquired with
+time type CLOCK_MONOTONIC_RAW, however end time in function timespec_elapsed
+is acquired with time type CLOCK_MONOTONIC. This will cause
+inaccurate elapsed time calculation on some platform such as LoongArch.
 
-Reviewed-by: Xie Yongji <xieyongji@bytedance.com>
+This patch modified test case kvm_page_table_test, and uses unified
+time type CLOCK_MONOTONIC for start time.
 
-Thanks,
-Yongji
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+---
+ tools/testing/selftests/kvm/kvm_page_table_test.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/tools/testing/selftests/kvm/kvm_page_table_test.c b/tools/testing/selftests/kvm/kvm_page_table_test.c
+index b3b00be1ef82..69f26d80c821 100644
+--- a/tools/testing/selftests/kvm/kvm_page_table_test.c
++++ b/tools/testing/selftests/kvm/kvm_page_table_test.c
+@@ -200,7 +200,7 @@ static void *vcpu_worker(void *data)
+ 		if (READ_ONCE(host_quit))
+ 			return NULL;
+ 
+-		clock_gettime(CLOCK_MONOTONIC_RAW, &start);
++		clock_gettime(CLOCK_MONOTONIC, &start);
+ 		ret = _vcpu_run(vcpu);
+ 		ts_diff = timespec_elapsed(start);
+ 
+@@ -367,7 +367,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 	/* Test the stage of KVM creating mappings */
+ 	*current_stage = KVM_CREATE_MAPPINGS;
+ 
+-	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
++	clock_gettime(CLOCK_MONOTONIC, &start);
+ 	vcpus_complete_new_stage(*current_stage);
+ 	ts_diff = timespec_elapsed(start);
+ 
+@@ -380,7 +380,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 
+ 	*current_stage = KVM_UPDATE_MAPPINGS;
+ 
+-	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
++	clock_gettime(CLOCK_MONOTONIC, &start);
+ 	vcpus_complete_new_stage(*current_stage);
+ 	ts_diff = timespec_elapsed(start);
+ 
+@@ -392,7 +392,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 
+ 	*current_stage = KVM_ADJUST_MAPPINGS;
+ 
+-	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
++	clock_gettime(CLOCK_MONOTONIC, &start);
+ 	vcpus_complete_new_stage(*current_stage);
+ 	ts_diff = timespec_elapsed(start);
+ 
+-- 
+2.27.0
+
