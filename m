@@ -2,111 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29795768B89
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803E1768B8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbjGaGHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 02:07:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        id S230032AbjGaGI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 02:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229509AbjGaGHw (ORCPT
+        with ESMTP id S229509AbjGaGIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 02:07:52 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90555125;
-        Sun, 30 Jul 2023 23:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1690783665; bh=1nomeP1d9ikYEOkL1+aGr38oYfkTSthNlpvoN0QtBd0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KbgfJVeiaXReoQ/ZakEwOW07+K2iNobv2eFdQl4mm1tHeoST8umilwHxO6gtXJZZJ
-         94ah6d3/RyJtgel6+X/fJCtKZQ/kYeg0ISroCmBW+1jYAD4WVQy/Brs2vk3HPtszav
-         GnHdP2ZgC89WRii++KcyS4fQ2EbK6or9mLiakXxA=
-Date:   Mon, 31 Jul 2023 08:07:44 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Yuan Tan <tanyuan@tinylab.org>
-Cc:     w@1wt.eu, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] tools/nolibc: add pipe() and pipe2() support
-Message-ID: <f5bcb0b3-7165-4e06-a5a5-9535d5ce3c4e@t-8ch.de>
-References: <cover.1690733545.git.tanyuan@tinylab.org>
- <23019c9ad3a63d7026a60df8bc41934c3e74e564.1690733545.git.tanyuan@tinylab.org>
+        Mon, 31 Jul 2023 02:08:25 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E09110DC;
+        Sun, 30 Jul 2023 23:08:21 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 76FCD809E;
+        Mon, 31 Jul 2023 06:08:20 +0000 (UTC)
+Date:   Mon, 31 Jul 2023 09:08:19 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Andreas Kemnade <andreas@kemnade.info>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, afd@ti.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: Re: [PATCH v7 0/2] dt-bindings: omap: Convert omap.txt to yaml
+Message-ID: <20230731060819.GD5194@atomide.com>
+References: <20230515074512.66226-1-andreas@kemnade.info>
+ <20230613193257.267ad763@aktux>
+ <37ef78ee-b290-ecfb-504d-cef5653d23f2@linaro.org>
+ <20230616185320.61b33510@aktux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <23019c9ad3a63d7026a60df8bc41934c3e74e564.1690733545.git.tanyuan@tinylab.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230616185320.61b33510@aktux>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-07-31 13:50:45+0800, Yuan Tan wrote:
-> According to manual page [1], posix spec [2] and source code like
-> arch/mips/kernel/syscall.c, for historic reasons, the sys_pipe() syscall
-> on some architectures has an unusual calling convention.  It returns
-> results in two registers which means there is no need for it to do
-> verify the validity of a userspace pointer argument.  Historically that
-> used to be expensive in Linux.  These days the performance advantage is
-> negligible.
+* Andreas Kemnade <andreas@kemnade.info> [230616 16:53]:
+> On Tue, 13 Jun 2023 20:43:55 +0200
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 > 
-> Nolibc doesn't support the unusual calling convention above, luckily
-> Linux provides a generic sys_pipe2() with an additional flags argument
-> from 2.6.27. If flags is 0, then pipe2() is the same as pipe(). So here
-> we use sys_pipe2() to implement the pipe().
+> > On 13/06/2023 19:32, Andreas Kemnade wrote:
+> > > Hi,
+> > > 
+> > > any action still expected from my side?
+> > > people gave R-bys...
+> > > So looks like it is ready for the dt-folks to pick it up.
+> > >   
+> > 
+> > It's SoC file, isn't it? Then goes via SoC tree.
+> > 
+> Apparently there was confusion about it. Quoting
+> Tony:"And thanks for getting the
+> omap.yaml conversion going, that will get merged by the dt folks."
 > 
-> pipe2() is also provided to allow users to use flags argument on demand.
-> 
-> [1]: https://man7.org/linux/man-pages/man2/pipe.2.html
-> [2]: https://pubs.opengroup.org/onlinepubs/9699919799/functions/pipe.html
-> 
-> Suggested-by: Zhangjin Wu <falcon@tinylab.org>
-> Link: https://lore.kernel.org/all/20230729100401.GA4577@1wt.eu/
-> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
-> ---
->  tools/include/nolibc/sys.h | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/tools/include/nolibc/sys.h b/tools/include/nolibc/sys.h
-> index 8bfe7db20b80..9fec09c22dbe 100644
-> --- a/tools/include/nolibc/sys.h
-> +++ b/tools/include/nolibc/sys.h
-> @@ -752,6 +752,30 @@ int open(const char *path, int flags, ...)
->  }
->  
->  
-> +/*
-> + * int pipe2(int pipefd[2], int flags);
-> + * int pipe(int pipefd[2]);
-> + */
-> +
-> +static __attribute__((unused))
-> +int sys_pipe2(int pipefd[2], int flags)
-> +{
-> +	return my_syscall2(__NR_pipe, pipefd, flags);
-> +}
+> I am fine with either, 
 
-Should be __NR_pipe2.
+OK I'll apply this into omap-for-v6.6/dt-bindings thanks.
 
-> +static __attribute__((unused))
-> +int pipe2(int pipefd[2], int flags)
-> +{
-> +	return __sysret(sys_pipe2(pipefd, flags));
-> +}
-> +
-> +static __attribute__((unused))
-> +int pipe(int pipefd[2])
-> +{
-> +	pipe2(pipefd, 0);
-> +}
-> +
-> +
->  /*
->   * int prctl(int option, unsigned long arg2, unsigned long arg3,
->   *                       unsigned long arg4, unsigned long arg5);
-> -- 
-> 2.34.1
-> 
+Regards,
+
+Tony
