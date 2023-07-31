@@ -2,55 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E4376964F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42EB769656
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232628AbjGaM3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51604 "EHLO
+        id S231922AbjGaMa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbjGaM3K (ORCPT
+        with ESMTP id S231137AbjGaMa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:29:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D95510FB;
-        Mon, 31 Jul 2023 05:28:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EE1F6106D;
-        Mon, 31 Jul 2023 12:28:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64C63C433C8;
-        Mon, 31 Jul 2023 12:28:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690806538;
-        bh=gucAJxQzB4fig8Bm7pwza70ovSvStEeXYbXN0idyvPw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e+3szwEX33/RaVQJk/TRFp71p73DxviAyxLw590rScKH2UyVgesQlTiZWvnnFoPVf
-         UwW8rEbAe7dRc8mqUVkTnOSEXU+pAvPwkzJCggYoFjbH2OiIx/kIbebX6SLsDCJ9aY
-         jDtJDPhqTDzxu19oyE8hukb0ZgIqqiXveyg97h1G15umu60TQEJ1c/MR5PKB1ukGh2
-         EsBPhIv2dzUVYpDQV4+Oi6I5PFL9T7NdQp+HKarx1NdbGctjEa1gngWeOPlpe7n0oM
-         ZOs6eYMrHUXcq2iPtq88cdDvP43iLtSYYu7Gv/hbDu0l9MOrTBZ35WLor56MdC6qG1
-         WFWcSzct4gkaw==
-Date:   Mon, 31 Jul 2023 14:28:49 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] fs: fix request_mask variable in generic_fillattr
- kerneldoc comment
-Message-ID: <20230731-gefeiert-ermangelung-077409c95c9d@brauner>
-References: <20230731-mgctime-v1-1-1aa1177841ed@kernel.org>
- <ZMemr1EzBCRrvv3g@casper.infradead.org>
+        Mon, 31 Jul 2023 08:30:26 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31818B2;
+        Mon, 31 Jul 2023 05:30:25 -0700 (PDT)
+Received: from canpemm500005.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RDyD04VMjzNmcQ;
+        Mon, 31 Jul 2023 20:26:56 +0800 (CST)
+Received: from [10.174.176.34] (10.174.176.34) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 31 Jul 2023 20:30:21 +0800
+Subject: Re: [PATCH v2] ext4: Fix rec_len verify error
+To:     zhangshida <starzhangzsd@gmail.com>, <tytso@mit.edu>,
+        <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <zhangshida@kylinos.cn>
+References: <20230731010104.1781335-1-zhangshida@kylinos.cn>
+From:   Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <558eed4b-3817-671e-48f1-3f9933486876@huawei.com>
+Date:   Mon, 31 Jul 2023 20:30:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZMemr1EzBCRrvv3g@casper.infradead.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+In-Reply-To: <20230731010104.1781335-1-zhangshida@kylinos.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.34]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500005.china.huawei.com (7.192.104.229)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,17 +52,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 01:18:55PM +0100, Matthew Wilcox wrote:
-> On Mon, Jul 31, 2023 at 06:37:10AM -0400, Jeff Layton wrote:
-> >  /**
-> >   * generic_fillattr - Fill in the basic attributes from the inode struct
-> > - * @idmap:	idmap of the mount the inode was found from
-> > - * @req_mask	statx request_mask
-> > - * @inode:	Inode to use as the source
-> > - * @stat:	Where to fill in the attributes
-> > + * @idmap:		idmap of the mount the inode was found from
-> > + * @request_mask	statx request_mask
+On 2023/7/31 9:01, zhangshida wrote:
+> From: Shida Zhang <zhangshida@kylinos.cn>
 > 
-> Missing the colon after request_mask.
+> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
+> a problem occurred when more than 13 million files were directly created
+> under a directory:
+> 
+> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
+> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
+> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
+> 
+> When enough files are created, the fake_dirent->reclen will be 0xffff.
+> it doesn't equal to the blocksize 65536, i.e. 0x10000.
+> 
+> But it is not the same condition when blocksize equals to 4k.
+> when enough file are created, the fake_dirent->reclen will be 0x1000.
+> it equals to the blocksize 4k, i.e. 0x1000.
+> 
+> The problem seems to be related to the limitation of the 16-bit field
+> when the blocksize is set to 64k. To address this, Modify the check so
+> as to handle it properly.
+> 
 
-Fixed in-tree, thanks!
+Thanks for the patch. It works and looks good to me.
+
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+
+> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> ---
+> v1->v2:
+>   Use a better way to check the condition, as suggested by Andreas.
+> 
+>  fs/ext4/namei.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 0caf6c730ce3..fffed95f8531 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
+>  	struct ext4_dir_entry *dp;
+>  	struct dx_root_info *root;
+>  	int count_offset;
+> +	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
+>  
+> -	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
+> +	if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == blocksize)
+>  		count_offset = 8;
+>  	else if (le16_to_cpu(dirent->rec_len) == 12) {
+>  		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
+> 
