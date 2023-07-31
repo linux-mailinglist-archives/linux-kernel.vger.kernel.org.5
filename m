@@ -2,64 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B7D769600
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88454769602
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbjGaMUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
+        id S229923AbjGaMUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbjGaMT7 (ORCPT
+        with ESMTP id S231347AbjGaMUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:19:59 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232FC10FB;
-        Mon, 31 Jul 2023 05:19:51 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686daaa5f1fso3004912b3a.3;
-        Mon, 31 Jul 2023 05:19:50 -0700 (PDT)
+        Mon, 31 Jul 2023 08:20:14 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9481999;
+        Mon, 31 Jul 2023 05:20:02 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6873a30d02eso571628b3a.3;
+        Mon, 31 Jul 2023 05:20:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690805990; x=1691410790;
+        d=gmail.com; s=20221208; t=1690806001; x=1691410801;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JrFfLWtuEeyZX21Fz2US96pmiJe/UZVkhX3z1c8xfNU=;
-        b=ip++/mfml8IprY8Bpn7tjw5s6FFy99EK2OWoJ6EeEyP+FvvkYCNJw80aaJI3dVK1RF
-         cbId/YiAnRRSh/fwvHkwbK3LKDy1gqZZiyPsLUCPjMxPSsu45JixkDWwTzMQ7QpJjc1I
-         QkfQMMSBGbG2ziiqNsWb1awZa/7qS3kNTfxcpahAYXRsRLckQs2JXQeMdXMi0tzoSlWu
-         tGEEsx1TYcnKbNFaO6ynnfPnLWI+6hjYR6Fu7EU4AfW5AcA74iuWWK3juTegaHHfdfNM
-         2YrsHXG7MH1dbrY/4zx5NH9XBYgDhxY9it4p6WKcZVpxiECX9DsfsW9bxQnIarhwPu3s
-         46iw==
+        bh=wc6dwH/HvZi0vPM1tFTS6dfKlRz8fg7TW4Ttiul7pXo=;
+        b=c9rM4N3XAMIYk/GDJ0fShaYJkUjFCtpEaWMRncbNs2Z5tM7drLfNkRiZX5xBwyGgIj
+         sAuIUeLx03+psHN+7Hh8iqVfRbWy/biG4hZyicnGK57LhW4zsaTkhF/Y7XVyqLn6MQyE
+         IvyP6xgt6Dj76Yhtl7hYhBWdDivKYkJRvaPo7fUMEH+zWr+NZj0ETNtXi6fPHXmFC15A
+         67w/2z1kY/pQEKaxOG43iagRBTfzDr+DXScv0WgRl+ODNkj/DlZkn2d2eiXrhK7eCOzR
+         SufDRIqs3T+potr3JP3mN1Q/JKMwZpdwRLZnPVbBZVeMS9nVsT+Sti1m6pY/c0YBu6Yc
+         SJ/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690805990; x=1691410790;
+        d=1e100.net; s=20221208; t=1690806001; x=1691410801;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JrFfLWtuEeyZX21Fz2US96pmiJe/UZVkhX3z1c8xfNU=;
-        b=gb2VjqEEY0ndxE+TnI/M7lOyxiSZ1DfAKdnkIEbSC34857bb7Mhq0RD/x8negGrdq2
-         oyfXh4urvipEWBDmlcxtzyQxXsZJaYHpxPzyGA8EdNiG8sb9jUN1B1DnH1fo7dPmZ0dG
-         GQSBwR9koMxaLbYC112Nl9geT+XTkZ6Mdrcnxa8m7r5TsGOK/T/clAYH1d1mhzAObGax
-         2azG02cOQH87H2WeyiR5To1uzd884pQlnnUqfdw1T0+4RrepNLH07AM/5hG+lNlpeVI0
-         iMcMjerhgp+GmEB34YzsEPSKigFPYNncronI/er6ggiVcHxs5vLd8cJTPorcD4eytsQk
-         H+yw==
-X-Gm-Message-State: ABy/qLYx43nduFmpmu93ndxNHaPvG2EechbhyAJM+mofZC3dntm8jA0u
-        fTx2dWh16i3G5/28ljhzwlDL3xaCqHeb8Zry
-X-Google-Smtp-Source: APBJJlG+BRf7OTjHcCfOCchY8Yu+HR4xwyiSmwqKrgLc6tOsEW3R+P36v+5Uv0GhAEwdqbHauDKLVA==
-X-Received: by 2002:a05:6a00:a13:b0:686:be77:4311 with SMTP id p19-20020a056a000a1300b00686be774311mr11774809pfh.4.1690805990006;
-        Mon, 31 Jul 2023 05:19:50 -0700 (PDT)
+        bh=wc6dwH/HvZi0vPM1tFTS6dfKlRz8fg7TW4Ttiul7pXo=;
+        b=OKxqkhkxeQByjeF2z+jiNboXvbooHf88E76L77wjPokTPOzWy/OfgSTxBr9qOuSESj
+         u/iwDRRHP8WjikOM38zMft3eOBz43Yf8bZ9QBvbZvPgOtYfATguV2dV9Sx0mZb37Ardx
+         CrpJl5OEMomLqv2uzLEOY/Uog319e65b0Bt7IBzTRP0xIBezWwXCcxZmEAFZjmxZHdzC
+         Mw5+kni6kuR4T4EFie3Ge1f95L+PhT0toCW5VCuI+smmr1QbGL21p39tjKutheOC6F4R
+         SLxROLqdinYDFESIeb8lN4c63xO8Z2wbMmmCqbE5bnnFQP3tBRz+3xYCpJwN5LTEXaZD
+         KMIA==
+X-Gm-Message-State: ABy/qLagIGLWX9uDXBCpFZhdmR4/BqQUbGAd5Aq9Mst3GEovFnUCWCXr
+        ZZekEJSOfQZxIDB9gmqGifoLY8ev7jEaKkmR
+X-Google-Smtp-Source: APBJJlE/j3zHpInzQCGWkQQe0zAwy2uqJ53xJUV1YeAlKdZp+HQ9K8cZJ1NhL3Fl2q5l0BuOtxhuWA==
+X-Received: by 2002:a05:6a00:ac8:b0:666:a25b:3788 with SMTP id c8-20020a056a000ac800b00666a25b3788mr10518653pfl.34.1690806001300;
+        Mon, 31 Jul 2023 05:20:01 -0700 (PDT)
 Received: from d.home.yangfl.dn42 ([104.28.245.199])
-        by smtp.gmail.com with ESMTPSA id y23-20020aa78557000000b00687227dd8f1sm3529559pfn.122.2023.07.31.05.19.46
+        by smtp.gmail.com with ESMTPSA id y23-20020aa78557000000b00687227dd8f1sm3529559pfn.122.2023.07.31.05.19.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 05:19:49 -0700 (PDT)
+        Mon, 31 Jul 2023 05:20:01 -0700 (PDT)
 From:   David Yang <mmyangfl@gmail.com>
 To:     linux-clk@vger.kernel.org
 Cc:     David Yang <mmyangfl@gmail.com>,
         Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 03/13] clk: hisilicon: hi3798cv200: Use helper functions
-Date:   Mon, 31 Jul 2023 20:18:03 +0800
-Message-Id: <20230731121821.22242-4-mmyangfl@gmail.com>
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v6 04/13] clk: hisilicon: Remove hisi_crg_funcs
+Date:   Mon, 31 Jul 2023 20:18:04 +0800
+Message-Id: <20230731121821.22242-5-mmyangfl@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230731121821.22242-1-mmyangfl@gmail.com>
 References: <20230731121821.22242-1-mmyangfl@gmail.com>
@@ -75,260 +73,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use common helper functions and register clks with a single of_device_id
-data.
+After refactor, no one use hisi_crg_funcs.
 
 Signed-off-by: David Yang <mmyangfl@gmail.com>
 ---
- drivers/clk/hisilicon/crg-hi3798cv200.c | 196 +++---------------------
- 1 file changed, 20 insertions(+), 176 deletions(-)
+ drivers/clk/hisilicon/crg.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/clk/hisilicon/crg-hi3798cv200.c b/drivers/clk/hisilicon/crg-hi3798cv200.c
-index a0b16be1e25d..c2079bf293b2 100644
---- a/drivers/clk/hisilicon/crg-hi3798cv200.c
-+++ b/drivers/clk/hisilicon/crg-hi3798cv200.c
-@@ -12,7 +12,6 @@
- #include <linux/platform_device.h>
- #include "clk.h"
- #include "crg.h"
--#include "reset.h"
+diff --git a/drivers/clk/hisilicon/crg.h b/drivers/clk/hisilicon/crg.h
+index bd8e76b1f6d7..db2324309d41 100644
+--- a/drivers/clk/hisilicon/crg.h
++++ b/drivers/clk/hisilicon/crg.h
+@@ -11,15 +11,9 @@
+ struct hisi_clock_data;
+ struct hisi_reset_controller;
  
- /* hi3798CV200 core CRG */
- #define HI3798CV200_INNER_CLK_OFFSET		64
-@@ -41,6 +40,7 @@
- 
- #define HI3798CV200_CRG_NR_CLKS			128
- 
-+#define HI3798CV200_SYSCTRL_NR_CLKS		16
- static const struct hisi_fixed_rate_clock hi3798cv200_fixed_rate_clks[] = {
- 	{ HISTB_OSC_CLK, "clk_osc", NULL, 0, 24000000, },
- 	{ HISTB_APB_CLK, "clk_apb", NULL, 0, 100000000, },
-@@ -193,90 +193,18 @@ static const struct hisi_gate_clock hi3798cv200_gate_clks[] = {
- 		CLK_SET_RATE_PARENT, 0xb0, 18, 0 },
+-struct hisi_crg_funcs {
+-	struct hisi_clock_data*	(*register_clks)(struct platform_device *pdev);
+-	void (*unregister_clks)(struct platform_device *pdev);
+-};
+-
+ struct hisi_crg_dev {
+ 	struct hisi_clock_data *clk_data;
+ 	struct hisi_reset_controller *rstc;
+-	const struct hisi_crg_funcs *funcs;
  };
  
--static struct hisi_clock_data *hi3798cv200_clk_register(
--				struct platform_device *pdev)
--{
--	struct hisi_clock_data *clk_data;
--	int ret;
--
--	clk_data = hisi_clk_alloc(pdev, HI3798CV200_CRG_NR_CLKS);
--	if (!clk_data)
--		return ERR_PTR(-ENOMEM);
--
--	/* hisi_phase_clock is resource managed */
--	ret = hisi_clk_register_phase(&pdev->dev,
--				hi3798cv200_phase_clks,
--				ARRAY_SIZE(hi3798cv200_phase_clks),
--				clk_data);
--	if (ret)
--		return ERR_PTR(ret);
--
--	ret = hisi_clk_register_fixed_rate(hi3798cv200_fixed_rate_clks,
--				     ARRAY_SIZE(hi3798cv200_fixed_rate_clks),
--				     clk_data);
--	if (ret)
--		return ERR_PTR(ret);
--
--	ret = hisi_clk_register_mux(hi3798cv200_mux_clks,
--				ARRAY_SIZE(hi3798cv200_mux_clks),
--				clk_data);
--	if (ret)
--		goto unregister_fixed_rate;
--
--	ret = hisi_clk_register_gate(hi3798cv200_gate_clks,
--				ARRAY_SIZE(hi3798cv200_gate_clks),
--				clk_data);
--	if (ret)
--		goto unregister_mux;
--
--	ret = of_clk_add_provider(pdev->dev.of_node,
--			of_clk_src_onecell_get, &clk_data->clk_data);
--	if (ret)
--		goto unregister_gate;
--
--	return clk_data;
--
--unregister_gate:
--	hisi_clk_unregister_gate(hi3798cv200_gate_clks,
--				ARRAY_SIZE(hi3798cv200_gate_clks),
--				clk_data);
--unregister_mux:
--	hisi_clk_unregister_mux(hi3798cv200_mux_clks,
--				ARRAY_SIZE(hi3798cv200_mux_clks),
--				clk_data);
--unregister_fixed_rate:
--	hisi_clk_unregister_fixed_rate(hi3798cv200_fixed_rate_clks,
--				ARRAY_SIZE(hi3798cv200_fixed_rate_clks),
--				clk_data);
--	return ERR_PTR(ret);
--}
--
--static void hi3798cv200_clk_unregister(struct platform_device *pdev)
--{
--	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
--
--	of_clk_del_provider(pdev->dev.of_node);
--
--	hisi_clk_unregister_gate(hi3798cv200_gate_clks,
--				ARRAY_SIZE(hi3798cv200_gate_clks),
--				crg->clk_data);
--	hisi_clk_unregister_mux(hi3798cv200_mux_clks,
--				ARRAY_SIZE(hi3798cv200_mux_clks),
--				crg->clk_data);
--	hisi_clk_unregister_fixed_rate(hi3798cv200_fixed_rate_clks,
--				ARRAY_SIZE(hi3798cv200_fixed_rate_clks),
--				crg->clk_data);
--}
--
--static const struct hisi_crg_funcs hi3798cv200_crg_funcs = {
--	.register_clks = hi3798cv200_clk_register,
--	.unregister_clks = hi3798cv200_clk_unregister,
-+static const struct hisi_clocks hi3798cv200_crg_clks = {
-+	.nr = HI3798CV200_CRG_NR_CLKS,
-+	.fixed_rate_clks = hi3798cv200_fixed_rate_clks,
-+	.fixed_rate_clks_num = ARRAY_SIZE(hi3798cv200_fixed_rate_clks),
-+	.mux_clks = hi3798cv200_mux_clks,
-+	.mux_clks_num = ARRAY_SIZE(hi3798cv200_mux_clks),
-+	.phase_clks = hi3798cv200_phase_clks,
-+	.phase_clks_num = ARRAY_SIZE(hi3798cv200_phase_clks),
-+	.gate_clks = hi3798cv200_gate_clks,
-+	.gate_clks_num = ARRAY_SIZE(hi3798cv200_gate_clks),
- };
- 
--/* hi3798CV200 sysctrl CRG */
--
--#define HI3798CV200_SYSCTRL_NR_CLKS 16
--
- static const struct hisi_gate_clock hi3798cv200_sysctrl_gate_clks[] = {
- 	{ HISTB_IR_CLK, "clk_ir", "24m",
- 		CLK_SET_RATE_PARENT, 0x48, 4, 0, },
-@@ -286,115 +214,31 @@ static const struct hisi_gate_clock hi3798cv200_sysctrl_gate_clks[] = {
- 		CLK_SET_RATE_PARENT, 0x48, 10, 0, },
- };
- 
--static struct hisi_clock_data *hi3798cv200_sysctrl_clk_register(
--					struct platform_device *pdev)
--{
--	struct hisi_clock_data *clk_data;
--	int ret;
--
--	clk_data = hisi_clk_alloc(pdev, HI3798CV200_SYSCTRL_NR_CLKS);
--	if (!clk_data)
--		return ERR_PTR(-ENOMEM);
--
--	ret = hisi_clk_register_gate(hi3798cv200_sysctrl_gate_clks,
--				ARRAY_SIZE(hi3798cv200_sysctrl_gate_clks),
--				clk_data);
--	if (ret)
--		return ERR_PTR(ret);
--
--	ret = of_clk_add_provider(pdev->dev.of_node,
--			of_clk_src_onecell_get, &clk_data->clk_data);
--	if (ret)
--		goto unregister_gate;
--
--	return clk_data;
--
--unregister_gate:
--	hisi_clk_unregister_gate(hi3798cv200_sysctrl_gate_clks,
--				ARRAY_SIZE(hi3798cv200_sysctrl_gate_clks),
--				clk_data);
--	return ERR_PTR(ret);
--}
--
--static void hi3798cv200_sysctrl_clk_unregister(struct platform_device *pdev)
--{
--	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
--
--	of_clk_del_provider(pdev->dev.of_node);
--
--	hisi_clk_unregister_gate(hi3798cv200_sysctrl_gate_clks,
--				ARRAY_SIZE(hi3798cv200_sysctrl_gate_clks),
--				crg->clk_data);
--}
--
--static const struct hisi_crg_funcs hi3798cv200_sysctrl_funcs = {
--	.register_clks = hi3798cv200_sysctrl_clk_register,
--	.unregister_clks = hi3798cv200_sysctrl_clk_unregister,
-+static const struct hisi_clocks hi3798cv200_sysctrl_clks = {
-+	.nr = HI3798CV200_SYSCTRL_NR_CLKS,
-+	.gate_clks = hi3798cv200_sysctrl_gate_clks,
-+	.gate_clks_num = ARRAY_SIZE(hi3798cv200_sysctrl_gate_clks),
- };
- 
- static const struct of_device_id hi3798cv200_crg_match_table[] = {
- 	{ .compatible = "hisilicon,hi3798cv200-crg",
--		.data = &hi3798cv200_crg_funcs },
-+		.data = &hi3798cv200_crg_clks },
- 	{ .compatible = "hisilicon,hi3798cv200-sysctrl",
--		.data = &hi3798cv200_sysctrl_funcs },
-+		.data = &hi3798cv200_sysctrl_clks },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, hi3798cv200_crg_match_table);
- 
--static int hi3798cv200_crg_probe(struct platform_device *pdev)
--{
--	struct hisi_crg_dev *crg;
--
--	crg = devm_kmalloc(&pdev->dev, sizeof(*crg), GFP_KERNEL);
--	if (!crg)
--		return -ENOMEM;
--
--	crg->funcs = of_device_get_match_data(&pdev->dev);
--	if (!crg->funcs)
--		return -ENOENT;
--
--	crg->rstc = hisi_reset_init(pdev);
--	if (!crg->rstc)
--		return -ENOMEM;
--
--	crg->clk_data = crg->funcs->register_clks(pdev);
--	if (IS_ERR(crg->clk_data)) {
--		hisi_reset_exit(crg->rstc);
--		return PTR_ERR(crg->clk_data);
--	}
--
--	platform_set_drvdata(pdev, crg);
--	return 0;
--}
--
--static void hi3798cv200_crg_remove(struct platform_device *pdev)
--{
--	struct hisi_crg_dev *crg = platform_get_drvdata(pdev);
--
--	hisi_reset_exit(crg->rstc);
--	crg->funcs->unregister_clks(pdev);
--}
--
- static struct platform_driver hi3798cv200_crg_driver = {
--	.probe          = hi3798cv200_crg_probe,
--	.remove_new	= hi3798cv200_crg_remove,
-+	.probe = hisi_crg_probe,
-+	.remove_new = hisi_crg_remove,
- 	.driver         = {
- 		.name   = "hi3798cv200-crg",
- 		.of_match_table = hi3798cv200_crg_match_table,
- 	},
- };
- 
--static int __init hi3798cv200_crg_init(void)
--{
--	return platform_driver_register(&hi3798cv200_crg_driver);
--}
--core_initcall(hi3798cv200_crg_init);
--
--static void __exit hi3798cv200_crg_exit(void)
--{
--	platform_driver_unregister(&hi3798cv200_crg_driver);
--}
--module_exit(hi3798cv200_crg_exit);
-+module_platform_driver(hi3798cv200_crg_driver);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("HiSilicon Hi3798CV200 CRG Driver");
+ /* helper functions for platform driver */
 -- 
 2.40.1
 
