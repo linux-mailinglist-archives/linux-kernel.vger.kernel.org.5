@@ -2,118 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D219876896C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 03:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFAA768972
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 03:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbjGaBB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 21:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
+        id S229720AbjGaBDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 21:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjGaBBY (ORCPT
+        with ESMTP id S229448AbjGaBDb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 21:01:24 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F07EAE79;
-        Sun, 30 Jul 2023 18:01:22 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbea147034so36737725e9.0;
-        Sun, 30 Jul 2023 18:01:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690765281; x=1691370081;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nqHefzyFteg+XSDK8TjKUuurTQ3TCfNZauRn+ePIKMo=;
-        b=mBNiY17I+06vfDqduqEp9Eu92UazmmoxGjGV5kDopFuUT3knqdiTTaca9SCpEpD9U/
-         oQ8YBtrW1BMlZUID0/sARvSK9sdrj5uxl8TKHvdoT41BvOoLGgf9B7h2cJkcJE8/wSNu
-         Gt8Y1IzTZVZ7Kz5GUj/4dCWEjSGOweLHg0yISc7oE6BXOSqOQA9mbngEbTnnuG9cIejs
-         RT0f4pP/x2f44lVzh9dHBcECScP3gZwpakwCuo1C3FEBV/6xksXT0m9sS1ePp9E22H7s
-         XW0ypopZdDfZmy4xPx91Xbt3vJHdBt+chF5oO6s45DLvzO03yKREiBt8GbZU0mxJErDq
-         pEZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690765281; x=1691370081;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nqHefzyFteg+XSDK8TjKUuurTQ3TCfNZauRn+ePIKMo=;
-        b=CdDQXqgvmbb9UzHn9yDGmvuoKR/r7JRMHw442L2WWUaU+OGaZmLnlwItYgYwx2/CZ6
-         CyGXF0UMBsx6Lf2Vy8JW+jEo4fQwB2hcxKHoDb+yBv93unn3MARRnmMclHYGk8gFnqz8
-         6xzwhLjo3sqMeZCar7WZCq8G+ozMyEIwUZEjLUUql6QLMgQHGVWzetx7GH6IfaImlk6t
-         1xdLujSsfzDqhRxdvYCrgy0+QMSjLbVHG0J6BfVqllEi87F341UEYk9NPzTN6Y0SNQDZ
-         +rMfoTyZ8tfYbENCZ1lraUrDJ4uIw3IjUunB4COd5aW6New8favFfXvu7bpzhdg15r3c
-         fA9Q==
-X-Gm-Message-State: ABy/qLZvLT+tNxpH3sjhmxNJxk3f7HWcFAxuC6O7XFr+t9qFILE0OZh6
-        4TbhZ0NqEf6z8PNshvJVtjjAAIUHdtw=
-X-Google-Smtp-Source: APBJJlHwCz1UkjOVuaRzHJmxVag4LxAKS6YT7RLfOi3MxMHa4thRTAcv1sSdpxv5AIbv3pz0RxUqYQ==
-X-Received: by 2002:a7b:c405:0:b0:3fc:4:a5b5 with SMTP id k5-20020a7bc405000000b003fc0004a5b5mr5226525wmi.29.1690765281064;
-        Sun, 30 Jul 2023 18:01:21 -0700 (PDT)
-Received: from localhost.localdomain ([2a05:f480:1000:b09:5400:4ff:fe6f:7099])
-        by smtp.gmail.com with ESMTPSA id q15-20020a7bce8f000000b003fe20533a1esm1850336wmj.44.2023.07.30.18.01.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jul 2023 18:01:20 -0700 (PDT)
-From:   zhangshida <starzhangzsd@gmail.com>
-X-Google-Original-From: zhangshida <zhangshida@kylinos.cn>
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangshida@kylinos.cn, starzhangzsd@gmail.com
-Subject: [PATCH v2] ext4: Fix rec_len verify error
-Date:   Mon, 31 Jul 2023 09:01:04 +0800
-Message-Id: <20230731010104.1781335-1-zhangshida@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        Sun, 30 Jul 2023 21:03:31 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDC4A8;
+        Sun, 30 Jul 2023 18:03:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690765410; x=1722301410;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=H4f2pgcHPDppOpMIhE5jfAiRkV8P22+qE6ZHE70YtNw=;
+  b=KXK43aXHn6mqY3u/l1TzQQpbWTUQimqcwR4y1wLOJUXyPJpatmzE37lQ
+   b0yLqApOGpDiR7AhHbowEfLbXp6ZQIFoNM0bsWEx3CbNNiDiRQf+NquoJ
+   MFUDE1KMJVaAb3gG1jxaPsEZqaIFEnRCUhuGBZbqXGXvy9R+L+UMvC2ls
+   TwNsWqSlw7aRbH9CTqMTEK1Cr+Y3sOOv4IBRBYlHCKkd9vR1CEmYAskO8
+   EpHsFxo/PrTcbYv+ibK+ssyTa8mdLwdOHYNWeBxYlPBVvhFwRSzn0P6Ly
+   MyJ7J9za/WFitcu54pKi6GfbfHMbDO045XSxPhCtr2pirRppbPZFGXl+o
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="371599899"
+X-IronPort-AV: E=Sophos;i="6.01,243,1684825200"; 
+   d="scan'208";a="371599899"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2023 18:03:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="757759101"
+X-IronPort-AV: E=Sophos;i="6.01,243,1684825200"; 
+   d="scan'208";a="757759101"
+Received: from yungchua-mobl2.ccr.corp.intel.com (HELO [10.92.2.114]) ([10.92.2.114])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2023 18:03:25 -0700
+Message-ID: <502d8316-1630-5818-5ffe-e094788d847a@linux.intel.com>
+Date:   Mon, 31 Jul 2023 09:03:16 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v6 1/6] soundwire: bus: Allow SoundWire peripherals to
+ register IRQ handlers
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Lee Jones <lee@kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     broonie@kernel.org, vkoul@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org, lgirdwood@gmail.com,
+        sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230725102532.2567580-1-ckeepax@opensource.cirrus.com>
+ <20230725102532.2567580-2-ckeepax@opensource.cirrus.com>
+ <20230728151818.GL8175@google.com>
+ <db5f1478-8aca-fb57-c3fc-aa09071a0829@linux.intel.com>
+Content-Language: en-US
+From:   "Liao, Bard" <yung-chuan.liao@linux.intel.com>
+In-Reply-To: <db5f1478-8aca-fb57-c3fc-aa09071a0829@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shida Zhang <zhangshida@kylinos.cn>
 
-With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-a problem occurred when more than 13 million files were directly created
-under a directory:
+On 7/29/2023 12:44 AM, Pierre-Louis Bossart wrote:
+>
+> On 7/28/23 17:18, Lee Jones wrote:
+>> Vinod, Bard, Pierre-Louis, Sanyog,
+>>
+>> This has been on the list for some time now.
+>>
+>> Would one of you please review this, so we can get it merged?
+> Sorry, I thought I provided my tag on an earlier version, but apparently
+> that never reached the ML. All my earlier feedback was taken into
+> account so no objections from me - just one typo below...
+>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
-EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
 
-When enough files are created, the fake_dirent->reclen will be 0xffff.
-it doesn't equal to the blocksize 65536, i.e. 0x10000.
+The patch looks good to me.
 
-But it is not the same condition when blocksize equals to 4k.
-when enough file are created, the fake_dirent->reclen will be 0x1000.
-it equals to the blocksize 4k, i.e. 0x1000.
+Acked-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-The problem seems to be related to the limitation of the 16-bit field
-when the blocksize is set to 64k. To address this, Modify the check so
-as to handle it properly.
-
-Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
----
-v1->v2:
-  Use a better way to check the condition, as suggested by Andreas.
-
- fs/ext4/namei.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 0caf6c730ce3..fffed95f8531 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
- 	struct ext4_dir_entry *dp;
- 	struct dx_root_info *root;
- 	int count_offset;
-+	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
- 
--	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
-+	if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == blocksize)
- 		count_offset = 8;
- 	else if (le16_to_cpu(dirent->rec_len) == 12) {
- 		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
--- 
-2.27.0
-
+>> On Tue, 25 Jul 2023, Charles Keepax wrote:
+>>
+>>> From: Lucas Tanure <tanureal@opensource.cirrus.com>
+>>>
+>>> Currently the in-band alerts for SoundWire peripherals can only
+>>> be communicated to the driver through the interrupt_callback
+>>> function. This however is slightly inconvient for devices that wish to
+> inconvenient
+>
+>>> share IRQ handling code between SoundWire and I2C/SPI, the later would
+>>> normally register an IRQ handler with the IRQ subsystem. However there
+>>> is no reason the SoundWire in-band IRQs can not also be communicated
+>>> as an actual IRQ to the driver.
