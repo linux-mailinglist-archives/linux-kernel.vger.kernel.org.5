@@ -2,62 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C21768D55
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B80F768D2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbjGaHLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49308 "EHLO
+        id S231193AbjGaHJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 03:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229824AbjGaHLC (ORCPT
+        with ESMTP id S231150AbjGaHJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:11:02 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD89D1FC7
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:09:06 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A18646607105;
-        Mon, 31 Jul 2023 08:03:55 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690787036;
-        bh=h4ff7dyElXSiU2HCDoxKH52aXgTKwtgpwzSppL9MAQY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ToZDxR0VoZrKARAAT6OtEg2+o0PKqpM4P/MdnvE1nIwbEjClxWpG0jU0CykqRR/iy
-         jlM8+aWm2CMSwB4P9MMq25pLeqH4LlXBBPbXif5CILxiHgulF8L8Is7Pb30ZJjjWbn
-         vuR7DDI92//oUkeZ1ekBC9fTGRbG4zKjQCDZOiIHurB8t4/ckcXl6/gMlZREFYhtK8
-         in2UkQ9XbEcjirbXuQwbkaMkeWYOnbGcC7+T8TDgBsp/PdibU53Qz/V5F1/YANiwMe
-         d+9vO/Xw/Qp27WldVizqu/MtgBK6G/0YRdqeEPlZ93uTGedw9W8/Nm9p4tvWpviYo5
-         mOXwZz1opz+zQ==
-Date:   Mon, 31 Jul 2023 09:03:53 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     ndesaulniers@google.com,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Tom Rix <trix@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Naresh Kamboju <naresh.kamboju@linaro.org>,
-        christian.koenig@amd.com, dakr@redhat.com,
-        alexander.deucher@amd.com
-Subject: Re: [PATCH v2] drm: fix indirect goto into statement expression UB
-Message-ID: <20230731090353.1cd5e2d5@collabora.com>
-In-Reply-To: <20230728171757.GA433645@dev-arch.thelio-3990X>
-References: <20230727-amdgpu-v2-1-7fc66bc52bf6@google.com>
-        <20230728171757.GA433645@dev-arch.thelio-3990X>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 31 Jul 2023 03:09:15 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363FB2D73
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:07:36 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bf9252eddso327083966b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 00:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690787173; x=1691391973;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G2S79vQkr/Q6AsrCfTC9FA0lnKMVA5NRuZdzXti1EXs=;
+        b=JWdIFUyPCSGhlS9/udGq4gNVONwXz7IgcHWdgX38rdevQIipSg0PqMICpRfm7kXMq6
+         HsWcRRKT4BiOviTPUx5rvVAzEaDbr05j76NHSb2wLnYHNKAJwR+6I0s0jN9TGITjPPcD
+         lYBRBUirFzBqD0/Ei32YyQeSuExCH4/XMMMN0bObvLNipjF5uxkRwl+yeUop00SwR8QG
+         t4eTZ8pJSyTvmTFIkp23JyxfZbH1jGqadG0ylrkpCQePqw/pmGMeZYnkHfzvG/XLyNZ0
+         DX/azZfNF4bfhgUB1bX7bY5I+Q8o5QqZ+xysWiVoIYhQZMmDJ2jqC83OsOa1CO05CvRg
+         Q8ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690787173; x=1691391973;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G2S79vQkr/Q6AsrCfTC9FA0lnKMVA5NRuZdzXti1EXs=;
+        b=H0Ssno0FTUdB9yE+f5c+3MoqHmP/5pj//h2GUxnPFgowQSL+qWWeZTAC6rgyxv2WHC
+         WxonhJFxf4p89QNbXTwBKKEblHTaWSFRybwLTveWY7xgm9UhdqpA5a8ADaL1+hxIYudJ
+         buoFV+IPAaqd5Yceb+0hFPhisf30rnI51RYDCp6nqjXVEChaZKoXdMzaFNr6otTupCaM
+         GFTkIkRSCwl/1TzXTA0WCKElaQzCNDQ7DwKbKn687v3IGKoKbkPS9rgfA1WMkOmqt7s8
+         tS/+syO24PfGAoew+uWV9jIDf+cIWLmZZ1xj6NTItUMunfeIp8IbPqARvzg2lhipLTrF
+         msVQ==
+X-Gm-Message-State: ABy/qLZUl6b13SLCjgw6YBc/jzsrvzy0cyLbpb31W0DFx4cEAFMjPDVc
+        iT27F/sZXnUYLjhZoHoVseUyzw==
+X-Google-Smtp-Source: APBJJlEPFgaPUMMYauFP7cTFYrzHjUp57IMDsTKAdaxvn07SrcaBjIcW2QxMB+JxkUTO7HjFCXXPvw==
+X-Received: by 2002:a17:906:4f:b0:991:d2a8:658a with SMTP id 15-20020a170906004f00b00991d2a8658amr6680496ejg.34.1690787173223;
+        Mon, 31 Jul 2023 00:06:13 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id lj24-20020a170906f9d800b0099bca8b9a31sm5703554ejb.100.2023.07.31.00.06.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 00:06:12 -0700 (PDT)
+Message-ID: <b938ba84-38e9-b220-9686-6656e4452c10@linaro.org>
+Date:   Mon, 31 Jul 2023 09:06:10 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v2 2/3] ASoC: starfive: Add JH7110 PWM-DAC driver
+Content-Language: en-US
+To:     Hal Feng <hal.feng@starfivetech.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        Xingyu Wu <xingyu.wu@starfivetech.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230731032829.127864-1-hal.feng@starfivetech.com>
+ <20230731032829.127864-3-hal.feng@starfivetech.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230731032829.127864-3-hal.feng@starfivetech.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,131 +87,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Jul 2023 10:17:57 -0700
-Nathan Chancellor <nathan@kernel.org> wrote:
+On 31/07/2023 05:28, Hal Feng wrote:
+> Add PWM-DAC driver support for the StarFive JH7110 SoC.
+> 
 
-> + people from trailers of 09593216bff1
-> 
-> On Thu, Jul 27, 2023 at 03:50:58PM -0700, ndesaulniers@google.com wrote:
-> > A new diagnostic in clang-17 now produces the following build error:
-> > 
-> > drivers/gpu/drm/tests/drm_exec_test.c:41:3: error: cannot jump from this
-> > indirect goto statement to one of its possible targets
-> >    41 |                 drm_exec_retry_on_contention(&exec);
-> >       |                 ^
-> > include/drm/drm_exec.h:96:4: note: expanded from macro
-> > 'drm_exec_retry_on_contention'
-> >    96 |                         goto *__drm_exec_retry_ptr;
-> >       |                         ^
-> > drivers/gpu/drm/tests/drm_exec_test.c:39:2: note: possible target of
-> > indirect goto statement
-> >    39 |         drm_exec_until_all_locked(&exec) {
-> >       |         ^
-> > include/drm/drm_exec.h:79:33: note: expanded from macro
-> > 'drm_exec_until_all_locked'
-> >    79 |                 __label__ __drm_exec_retry;
-> > drivers/gpu/drm/tests/drm_exec_test.c:39:2: note: jump enters a
-> > statement expression
-> > 
-> > The GCC manually currently states that:  
-> 
->           ^ manual
-> 
-> > >> Jumping into a statement expression with a computed goto (see Labels
-> > >> as Values) has undefined behavior.  
-> > 
-> > So the diagnostic appears correct, even if codegen happened to produce
-> > working code.
-> > 
-> > Looking closer at this code, while the original combination of statement
-> > expression, local label, and computed/indirect goto GNU C expressions
-> > were clever, a simple while loop and continue block might have sufficed.
-> > 
-> > This approach might not work as expected if drm_exec_until_all_locked
-> > "loops" can be nested, but that doesn't appear to be an existing use
-> > case in the codebase.
 
-Hm, that's exactly the sort of things we were trying to be robust
-against with the original approach. With this version, we're back to a
-situation where
+...
 
-	drm_exec_until_all_locked(exec) {
-		for (...) {
-			drm_exec_retry_on_contention(exec);
-		}
-	}
+> +static int jh7110_pwmdac_probe(struct platform_device *pdev)
+> +{
+> +	struct jh7110_pwmdac_dev *dev;
+> +	struct resource *res;
+> +	int ret;
+> +
+> +	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
+> +	if (!dev)
+> +		return -ENOMEM;
+> +
+> +	dev->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+> +	if (IS_ERR(dev->base))
+> +		return PTR_ERR(dev->base);
+> +
+> +	dev->mapbase = res->start;
+> +
+> +	dev->clks[0].id = "apb";
+> +	dev->clks[1].id = "core";
+> +
+> +	ret = devm_clk_bulk_get(&pdev->dev, ARRAY_SIZE(dev->clks), dev->clks);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "failed to get pwmdac clocks\n");
 
-doesn't do what we expect it to do, and that's a use case we want to
-support.
+return dev_err_probe
 
-> > 
-> > Fixes: commit 09593216bff1 ("drm: execution context for GEM buffers v7")
-> > Link: https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1890
-> > Link: https://github.com/llvm/llvm-project/commit/20219106060208f0c2f5d096eb3aed7b712f5067
-> > Reported-by: Nathan Chancellor <nathan@kernel.org>
-> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>  
-> 
-> Thanks for the patch!
-> 
-> Tested-by: Nathan Chancellor <nathan@kernel.org> # build
-> 
-> > ---
-> > Changes in v2:
-> > Fix the continue to be outside of the do while
-> > - Link to v1: https://lore.kernel.org/r/20230727-amdgpu-v1-1-a95690e75388@google.com
-> > ---
-> >  include/drm/drm_exec.h | 21 +++++----------------
-> >  1 file changed, 5 insertions(+), 16 deletions(-)
-> > 
-> > diff --git a/include/drm/drm_exec.h b/include/drm/drm_exec.h
-> > index 73205afec162..fa1cc5c3d021 100644
-> > --- a/include/drm/drm_exec.h
-> > +++ b/include/drm/drm_exec.h
-> > @@ -70,18 +70,8 @@ struct drm_exec {
-> >   * Core functionality of the drm_exec object. Loops until all GEM objects are
-> >   * locked and no more contention exists. At the beginning of the loop it is
-> >   * guaranteed that no GEM object is locked.
-> > - *
-> > - * Since labels can't be defined local to the loops body we use a jump pointer
-> > - * to make sure that the retry is only used from within the loops body.
-> >   */
-> > -#define drm_exec_until_all_locked(exec)				\
-> > -	for (void *__drm_exec_retry_ptr; ({			\
-> > -		__label__ __drm_exec_retry;			\
-> > -__drm_exec_retry:						\
-> > -		__drm_exec_retry_ptr = &&__drm_exec_retry;	\
-> > -		(void)__drm_exec_retry_ptr;			\
-> > -		drm_exec_cleanup(exec);				\
-> > -	});)
-> > +#define drm_exec_until_all_locked(exec)	while(drm_exec_cleanup(exec))
-> >  
-> >  /**
-> >   * drm_exec_retry_on_contention - restart the loop to grap all locks
-> > @@ -90,11 +80,10 @@ __drm_exec_retry:						\
-> >   * Control flow helper to continue when a contention was detected and we need to
-> >   * clean up and re-start the loop to prepare all GEM objects.
-> >   */
-> > -#define drm_exec_retry_on_contention(exec)			\
-> > -	do {							\
-> > -		if (unlikely(drm_exec_is_contended(exec)))	\
-> > -			goto *__drm_exec_retry_ptr;		\
-> > -	} while (0)
-> > +#define drm_exec_retry_on_contention(exec)		\
-> > +	if (unlikely(drm_exec_is_contended(exec)))	\
-> > +		continue;				\
-> > +	do {} while (0)
-> >  
-> >  /**
-> >   * drm_exec_is_contended - check for contention
-> > 
-> > ---
-> > base-commit: 451cc82bd11eb6a374f4dbcfc1cf007eafea91ab
-> > change-id: 20230727-amdgpu-93c0e5302951
-> > 
-> > Best regards,
-> > -- 
-> > Nick Desaulniers <ndesaulniers@google.com>
-> >   
+> +		return ret;
+> +	}
+> +
+> +	dev->rst_apb = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+> +	if (IS_ERR(dev->rst_apb)) {
+> +		dev_err(&pdev->dev, "failed to get pwmdac apb reset\n");
+> +		return PTR_ERR(dev->rst_apb);
+
+return dev_err_probe
+
+> +	}
+> +
+> +	dev->dev = &pdev->dev;
+> +	dev->shift = PWMDAC_SHIFT_8;
+> +	dev->duty_cycle = PWMDAC_CYCLE_CENTER;
+> +	dev->cnt_n = PWMDAC_SAMPLE_CNT_1;
+> +	dev->data_change = NO_CHANGE;
+> +	dev->data_mode = INVERTER_DATA_MSB;
+> +	dev->data_shift = PWMDAC_DATA_LEFT_SHIFT_BIT_0;
+> +
+> +	dev_set_drvdata(&pdev->dev, dev);
+> +	ret = devm_snd_soc_register_component(&pdev->dev,
+> +					      &jh7110_pwmdac_component,
+> +					      &jh7110_pwmdac_dai, 1);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "failed to register dai\n");
+> +		return ret;
+
+I guess here as well for consistency and shorter code even though
+EPROBE_DEFER does not happen really.
+
+return dev_err_probe
+
+> +	}
+> +
+> +	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "failed to register pcm\n");
+> +		return ret;
+
+return dev_err_probe
+
+> +	}
+> +
+
+Best regards,
+Krzysztof
 
