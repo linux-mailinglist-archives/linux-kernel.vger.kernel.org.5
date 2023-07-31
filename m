@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8174F76A11C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E160776A125
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbjGaTWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S230253AbjGaTXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231551AbjGaTWn (ORCPT
+        with ESMTP id S229537AbjGaTXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:22:43 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A3FF198
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:22:26 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-991c786369cso706147966b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:22:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690831344; x=1691436144;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=t3GQbdwLvcWtVcLzrtdmftkuTA3BSuGTxKC7dfPWmfo=;
-        b=Ts/6yhyqbGiFW6aCwX48VhZ546zZwJzTk0QWiW1b/29V9ehDjGb4pzasYuzFtBQapf
-         J/Vj3r7Pb/F8iPylZLMZyNLV10iVdCnQVM6AoQFGhHbNouNu5gfFXB2M6yuNXTplFhDU
-         NGVM/J5K+gCeXnRWR1Hb+JwBKfxwoQfOjSqoA=
+        Mon, 31 Jul 2023 15:23:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165111BC5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:22:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690831351;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3XHpXZQfPdcBCB40xD4cQo5HE4yndD5B/+tRyE4teEw=;
+        b=VQAdpjcAeN6YItaZAm5NoKnli4N0JB5kcuBz2IoiPSgZMfTyRC5UGRMsfMbwWOTCAf6cyM
+        8KRWfa3VpYcar5nlCIwpXKhLQ9AT8VBnqqxWeHuOfhoqkszqdiGAbD/6EtlAGMYnRjycLM
+        34NJ0iFZkGis9Gx7uWbOEf8lLCYQ4sM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-264-1GyVyPnDMXylJRZAX9HgyQ-1; Mon, 31 Jul 2023 15:22:29 -0400
+X-MC-Unique: 1GyVyPnDMXylJRZAX9HgyQ-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fe25f8c4bfso3230625e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:22:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690831344; x=1691436144;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1690831348; x=1691436148;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=t3GQbdwLvcWtVcLzrtdmftkuTA3BSuGTxKC7dfPWmfo=;
-        b=aHeFvyNSJjyS8jUVETc0/Cv2iSUrToVBl8cYra97eTdhe9ikMfZ8yIzKbrdBumztJ4
-         zMmU4PL8dcGFiVhZjFNm9dCvnq+zQSrKtwAXtFgWMPUoURNJq3LudR5wkc7uDFTHNwIa
-         ABZgJBlKHouGeSEYy5Nlt+VgrWJcNlOsKr8ZO93S5urX1xS/Ub4Dwhbbq7sS952Me7N5
-         7Jk/tajFEUGV3dIFAuCVM9BG78KTdTc2o+/OMGqK5OQsVg+y6nbRJWHFI+VtuhR/Y2py
-         kwvX/BQ0uFL3fxbDsS7rQO1UVcvsw7ESxogWNEAeLR4rjZAP2WyY6qYQxSJp8n4GSpuG
-         QqSQ==
-X-Gm-Message-State: ABy/qLbKcNVauBxUz/dC8fioyr6Xhp/A49KWj9xbO/r32iVXyT/UmV+q
-        6C4yZcL+zmWzPob6ydHEkxWA4Zs8elJiIp7XbcE1gJmt
-X-Google-Smtp-Source: APBJJlH+HIKPDECmEagMdf3mHFQAhoS3rDe5czr+CSSvE6wKCUUgt+qlTCZRPzRYC2HA4R7tzT0AGw==
-X-Received: by 2002:a17:906:2009:b0:99b:e04d:3079 with SMTP id 9-20020a170906200900b0099be04d3079mr546193ejo.19.1690831344451;
-        Mon, 31 Jul 2023 12:22:24 -0700 (PDT)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id h15-20020a1709063c0f00b009929ab17be0sm6567812ejg.162.2023.07.31.12.22.23
-        for <linux-kernel@vger.kernel.org>
+        bh=3XHpXZQfPdcBCB40xD4cQo5HE4yndD5B/+tRyE4teEw=;
+        b=ZoAmmtLkt68H+KD6Ozg0+vAdPCqQ4iaHkwC50W4Ga0wUIQXAmX2sWZnFmDJ6LjWpeP
+         xqnAPYn2Zvk/7IdYvJzMiEyoZcinCSnTKCjmBtP3iK9bDVGlqaTRcQ9I402FWLCV+sTd
+         zAPhfJ0hG78Zqy0j9Y7+Zgk2urMcZv3fClnNdAWcLq6AfKa7Tu1pXvBbVjVXvmxgAvCs
+         ytXG5cM+oV9U72aJgPB3c5xAfWo/ZX9y+slz+wh3E3t4LHshubxigP0C138GAqvFp//B
+         VgWIadCzVpz8Pcnbvd2wLqh9Wz+Ls/J+fXAe8oN3QeV8HlvDnxzpLLKvoUZ/rx5q0kkr
+         OwNg==
+X-Gm-Message-State: ABy/qLYgLy1WIz2CoPNG9e4GmINpcXaFOcLn3Wq37k36AauChTi1nQHY
+        9Xo8zbikwgCyiin9/b4AH4HtASS2LnupGT/8um8q/yvHB8uYn7cSWMhe9A12xAYQG9s278+luHz
+        nbbiWl5GSGw2fByZnmm5J5lun
+X-Received: by 2002:a5d:5389:0:b0:313:ea59:7ded with SMTP id d9-20020a5d5389000000b00313ea597dedmr527975wrv.24.1690831348687;
+        Mon, 31 Jul 2023 12:22:28 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlE3VWK9O6PVe8wtmdproWt76/+jiswldybLURzUXx9vkkftywxOeU5n+v/yJOUJccBkcxNCsQ==
+X-Received: by 2002:a5d:5389:0:b0:313:ea59:7ded with SMTP id d9-20020a5d5389000000b00313ea597dedmr527965wrv.24.1690831348285;
+        Mon, 31 Jul 2023 12:22:28 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c723:4c00:5c85:5575:c321:cea3? (p200300cbc7234c005c855575c321cea3.dip0.t-ipconnect.de. [2003:cb:c723:4c00:5c85:5575:c321:cea3])
+        by smtp.gmail.com with ESMTPSA id i15-20020adffdcf000000b003145559a691sm13875824wrs.41.2023.07.31.12.22.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 12:22:24 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-52227142a27so6361416a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:22:23 -0700 (PDT)
-X-Received: by 2002:a05:6402:406:b0:522:3a37:a463 with SMTP id
- q6-20020a056402040600b005223a37a463mr700776edv.20.1690831343614; Mon, 31 Jul
- 2023 12:22:23 -0700 (PDT)
+        Mon, 31 Jul 2023 12:22:27 -0700 (PDT)
+Message-ID: <9a26ce23-9ac7-b111-b700-db0905203c73@redhat.com>
+Date:   Mon, 31 Jul 2023 21:22:26 +0200
 MIME-Version: 1.0
-References: <CAPM=9twNnV4zMCvrPkw3H-ajZOH-01JVh_kDrxdPYQErz8ZTdA@mail.gmail.com>
- <CAHk-=wi=eDN4Ub0qSN27ztBAvHSXCyiY2stu3_XbTpYpQX4x7w@mail.gmail.com>
- <ZJX27JDyrgvdeCe4@slm.duckdns.org> <ZMdu1YqUI7VIEq1y@alley>
- <CAHk-=wiJSzSkF-FDcHydR61Q3_q4xCiqq37tfXdijaCxsDF86Q@mail.gmail.com> <ZMgIF_6zCqB0LfjN@slm.duckdns.org>
-In-Reply-To: <ZMgIF_6zCqB0LfjN@slm.duckdns.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 31 Jul 2023 12:22:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgGmV6x1brPoROABozj99hrKo031qq8F8K9Mjx2FC6nfw@mail.gmail.com>
-Message-ID: <CAHk-=wgGmV6x1brPoROABozj99hrKo031qq8F8K9Mjx2FC6nfw@mail.gmail.com>
-Subject: Re: arm32 build warnings in workqueue.c
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Petr Mladek <pmladek@suse.com>, Dave Airlie <airlied@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        liubo <liubo254@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@suse.de>
+References: <20230727212845.135673-1-david@redhat.com>
+ <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+ <412bb30f-0417-802c-3fc4-a4e9d5891c5d@redhat.com>
+ <66e26ad5-982e-fe2a-e4cd-de0e552da0ca@redhat.com> <ZMfc9+/44kViqjeN@x1n>
+ <a3349cdb-f76f-eb87-4629-9ccba9f435a1@redhat.com>
+ <CAHk-=wiREarX5MQx9AppxPzV6jXCCQRs5KVKgHoGYwATRL6nPg@mail.gmail.com>
+ <a453d403-fc96-e4a0-71ee-c61d527e70da@redhat.com>
+ <CAHk-=whxpKc_zOiJ9n-MA9s0wxvU9vRST+iuNYGkHHB6ux48Rg@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
+ fallout
+In-Reply-To: <CAHk-=whxpKc_zOiJ9n-MA9s0wxvU9vRST+iuNYGkHHB6ux48Rg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 at 12:14, Tejun Heo <tj@kernel.org> wrote:
->
-> PAGE_SIZE is easily available through _SC_PAGE_SIZE, so that particular one
-> is never a real problem (and a lot of tools have pre-defined helpers for it
-> and similarly important constants) but yeah there are other constants which
-> I sometimes wish were available through debug info.
+On 31.07.23 21:07, Linus Torvalds wrote:
+> On Mon, 31 Jul 2023 at 12:00, David Hildenbrand <david@redhat.com> wrote:
+>>
+>> So in the "!writable" case, we would always call
+>> get_user_pages_unlocked() and never honor NUMA faults.
+> 
+> Ok, so kvm doesn't just use the fast version. Oh well. It was an idea..
 
-We do have that
+Certainly an interesting one, thanks for thinking about possible 
+alternatives! Unfortunately, KVM is an advanced GUP user to managed 
+secondary MMUs.
 
-   scripts/gdb/linux/constants.py.in
+I'll get the FOLL_HONOR_NUMA_FAULT patches ready tomorrow and we can 
+discuss if that looks better.
 
-thing. Which seems to be the logical place do deal with this all.
+(btw, the whole reasoning about "HW would refuse to use these pages" was 
+exactly the whole reason I went into the FOLL_FORCE direction ... but 
+it's really better to make FOLL_FORCE deal with VMA protection only)
 
-That's where other - and arguably much more fundamental - kernel
-#define's are dealt with.
+-- 
+Cheers,
 
-Now, looking at the particular constants that are listed, I get the
-feeling that the people who have done that script may be mostly
-interested in filesystems, but I don't see why it wouldn't be
-appropriate for the workstruct stuff too...
+David / dhildenb
 
-                  Linus
