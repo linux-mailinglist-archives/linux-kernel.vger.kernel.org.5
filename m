@@ -2,163 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F25769946
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6D376994B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbjGaOSt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:18:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35602 "EHLO
+        id S232146AbjGaOUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbjGaOSi (ORCPT
+        with ESMTP id S230171AbjGaOUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:18:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CF5AF;
-        Mon, 31 Jul 2023 07:18:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 31 Jul 2023 10:20:04 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C07BB6;
+        Mon, 31 Jul 2023 07:20:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HHSsgCNjhHdFIGMQf5i+HECrKrb/KpWdhY3pLbYw1XQ=; b=shzvgZ5MR8NVHhRx3eD7xO1ViD
+        K9qpI4RQJ/e43YTDHsUFoQYLazXH6Ge36IwmKu+3pR9fDqMliYZ2Q2cm4ci0auq3oU+ii6qr6PY2Q
+        1zzsnQ5ZOMuT0bX1PCilQUVKc+nm8zPy6tyr1VACKxtqHdsRZ1Psr/1uTmfTE5Zb/51y3j0I45/HK
+        ErHKpItC8xcFt7QeAWgygfvAdsG4Q02bTNxnrt2Q0rEEz7HVwtdRW3ErwNatV7wqFaKDTLtpfuKIo
+        pooLJSZKqsZXxTPLhChgkmKJGr0G+dfFu62+bLC4in5g7zUj09jkJGmPWsDI+T2jzzzYlpwoNcKGx
+        W89FVHkA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQTkF-0024Yq-8F; Mon, 31 Jul 2023 14:19:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3FC796116C;
-        Mon, 31 Jul 2023 14:18:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A06F8C433CC;
-        Mon, 31 Jul 2023 14:18:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690813116;
-        bh=roJWAQyv2E5qkTUrOOBL4JF3wGCSEwvRkjeyvGDMfgA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LJMq0mlLdbjKpQanOwpGJlkLgCigH2wg+fO3BVZxtnEV2DQwl/eUo1FpJyYmuwMqE
-         HEG898Nl5MjGZngHWqLpaK+CfiiVDlRNwaoxRD+9t4IBC+vuQn19pMS2e9+I2/R+yl
-         s4xPjn9HDHVeSeQWjhpfL54OyHWfiKBAcsN+7q4rcLKykjjZ04Pq8XqOS1XyWfR3bC
-         KI8zPjPgKRfREnh52p23R4g4VwSnhjp1gxZyLLengURf37CMgjvgJmj8RsWkOe0rjq
-         eCBChPkl/Gb89eyN+vT5YC9lA+NHRbjOYLqCl5/6Eboq85dSn9iCqHR8qnbBQV81pf
-         ugTBFE4IcuwUA==
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2b9c66e2e36so50972131fa.1;
-        Mon, 31 Jul 2023 07:18:36 -0700 (PDT)
-X-Gm-Message-State: ABy/qLaWfLi81sQtXwlPWGvFUetn1S2S7PIwdwZxRwcf2YyulocScvPG
-        yq8DZ0gGPjXVaKJeAgiJhi+ENB7BKWA1diYNzkk=
-X-Google-Smtp-Source: APBJJlEvkn1wHuYbYL8ntPekVB8VTmJ6TTXSwPpnDfTAJ0HYisyFNw9wh3socjCfnvnSVFOES7Il26opS+oE9Y5+jpI=
-X-Received: by 2002:a2e:a27b:0:b0:2b9:aad7:9d89 with SMTP id
- k27-20020a2ea27b000000b002b9aad79d89mr5322200ljm.15.1690813114640; Mon, 31
- Jul 2023 07:18:34 -0700 (PDT)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9DCF6300134;
+        Mon, 31 Jul 2023 16:19:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7BEB4203EA053; Mon, 31 Jul 2023 16:19:34 +0200 (CEST)
+Date:   Mon, 31 Jul 2023 16:19:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
+Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
+ 6.4.7-rc1 review)
+Message-ID: <20230731141934.GK29590@hirez.programming.kicks-ass.net>
+References: <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
+ <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
+ <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
 MIME-Version: 1.0
-References: <CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStPqBhubxyk_A@mail.gmail.com>
- <97730.1690408399@warthog.procyon.org.uk>
-In-Reply-To: <97730.1690408399@warthog.procyon.org.uk>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 31 Jul 2023 16:18:22 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHs_09b8UY7BsFQtxg1Rv6a3vfSRLFJT58Sn+MUevXi6g@mail.gmail.com>
-Message-ID: <CAMj1kXHs_09b8UY7BsFQtxg1Rv6a3vfSRLFJT58Sn+MUevXi6g@mail.gmail.com>
-Subject: Re: [PATCH] crypto: Fix missing initialisation affecting gcm-aes-s390
-To:     David Howells <dhowells@redhat.com>
-Cc:     =?UTF-8?B?T25kcmVqIE1vc27DocSNZWs=?= <omosnacek@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.vnet.ibm.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        linux-crypto@vger.kernel.org, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, regressions@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 26 Jul 2023 at 23:54, David Howells <dhowells@redhat.com> wrote:
->
->
-> Fix af_alg_alloc_areq() to initialise areq->first_rsgl.sgl.sgt.sgl to poi=
-nt
-> to the scatterlist array in areq->first_rsgl.sgl.sgl.
->
-> Without this, the gcm-aes-s390 driver will oops when it tries to do
-> gcm_walk_start() on req->dst because req->dst is set to the value of
-> areq->first_rsgl.sgl.sgl by _aead_recvmsg() calling
-> aead_request_set_crypt().
->
-> The problem comes if an empty ciphertext is passed: the loop in
-> af_alg_get_rsgl() just passes straight out and doesn't set areq->first_rs=
-gl
-> up.
->
-> This isn't a problem on x86_64 using gcmaes_crypt_by_sg() because, as far
-> as I can tell, that ignores req->dst and only uses req->src[*].
->
-> [*] Is this a bug in aesni-intel_glue.c?
->
+On Sat, Jul 29, 2023 at 09:00:02PM -0700, Guenter Roeck wrote:
+> On 7/27/23 16:18, Joel Fernandes wrote:
+> 
+> [ ... ]
+> 
+> > > I freely confess that I am having a hard time imagining what would
+> > > be CPU dependent in that code.  Timing, maybe?  Whatever the reason,
+> > > I am not seeing these failures in my testing.
+> > > 
+> > > So which of the following Kconfig options is defined in your .config?
+> > > CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
+> > > 
+> > > If you have more than one of them, could you please apply this patch
+> > > and show me the corresponding console output from the resulting hang?
+> > 
+> > FWIW, I am not able to repro this issue either. If a .config can be shared of the problem system, I can try it out to see if it can be reproduced on my side.
+> > 
+> 
+> I managed to bisect the problem. See bisect log below. Bisect repeated twice.
+> so it should be reliable. I don't really understand it, but the following
+> reverts fix the problem. This is on top of next-20230721 because next-20230728
+> crashes immediately in my tests.
+> 
+> 0caafe9b94ab (HEAD) Revert "sched/fair: Remove sched_feat(START_DEBIT)"
+> 518bdbd39fdb Revert "sched/fair: Add lag based placement"
+> a011162c3e32 Revert "sched/fair: Implement an EEVDF-like scheduling policy"
+> df579720bf98 Revert "sched/fair: Commit to lag based placement"
+> aac459a7e738 Revert "sched/smp: Use lag to simplify cross-runqueue placement"
+> 8d686eb173e1 Revert "sched/fair: Commit to EEVDF"
+> 486474c50f95 Revert "sched/debug: Rename sysctl_sched_min_granularity to sysctl_sched_base_slice"
+> 79e94d67d08a Revert "sched/fair: Propagate enqueue flags into place_entity()"
+> ae867bc97b71 (tag: next-20230721) Add linux-next specific files for 20230721
+> 
+> For context: x86 images (32 and 64 bit) in -next tend to hang at
+> 
+> [    2.309323] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
+> [    2.311634] Running RCU-tasks wait API self tests
+> 
+> The hang is not seen with every boot; it happens roughly about once every
+> 10 boot attempts. It is not CPU dependent as I initially thought.
+> 
+> Configuration file is at http://server.roeck-us.net/qemu/x86-next/config.
+> Example qemu command line:
 
-It uses req->src directly only for processing the additional
-authenticated data (AAD) which contributes to the MAC but not to the
-ciphertext. Conceptually, there is no dst only src for this part, and
-only the IPsec specific encapsulations of GCM and CCM etc do a plain
-memcpy of src to dst (if src and dst do not refer to the same
-scatterlist already). Otherwise, the AAD is not considered to be part
-of the output.
-
-The actual encryption logic does use both src and dst, but under the
-hood (inside the skcipher walk helpers)
-
-
-
-> The s390x oops looks something like:
->
->  Unable to handle kernel pointer dereference in virtual kernel address sp=
-ace
->  Failing address: 0000000a00000000 TEID: 0000000a00000803
->  Fault in home space mode while using kernel ASCE.
->  AS:00000000a43a0007 R3:0000000000000024
->  Oops: 003b ilc:2 [#1] SMP
->  ...
->  Call Trace:
->   [<000003ff7fc3d47e>] gcm_walk_start+0x16/0x28 [aes_s390]
->   [<00000000a2a342f2>] crypto_aead_decrypt+0x9a/0xb8
->   [<00000000a2a60888>] aead_recvmsg+0x478/0x698
->   [<00000000a2e519a0>] sock_recvmsg+0x70/0xb0
->   [<00000000a2e51a56>] sock_read_iter+0x76/0xa0
->   [<00000000a273e066>] vfs_read+0x26e/0x2a8
->   [<00000000a273e8c4>] ksys_read+0xbc/0x100
->   [<00000000a311d808>] __do_syscall+0x1d0/0x1f8
->   [<00000000a312ff30>] system_call+0x70/0x98
->  Last Breaking-Event-Address:
->   [<000003ff7fc3e6b4>] gcm_aes_crypt+0x104/0xa68 [aes_s390]
->
-> Fixes: c1abe6f570af ("crypto: af_alg: Use extract_iter_to_sg() to create =
-scatterlists")
-> Reported-by: Ondrej Mosn=C3=A1=C4=8Dek <omosnacek@gmail.com>
-> Link: https://lore.kernel.org/r/CAAUqJDuRkHE8fPgZJGaKjUjd3QfGwzfumuJBmStP=
-qBhubxyk_A@mail.gmail.com/
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Herbert Xu <herbert@gondor.apana.org.au>
-> cc: Sven Schnelle <svens@linux.ibm.com>
-> cc: Harald Freudenberger <freude@linux.vnet.ibm.com>
-> cc: "David S. Miller" <davem@davemloft.net>
-> cc: Paolo Abeni <pabeni@redhat.com>
-> cc: linux-crypto@vger.kernel.org
-> cc: linux-s390@vger.kernel.org
-> cc: regressions@lists.linux.dev
-> ---
->  crypto/af_alg.c |    1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-> index 06b15b9f661c..9ee8575d3b1a 100644
-> --- a/crypto/af_alg.c
-> +++ b/crypto/af_alg.c
-> @@ -1192,6 +1192,7 @@ struct af_alg_async_req *af_alg_alloc_areq(struct s=
-ock *sk,
->
->         areq->areqlen =3D areqlen;
->         areq->sk =3D sk;
-> +       areq->first_rsgl.sgl.sgt.sgl =3D areq->first_rsgl.sgl.sgl;
->         areq->last_rsgl =3D NULL;
->         INIT_LIST_HEAD(&areq->rsgl_list);
->         areq->tsgl =3D NULL;
->
+Hurmph, let me see if I can reproduce on next-20230731 (not having the
+older next thingies around).
