@@ -2,131 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E1D776A1A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A9276A1AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbjGaUBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
+        id S230154AbjGaUC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:02:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjGaUB2 (ORCPT
+        with ESMTP id S230252AbjGaUCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:01:28 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796908F;
-        Mon, 31 Jul 2023 13:01:27 -0700 (PDT)
+        Mon, 31 Jul 2023 16:02:55 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7ED68F;
+        Mon, 31 Jul 2023 13:02:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690833687; x=1722369687;
+  t=1690833774; x=1722369774;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=5oGbXYGj4vcg8CCQuePDiYFktmYReAlAj/YZnxzjeD0=;
-  b=VkSFNtZBA5HOuUJzC3R1icmDvQPvaAovL+TfbO/EOpgzDgV/6PRUzgr9
-   u+7wxsxHJYvHKyFr/VuFl4kD8aBzaq4rSJvuvcruOkq/tViFjvAsv6hs9
-   /yDs0vdFZL/bhDKTbkrgygq/7K6gNXNI2ZqDFEqO8Barq/w8ZsSRLrZaX
-   i1Jn2qKPMl3qnCrMnpVsIMab34i/ojQDL1pxPwC+OSnFS7k4CBQ1nEbJ7
-   8VO/9v+SWnsMIMzNQ+PKSYDyaCdKDoRxiNw71khvFggIM3nLoZ09dDvCK
-   ywU6CBpj2eV/Cqn5J+P8V8DlPmLVP30DH4052Hc9+yNS+hgtY71//AQ4v
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="435428394"
+  bh=QLuqdMFVbfipgkJpmQ7yQ70kosGRgV7Qx5yzcgkRwo8=;
+  b=EACdtjWbZUBt92jSHsV37Dtm/x/V/YPJw/MLOu6PGlUArA8eOHREIq7h
+   UTd/cqYlcKWhH2rIA8mkgtROng65mFUqaO7zbbQrc52fxy621MW0JO711
+   a4W0f02NB0pBqtCH5ZLOBIF7nSi6LJ8h1RLCwozYGP0LLzbslFtTX+iwt
+   rMWnEt0etXR5fs21UUiL19ib5+hRvIGzLoobIKvay69JlcT9w95famASD
+   Vp4d0F11Zgrq4whse1ujFwOHalb2Aq9jYLebzxzFVuu1edSFPRHD6MHf0
+   DTlw7JlhGCTgJBIuVp9DKR9y8Lc6N6nZs9SD01JIGkqFJR1V9XI/6E4U7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="368020245"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="435428394"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:01:19 -0700
+   d="scan'208";a="368020245"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:02:39 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="1059115379"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="793852520"
 X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="1059115379"
+   d="scan'208";a="793852520"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP; 31 Jul 2023 13:01:17 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 31 Jul 2023 13:02:36 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.96)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qQZ4t-003ufD-1R;
-        Mon, 31 Jul 2023 23:01:15 +0300
-Date:   Mon, 31 Jul 2023 23:01:15 +0300
+        id 1qQZ6B-003xYM-0O;
+        Mon, 31 Jul 2023 23:02:35 +0300
+Date:   Mon, 31 Jul 2023 23:02:34 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kees Cook <keescook@chromium.org>, Nuno Sa <nuno.sa@analog.com>
-Subject: Re: [PATCH v3 2/4] iio: core: Add opaque_struct_size() helper and
- use it
-Message-ID: <ZMgTCzslTd2REumj@smile.fi.intel.com>
-References: <20230724110204.46285-1-andriy.shevchenko@linux.intel.com>
- <20230724110204.46285-3-andriy.shevchenko@linux.intel.com>
- <20230729124618.67e89fff@jic23-huawei>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Jiri Slaby <jirislaby@kernel.org>, Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] serial: core: Fix serial core controller port
+ name to show controller id
+Message-ID: <ZMgTWktV1pDQ+Esz@smile.fi.intel.com>
+References: <20230725054216.45696-1-tony@atomide.com>
+ <20230725054216.45696-4-tony@atomide.com>
+ <ZL+QuHE4CztPvBxo@smile.fi.intel.com>
+ <2023073158-ungraded-carefully-6af3@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230729124618.67e89fff@jic23-huawei>
+In-Reply-To: <2023073158-ungraded-carefully-6af3@gregkh>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 12:46:18PM +0100, Jonathan Cameron wrote:
-> On Mon, 24 Jul 2023 14:02:02 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-
-...
-
-> > + * Note, when @s is 0, the alignment @a is added to the sizeof(*(@p))
-> > + * and the result, depending on the @a, may be way off the initial size.
+On Mon, Jul 31, 2023 at 05:14:15PM +0200, Greg Kroah-Hartman wrote:
+> On Tue, Jul 25, 2023 at 12:07:04PM +0300, Andy Shevchenko wrote:
+> > On Tue, Jul 25, 2023 at 08:42:12AM +0300, Tony Lindgren wrote:
+> > > We are missing the serial core controller id for the serial core port
+> > > name. Let's fix the issue for sane sysfs output, and to avoid issues
+> > > addressing serial ports later on.
+> > > 
+> > > And as we're now showing the controller id, the "ctrl" and "port" prefix
+> > > for the DEVNAME become useless, we can just drop them. Let's standardize on
+> > > DEVNAME:0 for controller name, where 0 is the controller id. And
+> > > DEVNAME:0.0 for port name, where 0.0 are the controller id and port id.
+> > > 
+> > > This makes the sysfs output nicer, on qemu for example:
+> > > 
+> > > $ ls /sys/bus/serial-base/devices
+> > > 00:04:0         serial8250:0    serial8250:0.2
+> > > 00:04:0.0       serial8250:0.1  serial8250:0.3
+> > 
+> > Hmm... Why 0.0 is absent for serial8250?
+> > Btw, what was before this patch there?
+> > And maybe ls -l will look more informative?
+> > 
+> > > Fixes: 84a9582fd203 ("serial: core: Start managing serial controllers to enable runtime PM")
+> > > Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > > Signed-off-by: Tony Lindgren <tony@atomide.com>
+> > > ---
+> > > 
+> > > Andy, I kept your Reviewed-by although I updated the device naming and
+> > > description, does the patch still look OK to you?
+> > 
+> > Looks okay, but I have a question above.
 > 
-> How often is this true?  A quick and dirty grep suggests at least 2 so perhaps
-> worth retaining the old behaviour.
+> Can I get an ack for this if you are ok with these fixes?
 
-You mean that the sizeof(_some_grepped_struct_) is much less than an alignment
-in those uses?
-
-> Can we take that into account?  Maybe something like
-> 
-> #define opaque_struct_size(p, a, s) ((s) ? size_add(ALIGN(sizeof(*(p)), (a)), (s)): sizeof(*p)) 
-
-(s) will be evaluated twice, not good. So, not in this form.
-
-> Or do it at the call site below.
-
-Looks much better to me.
-
-...
-
-> 	if (sizeof_priv)
-> 		alloc_size = opaque_struct_size(iio_dev_opaque, IIO_DMA_MINALIGN, sizeof_priv);
-> 	else
-> 		alloc_size = sizeof(struct iio_dev_opaque);
-
-Right.
-
-...
-
-> > -	indio_dev->priv = (char *)iio_dev_opaque +
-> > -		ALIGN(sizeof(struct iio_dev_opaque), IIO_DMA_MINALIGN);
-> > +	indio_dev->priv = opaque_struct_data(iio_dev_opaque, IIO_DMA_MINALIGN);
-> 
-> Would have been safer if original code set this to NULL if
-> sizeof_priv == 0
-
-Yeah, original code and proposed change has no difference in this sense.
-
-> A driver doing that should never have used iio_priv() but nicer if it was
-> NULL rather than off the end of the allocation.
-
-Agree.
-But looking at the above, I would rather see that in a form of
-
-	if (...)
-		priv = opaque_struct_data(...);
-	else
-		priv = NULL;
+Sure,
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
 -- 
 With Best Regards,
