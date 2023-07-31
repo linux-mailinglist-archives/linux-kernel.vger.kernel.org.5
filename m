@@ -2,61 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA157699AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4817699B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:39:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232350AbjGaOiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46306 "EHLO
+        id S232442AbjGaOjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:39:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbjGaOhv (ORCPT
+        with ESMTP id S232532AbjGaOjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:37:51 -0400
-Received: from smtp-8fa8.mail.infomaniak.ch (smtp-8fa8.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fa8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8150D3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:37:49 -0700 (PDT)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RF1701BX8zMpnpP;
-        Mon, 31 Jul 2023 14:37:48 +0000 (UTC)
-Received: from unknown by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4RF16z0yMvzMppKq;
-        Mon, 31 Jul 2023 16:37:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-        s=20191114; t=1690814268;
-        bh=FbRoEBv4cNjlnd0vcW71aYM/IRrHo21jzhNdZDTwq44=;
+        Mon, 31 Jul 2023 10:39:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD0AB18E;
+        Mon, 31 Jul 2023 07:39:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3642561184;
+        Mon, 31 Jul 2023 14:39:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79B60C433C7;
+        Mon, 31 Jul 2023 14:39:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690814342;
+        bh=I+HTilLE0eCgqcOxm8A9AzbA88OpHR1hterp6c6XU+w=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CI1ICo9+HLi8IwHyaakN7dRo7jCy4c8k/q5rNIwffnSaoAXy2SAXvnnS2+1SjcMH4
-         zQ5+mvMj9525CZTVCpdZWpTxAgv+rpfeUS0ojwF0GQgEfiTksXFa1IMDbxOrTnUhpI
-         oTxnsQk3SHXxB5tDW2DW5uGk0lOcfk/oOFURevGc=
-Date:   Mon, 31 Jul 2023 16:37:53 +0200
-From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To:     limin <limin100@huawei.com>, Jeff Xu <jeffxu@google.com>
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, songmuchun@bytedance.com, tj@kernel.org,
-        lizefan.x@bytedance.com, shuah@kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jorge Lucangeli Obes <jorgelo@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH -next] selftests/landlock: Fix selftest ptrace_test run
- fail
-Message-ID: <20230731.ahcei5eP4aef@digikod.net>
-References: <20221128020409.1545717-1-limin100@huawei.com>
- <1232e4f3-e4b8-ff23-61e8-5465c8406f6e@digikod.net>
- <7379a5fd-5593-c6ce-40fd-c543dcf70d2b@huawei.com>
- <e62a539b-614c-c008-873a-f9c57c7ecb33@digikod.net>
- <2bc18685-f975-497f-9c20-da99dbc296c0@huawei.com>
- <ed1f6874-0f24-8145-63d4-efe28545381b@digikod.net>
+        b=Pg+zp2UxyorlYipjOt2QuL2ulmdPZOv6nqgX8rI7HeFvug9s4uUjTa7fk79yJpEJZ
+         kHJIg6Z09MuBmxvZJMz0zBvsfY9SuES52uCVOp98BgNUkZPsAx2MMUEjZugT4Oggog
+         NBGUpxONXSFmhKzNBPavt7eavVNB8kxNt3n0vvryKgwCsd4BwOQsHWUxNWajJc3oH8
+         sZ+ZaPbj4JyaWZAwz6LO1jDGvPA7EMmXVj40RP77w9SdUECS+f+Gc2hB2WZDcmX/8l
+         GrsKzmxO061FUgIS6HjTQ7bAT5+QxQEU5qmOPbePzUCVf5uv7ldYatz7zF8mfbHnLK
+         /z0h20ZI/tWjg==
+Received: (nullmailer pid 2931468 invoked by uid 1000);
+        Mon, 31 Jul 2023 14:38:59 -0000
+Date:   Mon, 31 Jul 2023 08:38:59 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Judy Hsiao <judyhsiao@chromium.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-mediatek@lists.infradead.org,
+        Fabio Estevam <festevam@gmail.com>,
+        alsa-devel@alsa-project.org, NXP Linux Team <linux-imx@nxp.com>,
+        Rao Mandadapu <srivasam@codeaurora.org>,
+        Trevor Wu <trevor.wu@mediatek.com>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        devicetree@vger.kernel.org,
+        Rohit kumar <quic_rohkumar@quicinc.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/12] ASoC: dt-bindings: mediatek,mt8188-mt6359: use
+ common sound card
+Message-ID: <20230731143859.GA2928327-robh@kernel.org>
+References: <20230731094303.185067-1-krzysztof.kozlowski@linaro.org>
+ <20230731094303.185067-4-krzysztof.kozlowski@linaro.org>
+ <169080070077.2404962.11506468692056687115.robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ed1f6874-0f24-8145-63d4-efe28545381b@digikod.net>
-X-Infomaniak-Routing: alpha
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+In-Reply-To: <169080070077.2404962.11506468692056687115.robh@kernel.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,102 +85,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi limin,
+On Mon, Jul 31, 2023 at 04:51:46AM -0600, Rob Herring wrote:
+> 
+> On Mon, 31 Jul 2023 11:42:54 +0200, Krzysztof Kozlowski wrote:
+> > The mediatek,mt8188-mt6359 Linux sound machine driver requires the
+> > "model" property, so binding was incomplete.  Reference the common sound
+> > card properties to fix that which also allows to remove duplicated
+> > property definitions.  Leave the relevant parts of "audio-routing"
+> > description.
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> >  .../bindings/sound/mediatek,mt8188-mt6359.yaml  | 17 +++++++----------
+> >  1 file changed, 7 insertions(+), 10 deletions(-)
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.yaml:
+> Error in referenced schema matching $id: http://devicetree.org/schemas/sound/sound-card-common.yaml
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.example.dtb: sound: False schema does not allow {'compatible': ['mediatek,mt8188-mt6359-evb'], 'model': ['MT6359-EVB'], 'mediatek,platform': [[4294967295]], 'pinctrl-names': ['default'], 'pinctrl-0': [[4294967295]], 'audio-routing': ['Headphone', 'Headphone L', 'Headphone', 'Headphone R', 'AIN1', 'Headset Mic'], 'dai-link-0': {'link-name': ['ETDM3_OUT_BE'], 'dai-format': ['i2s'], 'mediatek,clk-provider': ['cpu'], 'codec': {'sound-dai': [[4294967295]]}}, '$nodename': ['sound']}
+> 	from schema $id: http://devicetree.org/schemas/sound/mediatek,mt8188-mt6359.yaml#
+> /builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/mediatek,mt8188-mt6359.example.dtb: sound: Unevaluated properties are not allowed ('model' was unexpected)
+> 	from schema $id: http://devicetree.org/schemas/sound/mediatek,mt8188-mt6359.yaml#
 
-Just to let you know that Jeff's patch was merged and is available since
-Linux 6.3:
-https://lore.kernel.org/all/20230114020306.1407195-1-jeffxu@google.com/
+Looks like patch 2 could not be applied causing this.
 
-Regards,
- Mickaël
-
-On Wed, Nov 30, 2022 at 08:32:41PM +0100, Mickaël Salaün wrote:
-> I checked and the Landlock ptrace test failed because Yama is enabled, which
-> is expected. You can check that with /proc/sys/kernel/yama/ptrace_scope
-> 
-> Jeff Xu sent a patch to fix this case but it is not ready yet:
-> https://lore.kernel.org/r/20220628222941.2642917-1-jeffxu@google.com
-> 
-> Could you please send a new patch Jeff, and add Limin in Cc?
-> 
-> 
-> On 29/11/2022 12:26, limin wrote:
-> > cat /proc/cmdline
-> > BOOT_IMAGE=/vmlinuz-6.1.0-next-20221116
-> > root=UUID=a65b3a79-dc02-4728-8a0c-5cf24f4ae08b ro
-> > systemd.unified_cgroup_hierarchy=1 cgroup_no_v1=all
-> > 
-> > 
-> > config
-> > 
-> > #
-> > # Automatically generated file; DO NOT EDIT.
-> > # Linux/x86 6.1.0-rc6 Kernel Configuration
-> > #
-> 
-> [...]
-> 
-> > CONFIG_SECURITY_YAMA=y
-> 
-> [...]
-> 
-> > CONFIG_LSM="landlock,lockdown,yama,integrity,apparmor"
-> [...]
-> > 
-> > On 2022/11/29 19:03, Mickaël Salaün wrote:
-> > > I tested with next-20221116 and all tests are OK. Could you share your
-> > > kernel configuration with a link? What is the content of /proc/cmdline?
-> > > 
-> > > On 29/11/2022 02:42, limin wrote:
-> > > > I run test on Linux ubuntu2204 6.1.0-next-20221116
-> > > > 
-> > > > I did't use yama.
-> > > > 
-> > > > you can reproduce by this step:
-> > > > 
-> > > > cd kernel_src
-> > > > 
-> > > > cd tools/testing/selftests/landlock/
-> > > > make
-> > > > ./ptrace_test
-> > > > 
-> > > > 
-> > > > 
-> > > > 
-> > > > On 2022/11/29 3:44, Mickaël Salaün wrote:
-> > > > > This patch changes the test semantic and then cannot work on my test
-> > > > > environment. On which kernel did you run test? Do you use Yama or
-> > > > > something similar?
-> > > > > 
-> > > > > On 28/11/2022 03:04, limin wrote:
-> > > > > > Tests PTRACE_ATTACH and PTRACE_MODE_READ on the parent,
-> > > > > > trace parent return -1 when child== 0
-> > > > > > How to reproduce warning:
-> > > > > > $ make -C tools/testing/selftests TARGETS=landlock run_tests
-> > > > > > 
-> > > > > > Signed-off-by: limin <limin100@huawei.com>
-> > > > > > ---
-> > > > > >     tools/testing/selftests/landlock/ptrace_test.c | 5 ++---
-> > > > > >     1 file changed, 2 insertions(+), 3 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/tools/testing/selftests/landlock/ptrace_test.c
-> > > > > > b/tools/testing/selftests/landlock/ptrace_test.c
-> > > > > > index c28ef98ff3ac..88c4dc63eea0 100644
-> > > > > > --- a/tools/testing/selftests/landlock/ptrace_test.c
-> > > > > > +++ b/tools/testing/selftests/landlock/ptrace_test.c
-> > > > > > @@ -267,12 +267,11 @@ TEST_F(hierarchy, trace)
-> > > > > >             /* Tests PTRACE_ATTACH and PTRACE_MODE_READ on the
-> > > > > > parent. */
-> > > > > >             err_proc_read = test_ptrace_read(parent);
-> > > > > >             ret = ptrace(PTRACE_ATTACH, parent, NULL, 0);
-> > > > > > +        EXPECT_EQ(-1, ret);
-> > > > > > +        EXPECT_EQ(EPERM, errno);
-> > > > > >             if (variant->domain_child) {
-> > > > > > -            EXPECT_EQ(-1, ret);
-> > > > > > -            EXPECT_EQ(EPERM, errno);
-> > > > > >                 EXPECT_EQ(EACCES, err_proc_read);
-> > > > > >             } else {
-> > > > > > -            EXPECT_EQ(0, ret);
-> > > > > >                 EXPECT_EQ(0, err_proc_read);
-> > > > > >             }
-> > > > > >             if (ret == 0) {
+Rob
