@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B065F768AC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 06:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BECB2768ACA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 06:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbjGaEVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 00:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
+        id S229743AbjGaE23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 00:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjGaEVd (ORCPT
+        with ESMTP id S229464AbjGaE20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 00:21:33 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D167510D;
-        Sun, 30 Jul 2023 21:21:30 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bdf08860dso731252166b.0;
-        Sun, 30 Jul 2023 21:21:30 -0700 (PDT)
+        Mon, 31 Jul 2023 00:28:26 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C64E6D
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 21:28:25 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bbc87ded50so24703585ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 21:28:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google; t=1690777289; x=1691382089;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZitA7g4lEq5HSSYsaRmgk4c652yJOHd1UWJHaP9uzJ0=;
-        b=kBU1Q1S3kp6WRiIFnBiqesOP3oNfzY4PjpVactBA8fweY9YQU9rWYcW+Z0fdUsCfWP
-         vDdE6k+zrNA1y/f+A2Xf6XFtLNB9g1Qw5cKfWPuKta+ngFqZJYFyH8NT896Dv9xKD9fd
-         jXhw5Hv4ZyCoyYuLYKA65QT/FyEJ7WPFWoIm8=
+        d=chromium.org; s=google; t=1690777704; x=1691382504;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5A36sJfoTWTZxxRtlkUpT4+tRtDcKRqPwRCEoULd4eU=;
+        b=b5DQ6Rlyi7Lq9BXtLOOwalkREoNbb87b7unENttOCjxE8BVeLJiZVLColztFw+ksZi
+         T5RO9eNtw8w4tbxo8yjiH8JdzdVbiLrXtczhvTfIZrpykQ7oQia1ZRmOGhd2hBXjrtZT
+         V8fl0WKyk3tkCepVejzvfjyVLsuOV988AmZX4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690777289; x=1691382089;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1690777704; x=1691382504;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ZitA7g4lEq5HSSYsaRmgk4c652yJOHd1UWJHaP9uzJ0=;
-        b=gfD1DRIGCJx9GvqgYMDt0AcPm5bso3/mgiZrENkZ8o/ryv4XFtSK2blahWbMvXcTag
-         OFRFtmFg7of6wJdtcupJWWb9PUv3WBKJhDetD/QV8qwt4XFo7D6JvkkSHHK7Zd8W3XYi
-         TDpZxSsStRLvw5z3mzbYGeHA0P3A8v9cl/vBqY/iebqOCXjyUV2Nay70HqcMS+ywpBJ0
-         IzbvxMi0WLuAXKydocheTOYvcWyGdNo8yp74aoknQZreZlrZpi4ZX84SXQIRTK1uJ2/J
-         U7fF/qAApf47QrarKDswX8wd6VbyNI9j1XX55XcOSTsD0S3i9BdhNj6A94yu0zh4KGN9
-         ahVQ==
-X-Gm-Message-State: ABy/qLZtGeXM50Gy22PtQaz+PMArLmft68xviiULyAOeP/ZAKLM/qiZ6
-        Ptn87Ho8WX7t83M71iWyviaQl/Pviq+lF4sA3lM=
-X-Google-Smtp-Source: APBJJlFDgZxAn8Q4AK+y0YmkDiz7Rn+hJjCg5hDfnEtGL7P5vUgksBmup3Ptzk+0W/Ntq2y52aZUAHLFf/CgJEV8f+E=
-X-Received: by 2002:a17:907:728d:b0:99b:dd23:4f01 with SMTP id
- dt13-20020a170907728d00b0099bdd234f01mr6491075ejc.33.1690777289031; Sun, 30
- Jul 2023 21:21:29 -0700 (PDT)
+        bh=5A36sJfoTWTZxxRtlkUpT4+tRtDcKRqPwRCEoULd4eU=;
+        b=Fa3pkgkyEml/pABE4e0PAR+9PWiu4IelTkZkTN3vgTKldSP9/RcdPT2iHCCL1+bCH6
+         bQH+3p5UF4UBLSaoK3BzZUVN1id5a7JVcLbSMt6gu7sCuJMSAjeck6tnT5rdGVGt6TrC
+         BmlBVc46eRkLWzXkrSMgCITnzVhbrl1DaKwkJCyrN2+gLaVEapZmkbk8yNxRJ/6qQTFW
+         Fr2Sx6UTxGmj4DyNVrQXpoNkNLKW9+B6K3a//TpiCbJVa45uNYXQFXyyCANSS1M8897g
+         bMSCyjsdlPN6B6qYfNtzrW+4+hB77rQZdWsLUiJ+Tm4aWVQe+SwJxIEMp+GPT6ElXIb0
+         9x3w==
+X-Gm-Message-State: ABy/qLZ8I/CGHo5O8afZxI53N9rtQJ+2unfgrvr/wqD9aZk4Es1IwVpj
+        npHkLjCIr+4RNMqtiVfG13M78Q==
+X-Google-Smtp-Source: APBJJlGW73mZDqZnkyjN83Bmi8SBbMUxpBxQv5ILrRrZFjgWoHlYdewLdEqjUMKHtrkbxW8SlUceaA==
+X-Received: by 2002:a17:902:d4c3:b0:1b8:b3f0:3d57 with SMTP id o3-20020a170902d4c300b001b8b3f03d57mr9821918plg.31.1690777704531;
+        Sun, 30 Jul 2023 21:28:24 -0700 (PDT)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:fd7a:6af2:fca:ff71])
+        by smtp.gmail.com with ESMTPSA id t15-20020a170902b20f00b001b9df8f14d7sm7349096plr.267.2023.07.30.21.28.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 21:28:24 -0700 (PDT)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: meson: meson8b: Simplify notifier clock lookup
+Date:   Mon, 31 Jul 2023 12:27:53 +0800
+Message-ID: <20230731042807.1322972-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
 MIME-Version: 1.0
-References: <20230728122416.17782-1-lianglixuehao@126.com>
-In-Reply-To: <20230728122416.17782-1-lianglixuehao@126.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Mon, 31 Jul 2023 04:21:18 +0000
-Message-ID: <CACPK8Xf6YssamEmHB5XDf8JYk+_=hnG8Yzqn4kCikseqg6rqOA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: aspeed: Avoid accessing freed buffers during i2c transfers.
-To:     Lixue Liang <lianglixuehao@126.com>,
-        Eddie James <eajames@linux.ibm.com>
-Cc:     brendan.higgins@linux.dev, benh@kernel.crashing.org,
-        p.zabel@pengutronix.de, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Lixue Liang <lianglixue@greatwall.com.cn>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 28 Jul 2023 at 12:40, Lixue Liang <lianglixuehao@126.com> wrote:
->
-> From: Lixue Liang <lianglixue@greatwall.com.cn>
->
-> After waiting for the transmission timeout, the I2C controller will
-> continue to transmit data when the bus is idle. Clearing bus->msg will
-> avoid kernel panic when accessing the freed msg->buf in
-> aspeed_i2c_master_irq.
->
-> Signed-off-by: Lixue Liang <lianglixue@greatwall.com.cn>
-> ---
->  drivers/i2c/busses/i2c-aspeed.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-> index 2e5acfeb76c8..c83057497e26 100644
-> --- a/drivers/i2c/busses/i2c-aspeed.c
-> +++ b/drivers/i2c/busses/i2c-aspeed.c
-> @@ -713,6 +713,8 @@ static int aspeed_i2c_master_xfer(struct i2c_adapter *adap,
->                 spin_lock_irqsave(&bus->lock, flags);
->                 if (bus->master_state == ASPEED_I2C_MASTER_PENDING)
->                         bus->master_state = ASPEED_I2C_MASTER_INACTIVE;
-> +
-> +               bus->msgs = NULL;
+The driver registers a clock notifier by first getting the name of one
+of its clocks it just registered, then uses the name to look up the
+clock. The lookup is not needed, since each clock provider already
+has a clock attached to it. Use that instead to get rid of a
+__clk_lookup() call.
 
-Eddie, is this the same issue you were debugging?
+Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+---
+Found this could be simplified while looking through some clk core code.
 
->                 spin_unlock_irqrestore(&bus->lock, flags);
->
->                 return -ETIMEDOUT;
-> --
-> 2.27.0
->
+
+ drivers/clk/meson/meson8b.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
+index 827e78fb16a8..c4336ac012bf 100644
+--- a/drivers/clk/meson/meson8b.c
++++ b/drivers/clk/meson/meson8b.c
+@@ -3793,7 +3793,6 @@ static void __init meson8b_clkc_init_common(struct device_node *np,
+ {
+ 	struct meson8b_clk_reset *rstc;
+ 	struct device_node *parent_np;
+-	const char *notifier_clk_name;
+ 	struct clk *notifier_clk;
+ 	struct regmap *map;
+ 	int i, ret;
+@@ -3847,9 +3846,7 @@ static void __init meson8b_clkc_init_common(struct device_node *np,
+ 	 * tricky programming sequence will be handled by the forthcoming
+ 	 * coordinated clock rates mechanism once that feature is released.
+ 	 */
+-	notifier_clk_name = clk_hw_get_name(&meson8b_cpu_scale_out_sel.hw);
+-	notifier_clk = __clk_lookup(notifier_clk_name);
+-	ret = clk_notifier_register(notifier_clk, &meson8b_cpu_nb_data.nb);
++	ret = clk_notifier_register(meson8b_cpu_scale_out_sel.hw.clk, &meson8b_cpu_nb_data.nb);
+ 	if (ret) {
+ 		pr_err("%s: failed to register the CPU clock notifier\n",
+ 		       __func__);
+-- 
+2.41.0.487.g6d72f3e995-goog
+
