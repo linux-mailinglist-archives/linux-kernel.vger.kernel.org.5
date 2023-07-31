@@ -2,185 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B40AC768FCB
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B12F768FCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbjGaIOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
+        id S231312AbjGaIOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbjGaIOF (ORCPT
+        with ESMTP id S229504AbjGaIOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:14:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45946E5A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:11:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690791099;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fuCYmnkImjZJwJ5RKqoRGV3s3QJX4IXBsMMwCatHIDg=;
-        b=LuhqBse7MabrdnnZdl3AYqtPTsyTyahrH1d9MU5HNdzmhTZu0HCRXMbyNzxR3MeKVM5xEw
-        SdtvckRxISdHU97oSt5tHxd1jNBSONQpVUiQHywL/kZryERGI3Y48ELNTAn8ROZ9MTEHey
-        LTVj/W/aypwpmQKoa3Pja94eid7Aj3o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-664-5uF_wT9KOJ-HBpkLT3XPsw-1; Mon, 31 Jul 2023 04:11:37 -0400
-X-MC-Unique: 5uF_wT9KOJ-HBpkLT3XPsw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E33BB803FEF;
-        Mon, 31 Jul 2023 08:11:36 +0000 (UTC)
-Received: from butterfly.localnet (unknown [10.45.224.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4CFDA2166B25;
-        Mon, 31 Jul 2023 08:11:35 +0000 (UTC)
-From:   Oleksandr Natalenko <oleksandr@redhat.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "GR-QLogic-Storage-Upstream@marvell.com" 
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jozef Bacik <jobacik@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Rob Evers <revers@redhat.com>
-Subject: Re: [PATCH 2/3] scsi: qedf: do not touch __user pointer in
- qedf_dbg_debug_cmd_read() directly
-Date:   Mon, 31 Jul 2023 10:11:33 +0200
-Message-ID: <5955796.lOV4Wx5bFT@redhat.com>
-Organization: Red Hat
-In-Reply-To: <2938f701ba56419e861f1bb410831862@AcuMS.aculab.com>
-References: <20230728065819.139694-1-oleksandr@redhat.com>
- <20230728065819.139694-3-oleksandr@redhat.com>
- <2938f701ba56419e861f1bb410831862@AcuMS.aculab.com>
+        Mon, 31 Jul 2023 04:14:12 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11752183
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:12:25 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-78bb3ff7cbcso160210939f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1690791145; x=1691395945;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uHauh0efPqBTqf56QAv8YjVP272Ig9QLMnZTsT29Eps=;
+        b=TulGKMcX321aWapxcZccg9DOsP4HNkn2WTblLDm26pSR0fGnsJcdGRD/TzCyDxqhHk
+         mU+S8phtTNqeqm4bZD/j4KV4vQSUH//JL9+fD5b4MphnWCAlkYaR9wD4xTeeBtI3WlXE
+         heYDFjVKSD7pk1bpwKDno2Kcqc6I1ycWAwNIkqP4zXl+ZV583LOlYYbCfHsd6g0T10BY
+         fIfcJLYPvQNBnFWYQ3NoqCsorXChKjAmIBR/M6NDJIp78N3k6H+HJtCawVHNJpZrReEA
+         8czg7aUa2sUuR2yiInxZ0cG1A7XahnbXvkiqGSgY5S342d4vdSy/jzvDHDFodXku/YQx
+         23Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690791145; x=1691395945;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uHauh0efPqBTqf56QAv8YjVP272Ig9QLMnZTsT29Eps=;
+        b=CoG1CDTCjCFeErD0ObPCTX114G9WsH1PMiNt897L4xZG+8s3JNNXufWKcPwdrboXQF
+         Qjq96dMd1Dp58ZOywCUsAoRi082rR6PVRK/3xZoCm149rPM2Pxmlk27fZOZw35kreXMK
+         Tx+SQoHhjuY7ix7bFCRJTGfruo16Q1ROvfm5OdUfTLI2b57M0QC/aNsZhZncwARY8sWq
+         aLGnnhCkny5iDvSg1NUq9rfQEdXZixdxSlDeHfIrqEDCu8yN+/3HbEASTeqoABENdFz7
+         qAUjNcLzwwf6uyfgRAapdeO2ayPWRZ9XqITHWKDk941NpPBfk/TFfWRL1Rhr+lBm+BWL
+         8oOA==
+X-Gm-Message-State: ABy/qLbUkQN6jbe57KsTchrePfrzRx2sVw63jOGjF4a15UN5eZCuKeK7
+        9B0j6AzjQf6aATO8SijVI7A/Z+k3/SvYHeD/QkY71vPqEKXXSsXx9uI=
+X-Google-Smtp-Source: APBJJlFd8FXntafRgv49ekXY4iSLX1SKmvW8LypYEXY0DQr5GzWG7o/hXai+HnoNflLPhvQeZLlH51As3NP47P+py2Y=
+X-Received: by 2002:a92:cda5:0:b0:348:cd6b:d593 with SMTP id
+ g5-20020a92cda5000000b00348cd6bd593mr7885407ild.27.1690791144902; Mon, 31 Jul
+ 2023 01:12:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4846980.31r3eYUQgx";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        GUARANTEED_100_PERCENT,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <cover.1689792825.git.tjeznach@rivosinc.com> <0c391072fe0be52b3bdf3d826e4313d960aecba0.1689792825.git.tjeznach@rivosinc.com>
+In-Reply-To: <0c391072fe0be52b3bdf3d826e4313d960aecba0.1689792825.git.tjeznach@rivosinc.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Mon, 31 Jul 2023 16:12:14 +0800
+Message-ID: <CANXhq0q9bMm4m6AJ=3uy81+GsQ+bav+TLbdB-oTBu-wu+f5beQ@mail.gmail.com>
+Subject: Re: [PATCH 11/11] RISC-V: drivers/iommu/riscv: Add G-Stage
+ translation support
+To:     Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
+        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
+        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart4846980.31r3eYUQgx
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@redhat.com>
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date: Mon, 31 Jul 2023 10:11:33 +0200
-Message-ID: <5955796.lOV4Wx5bFT@redhat.com>
-Organization: Red Hat
-In-Reply-To: <2938f701ba56419e861f1bb410831862@AcuMS.aculab.com>
-MIME-Version: 1.0
-
-Hello/
-
-On p=C3=A1tek 28. =C4=8Dervence 2023 17:26:11 CEST David Laight wrote:
-> From: Oleksandr Natalenko
-> > Sent: 28 July 2023 07:58
-> >=20
-> > The qedf_dbg_debug_cmd_read() function invokes sprintf()
-> > directly on a __user pointer, which may crash the kernel.
->                                       ^^^ will
-
-I don't think it is 100% guaranteed, but for sure this is not a correct beh=
-aviour.
-
-> >=20
-> > Avoid doing that by using a small on-stack buffer for sprintf()
-> > and then calling simple_read_from_buffer() which does a proper
-> > copy_to_user() call.
-> ...
-> > diff --git a/drivers/scsi/qedf/qedf_debugfs.c b/drivers/scsi/qedf/qedf_=
-debugfs.c
-> > index 4d1b99569d490..f910af0029a2c 100644
-> > --- a/drivers/scsi/qedf/qedf_debugfs.c
-> > +++ b/drivers/scsi/qedf/qedf_debugfs.c
-> > @@ -138,15 +138,14 @@ qedf_dbg_debug_cmd_read(struct file *filp, char _=
-_user *buffer, size_t count,
-> >  			loff_t *ppos)
-> >  {
-> >  	int cnt;
-> > +	char cbuf[35];
->=20
-> Why 35?
-> I pick a multiple of 8 that if 'enough.
-
-OK, I overestimated this, it should have been 27, but I'll make it 32 to be=
- a multiple of 8.
-
-Thanks.
-
-> >  	struct qedf_dbg_ctx *qedf_dbg =3D
-> >  				(struct qedf_dbg_ctx *)filp->private_data;
-> >=20
-> >  	QEDF_INFO(qedf_dbg, QEDF_LOG_DEBUGFS, "debug mask=3D0x%x\n", qedf_deb=
-ug);
-> > -	cnt =3D sprintf(buffer, "debug mask =3D 0x%x\n", qedf_debug);
-> > +	cnt =3D sprintf(cbuf, "debug mask =3D 0x%x\n", qedf_debug);
->=20
-> Use scnprintf() to be sure it doesn't overflow.
-> Much safer if someone does a quick update or copies the code.
->=20
-> 	David
->=20
-> >=20
-> > -	cnt =3D min_t(int, count, cnt - *ppos);
-> > -	*ppos +=3D cnt;
-> > -	return cnt;
-> > +	return simple_read_from_buffer(buffer, count, ppos, cbuf, cnt);
-> >  }
-> >=20
-> >  static ssize_t
-> > --
-> > 2.41.0
->=20
+On Thu, Jul 20, 2023 at 3:34=E2=80=AFAM Tomasz Jeznach <tjeznach@rivosinc.c=
+om> wrote:
+>
+> This change introduces 2nd stage translation configuration
+> support, enabling nested translation for IOMMU hardware.
+> Pending integration with VMM IOMMUFD interfaces to manage
+> 1st stage translation and IOMMU virtialization interfaces.
+>
+> Signed-off-by: Tomasz Jeznach <tjeznach@rivosinc.com>
+> ---
+>  drivers/iommu/riscv/iommu.c | 58 ++++++++++++++++++++++++++++---------
+>  drivers/iommu/riscv/iommu.h |  3 +-
+>  2 files changed, 46 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/iommu/riscv/iommu.c b/drivers/iommu/riscv/iommu.c
+> index 7b3e3e135cf6..3ca2f0194d3c 100644
+> --- a/drivers/iommu/riscv/iommu.c
+> +++ b/drivers/iommu/riscv/iommu.c
+> @@ -1418,6 +1418,19 @@ static struct iommu_domain *riscv_iommu_domain_all=
+oc(unsigned type)
+>         return &domain->domain;
+>  }
+>
+> +/* mark domain as second-stage translation */
+> +static int riscv_iommu_enable_nesting(struct iommu_domain *iommu_domain)
+> +{
+> +       struct riscv_iommu_domain *domain =3D iommu_domain_to_riscv(iommu=
+_domain);
+> +
+> +       mutex_lock(&domain->lock);
+> +       if (list_empty(&domain->endpoints))
+> +               domain->g_stage =3D true;
+> +       mutex_unlock(&domain->lock);
+> +
+> +       return domain->g_stage ? 0 : -EBUSY;
+> +}
+> +
+>  static void riscv_iommu_domain_free(struct iommu_domain *iommu_domain)
+>  {
+>         struct riscv_iommu_domain *domain =3D iommu_domain_to_riscv(iommu=
+_domain);
+> @@ -1433,7 +1446,7 @@ static void riscv_iommu_domain_free(struct iommu_do=
+main *iommu_domain)
+>                 free_io_pgtable_ops(&domain->pgtbl.ops);
+>
+>         if (domain->pgd_root)
+> -               free_pages((unsigned long)domain->pgd_root, 0);
+> +               free_pages((unsigned long)domain->pgd_root, domain->g_sta=
+ge ? 2 : 0);
+>
+>         if ((int)domain->pscid > 0)
+>                 ida_free(&riscv_iommu_pscids, domain->pscid);
+> @@ -1483,7 +1496,8 @@ static int riscv_iommu_domain_finalize(struct riscv=
+_iommu_domain *domain,
+>
+>         /* TODO: Fix this for RV32 */
+>         domain->mode =3D satp_mode >> 60;
+> -       domain->pgd_root =3D (pgd_t *) __get_free_pages(GFP_KERNEL | __GF=
+P_ZERO, 0);
+> +       domain->pgd_root =3D (pgd_t *) __get_free_pages(GFP_KERNEL | __GF=
+P_ZERO,
+> +                                                     domain->g_stage ? 2=
+ : 0);
+>
+>         if (!domain->pgd_root)
+>                 return -ENOMEM;
+> @@ -1499,6 +1513,8 @@ static u64 riscv_iommu_domain_atp(struct riscv_iomm=
+u_domain *domain)
+>         u64 atp =3D FIELD_PREP(RISCV_IOMMU_DC_FSC_MODE, domain->mode);
+>         if (domain->mode !=3D RISCV_IOMMU_DC_FSC_MODE_BARE)
+>                 atp |=3D FIELD_PREP(RISCV_IOMMU_DC_FSC_PPN, virt_to_pfn(d=
+omain->pgd_root));
+> +       if (domain->g_stage)
+> +               atp |=3D FIELD_PREP(RISCV_IOMMU_DC_IOHGATP_GSCID, domain-=
+>pscid);
+>         return atp;
+>  }
+>
+> @@ -1541,20 +1557,30 @@ static int riscv_iommu_attach_dev(struct iommu_do=
+main *iommu_domain, struct devi
+>         if (!dc)
+>                 return -ENODEV;
+>
+> -       /*
+> -        * S-Stage translation table. G-Stage remains unmodified (BARE).
+> -        */
+> -       val =3D FIELD_PREP(RISCV_IOMMU_DC_TA_PSCID, domain->pscid);
 > -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
- 1PT, UK
-> Registration No: 1397386 (Wales)
->=20
->=20
+> -       if (ep->pasid_enabled) {
+> -               ep->pc[0].ta =3D cpu_to_le64(val | RISCV_IOMMU_PC_TA_V);
+> -               ep->pc[0].fsc =3D cpu_to_le64(riscv_iommu_domain_atp(doma=
+in));
+> +       if (domain->g_stage) {
+> +               /*
+> +                * Enable G-Stage translation with initial pass-through m=
+ode
+> +                * for S-Stage. VMM is responsible for more restrictive
+> +                * guest VA translation scheme configuration.
+> +                */
+>                 dc->ta =3D 0;
+> -               dc->fsc =3D cpu_to_le64(virt_to_pfn(ep->pc) |
+> -                   FIELD_PREP(RISCV_IOMMU_DC_FSC_MODE, RISCV_IOMMU_DC_FS=
+C_PDTP_MODE_PD8));
+> +               dc->fsc =3D 0ULL; /* RISCV_IOMMU_DC_FSC_MODE_BARE */ ;
+> +               dc->iohgatp =3D cpu_to_le64(riscv_iommu_domain_atp(domain=
+));
+>         } else {
+> -               dc->ta =3D cpu_to_le64(val);
+> -               dc->fsc =3D cpu_to_le64(riscv_iommu_domain_atp(domain));
+> +               /* S-Stage translation table. G-Stage remains unmodified.=
+ */
+> +               if (ep->pasid_enabled) {
+> +                       val =3D FIELD_PREP(RISCV_IOMMU_DC_TA_PSCID, domai=
+n->pscid);
+> +                       ep->pc[0].ta =3D cpu_to_le64(val | RISCV_IOMMU_PC=
+_TA_V);
+> +                       ep->pc[0].fsc =3D cpu_to_le64(riscv_iommu_domain_=
+atp(domain));
+> +                       dc->ta =3D 0;
+> +                       val =3D FIELD_PREP(RISCV_IOMMU_DC_FSC_MODE,
+> +                                         RISCV_IOMMU_DC_FSC_PDTP_MODE_PD=
+8);
+> +                       dc->fsc =3D cpu_to_le64(val | virt_to_pfn(ep->pc)=
+);
+> +               } else {
+> +                       val =3D FIELD_PREP(RISCV_IOMMU_DC_TA_PSCID, domai=
+n->pscid);
+> +                       dc->ta =3D cpu_to_le64(val);
+> +                       dc->fsc =3D cpu_to_le64(riscv_iommu_domain_atp(do=
+main));
+> +               }
+>         }
+>
+>         wmb();
+> @@ -1599,6 +1625,9 @@ static int riscv_iommu_set_dev_pasid(struct iommu_d=
+omain *iommu_domain,
+>         if (!iommu_domain || !iommu_domain->mm)
+>                 return -EINVAL;
+>
+> +       if (domain->g_stage)
+> +               return -EINVAL;
+> +
+>         /* Driver uses TC.DPE mode, PASID #0 is incorrect. */
+>         if (pasid =3D=3D 0)
+>                 return -EINVAL;
+> @@ -1969,6 +1998,7 @@ static const struct iommu_domain_ops riscv_iommu_do=
+main_ops =3D {
+>         .iotlb_sync =3D riscv_iommu_iotlb_sync,
+>         .iotlb_sync_map =3D riscv_iommu_iotlb_sync_map,
+>         .flush_iotlb_all =3D riscv_iommu_flush_iotlb_all,
+> +       .enable_nesting =3D riscv_iommu_enable_nesting,
+>  };
+>
 
+I don't see the GVMA invalidate command, I guess we need do something
+likes that in 'riscv_iommu_mm_invalidate'
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
-Principal Software Maintenance Engineer
---nextPart4846980.31r3eYUQgx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEENQb0bxzeq+SMr0+vn464/xkP+AUFAmTHbLUACgkQn464/xkP
-+AUbUg//Y5nvNFmiZz3xpfG0OcvALZ1+SByBMm4YAcq9G73iffGFVhiztDU/fauw
-3NuWUvndV88ywS9zTTIL2Bv+yFJo3yx7RJOovaYxaUA8Iw2lu530XSfy7Th3BRVE
-qpeQ/b6yzsJpq6eY8pWTM0qJkj78D6zeclFh4iGy8k0+DukUQjsjayvYeQFJdRex
-4cDUos7e9N4LkIAgMnaE6z8VYI2TJX7qSbK93VNao/XcASBpH9eEXo9pXAsFNIjV
-6aEYJOeMeCo1mfeqjQt6WMtADTqjyY1kTN8idUoRYvErWXDJDzmdIEkxElfw7vPD
-QTZE10ggiWFcV+HXUXJf516TFfsOdHxvIQr176lfUqehb0HMQwarVvLq55tBYAph
-ZM/4GQG0lifgptZIetQxV6ySTSYk8AuTwOkMCSwEe9rQqz4JN1MJDKogApUDMdEy
-2IBy9MxmX9K/FBnktEs5i9TG6jeLjOj50zx8i2SQ/P/hPuA90gtsUdQ1xIN6UJ7X
-1vycNlKK2CmfbvNLhDxwXrunjChjXZiRE/4FifpjgFO1ynr+n2nhtDF369jkC+Y3
-KZNPns4pVQOEj6HUDMEuMcfIk0YtMeZCUyhbXepUlmo0qLkDPiPtGBrpBmt9WPZu
-kvFo1Mj+JzsGCh41ra1SFNMjL8n0ii0NVV6ofriV7KKkBgxn5II=
-=loJJ
------END PGP SIGNATURE-----
-
---nextPart4846980.31r3eYUQgx--
-
-
-
+>  static const struct iommu_ops riscv_iommu_ops =3D {
+> diff --git a/drivers/iommu/riscv/iommu.h b/drivers/iommu/riscv/iommu.h
+> index 55418a1144fb..55e5aafea5bc 100644
+> --- a/drivers/iommu/riscv/iommu.h
+> +++ b/drivers/iommu/riscv/iommu.h
+> @@ -102,8 +102,9 @@ struct riscv_iommu_domain {
+>         struct riscv_iommu_device *iommu;
+>
+>         unsigned mode;          /* RIO_ATP_MODE_* enum */
+> -       unsigned pscid;         /* RISC-V IOMMU PSCID */
+> +       unsigned pscid;         /* RISC-V IOMMU PSCID / GSCID */
+>         ioasid_t pasid;         /* IOMMU_DOMAIN_SVA: Cached PASID */
+> +       bool g_stage;           /* 2nd stage translation domain */
+>
+>         pgd_t *pgd_root;        /* page table root pointer */
+>  };
+> --
+> 2.34.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
