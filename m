@@ -2,236 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A00C769FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F831769FAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbjGaRpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 13:45:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58116 "EHLO
+        id S230247AbjGaRr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjGaRpO (ORCPT
+        with ESMTP id S229495AbjGaRrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:45:14 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E26A10B
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:45:13 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-3460770afe2so7135ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:45:13 -0700 (PDT)
+        Mon, 31 Jul 2023 13:47:24 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8C9109
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:47:23 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c926075a50cso10886915276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:47:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690825512; x=1691430312;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kGd0AsQAwp8H4S0Hha56MgdpWqYeFbEB+5/aXRn1dMo=;
-        b=zhNx/6wzQh/59YeSRE6Zk4KX3oq74BFHs4UtLBkzn2jdHIAdFgvHuAar0N7QSKQ9f5
-         gjQxMlF+fLNY+ZUISpJHI0elU+cLIdQf9GgISZnsqfCf83nff+p8ZoI4qwMxlGSHmRGS
-         H9vLbyX49OVEAIxHJDj0yWOJiTKWw62piWzCVMyGtpsQzzwSHz6vu5Y5Kd4s7w/bM6ad
-         yxqnXQ65tId6WoxniRpfQrscD+4ZkZbKquP8FbIAUUvtEeAJhDc8s8hf77qxAQblxC6d
-         MGM+hARijf69iuafH7E2VxwLQh8Zk2A1wLG/KqMNKUk0JsY95RdIIY1aKBg+ToecJziV
-         ljcQ==
+        d=google.com; s=20221208; t=1690825642; x=1691430442;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=X4UQueuuDKqCZDWve1EZkKBYX7ySf7wZF3eSylmwqIQ=;
+        b=UImtfvTxjlfO3sGKKMhZojZzHKpxu2WrBLaKXYfkeq8WAhMQ6+7CYaoNYv3XvHq9xe
+         n33k56E17YMj3wzzwb3TNM8nUyjS+QUpRrl+Jlj7TYeudah+3IDwqzj0XKMHwdVO8/j+
+         e0rFVJofV78eK3Z8fAwjKGpstxXK41S62V1Ht8bJkOfOldaL39RCuvylGG6UI7YcBB0L
+         4RuHOdcBptYnlTCWa3qtlqIGH37XHT1a65GXG30UvKjyJOZtPt075MINQGYz6VEeKHCd
+         acqa5tS3BFm0YXX5Gdl0uULmqbu+NJtrbzA2ArCdik3Kwo8Hk85yhoMNHGF6ZSYUy/6v
+         T22A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690825512; x=1691430312;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kGd0AsQAwp8H4S0Hha56MgdpWqYeFbEB+5/aXRn1dMo=;
-        b=QaDTcy/R9MMdJ7wQTFh/cTAak1zJ6GZbmUpf21rt026GwSkZt8POSVClfk5C1CMKKp
-         08VeUj3Ot72GoU3RXnvhRFnQy9I21C8m++3W6kg2hEzRZYHBZC018l8hCidiVsNUCHFd
-         J+ip1jic0zlIos72bFvtJSRH9IP6y0pswBnm9pNNjGanfjMdldUYiKQ/alq+szOJ5E5U
-         jh0Zj8jF8VmZmwYXksYoJixuoaGLN06qlc7tn3FmsJ5IktRFDKKqC2bsrkfnuWYsdMBG
-         C6l+6lUZ8AKl+LDenZ7iMs37i05hRk7bdjK6ha3wsKviu6WYgYV6W1UhLeklFR5Wzh1z
-         lmHA==
-X-Gm-Message-State: ABy/qLYb0dPRhS6AxlrsuHNUFqNvI60UhHySy0y/1kooNK11NYrgdUkB
-        nE+Pb25CzFxe8wSWllaehL/llA91Kj2k17tGURz3Xw==
-X-Google-Smtp-Source: APBJJlHvsEicZK0ZV+JPaAOpuRWgNNmyNpC20X4iCvK3kUuw0MwfTIC6ClvWz7VEDkFWRsgU9lS/jm5d+jFZ3qI9OLA=
-X-Received: by 2002:a05:6e02:1d8e:b0:345:fd14:c32e with SMTP id
- h14-20020a056e021d8e00b00345fd14c32emr460245ila.25.1690825512355; Mon, 31 Jul
- 2023 10:45:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-8-rananta@google.com>
- <87pm4dr0hd.wl-maz@kernel.org>
-In-Reply-To: <87pm4dr0hd.wl-maz@kernel.org>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 31 Jul 2023 10:45:01 -0700
-Message-ID: <CAJHc60ztA7pNQVHbd1WPmPNkoEzZWarDmxnLxh=-5ZYo9CWw2g@mail.gmail.com>
-Subject: Re: [PATCH v7 07/12] KVM: arm64: Implement __kvm_tlb_flush_vmid_range()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>
+        d=1e100.net; s=20221208; t=1690825642; x=1691430442;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X4UQueuuDKqCZDWve1EZkKBYX7ySf7wZF3eSylmwqIQ=;
+        b=N04OJcevffdUb6DWwR8ww6I3So+EtaHFT8k0GWKW2Lx+1lCWTfQppdNW6e5CDn3UA9
+         FcSIiv90Uuf04toZ50sLG4h0oCXEQtSu7/aVaNFTJbkdfZ4WYluXpzjiNnIi5BBWKkDE
+         +kHTzHKgdRNmpy9V5l6KuMVGwKnrtu1DSRHSMfsW64fCwCuzHwBQ2vzTlbvu9/CIr7JH
+         jZW/e7uc4XTyrKKty0IVZ/qUrzPzUKb/AawyUuDQNjdsHF6hGxfJO6dRq97G2XjV4ZLZ
+         uA7nNPd1mw/YVIv0+ZvlgM3EHmiXBOd8vux+6SQqUjkIzjvya1avt00jCELiEXwaQT7Y
+         J7zg==
+X-Gm-Message-State: ABy/qLY0PtinmNQjSHBOAiNbKsvTIY5qIB0oOJtycZ+KWpeTcIECk28N
+        xLGsos8gwVBPWbyLdJpUZRlUb0uZxpfW
+X-Google-Smtp-Source: APBJJlEbvyVqYfELN9HyzNzECBNQCQOL+vlWKMldvXgR48dyeIzdVtlR38PviPEAmpTCs9dXD21MS5+i1cjd
+X-Received: from davidai2.mtv.corp.google.com ([2620:15c:211:201:4949:e05:91e:bd74])
+ (user=davidai job=sendgmr) by 2002:a25:dfc3:0:b0:d15:53b5:509f with SMTP id
+ w186-20020a25dfc3000000b00d1553b5509fmr109830ybg.2.1690825642488; Mon, 31 Jul
+ 2023 10:47:22 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 10:46:07 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
+Message-ID: <20230731174613.4133167-1-davidai@google.com>
+Subject: [PATCH v3 0/2] Improve VM CPUfreq and task placement behavior
+From:   David Dai <davidai@google.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        David Dai <davidai@google.com>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,TVD_PH_BODY_ACCOUNTS_PRE,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 5:40=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
-:
->
-> On Sat, 22 Jul 2023 03:22:46 +0100,
-> Raghavendra Rao Ananta <rananta@google.com> wrote:
-> >
-> > Define  __kvm_tlb_flush_vmid_range() (for VHE and nVHE)
-> > to flush a range of stage-2 page-tables using IPA in one go.
-> > If the system supports FEAT_TLBIRANGE, the following patches
-> > would conviniently replace global TLBI such as vmalls12e1is
-> > in the map, unmap, and dirty-logging paths with ripas2e1is
-> > instead.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > ---
-> >  arch/arm64/include/asm/kvm_asm.h   |  3 +++
-> >  arch/arm64/kvm/hyp/nvhe/hyp-main.c | 11 +++++++++++
-> >  arch/arm64/kvm/hyp/nvhe/tlb.c      | 30 ++++++++++++++++++++++++++++++
-> >  arch/arm64/kvm/hyp/vhe/tlb.c       | 27 +++++++++++++++++++++++++++
-> >  4 files changed, 71 insertions(+)
-> >
-> > diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/=
-kvm_asm.h
-> > index 7d170aaa2db4..2c27cb8cf442 100644
-> > --- a/arch/arm64/include/asm/kvm_asm.h
-> > +++ b/arch/arm64/include/asm/kvm_asm.h
-> > @@ -70,6 +70,7 @@ enum __kvm_host_smccc_func {
-> >       __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa,
-> >       __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa_nsh,
-> >       __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid,
-> > +     __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_range,
-> >       __KVM_HOST_SMCCC_FUNC___kvm_flush_cpu_context,
-> >       __KVM_HOST_SMCCC_FUNC___kvm_timer_set_cntvoff,
-> >       __KVM_HOST_SMCCC_FUNC___vgic_v3_read_vmcr,
-> > @@ -229,6 +230,8 @@ extern void __kvm_tlb_flush_vmid_ipa(struct kvm_s2_=
-mmu *mmu, phys_addr_t ipa,
-> >  extern void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mmu *mmu,
-> >                                        phys_addr_t ipa,
-> >                                        int level);
-> > +extern void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
-> > +                                     phys_addr_t start, unsigned long =
-pages);
-> >  extern void __kvm_tlb_flush_vmid(struct kvm_s2_mmu *mmu);
-> >
-> >  extern void __kvm_timer_set_cntvoff(u64 cntvoff);
-> > diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nv=
-he/hyp-main.c
-> > index a169c619db60..857d9bc04fd4 100644
-> > --- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> > +++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-> > @@ -135,6 +135,16 @@ static void handle___kvm_tlb_flush_vmid_ipa_nsh(st=
-ruct kvm_cpu_context *host_ctx
-> >       __kvm_tlb_flush_vmid_ipa_nsh(kern_hyp_va(mmu), ipa, level);
-> >  }
-> >
-> > +static void
-> > +handle___kvm_tlb_flush_vmid_range(struct kvm_cpu_context *host_ctxt)
-> > +{
-> > +     DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
-> > +     DECLARE_REG(phys_addr_t, start, host_ctxt, 2);
-> > +     DECLARE_REG(unsigned long, pages, host_ctxt, 3);
-> > +
-> > +     __kvm_tlb_flush_vmid_range(kern_hyp_va(mmu), start, pages);
-> > +}
-> > +
-> >  static void handle___kvm_tlb_flush_vmid(struct kvm_cpu_context *host_c=
-txt)
-> >  {
-> >       DECLARE_REG(struct kvm_s2_mmu *, mmu, host_ctxt, 1);
-> > @@ -327,6 +337,7 @@ static const hcall_t host_hcall[] =3D {
-> >       HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa),
-> >       HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa_nsh),
-> >       HANDLE_FUNC(__kvm_tlb_flush_vmid),
-> > +     HANDLE_FUNC(__kvm_tlb_flush_vmid_range),
-> >       HANDLE_FUNC(__kvm_flush_cpu_context),
-> >       HANDLE_FUNC(__kvm_timer_set_cntvoff),
-> >       HANDLE_FUNC(__vgic_v3_read_vmcr),
-> > diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tl=
-b.c
-> > index b9991bbd8e3f..09347111c2cd 100644
-> > --- a/arch/arm64/kvm/hyp/nvhe/tlb.c
-> > +++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
-> > @@ -182,6 +182,36 @@ void __kvm_tlb_flush_vmid_ipa_nsh(struct kvm_s2_mm=
-u *mmu,
-> >       __tlb_switch_to_host(&cxt);
-> >  }
-> >
-> > +void __kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
-> > +                             phys_addr_t start, unsigned long pages)
-> > +{
-> > +     struct tlb_inv_context cxt;
-> > +     unsigned long stride;
-> > +
-> > +     /*
-> > +      * Since the range of addresses may not be mapped at
-> > +      * the same level, assume the worst case as PAGE_SIZE
-> > +      */
-> > +     stride =3D PAGE_SIZE;
-> > +     start =3D round_down(start, stride);
-> > +
-> > +     /* Switch to requested VMID */
-> > +     __tlb_switch_to_guest(mmu, &cxt, false);
-> > +
-> > +     __flush_tlb_range_op(ipas2e1is, start, pages, stride, 0, 0, false=
-);
->
-> I really think we need an abstraction here. All this ASID and user
-> nonsense shouldn't appear here. Something such as
-> __flush_s2_tlb_range_op(), which would pass the correct parameters
-> that this code shouldn't have to worry about.
->
-Yes, a simple wrapper would be nice. I'll implement this in v8.
+Hi,
 
-> I'm also a bit concerned by the fact we completely lose the level
-> here. This is a massive fast-path for the CPU, and we don't make use
-> of it. It'd be worth thinking of how we can make use of it if at all
-> possible...
->
-Initial implementation of the series included the 'level', but had
-some complexities [1], and so we had to get rid of it for things to at
-least be correct.
-But, we can think about it and include the 'level' as needed.
+This patch series is a continuation of the talk Saravana gave at LPC 2022
+titled "CPUfreq/sched and VM guest workload problems" [1][2][3]. The gist
+of the talk is that workloads running in a guest VM get terrible task
+placement and CPUfreq behavior when compared to running the same workload
+in the host. Effectively, no EAS(Energy Aware Scheduling) for threads
+inside VMs. This would make power and performance terrible just by running
+the workload in a VM even if we assume there is zero virtualization
+overhead.
 
-- Raghavendra
+With this series, a workload running in a VM gets the same task placement
+and CPUfreq behavior as it would when running in the host.
 
-[1]: https://lore.kernel.org/all/ZCTjirkCgBkT65eP@linux.dev/
+The idea is to improve VM CPUfreq/sched behavior by:
+- Having guest kernel do accurate load tracking by taking host CPU
+  arch/type and frequency into account.
+- Sharing vCPU frequency requirements with the host so that the
+  host can do proper frequency scaling and task placement on the host side.
 
-> > +
-> > +     dsb(ish);
-> > +     __tlbi(vmalle1is);
-> > +     dsb(ish);
-> > +     isb();
-> > +
-> > +     /* See the comment in __kvm_tlb_flush_vmid_ipa() */
-> > +     if (icache_is_vpipt())
-> > +             icache_inval_all_pou();
-> > +
-> > +     __tlb_switch_to_host(&cxt);
->
-> Another thing is that it is high time that some of this call gets
-> refactored. All these helpers are basically the same sequence, only
-> differing by a couple of lines. Not something we need to do
-> immediately, but eventually we'll have to bite the bullet.
->
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+Based on feedback from RFC V1 proposal[4], we've revised our
+implementation to using MMIO reads and writes to pass information
+from/to host instead of using hypercalls. In our example, the
+VMM(Virtual Machine Manager) translates the frequency requests into
+Uclamp_min and applies it to the vCPU thread as a hint to the host
+kernel.
+
+To achieve the results below, configure the host to:
+- Affine vCPUs to specific clusters.
+- Set vCPU capacity to match the host CPU they are running on.
+
+To make it easy for folks to try this out with CrosVM, we have put up
+userspace patches[5][6]. With those patches, you can configure CrosVM
+correctly by adding the options "--host-cpu-topology" and "--virt-cpufreq".
+
+Results:
+========
+
+Here are some side-by-side comparisons of RFC V1 proposal vs the current
+RFC V3 proposal and are labelled as follows. Some of the numbers have
+changed due to using newer userspace binaries compared to RFC V1:
+
+- (RFC V1) UtilHyp = hypercall + util_guest
+- (V3) UClampMMIO = MMIO + UClamp_min
+
+Use cases running a minimal system inside a VM on a Pixel 6:
+============================================================
+
+FIO
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+| Usecase(avg MB/s) | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| Seq Write         |     13.3 |    16.4 |   +23% |       13.4 |    +1% |
++-------------------+----------+---------+--------+------------+--------+
+| Rand Write        |     11.2 |    12.9 |   +15% |       11.2 |     0% |
++-------------------+----------+---------+--------+------------+--------+
+| Seq Read          |      100 |     168 |   +68% |        136 |   +36% |
++-------------------+----------+---------+--------+------------+--------+
+| Rand Read         |     20.5 |    35.6 |   +74% |       29.5 |   +44% |
++-------------------+----------+---------+--------+------------+--------+
+
+CPU-based ML Inference Benchmark
+Lower is better
++----------------+----------+------------+--------+------------+--------+
+| Test Case (ms) | Baseline | UtilHyp    | %delta | UClampMMIO | %delta |
++----------------+----------+------------+--------+------------+--------+
+| Cached Sample  |          |            |        |            |        |
+| Inference      |     3.40 |       2.37 |   -30% |       2.97 |   -13% |
++----------------+----------+------------+--------+------------+--------+
+| Small Sample   |          |            |        |            |        |
+| Inference      |     9.87 |       6.78 |   -31% |       7.92 |   -20% |
++----------------+----------+------------+--------+------------+--------+
+| Large Sample   |          |            |        |            |        |
+| Inference      |    33.35 |      26.74 |   -20% |      31.48 |    -6% |
++----------------+----------+------------+--------+------------+--------+
+
+Use cases running Android inside a VM on a Chromebook:
+======================================================
+
+PCMark (Emulates real world usecases)
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+| Test Case (score) | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| Weighted Total    |     5970 |    7162 |   +20% |       6782 |   +14% |
++-------------------+----------+---------+--------+------------+--------+
+| Web Browsing      |     5558 |    5877 |    +6% |       5729 |    +3% |
++-------------------+----------+---------+--------+------------+--------+
+| Video Editing     |     4921 |    5140 |    +4% |       5079 |    +3% |
++-------------------+----------+---------+--------+------------+--------+
+| Writing           |     6864 |    9111 |   +33% |       8171 |   +10% |
++-------------------+----------+---------+--------+------------+--------+
+| Photo Editing     |     7983 |   11349 |   +42% |      10313 |   +29% |
++-------------------+----------+---------+--------+------------+--------+
+| Data Manipulation |     5814 |    6051 |    +4% |       6051 |    +1% |
++-------------------+----------+---------+--------+------------+--------+
+
+PCMark Performance/mAh
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+|                   | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| Score/mAh         |       85 |     102 |   +20% |         94 |    10% |
++-------------------+----------+---------+--------+------------+--------+
+
+Roblox
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+|                   | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| FPS               |    20.88 |   25.64 |   +23% |      24.05 |   +15% |
++-------------------+----------+---------+--------+------------+--------+
+
+Roblox Frames/mAh
+Higher is better
++-------------------+----------+---------+--------+------------+--------+
+|                   | Baseline | UtilHyp | %delta | UClampMMIO | %delta |
++-------------------+----------+---------+--------+------------+--------+
+| Frames/mAh        |    85.29 |  102.31 |   +20% |     94.20  |    10% |
++-------------------+----------+---------+--------+------------+--------+
+
+We've simplified our implementation based on community feedback to make
+it less intrusive and to use a more generic MMIO interface for
+communication with the host. The results show that the current design
+still has tangible improvements over baseline. We'll continue looking
+into ways to reduce the overhead of the MMIO read/writes and submit
+separate and generic patches for that if we find any good optimizations.
+
+Thanks,
+David & Saravana
+
+Cc: Saravana Kannan <saravanak@google.com>
+Cc: Quentin Perret <qperret@google.com>
+Cc: Masami Hiramatsu <mhiramat@google.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Pavan Kondeti <quic_pkondeti@quicinc.com>
+Cc: Gupta Pankaj <pankaj.gupta@amd.com>
+Cc: Mel Gorman <mgorman@suse.de>
+
+v2 -> v3:
+- Dropped patches adding new hypercalls
+- Dropped patch adding util_guest in sched/fair
+- Cpufreq driver now populates frequency using opp bindings
+- Removed transition_delay_us=1 cpufreq setting as it was configured too
+  agressively and resulted in poor I/O performance
+- Modified guest cpufreq driver to read/write MMIO regions instead of
+  using hypercalls to communicate with the host
+- Modified guest cpufreq driver to pass frequency info instead of
+  utilization of the current vCPU's runqueue which now takes
+  iowait_boost into account from the schedutil governor
+- Updated DT bindings for a virtual CPU frequency device
+Userspace changes:
+- Updated CrosVM patches to emulate a virtual cpufreq device
+- Updated to newer userspace binaries when collecting more recent
+  benchmark data
+
+v1 -> v2:
+- No functional changes.
+- Added description for EAS and removed DVFS in coverletter.
+- Added a v2 tag to the subject.
+- Fixed up the inconsistent "units" between tables.
+- Made sure everyone is To/Cc-ed for all the patches in the series.
+
+[1] - https://lpc.events/event/16/contributions/1195/
+[2] - https://lpc.events/event/16/contributions/1195/attachments/970/1893/LPC%202022%20-%20VM%20DVFS.pdf
+[3] - https://www.youtube.com/watch?v=hIg_5bg6opU
+[4] - https://lore.kernel.org/all/20230331014356.1033759-1-davidai@google.com/
+[5] - https://chromium-review.googlesource.com/c/crosvm/crosvm/+/4208668
+[6] - https://chromium-review.googlesource.com/c/crosvm/crosvm/+/4504738
+
+David Dai (2):
+  dt-bindings: cpufreq: add bindings for virtual cpufreq
+  cpufreq: add virtual-cpufreq driver
+
+ .../bindings/cpufreq/cpufreq-virtual.yaml     |  89 +++++++
+ drivers/cpufreq/Kconfig                       |  15 ++
+ drivers/cpufreq/Makefile                      |   1 +
+ drivers/cpufreq/virtual-cpufreq.c             | 237 ++++++++++++++++++
+ include/linux/arch_topology.h                 |   1 +
+ 5 files changed, 343 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-virtual.yaml
+ create mode 100644 drivers/cpufreq/virtual-cpufreq.c
+
+-- 
+2.41.0.585.gd2178a4bd4-goog
+
