@@ -2,118 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C5A769B48
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C539769B53
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbjGaPwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:52:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58416 "EHLO
+        id S232484AbjGaPwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:52:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbjGaPwB (ORCPT
+        with ESMTP id S230413AbjGaPwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:52:01 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 367D010D
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:52:00 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 31 Jul 2023 11:52:36 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F8C1713;
+        Mon, 31 Jul 2023 08:52:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A68FC221BF;
-        Mon, 31 Jul 2023 15:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690818718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2u0dLn7hjxy/youRd5pKqbthQhRipuIEteybjBKpN4E=;
-        b=rCaCGA62SE/QwvolETdgLfypTGMcJovoyoslABstBWyEUmBEvGP18X+VhPVlPgrHJu4um/
-        zAcRBAZypKa8zzZOhSuXw5J3z0LO6d48L3GpK0De3Q5lO/k/PwwmdHeHOkyPFGBMixhD6F
-        aZIDmE8hVbkWvS1EEbIPBu04oH9EBC8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690818718;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2u0dLn7hjxy/youRd5pKqbthQhRipuIEteybjBKpN4E=;
-        b=5TUHmTvGfr9XRNykMv51Iya5erMQ673fMYetRY8lG+u3mmaBSMW3Ur/MCvpeyP86sMUQly
-        vZjayjD7xdF7WODA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BEC651322C;
-        Mon, 31 Jul 2023 15:51:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id RgGHLZ3Yx2TqAgAAMHmgww
-        (envelope-from <tiwai@suse.de>); Mon, 31 Jul 2023 15:51:57 +0000
-Date:   Mon, 31 Jul 2023 17:51:57 +0200
-Message-ID: <87r0oohyea.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, sound-open-firmware@alsa-project.org,
-        linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH v2 0/9] sound: Use -EPROBE_DEFER instead of i915 module loading.
-In-Reply-To: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
-References: <20230719164141.228073-1-maarten.lankhorst@linux.intel.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 04F78611B6;
+        Mon, 31 Jul 2023 15:52:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFD72C433C7;
+        Mon, 31 Jul 2023 15:52:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690818749;
+        bh=lKEFTpJ7QnKtXZmNh6BU0LSStWE7LBVzT3jA1H66E8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uiadaHaYCCnbNGfobUYY9yh2phrkolxwMmuH6XnjmVzLSSnWBConfxnU3wPh55rLg
+         rEDJX+JqiCNfjnb/chn3Q+KQuUGJBQpcxxzf5gajwZRoNYvGOnWnqo3OTU9SCNEu8O
+         HEb85RML1fDxzk10gggVUfjb+JVkfjERVzOsD0iI=
+Date:   Mon, 31 Jul 2023 17:52:26 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, jirislaby@kernel.org, jringle@gridpoint.com,
+        isaac.true@canonical.com, jesse.sung@canonical.com,
+        l.perczak@camlintechnologies.com, tomasz.mon@camlingroup.com,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        stable@vger.kernel.org,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Lech Perczak <lech.perczak@camlingroup.com>
+Subject: Re: [PATCH v9 01/10] serial: sc16is7xx: fix broken port 0 uart init
+Message-ID: <2023073148-marshy-extenuate-2d45@gregkh>
+References: <20230725142343.1724130-1-hugo@hugovil.com>
+ <20230725142343.1724130-2-hugo@hugovil.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230725142343.1724130-2-hugo@hugovil.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 Jul 2023 18:41:32 +0200,
-Maarten Lankhorst wrote:
+On Tue, Jul 25, 2023 at 10:23:33AM -0400, Hugo Villeneuve wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 > 
-> Explicitly loading i915 becomes a problem when upstreaming the new intel driver
-> for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
-> driver load of xe, and will fail completely before it loads.
+> The sc16is7xx_config_rs485() function is called only for the second
+> port (index 1, channel B), causing initialization problems for the
+> first port.
 > 
-> -EPROBE_DEFER has to be returned before any device is created in probe(),
-> otherwise the removal of the device will cause EPROBE_DEFER to try again
-> in an infinite loop.
+> For the sc16is7xx driver, port->membase and port->mapbase are not set,
+> and their default values are 0. And we set port->iobase to the device
+> index. This means that when the first device is registered using the
+> uart_add_one_port() function, the following values will be in the port
+> structure:
+>     port->membase = 0
+>     port->mapbase = 0
+>     port->iobase  = 0
 > 
-> The conversion is done in gradual steps. First I add an argument to
-> snd_hdac_i915_init to allow for -EPROBE_DEFER so I can convert each driver
-> separately. Then I convert each driver to move snd_hdac_i915_init out of the
-> workqueue. Finally I drop the ability to choose modprobe behavior after the
-> last user is converted.
+> Therefore, the function uart_configure_port() in serial_core.c will
+> exit early because of the following check:
+> 	/*
+> 	 * If there isn't a port here, don't do anything further.
+> 	 */
+> 	if (!port->iobase && !port->mapbase && !port->membase)
+> 		return;
 > 
-> I suspect the avs and skylake drivers used snd_hdac_i915_init purely for the
-> modprobe, but I don't have the hardware to test if it can be safely removed.
-> It can still be done easily in a followup patch to simplify probing.
+> Typically, I2C and SPI drivers do not set port->membase and
+> port->mapbase.
 > 
+> The max310x driver sets port->membase to ~0 (all ones). By
+> implementing the same change in this driver, uart_configure_port() is
+> now correctly executed for all ports.
+> 
+> Fixes: dfeae619d781 ("serial: sc16is7xx")
+
+That commit is in a very old 3.x release.
+
+> Cc: <stable@vger.kernel.org> # 6.1.x
+
+But you say this should only go to 6.1.y?  Why?  What is wrong with the
+older kernels?
+
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
+> Tested-by: Lech Perczak <lech.perczak@camlingroup.com>
 > ---
-> New since first version:
+>  drivers/tty/serial/sc16is7xx.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> - snd_hda_core.gpu_bind is added as a mechanism to force gpu binding,
->   for testing. snd_hda_core.gpu_bind=0 forces waiting for GPU bind to
->   off, snd_hda_core.gpu_bind=1 forces waiting for gpu bind. Default
->   setting depends on whether kernel booted with nomodeset.
-> - Incorporated all feedback review.
+> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+> index 2e7e7c409cf2..8ae2afc76a9b 100644
+> --- a/drivers/tty/serial/sc16is7xx.c
+> +++ b/drivers/tty/serial/sc16is7xx.c
+> @@ -1436,6 +1436,7 @@ static int sc16is7xx_probe(struct device *dev,
+>  		s->p[i].port.fifosize	= SC16IS7XX_FIFO_SIZE;
+>  		s->p[i].port.flags	= UPF_FIXED_TYPE | UPF_LOW_LATENCY;
+>  		s->p[i].port.iobase	= i;
+> +		s->p[i].port.membase	= (void __iomem *)~0;
 
-Maarten, are you working on v3 patch set?
-Or, for moving forward, should we merge v2 now and fix the rest based
-on that later?
+That's a magic value, some comment should be added here to explain why
+setting all bits is ok.  Why does this work exactly?  You only say that
+the max310x driver does this, but not why it does this at all.
 
+confused,
 
-thanks,
-
-Takashi
+greg k-h
