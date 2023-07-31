@@ -2,178 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C18768F8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F36768F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbjGaIFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
+        id S231877AbjGaIEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:04:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbjGaIES (ORCPT
+        with ESMTP id S231803AbjGaIDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:04:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6234E1713;
-        Mon, 31 Jul 2023 01:02:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7FC4E60E8B;
-        Mon, 31 Jul 2023 08:02:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DE88C433C9;
-        Mon, 31 Jul 2023 08:02:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690790570;
-        bh=iL+/iMkVyPpitc+31cYvs+uU/ZxRswV5+Wl1H0RRVAc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kk8c18DLN8tYP5izkZrkGSFDhJrb7SeDZ2SJdORAd4uCe9aBlAuCYU4UpsXxCh1q7
-         nOQqzUT+G08qFcjMIIQ/pOIvdg2x0Z+65ju3cD8Z+9D7HHt45CFK7yUbIff/GI+JbK
-         ijOILqb8o3+xF0Hiu5rwe3S86z9WyK1cqGTOMzVsiCFUu9Vm45Zg3OkfMjMOneoNtJ
-         rZx01dTozdMNkVlKNj58/YqEESOGn3K9obS8F6L6epGPzJ9H5vi6fK1AOnbQ1PS/My
-         AW78bF4WFORdBUyYEnCIV1MFh9lCHEl9Nif7xvBcpLJgjF4IG8zEiSJU8vAtd/YTMf
-         7eGVYk0787PsA==
-From:   "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org
-Subject: [PATCH 02/10] Bluetooth: rfcomm: remove casts from tty->driver_data
+        Mon, 31 Jul 2023 04:03:46 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361D11FF5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:02:41 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so40365951fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690790559; x=1691395359;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MprwVZmNUV7a47mCTURUBSfMwGAKqbdXK1e5nVbgoxA=;
+        b=VwNtgQDgYrVPUchMtfZ690ZpBvW/vnFfxiXWNzOXcd8hVJM9kZOa1NnYACjMR9ct7d
+         KG8NvlOU70LrsblNBE/+X56kZsCUgkukAP97QYe6oAppHDHMFwL1L9TSgzp4CHTtXkJt
+         hDjhWkoodM+dt2FAyHYlJHqAxwUfazFKD6spNoUA5C4v5+pdbWEftNUdD1YzkKzuzOzR
+         6PgIieS07LJks8jfr0YMWpGHigMNoiRA6vmgJAg1YOICh2uSpIg1HShPDxY55rlCoZvR
+         BaxDu8kO7ufs5ZhIcIufRxsMkHN4LiWvUDiEVfelP1RLzjRLsU+u2Jw01keIVRRLPXSg
+         Mlwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690790559; x=1691395359;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MprwVZmNUV7a47mCTURUBSfMwGAKqbdXK1e5nVbgoxA=;
+        b=K7x/9u26VH34q7SA85yN37gadDRU36BOS1zt9Xzw048n1S5mbO7Mj71bZ+92zl8xPP
+         ol0RpFEtSsKQ8a6cow09n9TurUsbaAQDnoXx9UK7e/mOEfzuSKcl/2YK/rAyxd10+/eL
+         gevN4pTR6uaI6YA0hNfuUs1irJTLFcWLcOuEn/Oc/TtEyFJPDCn6phVCMu93qrFVlZAX
+         1OZ8v+/pOeX3s/jx/ZEI0TbAeKUe6rOd8GcXrmIWAsohaXGfMJ2Hxufnw7YG9uJIJLgA
+         ggJWHJJNfH3cLn8tYxXAzwvNGZXCKR1XRzRzJvbduQByJFRllw2362ouyMYrEEn7knQ3
+         RyZA==
+X-Gm-Message-State: ABy/qLbopzhUP+dg5HsWEZBxjcN+bB612NZVi+1M9LYa8M5q9GSoX864
+        3KguIshkSO+kbOgUVc6du4vDoA==
+X-Google-Smtp-Source: APBJJlGllSTwLHwrGgtsMnNsjbPWLnX9k2/UY2kzBkmdnksg2maL9QuCt0nuQECpBFBej1dpvYOMOg==
+X-Received: by 2002:a2e:904e:0:b0:2b9:ec57:c330 with SMTP id n14-20020a2e904e000000b002b9ec57c330mr1167125ljg.7.1690790559168;
+        Mon, 31 Jul 2023 01:02:39 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id h15-20020a1709063c0f00b009929ab17be0sm5799358ejg.162.2023.07.31.01.02.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 01:02:38 -0700 (PDT)
+Message-ID: <dc327138-0fc2-0766-0d86-08977b07fb76@linaro.org>
 Date:   Mon, 31 Jul 2023 10:02:36 +0200
-Message-ID: <20230731080244.2698-3-jirislaby@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230731080244.2698-1-jirislaby@kernel.org>
-References: <20230731080244.2698-1-jirislaby@kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v3 5/8] dt-bindings: arm: qcom,ids: Adjust the position of
+ QCOM_ID_QDU1010
+Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     quic_tsoni@quicinc.com, quic_shashim@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_tdas@quicinc.com,
+        quic_tingweiz@quicinc.com, quic_aiquny@quicinc.com,
+        kernel@quicinc.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230731061325.26431-1-quic_tengfan@quicinc.com>
+ <20230731061325.26431-6-quic_tengfan@quicinc.com>
+ <981a79ee-5258-eb76-020a-765f5f39866f@linaro.org>
+ <53132580-53b6-06bc-8b48-51a3f56ab71d@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <53132580-53b6-06bc-8b48-51a3f56ab71d@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tty->driver_data is 'void *', so there is no need to cast from that.
-Therefore remove the casts and assign the pointer directly.
+On 31/07/2023 09:21, Tengfei Fan wrote:
+> 
+> 
+> 在 7/31/2023 3:00 PM, Krzysztof Kozlowski 写道:
+>> On 31/07/2023 08:13, Tengfei Fan wrote:
+>>> Adjust the position of QCOM_ID_QDU1010, so that there is a coherent
+>>> sequence of numbers.
+>>>
+>>> Change-Id: Id083e1ecc92c063c1a07a81c66dcb034020964b0
+>>
+>> Please run scripts/checkpatch.pl and fix reported warnings. Some
+>> warnings can be ignored, but the code here looks like it needs a fix.
+>> Feel free to get in touch if the warning is not clear.
+>>
+> sure, will do this check if this patch still need.
 
-Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Johan Hedberg <johan.hedberg@gmail.com>
-Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-bluetooth@vger.kernel.org
----
- net/bluetooth/rfcomm/tty.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+I understand that resending this might not be needed, but just to
+clarify: you must run checkpatch on all your patches before sending
+them. This is the most basic step required before sending anything.
 
-diff --git a/net/bluetooth/rfcomm/tty.c b/net/bluetooth/rfcomm/tty.c
-index 5697df9d4394..d73eec146529 100644
---- a/net/bluetooth/rfcomm/tty.c
-+++ b/net/bluetooth/rfcomm/tty.c
-@@ -771,7 +771,7 @@ static int rfcomm_tty_open(struct tty_struct *tty, struct file *filp)
- 
- static void rfcomm_tty_close(struct tty_struct *tty, struct file *filp)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 
- 	BT_DBG("tty %p dev %p dlc %p opened %d", tty, dev, dev->dlc,
- 						dev->port.count);
-@@ -781,7 +781,7 @@ static void rfcomm_tty_close(struct tty_struct *tty, struct file *filp)
- 
- static int rfcomm_tty_write(struct tty_struct *tty, const unsigned char *buf, int count)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 	struct rfcomm_dlc *dlc = dev->dlc;
- 	struct sk_buff *skb;
- 	int sent = 0, size;
-@@ -810,7 +810,7 @@ static int rfcomm_tty_write(struct tty_struct *tty, const unsigned char *buf, in
- 
- static unsigned int rfcomm_tty_write_room(struct tty_struct *tty)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 	int room = 0;
- 
- 	if (dev && dev->dlc)
-@@ -864,7 +864,7 @@ static void rfcomm_tty_set_termios(struct tty_struct *tty,
- 	u8 baud, data_bits, stop_bits, parity, x_on, x_off;
- 	u16 changes = 0;
- 
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 
- 	BT_DBG("tty %p termios %p", tty, old);
- 
-@@ -996,7 +996,7 @@ static void rfcomm_tty_set_termios(struct tty_struct *tty,
- 
- static void rfcomm_tty_throttle(struct tty_struct *tty)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 
- 	BT_DBG("tty %p dev %p", tty, dev);
- 
-@@ -1005,7 +1005,7 @@ static void rfcomm_tty_throttle(struct tty_struct *tty)
- 
- static void rfcomm_tty_unthrottle(struct tty_struct *tty)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 
- 	BT_DBG("tty %p dev %p", tty, dev);
- 
-@@ -1014,7 +1014,7 @@ static void rfcomm_tty_unthrottle(struct tty_struct *tty)
- 
- static unsigned int rfcomm_tty_chars_in_buffer(struct tty_struct *tty)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 
- 	BT_DBG("tty %p dev %p", tty, dev);
- 
-@@ -1029,7 +1029,7 @@ static unsigned int rfcomm_tty_chars_in_buffer(struct tty_struct *tty)
- 
- static void rfcomm_tty_flush_buffer(struct tty_struct *tty)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 
- 	BT_DBG("tty %p dev %p", tty, dev);
- 
-@@ -1052,7 +1052,7 @@ static void rfcomm_tty_wait_until_sent(struct tty_struct *tty, int timeout)
- 
- static void rfcomm_tty_hangup(struct tty_struct *tty)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 
- 	BT_DBG("tty %p dev %p", tty, dev);
- 
-@@ -1061,7 +1061,7 @@ static void rfcomm_tty_hangup(struct tty_struct *tty)
- 
- static int rfcomm_tty_tiocmget(struct tty_struct *tty)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 
- 	BT_DBG("tty %p dev %p", tty, dev);
- 
-@@ -1070,7 +1070,7 @@ static int rfcomm_tty_tiocmget(struct tty_struct *tty)
- 
- static int rfcomm_tty_tiocmset(struct tty_struct *tty, unsigned int set, unsigned int clear)
- {
--	struct rfcomm_dev *dev = (struct rfcomm_dev *) tty->driver_data;
-+	struct rfcomm_dev *dev = tty->driver_data;
- 	struct rfcomm_dlc *dlc = dev->dlc;
- 	u8 v24_sig;
- 
--- 
-2.41.0
+Best regards,
+Krzysztof
 
