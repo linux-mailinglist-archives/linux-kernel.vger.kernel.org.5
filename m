@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7396769A46
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC5F769A48
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231787AbjGaPDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
+        id S232568AbjGaPDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbjGaPDJ (ORCPT
+        with ESMTP id S229890AbjGaPDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:03:09 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C251120;
-        Mon, 31 Jul 2023 08:03:08 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bb119be881so39247795ad.3;
-        Mon, 31 Jul 2023 08:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690815788; x=1691420588;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=y7z84WLzQQAhksQ4Qty3hSLr3+i9Bp8oEu2LreTIujk=;
-        b=Ftws52sX4PhxkpYjWZkaKpuyrTdXbWFlFyhHfs4SAgvye9Fj8mLt4kKLfpgSTI3uE0
-         Ii5a2SQTdWJ045BCVlNIabVo4vvvuYHvNwNe4i9iX5tDMWeqrtoQ/CfLacFtXhK+SEbz
-         vJ2kmzfUJ9qVluFzTPIrD7YzP/y9PysM0uOz3Y5mE58f+nZfmzyLAqSu+f7Xl8A4B+Af
-         vmBS63glJpxFY5jKCjMI72Dl7HXII8nrulffQrIDfNIy/sMcD7UF6iO2w6Uv9ZwJipg8
-         nIAn1F0X8uWFnmOGCNhPi14V2McRgOh+9jks6+H3kVb/RcIBGQnFHG00bYdmd6+gt+vM
-         MncQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690815788; x=1691420588;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y7z84WLzQQAhksQ4Qty3hSLr3+i9Bp8oEu2LreTIujk=;
-        b=dfi0E3Lv/jgvl4tOyej+80AVzmKMwJ+Pg/IsubjNreIroEAV4tySTUf3qJUS2oOYRN
-         dWp6yIizyaoKWWCQvheI3g6bSUoBUEBKcD3T4PhQyK9qI3kF6rf9+5dfNLVWfXKbcXsw
-         Gsq8/H18UjKyP6uJkF16BJ6lvoJQqhkQ9/Ny9HnMvtC9nGvrDdYHsd4vFakUXzrt6fcM
-         /GvGFODCVBY4Is6QR2U8Hl2iwr9tIOzhPUp93UK+SS9PdBXrjJduDploltr4mEX/CkbL
-         5u1UWbHukyDP+05qC4OXntK0BKqqXZE71g4Shgm5We8cvgXnS+QU3v4mYEri+VjLgp+K
-         q22g==
-X-Gm-Message-State: ABy/qLbcX3QJEu9I9HFcDqyLmQcuwLaRdTKznLU2gd+F8BiJ8LVr8kXq
-        GiqT9EB0SNgqpREG4nvppWk=
-X-Google-Smtp-Source: APBJJlEwrn2P6WxOGIDcA2iBk7KM7tT0dduXSYBHC4snXk1zI6KsJ7UDy3qaBzA0+fazhPxIQ97QSA==
-X-Received: by 2002:a17:902:c40f:b0:1bb:a4e4:54b6 with SMTP id k15-20020a170902c40f00b001bba4e454b6mr12734060plk.62.1690815787707;
-        Mon, 31 Jul 2023 08:03:07 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v11-20020a170902d68b00b001b53d3d8f3dsm8652858ply.299.2023.07.31.08.03.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 08:03:07 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <5f1b740e-592f-32d7-0f33-2fed88b949be@roeck-us.net>
-Date:   Mon, 31 Jul 2023 08:03:05 -0700
-MIME-Version: 1.0
+        Mon, 31 Jul 2023 11:03:40 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF34E78;
+        Mon, 31 Jul 2023 08:03:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XzXx/jbfjukySgMQg2r/oSy/c5UQK0sbY+YlOSOUVD5bc0hbCZMrXLzNNUCkwKlj1A91XYE7DdcUpx7A8lTCI5uWTi+IGhcoTW4a4thUj5Az4qgt3H4NyLQBSYixZmoiRARbCsttke6x88TwKORW95979UGVaHY2N5+0iaQtX5gwq0qy7NapVoujMrOYEK6D32JrkyjpKT7qLYOaeTnrmFDl9inaFbCpSqRo0/NWSQzsjv0wtw1Idv/U3J2UxgCLkYYoaqvzVWiYW0Xs9fywiwdU/30dJkWFYaXwogNETC/gD5DehTX223fgLnNIcRT+JqZJ/Ce9b5sLs6lbDcMStQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=14mnzZdoY1dMOMiDpm6QshQHB1zFJDufgwCdZkCO3pw=;
+ b=S5Vsv8BxOW10NaYXBz/nS/NcWw74nXvWsPDKvtmURyad2G8OmN+QHGg2qGoZD8ZSAZJX02D4+BslnD0NODJCa9oMSJFOJOa+cWrNoJN0/8pv0LEnaPyCqoFzFxywCfNT89bSklVGV24JBslq/dARvavNrj9gkG+XQC4VksEs+2jtAR6VHHLsTNEl8IukAl8bjtPNNMYLC8c9DDn6mh2n+iQOC2ZtaIOMbsy/ngR+yn6uiKHJNSqU8JVN0JY8RFrt0G5qUYHWGUbO71Wpl8f2PrNr6zflPyv13nNhpXyzDXau5v6JKS479k5JuDOhQZdr2iF2RZg8Abbl9RYb7FY2GA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=14mnzZdoY1dMOMiDpm6QshQHB1zFJDufgwCdZkCO3pw=;
+ b=xjbRe1NUeFpENjj4LephnS6W0rCFHIHvrn9IQTec78gKTcZrhOd8BGV+pX2+6CE+o42Z7m2KevNc0hUpexb/cSoaQskFWBeK7+cgc4rY8YlG2M0amCDsvbhtF4DezYv2Ea+GH49G3Y7SSz8E9r/VnRwYjUU1n8KqJLBT6cz8x7Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
+ by SA3PR12MB8804.namprd12.prod.outlook.com (2603:10b6:806:31f::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Mon, 31 Jul
+ 2023 15:03:37 +0000
+Received: from DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d267:7b8b:844f:8bcd]) by DM4PR12MB5229.namprd12.prod.outlook.com
+ ([fe80::d267:7b8b:844f:8bcd%7]) with mapi id 15.20.6631.043; Mon, 31 Jul 2023
+ 15:03:37 +0000
+Message-ID: <4ebb3e20-a043-8ad3-ef6c-f64c2443412c@amd.com>
+Date:   Mon, 31 Jul 2023 10:03:34 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
- 6.4.7-rc1 review)
+Subject: Re: [Question] int3 instruction generates a #UD in SEV VM
+To:     Sean Christopherson <seanjc@google.com>,
+        wuzongyong <wuzongyo@mail.ustc.edu.cn>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        linux-coco@lists.linux.dev
+References: <8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn>
+ <ZMfFaF2M6Vrh/QdW@google.com>
 Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-References: <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
- <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
- <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
- <20230731141934.GK29590@hirez.programming.kicks-ass.net>
- <fdaaee62-b67e-556c-2675-aacd3ec994f6@roeck-us.net>
- <20230731144733.GL29590@hirez.programming.kicks-ass.net>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230731144733.GL29590@hirez.programming.kicks-ass.net>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+In-Reply-To: <ZMfFaF2M6Vrh/QdW@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+X-ClientProxiedBy: SN7P222CA0024.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:806:124::20) To DM4PR12MB5229.namprd12.prod.outlook.com
+ (2603:10b6:5:398::12)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|SA3PR12MB8804:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4634bdb9-d5db-4a65-73de-08db91d75151
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jnHtHzbPVN6jo6hl8S7I78P3xfoW3Hz5vZjyIO9D9mssvqnmnjK3AHrO2MHivviBHKKVLo9IPCMIdspODXAtxUN+Nvpw4SVP35QKQYntSOySOnW8pxkPsTYz17pN8Ge9N8LlfxegGJ76CxdukSuVlP/xDfG5HYo0mH7n9S4QujSY2VGajiGi5s37JrRxels4tZbKelAx6iSxI4j/jSWUXM+0iiNEUPOluY20q2SeIcCnaD9LBydpNwf0KhI0LgkrCgsQk6RkothhqAiNB78J8YOk5rmeS6OF83scbv4WGvfBbBBvBIrEUvyHJtFqR8q8g6cbhgX6GOPo0R4OXv5jGPCQc7w1TuZg0hPbq7Ai8LEgnCAoDnkaYWKMRz4DywHiiOtTJwb/FafqLdYgy0xKAZSsCPaE14cWjVmUUmn1eejeaWlA/72B6yvHBwDvQ2vuv4G2cKSlvwBcHGhJL749aoAiTknImDaZrBe897s8UwlPtN0qguCXpeqmAnxGY7tLbXMS4iTpZfJB19GTPVY7PWfCTH1R7VEV813vV7YStY2TnEyzR2U5lO/+8xVUyQuFBouM1z6/v8MW+BoG2B0Q3L3y7mGwKAMRJKxJFwBzuD4V7sxM8+SVizcuwHrFhKSB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(136003)(346002)(39860400002)(366004)(376002)(451199021)(2906002)(83380400001)(6486002)(6666004)(38100700002)(36756003)(2616005)(186003)(5660300002)(31686004)(86362001)(31696002)(6506007)(316002)(26005)(8676002)(53546011)(41300700001)(8936002)(66476007)(478600001)(66556008)(4326008)(66946007)(6512007)(966005)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d3gyTWJ2SnFUaS9GT3BYUFVDQ3ZXMkk5bkl0ZVhnS21SWHc3QmtLTC85UW1w?=
+ =?utf-8?B?b3FEWSt6R2Z2QTRZeWc2S3d1L0hIa0I3RERRWmE4VDJKYzhpRk1UT0RWdzg1?=
+ =?utf-8?B?UzZSWUtUQWMyRjFVVnpCSlBkbDl0U3Y0NytjWm9GN1Y0Sm5hUUFkRE8zRFY4?=
+ =?utf-8?B?VkJ6R1dMQTdjYTdFUGVEWlZ2NjRpY0RMdWRBOVF4bzViUWx1b0dLTWVWNDBB?=
+ =?utf-8?B?dDYxaDl0Q29ETXp6b1JWZTZDVVdiOE1XcjdmeHp4YVZJaFdUMkFPNVZ6T3dZ?=
+ =?utf-8?B?eTNEU2JKWEUxdFhZQWJvYzhNaXlGc3YyWis5VmtTVVVpeHk1SSt0b0x3b1Nx?=
+ =?utf-8?B?N3ovWi9BdXJQUXpLM3Q4Q0RxemJYMnRlOXpaZ3RDVCtKR0toek9lbkNGYy9S?=
+ =?utf-8?B?MDZmTDB3bFY5SVRsWFd4NzIzOERDR25HWVhEWWZxb29Oc0wxWHQzTEQydFpw?=
+ =?utf-8?B?R2FsbHU2M3I0djhUeWZrd0J4dEoweTgwN3haTlhSNjZnQ1l2aUdIRHJxNWdQ?=
+ =?utf-8?B?N0gxTEhoRStwMGtCaTB4LzNXVTZYc3NvN3FlWm5EK1hZQm9WdjdUaFNYWUJ3?=
+ =?utf-8?B?U2NVd1AzZzNpY21XSGk0dGczRkJGbm9tK1hLSlVYL3FDZmhXQ0c4VlBxQjlu?=
+ =?utf-8?B?UHZFL2kzMzlyTGcrQU1nM0RIQXlseC9ObUY4Y3hULys5SWhBVVhJdEpsVmhN?=
+ =?utf-8?B?TjdrOEh1aGZHNWV0U1JLeU9SSWR4d0Q5OGRIeEVHc1R6Um9uelVabVdiZHoz?=
+ =?utf-8?B?cFRxTGpWbkJFT3MrN0c1MDJFSjNCUStWVGVBci9hTGVmdjJRZE9sSjBwc3M0?=
+ =?utf-8?B?ZFdvN3VRVTRleGdsWVpzSzNHZHpjdnAxeXB6b01aTTJLNkxOOWo5UWROM3li?=
+ =?utf-8?B?a1QvMmF0bGkwaFkvUjJ0UlU5N0dtVHBUMnNtc2x4MjhzODMzVlVvT2dzZGVj?=
+ =?utf-8?B?VXhTSE1wRVFHQURROXBWODkwWHc1QnZId0d6RFB4R0dBTWdGbllwQmh3ZVlp?=
+ =?utf-8?B?Z2txY1k0Vkd5QTlremhUWEpHa1RXVXdlMk9DR2dHbVFWUU1KbG1ITHFBUi9W?=
+ =?utf-8?B?Q3FlSGhNTUlXRlh6NmZVWWozaGlORmlOMmUzR3d2YmlZUHQrdjRYRU9NK0NE?=
+ =?utf-8?B?em91aDNuYjNiY1ZuRTRyNExDWk5waDgxdkIya3haN3VVRk93MkxUWFZ4WUgr?=
+ =?utf-8?B?eWh1WjQxNFphRmRnQlFxQ083V0pGa2xYdXNOUUhPRXJiOStCOVRMWHI0Mkkr?=
+ =?utf-8?B?Q2E2bmxyUStnbDNhSEtXTTVCMjdaS01VV1pJSkYrR2s5OEFyNFdqZFV3WCs4?=
+ =?utf-8?B?N1ZDbW5udlZldlY5N3VnTk9hc21PaTNOTCtJZHJoYnJUaWRrQXByeDNjeGpp?=
+ =?utf-8?B?R2ZVWndvOTgrUlpTWkdIT09SalpXYXdnQmtEaDhxNHM2dC80SGZJaEwrcXkv?=
+ =?utf-8?B?cXFiZnJneWJHMG5ndkYrTmtBaEN2Q3RwdGZGNmVRUXpoUlkyTHBmVzJJbThv?=
+ =?utf-8?B?VFh0bXlTRlROZ1R3Ty9rcFh5QWZ4VFpDOVpuclpvSWh1TnZUbkZwZlo3Y3h0?=
+ =?utf-8?B?ZjluUjRCWGhNdm9DRW5oTUlTcXJvdGhtQy9nZnhDU3ZxQ0JkRHQyaHJKY1pQ?=
+ =?utf-8?B?ZGltbTBIU2NUSm4ybTVVT3I0UyttNmJlaXRRcy9BUnVaRFdvMi9wNWNIS3Za?=
+ =?utf-8?B?bjZuTjlLTTllK1NXa1orY2xjaHZhR0N5Zk5pNTI0YW5wWFNYVFFidjIrQ1F3?=
+ =?utf-8?B?ZzlveDQ1VmUwUmsrYlBzcnQ2VGhBNEFZdXJ0bXlWMlBuWWNqVTE0L3pyblZH?=
+ =?utf-8?B?SG8ySkxPdXZaSm9MQzE0UHAvRkJTMVVFZk9OSys4NmxEb1AxWm5uMHpQdDRx?=
+ =?utf-8?B?M0ZRTmpJSGx1dlg0cEMrcTFOcFN2MGx1eW9LbGZHY3EzM2paRzUyZkxiMmxI?=
+ =?utf-8?B?eWZ4WDZjcmhFRldOVVZIWnFiZGpCUnVxY01DNUYrMkltQUVTajdQaGl1NGt0?=
+ =?utf-8?B?dFJhQms4REtJSVdsT1NiZHdicjI0SFNxQVJqY25ZRDJYdDdXVEltUFBJU0hm?=
+ =?utf-8?B?UXVqTzg0a09GM1FjMVp3SVV6Nm9mZnpyRXhKcE9qdW52SUlKa0hpczFyQ3V2?=
+ =?utf-8?Q?VPuaALK5ae52iVCra14/qihpd?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4634bdb9-d5db-4a65-73de-08db91d75151
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 15:03:37.3202
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lxbuVkOFkeNZUX5wXXmbNw1VtMl4a+DBVCTbA+Kuz0bVOkXg9xkTU0Ts414KiF4sb9xF9xZr69GtUj4/3uI0cQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8804
+X-Spam-Status: No, score=-0.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,108 +126,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/23 07:47, Peter Zijlstra wrote:
-> On Mon, Jul 31, 2023 at 07:35:13AM -0700, Guenter Roeck wrote:
+On 7/31/23 09:30, Sean Christopherson wrote:
+> On Sat, Jul 29, 2023, wuzongyong wrote:
+>> Hi,
+>> I am writing a firmware in Rust to support SEV based on project td-shim[1].
+>> But when I create a SEV VM (just SEV, no SEV-ES and no SEV-SNP) with the firmware,
+>> the linux kernel crashed because the int3 instruction in int3_selftest() cause a
+>> #UD.
 > 
->>> Hurmph, let me see if I can reproduce on next-20230731 (not having the
->>> older next thingies around).
->>
->> That crashes hard with my configuration.
->>
->> [    6.353191] kernel tried to execute NX-protected page - exploit attempt? (uid: 0)
->> [    6.353392] BUG: unable to handle page fault for address: ffff9b10c0013cd0
->> [    6.353531] #PF: supervisor instruction fetch in kernel mode
->> [    6.353624] #PF: error_code(0x0011) - permissions violation
->> [    6.353751] PGD 1000067 P4D 1000067 PUD 1205067 PMD 1206067 PTE 800000000124e063
->> [    6.354011] Oops: 0011 [#1] PREEMPT SMP PTI
->> [    6.354164] CPU: 0 PID: 182 Comm: kunit_try_catch Tainted: G                 N 6.5.0-rc4-next-20230731 #1
->> [    6.354315] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
->> [    6.354525] RIP: 0010:0xffff9b10c0013cd0
->> [    6.354793] Code: ff ff 60 64 ce a9 ff ff ff ff 00 00 00 00 00 00 00 00 d1 3a bc a8 ff ff ff ff 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <f0> 00 01 44 10 8a ff ff b8 01 01 44 10 8a ff ff 00 00 00 00 00 00
->> [    6.355059] RSP: 0000:ffff9b10c027fd60 EFLAGS: 00000246
->> [    6.355157] RAX: ffff9b10c0013cd0 RBX: ffff8a1043bdb400 RCX: 0000000000000000
->> [    6.355259] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff8a1043bdb400
->> [    6.355358] RBP: ffff9b10c027fdc8 R08: 0000000000000001 R09: 0000000000000001
->> [    6.355456] R10: 0000000000000001 R11: 0000000000000001 R12: ffff9b10c027fe74
->> [    6.355556] R13: ffff8a10440100f0 R14: ffff8a10440101b8 R15: ffff9b10c027fe74
->> [    6.355679] FS:  0000000000000000(0000) GS:ffff8a104fc00000(0000) knlGS:0000000000000000
->> [    6.355798] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [    6.355886] CR2: ffff9b10c0013cd0 CR3: 000000000e048000 CR4: 00000000003506f0
->> [    6.356029] Call Trace:
->> [    6.356158]  <TASK>
->> [    6.356334]  ? __die+0x1f/0x70
->> [    6.356472]  ? page_fault_oops+0x14a/0x460
->> [    6.356547]  ? exc_page_fault+0xee/0x1c0
->> [    6.356612]  ? asm_exc_page_fault+0x26/0x30
->> [    6.356703]  ? kunit_filter_attr_tests+0xc4/0x2e0
->> [    6.356796]  kunit_filter_suites+0x2e2/0x460
->> [    6.356889]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10
->> [    6.356979]  filter_suites_test+0xea/0x2c0
->> [    6.357051]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10
->> [    6.357148]  kunit_generic_run_threadfn_adapter+0x15/0x20
->> [    6.357228]  kthread+0xef/0x120
->> [    6.357282]  ? __pfx_kthread+0x10/0x10
->> [    6.357343]  ret_from_fork+0x2f/0x50
->> [    6.357399]  ? __pfx_kthread+0x10/0x10
->> [    6.357458]  ret_from_fork_asm+0x1b/0x30
->> [    6.357560]  </TASK>
->> [    6.357632] Modules linked in:
->> [    6.357786] CR2: ffff9b10c0013cd0
->> [    6.358010] ---[ end trace 0000000000000000 ]---
+> ...
 > 
-> I get:
+>> BTW, if a create a normal VM without SEV by qemu & OVMF, the int3 instruction always generates a
+>> #BP.
+>> So I am confused now about the behaviour of int3 instruction, could anyone help to explain the behaviour?
+>> Any suggestion is appreciated!
 > 
-> [    2.423691] ------------[ cut here ]------------
-> [    2.424994] WARNING: CPU: 0 PID: 184 at mm/slab_common.c:992 free_large_kmalloc+0x4f/0x80
-> [    2.426183] Modules linked in:
-> [    2.426624] CPU: 0 PID: 184 Comm: kunit_try_catch Tainted: G                 N 6.5.0-rc4-next-20230731 #1
-> [    2.427964] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.0-debian-1.16.0-5 04/01/2014
-> [    2.429265] RIP: 0010:free_large_kmalloc+0x4f/0x80
-> [    2.429952] Code: f7 da 48 63 d2 48 8b 03 be 06 00 00 00 48 c1 e8 3a 48 8b 3c c5 60 ba 11 ab e8 0d 52 ff ff 89 ee 48 89 df 5b 5d e9 41 df 03 00 <0f> 0b 80 3d 49 43 e9 01 00 75
-> [    2.432511] RSP: 0000:ffffadcb0024bdb8 EFLAGS: 00010246
-> [    2.433259] RAX: 0100000000001000 RBX: ffffd16bc018aa40 RCX: ffffadcb0024bd7c
-> [    2.434262] RDX: ffffd16bc018aa48 RSI: ffffffffa96a9ec7 RDI: ffffd16bc018aa40
-> [    2.435265] RBP: ffffadcb0024be60 R08: 0000000000000001 R09: 0000000000000001
-> [    2.436269] R10: 0000000000000001 R11: 0000000000000000 R12: ffff8a7084014410
-> [    2.437267] R13: ffff8a70840c4000 R14: 0000000000000002 R15: ffff8a70840564a8
-> [    2.438271] FS:  0000000000000000(0000) GS:ffff8a708f800000(0000) knlGS:0000000000000000
-> [    2.439403] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [    2.440215] CR2: ffff8a7089401000 CR3: 0000000007a48001 CR4: 0000000000170ef0
-> [    2.441218] Call Trace:
-> [    2.441568]  <TASK>
-> [    2.441883]  ? free_large_kmalloc+0x4f/0x80
-> [    2.442491]  ? __warn+0x80/0x170
-> [    2.442988]  ? free_large_kmalloc+0x4f/0x80
-> [    2.443591]  ? report_bug+0x171/0x1a0
-> [    2.444145]  ? handle_bug+0x3c/0x70
-> [    2.444662]  ? exc_invalid_op+0x17/0x70
-> [    2.445225]  ? asm_exc_invalid_op+0x1a/0x20
-> [    2.445844]  ? kunit_add_action+0xc7/0x140
-> [    2.446455]  ? free_large_kmalloc+0x4f/0x80
-> [    2.447054]  kunit_filter_suites+0x468/0x480
-> [    2.447662]  ? kunit_add_action+0xc7/0x140
-> [    2.448258]  ? __pfx_kunit_generic_run_threadfn_adapter+0x10/0x10
-> [    2.449105]  filter_suites_test+0xea/0x2c0
-> [    2.449702]  kunit_generic_run_threadfn_adapter+0x15/0x20
-> [    2.450469]  kthread+0xf0/0x120
-> [    2.450940]  ? __pfx_kthread+0x10/0x10
-> [    2.451481]  ret_from_fork+0x2f/0x50
-> [    2.452012]  ? __pfx_kthread+0x10/0x10
-> [    2.452557]  ret_from_fork_asm+0x1b/0x30
-> [    2.453146]  </TASK>
-> [    2.453474] irq event stamp: 677
-> [    2.453943] hardirqs last  enabled at (689): [<ffffffffa911c24a>] console_unlock+0x10a/0x160
-> [    2.455151] hardirqs last disabled at (700): [<ffffffffa911c22f>] console_unlock+0xef/0x160
-> [    2.456329] softirqs last  enabled at (662): [<ffffffffa909179a>] irq_exit_rcu+0x7a/0xa0
-> [    2.457474] softirqs last disabled at (657): [<ffffffffa909179a>] irq_exit_rcu+0x7a/0xa0
-> [    2.458610] ---[ end trace 0000000000000000 ]---
+> Have you tried my suggestions from the other thread[*]?
 > 
+>    : > > I'm curious how this happend. I cannot find any condition that would
+>    : > > cause the int3 instruction generate a #UD according to the AMD's spec.
+>    :
+>    : One possibility is that the value from memory that gets executed diverges from the
+>    : value that is read out be the #UD handler, e.g. due to patching (doesn't seem to
+>    : be the case in this test), stale cache/tlb entries, etc.
+>    :
+>    : > > BTW, it worked nomarlly with qemu and ovmf.
+>    : >
+>    : > Does this happen every time you boot the guest with your firmware? What
+>    : > processor are you running on?
+>    :
+>    : And have you ruled out KVM as the culprit?  I.e. verified that KVM is NOT injecting
+>    : a #UD.  That obviously shouldn't happen, but it should be easy to check via KVM
+>    : tracepoints.
 
-Same problem. I see the warning on some architectures, the crash on others.
-The fix for that problem is at
-https://lore.kernel.org/linux-kselftest/20230729010003.4058582-1-ruanjinjie@huawei.com/
-It is caused by the "kunit: Add test attributes API" patch series.
-See https://lore.kernel.org/lkml/5205b6aa-c9ea-8f9c-f42c-b840346f740c@roeck-us.net/T/
+I have a feeling that KVM is injecting the #UD, but it will take 
+instrumenting KVM to see which path the #UD is being injected from.
 
-Guenter
+Wu Zongyo, can you add some instrumentation to figure that out if the 
+trace points towards KVM injecting the #UD?
 
+Thanks,
+Tom
+
+> 
+> [*] https://lore.kernel.org/all/ZMFd5kkehlkIfnBA@google.com
