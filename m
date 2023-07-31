@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D8376A153
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7605376A157
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbjGaTd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:33:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59016 "EHLO
+        id S230151AbjGaTf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbjGaTdX (ORCPT
+        with ESMTP id S229767AbjGaTf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:33:23 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84355171B
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:33:22 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9e6cc93c6so23667381fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:33:22 -0700 (PDT)
+        Mon, 31 Jul 2023 15:35:26 -0400
+Received: from mailrelay1-1.pub.mailoutpod2-cph3.one.com (mailrelay1-1.pub.mailoutpod2-cph3.one.com [IPv6:2a02:2350:5:400::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2B11998
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1690832001; x=1691436801;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yXLFlpjaOoFRKiNfZATjG2CogmUERUAniLQFoDaW35U=;
-        b=DmEFT6jHO9aU0Q7mmz7r/3blosp5zNuGMXAmEo5De2MDIjQKJZZBHYk/ElQiLMJeg0
-         QxQml6A/B37Up+BHTkZgXTfbuW4Inuyyvw66qiXZBSPYiVtmmmJCuX1VbOBpKw+XJtXr
-         nRWRkTI1yyC577PjDeimQqdrdqEu8m7qM+jQA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690832001; x=1691436801;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yXLFlpjaOoFRKiNfZATjG2CogmUERUAniLQFoDaW35U=;
-        b=GM+M3fJjjkBGftzWcIS5SJ0/f5J4L5ZWlN4WCHB2h7oO1IJt8f2yoSH5TXpkie5KG3
-         vkViWcOvHXc+/4DOlF8NfHbWQUJbU9RYapGFyu3Fp+V9mVuJfykAPoNwfKCxkqUuoREf
-         mMa0QhiJ3F2kPC6nk9gpSth4cyPf6bgTLPoQLxMJuBpwgQ8JVDBQf4CS+t54ICNio4Ka
-         V6FajOj2gL7Kh5Su8C7ojgrR+dIkfWeAy+xj5kCdk6ybxDC9fl496r+QgJSaibeMwp8l
-         LOFRATO02XWH4ZvdJnfqIDu5ioU76wfdfNidkerMvccjabHU27u6LcH4cfl8zj5L2NaF
-         y8FA==
-X-Gm-Message-State: ABy/qLaiozQtFFCmO4o6npzcPCcFHJgizr3ksGUzKa/rWVVXKsGB0e/s
-        nMifFAwOpeOqGiNp5LoNjp4yeO9UaOd06guv8v9/ASWk
-X-Google-Smtp-Source: APBJJlFX+/RIvfTg1wF+tw3V6KBWoubVByrnB5J1aGQ2uX2gmyXpAeBGfqK9iHNXbxCvGgsDdaY/Ng==
-X-Received: by 2002:a2e:86c8:0:b0:2b9:c676:434a with SMTP id n8-20020a2e86c8000000b002b9c676434amr665444ljj.15.1690832000765;
-        Mon, 31 Jul 2023 12:33:20 -0700 (PDT)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id k14-20020a2e92ce000000b002b6c61bac2esm2699566ljh.92.2023.07.31.12.33.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 12:33:20 -0700 (PDT)
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-4fe0e34f498so7605558e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:33:20 -0700 (PDT)
-X-Received: by 2002:a19:2d4b:0:b0:4fb:89e3:5ac6 with SMTP id
- t11-20020a192d4b000000b004fb89e35ac6mr527434lft.62.1690832000024; Mon, 31 Jul
- 2023 12:33:20 -0700 (PDT)
+        d=ravnborg.org; s=rsa1;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=6qASGIsrRTha6LW4nGlFz5hVK9QFyCgkRnIOH/MfmdI=;
+        b=gbD2l+F4txZSKOikg9ULrRxYvmKpodr8viXTZBSfsyRhtbkseAGNq5G/j1Yjw/MChSfPAbovOOckO
+         fDLnWkOt+KM0RrinBws0z3F8YDy4ZK+v8OA63YMgBDwno7Hos7KtKozzN1O0VOr+88mykbAMD9nyem
+         JOtXu92SRr2bmjPmUpaS/v4CXn8TOlB/DULIqsm0bq8fQjbPCL4F1imrCWJD8+zw9e7BtI5nvLQGBr
+         Vvw9pxE+uYxbtboGk5CCcL6EiLab9g7/w/44JEZWP4Pd2Wrvf/kbo+XywEiXBXQWvpKJz31cF8878D
+         7E3htRYGp0KE2CAKyAhYuzmi55Lpy+w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+        d=ravnborg.org; s=ed1;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=6qASGIsrRTha6LW4nGlFz5hVK9QFyCgkRnIOH/MfmdI=;
+        b=lbxy0fAhUsTGM7a0p9jw1JGKiT98vxHJLhFafsTjUZmjfLKS+bkQvy0jxq/0Be1QR1jiE0GoMXFoE
+         wcLb15eBg==
+X-HalOne-ID: 626809cf-2fd9-11ee-8694-c5367ef0e45e
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+        by mailrelay1 (Halon) with ESMTPSA
+        id 626809cf-2fd9-11ee-8694-c5367ef0e45e;
+        Mon, 31 Jul 2023 19:35:21 +0000 (UTC)
+Date:   Mon, 31 Jul 2023 21:35:20 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, javierm@redhat.com,
+        bagasdotme@gmail.com, rd.dunlab@gmail.com,
+        regressions@leemhuis.info, sfr@canb.auug.org.au,
+        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, regressions@lists.linux.dev,
+        linux-next@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] fbdev/ps3fb: Build without kernel device
+Message-ID: <20230731193520.GA1463201@ravnborg.org>
+References: <20230731175535.11345-1-tzimmermann@suse.de>
 MIME-Version: 1.0
-References: <20230731171233.1098105-1-surenb@google.com> <20230731171233.1098105-2-surenb@google.com>
- <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com> <CAJuCfpFWOknMsBmk1RwsX9_0-eZBoF+cy=P-E7xAmOWyeo4rvA@mail.gmail.com>
-In-Reply-To: <CAJuCfpFWOknMsBmk1RwsX9_0-eZBoF+cy=P-E7xAmOWyeo4rvA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 31 Jul 2023 12:33:03 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiFXOJ_6mnuP5h3ZKNM1+SBNZFZz9p8hyS8NaYUGLioEg@mail.gmail.com>
-Message-ID: <CAHk-=wiFXOJ_6mnuP5h3ZKNM1+SBNZFZz9p8hyS8NaYUGLioEg@mail.gmail.com>
-Subject: Re: [PATCH 1/6] mm: enable page walking API to lock vmas during the walk
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
-        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
-        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731175535.11345-1-tzimmermann@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 at 12:31, Suren Baghdasaryan <surenb@google.com> wrote:
->
-> I got the idea but a couple of modifications, if I may.
-
-Ack, sounds sane to me.
-
-             Linus
+On Mon, Jul 31, 2023 at 07:55:00PM +0200, Thomas Zimmermann wrote:
+> Use fb_info() to print status message at the end of the probe function,
+> which avoids decoding the devices. fb_info() works with or without an
+> fbdev kernel device. Fixes the following error:
+> 
+> ../drivers/video/fbdev/ps3fb.c: In function 'ps3fb_probe':
+> ../drivers/video/fbdev/ps3fb.c:1172:40: error: 'struct fb_info' has no member named 'dev'
+>  1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
+>       |                                        ^~
+> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
+>   110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+>       |                                     ^~~~~~~~~~~
+> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
+>  1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
+>       |         ^~~~~~~~
+> ../drivers/video/fbdev/ps3fb.c:1172:61: error: 'struct fb_info' has no member named 'dev'
+>  1172 |                  dev_driver_string(info->dev), dev_name(info->dev),
+>       |                                                             ^~
+> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'dev_printk_index_wrap'
+>   110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+>       |                                     ^~~~~~~~~~~
+> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'dev_info'
+>  1171 |         dev_info(info->device, "%s %s, using %u KiB of video memory\n",
+>       |         ^~~~~~~~
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Closes: https://lore.kernel.org/lkml/ccc63065-2976-88ef-1211-731330bf2866@infradead.org/
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+> Fixes: 701d2054fa31 ("fbdev: Make support for userspace interfaces configurable")
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Javier Martinez Canillas <javierm@redhat.com>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Bagas Sanjaya <bagasdotme@gmail.com>
+> Cc: Thorsten Leemhuis <regressions@leemhuis.info>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> ---
+>  drivers/video/fbdev/ps3fb.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/ps3fb.c b/drivers/video/fbdev/ps3fb.c
+> index 5aedc30c5f7e..64d291d6b153 100644
+> --- a/drivers/video/fbdev/ps3fb.c
+> +++ b/drivers/video/fbdev/ps3fb.c
+> @@ -1168,9 +1168,7 @@ static int ps3fb_probe(struct ps3_system_bus_device *dev)
+>  
+>  	ps3_system_bus_set_drvdata(dev, info);
+>  
+> -	dev_info(info->device, "%s %s, using %u KiB of video memory\n",
+> -		 dev_driver_string(info->dev), dev_name(info->dev),
+> -		 info->fix.smem_len >> 10);
+> +	fb_info(info, "using %u KiB of video memory\n", info->fix.smem_len >> 10);
+>  
+>  	task = kthread_run(ps3fbd, info, DEVICE_NAME);
+>  	if (IS_ERR(task)) {
+> -- 
+> 2.41.0
