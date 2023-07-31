@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A85E376A523
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22F776A53D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbjGaXuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 19:50:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S229933AbjGaXzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 19:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbjGaXt6 (ORCPT
+        with ESMTP id S229510AbjGaXzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 19:49:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AAB1198A;
-        Mon, 31 Jul 2023 16:49:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A74EC6135D;
-        Mon, 31 Jul 2023 23:49:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23D1AC433CC;
-        Mon, 31 Jul 2023 23:49:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690847390;
-        bh=NrM8D/pRtgA8u9+xv5ucAKjBAYNZkgUlEzf9jXHLqbs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MNI5iizQxnXgqHw2mROmp7NvMwrPYKp8qS8TOMviNQauzoXKSHDTGlCy6yfsz/Lt7
-         ICSk+Swa3F1jdu2kILd8O2pOYkHIXuLMIVAlkIuNcBaWnO89nvTURmN1ysE87Jeaw0
-         ZW+Kxtl3ioK0PhYsfEp7k5kWj0tUh8RNuJ48SyKgrpIH2pOS24q606UBTzI+NSQik9
-         Sdq3AfMrQAN/3e6llfZe8x5XCHevOobzGwmkJN4Fr0FD4t/hCBtqe5ZiI7OaCQUHkg
-         4tmj1OC2u9M5uAZJwjc8Nm75jc+cNSkcAbs3CRpWWGSt7iyP6BvZmHwbHhr5/a2nJ0
-         Yxp9Wse0vrpUA==
-From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Yassine Oudjana <yassine.oudjana@gmail.com>
-Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v2 0/3] MSM8996 Pro CBF scaling support
-Date:   Mon, 31 Jul 2023 16:52:47 -0700
-Message-ID: <169084756381.3010488.6982581507928196439.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230527093934.101335-1-y.oudjana@protonmail.com>
-References: <20230527093934.101335-1-y.oudjana@protonmail.com>
+        Mon, 31 Jul 2023 19:55:18 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48CD910C1;
+        Mon, 31 Jul 2023 16:55:17 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so5435746e87.3;
+        Mon, 31 Jul 2023 16:55:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690847715; x=1691452515;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4pbTHD6tjmefXpshBCW5jz178SsoZXI/gyLrsf3Jo0g=;
+        b=aSniwb46EziMct0wa7R7iEvhc05wrVYWgvblFqG5oTGqaEe51aj6U/88Qf6J0nXZ9Q
+         eQ6KV0ktHPDoMfbQRltAE9a4hAEqcq8grwoswnU64KqMmC3TmsUJmk0kky+LgPVeQbof
+         aTI4BAcp5kl/2KLizO10hp16iDKHYMZkGlNYnpAzoJRXaD5gvSXBnbEL8RvNLVstW4GC
+         aB/haQVh1jKZsK8S/QEZ46Kk9jmGM6TIv+2AfxoUkdUICUFsQ7A6JPsyvc30oVCJwkwv
+         ZB+cm7HMgrtj6SnffBP/ejwW0qOk1nAs+q7+QWZMoB91SnTmjwaSbi/PBM5S2kxEOQO7
+         OhOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690847715; x=1691452515;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4pbTHD6tjmefXpshBCW5jz178SsoZXI/gyLrsf3Jo0g=;
+        b=c714D6D5pG7yQi95ZlX6hwMTJA/rROaOB6F2rB/FkzWnjp+7e+uj4MDoYmvnmqCmCI
+         /cyz3OtLNTaxZXpvtOB0elSLqLCDGktooyWcO2ykB5okZL4Hnx5e6vyda8XGu7IhSSKX
+         gtT7TJF3sORvSNfdWTupi/hhViFHlMJw3AoRWnbSeIpXQ2WGBwgtYSMod1H1IFyxaexc
+         FRxkrNpUSltEAUOljugFkkuI5/eXBd+isbnYOwe8Xdwhr+3oYHXNXqSw1Tl0+DK4+y9Q
+         nVp9s/jYfH3X6twnifgGas6vdqJFDn6O8hqmQVWnuoMauRNX88zFuiwaEZ4iW+HVRLuD
+         hhOQ==
+X-Gm-Message-State: ABy/qLYQtU9TS9gwgTrsjKWwFl6uGGuX+UJBnk6d5v7Wkko2gJdc+nVi
+        c8UOKN5vw9627wzpq7I63yDKiWNUeKo=
+X-Google-Smtp-Source: APBJJlGUDDjPPHt44seWPu/ci3y9lLwcQrFwpRmxSbFeKhWVYfEmOTrr264TyKs8AmxDG9XWC0X1eQ==
+X-Received: by 2002:a05:6512:baa:b0:4fb:89ad:6651 with SMTP id b42-20020a0565120baa00b004fb89ad6651mr1038693lfv.28.1690847715227;
+        Mon, 31 Jul 2023 16:55:15 -0700 (PDT)
+Received: from mobilestation ([95.79.172.181])
+        by smtp.gmail.com with ESMTPSA id t5-20020ac25485000000b004fe3a2e3952sm498202lfk.100.2023.07.31.16.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 16:55:14 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 02:55:12 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        wuyonggang001@208suo.com, mturquette@baylibre.com,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: baikal-t1: Using div64_ Ul replaces do_ Div()
+ function
+Message-ID: <xfw5vpmcqgktuvk2hhxhi5yppzarr7kidmr7g33r55zxcncd5a@z6zz2ciw2ipu>
+References: <20230612033904.34921-1-zhanglibing@cdjrlc.com>
+ <0dc9409b662180ed29cbc281f0f076b7@208suo.com>
+ <fcd37e67fba625da304fdaf07e0ab0db@208suo.com>
+ <CAMuHMdX0xP5Gugo7uF5Wqk9_ny6-4fOWYRm41KicOo26kC6m+g@mail.gmail.com>
+ <nt6kbounehvfqo4hpfj3wbr7baukuhr22dafvoykgyehs4imsp@pc6bajyo6ugn>
+ <CAMuHMdUHDK9CCJPoMgLQBrXjk9VWszYF17dUU=9JtQ8XX=QAPA@mail.gmail.com>
+ <2xp54apmm6o5np34obv5muus5d2lpoo7fn6ozuzzj6p4f2whot@c3pji7twevci>
+ <vnps4c6o6nsvazyggdqhhqedwsf7vrucc2kpiwpuozi7e2e7tc@celmt367ov73>
+ <f4bb6c51f66325c388a43b9336ffa45b.sboyd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4bb6c51f66325c388a43b9336ffa45b.sboyd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Sat, 27 May 2023 12:39:31 +0300, Yassine Oudjana wrote:
-> From: Yassine Oudjana <y.oudjana@protonmail.com>
+On Fri, Jul 28, 2023 at 08:24:19PM -0700, Stephen Boyd wrote:
+> Quoting Serge Semin (2023-07-27 05:28:47)
+> > On Mon, Jul 24, 2023 at 05:11:23PM +0300, Serge Semin wrote:
+> > > On Mon, Jul 24, 2023 at 03:38:49PM +0200, Geert Uytterhoeven wrote:
+> > > > > >
+> > > > > > Likewise.
+> > > > >
+> > > > > Right. This will also break the driver.
+> > 
+> > No news from Yonggang meanwhile the patch will certainly break the
+> > driver. Is it still possible to drop it from the clk-cleanup and
+> > clk-next branches then before it gets to the mainline kernel?
+> > 
 > 
-> MSM8996 Pro has a /4 post divisor on its CBF PLL instead of /2, allowing
-> it to reach 192000000Hz on the lowest CPU OPPs (compared to 307200000Hz
-> on MSM8996). Add a compatible string to differentiate between the two and
-> handle the different divisor in the driver. Finally, add peak bandwidths
-> to CPU OPPs in msm8996pro.dtsi.
-> 
-> [...]
+> I've dropped it.
 
-Applied, thanks!
+Great! Thanks.
 
-[1/3] dt-bindings: clock: qcom,msm8996-cbf: Add compatible for MSM8996 Pro
-      commit: 434cb57732cd6b39c41a218f2e1dfddd5373fe1b
-[3/3] clk: qcom: cbf-msm8996: Add support for MSM8996 Pro
-      commit: bc48641a68dcf9998c78248ce7e79d1a492463c1
-
-Best regards,
--- 
-Bjorn Andersson <andersson@kernel.org>
+-Serge(y)
