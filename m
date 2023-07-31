@@ -2,175 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C88768ABD
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 06:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C611768AC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 06:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbjGaEPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 00:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
+        id S229889AbjGaERL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 00:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbjGaEPq (ORCPT
+        with ESMTP id S229678AbjGaERE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 00:15:46 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D788E10D
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 21:15:44 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-4fe383c1a26so529399e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 21:15:44 -0700 (PDT)
+        Mon, 31 Jul 2023 00:17:04 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A60119;
+        Sun, 30 Jul 2023 21:17:02 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-686b91c2744so2864901b3a.0;
+        Sun, 30 Jul 2023 21:17:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690776943; x=1691381743;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20221208; t=1690777022; x=1691381822;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RMYX8jg3dCCRuMtGRbFlfbd9q+spdF7dLaJz3ilyQ9s=;
-        b=bYvAXKJfEpm7ZHm7V6ZQYvQ/r3zEqbZqR2jUyTa2M3ANHwwnSUYCuFQWHiMJJLxbxh
-         /nhxgAJN7Dn8TffN0Tu6uDmG/R6vsB3vntrYTxd7r/QEkucacPez16QZyNN21IgZdmcn
-         572UoyXFdxJrAvUt1DtZw4KiX82M7w24ajn6WrlG/mIHMHF81d/SDWtbGnupwj+VELyE
-         yVwfCecGWLWoABPkzqRt79FUCBfLBoM6DXeenhtuI03gSPaW0N1ZdefdHnmqXr7dIK/i
-         zV16CNJk6iOaCEOKV5f/lYQp2WdNP38Hbk/X5WHbdshk7LchrIng+WS6yNDSOWpfskSv
-         nnbg==
+        bh=InO4fB71UppySdmBaFe7IJBmYOMGORvt2/2z9f7w8Mo=;
+        b=WDP0Jj/72CwoAduZqkX03b85dhAPk5h0OFjQ0w2iKJnTY5cqgURnS6BbD3pTlMfyES
+         RI32KKl+Oo6XtnJIAxbxKl9/xJMIq5sXVBr99uaesy48VChj2vrVnO1ZAzkM/BP/gu9D
+         Bcl45NfCpDEHN0zpd8v5/hR3xoLavO0GWjcOonKW6vgPIGy8CBXggPwmDspZZvxnEpNE
+         oqRciRXdI1PxAHyWx9TFSRrLI1lVM1oLFeaK2HtauY/eTEd3bG1iw1yL1Qi79VL9pAEe
+         VY1m5HIFRBHdRyUVNR2zGAwOOOr+cZwBa8SvxrbEjuTeJCSckn/B9w7f7kLLKyM0RjIv
+         I/hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690776943; x=1691381743;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1690777022; x=1691381822;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RMYX8jg3dCCRuMtGRbFlfbd9q+spdF7dLaJz3ilyQ9s=;
-        b=PcBrCLnDKgQqk/uZaHbqAjqdvbw50O9aT4XiLw/7OjxKzvLbcR3CAKsD4UEtQ/f1Mh
-         9dIh1cpyt+5mS6mVi2QHuKBZ7pP9yj5kwQj/G3GeE2lrawcgZwBWqqBMioIrvwVaMIi6
-         GU4URShg8Cuy8+SuqbP/7sX40QY4VISgmObD7Y/mQLu2FnwalMU2QAv54B1PTr6uzego
-         SD6j5WjowH6pkw24Jwmy4JUkTNy65qxzxRh4/m0MkiAIlfvT6urYXZ7zofAEseR/x/t3
-         rr33cC0bF7mRNzXzToLLFNpZt2EuCxFtsqB46ZnZo4LHBgVss96msSkw+ga8dB6r5pa9
-         iMfw==
-X-Gm-Message-State: ABy/qLYpays5YjUKA7s43hcSmz461w74wjeakcLLJ50OBXKVjauWad8B
-        WXvdb9EXHuEXdAIwBEMYAJ3ttg==
-X-Google-Smtp-Source: APBJJlGonw/NVp753YF2Y9RKp+a5ekUpZME5M2yzcts8myZGrL29w0aXo/ctx0eEWpMecqVnI/Jw1Q==
-X-Received: by 2002:a19:6501:0:b0:4f8:71cc:2b6e with SMTP id z1-20020a196501000000b004f871cc2b6emr5022274lfb.33.1690776943055;
-        Sun, 30 Jul 2023 21:15:43 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id h11-20020ac25d6b000000b004fa4323ec97sm1899712lft.301.2023.07.30.21.15.42
+        bh=InO4fB71UppySdmBaFe7IJBmYOMGORvt2/2z9f7w8Mo=;
+        b=c2jqVYwGFbhAHwfDiy/h6zybm1z/HacmNKxjbNqBMwXsF0ixGRrWCm4yLEu+/n7c8j
+         hCDV0EGY/ruV9xOLMVhwwmaReui8iwvxirg0o7YK3FhdVkDtJFWq/2qvYDPSMBt+mabn
+         9McS2ea/jmGI82OvEGSfFaPHE626pU6d30uVZS91nzJasnzUbqKC04hrN/dhbL2EN38Q
+         uCxM+SrtPf+noXAiQZRTNkj/RwrLxHfzqNususMTUcmn4VSv4bGe2BR9wXsUiyad9faC
+         tJB5662BUICAxZaGowImW6FJ0zw6zrQptZi8k+kHHbIs1kYBOnbXoEXtjjOp1zGBqd1T
+         wssg==
+X-Gm-Message-State: ABy/qLYadRQGokM1eWUBzX3HkT2sN9ByKcBw24/Qk44hS/QhmieQw9D6
+        iYU45JGfmFagzSTvDjCon/w=
+X-Google-Smtp-Source: APBJJlHCKP6JrqL7v8nAHmmKHENRxl+XH/aY87MHs8R2HMC1XY+gkjsGpAxlhGUtJHy6fzP3Kq5KnQ==
+X-Received: by 2002:a05:6a00:1147:b0:66a:6339:e8f9 with SMTP id b7-20020a056a00114700b0066a6339e8f9mr9671743pfm.0.1690777021642;
+        Sun, 30 Jul 2023 21:17:01 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e3-20020aa78c43000000b00682562bf477sm6588959pfd.82.2023.07.30.21.16.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 30 Jul 2023 21:15:42 -0700 (PDT)
-Message-ID: <de406c53-023d-f477-17f2-7d6dabf838bd@linaro.org>
-Date:   Mon, 31 Jul 2023 07:15:42 +0300
+        Sun, 30 Jul 2023 21:17:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <0a07880d-1e6a-25d5-18c7-cf0bfa58cee9@roeck-us.net>
+Date:   Sun, 30 Jul 2023 21:16:59 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH RFC v5 09/10] drm/msm/dpu: Use DRM solid_fill property
-Content-Language: en-GB
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     quic_abhinavk@quicinc.com, ppaalanen@gmail.com,
-        contact@emersion.fr, laurent.pinchart@ideasonboard.com,
-        sebastian.wick@redhat.com, ville.syrjala@linux.intel.com,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        wayland-devel@lists.freedesktop.org
-References: <20230728-solid-fill-v5-0-053dbefa909c@quicinc.com>
- <20230728-solid-fill-v5-9-053dbefa909c@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230728-solid-fill-v5-9-053dbefa909c@quicinc.com>
+Content-Language: en-US
+To:     paulmck@kernel.org
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org
+References: <ZMJWet00+9yIl/9c@duo.ucw.cz>
+ <78722041-D1F7-45FA-BA1C-41B92209BA6C@joelfernandes.org>
+ <0751f5a8-2727-4a08-8bb8-50bbd4244c9c@paulmck-laptop>
+ <67eba84a-ae24-2983-a756-463f39f3ca71@roeck-us.net>
+ <ebe4a969-8a24-4bb8-8dbe-f77db89f65c9@paulmck-laptop>
+ <2f4b012e-1f95-30aa-3f43-c31e84cb2c42@roeck-us.net>
+ <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
+ <6d45f1d0-25e5-8603-0fbb-73374be00503@roeck-us.net>
+ <bfa768e7-fc4f-4511-ad3a-67772f41d50c@paulmck-laptop>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 6.4 000/227] 6.4.7-rc1 review
+In-Reply-To: <bfa768e7-fc4f-4511-ad3a-67772f41d50c@paulmck-laptop>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/07/2023 20:02, Jessica Zhang wrote:
-> Drop DPU_PLANE_COLOR_FILL_FLAG and check the DRM solid_fill property to
-> determine if the plane is solid fill. In addition drop the DPU plane
-> color_fill field as we can now use drm_plane_state.solid_fill instead,
-> and pass in drm_plane_state.alpha to _dpu_plane_color_fill_pipe() to
-> allow userspace to configure the alpha value for the solid fill color.
+On 7/30/23 20:54, Paul E. McKenney wrote:
+> On Thu, Jul 27, 2023 at 09:22:52PM -0700, Guenter Roeck wrote:
+>> On 7/27/23 13:33, Paul E. McKenney wrote:
+>> [ ... ]
+>>
+>>> So which of the following Kconfig options is defined in your .config?
+>>> CONFIG_TASKS_RCU, CONFIG_TASKS_RUDE_RCU, and CONFIG_TASKS_TRACE_RCU.
+>>>
+>>
+>> Only CONFIG_TASKS_RCU. I added another log message after call_rcu_tasks().
+>> It never returns from that function.
+>>
+>> [    1.168993] Running RCU synchronous self tests
+>> [    1.169219] Running RCU synchronous self tests
+>> [    1.285795] smpboot: CPU0: Intel Xeon Processor (Cascadelake) (family: 0x6, model: 0x55, stepping: 0x6)
+>> [    1.302827] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1.
+>> [    1.304526] Running RCU Tasks wait API self tests
+>>
+>> ... and then nothing for at least 10 minutes (then I gave up and stopped the test).
+>>
+>> Qemu command line:
+>>
+>> qemu-system-x86_64 -kernel \
+>>       arch/x86/boot/bzImage -M q35 -cpu Cascadelake-Server -no-reboot \
+>>       -snapshot -device e1000e,netdev=net0 -netdev user,id=net0 -m 256 \
+>>       -drive file=rootfs.iso,format=raw,if=ide,media=cdrom \
+>>       --append "earlycon=uart8250,io,0x3f8,9600n8 panic=-1 slub_debug=FZPUA root=/dev/sr0 rootwait console=ttyS0 noreboot" \
+>>       -d unimp,guest_errors -nographic -monitor none
+>>
+>> Again, this doesn't happen all the time. With Cascadelake-Server
+>> I see it maybe once every 5 boot attempts. I tried with qemu v8.0
+>> and v8.1. Note that it does seem to happen with various CPU types,
+>> only for some it seems to me more likely to happen (so maybe the
+>> CPU type was a red herring). It does seem to depend on the system
+>> load, and happen more often if the system is under heavy load.
 > 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c | 24 ++++++++++++++++++------
->   1 file changed, 18 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> index 114c803ff99b..95fc0394d13e 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c
-> @@ -42,7 +42,6 @@
->   #define SHARP_SMOOTH_THR_DEFAULT	8
->   #define SHARP_NOISE_THR_DEFAULT	2
->   
-> -#define DPU_PLANE_COLOR_FILL_FLAG	BIT(31)
->   #define DPU_ZPOS_MAX 255
->   
->   /*
-> @@ -82,7 +81,6 @@ struct dpu_plane {
->   
->   	enum dpu_sspp pipe;
->   
-> -	uint32_t color_fill;
->   	bool is_error;
->   	bool is_rt_pipe;
->   	const struct dpu_mdss_cfg *catalog;
-> @@ -606,6 +604,20 @@ static void _dpu_plane_color_fill_pipe(struct dpu_plane_state *pstate,
->   	_dpu_plane_setup_scaler(pipe, fmt, true, &pipe_cfg, pstate->rotation);
->   }
->   
-> +static uint32_t _dpu_plane_get_bgr_fill_color(struct drm_solid_fill solid_fill)
-
-As I commented for v4 (please excuse me for not responding to your email 
-at thattime), we can return abgr here, taking plane->state->alpha into 
-account.
-
-> +{
-> +	uint32_t ret = 0;
-> +	uint8_t b = solid_fill.b >> 24;
-> +	uint8_t g = solid_fill.g >> 24;
-> +	uint8_t r = solid_fill.r >> 24;
-> +
-> +	ret |= b << 16;
-> +	ret |= g << 8;
-> +	ret |= r;
-> +
-> +	return ret;
-> +}
-> +
->   /**
->    * _dpu_plane_color_fill - enables color fill on plane
->    * @pdpu:   Pointer to DPU plane object
-> @@ -977,9 +989,9 @@ void dpu_plane_flush(struct drm_plane *plane)
->   	if (pdpu->is_error)
->   		/* force white frame with 100% alpha pipe output on error */
->   		_dpu_plane_color_fill(pdpu, 0xFFFFFF, 0xFF);
-> -	else if (pdpu->color_fill & DPU_PLANE_COLOR_FILL_FLAG)
-> -		/* force 100% alpha */
-> -		_dpu_plane_color_fill(pdpu, pdpu->color_fill, 0xFF);
-> +	else if (drm_plane_solid_fill_enabled(plane->state))
-> +		_dpu_plane_color_fill(pdpu, _dpu_plane_get_bgr_fill_color(plane->state->solid_fill),
-> +				plane->state->alpha);
->   	else {
->   		dpu_plane_flush_csc(pdpu, &pstate->pipe);
->   		dpu_plane_flush_csc(pdpu, &pstate->r_pipe);
-> @@ -1024,7 +1036,7 @@ static void dpu_plane_sspp_update_pipe(struct drm_plane *plane,
->   	}
->   
->   	/* override for color fill */
-> -	if (pdpu->color_fill & DPU_PLANE_COLOR_FILL_FLAG) {
-> +	if (drm_plane_solid_fill_enabled(plane->state)) {
->   		_dpu_plane_set_qos_ctrl(plane, pipe, false);
->   
->   		/* skip remaining processing on color fill */
+> Hmmm...  What kernel are you using as your qemu/KVM hypervisor?
 > 
 
--- 
-With best wishes
-Dmitry
+Not sure I understand the question. KVM is disabled in my systems.
+The host CPUs are Ryzen 3900X and 5900X, but I don't really see why
+that would matter.
+
+> And I echo Joel's requests for your .config file.
+> 
+
+Did you see the e-mail I sent about this problem earlier today ?
+
+https://lore.kernel.org/lkml/3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net/
+
+I think I'll declare this to be a problem with my test environment and disable
+RCU debugging.
+
+Thanks,
+Guenter
 
