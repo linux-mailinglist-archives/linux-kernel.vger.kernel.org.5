@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 291F7769E2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D647769EF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbjGaRFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 13:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58434 "EHLO
+        id S233952AbjGaRIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233911AbjGaRFA (ORCPT
+        with ESMTP id S234274AbjGaRIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:05:00 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878C019A1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:04:07 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d3563cb3748so520802276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690823044; x=1691427844;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KfSgWNMsFhJfp3i+4pg02RKqbKjloChlJGxRUeeMH+8=;
-        b=XmxsSZ8YI1gTXEnTcgvYTdFsp7D/Gtnnl+yTAX1w8hl10rqnm0I2V0S1CRpdRB0nIq
-         DbUwMq/ZmN1VWeIcZgVvFGltYhB6Xf0Dr9C5TLMvkQU4xTHNB1OHqklHixYf/XqiRiL8
-         D+efNUrTdedEpvVEg6ZlmoO1BhLwXwzhYaFQ2Kji8qkCvEBH/m/mUxuHBcrR/kXMtxUW
-         8GiV3bb9VhJjaJ2zKE596RYBDeSSbSKtkVq9Z9tTnW+Jnl7/Bk+2hncZuuZyzXycRMoG
-         E6WZIFuMQhTTsoJXgRaSgq9ARNAcGMJDvJ0POZ4SMvMbH8RN5fkcH/U4Lm0JuR47ecd/
-         2WnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690823044; x=1691427844;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KfSgWNMsFhJfp3i+4pg02RKqbKjloChlJGxRUeeMH+8=;
-        b=lA9lzDMzsXVm3y6ixEBxHw50gYlYFqMURGhLvk4epy3ibEr/dI39BkXXYKNpNVGRh7
-         +k2P0I6UmOAnzJI/JPYBTsUdkZCBHkZgROaA0IzDSvYQ6r+FoeVkEwcotQeRfUG4h7SV
-         ppqgFktHXbmUnF8lmWu1YgTuLvMXDuR3H1wAHwmUIPbjRDMXZpAcces+0S6sLcKvZlq6
-         +twiLQob4vRO1KRzJ19IznVFo9O3uengM+BiuSabs7KFnXwHFSvfbJsHD1Cz6ey3YISe
-         JsLPC/01PNXp08Dl2UB2dPZvm4fTDqsFwRdw8/vJHeKPp76tYM0CwxxqF9YUB2dC5Ekx
-         U1Qw==
-X-Gm-Message-State: ABy/qLYNWDSEq6hkJmmD9wBtZ3TS1i6yAq6Gr93OBE8lPtuZuq2bvvRn
-        A56wGdSfAjw4SSLPB43jo028nH80580=
-X-Google-Smtp-Source: APBJJlES9j9tNYULGAVq4lgAnEqvnPcEJ6pz6+LhC1e/NDHHnYuoI1LUAaGS4uysn5IBZCe1/Lm/mrJsitU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:11ca:b0:d09:b19:fe2c with SMTP id
- n10-20020a05690211ca00b00d090b19fe2cmr63513ybu.12.1690823044560; Mon, 31 Jul
- 2023 10:04:04 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 10:04:02 -0700
-In-Reply-To: <20230731-91b64a6b787ba7e23b285785@orel>
-Mime-Version: 1.0
-References: <20230729003643.1053367-1-seanjc@google.com> <20230729003643.1053367-10-seanjc@google.com>
- <20230731-91b64a6b787ba7e23b285785@orel>
-Message-ID: <ZMfpgu8bHH0jA8Si@google.com>
-Subject: Re: [PATCH v4 09/34] KVM: selftests: Add a selftest for guest prints
- and formatted asserts
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andrew Jones <ajones@ventanamicro.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Thomas Huth <thuth@redhat.com>,
-        "Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?=" <philmd@linaro.org>,
-        Aaron Lewis <aaronlewis@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        Mon, 31 Jul 2023 13:08:25 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E3E3C0F;
+        Mon, 31 Jul 2023 10:05:33 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VGiPtN023008;
+        Mon, 31 Jul 2023 17:04:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=9s+asaePODdRt5hKbett46tpTwR3OUK0tm4vj0uLeK0=;
+ b=k/ykxdVJmXBDN5+jqeWWkLscwdPXjiUVgnTHxKxsHygyyyw64GDiEmRfnEgGfD7St35k
+ dwjr7gYfl7DlxLGkxtUPz4xP58lJPZ5xv+jR8NDqVn4f7fKe85zz0aYIN1n/GDNL00zg
+ WmDU7BiHXwQmiy+Byh8YQoMtUrEirCaF7dnFjzq9HGUvdLcXkRvl2bxYROn3J1NosjQU
+ X+xQMru1uIfllAY1C0n/tJnpYt1l/Hspic7TgCcFp7gv0wTnzn9AAt/BiejupgQjPhp1
+ azDNu2Vbssl0yyJ+oQxHAG0pLcOvHNpHs9TYp+TNdakjEYn38mdFu0PeS6IzL3qMPcVE ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s6gr0rmdk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 17:04:42 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36VGn9NX006840;
+        Mon, 31 Jul 2023 17:04:41 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s6gr0rmcf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 17:04:41 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36VFv9N6015486;
+        Mon, 31 Jul 2023 17:04:40 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s5e3mmufr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 17:04:40 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36VH4dvN5505674
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Jul 2023 17:04:40 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CE40B5804B;
+        Mon, 31 Jul 2023 17:04:39 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BB7E958059;
+        Mon, 31 Jul 2023 17:04:38 +0000 (GMT)
+Received: from [9.61.57.205] (unknown [9.61.57.205])
+        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Mon, 31 Jul 2023 17:04:38 +0000 (GMT)
+Message-ID: <b1b92581-56f2-b684-573f-50a66ca9fbf2@linux.vnet.ibm.com>
+Date:   Mon, 31 Jul 2023 13:04:38 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v4] integrity: Always reference the blacklist keyring with
+ appraisal
+To:     Eric Snowberg <eric.snowberg@oracle.com>, zohar@linux.ibm.com
+Cc:     dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, roberto.sassu@huawei.com,
+        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20230726211725.393056-1-eric.snowberg@oracle.com>
+Content-Language: en-US
+From:   Nayna <nayna@linux.vnet.ibm.com>
+In-Reply-To: <20230726211725.393056-1-eric.snowberg@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: m8Brc2qtqorRhLNe2PYoQTFYxuCsdDBQ
+X-Proofpoint-ORIG-GUID: mEL0qzk3mTtVM_Rrcnb0-7cr0iryTkCT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-31_09,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
+ spamscore=0 suspectscore=0 malwarescore=0 clxscore=1011 mlxscore=0
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307310149
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,98 +98,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023, Andrew Jones wrote:
-> On Fri, Jul 28, 2023 at 05:36:18PM -0700, Sean Christopherson wrote:
-> > From: Aaron Lewis <aaronlewis@google.com>
-> > 
-> > Add a test to exercise the various features in KVM selftest's local
-> > snprintf() and compare them to LIBC's snprintf() to ensure they behave
-> > the same.
-> > 
-> > This is not an exhaustive test.  KVM's local snprintf() does not
-> > implement all the features LIBC does, e.g. KVM's local snprintf() does
-> > not support floats or doubles, so testing for those features were
-> > excluded.
-> > 
-> > Testing was added for the features that are expected to work to
-> > support a minimal version of printf() in the guest.
-> > 
-> > Signed-off-by: Aaron Lewis <aaronlewis@google.com>
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >  tools/testing/selftests/kvm/Makefile          |   1 +
-> >  .../testing/selftests/kvm/guest_print_test.c  | 223 ++++++++++++++++++
-> >  2 files changed, 224 insertions(+)
-> >  create mode 100644 tools/testing/selftests/kvm/guest_print_test.c
-> 
-> I added this diff to this patch
-> 
-> diff --git a/tools/testing/selftests/kvm/guest_print_test.c b/tools/testing/selftests/kvm/guest_print_test.c
-> index 3a9a5db9794e..602a23ea9f01 100644
-> --- a/tools/testing/selftests/kvm/guest_print_test.c
-> +++ b/tools/testing/selftests/kvm/guest_print_test.c
-> @@ -115,7 +115,7 @@ static void run_test(struct kvm_vcpu *vcpu, const char *expected_printf,
->         while (1) {
->                 vcpu_run(vcpu);
->  
-> -               TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
-> +               TEST_ASSERT(run->exit_reason == UCALL_EXIT_REASON,
->                             "Unexpected exit reason: %u (%s),\n",
->                             run->exit_reason,
->                             exit_reason_str(run->exit_reason));
-> @@ -161,7 +161,7 @@ static void test_limits(void)
->         run = vcpu->run;
->         vcpu_run(vcpu);
->  
-> -       TEST_ASSERT(run->exit_reason == KVM_EXIT_IO,
-> +       TEST_ASSERT(run->exit_reason == UCALL_EXIT_REASON,
->                     "Unexpected exit reason: %u (%s),\n",
->                     run->exit_reason,
->                     exit_reason_str(run->exit_reason));
-> diff --git a/tools/testing/selftests/kvm/include/ucall_common.h b/tools/testing/selftests/kvm/include/ucall_common.h
-> index 4cf69fa8bfba..4adf526dc378 100644
-> --- a/tools/testing/selftests/kvm/include/ucall_common.h
-> +++ b/tools/testing/selftests/kvm/include/ucall_common.h
-> @@ -6,8 +6,19 @@
->   */
->  #ifndef SELFTEST_KVM_UCALL_COMMON_H
->  #define SELFTEST_KVM_UCALL_COMMON_H
-> +#include <linux/kvm.h>
->  #include "test_util.h"
->  
-> +#if defined(__aarch64__)
-> +#define UCALL_EXIT_REASON      KVM_EXIT_MMIO
-> +#elif defined(__x86_64__)
-> +#define UCALL_EXIT_REASON      KVM_EXIT_IO
-> +#elif defined(__s390x__)
-> +#define UCALL_EXIT_REASON      KVM_EXIT_S390_SIEIC
-> +#elif defined(__riscv)
-> +#define UCALL_EXIT_REASON      KVM_EXIT_RISCV_SBI
-> +#endif
+
+On 7/26/23 17:17, Eric Snowberg wrote:
+> Commit 273df864cf746 ("ima: Check against blacklisted hashes for files with
+> modsig") introduced an appraise_flag option for referencing the blacklist
+> keyring.  Any matching binary found on this keyring fails signature
+> validation. This flag only works with module appended signatures.
+>
+> An important part of a PKI infrastructure is to have the ability to do
+> revocation at a later time should a vulnerability be found.  Expand the
+> revocation flag usage to all appraisal functions. The flag is now
+> enabled by default. Setting the flag with an IMA policy has been
+> deprecated. Without a revocation capability like this in place, only
+> authenticity can be maintained. With this change, integrity can now be
+> achieved with digital signature based IMA appraisal.
+>
+> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+> ---
+> v4 changes:
+>    Fixed typo
+>    Also did some performance testing with this patch. With the associative array
+>    implementation used within the keyring code, there doesn't seem to be much of a
+>    difference between doing  an appraisal with an empty blacklist keyring and one
+>    containing 1500 entries.  At this time it is unknown how many entries a user
+>    would place in this keyring, but this seemed like a bigger number than most use
+>    cases.  With the 1500 entries, there were only 7 lookups to get through the
+>    entire list for a file not contained within it.  For something that was
+>    on the list, there was an average of 4 lookups and a single string compare.
+>    Based on this testing, IMHO, there could be a lot more entries added to the
+>    blacklist keyring without any real performance issues.
+
+Nice to see the performance test results.
+
+Reviewed-by: Nayna Jain <nayna@linux.ibm.com>
+
+Thanks & Regards,
+
+      - Nayna
+
+>
+> v3 changes:
+>    No longer display appraise_flag=check_blacklist in the policy
+>
+> v2 changes:
+>    Update the "case Opt_apprase_flag"
+>    Removed "appraise_flag=" in the powerpc arch specific policy rules
+> ---
+>   Documentation/ABI/testing/ima_policy  |  6 +++---
+>   arch/powerpc/kernel/ima_arch.c        |  8 ++++----
+>   security/integrity/ima/ima_appraise.c | 12 +++++++-----
+>   security/integrity/ima/ima_policy.c   | 17 +++++------------
+>   4 files changed, 19 insertions(+), 24 deletions(-)
+>
+> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> index 49db0ff288e5..c2385183826c 100644
+> --- a/Documentation/ABI/testing/ima_policy
+> +++ b/Documentation/ABI/testing/ima_policy
+> @@ -57,9 +57,9 @@ Description:
+>   				stored in security.ima xattr. Requires
+>   				specifying "digest_type=verity" first.)
+>
+> -			appraise_flag:= [check_blacklist]
+> -			Currently, blacklist check is only for files signed with appended
+> -			signature.
+> +			appraise_flag:= [check_blacklist] (deprecated)
+> +			Setting the check_blacklist flag is no longer necessary.
+> +			All appraisal functions set it by default.
+>   			digest_type:= verity
+>   			    Require fs-verity's file digest instead of the
+>   			    regular IMA file hash.
+> diff --git a/arch/powerpc/kernel/ima_arch.c b/arch/powerpc/kernel/ima_arch.c
+> index 957abd592075..b7029beed847 100644
+> --- a/arch/powerpc/kernel/ima_arch.c
+> +++ b/arch/powerpc/kernel/ima_arch.c
+> @@ -23,9 +23,9 @@ bool arch_ima_get_secureboot(void)
+>    * is not enabled.
+>    */
+>   static const char *const secure_rules[] = {
+> -	"appraise func=KEXEC_KERNEL_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
+> +	"appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig|modsig",
+>   #ifndef CONFIG_MODULE_SIG
+> -	"appraise func=MODULE_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
+> +	"appraise func=MODULE_CHECK appraise_type=imasig|modsig",
+>   #endif
+>   	NULL
+>   };
+> @@ -49,9 +49,9 @@ static const char *const trusted_rules[] = {
+>   static const char *const secure_and_trusted_rules[] = {
+>   	"measure func=KEXEC_KERNEL_CHECK template=ima-modsig",
+>   	"measure func=MODULE_CHECK template=ima-modsig",
+> -	"appraise func=KEXEC_KERNEL_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
+> +	"appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig|modsig",
+>   #ifndef CONFIG_MODULE_SIG
+> -	"appraise func=MODULE_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
+> +	"appraise func=MODULE_CHECK appraise_type=imasig|modsig",
+>   #endif
+>   	NULL
+>   };
+> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
+> index 491c1aca0b1c..870dde67707b 100644
+> --- a/security/integrity/ima/ima_appraise.c
+> +++ b/security/integrity/ima/ima_appraise.c
+> @@ -458,11 +458,13 @@ int ima_check_blacklist(struct integrity_iint_cache *iint,
+>   		ima_get_modsig_digest(modsig, &hash_algo, &digest, &digestsize);
+>
+>   		rc = is_binary_blacklisted(digest, digestsize);
+> -		if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
+> -			process_buffer_measurement(&nop_mnt_idmap, NULL, digest, digestsize,
+> -						   "blacklisted-hash", NONE,
+> -						   pcr, NULL, false, NULL, 0);
+> -	}
+> +	} else if (iint->flags & IMA_DIGSIG_REQUIRED && iint->ima_hash)
+> +		rc = is_binary_blacklisted(iint->ima_hash->digest, iint->ima_hash->length);
 > +
->  /* Common ucalls */
->  enum {
->         UCALL_NONE,
-> 
-> and then compiled the test for riscv and it passed. I also ran all other
-> riscv tests successfully.
-
-Can I have your SoB for the ucall_common.h patch?  I'll write a changelog and fold
-in a separate prep patch for that change.
-
-> > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> > index f65889f5a083..f2a8b3262f17 100644
-> > --- a/tools/testing/selftests/kvm/Makefile
-> > +++ b/tools/testing/selftests/kvm/Makefile
-> > @@ -123,6 +123,7 @@ TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
-> >  TEST_GEN_PROGS_x86_64 += demand_paging_test
-> >  TEST_GEN_PROGS_x86_64 += dirty_log_test
-> >  TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
-> > +TEST_GEN_PROGS_x86_64 += guest_print_test
-
-Argh, this is why ARM didn't fail for me, the test was only built for x86.  I'll
-double check that ARM works with the above, and also enable the test for all
-architectures.  If the printf stuff doesn't work on s390, then we definitely want
-to know before this is fully merged.
-
-Thanks Drew!
+> +	if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
+> +		process_buffer_measurement(&nop_mnt_idmap, NULL, digest, digestsize,
+> +					   "blacklisted-hash", NONE,
+> +					   pcr, NULL, false, NULL, 0);
+>
+>   	return rc;
+>   }
+> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+> index c9b3bd8f1bb9..69452b79686b 100644
+> --- a/security/integrity/ima/ima_policy.c
+> +++ b/security/integrity/ima/ima_policy.c
+> @@ -1280,7 +1280,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+>   				     IMA_FSNAME | IMA_GID | IMA_EGID |
+>   				     IMA_FGROUP | IMA_DIGSIG_REQUIRED |
+>   				     IMA_PERMIT_DIRECTIO | IMA_VALIDATE_ALGOS |
+> -				     IMA_VERITY_REQUIRED))
+> +				     IMA_CHECK_BLACKLIST | IMA_VERITY_REQUIRED))
+>   			return false;
+>
+>   		break;
+> @@ -1355,7 +1355,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
+>
+>   	/* Ensure that combinations of flags are compatible with each other */
+>   	if (entry->flags & IMA_CHECK_BLACKLIST &&
+> -	    !(entry->flags & IMA_MODSIG_ALLOWED))
+> +	    !(entry->flags & IMA_DIGSIG_REQUIRED))
+>   		return false;
+>
+>   	/*
+> @@ -1803,11 +1803,11 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>   				if (entry->flags & IMA_VERITY_REQUIRED)
+>   					result = -EINVAL;
+>   				else
+> -					entry->flags |= IMA_DIGSIG_REQUIRED;
+> +					entry->flags |= IMA_DIGSIG_REQUIRED | IMA_CHECK_BLACKLIST;
+>   			} else if (strcmp(args[0].from, "sigv3") == 0) {
+>   				/* Only fsverity supports sigv3 for now */
+>   				if (entry->flags & IMA_VERITY_REQUIRED)
+> -					entry->flags |= IMA_DIGSIG_REQUIRED;
+> +					entry->flags |= IMA_DIGSIG_REQUIRED | IMA_CHECK_BLACKLIST;
+>   				else
+>   					result = -EINVAL;
+>   			} else if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
+> @@ -1816,18 +1816,13 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
+>   					result = -EINVAL;
+>   				else
+>   					entry->flags |= IMA_DIGSIG_REQUIRED |
+> -						IMA_MODSIG_ALLOWED;
+> +						IMA_MODSIG_ALLOWED | IMA_CHECK_BLACKLIST;
+>   			} else {
+>   				result = -EINVAL;
+>   			}
+>   			break;
+>   		case Opt_appraise_flag:
+>   			ima_log_string(ab, "appraise_flag", args[0].from);
+> -			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
+> -			    strstr(args[0].from, "blacklist"))
+> -				entry->flags |= IMA_CHECK_BLACKLIST;
+> -			else
+> -				result = -EINVAL;
+>   			break;
+>   		case Opt_appraise_algos:
+>   			ima_log_string(ab, "appraise_algos", args[0].from);
+> @@ -2271,8 +2266,6 @@ int ima_policy_show(struct seq_file *m, void *v)
+>   	}
+>   	if (entry->flags & IMA_VERITY_REQUIRED)
+>   		seq_puts(m, "digest_type=verity ");
+> -	if (entry->flags & IMA_CHECK_BLACKLIST)
+> -		seq_puts(m, "appraise_flag=check_blacklist ");
+>   	if (entry->flags & IMA_PERMIT_DIRECTIO)
+>   		seq_puts(m, "permit_directio ");
+>   	rcu_read_unlock();
