@@ -2,122 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39C3C76A0B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2D376A0B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbjGaSw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:52:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38176 "EHLO
+        id S229727AbjGaSy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:54:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbjGaSwT (ORCPT
+        with ESMTP id S229486AbjGaSyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:52:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3731BF
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:51:32 -0700 (PDT)
+        Mon, 31 Jul 2023 14:54:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48019116
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:53:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690829492;
+        s=mimecast20190719; t=1690829617;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=LC0V9/+I+dQtKIWD+joyys4KFMU5FdyntHwr9WKxQxc=;
-        b=JfkdPeDtINpJANRKsQ0me2FKCE9ltAvEgxmoruVewZegKAm+GfoPFEgQEzV5Na5BSofGg3
-        YADLWffmoQBBqYwmcSGxbgxaLvCGh9d32skELpqD00Y0wUwrLOGyFL3Y6HLyJFUTVWmJDM
-        Ty4G3xkwMSgDDx12+xrPudxlScCBvuM=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-589-ObcA1mFJO2SfDrunWJa_nw-1; Mon, 31 Jul 2023 14:51:30 -0400
-X-MC-Unique: ObcA1mFJO2SfDrunWJa_nw-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-76cb292df12so27842485a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:51:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690829490; x=1691434290;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LC0V9/+I+dQtKIWD+joyys4KFMU5FdyntHwr9WKxQxc=;
-        b=armyjPjpkDpcNhcl9ntIGKNdcaAPaWiLWQEc3LT2qY6IIMhc0FTfg4GFOG5JDHziwe
-         N2BVdvVUkmxDJvxAdOGNpmA5E2iWVz/EyYOEGkaJ/Hy4ZjTDGGTW4+/h6UUAESON9eTe
-         eW/TOZqtIZ916jb+MMyj2+rzs7ZZjHv8PsoK5Qzk9olo0iVu+9PQ9CPwlJcpDy6OzGde
-         JPES6grOIFqgPIYFsREBYRZN3bo/+NLdElJWf5HAUzjyHODw62VANjay741rtnOTKKQy
-         Jft0asxv9Id+GfXBGyUH4rSVhunWptxRLTNOFGinkTFQUEuAwA3gr2sEog1zYmNMgV/V
-         fbOQ==
-X-Gm-Message-State: ABy/qLYwOQb0qljDJ1g1Is6b/8V6ofiEKFOm8gJ2oKMIhVxWWasjgRUy
-        DFrRfythb1/F23LR9wkmWofnReaO2kyBhAaT2QEGHYi2QerpTS8nRNbyokfPXL9rKQLzMqeOoCm
-        PVbW6cClEGmW5en9DZ2T2lE1E
-X-Received: by 2002:a05:620a:4620:b0:765:7783:a0ec with SMTP id br32-20020a05620a462000b007657783a0ecmr10445727qkb.4.1690829490222;
-        Mon, 31 Jul 2023 11:51:30 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEg5YxLF59WmVvWOZ3yqWHlLOSK+aX3Y8j9q9S8wpsyhiYv7b9KXyA/YO/AvBdJ4oXFKIWEAw==
-X-Received: by 2002:a05:620a:4620:b0:765:7783:a0ec with SMTP id br32-20020a05620a462000b007657783a0ecmr10445711qkb.4.1690829489916;
-        Mon, 31 Jul 2023 11:51:29 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id a16-20020a05620a125000b00767502e8601sm3513396qkl.35.2023.07.31.11.51.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 11:51:29 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 14:51:27 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
- fallout
-Message-ID: <ZMgCr4TxgNQZhhQK@x1n>
-References: <20230727212845.135673-1-david@redhat.com>
- <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
- <412bb30f-0417-802c-3fc4-a4e9d5891c5d@redhat.com>
- <66e26ad5-982e-fe2a-e4cd-de0e552da0ca@redhat.com>
- <ZMfc9+/44kViqjeN@x1n>
- <a3349cdb-f76f-eb87-4629-9ccba9f435a1@redhat.com>
- <CAHk-=wiREarX5MQx9AppxPzV6jXCCQRs5KVKgHoGYwATRL6nPg@mail.gmail.com>
+        bh=BQy4ypcVG07Cu5Bt5i+xr4atEbM6UoAiZqq8Pdbt1b4=;
+        b=HGhz9Bej95ZfTF1/4qwYVLZyjFVnH9MDAf9URB7MXNeZusx+v9g8viWNmYDSwqqYSA/dt5
+        99bdMKopkZNlhZ2QyQj7h2M3Ab5YzxImnLHQFZe9EMHuDcEzh5fkEvmSMH4AH4eS7oJ5RI
+        1cCkwng00mvzpyt5dUElQj060Gh2cpA=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-66-Zt5MW-84Nb-FXCAt4r8fqg-1; Mon, 31 Jul 2023 14:53:33 -0400
+X-MC-Unique: Zt5MW-84Nb-FXCAt4r8fqg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 48E7638117F2;
+        Mon, 31 Jul 2023 18:53:33 +0000 (UTC)
+Received: from RHTPC1VM0NT (unknown [10.22.8.217])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 88B6F40C1258;
+        Mon, 31 Jul 2023 18:53:32 +0000 (UTC)
+From:   Aaron Conole <aconole@redhat.com>
+To:     Adrian Moreno <amorenoz@redhat.com>
+Cc:     netdev@vger.kernel.org, dev@openvswitch.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <shuah@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pravin B Shelar <pshelar@ovn.org>,
+        Ilya Maximets <i.maximets@ovn.org>
+Subject: Re: [PATCH v2 net-next 5/5] selftests: openvswitch: add ct-nat test
+ case with ipv4
+References: <20230728115940.578658-1-aconole@redhat.com>
+        <20230728115940.578658-6-aconole@redhat.com>
+        <990b0e22-63ad-f747-4ea2-0c3ba78b0b37@redhat.com>
+Date:   Mon, 31 Jul 2023 14:53:31 -0400
+In-Reply-To: <990b0e22-63ad-f747-4ea2-0c3ba78b0b37@redhat.com> (Adrian
+        Moreno's message of "Fri, 28 Jul 2023 16:31:06 +0200")
+Message-ID: <f7t4jljc3pw.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiREarX5MQx9AppxPzV6jXCCQRs5KVKgHoGYwATRL6nPg@mail.gmail.com>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:23:59AM -0700, Linus Torvalds wrote:
-> So GUP-fast can only look at the page table data, and as such *has* to
-> fail if the page table is inaccessible.
-> 
-> But GUP in general? Why would it want to honor numa faulting?
-> Particularly by default, and _particularly_ for things like
-> FOLL_REMOTE.
+Adrian Moreno <amorenoz@redhat.com> writes:
 
-True.
+> On 7/28/23 13:59, Aaron Conole wrote:
+>> Building on the previous work, add a very simplistic NAT case
+>> using ipv4.  This just tests dnat transformation
+>> Signed-off-by: Aaron Conole <aconole@redhat.com>
+>> ---
+>>   .../selftests/net/openvswitch/openvswitch.sh  | 64 ++++++++++++++++
+>>   .../selftests/net/openvswitch/ovs-dpctl.py    | 75 +++++++++++++++++++
+>>   2 files changed, 139 insertions(+)
+>> diff --git a/tools/testing/selftests/net/openvswitch/openvswitch.sh
+>> b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+>> index 40a66c72af0f..dced4f612a78 100755
+>> --- a/tools/testing/selftests/net/openvswitch/openvswitch.sh
+>> +++ b/tools/testing/selftests/net/openvswitch/openvswitch.sh
+>> @@ -14,6 +14,7 @@ tests="
+>>   	arp_ping				eth-arp: Basic arp ping between two NS
+>>   	ct_connect_v4				ip4-ct-xon: Basic ipv4 tcp connection using ct
+>>   	connect_v4				ip4-xon: Basic ipv4 ping between two NS
+>> +	nat_connect_v4				ip4-nat-xon: Basic ipv4 tcp connection via NAT
+>>   	netlink_checks				ovsnl: validate netlink attrs and settings
+>>   	upcall_interfaces			ovs: test the upcall interfaces"
+>>   @@ -300,6 +301,69 @@ test_connect_v4 () {
+>>   	return 0
+>>   }
+>>   +# nat_connect_v4 test
+>> +#  - client has 1500 byte MTU
+>> +#  - server has 1500 byte MTU
+>> +#  - use ICMP to ping in each direction
+>> +#  - only allow CT state stuff to pass through new in c -> s
+>> +test_nat_connect_v4 () {
+>> +	which nc >/dev/null 2>/dev/null || return $ksft_skip
+>> +
+>> +	sbx_add "test_nat_connect_v4" || return $?
+>> +
+>> +	ovs_add_dp "test_nat_connect_v4" nat4 || return 1
+>> +	info "create namespaces"
+>> +	for ns in client server; do
+>> +		ovs_add_netns_and_veths "test_nat_connect_v4" "nat4" "$ns" \
+>> +		    "${ns:0:1}0" "${ns:0:1}1" || return 1
+>> +	done
+>> +
+>> +	ip netns exec client ip addr add 172.31.110.10/24 dev c1
+>> +	ip netns exec client ip link set c1 up
+>> +	ip netns exec server ip addr add 172.31.110.20/24 dev s1
+>> +	ip netns exec server ip link set s1 up
+>> +
+>> +	ip netns exec client ip route add default via 172.31.110.20
+>> +
+>> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+>> +		'in_port(1),eth(),eth_type(0x0806),arp()' '2' || return 1
+>> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+>> +		'in_port(2),eth(),eth_type(0x0806),arp()' '1' || return 1
+>> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+>> +		"ct_state(-trk),in_port(1),eth(),eth_type(0x0800),ipv4(dst=192.168.0.20)" \
+>> +		"ct(commit,nat(dst=172.31.110.20)),recirc(0x1)"
+>> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+>> +		"ct_state(-trk),in_port(2),eth(),eth_type(0x0800),ipv4()" \
+>> +		"ct(commit,nat),recirc(0x2)"
+>> +
+>> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+>> +		"recirc_id(0x1),ct_state(+trk-inv),in_port(1),eth(),eth_type(0x0800),ipv4()" "2"
+>> +	ovs_add_flow "test_nat_connect_v4" nat4 \
+>> +		"recirc_id(0x2),ct_state(+trk-inv),in_port(2),eth(),eth_type(0x0800),ipv4()" "1"
+>> +
+>> +	# do a ping
+>> +	ovs_sbx "test_nat_connect_v4" ip netns exec client ping 192.168.0.20 -c 3 || return 1
+>> +
+>> +	# create an echo server in 'server'
+>> +	echo "server" | \
+>> +		ovs_netns_spawn_daemon "test_nat_connect_v4" "server" \
+>> +				nc -lvnp 4443
+>> +	ovs_sbx "test_nat_connect_v4" ip netns exec client nc -i 1 -zv 192.168.0.20 4443 || return 1
+>> +
+>> +	# Now test in the other direction (should fail)
+>> +	echo "client" | \
+>> +		ovs_netns_spawn_daemon "test_nat_connect_v4" "client" \
+>> +				nc -lvnp 4443
+>> +	ovs_sbx "test_nat_connect_v4" ip netns exec client nc -i 1 -zv 172.31.110.10 4443
+>> +	if [ $? == 0 ]; then
+>> +	   info "connect to client was successful"
+>> +	   return 1
+>> +	fi
+>> +
+>> +	info "done..."
+>> +	return 0
+>> +}
+>> +
+>>   # netlink_validation
+>>   # - Create a dp
+>>   # - check no warning with "old version" simulation
+>> diff --git a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+>> index 6e258ab9e635..258c9ef263d9 100644
+>> --- a/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+>> +++ b/tools/testing/selftests/net/openvswitch/ovs-dpctl.py
+>> @@ -530,6 +530,81 @@ class ovsactions(nla):
+>>                           else:
+>>                               ctact["attrs"].append([scan[1], None])
+>>                           actstr = actstr[strspn(actstr, ", ") :]
+>> +                    # it seems strange to put this here, but nat() is a complex
+>> +                    # sub-action and this lets it sit anywhere in the ct() action
+>> +                    if actstr.startswith("nat"):
+>> +                        actstr = actstr[3:]
+>> +                        natact = ovsactions.ctact.natattr()
+>> +
+>> +                        if actstr.startswith("("):
+>> +                            t = None
+>> +                            actstr = actstr[1:]
+>> +                            if actstr.startswith("src"):
+>> +                                t = "OVS_NAT_ATTR_SRC"
+>> +                                actstr = actstr[3:]
+>> +                            elif actstr.startswith("dst"):
+>> +                                t = "OVS_NAT_ATTR_DST"
+>> +                                actstr = actstr[3:]
+>> +
+>> +                            actstr, ip_block_min = parse_extract_field(
+>> +                                actstr, "=", "([0-9a-fA-F:\.\[]+)", str, False
+>> +                            )
+>> +                            actstr, ip_block_max = parse_extract_field(
+>> +                                actstr, "-", "([0-9a-fA-F:\.\[]+)", str, False
+>> +                            )
+>> +
+>> +                            # [XXXX:YYY::Z]:123
+>> +                            # following RFC 3986
+>> +                            # More complete parsing, ala RFC5952 isn't
+>> +                            # supported.
+>> +                            if actstr.startswith("]"):
+>> +                                actstr = actstr[1:]
+>> +                            if ip_block_min is not None and \
+>> +                               ip_block_min.startswith("["):
+>> +                                ip_block_min = ip_block_min[1:]
+>> +                            if ip_block_max is not None and \
+>> +                               ip_block_max.startswith("["):
+>> +                                ip_block_max = ip_block_max[1:]
+>> +
+>> +                            actstr, proto_min = parse_extract_field(
+>> +                                actstr, ":", "(\d+)", int, False
+>> +                            )
+>> +                            actstr, proto_max = parse_extract_field(
+>> +                                actstr, "-", "(\d+)", int, False
+>> +                            )
+>
+> I'm still struggling to make this part work:
+> On the one hand, ipv6 seems not fully supported by ovs-dpctl.py. If I
+> try adding an ipv6 flow I end up needing to add a function such as as
+> the following and use it to parse "ipv6()" field:
 
-> 
-> In fact, I feel like this is what the real rule should be: we simply
-> define that get_user_pages_fast() is about looking up the page in the
-> page tables.
-> 
-> So if you want something that acts like a page table lookup, you use
-> that "fast" thing.  It's literally how it is designed. The whole - and
-> pretty much only - point of it is that it can be used with no locking
-> at all, because it basically acts like the hardware lookup does.
+Let's just drop the ipv6 stuff from the NAT action support, and we can
+add it later when I address the flow key side of it.
 
-Unfortunately I think at least kvm (besides the rest..) relies not only on
-numa balancing but also fast-gup.. :-( Please refer to hva_to_pfn() where
-it even supports fast-gup-only HVA translation when atomic==true set.
+> def convert_ipv6(data):
+>     ip, _, mask = data.partition('/')
+>     max_ip = pow(2, 128) - 1
+>
+>     if not ip:
+>         ip = mask = 0
+>     elif not mask:
+>         mask = max
+>     elif mask.isdigit():
+>         mask = (max_ip << (128 - int(mask))) & max_ip
+>
+>     return ipaddress.IPv6Address(ip).packed, ipaddress.IPv6Address(mask).packed
+>
+> OTOH, trying to support ipv6 makes ct ip/port range parsing more
+> complex, for instance, this action:
+> "ct(nat(src=10.0.0.240-10.0.0.254:32768-65535))"
+>
+> fails, because it's parsed as:
+> ip_block_min = 10.0.0.240
+> ip_block_max = 10.0.0.254:32768
+> proto_min = None
+> proto_max = 65535
+>
+> I would say we could drop ipv6 support for nat() action, making it
+> simpler to parse or first detect if we're parsing ipv4 or ipv6 and use
+> appropriate regexp on each case. E.g:
+> https://github.com/openvswitch/ovs/blob/d460c473ebf9e9ab16da44cbfbb13a4911352195/python/ovs/flow/decoders.py#L430-L486
 
-Thanks,
+ACK
 
--- 
-Peter Xu
+> Another approach would be to stop trying to be human friendly and use
+> an easier to parse syntax, something closer to key-value, e.g:
+> "ct(ip_block_min=10.0.0.240, ip_block_max=10.0.0.254, proto_min=32768,
+> proto_max=65535)". It'd be more verbose and not compatible with ovs
+> tooling but this is a testing tool afterall. WDYT?
+
+I do like that we can use the flow output from the running ovs-vswitchd
+to generate test cases.  I'd like, as much as possible, to try and keep
+it compatible.
+
+>> +
+>> +                            if t is not None:
+>> +                                natact["attrs"].append([t, None])
+>> +
+>> +                                if ip_block_min is not None:
+>> +                                    natact["attrs"].append(
+>> +                                        ["OVS_NAT_ATTR_IP_MIN", ip_block_min]
+>> +                                    )
+>> +                                if ip_block_max is not None:
+>> +                                    natact["attrs"].append(
+>> +                                        ["OVS_NAT_ATTR_IP_MAX", ip_block_max]
+>> +                                    )
+>> +                                if proto_min is not None:
+>> +                                    natact["attrs"].append(
+>> +                                        ["OVS_NAT_ATTR_PROTO_MIN", proto_min]
+>> +                                    )
+>> +                                if proto_max is not None:
+>> +                                    natact["attrs"].append(
+>> +                                        ["OVS_NAT_ATTR_PROTO_MAX", proto_max]
+>> +                                    )
+>> +
+>> +                            for natscan in (
+>> +                                ("persist", "OVS_NAT_ATTR_PERSISTENT"),
+>
+> odp-util.c defines this flag as "persistent", not sure if you intend
+> to keep it compatible at all.
+
+I will adjust when I resubmit.
+
+>> +                                ("hash", "OVS_NAT_ATTR_PROTO_HASH"),
+>> +                                ("random", "OVS_NAT_ATTR_PROTO_RANDOM"),
+>> +                            ):
+>> +                                if actstr.startswith(natscan[0]):
+>> +                                    actstr = actstr[len(natscan[0]) :]
+>> +                                    natact["attrs"].append([natscan[1], None])
+>> +                                    actstr = actstr[strspn(actstr, ", ") :]
+>> +
+>> +                        ctact["attrs"].append(["OVS_CT_ATTR_NAT", natact])
+>> +                        actstr = actstr[strspn(actstr, ",) ") :]
+>>                     self["attrs"].append(["OVS_ACTION_ATTR_CT",
+>> ctact])
+>>                   parsed = True
 
