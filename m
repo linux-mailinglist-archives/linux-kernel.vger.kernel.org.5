@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AFA7697A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D532C7697B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:35:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231883AbjGaNcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35822 "EHLO
+        id S232158AbjGaNe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbjGaNcT (ORCPT
+        with ESMTP id S230044AbjGaNe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:32:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974D210E3;
-        Mon, 31 Jul 2023 06:32:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Mon, 31 Jul 2023 09:34:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86E21709
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:34:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690810449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fzwvrlH1XSGlWSe56Wopyn1B7OdltVaU2XLlAlxd74o=;
+        b=LQGYG3xcfo0dwWCQA3mNYVrTyjyQ3MFjW2r3cmq3Gct7cCz1U0BRyK3tq0th98P90LeIsO
+        d5jLtnWI9dNdI86JSQtJBNEwF5WoVsdHRWDNJASjvj/nJeSgv/LfCv5DPMosJnM353rLN5
+        7g7tU2Ng80Mb0ys2vmW6AhqP3ANK+IE=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-342-facAzEGHPVC7lcet0k7VTQ-1; Mon, 31 Jul 2023 09:34:05 -0400
+X-MC-Unique: facAzEGHPVC7lcet0k7VTQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 23D926114E;
-        Mon, 31 Jul 2023 13:32:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B793C433C7;
-        Mon, 31 Jul 2023 13:32:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690810337;
-        bh=z+uAjZVNhz3LyIsdekBiHKjrJt8GwMtkgIpTiC3PAhA=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=kB01tzMRm0xGd46a/lcgXTdh7oLikepiXWJAdD8VSwE9ZBAEkWDo+TYXbogvXBgP9
-         AJ23A5d3Fq/rXkUPkZCk5FG6x+6wOgw05LSZhm/8oVNWbI1jQroLbsuHh3cscmQdt2
-         uRVnuLARcsiT1T1ydr16yNHdd7BwJUtENHPlZzBTzf+vtIX1GV9NmaO/ARfykaAFGt
-         m2NUtScqaxIMg7yiLb5xXR8tVV9P70OWi+gKX9fUuwToBmzCpKqv5jLqJNaDZsSM6U
-         O1ANB4DWnkC/flvt651yNsmqv6JmkQRc6yEgpwoXoHL+DKrdzi9C8ZtxDg1smtXDqI
-         ZhypNn1sURM7Q==
-Received: (nullmailer pid 2855850 invoked by uid 1000);
-        Mon, 31 Jul 2023 13:32:15 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 31911382C965;
+        Mon, 31 Jul 2023 13:34:04 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 87D58C57964;
+        Mon, 31 Jul 2023 13:34:02 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch>
+References: <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch> <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch> <20230718160737.52c68c73@kernel.org> <000000000000881d0606004541d1@google.com> <0000000000001416bb06004ebf53@google.com> <792238.1690667367@warthog.procyon.org.uk> <831028.1690791233@warthog.procyon.org.uk>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     dhowells@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     conor+dt@kernel.org, openbmc@lists.ozlabs.org, robh+dt@kernel.org,
-        tali.perry1@gmail.com, benjaminfair@google.com,
-        linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-        yuenn@google.com, linux-kernel@vger.kernel.org, joel@jms.id.au,
-        krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
-        venture@google.com, avifishman70@gmail.com
-In-Reply-To: <20230731122323.172834-2-tmaimon77@gmail.com>
-References: <20230731122323.172834-1-tmaimon77@gmail.com>
- <20230731122323.172834-2-tmaimon77@gmail.com>
-Message-Id: <169081033533.2855823.7340412529584491141.robh@kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-binding: pinctrl: Add NPCM8XX pinctrl and
- GPIO documentation
-Date:   Mon, 31 Jul 2023 07:32:15 -0600
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1125141.1690810441.1@warthog.procyon.org.uk>
+Date:   Mon, 31 Jul 2023 14:34:01 +0100
+Message-ID: <1125142.1690810441@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
 
-On Mon, 31 Jul 2023 15:23:22 +0300, Tomer Maimon wrote:
-> Added device tree binding documentation for Nuvoton Arbel BMC NPCM8XX
-> pinmux and GPIO controller.
-> 
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
-> ---
->  .../pinctrl/nuvoton,npcm845-pinctrl.yaml      | 215 ++++++++++++++++++
->  1 file changed, 215 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml
-> 
+> Is the MSG_CONFIRM needed to trigger this?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+It's not actually necessary.  The syz test was doing it.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml:77:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
+> Is this indeed trivially sidestepped if downgrading from splicing to
+> regular copying with fragmentation?
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pinctrl/nuvoton,npcm845-pinctrl.yaml: patternProperties: '-mux' does not match '[\\^$()*@]'
-	hint: Fixed strings belong in 'properties', not 'patternProperties'
-	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+That works.  The logging looks like:
 
-doc reference errors (make refcheckdocs):
+==>splice_to_socket() 5535
+udp_sendmsg(8,8)
+__ip_append_data(copy=-1,len=8, mtu=8192 skblen=8189 maxfl=8188)
+copy 8 = 9 - 0 - 1 - 0
+length 8 -= 8 + 0
+<==splice_to_socket() = 8
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230731122323.172834-2-tmaimon77@gmail.com
+It looks like pagedlen being non-zero might be the issue.
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+David
 
