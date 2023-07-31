@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA60E769183
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A79769184
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 11:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbjGaJUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 05:20:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
+        id S232315AbjGaJUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 05:20:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbjGaJUM (ORCPT
+        with ESMTP id S232217AbjGaJUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 05:20:12 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50B82D6A
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:18:26 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so6453397e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:18:26 -0700 (PDT)
+        Mon, 31 Jul 2023 05:20:15 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11FC10D3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:18:33 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9ba3d6157so62173441fa.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 02:18:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690795099; x=1691399899;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q+12FXMvr9ESJo689bLamp4E/dWbT1DX8iIWUzUEY94=;
-        b=Zr2w4Hhljr8LguATEiPtuaD7DaWFkoVMIE5v+jCbEI2GAdBZ+TU4wuBzoTYf4gZYH0
-         NMBPTsAQwHME1VcqEvbCCz46yCo7KYI9298u2Dyt8R2R2JRstMe3tgogrCYfXpb3ov4E
-         +jYwpoh7cjXt645E6KBNAhsuVvQtY5gKvzGXhePnUT5eZqL7wwFI3V9L0c3Om8mX0A0o
-         WO8e6oVwPpkKb6Epv1rdsQmQRRHU665MR2yV5OjqLVNR/VcMTIpIl63FcluGwEP6Qiqk
-         VcoiRBm7JfL+ELFCbFpxbJRppGkLOwx5Y8ZLrGUvKPFbBmqAMfFnmLbyJQ5WozcXD17N
-         Na0g==
+        d=linaro.org; s=google; t=1690795103; x=1691399903;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wRPl8ExMEKGkKxc8JLVP1HjAhzRX7LhJPQ6yu58Jr+8=;
+        b=egSCwLPGdbnxqM64YT6dE5oe7lKSwA62hHGnI98l4e/LQc2zzrG2ZEh44DsRvzk3zl
+         pgauphOAP4esHRpaJ9NeSki5u3yim7Jc0SThqCg2N35Msk1MvajdM8cXkWb9gxiCdw3D
+         MnvBJPzgfRXL0EXwZJhjbxtaBCe/x86dNCyMx0ZsBqO4FMT2UKvXojgZOzH5nU4l4mIY
+         36yw8U7e0Vs1QE6hnAqh2wOOTt2khpmqIfH/SYt1s8cui4q0V9e6YLbsDTS+WpJEgi2b
+         sOxyAufDeatZUEdsRzgnzMOjV9XjEkraK6vwx49P2qeyztY0HY4RuyCALJGynfQvDnhM
+         Mueg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690795099; x=1691399899;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q+12FXMvr9ESJo689bLamp4E/dWbT1DX8iIWUzUEY94=;
-        b=CyPjT6rKw4pbxqK6/NIUXLdF3kVKWt9zA5XLjsZn4TRxnSZmBqOPtEp5tTGCHVt1Xn
-         pvMi9afLYoHH1OdiVD4hySaVNP7I+Jru22ZQAkCrBqoGc2JgWg3TvCpTQfJegeyjyUlL
-         PgsrbYicbL9PIs9hoZhrpV+6rO6iEW+A3mq8c59027396D8vwRJVIHI/jSfxa/3LVHRN
-         in92m+2srYw7cDZRxSzOhN01gwG1r6egrfNVUWpEyje0j4JDrQzIo0bUntukU0vFPMdf
-         yxw4xag/fr9wmI9u1wRluVFG3FLqRmky01Rse9hD8SaJIBt7+P5oQHrHaKzKbub8pRD/
-         L8yg==
-X-Gm-Message-State: ABy/qLYSTOtQ6DqOi7iEAKKRvbj70Bvf3B5TsFw8Pd2pPqDzYZ6WaAmC
-        /huEGL12E86yfNl4gRF+iqMsC/bLGGq/SEDAAGd6aDm5
-X-Google-Smtp-Source: APBJJlHp0uEk5QeTIS0JLVRxJ9SPwseAAkLAO8wGjA6IYWrdeKTLShhJh2CQzrlnwtja2nd327DCjw==
-X-Received: by 2002:a05:6512:ba5:b0:4f8:5885:61e with SMTP id b37-20020a0565120ba500b004f85885061emr6210929lfv.40.1690795099597;
-        Mon, 31 Jul 2023 02:18:19 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:14b8:9aa7:6bf0:256d? ([2a01:e0a:982:cbb0:14b8:9aa7:6bf0:256d])
-        by smtp.gmail.com with ESMTPSA id q9-20020a1ce909000000b003fc04d13242sm13610289wmc.0.2023.07.31.02.18.18
+        d=1e100.net; s=20221208; t=1690795103; x=1691399903;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wRPl8ExMEKGkKxc8JLVP1HjAhzRX7LhJPQ6yu58Jr+8=;
+        b=EwvG1gyhb3g7ekHF2q7tn8R3SP62OOlsbheiF6CjNqVdz7+8WS3ygCgg0olB1j0A4U
+         bgDFEFCNW61kI1KCll3E6+/j1aG3wGHv1nfJ5DOKUcoT0Xpag0sJM21NlmvoA4EaZoWO
+         8kmgJEGYloBBgV4AF+xflA3rxhjXLovtMIbVdQber/x3V8D29L6hN6Re2HQ3+xGa9P4e
+         lmhzBG4YVKhNMxGwwtvHXajoj/ad0/qQqTpNenYDxI1w9bXZLNu6OHES/YiU6ikqENOD
+         gc8QC8+3VY71s1195wF1UGbAAFnq7XQW/h742Z8Mrd9UyZ6t1/bY7zygJUXW6lNUspnQ
+         47aA==
+X-Gm-Message-State: ABy/qLYB9dhaKiSzlqi1ALXwIlnREFWtMl+BOFkQvfhOxf4XEN3pmv/5
+        dlOlBUwzIPBpq1dUk3J0cU88uw==
+X-Google-Smtp-Source: APBJJlEpPr2ey8ryYxAtnp3sJxLbV2b6NuqDArd3fSGHQ8zEFlG4VTamWJZ8CEJqMF2Ls5WQqgVV0g==
+X-Received: by 2002:a05:651c:206:b0:2b9:c4ce:558f with SMTP id y6-20020a05651c020600b002b9c4ce558fmr5669884ljn.37.1690795102996;
+        Mon, 31 Jul 2023 02:18:22 -0700 (PDT)
+Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
+        by smtp.gmail.com with ESMTPSA id i26-20020a2e809a000000b002b9cc2f5c39sm2107563ljg.37.2023.07.31.02.18.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 02:18:18 -0700 (PDT)
-Message-ID: <a139cc8c-1106-d478-ed3b-40fea800707e@linaro.org>
-Date:   Mon, 31 Jul 2023 11:18:17 +0200
+        Mon, 31 Jul 2023 02:18:22 -0700 (PDT)
+Message-ID: <4377ba5a-deab-1f24-c785-c90965991af1@linaro.org>
+Date:   Mon, 31 Jul 2023 11:18:21 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v2 0/5] bluetooth: qca: enable WCN7850 support
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] soc: qcom: qmi_encdec: Restrict string length in decode
 Content-Language: en-US
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        Rocky Liao <rjliao@codeaurora.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Rob Herring <robh@kernel.org>
-References: <20230620-topic-sm8550-upstream-bt-v2-0-98b0043d31a4@linaro.org>
-Organization: Linaro Developer Services
-In-Reply-To: <20230620-topic-sm8550-upstream-bt-v2-0-98b0043d31a4@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Praveenkumar I <quic_ipkumar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     quic_varada@quicinc.com, quic_clew@quicinc.com
+References: <20230731091408.2458199-1-quic_ipkumar@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230731091408.2458199-1-quic_ipkumar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,46 +110,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 27/06/2023 10:15, Neil Armstrong wrote:
-> This serie enables WCN7850 on the Qualcomm SM8550 QRD
-> reference platform.
+On 31.07.2023 11:14, Praveenkumar I wrote:
+> The QMI TLV value for strings in a lot of qmi element info structures
+> account for null terminated strings with MAX_LEN + 1. If a string is
+> actually MAX_LEN + 1 length, this will cause an out of bounds access
+> when the NULL character is appended in decoding.
 > 
-> The WCN7850 is close to the WCN6855 but uses different
-> firmware names.
-
-Gentle ping,
-
-Thanks,
-Neil
-
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Chris Lew <quic_clew@quicinc.com>
+> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
 > ---
-> Changes in v2:
-> - Convert if/else and qca_is_*() macros by switch/case to simplify adding now BT SoCs
-> - Add bindings reviewed-by
-> - Link to v1: https://lore.kernel.org/r/20230620-topic-sm8550-upstream-bt-v1-0-4728564f8872@linaro.org
-> 
-> ---
-> Neil Armstrong (5):
->        dt-bindings: net: bluetooth: qualcomm: document WCN7850 chipset
->        bluetooth: qca: use switch case for soc type behavior
->        bluetooth: qca: add support for WCN7850
->        arm64: dts: qcom: sm8550: add UART14 nodes
->        arm64: dts: qcom: sm8550-qrd: add bluetooth support
-> 
->   .../bindings/net/bluetooth/qualcomm-bluetooth.yaml |  23 ++
->   arch/arm64/boot/dts/qcom/sm8550-qrd.dts            |  43 ++++
->   arch/arm64/boot/dts/qcom/sm8550.dtsi               |  30 +++
->   drivers/bluetooth/btqca.c                          |  82 +++++--
->   drivers/bluetooth/btqca.h                          |  30 +--
->   drivers/bluetooth/hci_qca.c                        | 250 ++++++++++++++++-----
->   6 files changed, 350 insertions(+), 108 deletions(-)
-> ---
-> base-commit: d4cee89031c80066ec461bb77b5e13a4f37d5fd2
-> change-id: 20230620-topic-sm8550-upstream-bt-dfc4305f9c14
-> 
-> Best regards,
+Fixes + Cc: stable?
 
+Konrad
