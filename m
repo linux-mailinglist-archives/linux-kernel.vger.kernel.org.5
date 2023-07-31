@@ -2,55 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EFF768A18
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EFA768A1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 04:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229815AbjGaClI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 22:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41498 "EHLO
+        id S229669AbjGaCqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 22:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbjGaClH (ORCPT
+        with ESMTP id S229454AbjGaCqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 22:41:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 430FD10D7;
-        Sun, 30 Jul 2023 19:40:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B999260E0A;
-        Mon, 31 Jul 2023 02:40:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2817FC433C8;
-        Mon, 31 Jul 2023 02:40:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690771251;
-        bh=J0ZdN6k+NXscFIa7xVIKz/qaVIETu93UOxamXbBvn2o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AJTp3ft/1lYJCYw86qMq7cQ63uMTMGhxjoq3jOE9P1+oSPudfBtKDO2sS2RApnVx1
-         /eVcB9vFYhumKtBsHk7+wwxvFt4zn1Hg4lZ88BUtnpgJodb7jnRrrXGUlzv0ccqN6G
-         Vv8NJ70nv2rpQjx03sBBfP2aExCqq2kwnJ1eC94id/CVzqhx4+TzZvurTO1uPdzYK+
-         dsgpBCCb8PprfgDzDW3zl53okqTMdcvyvaruKdXNs0LnIU56lBQaklelAXAXypRbqR
-         QZ7Avok5fwmDvaQ5QQYKSlyRRFeLCg/Z/9Cgeg5Qm/p/n3N2kgem0k9b+AL399lAmT
-         gXr1oQyIBS5pg==
-Date:   Sun, 30 Jul 2023 22:40:40 -0400
-From:   Guo Ren <guoren@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     David.Laight@aculab.com, will@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>
-Subject: Re: [PATCH] asm-generic: ticket-lock: Optimize
- arch_spin_value_unlocked
-Message-ID: <ZMcfKFWWUC0hI2kM@gmail.com>
-References: <20230719070001.795010-1-guoren@kernel.org>
- <0e39d62d-44bc-731e-471e-4df621b4cdd5@redhat.com>
+        Sun, 30 Jul 2023 22:46:05 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F96E45;
+        Sun, 30 Jul 2023 19:46:04 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6b9defb36a2so3687555a34.2;
+        Sun, 30 Jul 2023 19:46:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690771563; x=1691376363;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lLnxhTOK8CR7EOKXVMtGvf6ZSiJOcPXDQqy3TBSI8eI=;
+        b=fBWuJ/VArlePTzAu+Lv1gqnlPm1ITSafKrNAnGpysA0wqm5h+7D28oOsXmzHfQteCo
+         O3gq/1b1LaWqVu0Iq8Z1hBFo97dQQkyf8rPeoYBwT9pCQ+9LSFSCGzTxcIHXmwawqLZ6
+         2jMnKnKGwWltp0uBK1kBYf5TUMDex7bpwzMF9OkbcWZoU4UOHGayozhDgvub93GChaf9
+         2Bc/NesvHzpTquzJev3zGxoYOfP7nrE2w1N+dcFAflHCEDqmxpC9VUc7poptzT9m/2v8
+         +DEnp9f6nM/mZrzjFYzERwxXXJV9WOd1FWxZ5vutlN/TtOTA1O3ofTMYDyILNdEm2/rr
+         OUFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690771563; x=1691376363;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lLnxhTOK8CR7EOKXVMtGvf6ZSiJOcPXDQqy3TBSI8eI=;
+        b=lLq5KnW9eW5Exem717fG0vtMM9zm0u0vfo3wj4ahCN6C1f/imlsH7fzRIlT6/zOmYU
+         VApn/aghctzIQ2OnfzTRaBggMPtjzUl3qmE3M/shRK+EA0HcIxYRAasQZM7IkBbC6rBI
+         wl7ML3ijJ1KGr5HQTbOUqOEfkLcDTehfvCBqNHCyJtcDwJpCaTJ3gpB6+nLAI3RIoKdx
+         AOe3yfZXyuvz+vQfAf6DPkkzZJNbphIT6SiP0VMr/ZXF4ZpsUXMBSbHRJ8gyRnDFq+C2
+         df8sZY/u4huU3Ut0AM7R9b9Hn38OS7g0vr88EYlhmkFBwbCOT3HcWHLV76RuyO9wkZWd
+         j9Bw==
+X-Gm-Message-State: ABy/qLZsov7pHgCd+blEcDVPSjDfz0LTfsl4Bc91gqmfwkKOi7N4wIpS
+        Gd4GNyu2V8Vd2zq1VFagCVaXws2NyrS57hOm
+X-Google-Smtp-Source: APBJJlGX6gf6keMnZy5xVRbtRtp1qIpjbNHpcHhZQJEad9kWQQ8T7vWppcBE7i3cScDh4yAuD2TZIQ==
+X-Received: by 2002:a05:6358:249f:b0:135:515c:38ee with SMTP id m31-20020a056358249f00b00135515c38eemr9782752rwc.25.1690771563460;
+        Sun, 30 Jul 2023 19:46:03 -0700 (PDT)
+Received: from rajgad.hsd1.ca.comcast.net ([2601:204:df00:9cd0:f50b:8f24:acc4:e5c])
+        by smtp.gmail.com with ESMTPSA id q1-20020a63d601000000b0055be951145csm7045301pgg.36.2023.07.30.19.46.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jul 2023 19:46:03 -0700 (PDT)
+From:   Atul Raut <rauji.raut@gmail.com>
+To:     kvalo@kernel.org
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] ath6kl: Fix debugfs_create_dir error checking
+Date:   Sun, 30 Jul 2023 19:45:42 -0700
+Message-Id: <20230731024542.27248-1-rauji.raut@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e39d62d-44bc-731e-471e-4df621b4cdd5@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,86 +69,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 22, 2023 at 10:07:19PM -0400, Waiman Long wrote:
-> On 7/19/23 03:00, guoren@kernel.org wrote:
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> > 
-> > Using arch_spinlock_is_locked would cause another unnecessary memory
-> > access to the contended value. Although it won't cause a significant
-> > performance gap in most architectures, the arch_spin_value_unlocked
-> > argument contains enough information. Thus, remove unnecessary
-> > atomic_read in arch_spin_value_unlocked().
-> 
-> AFAICS, only one memory access is needed for the current
-> arch_spinlock_is_locked(). So your description isn't quite right. OTOH,
-Okay, I would improve it. Here means "arch_spin_value_unlocked using
-arch_spinlock_is_locked" would cause "an" unnecessary ...
+The debugfs_create_dir function returns ERR_PTR
+in case of error and the correct way to check an
+error is 'IS_ERR' inline function.
+This patch will replace the null-comparison with IS_ERR
 
-> caller of arch_spin_value_unlocked() could benefit from this change.
-> Currently, the only caller is lockref.
-Thx for comment, I would add it in the commit msg.
+This issue was found with the help of Coccinelle.
+./drivers/net/wireless/ath/ath6kl/debug.c:1796:6-21: Wrong debugfs call error processing on line 1796
 
-New version is here:
-https://lore.kernel.org/linux-riscv/20230731023308.3748432-1-guoren@kernel.org/
+Signed-off-by: Atul Raut <rauji.raut@gmail.com>
+---
+ drivers/net/wireless/ath/ath6kl/debug.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Other than that, the patch looks good to me.
-> 
-> Cheers,
-> Longman
-> 
-> > 
-> > Signed-off-by: Guo Ren <guoren@kernel.org>
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > Cc: David Laight <David.Laight@ACULAB.COM>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > ---
-> > Changelog:
-> > This patch is separate from:
-> > https://lore.kernel.org/linux-riscv/20220808071318.3335746-1-guoren@kernel.org/
-> > 
-> > Peter & David have commented on it:
-> > https://lore.kernel.org/linux-riscv/YsK4Z9w0tFtgkni8@hirez.programming.kicks-ass.net/
-> > ---
-> >   include/asm-generic/spinlock.h | 16 +++++++++-------
-> >   1 file changed, 9 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/include/asm-generic/spinlock.h b/include/asm-generic/spinlock.h
-> > index fdfebcb050f4..90803a826ba0 100644
-> > --- a/include/asm-generic/spinlock.h
-> > +++ b/include/asm-generic/spinlock.h
-> > @@ -68,11 +68,18 @@ static __always_inline void arch_spin_unlock(arch_spinlock_t *lock)
-> >   	smp_store_release(ptr, (u16)val + 1);
-> >   }
-> > +static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
-> > +{
-> > +	u32 val = lock.counter;
-> > +
-> > +	return ((val >> 16) == (val & 0xffff));
-> > +}
-> > +
-> >   static __always_inline int arch_spin_is_locked(arch_spinlock_t *lock)
-> >   {
-> > -	u32 val = atomic_read(lock);
-> > +	arch_spinlock_t val = READ_ONCE(*lock);
-> > -	return ((val >> 16) != (val & 0xffff));
-> > +	return !arch_spin_value_unlocked(val);
-> >   }
-> >   static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
-> > @@ -82,11 +89,6 @@ static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
-> >   	return (s16)((val >> 16) - (val & 0xffff)) > 1;
-> >   }
-> > -static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
-> > -{
-> > -	return !arch_spin_is_locked(&lock);
-> > -}
-> > -
-> >   #include <asm/qrwlock.h>
-> >   #endif /* __ASM_GENERIC_SPINLOCK_H */
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+diff --git a/drivers/net/wireless/ath/ath6kl/debug.c b/drivers/net/wireless/ath/ath6kl/debug.c
+index 433a047f3747..505af195e299 100644
+--- a/drivers/net/wireless/ath/ath6kl/debug.c
++++ b/drivers/net/wireless/ath/ath6kl/debug.c
+@@ -1793,7 +1793,7 @@ int ath6kl_debug_init_fs(struct ath6kl *ar)
+ {
+ 	ar->debugfs_phy = debugfs_create_dir("ath6kl",
+ 					     ar->wiphy->debugfsdir);
+-	if (!ar->debugfs_phy)
++	if (IS_ERR(ar->debugfs_phy))
+ 		return -ENOMEM;
+ 
+ 	debugfs_create_file("tgt_stats", 0400, ar->debugfs_phy, ar,
+-- 
+2.34.1
+
