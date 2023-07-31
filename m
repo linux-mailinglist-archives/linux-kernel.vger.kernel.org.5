@@ -2,126 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4AF769A72
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58073769A79
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231719AbjGaPJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33732 "EHLO
+        id S233249AbjGaPKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232964AbjGaPJK (ORCPT
+        with ESMTP id S233132AbjGaPK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:09:10 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7022B10F2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:09:05 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe0d5f719dso7659268e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:09:05 -0700 (PDT)
+        Mon, 31 Jul 2023 11:10:29 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6E71BC2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:09:59 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbd33a1819so113095e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:09:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690816143; x=1691420943;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+GJI50mwxWlMPNP5cWPxpWEEdZG5lOnOefrq0yW+CGM=;
-        b=B1DYggB8eGqCpLsilfDjv+CtPtKA8mzBBJiX3DsqfFcVmRD3EHJVa1I3ui/adpLG4o
-         5L0OkqX16kwiG+alYKt7beRdvQIUy6Vqp3fytmEb5t72ZkLKEhGIgX3oVK/qbYP2dIf+
-         PcZ/IBYg5fcpqwrCWjYL+XwqkbsE3JJtqktw3OwnCLBUH9VtvguIXX/hX+tgZ2GTjPyB
-         R4x/Jm7nX/dzvKoX2oYUEEJP8wTaKuD9XBJLfoKlM1IVbZmntXqZyHRJzDJHiJGj94Ut
-         w2Rglkd43okEbIloEuKynBL4GOaTToBhU7MKjHy1yqnf8agEPfjNDDUg+3mo7/l84d8k
-         JPpw==
+        d=google.com; s=20221208; t=1690816189; x=1691420989;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RkSACQ185yDNC2p76NT2Z17d4EwKu0PvetEljtWKaTU=;
+        b=4FQcXvP+5xbo5XsQOMlicCIUHJMhfFvtoyQPpdydoNjzhClsruYv34uvqcK/2dvoC4
+         2onQbf1Y20yXHNGEUNNEzPhNSKD9KZnCy4V5Nx6d0M/09F4K80PHaSqSEX/dS50EXtwD
+         YMgust/h9o+AYo1cgIfRfSLXm+ZoUkwNf7hifiCvbow2YH5q8Wddfc0J+m82yQNto56T
+         m4KH8oc0wVfABihgrLHD4CtM2xsfwfdonWCkG4jz9yYfRY17PdW11BXLXsMNFj1F/PP8
+         HX1zd0BWWQUXhZS8y05KsfiLIusXFK42CALzdpXRl9MfmoAWrCgWlEgF6776Q15/Ofuk
+         e80A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690816143; x=1691420943;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690816189; x=1691420989;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+GJI50mwxWlMPNP5cWPxpWEEdZG5lOnOefrq0yW+CGM=;
-        b=HbyC/5kg+Cp4qDO28H1Bo/nF31RXbjKGFgao40+uHFw2ojcbL/d8bTw3rDffXok2J4
-         3ktE/0TiPvsIzBSwBByzi9+nbIC5KQMB3Z5WsZItL4/WBvtmShnHJzYMtqwaOEwrFsKv
-         J+blRyqwZsRTQyEL5oOkCt+TbyduQPEXhxmIxpz7Olor+VZHYWkiICNJSXc+LHANA1Xh
-         J1xNHn0HOacXw0Omg+oNUF6WvH8/p5eywBcJW8IKhz8QtA4vP3xImNlz+R59bMD2L5Xg
-         ImQHTznxWBXdXnwLr6sgFmYzQ7eBavsXlOOrCNCHI7r2vayPoMK18lBItTYx2VohL76/
-         Mm4w==
-X-Gm-Message-State: ABy/qLbX7uYtMi9YLEpGZmNChVvHnUivzGZkNyXhyWJTzWF1cZxoiUrf
-        sdXxcAh9l8SqV4Mu5nnLpYE64Q==
-X-Google-Smtp-Source: APBJJlHa9zHDumGZmnru2O8XwCkJrQtDXNbzYwW+KavipyZYevSoqWizlwsA89+vnBqByZBXimV7aA==
-X-Received: by 2002:a05:6512:5ca:b0:4fe:599:5684 with SMTP id o10-20020a05651205ca00b004fe05995684mr71097lfo.34.1690816143625;
-        Mon, 31 Jul 2023 08:09:03 -0700 (PDT)
-Received: from [127.0.1.1] ([93.5.22.158])
-        by smtp.googlemail.com with ESMTPSA id u22-20020a05600c211600b003fbcdba1a63sm11728791wml.12.2023.07.31.08.09.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 08:09:02 -0700 (PDT)
-From:   Alexandre Mergnat <amergnat@baylibre.com>
-Date:   Mon, 31 Jul 2023 17:08:58 +0200
-Subject: [PATCH v4 3/3] arm64: defconfig: enable STARTEK KD070FHFID015
- panel
+        bh=RkSACQ185yDNC2p76NT2Z17d4EwKu0PvetEljtWKaTU=;
+        b=UOZG0znqBSbm4G5qSfMyiwpRcO7RsootoSmMG2/btsYuUsVunNdflTLP6ezGLgSgnP
+         fNp9hbce3nRdBrMBOVtR5AuIH/ybAS0SA/mKXxgyALXTWUTpzT1tmdZBuyAlrcXpGJIM
+         vH7sQ9+jQ3G92tMwB44cA5Mwb38+mXV6evH0Wfs1719WQqTxQSEWuClH0NvlDTxIE3Po
+         66EuEAxBWbWqJ/c1tn8bN7PbFdW/Yhpw7yG1P/r4DY7acNwl3XshvpqAu9Xvz76Sr/wb
+         4fTo7G5sEqlnrMdwTnah+Dd3o4h0FhpFAcrWjnLMafzXkGHvj/tCHMcU6lbcodehkdEu
+         m+0w==
+X-Gm-Message-State: ABy/qLZGwsiQMwhouM0uh8t8q0E+Ztth++xSHQSGAidA7hnNz75ErtmA
+        g617q+lGQygpUeL52L38tNF0kOhpC9CucuymGOsRLg==
+X-Google-Smtp-Source: APBJJlEqealXDm6xQmEIgqmI5g5eVpSrfgqDalsc/CjusIOfJwOScJ7VPEIJob8wJEkS3Oj26SYWUho8DY8CwApPe2g=
+X-Received: by 2002:a7b:cbcd:0:b0:3fd:e15:6d5 with SMTP id n13-20020a7bcbcd000000b003fd0e1506d5mr155706wmi.2.1690816189181;
+ Mon, 31 Jul 2023 08:09:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230711-startek_display-v4-3-fb1d53bfdef6@baylibre.com>
-References: <20230711-startek_display-v4-0-fb1d53bfdef6@baylibre.com>
-In-Reply-To: <20230711-startek_display-v4-0-fb1d53bfdef6@baylibre.com>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Guillaume La Roque <glaroque@baylibre.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Alexandre Mergnat <amergnat@baylibre.com>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=767; i=amergnat@baylibre.com;
- h=from:subject:message-id; bh=3ewdZnRTwiLei9nYvBO9iEQ33z/6iSvXdTZm6ylJVyY=;
- b=owEBbQKS/ZANAwAKAStGSZ1+MdRFAcsmYgBkx86JSWBe/R+WdTNSp+vNLNQkL6rWTTSurE2qm+F8
- Nb0tXdmJAjMEAAEKAB0WIQQjG17X8+qqcA5g/osrRkmdfjHURQUCZMfOiQAKCRArRkmdfjHURRqwD/
- 0doxKphu5595hSG80BpEmZ8DzSqvovKlEfgPCJMGL51vVD+dY6e02ieFPrS9uw6FyfIpq13lRYesi6
- DJr6qrgxwbKGSA2d46RkMnc1xYF7GovxIPzU1oevQjr81n3HYn9VJTva6SR0Vq+jgES8mC6jcXOJlY
- emtjChmuuolXVTe1JDMWRmZ/p2kIfVDIfeVZVB0l98kG6QBJit6oYvKix5iU2zuZknzxNDlIu3jn7N
- 9RJ4nLVJyarM43diGm0yzIAS4Kz8qmbIBcwaPMG9ShA4vr+kTNog1efaJnjGnKlqmqMTR66ILli16v
- widOVEVlnhBC5s/YwJnLMdupi4OkDu6oFcH0piuwpcmTH3qxGSGEW3xCV0MotrXj3t+FhsfOHn/R2H
- Nc+8ez34sEGbmqLNAi/Y30ypmLijfbumQr3WRn4AdovudtfBD41aZ0bB0utXD1awsLFyR8XsMaU/mX
- QFYZqfTD/S0UR9VNxvCH0onfYdfKMpZMUfWnwp9sS1/NxeH4DYUkvCwOqDIvx77wByJZcM7D/Ui5dT
- or30NjCl2/P2DLuC/IX6tF7KDBXgfXUBR8+ztt3rOT0kUN637geJRLBPqzp7MKw+ObOrJBilY5sfSi
- JwHqNfF5+QR+4m1I3vy8ZyeaDT/463ZSawnmTJtI7dn42Y7mAM7LDnm1DiMQ==
-X-Developer-Key: i=amergnat@baylibre.com; a=openpgp;
- fpr=231B5ED7F3EAAA700E60FE8B2B46499D7E31D445
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <0000000000003d4a1a05ef104401@google.com> <2de85e6f-b1ad-69ae-1e60-cd47c91115a9@gmx.com>
+In-Reply-To: <2de85e6f-b1ad-69ae-1e60-cd47c91115a9@gmx.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Mon, 31 Jul 2023 18:09:34 +0300
+Message-ID: <CANp29Y7RuSVpcM935CghayAyfMvPYAis=XhzrU8SQXYWgSJQeg@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in lookup_inline_extent_backref
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     syzbot <syzbot+d6f9ff86c1d804ba2bc6@syzkaller.appspotmail.com>,
+        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Build Startek KD070FHFID015 panel driver. This MIPI-DSI display
-can be used for the mt8365-evk board for example.
+On Mon, Jul 31, 2023 at 8:56=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+>
+>
+>
+> On 2022/12/5 16:13, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    a4412fdd49dc error-injection: Add prompt for function e=
+rro..
+> > git tree:       upstream
+> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D1469bdbd880=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D2325e409a9a=
+893e1
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dd6f9ff86c1d80=
+4ba2bc6
+> > compiler:       Debian clang version 13.0.1-++20220126092033+75e33f71c2=
+da-1~exp1~20220126212112.63, GNU ld (GNU Binutils for Debian) 2.35.2
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12d892478=
+80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D16b1ca83880=
+000
+> >
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/3bbe66b25958/d=
+isk-a4412fdd.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/6851483ca667/vmli=
+nux-a4412fdd.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/2d5b23cb4616=
+/bzImage-a4412fdd.xz
+> > mounted in repro: https://storage.googleapis.com/syzbot-assets/1f178223=
+dd56/mount_0.gz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the co=
+mmit:
+> > Reported-by: syzbot+d6f9ff86c1d804ba2bc6@syzkaller.appspotmail.com
+> >
+> > ------------[ cut here ]------------
+> > WARNING: CPU: 0 PID: 6559 at fs/btrfs/extent-tree.c:865 lookup_inline_e=
+xtent_backref+0x8c1/0x13f0
+> > Modules linked in:
+> > CPU: 0 PID: 6559 Comm: syz-executor311 Not tainted 6.1.0-rc7-syzkaller-=
+00123-ga4412fdd49dc #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
+ Google 10/26/2022
+> > RIP: 0010:lookup_inline_extent_backref+0x8c1/0x13f0 fs/btrfs/extent-tre=
+e.c:865
+> > Code: 98 00 00 00 0f 87 42 0b 00 00 e8 5a 9c 07 fe 4c 8b 6c 24 28 eb 3d=
+ 83 7d 28 00 4c 8b 6c 24 28 0f 84 b0 04 00 00 e8 3f 9c 07 fe <0f> 0b 41 bc =
+fb ff ff ff e9 f3 05 00 00 e8 2d 9c 07 fe e9 ca 05 00
+> > RSP: 0018:ffffc90006296e40 EFLAGS: 00010293
+> > RAX: ffffffff8382fbb1 RBX: 0000000000000000 RCX: ffff88801eab1d40
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > RBP: ffffc90006296ff0 R08: ffffffff8382f700 R09: ffffed100faf1008
+> > R10: ffffed100faf1008 R11: 1ffff1100faf1007 R12: dffffc0000000000
+> > R13: ffff888075edcd10 R14: ffffc90006296f60 R15: ffff88807d788000
+> > FS:  00007fdb617d5700(0000) GS:ffff8880b9900000(0000) knlGS:00000000000=
+00000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 000055912e028900 CR3: 000000001954b000 CR4: 00000000003506e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >   <TASK>
+> >   insert_inline_extent_backref+0xcc/0x260 fs/btrfs/extent-tree.c:1152
+> >   __btrfs_inc_extent_ref+0x108/0x5e0 fs/btrfs/extent-tree.c:1455
+> >   btrfs_run_delayed_refs_for_head+0xf00/0x1df0 fs/btrfs/extent-tree.c:1=
+943
+> >   __btrfs_run_delayed_refs+0x25f/0x490 fs/btrfs/extent-tree.c:2008
+> >   btrfs_run_delayed_refs+0x312/0x490 fs/btrfs/extent-tree.c:2139
+> >   qgroup_account_snapshot+0xce/0x340 fs/btrfs/transaction.c:1538
+> >   create_pending_snapshot+0xf35/0x2560 fs/btrfs/transaction.c:1800
+> >   create_pending_snapshots+0x1a8/0x1e0 fs/btrfs/transaction.c:1868
+> >   btrfs_commit_transaction+0x13f0/0x3760 fs/btrfs/transaction.c:2323
+> >   create_snapshot+0x4aa/0x7e0 fs/btrfs/ioctl.c:833
+> >   btrfs_mksubvol+0x62e/0x760 fs/btrfs/ioctl.c:983
+> >   btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1029
+> >   __btrfs_ioctl_snap_create+0x339/0x450 fs/btrfs/ioctl.c:2184
+> >   btrfs_ioctl_snap_create+0x134/0x190 fs/btrfs/ioctl.c:2211
+> >   btrfs_ioctl+0x15c/0xc10
+> >   vfs_ioctl fs/ioctl.c:51 [inline]
+> >   __do_sys_ioctl fs/ioctl.c:870 [inline]
+> >   __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:856
+> >   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+> >   do_syscall_64+0x3d/0xb0 arch/x86/entry/common.c:80
+> >   entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> > RIP: 0033:0x7fdb6184aa69
+> > Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 71 15 00 00 90 48 89 f8 48 89=
+ f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
+ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> > RSP: 002b:00007fdb617d52f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> > RAX: ffffffffffffffda RBX: 00007fdb618d57f0 RCX: 00007fdb6184aa69
+> > RDX: 00000000200000c0 RSI: 0000000050009401 RDI: 0000000000000004
+> > RBP: 00007fdb618a226c R08: 00007fdb617d5700 R09: 0000000000000000
+> > R10: 00007fdb617d5700 R11: 0000000000000246 R12: 8000000000000000
+> > R13: 00007fdb618a1270 R14: 0000000100000000 R15: 00007fdb618d57f8
+> >   </TASK>
+>
+> # syz test: git://github.com/adam900710/linux.git inline_lookup_debug
 
-Signed-off-by: Alexandre Mergnat <amergnat@baylibre.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+The bot does not expect the space between # and syz, so
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 0777bcae9104..cb24a3d1219b 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -816,6 +816,7 @@ CONFIG_DRM_PANEL_EDP=m
- CONFIG_DRM_PANEL_MANTIX_MLAF057WE51=m
- CONFIG_DRM_PANEL_RAYDIUM_RM67191=m
- CONFIG_DRM_PANEL_SITRONIX_ST7703=m
-+CONFIG_DRM_PANEL_STARTEK_KD070FHFID015=m
- CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
- CONFIG_DRM_PANEL_VISIONOX_VTDR6130=m
- CONFIG_DRM_LONTIUM_LT8912B=m
-
--- 
-2.25.1
-
+ #syz test: git://github.com/adam900710/linux.git inline_lookup_debug
