@@ -2,284 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D647769EF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB06769F06
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 19:11:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbjGaRIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 13:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
+        id S229863AbjGaRLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 13:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234274AbjGaRIZ (ORCPT
+        with ESMTP id S232781AbjGaRLX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 13:08:25 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E3E3C0F;
-        Mon, 31 Jul 2023 10:05:33 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VGiPtN023008;
-        Mon, 31 Jul 2023 17:04:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=9s+asaePODdRt5hKbett46tpTwR3OUK0tm4vj0uLeK0=;
- b=k/ykxdVJmXBDN5+jqeWWkLscwdPXjiUVgnTHxKxsHygyyyw64GDiEmRfnEgGfD7St35k
- dwjr7gYfl7DlxLGkxtUPz4xP58lJPZ5xv+jR8NDqVn4f7fKe85zz0aYIN1n/GDNL00zg
- WmDU7BiHXwQmiy+Byh8YQoMtUrEirCaF7dnFjzq9HGUvdLcXkRvl2bxYROn3J1NosjQU
- X+xQMru1uIfllAY1C0n/tJnpYt1l/Hspic7TgCcFp7gv0wTnzn9AAt/BiejupgQjPhp1
- azDNu2Vbssl0yyJ+oQxHAG0pLcOvHNpHs9TYp+TNdakjEYn38mdFu0PeS6IzL3qMPcVE ew== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s6gr0rmdk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 17:04:42 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 36VGn9NX006840;
-        Mon, 31 Jul 2023 17:04:41 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s6gr0rmcf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 17:04:41 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 36VFv9N6015486;
-        Mon, 31 Jul 2023 17:04:40 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3s5e3mmufr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 17:04:40 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-        by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 36VH4dvN5505674
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 31 Jul 2023 17:04:40 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CE40B5804B;
-        Mon, 31 Jul 2023 17:04:39 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BB7E958059;
-        Mon, 31 Jul 2023 17:04:38 +0000 (GMT)
-Received: from [9.61.57.205] (unknown [9.61.57.205])
-        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-        Mon, 31 Jul 2023 17:04:38 +0000 (GMT)
-Message-ID: <b1b92581-56f2-b684-573f-50a66ca9fbf2@linux.vnet.ibm.com>
-Date:   Mon, 31 Jul 2023 13:04:38 -0400
+        Mon, 31 Jul 2023 13:11:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EEE555B1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:06:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690823171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o7Je1Tw1wJWhPdYNICmrH5qTgNEkZ25/eHgF0fwCa/s=;
+        b=P6jIG37jSqXleRXLmjRV7D0UyUfwiLRO9Fho+/5HwxSCozxI7w8BaKsyCn3JxP7GtLHsT1
+        pDT1zfON64STLRAYj21hk2so57y0/kcJGVPLomqr+pKBYAviEqvRJZafOIcYhHG9w9zhL0
+        N1jOsXSo3Uk7bcPANCY54dr1Oj5EMqk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-93-uXrVtPKUOOm7UGl8EEeK8w-1; Mon, 31 Jul 2023 13:06:08 -0400
+X-MC-Unique: uXrVtPKUOOm7UGl8EEeK8w-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fd2209bde4so24602005e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 10:06:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690823167; x=1691427967;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o7Je1Tw1wJWhPdYNICmrH5qTgNEkZ25/eHgF0fwCa/s=;
+        b=JjsPYrLVVjzn5FAGkhmbfYrE/dszNsFuZOJzO6FqteZ/8kNNb+RkMpDrIf00STOrBJ
+         qub+lkp35tlRhxo9U/0vlWNU2Pzm6oen/X5GWYYP3uNSxnza2gbRdT4rHRhBnxwOcECZ
+         yYjZzNnANe2MTzRsLIyyGo3jFuYl943rHYgZAuST6WyMlxW9+meUCf8cAfYwn5Qo29td
+         PzgZmGTrdGzln263KEhHVrpPqTGPbSoaKm9De+PnN3fv+1bN8zNFsFyBzEy4LEUKfPdA
+         8pZBkqlOrwi1kjyFRX8rwHJkWYt5PSNBQmLHuFe7Jwmmzz39FgcX2SzvFAsWh/n7xicg
+         xX8A==
+X-Gm-Message-State: ABy/qLY8vOaiWkZBNY+jWnUaJ469FVtzIV9ekflEPDcfafV+zcaDILVa
+        MU416TUSeD1W/B0CV1D8uABmHrqPatrZNAfo6ILNE6Mt0kOWnXZO28Y7zN966v6L0Eln/ap5ixS
+        2CDTAS8dmTWN9x/o7wexwnqLg
+X-Received: by 2002:a05:600c:260e:b0:3fe:1548:264f with SMTP id h14-20020a05600c260e00b003fe1548264fmr433538wma.22.1690823166978;
+        Mon, 31 Jul 2023 10:06:06 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlH2MTM3zZh6fdgvplx34o1m2GIuXvVYoFmP83+z8cxLJsJsTDtauV6QKq2/5/U7uWp78AAGYQ==
+X-Received: by 2002:a05:600c:260e:b0:3fe:1548:264f with SMTP id h14-20020a05600c260e00b003fe1548264fmr433518wma.22.1690823166457;
+        Mon, 31 Jul 2023 10:06:06 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c723:4c00:5c85:5575:c321:cea3? (p200300cbc7234c005c855575c321cea3.dip0.t-ipconnect.de. [2003:cb:c723:4c00:5c85:5575:c321:cea3])
+        by smtp.gmail.com with ESMTPSA id 3-20020a05600c22c300b003fe13c3ece7sm7762180wmg.10.2023.07.31.10.06.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 10:06:06 -0700 (PDT)
+Message-ID: <b046ce32-2f47-d415-ad40-8be2cc0d5991@redhat.com>
+Date:   Mon, 31 Jul 2023 19:06:05 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4] integrity: Always reference the blacklist keyring with
- appraisal
-To:     Eric Snowberg <eric.snowberg@oracle.com>, zohar@linux.ibm.com
-Cc:     dmitry.kasatkin@gmail.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, roberto.sassu@huawei.com,
-        kanth.ghatraju@oracle.com, konrad.wilk@oracle.com,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20230726211725.393056-1-eric.snowberg@oracle.com>
+ Thunderbird/102.13.0
 Content-Language: en-US
-From:   Nayna <nayna@linux.vnet.ibm.com>
-In-Reply-To: <20230726211725.393056-1-eric.snowberg@oracle.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Rongwei Wang <rongwei.wang@linux.alibaba.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org,
+        "xuyu@linux.alibaba.com" <xuyu@linux.alibaba.com>
+References: <cover.1682453344.git.khalid.aziz@oracle.com>
+ <74fe50d9-9be9-cc97-e550-3ca30aebfd13@linux.alibaba.com>
+ <ZMeoHoM8j/ric0Bh@casper.infradead.org>
+ <ae3bbfba-4207-ec5b-b4dd-ea63cb52883d@redhat.com>
+ <9faea1cf-d3da-47ff-eb41-adc5bd73e5ca@linux.alibaba.com>
+ <d3d03475-7977-fc55-188d-7df350ee0f29@redhat.com>
+ <ZMfjmhaqVZyZNNMW@casper.infradead.org>
+ <c1f3c78d-b1eb-5c1c-83aa-35901800498f@redhat.com>
+ <ZMfnNpQIkXXs1W02@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH RFC v2 0/4] Add support for sharing page tables across
+ processes (Previously mshare)
+In-Reply-To: <ZMfnNpQIkXXs1W02@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: m8Brc2qtqorRhLNe2PYoQTFYxuCsdDBQ
-X-Proofpoint-ORIG-GUID: mEL0qzk3mTtVM_Rrcnb0-7cr0iryTkCT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-31_09,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
- spamscore=0 suspectscore=0 malwarescore=0 clxscore=1011 mlxscore=0
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2307310149
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 31.07.23 18:54, Matthew Wilcox wrote:
+> On Mon, Jul 31, 2023 at 06:48:47PM +0200, David Hildenbrand wrote:
+>> On 31.07.23 18:38, Matthew Wilcox wrote:
+>>> On Mon, Jul 31, 2023 at 06:30:22PM +0200, David Hildenbrand wrote:
+>>>> Assume we do do the page table sharing at mmap time, if the flags are right.
+>>>> Let's focus on the most common:
+>>>>
+>>>> mmap(memfd, PROT_READ | PROT_WRITE, MAP_SHARED)
+>>>>
+>>>> And doing the same in each and every process.
+>>>
+>>> That may be the most common in your usage, but for a database, you're
+>>> looking at two usage scenarios.  Postgres calls mmap() on the database
+>>> file itself so that all processes share the kernel page cache.
+>>> Some Commercial Databases call mmap() on a hugetlbfs file so that all
+>>> processes share the same userspace buffer cache.  Other Commecial
+>>> Databases call shmget() / shmat() with SHM_HUGETLB for the exact
+>>> same reason.
+>>
+>> I remember you said that postgres might be looking into using shmem as well,
+>> maybe I am wrong.
+> 
+> No, I said that postgres was also interested in sharing page tables.
+> I don't think they have any use for shmem.
+> 
+>> memfd/hugetlb/shmem could all be handled alike, just "arbitrary filesystems"
+>> would require more work.
+> 
+> But arbitrary filesystems was one of the origin use cases; where the
+> database is stored on a persistent memory filesystem, and neither the
+> kernel nor userspace has a cache.  The Postgres & Commercial Database
+> use-cases collapse into the same case, and we want to mmap the files
+> directly and share the page tables.
 
-On 7/26/23 17:17, Eric Snowberg wrote:
-> Commit 273df864cf746 ("ima: Check against blacklisted hashes for files with
-> modsig") introduced an appraise_flag option for referencing the blacklist
-> keyring.  Any matching binary found on this keyring fails signature
-> validation. This flag only works with module appended signatures.
->
-> An important part of a PKI infrastructure is to have the ability to do
-> revocation at a later time should a vulnerability be found.  Expand the
-> revocation flag usage to all appraisal functions. The flag is now
-> enabled by default. Setting the flag with an IMA policy has been
-> deprecated. Without a revocation capability like this in place, only
-> authenticity can be maintained. With this change, integrity can now be
-> achieved with digital signature based IMA appraisal.
->
-> Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
-> ---
-> v4 changes:
->    Fixed typo
->    Also did some performance testing with this patch. With the associative array
->    implementation used within the keyring code, there doesn't seem to be much of a
->    difference between doing  an appraisal with an empty blacklist keyring and one
->    containing 1500 entries.  At this time it is unknown how many entries a user
->    would place in this keyring, but this seemed like a bigger number than most use
->    cases.  With the 1500 entries, there were only 7 lookups to get through the
->    entire list for a file not contained within it.  For something that was
->    on the list, there was an average of 4 lookups and a single string compare.
->    Based on this testing, IMHO, there could be a lot more entries added to the
->    blacklist keyring without any real performance issues.
+Yes, and transparent page table sharing can be achieved otherwise.
 
-Nice to see the performance test results.
+I guess what you imply is that they want to share page tables and have a 
+single mprotect(PROT_READ) to modify the shared page tables.
 
-Reviewed-by: Nayna Jain <nayna@linux.ibm.com>
+> 
+>>> This is why I proposed mshare().  Anyone can use it for anything.
+>>> We have such a diverse set of users who want to do stuff with shared
+>>> page tables that we should not be tying it to memfd or any other
+>>> filesystem.  Not to mention that it's more flexible; you can map
+>>> individual 4kB files into it and still get page table sharing.
+>>
+>> That's not what the current proposal does, or am I wrong?
+> 
+> I think you're wrong, but I haven't had time to read the latest patches.
+> 
 
-Thanks & Regards,
+Maybe I misunderstood what the MAP_SHARED_PT actually does.
 
-      - Nayna
+"
+This patch series adds a new flag to mmap() call - MAP_SHARED_PT.
+This flag can be specified along with MAP_SHARED by a process to
+hint to kernel that it wishes to share page table entries for this
+file mapping mmap region with other processes. Any other process
+that mmaps the same file with MAP_SHARED_PT flag can then share the
+same page table entries. Besides specifying MAP_SHARED_PT flag, the
+processes must map the files at a PMD aligned address with a size
+that is a multiple of PMD size and at the same virtual addresses.
+This last requirement of same virtual addresses can possibly be
+relaxed if that is the consensus.
+"
 
->
-> v3 changes:
->    No longer display appraise_flag=check_blacklist in the policy
->
-> v2 changes:
->    Update the "case Opt_apprase_flag"
->    Removed "appraise_flag=" in the powerpc arch specific policy rules
-> ---
->   Documentation/ABI/testing/ima_policy  |  6 +++---
->   arch/powerpc/kernel/ima_arch.c        |  8 ++++----
->   security/integrity/ima/ima_appraise.c | 12 +++++++-----
->   security/integrity/ima/ima_policy.c   | 17 +++++------------
->   4 files changed, 19 insertions(+), 24 deletions(-)
->
-> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-> index 49db0ff288e5..c2385183826c 100644
-> --- a/Documentation/ABI/testing/ima_policy
-> +++ b/Documentation/ABI/testing/ima_policy
-> @@ -57,9 +57,9 @@ Description:
->   				stored in security.ima xattr. Requires
->   				specifying "digest_type=verity" first.)
->
-> -			appraise_flag:= [check_blacklist]
-> -			Currently, blacklist check is only for files signed with appended
-> -			signature.
-> +			appraise_flag:= [check_blacklist] (deprecated)
-> +			Setting the check_blacklist flag is no longer necessary.
-> +			All appraisal functions set it by default.
->   			digest_type:= verity
->   			    Require fs-verity's file digest instead of the
->   			    regular IMA file hash.
-> diff --git a/arch/powerpc/kernel/ima_arch.c b/arch/powerpc/kernel/ima_arch.c
-> index 957abd592075..b7029beed847 100644
-> --- a/arch/powerpc/kernel/ima_arch.c
-> +++ b/arch/powerpc/kernel/ima_arch.c
-> @@ -23,9 +23,9 @@ bool arch_ima_get_secureboot(void)
->    * is not enabled.
->    */
->   static const char *const secure_rules[] = {
-> -	"appraise func=KEXEC_KERNEL_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
-> +	"appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig|modsig",
->   #ifndef CONFIG_MODULE_SIG
-> -	"appraise func=MODULE_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
-> +	"appraise func=MODULE_CHECK appraise_type=imasig|modsig",
->   #endif
->   	NULL
->   };
-> @@ -49,9 +49,9 @@ static const char *const trusted_rules[] = {
->   static const char *const secure_and_trusted_rules[] = {
->   	"measure func=KEXEC_KERNEL_CHECK template=ima-modsig",
->   	"measure func=MODULE_CHECK template=ima-modsig",
-> -	"appraise func=KEXEC_KERNEL_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
-> +	"appraise func=KEXEC_KERNEL_CHECK appraise_type=imasig|modsig",
->   #ifndef CONFIG_MODULE_SIG
-> -	"appraise func=MODULE_CHECK appraise_flag=check_blacklist appraise_type=imasig|modsig",
-> +	"appraise func=MODULE_CHECK appraise_type=imasig|modsig",
->   #endif
->   	NULL
->   };
-> diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-> index 491c1aca0b1c..870dde67707b 100644
-> --- a/security/integrity/ima/ima_appraise.c
-> +++ b/security/integrity/ima/ima_appraise.c
-> @@ -458,11 +458,13 @@ int ima_check_blacklist(struct integrity_iint_cache *iint,
->   		ima_get_modsig_digest(modsig, &hash_algo, &digest, &digestsize);
->
->   		rc = is_binary_blacklisted(digest, digestsize);
-> -		if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
-> -			process_buffer_measurement(&nop_mnt_idmap, NULL, digest, digestsize,
-> -						   "blacklisted-hash", NONE,
-> -						   pcr, NULL, false, NULL, 0);
-> -	}
-> +	} else if (iint->flags & IMA_DIGSIG_REQUIRED && iint->ima_hash)
-> +		rc = is_binary_blacklisted(iint->ima_hash->digest, iint->ima_hash->length);
-> +
-> +	if ((rc == -EPERM) && (iint->flags & IMA_MEASURE))
-> +		process_buffer_measurement(&nop_mnt_idmap, NULL, digest, digestsize,
-> +					   "blacklisted-hash", NONE,
-> +					   pcr, NULL, false, NULL, 0);
->
->   	return rc;
->   }
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index c9b3bd8f1bb9..69452b79686b 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -1280,7 +1280,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
->   				     IMA_FSNAME | IMA_GID | IMA_EGID |
->   				     IMA_FGROUP | IMA_DIGSIG_REQUIRED |
->   				     IMA_PERMIT_DIRECTIO | IMA_VALIDATE_ALGOS |
-> -				     IMA_VERITY_REQUIRED))
-> +				     IMA_CHECK_BLACKLIST | IMA_VERITY_REQUIRED))
->   			return false;
->
->   		break;
-> @@ -1355,7 +1355,7 @@ static bool ima_validate_rule(struct ima_rule_entry *entry)
->
->   	/* Ensure that combinations of flags are compatible with each other */
->   	if (entry->flags & IMA_CHECK_BLACKLIST &&
-> -	    !(entry->flags & IMA_MODSIG_ALLOWED))
-> +	    !(entry->flags & IMA_DIGSIG_REQUIRED))
->   		return false;
->
->   	/*
-> @@ -1803,11 +1803,11 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
->   				if (entry->flags & IMA_VERITY_REQUIRED)
->   					result = -EINVAL;
->   				else
-> -					entry->flags |= IMA_DIGSIG_REQUIRED;
-> +					entry->flags |= IMA_DIGSIG_REQUIRED | IMA_CHECK_BLACKLIST;
->   			} else if (strcmp(args[0].from, "sigv3") == 0) {
->   				/* Only fsverity supports sigv3 for now */
->   				if (entry->flags & IMA_VERITY_REQUIRED)
-> -					entry->flags |= IMA_DIGSIG_REQUIRED;
-> +					entry->flags |= IMA_DIGSIG_REQUIRED | IMA_CHECK_BLACKLIST;
->   				else
->   					result = -EINVAL;
->   			} else if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
-> @@ -1816,18 +1816,13 @@ static int ima_parse_rule(char *rule, struct ima_rule_entry *entry)
->   					result = -EINVAL;
->   				else
->   					entry->flags |= IMA_DIGSIG_REQUIRED |
-> -						IMA_MODSIG_ALLOWED;
-> +						IMA_MODSIG_ALLOWED | IMA_CHECK_BLACKLIST;
->   			} else {
->   				result = -EINVAL;
->   			}
->   			break;
->   		case Opt_appraise_flag:
->   			ima_log_string(ab, "appraise_flag", args[0].from);
-> -			if (IS_ENABLED(CONFIG_IMA_APPRAISE_MODSIG) &&
-> -			    strstr(args[0].from, "blacklist"))
-> -				entry->flags |= IMA_CHECK_BLACKLIST;
-> -			else
-> -				result = -EINVAL;
->   			break;
->   		case Opt_appraise_algos:
->   			ima_log_string(ab, "appraise_algos", args[0].from);
-> @@ -2271,8 +2266,6 @@ int ima_policy_show(struct seq_file *m, void *v)
->   	}
->   	if (entry->flags & IMA_VERITY_REQUIRED)
->   		seq_puts(m, "digest_type=verity ");
-> -	if (entry->flags & IMA_CHECK_BLACKLIST)
-> -		seq_puts(m, "appraise_flag=check_blacklist ");
->   	if (entry->flags & IMA_PERMIT_DIRECTIO)
->   		seq_puts(m, "permit_directio ");
->   	rcu_read_unlock();
+Reading this, I'm confused how 4k files would interact with the PMD size 
+requirement.
+
+Probably I got it all wrong.
+
+>> Also, I'm curious, is that a real requirement in the database world?
+> 
+> I don't know.  It's definitely an advantage that falls out of the design
+> of mshare.
+
+Okay, just checking if there is an important use case I'm missing, I'm 
+also not aware of any.
+
+
+Anyhow, I have other work to do. Happy to continue the discussion 
+someone is actually working on this (again).
+
+-- 
+Cheers,
+
+David / dhildenb
+
