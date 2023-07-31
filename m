@@ -2,181 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F8276A07A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F313676A07E
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbjGaSeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58258 "EHLO
+        id S231893AbjGaSgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbjGaSeS (ORCPT
+        with ESMTP id S229935AbjGaSgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:34:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615F219BB
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:33:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690828413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mleMDQBlgoEZn6B2n7OWtI7BglzC5H6dpI6VTr1crBc=;
-        b=I5ElABZZcU4b2LNaHngPVW0vqGoAe+E1wrkPZaRI8kgUTML1KfJ4ODcck+SY2gfqGxM1Zr
-        0jewAsKOUNeQuG3xfh9nTJ9USdcuAmCSZtM5tKIjSWq4GuaCk8/RVSbcsOwRQAaFyLl5mx
-        2YyOWiokhUrWniICQXYXleD13Uxkx3E=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-65-8xkPxy5RNWKD6BNIIH0biA-1; Mon, 31 Jul 2023 14:33:30 -0400
-X-MC-Unique: 8xkPxy5RNWKD6BNIIH0biA-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-63cfc4ebcecso45884336d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:33:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690828410; x=1691433210;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mleMDQBlgoEZn6B2n7OWtI7BglzC5H6dpI6VTr1crBc=;
-        b=WH596NFd08QZm6gFWNzTu7Oz0Qu6vXVrgcuqd9crnVGZf2ns29Guxwn/sZ3eu1HdEG
-         qu2u8LtvjmRrpPn3/SoK1ogAd7Kj2srN9lnjPJFgXpCghetBTESk+KSevilVOH9wfYUX
-         8oj/E3X1rhsXEYBzR/8g6Bf0/09A2zJ2R3aIWuuuzXsHOQzOy8MNRoGWmmMUTiuPQTJQ
-         Vgs6gQxwB6jjZEPRDIZ1D0eypaeg1qucCs9MRxb6FkHETS3XCTf5F3eU/WY0CJx5unPw
-         SP4+E4i7YDSGFbo2tmo8GgYAayCc40UfYVgtT0pa3jPKIB4eGFmo3ZAM3nuM0mRvMMm2
-         qexA==
-X-Gm-Message-State: ABy/qLYNT/pLT3vz4BgIi1wNI1huaAcoX9jtukENaUEklpiZOKcRDMwI
-        Sssofn2f5JSE2cV44o3asrX9NY+LSBIwaruDEBigc/S9321XNv9fiXnRKacq/wBjSxumxtF2Wlb
-        7zWdloUalx9L4Fi3yTB0e382W
-X-Received: by 2002:a05:622a:351:b0:40f:c60d:1c83 with SMTP id r17-20020a05622a035100b0040fc60d1c83mr2424578qtw.56.1690828410159;
-        Mon, 31 Jul 2023 11:33:30 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFVqxAPHbbF9CG2rIbBplT4RyiBtuHUbABbvDsfVIW7zQzqhMEzkG7Pghosa3oaDqJmkEDMPA==
-X-Received: by 2002:a05:622a:351:b0:40f:c60d:1c83 with SMTP id r17-20020a05622a035100b0040fc60d1c83mr2424554qtw.56.1690828409888;
-        Mon, 31 Jul 2023 11:33:29 -0700 (PDT)
-Received: from ?IPv6:2600:6c64:4e7f:603b:2613:173:a68a:fce8? ([2600:6c64:4e7f:603b:2613:173:a68a:fce8])
-        by smtp.gmail.com with ESMTPSA id ez3-20020a05622a4c8300b003f7fd3ce69fsm1234168qtb.59.2023.07.31.11.33.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 11:33:29 -0700 (PDT)
-Message-ID: <a44acf6edf8714f9e247e8de371d0f00521ec6b5.camel@redhat.com>
-Subject: Re: [PATCH v2 0/3] scsi: qedf: sanitise uaccess
-From:   Laurence Oberman <loberman@redhat.com>
-To:     Oleksandr Natalenko <oleksandr@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-scsi@vger.kernel.org, Saurav Kashyap <skashyap@marvell.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jozef Bacik <jobacik@redhat.com>, Rob Evers <revers@redhat.com>
-Date:   Mon, 31 Jul 2023 14:33:28 -0400
-In-Reply-To: <20230731084034.37021-1-oleksandr@redhat.com>
-References: <20230731084034.37021-1-oleksandr@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Mon, 31 Jul 2023 14:36:12 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023C419AE;
+        Mon, 31 Jul 2023 11:36:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1690828566;
+        bh=+ecIanusPEM9grLteoH4m5s9pVLXerZghs/LdT94HCs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DGJR/lKaDiHzpLrZgoy+WsW3XvLafzayhfbo83CH3WCJFtFKsjPFVYbgNwfyYpbzw
+         4aeAhuVb7m5wnQGpjFu+/uWlKNenVayrCw+HG6GE0Pwzu5y0nQ0X02jj+cIGGhsN76
+         tk5VVOXfVRQTNhF3g2O9Mrck4vOxQYjLsOw1n+sg=
+Date:   Mon, 31 Jul 2023 20:36:05 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Zhangjin Wu <falcon@tinylab.org>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        tanyuan@tinylab.org
+Subject: Re: [PATCH 1/4] selftests/nolibc: drop unused test helpers
+Message-ID: <26fd12c7-3c9c-4e1e-a8bf-9529cd624e81@t-8ch.de>
+References: <20230731073243.21265-1-falcon@tinylab.org>
+ <20230731110226.115351-1-falcon@tinylab.org>
+ <e7ec15d7-0152-4e69-920f-ffb1983e1011@t-8ch.de>
+ <20230731165334.GA17823@1wt.eu>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230731165334.GA17823@1wt.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-07-31 at 10:40 +0200, Oleksandr Natalenko wrote:
-> qedf driver, debugfs part of it specifically, touches __user pointers
-> directly for printing out info to userspace via sprintf(), which may
-> cause crash like this:
->=20
-> BUG: unable to handle kernel paging request at 00007ffd1d6b43a0
-> IP: [<ffffffffaa7a882a>] string.isra.7+0x6a/0xf0
-> Oops: 0003 [#1] SMP
-> Call Trace:
-> =C2=A0[<ffffffffaa7a9f31>] vsnprintf+0x201/0x6a0
-> =C2=A0[<ffffffffaa7aa556>] sprintf+0x56/0x80
-> =C2=A0[<ffffffffc04227ed>] qedf_dbg_stop_io_on_error_cmd_read+0x6d/0x90
-> [qedf]
-> =C2=A0[<ffffffffaa65bb2f>] vfs_read+0x9f/0x170
-> =C2=A0[<ffffffffaa65cb82>] SyS_pread64+0x92/0xc0
->=20
-> Avoid this by preparing the info in a kernel buffer first, either
-> allocated on stack for small printouts, or via vmalloc() for big
-> ones,
-> and then copying it to the userspace properly.
->=20
-> Changes since v1 [1]:
->=20
-> =C2=A0 * use scnprintf() for on-stack buffers too
-> =C2=A0 * adjust an on-stack buffer size in qedf_dbg_debug_cmd_read() to b=
-e
-> a
-> =C2=A0=C2=A0=C2=A0 multiple of 8, and also size it properly
-> =C2=A0 * accumulate acks and reviews
->=20
-> [1]
-> https://lore.kernel.org/lkml/20230728065819.139694-1-oleksandr@redhat.com=
-/
->=20
-> Oleksandr Natalenko (3):
-> =C2=A0 scsi: qedf: do not touch __user pointer in
-> =C2=A0=C2=A0=C2=A0 qedf_dbg_stop_io_on_error_cmd_read() directly
-> =C2=A0 scsi: qedf: do not touch __user pointer in
-> qedf_dbg_debug_cmd_read()
-> =C2=A0=C2=A0=C2=A0 directly
-> =C2=A0 scsi: qedf: do not touch __user pointer in
-> qedf_dbg_fp_int_cmd_read()
-> =C2=A0=C2=A0=C2=A0 directly
->=20
-> =C2=A0drivers/scsi/qedf/qedf_dbg.h=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 ++
-> =C2=A0drivers/scsi/qedf/qedf_debugfs.c | 35 +++++++++++++++++++----------=
--
-> --
-> =C2=A02 files changed, 23 insertions(+), 14 deletions(-)
->=20
-In case it's needed
+On 2023-07-31 18:53:34+0200, Willy Tarreau wrote:
+> Hi guys,
+> 
+> On Mon, Jul 31, 2023 at 05:30:23PM +0200, Thomas Weißschuh wrote:
+> 
+> > > > > > > Why not a simple 'static __attribute__((unused))' line, then, no need to
+> > > > > > > add them again next time.
+> > > > > > > 
+> > > > > > >     -static int expect_zr(int expr, int llen)
+> > > > > > >     +static __attribute__((unused))
+> > > > > > >     +int expect_zr(int expr, int llen)
+> > > > > > >      {
+> > > > > > 
+> > > > > > Personally I don't like having dead code lying around that needs to be
+> > > > > > maintained and skipped over while reading.
+> > > > > > It's not a given that we will need those helpers in the future at all.
+> > > > > >
+> > > > > 
+> > > > > It is reasonable in some degree from current status, especially for
+> > > > > these ones are newly added, but let us think about these scenes: when we
+> > > > > would drop or change some test cases in the future and the helpers may
+> > > > > would be not referenced by any test cases in a short time, and warnings
+> > > > > there, but some other cases may be added later to use them again ...
+> > > > 
+> > > > That doesn't seem very likely.
+> > > > Did it happen recently?
+> > > >
+> > > 
+> > > Yeah, it did happen, but I can not remember which one, a simple statistic
+> > > does show it may be likely:
+> > 
+> > I can't find it.
+> > 
+> > >     $ grep EXPECT_ -ur tools/testing/selftests/nolibc/nolibc-test.c | grep -v define | sed -e 's/.*\(EXPECT_[A-Z0-9]*\).*/\1/g' | sort | uniq -c | sort -k 1 -g -r
+> > >          55 EXPECT_EQ
+> > >          37 EXPECT_SYSER
+> > >          21 EXPECT_SYSZR
+> > >          11 EXPECT_SYSNE
+> > >           9 EXPECT_VFPRINTF
+> > >           4 EXPECT_PTRGT
+> > >           4 EXPECT_GE
+> > >           3 EXPECT_STRZR
+> > >           3 EXPECT_NE
+> > >           3 EXPECT_LT
+> > >           3 EXPECT_GT
+> > >           2 EXPECT_STRNZ
+> > >           2 EXPECT_STREQ
+> > >           2 EXPECT_PTRLT
+> > >           1 EXPECT_SYSER2
+> > >           1 EXPECT_SYSEQ
+> > >           1 EXPECT_PTRNZ
+> > >           1 EXPECT_PTRNE
+> > >           1 EXPECT_PTRER2
+> > >           1 EXPECT_PTRER
+> > >           1 EXPECT_PTREQ
+> > > 
+> > > 7 helpers are only used by once, another 3 helpers are used twice, and
+> > > another 4 are only used by three times.
+> > 
+> > Why can't we just drop them when they are not used anymore?
+> 
+> Actually we don't know if they're used or not given that the purpose of
+> the nolibc-test.c file is for it to be easy to add new tests, and the
+> collection of macros above serves this purpose. It's not just a series
+> of test but rather a small test framework. So the fact that right now
+> no single test uses some of them doesn't mean that someone else will
+> not have to reimplement them in two months.
 
-For the series v2 against 6.5-rc3
-Reviewed-by: Laurence Oberman <loberman@redhat.com>
-Tested-by: Laurence Oberman <loberman@redhat.com>
+Reimplementing them would mean to copy one of the sibling test macros
+and changing the name and the condition operator in one place.
+I regarded that as an acceptable effort instead of having to work around
+the warnings.
 
-Test notes
+The warnings themselves I see as useful as they can give developers
+early feedback on their code. They would have avoided some of the issues
+with the recent pipe() series.
 
-Linux segstorage5 6.5.0-rc3+
+Do you have a preferred solution for the overall situation?
 
-[root@segstorage5 qedf]# cd host2
-[root@segstorage5 host2]# ls
-clear_stats  debug  driver_stats  fp_int  io_trace  offload_stats=20
-stop_io_on_error
+> However I share your concern that the file has become ugly over time.
+> I've recently been wondering why we wouldn't move all that to an external
+> include file. It could also encourage us to differentiate between the
+> macros used to only evaluate a result, and the tests themselves, as
+> we'd be certain that none of them could call a test function directly.
+> 
+> > > Btw, just thought about gc-section, do we need to further remove dead code/data
+> > > in the binary? I don't think it is necessary for nolibc-test itself, but with
+> > > '-Wl,--gc-sections -Wl,--print-gc-sections' may be a good helper to show us
+> > > which ones should be dropped or which ones are wrongly declared as public?
+> > > 
+> > > Just found '-O3 + -Wl,--gc-section + -Wl,--print-gc-sections' did tell
+> > > us something as below:
+> > > 
+> > >     removing unused section '.text.nolibc_raise'
+> > >     removing unused section '.text.nolibc_memmove'
+> > >     removing unused section '.text.nolibc_abort'
+> > >     removing unused section '.text.nolibc_memcpy'
+> > >     removing unused section '.text.__stack_chk_init'
+> > >     removing unused section '.text.is_setting_valid'
+> 
+> Just a note Zhangjin, it would really help if you wouldn't mix different
+> topics in mails. It's easy enough to start a separate thread since it's
+> a completely separate one here.
+> 
+> > > These info may help us further add missing 'static' keyword or find
+> > > another method to to drop the wrongly used status of some functions from
+> > > the code side.
+> > > 
+> > > It is very easy to add the missing 'static' keyword for is_setting_valid(), but
+> > > for __stack_chk_init(), is it ok for us to convert it to 'static' and remove
+> > > the 'weak' attrbute and even the 'section' attribute? seems it is only used by
+> > > our _start_c() currently.
+> > 
+> > Making is_setting_valid(), __stack_chk_init() seems indeed useful.
+> > Also all the run_foo() test functions.
+> 
+> Most of them could theoretically be turned to static. *But* it causes a
+> problem which is that it will multiply their occurrences in multi-unit
+> programs, and that's in part why we've started to use weak instead. Also
+> if you run through gdb and want to mark a break point, you won't have the
+> symbol when it's static, and the code will appear at multiple locations,
+> which is really painful. I'd instead really prefer to avoid static when
+> we don't strictly want to inline the code, and prefer weak when possible
+> because we know many of them will be dropped at link time (and that's
+> the exact purpose).
 
-[root@segstorage5 host2]# cat stop_io_on_error
-false
+Thanks for the clarification. I forgot about that completely!
 
-[root@segstorage5 host2]# cat fp_int
+The stuff from nolibc-test.c itself (run_foo() and is_settings_valid())
+should still be done.
 
-Fastpath I/O completions
-
-#0: 844
-#1: 990
-#2: 1036
-#3: 1116
-#4: 953
-#5: 822
-#6: 882
-#7: 1073
-#8: 1030
-#9: 992
-#10: 789
-#11: 705
-#12: 490
-#13: 532
-#14: 646
-#15: 705
-
-[root@segstorage5 host2]# cat debug
-debug mask =3D 0x2
-
-
-
+Thomas
