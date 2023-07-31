@@ -2,167 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 315EE7696BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 066797696BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232851AbjGaMsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34416 "EHLO
+        id S231194AbjGaMth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:49:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232816AbjGaMrs (ORCPT
+        with ESMTP id S229864AbjGaMte (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:47:48 -0400
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053281BEC
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:47:29 -0700 (PDT)
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230731124711epoutp040672a0d3201dd87d4b2a1291523e4929~29JU51KzD0581105811epoutp04G
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:47:11 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230731124711epoutp040672a0d3201dd87d4b2a1291523e4929~29JU51KzD0581105811epoutp04G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1690807631;
-        bh=nbKWEanf4a/xZ1MFCZC3I9H5fUDOvIaLAmXBrH8FUm4=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=lQFMLQsvnY+3X3aZF+mmUgxPJJ+YByKcPeIjME6amz4opjrzmoH217PBbrdvENKzd
-         pZC+TmbeWfYOPCj1/ZoLIWTQp3+4QOldrGmN683321AQtoX9WSvFfiTe5W0TidVSy5
-         JeUqPrjiv05ZRTzA1beM0fR27IUScQTwq2oht1yE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20230731124711epcas2p49be822d336488e8f3ac50b3b360168ef~29JUlZgDZ2322123221epcas2p46;
-        Mon, 31 Jul 2023 12:47:11 +0000 (GMT)
-Received: from epsmges2p2.samsung.com (unknown [182.195.36.90]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4RDygM0Hrfz4x9Pq; Mon, 31 Jul
-        2023 12:47:11 +0000 (GMT)
-X-AuditID: b6c32a46-6fdfa70000009cc5-94-64c7ad4eda76
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        38.AA.40133.E4DA7C46; Mon, 31 Jul 2023 21:47:10 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH v2 0/4] multi-page bvec configuration for integrity payload
-Reply-To: j-young.choi@samsung.com
-Sender: Jinyoung Choi <j-young.choi@samsung.com>
-From:   Jinyoung Choi <j-young.choi@samsung.com>
-To:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "chaitanya.kulkarni@wdc.com" <chaitanya.kulkarni@wdc.com>,
-        "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5@epcms2p5>
-Date:   Mon, 31 Jul 2023 21:47:10 +0900
-X-CMS-MailID: 20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5
+        Mon, 31 Jul 2023 08:49:34 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F3CB8
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:49:32 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbf1b82d9cso41312935e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:49:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690807771; x=1691412571;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=uEHcWcMUxn3CMDHIhxNa126s8EohgFFmT+MYPumWW5A=;
+        b=OdcscSXjl3WqwbcyHlc98NLIQOI2jfptXhUxVLDvGSdzViydshmng6QGlxwQYjWHgt
+         0AJ/ed2ZdOesi1deNRidSXIhwn5H92vzXHtDVmaRfyaVce8oTyiNdlulGnssTNmMq8X0
+         bTeSsrNtWPQggl8imqokS2Z9Aye5mpRNjiP/hSCuEH5+SyALKBl8lG3R1h0jp/2P/vLF
+         4gGBFINLkRpflHe/Nsx4zuQPEGHfz6Z7dy/CJahULlBVeoVJCz1FezDQ8SmqmQGXWn5b
+         CzDGwyM1VTBECbpM77hTck/9NHBAaNQ8bmoiGMUiwGHViPjkp38UXRj1Wiba1KiBWFEY
+         TUIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690807771; x=1691412571;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uEHcWcMUxn3CMDHIhxNa126s8EohgFFmT+MYPumWW5A=;
+        b=W7YM0nGxuEa+mzMZNzHR8YEK5notz91XNyCQWW02rmyLaMuGbJOrGle/YQX7p7pcN5
+         Q3lJZAfiGrxrFp4AqGb3We5f9O96uy8PqCp0CKQ4N3/Km2/xsY7M8PtkEHsqtaYE7bSD
+         JrD31VxR0YasNuRnyorVCv9smAHQ6DIdJaEI7VqlQ6Mt30rHGHcQzXs35YYwxxIy3Pnn
+         m0LupPiTDBvXEt8oc56WLZDvNWN7hxzriFDIRq79DpVWF47e50FaYDXx8zvdWVlmUgju
+         hoUREPbsEjZuj1mdzhUjgvBKt7Y1p8KHyP9Cf+TTC8FXrlFnWhKmMsydFqbQPxG4HTpj
+         hhgQ==
+X-Gm-Message-State: ABy/qLZB6J8HWagK18GeoTzqpd9KSSeiSE7Da/HhS/O2uYRlPFsdytr8
+        EjvNtGuQgsh73CXgl7ZqD8emBQ==
+X-Google-Smtp-Source: APBJJlHu7h2PTuHRcF1xb7aLuzj15SqJIXtJnW+ZKhEnSqS7DL83SaZ1FayhWMVbC2o2LDDW3UA5Pg==
+X-Received: by 2002:a05:600c:2a54:b0:3fb:739d:27b2 with SMTP id x20-20020a05600c2a5400b003fb739d27b2mr6663696wme.8.1690807771202;
+        Mon, 31 Jul 2023 05:49:31 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:f723:b60b:92cd:4df4? ([2a01:e0a:982:cbb0:f723:b60b:92cd:4df4])
+        by smtp.gmail.com with ESMTPSA id v24-20020a1cf718000000b003fc05b89e5bsm11166120wmh.34.2023.07.31.05.49.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 05:49:30 -0700 (PDT)
+Message-ID: <13ab604e-8177-e080-9411-86954105b325@linaro.org>
+Date:   Mon, 31 Jul 2023 14:49:29 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 2/2] drm/panel: ilitek-ili9881c: Add TDO TL050HDV35 LCD
+ panel
+Content-Language: en-US
+To:     Matus Gajdos <matuszpd@gmail.com>, Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230719102616.2259-1-matuszpd@gmail.com>
+ <20230719102616.2259-3-matuszpd@gmail.com>
+Organization: Linaro Developer Services
+In-Reply-To: <20230719102616.2259-3-matuszpd@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZdljTQtdv7fEUg4d3rC1W3+1ns5h1+zWL
-        xctDmhaTDl1jtNh7S9vi8q45bBbLj/9jslj3+j2LA4fH+XsbWTwuny312LSqk83j49NbLB59
-        W1YxenzeJOfRfqCbKYA9KtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE3
-        1VbJxSdA1y0zB+gkJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BeYFecWJucWle
-        ul5eaomVoYGBkSlQYUJ2xvaJj9kKPohWvDi9gqWBcZJgFyMHh4SAicS/5UAmF4eQwA5GifZz
-        R1hB4rwCghJ/dwh3MXJyCAt4S9zYvYsNxBYSUJI4t2YWI0TcQKLldhsLiM0moCex4/ludpA5
-        IgKfmSQu//jACpKQEOCVmNH+lAXClpbYvnwrI4StIfFjWS8zhC0qcXP1W3YY+/2x+VA1IhKt
-        985C1QhKPPi5GyouKXHo0Fc2iPvzJTYcCIQI10i0/XoPVa4vca1jI9haXgFfidvvG8HuZxFQ
-        lZi/cyITRI2LxIbHS8DizALyEtvfzmEGGcksoCmxfpc+xHRliSO3WCAq+CQ6Dv9lh3mqYeNv
-        rOwd854wQbSqSSxqMoIIy0h8PTwfqsRDYtHMCUwTGBVnIYJ5FpITZiGcsICReRWjWGpBcW56
-        arFRgRE8YpPzczcxglOmltsOxilvP+gdYmTiYDzEKMHBrCTCeyrgUIoQb0piZVVqUX58UWlO
-        avEhRlOg5ycyS4km5wOTdl5JvKGJpYGJmZmhuZGpgbmSOO+91rkpQgLpiSWp2ampBalFMH1M
-        HJxSDUzx5n+FDid9qZlke7ZRIeOVxHGuAK9HMw9+qjMueTxv4sXcV19jQ5c8fBi2RvXenzy9
-        Wz4Pd8j96PMNbb/Kba73KH1Wos9S+b61EyZPPHUmKWvi0a83ZdbcdnE2DqsS4jZpCuTjPXRd
-        6cHX7Rs3JDx40Nkx7V5/YMCfYomUrhQpzWLfwGKG22Xv418ubfn5enbr15wLE/fNz+ZZ9ZT/
-        yroDrOGf/Msv26a+VvC4IZsSnnksiW3ioanNu8L7QntyldhWNj12LNsve5JDpO1/vPyFLqYY
-        pYYt1bu5YgI4/uwQFs7Of+OptZHXY/asklM3rrnErrIq/XaqM6wta/7MxHgeqeTUrbsOcrUk
-        Nf22yVJiKc5INNRiLipOBADp8VpVIgQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5
-References: <CGME20230731124710epcms2p55b4d1a163b5ee6f15d96bf07817e12a5@epcms2p5>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the case of NVMe, it has an integrity payload consisting of one segment.
-So, rather than configuring SG_LIST, it was changed by direct DMA mapping.
+On 19/07/2023 12:26, Matus Gajdos wrote:
+> Add support for TDO TL050HDV35-H1311A LCD panel.
+> 
+> Signed-off-by: Matus Gajdos <matuszpd@gmail.com>
+> ---
+>   drivers/gpu/drm/panel/panel-ilitek-ili9881c.c | 194 ++++++++++++++++++
+>   1 file changed, 194 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
+> index 1ec696adf9de..78ac57224689 100644
+> --- a/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
+> +++ b/drivers/gpu/drm/panel/panel-ilitek-ili9881c.c
+> @@ -455,6 +455,174 @@ static const struct ili9881c_instr k101_im2byl02_init[] = {
+>   	ILI9881C_COMMAND_INSTR(0xD3, 0x3F), /* VN0 */
+>   };
+>   
+> +static const struct ili9881c_instr tl050hdv35_init[] = {
+> +	ILI9881C_SWITCH_PAGE_INSTR(3),
+> +	ILI9881C_COMMAND_INSTR(0x01, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x02, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x03, 0x73),
+> +	ILI9881C_COMMAND_INSTR(0x04, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x05, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x06, 0x0a),
+> +	ILI9881C_COMMAND_INSTR(0x07, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x08, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x09, 0x01),
+> +	ILI9881C_COMMAND_INSTR(0x0a, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x0b, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x0c, 0x01),
+> +	ILI9881C_COMMAND_INSTR(0x0d, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x0e, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x0f, 0x1d),
+> +	ILI9881C_COMMAND_INSTR(0x10, 0x1d),
+> +	ILI9881C_COMMAND_INSTR(0x15, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x16, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x17, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x18, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x19, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x1a, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x1b, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x1c, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x1d, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x1e, 0x40),
+> +	ILI9881C_COMMAND_INSTR(0x1f, 0x80),
+> +	ILI9881C_COMMAND_INSTR(0x20, 0x06),
+> +	ILI9881C_COMMAND_INSTR(0x21, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x28, 0x33),
+> +	ILI9881C_COMMAND_INSTR(0x29, 0x03),
+> +	ILI9881C_COMMAND_INSTR(0x2a, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x2b, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x2c, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x2d, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x2e, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x2f, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x35, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x36, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x37, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x38, 0x3C),
+> +	ILI9881C_COMMAND_INSTR(0x39, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x3a, 0x40),
+> +	ILI9881C_COMMAND_INSTR(0x3b, 0x40),
+> +	ILI9881C_COMMAND_INSTR(0x3c, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x3d, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x3e, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x3f, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x40, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x41, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x42, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x43, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x44, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x55, 0xab),
+> +	ILI9881C_COMMAND_INSTR(0x5a, 0x89),
+> +	ILI9881C_COMMAND_INSTR(0x5b, 0xab),
+> +	ILI9881C_COMMAND_INSTR(0x5c, 0xcd),
+> +	ILI9881C_COMMAND_INSTR(0x5d, 0xef),
+> +	ILI9881C_COMMAND_INSTR(0x5e, 0x11),
+> +	ILI9881C_COMMAND_INSTR(0x5f, 0x01),
+> +	ILI9881C_COMMAND_INSTR(0x60, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x61, 0x15),
+> +	ILI9881C_COMMAND_INSTR(0x62, 0x14),
+> +	ILI9881C_COMMAND_INSTR(0x63, 0x0e),
+> +	ILI9881C_COMMAND_INSTR(0x64, 0x0f),
+> +	ILI9881C_COMMAND_INSTR(0x65, 0x0c),
+> +	ILI9881C_COMMAND_INSTR(0x66, 0x0d),
+> +	ILI9881C_COMMAND_INSTR(0x67, 0x06),
+> +	ILI9881C_COMMAND_INSTR(0x68, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x69, 0x07),
+> +	ILI9881C_COMMAND_INSTR(0x6a, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x6b, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x6c, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x6d, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x6e, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x6f, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x70, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x71, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x72, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x73, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x74, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x75, 0x01),
+> +	ILI9881C_COMMAND_INSTR(0x76, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x77, 0x14),
+> +	ILI9881C_COMMAND_INSTR(0x78, 0x15),
+> +	ILI9881C_COMMAND_INSTR(0x79, 0x0e),
+> +	ILI9881C_COMMAND_INSTR(0x7a, 0x0f),
+> +	ILI9881C_COMMAND_INSTR(0x7b, 0x0c),
+> +	ILI9881C_COMMAND_INSTR(0x7c, 0x0d),
+> +	ILI9881C_COMMAND_INSTR(0x7d, 0x06),
+> +	ILI9881C_COMMAND_INSTR(0x7e, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x7f, 0x07),
+> +	ILI9881C_COMMAND_INSTR(0x88, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x89, 0x02),
+> +	ILI9881C_COMMAND_INSTR(0x8A, 0x02),
+> +	ILI9881C_SWITCH_PAGE_INSTR(4),
+> +	ILI9881C_COMMAND_INSTR(0x38, 0x01),
+> +	ILI9881C_COMMAND_INSTR(0x39, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x6c, 0x15),
+> +	ILI9881C_COMMAND_INSTR(0x6e, 0x2b),
+> +	ILI9881C_COMMAND_INSTR(0x6f, 0x33),
+> +	ILI9881C_COMMAND_INSTR(0x8d, 0x18),
+> +	ILI9881C_COMMAND_INSTR(0x87, 0xba),
+> +	ILI9881C_COMMAND_INSTR(0x26, 0x76),
+> +	ILI9881C_COMMAND_INSTR(0xb2, 0xd1),
+> +	ILI9881C_COMMAND_INSTR(0xb5, 0x06),
+> +	ILI9881C_COMMAND_INSTR(0x3a, 0x24),
+> +	ILI9881C_COMMAND_INSTR(0x35, 0x1f),
+> +	ILI9881C_COMMAND_INSTR(0x33, 0x14),
+> +	ILI9881C_COMMAND_INSTR(0x3b, 0x98),
+> +	ILI9881C_SWITCH_PAGE_INSTR(1),
+> +	ILI9881C_COMMAND_INSTR(0x22, 0x0a),
+> +	ILI9881C_COMMAND_INSTR(0x31, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x40, 0x33),
+> +	ILI9881C_COMMAND_INSTR(0x53, 0xa2),
+> +	ILI9881C_COMMAND_INSTR(0x55, 0x92),
+> +	ILI9881C_COMMAND_INSTR(0x50, 0x96),
+> +	ILI9881C_COMMAND_INSTR(0x51, 0x96),
+> +	ILI9881C_COMMAND_INSTR(0x60, 0x22),
+> +	ILI9881C_COMMAND_INSTR(0x61, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0x62, 0x19),
+> +	ILI9881C_COMMAND_INSTR(0x63, 0x00),
+> +	ILI9881C_COMMAND_INSTR(0xa0, 0x08),
+> +	ILI9881C_COMMAND_INSTR(0xa1, 0x11),
+> +	ILI9881C_COMMAND_INSTR(0xa2, 0x19),
+> +	ILI9881C_COMMAND_INSTR(0xa3, 0x0d),
+> +	ILI9881C_COMMAND_INSTR(0xa4, 0x0d),
+> +	ILI9881C_COMMAND_INSTR(0xa5, 0x1e),
+> +	ILI9881C_COMMAND_INSTR(0xa6, 0x14),
+> +	ILI9881C_COMMAND_INSTR(0xa7, 0x17),
+> +	ILI9881C_COMMAND_INSTR(0xa8, 0x4f),
+> +	ILI9881C_COMMAND_INSTR(0xa9, 0x1a),
+> +	ILI9881C_COMMAND_INSTR(0xaa, 0x27),
+> +	ILI9881C_COMMAND_INSTR(0xab, 0x49),
+> +	ILI9881C_COMMAND_INSTR(0xac, 0x1a),
+> +	ILI9881C_COMMAND_INSTR(0xad, 0x18),
+> +	ILI9881C_COMMAND_INSTR(0xae, 0x4c),
+> +	ILI9881C_COMMAND_INSTR(0xaf, 0x22),
+> +	ILI9881C_COMMAND_INSTR(0xb0, 0x27),
+> +	ILI9881C_COMMAND_INSTR(0xb1, 0x4b),
+> +	ILI9881C_COMMAND_INSTR(0xb2, 0x60),
+> +	ILI9881C_COMMAND_INSTR(0xb3, 0x39),
+> +	ILI9881C_COMMAND_INSTR(0xc0, 0x08),
+> +	ILI9881C_COMMAND_INSTR(0xc1, 0x11),
+> +	ILI9881C_COMMAND_INSTR(0xc2, 0x19),
+> +	ILI9881C_COMMAND_INSTR(0xc3, 0x0d),
+> +	ILI9881C_COMMAND_INSTR(0xc4, 0x0d),
+> +	ILI9881C_COMMAND_INSTR(0xc5, 0x1e),
+> +	ILI9881C_COMMAND_INSTR(0xc6, 0x14),
+> +	ILI9881C_COMMAND_INSTR(0xc7, 0x17),
+> +	ILI9881C_COMMAND_INSTR(0xc8, 0x4f),
+> +	ILI9881C_COMMAND_INSTR(0xc9, 0x1a),
+> +	ILI9881C_COMMAND_INSTR(0xca, 0x27),
+> +	ILI9881C_COMMAND_INSTR(0xcb, 0x49),
+> +	ILI9881C_COMMAND_INSTR(0xcc, 0x1a),
+> +	ILI9881C_COMMAND_INSTR(0xcd, 0x18),
+> +	ILI9881C_COMMAND_INSTR(0xce, 0x4c),
+> +	ILI9881C_COMMAND_INSTR(0xcf, 0x33),
+> +	ILI9881C_COMMAND_INSTR(0xd0, 0x27),
+> +	ILI9881C_COMMAND_INSTR(0xd1, 0x4b),
+> +	ILI9881C_COMMAND_INSTR(0xd2, 0x60),
+> +	ILI9881C_COMMAND_INSTR(0xd3, 0x39),
+> +	ILI9881C_SWITCH_PAGE_INSTR(0),
+> +	ILI9881C_COMMAND_INSTR(0x36, 0x03),
+> +};
+> +
+>   static const struct ili9881c_instr w552946ab_init[] = {
+>   	ILI9881C_SWITCH_PAGE_INSTR(3),
+>   	ILI9881C_COMMAND_INSTR(0x01, 0x00),
+> @@ -812,6 +980,23 @@ static const struct drm_display_mode k101_im2byl02_default_mode = {
+>   	.height_mm	= 217,
+>   };
+>   
+> +static const struct drm_display_mode tl050hdv35_default_mode = {
+> +	.clock		= 59400,
+> +
+> +	.hdisplay	= 720,
+> +	.hsync_start	= 720 + 18,
+> +	.hsync_end	= 720 + 18 + 3,
+> +	.htotal		= 720 + 18 + 3 + 20,
+> +
+> +	.vdisplay	= 1280,
+> +	.vsync_start	= 1280 + 26,
+> +	.vsync_end	= 1280 + 26 + 6,
+> +	.vtotal		= 1280 + 26 + 6 + 28,
+> +
+> +	.width_mm	= 62,
+> +	.height_mm	= 110,
+> +};
+> +
+>   static const struct drm_display_mode w552946aba_default_mode = {
+>   	.clock		= 64000,
+>   
+> @@ -944,6 +1129,14 @@ static const struct ili9881c_desc k101_im2byl02_desc = {
+>   	.mode_flags = MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
+>   };
+>   
+> +static const struct ili9881c_desc tl050hdv35_desc = {
+> +	.init = tl050hdv35_init,
+> +	.init_length = ARRAY_SIZE(tl050hdv35_init),
+> +	.mode = &tl050hdv35_default_mode,
+> +	.mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
+> +		      MIPI_DSI_MODE_LPM,
+> +};
+> +
+>   static const struct ili9881c_desc w552946aba_desc = {
+>   	.init = w552946ab_init,
+>   	.init_length = ARRAY_SIZE(w552946ab_init),
+> @@ -955,6 +1148,7 @@ static const struct ili9881c_desc w552946aba_desc = {
+>   static const struct of_device_id ili9881c_of_match[] = {
+>   	{ .compatible = "bananapi,lhr050h41", .data = &lhr050h41_desc },
+>   	{ .compatible = "feixin,k101-im2byl02", .data = &k101_im2byl02_desc },
+> +	{ .compatible = "tdo,tl050hdv35", .data = &tl050hdv35_desc },
+>   	{ .compatible = "wanchanglong,w552946aba", .data = &w552946aba_desc },
+>   	{ }
+>   };
 
-The page-merge is not performed for the struct bio_vec when creating 
-a integrity payload in block.
-As a result, when creating an integrity paylaod beyond one page, each 
-struct bio_vec is generated, and its bv_len does not exceed the PAGESIZE.
-
-To solve it, bio_integrity_add_page() should just add to the existing 
-bvec, similar to bio_add_page() and friends. 
-
-(ref: https://lore.kernel.org/linux-nvme/yq18rewbmay.fsf@ca-mkp.ca.oracle.com/T/#t)
-
-
-Tested like this:
-
-- Format (support pi)
-$ sudo nvme format /dev/nvme2n1 --force -n 1 -i 1 -p 0 -m 0 -l 1 -r
-
-- Run FIO
-[global]
-ioengine=libaio
-group_reporting
-
-[job]
-bs=512k
-iodepth=256
-rw=write
-numjobs=8
-direct=1
-runtime=10s
-filename=/dev/nvme2n1
-
-- Result
-...
-[   93.496218] nvme2n1: I/O Cmd(0x1) @ LBA 62464, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
-[   93.496227] protection error, dev nvme2n1, sector 62464 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
-[   93.538788] nvme2n1: I/O Cmd(0x1) @ LBA 6144, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
-[   93.538798] protection error, dev nvme2n1, sector 6144 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
-[   93.566231] nvme2n1: I/O Cmd(0x1) @ LBA 124928, 1024 blocks, I/O Error (sct 0x0 / sc 0x4)
-[   93.566241] I/O error, dev nvme2n1, sector 124928 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
-[   93.694147] nvme2n1: I/O Cmd(0x1) @ LBA 64512, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
-[   93.694155] protection error, dev nvme2n1, sector 64512 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
-[   93.694299] nvme2n1: I/O Cmd(0x1) @ LBA 5120, 1024 blocks, I/O Error (sct 0x2 / sc 0x82) MORE
-[   93.694305] protection error, dev nvme2n1, sector 5120 op 0x1:(WRITE) flags 0x18800 phys_seg 3 prio class 2
-...
-
-Changes to v1:
-- add a patch to modify the location of the bi_size update code.
-- split a patch (create multi-page bvecs in bio_integirty_add_page()).
-
-Jinyoung Choi (4):
-  block: make bvec_try_merge_hw_page() non-static
-  bio-integrity: Sets the payload size in bio_integrity_add_page()
-  bio-integrity: cleanup adding integrity pages to bip's bvec.
-  bio-integrity: create multi-page bvecs in bio_integrity_add_page()
-
- block/bio-integrity.c               | 49 ++++++++++++++++-------------
- block/bio.c                         |  2 +-
- block/blk.h                         |  4 +++
- drivers/md/dm-crypt.c               |  1 -
- drivers/nvme/host/ioctl.c           |  1 -
- drivers/nvme/target/io-cmd-bdev.c   |  3 +-
- drivers/target/target_core_iblock.c |  3 +-
- 7 files changed, 35 insertions(+), 28 deletions(-)
-
--- 
-2.34.1
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
