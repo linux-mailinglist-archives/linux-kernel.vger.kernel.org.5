@@ -2,189 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BE6768D8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 09:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A356768C23
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 08:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjGaHNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 03:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49760 "EHLO
+        id S230042AbjGaGmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 02:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231348AbjGaHMu (ORCPT
+        with ESMTP id S229501AbjGaGmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 03:12:50 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48834233;
-        Mon, 31 Jul 2023 00:10:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690787442; x=1722323442;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gEY4ZGGaaQpe3vscglEO/Z/ZNgQa2ejE/Ek77q9vAj0=;
-  b=jPwwv3fJ7pH//o7VOsuljtRrYcYDxNc2+pMYZ40uHoi4AWgNJcrIURWN
-   W5o/nZ0truTZHU4seKuLlTz5s2EJ9isHD3dhJOBvRi9OE3N+lE8qGOhcp
-   IJaziGlvZAozZl3KASINswr9oof0kyn4ODle4D0i/bBXbO2Q+2oAukp3z
-   N1kKebduF0BOCpg8MZMEP8Q05x5TybghaG2kAD7aAwEh4IiA9aDLg6njO
-   a2Cbr/qdJx9O9JqGecnKYp2/TH4qILXY/fX2t3nfAR2rDeoISoh7qGvbs
-   zPQ8sq6kh7Ck6lhpClm7ey3KAcgBpH43Q9lUSYuPKBAewL2Hb9dU3nslh
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="432750289"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="432750289"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 00:10:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10787"; a="798157816"
-X-IronPort-AV: E=Sophos;i="6.01,244,1684825200"; 
-   d="scan'208";a="798157816"
-Received: from unknown (HELO fred..) ([172.25.112.68])
-  by fmsmga004.fm.intel.com with ESMTP; 31 Jul 2023 00:10:14 -0700
-From:   Xin Li <xin3.li@intel.com>
-To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Xin Li <xin3.li@intel.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@Oracle.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Jiaxi Chen <jiaxi.chen@linux.intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Jim Mattson <jmattson@google.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        Breno Leitao <leitao@debian.org>,
-        Nikunj A Dadhania <nikunj@amd.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ze Gao <zegao2021@gmail.com>, Fei Li <fei1.li@intel.com>,
-        Conghui <conghui.chen@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Jane Malalane <jane.malalane@citrix.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Yantengsi <siyanteng@loongson.cn>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Sathvika Vasireddy <sv@linux.ibm.com>
-Subject: [PATCH v9 36/36] x86/fred: Disable FRED by default in its early stage
-Date:   Sun, 30 Jul 2023 23:41:33 -0700
-Message-Id: <20230731064133.3881-7-xin3.li@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230731064133.3881-1-xin3.li@intel.com>
-References: <20230731064133.3881-1-xin3.li@intel.com>
+        Mon, 31 Jul 2023 02:42:08 -0400
+Received: from out28-196.mail.aliyun.com (out28-196.mail.aliyun.com [115.124.28.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 254371A5;
+        Sun, 30 Jul 2023 23:42:05 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436259|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00623896-0.000234438-0.993527;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=26;RT=26;SR=0;TI=SMTPD_---.U4cHkoK_1690785714;
+Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.U4cHkoK_1690785714)
+          by smtp.aliyun-inc.com;
+          Mon, 31 Jul 2023 14:41:57 +0800
+From:   wangweidong.a@awinic.com
+To:     krzysztof.kozlowski@linaro.org
+Cc:     13916275206@139.com, alsa-devel@alsa-project.org,
+        broonie@kernel.org, ckeepax@opensource.cirrus.com,
+        colin.i.king@gmail.com, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, doug@schmorgal.com, fido_max@inbox.ru,
+        herve.codina@bootlin.com, krzysztof.kozlowski+dt@linaro.org,
+        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        liweilei@awinic.com, perex@perex.cz, povik+lin@cutebit.org,
+        rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
+        shumingf@realtek.com, tiwai@suse.com, trix@redhat.com,
+        wangweidong.a@awinic.com, yijiangtao@awinic.com,
+        zhangjianming@awinic.com
+Subject: Re: [PATCH V3 4/5] ASoC: codecs: aw88261 device related operation functions
+Date:   Mon, 31 Jul 2023 14:41:54 +0800
+Message-ID: <20230731064154.4137-1-wangweidong.a@awinic.com>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <7cdd4825-c0da-f60e-bbef-970bea48dc95@linaro.org>
+References: <7cdd4825-c0da-f60e-bbef-970bea48dc95@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable FRED by default in its early stage.
+Thank you very much for your review, but I have a few questions
+I'd like to discuss with you
 
-To enable FRED, a new kernel command line option "fred" needs to be added.
+On 29/07/2023 19:29, krzysztof.kozlowski@linaro.org wrote:
+> On 29/07/2023 11:12, wangweidong.a@awinic.com wrote:
+>> From: Weidong Wang <wangweidong.a@awinic.com>
+>> 
+>> Operate the aw88261 chip, including device initialization,
+>> chip power-on and power-off, control volume, etc.
+>> 
+>> Signed-off-by: Weidong Wang <wangweidong.a@awinic.com>
+>> ---
+>>  sound/soc/codecs/aw88261/aw88261_device.c | 877 ++++++++++++++++++++++
+>>  sound/soc/codecs/aw88261/aw88261_device.h |  79 ++
+>>  2 files changed, 956 insertions(+)
+>>  create mode 100644 sound/soc/codecs/aw88261/aw88261_device.c
+>>  create mode 100644 sound/soc/codecs/aw88261/aw88261_device.h
+>> 
 
-Tested-by: Shan Kang <shan.kang@intel.com>
-Signed-off-by: Xin Li <xin3.li@intel.com>
----
+...
 
-Changes since v7:
-* Add a log message when FRED is enabled.
----
- Documentation/admin-guide/kernel-parameters.txt | 4 ++++
- arch/x86/kernel/cpu/common.c                    | 3 +++
- arch/x86/kernel/fred.c                          | 3 +++
- 3 files changed, 10 insertions(+)
+>> +
+>> +int aw88261_dev_stop(struct aw88261_device *aw_dev)
+>> +{
+>> +	if (aw_dev->aw88261_base->status == AW88261_DEV_PW_OFF) {
+>> +		dev_info(aw_dev->aw88261_base->dev, "already power off");
+>> +		return 0;
+>> +	}
+>> +
+>> +	aw_dev->aw88261_base->status = AW88261_DEV_PW_OFF;
+>> +
+>> +	/* clear inturrupt */
+>> +	aw_dev_clear_int_status(aw_dev);
+>> +
+>> +	aw88261_dev_uls_hmute(aw_dev, true);
+>> +	/* set mute */
+>> +	aw88261_dev_mute(aw_dev, true);
+>> +
+>> +	/* close tx feedback */
+>> +	aw_dev_i2s_tx_enable(aw_dev, false);
+>> +	usleep_range(AW88261_1000_US, AW88261_1000_US + 100);
+>> +
+>> +	/* enable amppd */
+>> +	aw_dev_amppd(aw_dev, true);
+>> +
+>> +	/* set power down */
+>> +	aw_dev_pwd(aw_dev, true);
+>> +
+>> +	dev_dbg(aw_dev->dev, "pa stop success\n");
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a1457995fd41..cb12decfcdc0 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1513,6 +1513,10 @@
- 			Warning: use of this parameter will taint the kernel
- 			and may cause unknown problems.
- 
-+	fred
-+			Forcefully enable flexible return and event delivery,
-+			which is otherwise disabled by default.
-+
- 	ftrace=[tracer]
- 			[FTRACE] will set and start the specified tracer
- 			as early as possible in order to facilitate early
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index b34a8a138755..38cf4f64a56e 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1451,6 +1451,9 @@ static void __init cpu_parse_early_param(void)
- 	char *argptr = arg, *opt;
- 	int arglen, taint = 0;
- 
-+	if (!cmdline_find_option_bool(boot_command_line, "fred"))
-+		setup_clear_cpu_cap(X86_FEATURE_FRED);
-+
- #ifdef CONFIG_X86_32
- 	if (cmdline_find_option_bool(boot_command_line, "no387"))
- #ifdef CONFIG_MATH_EMULATION
-diff --git a/arch/x86/kernel/fred.c b/arch/x86/kernel/fred.c
-index 7fdf79c964a8..a4a726ea9fc2 100644
---- a/arch/x86/kernel/fred.c
-+++ b/arch/x86/kernel/fred.c
-@@ -8,6 +8,9 @@
- 
- void cpu_init_fred_exceptions(void)
- {
-+	/* When FRED is enabled by default, this log message may not needed */
-+	pr_info("Initialize FRED on CPU%d\n", smp_processor_id());
-+
- 	wrmsrl(MSR_IA32_FRED_CONFIG,
- 	       /* Reserve for CALL emulation */
- 	       FRED_CONFIG_REDZONE |
--- 
-2.34.1
+> No for debug replacing tracing. We have tracing for this.
 
+I will delete this print debug statement
+
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +int aw88261_dev_init(struct aw88261_device *aw_dev, struct aw_container *aw_cfg)
+
+> You already used this function in patch #3, so your order of patches is
+> confusing.
+
+Do I need to change the order of patch? 
+Do I neeed to put aw88261_device.c aw88261_device.h in patch #3 and 
+put aw88261.c aw88261.h in patch #4?
+Is that how you change the order?
+
+>> +{
+>> +	int ret;
+>> +
+>> +	if ((!aw_dev) || (!aw_cfg)) {
+>> +		pr_err("aw_dev is NULL or aw_cfg is NULL");
+
+> Is this possible? If so, why?
+
+Thank you very much, I will delete this judgment.
+
+>> +		return -ENOMEM;
+>> +	}
+>> +
+>> +	ret = aw88395_dev_cfg_load(aw_dev->aw88261_base, aw_cfg);
+>> +	if (ret) {
+>> +		dev_err(aw_dev->dev, "aw_dev acf parse failed");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	ret = regmap_write(aw_dev->aw88261_base->regmap, AW88261_ID_REG, AW88261_SOFT_RESET_VALUE);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>> +	aw_dev->aw88261_base->fade_in_time = AW88261_1000_US / 10;
+>> +	aw_dev->aw88261_base->fade_out_time = AW88261_1000_US >> 1;
+>> +	aw_dev->aw88261_base->prof_cur = AW_INIT_PROFILE;
+>> +	aw_dev->aw88261_base->prof_index = AW_INIT_PROFILE;
+>> +
+>> +	ret = aw_dev_fw_update(aw_dev);
+>> +	if (ret) {
+>> +		dev_err(aw_dev->dev, "fw update failed ret = %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = aw_frcset_check(aw_dev);
+>> +	if (ret) {
+>> +		dev_err(aw_dev->dev, "aw_frcset_check failed ret = %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	aw_dev_clear_int_status(aw_dev);
+>> +
+>> +	aw88261_dev_uls_hmute(aw_dev, true);
+>> +
+>> +	aw88261_dev_mute(aw_dev, true);
+>> +
+>> +	aw_dev_i2s_tx_enable(aw_dev, false);
+>> +
+>> +	usleep_range(AW88261_1000_US, AW88261_1000_US + 100);
+>> +
+>> +	aw_dev_amppd(aw_dev, true);
+>> +
+>> +	aw_dev_pwd(aw_dev, true);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void aw_parse_channel_dt(struct aw88261_device *aw_dev)
+>> +{
+>> +	struct device_node *np = aw_dev->aw88261_base->dev->of_node;
+>> +	u32 channel_value;
+>> +	u32 sync_enable;
+>> +	int ret;
+>> +
+>> +	ret = of_property_read_u32(np, "sound-channel", &channel_value);
+>> +	if (ret)
+>> +		channel_value = AW88261_DEV_DEFAULT_CH;
+>> +
+>> +	ret = of_property_read_u32(np, "sync-flag", &sync_enable);
+>> +	if (ret)
+>> +		sync_enable = false;
+>> +
+>> +	dev_dbg(aw_dev->dev,  "sync flag is %d", sync_enable);
+
+> Fix style - only one space after ,
+
+Thank you very much. I will modify it according to your suggestion.
+
+>> +	dev_dbg(aw_dev->dev, "read sound-channel value is: %d", channel_value);
+>> +
+>> +	aw_dev->aw88261_base->channel = channel_value;
+>> +	aw_dev->phase_sync = sync_enable;
+>> +}
+>> +
+>> +static int aw_dev_init(struct aw88261_device *aw_dev)
+>> +{
+>> +	aw_dev->aw88261_base->chip_id = AW88261_CHIP_ID;
+>> +	/* call aw device init func */
+>> +	aw_dev->aw88261_base->acf = NULL;
+>> +	aw_dev->aw88261_base->prof_info.prof_desc = NULL;
+>> +	aw_dev->aw88261_base->prof_info.count = 0;
+>> +	aw_dev->aw88261_base->prof_info.prof_type = AW88395_DEV_NONE_TYPE_ID;
+>> +	aw_dev->aw88261_base->channel = 0;
+>> +	aw_dev->aw88261_base->fw_status = AW88261_DEV_FW_FAILED;
+>> +
+>> +	aw_dev->aw88261_base->fade_step = AW88261_VOLUME_STEP_DB;
+>> +	aw_dev->aw88261_base->volume_desc.ctl_volume = AW88261_VOL_DEFAULT_VALUE;
+>> +	aw_dev->aw88261_base->volume_desc.mute_volume = AW88261_MUTE_VOL;
+>> +	aw_parse_channel_dt(aw_dev);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +int aw88261_dev_set_profile_index(struct aw88261_device *aw_dev, int index)
+>> +{
+>> +	struct aw_device *aw88261_base = aw_dev->aw88261_base;
+>> +
+>> +	/* check the index whether is valid */
+>> +	if ((index >= aw88261_base->prof_info.count) || (index < 0))
+>> +		return -EINVAL;
+>> +	/* check the index whether change */
+>> +	if (aw88261_base->prof_index == index)
+>> +		return -EINVAL;
+>> +
+>> +	aw88261_base->prof_index = index;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +char *aw88261_dev_get_prof_name(struct aw88261_device *aw_dev, int index)
+>> +{
+>> +	struct aw_prof_info *prof_info = &aw_dev->aw88261_base->prof_info;
+>> +	struct aw_prof_desc *prof_desc;
+>> +
+>> +	if ((index >= aw_dev->aw88261_base->prof_info.count) || (index < 0)) {
+>> +		dev_err(aw_dev->dev, "index[%d] overflow count[%d]",
+>> +			index, aw_dev->aw88261_base->prof_info.count);
+>> +		return NULL;
+>> +	}
+>> +
+>> +	prof_desc = &aw_dev->aw88261_base->prof_info.prof_desc[index];
+>> +
+>> +	return prof_info->prof_name_list[prof_desc->id];
+>> +}
+>> +
+>> +int aw88261_dev_get_prof_data(struct aw88261_device *aw_dev, int index,
+>> +			struct aw_prof_desc **prof_desc)
+>> +{
+>> +	if ((index >= aw_dev->aw88261_base->prof_info.count) || (index < 0)) {
+>> +		dev_err(aw_dev->dev, "%s: index[%d] overflow count[%d]\n",
+>> +				__func__, index, aw_dev->aw88261_base->prof_info.count);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	*prof_desc = &aw_dev->aw88261_base->prof_info.prof_desc[index];
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +int aw88261_init(struct aw88261_device **aw_dev, struct i2c_client *i2c, struct regmap *regmap)
+
+> You already used this function in patch #3, so your order of patches is
+> confusing.
+
+I will change the patch order as mentioned above
+
+>> +{
+>> +	unsigned int chip_id;
+>> +	int ret;
+>> +
+>> +	if (*aw_dev) {
+>> +		dev_info(&i2c->dev, "it should be initialized here.\n");
+
+> How is this possible?
+
+I will modify it according to your suggestion.
+
+>> +	} else {
+>> +		*aw_dev = devm_kzalloc(&i2c->dev, sizeof(struct aw88261_device), GFP_KERNEL);
+
+> sizeof(**)
+
+Thank you very much. I will modify it according to your suggestion.
+
+>> +		if (!(*aw_dev))
+>> +			return -ENOMEM;
+>> +	}
+>> +
+>> +	(*aw_dev)->aw88261_base =
+>> +			devm_kzalloc(&i2c->dev, sizeof(struct aw_device), GFP_KERNEL);
+
+> sizeof(*)
+
+Thank you very much. I will modify it according to your suggestion
+
+>> +	if (!(*aw_dev)->aw88261_base)
+>> +		return -ENOMEM;
+>> +
+>> +	(*aw_dev)->aw88261_base->i2c = i2c;
+
+> I propose to use some local variable, to simplify all these assignments.
+
+Thank you very much. I will modify it according to your suggestion
+
+>> +	(*aw_dev)->aw88261_base->dev = &i2c->dev;
+>> +	(*aw_dev)->aw88261_base->regmap = regmap;
+>> +	(*aw_dev)->dev = &i2c->dev;
+
+> In how many places do you need to store &i2c->dev?
+
+There are many places where I use dev_err(aw_dev->dev, xxx) for error printing.
+So I did this part of the storage.
+Does it make sense to change to dev_err(aw_dev->aw88261_base->dev, xx) or add a local variable
+and use "dev_err(aw88261_base->dev, xxx)"?
+
+>> +
+>> +	/* read chip id */
+>> +	ret = regmap_read((*aw_dev)->aw88261_base->regmap, AW88261_CHIP_ID_REG, &chip_id);
+>> +	if (ret) {
+>> +		dev_err((*aw_dev)->dev, "%s read chipid error. ret = %d", __func__, ret);
+>> +		return ret;
+>> +	}
+>> +	dev_info((*aw_dev)->dev, "chip id = %x\n", chip_id);
+
+> "(*aw_dev)->dev" all over this function is not really readable.
+
+Thank you very much, I will change it to "dev_info(&i2c->dev, xxx)";
+
+>> +
+>> +	switch (chip_id) {
+>> +	case AW88261_CHIP_ID:
+>> +		ret = aw_dev_init((*aw_dev));
+>> +		break;
+>> +	default:
+>> +		ret = -EINVAL;
+>> +		dev_err((*aw_dev)->dev, "unsupported device");
+>> +		break;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +MODULE_DESCRIPTION("AW88261 device");
+>> +MODULE_LICENSE("GPL v2");
+
+> Wait, is this a module? Does not look complete. I already saw one
+> module, so what is this for? For which module?
+
+Can it be changed to MODULE_DESCRIPTION("AW88261 device lib")?
+The function in the aw88261_device.c file, which I used in the aw88261.c file.
+
+Best regards,
+Weidong Wang
