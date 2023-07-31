@@ -2,111 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E612E768FB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6105768FB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 10:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbjGaIME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 04:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
+        id S231899AbjGaIMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 04:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbjGaILn (ORCPT
+        with ESMTP id S229550AbjGaILv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 04:11:43 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA3E1BC5
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:07:29 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so40436401fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 01:07:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690790847; x=1691395647;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZqTmRIbEzGWkMIQ/7WUD43X1exAHGHGBjC+JLzJ3vlw=;
-        b=dDu3pT6Z2pBpixJh9+pzWjBRT6ICwIa1XvWIDvSh0G4WmAfufd5lYeeAer0s1IeKWL
-         Q2z+4fJkFSOYxWqgLWX1JKAlzU5z6in65GzzHHX1PF7vmsrniAoCF6WD/ZP07E2h0Gsy
-         WLQ2h4mNeFRzPa1OvyKE9kdwCEQsVgdl6n6BJFvbBOKZ8CC70VubPKlyGkJdp8TDoDto
-         kOeVrVLigTtGh2k372mhwhbKDrHHn/EGuvoTaoNcf573fY/n1jLU9FMTwhAYoSP5dbQ0
-         wg5cPa5rNkmA+P3S2lrqPWqeiIjWI4O4dgPi8BPXm9xIqFOoSbU6+jd50fI0R79M2Kha
-         +SpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690790847; x=1691395647;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZqTmRIbEzGWkMIQ/7WUD43X1exAHGHGBjC+JLzJ3vlw=;
-        b=jaau9X2bSijUJsn6pNl6+oxaepGbfI5jvwDUnkb6Tudz+NjXWaIWmiVATQjnLLK1pa
-         N0pm/rBYhAiIDq2PZPqfR1wFQFktoxBCNxwdjolVCP5rD5XJ8O/rN4qgDMmyR4oQH298
-         4sWf0ZdXNR7NPeF+XxM6GVsKI2y2fSpFl0WDGBJADdHqrGK7qT8oNOJszaR49Gynw/TQ
-         0VKsnBbu2t2LPJ7cnI3rom8+mIU/sNwOfehaVzkNICJZU9081XhN2tBn5wAzQgf4FnQ1
-         cuQg5fWCNwx/lXVmGxjhwVk0cYEI51YVONkhmMzUrvZ/w43umfTBuclDvMJEFljVKMML
-         IUpA==
-X-Gm-Message-State: ABy/qLYBDtQUfwjESLVMI4AQBz3NkfVurDnm2RgY5ibrbX1AkvWZEP8+
-        GcUbQ2ZHfLOpiwej0SjuWjjsEA==
-X-Google-Smtp-Source: APBJJlGMqG5IlFByvjde3/tO+un+SfvKLos/B9DUiKrbZqzGjWFmsRNr1v0/XvOB7unx/zERilrkBw==
-X-Received: by 2002:a2e:9e46:0:b0:2b6:d0fc:ee18 with SMTP id g6-20020a2e9e46000000b002b6d0fcee18mr5819812ljk.19.1690790847277;
-        Mon, 31 Jul 2023 01:07:27 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id w18-20020a2e3012000000b002b6a5dfc7f3sm2448776ljw.30.2023.07.31.01.07.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 01:07:26 -0700 (PDT)
-Message-ID: <e274df6d-d34b-8a5d-8792-261ae51e2f66@linaro.org>
-Date:   Mon, 31 Jul 2023 10:07:25 +0200
+        Mon, 31 Jul 2023 04:11:51 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D376F1BC;
+        Mon, 31 Jul 2023 01:07:55 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36V6xcvi030927;
+        Mon, 31 Jul 2023 08:07:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=GsmGA04Aq/4sirD7eMpQWZAa/t+hd9ql4R9SolXLrAo=;
+ b=A1I4KVPOifKTnv/4i9IvLR9kBrx0UEyc6E9DaQq1WQyyzbKV03LPCkJPf/wpwfT9/kmS
+ BVeH54N6pmazpMfOjKcidySq145YJwRMdYkF7dA2PISQBLkzu5Eg1BmZzZKrjoz752Wz
+ k9wsfzA4BtvZEAQpavHsMaE7v3Mw/gxEqjVCkblawGgq5Ut39k86LKQtevzVpU0VzBNI
+ xy9qvIC4MSIIOQCz+uGJNqPWgPSftuwUN5skbe1jz7E/yQGj6LujDlmGTZPXAgX1Z6tf
+ sRJpXREUqxtgRMAZ3W6s7T2hQO2RsJS9+dgk1mAlJwMXXYGHqACo4fnLE4hzrw9q/c+P qA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4uat2yfn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 08:07:52 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36V87p4P019889
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 08:07:51 GMT
+Received: from [10.239.132.204] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 01:07:46 -0700
+Message-ID: <ad6aba3b-f8b8-9cf5-aa50-ad34a7406b5d@quicinc.com>
+Date:   Mon, 31 Jul 2023 16:07:43 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ARM: dts: qcom: use defines for interrupts
-Content-Language: en-US
+Subject: Re: [PATCH v3 5/8] dt-bindings: arm: qcom,ids: Adjust the position of
+ QCOM_ID_QDU1010
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230730111530.98105-1-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230730111530.98105-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <quic_tsoni@quicinc.com>, <quic_shashim@quicinc.com>,
+        <quic_kaushalk@quicinc.com>, <quic_tdas@quicinc.com>,
+        <quic_tingweiz@quicinc.com>, <quic_aiquny@quicinc.com>,
+        <kernel@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230731061325.26431-1-quic_tengfan@quicinc.com>
+ <20230731061325.26431-6-quic_tengfan@quicinc.com>
+ <981a79ee-5258-eb76-020a-765f5f39866f@linaro.org>
+ <53132580-53b6-06bc-8b48-51a3f56ab71d@quicinc.com>
+ <dc327138-0fc2-0766-0d86-08977b07fb76@linaro.org>
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+In-Reply-To: <dc327138-0fc2-0766-0d86-08977b07fb76@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: S3v6vyUGcSgMNsl5Gjncj0eTJsg3ddb6
+X-Proofpoint-GUID: S3v6vyUGcSgMNsl5Gjncj0eTJsg3ddb6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-31_01,2023-07-26_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ priorityscore=1501 mlxlogscore=595 suspectscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 bulkscore=0 impostorscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2307310072
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,43 +88,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.07.2023 13:15, Krzysztof Kozlowski wrote:
-> Replace hard-coded interrupt parts (GIC, flags) with standard defines
-> for readability.  No changes in resulting DTBs.
+
+
+在 7/31/2023 4:02 PM, Krzysztof Kozlowski 写道:
+> On 31/07/2023 09:21, Tengfei Fan wrote:
+>>
+>>
+>> 在 7/31/2023 3:00 PM, Krzysztof Kozlowski 写道:
+>>> On 31/07/2023 08:13, Tengfei Fan wrote:
+>>>> Adjust the position of QCOM_ID_QDU1010, so that there is a coherent
+>>>> sequence of numbers.
+>>>>
+>>>> Change-Id: Id083e1ecc92c063c1a07a81c66dcb034020964b0
+>>>
+>>> Please run scripts/checkpatch.pl and fix reported warnings. Some
+>>> warnings can be ignored, but the code here looks like it needs a fix.
+>>> Feel free to get in touch if the warning is not clear.
+>>>
+>> sure, will do this check if this patch still need.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  arch/arm/boot/dts/qcom/qcom-apq8064.dtsi | 44 ++++++++++++------------
->  arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi |  2 +-
->  arch/arm/boot/dts/qcom/qcom-msm8660.dtsi | 22 ++++++------
->  arch/arm/boot/dts/qcom/qcom-msm8974.dtsi |  6 ++--
->  arch/arm/boot/dts/qcom/qcom-sdx55.dtsi   | 18 +++++-----
->  arch/arm/boot/dts/qcom/qcom-sdx65.dtsi   | 26 +++++++-------
->  6 files changed, 59 insertions(+), 59 deletions(-)
+> I understand that resending this might not be needed, but just to
+> clarify: you must run checkpatch on all your patches before sending
+> them. This is the most basic step required before sending anything.
 > 
-> diff --git a/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi b/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
-> index e0adf237fc5c..c693bfc63488 100644
-> --- a/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
-> +++ b/arch/arm/boot/dts/qcom/qcom-apq8064.dtsi
-> @@ -190,7 +190,7 @@ cpu_crit3: trip1 {
->  
->  	cpu-pmu {
->  		compatible = "qcom,krait-pmu";
-> -		interrupts = <1 10 0x304>;
-> +		interrupts = <GIC_PPI 10 0x304>;
-Looks like 0x304 would be (IRQ_TYPE_LEVEL_HIGH | IRQ_LEVEL | IRQ_PER_CPU)
+> Best regards,
+> Krzysztof
+> 
+Thanks Krzysztof remind me kindly, will do checkpatch confirm if have 
+other patch need push to upstream.
+new patcheset already remove this patch, and already got your review, 
+Thanks again!
 
-
-[...]
-
->  	timer {
->  		compatible = "arm,armv7-timer";
-> -		interrupts = <1 2 0xf08>,
-> +		interrupts = <GIC_PPI 2 0xf08>,
-0xf08 -> (IRQ_LEVEL | IRQ_PER_CPU | IRQ_NOPROBE | IRQ_NOREQUEST | IRQ_TYPE_LEVEL_LOW)
-
-there's a couple more 0x3XX and 0xfXX in there
-
-otherwise lgtm
-
-Konrad
+-- 
+Thx and BRs,
+Tengfei Fan
