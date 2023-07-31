@@ -2,58 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7A5769764
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0385769763
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbjGaNWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57594 "EHLO
+        id S232348AbjGaNWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbjGaNWg (ORCPT
+        with ESMTP id S229960AbjGaNWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:22:36 -0400
+        Mon, 31 Jul 2023 09:22:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAB410DF;
-        Mon, 31 Jul 2023 06:22:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FF7A10DD;
+        Mon, 31 Jul 2023 06:22:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C847461138;
-        Mon, 31 Jul 2023 13:22:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42EC2C433C7;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2957F61147;
         Mon, 31 Jul 2023 13:22:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690809754;
-        bh=W88KIO1EGaih8WBv3amMc7NCSgZQDPxMZgc6sGJqxMk=;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C9AAC433C7;
+        Mon, 31 Jul 2023 13:22:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690809750;
+        bh=WpJsh3fyEuGUo6PH6fN0EFyznVrVxs5GaJUXkqK1ArM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JDO1ONd6KSm0JmgLpI+0me23J0iuXRF6IR/rPcbY6loYRsnutr1iAqtzj/fv7cN0r
-         RQjqW/oFiOX5qgUaaHNLFmgfDDde/sDVD0P+6fVpJeb3NROz48QOKmqT0AVJuUGrda
-         ygN7MEzS6dzS7BPF3qo1q1F3gb2APHQbHjq4zIDnNfy8mHwTVxkbz0OXP+bpM0yRrk
-         qvVOBDXCSEPGpJCSB/Tn2sabXgJrr/e6reXkemMlLRZKP8UgUa8Cof+i6YblOhdEzG
-         VzxeI23zgoc4FEEwKQR1cUf1Au+e0y1B9GPGepFPaTH5/kn/mGJ95h5RuFHYt3TN5r
-         4Caq9hPCJesgQ==
-Date:   Mon, 31 Jul 2023 15:22:28 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Gao Xiang <hsiangkao@linux.alibaba.com>,
-        syzbot <syzbot+69c477e882e44ce41ad9@syzkaller.appspotmail.com>,
-        chao@kernel.org, huyue2@coolpad.com, jack@suse.cz,
-        jefflexu@linux.alibaba.com, linkinjeon@kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sj1557.seo@samsung.com,
-        syzkaller-bugs@googlegroups.com, xiang@kernel.org
-Subject: Re: [syzbot] [erofs?] [fat?] WARNING in erofs_kill_sb
-Message-ID: <20230731-unbeirrbar-kochen-761422d57ffc@brauner>
-References: <000000000000f43cab0601c3c902@google.com>
- <20230731093744.GA1788@lst.de>
- <9b57e5f7-62b6-fd65-4dac-a71c9dc08abc@linux.alibaba.com>
- <20230731111622.GA3511@lst.de>
- <20230731-augapfel-penibel-196c3453f809@brauner>
+        b=gcpEgFq/S32d3pUMyuyl/Kot/n40hCWR6RpeLyaKC5hCseKd0FZyXQ6XKJVSPdUYe
+         Ry+ctDKz7oRurSz3gR7+R6N4+4gf34rqN7zkBtuVetSuenkuKAltbYa4kkJ26LYITn
+         cAG3ZCVRWCfnSAB5MG+KhAtyHTtqYU+s4qBd/qqY=
+Date:   Mon, 31 Jul 2023 15:22:30 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Chengfeng Ye <dg573847474@gmail.com>,
+        kernel-janitors@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] tty: synclink_gt: Fix potential deadlock on &info->lock
+Message-ID: <2023073123-poser-panhandle-1cb7@gregkh>
+References: <20230728123901.64225-1-dg573847474@gmail.com>
+ <a95e699c-c507-931e-92b0-7f63a5e3a9e1@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731-augapfel-penibel-196c3453f809@brauner>
+In-Reply-To: <a95e699c-c507-931e-92b0-7f63a5e3a9e1@web.de>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -64,48 +58,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 02:43:39PM +0200, Christian Brauner wrote:
-> On Mon, Jul 31, 2023 at 01:16:22PM +0200, Christoph Hellwig wrote:
-> > On Mon, Jul 31, 2023 at 06:58:14PM +0800, Gao Xiang wrote:
-> > > Previously, deactivate_locked_super() or .kill_sb() will only be
-> > > called after fill_super is called, and .s_magic will be set at
-> > > the very beginning of erofs_fc_fill_super().
-> > >
-> > > After ("fs: open block device after superblock creation"), such
-> > > convension is changed now.  Yet at a quick glance,
-> > >
-> > > WARN_ON(sb->s_magic != EROFS_SUPER_MAGIC);
-> > >
-> > > in erofs_kill_sb() can be removed since deactivate_locked_super()
-> > > will also be called if setup_bdev_super() is falled.  I'd suggest
-> > > that removing this WARN_ON() in the related commit, or as
-> > > a following commit of the related branch of the pull request if
-> > > possible.
-> > 
-> > Agreed.  I wonder if we should really call into ->kill_sb before
-> > calling into fill_super, but I need to carefull look into the
-> > details.
-> 
-> I think checking for s_magic in erofs kill sb is wrong as it introduces
-> a dependency on both fill_super() having been called and that s_magic is
-> initialized first. If someone reorders erofs_kill_sb() such that s_magic
-> is only filled in once everything else succeeded it would cause the same
-> bug. That doesn't sound nice to me.
-> 
-> I think ->fill_super() should only be called after successfull
-> superblock allocation and after the device has been successfully opened.
-> Just as this code does now. So ->kill_sb() should only be called after
-> we're guaranteed that ->fill_super() has been called.
-> 
-> We already mostly express that logic through the fs_context object.
-> Anything that's allocated in fs_context->init_fs_context() is freed in
-> fs_context->free() before fill_super() is called. After ->fill_super()
-> is called fs_context->s_fs_info will have been transferred to
-> sb->s_fs_info and will have to be killed via ->kill_sb().
-> 
-> Does that make sense?
+Hi,
 
-Uh, no. I vasty underestimated how sensitive that change would be. Plus
-arguably ->kill_sb() really should be callable once the sb is visible.
+This is the semi-friendly patch-bot of Greg Kroah-Hartman.
 
-Are you looking into this or do you want me to, Christoph?
+Markus, you seem to have sent a nonsensical or otherwise pointless
+review comment to a patch submission on a Linux kernel developer mailing
+list.  I strongly suggest that you not do this anymore.  Please do not
+bother developers who are actively working to produce patches and
+features with comments that, in the end, are a waste of time.
+
+Patch submitter, please ignore Markus's suggestion; you do not need to
+follow it at all.  The person/bot/AI that sent it is being ignored by
+almost all Linux kernel maintainers for having a persistent pattern of
+behavior of producing distracting and pointless commentary, and
+inability to adapt to feedback.  Please feel free to also ignore emails
+from them.
+
+thanks,
+
+greg k-h's patch email bot
