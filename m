@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8164768975
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 03:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED898768977
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 03:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjGaBGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 30 Jul 2023 21:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43542 "EHLO
+        id S229739AbjGaBID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 30 Jul 2023 21:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjGaBGc (ORCPT
+        with ESMTP id S229448AbjGaBIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 30 Jul 2023 21:06:32 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124F2A8
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 18:06:30 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-403a85eb723so32805321cf.1
-        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 18:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690765589; x=1691370389;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tFmc3LSzrpEqyrtFMsjpuqEL6tx6bxO7/K5KB2HQeYI=;
-        b=nb65YHarYEOj1MpY9L+5D+t/XGN0YKVf8GmPHeLemYM9iv5Ew8+GMLtXi1NEdPm86s
-         7qyEynL9gf/SaaZ+hyDdmpi1TWY2Y2zxwsbRBJdFo3mTa33DQhgyz3eVZ8bBiKG8hONn
-         N+39ETFQVGZVbahoPb1z0du7m/HlmrnjtygF1j8+Z8oFDu53pculHXEo62tqGtK4kWEz
-         kx5lt7GlkaTX+oXMGWBFo5rZEeZ1nQULhiWoYcLQEQSZXlkZJ3enow1NqmNcxu1IaIu2
-         C0AKYlNQK9Bq6ZZgwIH9+BFArb3fu5XVp/HKfuo0QyJTTatlzTRqlTi6+wjZnMaubwga
-         afjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690765589; x=1691370389;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tFmc3LSzrpEqyrtFMsjpuqEL6tx6bxO7/K5KB2HQeYI=;
-        b=MN6an4cIRQ9sZQoJYXv5vW7gkVCCttLU4CSJzJH3E85RVN1qwfwwoclzJwZtfZgHHw
-         b/laQ1wop98tPqCmiLLg092lzs0Pks56JAUlM7NfKkFkCIT6MZUNkruQg851Vi6sOfnF
-         XLWaQACwF5BAbc/Gb7EIwLcOJoK8iJW/rGjNAysthY42ytggD2VMORkQ58kteXQUc6Hd
-         mUMY9CugNz2eTEGrnMtrF0z7sIoJCWJt4yqCQVeXUXUYwRcjl11cXf1d97U5WcTp+Js9
-         PM4bMOj/U692EHwfNkMeRtPlz/jiEhsDrnSQ1Jx3EWJBbBV8jhCJE9tIsCYJi9Hq9fuP
-         CwCw==
-X-Gm-Message-State: ABy/qLbhxiP5boy8DBowLr0dlp3AoMtWa8gB0lQQztsqaX7IPNqwxC07
-        RBnImssBqP0hp5ZRXDyWi4Vb6s8AJ5VJK4b8o/I=
-X-Google-Smtp-Source: APBJJlHJuMYSAMTZZClGEz5NR785dOjQIKU7YpcJh+77Cc2xMhnXxKru7xwtPhSSqWM0VcXdOqFehG4qO3WQ47kPaJc=
-X-Received: by 2002:ac8:5808:0:b0:406:56cb:b617 with SMTP id
- g8-20020ac85808000000b0040656cbb617mr13227416qtg.53.1690765588579; Sun, 30
- Jul 2023 18:06:28 -0700 (PDT)
+        Sun, 30 Jul 2023 21:08:02 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C61191;
+        Sun, 30 Jul 2023 18:08:00 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RDg8Y1dyZz4f3jLg;
+        Mon, 31 Jul 2023 09:07:57 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+        by APP4 (Coremail) with SMTP id gCh0CgBnHbFtCcdktnTRPA--.18098S3;
+        Mon, 31 Jul 2023 09:07:58 +0800 (CST)
+Subject: Re: [PATCH v2] md: raid1: fix potential OOB in raid1_remove_disk()
+To:     Song Liu <song@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc:     Zhang Shurong <zhang_shurong@foxmail.com>,
+        linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "yukuai (C)" <yukuai3@huawei.com>
+References: <tencent_0D24426FAC6A21B69AC0C03CE4143A508F09@qq.com>
+ <d8fde5d9-3ac5-0945-dc8e-315092a67528@huaweicloud.com>
+ <CAPhsuW6UnqTowo0CZVZXcb_Z=OjV5xFwYqD1O6FO3CLqiKx2DQ@mail.gmail.com>
+From:   Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <52ddb065-e778-53d0-9679-7a6879e8a8e9@huaweicloud.com>
+Date:   Mon, 31 Jul 2023 09:07:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20230730024409.1738559-1-zhangshida@kylinos.cn>
-In-Reply-To: <20230730024409.1738559-1-zhangshida@kylinos.cn>
-From:   Stephen Zhang <starzhangzsd@gmail.com>
-Date:   Mon, 31 Jul 2023 09:05:52 +0800
-Message-ID: <CANubcdWBRHU1Jc+PtneaJ=YpDtoQtFhoxiNOgOVCM55VJF45TQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: Fix rec_len verify error
-To:     tytso@mit.edu, adilger.kernel@dilger.ca
-Cc:     linux-kernel@vger.kernel.org, zhangshida@kylinos.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAPhsuW6UnqTowo0CZVZXcb_Z=OjV5xFwYqD1O6FO3CLqiKx2DQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBnHbFtCcdktnTRPA--.18098S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr13KF1Uur4rCr4ktF1DKFg_yoW8Wry5pa
+        17GasxWr18AryUGF1Dtr4UuFyFya17KFZ7XFyfWw12qr9IvrWxW3y5KF45urnIvr4UA34j
+        yF1jgrZxCF1FgFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+        IcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9a9DU
+        UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zhangshida <starzhangzsd@gmail.com> =E4=BA=8E2023=E5=B9=B47=E6=9C=8830=E6=
-=97=A5=E5=91=A8=E6=97=A5 10:44=E5=86=99=E9=81=93=EF=BC=9A
->
-> From: Shida Zhang <zhangshida@kylinos.cn>
->
-> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> a problem occurred when more than 13 million files were directly created
-> under a directory:
->
-> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx:=
- dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxx=
-xx: dir seems corrupt?  Run e2fsck -D.
-> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xx=
-xxx: Directory index failed checksum
->
-> When enough files are created, the fake_dirent->reclen will be 0xffff.
-> it doesn't equal to the blocksize 65536, i.e. 0x10000.
->
-> But it is not the same condition when blocksize equals to 4k.
-> when enough file are created, the fake_dirent->reclen will be 0x1000.
-> it equals to the blocksize 4k, i.e. 0x1000.
->
-> The problem seems to be related to the limitation of the 16-bit field
-> when the blocksize is set to 64k. To address this, Modify the check so
-> as to handle it properly.
->
-> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
-> ---
-> v1->v2:
->   Use a better way to check the condition, as suggested by Andreas.
->
->  fs/ext4/namei.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 0caf6c730ce3..fffed95f8531 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(struct=
- inode *inode,
->         struct ext4_dir_entry *dp;
->         struct dx_root_info *root;
->         int count_offset;
-> +       int blocksize =3D EXT4_BLOCK_SIZE(inode->i_sb);
->
-> -       if (le16_to_cpu(dirent->rec_len) =3D=3D EXT4_BLOCK_SIZE(inode->i_=
-sb))
-> +       if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) =3D=3D blo=
-cksize)
->                 count_offset =3D 8;
->         else if (le16_to_cpu(dirent->rec_len) =3D=3D 12) {
->                 dp =3D (struct ext4_dir_entry *)(((void *)dirent) + 12);
-> --
-> 2.27.0
->
+Hi,
 
-Sorry, this one seems to missing Ccing to linux-ext4@vger.kernel.org.
+在 2023/07/29 18:49, Song Liu 写道:
+> On Mon, Jul 24, 2023 at 10:12 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> 在 2023/07/22 15:53, Zhang Shurong 写道:
+>>> If rddev->raid_disk is greater than mddev->raid_disks, there will be
+>>> an out-of-bounds in raid1_remove_disk(). We have already found
+>>> similar reports as follows:
+>>>
+>>> 1) commit d17f744e883b ("md-raid10: fix KASAN warning")
+>>> 2) commit 1ebc2cec0b7d ("dm raid: fix KASAN warning in raid5_remove_disk")
+>>>
+>>> Fix this bug by checking whether the "number" variable is
+>>> valid.
+>>
+>> LGTM
+>>
+>> Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+>>>
+>>> Signed-off-by: Zhang Shurong <zhang_shurong@foxmail.com>
+>>> ---
+>>> Changes in v2:
+>>>    - Using conf->raid_disks instead of mddev->raid_disks.
+>>>
+>>>    drivers/md/raid1.c | 4 ++++
+>>>    1 file changed, 4 insertions(+)
+>>>
+>>> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+>>> index dd25832eb045..80aeee63dfb7 100644
+>>> --- a/drivers/md/raid1.c
+>>> +++ b/drivers/md/raid1.c
+>>> @@ -1829,6 +1829,10 @@ static int raid1_remove_disk(struct mddev *mddev, struct md_rdev *rdev)
+>>>        struct r1conf *conf = mddev->private;
+>>>        int err = 0;
+>>>        int number = rdev->raid_disk;
+>>> +
+>>> +     if (unlikely(number >= conf->raid_disks))
+>>> +             goto abort;
+> 
+> We need err = -EINVAL here.
 
--Shida
+I think return 0 is right here, so that caller can remove this rdev
+from array successfully, this only need to return error for the case
+-EBUSY.
+
+Thanks,
+Kuai
+
+> 
+>>> +
+>>>        struct raid1_info *p = conf->mirrors + number;
+>>>
+>>>        if (rdev != p->rdev)
+>>>
+>>
+> .
+> 
+
