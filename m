@@ -2,91 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EB9769977
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB7176997F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 16:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbjGaO1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 10:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
+        id S231772AbjGaO2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 10:28:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbjGaO07 (ORCPT
+        with ESMTP id S232726AbjGaO17 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 10:26:59 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C969EB3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:26:57 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fe2048c910so9934165e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:26:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690813616; x=1691418416;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=d0amng8ESj5Ivn3+1Qpwn6F8c5hSHQtHpqsKrSaqmyM=;
-        b=uc+fd4z3doK5zO6DlkUKmP75VP+YhckG31qRdKmzMx3SfzHxgEvUG4TZJe3y+phASO
-         Vt6Vj2SpM+mhoB8FlaaLfSg4GvJr5glzyru4hhZn2/OF34PIdvyQuuXIC2o82IDlbMkT
-         lvFY0u9O1qGNbQKhcLXSslU6Vjv6a+4hxvgmthJJEMVtsaJzdLjgk1j/Kq9rQ4lHsJTR
-         Ep8xhUPTxZj6UgC7aru352SW/OnJsGkG03+RxM49bagpvN9UyEQbzbEjYCKCq+GDPMFr
-         ipmS+4dk5mg5xGqNuajn9l1LXxr1F4Lh8OtGHZ3MAO2L7rx6TLAp98U/lDNOZOVNjYLy
-         fd2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690813616; x=1691418416;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d0amng8ESj5Ivn3+1Qpwn6F8c5hSHQtHpqsKrSaqmyM=;
-        b=K1YA+v2JEzT4zFgm+w9wAjkKts/aEeMx2NENMkhZaEogtl8XxJ2s+EfRZOe9pyjrhc
-         wIypJoHM4RW4sfj2In4scRtGjGdGztcDGWnzt3PvILTHK+x7lx3HMN7NXh6Wbrqck7Xk
-         bVR90Lfe1jYb5cNG3R42qS0hvR4mHzDIK5KuRJP4QveoYybaTAvXea5mYS8u6M2gq+Xx
-         zvRxe9zpUa3z6p7ZuDN/3mzw0aZ2RKrwNzPYDWjsXumJgDuPdSnZgHyjuBkzMod7Lf0u
-         IgsJN0vFj7FM5dgjmfh5yF3KGSvxf8phXeBxYqnEbWb7xQse5WtXVfuVucQapgGU3Zox
-         af5Q==
-X-Gm-Message-State: ABy/qLYeVYr3CnFPlFGOQn9UKGaEw1NbrcUwM7du1XKheirkgzzyWAya
-        mie25CI8aA0ylg6MftAIw8wyWA==
-X-Google-Smtp-Source: APBJJlGzCyI+U5RVUU8FDM+eBfMc+3uCEUPv/aNqKzgnlSN7kdoPm8KbQdY/Zxi8dDL10HtPb67Ihw==
-X-Received: by 2002:adf:f70c:0:b0:313:f61c:42b2 with SMTP id r12-20020adff70c000000b00313f61c42b2mr5302957wrp.69.1690813616290;
-        Mon, 31 Jul 2023 07:26:56 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id a8-20020adfed08000000b0031417b0d338sm13274552wro.87.2023.07.31.07.26.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 07:26:56 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 17:26:53 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
-        Jordan Griege <jgriege@cloudflare.com>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
-Message-ID: <38c61917-98b5-4ca0-b04e-64f956ace6e4@kadam.mountain>
-References: <cover.1690332693.git.yan@cloudflare.com>
- <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
- <a76b300a-e472-4568-b734-37115927621d@moroto.mountain>
- <ZMEqYOOBc1ZNcEER@debian.debian>
- <bc3ec02d-4d4e-477a-b8a5-5245425326c6@kadam.mountain>
- <ZMFFbChK/66/8XZd@debian.debian>
- <8b681fe1-4cc6-4310-9f50-1cff868f8f7f@kadam.mountain>
+        Mon, 31 Jul 2023 10:27:59 -0400
+Received: from out-83.mta1.migadu.com (out-83.mta1.migadu.com [IPv6:2001:41d0:203:375::53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339A7B3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 07:27:52 -0700 (PDT)
+Message-ID: <1f9f6c41-6b67-ef33-f7d0-9c0e42a231c9@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690813670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dx5Chf3zAqMy7M8DF/JIJ8L29UssARWG699WHErf97A=;
+        b=MfjwhR8BZuEFjG1ucDLPH2LY7TqklIan4Ec2BIIK5NbhcovgxY7fIiA812JJEueLJA2rkP
+        r2OjluZ2upRIuKF8j5OVD+lO2gnKW+jE8YiORAMBJhCQGkjKlbLg/1tkG8pBnpBaom0qH5
+        W6DBUJ7MsZy7hBbXOD3XlWA6vpImZq8=
+Date:   Mon, 31 Jul 2023 22:27:25 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8b681fe1-4cc6-4310-9f50-1cff868f8f7f@kadam.mountain>
+Subject: Re: [PATCH v2 3/4] blk-flush: kill the flush state machine
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     axboe@kernel.dk, ming.lei@redhat.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhouchengming@bytedance.com
+References: <20230725130102.3030032-1-chengming.zhou@linux.dev>
+ <20230725130102.3030032-4-chengming.zhou@linux.dev>
+ <20230731061937.GC30409@lst.de>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20230731061937.GC30409@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,20 +52,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm not a networking person, but I was looking at some use after free
-static checker warnings.
+On 2023/7/31 14:19, Christoph Hellwig wrote:
+> On Tue, Jul 25, 2023 at 09:01:01PM +0800, chengming.zhou@linux.dev wrote:
+>> From: Chengming Zhou <zhouchengming@bytedance.com>
+>>
+>> Since now we put preflush and postflush requests in separate queues,
+>> we don't need the flush sequence to record anymore.
+>>
+>> REQ_FSEQ_PREFLUSH: blk_enqueue_preflush()
+>> REQ_FSEQ_POSTFLUSH: blk_enqueue_postflush()
+>> REQ_FSEQ_DONE: blk_end_flush()
+>>
+>> In blk_flush_complete(), we have two list to handle: preflush_running
+>> and postflush_running. We just blk_end_flush() directly for postflush
+>> requests, but need to move preflush requests to requeue_list to
+>> dispatch.
+>>
+>> This patch just kill the flush state machine and directly call these
+>> functions, in preparation for the next patch.
+> 
+>> +static void blk_enqueue_postflush(struct request *rq, struct blk_flush_queue *fq)
+> 
+> Please avoid the overly long here.  Maybe just rename enqueue to queue
+> here and for the preflush version as we don't really use enqueue in
+> the flush code anyway.
 
-Apparently the rule with xmit functions is that if they return a value
-> 15 then that means the skb was not freed.  Otherwise it's supposed to
-be freed.  So like NETDEV_TX_BUSY is 0x10 so it's not freed.
+Ok, will rename to queue.
 
-This is checked with using the dev_xmit_complete() function.  So I feel
-like it would make sense for LWTUNNEL_XMIT_CONTINUE to return higher
-than 15.
+> 
+>> +{
+>> +	unsigned int nr_requeue = 0;
+>> +	struct list_head *preflush_running;
+>> +	struct list_head *postflush_running;
+>> +	struct request *rq, *n;
+>> +
+>> +	preflush_running = &fq->preflush_queue[fq->flush_running_idx];
+>> +	postflush_running = &fq->postflush_queue[fq->flush_running_idx];
+> 
+> I'd initialize these ad declaration time:
+> 
+> 	struct list_head *preflush_running =
+> 		&fq->preflush_queue[fq->flush_running_idx];
+> 	struct list_head *postflush_running =
+> 		&fq->postflush_queue[fq->flush_running_idx];
+> 	unsigned int nr_requeue = 0;
+> 	struct request *rq, *n;
+> 
 
-Because that's the bug right?  The original code was assuming that
-everything besides LWTUNNEL_XMIT_DONE was freed.
+LGTM, will change these.
 
-regards,
-dan carpenter
+Thanks for your review!
 
+>> +
+>> +	list_for_each_entry_safe(rq, n, postflush_running, queuelist) {
+>> +		blk_end_flush(rq, fq, error);
+>>  	}
+> 
+> No need for the braces.
+> 
