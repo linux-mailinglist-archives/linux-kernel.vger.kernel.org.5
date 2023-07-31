@@ -2,62 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF85769A51
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CC3769A57
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232621AbjGaPF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60244 "EHLO
+        id S232788AbjGaPGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:06:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjGaPF0 (ORCPT
+        with ESMTP id S232735AbjGaPGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:05:26 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D92D10DD;
-        Mon, 31 Jul 2023 08:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=0+kFd0PeLKGw7bCHBy4dn6TcM2mrgGMssJUohhcTcA0=; b=K8xAm8d84ZvAl6tQ0q8q3Xrfw9
-        jzmMF7NG3Idujlq0AT6Rt2ArZwBhnJV3iNneG0vsF0uEVWgnt8TsZC/e+8R4zJ0c9AvFSCM2p5heh
-        fLh1v88Fwx2Ff0v4gxerNhyojk3Go/acQuGmE1eaUWh3gOozCa//gT3/uR21xcZWKgHQmIVViaKsX
-        E/ly9B1HPJqJGDjQU+4IRR1/EECWiTtSd+uSnrI1gKBfOuj3sXVF7twJdgj35Tfz94xSmgfUKDCAe
-        4tczCaJd8HbQOHF9pA9cjFMkiZZS+hQuGyqkNdotAPSSLa1NsR6d0Lske76wByU19CCuzzpmaHUiB
-        FMHQSTSw==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQUSX-00GFIi-2e;
-        Mon, 31 Jul 2023 15:05:21 +0000
-Message-ID: <a6d9857c-fcbd-74d0-bc97-fc86a8c1b820@infradead.org>
-Date:   Mon, 31 Jul 2023 08:05:18 -0700
+        Mon, 31 Jul 2023 11:06:50 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2063.outbound.protection.outlook.com [40.107.20.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14B6310E3;
+        Mon, 31 Jul 2023 08:06:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kg/TFX/GjDtJzq8qAZs6x35dUGsDUOLOyo5TuyOq8fuwagnc0SVEBlR9wvx3/5zYmFx4Qq0x7zioY73eKpybeHJpErAarKPWncB8FmJ0ZsomLpjcWffCiwwcE55bGm0Gl4Vr95MpmykTmKre7ocynw9LbwAhc1uimrDpPqpySXHJBkmhLRuDVA3F/Wnp/cAjOKQPQhl12CuGBDCgfwVfYt618q9uAMTD37u3si3QTf6UfH/6hd4j4DGIsg1sGPJaco+Jb9GLpK2YFfNv91Wc0PErJSXkneg8MejPCrB2VAKf6WFj449DKotT98x+U6ixO006W12+WqCAYcCYhWNQwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=crcUh5M+29qWAqhs2HQiCtWclidSWg61ZXdah2qyiuk=;
+ b=VS03mg1aGPK4Mldh1OjUzNQ2hnIaZXneXf3z2rzmbtD85rIBMk6+W+bg6coSdzHHPlnpfCX4Z9zoFhdCk1BOVB2PWjGWjr37PR1no7MY8kVWR1AmHx7t9Ob3TrOgKQW5Xj9lrxAaWEWmyitgm7hoNRXfx7dKxGmgnL3jhh8czUW4XypMp35ORhqGXlynYza5qe3UQ3FKWQbno9/vP53x6Q+HD5/k0NQJC4kxy7cwyDydthRIbfFxMsjTXk2LgzI6UTC7eKkMT7Xu2D/4mXB2Mdly6BzsDkMAlIf3/Rz9UtHcvDTHPN9BIhUbPATz2/dOVFH2yxPk+pLUjWJ6zui7kg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=crcUh5M+29qWAqhs2HQiCtWclidSWg61ZXdah2qyiuk=;
+ b=a0AlKzYXCjDsvuPAnby9GhfWpvEuDIB+ByjJCtb12XNjOYdOGUm3Uj9PSZfzP+uMd1tnJfOEfciEjKexFe2MyJMUU253LPy+9UvAzMOQsezPRquTiW4wiL3btmKyoBbEbQB4PiSr+Lbl+agbmtLP2mYwtnPdCSKtTyXNcFcjki0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AS8PR04MB7509.eurprd04.prod.outlook.com (2603:10a6:20b:23e::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.43; Mon, 31 Jul
+ 2023 15:06:46 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::d0d5:3604:98da:20b1]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::d0d5:3604:98da:20b1%7]) with mapi id 15.20.6631.043; Mon, 31 Jul 2023
+ 15:06:46 +0000
+Date:   Mon, 31 Jul 2023 11:06:31 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     lpieralisi@kernel.org
+Cc:     Zhiqiang.Hou@nxp.com, bhelgaas@google.com, imx@lists.linux.dev,
+        kernel-janitors@vger.kernel.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        mani@kernel.org, markus.elfring@web.de, minghuan.Lian@nxp.com,
+        mingkai.hu@nxp.com, robh@kernel.org, roy.zang@nxp.com,
+        xiaowei.bao@nxp.com
+Subject: Re: [PATCH v4 1/2] PCI: layerscape: Add support for Link down
+ notification
+Message-ID: <ZMfN9w6ixBFBmof7@lizhi-Precision-Tower-5810>
+References: <20230720135834.1977616-1-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720135834.1977616-1-Frank.Li@nxp.com>
+X-ClientProxiedBy: SJ0PR03CA0204.namprd03.prod.outlook.com
+ (2603:10b6:a03:2ef::29) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 3/5] efi: Add tee-based EFI variable driver
-Content-Language: en-US
-To:     Masahisa Kojima <masahisa.kojima@linaro.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
-Cc:     Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-efi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20230731065041.1447-1-masahisa.kojima@linaro.org>
- <20230731065041.1447-4-masahisa.kojima@linaro.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230731065041.1447-4-masahisa.kojima@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS8PR04MB7509:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5a84d578-d34c-4f8f-3110-08db91d7c21d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fjbBx9OTq1XUKe9FDQ5MsfsqcmPACxUomMgHrJDvBjE/sZ9VKCPimk63YuJkF4TZZMd//8lmI8f7Xip9rNbtpJUMQYfRxfYcQxU6/9JBRJKPp+cWuXoGO6FiadjDq6GKh2SAj8AXrJGhQtz1WCzf0szIhrK0sUgENtZAvJTCChTDD5zZe1CrAvfplSva+7AsB4Cy97SMxUHXqK4t4U+3L8ULAaNkgHRH2PNfjinVDLjGTVZVgqUP0ohplTHn+2C4iLrJYxqgFtBAbKR5H4HtWoRaqaum3lV5Hq9UNscM8vlIrlhoUnDwtQSWja1ZPmczcLcBkGjRVXBRxXEyIzu/ivOlGoIIC3JBeYm6F8H9luCobyaUhe3643E/Pv6jQJLmgCIFTk8P8U8+dhMEA7+CgfLJMBuYAt8fqHht/KrQzBrNW2UfR+IBP/XaWqZ0zlWA3w7TDKGswGExpYT2Yypn4h1yrH84pX8FMdRoLAwacD64SCquKuXbGVvQNAAHx3Rq3zI2OqoKTF5vA1UNj3BH5R4sOvbzUx35VUdVTu0+5LvMSjzq4UK4oVTGid+E4t2YrxKHGvo2LPO6P+pvL/yFAcByeMjqCPI0loAQzKZ8tNlRtyfS+L18OH9AWbJw1q6f
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(7916004)(376002)(396003)(346002)(136003)(39860400002)(366004)(451199021)(6512007)(9686003)(6666004)(52116002)(6486002)(186003)(83380400001)(86362001)(33716001)(38350700002)(38100700002)(26005)(6506007)(5660300002)(15650500001)(41300700001)(8936002)(8676002)(6916009)(66946007)(66556008)(66476007)(2906002)(316002)(7416002)(478600001)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3UsIzxyjvzwE03eq87zPZA6C+kXddkDN15AtmMS20m1IPkusPDrP45c9TV5s?=
+ =?us-ascii?Q?99FiSEKFX+25IHfu49p9DWPHdHVorRBkSUIfrHxOIT49zBd9ProumGnLVGt7?=
+ =?us-ascii?Q?YH+zZMJYO4doXVvKcLprEJjpAgO9AjXo/uXThuqfpNlTLxoZlDp4I7qp7VSO?=
+ =?us-ascii?Q?43veGPiiv9MoD7boBDfGXJQeIUV4u9Y7DbDWmHvtn+q2QTazzsKHTqebYNQI?=
+ =?us-ascii?Q?5jp5LGmA9x4HvEqRCZ7373BW+I1QsAaVad/CSOLLA98dJC/jSSgWR1OWRdcE?=
+ =?us-ascii?Q?0B5/z2BuZ6o3HVhZ9P4m+dKKV4xuXjqzH/632ghR2NEArIWNfDBKFrPDm6Ao?=
+ =?us-ascii?Q?18dJFS7qhJAsMhO9FclY5gBFOXs+Kx0InVSq/aWYxmtLxjkPaXKofB6FT1Nx?=
+ =?us-ascii?Q?cY0qlZLmfXZml9A8ad+CyM3JDIj/hDbRyOnkjWsOzcn0UHdndc8w1D+FBy5E?=
+ =?us-ascii?Q?WLNrE+Wy2N4Ryb6oupZGzQO//ITAve33wiGTZkOiSSk96rg3NUNA0p8Ofsol?=
+ =?us-ascii?Q?lboVVp0SYL7ejcMvyJSTZswM8ekyRaARh1S7q2zZ4WH5eWcMpOvBLIxV6oap?=
+ =?us-ascii?Q?uHZfH8Q7Mn1Do00NsSKEjE3Yo1Zig2Ox6frpMgFym4JuSCW92EdoRISUo1Ki?=
+ =?us-ascii?Q?oHFhZTaXThanrfjTfnVy3orlxDYgB/DYluafwKKk2toritXUAu74iF0EY14B?=
+ =?us-ascii?Q?pqA/vF+yv2zmBBYgBmGNJTjGkYPe2h2rlqzLwLUCA2NEi9t3bT/jtFF9+S+S?=
+ =?us-ascii?Q?uUuiBchnwubIQWPMdow8ht1zlbGVbZt3234a3nNwfO9fc4jZrUNS11esgboD?=
+ =?us-ascii?Q?bhYNM018QJuC+kbUV6pCReWFEVyk+/1G71DHQLdX4ffGsEy711KBOnhZ/uk4?=
+ =?us-ascii?Q?EK/BTB8U8B1vX3LKMazeudAW2vVTqXweE2NP48vHH4X2Pbknjr6rWk+9hO17?=
+ =?us-ascii?Q?4esdl2uHG8j8G8ZJlfPj1iqCg498gZ/OiNbJpBUdUl6Yr6k93Y3IPALd7MGy?=
+ =?us-ascii?Q?ERaE3sUF16nvqjktE9lGWxoWjrZOe85NrS+pJNXi96uI/KB8Rw3PfvH/5M/e?=
+ =?us-ascii?Q?bTZtzVxc29XGYheNPC6EfnaxJxpXOEFyZFa3i5gHvL+nx3KlpTPB5cKVknKV?=
+ =?us-ascii?Q?g6PSdMyJ6cdRAhjUS9oe0RiSLTfRgcOcMv8IF1/BmbobtK/JR4BnCsnrQeBn?=
+ =?us-ascii?Q?IFUCd7Jqr4rO0C1TOIHKTEECSTAajp7H01ZOyO/n0V0Pbo2QkPo6c+131vZL?=
+ =?us-ascii?Q?aW5UKSAvXiPcXCdUuFeMxOTSVaYLvT2dGgEo9zyZUH77CSFV/s92W9DZTRvU?=
+ =?us-ascii?Q?Dkd955v7aVGoYwvd63UeozzkFA0c0jidstRXCmituYi1XscjceVqGFj9Eh50?=
+ =?us-ascii?Q?6SkHc35FUBpVwMF5m5PJUdBYDCj2ELKpr1axAKC7oiqIpvTbIismCAdPe9IW?=
+ =?us-ascii?Q?+uJvt4ec50mLFJz8eDEF6rQK1pAyGKEjgqMzUJVNK71v5SQ8mnLmJWKIfdJA?=
+ =?us-ascii?Q?AiHureqrYfysQs4IIhBg8rfFJzJ5Xe+3w4OveqesRGDj5yVtL6zeOQvcG6Tl?=
+ =?us-ascii?Q?G/YojlTm0M3ym92n5hQ=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a84d578-d34c-4f8f-3110-08db91d7c21d
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jul 2023 15:06:46.5880
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pH1s5OphSUr8naTX8f5Pb7BaeVICXzg2yRgmTAmPavTg1bkKsHIUY9kXKc/u4eSgleAS5+OwR2Ev29zXH9Z0Zw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7509
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,38 +118,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jul 20, 2023 at 09:58:33AM -0400, Frank Li wrote:
+> Add support to pass Link down notification to Endpoint function driver
+> so that the LINK_DOWN event can be processed by the function.
+> 
+> Acked-by: Manivannan Sadhasivam <mani@kernel.org>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
 
+@Lorenzo
 
-On 7/30/23 23:50, Masahisa Kojima wrote:
-> diff --git a/drivers/firmware/efi/Kconfig b/drivers/firmware/efi/Kconfig
-> index 043ca31c114e..aa38089d1e4a 100644
-> --- a/drivers/firmware/efi/Kconfig
-> +++ b/drivers/firmware/efi/Kconfig
-> @@ -287,3 +287,18 @@ config UEFI_CPER_X86
->  	bool
->  	depends on UEFI_CPER && X86
->  	default y
-> +
-> +config TEE_STMM_EFI
-> +	tristate "TEE based EFI runtime variable service driver"
+Could you please consider pick both patches?
+Manivannan already reviewed and only impact layerscape.
 
-	          TEE-based
+Frank
 
-> +	depends on EFI && OPTEE && !EFI_VARS_PSTORE
-> +	help
-> +	  Select this config option if TEE is compiled to include StandAloneMM
-> +	  as a separate secure partition it has the ability to check and store
-
-	                       partition. It has the ability
-
-> +	  EFI variables on an RPMB or any other non-volatile medium used by
-> +	  StandAloneMM.
-> +
-> +	  Enabling this will change the EFI runtime services from the firmware
-> +	  provided functions to TEE calls.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called tee_stmm_efi.
-
--- 
-~Randy
+> Change from v2 to v4
+>  - none
+> Change from v1 to v2
+> 
+>  drivers/pci/controller/dwc/pci-layerscape-ep.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> index de4c1758a6c3..e0969ff2ddf7 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
+> @@ -89,6 +89,7 @@ static irqreturn_t ls_pcie_ep_event_handler(int irq, void *dev_id)
+>  		dev_dbg(pci->dev, "Link up\n");
+>  	} else if (val & PEX_PF0_PME_MES_DR_LDD) {
+>  		dev_dbg(pci->dev, "Link down\n");
+> +		pci_epc_linkdown(pci->ep.epc);
+>  	} else if (val & PEX_PF0_PME_MES_DR_HRD) {
+>  		dev_dbg(pci->dev, "Hot reset\n");
+>  	}
+> -- 
+> 2.34.1
+> 
