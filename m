@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A621B76964A
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE1576964C
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbjGaM10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S232732AbjGaM2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231532AbjGaM1Z (ORCPT
+        with ESMTP id S232630AbjGaM20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:27:25 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245611724;
-        Mon, 31 Jul 2023 05:26:47 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-522bc9556f5so2457044a12.0;
-        Mon, 31 Jul 2023 05:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690806382; x=1691411182;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gwhaajtiWbAK0+aLK2xFSMs0ohtyw35IKQkHVzwXE8Q=;
-        b=AnYWCg8THtmqrYKDgEWhGEj4akQmYhihbNAeSRam1/TdCJuZIrOA33P7Jf2F6GrsGQ
-         RNhF3NbcUuAV+mw5z72qcIr9tMx3Msi9enDZV8ESejhjQj586qF2OSf7kqXZrICPgiL5
-         hqOcCW/2NFdJNEVjq5Md1ZSlD2lOwgWEpusqqK+JfSQ3PmVwvlJEBorqjIgsDXU/6+oV
-         b2r247/jzsbfUkJ9WOLDPrka179JjM+r/to86iaD5+QOHYFN8jEVPVyBEa5sZbijb01f
-         XaJ+7ECaj24RGDvssOn8xZoGYJtn4swg7ArddeIlj8dhjKhoX1vNM+TBfJTpNMErWGE9
-         w33A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690806382; x=1691411182;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gwhaajtiWbAK0+aLK2xFSMs0ohtyw35IKQkHVzwXE8Q=;
-        b=ZbBbhWBO56wHg4pr7Gu3+qZMZ2JUgz1LFJMN2hacoKc/BRUYTU9EmzlymbK4Ao28q8
-         GUiJz8UhpslS+Ooh1KkBSueYo6Fava9iMdRXfuk7dGKBFvmHWiUiKlHMDITPTZWa8jJA
-         UsbZm8/Fm7rIpkUL8DiSJjelOftereoJEUhj6HTqvLWAUkxIQHWZ5q7dOhCCZ/QPLqGa
-         4O3VmA7rf6lkO2xVaEYXUTmvZM5JQOI4EWBQeBA7P+8hS3lo0CAeMGuHy2sksNVczJCz
-         /7rRbhXwH2o0SlkbetTo56AJqoVHAwmbc3QCPRt3bCS9gy4VYyiboGSBF6brUi3LtgHo
-         dKXQ==
-X-Gm-Message-State: ABy/qLaSFcVrPv/mNh3+Pan9HVonE2mvD0ftEVYMAoBIpBxYwjS2ic6M
-        DBYV249d/ucUr9Axtmjo8Mg=
-X-Google-Smtp-Source: APBJJlFqh6O8ZhZZrVhxyzkGtfKV31CkB3xqadtfge9pqNyKNfX9Qj6+rE7GluS3HH43H8S7tBjmPA==
-X-Received: by 2002:aa7:dbd8:0:b0:522:3b6e:5f6a with SMTP id v24-20020aa7dbd8000000b005223b6e5f6amr8992130edt.29.1690806382404;
-        Mon, 31 Jul 2023 05:26:22 -0700 (PDT)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:c9d4:a174:b52d:4c33])
-        by smtp.gmail.com with ESMTPSA id y19-20020aa7ccd3000000b0051d9ee1c9d3sm5359982edt.84.2023.07.31.05.26.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 05:26:22 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Walker Chen <walker.chen@starfivetech.com>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        linux-pm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: adjust file entry in STARFIVE JH71XX PMU CONTROLLER DRIVER
-Date:   Mon, 31 Jul 2023 14:26:11 +0200
-Message-Id: <20230731122611.4309-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 08:28:26 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD2819A6
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:28:03 -0700 (PDT)
+Received: from [192.168.2.174] (109-252-150-127.dynamic.spd-mgts.ru [109.252.150.127])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id CA89666020AE;
+        Mon, 31 Jul 2023 13:27:34 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690806456;
+        bh=t+kNYnRp3JEhtRu3dv/EMffqWCWXTjQlm8JAtUsnSlM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=kkjTv2by5suJcB3axLiTbVi3kI0kXtHBEYujiRVXo2butVE3i6rgt5aDFhldO4kFO
+         46lQhNIa3g762H7hnJliI5g7bhudEfjySh66SsOYXp9N3X5pPTQWycMZkiGe1qVyDA
+         I+Y+xW2zs0qWP+VdYgZQ0I17Md9tWp1TO18GvgioAuf7DwEOEEO8xYVH0WH1mECbPn
+         OgrjJ2YSzOhgVf+JnJfHN+l6p6BcX+IkrKfdM9it6o+nOFdxSl1yIua5/YJtp+pths
+         mxf+EJtBVHxK/R0qE5rwqsjXcLq/MBb3UEKip7EC3vsLppqOjxi/RlJYzo+1WLEDsR
+         uzfU8t+dBOYbA==
+Message-ID: <4c5fa735-9bfd-f92a-8deb-888c7368f89e@collabora.com>
+Date:   Mon, 31 Jul 2023 15:27:31 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.1
+Subject: Re: [PATCH v14 02/12] drm/shmem-helper: Add pages_pin_count field
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+References: <20230722234746.205949-1-dmitry.osipenko@collabora.com>
+ <20230722234746.205949-3-dmitry.osipenko@collabora.com>
+ <20230725092709.51356f39@collabora.com>
+ <20230725103234.0c8923f1@collabora.com>
+Content-Language: en-US
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230725103234.0c8923f1@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit f3fb16291f48 ("soc: starfive: Move the power-domain driver to the
-genpd dir") moves:
+On 7/25/23 11:32, Boris Brezillon wrote:
+>> Can we make it an atomic_t, so we can avoid taking the lock when the
+>> GEM has already been pinned. That's something I need to be able to grab
+>> a pin-ref in a path where the GEM resv lock is already held[1]. We could
+>> of course expose the locked version,
+> My bad, that's actually not true. The problem is not that I call
+> drm_gem_shmem_pin() with the resv lock already held, but that I call
+> drm_gem_shmem_pin() in a dma-signaling path where I'm not allowed to
+> take a resv lock. I know for sure pin_count > 0, because all GEM objects
+> mapped to a VM have their memory pinned right now, and this should
+> stand until we decide to add support for live-GEM eviction, at which
+> point we'll probably have a way to detect when a GEM is evicted, and
+> avoid calling drm_gem_shmem_pin() on it.
+> 
+> TLDR; I can't trade the atomic_t for a drm_gem_shmem_pin_locked(),
+> because that wouldn't solve my problem. The other solution would be to
+> add an atomic_t at the driver-GEM level, and only call
+> drm_gem_shmem_[un]pin() on 0 <-> 1 transitions, but I thought using an
+> atomic at the GEM-shmem level, to avoid locking when we can, would be
+> beneficial to the rest of the eco-system. Let me know if that's not an
+> option, and I'll go back to the driver-specific atomic_t.
 
-  drivers/{soc/starfive/jh71xx_pmu.c => genpd/starfive/jh71xx-pmu.c}
+Could you please explain why do you need to pin GEM in a signal handler?
+This is not something drivers usually do or need to do. You likely also
+shouldn't need to detect that GEM is evicted in yours driver. I'd expect
+that Panthor shouldn't differ from Panfrost in regards to how GEM memory
+management is done and Panfrost doesn't need to do anything special.
 
-However, the update to the file entry in MAINTAINERS only addresses the
-move in directories, but misses the renaming from jh71xx_pmu.c to
-jh71xx-pmu.c. Hence, ./scripts/get_maintainer.pl --self-test=patterns
-complains about a broken reference.
+Note that patch #14 makes locked pin/unpin functions public and turns
+the unlocked variants into helpers, you'll be able to experiment with
+these funcs in the Panthor driver.
 
-Adjust the file entry in STARFIVE JH71XX PMU CONTROLLER DRIVER.
+In general, using atomic_t or kref should be a good thing to do, but
+AFAICS it shouldn't bring benefits to the today's drm-shmem users. I'd
+want to understand what you're trying to achieve in the Panthor driver.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 003b0461641a..7a20d6ab1d18 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20408,7 +20408,7 @@ M:	Walker Chen <walker.chen@starfivetech.com>
- M:	Changhuang Liang <changhuang.liang@starfivetech.com>
- S:	Supported
- F:	Documentation/devicetree/bindings/power/starfive*
--F:	drivers/genpd/starfive/jh71xx_pmu.c
-+F:	drivers/genpd/starfive/jh71xx-pmu.c
- F:	include/dt-bindings/power/starfive,jh7110-pmu.h
- 
- STARFIVE SOC DRIVERS
 -- 
-2.17.1
+Best regards,
+Dmitry
 
