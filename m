@@ -2,193 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E55C768AA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 06:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30815768AAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 06:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbjGaEKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 00:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34768 "EHLO
+        id S229577AbjGaEMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 00:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbjGaEKg (ORCPT
+        with ESMTP id S229522AbjGaEMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 00:10:36 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AD3E43;
-        Sun, 30 Jul 2023 21:10:32 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36V2mVwh019004;
-        Mon, 31 Jul 2023 04:10:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=gPvnt16QGA4ObIxg6yNEmot12urHMc4SMSDvzpuJp88=;
- b=RlLkPPOkE5u5Rw76QJjAmaE+bjsmWEzfXxz1oqz/Q2Ixelqy6P5gdoX+95bRWboGgKIz
- TB6TIPWVSz+Cy4FnNZidaQL2gHYAGBDL7J2nWo5Et/vAE47sNYVN471tMr1Y9ZGjgzvg
- Z2F7oYnp1gKwrHn4cy4KQQU5WvpDGK7Ghv4Btno6+Vpw5to6IZikvRLEieVIlZQV0OkC
- ks2J1dGpluLR+EBaAFJt96U8TaTD+RbkaXfQ1cctY1odiU4cSWHZZE1yZPBuo1Qiav9O
- Y3BibykIVP7nlHDGByK43P62j+kfZQ8LHDTB9P2kvZeDdN+V4IQdmfv4e4vjTxXKn918 Rg== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s4ueujk90-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 04:10:21 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 36V4AKiS031498
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 04:10:20 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Sun, 30 Jul 2023 21:10:20 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Chris Lew <quic_clew@quicinc.com>
-CC:     Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
-Subject: [PATCH 4/4] soc: qcom: aoss: Tidy up qmp_send() callers
-Date:   Sun, 30 Jul 2023 21:10:13 -0700
-Message-ID: <20230731041013.2950307-5-quic_bjorande@quicinc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230731041013.2950307-1-quic_bjorande@quicinc.com>
-References: <20230731041013.2950307-1-quic_bjorande@quicinc.com>
+        Mon, 31 Jul 2023 00:12:13 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E7F171A
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 21:11:45 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fb960b7c9dso6420591e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 30 Jul 2023 21:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690776703; x=1691381503;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zsess/8JJrHTnk1M2sCbsEz2P3ISuJ+vZA0sFdsXBAU=;
+        b=O90L/at68+T5y2rldkivkDCw0gbH7IqRrlaL0FBM78DaxnNIt67UB40sFh0Xww5L2k
+         PMKEeZ29NHA+6HmZQqZE9svXYrF1jwFpI+CkHcjZuvhqfW5gr9Z11JcDtsjQOeqBg9P+
+         LINugW1bAUwm/2l3KwlmDlhhMRAi6u7Xq3vNwNxJaa6F3849i3/5so4WmNCPJG4w2hk1
+         N/EXPNHPIfWyQFEZID9FdWau0opUfsk/2tid5BBWcmsSirscrrRx+EoGX4c68XDQ98hC
+         qdsgRiZFaPhs3YH9yM1i7eK+ZZKTtU8V8UNvSY9VvufkHodYjFXAm499v+5CIIMp4Na/
+         7lvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690776703; x=1691381503;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zsess/8JJrHTnk1M2sCbsEz2P3ISuJ+vZA0sFdsXBAU=;
+        b=BnjWG5SORDO7i+EaBZPvBMh7R8kxZuWrkdSzHEoT0anGP8TXbDsNpVz1sh0f2K5kAF
+         mrI05IA/UCzIxlJCQHbKPEGCl/nPiO3rsa7M/dQ+Yf+nGcE4iiDy9+WrCpznZsu+SQyb
+         KgFz57kF6SKbKF6q6Ep9LveSBj8quhKV99Ks/IMF42q1fFghCoSI7p0zWvP+UCBN7XTb
+         13GEBF6Zs2L3Xlds1dRtlTylPElMycRmuDb4QqzwA/PoPvCXhS8XICIMqr41HETUzjwc
+         QgzKASgkm8LLCP1ZjryZt0qtIAHbnOS28QnDJMc81QLE0wSI1coVT1e79Bc2jdAt+L/t
+         Yrng==
+X-Gm-Message-State: ABy/qLZFShqneu2pubmxHndjRpheJVS7Icn4jQwiUDhQlmNpWze8HZi4
+        8N5YIqeeNA/5mZiaV/CK+OjyaA==
+X-Google-Smtp-Source: APBJJlHMhth9LvtXCpSOPC+KGRoPtSJPJdykVuWLgwpUfwb1CNiECcYILT70wHHSP43bFTCrO80arw==
+X-Received: by 2002:a19:6408:0:b0:4fe:df7:bcf5 with SMTP id y8-20020a196408000000b004fe0df7bcf5mr4824235lfb.8.1690776703130;
+        Sun, 30 Jul 2023 21:11:43 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
+        by smtp.gmail.com with ESMTPSA id b3-20020a056512024300b004fe28168cd1sm988937lfo.155.2023.07.30.21.11.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jul 2023 21:11:42 -0700 (PDT)
+Message-ID: <d5644f7e-c96f-d4b1-cc17-8b20b8570298@linaro.org>
+Date:   Mon, 31 Jul 2023 07:11:42 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 7zMnZAXaYh_3srMd2w-mcsIwO6_BuxRf
-X-Proofpoint-ORIG-GUID: 7zMnZAXaYh_3srMd2w-mcsIwO6_BuxRf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-27_10,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
- phishscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 adultscore=0 impostorscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2307310038
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RFC v5 07/10] drm/atomic: Loosen FB atomic checks
+Content-Language: en-GB
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     quic_abhinavk@quicinc.com, ppaalanen@gmail.com,
+        contact@emersion.fr, laurent.pinchart@ideasonboard.com,
+        sebastian.wick@redhat.com, ville.syrjala@linux.intel.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        wayland-devel@lists.freedesktop.org
+References: <20230728-solid-fill-v5-0-053dbefa909c@quicinc.com>
+ <20230728-solid-fill-v5-7-053dbefa909c@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230728-solid-fill-v5-7-053dbefa909c@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With qmp_send() handling variable length messages and string formatting
-he callers of qmp_send() can be cleaned up to not care about these
-things.
+On 28/07/2023 20:02, Jessica Zhang wrote:
+> Loosen the requirements for atomic and legacy commit so that, in cases
+> where pixel_source != FB, the commit can still go through.
+> 
+> This includes adding framebuffer NULL checks in other areas to account
+> for FB being NULL when non-FB pixel sources are enabled.
+> 
+> To disable a plane, the pixel_source must be NONE or the FB must be NULL
+> if pixel_source == FB.
+> 
+> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> ---
+>   drivers/gpu/drm/drm_atomic.c        | 20 +++++++++++---------
+>   drivers/gpu/drm/drm_atomic_helper.c | 34 ++++++++++++++++++++--------------
+>   drivers/gpu/drm/drm_plane.c         | 16 ++++++++++++----
+>   include/drm/drm_atomic_helper.h     |  4 ++--
+>   include/drm/drm_plane.h             | 29 +++++++++++++++++++++++++++++
+>   5 files changed, 74 insertions(+), 29 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic.c b/drivers/gpu/drm/drm_atomic.c
+> index 017ce0e6570f..b0c532f3db82 100644
+> --- a/drivers/gpu/drm/drm_atomic.c
+> +++ b/drivers/gpu/drm/drm_atomic.c
+> @@ -668,14 +668,14 @@ static int drm_atomic_plane_check(const struct drm_plane_state *old_plane_state,
+>   	const struct drm_framebuffer *fb = new_plane_state->fb;
+>   	int ret;
+>   
+> -	/* either *both* CRTC and FB must be set, or neither */
+> -	if (crtc && !fb) {
+> -		drm_dbg_atomic(plane->dev, "[PLANE:%d:%s] CRTC set but no FB\n",
+> +	/* either *both* CRTC and pixel source must be set, or neither */
+> +	if (crtc && !drm_plane_has_visible_data(new_plane_state)) {
+> +		drm_dbg_atomic(plane->dev, "[PLANE:%d:%s] CRTC set but no visible data\n",
+>   			       plane->base.id, plane->name);
+>   		return -EINVAL;
+> -	} else if (fb && !crtc) {
+> -		drm_dbg_atomic(plane->dev, "[PLANE:%d:%s] FB set but no CRTC\n",
+> -			       plane->base.id, plane->name);
+> +	} else if (drm_plane_has_visible_data(new_plane_state) && !crtc) {
+> +		drm_dbg_atomic(plane->dev, "[PLANE:%d:%s] Source %d has visible data but no CRTC\n",
+> +			       plane->base.id, plane->name, new_plane_state->pixel_source);
+>   		return -EINVAL;
+>   	}
+>   
+> @@ -706,9 +706,11 @@ static int drm_atomic_plane_check(const struct drm_plane_state *old_plane_state,
+>   	}
+>   
+>   
+> -	ret = drm_atomic_check_fb(new_plane_state);
+> -	if (ret)
+> -		return ret;
+> +	if (new_plane_state->pixel_source == DRM_PLANE_PIXEL_SOURCE_FB && fb) {
+> +		ret = drm_atomic_check_fb(new_plane_state);
+> +		if (ret)
+> +			return ret;
+> +	}
+>   
+>   	if (plane_switching_crtc(old_plane_state, new_plane_state)) {
+>   		drm_dbg_atomic(plane->dev,
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> index 41b8066f61ff..d05ec9ef2b3e 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -864,7 +864,7 @@ int drm_atomic_helper_check_plane_state(struct drm_plane_state *plane_state,
+>   	*src = drm_plane_state_src(plane_state);
+>   	*dst = drm_plane_state_dest(plane_state);
+>   
+> -	if (!fb) {
+> +	if (!drm_plane_has_visible_data(plane_state)) {
+>   		plane_state->visible = false;
+>   		return 0;
+>   	}
+> @@ -881,25 +881,31 @@ int drm_atomic_helper_check_plane_state(struct drm_plane_state *plane_state,
+>   		return -EINVAL;
+>   	}
+>   
+> -	drm_rect_rotate(src, fb->width << 16, fb->height << 16, rotation);
+> +	if (plane_state->pixel_source == DRM_PLANE_PIXEL_SOURCE_FB && fb) {
+> +		drm_rect_rotate(src, fb->width << 16, fb->height << 16, rotation);
+>   
+> -	/* Check scaling */
+> -	hscale = drm_rect_calc_hscale(src, dst, min_scale, max_scale);
+> -	vscale = drm_rect_calc_vscale(src, dst, min_scale, max_scale);
+> -	if (hscale < 0 || vscale < 0) {
+> -		drm_dbg_kms(plane_state->plane->dev,
+> -			    "Invalid scaling of plane\n");
+> -		drm_rect_debug_print("src: ", &plane_state->src, true);
+> -		drm_rect_debug_print("dst: ", &plane_state->dst, false);
+> -		return -ERANGE;
+> +		/* Check scaling */
+> +		hscale = drm_rect_calc_hscale(src, dst, min_scale, max_scale);
+> +		vscale = drm_rect_calc_vscale(src, dst, min_scale, max_scale);
+> +
+> +		if (hscale < 0 || vscale < 0) {
+> +			drm_dbg_kms(plane_state->plane->dev,
+> +					"Invalid scaling of plane\n");
+> +			drm_rect_debug_print("src: ", &plane_state->src, true);
+> +			drm_rect_debug_print("dst: ", &plane_state->dst, false);
+> +			return -ERANGE;
+> +		}
+>   	}
+>   
+>   	if (crtc_state->enable)
+>   		drm_mode_get_hv_timing(&crtc_state->mode, &clip.x2, &clip.y2);
+>   
+> -	plane_state->visible = drm_rect_clip_scaled(src, dst, &clip);
+> -
+> -	drm_rect_rotate_inv(src, fb->width << 16, fb->height << 16, rotation);
+> +	if (plane_state->pixel_source == DRM_PLANE_PIXEL_SOURCE_FB && fb) {
 
-Drop the QMP_MSG_LEN sized buffers and use the message formatting, as
-appropriate.
+You can unify this with the previous if condition, it will be more logical.
 
-Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
----
- drivers/net/ipa/ipa_power.c    |  5 +----
- drivers/remoteproc/qcom_q6v5.c |  8 +-------
- drivers/soc/qcom/qcom_aoss.c   | 14 ++++----------
- 3 files changed, 6 insertions(+), 21 deletions(-)
+> +		plane_state->visible = drm_rect_clip_scaled(src, dst, &clip);
+> +		drm_rect_rotate_inv(src, fb->width << 16, fb->height << 16, rotation);
+> +	} else if (drm_plane_solid_fill_enabled(plane_state)) {
+> +		plane_state->visible = true;
+> +	}
+>   
+>   	if (!plane_state->visible)
+>   		/*
+> diff --git a/drivers/gpu/drm/drm_plane.c b/drivers/gpu/drm/drm_plane.c
+> index 009d3ebd9b39..8f759f546aae 100644
+> --- a/drivers/gpu/drm/drm_plane.c
+> +++ b/drivers/gpu/drm/drm_plane.c
+> @@ -839,6 +839,14 @@ bool drm_any_plane_has_format(struct drm_device *dev,
+>   }
+>   EXPORT_SYMBOL(drm_any_plane_has_format);
+>   
+> +static bool drm_plane_needs_disable(struct drm_plane_state *state, struct drm_framebuffer *fb)
+> +{
+> +	if (state->pixel_source == DRM_PLANE_PIXEL_SOURCE_NONE)
+> +		return true;
+> +
+> +	return state->pixel_source == DRM_PLANE_PIXEL_SOURCE_FB && fb == NULL;
+> +}
+> +
+>   /*
+>    * __setplane_internal - setplane handler for internal callers
+>    *
+> @@ -861,8 +869,8 @@ static int __setplane_internal(struct drm_plane *plane,
+>   
+>   	WARN_ON(drm_drv_uses_atomic_modeset(plane->dev));
+>   
+> -	/* No fb means shut it down */
+> -	if (!fb) {
+> +	/* No visible data means shut it down */
+> +	if (drm_plane_needs_disable(plane->state, fb)) {
+>   		plane->old_fb = plane->fb;
+>   		ret = plane->funcs->disable_plane(plane, ctx);
+>   		if (!ret) {
+> @@ -913,8 +921,8 @@ static int __setplane_atomic(struct drm_plane *plane,
+>   
+>   	WARN_ON(!drm_drv_uses_atomic_modeset(plane->dev));
+>   
+> -	/* No fb means shut it down */
+> -	if (!fb)
+> +	/* No visible data means shut it down */
+> +	if (drm_plane_needs_disable(plane->state, fb))
+>   		return plane->funcs->disable_plane(plane, ctx);
+>   
+>   	/*
+> diff --git a/include/drm/drm_atomic_helper.h b/include/drm/drm_atomic_helper.h
+> index 536a0b0091c3..6d97f38ac1f6 100644
+> --- a/include/drm/drm_atomic_helper.h
+> +++ b/include/drm/drm_atomic_helper.h
+> @@ -256,8 +256,8 @@ drm_atomic_plane_disabling(struct drm_plane_state *old_plane_state,
+>   	 * Anything else should be considered a bug in the atomic core, so we
+>   	 * gently warn about it.
+>   	 */
+> -	WARN_ON((new_plane_state->crtc == NULL && new_plane_state->fb != NULL) ||
+> -		(new_plane_state->crtc != NULL && new_plane_state->fb == NULL));
+> +	WARN_ON((new_plane_state->crtc == NULL && drm_plane_has_visible_data(new_plane_state)) ||
+> +		(new_plane_state->crtc != NULL && !drm_plane_has_visible_data(new_plane_state)));
+>   
+>   	return old_plane_state->crtc && !new_plane_state->crtc;
+>   }
+> diff --git a/include/drm/drm_plane.h b/include/drm/drm_plane.h
+> index 303f01f0588c..9ff2a837ed17 100644
+> --- a/include/drm/drm_plane.h
+> +++ b/include/drm/drm_plane.h
+> @@ -991,6 +991,35 @@ static inline struct drm_plane *drm_plane_find(struct drm_device *dev,
+>   #define drm_for_each_plane(plane, dev) \
+>   	list_for_each_entry(plane, &(dev)->mode_config.plane_list, head)
+>   
+> +/**
+> + * drm_plane_solid_fill_enabled - Check if solid fill is enabled on plane
+> + * @state: plane state
+> + *
+> + * Returns:
+> + * Whether the plane has been assigned a solid_fill_blob
+> + */
+> +static inline bool drm_plane_solid_fill_enabled(struct drm_plane_state *state)
+> +{
+> +	if (!state)
+> +		return false;
+> +	return state->pixel_source == DRM_PLANE_PIXEL_SOURCE_SOLID_FILL && state->solid_fill_blob;
+> +}
+> +
+> +static inline bool drm_plane_has_visible_data(const struct drm_plane_state *state)
+> +{
+> +	switch (state->pixel_source) {
+> +	case DRM_PLANE_PIXEL_SOURCE_NONE:
+> +		return false;
+> +	case DRM_PLANE_PIXEL_SOURCE_SOLID_FILL:
+> +		return state->solid_fill_blob != NULL;
+> +	case DRM_PLANE_PIXEL_SOURCE_FB:
+> +	default:
+> +		WARN_ON(state->pixel_source != DRM_PLANE_PIXEL_SOURCE_FB);
+> +	}
+> +
+> +	return state->fb != NULL;
+> +}
+> +
+>   bool drm_any_plane_has_format(struct drm_device *dev,
+>   			      u32 format, u64 modifier);
+>   
+> 
 
-diff --git a/drivers/net/ipa/ipa_power.c b/drivers/net/ipa/ipa_power.c
-index 26181eeed975..0eaa7a7f3343 100644
---- a/drivers/net/ipa/ipa_power.c
-+++ b/drivers/net/ipa/ipa_power.c
-@@ -324,15 +324,12 @@ void ipa_power_retention(struct ipa *ipa, bool enable)
- {
- 	static const char fmt[] = "{ class: bcm, res: ipa_pc, val: %c }";
- 	struct ipa_power *power = ipa->power;
--	char buf[36];	/* Exactly enough for fmt[]; size a multiple of 4 */
- 	int ret;
- 
- 	if (!power->qmp)
- 		return;		/* Not needed on this platform */
- 
--	(void)snprintf(buf, sizeof(buf), fmt, enable ? '1' : '0');
--
--	ret = qmp_send(power->qmp, buf);
-+	ret = qmp_send(power->qmp, fmt, enable ? '1' : '0');
- 	if (ret)
- 		dev_err(power->dev, "error %d sending QMP %sable request\n",
- 			ret, enable ? "en" : "dis");
-diff --git a/drivers/remoteproc/qcom_q6v5.c b/drivers/remoteproc/qcom_q6v5.c
-index 8b41a73fa4d1..4ee5e67a9f03 100644
---- a/drivers/remoteproc/qcom_q6v5.c
-+++ b/drivers/remoteproc/qcom_q6v5.c
-@@ -23,19 +23,13 @@
- 
- static int q6v5_load_state_toggle(struct qcom_q6v5 *q6v5, bool enable)
- {
--	char buf[Q6V5_LOAD_STATE_MSG_LEN];
- 	int ret;
- 
- 	if (!q6v5->qmp)
- 		return 0;
- 
--	ret = snprintf(buf, sizeof(buf),
--		       "{class: image, res: load_state, name: %s, val: %s}",
-+	ret = qmp_send(q6v5->qmp, "{class: image, res: load_state, name: %s, val: %s}",
- 		       q6v5->load_state, enable ? "on" : "off");
--
--	WARN_ON(ret >= Q6V5_LOAD_STATE_MSG_LEN);
--
--	ret = qmp_send(q6v5->qmp, buf);
- 	if (ret)
- 		dev_err(q6v5->dev, "failed to toggle load state\n");
- 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index b59c8681bcfe..4a4e12c7439a 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -266,7 +266,7 @@ EXPORT_SYMBOL(qmp_send);
- 
- static int qmp_qdss_clk_prepare(struct clk_hw *hw)
- {
--	static const char buf[QMP_MSG_LEN] = "{class: clock, res: qdss, val: 1}";
-+	static const char *buf = "{class: clock, res: qdss, val: 1}";
- 	struct qmp *qmp = container_of(hw, struct qmp, qdss_clk);
- 
- 	return qmp_send(qmp, buf);
-@@ -274,7 +274,7 @@ static int qmp_qdss_clk_prepare(struct clk_hw *hw)
- 
- static void qmp_qdss_clk_unprepare(struct clk_hw *hw)
- {
--	static const char buf[QMP_MSG_LEN] = "{class: clock, res: qdss, val: 0}";
-+	static const char *buf = "{class: clock, res: qdss, val: 0}";
- 	struct qmp *qmp = container_of(hw, struct qmp, qdss_clk);
- 
- 	qmp_send(qmp, buf);
-@@ -336,7 +336,6 @@ static int qmp_cdev_set_cur_state(struct thermal_cooling_device *cdev,
- 				  unsigned long state)
- {
- 	struct qmp_cooling_device *qmp_cdev = cdev->devdata;
--	char buf[QMP_MSG_LEN] = {};
- 	bool cdev_state;
- 	int ret;
- 
-@@ -346,13 +345,8 @@ static int qmp_cdev_set_cur_state(struct thermal_cooling_device *cdev,
- 	if (qmp_cdev->state == state)
- 		return 0;
- 
--	snprintf(buf, sizeof(buf),
--		 "{class: volt_flr, event:zero_temp, res:%s, value:%s}",
--			qmp_cdev->name,
--			cdev_state ? "on" : "off");
--
--	ret = qmp_send(qmp_cdev->qmp, buf);
--
-+	ret = qmp_send(qmp_cdev->qmp, "{class: volt_flr, event:zero_temp, res:%s, value:%s}",
-+		       qmp_cdev->name, cdev_state ? "on" : "off");
- 	if (!ret)
- 		qmp_cdev->state = cdev_state;
- 
 -- 
-2.25.1
+With best wishes
+Dmitry
 
