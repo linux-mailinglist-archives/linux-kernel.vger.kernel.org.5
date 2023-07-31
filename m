@@ -2,71 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D32769AD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DEC769ADA
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbjGaPcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
+        id S231801AbjGaPct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229839AbjGaPcK (ORCPT
+        with ESMTP id S229680AbjGaPcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:32:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E206CBF;
-        Mon, 31 Jul 2023 08:32:08 -0700 (PDT)
+        Mon, 31 Jul 2023 11:32:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649DCBF;
+        Mon, 31 Jul 2023 08:32:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7635C611A9;
-        Mon, 31 Jul 2023 15:32:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7CADC433CA;
-        Mon, 31 Jul 2023 15:32:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0257B611A0;
+        Mon, 31 Jul 2023 15:32:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D35A5C433C8;
+        Mon, 31 Jul 2023 15:32:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690817527;
-        bh=5E06FUiid6T4vgfkLSlTscvM6X1NVs/YkUOgbv1WjZc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AZxwYpXcjYbyuWTzscU1pa0c7ZxYX+jUX/gVXYqzo3K9Yox+xyMzJ28WqQkICXG5A
-         M47daMdHhor49bZP/Yxk7qFAeZrPM7C40B7nyUbuQax3iHE42JuidkswWCQ6XnEZr0
-         VQ0httpuVvzcDzoD/pbfsUkAqrpLfVgGrr0ojXvfly/CponzZBi73QjLX8nVNgVLy8
-         WS4LcE7PJG3xO0GjUA/zbH79lf6bX+WGchWSDUVBqA+cwN+ZqDWC8sNIghCs2s2cYY
-         nzoKmpXCiF6S+tFisvfzKQIQInXYiZgf4/qTiaQ5DjPpj8q7yFPO7361/GgAXugawF
-         orO0tNZlGDiSg==
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2b9ba3d6157so68619551fa.3;
-        Mon, 31 Jul 2023 08:32:07 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbIt6mdSfZdOnynHk+ljsSEikG/RjRtXniu4o3D/spP2A9v7xcx
-        RH2R0QEWvGnUJWH0/EAQA3ygvtMRY2SAODYqpw==
-X-Google-Smtp-Source: APBJJlF19uImMksgUiSVsL8p6nT4gd4CeDo7zq0USsNsugz1qVA1GktuTbo0TYPWnk7rVJKuWRXVCTCNUHaM7QQCpkM=
-X-Received: by 2002:a2e:8804:0:b0:2b9:ee3e:2407 with SMTP id
- x4-20020a2e8804000000b002b9ee3e2407mr204494ljh.38.1690817525832; Mon, 31 Jul
- 2023 08:32:05 -0700 (PDT)
+        s=k20201202; t=1690817565;
+        bh=W0IpSFwS67t8wZMVaiBzUL8aZ4W06IfVmvreY4qbGLc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T2K5ueSBGnVMsidOJRqwrd4MjEmjg+Hw3FDDf740xrfNrJZEP43f/YESO5YpUSVrp
+         ACOsDnY958gSrkfOzCOgVClGrmL3A4f/hHSKx09Ys/ySrp9DJfhgOC4Tw/+7EruT91
+         lEXwNmjptQx0YV8SvmJFwKjFDmWy2P/+rzBxS75CVoJVb3niIIfWe+m2wMrVzSwkVE
+         3bJyGkXW1wj/t0lbCZ4sHlIXg4wS+DXHLhXCLZX/0apuvdbe05xZcMbLvRju9w2ADt
+         23PNQZ3UgyXI/tcWHZs/pyc3eRqRAohZaqYBkl4E23N49vcUJDPHsu6uxQyirqekTt
+         4OcN/oZWxia/w==
+Date:   Mon, 31 Jul 2023 16:32:40 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-rockchip@lists.infradead.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+Subject: Re: [PATCH v2 1/3] dt-bindings: usb: add rk3588 compatible to
+ rockchip,dwc3
+Message-ID: <20230731-decipher-smuggler-2f83caa8c616@spud>
+References: <20230720173643.69553-1-sebastian.reichel@collabora.com>
+ <20230720173643.69553-2-sebastian.reichel@collabora.com>
+ <20230722-coleslaw-breeder-40827e23f717@spud>
+ <20230731151224.2vlk7bnabrqhz3pr@mercury.elektranox.org>
 MIME-Version: 1.0
-References: <20230721161840.1393996-1-hugo@hugovil.com> <20230721161840.1393996-7-hugo@hugovil.com>
- <CAL_JsqJpdhtnZ8FcM7kGWnM+iuDs1fWiCVgf413evbw-o8TZGQ@mail.gmail.com>
- <20230722104724.ef0c5896c239e721794b9fe9@hugovil.com> <2023072240-supremacy-shallot-a77f@gregkh>
- <20230724115428.d191186852c0bd0ee0d78398@hugovil.com>
-In-Reply-To: <20230724115428.d191186852c0bd0ee0d78398@hugovil.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 31 Jul 2023 09:31:53 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqL8rjwONd6UAitKik0U44BKSD6m8zbachgfq0R9oHBW8w@mail.gmail.com>
-Message-ID: <CAL_JsqL8rjwONd6UAitKik0U44BKSD6m8zbachgfq0R9oHBW8w@mail.gmail.com>
-Subject: Re: [RESEND PATCH v8 06/10] serial: sc16is7xx: fix regression with
- GPIO configuration
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jirislaby@kernel.org, jringle@gridpoint.com,
-        isaac.true@canonical.com, jesse.sung@canonical.com,
-        tomasz.mon@camlingroup.com, l.perczak@camlintechnologies.com,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Lech Perczak <lech.perczak@camlingroup.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ZiAI6f3sKG+VEhr4"
+Content-Disposition: inline
+In-Reply-To: <20230731151224.2vlk7bnabrqhz3pr@mercury.elektranox.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -77,68 +67,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 24, 2023 at 9:54=E2=80=AFAM Hugo Villeneuve <hugo@hugovil.com> =
-wrote:
->
-> On Sat, 22 Jul 2023 17:15:26 +0200
-> Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> > On Sat, Jul 22, 2023 at 10:47:24AM -0400, Hugo Villeneuve wrote:
-> > > On Fri, 21 Jul 2023 13:24:19 -0600
-> > > Rob Herring <robh+dt@kernel.org> wrote:
-> > >
-> > > > On Fri, Jul 21, 2023 at 10:19=E2=80=AFAM Hugo Villeneuve <hugo@hugo=
-vil.com> wrote:
-> > > > >
-> > > > > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> > > > >
-> > > > > Commit 679875d1d880 ("sc16is7xx: Separate GPIOs from modem contro=
-l lines")
-> > > > > and commit 21144bab4f11 ("sc16is7xx: Handle modem status lines")
-> > > > > changed the function of the GPIOs pins to act as modem control
-> > > > > lines without any possibility of selecting GPIO function.
-> > > >
-> > > > Requiring a new DT property is not fixing a kernel regression. You
-> > > > should be returning the kernel to original behavior and then have a
-> > > > new DT property for new behavior.
-> > >
-> > > Hi Rob,
-> > > please read the entire patch history starting from V1
-> > >  and you will understand why this course of action was
-> > >  not selected.
-> >
-> > That's not going to happen, sorry, you need to explain it here, in this
-> > patch series, why a specific action is being taken over another one, as
-> > no one has time to go dig through past history, sorry.
->
-> Hi Rob,
-> I initially submitted a patch to revert the kernel to original
-> behavior, but it created more problems because the patch was
-> unfortunately split in two separate patches, and mixed with other non
-> closely-related changes. It was also noted to me that reverting to the
-> old behavior would break things for some users.
->
-> It was suggested to me by a more experienced kernel developer to
-> "suggest a fix, instead of hurrying a revert":
->
->     https://lkml.org/lkml/2023/5/17/758
 
-Do I have to go read this to decipher the justification and reasoning?
-When Greg says "in this patch series", he means in the commit messages
-of the patches. You send v9 already and it doesn't have that. The
-patchset needs to stand on its own summarizing any relevant prior
-discussions.
+--ZiAI6f3sKG+VEhr4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I never suggested doing a revert. Obviously, someone still wants the
-new feature. The issue is a new feature was added to the kernel, but
-you are requiring a DT change to platforms NOT using the feature. Make
-the platforms wanting the new feature to need a DT change. That's
-still not great, but it's much better to affect new platforms rather
-than old, stable platforms. The period of time that regresses is much
-smaller (a few kernel releases vs. years potentially). Of course, if
-it's just those 3 platforms and their maintainers are fine with
-needing this DT change, then that works too. But there's no evidence
-here that they are okay with it. You didn't even do the update of the
-dts files and just left them broken.
+On Mon, Jul 31, 2023 at 05:12:24PM +0200, Sebastian Reichel wrote:
+> Hi,
+>=20
+> On Sat, Jul 22, 2023 at 12:42:09PM +0100, Conor Dooley wrote:
+> > On Thu, Jul 20, 2023 at 07:36:41PM +0200, Sebastian Reichel wrote:
+> > > RK3588 has three DWC3 controllers. Two of them are fully functional in
+> > > host, device and OTG mode including USB2 support. They are connected =
+to
+> > > dedicated PHYs, that also support USB-C's DisplayPort alternate mode.
+> > >=20
+> > > The third controller is connected to one of the combphy's shared
+> > > with PCIe and SATA. It can only be used in host mode and does not
+> > > support USB2. Compared to the other controllers this one needs
+> > > some extra clocks.
+> > >=20
+> > > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> >=20
+> > I feel like I say it a bunch for some of these Rockchip bindings
+> > patches, but if you're adding more clocks for some SoCs, should some
+> > per-SoC constraints not also be added?
+>=20
+> The extra clocks are not actually needed by all the USB3 controllers
+> in the SoC. Only one of three USB3 controllers needs them. In v1 I
+> used different compatible values to narrow the clock binding down
+> and Krzysztof asked to remove that. So please tell me what it should
+> look like.
 
-Rob
+Maybe Krzysztof and I were talking about different things. I was talking
+about constraining !3588 SoCs so that nobody tries to use a utmi and
+pipe clock on those, and only allowing them on a 3588. AFAICT, what
+Krzysztof objected to was having more than one compatible for
+controllers on the 3588. Maybe he weigh in.
+
+Thanks,
+Conor.
+
+> > > ---
+> > >  .../devicetree/bindings/usb/rockchip,dwc3.yaml        | 11 +++++++++=
+--
+> > >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml=
+ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+> > > index 291844c8f3e1..cbc3e55e05e1 100644
+> > > --- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+> > > +++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+> > > @@ -30,6 +30,7 @@ select:
+> > >          enum:
+> > >            - rockchip,rk3328-dwc3
+> > >            - rockchip,rk3568-dwc3
+> > > +          - rockchip,rk3588-dwc3
+> > >    required:
+> > >      - compatible
+> > > =20
+> > > @@ -39,6 +40,7 @@ properties:
+> > >        - enum:
+> > >            - rockchip,rk3328-dwc3
+> > >            - rockchip,rk3568-dwc3
+> > > +          - rockchip,rk3588-dwc3
+> > >        - const: snps,dwc3
+> > > =20
+> > >    reg:
+> > > @@ -58,7 +60,9 @@ properties:
+> > >            Master/Core clock, must to be >=3D 62.5 MHz for SS
+> > >            operation and >=3D 30MHz for HS operation
+> > >        - description:
+> > > -          Controller grf clock
+> > > +          Controller grf clock OR UTMI clock
+> > > +      - description:
+> > > +          PIPE clock
+> > > =20
+> > >    clock-names:
+> > >      minItems: 3
+> > > @@ -66,7 +70,10 @@ properties:
+> > >        - const: ref_clk
+> > >        - const: suspend_clk
+> > >        - const: bus_clk
+> > > -      - const: grf_clk
+> > > +      - enum:
+> > > +          - grf_clk
+> > > +          - utmi
+> > > +      - const: pipe
+> > > =20
+> > >    power-domains:
+> > >      maxItems: 1
+> > > --=20
+> > > 2.40.1
+> > >=20
+>=20
+>=20
+
+
+
+--ZiAI6f3sKG+VEhr4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMfUGAAKCRB4tDGHoIJi
+0gYdAQCtVymT2J92udmYoQAUhL5iDXjhAv7jPmdRlPyKGj/qHgEA/fz2olBaKF0u
+BkCLMkL5P1piybZ1GpYuKH/Qjf9ugg8=
+=3JZ5
+-----END PGP SIGNATURE-----
+
+--ZiAI6f3sKG+VEhr4--
