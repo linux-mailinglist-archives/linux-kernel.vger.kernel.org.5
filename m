@@ -2,63 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB26769AC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29669769AC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 17:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229481AbjGaP13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 11:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
+        id S231243AbjGaP3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 11:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbjGaP10 (ORCPT
+        with ESMTP id S230341AbjGaP3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 11:27:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46FE1706;
-        Mon, 31 Jul 2023 08:27:24 -0700 (PDT)
-Date:   Mon, 31 Jul 2023 15:27:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690817242;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkZOxfb5DjcupVWqTwMGJ6YsU7wMnmDh4F1M/WLCvtk=;
-        b=UiwOvHjInWr2o3oe3nA/IpWDXkkXL1nMpF/chRb8RRCyC/6QHdut7ZGWl/D5ARz/TUCQ8b
-        JXyh5NkzyQnX4PWPBzleizsaBFzSPsMVN64IfjdLrZE7+yfchU9PXBOwr/AN7a5eJykANR
-        4tzkzjX/Iggxg9IO6WERyvh9grIZdpRHzBM38CtkDZP+zXIliRqr2BpqF7Y+3Y6uYQf5g3
-        i1J49xh2TOAX5wf98HiFUKLf4GTpeQniJopXmF8ru1zGi1KjQRNoxSk7sKt+YRUFoK+dLT
-        lIqxoXYATwEobZGldwpc9XFLStOi6/3Rwr2GlLzOe84SdEoHSYrlxKUrq9Nxvg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690817242;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZkZOxfb5DjcupVWqTwMGJ6YsU7wMnmDh4F1M/WLCvtk=;
-        b=vgdiVi7ScT+o8xdyk+5Bl0Z5MSaWJtUGmIL99wsGVldB1z2smn5bjT4mTuzIC1zykP1QbG
-        IO1CrHSp/bSQ+tBg==
-From:   "tip-bot2 for Vincent Whitchurch" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Prevent nested thread vs
- synchronize_hardirq() deadlock
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20230613-genirq-nested-v3-1-ae58221143eb@axis.com>
-References: <20230613-genirq-nested-v3-1-ae58221143eb@axis.com>
+        Mon, 31 Jul 2023 11:29:07 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3EE3130
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:29:04 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6b9a2416b1cso3760602a34.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 08:29:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1690817344; x=1691422144;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BCRwNRJ8ALXYzDjLSXyUvn0AG6JBCqWnkgFUrA+N5Y0=;
+        b=NqGA3p7HyI7sNItshe7KnzE2AJCv0MNPi70W7PsOswQzT1tTWWAlO62VXs2kNxqFtn
+         DslQQU/doWcW0NlF0bW4qZ7mD5PoJX6SboFX5C6oNAl29ZwKFGDvh3wWlC0RsObeeSFj
+         /TyCm5gtmBODiQXwb0YeiErrPKEj4fKxF4AVOF8IdBu7fS+1c/AxPEL9D7xJzX5Fgu8f
+         9g2rHtpryEPUpvCIsQrmHe/K5yRP/EHpZo0ntzVANQmm0IbqQUcppPLbCWTpZVosiKHD
+         bx4+S0NsOwLjZ1QMGFlDCsSibcI3Z16MlK0W8cYTZJG+WCD65ZSwD+vlq+vvYiZE3s0D
+         9F1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690817344; x=1691422144;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BCRwNRJ8ALXYzDjLSXyUvn0AG6JBCqWnkgFUrA+N5Y0=;
+        b=SrwZTslfsxPDHJ1d3vpbm/BM68of79He3H1O3l6ZUqFcUg0cr4Jr/X/6Ig8mFF19RK
+         EX49fS+hQj/WXEBQco7BvqpmJkJbwLVtHH4Joz4BPaCa+dQiDvYMagvXrq9h8adGVEB9
+         T+I1yP+KuP2dTrijPjdVcaQ4aWftJyyh3vfQpv5V61hqXOwX8JLEjCTs71CnNm4mHeFL
+         qHUXcU80f6W7wcjEe2MqbugY0mOdzDKixIwOxGgQpwa2gXm5lAB7Z/JOPYkKCz49FBXQ
+         56QtsbAP8cyQ1aWIzrWC/ZMR9pIwttjPCOG9BJTjb/hdRW4n314chrYcIUM6P0EsyDtI
+         zqAA==
+X-Gm-Message-State: ABy/qLadOCp98SzJisXdH+wATpZU3x4hpAamEM7Xslz7NLGDIi3AK8oM
+        KIsUmbd1/UQdeO2z3ZJ0m+4CGg==
+X-Google-Smtp-Source: APBJJlE1eyFcDH4XASVP03sTRW0OrIqg00vcjFUxeCj/e0BycQmPkp2YlRBwaF1b4KGb3/jdZ7uqBA==
+X-Received: by 2002:a9d:7b48:0:b0:6b9:4e85:de95 with SMTP id f8-20020a9d7b48000000b006b94e85de95mr9257878oto.34.1690817344287;
+        Mon, 31 Jul 2023 08:29:04 -0700 (PDT)
+Received: from ?IPV6:2405:201:d02f:d855:213e:dcc8:df5f:960a? ([2405:201:d02f:d855:213e:dcc8:df5f:960a])
+        by smtp.gmail.com with ESMTPSA id y15-20020a637d0f000000b00563b36264besm8247703pgc.85.2023.07.31.08.29.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 08:29:03 -0700 (PDT)
+Message-ID: <7dd0607c-cbe4-e763-03a0-5f9a5db9d6db@9elements.com>
+Date:   Mon, 31 Jul 2023 20:59:00 +0530
 MIME-Version: 1.0
-Message-ID: <169081724175.28540.15276914612023519757.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 2/4] dt-bindings: i2c: Add Maxim MAX735x/MAX736x
+ variants
+Content-Language: en-US
+To:     Peter Rosin <peda@axentia.se>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230501091552.847240-1-patrick.rudolph@9elements.com>
+ <20230501091552.847240-3-patrick.rudolph@9elements.com>
+ <fd20cad6-34f9-5f3c-abe7-cdf3a93d712c@axentia.se>
+ <CALNFmy1gxUD-C62SH5GxA=fq8eKYxiOHe8wqXGsVdzsyiJc6Xg@mail.gmail.com>
+ <cfb17cbc-b8cf-c3ce-cf77-7e13e12c42eb@linaro.org>
+ <cbaf1816-ffd1-686d-9651-605da29d76c6@axentia.se>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+In-Reply-To: <cbaf1816-ffd1-686d-9651-605da29d76c6@axentia.se>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,148 +85,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/core branch of tip:
+Hi Peter,
 
-Commit-ID:     e2c12739ccf76aae12e9e949526a475b9d17adaa
-Gitweb:        https://git.kernel.org/tip/e2c12739ccf76aae12e9e949526a475b9d17adaa
-Author:        Vincent Whitchurch <vincent.whitchurch@axis.com>
-AuthorDate:    Thu, 06 Jul 2023 16:22:25 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 31 Jul 2023 17:24:22 +02:00
+On 02-05-2023 16:06, Peter Rosin wrote:
+> Hi!
+>
+> 2023-05-02 at 10:46, Krzysztof Kozlowski wrote:
+>> On 02/05/2023 08:52, Patrick Rudolph wrote:
+>>> Hi Peter,
+>>> it could indeed cause problems when VDD1 != VDD2 and at both needs to
+>>> be enabled.
+>>> The pca9846 datasheet seems to refer to VDD1 as VDD. Thus I could add
+>>> an optional "vdd2" regulator to the binding and driver.
+>>>
+>>> Please let me know if that's what you had in mind.
+>> Don't top post.
+>>
+>> In such case vdd-supply should not be used for VDD2.
+> When reading the data sheet [1], I get the feeling that the instances
+> of VDD are either copy-paste errors from data sheets from chip with a
+> single VDD, or a reference to either of VDD1 or VDD2. It is thus not
+> super clear to me that VDD should be the same thing as VDD1.
+>
+> Sure, there is section 6.5 "Power-on reset", which mentions VDD and
+> VDD2 (but not VDD1), but that seems like a simply typo and that it
+> should really have been VDD1 instead of an unqualified VDD.
+>
+> There are also various timings "glitch supply voltage difference"
+> (delta VDD(gl)) and "supply voltage glitch pulse width" (t w(gl)VDD)
+> with notes that refer to VDD2, which *could* indicate that the
+> glitch in VDD is about a glitch VDD1. But it could also mean glitches
+> on any of VDD1 and VDD2?
+>
+> The general description of the chip indicates that VDD1 is there
+> mainly to allow different bus voltages on each of the channels.
+> Which is not at all the function of VDD on the other chips. Meanwhile
+> VDD2 "is the core logic supply from which most of the PCA9846
+> circuitry runs", and seems like it is a better match for plain VDD?
+Yes, based on Figure 14 in datasheet, VDD2 seems to be better match
+for plain VDD.
+Also VDD1 is I2C bus voltage on micro-controller side so the best
+match I can think of is VBUS.
+>
+> Maybe one can find out more by reading the spec more carefully, but
+> as I said, it is not clear to me that either of VDD1 or VDD2 can be
+> matched to VDD.
+>
+> Perhaps it is best to not mix things at all?
+Yes. For designs with same voltage rails, "VDD" can serve the purpose.
+For designs with different voltage rail, VBUS would be needed to
+identify micro-controller side bus supply.
+Let me know your thoughts.
 
-genirq: Prevent nested thread vs synchronize_hardirq() deadlock
-
-There is a possibility of deadlock if synchronize_hardirq() is called
-when the nested threaded interrupt is active.  The following scenario
-was observed on a uniprocessor PREEMPT_NONE system:
-
- Thread 1                      Thread 2
-
- handle_nested_thread()
-  Set INPROGRESS
-  Call ->thread_fn()
-   thread_fn goes to sleep
-
-                              free_irq()
-                               __synchronize_hardirq()
-                                Busy-loop forever waiting for INPROGRESS
-                                to be cleared
-
-The INPROGRESS flag is only supposed to be used for hard interrupt
-handlers.  Remove the incorrect usage in the nested threaded interrupt
-case and instead re-use the threads_active / wait_for_threads mechanism
-to wait for nested threaded interrupts to complete.
-
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20230613-genirq-nested-v3-1-ae58221143eb@axis.com
-
----
- kernel/irq/chip.c      | 11 ++++-------
- kernel/irq/internals.h |  2 ++
- kernel/irq/manage.c    | 26 ++++++++++++++------------
- 3 files changed, 20 insertions(+), 19 deletions(-)
-
-diff --git a/kernel/irq/chip.c b/kernel/irq/chip.c
-index ee8c0ac..dc94e0b 100644
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -473,11 +473,12 @@ void handle_nested_irq(unsigned int irq)
- 	action = desc->action;
- 	if (unlikely(!action || irqd_irq_disabled(&desc->irq_data))) {
- 		desc->istate |= IRQS_PENDING;
--		goto out_unlock;
-+		raw_spin_unlock_irq(&desc->lock);
-+		return;
- 	}
- 
- 	kstat_incr_irqs_this_cpu(desc);
--	irqd_set(&desc->irq_data, IRQD_IRQ_INPROGRESS);
-+	atomic_inc(&desc->threads_active);
- 	raw_spin_unlock_irq(&desc->lock);
- 
- 	action_ret = IRQ_NONE;
-@@ -487,11 +488,7 @@ void handle_nested_irq(unsigned int irq)
- 	if (!irq_settings_no_debug(desc))
- 		note_interrupt(desc, action_ret);
- 
--	raw_spin_lock_irq(&desc->lock);
--	irqd_clear(&desc->irq_data, IRQD_IRQ_INPROGRESS);
--
--out_unlock:
--	raw_spin_unlock_irq(&desc->lock);
-+	wake_threads_waitq(desc);
- }
- EXPORT_SYMBOL_GPL(handle_nested_irq);
- 
-diff --git a/kernel/irq/internals.h b/kernel/irq/internals.h
-index bdd35bb..831f383 100644
---- a/kernel/irq/internals.h
-+++ b/kernel/irq/internals.h
-@@ -121,6 +121,8 @@ void irq_resend_init(struct irq_desc *desc);
- bool irq_wait_for_poll(struct irq_desc *desc);
- void __irq_wake_thread(struct irq_desc *desc, struct irqaction *action);
- 
-+void wake_threads_waitq(struct irq_desc *desc);
-+
- #ifdef CONFIG_PROC_FS
- extern void register_irq_proc(unsigned int irq, struct irq_desc *desc);
- extern void unregister_irq_proc(unsigned int irq, struct irq_desc *desc);
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index d2742af..d309ba8 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -108,6 +108,16 @@ bool synchronize_hardirq(unsigned int irq)
- }
- EXPORT_SYMBOL(synchronize_hardirq);
- 
-+static void __synchronize_irq(struct irq_desc *desc)
-+{
-+	__synchronize_hardirq(desc, true);
-+	/*
-+	 * We made sure that no hardirq handler is running. Now verify that no
-+	 * threaded handlers are active.
-+	 */
-+	wait_event(desc->wait_for_threads, !atomic_read(&desc->threads_active));
-+}
-+
- /**
-  *	synchronize_irq - wait for pending IRQ handlers (on other CPUs)
-  *	@irq: interrupt number to wait for
-@@ -127,16 +137,8 @@ void synchronize_irq(unsigned int irq)
- {
- 	struct irq_desc *desc = irq_to_desc(irq);
- 
--	if (desc) {
--		__synchronize_hardirq(desc, true);
--		/*
--		 * We made sure that no hardirq handler is
--		 * running. Now verify that no threaded handlers are
--		 * active.
--		 */
--		wait_event(desc->wait_for_threads,
--			   !atomic_read(&desc->threads_active));
--	}
-+	if (desc)
-+		__synchronize_irq(desc);
- }
- EXPORT_SYMBOL(synchronize_irq);
- 
-@@ -1216,7 +1218,7 @@ static irqreturn_t irq_thread_fn(struct irq_desc *desc,
- 	return ret;
- }
- 
--static void wake_threads_waitq(struct irq_desc *desc)
-+void wake_threads_waitq(struct irq_desc *desc)
- {
- 	if (atomic_dec_and_test(&desc->threads_active))
- 		wake_up(&desc->wait_for_threads);
-@@ -1944,7 +1946,7 @@ static struct irqaction *__free_irq(struct irq_desc *desc, void *dev_id)
- 	 * supports it also make sure that there is no (not yet serviced)
- 	 * interrupt in flight at the hardware level.
- 	 */
--	__synchronize_hardirq(desc, true);
-+	__synchronize_irq(desc);
- 
- #ifdef CONFIG_DEBUG_SHIRQ
- 	/*
+Regards,
+Naresh
+>
+> [1] https://www.nxp.com/docs/en/data-sheet/PCA9846.pdf
+>
