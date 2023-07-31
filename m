@@ -2,72 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACAD7696FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 954F17696FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 15:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbjGaNB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 09:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
+        id S232679AbjGaNBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 09:01:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229885AbjGaNBX (ORCPT
+        with ESMTP id S231651AbjGaNBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 09:01:23 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6388810B
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:01:22 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fbd33a57b6so51013995e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:01:22 -0700 (PDT)
+        Mon, 31 Jul 2023 09:01:25 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D5E6E63
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:01:24 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31771a876b5so3728273f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 06:01:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690808481; x=1691413281;
+        d=linaro.org; s=google; t=1690808483; x=1691413283;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BZR18Xj99HGOD1PDk2Wg3AoA7XuLUWWBfQUMdU0ykAY=;
-        b=hV+Fa/iXvze4EZHc4nHJxlGxRetuNEIbLhs5E0XXYKB8oBw519mtJiK1+s2jqcN75V
-         Fi4aT4kuLs8DJepDyLQE9C4MAG5dEDC0F6jHsOsSK+IryHYhBTpObKS2xDPjJurf0+yO
-         dlbLBjsrj3lgMVDRs4Ru+dCl3/4/+cdIbqm7f+Tgv8ypVc9UJRJ5sb3mzqcn4MS/0O4M
-         bqGyJ56bfjvdfFw94bSsWOsUSPaahBGE9EEPpBlc7W44YhHrbm/7bEigI3f13HVE5jxJ
-         Wzu/LMVFamzixGigFcIpmr6/iQWjnu3z14XTGBkuZ1RMCFqeuNmRN2XwPXZWwApp8PqV
-         zDug==
+        bh=+DDzJV1vwG/o6GKGnxfHEJZ1cqvyrsDF+27hqWZCPcs=;
+        b=HNlXr+bTJpd570DCOScEd9dY+NVscjCQ4TZ9qFzuXcBnjryFEUiHuZbKNxi2KqLjAp
+         ecv9fhdryF6j/Pe2vkwFnNGN8wZwsQtEqtj3V+IlJNP3uiDjdEydI10UKNHBVEiZQcoY
+         qSy1GbGl3jgq/R0n9J2pqbH9lhxVyBt0gIjKs+ssZUYjhr1LjJvunNK4eM0YJLLIruXv
+         f1DMFsZZFb7ZmfGhFsZzGElD9gLRTj/z9h229paaQ+eiXZ2ofBRTzgQDYBx7tDko5/+J
+         FjotG2lESjTZLosm8YI5NdlR0xUrtY9Uhxcb66SYwqP26VdrjkTCzPlcioQSCeDDn5Yw
+         3EgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690808481; x=1691413281;
+        d=1e100.net; s=20221208; t=1690808483; x=1691413283;
         h=content-transfer-encoding:mime-version:date:message-id:subject
          :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BZR18Xj99HGOD1PDk2Wg3AoA7XuLUWWBfQUMdU0ykAY=;
-        b=Iukbj3PRcB1zTn/fwa9eRQ8bFo5yU5mwmgbsRifxJEXOWdU0kToebDTbGyz9pgjkTt
-         soSh6GsXM8TyRWyzVDeNnfxTTINCysGCxuE/dVHS3AxxP5fPIkvEBfLNDvbqSbMP5jRS
-         5S6BWcZNZXYuPfhVOo6buUYFguufxaq9U3X854xNP6DsWWJadNCpulUeKtOq+3QQDuv0
-         OCclYzh//3B+tpxWdvS0tH5XOW2Bv+AGHX0I5QUNTbtZB2IuvDlE0e/UoPw/wJNfGw5u
-         JHae/IGoTtJ0xSScLJXY6xCe09vL/9fUc4ug1i8q+808/8pHWLhJox+6KOTlHi4dZXN7
-         an9Q==
-X-Gm-Message-State: ABy/qLYWOlkR/NnC6etEhjkPlzqFIO1HT4OSZlX4V1VMMQSpKzH//yMP
-        RusyZisIEeBAoLIewRP0Q8NNJQ==
-X-Google-Smtp-Source: APBJJlGKwp4AmZBH8wn9WCGXvrGNKhkG80luhvVxrKuEKffDnq+76vxp1MDIU12B9wvo6hBrXjyR9g==
-X-Received: by 2002:a5d:548b:0:b0:316:fc86:28ae with SMTP id h11-20020a5d548b000000b00316fc8628aemr8853742wrv.15.1690808480379;
-        Mon, 31 Jul 2023 06:01:20 -0700 (PDT)
+        bh=+DDzJV1vwG/o6GKGnxfHEJZ1cqvyrsDF+27hqWZCPcs=;
+        b=hLZY4sobhVbas1oGsl6aOl5DV8ogs9EUfZJMkqrg2Sve0XCXgtrHzMbDFvCHiDlC/m
+         Y12f7yoiJpPkwATTNqt9rXtkRXjBg9x1PX2e3xthJoZd5+8Rd2RQRN00lDiJ0VxttJQA
+         bOAJJUXqprJDCq5dSexMXiEBVpBWNIq1d+OcBMAMZPDvE2xePiJSFV39n8Mvr5tquv2V
+         qFIrymiDu5zufjAUqswVdeMvII9TKjc1UZMQaE2jhzelykUKfmwsxSD2ZKABf7t/WyNL
+         A6pgOj/1L03zETcrdQ8EttJQcCvRP41IE9B1KlGprONj8lFVtxJBStmM6Nf9ot+MPo+X
+         czlw==
+X-Gm-Message-State: ABy/qLY/Zv0sBs/sriXyWB2z+uKsdxYGbWtK7YKiTEhD1DWhw4P/n49P
+        ea2bzL8/t3NhWgxFKB94eM7K0Q==
+X-Google-Smtp-Source: APBJJlF2MLeys5HLsk1/ygRiquwn+xckE5m8ikRTKpgfwE+Po7ISnMqt/ZWo7+1AjEMXNPeiJ0RT3Q==
+X-Received: by 2002:a5d:4dcb:0:b0:317:58a8:bb4 with SMTP id f11-20020a5d4dcb000000b0031758a80bb4mr6694637wru.40.1690808482528;
+        Mon, 31 Jul 2023 06:01:22 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id j4-20020adfe504000000b003063a92bbf5sm13220390wrm.70.2023.07.31.06.01.19
+        by smtp.gmail.com with ESMTPSA id j4-20020adfe504000000b003063a92bbf5sm13220390wrm.70.2023.07.31.06.01.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 06:01:19 -0700 (PDT)
+        Mon, 31 Jul 2023 06:01:22 -0700 (PDT)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230719130940.659837-1-arnd@kernel.org>
-References: <20230719130940.659837-1-arnd@kernel.org>
-Subject: Re: [PATCH] drm/panel: r66451: select CONFIG_DRM_DISPLAY_DP_HELPER
-Message-Id: <169080847948.304500.9472944038515886970.b4-ty@linaro.org>
-Date:   Mon, 31 Jul 2023 15:01:19 +0200
+To:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matus Gajdos <matuszpd@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230719102616.2259-1-matuszpd@gmail.com>
+References: <20230719102616.2259-1-matuszpd@gmail.com>
+Subject: Re: [PATCH 0/2] drm/panel: ilitek-ili9881c: Add TDO
+ TL050HDV35-H1311A LCD panel
+Message-Id: <169080848175.304500.6200088546909299961.b4-ty@linaro.org>
+Date:   Mon, 31 Jul 2023 15:01:21 +0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,21 +77,22 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Wed, 19 Jul 2023 15:09:21 +0200, Arnd Bergmann wrote:
-> The newly added driver only builds when DRM_DISPLAY_DP_HELPER is enabled:
+On Wed, 19 Jul 2023 12:26:13 +0200, Matus Gajdos wrote:
+> The first patch updates the DT documentation and the second is the
+> update of the ilitek ili9881c driver.
 > 
-> x86_64-linux-ld: drivers/gpu/drm/panel/panel-visionox-r66451.o: in function `visionox_r66451_enable':
-> panel-visionox-r66451.c:(.text+0x105): undefined reference to `drm_dsc_pps_payload_pack'
-> 
-> Select both CONFIG_DRM_DISPLAY_DP_HELPER and CONFIG_DRM_DISPLAY_HELPER to
-> ensure the helper function is always available.
+> Matus Gajdos (2):
+>   dt-bindings: ili9881c: Add TDO TL050HDV35 LCD panel
+>   drm/panel: ilitek-ili9881c: Add TDO TL050HDV35 LCD panel
 > 
 > [...]
 
 Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
 
-[1/1] drm/panel: r66451: select CONFIG_DRM_DISPLAY_DP_HELPER
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=a1865d3b98c97d25cbfbba4318180f5cfe8ec22d
+[1/2] dt-bindings: ili9881c: Add TDO TL050HDV35 LCD panel
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=9cd437c870b10da4a3276a569f5089af06435f85
+[2/2] drm/panel: ilitek-ili9881c: Add TDO TL050HDV35 LCD panel
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=81aedd50697c876e633b68d6188a31aeafcfc535
 
 -- 
 Neil
