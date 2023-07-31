@@ -2,97 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BC20769664
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8906769668
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbjGaMdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54544 "EHLO
+        id S232093AbjGaMd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232316AbjGaMdR (ORCPT
+        with ESMTP id S232690AbjGaMdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:33:17 -0400
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A207EE53;
-        Mon, 31 Jul 2023 05:33:14 -0700 (PDT)
-Received: from linma$zju.edu.cn ( [42.120.103.60] ) by
- ajax-webmail-mail-app2 (Coremail) ; Mon, 31 Jul 2023 20:33:02 +0800
- (GMT+08:00)
-X-Originating-IP: [42.120.103.60]
-Date:   Mon, 31 Jul 2023 20:33:02 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Lin Ma" <linma@zju.edu.cn>
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     "Jakub Kicinski" <kuba@kernel.org>, jgg@ziepe.ca,
-        markzhang@nvidia.com, michaelgur@nvidia.com, ohartoov@nvidia.com,
-        chenzhongjin@huawei.com, yuancan@huawei.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] RDMA/nldev: Add length check for
- IFLA_BOND_ARP_IP_TARGET parsing
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
- Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <20230725183924.GS11388@unreal>
-References: <20230723074504.3706691-1-linma@zju.edu.cn>
- <20230724174707.GB11388@unreal>
- <3c0760b5.e264b.1898a6368f8.Coremail.linma@zju.edu.cn>
- <20230725052557.GI11388@unreal> <20230725101405.4cd51059@kernel.org>
- <20230725183924.GS11388@unreal>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Mon, 31 Jul 2023 08:33:52 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C833810F5;
+        Mon, 31 Jul 2023 05:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690806806; x=1691411606; i=deller@gmx.de;
+ bh=0RFDEXXQMPxJBQdMJHQn7D5WifSZ6l/L2WktkbceJyc=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=FXGk9moCw8qFnPcjSFfxssf06xB2w7SYR8UPNCKWRnYLOjxtepPLWJ1onxRzFeHeQOp+ApT
+ ZdloVKFW6BctrAcKl3boCKaltVrEg05FJAMEGZ9JTRoL0XmvakhrDTGWCRLZ9VgU6WFYNq58p
+ XD9GBC+8XPT8TYdHxvt7RwLju0T5qsERFCshKCzQRM6LlWTpxxc7mTOTNBDYrfNMIEJ5K3E0Z
+ ik9Ny4gE5yarWwE6H8XWYfTgNnmSL9Mrx2s/jbx18XXJVsoQwvRFnELhp1kcBZmU9r1UbB6tH
+ mOmKsf0fgrLd5uQX4G3HwID0IGuDIBuCM9bj4YfLNihfjlHTEz7Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.159.238]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MIwzA-1qAYrk2CD4-00KTWj; Mon, 31
+ Jul 2023 14:33:26 +0200
+Message-ID: <6bd9ed23-5a79-879a-c9c1-0b3952fea0ad@gmx.de>
+Date:   Mon, 31 Jul 2023 14:33:24 +0200
 MIME-Version: 1.0
-Message-ID: <7a2e7314.ee8a2.189abf00b34.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: by_KCgCnzn3_qcdkiTnaCg--.46655W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwIIEmTAePoLZABKsY
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: linux-next: Tree for Jul 13 (drivers/video/fbdev/ps3fb.c)
+Content-Language: en-US
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        linux-fbdev@vger.kernel.org,
+        Linux PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Geoff Levand <geoff@infradead.org>
+References: <20230713123710.5d7d81e4@canb.auug.org.au>
+ <ccc63065-2976-88ef-1211-731330bf2866@infradead.org>
+ <ZLYHtVuS7AElXcCb@debian.me> <874jm1jv9m.fsf@mail.lhotse>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <874jm1jv9m.fsf@mail.lhotse>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8JThjdBtX8FirEM7utDHiybc3BR1zxxlm3GKmGCUcmNv/w83edb
+ otg9E/DNNBHl1ybbl0Dnt+KCqms2wgX2uWiHMlT0XaX/WaGBw57s9qbkwU/xJo/Gyaoilt9
+ gfufL2w5I0drReRuUihbe4SuRPqukFP3MBOROScj4gMd13Q82B0WnIwBLjSOo4oRLNxgELH
+ JvwRQszd9U8IqhRCFWcIQ==
+UI-OutboundReport: notjunk:1;M01:P0:17kHrss4C9E=;k7E/NjF47QPlMvlKSJpOftE6ES3
+ eRQdZ5sMAmvlfdbcYe0RUVBfrF0dShKRZCnn9H325/YHm74NPQuf17UrPeY7bd0yrllcgkrwA
+ W8Fu5/qiLBPE7P/fqNXtQNBtJZfU5K9Eo3ruUmxYHFlPx4IhSqmta6zUKWDdsVXqIhQSBYj7L
+ QoQiOQdeyq7ABC0dfN7w8IIzRIMENta3BEMvBhjeicsAB9vdx8TbKEMvNi3EcEzSE/C1dTpC7
+ Eyn8AisbqGP5x8PXb5AVNVkrrt6RBvbm3tmlBxeBT1o6vGJWFYavZGlPpu7oMmDzCqqgIHnM/
+ Q1QdDEIXOalxLp13B6FYQ6dELenoh2DXSczYRV6evYF3sjSgCNRiRRcyaGWAkSZ9eYqw/mm2V
+ faG+rsElF3AdGmX9vieh74jpKAzPcuRBSijhFLckSxCRm/SnV7JB1a3IcY3b/QklKV+oWorBC
+ 43MRn3g7Gzkk0NtHPy9xf0iC+Ew/Ruyv/7aqJO0KsThjaEWoDt1zCsLr4IffMKFmI+AoysWpp
+ uVAiQ832jrE4OgQS/wGWUvVCa3CgfY57XPXtvTPW7xUk0mvC/DYBoCfOYmOT7+SpKRIFah+N4
+ rTgnIEBFuUXRrWgzS+31fxKaOVYRzKbXPOl3eXuVJecTSqYpGa9jv4lx37drxct3TKnkIQglU
+ vYUjs9KwjoRfHXJwSgwKQPIntjdX9vBfRjpN4Qg3rk12K3dAbsOhBZNa0f4Wp60Fo4Qc7XOgD
+ XKvQHZ2ldvjTXpTSbtwuqnjVCZsKVXxJmuh3x+i6XX4Skiw0Sp49xXhSDp0HchERv8Ftz5UwC
+ u3yEtA0CmMr/VZd+6tfVMn6GoI8ddFaVNmSt698nqcQsSamUb8d9Y4r09HJywn9gAQmTnQjzn
+ T1E2abpkKs/FAGBH1dYSC+7PmmHxNjgHDF08P/xKNEoMPn+MsLkLLUODHvYs0pCwQPgE4nKRz
+ 8hULd2moGa4LLOVU4AhIfK4Nugg=
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gdGhlcmUsCgo+ID4gPiA+IFllYWggSSBoYXZlIHNlZW4gdGhhdC4gSnVzdCBhcyBKYWt1
-YiBzYWlkLCBlbXB0eSBuZXRsaW5rIGF0dHJpYnV0ZXMgYXJlIHZhbGlkIAo+ID4gPiA+ICh0aGV5
-IGFyZSB2aWV3ZWQgYXMgZmxhZykuIFRoZSBwb2ludCBpcyB0aGF0IGRpZmZlcmVudCBhdHRyaWJ1
-dGUgaGFzIGRpZmZlcmVudAo+ID4gPiA+IGxlbmd0aCByZXF1aXJlbWVudC4gRm9yIHRoaXMgc3Bl
-Y2lmaWMgY29kZSwgdGhlIFJETUFfTkxERVZfQVRUUl9TVEFUX0hXQ09VTlRFUlMKPiA+ID4gPiBh
-dHRyaWJ1dGUgaXMgYSBuZXN0ZWQgb25lIHdob3NlIGlubmVyIGF0dHJpYnV0ZXMgc2hvdWxkIGJl
-IE5MQV9VMzIuIEJ1dCBhcyB5b3UKPiA+ID4gPiBjYW4gc2VlIGluIHZhcmlhYmxlIG5sZGV2X3Bv
-bGljeSwgdGhlIGRlc2NyaXB0aW9uIGRvZXMgbm90IHVzZSBuZXN0ZWQgcG9saWN5IHRvCj4gPiA+
-ID4gZW5mb3JlIHRoYXQsIHdoaWNoIHJlc3VsdHMgaW4gdGhlIGJ1ZyBkaXNjdXNzZWQgaW4gbXkg
-Y29tbWl0IG1lc3NhZ2UuCj4gPiA+ID4gCj4gPiA+ID4gIFtSRE1BX05MREVWX0FUVFJfU1RBVF9I
-V0NPVU5URVJTXSAgICAgICA9IHsgLnR5cGUgPSBOTEFfTkVTVEVEIH0sCj4gPiA+ID4gCj4gPiA+
-ID4gVGhlIGVsZWdhbnQgZml4IGNvdWxkIGJlIGFkZCB0aGUgbmVzdGVkIHBvbGljeSBkZXNjcmlw
-dGlvbiB0byBubGRldl9wb2xpY3kgd2hpbGUKPiA+ID4gPiB0aGlzIGlzIHRvdWJsZXNvbWUgYXMg
-bm8gZXhpc3RpbmcgbmxhX2F0dHIgaGFzIGJlZW4gZ2l2ZW4gdG8gdGhpcyBuZXN0ZWQgbmxhdHRy
-Lgo+ID4gPiA+IEhlbmNlLCBhZGQgdGhlIGxlbmd0aCBjaGVjayBpcyB0aGUgc2ltcGxlc3Qgc29s
-dXRpb24gYW5kIHlvdSBjYW4gc2VlIHN1Y2ggbmxhX2xlbgo+ID4gPiA+IGNoZWNrIGNvZGUgYWxs
-IG92ZXIgdGhlIGtlcm5lbC4gIAo+ID4gPiAKPiA+ID4gUmlnaHQsIGFuZCB0aGlzIGlzIHdoYXQg
-Ym90aGVycyBtZS4KPiA+ID4gCj4gPiA+IEkgd291bGQgbW9yZSB0aGFuIGhhcHB5IHRvIGNoYW5n
-ZSBubGFfZm9yX2VhY2hfbmVzdGVkKCkgdG8gYmUgc29tZXRoaW5nCj4gPiA+IGxpa2UgbmxhX2Zv
-cl9lYWNoX25lc3RlZF90eXBlKC4uLi4sIHNpemVvZih1MzIpKSwgd2hpY2ggd2lsbCBza2lwIGVt
-cHR5Cj4gPiA+IGxpbmVzLCBmb3IgY29kZSB3aGljaCBjYW4ndCBoYXZlIHRoZW0uCj4gPiAKPiA+
-IEluIGdlbmVyYWwgdGhlIGlkZWEgb2YgYXV0by1za2lwcGluZyBzdHVmZiBrZXJuZWwgZG9lc24n
-dCByZWNvZ25pemUKPiA+IGlzIGEgYml0IG9sZCBzY2hvb2wuIEJldHRlciBkaXJlY3Rpb24gd291
-bGQgYmUgZXh0ZW5kaW5nIHRoZSBwb2xpY3kKPiA+IHZhbGlkYXRpb24gdG8gY292ZXIgdXNlIGNh
-c2VzIGZvciBzdWNoIGxvb3BzLgo+IAo+IEknbSBhbGwgaW4gZm9yIGFueSBzb2x1dGlvbiB3aGlj
-aCB3aWxsIGhlbHAgZm9yIGF2ZXJhZ2UgZGV2ZWxvcGVyIHRvIHdyaXRlCj4gbmV0bGluayBjb2Rl
-IHdpdGhvdXQgbWlzdGFrZXMuCj4gCj4gVGhhbmtzCgpJIGhhdmUganVzdCBjb21lIG91dCBhIG5l
-dyBzb2x1dGlvbiBmb3Igc3VjaCBsZW5ndGggaXNzdWVzLiBQbGVhc2Ugc2VlCiogaHR0cHM6Ly9s
-b3JlLmtlcm5lbC5vcmcvYWxsLzIwMjMwNzMxMTIxMjQ3LjM5NzI3ODMtMS1saW5tYUB6anUuZWR1
-LmNuL1QvI3UKKiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMzA3MzExMjEzMjQuMzk3
-MzEzNi0xLWxpbm1hQHpqdS5lZHUuY24vVC8jdQoKSSdtIG5vdCBzdXJlIGFkZGluZyBhZGRpdGlv
-bmFsIHZhbGlkYXRpb24gbG9naWMgaW4gdGhlIG1haW4gbmxhdHRyIGNvZGUgaXMKdGhlIGJlc3Qg
-c29sdXRpb24uIFN0aWxsLCBhZnRlciBpbnZlc3RpZ2F0aW5nIHRoZSBjb2RlLCB0aGUgbGVuIGZp
-ZWxkIGNhbgpiZSB2ZXJ5IHN1aXRhYmxlIGZvciBoYW5kbGluZyB0aGUgTkxBX05FU1RFRCBjYXNl
-cyBoZXJlLiBBbmQgdGhlIGRldmVsb3BlcgpjYW4gZG8gbWFudWFsIHBhcnNpbmcgd2l0aCBiZXR0
-ZXIgbmxhX3BvbGljeS1iYXNlZCBjaGVja2luZyB0b28uCgpJZiB0aGlzIGlkZWEgaXMgYXBwbGll
-ZCwgSSB3aWxsIGFsc28gd3JpdGUgYSBzY3JpcHQgdG8gY2xlYW4gdXAgb3RoZXIKbmxhX2xlbiBw
-YXRjaGVzIGJhc2VkIG9uIHRoZSBubGFfcG9saWN5IGNoZWNrLgoKUmVnYXJkcwpMaW4K
+On 7/18/23 13:48, Michael Ellerman wrote:
+> Bagas Sanjaya <bagasdotme@gmail.com> writes:
+>> On Thu, Jul 13, 2023 at 09:11:10AM -0700, Randy Dunlap wrote:
+>>> on ppc64:
+>>>
+>>> In file included from ../include/linux/device.h:15,
+>>>                   from ../arch/powerpc/include/asm/io.h:22,
+>>>                   from ../include/linux/io.h:13,
+>>>                   from ../include/linux/irq.h:20,
+>>>                   from ../arch/powerpc/include/asm/hardirq.h:6,
+>>>                   from ../include/linux/hardirq.h:11,
+>>>                   from ../include/linux/interrupt.h:11,
+>>>                   from ../drivers/video/fbdev/ps3fb.c:25:
+>>> ../drivers/video/fbdev/ps3fb.c: In function 'ps3fb_probe':
+>>> ../drivers/video/fbdev/ps3fb.c:1172:40: error: 'struct fb_info' has no=
+ member named 'dev'
+>>>   1172 |                  dev_driver_string(info->dev), dev_name(info-=
+>dev),
+>>>        |                                        ^~
+>>> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'de=
+v_printk_index_wrap'
+>>>    110 |                 _p_func(dev, fmt, ##__VA_ARGS__);            =
+           \
+>>>        |                                     ^~~~~~~~~~~
+>>> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'de=
+v_info'
+>>>   1171 |         dev_info(info->device, "%s %s, using %u KiB of video =
+memory\n",
+>>>        |         ^~~~~~~~
+>>> ../drivers/video/fbdev/ps3fb.c:1172:61: error: 'struct fb_info' has no=
+ member named 'dev'
+>>>   1172 |                  dev_driver_string(info->dev), dev_name(info-=
+>dev),
+>>>        |                                                             ^=
+~
+>>> ../include/linux/dev_printk.h:110:37: note: in definition of macro 'de=
+v_printk_index_wrap'
+>>>    110 |                 _p_func(dev, fmt, ##__VA_ARGS__);            =
+           \
+>>>        |                                     ^~~~~~~~~~~
+>>> ../drivers/video/fbdev/ps3fb.c:1171:9: note: in expansion of macro 'de=
+v_info'
+>>>   1171 |         dev_info(info->device, "%s %s, using %u KiB of video =
+memory\n",
+>>>        |         ^~~~~~~~
+>>>
+>>>
+>>
+>> Hmm, there is no response from Thomas yet. I guess we should go with
+>> reverting bdb616479eff419, right? Regardless, I'm adding this build reg=
+ression
+>> to regzbot so that parties involved are aware of it:
+>>
+>> #regzbot ^introduced: bdb616479eff419
+>> #regzbot title: build regression in PS3 framebuffer
+>
+> Does regzbot track issues in linux-next?
+>
+> They're not really regressions because they're not in a release yet.
+>
+> Anyway I don't see where bdb616479eff419 comes from.
+>
+> The issue was introduced by:
+>
+>    701d2054fa31 fbdev: Make support for userspace interfaces configurabl=
+e
+>
+> The driver seems to only use info->dev in that one dev_info() line,
+> which seems purely cosmetic, so I think it could just be removed, eg:
+>
+> diff --git a/drivers/video/fbdev/ps3fb.c b/drivers/video/fbdev/ps3fb.c
+> index d4abcf8aff75..a304a39d712b 100644
+> --- a/drivers/video/fbdev/ps3fb.c
+> +++ b/drivers/video/fbdev/ps3fb.c
+> @@ -1168,8 +1168,7 @@ static int ps3fb_probe(struct ps3_system_bus_devic=
+e *dev)
+>
+>   	ps3_system_bus_set_drvdata(dev, info);
+>
+> -	dev_info(info->device, "%s %s, using %u KiB of video memory\n",
+> -		 dev_driver_string(info->dev), dev_name(info->dev),
+> +	dev_info(info->device, "using %u KiB of video memory\n",
+>   		 info->fix.smem_len >> 10);
+>
+>   	task =3D kthread_run(ps3fbd, info, DEVICE_NAME);
+>
+
+Can you please resend this as proper patch to fbdev and/or drm-misc mailin=
+g lists?
+As it is, it never showed up for me in patchwork...
+
+Helge
