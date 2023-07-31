@@ -2,81 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3780769D42
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B08769D44
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 18:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbjGaQzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 12:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53236 "EHLO
+        id S233609AbjGaQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 12:55:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233587AbjGaQzU (ORCPT
+        with ESMTP id S233599AbjGaQzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 12:55:20 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91324173F
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:55:18 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so555a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:55:18 -0700 (PDT)
+        Mon, 31 Jul 2023 12:55:35 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC32A19B2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:55:29 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe2503e3easo4461104e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 09:55:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690822517; x=1691427317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FugYPAHRqw7Xfd9X9Niu54YBGcN++GZEOKP1LL2G8Uc=;
-        b=YJ+Od+D4vmgyhxZkY79XUm127w4e8w49g4ygfWyf4S8Pjd6qb1uYFNRMl9a3lZCZP6
-         ASae7VRxDmZZpyepRrnQ/X0U7IW/67gL+XQpIcKOGSIyS/C7urXqMaJtvEFF8ZWoXhVR
-         4pJzWrRXXWE3r+kh3KGTKS+C4cNcQ6cCx6sLR/pDLPQUnvzyaDnhL/m46JrZck+4UyOZ
-         wOwU2U7Dj3G8VJMy1BCTZktpc0SOcFqHvFZULIAaOiyhFkznflpbwD2yt0ez14Qt4mvp
-         VGe8LmZ8L8bzy+Ps9QfWh87ilV9nlAhC+9GBea+xYhMgUngXumQNHyExz2iJ+sQZJitQ
-         vQlA==
+        d=linaro.org; s=google; t=1690822528; x=1691427328;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RpT8nlEbctAiS0l82doDIjU49cpafv/Kh1hBxCyIFMo=;
+        b=Rw05xMgeodHctFTvKIC6laouQfNYMrrCy85KAbY3jUEwE/zAzGSE7inbQ1dCSG3OvU
+         nJ6lmmm58KV+hhoYyFvzr/6gVyymsQPXPkO8eBpKoGGitA6MHsDcLVT6ile8EKsu5wAc
+         Ux7AxuAPnCOrxOoQRMg4BtENAtstKNE2jWV887AvuHdhi94vHi+gLKHvJRGYjF/JKFm+
+         p5TvphCnkP8CGtAiQgSb5N+D5Llrz5PrfGODaO14DFc2R8f/SDIkTqy8kq0SD+qFifqC
+         ciK2YXicb6C0aTPVn3pECwELMaVncon34fL8AoOsKI2g/0tCmXXKFTs/1sLMjtOqwNq9
+         vUPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690822517; x=1691427317;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FugYPAHRqw7Xfd9X9Niu54YBGcN++GZEOKP1LL2G8Uc=;
-        b=A0/F8+WvqcPmbIvMdE39fI3ubWG3yQ31zXGanYUzlxjPsFWbnnKyFq68S+Z62fxksS
-         g2epyzvHT9er2nd7GNVOMcmEgGwtTaJv0dfzpFcHrbv8cub0cX+8tDWQOQgN0iGuzAw0
-         a6bPvzBhquXrRp3Lk/tVFladN1Q93VysRGnwQIz1WDsURPaBYUC4F+oZbIS9y/3jKnxf
-         9s9kC4qcMyuEzyqcji3JDIw7luCp5O9OLbAUcOgwXcx+ytTqt8ykE+CliEXMBubSnrE7
-         ItcPedsN04iT4lsXisLeVsWheYabMXRKTB2eEb/kJec7Skz13Udx5ZzI1mv7J0h8vVv8
-         6YWQ==
-X-Gm-Message-State: ABy/qLZA07xCHW34TIRh2h2UXAwlTn+t5H2yn0cRYwMYChHFrkYjkTzS
-        kBPFRjYD0YjuGMyYpHt7jMoZlWV/6AxRH14cwdofAA==
-X-Google-Smtp-Source: APBJJlE+edF8TNpdCgDk8gTCgGh6lrPGkKMArrAU4l29oolUCrG7bc9wLzTxb7S9keGivJ1c9KdBhx9t+zYPVH+gZlc=
-X-Received: by 2002:a50:8ac1:0:b0:51a:1ffd:10e with SMTP id
- k1-20020a508ac1000000b0051a1ffd010emr175599edk.3.1690822516902; Mon, 31 Jul
- 2023 09:55:16 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690822528; x=1691427328;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RpT8nlEbctAiS0l82doDIjU49cpafv/Kh1hBxCyIFMo=;
+        b=HBqphF9LDjC3TeLbuwo2NrAcpSV2H5ooKR1XMrhSiwqVJcMDx6rUrtkmtzqF8D6sk+
+         lFSPss+ue2btBxcgCZ9Z50tLknPAq9/C1dyEGZxv9xykBrKW6vC7SkvdOkNwrFLrUQ5q
+         BoyRMssELgB8AWebFytw8GrpRQ9tZY+ZppXJ27sJUWzgPPXnk3V919QeMsg3c8isQwVv
+         FnkN+QbSq5uy906YQzqryZYvdJ3X1ERPVt9m10Q6yBG0mDn2cjHdZibDkYwq8Im4L0ms
+         AGuheeE8d1HbDoyFGBh05cNlWsSH37VYfPhpPGPMnnwpZUmrfQ88YvGNy5YBSXguYMNi
+         uH1g==
+X-Gm-Message-State: ABy/qLY5qHm67TeSI3yGiGvIqOFXrbycT0nNhgEI4eJstR9bmUtrkzZO
+        KCRcvKKdblHRP3Xi38lfTaGd3DXFdAQtWCS1654=
+X-Google-Smtp-Source: APBJJlEH5+oK+Q7hPPqgktOZNUuPZU1PTqLvEGDjNa8eYUYojlkbc2qdz2IzV3gGcoZzoec2GACWHQ==
+X-Received: by 2002:ac2:5e6b:0:b0:4f8:5905:8e0a with SMTP id a11-20020ac25e6b000000b004f859058e0amr240314lfr.6.1690822527751;
+        Mon, 31 Jul 2023 09:55:27 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.222.183])
+        by smtp.gmail.com with ESMTPSA id s4-20020a170906c30400b009926928d486sm6374444ejz.35.2023.07.31.09.55.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 09:55:27 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] ASoC: codecs: rx-macro: Enable RX path clock to match POST_PMD
+Date:   Mon, 31 Jul 2023 18:55:22 +0200
+Message-Id: <20230731165522.328301-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230726020810.1408299-1-rdbabiera@google.com> <ZMeYBvD+I1U8HNfF@kuha.fi.intel.com>
-In-Reply-To: <ZMeYBvD+I1U8HNfF@kuha.fi.intel.com>
-From:   RD Babiera <rdbabiera@google.com>
-Date:   Mon, 31 Jul 2023 09:55:05 -0700
-Message-ID: <CALzBnUGH+jCuz+shO=G2O72gHHjwGe03WtXa2vmscsFvpC74ZA@mail.gmail.com>
-Subject: Re: [PATCH v1] usb: typec: tcpm: set initial svdm version based on pd revision
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, kyletso@google.com,
-        badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 4:21=E2=80=AFAM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
-> This makes sense to me, but couple of nitpicks below.
+The driver disables RX path clock in SND_SOC_DAPM_POST_PMD of
+rx_macro_enable_interp_clk() and rx_macro_enable_mix_path().  Make the
+code symmetrical by enabling the clock in SND_SOC_DAPM_PRE_PMU.  This
+also matches downstream Qualcomm driver for Qualcomm SM8550 SoC.
 
-Will fix, thanks for the feedback!
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+ sound/soc/codecs/lpass-rx-macro.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
---
-Best,
-RD
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index 685ca95ef4a9..a758ef4f575a 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -2529,6 +2529,9 @@ static int rx_macro_enable_interp_clk(struct snd_soc_component *component,
+ 						      CDC_RX_PATH_PGA_MUTE_MASK, 0x1);
+ 			snd_soc_component_write_field(component, dsm_reg,
+ 						      CDC_RX_RXn_DSM_CLK_EN_MASK, 0x1);
++			snd_soc_component_update_bits(component, main_reg,
++						      CDC_RX_PATH_CLK_EN_MASK,
++						      CDC_RX_PATH_CLK_ENABLE);
+ 			snd_soc_component_update_bits(component, rx_cfg2_reg,
+ 					CDC_RX_RXn_HPF_CUT_FREQ_MASK, 0x03);
+ 			rx_macro_load_compander_coeff(component, rx, interp_idx, event);
+@@ -2595,6 +2598,9 @@ static int rx_macro_enable_mix_path(struct snd_soc_dapm_widget *w,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+ 		rx_macro_enable_interp_clk(component, event, w->shift);
++		snd_soc_component_update_bits(component, mix_reg,
++					      CDC_RX_RXn_MIX_CLK_EN_MASK,
++					      CDC_RX_RXn_MIX_CLK_EN_MASK);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMU:
+ 		snd_soc_component_write(component, gain_reg,
+-- 
+2.34.1
+
