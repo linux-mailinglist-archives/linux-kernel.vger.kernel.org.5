@@ -2,218 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CA0F76A147
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE3F176A14B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbjGaTbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        id S231180AbjGaTbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbjGaTbC (ORCPT
+        with ESMTP id S231300AbjGaTbS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:31:02 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35A4199D
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:31:00 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bc9d16c317so1084126a34.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:31:00 -0700 (PDT)
+        Mon, 31 Jul 2023 15:31:18 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AEC19A2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:31:16 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe383c1a26so2025437e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:31:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690831860; x=1691436660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ri5yafbuL09u63Nj9JUthSCzYPjx6uG9CsWJ2yEpNqI=;
-        b=UjhhRZWDtRx74bTvWmT3fMpVy9szO/l+3kCSx8h2TcZ9k4cgarSo5SfvC1JUtQWX+y
-         Ic0vdZX0fvJbxOGIa/D4ARmFCuIfLrgd0MsaajA7pWuYCWijlokkay5XSTFAsM6eCGxn
-         lguEpnYec9vPl+WHyI8moFd1j+CX9bxV+CFdeAUO1AREy0HzxFzqpzgNp73nFfxI0fnt
-         FSg/TEgrKzORzXHYSN3aBJMJaGF3Vzw/rFysSJIkiclwC8RQJhRZKsgJ5SIzI0w0w40v
-         1LafnpwapEkqmNENRXtCKrlWcCnu7ppHubztKogJbCnGcndzzwpLF6B9kqtZR49JlvKQ
-         BArw==
+        d=linux-foundation.org; s=google; t=1690831874; x=1691436674;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ANccUczuCdN/Ctbbd+CLowkmR/s9+vGuLKhYUkmLMiM=;
+        b=g3DHojZdzR4AtFnafLgXcdiYZhs/PUZV9eFNZwj2qDJmppmTMxtgdctVcFk+XYdSuS
+         39bdNJZN0ISfpf9OF29Z1NG1w9zDF+12g/Jy+AmtYLP6t2W/nrETrFfc5sCh9LEB9O2W
+         fWSPBg1/18olsNfxyLiexST/xgjfElDpEJEMo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690831860; x=1691436660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ri5yafbuL09u63Nj9JUthSCzYPjx6uG9CsWJ2yEpNqI=;
-        b=fMyEU3qkvJeTdN0vJn2akqNRm+/zuyf8dBlRXgHTO7Bg7zZcBjRw76xeGc94kAMPtW
-         3KD1Xonr/P+1m1neIUZRtLGYRhn9DbPbmvifNFzdhl3/iOcdbBJQNiyXtxZvPwTAmCKf
-         fWkMs38Wa4yTYHVVYc0PhhSIObFUqVBBqeKRfD74jzyoUsqN4QsTep8FDZ7CM7UlISjl
-         cG8ecbYpPHrdgcdF3yclYMIt8zWLGi3kCjqDZACJWtB0ur+U1a6PkLoZSzZcvsZMjNA/
-         Yz+hsfXMLQj57VeVlOCP4EOXF3cKE7VdWqZj0sGrpmeRTe2EUeOMMhEK25Skwj9DejEf
-         DvQA==
-X-Gm-Message-State: ABy/qLYvDNndB7YzMjtqIQefdVtxX22hxbxWQ4qzM9CY61pOByIcQ/Y5
-        SR2qgr+ci9zujjc13SqnrdR8k0hjKqyYLKgfYNgDVA==
-X-Google-Smtp-Source: APBJJlH1Nb3wYpeMxuSzBBPjz1Nyltou8BS0F/g8ei595+a0AVaM6Jlz10PXmItkuf3OR74IkTYEFYxYrZGe05RE9y8=
-X-Received: by 2002:a05:6358:4283:b0:134:d467:b751 with SMTP id
- s3-20020a056358428300b00134d467b751mr830493rwc.21.1690831859825; Mon, 31 Jul
- 2023 12:30:59 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690831874; x=1691436674;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ANccUczuCdN/Ctbbd+CLowkmR/s9+vGuLKhYUkmLMiM=;
+        b=YRwwax2bojrvveJJz96ctll6kD9cVT4WBld9qMpTET9KfV9ZVAn3Vysx6gW4GY5DXy
+         KvuYsKkpnQL/4Y9XqaW91PefB8QV101DKWe6ar/GKYibb0gSomZN+eU4YQ/rd1JLnvWO
+         KSU4lOpvBk/aEC9DifBm4YYWYFohxniRY8HRxWSNJFktSPW7n9CpTIMfr73IKPK7u0Vf
+         rksZDXCIvwiPtgkFAd7EKYmyKqsQN/GSBDniO0CouG0H2GgzpRRXMWAEbUqcClfLyI+C
+         xOhjTibVRGLtAUZS0pd+1+HATqNmqgaIO9IBSzoV/TKnX1WOTzMmOtq20AJkmpuDlCNc
+         U5gA==
+X-Gm-Message-State: ABy/qLZvCQxxAvSkYN706kJAM0r5+J3+9HGUqdts3eYf4MPVnwMvcGXk
+        2bpE7UCr5CWrtBUWogoB+SSePuEkIvvgSU4lGDLLVi37
+X-Google-Smtp-Source: APBJJlF3+xPYoUhqjg/oipQBZDpDBT479KikQQ1tpgmt6hV5Pf6BC1+Y+A2+y+svb0+bLo7w5+XDsw==
+X-Received: by 2002:a19:6703:0:b0:4fd:fabf:b923 with SMTP id b3-20020a196703000000b004fdfabfb923mr550682lfc.14.1690831874468;
+        Mon, 31 Jul 2023 12:31:14 -0700 (PDT)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id q25-20020ac25a19000000b004fe061269edsm2183608lfn.249.2023.07.31.12.31.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 12:31:13 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-4fe383c1a26so2025391e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:31:13 -0700 (PDT)
+X-Received: by 2002:ac2:5931:0:b0:4fb:92df:a27b with SMTP id
+ v17-20020ac25931000000b004fb92dfa27bmr523833lfi.39.1690831873036; Mon, 31 Jul
+ 2023 12:31:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230731171233.1098105-1-surenb@google.com> <20230731171233.1098105-2-surenb@google.com>
- <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 31 Jul 2023 12:30:46 -0700
-Message-ID: <CAJuCfpFWOknMsBmk1RwsX9_0-eZBoF+cy=P-E7xAmOWyeo4rvA@mail.gmail.com>
-Subject: Re: [PATCH 1/6] mm: enable page walking API to lock vmas during the walk
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
-        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
-        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
-        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org
+References: <20230727183805.69c36d6e@g14> <b1dd27df-744b-3977-0a86-f5dde8e24288@amd.com>
+ <20230727193949.55c18805@g14> <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
+ <20230727195019.41abb48d@g14> <67eefe98-e6df-e152-3169-44329e22478d@amd.com>
+ <20230727200527.4080c595@g14> <CAHk-=whqT0PxBazwfjWwoHQQFzZt50tV6Jfgq3iYceKMJtyuUg@mail.gmail.com>
+ <CUGAV1Y993FB.1O2Q691015Z2C@seitikki> <CAHk-=whphk8Jp=NYmnm7Qv+vZ6ScYCz+rV8a2G1nD-AQY3z+mQ@mail.gmail.com>
+ <105b9d13-cedd-7d3c-1f29-2c65199f1de7@amd.com>
+In-Reply-To: <105b9d13-cedd-7d3c-1f29-2c65199f1de7@amd.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 31 Jul 2023 12:30:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=why64j-K4e1VxKwx7o6FiGjcXEnu1Pz+1QnNTBCv9AGyA@mail.gmail.com>
+Message-ID: <CAHk-=why64j-K4e1VxKwx7o6FiGjcXEnu1Pz+1QnNTBCv9AGyA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] tpm: disable hwrng for fTPM on some AMD designs
+To:     "Limonciello, Mario" <mario.limonciello@amd.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Daniil Stas <daniil.stas@posteo.net>,
+        James.Bottomley@hansenpartnership.com, Jason@zx2c4.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@leemhuis.info, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:02=E2=80=AFAM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Mon, 31 Jul 2023 at 12:18, Limonciello, Mario
+<mario.limonciello@amd.com> wrote:
 >
-> On Mon, 31 Jul 2023 at 10:12, Suren Baghdasaryan <surenb@google.com> wrot=
-e:
-> >
-> > -               walk_page_vma(vma, &subpage_walk_ops, NULL);
-> > +               walk_page_vma(vma, &subpage_walk_ops, true, NULL);
+> > Is there some way to just see "this is a fTPM"?
 >
-> Rather than add a new argument to the walk_page_*() functions, I
-> really think you should just add the locking rule to the 'const struct
-> mm_walk_ops' structure.
->
-> The locking rule goes along with the rules for what you are actually
-> doing, after all. Plus it would actually make it all much more legible
-> when it's not just some random "true/false" argument, but a an actual
->
->         .write_lock =3D 1
->
-> in the ops definition.
+> How many fTPM implementations are there?  We're talking like less than 5
+> right?  Maybe just check against a static list when
+> calling tpm_add_hwrng().
 
-Yeah, I was thinking about that but thought a flag like this in a pure
-"ops" struct would be frowned upon. If this is acceptable then it
-makes it much cleaner.
+Sounds sane. But I was hoping for some direct way to just query "are
+you a firmware SMI hook, or real hardware".
 
->
-> Yes, yes, that might mean that some ops might need duplicating in case
-> you really have a walk that sometimes takes the lock, and sometimes
-> doesn't, but that is odd to begin with.
->
-> The only such case I found from a quick look was the very strange
-> queue_pages_range() case. Is it really true that do_mbind() needs the
-> write-lock, but do_migrate_pages() does not?
->
-> And if they really are that different maybe they should have different wa=
-lk_ops?
+It would be lovely to avoid the list, because maybe AMD does - or in
+the past have done - discrete TPM hardware?  So it might not be as
+easy as just checking against the manufacturer..
 
-Makes sense to me.
+That said, maybe it really doesn't matter. I'm perfectly fine with
+just the "check for AMD as a manufacturer" too.
 
->
-> Maybe there were other cases that I didn't notice.
->
-> >                 error =3D walk_page_range(current->mm, start, end,
-> > -                               &prot_none_walk_ops, &new_pgprot);
-> > +                               &prot_none_walk_ops, true, &new_pgprot)=
-;
->
-> This looks odd. You're adding vma locking to a place that didn't do it be=
-fore.
->
-> Yes, the mmap semaphore is held for writing, but this particular walk
-> doesn't need it as far as I can tell.
+In fact, I'd be perfectly happy with not using the TPM for run-time
+randomness at all, and purely doing it for the bootup entropy, which
+is where I feel it matters a lot m ore.
 
-Yes you are correct. Locking a vma in this case seems unnecessary.
+> I've had some discussions today with a variety of people on this problem
+> and there is no advantage to get RNG through the fTPM over RDRAND.
 
->
-> In fact, this feels like that walker should maybe *verify* that it's
-> held for writing, but not try to write it again?
+Ack.
 
-In this particular case, does this walk even require the vma to be
-write locked? Looks like it's simply checking the ptes. And if so,
-walk_page_range() already has mmap_assert_locked(walk.mm) at the
-beginning to ensure the tree is stable. Do we need anything else here?
+And that's true even if you _trust_ the fTPM.
 
->
-> Maybe the "lock_vma" flag should be a tri-state:
->
->  - lock for reading (no-op per vma), verify that the mmap sem is held
-> for reading
->
->  - lock for reading (no-op per vma), but with mmap sem held for
-> writing (this kind of "check before doing changes" walker)
->
->  - lock for writing (with mmap sem obviously needs to be held for writing=
-)
->
-> >         mmap_assert_locked(walk.mm);
-> > +       if (lock_vma)
-> > +               vma_start_write(vma);
->
-> So I think this should also be tightened up, and something like
->
->         switch (ops->locking) {
->         case WRLOCK:
->                 vma_start_write(vma);
->                 fallthrough;
->         case WRLOCK_VERIFY:
->                 mmap_assert_write_locked(mm);
->                 break;
->         case RDLOCK:
->                 mmap_assert_locked(walk.mm);
->         }
+That said, I see no real downside to using the TPM (whether firmware
+or discrete) to just add to the boot-time "we'll gather entropy for
+our random number generator from any source".
 
-I got the idea but a couple of modifications, if I may.
-walk_page_range() already does mmap_assert_locked() at the beginning,
-so we can change it to:
+So it's purely the runtime randomness where I feel that the upside
+just isn't there, and the downsides are real.
 
-if (ops->locking =3D=3D RDLOCK)
-        mmap_assert_locked(walk.mm);
-else
-        mmap_assert_write_locked(mm);
-
-and during the walk:
-
-        switch (ops->locking) {
-        case WRLOCK:
-                 vma_start_write(vma);
-                 break;
-#ifdef CONFIG_PER_VMA_LOCK
-        case WRLOCK_VERIFY:
-                 vma_assert_write_locked(vma);
-                 break;
-#endif
-         }
-
-The above CONFIG_PER_VMA_LOCK is ugly but with !CONFIG_PER_VMA_LOCK
-vma_assert_write_locked() becomes mmap_assert_write_locked() and we
-already checked that, so it's unnecessary.
-
->
-> because we shouldn't have a 'vma_start_write()' without holding the
-> mmap sem for *writing*, and the above would also allow that
-> mprotect_fixup() "walk to see if we can merge, verify that it was
-> already locked" thing.
->
-> Hmm?
->
-> NOTE! The above names are just completely made up. I dcon't think it
-> should actually be some "WRLOCK" enum. There are probably much better
-> names. Take the above as a "maybe something kind of in this direction"
-> rather than "do it exactly like this".
-
-I'm not great with names... Maybe just add a PGWALK_ prefix like this:
-
-PGWALK_RDLOCK
-PGWALK_WRLOCK
-PGWALK_WRLOCK_VERIFY
-
-?
-
->
->             Linus
+                  Linus
