@@ -2,87 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8926A76A1C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:16:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68E076A1D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 22:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbjGaUQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 16:16:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46806 "EHLO
+        id S229902AbjGaUXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 16:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjGaUQq (ORCPT
+        with ESMTP id S229452AbjGaUXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 16:16:46 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6414E10FB
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:16:45 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="371828127"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="371828127"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 13:16:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="722210853"
-X-IronPort-AV: E=Sophos;i="6.01,245,1684825200"; 
-   d="scan'208";a="722210853"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga007.jf.intel.com with ESMTP; 31 Jul 2023 13:16:43 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1qQZJp-004RKT-2N;
-        Mon, 31 Jul 2023 23:16:41 +0300
-Date:   Mon, 31 Jul 2023 23:16:41 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 07/42] soc: Add SoC driver for Cirrus ep93xx
-Message-ID: <ZMgWqVb4wg5h6poh@smile.fi.intel.com>
-References: <20230605-ep93xx-v3-0-3d63a5f1103e@maquefel.me>
- <20230605-ep93xx-v3-7-3d63a5f1103e@maquefel.me>
- <ZLqSo6B5cJXVRJS/@smile.fi.intel.com>
- <79619e92b70fdb4b324758ddb34f84b3b8963256.camel@maquefel.me>
- <CAHp75VdSaxzU_7A7b=Htph29XA=ZbqUPJ6RJu+HtrSA2EbcXig@mail.gmail.com>
- <cbc0c2d68b950bf984b5cb16ce7fa6d2348940ad.camel@maquefel.me>
+        Mon, 31 Jul 2023 16:23:47 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2271723
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:23:46 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7748ca56133so44398639f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 13:23:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1690835026; x=1691439826;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=oGlGpw5Q9q73Ldn1HOpDYO0OQxBN9y2wWaW04aAn3Sk=;
+        b=Tzp6pkj2CuiwN5T1cb6RwqAagJWZcZvIWhojOmZqsie7v+OMp3a42BkMHG4DsZYbKG
+         JX6vDuwGJ0pF1vlwG8N+kns4UsUCyfy1wrYHeeJ6XSiLVu7AEcyYPIusG4cwY3hIs11d
+         qk1xcXcs7N34m6JIPDF+z3ZnMXQObG47f0meQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690835026; x=1691439826;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oGlGpw5Q9q73Ldn1HOpDYO0OQxBN9y2wWaW04aAn3Sk=;
+        b=GbEDsIiPaNT3aZuhPDGVjB0h0t7L5Z2FF3RFJnSm/0RVMrrA05WMmfWGrEIafHFF3j
+         uLmZaY8TBF6O/do5rABC3QMaLHXdpGGC6Sx3gwP3pl6k/qYC1g8dMzcBrg4wxqjy/p3q
+         J9XmN1lp2+kUo9mKoH/4NV0ZhnOZ1w5PBZ66qNl2qyYX4DU4mmnxiSgbbNuZY7Lvfo40
+         95/g9mO5cODi6Bcppwnf5l+0OKIYw7EN4e4nTgQhw4hZOP8NX4Vu55zfrRWicc0rGXu5
+         FAR3P3EVOfIK5Ox4O7qXfELsn5/LNiqAP6R2tfANpR1uFrqQ5u2sqJf72FQxTRQ7ZObV
+         aQTQ==
+X-Gm-Message-State: ABy/qLZPNEqZrlHEQPjUxXLunyWa9vdH+WYc9Wcng9cefjBy81myaCtF
+        e7z2lt9NqlFZ5SQDLeCu/hxb3A==
+X-Google-Smtp-Source: APBJJlGgAux994dW83HtYTYpLYqmK0Zrk10pegL7O2Y8RxVDCrof5T1fCXszRhNuvGJTRoXVR7UiwQ==
+X-Received: by 2002:a6b:c9d3:0:b0:788:2d78:813c with SMTP id z202-20020a6bc9d3000000b007882d78813cmr8761031iof.0.1690835026049;
+        Mon, 31 Jul 2023 13:23:46 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id j12-20020a02cb0c000000b004290985a1efsm3239825jap.43.2023.07.31.13.23.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 13:23:45 -0700 (PDT)
+Message-ID: <1471f593-1ff5-902a-a045-9241feda7bd0@linuxfoundation.org>
+Date:   Mon, 31 Jul 2023 14:23:45 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cbc0c2d68b950bf984b5cb16ce7fa6d2348940ad.camel@maquefel.me>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        FORGED_GMAIL_RCVD,FREEMAIL_FROM,MAY_BE_FORGED,NML_ADSP_CUSTOM_MED,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RESEND PATCH v2] selftests:connector: Fix input argument error
+ paths to skip
+Content-Language: en-US
+To:     shuah@kernel.org, Liam.Howlett@oracle.com,
+        anjali.k.kulkarni@oracle.com, kuba@kernel.org
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230729002403.4278-1-skhan@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230729002403.4278-1-skhan@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 01:01:11PM +0300, Nikita Shubin wrote:
-> On Fri, 2023-07-28 at 12:46 +0300, Andy Shevchenko wrote:
-
-...
-
-> I see your point now - citing docs:
+On 7/28/23 18:24, Shuah Khan wrote:
+> Fix input argument parsing paths to skip from their error legs.
+> This fix helps to avoid false test failure reports without running
+> the test.
 > 
-> "Logic safeguards are included to condition the control signals for
-> power connection to the matrix to prevent part damage. In addition, a
-> software lock register is included that must be written with 0xAA
-> before each register write to change the values of the four switch
-> matrix control registers."
+> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> ---
+> v2: Removed root check based on Anjali's review comments.
+> Add netdev to RESEND
 > 
-> So reading SHOULDN'T affect the lock.
+>   tools/testing/selftests/connector/proc_filter.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> But as we checked reading also breaks the lock, that's why this looks
-> so odd, it was done for purpose - i'll check it once again anyway.
+> diff --git a/tools/testing/selftests/connector/proc_filter.c b/tools/testing/selftests/connector/proc_filter.c
+> index 4fe8c6763fd8..4a825b997666 100644
+> --- a/tools/testing/selftests/connector/proc_filter.c
+> +++ b/tools/testing/selftests/connector/proc_filter.c
+> @@ -248,7 +248,7 @@ int main(int argc, char *argv[])
+>   
+>   	if (argc > 2) {
+>   		printf("Expected 0(assume no-filter) or 1 argument(-f)\n");
+> -		exit(1);
+> +		exit(KSFT_SKIP);
+>   	}
+>   
+>   	if (argc == 2) {
+> @@ -256,7 +256,7 @@ int main(int argc, char *argv[])
+>   			filter = 1;
+>   		} else {
+>   			printf("Valid option : -f (for filter feature)\n");
+> -			exit(1);
+> +			exit(KSFT_SKIP);
+>   		}
+>   	}
+>   
 
-This is very interesting information! Please, document this somewhere in
-the code.
+Hi Jakub,
 
--- 
-With Best Regards,
-Andy Shevchenko
+I sent v2 for patch 3 in the series. Do you want me to send the
+entire series again with this revised 3rd patch.
 
+thanks,
+-- Shuah
 
