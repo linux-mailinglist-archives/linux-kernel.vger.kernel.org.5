@@ -2,222 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 867A876A0BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BA776A0CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 21:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbjGaTBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 15:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
+        id S230449AbjGaTFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 15:05:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbjGaTA7 (ORCPT
+        with ESMTP id S229798AbjGaTE4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 15:00:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3E61BE1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690830013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LRN4iXZUggA9gxv0XWtRGIRu1LUQCEe4QBtdGPEZ4EM=;
-        b=ZG0iYk2KtHObfh9iJX6kS9+trBQAaSEXmdegQfdHgpHK1b0PlLNRAImlxEg48/gbV8XSyo
-        JAcAqFBiiOCnWR4nq/kuZfmjq+RLAuS6lVZ/HugJow9G7LEwLDTaeTlqF7m/R/TSMNmwVK
-        tgSqI5MShlPb+TTXvvNDyFITFwhaYVY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-516-YDui45BINReGuToD2aHe3Q-1; Mon, 31 Jul 2023 15:00:09 -0400
-X-MC-Unique: YDui45BINReGuToD2aHe3Q-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3178532c6c8so2016276f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 12:00:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690830008; x=1691434808;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LRN4iXZUggA9gxv0XWtRGIRu1LUQCEe4QBtdGPEZ4EM=;
-        b=bRsr3ZeaMlh5lOaWt1O5KcwomCAvX8TBm/SI61WEUXdnbzyU78bZY0Lw0lBnbUFIcg
-         VJuPWBOXV757M4mn/kl1V0P8eFlzz4/8An3j59m1PZSwM9NTQUG7aiFBbSCLHbAIS5gI
-         TWyrISVuubjKBu+wij7p8sqAJuZOm+U5MuoGQnfIzBxtCpwo3X9hJqKBk68bX7lfKwB9
-         BMReJSpKYlcIC1ZK/Hzn8jA4p9aODBFYvmSHZhUFaQT7heT4OKFueORKq4QNwAmhTnmu
-         Zy324Uv6oIgYUpUB5y8Lv3op6nQRQxkZCMRokITMgwtO4JfSeM2OJhZQ5Z498iHuTksS
-         ylNg==
-X-Gm-Message-State: ABy/qLY+m3m8LpxtIWQFr/UFhh8qehSOEukfd8eLVjD2MH1CzpZuaiZ0
-        5kQ6bi6BpjPtuzhyVlk5Lp8qGmN/9WHt+0uCSAhWyD0dv4EoU2yO3XCDZHlF6rbGpgWFEDt/40F
-        IK25MgyFCZus4CdyrttugkpXP
-X-Received: by 2002:adf:dd8a:0:b0:317:6e62:b124 with SMTP id x10-20020adfdd8a000000b003176e62b124mr423302wrl.18.1690830008404;
-        Mon, 31 Jul 2023 12:00:08 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFqiX9tpRijhcAmgDWj/xfoH3k7N2YHmd2jP9GAIEyCL0XqSLGXqpeGNftPDRTmLgmfpte+Vg==
-X-Received: by 2002:adf:dd8a:0:b0:317:6e62:b124 with SMTP id x10-20020adfdd8a000000b003176e62b124mr423280wrl.18.1690830007915;
-        Mon, 31 Jul 2023 12:00:07 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c723:4c00:5c85:5575:c321:cea3? (p200300cbc7234c005c855575c321cea3.dip0.t-ipconnect.de. [2003:cb:c723:4c00:5c85:5575:c321:cea3])
-        by smtp.gmail.com with ESMTPSA id z7-20020a5d4407000000b0031766e99429sm13799820wrq.115.2023.07.31.12.00.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 12:00:07 -0700 (PDT)
-Message-ID: <a453d403-fc96-e4a0-71ee-c61d527e70da@redhat.com>
-Date:   Mon, 31 Jul 2023 21:00:06 +0200
+        Mon, 31 Jul 2023 15:04:56 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7A01707;
+        Mon, 31 Jul 2023 12:04:55 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id e66c7d44df33c50a; Mon, 31 Jul 2023 21:04:53 +0200
+Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=rjwysocki.net 
+   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
+   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id EAC776620E2;
+        Mon, 31 Jul 2023 21:04:52 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Kajetan Puchalski <kajetan.puchalski@arm.com>
+Subject: [PATCH v3 2/3] cpuidle: teo: Avoid stopping the tick unnecessarily when bailing out
+Date:   Mon, 31 Jul 2023 21:03:09 +0200
+Message-ID: <10328871.nUPlyArG6x@kreacher>
+In-Reply-To: <4515817.LvFx2qVVIh@kreacher>
+References: <4515817.LvFx2qVVIh@kreacher>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>
-References: <20230727212845.135673-1-david@redhat.com>
- <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
- <412bb30f-0417-802c-3fc4-a4e9d5891c5d@redhat.com>
- <66e26ad5-982e-fe2a-e4cd-de0e552da0ca@redhat.com> <ZMfc9+/44kViqjeN@x1n>
- <a3349cdb-f76f-eb87-4629-9ccba9f435a1@redhat.com>
- <CAHk-=wiREarX5MQx9AppxPzV6jXCCQRs5KVKgHoGYwATRL6nPg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
- fallout
-In-Reply-To: <CAHk-=wiREarX5MQx9AppxPzV6jXCCQRs5KVKgHoGYwATRL6nPg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrjeeggddutdekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepfeduudeutdeugfelffduieegiedtueefledvjeegffdttefhhffhtefhleejgfetnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprghnnhgrqdhmrghrihgrsehlihhnuhht
+ rhhonhhigidruggvpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrghjvghtrghnrdhpuhgthhgrlhhskhhisegrrhhmrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.07.23 20:23, Linus Torvalds wrote:
-> On Mon, 31 Jul 2023 at 09:20, David Hildenbrand <david@redhat.com> wrote:
->>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Hi Linus,
+When teo_select() is going to return early in some special cases, make
+it avoid stopping the tick if the idle state to be returned is shallow.
 
->> I modified it slightly: FOLL_HONOR_NUMA_FAULT is now set in
->> is_valid_gup_args(), such that it will always be set for any GUP users,
->> including GUP-fast.
-> 
-> But do we actually want that? It is actively crazy to honor NUMA
-> faulting at least for get_user_pages_remote().
+In particular, never stop the tick if state 0 is to be returned.
 
-This would only be for the stable backport that would go in first and 
-where I want to be a bit careful.
+Link: https://lore.kernel.org/linux-pm/CAJZ5v0jJxHj65r2HXBTd3wfbZtsg=_StzwO1kA5STDnaPe_dWA@mail.gmail.com
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Next step would be to let the callers (KVM) specify 
-FOLL_HONOR_NUMA_FAULT, as suggested by you.
+v2 -> v3:
+   * Cover all of the special cases when 0 is returned and never stop the tick
+     in those cases.
+   * Do not bail out when constraint_idx becomes the candidate state (it should
+     be subject to the usual checks below, because it isn't really special).
+   * Be more careful about stopping the tick when the first enabled idle state
+     is used.
 
-> 
-> So right now, GUP-fast requires us to honor NUMA faults, because
-> GUP-fast doesn't have a vma (which in turn is because GUP-fast doesn't
-> take any locks).
+v1 -> v2: New patch
 
-With FOLL_HONOR_NUMA_FAULT moved to the GUP caller that would no longer 
-be the case.
+---
+ drivers/cpuidle/governors/teo.c |   56 +++++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 23 deletions(-)
 
-Anybody who
+Index: linux-pm/drivers/cpuidle/governors/teo.c
+===================================================================
+--- linux-pm.orig/drivers/cpuidle/governors/teo.c
++++ linux-pm/drivers/cpuidle/governors/teo.c
+@@ -382,12 +382,13 @@ static int teo_select(struct cpuidle_dri
+ 	/* Check if there is any choice in the first place. */
+ 	if (drv->state_count < 2) {
+ 		idx = 0;
+-		goto end;
++		goto out_tick;
+ 	}
++
+ 	if (!dev->states_usage[0].disable) {
+ 		idx = 0;
+ 		if (drv->states[1].target_residency_ns > duration_ns)
+-			goto end;
++			goto out_tick;
+ 	}
+ 
+ 	cpu_data->utilized = teo_cpu_is_utilized(dev->cpu, cpu_data);
+@@ -408,11 +409,12 @@ static int teo_select(struct cpuidle_dri
+ 		 * anyway.
+ 		 */
+ 		if ((!idx && !(drv->states[0].flags & CPUIDLE_FLAG_POLLING) &&
+-		    teo_time_ok(duration_ns)) || dev->states_usage[1].disable)
++		    teo_time_ok(duration_ns)) || dev->states_usage[1].disable) {
+ 			idx = 0;
+-		else /* Assume that state 1 is not a polling one and use it. */
+-			idx = 1;
+-
++			goto out_tick;
++		}
++		/* Assume that state 1 is not a polling one and use it. */
++		idx = 1;
+ 		goto end;
+ 	}
+ 
+@@ -459,8 +461,15 @@ static int teo_select(struct cpuidle_dri
+ 	/* Avoid unnecessary overhead. */
+ 	if (idx < 0) {
+ 		idx = 0; /* No states enabled, must use 0. */
+-		goto end;
+-	} else if (idx == idx0) {
++		goto out_tick;
++	}
++
++	if (idx == idx0) {
++		/*
++		 * This is the first enabled idle state, so use it, but do not
++		 * allow the tick to be stopped it is shallow enough.
++		 */
++		duration_ns = drv->states[idx].target_residency_ns;
+ 		goto end;
+ 	}
+ 
+@@ -566,24 +575,25 @@ static int teo_select(struct cpuidle_dri
+ 
+ end:
+ 	/*
+-	 * Don't stop the tick if the selected state is a polling one or if the
+-	 * expected idle duration is shorter than the tick period length.
++	 * Allow the tick to be stopped unless the selected state is a polling
++	 * one or the expected idle duration is shorter than the tick period
++	 * length.
+ 	 */
+-	if (((drv->states[idx].flags & CPUIDLE_FLAG_POLLING) ||
+-	    duration_ns < TICK_NSEC) && !tick_nohz_tick_stopped()) {
+-		*stop_tick = false;
++	if ((!(drv->states[idx].flags & CPUIDLE_FLAG_POLLING) &&
++	    duration_ns >= TICK_NSEC) || tick_nohz_tick_stopped())
++		return idx;
+ 
+-		/*
+-		 * The tick is not going to be stopped, so if the target
+-		 * residency of the state to be returned is not within the time
+-		 * till the closest timer including the tick, try to correct
+-		 * that.
+-		 */
+-		if (idx > idx0 &&
+-		    drv->states[idx].target_residency_ns > delta_tick)
+-			idx = teo_find_shallower_state(drv, dev, idx, delta_tick, false);
+-	}
++	/*
++	 * The tick is not going to be stopped, so if the target residency of
++	 * the state to be returned is not within the time till the closest
++	 * timer including the tick, try to correct that.
++	 */
++	if (idx > idx0 &&
++	    drv->states[idx].target_residency_ns > delta_tick)
++		idx = teo_find_shallower_state(drv, dev, idx, delta_tick, false);
+ 
++out_tick:
++	*stop_tick = false;
+ 	return idx;
+ }
+ 
 
-(1) doesn't specify FOLL_HONOR_NUMA_FAULT, which is the majority
-(2) doesn't specify FOLL_WRITE
 
-Would get GUP-fast just grabbing these pte_protnone() pages.
-
-> 
-> So GUP-fast can only look at the page table data, and as such *has* to
-> fail if the page table is inaccessible.
-
-gup_fast_only, yes, which is what KVM uses if a writable PFN is desired.
-
-> 
-> But GUP in general? Why would it want to honor numa faulting?
-> Particularly by default, and _particularly_ for things like
-> FOLL_REMOTE.
-
-KVM currently does [virt/kvm/kvm_main.c]:
-
-(1) hva_to_pfn_fast(): call get_user_page_fast_only(FOLL_WRITE) if a
-     writable PFN is desired
-(2) hva_to_pfn_slow(): call get_user_pages_unlocked()
-
-
-So in the "!writable" case, we would always call 
-get_user_pages_unlocked() and never honor NUMA faults.
-
-Converting that to some other pattern might be possible (although KVM 
-plays quite some tricks here!), but assuming we would always first do a 
-get_user_page_fast_only(), then when not intending to write (!FOLL_WRITE)
-
-(1) get_user_page_fast_only() would honor NUMA faults and fail
-(2) get_user_pages() would not honor NUMA faults and succeed
-
-Hmmm ... so we would have to use get_user_pages_fast()? It might be 
-possible, but I am not sure if we want get_user_pages_fast() to always 
-honor NUMA faults, because ...
-
-> 
-> In fact, I feel like this is what the real rule should be: we simply
-> define that get_user_pages_fast() is about looking up the page in the
-> page tables.
-> 
-> So if you want something that acts like a page table lookup, you use
-> that "fast" thing.  It's literally how it is designed. The whole - and
-> pretty much only - point of it is that it can be used with no locking
-> at all, because it basically acts like the hardware lookup does.
-> 
-
-... I see what you mean (HW would similarly refuse to use such a page), 
-but I do wonder if that makes the API clearer and if this is what we 
-actually want.
-
-We do have callers of pin_user_pages_fast() and friends that maybe 
-*really* shouldn't care about NUMA hinting. 
-iov_iter_extract_user_pages() is one example -- used for O_DIRECT nowadays.
-
-Their logic is "if it's directly in the page table, create, hand it 
-over. If not, please go the slow path.". In many cases user space just 
-touched these pages so they are very likely in the page table.
-
-Converting them to pin_user_pages() would mean they will just run slower 
-in the common case.
-
-Converting them to a manual pin_user_pages_fast_only() + 
-pin_user_pages() doesn't seem very compelling.
-
-
-... so we would need a new API? :/
-
-> So then if KVM wants to look up a page in the page table, that is what
-> kvm should use, and it automatically gets the "honor numa faults"
-> behavior, not because it sets a magic flag, but simply because that is
-> how GUP-fast *works*.
-> 
-> But if you use the "normal" get/pin_user_pages() function, which looks
-> up the vma, at that point you are following things at a "software
-> level", and it wouldn't do NUMA faulting, it would just get the page.
-
-My main problem with that is that pin_user_pages_fast() and friends are 
-used all over the place for a "likely already in the page table case, so 
-just make everything faster as default".
-
-Always honoring NUMA faults here does not sound like the improvement we 
-wanted to have :) ... we actually *don't* want to honor NUMA faults here.
-
-
-We just have to find a way to make the KVM special case happy.
-
-Thanks!
-
--- 
-Cheers,
-
-David / dhildenb
 
