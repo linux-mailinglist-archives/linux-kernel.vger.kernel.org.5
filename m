@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E49C76A01B
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290D076A01F
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 20:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230372AbjGaSNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 14:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
+        id S230009AbjGaSPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 14:15:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230026AbjGaSNe (ORCPT
+        with ESMTP id S229597AbjGaSPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 14:13:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57410173B;
-        Mon, 31 Jul 2023 11:13:32 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 87BB961253;
-        Mon, 31 Jul 2023 18:13:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B07AC433C7;
-        Mon, 31 Jul 2023 18:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690827211;
-        bh=JgYLR2p0UTU8jfWLZC91aaSiGzPX/p54RufKdswTSfw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Fv0gjn6meUczIYDumYbwS4gGefpf9Vxw+E9d5BDfhrUMlnDUxyfn3EuMJETmy+vIE
-         D1Gy3YcjvM907jdwBmPLtCek+s/7z9wtABc8mjmRl3C168LhTD0HibCXA4nkKDZkXg
-         EJ6Sj+JbY2bpyjhR3MpNsc9pZt+vWvtqmxGUp2Zr39DAeWaEJCHekj+DZ2I8MOEOR8
-         EBEIOHgzPYW6tu2vdPXSONfD9julemh6ZdDie2H4wJLLsambTyqqyhbzIKiWqbrkdJ
-         8rFgrPCQ1oOn71KP6G8IzKbJQhWVmAbCRa5LrgosmibsZFLHUquk0kWVMyBBQj0GMb
-         m4L00Bx0bKgnA==
-Date:   Mon, 31 Jul 2023 11:13:30 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>
-Cc:     hayeswang@realtek.com, edumazet@google.com,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        davem@davemloft.net, linux-usb@vger.kernel.org, pabeni@redhat.com,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Subject: Re: Error 'netif_napi_add_weight() called with weight 256'
-Message-ID: <20230731111330.5211e637@kernel.org>
-In-Reply-To: <0bfd445a-81f7-f702-08b0-bd5a72095e49@amd.com>
-References: <0bfd445a-81f7-f702-08b0-bd5a72095e49@amd.com>
+        Mon, 31 Jul 2023 14:15:01 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6744A198A
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:15:00 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d09ba80fbcaso4995438276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 11:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690827299; x=1691432099;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2NhrG3ebunqqW/6fNvydCmbdIW5aLv6UuHyoJLzPhvU=;
+        b=tldtOfPyvntdk2HF/kg3s7SdAP0QaF8msWK3JVFpDXcVBo9uim8imXk6qLdunFRQFz
+         w5VcSdpIN+AujQgh0zySWo6ZPrUl5zbZ4NneL+3Yz2mqD8JNcVrZjVGWaKaT9ny6KVTY
+         SHyQb5mdXV4HIbnf4RA43pdntiBR519rPKoOfkEnAUjcGNlMAJHxfsuSIuVfsas1JFMR
+         HwVCTUxs+qnPIqOtdLY+Sjj8b8qgLOzW28T8YWColjn5XcfN7AT/qbQpHuN/lJDUppAY
+         RG7R2ME/OanCsSY3b1/vYDWKvYekeesolZmTxvgDs8gFq87lZyEOZV2E1s3RH3qyhquA
+         3Hkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690827299; x=1691432099;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2NhrG3ebunqqW/6fNvydCmbdIW5aLv6UuHyoJLzPhvU=;
+        b=J4sSngC1NYMFy6kVp3E/H52TcXkcAaCBsZTpJkpjRoILCZQ2i4ito3QLTOhV9qc/4W
+         UgaKIdYuj1phSaPm2moCx9gh0QpRuuPTBCRo++lRFKppX9N0yc6dRHwSf+js5GyPQAp7
+         DJ9ePD5v2Pxxy2eygc5oX+DSNN1MQ77LgLwYX32LY1J5sZT0gwy4DQ2gUzd8bDoYkYJX
+         o0duQV3w3qGNjOQg/0QyMIRH79jvEOoPxmorvrC79at/qId/ho9BYfjtNXhCUmBqaf3X
+         6/AetUSy9+DRU9z5UEs5n510X/Tcjrt44GXve9BLetYm+FcdQemcd37D9mVzyw2go+Xq
+         7NQQ==
+X-Gm-Message-State: ABy/qLaRZHfmEQ/+9qtcA7z1D3xO5cgvwfrO1UAZ7lKjl1omPPTRpJvy
+        OwO3TvmgLs1GtOdz/FYTkWA5Yi9OGVF9H9RzV3yH5w==
+X-Google-Smtp-Source: APBJJlGIZWGKvTQYHo1n6R8G7XvGTwdV9smwAb/lAv3joMhn1JrPkus+Hp6j/DhQPokMTNgtjPMmHvQuHyGNfB0lcbI=
+X-Received: by 2002:a25:ccc4:0:b0:d12:1094:2036 with SMTP id
+ l187-20020a25ccc4000000b00d1210942036mr10193347ybf.43.1690827299443; Mon, 31
+ Jul 2023 11:14:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230731030740.12411-1-rdunlap@infradead.org>
+In-Reply-To: <20230731030740.12411-1-rdunlap@infradead.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 31 Jul 2023 11:14:46 -0700
+Message-ID: <CAJuCfpGQzpWptS0WBBzw8XesPFb5MeG5UVLFDce72wfXNA1joQ@mail.gmail.com>
+Subject: Re: [PATCH] PSI: select KERNFS as needed
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 11:02:40 -0500 Limonciello, Mario wrote:
-> Hi,
-> 
-> I noticed today with 6.5-rc4 and also on 6.1.42 that I'm getting an 
-> error from an r8152 based dongle (Framework ethernet expansion card).
-> 
-> netif_napi_add_weight() called with weight 256
-> 
-> It seems that this message is likely introduced by
-> 8ded532cd1cbe ("r8152: switch to netif_napi_add_weight()")
-> 
-> which if the card has support_2500full set will program the value to 256:
-> 
-> 	netif_napi_add_weight(netdev, &tp->napi, r8152_poll,
-> 			      tp->support_2500full ? 256 : 64);
-> 
-> It's err level from
-> 82dc3c63c692b ("net: introduce NAPI_POLL_WEIGHT")
-> 
-> Why is this considered an error but the driver uses the bigger value?
-> Should it be downgraded to a warning?
+On Sun, Jul 30, 2023 at 8:07=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
+> wrote:
+>
+> Users of KERNFS should select it to enforce its being built, so
+> do this to prevent a build error.
+>
+> In file included from ../kernel/sched/build_utility.c:97:
+> ../kernel/sched/psi.c: In function 'psi_trigger_poll':
+> ../kernel/sched/psi.c:1479:17: error: implicit declaration of function 'k=
+ernfs_generic_poll' [-Werror=3Dimplicit-function-declaration]
+>  1479 |                 kernfs_generic_poll(t->of, wait);
+>
+> Fixes: aff037078eca ("sched/psi: use kernfs polling functions for PSI tri=
+gger polling")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: lore.kernel.org/r/202307310732.r65EQFY0-lkp@intel.com
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Juri Lelli <juri.lelli@redhat.com>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
 
-Could you double check that the warning wasn't there before? The code
-added by commit 195aae321c82 ("r8152: support new chips") in 5.13 looks
-very much equivalent.
-The custom weight is probably due to a misunderstanding. We have 200G
-adapters using the standard weight of 64, IDK why 2.5G adapter would
-need anything special.
+Acked-by: Suren Baghdasaryan <surenb@google.com>
+
+Thanks!
+
+
+> ---
+>  init/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff -- a/init/Kconfig b/init/Kconfig
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -629,6 +629,7 @@ config TASK_IO_ACCOUNTING
+>
+>  config PSI
+>         bool "Pressure stall information tracking"
+> +       select KERNFS
+>         help
+>           Collect metrics that indicate how overcommitted the CPU, memory=
+,
+>           and IO capacity are in the system.
