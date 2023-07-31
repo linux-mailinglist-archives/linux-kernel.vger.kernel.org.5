@@ -2,138 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384AF76958D
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA50E769593
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232327AbjGaMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
+        id S231434AbjGaMGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231434AbjGaMFW (ORCPT
+        with ESMTP id S229819AbjGaMGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:05:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B786C171C;
-        Mon, 31 Jul 2023 05:05:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B3576108B;
-        Mon, 31 Jul 2023 12:04:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FA01C433C8;
-        Mon, 31 Jul 2023 12:04:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690805098;
-        bh=CxFnYp7q+XxZ7znzGHFxRtOTFd57UjGuXrJBT9Z6jfw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dNP7+QrCm8e46TuickOROLjjoLk92XRMECcE6QClmuWcLojczZGukm8KMESE1qWL8
-         CYxrXkdWiffoaLzos/RLuhWfIAdUqM/Q1pylPvMfbNH8spCCndcH/XDhXCxRQLggiF
-         vgBrGQHEXumy5TAx6WhEAHo1gT1LXoPY6m/epkfeeFQumPrdgl5SdK3jQGgrHF5mq7
-         pvD/f2EG7lAQIaTUn5JiXPWse/LTC4ro5PhsIEbt/I/IqH0PTMZa/o3xLuLyeDE+Ts
-         JhrfTd66S/ROXLq2LHi4ag2u/bghGxZltrDXN2c6wo0BCVdmbyzvetd4DsqUafCH0A
-         cW61RjU8PEI9Q==
-Date:   Mon, 31 Jul 2023 14:04:55 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, tzimmermann@suse.de, corbet@lwn.net,
-        christian.koenig@amd.com, bskeggs@redhat.com,
-        Liam.Howlett@oracle.com, matthew.brost@intel.com,
-        alexdeucher@gmail.com, ogabbay@kernel.org, bagasdotme@gmail.com,
-        willy@infradead.org, jason@jlekstrand.net,
-        donald.robson@imgtec.com, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas =?utf-8?Q?Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Dave Airlie <airlied@redhat.com>
-Subject: Re: [PATCH drm-misc-next v8 01/12] drm: manager to keep track of
- GPUs VA mappings
-Message-ID: <r7gbbrkn4hjyjyjgapf7jnyswbuvks4ng7uuy7gibsra2xpvzf@iot4rgafaqjn>
-References: <20230720001443.2380-1-dakr@redhat.com>
- <20230720001443.2380-2-dakr@redhat.com>
- <hi5magp4icayy5dxmylfyxws52cu63jvlhu4yj5xem3acoaylk@msf7zthcr3lg>
- <20230728142612.2ecf99ef@collabora.com>
+        Mon, 31 Jul 2023 08:06:20 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6BE1728
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:05:53 -0700 (PDT)
+X-UUID: 966417702f9a11eeb20a276fd37b9834-20230731
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=C6CrSBdjoAyzVpB6u/w8qzO48wNDLvceWe2rRQBmWzY=;
+        b=dkhSndMqGlZ9VYhEzuPygaPnNLY9kuMGzrE1CW1EF5p95rcnNJCh3NNOPBMSAulzKmf6KTd30rHaRdqPE7z9Di4S6NqY9EuQsAue8GtsE+tZI3xErMmWtZWu9awXTNE8rGnAhFU/j7xLogUg32HLadMU65hG/BzHrDtnSVY4PUw=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.30,REQID:e10c6e47-7cf2-4c21-9392-b58fe3e93d76,IP:0,U
+        RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+        N:release,TS:-25
+X-CID-META: VersionHash:1fcc6f8,CLOUDID:c39bfbb3-a467-4aa9-9e04-f584452e3794,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 966417702f9a11eeb20a276fd37b9834-20230731
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
+        (envelope-from <mark-pk.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1546789419; Mon, 31 Jul 2023 20:05:48 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 31 Jul 2023 20:05:47 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Mon, 31 Jul 2023 20:05:47 +0800
+From:   Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+CC:     <yj.chiang@mediatek.com>, Mark-PK Tsai <mark-pk.tsai@mediatek.com>,
+        <kasan-dev@googlegroups.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH] arm: kasan: Use memblock_alloc_try_nid_raw for shadow page allocation
+Date:   Mon, 31 Jul 2023 20:05:36 +0800
+Message-ID: <20230731120537.13152-1-mark-pk.tsai@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wm7cpxvm7mxqxcv7"
-Content-Disposition: inline
-In-Reply-To: <20230728142612.2ecf99ef@collabora.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-MTK:  N
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+kasan_pte_populate fill KASAN_SHADOW_INIT in the newly
+allocated shadow page, so it's unnecessary to
+use memblock_alloc_try_nid, which always zero the
+new allocated memory.
 
---wm7cpxvm7mxqxcv7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Use memblock_alloc_try_nid_raw instead of
+memblock_alloc_try_nid like arm64 does which
+can make kasan init faster.
 
-Hi Boris,
+Signed-off-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+---
+ arch/arm/mm/kasan_init.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-On Fri, Jul 28, 2023 at 02:26:12PM +0200, Boris Brezillon wrote:
-> On Fri, 28 Jul 2023 13:31:36 +0200
-> Maxime Ripard <mripard@kernel.org> wrote:
->=20
-> > Hi Danilo,
-> >=20
-> > On Thu, Jul 20, 2023 at 02:14:22AM +0200, Danilo Krummrich wrote:
-> > > Add infrastructure to keep track of GPU virtual address (VA) mappings
-> > > with a decicated VA space manager implementation.
-> > >=20
-> > > New UAPIs, motivated by Vulkan sparse memory bindings graphics drivers
-> > > start implementing, allow userspace applications to request multiple =
-and
-> > > arbitrary GPU VA mappings of buffer objects. The DRM GPU VA manager is
-> > > intended to serve the following purposes in this context.
-> > >=20
-> > > 1) Provide infrastructure to track GPU VA allocations and mappings,
-> > >    making using an interval tree (RB-tree).
-> > >=20
-> > > 2) Generically connect GPU VA mappings to their backing buffers, in
-> > >    particular DRM GEM objects.
-> > >=20
-> > > 3) Provide a common implementation to perform more complex mapping
-> > >    operations on the GPU VA space. In particular splitting and merging
-> > >    of GPU VA mappings, e.g. for intersecting mapping requests or part=
-ial
-> > >    unmap requests.
-> > >=20
-> > > Acked-by: Thomas Hellstr=F6m <thomas.hellstrom@linux.intel.com>
-> > > Acked-by: Matthew Brost <matthew.brost@intel.com>
-> > > Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-> > > Tested-by: Matthew Brost <matthew.brost@intel.com>
-> > > Tested-by: Donald Robson <donald.robson@imgtec.com>
-> > > Suggested-by: Dave Airlie <airlied@redhat.com>
-> > > Signed-off-by: Danilo Krummrich <dakr@redhat.com> =20
-> >=20
-> > For some reason this breaks the drm_exec kunit patches:
->=20
-> Fix available here [1].
->=20
-> [1]https://lore.kernel.org/dri-devel/cbf4ccf9-8131-27a0-332c-6942866340d1=
-@igalia.com/T/#t
+diff --git a/arch/arm/mm/kasan_init.c b/arch/arm/mm/kasan_init.c
+index 24d71b5db62d..111d4f703136 100644
+--- a/arch/arm/mm/kasan_init.c
++++ b/arch/arm/mm/kasan_init.c
+@@ -28,6 +28,12 @@ static pgd_t tmp_pgd_table[PTRS_PER_PGD] __initdata __aligned(PGD_SIZE);
+ 
+ pmd_t tmp_pmd_table[PTRS_PER_PMD] __page_aligned_bss;
+ 
++static __init void *kasan_alloc_block_raw(size_t size)
++{
++	return memblock_alloc_try_nid_raw(size, size, __pa(MAX_DMA_ADDRESS),
++				      MEMBLOCK_ALLOC_NOLEAKTRACE, NUMA_NO_NODE);
++}
++
+ static __init void *kasan_alloc_block(size_t size)
+ {
+ 	return memblock_alloc_try_nid(size, size, __pa(MAX_DMA_ADDRESS),
+@@ -50,7 +56,7 @@ static void __init kasan_pte_populate(pmd_t *pmdp, unsigned long addr,
+ 			if (!pte_none(READ_ONCE(*ptep)))
+ 				continue;
+ 
+-			p = kasan_alloc_block(PAGE_SIZE);
++			p = kasan_alloc_block_raw(PAGE_SIZE);
+ 			if (!p) {
+ 				panic("%s failed to allocate shadow page for address 0x%lx\n",
+ 				      __func__, addr);
+-- 
+2.18.0
 
-Thanks for pointing it out :)
-
-Maxime
-
---wm7cpxvm7mxqxcv7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMejZwAKCRDj7w1vZxhR
-xaW5AQCv028JEAAnIb/aFhQc1sYoXrIKQLstpLgP6KnY2r99tAD7BvwHotLO3uHq
-7wsMukvisTg7tcpMtdYRdRiWIaoh+gs=
-=nrso
------END PGP SIGNATURE-----
-
---wm7cpxvm7mxqxcv7--
