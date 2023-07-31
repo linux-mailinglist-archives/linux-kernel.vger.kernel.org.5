@@ -2,69 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E47976A497
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7D176A49A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 01:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbjGaXMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 19:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37348 "EHLO
+        id S231889AbjGaXMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 19:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229843AbjGaXM3 (ORCPT
+        with ESMTP id S231855AbjGaXMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 19:12:29 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A42213C
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:12:13 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d2b8437d825so2764676276.3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 16:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690845131; x=1691449931;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6aSUlR+SDHyoudPduOpoIhkwapimZgmTp8fIG9ADB4Q=;
-        b=KiRclaJ020M5km1rqDy5NohJgS+QzqMm6yp5lX2uUUqHUJQUtOeDEpShsn/pAinsP/
-         PTHGUIaFR9PAH+wpyz46BKmGXXCA6MecR8VPAFsKNisS0QfM6ZbF2AipxshUMc0FTmcy
-         eQjqtt7GmdtZmTN2Km/0yUj17Fh9LH5wh03PWRhLPi29DcYjnzUpa4pKnv26EgaKCazQ
-         FZGFBJGd2t7sYsj01AVkC3iphPsRfRX4PVlMk3hcpFXqWvLctnsBw9AAWeM1qvL+4xDV
-         OGSBhH9ejA23J/iKD9DWCN7v/Z9WfKZrK9w2t0cWVUr/AQEPpyir+V+AL+9J8jvzmw/Z
-         cBQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690845131; x=1691449931;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6aSUlR+SDHyoudPduOpoIhkwapimZgmTp8fIG9ADB4Q=;
-        b=aapdT2MpPka93h8vwvjq70CbZEur5c49oWTIs4oxyxXsb33kN8vvhEjtDHxQOUP+MB
-         MWdeRkLW7PnrrPWFISCxGbmgQxSw3ARyLUcQ6fAmgvtnS0uPb3Drns49lHv8vIl+uOSA
-         TFAIMvq8f9Y3NPMXhJDMt5PHypNhfiqby4buZ3hta+I6bE8JgR2AFQCC3UVMf+wZRnpI
-         MVDL/2REcu74np5Z3Qp/4hadaK57mY0QjqJOTMb3NxoNi6LqtPBtEpp8nH3nsr+laKrC
-         ww9M9fBFtFfCzprZB4F9SwDnjtza42FmXSrD3NYPTF5ALHRbkYfprVwi9otmKlW26wox
-         Dxmg==
-X-Gm-Message-State: ABy/qLZtJz8pcnjlap/kYPfcw7Yn7MsfEpq4BEcJn1OKjdEXdPolrogK
-        HN7u8yj09uQ9Yce0XAsw2UF3WaV4qNyQCvoYT7bD8g==
-X-Google-Smtp-Source: APBJJlHh+LlC4j1M0JXSf0XS+j3eIbROjGDGFaLWOqMmSB1I5jLNEPo/YW6J5CzonHErb4E3oSv8DWMCvbw3Ht1RKV0=
-X-Received: by 2002:a25:cc4a:0:b0:d07:87b0:f2a8 with SMTP id
- l71-20020a25cc4a000000b00d0787b0f2a8mr11375648ybf.21.1690845131480; Mon, 31
- Jul 2023 16:12:11 -0700 (PDT)
+        Mon, 31 Jul 2023 19:12:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2FE1FC8;
+        Mon, 31 Jul 2023 16:12:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0B8B761220;
+        Mon, 31 Jul 2023 23:12:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F0DAC433C8;
+        Mon, 31 Jul 2023 23:12:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690845145;
+        bh=Nu9Zxt9VTHuAwj+frT44+k98BkcHvxSV6qXTkuyVlDs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=hjt9RVuZswOhkpkeENCGIM/9sWjcNIp545q3Q5LE4tsA3jJPt2T+kwakTCE/UtAIm
+         WjLD6C5y1Yw7kintnZA3HPs+3q3qXCTsmZ5k/2lV08hnPCOUIlinu8ng7WqhiRK6tl
+         xiUpV8/Egf7duc+WL+7x4/qEob30Vqqb2jiZJ6fTiOgZDfqVj4f1FlbqEUxZRMH138
+         +9lVwODWiKZCA1ApR6was22LDYsNxF/44VsX5qlEfH7uVzr7Lh/1eI57vKYBXm1hCo
+         jSTysIQEeVbJ1SVv30ZB0WpVJjbp1UkBGTmF7OuvbL0kd1+LGBqngBnAdHRjz+G1r9
+         P5Bq39udxyDxg==
+Date:   Mon, 31 Jul 2023 18:12:23 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kevin Xie <kevin.xie@starfivetech.com>
+Cc:     Minda Chen <minda.chen@starfivetech.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
+Message-ID: <20230731231223.GA14721@bhelgaas>
 MIME-Version: 1.0
-References: <20230728120909.234244-1-ram.safiullin2001@gmail.com> <CAJuCfpGyV5nM+4t_RTxDgvgZ_VhjpdoZ4TJZBn7RgxSHC6+Hyw@mail.gmail.com>
-In-Reply-To: <CAJuCfpGyV5nM+4t_RTxDgvgZ_VhjpdoZ4TJZBn7RgxSHC6+Hyw@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 31 Jul 2023 16:12:00 -0700
-Message-ID: <CAJuCfpEjozCfqfPPttcnWdzhQBCGnr+MzWGN8FT40YObZf_mGA@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: add documentation to PSI section
-To:     Ramazan Safiullin <ram.safiullin2001@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66d794c5-3837-483e-87d1-4b745d7cb9c4@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,40 +73,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 4:10=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Fri, Jul 28, 2023 at 5:09=E2=80=AFAM Ramazan Safiullin
-> <ram.safiullin2001@gmail.com> wrote:
-> >
-> > While creating a patch for the psi documentation I noticed that
-> > MAINTENERS was missing an entry in psi.
-> >
-> > Add entry for psi documentation.
-> >
-> > Signed-off-by: Ramazan Safiullin <ram.safiullin2001@gmail.com>
->
-> Acked-by: Suren Baghdasaryan <surenb@google.com>
+[+cc Pali, Marek because I used f76b36d40bee ("PCI: aardvark: Fix link
+training") as an example]
 
-CC'ing Peter to pick up into his tree.
+On Mon, Jul 31, 2023 at 01:52:35PM +0800, Kevin Xie wrote:
+> On 2023/7/28 5:40, Bjorn Helgaas wrote:
+> > On Tue, Jul 25, 2023 at 03:46:35PM -0500, Bjorn Helgaas wrote:
+> >> On Mon, Jul 24, 2023 at 06:48:47PM +0800, Kevin Xie wrote:
+> >> > On 2023/7/21 0:15, Bjorn Helgaas wrote:
+> >> > > On Thu, Jul 20, 2023 at 06:11:59PM +0800, Kevin Xie wrote:
+> >> > >> On 2023/7/20 0:48, Bjorn Helgaas wrote:
+> >> > >> > On Wed, Jul 19, 2023 at 06:20:56PM +0800, Minda Chen wrote:
+> >> > >> >> Add StarFive JH7110 SoC PCIe controller platform
+> >> > >> >> driver codes.
+> >> 
+> >> > >> However, in the compatibility testing with several NVMe SSD, we
+> >> > >> found that Lenovo Thinklife ST8000 NVMe can not get ready in 100ms,
+> >> > >> and it actually needs almost 200ms.  Thus, we increased the T_PVPERL
+> >> > >> value to 300ms for the better device compatibility.
+> >> > > ...
+> >> > > 
+> >> > > Thanks for this valuable information!  This NVMe issue potentially
+> >> > > affects many similar drivers, and we may need a more generic fix so
+> >> > > this device works well with all of them.
+> >> > > 
+> >> > > T_PVPERL is defined to start when power is stable.  Do you have a way
+> >> > > to accurately determine that point?  I'm guessing this:
+> >> > > 
+> >> > >   gpiod_set_value_cansleep(pcie->power_gpio, 1)
+> >> > > 
+> >> > > turns the power on?  But of course that doesn't mean it is instantly
+> >> > > stable.  Maybe your testing is telling you that your driver should
+> >> > > have a hardware-specific 200ms delay to wait for power to become
+> >> > > stable, followed by the standard 100ms for T_PVPERL?
+> >> > 
+> >> > You are right, we did not take the power stable cost into account.
+> >> > T_PVPERL is enough for Lenovo Thinklife ST8000 NVMe SSD to get ready,
+> >> > and the extra cost is from the power circuit of a PCIe to M.2 connector,
+> >> > which is used to verify M.2 SSD with our EVB at early stage.
+> >> 
+> >> Hmm.  That sounds potentially interesting.  I assume you're talking
+> >> about something like this: https://www.amazon.com/dp/B07JKH5VTL
+> >> 
+> >> I'm not familiar with the timing requirements for something like this.
+> >> There is a PCIe M.2 spec with some timing requirements, but I don't
+> >> know whether or how software is supposed to manage this.  There is a
+> >> T_PVPGL (power valid to PERST# inactive) parameter, but it's
+> >> implementation specific, so I don't know what the point of that is.
+> >> And I don't see a way for software to even detect the presence of such
+> >> an adapter.
+> > 
+> > I intended to ask about this on the PCI-SIG forum, but after reading
+> > this thread [1], I don't think we would learn anything.  The question
+> > was:
+> > 
+> >   The M.2 device has 5 voltage rails generated from the 3.3V input
+> >   supply voltage
+> >   -------------------------------------------
+> >   This is re. Table 17 in PCI Express M.2 Specification Revision 1.1
+> >   Power Valid* to PERST# input inactive : Implementation specific;
+> >   recommended 50 ms
+> > 
+> >   What exactly does this mean ?
+> > 
+> >   The Note says
+> > 
+> >     *Power Valid when all the voltage supply rails have reached their
+> >     respective Vmin.
+> > 
+> >   Does this mean that the 50ms to PERSTn is counted from the instant
+> >   when all *5 voltage rails* on the M.2 device have become "good" ?
+> > 
+> > and the answer was:
+> > 
+> >   You wrote;
+> >   Does this mean that the 50ms to PERSTn is counted from the instant
+> >   when all 5 voltage rails on the M.2 device have become "good" ?
+> > 
+> >   Reply:
+> >   This means that counting the recommended 50 ms begins from the time
+> >   when the power rails coming to the device/module, from the host, are
+> >   stable *at the device connector*.
+> > 
+> >   As for the time it takes voltages derived inside the device from any
+> >   of the host power rails (e.g., 3.3V rail) to become stable, that is
+> >   part of the 50ms the host should wait before de-asserting PERST#, in
+> >   order ensure that most devices will be ready by then.
+> > 
+> >   Strictly speaking, nothing disastrous happens if a host violates the
+> >   50ms. If it de-asserts too soon, the device may not be ready, but
+> >   most hosts will try again. If the host de-asserts too late, the
+> >   device has even more time to stabilize. This is why the WG felt that
+> >   an exact minimum number for >>Tpvpgl, was not valid in practice, and
+> >   we made it a recommendation.
+> > 
+> > Since T_PVPGL is implementation-specific, we can't really base
+> > anything in software on the 50ms recommendation.  It sounds to me like
+> > they are counting on software to retry config reads when enumerating.
+> > 
+> > I guess the delays we *can* observe are:
+> > 
+> >   100ms T_PVPERL "Power stable to PERST# inactive" (CEM 2.9.2)
+> >   100ms software delay between reset and config request (Base 6.6.1)
+> 
+> Refer to Figure2-10 in CEM Spec V2.0, I guess this two delays are T2 & T4?
+> In the PATCH v2[4/4], T2 is the msleep(100) for T_PVPERL,
+> and T4 is done by starfive_pcie_host_wait_for_link().
 
->
-> > ---
-> >  MAINTAINERS | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index a5c16bb92fe2..2da6643b9488 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -17103,6 +17103,7 @@ PRESSURE STALL INFORMATION (PSI)
-> >  M:     Johannes Weiner <hannes@cmpxchg.org>
-> >  M:     Suren Baghdasaryan <surenb@google.com>
-> >  S:     Maintained
-> > +F:     Documentation/accounting/psi.rst
-> >  F:     include/linux/psi*
-> >  F:     kernel/sched/psi.c
-> >
-> > --
-> > 2.25.1
-> >
+Yes, I think "T2" is T_PVPERL.  The CEM r2.0 Figure 2-10 note is
+"2. Minimum time from power rails within specified tolerance to
+PERST# inactive (T_PVPERL)."
+
+As far as T4 ("Minimum PERST# inactive to PCI Express link out of
+electrical idle"), I don't see a name or a value for that parameter,
+and I don't think it is the delay required by PCIe r6.0, sec 6.6.1.
+
+The delay required by sec 6.6.1 is a minimum of 100ms following exit
+from reset or, for fast links, 100ms after link training completes.
+
+The comment at the call of advk_pcie_wait_for_link() [2] says it is
+the delay required by sec 6.6.1, but that doesn't seem right to me.
+
+For one thing, I don't think 6.6.1 says anything about "link up" being
+the end of a delay.  So if we want to do the delay required by 6.6.1,
+"wait_for_link()" doesn't seem like quite the right name.
+
+For another, all the *_wait_for_link() functions can return success
+after 0ms, 90ms, 180ms, etc.  They're unlikely to return after 0ms,
+but 90ms is quite possible.  If we avoided the 0ms return and
+LINK_WAIT_USLEEP_MIN were 100ms instead of 90ms, that should be enough
+for slow links, where we need 100ms following "exit from reset."
+
+But it's still not enough for fast links where we need 100ms "after
+link training completes" because we don't know when training
+completed.  If training completed 89ms into *_wait_for_link(), we only
+delay 1ms after that.
+
+> > The PCI core doesn't know how to assert PERST#, so the T_PVPERL delay
+> > definitely has to be in the host controller driver.
+> > 
+> > The PCI core observes the second 100ms delay after a reset in
+> > pci_bridge_wait_for_secondary_bus().  But this 100ms delay does not
+> > happen during initial enumeration.  I think the assumption of the PCI
+> > core is that when the host controller driver calls pci_host_probe(),
+> > we can issue config requests immediately.
+> > 
+> > So I think that to be safe, we probably need to do both of those 100ms
+> > delays in the host controller driver.  Maybe there's some hope of
+> > supporting the latter one in the PCI core someday, but that's not
+> > today.
+> > 
+> > Bjorn
+> > 
+> > [1] https://forum.pcisig.com/viewtopic.php?f=74&t=1037
+
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pci-aardvark.c?id=v6.4#n433
