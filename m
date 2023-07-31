@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E71A576938C
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3239876939D
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbjGaKvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 06:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
+        id S231685AbjGaKxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231807AbjGaKut (ORCPT
+        with ESMTP id S232529AbjGaKxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 06:50:49 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45D01BDB;
-        Mon, 31 Jul 2023 03:50:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1690800563; bh=fZV1fPQDaoUXxVRY9TfX1xjDSukj+7ktchYSGtV8aSE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wX0NIVvFJefytOowE9WrM4HpblaYyO+f40zMQV+9se7Rny8ZAaTnQKbuxgBs8aYbK
-         zqIbGyWU/5gZh1FE5Yu+6+JUKDZlHHMimTi+9JgpF+MKPPq7x97bP+bGzLW3UEpfYc
-         o15PXdUIiIuUfhdyvc5znN1GekOQQtdy8F99Ruho=
-Received: from ld50.lan (unknown [101.88.28.229])
+        Mon, 31 Jul 2023 06:53:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B2D171A;
+        Mon, 31 Jul 2023 03:52:00 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id B296F60555;
-        Mon, 31 Jul 2023 18:49:23 +0800 (CST)
-From:   WANG Xuerui <kernel@xen0n.name>
-To:     Song Liu <song@kernel.org>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        WANG Xuerui <git@xen0n.name>
-Subject: [PATCH 5/5] raid6: test: only check for Altivec if building on powerpc hosts
-Date:   Mon, 31 Jul 2023 18:49:11 +0800
-Message-Id: <20230731104911.411964-6-kernel@xen0n.name>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230731104911.411964-1-kernel@xen0n.name>
-References: <20230731104911.411964-1-kernel@xen0n.name>
-MIME-Version: 1.0
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BC8156100F;
+        Mon, 31 Jul 2023 10:51:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 139D4C433C8;
+        Mon, 31 Jul 2023 10:51:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690800719;
+        bh=VRB/1XE21uItYhBv3v9HcbSnr1pNI+FT1F8W0UoZ4EQ=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Rx3XU9T/DfTBZmTe1X/pitgrSt+EjtnzJoqNRAZuy+u5vwBhkfxh+hUZZrw8G6eyB
+         lFooQITIfBmh8/jxn75ajaVWWyL+K/4SU45HngfcLfFTzUUGPBR5u+9IjcHh4p2VuV
+         Gn/BP1tBlmjRqXbGir615a2nw2/EGblZCbb/EdH53HfxfeXjlH0iUF72exIeOeH8ce
+         iI0zsUs/KwhnnNIx6Lxy7o7ockkHS9S04Qeay5vnvJcuIp6si4rRnNUb+xaSuY4dlr
+         /lvwh+EQxuP3f465WPY0yRWJu6eDmjBQECj4Tp33HLlFzlfhS5JD89tNI3MxRd9Faa
+         LZXL9lzdwZVlg==
+Received: (nullmailer pid 2405199 invoked by uid 1000);
+        Mon, 31 Jul 2023 10:51:46 -0000
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        devicetree@vger.kernel.org, Trevor Wu <trevor.wu@mediatek.com>,
+        linux-kernel@vger.kernel.org,
+        Rohit kumar <quic_rohkumar@quicinc.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rao Mandadapu <srivasam@codeaurora.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Conor Dooley <conor+dt@kernel.org>
+In-Reply-To: <20230731094303.185067-7-krzysztof.kozlowski@linaro.org>
+References: <20230731094303.185067-1-krzysztof.kozlowski@linaro.org>
+ <20230731094303.185067-7-krzysztof.kozlowski@linaro.org>
+Message-Id: <169080070445.2405101.15748974095026995722.robh@kernel.org>
+Subject: Re: [PATCH 06/12] ASoC: dt-bindings: samsung,odroid: use common
+ sound card
+Date:   Mon, 31 Jul 2023 04:51:46 -0600
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: WANG Xuerui <git@xen0n.name>
 
-Altivec is only available for powerpc hosts, so only check for its
-availability when the host is powerpc, to avoid error messages being
-shown on architectures other than x86, arm or powerpc.
+On Mon, 31 Jul 2023 11:42:57 +0200, Krzysztof Kozlowski wrote:
+> Reference the common sound card properties and deprecate the
+> custom "samsung,audio-routing" in favor of generic one.  This allows to
+> remove "model" property and make the binding closer to other sounds
+> cards.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../devicetree/bindings/sound/samsung,odroid.yaml  | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
 
-Signed-off-by: WANG Xuerui <git@xen0n.name>
----
- lib/raid6/test/Makefile | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-diff --git a/lib/raid6/test/Makefile b/lib/raid6/test/Makefile
-index 143cda60faa12..1f693ea3b980c 100644
---- a/lib/raid6/test/Makefile
-+++ b/lib/raid6/test/Makefile
-@@ -35,6 +35,12 @@ ifeq ($(ARCH),aarch64)
-         HAS_NEON = yes
- endif
- 
-+ifeq ($(findstring ppc,$(ARCH)),ppc)
-+        CFLAGS += -I../../../arch/powerpc/include
-+        HAS_ALTIVEC := $(shell printf '$(pound)include <altivec.h>\nvector int a;\n' |\
-+                         gcc -c -x c - >/dev/null && rm ./-.o && echo yes)
-+endif
-+
- ifeq ($(IS_X86),yes)
-         OBJS   += mmx.o sse1.o sse2.o avx2.o recov_ssse3.o recov_avx2.o avx512.o recov_avx512.o
-         CFLAGS += -DCONFIG_X86
-@@ -44,15 +50,10 @@ ifeq ($(IS_X86),yes)
- else ifeq ($(HAS_NEON),yes)
-         OBJS   += neon.o neon1.o neon2.o neon4.o neon8.o recov_neon.o recov_neon_inner.o
-         CFLAGS += -DCONFIG_KERNEL_MODE_NEON=1
--else
--        HAS_ALTIVEC := $(shell printf '$(pound)include <altivec.h>\nvector int a;\n' |\
--                         gcc -c -x c - >/dev/null && rm ./-.o && echo yes)
--        ifeq ($(HAS_ALTIVEC),yes)
--                CFLAGS += -I../../../arch/powerpc/include
--                CFLAGS += -DCONFIG_ALTIVEC
--                OBJS += altivec1.o altivec2.o altivec4.o altivec8.o \
--                        vpermxor1.o vpermxor2.o vpermxor4.o vpermxor8.o
--        endif
-+else ifeq ($(HAS_ALTIVEC),yes)
-+        CFLAGS += -DCONFIG_ALTIVEC
-+        OBJS += altivec1.o altivec2.o altivec4.o altivec8.o \
-+                vpermxor1.o vpermxor2.o vpermxor4.o vpermxor8.o
- endif
- 
- .c.o:
--- 
-2.40.0
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/samsung,odroid.yaml:
+Error in referenced schema matching $id: http://devicetree.org/schemas/sound/sound-card-common.yaml
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/samsung,odroid.example.dtb: sound: False schema does not allow {'compatible': ['hardkernel,odroid-xu3-audio'], 'model': ['Odroid-XU3'], 'audio-routing': ['Headphone Jack', 'HPL', 'Headphone Jack', 'HPR', 'IN1', 'Mic Jack', 'Mic Jack', 'MICBIAS'], 'cpu': {'sound-dai': [[4294967295, 0]]}, 'codec': {'sound-dai': [[4294967295], [4294967295]]}, '$nodename': ['sound']}
+	from schema $id: http://devicetree.org/schemas/sound/samsung,odroid.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/samsung,odroid.example.dtb: sound: Unevaluated properties are not allowed ('audio-routing', 'model' were unexpected)
+	from schema $id: http://devicetree.org/schemas/sound/samsung,odroid.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230731094303.185067-7-krzysztof.kozlowski@linaro.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
