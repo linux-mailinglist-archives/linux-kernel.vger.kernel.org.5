@@ -2,130 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0775F769674
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C39B76967B
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 14:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjGaMgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 08:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
+        id S232577AbjGaMiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 08:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjGaMgb (ORCPT
+        with ESMTP id S232784AbjGaMhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 08:36:31 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FC91AC
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:36:30 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31768ce2e81so4766059f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:36:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690806988; x=1691411788;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aLp1taY+ERuB3LasQnUEAssMbTidsnt4pqF9zZDF/gU=;
-        b=chwC+wsgzGXj6wjU5jSUeRc5Vjg1jIuVhWvlqm0hd7IggW947rVleeAmnaNBE85PEd
-         9HiQ6m12UnWwDe5eetX7xFu4PZ7KzGyVthZcR3faV1kgd8EVEoCoSVVofNXzH6PclDee
-         cY2YBH2CiTvpzL8zctZbxWQ3knSm1Le3Gjx3N9S4rI88qL4Qvd/Ft9OJwoaGCMYvXKOI
-         8Bw1eak0mWqSWRQrY0z3pHJPvg57h+dif+YRObNbh1HX+ESzcvT2+qTPBUhCzdar/0GT
-         z2FCJgoZv8klH7RqK85RhlZiCU2RyYuRtHrTHE27lgGEeXFzdIHu9ocBBRY11V+JXtna
-         tRNw==
+        Mon, 31 Jul 2023 08:37:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28940E46
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:36:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690807016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GOFjSuz+nzO0XVUy4hfdNTLjsQdAMvC2f0+2gyXsjM0=;
+        b=fkC/aUVNYpE64JurGvOthZoMjJ2Qfn+QqSzfw6CsweSjTEurZwtijdkqvdcKER2eR4Cjs9
+        1S+L9a4SbfJRcAsv29chJugimdt4I0R2wSdLnRNeKAcsF+BY35GJiSJe7kakoccOrrNjcf
+        iEeEDfSm6vba5gEQ2oiQIGs9+DG5mOY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-28-PEU2YiWHN9CF6xkI5coRpA-1; Mon, 31 Jul 2023 08:36:55 -0400
+X-MC-Unique: PEU2YiWHN9CF6xkI5coRpA-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-51bef8bb689so7606032a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 05:36:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690806988; x=1691411788;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aLp1taY+ERuB3LasQnUEAssMbTidsnt4pqF9zZDF/gU=;
-        b=C5fVVsDNf8oaVy1JkET7d0yOLRjO4LGsUTJqWQA+iK9XSiU+7nqgHpc1CruI1d3QzK
-         s9O7SD0SwkzWYZdDvuvHlKqbVtADYtz68pcAjj0XH0qc/nL0W2ua/sr6SN8AycX9St94
-         2OZOwsq8sSH92x3wr3tX3wxNa2Ew854dX6vOhv533F3/dXISUG45Bz1/5b52F9/N11Pd
-         HE5SVUdBbzWPldv9Nb+o72FZOabDH+oJaxfLSaXvtrqiIo/PvfDUJRgVLHcL4kKwifOm
-         EA6ITxzHolY0e+oW9T67LF912udoeQ3ijkYycKgYpPEZOoaUrwEIbheZcXVKwYkiktC+
-         LtMA==
-X-Gm-Message-State: ABy/qLaVwMG9b6UUiw2IYrvi1SY8LCe+QafcG8XF2ME1iYiUvo55/c5a
-        HwhzEon68F3ht6DjZbG5bAo=
-X-Google-Smtp-Source: APBJJlHvC+FHChEM48GIT9MWRuWxUmhW+e0P0HpxDVwIfuo5KkFvCgGq1hXTIHbBCKhk+j4gUbPGEw==
-X-Received: by 2002:a5d:6310:0:b0:317:5fe7:6844 with SMTP id i16-20020a5d6310000000b003175fe76844mr7371635wru.39.1690806988455;
-        Mon, 31 Jul 2023 05:36:28 -0700 (PDT)
-Received: from able.fritz.box ([2a00:e180:14f0:a600:ce89:8608:2d6f:110d])
-        by smtp.gmail.com with ESMTPSA id e15-20020a5d4e8f000000b003143c532431sm12958292wru.27.2023.07.31.05.36.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 05:36:28 -0700 (PDT)
-From:   "=?UTF-8?q?Christian=20K=C3=B6nig?=" 
-        <ckoenig.leichtzumerken@gmail.com>
-X-Google-Original-From: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-To:     boris.brezillon@collabora.com, ndesaulniers@google.com,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        trix@redhat.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        naresh.kamboju@linaro.org, dakr@redhat.com
-Subject: [PATCH 2/2] drm/exec: add test case for using a drm_exec multiple times
-Date:   Mon, 31 Jul 2023 14:36:25 +0200
-Message-Id: <20230731123625.3766-2-christian.koenig@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230731123625.3766-1-christian.koenig@amd.com>
-References: <20230731123625.3766-1-christian.koenig@amd.com>
+        d=1e100.net; s=20221208; t=1690807013; x=1691411813;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GOFjSuz+nzO0XVUy4hfdNTLjsQdAMvC2f0+2gyXsjM0=;
+        b=axyqcYLfZkL8bzUNtA5if7jv9dsuLVfWby+c2VF6h9keELgf6Kqxbjune497eakJ1N
+         QqBEcLOmG27mQM63hjckMVrHUAEvbV3qVgQ/H9IimPX1ST2MYeKJKZWb0GXQ6CUoP6BA
+         CRNKJFpTQiFUcaGxl26ItdY7j3aHWh8eX0BFZXwqHM1rVHayonHsihYElFFtvUMeZU58
+         OxSc58oP/Tudk4Wnq6+InyWTIJ8MHh96mXsybyPlomOmUWMHivOhYRTEm536hQg4wyAP
+         x5XwiTNSVwH+FA6kWOPY2M5M0vxY/0sT+I1TBxqzOuRBgif0n2QZOhVd7B7xJb6ZDYKj
+         cirA==
+X-Gm-Message-State: ABy/qLbShzlP4pkr9woG6lCWlfePOG4voJH6kff+OVSwX6z3zxY0G0O0
+        /x+uKahOW49BZVCOmjIRD1VPtNcZEUgCH+9EpTYIBZDSPyf89eRv/iMld/MgT9swvEs3CgbQ5Ea
+        KNp+15thpFsE5bCbalC2wKgpYhH22OWpO
+X-Received: by 2002:a50:ea82:0:b0:522:3a54:1c05 with SMTP id d2-20020a50ea82000000b005223a541c05mr11936280edo.5.1690807013574;
+        Mon, 31 Jul 2023 05:36:53 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEsWInA7GJjO2YOR6fGzgFfUxuF4KQw7pGEuJcvlvlcgQUSMGtQLI2sVc55Zur0oqFTTno/Dw==
+X-Received: by 2002:a50:ea82:0:b0:522:3a54:1c05 with SMTP id d2-20020a50ea82000000b005223a541c05mr11936260edo.5.1690807013228;
+        Mon, 31 Jul 2023 05:36:53 -0700 (PDT)
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id y19-20020aa7ccd3000000b0051d9ee1c9d3sm5370905edt.84.2023.07.31.05.36.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 05:36:52 -0700 (PDT)
+Message-ID: <aea56ab4-e965-204c-4df1-040323c341f9@redhat.com>
+Date:   Mon, 31 Jul 2023 14:36:51 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 0/3] platform/x86: simatic-ipc: add another model
+ BX-56A/BX-59A
+Content-Language: en-US
+To:     xingtong_wu@163.com, markgross@kernel.org,
+        andriy.shevchenko@linux.intel.com, lee@kernel.org,
+        xingtong.wu@siemens.com, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Gerd Haeussler <gerd.haeussler@t-online.de>
+References: <20230731071424.4663-1-xingtong_wu@163.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20230731071424.4663-1-xingtong_wu@163.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not really a common use case, but let's make sure that we don't
-accidentially break that somehow.
+Hi,
 
-CC: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Christian König <christian.koenig@amd.com>
----
- drivers/gpu/drm/tests/drm_exec_test.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+On 7/31/23 09:14, xingtong_wu@163.com wrote:
+> From: "xingtong.wu" <xingtong.wu@siemens.com>
+> 
+> These are patches adding features for another Simatic IPC model
+> BX-56A/BX-59A, features for led and battery monitor are involved.
+> 
+> Based on:
+>  [PATCH v2 0/3] platform/x86: move simatic drivers into subdir
+>  [PATCH v2 0/2] leds: simatic-ipc-leds-gpio: add new model BX-21A
+>  [PATCH 0/2] platform/x86/siemens: fixes for CMOS battery hwmon
+> 
+> xingtong.wu (3):
+>   platform/x86: simatic-ipc: add new models BX-56A/BX-59A
+>   leds: simatic-ipc-leds-gpio: add support for module BX-59A
+>   batt: simatic-ipc-batt: add support for module BX-59A
 
-diff --git a/drivers/gpu/drm/tests/drm_exec_test.c b/drivers/gpu/drm/tests/drm_exec_test.c
-index 727ac267682e..7b0238c5d9fa 100644
---- a/drivers/gpu/drm/tests/drm_exec_test.c
-+++ b/drivers/gpu/drm/tests/drm_exec_test.c
-@@ -138,6 +138,26 @@ static void test_prepare_array(struct kunit *test)
- 	drm_exec_fini(&exec);
- }
- 
-+static void test_multiple_loops(struct kunit *test)
-+{
-+	struct drm_exec exec;
-+
-+	drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT);
-+	drm_exec_until_all_locked(&exec)
-+	{
-+		break;
-+	}
-+	drm_exec_fini(&exec);
-+
-+	drm_exec_init(&exec, DRM_EXEC_INTERRUPTIBLE_WAIT);
-+	drm_exec_until_all_locked(&exec)
-+	{
-+		break;
-+	}
-+	drm_exec_fini(&exec);
-+	KUNIT_SUCCEED(test);
-+}
-+
- static struct kunit_case drm_exec_tests[] = {
- 	KUNIT_CASE(sanitycheck),
- 	KUNIT_CASE(test_lock),
-@@ -145,6 +165,7 @@ static struct kunit_case drm_exec_tests[] = {
- 	KUNIT_CASE(test_duplicates),
- 	KUNIT_CASE(test_prepare),
- 	KUNIT_CASE(test_prepare_array),
-+	KUNIT_CASE(test_multiple_loops),
- 	{}
- };
- 
--- 
-2.34.1
+Thank you. I have merged patches 1/3 and 3/3 into
+the platform-drivers-x86-simatic-ipc branch now:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=platform-drivers-x86-simatic-ipc
+
+Lee, I'll send you a pull-req for an immutable tag so that you
+can merge 2/3 into lee/leds.git .
+
+Once I've run some tests on this branch the patches there will be
+merged into the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+Regards,
+
+Hans
+
+
+
+
+
+
+> 
+>  .../leds/simple/simatic-ipc-leds-gpio-core.c  |  1 +
+>  .../simple/simatic-ipc-leds-gpio-f7188x.c     | 42 ++++++++++++++++---
+>  drivers/platform/x86/siemens/Kconfig          |  1 +
+>  .../x86/siemens/simatic-ipc-batt-f7188x.c     | 37 +++++++++++-----
+>  .../platform/x86/siemens/simatic-ipc-batt.c   |  3 +-
+>  drivers/platform/x86/siemens/simatic-ipc.c    | 12 +++++-
+>  .../platform_data/x86/simatic-ipc-base.h      |  1 +
+>  include/linux/platform_data/x86/simatic-ipc.h |  2 +
+>  8 files changed, 80 insertions(+), 19 deletions(-)
+> 
 
