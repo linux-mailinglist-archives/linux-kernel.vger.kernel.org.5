@@ -2,121 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B12769507
-	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 13:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BD37692AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 31 Jul 2023 12:05:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbjGaLgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 07:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45402 "EHLO
+        id S232330AbjGaKFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 06:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbjGaLgk (ORCPT
+        with ESMTP id S232170AbjGaKEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 07:36:40 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD46E57;
-        Mon, 31 Jul 2023 04:36:37 -0700 (PDT)
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 36V812o2020043;
-        Mon, 31 Jul 2023 05:45:25 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3s66qmsr6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 05:45:24 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 36V9jDfg006532
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 31 Jul 2023 05:45:13 -0400
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Mon, 31 Jul
- 2023 05:45:12 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Mon, 31 Jul 2023 05:45:12 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.194])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 36V9iwH7024100;
-        Mon, 31 Jul 2023 05:45:04 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     <jic23@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Subject: [PATCH v3 2/2] drivers: iio: admv1013: add vcc regulators
-Date:   Mon, 31 Jul 2023 12:44:55 +0300
-Message-ID: <20230731094455.26742-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230731094455.26742-1-antoniu.miclaus@analog.com>
-References: <20230731094455.26742-1-antoniu.miclaus@analog.com>
+        Mon, 31 Jul 2023 06:04:43 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB0611BD3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:04:04 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-31783d02093so3940104f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 03:04:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690797843; x=1691402643;
+        h=mime-version:message-id:in-reply-to:date:subject:to:from:user-agent
+         :references:from:to:cc:subject:date:message-id:reply-to;
+        bh=xmu3IjUQ2taW3zTxDp9/zo0P78kimt745EhKwmVkMfQ=;
+        b=Vz8bn6xtRr9ajaVL2BYH/aU5C5qeoqk0tN1tW8v5Bz3+absmnMeoDLPOTrnC4mkk/M
+         9+D9rninKuwW61xhv+cDJcG0P33QMQ5HZz1mfs7UiwCXi6dIM/vsZyh3HjQ9922kj/4s
+         +jIin1qddCBn41gsu0Eo3jA+DxF8aM+9VZV6koeVX4ph6OqSYHlQ54AaEJNN4iEc1wD8
+         3yclrtFuxve6PCVDn+11GlYIJWc0Ha3DyBodOsez5rv8FHqjZNRq2htMQzNF9Ho13HT8
+         h/RrB+CklDlcmR7qAzMy0Ink/xkNE7JCgUqwrQsDQYYWQ6E9D+lOkpmzCoYZNzO26OPs
+         82ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690797843; x=1691402643;
+        h=mime-version:message-id:in-reply-to:date:subject:to:from:user-agent
+         :references:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xmu3IjUQ2taW3zTxDp9/zo0P78kimt745EhKwmVkMfQ=;
+        b=RNraS3t5kXApIJzQxtJ3Mqd0loR5xZMTBGcqqsIXI3g0+ofn6Tsg7Un0jFt957JpAd
+         MaCmrpfKh6Px02n69l0bTjV1fEiqi/u9W+WIvs4JBFevtg3LH4WjrhkHMLRlPrjvN29c
+         YfewYPWaszdKKdlOweiHVxAXI26kUG0uvAUThIrkgUjMM0dnokGaDf9bTPlDhSq68f1w
+         Z4xPDV1rskOJ3PZgIop15wQfnWlOJgonTwDCO2shOjaQnfWAZwkrm2yb/TeWECp6TJGD
+         p+/N5lUotYCimXO0kivwMC/lHnYD3tQuKtOuJwIccow3WZbhVCkgCvMczjdq34JGge25
+         XOQw==
+X-Gm-Message-State: ABy/qLYj55d+g44oRFMJ56pQCqfGN/bMnnecDsCSpN3F0CJ3kan7W8MB
+        5VXEB5lzRmw9dSHyrTD1wHSKkA==
+X-Google-Smtp-Source: APBJJlG/6YtIJ2PZyWt5JPzeSkuVMJs1cDNhO+1x9k/xAk4VYOxr9uirGMxr5kOpAVkpkBapLLbIcQ==
+X-Received: by 2002:adf:f681:0:b0:314:46af:e1e7 with SMTP id v1-20020adff681000000b0031446afe1e7mr8192622wrp.34.1690797842657;
+        Mon, 31 Jul 2023 03:04:02 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:686f:cc54:f527:35c0])
+        by smtp.gmail.com with ESMTPSA id f11-20020adff58b000000b003143aa0ca8asm12553696wro.13.2023.07.31.03.04.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 03:04:02 -0700 (PDT)
+References: <20230731094303.185067-1-krzysztof.kozlowski@linaro.org>
+ <20230731094303.185067-2-krzysztof.kozlowski@linaro.org>
+User-agent: mu4e 1.8.13; emacs 28.2
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Rohit kumar <quic_rohkumar@quicinc.com>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Rao Mandadapu <srivasam@codeaurora.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Trevor Wu <trevor.wu@mediatek.com>,
+        Jonathan Bakker <xc-racer2@live.ca>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 01/12] ASoC: dt-bindings: amlogic,gx-sound-card: correct
+ maxItems constraints
+Date:   Mon, 31 Jul 2023 11:52:53 +0200
+In-reply-to: <20230731094303.185067-2-krzysztof.kozlowski@linaro.org>
+Message-ID: <1jr0oowg6m.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: dUpWPT6YWkYVA-iYC99N3i8Sjb23EmvM
-X-Proofpoint-ORIG-GUID: dUpWPT6YWkYVA-iYC99N3i8Sjb23EmvM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-31_03,2023-07-26_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- adultscore=0 bulkscore=0 priorityscore=1501 clxscore=1015 phishscore=0
- impostorscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2306200000 definitions=main-2307310088
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add regulators for the VCC supplies of the admv1013.
 
-The patch aims to align the implementation with the current admv1014
-driver where all the VCC supplies are handled as regulators.
+On Mon 31 Jul 2023 at 11:42, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
-changes in v3:
- - add missing spaces in the commit subject.
- - use dev_err_probe for error handling.
- -  - use `devm_regulator_bulk_get_enable`
- drivers/iio/frequency/admv1013.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+> minItems without maxItems implies upper limit, so add some high maxItems
+> to fix dtbs_check warnings like:
+>
+>   meson-gxm-s912-libretech-pc.dtb: sound: audio-routing: ['AU2 INL', 'ACODEC LOLN', 'AU2 INR', 'ACODEC LORN', '7J4-14 LEFT', 'AU2 OUTL', '7J4-11 RIGHT', 'AU2 OUTR'] is too long
 
-diff --git a/drivers/iio/frequency/admv1013.c b/drivers/iio/frequency/admv1013.c
-index 9bf8337806fc..cc01fac2dfee 100644
---- a/drivers/iio/frequency/admv1013.c
-+++ b/drivers/iio/frequency/admv1013.c
-@@ -379,6 +379,11 @@ static const struct iio_info admv1013_info = {
- 	.debugfs_reg_access = &admv1013_reg_access,
- };
- 
-+static const char * const admv1013_vcc_regs[] = {
-+	 "vcc-drv", "vcc2-drv", "vcc-vva", "vcc-amp1", "vcc-amp2",
-+	 "vcc-env", "vcc-bg", "vcc-bg2", "vcc-mixer", "vcc-quad"
-+};
-+
- static int admv1013_freq_change(struct notifier_block *nb, unsigned long action, void *data)
- {
- 	struct admv1013_state *st = container_of(nb, struct admv1013_state, nb);
-@@ -554,6 +559,15 @@ static int admv1013_properties_parse(struct admv1013_state *st)
- 		return dev_err_probe(&spi->dev, PTR_ERR(st->reg),
- 				     "failed to get the common-mode voltage\n");
- 
-+	ret = devm_regulator_bulk_get_enable(&st->spi->dev,
-+					     ARRAY_SIZE(admv1013_vcc_regs),
-+					     admv1013_vcc_regs);
-+	if (ret) {
-+		dev_err_probe(&spi->dev, ret,
-+			      "Failed to request VCC regulators\n");
-+		return ret;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.41.0
+The only contraints is that values come in pair and there is no upper
+limit to the number of routes a device (using this driver) may have.
+
+The upper limit of 8 might work now but is very likely to be wrong for
+the next device to come.
+
+Is there way to correctly describe this "pair" contraint with DT schema ?
+
+If not, then I guess the most adequate solution is to drop minItems and
+give no bound, like simple-card is doing for the same type of properties.
+
+Same goes for the audio-widgets property
+
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../devicetree/bindings/sound/amlogic,gx-sound-card.yaml        | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+> index b358fd601ed3..45d6202d9730 100644
+> --- a/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+> +++ b/Documentation/devicetree/bindings/sound/amlogic,gx-sound-card.yaml
+> @@ -21,6 +21,7 @@ properties:
+>    audio-routing:
+>      $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+>      minItems: 2
+> +    maxItems: 32
+>      description: |-
+>        A list of the connections between audio components. Each entry is a
+>        pair of strings, the first being the connection's sink, the second
+> @@ -29,6 +30,7 @@ properties:
+>    audio-widgets:
+>      $ref: /schemas/types.yaml#/definitions/non-unique-string-array
+>      minItems: 2
+> +    maxItems: 8
+>      description: |-
+>        A list off component DAPM widget. Each entry is a pair of strings,
+>        the first being the widget type, the second being the widget name
 
