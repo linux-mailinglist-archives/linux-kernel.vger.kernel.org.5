@@ -2,126 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 376E176A8DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4A476A8EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231434AbjHAGWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:22:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S231544AbjHAGXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjHAGWE (ORCPT
+        with ESMTP id S231532AbjHAGW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:22:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 152171736
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:21:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690870876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cEXcNVC8M7lRhYW42/+g5b3GBs/QdaOQFoEqQEgH0aI=;
-        b=FR5LaKIqlSB8nP+ALDbUfYULDjYa+V3oRr2izQvDWeSXLQOV2UJG9Irt4Ij/YdPeENX23X
-        zJ/f2jhikx6PX/UgXwtcNg1XPw+jOTkARjYwr4bKZV0ICxmUa2YUdQDAL3lE8Q26MFWplq
-        EBlVCiH8kxjR+/zUpfQalovvoWYAVyY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-657-uK10LyYmNP2AG880KA65sA-1; Tue, 01 Aug 2023 02:21:12 -0400
-X-MC-Unique: uK10LyYmNP2AG880KA65sA-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F49D8631E7;
-        Tue,  1 Aug 2023 06:21:12 +0000 (UTC)
-Received: from butterfly.localnet (unknown [10.45.224.180])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 83A77492B03;
-        Tue,  1 Aug 2023 06:21:10 +0000 (UTC)
-From:   Oleksandr Natalenko <oleksandr@redhat.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        David Laight <David.Laight@aculab.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jozef Bacik <jobacik@redhat.com>,
-        Laurence Oberman <loberman@redhat.com>,
-        Rob Evers <revers@redhat.com>
-Subject: Re: [PATCH v2 0/3] scsi: qedf: sanitise uaccess
-Date:   Tue, 01 Aug 2023 08:21:05 +0200
-Message-ID: <2290359.ElGaqSPkdT@redhat.com>
-Organization: Red Hat
-In-Reply-To: <yq1edknrkfk.fsf@ca-mkp.ca.oracle.com>
-References: <20230731084034.37021-1-oleksandr@redhat.com>
- <yq1edknrkfk.fsf@ca-mkp.ca.oracle.com>
+        Tue, 1 Aug 2023 02:22:56 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B3471BF8;
+        Mon, 31 Jul 2023 23:22:54 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3716MT6l061792;
+        Tue, 1 Aug 2023 01:22:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690870949;
+        bh=bVi++/QFLU4gzTEd9HmogdhZQofYVS6mFnt8nZ5DN74=;
+        h=From:To:CC:Subject:In-Reply-To:References:Date;
+        b=yYPvte2SGYvyHVpr92H+gUlScpQe3ADqjZ0VxX/eTQkS135GDu5uVduae4Pnp8BwG
+         1tgGsBiuLItW2pjvlWdDYlsvrb/5EoT8EpEikpFft6qPFFsSXAV7luPkbCw44WLyB5
+         y00vZz+kiOx3F+RtHWd/qTwW6/1m5qoZ1y4GHl/k=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3716MT5N084716
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 1 Aug 2023 01:22:29 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 1
+ Aug 2023 01:22:29 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 1 Aug 2023 01:22:28 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3716MSqc085498;
+        Tue, 1 Aug 2023 01:22:28 -0500
+From:   Kamlesh Gurudasani <kamlesh@ti.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+CC:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Menon, Nishanth" <nm@ti.com>,
+        "Raghavendra, Vignesh" <vigneshr@ti.com>,
+        "Tero Kristo" <kristo@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [EXTERNAL] Re: [PATCH 0/5] Add support for Texas Instruments
+ MCRC64 engine
+In-Reply-To: <CAMj1kXGXNbkxdDRNojtZD3NhMGK97LOchqGoM-4-tVLgH5JEiA@mail.gmail.com>
+References: <20230719-mcrc-upstream-v1-0-dc8798a24c47@ti.com>
+ <CAMj1kXGXNbkxdDRNojtZD3NhMGK97LOchqGoM-4-tVLgH5JEiA@mail.gmail.com>
+Date:   Tue, 1 Aug 2023 11:52:27 +0530
+Message-ID: <87y1ive0yk.fsf@kamlesh.i-did-not-set--mail-host-address--so-tickle-me>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4819602.GXAFRqVoOG";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart4819602.GXAFRqVoOG
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@redhat.com>
-To: "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH v2 0/3] scsi: qedf: sanitise uaccess
-Date: Tue, 01 Aug 2023 08:21:05 +0200
-Message-ID: <2290359.ElGaqSPkdT@redhat.com>
-Organization: Red Hat
-In-Reply-To: <yq1edknrkfk.fsf@ca-mkp.ca.oracle.com>
-MIME-Version: 1.0
+Ard Biesheuvel <ardb@kernel.org> writes:
 
-On pond=C4=9Bl=C3=AD 31. =C4=8Dervence 2023 20:43:34 CEST Martin K. Peterse=
-n wrote:
->=20
-> Oleksandr,
->=20
-> > qedf driver, debugfs part of it specifically, touches __user pointers
-> > directly for printing out info to userspace via sprintf(), which may
-> > cause crash like this:
->=20
-> Applied to 6.6/scsi-staging, thanks!
+> On Sun, 30 Jul 2023 at 20:56, Kamlesh Gurudasani <kamlesh@ti.com> wrote:
+>>
+>> Add support for MCRC64 engine to calculate 64-bit CRC in Full-CPU mode
+>>
+>> MCRC64 engine calculates 64-bit cyclic redundancy checks (CRC)
+>> according to the ISO 3309 standard.
+>>
+>> Generator polynomial: x^64 + x^4 + x^3 + x + 1
+>> Polynomial value: 0x000000000000001b
+>>
+>
+> How will this code be used? WIthout a user of the crc64-iso crypto API
+> algorithm, there is no point in having a driver that implements it.
 
-Thank you all.
+Thanks for the review.
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
-Principal Software Maintenance Engineer
---nextPart4819602.GXAFRqVoOG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+MCRC64 will be used to check the integrity of memory blocks.
+On TI K3 SOCs, users can use MCRC64 to accelerate the integrity check.
 
------BEGIN PGP SIGNATURE-----
+>
+> Also, *if* such a user exists, we'd need to have a generic C
+> implementation as well - we don't add new algorithms unless they can
+> be enabled on all platforms and architectures.
 
-iQIzBAABCAAdFiEENQb0bxzeq+SMr0+vn464/xkP+AUFAmTIpFEACgkQn464/xkP
-+AVGoBAApM2s3dmQ3OKGrANSHHTUgfnr0/xROPJb2VMhL3nInOgvhpfQ1/BrRU/B
-AWcijQW38xTCDWkxvBJQG49PwiYKPfAqS8OWxfQebxWzr0vZJK/OQ9J6fuxAEdT0
-WjCUUz6VM7f089FzI6dw2RDA8/gO6MPkOYrqlYHXw8OGFgPFpoVbJeJUpX5AR+o0
-jln3dOVPaP4Y/GhEuW01wiDhRQZoVRHKY5Ay9rTutaypeItQWuCkQBP7zIEflTx3
-CiubLcC6oeon6pi/9Un1St9f0PRUy6+T6F1T130hd8YfGT7vwy9XiBauEpLbQd++
-s+mKn0lUkWmcsu70Orqj+94L4RiOpBrBghNzJu4OW5AiWFzcCGKUK0sJ7DWDMPEc
-jrCSNntf2nhE/JzR3jpd+RsTW1aQpD09BPvJ6fasHHko66lOxflIuS/YizgicWqu
-fQzi6gmT6JHLnY2lQS49bkvcQbGI5jO+FllQmHcOFwTxI36pEg3JofIUg1Ow7Fku
-iEwLnX5R/Rvx4UzmOyBvBFq8YBong2kaCOgm+0B5SBn0Ha/0q26BV5lantLCE6dr
-+U5WR34m7/4iJoHNBHSknw2qhv156B/TW6+z+O8Tx7BdNpV+5/CvYrvjFHs1VoBX
-w5QYYVy18URpL3xBO/H1Hh9jHB9o0v8penMxN4LJvAU9RqJ028Q=
-=gjDU
------END PGP SIGNATURE-----
+If it is must, will implement generic C code.
 
---nextPart4819602.GXAFRqVoOG--
-
-
-
+>
+>
+>> Tested with
+>>
+>> and tcrypt,
+>> sudo modprobe tcrypt mode=329 sec=1
+>>
+>> Signed-off-by: Kamlesh Gurudasani <kamlesh@ti.com>
+>> ---
+>> Kamlesh Gurudasani (5):
+>>       crypto: crc64 - add crc64-iso test vectors
+>>       dt-bindings: crypto: Add binding for TI MCRC64 driver
+>>       crypto: ti - add driver for MCRC64 engine
+>>       arm64: dts: ti: k3-am62: Add dt node, cbass_main ranges for MCRC64
+>>       arm64: defconfig: enable MCRC module
+>>
+>>  Documentation/devicetree/bindings/crypto/ti,mcrc64.yaml |  42 +++++++
+>>  MAINTAINERS                                             |   7 ++
+>>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi                |   7 ++
+>>  arch/arm64/boot/dts/ti/k3-am62.dtsi                     |   1 +
+>>  arch/arm64/configs/defconfig                            |   2 +
+>>  crypto/tcrypt.c                                         |   5 +
+>>  crypto/testmgr.c                                        |   7 ++
+>>  crypto/testmgr.h                                        | 401 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>  drivers/crypto/Kconfig                                  |   1 +
+>>  drivers/crypto/Makefile                                 |   1 +
+>>  drivers/crypto/ti/Kconfig                               |  10 ++
+>>  drivers/crypto/ti/Makefile                              |   2 +
+>>  drivers/crypto/ti/mcrc64.c                              | 360 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>>  13 files changed, 846 insertions(+)
+>> ---
+>> base-commit: d7b3af5a77e8d8da28f435f313e069aea5bcf172
+>> change-id: 20230719-mcrc-upstream-7ae9a75cab37
+>>
+>> Best regards,
+>> --
+>> Kamlesh Gurudasani <kamlesh@ti.com>
+>>
