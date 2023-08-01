@@ -2,57 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C10876A94E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A86776A951
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231755AbjHAGj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50780 "EHLO
+        id S231770AbjHAGkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjHAGj4 (ORCPT
+        with ESMTP id S229946AbjHAGkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:39:56 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 89F5F98;
-        Mon, 31 Jul 2023 23:39:53 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8Cxruu3qMhky+YNAA--.30050S3;
-        Tue, 01 Aug 2023 14:39:51 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxniO1qMhkHphDAA--.4219S3;
-        Tue, 01 Aug 2023 14:39:50 +0800 (CST)
-Subject: Re: [PATCH v2 1/2] gpio: dt-bindings: add parsing of loongson gpio
- offset
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn, zhuyinbo@loongson.cn
-References: <20230731091059.17323-1-zhuyinbo@loongson.cn>
- <20230731091059.17323-2-zhuyinbo@loongson.cn>
- <20230731-setback-such-61815ee3ef51@spud>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <041bf8a6-8d91-c2ce-6752-aa7255f946c7@loongson.cn>
-Date:   Tue, 1 Aug 2023 14:39:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 1 Aug 2023 02:40:51 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7624C98;
+        Mon, 31 Jul 2023 23:40:50 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37157E6Z014917;
+        Tue, 1 Aug 2023 06:40:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=3WP82ESlPGg/bfk6gvQRhFnAXHPs/eyjVLNLE8TvaG0=;
+ b=T+e+lsVcxbJSUb0zX7+qVB5wFZDG6XnLkKnjNh2cwruQ0Z6u95d76ZgR063QmXcr7gzv
+ IxVhjwn1/KsCADAGY+7afMLYKCg3+6AoODMSfbVR5D2Oa8IlkMS2qO9QO7Jo/H9xcSFG
+ sya/PpylgGF6mTT3/XlHoH8ktaGaWERNWn13eyj6fpjFE+GINjuzBuWMZwWUgNwqPAdD
+ VAMsmSaYJsVioSl1JJbj0af3K/lYOvTmcKTB5LQFu4ziMFbb4loyS/xn84Cem43vAszk
+ dZ/jRaU/aPeaZ47o3PFV4+6e4/iv9DaZj6NuHir7CfvAtAPH0Zh+pa8Ovv/MGDeGuxQG 6A== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6d61jch9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 06:40:47 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3716ek98014455
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 06:40:46 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 31 Jul 2023 23:40:42 -0700
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <srinivas.kandagatla@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH v6 0/2] nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
+Date:   Tue, 1 Aug 2023 12:10:23 +0530
+Message-ID: <20230801064025.17381-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-In-Reply-To: <20230731-setback-such-61815ee3ef51@spud>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxniO1qMhkHphDAA--.4219S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: SdF540jN4-QPgo64ws2kY9elI3pSavLD
+X-Proofpoint-ORIG-GUID: SdF540jN4-QPgo64ws2kY9elI3pSavLD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 mlxlogscore=699 clxscore=1015 malwarescore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308010060
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,99 +79,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changes in v6 -
+ - Removed '|' from description in binding.
+ - Removed the header inclusion under the example in the binding.
+ - Removed devm_pm_runtime_enable() api as there is no pm runtime handlers or users
+   in this driver as of now.
+ - Not keeping Bjorn's reviewed tag as removing the above mentioned api.
 
+Changes in v5 -
+ - Separating this from original series [1].
+ - Added description of driver to secure qfprom binding.
+ - Replaced pm_runtime_enable() withh devm_pm_runtime_enable().
+ - Changed module license to GPL instead of GPL v2.
 
-在 2023/7/31 下午11:55, Conor Dooley 写道:
-> On Mon, Jul 31, 2023 at 05:10:58PM +0800, Yinbo Zhu wrote:
->> Add parsing GPIO configure, input, output, interrupt register offset
->> address and GPIO control mode support.
-> 
-> This reeks of insufficient use of SoC specific compatibles. Do GPIO
-> controllers on the same SoC have different register offsets?
+This series introduces a new driver for reading secure fuse region and adding
+dt-bindings for same.
 
+[1] https://lore.kernel.org/linux-arm-msm/20230623141806.13388-1-quic_kbajaj@quicinc.com
 
-Yes,
+Komal Bajaj (2):
+  dt-bindings: nvmem: sec-qfprom: Add bindings for secure qfprom
+  nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
 
-> Where are the users for this?
+ .../bindings/nvmem/qcom,sec-qfprom.yaml       |  58 ++++++++++
+ drivers/nvmem/Kconfig                         |  13 +++
+ drivers/nvmem/Makefile                        |   2 +
+ drivers/nvmem/sec-qfprom.c                    | 101 ++++++++++++++++++
+ 4 files changed, 174 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/nvmem/qcom,sec-qfprom.yaml
+ create mode 100644 drivers/nvmem/sec-qfprom.c
 
-
-For example, ls2k500 contains multiple GPIO chips with different
-(configure, input, output, interrupt) offset addresses, but all others
-are the same.
-
-> 
-> Cheers,
-> Conor.
-> 
->>
->> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
->> ---
->>   .../bindings/gpio/loongson,ls-gpio.yaml       | 37 +++++++++++++++++++
->>   1 file changed, 37 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
->> index fb86e8ce6349..cad67f8bfe6e 100644
->> --- a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
->> +++ b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
->> @@ -29,6 +29,33 @@ properties:
->>   
->>     gpio-ranges: true
->>   
->> +  loongson,gpio-conf-offset:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      This option indicate this GPIO configuration register offset address.
->> +
->> +  loongson,gpio-out-offset:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      This option indicate this GPIO output register offset address.
->> +
->> +  loongson,gpio-in-offset:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      This option indicate this GPIO input register offset address.
->> +
->> +  loongson,gpio-ctrl-mode:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      This option indicate this GPIO control mode, where '0' represents
->> +      bit control mode and '1' represents byte control mode.
->> +
->> +  loongson,gpio-inten-offset:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description:
->> +      This option indicate this GPIO interrupt enable register offset
->> +      address.
->> +
->>     interrupts:
->>       minItems: 1
->>       maxItems: 64
->> @@ -39,6 +66,11 @@ required:
->>     - ngpios
->>     - "#gpio-cells"
->>     - gpio-controller
->> +  - loongson,gpio-conf-offset
->> +  - loongson,gpio-in-offset
->> +  - loongson,gpio-out-offset
->> +  - loongson,gpio-ctrl-mode
->> +  - loongson,gpio-inten-offset
->>     - gpio-ranges
->>     - interrupts
->>   
->> @@ -54,6 +86,11 @@ examples:
->>         ngpios = <64>;
->>         #gpio-cells = <2>;
->>         gpio-controller;
->> +      loongson,gpio-conf-offset = <0>;
->> +      loongson,gpio-in-offset = <0x20>;
->> +      loongson,gpio-out-offset = <0x10>;
->> +      loongson,gpio-ctrl-mode = <0>;
->> +      loongson,gpio-inten-offset = <0x30>;
->>         gpio-ranges = <&pctrl 0 0 15>,
->>                       <&pctrl 16 16 15>,
->>                       <&pctrl 32 32 10>,
->> -- 
->> 2.20.1
->>
+-- 
+2.41.0
 
