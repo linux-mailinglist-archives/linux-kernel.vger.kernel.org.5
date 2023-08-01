@@ -2,161 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 426B776B49E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A908876B4A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbjHAMTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:19:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
+        id S231861AbjHAMV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231861AbjHAMTe (ORCPT
+        with ESMTP id S229541AbjHAMV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:19:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B9E10C7;
-        Tue,  1 Aug 2023 05:19:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D69F6156E;
-        Tue,  1 Aug 2023 12:19:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31E18C433CB;
-        Tue,  1 Aug 2023 12:19:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690892372;
-        bh=LQfUhgeCTIA1TBt0YiYgR0RGh/RTGs1s07+mMDc0Zjo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ea2xTEDtDivpFGYTa8gdTKR1KB3yVZ+DO0nEvgQLt1MR+wReXyiLVLz6O7+smjYip
-         BmJlP/YXccsWA1/EfjlybCt7Uw7nlmEvoq74UBVrt/Pt0NvGYEbyW3aVM2OWcT5rZ+
-         KgkGdcbnl9sAjw3zubcMaLG6uqVfBkhKa/+jLmxfNQmLg+Q2L+5wOHjDElI2a7R/PG
-         uHabW6qhAxcLsTk8lo+/6yMlEY/oWgPW7P00YhQOE2SYACIwtYdqlSNVsT7x9QOHmf
-         7BjLZBY/5cHlYKJwjpQKUvXbYdp6q467EtcXFJz678B/2THwpZKwg2TweEurGsV60N
-         gDmFHsWqKL02Q==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH v2 2/2] kbuild: deb-pkg: split debian/rules
-Date:   Tue,  1 Aug 2023 21:19:26 +0900
-Message-Id: <20230801121926.1677205-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230801121926.1677205-1-masahiroy@kernel.org>
-References: <20230801121926.1677205-1-masahiroy@kernel.org>
+        Tue, 1 Aug 2023 08:21:56 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B76710C7;
+        Tue,  1 Aug 2023 05:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690892512; x=1691497312; i=rwarsow@gmx.de;
+ bh=mktVTINu2XoBBO2DUti5V416Vyw65PoMqn/e/11azKw=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+ b=qyzJHP9UYtMhWe+o5l1hJq0yVj+T+tdDQSpexKkMQaVewquVVve33GoklsgjJspf1oJbItl
+ UYjahc2eky+BjmEiDLcGVIQes7a2X+wK1YMhTLNS1jTdj0deVXCEPg6rUoubRJxj+1FYTi7sE
+ 2zak8fw6cCxqkSbTOx/skPY365t/0pdttGpb4SU7aBMUm6MdhkdJY4V3J6yOrJtJj7Qy6+yxw
+ dqIiw6QoFKZDYw38z+unOrPvDnaytFmludvQdVYsfNlcV2cHGreLvo12gJg688/qknh88f+DX
+ ZPdFHXVwftjOP5QkDV7pM939bVmtRMDBiqNOO2KHFTQBrlQoW5uw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([46.142.32.0]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MC34X-1qYkSz3F09-00CNrG; Tue, 01
+ Aug 2023 14:21:52 +0200
+Message-ID: <d8d90867-4365-d670-76b5-207f2267e1fc@gmx.de>
+Date:   Tue, 1 Aug 2023 14:21:51 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+From:   Ronald Warsow <rwarsow@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Language: de-DE, en-US
+Subject: Re: [PATCH 6.4 000/239] 6.4.8-rc1 review
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:6nMkuufbWqz3i7bzxm4ksUbxQl2/jTes0bMkUVYO4gV22JxiIlh
+ DhcrNLs2TkttS2pctvMUJIoA5+HaHvAI133EHtglWW3CICAT0ynoqzuff20soUYdd3RYgL0
+ dVT5XGVkGfIShfTMAeHNCuWwSWS54gzNJebXcLM1R1245iz1lXcPCL/DkXpMS/Ik3TFIzU4
+ JK8IOhmcgpSQDt7PYcHCA==
+UI-OutboundReport: notjunk:1;M01:P0:JjKJ+UlwOnc=;fD/UoziHHd3WtDTdL0GWjyOrRVO
+ 4xcJkKM8dFzdVAXFdydtITaLRTF5ghL13PmRsVqKAWw2SDZZIiDOOL70+i9mBWR+Lkt6y9o0V
+ oxn1Jle75I8NSyaTFwU+BxVAb131ihfG2dI4ayGTJwY5HKLXuxvCCcCUuWHA/yAstB00hPTQg
+ zUHnPi9VVB3b+/dzsKWYGw9+lGXuEXduVzNxvKgKjmXpoQBp5ezSxIfLp2G/esaw1mOcl2q4n
+ 2x+rPpux+KhktqNz4EbniD5ya9Ee8gd4xHSg/Bm/Btvh2/1yzfb0/ErSwYcEPhV/PsLONOy0r
+ jocHlldVU79eucpjeX0+R0kXPNnxrrXl+TQO/PX/yBhrJqrxmYvxsOTP9Zqo4OzaxD8D7btJ7
+ GADSoLU1jtKFd4NWJw6UhaSHktR95nXCvaJvfq+IB/5GIX8UQMxKYxj5x/qZQYQ2sZfRkJmzz
+ ycm7gBLLfatIzVjlnrdVXX1eJVT+dHcIkodmHMepzMAfJCS8TNfIVrjfTorafRKn32L4VWdBE
+ 6Ir9QVJtJodbn6NstHGSiBsstCJl0XXzaljDGbm0OZSJeW0I5tz36tyczbW/ZaJTZI+7KTKdD
+ 7bKIEwvw16ASzanrQ8wSJMT4zhl/TkBbdfgkpBcQY0ge5ZXH5evUayZgA/fd5qhxrqgYHqssv
+ BIofz4OTUtGkLgEWcnP3UbYngSchDf22JymesRviJnd1t26121x8KVnljIM5StdnKrB7xi8Xg
+ qNe12I9hQ7SZtGFN5eFgxcaBmttSiCExuLxBGT/oebwiKSeBQdtzos2XWY7eHbUPuBkvyiPfJ
+ HMRH7GxBIyYw4HYbxCShGj7GcwVabNn15PmL3tl56gp96SkN3cixBcDk2mQbeOFpLUjvYpOM7
+ 4UwFAIijLYo4OVxvjSyXU7Il66HhfcwGh6fdEmKukLEabx1BxFcivXpCu4Il8pVZaN3RVhChJ
+ +DRdew==
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-debian/rules is generated by shell, but the escape sequence (\$) is
-unreadable.
+Hi Greg
 
-debian/rules embeds only two variables (ARCH and KERNELRELEASE).
+6.4.8-rc1
 
-Split them out to debian/rules.vars, and check-in the rest of Makefile
-code to scripts/package/debian/rules.
+compiles, boots and runs here on x86_64
+(Intel Rocket Lake, i5-11400)
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Thanks
 
-Changes in v2:
-  - Change ${MAKE} to $(MAKE) for consistency
-  - Fix shellcheck warning
-
- scripts/package/debian/rules | 28 ++++++++++++++++++++++++++++
- scripts/package/mkdebian     | 34 +++++-----------------------------
- 2 files changed, 33 insertions(+), 29 deletions(-)
- create mode 100755 scripts/package/debian/rules
-
-diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
-new file mode 100755
-index 000000000000..226e127efd63
---- /dev/null
-+++ b/scripts/package/debian/rules
-@@ -0,0 +1,28 @@
-+#!/usr/bin/make -f
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+include debian/rules.vars
-+
-+srctree ?= .
-+
-+.PHONY: binary binary-indep binary-arch
-+binary: binary-arch binary-indep
-+binary-indep: build-indep
-+binary-arch: build-arch
-+	$(MAKE) -f $(srctree)/Makefile ARCH=$(ARCH) \
-+	KERNELRELEASE=$(KERNELRELEASE) \
-+	run-command KBUILD_RUN_COMMAND=+$(srctree)/scripts/package/builddeb
-+
-+.PHONY: build build-indep build-arch
-+build: build-arch build-indep
-+build-indep:
-+build-arch:
-+	$(MAKE) -f $(srctree)/Makefile ARCH=$(ARCH) \
-+	KERNELRELEASE=$(KERNELRELEASE) \
-+	$(shell $(srctree)/scripts/package/deb-build-option) \
-+	olddefconfig all
-+
-+.PHONY: clean
-+clean:
-+	rm -rf debian/files debian/linux-*
-+	$(MAKE) -f $(srctree)/Makefile ARCH=$(ARCH) clean
-diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-index 2829f5b8aea6..5044224cf671 100755
---- a/scripts/package/mkdebian
-+++ b/scripts/package/mkdebian
-@@ -263,35 +263,11 @@ Description: Linux kernel debugging symbols for $version
- EOF
- fi
- 
--cat <<EOF > debian/rules
--#!/usr/bin/make -f
--
--srctree ?= .
--KERNELRELEASE = ${KERNELRELEASE}
--
--.PHONY: clean build build-arch build-indep binary binary-arch binary-indep
--
--build-indep:
--build-arch:
--	\$(MAKE) -f \$(srctree)/Makefile ARCH=${ARCH} \
--	KERNELRELEASE=\$(KERNELRELEASE) \
--	\$(shell \$(srctree)/scripts/package/deb-build-option) \
--	olddefconfig all
--
--build: build-arch
--
--binary-indep:
--binary-arch: build-arch
--	\$(MAKE) -f \$(srctree)/Makefile ARCH=${ARCH} \
--	KERNELRELEASE=\$(KERNELRELEASE) \
--	run-command KBUILD_RUN_COMMAND=+\$(srctree)/scripts/package/builddeb
--
--clean:
--	rm -rf debian/files debian/linux-*
--	\$(MAKE) -f \$(srctree)/Makefile ARCH=${ARCH} clean
--
--binary: binary-arch
-+cat <<EOF > debian/rules.vars
-+ARCH := ${ARCH}
-+KERNELRELEASE := ${KERNELRELEASE}
- EOF
--chmod +x debian/rules
-+
-+cp "${srctree}/scripts/package/debian/rules" debian/
- 
- exit 0
--- 
-2.39.2
+Tested-by: Ronald Warsow <rwarsow@gmx.de>
 
