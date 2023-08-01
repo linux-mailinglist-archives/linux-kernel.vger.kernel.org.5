@@ -2,56 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 835DF76BE94
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E7AB76BE9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbjHAUkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 16:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53018 "EHLO
+        id S231732AbjHAUlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 16:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjHAUkT (ORCPT
+        with ESMTP id S230418AbjHAUlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 16:40:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A8418D;
-        Tue,  1 Aug 2023 13:40:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 26730616CA;
-        Tue,  1 Aug 2023 20:40:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CF66C433C8;
-        Tue,  1 Aug 2023 20:40:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690922417;
-        bh=Qk0jErerHl/harcMzMcc3VfUky6x5Mflzj5HbZTXslI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=o5Qh/RHEjFsOWShDVGHcoBOiJVuHpYrrKGo3SS3qIUy0d3CX6scMm8DELo3na94Iq
-         XEuthhBca/Ah3Y3ppAMrkgX/2SLQIIylvi+p3DeiI7qulQbVmeqfgn6dcFb1ZkX6PQ
-         zTcIuQfrGIxvquZYngmzIdF/Zidwluc1xhquzR+2f74ZndojtdsQ74Smp3RZT6pdP9
-         ulA7IwBpwpBsXHlrsD0326qvsvn041Bk1mi4ewwbu21Pp+CnA3kY7YYMgQhf3dDzR8
-         PuUzXcLc6zqUxE3FBGF7F2BUAFgvg/4YFkVl5fL0/FFfZ/z+kOpLCR2MPQD88JQ4tw
-         SxWE5Uq/7e3EA==
-Date:   Tue, 1 Aug 2023 15:40:15 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Vidya Sagar <vidyas@nvidia.com>
-Cc:     lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, Sergey.Semin@baikalelectronics.ru,
-        linux-pci@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kthota@nvidia.com,
-        mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V4] Revert "PCI: tegra194: Enable support for 256 Byte
- payload"
-Message-ID: <20230801204015.GA49719@bhelgaas>
+        Tue, 1 Aug 2023 16:41:13 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FBE218D;
+        Tue,  1 Aug 2023 13:41:11 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 728386017C;
+        Tue,  1 Aug 2023 22:41:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690922469; bh=z9QrJe0NTsnt2YmhHUDR0wCLO20TMhRAH8M43NnpZLk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=hOefIBFJ1LpokaYJd2vgFIZzQF+01yX3iquh7NkEbTF8ximdNISmPk+KDD0RhoQQ/
+         nTv2nfGlW1CRtSvqjT/aPq4RbrV6fjflrxxa285pENnl7G5U/uWwSK7bCrW79EFZAn
+         vaFpKSb/C9TzlPGsx5YPn5t0FWEz3apBQx/Pe8MTliH+U4Wknl8SOGty2ssmsViiea
+         1vQmaGkTWSM5KEjGTDgeOP74RYV9gHZM/U5V/87BshsjSL8PwlrVxooQkNO3x0pAvs
+         frPMyMzE9q862jiCDN5ZXG3HgMxIebrNZjAVKdy3mbJIw2viRjTcVLxZD1ExJB6MIg
+         ekR1zWgwGuF3g==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id rxM1YqdY52zd; Tue,  1 Aug 2023 22:41:07 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 6DA066015F;
+        Tue,  1 Aug 2023 22:41:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690922467; bh=z9QrJe0NTsnt2YmhHUDR0wCLO20TMhRAH8M43NnpZLk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZfEwU4wQpk4ge+sFPf5EJtFwYbaWrsOiIkupkUtL0cDChri6yZETaSpa3apKb+seq
+         rYVwK0x9UC/sLGlitKkDfiLkAxZBWKp0wJoYJ9+OEKauVK+8E6K51Dw1EGIRyncbUe
+         QbbXhGgAnnUKwlsBOQIgnU7dq4Lf/CI2ilNrAEAD2STbAGQjZjgM0Sma8Ix72gpvGo
+         Vaqg1rfV4rQIJw5oSYvuawDJ5uoN++P0JW4H5QWev9a6S+TMCc5txAqk2PFlHk71qF
+         abdo9DD6h/80vWYJv/IE6Dgy8H4dMfb3IU331Oq4SYFVm2g/kHACoLBPkg82Eey0Yx
+         hdFkVS4RjMs9w==
+Message-ID: <778cbcdc-24b2-12f4-aebc-d62d5bdaf2de@alu.unizg.hr>
+Date:   Tue, 1 Aug 2023 22:41:06 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718025221.4001329-1-vidyas@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v1 01/11] selftests: forwarding: custom_multipath_hash.sh:
+ add cleanup for SIGTERM sent by timeout
+Content-Language: en-US
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     petrm@nvidia.com, razor@blackwall.org,
+        Ido Schimmel <idosch@nvidia.com>, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+References: <ZL6OljQubhVtQjcD@shredder>
+ <cab8ea8a-98f4-ef9b-4215-e2a93cccaab1@alu.unizg.hr>
+ <ZMEQGIOQXv6so30x@shredder>
+ <a9b6d9f5-14ae-a931-ab7b-d31b5e40f5df@alu.unizg.hr>
+ <ZMYXABUN9OzfN5D3@shredder>
+ <da3f4f4e-47a7-25be-fa61-aebeba1d8d0c@alu.unizg.hr>
+ <ZMdouQRypZCGZhV0@shredder>
+ <2f203995-5ae0-13bc-d1a6-997c2b36a2b8@alu.unizg.hr>
+ <ZMei0VMIH/l1GzVM@shredder>
+ <cadad022-b241-398d-c79d-187596356a72@alu.unizg.hr>
+ <ZMfXsVAfpizMKH/U@shredder>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZMfXsVAfpizMKH/U@shredder>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,113 +84,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 18, 2023 at 08:22:21AM +0530, Vidya Sagar wrote:
-> After commit 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte
-> payload"), we set MPS=256 for tegra194 Root Ports.
-> 
-> By default (CONFIG_PCIE_BUS_DEFAULT set and no "pci=pcie_bus_*"
-> parameter), Linux configures the MPS of every device to match the
-> upstream bridge, which is impossible if the Root Port has MPS=256
-> and a device only supports MPS=128.
 
-Thanks for pointing out that I broke this log by omitting the mention
-of a switch.  Is the rewording below better?  If so, Krzysztof can
-amend the commit.
 
-  After commit 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte
-  payload"), we initialize MPS=256 for tegra194 Root Ports before enumerating
-  the hierarchy.
+On 7/31/23 17:48, Ido Schimmel wrote:
+> On Mon, Jul 31, 2023 at 05:13:37PM +0200, Mirsad Todorovac wrote:
+>> You can add:
+>>
+>> Tested-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+> 
+> Added your tags to all 17 patches. Available here:
+> https://github.com/idosch/linux/tree/submit/selftests_fix_v2
 
-  Consider an Endpoint that supports only MPS=128.  In the default situation
-  (CONFIG_PCIE_BUS_DEFAULT set and no "pci=pcie_bus_*" parameter), Linux
-  tries to configure the MPS of every device to match the upstream bridge.
-  If the Endpoint is directly below the Root Port, Linux can reduce the Root
-  Port MPS to 128 to match the Endpoint.  But if there's a switch in the
-  middle, Linux doesn't reduce the Root Port MPS because other devices below
-  the switch may already be configured with MPS larger than 128.
+Yes, thanks!
 
-> This scenario results in uncorrectable Malformed TLP errors if the
-> Root Port sends TLPs with payloads larger than 128 bytes.  These
-> errors can be avoided by using the "pci=pcie_bus_safe" parameter,
-> but it doesn't seem to be a good idea to always have this parameter
-> even for basic functionality to work.
-> 
-> Revert commit 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte
-> payload") so the Root Ports default to MPS=128, which all devices
-> support.
-> 
-> If peer-to-peer DMA is not required, one can use "pci=pcie_bus_perf"
-> to get the benefit of larger MPS settings.
-> 
-> [ rewrote commit message based on Bjorn's suggestion ]
-> 
-> Fixes: 4fb8e46c1bc4 ("PCI: tegra194: Enable support for 256 Byte payload")
+It is good to be known that I am available for testing patches on the available
+equipment.
 
-4fb8e46c1bc4 appeared in v6.0-rc1, so this wouldn't be a candidate for
-v6.5, but it does sound like it should be tagged for stable?  If so,
-Krzysztof can probably add that as well.
+> Will submit later this week (most likely on Wednesday) after I verify
+> they don't cause other regressions.
+> 
+> Thanks for testing and reporting.
 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> ---
-> V4:
-> * Rewrote commit message based on Bjorn's suggestion
-> 
-> V3:
-> * Fixed a build issue
-> 
-> V2:
-> * Addressed review comments from Bjorn
-> 
->  drivers/pci/controller/dwc/pcie-tegra194.c | 14 ++------------
->  1 file changed, 2 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
-> index 4fdadc7b045f..a772faff14b5 100644
-> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
-> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
-> @@ -900,11 +900,6 @@ static int tegra_pcie_dw_host_init(struct dw_pcie_rp *pp)
->  		pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
->  							      PCI_CAP_ID_EXP);
->  
-> -	val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
-> -	val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
-> -	val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
-> -	dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
-> -
->  	val = dw_pcie_readl_dbi(pci, PCI_IO_BASE);
->  	val &= ~(IO_BASE_IO_DECODE | IO_BASE_IO_DECODE_BIT8);
->  	dw_pcie_writel_dbi(pci, PCI_IO_BASE, val);
-> @@ -1756,7 +1751,6 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->  	struct device *dev = pcie->dev;
->  	u32 val;
->  	int ret;
-> -	u16 val_16;
->  
->  	if (pcie->ep_state == EP_STATE_ENABLED)
->  		return;
-> @@ -1887,20 +1881,16 @@ static void pex_ep_event_pex_rst_deassert(struct tegra_pcie_dw *pcie)
->  	pcie->pcie_cap_base = dw_pcie_find_capability(&pcie->pci,
->  						      PCI_CAP_ID_EXP);
->  
-> -	val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL);
-> -	val_16 &= ~PCI_EXP_DEVCTL_PAYLOAD;
-> -	val_16 |= PCI_EXP_DEVCTL_PAYLOAD_256B;
-> -	dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_DEVCTL, val_16);
-> -
->  	/* Clear Slot Clock Configuration bit if SRNS configuration */
->  	if (pcie->enable_srns) {
-> +		u16 val_16;
-> +
->  		val_16 = dw_pcie_readw_dbi(pci, pcie->pcie_cap_base +
->  					   PCI_EXP_LNKSTA);
->  		val_16 &= ~PCI_EXP_LNKSTA_SLC;
->  		dw_pcie_writew_dbi(pci, pcie->pcie_cap_base + PCI_EXP_LNKSTA,
->  				   val_16);
->  	}
-> -
->  	clk_set_rate(pcie->core_clk, GEN4_CORE_CLK_FREQ);
->  
->  	val = (ep->msi_mem_phys & MSIX_ADDR_MATCH_LOW_OFF_MASK);
-> -- 
-> 2.25.1
-> 
+Not at all.
+
+I am most pleased that we nailed the errors and fails.
+
+It was a great exercise for my little grey cells in a great environment of quality
+professionals.
+
+Much obliged.
+
+Still, maybe you should add to README about the forwarding.config.sample opportunity?
+
+I think what we all want as the community is greater test coverage, to discover the most
+bugs on the most platforms ...
+
+Kind regards,
+Mirsad Todorovac
