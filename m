@@ -2,167 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AD476BB05
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6963476BB09
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234239AbjHARWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
+        id S234525AbjHARWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:22:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbjHARWA (ORCPT
+        with ESMTP id S234485AbjHARWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:22:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB7B211E;
-        Tue,  1 Aug 2023 10:21:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C1DCF6154F;
-        Tue,  1 Aug 2023 17:21:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6C27C433C7;
-        Tue,  1 Aug 2023 17:21:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690910518;
-        bh=FvTrayG0aB9pBS56Qi18iMvVg3XJECQTzUNoJcvfVxY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XTg8YtjpaBdEyllcrmu65iWMgj74xz2mpu+ThdUY8cWF+84k4nm+EiWPIwktyvaO/
-         OD5Y+be8QlhnRdR+PCnVwUmUtBME8/DE1nSc2FIRxIflgSBdWYFTwqT4aBTvf4snXb
-         O1gVgPwUxCgUS8rEJv7BLxEReymjCD7vzvKhFWiatvEdLrQofd1eE6plTSVs1s74/A
-         6Ma9EuBOspIfKipNOb7U62xfz5hgp1Hg3spssqoMfzA39l4DwDnCoJhHQQ0sYi8HU2
-         wBUXqAkLOo5D9dpFQ5aT4L3TAh6VlWzc9s+tdXWoelzuH5TIhitkStIEEQcQmPxIXh
-         kFLYI0QlKRiZw==
-Date:   Tue, 1 Aug 2023 22:51:42 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-Cc:     manivannan.sadhasivam@linaro.org, helgaas@kernel.org,
-        linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_vbadigan@quicinc.com,
-        quic_nitegupt@quicinc.com, quic_skananth@quicinc.com,
-        quic_ramkri@quicinc.com, krzysztof.kozlowski@linaro.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        "open list:MHI BUS" <mhi@lists.linux.dev>
-Subject: Re: [PATCH v4 3/9] PCI: epf-mhi: Add support for handling D-state
- notify from EPC
-Message-ID: <20230801172142.GA76659@thinkpad>
-References: <1689232218-28265-1-git-send-email-quic_krichai@quicinc.com>
- <1689232218-28265-4-git-send-email-quic_krichai@quicinc.com>
- <20230728040949.GF4433@thinkpad>
- <1cfa6656-8130-ce1d-e28e-3665f12cc76a@quicinc.com>
- <0a6ca984-9797-88b1-ae12-c64916f6c61c@quicinc.com>
+        Tue, 1 Aug 2023 13:22:12 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634E7213E;
+        Tue,  1 Aug 2023 10:22:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=KI7aWHvSDXmhxzHfaalEHg4CqR1G5kysSfQhkQhMeeQ=; b=qLtl8QrLHzZR3bYK8L7GyySX8I
+        ui/iPrQEaxDZ2ZfzYU1SSMTdWMhYkH2FZalEJBLrDXxNFoxLyiD+GaUFKCZtShgsGlroNSM1mewkz
+        +K/5Jr4SSllO2UPuk94IptV+69fj7W5EzAdX/LSLm+iTyTRDAoc9qtXJQ+EMnVvG7gkK9vU9FkQ0r
+        NaOSrDyin3BImtyOJRNdcR2ARCfAsk+XaJq0t65rk7g31lgKcxWP7BClvjbC1USYJoOzx2Bkv7Jqb
+        s/Fj+GkFQtVxuKUX/FEtRMkAUM2OUYp0VnZF8342fy2gBxlRZw8VAauLrGHX/slpc1KmP7X/xB17c
+        1PuKU2JQ==;
+Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQt4P-002uSp-2j;
+        Tue, 01 Aug 2023 17:22:06 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian@brauner.io>,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: allow building a kernel without buffer_heads v3
+Date:   Tue,  1 Aug 2023 19:21:55 +0200
+Message-Id: <20230801172201.1923299-1-hch@lst.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0a6ca984-9797-88b1-ae12-c64916f6c61c@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 10:31:42AM +0530, Krishna Chaitanya Chundru wrote:
-> 
-> On 7/31/2023 11:05 AM, Krishna Chaitanya Chundru wrote:
-> > 
-> > On 7/28/2023 9:39 AM, Manivannan Sadhasivam wrote:
-> > > On Thu, Jul 13, 2023 at 12:40:12PM +0530, Krishna chaitanya chundru
-> > > wrote:
-> > > > Add support for handling D-state notify for MHI EPF.
-> > > > 
-> > > > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> > > > ---
-> > > >   drivers/pci/endpoint/functions/pci-epf-mhi.c | 11 +++++++++++
-> > > >   include/linux/mhi_ep.h                       |  3 +++
-> > > >   2 files changed, 14 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > > > b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > > > index 9c1f5a1..ee91bfc 100644
-> > > > --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > > > +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > > > @@ -339,6 +339,16 @@ static int pci_epf_mhi_bme(struct pci_epf *epf)
-> > > >       return 0;
-> > > >   }
-> > > >   +static int pci_epf_mhi_dstate_notify(struct pci_epf *epf,
-> > > > pci_power_t state)
-> > > > +{
-> > > > +    struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
-> > > > +    struct mhi_ep_cntrl *mhi_cntrl = &epf_mhi->mhi_cntrl;
-> > > > +
-> > > > +    mhi_cntrl->dstate = state;
-> > > Where is this variable being used? Also, don't we need any locking?
-> > > 
-> > > - Mani
-> > 
-> > we are using this variable in wakeup host op which is introduced on
-> > patch [PATCH v4 8/9] PCI: epf-mhi: Add wakeup host op
-> > 
-> > I will add lock in my next series.
-> > 
-> > - KC
-> 
-> Mani, as this is being called from IRQ context do we need to add any lock
-> here.
-> 
+Hi all,
 
-Notifiers are invoked in process context. And here, the context doesn't matter
-as either way you need locking to prevent concurrent access to dstate variable.
+This series allows to build a kernel without buffer_heads, which I
+think is useful to show where the dependencies are, and maybe also
+for some very much limited environments, where people just needs
+xfs and/or btrfs and some of the read-only block based file systems.
 
-But I think it is safe to ignore lock for now provided that wakeup_host callback
-is only called while MHI is in M3 state. Even if dstate changes while processing
-wakeup_host, it won't affect the behavior.
+It first switches buffered writes (but not writeback) for block devices
+to use iomap unconditionally, but still using buffer_heads, and then
+adds a CONFIG_BUFFER_HEAD selected by all file systems that need it
+(which is most block based file systems), makes the buffer_head support
+in iomap optional, and adds an alternative implementation of the block
+device address_operations using iomap.  This latter implementation
+will also be useful to support block size > PAGE_SIZE for block device
+nodes as buffer_heads won't work very well for that.
 
-- Mani
+Note that for now the md software raid drivers is also disabled as it has
+some (rather questionable) buffer_head usage in the unconditionally built
+bitmap code.  I have a series pending to make the bitmap code conditional
+and deprecated it, but it hasn't been merged yet.
 
-> - KC
-> 
-> > 
-> > > 
-> > > > +
-> > > > +    return 0;
-> > > > +}
-> > > > +
-> > > >   static int pci_epf_mhi_bind(struct pci_epf *epf)
-> > > >   {
-> > > >       struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
-> > > > @@ -394,6 +404,7 @@ static struct pci_epc_event_ops
-> > > > pci_epf_mhi_event_ops = {
-> > > >       .link_up = pci_epf_mhi_link_up,
-> > > >       .link_down = pci_epf_mhi_link_down,
-> > > >       .bme = pci_epf_mhi_bme,
-> > > > +    .dstate_notify = pci_epf_mhi_dstate_notify,
-> > > >   };
-> > > >     static int pci_epf_mhi_probe(struct pci_epf *epf,
-> > > > diff --git a/include/linux/mhi_ep.h b/include/linux/mhi_ep.h
-> > > > index f198a8a..c3a0685 100644
-> > > > --- a/include/linux/mhi_ep.h
-> > > > +++ b/include/linux/mhi_ep.h
-> > > > @@ -8,6 +8,7 @@
-> > > >     #include <linux/dma-direction.h>
-> > > >   #include <linux/mhi.h>
-> > > > +#include <linux/pci.h>
-> > > >     #define MHI_EP_DEFAULT_MTU 0x8000
-> > > >   @@ -139,6 +140,8 @@ struct mhi_ep_cntrl {
-> > > >         enum mhi_state mhi_state;
-> > > >   +    pci_power_t dstate;
-> > > > +
-> > > >       u32 max_chan;
-> > > >       u32 mru;
-> > > >       u32 event_rings;
-> > > > -- 
-> > > > 2.7.4
-> > > > 
-> > 
+This series is against Jens' for-6.6/block branch.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Changes since v2:
+ - fix handling of a negative return value from blkdev_direct_IO
+ - drop a WARN_ON that can happen when resizing block devices
+ - define away IOMAP_F_BUFFER_HEAD to keep the intrusions to the
+   iomap code minimal (even if that's not quite my preferred style)
+
+Changes since v1:
+ - drop the already merged prep patches
+ - depend on FS_IOMAP not IOMAP
+ - pick a better new name for block_page_mkwrite_return
