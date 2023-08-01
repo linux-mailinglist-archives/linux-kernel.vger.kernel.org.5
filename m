@@ -2,128 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BA576C05A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 00:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA7D76C05F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 00:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232225AbjHAWWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 18:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42320 "EHLO
+        id S231925AbjHAWZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 18:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232531AbjHAWWb (ORCPT
+        with ESMTP id S230462AbjHAWZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 18:22:31 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696212707
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 15:22:26 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d3ae42d146cso347556276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 15:22:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690928545; x=1691533345;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qdq1QXzvBye3WPzSe4XaK38onFNZo3hs4fREXJmryW4=;
-        b=yFZATxVFwdyeZsYr/9WCBmdfdj5iHWfXapu8fa8Ga+vqLw+ZGN5LSPG0FGOl+dSWwJ
-         dV8cPD6wXAWF2sw1PaeSS7S2a3SIhuzG7wje2xR8P/+Sygug78lCik23/ZZpU+4PBpcY
-         CiU8R+B5L8IP3kjcZD1OhBgCxddy1Z2pw7qqEYIcl73Miwuo5L5bjWhNvH5F8OMlZgSd
-         rE3P8FC8m2XPvfSaMO38q8amGfJ3eKBf6S5gtNuovLEdZu1lQsQIRojVM493LoldoTZD
-         YdQCqeNo9SPI9tw+Ca8LEMMD51Z6mHn7KMAE52D34Xuc0PAdsvepS0gNhEW3dbY/IV+A
-         QFwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690928545; x=1691533345;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qdq1QXzvBye3WPzSe4XaK38onFNZo3hs4fREXJmryW4=;
-        b=PINP2gTIjcEeXUhbd/nM/kN5FtWNft/zmQTCK1YSlN3IEaznNIBKs/nuJ5GfoeLeur
-         Tgh7LgcFNxcE/80mmZZ+PElhFd7zkej8wAoNCzh4AD45P8cfS9I85QiZmgGfNhuhL/Ag
-         2kTWiKV9EMTwnzlQe221YTGn/5XIoL9g8fCitT7ePytB7Zy1jpzyMEv1eeHbFkasMKFe
-         +38Uqm0RcgAYB0i7/Cw/PgUK0AgN7Fs0hYL15cjCiag8GJG/gaJ15SUzLXnG943pmaN7
-         oojAv+Dmb6E+O15ta1aUSLd4FNGBVIfrQD4XgOw/UasA+3d7hZLdrhYbdHTnhw3Ioqv7
-         MuVQ==
-X-Gm-Message-State: ABy/qLbn/cBkiEvlv1zBJUvkH0H9jencgkQT56wYsM/N5VmIRvCxcbcb
-        hDv2A9nfcB/O2GAn4iwpWCVq1YEEvPF46I/L9kU=
-X-Google-Smtp-Source: APBJJlHXsSD74YLaFezk7Bbpn6vBaNo77fE487r3MoevCiAjy2gKlgCSRi8w8ivfYunycq2GKV7i1YLkwAwOGtlXY1U=
-X-Received: from ndesaulniers-desktop.svl.corp.google.com ([2620:15c:2d1:203:feaa:8649:3c6a:9e94])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6902:1804:b0:d07:cb52:a3cf with
- SMTP id cf4-20020a056902180400b00d07cb52a3cfmr96059ybb.5.1690928545489; Tue,
- 01 Aug 2023 15:22:25 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 15:22:17 -0700
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAJiFyWQC/x2NQQqDMBBFryKzNpBJkUivIi4ydlJn0SgzYgvi3
- Rtdvvcf/AOMVdjg2RygvIvJUipg28A0p/JmJ6/KEHx4+N6jI9m+Yuxij4EQucsUodaUqiRNZZq v/pNsY72GVTnL774YxvP8A5Si+6hyAAAA
-X-Developer-Key: i=ndesaulniers@google.com; a=ed25519; pk=UIrHvErwpgNbhCkRZAYSX0CFd/XFEwqX3D0xqtqjNug=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690928543; l=2114;
- i=ndesaulniers@google.com; s=20220923; h=from:subject:message-id;
- bh=wXfGM6+rwzEUsf/TAMmubM77ovOgqNDW45eNFnd7nUI=; b=xg1QMLVE2aNnHbUJv06d31odtnY8e9Qbg+57vMuYZRKUErkyMAJirs1yLG26IR6bgSdkUt4tJ
- qsAFQF5WDRHBt4fXyxuf5JbZDjV/Lzw4AFKfQ3fItCoC9PFd/ghrWHK
-X-Mailer: b4 0.12.2
-Message-ID: <20230801-bitwise-v1-1-799bec468dc4@google.com>
-Subject: [PATCH] word-at-a-time: use the same return type for has_zero
- regardless of endianness
-From:   ndesaulniers@google.com
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Tue, 1 Aug 2023 18:25:12 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17604E57;
+        Tue,  1 Aug 2023 15:25:11 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690928708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6vBNRn+H/dJq3KiQZngBmkVTw7vlHm+rFM/v4+ZfCVc=;
+        b=YfVVpMlh3AgWVaOw8BAqH0WNL6zBa3y3ZX/ML7tUNBIuQuW3kyGi9vZXe84DNlGNouwNhI
+        vspqSluF6nr+ZKET4ijthsFCpSBWrLrslZAFZrCseQrmqNWz5WYopEmIi6xR1wpMVy2HTG
+        HtiCcYZOdEr0+v8XouguUounQcNg0Zjrh02LZToA+6rm6y0P5gE9jQRT7KBSiOqNZNxGfI
+        TfOrA6aYGbZzAwuHkTEwOv75RXrKHzkUOIdl5Pdu97qx+RHoVYgM1Dw8GXyZQ8kjdlLE/K
+        ppQ7lOf2hB7RFHYmd0a+vOTLBJW+O1PnVz0Mp9A2aziBItdIPRf8Zha+Hh04lQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690928708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6vBNRn+H/dJq3KiQZngBmkVTw7vlHm+rFM/v4+ZfCVc=;
+        b=qICwBH2O/ACaej1WWGuDl2V2Z5ehM13vyBVJeYwCoQni/JQKI+RGOzbSjHbyvjJUgiuM6O
+        uWN9TLIlApESnhCQ==
+To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        linux-hyperv@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: RE: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
+In-Reply-To: <873513n31m.ffs@tglx>
+References: <20230728105650.565799744@linutronix.de>
+ <20230728120930.839913695@linutronix.de>
+ <BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR21MB1688.namprd21.prod.outlook.com>
+ <871qgop8dc.ffs@tglx>
+ <20230731132714.GH29590@hirez.programming.kicks-ass.net>
+ <87sf94nlaq.ffs@tglx>
+ <BYAPR21MB16885EA9B2A7F382D2F9C5A2D705A@BYAPR21MB1688.namprd21.prod.outlook.com>
+ <87fs53n6xd.ffs@tglx>
+ <BYAPR21MB1688CE738E6DB857031B829DD705A@BYAPR21MB1688.namprd21.prod.outlook.com>
+ <873513n31m.ffs@tglx>
+Date:   Wed, 02 Aug 2023 00:25:07 +0200
+Message-ID: <87r0omjt8c.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compiling big-endian targets with Clang produces the diagnostic:
+Michael!
 
-fs/namei.c:2173:13: warning: use of bitwise '|' with boolean operands
-[-Wbitwise-instead-of-logical]
-} while (!(has_zero(a, &adata, &constants) | has_zero(b, &bdata, &constants)));
-          ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                           ||
-fs/namei.c:2173:13: note: cast one or both operands to int to silence
-this warning
+On Tue, Aug 01 2023 at 00:12, Thomas Gleixner wrote:
+> On Mon, Jul 31 2023 at 21:27, Michael Kelley wrote:
+> Clearly the hyper-v BIOS people put a lot of thoughts into this:
+>
+>>    x2APIC features / processor topology (0xb):
+>>       extended APIC ID                      = 0
+>>       --- level 0 ---
+>>       level number                          = 0x0 (0)
+>>       level type                            = thread (1)
+>>       bit width of level                    = 0x1 (1)
+>>       number of logical processors at level = 0x2 (2)
+>>       --- level 1 ---
+>>       level number                          = 0x1 (1)
+>>       level type                            = core (2)
+>>       bit width of level                    = 0x6 (6)
+>>       number of logical processors at level = 0x40 (64)
+>
+> FAIL:                                           ^^^^^
+>
+> While that field is not meant for topology evaluation it is at least
+> expected to tell the actual number of logical processors at that level
+> which are actually available. 
+>
+> The CPUID APIC ID aka initial_apicid clearly tells that the topology has
+> 36 logical CPUs in package 0 and 36 in package 1 according to your
+> table.
+>
+> On real hardware this looks like this:
+>
+>       --- level 1 ---
+>       level number                          = 0x1 (1)
+>       level type                            = core (2)
+>       bit width of level                    = 0x6 (6)
+>       number of logical processors at level = 0x38 (56)
+>
+> Which corresponds to reality and is consistent. But sure, consistency is
+> overrated.
 
-It appears that when has_zero was introduced, two definitions were
-produced with different signatures (in particular different return types).
+So I looked really hard to find some hint how to detect this situation
+on the boot CPU, which allows us to mitigate it, but there is none at
+all.
 
-Looking at the usage in hash_name() in fs/namei.c, I suspect that
-has_zero() is meant to be invoked twice per while loop iteration; using
-logical-or would not update `bdata` when `a` did not have zeros. So I
-think it's preferred to always return an unsigned long rather than a
-bool then update the while loop in hash_name() to use a logical-or
-rather than bitwise-or.
+So we are caught between a rock and a hard place, which provides us two
+mutually exclusive options to chose from:
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1832
-Fixes: 36126f8f2ed8 ("word-at-a-time: make the interfaces truly generic")
-Debugged-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+  1) Have a sane topology evaluation mechanism which solves the known
+     problems of hybrid systems, wrong sizing estimates and other
+     unpleasantries.
+
+  2) Support the Hyper-V BIOS trainwreck forever.
+
+Unsurprisingly #2 is not really an option as #1 is a crucial issue for
+the kernel and we need it resolved urgently as of yesterday.
+
+So while I'm definitely a strong supporter of no-regression policy, I
+have to make an argument here why this particular issue is _not_
+covered:
+
+ 1) Hyper-V BIOS/firmware violates the firmware specification and
+    requirements which are clearly spelled out in the SDM.
+
+ 2) This violatation is reported on every boot with one promiment
+    message per brought up AP where the initial APIC ID as provided by
+    CPUID leaf 0xB deviates from the APIC ID read from "hardware", which is
+    also provided by MADT starting with CPU 36 in the provided example:
+
+    "[FIRMWARE BUG] CPU36: APIC id mismatch. Firmware: 40 APIC: 24"
+
+    repeating itself up to CPU71 with the relevant diverging APIC IDs.
+
+    At least that's what the upstream kernel produces according to
+    validate_apic_and_package_id() in such an situation.
+
+ 3) This is known for years and the Hyper-V Linux team tried to get this
+    resolved, but obviously their arguments fell on deaf ears.
+
+    IOW, the firmware BUG message has been ignored willfully for years
+    due to "works for me, why should I care?" attitude.
+
+Seriously, kernel development cannot be held hostage forever by the
+wilful ignorance of a BIOS team, which refuses to adhere to
+specifications and defines their own world order.
+
+The x86 maintainer team is chosing the lesser of two evils and lets
+those who created the problem and refused to resolve it deal with the
+outcome.
+
+Just to clarify. This is not preventing affected guests from booting.
+The worst consequence is a slight performance regression because the
+firmware provided topology information is not matching reality and
+therefore the scheduler placement vs. L3 affinity sucks. That's clearly
+not a kernel problem.
+
+I'm happy to aid accelerating this thought process by elevating the
+existing pr_err(FW_BUG....) to a solid WARN_ON_ONCE(). See below.
+
+Thanks,
+
+        tglx
 ---
- include/asm-generic/word-at-a-time.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/asm-generic/word-at-a-time.h b/include/asm-generic/word-at-a-time.h
-index 20c93f08c993..95a1d214108a 100644
---- a/include/asm-generic/word-at-a-time.h
-+++ b/include/asm-generic/word-at-a-time.h
-@@ -38,7 +38,7 @@ static inline long find_zero(unsigned long mask)
- 	return (mask >> 8) ? byte : byte + 1;
- }
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1688,7 +1688,7 @@ static void validate_apic_and_package_id
  
--static inline bool has_zero(unsigned long val, unsigned long *data, const struct word_at_a_time *c)
-+static inline unsigned long has_zero(unsigned long val, unsigned long *data, const struct word_at_a_time *c)
- {
- 	unsigned long rhs = val | c->low_bits;
- 	*data = rhs;
-
----
-base-commit: 18b44bc5a67275641fb26f2c54ba7eef80ac5950
-change-id: 20230801-bitwise-7812b11e5fb7
-
-Best regards,
--- 
-Nick Desaulniers <ndesaulniers@google.com>
-
+ 	apicid = apic->cpu_present_to_apicid(cpu);
+ 
+-	if (apicid != c->topo.apicid) {
++	if (WARN_ON_ONCE(apicid != c->topo.apicid)) {
+ 		pr_err(FW_BUG "CPU%u: APIC id mismatch. Firmware: %x APIC: %x\n",
+ 		       cpu, apicid, c->topo.initial_apicid);
+ 	}
