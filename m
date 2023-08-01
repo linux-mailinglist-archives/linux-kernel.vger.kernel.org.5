@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBB176B326
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1153276B324
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234141AbjHALYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
+        id S234090AbjHALYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233995AbjHALXi (ORCPT
+        with ESMTP id S233974AbjHALXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Aug 2023 07:23:38 -0400
-Received: from mail-4318.protonmail.ch (mail-4318.protonmail.ch [185.70.43.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C170EB2;
-        Tue,  1 Aug 2023 04:23:05 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 11:22:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1690888983; x=1691148183;
-        bh=/GbdM8wTz38mFTXJXJcRCr+lPwpUtRE7lW/yp7qtVLY=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=Qa9Xr1mcVm25LuHUedB9uIoa86cCeHZ7ol8EWuvfnw91sipA+vvchEBCfwzINcPgw
-         TQD3G0x2HHXL41CMUWyvM70KpLCEoelsC+tsncsPs+E4lpqQKn6LHSahRGzYBRvUuH
-         S3KXaQeSBXLgyUC2z4BFV5tFa+EY8Fck+8jFrd0n+C3g5yejqTCXflpdphRa5x5sIf
-         nErACxz9T8gmk+RcYKfPrsWUfVAYfVd3hSVu8NNL4x/4Tk+VRyuSaPxkkfer6p5Wi7
-         aOjz5YYwPcRJNSu66nnt7As0A2xnHHbMdrV8KUr7c+ixUjHoRsEqy1lvIt4JR5TgcH
-         kS0mPalOoAAXQ==
-To:     linux-kernel@vger.kernel.org
-From:   "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Gareth Peoples <mail@gpeopl.es>
-Subject: [PATCH v2 3/3] ARM: dts: qcom-msm8916-samsung-fortuna: Include dts from arm64
-Message-ID: <20230801112134.4689-1-linmengbo0689@protonmail.com>
-In-Reply-To: <20230801111745.4629-1-linmengbo0689@protonmail.com>
-References: <20230801111745.4629-1-linmengbo0689@protonmail.com>
-Feedback-ID: 40467236:user:proton
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: from xry111.site (xry111.site [89.208.246.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F0D9B
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 04:23:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+        s=default; t=1690888984;
+        bh=MppDrBnXdUlmfC3sOWixz1Op3KV6t+4ylVpzcvMVzpw=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=jEA33zTpKmX+tV6nGCvpO/xo4sCZxJf7xjIBk5iHrliSEsk+6ovRZx/oIIsKcZ4nE
+         nltLYOYoFd4/lvYwtI2a+s8SaAX9+T0jpi9YzVfMTRIfjKYF6zqZ+X/UN+L91HH9ZV
+         E2ocilZvJwtpCmLoWM1iuQyXncloedFPkwTRfEPU=
+Received: from localhost.localdomain (xry111.site [IPv6:2001:470:683e::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@xry111.site)
+        by xry111.site (Postfix) with ESMTPSA id C7A0E6599C;
+        Tue,  1 Aug 2023 07:23:01 -0400 (EDT)
+Message-ID: <44a99b78933afeb1b33d8c51487fe0673281af9b.camel@xry111.site>
+Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
+From:   Xi Ruoyao <xry111@xry111.site>
+To:     Guo Ren <guoren@kernel.org>, WANG Rui <wangrui@loongson.cn>
+Cc:     chenhuacai@kernel.or, kernel@xen0n.name, arnd@arndb.de,
+        andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
+        peterz@infradead.org, will@kernel.org, boqun.feng@gmail.com,
+        mark.rutland@arm.com, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Date:   Tue, 01 Aug 2023 19:23:00 +0800
+In-Reply-To: <CAJF2gTR2ON33wc87iV564rkDbNiE56h_t0kzKKXdJtGqgJ1sOQ@mail.gmail.com>
+References: <20230801011554.3950435-1-guoren@kernel.org>
+         <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
+         <CAJF2gTRa5erHomJzLgUFO4SGqd5zSDwn6r3WN7kM8aWpv1vesg@mail.gmail.com>
+         <CAJF2gTQ1hV1vipAo3H4X4WiPO84kVVFZcdGq7u4f0bVTry_akQ@mail.gmail.com>
+         <CAHirt9gVqE=9vviJEY=kY=booVRmFPHrnFsKCXPXnXiWTB8bZQ@mail.gmail.com>
+         <CAJF2gTR2ON33wc87iV564rkDbNiE56h_t0kzKKXdJtGqgJ1sOQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After adding all necessary support for MSM8916 SMP/cpuidle without PSCI
-on ARM32, build fortunaltezt and heatqlte device trees from the arm64
-tree together with the ARM32 include to allow booting this device on ARM32.
+On Tue, 2023-08-01 at 18:49 +0800, Guo Ren wrote:
+> > On Tue, Aug 1, 2023 at 5:05=E2=80=AFPM Guo Ren <guoren@kernel.org> wrot=
+e:
+> > >=20
+> > > > The CoRR problem would cause wider problems than this.For this case=
+,
+> > > > do you mean your LL -> LL would be reordered?
+> > > >=20
+> > > > CPU 0
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 CPU1
+> > > > LL(2) (set ex-monitor)
+> > > >=20
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 store (break the ex-monitor)
+> > > > LL(1) (reordered instruction set ex-monitor
+> > > > SC(3) (successes ?)
+> > > Sorry for the mail client reformat, I mean:
+> > >=20
+> > > CPU0=C2=A0 LL(2) (set ex-monitor)
+> > > CPU1=C2=A0 STORE (break the ex-monitor)
+> > > CPU0=C2=A0 LL(1) (reordered instruction set ex-monitor
+> > > CPU0=C2=A0 SC(3) (success?)
+> >=20
+> > No. LL and LL won't reorder because LL implies a memory barrier(though
+> > not acquire semantics).
+> That means we could remove __WEAK_LLSC_MB totally, right?
 
-The approach to include device tree files from other architectures is
-inspired from e.g. the Raspberry Pi (bcm2711-rpi-4-b.dts) where this is
-used to build the device tree for both ARM32 and ARM64.
+As I've said, to implement CAS on LA464 this barrier is *really* needed.
+I initially didn't believe it then I spent one night (from 11 PM to 04
+AM) debugging GCC libgomp test failures.
 
-[Add workaround to TSENS problem]
-Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-[Add heatqlte]
-Co-developed-by: Gareth Peoples <mail@gpeopl.es>
-Signed-off-by: Gareth Peoples <mail@gpeopl.es>
-Signed-off-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
----
- arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts | 8 ++++++++
- arch/arm/boot/dts/qcom-msm8916-samsung-heatqlte.dts     | 8 ++++++++
- arch/arm/boot/dts/qcom/Makefile                         | 2 ++
- 3 files changed, 18 insertions(+)
- create mode 100644 arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts
- create mode 100644 arch/arm/boot/dts/qcom-msm8916-samsung-heatqlte.dts
+On LA664 (3A6000) things may change though.
 
-diff --git a/arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts b/arch=
-/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts
-new file mode 100644
-index 000000000000..b9704fea7029
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts
-@@ -0,0 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "arm64/qcom/msm8916-samsung-fortunaltezt.dts"
-+#include "qcom-msm8916-smp.dtsi"
-+
-+&tsens {
-+=09/* FIXME: The device crashes when accessing the SROT region for some re=
-ason */
-+=09status =3D "disabled";
-+};
-diff --git a/arch/arm/boot/dts/qcom-msm8916-samsung-heatqlte.dts b/arch/arm=
-/boot/dts/qcom-msm8916-samsung-heatqlte.dts
-new file mode 100644
-index 000000000000..ec3edd4f31c3
---- /dev/null
-+++ b/arch/arm/boot/dts/qcom-msm8916-samsung-heatqlte.dts
-@@ -0,0 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include "arm64/qcom/msm8916-samsung-heatqlte.dts"
-+#include "qcom-msm8916-smp.dtsi"
-+
-+&tsens {
-+=09/* FIXME: The device crashes when accessing the SROT region for some re=
-ason */
-+=09status =3D "disabled";
-+};
-diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makef=
-ile
-index 3dfb1c8cefb8..746d7aa940d9 100644
---- a/arch/arm/boot/dts/qcom/Makefile
-+++ b/arch/arm/boot/dts/qcom/Makefile
-@@ -27,7 +27,9 @@ dtb-$(CONFIG_ARCH_QCOM) +=3D \
- =09qcom-msm8660-surf.dtb \
- =09qcom-msm8916-samsung-e5.dtb \
- =09qcom-msm8916-samsung-e7.dtb \
-+=09qcom-msm8916-samsung-fortunaltezt.dtb \
- =09qcom-msm8916-samsung-grandmax.dtb \
-+=09qcom-msm8916-samsung-heatqlte.dtb \
- =09qcom-msm8916-samsung-serranove.dtb \
- =09qcom-msm8960-cdp.dtb \
- =09qcom-msm8960-samsung-expressatt.dtb \
 --=20
-2.39.2
-
-
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
