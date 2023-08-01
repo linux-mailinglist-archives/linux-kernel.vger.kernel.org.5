@@ -2,133 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25EA876A899
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8E376A8A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:03:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbjHAGCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        id S231250AbjHAGDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbjHAGCB (ORCPT
+        with ESMTP id S229698AbjHAGDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:02:01 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5944E7D;
-        Mon, 31 Jul 2023 23:01:59 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3715woir026178;
-        Tue, 1 Aug 2023 06:01:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=rSy7dPqq1OG7Y6hBJX9jb9y8LyPyQfc/Of+5x7X6wfw=;
- b=iBKwCs4ccCspmHvyG8PFYisnizgHPHKUQNzSCmCWCVZwLc2YAErXMqB229vowCiCq/6H
- DLq/yKtTDq2KBEibSp4ieEP2iNN8zl2hV2BshfVkeMHVzm7HmpMs5rAt9zLWYxkJkU0/
- n720ix46ErzmuhhmPhG0tpN32iJ/p8nL/oM43ro8IZTkaDtQq58GV+7MqvC0ojnluQAT
- GkrROlzCuTPxcfh63RsjaIAGGTrrDzrEyz0Z2rhWd0/xgpfEARMXO77sBdh0QjNMGwcK
- u7SH0ibWEN5aM8VgQmXoKcpZTIwvgrO/Jvmku++rANJBXbd1lyyCI068duM6wkDrp9N2 Ng== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6a502tpr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 06:01:54 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37161rZ0031148
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 1 Aug 2023 06:01:53 GMT
-Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Mon, 31 Jul 2023 23:01:50 -0700
-From:   Prashanth K <quic_prashk@quicinc.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "AngeloGioacchino Del Regno" 
-        <angelogioacchino.delregno@collabora.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Prashanth K <quic_prashk@quicinc.com>
-Subject: [v2] usb: common: usb-conn-gpio: Prevent bailing out if initial role is none
-Date:   Tue, 1 Aug 2023 11:31:35 +0530
-Message-ID: <1690869695-32018-1-git-send-email-quic_prashk@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-MIME-Version: 1.0
+        Tue, 1 Aug 2023 02:03:07 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86528127;
+        Mon, 31 Jul 2023 23:03:05 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 775BF3200904;
+        Tue,  1 Aug 2023 02:03:03 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 01 Aug 2023 02:03:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1690869782; x=1690956182; bh=qk
+        yMf1jROQESc+dKhHjjFPnh08dBcae/QUx9x+GbCtI=; b=XAaP+/+UOTnwvVemks
+        YopMYaMcMUz0s+743h6XRCTAg2WKOijp29Zjj1ombpCZS+VMsL/qqBEmiUPz/qpA
+        ZIp5w4IeU4KKI0hzCExJW5ycpG4u6w5jrjiPCcFNQib/TBeHIOOEKekZYElsdKHa
+        nym0UgIN/QbDR8yXjVyt5EsfgXyoV80wTGbOO56BIhBLmNYu+X6EJiwwXhehGm9l
+        icdLq9ZoN9ZMmbKEd7smNtbj6enzC7nGJ+ReduVHIUrxUYoy4zczCxOVXYe/CYv0
+        3V7RPMAzPqShh0g4GPkA+WB1+1CT2k3qd+2/jvfVtGh1YpIRNwi19QYgmIkiHHGS
+        /geA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690869782; x=1690956182; bh=qkyMf1jROQESc
+        +dKhHjjFPnh08dBcae/QUx9x+GbCtI=; b=V8jBjh1HxL7d/irNHDlnPPAOnn6gQ
+        MnBvXgkw8Kcsf1Ltw7zPbvfQEvDmi3MDuBRbd6yRrihNN27JsQiQmndqVrk0KnEe
+        9QjBQvMytcV5UaWbAdRKPxW5njka3m4UO2GNnIDZQ2CqWGPfAeKnKoscDashq3WX
+        hfkeptDhapzV5twxlCT24zS7/OmFfXu9dUZ0E3cZM7Xvp1P1Dn+nnZZDUUC/P26G
+        1H+yRk3EgoF+Kp4ky9CyjAgCWz38M7a2+Ojjy4mUP1oXqN6ES1boPJJYdz0FkANM
+        lcea4fXYdTo0p1MdB64OvRuyj4yb502ox+17D7EnRMCVDIcV4eJLJGSdQ==
+X-ME-Sender: <xms:FaDIZPXoQWDYyYcXI7aYyWNtgvXfQuUWLCk6S_GiRblQ8EEsihgL_g>
+    <xme:FaDIZHlqLrMACy7aKb5HsWLRRjf-0hKJxTSexGjiZxBjkUOF4tgBLPtvnnTrs9zXy
+    oZ5aidxIVy2DrEd8EI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeehgddutdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:FaDIZLZjWAsnldLMF8roNWDifXJ4QxIQXGXSF5yGCd7Uf3tPOaTmTA>
+    <xmx:FaDIZKVk40KF_pmKQnslC9CpYAjXYYevFS-G2yhvjX_4wlgzwCuPhA>
+    <xmx:FaDIZJncneE9pXFtFULPv5Kms_B050h3hbu8RJfxDF1t7RUmhlBjbw>
+    <xmx:FqDIZLmQSvKyItu5zGcPmO9aT1Vur76WzvC-PJl_GDzdtfVGUI2vAQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id A0937B60089; Tue,  1 Aug 2023 02:03:01 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+Mime-Version: 1.0
+Message-Id: <2d9c843f-e884-47d3-a825-6402db0a2cb8@app.fastmail.com>
+In-Reply-To: <87y1ivln1v.ffs@tglx>
+References: <20230721102237.268073801@infradead.org>
+ <20230721105743.819362688@infradead.org> <87edkonjrk.ffs@tglx>
+ <87mszcm0zw.ffs@tglx>
+ <20230731192012.GA11704@hirez.programming.kicks-ass.net>
+ <87a5vbn5r0.ffs@tglx>
+ <20230731213341.GB51835@hirez.programming.kicks-ass.net>
+ <87y1ivln1v.ffs@tglx>
+Date:   Tue, 01 Aug 2023 08:02:21 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Peter Zijlstra" <peterz@infradead.org>
+Cc:     "Jens Axboe" <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Darren Hart" <dvhart@infradead.org>, dave@stgolabs.net,
+        andrealmeid@igalia.com,
+        "Andrew Morton" <akpm@linux-foundation.org>, urezki@gmail.com,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Lorenzo Stoakes" <lstoakes@gmail.com>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, Linux-Arch <linux-arch@vger.kernel.org>,
+        malteskarupke@web.de
+Subject: Re: [PATCH v1 02/14] futex: Extend the FUTEX2 flags
 Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: rL03t9C0u4CngsQgmCsE9uu27tZeobvl
-X-Proofpoint-ORIG-GUID: rL03t9C0u4CngsQgmCsE9uu27tZeobvl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- priorityscore=1501 phishscore=0 clxscore=1015 mlxscore=0
- lowpriorityscore=0 impostorscore=0 bulkscore=0 suspectscore=0
- mlxlogscore=851 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2306200000 definitions=main-2308010055
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently if we bootup a device without cable connected, then
-usb-conn-gpio won't call set_role() since last_role is same as
-current role. This happens because during probe last_role gets
-initialised to zero.
+On Tue, Aug 1, 2023, at 00:43, Thomas Gleixner wrote:
+> On Mon, Jul 31 2023 at 23:33, Peter Zijlstra wrote:
+>> On Mon, Jul 31, 2023 at 11:14:11PM +0200, Thomas Gleixner wrote:
+>>> --- a/include/uapi/linux/futex.h
+>>> +++ b/include/uapi/linux/futex.h
+>>> @@ -74,7 +74,12 @@
+>>>  struct futex_waitv {
+>>>  	__u64 val;
+>>>  	__u64 uaddr;
+>>> -	__u32 flags;
+>>> +	union {
+>>> +		__u32	flags;
+>>> +		__u32	size	: 2,
+>>> +				: 5,
+>>> +			private	: 1;
+>>> +	};
+>>>  	__u32 __reserved;
+>>>  };
+>>
+>> Durr, I'm not sure I remember if that does the right thing across
+>> architectures -- might just work. But I'm fairly sure this isn't the
+>> only case of a field in a flags thing in our APIs. Although obviously
+>> I can't find another case in a hurry :/
+>
+> I know, but that doesn't make these things more readable and neither an
+> argument against doing it for futex2 :)
+...
+>
+> Still that explicit bitfield does neither need comments nor does it
+> leave room for interpretation.
 
-To avoid this, add a new flag initial_detection in the struct
-usb_conn_info, which prevents from bailing out during initial
-detection.
+It may be clear to the compiler, but without comments or
+looking up psABI documentation I certainly wouldn't know
+immediately which bits of the flags word overlay the bitfields
+for a given combination of __BIG_ENDIAN/__LITTLE_ENDIAN
+and __BIG_ENDIAN_BITFIELD/__LITTLE_ENDIAN_BITFIELD or
+architectures with unusual struct alignment requirements
+(m68k or arm-oabi).
 
-Fixes: 4602f3bff266 ("usb: common: add USB GPIO based connection detection driver")
-Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
----
-v2: Updated the bool name to initial_detection.
+I'd prefer to completely avoid the bitfield here. Maybe having
+exclusive flags for each width would be less confusing, at the
+cost of needing two more flag bits and a slightly more complicated
+sanity check, or we could take an extra byte out of the __reserved
+field to store the length.
 
- drivers/usb/common/usb-conn-gpio.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
-index 766005d..501e8bc9 100644
---- a/drivers/usb/common/usb-conn-gpio.c
-+++ b/drivers/usb/common/usb-conn-gpio.c
-@@ -42,6 +42,7 @@ struct usb_conn_info {
- 
- 	struct power_supply_desc desc;
- 	struct power_supply *charger;
-+	bool initial_detection;
- };
- 
- /*
-@@ -86,11 +87,13 @@ static void usb_conn_detect_cable(struct work_struct *work)
- 	dev_dbg(info->dev, "role %s -> %s, gpios: id %d, vbus %d\n",
- 		usb_role_string(info->last_role), usb_role_string(role), id, vbus);
- 
--	if (info->last_role == role) {
-+	if (!info->initial_detection && info->last_role == role) {
- 		dev_warn(info->dev, "repeated role: %s\n", usb_role_string(role));
- 		return;
- 	}
- 
-+	info->initial_detection = false;
-+
- 	if (info->last_role == USB_ROLE_HOST && info->vbus)
- 		regulator_disable(info->vbus);
- 
-@@ -258,6 +261,7 @@ static int usb_conn_probe(struct platform_device *pdev)
- 	device_set_wakeup_capable(&pdev->dev, true);
- 
- 	/* Perform initial detection */
-+	info->initial_detection = true;
- 	usb_conn_queue_dwork(info, 0);
- 
- 	return 0;
--- 
-2.7.4
-
+       Arnd
