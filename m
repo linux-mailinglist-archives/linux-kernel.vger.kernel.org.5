@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B7476A877
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0402376A878
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230238AbjHAFsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 01:48:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53502 "EHLO
+        id S230304AbjHAFsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 01:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbjHAFs3 (ORCPT
+        with ESMTP id S229921AbjHAFsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 01:48:29 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8B31B5;
-        Mon, 31 Jul 2023 22:48:25 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3712gRsm026351;
-        Tue, 1 Aug 2023 05:48:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4Zn7E0Dl+W5BuwFXIKMOv+P0FYRaC1MsuIZCNeQvZfE=;
- b=Q8OLNOBhma2YcjkuHn4D1B/UHK/Uvmw+xyUPWJbyiQjhtiLwH6b2nkxKqe8moc6B3u6u
- O/l2UTHnUYb+vSNv1vNWkq6Vt0DSoP5ktZgEJM3+UhzOeQjgbGFyxl0DqY/D2Z57k0Ds
- 95yw+hnjEeTsWYzRMtgcnH1q2cVrtinoF+w1AgiQ8ikZuNHJWohP+bPcOz4clc/RpEBt
- ra/rgdhlVk2JQCl/WB5wvnbP65SoBcyqp8gmeSBx+sDxVsInqZgdrsAvQd62Dxdtbg9i
- RBCWGORArslGr1KhowBM8nL6t3tFxjF8RhM6p1xQ9zvwDG9CjDWUbiYQLpGVZb4V7Nby cA== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6rharcux-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 05:48:16 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3715mFfJ027519
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 1 Aug 2023 05:48:15 GMT
-Received: from [10.110.54.109] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 22:48:12 -0700
-Message-ID: <ce06c845-f3c8-a733-dc21-ee0ba4b4ca68@quicinc.com>
-Date:   Mon, 31 Jul 2023 22:48:11 -0700
+        Tue, 1 Aug 2023 01:48:30 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23C4119;
+        Mon, 31 Jul 2023 22:48:26 -0700 (PDT)
+X-QQ-mid: bizesmtp64t1690868901t0c02f9n
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 01 Aug 2023 13:48:19 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: W+onFc5Tw4NPiGH5LHtUKH8SpenMHSikuPbIg86FMMkhn+3tjiXobadjp8olQ
+        VwS36oE07P5MVVnltHrjj0JsD2MwK2GlE2yCZ0KZ2jO5Lwn4aybxqRwdf7T1BCrOIL7BERn
+        Dl1T4ZjZWwK1xJKY2tcU7k/1UElf9uJ4e0S8cVEh4R7hoxvzV7q1rh3GClYASlG4MMWG3df
+        70vklwg5IwpkuSkOe/bIfstP7WFVUhbum++4GnvBF1vnAHNGKi8KaBERsUtUiuJvXcwgzE8
+        KKlDVyRRZly8xZywlY6lPWo23WXfBXmsOzTrQAEksEHW8Mkg7D/tFuFh5M41tCOg8y1Uv8d
+        wHbHW6wYLPShWT6YMlgCwA+OBQ2kaCjwoezemz1xHEEFlREvGr4PBRAAKTAng==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 9204860643675782347
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     linux@weissschuh.net
+Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        tanyuan@tinylab.org, w@1wt.eu
+Subject: [PATCH v2 08/10] selftests/nolibc: avoid sign-compare warnings
+Date:   Tue,  1 Aug 2023 13:48:19 +0800
+Message-Id: <20230801054819.37659-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230801-nolibc-warnings-v2-8-1ba5ca57bd9b@weissschuh.net>
+References: <20230801-nolibc-warnings-v2-8-1ba5ca57bd9b@weissschuh.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH] EDAC/device: Add sysfs notification for UE,CE count
- change
-From:   Trilok Soni <quic_tsoni@quicinc.com>
-To:     Deepti Jaggi <quic_djaggi@quicinc.com>, <james.morse@arm.com>,
-        <mchehab@kernel.org>, <rric@kernel.org>, <bp@alien8.de>,
-        <tony.luck@intel.com>
-CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, <quic_psodagud@quicinc.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-References: <20230731220059.28474-1-quic_djaggi@quicinc.com>
- <3e2bf03e-2bc1-445e-d8ce-4975c044eea0@quicinc.com>
-Content-Language: en-US
-In-Reply-To: <3e2bf03e-2bc1-445e-d8ce-4975c044eea0@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 0dEiw39yIqzBDRsd-yshWhcjDBf25sTv
-X-Proofpoint-ORIG-GUID: 0dEiw39yIqzBDRsd-yshWhcjDBf25sTv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 clxscore=1015 impostorscore=0 spamscore=0
- bulkscore=0 phishscore=0 mlxlogscore=475 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308010053
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/2023 3:40 PM, Trilok Soni wrote:
-> On 7/31/2023 3:00 PM, Deepti Jaggi wrote:
->> A daemon running in user space collects information on correctable
->> and uncorrectable errors from EDAC driver by reading corresponding
->> sysfs entries and takes appropriate action.
-> 
-> Which daemon we are referring here? Can you please provide the link to 
-> the project?
-> 
-> Are you using this daemon?
-> 
-> https://mcelog.org/ - It is for x86, but is your daemon project different?
-> 
->> This patch adds support for user space daemon to wait on poll() until
->> the sysfs entries for UE count and CE count change and then read updated
->> counts instead of continuously monitoring the sysfs entries for
->> any changes.
-> 
-> The modifications below are architecture agnostic so I really want to 
-> know what exactly we are fixing and if there is a problem.
+Hi, Thomas
 
-+ CC linux-arm-msm
+> These warnings will be enabled later so avoid triggering them.
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
+>  tools/testing/selftests/nolibc/nolibc-test.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> index cb17cccd0bc7..82714051c72f 100644
+> --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> @@ -749,7 +749,7 @@ static int test_mmap_munmap(void)
+>  	};
+>  
+>  	page_size = getpagesize();
+> -	if (page_size < 0)
+> +	if (page_size == 0)
+>  		return -1;
+>
 
-Please keep linux-arm-msm in CC if there is a next revision.
+It was my mistake before, but do we need to align with the one used in
+test_getpagesize():
 
--- 
----Trilok Soni
+    static int test_getpagesize(void)
+    {
+            long x = getpagesize();
+            int c;
+    
+            if (x < 0)
+                    return x;
 
+Use 'long' instead of 'size_t' to declare page_size?
+
+Thanks,
+Zhangjin
+
+>  	/* find a right file to mmap, existed and accessible */
+> @@ -998,7 +998,7 @@ static int run_stdlib(int min, int max)
+>  #define EXPECT_VFPRINTF(c, expected, fmt, ...)				\
+>  	ret += expect_vfprintf(llen, c, expected, fmt, ##__VA_ARGS__)
+>  
+> -static int expect_vfprintf(int llen, size_t c, const char *expected, const char *fmt, ...)
+> +static int expect_vfprintf(int llen, int c, const char *expected, const char *fmt, ...)
+>  {
+>  	int ret, fd, w, r;
+>  	char buf[100];
+> 
+> -- 
+> 2.41.0
