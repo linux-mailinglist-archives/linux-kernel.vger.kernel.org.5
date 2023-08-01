@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC24076BB41
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C75DF76BB4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233788AbjHARaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        id S234039AbjHARcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233856AbjHARab (ORCPT
+        with ESMTP id S232136AbjHARcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:30:31 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009A5E71
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:30:28 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-563e6524aaeso3446270a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:30:28 -0700 (PDT)
+        Tue, 1 Aug 2023 13:32:50 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10934E71;
+        Tue,  1 Aug 2023 10:32:50 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-3493862cfb1so1917555ab.1;
+        Tue, 01 Aug 2023 10:32:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690911028; x=1691515828;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5UkfaFNS6PyQamzbmmCA96R1ctLMlDtPFxg5rPKFvn0=;
-        b=ig03R9f26Io9mZRy/gthUxgE3w+/0k7snxeJgxSl6+mwRNVWizC02DNjIQDq8m3xrH
-         Vg840aKGAHvEdMCDs04jyfu3tyarRhBnRM84RJCzWd5nUxZPZ8k7tWC/tinCeIEbqtOf
-         4Xd/hpUfIMEz1/0zzW7kCpw/bOi703v2qdmP0=
+        d=gmail.com; s=20221208; t=1690911169; x=1691515969;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rxfffmnKLjMpRaF+oj2k9XWjuJzG7Mpl/8fOeP1Tlj8=;
+        b=VcIp2nJOsFoMuplIw3t8qwptOiLdWXL8dwUmccUOs6t93Cc9xR9xVrWBEDBf7tzu0H
+         uMXkDf38gFnQafLeR6fnO1wPdRHl5iaFTwuMX+LzJ646zOl1X7m4UuG+2amE2UqSqH7l
+         Pz3zqm2tMdLhixWFTWqYqJBYiM0Rp5twyLOQGZfL1yEB7ZQ56l+PLOEzKsZeqrjbZ9uI
+         yYkhyzfjZKUVKFRcfoMiQjHuWcnWn9JQi07F7ywdV02+cBq/mCzX6jAU/EEd11gV/o9h
+         6RVkuiWqTuQJdrCYyAkC9qb8HWR3oXCEiGAuvcdT/gilw3zvbh1e+rZOiXiDzM0Pn0Ts
+         jhIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690911028; x=1691515828;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5UkfaFNS6PyQamzbmmCA96R1ctLMlDtPFxg5rPKFvn0=;
-        b=H6Ia4ybs3H9gCQcrw6wSolxIxs3LAW00m2rhK4auWyu0zVRBGm7elKSbNoRlvbmtok
-         VOYtK9YdX6VAGxI9VOkmkTlFmHcquXxgg+x0aRIXyBNzbAOupokkeJVbQNwa3nUr2CFJ
-         aURBEEyw6kM1eZIb7biqclwOF0fbVzRaHYATjU5d9dJ/bovfBXB1c5tGdKusZddAVIpx
-         qudwlDBFW8V0d/ZACRk+BGUYSOU8zftyMM1HhbhLWki+0Nyxh+jwpTNRrGrB4RX2zrs0
-         utTRqE5TRUNkK1HgrFu/IY1AxlYddkT1M+rPW+tXqbbAgzGnMKfLAs9UQzJ36qrKxRDq
-         KLew==
-X-Gm-Message-State: ABy/qLYZQH4INbnIia7Dd3Pw6ddkE9Ww0xBpQQbSKjUM20wLjCV1o0Wc
-        lbx30R3tW3m9mZBJrfni3/yc7g==
-X-Google-Smtp-Source: APBJJlGeRYdG7+8sYbdVaQYLv/kApU8rzcyO+v9cxR1ZM3lkg/IZowd6BZdBE5G926/17ajA741tIw==
-X-Received: by 2002:a17:90a:46c7:b0:262:e742:f40a with SMTP id x7-20020a17090a46c700b00262e742f40amr10648695pjg.44.1690911028158;
-        Tue, 01 Aug 2023 10:30:28 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id z136-20020a63338e000000b0056001f43726sm10106893pgz.92.2023.08.01.10.30.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 10:30:27 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 10:30:27 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Ian Lin <ian.lin@infineon.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Hector Martin <marcan@marcan.st>,
-        Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ramesh Rangavittal <ramesh.rangavittal@infineon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ryohei Kondo <ryohei.kondo@cypress.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Brian Henriquez <brian.henriquez@cypress.com>,
-        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
-        <SHA-cyfmac-dev-list@infineon.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        petr@tesarici.cz, Przemek Kitszel <przemyslaw.kitszel@intel.com>
-Subject: Re: [PATCH v1 3/3] wifi: brcm80211: change channel_list to a
- flexible array
-Message-ID: <202308011028.BC462D29E@keescook>
-References: <cover.1690904067.git.petr.tesarik.ext@huawei.com>
- <c18a31a293fb5ba5d7a845c4b5052516ff724a9f.1690904067.git.petr.tesarik.ext@huawei.com>
+        d=1e100.net; s=20221208; t=1690911169; x=1691515969;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rxfffmnKLjMpRaF+oj2k9XWjuJzG7Mpl/8fOeP1Tlj8=;
+        b=JpitpFvg5TyZOCkQlExTr5uRRij3XYhxKgAQCV/IW5M3GEZtMRJ1uVd5JDmVe7X95/
+         Q6Yl5t/DfPaKJFrXSFel78cQ4H/vfY8QuKs+PXPwoV+MFu7PLr19EcJFHSY6Gd/p1vhP
+         zUlORiGC9bqL4pVQbk7On9lng3rVyKm23O/rY2bDK7G8pCGeum4qWURh9ITZYmVXwzxu
+         kgGhJfpT5j20szTaMfgYseOgyH0/yAhMPpFFuYMteW/2WRmsXDUU8QqTggRiHmxjkVNO
+         yGm55mHc0HA+fuDiteK1HRkI08FVV5ugjMzGDXXdV9NGTkDIflW5kJXos6NrKH4VmGb8
+         vkJw==
+X-Gm-Message-State: ABy/qLYxIB/+r7bCZ8ca+lIeFimMnv0qGA8Ou8Ufo8j63HN8t+WAOeMf
+        rby1aivuYof899iGWRhSJ+Q=
+X-Google-Smtp-Source: APBJJlEfYNHAmcDXBD2bJbxgOiEovrQqUA0zD0/q6PfUdnUPPnfhj2y4B95WeuHZ1i438RcxyPsVUQ==
+X-Received: by 2002:a05:6e02:1a0d:b0:342:512a:ccec with SMTP id s13-20020a056e021a0d00b00342512accecmr13376561ild.31.1690911169208;
+        Tue, 01 Aug 2023 10:32:49 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n11-20020a92d9cb000000b00345d2845c42sm3991233ilq.57.2023.08.01.10.32.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 10:32:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
+Date:   Tue, 1 Aug 2023 10:32:45 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c18a31a293fb5ba5d7a845c4b5052516ff724a9f.1690904067.git.petr.tesarik.ext@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Roy Hopkins <rhopkins@suse.de>,
+        Joel Fernandes <joel@joelfernandes.org>, paulmck@kernel.org,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
+References: <2cfc68cc-3a2f-4350-a711-ef0c0d8385fd@paulmck-laptop>
+ <D56D0318-A2EA-4448-8F4D-BE84706E26A5@joelfernandes.org>
+ <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
+ <20230731141934.GK29590@hirez.programming.kicks-ass.net>
+ <20230731143954.GB37820@hirez.programming.kicks-ass.net>
+ <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
+ <20230731145232.GM29590@hirez.programming.kicks-ass.net>
+ <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
+ <20230731161452.GA40850@hirez.programming.kicks-ass.net>
+ <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
+ <20230731211517.GA51835@hirez.programming.kicks-ass.net>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
+ 6.4.7-rc1 review)
+In-Reply-To: <20230731211517.GA51835@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 05:36:42PM +0200, Petr Tesarik wrote:
-> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+On 7/31/23 14:15, Peter Zijlstra wrote:
+> On Mon, Jul 31, 2023 at 09:34:29AM -0700, Guenter Roeck wrote:
+>>> Ha!, I was poking around the same thing. My hack below seems to (so far,
+>>> <20 boots) help things.
+>>>
+>>
+>> So, dumb question:
+>> How comes this bisects to "sched/fair: Remove sched_feat(START_DEBIT)" ?
 > 
-> The channel list is in fact a flexible array, but it has a length of 1 to
-> make sure there is enough room for the special chanspec -1 when the struct
-> is allocated on stack to abort a scan.
+> That commit changes the timings of things; dumb luck otherwise.
 
-There is patch series proposing a way to put flex array structures with
-a compile-time-known size on the stack. Would that help for this series?
-https://lore.kernel.org/netdev/20230801111923.118268-1-przemyslaw.kitszel@intel.com/
+Kind of scary. So I only experienced the problem because the START_DEBIT patch
+happened to be queued roughly at the same time, and it might otherwise have
+found its way unnoticed into the upstream kernel. That makes me wonder if this
+or other similar patches may uncover similar problems elsewhere in the kernel
+(i.e., either hide new or existing race conditions or expose existing ones).
 
--Kees
+This in turn makes me wonder if it would be possible to define a test which
+would uncover such problems without the START_DEBIT patch. Any idea ?
 
->
--- 
-Kees Cook
+Guenter
+
