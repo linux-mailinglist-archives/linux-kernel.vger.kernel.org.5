@@ -2,159 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F01E76B9EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFF576B9F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbjHAQua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
+        id S232274AbjHAQvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230473AbjHAQu2 (ORCPT
+        with ESMTP id S232248AbjHAQvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:50:28 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B89210E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:50:26 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 514D860005;
-        Tue,  1 Aug 2023 16:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690908624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fngJDTlQm55UuzieJxHzhuoFqug03dAdiNzE2dkdzJs=;
-        b=U5tp6+G/Z2p2wVrE/fgugGwfU6d0zMOWy1Y4jcr5cjLSuSAMiCr0sQ3HTnfleU5k6y/+y2
-        VD3eyXDBiGKTT/sWIvLylo7PvSdIVLUkzndmFhSzWkOoqDoISkyC8g2WwLKMHdgWhQxxsc
-        BAMqSlivLCWFPUwog9gPg5m3uDwQKNNOGI4lPKR0wArQ9adF3HA8snceofxboNOkbnlY7Y
-        SE4h5dEr+QvBZp6hMQeUEqCAsqkwHa+xOg5cjVc9HbibshihdRAPLhJ+7+BHmWIoU6rM8H
-        3sTJva+pjyKj4vc0ZoY792XvjQu+N8OERsHUWphnUlZnC58fv85YMjBI7H96sQ==
-Date:   Tue, 1 Aug 2023 18:50:22 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     John Thomson <lists@johnthomson.fastmail.com.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Michael Walle <michael@walle.cc>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v6 1/3] ABI: sysfs-nvmem-cells: Expose cells through
- sysfs
-Message-ID: <20230801185022.03e5aa03@xps-13>
-In-Reply-To: <44a87823-1bde-7bba-4a38-d768d2754dec@linaro.org>
-References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
-        <20230717075147.43326-2-miquel.raynal@bootlin.com>
-        <925d1b35-3e70-4b5d-9533-f730a652d242@app.fastmail.com>
-        <20230731175152.5c2adbae@xps-13>
-        <44a87823-1bde-7bba-4a38-d768d2754dec@linaro.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 1 Aug 2023 12:51:12 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47482115
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:51:10 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-63d2b7d77bfso41337366d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690908670; x=1691513470;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SzryMjySR1ilIQJogkpEiq4/HKuChL2WRfawPAgdQ7I=;
+        b=Ay6+nlDYEoqMNTybOc0KFFJlHBad2YSerfhdGyk+P162oTlZ4rSIxgYECnAFdPYfZC
+         QjG9FYti6+ZPqeC6KTIB9NN1mRHYa/iKXOjEaMPTqUHcxrKqTpCW564dIxBmXL//A8HB
+         MYYLwahJ9g/qa4y6sqbcgZzqyjvhy3P3TwvoWIiI/u6RAak/bqUI1YQutMdJSyEwSGZZ
+         3m53lbPQUWxVPY2WtnTQvN0setYnWeBP/AdbOKatEHphdtAPQYOU4yIEt+Dvw4fJbN4M
+         9SUWlcnv+BDLm5rqjYq9EzG4hsyBuRwioBV71s0xh0jrGkJ2LJLhD7KLn2h/XOJCN6Nc
+         apeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690908670; x=1691513470;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SzryMjySR1ilIQJogkpEiq4/HKuChL2WRfawPAgdQ7I=;
+        b=JlQXa69YUc5/voZbvz12jlyx+dWJ2gLMVirPsRWTtale3VhNI+srx0cXU+kGS6P2Zk
+         dBFbvHED9yzGR0RWeedghwLUL0X6Mq0h0bQXtPup2nGIslRoqK5Je/9pR9mLJ0QQR+3D
+         hTx6mjo1d39rjpYHvMCIhUaMIkA56p37S7uBfmq7RCV5WAZH0tDweExlKf6ELKmYZkZr
+         0JAq2mhPtRr/0JyxKPS5lY2t8VdCMvN0Twttywc5q+rOowyna8N8bVh4VbEgHYOjEpVH
+         DjmljSWOcQOvNlxOooLdk5ngvrFyNd6eLByuZIvTl1Skbli+rmcvOVRrL4TBgsuRY1su
+         Gecw==
+X-Gm-Message-State: ABy/qLauHhPgacFrY4mPutcWYKWjkJ7Tu8hhhMoVKgsJ3oe87zeKgzhd
+        LOyLrXDhHJRkh5BAakYl1DwTgFWuEq9fX8gQyXgdEw==
+X-Google-Smtp-Source: APBJJlFz/6BADrSwtiTVvMZa6M/4XOaJ8DJhEWR8hoAe1oALta5l1GpWPAUhN9QLDVEAM35A+giuSxBF3BNpkqI8xCs=
+X-Received: by 2002:a05:6214:57cb:b0:63d:1aed:72ee with SMTP id
+ lw11-20020a05621457cb00b0063d1aed72eemr13837966qvb.64.1690908669745; Tue, 01
+ Aug 2023 09:51:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20230728113415.21067-1-will@kernel.org> <20230728113415.21067-2-will@kernel.org>
+ <CAK7LNATaXbGb7w=5xHtpVdPwcpm3iMPfzooABpftah1Sdw7ooQ@mail.gmail.com>
+In-Reply-To: <CAK7LNATaXbGb7w=5xHtpVdPwcpm3iMPfzooABpftah1Sdw7ooQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Aug 2023 09:50:58 -0700
+Message-ID: <CAKwvOd=BPCoib2zcMnnuw-S9T52CGXvJ3MXyTawurV7x2P_XqQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] scripts/faddr2line: Use LLVM addr2line and readelf
+ if LLVM=1
+To:     Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org,
+        clang-built-linux <llvm@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Jul 29, 2023 at 1:48=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+>
+> On Fri, Jul 28, 2023 at 8:34=E2=80=AFPM Will Deacon <will@kernel.org> wro=
+te:
+> >
+> > GNU utilities cannot necessarily parse objects built by LLVM, which can
+> > result in confusing errors when using 'faddr2line':
+> >
+> > $ CROSS_COMPILE=3Daarch64-linux-gnu- ./scripts/faddr2line vmlinux do_on=
+e_initcall+0xf4/0x260
+> > aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.rel=
+r.dyn'
 
-srinivas.kandagatla@linaro.org wrote on Tue, 1 Aug 2023 10:06:14 +0100:
+^ old GNU binutils missing support for RELR relocation format.
+https://maskray.me/blog/2021-10-31-relative-relocations-and-relr
 
-> On 31/07/2023 16:51, Miquel Raynal wrote:
-> > Hi John,
-> >=20
-> > Srinivas, a question for you below.
-> >=20
-> > lists@johnthomson.fastmail.com.au wrote on Sun, 23 Jul 2023 19:39:50
-> > +0000:
-> >  =20
-> >> Hi Miquel,
-> >>
-> >> On Mon, 17 Jul 2023, at 07:51, Miquel Raynal wrote: =20
-> >>> The binary content of nvmem devices is available to the user so in the
-> >>> easiest cases, finding the content of a cell is rather easy as it is
-> >>> just a matter of looking at a known and fixed offset. However, nvmem
-> >>> layouts have been recently introduced to cope with more advanced
-> >>> situations, where the offset and size of the cells is not known in
-> >>> advance or is dynamic. When using layouts, more advanced parsers are
-> >>> used by the kernel in order to give direct access to the content of e=
-ach
-> >>> cell regardless of their position/size in the underlying device, but
-> >>> these information were not accessible to the user.
-> >>>
-> >>> By exposing the nvmem cells to the user through a dedicated cell/ fol=
-der
-> >>> containing one file per cell, we provide a straightforward access to
-> >>> useful user information without the need for re-writing a userland
-> >>> parser. Content of nvmem cells is usually: product names, manufacturi=
-ng
-> >>> date, MAC addresses, etc,
-> >>>
-> >>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> >>> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >>> ---
-> >>>   Documentation/ABI/testing/sysfs-nvmem-cells | 19 +++++++++++++++++++
-> >>>   1 file changed, 19 insertions(+)
-> >>>   create mode 100644 Documentation/ABI/testing/sysfs-nvmem-cells
-> >>>
-> >>> diff --git a/Documentation/ABI/testing/sysfs-nvmem-cells
-> >>> b/Documentation/ABI/testing/sysfs-nvmem-cells
-> >>> new file mode 100644
-> >>> index 000000000000..b2d15a8d36e5
-> >>> --- /dev/null
-> >>> +++ b/Documentation/ABI/testing/sysfs-nvmem-cells
-> >>> @@ -0,0 +1,19 @@
-> >>> +What:		/sys/bus/nvmem/devices/.../cells/<cell-name>
-> >>> +Date:		May 2023
-> >>> +KernelVersion:	6.5
-> >>> +Contact:	Miquel Raynal <miquel.raynal@bootlin.com>
-> >>> +Description:
-> >>> +		The "cells" folder contains one file per cell exposed by
-> >>> +		the nvmem device. The name of the file is the cell name. =20
-> >>
-> >> Could we consider using a file within a folder (name defined by cell p=
-ropertys) to access the cell bytes?
-> >> Example (pick the best path and filename):
-> >> /sys/bus/nvmem/devices/.../cells/<cell-name>/bytes
-> >>
-> >> That way, it is much easier to expand this at a later stage,
-> >> like adding an of_node link at
-> >> /sys/bus/nvmem/devices/.../cells/<cell-name>/of_node
-> >> or exposing other nvmem cell properties. =20
-> >=20
-> > I have no strong opinion. Srinivas what do you prefer? I'm fine either
-> > ways. I like the simplicity of the current approach more, but it's true
-> > that it is more easy to make it grow if we follow John idea. =20
->=20
-> Sounds sensible to me.
+> > aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM val=
+ue: 0x25
 
-I've looked a bit more in depth how to do that and to be honest I did
-not find an easy way. Attributes and attribute groups are meant to be
-used with only one indirection level and making an additional one seems
-terribly more complex. Maybe I'm wrong, if you have a piece of code
-doing that please share it and I'll make my best to integrate it,
-otherwise I think I'll keep the simplest approach.
+^ old GNU binutils missing support for DWARFv5
 
-> >> This is particularly relevant given the cell-name alone does not always
-> >> uniquely represent a cell on an nvmem device.
-> >> https://lore.kernel.org/lkml/ZLaZ7fzUSsa0Igx1@makrotopia.org/ =20
-> >=20
-> > It seems like this is gonna be fixed by suffixing @<offset> to the
-> > name, as anyway whatever solution we choose, it is gonna be needed. =20
->=20
-> we have to be careful here not to break the nvmem_cell_get() users.
+I suppose if someone used a new GCC with an old binutils, they could
+observe the exact same errors.
 
-I believe this only applies to sysfs names, so nvmem_cell_get() which
-uses real cells names should not be affected.
+> > do_one_initcall+0xf4/0x260:
+> > aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.rel=
+r.dyn'
+> > aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM val=
+ue: 0x25
+> > $x.73 at main.c:?
+> >
+> > Although this can be worked around by setting CROSS_COMPILE to "llvm=3D=
+-",
+> > it's cleaner to follow the same syntax as the top-level Makefile and
+> > accept LLVM=3D1 as an indication to use the llvm- tools.
+>
+>
+> Just a note.
+> The top Makefile accepts not only LLVM=3D1
+> but also LLVM=3D/usr/lib/llvm-16/bin/.
+> The latter is useful when you want to use
+> a particular version or a custom one.
 
+Ah, like LLVM_PREFIX/LLVM_SUFFIX a la
+commit e9c281928c24 ("kbuild: Make $(LLVM) more flexible")
+
+Then we could have both UTIL_PREFIX+UTIL_SUFFIX.
+
+>
+> Another idea might be to use a generic '${prefix}'
+> as this is not hooked to the Makefile,
+> but I do not have a strong opinion.
+>
+>
+>
+>
+> >
+> > Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+> > Cc: John Stultz <jstultz@google.com>
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > ---
+> >  scripts/faddr2line | 10 ++++++++--
+> >  1 file changed, 8 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/scripts/faddr2line b/scripts/faddr2line
+> > index 0e73aca4f908..62a3fa6f6f59 100755
+> > --- a/scripts/faddr2line
+> > +++ b/scripts/faddr2line
+> > @@ -58,8 +58,14 @@ die() {
+> >         exit 1
+> >  }
+> >
+> > -READELF=3D"${CROSS_COMPILE:-}readelf"
+> > -ADDR2LINE=3D"${CROSS_COMPILE:-}addr2line"
+> > +if [ "${LLVM:-}" =3D=3D "1" ]; then
+> > +       UTIL_PREFIX=3Dllvm-
+> > +else
+> > +       UTIL_PREFIX=3D${CROSS_COMPILE:-}
+> > +fi
+> > +
+> > +READELF=3D"${UTIL_PREFIX}readelf"
+> > +ADDR2LINE=3D"${UTIL_PREFIX}addr2line"
+> >  AWK=3D"awk"
+> >  GREP=3D"grep"
+> >
+> > --
+> > 2.41.0.487.g6d72f3e995-goog
+> >
+>
+>
+> --
+> Best Regards
+> Masahiro Yamada
+
+
+
+--=20
 Thanks,
-Miqu=C3=A8l
+~Nick Desaulniers
