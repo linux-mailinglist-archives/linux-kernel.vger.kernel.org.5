@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F12BA76AB69
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 829FF76AB6F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbjHAIyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53810 "EHLO
+        id S232312AbjHAIy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232014AbjHAIya (ORCPT
+        with ESMTP id S232066AbjHAIyd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:54:30 -0400
+        Tue, 1 Aug 2023 04:54:33 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19043173E;
-        Tue,  1 Aug 2023 01:54:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C051724;
+        Tue,  1 Aug 2023 01:54:26 -0700 (PDT)
 Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3718AVRh002680;
-        Tue, 1 Aug 2023 08:54:17 GMT
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3718B7hi003104;
+        Tue, 1 Aug 2023 08:54:21 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=OqNAhSgX4VSa5LWjXu19KOATQChWFLhjwE9EJ2lFDx4=;
- b=Lm6vSJLfZOCXaqTgrgsXkc9MVR4SYVpsQD5/k82O8OcvkAYDPdER1RKKHVWP1vHI/IUe
- mOz+sC+c/g1lAm5uInt3SRNCGmR3xX21Ricjs2Mr9pdXdwOpIztfXI1WiSMtUcJKc1GP
- Plu0PKLQ49LGo7O+FeaeTb3rryX5KWwjuDILYDUatfrhvC32lYpxbZ5AwI6QNEiMVayl
- x3Bqf9LE13shPQshFkcZTdkW+A9SzHAEsV3Y+SEWNrc9+/t9nLxrXlsh9Hq56OZeldIg
- +FgY9dnUdF1gFXBRhQfXU6fy62OKn1FKxhiPDw2Cm3rtU1jg8dcDBIN3F8DjdYAcWFPA xQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6e9j237v-1
+ bh=ghvxQiJd5TkmFCXeuJG89WbNvPANziVFWaRGL4K9pC4=;
+ b=Fsus8a6YO5rgD/9q3C+k2HSjPDVb0FjPBFC3nzEN+eRZDk6K2WfE2rnayXpYidWCSPke
+ Sx/AFOxJ3ulTfFDurQ3KLTLOSFfk/VN/Zxc8KCk1NpEjsHMn+HCWk6JGi2WFGKRhFbH+
+ xIrstvBdM0/Hs+hmCYybYzevSR9v9UCGhyR+tD9rILyyJpx8Yb3fwXBSj5kG2qGzg6cC
+ G7bl856qirEvQuFKXLJi8Mr31Q68922vEzq1NuUtqb2U/7cRunlJ4zjTGaesFYI9Thoq
+ CIeGXpQxfcnX9kFbyn3A25L4B3jYIj9UPo+RNXSQGkq2MSsU/VzBNL6AyGs0Z3hf/RRA xw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6e9j237y-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 08:54:17 +0000
+        Tue, 01 Aug 2023 08:54:21 +0000
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3718sGFR016628
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3718sJD9005720
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 1 Aug 2023 08:54:16 GMT
+        Tue, 1 Aug 2023 08:54:20 GMT
 Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 1 Aug 2023 01:54:12 -0700
+ 15.2.1118.30; Tue, 1 Aug 2023 01:54:16 -0700
 From:   Luo Jie <quic_luoj@quicinc.com>
 To:     <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
@@ -48,9 +48,9 @@ To:     <agross@kernel.org>, <andersson@kernel.org>,
 CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <quic_srichara@quicinc.com>, Luo Jie <quic_luoj@quicinc.com>
-Subject: [PATCH 1/3] clk: Add the flag CLK_ENABLE_MUTEX_LOCK of enabling clock
-Date:   Tue, 1 Aug 2023 16:53:50 +0800
-Message-ID: <20230801085352.22873-2-quic_luoj@quicinc.com>
+Subject: [PATCH 2/3] dt-bindings: clock: add qca8386/qca8084 clock and reset definitions
+Date:   Tue, 1 Aug 2023 16:53:51 +0800
+Message-ID: <20230801085352.22873-3-quic_luoj@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230801085352.22873-1-quic_luoj@quicinc.com>
 References: <20230801085352.22873-1-quic_luoj@quicinc.com>
@@ -61,8 +61,8 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: piSbiNbOrGwpmn46u8i8hebV3odmavsA
-X-Proofpoint-GUID: piSbiNbOrGwpmn46u8i8hebV3odmavsA
+X-Proofpoint-ORIG-GUID: DyA0oKEFnshThDl2PQaoSoAEoFk8Mi--
+X-Proofpoint-GUID: DyA0oKEFnshThDl2PQaoSoAEoFk8Mi--
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
@@ -81,211 +81,275 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support the clock controller where the HW register is
-accessed by MDIO bus, the spin lock can't be used because
-of sleep during the MDIO operation.
-
-Add the flag CLK_ENABLE_MUTEX_LOCK to hint clock framework
-to use mutex lock instead of the spin lock.
+QCA8386/QCA8084 includes the clock & reset controller that is
+accessed by MDIO bus. Two work modes are supported, qca8386 works
+as switch mode, qca8084 works as PHY mode.
 
 Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
 ---
- drivers/clk/clk.c            | 78 +++++++++++++++++++++++++++++-------
- include/linux/clk-provider.h |  4 ++
- 2 files changed, 68 insertions(+), 14 deletions(-)
+ .../bindings/clock/qcom,nsscc-qca8k.yaml      |  59 ++++++++++
+ include/dt-bindings/clock/qcom,nsscc-qca8k.h  | 102 ++++++++++++++++++
+ include/dt-bindings/reset/qcom,nsscc-qca8k.h  |  76 +++++++++++++
+ 3 files changed, 237 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,nsscc-qca8k.yaml
+ create mode 100644 include/dt-bindings/clock/qcom,nsscc-qca8k.h
+ create mode 100644 include/dt-bindings/reset/qcom,nsscc-qca8k.h
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index c249f9791ae8..9f1be8e3f32b 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -26,12 +26,15 @@
- 
- static DEFINE_SPINLOCK(enable_lock);
- static DEFINE_MUTEX(prepare_lock);
-+static DEFINE_MUTEX(enable_mutex_lock);
- 
- static struct task_struct *prepare_owner;
- static struct task_struct *enable_owner;
-+static struct task_struct *enable_mutex_owner;
- 
- static int prepare_refcnt;
- static int enable_refcnt;
-+static int enable_mutex_refcnt;
- 
- static HLIST_HEAD(clk_root_list);
- static HLIST_HEAD(clk_orphan_list);
-@@ -149,7 +152,7 @@ static void clk_prepare_unlock(void)
- 	mutex_unlock(&prepare_lock);
- }
- 
--static unsigned long clk_enable_lock(void)
-+static unsigned long clk_enable_spin_lock(void)
- 	__acquires(enable_lock)
- {
- 	unsigned long flags;
-@@ -177,7 +180,7 @@ static unsigned long clk_enable_lock(void)
- 	return flags;
- }
- 
--static void clk_enable_unlock(unsigned long flags)
-+static void clk_enable_spin_unlock(unsigned long flags)
- 	__releases(enable_lock)
- {
- 	WARN_ON_ONCE(enable_owner != current);
-@@ -191,6 +194,52 @@ static void clk_enable_unlock(unsigned long flags)
- 	spin_unlock_irqrestore(&enable_lock, flags);
- }
- 
-+static void clk_enable_mutex_lock(void)
-+{
-+	if (!mutex_trylock(&enable_mutex_lock)) {
-+		if (enable_mutex_owner == current) {
-+			enable_mutex_refcnt++;
-+			return;
-+		}
-+		mutex_lock(&enable_mutex_lock);
-+	}
-+	WARN_ON_ONCE(enable_mutex_owner != NULL);
-+	WARN_ON_ONCE(enable_mutex_refcnt != 0);
-+	enable_mutex_owner = current;
-+	enable_mutex_refcnt = 1;
-+}
+diff --git a/Documentation/devicetree/bindings/clock/qcom,nsscc-qca8k.yaml b/Documentation/devicetree/bindings/clock/qcom,nsscc-qca8k.yaml
+new file mode 100644
+index 000000000000..8fb77156070c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/qcom,nsscc-qca8k.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/qcom,nsscc-qca8k.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+static void clk_enable_mutex_unlock(void)
-+{
-+	WARN_ON_ONCE(enable_mutex_owner != current);
-+	WARN_ON_ONCE(enable_mutex_refcnt == 0);
++title: Qualcomm NSS Clock & Reset Controller on QCA8386/QCA8084
 +
-+	if (--enable_mutex_refcnt)
-+		return;
-+	enable_mutex_owner = NULL;
-+	mutex_unlock(&enable_mutex_lock);
-+}
++maintainers:
++  - Luo Jie <quic_luoj@quicinc.com>
 +
-+static unsigned long clk_enable_lock(struct clk_core *core)
-+{
-+	unsigned long flags = 0;
++description: |
++  Qualcomm NSS clock control module provides the clocks and resets
++  on QCA8386(switch mode)/QCA8084(PHY mode)
 +
-+	if (core && (core->flags & CLK_ENABLE_MUTEX_LOCK))
-+		clk_enable_mutex_lock();
-+	else
-+		flags = clk_enable_spin_lock();
++  See also::
++    include/dt-bindings/clock/qcom,nsscc-qca8k.h
++    include/dt-bindings/reset/qcom,nsscc-qca8k.h
 +
-+	return flags;
-+}
++properties:
++  compatible:
++    const: qcom,nsscc-qca8k
 +
-+static void clk_enable_unlock(struct clk_core *core, unsigned long flags)
-+{
-+	if (core && (core->flags & CLK_ENABLE_MUTEX_LOCK))
-+		clk_enable_mutex_unlock();
-+	else
-+		clk_enable_spin_unlock(flags);
-+}
++  clocks:
++    items:
++      - description: Chip XO source
++      - description: UNIPHY1 RX 312P5M clock source
++      - description: UNIPHY1 TX 312P5M clock source
 +
- static bool clk_core_rate_is_protected(struct clk_core *core)
- {
- 	return core->protect_count;
-@@ -1111,9 +1160,9 @@ static void clk_core_disable_lock(struct clk_core *core)
- {
- 	unsigned long flags;
- 
--	flags = clk_enable_lock();
-+	flags = clk_enable_lock(core);
- 	clk_core_disable(core);
--	clk_enable_unlock(flags);
-+	clk_enable_unlock(core, flags);
- }
- 
- /**
-@@ -1178,9 +1227,9 @@ static int clk_core_enable_lock(struct clk_core *core)
- 	unsigned long flags;
- 	int ret;
- 
--	flags = clk_enable_lock();
-+	flags = clk_enable_lock(core);
- 	ret = clk_core_enable(core);
--	clk_enable_unlock(flags);
-+	clk_enable_unlock(core, flags);
- 
- 	return ret;
- }
-@@ -1390,7 +1439,7 @@ static void __init clk_disable_unused_subtree(struct clk_core *core)
- 	if (clk_pm_runtime_get(core))
- 		goto unprepare_out;
- 
--	flags = clk_enable_lock();
-+	flags = clk_enable_lock(core);
- 
- 	if (core->enable_count)
- 		goto unlock_out;
-@@ -1413,7 +1462,7 @@ static void __init clk_disable_unused_subtree(struct clk_core *core)
- 	}
- 
- unlock_out:
--	clk_enable_unlock(flags);
-+	clk_enable_unlock(core, flags);
- 	clk_pm_runtime_put(core);
- unprepare_out:
- 	if (core->flags & CLK_OPS_PARENT_ENABLE)
-@@ -2042,9 +2091,9 @@ static struct clk_core *__clk_set_parent_before(struct clk_core *core,
- 	}
- 
- 	/* update the clk tree topology */
--	flags = clk_enable_lock();
-+	flags = clk_enable_lock(core);
- 	clk_reparent(core, parent);
--	clk_enable_unlock(flags);
-+	clk_enable_unlock(core, flags);
- 
- 	return old_parent;
- }
-@@ -2087,9 +2136,9 @@ static int __clk_set_parent(struct clk_core *core, struct clk_core *parent,
- 	trace_clk_set_parent_complete(core, parent);
- 
- 	if (ret) {
--		flags = clk_enable_lock();
-+		flags = clk_enable_lock(core);
- 		clk_reparent(core, old_parent);
--		clk_enable_unlock(flags);
-+		clk_enable_unlock(core, flags);
- 
- 		__clk_set_parent_after(core, old_parent, parent);
- 
-@@ -3388,6 +3437,7 @@ static const struct {
- 	ENTRY(CLK_IS_CRITICAL),
- 	ENTRY(CLK_OPS_PARENT_ENABLE),
- 	ENTRY(CLK_DUTY_CYCLE_PARENT),
-+	ENTRY(CLK_ENABLE_MUTEX_LOCK),
- #undef ENTRY
- };
- 
-@@ -4410,9 +4460,9 @@ void clk_unregister(struct clk *clk)
- 	 * Assign empty clock ops for consumers that might still hold
- 	 * a reference to this clock.
- 	 */
--	flags = clk_enable_lock();
-+	flags = clk_enable_lock(clk->core);
- 	clk->core->ops = &clk_nodrv_ops;
--	clk_enable_unlock(flags);
-+	clk_enable_unlock(clk->core, flags);
- 
- 	if (ops->terminate)
- 		ops->terminate(clk->core->hw);
-diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
-index 0f0cd01906b4..084b1f6fe321 100644
---- a/include/linux/clk-provider.h
-+++ b/include/linux/clk-provider.h
-@@ -32,6 +32,10 @@
- #define CLK_OPS_PARENT_ENABLE	BIT(12)
- /* duty cycle call may be forwarded to the parent clock */
- #define CLK_DUTY_CYCLE_PARENT	BIT(13)
-+/* clock operation is accessing register by MDIO, which needs to sleep.
-+ * the lock should use mutex_lock instead of spin_lock.
++  reg:
++    items:
++      - description: MDIO bus address for Clock & Reset Controller register
++
++required:
++  - compatible
++  - clocks
++  - reg
++
++allOf:
++  - $ref: qcom,gcc.yaml#
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    clock-controller@24 {
++      compatible = "qcom,nsscc-qca8k";
++      #clock-cells = <1>;
++      #reset-cells = <1>;
++      reg = <24>;
++      clocks = <&qca8k_xo>,
++               <0>,
++               <0>,
++               <0>,
++               <0>,
++               <&qca8k_uniphy1_rx312p5m>,
++               <&qca8k_uniphy1_tx312p5m>;
++    };
++...
+diff --git a/include/dt-bindings/clock/qcom,nsscc-qca8k.h b/include/dt-bindings/clock/qcom,nsscc-qca8k.h
+new file mode 100644
+index 000000000000..3f49147aacc5
+--- /dev/null
++++ b/include/dt-bindings/clock/qcom,nsscc-qca8k.h
+@@ -0,0 +1,102 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
 + */
-+#define CLK_ENABLE_MUTEX_LOCK	BIT(14)
- 
- struct clk;
- struct clk_hw;
++
++#ifndef _DT_BINDINGS_CLK_QCOM_NSS_CC_QCA8K_H
++#define _DT_BINDINGS_CLK_QCOM_NSS_CC_QCA8K_H
++
++#define NSS_CC_SWITCH_CORE_CLK_SRC				0
++#define NSS_CC_SWITCH_CORE_CLK					1
++#define NSS_CC_APB_BRIDGE_CLK					2
++#define NSS_CC_MAC0_TX_CLK_SRC					3
++#define NSS_CC_MAC0_TX_DIV_CLK_SRC				4
++#define NSS_CC_MAC0_TX_CLK					5
++#define NSS_CC_MAC0_TX_SRDS1_CLK				6
++#define NSS_CC_MAC0_RX_CLK_SRC					7
++#define NSS_CC_MAC0_RX_DIV_CLK_SRC				8
++#define NSS_CC_MAC0_RX_CLK					9
++#define NSS_CC_MAC0_RX_SRDS1_CLK				10
++#define NSS_CC_MAC1_TX_CLK_SRC					11
++#define NSS_CC_MAC1_TX_DIV_CLK_SRC				12
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_DIV_CLK_SRC		13
++#define NSS_CC_MAC1_SRDS1_CH0_RX_CLK				14
++#define NSS_CC_MAC1_TX_CLK					15
++#define NSS_CC_MAC1_GEPHY0_TX_CLK				16
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_CLK			17
++#define NSS_CC_MAC1_RX_CLK_SRC					18
++#define NSS_CC_MAC1_RX_DIV_CLK_SRC				19
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_DIV_CLK_SRC		20
++#define NSS_CC_MAC1_SRDS1_CH0_TX_CLK				21
++#define NSS_CC_MAC1_RX_CLK					22
++#define NSS_CC_MAC1_GEPHY0_RX_CLK				23
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_CLK			24
++#define NSS_CC_MAC2_TX_CLK_SRC					25
++#define NSS_CC_MAC2_TX_DIV_CLK_SRC				26
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_DIV_CLK_SRC		27
++#define NSS_CC_MAC2_SRDS1_CH1_RX_CLK				28
++#define NSS_CC_MAC2_TX_CLK					29
++#define NSS_CC_MAC2_GEPHY1_TX_CLK				30
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_CLK			31
++#define NSS_CC_MAC2_RX_CLK_SRC					32
++#define NSS_CC_MAC2_RX_DIV_CLK_SRC				33
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_DIV_CLK_SRC		34
++#define NSS_CC_MAC2_SRDS1_CH1_TX_CLK				35
++#define NSS_CC_MAC2_RX_CLK					36
++#define NSS_CC_MAC2_GEPHY1_RX_CLK				37
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_CLK			38
++#define NSS_CC_MAC3_TX_CLK_SRC					39
++#define NSS_CC_MAC3_TX_DIV_CLK_SRC				40
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_DIV_CLK_SRC		41
++#define NSS_CC_MAC3_SRDS1_CH2_RX_CLK				42
++#define NSS_CC_MAC3_TX_CLK					43
++#define NSS_CC_MAC3_GEPHY2_TX_CLK				44
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_CLK			45
++#define NSS_CC_MAC3_RX_CLK_SRC					46
++#define NSS_CC_MAC3_RX_DIV_CLK_SRC				47
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_DIV_CLK_SRC		48
++#define NSS_CC_MAC3_SRDS1_CH2_TX_CLK				49
++#define NSS_CC_MAC3_RX_CLK					50
++#define NSS_CC_MAC3_GEPHY2_RX_CLK				51
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_CLK			52
++#define NSS_CC_MAC4_TX_CLK_SRC					53
++#define NSS_CC_MAC4_TX_DIV_CLK_SRC				54
++#define NSS_CC_MAC4_SRDS1_CH2_XGMII_RX_DIV_CLK_SRC		55
++#define NSS_CC_MAC4_SRDS1_CH3_RX_CLK				56
++#define NSS_CC_MAC4_TX_CLK					57
++#define NSS_CC_MAC4_GEPHY3_TX_CLK				58
++#define NSS_CC_MAC4_SRDS1_CH3_XGMII_RX_CLK			59
++#define NSS_CC_MAC4_RX_CLK_SRC					60
++#define NSS_CC_MAC4_RX_DIV_CLK_SRC				61
++#define NSS_CC_MAC4_SRDS1_CH2_XGMII_TX_DIV_CLK_SRC		62
++#define NSS_CC_MAC4_SRDS1_CH3_TX_CLK				63
++#define NSS_CC_MAC4_RX_CLK					64
++#define NSS_CC_MAC4_GEPHY3_RX_CLK				65
++#define NSS_CC_MAC4_SRDS1_CH3_XGMII_TX_CLK			66
++#define NSS_CC_MAC5_TX_CLK_SRC					67
++#define NSS_CC_MAC5_TX_DIV_CLK_SRC				68
++#define NSS_CC_MAC5_TX_SRDS0_CLK				69
++#define NSS_CC_MAC5_TX_CLK					70
++#define NSS_CC_MAC5_RX_CLK_SRC					71
++#define NSS_CC_MAC5_RX_DIV_CLK_SRC				72
++#define NSS_CC_MAC5_RX_SRDS0_CLK				73
++#define NSS_CC_MAC5_RX_CLK					74
++#define NSS_CC_MAC5_TX_SRDS0_CLK_SRC				75
++#define NSS_CC_MAC5_RX_SRDS0_CLK_SRC				76
++#define NSS_CC_AHB_CLK_SRC					77
++#define NSS_CC_AHB_CLK						78
++#define NSS_CC_SEC_CTRL_AHB_CLK					79
++#define NSS_CC_TLMM_CLK						80
++#define NSS_CC_TLMM_AHB_CLK					81
++#define NSS_CC_CNOC_AHB_CLK					82
++#define NSS_CC_MDIO_AHB_CLK					83
++#define NSS_CC_MDIO_MASTER_AHB_CLK				84
++#define NSS_CC_SYS_CLK_SRC					85
++#define NSS_CC_SRDS0_SYS_CLK					86
++#define NSS_CC_SRDS1_SYS_CLK					87
++#define NSS_CC_GEPHY0_SYS_CLK					88
++#define NSS_CC_GEPHY1_SYS_CLK					89
++#define NSS_CC_GEPHY2_SYS_CLK					90
++#define NSS_CC_GEPHY3_SYS_CLK					91
++
++#endif
+diff --git a/include/dt-bindings/reset/qcom,nsscc-qca8k.h b/include/dt-bindings/reset/qcom,nsscc-qca8k.h
+new file mode 100644
+index 000000000000..1bc763f52333
+--- /dev/null
++++ b/include/dt-bindings/reset/qcom,nsscc-qca8k.h
+@@ -0,0 +1,76 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights reserved.
++ */
++
++#ifndef _DT_BINDINGS_RESET_QCOM_NSS_CC_QCA8K_H
++#define _DT_BINDINGS_RESET_QCOM_NSS_CC_QCA8K_H
++
++#define NSS_CC_SWITCH_CORE_ARES				1
++#define NSS_CC_APB_BRIDGE_ARES				2
++#define NSS_CC_MAC0_TX_ARES				3
++#define NSS_CC_MAC0_TX_SRDS1_ARES			4
++#define NSS_CC_MAC0_RX_ARES				5
++#define NSS_CC_MAC0_RX_SRDS1_ARES			6
++#define NSS_CC_MAC1_SRDS1_CH0_RX_ARES			7
++#define NSS_CC_MAC1_TX_ARES				8
++#define NSS_CC_MAC1_GEPHY0_TX_ARES			9
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_RX_ARES		10
++#define NSS_CC_MAC1_SRDS1_CH0_TX_ARES			11
++#define NSS_CC_MAC1_RX_ARES				12
++#define NSS_CC_MAC1_GEPHY0_RX_ARES			13
++#define NSS_CC_MAC1_SRDS1_CH0_XGMII_TX_ARES		14
++#define NSS_CC_MAC2_SRDS1_CH1_RX_ARES			15
++#define NSS_CC_MAC2_TX_ARES				16
++#define NSS_CC_MAC2_GEPHY1_TX_ARES			17
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_RX_ARES		18
++#define NSS_CC_MAC2_SRDS1_CH1_TX_ARES			19
++#define NSS_CC_MAC2_RX_ARES				20
++#define NSS_CC_MAC2_GEPHY1_RX_ARES			21
++#define NSS_CC_MAC2_SRDS1_CH1_XGMII_TX_ARES		22
++#define NSS_CC_MAC3_SRDS1_CH2_RX_ARES			23
++#define NSS_CC_MAC3_TX_ARES				24
++#define NSS_CC_MAC3_GEPHY2_TX_ARES			25
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_RX_ARES		26
++#define NSS_CC_MAC3_SRDS1_CH2_TX_ARES			27
++#define NSS_CC_MAC3_RX_ARES				28
++#define NSS_CC_MAC3_GEPHY2_RX_ARES			29
++#define NSS_CC_MAC3_SRDS1_CH2_XGMII_TX_ARES		30
++#define NSS_CC_MAC4_SRDS1_CH3_RX_ARES			31
++#define NSS_CC_MAC4_TX_ARES				32
++#define NSS_CC_MAC4_GEPHY3_TX_ARES			33
++#define NSS_CC_MAC4_SRDS1_CH3_XGMII_RX_ARES		34
++#define NSS_CC_MAC4_SRDS1_CH3_TX_ARES			35
++#define NSS_CC_MAC4_RX_ARES				36
++#define NSS_CC_MAC4_GEPHY3_RX_ARES			37
++#define NSS_CC_MAC4_SRDS1_CH3_XGMII_TX_ARES		38
++#define NSS_CC_MAC5_TX_ARES				39
++#define NSS_CC_MAC5_TX_SRDS0_ARES			40
++#define NSS_CC_MAC5_RX_ARES				41
++#define NSS_CC_MAC5_RX_SRDS0_ARES			42
++#define NSS_CC_AHB_ARES					43
++#define NSS_CC_SEC_CTRL_AHB_ARES			44
++#define NSS_CC_TLMM_ARES				45
++#define NSS_CC_TLMM_AHB_ARES				46
++#define NSS_CC_CNOC_AHB_ARES				47
++#define NSS_CC_MDIO_AHB_ARES				48
++#define NSS_CC_MDIO_MASTER_AHB_ARES			49
++#define NSS_CC_SRDS0_SYS_ARES				50
++#define NSS_CC_SRDS1_SYS_ARES				51
++#define NSS_CC_GEPHY0_SYS_ARES				52
++#define NSS_CC_GEPHY1_SYS_ARES				53
++#define NSS_CC_GEPHY2_SYS_ARES				54
++#define NSS_CC_GEPHY3_SYS_ARES				55
++#define NSS_CC_SEC_CTRL_ARES				56
++#define NSS_CC_SEC_CTRL_SENSE_ARES			57
++#define NSS_CC_SLEEP_ARES				58
++#define NSS_CC_DEBUG_ARES				59
++#define NSS_CC_GEPHY0_ARES				60
++#define NSS_CC_GEPHY1_ARES				61
++#define NSS_CC_GEPHY2_ARES				62
++#define NSS_CC_GEPHY3_ARES				63
++#define NSS_CC_DSP_ARES					64
++#define NSS_CC_GLOBAL_ARES				65
++#define NSS_CC_XPCS_ARES				66
++
++#endif
 -- 
 2.34.1
 
