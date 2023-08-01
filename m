@@ -2,129 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E7476B2A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A41D576B2A4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233662AbjHALFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44262 "EHLO
+        id S231883AbjHALGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:06:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233242AbjHALEv (ORCPT
+        with ESMTP id S233998AbjHALF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:04:51 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9E63C0D;
-        Tue,  1 Aug 2023 03:58:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1690887528; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=riU0iAR+POSddJyJ9VTQav1aJPUMIqjF/LwpFKhsXnkZFMjkTbSixJitrSll6mOVS6
-    4DnF51L/zvuOnJSfdh8bbeCbL0/4uAb+jlC8WrsJtV5n5KvZ55r1x5+KGAxqjemEkiwT
-    LjEX77OBAEYTRAKme6EkPFoeL121yagphgulZIwgK8uL9SlQz3q90rSXFl5kgZwEzAyR
-    PZ//TixDbYIF2yS1BPb8Y71VKzZOu6HsVpArr6t2V15ZHacMHlC7kWWRYdpEQi3IY+3y
-    jjzNB1P0+Wu1bsxHtK+XyrIQ4MB78xNCCoTwibrcxzVDgg2nlhcnQLYg0QhnjX2qH86H
-    uQww==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1690887528;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=DHbOBvCZgYYvNTOE8eCfcIFSVNt2pXB9oMJnvEr1yMQ=;
-    b=XrkLabBs7byytSRo7gsNP//omSSbGGic7O+WVTyxbJpX4+ykYdiSGB5oQSjxKlf5Bh
-    uaJDEDBpOT4NA4gMLvKWo8JIoz5TQNjYUtFYTZScqRgzBR91khpifLeGC0LZn9eJAa3K
-    0cBC3QAuJp/YVSXDFiuOshYUZiqMKAPfie+yPIMEJU9/ec0KOYBf3PsLV6gJi4uBtf2t
-    CPc7Fi3G3QDI9RVCw4p1KqRtd0r2pBfxLi8UHZxdtGwHKB/0LHjCSyAnj/5UWtxn6nGw
-    qf82zoQejHksBJGU3IvHqvuEbc7IOjqVyRTGfFUv2akqhd4dujhqDWY6OqdMjQmkzp1g
-    1wbA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1690887528;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=DHbOBvCZgYYvNTOE8eCfcIFSVNt2pXB9oMJnvEr1yMQ=;
-    b=dn1Ej/kf59bpcPHppSQZRMNxuxNvI19hG54oYMhot/dlzhhcBF2Y4x1PC+QCkb68Hi
-    3FxE6VSdJIpgNnJcHrQ+Y3LzxMV+e7+NS6WM424cs0v7ylX3u9I8CCfyZD49Hsm7yxRK
-    s6D9h0bra0G8+jig20BRns9gb5zxmFaldCoLeovy/SgRAtYc87epbN+XHtKeltZb92Ga
-    JhBtmzy3GzyKIuQZk9j3GhhqGdizDNOIhxht/OzuJ9clrZrDdZJ/g9GXid32QO5ZVzGg
-    z77CTx93s7ZZo1t4+bI7ZzJRb06cwGwiEDLGaWtezRwIjutY0OPvzV1RdJ7mtVK0Ym6q
-    Pflg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1690887528;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=DHbOBvCZgYYvNTOE8eCfcIFSVNt2pXB9oMJnvEr1yMQ=;
-    b=m38koJhuqGI76tLhYWjbcwJHCFjyjcjgsErBVIfGl9+Hh7CmCS15i7wiYeW+/kf4gR
-    /Ceun0nyDo9kQ1aX19CA==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8p+L1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.6.6 DYNA|AUTH)
-    with ESMTPSA id k61817z71AwmNkR
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 1 Aug 2023 12:58:48 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 12:58:47 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 03/10] interconnect: qcom: icc-rpm: Let nodes drive
- their own bus clock
-Message-ID: <ZMjlZyFcB9IFEG60@gerhold.net>
-References: <20230726-topic-icc_coeff-v2-0-8c91c6c76076@linaro.org>
- <20230726-topic-icc_coeff-v2-3-8c91c6c76076@linaro.org>
+        Tue, 1 Aug 2023 07:05:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397CB7AA9;
+        Tue,  1 Aug 2023 03:59:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C21C361519;
+        Tue,  1 Aug 2023 10:59:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68F66C433C8;
+        Tue,  1 Aug 2023 10:59:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690887578;
+        bh=W6uC+hfdQjXTE0b+hUiFIq4lfhy6AJ+5JMfKAqdfPEg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=I3i7dgT+D7pQRjctNSQCfp2q3NsGd0IjKONwgsV5qi8MuPuNxiXt3FhH/F8UHr3NJ
+         H6mbydie71eLjQgprazKi0/9WCDZaQdB9CI+YGBeO4ic0O7fDcb+Wh5kSA6akqKvsM
+         rYzIwsA1LuNixpwVzxZzH4m1Kffo/le6cp3BCbeKy24Iuhw24sdRfesACPcTPrQ6FY
+         Fy/HTlrayvB15X/PhESYg52xrOovl+Y5/mXrdEu0Y25QGEKzqdccTzl450jNLZ3EsJ
+         szRAHJrb6MjAXz7UoAIcBBCTUn7hiYskhJrEbuvUPw3QcjsUIQWe0o2lp5XtyUblRS
+         Jo/W818d0jTyw==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>,
+        Antonio Borneo <antonio.borneo@foss.st.com>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Christophe Guibout <christophe.guibout@foss.st.com>,
+        Gabriel Fernandez <gabriel.fernandez@foss.st.com>,
+        linux-rtc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] rtc: stm32: remove incorrect #ifdef check
+Date:   Tue,  1 Aug 2023 12:59:15 +0200
+Message-Id: <20230801105932.3738430-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726-topic-icc_coeff-v2-3-8c91c6c76076@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 12:52:19PM +0200, Konrad Dybcio wrote:
-> If this hardware couldn't get messier, some nodes are supposed to drive
-> their own bus clock.. Presumably to connect to some intermediate
-> interface between the node itself and the bus it's (supposed to be)
-> connected to.
-> 
-> Expand the node struct with the necessary data and hook up the
-> allocations & calculations.
-> 
-> To save on memory (not very many nodes have their own clocks), allocate
-> a pointer to an array instead of allocating an array within
-> qcom_icc_node.
-> 
+From: Arnd Bergmann <arnd@arndb.de>
 
-Only on ARM32 though. On ARM64 you waste extra memory:
+After a previous commit changed the driver over to
+SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(), the suspend/resume
+functions must no longer be hidden behind an #ifdef:
 
-u32 bus_clk_rate[QCOM_SMD_RPM_STATE_NUM];
-sizeof(bus_clk_rate) = QCOM_SMD_RPM_STATE_NUM * sizeof(bus_clk_rate[0])
-                     = 2 * 4
-                     = 8
+In file included from include/linux/clk.h:13,
+                 from drivers/rtc/rtc-stm32.c:8:
+drivers/rtc/rtc-stm32.c:927:39: error: 'stm32_rtc_suspend' undeclared here (not in a function); did you mean 'stm32_rtc_probe'?
+  927 |         SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(stm32_rtc_suspend, stm32_rtc_resume)
+      |                                       ^~~~~~~~~~~~~~~~~
+include/linux/kernel.h:58:44: note: in definition of macro 'PTR_IF'
+   58 | #define PTR_IF(cond, ptr)       ((cond) ? (ptr) : NULL)
+      |                                            ^~~
+include/linux/pm.h:329:26: note: in expansion of macro 'pm_sleep_ptr'
+  329 |         .suspend_noirq = pm_sleep_ptr(suspend_fn), \
+      |                          ^~~~~~~~~~~~
 
-u32 *bus_clk_rate;
-sizeof(bus_clk_rate) = sizeof(ptr)
-                     = 8 (for ARM64)
-                       + 2 * 4 + malloc overhead
-                         for each node with bus_clk_desc
+Fixes: fb9a7e5360dc8 ("rtc: stm32: change PM callbacks to "_noirq()"")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/rtc/rtc-stm32.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-which is > 8 from above.
+diff --git a/drivers/rtc/rtc-stm32.c b/drivers/rtc/rtc-stm32.c
+index 85689192fa7ae..c296e7af0700c 100644
+--- a/drivers/rtc/rtc-stm32.c
++++ b/drivers/rtc/rtc-stm32.c
+@@ -890,7 +890,6 @@ static void stm32_rtc_remove(struct platform_device *pdev)
+ 	device_init_wakeup(&pdev->dev, false);
+ }
+ 
+-#ifdef CONFIG_PM_SLEEP
+ static int stm32_rtc_suspend(struct device *dev)
+ {
+ 	struct stm32_rtc *rtc = dev_get_drvdata(dev);
+@@ -921,7 +920,6 @@ static int stm32_rtc_resume(struct device *dev)
+ 
+ 	return ret;
+ }
+-#endif
+ 
+ static const struct dev_pm_ops stm32_rtc_pm_ops = {
+ 	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(stm32_rtc_suspend, stm32_rtc_resume)
+-- 
+2.39.2
 
-I'm not quite convinced this optimization is worth it.
-
-Thanks,
-Stephan
