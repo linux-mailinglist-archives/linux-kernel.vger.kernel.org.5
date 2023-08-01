@@ -2,164 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1B476B390
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640CD76B398
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbjHALnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40020 "EHLO
+        id S234281AbjHALoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234337AbjHALmz (ORCPT
+        with ESMTP id S232003AbjHALom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:42:55 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E15C7;
-        Tue,  1 Aug 2023 04:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690890174; x=1722426174;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=FUGCEj/siVfIn4e28iYsWx67klPHrf/XBtaUu4SJ20M=;
-  b=dMO+YAr13bHK/NlJ/fxOhFcaHJStvJy0y3nWnK2FmpwFZk9/KAO9rrwv
-   d7TT9GHbfKjPs5gYVqOOGGKJHuzlSe6D0P/lN3TF3SQxgjh9RM6ngfROl
-   PjMXLByzkpRGZ0+7X47Af6HBR77UVMppGoKw6ROzrA6WyLslzzhIBehop
-   YWTnch7VS1fjn6iJbjsPSx5itIrK638hSm4m4Wb0gkJmwXhcaKCLBr4LA
-   aBKW4fhstga+FuqwU/v4OZ5Tya1yleyWAPKdCUCYhXLkTzlSMuGX/dkwT
-   /H3BUNQ6wgXYWnH5Y/JnU44zntmPKJcsDGBxgkKt6wuYxNhIxFS5fg5vv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="349569735"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="349569735"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 04:42:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="722456605"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="722456605"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga007.jf.intel.com with ESMTP; 01 Aug 2023 04:42:53 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 1 Aug 2023 04:42:52 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 1 Aug 2023 04:42:52 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 1 Aug 2023 04:42:52 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.103)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 1 Aug 2023 04:42:52 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TUZXepkkdRsFOF445ajXYcspgcd2ChBZdaF7vZ1xqQKmXTroDrC5JXGz0OdzVSmsa8YBLLOPo0OquMp6og84RU8cV1uWQJrbaPvSNn8rSPWuPRDRiq+rOYHITz0Umv+iF4yNJEjLTjncmyPUY5rXESVpvjjG8JseRHBaKDTZatddbBsEIScMvWb/7c++3Lt+RO58wh7Qd2yS3cl/Jag6QnPg6O22L5ThwIuklBzDj/P1RujOAx1dUYZirfyPAx28IXjZ9SYJBz+RxHasXdO7YDHeLPX0VI6bwV4wmAAmSjUXfUQsda/jZwOhLtAIRuvgmJIT7n+HHFjzfK8oqVR+Xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=aPXZ5uZiMG0NDjUJopx1b3g4rDv/6moLUD9pNyWDftU=;
- b=QUTeoRsJeVDOK7AI7UtMyH92DDcfsbNqLyAB4yKP1SUGxicCG4uA15yiNtMqjaQI9MtIsJweTd0EgAGYdpfXOGailPVRIqSPKZSll1Vyb3cNtkcebNFKVQ21bGHHVG5DTd7QSXdIPCqtozMNRrtWNV5fMgYhSkBTZl2ysQradL3QWUcR82uhgvqD/ryuqdcxFKjQm5FCJfTRXvgjLHg2jYSyEiEtI2uui1uRyE6Zsk+8kUHK96rRV1VYrFcCZqIrWQTazBirAAEoDPcpFfXJCBXFGWvGdCVD5EkqsXeaa3MWmHObVtrTR5epSfyihq8YGsmiR+FYvWG4sn5HqluxnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB5549.namprd11.prod.outlook.com (2603:10b6:5:388::7) by
- IA0PR11MB7379.namprd11.prod.outlook.com (2603:10b6:208:431::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.44; Tue, 1 Aug 2023 11:42:50 +0000
-Received: from DM4PR11MB5549.namprd11.prod.outlook.com
- ([fe80::fa3f:a88:b8dd:5c8e]) by DM4PR11MB5549.namprd11.prod.outlook.com
- ([fe80::fa3f:a88:b8dd:5c8e%2]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
- 11:42:49 +0000
-Message-ID: <34e5cea4-b837-cb1e-15c1-fcbf2dba4f71@intel.com>
-Date:   Tue, 1 Aug 2023 14:42:43 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 29/29] drm/i915/gvt: Drop final dependencies on KVM
- internal details
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-CC:     <kvm@vger.kernel.org>, <intel-gvt-dev@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Yan Zhao <yan.y.zhao@intel.com>,
-        Yongwei Ma <yongwei.ma@intel.com>,
-        Ben Gardon <bgardon@google.com>
-References: <20230729013535.1070024-1-seanjc@google.com>
- <20230729013535.1070024-30-seanjc@google.com>
-From:   "Wang, Zhi A" <zhi.a.wang@intel.com>
-In-Reply-To: <20230729013535.1070024-30-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: FR2P281CA0153.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:98::20) To DM4PR11MB5549.namprd11.prod.outlook.com
- (2603:10b6:5:388::7)
+        Tue, 1 Aug 2023 07:44:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429A292;
+        Tue,  1 Aug 2023 04:44:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CCA596156E;
+        Tue,  1 Aug 2023 11:44:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0C58C433C8;
+        Tue,  1 Aug 2023 11:44:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690890280;
+        bh=dbodHSwIgKgpR708XhGtQfRJC68lUns//VtMieKP9nc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mIPN/0FlrywKoIvGuj184pORf/lD8hhwluBTGh+LkJQPCLledF7sFrBYwGV/lqUS1
+         523bB6efo7rFR3KMuWoIJhQr4Bdcgm9DWfXIm7yGqW2lahDabJWA2iv5BlA4oi9H6I
+         E1J608KbtQ3ZReXwf9vUfA6ouEDGz27xA4f6lSvhMoRmPdcW72n4i/q07LTV+DtI4k
+         khUoBRy5gFFucKponYrQlQ2svb9z4sncsgjZNL59SYR06uNZWn9aiJbYOEgGForKMM
+         ve6Ez9aeP1r+xBgk7F+Ee+2DMbgCNEv20Uz60Ak6AlyqGQ5nxLVj8l+HlfWckYM9BT
+         haR5vtYw/l+kA==
+Date:   Tue, 1 Aug 2023 13:44:37 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Keith Zhao <keith.zhao@starfivetech.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        christian.koenig@amd.com, Bjorn Andersson <andersson@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>
+Subject: Re: [PATCH v1 v1 2/7] dt-bindings: display: Add yamls for JH7110
+ display system
+Message-ID: <hsuuag25psaxd6wgtaohpakxi3pppg6xk4w7x64ubwjir5pjb3@vrqns6ptrzzm>
+References: <20230801101030.2040-1-keith.zhao@starfivetech.com>
+ <20230801101030.2040-3-keith.zhao@starfivetech.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB5549:EE_|IA0PR11MB7379:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0cb8b262-0e5c-4844-110c-08db92846ea4
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: uY8MT47pLWlExPtyyMas4u06J994MBPGRURbvqc+FiPbpM45xnsHAMx4fkybsQCfMxvnRQ65IVEIQzTDYxRHQ2KS6ICB8l9C7cDCJtdYeUXkzYWd8m31kncP9RhQlm3tMiIXNv9pt8B/m+t8M96Nr4h6IPE3LlseThCLoIBkitFfCbkjAKIQPXR2Disx2x8iRsvwM/05O+4UJK2YHT+CAhSjfPfX1ZDf11Ja4KQv0MLIBrs7v4gqh7qcVHBoZ1FiNa1cwRQTUzfpIXbYn7xZ2C1YxmOrahnB4WBErloJrNYTRztIe38/8eHm4dHRNZgkXNrzhCJWv8YT772yZR3nZ2r/4JkTX3DStOe4gXI4lfdHn8RdGMgsUo4W96Uoh6gwk8TW0JV3nb6jgwOVaGdKB/pPgjqh3mtBBtERz29SYgVXmN8M+d8XT92prIqNheDQLT/jC5UVKQgHqoQCwKoIOREIdkmnImP5lgAyLLJLQbY8VpRlASttNDbemU2GxcPEONb3SwUZ1SItVVVC2Fr0i2V6aE/ozt+t57CF8TkqKiHAiwZpKqS5YpGDar1TWtuL8QA8KTOclutcaf6z0ESd7YqhxNN4yvocahk9sYzXP6yNk5tG+upx9/mzIEIFnLCsZ/a24xSwG/G/aELO5pNyqw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5549.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(136003)(396003)(366004)(346002)(39860400002)(451199021)(2906002)(4326008)(2616005)(83380400001)(186003)(316002)(38100700002)(31696002)(31686004)(41300700001)(478600001)(86362001)(6512007)(110136005)(54906003)(82960400001)(5660300002)(66946007)(66476007)(66556008)(53546011)(6506007)(26005)(6666004)(8936002)(8676002)(36756003)(6486002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dit5S2IwZHNlY25IRnp6cVJtS3VhcGZtSmZ0OXlGZzArb1p6SW8rdFNNSkNE?=
- =?utf-8?B?SEgxeURGcnZRY0NIbXNweno4M2lseWd5em9taTc4bEFmenFzSElROGxITnVG?=
- =?utf-8?B?TzlvVGVESXdsYUxGVVhGNWpvWk0vVzhCRVdkRDJWcW41VEJEbzF3ZmNEcWMw?=
- =?utf-8?B?TTFTN2tTZVVUQlFDYUk2L3kxVklMVG5MV3lRdkdrT0Flc041d1R1YUZZSXkz?=
- =?utf-8?B?eTlwRDB3MTlkUVlncDhXUHRKUWRMb0hCMHA5YmlseVpwQithanlPa3VDVERQ?=
- =?utf-8?B?eTVyUGNoaHVhVHNOZGE4cjAvYmZSdGxyMGJTNE4yUXRKYWZaMDYzTnYrK05o?=
- =?utf-8?B?bm4yZUROZHA0N3o5Vlcyc3h4UmZhMkRyVmt6cnpyNmh5S1N0TzIvVnBpUTBP?=
- =?utf-8?B?SzZ1dTNVUld0a29uSDROcTRHN1J4L25CVENBOWduUENOT3dsMjZkbCtqSm5X?=
- =?utf-8?B?cnBQdFpaVmFoMkQ5d0ZXSG9nNkJ3VVpZZ2tNR1ZpT0Q1dVg3OERmYVNvN3FX?=
- =?utf-8?B?VEUzT3NNZG1ZRml0LzVxQ05Fa21GWE8rdG9QRk5ad05tOHh6aGg3RlJyc2d1?=
- =?utf-8?B?cTlKVEduZnA0eDdZZ2tSemp0cVZRUW81MnZCaE9mM0QySk50QXAzOWhXcWFt?=
- =?utf-8?B?dEg0UUgvODh3NFFqcmppeTlENE8vNUdDZXpkT0Z1aXRpUjZZcE5NaXVCWERt?=
- =?utf-8?B?MDNYOGpVMzBVenlKTHB2U0JrdDZQRmptSHM3bng4UUxjeHJZNWdXQXBiZ2hI?=
- =?utf-8?B?VXE0ZjhlMERHbkk3ZjNpN1dsWkVpQUswRzJ1WUxKeVA0NWVzL2k5eFQ5UmdB?=
- =?utf-8?B?bjB4ZEgwcjBYSS82Y0NSUWFIeit6N0lmTVlpcHNWbW10OFJSUE5xc0lIZGo1?=
- =?utf-8?B?Y2VDWWxHbUx2NzZiY1kydGdQbFFOclRKemx5RFE1U05jcEREVmlScDRhM2dS?=
- =?utf-8?B?WVFZTDlBakMrblJsalVlVzlaRFlsR1h3OEtYVE04QUllMGczVEJwYnlYVmND?=
- =?utf-8?B?VUNlbmFlZXZwbU5WRTVDK3pFQWFoeG9DeWtKaS9IN1p6THlmb0JJWmpBclQ0?=
- =?utf-8?B?TGh3NXVEUWhyN3pFbzh1WUtocEw2NHhPdFdVUXdVUE5CVnVMbXVVeUVuaEZE?=
- =?utf-8?B?aU1iYnU3UVI3NG5ZaEhPbkxEYTUxaU9rTDFXckdHZU9wVTgxZlByZE9nUGlk?=
- =?utf-8?B?NEF1TFp4RkR4MDg5RHdEbUk5c2ljdkFueW1zeW9laFZZazEzT3lHU2dHcGow?=
- =?utf-8?B?bzZHTVc3Wi9iNXBOWDBFNW9GY3ppaXQ1UnlxRnhIZmpJTldkZVowS1BTRXd4?=
- =?utf-8?B?b01zUjEvVGNEMGxMU2JoanRWSDg3dGNnazlyNHI5cFZsMldpRVA1c3lSeHJX?=
- =?utf-8?B?SlVTKzhwMVhnVTNIRzkwaU1wR1plK000akREUnB6dmFWTldreXJrd2RNdWtB?=
- =?utf-8?B?TlBJMHBtdzdtUmRaaEQ0a2RzYnZyU3ZzdzdQZDNGL3JmWWp1L05QUHVFQ3RU?=
- =?utf-8?B?Wmc2NzNtQlJEazJLY0Vob2N4RzJYS3gwVk5jYlJuZXpMVjZUOVlkcWVtS0U5?=
- =?utf-8?B?dG52QVA3Q0FyTlJzQjNoZ1BQQmdMMldRWkZ4Rmxwc3pSNGN1anpvQTdERnYv?=
- =?utf-8?B?VmhCUmV2YVJWUnB2RVpLTTQwT05TT0syaXR0MEIrcU1OOUxWa2txc1Mrb2Y5?=
- =?utf-8?B?SmdaTkwrbHgzZGF1bTVJOCtDcnpSK2gvV2Q3YmJ2QnNuci9Qc0UwV0xHSEJY?=
- =?utf-8?B?TGlEc3RjZ0p4a2ZtNkI4clpMVGgza0JmWU0xSXlKYVlyeTdvM1FRMThoK0o1?=
- =?utf-8?B?VWR2TFJPRDNVUjkweXZONnpmdi9QZmNWVVM2dzFOWDdhOXRXeTRxREY3OEF5?=
- =?utf-8?B?KzZlNXA2STUxQmh4Sk5SNXhXNmJWVzNHbXJmMlJtVXdsSzFvUlBoUnBzb05t?=
- =?utf-8?B?aWN2Y0NNTm8wcy8rSkVPVnd6dkswdmZVdjBtSmNKSkx2WXdHYVI0MGRTblZ6?=
- =?utf-8?B?aHdHRHVqZDdYVzlQKzhaQmRrbG0yNmFqenkvUXlkZDd4eGVkUlNYcllrUmJ0?=
- =?utf-8?B?TFRZdSs3Y2NKakM1Mk9rRDNsdkNtY25UYUdtVFhtOW01dytodFhNQ0lsbFpV?=
- =?utf-8?Q?C4/jG354zVhQ0NMuuZA97mF04?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0cb8b262-0e5c-4844-110c-08db92846ea4
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5549.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 11:42:49.5004
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v6qgYDaRjaVp0n8ZX9YmS1r7UbupdwlLaAHfrFbOXQsS96v+kjjHPy6IkuLsa9dn/VfZ4M6iVuMWwAv1t3QXhQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7379
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dan5yrpicomxdg2s"
+Content-Disposition: inline
+In-Reply-To: <20230801101030.2040-3-keith.zhao@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -167,51 +79,210 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/29/2023 4:35 AM, Sean Christopherson wrote:
-> Open code gpa_to_gfn() in kvmgt_page_track_write() and drop KVMGT's
-> dependency on kvm_host.h, i.e. include only kvm_page_track.h.  KVMGT
-> assumes "gfn == gpa >> PAGE_SHIFT" all over the place, including a few
-> lines below in the same function with the same gpa, i.e. there's no
-> reason to use KVM's helper for this one case.
-> 
-> No functional change intended.
-> 
-> Reviewed-by: Yan Zhao <yan.y.zhao@intel.com>
-> Tested-by: Yongwei Ma <yongwei.ma@intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->   drivers/gpu/drm/i915/gvt/gvt.h   | 3 ++-
->   drivers/gpu/drm/i915/gvt/kvmgt.c | 2 +-
->   2 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gvt/gvt.h b/drivers/gpu/drm/i915/gvt/gvt.h
-> index 2d65800d8e93..53a0a42a50db 100644
-> --- a/drivers/gpu/drm/i915/gvt/gvt.h
-> +++ b/drivers/gpu/drm/i915/gvt/gvt.h
-> @@ -34,10 +34,11 @@
->   #define _GVT_H_
->   
->   #include <uapi/linux/pci_regs.h>
-> -#include <linux/kvm_host.h>
->   #include <linux/vfio.h>
->   #include <linux/mdev.h>
->   
-> +#include <asm/kvm_page_track.h>
+
+--dan5yrpicomxdg2s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi,
+
+On Tue, Aug 01, 2023 at 06:10:25PM +0800, Keith Zhao wrote:
+> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
+> new file mode 100644
+> index 000000000..bebe2050c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
+> @@ -0,0 +1,107 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/starfive/starfive,jh7110-dc8200.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
->   #include "i915_drv.h"
->   #include "intel_gvt.h"
->   
-> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> index eb50997dd369..aaed3969f204 100644
-> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> @@ -1585,7 +1585,7 @@ static void kvmgt_page_track_write(gpa_t gpa, const u8 *val, int len,
->   
->   	mutex_lock(&info->vgpu_lock);
->   
-> -	if (kvmgt_gfn_is_write_protected(info, gpa_to_gfn(gpa)))
-> +	if (kvmgt_gfn_is_write_protected(info, gpa >> PAGE_SHIFT))
->   		intel_vgpu_page_track_handler(info, gpa,
->   						     (void *)val, len);
->   
-Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
+> +title: StarFive display controller
+> +
+> +description:
+> +  The StarFive SoC uses the display controller based on Verisilicon IP
+> +  to transfer the image data from a video memory
+> +  buffer to an external LCD interface.
+> +
+> +maintainers:
+> +  - Keith Zhao <keith.zhao@starfivetech.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: starfive,jh7110-dc8200
+> +
+> +  reg:
+> +    maxItems: 3
+
+What these registers are used for must be documented.
+
+> +
+> +  interrupts:
+> +    items:
+> +      - description: The interrupt will be generated when DC finish one frame
+> +
+> +  clocks:
+> +    items:
+> +      - description: Clock for display system noc bus.
+> +      - description: Pixel clock for display channel 0.
+> +      - description: Pixel clock for display channel 1.
+> +      - description: Clock for axi interface of display controller.
+> +      - description: Core clock for display controller.
+> +      - description: Clock for ahb interface of display controller.
+> +      - description: External HDMI pixel clock.
+> +      - description: Parent clock for pixel clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: vout_noc_disp
+> +      - const: vout_pix0
+> +      - const: vout_pix1
+> +      - const: vout_axi
+> +      - const: vout_core
+> +      - const: vout_vout_ahb
+> +      - const: hdmitx0_pixel
+> +      - const: vout_dc8200
+
+The clock-names should reflect what they are used for on the device, not
+what their name is in the system. So it should rather be something like
+"noc-bus", "channel0", "channel1", etc.
+
+vout, or the soc model, shouldn't appear there.
+
+> +  resets:
+> +    items:
+> +      - description: Reset for axi interface of display controller.
+> +      - description: Reset for ahb interface of display controller.
+> +      - description: Core reset of display controller.
+> +
+> +  reset-names:
+> +    items:
+> +      - const: vout_axi
+> +      - const: vout_ahb
+> +      - const: vout_core
+
+Ditto.
+
+Also, I'm a bit confused, how can a device be attached to both an AXI
+and AHB bus? That, plus the multiple registers spaces, make me think
+that this is multiple devices glued together in a single node, which
+isn't ok.
+
+> +  port:
+> +    $ref: /schemas/graph.yaml#/properties/port
+> +    description:
+> +      A port node with endpoint definitions as defined in
+> +      Documentation/devicetree/bindings/media/video-interfaces.txt.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - resets
+> +  - reset-names
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    dc8200: lcd-controller@29400000 {
+> +        compatible = "starfive,jh7110-dc8200";
+> +        reg = <0x29400000 0x100>, <0x29400800 0x2000>, <0x295b0000 0x90>;
+> +        interrupts = <95>;
+> +        clocks = <&syscrg 60>,
+> +               <&voutcrg 7>,
+> +               <&voutcrg 8>,
+> +               <&voutcrg 4>,
+> +               <&voutcrg 5>,
+> +               <&voutcrg 6>,
+> +               <&hdmitx0_pixelclk>,
+> +               <&voutcrg 1>;
+> +        clock-names = "vout_noc_disp", "vout_pix0", "vout_pix1",
+> +                      "vout_axi", "vout_core", "vout_vout_ahb",
+> +                      "hdmitx0_pixel","vout_dc8200";
+> +        resets = <&voutcrg 0>, <&voutcrg 1>, <&voutcrg 2>;
+> +        reset-names = "vout_axi", "vout_ahb", "vout_core";
+> +        dc_out: port {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +            dc_out_hdmi: endpoint@0 {
+> +                reg = <0>;
+> +                remote-endpoint = <&hdmi_in_dc>;
+> +            };
+> +        };
+> +    };
+> diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
+> new file mode 100644
+> index 000000000..f6927acf6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
+> @@ -0,0 +1,92 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/starfive/starfive,jh7110-inno-hdmi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Starfive JH7110 HDMI controller
+> +
+> +description:
+> +  The StarFive JH7110 SoC uses the HDMI signal transmiter based on innosilicon IP
+> +  to generate HDMI signal from its input and transmit the signal to the screen.
+> +
+> +maintainers:
+> +  - Keith Zhao <keith.zhao@starfivetech.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: "starfive,jh7110-inno-hdmi"
+> +
+> +  reg:
+> +    minItems: 1
+> +
+> +  interrupts:
+> +    items:
+> +      - description: The HDMI hot plug detection interrupt.
+> +
+> +  clocks:
+> +    items:
+> +      - description: System clock of HDMI module.
+> +      - description: Mclk clock of HDMI audio.
+> +      - description: Bclk clock of HDMI audio.
+> +      - description: Pixel clock generated by HDMI module.
+> +
+> +  clock-names:
+> +    items:
+> +      - const: sysclk
+> +      - const: mclk
+> +      - const: bclk
+> +      - const: pclk
+> +
+> +  resets:
+> +    items:
+> +      - description: Reset for HDMI module.
+> +
+> +  reset-names:
+> +    items:
+> +      - const: hdmi_tx
+
+If there's only one you don't need reset-names
+
+Maxime
+
+--dan5yrpicomxdg2s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMjwJQAKCRDj7w1vZxhR
+xZBQAPwPOEedmxWZJ27iqcESJscaRD6CHACzB6No3CR39QnaDgD/bbKScqVg2wHb
+dTG9DGpqq1ezLI5zfPLEM3steJgVlg4=
+=A6ek
+-----END PGP SIGNATURE-----
+
+--dan5yrpicomxdg2s--
