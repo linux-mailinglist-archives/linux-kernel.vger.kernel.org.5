@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2DC76B258
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:51:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C9F76B259
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233553AbjHAKvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:51:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57342 "EHLO
+        id S231916AbjHAKvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234237AbjHAKvD (ORCPT
+        with ESMTP id S232790AbjHAKvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:51:03 -0400
+        Tue, 1 Aug 2023 06:51:09 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EB449E5
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:48:45 -0700 (PDT)
-Message-ID: <20230801103818.102616923@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D7D49EB
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:48:46 -0700 (PDT)
+Message-ID: <20230801103818.159719736@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690886868;
+        s=2020; t=1690886869;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=Nbvmnz+q7lfNjTCb/pF8Ed6DjVtg5/qR2ISN11UnuKc=;
-        b=m/ftRm6CY7vOEvnk6HLnkLvf8fJIvc5QDb18b0qqzTqp9rpHXvhChyLQ1iR/egwNT/yz+U
-        JUTJz8Fq7gUhntHAioOqX6LulJPvsS6GFSqfEeF6wSJtDHHd9WxMFUbif2UeZFb2WpOqxZ
-        9sdfRkwnIIOtOxo8hREBqQ7j6d0Gp65e4FmpyxBp4tRjSt2A+EMuuZZkSSSZPcKrYdglCA
-        B0G7jYOSF4sPjOTT99E7OV5oKYv0ROtRU3Ic6v/YynfwPI2Gfjap1GN9oQxgSbNbf5pHkE
-        DduTyhghtVWvPg+FbAeLqfyhU6vpG/7xA2MmviMDkgKVKCgiRdQ0+4cxXUDM/Q==
+         references:references; bh=TEFG8gkU/838HFgL72fmh8n+4W7BVeF0i1tCpnYKDqA=;
+        b=VFbL0HFfrX7TJs82ET0+zn5kp1a2SLQnpxlb1kKGJ/vnK/9i8tNL63nkaCgQWo5q05EEHb
+        5ohNGIi/1RUg6ZGfDEZuDNoPnp+ZjQF2dVtYWNg081xD8m88oh1rFIqsrGnpHEBmA2WJjU
+        He0p+2vmGzwYpfp8R0b0HhdLcT08zgklwsICPilITdfE8SCOH6/eKYF2oewZvcBf9RVQog
+        VfJfeqn0fSXa3cnKY7BaJHFozUa3wYu5NFEAshyI9QApGR2qRxlipPvZ2g3oUW7+WXMGqo
+        aTb48NH38aJxk9182quv7onWrqMCRBbWqLApCdaQrUMfvsI9WRF4CByflU35DA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690886868;
+        s=2020e; t=1690886869;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=Nbvmnz+q7lfNjTCb/pF8Ed6DjVtg5/qR2ISN11UnuKc=;
-        b=YMafMncx3ilO32ExT9NWUWSkGb9alVXJyh/qKxtt+HKEc2jlRjVq9a4uKENWWRg2/Us3F0
-        ZNV/kP93dg2m/XCg==
+         references:references; bh=TEFG8gkU/838HFgL72fmh8n+4W7BVeF0i1tCpnYKDqA=;
+        b=qeVFuHPpJc9x5zSL7n0FxobJuFKJMjTRpiDyAl4kFvjSUVdE46G+VbaAb4vE3vHGyWAyxz
+        Xl1kWutm2EtnKzBw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
@@ -44,12 +44,12 @@ Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
         Michael Kelley <mikelley@microsoft.com>,
         Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V3 54/60] x86/apic: Replace acpi_wake_cpu_handler_update() and
- apic_set_eoi_cb()
+Subject: [patch V3 55/60] x86/apic: Convert other overrides to
+ apic_update_callback()
 References: <20230801103042.936020332@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue,  1 Aug 2023 12:47:47 +0200 (CEST)
+Date:   Tue,  1 Aug 2023 12:47:49 +0200 (CEST)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
@@ -60,123 +60,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch them over to apic_update_callback() and remove the code.
+Convert all places which just assign a new function directly to the apic
+callback to use apic_update_callback() which prepares for using static
+calls.
+
+Mark snp_set_wakeup_secondary_cpu() and kvm_setup_pv_ipi() __init, as they
+are only invoked from init code and otherwise trigger a section mismatch as
+they are now invoking a __init function.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/hyperv/hv_apic.c   |    2 +-
- arch/x86/hyperv/hv_vtl.c    |    2 +-
- arch/x86/include/asm/apic.h |    3 ---
- arch/x86/kernel/acpi/boot.c |    2 +-
- arch/x86/kernel/apic/init.c |   27 ---------------------------
- arch/x86/kernel/kvm.c       |    4 ++--
- 6 files changed, 5 insertions(+), 35 deletions(-)
+V2: Mark snp_set_wakeup_secondary_cpu() and kvm_setup_pv_ipi() __init.
+---
+ arch/x86/hyperv/hv_apic.c |   20 ++++++++++----------
+ arch/x86/kernel/kvm.c     |    6 +++---
+ arch/x86/kernel/sev.c     |    4 ++--
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
 --- a/arch/x86/hyperv/hv_apic.c
 +++ b/arch/x86/hyperv/hv_apic.c
-@@ -310,7 +310,7 @@ void __init hv_apic_init(void)
- 		 * lazy EOI when available, but the same accessor works for
- 		 * both xapic and x2apic because the field layout is the same.
+@@ -288,12 +288,12 @@ void __init hv_apic_init(void)
  		 */
--		apic_set_eoi_cb(hv_apic_eoi_write);
-+		apic_update_callback(eoi, hv_apic_eoi_write);
- 		if (!x2apic_enabled()) {
- 			apic->read      = hv_apic_read;
- 			apic->write     = hv_apic_write;
---- a/arch/x86/hyperv/hv_vtl.c
-+++ b/arch/x86/hyperv/hv_vtl.c
-@@ -222,7 +222,7 @@ static int __init hv_vtl_early_init(void
- 			  "Please add 'noxsave' to the kernel command line.\n");
+ 		orig_apic = *apic;
  
- 	real_mode_header = &hv_vtl_real_mode_header;
--	apic->wakeup_secondary_cpu_64 = hv_vtl_wakeup_secondary_cpu;
-+	apic_update_callback(wakeup_secondary_cpu_64, hv_vtl_wakeup_secondary_cpu);
- 
- 	return 0;
- }
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -417,8 +417,6 @@ static inline bool apic_id_valid(u32 api
- 	return apic_id <= apic->max_apic_id;
- }
- 
--extern void __init apic_set_eoi_cb(void (*eoi)(void));
--
- #else /* CONFIG_X86_LOCAL_APIC */
- 
- static inline u32 apic_read(u32 reg) { return 0; }
-@@ -478,7 +476,6 @@ static inline unsigned int read_apic_id(
- 
- #ifdef CONFIG_X86_64
- typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
--extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
- extern int default_acpi_madt_oem_check(char *, char *);
- extern void x86_64_probe_apic(void);
- #else
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -1174,7 +1174,7 @@ static int __init acpi_parse_mp_wake(uni
- 
- 	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
- 
--	acpi_wake_cpu_handler_update(acpi_wakeup_cpu);
-+	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
- 
- 	return 0;
- }
---- a/arch/x86/kernel/apic/init.c
-+++ b/arch/x86/kernel/apic/init.c
-@@ -55,30 +55,3 @@ void __init apic_install_driver(struct a
- 
- 	pr_info("Switched APIC routing to: %s\n", driver->name);
- }
--
--#ifdef CONFIG_X86_64
--void __init acpi_wake_cpu_handler_update(wakeup_cpu_handler handler)
--{
--	struct apic **drv;
--
--	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++)
--		(*drv)->wakeup_secondary_cpu_64 = handler;
--}
--#endif
--
--/*
-- * Override the generic EOI implementation with an optimized version.
-- * Only called during early boot when only one CPU is active and with
-- * interrupts disabled, so we know this does not race with actual APIC driver
-- * use.
-- */
--void __init apic_set_eoi_cb(void (*eoi)(void))
--{
--	struct apic **drv;
--
--	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++) {
--		/* Should happen once for each apic */
--		WARN_ON((*drv)->eoi == eoi);
--		(*drv)->eoi = eoi;
--	}
--}
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -332,7 +332,7 @@ static void kvm_register_steal_time(void
- 
- static DEFINE_PER_CPU_DECRYPTED(unsigned long, kvm_apic_eoi) = KVM_PV_EOI_DISABLED;
- 
--static notrace void kvm_guest_apic_eoi_write(void)
-+static notrace __maybe_unused void kvm_guest_apic_eoi_write(void)
- {
- 	/**
- 	 * This relies on __test_and_clear_bit to modify the memory
-@@ -825,7 +825,7 @@ static void __init kvm_guest_init(void)
+-		apic->send_IPI = hv_send_ipi;
+-		apic->send_IPI_mask = hv_send_ipi_mask;
+-		apic->send_IPI_mask_allbutself = hv_send_ipi_mask_allbutself;
+-		apic->send_IPI_allbutself = hv_send_ipi_allbutself;
+-		apic->send_IPI_all = hv_send_ipi_all;
+-		apic->send_IPI_self = hv_send_ipi_self;
++		apic_update_callback(send_IPI, hv_send_ipi);
++		apic_update_callback(send_IPI_mask, hv_send_ipi_mask);
++		apic_update_callback(send_IPI_mask_allbutself, hv_send_ipi_mask_allbutself);
++		apic_update_callback(send_IPI_allbutself, hv_send_ipi_allbutself);
++		apic_update_callback(send_IPI_all, hv_send_ipi_all);
++		apic_update_callback(send_IPI_self, hv_send_ipi_self);
  	}
  
- 	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
--		apic_set_eoi_cb(kvm_guest_apic_eoi_write);
-+		apic_update_callback(eoi, kvm_guest_apic_eoi_write);
+ 	if (ms_hyperv.hints & HV_X64_APIC_ACCESS_RECOMMENDED) {
+@@ -312,10 +312,10 @@ void __init hv_apic_init(void)
+ 		 */
+ 		apic_update_callback(eoi, hv_apic_eoi_write);
+ 		if (!x2apic_enabled()) {
+-			apic->read      = hv_apic_read;
+-			apic->write     = hv_apic_write;
+-			apic->icr_write = hv_apic_icr_write;
+-			apic->icr_read  = hv_apic_icr_read;
++			apic_update_callback(read, hv_apic_read);
++			apic_update_callback(write, hv_apic_write);
++			apic_update_callback(icr_write, hv_apic_icr_write);
++			apic_update_callback(icr_read, hv_apic_icr_read);
+ 		}
+ 	}
+ }
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -622,10 +622,10 @@ late_initcall(setup_efi_kvm_sev_migratio
+ /*
+  * Set the IPI entry points
+  */
+-static void kvm_setup_pv_ipi(void)
++static __init void kvm_setup_pv_ipi(void)
+ {
+-	apic->send_IPI_mask = kvm_send_ipi_mask;
+-	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
++	apic_update_callback(send_IPI_mask, kvm_send_ipi_mask);
++	apic_update_callback(send_IPI_mask_allbutself, kvm_send_ipi_mask_allbutself);
+ 	pr_info("setup PV IPIs\n");
+ }
  
- 	if (kvm_para_has_feature(KVM_FEATURE_ASYNC_PF_INT) && kvmapf) {
- 		static_branch_enable(&kvm_async_pf_enabled);
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -1089,7 +1089,7 @@ static int wakeup_cpu_via_vmgexit(int ap
+ 	return ret;
+ }
+ 
+-void snp_set_wakeup_secondary_cpu(void)
++void __init snp_set_wakeup_secondary_cpu(void)
+ {
+ 	if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
+ 		return;
+@@ -1099,7 +1099,7 @@ void snp_set_wakeup_secondary_cpu(void)
+ 	 * required method to start APs under SNP. If the hypervisor does
+ 	 * not support AP creation, then no APs will be started.
+ 	 */
+-	apic->wakeup_secondary_cpu = wakeup_cpu_via_vmgexit;
++	apic_update_callback(wakeup_secondary_cpu, wakeup_cpu_via_vmgexit);
+ }
+ 
+ int __init sev_es_setup_ap_jump_table(struct real_mode_header *rmh)
 
