@@ -2,100 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B78F576B724
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E8776B717
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbjHAOUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
+        id S234557AbjHAOTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234571AbjHAOT7 (ORCPT
+        with ESMTP id S234562AbjHAOTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:19:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917D0103
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 07:19:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690899553;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/RBCCNSNER9keBqZEiKvDtVniv9ZXTWzP9vzUW4dQY4=;
-        b=PkpDhJn4lI94Ter7W8hb77BGHvHu0k0lV2vxajszFZGNzI/Bn88m5xKQXRki6A39A/X3Ck
-        SJI2h8JjV1opncvstszdSR+DymJsddL3J99A+xONpYxnjkNr9nb7zLzJNX5WUc7itnNZMQ
-        re2IuPMZm1b613aT6tJIgGuPf5nA1Yc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-212-BZiRKqMXM4WOCOIycKfd2Q-1; Tue, 01 Aug 2023 10:19:10 -0400
-X-MC-Unique: BZiRKqMXM4WOCOIycKfd2Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 1 Aug 2023 10:19:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83E5BF;
+        Tue,  1 Aug 2023 07:19:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 85C6010504B1;
-        Tue,  1 Aug 2023 14:19:08 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D49884024F83;
-        Tue,  1 Aug 2023 14:19:06 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <64c903b02b234_1b307829418@willemb.c.googlers.com.notmuch>
-References: <64c903b02b234_1b307829418@willemb.c.googlers.com.notmuch> <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch> <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch> <20230718160737.52c68c73@kernel.org> <000000000000881d0606004541d1@google.com> <0000000000001416bb06004ebf53@google.com> <792238.1690667367@warthog.procyon.org.uk> <831028.1690791233@warthog.procyon.org.uk> <1401696.1690893633@warthog.procyon.org.uk>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     dhowells@redhat.com, Jakub Kicinski <kuba@kernel.org>,
-        syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>,
-        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Subject: Re: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 45935615CD;
+        Tue,  1 Aug 2023 14:19:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01565C433C9;
+        Tue,  1 Aug 2023 14:19:09 +0000 (UTC)
+Date:   Tue, 1 Aug 2023 10:19:08 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ze Gao <zegao2021@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: Re: [RFC PATCH v3 6/6] libtraceevent: prefer to use prev_state_char
+ introduced in sched_switch
+Message-ID: <20230801101908.4ccc81c8@gandalf.local.home>
+In-Reply-To: <20230801090124.8050-7-zegao@tencent.com>
+References: <20230801090124.8050-1-zegao@tencent.com>
+        <20230801090124.8050-7-zegao@tencent.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1409098.1690899546.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 01 Aug 2023 15:19:06 +0100
-Message-ID: <1409099.1690899546@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The attached seems to work.  I still think copy isn't correctly calculated=
- in
-some circumstances - as I showed, several terms in the maths cancel out,
-including the length of the data.
+On Tue,  1 Aug 2023 17:01:24 +0800
+Ze Gao <zegao2021@gmail.com> wrote:
 
-I'm also not entirely sure what 'paged' means in this function.  Should it
-actually be set in the MSG_SPLICE_PAGES context?
+> Since the sched_switch tracepoint introduces a new variable to
+> report sched-out task state in symbolic char, we prefer to use
+> it to spare from knowing internal implementations in kernel.
+> 
+> Also we keep the old parsing logic intact but sync the state char
+> array with the latest kernel.
 
----
-udp: Fix __ip_addend_data()
+This should be two patches. First sync the state char array and then add
+your state_char change. The two changes are agnostic to each other, and
+should be separate commits. Same goes for the perf changes.
 
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 6e70839257f7..54675a4f2c9f 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -1157,7 +1157,7 @@ static int __ip_append_data(struct sock *sk,
- 				pskb_trim_unique(skb_prev, maxfraglen);
- 			}
- =
+-- Steve
 
--			copy =3D datalen - transhdrlen - fraggap - pagedlen;
-+			copy =3D max_t(int, datalen - transhdrlen - fraggap - pagedlen, 0);
- 			if (copy > 0 && getfrag(from, data + transhdrlen, offset, copy, fragga=
-p, skb) < 0) {
- 				err =3D -EFAULT;
- 				kfree_skb(skb);
+
+> 
+> Signed-off-by: Ze Gao <zegao@tencent.com>
+> ---
+>  plugins/plugin_sched_switch.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
+> index 8752cae..4c57322 100644
+> --- a/plugins/plugin_sched_switch.c
+> +++ b/plugins/plugin_sched_switch.c
+> @@ -11,7 +11,7 @@
+>  
+>  static void write_state(struct trace_seq *s, int val)
+>  {
+> -	const char states[] = "SDTtZXxW";
+> +	const char states[] = "SDTtXZPIp";
+>  	int found = 0;
+>  	int i;
+>  
+> @@ -99,7 +99,12 @@ static int sched_switch_handler(struct trace_seq *s,
+>  	if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) == 0)
+>  		trace_seq_printf(s, "[%d] ", (int) val);
+>  
+> -	if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) == 0)
+> +	//find if has prev_state_char, otherwise fallback to prev_state
+> +	if (tep_find_field(event, "prev_state_char")) {
+> +		if (tep_get_field_val(s,  event, "prev_state_char", record, &val, 1) == 0)
+> +			trace_seq_putc(s, (char) val);
+> +	}
+> +	else if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) == 0)
+>  		write_state(s, val);
+>  
+>  	trace_seq_puts(s, " ==> ");
 
