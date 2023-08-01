@@ -2,55 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F7A76B4E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 914DE76B4ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:41:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbjHAMj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:39:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42612 "EHLO
+        id S233684AbjHAMl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:41:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbjHAMj1 (ORCPT
+        with ESMTP id S231190AbjHAMlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:39:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B15A8
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:39:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 1 Aug 2023 08:41:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEE41FD2
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:40:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690893642;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fdSmE0KsRkcAPc+N+tgRm738pW2M/sS8fQouKVDmKko=;
+        b=ems8gKr2iHPwSds9b3xksRgmwWEbmXnLEFRLZV0fZeSoyfvvtwFJ39LS8GuSnOwEWIOumR
+        sP5bYqE8+G/XFHxhx5+AiGiNM6oZwY4hMNeMfdqDgYLpi2LXPyNVK3jCxAyB+RDkiw16A8
+        SDkNk7WJ4MmvEdiA++l4Qx24zDMyv5w=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-192-1QObjjXDNfmEubEKL5L97Q-1; Tue, 01 Aug 2023 08:40:37 -0400
+X-MC-Unique: 1QObjjXDNfmEubEKL5L97Q-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id BA5D161564
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:39:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E79D6C433C7;
-        Tue,  1 Aug 2023 12:39:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690893565;
-        bh=ptHIP8rflq98VVazSu1Ujyg+iZNZce3MRFi7SGKE1nU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=CrmA23r2+N7MKz3P3DCdW3VKE0aLpWFNl0intF5HregYdyO1TOogJZqX0zk4cABnj
-         bVH8hHtiCQx4g/xNlB3bjSiaSaf/iLXFPoQtCUlzaLlCHaoSSvuyBLYXmNYhrL6lHc
-         WfgFZkOjpJCD2FKEqUjcf2qHvpAOhIdqGTb9VPNhc6PkUlFPhmN87Z7JCEBzFSMYg/
-         hkUgxrMVMG0DKwcLW0sJOApPgvW/d+7CY3Kki53rMyiuio9WfxaK6dyhuOHwHKTWmC
-         aHQZB3bWm3YavUCSuW5KWNVOg6YbZ+8DXTMXxyxQiDCi8u/8SIN/ZoywNvVPxL4tmE
-         KIj25Jnh1AdGQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 09C9240096; Tue,  1 Aug 2023 09:39:22 -0300 (-03)
-Date:   Tue, 1 Aug 2023 09:39:21 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] perf test bpf: Address error about non-null argument for
- epoll_pwait 2nd arg
-Message-ID: <ZMj8+bvN86D0ZKiB@kernel.org>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4FA53185A792;
+        Tue,  1 Aug 2023 12:40:36 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 72517492B01;
+        Tue,  1 Aug 2023 12:40:34 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch>
+References: <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch> <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch> <20230718160737.52c68c73@kernel.org> <000000000000881d0606004541d1@google.com> <0000000000001416bb06004ebf53@google.com> <792238.1690667367@warthog.procyon.org.uk> <831028.1690791233@warthog.procyon.org.uk>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     dhowells@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1401695.1690893633.1@warthog.procyon.org.uk>
+Date:   Tue, 01 Aug 2023 13:40:33 +0100
+Message-ID: <1401696.1690893633@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,60 +70,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First noticed on Fedora Rawhide:
+The more I look at __ip_append_data(), the more I think the maths is wrong.
+In the bit that allocates a new skbuff:
 
-  tests/bpf.c: In function ‘epoll_pwait_loop’:
-  tests/bpf.c:36:17: error: argument 2 null where non-null expected [-Werror=nonnull]
-     36 |                 epoll_pwait(-(i + 1), NULL, 0, 0, NULL);
-        |                 ^~~~~~~~~~~
-  In file included from tests/bpf.c:5:
-  /usr/include/sys/epoll.h:134:12: note: in a call to function ‘epoll_pwait’ declared ‘nonnull’
-    134 | extern int epoll_pwait (int __epfd, struct epoll_event *__events,
-        |            ^~~~~~~~~~~
+	if (copy <= 0) {
+	...
+		datalen = length + fraggap;
+		if (datalen > mtu - fragheaderlen)
+			datalen = maxfraglen - fragheaderlen;
+		fraglen = datalen + fragheaderlen;
+		pagedlen = 0;
+	...
+		if ((flags & MSG_MORE) &&
+		    !(rt->dst.dev->features&NETIF_F_SG))
+	...
+		else if (!paged &&
+			 (fraglen + alloc_extra < SKB_MAX_ALLOC ||
+			  !(rt->dst.dev->features & NETIF_F_SG)))
+	...
+		else {
+			alloclen = fragheaderlen + transhdrlen;
+			pagedlen = datalen - transhdrlen;
+		}
+	...
 
-  [perfbuilder@27cfe44d67ed perf-6.5.0-rc2]$ gcc -v
-  Using built-in specs.
-  COLLECT_GCC=gcc
-  COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper
-  OFFLOAD_TARGET_NAMES=nvptx-none
-  OFFLOAD_TARGET_DEFAULT=1
-  Target: x86_64-redhat-linux
-  Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,objc,obj-c++,ada,go,d,m2,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --with-isl=/builddir/build/BUILD/gcc-13.2.1-20230728/obj-x86_64-redhat-linux/isl-install --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1
-  Thread model: posix
-  Supported LTO compression algorithms: zlib zstd
-  gcc version 13.2.1 20230728 (Red Hat 13.2.1-1) (GCC)
-  [perfbuilder@27cfe44d67ed perf-6.5.0-rc2]$
+In the MSG_SPLICE_READ but not MSG_MORE case, we go through that else clause.
+The values used here, a few lines further along:
 
-Just add that argument to address this compiler warning.
+		copy = datalen - transhdrlen - fraggap - pagedlen;
 
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Link: https://lore.kernel.org/lkml/
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/tests/bpf.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+are constant over the intervening span.  This means that, provided the splice
+isn't going to exceed the MTU on the second fragment, the calculation of
+'copy' can then be simplified algebraically thus:
 
-diff --git a/tools/perf/tests/bpf.c b/tools/perf/tests/bpf.c
-index 31796f2a80f47fb1..9ccecd873ecdd046 100644
---- a/tools/perf/tests/bpf.c
-+++ b/tools/perf/tests/bpf.c
-@@ -29,11 +29,12 @@
- 
- static int epoll_pwait_loop(void)
- {
-+	struct epoll_event events;
- 	int i;
- 
- 	/* Should fail NR_ITERS times */
- 	for (i = 0; i < NR_ITERS; i++)
--		epoll_pwait(-(i + 1), NULL, 0, 0, NULL);
-+		epoll_pwait(-(i + 1), &events, 0, 0, NULL);
- 	return 0;
- }
- 
--- 
-2.37.1
+		copy = (length + fraggap) - transhdrlen - fraggap - pagedlen;
+
+		copy = length - transhdrlen - pagedlen;
+
+		copy = length - transhdrlen - (datalen - transhdrlen);
+
+		copy = length - transhdrlen - datalen + transhdrlen;
+
+		copy = length - datalen;
+
+		copy = length - (length + fraggap);
+
+		copy = length - length - fraggap;
+
+		copy = -fraggap;
+
+I think we might need to recalculate copy after the conditional call to
+getfrag().  Possibly we should skip that entirely for MSG_SPLICE_READ.  The
+root seems to be that we're subtracting pagedlen from datalen - but probably
+we shouldn't be doing getfrag() if pagedlen > 0.
+
+David
 
