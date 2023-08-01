@@ -2,85 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FEF76BDF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:41:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE7D76BDDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbjHATlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:41:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32904 "EHLO
+        id S232505AbjHATgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbjHATlQ (ORCPT
+        with ESMTP id S229841AbjHATgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:41:16 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4F61FF3;
-        Tue,  1 Aug 2023 12:41:14 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 9a48f1ec80921127; Tue, 1 Aug 2023 21:41:12 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 365E16621DD;
-        Tue,  1 Aug 2023 21:41:12 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>
-Subject: [RFC/RFT][PATCH v1 0/2] cpuidle: teo: Do not check timers unconditionally every time
-Date:   Tue, 01 Aug 2023 21:35:15 +0200
-Message-ID: <4511619.LvFx2qVVIh@kreacher>
+        Tue, 1 Aug 2023 15:36:16 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446EC19A4;
+        Tue,  1 Aug 2023 12:36:14 -0700 (PDT)
+X-QQ-mid: bizesmtp74t1690918563tu5j6iav
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 02 Aug 2023 03:36:02 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000B00A0000000
+X-QQ-FEAT: 7YFKcddXaghqkRBpLDziBfBC85h2DKn+U6m/sBmgHfGSmVRsmTQhKYsQg42hM
+        MbfkwiUcFRNNJuoTaXsSiXS7+l5BAw/+2gsQPjsjJCZS8j+tw8fE8TimR7dYP9i1pQmJd3Q
+        c9DmXh2DVR4RUZSa3saIisYRc5H+xZjDn+A413a+sxEn2ZmTPqIFwfTpvjh5mtk0xgFouFP
+        5vFSMa/l0ry511IC8G5iPzbNfNyK8jp1dajb+L8zxLptNVhupr5A9Vnf2x6fiJJu+xGDYO8
+        KUwus8Az8FFaUzbZQgMVcHWqm7MP715tAg5aKS/fGqF5G15bJXniVmTqa3sP/YhjaHLoU83
+        S8aC+rEioUrlAskK/E=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 8572330015572247094
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, w@1wt.eu
+Subject: [PATCH v4 00/12] tools/nolibc: add 32/64-bit powerpc support
+Date:   Wed,  2 Aug 2023 03:36:02 +0800
+Message-Id: <cover.1690916314.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigddufeeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepgeffhfdujeelhfdtgeffkeetudfhtefhhfeiteethfekvefgvdfgfeeikeeigfehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeeipdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepphgvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheprghnnhgrqdhmrghrihgrsehlihhnuhhtrhhonhhigidruggvpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhn
- vghlrdhorhhgpdhrtghpthhtohepfhhrvgguvghrihgtsehkvghrnhgvlhdrohhrghdprhgtphhtthhopehkrghjvghtrghnrdhpuhgthhgrlhhskhhisegrrhhmrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Folks,
+Hi, Willy, Hi Thomas
 
-This is on top of the fixes series posted previously:
+v4 here is mainly with a new nolibc-test-config target from your
+suggestions and with the reordering of some patches to make
+nolibc-test-config be fast forward.
 
-https://lore.kernel.org/linux-pm/4515817.LvFx2qVVIh@kreacher/
+run-user tests for all of the powerpc variants:
 
-(I'll put it all into one git branch tomorrow).
+    $ for arch in ppc ppc64 ppc64le; do make run-user XARCH=$arch | grep status; done
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
+    165 test(s): 157 passed,   8 skipped,   0 failed => status: warning
 
-I started to play with the idea described here
+and defconfig + run for ppc:
 
-https://lore.kernel.org/linux-pm/CAJZ5v0hQh2Pg_uXxj8KBRw3oLS1WdsU+rUafBAAq7dRdbRwYSA@mail.gmail.com/
-
-and this is the result.
-
-Note that this is completely experimental, even though it doesn't kill any of
-the test boxes I've run it on.
-
-Patch [1/2] moves the tick_nohz_get_sleep_length() call in teo_select() after
-a preliminary idle state selection based on statistics and patch [2/2] adds
-checks to avoid it completely if the idle state selected so far is shallow
-enough.
-
-I would appreciate checking if this actually makes any difference.
-
-Thanks!
+    $ make nolibc-test-config XARCH=ppc
+    $ make run XARCH=ppc 
+    165 test(s): 159 passed,   6 skipped,   0 failed => status: warning
 
 
+* tools/nolibc: add support for powerpc
+  tools/nolibc: add support for powerpc64
+
+    No change.
+
+* selftests/nolibc: fix up O= option support
+  selftests/nolibc: add macros to reduce duplicated changes
+
+    From tinyconfig-part1 patchset, required by our nolibc-test-config target
+
+    Let nolibc-test-config be able to use objtree and the kernel related
+    macros directly.
+
+* selftests/nolibc: add XARCH and ARCH mapping support
+
+    Moved before nolibc-test-config, for the NOLIBC_TEST_CONFIG macro used by
+    nolibc-test-config target
+    
+    Willy talked about this twice, let nolibc-test-config be able to use
+    nolibc-test-$(XARCH).config listed in NOLIBC_TEST_CONFIG  directly.
+
+* selftests/nolibc: add nolibc-test-config target
+  selftests/nolibc: add help for nolibc-test-config target
+
+    A new generic nolibc-test-config target is added, allows to enable
+    additional options for a top-level config target.
+
+    defconfig is reserved as an alias of nolibc-test-config.
+
+    As suggested by Thomas and Willy.
+
+* selftests/nolibc: add test support for ppc
+  selftests/nolibc: add test support for ppc64le
+  selftests/nolibc: add test support for ppc64
+
+    Renamed from $(XARCH).config to nolibc-test-$(XARCH).config
+
+    As suggested by Willy.
+
+* selftests/nolibc: allow customize CROSS_COMPILE by architecture
+  selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
+
+    Moved here as suggested by Willy.
+
+Best regards,
+Zhangjin
+---
+[1]: https://lore.kernel.org/lkml/cover.1690468707.git.falcon@tinylab.org/
+
+ 
+ 
+Zhangjin Wu (12):
+  tools/nolibc: add support for powerpc
+  tools/nolibc: add support for powerpc64
+  selftests/nolibc: fix up O= option support
+  selftests/nolibc: add macros to reduce duplicated changes
+  selftests/nolibc: add XARCH and ARCH mapping support
+  selftests/nolibc: add nolibc-test-config target
+  selftests/nolibc: add help for nolibc-test-config target
+  selftests/nolibc: add test support for ppc
+  selftests/nolibc: add test support for ppc64le
+  selftests/nolibc: add test support for ppc64
+  selftests/nolibc: allow customize CROSS_COMPILE by architecture
+  selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
+
+ tools/include/nolibc/arch-powerpc.h           | 202 ++++++++++++++++++
+ tools/include/nolibc/arch.h                   |   2 +
+ tools/testing/selftests/nolibc/Makefile       | 157 ++++++++++----
+ .../nolibc/configs/nolibc-test-ppc.config     |   3 +
+ 4 files changed, 327 insertions(+), 37 deletions(-)
+ create mode 100644 tools/include/nolibc/arch-powerpc.h
+ create mode 100644 tools/testing/selftests/nolibc/configs/nolibc-test-ppc.config
+
+-- 
+2.25.1
 
