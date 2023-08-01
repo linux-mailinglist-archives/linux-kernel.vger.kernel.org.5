@@ -2,63 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADAB76B860
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3F376B85F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233931AbjHAPSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42568 "EHLO
+        id S233813AbjHAPSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbjHAPSd (ORCPT
+        with ESMTP id S233839AbjHAPSc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:18:33 -0400
+        Tue, 1 Aug 2023 11:18:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CD82116;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 082182102;
         Tue,  1 Aug 2023 08:18:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4693E615E6;
-        Tue,  1 Aug 2023 15:18:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3111EC433C7;
-        Tue,  1 Aug 2023 15:18:27 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 91A2461531;
+        Tue,  1 Aug 2023 15:18:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED480C433C8;
+        Tue,  1 Aug 2023 15:18:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1690903109;
-        bh=9zE3B/GzLbe9RK3XK4iNIjOkmj6TzTD5UskW9ugQeFc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tcNCDq0gVabvvlUcl27p35Ui7WkL+VQMdfoqPGtPSX4GjohIEg0bcMkuETnOzffpB
-         P/VEmk1oGKPtb5gVYqZlWgwsIPOtUdKcyaO4HijEewZRkxc2fpuwGoVP32nqBxfbRS
-         ijRFKRPDh7AfM8s8FFhPjlgZKd/wOchK3PA5pgqERNLOFGSJr3sXdooJjT2iVClsFt
-         QftIonj9c0c+0lrYZO49aDSj6JKglZdN9unSfJEyTMBc/EkGEuRIhr5cHRhAM5rLQf
-         2kyuRGm1MvFXL/Ll+p05+pIMOAVYMKoEmuK/Qldgs9G1o3Mg6vPSwskew7EMjNtK/F
-         uoUDOFoBhP93w==
-Date:   Wed, 2 Aug 2023 00:18:24 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-Id: <20230802001824.90819c7355283843178d9163@kernel.org>
-In-Reply-To: <CAADnVQJz41QgpFHr3k0pndjHZ8ragH--=C_bYxrzitj7bN3bbg@mail.gmail.com>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-        <169078863449.173706.2322042687021909241.stgit@devnote2>
-        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-        <20230731211527.3bde484d@gandalf.local.home>
-        <CAADnVQJz41QgpFHr3k0pndjHZ8ragH--=C_bYxrzitj7bN3bbg@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        bh=iR0vxFbHHnoGoKhRMvkLfrUpLYKG6Zy8MO5fgey7/WE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R33CuhpMn3/kdUcPqTebZEgIk+MbCkDnO8EGLjqZNH4Ts1Fk4d+Dv8hTjt1nKx0ig
+         NhCfBsGyTlsL7BD/334bYwz70owny1S6yOIVmEijXb5Vu5nDiMUBVMOI7bT3z5CcXt
+         6Iyr7x5mF29qn00w/iHvY7PP1dSkqDPIAF2rVXg5R83zXqR2gzgLljSqTVdwr6q0eN
+         GHHYfzI4ETWP5zvhtOTcPQriZDPNixmcU/jRui0X58uMMkp4dK6iIVZmascTP5I2VW
+         2iqvk1SwAAb0apBIA6hMdtbLLYNlOauQBJcQ5M1yPOijaTOXSOBbzJWwI4VoQfLoP4
+         lH7uP3QNUsaIw==
+Date:   Tue, 1 Aug 2023 08:18:28 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     zhangshida <starzhangzsd@gmail.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, yi.zhang@huawei.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangshida@kylinos.cn, stable@kernel.org,
+        Andreas Dilger <adilger@dilger.ca>
+Subject: Re: [PATCH v3] ext4: Fix rec_len verify error
+Message-ID: <20230801151828.GB11332@frogsfrogsfrogs>
+References: <20230801112337.1856215-1-zhangshida@kylinos.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801112337.1856215-1-zhangshida@kylinos.cn>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -67,66 +57,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 19:24:25 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-
-> On Mon, Jul 31, 2023 at 6:15 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Mon, 31 Jul 2023 14:59:47 -0700
-> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-> >
-> > > Assuming that is addressed. How do we merge the series?
-> > > The first 3 patches have serious conflicts with bpf trees.
-> > >
-> > > Maybe send the first 3 with extra selftest for above recursion
-> > > targeting bpf-next then we can have a merge commit that Steven can pull
-> > > into tracing?
-> >
-> > Would it be possible to do this by basing it off of one of Linus's tags,
-> > and doing the merge and conflict resolution in your tree before it gets to
-> > Linus?
-> >
-> > That way we can pull in that clean branch without having to pull in
-> > anything else from BPF. I believe Linus prefers this over having tracing
-> > having extra changes from BPF that are not yet in his tree. We only need
-> > these particular changes, we shouldn't be pulling in anything specific for
-> > BPF, as I believe that will cause issues on Linus's side.
+On Tue, Aug 01, 2023 at 07:23:37PM +0800, zhangshida wrote:
+> From: Shida Zhang <zhangshida@kylinos.cn>
 > 
-> We can try, but I suspect git tricks won't do it.
-> Masami's changes depend on patches for kernel/bpf/btf.c that
-> are already in bpf-next, so git would have to follow all commits
-> that touch this file. 
+> With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
+> a problem occurred when more than 13 million files were directly created
+> under a directory:
+> 
+> EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
+> EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm xxxxx: dir seems corrupt?  Run e2fsck -D.
+> EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm xxxxx: Directory index failed checksum
+> 
+> When enough files are created, the fake_dirent->reclen will be 0xffff.
+> it doesn't equal to the blocksize 65536, i.e. 0x10000.
+> 
+> But it is not the same condition when blocksize equals to 4k.
+> when enough files are created, the fake_dirent->reclen will be 0x1000.
+> it equals to the blocksize 4k, i.e. 0x1000.
+> 
+> The problem seems to be related to the limitation of the 16-bit field
+> when the blocksize is set to 64k.
+> To address this, helpers like ext4_rec_len_{from,to}_disk has already
+> been introduce to complete the conversion between the encoded and the
+> plain form of rec_len.
+> 
+> So fix this one by using the helper, and all the other
+> le16_to_cpu(ext4_dir_entry{,_2}.rec_len) accesses in this file too.
+> 
+> Cc: stable@kernel.org
+> Fixes: dbe89444042a ("ext4: Calculate and verify checksums for htree nodes")
+> Suggested-by: Andreas Dilger <adilger@dilger.ca>
+> Suggested-by: Darrick J. Wong <djwong@kernel.org>
+> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> ---
+> v1->v2:
+>  Use the existing helper to covert the rec_len, as suggested by Andreas.
+> v2->v3:
+>  1,Covert all the other rec_len if necessary, as suggested by Darrick.
+>  2,Rephrase the commit message.
+> 
+>  fs/ext4/namei.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index 0caf6c730ce3..8cb377b8ad86 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -346,14 +346,14 @@ static struct ext4_dir_entry_tail *get_dirent_tail(struct inode *inode,
+>  
+>  #ifdef PARANOID
+>  	struct ext4_dir_entry *d, *top;
+> +	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
+>  
+>  	d = (struct ext4_dir_entry *)bh->b_data;
+>  	top = (struct ext4_dir_entry *)(bh->b_data +
+> -		(EXT4_BLOCK_SIZE(inode->i_sb) -
+> -		 sizeof(struct ext4_dir_entry_tail)));
+> -	while (d < top && d->rec_len)
+> +		(blocksize - sizeof(struct ext4_dir_entry_tail)));
+> +	while (d < top && ext4_rec_len_from_disk(d->rec_len, blocksize))
+>  		d = (struct ext4_dir_entry *)(((void *)d) +
+> -		    le16_to_cpu(d->rec_len));
+> +		    ext4_rec_len_from_disk(d->rec_len, blocksize));
+>  
+>  	if (d != top)
+>  		return NULL;
 
-This point is strange. I'm working on probe/fixes which is based on
-v6.5-rc3, so any bpf-next change should not be involved. Can you recheck
-this point?
+This is sitll missing some pieces; what about this clause at line 367:
 
-> I don't think git is smart enough to
-> thread the needle and split the commit into files. If one commit touches
-> btf.c and something else that whole commit becomes a dependency
-> that pulls another commit with all files touched by
-> the previous commit and so on.
+	if (t->det_reserved_zero1 ||
+	    le16_to_cpu(t->det_rec_len) != sizeof(struct ext4_dir_entry_tail) ||
+	    t->det_reserved_zero2 ||
+	    t->det_reserved_ft != EXT4_FT_DIR_CSUM)
+		return NULL;
 
-As far as I understand Steve's method, we will have an intermediate branch
-on bpf or probe tree, like 
+> @@ -445,13 +445,13 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
+>  	struct ext4_dir_entry *dp;
+>  	struct dx_root_info *root;
+>  	int count_offset;
+> +	int blocksize = EXT4_BLOCK_SIZE(inode->i_sb);
+>  
+> -	if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
+> +	if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == blocksize)
+>  		count_offset = 8;
+> -	else if (le16_to_cpu(dirent->rec_len) == 12) {
+> +	else if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) == 12) {
 
-linus(some common commit) ---- probes/btf-find-api
+Why not lift this ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ to a
+local variable?  @dirent doesn't change, right?
 
-and merge it to both bpf-next and probes/for-next branch
+>  		dp = (struct ext4_dir_entry *)(((void *)dirent) + 12);
+> -		if (le16_to_cpu(dp->rec_len) !=
+> -		    EXT4_BLOCK_SIZE(inode->i_sb) - 12)
+> +		if (ext4_rec_len_from_disk(dp->rec_len, blocksize) != blocksize - 12)
+>  			return NULL;
+>  		root = (struct dx_root_info *)(((void *)dp + 12));
+>  		if (root->reserved_zero ||
 
-          +----------------------bpf-next --- (merge bpf patches)
-         /                       / merge
-common -/\ probes/btf-find-api -/-\
-          \                        \ merge
-           +----------------------probes/for-next --- (merge probe patches)
+What about dx_make_map?
 
-Thus, we can merge both for-next branches at next merge window without
-any issue. (But, yes, this is not simple, and needs maxium care)
+Here's all the opencoded access I could find:
 
-Thank you,
+$ git grep le16.*rec_len fs/ext4/
+fs/ext4/namei.c:356:                le16_to_cpu(d->rec_len));
+fs/ext4/namei.c:367:        le16_to_cpu(t->det_rec_len) != sizeof(struct ext4_dir_entry_tail) ||
+fs/ext4/namei.c:449:    if (le16_to_cpu(dirent->rec_len) == EXT4_BLOCK_SIZE(inode->i_sb))
+fs/ext4/namei.c:451:    else if (le16_to_cpu(dirent->rec_len) == 12) {
+fs/ext4/namei.c:453:            if (le16_to_cpu(dp->rec_len) !=
+fs/ext4/namei.c:1338:                   map_tail->size = le16_to_cpu(de->rec_len);
 
-> tbh for this set, the easiest for everyone, is to land the whole thing
-> through bpf-next, since there are no conflicts on fprobe side.
+--D
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> -- 
+> 2.27.0
+> 
