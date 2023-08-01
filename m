@@ -2,120 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AAE76B004
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A55A376B001
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbjHAJy7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 05:54:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
+        id S233459AbjHAJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbjHAJy5 (ORCPT
+        with ESMTP id S231978AbjHAJyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:54:57 -0400
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B1BEE;
-        Tue,  1 Aug 2023 02:54:56 -0700 (PDT)
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-56c9f7830c2so251657eaf.0;
-        Tue, 01 Aug 2023 02:54:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690883696; x=1691488496;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wDHtwCciAVcr1/uCb4H8IZDljQclLvhqmNWIc3kVGPQ=;
-        b=VQEqDg8J326q9pEfrlBcFaGgG1BkM8Jpqzjtm3SIFmcp5mG8rqqnPvMhmaf+3IRkHS
-         Eg4DfJewjPxLO8OWcOFAHZLUU3K5OgV8PhFa5mYG0PVrCFN2rGysFd0dK5qk8Ek7ypWn
-         tBusVswZ5M1AFcEui4417QzUjxwT60PGLdMzQ4vvEsxKggU2KlZhJcO47UMAnOOncftW
-         zJplA/dNA/EbhybTdqp263zjNtDMlAzEmrp61SwkXgG/NNeOW8eaL4Ckdg4ztdPFoZxg
-         TZl3Z2mfCK5xgXQnWZiqzcz9eucUzLTm7lxihvtAGs01raMxhdE4U6Eqvz/6/KXUKIXm
-         RiHA==
-X-Gm-Message-State: ABy/qLY7Rhq27inmOvmwEUUDhC+fEGmicIXDBajR5qA57mfp6r6PpKl5
-        NubEwVdDLcmDViP0UY28YWN3SlnGToMtcyGjNUo=
-X-Google-Smtp-Source: APBJJlGkGPlF9lCipQ7nhQdKjJk5+T87Obsq50y6T9rLg2wcB3DF7T52fU8JiHb9ZLwZDRZSEq4Hb9MqSi3BIZbvplQ=
-X-Received: by 2002:a4a:e9b0:0:b0:565:a7bd:3927 with SMTP id
- t16-20020a4ae9b0000000b00565a7bd3927mr6598903ood.0.1690883695759; Tue, 01 Aug
- 2023 02:54:55 -0700 (PDT)
+        Tue, 1 Aug 2023 05:54:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5C4BE;
+        Tue,  1 Aug 2023 02:54:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id C24E81F38D;
+        Tue,  1 Aug 2023 09:54:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690883687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wO63J1EyZpemnTVHqFZ8CyKvSylFpCyQaYjDytJ5JcI=;
+        b=Xm1y6TPV+ft2mgHUEs0a4S+VBf8IeVMT2AHrnpwxVYWrl3VVPM27WCA62GEGULwRhG07+U
+        n0QYWPeJiNSw5BddFNX4NloFWNI0P/eu+VT8/XaOjKnQpON2VvvYJD09cUF5gpKij+y1c4
+        5kP2fChggBnUHXhaJts/jfCsA5DAVGc=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0B8813919;
+        Tue,  1 Aug 2023 09:54:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Z5loKmfWyGRWUgAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 01 Aug 2023 09:54:47 +0000
+Date:   Tue, 1 Aug 2023 11:54:47 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Yosry Ahmed <yosryahmed@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        "T.J. Mercier" <tjmercier@google.com>,
+        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
+Message-ID: <ZMjWZwYkhxSNLU+q@dhcp22.suse.cz>
+References: <20230720070825.992023-1-yosryahmed@google.com>
+ <20230720153515.GA1003248@cmpxchg.org>
 MIME-Version: 1.0
-References: <20230711221427.GA250962@bhelgaas> <b82a50eb-8182-84ca-5b24-dbe8870fa871@amd.com>
- <CAJZ5v0i6PviqW7u3i8hmvSCvR_VHqP-mWRy3Da8Ev_1vi9qBQA@mail.gmail.com>
- <a309e3fe-b1f9-e269-cb97-8af87c8d483b@amd.com> <CAJZ5v0jvxrDMR6YHFpYZ4yYpp82-3TtrH==SMRFtUMJsv7=i=g@mail.gmail.com>
- <67fa2dda-f383-1864-57b8-08b86263bd02@amd.com>
-In-Reply-To: <67fa2dda-f383-1864-57b8-08b86263bd02@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 1 Aug 2023 11:54:43 +0200
-Message-ID: <CAJZ5v0hZ-2rv2VovS-NO11QBMMGXLWL9J6Gys4ORpM+NGTxCTQ@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] PCI: Don't put non-power manageable PCIe root
- ports into D3
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230720153515.GA1003248@cmpxchg.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 15, 2023 at 1:00 AM Limonciello, Mario
-<mario.limonciello@amd.com> wrote:
->
->
-> On 7/14/2023 2:17 PM, Rafael J. Wysocki wrote:
->
-> Well, this looks like a spec interpretation difference.
->
-> We thought that _SxD/_SxW would only be relevant for devices with ACPI
-> PM support, but the firmware people seem to think that those objects
-> are also relevant for PCI devices that don't have ACPI PM support
-> (because those devices are still power-manageable via PMCSR).  If
-> Windows agrees with that viewpoint, we'll need to adjust, but not
-> through adding _SxW checks in random places.
->
-> I think that depends upon how you want to handle the lack of _S0W.
+[Sorry for being late to this discussion]
 
-If _S0W is not present, _S0D should return the deepest state that can be used.
+On Thu 20-07-23 11:35:15, Johannes Weiner wrote:
+[...]
+> I'm super skeptical of this proposal.
 
-If that is not present, it is a matter of OS policy.
+Agreed.
+ 
+> Recharging *might* be the most desirable semantics from a user pov,
+> but only if it applies consistently to the whole memory footprint.
+> There is no mention of slab allocations such as inodes, dentries,
+> network buffers etc. which can be a significant part of a cgroup's
+> footprint. These are currently reparented. I don't think doing one
+> thing with half of the memory, and a totally different thing with the
+> other half upon cgroup deletion is going to be acceptable semantics.
+> 
+> It appears this also brings back the reliability issue that caused us
+> to deprecate charge moving. The recharge path has trylocks, LRU
+> isolation attempts, GFP_ATOMIC allocations. These introduce a variable
+> error rate into the relocation process, which causes pages that should
+> belong to the same domain to be scattered around all over the place.
+> It also means that zombie pinning still exists, but it's now even more
+> influenced by timing and race conditions, and so less predictable.
+> 
+> There are two issues being conflated here:
+> 
+> a) the problem of zombie cgroups, and
+> 
+> b) who controls resources that outlive the control domain.
+> 
+> For a), reparenting is still the most reasonable proposal. It's
+> reliable for one, but it also fixes the problem fully within the
+> established, user-facing semantics: resources that belong to a cgroup
+> also hierarchically belong to all ancestral groups; if those resources
+> outlive the last-level control domain, they continue to belong to the
+> parents. This is how it works today, and this is how it continues to
+> work with reparenting. The only difference is that those resources no
+> longer pin a dead cgroup anymore, but instead are physically linked to
+> the next online ancestor. Since dead cgroups have no effective control
+> parameters anymore, this is semantically equivalent - it's just a more
+> memory efficient implementation of the same exact thing.
+> 
+> b) is a discussion totally separate from this. We can argue what we
+> want this behavior to be, but I'd argue strongly that whatever we do
+> here should apply to all resources managed by the controller equally.
+> 
+> It could also be argued that if you don't want to lose control over a
+> set of resources, then maybe don't delete their control domain while
+> they are still alive and in use. For example, when restarting a
+> workload, and the new instance is expected to have largely the same
+> workingset, consider reusing the cgroup instead of making a new one.
+> 
+> For the zombie problem, I think we should merge Muchun's patches
+> ASAP. They've been proposed several times, they have Roman's reviews
+> and acks, and they do not change user-facing semantics. There is no
+> good reason not to merge them.
 
-> On these problematic devices there is no _S0W under the PCIe
-> root port.  As I said; Windows puts them into D0 in this case though.
+Yes, fully agreed on both points. The problem with zombies is real but
+reparenting should address it for a large part. Ownership is a different
+problem. We have discussed that at LSFMM this year and in the past as
+well I believe. What we probably need is a concept of taking an
+ownership of the memory (something like madvise(MADV_OWN, range) or
+fadvise for fd based resources). This would allow the caller to take
+ownership of the said resource (like memcg charge of it).
 
-Do you know what the rationale for that is?  Maybe Windows takes the
-lack of _S0W/_S0D as the indication that the device could not go into
-low-power states in D0, but do you actually know that this is the
-case?
+I understand that would require some changes to existing workloads.
+Whatever the interface will be, it has to be explicit otherwise we
+are hitting problems with unaccounted resources that are sitting without
+any actual ownership and an undeterministic and time dependeing hopping
+over owners. In other words, nobody should be able to drop
+responsibility of any object while it is still consuming resources.
 
-Surely, for non-bridge devices the lack of _S0W/_S0D does not mean
-that the device should not be programmed into low-power states via
-PMCSR, but maybe Root Ports are an exception?
-
-> So acpi_dev_power_state_for_wake should return ACPI_STATE_UNKNOWN.
-
-And then who'll decide what to do with that return value?
-
-> Can you suggest where you think adding a acpi_dev_power_state_for_wake() does make sense?
->
-> Two areas that I think would work would be in: pci_pm_suspend_noirq() (to avoid calling pci_prepare_to_sleep)
->
-> or
->
-> directly in pci_prepare_to_sleep() to check that value in lieu of pci_target_state().
-
-I'm not sure that this is a core problem TBH.  It looks like this is
-an exception made specifically for ports, so this check seems to
-belong to where ports are handled, so that would be
-acpi_pci_bridge_d3() after all.
-
-However, _S0D needs to be checked too when _S0W is not present.
+-- 
+Michal Hocko
+SUSE Labs
