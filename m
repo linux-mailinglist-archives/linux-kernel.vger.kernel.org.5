@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 366C276AB68
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274C976AB7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbjHAIyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53812 "EHLO
+        id S232049AbjHAI4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231786AbjHAIya (ORCPT
+        with ESMTP id S231344AbjHAIz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:54:30 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F2B1726
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:54:24 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690880063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5D/H/wtmV/2qMq2QlRtxqoE9K4Ef5Ua0CblWkkulSQ0=;
-        b=ubzdhhhXOBYbfHmWQdGXAGjwChIy3ujG9yl088QWX5MJ9DWP8Q3oDPM5XqwrcQ+uNapOUG
-        i20ap5dpgfBVV+iVyFAljIcFrGuxJM5ZIhMPScnGZBt3rnnlznGorz5PIOima/tVxFZduI
-        Trr0lLGsm/BFQeT2b7T5tkj+JHf3XpcH+fh25qZl1HlhoG5WaisCBElk7M/tDR7O4WPWAA
-        n2QMFvbfyuXmIR953j6xRADi092HyRKPg8kHR6apjmwc7hWGWhZYoIINU3TvrDozQcivxR
-        AYeOjONJVyy4NVA7hMP3dKufcLJOH93LRV7IKdq4GXJUt+8kaQ2GWjdaqTJN4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690880063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5D/H/wtmV/2qMq2QlRtxqoE9K4Ef5Ua0CblWkkulSQ0=;
-        b=cdHh0xpPt+AA35zj8WMiIlXxG2TPFGEfD94/Ry3QjbsLG98PD6o46e9+JZ3fxa2+V2VKIn
-        XL8vwqf1A3sxTUDA==
-To:     Juergen Gross <jgross@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch V2 50/58] x86/apic: Provide common init infrastructure
-In-Reply-To: <bd5a43b8-c07d-c906-c0ef-ac8b3ae537e2@suse.com>
-References: <20230724131206.500814398@linutronix.de>
- <20230724132047.554355840@linutronix.de>
- <abfa4548-4367-d8fa-f23f-b2ca4a912258@suse.com> <87v8e0nskd.ffs@tglx>
- <b4f0e874-1e35-e523-8e5a-710bc54af52d@suse.com> <87pm48nktc.ffs@tglx>
- <87v8dzl0wm.ffs@tglx> <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
- <f0d5b71b-4344-2f35-03ee-3af6ebd038b2@suse.com> <87o7jrkyjf.ffs@tglx>
- <3af74b7a-be7f-3fdb-396e-e76b8ca1efaf@suse.com> <87il9zkw7h.ffs@tglx>
- <bd5a43b8-c07d-c906-c0ef-ac8b3ae537e2@suse.com>
-Date:   Tue, 01 Aug 2023 10:54:22 +0200
-Message-ID: <87bkfrkurl.ffs@tglx>
+        Tue, 1 Aug 2023 04:55:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788D3268E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:55:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DC3E4614C4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:55:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E69C3C433C9;
+        Tue,  1 Aug 2023 08:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690880111;
+        bh=9eJCKTqNMuD9Qzd4V6zbjbKNH9Wn22vwxY5UdngJOsA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G2RNsx5poE4gfIohzHxNzgBThoQMTuMRj8TR1ONzG43Qx4zubbobawBjUKKwieY63
+         PYMuSGRF3htn76wjGsBiv+uirXuvL2iF5o1nlsyFnLTu8PLEVU6WgtomvfmyxI2jhg
+         yMUOk4ovrZSItmxBkaWnPPqqcWFaAh0qxIbPlhrAxwfGAJeQ0KByKAJT4+HIr6Rzw7
+         tPlvYvD7be3Yk/+tJNuj64IFAFu5NVCjPvDVv6W/VQCwKFh8Z1MPIbi72FjuD3iaBE
+         6AWIG1ArxsPGsJb7nvUNPsRvKnA5Y7qf7zQiXKUPNE8WKmxbKiN8L9DNF/5G18uBd2
+         t7Nf7WXHCFwoQ==
+Date:   Tue, 1 Aug 2023 09:55:05 +0100
+From:   Will Deacon <will@kernel.org>
+To:     wangwudi <wangwudi@hisilicon.com>
+Cc:     linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Rui Zhu <zhurui3@huawei.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Tomas Krcka <krckatom@amazon.de>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+Subject: Re: [PATCH 1/1] Revert "iommu/arm-smmu-v3: Set TTL invalidation hint
+ better"
+Message-ID: <20230801085504.GA26130@willie-the-truck>
+References: <1690784482-30028-1-git-send-email-wangwudi@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1690784482-30028-1-git-send-email-wangwudi@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01 2023 at 10:25, Juergen Gross wrote:
-> On 01.08.23 10:23, Thomas Gleixner wrote:
->> On Tue, Aug 01 2023 at 09:37, Juergen Gross wrote:
->>> On 01.08.23 09:32, Thomas Gleixner wrote:
->>>> On Tue, Aug 01 2023 at 09:08, Juergen Gross wrote:
->>>>> On 01.08.23 08:49, Juergen Gross wrote:
->>>>>     void __init xen_init_apic(void)
->>>>>     {
->>>>>            x86_apic_ops.io_apic_read = xen_io_apic_read;
->>>>> -       /* On PV guests the APIC CPUID bit is disabled so none of the
->>>>> -        * routines end up executing. */
->>>>> -       if (!xen_initial_domain())
->>>>> -               apic_install_driver(&xen_pv_apic);
->>>>> -
->>>>>            x86_platform.apic_post_init = xen_apic_check;
->>>>
->>>> I don't think this one is needed.
->>>
->>> Indeed.
->> 
->> Can you send a real patch please which I can add to that pile at the
->> right place?
->
-> I think adding it right after patch 50 should be fine?
->
-> The WARN() will be issued only with patch 58.
+On Mon, Jul 31, 2023 at 02:21:22PM +0800, wangwudi wrote:
+> From: Rui Zhu <zhurui3@huawei.com>
+> 
+> This reverts commit 6833b8f2e19945a41e4d5efd8c6d9f4cae9a5b7d.
+> 
+> This constraint violates the protocol. When tg is not 0 but ttl, scale,
+> and num are 0, the hardware reports the CERROR_IL gerror. In the
+> protocol, leaf is not a prerequisite for TTL.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Lu Baolu <baolu.lu@linux.intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Yicong Yang <yangyicong@hisilicon.com>
+> Cc: Tomas Krcka <krckatom@amazon.de>
+> Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Cc: Nicolin Chen <nicolinc@nvidia.com>
+> Cc: Rui Zhu <zhurui3@huawei.com>
+> 
+> Signed-off-by: Rui Zhu <zhurui3@huawei.com>
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index 9b0dc3505601..098e84cfa82f 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -1898,13 +1898,8 @@ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
+>  		/* Convert page size of 12,14,16 (log2) to 1,2,3 */
+>  		cmd->tlbi.tg = (tg - 10) / 2;
+>  
+> -		/*
+> -		 * Determine what level the granule is at. For non-leaf, io-pgtable
+> -		 * assumes .tlb_flush_walk can invalidate multiple levels at once,
+> -		 * so ignore the nominal last-level granule and leave TTL=0.
+> -		 */
+> -		if (cmd->tlbi.leaf)
+> -			cmd->tlbi.ttl = 4 - ((ilog2(granule) - 3) / (tg - 3));
+> +		/* Determine what level the granule is at */
+> +		cmd->tlbi.ttl = 4 - ((ilog2(granule) - 3) / (tg - 3));
 
-Correct.
+Doesn't this reintroduce the bug that 6833b8f2e199 tried to fix?
+
+afaict, we should only hit the problematic case of tg != 0 but ttl, scale
+and num all 0 if we're invalidating a single page, so shouldn't we just
+zap tg in that case, since it's not doing anything useful?
+
+I hesitate to say we should avoid range invalidation altogether for
+single-page invalidations because I think some errata workarounds might
+need that to work.
+
+Will
