@@ -2,651 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5670076AAA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3E676AB2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbjHAIOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34520 "EHLO
+        id S231233AbjHAIew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbjHAINz (ORCPT
+        with ESMTP id S232250AbjHAIeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:13:55 -0400
-Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E5F1FC9;
-        Tue,  1 Aug 2023 01:13:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
-        t=1690877623; bh=S8xXHE8Sqej/5vBghj7SadfjRDRToiCzxN39sB4368U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ajKiXG8Oe+/Jc3CaGGLIiACmU7jr/xFIprYh78RHSDIu98+zJ30qWU+SxOcTvJLKw
-         Hedg5LCx4WgUnkMkcxr+dJedUUoTIWJZDb6ukH9Zg+Qh6l2GXfNKGoLr5Fxe4tE3ZQ
-         6VZgeaxnu0tspiJYbm4IMXgSt9/bHz7EzKCn6PQs=
-Received: from ld50.lan (unknown [101.88.28.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 7E6E1601A3;
-        Tue,  1 Aug 2023 16:13:43 +0800 (CST)
-From:   WANG Xuerui <kernel@xen0n.name>
-To:     Song Liu <song@kernel.org>
-Cc:     Huacai Chen <chenhuacai@kernel.org>, linux-raid@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        WANG Xuerui <git@xen0n.name>
-Subject: [PATCH 3/3] raid6: Add LoongArch SIMD recovery implementation
-Date:   Tue,  1 Aug 2023 16:13:35 +0800
-Message-Id: <20230801081335.523097-4-kernel@xen0n.name>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230801081335.523097-1-kernel@xen0n.name>
-References: <20230801081335.523097-1-kernel@xen0n.name>
+        Tue, 1 Aug 2023 04:34:11 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [IPv6:2001:b68:2:2800::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA100E6D;
+        Tue,  1 Aug 2023 01:34:09 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 10FF76017C;
+        Tue,  1 Aug 2023 10:34:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690878847; bh=UXWDskgxlw95RIZ0DjzbONRlRD516JvVYJ02jsHHwGA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XZHlBMd3fRfOOWQeF8DnRoWO3HqV95GxvtIsus0eRxwd2nmCaVJAOlRpHdy0LJprC
+         ulYlxqzwZ4C9oWRSlRe81I8OjKj3qwYq5oYHsnWPeiDFjck24O0bsmtWCGFiDskAXe
+         0vutPT2z/IROmwSjPAPbWMmpg8gzxqOdxabbsEzbPP5yMvgtNjpYF5k/uNcN4Z7Ulc
+         2SHqiFOPHLvvZrAWC3laamXDpG9s5nIDcpqU0r6J0yHSw0vttXVS66XhAIwgX38C0w
+         KvM4svApt2c+mxyjBEDr9B6DWK0OlL09uf8J0byWQ3BonsqJZXCxSHmlgVOvloK5SR
+         6dBkKyQCPwB/A==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id lKnUzbz4rVVF; Tue,  1 Aug 2023 10:34:04 +0200 (CEST)
+Received: from defiant.. (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id 8EBCC6015F;
+        Tue,  1 Aug 2023 10:33:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690878844; bh=UXWDskgxlw95RIZ0DjzbONRlRD516JvVYJ02jsHHwGA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DcHjGL7oHDx5sJ02WTfo3qDCrUgfgTVacOu6C+kmz9KpRmhRGw87p0pi+t3l1beNL
+         CmESoOfj4+rY5gZDd+B+hiXYg8ZEcfsDe8ujC8nTQLQsVKIb54eWxdgpssuc8JpM57
+         OGytUFOStnCO7UHowApfPdSwM3xA+N4f3ZRbnz47/9UVcTLXTPk+86+nED/bY2mSYv
+         A/MJqE+FlWIS87jailkZD/cfc/CIwAvdvJZjAMcWsZptaMQnh/9ZeoM02ex5b55OHz
+         c3I97bVeAVUBjqxlNJCL1L9/KdEdakseB0xpfzzbHOGEe3d/fF/MLTcYRl2IR/j8uh
+         /LGgekUICWR9A==
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
+        linux-kernel@vger.kernel.org
+Cc:     "Luis R . Rodriguez" <mcgrof@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Tianfei Zhang <tianfei.zhang@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
+        Dan Carpenter <error27@gmail.com>
+Subject: [PATCH v2 1/1] test_firmware: prevent race conditions by a correct implementation of locking
+Date:   Tue,  1 Aug 2023 10:14:05 +0200
+Message-Id: <20230801081404.56387-1-mirsad.todorovac@alu.unizg.hr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: WANG Xuerui <git@xen0n.name>
+[ Upstream commit 4acfe3dfde685a5a9eaec5555351918e2d7266a1 ]
 
-Similar to the syndrome calculation, the recovery algorithms also work
-on 64 bytes at a time to align with the L1 cache line size of current
-and future LoongArch cores (that we care about). Which means
-unrolled-by-4 LSX and unrolled-by-2 LASX code.
+Dan Carpenter spotted a race condition in a couple of situations like
+these in the test_firmware driver:
 
-The assembly is originally based on the x86 SSSE3/AVX2 ports, but
-register allocation has been redone to take advantage of LSX/LASX's 32
-vector registers, and instruction sequence has been optimized to suit
-(e.g. LoongArch can perform per-byte srl and andi on vectors, but x86
-cannot).
+static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
+{
+        u8 val;
+        int ret;
 
-Performance numbers measured by instrumenting the raid6test code:
+        ret = kstrtou8(buf, 10, &val);
+        if (ret)
+                return ret;
 
-> lasx  2data: 354.987 MiB/s
-> lasx  datap: 350.430 MiB/s
-> lsx   2data: 340.026 MiB/s
-> lsx   datap: 337.318 MiB/s
-> intx1 2data: 164.280 MiB/s
-> intx1 datap: 187.966 MiB/s
+        mutex_lock(&test_fw_mutex);
+        *(u8 *)cfg = val;
+        mutex_unlock(&test_fw_mutex);
 
-Signed-off-by: WANG Xuerui <git@xen0n.name>
+        /* Always return full write size even if we didn't consume all */
+        return size;
+}
+
+static ssize_t config_num_requests_store(struct device *dev,
+                                         struct device_attribute *attr,
+                                         const char *buf, size_t count)
+{
+        int rc;
+
+        mutex_lock(&test_fw_mutex);
+        if (test_fw_config->reqs) {
+                pr_err("Must call release_all_firmware prior to changing config\n");
+                rc = -EINVAL;
+                mutex_unlock(&test_fw_mutex);
+                goto out;
+        }
+        mutex_unlock(&test_fw_mutex);
+
+	// NOTE: HERE is the race!!! Function can be preempted!
+
+	// test_fw_config->reqs can change between the release of
+	// the lock about and acquire of the lock in the
+	// test_dev_config_update_u8()
+
+        rc = test_dev_config_update_u8(buf, count,
+                                       &test_fw_config->num_requests);
+
+out:
+        return rc;
+}
+
+static ssize_t config_read_fw_idx_store(struct device *dev,
+                                        struct device_attribute *attr,
+                                        const char *buf, size_t count)
+{
+        return test_dev_config_update_u8(buf, count,
+                                         &test_fw_config->read_fw_idx);
+}
+
+The function test_dev_config_update_u8() is called from both the locked
+and the unlocked context, function config_num_requests_store() and
+config_read_fw_idx_store() which can both be called asynchronously as
+they are driver's methods, while test_dev_config_update_u8() and siblings
+change their argument pointed to by u8 *cfg or similar pointer.
+
+To avoid deadlock on test_fw_mutex, the lock is dropped before calling
+test_dev_config_update_u8() and re-acquired within test_dev_config_update_u8()
+itself, but alas this creates a race condition.
+
+Having two locks wouldn't assure a race-proof mutual exclusion.
+
+This situation is best avoided by the introduction of a new, unlocked
+function __test_dev_config_update_u8() which can be called from the locked
+context and reducing test_dev_config_update_u8() to:
+
+static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
+{
+        int ret;
+
+        mutex_lock(&test_fw_mutex);
+        ret = __test_dev_config_update_u8(buf, size, cfg);
+        mutex_unlock(&test_fw_mutex);
+
+        return ret;
+}
+
+doing the locking and calling the unlocked primitive, which enables both
+locked and unlocked versions without duplication of code.
+
+Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
+Cc: Luis R. Rodriguez <mcgrof@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Russ Weight <russell.h.weight@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Tianfei Zhang <tianfei.zhang@intel.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Colin Ian King <colin.i.king@gmail.com>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kselftest@vger.kernel.org
+Cc: stable@vger.kernel.org # v5.4
+Suggested-by: Dan Carpenter <error27@gmail.com>
+Link: https://lore.kernel.org/r/20230509084746.48259-1-mirsad.todorovac@alu.unizg.hr
+Signed-off-by: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+
+[ NOTE: This patch is tested against 5.4 stable. Some of the fixes from the upstream ]
+[       patch to stable 5.10+ do not apply.					     ]
+
 ---
- include/linux/raid/pq.h          |   2 +
- lib/raid6/Makefile               |   2 +-
- lib/raid6/algos.c                |   8 +
- lib/raid6/recov_loongarch_simd.c | 501 +++++++++++++++++++++++++++++++
- lib/raid6/test/Makefile          |   2 +-
- 5 files changed, 513 insertions(+), 2 deletions(-)
- create mode 100644 lib/raid6/recov_loongarch_simd.c
+v2:
+ minor clarification and consistency improvements. no change to code.
 
-diff --git a/include/linux/raid/pq.h b/include/linux/raid/pq.h
-index 8744474858487..006e18decfad0 100644
---- a/include/linux/raid/pq.h
-+++ b/include/linux/raid/pq.h
-@@ -125,6 +125,8 @@ extern const struct raid6_recov_calls raid6_recov_avx2;
- extern const struct raid6_recov_calls raid6_recov_avx512;
- extern const struct raid6_recov_calls raid6_recov_s390xc;
- extern const struct raid6_recov_calls raid6_recov_neon;
-+extern const struct raid6_recov_calls raid6_recov_lsx;
-+extern const struct raid6_recov_calls raid6_recov_lasx;
+ lib/test_firmware.c | 37 ++++++++++++++++++++++++++++---------
+ 1 file changed, 28 insertions(+), 9 deletions(-)
+
+diff --git a/lib/test_firmware.c b/lib/test_firmware.c
+index 38553944e967..92d7195d5b5b 100644
+--- a/lib/test_firmware.c
++++ b/lib/test_firmware.c
+@@ -301,16 +301,26 @@ static ssize_t config_test_show_str(char *dst,
+ 	return len;
+ }
  
- extern const struct raid6_calls raid6_neonx1;
- extern const struct raid6_calls raid6_neonx2;
-diff --git a/lib/raid6/Makefile b/lib/raid6/Makefile
-index 2b9ebe1054806..035b0a4db476a 100644
---- a/lib/raid6/Makefile
-+++ b/lib/raid6/Makefile
-@@ -9,7 +9,7 @@ raid6_pq-$(CONFIG_ALTIVEC) += altivec1.o altivec2.o altivec4.o altivec8.o \
-                               vpermxor1.o vpermxor2.o vpermxor4.o vpermxor8.o
- raid6_pq-$(CONFIG_KERNEL_MODE_NEON) += neon.o neon1.o neon2.o neon4.o neon8.o recov_neon.o recov_neon_inner.o
- raid6_pq-$(CONFIG_S390) += s390vx8.o recov_s390xc.o
--raid6_pq-$(CONFIG_LOONGARCH) += loongarch_simd.o
-+raid6_pq-$(CONFIG_LOONGARCH) += loongarch_simd.o recov_loongarch_simd.o
+-static int test_dev_config_update_bool(const char *buf, size_t size,
+-				       bool *cfg)
++static inline int __test_dev_config_update_bool(const char *buf, size_t size,
++						bool *cfg)
+ {
+ 	int ret;
  
- hostprogs	+= mktables
+-	mutex_lock(&test_fw_mutex);
+ 	if (strtobool(buf, cfg) < 0)
+ 		ret = -EINVAL;
+ 	else
+ 		ret = size;
++
++	return ret;
++}
++
++static int test_dev_config_update_bool(const char *buf, size_t size,
++				       bool *cfg)
++{
++	int ret;
++
++	mutex_lock(&test_fw_mutex);
++	ret = __test_dev_config_update_bool(buf, size, cfg);
+ 	mutex_unlock(&test_fw_mutex);
  
-diff --git a/lib/raid6/algos.c b/lib/raid6/algos.c
-index 739c7ebcae1a2..0ec534faf019b 100644
---- a/lib/raid6/algos.c
-+++ b/lib/raid6/algos.c
-@@ -111,6 +111,14 @@ const struct raid6_recov_calls *const raid6_recov_algos[] = {
- #endif
- #if defined(CONFIG_KERNEL_MODE_NEON)
- 	&raid6_recov_neon,
-+#endif
-+#ifdef CONFIG_LOONGARCH
-+#ifdef CONFIG_CPU_HAS_LASX
-+	&raid6_recov_lasx,
-+#endif
-+#ifdef CONFIG_CPU_HAS_LSX
-+	&raid6_recov_lsx,
-+#endif
- #endif
- 	&raid6_recov_intx1,
- 	NULL
-diff --git a/lib/raid6/recov_loongarch_simd.c b/lib/raid6/recov_loongarch_simd.c
-new file mode 100644
-index 0000000000000..854b584b57453
---- /dev/null
-+++ b/lib/raid6/recov_loongarch_simd.c
-@@ -0,0 +1,501 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2023 WANG Xuerui <git@xen0n.name>
-+ *
-+ * Based on recov_avx2.c and recov_ssse3.c:
-+ *
-+ * Copyright (C) 2012 Intel Corporation
-+ * Author: Jim Kukunas <james.t.kukunas@linux.intel.com>
-+ */
-+
-+#include <linux/raid/pq.h>
-+#include "loongarch.h"
-+
-+/*
-+ * Unlike with the syndrome calculation algorithms, there's no boot-time
-+ * selection of recovery algorithms by benchmarking, so we have to specify
-+ * the priorities and hope the future cores will all have decent vector
-+ * support (i.e. no LASX slower than LSX, or even scalar code).
-+ */
-+
-+#ifdef CONFIG_CPU_HAS_LSX
-+static int raid6_has_lsx(void)
-+{
-+	return cpu_has_lsx;
-+}
-+
-+static void raid6_2data_recov_lsx(int disks, size_t bytes, int faila,
-+				  int failb, void **ptrs)
-+{
-+	u8 *p, *q, *dp, *dq;
-+	const u8 *pbmul;	/* P multiplier table for B data */
-+	const u8 *qmul;		/* Q multiplier table (for both) */
-+
-+	p = (u8 *)ptrs[disks-2];
-+	q = (u8 *)ptrs[disks-1];
-+
-+	/* Compute syndrome with zero for the missing data pages
-+	   Use the dead data pages as temporary storage for
-+	   delta p and delta q */
-+	dp = (u8 *)ptrs[faila];
-+	ptrs[faila] = (void *)raid6_empty_zero_page;
-+	ptrs[disks-2] = dp;
-+	dq = (u8 *)ptrs[failb];
-+	ptrs[failb] = (void *)raid6_empty_zero_page;
-+	ptrs[disks-1] = dq;
-+
-+	raid6_call.gen_syndrome(disks, bytes, ptrs);
-+
-+	/* Restore pointer table */
-+	ptrs[faila]   = dp;
-+	ptrs[failb]   = dq;
-+	ptrs[disks-2] = p;
-+	ptrs[disks-1] = q;
-+
-+	/* Now, pick the proper data tables */
-+	pbmul = raid6_vgfmul[raid6_gfexi[failb-faila]];
-+	qmul  = raid6_vgfmul[raid6_gfinv[raid6_gfexp[faila] ^
-+		raid6_gfexp[failb]]];
-+
-+	kernel_fpu_begin();
-+
-+	// vr20, vr21: qmul
-+	// vr22, vr23: pbmul
-+	asm volatile("vld $vr20, %0" : : "m" (qmul[0]));
-+	asm volatile("vld $vr21, %0" : : "m" (qmul[16]));
-+	asm volatile("vld $vr22, %0" : : "m" (pbmul[0]));
-+	asm volatile("vld $vr23, %0" : : "m" (pbmul[16]));
-+
-+	while (bytes) {
-+		// vr4 - vr7: Q
-+		asm volatile("vld $vr4, %0" : : "m" (q[0]));
-+		asm volatile("vld $vr5, %0" : : "m" (q[16]));
-+		asm volatile("vld $vr6, %0" : : "m" (q[32]));
-+		asm volatile("vld $vr7, %0" : : "m" (q[48]));
-+		//  vr4 - vr7: Q + Qxy
-+		asm volatile("vld $vr8, %0" : : "m" (dq[0]));
-+		asm volatile("vld $vr9, %0" : : "m" (dq[16]));
-+		asm volatile("vld $vr10, %0" : : "m" (dq[32]));
-+		asm volatile("vld $vr11, %0" : : "m" (dq[48]));
-+		asm volatile("vxor.v $vr4, $vr4, $vr8");
-+		asm volatile("vxor.v $vr5, $vr5, $vr9");
-+		asm volatile("vxor.v $vr6, $vr6, $vr10");
-+		asm volatile("vxor.v $vr7, $vr7, $vr11");
-+		// vr0 - vr3: P
-+		asm volatile("vld $vr0, %0" : : "m" (p[0]));
-+		asm volatile("vld $vr1, %0" : : "m" (p[16]));
-+		asm volatile("vld $vr2, %0" : : "m" (p[32]));
-+		asm volatile("vld $vr3, %0" : : "m" (p[48]));
-+		// vr0 - vr3: P + Pxy
-+		asm volatile("vld $vr8, %0" : : "m" (dp[0]));
-+		asm volatile("vld $vr9, %0" : : "m" (dp[16]));
-+		asm volatile("vld $vr10, %0" : : "m" (dp[32]));
-+		asm volatile("vld $vr11, %0" : : "m" (dp[48]));
-+		asm volatile("vxor.v $vr0, $vr0, $vr8");
-+		asm volatile("vxor.v $vr1, $vr1, $vr9");
-+		asm volatile("vxor.v $vr2, $vr2, $vr10");
-+		asm volatile("vxor.v $vr3, $vr3, $vr11");
-+
-+		// vr8 - vr11: higher 4 bits of each byte of (Q + Qxy)
-+		asm volatile("vsrli.b $vr8, $vr4, 4");
-+		asm volatile("vsrli.b $vr9, $vr5, 4");
-+		asm volatile("vsrli.b $vr10, $vr6, 4");
-+		asm volatile("vsrli.b $vr11, $vr7, 4");
-+		// vr4 - vr7: lower 4 bits of each byte of (Q + Qxy)
-+		asm volatile("vandi.b $vr4, $vr4, 0x0f");
-+		asm volatile("vandi.b $vr5, $vr5, 0x0f");
-+		asm volatile("vandi.b $vr6, $vr6, 0x0f");
-+		asm volatile("vandi.b $vr7, $vr7, 0x0f");
-+		// lookup from qmul[0]
-+		asm volatile("vshuf.b $vr4, $vr20, $vr20, $vr4");
-+		asm volatile("vshuf.b $vr5, $vr20, $vr20, $vr5");
-+		asm volatile("vshuf.b $vr6, $vr20, $vr20, $vr6");
-+		asm volatile("vshuf.b $vr7, $vr20, $vr20, $vr7");
-+		// lookup from qmul[16]
-+		asm volatile("vshuf.b $vr8, $vr21, $vr21, $vr8");
-+		asm volatile("vshuf.b $vr9, $vr21, $vr21, $vr9");
-+		asm volatile("vshuf.b $vr10, $vr21, $vr21, $vr10");
-+		asm volatile("vshuf.b $vr11, $vr21, $vr21, $vr11");
-+		// vr16 - vr19: B(Q + Qxy)
-+		asm volatile("vxor.v $vr16, $vr8, $vr4");
-+		asm volatile("vxor.v $vr17, $vr9, $vr5");
-+		asm volatile("vxor.v $vr18, $vr10, $vr6");
-+		asm volatile("vxor.v $vr19, $vr11, $vr7");
-+
-+		// vr4 - vr7: higher 4 bits of each byte of (P + Pxy)
-+		asm volatile("vsrli.b $vr4, $vr0, 4");
-+		asm volatile("vsrli.b $vr5, $vr1, 4");
-+		asm volatile("vsrli.b $vr6, $vr2, 4");
-+		asm volatile("vsrli.b $vr7, $vr3, 4");
-+		// vr12 - vr15: lower 4 bits of each byte of (P + Pxy)
-+		asm volatile("vandi.b $vr12, $vr0, 0x0f");
-+		asm volatile("vandi.b $vr13, $vr1, 0x0f");
-+		asm volatile("vandi.b $vr14, $vr2, 0x0f");
-+		asm volatile("vandi.b $vr15, $vr3, 0x0f");
-+		// lookup from pbmul[0]
-+		asm volatile("vshuf.b $vr12, $vr22, $vr22, $vr12");
-+		asm volatile("vshuf.b $vr13, $vr22, $vr22, $vr13");
-+		asm volatile("vshuf.b $vr14, $vr22, $vr22, $vr14");
-+		asm volatile("vshuf.b $vr15, $vr22, $vr22, $vr15");
-+		// lookup from pbmul[16]
-+		asm volatile("vshuf.b $vr4, $vr23, $vr23, $vr4");
-+		asm volatile("vshuf.b $vr5, $vr23, $vr23, $vr5");
-+		asm volatile("vshuf.b $vr6, $vr23, $vr23, $vr6");
-+		asm volatile("vshuf.b $vr7, $vr23, $vr23, $vr7");
-+		// vr4 - vr7: A(P + Pxy)
-+		asm volatile("vxor.v $vr4, $vr4, $vr12");
-+		asm volatile("vxor.v $vr5, $vr5, $vr13");
-+		asm volatile("vxor.v $vr6, $vr6, $vr14");
-+		asm volatile("vxor.v $vr7, $vr7, $vr15");
-+
-+		// vr4 - vr7: A(P + Pxy) + B(Q + Qxy) = Dx
-+		asm volatile("vxor.v $vr4, $vr4, $vr16");
-+		asm volatile("vxor.v $vr5, $vr5, $vr17");
-+		asm volatile("vxor.v $vr6, $vr6, $vr18");
-+		asm volatile("vxor.v $vr7, $vr7, $vr19");
-+		asm volatile("vst $vr4, %0" : "=m" (dq[0]));
-+		asm volatile("vst $vr5, %0" : "=m" (dq[16]));
-+		asm volatile("vst $vr6, %0" : "=m" (dq[32]));
-+		asm volatile("vst $vr7, %0" : "=m" (dq[48]));
-+
-+		// vr0 - vr3: P + Pxy + Dx = Dy
-+		asm volatile("vxor.v $vr0, $vr0, $vr4");
-+		asm volatile("vxor.v $vr1, $vr1, $vr5");
-+		asm volatile("vxor.v $vr2, $vr2, $vr6");
-+		asm volatile("vxor.v $vr3, $vr3, $vr7");
-+		asm volatile("vst $vr0, %0" : "=m" (dp[0]));
-+		asm volatile("vst $vr1, %0" : "=m" (dp[16]));
-+		asm volatile("vst $vr2, %0" : "=m" (dp[32]));
-+		asm volatile("vst $vr3, %0" : "=m" (dp[48]));
-+
-+		bytes -= 64;
-+		p += 64;
-+		q += 64;
-+		dp += 64;
-+		dq += 64;
-+	}
-+
-+	kernel_fpu_end();
-+}
-+
-+static void raid6_datap_recov_lsx(int disks, size_t bytes, int faila,
-+				  void **ptrs)
-+{
-+	u8 *p, *q, *dq;
-+	const u8 *qmul;		/* Q multiplier table */
-+
-+	p = (u8 *)ptrs[disks-2];
-+	q = (u8 *)ptrs[disks-1];
-+
-+	/* Compute syndrome with zero for the missing data page
-+	   Use the dead data page as temporary storage for delta q */
-+	dq = (u8 *)ptrs[faila];
-+	ptrs[faila] = (void *)raid6_empty_zero_page;
-+	ptrs[disks-1] = dq;
-+
-+	raid6_call.gen_syndrome(disks, bytes, ptrs);
-+
-+	/* Restore pointer table */
-+	ptrs[faila]   = dq;
-+	ptrs[disks-1] = q;
-+
-+	/* Now, pick the proper data tables */
-+	qmul  = raid6_vgfmul[raid6_gfinv[raid6_gfexp[faila]]];
-+
-+	kernel_fpu_begin();
-+
-+	// vr22, vr23: qmul
-+	asm volatile("vld $vr22, %0" : : "m" (qmul[0]));
-+	asm volatile("vld $vr23, %0" : : "m" (qmul[16]));
-+
-+	while (bytes) {
-+		// vr0 - vr3: P + Dx
-+		asm volatile("vld $vr0, %0" : : "m" (p[0]));
-+		asm volatile("vld $vr1, %0" : : "m" (p[16]));
-+		asm volatile("vld $vr2, %0" : : "m" (p[32]));
-+		asm volatile("vld $vr3, %0" : : "m" (p[48]));
-+		// vr4 - vr7: Qx
-+		asm volatile("vld $vr4, %0" : : "m" (dq[0]));
-+		asm volatile("vld $vr5, %0" : : "m" (dq[16]));
-+		asm volatile("vld $vr6, %0" : : "m" (dq[32]));
-+		asm volatile("vld $vr7, %0" : : "m" (dq[48]));
-+		// vr4 - vr7: Q + Qx
-+		asm volatile("vld $vr8, %0" : : "m" (q[0]));
-+		asm volatile("vld $vr9, %0" : : "m" (q[16]));
-+		asm volatile("vld $vr10, %0" : : "m" (q[32]));
-+		asm volatile("vld $vr11, %0" : : "m" (q[48]));
-+		asm volatile("vxor.v $vr4, $vr4, $vr8");
-+		asm volatile("vxor.v $vr5, $vr5, $vr9");
-+		asm volatile("vxor.v $vr6, $vr6, $vr10");
-+		asm volatile("vxor.v $vr7, $vr7, $vr11");
-+
-+		// vr8 - vr11: higher 4 bits of each byte of (Q + Qx)
-+		asm volatile("vsrli.b $vr8, $vr4, 4");
-+		asm volatile("vsrli.b $vr9, $vr5, 4");
-+		asm volatile("vsrli.b $vr10, $vr6, 4");
-+		asm volatile("vsrli.b $vr11, $vr7, 4");
-+		// vr4 - vr7: lower 4 bits of each byte of (Q + Qx)
-+		asm volatile("vandi.b $vr4, $vr4, 0x0f");
-+		asm volatile("vandi.b $vr5, $vr5, 0x0f");
-+		asm volatile("vandi.b $vr6, $vr6, 0x0f");
-+		asm volatile("vandi.b $vr7, $vr7, 0x0f");
-+		// lookup from qmul[0]
-+		asm volatile("vshuf.b $vr4, $vr22, $vr22, $vr4");
-+		asm volatile("vshuf.b $vr5, $vr22, $vr22, $vr5");
-+		asm volatile("vshuf.b $vr6, $vr22, $vr22, $vr6");
-+		asm volatile("vshuf.b $vr7, $vr22, $vr22, $vr7");
-+		// lookup from qmul[16]
-+		asm volatile("vshuf.b $vr8, $vr23, $vr23, $vr8");
-+		asm volatile("vshuf.b $vr9, $vr23, $vr23, $vr9");
-+		asm volatile("vshuf.b $vr10, $vr23, $vr23, $vr10");
-+		asm volatile("vshuf.b $vr11, $vr23, $vr23, $vr11");
-+		// vr4 - vr7: qmul(Q + Qx) = Dx
-+		asm volatile("vxor.v $vr4, $vr4, $vr8");
-+		asm volatile("vxor.v $vr5, $vr5, $vr9");
-+		asm volatile("vxor.v $vr6, $vr6, $vr10");
-+		asm volatile("vxor.v $vr7, $vr7, $vr11");
-+		asm volatile("vst $vr4, %0" : "=m" (dq[0]));
-+		asm volatile("vst $vr5, %0" : "=m" (dq[16]));
-+		asm volatile("vst $vr6, %0" : "=m" (dq[32]));
-+		asm volatile("vst $vr7, %0" : "=m" (dq[48]));
-+
-+		// vr0 - vr3: P + Dx + Dx = P
-+		asm volatile("vxor.v $vr0, $vr0, $vr4");
-+		asm volatile("vxor.v $vr1, $vr1, $vr5");
-+		asm volatile("vxor.v $vr2, $vr2, $vr6");
-+		asm volatile("vxor.v $vr3, $vr3, $vr7");
-+		asm volatile("vst $vr0, %0" : "=m" (p[0]));
-+		asm volatile("vst $vr1, %0" : "=m" (p[16]));
-+		asm volatile("vst $vr2, %0" : "=m" (p[32]));
-+		asm volatile("vst $vr3, %0" : "=m" (p[48]));
-+
-+		bytes -= 64;
-+		p += 64;
-+		q += 64;
-+		dq += 64;
-+	}
-+
-+	kernel_fpu_end();
-+}
-+
-+const struct raid6_recov_calls raid6_recov_lsx = {
-+	.data2 = raid6_2data_recov_lsx,
-+	.datap = raid6_datap_recov_lsx,
-+	.valid = raid6_has_lsx,
-+	.name = "lsx",
-+	.priority = 1,
-+};
-+#endif // CONFIG_CPU_HAS_LSX
-+
-+#ifdef CONFIG_CPU_HAS_LASX
-+static int raid6_has_lasx(void)
-+{
-+	return cpu_has_lasx;
-+}
-+
-+static void raid6_2data_recov_lasx(int disks, size_t bytes, int faila,
-+				   int failb, void **ptrs)
-+{
-+	u8 *p, *q, *dp, *dq;
-+	const u8 *pbmul;	/* P multiplier table for B data */
-+	const u8 *qmul;		/* Q multiplier table (for both) */
-+
-+	p = (u8 *)ptrs[disks-2];
-+	q = (u8 *)ptrs[disks-1];
-+
-+	/* Compute syndrome with zero for the missing data pages
-+	   Use the dead data pages as temporary storage for
-+	   delta p and delta q */
-+	dp = (u8 *)ptrs[faila];
-+	ptrs[faila] = (void *)raid6_empty_zero_page;
-+	ptrs[disks-2] = dp;
-+	dq = (u8 *)ptrs[failb];
-+	ptrs[failb] = (void *)raid6_empty_zero_page;
-+	ptrs[disks-1] = dq;
-+
-+	raid6_call.gen_syndrome(disks, bytes, ptrs);
-+
-+	/* Restore pointer table */
-+	ptrs[faila]   = dp;
-+	ptrs[failb]   = dq;
-+	ptrs[disks-2] = p;
-+	ptrs[disks-1] = q;
-+
-+	/* Now, pick the proper data tables */
-+	pbmul = raid6_vgfmul[raid6_gfexi[failb-faila]];
-+	qmul  = raid6_vgfmul[raid6_gfinv[raid6_gfexp[faila] ^
-+		raid6_gfexp[failb]]];
-+
-+	kernel_fpu_begin();
-+
-+	// xr20, xr21: qmul
-+	// xr22, xr23: pbmul
-+	asm volatile("vld $vr20, %0" : : "m" (qmul[0]));
-+	asm volatile("vld $vr21, %0" : : "m" (qmul[16]));
-+	asm volatile("vld $vr22, %0" : : "m" (pbmul[0]));
-+	asm volatile("vld $vr23, %0" : : "m" (pbmul[16]));
-+	asm volatile("xvreplve0.q $xr20, $xr20");
-+	asm volatile("xvreplve0.q $xr21, $xr21");
-+	asm volatile("xvreplve0.q $xr22, $xr22");
-+	asm volatile("xvreplve0.q $xr23, $xr23");
-+
-+	while (bytes) {
-+		// xr0, xr1: Q
-+		asm volatile("xvld $xr0, %0" : : "m" (q[0]));
-+		asm volatile("xvld $xr1, %0" : : "m" (q[32]));
-+		// xr0, xr1: Q + Qxy
-+		asm volatile("xvld $xr4, %0" : : "m" (dq[0]));
-+		asm volatile("xvld $xr5, %0" : : "m" (dq[32]));
-+		asm volatile("xvxor.v $xr0, $xr0, $xr4");
-+		asm volatile("xvxor.v $xr1, $xr1, $xr5");
-+		// xr2, xr3: P
-+		asm volatile("xvld $xr2, %0" : : "m" (p[0]));
-+		asm volatile("xvld $xr3, %0" : : "m" (p[32]));
-+		// xr2, xr3: P + Pxy
-+		asm volatile("xvld $xr4, %0" : : "m" (dp[0]));
-+		asm volatile("xvld $xr5, %0" : : "m" (dp[32]));
-+		asm volatile("xvxor.v $xr2, $xr2, $xr4");
-+		asm volatile("xvxor.v $xr3, $xr3, $xr5");
-+
-+		// xr4, xr5: higher 4 bits of each byte of (Q + Qxy)
-+		asm volatile("xvsrli.b $xr4, $xr0, 4");
-+		asm volatile("xvsrli.b $xr5, $xr1, 4");
-+		// xr0, xr1: lower 4 bits of each byte of (Q + Qxy)
-+		asm volatile("xvandi.b $xr0, $xr0, 0x0f");
-+		asm volatile("xvandi.b $xr1, $xr1, 0x0f");
-+		// lookup from qmul[0]
-+		asm volatile("xvshuf.b $xr0, $xr20, $xr20, $xr0");
-+		asm volatile("xvshuf.b $xr1, $xr20, $xr20, $xr1");
-+		// lookup from qmul[16]
-+		asm volatile("xvshuf.b $xr4, $xr21, $xr21, $xr4");
-+		asm volatile("xvshuf.b $xr5, $xr21, $xr21, $xr5");
-+		// xr6, xr7: B(Q + Qxy)
-+		asm volatile("xvxor.v $xr6, $xr4, $xr0");
-+		asm volatile("xvxor.v $xr7, $xr5, $xr1");
-+
-+		// xr4, xr5: higher 4 bits of each byte of (P + Pxy)
-+		asm volatile("xvsrli.b $xr4, $xr2, 4");
-+		asm volatile("xvsrli.b $xr5, $xr3, 4");
-+		// xr0, xr1: lower 4 bits of each byte of (P + Pxy)
-+		asm volatile("xvandi.b $xr0, $xr2, 0x0f");
-+		asm volatile("xvandi.b $xr1, $xr3, 0x0f");
-+		// lookup from pbmul[0]
-+		asm volatile("xvshuf.b $xr0, $xr22, $xr22, $xr0");
-+		asm volatile("xvshuf.b $xr1, $xr22, $xr22, $xr1");
-+		// lookup from pbmul[16]
-+		asm volatile("xvshuf.b $xr4, $xr23, $xr23, $xr4");
-+		asm volatile("xvshuf.b $xr5, $xr23, $xr23, $xr5");
-+		// xr0, xr1: A(P + Pxy)
-+		asm volatile("xvxor.v $xr0, $xr0, $xr4");
-+		asm volatile("xvxor.v $xr1, $xr1, $xr5");
-+
-+		// xr0, xr1: A(P + Pxy) + B(Q + Qxy) = Dx
-+		asm volatile("xvxor.v $xr0, $xr0, $xr6");
-+		asm volatile("xvxor.v $xr1, $xr1, $xr7");
-+
-+		// xr2, xr3: P + Pxy + Dx = Dy
-+		asm volatile("xvxor.v $xr2, $xr2, $xr0");
-+		asm volatile("xvxor.v $xr3, $xr3, $xr1");
-+
-+		asm volatile("xvst $xr0, %0" : "=m" (dq[0]));
-+		asm volatile("xvst $xr1, %0" : "=m" (dq[32]));
-+		asm volatile("xvst $xr2, %0" : "=m" (dp[0]));
-+		asm volatile("xvst $xr3, %0" : "=m" (dp[32]));
-+
-+		bytes -= 64;
-+		p += 64;
-+		q += 64;
-+		dp += 64;
-+		dq += 64;
-+	}
-+
-+	kernel_fpu_end();
-+}
-+
-+static void raid6_datap_recov_lasx(int disks, size_t bytes, int faila,
-+				   void **ptrs)
-+{
-+	u8 *p, *q, *dq;
-+	const u8 *qmul;		/* Q multiplier table */
-+
-+	p = (u8 *)ptrs[disks-2];
-+	q = (u8 *)ptrs[disks-1];
-+
-+	/* Compute syndrome with zero for the missing data page
-+	   Use the dead data page as temporary storage for delta q */
-+	dq = (u8 *)ptrs[faila];
-+	ptrs[faila] = (void *)raid6_empty_zero_page;
-+	ptrs[disks-1] = dq;
-+
-+	raid6_call.gen_syndrome(disks, bytes, ptrs);
-+
-+	/* Restore pointer table */
-+	ptrs[faila]   = dq;
-+	ptrs[disks-1] = q;
-+
-+	/* Now, pick the proper data tables */
-+	qmul  = raid6_vgfmul[raid6_gfinv[raid6_gfexp[faila]]];
-+
-+	kernel_fpu_begin();
-+
-+	// xr22, xr23: qmul
-+	asm volatile("vld $vr22, %0" : : "m" (qmul[0]));
-+	asm volatile("xvreplve0.q $xr22, $xr22");
-+	asm volatile("vld $vr23, %0" : : "m" (qmul[16]));
-+	asm volatile("xvreplve0.q $xr23, $xr23");
-+
-+	while (bytes) {
-+		// xr0, xr1: P + Dx
-+		asm volatile("xvld $xr0, %0" : : "m" (p[0]));
-+		asm volatile("xvld $xr1, %0" : : "m" (p[32]));
-+		// xr2, xr3: Qx
-+		asm volatile("xvld $xr2, %0" : : "m" (dq[0]));
-+		asm volatile("xvld $xr3, %0" : : "m" (dq[32]));
-+		// xr2, xr3: Q + Qx
-+		asm volatile("xvld $xr4, %0" : : "m" (q[0]));
-+		asm volatile("xvld $xr5, %0" : : "m" (q[32]));
-+		asm volatile("xvxor.v $xr2, $xr2, $xr4");
-+		asm volatile("xvxor.v $xr3, $xr3, $xr5");
-+
-+		// xr4, xr5: higher 4 bits of each byte of (Q + Qx)
-+		asm volatile("xvsrli.b $xr4, $xr2, 4");
-+		asm volatile("xvsrli.b $xr5, $xr3, 4");
-+		// xr2, xr3: lower 4 bits of each byte of (Q + Qx)
-+		asm volatile("xvandi.b $xr2, $xr2, 0x0f");
-+		asm volatile("xvandi.b $xr3, $xr3, 0x0f");
-+		// lookup from qmul[0]
-+		asm volatile("xvshuf.b $xr2, $xr22, $xr22, $xr2");
-+		asm volatile("xvshuf.b $xr3, $xr22, $xr22, $xr3");
-+		// lookup from qmul[16]
-+		asm volatile("xvshuf.b $xr4, $xr23, $xr23, $xr4");
-+		asm volatile("xvshuf.b $xr5, $xr23, $xr23, $xr5");
-+		// xr2, xr3: qmul(Q + Qx) = Dx
-+		asm volatile("xvxor.v $xr2, $xr2, $xr4");
-+		asm volatile("xvxor.v $xr3, $xr3, $xr5");
-+
-+		// xr0, xr1: P + Dx + Dx = P
-+		asm volatile("xvxor.v $xr0, $xr0, $xr2");
-+		asm volatile("xvxor.v $xr1, $xr1, $xr3");
-+
-+		asm volatile("xvst $xr2, %0" : "=m" (dq[0]));
-+		asm volatile("xvst $xr3, %0" : "=m" (dq[32]));
-+		asm volatile("xvst $xr0, %0" : "=m" (p[0]));
-+		asm volatile("xvst $xr1, %0" : "=m" (p[32]));
-+
-+		bytes -= 64;
-+		p += 64;
-+		q += 64;
-+		dq += 64;
-+	}
-+
-+	kernel_fpu_end();
-+}
-+
-+const struct raid6_recov_calls raid6_recov_lasx = {
-+	.data2 = raid6_2data_recov_lasx,
-+	.datap = raid6_datap_recov_lasx,
-+	.valid = raid6_has_lasx,
-+	.name = "lasx",
-+	.priority = 2,
-+};
-+#endif // CONFIG_CPU_HAS_LASX
-diff --git a/lib/raid6/test/Makefile b/lib/raid6/test/Makefile
-index 7b244bce32b3d..2abe0076a636c 100644
---- a/lib/raid6/test/Makefile
-+++ b/lib/raid6/test/Makefile
-@@ -65,7 +65,7 @@ else ifeq ($(HAS_ALTIVEC),yes)
-         OBJS += altivec1.o altivec2.o altivec4.o altivec8.o \
-                 vpermxor1.o vpermxor2.o vpermxor4.o vpermxor8.o
- else ifeq ($(ARCH),loongarch64)
--        OBJS += loongarch_simd.o
-+        OBJS += loongarch_simd.o recov_loongarch_simd.o
- endif
+ 	return ret;
+@@ -340,7 +350,7 @@ static ssize_t test_dev_config_show_int(char *buf, int cfg)
+ 	return snprintf(buf, PAGE_SIZE, "%d\n", val);
+ }
  
- .c.o:
+-static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
++static inline int __test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
+ {
+ 	int ret;
+ 	long new;
+@@ -352,14 +362,23 @@ static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
+ 	if (new > U8_MAX)
+ 		return -EINVAL;
+ 
+-	mutex_lock(&test_fw_mutex);
+ 	*(u8 *)cfg = new;
+-	mutex_unlock(&test_fw_mutex);
+ 
+ 	/* Always return full write size even if we didn't consume all */
+ 	return size;
+ }
+ 
++static int test_dev_config_update_u8(const char *buf, size_t size, u8 *cfg)
++{
++	int ret;
++
++	mutex_lock(&test_fw_mutex);
++	ret = __test_dev_config_update_u8(buf, size, cfg);
++	mutex_unlock(&test_fw_mutex);
++
++	return ret;
++}
++
+ static ssize_t test_dev_config_show_u8(char *buf, u8 cfg)
+ {
+ 	u8 val;
+@@ -392,10 +411,10 @@ static ssize_t config_num_requests_store(struct device *dev,
+ 		mutex_unlock(&test_fw_mutex);
+ 		goto out;
+ 	}
+-	mutex_unlock(&test_fw_mutex);
+ 
+-	rc = test_dev_config_update_u8(buf, count,
+-				       &test_fw_config->num_requests);
++	rc = __test_dev_config_update_u8(buf, count,
++					 &test_fw_config->num_requests);
++	mutex_unlock(&test_fw_mutex);
+ 
+ out:
+ 	return rc;
 -- 
-2.40.0
+2.34.1
 
