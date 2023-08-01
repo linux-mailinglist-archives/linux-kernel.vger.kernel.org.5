@@ -2,146 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8E376A8A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE0476A89C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbjHAGDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58256 "EHLO
+        id S231265AbjHAGCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjHAGDH (ORCPT
+        with ESMTP id S231238AbjHAGCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:03:07 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86528127;
-        Mon, 31 Jul 2023 23:03:05 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 775BF3200904;
-        Tue,  1 Aug 2023 02:03:03 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 01 Aug 2023 02:03:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690869782; x=1690956182; bh=qk
-        yMf1jROQESc+dKhHjjFPnh08dBcae/QUx9x+GbCtI=; b=XAaP+/+UOTnwvVemks
-        YopMYaMcMUz0s+743h6XRCTAg2WKOijp29Zjj1ombpCZS+VMsL/qqBEmiUPz/qpA
-        ZIp5w4IeU4KKI0hzCExJW5ycpG4u6w5jrjiPCcFNQib/TBeHIOOEKekZYElsdKHa
-        nym0UgIN/QbDR8yXjVyt5EsfgXyoV80wTGbOO56BIhBLmNYu+X6EJiwwXhehGm9l
-        icdLq9ZoN9ZMmbKEd7smNtbj6enzC7nGJ+ReduVHIUrxUYoy4zczCxOVXYe/CYv0
-        3V7RPMAzPqShh0g4GPkA+WB1+1CT2k3qd+2/jvfVtGh1YpIRNwi19QYgmIkiHHGS
-        /geA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690869782; x=1690956182; bh=qkyMf1jROQESc
-        +dKhHjjFPnh08dBcae/QUx9x+GbCtI=; b=V8jBjh1HxL7d/irNHDlnPPAOnn6gQ
-        MnBvXgkw8Kcsf1Ltw7zPbvfQEvDmi3MDuBRbd6yRrihNN27JsQiQmndqVrk0KnEe
-        9QjBQvMytcV5UaWbAdRKPxW5njka3m4UO2GNnIDZQ2CqWGPfAeKnKoscDashq3WX
-        hfkeptDhapzV5twxlCT24zS7/OmFfXu9dUZ0E3cZM7Xvp1P1Dn+nnZZDUUC/P26G
-        1H+yRk3EgoF+Kp4ky9CyjAgCWz38M7a2+Ojjy4mUP1oXqN6ES1boPJJYdz0FkANM
-        lcea4fXYdTo0p1MdB64OvRuyj4yb502ox+17D7EnRMCVDIcV4eJLJGSdQ==
-X-ME-Sender: <xms:FaDIZPXoQWDYyYcXI7aYyWNtgvXfQuUWLCk6S_GiRblQ8EEsihgL_g>
-    <xme:FaDIZHlqLrMACy7aKb5HsWLRRjf-0hKJxTSexGjiZxBjkUOF4tgBLPtvnnTrs9zXy
-    oZ5aidxIVy2DrEd8EI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeehgddutdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:FaDIZLZjWAsnldLMF8roNWDifXJ4QxIQXGXSF5yGCd7Uf3tPOaTmTA>
-    <xmx:FaDIZKVk40KF_pmKQnslC9CpYAjXYYevFS-G2yhvjX_4wlgzwCuPhA>
-    <xmx:FaDIZJncneE9pXFtFULPv5Kms_B050h3hbu8RJfxDF1t7RUmhlBjbw>
-    <xmx:FqDIZLmQSvKyItu5zGcPmO9aT1Vur76WzvC-PJl_GDzdtfVGUI2vAQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A0937B60089; Tue,  1 Aug 2023 02:03:01 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <2d9c843f-e884-47d3-a825-6402db0a2cb8@app.fastmail.com>
-In-Reply-To: <87y1ivln1v.ffs@tglx>
-References: <20230721102237.268073801@infradead.org>
- <20230721105743.819362688@infradead.org> <87edkonjrk.ffs@tglx>
- <87mszcm0zw.ffs@tglx>
- <20230731192012.GA11704@hirez.programming.kicks-ass.net>
- <87a5vbn5r0.ffs@tglx>
- <20230731213341.GB51835@hirez.programming.kicks-ass.net>
- <87y1ivln1v.ffs@tglx>
-Date:   Tue, 01 Aug 2023 08:02:21 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Peter Zijlstra" <peterz@infradead.org>
-Cc:     "Jens Axboe" <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Darren Hart" <dvhart@infradead.org>, dave@stgolabs.net,
-        andrealmeid@igalia.com,
-        "Andrew Morton" <akpm@linux-foundation.org>, urezki@gmail.com,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "Lorenzo Stoakes" <lstoakes@gmail.com>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Linux-Arch <linux-arch@vger.kernel.org>,
-        malteskarupke@web.de
-Subject: Re: [PATCH v1 02/14] futex: Extend the FUTEX2 flags
+        Tue, 1 Aug 2023 02:02:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A36B1FD2;
+        Mon, 31 Jul 2023 23:02:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C3E956146F;
+        Tue,  1 Aug 2023 06:02:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 178E1C433C8;
+        Tue,  1 Aug 2023 06:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690869726;
+        bh=JiTXGLYJWPJsg2TfI3p8egkq8itI6r7RrUkb+0gpOKQ=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=m+rxfq4V/I0DfPvvwO/NW44g6r3HcAX81KglDqByLhm/0nfB6A8Jj54OQrHE6vJKl
+         7KZOSe1AkHmbGGlvCzaQbyuchARp7aRcRQUBedNk/f38I3NyHg9N1pBd6D+iO0MvSy
+         okOWvNZn9PNdqCjNEXHTPiI/hLJZmlgKDS3TqhRDzyDD3K/dAnUiTDcmWl0fnrmgrc
+         EieY1XAhzOMUUxfsL7kHW0WuJili3BeHnTaYscztcp2JY9nxj2vqATJ3NC3ZxTm8DG
+         z17YW0Fv4u+KGq4U/yYlVD6b9SbO5x4QYEAzIHEHF0ofddGndIEfT0ZaW7xdMQk2uU
+         GgisnK/0dXEtQ==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     <johannes@sipsolutions.net>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <nbd@nbd.name>, <pagadala.yesu.anjaneyulu@intel.com>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mac80211: mesh: Remove unused function declaration
+ mesh_ids_set_default()
+References: <20230731140712.1204-1-yuehaibing@huawei.com>
+Date:   Tue, 01 Aug 2023 09:02:22 +0300
+In-Reply-To: <20230731140712.1204-1-yuehaibing@huawei.com> (Yue Haibing's
+        message of "Mon, 31 Jul 2023 22:07:12 +0800")
+Message-ID: <87jzufz4ep.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023, at 00:43, Thomas Gleixner wrote:
-> On Mon, Jul 31 2023 at 23:33, Peter Zijlstra wrote:
->> On Mon, Jul 31, 2023 at 11:14:11PM +0200, Thomas Gleixner wrote:
->>> --- a/include/uapi/linux/futex.h
->>> +++ b/include/uapi/linux/futex.h
->>> @@ -74,7 +74,12 @@
->>>  struct futex_waitv {
->>>  	__u64 val;
->>>  	__u64 uaddr;
->>> -	__u32 flags;
->>> +	union {
->>> +		__u32	flags;
->>> +		__u32	size	: 2,
->>> +				: 5,
->>> +			private	: 1;
->>> +	};
->>>  	__u32 __reserved;
->>>  };
->>
->> Durr, I'm not sure I remember if that does the right thing across
->> architectures -- might just work. But I'm fairly sure this isn't the
->> only case of a field in a flags thing in our APIs. Although obviously
->> I can't find another case in a hurry :/
+Yue Haibing <yuehaibing@huawei.com> writes:
+
+> Commit ccf80ddfe492 ("mac80211: mesh function and data structures definitions")
+> introducted this but never implemented.
 >
-> I know, but that doesn't make these things more readable and neither an
-> argument against doing it for futex2 :)
-...
->
-> Still that explicit bitfield does neither need comments nor does it
-> leave room for interpretation.
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> ---
+>  net/mac80211/mesh.h | 1 -
+>  1 file changed, 1 deletion(-)
 
-It may be clear to the compiler, but without comments or
-looking up psABI documentation I certainly wouldn't know
-immediately which bits of the flags word overlay the bitfields
-for a given combination of __BIG_ENDIAN/__LITTLE_ENDIAN
-and __BIG_ENDIAN_BITFIELD/__LITTLE_ENDIAN_BITFIELD or
-architectures with unusual struct alignment requirements
-(m68k or arm-oabi).
+The title should have "wifi:" but no need to resend because of this.
 
-I'd prefer to completely avoid the bitfield here. Maybe having
-exclusive flags for each width would be less confusing, at the
-cost of needing two more flag bits and a slightly more complicated
-sanity check, or we could take an extra byte out of the __reserved
-field to store the length.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-       Arnd
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
