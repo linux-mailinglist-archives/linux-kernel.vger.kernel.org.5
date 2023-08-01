@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7462E76A6F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2598976A6FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232090AbjHAC3t convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 Jul 2023 22:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
+        id S232112AbjHACaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:30:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjHAC3s (ORCPT
+        with ESMTP id S232094AbjHACaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:29:48 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 44E23E65
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:29:47 -0700 (PDT)
-Received: from loongson.cn (unknown [209.85.128.41])
-        by gateway (Coremail) with SMTP id _____8CxrusZbshkHswNAA--.29829S3;
-        Tue, 01 Aug 2023 10:29:46 +0800 (CST)
-Received: from mail-wm1-f41.google.com (unknown [209.85.128.41])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxWM0WbshkwXdDAA--.46292S3;
-        Tue, 01 Aug 2023 10:29:44 +0800 (CST)
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-3fbc244d384so47910175e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:29:43 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZmP1nYE/bQjWjFoYZDzJ5REARD0bqRZY06u4YQKgLQxNAfDUva
-        f+YdQ3GmMk5Mr+YVDR2TzscaZrflhEelPRDUhy7NIg==
-X-Google-Smtp-Source: APBJJlGR2xCzEbR0KfLvULAvj4Q/rRacHyeQ3FRpG/PeA9oezM1aq7UPOCn9hCun1wnjhnQ09KzsW9iG/Ng+J4KnFBA=
-X-Received: by 2002:a1c:ed0f:0:b0:3fe:1c05:3c8f with SMTP id
- l15-20020a1ced0f000000b003fe1c053c8fmr1260964wmh.35.1690856982158; Mon, 31
- Jul 2023 19:29:42 -0700 (PDT)
+        Mon, 31 Jul 2023 22:30:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166691BFD;
+        Mon, 31 Jul 2023 19:30:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F3A9613EF;
+        Tue,  1 Aug 2023 02:30:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92EBCC433C7;
+        Tue,  1 Aug 2023 02:29:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690857000;
+        bh=JqTpuojuSmByA27/5WGpMBYobl6c+pIwWwOPzzkyoSk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M59G1iH5RSuy/jK4mIM5hLWCgtxG6QNZHLZsxbkscK3O2uHaIhfgKrCYkun1biidL
+         h5BVJLdxwGiZox9SC4yuEbTvH+z0EzZiSzeNeGDkcpQtmDOGuz18ed6j+CDmBfYULM
+         FSWt+bWY62WmfOHlPVtv3pDus3nXq+Hv2dKdKaoX9WZClxjocAw8mWvKBuben0+vgo
+         CfssLd1IF/jInUY88692Dm3tGAJ3uXgHOW2UPvnhH5/PXNJIXRegBmf7wvWvoy10m2
+         gbzQd+7l7Xyzs++sY+u2JtDEluqmu65wPHHY8br4vZKr240aEYaxhq0CKW86BBwYOu
+         KKjk1TWfinwPQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C752240096; Mon, 31 Jul 2023 23:29:56 -0300 (-03)
+Date:   Mon, 31 Jul 2023 23:29:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     James Clark <james.clark@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Gaosheng Cui <cuigaosheng1@huawei.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH v1 4/6] perf build: Disable fewer flex warnings
+Message-ID: <ZMhuJK/5+pMThsFd@kernel.org>
+References: <20230728064917.767761-1-irogers@google.com>
+ <20230728064917.767761-5-irogers@google.com>
+ <a8833945-3f0a-7651-39ff-a01e7edc2b3a@arm.com>
+ <ZMPJym7DnCkFH7aA@kernel.org>
+ <ZMPKekDl+g5PeiH8@kernel.org>
+ <CAP-5=fX2LOdd_34ysAYYB5zq5tr7dMje35Nw6hrLXTPLsOHoaw@mail.gmail.com>
+ <ZMQEfIi/BYwpDIEB@kernel.org>
+ <ZMQMQoCtBytgwB4i@kernel.org>
+ <CAP-5=fUOD4hgQBmXjQh0HujO_39zQQhv_Wv5oirgAC4N8Ao1nw@mail.gmail.com>
+ <ZMgkthavch7x/z+0@kernel.org>
 MIME-Version: 1.0
-References: <20230801011554.3950435-1-guoren@kernel.org>
-In-Reply-To: <20230801011554.3950435-1-guoren@kernel.org>
-From:   WANG Rui <wangrui@loongson.cn>
-Date:   Tue, 1 Aug 2023 10:29:31 +0800
-X-Gmail-Original-Message-ID: <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
-Message-ID: <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
-To:     guoren@kernel.org
-Cc:     chenhuacai@kernel.or, kernel@xen0n.name, arnd@arndb.de,
-        andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
-        peterz@infradead.org, will@kernel.org, boqun.feng@gmail.com,
-        mark.rutland@arm.com, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-CM-TRANSID: AQAAf8CxWM0WbshkwXdDAA--.46292S3
-X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7XFWxJry7Kw1kur13tr4fJFc_yoWkArg_Wa
-        17Cw4Uuw4xXa13tanxKryfJr1qqa1xAFn3uaySqr1fAFn8Jw43Z397X3W3Zr17K3y8Xrs8
-        u3ySqr90kr1j9osvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUbzAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAF
-        wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI4
-        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20E
-        Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-        AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMgkthavch7x/z+0@kernel.org>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NUMERIC_HTTP_ADDR,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,40 +84,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Em Mon, Jul 31, 2023 at 06:16:38PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Jul 28, 2023 at 12:05:56PM -0700, Ian Rogers escreveu:
+> > On Fri, Jul 28, 2023, 11:43 AM Arnaldo Carvalho de Melo <acme@kernel.org>
+> > > > I haven't checked, lemme do it now.
+> 
+> > > It comes directly from flex's m4 files:
+> 
+> > > https://github.com/westes/flex/blob/master/src/c99-flex.skl#L2044
+> 
+> > > So I'll keep the -Wno-misleading-indentation, ok?
+>  
+> > Makes sense, yes.
+> 
+> continuing, changed the version check to:
+     
+>     Committer notes:
+>     
+>     Added this to the list of ignored warnings to get it building on
+>     a Fedora 36 machine with flex 2.6.4:
+>     
+>       -Wno-misleading-indentation
+>     
+>     Noticed when building with:
+>     
+>       $ make LLVM=1 -C tools/perf NO_BPF_SKEL=1 DEBUG=1
+>     
+>     Take two:
+>     
+>     We can't just try to canonicalize flex versions by just removing the
+>     dots, as we end up with:
+>     
+>             2.6.4 >= 2.5.37
+>     
+>     becoming:
+>     
+>             264 >= 2537
+>     
+>     Failing the build on flex 2.5.37, so instead use the back to the past
+>     added $(call version_ge3,2.6.4,$(FLEX_VERSION)) variant to check for
+>     that.
+>     
+>     Making sure $(FLEX_VERSION) keeps the dots as we may want to use 'sort
+>     -V' or something nicer when available everywhere.
 
-On Tue, Aug 1, 2023 at 9:16 AM <guoren@kernel.org> wrote:
-> diff --git a/arch/loongarch/include/asm/cmpxchg.h b/arch/loongarch/include/asm/cmpxchg.h
-> index 979fde61bba8..6a05b92814b6 100644
-> --- a/arch/loongarch/include/asm/cmpxchg.h
-> +++ b/arch/loongarch/include/asm/cmpxchg.h
-> @@ -102,8 +102,8 @@ __arch_xchg(volatile void *ptr, unsigned long x, int size)
->         "       move    $t0, %z4                        \n"             \
->         "       " st "  $t0, %1                         \n"             \
->         "       beqz    $t0, 1b                         \n"             \
-> -       "2:                                             \n"             \
->         __WEAK_LLSC_MB                                                  \
-> +       "2:                                             \n"             \
+Please take a look at the tmp.perf-tools-next on the perf-tools-next git
+tree, so far it passed on:
 
-Thanks for the patch.
+[perfbuilder@five ~]$ export BUILD_TARBALL=http://192.168.86.10/perf/perf-6.5.0-rc2.tar.xz
+[perfbuilder@five ~]$ time dm
+   1   131.37 almalinux:8                   : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-18) , clang version 15.0.7 (Red Hat 15.0.7-1.module_el8.8.0+3466+dfcbc058) flex 2.6.1
+   2   133.63 almalinux:9                   : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.7 (Red Hat 15.0.7-2.el9) flex 2.6.4
+   3   151.31 alpine:3.15                   : Ok   gcc (Alpine 10.3.1_git20211027) 10.3.1 20211027 , Alpine clang version 12.0.1 flex 2.6.4
+   4   148.73 alpine:3.16                   : Ok   gcc (Alpine 11.2.1_git20220219) 11.2.1 20220219 , Alpine clang version 13.0.1 flex 2.6.4
+   5   126.35 alpine:3.17                   : Ok   gcc (Alpine 12.2.1_git20220924-r4) 12.2.1 20220924 , Alpine clang version 15.0.7 flex 2.6.4
+   6   125.43 alpine:3.18                   : Ok   gcc (Alpine 12.2.1_git20220924-r10) 12.2.1 20220924 , Alpine clang version 16.0.6 flex 2.6.4
+   7   143.12 alpine:edge                   : Ok   gcc (Alpine 13.1.1_git20230520) 13.1.1 20230520 , Alpine clang version 16.0.4 flex 2.6.4
+   8   102.10 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-15) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2) flex 2.5.37
+   9    95.36 amazonlinux:2023              : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
+  10    96.15 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
+  11   118.48 archlinux:base                : Ok   gcc (GCC) 12.2.0 , clang version 14.0.6 flex 2.6.4
+  12   106.42 centos:stream                 : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-18) , clang version 15.0.7 (Red Hat 15.0.7-1.module_el8.8.0+1258+af79b238) flex 2.6.1
+  13   127.88 clearlinux:latest             : Ok   gcc (Clear Linux OS for Intel Architecture) 13.1.1 20230720 releases/gcc-13.1.0-353-g9aac37ab8a , clang version 16.0.6 flex 2.6.4
+  14    88.12 debian:10                     : Ok   gcc (Debian 8.3.0-6) 8.3.0 , Debian clang version 11.0.1-2~deb10u1 flex 2.6.4
+  15   113.56 debian:11                     : Ok   gcc (Debian 10.2.1-6) 10.2.1 20210110 , Debian clang version 13.0.1-6~deb11u1 flex 2.6.4
+  16   122.58 debian:12                     : Ok   gcc (Debian 12.2.0-14) 12.2.0 , Debian clang version 14.0.6 flex 2.6.4
+  17   130.89 debian:experimental           : Ok   gcc (Debian 12.3.0-5) 12.3.0 , Debian clang version 14.0.6 flex 2.6.4
+  18    23.75 fedora:26                     : Ok   gcc (GCC) 7.3.1 20180130 (Red Hat 7.3.1-2)  flex 2.6.1
+  19    23.52 fedora:27                     : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-6)  flex 2.6.1
+  20    24.66 fedora:28                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2)  flex 2.6.1
+  21    26.12 fedora:29                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2)  flex 2.6.1
+  22    26.06 fedora:30                     : Ok   gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2)  flex 2.6.4
 
-This would look pretty good if it weren't for the special memory
-barrier semantics of the LoongArch's LL and SC instructions.
+Tomorrow I'll go back to perf-tools, to get what sat on linux-next
+pending-fixes and a few other fixes (the one reported by Thomas, etc)
+to send to Linus for v6.5.
 
-The LL/SC memory barrier behavior of LoongArch:
-
-* LL: <memory-barrier> + <load-exclusive>
-* SC: <store-conditional> + <memory-barrier>
-
-and the LoongArch's weak memory model allows load/load reorder for the
-same address.
-
-So, the __WEAK_LLSC_MB[1] is used to prevent load/load reorder and no
-explicit barrier instruction is required after SC.
-
-[1] https://lore.kernel.org/loongarch/20230516124536.535343-1-chenhuacai@loongson.cn/
-
-Regards,
---
-WANG Rui
-
+- Arnaldo
