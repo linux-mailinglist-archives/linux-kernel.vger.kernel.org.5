@@ -2,60 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8306876A992
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9B776A994
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbjHAG67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
+        id S231970AbjHAG7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjHAG66 (ORCPT
+        with ESMTP id S229675AbjHAG7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:58:58 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFB21BD
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:58:53 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id B3561E0007;
-        Tue,  1 Aug 2023 06:58:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690873132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N5FAqOX/33n4uDpymzBUG8KgidPfOT4KtVFrkPH1G2o=;
-        b=KJtnGFYKCzwPhpLbN7Q4usbgj03CTiHxHRd2Qa56IhSRffPYRSc+P2xepM3msWRxzkJDAD
-        ROckkMbzKw6RQiI+JRfRzBrTNkWRvCYWWJLWxhac8jhfhrnyCuQ1xhzqfHRT1pSDijYp1c
-        ctquRptT1Qjvb7lsZQXaqZZP8GMRPY83yKayLf8j/2LDFTcsAaf8TTZeYEbNWa9QifvusK
-        JsWHaasNQKnZ+4eQTk/NJaBq/QXgE2SyxsxtjRvVjRNvZdNNwQr6v7qSunXuhy/zkB7yDB
-        x87Rwv7KenA9+86WdftoZuurdMCdKziUnauhU9hiAoyQ9YZERqlj+XNcAzJegQ==
-Date:   Tue, 1 Aug 2023 08:58:47 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Zheng Zhang <zheng.zhang@email.ucr.edu>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Usyskin <alexander.usyskin@intel.com>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Vitaly Lubart <vitaly.lubart@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Zhang Xiaoxu <zhangxiaoxu5@huawei.com>
-Subject: Re: kernel BUG in __put_mtd_device
-Message-ID: <20230801085847.46c7db12@xps-13>
-In-Reply-To: <CAC_GQSp7W=MoiWoWo+UFFcZ48JLwsnfL84QWTJm_DNLO7S9AxQ@mail.gmail.com>
-References: <CAC_GQSpE5nbj7Lt=8sXu8GoSQTRd+=fpZb_zpVKQOJ4MxRHzsw@mail.gmail.com>
-        <89021294.889167.1690781715755.JavaMail.zimbra@nod.at>
-        <CAC_GQSp7W=MoiWoWo+UFFcZ48JLwsnfL84QWTJm_DNLO7S9AxQ@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 1 Aug 2023 02:59:40 -0400
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 48A591BD;
+        Mon, 31 Jul 2023 23:59:39 -0700 (PDT)
+Received: (from willy@localhost)
+        by mail.home.local (8.17.1/8.17.1/Submit) id 3716xHHu030364;
+        Tue, 1 Aug 2023 08:59:17 +0200
+Date:   Tue, 1 Aug 2023 08:59:17 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yuan Tan <tanyuan@tinylab.org>,
+        Zhangjin Wu <falcon@tinylab.org>
+Subject: Re: [PATCH v2 09/10] selftests/nolibc: test return value of read()
+ in test_vfprintf
+Message-ID: <ZMitRWU94SzCBNdd@1wt.eu>
+References: <20230801-nolibc-warnings-v2-0-1ba5ca57bd9b@weissschuh.net>
+ <20230801-nolibc-warnings-v2-9-1ba5ca57bd9b@weissschuh.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230801-nolibc-warnings-v2-9-1ba5ca57bd9b@weissschuh.net>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,18 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zheng,
+On Tue, Aug 01, 2023 at 07:30:16AM +0200, Thomas Weiﬂschuh wrote:
+> If read() fails and returns -1 buf would be accessed out of bounds.
+> 
+> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> ---
+>  tools/testing/selftests/nolibc/nolibc-test.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> index 82714051c72f..a334f8450a34 100644
+> --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> @@ -1031,6 +1031,12 @@ static int expect_vfprintf(int llen, int c, const char *expected, const char *fm
+>  	lseek(fd, 0, SEEK_SET);
+>  
+>  	r = read(fd, buf, sizeof(buf) - 1);
+> +	if (r == -1) {
+> +		llen += printf(" read() = %s", errorname(errno));
+> +		result(llen, FAIL);
+> +		return 1;
+> +	}
+> +
+>  	buf[r] = '\0';
 
-zheng.zhang@email.ucr.edu wrote on Mon, 31 Jul 2023 16:58:49 -0700:
+In fact given the nature of this file (test if we properly implemented
+our syscalls), I think that a more conservative approach is deserved
+because if we messed up on read() we can have anything on return and we
+don't want to trust that. As such I would suggest that we declare r as
+ssize_t and verify that it's neither negative nor larger than
+sizeof(buf)-1, which becomes:
 
-> Could you tell me the base Linux version of this patch? It seems that the
-> context is not consistent with 6.2 or newest version v6.5.rc4
-> Thanks
+        if ((size_t)r >= sizeof(buf)) {
+            ... fail ...
+        }
 
-mtd/next, where new changes have been brought to these functions
+You'll also have to turn w to ssize_t then due to the test later BTW.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git/log/?h=3Dmtd/=
-next
-
-Thanks,
-Miqu=C3=A8l
+Willy
