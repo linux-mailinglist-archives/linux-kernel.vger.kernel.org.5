@@ -2,108 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCD676BDB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D3276BDB7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbjHAT2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:28:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        id S232362AbjHAT2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232430AbjHAT2R (ORCPT
+        with ESMTP id S231786AbjHAT2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:28:17 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6652702
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:28:14 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-48662837573so1964546e0c.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:28:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690918093; x=1691522893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HCrBZ+LARUcvOa9R+ORZqbZu0aG8I3aHxOBsAiGdDF8=;
-        b=MC9nGd/11OgWvJFBXkX7+UwU+Y4an+7b6KwxNnqjCTGVTdrRltuAvJ0IFU3fQTbg7a
-         b6E+L0stygSE91lezyJ9xyIJ1teNBytoo/hmIC+QPzc0Z+xDWTOw+hbY4QPavYKjc0sY
-         h3B2geZNqR7igvGgE8+4l/xLn/uvM2uoUr1vC/KLJNCWoPFj6f3j5SxRqNcl3+wy9owh
-         8C7ixOh42cbcVDDm6LdwOPSJb6KMcinP5y1eYm6chCZhqRvUAR0pfHDki9mYc8nvhOpk
-         miHrtHPhCFqpb21poHGvLcWXGoc9qw0sMHTBQZpDZW28wrTyIxwfIF7Ungm3HWCZ88+T
-         6T+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690918093; x=1691522893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HCrBZ+LARUcvOa9R+ORZqbZu0aG8I3aHxOBsAiGdDF8=;
-        b=Y1crrzMclNmnXJVxVmutGsNkPYDigtmDnml9CWS82iCO+qBJ2yfaXcacDWmZx52YiA
-         KhTrsjhcOzlWkzszNqCTnfDpcj+8LzotZ7jnxwopFWLuqPb4T6u6t5jNroV22mtI2yKY
-         0sUZA3agar9amDNdBmnbkVLDv7GZxB6gru11ISXqe4eDHdAxByC4yqOU0W73jmmRlesY
-         uHwm3q3eCXPIcqTvOZFLYupdV0fdJ17RpBxdEXgMoZ9JOkjbC+af8KNNGr13f1fM21Cc
-         JZ+EoQKL2LC+WEoSnkmVTx3urFUAWlia/A+GcrwfDiKOZEvMFC06EKzBPcZLrlhOxSAS
-         Sn1g==
-X-Gm-Message-State: ABy/qLaDSj6PAmgDGiesHOyB6Ml9O1BlhGiux44/zghGL/eK40XDJnSO
-        LsDS3vrip4Gx/6h7g/wYbdznXQZl26KStM4SA/EMFQ==
-X-Google-Smtp-Source: APBJJlGmsrWrqHsKoCkpTUDByMprWAgrRIUfS39Wr3WrmpPuTLgxZfyQunwmIu+/Uh5bMCyrmj7Hgk/YY6eK92ve+jk=
-X-Received: by 2002:a1f:bfc5:0:b0:486:6cad:b6e7 with SMTP id
- p188-20020a1fbfc5000000b004866cadb6e7mr3451015vkf.10.1690918093314; Tue, 01
- Aug 2023 12:28:13 -0700 (PDT)
+        Tue, 1 Aug 2023 15:28:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5C3F10E;
+        Tue,  1 Aug 2023 12:28:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gaut94wtJvcD0zi3q7k4JYT7+QEi/Ua5L41+y8I+W9A=; b=FWrX0z28U3EqiQJrIFfM/btNnD
+        h0r6Q0OJ3rp5KMXJorNilcAfp8f3kEIhltT8RjmJWCxZ+EUksczMNZPOLsVqYa8HvYCGAKxjvRc6Z
+        ZHXdgNjBBXysu78uR2VE4uvd/UnmJTUo3BNeWLgbqgStaLTfK4lAPj83qDQEU85kHEyUSozuXFVlJ
+        y1i8KQOzRWSaUDKfxEWBhsPHwkBEDJQPlrogyIqDoeihbK6N8zE1PqhZkxC3zwUdvdzanaPkJK5nq
+        VdvR8Yc4tHO6vQgiV2CjJtdAth0lqVMHIYcwyP+9RxH1FNA2UhNOA8i99+Whl9iPkLdc/nlZ850V3
+        puAflRfA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQv2I-00AacX-ID; Tue, 01 Aug 2023 19:28:02 +0000
+Date:   Tue, 1 Aug 2023 20:28:02 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
+Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org,
+        "xuyu@linux.alibaba.com" <xuyu@linux.alibaba.com>
+Subject: Re: [PATCH RFC v2 0/4] Add support for sharing page tables across
+ processes (Previously mshare)
+Message-ID: <ZMlcwrCMdZIBWT90@casper.infradead.org>
+References: <cover.1682453344.git.khalid.aziz@oracle.com>
+ <74fe50d9-9be9-cc97-e550-3ca30aebfd13@linux.alibaba.com>
+ <ZMeoHoM8j/ric0Bh@casper.infradead.org>
+ <ae3bbfba-4207-ec5b-b4dd-ea63cb52883d@redhat.com>
+ <9faea1cf-d3da-47ff-eb41-adc5bd73e5ca@linux.alibaba.com>
+ <d3d03475-7977-fc55-188d-7df350ee0f29@redhat.com>
+ <ZMfjmhaqVZyZNNMW@casper.infradead.org>
+ <dcf5dbff-df95-0b5e-964e-6e55c843d977@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20230728182522.18477-1-aboutphysycs@gmail.com>
-In-Reply-To: <20230728182522.18477-1-aboutphysycs@gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 1 Aug 2023 21:28:02 +0200
-Message-ID: <CAMRc=McZS65f4Z8bXSCW_6gHQ5hgQD8x1z5OvM6-oKJfii4F=w@mail.gmail.com>
-Subject: Re: [PATCH] gpio: sama5d2-piobu: remove unneeded call to platform_set_drvdata()
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, andy@kernel.org,
-        linus.walleij@linaro.org, ludovic.desroches@microchip.com,
-        Alexandru Ardelean <alex@shruggie.ro>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dcf5dbff-df95-0b5e-964e-6e55c843d977@linux.alibaba.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 8:25=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
-com> wrote:
->
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Als=
-o,
-> the private data is defined in this driver, so there is no risk of it bei=
-ng
-> accessed outside of this driver file.
->
-> Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
->  drivers/gpio/gpio-sama5d2-piobu.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/gpio/gpio-sama5d2-piobu.c b/drivers/gpio/gpio-sama5d=
-2-piobu.c
-> index 767c33ae3213..d89da7300ddd 100644
-> --- a/drivers/gpio/gpio-sama5d2-piobu.c
-> +++ b/drivers/gpio/gpio-sama5d2-piobu.c
-> @@ -189,7 +189,6 @@ static int sama5d2_piobu_probe(struct platform_device=
- *pdev)
->         if (!piobu)
->                 return -ENOMEM;
->
-> -       platform_set_drvdata(pdev, piobu);
->         piobu->chip.label =3D pdev->name;
->         piobu->chip.parent =3D &pdev->dev;
->         piobu->chip.owner =3D THIS_MODULE,
-> --
-> 2.34.1
->
+On Tue, Aug 01, 2023 at 02:53:02PM +0800, Rongwei Wang wrote:
+> 
+> On 2023/8/1 00:38, Matthew Wilcox wrote:
+> > On Mon, Jul 31, 2023 at 06:30:22PM +0200, David Hildenbrand wrote:
+> > > Assume we do do the page table sharing at mmap time, if the flags are right.
+> > > Let's focus on the most common:
+> > > 
+> > > mmap(memfd, PROT_READ | PROT_WRITE, MAP_SHARED)
+> > > 
+> > > And doing the same in each and every process.
+> > That may be the most common in your usage, but for a database, you're
+> > looking at two usage scenarios.  Postgres calls mmap() on the database
+> > file itself so that all processes share the kernel page cache.
+> > Some Commercial Databases call mmap() on a hugetlbfs file so that all
+> > processes share the same userspace buffer cache.  Other Commecial
+> > Databases call shmget() / shmat() with SHM_HUGETLB for the exact
+> > same reason.
+> > 
+> > This is why I proposed mshare().  Anyone can use it for anything.
+> 
+> Hi Matthew
+> 
+> I'm a little confused about this mshare(). Which one is the mshare() you
+> refer to here, previous mshare() based on filesystem or this RFC v2 posted
+> by Khalid?
+> 
+> IMHO, they have much difference between previously mshare() and
+> MAP_SHARED_PT now.
 
-Applied, thanks!
-
-Bartosz
+I haven't read this version of the patchset.  I'm describing the original
+idea, not what it may have turned into.  As far as I'm concerned, we're
+still trying to decide what functionality we actually want, not arguing
+about whether this exact patchset has the correct number of tab indents
+to be merged.
