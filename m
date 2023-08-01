@@ -2,99 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A7276C3D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB1976C42A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229482AbjHBECN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 00:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
+        id S231923AbjHBEb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 00:31:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjHBECI (ORCPT
+        with ESMTP id S231802AbjHBEbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 00:02:08 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19309B
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:02:06 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bb84194bf3so39779645ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 21:02:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690948926; x=1691553726;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vG5UMw6bFZ2XuN8CCsSVN9Y60w1sWvQGrsbmsXSfDCg=;
-        b=l0OlMBx+GytmlHiryoJm4BsFsflyHSrNEeowcnna3sb2VRaFNPQCkpXkOpIbypjAXi
-         P1qKRrhuGKhoouanf6XjGT8QqcWaAklLPjPvz19Kt2vdqd3OfaeH5CWRXMVwkP/VIDaI
-         Q3ejhBU1HEbl40qJvIQI/P8DnE1TQmXaQB3Uv8XKF4jtXj+Pe40hkHTfBPuKKORRfwmF
-         BZ25EDRGgRABT1sRKMrBqDNiqT1VzNPpdNkkSZGk3Fekj+Ud8ayt5KJmp2/loDq0+hEt
-         UcOqeSdiYu+eUPiLzYwNkJ8bpFcuoKXcmpj+UU+pUCs2uedvZa6tz2CG/p3gCUflrPaF
-         z5LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690948926; x=1691553726;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vG5UMw6bFZ2XuN8CCsSVN9Y60w1sWvQGrsbmsXSfDCg=;
-        b=STNSknXTWpVG34l0UUA1sXQz+0azaqymNSItqVRpy7keIeoFzWWB78SDfjuH3Jf4qb
-         vIv31nudiq9CJcp+3BQ0o1mltZ//Cuu4VimtWwg72tJC5ZLGGhEBlQwSYwFkgLtnEqiM
-         n23mBKEePNhCBtfLwCI39/J4H1g4tV05QZcfyP2tyRAQINukkUX6eLukGJaEYQvpfE11
-         NUvXxxbMWriy8efMMlisBUIw7Lokbwdtc1TUlYNbL0HF/nD+mY1Sq1r9PTPHrkH188ur
-         O4Qnt2nGtpkL65SZwJu2nTxIO0/zuOnHCy3DpSWobd3ai9U7UcA0hBm4gu2wwHE+U1Zq
-         fhVA==
-X-Gm-Message-State: ABy/qLZUXFNQ8xeG1DyivKmyeTACGU0QkEtFOmDwgssPMnjuUwfCyKsd
-        crMefAw2SGDH55hs4AucGKhT
-X-Google-Smtp-Source: APBJJlFdwviOBoJsVp3olVv/BcGe+WEfRsc/zCYIAaAGRExJh38BwE9IFhqgUoI63zUxsukJQ701Aw==
-X-Received: by 2002:a17:902:e551:b0:1bb:a125:f831 with SMTP id n17-20020a170902e55100b001bba125f831mr17474097plf.58.1690948926150;
-        Tue, 01 Aug 2023 21:02:06 -0700 (PDT)
-Received: from localhost.localdomain ([117.193.209.129])
-        by smtp.gmail.com with ESMTPSA id b12-20020a170902d50c00b001bb8be10a84sm11202710plg.304.2023.08.01.21.02.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 21:02:05 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     andersson@kernel.org, konrad.dybcio@linaro.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH] scsi: ufs: qcom: Make struct ufs_qcom_bw_table static const
-Date:   Wed,  2 Aug 2023 09:31:54 +0530
-Message-Id: <20230802040154.10652-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 2 Aug 2023 00:31:25 -0400
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CD51715
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:31:20 -0700 (PDT)
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20230802043118epoutp045136614a3f4b2f4e8b6404e3af02e941~3dq7TCa-o1761217612epoutp04o
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:31:18 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20230802043118epoutp045136614a3f4b2f4e8b6404e3af02e941~3dq7TCa-o1761217612epoutp04o
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1690950678;
+        bh=Gd76as/DzpDjYh3/r5rRA3x6waAAF+TrgBJUsPlPzNM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Av3UfBpm0RHzBTVqQG7+I2QePSBQpK1TX6LNYVQa95m84lD8mXsl1XYsE/ds9go0g
+         KL0FHIJE4oXGR2UWm6tQfoPuFd7NCp90VfaLTrqCFsATkN/IommLsPbAqooMOE3fYK
+         eCI2TdUwX2MHk90mvdlsymjF9lopJrhdaQZyOYao=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20230802043117epcas5p4f65a3af8f58ed9fbd09a0de76a1a6e98~3dq6q3CdP0307103071epcas5p4G;
+        Wed,  2 Aug 2023 04:31:17 +0000 (GMT)
+Received: from epsmges5p3new.samsung.com (unknown [182.195.38.183]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4RFzZD00jzz4x9Q8; Wed,  2 Aug
+        2023 04:31:16 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        46.DF.06099.31CD9C46; Wed,  2 Aug 2023 13:31:15 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20230801131020epcas5p39ed61d99f4711bb3275c06db551abe96~3RG0as1091260612606epcas5p3k;
+        Tue,  1 Aug 2023 13:10:20 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230801131020epsmtrp120d0022b70a61a613b1e6a625a053500~3RG0YTEid1439414394epsmtrp1v;
+        Tue,  1 Aug 2023 13:10:20 +0000 (GMT)
+X-AuditID: b6c32a4b-cafff700000017d3-74-64c9dc13528b
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        28.29.34491.C3409C46; Tue,  1 Aug 2023 22:10:20 +0900 (KST)
+Received: from green245 (unknown [107.99.41.245]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20230801131015epsmtip2074fb69732b70a6432999c6e507196bd~3RGwMiLU92662426624epsmtip2c;
+        Tue,  1 Aug 2023 13:10:15 +0000 (GMT)
+Date:   Tue, 1 Aug 2023 18:37:02 +0530
+From:   Nitesh Shetty <nj.shetty@samsung.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Jonathan Corbet <corbet@lwn.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>, dm-devel@redhat.com,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        willy@infradead.org, hare@suse.de, djwong@kernel.org,
+        bvanassche@acm.org, ming.lei@redhat.com, dlemoal@kernel.org,
+        nitheshshetty@gmail.com, gost.dev@samsung.com,
+        Vincent Fu <vincent.fu@samsung.com>,
+        Anuj Gupta <anuj20.g@samsung.com>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v13 3/9] block: add emulation for copy
+Message-ID: <20230801130702.2taecrgn4v66ehtx@green245>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230720075050.GB5042@lst.de>
+User-Agent: NeoMutt/20171215
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTdxTH/d3bXi5s7a5Fth8PB1azKYbXhPKDlEcicVcwiJI5NpeUht4B
+        AqVpy5jTbTyUhwo4ZG7reMhDKLDAKLihlI0ArgME4qowiDCeZkB4OpRB0BUuLP73yTnne545
+        JC7QmdmQ0XI1o5RLY4WEBeentgNvO1k+6pC5NqyKUG3nbzhKubqOo+qhHALNtC0BdH3hXxxN
+        tKQDZJzgo5Ff/VDz3PdcNNByG0P6klwMVVbfxVBuax9Akw81GGoePIiK08o4SN/cwUHGO/kE
+        KiqfNEOX+xsJVGF4jqHWa6kYapxIBqhmZp6Dfh+0ReOXMwDqXTdw0dpKPuFvRxsfBNG3NUNm
+        dO9wHYeu1zrSxu4EWleVSdD1ZV/STQNJBF2afY1LZ6XOEfTi5CCHnv/lIUFnN1QBur7rHP1E
+        9yatm5jFQqgPY8RRjFTGKB0YeUS8LFoe6SMMCpUclniIXN2c3LyQp9BBLo1jfIQBx0KcjkTH
+        mrYjdPhEGptgMoVIVSqhi69YGZ+gZhyi4lVqHyGjkMUq3BXOKmmcKkEe6Sxn1N5urq7veJgC
+        w2Oiio2ruGL41U/rV0axJKC1uATMSUi5w/G0x8QlYEEKqCYAKwp7uRsOAbUEYPtoNOt4CmBR
+        +7jZtqKmZQ1nHc0APqku2ZI/BnDpVjXYiOJQ+2BqgdEURZIEdRB2vSA3zLsoIZyc7gYb8ThV
+        SsDxobHNcpaUN+xuHN3U8igRzK3/A2N5J+z4boKzweamPH+PD212YUXZwW9vLuNsR8PmMDn9
+        BMsBsHRBy2HZEk4bGra6toFTOWlbnAgr87SbTUPqAoCafg1gHX7wYmfOZlKcioJ63Z9bgt3w
+        684ajLXzYdbaBMbaebCxcJv3wh9qbxAsW8O+Z8nExvCQomGP8TC7oBEAMwc6wVVgr3lpNs1L
+        5Vj2hpkLKVyNSY5TtrDiOcniAVh7x+UG4FYBa0ahiotkVB6KQ3Im8f+DR8TH6cDm8zgGNYKx
+        kQXnVoCRoBVAEhfu4tmuGWQCnkx69jNGGS9RJsQyqlbgYbrVV7iNVUS86fvkaombu5eru0gk
+        cvc6JHITvsGbuVggE1CRUjUTwzAKRrmtw0hzmyQs9f2s0BIrm9CCHz/WLBp+fs1wf0fXktno
+        5GxYjstdcWre68II0vAij3v6GxFfa+CHd6/49ZxqX1bz35vi/+V6fvGR/x69ryh4RjYdeKYv
+        cn6Hf1naUd7+ujpf3ok1mHWqKX+f2B4k8r08nkFe8v3V8LjgLzyrzt/MLz+pDxsP3m1VmSIQ
+        g3dT6sbEMfb6mMYMiaSjedo8oGjNm5wtP5nKe3A25J+2paPa09r1fKvAdZv63KA5OnvlracL
+        /mcMnj2DTu6rhbpi348srLPuZWb0LwbM7A0dXjnXtFKql17f33C8+njvnqaUe8wUmXzs0ufp
+        RwIlYa98sKC9cuuCk10od+eykKOKkro54kqV9D+VmoMoxQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKIsWRmVeSWpSXmKPExsWy7bCSvK4Ny8kUgyOHBCzWnzrGbNE04S+z
+        xeq7/WwWrw9/YrSY9uEns8WTA+2MFpef8Fk82G9vsffdbFaLmwd2MlnsWTSJyWLl6qNMFpMO
+        XWO0eHp1FpPF3lvaFgvblrBY7Nl7ksXi8q45bBbzlz1lt+i+voPNYvnxf0wWhyY3M1nseNLI
+        aLHu9XsWixO3pC0ed3cwWpz/e5zV4vePOWwOMh6Xr3h77Jx1l93j/L2NLB6bV2h5XD5b6rFp
+        VSebx+Yl9R67bzaweSzum8zq0dv8js3j49NbLB7v911l8+jbsorRY/Ppao/Pm+Q8Nj15yxQg
+        EMVlk5Kak1mWWqRvl8CVcWL/Z8aCCVwVSw+dZGlg/MLexcjJISFgIrHuwG/mLkYuDiGB3YwS
+        LyZNg0pISiz7e4QZwhaWWPnvOTtE0RNGiWX9K1hAEiwCKhLNcy8DFXFwsAloS5z+zwESFhFQ
+        knj66iwjSD2zwHI2iQWXN4ANEhawkji74yEjiM0rYCYxafMlJoihDxglej7dYINICEqcnPkE
+        bAEzUNG8zQ/BFjALSEss/we2gBNo14vHd8EOFRWQkZix9CvzBEbBWUi6ZyHpnoXQvYCReRWj
+        ZGpBcW56brFhgWFearlecWJucWleul5yfu4mRnDK0NLcwbh91Qe9Q4xMHIyHGCU4mJVEeKV/
+        H08R4k1JrKxKLcqPLyrNSS0+xCjNwaIkziv+ojdFSCA9sSQ1OzW1ILUIJsvEwSnVwLRRRvvt
+        jTsc388q2D+55KOQYXOwcfOeS+eM/yRb5P7wKWYtk1VWytf+GyZ0dV6cqJuU2J5DWy7efrTi
+        +YRzr2OuXvxpd1ihqNB5oVf1+/9m4epam478m31wguKimAe7VIW9zryOD7K+ELqP137lmauH
+        3mowp69yXVK8v0i5c+cx5aTCI/I15g8knt15Xvh2yikB05VLPOwXMk/84np3Qfud10kuF0/8
+        T4/4/XrvjAXvZPT0WFvXVh/xXrZ0Uc3B8lkGnd/OWaQbvlZbLfWxl3nb67NTcqSe8VwvXHKo
+        e57zR4tj9TuXZJ1T2Nv9vsBL+fO2pc0XH6x7Lf6nq1mn8DhD9valXcYix5O+HFRfc7zslRJL
+        cUaioRZzUXEiADYZ85yIAwAA
+X-CMS-MailID: 20230801131020epcas5p39ed61d99f4711bb3275c06db551abe96
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----nvFln8z3L_krFSQI_duuyTsYVGNcxCMU6qftyQwhOSKtHzaF=_17c6a_"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230627184020epcas5p13fdcea52edead5ffa3fae444f923439e
+References: <20230627183629.26571-1-nj.shetty@samsung.com>
+        <CGME20230627184020epcas5p13fdcea52edead5ffa3fae444f923439e@epcas5p1.samsung.com>
+        <20230627183629.26571-4-nj.shetty@samsung.com>
+        <20230720075050.GB5042@lst.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ufs_qcom_bw_table is not modified anywhere. So make it static const so that
-it can be placed in read-only memory.
+------nvFln8z3L_krFSQI_duuyTsYVGNcxCMU6qftyQwhOSKtHzaF=_17c6a_
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Disposition: inline
 
-Reported-by: Bart Van Assche <bvanassche@acm.org>
-Closes: https://lore.kernel.org/linux-scsi/43cd0057-c6d8-bc92-08f4-d767336d2cfe@acm.org/
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/ufs/host/ufs-qcom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 23/07/20 09:50AM, Christoph Hellwig wrote:
+>> +static void *blkdev_copy_alloc_buf(sector_t req_size, sector_t *alloc_size,
+>> +		gfp_t gfp_mask)
+>> +{
+>> +	int min_size = PAGE_SIZE;
+>> +	void *buf;
+>> +
+>> +	while (req_size >= min_size) {
+>> +		buf = kvmalloc(req_size, gfp_mask);
+>> +		if (buf) {
+>> +			*alloc_size = req_size;
+>> +			return buf;
+>> +		}
+>> +		/* retry half the requested size */
+>> +		req_size >>= 1;
+>> +	}
+>> +
+>> +	return NULL;
+>
+>Is there any good reason for using vmalloc instead of a bunch
+>of distcontiguous pages?
+>
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index 75a1fd295f34..0341c025e818 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -58,7 +58,7 @@ enum {
- 	MODE_MAX,
- };
- 
--struct __ufs_qcom_bw_table {
-+static const struct __ufs_qcom_bw_table {
- 	u32 mem_bw;
- 	u32 cfg_bw;
- } ufs_qcom_bw_table[MODE_MAX + 1][QCOM_UFS_MAX_GEAR + 1][QCOM_UFS_MAX_LANE + 1] = {
--- 
-2.25.1
+kvmalloc seemed convenient for the purpose. 
+We will need to call alloc_page in a loop to guarantee discontigous pages. 
+Do you prefer that over kvmalloc?
 
+>> +		ctx = kzalloc(sizeof(struct copy_ctx), gfp_mask);
+>> +		if (!ctx)
+>> +			goto err_ctx;
+>
+>I'd suspect it would be better to just allocte a single buffer and
+>only have a single outstanding copy.  That will reduce the bandwith
+>you can theoretically get, but copies tend to be background operations
+>anyway.  It will reduce the required memory, and thus the chance for
+>this operation to fail on a loaded system.  It will also dramatically
+>reduce the effect on memory managment.
+>
+
+Next version will have that change.
+
+Thank You,
+Nitesh Shetty
+
+------nvFln8z3L_krFSQI_duuyTsYVGNcxCMU6qftyQwhOSKtHzaF=_17c6a_
+Content-Type: text/plain; charset="utf-8"
+
+
+------nvFln8z3L_krFSQI_duuyTsYVGNcxCMU6qftyQwhOSKtHzaF=_17c6a_--
