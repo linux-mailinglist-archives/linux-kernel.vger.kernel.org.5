@@ -2,213 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B952476B350
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4D776B352
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbjHALc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:32:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        id S233779AbjHALc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:32:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232467AbjHALcy (ORCPT
+        with ESMTP id S233659AbjHALc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:32:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ADD4DC
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 04:32:53 -0700 (PDT)
+        Tue, 1 Aug 2023 07:32:56 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E18E1;
+        Tue,  1 Aug 2023 04:32:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690889573; x=1722425573;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=FD69+KNCQqKAUph7dQfNY7nvz8hXschlb9hSwAbjSXE=;
-  b=d3WH/WSzps2dhQKiX24Sn2A4VupY3WPDmTQLIVvsiD7VBTRoakFbG/5C
-   YUUPEeZ77MFBU0PwLXZQaOJMmmM5PGE7/cGWPKpZj03XnkVZN5mBY9fvQ
-   p5CfThLJbdECcRHFF2SVoYcIlrKcDaRgdItmJBa9TlCEDchUPb9jf088C
-   KT94Cr1IuH4VY5Cm36oakEQSoPQeacLp5+lJYgnq8o/uv5dp0/SNBrkCe
-   5F2AVE4FyknHK+IkQGN0vr4A7OwCecS/hRH6UzRKK8nNarCU4N3zQFzSp
-   gq3OaoJaiyh+bv5ftJGJ/4Zxp1S7e0kMqUicSBooi1oLTjjiURvZP3rJ8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="372902197"
+  t=1690889574; x=1722425574;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=TzSEaSzQL9u9ekleAO7fPDY/vHwfdTwqjFeCTI054Hk=;
+  b=nfJFoT56ZjmElmW2VQhOvKxg/7Q8OpiHs0wHVGnUXz8IUna+0suuKsOm
+   /Zerrny7+to6hek1TVXK9n/5+Pb9HGIQICH8jvcJFJCwGu9CfsXPVbgR4
+   H4CrU/cpZvZ5EWlSnF9lhkBBfOOQ1x5Hj8VUs1N1AwrpQW5QY+UTgl2BM
+   t2d8m6Rp4zsvsF2juEvpjmOAAgRSukqe8hnVGsTso2+EW0+aQHhwwIsHv
+   940rBFdQGp+e3qx1sX+QS6tfeHFr7vIvx++r60WYm0122ncz0mzbTSlGl
+   OiMvt18yYwSOC3nbn7YXzxYnxdbstPLG3oniiUmEQ7ABUNRdd0qvRQpvn
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="349568105"
 X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="372902197"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 04:32:52 -0700
+   d="scan'208";a="349568105"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 04:32:53 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="705801056"
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="722454740"
 X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="705801056"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 01 Aug 2023 04:32:51 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qQncQ-0000Ex-0K;
-        Tue, 01 Aug 2023 11:32:50 +0000
-Date:   Tue, 1 Aug 2023 19:32:34 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
-Subject: drivers/iommu/ipmmu-vmsa.c:946:34: warning: unused variable
- 'ipmmu_of_ids'
-Message-ID: <202308011923.SJDDG6oN-lkp@intel.com>
+   d="scan'208";a="722454740"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga007.jf.intel.com with ESMTP; 01 Aug 2023 04:32:52 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 1 Aug 2023 04:32:52 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 1 Aug 2023 04:32:52 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 1 Aug 2023 04:32:52 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XoNdTLLy7oaAstY0bm0jSeXyWEfeNQJQIvtUpkzQmpq9wbWWYX3IZh1cuCyQuwBamfZQHVY1ZElZz39/c8r4A2wAOlWDKpqhOxjq86biG/fEdec+c/soP8DJ0cbw2406WPulzlU/noLak7hJRKGyUgp27Ol7CX9Z0V9zpWXLfIil6shuaCKD4ICp1Mh6Qbofy2KP+1CB5hM/7yUpDIZQ2cVIxRAvjPV7jcy+wZrewS88nSfP/hzo/aITXmymEA/ExbihTnVwRzM68Q7iNEAs3P5mOrVVd5Tt2LstvMRxLZgg/XPUNYajETAzUQRQ9YKKbnpdiuarETW5eGO/EPAj7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+UUIGBYy/1i8L7tcMofNc7ZXSDAHLocj60UHSrbIYsc=;
+ b=F7EIjeI/6Wqp11ZGZvtT8pUGp+noM1Iqp/nKGIs5SB9lp6AtLkOVAMX3eUpyRUbXvjUgQBI+CGLG+9wlHNk+GAihQdivr3jz82JPjcWmouO6XGISNLmTL85Q1Jcs3x+ch74rmnX88asZA7p/aelC03GCWixjXFsw3QLyBiNu+m6zHEpVBeucg2PMHVqsQOObFCF9v3FeXCLB6VnVvpQPcP+Iz5fmlmfYxBy1rzeR/giUtW89H4plLJVl6khIzMvTyniA15gIJEJ6YQy51aUQYknuM2X6772WRh1vHYWsb7oPhcfjkjcK9ZrFntOs713GVdJguPxuBm8TeD7LppfQ3Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5549.namprd11.prod.outlook.com (2603:10b6:5:388::7) by
+ SJ0PR11MB6695.namprd11.prod.outlook.com (2603:10b6:a03:44e::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.42; Tue, 1 Aug 2023 11:32:43 +0000
+Received: from DM4PR11MB5549.namprd11.prod.outlook.com
+ ([fe80::fa3f:a88:b8dd:5c8e]) by DM4PR11MB5549.namprd11.prod.outlook.com
+ ([fe80::fa3f:a88:b8dd:5c8e%2]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
+ 11:32:43 +0000
+Message-ID: <8c7af6c1-903f-6c4c-67d5-3765315f05b4@intel.com>
+Date:   Tue, 1 Aug 2023 14:32:35 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 11/29] drm/i915/gvt: Protect gfn hash table with
+ vgpu_lock
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+CC:     <kvm@vger.kernel.org>, <intel-gvt-dev@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Yongwei Ma <yongwei.ma@intel.com>,
+        Ben Gardon <bgardon@google.com>
+References: <20230729013535.1070024-1-seanjc@google.com>
+ <20230729013535.1070024-12-seanjc@google.com>
+From:   "Wang, Zhi A" <zhi.a.wang@intel.com>
+In-Reply-To: <20230729013535.1070024-12-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR3P281CA0115.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a3::10) To DM4PR11MB5549.namprd11.prod.outlook.com
+ (2603:10b6:5:388::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5549:EE_|SJ0PR11MB6695:EE_
+X-MS-Office365-Filtering-Correlation-Id: b97d1065-6d8b-4104-25d4-08db92830543
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iksA+hMH1CZfOk7HYl5VWYQ8Tkm+p8AxZ+Q+5GJwEPCpVPI9wAC7pSO/+VfZx+RaLHOdbha4qavaWuY+bRonZGqaJsiCPSthV6XdL1PBjMLAUy1EiDsHS6WgEPUcttU4Ea0wloF2Yfz9ZmR6B09uBKkkj/AV5GzXIYiNyFbt8crIFPvG+w05+JaZskh4psofm0A3CPWwFtwvJyh4HxoEkzp0pLlcXwj8uJbYYJr67o+2hoP/UVXGJkV8Trr+PxRnsLx/nAhnk1Vk/5yCbcyk8HdrDQuHgoqYUrdjSod2PgDOH7zfE1Ldpw/+H/Y+CAuX77UiU+RlnJm+iYIVVhFD7XZrFtViX0xeNYLAnOCs9nQtQLkgR8pKRADxcBT+YMi0k3OXouyitk/OKlDIKqrBXrOmbEJG582X8Y6x4RgAWb0Jqjl256gmZHUAoSQzGxsENt7JjsZt8ILfNHuKPVPiI/2GBqr8DxD8BQHMR85Pt7VAViRTi22BBPAkA+yBG4M6hNGMsGvpjR9ABjpTvJC8oWqKTiY8ukKtf2q7tWV5/HFxSu7a52tm8mSg1kWSQcNJymW45kbu9ZcF73KhcGD11UqZ1YDUMCji49nfH7P6GVesh8sXcB6+GDUqAjWDbakhz75HEv1kax+1aR0d9xVATw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5549.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(366004)(396003)(346002)(136003)(451199021)(38100700002)(82960400001)(31696002)(86362001)(36756003)(6512007)(478600001)(6666004)(6486002)(2616005)(186003)(26005)(53546011)(8676002)(8936002)(6506007)(5660300002)(66946007)(66556008)(66476007)(110136005)(31686004)(54906003)(4326008)(316002)(41300700001)(2906002)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MjgwV3YxKy91NnhheXZUZHQrSU9GdTlBaFdiNnFjYmVUUnJHZXN2N2ZSWTdr?=
+ =?utf-8?B?QnB3dWZ5MXYyWHcvTmh4Y2FHN2tXSFludDZQQUxjcVVkZytEdHZxZ3hWbjVP?=
+ =?utf-8?B?ZnhZSkZ6RVNSajVBYVVmYkxwOHlwelRFdU5vNTJYK2M0d3ZMZXlWUFZMUlNw?=
+ =?utf-8?B?VHdVSDlPVXA3K1k4Zi9QL0wyVFB6TFhRQUQwSjlMZGgyRDJFazNDK3FzK2xn?=
+ =?utf-8?B?MVh1cXhYSk04L09qZWZDRVd5OTBxbVE3N2NMMCtNYThQVlR2aElCRUxtZ1J3?=
+ =?utf-8?B?M1h3aU5sVkVlREdsL1E0cHE1UDFiemhSeUYxN2JuTTl4TTV5MzNtQUs2aXp5?=
+ =?utf-8?B?bXkxVVNoMHBHZHdlNnpSR3V2dGZzb3pJUmJ1d3diaUh6MnlFSVNubHRXMUhp?=
+ =?utf-8?B?NUdwKzQwME9zblhReVQxVFFDbklvV3VBSlhLemR0MTk5OFBHMXZvaE5pcDdM?=
+ =?utf-8?B?OUlERllPb0E0SGxxWExtaHNIZlBiOHZQUmV3Q1JUOVVVNlRGVFo5eDRkT2JQ?=
+ =?utf-8?B?R0E5Y2crbG9MNVBORC82OXFxTGtOOWRqVUk1N2JJZ09sVFZFdlkvWTJWd3F0?=
+ =?utf-8?B?S0pjMVQ4Y251ejBOSnhpYXNLOElQbXF3dVVFT2RmeGc0MEFXOFkwVDdJcWNR?=
+ =?utf-8?B?UkxaTVF1ejZYR1kzUlN3QmJ1RXY2WFNtbE5UNTFvWS9iVE9TYVZpS1JVb3pv?=
+ =?utf-8?B?NE1RbWJkd1Q4bGYxbUFTclpzQ2taeHpqa2pLTmFVUTNnZ1VDSS9vYlc2V2VE?=
+ =?utf-8?B?VWNFTE9iM0oxZGZRNVc3TGVmcExtdldxTUp0emVYRTlYZFNIL3g1VVpReGpp?=
+ =?utf-8?B?LzlvYzlCUnd6U3FuN0hsQjY0b3FiODZzSkJOeGEwZkhjc1JTcVhUazRUZ3I0?=
+ =?utf-8?B?WGxvUVRPOXp3b2M4NzVDcHk1UVQ3aytpWFhicVY4MlMvVzRqdDVkaHJ0UE41?=
+ =?utf-8?B?UWQzaHh3bm5Fa2NpUUdRMkEwZ3Q5VXlmU0RaclAxSzRVUmp5eEZXcVFrdTR6?=
+ =?utf-8?B?ZzBSTFM4SEFVZkorc2pGeG8xQU5LZHFGRGxGMGFPYjlYODNPbkdBSlU0eU1m?=
+ =?utf-8?B?aGQwY1NuZndEUzNQVjRrWVJsMUpPNVNrcFBCUjBiZk00V3Z6cGpRZFRVdDhh?=
+ =?utf-8?B?WHgvNUlzQ3MyeExEQnVwVGlEbHBGVnFJRVZSWnBBa1RWR0VwYmx6OUNEWDFH?=
+ =?utf-8?B?T0pJd0JmUTNROXYxQkw1UFpJZ1dpd3dHZU9vczBWalE5cTVZK0dhWnJlaU40?=
+ =?utf-8?B?bXdiYXlWVFlORFk5bzFXUjljNXlJUGY0akV5cEU3cWV4TVpGcHEyRWhjcTVq?=
+ =?utf-8?B?RmwvUFR3bUIvTUZiaVR2eW1FQlRUL01VNkRpQnpSVElBVEl0Z29ZbzRrcXdi?=
+ =?utf-8?B?SXZLbm9SZzF3WlVrVFc4VzkvOFNybmZMWlI2eDl5WnZDQ21aOHd2VWlUcHJG?=
+ =?utf-8?B?U3Ayay9RY3BzRVRlQUFhbUZMNjN6bnRQZUxRTDc4cVpYVzgwb1c0T0pUQnRs?=
+ =?utf-8?B?VHEwM1A4VlE4emRpalFvK2V0aDVlMFUwNHg2RzRUMkVIYzNxa08yaU9xRW9t?=
+ =?utf-8?B?Zzl5Y0tTQjZTQkR3M2w2YkFZU09TcVp4aitMVitiWUxWMjhzN0ZVN1BJTXMr?=
+ =?utf-8?B?MlFHQkllOXJRTHA2UGZQYy8zT215WDVDTFlPT0dYTVhubE55eUJKUHF6dFov?=
+ =?utf-8?B?T3lXVFFmUzZMcnhZY2NKaEV0enEvdlJ6cTg4K3VzcG02azZXV2V6encwNnM1?=
+ =?utf-8?B?SWNoQ2YvOVl1MmphMDZWdEJHbTNjVlpXWTVjM2tWNU5yMUpmMmcvdll0WG01?=
+ =?utf-8?B?eEZ5cDk0SHFObTBkeUw3dFlrUEFINVNFbGJpaVNCazJGeXpiVG15VWlZT3Fn?=
+ =?utf-8?B?MmFPZFR3OVpJcStxU1hwRExNSWo4UlNpZTBwV2p2VnpVeGozcEdZbzZwei9r?=
+ =?utf-8?B?N2NqcVpwcDJjSGY2ZDFmSDNjRlEzTE5vcUUzT09PNGU5eGdXVmUvaitxbVZL?=
+ =?utf-8?B?c3h2eUs5bjJHMEFvTk1IRFpzSWtYbXJKNTk0N2hhdE8xVDA4enY0UHJQckRl?=
+ =?utf-8?B?WW5IcG1FMUl3MGtsWDVGSTg1MVZwRmpONzFwYlZOblA1bld4d2ZGL00wU1VV?=
+ =?utf-8?Q?5uZwNrpwo0L1df+AJodZZFrfv?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b97d1065-6d8b-4104-25d4-08db92830543
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5549.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 11:32:43.2020
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3xAtVU2o3fuyvqmLAQ3Nd/VWXNpYEv0Gzm68RU2YkFBvX3mX3psRzxcHNqSBEbKWdnGIS6jPJfFYYVHKlhlfpg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB6695
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
-
-FYI, the error/warning still remains.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-commit: b87d6d7fa405e23478f1e1dff6d66b5a533a5433 iommu/ipmmu-vmsa: Clean up bus_set_iommu()
-date:   11 months ago
-config: s390-randconfig-r015-20230731 (https://download.01.org/0day-ci/archive/20230801/202308011923.SJDDG6oN-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20230801/202308011923.SJDDG6oN-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308011923.SJDDG6oN-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/iommu/ipmmu-vmsa.c:11:
-   In file included from include/linux/dma-mapping.h:10:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:75:
-   include/asm-generic/io.h:547:31: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     547 |         val = __raw_readb(PCI_IOBASE + addr);
-         |                           ~~~~~~~~~~ ^
-   include/asm-generic/io.h:560:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     560 |         val = __le16_to_cpu((__le16 __force)__raw_readw(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:37:59: note: expanded from macro '__le16_to_cpu'
-      37 | #define __le16_to_cpu(x) __swab16((__force __u16)(__le16)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:102:54: note: expanded from macro '__swab16'
-     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-         |                                                      ^
-   In file included from drivers/iommu/ipmmu-vmsa.c:11:
-   In file included from include/linux/dma-mapping.h:10:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:75:
-   include/asm-generic/io.h:573:61: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     573 |         val = __le32_to_cpu((__le32 __force)__raw_readl(PCI_IOBASE + addr));
-         |                                                         ~~~~~~~~~~ ^
-   include/uapi/linux/byteorder/big_endian.h:35:59: note: expanded from macro '__le32_to_cpu'
-      35 | #define __le32_to_cpu(x) __swab32((__force __u32)(__le32)(x))
-         |                                                           ^
-   include/uapi/linux/swab.h:115:54: note: expanded from macro '__swab32'
-     115 | #define __swab32(x) (__u32)__builtin_bswap32((__u32)(x))
-         |                                                      ^
-   In file included from drivers/iommu/ipmmu-vmsa.c:11:
-   In file included from include/linux/dma-mapping.h:10:
-   In file included from include/linux/scatterlist.h:9:
-   In file included from arch/s390/include/asm/io.h:75:
-   include/asm-generic/io.h:584:33: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     584 |         __raw_writeb(value, PCI_IOBASE + addr);
-         |                             ~~~~~~~~~~ ^
-   include/asm-generic/io.h:594:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     594 |         __raw_writew((u16 __force)cpu_to_le16(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:604:59: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     604 |         __raw_writel((u32 __force)cpu_to_le32(value), PCI_IOBASE + addr);
-         |                                                       ~~~~~~~~~~ ^
-   include/asm-generic/io.h:692:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     692 |         readsb(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:700:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     700 |         readsw(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:708:20: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     708 |         readsl(PCI_IOBASE + addr, buffer, count);
-         |                ~~~~~~~~~~ ^
-   include/asm-generic/io.h:717:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     717 |         writesb(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:726:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     726 |         writesw(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
-   include/asm-generic/io.h:735:21: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-     735 |         writesl(PCI_IOBASE + addr, buffer, count);
-         |                 ~~~~~~~~~~ ^
->> drivers/iommu/ipmmu-vmsa.c:946:34: warning: unused variable 'ipmmu_of_ids' [-Wunused-const-variable]
-     946 | static const struct of_device_id ipmmu_of_ids[] = {
-         |                                  ^
-   13 warnings generated.
-
-
-vim +/ipmmu_of_ids +946 drivers/iommu/ipmmu-vmsa.c
-
-7a62ced8ebd0e1 Yoshihiro Shimoda       2021-09-07  945  
-33f3ac9b511612 Magnus Damm             2017-10-16 @946  static const struct of_device_id ipmmu_of_ids[] = {
-33f3ac9b511612 Magnus Damm             2017-10-16  947  	{
-33f3ac9b511612 Magnus Damm             2017-10-16  948  		.compatible = "renesas,ipmmu-vmsa",
-33f3ac9b511612 Magnus Damm             2017-10-16  949  		.data = &ipmmu_features_default,
-60fb0083c9d43b Fabrizio Castro         2018-08-23  950  	}, {
-60fb0083c9d43b Fabrizio Castro         2018-08-23  951  		.compatible = "renesas,ipmmu-r8a774a1",
-60fb0083c9d43b Fabrizio Castro         2018-08-23  952  		.data = &ipmmu_features_rcar_gen3,
-757f26a3a9ec2c Biju Das                2019-09-27  953  	}, {
-757f26a3a9ec2c Biju Das                2019-09-27  954  		.compatible = "renesas,ipmmu-r8a774b1",
-757f26a3a9ec2c Biju Das                2019-09-27  955  		.data = &ipmmu_features_rcar_gen3,
-b6d39cd82241bf Fabrizio Castro         2018-12-13  956  	}, {
-b6d39cd82241bf Fabrizio Castro         2018-12-13  957  		.compatible = "renesas,ipmmu-r8a774c0",
-b6d39cd82241bf Fabrizio Castro         2018-12-13  958  		.data = &ipmmu_features_rcar_gen3,
-4b2aa7a6f9b793 Marian-Cristian Rotariu 2020-07-14  959  	}, {
-4b2aa7a6f9b793 Marian-Cristian Rotariu 2020-07-14  960  		.compatible = "renesas,ipmmu-r8a774e1",
-4b2aa7a6f9b793 Marian-Cristian Rotariu 2020-07-14  961  		.data = &ipmmu_features_rcar_gen3,
-58b8e8bf409236 Magnus Damm             2017-10-16  962  	}, {
-58b8e8bf409236 Magnus Damm             2017-10-16  963  		.compatible = "renesas,ipmmu-r8a7795",
-0b8ac1409641e1 Magnus Damm             2018-06-14  964  		.data = &ipmmu_features_rcar_gen3,
-0b8ac1409641e1 Magnus Damm             2018-06-14  965  	}, {
-0b8ac1409641e1 Magnus Damm             2018-06-14  966  		.compatible = "renesas,ipmmu-r8a7796",
-0b8ac1409641e1 Magnus Damm             2018-06-14  967  		.data = &ipmmu_features_rcar_gen3,
-17fe1618163980 Yoshihiro Shimoda       2020-06-11  968  	}, {
-17fe1618163980 Yoshihiro Shimoda       2020-06-11  969  		.compatible = "renesas,ipmmu-r8a77961",
-17fe1618163980 Yoshihiro Shimoda       2020-06-11  970  		.data = &ipmmu_features_rcar_gen3,
-98dbffd39a6513 Jacopo Mondi            2018-06-14  971  	}, {
-98dbffd39a6513 Jacopo Mondi            2018-06-14  972  		.compatible = "renesas,ipmmu-r8a77965",
-98dbffd39a6513 Jacopo Mondi            2018-06-14  973  		.data = &ipmmu_features_rcar_gen3,
-3701c123e1c13c Simon Horman            2018-06-14  974  	}, {
-3701c123e1c13c Simon Horman            2018-06-14  975  		.compatible = "renesas,ipmmu-r8a77970",
-3701c123e1c13c Simon Horman            2018-06-14  976  		.data = &ipmmu_features_rcar_gen3,
-1cdeb52e5c245b Nikita Yushchenko       2021-09-23  977  	}, {
-1cdeb52e5c245b Nikita Yushchenko       2021-09-23  978  		.compatible = "renesas,ipmmu-r8a77980",
-1cdeb52e5c245b Nikita Yushchenko       2021-09-23  979  		.data = &ipmmu_features_rcar_gen3,
-b0c32912150565 Hai Nguyen Pham         2018-10-17  980  	}, {
-b0c32912150565 Hai Nguyen Pham         2018-10-17  981  		.compatible = "renesas,ipmmu-r8a77990",
-b0c32912150565 Hai Nguyen Pham         2018-10-17  982  		.data = &ipmmu_features_rcar_gen3,
-3701c123e1c13c Simon Horman            2018-06-14  983  	}, {
-3701c123e1c13c Simon Horman            2018-06-14  984  		.compatible = "renesas,ipmmu-r8a77995",
-3701c123e1c13c Simon Horman            2018-06-14  985  		.data = &ipmmu_features_rcar_gen3,
-7a62ced8ebd0e1 Yoshihiro Shimoda       2021-09-07  986  	}, {
-7a62ced8ebd0e1 Yoshihiro Shimoda       2021-09-07  987  		.compatible = "renesas,ipmmu-r8a779a0",
-ae684caf465b7d Yoshihiro Shimoda       2022-02-08  988  		.data = &ipmmu_features_rcar_gen4,
-ae684caf465b7d Yoshihiro Shimoda       2022-02-08  989  	}, {
-9f7d09fe23a011 Yoshihiro Shimoda       2022-06-17  990  		.compatible = "renesas,rcar-gen4-ipmmu-vmsa",
-ae684caf465b7d Yoshihiro Shimoda       2022-02-08  991  		.data = &ipmmu_features_rcar_gen4,
-33f3ac9b511612 Magnus Damm             2017-10-16  992  	}, {
-33f3ac9b511612 Magnus Damm             2017-10-16  993  		/* Terminator */
-33f3ac9b511612 Magnus Damm             2017-10-16  994  	},
-33f3ac9b511612 Magnus Damm             2017-10-16  995  };
-33f3ac9b511612 Magnus Damm             2017-10-16  996  
-
-:::::: The code at line 946 was first introduced by commit
-:::::: 33f3ac9b511612153bae1d328b0c84c0367cd08d iommu/ipmmu-vmsa: Introduce features, break out alias
-
-:::::: TO: Magnus Damm <damm+renesas@opensource.se>
-:::::: CC: Alex Williamson <alex.williamson@redhat.com>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+On 7/29/2023 4:35 AM, Sean Christopherson wrote:
+> Use vgpu_lock instead of KVM's mmu_lock to protect accesses to the hash
+> table used to track which gfns are write-protected when shadowing the
+> guest's GTT, and hoist the acquisition of vgpu_lock from
+> intel_vgpu_page_track_handler() out to its sole caller,
+> kvmgt_page_track_write().
+> 
+> This fixes a bug where kvmgt_page_track_write(), which doesn't hold
+> kvm->mmu_lock, could race with intel_gvt_page_track_remove() and trigger
+> a use-after-free.
+> 
+> Fixing kvmgt_page_track_write() by taking kvm->mmu_lock is not an option
+> as mmu_lock is a r/w spinlock, and intel_vgpu_page_track_handler() might
+> sleep when acquiring vgpu->cache_lock deep down the callstack:
+> 
+>    intel_vgpu_page_track_handler()
+>    |
+>    |->  page_track->handler / ppgtt_write_protection_handler()
+>         |
+>         |-> ppgtt_handle_guest_write_page_table_bytes()
+>             |
+>             |->  ppgtt_handle_guest_write_page_table()
+>                  |
+>                  |-> ppgtt_handle_guest_entry_removal()
+>                      |
+>                      |-> ppgtt_invalidate_pte()
+>                          |
+>                          |-> intel_gvt_dma_unmap_guest_page()
+>                              |
+>                              |-> mutex_lock(&vgpu->cache_lock);
+> 
+> Reviewed-by: Yan Zhao <yan.y.zhao@intel.com>
+> Tested-by: Yongwei Ma <yongwei.ma@intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   drivers/gpu/drm/i915/gvt/kvmgt.c      | 55 +++++++++++++++------------
+>   drivers/gpu/drm/i915/gvt/page_track.c | 10 +----
+>   2 files changed, 33 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
+> index 6f52886c4051..034be0655daa 100644
+> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
+> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+> @@ -352,6 +352,8 @@ __kvmgt_protect_table_find(struct intel_vgpu *info, gfn_t gfn)
+>   {
+>   	struct kvmgt_pgfn *p, *res = NULL;
+>   
+> +	lockdep_assert_held(&info->vgpu_lock);
+> +
+>   	hash_for_each_possible(info->ptable, p, hnode, gfn) {
+>   		if (gfn == p->gfn) {
+>   			res = p;
+> @@ -1553,6 +1555,9 @@ int intel_gvt_page_track_add(struct intel_vgpu *info, u64 gfn)
+>   	if (!test_bit(INTEL_VGPU_STATUS_ATTACHED, info->status))
+>   		return -ESRCH;
+>   
+> +	if (kvmgt_gfn_is_write_protected(info, gfn))
+> +		return 0;
+> +
+>   	idx = srcu_read_lock(&kvm->srcu);
+>   	slot = gfn_to_memslot(kvm, gfn);
+>   	if (!slot) {
+> @@ -1561,16 +1566,12 @@ int intel_gvt_page_track_add(struct intel_vgpu *info, u64 gfn)
+>   	}
+>   
+>   	write_lock(&kvm->mmu_lock);
+> -
+> -	if (kvmgt_gfn_is_write_protected(info, gfn))
+> -		goto out;
+> -
+>   	kvm_slot_page_track_add_page(kvm, slot, gfn, KVM_PAGE_TRACK_WRITE);
+> +	write_unlock(&kvm->mmu_lock);
+> +
+> +	srcu_read_unlock(&kvm->srcu, idx);
+> +
+>   	kvmgt_protect_table_add(info, gfn);
+> -
+> -out:
+> -	write_unlock(&kvm->mmu_lock);
+> -	srcu_read_unlock(&kvm->srcu, idx);
+>   	return 0;
+>   }
+>   
+> @@ -1583,24 +1584,22 @@ int intel_gvt_page_track_remove(struct intel_vgpu *info, u64 gfn)
+>   	if (!test_bit(INTEL_VGPU_STATUS_ATTACHED, info->status))
+>   		return -ESRCH;
+>   
+> -	idx = srcu_read_lock(&kvm->srcu);
+> -	slot = gfn_to_memslot(kvm, gfn);
+> -	if (!slot) {
+> -		srcu_read_unlock(&kvm->srcu, idx);
+> -		return -EINVAL;
+> -	}
+> -
+> -	write_lock(&kvm->mmu_lock);
+> -
+>   	if (!kvmgt_gfn_is_write_protected(info, gfn))
+> -		goto out;
+> +		return 0;
+>   
+> +	idx = srcu_read_lock(&kvm->srcu);
+> +	slot = gfn_to_memslot(kvm, gfn);
+> +	if (!slot) {
+> +		srcu_read_unlock(&kvm->srcu, idx);
+> +		return -EINVAL;
+> +	}
+> +
+> +	write_lock(&kvm->mmu_lock);
+>   	kvm_slot_page_track_remove_page(kvm, slot, gfn, KVM_PAGE_TRACK_WRITE);
+> +	write_unlock(&kvm->mmu_lock);
+> +	srcu_read_unlock(&kvm->srcu, idx);
+> +
+>   	kvmgt_protect_table_del(info, gfn);
+> -
+> -out:
+> -	write_unlock(&kvm->mmu_lock);
+> -	srcu_read_unlock(&kvm->srcu, idx);
+>   	return 0;
+>   }
+>   
+> @@ -1611,9 +1610,13 @@ static void kvmgt_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa,
+>   	struct intel_vgpu *info =
+>   		container_of(node, struct intel_vgpu, track_node);
+>   
+> +	mutex_lock(&info->vgpu_lock);
+> +
+>   	if (kvmgt_gfn_is_write_protected(info, gpa_to_gfn(gpa)))
+>   		intel_vgpu_page_track_handler(info, gpa,
+>   						     (void *)val, len);
+> +
+> +	mutex_unlock(&info->vgpu_lock);
+>   }
+>   
+>   static void kvmgt_page_track_flush_slot(struct kvm *kvm,
+> @@ -1625,16 +1628,20 @@ static void kvmgt_page_track_flush_slot(struct kvm *kvm,
+>   	struct intel_vgpu *info =
+>   		container_of(node, struct intel_vgpu, track_node);
+>   
+> -	write_lock(&kvm->mmu_lock);
+> +	mutex_lock(&info->vgpu_lock);
+> +
+>   	for (i = 0; i < slot->npages; i++) {
+>   		gfn = slot->base_gfn + i;
+>   		if (kvmgt_gfn_is_write_protected(info, gfn)) {
+> +			write_lock(&kvm->mmu_lock);
+>   			kvm_slot_page_track_remove_page(kvm, slot, gfn,
+>   						KVM_PAGE_TRACK_WRITE);
+> +			write_unlock(&kvm->mmu_lock);
+> +
+>   			kvmgt_protect_table_del(info, gfn);
+>   		}
+>   	}
+> -	write_unlock(&kvm->mmu_lock);
+> +	mutex_unlock(&info->vgpu_lock);
+>   }
+>   
+>   void intel_vgpu_detach_regions(struct intel_vgpu *vgpu)
+> diff --git a/drivers/gpu/drm/i915/gvt/page_track.c b/drivers/gpu/drm/i915/gvt/page_track.c
+> index df34e73cba41..60a65435556d 100644
+> --- a/drivers/gpu/drm/i915/gvt/page_track.c
+> +++ b/drivers/gpu/drm/i915/gvt/page_track.c
+> @@ -162,13 +162,9 @@ int intel_vgpu_page_track_handler(struct intel_vgpu *vgpu, u64 gpa,
+>   	struct intel_vgpu_page_track *page_track;
+>   	int ret = 0;
+>   
+> -	mutex_lock(&vgpu->vgpu_lock);
+> -
+>   	page_track = intel_vgpu_find_page_track(vgpu, gpa >> PAGE_SHIFT);
+> -	if (!page_track) {
+> -		ret = -ENXIO;
+> -		goto out;
+> -	}
+> +	if (!page_track)
+> +		return -ENXIO;
+>   
+>   	if (unlikely(vgpu->failsafe)) {
+>   		/* Remove write protection to prevent furture traps. */
+> @@ -179,7 +175,5 @@ int intel_vgpu_page_track_handler(struct intel_vgpu *vgpu, u64 gpa,
+>   			gvt_err("guest page write error, gpa %llx\n", gpa);
+>   	}
+>   
+> -out:
+> -	mutex_unlock(&vgpu->vgpu_lock);
+>   	return ret;
+>   }
+Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
