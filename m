@@ -2,81 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 820DC76BDFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C909D76BDFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbjHATlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:41:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        id S232589AbjHATlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232025AbjHATlr (ORCPT
+        with ESMTP id S232579AbjHATls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:41:47 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BC32728;
+        Tue, 1 Aug 2023 15:41:48 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D3C1FF3;
         Tue,  1 Aug 2023 12:41:36 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371JEnvf009475;
-        Tue, 1 Aug 2023 19:41:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=IxJqKzdA+lN2GY16Pxzo+j0OHpij2fgQVywHiSBsxyw=;
- b=FWgP3hyZh5km+ZfGYLJFO0RV954/UmAJfeXh1zj+AvxClGit4y1UlZZGU53SemP2crYi
- yNtvyt4lCVb8UnWe4bmxodAIm3N19LigG/6smSzu1QEEbIjeYg1UewLChxi/0vSw9pPi
- SoKvrh43GOG9GPWxzAtA3ajvsibuN99MFsO4Zx2KF6kas8nuPeB3nu7u18TUJufUieui
- ixCsGjEi4MexSlRno1V7NdF+WCsHsnPIwkYP/USnv6SOwX0MaTLc6UupK9o/rs37cldh
- WYdJS+en3Xwok38AQjwuCBMwIvb5SUmZQlqSJL/ViA2ZX7+PGDecawO1jQmXm85ZYLPX rg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6gs7k0s3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 19:41:24 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 371JfNDt000576
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 1 Aug 2023 19:41:23 GMT
-Received: from [10.110.76.246] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 1 Aug
- 2023 12:41:23 -0700
-Message-ID: <590a5f4e-59a6-a449-5174-e4e7f7109ecf@quicinc.com>
-Date:   Tue, 1 Aug 2023 12:41:22 -0700
+X-QQ-mid: bizesmtp63t1690918887tcphyv4r
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 02 Aug 2023 03:41:26 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: nMuci6qhceNBRU+sDADE7/JtUrCHaoVrlifjCBDUL/jBJl0rtLP+oHvUfnRqC
+        i/gsuROO441HGXQZcSyxvg9IBfxJFwT38fc4uyMi/CVsu2P9+jh7eLJBBuy2sP7lGj1VqmI
+        5CBpoaaHzYnPvkYWGwrTm4z7ZiNH9QrByWSGmgedwfHdVvr8pCeHavaYZkDE8tSeM5DAwEY
+        X1hC/rz2f/5sGi5i6YHLJ6SWzKTURFFCUUuHomAiYdQv1LPiBRUczYmMnc6H2Y+BZhHUFLc
+        0i5jUYAvmZZ2Bn3jkKOxqCXE5GvhXQ5AGrBE2rBJmYOsuipqId1rgNaqa28M0P21hengeK/
+        oOc3xhr97IrWEaFRoM+5pFdtlCkDCO97FhtrfcQpzFDzYtFzogDvANJu3Ss3MSkdGKp5CxK
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 16416427454383325419
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, w@1wt.eu,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v4 05/12] selftests/nolibc: add XARCH and ARCH mapping support
+Date:   Wed,  2 Aug 2023 03:41:26 +0800
+Message-Id: <67396957cee44f6002d5a0dd74fbaeaa50d7d803.1690916314.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690916314.git.falcon@tinylab.org>
+References: <cover.1690916314.git.falcon@tinylab.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH V2] usb: dwc3: gadget: Let pm runtime get/put paired
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Surong Pang <surong.pang@unisoc.com>, <Thinh.Nguyen@synopsys.com>,
-        <felipe.balbi@linux.intel.com>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <rogerq@kernel.org>,
-        <Orson.Zhai@unisoc.com>, <Chunyan.Zhang@unisoc.com>,
-        <Zhiyong.liu@unisoc.com>, <Surong.Pang@gmail.com>
-References: <20230801011548.30232-1-surong.pang@unisoc.com>
- <e8d9652f-3b81-319a-7ca6-9b656eac6f40@quicinc.com>
- <2023080128-bubble-frosty-92c8@gregkh>
-From:   Elson Serrao <quic_eserrao@quicinc.com>
-In-Reply-To: <2023080128-bubble-frosty-92c8@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: XY_fWXXy-r66omq8J5R91tUgV5tjW7ox
-X-Proofpoint-ORIG-GUID: XY_fWXXy-r66omq8J5R91tUgV5tjW7ox
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_16,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- adultscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
- mlxlogscore=518 spamscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308010177
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,55 +54,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Most of the CPU architectures have different variants, but kernel
+usually only accepts parts of them via the ARCH variable, the others
+should be customized via kernel config files.
 
+To simplify testing, a new XARCH variable is added to extend the
+kernel's ARCH with a few variants of the same architecture, and it is
+used to customize variant specific variables, at last XARCH is converted
+to the kernel's ARCH:
 
-On 7/31/2023 9:43 PM, Greg KH wrote:
-> On Mon, Jul 31, 2023 at 06:33:04PM -0700, Elson Serrao wrote:
->>
->>
->> On 7/31/2023 6:15 PM, Surong Pang wrote:
->>> Pm_runtime_get is called when setting pending_events to true.
->>> Pm_runtime_put is needed for pairing with pm_runtime_get.
->>>
->>> Fixes: fc8bb91bc83e ("usb: dwc3: implement runtime PM")
->>> Signed-off-by: Surong Pang <surong.pang@unisoc.com>
->>>
->>> ---
->>> V2: add Fixes tag, fix Fixes tag
->>> ---
->>>    drivers/usb/dwc3/gadget.c | 1 +
->>>    1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
->>> index 5fd067151fbf..9c835c5f9928 100644
->>> --- a/drivers/usb/dwc3/gadget.c
->>> +++ b/drivers/usb/dwc3/gadget.c
->>> @@ -4720,5 +4720,6 @@ void dwc3_gadget_process_pending_events(struct dwc3 *dwc)
->>>    		dwc3_interrupt(dwc->irq_gadget, dwc->ev_buf);
->>>    		dwc->pending_events = false;
->>>    		enable_irq(dwc->irq_gadget);
->>> +		pm_runtime_put(dwc->dev);
->>>    	}
->>>    }
->>
->> I am already handling this change as part of below series. Will be uploading
->> a separate patch based on the feedback from Roger.
->>
->> https://lore.kernel.org/all/be57511d-2005-a1f5-d5a5-809e71029aec@quicinc.com/
-> 
-> But this should be fixed now, and properly backported to stable kernels.
-> There's no need to wait for a different patch series if this one is
-> correct, right?
-> 
-Hi Greg
+  e.g. make run XARCH=<one of the supported variants>
+                | \
+                |  `-> variant specific variables:
+                |      IMAGE, DEFCONFIG, QEMU_ARCH, QEMU_ARGS, CFLAGS ...
+                \
+                 `---> kernel's ARCH
 
-I have separated this change from the series and have uploaded below 
-change as an independent fix. Based on the earlier feedback and 
-discussion, few additional modifications are needed to properly handle 
-pending events
-https://lore.kernel.org/all/20230801192658.19275-1-quic_eserrao@quicinc.com/
+XARCH and ARCH are carefully mapped to allow users to pass architecture
+variants via XARCH or pass architecture via ARCH from cmdline.
 
-Thanks
-Elson
+PowerPC is the first user and also a very good reference architecture of
+this mapping, it has variants with different combinations of
+32-bit/64-bit and bit endian/little endian.
 
+To use this mapping, the other architectures can refer to PowerPC, If
+the target architecture only has one variant, XARCH is simply an alias
+of ARCH, no additional mapping required.
+
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/20230702171715.GD16233@1wt.eu/
+Link: https://lore.kernel.org/lkml/20230730061801.GA7690@1wt.eu/
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 46 ++++++++++++++++++-------
+ 1 file changed, 34 insertions(+), 12 deletions(-)
+
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index fdc72ca75589..7902b86911a5 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -17,6 +17,27 @@ include $(srctree)/scripts/subarch.include
+ ARCH = $(SUBARCH)
+ endif
+ 
++# XARCH extends the kernel's ARCH with a few variants of the same
++# architecture that only differ by the configuration, the toolchain
++# and the Qemu program used. It is copied as-is into ARCH except for
++# a few specific values which are mapped like this:
++#
++#  XARCH        | ARCH      | config
++#  -------------|-----------|-------------------------
++#  ppc          | powerpc   | 32 bits
++#  ppc64        | powerpc   | 64 bits big endian
++#  ppc64le      | powerpc   | 64 bits little endian
++#
++# It is recommended to only use XARCH, though it does not harm if
++# ARCH is already set. For simplicity, ARCH is sufficient for all
++# architectures where both are equal.
++
++# configure default variants for target kernel supported architectures
++XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
++
++# map from user input variants to their kernel supported architectures
++ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
++
+ # kernel image names by architecture
+ IMAGE_i386       = arch/x86/boot/bzImage
+ IMAGE_x86_64     = arch/x86/boot/bzImage
+@@ -27,7 +48,7 @@ IMAGE_mips       = vmlinuz
+ IMAGE_riscv      = arch/riscv/boot/Image
+ IMAGE_s390       = arch/s390/boot/bzImage
+ IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
+-IMAGE            = $(IMAGE_$(ARCH))
++IMAGE            = $(IMAGE_$(XARCH))
+ IMAGE_NAME       = $(notdir $(IMAGE))
+ 
+ # default kernel configurations that appear to be usable
+@@ -40,7 +61,7 @@ DEFCONFIG_mips       = malta_defconfig
+ DEFCONFIG_riscv      = defconfig
+ DEFCONFIG_s390       = defconfig
+ DEFCONFIG_loongarch  = defconfig
+-DEFCONFIG            = $(DEFCONFIG_$(ARCH))
++DEFCONFIG            = $(DEFCONFIG_$(XARCH))
+ 
+ # optional tests to run (default = all)
+ TEST =
+@@ -55,7 +76,7 @@ QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
+ QEMU_ARCH_riscv      = riscv64
+ QEMU_ARCH_s390       = s390x
+ QEMU_ARCH_loongarch  = loongarch64
+-QEMU_ARCH            = $(QEMU_ARCH_$(ARCH))
++QEMU_ARCH            = $(QEMU_ARCH_$(XARCH))
+ 
+ # QEMU_ARGS : some arch-specific args to pass to qemu
+ QEMU_ARGS_i386       = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+@@ -67,7 +88,7 @@ QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+-QEMU_ARGS            = $(QEMU_ARGS_$(ARCH)) $(QEMU_ARGS_EXTRA)
++QEMU_ARGS            = $(QEMU_ARGS_$(XARCH)) $(QEMU_ARGS_EXTRA)
+ 
+ # OUTPUT is only set when run from the main makefile, otherwise
+ # it defaults to this nolibc directory.
+@@ -84,7 +105,7 @@ CFLAGS_mips = -EL
+ CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
+ CFLAGS  ?= -Os -fno-ident -fno-asynchronous-unwind-tables -std=c89 \
+ 		$(call cc-option,-fno-stack-protector) \
+-		$(CFLAGS_$(ARCH)) $(CFLAGS_STACKPROTECTOR)
++		$(CFLAGS_$(XARCH)) $(CFLAGS_STACKPROTECTOR)
+ LDFLAGS := -s
+ 
+ REPORT  ?= awk '/\[OK\][\r]*$$/{p++} /\[FAIL\][\r]*$$/{if (!f) printf("\n"); f++; print;} /\[SKIPPED\][\r]*$$/{s++} \
+@@ -99,24 +120,25 @@ help:
+ 	@echo "  sysroot      create the nolibc sysroot here (uses \$$ARCH)"
+ 	@echo "  nolibc-test  build the executable (uses \$$CC and \$$CROSS_COMPILE)"
+ 	@echo "  libc-test    build an executable using the compiler's default libc instead"
+-	@echo "  run-user     runs the executable under QEMU (uses \$$ARCH, \$$TEST)"
++	@echo "  run-user     runs the executable under QEMU (uses \$$XARCH, \$$TEST)"
+ 	@echo "  initramfs    prepare the initramfs with nolibc-test"
+-	@echo "  defconfig    create a fresh new default config (uses \$$ARCH)"
+-	@echo "  kernel       (re)build the kernel with the initramfs (uses \$$ARCH)"
+-	@echo "  run          runs the kernel in QEMU after building it (uses \$$ARCH, \$$TEST)"
+-	@echo "  rerun        runs a previously prebuilt kernel in QEMU (uses \$$ARCH, \$$TEST)"
++	@echo "  defconfig    create a fresh new default config (uses \$$XARCH)"
++	@echo "  kernel       (re)build the kernel with the initramfs (uses \$$XARCH)"
++	@echo "  run          runs the kernel in QEMU after building it (uses \$$XARCH, \$$TEST)"
++	@echo "  rerun        runs a previously prebuilt kernel in QEMU (uses \$$XARCH, \$$TEST)"
+ 	@echo "  clean        clean the sysroot, initramfs, build and output files"
+ 	@echo ""
+ 	@echo "The output file is \"run.out\". Test ranges may be passed using \$$TEST."
+ 	@echo ""
+ 	@echo "Currently using the following variables:"
+ 	@echo "  ARCH          = $(ARCH)"
++	@echo "  XARCH         = $(XARCH)"
+ 	@echo "  CROSS_COMPILE = $(CROSS_COMPILE)"
+ 	@echo "  CC            = $(CC)"
+ 	@echo "  OUTPUT        = $(OUTPUT)"
+ 	@echo "  TEST          = $(TEST)"
+-	@echo "  QEMU_ARCH     = $(if $(QEMU_ARCH),$(QEMU_ARCH),UNKNOWN_ARCH) [determined from \$$ARCH]"
+-	@echo "  IMAGE_NAME    = $(if $(IMAGE_NAME),$(IMAGE_NAME),UNKNOWN_ARCH) [determined from \$$ARCH]"
++	@echo "  QEMU_ARCH     = $(if $(QEMU_ARCH),$(QEMU_ARCH),UNKNOWN_ARCH) [determined from \$$XARCH]"
++	@echo "  IMAGE_NAME    = $(if $(IMAGE_NAME),$(IMAGE_NAME),UNKNOWN_ARCH) [determined from \$$XARCH]"
+ 	@echo ""
+ 
+ all: run
+-- 
+2.25.1
 
