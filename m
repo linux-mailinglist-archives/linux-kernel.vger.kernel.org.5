@@ -2,34 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A32EA76A6A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EECE76A6B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbjHACBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47362 "EHLO
+        id S232021AbjHACCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:02:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbjHACBQ (ORCPT
+        with ESMTP id S230122AbjHACCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:01:16 -0400
-Received: from out28-97.mail.aliyun.com (out28-97.mail.aliyun.com [115.124.28.97])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10842117
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:01:01 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08409528|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00368847-0.000301355-0.99601;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5DeSmo_1690855254;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5DeSmo_1690855254)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 10:00:56 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd/pm: Clean up errors in aldebaran_ppt.c
-Date:   Tue,  1 Aug 2023 02:00:52 +0000
-Message-Id: <20230801020052.4192-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        Mon, 31 Jul 2023 22:02:11 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5F84E19B4;
+        Mon, 31 Jul 2023 19:02:09 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.5.185])
+        by gateway (Coremail) with SMTP id _____8BxnuugZ8hkI8gNAA--.30325S3;
+        Tue, 01 Aug 2023 10:02:08 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.185])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHCOeZ8hkPHJDAA--.25753S2;
+        Tue, 01 Aug 2023 10:02:06 +0800 (CST)
+From:   Tianrui Zhao <zhaotianrui@loongson.cn>
+To:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn,
+        zhaotianrui@loongson.cn
+Subject: [PATCH v1 0/4] selftests: kvm: Add LoongArch support
+Date:   Tue,  1 Aug 2023 10:02:02 +0800
+Message-Id: <20230801020206.1957986-1-zhaotianrui@loongson.cn>
+X-Mailer: git-send-email 2.39.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxHCOeZ8hkPHJDAA--.25753S2
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
+        nUUI43ZEXa7xR_UUUUUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,69 +50,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+This patch series base on the Linux LoongArch KVM patch:
+Based-on: <20230720062813.4126751-1-zhaotianrui@loongson.cn>
 
-ERROR: that open brace { should be on the previous line
-ERROR: space required after that ',' (ctx:VxV)
-ERROR: spaces required around that '=' (ctx:VxW)
-ERROR: else should follow close brace '}'
+We add LoongArch support into KVM selftests and there are some KVM
+test cases we have passed:
+  kvm_create_max_vcpus
+  demand_paging_test
+  kvm_page_table_test
+  set_memory_region_test
+  memslot_modification_stress_test
+  memslot_perf_test
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+The test results:
+1..6
+selftests: kvm: kvm_create_max_vcpus
+  KVM_CAP_MAX_VCPU_ID: 256
+  KVM_CAP_MAX_VCPUS: 256
+  Testing creating 256 vCPUs, with IDs 0...255.
+  ok 1 selftests: kvm: kvm_create_max_vcpus
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-index ce50ef46e73f..8f26123ac703 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/aldebaran_ppt.c
-@@ -94,8 +94,7 @@
-  */
- #define SUPPORT_BAD_CHANNEL_INFO_MSG_VERSION 0x00443300
- 
--static const struct smu_temperature_range smu13_thermal_policy[] =
--{
-+static const struct smu_temperature_range smu13_thermal_policy[] = {
- 	{-273150,  99000, 99000, -273150, 99000, 99000, -273150, 99000, 99000},
- 	{ 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000},
- };
-@@ -196,7 +195,7 @@ static const struct cmn2asic_mapping aldebaran_feature_mask_map[SMU_FEATURE_COUN
- 	ALDEBARAN_FEA_MAP(SMU_FEATURE_FW_CTF_BIT, 				FEATURE_FW_CTF_BIT),
- 	ALDEBARAN_FEA_MAP(SMU_FEATURE_THERMAL_BIT, 				FEATURE_THERMAL_BIT),
- 	ALDEBARAN_FEA_MAP(SMU_FEATURE_OUT_OF_BAND_MONITOR_BIT, 	FEATURE_OUT_OF_BAND_MONITOR_BIT),
--	ALDEBARAN_FEA_MAP(SMU_FEATURE_XGMI_PER_LINK_PWR_DWN_BIT,FEATURE_XGMI_PER_LINK_PWR_DWN),
-+	ALDEBARAN_FEA_MAP(SMU_FEATURE_XGMI_PER_LINK_PWR_DWN_BIT, FEATURE_XGMI_PER_LINK_PWR_DWN),
- 	ALDEBARAN_FEA_MAP(SMU_FEATURE_DF_CSTATE_BIT, 			FEATURE_DF_CSTATE),
- };
- 
-@@ -580,7 +579,7 @@ static int aldebaran_get_smu_metrics_data(struct smu_context *smu,
- 					  MetricsMember_t member,
- 					  uint32_t *value)
- {
--	struct smu_table_context *smu_table= &smu->smu_table;
-+	struct smu_table_context *smu_table = &smu->smu_table;
- 	SmuMetrics_t *metrics = (SmuMetrics_t *)smu_table->metrics_table;
- 	int ret = 0;
- 
-@@ -1906,8 +1905,7 @@ static int aldebaran_mode1_reset(struct smu_context *smu)
- 	smu_cmn_get_smc_version(smu, NULL, &smu_version);
- 	if (smu_version < 0x00440700) {
- 		ret = smu_cmn_send_smc_msg(smu, SMU_MSG_Mode1Reset, NULL);
--	}
--	else {
-+	} else {
- 		/* fatal error triggered by ras, PMFW supports the flag
- 		   from 68.44.0 */
- 		if ((smu_version >= 0x00442c00) && ras &&
-@@ -2116,7 +2114,7 @@ static const struct pptable_funcs aldebaran_ppt_funcs = {
- 	.register_irq_handler = smu_v13_0_register_irq_handler,
- 	.set_azalia_d3_pme = smu_v13_0_set_azalia_d3_pme,
- 	.get_max_sustainable_clocks_by_dc = smu_v13_0_get_max_sustainable_clocks_by_dc,
--	.baco_is_support= aldebaran_is_baco_supported,
-+	.baco_is_support = aldebaran_is_baco_supported,
- 	.get_dpm_ultimate_freq = smu_v13_0_get_dpm_ultimate_freq,
- 	.set_soft_freq_limited_range = aldebaran_set_soft_freq_limited_range,
- 	.od_edit_dpm_table = aldebaran_usr_edit_dpm_table,
+selftests: kvm: demand_paging_test
+  Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+  guest physical test memory: [0xfbfffc000, 0xfffffc000)
+  Finished creating vCPUs and starting uffd threads
+  Started all vCPUs
+  All vCPU threads joined
+  Total guest execution time: 0.787727423s
+  Overall demand paging rate: 83196.291111 pgs/sec
+  ok 2 selftests: kvm: demand_paging_test
+
+selftests: kvm: kvm_page_table_test
+  Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+  Testing memory backing src type: anonymous
+  Testing memory backing src granularity: 0x4000
+  Testing memory size(aligned): 0x40000000
+  Guest physical test memory offset: 0xfbfffc000
+  Host  virtual  test memory offset: 0xffb011c000
+  Number of testing vCPUs: 1
+  Started all vCPUs successfully
+  KVM_CREATE_MAPPINGS: total execution time: -3.-672213074s
+  KVM_UPDATE_MAPPINGS: total execution time: -4.-381650744s
+  KVM_ADJUST_MAPPINGS: total execution time: -4.-434860241s
+  ok 3 selftests: kvm: kvm_page_table_test
+
+selftests: kvm: set_memory_region_test
+  Allowed number of memory slots: 256
+  Adding slots 0..255, each memory region with 2048K size
+  ok 4 selftests: kvm: set_memory_region_test
+
+selftests: kvm: memslot_modification_stress_test
+  Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+  guest physical test memory: [0xfbfffc000, 0xfffffc000)
+  Finished creating vCPUs
+  Started all vCPUs
+  All vCPU threads joined
+  ok 5 selftests: kvm: memslot_modification_stress_test
+
+selftests: kvm: memslot_perf_test
+  Testing map performance with 1 runs, 5 seconds each
+  Test took 0.003797735s for slot setup + 5.012294023s all iterations
+  Done 369 iterations, avg 0.013583452s each
+  Best runtime result was 0.013583452s per iteration (with 369 iterations)
+
+  Testing unmap performance with 1 runs, 5 seconds each
+  Test took 0.003841196s for slot setup + 5.001802893s all iterations
+  Done 341 iterations, avg 0.014668043s each
+  Best runtime result was 0.014668043s per iteration (with 341 iterations)
+
+  Testing unmap chunked performance with 1 runs, 5 seconds each
+  Test took 0.003784356s for slot setup + 5.000265398s all iterations
+  Done 7376 iterations, avg 0.000677910s each
+  Best runtime result was 0.000677910s per iteration (with 7376 iterations)
+
+  Testing move active area performance with 1 runs, 5 seconds each
+  Test took 0.003828075s for slot setup + 5.000021760s all iterations
+  Done 85449 iterations, avg 0.000058514s each
+  Best runtime result was 0.000058514s per iteration (with 85449 iterations)
+
+  Testing move inactive area performance with 1 runs, 5 seconds each
+  Test took 0.003809146s for slot setup + 5.000024149s all iterations
+  Done 181908 iterations, avg 0.000027486s each
+  Best runtime result was 0.000027486s per iteration (with 181908 iterations)
+
+  Testing RW performance with 1 runs, 5 seconds each
+  Test took 0.003780596s for slot setup + 5.001116175s all iterations
+  Done 391 iterations, avg 0.012790578s each
+  Best runtime result was 0.012790578s per iteration (with 391 iterations)
+  Best slot setup time for the whole test area was 0.003780596s
+  ok 6 selftests: kvm: memslot_perf_test
+
+changes for v1:
+1. Add kvm selftests header files for LoongArch.
+2. Add processor tests for LoongArch KVM.
+3. Add ucall tests for LoongArch KVM.
+4. Add LoongArch tests into makefile.
+
+Tianrui Zhao (4):
+  selftests: kvm: Add kvm selftests header files for LoongArch
+  selftests: kvm: Add processor tests for LoongArch KVM
+  selftests: kvm: Add ucall tests for LoongArch KVM
+  selftests: kvm: Add LoongArch tests into makefile
+
+ tools/testing/selftests/kvm/Makefile          |  11 +
+ .../selftests/kvm/include/kvm_util_base.h     |   5 +
+ .../kvm/include/loongarch/processor.h         |  28 ++
+ .../selftests/kvm/include/loongarch/sysreg.h  |  89 +++++
+ .../selftests/kvm/lib/loongarch/exception.S   |  27 ++
+ .../selftests/kvm/lib/loongarch/processor.c   | 367 ++++++++++++++++++
+ .../selftests/kvm/lib/loongarch/ucall.c       |  44 +++
+ 7 files changed, 571 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/include/loongarch/processor.h
+ create mode 100644 tools/testing/selftests/kvm/include/loongarch/sysreg.h
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/exception.S
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/processor.c
+ create mode 100644 tools/testing/selftests/kvm/lib/loongarch/ucall.c
+
 -- 
-2.17.1
+2.39.1
 
