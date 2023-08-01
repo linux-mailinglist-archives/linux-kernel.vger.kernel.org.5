@@ -2,121 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4723D76B98C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB74276B983
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbjHAQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        id S232039AbjHAQRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233848AbjHAQRx (ORCPT
+        with ESMTP id S231294AbjHAQRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:17:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551DA1B4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:17:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690906624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eXJy6R2O1N6NpbXl3Zkyt7SvhrIHr98fxs9gYSY7xq0=;
-        b=Arx6tDhS/cz3yb/tMxIux8LPuUlA0/OXeCn6116xw6AiAjnxT1CdOXnJK/7DASvrKAANFU
-        DB6Bmy/gkdhzv0Xo6yvKyfbypllK15BmJrmz5FJ4YfB2HC6qvrY8zBVv9ogWHYSJfR616O
-        nVa0EvQgoxYmTJrxntgamATrpInMiUE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-84-t4h2C_eWNjyAQAX3YZ1teg-1; Tue, 01 Aug 2023 12:17:03 -0400
-X-MC-Unique: t4h2C_eWNjyAQAX3YZ1teg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3178e3f46b1so1910960f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:17:02 -0700 (PDT)
+        Tue, 1 Aug 2023 12:17:16 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF801AA
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:17:14 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bcb15aa074so589557a34.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:17:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690906634; x=1691511434;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IluS0dN33fbcySvCi1VkJafmlujO6rxWmw3dx0Lv8F0=;
+        b=V0CKP1Jdw5SNvLd4IvWun4OMWggcyahW6Fy0lLkk6sGSij/cuH2cleoG/+wZtjykJm
+         Yv1HpcFskBeNvlhCzWMn86CZQtITl2igcjZGY35ryAMRDKsrMqeSlbAedIAmKhF7r1+B
+         k3pAmwAh2opaRbOA/qqLkULkeZq12ISQq4Ia9Xi52KhYg8Rt8bv8+URoLQV96B1gyXbh
+         6upqMGhBqBenB2YmwbATlnGxhmT/M3y60iSAD58HdTtzXmVo/hVIo0/n2Xidov6riQvo
+         5D9+v/yh6ObEgGrYhjMVTS+E+iiXP8HIBMaXaR8YGKPg7pM5lRdME6pHLLRTobymaa9m
+         4l7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690906622; x=1691511422;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eXJy6R2O1N6NpbXl3Zkyt7SvhrIHr98fxs9gYSY7xq0=;
-        b=l+PctGmTg/o2niCujB5kyTmyElSG8LE92MijpRzftuZiS4G1uZc2abWiXh+63samZa
-         IFg/Qlxrk5iVs3rA81N8Xnq0tM0rUyV96qSK5402fQcuoqgWhuEJ088xGI0XFgV8s94+
-         Mt/E27hgUARta9CrX9qd6CWeFlDvC3FgaVltfL7/EsDLKFekNLHUG4UhnlLeSLSyoaXY
-         eiBZNEPpff2pEEo0is53xc5Ejc9ALvSdEjTsgGmWDlRpspyGjfYhVXlDK0QWO/JAxM9d
-         EQmjgt/gjBrEWlHNGQzTz9frLP9e5u2GW1h6RKg8fULSO6cBdtMsShl2fyoJcfYIXoiz
-         F8ew==
-X-Gm-Message-State: ABy/qLaQxjDjmqhon/5lRjqWqwWO07rmufv0o3Udt4KDksaueiAXj92a
-        Tsf2OxqjytQMnO9lLugfIKt2YFmQJLAZJX6il4eUSOyIU0Vx9uka8KHEJbYC9/SCs+6NmwM684F
-        AfsLZ/zl5Ujno+Umegk2lCBhxuHmfRAUi
-X-Received: by 2002:adf:ef8b:0:b0:314:2ea7:af4a with SMTP id d11-20020adfef8b000000b003142ea7af4amr2822125wro.13.1690906621792;
-        Tue, 01 Aug 2023 09:17:01 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEGH0Ulw/x64O87fJEpYxoKABrDKtvZU+QbrtOdpDe0pNVnkFsl/Bu4qmZb7dXZ1ZmPNNOp/w==
-X-Received: by 2002:adf:ef8b:0:b0:314:2ea7:af4a with SMTP id d11-20020adfef8b000000b003142ea7af4amr2822111wro.13.1690906621380;
-        Tue, 01 Aug 2023 09:17:01 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c705:d100:871b:ec55:67d:5247? (p200300cbc705d100871bec55067d5247.dip0.t-ipconnect.de. [2003:cb:c705:d100:871b:ec55:67d:5247])
-        by smtp.gmail.com with ESMTPSA id s6-20020a5d6a86000000b003143add4396sm16471132wru.22.2023.08.01.09.17.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 09:17:00 -0700 (PDT)
-Message-ID: <b10d9d85-d8d6-2ee5-53f9-6b5d586b55fb@redhat.com>
-Date:   Tue, 1 Aug 2023 18:16:59 +0200
+        d=1e100.net; s=20221208; t=1690906634; x=1691511434;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IluS0dN33fbcySvCi1VkJafmlujO6rxWmw3dx0Lv8F0=;
+        b=ha3cVp4tI//jh9w1zA21DkvBO4pHWN9ayVoci6SM3MF9aV0wi2twui8Aj7dij5kwgV
+         UENT32XUpXYfmwVxE8Dm1BHXMM9srF4wD8Yvln1BqPAGxb5rAk2xvh/ojz0Ch3xisF0X
+         6/K0HnvrTkXZY2H3BFRqRiPQwDX/YUZCT5XleUkhqELf3Kpooabybs9zfvqe2gX5hC9y
+         Pwb/7OPnc/6Q7Js/BYbamfYNxmK2SLqxFRkWbTpmesmA4/ktqq7sXrIrK//xd7Ni3YRC
+         Tx1qISHtYocAke3uK1NcpVpz2VS5k9v+IdNc+4sKTsbqIubVGjUd/H2QMcGnjpo2Xtuh
+         ixRw==
+X-Gm-Message-State: ABy/qLb7KkOtSZFY5CWGUqCGX8ZQtWU+dwSbNTK9ImCZ8BJCC6x6T8H5
+        M+o6G+TCguG4bKVjDR1u2Zk=
+X-Google-Smtp-Source: APBJJlHi0OSFDBu0zCNP4lp/yVzVtEou4lj1Rv1dDNKXV63YvhPn4yKUNI91+1p1QPMjRCZXzKDiUA==
+X-Received: by 2002:a9d:664e:0:b0:6b7:564d:f368 with SMTP id q14-20020a9d664e000000b006b7564df368mr10498970otm.5.1690906633599;
+        Tue, 01 Aug 2023 09:17:13 -0700 (PDT)
+Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
+        by smtp.gmail.com with ESMTPSA id v15-20020a9d69cf000000b006b753685cc5sm5145636oto.79.2023.08.01.09.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 09:17:12 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 13:17:07 -0300
+From:   Alexon Oliveira <alexondunkan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        dan.carpenter@linaro.org
+Subject: [PATCH v2] staging: vme_user: fix check alignment should match open
+ parenthesis
+Message-ID: <ZMkwA8TnMBAgPRgR@alolivei-thinkpadt480s.gru.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 6/8] mm/huge_memory: remove stale NUMA hinting comment
- from follow_trans_huge_pmd()
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-References: <20230801124844.278698-1-david@redhat.com>
- <20230801124844.278698-7-david@redhat.com> <ZMktuATuYhHdAW6M@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZMktuATuYhHdAW6M@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.08.23 18:07, Peter Xu wrote:
-> On Tue, Aug 01, 2023 at 02:48:42PM +0200, David Hildenbrand wrote:
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index 2cd3e5502180..0b709d2c46c6 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -1467,7 +1467,6 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
->>   	if ((flags & FOLL_DUMP) && is_huge_zero_pmd(*pmd))
->>   		return ERR_PTR(-EFAULT);
->>   
->> -	/* Full NUMA hinting faults to serialise migration in fault paths */
->>   	if (pmd_protnone(*pmd) && !gup_can_follow_protnone(vma, flags))
->>   		return NULL;
-> 
-> Perhaps squashing into patch 1?  Thanks,
+First patch was intended to fix all "CHECK: Alignment should match open parenthesis",
+but added new warnings in the process. This patch is intended to fixed them all,
+on lines 133, 142, 144, 145 and 173.
 
-I decided against it so I don't have to make patch description of patch 
-#1 even longer with something that's mostly unrelated to the core change.
+Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
 
+---
+
+Changes in v2:
+- Fixed 3 different line lengths exceeding 100 columns, noted by Greg KH and Dan Carpenter
+- Fixed 1 line with alignment matching open parenthesis
+- Fixed 1 line to not end with a '('
+
+Changes in v1:
+- Fixed 11 different lines with alignment matching open parenthesis
+
+ drivers/staging/vme_user/vme_bridge.h | 46 +++++++++++----------------
+ 1 file changed, 18 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/staging/vme_user/vme_bridge.h b/drivers/staging/vme_user/vme_bridge.h
+index 11df0a5e7f7b..9bdc41bb6602 100644
+--- a/drivers/staging/vme_user/vme_bridge.h
++++ b/drivers/staging/vme_user/vme_bridge.h
+@@ -128,28 +128,24 @@ struct vme_bridge {
+ 	struct mutex irq_mtx;
+ 
+ 	/* Slave Functions */
+-	int (*slave_get)(struct vme_slave_resource *, int *,
+-		unsigned long long *, unsigned long long *, dma_addr_t *,
+-		u32 *, u32 *);
++	int (*slave_get)(struct vme_slave_resource *, int *, unsigned long long *,
++			 unsigned long long *, dma_addr_t *, u32 *, u32 *);
+ 	int (*slave_set)(struct vme_slave_resource *, int, unsigned long long,
+-		unsigned long long, dma_addr_t, u32, u32);
++			 unsigned long long, dma_addr_t, u32, u32);
+ 
+ 	/* Master Functions */
+-	int (*master_get)(struct vme_master_resource *, int *,
+-		unsigned long long *, unsigned long long *, u32 *, u32 *,
+-		u32 *);
+-	int (*master_set)(struct vme_master_resource *, int,
+-		unsigned long long, unsigned long long,  u32, u32, u32);
+-	ssize_t (*master_read)(struct vme_master_resource *, void *, size_t,
+-		loff_t);
+-	ssize_t (*master_write)(struct vme_master_resource *, void *, size_t,
+-		loff_t);
++	int (*master_get)(struct vme_master_resource *, int *, unsigned long long *,
++			  unsigned long long *, u32 *, u32 *, u32 *);
++	int (*master_set)(struct vme_master_resource *, int, unsigned long long,
++			  unsigned long long,  u32, u32, u32);
++	ssize_t (*master_read)(struct vme_master_resource *, void *, size_t, loff_t);
++	ssize_t (*master_write)(struct vme_master_resource *, void *, size_t, loff_t);
+ 	unsigned int (*master_rmw)(struct vme_master_resource *, unsigned int,
+-		unsigned int, unsigned int, loff_t);
++				   unsigned int, unsigned int, loff_t);
+ 
+ 	/* DMA Functions */
+ 	int (*dma_list_add)(struct vme_dma_list *, struct vme_dma_attr *,
+-		struct vme_dma_attr *, size_t);
++			    struct vme_dma_attr *, size_t);
+ 	int (*dma_list_exec)(struct vme_dma_list *);
+ 	int (*dma_list_empty)(struct vme_dma_list *);
+ 
+@@ -159,32 +155,26 @@ struct vme_bridge {
+ 
+ 	/* Location monitor functions */
+ 	int (*lm_set)(struct vme_lm_resource *, unsigned long long, u32, u32);
+-	int (*lm_get)(struct vme_lm_resource *, unsigned long long *, u32 *,
+-		u32 *);
+-	int (*lm_attach)(struct vme_lm_resource *, int,
+-			 void (*callback)(void *), void *);
++	int (*lm_get)(struct vme_lm_resource *, unsigned long long *, u32 *, u32 *);
++	int (*lm_attach)(struct vme_lm_resource *, int, void (*callback)(void *), void *);
+ 	int (*lm_detach)(struct vme_lm_resource *, int);
+ 
+ 	/* CR/CSR space functions */
+ 	int (*slot_get)(struct vme_bridge *);
+ 
+ 	/* Bridge parent interface */
+-	void *(*alloc_consistent)(struct device *dev, size_t size,
+-		dma_addr_t *dma);
+-	void (*free_consistent)(struct device *dev, size_t size,
+-		void *vaddr, dma_addr_t dma);
++	void *(*alloc_consistent)(struct device *dev, size_t size, dma_addr_t *dma);
++	void (*free_consistent)(struct device *dev, size_t size, void *vaddr, dma_addr_t dma);
+ };
+ 
+-void vme_bus_error_handler(struct vme_bridge *bridge,
+-			   unsigned long long address, int am);
++void vme_bus_error_handler(struct vme_bridge *bridge, unsigned long long address, int am);
+ void vme_irq_handler(struct vme_bridge *, int, int);
+ 
+ struct vme_bridge *vme_init_bridge(struct vme_bridge *);
+ int vme_register_bridge(struct vme_bridge *);
+ void vme_unregister_bridge(struct vme_bridge *);
+-struct vme_error_handler *vme_register_error_handler(
+-	struct vme_bridge *bridge, u32 aspace,
+-	unsigned long long address, size_t len);
++struct vme_error_handler *vme_register_error_handler(struct vme_bridge *bridge, u32 aspace,
++						     unsigned long long address, size_t len);
+ void vme_unregister_error_handler(struct vme_error_handler *handler);
+ 
+ #endif /* _VME_BRIDGE_H_ */
 -- 
-Cheers,
-
-David / dhildenb
-
+2.41.0
