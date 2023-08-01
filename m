@@ -2,85 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3450B76B786
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:32:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A26376B791
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234716AbjHAOcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
+        id S234738AbjHAOeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234717AbjHAOcV (ORCPT
+        with ESMTP id S232198AbjHAOd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:32:21 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EE32D79;
-        Tue,  1 Aug 2023 07:31:49 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-409ae93bbd0so30092561cf.0;
-        Tue, 01 Aug 2023 07:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690900304; x=1691505104;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qpvro3EfLxFN3z0F6AOvOpAWsKbp8qLvkGalM6MQnwg=;
-        b=MFkiI/tWUH7qTrlZQn3zI/pTGv+0QB7gj6ZEibl8JGYPABQQlnKoldTyMIITKYSwFn
-         4e3V20BhJvn9MEHh7M7VPClVQFSgrCrgprWFHpP7lX1l4ORyxD41Xf/YYuHrqNwuk6/J
-         DuWgujvvfB2tgQxh17fuGU/gOmYZS0zVMuAZrkRN4ASS7OJMM8tMsOb2lbTR3kc6JMRD
-         Cae/b3FD381orZ+3uWsKO+//gJXGNdL0WhqmKISdy4ziK/bk8/+HcZJ7I4i53XpJtXVk
-         eJmKAIm1dJyoytPqQrTK96T4I8WDhIObnVcK+em7FTvmvW+qIpKYaLlS32qfkcN20WrC
-         qzPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690900304; x=1691505104;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qpvro3EfLxFN3z0F6AOvOpAWsKbp8qLvkGalM6MQnwg=;
-        b=OF4lgxV9vLDYcU90RIEWmn68aapaG3W5cKIuc92r1kBo9BaHvtBtyLbILYZ3CeXzYj
-         hmerNcV3+glydXqNPdAVZwn1Gl5W1qcinnf+taCndSJ3QYE0PARbhQDXUhnYQ/jihWrJ
-         LZCAVjsx7Z9ng4A3SAlibtiNbD/pOszaBcfGN5Rmuyl3qjU4TshSovZ4wUrlbD39Ujcy
-         vDGoU8KwW1ne9TDFB21lZG4yTNqWTIh6xexd1YA8UfqHOdLXSiaEVIihzgOv7NU3+2x2
-         13afbiWsZSoHmFWCnflJIjX+/qQ+sJwfqCx27puvCQr8G4AdiJXGvo2Y3p4BcZLBA6b9
-         h6Rw==
-X-Gm-Message-State: ABy/qLZZn3S20zqtsRyV29kYL9JcZRuiHXTQz+WB8QJ9fRvTbg+mjHxz
-        xKyFLWGvREcNbrLrrwY0t60=
-X-Google-Smtp-Source: APBJJlGVe1mUE4psH/jKdYS9UhTvYS7XBodqk3vrPXjJaNRz/XmWvQxFBNBAmf44hGUQzNKRBXMz7Q==
-X-Received: by 2002:a05:622a:2cf:b0:40f:da50:4dbf with SMTP id a15-20020a05622a02cf00b0040fda504dbfmr706477qtx.1.1690900304510;
-        Tue, 01 Aug 2023 07:31:44 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id c27-20020ac8009b000000b004054b435f8csm4469242qtg.65.2023.08.01.07.31.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 07:31:44 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 10:31:43 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     David Howells <dhowells@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     dhowells@redhat.com, Jakub Kicinski <kuba@kernel.org>,
-        syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>,
-        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Message-ID: <64c9174fda48e_1bf0a42945f@willemb.c.googlers.com.notmuch>
-In-Reply-To: <1409099.1690899546@warthog.procyon.org.uk>
-References: <64c903b02b234_1b307829418@willemb.c.googlers.com.notmuch>
- <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch>
- <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch>
- <20230718160737.52c68c73@kernel.org>
- <000000000000881d0606004541d1@google.com>
- <0000000000001416bb06004ebf53@google.com>
- <792238.1690667367@warthog.procyon.org.uk>
- <831028.1690791233@warthog.procyon.org.uk>
- <1401696.1690893633@warthog.procyon.org.uk>
- <1409099.1690899546@warthog.procyon.org.uk>
-Subject: Re: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?]
- INFO: task hung in pipe_release (4)
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        Tue, 1 Aug 2023 10:33:59 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3A7871FEF;
+        Tue,  1 Aug 2023 07:33:53 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxIvDOF8lkiiYOAA--.32762S3;
+        Tue, 01 Aug 2023 22:33:50 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxJ83MF8lkyBdEAA--.44246S3;
+        Tue, 01 Aug 2023 22:33:48 +0800 (CST)
+Message-ID: <9f6ff24b-7e58-2dde-3b6d-eda9be1944ae@loongson.cn>
+Date:   Tue, 1 Aug 2023 22:33:09 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [v1,v1,5/7] drm/vs: Register DRM device
+From:   suijingfeng <suijingfeng@loongson.cn>
+To:     Keith Zhao <keith.zhao@starfivetech.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Shawn Guo <shawnguo@kernel.org>, christian.koenig@amd.com
+References: <20230801101030.2040-6-keith.zhao@starfivetech.com>
+ <6b776c23-9cc1-5a7d-0a85-bd7eb42e847d@loongson.cn>
+Content-Language: en-US
+In-Reply-To: <6b776c23-9cc1-5a7d-0a85-bd7eb42e847d@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8DxJ83MF8lkyBdEAA--.44246S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
+        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
+        BjDU0xBIdaVrnRJUUUm2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
+        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
+        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
+        67AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44
+        I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2
+        jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0V
+        AS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCF54CYxVAaw2AFwI0_Jw0_GFyl4c8EcI0E
+        c7CjxVAaw2AFwI0_GFv_Wryl4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Wr
+        v_ZF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
+        6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxh
+        VjvjDU0xZFpf9x07jUSdgUUUUU=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,43 +82,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells wrote:
-> The attached seems to work.  I still think copy isn't correctly calculated in
-> some circumstances - as I showed, several terms in the maths cancel out,
-> including the length of the data.
+Hi,
 
-That arithmetic makes assumptions that are specific to a particular
-set of conditions (e.g., that pagedlen is non-zero).
+On 2023/8/1 21:40, suijingfeng wrote:
+>> +#define DRV_DATE    "202305161"
+>
+> The date is not correct here, generally it should have 8 numbers,
+>
+> while you have 9 digits, why you are so special ? 
 
-Since the arithmetic is so complicated and error prone, I would try
-to structure a fix that is easy to reason about to only change
-behavior for the MSG_SPLICE_PAGES case.
- 
-> I'm also not entirely sure what 'paged' means in this function.  Should it
-> actually be set in the MSG_SPLICE_PAGES context?
 
-I introduced it with MSG_ZEROCOPY. It sets up pagedlen to capture the
-length that is not copied.
+I'm also interesting in RISCV arch, I got attracted by your patch.
 
-If the existing code would affect MSG_ZEROCOPY too, I expect syzbot
-to have reported that previously.
+I just want to join into the discussion at here (at my spare time),
 
-> ---
-> udp: Fix __ip_addend_data()
-> 
-> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-> index 6e70839257f7..54675a4f2c9f 100644
-> --- a/net/ipv4/ip_output.c
-> +++ b/net/ipv4/ip_output.c
-> @@ -1157,7 +1157,7 @@ static int __ip_append_data(struct sock *sk,
->  				pskb_trim_unique(skb_prev, maxfraglen);
->  			}
->  
-> -			copy = datalen - transhdrlen - fraggap - pagedlen;
-> +			copy = max_t(int, datalen - transhdrlen - fraggap - pagedlen, 0);
->  			if (copy > 0 && getfrag(from, data + transhdrlen, offset, copy, fraggap, skb) < 0) {
->  				err = -EFAULT;
->  				kfree_skb(skb);
-> 
+So when you see my comments, I hoping that you will not interpret it as 
+hostility.
 
+Welcome contributing. :-)
 
