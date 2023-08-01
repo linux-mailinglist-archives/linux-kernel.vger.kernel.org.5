@@ -2,82 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D115B76AB4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5A376AB50
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbjHAItp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
+        id S231576AbjHAIuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjHAItn (ORCPT
+        with ESMTP id S231384AbjHAIuJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:49:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCD810FA;
-        Tue,  1 Aug 2023 01:49:38 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690879770;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7y14opVxFYlYAWiVX/5Sl0k5U4rJuCot7ooRCfUHosM=;
-        b=xSBCKEGpQRWVDFGStCmuLyE+mQlyRwhxJqV9v2T37MKHoMSEykElcc5PSp2bfCc80zh6I3
-        CJYu86vWVLBtgt0SEg+cXQbxUMf+lAPAOPB8tRL/WxZ/rnKTuOqMSUxoG5T8HiqRUWwUsq
-        XOdQP1IK8qsMmQdDK2sEzQFyNk8Orh3RRFCsLBCzR5LP1Wo2DutikbelmNpJSuMj+FEnzY
-        bVLnlLkUtFsrK2FRar7mUMj8wT1yjmwKa5sC3MI5NY2ksJIgmGRS2OMo5fHzbMbfxxeJD+
-        acAGZlsc0ZIxwUUamEGP9fpIBddOf0zTm348SFs71JZk5V8e/iQDs/N98s0g1Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690879770;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7y14opVxFYlYAWiVX/5Sl0k5U4rJuCot7ooRCfUHosM=;
-        b=4fCPbVP95QTc1VJ4591RDCaOfcGUPX3GsmIqewJDoQZxV4/B+CQJ5uH/TC5jqQA8Upb2az
-        0q6o3slkGaltNvAg==
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        dvhart@infradead.org, dave@stgolabs.net, andrealmeid@igalia.com,
-        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
-        hch@infradead.org, lstoakes@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        malteskarupke@web.de
-Subject: Re: [PATCH v1 02/14] futex: Extend the FUTEX2 flags
-In-Reply-To: <20230731225959.GE51835@hirez.programming.kicks-ass.net>
-References: <20230721102237.268073801@infradead.org>
- <20230721105743.819362688@infradead.org> <87edkonjrk.ffs@tglx>
- <87mszcm0zw.ffs@tglx>
- <20230731192012.GA11704@hirez.programming.kicks-ass.net>
- <87a5vbn5r0.ffs@tglx>
- <20230731213341.GB51835@hirez.programming.kicks-ass.net>
- <87y1ivln1v.ffs@tglx>
- <20230731225959.GE51835@hirez.programming.kicks-ass.net>
-Date:   Tue, 01 Aug 2023 10:49:29 +0200
-Message-ID: <87edknkuzq.ffs@tglx>
+        Tue, 1 Aug 2023 04:50:09 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1784F10FA;
+        Tue,  1 Aug 2023 01:50:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1690879806;
+        bh=N1HBf/84hnmfCbdnwqZ0eyFfZXSs6A4NmSmQ9HOb62c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NEP53/pBD2koXxSzMV8+FL8/eAf2YWcbL1SJllcRFQxTNqbgN8p1tK0rpvuEERC1U
+         8u2fq72RTBoRIO++oYPD8aSz8tgZnALvIsOIapkhwmZJzcIjfcgme6T6sZ3Bw7az6m
+         Z36a3OEXv44FpL+CrLACjymyPJS8DILcF1Vkoe9c=
+Date:   Tue, 1 Aug 2023 10:50:05 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yuan Tan <tanyuan@tinylab.org>,
+        Zhangjin Wu <falcon@tinylab.org>
+Subject: Re: [PATCH v2 06/10] selftests/nolibc: make functions static if
+ possible
+Message-ID: <4ad4b853-b89f-4c5a-a50b-28739d7b81c0@t-8ch.de>
+References: <20230801-nolibc-warnings-v2-0-1ba5ca57bd9b@weissschuh.net>
+ <20230801-nolibc-warnings-v2-6-1ba5ca57bd9b@weissschuh.net>
+ <ZMiro1pwVvAzNel5@1wt.eu>
+ <bf97900a-98bb-45dc-9451-b9728173136e@t-8ch.de>
+ <ZMi+k0HsMGJxbs7V@1wt.eu>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZMi+k0HsMGJxbs7V@1wt.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01 2023 at 00:59, Peter Zijlstra wrote:
-> On Tue, Aug 01, 2023 at 12:43:24AM +0200, Thomas Gleixner wrote:
-> Which then gets people to write garbage like:
->
-> 	futex_wake(add, 0xFFFF, 1, (union futex_flags){ .flags = FUTEX2_SIZE_U16 | FUTEX2_PRIVATE));
-> or
-> 	futex_wake(add, 0xFFFF, 1, (union futex_flags){ .size = FUTEX2_SIZE_U16, private = true, ));
->
-> You really want that ?
+On 2023-08-01 10:13:07+0200, Willy Tarreau wrote:
+> On Tue, Aug 01, 2023 at 09:34:18AM +0200, Thomas Weißschuh wrote:
+> > On 2023-08-01 08:52:19+0200, Willy Tarreau wrote:
+> > > On Tue, Aug 01, 2023 at 07:30:13AM +0200, Thomas Weißschuh wrote:
+> > > > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+> > > > index 1555759bb164..53a3773c7790 100644
+> > > > --- a/tools/testing/selftests/nolibc/nolibc-test.c
+> > > > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+> > 
+> > > [..]
+> > 
+> > > >  /* prepare what needs to be prepared for pid 1 (stdio, /dev, /proc, etc) */
+> > > > -int prepare(void)
+> > > > +static int prepare(void)
+> > > >  {
+> > > >  	struct stat stat_buf;
+> > > >  
+> > > > @@ -1208,7 +1208,7 @@ static const struct test test_names[] = {
+> > > >  	{ 0 }
+> > > >  };
+> > >  
+> > > For these ones it will prevent gcc from putting breakpoints there, which
+> > > is counter-productive.
+> > 
+> > Indeed.
+> > 
+> > An alternative would be to add -g to CFLAGS (and remove -s from LDFLAGS).
+> > This way we get full debugability including breakpoints for everything.
+> 
+> It wouldn't change much because while it would allow the debugger to know
+> where the function was possibly inlined, it's still not very convenient:
+> you believe you're in a function but in fact you're in the caller. It
+> really depends what you're debugging but here I don't see all that as
+> providing a value, at least it brings more annoyance and little to no
+> gain IMHO.
 
-Well, people write garbage no matter what. So just keep the flags and
-make the names explicit.
+Even if it doesn't work 100% properly it wouldn't it still be a superset
+of the previous functionality?
+And we don't have to manually keep track of which ones should be static
+and which shouldn't (See this discussion).
 
-Note to myself: /me shouldn't look at futex patches when tired
+Would it be better with -ggdb?
+
+If you are still not conviced I'll drop the argument here :-)
+(And the changes in the next revision)
+
+> > I didn't find the reasoning for -s in LDFLAGS.
+> 
+> It's historic, because normally when you want small binaries you strip
+> them, and the command line was reused as-is, but I agree that we could
+> get rid of it!
+
+I'll remove it. It was annoying to figure out why my "-g" CFLAG didn't
+work at all.
+
+Thomas
