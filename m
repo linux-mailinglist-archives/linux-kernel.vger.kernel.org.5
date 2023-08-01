@@ -2,217 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC9176BA17
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5883576BA18
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbjHAQyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:54:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
+        id S233216AbjHAQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232921AbjHAQyu (ORCPT
+        with ESMTP id S233232AbjHAQyz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:54:50 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B702690;
-        Tue,  1 Aug 2023 09:54:47 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id 0243F6017E;
-        Tue,  1 Aug 2023 18:54:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690908885; bh=Yx04bmdoZMNOkKPZgrflGP2jjq18mCy2PcLID61NEg4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ry2EiIzf4v6rJBWhXoyUNgQp/WI8xzniFrMPmXFfSDZPVTP5tuRv9Fv2l2KxfFU/o
-         RTct1KQoeF5VSiLEshMAbjx4Q3HCDF1zRwwANTmQEohb806K6WWmh3SxuVEfg5P1dE
-         s7+Ahb1BJU9WDP7iXTn5iSju68kZcLy1Mb4U5lFboZBRfxYQ6XKX9kX2iO7Ul17031
-         Pbmr0pNKEE8AQ7JBVUBu/pjqlGRC5Pt5PFIw+T0G2vgWMMWBAn3w4SYMKLfWg9e9D4
-         7aywMYclIkqHj/cp3nq9HPqB/c1fhKwnmWSca95zUEO9SsPzYek1tZ8E5dfilglfuv
-         IRPSCUhJTvdAg==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ExkLY74uPblc; Tue,  1 Aug 2023 18:54:42 +0200 (CEST)
-Received: from [192.168.1.6] (unknown [94.250.191.183])
-        by domac.alu.hr (Postfix) with ESMTPSA id 9CF676015F;
-        Tue,  1 Aug 2023 18:54:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1690908882; bh=Yx04bmdoZMNOkKPZgrflGP2jjq18mCy2PcLID61NEg4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZrNwC/6uMPdjMV2AavDStfBkqP0L9rUdwl6Nmilk31m4RABneeSgiUDTBa/CLdjOA
-         rT2BbtzNwHsCg5cI4ulhiV+mKom/d7JNiciPtJ28Qa9NSJzsaLSIRmoi/pqNQAAzBE
-         4LNy6MAL95Lz3oppS5T8K0j6TPCPDDt+rr5ViM35dT5avXJ+gSiIPPI+Q6c9FDpvEq
-         K6xx7ss1T0xgZ4QDb59CAnKjN27xN4vK/t26LbfoxBmNkdwRtlEV6B3MANQECrVOhf
-         K/jIvPo5u+cjdNEDrD3nP7fK4s3uhWq1AomqB6RAxvGTj8e+wVuZBqVqzyzgppqKsu
-         foUZ4QJ1raobA==
-Message-ID: <304ba960-0214-82d4-05be-e5956baa64c7@alu.unizg.hr>
-Date:   Tue, 1 Aug 2023 18:54:41 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH v1 01/11] selftests: forwarding: custom_multipath_hash.sh:
- add cleanup for SIGTERM sent by timeout
-Content-Language: en-US
-To:     Petr Machata <petrm@nvidia.com>, Ido Schimmel <idosch@idosch.org>
-Cc:     razor@blackwall.org, Ido Schimmel <idosch@nvidia.com>,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Tue, 1 Aug 2023 12:54:55 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349272684
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:54:52 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5A0151BF203;
+        Tue,  1 Aug 2023 16:54:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690908891;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V3jHMGbJP3QoNz+rczliCDsMkczh5HGRrxCqzcgnveo=;
+        b=L0LEpiaWM546go+iQHmp9rh1i2Yg5K61mkwNPerpxzqAlx4f3khZ4bJBL6iFmQZEjCi+xU
+        YsEUV/68G6Vp9+N9YN4AeLybuk44fWbn9SI0V+8G1y56B7QP/QfgAih+WGwJj8+nVirCQ5
+        OK1qaFJF2FKFGawoxH1xcJmiUSc4z7B1EmqoOk/DSmKga840HiaS9stCveYL1tbT08E/xr
+        hTPxaNpmChcxpLwAmwz29vfS6KemfblRl3lOJ+fVRrhKZLu7pq5BJh08BIkdZUgPjJoj6+
+        GVzPYq4Ha4IxkoWi5HWU2hAvi4Yl5B8kdp9HTMfufH/4rg9UCmV+fzpaAqBQ6Q==
+Date:   Tue, 1 Aug 2023 18:54:49 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
- <ZLzj5oYrbHGvCMkq@shredder>
- <0550924e-dce9-f90d-df8a-db810fd2499f@alu.unizg.hr>
- <adc5e40d-d040-a65e-eb26-edf47dac5b02@alu.unizg.hr>
- <ZL6OljQubhVtQjcD@shredder>
- <cab8ea8a-98f4-ef9b-4215-e2a93cccaab1@alu.unizg.hr>
- <ZMEQGIOQXv6so30x@shredder>
- <a9b6d9f5-14ae-a931-ab7b-d31b5e40f5df@alu.unizg.hr>
- <ZMYXABUN9OzfN5D3@shredder> <875y5zf27p.fsf@nvidia.com>
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <875y5zf27p.fsf@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Michael Walle <michael@walle.cc>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v6 3/3] nvmem: core: Expose cells through sysfs
+Message-ID: <20230801185449.5088c8d4@xps-13>
+In-Reply-To: <2023080125-renovate-uptake-86f0@gregkh>
+References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
+        <20230717075147.43326-4-miquel.raynal@bootlin.com>
+        <2023071717-channel-supernova-4cc9@gregkh>
+        <20230717183323.49a55ad0@xps-13>
+        <2023071724-twiddling-morale-157e@gregkh>
+        <20230731164642.49fea651@xps-13>
+        <2023080125-renovate-uptake-86f0@gregkh>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/1/23 13:08, Petr Machata wrote:
-> 
-> Ido Schimmel <idosch@idosch.org> writes:
-> 
->> On Thu, Jul 27, 2023 at 09:26:03PM +0200, Mirsad Todorovac wrote:
->>> not ok 49 selftests: net/forwarding: mirror_gre_changes.sh # exit=1
->>
->> Petr, please take a look. Probably need to make the filters more
->> specific. The failure is:
->>
->> # TEST: mirror to gretap: TTL change (skip_hw)                        [FAIL]
->> # 	Expected to capture 10 packets, got 14.
-> 
-> Yeah, this reproduces easily on my laptop. The switches are somehow much
-> more quiet and do not really hit the issue.
-> 
-> Mirsad, can you please try this patch? It fixes the issue for me.
-> 
->>From 77461c209eb0067dca7fdf4431a907b2a1ce8c6a Mon Sep 17 00:00:00 2001
-> Message-ID: <77461c209eb0067dca7fdf4431a907b2a1ce8c6a.1690887929.git.petrm@nvidia.com>
-> From: Petr Machata <petrm@nvidia.com>
-> Date: Tue, 1 Aug 2023 12:57:53 +0200
-> Subject: [PATCH net-next] selftests: mirror_gre_changes: Tighten up the TTL
->   test match
-> To: <netdev@vger.kernel.org>
-> 
-> This test verifies whether the encapsulated packets have the correct
-> configured TTL. It does so by sending ICMP packets through the test
-> topology and mirroring them to a gretap netdevice. On a busy host
-> however, more than just the test ICMP packets may end up flowing
-> through the topology, get mirrored, and counted. This leads to
-> potential spurious failures as the test observes much more mirrored
-> packets than the sent test packets, and assumes a bug.
-> 
-> Fix this by tightening up the mirror action match. Change it from
-> matchall to a flower classifier matching on ICMP packets specifically.
-> 
-> Signed-off-by: Petr Machata <petrm@nvidia.com>
-> ---
->   tools/testing/selftests/net/forwarding/mirror_gre_changes.sh | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/net/forwarding/mirror_gre_changes.sh b/tools/testing/selftests/net/forwarding/mirror_gre_changes.sh
-> index aff88f78e339..5ea9d63915f7 100755
-> --- a/tools/testing/selftests/net/forwarding/mirror_gre_changes.sh
-> +++ b/tools/testing/selftests/net/forwarding/mirror_gre_changes.sh
-> @@ -72,7 +72,8 @@ test_span_gre_ttl()
->   
->   	RET=0
->   
-> -	mirror_install $swp1 ingress $tundev "matchall $tcflags"
-> +	mirror_install $swp1 ingress $tundev \
-> +		"prot ip flower $tcflags ip_prot icmp"
->   	tc filter add dev $h3 ingress pref 77 prot $prot \
->   		flower skip_hw ip_ttl 50 action pass
->   
+Hi Greg,
 
-The problem seems to be fixed in the test run:
+gregkh@linuxfoundation.org wrote on Tue, 1 Aug 2023 11:56:40 +0200:
 
-root@defiant:tools/testing/selftests/net/forwarding# ./mirror_gre_changes.sh
-TEST: mirror to gretap: TTL change (skip_hw)                        [ OK ]
-TEST: mirror to ip6gretap: TTL change (skip_hw)                     [ OK ]
-TEST: mirror to gretap: tunnel down/up (skip_hw)                    [ OK ]
-TEST: mirror to ip6gretap: tunnel down/up (skip_hw)                 [ OK ]
-TEST: mirror to gretap: egress down/up (skip_hw)                    [ OK ]
-TEST: mirror to ip6gretap: egress down/up (skip_hw)                 [ OK ]
-TEST: mirror to gretap: remote address change (skip_hw)             [ OK ]
-TEST: mirror to ip6gretap: remote address change (skip_hw)          [ OK ]
-TEST: mirror to gretap: tunnel deleted (skip_hw)                    [ OK ]
-TEST: mirror to ip6gretap: tunnel deleted (skip_hw)                 [ OK ]
-TEST: mirror to gretap: underlay route removal (skip_hw)            [ OK ]
-TEST: mirror to ip6gretap: underlay route removal (skip_hw)         [ OK ]
-WARN: Could not test offloaded functionality
-root@defiant:tools/testing/selftests/net/forwarding#
+> On Mon, Jul 31, 2023 at 05:33:13PM +0200, Miquel Raynal wrote:
+> > Hi Greg,
+> >=20
+> > gregkh@linuxfoundation.org wrote on Mon, 17 Jul 2023 18:59:52 +0200:
+> >  =20
+> > > On Mon, Jul 17, 2023 at 06:33:23PM +0200, Miquel Raynal wrote: =20
+> > > > Hi Greg,
+> > > >=20
+> > > > gregkh@linuxfoundation.org wrote on Mon, 17 Jul 2023 16:32:09 +0200:
+> > > >    =20
+> > > > > On Mon, Jul 17, 2023 at 09:51:47AM +0200, Miquel Raynal wrote:   =
+=20
+> > > > > > The binary content of nvmem devices is available to the user so=
+ in the
+> > > > > > easiest cases, finding the content of a cell is rather easy as =
+it is
+> > > > > > just a matter of looking at a known and fixed offset. However, =
+nvmem
+> > > > > > layouts have been recently introduced to cope with more advanced
+> > > > > > situations, where the offset and size of the cells is not known=
+ in
+> > > > > > advance or is dynamic. When using layouts, more advanced parser=
+s are
+> > > > > > used by the kernel in order to give direct access to the conten=
+t of each
+> > > > > > cell, regardless of its position/size in the underlying
+> > > > > > device. Unfortunately, these information are not accessible by =
+users,
+> > > > > > unless by fully re-implementing the parser logic in userland.
+> > > > > >=20
+> > > > > > Let's expose the cells and their content through sysfs to avoid=
+ these
+> > > > > > situations. Of course the relevant NVMEM sysfs Kconfig option m=
+ust be
+> > > > > > enabled for this support to be available.
+> > > > > >=20
+> > > > > > Not all nvmem devices expose cells. Indeed, the .bin_attrs attr=
+ibute
+> > > > > > group member will be filled at runtime only when relevant and w=
+ill
+> > > > > > remain empty otherwise. In this case, as the cells attribute gr=
+oup will
+> > > > > > be empty, it will not lead to any additional folder/file creati=
+on.
+> > > > > >=20
+> > > > > > Exposed cells are read-only. There is, in practice, everything =
+in the
+> > > > > > core to support a write path, but as I don't see any need for t=
+hat, I
+> > > > > > prefer to keep the interface simple (and probably safer). The i=
+nterface
+> > > > > > is documented as being in the "testing" state which means we ca=
+n later
+> > > > > > add a write attribute if though relevant.
+> > > > > >=20
+> > > > > > There is one limitation though: if a layout is built as a modul=
+e but is
+> > > > > > not properly installed in the system and loaded manually with i=
+nsmod
+> > > > > > while the nvmem device driver was built-in, the cells won't app=
+ear in
+> > > > > > sysfs. But if done like that, the cells won't be usable by the =
+built-in
+> > > > > > kernel drivers anyway.     =20
+> > > > >=20
+> > > > > Wait, what?  That should not be an issue here, if so, then this c=
+hange
+> > > > > is not correct and should be fixed as this is NOT an issue for sy=
+sfs
+> > > > > (otherwise the whole tree wouldn't work.)
+> > > > >=20
+> > > > > Please fix up your dependancies if this is somehow not working pr=
+operly.   =20
+> > > >=20
+> > > > I'm not sure I fully get your point.
+> > > >=20
+> > > > There is no way we can describe any dependency between a storage de=
+vice
+> > > > driver and an nvmem layout. NVMEM is a pure software abstraction, t=
+he
+> > > > layout that will be chosen depends on the device tree, but if the
+> > > > layout has not been installed, there is no existing mechanism in
+> > > > the kernel to prevent it from being loaded (how do you know it's
+> > > > not on purpose?).   =20
+> > >=20
+> > > Once a layout has been loaded, the sysfs files should show up, right?
+> > > Otherwise what does a "layout" do?  (hint, I have no idea, it's an odd
+> > > term to me...) =20
+> >=20
+> > Sorry for the latency in responding to these questions, I'll try to
+> > clarify the situation.
+> >=20
+> > We have:
+> > - device drivers (like NAND flashes, SPI-NOR flashes or EEPROMs) which
+> >   typically probe and register their devices into the nvmem
+> >   layer to expose their content through NVMEM.
+> > - each registration in NVMEM leads to the creation of the relevant
+> >   NVMEM cells which can then be used by other device drivers
+> >   (typically: a network controller retrieving a MAC address from an
+> >   EEPROM through the generic NVMEM abstraction). =20
+>=20
+>=20
+> So is a "cell" here a device in the device model?  Or something else?
 
-That leaves us with one more tests to fix:./bridge_vlan_mcast.sh
+It is not a device in the device model, but I am wondering if it should
+not be one actually. I discussed with Rafal about another issue in the
+current design (dependence over a layout driver which might defer
+forever a storage device probe) which might be solved if the core was
+handling these layouts differently.
 
-# ./bridge_vlan_mcast.sh
+> > We recently covered a slightly new case: the NVMEM cells can be in
+> > random places in the storage devices so we need a "dynamic" way to
+> > discover them: this is the purpose of the NVMEM layouts. We know cell X
+> > is in the device, we just don't know where it is exactly at compile
+> > time, the layout driver will discover it dynamically for us at runtime.=
+ =20
+>=20
+> So you then create the needed device when it is found?
 
-TEST: Vlan mcast_startup_query_interval global option default value   [FAIL]
-         Wrong default mcast_startup_query_interval global vlan option value
+We don't create devices, but we match the layouts with the NVMEM
+devices thanks to the of_ logic.
 
+> > While the "static cells" parser is built-in the NVMEM subsystem, you
+> > explicitly asked to have the layouts modularized. This means
+> > registering a storage device in nvmem while no layout driver has been
+> > inserted yet is now a scenario. We cannot describe any dependency
+> > between a storage device and a layout driver. We cannot defer the probe
+> > either because device drivers which don't get access to their NVMEM
+> > cell are responsible of choosing what to do (most of the time, the idea
+> > is to fallback to a default value to avoid failing the probe for no
+> > reason).
+> >=20
+> > So to answer your original question:
+> >  =20
+> > > Once a layout has been loaded, the sysfs files should show up, right?=
+ =20
+> >=20
+> > No. The layouts are kind of "libraries" that the NVMEM subsystem uses
+> > to try exposing cells *when* a new device is registered in NVMEM (not
+> > later). The registration of an NVMEM layout does not trigger any new
+> > parsing, because that is not how the NVMEM subsystem was designed. =20
+>=20
+> So they are a type of "class" right?  Why not just use class devices
+> then?
+>=20
+> > I must emphasize that if the layout driver is installed in
+> > /lib/modules/ there is no problem, it will be loaded with
+> > usermodehelper. But if it is not, we can very well have the layout
+> > driver inserted after, and this case, while in practice possible, is
+> > irrelevant from a driver standpoint. It does not make any sense to have
+> > these cells created "after" because they are mostly used during probes.
+> > An easy workaround would be to unregister/register again the underlying
+> > storage device driver. =20
+>=20
+> We really do not support any situation where a module is NOT in the
+> proper place when device discovery happens.
 
-[...]
+Great, I didn't know. Then there is no issue.
 
-+ bridge vlan global set vid 10 dev br0 mcast_snooping 1 mcast_last_member_interval 100
-+ for current_test in ${TESTS:-$ALL_TESTS}
-+ vlmc_startup_query_test
-+ RET=0
-++ bridge -j vlan global show
-+ local 'goutput=[{"ifname":"br0","vlans":[{"vlan":1,"mcast_snooping":1,"mcast_querier":0,"mcast_igmp_version":2,"mcast_mld_version":1,"mcast_last_member_count":2,"mcast_last_member_interval":100,"mcast_startup_query_count":2,"mcast_startup_query_
-interval":3124,"mcast_membership_interval":26000,"mcast_querier_interval":25500,"mcast_query_interval":12500,"mcast_query_response_interval":1000},{"vlan":10,"vlanEnd":11,"mcast_snooping":1,"mcast_querier":0,"mcast_igmp_version":2,"mcast_mld_versi
-on":1,"mcast_last_member_count":2,"mcast_last_member_interval":100,"mcast_startup_query_count":2,"mcast_startup_query_interval":3124,"mcast_membership_interval":26000,"mcast_querier_interval":25500,"mcast_query_interval":12500,"mcast_query_respons
-e_interval":1000}]}]'
-+ jq -e '.[].vlans[] | select(.vlan == 10)'
-+ echo -n '[{"ifname":"br0","vlans":[{"vlan":1,"mcast_snooping":1,"mcast_querier":0,"mcast_igmp_version":2,"mcast_mld_version":1,"mcast_last_member_count":2,"mcast_last_member_interval":100,"mcast_startup_query_count":2,"mcast_startup_query_interv
-al":3124,"mcast_membership_interval":26000,"mcast_querier_interval":25500,"mcast_query_interval":12500,"mcast_query_response_interval":1000},{"vlan":10,"vlanEnd":11,"mcast_snooping":1,"mcast_querier":0,"mcast_igmp_version":2,"mcast_mld_version":1,
-"mcast_last_member_count":2,"mcast_last_member_interval":100,"mcast_startup_query_count":2,"mcast_startup_query_interval":3124,"mcast_membership_interval":26000,"mcast_querier_interval":25500,"mcast_query_interval":12500,"mcast_query_response_inte
-rval":1000}]}]'
-+ check_err 0 'Could not find vlan 10'\''s global options'
-+ local err=0
-+ local 'msg=Could not find vlan 10'\''s global options'
-+ [[ 0 -eq 0 ]]
-+ [[ 0 -ne 0 ]]
-+ jq -e '.[].vlans[] | select(.vlan == 10 and                                       .mcast_startup_query_interval == 3125) '
-+ echo -n '[{"ifname":"br0","vlans":[{"vlan":1,"mcast_snooping":1,"mcast_querier":0,"mcast_igmp_version":2,"mcast_mld_version":1,"mcast_last_member_count":2,"mcast_last_member_interval":100,"mcast_startup_query_count":2,"mcast_startup_query_interv
-al":3124,"mcast_membership_interval":26000,"mcast_querier_interval":25500,"mcast_query_interval":12500,"mcast_query_response_interval":1000},{"vlan":10,"vlanEnd":11,"mcast_snooping":1,"mcast_querier":0,"mcast_igmp_version":2,"mcast_mld_version":1,
-"mcast_last_member_count":2,"mcast_last_member_interval":100,"mcast_startup_query_count":2,"mcast_startup_query_interval":3124,"mcast_membership_interval":26000,"mcast_querier_interval":25500,"mcast_query_interval":12500,"mcast_query_response_inte
-rval":1000}]}]'
-+ check_err 4 'Wrong default mcast_startup_query_interval global vlan option value'
-+ local err=4
-+ local 'msg=Wrong default mcast_startup_query_interval global vlan option value'
-+ [[ 0 -eq 0 ]]
-+ [[ 4 -ne 0 ]]
-+ RET=4
-+ retmsg='Wrong default mcast_startup_query_interval global vlan option value'
-+ log_test 'Vlan mcast_startup_query_interval global option default value'
-+ local 'test_name=Vlan mcast_startup_query_interval global option default value'
-+ local opt_str=
-+ [[ 1 -eq 2 ]]
-+ [[ 4 -ne 0 ]]
-+ EXIT_STATUS=1
-+ printf 'TEST: %-60s  [FAIL]\n' 'Vlan mcast_startup_query_interval global option default value '
-TEST: Vlan mcast_startup_query_interval global option default value   [FAIL]
-+ [[ ! -z Wrong default mcast_startup_query_interval global vlan option value ]]
-+ printf '\t%s\n' 'Wrong default mcast_startup_query_interval global vlan option value'
-         Wrong default mcast_startup_query_interval global vlan option value
+>  So this shouldn't be an
+> issue, yet you all mention it?  So how is it happening?
 
-[...]
+Just transparency, I'm giving all details I can.
 
-Hope this helps.
+I'll try to come with something slightly different than what we have
+with the current approach.
 
-Kind regards,
-Mirsad
+Thanks,
+Miqu=C3=A8l
