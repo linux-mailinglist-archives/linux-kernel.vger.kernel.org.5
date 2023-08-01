@@ -2,149 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D5276AC8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD3E76AC94
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:14:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbjHAJKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:10:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37502 "EHLO
+        id S229585AbjHAJOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbjHAJK2 (ORCPT
+        with ESMTP id S233237AbjHAJNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:10:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4536F46B7
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:07:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5C9BD614E1
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:05:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF87CC43140
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:05:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690880749;
-        bh=ahFDZkG3uB6gt5CXk13eA4lfV0UiHUFqChNpbvLIrZk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=L9Gz8w1Y8zXgHls4hV9dnWrTg6XbW620mjJn1nYcUdu09Blf/K/IHj+85KJ6mqviJ
-         P69WzDeCdaaVwLmh87f4EpDj6Um2vREBh6nwX6FHlOT75F1Tb6j6m+8tuDfN2uZInU
-         JM+0EcwPO/gkDMuy2BT2gxrWNuPhGkqSSBpkGgD67zvdEi065neRqQEvpZ/gunH83D
-         IwcDnwOS5bEE4IofrFQrG0+YbGzRpujvvhQ4WqFtAzQVrbPqbt650d8UXQn0AEGxpV
-         03gRdwMrmsN9b0+sHOhnYj213Z3xn/HRszJ8v0zg/2nNcWMwJazzbF7oVw2BnwK410
-         KjuFYBdcOxwIg==
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2b9f48b6796so13060511fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:05:49 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZSf0ISN5guPFlAWgGKd18YdCy1pfV9R8i7134a+8HeA0caTgnE
-        XOP12q1MTh6Y7FLUJsP7xn60KDQTl2Cqo5Rr6aQ=
-X-Google-Smtp-Source: APBJJlFyL5Rr/t9XHuQAHtfsKRciAKpYSXbhhNkZ/pZqJ6eT33e8g+/B+VjFpim1Hv2h0TXC0heRePu62xBWVFYPvyw=
-X-Received: by 2002:a19:6908:0:b0:4f8:4512:c846 with SMTP id
- e8-20020a196908000000b004f84512c846mr1443298lfc.49.1690880747644; Tue, 01 Aug
- 2023 02:05:47 -0700 (PDT)
+        Tue, 1 Aug 2023 05:13:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87F855B8
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690880941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n9kdFDWcMyK/1HOobM9v5phnyHdEWyzyFaqhLZWLocA=;
+        b=K9ODMQ0iZGpQPBrlQQz49Ql1kw9ompu+7Pcoy9RWrFYoQHyZfEk2I1GphxrDvv+9u7DB6K
+        zdvOD2DMaRcSldAjETs7X0bIlkCSVfWtof00SiJlEp4umBSd1uirC0rH9iW2YOOksw7kR8
+        Zn2XLK1/ed8qs7xNRSAkvGe4Na13H30=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-92-BZTBZYzPOsmZAW3u822xmQ-1; Tue, 01 Aug 2023 05:05:43 -0400
+X-MC-Unique: BZTBZYzPOsmZAW3u822xmQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fd2dec82b7so31962805e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:05:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690880742; x=1691485542;
+        h=content-transfer-encoding:in-reply-to:organization:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n9kdFDWcMyK/1HOobM9v5phnyHdEWyzyFaqhLZWLocA=;
+        b=ltXr9q196UFkINIFu6IqWwrlLrFU0WlQbJo37I70R66JHu9QiNoIRUf2/zNd6Gh0Uv
+         WC3VLRuMuCHw0M90k8BNZbpQBNhO8lFjgxjqumBQoiyjRwNTZqv0re0/Cf24PA6N6R0R
+         1ceGl0Yuwhfv25AnzP+XqccEHZ8+jJc2WRQABXWYnwgcQGCquwtCUlrcEuZCVsIWVB4m
+         2cHthMcHncvo9sC+ipltz+L8ZthdmOcdVD1fjiEjMkK4DqB8E1kg5jTn1PoSIXdDAjnm
+         +NbrQuWvVJ+G4Cx9aoumG9F5rf0FcYKNhGcJ5R1JA7UYMPhqQZ+r+TGSXoX05HiESeiq
+         AwUg==
+X-Gm-Message-State: ABy/qLYN0cQ5SGvB+1eTWTjzIiEwcpk7sgKeUe2VcJuiz+1Cn1Pg4Jwb
+        rP2OlDolhYCDNKd3YEI5xvJNeDsivVAwQB7BbEHFKPuU8CG8HbCwltEwfhdrhZjEAVh+Juo3GId
+        raDGCY+MUjm0Szm0nhfd1U92W
+X-Received: by 2002:a7b:ce16:0:b0:3fc:521:8492 with SMTP id m22-20020a7bce16000000b003fc05218492mr1796100wmc.5.1690880742247;
+        Tue, 01 Aug 2023 02:05:42 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEC68EW/3Q+u0VSARbq5VNE5NLUF7t+a5naaLWqjf05jsPmAZ5g85TjNh4l1QEK1armULjtOw==
+X-Received: by 2002:a7b:ce16:0:b0:3fc:521:8492 with SMTP id m22-20020a7bce16000000b003fc05218492mr1796077wmc.5.1690880741870;
+        Tue, 01 Aug 2023 02:05:41 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c705:d100:871b:ec55:67d:5247? (p200300cbc705d100871bec55067d5247.dip0.t-ipconnect.de. [2003:cb:c705:d100:871b:ec55:67d:5247])
+        by smtp.gmail.com with ESMTPSA id f17-20020adffcd1000000b00313f61889ecsm15587910wrs.66.2023.08.01.02.05.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 02:05:41 -0700 (PDT)
+Message-ID: <0af1bc20-8ba2-c6b6-64e6-c1f58d521504@redhat.com>
+Date:   Tue, 1 Aug 2023 11:05:40 +0200
 MIME-Version: 1.0
-References: <20230801011554.3950435-1-guoren@kernel.org> <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
- <CAJF2gTRa5erHomJzLgUFO4SGqd5zSDwn6r3WN7kM8aWpv1vesg@mail.gmail.com>
-In-Reply-To: <CAJF2gTRa5erHomJzLgUFO4SGqd5zSDwn6r3WN7kM8aWpv1vesg@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 1 Aug 2023 17:05:35 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQ1hV1vipAo3H4X4WiPO84kVVFZcdGq7u4f0bVTry_akQ@mail.gmail.com>
-Message-ID: <CAJF2gTQ1hV1vipAo3H4X4WiPO84kVVFZcdGq7u4f0bVTry_akQ@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
-To:     WANG Rui <wangrui@loongson.cn>
-Cc:     chenhuacai@kernel.or, kernel@xen0n.name, arnd@arndb.de,
-        andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
-        peterz@infradead.org, will@kernel.org, boqun.feng@gmail.com,
-        mark.rutland@arm.com, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] fs/proc/kcore: reinstate bounce buffer for KCORE_TEXT
+ regions
+To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Baoquan He <bhe@redhat.com>, Uladzislau Rezki <urezki@gmail.com>,
+        linux-fsdevel@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>,
+        Will Deacon <will@kernel.org>, Mike Galbraith <efault@gmx.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
+        ardb@kernel.org,
+        Linux regression tracking <regressions@leemhuis.info>,
+        regressions@lists.linux.dev, Matthew Wilcox <willy@infradead.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        stable@vger.kernel.org
+References: <20230731215021.70911-1-lstoakes@gmail.com>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230731215021.70911-1-lstoakes@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 5:02=E2=80=AFPM Guo Ren <guoren@kernel.org> wrote:
->
-> On Tue, Aug 1, 2023 at 10:29=E2=80=AFAM WANG Rui <wangrui@loongson.cn> wr=
-ote:
-> >
-> > Hello,
-> >
-> > On Tue, Aug 1, 2023 at 9:16=E2=80=AFAM <guoren@kernel.org> wrote:
-> > > diff --git a/arch/loongarch/include/asm/cmpxchg.h b/arch/loongarch/in=
-clude/asm/cmpxchg.h
-> > > index 979fde61bba8..6a05b92814b6 100644
-> > > --- a/arch/loongarch/include/asm/cmpxchg.h
-> > > +++ b/arch/loongarch/include/asm/cmpxchg.h
-> > > @@ -102,8 +102,8 @@ __arch_xchg(volatile void *ptr, unsigned long x, =
-int size)
-> > >         "       move    $t0, %z4                        \n"          =
-   \
-> > >         "       " st "  $t0, %1                         \n"          =
-   \
-> > >         "       beqz    $t0, 1b                         \n"          =
-   \
-> > > -       "2:                                             \n"          =
-   \
-> > >         __WEAK_LLSC_MB                                               =
-   \
-> > > +       "2:                                             \n"          =
-   \
-> >
-> > Thanks for the patch.
-> >
-> > This would look pretty good if it weren't for the special memory
-> > barrier semantics of the LoongArch's LL and SC instructions.
-> >
-> > The LL/SC memory barrier behavior of LoongArch:
-> >
-> > * LL: <memory-barrier> + <load-exclusive>
-> > * SC: <store-conditional> + <memory-barrier>
-> >
-> > and the LoongArch's weak memory model allows load/load reorder for the
-> > same address.
-> The CoRR problem would cause wider problems than this.For this case,
-> do you mean your LL -> LL would be reordered?
->
-> CPU 0
->           CPU1
-> LL(2) (set ex-monitor)
->
->                 store (break the ex-monitor)
-> LL(1) (reordered instruction set ex-monitor
-> SC(3) (successes ?)
-Sorry for the mail client reformat, I mean:
+On 31.07.23 23:50, Lorenzo Stoakes wrote:
+> Some architectures do not populate the entire range categorised by
+> KCORE_TEXT, so we must ensure that the kernel address we read from is
+> valid.
+> 
+> Unfortunately there is no solution currently available to do so with a
+> purely iterator solution so reinstate the bounce buffer in this instance so
+> we can use copy_from_kernel_nofault() in order to avoid page faults when
+> regions are unmapped.
+> 
+> This change partly reverts commit 2e1c0170771e ("fs/proc/kcore: avoid
+> bounce buffer for ktext data"), reinstating the bounce buffer, but adapts
+> the code to continue to use an iterator.
+> 
+> Fixes: 2e1c0170771e ("fs/proc/kcore: avoid bounce buffer for ktext data")
+> Reported-by: Jiri Olsa <olsajiri@gmail.com>
+> Closes: https://lore.kernel.org/all/ZHc2fm+9daF6cgCE@krava
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> ---
+>   fs/proc/kcore.c | 26 +++++++++++++++++++++++++-
+>   1 file changed, 25 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
+> index 9cb32e1a78a0..3bc689038232 100644
+> --- a/fs/proc/kcore.c
+> +++ b/fs/proc/kcore.c
+> @@ -309,6 +309,8 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
+>   
+>   static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
+>   {
+> +	struct file *file = iocb->ki_filp;
+> +	char *buf = file->private_data;
+>   	loff_t *fpos = &iocb->ki_pos;
+>   	size_t phdrs_offset, notes_offset, data_offset;
+>   	size_t page_offline_frozen = 1;
+> @@ -554,11 +556,22 @@ static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
+>   			fallthrough;
+>   		case KCORE_VMEMMAP:
+>   		case KCORE_TEXT:
+> +			/*
+> +			 * Sadly we must use a bounce buffer here to be able to
+> +			 * make use of copy_from_kernel_nofault(), as these
+> +			 * memory regions might not always be mapped on all
+> +			 * architectures.
+> +			 */
+> +			if (copy_from_kernel_nofault(buf, (void *)start, tsz)) {
+> +				if (iov_iter_zero(tsz, iter) != tsz) {
+> +					ret = -EFAULT;
+> +					goto out;
+> +				}
+>   			/*
+>   			 * We use _copy_to_iter() to bypass usermode hardening
+>   			 * which would otherwise prevent this operation.
+>   			 */
 
-CPU0  LL(2) (set ex-monitor)
-CPU1  STORE (break the ex-monitor)
-CPU0  LL(1) (reordered instruction set ex-monitor
-CPU0  SC(3) (success?)
+Having a comment at this indentation level looks for the else case looks 
+kind of weird.
 
->
-> >
-> > So, the __WEAK_LLSC_MB[1] is used to prevent load/load reorder and no
-> > explicit barrier instruction is required after SC.
-> >
-> > [1] https://lore.kernel.org/loongarch/20230516124536.535343-1-chenhuaca=
-i@loongson.cn/
-> >
-> > Regards,
-> > --
-> > WANG Rui
-> >
->
->
-> --
-> Best Regards
->  Guo Ren
+(does that comment still apply?)
 
 
+-- 
+Cheers,
 
---=20
-Best Regards
- Guo Ren
+David / dhildenb
+
