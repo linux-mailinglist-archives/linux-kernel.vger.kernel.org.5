@@ -2,68 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E9776AE1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED36876AE2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233125AbjHAJgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34938 "EHLO
+        id S233196AbjHAJge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbjHAJfv (ORCPT
+        with ESMTP id S233106AbjHAJgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:35:51 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AFB4200;
-        Tue,  1 Aug 2023 02:33:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=SNYkC/g1c+YfS8ZTo9JQVhuDkdGL5+kyeQ/yUz57+AY=; b=cpjULsYII+lR9kpuqlTcGQ64zN
-        YSf+oKkf8S3cxbtVU6PG3VprE3zGNQKRdFk4YRWAlLpSUWcI89OGnauzXWhFks7zwwPc6AgNlmSAM
-        XSkvQCdoANl7AS3AScQk7zhRMqAUCtHM+WmJjXGc08EE+CSOX31TtFFEZBL4KJbm/B6E=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qQll5-002mfV-Ob; Tue, 01 Aug 2023 11:33:39 +0200
-Date:   Tue, 1 Aug 2023 11:33:39 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 08/28] soc: fsl: cpm1: qmc: Introduce available
- timeslots masks
-Message-ID: <dd34fa03-0b34-44a4-9e70-9d9a69f95403@lunn.ch>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
- <20230726150225.483464-9-herve.codina@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726150225.483464-9-herve.codina@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Tue, 1 Aug 2023 05:36:03 -0400
+Received: from out28-124.mail.aliyun.com (out28-124.mail.aliyun.com [115.124.28.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFCE2D77
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:34:23 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07780596|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0155529-0.000498951-0.983948;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5s-8G6_1690882455;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5s-8G6_1690882455)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 17:34:17 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in tonga_baco.c
+Date:   Tue,  1 Aug 2023 09:34:14 +0000
+Message-Id: <20230801093414.7673-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,34 +37,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 05:02:04PM +0200, Herve Codina wrote:
-> Available timeslots masks define timeslots available for the related
-> channel. These timeslots are defined by the QMC binding.
-> 
-> Timeslots used are initialized to available timeslots but can be a
-> subset of available timeslots.
-> This prepares the dynamic timeslots management (ie. changing timeslots
-> at runtime).
-> 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  drivers/soc/fsl/qe/qmc.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/soc/fsl/qe/qmc.c b/drivers/soc/fsl/qe/qmc.c
-> index 2d2a9d88ba6c..21ad7e79e7bd 100644
-> --- a/drivers/soc/fsl/qe/qmc.c
-> +++ b/drivers/soc/fsl/qe/qmc.c
-> @@ -177,7 +177,9 @@ struct qmc_chan {
->  	struct qmc *qmc;
->  	void __iomem *s_param;
->  	enum qmc_mode mode;
-> +	u64	tx_ts_mask_avail;
->  	u64	tx_ts_mask;
-> +	u64	rx_ts_mask_avail;
->  	u64	rx_ts_mask;
+Fix the following errors reported by checkpatch:
 
-Is this for E1? So there is a maximum of 32 slots? A u32 would be
-sufficient i think?
+ERROR: that open brace { should be on the previous line
 
-	   Andrew
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ .../drm/amd/pm/powerplay/hwmgr/tonga_baco.c   | 30 +++++++------------
+ 1 file changed, 10 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/tonga_baco.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/tonga_baco.c
+index ea743bea8e29..432d4fd2a0ba 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/tonga_baco.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/tonga_baco.c
+@@ -36,8 +36,7 @@
+ #include "smu/smu_7_1_2_sh_mask.h"
+ 
+ 
+-static const struct baco_cmd_entry gpio_tbl[] =
+-{
++static const struct baco_cmd_entry gpio_tbl[] = {
+ 	{ CMD_WRITE, mmGPIOPAD_EN, 0, 0, 0, 0x0 },
+ 	{ CMD_WRITE, mmGPIOPAD_PD_EN, 0, 0, 0, 0x0 },
+ 	{ CMD_WRITE, mmGPIOPAD_PU_EN, 0, 0, 0, 0x0 },
+@@ -50,15 +49,13 @@ static const struct baco_cmd_entry gpio_tbl[] =
+ 	{ CMD_READMODIFYWRITE, mmDC_GPIO_SYNCA_MASK, 0, 0, 0, 0x00001111 }
+ };
+ 
+-static const struct baco_cmd_entry enable_fb_req_rej_tbl[] =
+-{
++static const struct baco_cmd_entry enable_fb_req_rej_tbl[] = {
+ 	{ CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, 0xC0300024 },
+ 	{ CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, 0x1, 0x0, 0, 0x1 },
+ 	{ CMD_WRITE, mmBIF_FB_EN, 0, 0, 0, 0x0 }
+ };
+ 
+-static const struct baco_cmd_entry use_bclk_tbl[] =
+-{
++static const struct baco_cmd_entry use_bclk_tbl[] = {
+ 	{ CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, ixCG_SPLL_FUNC_CNTL },
+ 	{ CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, CG_SPLL_FUNC_CNTL__SPLL_BYPASS_EN_MASK, CG_SPLL_FUNC_CNTL__SPLL_BYPASS_EN__SHIFT, 0, 0x1 },
+ 	{ CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, ixCG_SPLL_FUNC_CNTL_2 },
+@@ -80,8 +77,7 @@ static const struct baco_cmd_entry use_bclk_tbl[] =
+ 	{ CMD_READMODIFYWRITE, mmMPLL_CNTL_MODE, MPLL_CNTL_MODE__MPLL_MCLK_SEL_MASK, MPLL_CNTL_MODE__MPLL_MCLK_SEL__SHIFT, 0, 0x0 }
+ };
+ 
+-static const struct baco_cmd_entry turn_off_plls_tbl[] =
+-{
++static const struct baco_cmd_entry turn_off_plls_tbl[] = {
+ 	{ CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, ixCG_SPLL_FUNC_CNTL },
+ 	{ CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, CG_SPLL_FUNC_CNTL__SPLL_RESET_MASK, CG_SPLL_FUNC_CNTL__SPLL_RESET__SHIFT, 0, 0x1 },
+ 	{ CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, CG_SPLL_FUNC_CNTL__SPLL_PWRON_MASK, CG_SPLL_FUNC_CNTL__SPLL_PWRON__SHIFT, 0, 0x0 },
+@@ -112,8 +108,7 @@ static const struct baco_cmd_entry turn_off_plls_tbl[] =
+ 	{ CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, THM_CLK_CNTL__TMON_CLK_SEL_MASK,  THM_CLK_CNTL__TMON_CLK_SEL__SHIFT, 0, 0x1 }
+ };
+ 
+-static const struct baco_cmd_entry enter_baco_tbl[] =
+-{
++static const struct baco_cmd_entry enter_baco_tbl[] = {
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_EN_MASK, BACO_CNTL__BACO_EN__SHIFT, 0, 0x01 },
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_BIF_SCLK_SWITCH_MASK, BACO_CNTL__BACO_BIF_SCLK_SWITCH__SHIFT, 0, 0x01 },
+ 	{ CMD_WAITFOR, mmBACO_CNTL, BACO_CNTL__BACO_BIF_SCLK_SWITCH_MASK, 0, 5, 0x40000 },
+@@ -130,8 +125,7 @@ static const struct baco_cmd_entry enter_baco_tbl[] =
+ 
+ #define BACO_CNTL__PWRGOOD_MASK  BACO_CNTL__PWRGOOD_GPIO_MASK+BACO_CNTL__PWRGOOD_MEM_MASK+BACO_CNTL__PWRGOOD_DVO_MASK
+ 
+-static const struct baco_cmd_entry exit_baco_tbl[] =
+-{
++static const struct baco_cmd_entry exit_baco_tbl[] = {
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_RESET_EN_MASK, BACO_CNTL__BACO_RESET_EN__SHIFT, 0, 0x01 },
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_BCLK_OFF_MASK, BACO_CNTL__BACO_BCLK_OFF__SHIFT, 0, 0x00 },
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_POWER_OFF_MASK, BACO_CNTL__BACO_POWER_OFF__SHIFT, 0, 0x00 },
+@@ -146,22 +140,19 @@ static const struct baco_cmd_entry exit_baco_tbl[] =
+ 	{ CMD_WAITFOR, mmBACO_CNTL, BACO_CNTL__BACO_MODE_MASK, 0, 0xffffffff, 0x00 }
+ };
+ 
+-static const struct baco_cmd_entry clean_baco_tbl[] =
+-{
++static const struct baco_cmd_entry clean_baco_tbl[] = {
+ 	{ CMD_WRITE, mmBIOS_SCRATCH_6, 0, 0, 0, 0 },
+ 	{ CMD_WRITE, mmBIOS_SCRATCH_7, 0, 0, 0, 0 }
+ };
+ 
+-static const struct baco_cmd_entry gpio_tbl_iceland[] =
+-{
++static const struct baco_cmd_entry gpio_tbl_iceland[] = {
+ 	{ CMD_WRITE, mmGPIOPAD_EN, 0, 0, 0, 0x0 },
+ 	{ CMD_WRITE, mmGPIOPAD_PD_EN, 0, 0, 0, 0x0 },
+ 	{ CMD_WRITE, mmGPIOPAD_PU_EN, 0, 0, 0, 0x0 },
+ 	{ CMD_WRITE, mmGPIOPAD_MASK, 0, 0, 0, 0xff77ffff }
+ };
+ 
+-static const struct baco_cmd_entry exit_baco_tbl_iceland[] =
+-{
++static const struct baco_cmd_entry exit_baco_tbl_iceland[] = {
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_RESET_EN_MASK, BACO_CNTL__BACO_RESET_EN__SHIFT, 0, 0x01 },
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_BCLK_OFF_MASK, BACO_CNTL__BACO_BCLK_OFF__SHIFT, 0, 0x00 },
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_POWER_OFF_MASK, BACO_CNTL__BACO_POWER_OFF__SHIFT, 0, 0x00 },
+@@ -177,8 +168,7 @@ static const struct baco_cmd_entry exit_baco_tbl_iceland[] =
+ 	{ CMD_WAITFOR, mmBACO_CNTL, BACO_CNTL__BACO_MODE_MASK, 0, 0xffffffff, 0x00 }
+ };
+ 
+-static const struct baco_cmd_entry clean_baco_tbl_iceland[] =
+-{
++static const struct baco_cmd_entry clean_baco_tbl_iceland[] = {
+ 	{ CMD_WRITE, mmBIOS_SCRATCH_7, 0, 0, 0, 0 }
+ };
+ 
+-- 
+2.17.1
+
