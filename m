@@ -2,147 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 238D976BBBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3174B76BBC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbjHARzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51378 "EHLO
+        id S231497AbjHAR4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:56:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjHARzD (ORCPT
+        with ESMTP id S229485AbjHAR4J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:55:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380CC1BF6;
-        Tue,  1 Aug 2023 10:55:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B99E76154F;
-        Tue,  1 Aug 2023 17:55:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04115C433C8;
-        Tue,  1 Aug 2023 17:54:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690912501;
-        bh=9+iH7eVxFr4wHi/N95S6chs7KFxakju7TNL5dJY/X4o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lG3Vaeavv2JUipv1eLk91e2CQ/94rkNiLm7pEduScTyvjRg70aeNgvTRBrn+6DfDs
-         +FfcRdH8xGy94j1nc5YxdNHaEhVOCRSaojCrtHfcfUdy/1moxlTK3dBfqhQPiAg4Uu
-         01cy8BKmjIwuavn1p97tHW/enwweF8Iv53Tpq182AFElni1VxxGhpWM+5MjfcGnl0B
-         fczonjKdWDCQSvjmOClA4ZaM7WpgLe912vzkcvqo0xxN3MOJ76PfAVhvzmA9awJkJd
-         icfHQR0E4hgnVtvFl0d3wxALbz4vjtbwWzAehMRydKaQfg4QnJTG7tUZrnD26Tqt+Z
-         oju3JylN43LOw==
-Date:   Tue, 1 Aug 2023 18:54:54 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 2/8] iio: cdc: ad7150: relax return value check for
- IRQ get
-Message-ID: <20230801185454.0d115aaa@jic23-huawei>
-In-Reply-To: <3ad1c6f195ead3dfa8711235e1dead139d27f700.1690890774.git.mazziesaccount@gmail.com>
-References: <cover.1690890774.git.mazziesaccount@gmail.com>
-        <3ad1c6f195ead3dfa8711235e1dead139d27f700.1690890774.git.mazziesaccount@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Tue, 1 Aug 2023 13:56:09 -0400
+Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8191BF6;
+        Tue,  1 Aug 2023 10:56:07 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFj9n5hVsz9xFrn;
+        Wed,  2 Aug 2023 01:42:37 +0800 (CST)
+Received: from [10.81.206.119] (unknown [10.81.206.119])
+        by APP1 (Coremail) with SMTP id LxC2BwAn27oNR8lkleUeAA--.35429S2;
+        Tue, 01 Aug 2023 18:55:42 +0100 (CET)
+Message-ID: <e12fcf9b-d122-7c42-1516-27e03a99270a@huaweicloud.com>
+Date:   Tue, 1 Aug 2023 19:55:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/3] wifi: brcm80211: change channel_list to a flexible
+ array
+Content-Language: en-US
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Ian Lin <ian.lin@infineon.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Hector Martin <marcan@marcan.st>,
+        Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ramesh Rangavittal <ramesh.rangavittal@infineon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Ryohei Kondo <ryohei.kondo@cypress.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Brian Henriquez <brian.henriquez@cypress.com>,
+        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
+        <SHA-cyfmac-dev-list@infineon.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+References: <cover.1690904067.git.petr.tesarik.ext@huawei.com>
+ <c18a31a293fb5ba5d7a845c4b5052516ff724a9f.1690904067.git.petr.tesarik.ext@huawei.com>
+ <87pm46wtno.fsf@kernel.org>
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+In-Reply-To: <87pm46wtno.fsf@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: LxC2BwAn27oNR8lkleUeAA--.35429S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtw4ruF1fuFWrtF18uF1xKrg_yoW7Xw43pa
+        4fJFyUKr4kXr1jqF17JF43tFyrKa1qy3Z8KF4xKryavayUWr1fJF18Gay0kryDA39rt347
+        tryqqryqyF4rAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVW8
+        JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUoj
+        jgUUUUU
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 15:02:47 +0300
-Matti Vaittinen <mazziesaccount@gmail.com> wrote:
+On 8/1/2023 7:37 PM, Kalle Valo wrote:
+> Petr Tesarik <petrtesarik@huaweicloud.com> writes:
+> 
+>> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+>>
+>> The channel list is in fact a flexible array, but it has a length of 1 to
+>> make sure there is enough room for the special chanspec -1 when the struct
+>> is allocated on stack to abort a scan.
+>>
+>> Move the single array member to newly declared struct brcmf_scan_abort_le
+>> and struct brcmf_scan_abort_v2_le and make channel_list in struct
+>> brcmf_scan_params_le and struct brcmf_scan_params_v2_le a flexible array.
+>>
+>> This fixes this annoying (though harmless) warning when the kernel is built
+>> with CONFIG_FORTIFY_SOURCE=y:
+>>
+>> ------------[ cut here ]------------
+>> memcpy: detected field-spanning write (size 76) of single field
+>> "&params_le->channel_list[0]" at
+>> drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:1072 (size
+>> 2)
+>> WARNING: CPU: 2 PID: 991 at
+>> drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:1072
+>> brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac]
+>> Modules linked in: qrtr(E) algif_hash(E) aes_neon_bs(E)
+>> aes_neon_blk(E) algif_skcipher(E) af_alg(E) bnep(E) brcmfmac_wcc(E)
+>> bcm2835_v4l2(CE) bcm2835_mmal_vchiq(CE) videobuf2_vmalloc(E)
+>> videobuf2_memops(E) videobuf2_v4l2(E) videodev(E) hci_uart(E)
+>> btsdio(E) videobuf2_common(E) btbcm(E) mc(E) snd_bcm2835(CE)
+>> bluetooth(E) snd_pcm(E) brcmfmac(E) snd_timer(E) cpufreq_dt(E) snd(E)
+>> soundcore(E) cfg80211(E) ecdh_generic(E) brcmutil(E)
+>> raspberrypi_cpufreq(E) rfkill(E) vchiq(CE) bcm2711_thermal(E)
+>> leds_gpio(E) fuse(E) efi_pstore(E) dmi_sysfs(E) ip_tables(E)
+>> x_tables(E) rpcsec_gss_krb5(E) auth_rpcgss(E) nfsv4(E) dns_resolver(E)
+>> nfs(E) lockd(E) grace(E) fscache(E) netfs(E) af_packet(E) mmc_block(E)
+>> xhci_pci(E) xhci_pci_renesas(E) xhci_hcd(E) usbcore(E) usb_common(E)
+>> clk_raspberrypi(E) gpio_raspberrypi_exp(E) bcm2835_dma(E)
+>> crct10dif_ce(E) virt_dma(E) pcie_brcmstb(E) sdhci_iproc(E)
+>> gpio_regulator(E) sdhci_pltfm(E) sdhci(E) mmc_core(E) fixed(E)
+>> nvmem_rmem(E) sunrpc(E) sg(E) dm_multipath(E) dm_mod(E) efivarfs(E)
+>> Unloaded tainted modules: aes_ce_cipher(E):1
+>> CPU: 2 PID: 991 Comm: wpa_supplicant Tainted: G C E
+>> 6.5.0-rc4-dynswiotlb+ #27 2ec0961165cc91fdbec101d9d43b3331ba4f0927
+>> Hardware name: Unknown Unknown Product/Unknown Product, BIOS 2023.04 04/01/2023
+>> pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>> pc : brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac]
+>> lr : brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac]
+>> sp : ffff8000829ab590
+>> x29: ffff8000829ab590 x28: 0000000000000000 x27: 0000000000000001
+>> x26: ffff000105e7e0a4 x25: ffff00010a0bcb48 x24: ffff000101e03800
+>> x23: ffff000105ec8920 x22: ffff000106332980 x21: ffff00010a0bc0c0
+>> x20: ffff00010a0bcb90 x19: ffff00010a0bc108 x18: ffffffffffffffff
+>> x17: 0000000000000000 x16: 0000000000000000 x15: 616f72622f737365
+>> x14: 6c657269772f7465 x13: 616d666d6372622f x12: 31313230386d6372
+>> x11: 00000000ffffdfff x10: ffff800081ad3328 x9 : ffff800080130694
+>> x8 : 000000000002ffe8 x7 : c0000000ffffdfff x6 : 00000000000affa8
+>> x5 : ffff0001fef75e00 x4 : 0000000000000000 x3 : 0000000000000027
+>> x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00010aa0e000
+>> Call trace:
+>>  brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac
+>> 38c4a81a3b85b4aff1650c67f95f20bc542d60c1]
+>>  brcmf_run_escan+0x148/0x1a0 [brcmfmac 38c4a81a3b85b4aff1650c67f95f20bc542d60c1]
+>>  brcmf_do_escan+0x74/0xe0 [brcmfmac 38c4a81a3b85b4aff1650c67f95f20bc542d60c1]
+>>  brcmf_cfg80211_scan+0xcc/0x298 [brcmfmac 38c4a81a3b85b4aff1650c67f95f20bc542d60c1]
+>>  rdev_scan+0x38/0x158 [cfg80211 8907673111c49ec56be88af3d38994cc1cf54cb8]
+>>  cfg80211_scan+0x134/0x178 [cfg80211 8907673111c49ec56be88af3d38994cc1cf54cb8]
+>>  nl80211_trigger_scan+0x3e8/0x768 [cfg80211 8907673111c49ec56be88af3d38994cc1cf54cb8]
+>>  genl_family_rcv_msg_doit.isra.0+0xc0/0x130
+>>  genl_rcv_msg+0x1e4/0x278
+>>  netlink_rcv_skb+0x64/0x138
+>>  genl_rcv+0x40/0x60
+>>  netlink_unicast+0x1cc/0x2d8
+>>  netlink_sendmsg+0x1d4/0x448
+>>  sock_sendmsg+0x64/0xc0
+>>  ____sys_sendmsg+0x260/0x2e0
+>>  ___sys_sendmsg+0x88/0xf0
+>>  __sys_sendmsg+0x70/0xd8
+>>  __arm64_sys_sendmsg+0x2c/0x40
+>>  invoke_syscall+0x78/0x100
+>>  el0_svc_common.constprop.0+0x100/0x130
+>>  do_el0_svc+0x40/0xa8
+>>  el0_svc+0x34/0x138
+>>  el0t_64_sync_handler+0x120/0x130
+>>  el0t_64_sync+0x1a8/0x1b0
+>> ---[ end trace 0000000000000000 ]---
+>>
+>> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> 
+> Is this the same issue as Hans patch fixes?
+> 
+> https://patchwork.kernel.org/project/linux-wireless/patch/20230729140500.27892-1-hdegoede@redhat.com/
 
-> fwnode_irq_get[_byname]() were changed to not return 0 anymore. The
-> special error case where device-tree based IRQ mapping fails can't no
-> longer be reliably detected from this return value. This yields a
-> functional change in the driver where the mapping failure is treated as
-> an error.
-> 
-> The mapping failure can occur for example when the device-tree IRQ
-> information translation call-back(s) (xlate) fail, IRQ domain is not
-> found, IRQ type conflicts, etc. In most cases this indicates an error in
-> the device-tree and special handling is not really required.
-> 
-> One more thing to note is that ACPI APIs do not return zero for any
-> failures so this special handling did only apply on device-tree based
-> systems.
-> 
-> Drop the special handling for DT mapping failures as these can no longer
-> be separated from other errors at driver side. Change all failures in
-> IRQ getting to be handled by continuing without the events instead of
-> aborting the probe upon certain errors.
-> 
-> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Again, fiddled tags so I don't have RB and SoB
+Yes, I wasn't aware of this other patch (I'm not subscribed to
+linux-wireless). I see, Hans approach is less intrusive.
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-all the normal reasons.
-
-Thanks,
-
-Jonathan
-
-> 
-> ---
-> Revision history:
-> v5 => v6:
->  - Never abort the probe when IRQ getting fails but continue without
->    events.
-> 
-> Please note that I don't have the hardware to test this change.
-> Furthermore, testing this type of device-tree error cases is not
-> trivial, as the question we probably dive in is "what happens with the
-> existing users who have errors in the device-tree". Answering to this
-> question is not simple.
-> 
-> The patch changing the fwnode_irq_get() got merged during 5.4:
-> https://lore.kernel.org/all/fb7241d3-d1d1-1c37-919b-488d6d007484@gmail.com/
-> This is a clean-up as agreed.
-> ---
->  drivers/iio/cdc/ad7150.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/iio/cdc/ad7150.c b/drivers/iio/cdc/ad7150.c
-> index d656d2f12755..4c03b9e834b8 100644
-> --- a/drivers/iio/cdc/ad7150.c
-> +++ b/drivers/iio/cdc/ad7150.c
-> @@ -541,6 +541,7 @@ static int ad7150_probe(struct i2c_client *client)
->  	const struct i2c_device_id *id = i2c_client_get_device_id(client);
->  	struct ad7150_chip_info *chip;
->  	struct iio_dev *indio_dev;
-> +	bool use_irq = true;
->  	int ret;
->  
->  	indio_dev = devm_iio_device_alloc(&client->dev, sizeof(*chip));
-> @@ -561,14 +562,13 @@ static int ad7150_probe(struct i2c_client *client)
->  
->  	chip->interrupts[0] = fwnode_irq_get(dev_fwnode(&client->dev), 0);
->  	if (chip->interrupts[0] < 0)
-> -		return chip->interrupts[0];
-> -	if (id->driver_data == AD7150) {
-> +		use_irq = false;
-> +	else if (id->driver_data == AD7150) {
->  		chip->interrupts[1] = fwnode_irq_get(dev_fwnode(&client->dev), 1);
->  		if (chip->interrupts[1] < 0)
-> -			return chip->interrupts[1];
-> +			use_irq = false;
->  	}
-> -	if (chip->interrupts[0] &&
-> -	    (id->driver_data == AD7151 || chip->interrupts[1])) {
-> +	if (use_irq) {
->  		irq_set_status_flags(chip->interrupts[0], IRQ_NOAUTOEN);
->  		ret = devm_request_threaded_irq(&client->dev,
->  						chip->interrupts[0],
+Petr T
 
