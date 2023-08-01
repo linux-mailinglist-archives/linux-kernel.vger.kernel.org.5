@@ -2,66 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A7176B357
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD19676B355
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233847AbjHALeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36338 "EHLO
+        id S233757AbjHALeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233774AbjHALed (ORCPT
+        with ESMTP id S232283AbjHALeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:34:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38536D3;
-        Tue,  1 Aug 2023 04:34:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=m1F9HPkA3rCfG5++ie5WawGo0UTj2vVNhV/5rI+7dho=; b=mB9lQRj8ne7QFWU/SvSHLBtwb6
-        h8xkNxWTv4f5uznh/z9xyszKEHyfllEKko5I05DM439vdurXjN3Ng5UlhclOvPdYJlzKN75ic1PuZ
-        MkQx7FVcynX8dz8FJWvDGDtTmTY6w2TLbbQbh1NXLy0plifn86o+u0GEsiobPMM55N+aULATCl7o5
-        IdlMhHYGS/bCJUhVDMRtgJ0e44vX5wwj0q4PNb9Z8iad4ngKUWtCkhUbkQ5tg+F1QUWm/fiUrNvg3
-        EPHixlaFooaWC4Zv49H6rXFD2n+pHXC40U/U929HsM7rOoe7LlXEaVvwd+4uv5LM1aBGZQGY/RYTp
-        2VqoqZEA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qQndb-008R8A-MR; Tue, 01 Aug 2023 11:34:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3184E300134;
-        Tue,  1 Aug 2023 13:34:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EDD41200C570F; Tue,  1 Aug 2023 13:34:01 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 13:34:01 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ze Gao <zegao2021@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: Re: [RFC PATCH v3 3/6] sched, tracing: add to report task state in
- symbolic chars
-Message-ID: <20230801113401.GC79828@hirez.programming.kicks-ass.net>
-References: <20230801090124.8050-1-zegao@tencent.com>
- <20230801090124.8050-4-zegao@tencent.com>
+        Tue, 1 Aug 2023 07:34:14 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17823D3
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 04:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690889654; x=1722425654;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=ZFlr8Ova1lel+95XhQpbpQvUr8pBCW/k2p17P2zQdT0=;
+  b=RFyGAsj0aMitqyhvPmMC7hQII6LHphNjPu8F6m4iCfp4V/0WrylEolSz
+   m4YdCGydYYPisMhinXbsjBTN2vIsZX525i/MirbkvaGIPlhYYakACU3Oj
+   W3zK69rkcHQ9owv+h8RACennMfkOtfJ+Vt7/w2kdHhkt6bXEWcFrKFVnj
+   ov89ymtxurl9vZtyDDiJlktmk7ToIKDRC2hDWf+RVVVAxPLrwbMNDrb2W
+   bAc5Hh+Aqs4ccM2CKi4A+eq9d76F47J/VRJLBlsBjWFiByCrTQ8V2ng8A
+   UATwnn4MqhxpWdCM7i55jnb/fi5+nspeOA0b+Jaw5oxwbldbDc4zK9l8F
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="349568218"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="scan'208";a="349568218"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 04:34:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="731944500"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="scan'208";a="731944500"
+Received: from igorban-mobl1.ccr.corp.intel.com (HELO localhost) ([10.252.36.188])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 04:34:11 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>,
+        Ran Sun <sunran001@208suo.com>, alexander.deucher@amd.com,
+        airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/amd/pm: Clean up errors in smu73_discrete.h
+In-Reply-To: <ZMjposYeMFxU5nE9@debian.me>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230801100024.8215-1-sunran001@208suo.com>
+ <ZMjposYeMFxU5nE9@debian.me>
+Date:   Tue, 01 Aug 2023 14:34:09 +0300
+Message-ID: <87cz07vvwu.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801090124.8050-4-zegao@tencent.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,29 +64,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 05:01:21PM +0800, Ze Gao wrote:
-> Internal representations of task state are likely to be changed
-> or ordered, and reporting them to userspace without exporting
-> them as part of API is basically wrong, which can easily break
-> a userspace observability tool as kernel evolves. For example,
-> perf suffers from this and still reports wrong states as of this
-> writing.
-> 
-> OTOH, some masqueraded states like TASK_REPORT_IDLE and
-> TASK_REPORT_MAX are also reported inadvertently, which confuses
-> things even more and most userspace tools do not even take them
-> into consideration.
-> 
-> So add a new variable in company with the old raw value to
-> report task state in symbolic chars, which are self-explaining
-> and no further translation is needed. Of course this does not
-> break any userspace tool.
-> 
-> Note for PREEMPT_ACTIVE, we introduce 'p' to report it and use
-> the old conventions for the rest.
+On Tue, 01 Aug 2023, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+> And it is unfortunate that you and @208suo.com people doesn't reply to
+> review comments (try searching lore.kernel.org)
 
-*sigh*... just because userspace if daft, we need to change the kernel?
+Essentially a one-way firehose of patches pointed at our general
+direction is not benefitial to the community. It's not participation,
+it's not co-operation. If the review gets ignored, why should we invest
+our time on *any* of the patches?
 
-Why do we need this character anyway, why not just print the state in
-hex and leave it at that? These single character state things are a
-relic, please just let them die.
+
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
