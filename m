@@ -2,58 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0346076B5AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4403B76B5B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234025AbjHANVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
+        id S234054AbjHANXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230305AbjHANV2 (ORCPT
+        with ESMTP id S234034AbjHANXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:21:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3557F10C3;
-        Tue,  1 Aug 2023 06:21:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B830661593;
-        Tue,  1 Aug 2023 13:21:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B10BC433C7;
-        Tue,  1 Aug 2023 13:21:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690896086;
-        bh=rhZs8WvpeDdD/lD7n3xXs2aoj3z1VB7E4PDP0oU22EE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TPWfXHS17ip7EH8JQAphBzmLWL5eFSgkJJTLLMTAbdVxHPI8AgP5eTCauW1vuR/wF
-         EZ5sKnojzysZCIT1MzEfxx0KEBOonbmR5cZN2Gq1wXl3AvUo4HD5y+MwOLtV8a9ZEu
-         KDZkxFsILSLB2BRDtbq+MiVvw7AbH+hsCr3LNhHHwUE+3eT6v6NGErLbJaC+dGc9ex
-         MPfj+2rvCcGFxrq6px/itwngoJ56sc8iTwIV2skbqEuu6pwXzZhmVT1y6lrN05t2Zk
-         zySMZ1CDI993In29OnpByKe4F4uuwiU0blcvA6oLgT+BYJvkuGh2CGObbEm46wIC4n
-         A0uq0BwAAz++A==
-Date:   Tue, 1 Aug 2023 15:21:20 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] kunit: Make 'list' action available to kunit
- test modules
-Message-ID: <20230801152120.3f53f876@coco.lan>
-In-Reply-To: <20230731141021.2854827-7-janusz.krzysztofik@linux.intel.com>
-References: <20230731141021.2854827-5-janusz.krzysztofik@linux.intel.com>
-        <20230731141021.2854827-7-janusz.krzysztofik@linux.intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 1 Aug 2023 09:23:42 -0400
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400F61985;
+        Tue,  1 Aug 2023 06:23:41 -0700 (PDT)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-686ba97e4feso5544500b3a.0;
+        Tue, 01 Aug 2023 06:23:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690896221; x=1691501021;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S8DGTH9o8XYfpqW6sUl5ShJmmE1aRyuvuNJxFdy1tXs=;
+        b=gkvQPEMZQw1y2rMtAPv/AUcpIYlHuI+ICXX82Sg9BuW8GX15t7k7J7VK+0BSmiiCnK
+         bTvyzywmngnqrEQOcyHDLRyK+WUZ+wHiHrQ+PrnJTPW77HC+ApM/+VuluvPR0DTtyRSy
+         AWF/ElA0LsY+rK9S4OEA/JQTmfIGoafAnt+8BP10s0qZjOlZMPd6FHV7qQhtqcw9bKel
+         zKzZKfo+QwVnj5alvGQcYBO51hlWMnK/eYxKiU2z/U81TLLxJlTBfUYoPVoQ1qe8mzXN
+         A9RFXhb7JS6Nl5aQl9txsSKfDMolMj/UGgnIEt3dOjArDqGlJ8JiccLUxWxMFbgtPBnu
+         oQqA==
+X-Gm-Message-State: ABy/qLa5s5lTbJk47qJFpviFCzTKVTgcGQ6Z9BShe8WhlvVj2bPFlwhH
+        tbwn1Rne71lfhfcW//vDToY=
+X-Google-Smtp-Source: APBJJlGl6eg7z0GE6ZR9QqLPoLDV1SjAgmptJ7kEEEn1in7OIMQy1N+rIb5Um0iq0Vbh1jKdATtH3A==
+X-Received: by 2002:a05:6a20:9194:b0:135:940:97e6 with SMTP id v20-20020a056a20919400b00135094097e6mr15062201pzd.8.1690896220368;
+        Tue, 01 Aug 2023 06:23:40 -0700 (PDT)
+Received: from [192.168.51.14] ([98.51.102.78])
+        by smtp.gmail.com with ESMTPSA id t7-20020aa79387000000b00687087d3647sm8151133pfe.142.2023.08.01.06.23.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 06:23:39 -0700 (PDT)
+Message-ID: <a660adba-b73b-1c02-f642-c287bb4c72fc@acm.org>
+Date:   Tue, 1 Aug 2023 06:23:38 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: next: arm64: gcc-8-defconfig: ufshcd.c:10629:2:
+ /builds/linux/include/linux/compiler_types.h:397:38: error: call to
+ '__compiletime_assert_553' declared with attribute error: BUILD_BUG_ON
+ failed:
+Content-Language: en-US
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-scsi@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Avri Altman <avri.altman@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>
+References: <CA+G9fYur8UJoUyTLJFVEJPh-15TJ7kbdD2q8xVz8a3fLjkxxVw@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <CA+G9fYur8UJoUyTLJFVEJPh-15TJ7kbdD2q8xVz8a3fLjkxxVw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,165 +72,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 31 Jul 2023 16:10:24 +0200
-Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com> escreveu:
-
-> Results from kunit tests reported via dmesg may be interleaved with other
-> kernel messages.  When parsing dmesg for modular kunit results in real
-> time, external tools, e.g., Intel GPU tools (IGT), may want to insert
-> their own test name markers into dmesg at the start of each test, before
-> any kernel message related to that test appears there, so existing upper
-> level test result parsers have no doubt which test to blame for a specific
-> kernel message.  Unfortunately, kunit reports names of tests only at their
-> completion (with the exeption of a not standarized "# Subtest: <name>"
-> header above a test plan of each test suite or parametrized test).
+On 8/1/23 05:16, Naresh Kamboju wrote:
+> Following build error noticed while building Linux next-20230801 tag
+> arm64 defconfig with gcc-8 toolchain.
 > 
-> External tools could be able to insert their own "start of the test"
-> markers with test names included if they new those names in advance.
-> Test names could be learned from a list if provided by a kunit test
-> module.
+> Regressions found on arm64:
 > 
-> There exists a feature of listing kunit tests without actually executing
-> them, but it is now limited to configurations with the kunit module built
-> in and covers only built-in tests, already available at boot time.
-> Moreover, switching from list to normal mode requires reboot.  If that
-> feature was also available when kunit is built as a module, userspace
-> could load the module with action=list parameter, load some kunit test
-> modules they are interested in and learn about the list of tests provided
-> by those modules, then unload them, reload the kunit module in normal mode
-> and execute the tests with their lists already known.
+>    - build/gcc-8-defconfig
+>    - build/gcc-8-defconfig-40bc7ee5
 > 
-> Extend kunit module notifier initialization callback with a processing
-> path for only listing the tests provided by a module if the kunit action
-> parameter is set to "list".  For ease of use, submit the list in the
-> format of a standard KTAP report, with SKIP result from each test case,
-> giving "list mode" as the reason for skipping.  For each test suite
-> provided by a kunit test module, make such list of its test cases also
-> available via kunit debugfs for the lifetime of the module.  For user
-> convenience, make the kunit.action parameter visible in sysfs.
-
-It sounds interesting to have a modprobe option to just list the
-tests without excecuting.
-
 > 
-> Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-> ---
->  include/kunit/test.h |  1 +
->  lib/kunit/executor.c | 19 +++++++++++++------
->  lib/kunit/test.c     | 30 +++++++++++++++++++++++++++++-
->  3 files changed, 43 insertions(+), 7 deletions(-)
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 > 
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index 23120d50499ef..6d693f21a4833 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -237,6 +237,7 @@ static inline void kunit_set_failure(struct kunit *test)
->  }
->  
->  bool kunit_enabled(void);
-> +const char *kunit_action(void);
->  
->  void kunit_init_test(struct kunit *test, const char *name, char *log);
->  
-> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-> index 74982b83707ca..d1c0616569dfd 100644
-> --- a/lib/kunit/executor.c
-> +++ b/lib/kunit/executor.c
-> @@ -12,19 +12,26 @@
->  extern struct kunit_suite * const __kunit_suites_start[];
->  extern struct kunit_suite * const __kunit_suites_end[];
->  
-> +static char *action_param;
-> +
-> +module_param_named(action, action_param, charp, 0400);
-> +MODULE_PARM_DESC(action,
-> +		 "Changes KUnit executor behavior, valid values are:\n"
-> +		 "<none>: run the tests like normal\n"
-> +		 "'list' to list test names instead of running them.\n");
+> log:
+> -----
+> In function 'ufshcd_check_header_layout',
+>      inlined from 'ufshcd_core_init' at
+> /builds/linux/drivers/ufs/core/ufshcd.c:10629:2:
+> /builds/linux/include/linux/compiler_types.h:397:38: error: call to
+> '__compiletime_assert_553' declared with attribute error: BUILD_BUG_ON
+> failed: ((u8 *)&(struct request_desc_header){ .enable_crypto = 1})[2]
+> != 0x80
+>    _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>                                        ^
+> 
+> 
+> Links:
+>   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/log
+>   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/details/
+>   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/history/
 
-Help message sounded confusing. What about adding a boolean modprobe
-parameter, like "list_tests"?
-
-> +
-> +const char *kunit_action(void)
-> +{
-> +	return action_param;
-> +}
-> +
->  #if IS_BUILTIN(CONFIG_KUNIT)
->  
->  static char *filter_glob_param;
-> -static char *action_param;
->  
->  module_param_named(filter_glob, filter_glob_param, charp, 0);
->  MODULE_PARM_DESC(filter_glob,
->  		"Filter which KUnit test suites/tests run at boot-time, e.g. list* or list*.*del_test");
-> -module_param_named(action, action_param, charp, 0);
-> -MODULE_PARM_DESC(action,
-> -		 "Changes KUnit executor behavior, valid values are:\n"
-> -		 "<none>: run the tests like normal\n"
-> -		 "'list' to list test names instead of running them.\n");
->  
->  /* glob_match() needs NULL terminated strings, so we need a copy of filter_glob_param. */
->  struct kunit_test_filter {
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index a29ca1acc4d81..413d9fd364a8d 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -674,6 +674,27 @@ int kunit_run_tests(struct kunit_suite *suite)
->  }
->  EXPORT_SYMBOL_GPL(kunit_run_tests);
->  
-> +static void kunit_list_suite(struct kunit_suite *suite)
-> +{
-> +	struct kunit_case *test_case;
-> +
-> +	kunit_print_suite_start(suite);
-> +
-> +	kunit_suite_for_each_test_case(suite, test_case) {
-> +		struct kunit test = { .param_value = NULL, .param_index = 0 };
-> +
-> +		kunit_init_test(&test, test_case->name, test_case->log);
-> +
-> +		kunit_print_ok_not_ok(&test, true, KUNIT_SKIPPED,
-> +				      kunit_test_case_num(suite, test_case),
-> +				      test_case->name, "list mode");
-> +	}
-> +
-> +	kunit_print_ok_not_ok((void *)suite, false, KUNIT_SKIPPED,
-> +			      kunit_suite_counter++,
-> +			      suite->name, "list mode");
-> +}
-> +
->  static void kunit_init_suite(struct kunit_suite *suite)
->  {
->  	kunit_debugfs_create_suite(suite);
-> @@ -688,6 +709,7 @@ bool kunit_enabled(void)
->  
->  int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_suites)
->  {
-> +	const char *action = kunit_action();
->  	unsigned int i;
->  
->  	if (!kunit_enabled() && num_suites > 0) {
-> @@ -699,7 +721,13 @@ int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_
->  
->  	for (i = 0; i < num_suites; i++) {
->  		kunit_init_suite(suites[i]);
-> -		kunit_run_tests(suites[i]);
-> +
-> +		if (!action)
-> +			kunit_run_tests(suites[i]);
-> +		else if (!strcmp(action, "list"))
-> +			kunit_list_suite(suites[i]);
-> +		else
-> +			pr_err("kunit: unknown action '%s'\n", action);
->  	}
->  
->  	static_branch_dec(&kunit_running);
-
-The remaining code LGTM.
-
+I can't reproduce this build error with a gcc-12 arm64 cross-compiler. How
+important is gcc-8 for the ARM community?
 
 Thanks,
-Mauro
+
+Bart.
+
