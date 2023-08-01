@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C7776C129
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 01:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CED176C12C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 01:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjHAXl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 19:41:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35538 "EHLO
+        id S229992AbjHAXmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 19:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229969AbjHAXlU (ORCPT
+        with ESMTP id S229879AbjHAXmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 19:41:20 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E05CA1B1
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 16:41:19 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bba9a0da10so43861335ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 16:41:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690933279; x=1691538079;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z2LwGsT/iHwXLUwnaAgJ41gfE/Q8Bf1CWgRIFqYX6qY=;
-        b=Kp5KNEahFVkBN4nOisbcXObQ2XDK++Z1WBCBukJjD13lAYFQnpOrEzdr18R049TWds
-         aGTaSE1pyLRiaGz969hcC5l8nAiHl+nZEHbxxXhLkbgzAubCcewKD5rpgvoCFt2sM3bS
-         tNPlJLFSVF3ob2tTHOmGt01BHcBOtQkBNGepPnv2Http9XcpTMXtS/yRCbmlwaI/eqR9
-         D7iAUECPXeMgvLLmuuqFWQ3KcrERqIkeUwXdj+sVEiS9t3xyioF1mME9RQ1HLKCVhtA/
-         5F7LQg7SFk76mhxxy81A+f/vLw6wIx7LGeR0ylt6GAVHqtZdTK4xR5zD4OoPx3XeS5Bb
-         yz7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690933279; x=1691538079;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Z2LwGsT/iHwXLUwnaAgJ41gfE/Q8Bf1CWgRIFqYX6qY=;
-        b=bHMAuyzcDNf7GpvsiiRPn7XQRUcI2lb2O2vsDcWkZm57AZw2ulClLsYD+RP1vg3P1/
-         ur3GBkhyL7SJWRtLhK22kAa1OAHdRil2/eB2oBC4fQBKPYvOnyj/7iwjSU7Pl31G19nx
-         elfDaynvRgs2uLwCfsx9Mvfho70LWPO9dE612vfbFU7sIQhTcQHvgdRLbHUb4J+7DdNV
-         EFnFbW0g9XMd+ZCe7Z17f63vvjEY+NinWwLMf6g9qwyue+isnzSdnvpqpGIkQk5grex4
-         3wznAGZFb6afTU1ofMV0KvvQAjYEQTzapx48OIAtYpgQfYvjRcYWvqklVEC72cctHBu0
-         m53g==
-X-Gm-Message-State: ABy/qLZn7+rNA9H3VCSzP488DHtYfslNDG4Uu2u9wS5u7cR2Zpl8F4Nk
-        VdrS7Ljknizj2hF96+os6nZvsIxsMpk=
-X-Google-Smtp-Source: APBJJlH8Sbjqd6VGnpJCr5LDEnW46KjKTVgZmLtT1W13JnjOKdg2SzuAqH9H1wwxrEtFvf1wfad7JfYgdeI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:c40b:b0:1bb:a78c:7a3e with SMTP id
- k11-20020a170902c40b00b001bba78c7a3emr75641plk.3.1690933279379; Tue, 01 Aug
- 2023 16:41:19 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 16:41:17 -0700
-In-Reply-To: <8f2c1cf6-ae4d-f5fb-624f-16a1295612d7@linaro.org>
-Mime-Version: 1.0
-References: <20230729004722.1056172-1-seanjc@google.com> <20230729004722.1056172-11-seanjc@google.com>
- <8f2c1cf6-ae4d-f5fb-624f-16a1295612d7@linaro.org>
-Message-ID: <ZMmYHQwWMpT8s9Vi@google.com>
-Subject: Re: [PATCH v3 10/12] KVM: x86/mmu: Use BUILD_BUG_ON_INVALID() for
- KVM_MMU_WARN_ON() stub
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?=" <philmd@linaro.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mingwei Zhang <mizhang@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jim Mattson <jmattson@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Tue, 1 Aug 2023 19:42:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE7E268E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 16:42:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F14861779
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:42:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCDCDC433C8;
+        Tue,  1 Aug 2023 23:42:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690933347;
+        bh=z0fmdgzeuoBofNmQQG5TKdCgYOx55EJdXWUBZ5kbeUQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MyPQmhGyJhqdhOy1gTnoZUeiHQGBf/BZ6Lhs/RNyDwzX0pqQnwxFZavOb3fuBRGGD
+         JA23Je9StEtBOlW5+W9EsEEzAiU1pLNLgNzDZrFLQ9zCRjU9rXVVosbM6bOD0FEaV2
+         ZGkg3OjuR9wVf4Uu+XNxFlUMwihPt7ELBGnUIjgaix9wGe8OfRrhYXDBavKrZNk6L3
+         1JkM3pt0CgaWootK5miPPEEAWmgTnZ4jBkUYCoQsy4qhrfH6+D/bpqEPiLjvp8UwZs
+         4N/BS58hWGt62As9/khpNr967iCcPG2B6+VZGAXFLRFxveR4LOWxDq/HM1S4HbxKDL
+         viGmJoawal45g==
+Date:   Wed, 2 Aug 2023 01:42:24 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Feng Liu <feliu@nvidia.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Wolfram Sang <wsa@kernel.org>
+Subject: Re: [PATCH] virtio: Remove PM #ifdef guards to fix i2c driver
+Message-ID: <20230801234224.e33sikkjug276ktt@intel.intel>
+References: <20230801105846.3708252-1-arnd@kernel.org>
+ <c809220b8f10c6c9a3d05bbbd416fbb27d654d2d.camel@crapouillou.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c809220b8f10c6c9a3d05bbbd416fbb27d654d2d.camel@crapouillou.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023, Philippe Mathieu-Daud=C3=A9 wrote:
-> Hi Sean,
->=20
-> On 29/7/23 02:47, Sean Christopherson wrote:
-> > Use BUILD_BUG_ON_INVALID() instead of an empty do-while loop to stub ou=
-t
-> > KVM_MMU_WARN_ON() when CONFIG_KVM_PROVE_MMU=3Dn, that way _some_ build
-> > issues with the usage of KVM_MMU_WARN_ON() will be dected even if the
-> > kernel is using the stubs, e.g. basic syntax errors will be detected.
-> >=20
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> >   arch/x86/kvm/mmu/mmu_internal.h | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_int=
-ernal.h
-> > index 40e74db6a7d5..f1ef670058e5 100644
-> > --- a/arch/x86/kvm/mmu/mmu_internal.h
-> > +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> > @@ -9,7 +9,7 @@
-> >   #ifdef CONFIG_KVM_PROVE_MMU
-> >   #define KVM_MMU_WARN_ON(x) WARN_ON_ONCE(x)
-> >   #else
-> > -#define KVM_MMU_WARN_ON(x) do { } while (0)
-> > +#define KVM_MMU_WARN_ON(x) BUILD_BUG_ON_INVALID(x)
->=20
-> No need to include <linux/build_bug.h> ?
+Hi,
 
-It's indirectly included via
+On Wed, Aug 02, 2023 at 01:06:47AM +0200, Paul Cercueil wrote:
+> Hi,
+> 
+> Le mardi 01 août 2023 à 12:58 +0200, Arnd Bergmann a écrit :
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > A cleanup in the virtio i2c caused a build failure:
+> > 
+> > drivers/i2c/busses/i2c-virtio.c:270:10: error: 'struct virtio_driver'
+> > has no member named 'freeze'
+> > drivers/i2c/busses/i2c-virtio.c:271:10: error: 'struct virtio_driver'
+> > has no member named 'restore'
+> > 
+> > Change the structure definition to allow this cleanup to
+> > be applied everywhere.
+> > 
+> > Fixes: 73d546c76235b ("i2c: virtio: Remove #ifdef guards for PM
+> > related functions")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> Thanks, I didn't realize it was merged already.
+> 
+> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 
-  linux/kvm_host.h =3D> linux/bug.h =3D> linux/build_bug.h
+Actually this fix is taken from linux-next, it's not in
+Wolfram's branch, it's in mine. I can still force-push a fixed
+version in Paul's original patch in order to avoid breaking the
+bisectability.
 
-Depending on the day, I might argue for explicitly including all dependenci=
-es, but
-in this case build_bug.h is a "core" header, and IMO there's no value added=
- by
-including it directly.
+Andi
