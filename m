@@ -2,137 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B3276BAC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EEC76BB44
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbjHARIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:08:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
+        id S232813AbjHARbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:31:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbjHARHh (ORCPT
+        with ESMTP id S231521AbjHARbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:07:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0A430FE
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690909506;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iHJDHQhMPESpDTCc7d6m6CZ7cgDoS6a5SZpOnu6DMTE=;
-        b=jLcStyGvbGIbMdNB2Qp9wj8/mgrRE1nLtnwlNo97Pgfa0yCS6VrF0dphk08Wpoqc5HrV0r
-        0rK1VtFbsKsxLd03TsDNLD+Q/pxSbsOnS7EtuPCKGM1SmyxXxL4edgxU4EXxoasg6w8xX0
-        iYrXNZVyZgvHlSmNGjxTQEr4DcCRqwk=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-479-Um2iu1jNMlubNt80E20_cw-1; Tue, 01 Aug 2023 13:05:05 -0400
-X-MC-Unique: Um2iu1jNMlubNt80E20_cw-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4054266d0beso13660531cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:05:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690909504; x=1691514304;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iHJDHQhMPESpDTCc7d6m6CZ7cgDoS6a5SZpOnu6DMTE=;
-        b=e/H0usgCiNpACc1SDZQ94LboTy68TUbTC8noeLJW11oZ91Tb7pQmanY3dblY9HubHN
-         NxHaaKwEw1cG/CEfKHIKmZwyw7i+8BXWVYyG52nF9+ya7wrkf4VgUNxJVGl3gqvow2Ue
-         sxrgrBdmZrIgv6HdOpyT0ysXMLkV6eWYoZison+5jGXYGy3IHYGy5BEVDS64f2eboh9w
-         9HFqWe1DBMAqy19QX+UBgW8yChYaM7DVQ+TSA6fDC5NOEksSTSXIjawOpnkLcgedtx3z
-         gCmc5YNMjjf0eHL1tiWpm6OlhemKPpTGWQsHwcp/WDOLRYYH12V5iVz5DPo35UuuFPAX
-         jAHQ==
-X-Gm-Message-State: ABy/qLYUt4XWlG33W2MtLZJlGch3xlKzljzY/9MK+9NCVWOpKetgYAPE
-        YXRH7E7+ySNPyaqkl4xcbpqGlRgZcMCRT08ewEeGzggLz+5LkmvaUGkmpjv/8ncD3EpVbU+ztI5
-        vAgHui70w9QMVAft5MYoI4mGS
-X-Received: by 2002:ad4:5b83:0:b0:63c:f5fd:d30f with SMTP id 3-20020ad45b83000000b0063cf5fdd30fmr13776742qvp.1.1690909504493;
-        Tue, 01 Aug 2023 10:05:04 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFaaBdvX372gnIc+hqJabCioknXLsWVusS1Xd1tIAYtUq1mP4VO3uaCM3OMaXWQ6+iPT5cVCQ==
-X-Received: by 2002:ad4:5b83:0:b0:63c:f5fd:d30f with SMTP id 3-20020ad45b83000000b0063cf5fdd30fmr13776714qvp.1.1690909504219;
-        Tue, 01 Aug 2023 10:05:04 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id e30-20020a0caa5e000000b0063d10086876sm4807945qvb.115.2023.08.01.10.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 10:05:03 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 13:04:50 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/8] mm/gup: reintroduce FOLL_NUMA as
- FOLL_HONOR_NUMA_FAULT
-Message-ID: <ZMk7MqApTDZXzwKX@x1n>
-References: <20230801124844.278698-1-david@redhat.com>
- <20230801124844.278698-2-david@redhat.com>
- <ZMkpM95vdc9wgs9T@x1n>
- <30d86a2d-4af2-d840-91be-2e68c73a07bd@redhat.com>
+        Tue, 1 Aug 2023 13:31:15 -0400
+Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C61DE0;
+        Tue,  1 Aug 2023 10:31:13 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFh4B4VPvz9xFZZ;
+        Wed,  2 Aug 2023 00:52:42 +0800 (CST)
+Received: from [10.81.206.119] (unknown [10.81.206.119])
+        by APP1 (Coremail) with SMTP id LxC2BwAn2bg5O8lkq2QeAA--.14915S2;
+        Tue, 01 Aug 2023 18:05:17 +0100 (CET)
+Message-ID: <56be3268-60ee-a496-4781-a59ce34bfca8@huaweicloud.com>
+Date:   Tue, 1 Aug 2023 19:04:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <30d86a2d-4af2-d840-91be-2e68c73a07bd@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 0/9] Allow dynamic allocation of software IO TLB bounce
+ buffers
+Content-Language: en-US
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
+        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+References: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
+ <20230801160339.GB13111@lst.de>
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+In-Reply-To: <20230801160339.GB13111@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LxC2BwAn2bg5O8lkq2QeAA--.14915S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY77AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2js
+        IEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
+        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4II
+        rI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAI
+        cVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbJ73DUUUUU==
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 06:15:48PM +0200, David Hildenbrand wrote:
-> On 01.08.23 17:48, Peter Xu wrote:
-> > On Tue, Aug 01, 2023 at 02:48:37PM +0200, David Hildenbrand wrote:
-> > > @@ -2240,6 +2244,12 @@ static bool is_valid_gup_args(struct page **pages, int *locked,
-> > >   		gup_flags |= FOLL_UNLOCKABLE;
-> > >   	}
-> > > +	/*
-> > > +	 * For now, always trigger NUMA hinting faults. Some GUP users like
-> > > +	 * KVM really require it to benefit from autonuma.
-> > > +	 */
-> > > +	gup_flags |= FOLL_HONOR_NUMA_FAULT;
-> > 
-> > Since at it, do we want to not set it for FOLL_REMOTE, which still sounds
-> > like a good thing to have?
+On 8/1/2023 6:03 PM, Christoph Hellwig wrote:
+> Thanks,
 > 
-> I thought about that, but decided against making that patch here more
-> complicated to eventually rip it again all out in #4.
+> I've applied this to a new swiotlb-dynamic branch that I'll pull into
+> the dma-mapping for-next tree.
 
-I thought that was the whole point of having patch 4 separate, because we
-should assume patch 4 may not exist in (at least) some trees, so I ignored
-patch 4 when commenting here, and we should not assume it's destined to be
-removed here.
+Thank you.
 
-> 
-> I fully agree that FOLL_REMOTE does not make too much sense, but let's
-> rather keep it simple for this patch.
+I guess I can prepare some follow-up series now. ;-)
 
-It's fine - I suppose this patch fixes whatever we're aware of that's
-broken with FOLL_NUMA's removal, so it can even be anything on top when
-needed.  I assume I'm happy to ack this with/without that change, then:
-
-Acked-by: Peter Xu <peterx@redhat.com>
-
-PS: I still hope that the other oneliner can be squashed here directly; it
-literally changes exact the same line above so reading this patch alone can
-be affected.  You said there you didn't want the commit message to be too
-long here, but this is definitely not long at all!  I bet you have similar
-understanding to me on defining "long commit message". :) I'd never worry
-that.  Your call.
-
-Thanks,
-
--- 
-Peter Xu
+Petr T
 
