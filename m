@@ -2,119 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 590F076B81B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C09A76B825
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbjHAO5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:57:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
+        id S234910AbjHAO7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234075AbjHAO5A (ORCPT
+        with ESMTP id S232476AbjHAO7S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:57:00 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E7212B;
-        Tue,  1 Aug 2023 07:56:58 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id C708A3200973;
-        Tue,  1 Aug 2023 10:56:54 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 01 Aug 2023 10:56:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690901814; x=1690988214; bh=m5
-        w/FN7NhnyKPGl0XOXnEVsMCY0ctzZc2rLRkLgXhMA=; b=JOsdkIsi/b9dWNyLQ8
-        X1KkXWDDH/ZnpY8Uh33eF0SRVcZBVaPVYVawQXfYeerTRMeNJ1m86GJYSSwsemaR
-        Jq89DQ6yKa2d5ZlvdNDoimGqsfsm/MBbLGuu5srkfM9YdtVgpMNuTxvfwwXL/ypL
-        Hfw8Yk/BqJkvvUGRDrQYw2017BymUbKwYU6CmkC4vg1t8dde7M/HFZj+e6+xAu/r
-        nIlQstCQu4zTqjlUQqpgNhUp/u7MO8yRt+OAxR3BJCiTV6XemFQ89+pNF6VDyVGs
-        OUwZg/wq0oTyQGUqaqUlUE5t5Mh9Pk4q2X6VskUbJuElGkpghmNL9tIR0H0b6tS/
-        WqJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690901814; x=1690988214; bh=m5w/FN7NhnyKP
-        Gl0XOXnEVsMCY0ctzZc2rLRkLgXhMA=; b=jmu5Md0n9CSOV7Z5moH2KKyqndzH0
-        393L8FYxxZfDSYejFJQ36QLi2KRqptTKu6pxjC+7D/1oTastlUd0+sOl6rbvG3Wx
-        xnotnk0kRZuJeSjC9N8hGfxKLG5E61GYdOOEcYZwqK5rmISuG+SEYydQrb7I0ACQ
-        oMmLFDvVrN2QewFxApMmoKTqhbWvQnJLhtWIKcdh1nmt0PiTbpeSXGrzbiOrYUWK
-        DUdlNgJeGuwOZ4XLPoL/I17vxko+aHM7maMDmGwmwLwd9E6br3FXo5Wpj/p5v42F
-        /GZjkp6Ak2jL//x2zeDVmOiyT9wgU/5QpEXZcrfBzZ6+gfBv16WOCQqmw==
-X-ME-Sender: <xms:NR3JZI-gI3pBaM71ZJ4qYfQbhyvRqP7UbNGrRkUfyLR0gnruA9iDzg>
-    <xme:NR3JZAvzNVFrAgE9jZzsU4gxPGpKi_ygVpDZA51jBmzPaljaJNLxh2mBBKHMGU9Q5
-    5RGWIxK0LtKUAy5m2M>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigdektdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpefffefgheejtdejhfefuefggfffudehiefgffekheekffeghfdvkedthfdvjeej
-    ffenucffohhmrghinheplhhinhgrrhhordhorhhgpdhkvghrnhgvlhdrohhrghdpghhoug
-    gsohhlthdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:NR3JZOC12JuP5WwXVgaTbK_1WwJvSyBVYbhPf4917yKzAhNfOTKU0Q>
-    <xmx:NR3JZIccED47NrbQTkOocpqJM-RXWMKnUjtX0g09BprR2VZjtl76Lw>
-    <xmx:NR3JZNMzNYGrJJr4Z-eve96Z1NJhWxTIqd9PXt_vQh7WRHQqY8Ko-g>
-    <xmx:Nh3JZA2XYrfAK00ILGpupCAoHYan74uFcrCpBxbN4HixGlQBbWO7_Q>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id CAD6EB60089; Tue,  1 Aug 2023 10:56:53 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <227327a3-399a-4a9f-a775-e9627656b5a1@app.fastmail.com>
-In-Reply-To: <CA+G9fYsYifn9ywPc8KqYHwDDSTRQGOgf_T58Gpt9CYDBs8u+SQ@mail.gmail.com>
-References: <CA+G9fYur8UJoUyTLJFVEJPh-15TJ7kbdD2q8xVz8a3fLjkxxVw@mail.gmail.com>
- <a660adba-b73b-1c02-f642-c287bb4c72fc@acm.org>
- <CA+G9fYsYifn9ywPc8KqYHwDDSTRQGOgf_T58Gpt9CYDBs8u+SQ@mail.gmail.com>
-Date:   Tue, 01 Aug 2023 16:56:33 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Naresh Kamboju" <naresh.kamboju@linaro.org>,
-        "Bart Van Assche" <bvanassche@acm.org>
-Cc:     "open list" <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org,
-        linux-next <linux-next@vger.kernel.org>,
-        "Avri Altman" <avri.altman@wdc.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Anders Roxell" <anders.roxell@linaro.org>
-Subject: Re: next: arm64: gcc-8-defconfig: ufshcd.c:10629:2:
- /builds/linux/include/linux/compiler_types.h:397:38: error: call to
- '__compiletime_assert_553' declared with attribute error: BUILD_BUG_ON
- failed:
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 10:59:18 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D67E4E;
+        Tue,  1 Aug 2023 07:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690901957; x=1722437957;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9WtORg9ICe4cJKnB5dQPkrNEObZycRB/xV8WTCzQTxY=;
+  b=Vfj6FmWml/Dzjta2F6qm9rjoHQTVyVnkg6S0krfRYcwxtkUn+o72c4tr
+   WRnuoxGHJ86AtcnfwgqMqoKDRIGaSua4RnI3OQhxhd5sWmx+z30fh8pe0
+   YPeXI4gV4K5EF1DdM7LA47tZon2g1j86LymECnsdupl0XNqRWrlpngHWH
+   gZ2JoN6zOKIJ8Z3EALPFpnZgm3WpxNskX/XwDn74+Xju9wgJJT0jSJtFj
+   uhoPottv/49a8Z7CmyL02SdDaJv3FX0RR9GLN+Fe5d5LJb042DKW9gXc+
+   Hm+wuwzQCjqsXLZ7HsxPDE0bHRAzPcP7RXyz1YZYZjc0cRyHaQORVzC/j
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="369313283"
+X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
+   d="scan'208";a="369313283"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 07:58:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="705846281"
+X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
+   d="scan'208";a="705846281"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 01 Aug 2023 07:58:00 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qQqox-0000N1-2U;
+        Tue, 01 Aug 2023 14:57:59 +0000
+Date:   Tue, 1 Aug 2023 22:57:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     zhouscd <zhouscd@gmail.com>, gregkh@linuxfoundation.org
+Cc:     oe-kbuild-all@lists.linux.dev, dan.scally@ideasonboard.com,
+        laurent.pinchart@ideasonboard.com, m.grzeschik@pengutronix.de,
+        john@keeping.me.uk, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhouscd <zhouscd@gmail.com>
+Subject: Re: [PATCH] USB: gadget: Fix the function name error in
+ sourcesink/loopback.
+Message-ID: <202308012224.vyXfjJMA-lkp@intel.com>
+References: <20230801045449.156348-1-zhouscd@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801045449.156348-1-zhouscd@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023, at 16:23, Naresh Kamboju wrote:
-> On Tue, 1 Aug 2023 at 18:53, Bart Van Assche <bvanassche@acm.org> wrote:
+Hi zhouscd,
 
->> >   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/log
->> >   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/details/
->> >   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/history/
->>
->> I can't reproduce this build error with a gcc-12 arm64 cross-compiler. How
->> important is gcc-8 for the ARM community?
->
-> You are right,
-> gcc-12 build pass.
-> gcc-8 build failed.
+kernel test robot noticed the following build errors:
 
-I can also reproduce this with gcc-9.5.0 from
-https://mirrors.edge.kernel.org/pub/tools/crosstool/ but
-not with 10.5.0 or clang.
+[auto build test ERROR on usb/usb-testing]
+[also build test ERROR on usb/usb-next usb/usb-linus linus/master v6.5-rc4 next-20230801]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I get the same results for x86 with gcc-9.5.0.
+url:    https://github.com/intel-lab-lkp/linux/commits/zhouscd/USB-gadget-Fix-the-function-name-error-in-sourcesink-loopback/20230801-125745
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+patch link:    https://lore.kernel.org/r/20230801045449.156348-1-zhouscd%40gmail.com
+patch subject: [PATCH] USB: gadget: Fix the function name error in sourcesink/loopback.
+config: sparc-randconfig-r015-20230731 (https://download.01.org/0day-ci/archive/20230801/202308012224.vyXfjJMA-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230801/202308012224.vyXfjJMA-lkp@intel.com/reproduce)
 
-See https://godbolt.org/z/GjGrW9znc for a partially reduced testcase.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308012224.vyXfjJMA-lkp@intel.com/
 
-      Arnd
+All errors (new ones prefixed by >>):
+
+   sparc64-linux-ld: drivers/usb/gadget/function/f_sourcesink.o: in function `sourcesinkmod_init':
+>> f_sourcesink.c:(.init.text+0x0): multiple definition of `init_module'; drivers/usb/gadget/function/f_loopback.o:f_loopback.c:(.init.text+0x0): first defined here
+   sparc64-linux-ld: drivers/usb/gadget/function/f_sourcesink.o: in function `sourcesinkmod_exit':
+>> f_sourcesink.c:(.exit.text+0x0): multiple definition of `cleanup_module'; drivers/usb/gadget/function/f_loopback.o:f_loopback.c:(.exit.text+0x0): first defined here
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
