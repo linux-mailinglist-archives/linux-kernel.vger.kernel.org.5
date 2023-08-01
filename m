@@ -2,72 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B43B276BD78
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D623A76BD7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbjHATOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:14:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
+        id S231719AbjHATOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbjHATOd (ORCPT
+        with ESMTP id S231143AbjHATOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:14:33 -0400
+        Tue, 1 Aug 2023 15:14:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E48CE57;
-        Tue,  1 Aug 2023 12:14:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9191F1BF0;
+        Tue,  1 Aug 2023 12:14:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EF38E616AB;
-        Tue,  1 Aug 2023 19:14:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F4E6C433C7;
-        Tue,  1 Aug 2023 19:14:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2F965616A7;
+        Tue,  1 Aug 2023 19:14:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 824A8C433C7;
+        Tue,  1 Aug 2023 19:14:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690917271;
-        bh=JIJPdUANHrD6Yb6wBmrW7GHkKKSJRvPopi+aSXxrjwU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=K3zM9rcgo3wdtzWy15KNTAuv1/KkedB/OkEMO8niKImrZX2KnF8/+q1k9MF4shlrF
-         /8JAwuV0xhzD8drIZSDYedqbz3E4QhMeOGA1jjT+RP4e+RzuEXoEvsQEh3W97CCtKZ
-         2PhC0Wy4cepJaTvG2cSfrtHbYTJveoeMatC7wWG8vQ8S3tmUo2y8U5MQidSwBB0Nxu
-         kaSseiqQ88kh1EjduVUFyB17HARd8hBk1+d5tgW/QWQGTvrSaVcjfqP+c/nOzgFjpO
-         YC63toNsjnwQ10vRnSH7Kyo35ryDaUelBVz1RtbfOfFcbhlJ0wqxHMgsCYZ0OIM+fl
-         jgXq/t7kXF8wg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D1E36CE0908; Tue,  1 Aug 2023 12:14:30 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 12:14:30 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Roy Hopkins <rhopkins@suse.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
- 6.4.7-rc1 review)
-Message-ID: <aec97d62-a07d-45f3-9cf8-5a7ad0e98e47@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230731141934.GK29590@hirez.programming.kicks-ass.net>
- <20230731143954.GB37820@hirez.programming.kicks-ass.net>
- <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
- <20230731145232.GM29590@hirez.programming.kicks-ass.net>
- <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
- <20230731161452.GA40850@hirez.programming.kicks-ass.net>
- <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
- <20230731211517.GA51835@hirez.programming.kicks-ass.net>
- <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
- <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
+        s=k20201202; t=1690917290;
+        bh=RricL0NBD2SlXPu5D6K3MkV2NfI2Fl9g7qhLIB9lKzs=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=ZmhBbI6q1rH8SwBWw7Bxp58j12JA0u4tagm4I1spQ4hymiK8n+VSfZn4bnDxGQ5eZ
+         zRTn75Ez47dqoWaZAC/USrqMPfbutYJpA39CcU3FzTLBDCEPbHVCDfqNZ5fHPNyVxi
+         F8p1YiI9Q3oxsyXvYMH07aFZjDm0ZBXeOqRDiHtNkE4yBNMT12zQQypoQw/I2MS8CT
+         9iVPIC5awUS2tzXak5s1SBNF9fSL0887T4zOFPmsLfd7I13Vvi5Ya20JsFXa6JB2fj
+         XC6b1TtXp+N/aGb6yueKNPuXaAKetcrrl1D/WntkFG00YSO5xydBVrzQ6jyiDJaa1k
+         EpxBXA8mJ1DRg==
+Message-ID: <54b4d761e5b16ffb798a89c1cea99714.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZLvyn0xq3Msk+lxF@probook>
+References: <20230428190226.1304326-1-j.neuschaefer@gmx.net> <20230428190226.1304326-3-j.neuschaefer@gmx.net> <4e0a5db18ed7d37038e67be0f1ddcb08.sboyd@kernel.org> <ZLvyn0xq3Msk+lxF@probook>
+Subject: Re: [PATCH v8 2/2] clk: wpcm450: Add Nuvoton WPCM450 clock/reset controller driver
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Jonathan =?utf-8?q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-clk@vger.kernel.org, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Joel Stanley <joel@jms.id.au>
+To:     Jonathan =?utf-8?q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Date:   Tue, 01 Aug 2023 12:14:48 -0700
+User-Agent: alot/0.10
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -78,70 +74,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 12:11:04PM -0700, Paul E. McKenney wrote:
-> On Tue, Aug 01, 2023 at 10:32:45AM -0700, Guenter Roeck wrote:
-> > On 7/31/23 14:15, Peter Zijlstra wrote:
-> > > On Mon, Jul 31, 2023 at 09:34:29AM -0700, Guenter Roeck wrote:
-> > > > > Ha!, I was poking around the same thing. My hack below seems to (so far,
-> > > > > <20 boots) help things.
-> > > > > 
-> > > > 
-> > > > So, dumb question:
-> > > > How comes this bisects to "sched/fair: Remove sched_feat(START_DEBIT)" ?
-> > > 
-> > > That commit changes the timings of things; dumb luck otherwise.
-> > 
-> > Kind of scary. So I only experienced the problem because the START_DEBIT patch
-> > happened to be queued roughly at the same time, and it might otherwise have
-> > found its way unnoticed into the upstream kernel.
+Quoting Jonathan Neusch=C3=A4fer (2023-07-22 08:15:43)
+> On Thu, Jul 20, 2023 at 05:02:15PM -0700, Stephen Boyd wrote:
+> > Quoting Jonathan Neusch=C3=A4fer (2023-04-28 12:02:26)
+> > > diff --git a/drivers/clk/clk-wpcm450.c b/drivers/clk/clk-wpcm450.c
+> [...]
+> > > +static unsigned long wpcm450_clk_pll_recalc_rate(struct clk_hw *hw,
+> > > +                                                unsigned long parent=
+_rate)
+> > > +{
+> > > +       struct wpcm450_clk_pll *pll =3D to_wpcm450_clk_pll(hw);
+[...]
+>=20
+> > > +static const struct wpcm450_pll_data pll_data[] =3D {
+> > > +       { "pll0", { .name =3D "ref" }, REG_PLLCON0, 0 },
+> >=20
+> > This is new code, please don't use .name. Instead use .fw_name or .inde=
+x with preference to
+> > .index first and .hw if the pointer is available in this driver.
+>=20
+> As far as I can see, .fw_name and .index depend on a struct device*
+> being passed to clk_hw_register, which won't be available unless I
+> actually convert the driver to a platform driver.
 
-And just to set the record straight, this bug has been in mainline for
-about a year, since v5.19.
+You can call of_clk_hw_register(), but a conversion to a platform driver
+is preferred.
 
-							Thanx, Paul
+>=20
+> Not relying on .name would indeed be nice.
 
-> >                                                   That makes me wonder if this
-> > or other similar patches may uncover similar problems elsewhere in the kernel
-> > (i.e., either hide new or existing race conditions or expose existing ones).
-> > 
-> > This in turn makes me wonder if it would be possible to define a test which
-> > would uncover such problems without the START_DEBIT patch. Any idea ?
-> 
-> Thank you all for tracking this down!
-> 
-> One way is to put a schedule_timeout_idle(100) right before the call to
-> rcu_tasks_one_gp() from synchronize_rcu_tasks_generic().  That is quite
-> specific to this particular issue, but it does have the virtue of making
-> it actually happen in my testing.
-> 
-> There have been a few academic projects that inject delays at points
-> chosen by various heuristics plus some randomness.  But this would be
-> a bit of a challenge to those because each kernel only passes through
-> this window once at boot time.
-> 
-> Please see below for my preferred fix.  Does this work for you guys?
-> 
-> Back to figuring out why recent kernels occasionally to blow up all
-> rcutorture guest OSes...
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 7294be62727b..2d5b8385c357 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -570,10 +570,12 @@ static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
->  	if (unlikely(midboot)) {
->  		needgpcb = 0x2;
->  	} else {
-> +		mutex_unlock(&rtp->tasks_gp_mutex);
->  		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
->  		rcuwait_wait_event(&rtp->cbs_wait,
->  				   (needgpcb = rcu_tasks_need_gpcb(rtp)),
->  				   TASK_IDLE);
-> +		mutex_lock(&rtp->tasks_gp_mutex);
->  	}
->  
->  	if (needgpcb & 0x2) {
+Cool.
