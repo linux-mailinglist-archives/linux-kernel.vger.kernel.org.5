@@ -2,151 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4D476A642
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528F576A648
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbjHABYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 21:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34628 "EHLO
+        id S231292AbjHAB0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 21:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbjHABYG (ORCPT
+        with ESMTP id S230155AbjHAB0U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 21:24:06 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE70B1707;
-        Mon, 31 Jul 2023 18:24:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690853044; x=1722389044;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=KhN5AuFcQElJOP62go3wRfM0GbtP4K7iYQy+CQD//dY=;
-  b=PpIAuttxLc/HdKFvNMW36MqxHJCSeaf1mYVtEpZ2izDjblN7d1jnMkxW
-   fn95uX+y6gb+XBDJBXI3UqHx6P5Ex1x1KD1Fq4YTEtKFI6UM2fjtyZ+aZ
-   6gz5DjzaiETGrFvwY8Qn7d94C4Oirf0HaJD8wdWMA0/Vu+33ziABjB3nG
-   lEFsxgL619HJeoOkSOAn5U6df8RWNOYXzeRVsSHCh+Y71cW/pZCTQgz8y
-   iFkmM3k7A9ocaxVBjmkPGQrgVtRWiumHiH9C17IkYp+ig9clRBW7/uySj
-   Iu87UjyiS6IqH4MdxvmD0Jwza9glr594Gx9m0vmhWi+YA7CWRkwBCDq4c
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366638749"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="366638749"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 18:24:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="705629549"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="705629549"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.255.229.233])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 18:24:03 -0700
-Date:   Mon, 31 Jul 2023 18:24:02 -0700
-From:   Alison Schofield <alison.schofield@intel.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Davidlohr Bueso <dave@stgolabs.net>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cxl/mbox: Fix debug message print
-Message-ID: <ZMhesrtXf31iST/O@aschofie-mobl2>
-References: <20230731-cxl-fix-clear-event-debug-print-v1-1-42c068f500d1@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731-cxl-fix-clear-event-debug-print-v1-1-42c068f500d1@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 21:26:20 -0400
+Received: from out28-218.mail.aliyun.com (out28-218.mail.aliyun.com [115.124.28.218])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB3210D;
+        Mon, 31 Jul 2023 18:26:18 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07736829|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0982606-0.000258943-0.90148;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047203;MF=sunran001@208suo.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.U5CBZxW_1690853169;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5CBZxW_1690853169)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 09:26:12 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     apw@canonical.com, joe@perches.com, alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in smu_v13_0_7_ppt.c
+Date:   Tue,  1 Aug 2023 01:26:08 +0000
+Message-Id: <20230801012608.4003-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 01:52:27PM -0700, Ira Weiny wrote:
+Fix the following errors reported by checkpatch:
 
-Looks like this is rolling for the distro list, so..
+ERROR: open brace '{' following struct go on the same line
+ERROR: spaces required around that '=' (ctx:VxW)
+ERROR: that open brace { should be on the previous line
 
-Please be more specific than this:
-[PATCH] cxl/mbox: Fix debug message print
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Something like this is more useful to folks scanning the one-liners:
-[PATCH] cxl/mbox: Use correct handle in events debug message
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
+index b1f0937ccade..26ba51ec0567 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_7_ppt.c
+@@ -386,8 +386,7 @@ static int smu_v13_0_7_check_fw_status(struct smu_context *smu)
+ }
+ 
+ #ifndef atom_smc_dpm_info_table_13_0_7
+-struct atom_smc_dpm_info_table_13_0_7
+-{
++struct atom_smc_dpm_info_table_13_0_7 {
+ 	struct atom_common_table_header table_header;
+ 	BoardTable_t BoardTable;
+ };
+@@ -494,7 +493,7 @@ static int smu_v13_0_7_tables_init(struct smu_context *smu)
+ 		       PAGE_SIZE, AMDGPU_GEM_DOMAIN_VRAM);
+ 	SMU_TABLE_INIT(tables, SMU_TABLE_ACTIVITY_MONITOR_COEFF,
+ 		       sizeof(DpmActivityMonitorCoeffIntExternal_t), PAGE_SIZE,
+-	               AMDGPU_GEM_DOMAIN_VRAM);
++		       AMDGPU_GEM_DOMAIN_VRAM);
+ 	SMU_TABLE_INIT(tables, SMU_TABLE_COMBO_PPTABLE, MP0_MP1_DATA_REGION_SIZE_COMBOPPTABLE,
+ 			PAGE_SIZE, AMDGPU_GEM_DOMAIN_VRAM);
+ 
+@@ -728,7 +727,7 @@ static int smu_v13_0_7_get_smu_metrics_data(struct smu_context *smu,
+ 					    MetricsMember_t member,
+ 					    uint32_t *value)
+ {
+-	struct smu_table_context *smu_table= &smu->smu_table;
++	struct smu_table_context *smu_table = &smu->smu_table;
+ 	SmuMetrics_t *metrics =
+ 		&(((SmuMetricsExternal_t *)(smu_table->metrics_table))->SmuMetrics);
+ 	int ret = 0;
+@@ -1635,8 +1634,7 @@ static int smu_v13_0_7_force_clk_levels(struct smu_context *smu,
+ 	return ret;
+ }
+ 
+-static const struct smu_temperature_range smu13_thermal_policy[] =
+-{
++static const struct smu_temperature_range smu13_thermal_policy[] = {
+ 	{-273150,  99000, 99000, -273150, 99000, 99000, -273150, 99000, 99000},
+ 	{ 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000, 120000},
+ };
+-- 
+2.17.1
 
-> The handle value used to report an event being cleared by dev_dbg() is
-> incorrect due to a post increment of the payload handle index.
-> 
-> Delay the increment of the index until after the print.  Also add the
-> debugging for event processing which was useful in finding this bug.
-> 
-
-"Also" always smells like something that should be a separate patch.
-
-I guess you could rewrite the commit message and keep it in one patch:
-[PATCH] cxl/mbox: Improve event dev_dbg() messages
-
-Alison
-
-
-> To: Davidlohr Bueso <dave@stgolabs.net>
-> To: Jonathan Cameron <jonathan.cameron@huawei.com>
-> To: Dave Jiang <dave.jiang@intel.com>
-> To: Alison Schofield <alison.schofield@intel.com>
-> To: Vishal Verma <vishal.l.verma@intel.com>
-> To: Dan Williams <dan.j.williams@intel.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: linux-cxl@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
-> NOTE: This does fix a bug in the patch referenced below.  However, I
-> don't think that warrants back porting because this is only a debug
-> print.
-> 
-> Fixes: 6ebe28f9ec72 ("cxl/mem: Read, trace, and clear events on driver load")
-> ---
->  drivers/cxl/core/mbox.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index d6d067fbee97..f052d5f174ee 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -882,9 +882,10 @@ static int cxl_clear_event_record(struct cxl_memdev_state *mds,
->  	 */
->  	i = 0;
->  	for (cnt = 0; cnt < total; cnt++) {
-> -		payload->handles[i++] = get_pl->records[cnt].hdr.handle;
-> +		payload->handles[i] = get_pl->records[cnt].hdr.handle;
->  		dev_dbg(mds->cxlds.dev, "Event log '%d': Clearing %u\n", log,
->  			le16_to_cpu(payload->handles[i]));
-> +		i++;
->  
->  		if (i == max_handles) {
->  			payload->nr_recs = i;
-> @@ -946,9 +947,13 @@ static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
->  		if (!nr_rec)
->  			break;
->  
-> -		for (i = 0; i < nr_rec; i++)
-> +		for (i = 0; i < nr_rec; i++) {
-> +			dev_dbg(dev, "Event log %d: processing handle %u\n",
-> +				type,
-> +				le16_to_cpu(payload->records[i].hdr.handle));
->  			cxl_event_trace_record(cxlmd, type,
->  					       &payload->records[i]);
-> +		}
->  
->  		if (payload->flags & CXL_GET_EVENT_FLAG_OVERFLOW)
->  			trace_cxl_overflow(cxlmd, type, payload);
-> 
-> ---
-> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-> change-id: 20230731-cxl-fix-clear-event-debug-print-3b57da0e956c
-> 
-> Best regards,
-> -- 
-> Ira Weiny <ira.weiny@intel.com>
-> 
