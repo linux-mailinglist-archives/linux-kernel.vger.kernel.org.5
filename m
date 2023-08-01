@@ -2,71 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DC676A6C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D0C76A6DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbjHACLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
+        id S231292AbjHACQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230356AbjHACLj (ORCPT
+        with ESMTP id S229437AbjHACQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:11:39 -0400
-Received: from out28-195.mail.aliyun.com (out28-195.mail.aliyun.com [115.124.28.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D12A61A3
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:11:37 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1111192|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0123702-0.000752526-0.986877;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047204;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5FqyPn_1690855890;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5FqyPn_1690855890)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 10:11:32 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd: Clean up errors in smu_v13_0_5_ppt.c
-Date:   Tue,  1 Aug 2023 02:11:29 +0000
-Message-Id: <20230801021129.4458-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 22:16:05 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E195E5C;
+        Mon, 31 Jul 2023 19:16:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=k/FrXh/THAB5ueNYpFa+DtWLKwB8v/g7kBddjVkmREY=; b=ho7cwcSoealjW606BJo530kKgt
+        XEUNVH8f1Jjy9VMmO6MzmygNyaxNtutK6gEGLuMfO7nLQK74IxEHYRcufBlmo+K2nJG2545xsctRM
+        OGduqz8m1jy/KSBORvjKB51ymqOlBQe5YrU3IzbMzH57HR3HpQJ5u5sxhiS48iQpVOzRMKPrl4ArT
+        RlA3TdLkYZAxQp2pavftZoRXgVfYC5oOMpZ1jgUkfY/SXw3CuME54IT3XZtJl0It2+4j6QhvSPmhJ
+        Vt9erlupCLsJdrFSVnuOAz4jvtcXgD8J5ieclD6269b7DwiW9AUhbYK2c/gC/pDyI99gG47VeLKFT
+        xHLiHY7w==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQevc-000BnJ-0B;
+        Tue, 01 Aug 2023 02:16:04 +0000
+Message-ID: <57c5ba80-bc87-e76a-98f1-5f8043711b0a@infradead.org>
+Date:   Mon, 31 Jul 2023 19:16:03 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] s390/certstore: select CRYPTO_LIB_SHA256
+Content-Language: en-US
+To:     Sven Schnelle <svens@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-next@vger.kernel.org,
+        Anastasia Eskova <anastasia.eskova@ibm.com>
+References: <20230728100430.1567328-1-svens@linux.ibm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230728100430.1567328-1-svens@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
 
-ERROR: space prohibited before that ',' (ctx:WxW)
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- drivers/gpu/drm/amd/pm/swsmu/smu_internal.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 7/28/23 03:04, Sven Schnelle wrote:
+> A build failure was reported when sha256() is not present:
+> 
+> gcc-13.1.0-nolibc/s390-linux/bin/s390-linux-ld: arch/s390/kernel/cert_store.o: in function `check_certificate_hash':
+> arch/s390/kernel/cert_store.c:267: undefined reference to `sha256'
+> 
+> Therefore make CONFIG_CERT_STORE select CRYPTO_LIB_SHA256.
+> 
+> Fixes: 8cf57d7217c3 ("s390: add support for user-defined certificates")
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Closes: https://lore.kernel.org/all/8ecb57fb-4560-bdfc-9e55-63e3b0937132@infradead.org/
+> Signed-off-by: Sven Schnelle <svens@linux.ibm.com>
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu_internal.h b/drivers/gpu/drm/amd/pm/swsmu/smu_internal.h
-index ceb13c838067..bcc42abfc768 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu_internal.h
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu_internal.h
-@@ -61,14 +61,14 @@
- #define smu_feature_get_enabled_mask(smu, mask)				smu_ppt_funcs(get_enabled_mask, -EOPNOTSUPP, smu, mask)
- #define smu_feature_is_enabled(smu, mask)				smu_ppt_funcs(feature_is_enabled, 0, smu, mask)
- #define smu_disable_all_features_with_exception(smu, mask)		smu_ppt_funcs(disable_all_features_with_exception, 0, smu, mask)
--#define smu_is_dpm_running(smu)						smu_ppt_funcs(is_dpm_running, 0 , smu)
-+#define smu_is_dpm_running(smu)						smu_ppt_funcs(is_dpm_running, 0, smu)
- #define smu_notify_display_change(smu)					smu_ppt_funcs(notify_display_change, 0, smu)
- #define smu_populate_umd_state_clk(smu)					smu_ppt_funcs(populate_umd_state_clk, 0, smu)
- #define smu_enable_thermal_alert(smu)					smu_ppt_funcs(enable_thermal_alert, 0, smu)
- #define smu_disable_thermal_alert(smu)					smu_ppt_funcs(disable_thermal_alert, 0, smu)
- #define smu_smc_read_sensor(smu, sensor, data, size)			smu_ppt_funcs(read_sensor, -EINVAL, smu, sensor, data, size)
- #define smu_pre_display_config_changed(smu)				smu_ppt_funcs(pre_display_config_changed, 0, smu)
--#define smu_display_config_changed(smu)					smu_ppt_funcs(display_config_changed, 0 , smu)
-+#define smu_display_config_changed(smu)					smu_ppt_funcs(display_config_changed, 0, smu)
- #define smu_apply_clocks_adjust_rules(smu)				smu_ppt_funcs(apply_clocks_adjust_rules, 0, smu)
- #define smu_notify_smc_display_config(smu)				smu_ppt_funcs(notify_smc_display_config, 0, smu)
- #define smu_run_btc(smu)						smu_ppt_funcs(run_btc, 0, smu)
+Sorry for the delay.
+
+Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+
+> ---
+>  arch/s390/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+> index d9d50a7a2016..18bf754e1fad 100644
+> --- a/arch/s390/Kconfig
+> +++ b/arch/s390/Kconfig
+> @@ -516,6 +516,7 @@ config KEXEC_SIG
+>  config CERT_STORE
+>  	bool "Get user certificates via DIAG320"
+>  	depends on KEYS
+> +	select CRYPTO_LIB_SHA256
+>  	help
+>  	  Enable this option if you want to access user-provided secure boot
+>  	  certificates via DIAG 0x320.
+
 -- 
-2.17.1
-
+~Randy
