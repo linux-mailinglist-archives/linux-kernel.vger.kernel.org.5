@@ -2,59 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2103176B737
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78F576B724
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234562AbjHAOVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
+        id S234598AbjHAOUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbjHAOVW (ORCPT
+        with ESMTP id S234571AbjHAOT7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:21:22 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 06F01B1
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 07:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=D/tnD
-        hhtLKuYANELtN6YERyXJ7QVSlBim2KcElYcYng=; b=KWfE4OH3C92BlkD6a54Ib
-        FYCeBlSrcf9beeHBCkjXqQMXfAq3KGyNeHuE2w/Xhs4LeS9Dl9iS4dwWAJqujvht
-        SCuisXctUQbC98MXB4ebu0V0KxMnkB14hpCEdQh0pjtBADvFToPPj72t4AWDaidX
-        UKTqfZg7PLqCZusIgvaYYU=
-Received: from lml-Birman-PHX.. (unknown [112.96.224.101])
-        by zwqz-smtp-mta-g5-0 (Coremail) with SMTP id _____wB3f0OKFMlkldd6Bw--.12472S3;
-        Tue, 01 Aug 2023 22:19:58 +0800 (CST)
-From:   "Baojun.Xu" <jim_monkey@163.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com
-Cc:     shenghao-ding@ti.com, kevin-lu@ti.com,
-        krzysztof.kozlowski@linaro.org, rf@opensource.cirrus.com,
-        shumingf@realtek.com, herve.codina@bootlin.com,
-        povik+lin@cutebit.org, ryans.lee@analog.com,
-        ckeepax@opensource.cirrus.com, sebastian.reichel@collabora.com,
-        fido_max@inbox.ru, wangweidong.a@awinic.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        peeyush@ti.com, navada@ti.com, tiwai@suse.de,
-        mengdong.lin@intel.com, Baojun Xu <baojun.xu@ti.com>
-Subject: [PATCH v1 2/2] MAINTAINERS: Add the MAINTAINERS entries for TEXAS INSTRUMENTS AUDIO DRIVERS
-Date:   Tue,  1 Aug 2023 22:18:58 +0800
-Message-Id: <20230801141858.130745-2-jim_monkey@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230801141858.130745-1-jim_monkey@163.com>
-References: <20230801141858.130745-1-jim_monkey@163.com>
+        Tue, 1 Aug 2023 10:19:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917D0103
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 07:19:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690899553;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/RBCCNSNER9keBqZEiKvDtVniv9ZXTWzP9vzUW4dQY4=;
+        b=PkpDhJn4lI94Ter7W8hb77BGHvHu0k0lV2vxajszFZGNzI/Bn88m5xKQXRki6A39A/X3Ck
+        SJI2h8JjV1opncvstszdSR+DymJsddL3J99A+xONpYxnjkNr9nb7zLzJNX5WUc7itnNZMQ
+        re2IuPMZm1b613aT6tJIgGuPf5nA1Yc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-212-BZiRKqMXM4WOCOIycKfd2Q-1; Tue, 01 Aug 2023 10:19:10 -0400
+X-MC-Unique: BZiRKqMXM4WOCOIycKfd2Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 85C6010504B1;
+        Tue,  1 Aug 2023 14:19:08 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D49884024F83;
+        Tue,  1 Aug 2023 14:19:06 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <64c903b02b234_1b307829418@willemb.c.googlers.com.notmuch>
+References: <64c903b02b234_1b307829418@willemb.c.googlers.com.notmuch> <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch> <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch> <20230718160737.52c68c73@kernel.org> <000000000000881d0606004541d1@google.com> <0000000000001416bb06004ebf53@google.com> <792238.1690667367@warthog.procyon.org.uk> <831028.1690791233@warthog.procyon.org.uk> <1401696.1690893633@warthog.procyon.org.uk>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     dhowells@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wB3f0OKFMlkldd6Bw--.12472S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw4UXr1ftw15Ar4kGr4DJwb_yoW8uw1rpa
-        1kCFZ5tFy7JF12k3yfK3W8Gw1rWry8uF42kasFqw1DtF1DJFsY9w13tr1DXFWvvFWUGFZx
-        Jry3uw4rGrZxZwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07ja_M-UUUUU=
-X-Originating-IP: [112.96.224.101]
-X-CM-SenderInfo: 5mlpsz5rqnv5i6rwjhhfrp/1tbiMRC+82NfshHiVgAAsH
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1409098.1690899546.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 01 Aug 2023 15:19:06 +0100
+Message-ID: <1409099.1690899546@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,62 +72,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baojun Xu <baojun.xu@ti.com>
+The attached seems to work.  I still think copy isn't correctly calculated=
+ in
+some circumstances - as I showed, several terms in the maths cancel out,
+including the length of the data.
 
-Add the MAINTAINERS entries for TEXAS INSTRUMENTS AUDIO DRIVERS.
-
-Signed-off-by: Baojun Xu <baojun.xu@ti.com>
+I'm also not entirely sure what 'paged' means in this function.  Should it
+actually be set in the MSG_SPLICE_PAGES context?
 
 ---
-Change in v1:
- - Add the MAINTAINERS entries for TI.
----
- MAINTAINERS | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+udp: Fix __ip_addend_data()
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 53b7ca804465..2c16168167e2 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -21063,6 +21063,38 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/sound/davinci-mcasp-audio.yaml
- F:	sound/soc/ti/
- 
-+TEXAS INSTRUMENTS AUDIO (ASoC/HDA) DRIVERS
-+M:	Shenghao Ding <shenghao-ding@ti.com>
-+M:	Kevin Lu <kevin-lu@ti.com>
-+M:	Baojun Xu <baojun.xu@ti.com>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/tas2552.txt
-+F:	Documentation/devicetree/bindings/sound/tas2562.yaml
-+F:	Documentation/devicetree/bindings/sound/tas2770.yaml
-+F:	Documentation/devicetree/bindings/sound/tas27xx.yaml
-+F:	Documentation/devicetree/bindings/sound/ti,pcm1681.txt
-+F:	Documentation/devicetree/bindings/sound/ti,pcm3168a.yaml
-+F:	Documentation/devicetree/bindings/sound/ti,tlv320*.yaml
-+F:	Documentation/devicetree/bindings/sound/tlv320adcx140.yaml
-+F:	Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-+F:	Documentation/devicetree/bindings/sound/tpa6130a2.txt
-+F:	include/sound/tas2*.h
-+F:	include/sound/tlv320*.h
-+F:	include/sound/tpa6130a2-plat.h
-+F:	sound/soc/codecs/pcm1681.c
-+F:	sound/soc/codecs/pcm1789*.*
-+F:	sound/soc/codecs/pcm179x*.*
-+F:	sound/soc/codecs/pcm186x*.*
-+F:	sound/soc/codecs/pcm3008.*
-+F:	sound/soc/codecs/pcm3060*.*
-+F:	sound/soc/codecs/pcm3168a*.*
-+F:	sound/soc/codecs/pcm5102a.c
-+F:	sound/soc/codecs/pcm512x*.*
-+F:	sound/soc/codecs/tas2*.*
-+F:	sound/soc/codecs/tlv320*.*
-+F:	sound/soc/codecs/tpa6130a2.*
-+
- TEXAS INSTRUMENTS DMA DRIVERS
- M:	Peter Ujfalusi <peter.ujfalusi@gmail.com>
- L:	dmaengine@vger.kernel.org
--- 
-2.34.1
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 6e70839257f7..54675a4f2c9f 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -1157,7 +1157,7 @@ static int __ip_append_data(struct sock *sk,
+ 				pskb_trim_unique(skb_prev, maxfraglen);
+ 			}
+ =
+
+-			copy =3D datalen - transhdrlen - fraggap - pagedlen;
++			copy =3D max_t(int, datalen - transhdrlen - fraggap - pagedlen, 0);
+ 			if (copy > 0 && getfrag(from, data + transhdrlen, offset, copy, fragga=
+p, skb) < 0) {
+ 				err =3D -EFAULT;
+ 				kfree_skb(skb);
 
