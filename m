@@ -2,147 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A57576AA3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680A276AA39
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:45:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231982AbjHAHpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 03:45:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
+        id S231561AbjHAHpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 03:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231645AbjHAHp2 (ORCPT
+        with ESMTP id S232051AbjHAHpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 03:45:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3E1269E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 00:44:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690875869;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NqXQpdHpV8Ezvm5Ot+Q+uVycSyLQP6CCe0dWhYuT94Y=;
-        b=AbwqoXFIabWbBrLZJ2sT/rz/ZIZDBHr3TQ50vwUookdn9edEEAogWwwKrby05jKJmMKe70
-        vJGCJP5Xi9Ij6YEH7FxRxtQ2JpfI1vFEKBkSA8lXHf+83xKQjNXnVIjqMD/WFytmZxKOs9
-        QMyzCv7c5hkbPZJmvnTHdNkog4uD5V0=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-679-ZwWQmZI-O9S23JKDL7j9zg-1; Tue, 01 Aug 2023 03:44:28 -0400
-X-MC-Unique: ZwWQmZI-O9S23JKDL7j9zg-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-76c7cffef41so108993585a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 00:44:28 -0700 (PDT)
+        Tue, 1 Aug 2023 03:45:09 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C71211B;
+        Tue,  1 Aug 2023 00:44:45 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-991c786369cso769813766b.1;
+        Tue, 01 Aug 2023 00:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690875881; x=1691480681;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=duwQiPtNtN/ka+/qSDejTLlGxxydtKaBegoBst6LgQA=;
+        b=bflEIgZJpGNTS6Jz8vjxQYTUlCm7p6fq9wi37gFvz6Gi1A1hnh7+v8PhmWz/e2NBHt
+         J5vBY1o1UnhJ9Em3FKmkl6F/GOUY+oKXK2ghU7UXx9IeuxZHwAbmhkgcbTajXOEAWioa
+         hPhxzLQnLBxTYZgO0jLt9sEd/xETN4tMB3uicL4jqtwOSmPEwbPVUwkEMEqcCsRw0CcW
+         O8Iu1uOydcP8C2lk7QC045zuzj7rk5F2AZCsbOoDZDNhnLik1OBdgrOqbQxbqd9x7a9I
+         nPLsvQ8EIffw4XaVl8z1SHccErANxiY2i0ZORp2GnU/RQ/VLV2/ykNyo2YP8gYDoWcmE
+         XDzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690875868; x=1691480668;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NqXQpdHpV8Ezvm5Ot+Q+uVycSyLQP6CCe0dWhYuT94Y=;
-        b=WisodW811FIkVwgLddm3yQac4zIUyTkhXmzX9nSUQPPGiG+mhMuKHq8XgD8XmI/ZRs
-         C2jg/yrXVEIUainSGYIhQE74j5B0cuwJTFw158sl7AoYyLjHaKA6j76MJriXF29IuapS
-         rSpzILkjmUYJIUvmY8Txh7kBHLpEtE8dy0/wIPLtnnMj/KEPMLYp3Y9N7HhHcB1QPCsR
-         8yA6vf2ZNWDW45VDLjgi69HtDSPGzqjm+uaXqJgwLPk93Zop5QItDpy7COnDc+iUCqrX
-         FTeEGkSsfgeL2mRdyV0N9Gbct/G3VAQhOZF2rI784tL7ufHge4Yp5Hu0nhw4IeSNb/Iq
-         VOig==
-X-Gm-Message-State: ABy/qLbcaMam+xwXdan40NDK53r0sl6FNPSpUo3FS/X7bsaqXz9i+fgE
-        Q+15UYQimrry1JGvM4W1EH5qR2YOaKdy63dikptdFDirBLtQA9Du9yH40ALz5mzBh7w2D7NKI0b
-        sb3TcmX3vAXkfpJCKd1o9jN+3
-X-Received: by 2002:a05:620a:2401:b0:763:a1d3:196d with SMTP id d1-20020a05620a240100b00763a1d3196dmr11749448qkn.0.1690875868208;
-        Tue, 01 Aug 2023 00:44:28 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFtiHX4Gzu39qMYgYQMXjB5BxCkE29IapHRH0veL6ley9egkDZ2BXpTaPJcFd+GV6SCcVoAqg==
-X-Received: by 2002:a05:620a:2401:b0:763:a1d3:196d with SMTP id d1-20020a05620a240100b00763a1d3196dmr11749443qkn.0.1690875867867;
-        Tue, 01 Aug 2023 00:44:27 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-225-251.dyn.eolo.it. [146.241.225.251])
-        by smtp.gmail.com with ESMTPSA id os28-20020a05620a811c00b00767e98535b7sm3961257qkn.67.2023.08.01.00.44.25
+        d=1e100.net; s=20221208; t=1690875881; x=1691480681;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=duwQiPtNtN/ka+/qSDejTLlGxxydtKaBegoBst6LgQA=;
+        b=Vipze0gqCNmHLtD5DAdxv4/Ibi5fue8rgke/nbh8FBsrlUSiYfnquj1y5AYmlT9t1m
+         50LXHB6R1vheyBy722ZkoI2IKuf7wupvhqPoCrKcLT+iheWRQcxoNi6iwOtbPXU4Ap8r
+         yu1m7J3jTlsXhMteM74oNUCsqhNFOZmJE2jgc8BLa1zk6LOpfjH5JdS3o93OfUrbB7IT
+         GYplLYUuSMyOUfi3CmbnnGRZJNVY60dWBaEB50c79a/g8GIZLnO/0krqxlemQ3b/yu/r
+         p82woJjw08mM4eLaggo2OedLJjw99ofcg0LBa6VM9ub6Bvwaupk0MBncTeZs9e7x9k9d
+         fj9Q==
+X-Gm-Message-State: ABy/qLZmejbklFjXM203Nr2u80Mx5f7KI6vKbcbEej3N0IR1QpSqHkvk
+        OGKyw6WsFSLCxboJfEy0w9/t5gEGTPUrQw==
+X-Google-Smtp-Source: APBJJlFqt6jAfAmLQZ3qXcE0/0wX91lgUIY+ZCroPI0JqeFIQL3K+Xkro0RoAHQ81Axcfx+wmIIYZA==
+X-Received: by 2002:a17:907:77ce:b0:977:befe:d888 with SMTP id kz14-20020a17090777ce00b00977befed888mr1615099ejc.13.1690875880995;
+        Tue, 01 Aug 2023 00:44:40 -0700 (PDT)
+Received: from localhost.localdomain ([78.97.234.98])
+        by smtp.gmail.com with ESMTPSA id m15-20020a17090607cf00b00993159ce075sm7168595ejc.210.2023.08.01.00.44.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 00:44:27 -0700 (PDT)
-Message-ID: <19a3a2be3c2389e97cacd7e7ab93b317b016ef94.camel@redhat.com>
-Subject: Re: [PATCH net] bpf: sockmap: Remove preempt_disable in
- sock_map_sk_acquire
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, tglozar@redhat.com
-Date:   Tue, 01 Aug 2023 09:44:23 +0200
-In-Reply-To: <64c882fd8c200_a427920843@john.notmuch>
-References: <20230728064411.305576-1-tglozar@redhat.com>
-         <87ila0fn01.fsf@cloudflare.com> <64c882fd8c200_a427920843@john.notmuch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 01 Aug 2023 00:44:40 -0700 (PDT)
+From:   Andrei Coardos <aboutphysycs@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-gpio@vger.kernel.org
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com, andy@kernel.org,
+        brgl@bgdev.pl, linus.walleij@linaro.org,
+        Andrei Coardos <aboutphysycs@gmail.com>,
+        Alexandru Ardelean <alex@shruggie.ro>
+Subject: [PATCH] gpio: sifive: remove unneeded call to platform_set_drvdata()
+Date:   Tue,  1 Aug 2023 10:44:30 +0300
+Message-Id: <20230801074430.5179-1-aboutphysycs@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-07-31 at 20:58 -0700, John Fastabend wrote:
-> Jakub Sitnicki wrote:
-> >=20
-> > On Fri, Jul 28, 2023 at 08:44 AM +02, tglozar@redhat.com wrote:
-> > > From: Tomas Glozar <tglozar@redhat.com>
-> > >=20
-> > > Disabling preemption in sock_map_sk_acquire conflicts with GFP_ATOMIC
-> > > allocation later in sk_psock_init_link on PREEMPT_RT kernels, since
-> > > GFP_ATOMIC might sleep on RT (see bpf: Make BPF and PREEMPT_RT co-exi=
-st
-> > > patchset notes for details).
-> > >=20
-> > > This causes calling bpf_map_update_elem on BPF_MAP_TYPE_SOCKMAP maps =
-to
-> > > BUG (sleeping function called from invalid context) on RT kernels.
-> > >=20
-> > > preempt_disable was introduced together with lock_sk and rcu_read_loc=
-k
-> > > in commit 99ba2b5aba24e ("bpf: sockhash, disallow bpf_tcp_close and u=
-pdate
-> > > in parallel"), probably to match disabled migration of BPF programs, =
-and
-> > > is no longer necessary.
-> > >=20
-> > > Remove preempt_disable to fix BUG in sock_map_update_common on RT.
-> > >=20
-> > > Signed-off-by: Tomas Glozar <tglozar@redhat.com>
-> > > ---
-> >=20
-> > We disable softirq and hold a spin lock when modifying the map/hash in
-> > sock_{map,hash}_update_common so this LGTM:
-> >=20
->=20
-> Agree.
->=20
-> > Reviewed-by: Jakub Sitnicki <jakub@cloudflare.com>
->=20
-> Reviewed-by: John Fastabend <john.fastabend@gmail.com>
->=20
-> >=20
-> > You might want some extra tags:
-> >=20
-> > Link: https://lore.kernel.org/all/20200224140131.461979697@linutronix.d=
-e/
-> > Fixes: 99ba2b5aba24 ("bpf: sockhash, disallow bpf_tcp_close and update =
-in parallel")
+This function call was found to be unnecessary as there is no equivalent
+platform_get_drvdata() call to access the private data of the driver. Also,
+the private data is defined in this driver, so there is no risk of it being
+accessed outside of this driver file.
 
-ENOCOFFEE here (which is never an excuse, but at least today is really
-true), but I considered you may want this patch via the ebpf tree only
-after applying it to net.
+Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+---
+ drivers/gpio/gpio-sifive.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Hopefully should not be tragic, but please let me know if you prefer
-the change reverted from net and going via the other path.
-
-Thanks!
-
-Paolo
+diff --git a/drivers/gpio/gpio-sifive.c b/drivers/gpio/gpio-sifive.c
+index c6a8d2374e31..0010f607a9ef 100644
+--- a/drivers/gpio/gpio-sifive.c
++++ b/drivers/gpio/gpio-sifive.c
+@@ -259,7 +259,6 @@ static int sifive_gpio_probe(struct platform_device *pdev)
+ 	girq->child_to_parent_hwirq = sifive_gpio_child_to_parent_hwirq;
+ 	girq->handler = handle_bad_irq;
+ 	girq->default_type = IRQ_TYPE_NONE;
+-	platform_set_drvdata(pdev, priv);
+ 
+ 	return gpiochip_add_data(&chip->gc, chip);
+ }
+-- 
+2.34.1
 
