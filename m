@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CC976B088
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F320F76B077
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233868AbjHAKLM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 06:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
+        id S233820AbjHAKKv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 06:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbjHAKKm (ORCPT
+        with ESMTP id S230343AbjHAKKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:10:42 -0400
+        Tue, 1 Aug 2023 06:10:39 -0400
 Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B963103;
-        Tue,  1 Aug 2023 03:10:40 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D73BE;
+        Tue,  1 Aug 2023 03:10:36 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
         (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 2459C24E2AA;
-        Tue,  1 Aug 2023 18:10:34 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 530F024E2F2;
+        Tue,  1 Aug 2023 18:10:35 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
  2023 18:10:34 +0800
 Received: from xiaofei.localdomain (180.164.60.184) by EXMBX061.cuchost.com
  (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
@@ -51,9 +51,9 @@ CC:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
         Jack Zhu <jack.zhu@starfivetech.com>,
         Shengyang Chen <shengyang.chen@starfivetech.com>,
         Changhuang Liang <changhuang.liang@starfivetech.com>
-Subject: [PATCH v1 v1 3/7] riscv: dts: starfive: jh7110: add dc controller and hdmi  node
-Date:   Tue, 1 Aug 2023 18:10:26 +0800
-Message-ID: <20230801101030.2040-4-keith.zhao@starfivetech.com>
+Subject: [PATCH v1 v1 4/7] drm/fourcc: Add drm/vs tiled modifiers
+Date:   Tue, 1 Aug 2023 18:10:27 +0800
+Message-ID: <20230801101030.2040-5-keith.zhao@starfivetech.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230801101030.2040-1-keith.zhao@starfivetech.com>
 References: <20230801101030.2040-1-keith.zhao@starfivetech.com>
@@ -73,183 +73,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the dc controller and hdmi node for the Starfive JH7110 SoC.
+These are mainly used internally in vs-drm,
+I'm not sure if the new modifiers can be used with the existing ones.
+If there is a problem, I will improve it further.
 
 Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
 ---
- .../jh7110-starfive-visionfive-2.dtsi         | 87 +++++++++++++++++++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      | 43 +++++++++
- 2 files changed, 130 insertions(+)
+ include/uapi/drm/drm_fourcc.h | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index de0f40a8b..32e5cc96c 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -31,6 +31,21 @@ memory@40000000 {
- 		reg = <0x0 0x40000000 0x1 0x0>;
- 	};
+diff --git a/include/uapi/drm/drm_fourcc.h b/include/uapi/drm/drm_fourcc.h
+index 8db7fd3f7..0b884cf50 100644
+--- a/include/uapi/drm/drm_fourcc.h
++++ b/include/uapi/drm/drm_fourcc.h
+@@ -419,6 +419,7 @@ extern "C" {
+ #define DRM_FORMAT_MOD_VENDOR_ARM     0x08
+ #define DRM_FORMAT_MOD_VENDOR_ALLWINNER 0x09
+ #define DRM_FORMAT_MOD_VENDOR_AMLOGIC 0x0a
++#define DRM_FORMAT_MOD_VENDOR_VS      0x0b
  
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		linux,cma {
-+			compatible = "shared-dma-pool";
-+			reusable;
-+			size = <0x0 0x20000000>;
-+			alignment = <0x0 0x1000>;
-+			alloc-ranges = <0x0 0x80000000 0x0 0x20000000>;
-+			linux,cma-default;
-+		};
-+	};
-+
- 	gpio-restart {
- 		compatible = "gpio-restart";
- 		gpios = <&sysgpio 35 GPIO_ACTIVE_HIGH>;
-@@ -231,6 +246,41 @@ GPOEN_DISABLE,
- 			slew-rate = <0>;
- 		};
- 	};
-+
-+	hdmi_pins: hdmi-0 {
-+		hdmi-scl-pins {
-+			pinmux = <GPIOMUX(0, GPOUT_SYS_HDMI_DDC_SCL,
-+					     GPOEN_SYS_HDMI_DDC_SCL,
-+					     GPI_SYS_HDMI_DDC_SCL)>;
-+			input-enable;
-+			bias-pull-up;
-+		};
-+
-+		hdmi-sda-pins {
-+			pinmux = <GPIOMUX(1, GPOUT_SYS_HDMI_DDC_SDA,
-+					     GPOEN_SYS_HDMI_DDC_SDA,
-+					     GPI_SYS_HDMI_DDC_SDA)>;
-+			input-enable;
-+			bias-pull-up;
-+		};
-+
-+		hdmi-cec-pins {
-+			pinmux = <GPIOMUX(14, GPOUT_SYS_HDMI_CEC_SDA,
-+					     GPOEN_SYS_HDMI_CEC_SDA,
-+					     GPI_SYS_HDMI_CEC_SDA)>;
-+			input-enable;
-+			bias-pull-up;
-+		};
-+
-+		hdmi-hpd-pins {
-+			pinmux = <GPIOMUX(15, GPOUT_HIGH,
-+					     GPOEN_ENABLE,
-+					     GPI_SYS_HDMI_HPD)>;
-+			input-enable;
-+			bias-disable; /* external pull-up */
-+		};
-+	};
-+
- };
+ /* add more to the end as needed */
  
- &uart0 {
-@@ -254,3 +304,40 @@ &U74_3 {
- &U74_4 {
- 	cpu-supply = <&vdd_cpu>;
- };
-+
-+&voutcrg {
-+	status = "okay";
-+};
-+
-+&display {
-+	status = "okay";
-+};
-+
-+&hdmi {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&hdmi_pins>;
-+
-+	hdmi_in: port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		hdmi_in_dc: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&dc_out_hdmi>;
-+		};
-+	};
-+};
-+
-+&dc8200 {
-+	status = "okay";
-+
-+	dc_out: port {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		dc_out_hdmi: endpoint@0 {
-+			reg = <0>;
-+			remote-endpoint = <&hdmi_in_dc>;
-+		};
-+
-+	};
-+};
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index 0005fa163..b8c527d9f 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -282,6 +282,11 @@ tdm_ext: tdm-ext-clock {
- 		#clock-cells = <0>;
- 	};
+@@ -1562,6 +1563,32 @@ drm_fourcc_canonicalize_nvidia_format_mod(__u64 modifier)
+ #define AMD_FMT_MOD_CLEAR(field) \
+ 	(~((__u64)AMD_FMT_MOD_##field##_MASK << AMD_FMT_MOD_##field##_SHIFT))
  
-+	display: display-subsystem {
-+		compatible = "starfive,display-subsystem";
-+		ports = <&dc_out>;
-+	};
++#define DRM_FORMAT_MOD_VS_TYPE_NORMAL        0x00
++#define DRM_FORMAT_MOD_VS_TYPE_COMPRESSED    0x01
++#define DRM_FORMAT_MOD_VS_TYPE_CUSTOM_10BIT  0x02
++#define DRM_FORMAT_MOD_VS_TYPE_MASK     ((__u64)0x3 << 54)
 +
- 	soc {
- 		compatible = "simple-bus";
- 		interrupt-parent = <&plic>;
-@@ -613,5 +618,43 @@ voutcrg: clock-controller@295c0000 {
- 			#reset-cells = <1>;
- 			power-domains = <&pwrc JH7110_PD_VOUT>;
- 		};
++#define fourcc_mod_vs_code(type, val) \
++	fourcc_mod_code(VS, ((((__u64)type) << 54) | (val)))
 +
-+		dc8200: lcd-controller@29400000 {
-+			compatible = "starfive,jh7110-dc8200";
-+			reg = <0x0 0x29400000 0x0 0x100>,
-+			      <0x0 0x29400800 0x0 0x2000>,
-+			      <0x0 0x295b0000 0x0 0x90>;
-+			interrupts = <95>;
-+			clocks = <&syscrg JH7110_SYSCLK_NOC_BUS_DISP_AXI>,
-+				<&voutcrg JH7110_VOUTCLK_DC8200_PIX0>,
-+				<&voutcrg JH7110_VOUTCLK_DC8200_PIX1>,
-+				<&voutcrg JH7110_VOUTCLK_DC8200_AXI>,
-+				<&voutcrg JH7110_VOUTCLK_DC8200_CORE>,
-+				<&voutcrg JH7110_VOUTCLK_DC8200_AHB>,
-+				<&hdmitx0_pixelclk>,
-+				<&voutcrg JH7110_VOUTCLK_DC8200_PIX>;
-+			clock-names = "vout_noc_disp", "vout_pix0", "vout_pix1",
-+				      "vout_axi", "vout_core", "vout_vout_ahb",
-+				      "hdmitx0_pixel", "vout_dc8200";
-+			resets = <&voutcrg JH7110_VOUTRST_DC8200_AXI>,
-+				 <&voutcrg JH7110_VOUTRST_DC8200_AHB>,
-+				 <&voutcrg JH7110_VOUTRST_DC8200_CORE>;
-+			reset-names = "vout_axi","vout_ahb", "vout_core";
-+		};
++#define DRM_FORMAT_MOD_VS_NORM_MODE_MASK        0x1F
++#define DRM_FORMAT_MOD_VS_LINEAR                0x00
++#define DRM_FORMAT_MOD_VS_SUPER_TILED_XMAJOR    0x02
++#define DRM_FORMAT_MOD_VS_SUPER_TILED_YMAJOR    0x03
++#define DRM_FORMAT_MOD_VS_TILE_8X8              0x04
++#define DRM_FORMAT_MOD_VS_TILE_8X4              0x07
++#define DRM_FORMAT_MOD_VS_SUPER_TILED_XMAJOR_8X4    0x0B
++#define DRM_FORMAT_MOD_VS_SUPER_TILED_YMAJOR_4X8    0x0C
++#define DRM_FORMAT_MOD_VS_TILE_MODE4X4          0x15
 +
-+		hdmi: hdmi@29590000 {
-+			compatible = "starfive,jh7110-inno-hdmi";
-+			reg = <0x0 0x29590000 0x0 0x4000>;
-+			interrupts = <99>;
++#define fourcc_mod_vs_norm_code(tile) \
++	fourcc_mod_vs_code(DRM_FORMAT_MOD_VS_TYPE_NORMAL, \
++				(tile))
 +
-+			clocks = <&voutcrg JH7110_VOUTCLK_HDMI_TX_SYS>,
-+				 <&voutcrg JH7110_VOUTCLK_HDMI_TX_MCLK>,
-+				 <&voutcrg JH7110_VOUTCLK_HDMI_TX_BCLK>,
-+				 <&hdmitx0_pixelclk>;
-+			clock-names = "sysclk", "mclk", "bclk", "pclk";
-+			resets = <&voutcrg JH7110_VOUTRST_HDMI_TX_HDMI>;
-+			reset-names = "hdmi_tx";
-+			#sound-dai-cells = <0>;
-+		};
- 	};
- };
++#define fourcc_mod_vs_custom_code(tile) \
++	fourcc_mod_vs_code(DRM_FORMAT_MOD_VS_TYPE_CUSTOM_10BIT, \
++				(tile))
++
+ #if defined(__cplusplus)
+ }
+ #endif
 -- 
 2.34.1
 
