@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEE376AA80
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA78F76AA83
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231958AbjHAIEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:04:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
+        id S232081AbjHAIGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjHAIEd (ORCPT
+        with ESMTP id S229904AbjHAIGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:04:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1001CC6;
-        Tue,  1 Aug 2023 01:04:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 96AD6614AD;
-        Tue,  1 Aug 2023 08:04:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 823D5C433C8;
-        Tue,  1 Aug 2023 08:04:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690877072;
-        bh=Tv+oYDR8L9V9W/c2l2OAdHIcJgsgGbcswiHtZzQaNhQ=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=I114Msy+sme9c8Xqqa/nLUtJEsHDs1ACQd4cp3G1yIxuGDbjrG8iwEG6x4by7ZNSH
-         bHOu12c4zWevOcO96Tz4nntB6501ZgchVnA6z9du0NVknqaNnsmsupZmfAncKadfq+
-         Tx4PoXAL4oyrcsFtWR08l1NYgkm9AT8c0WLygRyLteAZJW352I0lMv8m9KpOoiHf3s
-         p/299KpE27dGdrO/BVSaah1LYuYiSXTElxyIABR0XLzmnNNFT5U1ehbuPXkbc5E1ka
-         s12EYyRFq/BCKDDBAaHf7YDST3PkxF90VP+sTuqNWNMK48RZ0U2gVi+fxXBZM4488F
-         QPRXnUCo9BLSg==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net-next v3 1/2] dt-bindings: mt76: support setting
- per-band MAC address
-References: <d3130584b64309da28a04826100643ff6239f9ca.1690841657.git.daniel@makrotopia.org>
-Date:   Tue, 01 Aug 2023 11:04:25 +0300
-In-Reply-To: <d3130584b64309da28a04826100643ff6239f9ca.1690841657.git.daniel@makrotopia.org>
-        (Daniel Golle's message of "Mon, 31 Jul 2023 23:23:16 +0100")
-Message-ID: <874jljyyra.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 04:06:04 -0400
+Received: from out28-53.mail.aliyun.com (out28-53.mail.aliyun.com [115.124.28.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57070C6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:06:02 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09275195|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0142227-0.000504418-0.985273;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047205;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5mTyvE_1690877153;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5mTyvE_1690877153)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 16:05:55 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amdgpu: Clean up errors in ci_baco.c
+Date:   Tue,  1 Aug 2023 08:05:50 +0000
+Message-Id: <20230801080550.6644-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Golle <daniel@makrotopia.org> writes:
+Fix the following errors reported by checkpatch:
 
-> Introduce support for setting individual per-band MAC addresses using
-> NVMEM cells by adding a 'bands' object with enumerated child nodes
-> representing the 2.4 GHz, 5 GHz and 6 GHz bands.
->
-> In case it is defined, call of_get_mac_address for the per-band child
-> node, otherwise try with of_get_mac_address on the main device node and
-> fall back to a random address like it used to be.
->
-> While at it, add MAC address related properties also for the main node.
->
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+ERROR: that open brace { should be on the previous line
 
-mt76 patches go to Felix's tree, not net-next. No need to resend because
-of this.
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ .../gpu/drm/amd/pm/powerplay/hwmgr/ci_baco.c  | 21 +++++++------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ci_baco.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ci_baco.c
+index 45f608838f6e..65b95d6be5c5 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ci_baco.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ci_baco.c
+@@ -38,8 +38,7 @@
+ #include "gca/gfx_7_2_d.h"
+ #include "gca/gfx_7_2_sh_mask.h"
+ 
+-static const struct baco_cmd_entry gpio_tbl[] =
+-{
++static const struct baco_cmd_entry gpio_tbl[] = {
+ 	{ CMD_WRITE, mmGPIOPAD_EN, 0, 0, 0, 0x0 },
+ 	{ CMD_WRITE, mmGPIOPAD_PD_EN, 0, 0, 0, 0x0 },
+ 	{ CMD_WRITE, mmGPIOPAD_PU_EN, 0, 0, 0, 0x0 },
+@@ -52,15 +51,13 @@ static const struct baco_cmd_entry gpio_tbl[] =
+ 	{ CMD_READMODIFYWRITE, mmDC_GPIO_SYNCA_MASK, 0, 0, 0, 0x00001111 }
+ };
+ 
+-static const struct baco_cmd_entry enable_fb_req_rej_tbl[] =
+-{
++static const struct baco_cmd_entry enable_fb_req_rej_tbl[] = {
+ 	{ CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, 0xC0300024 },
+ 	{ CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, 0x1, 0x0, 0, 0x1 },
+ 	{ CMD_WRITE, mmBIF_FB_EN, 0, 0, 0, 0x0 }
+ };
+ 
+-static const struct baco_cmd_entry use_bclk_tbl[] =
+-{
++static const struct baco_cmd_entry use_bclk_tbl[] = {
+ 	{ CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, ixCG_SPLL_FUNC_CNTL },
+ 	{ CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, CG_SPLL_FUNC_CNTL__SPLL_BYPASS_EN_MASK, CG_SPLL_FUNC_CNTL__SPLL_BYPASS_EN__SHIFT, 0, 0x1 },
+ 	{ CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, ixCG_SPLL_FUNC_CNTL_2 },
+@@ -82,8 +79,7 @@ static const struct baco_cmd_entry use_bclk_tbl[] =
+ 	{ CMD_READMODIFYWRITE, mmMPLL_CNTL_MODE, MPLL_CNTL_MODE__MPLL_MCLK_SEL_MASK, MPLL_CNTL_MODE__MPLL_MCLK_SEL__SHIFT, 0, 0x0 }
+ };
+ 
+-static const struct baco_cmd_entry turn_off_plls_tbl[] =
+-{
++static const struct baco_cmd_entry turn_off_plls_tbl[] = {
+ 	{ CMD_READMODIFYWRITE, mmDISPPLL_BG_CNTL, DISPPLL_BG_CNTL__DISPPLL_BG_PDN_MASK, DISPPLL_BG_CNTL__DISPPLL_BG_PDN__SHIFT, 0, 0x1 },
+ 	{ CMD_WRITE, mmGCK_SMC_IND_INDEX, 0, 0, 0, ixCG_CLKPIN_CNTL_DC },
+ 	{ CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, CG_CLKPIN_CNTL_DC__OSC_EN_MASK, CG_CLKPIN_CNTL_DC__OSC_EN__SHIFT, 0, 0x0 },
+@@ -120,8 +116,7 @@ static const struct baco_cmd_entry turn_off_plls_tbl[] =
+ 	{ CMD_READMODIFYWRITE, mmGCK_SMC_IND_DATA, THM_CLK_CNTL__TMON_CLK_SEL_MASK, THM_CLK_CNTL__TMON_CLK_SEL__SHIFT, 0, 0x2 }
+ };
+ 
+-static const struct baco_cmd_entry enter_baco_tbl[] =
+-{
++static const struct baco_cmd_entry enter_baco_tbl[] = {
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_EN_MASK, BACO_CNTL__BACO_EN__SHIFT, 0, 0x01 },
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_BCLK_OFF_MASK, BACO_CNTL__BACO_BCLK_OFF__SHIFT, 0, 0x01 },
+ 	{ CMD_WAITFOR,         mmBACO_CNTL, BACO_CNTL__BACO_BCLK_OFF_MASK, 0, 5, 0x02 },
+@@ -136,8 +131,7 @@ static const struct baco_cmd_entry enter_baco_tbl[] =
+ 
+ #define BACO_CNTL__PWRGOOD_MASK  BACO_CNTL__PWRGOOD_GPIO_MASK+BACO_CNTL__PWRGOOD_MEM_MASK+BACO_CNTL__PWRGOOD_DVO_MASK
+ 
+-static const struct baco_cmd_entry exit_baco_tbl[] =
+-{
++static const struct baco_cmd_entry exit_baco_tbl[] = {
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_RESET_EN_MASK, BACO_CNTL__BACO_RESET_EN__SHIFT, 0, 0x01 },
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_BCLK_OFF_MASK,           BACO_CNTL__BACO_BCLK_OFF__SHIFT, 0, 0x00 },
+ 	{ CMD_READMODIFYWRITE, mmBACO_CNTL, BACO_CNTL__BACO_POWER_OFF_MASK,          BACO_CNTL__BACO_POWER_OFF__SHIFT, 0, 0x00 },
+@@ -152,8 +146,7 @@ static const struct baco_cmd_entry exit_baco_tbl[] =
+ 	{ CMD_WAITFOR, mmBACO_CNTL, BACO_CNTL__BACO_MODE_MASK, 0, 0xffffffff, 0x00 }
+ };
+ 
+-static const struct baco_cmd_entry clean_baco_tbl[] =
+-{
++static const struct baco_cmd_entry clean_baco_tbl[] = {
+ 	{ CMD_WRITE, mmBIOS_SCRATCH_6, 0, 0, 0, 0 },
+ 	{ CMD_WRITE, mmBIOS_SCRATCH_7, 0, 0, 0, 0 },
+ 	{ CMD_WRITE, mmCP_PFP_UCODE_ADDR, 0, 0, 0, 0 }
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.17.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
