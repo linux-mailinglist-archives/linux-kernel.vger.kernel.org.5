@@ -2,68 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2798076A7C3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:05:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD8A76A7CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbjHAEFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 00:05:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
+        id S230250AbjHAEOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 00:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjHAEFV (ORCPT
+        with ESMTP id S229662AbjHAEOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 00:05:21 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2C708185;
-        Mon, 31 Jul 2023 21:05:18 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8Bx5fB7hMhkEtkNAA--.32917S3;
-        Tue, 01 Aug 2023 12:05:15 +0800 (CST)
-Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLCN5hMhkAoVDAA--.26035S3;
-        Tue, 01 Aug 2023 12:05:14 +0800 (CST)
-Message-ID: <0126bfcf-fb5c-6243-a2f3-2aab01b38279@loongson.cn>
-Date:   Tue, 1 Aug 2023 12:05:13 +0800
+        Tue, 1 Aug 2023 00:14:16 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A866DE49;
+        Mon, 31 Jul 2023 21:14:14 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686daaa5f1fso3635342b3a.3;
+        Mon, 31 Jul 2023 21:14:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690863254; x=1691468054;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D+Qr+Vl6m/WbbDISDjD1yyCZ2hR5HHEvke4EmXEj2Uw=;
+        b=pIz+Kd+2aIGkwz0drO4/9pu9r8QDYtL8kmf1bgJ0EtiKl8D5Dq1pruHje/mBtmcd7D
+         95ay4nhbosIOs7YbjYOFSwpwuKb2x/raH71dbfEbl0ighvQVE/QyedPwMsDk6k8l+GUT
+         VyFMj5qNklAfs0B/ns7Az9lYDYDNXEg/FDmaidwfHjueT5L2gRFBdFZA9WczyFgAqPfT
+         EeeVGL/C19UAdymTIwSQ0NtZxCdNlHGXtANr3/6EwVv13cD4tg07pnYk78ptn7Q4Cb0Y
+         k6uCS9G9oWyxUPltKR8NmVNyvB5UiQRcoUMlDu8wDpTeD0umyjYoMhMLjR+K5eFUG7gl
+         ODcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690863254; x=1691468054;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D+Qr+Vl6m/WbbDISDjD1yyCZ2hR5HHEvke4EmXEj2Uw=;
+        b=kEyqBqwc5KJWS+IHCXPN8zlWs9uxc8gvKXQXjuzdEUM8FRwH0TyxA883+4KKcaSY4R
+         RxCgA/QFbakBUiiyUNecttbQyA8QAfM7f4JhlmYqCAUU48amDZFNt4v8nCdeW17GUEvk
+         1s8758jWsY2dqpZ/+4tVahO+ip0Wgu227F36h3oAX/M78R83tioCaMT375F93eYxf0jr
+         B4CReaMDY/ctHVUkImWKN3jS1OoYXBYIZUAbVt++kEAJgGH4F5ecubephq7/dn2P9mik
+         SwMLGs17Yy/L0FxIdGGi0VR69UA2vNnWjTfLPQ8kiL7mEg6U1MiqbMmQHcWxPR87opi/
+         bGaw==
+X-Gm-Message-State: ABy/qLYkf8ZJNO4rE8ukyM3Ipwfg5NUjQVPB+7BxlHmkSaG5GUgl/eDi
+        rpBZ9PzbI/qAi/dyxg7+mOGWE/Z6cqgWGWdr
+X-Google-Smtp-Source: APBJJlFF11RaQc5lCvP2a1aXSvPrjsc4P1ZZLbtnwCzQ2n4om5Ert1Viv7o7AR3/b8EanH052/XDqw==
+X-Received: by 2002:a05:6a21:498e:b0:12f:dc60:2b9e with SMTP id ax14-20020a056a21498e00b0012fdc602b9emr11084938pzc.48.1690863253921;
+        Mon, 31 Jul 2023 21:14:13 -0700 (PDT)
+Received: from localhost (c-67-166-91-86.hsd1.wa.comcast.net. [67.166.91.86])
+        by smtp.gmail.com with ESMTPSA id d7-20020aa78147000000b0068718aadda7sm5242014pfn.108.2023.07.31.21.14.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 21:14:13 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 04:14:12 +0000
+From:   Bobby Eshleman <bobbyeshleman@gmail.com>
+To:     Arseniy Krasnov <oxffffaa@gmail.com>
+Cc:     Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bryan Tan <bryantan@vmware.com>,
+        Vishnu Dasa <vdasa@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>,
+        Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH RFC net-next v5 13/14] virtio/vsock: implement datagram
+ supporty
+Message-ID: <ZMiGlMj70xd95dTK@bullseye>
+References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
+ <20230413-b4-vsock-dgram-v5-13-581bd37fdb26@bytedance.com>
+ <adeed3a8-68fe-bdb7-e4a1-48044dbe5436@gmail.com>
+ <ZMFetBpO0OdzXtnK@bullseye>
+ <f04d2aa5-32d8-cdc4-3b51-f15b0f42a1e8@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V2] asm-generic: ticket-lock: Optimize
- arch_spin_value_unlocked
-Content-Language: en-US
-To:     Waiman Long <longman@redhat.com>, guoren@kernel.org,
-        David.Laight@ACULAB.COM, will@kernel.org, peterz@infradead.org,
-        mingo@redhat.com
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-References: <20230731023308.3748432-1-guoren@kernel.org>
- <c603e7f1-a562-6826-1c86-995c8127abee@redhat.com>
- <2437ac29-29f0-34f9-b7cb-f0e294db7dc6@loongson.cn>
- <f34ddf7f-3ed9-6118-8106-eb9df110c44c@redhat.com>
-From:   bibo mao <maobibo@loongson.cn>
-In-Reply-To: <f34ddf7f-3ed9-6118-8106-eb9df110c44c@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8CxLCN5hMhkAoVDAA--.26035S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGryfWr1fZr1xArW5WF1kXrc_yoWrZw17pr
-        1kGF15JryUCr1kAF1Utr1jqry8tw47Kw1UXr1DGF1UJFsrXr1Yga18Xr90gr1jyw4xJr4U
-        Jr1jqry7Zr1UJrcCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4SoGDU
-        UUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f04d2aa5-32d8-cdc4-3b51-f15b0f42a1e8@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,90 +95,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/8/1 09:59, Waiman Long 写道:
-> On 7/31/23 21:37, bibo mao wrote:
->>
->> 在 2023/7/31 23:16, Waiman Long 写道:
->>> On 7/30/23 22:33, guoren@kernel.org wrote:
->>>> From: Guo Ren <guoren@linux.alibaba.com>
->>>>
->>>> The arch_spin_value_unlocked would cause an unnecessary memory
->>>> access to the contended value. Although it won't cause a significant
->>>> performance gap in most architectures, the arch_spin_value_unlocked
->>>> argument contains enough information. Thus, remove unnecessary
->>>> atomic_read in arch_spin_value_unlocked().
->>>>
->>>> The caller of arch_spin_value_unlocked() could benefit from this
->>>> change. Currently, the only caller is lockref.
->>>>
->>>> Signed-off-by: Guo Ren <guoren@kernel.org>
->>>> Cc: Waiman Long <longman@redhat.com>
->>>> Cc: David Laight <David.Laight@ACULAB.COM>
->>>> Cc: Peter Zijlstra <peterz@infradead.org>
->>>> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
->>>> ---
->>>> Changelog
->>>> V2:
->>>>    - Fixup commit log with Waiman advice.
->>>>    - Add Waiman comment in the commit msg.
->>>> ---
->>>>    include/asm-generic/spinlock.h | 16 +++++++++-------
->>>>    1 file changed, 9 insertions(+), 7 deletions(-)
->>>>
->>>> diff --git a/include/asm-generic/spinlock.h b/include/asm-generic/spinlock.h
->>>> index fdfebcb050f4..90803a826ba0 100644
->>>> --- a/include/asm-generic/spinlock.h
->>>> +++ b/include/asm-generic/spinlock.h
->>>> @@ -68,11 +68,18 @@ static __always_inline void arch_spin_unlock(arch_spinlock_t *lock)
->>>>        smp_store_release(ptr, (u16)val + 1);
->>>>    }
->>>>    +static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
->>>> +{
->>>> +    u32 val = lock.counter;
->>>> +
->>>> +    return ((val >> 16) == (val & 0xffff));
->>>> +}
->>>> +
->>>>    static __always_inline int arch_spin_is_locked(arch_spinlock_t *lock)
->>>>    {
->>>> -    u32 val = atomic_read(lock);
->>>> +    arch_spinlock_t val = READ_ONCE(*lock);
->>>>    -    return ((val >> 16) != (val & 0xffff));
->>>> +    return !arch_spin_value_unlocked(val);
->>>>    }
->>>>      static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
->>>> @@ -82,11 +89,6 @@ static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
->>>>        return (s16)((val >> 16) - (val & 0xffff)) > 1;
->>>>    }
->>>>    -static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
->>>> -{
->>>> -    return !arch_spin_is_locked(&lock);
->>>> -}
->>>> -
->>>>    #include <asm/qrwlock.h>
->>>>      #endif /* __ASM_GENERIC_SPINLOCK_H */
->>> I am fine with the current change. However, modern optimizing compiler should be able to avoid the redundant memory read anyway. So this patch may not have an impact from the performance point of view.
->> arch_spin_value_unlocked is called with lockref like this:
->>
->> #define CMPXCHG_LOOP(CODE, SUCCESS) do {                                        \
->>          int retry = 100;                                                        \
->>          struct lockref old;                                                     \
->>          BUILD_BUG_ON(sizeof(old) != 8);                                         \
->>          old.lock_count = READ_ONCE(lockref->lock_count);                        \
->>          while (likely(arch_spin_value_unlocked(old.lock.rlock.raw_lock))) {     \
->>
->> With modern optimizing compiler, Is it possible that old value of
->> old.lock.rlock.raw_lock is cached in register, despite that try_cmpxchg64_relaxed
->> modifies the memory of old.lock_count with new value?
+On Thu, Jul 27, 2023 at 11:09:21AM +0300, Arseniy Krasnov wrote:
 > 
-> What I meant is that the call to arch_spin_value_unlocked() as it is today will not generate 2 memory reads of the same location with or without the patch. Of course, a new memory read will be needed after a failed cmpxchg().
-yeap, it can solve the issue with a new memory read after a failed cmpxchg().
-
-Regards
-Bibo Mao
 > 
-> Cheers,
-> Longman
+> On 26.07.2023 20:58, Bobby Eshleman wrote:
+> > On Sat, Jul 22, 2023 at 11:45:29AM +0300, Arseniy Krasnov wrote:
+> >>
+> >>
+> >> On 19.07.2023 03:50, Bobby Eshleman wrote:
+> >>> This commit implements datagram support for virtio/vsock by teaching
+> >>> virtio to use the general virtio transport ->dgram_addr_init() function
+> >>> and implementation a new version of ->dgram_allow().
+> >>>
+> >>> Additionally, it drops virtio_transport_dgram_allow() as an exported
+> >>> symbol because it is no longer used in other transports.
+> >>>
+> >>> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
+> >>> ---
+> >>>  include/linux/virtio_vsock.h            |  1 -
+> >>>  net/vmw_vsock/virtio_transport.c        | 24 +++++++++++++++++++++++-
+> >>>  net/vmw_vsock/virtio_transport_common.c |  6 ------
+> >>>  3 files changed, 23 insertions(+), 8 deletions(-)
+> >>>
+> >>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+> >>> index b3856b8a42b3..d0a4f08b12c1 100644
+> >>> --- a/include/linux/virtio_vsock.h
+> >>> +++ b/include/linux/virtio_vsock.h
+> >>> @@ -211,7 +211,6 @@ void virtio_transport_notify_buffer_size(struct vsock_sock *vsk, u64 *val);
+> >>>  u64 virtio_transport_stream_rcvhiwat(struct vsock_sock *vsk);
+> >>>  bool virtio_transport_stream_is_active(struct vsock_sock *vsk);
+> >>>  bool virtio_transport_stream_allow(u32 cid, u32 port);
+> >>> -bool virtio_transport_dgram_allow(u32 cid, u32 port);
+> >>>  void virtio_transport_dgram_addr_init(struct sk_buff *skb,
+> >>>  				      struct sockaddr_vm *addr);
+> >>>  
+> >>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+> >>> index ac2126c7dac5..713718861bd4 100644
+> >>> --- a/net/vmw_vsock/virtio_transport.c
+> >>> +++ b/net/vmw_vsock/virtio_transport.c
+> >>> @@ -63,6 +63,7 @@ struct virtio_vsock {
+> >>>  
+> >>>  	u32 guest_cid;
+> >>>  	bool seqpacket_allow;
+> >>> +	bool dgram_allow;
+> >>>  };
+> >>>  
+> >>>  static u32 virtio_transport_get_local_cid(void)
+> >>> @@ -413,6 +414,7 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
+> >>>  	queue_work(virtio_vsock_workqueue, &vsock->rx_work);
+> >>>  }
+> >>>  
+> >>> +static bool virtio_transport_dgram_allow(u32 cid, u32 port);
+> >>
+> >> May be add body here? Without prototyping? Same for loopback and vhost.
+> >>
+> > 
+> > Sounds okay with me, but this seems to go against the pattern
+> > established by seqpacket. Any reason why?
+> 
+> Stefano Garzarella <sgarzare@redhat.com> commented my patch with the same approach:
+> 
+> https://lore.kernel.org/netdev/lex6l5suez7azhirt22lidndtjomkbagfbpvvi5p7c2t7klzas@4l2qly7at37c/
+> 
+> Thanks, Arseniy
+> 
 
+Gotcha, sounds good.
+
+Thanks,
+Bobby
+> 
+> > 
+> >>>  static bool virtio_transport_seqpacket_allow(u32 remote_cid);
+> >>>  
+> >>>  static struct virtio_transport virtio_transport = {
+> >>> @@ -430,6 +432,7 @@ static struct virtio_transport virtio_transport = {
+> >>>  
+> >>>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
+> >>>  		.dgram_allow              = virtio_transport_dgram_allow,
+> >>> +		.dgram_addr_init          = virtio_transport_dgram_addr_init,
+> >>>  
+> >>>  		.stream_dequeue           = virtio_transport_stream_dequeue,
+> >>>  		.stream_enqueue           = virtio_transport_stream_enqueue,
+> >>> @@ -462,6 +465,21 @@ static struct virtio_transport virtio_transport = {
+> >>>  	.send_pkt = virtio_transport_send_pkt,
+> >>>  };
+> >>>  
+> >>> +static bool virtio_transport_dgram_allow(u32 cid, u32 port)
+> >>> +{
+> >>> +	struct virtio_vsock *vsock;
+> >>> +	bool dgram_allow;
+> >>> +
+> >>> +	dgram_allow = false;
+> >>> +	rcu_read_lock();
+> >>> +	vsock = rcu_dereference(the_virtio_vsock);
+> >>> +	if (vsock)
+> >>> +		dgram_allow = vsock->dgram_allow;
+> >>> +	rcu_read_unlock();
+> >>> +
+> >>> +	return dgram_allow;
+> >>> +}
+> >>> +
+> >>>  static bool virtio_transport_seqpacket_allow(u32 remote_cid)
+> >>>  {
+> >>>  	struct virtio_vsock *vsock;
+> >>> @@ -655,6 +673,9 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
+> >>>  	if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_SEQPACKET))
+> >>>  		vsock->seqpacket_allow = true;
+> >>>  
+> >>> +	if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_DGRAM))
+> >>> +		vsock->dgram_allow = true;
+> >>> +
+> >>>  	vdev->priv = vsock;
+> >>>  
+> >>>  	ret = virtio_vsock_vqs_init(vsock);
+> >>> @@ -747,7 +768,8 @@ static struct virtio_device_id id_table[] = {
+> >>>  };
+> >>>  
+> >>>  static unsigned int features[] = {
+> >>> -	VIRTIO_VSOCK_F_SEQPACKET
+> >>> +	VIRTIO_VSOCK_F_SEQPACKET,
+> >>> +	VIRTIO_VSOCK_F_DGRAM
+> >>>  };
+> >>>  
+> >>>  static struct virtio_driver virtio_vsock_driver = {
+> >>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> >>> index 96118e258097..77898f5325cd 100644
+> >>> --- a/net/vmw_vsock/virtio_transport_common.c
+> >>> +++ b/net/vmw_vsock/virtio_transport_common.c
+> >>> @@ -783,12 +783,6 @@ bool virtio_transport_stream_allow(u32 cid, u32 port)
+> >>>  }
+> >>>  EXPORT_SYMBOL_GPL(virtio_transport_stream_allow);
+> >>>  
+> >>> -bool virtio_transport_dgram_allow(u32 cid, u32 port)
+> >>> -{
+> >>> -	return false;
+> >>> -}
+> >>> -EXPORT_SYMBOL_GPL(virtio_transport_dgram_allow);
+> >>> -
+> >>>  int virtio_transport_connect(struct vsock_sock *vsk)
+> >>>  {
+> >>>  	struct virtio_vsock_pkt_info info = {
+> >>>
+> >>
+> >> Thanks, Arseniy
+> > 
+> > Thanks,
+> > Bobby
