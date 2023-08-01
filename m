@@ -2,222 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F2A76BCA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463D676BC92
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:37:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbjHASkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 14:40:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50532 "EHLO
+        id S229904AbjHAShM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbjHASju (ORCPT
+        with ESMTP id S229570AbjHAShK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:39:50 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC7D30DD
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 11:39:30 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-583c49018c6so68043017b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 11:39:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690915169; x=1691519969;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F4Z9SBCgE40ttAK1rHrmRKU6D2Q6kRNaqcnUiFVuA6E=;
-        b=qESZVEXtBgfMWPZtFaMnDa+sfp62iEaF1Awx0lzCFJTzIl4FVu5R1Ev71n7gJXnVqE
-         z4s4wWwuwRRbGJI4cRq8NC0e4bnH0Ph5jTKbgK8ZciunR2D4VYTQPxL6p4HDNvrvq7H7
-         JbG8VVCw0VFKwMWRrbZfWeFaFaLY3qoP+/itRTeFh0jw6cKQ2X3a9B4AjNARUOUFVlrS
-         89fMYS6yGOU32o19b3annJ8aOK0jxtMDa1oLnx0FNg1k2INLK9t0h+cXUHwqgFBe8qdg
-         lk/gTEW75uyZghOsqhT3Z3BVakrcWQRCvfsQRWuvKOwWFG+wnznq/+PPIePvTFN1WDyI
-         hLGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690915169; x=1691519969;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=F4Z9SBCgE40ttAK1rHrmRKU6D2Q6kRNaqcnUiFVuA6E=;
-        b=HaADFJQEyYnXU5ecq0CNxYey7uKk2J+qRlvoR9EThi8YXBoI/7a7BWaY4/gVQsxLP9
-         AXcadfvIelaUbsn/DAwWR3fAs9+E2pgQ7WdNcPKR2Wwtw0BsZbEkcJMclNMnopUu/o/7
-         OfjVGz6KQlpwXzRscZqx18jsi/aSxq7D12EOQ/i3gsb0TUoz0EBo9WS8ug3wREbMxwns
-         nYOMzVgbVV88IperWE44ikjPf4u424YenxMBj/vqcHDM4AisglK37SIevwhlpP3lkUTS
-         uLmIxo3IEI55plkSe+WsciUPgYPrYRsm+3f0TuGxmPccGMvwrxSN3S01LB6Y10GMTmhD
-         E4Yw==
-X-Gm-Message-State: ABy/qLZJxh4F92i2zke2b3Cd8jJ2hEwWxGwqZ1Q2qf2TJcoKIu+RuunS
-        h44t5jBprf4acW1NGV2xHeJplmUZbynL
-X-Google-Smtp-Source: APBJJlH+hB3HzyqFgyYlnbTt4uMwrP0Cs5cycyzhDtbrVVhb4LsO6lsQGYi9PYa4fLbIXxHGndpAqsZ8/xKs
-X-Received: from mshavit.ntc.corp.google.com ([2401:fa00:95:20c:a54:d53d:50e4:b5b8])
- (user=mshavit job=sendgmr) by 2002:a81:ac0e:0:b0:577:617b:f881 with SMTP id
- k14-20020a81ac0e000000b00577617bf881mr105464ywh.8.1690915169541; Tue, 01 Aug
- 2023 11:39:29 -0700 (PDT)
-Date:   Wed,  2 Aug 2023 02:35:25 +0800
-In-Reply-To: <20230801183845.4026101-1-mshavit@google.com>
-Mime-Version: 1.0
-References: <20230801183845.4026101-1-mshavit@google.com>
-X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <20230802023524.v3.8.I5ee79793b444ddb933e8bc1eb7b77e728d7f8350@changeid>
-Subject: [PATCH v3 8/8] iommu/arm-smmu-v3: Rename cdcfg to cd_table
-From:   Michael Shavit <mshavit@google.com>
-To:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     robin.murphy@arm.com, will@kernel.org, jean-philippe@linaro.org,
-        jgg@nvidia.com, nicolinc@nvidia.com,
-        Michael Shavit <mshavit@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 14:37:10 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AC39010C;
+        Tue,  1 Aug 2023 11:37:08 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8CxruvTUMlkSkgOAA--.30856S3;
+        Wed, 02 Aug 2023 02:37:07 +0800 (CST)
+Received: from openarena.loongson.cn (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3c7SUMlk7F1EAA--.46812S2;
+        Wed, 02 Aug 2023 02:37:06 +0800 (CST)
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] PCI/VGA: Fixup the firmware fb address om demanding time
+Date:   Wed,  2 Aug 2023 02:37:06 +0800
+Message-Id: <20230801183706.702567-1-suijingfeng@loongson.cn>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8Ax3c7SUMlk7F1EAA--.46812S2
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW3WrWUXw4kGFyDuF47KFWDWrX_yoW7Cr4Dpr
+        WfAayftrs8Wr4fJr43GF48Xw15ZrsY9FWxKFW7A3Z3Ja47urykGr4FyFWDtrWfJ397Jr4f
+        KF42yrn5GFsrJFgCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
+        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cdcfg is a confusing name, especially given other variables with the cfg
-suffix in this driver. cd_table more clearly describes what is being
-operated on.
+Currently, the vga_is_firmware_default() function works on x86 and IA64
+architecture only, it is a no-op on ARM64/PPC/RISC-V arch etc. This patch
+complete the implementation for the non-x86 architectures by tracking the
+firmware fb's address range. Which overcome the VRAM bar relocation issue
+by updating the cached firmware fb address range on demanding time.
 
-Signed-off-by: Michael Shavit <mshavit@google.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+This make the vga_is_firmware_default() function works on whatever archs
+who has UEFI GOP support.
+
+Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
 ---
+ drivers/pci/vgaarb.c | 139 ++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 124 insertions(+), 15 deletions(-)
 
-Changes in v3:
-- Commit message update
-
-Changes in v2:
-- New commit
-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 66 ++++++++++-----------
- 1 file changed, 33 insertions(+), 33 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 94922d4ff7be0..fc57155efb6b9 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -1028,18 +1028,18 @@ static __le64 *arm_smmu_get_cd_ptr(struct arm_smmu_master *master, u32 ssid)
- 	unsigned int idx;
- 	struct arm_smmu_l1_ctx_desc *l1_desc;
- 	struct arm_smmu_device *smmu = master->smmu;
--	struct arm_smmu_ctx_desc_cfg *cdcfg = &master->cd_table;
-+	struct arm_smmu_ctx_desc_cfg *cd_table = &master->cd_table;
+diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
+index 5a696078b382..8d5c7ee4ee7b 100644
+--- a/drivers/pci/vgaarb.c
++++ b/drivers/pci/vgaarb.c
+@@ -61,6 +61,84 @@ static bool vga_arbiter_used;
+ static DEFINE_SPINLOCK(vga_lock);
+ static DECLARE_WAIT_QUEUE_HEAD(vga_wait_queue);
  
--	if (!cdcfg->l1_desc)
--		return cdcfg->cdtab + ssid * CTXDESC_CD_DWORDS;
-+	if (!cd_table->l1_desc)
-+		return cd_table->cdtab + ssid * CTXDESC_CD_DWORDS;
++static struct firmware_fb_tracker {
++	/* The PCI(e) device who owns the firmware framebuffer */
++	struct pci_dev *pdev;
++	/* The index of the VRAM Bar */
++	unsigned int bar;
++	/* Firmware fb's offset from the VRAM aperture start */
++	resource_size_t offset;
++	/* The firmware fb's size, in bytes */
++	resource_size_t size;
++
++	/* Firmware fb's address range, suffer from change */
++	resource_size_t start;
++	resource_size_t end;
++
++} firmware_fb;
++
++static bool vga_arb_get_fb_range_from_screen_info(resource_size_t *start,
++						  resource_size_t *end)
++{
++	resource_size_t fb_start;
++	resource_size_t fb_end;
++	resource_size_t fb_size;
++
++	fb_start = screen_info.lfb_base;
++	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
++		fb_start |= (u64)screen_info.ext_lfb_base << 32;
++
++	fb_size = screen_info.lfb_size;
++
++	/* No firmware framebuffer support */
++	if (!fb_start || !fb_size)
++		return false;
++
++	fb_end = fb_start + fb_size - 1;
++
++	*start = fb_start;
++	*end = fb_end;
++
++	return true;
++}
++
++static bool vga_arb_get_fb_range_from_tracker(resource_size_t *start,
++					      resource_size_t *end)
++{
++	struct pci_dev *pdev = firmware_fb.pdev;
++	resource_size_t new_vram_base;
++	resource_size_t new_fb_start;
++	resource_size_t old_fb_start;
++	resource_size_t old_fb_end;
++
++	/*
++	 * No firmware framebuffer support or No aperture that contains the
++	 * firmware FB is found, in this case, the firmware_fb.pdev will be
++	 * NULL. We will return immediately.
++	 */
++	if (!pdev)
++		return false;
++
++	new_vram_base = pdev->resource[firmware_fb.bar].start;
++	new_fb_start = new_vram_base + firmware_fb.offset;
++	old_fb_start = firmware_fb.start;
++	old_fb_end = firmware_fb.end;
++
++	if (new_fb_start != old_fb_start) {
++		firmware_fb.start = new_fb_start;
++		firmware_fb.end = new_fb_start + firmware_fb.size - 1;
++		/* Firmware fb address range moved */
++		vgaarb_dbg(&pdev->dev,
++			   "[0x%llx, 0x%llx] -> [0x%llx, 0x%llx]\n",
++			   old_fb_start, old_fb_end,
++			   firmware_fb.start, firmware_fb.end);
++	}
++
++	*start = firmware_fb.start;
++	*end = firmware_fb.end;
++
++	return true;
++}
  
- 	idx = ssid >> CTXDESC_SPLIT;
--	l1_desc = &cdcfg->l1_desc[idx];
-+	l1_desc = &cd_table->l1_desc[idx];
- 	if (!l1_desc->l2ptr) {
- 		if (arm_smmu_alloc_cd_leaf_table(smmu, l1_desc))
- 			return NULL;
- 
--		l1ptr = cdcfg->cdtab + idx * CTXDESC_L1_DESC_DWORDS;
-+		l1ptr = cd_table->cdtab + idx * CTXDESC_L1_DESC_DWORDS;
- 		arm_smmu_write_cd_l1_desc(l1ptr, l1_desc);
- 		/* An invalid L1CD can be cached */
- 		arm_smmu_sync_cd(master, ssid, false);
-@@ -1134,33 +1134,33 @@ static int arm_smmu_alloc_cd_tables(struct arm_smmu_master *master)
- 	size_t l1size;
- 	size_t max_contexts;
- 	struct arm_smmu_device *smmu = master->smmu;
--	struct arm_smmu_ctx_desc_cfg *cdcfg = &master->cd_table;
-+	struct arm_smmu_ctx_desc_cfg *cd_table = &master->cd_table;
- 
--	cdcfg->stall_enabled = master->stall_enabled;
--	cdcfg->max_cds_bits = master->ssid_bits;
--	max_contexts = 1 << cdcfg->max_cds_bits;
-+	cd_table->stall_enabled = master->stall_enabled;
-+	cd_table->max_cds_bits = master->ssid_bits;
-+	max_contexts = 1 << cd_table->max_cds_bits;
- 
- 	if (!(smmu->features & ARM_SMMU_FEAT_2_LVL_CDTAB) ||
- 	    max_contexts <= CTXDESC_L2_ENTRIES) {
--		cdcfg->num_l1_ents = max_contexts;
-+		cd_table->num_l1_ents = max_contexts;
- 
- 		l1size = max_contexts * (CTXDESC_CD_DWORDS << 3);
- 	} else {
--		cdcfg->num_l1_ents = DIV_ROUND_UP(max_contexts,
-+		cd_table->num_l1_ents = DIV_ROUND_UP(max_contexts,
- 						  CTXDESC_L2_ENTRIES);
- 
--		cdcfg->l1_desc = devm_kcalloc(smmu->dev, cdcfg->num_l1_ents,
--					      sizeof(*cdcfg->l1_desc),
-+		cd_table->l1_desc = devm_kcalloc(smmu->dev, cd_table->num_l1_ents,
-+					      sizeof(*cd_table->l1_desc),
- 					      GFP_KERNEL);
--		if (!cdcfg->l1_desc)
-+		if (!cd_table->l1_desc)
- 			return -ENOMEM;
- 
--		l1size = cdcfg->num_l1_ents * (CTXDESC_L1_DESC_DWORDS << 3);
-+		l1size = cd_table->num_l1_ents * (CTXDESC_L1_DESC_DWORDS << 3);
- 	}
- 
--	cdcfg->cdtab = dmam_alloc_coherent(smmu->dev, l1size, &cdcfg->cdtab_dma,
-+	cd_table->cdtab = dmam_alloc_coherent(smmu->dev, l1size, &cd_table->cdtab_dma,
- 					   GFP_KERNEL);
--	if (!cdcfg->cdtab) {
-+	if (!cd_table->cdtab) {
- 		dev_warn(smmu->dev, "failed to allocate context descriptor\n");
- 		ret = -ENOMEM;
- 		goto err_free_l1;
-@@ -1169,9 +1169,9 @@ static int arm_smmu_alloc_cd_tables(struct arm_smmu_master *master)
- 	return 0;
- 
- err_free_l1:
--	if (cdcfg->l1_desc) {
--		devm_kfree(smmu->dev, cdcfg->l1_desc);
--		cdcfg->l1_desc = NULL;
-+	if (cd_table->l1_desc) {
-+		devm_kfree(smmu->dev, cd_table->l1_desc);
-+		cd_table->l1_desc = NULL;
- 	}
- 	return ret;
+ static const char *vga_iostate_to_str(unsigned int iostate)
+ {
+@@ -543,20 +621,21 @@ void vga_put(struct pci_dev *pdev, unsigned int rsrc)
  }
-@@ -1181,30 +1181,30 @@ static void arm_smmu_free_cd_tables(struct arm_smmu_master *master)
- 	int i;
- 	size_t size, l1size;
- 	struct arm_smmu_device *smmu = master->smmu;
--	struct arm_smmu_ctx_desc_cfg *cdcfg = &master->cd_table;
-+	struct arm_smmu_ctx_desc_cfg *cd_table = &master->cd_table;
+ EXPORT_SYMBOL(vga_put);
  
--	if (cdcfg->l1_desc) {
-+	if (cd_table->l1_desc) {
- 		size = CTXDESC_L2_ENTRIES * (CTXDESC_CD_DWORDS << 3);
++/* Select the device owning the boot framebuffer if there is one */
+ static bool vga_is_firmware_default(struct pci_dev *pdev)
+ {
+-#if defined(CONFIG_X86) || defined(CONFIG_IA64)
+-	u64 base = screen_info.lfb_base;
+-	u64 size = screen_info.lfb_size;
+ 	struct resource *r;
+-	u64 limit;
++	resource_size_t fb_start;
++	resource_size_t fb_end;
++	bool ret;
  
--		for (i = 0; i < cdcfg->num_l1_ents; i++) {
--			if (!cdcfg->l1_desc[i].l2ptr)
-+		for (i = 0; i < cd_table->num_l1_ents; i++) {
-+			if (!cd_table->l1_desc[i].l2ptr)
- 				continue;
+-	/* Select the device owning the boot framebuffer if there is one */
+-
+-	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
+-		base |= (u64)screen_info.ext_lfb_base << 32;
+-
+-	limit = base + size;
++#if defined(CONFIG_X86) || defined(CONFIG_IA64)
++	ret = vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end);
++#else
++	ret = vga_arb_get_fb_range_from_tracker(&fb_start, &fb_end);
++#endif
++	if (!ret)
++		return false;
  
- 			dmam_free_coherent(smmu->dev, size,
--					   cdcfg->l1_desc[i].l2ptr,
--					   cdcfg->l1_desc[i].l2ptr_dma);
-+					   cd_table->l1_desc[i].l2ptr,
-+					   cd_table->l1_desc[i].l2ptr_dma);
- 		}
--		devm_kfree(smmu->dev, cdcfg->l1_desc);
--		cdcfg->l1_desc = NULL;
-+		devm_kfree(smmu->dev, cd_table->l1_desc);
-+		cd_table->l1_desc = NULL;
+ 	/* Does firmware framebuffer belong to us? */
+ 	pci_dev_for_each_resource(pdev, r) {
+@@ -566,12 +645,10 @@ static bool vga_is_firmware_default(struct pci_dev *pdev)
+ 		if (!r->start || !r->end)
+ 			continue;
  
--		l1size = cdcfg->num_l1_ents * (CTXDESC_L1_DESC_DWORDS << 3);
-+		l1size = cd_table->num_l1_ents * (CTXDESC_L1_DESC_DWORDS << 3);
- 	} else {
--		l1size = cdcfg->num_l1_ents * (CTXDESC_CD_DWORDS << 3);
-+		l1size = cd_table->num_l1_ents * (CTXDESC_CD_DWORDS << 3);
+-		if (base < r->start || limit >= r->end)
+-			continue;
+-
+-		return true;
++		if (fb_start >= r->start && fb_end <= r->end)
++			return true;
  	}
- 
--	dmam_free_coherent(smmu->dev, l1size, cdcfg->cdtab, cdcfg->cdtab_dma);
--	cdcfg->cdtab_dma = 0;
--	cdcfg->cdtab = NULL;
-+	dmam_free_coherent(smmu->dev, l1size, cd_table->cdtab, cd_table->cdtab_dma);
-+	cd_table->cdtab_dma = 0;
-+	cd_table->cdtab = NULL;
+-#endif
++
+ 	return false;
  }
  
- bool arm_smmu_free_asid(struct arm_smmu_ctx_desc *cd)
+@@ -1555,3 +1632,35 @@ static int __init vga_arb_device_init(void)
+ 	return rc;
+ }
+ subsys_initcall_sync(vga_arb_device_init);
++
++static void vga_arb_firmware_fb_addr_tracker(struct pci_dev *pdev)
++{
++	resource_size_t fb_start;
++	resource_size_t fb_end;
++	unsigned int i;
++
++	if (!vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end))
++		return;
++
++	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
++		struct resource *ap = &pdev->resource[i];
++
++		if (resource_type(ap) != IORESOURCE_MEM)
++			continue;
++
++		if (!ap->start || !ap->end)
++			continue;
++
++		if (ap->start <= fb_start && fb_end <= ap->end) {
++			firmware_fb.pdev = pdev;
++			firmware_fb.bar = i;
++			firmware_fb.size = fb_end - fb_start + 1;
++			firmware_fb.offset = fb_start - ap->start;
++			firmware_fb.start = fb_start;
++			firmware_fb.end = fb_end;
++			break;
++		}
++	}
++}
++DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_DISPLAY_VGA,
++			       8, vga_arb_firmware_fb_addr_tracker);
 -- 
-2.41.0.585.gd2178a4bd4-goog
+2.34.1
 
