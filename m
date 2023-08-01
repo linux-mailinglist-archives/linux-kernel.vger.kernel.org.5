@@ -2,106 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 767F776AC1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B373C76ACC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbjHAJFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60562 "EHLO
+        id S232770AbjHAJTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232361AbjHAJFN (ORCPT
+        with ESMTP id S232842AbjHAJTP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:05:13 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E53030F8
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:03:38 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686f1240a22so4960632b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690880616; x=1691485416;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dl31qmpoVvkSjyLSpZPfwkWIRx8GhdUOBKx/4n/3L7U=;
-        b=aV+1dhYFoQbThS/XG6H4CkBcRwxAYBFxA8B3Q+sVquHfgQ5/TDAjK6as3P7Y/6eedr
-         dHTCVOlHqZL44kpDUtW2Hq0lmQVvKSe7GTxFwxalpwFrRu+gTUM7mArtdckgfAu6s3L4
-         Cgr4edYOU1UYHd3bVI8eNB4vAzAS9/eE3pFEGbDJrCnamnLFC807pss2LyoN9DQLuDaf
-         P2ceYyYr89Vy6nwgELd2tGgt7O8VYmSBPUriTwWp5XEeKMWOtfh989r87GMEJY9FDZnD
-         +OtnozrChpUhdiWa44+0CuEo9+j/SsfEmER4y3u/II6LpjFikdLNj8qI54P63YmcykCi
-         W6YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690880616; x=1691485416;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dl31qmpoVvkSjyLSpZPfwkWIRx8GhdUOBKx/4n/3L7U=;
-        b=G/O4pEbaceZQnShC/jr9bZV8y/Bc8cMZ7d7QwkBjjfJVCvpXWuBngUZCBPtPnUWnTu
-         oy9E+dImuvyrzSeyCT7JPMF16/MWAyPe6tddpwDs1DT2V6jbij2t6cehuI8FrqLKmxjK
-         E7QS1S3+TvnJU0RanBY3AYgjE94vfqDQQ3+grYu/OFsQSrAvEWD8b6dxIIwMMEaJnG5c
-         bEelTlLyoqqC5J+6K5VB/IaGgaHg8fDJa2j7jZBEXv17fsB7M3NrQB6zC6+7DqOnzb0z
-         tK9Dr1GwRNfLpYeNXUW/EwELX+kwDLI9jy7JnHLU+fQM/ybvgkDLmpSxSC7rz020EK8J
-         cl1Q==
-X-Gm-Message-State: ABy/qLZXIwdmCnxldikqrE5jPybM7tMQQIptzyBurhXpHd/VxDItzy8X
-        R4oT0ewu2GVFqy3O+XmY+GA3aw==
-X-Google-Smtp-Source: APBJJlH6oCr2tZeWpewSHACfnDCdQHNervXhutIyQgatxkDxrpBPXL7suSS9iuOmjWItMEsVtIbYsg==
-X-Received: by 2002:a05:6a20:a11d:b0:13d:3b4d:e4b4 with SMTP id q29-20020a056a20a11d00b0013d3b4de4b4mr11186875pzk.9.1690880616089;
-        Tue, 01 Aug 2023 02:03:36 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id m8-20020aa78a08000000b00686bbf5c573sm5719659pfa.119.2023.08.01.02.03.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 02:03:35 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 14:33:33 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        cw00.choi@samsung.com, andersson@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
-        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
-        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
-        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
-        bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/6] scsi: ufs: host: Add support for parsing OPP
-Message-ID: <20230801090333.pqqugj4tcarwdl2o@vireshk-i7>
-References: <20230731163357.49045-1-manivannan.sadhasivam@linaro.org>
- <20230731163357.49045-5-manivannan.sadhasivam@linaro.org>
+        Tue, 1 Aug 2023 05:19:15 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1ABA198C;
+        Tue,  1 Aug 2023 02:17:30 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37189ds0009279;
+        Tue, 1 Aug 2023 09:04:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=KHfLUQGL6faL0F/nqq7dox/0afIBoQuFJvhxwvUo7Oo=;
+ b=diTWugTb2yTf4hkW+pNfpS9azQ74t3yZV0fCwa3NekRR9yV+aas5eXl5iYZrkTSioqc4
+ t0EKxl/+b82tSbd9zy3q6RwXp0BaVDQwMzIGf0VCiwozB79wKmta5cUZaW6PFLco2eCV
+ p67zCtn4LeG+DDrAgnOax/7Y6+EQQpc0uX9SuJo3yXQr+IQeCCzoTZG0QlJPROz6uHDG
+ /4a1HMTwEfG/aK0rAECPAZ9G3H9EuscWk48Hx0XIKoD0+0DBGc+Zfj908sKZZ6pNuRD/
+ tqC4GfIUdt4rLb+R+OrpgvKbLOLQ+lfNss7uCsgfrfdRlAEz3LHyQD245Yu7ImMJfqai cg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6ckfjr6u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 09:04:11 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3719400G019389
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 09:04:00 GMT
+Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 1 Aug 2023 02:03:57 -0700
+From:   Prashanth K <quic_prashk@quicinc.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Prashanth K <quic_prashk@quicinc.com>,
+        "# 5 . 4" <stable@vger.kernel.org>
+Subject: [PATCH v3] usb: common: usb-conn-gpio: Prevent bailing out if initial role is none
+Date:   Tue, 1 Aug 2023 14:33:52 +0530
+Message-ID: <1690880632-12588-1-git-send-email-quic_prashk@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731163357.49045-5-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: WOAdOjPmQ1559TjJLMp9b0ORUc9TQPci
+X-Proofpoint-ORIG-GUID: WOAdOjPmQ1559TjJLMp9b0ORUc9TQPci
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
+ lowpriorityscore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=843 spamscore=0 clxscore=1011 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308010082
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-07-23, 22:03, Manivannan Sadhasivam wrote:
-> +int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
-> +			   struct dev_pm_opp *opp, void *data,
-> +			   bool scaling_down)
-> +{
-> +	struct ufs_hba *hba = dev_get_drvdata(dev);
-> +	struct list_head *head = &hba->clk_list_head;
-> +	struct ufs_clk_info *clki;
-> +	unsigned long freq;
-> +	u8 idx = 0;
-> +	int ret;
-> +
-> +	list_for_each_entry(clki, head, list) {
-> +		if (!IS_ERR_OR_NULL(clki->clk)) {
+Currently if we bootup a device without cable connected, then
+usb-conn-gpio won't call set_role() because last_role is same
+as current role. This happens since last_role gets initialised
+to zero during the probe.
 
-NULL is considered as a valid clock AFAIR, so you must only be doing
-IS_ERR() here I guess.
+To avoid this, add a new flag initial_detection into struct
+usb_conn_info, which prevents bailing out during initial
+detection.
 
+Cc: <stable@vger.kernel.org> # 5.4
+Fixes: 4602f3bff266 ("usb: common: add USB GPIO based connection detection driver")
+Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+---
+v3: Added cc tag as suggested by the patch-bot.
+v2: Updated the bool name to initial_detection.
+
+ drivers/usb/common/usb-conn-gpio.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
+index 766005d..501e8bc9 100644
+--- a/drivers/usb/common/usb-conn-gpio.c
++++ b/drivers/usb/common/usb-conn-gpio.c
+@@ -42,6 +42,7 @@ struct usb_conn_info {
+ 
+ 	struct power_supply_desc desc;
+ 	struct power_supply *charger;
++	bool initial_detection;
+ };
+ 
+ /*
+@@ -86,11 +87,13 @@ static void usb_conn_detect_cable(struct work_struct *work)
+ 	dev_dbg(info->dev, "role %s -> %s, gpios: id %d, vbus %d\n",
+ 		usb_role_string(info->last_role), usb_role_string(role), id, vbus);
+ 
+-	if (info->last_role == role) {
++	if (!info->initial_detection && info->last_role == role) {
+ 		dev_warn(info->dev, "repeated role: %s\n", usb_role_string(role));
+ 		return;
+ 	}
+ 
++	info->initial_detection = false;
++
+ 	if (info->last_role == USB_ROLE_HOST && info->vbus)
+ 		regulator_disable(info->vbus);
+ 
+@@ -258,6 +261,7 @@ static int usb_conn_probe(struct platform_device *pdev)
+ 	device_set_wakeup_capable(&pdev->dev, true);
+ 
+ 	/* Perform initial detection */
++	info->initial_detection = true;
+ 	usb_conn_queue_dwork(info, 0);
+ 
+ 	return 0;
 -- 
-viresh
+2.7.4
+
