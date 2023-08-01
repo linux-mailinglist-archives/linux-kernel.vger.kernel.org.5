@@ -2,146 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A995276A673
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549C476A677
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231873AbjHABjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 21:39:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
+        id S231890AbjHABlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 21:41:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbjHABjC (ORCPT
+        with ESMTP id S231405AbjHABlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 21:39:02 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317E019AF
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 18:39:00 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbd33a57ddso47613205e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 18:39:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jrtc27.com; s=gmail.jrtc27.user; t=1690853938; x=1691458738;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=334XzK4sUQw29izKxXhVMPDqKOQOFm4Il91KEG4/Jt8=;
-        b=AanWT0epf4MShymtvLHSoWkqKvnKTGhrbmMCLffmEcS1CZjw8L7jFwYSCsFdgUcL+Z
-         Iua3Oqaxp09HrQQgzuwpFyI5cF3gXPBLJJXuGQBa2t0AcBlizvEOGzVMsh/JDRqWcEQC
-         zteelzy/yhv3CD8KjnNO0skVQxoynGmIo7om1Ybg9l6I059Zt95hAUGhT2ulawoaKQUF
-         4JsH6df2C0ZfdxLKPNecs5YoHVCECzKCyipbND4c+Fwnjty7bfvCMvmYksUpd8bz+tH4
-         YN1/EAis5L2eKJ8SWevWA9tEndLzJ4C3SPzwIgsfbXTSQ4mt6hi2nmX6UNfZsGHVnFBS
-         /p4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690853938; x=1691458738;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=334XzK4sUQw29izKxXhVMPDqKOQOFm4Il91KEG4/Jt8=;
-        b=EHhUNsAKp7hIGaHYfvCjemyliJYfp1xORE/Zxp3c9c/Pim77D+fETXvMllkiSA+DiB
-         KlysR863twPmHcWa7xnq3/mabWyEnNuB+6eBpdTLzjsFXCYcUGaC5q/94Z6lwZbRUNMn
-         53CRFZ9n04i682Dn/7fxIK2a6tRF9dHbOYYCUjTg93pcuJgVMjenF/yyvuo52E99llqC
-         U6z1dv8HAxMD8bNosHBa43uY1eZfsbypFPPBScWPymc7Hxh6zizvhAfCw5Xzz0/Mi1MU
-         HPLQcnVt5/bMf8Ph0SkwWrlihvEFY1GfhnswivbpLb6FGXnIMsX0lubJwqeUHwzTxuyb
-         3ivQ==
-X-Gm-Message-State: ABy/qLYasxJGcAXBitKje6AGtMD6ZWPHLDseYmOUu6vH7MFUY7do428U
-        0z36UDcDKumGMVVLvL7X4+lggw==
-X-Google-Smtp-Source: APBJJlG8zOALv1XaxPHw32cKXqy4Xd9IRY59uS09ybdBueIiM2qDPOhScVDNregC/9kM33vdQWnqkg==
-X-Received: by 2002:a1c:f019:0:b0:3fb:b5dc:dab1 with SMTP id a25-20020a1cf019000000b003fbb5dcdab1mr1043631wmb.39.1690853938565;
-        Mon, 31 Jul 2023 18:38:58 -0700 (PDT)
-Received: from smtpclient.apple ([131.111.5.246])
-        by smtp.gmail.com with ESMTPSA id u13-20020a5d514d000000b003172510d19dsm14657118wrt.73.2023.07.31.18.38.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 31 Jul 2023 18:38:57 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
-Subject: Re: [PATCH v2] x86: Fix x32 System V message queue syscalls
-From:   Jessica Clarke <jrtc27@jrtc27.com>
-In-Reply-To: <347eab9f-b64a-b124-ba7a-ee458e6407f3@gigawatt.nl>
-Date:   Tue, 1 Aug 2023 02:38:47 +0100
-Cc:     Andy Lutomirski <luto@kernel.org>, Rich Felker <dalias@libc.org>,
-        linux-x86_64@vger.kernel.org, Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <5C330BFF-A81A-465D-BE7D-6DB6A7B263AF@jrtc27.com>
-References: <1156938F-A9A3-4EE9-B059-2294A0B9FBFE@jrtc27.com>
- <20201012134444.1905-1-jrtc27@jrtc27.com>
- <CALCETrWKwFD7QhFQu9X_yQeVW1_yy-gEMNEtsWmQK=fNg9y68A@mail.gmail.com>
- <20201101012202.GM534@brightrain.aerifal.cx>
- <7842A462-0ADB-4EE3-B4CB-AE6DCD70CE1C@jrtc27.com>
- <20201101015013.GN534@brightrain.aerifal.cx>
- <CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com>
- <04832096-ED7F-4754-993D-F578D4A90843@jrtc27.com>
- <EEC90B2F-E972-475F-B058-918CDE401618@jrtc27.com>
- <20201101210102.GO534@brightrain.aerifal.cx>
- <29423184-A433-42D4-B635-CDEFE7271B40@jrtc27.com>
- <2AC632C0-EC00-4C4E-92DC-B7F238897C4C@jrtc27.com>
- <CALCETrWWcVhYoVuvovo558sXpA7X75jNpf8LA+w+k-dzyRiUcg@mail.gmail.com>
- <347eab9f-b64a-b124-ba7a-ee458e6407f3@gigawatt.nl>
-To:     Harald van Dijk <harald@gigawatt.nl>
-X-Mailer: Apple Mail (2.3731.600.7)
+        Mon, 31 Jul 2023 21:41:20 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F861988;
+        Mon, 31 Jul 2023 18:41:19 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VMXrYG010378;
+        Mon, 31 Jul 2023 18:41:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=pfpt0220; bh=GxkItpsAbwiG+YRD3iuiGsE6HH2Xw12N4R604R5jrfI=;
+ b=ATCLGPyopzSwZOp4xB6OTsM9+nje2x1NU1aMNgf7O4IcbvnCeJJOtULAjcT2VeGUzFze
+ e7lDBtjzCW5tsLvD78XxfnfP1ohIAzfd12oAa2QA6jUYrnY0gkXDJUAp9ENyLwDMEoAd
+ 44qtOMWmJH2N0GeHmRsTGJ4CgTai5CwZLda0nUxR0/LQQVqKH2lYeYdLB172QlQVm6mC
+ fBCZZdsZ4P8WDm6g/XAU8WYLwQqwqKqXKV6Z6H+XVXgT0txyN7rlxTWqlDues4v5HG3U
+ XyiFAda6r4okqtDcTe1kovEDu8FWTgzV+tmW0ppwvetboXIsX7Ziap+mkV7d5aATa01M Mg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3s529k70dm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jul 2023 18:41:10 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 31 Jul
+ 2023 18:41:08 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 31 Jul 2023 18:41:08 -0700
+Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
+        by maili.marvell.com (Postfix) with ESMTP id 77A8E3F704B;
+        Mon, 31 Jul 2023 18:41:03 -0700 (PDT)
+From:   Ratheesh Kannoth <rkannoth@marvell.com>
+To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <jerinj@marvell.com>, <hkelam@marvell.com>,
+        <sbhatta@marvell.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        Ratheesh Kannoth <rkannoth@marvell.com>
+Subject: [PATCH v1 net-next 0/4] Packet classify by matching against SPI
+Date:   Tue, 1 Aug 2023 07:10:57 +0530
+Message-ID: <20230801014101.2955887-1-rkannoth@marvell.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: gCp4vK7oN_7kMBgoruapCUum5upuQsUf
+X-Proofpoint-ORIG-GUID: gCp4vK7oN_7kMBgoruapCUum5upuQsUf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-07-31_18,2023-07-31_02,2023-05-22_02
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1 Aug 2023, at 01:43, Harald van Dijk <harald@gigawatt.nl> wrote:
->=20
-> On 06/12/2020 22:55, Andy Lutomirski wrote:
->> On Sat, Dec 5, 2020 at 4:01 PM Jessica Clarke <jrtc27@jrtc27.com> =
-wrote:
->>>=20
->>> Ping?
->> Can you submit patches implementing my proposal?  One is your =
-existing
->> patch plus fixing struct msghdr, with Cc: stable@vger.kernel.org at
->> the bottom.  The second is a removal of struct msghdr from uapi,
->> moving it into include/inux (no uapi) if needed.  The second should
->> not cc stable.
->=20
-> Hi,
->=20
-> This looks like it was forgotten, but it is still needed. Jessica, are =
-you interested in submitting the requested change? If not, would it be =
-okay if I do so? I have been running this locally for a long time now.
+1.  net: flow_dissector: Add IPSEC dissector.
+Flow dissector patch reads IPSEC headers (ESP or AH) header
+from packet and retrieves the SPI header.
 
-Hi,
-Please feel free to; sorry that it dropped off my radar. Part of the
-issue is my laptop no longer being x86, making it more annoying to test.
+2. tc: flower: support for SPI.
+TC control path changes to pass SPI field from userspace to
+kernel.
 
-> There is one complication that I think has not been mentioned yet: =
-when _GNU_SOURCE is defined, glibc does provide a definition of struct =
-msghdr in <sys/msg.h> with a field "__syscall_slong_t mtype;". This =
-makes it slightly more likely that there is code out there in the wild =
-that works fine with current kernels and would be broken by the fix. =
-Given how rare x32 is, and how rare message queues are, this may still =
-be acceptable, but I am mentioning it just in case this would cause a =
-different approach to be preferred. And whatever is done, a fix should =
-also be submitted to glibc.
+3. tc: flower: Enable offload support IPSEC SPI field.
+Next patch enables the HW support for classify offload for ESP/AH.
+This patch enables the HW offload control.
 
-Given POSIX is very clear on how msghdr works I think we have to break
-whatever oddball code out there might be using this. The alternative is
-violating POSIX in a way that makes correct code compile fine but fail
-at run time on x32, which is a terrible place to be, especially when
-the =E2=80=9Cfix=E2=80=9D is to special-case x32 to go against what =
-POSIX says. I just
-can=E2=80=99t see how that=E2=80=99s a good place to stay in, even if =
-something might
-break when we fix this bug.
+4. octeontx2-pf: TC flower offload support for SPI field.
+HW offload support for classification in octeontx2 driver.
 
-Thanks,
-Jess
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  4 ++
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |  1 +
+ .../marvell/octeontx2/af/rvu_debugfs.c        |  4 ++
+ .../marvell/octeontx2/af/rvu_npc_fs.c         | 11 ++++
+ .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 27 ++++++++++
+ include/net/flow_dissector.h                  |  9 ++++
+ include/net/flow_offload.h                    |  6 +++
+ include/uapi/linux/pkt_cls.h                  |  3 ++
+ net/core/flow_dissector.c                     | 53 ++++++++++++++++++-
+ net/core/flow_offload.c                       |  7 +++
+ net/sched/cls_flower.c                        | 35 ++++++++++++
+ 11 files changed, 159 insertions(+), 1 deletion(-)
 
-> (musl define struct msghdr as well, but defines mtype unconditionally =
-as having type long, so if this approach is still preferred, needs no =
-changes.)
->=20
-> Cheers,
-> Harald van Dijk
+---
+ChangeLog
+
+v0 -> v1: Fix new fields in the middle of UAPI exposed enum.
+
+--
+2.25.1
 
