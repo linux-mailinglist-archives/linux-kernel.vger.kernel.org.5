@@ -2,457 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262D776BC35
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E6B076BC36
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbjHASVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 14:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37010 "EHLO
+        id S231862AbjHASVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:21:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbjHASVV (ORCPT
+        with ESMTP id S231718AbjHASVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:21:21 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6482139;
-        Tue,  1 Aug 2023 11:21:19 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe0fe622c3so9361240e87.2;
-        Tue, 01 Aug 2023 11:21:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690914078; x=1691518878;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FxRQaYG+ttIXwsONESXz1C6GagjbBIeTKAF4a8p9vyU=;
-        b=NI+xyFVnQkK3Ol5rLCu1V4lnv6ByegOEmX7bC68jRKEJi7j75LB+WVJC2Rc40UYcLG
-         wdfMveyAlZGH2iIMECZa1iirW9yydhPsvP/ezzF+8Of+vmKqaCyyWdiQvG5q3Y0JnylN
-         AtDeBcKZt9VyW7D9Zw2aMZxj1h0RKeNVJdFeTLLeoJJxDDUIu4onBSKstCHSYRa+XNtR
-         3UFgBSrhtzuwLnS4k7lVLcgZGRJ0UFKOgAHZft7Ci0Khih2QqU5VV5TZYGEoKZSYUgNT
-         adEL1jaXQCj+0L7SPChtfbnEGhIUMxbZmt8OJwNIUCYFXRdnQxFsAm/NzETmG5R1rEOc
-         hHSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690914078; x=1691518878;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FxRQaYG+ttIXwsONESXz1C6GagjbBIeTKAF4a8p9vyU=;
-        b=O40B5N+5aZjb+3NmIlz5nyUMBDe9XrFzOBbf2Wx6pV56S8MwyclZsKVTSa48jSd2DD
-         yWMiaRGhXTz9UvI/f9k+ECrUWxaPoCPFlyDnXO7XyQzU34kj2lDFVBzVZIK1FqSqWi/D
-         D/t2e9yQDfLKi3+z0ZCJyccs3u/NxS2qBL5J7HvYclC57j6YmI3bxoF6yWtz8dIUihT/
-         DNcdcXzmjVn9pa3O9TkMZjPy3IoKxs5Z2wq7iJBYMB2e9kuzGSf1edfaHuquXTpzMtaC
-         SupG72unKw9v8nrCZPNLIZUsCC4LpUGaLNHcsRMyEHuzAhp5Xq5W8jnKV6RI/h0XgVH7
-         q3Cw==
-X-Gm-Message-State: ABy/qLZ3NWLkUaUScLHKIKibWSHplHUABAvjvAVAdtRK+0Y6zmI/eEFh
-        G5w4ryy92Y3PqZGzaPY9lDrFF18wb94=
-X-Google-Smtp-Source: APBJJlE/HU0F7WAqVp6IlZI7luivfSxzHeTrROKwl9nmIc782+9H56yyhUwUCkB2JBSfopZQd2rCgg==
-X-Received: by 2002:a05:6512:3e02:b0:4f9:596d:c803 with SMTP id i2-20020a0565123e0200b004f9596dc803mr4080410lfv.53.1690914077423;
-        Tue, 01 Aug 2023 11:21:17 -0700 (PDT)
-Received: from mobilestation ([95.79.172.181])
-        by smtp.gmail.com with ESMTPSA id b2-20020a056512218200b004fbd39b69adsm2632041lft.199.2023.08.01.11.21.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 11:21:16 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 21:21:14 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 08/17] MIPS: loongson32: Convert Ethernet platform device
- to DT
-Message-ID: <4qk22kycanwwbx6e7w4uuf7y5re7y4voi5vdurq3usa27py2zk@zms25h4hg2da>
-References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
- <20230729134318.1694467-9-keguang.zhang@gmail.com>
+        Tue, 1 Aug 2023 14:21:43 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE2E92683
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 11:21:37 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6A062E0004;
+        Tue,  1 Aug 2023 18:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690914096;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wdDMxoqOMQfXcZRg2HYBz4LvEZlaPzTlh754krjIucs=;
+        b=Ecjzjrj31Gn9nP+f7b0byMHCCQSYkixJ6uZNr2+jbOTpUyEzdPp/BJvePUfQedsRs0mqsB
+        11LVFeqhebQzk5u1X7etkrvEL/u2HphOGFSWjJq2VFdMrzArU5/jRawJwGR8yLdgAs/eZR
+        qLzUdmtsyVWR8Bu3wS25diIDC0jlPoUwUjJZO/xF6FuqG5TZy/yU0OA5Sfp4ewYbs+PoOe
+        wpfd93D/NGWx7YBPv3GQl1ksXdWJOyfwWc8Q69bFjz7Ks/gjUzZ3nKPGOlURzwZnc/GFFQ
+        8jVRihzJm8wZj3HEN3IZfgWaaEIhJPChM2Ll1/NACk5oAGg/LHCOK4UcrRqVDQ==
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Michael Walle <michael@walle.cc>,
+        <linux-kernel@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        Daniel Golle <daniel@makrotopia.org>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v7 0/7] NVMEM cells in sysfs
+Date:   Tue,  1 Aug 2023 20:21:25 +0200
+Message-Id: <20230801182132.1058707-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230729134318.1694467-9-keguang.zhang@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: miquel.raynal@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 09:43:09PM +0800, Keguang Zhang wrote:
-> Add Ethernet device nodes for Loongson-1 boards,
-> and drop the legacy platform devices and data accordingly.
+Hello,
 
-It seems to me that your conversion breaks the RGMII mode support.
-What you need to do is to make sure that the respective flags are set
-in the MUX space.
+As part of a previous effort, support for dynamic NVMEM layouts was
+brought into mainline, helping a lot in getting information from NVMEM
+devices at non-static locations. One common example of NVMEM cell is the
+MAC address that must be used. Sometimes the cell content is mainly (or
+only) useful to the kernel, and sometimes it is not. Users might also
+want to know the content of cells such as: the manufacturing place and
+date, the hardware version, the unique ID, etc. Two possibilities in
+this case: either the users re-implement their own parser to go through
+the whole device and search for the information they want, or the kernel
+can expose the content of the cells if deemed relevant. This second
+approach sounds way more relevant than the first one to avoid useless
+code duplication, so here is a series bringing NVMEM cells content to
+the user through sysfs.
 
-Regarding the MUX-space. It looks as a pinctrl-setting space. If so
-adding the new pinctrl driver will be required. Otherwise it can be
-defined as a syscon-node and then utilized in the Loongson-1 GMAC
-low-level driver.
+Here is a real life example with a Marvell Armada 7040 TN48m switch:
 
--Serge(y)
+$ nvmem=/sys/bus/nvmem/devices/1-00563/
+$ for i in `ls -1 $nvmem/cells/*`; do basename $i; hexdump -C $i | head -n1; done
+country-code
+00000000  54 57                                             |TW|
+crc32
+00000000  bb cd 51 98                                       |..Q.|
+device-version
+00000000  02                                                |.|
+diag-version
+00000000  56 31 2e 30 2e 30                                 |V1.0.0|
+label-revision
+00000000  44 31                                             |D1|
+mac-address
+00000000  18 be 92 13 9a 00                                 |......|
+manufacture-date
+00000000  30 32 2f 32 34 2f 32 30  32 31 20 31 38 3a 35 39  |02/24/2021 18:59|
+manufacturer
+00000000  44 4e 49                                          |DNI|
+num-macs
+00000000  00 40                                             |.@|
+onie-version
+00000000  32 30 32 30 2e 31 31 2d  56 30 31                 |2020.11-V01|
+platform-name
+00000000  38 38 46 37 30 34 30 2f  38 38 46 36 38 32 30     |88F7040/88F6820|
+product-name
+00000000  54 4e 34 38 4d 2d 50 2d  44 4e                    |TN48M-P-DN|
+serial-number
+00000000  54 4e 34 38 31 50 32 54  57 32 30 34 32 30 33 32  |TN481P2TW2042032|
+vendor
+00000000  44 4e 49                                          |DNI|
 
-> 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
->  arch/mips/boot/dts/loongson/loongson1.dtsi    |  16 ++
->  arch/mips/boot/dts/loongson/loongson1b.dtsi   |  53 +++++++
->  arch/mips/boot/dts/loongson/loongson1c.dtsi   |  17 ++
->  arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   |   8 +
->  arch/mips/boot/dts/loongson/smartloong_1c.dts |   4 +
->  arch/mips/loongson32/common/platform.c        | 146 +-----------------
->  arch/mips/loongson32/ls1b/board.c             |   2 -
->  arch/mips/loongson32/ls1c/board.c             |   1 -
->  8 files changed, 99 insertions(+), 148 deletions(-)
-> 
-> diff --git a/arch/mips/boot/dts/loongson/loongson1.dtsi b/arch/mips/boot/dts/loongson/loongson1.dtsi
-> index c77aa2d0f66c..48bb786bbf10 100644
-> --- a/arch/mips/boot/dts/loongson/loongson1.dtsi
-> +++ b/arch/mips/boot/dts/loongson/loongson1.dtsi
-> @@ -71,6 +71,22 @@ intc3: interrupt-controller@1fd01088 {
->  			interrupt-parent = <&cpu_intc>;
->  			interrupts = <5>;
->  		};
-> +
-> +		gmac0: ethernet@1fe10000 {
-> +			compatible = "snps,dwmac-3.70a";
-> +			reg = <0x1fe10000 0x10000>;
-> +
-> +			interrupt-parent = <&intc1>;
-> +			interrupt-names = "macirq";
-> +
-> +			clocks = <&clkc LS1X_CLKID_AHB>;
-> +			clock-names = "stmmaceth";
-> +
-> +			snps,pbl = <1>;
-> +
-> +			status = "disabled";
-> +		};
-> +
->  	};
->  
->  	apb: bus@1fe40000 {
-> diff --git a/arch/mips/boot/dts/loongson/loongson1b.dtsi b/arch/mips/boot/dts/loongson/loongson1b.dtsi
-> index 437a77cee163..42b96c557660 100644
-> --- a/arch/mips/boot/dts/loongson/loongson1b.dtsi
-> +++ b/arch/mips/boot/dts/loongson/loongson1b.dtsi
-> @@ -7,6 +7,11 @@
->  #include "loongson1.dtsi"
->  
->  / {
-> +	aliases {
-> +		ethernet0 = &gmac0;
-> +		ethernet1 = &gmac1;
-> +	};
-> +
->  	cpus {
->  		#address-cells = <1>;
->  		#size-cells = <0>;
-> @@ -74,6 +79,54 @@ clkc: clock-controller@1fe78030 {
->  	};
->  };
->  
-> +&ahb {
-> +	gmac1: ethernet@1fe20000 {
-> +		compatible = "snps,dwmac-3.70a";
-> +		reg = <0x1fe20000 0x10000>;
-> +
-> +		interrupt-parent = <&intc1>;
-> +		interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
-> +		interrupt-names = "macirq";
-> +
-> +		clocks = <&clkc LS1X_CLKID_AHB>;
-> +		clock-names = "stmmaceth";
-> +
-> +		phy-handle = <&phy1>;
-> +		phy-mode = "mii";
-> +
-> +		snps,pbl = <1>;
-> +
-> +		status = "disabled";
-> +
-> +		mdio1 {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			compatible = "snps,dwmac-mdio";
-> +
-> +			phy1: ethernet-phy@0 {
-> +				reg = <0x0>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&gmac0 {
-> +	interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +	phy-handle = <&phy0>;
-> +	phy-mode = "mii";
-> +
-> +	mdio0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		compatible = "snps,dwmac-mdio";
-> +
-> +		phy0: ethernet-phy@0 {
-> +			reg = <0x0>;
-> +		};
-> +	};
-> +};
-> +
->  &uart1 {
->  	interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
->  };
-> diff --git a/arch/mips/boot/dts/loongson/loongson1c.dtsi b/arch/mips/boot/dts/loongson/loongson1c.dtsi
-> index 1dd575b7b2f9..5b3e0f9280f6 100644
-> --- a/arch/mips/boot/dts/loongson/loongson1c.dtsi
-> +++ b/arch/mips/boot/dts/loongson/loongson1c.dtsi
-> @@ -41,6 +41,23 @@ intc4: interrupt-controller@1fd010a0 {
->  	};
->  };
->  
-> +&gmac0 {
-> +	interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +	phy-handle = <&phy0>;
-> +	phy-mode = "rmii";
-> +
-> +	mdio0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		compatible = "snps,dwmac-mdio";
-> +
-> +		phy0: ethernet-phy@13 {
-> +			reg = <0x13>;
-> +		};
-> +	};
-> +};
-> +
->  &uart1 {
->  	interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
->  };
-> diff --git a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-> index 89c3dfa574f7..a43df21f2904 100644
-> --- a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-> +++ b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-> @@ -28,6 +28,14 @@ xtal: xtal {
->  	};
->  };
->  
-> +&gmac0 {
-> +	status = "okay";
-> +};
-> +
-> +&gmac1 {
-> +	status = "okay";
-> +};
-> +
->  &uart0 {
->  	status = "okay";
->  };
-> diff --git a/arch/mips/boot/dts/loongson/smartloong_1c.dts b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-> index 188aab9e3685..2d8f304aa2c4 100644
-> --- a/arch/mips/boot/dts/loongson/smartloong_1c.dts
-> +++ b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-> @@ -28,6 +28,10 @@ xtal: xtal {
->  	};
->  };
->  
-> +&gmac0 {
-> +	status = "okay";
-> +};
-> +
->  &uart0 {
->  	status = "okay";
->  };
-> diff --git a/arch/mips/loongson32/common/platform.c b/arch/mips/loongson32/common/platform.c
-> index 8272b4133e25..817518531b9b 100644
-> --- a/arch/mips/loongson32/common/platform.c
-> +++ b/arch/mips/loongson32/common/platform.c
-> @@ -8,157 +8,13 @@
->  #include <linux/err.h>
->  #include <linux/mtd/partitions.h>
->  #include <linux/sizes.h>
-> -#include <linux/phy.h>
-> -#include <linux/stmmac.h>
->  #include <linux/usb/ehci_pdriver.h>
->  
->  #include <platform.h>
->  #include <loongson1.h>
->  #include <dma.h>
->  #include <nand.h>
-> -
-> -/* Synopsys Ethernet GMAC */
-> -static struct stmmac_mdio_bus_data ls1x_mdio_bus_data = {
-> -	.phy_mask	= 0,
-> -};
-> -
-> -static struct stmmac_dma_cfg ls1x_eth_dma_cfg = {
-> -	.pbl		= 1,
-> -};
-> -
-> -int ls1x_eth_mux_init(struct platform_device *pdev, void *priv)
-> -{
-> -	struct plat_stmmacenet_data *plat_dat = NULL;
-> -	u32 val;
-> -
-> -	val = __raw_readl(LS1X_MUX_CTRL1);
-> -
-> -#if defined(CONFIG_LOONGSON1_LS1B)
-> -	plat_dat = dev_get_platdata(&pdev->dev);
-> -	if (plat_dat->bus_id) {
-> -		__raw_writel(__raw_readl(LS1X_MUX_CTRL0) | GMAC1_USE_UART1 |
-> -			     GMAC1_USE_UART0, LS1X_MUX_CTRL0);
-> -		switch (plat_dat->phy_interface) {
-> -		case PHY_INTERFACE_MODE_RGMII:
-> -			val &= ~(GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
-> -			break;
-> -		case PHY_INTERFACE_MODE_MII:
-> -			val |= (GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
-> -			break;
-> -		default:
-> -			pr_err("unsupported mii mode %d\n",
-> -			       plat_dat->phy_interface);
-> -			return -ENOTSUPP;
-> -		}
-> -		val &= ~GMAC1_SHUT;
-> -	} else {
-> -		switch (plat_dat->phy_interface) {
-> -		case PHY_INTERFACE_MODE_RGMII:
-> -			val &= ~(GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
-> -			break;
-> -		case PHY_INTERFACE_MODE_MII:
-> -			val |= (GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
-> -			break;
-> -		default:
-> -			pr_err("unsupported mii mode %d\n",
-> -			       plat_dat->phy_interface);
-> -			return -ENOTSUPP;
-> -		}
-> -		val &= ~GMAC0_SHUT;
-> -	}
-> -	__raw_writel(val, LS1X_MUX_CTRL1);
-> -#elif defined(CONFIG_LOONGSON1_LS1C)
-> -	plat_dat = dev_get_platdata(&pdev->dev);
-> -
-> -	val &= ~PHY_INTF_SELI;
-> -	if (plat_dat->phy_interface == PHY_INTERFACE_MODE_RMII)
-> -		val |= 0x4 << PHY_INTF_SELI_SHIFT;
-> -	__raw_writel(val, LS1X_MUX_CTRL1);
-> -
-> -	val = __raw_readl(LS1X_MUX_CTRL0);
-> -	__raw_writel(val & (~GMAC_SHUT), LS1X_MUX_CTRL0);
-> -#endif
-> -
-> -	return 0;
-> -}
-> -
-> -static struct plat_stmmacenet_data ls1x_eth0_pdata = {
-> -	.bus_id			= 0,
-> -	.phy_addr		= -1,
-> -#if defined(CONFIG_LOONGSON1_LS1B)
-> -	.phy_interface		= PHY_INTERFACE_MODE_MII,
-> -#elif defined(CONFIG_LOONGSON1_LS1C)
-> -	.phy_interface		= PHY_INTERFACE_MODE_RMII,
-> -#endif
-> -	.mdio_bus_data		= &ls1x_mdio_bus_data,
-> -	.dma_cfg		= &ls1x_eth_dma_cfg,
-> -	.has_gmac		= 1,
-> -	.tx_coe			= 1,
-> -	.rx_queues_to_use	= 1,
-> -	.tx_queues_to_use	= 1,
-> -	.init			= ls1x_eth_mux_init,
-> -};
-> -
-> -static struct resource ls1x_eth0_resources[] = {
-> -	[0] = {
-> -		.start	= LS1X_GMAC0_BASE,
-> -		.end	= LS1X_GMAC0_BASE + SZ_64K - 1,
-> -		.flags	= IORESOURCE_MEM,
-> -	},
-> -	[1] = {
-> -		.name	= "macirq",
-> -		.start	= LS1X_GMAC0_IRQ,
-> -		.flags	= IORESOURCE_IRQ,
-> -	},
-> -};
-> -
-> -struct platform_device ls1x_eth0_pdev = {
-> -	.name		= "stmmaceth",
-> -	.id		= 0,
-> -	.num_resources	= ARRAY_SIZE(ls1x_eth0_resources),
-> -	.resource	= ls1x_eth0_resources,
-> -	.dev		= {
-> -		.platform_data = &ls1x_eth0_pdata,
-> -	},
-> -};
-> -
-> -#ifdef CONFIG_LOONGSON1_LS1B
-> -static struct plat_stmmacenet_data ls1x_eth1_pdata = {
-> -	.bus_id			= 1,
-> -	.phy_addr		= -1,
-> -	.phy_interface		= PHY_INTERFACE_MODE_MII,
-> -	.mdio_bus_data		= &ls1x_mdio_bus_data,
-> -	.dma_cfg		= &ls1x_eth_dma_cfg,
-> -	.has_gmac		= 1,
-> -	.tx_coe			= 1,
-> -	.rx_queues_to_use	= 1,
-> -	.tx_queues_to_use	= 1,
-> -	.init			= ls1x_eth_mux_init,
-> -};
-> -
-> -static struct resource ls1x_eth1_resources[] = {
-> -	[0] = {
-> -		.start	= LS1X_GMAC1_BASE,
-> -		.end	= LS1X_GMAC1_BASE + SZ_64K - 1,
-> -		.flags	= IORESOURCE_MEM,
-> -	},
-> -	[1] = {
-> -		.name	= "macirq",
-> -		.start	= LS1X_GMAC1_IRQ,
-> -		.flags	= IORESOURCE_IRQ,
-> -	},
-> -};
-> -
-> -struct platform_device ls1x_eth1_pdev = {
-> -	.name		= "stmmaceth",
-> -	.id		= 1,
-> -	.num_resources	= ARRAY_SIZE(ls1x_eth1_resources),
-> -	.resource	= ls1x_eth1_resources,
-> -	.dev		= {
-> -		.platform_data = &ls1x_eth1_pdata,
-> -	},
-> -};
-> -#endif	/* CONFIG_LOONGSON1_LS1B */
-> +#include <irq.h>
->  
->  /* GPIO */
->  static struct resource ls1x_gpio0_resources[] = {
-> diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson32/ls1b/board.c
-> index e8290f200096..f23e4e5c96ee 100644
-> --- a/arch/mips/loongson32/ls1b/board.c
-> +++ b/arch/mips/loongson32/ls1b/board.c
-> @@ -34,8 +34,6 @@ static const struct gpio_led_platform_data ls1x_led_pdata __initconst = {
->  };
->  
->  static struct platform_device *ls1b_platform_devices[] __initdata = {
-> -	&ls1x_eth0_pdev,
-> -	&ls1x_eth1_pdev,
->  	&ls1x_ehci_pdev,
->  	&ls1x_gpio0_pdev,
->  	&ls1x_gpio1_pdev,
-> diff --git a/arch/mips/loongson32/ls1c/board.c b/arch/mips/loongson32/ls1c/board.c
-> index a7096964fb30..29bc467fd149 100644
-> --- a/arch/mips/loongson32/ls1c/board.c
-> +++ b/arch/mips/loongson32/ls1c/board.c
-> @@ -6,7 +6,6 @@
->  #include <platform.h>
->  
->  static struct platform_device *ls1c_platform_devices[] __initdata = {
-> -	&ls1x_eth0_pdev,
->  	&ls1x_rtc_pdev,
->  	&ls1x_wdt_pdev,
->  };
-> -- 
-> 2.39.2
-> 
+This layout with a cells/ folder containing one file per cell has been
+legitimately challenged by John Thomson. I am not against the idea of
+having a sub-folder per cell but I did not find a relevant way to do
+that so for know I did not change the sysfs organization. If someone
+really wants this other layout, please provide a code snipped which I
+can integrate.
+
+Here are two limitations:
+* It is currently not possible to know whether the cell contains ASCII
+  or binary data, so by default all cells are exposed in binary form.
+* For now the implementation focuses on the read aspect. Technically
+  speaking, in some cases, it could be acceptable to write the cells, I
+  guess, but for now read-only files sound more than enough. A writable
+  path can be added later anyway.
+
+Changes in v7:
+* Rework the layouts registration mechanism to use the platform devices
+  logic.
+* Fix the two issues reported by Daniel Golle and Chen-Yu Tsai, one of
+  them consist in suffixing '@<offset>' to the cell name to create the
+  sysfs files in order to be sure they are all unique.
+* Update the doc.
+
+Changes in v6:
+* ABI documentation style fixes reported by Randy Dunlap:
+  s|cells/ folder|"cells" folder|
+  Missing period at the end of the final note.
+  s|Ex::|Example::|
+* Remove spurious patch from the previous resubmission.
+
+Resending v5:
+* I forgot the mailing list in my former submission, both are absolutely
+  identical otherwise.
+
+Changes in v5:
+* Rebased on last -rc1, fixing a conflict and skipping the first two
+patches already taken by Greg.
+* Collected tags from Greg.
+* Split the nvmem patch into two, one which just moves the cells
+  creation and the other which adds the cells.
+
+Changes in v4:
+* Use a core helper to count the number of cells in a list.
+* Provide sysfs attributes a private member which is the entry itself to
+  avoid the need for looking up the nvmem device and then looping over
+  all the cells to find the right one.
+
+Changes in v3:
+* Patch 1 is new: fix a style issue which bothered me when reading the
+  core.
+* Patch 2 is new: Don't error out when an attribute group does not
+  contain any attributes, it's easier for developers to handle "empty"
+  directories this way. It avoids strange/bad solutions to be
+  implemented and does not cost much.
+* Drop the is_visible hook as it is no longer needed.
+* Stop allocating an empty attribute array to comply with the sysfs core
+  checks (this check has been altered in the first commits).
+* Fix a missing tab in the ABI doc.
+
+Changes in v2:
+* Do not mention the cells might become writable in the future in the
+  ABI documentation.
+* Fix a wrong return value reported by Dan and kernel test robot.
+* Implement .is_bin_visible().
+* Avoid overwriting the list of attribute groups, but keep the cells
+  attribute group writable as we need to populate it at run time.
+* Improve the commit messages.
+* Give a real life example in the cover letter.
+
+
+Miquel Raynal (7):
+  nvmem: core: Create all cells before adding the nvmem device
+  nvmem: core: Do not open-code existing functions
+  nvmem: core: Track the registered devices
+  nvmem: core: Notify when a new layout is registered
+  nvmem: core: Rework layouts to become platform devices
+  ABI: sysfs-nvmem-cells: Expose cells through sysfs
+  nvmem: core: Expose cells through sysfs
+
+ Documentation/ABI/testing/sysfs-nvmem-cells |  21 ++
+ drivers/nvmem/core.c                        | 269 +++++++++++++++++---
+ drivers/nvmem/layouts/onie-tlv.c            |  39 ++-
+ drivers/nvmem/layouts/sl28vpd.c             |  39 ++-
+ include/linux/nvmem-consumer.h              |   2 +
+ include/linux/nvmem-provider.h              |  11 +-
+ 6 files changed, 328 insertions(+), 53 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-nvmem-cells
+
+-- 
+2.34.1
+
