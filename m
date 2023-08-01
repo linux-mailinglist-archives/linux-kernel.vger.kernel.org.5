@@ -2,190 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3174B76BBC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28EF76BBC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231497AbjHAR4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
+        id S231807AbjHAR5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjHAR4J (ORCPT
+        with ESMTP id S229485AbjHAR5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:56:09 -0400
-Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA8191BF6;
-        Tue,  1 Aug 2023 10:56:07 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFj9n5hVsz9xFrn;
-        Wed,  2 Aug 2023 01:42:37 +0800 (CST)
-Received: from [10.81.206.119] (unknown [10.81.206.119])
-        by APP1 (Coremail) with SMTP id LxC2BwAn27oNR8lkleUeAA--.35429S2;
-        Tue, 01 Aug 2023 18:55:42 +0100 (CET)
-Message-ID: <e12fcf9b-d122-7c42-1516-27e03a99270a@huaweicloud.com>
-Date:   Tue, 1 Aug 2023 19:55:22 +0200
+        Tue, 1 Aug 2023 13:57:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 049D11FCB;
+        Tue,  1 Aug 2023 10:57:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8AD526165F;
+        Tue,  1 Aug 2023 17:57:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A047AC433C8;
+        Tue,  1 Aug 2023 17:57:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690912639;
+        bh=F8CAARuNUeaGEa3yA1waQoVFs2zc6rvh3zubyIWd+RI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JZJMaAT42SQFAM85RnUbpnm4my8uLLOgrzrpv9ey5F7iOsTiCZBEwwsQMLRUS80/H
+         gICFBbZERF2JfuNbCyCasY1N2jUMSPr8iIihwDf950iYsquKfhXkKiL5b+msCXfHuc
+         B0hu58CMAQA41AZ35HEN4GzCtnJS9SRnAzeUVfmqmxuG8PriXB+8iNnYQ9IBFlhh0g
+         5LHahWPZHyPVmmgOLHdeR6Ip9wxGlCVC4KZ6u6/MqfCxXMrpYZItw3hBiaTqg1xfTN
+         tUOKRiTjydZGF6wuuwu94EdSvPU1tYZYsAoggPLjahr6Dr1QtlFVqW2D4lr8QT0Spn
+         skZg6nLYjJM5w==
+Date:   Tue, 1 Aug 2023 18:57:08 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>
+Subject: Re: [PATCH v3 21/36] arm64/mm: Implement map_shadow_stack()
+Message-ID: <55c629cc-0545-460b-91cb-2ebdb8ae9051@sirena.org.uk>
+References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
+ <20230731-arm64-gcs-v3-21-cddf9f980d98@kernel.org>
+ <5461c56cf4896f18bddaa66c3beec7b909fc8fb9.camel@intel.com>
+ <0a6c90d6-f790-4036-a364-d4761fdd0e95@sirena.org.uk>
+ <e827138f9d8800e3db158831bca88d1ea8b559af.camel@intel.com>
+ <21d7e814-8608-40ce-b5d3-401f2110ad91@sirena.org.uk>
+ <a9ea33d31aad0c45eab41b0dcbd4913d863cc930.camel@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/3] wifi: brcm80211: change channel_list to a flexible
- array
-Content-Language: en-US
-To:     Kalle Valo <kvalo@kernel.org>
-Cc:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Ian Lin <ian.lin@infineon.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Hector Martin <marcan@marcan.st>,
-        Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ramesh Rangavittal <ramesh.rangavittal@infineon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ryohei Kondo <ryohei.kondo@cypress.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Brian Henriquez <brian.henriquez@cypress.com>,
-        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
-        <linux-wireless@vger.kernel.org>,
-        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "open list:BROADCOM BRCM80211 IEEE802.11n WIRELESS DRIVER" 
-        <SHA-cyfmac-dev-list@infineon.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
-References: <cover.1690904067.git.petr.tesarik.ext@huawei.com>
- <c18a31a293fb5ba5d7a845c4b5052516ff724a9f.1690904067.git.petr.tesarik.ext@huawei.com>
- <87pm46wtno.fsf@kernel.org>
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-In-Reply-To: <87pm46wtno.fsf@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LxC2BwAn27oNR8lkleUeAA--.35429S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtw4ruF1fuFWrtF18uF1xKrg_yoW7Xw43pa
-        4fJFyUKr4kXr1jqF17JF43tFyrKa1qy3Z8KF4xKryavayUWr1fJF18Gay0kryDA39rt347
-        tryqqryqyF4rAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVW8
-        JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfUoj
-        jgUUUUU
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WYhsHyqynSPadbUB"
+Content-Disposition: inline
+In-Reply-To: <a9ea33d31aad0c45eab41b0dcbd4913d863cc930.camel@intel.com>
+X-Cookie: I thought YOU silenced the guard!
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/1/2023 7:37 PM, Kalle Valo wrote:
-> Petr Tesarik <petrtesarik@huaweicloud.com> writes:
-> 
->> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
->>
->> The channel list is in fact a flexible array, but it has a length of 1 to
->> make sure there is enough room for the special chanspec -1 when the struct
->> is allocated on stack to abort a scan.
->>
->> Move the single array member to newly declared struct brcmf_scan_abort_le
->> and struct brcmf_scan_abort_v2_le and make channel_list in struct
->> brcmf_scan_params_le and struct brcmf_scan_params_v2_le a flexible array.
->>
->> This fixes this annoying (though harmless) warning when the kernel is built
->> with CONFIG_FORTIFY_SOURCE=y:
->>
->> ------------[ cut here ]------------
->> memcpy: detected field-spanning write (size 76) of single field
->> "&params_le->channel_list[0]" at
->> drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:1072 (size
->> 2)
->> WARNING: CPU: 2 PID: 991 at
->> drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c:1072
->> brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac]
->> Modules linked in: qrtr(E) algif_hash(E) aes_neon_bs(E)
->> aes_neon_blk(E) algif_skcipher(E) af_alg(E) bnep(E) brcmfmac_wcc(E)
->> bcm2835_v4l2(CE) bcm2835_mmal_vchiq(CE) videobuf2_vmalloc(E)
->> videobuf2_memops(E) videobuf2_v4l2(E) videodev(E) hci_uart(E)
->> btsdio(E) videobuf2_common(E) btbcm(E) mc(E) snd_bcm2835(CE)
->> bluetooth(E) snd_pcm(E) brcmfmac(E) snd_timer(E) cpufreq_dt(E) snd(E)
->> soundcore(E) cfg80211(E) ecdh_generic(E) brcmutil(E)
->> raspberrypi_cpufreq(E) rfkill(E) vchiq(CE) bcm2711_thermal(E)
->> leds_gpio(E) fuse(E) efi_pstore(E) dmi_sysfs(E) ip_tables(E)
->> x_tables(E) rpcsec_gss_krb5(E) auth_rpcgss(E) nfsv4(E) dns_resolver(E)
->> nfs(E) lockd(E) grace(E) fscache(E) netfs(E) af_packet(E) mmc_block(E)
->> xhci_pci(E) xhci_pci_renesas(E) xhci_hcd(E) usbcore(E) usb_common(E)
->> clk_raspberrypi(E) gpio_raspberrypi_exp(E) bcm2835_dma(E)
->> crct10dif_ce(E) virt_dma(E) pcie_brcmstb(E) sdhci_iproc(E)
->> gpio_regulator(E) sdhci_pltfm(E) sdhci(E) mmc_core(E) fixed(E)
->> nvmem_rmem(E) sunrpc(E) sg(E) dm_multipath(E) dm_mod(E) efivarfs(E)
->> Unloaded tainted modules: aes_ce_cipher(E):1
->> CPU: 2 PID: 991 Comm: wpa_supplicant Tainted: G C E
->> 6.5.0-rc4-dynswiotlb+ #27 2ec0961165cc91fdbec101d9d43b3331ba4f0927
->> Hardware name: Unknown Unknown Product/Unknown Product, BIOS 2023.04 04/01/2023
->> pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->> pc : brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac]
->> lr : brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac]
->> sp : ffff8000829ab590
->> x29: ffff8000829ab590 x28: 0000000000000000 x27: 0000000000000001
->> x26: ffff000105e7e0a4 x25: ffff00010a0bcb48 x24: ffff000101e03800
->> x23: ffff000105ec8920 x22: ffff000106332980 x21: ffff00010a0bc0c0
->> x20: ffff00010a0bcb90 x19: ffff00010a0bc108 x18: ffffffffffffffff
->> x17: 0000000000000000 x16: 0000000000000000 x15: 616f72622f737365
->> x14: 6c657269772f7465 x13: 616d666d6372622f x12: 31313230386d6372
->> x11: 00000000ffffdfff x10: ffff800081ad3328 x9 : ffff800080130694
->> x8 : 000000000002ffe8 x7 : c0000000ffffdfff x6 : 00000000000affa8
->> x5 : ffff0001fef75e00 x4 : 0000000000000000 x3 : 0000000000000027
->> x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00010aa0e000
->> Call trace:
->>  brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac
->> 38c4a81a3b85b4aff1650c67f95f20bc542d60c1]
->>  brcmf_run_escan+0x148/0x1a0 [brcmfmac 38c4a81a3b85b4aff1650c67f95f20bc542d60c1]
->>  brcmf_do_escan+0x74/0xe0 [brcmfmac 38c4a81a3b85b4aff1650c67f95f20bc542d60c1]
->>  brcmf_cfg80211_scan+0xcc/0x298 [brcmfmac 38c4a81a3b85b4aff1650c67f95f20bc542d60c1]
->>  rdev_scan+0x38/0x158 [cfg80211 8907673111c49ec56be88af3d38994cc1cf54cb8]
->>  cfg80211_scan+0x134/0x178 [cfg80211 8907673111c49ec56be88af3d38994cc1cf54cb8]
->>  nl80211_trigger_scan+0x3e8/0x768 [cfg80211 8907673111c49ec56be88af3d38994cc1cf54cb8]
->>  genl_family_rcv_msg_doit.isra.0+0xc0/0x130
->>  genl_rcv_msg+0x1e4/0x278
->>  netlink_rcv_skb+0x64/0x138
->>  genl_rcv+0x40/0x60
->>  netlink_unicast+0x1cc/0x2d8
->>  netlink_sendmsg+0x1d4/0x448
->>  sock_sendmsg+0x64/0xc0
->>  ____sys_sendmsg+0x260/0x2e0
->>  ___sys_sendmsg+0x88/0xf0
->>  __sys_sendmsg+0x70/0xd8
->>  __arm64_sys_sendmsg+0x2c/0x40
->>  invoke_syscall+0x78/0x100
->>  el0_svc_common.constprop.0+0x100/0x130
->>  do_el0_svc+0x40/0xa8
->>  el0_svc+0x34/0x138
->>  el0t_64_sync_handler+0x120/0x130
->>  el0t_64_sync+0x1a8/0x1b0
->> ---[ end trace 0000000000000000 ]---
->>
->> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
-> 
-> Is this the same issue as Hans patch fixes?
-> 
-> https://patchwork.kernel.org/project/linux-wireless/patch/20230729140500.27892-1-hdegoede@redhat.com/
 
-Yes, I wasn't aware of this other patch (I'm not subscribed to
-linux-wireless). I see, Hans approach is less intrusive.
+--WYhsHyqynSPadbUB
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Petr T
+On Tue, Aug 01, 2023 at 05:07:00PM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2023-08-01 at 15:01 +0100, Mark Brown wrote:
 
+> > > It could be a different flag, like SHADOW_STACK_SET_TOKEN_MARKER,
+> > > or it
+> > > could be SHADOW_STACK_SET_MARKER, and callers could pass
+> > > (SHADOW_STACK_SET_TOKEN | SHADOW_STACK_SET_MARKER) to get what you
+> > > have
+> > > implemented here. What do you think?
+
+> > For arm64 code this would mean that it would be possible (and fairly
+> > easy) to create stacks which don't have a termination record which
+> > would
+> > make life harder for unwinders to rely on.=A0 I don't think this is
+> > insurmountable, creating manually shouldn't be the standard and it'll
+> > already be an issue on x86 anyway.
+
+> If you are going to support optionally writing to shadow stacks (which
+> x86 needed for CRIU, and also seems like a nice thing for several other
+> reasons), you are already at that point. Can't you also do a bunch of
+> gcspopm's to the top of the GCS stack, and have no marker to hit before
+> the end of the stack? (maybe not in GCS, I don't know...)
+
+It's definitely possible to use writes or pops to achive the same
+effect, it's just that it's less likely to be something that happens
+through simple oversight than missing a flag off the initial map call
+would be.
+
+> > The other minor issue is that the current arm64 marker is all bits 0
+> > so by itself for arm64 _MARKER would have no perceptible impact, it
+> > would only serve to push the token down a slot in the stack (I'm
+> > guessing that's the intended meaning?).
+
+> Pushing the token down a frame is what flags=3D=3D0 does in this patch,
+> right?
+
+Yes, exactly - if we make the top of stack record optional then if that
+flag is omitted we'd not do that.
+
+> You don't have to support all the flags actually, you could just
+> support the one mode you already have and reject all other
+> combinations... Then it matches between arch's, and you still have the
+> guaranteed-ish end marker.
+
+Sure, though if we're going to the trouble of checking for the flag we
+probably may as well implement it.  I guess x86 is locked in at this
+point by existing userspace.  I guess I'll implement it assuming nobody
+=66rom userspace complains, it's trivial for a kernel.
+
+> So the question is not what mode should arm support, but should we have
+> the flags match between x86 and ARM?
+
+The flags should definitely match, no disagreement there.
+
+--WYhsHyqynSPadbUB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTJR3QACgkQJNaLcl1U
+h9D+HQf/dMO4oPMfSYgpJfSkqjyeMhvngNszJ/vg3XKaq4EJAEMgOh+p9YWNYPyv
+uBQnGou+Mr2N+ymg2pLC4+WNybCoXsyaVeF/84elK+awSuCxD9GhjtrjqnteBAWg
+Cjy3FqvlmXwV2AHcXeYANCjGN6BJhmbUKcJp+jwyEU+PNxMrGY4Fyos1o7DlgcDo
+udN5QQnR8fZ4Xjyv5ZcHWeUX0e5TsB+1e9MK8AOIRkpI52cfHU8u/HSNfOHs5an7
+Ugb2wl/4tUWdslzaD4LLg+znjSCYjZ2c0uuIuigxAeFfSDhsFG9C2CiIEaa13iCj
+rrMq656MkRtw4gwfJ7HGsycFpraatg==
+=HHRV
+-----END PGP SIGNATURE-----
+
+--WYhsHyqynSPadbUB--
