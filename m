@@ -2,156 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 730A176B40A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C521176B417
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232825AbjHAL5D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:57:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48774 "EHLO
+        id S232755AbjHAL6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232692AbjHAL47 (ORCPT
+        with ESMTP id S234405AbjHAL5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:56:59 -0400
-Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470AC1723
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 04:56:57 -0700 (PDT)
-Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6bb31a92b44so10702766a34.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 04:56:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690891016; x=1691495816;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1aw1O1Y4EWcHxyzEL75bIuduZ1/KpOZztlDrppW0Pas=;
-        b=Pry9osn7dhvJ52qfqJ88UcltUuBxDOexZwx8vmhpD0mJjIKJyDxWFHsFqMOHrelOZS
-         rVANnyv5ash3wHcNdF2BIMj0edGhAvqwArcDz/5gwS2jA45NZN42mLc3/jzM8jIDLqwU
-         lEzROb+/X2wgvSoeGzrJal11/zAdkOPyXdEgt8bBYEoBOUqX3I62/Ju1uE0N0erq5fbR
-         x4p+zLdOCQwYFASyytfqXSudprTvn9rkjvDkmHlWqE1KzRlehLKOkbCvbHyB1cADpK15
-         IuB6Tai5Ag6F+NhsDrZp8d/tnxxOEyzcvBF+vh+y9gSqBJOPdKvYGlhqggMWkJYx8ru0
-         p1eA==
-X-Gm-Message-State: ABy/qLaA7XDlIyNRmR9InCT4gwGEFsz9x2xyUU+LeQttZ25hcGJhV3UZ
-        IL5YgGXp7KiB/aJe22Tz0ZjCA0a98rFtcAwtgVXK2rWRzt1X
-X-Google-Smtp-Source: APBJJlGr7qA7J0ZhcT9T82CzXInpIOtKfmQ7QVmrVI22MG7s3TV7LqJQuDMfb8el+a6sCrijJVFdMddUwQCiCUh9A0XXRYV7lDr1
+        Tue, 1 Aug 2023 07:57:55 -0400
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA4E219AA;
+        Tue,  1 Aug 2023 04:57:44 -0700 (PDT)
+X-UUID: 3673350e4fa642aa80c56927871104fd-20230801
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.28,REQID:4b477b88-1d0e-4176-b74c-3029f2cd175a,IP:15,
+        URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+        ON:release,TS:0
+X-CID-INFO: VERSION:1.1.28,REQID:4b477b88-1d0e-4176-b74c-3029f2cd175a,IP:15,UR
+        L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+        :release,TS:0
+X-CID-META: VersionHash:176cd25,CLOUDID:6b84b142-d291-4e62-b539-43d7d78362ba,B
+        ulkID:230801195728JVEQZRGY,BulkQuantity:0,Recheck:0,SF:24|17|19|44|102,TC:
+        nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OS
+        I:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
+X-UUID: 3673350e4fa642aa80c56927871104fd-20230801
+X-User: oushixiong@kylinos.cn
+Received: from localhost.localdomain [(111.48.58.12)] by mailgw
+        (envelope-from <oushixiong@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 1103825839; Tue, 01 Aug 2023 19:57:26 +0800
+From:   oushixiong <oushixiong@kylinos.cn>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        oushixiong <oushixiong@kylinos.cn>
+Subject: [PATCH v2] tty: vt: Remove some repetitive initialization
+Date:   Tue,  1 Aug 2023 19:57:24 +0800
+Message-Id: <20230801115724.1428952-1-oushixiong@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a9d:4f15:0:b0:6bc:b5dc:7b6d with SMTP id
- d21-20020a9d4f15000000b006bcb5dc7b6dmr529715otl.2.1690891016676; Tue, 01 Aug
- 2023 04:56:56 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 04:56:56 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000672c810601db3e84@google.com>
-Subject: [syzbot] [btrfs?] kernel BUG in btrfs_cancel_balance
-From:   syzbot <syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/mixed;
+        boundary="Add_By_Label_Mail_Nextpart_001"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        PP_MIME_FAKE_ASCII_TEXT,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_TVD_MIME_NO_HEADERS,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    57012c57536f Merge tag 'net-6.5-rc4' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1413a086a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5d10d93e1ae1f229
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6443e1f040e8d616e7b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137d82cea80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7336195c1d93/disk-57012c57.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e7a6562e4033/vmlinux-57012c57.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/7d66531ff83b/bzImage-57012c57.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/e6f09fca3191/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at fs/btrfs/volumes.c:4642!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 5160 Comm: syz-executor.1 Not tainted 6.5.0-rc3-syzkaller-00123-g57012c57536f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-RIP: 0010:btrfs_cancel_balance+0x429/0x430 fs/btrfs/volumes.c:4641
-Code: e8 1c 31 01 00 4c 89 ef 48 c7 c6 00 fd 4a 8b e8 ad 1a 24 07 e9 ef fe ff ff e8 a3 af 25 07 e8 3e 04 f5 fd 0f 0b e8 37 04 f5 fd <0f> 0b 0f 1f 44 00 00 f3 0f 1e fa 55 48 89 e5 41 57 41 56 41 55 41
-RSP: 0018:ffffc90004b7fdc0 EFLAGS: 00010293
-RAX: ffffffff839711d9 RBX: ffff888063844010 RCX: ffff888079498000
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
-RBP: ffffc90004b7fed0 R08: ffff8880638453d3 R09: 1ffff1100c708a7a
-R10: dffffc0000000000 R11: ffffed100c708a7b R12: 1ffff9200096ffc0
-R13: ffff888063845468 R14: dffffc0000000000 R15: ffff888063845460
-FS:  00007fab7440b6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1c1abfe000 CR3: 000000007aa05000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_ioctl_balance_ctl+0x3f/0x70 fs/btrfs/ioctl.c:3632
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fab7367cb29
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fab7440b0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fab7379c120 RCX: 00007fab7367cb29
-RDX: 0000000000000002 RSI: 0000000040049421 RDI: 0000000000000006
-RBP: 00007fab736c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007fab7379c120 R15: 00007ffcf21c7038
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:btrfs_cancel_balance+0x429/0x430 fs/btrfs/volumes.c:4641
-Code: e8 1c 31 01 00 4c 89 ef 48 c7 c6 00 fd 4a 8b e8 ad 1a 24 07 e9 ef fe ff ff e8 a3 af 25 07 e8 3e 04 f5 fd 0f 0b e8 37 04 f5 fd <0f> 0b 0f 1f 44 00 00 f3 0f 1e fa 55 48 89 e5 41 57 41 56 41 55 41
-RSP: 0018:ffffc90004b7fdc0 EFLAGS: 00010293
-
-RAX: ffffffff839711d9 RBX: ffff888063844010 RCX: ffff888079498000
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000001
-RBP: ffffc90004b7fed0 R08: ffff8880638453d3 R09: 1ffff1100c708a7a
-R10: dffffc0000000000 R11: ffffed100c708a7b R12: 1ffff9200096ffc0
-R13: ffff888063845468 R14: dffffc0000000000 R15: ffff888063845460
-FS:  00007fab7440b6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1c22cd71e5 CR3: 000000007aa05000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+--Add_By_Label_Mail_Nextpart_001
+Content-Type: text/plain;
+Content-Transfer-Encoding: 8bit
 
 
+Members vc_col、vc_rows and vc_size_row of the struct vc_data have been
+initialized in visual_init(), so it no longer to initialized them again
+in vc_init().
+
+v1->v2:
+	- Fix the comment.
+
+Signed-off-by: oushixiong <oushixiong@kylinos.cn>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/tty/vt/vt.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index 1e8e57b45688..cf77011a8f4e 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -140,8 +140,7 @@ EXPORT_SYMBOL(vc_cons);
+ static const struct consw *con_driver_map[MAX_NR_CONSOLES];
+ 
+ static int con_open(struct tty_struct *, struct file *);
+-static void vc_init(struct vc_data *vc, unsigned int rows,
+-		    unsigned int cols, int do_clear);
++static void vc_init(struct vc_data *vc, int do_clear);
+ static void gotoxy(struct vc_data *vc, int new_x, int new_y);
+ static void save_cur(struct vc_data *vc);
+ static void reset_terminal(struct vc_data *vc, int do_clear);
+@@ -1103,7 +1102,7 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
+ 	if (global_cursor_default == -1)
+ 		global_cursor_default = 1;
+ 
+-	vc_init(vc, vc->vc_rows, vc->vc_cols, 1);
++	vc_init(vc, 1);
+ 	vcs_make_sysfs(currcons);
+ 	atomic_notifier_call_chain(&vt_notifier_list, VT_ALLOCATE, &param);
+ 
+@@ -3398,16 +3397,10 @@ module_param_named(color, default_color, int, S_IRUGO | S_IWUSR);
+ module_param_named(italic, default_italic_color, int, S_IRUGO | S_IWUSR);
+ module_param_named(underline, default_underline_color, int, S_IRUGO | S_IWUSR);
+ 
+-static void vc_init(struct vc_data *vc, unsigned int rows,
+-		    unsigned int cols, int do_clear)
++static void vc_init(struct vc_data *vc, int do_clear)
+ {
+ 	int j, k ;
+ 
+-	vc->vc_cols = cols;
+-	vc->vc_rows = rows;
+-	vc->vc_size_row = cols << 1;
+-	vc->vc_screenbuf_size = vc->vc_rows * vc->vc_size_row;
+-
+ 	set_origin(vc);
+ 	vc->vc_pos = vc->vc_origin;
+ 	reset_vc(vc);
+@@ -3475,8 +3468,7 @@ static int __init con_init(void)
+ 		visual_init(vc, currcons, 1);
+ 		/* Assuming vc->vc_{cols,rows,screenbuf_size} are sane here. */
+ 		vc->vc_screenbuf = kzalloc(vc->vc_screenbuf_size, GFP_NOWAIT);
+-		vc_init(vc, vc->vc_rows, vc->vc_cols,
+-			currcons || !vc->vc_sw->con_save_screen);
++		vc_init(vc, currcons || !vc->vc_sw->con_save_screen);
+ 	}
+ 	currcons = fg_console = 0;
+ 	master_display_fg = vc = vc_cons[currcons].d;
+-- 
+2.25.1
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+--Add_By_Label_Mail_Nextpart_001
 
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+Content-type: Text/plain
 
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
+No virus found
+		Checked by Hillstone Network AntiVirus
 
-If you want to undo deduplication, reply with:
-#syz undup
+--Add_By_Label_Mail_Nextpart_001--
