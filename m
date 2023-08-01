@@ -2,232 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 520F876BEFF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA6E76BEFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbjHAVLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37994 "EHLO
+        id S231362AbjHAVK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbjHAVLF (ORCPT
+        with ESMTP id S229898AbjHAVK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:11:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8040E6D
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690924216;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=DI/Y27iYKk+GE2VbFkdqv51tvM927ZHMATm+vJN1hrs=;
-        b=e0JDJwbvfoESn9+plrQPt2RroSxZ4ydPvjN7b7vjFgzWHI8aExiLDQ7tEll7ZIjaqYWR+n
-        jN2xJRynxdkD64IX907PukxftWDDgo4k6tit5C0GCIX72AFdC1N8SgquFHLRH9LBElly+Q
-        zOn2TXGq864BssY+5L9QDpIUgmH2RZ0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-90-rpc81ftLN8q6r6O45lqd1A-1; Tue, 01 Aug 2023 17:10:13 -0400
-X-MC-Unique: rpc81ftLN8q6r6O45lqd1A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DC98A856F66;
-        Tue,  1 Aug 2023 21:10:09 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 03F2240C6CCC;
-        Tue,  1 Aug 2023 21:10:07 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-cc:     dhowells@redhat.com,
-        syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com,
-        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, axboe@kernel.dk, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] udp: Fix __ip{,6}_append_data()'s handling of MSG_SPLICE_PAGES
+        Tue, 1 Aug 2023 17:10:26 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DCEE7C
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690924226; x=1722460226;
+  h=message-id:date:subject:to:references:from:in-reply-to:
+   content-transfer-encoding:mime-version;
+  bh=rXV7C3siBGGIYJBuq6cA3Qd4ajhbx/5PQUkXXPJWy1s=;
+  b=UZU9dqDQPfXo9KfeP9JPo+5TgZpPv12jVm1vPWfw5/9y8lDaBjtD7uBm
+   uRlql0GzL2cBKNz64KgS6H5TT2Yj7Px5q6fvUFGLwdx9NZJGyOf4Ozl1J
+   IpZtQWf/NnWTMy0tKuuK/Qj3sqnoaB6r85PIZlEB35XVnWP+MCCig7OQp
+   zVrwNJNifaCkyjLYCj5ojyDHAAwnfRuErEFvMRBuOc5fac3jI8xs6POdl
+   /ewPV+3Iw6qPqdTae00i6FxPb01+Biy/1gYkanYwEtllyLPzmT4RwL54v
+   InWSh39EaFj7mQIg7DHj1WTDz//JW1LYnxT5LDNCRUAxHZjaPkhtSt9Ai
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="354341631"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="354341631"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 14:10:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="975439649"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="975439649"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Aug 2023 14:10:25 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 1 Aug 2023 14:10:25 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 1 Aug 2023 14:10:24 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 1 Aug 2023 14:10:24 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.45) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 1 Aug 2023 14:10:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=i8geJ/KxJ+BPaUgMaBtcS519jCkqxHK/rC9F79OeQc+8yGh6IGGM9zk6qck82WIiZLwFo3A3RrjZrWGe7gP8XRwLplMsHQ6THyLpK64hIsiR7cjQGaTQ0UyBmRVG/OAAVUDh2qQ/U4ZBDCDAsDi3RxPNo7tzQPHJpppYpwBoptlkz8fvqAu52qJ+8z4RYIoRH2w5d5+kVRsnC69GIMa2gZCX+UL+X1+Xkbppshi8opreGClMYBL+s8PzI/84z+2rAsxGQ86x5ilFV9nPnOKVNS3ZRjejKYirvcFkFTsul0rwWKpZ6DHrtl3jd1f5ktO5OicMWMLtb86iKfyVFwxgDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=iLFwYPcXWPa0tXun+fLGVrByBuGCFudhwygXj9dysfQ=;
+ b=oGf9T8b9yCGbIjlk4A8G9jIPJpqewn+CG3TYInpAG8VfyU7JEfytL0hUEegrQGTZI3xojAriaWgv8fbNRomclhTsq7W38po6bWBYGa88dnUY5dlkYOESLkQo2rgVuGhx6ebOYoske2Te2VxqtVcvywn9RM5H2JWiXMgo7CT3N2mj58RoePQ5MSKHFrQGwIds1AYxsMUy3npUPFGhg8AHmQGyVCZTR2I7tQ+q/bJ5b/iHPh+JN4rtR1bMgrWnhY5B6+d2cHiXAEdosp1HmdmuGofAmOs4i/+VibZiYnk7rXYErSpipwJ4JzlIHzq3kAXBLzGlhrgEtXIlyD1k/QUD+Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
+ by SA0PR11MB4685.namprd11.prod.outlook.com (2603:10b6:806:9e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.44; Tue, 1 Aug
+ 2023 21:10:22 +0000
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::b5c2:7049:2735:2943]) by BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::b5c2:7049:2735:2943%6]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
+ 21:10:21 +0000
+Message-ID: <a947a270-dad6-5486-2e11-feb288aa9210@intel.com>
+Date:   Tue, 1 Aug 2023 14:10:20 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 03/12] x86/alternatives: Disable LASS when patching
+ kernel alternatives
+Content-Language: en-US
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Luck, Tony" <tony.luck@intel.com>
+References: <20230609183632.48706-1-alexander.shishkin@linux.intel.com>
+ <20230609183632.48706-4-alexander.shishkin@linux.intel.com>
+ <40ac9a487c723eff9eb069a5795760b1caf02f18.camel@intel.com>
+From:   Sohil Mehta <sohil.mehta@intel.com>
+In-Reply-To: <40ac9a487c723eff9eb069a5795760b1caf02f18.camel@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR21CA0023.namprd21.prod.outlook.com
+ (2603:10b6:a03:114::33) To BYAPR11MB3320.namprd11.prod.outlook.com
+ (2603:10b6:a03:18::25)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1569148.1690924207.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 01 Aug 2023 22:10:07 +0100
-Message-ID: <1569149.1690924207@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|SA0PR11MB4685:EE_
+X-MS-Office365-Filtering-Correlation-Id: a2859a27-1894-4a58-20c7-08db92d3b76b
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lr+t/R8xDts/gbVhIDdRJSwQx9nKcdKRMpP3vK496/GsNUjGaW3N1Un8Ml5W0vpEj2Nqx4N3C+d9oUzxZFxKmClL8GtSdaAlPCV967qH6k6BnNfMHtP+Ks7G2ybuH5xQZl+Dhtqj8mv9x8l240F85s60yCVgJPXqw2I8l4gc0zqt7AEgrlBitIUG6xjUY8grMt4TqY1EnyvaeOfKH0hRWzv4AgSr9s6/M3lzgwnQvQozNmhOuB/dvDtnQO6YaEOm5gmgyeFc6U1GlJxwLW8iW7zZn7hx8IelIHRec178M0t42sYFXV8ebUJRpFFfYYULWmk8eOzxasE1BDr3W1/w/t0XXnz57swNUkQN7aglPkO8t+a+sP2a+NYoOzQi65RqKhcfKT0YHGWmcZJznFx81RYzR4zPFvpWMpcooS98wqLVN/M2E+KnOx8WyKkLyxS6CmVpzCfFovi3KKzRY6PfapSEj0jTE5ofTQKLwjNHJtZFgNERujJcV+DBCI4T998gU2rT0xECxVbL9Fm6CTDna/VU+JiSnSmDLZASc2rJdTJPE0eFvzLYMWz0ORjPKm6rnbkgLpIWMfOdD4RERouMiBvLjR4LTusvswy2vUzEd8hxmhNMNghq+Qd2BTo+GZY/U6JnbKJ/fPHojaFi48wzQ44wnFNKfHi5QhWXxIRkKYA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(136003)(366004)(396003)(346002)(376002)(451199021)(44832011)(316002)(8936002)(8676002)(66946007)(66556008)(6636002)(66476007)(41300700001)(31696002)(5660300002)(86362001)(36756003)(2906002)(26005)(6506007)(186003)(6486002)(6512007)(83380400001)(2616005)(31686004)(921005)(82960400001)(110136005)(38100700002)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VzFQWGdYZTdUSnN5bU1HZDhISjdTOUJwQ2RFTUVFS3FXTFJCVXZkOEwvSXAv?=
+ =?utf-8?B?TXF4V2lBQ081c2pKQUpieXl3SWJobVRZOHV3MW1iWjJBTkhXWk1DQXlTbVJw?=
+ =?utf-8?B?eVQ2djRqOUpkSm9QTEdLNjdSVGVKQzd1TFVDeElPUlVDOWZlYzN4N2tHSHVr?=
+ =?utf-8?B?VlQ0OWNhZTB6eXR3YmYvanVzM3FhZXNKTjk4aEJrVjdPelNCMmF6dmgvS3Nk?=
+ =?utf-8?B?SFVsZSs3UUx5dHRWNjFYTXNlUXcxUXFjZHlJc3ZGT0ovQ25jNjRvVXpXbEJQ?=
+ =?utf-8?B?bVlqdWdGSmpxcGhsMWVvbk1jeWdNd09BNm9uS1JBOVBrWFhvRkNuSzVFVFlF?=
+ =?utf-8?B?SG1aaUJNZVZyN2lNRm9jNkhzSHA0MGRLTGZPeS92L0lGSlNiQTl0RUx6YWI2?=
+ =?utf-8?B?MjNHaG50eFRZbkwvYXQ5ZnlmMEQ3b1czTG9KdWRyU2gxL3dsZUV1clVRL1ZX?=
+ =?utf-8?B?VEoxeDVYejh3SUVUakpyb1drQVlSKzZyYS9Bc1lacWtxOUN5ZU5uRFAwcHZ4?=
+ =?utf-8?B?VVpWcHBVQWFMekgrR0dVNTA1OGhJUDRlME9HcFhNdUpwRG8yTDd0R2Q0UEcx?=
+ =?utf-8?B?OVVJZ0lwWFdGdHlMYjE3UUJKK2p0UE82d3NNOXpiaUcvNHFPUjcxeUNmQVVn?=
+ =?utf-8?B?djZjR0tCRDdWV1l1SlJnT1hFN2lpWjFyZEpIYURKeUlOLzdsZHJPSVFMT29Y?=
+ =?utf-8?B?cG9Xamw3WjhWcEhmQ0tYZTdreU16b1ZFa0ZTMDVWSzhlOGdLY3p1RE80U2xW?=
+ =?utf-8?B?a0ptZC9hdTlrRVVDb2hxMGNYNUZOdnFESTJkd2srOW55OEs2V09WZE1BY2dR?=
+ =?utf-8?B?MjNETnFwalV3VDlKK0Q1T252Vkg0QmdIdE9FdUF3Tm5VTGNTVkZYczl3Y1Qv?=
+ =?utf-8?B?OU0weDRWbVdnaWNtU1hjUVlNVTZ2b0xNQnB0aDlIcW1EeHpPWDVDUmg4TVBy?=
+ =?utf-8?B?SlB2N1JaRG9nR00yNW1ZcHRiVFVoZFl6Y3h4OTZRTHlobDcxaGtodE12WDdL?=
+ =?utf-8?B?UkpPKzVEM0FUcGRweGZWQjl2UC9OS2tBRUhSV20yTy9Cd0E3NzJSQkJkd2Zh?=
+ =?utf-8?B?RHppYkRmTytTWHZTNU9OVjB2aGdGbXFUQWQrMnQ1Qm9FN2NnL0d5MTlvYTJm?=
+ =?utf-8?B?Y2E3aWREVmhhNHNmR1htVC9Dc0RnOXYvd1dNTHB4WXo5Z01MWkV0emlYL2c2?=
+ =?utf-8?B?L3J3YVExVmN3dzAxY1NaL0FyWHVQdExpS2FuUzRBTzlXT1ZCMnQ4d0V0Q2Yx?=
+ =?utf-8?B?ZDdCUWJNeHppNGNtb29ZU05jeWZUUkRpRjJOb2xPd3NlSzYrYW9SRkFpK2dJ?=
+ =?utf-8?B?em9WZlVTaHBZU1R3VXUzUFl4NnROaWg1eUhuakpGNGY3bGgzOUNEdEhra2Fi?=
+ =?utf-8?B?UE5qdUdBaEVVYWREazRWUTVWbTV6L0FyOE1KQnFPOXF3UThVUlNCVVNCWmRs?=
+ =?utf-8?B?TDlwM2ZlTEJraHZNc25zUWZRaGhVYTJqcUlLNW5hTzhVWFhuejNvazNNTmt1?=
+ =?utf-8?B?WmUzRFNFaHdIRmFaMXB4S053Tlp6cFU2MksycnV6RzI4WmMwZlA0RE9mcm9k?=
+ =?utf-8?B?ekoxMnE0SVNvaU5pTnM1UlQ5ckl6QkZURmJsK0EyRWNTcWxOenpIWS85d051?=
+ =?utf-8?B?aXB0MDJaRno3WWJvMHFzc0tycUl5NnNQOE5hMEN6MjlQclh2UllpTFQyQWpF?=
+ =?utf-8?B?SWNJc1BVaFRoUUZZSWtZSTNnYU9tMlptTW1kNFdqdWlNMGRMM3BKZ0x5aVBj?=
+ =?utf-8?B?M0xBaXNIN0ZWMW04a3RaUUIzYlU1NzNGUUxCaWl2emMvaUx2SzFHQnZmRnRP?=
+ =?utf-8?B?QmxYMGFLRHBPdnpJMWpxQnZrV1pqdUVOSnd0ZkJlY25yVXR0T2ZrNUJkZjFN?=
+ =?utf-8?B?d3FCNmwyNzVkUkJQNE94TEFreC9WY3VCcXVybjJ2alJrYWhDNlEyYUJicFV6?=
+ =?utf-8?B?Y096amRSVGs2TTdqdVdzSUZudDlYSFpleTRQQUtkMnQraVVHRWdEYU84cXdH?=
+ =?utf-8?B?S0ZyMlcyOFo5R0dlMHk3c0FVWGUrczBXWnZueUVXRzloYUd2bjNmQUZVWG9J?=
+ =?utf-8?B?cTV6VE9zZk56cllFaWlZZEQzTHFOVnd1ZmUyamxwSHAxYVdGTW9vQ2l1UWxu?=
+ =?utf-8?Q?VJS75FJ8JleevL4agYHvOdopy?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2859a27-1894-4a58-20c7-08db92d3b76b
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 21:10:21.7431
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j3s2U2ZU55WtPUqE674tY7if/zz7Iiuga6l+9YwjfjRCPoLnEj74E6OmU0BeieiJXdaJDWFMlbF3q7UYTIC8IQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR11MB4685
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__ip_append_data() can get into an infinite loop when asked to splice into
-a partially-built UDP message that has more than the frag-limit data and u=
-p
-to the MTU limit.  Something like:
+> Why not do stac/clac in a single place inside __text_poke()?
 
-        pipe(pfd);
-        sfd =3D socket(AF_INET, SOCK_DGRAM, 0);
-        connect(sfd, ...);
-        send(sfd, buffer, 8161, MSG_CONFIRM|MSG_MORE);
-        write(pfd[1], buffer, 8);
-        splice(pfd[0], 0, sfd, 0, 0x4ffe0ul, 0);
+It would mostly look something like this:
+> diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+> index 0fbf8a631306..02ef08e2575d 100644
+> --- a/arch/x86/kernel/alternative.c
+> +++ b/arch/x86/kernel/alternative.c
+> @@ -1781,7 +1781,9 @@ static void *__text_poke(text_poke_f func, void *addr, const void *src, size_t l
+>         prev = use_temporary_mm(poking_mm);
+> 
+>         kasan_disable_current();
+> +       stac();
+>         func((u8 *)poking_addr + offset_in_page(addr), src, len);
+> +       clac();
+>         kasan_enable_current();
+> 
+>         /*
 
-where the amount of data given to send() is dependent on the MTU size (in
-this instance an interface with an MTU of 8192).
+Since, __text_poke() uses a dynamic function to call into
+text_poke_memcpy() and text_poke_memset(), objtool would still complain.
 
-The problem is that the calculation of the amount to copy in
-__ip_append_data() goes negative in two places, and, in the second place,
-this gets subtracted from the length remaining, thereby increasing it.
+> arch/x86/kernel/alternative.o: warning: objtool: __text_poke+0x259: call to {dynamic}() with UACCESS enabled
 
-This happens when pagedlen > 0 (which happens for MSG_ZEROCOPY and
-MSG_SPLICE_PAGES), the terms in:
+We could change __text_poke() to not use the dynamic func but it might
+be a bit heavy handed to save a couple of lines of stac/clac calls. The
+current trade-off seems reasonable to me.
 
-        copy =3D datalen - transhdrlen - fraggap - pagedlen;
+Did you have something different in mind?
 
-then mostly cancel when pagedlen is substituted for, leaving just -fraggap=
-.
-This causes:
+Sohil
 
-        length -=3D copy + transhdrlen;
-
-to increase the length to more than the amount of data in msg->msg_iter,
-which causes skb_splice_from_iter() to be unable to fill the request and i=
-t
-returns less than 'copied' - which means that length never gets to 0 and w=
-e
-never exit the loop.
-
-Fix this by:
-
- (1) Insert a note about the dodgy calculation of 'copy'.
-
- (2) If MSG_SPLICE_PAGES, clear copy if it is negative from the above
-     equation, so that 'offset' isn't regressed and 'length' isn't
-     increased, which will mean that length and thus copy should match the
-     amount left in the iterator.
-
- (3) When handling MSG_SPLICE_PAGES, give a warning and return -EIO if
-     we're asked to splice more than is in the iterator.  It might be
-     better to not give the warning or even just give a 'short' write.
-
-The same problem occurs in __ip6_append_data(), except that there's a chec=
-k
-in there that errors out with EINVAL if copy < 0.  Fix this function in
-much the same way as the ipv4 variant but also skip the erroring out if
-copy < 0.
-
-[!] Note that this ought to also affect MSG_ZEROCOPY, but MSG_ZEROCOPY
-avoids the problem by simply assuming that everything asked for got copied=
-,
-not just the amount that was in the iterator.  This is a potential bug for
-the future.
-
-Fixes: 7ac7c987850c ("udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES"=
-)
-Fixes: 6d8192bd69bb ("ip6, udp6: Support MSG_SPLICE_PAGES")
-Reported-by: syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/000000000000881d0606004541d1@google.com/
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: David Ahern <dsahern@kernel.org>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
-cc: netdev@vger.kernel.org
----
-ver #2)
- - Fix __ip6_append_data() also.
-
- net/ipv4/ip_output.c  |    9 +++++++++
- net/ipv6/ip6_output.c |   11 ++++++++++-
- 2 files changed, 19 insertions(+), 1 deletion(-)
-    =
-
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 6e70839257f7..91715603cf6e 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -1158,10 +1158,15 @@ static int __ip_append_data(struct sock *sk,
- 			}
- =
-
- 			copy =3D datalen - transhdrlen - fraggap - pagedlen;
-+			/* [!] NOTE: copy will be negative if pagedlen>0
-+			 * because then the equation reduces to -fraggap.
-+			 */
- 			if (copy > 0 && getfrag(from, data + transhdrlen, offset, copy, fragga=
-p, skb) < 0) {
- 				err =3D -EFAULT;
- 				kfree_skb(skb);
- 				goto error;
-+			} else if (flags & MSG_SPLICE_PAGES) {
-+				copy =3D 0;
- 			}
- =
-
- 			offset +=3D copy;
-@@ -1209,6 +1214,10 @@ static int __ip_append_data(struct sock *sk,
- 		} else if (flags & MSG_SPLICE_PAGES) {
- 			struct msghdr *msg =3D from;
- =
-
-+			err =3D -EIO;
-+			if (WARN_ON_ONCE(copy > msg->msg_iter.count))
-+				goto error;
-+
- 			err =3D skb_splice_from_iter(skb, &msg->msg_iter, copy,
- 						   sk->sk_allocation);
- 			if (err < 0)
-diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-index 1e8c90e97608..bc96559bbf0f 100644
---- a/net/ipv6/ip6_output.c
-+++ b/net/ipv6/ip6_output.c
-@@ -1693,7 +1693,10 @@ static int __ip6_append_data(struct sock *sk,
- 			fraglen =3D datalen + fragheaderlen;
- =
-
- 			copy =3D datalen - transhdrlen - fraggap - pagedlen;
--			if (copy < 0) {
-+			/* [!] NOTE: copy may be negative if pagedlen>0
-+			 * because then the equation may reduces to -fraggap.
-+			 */
-+			if (copy < 0 && !(flags & MSG_SPLICE_PAGES)) {
- 				err =3D -EINVAL;
- 				goto error;
- 			}
-@@ -1744,6 +1747,8 @@ static int __ip6_append_data(struct sock *sk,
- 				err =3D -EFAULT;
- 				kfree_skb(skb);
- 				goto error;
-+			} else if (flags & MSG_SPLICE_PAGES) {
-+				copy =3D 0;
- 			}
- =
-
- 			offset +=3D copy;
-@@ -1791,6 +1796,10 @@ static int __ip6_append_data(struct sock *sk,
- 		} else if (flags & MSG_SPLICE_PAGES) {
- 			struct msghdr *msg =3D from;
- =
-
-+			err =3D -EIO;
-+			if (WARN_ON_ONCE(copy > msg->msg_iter.count))
-+				goto error;
-+
- 			err =3D skb_splice_from_iter(skb, &msg->msg_iter, copy,
- 						   sk->sk_allocation);
- 			if (err < 0)
 
