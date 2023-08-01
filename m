@@ -2,93 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 586BE76A8B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A71976A8B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjHAGJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60578 "EHLO
+        id S231326AbjHAGKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjHAGJr (ORCPT
+        with ESMTP id S229952AbjHAGKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:09:47 -0400
-Received: from out28-217.mail.aliyun.com (out28-217.mail.aliyun.com [115.124.28.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3537D10C1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:09:46 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1864641|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0136917-0.000435556-0.985873;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5fuMlm_1690870177;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5fuMlm_1690870177)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 14:09:39 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd/pm: Clean up errors in vega12_baco.c
-Date:   Tue,  1 Aug 2023 06:09:37 +0000
-Message-Id: <20230801060937.6178-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-        UPPERCASE_50_75 autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 02:10:52 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BC510C1;
+        Mon, 31 Jul 2023 23:10:50 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3712OTub021976;
+        Tue, 1 Aug 2023 06:10:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=k0aCpbnFwmp/8D1M9UqaS9hPY06JCFYLbdnWnW8RK8E=;
+ b=fCOJKRp5GCf1qyk/d1zmobaAC6VysUZp1oc1Aebnb8uWE2u15ny5kUKLsK5yPYRvhBdM
+ G1UfIRwoLDuoDRk9/5/dGkrkvRZpv1ldO4ctij3ncVaSHISQaHzf1ArsPkgl6tkQPu7s
+ eCSXv0tlLN+IR8CbsPwpxmcEe6chrPR8DzoA16q7GjMH7jqXphk0ceGbTm8lDphByCi5
+ BGYxTCalDRpp1lJCE4osQm4Z/OdWytMzhvucLUMTYdNQ2jlrH57weCN1q/c3hxiZnhJE
+ +RxT2vw6xtlfA9efdBPn2fJ+MI5R6kIxE+knhKkMi7EYMwTCboxTWqN1nqJCQ3BK2acY 1w== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6rhare1u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 06:10:47 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3716AkYc010211
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 06:10:46 GMT
+Received: from [10.214.67.128] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 23:10:42 -0700
+Message-ID: <71924c34-c398-22d7-bc79-50b0df482a22@quicinc.com>
+Date:   Tue, 1 Aug 2023 11:40:39 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v5 2/2] nvmem: sec-qfprom: Add Qualcomm secure QFPROM
+ support
+Content-Language: en-US
+To:     Bjorn Andersson <andersson@kernel.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>
+CC:     <agross@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <srinivas.kandagatla@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230724083849.8277-1-quic_kbajaj@quicinc.com>
+ <20230724083849.8277-3-quic_kbajaj@quicinc.com>
+ <9f417fea-38cf-942b-514e-99b47f27c544@quicinc.com>
+ <wst227b45le3ql6ctkdiyiynae7ipy3gqiz6ibhbxau4bogb5o@w25vnllnwnw7>
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+In-Reply-To: <wst227b45le3ql6ctkdiyiynae7ipy3gqiz6ibhbxau4bogb5o@w25vnllnwnw7>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: B6VG5gmQ-zwu4vMHH6aINyuxfioYzfsU
+X-Proofpoint-ORIG-GUID: B6VG5gmQ-zwu4vMHH6aINyuxfioYzfsU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 clxscore=1015 impostorscore=0 spamscore=0
+ bulkscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308010056
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
 
-ERROR: that open brace { should be on the previous line
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_baco.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+On 7/31/2023 10:05 PM, Bjorn Andersson wrote:
+> On Thu, Jul 27, 2023 at 12:09:07PM +0530, Mukesh Ojha wrote:
+>> On 7/24/2023 2:08 PM, Komal Bajaj wrote:
+> [..]
+>>> diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
+>>> index f82431ec8aef..e248d3daadf3 100644
+>>> --- a/drivers/nvmem/Makefile
+>>> +++ b/drivers/nvmem/Makefile
+>>> @@ -44,6 +44,8 @@ obj-$(CONFIG_NVMEM_NINTENDO_OTP)	+= nvmem-nintendo-otp.o
+>>>    nvmem-nintendo-otp-y			:= nintendo-otp.o
+>>>    obj-$(CONFIG_NVMEM_QCOM_QFPROM)		+= nvmem_qfprom.o
+>>>    nvmem_qfprom-y				:= qfprom.o
+>>> +obj-$(CONFIG_NVMEM_QCOM_SEC_QFPROM)	+= nvmem_sec_qfprom.o
+>>> +nvmem_sec_qfprom-y			:= sec-qfprom.o
+>> Are we just doing this for just renaming the object ?
+>>
+> Correct.
+>
+>>>    obj-$(CONFIG_NVMEM_RAVE_SP_EEPROM)	+= nvmem-rave-sp-eeprom.o
+>>>    nvmem-rave-sp-eeprom-y			:= rave-sp-eeprom.o
+>>>    obj-$(CONFIG_NVMEM_RMEM) 		+= nvmem-rmem.o
+>>> diff --git a/drivers/nvmem/sec-qfprom.c b/drivers/nvmem/sec-qfprom.c
+> [..]
+>>> +static int sec_qfprom_reg_read(void *context, unsigned int reg, void *_val, size_t bytes)
+>>> +{
+>>> +	struct sec_qfprom *priv = context;
+>>> +	unsigned int i;
+>>> +	u8 *val = _val;
+>>> +	u32 read_val;
+>>> +	u8 *tmp;
+>>> +
+>>> +	for (i = 0; i < bytes; i++, reg++) {
+>>> +		if (i == 0 || reg % 4 == 0) {
+>>> +			if (qcom_scm_io_readl(priv->base + (reg & ~3), &read_val)) {
+>>> +				dev_err(priv->dev, "Couldn't access fuse register\n");
+>>> +				return -EINVAL;
+>>> +			}
+>>> +			tmp = (u8 *)&read_val;
+>>> +		}
+>>> +
+>>> +		val[i] = tmp[reg & 3];
+>>> +	}
+>> Getting secure read from fuse region is fine here, since we have to read
+>> 4 byte from trustzone, but this restriction of reading is also there
+>> for sm8{4|5}50 soc's where byte by byte reading is protected and granularity
+>> set to 4 byte (qfprom_reg_read() in drivers/nvmem/qfprom.c)
+>> is will result in abort, in  that case this function need to export this
+>> logic.
+>>
+> If qfprom needs similar treatment, then let's land this first and then
+> consider generalizing (i.e. move to some library code) this - or if
+> infeasible, just fix qfprom_reg_read().
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_baco.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_baco.c
-index bc53cce4f32d..32cc8de296e4 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_baco.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_baco.c
-@@ -29,16 +29,14 @@
- #include "vega12_ppsmc.h"
- #include "vega12_baco.h"
- 
--static const struct soc15_baco_cmd_entry  pre_baco_tbl[] =
--{
-+static const struct soc15_baco_cmd_entry  pre_baco_tbl[] = {
- 	{ CMD_READMODIFYWRITE, NBIF_HWID, 0, mmBIF_DOORBELL_CNTL_BASE_IDX, mmBIF_DOORBELL_CNTL, BIF_DOORBELL_CNTL__DOORBELL_MONITOR_EN_MASK, BIF_DOORBELL_CNTL__DOORBELL_MONITOR_EN__SHIFT, 0, 0 },
- 	{ CMD_WRITE, NBIF_HWID, 0, mmBIF_FB_EN_BASE_IDX, mmBIF_FB_EN, 0, 0, 0, 0 },
- 	{ CMD_READMODIFYWRITE, NBIF_HWID, 0, mmRCC_BACO_CNTL_MISC_BASE_IDX, mmBACO_CNTL, BACO_CNTL__BACO_DSTATE_BYPASS_MASK, BACO_CNTL__BACO_DSTATE_BYPASS__SHIFT, 0, 1 },
- 	{ CMD_READMODIFYWRITE, NBIF_HWID, 0, mmRCC_BACO_CNTL_MISC_BASE_IDX, mmBACO_CNTL, BACO_CNTL__BACO_RST_INTR_MASK_MASK, BACO_CNTL__BACO_RST_INTR_MASK__SHIFT, 0, 1 }
- };
- 
--static const struct soc15_baco_cmd_entry enter_baco_tbl[] =
--{
-+static const struct soc15_baco_cmd_entry enter_baco_tbl[] = {
- 	{ CMD_WAITFOR, THM_HWID, 0, mmTHM_BACO_CNTL_BASE_IDX, mmTHM_BACO_CNTL, THM_BACO_CNTL__SOC_DOMAIN_IDLE_MASK, THM_BACO_CNTL__SOC_DOMAIN_IDLE__SHIFT, 0xffffffff, 0x80000000 },
- 	{ CMD_READMODIFYWRITE, NBIF_HWID, 0, mmRCC_BACO_CNTL_MISC_BASE_IDX, mmBACO_CNTL, BACO_CNTL__BACO_EN_MASK, BACO_CNTL__BACO_EN__SHIFT, 0, 1 },
- 	{ CMD_READMODIFYWRITE, NBIF_HWID, 0, mmRCC_BACO_CNTL_MISC_BASE_IDX, mmBACO_CNTL, BACO_CNTL__BACO_BIF_LCLK_SWITCH_MASK, BACO_CNTL__BACO_BIF_LCLK_SWITCH__SHIFT, 0, 1 },
-@@ -56,8 +54,7 @@ static const struct soc15_baco_cmd_entry enter_baco_tbl[] =
- 	{ CMD_WAITFOR, NBIF_HWID, 0, mmRCC_BACO_CNTL_MISC_BASE_IDX, mmBACO_CNTL, BACO_CNTL__BACO_MODE_MASK, BACO_CNTL__BACO_MODE__SHIFT, 0xffffffff, 0x100 }
- };
- 
--static const struct soc15_baco_cmd_entry exit_baco_tbl[] =
--{
-+static const struct soc15_baco_cmd_entry exit_baco_tbl[] = {
- 	{ CMD_READMODIFYWRITE, NBIF_HWID, 0, mmRCC_BACO_CNTL_MISC_BASE_IDX, mmBACO_CNTL, BACO_CNTL__BACO_POWER_OFF_MASK, BACO_CNTL__BACO_POWER_OFF__SHIFT, 0, 0 },
- 	{ CMD_DELAY_MS, 0, 0, 0, 0, 0, 0, 10, 0 },
- 	{ CMD_READMODIFYWRITE, THM_HWID, 0, mmTHM_BACO_CNTL_BASE_IDX, mmTHM_BACO_CNTL, THM_BACO_CNTL__BACO_SOC_REFCLK_OFF_MASK, THM_BACO_CNTL__BACO_SOC_REFCLK_OFF__SHIFT, 0, 0 },
-@@ -77,8 +74,7 @@ static const struct soc15_baco_cmd_entry exit_baco_tbl[] =
- 	{ CMD_WAITFOR, NBIF_HWID, 0, mmRCC_BACO_CNTL_MISC_BASE_IDX, mmBACO_CNTL, BACO_CNTL__BACO_MODE_MASK, 0, 0xffffffff, 0 }
- };
- 
--static const struct soc15_baco_cmd_entry clean_baco_tbl[] =
--{
-+static const struct soc15_baco_cmd_entry clean_baco_tbl[] = {
- 	{ CMD_WRITE, NBIF_HWID, 0, mmBIOS_SCRATCH_6_BASE_IDX, mmBIOS_SCRATCH_6, 0, 0, 0, 0 },
- 	{ CMD_WRITE, NBIF_HWID, 0, mmBIOS_SCRATCH_7_BASE_IDX, mmBIOS_SCRATCH_7, 0, 0, 0, 0 }
- };
--- 
-2.17.1
+Agree, I will implement this logic into qfprom driver (into 
+qfprom_reg_read() ) in a separate patch.
+
+Thanks
+Komal
+>
+> Regards,
+> Bjorn
 
