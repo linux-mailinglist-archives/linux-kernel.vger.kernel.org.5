@@ -2,275 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF2576B8C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698BF76B8B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbjHAPie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        id S234175AbjHAPgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234934AbjHAPic (ORCPT
+        with ESMTP id S234141AbjHAPgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:38:32 -0400
-Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BAB5BF;
-        Tue,  1 Aug 2023 08:38:12 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFf6f2XJTz9xFr9;
-        Tue,  1 Aug 2023 23:24:42 +0800 (CST)
-Received: from A2101119013HW2.china.huawei.com (unknown [10.81.206.119])
-        by APP1 (Coremail) with SMTP id LxC2BwA36biWJslk2IYdAA--.14146S5;
-        Tue, 01 Aug 2023 16:37:47 +0100 (CET)
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-To:     Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Ian Lin <ian.lin@infineon.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Hector Martin <marcan@marcan.st>,
-        Prasanna Kerekoppa <prasanna.kerekoppa@cypress.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ramesh Rangavittal <ramesh.rangavittal@infineon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Ryohei Kondo <ryohei.kondo@cypress.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Brian Henriquez <brian.henriquez@cypress.com>,
-        linux-wireless@vger.kernel.org (open list:BROADCOM BRCM80211
-        IEEE802.11n WIRELESS DRIVER),
-        brcm80211-dev-list.pdl@broadcom.com (open list:BROADCOM BRCM80211
-        IEEE802.11n WIRELESS DRIVER),
-        SHA-cyfmac-dev-list@infineon.com (open list:BROADCOM BRCM80211
-        IEEE802.11n WIRELESS DRIVER),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
-Subject: [PATCH v1 3/3] wifi: brcm80211: change channel_list to a flexible array
-Date:   Tue,  1 Aug 2023 17:36:42 +0200
-Message-Id: <c18a31a293fb5ba5d7a845c4b5052516ff724a9f.1690904067.git.petr.tesarik.ext@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690904067.git.petr.tesarik.ext@huawei.com>
-References: <cover.1690904067.git.petr.tesarik.ext@huawei.com>
+        Tue, 1 Aug 2023 11:36:50 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E878E1B0;
+        Tue,  1 Aug 2023 08:36:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690904209; x=1722440209;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=NkcmWqH8lFlBt8JVs8Fywn256uGO6JM0+7urScRc4+c=;
+  b=HcmnZlDasiGeZ3F0q7F5Ur5xOe/ocoHmnT071UI/vU/hEQ7svbYVotG7
+   ydzlYx5ttZmRMl2eI0+mcQn4BTbIRmaNs3/kVhw6BrCYz3Jy72gJVzxoU
+   vLXwdA2Da9wMXULMXfL9agIi/XS3JXeVPoOc2FM2Hg2J/fSKHGFUgWylN
+   zBboh8wt40ipHXDhziaFrOmGsV9G8OWHuJK5AProsk4zY7ML8DtUYbXWd
+   E5phDMP6QGmb+ALYS9ah0jjTSvQ/PNtAuEl6ZLoYQdHaQOJKBuhfowH7g
+   emLDL5Gm+jiSiH7VbGn3qK2p6Qv7yM8G2x5KWJwk6vfhTfLeaCVL5rkFy
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="435657872"
+X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
+   d="scan'208";a="435657872"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 08:36:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="794237498"
+X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
+   d="scan'208";a="794237498"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.38.126])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 08:36:46 -0700
+Message-ID: <c1830d80-c8b2-19ec-fbfd-6bc3d2c806ce@intel.com>
+Date:   Tue, 1 Aug 2023 18:36:42 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-CM-TRANSID: LxC2BwA36biWJslk2IYdAA--.14146S5
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ww4DtFW7Ar4UuFWxCrW3ZFb_yoW3tr1Dpa
-        4fXa4jkr4kXr4a9a1UJFs5JFyrKanFy3WDKFWIy3sa9a1Uur1xJF10kFy09ry5C397t3sF
-        vF4jqryUKFsFyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUmI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr0_GcWl
-        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-        8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
-        kIwI1lc7CjxVAKzI0EY4vE52x082I5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
-        6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-        CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-        0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-        CI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnI
-        WIevJa73UjIFyTuYvjfU8F4EDUUUU
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.1
+Subject: Re: [PATCH v5] mmc: sdhci-of-dwcmshc: Add runtime PM operations
+Content-Language: en-US
+To:     Liming Sun <limings@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        David Thompson <davthompson@nvidia.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <79137159a833c164ea8ea3f05d8d6d9537db2f42.1683747334.git.limings@nvidia.com>
+ <20230728122052.296488-1-limings@nvidia.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20230728122052.296488-1-limings@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+On 28/07/23 15:20, Liming Sun wrote:
+> This commit implements the runtime PM operations to disable eMMC
+> card clock when idle.
+> 
+> Reviewed-by: David Thompson <davthompson@nvidia.com>
+> Signed-off-by: Liming Sun <limings@nvidia.com>
+> ---
+> v4->v5:
+>     - Address Adrian's comment to move the pm_enable to the end to
+>       avoid race;
+> v3->v4:
+>     - Fix compiling reported by 'kernel test robot';
+> v2->v3:
+>     - Revise the commit message;
+> v1->v2:
+>     Updates for comments from Ulf:
+>     - Make the runtime PM logic generic for sdhci-of-dwcmshc;
+> v1: Initial version.
+> ---
+>  drivers/mmc/host/sdhci-of-dwcmshc.c | 54 ++++++++++++++++++++++++++++-
+>  1 file changed, 53 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index e68cd87998c8..5cee42d72257 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/reset.h>
+>  #include <linux/sizes.h>
+>  
+> @@ -559,6 +560,8 @@ static int dwcmshc_probe(struct platform_device *pdev)
+>  	if (err)
+>  		goto err_setup_host;
+>  
+> +	devm_pm_runtime_enable(dev);
 
-The channel list is in fact a flexible array, but it has a length of 1 to
-make sure there is enough room for the special chanspec -1 when the struct
-is allocated on stack to abort a scan.
+By default, runtime PM regards the device as not active, so
+typically drivers will use something like pm_runtime_set_active()
+prior to pm_runtime_enable(dev)
 
-Move the single array member to newly declared struct brcmf_scan_abort_le
-and struct brcmf_scan_abort_v2_le and make channel_list in struct
-brcmf_scan_params_le and struct brcmf_scan_params_v2_le a flexible array.
+In fact it is better to enable before adding the host but
+increment the usage count to prevent runtime suspend.  That
+means adding some get/puts, ending up with something like:
 
-This fixes this annoying (though harmless) warning when the kernel is built
-with CONFIG_FORTIFY_SOURCE=3Dy:
++	pm_runtime_get_noresume(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
 
-------------[ cut here ]------------
-memcpy: detected field-spanning write (size 76) of single field "&params_le=
-->channel_list[0]" at drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg8=
-0211.c:1072 (size 2)
-WARNING: CPU: 2 PID: 991 at drivers/net/wireless/broadcom/brcm80211/brcmfma=
-c/cfg80211.c:1072 brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac]
-Modules linked in: qrtr(E) algif_hash(E) aes_neon_bs(E) aes_neon_blk(E) alg=
-if_skcipher(E) af_alg(E) bnep(E) brcmfmac_wcc(E) bcm2835_v4l2(CE) bcm2835_m=
-mal_vchiq(CE) videobuf2_vmalloc(E) videobuf2_memops(E) videobuf2_v4l2(E) vi=
-deodev(E) hci_uart(E) btsdio(E) videobuf2_common(E) btbcm(E) mc(E) snd_bcm2=
-835(CE) bluetooth(E) snd_pcm(E) brcmfmac(E) snd_timer(E) cpufreq_dt(E) snd(=
-E) soundcore(E) cfg80211(E) ecdh_generic(E) brcmutil(E) raspberrypi_cpufreq=
-(E) rfkill(E) vchiq(CE) bcm2711_thermal(E) leds_gpio(E) fuse(E) efi_pstore(=
-E) dmi_sysfs(E) ip_tables(E) x_tables(E) rpcsec_gss_krb5(E) auth_rpcgss(E) =
-nfsv4(E) dns_resolver(E) nfs(E) lockd(E) grace(E) fscache(E) netfs(E) af_pa=
-cket(E) mmc_block(E) xhci_pci(E) xhci_pci_renesas(E) xhci_hcd(E) usbcore(E)=
- usb_common(E) clk_raspberrypi(E) gpio_raspberrypi_exp(E) bcm2835_dma(E) cr=
-ct10dif_ce(E) virt_dma(E) pcie_brcmstb(E) sdhci_iproc(E) gpio_regulator(E) =
-sdhci_pltfm(E) sdhci(E) mmc_core(E) fixed(E) nvmem_rmem(E) sunrpc(E) sg(E) =
-dm_multipath(E) dm_mod(E) efivarfs(E)
-Unloaded tainted modules: aes_ce_cipher(E):1
-CPU: 2 PID: 991 Comm: wpa_supplicant Tainted: G         C  E      6.5.0-rc4=
--dynswiotlb+ #27 2ec0961165cc91fdbec101d9d43b3331ba4f0927
-Hardware name: Unknown Unknown Product/Unknown Product, BIOS 2023.04 04/01/=
-2023
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
-pc : brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac]
-lr : brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac]
-sp : ffff8000829ab590
-x29: ffff8000829ab590 x28: 0000000000000000 x27: 0000000000000001
-x26: ffff000105e7e0a4 x25: ffff00010a0bcb48 x24: ffff000101e03800
-x23: ffff000105ec8920 x22: ffff000106332980 x21: ffff00010a0bc0c0
-x20: ffff00010a0bcb90 x19: ffff00010a0bc108 x18: ffffffffffffffff
-x17: 0000000000000000 x16: 0000000000000000 x15: 616f72622f737365
-x14: 6c657269772f7465 x13: 616d666d6372622f x12: 31313230386d6372
-x11: 00000000ffffdfff x10: ffff800081ad3328 x9 : ffff800080130694
-x8 : 000000000002ffe8 x7 : c0000000ffffdfff x6 : 00000000000affa8
-x5 : ffff0001fef75e00 x4 : 0000000000000000 x3 : 0000000000000027
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00010aa0e000
-Call trace:
- brcmf_scan_params_v2_to_v1+0xd4/0x118 [brcmfmac 38c4a81a3b85b4aff1650c67f9=
-5f20bc542d60c1]
- brcmf_run_escan+0x148/0x1a0 [brcmfmac 38c4a81a3b85b4aff1650c67f95f20bc542d=
-60c1]
- brcmf_do_escan+0x74/0xe0 [brcmfmac 38c4a81a3b85b4aff1650c67f95f20bc542d60c=
-1]
- brcmf_cfg80211_scan+0xcc/0x298 [brcmfmac 38c4a81a3b85b4aff1650c67f95f20bc5=
-42d60c1]
- rdev_scan+0x38/0x158 [cfg80211 8907673111c49ec56be88af3d38994cc1cf54cb8]
- cfg80211_scan+0x134/0x178 [cfg80211 8907673111c49ec56be88af3d38994cc1cf54c=
-b8]
- nl80211_trigger_scan+0x3e8/0x768 [cfg80211 8907673111c49ec56be88af3d38994c=
-c1cf54cb8]
- genl_family_rcv_msg_doit.isra.0+0xc0/0x130
- genl_rcv_msg+0x1e4/0x278
- netlink_rcv_skb+0x64/0x138
- genl_rcv+0x40/0x60
- netlink_unicast+0x1cc/0x2d8
- netlink_sendmsg+0x1d4/0x448
- sock_sendmsg+0x64/0xc0
- ____sys_sendmsg+0x260/0x2e0
- ___sys_sendmsg+0x88/0xf0
- __sys_sendmsg+0x70/0xd8
- __arm64_sys_sendmsg+0x2c/0x40
- invoke_syscall+0x78/0x100
- el0_svc_common.constprop.0+0x100/0x130
- do_el0_svc+0x40/0xa8
- el0_svc+0x34/0x138
- el0t_64_sync_handler+0x120/0x130
- el0t_64_sync+0x1a8/0x1b0
----[ end trace 0000000000000000 ]---
+	err = sdhci_setup_host(host);
+	if (err)
+-		goto err_clk;
++		goto err_rpm;
 
-Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
----
- .../broadcom/brcm80211/brcmfmac/cfg80211.c    | 22 ++++++++++---------
- .../broadcom/brcm80211/brcmfmac/fwil_types.h  | 14 ++++++++++--
- 2 files changed, 24 insertions(+), 12 deletions(-)
+	if (rk_priv)
+		dwcmshc_rk35xx_postinit(host, priv);
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/=
-drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index 3f4257fe76b3..337a8e915e94 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-@@ -1088,8 +1088,9 @@ static void brcmf_escan_base_prep(struct brcmf_scan_p=
-arams_v2_le *params_le)
- 	memset(&params_le->ssid_le, 0, sizeof(params_le->ssid_le));
- }
-=20
--static void brcmf_escan_abort_prep(struct brcmf_scan_params_v2_le *params_=
-le)
-+static void brcmf_escan_abort_prep(struct brcmf_scan_abort_v2_le *abort_le)
- {
-+	struct brcmf_scan_params_v2_le *params_le =3D &abort_le->params;
- 	int length =3D BRCMF_SCAN_PARAMS_V2_FIXED_SIZE + sizeof(u16);
-=20
- 	brcmf_escan_base_prep(params_le);
-@@ -1171,7 +1172,7 @@ s32 brcmf_notify_escan_complete(struct brcmf_cfg80211=
-_info *cfg,
- 				bool fw_abort)
- {
- 	struct brcmf_pub *drvr =3D cfg->pub;
--	struct brcmf_scan_params_v2_le params_v2_le;
-+	struct brcmf_scan_abort_v2_le abort_v2_le;
- 	struct cfg80211_scan_request *scan_request;
- 	u64 reqid;
- 	u32 bucket;
-@@ -1191,20 +1192,21 @@ s32 brcmf_notify_escan_complete(struct brcmf_cfg802=
-11_info *cfg,
- 		/* Do a scan abort to stop the driver's scan engine */
- 		brcmf_dbg(SCAN, "ABORT scan in firmware\n");
-=20
--		brcmf_escan_abort_prep(&params_v2_le);
-+		brcmf_escan_abort_prep(&abort_v2_le);
-=20
--		/* E-Scan (or anyother type) can be aborted by SCAN */
-+		/* E-Scan (or any other type) can be aborted by SCAN */
- 		if (brcmf_feat_is_enabled(ifp, BRCMF_FEAT_SCAN_V2)) {
- 			err =3D brcmf_fil_cmd_data_set(ifp, BRCMF_C_SCAN,
--						     &params_v2_le,
--						     sizeof(params_v2_le));
-+						     &abort_v2_le,
-+						     sizeof(abort_v2_le));
- 		} else {
--			struct brcmf_scan_params_le params_le;
-+			struct brcmf_scan_abort_le abort_le;
-=20
--			brcmf_scan_params_v2_to_v1(&params_v2_le, &params_le);
-+			brcmf_scan_params_v2_to_v1(&abort_v2_le.params,
-+						   &abort_le.params);
- 			err =3D brcmf_fil_cmd_data_set(ifp, BRCMF_C_SCAN,
--						     &params_le,
--						     sizeof(params_le));
-+						     &abort_le,
-+						     sizeof(abort_le));
- 		}
-=20
- 		if (err)
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h =
-b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-index 792adaf880b4..10cc80b56f25 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-@@ -398,7 +398,12 @@ struct brcmf_scan_params_le {
- 				 * fixed parameter portion is assumed, otherwise
- 				 * ssid in the fixed portion is ignored
- 				 */
--	__le16 channel_list[1];	/* list of chanspecs */
-+	__le16 channel_list[];	/* list of chanspecs */
-+};
-+
-+struct brcmf_scan_abort_le {
-+	struct brcmf_scan_params_le params;
-+	__le16 channel_list[1];	/* room for the special chanspec -1 */
- };
-=20
- struct brcmf_scan_params_v2_le {
-@@ -437,7 +442,12 @@ struct brcmf_scan_params_v2_le {
- 				 * fixed parameter portion is assumed, otherwise
- 				 * ssid in the fixed portion is ignored
- 				 */
--	__le16 channel_list[1];	/* list of chanspecs */
-+	__le16 channel_list[];	/* list of chanspecs */
-+};
-+
-+struct brcmf_scan_abort_v2_le {
-+	struct brcmf_scan_params_v2_le params;
-+	__le16 channel_list[1];	/* room for the special chanspec -1 */
- };
-=20
- struct brcmf_scan_results {
---=20
-2.25.1
+	err = __sdhci_add_host(host);
+	if (err)
+		goto err_setup_host;
+
++	pm_runtime_put_sync(dev);
+
+	return 0;
+
+err_setup_host:
+	sdhci_cleanup_host(host);
++ err_rpm:
++	pm_runtime_disable(dev);
++	pm_runtime_put_noidle(dev);
+err_clk:
+	clk_disable_unprepare(pltfm_host->clk);
+	clk_disable_unprepare(priv->bus_clk);
+	if (rk_priv)
+		clk_bulk_disable_unprepare(RK35xx_MAX_CLKS,
+					   rk_priv->rockchip_clks);
+free_pltfm:
+	sdhci_pltfm_free(pdev);
+	return err;
+
+> +
+>  	return 0;
+>  
+>  err_setup_host:
+> @@ -646,7 +649,56 @@ static int dwcmshc_resume(struct device *dev)
+>  }
+>  #endif
+>  
+> -static SIMPLE_DEV_PM_OPS(dwcmshc_pmops, dwcmshc_suspend, dwcmshc_resume);
+> +#ifdef CONFIG_PM
+> +
+> +static void dwcmshc_enable_card_clk(struct sdhci_host *host)
+> +{
+> +	u16 ctrl;
+> +
+> +	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+
+You could save an mmio write:
+
+	if (ctrl & SDHCI_CLOCK_INT_EN && !(ctrl & SDHCI_CLOCK_CARD_EN)) {
+
+> +	ctrl |= SDHCI_CLOCK_CARD_EN;
+> +	sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
+
+	}
+
+> +}
+> +
+> +static void dwcmshc_disable_card_clk(struct sdhci_host *host)
+> +{
+> +	u16 ctrl;
+> +
+> +	ctrl = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+
+You could save an mmio write:
+
+	if (ctrl & SDHCI_CLOCK_CARD_EN) {
+
+> +	ctrl &= ~SDHCI_CLOCK_CARD_EN;
+> +	sdhci_writew(host, ctrl, SDHCI_CLOCK_CONTROL);
+
+	}
+
+> +}
+> +
+> +static int dwcmshc_runtime_suspend(struct device *dev)
+> +{
+> +	struct sdhci_host *host = dev_get_drvdata(dev);
+> +	int ret = 0;
+
+ret doesn't need initialization
+
+> +
+> +	ret = sdhci_runtime_suspend_host(host);
+
+If you *only* want to disable the card clock, then
+it is probably not necessary to call sdhci_runtime_suspend_host()
+and sdhci_runtime_resume_host().
+
+> +	if (!ret)
+> +		dwcmshc_disable_card_clk(host);
+> +
+> +	return ret;
+> +}
+> +
+> +static int dwcmshc_runtime_resume(struct device *dev)
+> +{
+> +	struct sdhci_host *host = dev_get_drvdata(dev);
+> +	int ret = 0;
+
+ret isn't needed
+
+> +
+> +	dwcmshc_enable_card_clk(host);
+> +	ret = sdhci_runtime_resume_host(host, 0);
+
+just
+	return sdhci_runtime_resume_host(host, 0);
+
+> +
+> +	return ret;
+> +}
+> +
+> +#endif
+> +
+> +static const struct dev_pm_ops dwcmshc_pmops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(dwcmshc_suspend, dwcmshc_resume)
+
+Typically you need a way to coordinate runtime PM and system PM, refer:
+
+https://www.kernel.org/doc/html/latest/power/runtime_pm.html#runtime-pm-and-system-sleep
+
+> +	SET_RUNTIME_PM_OPS(dwcmshc_runtime_suspend,
+> +			   dwcmshc_runtime_resume, NULL)
+> +};
+>  
+>  static struct platform_driver sdhci_dwcmshc_driver = {
+>  	.driver	= {
 
