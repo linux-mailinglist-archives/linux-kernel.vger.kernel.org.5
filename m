@@ -2,118 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A05F176AB3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062DE76AB41
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbjHAIlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S232066AbjHAInF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbjHAIlO (ORCPT
+        with ESMTP id S230120AbjHAIml (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:41:14 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB26D10FE;
-        Tue,  1 Aug 2023 01:41:07 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9bf52cd08so82445661fa.2;
-        Tue, 01 Aug 2023 01:41:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690879266; x=1691484066;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fEDttWqgK0CFKCWb2NcBurYWAnq5TrPHr/6xcJLjutQ=;
-        b=JmTFmA/YwVf47WGQzgGNC9Gx2CdqnxgNkk6BJi/OVBNaULhsSmi2x3Jvs7ZplJjAwM
-         ypvMQDX5HWHnKwcQ+/XV+dnvaNL+pvtqYjC5KrKANuSkIYgZ9G4Xza0bNQF1hq3+Vcp9
-         wcLoiajHTwANqrXpV7M1yZa/+1/WWdIW7gXuW4YAXxBsanf7mPrll6cidJQ0pJ1eMCkD
-         W1CEIGvZeEHlcbYNVju3/FKKEC9cqwqJz1hIRrgQZeb7LbSWYV8BeAtNMPg0/YkxPPZ6
-         G+ctwUMYFMSx9T6PLHB7HNiY9XTDYB0/4UDlOq42vEhzHc/cUhMXYNsZbwTEY8q/Br5/
-         Ah9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690879266; x=1691484066;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fEDttWqgK0CFKCWb2NcBurYWAnq5TrPHr/6xcJLjutQ=;
-        b=RDQi7l2rOND2f2mSKnMRWZdmRjqbGOu2ZAEXZA0hsdS9feodgZuhfCsPaKFNbiS9Qv
-         NwhYGTPIdL6h1TgOPhspVeCFdYjwirEyJvWb/znqEMWb3b/3+QijU+cW+1tH6seZl+CR
-         vjZrg0KB7Pu+sgSoUAD25tAWF60HiDPo17OIZX/z2h5kJLeAdT/BkCgIUKyj/2I5apc5
-         lZxLXc21Zw22IFRJ1QF7KPjGJZWN97pt+FwjiRYYa1aEZYFI+H2Kb2BnVwOGrtM3aoYM
-         dyht7N7Ua1HxilmJdPHVbhM6WdaZFMzmTHFpvXzW2KHQmJFqpwtUON6Xk1WkMbR01YMf
-         htMg==
-X-Gm-Message-State: ABy/qLbQwn6JRKEXUh+e4zLmFwPVOJs9uSwJnK1UhMqNpYvENMq97luy
-        mWfLu8eD8Y0lWJw1mT47Ofw/m3pWzMm5qK6efko=
-X-Google-Smtp-Source: APBJJlHigaiD/soq+foL/ueHdSCoL9kwM9uOiteOXtMYbntsGWOD4BdKieuCUt+o8fwYXw0uO3/Sy5quE1gVN+fCcDI=
-X-Received: by 2002:a2e:8ec3:0:b0:2b6:e12f:267 with SMTP id
- e3-20020a2e8ec3000000b002b6e12f0267mr1845557ljl.5.1690879265602; Tue, 01 Aug
- 2023 01:41:05 -0700 (PDT)
+        Tue, 1 Aug 2023 04:42:41 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C98C210E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:42:39 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RFTBg2Hr3z4f3lfg
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 16:42:35 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgB3SK96xchkfh85PQ--.56993S2;
+        Tue, 01 Aug 2023 16:42:36 +0800 (CST)
+Subject: Re: [PATCH 1/8] mm/compaction: avoid missing last page block in
+ section after skip offline sections
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        willy@infradead.org, david@redhat.com
+References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
+ <20230728171037.2219226-2-shikemeng@huaweicloud.com>
+ <6e76323f-a1cc-7d20-676e-4eccdbcf6b91@linux.alibaba.com>
+ <9b207dbf-1652-4851-7c6e-16220d5f2f3b@huaweicloud.com>
+ <a4a4c935-d7c8-ffba-cf51-6eaeb88ed19c@huaweicloud.com>
+ <cb028072-6cf7-05b5-cc47-fddd8f5b1174@linux.alibaba.com>
+ <6921ae7e-0c30-0934-168c-9480ca30108f@huaweicloud.com>
+ <d5d3dc39-c825-f040-1c1e-ae6c53921331@linux.alibaba.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <7b42d243-c62f-856e-2b8c-ba43528528f0@huaweicloud.com>
+Date:   Tue, 1 Aug 2023 16:42:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-References: <20230727202126.1477515-1-iwona.winiarska@intel.com> <20230727202126.1477515-4-iwona.winiarska@intel.com>
-In-Reply-To: <20230727202126.1477515-4-iwona.winiarska@intel.com>
-From:   Tomer Maimon <tmaimon77@gmail.com>
-Date:   Tue, 1 Aug 2023 11:40:54 +0300
-Message-ID: <CAP6Zq1hh_wr81L4vtYDct69rrqdSrxjap9-uZfvmt0xMvrfRJQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] ARM: dts: nuvoton: Add PECI controller node
-To:     Iwona Winiarska <iwona.winiarska@intel.com>
-Cc:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <d5d3dc39-c825-f040-1c1e-ae6c53921331@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgB3SK96xchkfh85PQ--.56993S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3GrWDZw1UuF1kWw1fuF4UArb_yoW7Aryxpr
+        y8JFy7tryDJ348XF1Utw1UuryUtws5Ga1UXr47JF1UAF1qqFn2gryqqr1q9r1jgr48AFyU
+        Zr1jyFW7Zr17A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+        wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+        80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+        I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+        k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY
+        1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Iwona,
 
-I have done r-b, Just could you do a small modification
 
-On Thu, 27 Jul 2023 at 23:23, Iwona Winiarska <iwona.winiarska@intel.com> wrote:
->
-> Add PECI controller node with all required information.
->
-> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
-> ---
->  arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
-> index c7b5ef15b716..cccc33441050 100644
-> --- a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
-> +++ b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
-> @@ -220,6 +220,15 @@ kcs3: kcs3@0 {
->                                 };
->                         };
->
-> +                       peci0: peci-controller@f0100000 {
-Please modify the peci0 to peci we have only one PECI controller.
-> +                               compatible = "nuvoton,npcm750-peci";
-> +                               reg = <0xf0100000 0x200>;
-> +                               interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB3>;
-> +                               cmd-timeout-ms = <1000>;
-> +                               status = "disabled";
-> +                       };
-> +
->                         spi0: spi@200000 {
->                                 compatible = "nuvoton,npcm750-pspi";
->                                 reg = <0x200000 0x1000>;
-> --
-> 2.40.1
->
+on 8/1/2023 4:01 PM, Baolin Wang wrote:
+> 
+> 
+> On 8/1/2023 2:08 PM, Kemeng Shi wrote:
+>>
+>>
+>> on 8/1/2023 11:53 AM, Baolin Wang wrote:
+>>>
+>>>
+>>> On 8/1/2023 10:36 AM, Kemeng Shi wrote:
+>>>>
+>>>>
+>>>> on 8/1/2023 10:18 AM, Kemeng Shi wrote:
+>>>>>
+>>>>>
+>>>>> on 7/31/2023 8:01 PM, Baolin Wang wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 7/29/2023 1:10 AM, Kemeng Shi wrote:
+>>>>>>> skip_offline_sections_reverse will return the last pfn in found online
+>>>>>>> section. Then we set block_start_pfn to start of page block which
+>>>>>>> contains the last pfn in section. Then we continue, move one page
+>>>>>>> block forward and ignore the last page block in the online section.
+>>>>>>> Make block_start_pfn point to first page block after online section to fix
+>>>>>>> this:
+>>>>>>> 1. make skip_offline_sections_reverse return end pfn of online section,
+>>>>>>> i.e. pfn of page block after online section.
+>>>>>>> 2. assign block_start_pfn with next_pfn.
+>>>>>>>
+>>>>>>> Fixes: f63224525309 ("mm: compaction: skip the memory hole rapidly when isolating free pages")
+>>>>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>>>>>> ---
+>>>>>>>     mm/compaction.c | 5 ++---
+>>>>>>>     1 file changed, 2 insertions(+), 3 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/mm/compaction.c b/mm/compaction.c
+>>>>>>> index 9b7a0a69e19f..ce7841363b12 100644
+>>>>>>> --- a/mm/compaction.c
+>>>>>>> +++ b/mm/compaction.c
+>>>>>>> @@ -259,7 +259,7 @@ static unsigned long skip_offline_sections_reverse(unsigned long start_pfn)
+>>>>>>>           while (start_nr-- > 0) {
+>>>>>>>             if (online_section_nr(start_nr))
+>>>>>>> -            return section_nr_to_pfn(start_nr) + PAGES_PER_SECTION - 1;
+>>>>>>> +            return section_nr_to_pfn(start_nr + 1);
+>>>>>>
+>>>>>> This is incorrect, you returned the start pfn of this section.
+>>>>>>
+>>>>>>>         }
+>>>>>>>           return 0;
+>>>>>>> @@ -1670,8 +1670,7 @@ static void isolate_freepages(struct compact_control *cc)
+>>>>>>>                   next_pfn = skip_offline_sections_reverse(block_start_pfn);
+>>>>>>>                 if (next_pfn)
+>>>>>>> -                block_start_pfn = max(pageblock_start_pfn(next_pfn),
+>>>>>>> -                              low_pfn);
+>>>>>>> +                block_start_pfn = max(next_pfn, low_pfn);
+>>>>>>
+>>>>>> 'block_start_pfn' should be pageblock aligned. If the 'next_pfn' is not pageblock-aligned (though this is not the common case), we should skip it.
+>>>>>>
+>>>>>> But if the 'next_pfn' is pageblock-aligned, yes, the commit f63224525309 still ignores the last pageblock, which is not right. So I think it should be:
+>>>>>> block_start_pfn = pageblock_aligned(next_pfn) ? : pageblock_start_pfn(next_pfn);
+>>>>>> block_start_pfn = max(block_start_pfn, low_pfn);
+>>>>>>
+>>>>> Hi Baolin, thanks for reply! As skip_offline_sections_reverse is based
+>>>>> on skip_offline_sections. I make the assumption that section is pageblock
+>>>>> aligned based on that we use section start from skip_offline_sections as
+>>>>> block_start_fpn without align check.
+>>>>> If section size is not pageblock aligned in real world, the pageblock aligned
+>>>>> check should be added to skip_offline_sections and skip_offline_sections_reverse.
+>>>>> If no one is against this, I will fix this in next version. THanks!
+>>>>>
+>>>> More information of aligment of section. For powerpc arch, we have SECTION_SIZE_BITS
+>>>> with 24 while PAGE_SHIFT could be configured to 18.
+>>>> Pageblock order is (18 + MAX_ORDER) which coule be 28 and is > SECTION_SZIE_BITS 24,
+>>>
+>>> The maximum pageblock order is MAX_ORDER. But after thinking more, I think return the start pfn or end pfn of a section is okay, and it should be aligned to a pageblock order IIUC.
+>>>
+>> Right, I mixed up the unit.
+>>> So I think your change is good:
+>>> + block_start_pfn = max(next_pfn, low_pfn);
+>>>
+>>> But in skip_offline_sections_reverse(), we should still return the last pfn of the online section.
+>>>
+>> Sure, then we should assign block_start_pfn with following change. Is this good to you?
+>> -                block_start_pfn = max(pageblock_start_pfn(next_pfn),
+>> +         block_start_pfn = max(pageblock_end_pfn(next_pfn),
+>>                                low_pfn);
+> 
+> The last pfn of a section is already section aligned, so I think no need to call pageblock_end_pfn(), just like your original change is okay to me.
+> block_start_pfn = max(next_pfn, low_pfn);
+> 
+> 
+Um, if we keep "block_start_pfn = max(next_pfn, low_pfn);", should we also keep
+returning end of section "section_nr_to_pfn(start_nr + 1);" instead of original last
+pfn of the section "section_nr_to_pfn(start_nr) + PAGES_PER_SECTION - 1;" which seems
+not aligned.
+Assume SECTION_SIZE_BITS = 27, PAGE_SHIFT = 12, pageblock order = 10
+Last pfn of the section 0 is 0x7fff, end pfn of section 0 is 0x8000. The last pfn
+is not aligned.
+Please tell me if I misunderstand anything. Thanks!
 
-Reviewed-by: Tomer Maimon <tmaimon77@gmail.com>
+-- 
+Best wishes
+Kemeng Shi
 
-Thanks,
-
-Tomer
