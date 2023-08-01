@@ -2,305 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5113476BDA9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A59AA76BDAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbjHATYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:24:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
+        id S232366AbjHATZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:25:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjHATYn (ORCPT
+        with ESMTP id S232411AbjHATZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:24:43 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14C119A1
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:24:38 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-583c48a9aa1so64141697b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:24:38 -0700 (PDT)
+        Tue, 1 Aug 2023 15:25:15 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1D963582
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:25:02 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-38c35975545so4731491b6e.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:25:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1690917878; x=1691522678;
+        d=chromium.org; s=google; t=1690917902; x=1691522702;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=38Ojwrgj40lNrH18lDVNz7f8CEUxvzjuVRkkOoVXi3c=;
-        b=FS/8h/9QzkAddpIc38jBNvvPbArN96+sXWtLNK/4pkm13UJ56T2KD+wfeAKTqoc4W1
-         XON7LzvI5jz/vOYvYEBTVotH0nd6wHWMEpwyYXjDunvslDbIMQ1qPllyqFb1MfrhD48o
-         SPYc5DhdVv7/cYXbSTlG7ZQidTCJf4aRUDNw9fZmOsSz4qK8HOlJ/AsF8J2ZrS2n72Kg
-         WlG/Xn/L202hOOJQfPPkUPsqzbGMpsqAoYOleIQhIb8XjxQxPyA+UUDRltjbVov0h+RB
-         DDuxtZ92JNeRUoJ0RlXwoT4BybrdDncvjxlzgmk7XItcAWCi/6TkP490V8LPF4DUTwDS
-         iKnQ==
+        bh=JVStSKOXHuVNjupka5b4LgzYs1g1E9EjO7OugsAUVZI=;
+        b=nGSW7hG5U6v+anh6x7l3AKx2jw08rqRM3ja6Ha8kC7KMTzWTZ5rUtjnL++PlStVEq+
+         fKC8pOprYrVNOzRsg4dU36ZFw1Rh0JxaU+UnOYtEoY/HFJ6hi8IzIPXvz8ZWgsAhiqgK
+         WKckw3N4DBhTwJS8elwpYPNTSpflqW9PhVFwc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690917878; x=1691522678;
+        d=1e100.net; s=20221208; t=1690917902; x=1691522702;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=38Ojwrgj40lNrH18lDVNz7f8CEUxvzjuVRkkOoVXi3c=;
-        b=AhYswLmQWufDlIaTg4Ul3np8AraIXwoTcNVr62Nb6HaOdOBO1kEWGndx/iLqUNaL2r
-         mSeo5R03NWDySn8UhcIY8ARPLGfPChzMOAYt0x7iEX2ZUayliBz7zBO6mtTIQM+s3hMJ
-         u9AZNgI9LVzFRLLFkFgycNSU1LdU9+0To1F7q8dUiFW3eZPY+fWb89ocoMXuyp0FQtsc
-         DSNrlN5fsBEvQrGn8kOsElT6ZmpQ/xR/QgSOaJ2t5Eb+iE8JmXVoGiP7b0EduCjS0yLn
-         b3SGNkPUueVEPllmYAfHwWtumjPpiJXbdKv+GhGvd7E3GzHxgAwndZGepsftJRHuloWL
-         uJVw==
-X-Gm-Message-State: ABy/qLbxkHrcPjriP+pny5Wi/unGCMNk2OAKjB52DFVFMwFYb07FQH9I
-        pPZMZz4+CKGqZMfGnH5UZwqNfSrhZdM965tgQ66C
-X-Google-Smtp-Source: APBJJlGVYKkoAlJEdO/pA2Hefr1NaPY8FSCU4/fsSlYHcIHkSndbJ2o+KScsMucfbtmWKA8SCnBFfHX2BsJoBBMxDkE=
-X-Received: by 2002:a25:ab07:0:b0:d0a:7e3:fa0 with SMTP id u7-20020a25ab07000000b00d0a07e30fa0mr12480978ybi.53.1690917878071;
- Tue, 01 Aug 2023 12:24:38 -0700 (PDT)
+        bh=JVStSKOXHuVNjupka5b4LgzYs1g1E9EjO7OugsAUVZI=;
+        b=NB2AjgbWbfyx/AsMRfZJuU/7vJ08oEnBS3rHdxMfcEDhvQ/ZEAx+YDiLn2twN/zJws
+         +ehhuB6A8GrCt/+JINGwH2tglvliuGSk9RYbxp5uN4OYQhn9b2FZv3VqdwOO8yasd5tQ
+         f6MWMdtfOMDKgb6orhR6pTfOAQS9rCeyw1Q3zQ3o4yOoNM+h2s+WPuNQ5zBfqBodDRAh
+         Ss1eK94U3n5A5CNU6s3tkoeNmDCTTywo98+PMhBmkaXWwSK+5887YDP6ZJcjzp20J8sz
+         A246JK38FPmWf45iqL+MpuAe3oUldiW/x2fPYwhC/+McXmLxjP2tt+EjHs7X0uOuA2HR
+         BQ1g==
+X-Gm-Message-State: ABy/qLY2tXU76OLPf7zbsOcMMu4/ChEdWJksSCnMBy7CHZadywlXaTgi
+        Ql7QG0Kv4KKde3ewZrhs43wQGFFelYlTcpDIW/dCtR6qa2lljveaUXs=
+X-Google-Smtp-Source: APBJJlEm1J3KL2r3HOetAysmO5T/aleeOed9lahwvrPBY5QHmqz8ldc8jZwRYKGHDPE1BPooGl5UYxsFN0u2uyZ3+58=
+X-Received: by 2002:a05:6808:219a:b0:3a2:a96d:19c3 with SMTP id
+ be26-20020a056808219a00b003a2a96d19c3mr16886646oib.41.1690917902045; Tue, 01
+ Aug 2023 12:25:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <1687986571-16823-9-git-send-email-wufan@linux.microsoft.com>
- <ec09144af7c7109d8b457ceccd50ba7a.paul@paul-moore.com> <20230715035738.GG15267@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-In-Reply-To: <20230715035738.GG15267@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 1 Aug 2023 15:24:27 -0400
-Message-ID: <CAHC9VhR-NDzKk-9gPP531ktaacd2wrdh0aGv5GScDgwkcWpcsw@mail.gmail.com>
-Subject: Re: [PATCH RFC v10 8/17] uapi|audit|ipe: add ipe auditing support
-To:     Fan Wu <wufan@linux.microsoft.com>
-Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
-        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
-        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
-        eparis@redhat.com, linux-doc@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, audit@vger.kernel.org,
-        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
-        Deven Bowers <deven.desai@linux.microsoft.com>
+References: <20230714114753.170814-1-david@readahead.eu> <CALmYWFsjy2jOfKyM3Gd3Ag+p6u5ejDoBp6RhqcXkcAkMiby4SA@mail.gmail.com>
+ <fb464cbf-04c4-4346-a96b-e0b2ab804e16@app.fastmail.com>
+In-Reply-To: <fb464cbf-04c4-4346-a96b-e0b2ab804e16@app.fastmail.com>
+From:   Jeff Xu <jeffxu@chromium.org>
+Date:   Tue, 1 Aug 2023 12:24:51 -0700
+Message-ID: <CABi2SkUOxngcDwRDtFFD2Uef=BUXVN08dMYhmpuS_b1xC39L7g@mail.gmail.com>
+Subject: Re: [PATCH] memfd: support MFD_NOEXEC alongside MFD_EXEC
+To:     David Rheinsberg <david@readahead.eu>
+Cc:     Jeff Xu <jeffxu@google.com>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>, linux-mm@kvack.org,
+        Peter Xu <peterx@redhat.com>, linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 14, 2023 at 11:57=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com>=
- wrote:
-> On Sat, Jul 08, 2023 at 12:23:05AM -0400, Paul Moore wrote:
-> > On Jun 28, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
-> > >
-> > > Users of IPE require a way to identify when and why an operation fail=
-s,
-> > > allowing them to both respond to violations of policy and be notified
-> > > of potentially malicious actions on their systems with respect to IPE
-> > > itself.
-> > >
-> > > This patch introduces 3 new audit events.
-> > >
-> > > AUDIT_IPE_ACCESS(1420) indicates the result of an IPE policy evaluati=
-on
-> > > of a resource.
-> > > AUDIT_IPE_CONFIG_CHANGE(1421) indicates the current active IPE policy
-> > > has been changed to another loaded policy.
-> > > AUDIT_IPE_POLICY_LOAD(1422) indicates a new IPE policy has been loade=
-d
-> > > into the kernel.
-> > >
-> > > This patch also adds support for success auditing, allowing users to
-> > > identify why an allow decision was made for a resource. However, it i=
+Hi David,
+
+On Fri, Jul 28, 2023 at 12:55=E2=80=AFAM David Rheinsberg <david@readahead.=
+eu> wrote:
+>
+> Hi
+>
+> On Tue, Jul 18, 2023, at 9:03 PM, Jeff Xu wrote:
+> > Hi David
+> >
+> > Thanks email and patch for discussion.
+> >
+> > On Fri, Jul 14, 2023 at 4:48=E2=80=AFAM David Rheinsberg <david@readahe=
+ad.eu> wrote:
+> >>
+> >> Add a new flag for memfd_create() called MFD_NOEXEC, which has the
+> >> opposite effect as MFD_EXEC (i.e., it strips the executable bits from
+> >> the inode file mode).
+> >>
+> > I previously thought about having the symmetric flags, such as
+> > MFD_NOEXEC/MFD_EXEC/MFD_NOEXEC_SEAL/MFD_EXEC_SEAL, but decided against
+> > it. The app shall decide beforehand what the memfd is created for, if
+> > it is no-executable, then it should be sealed, such that it can't be
+> > chmod to enable "X" bit.
+>
+> My point is, an application might decide to *not* seal a property, becaus=
+e it knows it has to change it later on. But it might still want to disable=
+ the executable bit initially, so to avoid having executable pages around t=
+hat can be exploited.
+>
+
+I understand that.
+My argument was this application can do this in two steps, as in my
+previous email:
+1> memfd_create(MFD_EXEC)
+2> chmod
+
+Two system calls back to back isn't too terrible,  and I know this
+might seem to be not optimized for your user case, I will explain it
+later, please read on.
+
+> >> The default mode for memfd_create() has historically been to use 0777 =
+as
+> >> file modes. The new `MFD_EXEC` flag has now made this explicit, paving
+> >> the way to reduce the default to 0666 and thus dropping the executable
+> >> bits for security reasons. Additionally, the `MFD_NOEXEC_SEAL` flag ha=
 s
-> > > recommended to use this option with caution, as it is quite noisy.
-> > >
-> > > Here are some examples of the new audit record types:
-> > >
-> > > AUDIT_IPE_ACCESS(1420):
-> > >
-> > >     audit: AUDIT1420 path=3D"/root/vol/bin/hello" dev=3D"sda"
-> > >       ino=3D3897 rule=3D"op=3DEXECUTE boot_verified=3DTRUE action=3DA=
-LLOW"
+> >> been added which allows this without changing the default right now.
+> >>
+> >> Unfortunately, `MFD_NOEXEC_SEAL` enforces `MFD_ALLOW_SEALING` and
+> >> `F_SEAL_EXEC`, with no alternatives available. This leads to multiple
+> >> issues:
+> >>
+> >>  * Applications that do not want to allow sealing either have to use
+> >>    `MFD_EXEC` (which we don't want, unless they actually need the
+> >>    executable bits), or they must add `F_SEAL_SEAL` immediately on
+> >>    return of memfd_create(2) with `MFD_NOEXEC_SEAL`, since this
+> >>    implicitly enables sealing.
+> >>
+> >>    Note that we explicitly added `MFD_ALLOW_SEALING` when creating
+> >>    memfd_create(2), because enabling seals on existing users of shmem
+> >>    without them knowing about it can easily introduce DoS scenarios.
 > >
-> > The 'dev' field is already in use by audit, and is used to log the
-> > device major and minor numbers, see audit_log_name() for an example.
+> > The application that doesn't want MFD_NOEXEC_SEAL can use MFD_EXEC,
+> > the kernel won't add MFD_ALLOW_SEALING implicitly. MFD_EXEC makes the
+> > kernel behave the same as before, this is also  why sysctl
+> > vm.memfd_noexec=3D0 can work seamlessly.
 > >
-> > I would suggest adopting the existing 'dev' field format, but if you
-> > really want to log the device name as a string you will need to find
-> > another audit field name.
+> >>   It
+> >>    is unclear why `MFD_NOEXEC_SEAL` was designed to enable seals, and
+> >>    this is especially dangerous with `MEMFD_NOEXEC_SCOPE_NOEXEC_SEAL`
+> >>    set via sysctl, since it will silently enable sealing on every memf=
+d
+> >>    created.
+> >>
+> > Without sealing, chmod(2) can modify the mfd to be executable, that is
+> > the consideration that MFD_NOEXEC is not provided as an option.
+> > Indeed, current design is "biased" towards promoting MFD_NOEXEC_SEAL
+> > as the safest approach, and try to avoid the pitfall that dev
+> > accidently uses "MFD_NOEXEC" without realizing it can still be
+> > chmod().
 >
-> Actually it was copied from https://git.kernel.org/pub/scm/linux/kernel/g=
-it/torvalds/linux.git/tree/security/lsm_audit.c#n228
-> Personally I think using device name is better, I will try to add a new f=
-ield.
-
-Ha, yes, it does look like the LSM code uses the device name as
-opposed to the major:minor format.  Given that existing use, and that
-IPE is a LSM, sticking with 'dev=3D<name>' seems like the right thing to
-do.  Sorry about that :/
-
-> > >     audit: AUDIT1420 path=3D"/mnt/ipe/bin/hello" dev=3D"dm-0"
-> > >       ino=3D2 rule=3D"DEFAULT action=3DDENY"
-> > >
-> > >     audit: AUDIT1420 path=3D"/tmp/tmpdp2h1lub/deny/bin/hello" dev=3D"=
-tmpfs"
-> > >       ino=3D131 rule=3D"DEFAULT action=3DDENY"
-> > >
-> > > The above three records were generated when the active IPE policy onl=
-y
-> > > allows binaries from the initial booted drive(sda) to run. The three
-> > > identical `hello` binary were placed at different locations, only the
-> > > first hello from sda was allowed.
-> > >
-> > > Field path followed by the file's path name.
-> > >
-> > > Field dev followed by the device name as found in /dev where the file=
- is
-> > > from.
-> > > Note that for device mappers it will use the name `dm-X` instead of
-> > > the name in /dev/mapper.
-> > > For a file in a temp file system, which is not from a device, it will=
- use
-> > > `tmpfs` for the field.
-> > > The implementation of this part is following another existing use cas=
-e
-> > > LSM_AUDIT_DATA_INODE in security/lsm_audit.c
-> > >
-> > > Field ino followed by the file's inode number.
-> > >
-> > > Field rule followed by the IPE rule made the access decision. The who=
-le
-> > > rule must be audited because the decision is based on the combination=
- of
-> > > all property conditions in the rule.
-> > >
-> > > Along with the syscall audit event, user can know why a blocked
-> > > happened. For example:
-> > >
-> > >     audit: AUDIT1420 path=3D"/mnt/ipe/bin/hello" dev=3D"dm-0"
-> > >       ino=3D2 rule=3D"DEFAULT action=3DDENY"
-> > >     audit[1956]: SYSCALL arch=3Dc000003e syscall=3D59
-> > >       success=3Dno exit=3D-13 a0=3D556790138df0 a1=3D556790135390 a2=
-=3D5567901338b0
-> > >       a3=3Dab2a41a67f4f1f4e items=3D1 ppid=3D147 pid=3D1956 auid=3D42=
-94967295 uid=3D0
-> > >       gid=3D0 euid=3D0 suid=3D0 fsuid=3D0 egid=3D0 sgid=3D0 fsgid=3D0=
- tty=3Dpts0
-> > >       ses=3D4294967295 comm=3D"bash" exe=3D"/usr/bin/bash" key=3D(nul=
-l)
-> > >
-> > > The above two records showed bash used execve to run "hello" and got
-> > > blocked by IPE. Note that the IPE records are always prior to a SYSCA=
-LL
-> > > record.
-> > >
-> > > AUDIT_IPE_CONFIG_CHANGE(1421):
-> > >
-> > >     audit: AUDIT1421
-> > >       old_active_pol_name=3D"Allow_All" old_active_pol_version=3D0.0.=
-0
-> > >       old_policy_digest=3Dsha256:E3B0C44298FC1C149AFBF4C8996FB92427AE=
-41E4649B934CA495991B7852B855
-> > >       new_active_pol_name=3D"boot_verified" new_active_pol_version=3D=
-0.0.0
-> > >       new_policy_digest=3Dsha256:820EEA5B40CA42B51F68962354BA083122A2=
-0BB846F26765076DD8EED7B8F4DB
-> > >       auid=3D4294967295 ses=3D4294967295 lsm=3Dipe res=3D1
-> >
-> > You can trim hash digest strings so they better fit in terminals, for
-> > example:
-> >
-> >   old_policy_digest=3Dsha256:E3B0C44....
+> I think I didn't get my point across. Imagine an application that does *N=
+OT* use sealing, but uses memfds. This application shares memfds with untru=
+sted clients, and does this in a safe way (SIGBUS protected). Everything wo=
+rks fine, unless someone decides to enable `vm.memfd_noexec=3D2`. Suddenly,=
+ the memfd will have sealing enabled *without* the application ever request=
+ing this. Now any untrusted client that got the memfd can add seals to the =
+memfd, even though the creator of the memfd did not enable sealing. This cl=
+ient can now seal WRITES on the memfd, even though it really should not be =
+able to do that.
 >
-> Do you mean I could trim it in the documentation and for the real audit
-> record I still record the whole hash?
+> (This is not an hypothetical setup, we have such setups for data sharing =
+already)
 
-Yes.  Failure to record the full hash digest string in the record
-would be Very Bad, but for the sake of keeping the line lengths in the
-docs and commit description reasonable you can trim as necessary.
-After all, we all know what a full hash string looks like :)
+Thanks, this helps me understand your point better.
 
-> > > The above record showed the current IPE active policy switch from
-> > > `Allow_All` to `boot_verified` along with the version and the hash
-> > > digest of the two policies. Note IPE can only have one policy active
-> > > at a time, all access decision evaluation is based on the current act=
-ive
-> > > policy.
-> > > The normal procedure to deploy a policy is loading the policy to depl=
-oy
-> > > into the kernel first, then switch the active policy to it.
-> > >
-> > > AUDIT_IPE_POLICY_LOAD(1422):
-> > >
-> > > audit: AUDIT1422 policy_name=3D"boot_verified" policy_version=3D0.0.0
-> > > policy_digest=3Dsha256:820EEA5B40CA42B51F68962354BA083122A20BB846F267=
-65076DD8EED7B8F4DB
-> > > auid=3D4294967295 ses=3D4294967295 lsm=3Dipe res=3D1
-> > >
-> > > The above record showed a new policy has been loaded into the kernel
-> > > with the policy name, policy version and policy hash.
-> > >
-> > > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
-> > > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
-> > > ---
-> > >  include/uapi/linux/audit.h |   3 +
-> > >  security/ipe/Kconfig       |   2 +-
-> > >  security/ipe/Makefile      |   1 +
-> > >  security/ipe/audit.c       | 197 +++++++++++++++++++++++++++++++++++=
-++
-> > >  security/ipe/audit.h       |  18 ++++
-> > >  security/ipe/eval.c        |  26 ++++-
-> > >  security/ipe/eval.h        |   8 ++
-> > >  security/ipe/fs.c          |  71 +++++++++++++
-> > >  security/ipe/policy.c      |   5 +
-> > >  9 files changed, 327 insertions(+), 4 deletions(-)
-> > >  create mode 100644 security/ipe/audit.c
-> > >  create mode 100644 security/ipe/audit.h
+I'm not convinced that sysctl needs to consider the threat model of
+"someone" changing and breaking an application.  If we follow that
+threat model, there are a lot of other sysctls to worry about.
 
-...
+Also, in the system that you described, if memfd is handled to an
+untrusted process, not only "sealing"  can cause damage, but also
+chmod, arbitrary rw,  imo the right approach is to harden the process
+or mechanism of passing the memfd.
 
-> > > +/**
-> > > + * ipe_audit_match - audit a match for IPE policy.
-> > > + * @ctx: Supplies a pointer to the evaluation context that was used =
-in the
-> > > + *  evaluation.
-> > > + * @match_type: Supplies the scope of the match: rule, operation def=
-ault,
-> > > + *         global default.
-> > > + * @act: Supplies the IPE's evaluation decision, deny or allow.
-> > > + * @r: Supplies a pointer to the rule that was matched, if possible.
-> > > + * @enforce: Supplies the enforcement/permissive state at the point
-> > > + *      the enforcement decision was made.
-> > > + */
-> > > +void ipe_audit_match(const struct ipe_eval_ctx *const ctx,
-> > > +                enum ipe_match match_type,
-> > > +                enum ipe_action_type act, const struct ipe_rule *con=
-st r)
-> > > +{
-> > > +   struct inode *inode;
-> > > +   struct audit_buffer *ab;
-> > > +   const char *op =3D audit_op_names[ctx->op];
-> > > +
-> > > +   if (act !=3D __IPE_ACTION_DENY && !READ_ONCE(success_audit))
-> > > +           return;
-> > > +
-> > > +   ab =3D audit_log_start(audit_context(), GFP_KERNEL, AUDIT_IPE_ACC=
-ESS);
-> > > +   if (!ab)
-> > > +           return;
-> > > +
-> > > +   if (ctx->file) {
-> > > +           audit_log_d_path(ab, "path=3D", &ctx->file->f_path);
-> > > +           inode =3D file_inode(ctx->file);
-> > > +           if (inode) {
-> > > +                   audit_log_format(ab, " dev=3D");
-> > > +                   audit_log_untrustedstring(ab, inode->i_sb->s_id);
-> >
-> > See my comments above about using the 'dev' field name, however, you
-> > shouldn't need to log the device name as an untrusted string as the
-> > string is coming from a trusted source within the kernel (the driver).
 >
-> I was trying to follow the existing code at https://git.kernel.org/pub/sc=
-m/linux/kernel/git/torvalds/linux.git/tree/security/lsm_audit.c#n229
-> But I do agree as it is already in the kernel, it should be trusted.
+> Thus, setting the security-option `memfd_noexec` *breaks* applications, b=
+ecause it enables sealing. If `MFD_NOEXEC_SEAL` would *not* imply `MFD_ALLO=
+W_SEALING`, this would not be an issue. IOW, why does =C2=B4MFD_NOEXEC_SEAL=
+` clear `F_SEAL_SEAL` even if `MFD_ALLOW_SEALING` is not set?
+>
 
-Hmm.  Given the existing code, I guess stick with the untrusted string
-variant for now.  I'm concerned that there is some device naming code
-which might allow funky device names; although if you can prove that
-is not the case then you can use the normal audit logging functions.
+If MFD_NOEXEC_SEAL is not desired, then it should not be used to
+overwrite memfd_create() in this system.
 
-For reference, the characters that audit finds problematic can be
-found in audit_string_contains_control().
+For the question of why the sysctl adding a seal without application
+setting it , the rationale here is, as summary of previous/this
+emails:
+1> The sysctl helps a system (or container in pid name) to migrate out
+of old API, e.g, a container can update only the  applications that
+need executable memfd, change the sysctl to MFD_NOEXEC_SEAL overwrite,
+thus secure the usage of executable memfd to only those need to. This
+is faster than updating all of the applications.
+2> Since the sysctl does overwrite, it has potential to break an
+application's intent, i.e.  an unmigrated application which expects
+executable memfd, and kernel uses MFD_NOEXEC_SEAL overwrite. It is
+important to use this with caution and abundant tests before turning
+it on.
+3> The seal is added because the majority of users should just care
+about MFD_NOEXEC_SEAL, this prevents changing the memfd to executable
+through chmod at runtime.
 
---=20
-paul-moore.com
+> >>  * Applications that do not want `MFD_EXEC`, but rely on
+> >>    `F_GET_SEALS` to *NOT* return `F_SEAL_EXEC` have no way of achievin=
+g
+> >>    this other than using `MFD_EXEC` and clearing the executable bits
+> >>    manually via fchmod(2). Using `MFD_NOEXEC_SEAL` will set
+> >>    `F_SEAL_EXEC` and thus break existing code that hard-codes the
+> >>    seal-set.
+> >>
+> >>    This is already an issue when sending log-memfds to systemd-journal=
+d
+> >>    today, which verifies the seal-set of the received FD and fails if
+> >>    unknown seals are set. Hence, you have to use `MFD_EXEC` when
+> >>    creating memfds for this purpose, even though you really do not nee=
+d
+> >>    the executable bits set.
+> >>
+> >>  * Applications that want to enable the executable bit later on,
+> >>    currently have no way to create the memfd without it. They have to
+> >>    clear the bits immediately after creating it via fchmod(2), or just
+> >>    leave them set.
+> >>
+> > Is it OK to do what you want in two steps ? What is the concern there ?=
+ i.e.
+> > memfd_create(MFD_EXEC), then chmod to remove the "X" bit.
+> >
+> > I imagine this is probably already what the application does for
+> > creating no-executable mfd before my patch, i.e.:
+> > memfd_create(), then chmod() to remove "X" to remove "X" bit.
+>
+> Yes, correct, this is not a technical issue, but rather an API issue. I d=
+on't think most memfd-users are aware that their inode has the executable b=
+it set, and they likely don't want it. But for backwards-compatibility reas=
+ons (as noted above), they cannot use `MFD_NOEXEC_SEAL`. Hence, we have to =
+make them explicitly request an executable memfd via `MFD_EXEC` now, even t=
+hough they clearly do not want this. And then we have to add code to drop t=
+he executable immediately afterwards.
+>
+> It don't understand why we don't add out `MFD_NOEXEC` and thus make it a =
+lot easier to patch existing applications? And we make it explicit that the=
+se applications don't care for the executable-bit, rather than forcing them=
+ to request the executable bit just to drop it immediately.
+>
+> The downside of `MFD_NOEXEC` is that it might be picked over `MFD_NOEXEC_=
+SEAL` by uneducated users, thus reducing security. But right now, the alter=
+native is that existing code picks `MFD_EXEC` instead and never clears the =
+executable bit, because it is a hassle to do so.
+>
+
+Yes. This is the downside I was thinking about.
+
+I lean to believe the kernel API shouldn't be feature rich, it could
+be simple, optimized towards the majority of user cases, and ideally,
+is self-explained without devs to look through documentation. For
+example, if I had to choose one to implement between MFD_NOEXEC and
+MFD_NOEXEC_SEAL, I would choose MFD_NOEXEC_SEAL because it should be
+what most users care about.
+
+> Or is there another reason *not* to include `MFD_NOEXEC`? I am not sure I=
+ understand fully why you fight it so vehemently?
+>
+
+I wouldn't add it myself, I hope to convince you not to :-).
+If you still think it is beneficial to add MFD_NOEXEC (saving one
+chmod call and making it easy to use), I wouldn't feel bad about that.
+I would suggest going with documentation to help devs to choose
+between those two, i.e. recommend MFD_NOEXEC_SEAL in most cases.
+
+Thanks
+Best regards,
+-Jeff
+
+> Thanks
+> David
+>
