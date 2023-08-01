@@ -2,138 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AA276B92C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0988A76B929
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235027AbjHAPyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
+        id S235016AbjHAPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:54:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235022AbjHAPyq (ORCPT
+        with ESMTP id S229803AbjHAPy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:54:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5505E1AA
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:53:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690905237;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6ii4XAGrPtq5rfz/6VphDSYMVOAoJKA+/p4wdrDYiew=;
-        b=N64ny0aE/gswuWppgE2Q3IiACIZdC25TaKqpAVp01xK4UwTkNTu4KiPYS3MgoamPuL1VBO
-        78b6KtBUkAL0+vc/rjLJQIVb2Ji7mUjvjymXiccqO0qC28BQM8mcCW12vsVCTTTy5EK5EZ
-        Oh2f+7Gbz+mg0s3dsXeUo6Vdgiaoj64=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-145-6uWu9M3XOamg6JMuPLV17g-1; Tue, 01 Aug 2023 11:53:55 -0400
-X-MC-Unique: 6uWu9M3XOamg6JMuPLV17g-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4E3A0185A78F;
-        Tue,  1 Aug 2023 15:53:55 +0000 (UTC)
-Received: from localhost (unknown [10.39.195.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ACDE61454148;
-        Tue,  1 Aug 2023 15:53:54 +0000 (UTC)
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Stefan Hajnoczi <stefanha@redhat.com>
-Subject: [PATCH] vfio/type1: fix cap_migration information leak
-Date:   Tue,  1 Aug 2023 11:53:52 -0400
-Message-ID: <20230801155352.1391945-1-stefanha@redhat.com>
+        Tue, 1 Aug 2023 11:54:28 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5528590
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:54:27 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4036bd4fff1so372651cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 08:54:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690905266; x=1691510066;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ednkhSFjqhneBIgGorXK+e4JTFLBif6NnYVr4qRSWqo=;
+        b=K/nxQJJ7NrDCh0owo2uR5R2TZToXKipEn/noXY5MSDLDTZ01+8q1ZXqk3p1DQadQrV
+         shtC9/uGBnZlU3tPLagrQo83HocoFB31YI28c20JXeH5NHUwYsebc3Y7ut3UkIGZyjQt
+         Gpu/7QpdLfNEvsAdkOdh6TiRjUK62Jdagt6auqQArKIzwYjlbTele8rzU/7Vdg+XFoPm
+         UEhMbxHd4iWubYhfk94uC1zmS/nJ+Ko+6AjFy7UdPSpMNNf02aspwnqC2JyQ/w8+H+M3
+         W+VznIWpEJx6rWTo9v/TLEu8YiYNTfoWJ5ll5U7n76GnShRC+kfrjUYyGP9ewycLIGtP
+         I0eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690905266; x=1691510066;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ednkhSFjqhneBIgGorXK+e4JTFLBif6NnYVr4qRSWqo=;
+        b=dQzKLXU2joFDfKFfsKLH3/DNtgC0Pw9jJxTrBjL/d/P2PikhKn06K5SY2biR3LLs3I
+         RbwIg2hK1DrHp8DYb//5YIHolKEgPXZDc6zk48qoPrEmwu+AlNuU16+Rt0YETVMkLWVX
+         776MRMXd+ED7Ovg98YAOZY7EWUcbGyx7CxYFWqtC1IDE5lbn93jwtJ4gpjbI6rb9XBUK
+         onWrJ3Z8y2h4p4Mpm3ArIDtW3DxL0Zmo536FX6AEshZdQlIOJEERQvOZ2n3iFxZdmkyw
+         DdNhs5YYX+ZZG1oe8GNkDrLoKHEt5kPE0Uc61nMGQzCpfKPbChv7/9rPUUb4cKLs1Dkd
+         JCTg==
+X-Gm-Message-State: ABy/qLaRt80uQ3LWwLA3pSntDUOi4TLfyTWW3ZK0WZ1dQa0lf8+evybv
+        bV2ALGvxAKeMXvHnlN8LRRKNvFplT0pkAALnBgpWWg==
+X-Google-Smtp-Source: APBJJlHg9mAAfHng4uHV1rIy3BBSPNZElzLssUj9kg/Vm+JaAoqdVvaByIgASgA3mJXM+z+EBPEwIkZUbQFjXpwSNec=
+X-Received: by 2002:ac8:5954:0:b0:3de:1aaa:42f5 with SMTP id
+ 20-20020ac85954000000b003de1aaa42f5mr832900qtz.15.1690905266362; Tue, 01 Aug
+ 2023 08:54:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230801053634.1142634-1-irogers@google.com> <20230801053634.1142634-2-irogers@google.com>
+ <faca2b35-fdd6-7394-edea-32dd59d3a16f@linux.intel.com>
+In-Reply-To: <faca2b35-fdd6-7394-edea-32dd59d3a16f@linux.intel.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 1 Aug 2023 08:54:14 -0700
+Message-ID: <CAP-5=fU+KJCwxtS7RkBNqnECSrO4dqVeH9NHRP1oA7W6L3Rx4g@mail.gmail.com>
+Subject: Re: [PATCH v1 1/4] perf parse-events x86: Avoid sorting uops_retired.slots
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Weilin Wang <weilin.wang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix an information leak where an uninitialized hole in struct
-vfio_iommu_type1_info_cap_migration on the stack is exposed to userspace.
+On Tue, Aug 1, 2023 at 8:40=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.co=
+m> wrote:
+>
+>
+>
+> On 2023-08-01 1:36 a.m., Ian Rogers wrote:
+> > As topdown.slots may appear as slots it may get confused with
+> > uops_retired.slots which is an invalid perf metric event group
+> > leader. Special case uops_retired.slots to avoid this confusion.
+> >
+>
+> Does any name with format "name.slots" cause the confusion? If so, I
+> don't think we can stop others from naming like the above format.
+>
+> Is it better to hard code the topdown.slots/slots, rather than
+> uops_retired.slots?
 
-The definition of struct vfio_iommu_type1_info_cap_migration contains a hole as
-shown in this pahole(1) output:
+So firstly, yet more fringe perf metric event benefits with this silly
+bit of complexity. The issue with "just" trying to pattern match
+"topdown.slots" and "slots" is that there may be pmu names in there.
+So (ignoring case) we get:
 
-  struct vfio_iommu_type1_info_cap_migration {
-          struct vfio_info_cap_header header;              /*     0     8 */
-          __u32                      flags;                /*     8     4 */
+slots
+topdown.slots
+cpu/slots/
+cpu/topdown.slots/
+cpu_core/slots/
+cpu_core/topdown.slots/
 
-          /* XXX 4 bytes hole, try to pack */
+but the name can have other junk like modifiers in there and also
+there's the name=3D config term, but let's just not think about that
+breaking stuff. To avoid 6 searches I searched for the known
+problematic uops_retired.slots, knowing if that's not there then one
+of the 6 above is the match. Searching for just "slots" or
+"topdown.slots" isn't good enough as "slots" will get a hit in
+"uops_retired.slots", how we ended up with this patch in the 1st
+place. So I ended up using the uops_retired.slots search to reduce
+complexity in the code and to avoid writing an event parser just to
+figure out what the name is... Ideally we'd be using the
+perf_event_attr to do this comparison, but immediately after
+parse-events when this code runs it hasn't been computed yet. Maybe I
+can shuffle things around and make this true. Ideally I think
+parse-events would just be a library that given some event description
+gives back perf_event_attr and not evsels, but that's yet further
+work...
 
-          __u64                      pgsize_bitmap;        /*    16     8 */
-          __u64                      max_dirty_bitmap_size; /*    24     8 */
+Thanks,
+Ian
 
-          /* size: 32, cachelines: 1, members: 4 */
-          /* sum members: 28, holes: 1, sum holes: 4 */
-          /* last cacheline: 32 bytes */
-  };
-
-The cap_mig variable is filled in without initializing the hole:
-
-  static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
-                         struct vfio_info_cap *caps)
-  {
-      struct vfio_iommu_type1_info_cap_migration cap_mig;
-
-      cap_mig.header.id = VFIO_IOMMU_TYPE1_INFO_CAP_MIGRATION;
-      cap_mig.header.version = 1;
-
-      cap_mig.flags = 0;
-      /* support minimum pgsize */
-      cap_mig.pgsize_bitmap = (size_t)1 << __ffs(iommu->pgsize_bitmap);
-      cap_mig.max_dirty_bitmap_size = DIRTY_BITMAP_SIZE_MAX;
-
-      return vfio_info_add_capability(caps, &cap_mig.header, sizeof(cap_mig));
-  }
-
-The structure is then copied to a temporary location on the heap. At this point
-it's already too late and ioctl(VFIO_IOMMU_GET_INFO) copies it to userspace
-later:
-
-  int vfio_info_add_capability(struct vfio_info_cap *caps,
-                   struct vfio_info_cap_header *cap, size_t size)
-  {
-      struct vfio_info_cap_header *header;
-
-      header = vfio_info_cap_add(caps, size, cap->id, cap->version);
-      if (IS_ERR(header))
-          return PTR_ERR(header);
-
-      memcpy(header + 1, cap + 1, size - sizeof(*header));
-
-      return 0;
-  }
-
-This issue was found by code inspection.
-
-Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
----
- drivers/vfio/vfio_iommu_type1.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index ebe0ad31d0b0..d662aa9d1b4b 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -2732,7 +2732,7 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
- static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
- 					   struct vfio_info_cap *caps)
- {
--	struct vfio_iommu_type1_info_cap_migration cap_mig;
-+	struct vfio_iommu_type1_info_cap_migration cap_mig = {};
- 
- 	cap_mig.header.id = VFIO_IOMMU_TYPE1_INFO_CAP_MIGRATION;
- 	cap_mig.header.version = 1;
--- 
-2.41.0
-
+>
+> Thanks,
+> Kan
+>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/arch/x86/util/evlist.c | 7 ++++---
+> >  tools/perf/arch/x86/util/evsel.c  | 7 +++----
+> >  2 files changed, 7 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/tools/perf/arch/x86/util/evlist.c b/tools/perf/arch/x86/ut=
+il/evlist.c
+> > index cbd582182932..b1ce0c52d88d 100644
+> > --- a/tools/perf/arch/x86/util/evlist.c
+> > +++ b/tools/perf/arch/x86/util/evlist.c
+> > @@ -75,11 +75,12 @@ int arch_evlist__add_default_attrs(struct evlist *e=
+vlist,
+> >
+> >  int arch_evlist__cmp(const struct evsel *lhs, const struct evsel *rhs)
+> >  {
+> > -     if (topdown_sys_has_perf_metrics() && evsel__sys_has_perf_metrics=
+(lhs)) {
+> > +     if (topdown_sys_has_perf_metrics() &&
+> > +         (arch_evsel__must_be_in_group(lhs) || arch_evsel__must_be_in_=
+group(rhs))) {
+> >               /* Ensure the topdown slots comes first. */
+> > -             if (strcasestr(lhs->name, "slots"))
+> > +             if (strcasestr(lhs->name, "slots") && !strcasestr(lhs->na=
+me, "uops_retired.slots"))
+> >                       return -1;
+> > -             if (strcasestr(rhs->name, "slots"))
+> > +             if (strcasestr(rhs->name, "slots") && !strcasestr(rhs->na=
+me, "uops_retired.slots"))
+> >                       return 1;
+> >               /* Followed by topdown events. */
+> >               if (strcasestr(lhs->name, "topdown") && !strcasestr(rhs->=
+name, "topdown"))
+> > diff --git a/tools/perf/arch/x86/util/evsel.c b/tools/perf/arch/x86/uti=
+l/evsel.c
+> > index 81d22657922a..090d0f371891 100644
+> > --- a/tools/perf/arch/x86/util/evsel.c
+> > +++ b/tools/perf/arch/x86/util/evsel.c
+> > @@ -40,12 +40,11 @@ bool evsel__sys_has_perf_metrics(const struct evsel=
+ *evsel)
+> >
+> >  bool arch_evsel__must_be_in_group(const struct evsel *evsel)
+> >  {
+> > -     if (!evsel__sys_has_perf_metrics(evsel))
+> > +     if (!evsel__sys_has_perf_metrics(evsel) || !evsel->name ||
+> > +         strcasestr(evsel->name, "uops_retired.slots"))
+> >               return false;
+> >
+> > -     return evsel->name &&
+> > -             (strcasestr(evsel->name, "slots") ||
+> > -              strcasestr(evsel->name, "topdown"));
+> > +     return strcasestr(evsel->name, "topdown") || strcasestr(evsel->na=
+me, "slots");
+> >  }
+> >
+> >  int arch_evsel__hw_name(struct evsel *evsel, char *bf, size_t size)
