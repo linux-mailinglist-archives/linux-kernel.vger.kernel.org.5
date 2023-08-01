@@ -2,34 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA89776A6F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7462E76A6F7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232081AbjHAC21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59698 "EHLO
+        id S232090AbjHAC3t convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 31 Jul 2023 22:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbjHAC2Z (ORCPT
+        with ESMTP id S229550AbjHAC3s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:28:25 -0400
-Received: from out28-2.mail.aliyun.com (out28-2.mail.aliyun.com [115.124.28.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18181E65
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:28:23 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0744491|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00483132-0.000711951-0.994457;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5Fqw-3_1690856895;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5Fqw-3_1690856895)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 10:28:17 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd/pm: Clean up errors in amdgpu_smu.c
-Date:   Tue,  1 Aug 2023 02:28:14 +0000
-Message-Id: <20230801022814.4577-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 31 Jul 2023 22:29:48 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 44E23E65
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:29:47 -0700 (PDT)
+Received: from loongson.cn (unknown [209.85.128.41])
+        by gateway (Coremail) with SMTP id _____8CxrusZbshkHswNAA--.29829S3;
+        Tue, 01 Aug 2023 10:29:46 +0800 (CST)
+Received: from mail-wm1-f41.google.com (unknown [209.85.128.41])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxWM0WbshkwXdDAA--.46292S3;
+        Tue, 01 Aug 2023 10:29:44 +0800 (CST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-3fbc244d384so47910175e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:29:43 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZmP1nYE/bQjWjFoYZDzJ5REARD0bqRZY06u4YQKgLQxNAfDUva
+        f+YdQ3GmMk5Mr+YVDR2TzscaZrflhEelPRDUhy7NIg==
+X-Google-Smtp-Source: APBJJlGR2xCzEbR0KfLvULAvj4Q/rRacHyeQ3FRpG/PeA9oezM1aq7UPOCn9hCun1wnjhnQ09KzsW9iG/Ng+J4KnFBA=
+X-Received: by 2002:a1c:ed0f:0:b0:3fe:1c05:3c8f with SMTP id
+ l15-20020a1ced0f000000b003fe1c053c8fmr1260964wmh.35.1690856982158; Mon, 31
+ Jul 2023 19:29:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230801011554.3950435-1-guoren@kernel.org>
+In-Reply-To: <20230801011554.3950435-1-guoren@kernel.org>
+From:   WANG Rui <wangrui@loongson.cn>
+Date:   Tue, 1 Aug 2023 10:29:31 +0800
+X-Gmail-Original-Message-ID: <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
+Message-ID: <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
+To:     guoren@kernel.org
+Cc:     chenhuacai@kernel.or, kernel@xen0n.name, arnd@arndb.de,
+        andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
+        peterz@infradead.org, will@kernel.org, boqun.feng@gmail.com,
+        mark.rutland@arm.com, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-CM-TRANSID: AQAAf8CxWM0WbshkwXdDAA--.46292S3
+X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7XFWxJry7Kw1kur13tr4fJFc_yoWkArg_Wa
+        17Cw4Uuw4xXa13tanxKryfJr1qqa1xAFn3uaySqr1fAFn8Jw43Z397X3W3Zr17K3y8Xrs8
+        u3ySqr90kr1j9osvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUbzAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAF
+        wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI4
+        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20E
+        Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
+        AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzsqWUUUUU
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,117 +72,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+Hello,
 
-ERROR: spaces required around that '=' (ctx:WxV)
-ERROR: spaces required around that '&&' (ctx:VxW)
-ERROR: that open brace { should be on the previous line
-ERROR: space required before the open parenthesis '('
-ERROR: space required before the open brace '{'
-ERROR: spaces required around that ':' (ctx:VxW)
+On Tue, Aug 1, 2023 at 9:16 AM <guoren@kernel.org> wrote:
+> diff --git a/arch/loongarch/include/asm/cmpxchg.h b/arch/loongarch/include/asm/cmpxchg.h
+> index 979fde61bba8..6a05b92814b6 100644
+> --- a/arch/loongarch/include/asm/cmpxchg.h
+> +++ b/arch/loongarch/include/asm/cmpxchg.h
+> @@ -102,8 +102,8 @@ __arch_xchg(volatile void *ptr, unsigned long x, int size)
+>         "       move    $t0, %z4                        \n"             \
+>         "       " st "  $t0, %1                         \n"             \
+>         "       beqz    $t0, 1b                         \n"             \
+> -       "2:                                             \n"             \
+>         __WEAK_LLSC_MB                                                  \
+> +       "2:                                             \n"             \
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+Thanks for the patch.
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c b/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
-index ce41a8309582..a7199275ffb8 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
-@@ -618,7 +618,7 @@ static int smu_set_funcs(struct amdgpu_device *adev)
- 		adev->pm.pp_feature &= ~PP_GFXOFF_MASK;
- 		arcturus_set_ppt_funcs(smu);
- 		/* OD is not supported on Arcturus */
--		smu->od_enabled =false;
-+		smu->od_enabled = false;
- 		break;
- 	case IP_VERSION(13, 0, 2):
- 		aldebaran_set_ppt_funcs(smu);
-@@ -1648,7 +1648,7 @@ static int smu_hw_fini(void *handle)
- 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
- 	struct smu_context *smu = adev->powerplay.pp_handle;
- 
--	if (amdgpu_sriov_vf(adev)&& !amdgpu_sriov_is_pp_one_vf(adev))
-+	if (amdgpu_sriov_vf(adev) && !amdgpu_sriov_is_pp_one_vf(adev))
- 		return 0;
- 
- 	smu_dpm_set_vcn_enable(smu, false);
-@@ -1700,7 +1700,7 @@ static int smu_suspend(void *handle)
- 	int ret;
- 	uint64_t count;
- 
--	if (amdgpu_sriov_vf(adev)&& !amdgpu_sriov_is_pp_one_vf(adev))
-+	if (amdgpu_sriov_vf(adev) && !amdgpu_sriov_is_pp_one_vf(adev))
- 		return 0;
- 
- 	if (!smu->pm_enabled)
-@@ -2217,8 +2217,7 @@ const struct amd_ip_funcs smu_ip_funcs = {
- 	.set_powergating_state = smu_set_powergating_state,
- };
- 
--const struct amdgpu_ip_block_version smu_v11_0_ip_block =
--{
-+const struct amdgpu_ip_block_version smu_v11_0_ip_block = {
- 	.type = AMD_IP_BLOCK_TYPE_SMC,
- 	.major = 11,
- 	.minor = 0,
-@@ -2226,8 +2225,7 @@ const struct amdgpu_ip_block_version smu_v11_0_ip_block =
- 	.funcs = &smu_ip_funcs,
- };
- 
--const struct amdgpu_ip_block_version smu_v12_0_ip_block =
--{
-+const struct amdgpu_ip_block_version smu_v12_0_ip_block = {
- 	.type = AMD_IP_BLOCK_TYPE_SMC,
- 	.major = 12,
- 	.minor = 0,
-@@ -2235,8 +2233,7 @@ const struct amdgpu_ip_block_version smu_v12_0_ip_block =
- 	.funcs = &smu_ip_funcs,
- };
- 
--const struct amdgpu_ip_block_version smu_v13_0_ip_block =
--{
-+const struct amdgpu_ip_block_version smu_v13_0_ip_block = {
- 	.type = AMD_IP_BLOCK_TYPE_SMC,
- 	.major = 13,
- 	.minor = 0,
-@@ -2337,7 +2334,7 @@ int smu_get_power_limit(void *handle,
- 	if (!smu->pm_enabled || !smu->adev->pm.dpm_enabled)
- 		return -EOPNOTSUPP;
- 
--	switch(pp_power_type) {
-+	switch (pp_power_type) {
- 	case PP_PWR_TYPE_SUSTAINED:
- 		limit_type = SMU_DEFAULT_PPT_LIMIT;
- 		break;
-@@ -2349,7 +2346,7 @@ int smu_get_power_limit(void *handle,
- 		break;
- 	}
- 
--	switch(pp_limit_level){
-+	switch (pp_limit_level) {
- 	case PP_PWR_LIMIT_CURRENT:
- 		limit_level = SMU_PPT_LIMIT_CURRENT;
- 		break;
-@@ -2595,7 +2592,7 @@ static int smu_read_sensor(void *handle,
- 		*size = 4;
- 		break;
- 	case AMDGPU_PP_SENSOR_VCN_POWER_STATE:
--		*(uint32_t *)data = atomic_read(&smu->smu_power.power_gate.vcn_gated) ? 0: 1;
-+		*(uint32_t *)data = atomic_read(&smu->smu_power.power_gate.vcn_gated) ? 0 : 1;
- 		*size = 4;
- 		break;
- 	case AMDGPU_PP_SENSOR_MIN_FAN_RPM:
-@@ -2868,7 +2865,7 @@ static int smu_set_xgmi_pstate(void *handle,
- 	if (smu->ppt_funcs->set_xgmi_pstate)
- 		ret = smu->ppt_funcs->set_xgmi_pstate(smu, pstate);
- 
--	if(ret)
-+	if (ret)
- 		dev_err(smu->adev->dev, "Failed to set XGMI pstate!\n");
- 
- 	return ret;
--- 
-2.17.1
+This would look pretty good if it weren't for the special memory
+barrier semantics of the LoongArch's LL and SC instructions.
+
+The LL/SC memory barrier behavior of LoongArch:
+
+* LL: <memory-barrier> + <load-exclusive>
+* SC: <store-conditional> + <memory-barrier>
+
+and the LoongArch's weak memory model allows load/load reorder for the
+same address.
+
+So, the __WEAK_LLSC_MB[1] is used to prevent load/load reorder and no
+explicit barrier instruction is required after SC.
+
+[1] https://lore.kernel.org/loongarch/20230516124536.535343-1-chenhuacai@loongson.cn/
+
+Regards,
+--
+WANG Rui
 
