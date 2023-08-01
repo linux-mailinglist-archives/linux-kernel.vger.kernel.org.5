@@ -2,56 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E872976B89D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3333676B89F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232800AbjHAPbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        id S233294AbjHAPbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:31:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230094AbjHAPbh (ORCPT
+        with ESMTP id S230094AbjHAPbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:31:37 -0400
+        Tue, 1 Aug 2023 11:31:48 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 841C4EE;
-        Tue,  1 Aug 2023 08:31:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89771FEE;
+        Tue,  1 Aug 2023 08:31:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 18B5B615F1;
-        Tue,  1 Aug 2023 15:31:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 747A6C433C7;
-        Tue,  1 Aug 2023 15:31:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CEA07615F9;
+        Tue,  1 Aug 2023 15:31:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 344A7C433C8;
+        Tue,  1 Aug 2023 15:31:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690903895;
-        bh=r5PsDp4On77OijBSy4XSqE+fneVpZ8oOUEVwG1Kl+9A=;
+        s=k20201202; t=1690903906;
+        bh=O1j0cFtt/OwyMMnLCbpMAX6DujFxHllzjlfgEiYVYH4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D0RGgnIbA43f0C/Gz6u+PEFaV0HmpD2KHxGJ/ctZfU4xX8Iwh/7s0NbTczNGAecDe
-         Ajiw/uAN6p9Ybak/3g4GkTJZEdEtM2sS1o9qq+KSwcPv9EMLSTplcxoTXcihyDpolz
-         HPWr7zF5DesQ4AVvRnLQRNHXaEBCNenTWaXx+yDEKA3VKD7S3Acqq+h8sAqECHHsY6
-         DMcT4kR9W2J4Hpu71Ut0dnkUaK+RzRtCYnb/SR8zdS1Wfe4p+hMGeOIumz86yC+nrs
-         kPyneppF67RAcP661vd1IgCDu3IGBfXSUzJr+GR+PA4YGMQW7mwpsr+37jv3O+aust
-         +BlVlIu8JLFCQ==
-Date:   Tue, 1 Aug 2023 17:31:29 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, schakrabarti@microsoft.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH V7 net] net: mana: Fix MANA VF unload when hardware is
-Message-ID: <ZMklUch+vfZBqfAr@kernel.org>
-References: <1690892953-25201-1-git-send-email-schakrabarti@linux.microsoft.com>
+        b=D/egdKDtQKBLiyGMYKlUqsmkWZULs3obHJLWRdC6SeNb++6jUZA1LkKNCD6e5Q57o
+         rNPb8oHdJaUzTLyeq1lSk6wF5efdR86uENZKbld1TuJsmkTSiOSFcnoZbejTIGyRZx
+         t5gVu3qrKUqiCXX37d1ctfFBZPDWEmwCUbjAlBoK+fWOdcKHfUbb+/yWOiIo7YZDBi
+         OxUrh7/l6B35JY9ycOKQmg6h1ND13YqGHpsFqPi5IzUDyfiud1Q7pGwf4yltGpiWwc
+         k6AcLFg3cQ0UuxE1Qe3GM/Ac9CZQRLjhMyZvorj1o5ZvMBb8IHKURQw4dnI2sT67QI
+         vCYAlFaop5mNw==
+Date:   Tue, 1 Aug 2023 08:31:45 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     pangzizhen001@208suo.com
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs/xfs: Fix typos in comments
+Message-ID: <20230801153145.GH11377@frogsfrogsfrogs>
+References: <20230720154942.56848-1-wangjianli@cdjrlc.com>
+ <d8927acfb0f11e0bcd2d7a015a0238a7@208suo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1690892953-25201-1-git-send-email-schakrabarti@linux.microsoft.com>
+In-Reply-To: <d8927acfb0f11e0bcd2d7a015a0238a7@208suo.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -62,30 +55,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 05:29:13AM -0700, Souradeep Chakrabarti wrote:
-
-...
-
-Hi Souradeep,
-
-
-> +	for (i = 0; i < apc->num_queues; i++) {
-> +		txq = &apc->tx_qp[i].txq;
-> +		while (skb = skb_dequeue(&txq->pending_skbs)) {
-
-W=1 builds with both clang-16 and gcc-12 complain that
-they would like an extra set of parentheses around
-an assignment used as a truth value.
-
-> +			mana_unmap_skb(skb, apc);
-> +			dev_consume_skb_any(skb);
-> +		}
-> +		atomic_set(&txq->pending_sends, 0);
-> +	}
->  	/* We're 100% sure the queues can no longer be woken up, because
->  	 * we're sure now mana_poll_tx_cq() can't be running.
->  	 */
-> -- 
-> 2.34.1
+On Thu, Jul 20, 2023 at 11:51:06PM +0800, pangzizhen001@208suo.com wrote:
+> Delete duplicate word "the"
 > 
+> Signed-off-by: Zizhen Pang <pangzizhen001@208suo.com>
+
+Looks good,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> ---
+>  fs/xfs/xfs_aops.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
+> index 451942fb38ec..66b311ccc4f9 100644
+> --- a/fs/xfs/xfs_aops.c
+> +++ b/fs/xfs/xfs_aops.c
+> @@ -478,7 +478,7 @@ xfs_discard_folio(
+>              folio, ip->i_ino, pos);
+> 
+>      /*
+> -     * The end of the punch range is always the offset of the the first
+> +     * The end of the punch range is always the offset of the first
+>       * byte of the next folio. Hence the end offset is only dependent on
+> the
+>       * folio itself and not the start offset that is passed in.
+>       */
