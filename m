@@ -2,176 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB74276B983
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCD4976B98F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbjHAQRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
+        id S230375AbjHAQTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbjHAQRQ (ORCPT
+        with ESMTP id S229715AbjHAQTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:17:16 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF801AA
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:17:14 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bcb15aa074so589557a34.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:17:14 -0700 (PDT)
+        Tue, 1 Aug 2023 12:19:11 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4326D10CA
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:19:07 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d058b9cafso38342616d6.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:19:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690906634; x=1691511434;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IluS0dN33fbcySvCi1VkJafmlujO6rxWmw3dx0Lv8F0=;
-        b=V0CKP1Jdw5SNvLd4IvWun4OMWggcyahW6Fy0lLkk6sGSij/cuH2cleoG/+wZtjykJm
-         Yv1HpcFskBeNvlhCzWMn86CZQtITl2igcjZGY35ryAMRDKsrMqeSlbAedIAmKhF7r1+B
-         k3pAmwAh2opaRbOA/qqLkULkeZq12ISQq4Ia9Xi52KhYg8Rt8bv8+URoLQV96B1gyXbh
-         6upqMGhBqBenB2YmwbATlnGxhmT/M3y60iSAD58HdTtzXmVo/hVIo0/n2Xidov6riQvo
-         5D9+v/yh6ObEgGrYhjMVTS+E+iiXP8HIBMaXaR8YGKPg7pM5lRdME6pHLLRTobymaa9m
-         4l7w==
+        d=google.com; s=20221208; t=1690906746; x=1691511546;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9bO4EMps/8stuDZiI8Gpdidb8h9+MIAhmvaNg3KYj1s=;
+        b=o4UnwJgpk8yeTzZUK1FZTs65eYsnacdGTDhjwzMy+DqQRhE2jTupyokcvRFqP1MKuo
+         qAu+yNtKzWXdHC5YGT3qGXgvBJ0yvodc24S05t5lVNoUZlrjld+c3ZYg84ALagFSl5E1
+         0e1IPmRVyqT2GVIRYdARMkHo0CkuvhYNhdAmnof9UiM53aClnQ1FS5ZSzeTK2gVSd53B
+         063XdvfBsZ51WyTLXABYzSrXYL1XyijHBazCJn4+IrTGw38FuZoFnqi2U6TZNyoEfv5r
+         ytN07iG/2nB0AbEtc586oI3xWMZoIT8TzfHqCOMBm0ZBpqNjIRXHSeGMlbbE1pfY9N/D
+         MP5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690906634; x=1691511434;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IluS0dN33fbcySvCi1VkJafmlujO6rxWmw3dx0Lv8F0=;
-        b=ha3cVp4tI//jh9w1zA21DkvBO4pHWN9ayVoci6SM3MF9aV0wi2twui8Aj7dij5kwgV
-         UENT32XUpXYfmwVxE8Dm1BHXMM9srF4wD8Yvln1BqPAGxb5rAk2xvh/ojz0Ch3xisF0X
-         6/K0HnvrTkXZY2H3BFRqRiPQwDX/YUZCT5XleUkhqELf3Kpooabybs9zfvqe2gX5hC9y
-         Pwb/7OPnc/6Q7Js/BYbamfYNxmK2SLqxFRkWbTpmesmA4/ktqq7sXrIrK//xd7Ni3YRC
-         Tx1qISHtYocAke3uK1NcpVpz2VS5k9v+IdNc+4sKTsbqIubVGjUd/H2QMcGnjpo2Xtuh
-         ixRw==
-X-Gm-Message-State: ABy/qLb7KkOtSZFY5CWGUqCGX8ZQtWU+dwSbNTK9ImCZ8BJCC6x6T8H5
-        M+o6G+TCguG4bKVjDR1u2Zk=
-X-Google-Smtp-Source: APBJJlHi0OSFDBu0zCNP4lp/yVzVtEou4lj1Rv1dDNKXV63YvhPn4yKUNI91+1p1QPMjRCZXzKDiUA==
-X-Received: by 2002:a9d:664e:0:b0:6b7:564d:f368 with SMTP id q14-20020a9d664e000000b006b7564df368mr10498970otm.5.1690906633599;
-        Tue, 01 Aug 2023 09:17:13 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
-        by smtp.gmail.com with ESMTPSA id v15-20020a9d69cf000000b006b753685cc5sm5145636oto.79.2023.08.01.09.17.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 09:17:12 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 13:17:07 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     martyn@welchs.me.uk, manohar.vanga@gmail.com,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        dan.carpenter@linaro.org
-Subject: [PATCH v2] staging: vme_user: fix check alignment should match open
- parenthesis
-Message-ID: <ZMkwA8TnMBAgPRgR@alolivei-thinkpadt480s.gru.csb>
+        d=1e100.net; s=20221208; t=1690906746; x=1691511546;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9bO4EMps/8stuDZiI8Gpdidb8h9+MIAhmvaNg3KYj1s=;
+        b=WUs2/OoKNd0xBXwFR1ei/oy3R2m8oo6utxRijLe/orMYAutUSWujgp2yskAhFkG40a
+         0mdK0bbE8Egp2EEzNvo06uqSk8dxj5Pz3V+CknZV5jMz+99kgDePljYoJSoNsPr9H4A+
+         ZsDhngUIcCUvuT1P0Ri4Szz6tCYfXytVbdTXZ+dFSiGfd0u9A2Y3Mm4/3zaiXDmYj2CG
+         dPa5Tp2quqq+oFK5r8wrcuGBWDZ9qioRo+pMk/eGn2u7UW8gqIO1j3nB0DNssfn6lbGc
+         6psqk9I7jvwVwZmrezI5+rxkULyoVWfDDfbEE9WXpMH20LiQPIcbubojWNbz1QnuI4l4
+         Ixsg==
+X-Gm-Message-State: ABy/qLanzxOlepyj3jYCKTucalSvz/U0tS6Tqn5VYALm8gwWI/sp5TCT
+        1VwjcBShb7bYh+3LEgtRsTo+wfgernqzTGxkpaJqtA==
+X-Google-Smtp-Source: APBJJlExjHsbEshbD/7fM07TlWTefBlG0GYpx+aMVrkgKVZzEhxPirjTfZFjF6Rla5/eWjDqzfKNP/t4CWrr7MCsFFs=
+X-Received: by 2002:ad4:5847:0:b0:635:fa7b:6c22 with SMTP id
+ de7-20020ad45847000000b00635fa7b6c22mr10424824qvb.55.1690906745972; Tue, 01
+ Aug 2023 09:19:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230725043310.1227621-1-suhui@nfschina.com>
+In-Reply-To: <20230725043310.1227621-1-suhui@nfschina.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Aug 2023 09:18:55 -0700
+Message-ID: <CAKwvOdn2Qn219Ys6vyR0Xryi_32XTARBWsfmuc3zhdH8TLREWQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: mballoc: avoid garbage value from err
+To:     Su Hui <suhui@nfschina.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, nathan@kernel.org,
+        trix@redhat.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-First patch was intended to fix all "CHECK: Alignment should match open parenthesis",
-but added new warnings in the process. This patch is intended to fixed them all,
-on lines 133, 142, 144, 145 and 173.
+On Mon, Jul 24, 2023 at 9:34=E2=80=AFPM Su Hui <suhui@nfschina.com> wrote:
+>
+> clang's static analysis warning: fs/ext4/mballoc.c
+> line 4178, column 6, Branch condition evaluates to a garbage value.
+>
+> err is uninitialized and will be judged when 'len <=3D 0' or
+> it first enters the loop while the condition "!ext4_sb_block_valid()"
+> is true. Although this can't make problems now, it's better to
+> correct it.
+>
+> Signed-off-by: Su Hui <suhui@nfschina.com>
 
-Signed-off-by: Alexon Oliveira <alexondunkan@gmail.com>
+Thanks for the patch!
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
----
+> ---
+> v2:
+>  - modify commit message
+>
+>  fs/ext4/mballoc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 21b903fe546e..769000c970b0 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4084,7 +4084,7 @@ void ext4_mb_mark_bb(struct super_block *sb, ext4_f=
+sblk_t block,
+>         struct ext4_sb_info *sbi =3D EXT4_SB(sb);
+>         ext4_group_t group;
+>         ext4_grpblk_t blkoff;
+> -       int i, err;
+> +       int i, err =3D 0;
+>         int already;
+>         unsigned int clen, clen_changed, thisgrp_len;
+>
+> --
+> 2.30.2
+>
 
-Changes in v2:
-- Fixed 3 different line lengths exceeding 100 columns, noted by Greg KH and Dan Carpenter
-- Fixed 1 line with alignment matching open parenthesis
-- Fixed 1 line to not end with a '('
 
-Changes in v1:
-- Fixed 11 different lines with alignment matching open parenthesis
-
- drivers/staging/vme_user/vme_bridge.h | 46 +++++++++++----------------
- 1 file changed, 18 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/staging/vme_user/vme_bridge.h b/drivers/staging/vme_user/vme_bridge.h
-index 11df0a5e7f7b..9bdc41bb6602 100644
---- a/drivers/staging/vme_user/vme_bridge.h
-+++ b/drivers/staging/vme_user/vme_bridge.h
-@@ -128,28 +128,24 @@ struct vme_bridge {
- 	struct mutex irq_mtx;
- 
- 	/* Slave Functions */
--	int (*slave_get)(struct vme_slave_resource *, int *,
--		unsigned long long *, unsigned long long *, dma_addr_t *,
--		u32 *, u32 *);
-+	int (*slave_get)(struct vme_slave_resource *, int *, unsigned long long *,
-+			 unsigned long long *, dma_addr_t *, u32 *, u32 *);
- 	int (*slave_set)(struct vme_slave_resource *, int, unsigned long long,
--		unsigned long long, dma_addr_t, u32, u32);
-+			 unsigned long long, dma_addr_t, u32, u32);
- 
- 	/* Master Functions */
--	int (*master_get)(struct vme_master_resource *, int *,
--		unsigned long long *, unsigned long long *, u32 *, u32 *,
--		u32 *);
--	int (*master_set)(struct vme_master_resource *, int,
--		unsigned long long, unsigned long long,  u32, u32, u32);
--	ssize_t (*master_read)(struct vme_master_resource *, void *, size_t,
--		loff_t);
--	ssize_t (*master_write)(struct vme_master_resource *, void *, size_t,
--		loff_t);
-+	int (*master_get)(struct vme_master_resource *, int *, unsigned long long *,
-+			  unsigned long long *, u32 *, u32 *, u32 *);
-+	int (*master_set)(struct vme_master_resource *, int, unsigned long long,
-+			  unsigned long long,  u32, u32, u32);
-+	ssize_t (*master_read)(struct vme_master_resource *, void *, size_t, loff_t);
-+	ssize_t (*master_write)(struct vme_master_resource *, void *, size_t, loff_t);
- 	unsigned int (*master_rmw)(struct vme_master_resource *, unsigned int,
--		unsigned int, unsigned int, loff_t);
-+				   unsigned int, unsigned int, loff_t);
- 
- 	/* DMA Functions */
- 	int (*dma_list_add)(struct vme_dma_list *, struct vme_dma_attr *,
--		struct vme_dma_attr *, size_t);
-+			    struct vme_dma_attr *, size_t);
- 	int (*dma_list_exec)(struct vme_dma_list *);
- 	int (*dma_list_empty)(struct vme_dma_list *);
- 
-@@ -159,32 +155,26 @@ struct vme_bridge {
- 
- 	/* Location monitor functions */
- 	int (*lm_set)(struct vme_lm_resource *, unsigned long long, u32, u32);
--	int (*lm_get)(struct vme_lm_resource *, unsigned long long *, u32 *,
--		u32 *);
--	int (*lm_attach)(struct vme_lm_resource *, int,
--			 void (*callback)(void *), void *);
-+	int (*lm_get)(struct vme_lm_resource *, unsigned long long *, u32 *, u32 *);
-+	int (*lm_attach)(struct vme_lm_resource *, int, void (*callback)(void *), void *);
- 	int (*lm_detach)(struct vme_lm_resource *, int);
- 
- 	/* CR/CSR space functions */
- 	int (*slot_get)(struct vme_bridge *);
- 
- 	/* Bridge parent interface */
--	void *(*alloc_consistent)(struct device *dev, size_t size,
--		dma_addr_t *dma);
--	void (*free_consistent)(struct device *dev, size_t size,
--		void *vaddr, dma_addr_t dma);
-+	void *(*alloc_consistent)(struct device *dev, size_t size, dma_addr_t *dma);
-+	void (*free_consistent)(struct device *dev, size_t size, void *vaddr, dma_addr_t dma);
- };
- 
--void vme_bus_error_handler(struct vme_bridge *bridge,
--			   unsigned long long address, int am);
-+void vme_bus_error_handler(struct vme_bridge *bridge, unsigned long long address, int am);
- void vme_irq_handler(struct vme_bridge *, int, int);
- 
- struct vme_bridge *vme_init_bridge(struct vme_bridge *);
- int vme_register_bridge(struct vme_bridge *);
- void vme_unregister_bridge(struct vme_bridge *);
--struct vme_error_handler *vme_register_error_handler(
--	struct vme_bridge *bridge, u32 aspace,
--	unsigned long long address, size_t len);
-+struct vme_error_handler *vme_register_error_handler(struct vme_bridge *bridge, u32 aspace,
-+						     unsigned long long address, size_t len);
- void vme_unregister_error_handler(struct vme_error_handler *handler);
- 
- #endif /* _VME_BRIDGE_H_ */
--- 
-2.41.0
+--=20
+Thanks,
+~Nick Desaulniers
