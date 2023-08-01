@@ -2,160 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4500376B3C8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0967A76B3CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbjHALtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45058 "EHLO
+        id S232536AbjHALup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234421AbjHALtI (ORCPT
+        with ESMTP id S229843AbjHALum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:49:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE3F11A;
-        Tue,  1 Aug 2023 04:49:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CD2876155E;
-        Tue,  1 Aug 2023 11:49:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 360F9C433CA;
-        Tue,  1 Aug 2023 11:49:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690890546;
-        bh=/EnFpJVOirRUmcSdhYmxqYtzYmk23apw6/a4SFiS2B8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=QN99XNTwVXKMQRuZ0FeeyhHWtFRAWS0RLGxnj1uc1q6n6uH3I/oKlEmczVjdVrseS
-         hrqlgiX6IwdlNpQ7XTGDy3ZpUm+3oxrlRV/OlE+ZRCvecShoLp+gH0QrOGkfgxmgE5
-         gEOtAT51yDZf4yWVaAewvxNIuW+X69OvB4xvrReXmGTcEPtaO54JGH8IU6N2tV4BD7
-         k8GPk3OJYVH6YLG7gT0yqFv/m7b94sjk861na3qK3k17x5qATLT4ruF4njOB6c/xwR
-         BDrKMvWn2L/W0l24N9pIfMgR9lqtcsS8kJC8hhThGL8jmor91tUvYFbVVbftKyuv2U
-         wc4K2gwcbJ0bQ==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-4fe44955decso779608e87.1;
-        Tue, 01 Aug 2023 04:49:06 -0700 (PDT)
-X-Gm-Message-State: ABy/qLbf/NZlToRrc5FtRsJU7h8JiVOGF6KIyzzxUxaG4D5bCmaivy9d
-        Qx797jpZd6uTkBNPftbPVkUSeghePH2NkFtB/Gk=
-X-Google-Smtp-Source: APBJJlFrmZ8SVcqn3722N1Kq1jCOKWo0UUmwcxCKUeU+/3sKTSh5IyJMn9eA0ql2w0oTbGcJ1aSnShBGUlz+tSPH0nY=
-X-Received: by 2002:a05:6512:1196:b0:4fd:fac4:2137 with SMTP id
- g22-20020a056512119600b004fdfac42137mr941579lfr.30.1690890544195; Tue, 01 Aug
- 2023 04:49:04 -0700 (PDT)
+        Tue, 1 Aug 2023 07:50:42 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974A2C7
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 04:50:41 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b9cdbf682eso64267481fa.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 04:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690890640; x=1691495440;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=+8anjLa3fQUuKSMyWGBixY8Ld6aUbLztV2CllbGNquY=;
+        b=A/yr2aOif3EMiR70/Mx5jAG1KdZ4BkNilH8v1QkqUAC3Txao/eWXpHpEALjUfR8umh
+         WOUWvfnAarvJ78byX1ASMChmLSR5GgzlfBw2oLCy3SBI8g5PDkTv7clPuhzMgCJxxi7g
+         3FK6MMPINK6S2TpSJFnyzfYJmjLkHv8ULmGT/K0dIHEPv4TX14ohtEP0lZEGDvouNK3v
+         rdm2I/BEC/XCJxp/ArMuSEOTwz1GUzhyaEzS3UJfdinem7ZyDYRyVz7T0Lle01s00IMN
+         nHoTWNvimas5OjoWYWoBN2FQ0Wcjy3lJhk+p/9S5cZzLcLlwmfL4UHRSIpdwjP9NejZw
+         fVYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690890640; x=1691495440;
+        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+8anjLa3fQUuKSMyWGBixY8Ld6aUbLztV2CllbGNquY=;
+        b=cG8WXwlbnM/ZFwNlRU5opkwNxSlr5p7qgNAAII+0cicvh/6ssEZR/eZqlwn0jJl6Vg
+         532asypjSQMX3bJr1y/iRdxAYx7Wjj5utPyXtMjVbxlY0QzB8LWvYBg0kyi7kHv4gche
+         WOXeuQXT6RDqFlukA6GF+JYOBo2GGbui2KJdt2N22DcqqVh3cURCR9iheAJKODR/k150
+         26GXH+DwhoQIY2DuStt2ZkO+zGbxZmJOOabUdm+46akK0h9vALJNYeTKPXEooCEm9SxK
+         1UCPuh3ma5NVGoUXXtLMQ65HjAAhKiHEvCiLdyULp77W3sso1/TfGy3fk/SylmymHqmJ
+         xoEg==
+X-Gm-Message-State: ABy/qLbrbktBEXGYNSpbIm1fVWLC6bCfhvca9UMtvxf7KiYL9W9Sxi4X
+        Mm9eSR1dkw8mrmEIuCW2hd29H0xJ0QJCsF55sJU=
+X-Google-Smtp-Source: APBJJlEARoKJC+9481EAtjsdyva2knzBsuQTlkq3GFnfjatdXfqlmvabK5uuexmtwUcf+0WA+WIyics5D3Z9k3kktBM=
+X-Received: by 2002:a05:651c:104e:b0:2b9:dfd0:c3d5 with SMTP id
+ x14-20020a05651c104e00b002b9dfd0c3d5mr2179327ljm.46.1690890639646; Tue, 01
+ Aug 2023 04:50:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230728090916.1538550-1-ardb@kernel.org> <20230728090916.1538550-13-ardb@kernel.org>
- <20230801114542.GEZMjwZne986ZxI6eG@fat_crate.local>
-In-Reply-To: <20230801114542.GEZMjwZne986ZxI6eG@fat_crate.local>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 1 Aug 2023 13:48:52 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEyApdRYNmn7Px=faANXv6JXXTAvdPUToy3-H1UZg6-eQ@mail.gmail.com>
-Message-ID: <CAMj1kXEyApdRYNmn7Px=faANXv6JXXTAvdPUToy3-H1UZg6-eQ@mail.gmail.com>
-Subject: Re: [PATCH v7 12/22] x86/decompressor: Call trampoline directly from
- C code
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Peter Jones <pjones@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
+Received: by 2002:a05:6520:12a4:b0:253:3d45:4dc8 with HTTP; Tue, 1 Aug 2023
+ 04:50:39 -0700 (PDT)
+Reply-To: hegborkodjov@gmail.com
+From:   kodjovihegbor <franklinvaletine50@gmail.com>
+Date:   Tue, 1 Aug 2023 11:50:39 +0000
+Message-ID: <CA+17ep2nOT7rTjoiQib8iLW6i2j2XLuE5noovqTNGG512hdHWQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=4.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 at 13:46, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Fri, Jul 28, 2023 at 11:09:06AM +0200, Ard Biesheuvel wrote:
-> > Instead of returning to the asm calling code to invoke the trampoline,
-> > call it straight from the C code that sets the scene. That way, the
-> > struct return type is no longer needed for returning two values, and the
-> > call can be made conditional more cleanly in a subsequent patch.
-> >
-> > This means that all callee save 64-bit registers need to be preserved
-> > and restored, as their contents may not survive the legacy mode switch.
-> >
-> > Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >  arch/x86/boot/compressed/head_64.S    | 28 +++++++-----------
-> >  arch/x86/boot/compressed/pgtable_64.c | 30 ++++++++------------
-> >  2 files changed, 23 insertions(+), 35 deletions(-)
-> >
-> > diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-> > index 1b0c61d1b389fd37..3f38db557112c155 100644
-> > --- a/arch/x86/boot/compressed/head_64.S
-> > +++ b/arch/x86/boot/compressed/head_64.S
-> > @@ -430,24 +430,12 @@ SYM_CODE_START(startup_64)
-> >  #endif
-> >
-> >       /*
-> > -      * paging_prepare() sets up the trampoline and checks if we need to
-> > -      * enable 5-level paging.
-> > -      *
-> > -      * paging_prepare() returns a two-quadword structure which lands
-> > -      * into RDX:RAX:
-> > -      *   - Address of the trampoline is returned in RAX.
-> > -      *   - Non zero RDX means trampoline needs to enable 5-level
-> > -      *     paging.
-> > -      *
-> > +      * set_paging_levels() updates the number of paging levels using a
->
-> I'd say here "configure paging" or so.
->
-> > diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
-> > index d66639c961b8eeda..649c51935fdec7ef 100644
-> > --- a/arch/x86/boot/compressed/pgtable_64.c
-> > +++ b/arch/x86/boot/compressed/pgtable_64.c
-> > @@ -16,11 +16,6 @@ unsigned int __section(".data") pgdir_shift = 39;
-> >  unsigned int __section(".data") ptrs_per_p4d = 1;
-> >  #endif
-> >
-> > -struct paging_config {
-> > -     unsigned long trampoline_start;
-> > -     unsigned long l5_required;
-> > -};
-> > -
-> >  /* Buffer to preserve trampoline memory */
-> >  static char trampoline_save[TRAMPOLINE_32BIT_SIZE];
-> >
-> > @@ -29,7 +24,7 @@ static char trampoline_save[TRAMPOLINE_32BIT_SIZE];
-> >   * purposes.
-> >   *
-> >   * Avoid putting the pointer into .bss as it will be cleared between
-> > - * paging_prepare() and extract_kernel().
-> > + * set_paging_levels() and extract_kernel().
-> >   */
-> >  unsigned long *trampoline_32bit __section(".data");
-> >
-> > @@ -106,10 +101,10 @@ static unsigned long find_trampoline_placement(void)
-> >       return bios_start - TRAMPOLINE_32BIT_SIZE;
-> >  }
-> >
-> > -struct paging_config paging_prepare(void *rmode)
-> > +asmlinkage void set_paging_levels(void *rmode)
->
-> So actually "paging_prepare" or "configure_paging" is more to the point
-> than setting paging levels. When I see set_paging_levels() I wonder what
-> levels are those and I have to look at the code and go, aaah, 5-level vs
-> 4-level.
->
-
-configure_5level_paging()? At least, that conveys to some extent that
-nothing will happen unless the hardware supports it to begin with.
+56eB44Gv5Y+L5oOF44KS5o2n44GS44CB44GC44Gq44Gf44GM56eB44KS5b+D44GL44KJ5Y+X44GR
+5YWl44KM44Gm44GP44KM44KL44Go5L+h44GY44Gm44GE44G+44GZ44CC56eB44Gv44GC44Gq44Gf
+44Gr6YCj57Wh44GX44Gm44CB56eB44Gf44Gh44GM44GK5LqS44GE44Gr44Gp44Gu44KI44GG44Gr
+5pyA5ZaE44KS5bC944GP44GZ44GT44Go44GM44Gn44GN44KL44GL44KS56K66KqN44GZ44KL44KI
+44GG5L+D44GV44KM44G+44GX44Gf44CCDQrnp4Hjga8NCuODiOODq+OCs+WHuui6q+OBruOCs+OC
+uOODp+ODtOOCo+ODu+ODmOOCsOODnOODq+Wkq+S6uuOBqOengeOBr+OAgVN0YW5kYXJkQk5QIEJh
+bmsgTGltaXRlZCBUdXJrZXkNCuOBrualreWLmemDqOmWgOiyrOS7u+iAheOBqOOBl+OBpuWDjeOB
+hOOBpuOBhOOBvuOBmeOAgiDjgZ3jgozjgYznp4Hjgavlr77jgZnjgovnpZ7jga7jgZTmhI/lv5fj
+gaDjgajkv6HjgZjjgabjgYTjgb7jgZkNCuS7iuOBguOBquOBn+OBq+WHuuS8muOBhuOBn+OCgeOB
+q+OAgiDnp4Hjga/ph43opoHjgarjg5Pjgrjjg43jgrnkuIrjga7orbDoq5bjgpLjgZfjgabjgYTj
+govjga7jgafjgIHjgYLjgarjgZ/jgajlhbHmnInjgZfjgZ/jgYTjgajmgJ3jgYTjgb7jgZnjgILj
+gZ3jgozjga/jgYLjgarjgZ/jga7lm73lkI3jgavplqLpgKPjgZfjgabjgYrjgorjgIHjgYLjgarj
+gZ/jgavjgajjgaPjgabmnInnm4rjgafjgYLjgovjgZ/jgoHjgIHjgYLjgarjgZ/jgoLoiIjlkbPj
+gpLmjIHjgaPjgabjgYTjgovjgajmgJ3jgYTjgb7jgZnjgIINCg0KMjAxOOW5tOOAgeOCv+ODiuOC
+q+OBqOOBhOOBhuWQjeOBruOBguOBquOBn+OBruWbveOBruWbveawkeOBjOOAgeaapuOBrjM244O2
+5pyI6ZaT44CBODQw5LiH44Od44Oz44OJ55u45b2T44Gu6Z2e5bGF5L2P6ICF5Y+j5bqn44KS56eB
+44Gu6YqA6KGM44Gr5L2c44KK44G+44GX44Gf44CCIOOBrg0K44GT44Gu6aCQ6YeR5aWR57SE44Gu
+5pyJ5Yq55pyf6ZmQ44GvMjAyMeW5tDHmnIgxNuaXpeOBp+OBl+OBn+OAguaui+W/teOBquOBjOOC
+ieOAgeW9vOOBr+acgOi/keS4reWbveOBp+eZuueUn+OBl+OBnzIwMTnlubTjgYvjgokyMDIw5bm0
+44Gr44GL44GR44Gm44Gu44Kz44Ot44OK44Km44Kk44Or44K577yIQ292aWQxOe+8ieODkeODs+OD
+h+ODn+ODg+OCr+OBrueZuueUn+OBp+OAgeWwkeOBquOBj+OBqOOCgjbkuIc4MDAw5Lq644GM5q27
+5Lqh44GX44Gf5Ye65by15Lit44Gr5q275Lqh44GX44Gf54qg54my6ICF44Gu5LiA5Lq644Gn44GX
+44Gf44CCDQrjgIINCg0K56eB44Gu6YqA6KGM44Gu57WM5Za26Zmj44Gv44G+44Gg5b2844Gu5q27
+44KS55+l44KK44G+44Gb44KT44CC56eB44Gv5b2844GM56eB44Gu5Y+L5Lq644Gn44GC44KK44CB
+5Y+j5bqn44GM6ZaL6Kit44GV44KM44Gf44Go44GN56eB44GM5b2844Gu5Lya6KiI6LKs5Lu76ICF
+44Gg44Gj44Gf44GL44KJ44Gd44KM44KS55+l44Gj44Gm44GE44G+44GX44Gf44CCDQrnp4Hjga7m
+mIfpgLLliY3jgavjgqrjg7zjg5fjg7PjgZfjgb7jgZfjgZ/jgIIg44GX44GL44GX44CB55Sw5Lit
+5rCP44Gv5Y+j5bqn6ZaL6Kit5pmC44Gr6L+R6Kaq6ICFL+ebuOe2muS6uuOBq+OBpOOBhOOBpuS4
+gOWIh+iogOWPiuOBl+OBpuOBiuOCieOBmuOAgee1kOWpmuOBl+OBpuOBiuOCieOBmuOAgeiyoeeU
+o+OCguOBguOCiuOBvuOBm+OCk+OBp+OBl+OBn+OAgg0K5a2Q5L6b44CCIOWFiOmAseOAgeengeOB
+rumKgOihjOe1jOWWtumZo+OBr+OAgeWlkee0hOOCkuabtOaWsOOBmeOCi+WgtOWQiOOBq+W9vOOB
+ruizh+mHkeOCkuOBqeOBhuOBmeOCi+OBi+OBq+OBpOOBhOOBpuaMh+ekuuOCkuS4juOBiOOCi+OC
+iOOBhuengeOBq+imgeaxguOBl+OBvuOBl+OBn+OAgg0KDQrnp4Hjga/jgZPjga7jgojjgYbjgarj
+gZPjgajjgYzotbfjgZPjgovjgZPjgajjgpLnn6XjgaPjgabjgYrjgorjgIHjgaDjgYvjgonjgZPj
+gZ3np4Hjga/jgZPjga7nirbms4Hjgavlr77lh6bjgZnjgovmiYvmrrXjgpLmjqLjgZfjgabjgYTj
+gZ/jga7jgafjgZnjgIINCuS6oeOBj+OBquOBo+OBpuOBhOOBpuebuOe2muS6uuOBjOOBhOOBquOB
+hOWgtOWQiOOAgeW9vOOCieOBr+OBneOBruizh+mHkeOCkuWAi+S6uueahOOBq+S9v+eUqOOBmeOC
+i+OBk+OBqOOBq+OBquOCi+OBruOBp+OAgeOBneOBruOCiOOBhuOBquOBk+OBqOOBjOi1t+OBk+OB
+o+OBpuOBu+OBl+OBj+OBquOBhOOBruOBp+OBmeOAgg0K44Gd44Gu44Go44GN44GC44Gq44Gf44Gr
+5Lya44Gj44Gf44Go44GN44CB56eB44Gv44GG44KM44GX44GP5oCd44GE44G+44GX44Gf44CC44GC
+44Gq44Gf44Gv5b2844Go5ZCM44GY5Zu944Gn44GC44KK44CB56eB44Gu6YqA6KGM5pys6YOo44GM
+44GC44Gq44Gf44Gu5Y+j5bqn44KS6Kej5pS+44GZ44KL5LqI5a6a44Gn44GC44KL44Gf44KB44CB
+44GC44Gq44Gf44KS44Gd44Gu5Y+j5bqn44Gu6L+R6Kaq6ICFL+ebuOe2muS6uuOBqOOBl+OBpue0
+ueS7i+OBmeOCi+OBn+OCgeOBq+OBguOBquOBn+OBruWNlOWKm+OCkuaxguOCgeOBpuOBhOOBvuOB
+meOAgg0K44Oq44K544Kv44Gv44GC44KK44G+44Gb44KTDQrplqLkuI47IOWPluW8leOBr+azlemB
+leWPjeOBi+OCieOBiuWuouanmOOCkuS/neitt+OBmeOCi+WQiOazleeahOOBquWPluOCiuaxuuOC
+geOBq+WfuuOBpeOBhOOBpuWun+ihjOOBleOCjOOBvuOBmeOAgg0KDQrpioDooYzlj5bnt6Dlvbnj
+gavjgYrph5HjgpLlj5fjgZHlj5bjgonjgZvjgovjgojjgorjgoLjgIHnp4HjgZ/jgaHjgYzjgZ3j
+ga7jgYrph5HjgpLoq4vmsYLjgZnjgovjgbvjgYbjgYzoia/jgYTjga7jgafjgZnjgILlvbzjgonj
+ga/jgZnjgafjgavoo5Xnpo/jgafjgZnjgIIg56eB44Gv6LKq5qyy44Gq5Lq66ZaT44Gn44Gv44Gq
+44GE44Gu44Gn44CB56eB44Gf44Gh44GM5o+Q5qGI44GX44Gm44GE44KL44Gu44Gv44CBDQros4fp
+h5HjgpLkuKHlvZPkuovogIXjgasgNTAvNTAlIOWdh+etieOBq+WFseacieOBl+OBvuOBmeOAguen
+geOBruWIhuOBkeWJjeOBr+OAgeengeOBjOiHquWIhuOBruS8muekvuOCkuioreeri+OBl+OAgeWP
+juebiuOCkuaFiOWWhOa0u+WLleOBq+S9v+eUqOOBmeOCi+OBruOBq+W9ueeri+OBoeOBvuOBmeOA
+gg0K5aSi44CCDQoNCuengeOBruaPkOahiOOBq+OBpOOBhOOBpuOBguOBquOBn+OBruiAg+OBiOOC
+kuaVmeOBiOOBpuOBj+OBoOOBleOBhOOAguOBk+OBruWPluW8leOBp+OBr+acrOW9k+OBq+OBguOB
+quOBn+OBruWKqeOBkeOBjOW/heimgeOBp+OBmeOAguengeOBr+iHquWIhuOBp+iHquWIhuOBruS7
+leS6i+OCkuOBmeOCi+OBruOBp+OBr+OBquOBj+OAgeengeOCkuWKqeOBkeOCi+OBn+OCgeOBq+OB
+guOBquOBn+OCkumBuOOBs+OBvuOBl+OBn+OAgg0K6Kaq5oSb44Gq44KL44CB44GX44GL44GX56We
+44GM6aGY44Gj44Gf44GT44Go44Gn44GZ44GM44CB56eB44Gv44GC44Gq44Gf44Gr6YCj57Wh44GZ
+44KL5YmN44Gr44CB44GT44Gu6YCj57Wh44Gr44Gk44GE44Gm5pmC6ZaT44KS44GL44GR44Gm56WI
+44Gj44Gf44GT44Go44KS55+l44Gj44Gm44GK44GE44Gm44GE44Gf44Gg44GN44Gf44GE44Gu44Gn
+44GZ44CB44GC44Gq44Gf44Gu44GT44Go44KS5pWZ44GI44Gm44GP44Gg44GV44GEDQrjgZPjga7n
+grnjgavjga/nlZnmhI/jgZfjgIHjgZPjga7mg4XloLHjga/mpbXnp5jjgajjgZfjgabmibHjgaPj
+gabjgY/jgaDjgZXjgYTjgIIg6L+U5L+h44KS5Y+X44GR5Y+W44KK5qyh56ys44CB56eB44Gu5YCL
+5Lq644Oh44O844Or44Ki44OJ44Os44K5DQpoZWdib3Jrb2Rqb3ZAZ21haWwuY29tIOe1jOeUseOB
+p+OBiumAgeOCiuOBl+OBvuOBmeOAgg0K5Y+W5byV44Gu6Kmz57Sw44KS44GK55+l44KJ44Gb44GX
+44G+44GZ44CCIOOBneOBl+OBpuOAgeizh+mHkeOBrumgkOmHkeiovOaYjuabuOOBqOOBneOBruS8
+muekvuOBruioreeri+iovOaYjuabuOOBruOCs+ODlOODvOOAgg0K5Z+66YeR44KS55Sf44G/5Ye6
+44GX44Gf44CCIOelnuOBruOBlOWKoOitt+OCkueliOOCiuOBvuOBmeOAguaXqeaApeOBquWvvuW/
+nOOCkuOBiuW+heOBoeOBl+OBpuOBiuOCiuOBvuOBmQ0K44KI44KN44GX44GP44GK6aGY44GE44GX
+44G+44GZDQrjgrPjgrjjg6fjg7TjgqPjg7vjg5jjgrDjg5zjg6vlpKvkuroNCmhlZ2JvcmtvZGpv
+dkBnbWFpbC5jb20NCg==
