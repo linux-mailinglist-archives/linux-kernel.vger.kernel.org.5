@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EC876BD9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489B376BD9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:23:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbjHATWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
+        id S232315AbjHATXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbjHATWg (ORCPT
+        with ESMTP id S232144AbjHATX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:22:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F581BFD
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:22:35 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2ED231EC00D9;
-        Tue,  1 Aug 2023 21:22:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1690917753;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=c/RRuNGpmCCaUtjrgZ1nbQ0/GjRcNBS+oG40tfrcyF0=;
-        b=jdPXySA0H5noc7+EItmpA25XMlxgEY9VHTlfYa+XWhfIkQZ7mBZVUofE89rjNQxUpW9Ijl
-        9FcDzZLZPta3uWphJQkKJigqOGI5LJhz8X9gjzLztfaz/8H0953MlCXvTHZApI0O99MgM/
-        3gugtaiSdyy1P2SPiQ/DIa2HDXn+t4E=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id KsIQZoxGU-wo; Tue,  1 Aug 2023 19:22:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1690917750; bh=c/RRuNGpmCCaUtjrgZ1nbQ0/GjRcNBS+oG40tfrcyF0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gzoYB8Iuk2FV6pVat8v2eS6ZhZ+kG+tRIYEC0MJMJe7RO+woPSksGS/k7UxKjEG2D
-         0a084ioLas1j9GE25kjkpD8Bhqw7PgCyaBHIt9rWRYn2iLeRySaBPAiNZXXxxhm1Bb
-         JYeuTQu+SXshT+i3IZz4Xw9QgmzZIE8Q+HDr5NCSM7Z46D3VZFpKaEriBjnCB+LnCT
-         Xw6jxKNhAlvYQkoghTpcJbJyHSm1xL5F2D+sZJvIgVzSGblL5Wcv+CjIfH3hW/YnRX
-         ktipr/0AtDkdCBlNUtUD8Id7ZLx5alez6s621dyPNsSpd7ByFcoOFmsbbeAOLdPd1n
-         Ryr4q1MXJcKj2EW+oRrsonR8mKR3WlxDJWMnX6VEgvVcq0e1tw4Z5SxkOn1Qnr1jna
-         0T3lFiNPo4wKH5lAuzwJYWboyUdqAOiGdXm2ckvI2rQ8aIT4CS6oEFPSv3LEcXdjek
-         5c0SKdXSuV4xpGRDO4reHBz0E4EdYYBTOmbwIUSMgngVZhj7dBZhHCi8iBCCeguMeS
-         gwvjlmpSBTS8Qwar1QlK3YNBNLwQj0StoQ/+/plaYDXkibGIxiSf5wBv5O0DinkLQZ
-         3uV1AQ8cdNu2hOuHIpe7MGMK1U02VMyIvOcZ+DJKHinfpKckPj9plC+lN79PMAbugt
-         0cEuDTNZ0J89l3Xvy7+oPEws=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1B64440E019D;
-        Tue,  1 Aug 2023 19:22:22 +0000 (UTC)
-Date:   Tue, 1 Aug 2023 21:22:17 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 3/5] [RESEND] x86: qspinlock-paravirt: fix
- mising-prototype warnings
-Message-ID: <20230801192217.GHZMlbaVMBavu909lb@fat_crate.local>
-References: <20230725134837.1534228-1-arnd@kernel.org>
- <20230725134837.1534228-4-arnd@kernel.org>
+        Tue, 1 Aug 2023 15:23:28 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF299C;
+        Tue,  1 Aug 2023 12:23:27 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbd33a57b6so66021185e9.2;
+        Tue, 01 Aug 2023 12:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690917806; x=1691522606;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tlk6j8VV67xBiOXhkkLv1ZO7Ahk1E6BY8WoLyYVNMug=;
+        b=UYzqulpjcLYc93ibI7pV7LkMJrbhG+EhG4tGkg1bb+zZDLSx/je74kmggGqE4u5xtQ
+         4SuwuS8uxiPsOG55BrauC1Ud1h4Wfld4SyRVMzOV76GPO20ujwITdQWaFvH5bq1PuMNW
+         VsJkwnKUO/s/Y2fX2627Aqt5ne+g02cd3iGLy7Q0A7D2fG5FAfO9Xmmbjdy473OkVpjE
+         6X6uVKNr+x/Y7w6l8FC0Tji3cR3mX59cXMJdKkeH+NFwJKSG7eAXtfXrmyO7LUWppWp1
+         C4YCvsS0JzxIeyoZoikNwOmao0l5oMP6qffsni3tNv7UhmrIqjbysm555J4ODV3TbZEu
+         fZFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690917806; x=1691522606;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tlk6j8VV67xBiOXhkkLv1ZO7Ahk1E6BY8WoLyYVNMug=;
+        b=FtQByuZQ6IqSIZ8lmq6FbDYmaTza2z0GtJTRTi1KLWbxTCcW/VT/2EnIUWtsquJLlq
+         FJz+tq/djrqWbEf9b9gKwaLKWhjwoV37MB/0h1Z+7YYkTFIAtBXMAhcNJnxCD5aFVJtM
+         +xIOIkNqZEgKEIIc44EhqHQE6+NbPIUXNdsGwfhPlSQ7OqiFVy/cHWVaquelHSHzkPyy
+         u7DmXAwxFj0X+lYE6C5s59ULaZZ5UqdvbjASvGxv+DM4AyihLvJbc8qcd2pbJCnv5YLv
+         jVJ0StOI68znAi2AipbOxSIB08SQ3mMmcx1MmpG0Ize4GV2+E6Z3bsxExU+Su7axK51I
+         UFYA==
+X-Gm-Message-State: ABy/qLZfdVW9OKCpQ3V7mTphJOhS65/uLXdsbOgHkeDKTiSuYmPC/1aM
+        7aGIkielqI0lkS1sOfarlUNnghmVpbsRBJ1t
+X-Google-Smtp-Source: APBJJlHkLCPO6wXTQd+QQ6GHrr3bApuwv25MFWtutmy46mhyw1ovpsntGhdUUzyWTbLU3bi2/6/EwQ==
+X-Received: by 2002:a05:600c:2216:b0:3fe:16d3:7d60 with SMTP id z22-20020a05600c221600b003fe16d37d60mr3411254wml.9.1690917805870;
+        Tue, 01 Aug 2023 12:23:25 -0700 (PDT)
+Received: from tpt440p.steeds.sam ([2602:fbf6:10:a::2])
+        by smtp.gmail.com with ESMTPSA id n6-20020a5d4206000000b00317a04131c5sm7895582wrq.57.2023.08.01.12.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 12:23:25 -0700 (PDT)
+From:   "Sicelo A. Mhlongo" <absicsz@gmail.com>
+To:     linux-omap@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, maemo-leste@lists.dyne.org,
+        "Sicelo A. Mhlongo" <absicsz@gmail.com>
+Subject: [PATCH v3] bus: omap_l3_smx: identify timeout cause before rebooting
+Date:   Tue,  1 Aug 2023 21:22:40 +0200
+Message-Id: <20230801192240.1063764-1-absicsz@gmail.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230725134837.1534228-4-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,31 +69,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 25, 2023 at 03:48:35PM +0200, Arnd Bergmann wrote:
-> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-> index 89842bb7ec9cc..64a6bba70d183 100644
-> --- a/arch/x86/kernel/paravirt.c
-> +++ b/arch/x86/kernel/paravirt.c
-> @@ -73,11 +73,13 @@ DEFINE_PARAVIRT_ASM(pv_native_read_cr2, "mov %cr2, %rax", .noinstr.text);
->  
->  DEFINE_STATIC_KEY_TRUE(virt_spin_lock_key);
->  
-> +#ifdef CONFIG_SMP
->  void __init native_pv_lock_init(void)
->  {
->  	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
->  		static_branch_disable(&virt_spin_lock_key);
->  }
-> +#endif
+Identify and print the error source before rebooting the board due to an l3
+timeout error. This is helpful when debugging, e.g. via serial.
 
-Can you add an empty UP stub instead?
+Signed-off-by: Sicelo A. Mhlongo <absicsz@gmail.com>
+---
+ drivers/bus/omap_l3_smx.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
 
-We all have a great aversion against ifdeffery...
-
-Thx.
-
+diff --git a/drivers/bus/omap_l3_smx.c b/drivers/bus/omap_l3_smx.c
+index bb1606f5ce2d..8e1a38bfcd8b 100644
+--- a/drivers/bus/omap_l3_smx.c
++++ b/drivers/bus/omap_l3_smx.c
+@@ -166,19 +166,10 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
+ 	irqreturn_t ret = IRQ_NONE;
+ 
+ 	int_type = irq == l3->app_irq ? L3_APPLICATION_ERROR : L3_DEBUG_ERROR;
+-	if (!int_type) {
++	if (!int_type)
+ 		status = omap3_l3_readll(l3->rt, L3_SI_FLAG_STATUS_0);
+-		/*
+-		 * if we have a timeout error, there's nothing we can
+-		 * do besides rebooting the board. So let's BUG on any
+-		 * of such errors and handle the others. timeout error
+-		 * is severe and not expected to occur.
+-		 */
+-		BUG_ON(status & L3_STATUS_0_TIMEOUT_MASK);
+-	} else {
++	else
+ 		status = omap3_l3_readll(l3->rt, L3_SI_FLAG_STATUS_1);
+-		/* No timeout error for debug sources */
+-	}
+ 
+ 	/* identify the error source */
+ 	err_source = __ffs(status);
+@@ -190,6 +181,14 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_l3)
+ 		ret |= omap3_l3_block_irq(l3, error, error_addr);
+ 	}
+ 
++	/*
++	 * if we have a timeout error, there's nothing we can
++	 * do besides rebooting the board. So let's BUG on any
++	 * of such errors and handle the others. timeout error
++	 * is severe and not expected to occur.
++	 */
++	BUG_ON(!int_type && status & L3_STATUS_0_TIMEOUT_MASK);
++
+ 	/* Clear the status register */
+ 	clear = (L3_AGENT_STATUS_CLEAR_IA << int_type) |
+ 		L3_AGENT_STATUS_CLEAR_TA;
 -- 
-Regards/Gruss,
-    Boris.
+2.40.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
