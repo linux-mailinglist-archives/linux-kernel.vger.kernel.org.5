@@ -2,170 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A17B276BDAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B85AD76BDA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbjHATYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
+        id S231766AbjHATYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232361AbjHATYo (ORCPT
+        with ESMTP id S229657AbjHATYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:24:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABF4AC
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:23:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690917831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2M7D2+uxCtAadPDyLgt7GBKp7WXr6ICJfQraK6HnRS0=;
-        b=Q6+D1a5R+S1kUH/X7hqmBK1i9TWHc08xdc9LIPmVRJc3GzptTD3eeoqQRSSRcazkR3dX77
-        BvFXJPr9/LZaVfDjoqQzTM6xQh5jYgIt0JIlTg0IHfW2wzPLlHAyXtl2Qo9A5EZofFe72Y
-        ZjoPZUGenh1Jcpg5fDXyiWwrHJupzBg=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-76-w7oRwQd7OASQR0HV7h5RMQ-1; Tue, 01 Aug 2023 15:23:49 -0400
-X-MC-Unique: w7oRwQd7OASQR0HV7h5RMQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7206D1C060C4;
-        Tue,  1 Aug 2023 19:23:49 +0000 (UTC)
-Received: from localhost (unknown [10.39.192.73])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DF753C57967;
-        Tue,  1 Aug 2023 19:23:47 +0000 (UTC)
-Date:   Tue, 1 Aug 2023 15:23:45 -0400
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] vfio/type1: fix cap_migration information leak
-Message-ID: <20230801192345.GA1414936@fedora>
-References: <20230801155352.1391945-1-stefanha@redhat.com>
- <20230801103114.757d7992.alex.williamson@redhat.com>
+        Tue, 1 Aug 2023 15:24:37 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D32219A4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:24:36 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-44757af136cso2202421137.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:24:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690917875; x=1691522675;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+aNzctAvCOFsjRX9JcgTWRDXvSWghISVYKDuXeAx6tg=;
+        b=uAF+ympd9Nu7rmVHf1u5CSlWFZUORYZ34u7lmLiDMWDO94fi0S9c7dF93CwkLUM2Gc
+         CX3vtQfYAGNfMns/o7l5WzfpwEdtDcn3qDwPTGm6q2Rl8thL2jaDYCPoSBJuMpQOYJqF
+         qsZ9nCmc90OTje9L4G96m2pZpY8YMRf59k4lNtmYHpi//0w/d98R7dCPCcCNqbQV5Rzc
+         jMIu5SpIHrF89WfHycu9/wE0/0BFw95sRYp6Log4TSJZSLdXOZagwixPh6p7qGPyLoFj
+         S6PTG5/a1QNLLWeHXI1pMdJIA4qHMJpKVLrN25A80nTgX+UQUUT+dpOcX0CTwrwxY9H5
+         mzpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690917875; x=1691522675;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+aNzctAvCOFsjRX9JcgTWRDXvSWghISVYKDuXeAx6tg=;
+        b=h7l+8qj06rUJyyytZqWXJAOVfznY1GKrEDXrsGf5gVP18UVfCLJZw/LQ1hy0bAE39N
+         +riE7kVp1HkjWs9zsdeZO8R0qotjoHJPyUHlYSX9axIdnCcYFchebyk2tD/63CVaNtfJ
+         DVM2pzyEOBlRFyo2oKf1BDkeHwsQdXADXo05r3iaQo0+PsuiBntmKfVlVa4n68bMgmc+
+         7DPMYaOYiR2Gviudbja6aqL4BejXhp+7k8h9zdzt6wHXS91YpCYxsv9RYB7xKdc+98KS
+         +4MMR2jqUEaql9V3RSA+FMk2lYkc/+hd+Fk/AqgvsnYl+a/Vkl4+WUdF6YkZLcDpxR5w
+         CtNg==
+X-Gm-Message-State: ABy/qLaq+mInM1iZJVX/9RpYfSNGPMcWzLVEcO3EpHxCB2ah7ATaDx27
+        o7lJKjMPGYMPkQ6ekAZ9qxpS9uhCa61rkEm3UECBCA==
+X-Google-Smtp-Source: APBJJlHYpG4QdfiGQbKHc2VahjAIeWLFoShgZExsSHTo84uxP4u7vJCiagobHPeyKch6nmCZ1p1A0SNtnZ8E2WjiWHA=
+X-Received: by 2002:a05:6102:8a:b0:446:de31:c78 with SMTP id
+ t10-20020a056102008a00b00446de310c78mr3202383vsp.26.1690917875513; Tue, 01
+ Aug 2023 12:24:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0CjF++Sq7XzfS4wJ"
-Content-Disposition: inline
-In-Reply-To: <20230801103114.757d7992.alex.williamson@redhat.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <ZMaAdG9Zj9AL1NiR@standask-GA-A55M-S2HP>
+In-Reply-To: <ZMaAdG9Zj9AL1NiR@standask-GA-A55M-S2HP>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 1 Aug 2023 21:24:24 +0200
+Message-ID: <CAMRc=McJjD8tDAgTrmAWaxuQ4QE9hRREOg_=Lye9Liew4O2Sdw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: gpio: brcm,kona-gpio: convert to YAML
+To:     Stanislav Jakubek <stano.jakubek@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jul 30, 2023 at 5:23=E2=80=AFPM Stanislav Jakubek
+<stano.jakubek@gmail.com> wrote:
+>
+> Convert Broadcom Kona family GPIO controller bindings to DT schema.
+>
+> Changes during conversion:
+>   - add used, but previously undocumented SoC-specific compatibles
+>
+> Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
 
---0CjF++Sq7XzfS4wJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied, thanks!
 
-On Tue, Aug 01, 2023 at 10:31:14AM -0600, Alex Williamson wrote:
-> On Tue,  1 Aug 2023 11:53:52 -0400
-> Stefan Hajnoczi <stefanha@redhat.com> wrote:
->=20
-> > Fix an information leak where an uninitialized hole in struct
-> > vfio_iommu_type1_info_cap_migration on the stack is exposed to userspac=
-e.
-> >=20
-> > The definition of struct vfio_iommu_type1_info_cap_migration contains a=
- hole as
-> > shown in this pahole(1) output:
-> >=20
-> >   struct vfio_iommu_type1_info_cap_migration {
-> >           struct vfio_info_cap_header header;              /*     0    =
- 8 */
-> >           __u32                      flags;                /*     8    =
- 4 */
-> >=20
-> >           /* XXX 4 bytes hole, try to pack */
-> >=20
-> >           __u64                      pgsize_bitmap;        /*    16    =
- 8 */
-> >           __u64                      max_dirty_bitmap_size; /*    24   =
-  8 */
-> >=20
-> >           /* size: 32, cachelines: 1, members: 4 */
-> >           /* sum members: 28, holes: 1, sum holes: 4 */
-> >           /* last cacheline: 32 bytes */
-> >   };
-> >=20
-> > The cap_mig variable is filled in without initializing the hole:
-> >=20
-> >   static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
-> >                          struct vfio_info_cap *caps)
-> >   {
-> >       struct vfio_iommu_type1_info_cap_migration cap_mig;
-> >=20
-> >       cap_mig.header.id =3D VFIO_IOMMU_TYPE1_INFO_CAP_MIGRATION;
-> >       cap_mig.header.version =3D 1;
-> >=20
-> >       cap_mig.flags =3D 0;
-> >       /* support minimum pgsize */
-> >       cap_mig.pgsize_bitmap =3D (size_t)1 << __ffs(iommu->pgsize_bitmap=
-);
-> >       cap_mig.max_dirty_bitmap_size =3D DIRTY_BITMAP_SIZE_MAX;
-> >=20
-> >       return vfio_info_add_capability(caps, &cap_mig.header, sizeof(cap=
-_mig));
-> >   }
-> >=20
-> > The structure is then copied to a temporary location on the heap. At th=
-is point
-> > it's already too late and ioctl(VFIO_IOMMU_GET_INFO) copies it to users=
-pace
-> > later:
-> >=20
-> >   int vfio_info_add_capability(struct vfio_info_cap *caps,
-> >                    struct vfio_info_cap_header *cap, size_t size)
-> >   {
-> >       struct vfio_info_cap_header *header;
-> >=20
-> >       header =3D vfio_info_cap_add(caps, size, cap->id, cap->version);
-> >       if (IS_ERR(header))
-> >           return PTR_ERR(header);
-> >=20
-> >       memcpy(header + 1, cap + 1, size - sizeof(*header));
-> >=20
-> >       return 0;
-> >   }
-> >=20
-> > This issue was found by code inspection.
->=20
-> LGTM, but missing:
->=20
-> Fixes: ad721705d09c ("vfio iommu: Add migration capability to report supp=
-orted features")
->=20
-> I'll give a bit for further comments/reviews and queue it for v6.6 with
-> the above update.  Thanks,
-
-Great, thanks for squashing in the "Fixes" line that I forgot.
-
-Stefan
-
---0CjF++Sq7XzfS4wJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmTJW8EACgkQnKSrs4Gr
-c8gIVAf8DE2gcidYmywXZWL207MyVOVVJNJ59lICK3bNWX3DfaBlXF67fKU8zzZM
-2Mi55gSKvhPLcluyAiSuLnKlB00TKRATlrBTxXtG4q5Ps6SxbE+tzc0KNZVvSNTl
-9eK+at3FddLX0nbLKO/rkNFcK74rP20crr6W/Hy6SnHAI8KRYd3LO7+bfg+kgq8g
-a0AeCk5iwL73lEJrXZaVo6loDBq7H0JUoupt5j87HtO+XYXRzfFZ/vCci0LyEFI4
-n+WO3DUXGALN4Z4rUyDaG0oZkC30sz7hmsP71FtT4uEAqeY8Qi3BufVFM2IghXT4
-FKOs9Z49Jw7JfYDp1EhkbdeAas9nmg==
-=e8Ic
------END PGP SIGNATURE-----
-
---0CjF++Sq7XzfS4wJ--
-
+Bartosz
