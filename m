@@ -2,55 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B4C76BD75
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43B276BD78
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbjHATNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:13:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47248 "EHLO
+        id S232200AbjHATOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:14:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232442AbjHATNE (ORCPT
+        with ESMTP id S231143AbjHATOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:13:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8678E18B;
-        Tue,  1 Aug 2023 12:13:03 -0700 (PDT)
+        Tue, 1 Aug 2023 15:14:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E48CE57;
+        Tue,  1 Aug 2023 12:14:32 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B767616A2;
-        Tue,  1 Aug 2023 19:13:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77973C433C7;
-        Tue,  1 Aug 2023 19:13:02 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EF38E616AB;
+        Tue,  1 Aug 2023 19:14:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F4E6C433C7;
+        Tue,  1 Aug 2023 19:14:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690917182;
-        bh=6e28umF2u1i8SSVJpPICenCM4Gk45G15e24p4wmMd28=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=X0Wqg142Z/A+UZs7FqgB96XiymHIDPtplqvE41l78WI+yhx1K8vxVTgjaHAZj1hBl
-         DMW1nmOUoT3V1Mz23v1lgc4QCGAiGEGy+pLFarBZd7f/cu26mmd9Fq7ecFcCRHE6GN
-         VT9JpEu2mGZoygIaeMafWH2EtSiF1f+W39Q4tAKruXSXt07GfR9NGLu/CHwzPtIZBC
-         mCjD/dlkNtcNvVDw7AWO9ZoMikvR6cH9MHJPosGvuUC/HDW2uuUESL2eFwzziyByh4
-         YiuRYmegRQE5PBMGUKP21bwnAnZfoHo9Q3CUbx76LPI7SJctZsshj+jkZQcnfLmSjg
-         AWf+VvN4sJuUg==
-Message-ID: <e0acf791831bcfed56d56c97f6867a89.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1690917271;
+        bh=JIJPdUANHrD6Yb6wBmrW7GHkKKSJRvPopi+aSXxrjwU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=K3zM9rcgo3wdtzWy15KNTAuv1/KkedB/OkEMO8niKImrZX2KnF8/+q1k9MF4shlrF
+         /8JAwuV0xhzD8drIZSDYedqbz3E4QhMeOGA1jjT+RP4e+RzuEXoEvsQEh3W97CCtKZ
+         2PhC0Wy4cepJaTvG2cSfrtHbYTJveoeMatC7wWG8vQ8S3tmUo2y8U5MQidSwBB0Nxu
+         kaSseiqQ88kh1EjduVUFyB17HARd8hBk1+d5tgW/QWQGTvrSaVcjfqP+c/nOzgFjpO
+         YC63toNsjnwQ10vRnSH7Kyo35ryDaUelBVz1RtbfOfFcbhlJ0wqxHMgsCYZ0OIM+fl
+         jgXq/t7kXF8wg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id D1E36CE0908; Tue,  1 Aug 2023 12:14:30 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 12:14:30 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Roy Hopkins <rhopkins@suse.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
+Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
+ 6.4.7-rc1 review)
+Message-ID: <aec97d62-a07d-45f3-9cf8-5a7ad0e98e47@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230731141934.GK29590@hirez.programming.kicks-ass.net>
+ <20230731143954.GB37820@hirez.programming.kicks-ass.net>
+ <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
+ <20230731145232.GM29590@hirez.programming.kicks-ass.net>
+ <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
+ <20230731161452.GA40850@hirez.programming.kicks-ass.net>
+ <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
+ <20230731211517.GA51835@hirez.programming.kicks-ass.net>
+ <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
+ <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230730163928.70637-1-martin@kaiser.cx>
-References: <20220602080344.208702-1-martin@kaiser.cx> <20230730163928.70637-1-martin@kaiser.cx>
-Subject: Re: [PATCH v6 0/2] ARM: imx25: print silicon revision at startup
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-To:     Abel Vesa <abelvesa@kernel.org>, Martin Kaiser <martin@kaiser.cx>
-Date:   Tue, 01 Aug 2023 12:13:00 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,25 +78,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Martin Kaiser (2023-07-30 09:39:26)
-> Resurrect the unused function to print the imx25 silicon revision at
-> startup.
->=20
-> This patch set is blocking Arnd's work on enabling -Werror=3Dmissing-prot=
-otypes.
->=20
-> I'd really appreciate a response from the clk maintainers if these (trivi=
-al)
-> patches are ok.
+On Tue, Aug 01, 2023 at 12:11:04PM -0700, Paul E. McKenney wrote:
+> On Tue, Aug 01, 2023 at 10:32:45AM -0700, Guenter Roeck wrote:
+> > On 7/31/23 14:15, Peter Zijlstra wrote:
+> > > On Mon, Jul 31, 2023 at 09:34:29AM -0700, Guenter Roeck wrote:
+> > > > > Ha!, I was poking around the same thing. My hack below seems to (so far,
+> > > > > <20 boots) help things.
+> > > > > 
+> > > > 
+> > > > So, dumb question:
+> > > > How comes this bisects to "sched/fair: Remove sched_feat(START_DEBIT)" ?
+> > > 
+> > > That commit changes the timings of things; dumb luck otherwise.
+> > 
+> > Kind of scary. So I only experienced the problem because the START_DEBIT patch
+> > happened to be queued roughly at the same time, and it might otherwise have
+> > found its way unnoticed into the upstream kernel.
 
-You need to Cc linux-imx@nxp.com on imx clk patches. I think Abel has
-some filter that looks for linux-clk@vger and linux-imx.
+And just to set the record straight, this bug has been in mainline for
+about a year, since v5.19.
 
-Also, please don't send series replies to previous rounds. It buries the
-patches deep in my MUA and my scripts don't work well to apply patches
-when they're sent like that.
+							Thanx, Paul
 
-I presume that Abel will pick the patches up? Or do you want to land
-them through Arnd's tree? Either way feel free to add my acked-by
-
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+> >                                                   That makes me wonder if this
+> > or other similar patches may uncover similar problems elsewhere in the kernel
+> > (i.e., either hide new or existing race conditions or expose existing ones).
+> > 
+> > This in turn makes me wonder if it would be possible to define a test which
+> > would uncover such problems without the START_DEBIT patch. Any idea ?
+> 
+> Thank you all for tracking this down!
+> 
+> One way is to put a schedule_timeout_idle(100) right before the call to
+> rcu_tasks_one_gp() from synchronize_rcu_tasks_generic().  That is quite
+> specific to this particular issue, but it does have the virtue of making
+> it actually happen in my testing.
+> 
+> There have been a few academic projects that inject delays at points
+> chosen by various heuristics plus some randomness.  But this would be
+> a bit of a challenge to those because each kernel only passes through
+> this window once at boot time.
+> 
+> Please see below for my preferred fix.  Does this work for you guys?
+> 
+> Back to figuring out why recent kernels occasionally to blow up all
+> rcutorture guest OSes...
+> 
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+> index 7294be62727b..2d5b8385c357 100644
+> --- a/kernel/rcu/tasks.h
+> +++ b/kernel/rcu/tasks.h
+> @@ -570,10 +570,12 @@ static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
+>  	if (unlikely(midboot)) {
+>  		needgpcb = 0x2;
+>  	} else {
+> +		mutex_unlock(&rtp->tasks_gp_mutex);
+>  		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
+>  		rcuwait_wait_event(&rtp->cbs_wait,
+>  				   (needgpcb = rcu_tasks_need_gpcb(rtp)),
+>  				   TASK_IDLE);
+> +		mutex_lock(&rtp->tasks_gp_mutex);
+>  	}
+>  
+>  	if (needgpcb & 0x2) {
