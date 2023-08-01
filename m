@@ -2,73 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8726E76BD0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0C776BD13
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbjHASz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 14:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36046 "EHLO
+        id S231742AbjHAS4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjHASz4 (ORCPT
+        with ESMTP id S231958AbjHAS4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:55:56 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C64C187;
-        Tue,  1 Aug 2023 11:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=ZcHJoyOnSyStBYXLxjKo9vGFu+ive0GAxmxsAXs0Erc=; b=fBKF6RRyzycU76I/LkqFaOlU3u
-        QIUo9yM61JDHkELJ1pnhRtC4QwFuYkmsdXwlzXeK20DcCHwwxpmEjYa78GxpKHHKjk9bVv4LYrcJq
-        jB/hkbqhCpyTS9uVfH6TwkFxGnJcJnyq8KlVbwwoXjX0A8dgvqGiTkoZnYgFlWtkS00xIpqrLTRL7
-        4QHaMFvmGICvFrinJYgiJ6z3UzcdZFwfSoSBvDl7T4yroi8FU95d5WvnruBmCocjLYUPJnQsbrhHw
-        30F9/cD6Vud5SxrQ8X/fUjyVstb0u7kO0QDHGjUH/+zCQegLy6u7Vn9caDweSrjeXL0FbbC0wDC2Y
-        jQXTZg3g==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQuXA-0034zE-0r;
-        Tue, 01 Aug 2023 18:55:52 +0000
-Message-ID: <6286077f-bd7e-8a78-deca-3442bd987ad4@infradead.org>
-Date:   Tue, 1 Aug 2023 11:55:50 -0700
+        Tue, 1 Aug 2023 14:56:19 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 49F46268F;
+        Tue,  1 Aug 2023 11:56:12 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxTetLVclk7UsOAA--.28292S3;
+        Wed, 02 Aug 2023 02:56:11 +0800 (CST)
+Received: from openarena.loongson.cn (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxF81JVclkyWREAA--.44250S2;
+        Wed, 02 Aug 2023 02:56:09 +0800 (CST)
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Jianmin Lv <lvjianmin@loongson.cn>,
+        Sui Jingfeng <suijingfeng@loongson.cn>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>, Li Yi <liyi@loongson.cn>,
+        linux-pci@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] LoongArch: Remove vgaarb related workarounds
+Date:   Wed,  2 Aug 2023 02:56:07 +0800
+Message-Id: <20230801185607.703295-1-suijingfeng@loongson.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1 v1 1/7] MAINTAINERS: Update starfive maintainers
-Content-Language: en-US
-To:     Keith Zhao <keith.zhao@starfivetech.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com, Bjorn Andersson <andersson@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>
-References: <20230801101030.2040-1-keith.zhao@starfivetech.com>
- <20230801101030.2040-2-keith.zhao@starfivetech.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230801101030.2040-2-keith.zhao@starfivetech.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxF81JVclkyWREAA--.44250S2
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7CFy5Xr13GrWUtrWUAw4xuFX_yoW8CF13pF
+        nI9Fs7KrWfGr18GwnIyr17WryDZ3ZrA347uFWaka40kr13Zw1Fq393Ar93Xr4fJa9rXFWx
+        ZFs8Cw48KF4DtabCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AK
+        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+        0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j1YL9UUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,37 +62,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When we have a better approach[1] to handle multiple video cards problems
+on Loongarch, we want to drop the vgaarb related workaround.
 
+[1] https://patchwork.freedesktop.org/patch/550708/?series=121740&rev=1
 
-On 8/1/23 03:10, Keith Zhao wrote:
-> update starfive maintainers
-> 
-> Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
-> ---
->  MAINTAINERS | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 3be1bdfe8..daadd1707 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6760,6 +6760,13 @@ S:	Supported
->  T:	git git://anongit.freedesktop.org/drm/drm-misc
->  F:	drivers/gpu/drm/udl/
->  
+Cc: Bjorn Helgaas <bhelgaas@google.com>
+Cc: Li Yi <liyi@loongson.cn>
+Cc: linux-pci@vger.kernel.org
+Cc: loongson-kernel@lists.loongnix.cn
+Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+---
+ arch/loongarch/pci/pci.c | 19 -------------------
+ 1 file changed, 19 deletions(-)
 
-This new entry should be in alphabetical order (hint: it's not).
-
-> +DRM DRIVERS FOR STARFIVE
-> +M:	Keith Zhao <keith.zhao@starfivetech.com>
-> +L:	dri-devel@lists.freedesktop.org
-> +S:	Maintained
-> +T:	git git://anongit.freedesktop.org/drm/drm-misc
-> +F:	Documentation/devicetree/bindings/display/starfive/
-> +
->  DRM DRIVER FOR VIRTUAL KERNEL MODESETTING (VKMS)
->  M:	Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
->  M:	Melissa Wen <melissa.srw@gmail.com>
-
+diff --git a/arch/loongarch/pci/pci.c b/arch/loongarch/pci/pci.c
+index 2726639150bc..4319b5d75872 100644
+--- a/arch/loongarch/pci/pci.c
++++ b/arch/loongarch/pci/pci.c
+@@ -8,13 +8,10 @@
+ #include <linux/acpi.h>
+ #include <linux/types.h>
+ #include <linux/pci.h>
+-#include <linux/vgaarb.h>
+ #include <asm/cacheflush.h>
+ #include <asm/loongson.h>
+ 
+ #define PCI_DEVICE_ID_LOONGSON_HOST     0x7a00
+-#define PCI_DEVICE_ID_LOONGSON_DC1      0x7a06
+-#define PCI_DEVICE_ID_LOONGSON_DC2      0x7a36
+ 
+ int raw_pci_read(unsigned int domain, unsigned int bus, unsigned int devfn,
+ 						int reg, int len, u32 *val)
+@@ -82,19 +79,3 @@ int pcibios_alloc_irq(struct pci_dev *dev)
+ 		return 0;
+ 	return acpi_pci_irq_enable(dev);
+ }
+-
+-static void pci_fixup_vgadev(struct pci_dev *pdev)
+-{
+-	struct pci_dev *devp = NULL;
+-
+-	while ((devp = pci_get_class(PCI_CLASS_DISPLAY_VGA << 8, devp))) {
+-		if (devp->vendor != PCI_VENDOR_ID_LOONGSON) {
+-			vga_set_default_device(devp);
+-			dev_info(&pdev->dev,
+-				"Overriding boot device as %X:%X\n",
+-				devp->vendor, devp->device);
+-		}
+-	}
+-}
+-DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_DC1, pci_fixup_vgadev);
+-DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_DC2, pci_fixup_vgadev);
 -- 
-~Randy
+2.34.1
+
