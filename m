@@ -2,191 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E78776B6C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0E776B6C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234530AbjHAOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58552 "EHLO
+        id S234539AbjHAOGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbjHAOGB (ORCPT
+        with ESMTP id S234492AbjHAOFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:06:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451E830D5
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 07:05:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690898702;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wrQZYdlPHfqAXUcA6lbzNx8CU3rrSsjWUivdGMgi/i8=;
-        b=cuc5jFBwDP4vn3czQqbEoA5LOq5OhcFQkkt8WgRjHgTlaexn7h/CnP0De3xQrlpsDmwkkU
-        ZkTCngQfpvi0mJCqx7xxuiBzVpKfTuqFHCr9m8UDMDq8hshJGJItqMyyEcesZTCkAF+YqC
-        XwSOQu/r5wmJGBtnPW+pRUd7tkOtdEM=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-636-HSfJR1DlNjWl7xEc4PLNmg-1; Tue, 01 Aug 2023 10:05:01 -0400
-X-MC-Unique: HSfJR1DlNjWl7xEc4PLNmg-1
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-56ce4f82d18so209007eaf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 07:05:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690898700; x=1691503500;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wrQZYdlPHfqAXUcA6lbzNx8CU3rrSsjWUivdGMgi/i8=;
-        b=D6J9qWX0bTXOxVHwjG9uo2ArR21DOReHEIlp3IQqyAaJWnskpG7ZqpAaJy/xtTjpNu
-         +XTgYvSS0Ks2J6ODuD8f8yRt/fOe9AB0v4IjUj03b+XTlCXimC3y30eHT++9flWTM+os
-         tevkeWLhIsMzh/MwZ2aj7LheCn8NEfd7jZOjnRP381aZSg1g5QAPr7n+vkfV0A6XRUr/
-         JgGeejjg8jSbcO4pBFhVzgIgRO/071Yz9kQw7GphCdu6cDwqJryFgo0iSBfoz19r1GWW
-         3wxlc9oHz+hUovwpS5g1Qw3l4x5JKJuwN0Mnwq/mmViQ5QNNout2VmWJv2AUelHopUmU
-         43yg==
-X-Gm-Message-State: ABy/qLYt+abgylC0MzNZtWl3EgecEO8BZDua/hAtutTY/bvEyS6FNiXx
-        sVoWBEfhGMV/lu2Yyv5BghrdXIQLA9Lq/399FQTDvVqqpzA3AG0RMG/VVIYNVWhYIlLmA71t66v
-        Tk6IrWZLTT+5LSKJdx7N8mN8H
-X-Received: by 2002:a4a:a585:0:b0:56c:484a:923d with SMTP id d5-20020a4aa585000000b0056c484a923dmr7768043oom.1.1690898700132;
-        Tue, 01 Aug 2023 07:05:00 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGkYK567OZvBBNHPM2ndAyrlc5sazvLUju3ozUYOY4HGl86ZO4bap40IQmhQfYLniD5hAHXvA==
-X-Received: by 2002:a4a:a585:0:b0:56c:484a:923d with SMTP id d5-20020a4aa585000000b0056c484a923dmr7768012oom.1.1690898699795;
-        Tue, 01 Aug 2023 07:04:59 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-225-251.dyn.eolo.it. [146.241.225.251])
-        by smtp.gmail.com with ESMTPSA id o2-20020a0ce402000000b0063d14bfa5absm4658714qvl.36.2023.08.01.07.04.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 07:04:59 -0700 (PDT)
-Message-ID: <00f2b7bdb18e0eaa42f0cca542a9530564615475.camel@redhat.com>
-Subject: Re: [PATCH net-next v5 4/4] vsock/virtio: MSG_ZEROCOPY flag support
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@sberdevices.ru>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Date:   Tue, 01 Aug 2023 16:04:55 +0200
-In-Reply-To: <1c9f9851-2228-c92b-ce3d-6a84d44e6628@sberdevices.ru>
-References: <20230730085905.3420811-1-AVKrasnov@sberdevices.ru>
-         <20230730085905.3420811-5-AVKrasnov@sberdevices.ru>
-         <8a7772a50a16fbbcb82fc0c5e09f9e31f3427e3d.camel@redhat.com>
-         <1c9f9851-2228-c92b-ce3d-6a84d44e6628@sberdevices.ru>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 1 Aug 2023 10:05:53 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 671E53598;
+        Tue,  1 Aug 2023 07:05:27 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371Cvufp010226;
+        Tue, 1 Aug 2023 14:05:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=8/KuE7ZebrUGAksmIDm85DsZ0E+iBDP8kfm3m+UuBnQ=;
+ b=MFBLuuUeCC7ra6yUso1HzBfXr5yHqupLIbNeGtK5UDPqVgmL+0Yhwn8DEQulIGluxXKL
+ JajWJL66Hd3nTZu6eYl7nb+q89tRcbWAtbbYkneaesCJiO5RIC9LOqn24bwWytI3cn+X
+ 11W9g+o6yvlhTcg1VLR70+nEv+fEQmsQFxDnek50hdlmvBojZ2O/ZwPoY7qvkOP53jXM
+ P/pxeX5ruatrt7KV/khprG55AVnCk6ROcFL1slE3uAchfF9yuCKG22wilbe+cJ3RtHS+
+ TX4fgXs9eKXBgv8Tz5PgS6iwvPXMrotvKIU8qprW9CHFIkEGAzP44ByCp1zX+/TVclTV xw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s72gqr4t5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 14:05:13 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 371E5CJR010200
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 14:05:12 GMT
+Received: from [10.50.55.253] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 1 Aug
+ 2023 07:05:10 -0700
+Message-ID: <dc7fdd8a-b3c4-b931-61be-b9bc467c6a85@quicinc.com>
+Date:   Tue, 1 Aug 2023 19:35:06 +0530
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH][V2][next] accel/qaic: remove redundant pointer pexec
+To:     Colin Ian King <colin.i.king@gmail.com>,
+        Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        Carl Vanderlip <quic_carlv@quicinc.com>,
+        "Oded Gabbay" <ogabbay@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230726140626.264952-1-colin.i.king@gmail.com>
+Content-Language: en-US
+From:   Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
+In-Reply-To: <20230726140626.264952-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: qriaiy6FdSCIUOE9KCRm590KugTW_szM
+X-Proofpoint-ORIG-GUID: qriaiy6FdSCIUOE9KCRm590KugTW_szM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_09,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=624 adultscore=0
+ phishscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 clxscore=1015 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308010128
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-01 at 16:36 +0300, Arseniy Krasnov wrote:
->=20
-> On 01.08.2023 16:34, Paolo Abeni wrote:
-> > On Sun, 2023-07-30 at 11:59 +0300, Arseniy Krasnov wrote:
-> > > +static int virtio_transport_fill_skb(struct sk_buff *skb,
-> > > +				     struct virtio_vsock_pkt_info *info,
-> > > +				     size_t len,
-> > > +				     bool zcopy)
-> > > +{
-> > > +	if (zcopy) {
-> > > +		return __zerocopy_sg_from_iter(info->msg, NULL, skb,
-> > > +					      &info->msg->msg_iter,
-> > > +					      len);
-> > > +	} else {
-> >=20
-> >=20
-> > No need for an else statement after 'return'
-> >=20
-> > > +		void *payload;
-> > > +		int err;
-> > > +
-> > > +		payload =3D skb_put(skb, len);
-> > > +		err =3D memcpy_from_msg(payload, info->msg, len);
-> > > +		if (err)
-> > > +			return -1;
-> > > +
-> > > +		if (msg_data_left(info->msg))
-> > > +			return 0;
-> > > +
-> >=20
-> > This path does not update truesize, evem if it increases the skb len...
->=20
-> Thanks, I'll fix it.
->=20
-> >=20
-> > > +		return 0;
-> > > +	}
-> > > +}
-> >=20
-> > [...]
-> >=20
-> > > @@ -214,6 +251,70 @@ static u16 virtio_transport_get_type(struct sock=
- *sk)
-> > >  		return VIRTIO_VSOCK_TYPE_SEQPACKET;
-> > >  }
-> > > =20
-> > > +static struct sk_buff *virtio_transport_alloc_skb(struct vsock_sock =
-*vsk,
-> > > +						  struct virtio_vsock_pkt_info *info,
-> > > +						  size_t payload_len,
-> > > +						  bool zcopy,
-> > > +						  u32 src_cid,
-> > > +						  u32 src_port,
-> > > +						  u32 dst_cid,
-> > > +						  u32 dst_port)
-> > > +{
-> > > +	struct sk_buff *skb;
-> > > +	size_t skb_len;
-> > > +
-> > > +	skb_len =3D VIRTIO_VSOCK_SKB_HEADROOM;
-> > > +
-> > > +	if (!zcopy)
-> > > +		skb_len +=3D payload_len;
-> > > +
-> > > +	skb =3D virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
-> > > +	if (!skb)
-> > > +		return NULL;
-> > > +
-> > > +	virtio_transport_init_hdr(skb, info, src_cid, src_port,
-> > > +				  dst_cid, dst_port,
-> > > +				  payload_len);
-> > > +
-> > > +	/* Set owner here, because '__zerocopy_sg_from_iter()' uses
-> > > +	 * owner of skb without check to update 'sk_wmem_alloc'.
-> > > +	 */
-> > > +	if (vsk)
-> > > +		skb_set_owner_w(skb, sk_vsock(vsk));
-> >=20
-> > ... which can lead to bad things(TM) if the skb goes trough some later
-> > non trivial processing, due to the above skb_set_owner_w().
-> >=20
-> > Additionally can be the following condition be true:
-> >=20
-> > 	vsk =3D=3D NULL && (info->msg && payload_len > 0) && zcopy
-> >=20
-> > ???
->=20
-> No, vsk =3D=3D NULL only when we reset connection, in that case both info=
-->msg =3D=3D NULL and payload_len =3D=3D 0,
-> as this is control message without any data.
 
-Perhaps a comment with possibly even a WARN_ON_ONCE(!<the above>) could
-help ;)
 
-Thanks!
+On 7/26/2023 7:36 PM, Colin Ian King wrote:
+> Pointer pexec is being assigned a value however it is never read. The
+> assignment is redundant and can be removed. Replace sizeof(*pexec)
+> with sizeof the type and remove the declaration of pointer pexec.
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-Paolo
+Reviewed-by: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
 
