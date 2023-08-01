@@ -2,181 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD0D76A5A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 02:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9AB76A5AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 02:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229977AbjHAAnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 20:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45732 "EHLO
+        id S231292AbjHAAnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 20:43:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229602AbjHAAnH (ORCPT
+        with ESMTP id S229481AbjHAAnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 20:43:07 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6923A1716
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 17:43:06 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-40a47e8e38dso74161cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 17:43:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690850585; x=1691455385;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wz5PQDI2T5JD79/VqNSh8cAHB4+Dq2pKqfYEsmYHYJc=;
-        b=MFYDUohPKYqzUjmRdIik4Kf/M1i09cRnmwx/ISJELixqxj8gzvM0dEKMXyxYAMFbw3
-         ReLM/cPUTz05PxclkqkBgVsoeT/7EH3dALymU5TM8n9AYViSu4kpjQw8g9TlIr5lYEdx
-         STtN0tXmEUrwz4qA3H7UDuyRNjk2yzkj4bwdACzU8bzIwG8V1u6MRimG2rWhgHRiWHYy
-         eXQ8o14YblAtdc0/rR4R99744OZdbLElco3n3qUL5oyzjog5namRFGU6L/NVq+oZEqqn
-         QLVsLJdbOWotDUgFVkV6iklP9yVqIk7HEQLLekRiuMLcq+3DzGurl/ToVlHLeESVGYUY
-         hxxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690850585; x=1691455385;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wz5PQDI2T5JD79/VqNSh8cAHB4+Dq2pKqfYEsmYHYJc=;
-        b=hb8jZ1Oudglx6H+dP8nwbCiAEFnicamAllo05XtuOHiMmFyy8tbU5bx405QLamLvvC
-         Ycl6+c7oVGUS1A2ppxzp+7Cfln1gKTzPxa3gYj4MWGlrfvmy5nEQvcMul8+4XhDM7rG7
-         OtMFFOfP0/Tp17gtHO3ILFL16FWG+KX4hDh/hUp1FJjtwzjx5yRDW09/x5l64aELeyRK
-         ciwd7j0rbx4IvA98KKXxZ1HV+vaqEhiRKznxrHbBdrWnXNB85Du3okObG26GdKHTovBY
-         i1Vjjsisi7qk3KfwVnyZHv2RX5IueS3le7s0jJ6G1WbbmbS90x4eTZSMO8QmFX5V1xys
-         3waA==
-X-Gm-Message-State: ABy/qLboJ77FAt3reEjJqRURfSKjYCwkAMbAvcoaEPQDavlPlFxR3isD
-        J5bpB3FFYh+75xuMNERQx4M4VEXP7uEmqyf4tTIvWA==
-X-Google-Smtp-Source: APBJJlGp1HM0IIW5HWYh0WPnS7cydIdnyyIPn3xHA78fZgN1YFWKwQ3DKE5js9J5XfPxG82YjMXnoKhazzIIIJsIP5M=
-X-Received: by 2002:a05:622a:1447:b0:3f4:f0fd:fe7e with SMTP id
- v7-20020a05622a144700b003f4f0fdfe7emr530327qtx.3.1690850585401; Mon, 31 Jul
- 2023 17:43:05 -0700 (PDT)
+        Mon, 31 Jul 2023 20:43:13 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2D319B7;
+        Mon, 31 Jul 2023 17:43:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690850590;
+        bh=UOeoP6o8nLk2lubr/P1iUVA7r8c0igQrDiDRg7uhqck=;
+        h=Date:From:To:Cc:Subject:From;
+        b=i8z5gH1ThEM/rpQyDHxRuBInnpf+wCP6sPpqztCO0IaUtGkv6KeoVxamg3ajLb4vI
+         BnNN3EXXCzkkXn83i6eBI+WGyWh0hP+4jPyER2KHwcFA7a0Sgo3HXnm1ZEgps29+uq
+         C+1hUTrBIcK1UcSOFelKuehFvBda+6pT/zpTYoXx9CaNjZIKBXWxFoqblCatzXhrEK
+         qD6A2yYXC+oBmBf2LWPPDboDaKXNxBhX6PW+ttqlK9NsNgVN17AaKHQeTk5eVayHrR
+         KkzwGAhkHx+cskKKC2Q3E3yVmfjSUL6p4zbYYrvQ4A7+0F2FmLc2UeTkJsgwjLGcZJ
+         0jv2Cu4eM0vbg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RFGYT4X65z4wbj;
+        Tue,  1 Aug 2023 10:43:09 +1000 (AEST)
+Date:   Tue, 1 Aug 2023 10:43:08 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Helge Deller <deller@gmx.de>, Dave Airlie <airlied@redhat.com>
+Cc:     DRI <dri-devel@lists.freedesktop.org>,
+        Fabio Estevam <festevam@denx.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: linux-next: manual merge of the fbdev tree with the drm tree
+Message-ID: <20230801104308.0de7f835@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-2-rananta@google.com>
- <87v8e5r6s6.wl-maz@kernel.org> <CAJHc60wtc2Usei3hKj1ykVRvBZFFCBOHMi9HCxnNvGK2dPFApA@mail.gmail.com>
- <ZMgqueePlmKvgUId@google.com>
-In-Reply-To: <ZMgqueePlmKvgUId@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 31 Jul 2023 17:42:54 -0700
-Message-ID: <CAJHc60xM+KsUKxtoqORnpzrRke4T-sob2uLJRMvBKwruipxnpw@mail.gmail.com>
-Subject: Re: [PATCH v7 01/12] KVM: Rename kvm_arch_flush_remote_tlb() to kvm_arch_flush_remote_tlbs()
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
-        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
-        Shaoqin Huang <shahuang@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/qc/9R..mTUGHjsXvnE7TEIt";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 2:42=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Mon, Jul 31, 2023, Raghavendra Rao Ananta wrote:
-> > On Thu, Jul 27, 2023 at 3:24=E2=80=AFAM Marc Zyngier <maz@kernel.org> w=
-rote:
-> > >
-> > > On Sat, 22 Jul 2023 03:22:40 +0100,
-> > > Raghavendra Rao Ananta <rananta@google.com> wrote:
-> > > >
-> > > > From: David Matlack <dmatlack@google.com>
-> > > >
-> > > > Rename kvm_arch_flush_remote_tlb() and the associated macro
-> > > > __KVM_HAVE_ARCH_FLUSH_REMOTE_TLB to kvm_arch_flush_remote_tlbs() an=
-d
-> > > > __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS respectively.
-> > > >
-> > > > Making the name plural matches kvm_flush_remote_tlbs() and makes it=
- more
-> > > > clear that this function can affect more than one remote TLB.
-> > > >
-> > > > No functional change intended.
-> > > >
-> > > > Signed-off-by: David Matlack <dmatlack@google.com>
-> > > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > > > Reviewed-by: Gavin Shan <gshan@redhat.com>
-> > > > Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
-> > > > Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
-> > > > ---
-> > > >  arch/mips/include/asm/kvm_host.h | 4 ++--
-> > > >  arch/mips/kvm/mips.c             | 2 +-
-> > > >  arch/x86/include/asm/kvm_host.h  | 4 ++--
-> > > >  include/linux/kvm_host.h         | 4 ++--
-> > > >  virt/kvm/kvm_main.c              | 2 +-
-> > > >  5 files changed, 8 insertions(+), 8 deletions(-)
-> > > >
-> > > > diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/a=
-sm/kvm_host.h
-> > > > index 04cedf9f8811..9b0ad8f3bf32 100644
-> > > > --- a/arch/mips/include/asm/kvm_host.h
-> > > > +++ b/arch/mips/include/asm/kvm_host.h
-> > > > @@ -896,7 +896,7 @@ static inline void kvm_arch_sched_in(struct kvm=
-_vcpu *vcpu, int cpu) {}
-> > > >  static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {=
-}
-> > > >  static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)=
- {}
-> > > >
-> > > > -#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLB
-> > > > -int kvm_arch_flush_remote_tlb(struct kvm *kvm);
-> > > > +#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
-> > > > +int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
-> > >
-> > > How about making this prototype global? I don't see a point in having
-> > > it per-architecture, specially as you are adding arm64 to that mix in
-> > > the following patch.
-> > >
-> > We can make it global, but I'm not sure what was the intention of the
-> > original author. My guess is that he was following the same style that
-> > we have for some of the other kvm_arch_*() functions
-> > (kvm_arch_free_vm() for example)?
->
-> Heh, KVM has a *lot* of code that was written with questionable style.  I=
- agree
-> with Marc, I can't think of a single reason not to have the definition in=
- common
-> code.  Declaring the function doesn't preclude a "static inline" implemen=
-tation,
-> and we could even keep the prototype under an #ifdef, e.g.
->
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 9d3ac7720da9..5ac64f933547 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1484,6 +1484,8 @@ static inline int kvm_arch_flush_remote_tlb(struct =
-kvm *kvm)
->  {
->         return -ENOTSUPP;
->  }
-> +#else
-> +int kvm_arch_flush_remote_tlb(struct kvm *kvm);
->  #endif
->
->  #ifdef __KVM_HAVE_ARCH_NONCOHERENT_DMA
->
-Thanks for the suggestions; I can go with a common declaration. Along
-with that, do we want to keep defining
-__KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS in the arch code that supports it or
-convert it into a CONFIG_?
+--Sig_/qc/9R..mTUGHjsXvnE7TEIt
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-- Raghavendra
+Hi all,
+
+Today's linux-next merge of the fbdev tree got a conflict in:
+
+  drivers/video/fbdev/mx3fb.c
+
+between commit:
+
+  8a4675ebbd30 ("fbdev: Remove FBINFO_FLAG_DEFAULT from framebuffer_alloc()=
+'ed structs")
+
+from the drm tree and commit:
+
+  87ac8777d424 ("fbdev: mx3fb: Remove the driver")
+
+from the fbdev tree.
+
+I fixed it up (I just removed the file) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qc/9R..mTUGHjsXvnE7TEIt
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTIVRwACgkQAVBC80lX
+0GweYQf+Luz0E8dd76dHdVBilRIJ/GhTDZ2mwr+kQ3IkvjiFx3pT+rQPiS4HZiz9
+g0SQtwEYQKKFip2scQ5O6B8kcmcNGvd1cEVSnEBVlJ0EFl3e56x/ikwXUq7YeHP7
+5BdZe/6EcneTovS4S6NZS9RoxVklwnyQvChPzgtpMSqUN79uk5DBF/GdJdbC14qR
+KLChDMDtR5D0teGj/nMi1e/wnuhh5fI97kU9xfFZw9Vn1NbN5ZFT3MlbkB8w3LK8
+vLQhq19rTvKbRJnm+aYIuNgO2zst5VGfxUj1KAm3Ghsca6q+A1Q9WuX4Yr+EKP26
+0zTMp6DamHhlmiS/vJbYaJxMojw7HQ==
+=ITek
+-----END PGP SIGNATURE-----
+
+--Sig_/qc/9R..mTUGHjsXvnE7TEIt--
