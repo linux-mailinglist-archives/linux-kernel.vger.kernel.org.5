@@ -2,152 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F8076B44E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:04:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE4E76B452
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233934AbjHAMEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
+        id S234486AbjHAMEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234277AbjHAMDp (ORCPT
+        with ESMTP id S232790AbjHAMEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:03:45 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C913D1734;
-        Tue,  1 Aug 2023 05:03:37 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9b50be31aso84202331fa.3;
-        Tue, 01 Aug 2023 05:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690891416; x=1691496216;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8zpSRj+GD1K9ivzCsboyfWepvG0nnxsJI4neiOMEOJA=;
-        b=J9YXI/qQWmc5foKYmcXr/mlM5rzoT7ewawJlMCCWUj6LqVxodgC86yvhX9LVcLzrId
-         ZMkIdl0WnR24MEWt1s91jJUWB2YFfz+xv/6wJ3QScW6rg/hiNPf+6xxw2h8RpPg2W120
-         eLvpxuzfmRCQOR4uZj8OJAQyPe6pgJzwUQGN84YvXJiXkPBdPKsEITrwhkeEfuw9jGMO
-         Cxy6RyLHU8T6grY7VKpp0XfSrhJxws3xim3yVFVyrpSRjcXTD+zBxKVE2QxoGmyvi68V
-         q9Hj0nPh3vM3KnxiFNfgc+Cs1AWHntrw4iN1SvF4Bmb1ZzgEr7Pg1Op51Tf76WTE9XFj
-         ItAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690891416; x=1691496216;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8zpSRj+GD1K9ivzCsboyfWepvG0nnxsJI4neiOMEOJA=;
-        b=Td0FvCqi2R8GJFCXfLdGRu31QBJsp0yunf3dXrjT1CU7uROhbNDCwObB1sdnfYN19+
-         2ZjpvyZP5jFgEIpQskg5YiyogoIl6GNtrAS1gFT7GUPWdb5kxjfsDGh6b3mDpXHqC2/e
-         8bzYun2Stb0Q8IfBVctO1dMJ1DpnFiaTYnzxEqYB4tT1g2Hyy2GABSeNXEaVW+RUhuXM
-         MnFoaj18A00GxEYHAeYqJBSLziYNOFkjyd2vn5OWr41DkZ/Aw+0UfQkBIfEcIdEyMT/y
-         +c9cv+g3+shcBj9LHcZZ2hE9zWVSf5EL4qRb2dsUfsmcF4ebPR4o6mgDWe2PTmROo7kC
-         vOaQ==
-X-Gm-Message-State: ABy/qLYfURSRWGI5ZNNGuCRWb2I6SQ2Dmffp2ainxGR44kOzzLSkOJkn
-        lD3SS3+yPOY/Gfhhm3vrFFc=
-X-Google-Smtp-Source: APBJJlHjM5sGeXJ8scrk4aBLFhYKc236hH6cKgiTcqCKxDSEfv4vNXCF+LRTsngmIqRpheMWNP66IQ==
-X-Received: by 2002:a2e:8812:0:b0:2b9:3cb3:2592 with SMTP id x18-20020a2e8812000000b002b93cb32592mr2327537ljh.10.1690891415898;
-        Tue, 01 Aug 2023 05:03:35 -0700 (PDT)
-Received: from fedora ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id y16-20020a2e7d10000000b002b9899d0f0bsm2590417ljc.83.2023.08.01.05.03.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 05:03:35 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 15:03:31 +0300
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v8 4/8] pinctrl: ingenic: relax return value check for IRQ get
-Message-ID: <92e97e068e0f058d081886f0352715d1f22d43a1.1690890774.git.mazziesaccount@gmail.com>
-References: <cover.1690890774.git.mazziesaccount@gmail.com>
+        Tue, 1 Aug 2023 08:04:02 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5751BC1;
+        Tue,  1 Aug 2023 05:03:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1690891434;
+        bh=A5Xp0ljkKmdYL3sgYa355A3A62vFCtOc0x8cdx5MtMk=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=KUnqGwrLqqEu+ttUE3pLXZ8wjg3yjQv1a2U1Mo/bwAy8cW1La6gdGKM128/BGdjEt
+         dKougbdACNTLJ0kb4pEbYGavpC8IffNivtMyvQArxguPaxAf/VIRB1PvNMJ1ahJjqT
+         egOIArUpFMKkCg1q0Pxo9/74jEk9JbzHD9wJ6Cpc=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 3A9CE12868C0;
+        Tue,  1 Aug 2023 08:03:54 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id SjriggjNz9md; Tue,  1 Aug 2023 08:03:53 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1690891432;
+        bh=A5Xp0ljkKmdYL3sgYa355A3A62vFCtOc0x8cdx5MtMk=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=sYD53L6PgfttXBZ6u2JW31Qs7KWZxIE5fvDAOk+EEZYLU6mg7iS1X40pC/gNQ/oAE
+         BlBq+6vJNEmU8Fq0S1ns24PF5pdexpd8CE0ddi8prRcTx8FxPwQ08bJOeg+nMSZue4
+         RklReOKKhtg3RAtrK/zB9LHCKFKrpVI171Y8SpsM=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 89C6E1280ECC;
+        Tue,  1 Aug 2023 08:03:49 -0400 (EDT)
+Message-ID: <55cec220f20c497925f46074fc70eeccccff61c9.camel@HansenPartnership.com>
+Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
+ reports
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     "Huang, Kai" <kai.huang@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>
+Cc:     "sameo@rivosinc.com" <sameo@rivosinc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "dionnaglaze@google.com" <dionnaglaze@google.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
+        "x86@kernel.org" <x86@kernel.org>
+Date:   Tue, 01 Aug 2023 08:03:47 -0400
+In-Reply-To: <6dec442c64faf2fecd21bcc77e4a6350e88948b9.camel@intel.com>
+References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
+         <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
+         <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
+         <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
+         <6dec442c64faf2fecd21bcc77e4a6350e88948b9.camel@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Fcap+cDW0Rqwoy47"
-Content-Disposition: inline
-In-Reply-To: <cover.1690890774.git.mazziesaccount@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2023-08-01 at 11:45 +0000, Huang, Kai wrote:
+[...]
+> 
+> Sorry perhaps a dumb question to ask:
+> 
+> As it has been adequately put, the remote verifiable report normally
+> contains a nonce.  For instance, it can be a per-session or per-
+> request nonce from the remote verification service to the
+> confidential VM.  
+> 
+> IIUC, exposing attestation report via /sysfs means many processes (in
+> the confidential VM) can potentially see the report and the nonce. 
+> My question is whether such nonce should be considered as a secret
+> thus should be only visible to the process which is responsible for
+> talking to the remote verification service?  Using IOCTL seems can
+> avoid such exposure.
 
---Fcap+cDW0Rqwoy47
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK, so the nonce seems to be a considerably misunderstood piece of this
+(and not just by you), so I'll try to go over carefully what it is and
+why.  The problem we have in pretty much any signature based
+attestation evidence scheme is when I, the attesting party, present the
+signed evidence to you, the relying part, how do you know I got it
+today from the system in question not five days ago when I happen to
+have engineered the correct conditions?  The solution to this currency
+problem is to incorporate a challenge supplied by the relying party
+(called a nonce) into the signature.  The nonce must be unpredictable
+enough that the attesting party can't guess it beforehand and it must
+be unique so that the attesting party can't go through its records and
+find an attestation signature with the same nonce and supply that
+instead.
 
-fwnode_irq_get[_byname]() were changed to not return 0 anymore.
+This property of unpredictability and uniqueness is usually satisfied
+simply by sending a random number.  However, as you can also see, since
+the nonce is supplied by the relying party to the attesting party, it
+eventually gets known to both, so can't be a secret to one or the
+other.  Because of the unpredictability requirement, it's generally
+frowned on to have nonces based on anything other than random numbers,
+because that might lead to predictability.
 
-Drop check for return value 0.
+James
 
-Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
----
-Revision history:
- - No changes
-
-Please note, I took Linus' reply to v4 cover-letter as ack && added the
-tag. Please let me know if this was not Ok.
-
-The patch changing the fwnode_irq_get() got merged during 5.4:
-https://lore.kernel.org/all/fb7241d3-d1d1-1c37-919b-488d6d007484@gmail.com/
-This is a clean-up as agreed.
----
- drivers/pinctrl/pinctrl-ingenic.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-in=
-genic.c
-index 2f220a47b749..86e71ad703a5 100644
---- a/drivers/pinctrl/pinctrl-ingenic.c
-+++ b/drivers/pinctrl/pinctrl-ingenic.c
-@@ -4201,8 +4201,6 @@ static int __init ingenic_gpio_probe(struct ingenic_p=
-inctrl *jzpc,
- 	err =3D fwnode_irq_get(fwnode, 0);
- 	if (err < 0)
- 		return err;
--	if (!err)
--		return -EINVAL;
- 	jzgc->irq =3D err;
-=20
- 	girq =3D &jzgc->gc.irq;
---=20
-2.40.1
-
-
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---Fcap+cDW0Rqwoy47
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmTI9JMACgkQeFA3/03a
-ocVLWAf+NGRt7nw3/XhPANula40iJJFiuw8jhq/Wh2q7d5+R8FyuXJ4k0MxYnNai
-Gz7hXWymh+tE5m6X2AiVaGen80URaPifkWsCCoQQvtN3EOt0b/uACthvyx3CkvoJ
-/6suG7+iZvQcxZTbHeJKvxh9IwsyLIKKyD2YVWA3EekFn4GAm9TtCGI3eITfejKN
-qJvpQpreePQoxqOEr0oGj8ZxqF4M1OQV5xyAVxG/iP5r4x7syoVt3II0qkkL2JEJ
-QYDGxtlgy5WGQyACRlBdvRInq6sb4ELRD/zuRD0bAAB2S03yqY0PJzLWN3kQtrMR
-AEowC+zNv1M1/MfC47NKj/vsbSrIgA==
-=DHaf
------END PGP SIGNATURE-----
-
---Fcap+cDW0Rqwoy47--
