@@ -2,206 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C6E76A912
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C57676A90C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:28:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbjHAG2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41148 "EHLO
+        id S231621AbjHAG2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbjHAG2r (ORCPT
+        with ESMTP id S231222AbjHAG1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:28:47 -0400
-Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BA7270C;
-        Mon, 31 Jul 2023 23:28:21 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4RFPyW4wJxz9y7l1;
-        Tue,  1 Aug 2023 14:16:51 +0800 (CST)
-Received: from A2101119013HW2.china.huawei.com (unknown [10.81.220.249])
-        by APP1 (Coremail) with SMTP id LxC2BwCHOroapchkgAwYAA--.27948S11;
-        Tue, 01 Aug 2023 07:27:25 +0100 (CET)
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR ARM),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        linux-kernel@vger.kernel.org (open list),
-        linux-mips@vger.kernel.org (open list:MIPS),
-        iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM),
-        linux-mm@kvack.org (open list:SLAB ALLOCATOR)
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
-Subject: [PATCH v7 9/9] swiotlb: search the software IO TLB only if the device makes use of it
-Date:   Tue,  1 Aug 2023 08:24:04 +0200
-Message-Id: <adea71bd1fa8660d4c3157a562431ad8127016d4.1690871004.git.petr.tesarik.ext@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
-References: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
+        Tue, 1 Aug 2023 02:27:48 -0400
+Received: from out-95.mta0.migadu.com (out-95.mta0.migadu.com [IPv6:2001:41d0:1004:224b::5f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819231BEA
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:27:35 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690871252;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GjPiL+4LjXSLBCxGMeQtGBgOYicqjuvMF+wdwkDOlns=;
+        b=BVeQI85MV804PQr1qQe3DjMi+1F7rL86o2o0lwrOFiyWe49HUAwschBw2NvFJbIx0AO6LH
+        IWMwlggQtKfBszl3tff+FfgvobC5ykPcyYp3Xet2RFFyDNBASoXJeYSsMBjOOwYvyNRKOp
+        qIDZRM7vuYhslGuWAI6QMX3bz0VBZP0=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH] sched/rt: move back to RT_GROUP_SCHED and rename it child
+Date:   Tue,  1 Aug 2023 14:27:14 +0800
+Message-Id: <20230801062714.3424299-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwCHOroapchkgAwYAA--.27948S11
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF15Ww18ZF1fWr1UtFW7XFb_yoWrXFy3pF
-        98AFZ8KayqqryxCryxCF18uF1agw4vk3yfurWagrnYkr1DJwnYqF1DKrWav3s5Ar4xZF43
-        tryj9wsYkr17Xr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUQv14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr1j6r
-        xdM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0
-        owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-        kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCY1x0264kExVAvwVAq07x20xyl42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc40Y0x0EwIxGrwCI42IY
-        6xIIjxv20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWlIxAIcV
-        CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Cr1j6rxdYxBIdaVFxhVjvjDU0xZFpf9x0JU2XdbUUUUU=
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
+it should not place out of RT_GROUP_SCHED, move back to RT_GROUP_SCHED
+and rename it child.
 
-Skip searching the software IO TLB if a device has never used it, making
-sure these devices are not affected by the introduction of multiple IO TLB
-memory pools.
+Init child in init_tg_rt_entry(). Also, remove the case parent is NULL
+because this case is the same as rt_se is NULL and already returned.
 
-Additional memory barrier is required to ensure that the new value of the
-flag is visible to other CPUs after mapping a new bounce buffer. For
-efficiency, the flag check should be inlined, and then the memory barrier
-must be moved to is_swiotlb_buffer(). However, it can replace the existing
-barrier in swiotlb_find_pool(), because all callers use is_swiotlb_buffer()
-first to verify that the buffer address belongs to the software IO TLB.
+Introduce for_each_sched_rt_entity_reverse() to iterate entries from
+top to down.
 
-Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
- include/linux/device.h  |  2 ++
- include/linux/swiotlb.h |  7 ++++++-
- kernel/dma/swiotlb.c    | 14 ++++++--------
- 3 files changed, 14 insertions(+), 9 deletions(-)
+ include/linux/sched.h |  2 +-
+ kernel/sched/rt.c     | 28 +++++++++++++++-------------
+ 2 files changed, 16 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 5fd89c9d005c..6fc808d22bfd 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -628,6 +628,7 @@ struct device_physical_location {
-  * @dma_io_tlb_mem: Software IO TLB allocator.  Not for driver use.
-  * @dma_io_tlb_pools:	List of transient swiotlb memory pools.
-  * @dma_io_tlb_lock:	Protects changes to the list of active pools.
-+ * @dma_uses_io_tlb: %true if device has used the software IO TLB.
-  * @archdata:	For arch-specific additions.
-  * @of_node:	Associated device tree node.
-  * @fwnode:	Associated device node supplied by platform firmware.
-@@ -737,6 +738,7 @@ struct device {
- #ifdef CONFIG_SWIOTLB_DYNAMIC
- 	struct list_head dma_io_tlb_pools;
- 	spinlock_t dma_io_tlb_lock;
-+	bool dma_uses_io_tlb;
- #endif
- 	/* arch specific additions */
- 	struct dev_archdata	archdata;
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index 8371c92a0271..b4536626f8ff 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -172,8 +172,13 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
- 	if (!mem)
- 		return false;
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 177b3f3676ef..5635655d6c35 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -594,8 +594,8 @@ struct sched_rt_entity {
+ 	unsigned short			on_rq;
+ 	unsigned short			on_list;
  
--	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC))
-+	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC)) {
-+		/* Pairs with smp_wmb() in swiotlb_find_slots() and
-+		 * swiotlb_dyn_alloc(), which modify the RCU lists.
-+		 */
-+		smp_rmb();
- 		return swiotlb_find_pool(dev, paddr);
-+	}
- 	return paddr >= mem->defpool.start && paddr < mem->defpool.end;
- }
+-	struct sched_rt_entity		*back;
+ #ifdef CONFIG_RT_GROUP_SCHED
++	struct sched_rt_entity		*child;
+ 	struct sched_rt_entity		*parent;
+ 	/* rq on which this entity is (to be) queued: */
+ 	struct rt_rq			*rt_rq;
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 00e0e5074115..75efb1027b9f 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -228,13 +228,10 @@ void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
+ 	if (!rt_se)
+ 		return;
  
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index adf80dec42d7..d7eac84f975b 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -730,7 +730,7 @@ static void swiotlb_dyn_alloc(struct work_struct *work)
- 
- 	add_mem_pool(mem, pool);
- 
--	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
-+	/* Pairs with smp_rmb() in is_swiotlb_buffer(). */
- 	smp_wmb();
- }
- 
-@@ -764,11 +764,6 @@ struct io_tlb_pool *swiotlb_find_pool(struct device *dev, phys_addr_t paddr)
- 	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
- 	struct io_tlb_pool *pool;
- 
--	/* Pairs with smp_wmb() in swiotlb_find_slots() and
--	 * swiotlb_dyn_alloc(), which modify the RCU lists.
--	 */
--	smp_rmb();
+-	if (!parent)
+-		rt_se->rt_rq = &rq->rt;
+-	else
+-		rt_se->rt_rq = parent->my_q;
 -
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(pool, &mem->pools, node) {
- 		if (paddr >= pool->start && paddr < pool->end)
-@@ -813,6 +808,7 @@ void swiotlb_dev_init(struct device *dev)
- #ifdef CONFIG_SWIOTLB_DYNAMIC
- 	INIT_LIST_HEAD(&dev->dma_io_tlb_pools);
- 	spin_lock_init(&dev->dma_io_tlb_lock);
-+	dev->dma_uses_io_tlb = false;
- #endif
++	rt_se->rt_rq = parent->my_q;
+ 	rt_se->my_q = rt_rq;
+ 	rt_se->parent = parent;
++	parent->child = rt_se;
+ 	INIT_LIST_HEAD(&rt_se->run_list);
  }
  
-@@ -1157,9 +1153,11 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
- 	list_add_rcu(&pool->node, &dev->dma_io_tlb_pools);
- 	spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags);
+@@ -564,6 +561,9 @@ static inline struct task_group *next_task_group(struct task_group *tg)
+ #define for_each_sched_rt_entity(rt_se) \
+ 	for (; rt_se; rt_se = rt_se->parent)
  
--	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
--	smp_wmb();
- found:
-+	dev->dma_uses_io_tlb = true;
-+	/* Pairs with smp_rmb() in is_swiotlb_buffer() */
-+	smp_wmb();
++#define for_each_sched_rt_entity_reverse(rt_se) \
++	for (; rt_se; rt_se = rt_se->child)
 +
- 	*retpool = pool;
- 	return index;
+ static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
+ {
+ 	return rt_se->my_q;
+@@ -669,6 +669,9 @@ typedef struct rt_rq *rt_rq_iter_t;
+ #define for_each_sched_rt_entity(rt_se) \
+ 	for (; rt_se; rt_se = NULL)
+ 
++#define for_each_sched_rt_entity_reverse(rt_se) \
++	for_each_sched_rt_entity(rt_se)
++
+ static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
+ {
+ 	return NULL;
+@@ -1481,22 +1484,21 @@ static void __dequeue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
+  */
+ static void dequeue_rt_stack(struct sched_rt_entity *rt_se, unsigned int flags)
+ {
+-	struct sched_rt_entity *back = NULL;
++	struct sched_rt_entity *parent = NULL;
+ 	unsigned int rt_nr_running;
+ 
+-	for_each_sched_rt_entity(rt_se) {
+-		rt_se->back = back;
+-		back = rt_se;
+-	}
++	for_each_sched_rt_entity(rt_se)
++		parent = rt_se;
+ 
+-	rt_nr_running = rt_rq_of_se(back)->rt_nr_running;
++	rt_nr_running = rt_rq_of_se(parent)->rt_nr_running;
+ 
+-	for (rt_se = back; rt_se; rt_se = rt_se->back) {
++	rt_se = parent;
++	for_each_sched_rt_entity_reverse(rt_se) {
+ 		if (on_rt_rq(rt_se))
+ 			__dequeue_rt_entity(rt_se, flags);
+ 	}
+ 
+-	dequeue_top_rt_rq(rt_rq_of_se(back), rt_nr_running);
++	dequeue_top_rt_rq(rt_rq_of_se(parent), rt_nr_running);
  }
+ 
+ static void enqueue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flags)
 -- 
 2.25.1
 
