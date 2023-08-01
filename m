@@ -2,75 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6B9A76B3FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EFE76B40E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbjHAL4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:56:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
+        id S233963AbjHAL5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjHAL4J (ORCPT
+        with ESMTP id S233937AbjHAL5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:56:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7A61718;
-        Tue,  1 Aug 2023 04:56:07 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DF0196156C;
-        Tue,  1 Aug 2023 11:56:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD24DC433C8;
-        Tue,  1 Aug 2023 11:56:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690890966;
-        bh=dNbS2NfuAynBVMvuWl6D3a35wHrGyTN6rKb7IKHX1QI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CMeAMPLEtVG9PsP0rzkOIjCx5valOv/2IEWTZ0DRihnb7E0yHRfXzOaK3t6ajN951
-         owMAbRdn7zl3L0s1Vs9qjC8NGxZlvqsUyzsfbJQiwcHN6fGotoudUxu/h6CY3JpR3Q
-         NBZk0y0mO2hW0mvhO0QOmAEHpaGYbVOElkhESl/h0RmnaN96liG8AF0XkNukjAeBf3
-         obn3T09EnuMAjb3btm/GMR10x42dtwhcDyN1PkePQXHR/PmMff5HHeTT30XVNbY8Gy
-         4n4DjmxDaprQFm3+EgN/lbWf0/QwXS4774k0l3AaBJ2chLpi1nsGtcBgaGDjDSPvqc
-         h4/CuyaxIKQ+w==
-Date:   Tue, 1 Aug 2023 13:56:03 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Keith Zhao <keith.zhao@starfivetech.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com, Bjorn Andersson <andersson@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>
-Subject: Re: [PATCH v1 v1 5/7] drm/vs: Register DRM device
-Message-ID: <pug7eu7td6hq56jgr2ro2ql5exywed4pj4o4hgqiypxos6qqpz@dcaaqufqeayk>
-References: <20230801101030.2040-1-keith.zhao@starfivetech.com>
- <20230801101030.2040-6-keith.zhao@starfivetech.com>
+        Tue, 1 Aug 2023 07:57:15 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A558D1722;
+        Tue,  1 Aug 2023 04:57:07 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68706d67ed9so3358203b3a.2;
+        Tue, 01 Aug 2023 04:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690891027; x=1691495827;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rKppcIoiYeo5kBDToRz2zFzOvb/47yYoiI9yldGahh4=;
+        b=Q1AuSn9Dz386cWFAx+wdCZCDjk264pKI8wwpaO9pXVRnlQfXXgrXj91rFp5b4ZRdUc
+         eCCT6dy5ydz5KAIunmaw10uwhDWmRoKRG7fntwAclxGzdJQnHJ2dGphLmifrVVSfRoHc
+         c8t/sKWvKiFb+41PYJ8nd+Za0IMrXD0INjCIiFf56MU+rPKTuZcPr4ErmhYDZ9KlVEj3
+         urBt2sIRJb6HLaxeyrkFu8eFdku+2Y4LySRIiaBI4O2OKZGWf2Vuf7mdcl534EZA61hD
+         FWOVBPwMSGWO1gylzarFm757lIB9GOy5EmYwgcBLlq4tXNTcnEDm9iDMs85u0sT8Ge/d
+         v+Fg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690891027; x=1691495827;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rKppcIoiYeo5kBDToRz2zFzOvb/47yYoiI9yldGahh4=;
+        b=K1cmqs1eKPYMmWC1J3B4/Utxw7r1i4v35p9updiyZbWqsWy9LzK7OJvqxjKwXUsxEr
+         afSpd1MfTWg4mL0UWmxT7oobm0OxZV+879odDi/Y4it4UhbnYxbpN1BXV3J75ERTXR2i
+         Gs7NrcCf/byIAavx5Ua1NhLmpVF3/KqX/A3O1g9BDXmhdT3pEOIiU1Xtqs1dgNDTWAj4
+         duW5hu0JA/G+wBMcLlo1vIdCzb8fTho8n/fhpm60lboHl1gtn+VROmcr2sAM/9TNDyKZ
+         rS8UvySrjpxX2RuKpygHY8Z8lCxr2bmO4Yj2EKcwS0NvPdcQw4kwsMKZmYNWnMazeiqr
+         iebA==
+X-Gm-Message-State: ABy/qLZTVasiZFsNebgTQ6XadEM5dSRVCWsG+JB4Dt1mgOpsWER528bf
+        BlY3XJiE1XCqITw5AHZjr20=
+X-Google-Smtp-Source: APBJJlFvTqsYNi/xc9QZstUWl4rP/AcWxWjDdtWi4/kAMSgqrHQVtvP3h+IRszWQIRNQMxWYzxz68g==
+X-Received: by 2002:a05:6a00:2d23:b0:66d:514c:cb33 with SMTP id fa35-20020a056a002d2300b0066d514ccb33mr14743452pfb.6.1690891026853;
+        Tue, 01 Aug 2023 04:57:06 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.32])
+        by smtp.gmail.com with ESMTPSA id t8-20020a62ea08000000b00686ec858fb0sm9222746pfh.190.2023.08.01.04.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 04:57:05 -0700 (PDT)
+From:   Like Xu <like.xu.linux@gmail.com>
+X-Google-Original-From: Like Xu <likexu@tencent.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Zhu Lingshan <lingshan.zhu@intel.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH] KVM: irqbypass: Convert producers/consumers single linked list to XArray
+Date:   Tue,  1 Aug 2023 19:56:46 +0800
+Message-ID: <20230801115646.33990-1-likexu@tencent.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xgoan7pmmnklpxdl"
-Content-Disposition: inline
-In-Reply-To: <20230801101030.2040-6-keith.zhao@starfivetech.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,641 +71,345 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Like Xu <likexu@tencent.com>
 
---xgoan7pmmnklpxdl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Replace producers/consumers linked list with XArray. There are no changes
+in functionality, but lookup performance has been improved.
 
-On Tue, Aug 01, 2023 at 06:10:28PM +0800, Keith Zhao wrote:
-> +#define DRV_NAME	"starfive"
-> +#define DRV_DESC	"Starfive DRM driver"
+The producers and consumers in current IRQ bypass manager are stored in
+simple linked lists, and a single mutex is held while traversing the lists
+and connecting a consumer to a producer (and vice versa). With this design
+and implementation, if there are a large number of KVM agents concurrently
+creating irqfds and all requesting to register their irqfds in the global
+consumers list, the global mutex contention will exponentially increase
+the avg wait latency, which is no longer tolerable in modern systems with
+a large number of CPU cores. For example:
 
-Shouldn't it be verisilicon?
+the wait time latency to acquire the mutex in a stress test where 174000
+irqfds were created concurrently on an 2.70GHz ICX w/ 144 cores:
 
-> +#define DRV_DATE	"202305161"
-> +#define DRV_MAJOR	1
-> +#define DRV_MINOR	0
-> +
-> +static struct platform_driver vs_drm_platform_driver;
+- avg = 117.855314 ms
+- min = 20 ns
+- max = 11428.340858 ms
 
-You don't seem to need that forward declaration.
+To reduce latency introduced by the irq_bypass_register_consumer() in
+the above usage scenario, the data structure XArray and its normal API
+is applied to track the producers and consumers so that lookups don't
+require a linear walk since the "tokens" used to match producers and
+consumers are just kernel pointers.
 
-> +static const struct file_operations fops = {
-> +	.owner			= THIS_MODULE,
-> +	.open			= drm_open,
-> +	.release		= drm_release,
-> +	.unlocked_ioctl	= drm_ioctl,
-> +	.compat_ioctl	= drm_compat_ioctl,
-> +	.poll			= drm_poll,
-> +	.read			= drm_read,
-> +	.mmap			= drm_gem_mmap,
-> +};
-> +
-> +static struct drm_driver vs_drm_driver = {
-> +	.driver_features	= DRIVER_MODESET | DRIVER_ATOMIC | DRIVER_GEM,
-> +	.lastclose		= drm_fb_helper_lastclose,
-> +	.prime_handle_to_fd = drm_gem_prime_handle_to_fd,
-> +	.prime_fd_to_handle = drm_gem_prime_fd_to_handle,
-> +	.gem_prime_import_sg_table = vs_gem_prime_import_sg_table,
-> +	.gem_prime_mmap		= drm_gem_prime_mmap,
-> +	.dumb_create		= vs_gem_dumb_create,
-> +	.fops			= &fops,
-> +	.name			= DRV_NAME,
-> +	.desc			= DRV_DESC,
-> +	.date			= DRV_DATE,
-> +	.major			= DRV_MAJOR,
-> +	.minor			= DRV_MINOR,
-> +};
-> +
-> +void vs_drm_update_pitch_alignment(struct drm_device *drm_dev,
-> +				   unsigned int alignment)
-> +{
-> +	struct vs_drm_private *priv = to_vs_dev(drm_dev);
-> +
-> +	if (alignment > priv->pitch_alignment)
-> +		priv->pitch_alignment = alignment;
-> +}
-> +
-> +static int vs_drm_bind(struct device *dev)
-> +{
-> +	struct platform_device *pdev = to_platform_device(dev);
-> +	struct vs_drm_private *priv;
-> +	int ret;
-> +	static u64 dma_mask = DMA_BIT_MASK(40);
-> +	struct drm_device *drm_dev;
-> +
-> +	/* Remove existing drivers that may own the framebuffer memory. */
-> +	ret = drm_aperture_remove_framebuffers(&vs_drm_driver);
-> +	if (ret) {
-> +		dev_err(dev,
-> +			    "Failed to remove existing framebuffers - %d.\n",
-> +			    ret);
-> +		return ret;
-> +	}
-> +
-> +	priv = devm_drm_dev_alloc(dev, &vs_drm_driver, struct vs_drm_private, base);
-> +		if (IS_ERR(priv))
-> +			return PTR_ERR(priv);
-> +
-> +	priv->pitch_alignment = 64;
-> +	priv->dma_dev = priv->base.dev;
-> +	priv->dma_dev->coherent_dma_mask = dma_mask;
+Thanks to the nature of XArray (more memory-efficient, parallelisable
+and cache friendly), the latecny is significantly reduced (compared to
+list and hlist proposal) under the same environment and testing:
 
-dma_set_coherent_mask()
+- avg = 314 ns
+- min = 124 ns
+- max = 47637 ns
 
-> +	drm_dev = &priv->base;
-> +	platform_set_drvdata(pdev, drm_dev);
-> +
-> +	vs_mode_config_init(drm_dev);
-> +
-> +	/* Now try and bind all our sub-components */
-> +	ret = component_bind_all(dev, drm_dev);
-> +	if (ret)
-> +		goto err_mode;
-> +
-> +	ret = drm_vblank_init(drm_dev, drm_dev->mode_config.num_crtc);
-> +	if (ret)
-> +		goto err_bind;
-> +
-> +	drm_mode_config_reset(drm_dev);
-> +
-> +	drm_kms_helper_poll_init(drm_dev);
-> +
-> +	ret = drm_dev_register(drm_dev, 0);
-> +	if (ret)
-> +		goto err_helper;
-> +
-> +	drm_fbdev_generic_setup(drm_dev, 32);
-> +
-> +	return 0;
-> +
-> +err_helper:
-> +	drm_kms_helper_poll_fini(drm_dev);
-> +err_bind:
-> +	component_unbind_all(drm_dev->dev, drm_dev);
-> +err_mode:
-> +	drm_mode_config_cleanup(drm_dev);
+In this conversion, the non-NULL opaque token to match between producer
+and consumer () is used as the XArray index. The list_for_each_entry() is
+replaced by xa_load(), and list_add/del() is replaced by xa_store/erase().
+The list_head member for linked list is removed, along with comments.
 
-If you're using drmm_mode_config_init this can go away.
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Reported-by: Yong He <alexyonghe@tencent.com>
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217379
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Like Xu <likexu@tencent.com>
+---
+Prerequisite:
+- https://lore.kernel.org/kvm/20230801085408.69597-1-likexu@tencent.com
+Test Requests:
+- Please rant to me if it causes a negative impact on vdpa/vfio testing.
+ include/linux/irqbypass.h |   8 +--
+ virt/lib/irqbypass.c      | 123 +++++++++++++++++++-------------------
+ 2 files changed, 61 insertions(+), 70 deletions(-)
 
-> +
-> +	return ret;
-> +}
-> +
-> +static void vs_drm_unbind(struct device *dev)
-> +{
-> +	struct drm_device *drm_dev = dev_get_drvdata(dev);
-> +
-> +	drm_dev_unregister(drm_dev);
-> +
-> +	drm_kms_helper_poll_fini(drm_dev);
-> +
-> +	component_unbind_all(drm_dev->dev, drm_dev);
-> +}
-> +
-> +static const struct component_master_ops vs_drm_ops = {
-> +	.bind = vs_drm_bind,
-> +	.unbind = vs_drm_unbind,
-> +};
-> +
-> +static struct platform_driver *drm_sub_drivers[] = {
-> +
-> +
-> +	/* connector + encoder*/
-> +#ifdef CONFIG_STARFIVE_HDMI
-> +	&starfive_hdmi_driver,
-> +#endif
-> +
-> +};
-> +
-> +#define NUM_DRM_DRIVERS \
-> +	(sizeof(drm_sub_drivers) / sizeof(struct platform_driver *))
-> +
-> +static int compare_dev(struct device *dev, void *data)
-> +{
-> +	return dev == (struct device *)data;
-> +}
-> +
-> +static struct component_match *vs_drm_match_add(struct device *dev)
-> +{
-> +	struct component_match *match = NULL;
-> +	int i;
-> +
-> +	for (i = 0; i < NUM_DRM_DRIVERS; ++i) {
-> +		struct platform_driver *drv = drm_sub_drivers[i];
-> +		struct device *p = NULL, *d;
-> +
-> +		while ((d = platform_find_device_by_driver(p, &drv->driver))) {
-> +			put_device(p);
-> +
-> +			component_match_add(dev, &match, compare_dev, d);
-> +			p = d;
-> +		}
-> +		put_device(p);
-> +	}
-> +
-> +	return match ?: ERR_PTR(-ENODEV);
-> +}
-> +
-> +static int vs_drm_platform_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct component_match *match;
-> +
-> +	match = vs_drm_match_add(dev);
-> +	if (IS_ERR(match))
-> +		return PTR_ERR(match);
-> +
-> +	return component_master_add_with_match(dev, &vs_drm_ops, match);
-> +}
-> +
-> +static int vs_drm_platform_remove(struct platform_device *pdev)
-> +{
-> +	component_master_del(&pdev->dev, &vs_drm_ops);
-> +	return 0;
-> +}
-> +
-> +#ifdef CONFIG_PM_SLEEP
-> +static int vs_drm_suspend(struct device *dev)
-> +{
-> +	return drm_mode_config_helper_suspend(dev_get_drvdata(dev));
-> +}
-> +
-> +static int vs_drm_resume(struct device *dev)
-> +{
-> +	drm_mode_config_helper_resume(dev_get_drvdata(dev));
-> +
-> +	return 0;
-> +}
-> +#endif
-> +
-> +static SIMPLE_DEV_PM_OPS(vs_drm_pm_ops, vs_drm_suspend, vs_drm_resume);
-> +
-> +static const struct of_device_id vs_drm_dt_ids[] = {
-> +	{ .compatible = "starfive,display-subsystem", },
-> +	{ },
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, vs_drm_dt_ids);
-> +
-> +static struct platform_driver vs_drm_platform_driver = {
-> +	.probe = vs_drm_platform_probe,
-> +	.remove = vs_drm_platform_remove,
-> +
-> +	.driver = {
-> +		.name = DRV_NAME,
-> +		.of_match_table = vs_drm_dt_ids,
-> +		.pm = &vs_drm_pm_ops,
-> +	},
-> +};
-> +
-> +static int __init vs_drm_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = platform_register_drivers(drm_sub_drivers, NUM_DRM_DRIVERS);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = platform_driver_register(&vs_drm_platform_driver);
-> +	if (ret)
-> +		platform_unregister_drivers(drm_sub_drivers, NUM_DRM_DRIVERS);
-> +
-> +	return ret;
-> +}
-> +
-> +static void __exit vs_drm_fini(void)
-> +{
-> +	platform_driver_unregister(&vs_drm_platform_driver);
-> +	platform_unregister_drivers(drm_sub_drivers, NUM_DRM_DRIVERS);
-> +}
-> +
-> +module_init(vs_drm_init);
-> +module_exit(vs_drm_fini);
-> +
-> +MODULE_DESCRIPTION("VeriSilicon DRM Driver");
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/gpu/drm/verisilicon/vs_drv.h b/drivers/gpu/drm/verisilicon/vs_drv.h
-> new file mode 100644
-> index 000000000..6ddc99dcf
-> --- /dev/null
-> +++ b/drivers/gpu/drm/verisilicon/vs_drv.h
-> @@ -0,0 +1,54 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2023 VeriSilicon Holdings Co., Ltd.
-> + */
-> +
-> +#ifndef __VS_DRV_H__
-> +#define __VS_DRV_H__
-> +
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/version.h>
-> +#include <drm/drm_drv.h>
-> +#include <drm/drm_gem.h>
-> +#include <drm/drm_managed.h>
-> +
-> +/*
-> + *
-> + * @dma_dev: device for DMA API.
-> + *	- use the first attached device if support iommu
-> +	else use drm device (only contiguous buffer support)
-> + * @domain: iommu domain for DRM.
-> + *	- all DC IOMMU share same domain to reduce mapping
-> + * @pitch_alignment: buffer pitch alignment required by sub-devices.
-> + *
-> + */
-> +struct vs_drm_private {
-> +	struct drm_device base;
-> +	struct device *dma_dev;
-> +	struct iommu_domain *domain;
-> +	unsigned int pitch_alignment;
-> +};
-> +
-> +static inline struct vs_drm_private *
-> +to_vs_dev(const struct drm_device *dev)
-> +{
-> +	return container_of(dev, struct vs_drm_private, base);
-> +}
-> +
-> +void vs_drm_update_pitch_alignment(struct drm_device *drm_dev,
-> +				   unsigned int alignment);
-> +
-> +
-> +static inline bool is_iommu_enabled(struct drm_device *dev)
-> +{
-> +	struct vs_drm_private *priv = to_vs_dev(dev);
-> +
-> +	return priv->domain ? true : false;
-> +}
-> +
-> +#ifdef CONFIG_STARFIVE_HDMI
-> +extern struct platform_driver starfive_hdmi_driver;
-> +#endif
-> +
-> +#endif /* __VS_DRV_H__ */
-> diff --git a/drivers/gpu/drm/verisilicon/vs_gem.c b/drivers/gpu/drm/verisilicon/vs_gem.c
-> new file mode 100644
-> index 000000000..a7d5a5c7b
-> --- /dev/null
-> +++ b/drivers/gpu/drm/verisilicon/vs_gem.c
-> @@ -0,0 +1,298 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2023 VeriSilicon Holdings Co., Ltd.
-> + */
-> +
-> +#include <linux/dma-buf.h>
-> +#include <linux/of_reserved_mem.h>
-> +#include <drm/drm_gem_dma_helper.h>
-> +
-> +#include "vs_drv.h"
-> +#include "vs_gem.h"
-> +
-> +MODULE_IMPORT_NS(DMA_BUF);
-> +
-> +static const struct drm_gem_object_funcs vs_gem_default_funcs;
-> +
-> +static int vs_gem_alloc_buf(struct vs_gem_object *vs_obj)
-> +{
-> +	struct drm_device *dev = vs_obj->base.base.dev;
-> +	unsigned int nr_pages;
-> +	struct sg_table sgt;
-> +	int ret = -ENOMEM;
-> +
-> +	if (vs_obj->base.dma_addr) {
-> +		drm_dbg_kms(dev, "already allocated.\n");
-> +		return 0;
-> +	}
-> +
-> +	vs_obj->base.dma_addr = DMA_ATTR_WRITE_COMBINE | DMA_ATTR_FORCE_CONTIGUOUS
-> +			   | DMA_ATTR_NO_KERNEL_MAPPING;
-> +
-> +	nr_pages = vs_obj->base.base.size >> PAGE_SHIFT;
-> +
-> +	vs_obj->pages = kvmalloc_array(nr_pages, sizeof(struct page *),
-> +				       GFP_KERNEL | __GFP_ZERO);
-> +	if (!vs_obj->pages)
-> +		return -ENOMEM;
-> +
-> +	vs_obj->cookie = dma_alloc_attrs(dev->dev, vs_obj->base.base.size,
-> +					 &vs_obj->base.dma_addr, GFP_KERNEL,
-> +					 vs_obj->dma_attrs);
-> +
-> +	if (!vs_obj->cookie) {
-> +		dev_err(dev->dev, "failed to allocate buffer.\n");
-> +		goto err_free;
-> +	}
-> +
-> +	vs_obj->iova = vs_obj->base.dma_addr;
-> +
-> +	ret = dma_get_sgtable_attrs(dev->dev, &sgt,
-> +				    vs_obj->cookie, vs_obj->base.dma_addr,
-> +				    vs_obj->base.base.size, vs_obj->dma_attrs);
-> +	if (ret < 0) {
-> +		dev_err(dev->dev, "failed to get sgtable.\n");
-> +		goto err_mem_free;
-> +	}
-> +
-> +	if (drm_prime_sg_to_page_array(&sgt, vs_obj->pages, nr_pages)) {
-> +		dev_err(dev->dev, "invalid sgtable.\n");
-> +		ret = -EINVAL;
-> +		goto err_sgt_free;
-> +	}
-> +
-> +	sg_free_table(&sgt);
-> +
-> +	return 0;
-> +
-> +err_sgt_free:
-> +	sg_free_table(&sgt);
-> +err_mem_free:
-> +		dma_free_attrs(dev->dev, vs_obj->base.base.size, vs_obj->cookie,
-> +			       vs_obj->base.dma_addr, vs_obj->dma_attrs);
-> +err_free:
-> +	kvfree(vs_obj->pages);
-> +
-> +	return ret;
-> +}
-> +
-> +static void vs_gem_free_buf(struct vs_gem_object *vs_obj)
-> +{
-> +	struct drm_device *dev = vs_obj->base.base.dev;
-> +
-> +	if (!vs_obj->base.dma_addr) {
-> +		drm_dbg_kms(dev, "dma_addr is invalid.\n");
-> +		return;
-> +	}
-> +
-> +	dma_free_attrs(dev->dev, vs_obj->base.base.size, vs_obj->cookie,
-> +		       (dma_addr_t)vs_obj->base.dma_addr,
-> +		       vs_obj->dma_attrs);
-> +
-> +	kvfree(vs_obj->pages);
-> +}
-> +
-> +static void vs_gem_free_object(struct drm_gem_object *obj)
-> +{
-> +	struct vs_gem_object *vs_obj = to_vs_gem_object(obj);
-> +
-> +	if (obj->import_attach)
-> +		drm_prime_gem_destroy(obj, vs_obj->base.sgt);
-> +	else
-> +		vs_gem_free_buf(vs_obj);
-> +
-> +	drm_gem_object_release(obj);
-> +
-> +	kfree(vs_obj);
-> +}
-> +
-> +static struct vs_gem_object *vs_gem_alloc_object(struct drm_device *dev,
-> +						 size_t size)
-> +{
-> +	struct vs_gem_object *vs_obj;
-> +	struct drm_gem_object *obj;
-> +	int ret;
-> +
-> +	vs_obj = kzalloc(sizeof(*vs_obj), GFP_KERNEL);
-> +	if (!vs_obj)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	vs_obj->base.base.size = size;
-> +	obj = &vs_obj->base.base;
-> +
-> +	ret = drm_gem_object_init(dev, obj, size);
-> +	if (ret)
-> +		goto err_free;
-> +
-> +	vs_obj->base.base.funcs = &vs_gem_default_funcs;
-> +
-> +	ret = drm_gem_create_mmap_offset(obj);
-> +	if (ret) {
-> +		drm_gem_object_release(obj);
-> +		goto err_free;
-> +	}
-> +
-> +	return vs_obj;
-> +
-> +err_free:
-> +	kfree(vs_obj);
-> +	return ERR_PTR(ret);
-> +}
-> +
-> +static struct vs_gem_object *vs_gem_create_object(struct drm_device *dev,
-> +						  size_t size)
-> +{
-> +	struct vs_gem_object *vs_obj;
-> +	int ret;
-> +
-> +	size = PAGE_ALIGN(size);
-> +
-> +	vs_obj = vs_gem_alloc_object(dev, size);
-> +	if (IS_ERR(vs_obj))
-> +		return vs_obj;
-> +
-> +	ret = vs_gem_alloc_buf(vs_obj);
-> +	if (ret) {
-> +		drm_gem_object_release(&vs_obj->base.base);
-> +		kfree(vs_obj);
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	return vs_obj;
-> +}
-> +
-> +static struct vs_gem_object *vs_gem_create_with_handle(struct drm_device *dev,
-> +						       struct drm_file *file,
-> +						       size_t size,
-> +						       unsigned int *handle)
-> +{
-> +	struct vs_gem_object *vs_obj;
-> +	struct drm_gem_object *obj;
-> +	int ret;
-> +
-> +	vs_obj = vs_gem_create_object(dev, size);
-> +	if (IS_ERR(vs_obj))
-> +		return vs_obj;
-> +
-> +	obj = &vs_obj->base.base;
-> +
-> +	ret = drm_gem_handle_create(file, obj, handle);
-> +
-> +	drm_gem_object_put(obj);
-> +
-> +	if (ret)
-> +		return ERR_PTR(ret);
-> +
-> +	return vs_obj;
-> +}
-> +
-> +static struct sg_table *vs_gem_prime_get_sg_table(struct drm_gem_object *obj)
-> +{
-> +	struct vs_gem_object *vs_obj = to_vs_gem_object(obj);
-> +
-> +	return drm_prime_pages_to_sg(obj->dev, vs_obj->pages,
-> +					 vs_obj->base.base.size >> PAGE_SHIFT);
-> +}
-> +
-> +static int vs_gem_prime_vmap(struct drm_gem_object *obj, struct iosys_map *map)
-> +{
-> +	struct vs_gem_object *vs_obj = to_vs_gem_object(obj);
-> +
-> +	vs_obj->base.vaddr = vs_obj->dma_attrs & DMA_ATTR_NO_KERNEL_MAPPING ?
-> +		       page_address(vs_obj->cookie) : vs_obj->cookie;
-> +
-> +	return drm_gem_dma_vmap(&vs_obj->base, map);
-> +}
+diff --git a/include/linux/irqbypass.h b/include/linux/irqbypass.h
+index 9bdb2a781841..dbcc1b4d0ccf 100644
+--- a/include/linux/irqbypass.h
++++ b/include/linux/irqbypass.h
+@@ -8,14 +8,12 @@
+ #ifndef IRQBYPASS_H
+ #define IRQBYPASS_H
+ 
+-#include <linux/list.h>
+-
+ struct irq_bypass_consumer;
+ 
+ /*
+  * Theory of operation
+  *
+- * The IRQ bypass manager is a simple set of lists and callbacks that allows
++ * The IRQ bypass manager is a simple set of xarrays and callbacks that allows
+  * IRQ producers (ex. physical interrupt sources) to be matched to IRQ
+  * consumers (ex. virtualization hardware that allows IRQ bypass or offload)
+  * via a shared token (ex. eventfd_ctx).  Producers and consumers register
+@@ -30,7 +28,6 @@ struct irq_bypass_consumer;
+ 
+ /**
+  * struct irq_bypass_producer - IRQ bypass producer definition
+- * @node: IRQ bypass manager private list management
+  * @token: opaque token to match between producer and consumer (non-NULL)
+  * @irq: Linux IRQ number for the producer device
+  * @add_consumer: Connect the IRQ producer to an IRQ consumer (optional)
+@@ -43,7 +40,6 @@ struct irq_bypass_consumer;
+  * for a physical device assigned to a VM.
+  */
+ struct irq_bypass_producer {
+-	struct list_head node;
+ 	void *token;
+ 	int irq;
+ 	int (*add_consumer)(struct irq_bypass_producer *,
+@@ -56,7 +52,6 @@ struct irq_bypass_producer {
+ 
+ /**
+  * struct irq_bypass_consumer - IRQ bypass consumer definition
+- * @node: IRQ bypass manager private list management
+  * @token: opaque token to match between producer and consumer (non-NULL)
+  * @add_producer: Connect the IRQ consumer to an IRQ producer
+  * @del_producer: Disconnect the IRQ consumer from an IRQ producer
+@@ -69,7 +64,6 @@ struct irq_bypass_producer {
+  * portions of the interrupt handling to the VM.
+  */
+ struct irq_bypass_consumer {
+-	struct list_head node;
+ 	void *token;
+ 	int (*add_producer)(struct irq_bypass_consumer *,
+ 			    struct irq_bypass_producer *);
+diff --git a/virt/lib/irqbypass.c b/virt/lib/irqbypass.c
+index e0aabbbf27ec..78238c0fa83f 100644
+--- a/virt/lib/irqbypass.c
++++ b/virt/lib/irqbypass.c
+@@ -15,15 +15,15 @@
+  */
+ 
+ #include <linux/irqbypass.h>
+-#include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
++#include <linux/xarray.h>
+ 
+ MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("IRQ bypass manager utility module");
+ 
+-static LIST_HEAD(producers);
+-static LIST_HEAD(consumers);
++static DEFINE_XARRAY(producers);
++static DEFINE_XARRAY(consumers);
+ static DEFINE_MUTEX(lock);
+ 
+ /* @lock must be held when calling connect */
+@@ -78,11 +78,12 @@ static void __disconnect(struct irq_bypass_producer *prod,
+  * irq_bypass_register_producer - register IRQ bypass producer
+  * @producer: pointer to producer structure
+  *
+- * Add the provided IRQ producer to the list of producers and connect
+- * with any matching token found on the IRQ consumers list.
++ * Add the provided IRQ producer to the xarray of producers and connect
++ * with any matching token found on the IRQ consumers xarray.
+  */
+ int irq_bypass_register_producer(struct irq_bypass_producer *producer)
+ {
++	unsigned long token = (unsigned long)producer->token;
+ 	struct irq_bypass_producer *tmp;
+ 	struct irq_bypass_consumer *consumer;
+ 	int ret;
+@@ -97,23 +98,22 @@ int irq_bypass_register_producer(struct irq_bypass_producer *producer)
+ 
+ 	mutex_lock(&lock);
+ 
+-	list_for_each_entry(tmp, &producers, node) {
+-		if (tmp->token == producer->token || tmp == producer) {
+-			ret = -EBUSY;
++	tmp = xa_load(&producers, token);
++	if (tmp || tmp == producer) {
++		ret = -EBUSY;
++		goto out_err;
++	}
++
++	consumer = xa_load(&consumers, token);
++	if (consumer) {
++		ret = __connect(producer, consumer);
++		if (ret)
+ 			goto out_err;
+-		}
+ 	}
+ 
+-	list_for_each_entry(consumer, &consumers, node) {
+-		if (consumer->token == producer->token) {
+-			ret = __connect(producer, consumer);
+-			if (ret)
+-				goto out_err;
+-			break;
+-		}
+-	}
+-
+-	list_add(&producer->node, &producers);
++	ret = xa_err(xa_store(&producers, token, producer, GFP_KERNEL));
++	if (ret)
++		goto out_err;
+ 
+ 	mutex_unlock(&lock);
+ 
+@@ -129,11 +129,12 @@ EXPORT_SYMBOL_GPL(irq_bypass_register_producer);
+  * irq_bypass_unregister_producer - unregister IRQ bypass producer
+  * @producer: pointer to producer structure
+  *
+- * Remove a previously registered IRQ producer from the list of producers
++ * Remove a previously registered IRQ producer from the xarray of producers
+  * and disconnect it from any connected IRQ consumer.
+  */
+ void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
+ {
++	unsigned long token = (unsigned long)producer->token;
+ 	struct irq_bypass_producer *tmp;
+ 	struct irq_bypass_consumer *consumer;
+ 
+@@ -143,24 +144,18 @@ void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
+ 	might_sleep();
+ 
+ 	if (!try_module_get(THIS_MODULE))
+-		return; /* nothing in the list anyway */
++		return; /* nothing in the xarray anyway */
+ 
+ 	mutex_lock(&lock);
+ 
+-	list_for_each_entry(tmp, &producers, node) {
+-		if (tmp != producer)
+-			continue;
++	tmp = xa_load(&producers, token);
++	if (tmp == producer) {
++		consumer = xa_load(&consumers, token);
++		if (consumer)
++			__disconnect(producer, consumer);
+ 
+-		list_for_each_entry(consumer, &consumers, node) {
+-			if (consumer->token == producer->token) {
+-				__disconnect(producer, consumer);
+-				break;
+-			}
+-		}
+-
+-		list_del(&producer->node);
++		xa_erase(&producers, token);
+ 		module_put(THIS_MODULE);
+-		break;
+ 	}
+ 
+ 	mutex_unlock(&lock);
+@@ -173,11 +168,12 @@ EXPORT_SYMBOL_GPL(irq_bypass_unregister_producer);
+  * irq_bypass_register_consumer - register IRQ bypass consumer
+  * @consumer: pointer to consumer structure
+  *
+- * Add the provided IRQ consumer to the list of consumers and connect
+- * with any matching token found on the IRQ producer list.
++ * Add the provided IRQ consumer to the xarray of consumers and connect
++ * with any matching token found on the IRQ producer xarray.
+  */
+ int irq_bypass_register_consumer(struct irq_bypass_consumer *consumer)
+ {
++	unsigned long token = (unsigned long)consumer->token;
+ 	struct irq_bypass_consumer *tmp;
+ 	struct irq_bypass_producer *producer;
+ 	int ret;
+@@ -193,23 +189,22 @@ int irq_bypass_register_consumer(struct irq_bypass_consumer *consumer)
+ 
+ 	mutex_lock(&lock);
+ 
+-	list_for_each_entry(tmp, &consumers, node) {
+-		if (tmp->token == consumer->token || tmp == consumer) {
+-			ret = -EBUSY;
++	tmp = xa_load(&consumers, token);
++	if (tmp || tmp == consumer) {
++		ret = -EBUSY;
++		goto out_err;
++	}
++
++	producer = xa_load(&producers, token);
++	if (producer) {
++		ret = __connect(producer, consumer);
++		if (ret)
+ 			goto out_err;
+-		}
+ 	}
+ 
+-	list_for_each_entry(producer, &producers, node) {
+-		if (producer->token == consumer->token) {
+-			ret = __connect(producer, consumer);
+-			if (ret)
+-				goto out_err;
+-			break;
+-		}
+-	}
+-
+-	list_add(&consumer->node, &consumers);
++	ret = xa_err(xa_store(&consumers, token, consumer, GFP_KERNEL));
++	if (ret)
++		goto out_err;
+ 
+ 	mutex_unlock(&lock);
+ 
+@@ -225,11 +220,12 @@ EXPORT_SYMBOL_GPL(irq_bypass_register_consumer);
+  * irq_bypass_unregister_consumer - unregister IRQ bypass consumer
+  * @consumer: pointer to consumer structure
+  *
+- * Remove a previously registered IRQ consumer from the list of consumers
++ * Remove a previously registered IRQ consumer from the xarray of consumers
+  * and disconnect it from any connected IRQ producer.
+  */
+ void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+ {
++	unsigned long token = (unsigned long)consumer->token;
+ 	struct irq_bypass_consumer *tmp;
+ 	struct irq_bypass_producer *producer;
+ 
+@@ -239,24 +235,18 @@ void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+ 	might_sleep();
+ 
+ 	if (!try_module_get(THIS_MODULE))
+-		return; /* nothing in the list anyway */
++		return; /* nothing in the xarray anyway */
+ 
+ 	mutex_lock(&lock);
+ 
+-	list_for_each_entry(tmp, &consumers, node) {
+-		if (tmp != consumer)
+-			continue;
++	tmp = xa_load(&consumers, token);
++	if (tmp == consumer) {
++		producer = xa_load(&producers, token);
++		if (producer)
++			__disconnect(producer, consumer);
+ 
+-		list_for_each_entry(producer, &producers, node) {
+-			if (producer->token == consumer->token) {
+-				__disconnect(producer, consumer);
+-				break;
+-			}
+-		}
+-
+-		list_del(&consumer->node);
++		xa_erase(&consumers, token);
+ 		module_put(THIS_MODULE);
+-		break;
+ 	}
+ 
+ 	mutex_unlock(&lock);
+@@ -264,3 +254,10 @@ void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+ 	module_put(THIS_MODULE);
+ }
+ EXPORT_SYMBOL_GPL(irq_bypass_unregister_consumer);
++
++static void __exit irqbypass_exit(void)
++{
++	xa_destroy(&producers);
++	xa_destroy(&consumers);
++}
++module_exit(irqbypass_exit);
 
-This looks *very* similar to the GEM DMA ops. Why do you need to roll
-your own?
+base-commit: b580148824057ef8e3cc3a459082ebcb99716880
+-- 
+2.41.0
 
-> +static const struct vm_operations_struct vs_vm_ops = {
-> +	.open  = drm_gem_vm_open,
-> +	.close = drm_gem_vm_close,
-> +};
-> +
-> +static const struct drm_gem_object_funcs vs_gem_default_funcs = {
-> +	.free = vs_gem_free_object,
-> +	.get_sg_table = vs_gem_prime_get_sg_table,
-> +	.vmap = vs_gem_prime_vmap,
-> +	.mmap = drm_gem_dma_object_mmap,
-> +	.vm_ops = &vs_vm_ops,
-> +};
-> +
-> +int vs_gem_dumb_create(struct drm_file *file,
-> +		       struct drm_device *dev,
-> +		       struct drm_mode_create_dumb *args)
-> +{
-> +	struct vs_drm_private *priv = to_vs_dev(dev);
-> +	struct vs_gem_object *vs_obj;
-> +	unsigned int pitch = DIV_ROUND_UP(args->width * args->bpp, 8);
-> +
-> +	if (args->bpp % 10)
-> +		args->pitch = ALIGN(pitch, priv->pitch_alignment);
-> +	else
-> +		/* for costum 10bit format with no bit gaps */
-> +		args->pitch = pitch;
-> +	args->size = PAGE_ALIGN(args->pitch * args->height);
-> +	vs_obj = vs_gem_create_with_handle(dev, file, args->size,
-> +					   &args->handle);
-> +	return PTR_ERR_OR_ZERO(vs_obj);
-> +}
-> +
-> +struct drm_gem_object *
-> +vs_gem_prime_import_sg_table(struct drm_device *dev,
-> +			     struct dma_buf_attachment *attach,
-> +			     struct sg_table *sgt)
-> +{
-> +	struct vs_gem_object *vs_obj;
-> +	int npages;
-> +	int ret;
-> +	struct scatterlist *s;
-> +	u32 i;
-> +	dma_addr_t expected;
-> +	size_t size = attach->dmabuf->size;
-> +
-> +	size = PAGE_ALIGN(size);
-> +
-> +	vs_obj = vs_gem_alloc_object(dev, size);
-> +	if (IS_ERR(vs_obj))
-> +		return ERR_CAST(vs_obj);
-> +
-> +	expected = sg_dma_address(sgt->sgl);
-> +	for_each_sg(sgt->sgl, s, sgt->nents, i) {
-> +		if (sg_dma_address(s) != expected) {
-> +			DRM_ERROR("sg_table is not contiguous");
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
-> +		if (sg_dma_len(s) & (PAGE_SIZE - 1)) {
-> +			ret = -EINVAL;
-> +			goto err;
-> +		}
-> +		if (i == 0)
-> +			vs_obj->iova = sg_dma_address(s);
-> +		expected = sg_dma_address(s) + sg_dma_len(s);
-> +	}
-> +
-> +	vs_obj->base.dma_addr = sg_dma_address(sgt->sgl);
-> +
-> +	npages = vs_obj->base.base.size >> PAGE_SHIFT;
-> +	vs_obj->pages = kvmalloc_array(npages, sizeof(struct page *),
-> +				       GFP_KERNEL);
-> +	if (!vs_obj->pages) {
-> +		ret = -ENOMEM;
-> +		goto err;
-> +	}
-> +
-> +	ret = drm_prime_sg_to_page_array(sgt, vs_obj->pages, npages);
-> +	if (ret)
-> +		goto err_free_page;
-> +
-> +	vs_obj->base.sgt = sgt;
-> +
-> +	return &vs_obj->base.base;
-> +
-> +err_free_page:
-> +	kvfree(vs_obj->pages);
-> +err:
-> +	vs_gem_free_object(&vs_obj->base.base);
-> +
-> +	return ERR_PTR(ret);
-> +}
-
-Ditto
-
-Maxime
-
---xgoan7pmmnklpxdl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMjy0wAKCRDj7w1vZxhR
-xRUZAP9dZyJpqxh/3iQ/mPjhJ/AtpK09jOTCpAyvsEFdRUG0cwEA2CuBuXIpi5YA
-UZr6SAwxgR9YosUtfdXawp3OeGo5iQM=
-=0QzG
------END PGP SIGNATURE-----
-
---xgoan7pmmnklpxdl--
