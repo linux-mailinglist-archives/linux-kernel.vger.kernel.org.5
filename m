@@ -2,185 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A4176BB76
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F5E76BB7D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbjHARj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42942 "EHLO
+        id S230346AbjHARkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:40:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjHARj0 (ORCPT
+        with ESMTP id S230116AbjHARkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:39:26 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A417E53;
-        Tue,  1 Aug 2023 10:39:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690911565; x=1722447565;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=UonUIoBUCNktB5rB1/gE9ziHWmQHQrb//uJtkHY7PGw=;
-  b=lZuNKAh+9xnIyMr4GI1x5LN53eSdHufxbIcODJ8r5jGSeJ3ND9Kbb//q
-   LZhuqTUY8LFwFxnD9LOSsoYch3YwgfBWoahfpenW5f9aNUQtT0d/YBY4m
-   iFqEJew0HXvVmXpnhvOhhdrff7l6oMDWjAaOl0xXZKKzKFI2bgffceH+a
-   bzBlY0GaE+6/reJAgLDHHQPmxJuUc9WQRyY/OTV+Pmr1PvQUJiLJxduA7
-   oUyM/151hkLxXEmPoygcXEbUAfOgWGfNm5ttZWQWV05cJ6olK9zOtJmA4
-   gxtFdUZFhGcBoeUuQM7QSK5l3B3eCo6xF8OY4H6GRSRvOk9ImPFS8UdYX
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="368270365"
-X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
-   d="scan'208";a="368270365"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 10:39:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="872149547"
-Received: from vcostago-desk1.jf.intel.com (HELO vcostago-desk1) ([10.54.70.17])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 10:39:26 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Maxim Georgiev <glipus@gmail.com>
-Subject: Re: [PATCH v2 net-next 7/9] net: netdevsim: mimic tc-taprio offload
-In-Reply-To: <20230801164534.2nklcql2nh6x6p7y@skbuf>
-References: <20230613215440.2465708-1-vladimir.oltean@nxp.com>
- <20230613215440.2465708-8-vladimir.oltean@nxp.com>
- <877cs5twqn.fsf@intel.com> <20230801164534.2nklcql2nh6x6p7y@skbuf>
-Date:   Tue, 01 Aug 2023 10:39:23 -0700
-Message-ID: <87o7jq64s4.fsf@intel.com>
+        Tue, 1 Aug 2023 13:40:06 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49383E53
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:40:05 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-407db3e9669so19871cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:40:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690911604; x=1691516404;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z4ttxZ9lvM9BRgPqD8KcTUo/Tqk/chLcWEpF3hi3Jtw=;
+        b=FcBMFuGzuHcmmy5rF69xdO99znqfnKnhx4Pr8GCZJbOTX9sSKgo1XkVCbe/TOOWWTy
+         kG7PvFMOMaS5dnQFt4etYAxJ2KWFFS70hQ8xEhLjFylSvgZZrBi2/8jkQ+jP4a0qhwjs
+         8Lgzi6hjaxmAEQx0H5hdNmgrTLluTlTJBpLng9/JseoebWPc12qD8CSqKJjKRXN0G21C
+         AbPBLSzAsMS7XQuUYgbE6cKoP/9bvOLRkpnwSusLgqpYEwAjCgEb/JpwO2i54s97f5hr
+         2w9hjTpC54HsNMUTrtieL2BeC0MoMKjBsbmNIihLSBI3nmnM94aY9/fg00zUTb7vN6V/
+         TuhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690911604; x=1691516404;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Z4ttxZ9lvM9BRgPqD8KcTUo/Tqk/chLcWEpF3hi3Jtw=;
+        b=K8A3iZNUKIn7QBvch7nz4ECJiA7/VsrdmpkQn9YfP4DFV0Ziljj76ynPcY/ym3VuZI
+         +S1ZMCCwXbI2UH6QWBb1ViPaivjdSyKp7W/wi4ERAXuTf/+nyfI4FyRCabnuPcIzxFfM
+         bi9JlnS3VtrfrPAOZ/sY9nOv0f03etMG7ds64iEYaTHf+z+GDQNAhhRg/OmEZ6AsugAJ
+         6vRbcnh/Jjxw1wEjImEIt/2nWXDrniF7fVhAJ99cUos8LneUB3yLHQTIde7PwAGhDMZF
+         uC/cWZZz3DkJ6+bYfsMtE4qMe5hkIq1YhOELocNYjvWAZlRfMnAOoKU9dJrGWQRvgXDW
+         ySHg==
+X-Gm-Message-State: ABy/qLZR8Uj6Tyri0TR6Xtj9lPB8JF2EdDYGxhtDoPyYdSadyU1VfZRO
+        PMaOEWAv339/akiWLTZhBmvdPMm0zCJXMFLBTaLS8g==
+X-Google-Smtp-Source: APBJJlGETBVMZMR1LPwpj6fIcpITK782kqS9VcG1LyI3VYRdrDhyvcbDs1fvheip5H6UVpkmAYE4OckMze6BFPmQB+M=
+X-Received: by 2002:a05:622a:115:b0:40d:eb06:d3cc with SMTP id
+ u21-20020a05622a011500b0040deb06d3ccmr681996qtw.7.1690911604254; Tue, 01 Aug
+ 2023 10:40:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20230711055859.1242497-1-irogers@google.com> <182675ca-0905-0ed2-de94-0f7d4a256082@oracle.com>
+ <CAP-5=fXrOvkwrbEB0GGv6Xr5JOdrW7dzjOL=MkDdxX2McfnzYA@mail.gmail.com> <cd5814af-8ab0-6ab9-9b3c-b5081e54f199@oracle.com>
+In-Reply-To: <cd5814af-8ab0-6ab9-9b3c-b5081e54f199@oracle.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 1 Aug 2023 10:39:53 -0700
+Message-ID: <CAP-5=fU4c+kU0OYbPp0andZW33tHiewyoxkvXbrU36EyLKKZ2A@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] perf list: Remove duplicate PMUs
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
-
-Vladimir Oltean <vladimir.oltean@nxp.com> writes:
-
-> On Wed, Jun 14, 2023 at 05:06:24PM -0700, Vinicius Costa Gomes wrote:
->> > +static int nsim_setup_tc_taprio(struct net_device *dev,
->> > +				struct tc_taprio_qopt_offload *offload)
->> > +{
->> > +	int err =3D 0;
->> > +
->> > +	switch (offload->cmd) {
->> > +	case TAPRIO_CMD_REPLACE:
->> > +	case TAPRIO_CMD_DESTROY:
->> > +		break;
->>=20
->> I was thinking about how useful would proper validation of the
->> parameters be? Thinking that we could detect "driver API" breakages
->> earlier, and we want it documented that the drivers should check for the
->> things that it supports.
->>=20
->> Makes sense?
+On Tue, Jul 11, 2023 at 8:24=E2=80=AFAM John Garry <john.g.garry@oracle.com=
+> wrote:
 >
-> Sorry, I lack imagination as to what the netdevsim driver may check for.
-> The taprio offload parameters should always be valid, properly speaking,
-> otherwise the Qdisc wouldn't be passing them on to the driver. At least
-> that would be the intention. The rest are hardware specific checks for
-> hardware specific limitations. Here there is no hardware.
 >
-
-Trying to remember what was going through my mind when I said that.
-
-What I seem to recall is something that would help us "keep honest":
-I was worrying about someone (perhaps myself ;-) sneaking a new feature
-in taprio and forgetting to update other drivers.
-
-I thought that adding a check for the existing parameters would help
-detect those kind of things. If anything unknown was there in the
-offload struct, netdevsim would complain loudly.
-
-Perhaps I was worrying too much. And the way to solve that is to keep
-active attention against that during review.
-
-> The parameters passed to TAPRIO_CMD_REPLACE are:
+> >>> ```
+> >>> $ perf list
+> >>> ...
+> >>>     uncore_imc_free_running_0/data_read/               [Kernel PMU ev=
+ent]
+> >>>     uncore_imc_free_running_0/data_total/              [Kernel PMU ev=
+ent]
+> >>>     uncore_imc_free_running_0/data_write/              [Kernel PMU ev=
+ent]
+> >>>     uncore_imc_free_running_1/data_read/               [Kernel PMU ev=
+ent]
+> >>>     uncore_imc_free_running_1/data_total/              [Kernel PMU ev=
+ent]
+> >>>     uncore_imc_free_running_1/data_write/              [Kernel PMU ev=
+ent]
+> >>> ```
+> >>>
+> >>> After:
+> >>> ```
+> >>> $ perf list
+> >>> ...
+> >>>     uncore_imc_free_running/data_read/                 [Kernel PMU ev=
+ent]
+> >>>     uncore_imc_free_running/data_total/                [Kernel PMU ev=
+ent]
+> >>>     uncore_imc_free_running/data_write/                [Kernel PMU ev=
+ent]
+> >> So with this change can we run something like:
+> >>
+> >> perf stat -e uncore_imc_free_running/data_read/
+> >>
+> >> ?
+> > It is a long standing behavior of the event parser that we match the
+> > numeric suffixes, so:
 >
-> struct tc_mqprio_qopt_offload mqprio:
-> 	struct tc_mqprio_qopt qopt: validated by taprio_parse_mqprio_opt() for f=
-lags 0x2
-> 	u16 mode: always set to TC_MQPRIO_MODE_DCB
-> 	u16 shaper: always set to TC_MQPRIO_SHAPER_DCB
-> 	u32 flags: always set to 0
-> 	u64 min_rate[TC_QOPT_MAX_QUEUE]: always set to [0,]
-> 	u64 max_rate[TC_QOPT_MAX_QUEUE]: always set to [0,]
-> 	unsigned long preemptible_tcs: always set to 0, because ethtool_dev_mm_s=
-upported() returns false
+> I guess that I missed this as I assume that it would not handle more
+> complex names, like hisi_sccl1_ddr3, which I was then interested in.
 >
-> ktime_t base_time: any value is valid
+> >
+> > ```
+> > $ sudo perf stat -e uncore_imc_free_running/data_read/ -a sleep 1
+> >
+> > Performance counter stats for 'system wide':
+> >
+> >           6,969.93 MiB  uncore_imc_free_running/data_read/
+> >
+> >        1.001163027 seconds time elapsed
+> > ```
+> >
+> > The "uncore_" at the beginning is also optional, I kind of wish the
+> > "free_running" was too. The code doing this is:
+> > https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel=
+/git/perf/perf-tools-next.git/tree/tools/perf/util/parse-events.y?h=3Dperf-=
+tools-next*n316__;Iw!!ACWV5N9M2RV99hQ!JduVayRc--qLXHsoXWTlMUsO4NBUoBnKQHqP2=
+sx7VuwZiZzfVXaQZNBZuzO2Ie-twWQ1xu7nycBNFJ13LGk$
+> > adding a * after the PMU name in:
+> > asprintf(&pattern, "%s*", $1)
+> > Then using fnmatch here:
+> > https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel=
+/git/perf/perf-tools-next.git/tree/tools/perf/util/pmu.c?h=3Dperf-tools-nex=
+t*n1707__;Iw!!ACWV5N9M2RV99hQ!JduVayRc--qLXHsoXWTlMUsO4NBUoBnKQHqP2sx7VuwZi=
+ZzfVXaQZNBZuzO2Ie-twWQ1xu7nycBNa2_VzYE$
+> >
+> >> If so, does that match all PMUs whose name beings with
+> >> "uncore_imc_free_running" (and give aggregate result for those PMUs)?
+> > Yep. As we're matching with a filename '*' glob then it will actually
+> > potentially grab a bunch more. I think this should likely be made a
+> > lot more precise.
+> >
+> > The merging of the counters happens throughout the code, but it is set =
+up here:
+> > https://urldefense.com/v3/__https://git.kernel.org/pub/scm/linux/kernel=
+/git/perf/perf-tools-next.git/tree/tools/perf/util/stat.c?h=3Dperf-tools-ne=
+xt*n559__;Iw!!ACWV5N9M2RV99hQ!JduVayRc--qLXHsoXWTlMUsO4NBUoBnKQHqP2sx7VuwZi=
+ZzfVXaQZNBZuzO2Ie-twWQ1xu7nycBNiVEZvEE$
+> >
+> > I didn't write this behavior, it has pre-existed my contributions. I'm
+> > hoping to change the perf list behavior as we're seeing large server
+> > systems with getting on toward 100 PMUs, the events are replicated for
+> > each one and the perf list and testing behaviors are somewhat
+> > exploding in size.
 >
-> u64 cycle_time: any value is valid
+> Sure, that is why I was advised PMU kernel drivers event names to be
+> unique per PMU, so that we can add an event alias in a JSON and then
+> kernel events are matched and removed from perf list.
 >
-> u64 cycle_time_extension: any value <=3D cycle_time is valid. According t=
-o 802.1Q
-> 			  "Q.5 CycleTimeExtension variables", it's the maximum
-> 			  amount by which the penultimate cycle can be extended
-> 			  to avoid a very short cycle upon a ConfigChange event.
-> 			  But if CycleTimeExtension is larger than one CycleTime,
-> 			  then we're not even talking about the penultimate cycle
-> 			  anymore, but about ones previous to that?! Maybe this
-> 			  should be limited to 0 <=3D cycle_time_extension <=3D cycle_time
-> 			  by taprio, certainly not by offloading drivers.
->
+> I suppose that your changes are an alternative to the problem of
+> mushrooming kernel event list.
 
-Good point. I have to review 802.1Q, but from what I remember that
-sounds right, cycle_time_extension greater than cycle_time doesn't make
-much sense. Having a check for it in taprio itself sounds good.
+Thanks John, yep this is going after that problem. Could I get a
+reviewed/acked/tested-by for these changes?
 
-> u32 max_sdu[TC_MAX_QUEUE]: limited to a value <=3D dev->max_mtu by taprio
->
-> size_t num_entries: any value is valid
->
-> struct tc_taprio_sched_entry entries[]:
-> 	u8 command: will be either one of: TC_TAPRIO_CMD_SET_GATES, TC_TAPRIO_CM=
-D_SET_AND_HOLD
-> 		    or TC_TAPRIO_CMD_SET_AND_RELEASE. However 802.1Q "Table 8-7=E2=80=
-=94Gate operations"
-> 		    says "If frame preemption is not supported or not enabled (preempti=
-onActive is
-> 		    FALSE), this operation behaves the same as SetGateStates.". So I
-> 		    see no reason to enforce any restriction here either?
->
-> 	u32 gate_mask: technically can have bits set, which correspond
-> 		       to traffic classes larger than dev->num_tc.
-> 		       Taprio can enforce this, so I wouldn't see
-> 		       drivers beginning to feel paranoid about it.
-> 		       Actually I had a patch about this:
-> 		       https://patchwork.kernel.org/project/netdevbpf/patch/20230130173=
-145.475943-15-vladimir.oltean@nxp.com/
-> 		       but I decided to drop it because I didn't have
-> 		       any strong case for it.
-> 	u32 interval: any value is valid. If the sum of entry intervals
-> 		      is less than the cycle_time, again that's taprio's
-> 		      problem to check for, in its netlink attribute
-> 		      validation method rather than offloading drivers.
->
+Thanks,
+Ian
 
-Thank you for the time it took to give this amount of detail.
-
-
-Cheers,
---=20
-Vinicius
+> Thanks,
+> John
