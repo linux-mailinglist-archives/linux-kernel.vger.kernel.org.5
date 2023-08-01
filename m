@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2844376A732
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51ADF76A730
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbjHACxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        id S229825AbjHACwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231873AbjHACxB (ORCPT
+        with ESMTP id S229510AbjHACwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:53:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A981981
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:53:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A528261375
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:53:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2D79C433C7;
-        Tue,  1 Aug 2023 02:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690858380;
-        bh=XcSi2fRJmzOTE7kbjFWduXKD2IOr2CcrRDOP0d+XB3U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ermuXP4TzbEIoP6HVCvunAJRX6wX39KTyEc/JSZDVZ0IDn0FuzR1R9e05X4pAw9Gi
-         04QSRn/ikxukC5fqya9UhIgopkmXR6EreQieXZ1LEgWQHGWHTf4kgQmpHxn7Fk2Qlp
-         zz0dl/cqnTygEo2ouoUUBbsPm1szil0aKaUdHT5lt7+VaMIH52Krj5L0laW99SUfji
-         rhSaieTxKTV5P40aU2ROlYIIDOz/YSnZoZPudGCOZEToffKpN2Qy7xaBdAw7feJM9y
-         Nf4UjAw5dDv/rXxK/6FocwPvR8/REuer9AcBWdeV5FXjJH1MxuJiVkisWeqzMISwtu
-         b0kSixTNgUiNA==
-Date:   Mon, 31 Jul 2023 19:52:58 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     rdunlap@infradead.org, benjamin.poirier@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, leit@meta.com,
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: Re: [PATCH net-next v2] netconsole: Enable compile time
- configuration
-Message-ID: <20230731195258.16b3a53d@kernel.org>
-In-Reply-To: <20230731083542.3665886-1-leitao@debian.org>
-References: <20230731083542.3665886-1-leitao@debian.org>
+        Mon, 31 Jul 2023 22:52:40 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB72114
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:52:39 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R921e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VojoVVU_1690858355;
+Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VojoVVU_1690858355)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 10:52:36 +0800
+Message-ID: <89d7ec1d-ac48-64e5-1d3c-d3ee5c66a26f@linux.alibaba.com>
+Date:   Tue, 1 Aug 2023 10:53:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 7/8] mm/compaction: remove unnecessary return for void
+ function
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        mgorman@techsingularity.net, willy@infradead.org, david@redhat.com
+References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
+ <20230728171037.2219226-8-shikemeng@huaweicloud.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230728171037.2219226-8-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 01:35:41 -0700 Breno Leitao wrote:
-> +config NETCONSOLE_EXTENDED_LOG
-> +	bool "Set kernel extended message as default"
-> +	depends on NETCONSOLE
-> +	default n
-> +	help
-> +	  Set extended log support for netconsole message. If this option is
-> +	  set, log messages are transmitted with extended metadata header in a
-> +	  format similar to /dev/kmsg.  See
-> +	  <file:Documentation/networking/netconsole.rst> for details.
-> +
-> +config NETCONSOLE_PREPEND_RELEASE
-> +	bool "Prepend kernel release version in the message"
 
-... by default
 
-> +	depends on NETCONSOLE_EXTENDED_LOG
-> +	default n
-> +	help
-> +	  Set kernel release to be prepended to each netconsole message by
-> +	  default. If this option is set, the kernel release is prepended into
-> +	  the first field of every netconsole message, so, the netconsole
-> +	  server/peer can easily identify what kernel release is logging each
-> +	  message.  See <file:Documentation/networking/netconsole.rst> for
-> +	  details.
+On 7/29/2023 1:10 AM, Kemeng Shi wrote:
+> Remove unnecessary return for void function
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-I had to look at the code to see what this does, exactly.
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-I think you either need to make similar changes to
-make_netconsole_target() so that instances created via sysfs
-have the same default.
-
-Or rewrite the help message to talk about forcing kernel
-command line arguments, rather than setting defaults.
--- 
-pw-bot: cr
+> ---
+>   mm/compaction.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 6052cb519de1..188d610eb3b6 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1420,8 +1420,6 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
+>   	/* Skip this pageblock in the future as it's full or nearly full */
+>   	if (start_pfn == end_pfn)
+>   		set_pageblock_skip(page);
+> -
+> -	return;
+>   }
+>   
+>   /* Search orders in round-robin fashion */
+> @@ -2863,7 +2861,7 @@ int compaction_register_node(struct node *node)
+>   
+>   void compaction_unregister_node(struct node *node)
+>   {
+> -	return device_remove_file(&node->dev, &dev_attr_compact);
+> +	device_remove_file(&node->dev, &dev_attr_compact);
+>   }
+>   #endif /* CONFIG_SYSFS && CONFIG_NUMA */
+>   
