@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C65276B78A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A1376B78B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbjHAOdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:33:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53456 "EHLO
+        id S234617AbjHAOdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232198AbjHAOdn (ORCPT
+        with ESMTP id S232198AbjHAOdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:33:43 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560A810C3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 07:33:41 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bf3f59905so643661366b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 07:33:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1690900419; x=1691505219;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R+KC9X0SP7TlgnnEh6U7lIN9BNbXdA3jvj5APPvcXzI=;
-        b=Q5HJhJeNyaFSjBG7MHhwbqiYjIAtoacD48lUpWvfvjjiRCKD9Bt1F3Agcx1PgyJDr1
-         xzWwqbRn1bO3LrgrYeNfUx5vp2SEZCyTteYunKs4G64C/GrYubcaF3AR1YhDK17PNekP
-         WyaJ6Og5hXTril/c1JH176dzB/RiLBtAJXiO0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690900419; x=1691505219;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R+KC9X0SP7TlgnnEh6U7lIN9BNbXdA3jvj5APPvcXzI=;
-        b=ZU68nHFcmnBnMMWlTYiGI2qe9DeVatuigTuEZSjeFsRFRJ/5VNIXQeWjcGIW4bc4rb
-         xlapLUkfb1dO1ApIKThWrYUoeE9bDzvHU/rJIDfYdiSL7tU9eMjCkKhu/d+AMQ/LiPGW
-         evjLBo84Pb95Rb8KwsTxpURdAmVXzDCKtu6jrL+09J3Q3H7LXTs8Hpmkd5TI3c9akS0g
-         upKRBHLhSpU3Wh7sqwwKYkZ6M8Io8m1vMxSV7PSlrbnSYt7VOIGOPDbNBXnxQ3kzjzle
-         7YJymXc6/mfc35D2t1L4hf4rvEi3dLmKfsPrp6bm1lbDKvuS6Nmg9vEFgo940api5HKL
-         rJDA==
-X-Gm-Message-State: ABy/qLZBS5WWZuORqOg3/CKeR8RVai/5F5gVOyFU3FpM6dXhWBQNUalc
-        ppC1lQf/keZay0cBY1m0JcsWhnqxxfek0/ks5QOh6A==
-X-Google-Smtp-Source: APBJJlE/9Qf5TAVLjB8o6UjDOu1oUOxG0wsQr6oG6IXcieOQdKrxWxILyqM0UR1g4/nHIOUTMcIokg==
-X-Received: by 2002:a17:906:18:b0:997:e79c:99dc with SMTP id 24-20020a170906001800b00997e79c99dcmr2538547eja.74.1690900419224;
-        Tue, 01 Aug 2023 07:33:39 -0700 (PDT)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
-        by smtp.gmail.com with ESMTPSA id l19-20020a170906079300b0098e0a937a6asm7717062ejc.69.2023.08.01.07.33.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 07:33:39 -0700 (PDT)
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-521e046f6c7so11109a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 07:33:38 -0700 (PDT)
-X-Received: by 2002:a50:c31c:0:b0:522:3ead:377 with SMTP id
- a28-20020a50c31c000000b005223ead0377mr141564edb.7.1690900418334; Tue, 01 Aug
- 2023 07:33:38 -0700 (PDT)
+        Tue, 1 Aug 2023 10:33:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D245AE5C;
+        Tue,  1 Aug 2023 07:33:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CE10615C9;
+        Tue,  1 Aug 2023 14:33:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06F9AC433C8;
+        Tue,  1 Aug 2023 14:33:42 +0000 (UTC)
+Date:   Tue, 1 Aug 2023 10:33:40 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ze Gao <zegao2021@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: Re: [RFC PATCH v3 4/6] sched, tracing: reorganize fields of switch
+ event struct
+Message-ID: <20230801103340.5dfa7133@gandalf.local.home>
+In-Reply-To: <20230801114650.GE79828@hirez.programming.kicks-ass.net>
+References: <20230801090124.8050-1-zegao@tencent.com>
+        <20230801090124.8050-5-zegao@tencent.com>
+        <20230801114650.GE79828@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230801-aspire1-cmn-panel-v1-1-c3d88e389805@trvn.ru>
-In-Reply-To: <20230801-aspire1-cmn-panel-v1-1-c3d88e389805@trvn.ru>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 1 Aug 2023 07:33:26 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UwpjXVhP3k14ye93r_9jc3L9y--qYn7hf7HWB-4Hu12Q@mail.gmail.com>
-Message-ID: <CAD=FV=UwpjXVhP3k14ye93r_9jc3L9y--qYn7hf7HWB-4Hu12Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/panel-edp: Add enable timings for N140HCA-EAC panel
-To:     Nikita Travkin <nikita@trvn.ru>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 1 Aug 2023 13:46:50 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-On Tue, Aug 1, 2023 at 12:24=E2=80=AFAM Nikita Travkin <nikita@trvn.ru> wro=
-te:
->
-> Add timings for InnoLux N140HCA-EAC. This panel is found on some laptops
-> such as Acer Aspire 1.
->
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
-> Timings taken per datasheet:
-> http://www.58display.com/ggs/20180713155310173_N140HCA-EAC_Rev.C1_Ver3.0_=
-20170121_201710238414.pdf
-> ---
->  drivers/gpu/drm/panel/panel-edp.c | 1 +
->  1 file changed, 1 insertion(+)
+> On Tue, Aug 01, 2023 at 05:01:22PM +0800, Ze Gao wrote:
+> > Report priorities in 'short' and prev_state in 'int' to save
+> > some buffer space. And also reorder the fields so that we take
+> > struct alignment into consideration to make the record compact.
+> > 
+> > Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>  
+> 
+> I don't see a single line describing the effort you've done to audit
+> consumers of this tracepoint.
+> 
+> *IF* you're wanting to break this tracepoint ABI, because seriously
+> that's what it is, then you get to invest the time and effort to audit
+> the users.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+The known major users that I am aware of is raesdaemon,
+powertop/latencytop, perf, trace-cmd and some bpf tools. The bpf tooling is
+known to update per kernel. The others all use libtraceevent that can
+handle this change.
 
-As per usual with simple additions to that table, there's no reason to
-wait before landing, so pushed to drm-misc-next:
+What other tools are there? There's Perfetto, but it also looks at tracefs
+to examine where the values are. There's LTTng, but I believe it uses the
+raw tracepoint directly and doesn't look at the layout of the ftrace/perf
+buffers.
 
-8229399486c4 drm/panel-edp: Add enable timings for N140HCA-EAC panel
+All other tooling I am slightly aware of uses libtracefs and libtraceveent,
+as I've been giving many talks on how to use those libraries.
+
+-- Steve
