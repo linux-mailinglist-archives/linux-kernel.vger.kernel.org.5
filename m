@@ -2,136 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C828676AB32
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5404176AB34
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231265AbjHAIjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:39:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46932 "EHLO
+        id S231313AbjHAIkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbjHAIjj (ORCPT
+        with ESMTP id S231375AbjHAIjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:39:39 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8450510E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690879158; x=1691483958; i=efault@gmx.de;
- bh=fQuDAejvv17CrafbhEWPjX3t0C0jSeS2qCYxa9Xs2BM=;
- h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
- b=pYUUDdM3SgJKXkQCFUQ02tNGeh7MqcGZU1FL66i5bIdAkA48cEudZqiAElAEcha1B0jzn/R
- kwoXDd50hcV/uJ7d0IeMNKkTofKV+iPJbytF31M4zQFEoCYl90JPDO00C0RQn/0WgwhGA74DY
- 8chVsONp9giXtkHFSPm+VzrHlgg/HRL8y18qx4YJ3Lpd5xw6DRFmfshHQujII+YAk8H4W5R8j
- 4ocPP5AWcZ12XT8YQnIugYKSf/LA4tGhA4QWvpGG2hWI4lNJtFljEOqQj5IlmiZ37yr4u1lIH
- 7ZeJ+zycBui/FQ4bdkHNDy7R/+FROpY2/NQmtOfWsf/kbO55TDyw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer.fritz.box ([185.191.216.56]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MIdeX-1qfNUB1KvV-00Eemy; Tue, 01
- Aug 2023 10:39:18 +0200
-Message-ID: <abd93ae835b2220277131081a448e038cce7e451.camel@gmx.de>
-Subject: Re: arm64: perf test 26 rpi4 oops
-From:   Mike Galbraith <efault@gmx.de>
-To:     Will Deacon <will@kernel.org>
-Cc:     Lorenzo Stoakes <lstoakes@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
-        ardb@kernel.org
-Date:   Tue, 01 Aug 2023 10:39:14 +0200
-In-Reply-To: <20230801072732.GA25854@willie-the-truck>
-References: <b39c62d29a431b023e98959578ba87e96af0e030.camel@gmx.de>
-         <20230728141852.GA21718@willie-the-truck>
-         <8c56256399e2e6c41bc574749d6170d5529f24fc.camel@gmx.de>
-         <20230731104340.GA24767@willie-the-truck>
-         <20230731115207.GB24767@willie-the-truck>
-         <CAA5enKaUYehLZGL3abv4rsS7caoUG-pN9wF3R+qek-DGNZufbA@mail.gmail.com>
-         <CAA5enKYaZ-daLeL3amr2QrQjtUdK=P8B+VbJdea7cB77QWY-eQ@mail.gmail.com>
-         <42ad26cb6c98e028a331f5d73abf85bd965ff89d.camel@gmx.de>
-         <21777dec0233b1bc65f51764ead9a03efa9baa64.camel@gmx.de>
-         <7b94619ad89c9e308c7aedef2cacfa10b8666e69.camel@gmx.de>
-         <20230801072732.GA25854@willie-the-truck>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Tue, 1 Aug 2023 04:39:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A6DA1710;
+        Tue,  1 Aug 2023 01:39:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8C39461499;
+        Tue,  1 Aug 2023 08:39:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FD25C433C7;
+        Tue,  1 Aug 2023 08:39:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690879189;
+        bh=I7Ylvu2aXpgZrcBn8wo5FXmj7fgbxnRV7pCOxVuXjwk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pumBEJWojxu/eL9wMP7/QHQ4s7hIpLv+khI9qapLE+Ii6HoDZlrGV5rlo8o248MkG
+         zFjgr/HfTSBD0IphGJf5dSzPnoC+cN2uG1hWyOtA549TCxii6hVGWDKH7YXxP6BxfG
+         VQsV4SOqp8gvPp2ZD9NMD8JassntwjYmoHTY5iuQ=
+Date:   Tue, 1 Aug 2023 10:39:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     chengdong zhou <zhouscd@gmail.com>
+Cc:     dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
+        m.grzeschik@pengutronix.de, john@keeping.me.uk,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] USB: gadget: Fix the function name error in
+ sourcesink/loopback.
+Message-ID: <2023080143-makeshift-cupid-8abb@gregkh>
+References: <20230801083244.165392-1-zhouscd@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1rBqZGJ5Caom51jUTScJD6nK7kAVGAjcjXpdZ3HzbpJcwC1WKVr
- yei/HdCCvgRK0qJFdQaiKofrW/IB2aULe1h4ektvZ5hQD7PFSAxNk03nPmhUx8qEifO06qT
- 4HFGaLvVPiRt/2N0ubxizpBaLW2TdnpLUKqVOSj4aBTJV73zLfEbMduDWjVOxx0PUXftAbk
- +IFCOPB8e29euqpYGuuUw==
-UI-OutboundReport: notjunk:1;M01:P0:QIzy8noaYPM=;kZatil0QBf+lhYE5GHUJ72EYn/P
- djJQvfDetgi6gWGCfFXJR2gc6An3X2w7FTG+ffAQaEx/SHnzq6TqqXGihWdfn4YwXIqX6TSDh
- ZloFm5H36+edsWsjHMpX6bqbcOoEKxstbazI+7II8L0lXFNYbelHk9l6dpRoqsrp5eC+PYZev
- lZ0xJ7dr0hzjdWVLT/QnrtNmbhmqrfc1Wxz9mnf5Z1JePhvP+3HvmVIx5SIiwfIjWm/SvS56O
- tWAaiIsa/x0XJ7EWUqYw+CHeNbZQlPugtlw8q6mqWiz/ROfDH4zex2CfPSQlcaZzpLfUaQP3g
- iHaRQX54Pj3cFwNYyG4EPj+0mY04WrQC8G9WVmt/dBNFlMRIN47etCCA7n9w+/qLjyAkYi0/W
- AAbODLkej2b2ZhRtbuz0c2psmrUFX4EfAew3IvQz+E50Ji6Y8vQxk0kY7UmyROi+Y3WEDHS8Z
- W4xPXODjL0Kocs8gPPNqRQMjoIdmq4kyqapmMDGRwB+C5snRypK2Zh6Hza4hm+KziLIvk6n/1
- OIvYclm2ONTFf6l+NPY1L55iqdz3pvpRmSAqEB/03yRRssoMPAlzpN0dYIAsF4YiH+DcuKvBJ
- uCm9AXtT99IFSX7tm++w3rtlDcbdvQx07E59H3OYeZc8I2U+4N9ZzJOO++Lbm2o0dF84YCC/w
- VK825YDRZOF06exNRdBbQ2V6EiEc4aa0CwiZxLaMdk8tK9t5rkmso5oRKWPdFtHGo/CNT/OIB
- tBXH/myjMET5kAB+JLA31QemJkWENYRcpjO2x7tOyq3c0o+ogSN57Cgmt/Z9XOVQjfqwZkNq5
- Ulq8yLgDCNU6Nk+D+7noyRYeRhfSRRBl0cv+plPW0q91fo5udzH0Uig1HCzWmp+sylq1ASbl7
- QaRvxsRKhk/7J7lydzoEkw9wcIP3KjTI5uOklSXyA26Rm5nsDOSuUq7hglSuqCVgTHp6Llfea
- CxnREgPPj4KLb1VNhhV3jR3Xz4w=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801083244.165392-1-zhouscd@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-01 at 08:27 +0100, Will Deacon wrote:
-> On Tue, Aug 01, 2023 at 06:34:15AM +0200, Mike Galbraith wrote:
-> > On Tue, 2023-08-01 at 01:48 +0200, Mike Galbraith wrote:
-> > >
-> > > root@rpi4:~# dmesg|tail -2
-> > > [=C2=A0 979.003019] __vm_enough_memory: pid: 12439, comm: objdump, n=
-ot enough memory for the allocation
-> > > [=C2=A0 979.003080] __vm_enough_memory: pid: 12439, comm: objdump, n=
-ot enough memory for the allocation
-> >
-> > Ancient bug droppings are due to VMALLOC_END-VMALLOC_START=3D265885319=
-168.
->
-> FWIW, I see the same thing on my x86 laptop. I'm guessing objdump tries
-> to read all of the vmalloc space into memory, which is going to end
-> pretty badly!
+On Tue, Aug 01, 2023 at 01:32:45AM -0700, chengdong zhou wrote:
+> Change function name from "source/sink" to "sourcesink".
+> Keep the usb_function_driver.name consistent with usb_function.name
+> for sourcesink and loopback.
+> Cleaned up some code to decouple the sourcesink and loopback.
+> 
+> If usb_function.name and usb_function_driver.name are not the same,
+> it will cause the function to be unable to be exported to userspace
+> by the USB config file system.
+> 
+> Signed-off-by: chengdong zhou <zhouscd@gmail.com>
+> ---
+>  drivers/usb/gadget/function/f_loopback.c   | 13 +----------
+>  drivers/usb/gadget/function/f_sourcesink.c | 25 ++--------------------
+>  drivers/usb/gadget/function/g_zero.h       |  3 ---
+>  drivers/usb/gadget/legacy/zero.c           |  6 +++---
+>  4 files changed, 6 insertions(+), 41 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/function/f_loopback.c b/drivers/usb/gadget/function/f_loopback.c
+> index ae41f556eb75..45f542b5ff55 100644
+> --- a/drivers/usb/gadget/function/f_loopback.c
+> +++ b/drivers/usb/gadget/function/f_loopback.c
+> @@ -583,16 +583,5 @@ static struct usb_function_instance *loopback_alloc_instance(void)
+>  
+>  	return  &lb_opts->func_inst;
+>  }
+> -DECLARE_USB_FUNCTION(Loopback, loopback_alloc_instance, loopback_alloc);
+> -
+> -int __init lb_modinit(void)
+> -{
+> -	return usb_function_register(&Loopbackusb_func);
+> -}
+> -
+> -void __exit lb_modexit(void)
+> -{
+> -	usb_function_unregister(&Loopbackusb_func);
+> -}
+> -
+> +DECLARE_USB_FUNCTION_INIT(loopback, loopback_alloc_instance, loopback_alloc);
+>  MODULE_LICENSE("GPL");
+> diff --git a/drivers/usb/gadget/function/f_sourcesink.c b/drivers/usb/gadget/function/f_sourcesink.c
+> index 6803cd60cc6d..f6d1c095aa2c 100644
+> --- a/drivers/usb/gadget/function/f_sourcesink.c
+> +++ b/drivers/usb/gadget/function/f_sourcesink.c
+> @@ -858,7 +858,7 @@ static struct usb_function *source_sink_alloc_func(
+>  	ss->bulk_qlen = ss_opts->bulk_qlen;
+>  	ss->iso_qlen = ss_opts->iso_qlen;
+>  
+> -	ss->function.name = "source/sink";
+> +	ss->function.name = "sourcesink";
+>  	ss->function.bind = sourcesink_bind;
+>  	ss->function.set_alt = sourcesink_set_alt;
+>  	ss->function.get_alt = sourcesink_get_alt;
+> @@ -1263,27 +1263,6 @@ static struct usb_function_instance *source_sink_alloc_inst(void)
+>  
+>  	return &ss_opts->func_inst;
+>  }
+> -DECLARE_USB_FUNCTION(SourceSink, source_sink_alloc_inst,
+> +DECLARE_USB_FUNCTION_INIT(sourcesink, source_sink_alloc_inst,
+>  		source_sink_alloc_func);
+> -
+> -static int __init sslb_modinit(void)
+> -{
+> -	int ret;
+> -
+> -	ret = usb_function_register(&SourceSinkusb_func);
+> -	if (ret)
+> -		return ret;
+> -	ret = lb_modinit();
+> -	if (ret)
+> -		usb_function_unregister(&SourceSinkusb_func);
+> -	return ret;
+> -}
+> -static void __exit sslb_modexit(void)
+> -{
+> -	usb_function_unregister(&SourceSinkusb_func);
+> -	lb_modexit();
+> -}
+> -module_init(sslb_modinit);
+> -module_exit(sslb_modexit);
+> -
+>  MODULE_LICENSE("GPL");
+> diff --git a/drivers/usb/gadget/function/g_zero.h b/drivers/usb/gadget/function/g_zero.h
+> index 98b8462ad538..c1ea28526c73 100644
+> --- a/drivers/usb/gadget/function/g_zero.h
+> +++ b/drivers/usb/gadget/function/g_zero.h
+> @@ -62,9 +62,6 @@ struct f_lb_opts {
+>  	int				refcnt;
+>  };
+>  
+> -void lb_modexit(void);
+> -int lb_modinit(void);
+> -
+>  /* common utilities */
+>  void disable_endpoints(struct usb_composite_dev *cdev,
+>  		struct usb_ep *in, struct usb_ep *out,
+> diff --git a/drivers/usb/gadget/legacy/zero.c b/drivers/usb/gadget/legacy/zero.c
+> index 23312a07efb4..0cddd20e54ff 100644
+> --- a/drivers/usb/gadget/legacy/zero.c
+> +++ b/drivers/usb/gadget/legacy/zero.c
+> @@ -222,7 +222,7 @@ static int ss_config_setup(struct usb_configuration *c,
+>  }
+>  
+>  static struct usb_configuration sourcesink_driver = {
+> -	.label                  = "source/sink",
+> +	.label                  = "sourcesink",
+>  	.setup                  = ss_config_setup,
+>  	.bConfigurationValue    = 3,
+>  	.bmAttributes           = USB_CONFIG_ATT_SELFPOWER,
+> @@ -282,7 +282,7 @@ static int zero_bind(struct usb_composite_dev *cdev)
+>  	autoresume_cdev = cdev;
+>  	timer_setup(&autoresume_timer, zero_autoresume, 0);
+>  
+> -	func_inst_ss = usb_get_function_instance("SourceSink");
+> +	func_inst_ss = usb_get_function_instance("sourcesink");
+>  	if (IS_ERR(func_inst_ss))
+>  		return PTR_ERR(func_inst_ss);
+>  
+> @@ -302,7 +302,7 @@ static int zero_bind(struct usb_composite_dev *cdev)
+>  		goto err_put_func_inst_ss;
+>  	}
+>  
+> -	func_inst_lb = usb_get_function_instance("Loopback");
+> +	func_inst_lb = usb_get_function_instance("loopback");
+>  	if (IS_ERR(func_inst_lb)) {
+>  		status = PTR_ERR(func_inst_lb);
+>  		goto err_put_func_ss;
+> -- 
+> 2.25.1
+> 
 
-Weird, I don't see that even booting my 16G desktop box with mem=3D4G,
-with a crashdump kernel setup and the GUI up and running...
+Hi,
 
-homer:/root # echo 0 > /proc/sys/vm/overcommit_memory
-homer:/root # free -h
-              total        used        free      shared  buff/cache   avai=
-lable
-Mem:          3.2Gi       1.6Gi       667Mi        18Mi       1.1Gi       =
-1.6Gi
-Swap:         4.0Gi          0B       4.0Gi
-homer:/root # swapoff -a
-homer:/root # perf test 26
- 26: Object code reading                        : Ok
-homer:/root # dmesg | tail
-[    9.379431] br0: port 1(eth0) entered blocking state
-[    9.379434] br0: port 1(eth0) entered forwarding state
-[    9.379527] IPv6: ADDRCONF(NETDEV_CHANGE): br0: link becomes ready
-[    9.388643] NET: Registered PF_PACKET protocol family
-[   17.225053] usblp0: removed
-[   17.226278] usblp 2-10:1.1: usblp0: USB Bidirectional printer dev 5 if =
-1 alt 0 proto 2 vid 0x04E8 pid 0x342E
-[   17.911334] r8169 0000:03:00.0: invalid VPD tag 0x00 (size 0) at offset=
- 0; assume missing optional EEPROM
-[   18.430787] NFSD: Using UMH upcall client tracking operations.
-[   18.430802] NFSD: starting 90-second grace period (net f0000000)
-[   20.578718] logitech-hidpp-device 0003:046D:401B.0006: HID++ 2.0 device=
- connected.
-homer:/root # uname -r
-6.4.7-stable
-homer:/root #
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Same for a limited objdump -d, though unrestricted will oom instantly.
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-	-Mike
+- Your patch did many different things all at once, making it difficult
+  to review.  All Linux kernel patches need to only do one thing at a
+  time.  If you need to do multiple things (such as clean up all coding
+  style issues in a file/driver), do it in a sequence of patches, each
+  one doing only one thing.  This will make it easier to review the
+  patches to ensure that they are correct, and to help alleviate any
+  merge issues that larger patches can cause.
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/process/submitting-patches.rst for what is needed in
+  order to properly describe the change.
+
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
