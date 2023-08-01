@@ -2,178 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6372976B3B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD53D76B3B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbjHALqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:46:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42104 "EHLO
+        id S234394AbjHALrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234464AbjHALqi (ORCPT
+        with ESMTP id S234369AbjHALrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:46:38 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA921BE7;
-        Tue,  1 Aug 2023 04:46:28 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RFYBx13PTztRkB;
-        Tue,  1 Aug 2023 19:43:05 +0800 (CST)
-Received: from [10.67.102.169] (10.67.102.169) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 1 Aug 2023 19:46:25 +0800
-CC:     <yangyicong@hisilicon.com>, <chengyou@linux.alibaba.com>,
-        <kaishen@linux.alibaba.com>, <helgaas@kernel.org>,
-        <will@kernel.org>, <baolin.wang@linux.alibaba.com>,
-        <robin.murphy@arm.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-pci@vger.kernel.org>, <rdunlap@infradead.org>,
-        <mark.rutland@arm.com>, <zhuo.song@linux.alibaba.com>
-Subject: Re: [PATCH v6 3/4] drivers/perf: add DesignWare PCIe PMU driver
-To:     Shuai Xue <xueshuai@linux.alibaba.com>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-References: <20230606074938.97724-1-xueshuai@linux.alibaba.com>
- <20230606074938.97724-4-xueshuai@linux.alibaba.com>
- <31e2b012-3a29-d063-842d-e3f7736816e7@huawei.com>
- <20230727103929.00000544@Huawei.com>
- <12958abe-4bdb-8532-bf67-8e772ed2a9dd@linux.alibaba.com>
-From:   Yicong Yang <yangyicong@huawei.com>
-Message-ID: <edc056aa-1c53-a31e-087f-6076b795d5cc@huawei.com>
-Date:   Tue, 1 Aug 2023 19:46:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Tue, 1 Aug 2023 07:47:16 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0A71712;
+        Tue,  1 Aug 2023 04:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TdpPIvgN+cdaHFVUOeW5qe3U6jUZBrGZ60UhJBXmvpY=; b=nlMuLsMdUfdbuRxXz8ioQYr9dR
+        o686TG0N5P3FFJm71RgPXPuXuyi5MGCmJAwWjvWWD1FGfOVZghopNFrXVMrGwmCltAbzFaEPUjz67
+        +bYTPHB8bqmpL17ba+a4/SToPkoEqTYC06G6LWtHg7RqwZbkDfAFypL/pDqf6zpIdc3l997qe2lYk
+        F0PcYe0qRh4M0IsAHqoBm0KuTPdMbvaxxlfjXkMhxyizUyV5yVdvP+Rb6keTanahrL+cMkhP9gA+o
+        reZfMTOT1G8UYsSshlsOnnC36pK5Q7ZKpVzTiP5oLC2H+MK0ytmlEIBGpfi67VDUB+P3jejVM1fMR
+        +ZjaBQoA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQnpz-00Edek-29;
+        Tue, 01 Aug 2023 11:46:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 07920300134;
+        Tue,  1 Aug 2023 13:46:51 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ED4EF200C570F; Tue,  1 Aug 2023 13:46:50 +0200 (CEST)
+Date:   Tue, 1 Aug 2023 13:46:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ze Gao <zegao2021@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: Re: [RFC PATCH v3 4/6] sched, tracing: reorganize fields of switch
+ event struct
+Message-ID: <20230801114650.GE79828@hirez.programming.kicks-ass.net>
+References: <20230801090124.8050-1-zegao@tencent.com>
+ <20230801090124.8050-5-zegao@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <12958abe-4bdb-8532-bf67-8e772ed2a9dd@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.169]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801090124.8050-5-zegao@tencent.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/7/28 20:41, Shuai Xue wrote:
+On Tue, Aug 01, 2023 at 05:01:22PM +0800, Ze Gao wrote:
+> Report priorities in 'short' and prev_state in 'int' to save
+> some buffer space. And also reorder the fields so that we take
+> struct alignment into consideration to make the record compact.
 > 
-> 
-> On 2023/7/27 17:39, Jonathan Cameron wrote:
->> On Tue, 6 Jun 2023 23:14:07 +0800
->> Yicong Yang <yangyicong@huawei.com> wrote:
->>
->>> On 2023/6/6 15:49, Shuai Xue wrote:
->>>> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
->>>> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
->>>> Core controller IP which provides statistics feature. The PMU is not a PCIe
->>>> Root Complex integrated End Point(RCiEP) device but only register counters
->>>> provided by each PCIe Root Port.
->>>>
->>>> To facilitate collection of statistics the controller provides the
->>>> following two features for each Root Port:
->>>>
->>>> - Time Based Analysis (RX/TX data throughput and time spent in each
->>>>   low-power LTSSM state)
->>>> - Event counters (Error and Non-Error for lanes)
->>>>
->>>> Note, only one counter for each type and does not overflow interrupt.
->>>>
->>>> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
->>>> named based the BDF of Root Port. For example,
->>>>
->>>>     30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
->>>>
->>>> the PMU device name for this Root Port is dwc_rootport_3018.
->>>>
->>>> Example usage of counting PCIe RX TLP data payload (Units of 16 bytes)::
->>>>
->>>>     $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
->>>>
->>>> average RX bandwidth can be calculated like this:
->>>>
->>>>     PCIe TX Bandwidth = PCIE_TX_DATA * 16B / Measure_Time_Window
->>>>
->>>> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
->>>> Reported-by: kernel test robot <lkp@intel.com>
->>>> Link: https://lore.kernel.org/oe-kbuild-all/202305170639.XU3djFZX-lkp@intel.com/
->>>> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->>
->> I'll review on top to avoid any duplication with Yicong.
-> 
-> Thank you! It also served as a reminder that I missed Yicong's email. It appears
-> that Thunderbird mistakenly moved his email to the junk folder, resulting in me
-> overlooking it.
-> 
->>
->> Note I've cropped the stuff neither of us commented on so it's
->> easier to spot the feedback.
-> 
-> Thank you for noting that. My feedback is replied inline.
-> 
->>
->> Jonathan
->>
->>>> ---
->>>>  drivers/perf/Kconfig        |   7 +
->>>>  drivers/perf/Makefile       |   1 +
->>>>  drivers/perf/dwc_pcie_pmu.c | 706 ++++++++++++++++++++++++++++++++++++
->>>>  3 files changed, 714 insertions(+)
->>>>  create mode 100644 drivers/perf/dwc_pcie_pmu.c
->>>>
->>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
->>>> index 711f82400086..6ff3921d7a62 100644
->>>> --- a/drivers/perf/Kconfig
->>>> +++ b/drivers/perf/Kconfig
->>>> @@ -209,6 +209,13 @@ config MARVELL_CN10K_DDR_PMU
->>>>  	  Enable perf support for Marvell DDR Performance monitoring
->>>>  	  event on CN10K platform.
->>>>  
->>>> +config DWC_PCIE_PMU
->>>> +	tristate "Enable Synopsys DesignWare PCIe PMU Support"
->>>> +	depends on (ARM64 && PCI)
->>>> +	help
->>>> +	  Enable perf support for Synopsys DesignWare PCIe PMU Performance
->>>> +	  monitoring event on Yitian 710 platform.
->>
->> The documentation kind of implies this isn't platform specific.
->> If some parts are (such as which events exist) then you may want to push
->> that to userspace / perftool with appropriate matching against specific SoC.
->>
->> If it is generic, then change this text to "event on platform including the Yitian 710."
-> 
-> It is generic without any platform specific, so I will change it as you expected.
-> 
->>
->>>> +
->>>>  source "drivers/perf/arm_cspmu/Kconfig"
->>>>  
->>>>  source "drivers/perf/amlogic/Kconfig"
->>
->>>> new file mode 100644
->>>> index 000000000000..8bfcf6e0662d
->>>> --- /dev/null
->>>> +++ b/drivers/perf/dwc_pcie_pmu.c
->>>> @@ -0,0 +1,706 @@
->>
->> ...
->>
->>>> +
->>>> +struct dwc_pcie_pmu {
->>>> +	struct pci_dev		*pdev;		/* Root Port device */  
->>>
->>> If the root port removed after the probe of this PCIe PMU driver, we'll access the NULL
->>> pointer. I didn't see you hold the root port to avoid the removal.
-> 
-> Do you mean that I should have a reference count of rootport by pci_dev_get() when allocating
-> pcie_pmu?
-> 
->      pcie_pmu->pdev = pci_dev_get();
+> Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-It could be one option, but will block the removal of device from userspace. Another option
-is to register a PCI bus notifier then on removal/added the driver can get notified and handle
-it, for example, remove the related PMU on the removal of the root ports.
+I don't see a single line describing the effort you've done to audit
+consumers of this tracepoint.
+
+*IF* you're wanting to break this tracepoint ABI, because seriously
+that's what it is, then you get to invest the time and effort to audit
+the users.
