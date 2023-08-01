@@ -2,149 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6847376A588
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 02:28:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C0576A58B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 02:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbjHAA2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 20:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        id S230208AbjHAAaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 20:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231449AbjHAA2B (ORCPT
+        with ESMTP id S229920AbjHAAaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 20:28:01 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B8E1999
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 17:27:59 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1bb91c20602so6730455ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 17:27:59 -0700 (PDT)
+        Mon, 31 Jul 2023 20:30:04 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DB5133;
+        Mon, 31 Jul 2023 17:30:02 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4f4b2bc1565so8050404e87.2;
+        Mon, 31 Jul 2023 17:30:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690849679; x=1691454479;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=NF/EZl9ssiFsilyYni0qa8S7le0pWtfJhEYQNYvUAjE=;
-        b=PrAT7ua2gCGDJhhlzzFedFjOQ1rgS5iQPOz6SH/WQxrs18n2SgKhu8IFVp3TOh99A/
-         wZD4PLISKHdZRXzRStEC4NAW38Lao4WhpC7U4Ox4YMfcugKDAv21KjtBqFf2u3j56g0l
-         FBqZkDxqxH10HNmR5p8NnvuBabifIvb27GuzKe+8XoWi1MuQ5mtqWtRU061YHulMjOUt
-         NzF6StfZ27iqeVy+6V4vlbFHJlqEhdMk4QJUtswPuAVwCC6b9/01XFUYtJgQbC/KyhYf
-         yBzgyvvaaGh+6xGTi8CgUomxzR6wMgV35diqln94FsRlMN95Mem5RCjpqJZPgLnVU/sh
-         mVUA==
+        d=gmail.com; s=20221208; t=1690849801; x=1691454601;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OP0ss+QFrEDr1W853Rw5boHV+kOYmqr8XMFUdINABY4=;
+        b=UnHjPYlKzePkM6jaAezL/Oz1naX+R2xTssxu/YDfCgIEk9OKvo+Zr1NwgplFVh5wYh
+         Nu8Gn9NgifSqEDUMSps1FPZU7QoNYlffON1zPM/PaeW2J1A6EwJxKFHqtBrRmnzKtFGP
+         VHGhj85Z3vviSlkeQzoy22OkqscKCGzuk2WDkrcGHF6YNUTmV3tYvxS/EIm+stNEr5fZ
+         Dda9dteptkuq4IiV8oQB+25qsCFdNaIpgc3m7V+uWjwyctEQ2z01HhwglI2ELhOtkz/1
+         7+urBeDBtqnJVN3PLJt94akoOsI/33FqMpHTFJ0rseY2qX6icgJq7/U0ZrultIDdLfh8
+         yuWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690849679; x=1691454479;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NF/EZl9ssiFsilyYni0qa8S7le0pWtfJhEYQNYvUAjE=;
-        b=WIXFncgOrPUv2mbP3isa01eXZlUvN+BQ1Qlf8J1my+C/1ZQf+vs5QZQHLFDzilo05k
-         wLAeTWAyNq3JNknegeT3dym3Uab9JmG0CK6xAff7pAtEr+Ln2FIohaGqjRZt2a1O0+N4
-         nUNyqTuD+rC6cst2NxUjYoXaW6FF4MQ/gKh4qf6WfpxaP1pI/5g5NfGfRwvKvZyPfBaf
-         rM9b4bWuSh8RZaDqqNFN2YtJtnLUeIog5pOoPrLFFXVKpTwhTUyHSILzN1qrECM/dGGt
-         zuhZJA9/x7RBUep8Tyf928aJ7motucesjTOn5ybSRNGCnTk4sP7dWKqJKKmXyI/Cn8FL
-         /Q6A==
-X-Gm-Message-State: ABy/qLa3In4ldh7sdBw52a6re4q64VAYoBU30Uqv2oZCBMraWdOQUWgr
-        TW0+BrP2lKcKnqkfMyRgoqmAIg==
-X-Google-Smtp-Source: APBJJlH2P/5iANAMJoJKWLbhhq7n9F8dLn8jScovcsOH2t8Kn7FLvtHkglJN8cWwsKNDVrbHuwcEOw==
-X-Received: by 2002:a17:902:db0f:b0:1b8:b0c4:2e3d with SMTP id m15-20020a170902db0f00b001b8b0c42e3dmr10066614plx.4.1690849679397;
-        Mon, 31 Jul 2023 17:27:59 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id iw14-20020a170903044e00b001bb54abfc07sm9083987plb.252.2023.07.31.17.27.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 17:27:58 -0700 (PDT)
-Message-ID: <1b67a9dd-c28a-661a-3a46-dab509d4c34e@kernel.dk>
-Date:   Mon, 31 Jul 2023 18:27:57 -0600
+        d=1e100.net; s=20221208; t=1690849801; x=1691454601;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OP0ss+QFrEDr1W853Rw5boHV+kOYmqr8XMFUdINABY4=;
+        b=j24/CTflhoIWMft3A31IX3hgeg3LmwMbmn79WM/itb5u9vxkMyhYdP2aI/QpTkdRQz
+         kn6UsNqII/1+64/ryb9wXRBVzSJv8Jj2UKc89iTSZQain0QAE0XC6tdEhrPgTn88T1F1
+         fqvkyLIs7jnLqF//u9OyXLIJB906Ji7iL7o28WE8ASqwBcBTwD1Y7U6Rh1pYznsVRHoO
+         GdPxTSeB48KvO5V3Zx5pDMwwG2kEBb6NLUYy5nNQ83gTmU5ly65+DAFVGfaYBo33tJAL
+         dWRz6y0eerhGwspwEET6pqvAALoGmaXvtPkpL/99DXiKxa4/vsrFIdC8BU1jM7maIHVG
+         Xr9g==
+X-Gm-Message-State: ABy/qLa5Trp4d/dO2ZO4fkAHyFKr2OVGClvLcFph1+FFZseblWEWje4Z
+        yHWsfQfKRKRHmgL9NgqwCOsMzOSW8GZYVJ7mFNQ=
+X-Google-Smtp-Source: APBJJlGbcB7idTGp1DG44yuQk8uVjeLpj1gIntNzbeoudVEFdAMQd5AEuyi0vN24WE4L3cvSs5UpLJRXwI115dfirDc=
+X-Received: by 2002:a2e:80c3:0:b0:2b7:3633:2035 with SMTP id
+ r3-20020a2e80c3000000b002b736332035mr1121930ljg.32.1690849800775; Mon, 31 Jul
+ 2023 17:30:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH -next] nbd: get config_lock before sock_shutdown
-Content-Language: en-US
-To:     Zhong Jinghua <zhongjinghua@huaweicloud.com>, josef@toxicpanda.com
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yukuai3@huawei.com
-References: <20230707062256.1271948-1-zhongjinghua@huaweicloud.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230707062256.1271948-1-zhongjinghua@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+ <169078863449.173706.2322042687021909241.stgit@devnote2> <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+ <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
+In-Reply-To: <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 31 Jul 2023 17:29:49 -0700
+Message-ID: <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a struct/union
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/7/23 12:22?AM, Zhong Jinghua wrote:
-> Config->socks in sock_shutdown may trigger a UAF problem.
-> The reason is that sock_shutdown does not hold the config_lock,
-> so that nbd_ioctl can release config->socks at this time.
-> 
-> T0: NBD_SET_SOCK
-> T1: NBD_DO_IT
-> 
-> T0						T1
-> 
-> nbd_ioctl
->   mutex_lock(&nbd->config_lock)
->   // get lock
->   __nbd_ioctl
->     nbd_start_device_ioctl
->       nbd_start_device
->        mutex_unlock(&nbd->config_lock)
->          // relase lock
->          wait_event_interruptible
->          (kill, enter sock_shutdown)
->          sock_shutdown
-> 					nbd_ioctl
-> 					  mutex_lock(&nbd->config_lock)
-> 					  // get lock
-> 					  __nbd_ioctl
-> 					    nbd_add_socket
-> 					      krealloc
-> 						kfree(p)
-> 					        //config->socks is NULL
->            nbd_sock *nsock = config->socks // error
-> 
-> Fix it by moving config_lock up before sock_shutdown.
-> 
-> Signed-off-by: Zhong Jinghua <zhongjinghua@huaweicloud.com>
-> ---
->  drivers/block/nbd.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-> index c410cf29fb0c..accbe99ebb7e 100644
-> --- a/drivers/block/nbd.c
-> +++ b/drivers/block/nbd.c
-> @@ -1428,13 +1428,18 @@ static int nbd_start_device_ioctl(struct nbd_device *nbd)
->  	mutex_unlock(&nbd->config_lock);
->  	ret = wait_event_interruptible(config->recv_wq,
->  					 atomic_read(&config->recv_threads) == 0);
-> +
-> +	/*
-> +	 * recv_work in flush_workqueue will not get this lock, because nbd_open
-> +	 * will hold nbd->config_refs
-> +	 */
-> +	mutex_lock(&nbd->config_lock);
->  	if (ret) {
->  		sock_shutdown(nbd);
->  		nbd_clear_que(nbd);
->  	}
->  
->  	flush_workqueue(nbd->recv_workq);
-> -	mutex_lock(&nbd->config_lock);
+On Mon, Jul 31, 2023 at 4:57=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
+rg> wrote:
+>
+> On Mon, 31 Jul 2023 14:59:47 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>
+> > On Mon, Jul 31, 2023 at 12:30=E2=80=AFAM Masami Hiramatsu (Google)
+> > <mhiramat@kernel.org> wrote:
+> > >
+> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > >
+> > > Add btf_find_struct_member() API to search a member of a given data s=
+tructure
+> > > or union from the member's name.
+> > >
+> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+> > > ---
+> > >  Changes in v3:
+> > >   - Remove simple input check.
+> > >   - Fix unneeded IS_ERR_OR_NULL() check for btf_type_by_id().
+> > >   - Move the code next to btf_get_func_param().
+> > >   - Use for_each_member() macro instead of for-loop.
+> > >   - Use btf_type_skip_modifiers() instead of btf_type_by_id().
+> > >  Changes in v4:
+> > >   - Use a stack for searching in anonymous members instead of nested =
+call.
+> > > ---
+> > >  include/linux/btf.h |    3 +++
+> > >  kernel/bpf/btf.c    |   40 ++++++++++++++++++++++++++++++++++++++++
+> > >  2 files changed, 43 insertions(+)
+> > >
+> > > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > > index 20e3a07eef8f..4b10d57ceee0 100644
+> > > --- a/include/linux/btf.h
+> > > +++ b/include/linux/btf.h
+> > > @@ -226,6 +226,9 @@ const struct btf_type *btf_find_func_proto(const =
+char *func_name,
+> > >                                            struct btf **btf_p);
+> > >  const struct btf_param *btf_get_func_param(const struct btf_type *fu=
+nc_proto,
+> > >                                            s32 *nr);
+> > > +const struct btf_member *btf_find_struct_member(struct btf *btf,
+> > > +                                               const struct btf_type=
+ *type,
+> > > +                                               const char *member_na=
+me);
+> > >
+> > >  #define for_each_member(i, struct_type, member)                     =
+   \
+> > >         for (i =3D 0, member =3D btf_type_member(struct_type);      \
+> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > > index f7b25c615269..8d81a4ffa67b 100644
+> > > --- a/kernel/bpf/btf.c
+> > > +++ b/kernel/bpf/btf.c
+> > > @@ -958,6 +958,46 @@ const struct btf_param *btf_get_func_param(const=
+ struct btf_type *func_proto, s3
+> > >                 return NULL;
+> > >  }
+> > >
+> > > +#define BTF_ANON_STACK_MAX     16
+> > > +
+> > > +/*
+> > > + * Find a member of data structure/union by name and return it.
+> > > + * Return NULL if not found, or -EINVAL if parameter is invalid.
+> > > + */
+> > > +const struct btf_member *btf_find_struct_member(struct btf *btf,
+> > > +                                               const struct btf_type=
+ *type,
+> > > +                                               const char *member_na=
+me)
+> > > +{
+> > > +       const struct btf_type *anon_stack[BTF_ANON_STACK_MAX];
+> > > +       const struct btf_member *member;
+> > > +       const char *name;
+> > > +       int i, top =3D 0;
+> > > +
+> > > +retry:
+> > > +       if (!btf_type_is_struct(type))
+> > > +               return ERR_PTR(-EINVAL);
+> > > +
+> > > +       for_each_member(i, type, member) {
+> > > +               if (!member->name_off) {
+> > > +                       /* Anonymous union/struct: push it for later =
+use */
+> > > +                       type =3D btf_type_skip_modifiers(btf, member-=
+>type, NULL);
+> > > +                       if (type && top < BTF_ANON_STACK_MAX)
+> > > +                               anon_stack[top++] =3D type;
+> > > +               } else {
+> > > +                       name =3D btf_name_by_offset(btf, member->name=
+_off);
+> > > +                       if (name && !strcmp(member_name, name))
+> > > +                               return member;
+> > > +               }
+> > > +       }
+> > > +       if (top > 0) {
+> > > +               /* Pop from the anonymous stack and retry */
+> > > +               type =3D anon_stack[--top];
+> > > +               goto retry;
+> > > +       }
+> >
+> > Looks good, but I don't see a test case for this.
+> > The logic is a bit tricky. I'd like to have a selftest that covers it.
+>
+> Thanks, and I agree about selftest.
+>
+> >
+> > You probably need to drop Alan's reviewed-by, since the patch is quite
+> > different from the time he reviewed it.
+>
+> OK. BTW, I found a problem on this function. I guess the member->offset w=
+ill
+> be the offset from the intermediate anonymous union, it is usually 0, but
+> I need the offset from the given structure. Thus the interface design mus=
+t
+> be changed. Passing a 'u32 *offset' and set the correct offset in it. If
+> it has nested intermediate anonymous unions, that offset must also be pus=
+hed.
 
-Feels pretty iffy to hold config_lock over the flush. If anything off
-recv_work() ever grabs it, we'd be stuck. Your comment assumes that the
-only case this will currently happen is if we drop the last ref, or at
-least that's the case that'd do it even if you don't mention it
-explicitly.
+With all that piling up have you considering reusing btf_struct_walk() ?
+It's doing the opposite off -> btf_id while you need name -> btf_id.
+But it will give an idea of overall complexity if you want to solve it
+for nested arrays and struct/union.
 
-Maybe this is all fine, but recv_work() should have a comment matching
-this one, and this comment should be more descriptive as well.
+> >
+> > Assuming that is addressed. How do we merge the series?
+> > The first 3 patches have serious conflicts with bpf trees.
+> >
+> > Maybe send the first 3 with extra selftest for above recursion
+> > targeting bpf-next then we can have a merge commit that Steven can pull
+> > into tracing?
+> >
+> > Or if we can have acks for patches 4-9 we can pull the whole set into b=
+pf-next.
+>
+> That's a good question. I don't like splitting the whole series in 2 -nex=
+t
+> branches. So I can send this to the bpf-next.
 
--- 
-Jens Axboe
+Works for me.
 
+> I need to work on another series(*) on fprobes which will not have confli=
+cts with
+> this series. (*Replacing pt_regs with ftrace_regs on fprobe, which will t=
+ake longer
+> time, and need to adjust with eBPF).
+
+ftrace_regs?
+Ouch. For bpf we rely on pt_regs being an argument.
+fprobe should be 100% compatible replacement of kprobe-at-the-func-start.
+If it diverges from that it's a big issue for bpf.
+We'd have to remove all of fprobe usage.
+I could be missing something, of course.
