@@ -2,217 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9BE676BF58
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F0876BF5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbjHAVfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
+        id S231822AbjHAViO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbjHAVfx (ORCPT
+        with ESMTP id S229666AbjHAViM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:35:53 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085C41710
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:35:50 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6F5678D;
-        Tue,  1 Aug 2023 23:34:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690925685;
-        bh=MFrgXENkqlcRfX+EcNkS5B5eqVfsBlbWWD9455+s2wU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pXww2BwiAlcpMLRrthanfJuKSooNTgMfkM8H9jjdg/QIIDYgyM3+vFT+VwNq0kS4T
-         10vdRipTLIkDX5qB08/UsjMKX5YmQkrQ8LeyZHoc+CsOhpGarXUBS+eeAt7wnYTMpW
-         P+O+/1AYseQWDYT9uBt9OPYCG7IzfuKap7dDMdzc=
-Date:   Wed, 2 Aug 2023 00:35:54 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        Aradhya Bhatia <a-bhatia1@ti.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] drm/bridge: Add debugfs print for bridge chains
-Message-ID: <20230801213554.GE8578@pendragon.ideasonboard.com>
-References: <20230731-drm-bridge-chain-debugfs-v3-1-7d0739f3efa3@ideasonboard.com>
+        Tue, 1 Aug 2023 17:38:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77659DF;
+        Tue,  1 Aug 2023 14:38:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0766061722;
+        Tue,  1 Aug 2023 21:38:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41263C433C8;
+        Tue,  1 Aug 2023 21:38:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690925890;
+        bh=L9yzo4o83vj4Z4G5LjXyDNNMIl4uZDRWjd0/MKTecbs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=s0n/52uUJK5yMxrM2nLvnjq1pew8zyNXY/3DO3orcI1nzkY2cZiWv7fWmU+SlUVQz
+         +iQgZ2r5v6TcBdeKakhrDg4XxoIJpLWSapA4Y4WwtvDalUvIPL0QShVFydpFKAcck2
+         GDLwQpRsqZk3zWdRGPhPs5YfukMHBguteBCSPmVjPhtlufLIEvz8GtLQo5z3ruvo2w
+         tTQB4qcFut6TkcMZKOaTOwHXiZb7hIbBQxiRP0pa+v5PQO6XE2fOKzTvNqbcPod/hk
+         /GmGNT8AxvpH6eKbTlCpiUVhcO6f5lKluwzo+Tj02g7Nn2qTxsBbcITTa9Cho44V29
+         MRxXEUSF0B+7A==
+Date:   Tue, 1 Aug 2023 16:38:08 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Mahesh Salgaonkar <mahesh@linux.ibm.com>
+Cc:     linuxppc-dev <linuxppc-dev@ozlabs.org>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v7 2/2] PCI: rpaphp: Error out on busy status from
+ get-sensor-state
+Message-ID: <20230801213808.GA51837@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731-drm-bridge-chain-debugfs-v3-1-7d0739f3efa3@ideasonboard.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <169018891453.2762525.13358294392014600391.stgit@jupiter>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
+On Mon, Jul 24, 2023 at 02:25:19PM +0530, Mahesh Salgaonkar wrote:
+> When certain PHB HW failure causes pHyp to recover PHB, it marks the PE
+> state as temporarily unavailable until recovery is complete. This also
+> triggers an EEH handler in Linux which needs to notify drivers, and perform
+> recovery. But before notifying the driver about the PCI error it uses
+> get_adapter_state()->get-sensor-state() operation of the hotplug_slot to
+> determine if the slot contains a device or not. if the slot is empty, the
+> recovery is skipped entirely.
 
-Thank you for the patch.
+It's helpful to use the exact function name so it's greppable; I think
+get_adapter_status() or rpaphp_get_sensor_state()?
 
-On Mon, Jul 31, 2023 at 03:13:14PM +0300, Tomi Valkeinen wrote:
-> DRM bridges are not visible to the userspace and it may not be
-> immediately clear if the chain is somehow constructed incorrectly. I
-> have had two separate instances of a bridge driver failing to do a
-> drm_bridge_attach() call, resulting in the bridge connector not being
-> part of the chain. In some situations this doesn't seem to cause issues,
-> but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
+s/if the slot is empty,/If the slot is empty,/
+
+> However on certain PHB failures, the RTAS call get-sensor-state() returns
+> extended busy error (9902) until PHB is recovered by pHyp. Once PHB is
+> recovered, the get-sensor-state() returns success with correct presence
+> status. The RTAS call interface rtas_get_sensor() loops over the RTAS call
+> on extended delay return code (9902) until the return value is either
+> success (0) or error (-1). This causes the EEH handler to get stuck for ~6
+> seconds before it could notify that the PCI error has been detected and
+> stop any active operations. Hence with running I/O traffic, during this 6
+> seconds, the network driver continues its operation and hits a timeout
+> (netdev watchdog).
 > 
-> Add a debugfs file to print the bridge chains. For me, on this TI AM62
-> based platform, I get the following output:
+> ------------
+> [52732.244731] DEBUG: ibm_read_slot_reset_state2()
+> [52732.244762] DEBUG: ret = 0, rets[0]=5, rets[1]=1, rets[2]=4000, rets[3]=>
+> [52732.244798] DEBUG: in eeh_slot_presence_check
+> [52732.244804] DEBUG: error state check
+> [52732.244807] DEBUG: Is slot hotpluggable
+> [52732.244810] DEBUG: hotpluggable ops ?
+> [52732.244953] DEBUG: Calling ops->get_adapter_status
+> [52732.244958] DEBUG: calling rpaphp_get_sensor_state
+> [52736.564262] ------------[ cut here ]------------
+> [52736.564299] NETDEV WATCHDOG: enP64p1s0f3 (tg3): transmit queue 0 timed o>
+> [52736.564324] WARNING: CPU: 1442 PID: 0 at net/sched/sch_generic.c:478 dev>
+> [...]
+> [52736.564505] NIP [c000000000c32368] dev_watchdog+0x438/0x440
+> [52736.564513] LR [c000000000c32364] dev_watchdog+0x434/0x440
+> ------------
 > 
-> encoder[39]
-> 	bridge[0] type: 0, ops: 0x0
-> 	bridge[1] type: 0, ops: 0x0, OF: /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778
-> 	bridge[2] type: 0, ops: 0x3, OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b
-> 	bridge[3] type: 11, ops: 0x7, OF: /hdmi-connector:hdmi-connector
+> On timeouts, network driver starts dumping debug information to console
+> (e.g bnx2 driver calls bnx2x_panic_dump()), and go into recovery path while
+> pHyp is still recovering the PHB. As part of recovery, the driver tries to
+> reset the device and it keeps failing since every PCI read/write returns
+> ff's. And when EEH recovery kicks-in, the driver is unable to recover the
+> device. This impacts the ssh connection and leads to the system being
+> inaccessible. To get the NIC working again it needs a reboot or re-assign
+> the I/O adapter from HMC.
 > 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
-> Changes in v3:
-> - Use drm_for_each_bridge_in_chain()
-> - Drop extra comment
-> - Fix whitespace issue
-> - Call drm_bridge_debugfs_init() only if the driver uses modeset
-> - Drop #ifdef for drm_bridge_debugfs_init() declaration
-> - Link to v2: https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v2-1-76df94347962@ideasonboard.com
+> [ 9531.168587] EEH: Beginning: 'slot_reset'
+> [ 9531.168601] PCI 0013:01:00.0#10000: EEH: Invoking bnx2x->slot_reset()
+> [...]
+> [ 9614.110094] bnx2x: [bnx2x_func_stop:9129(enP19p1s0f0)]FUNC_STOP ramrod failed. Running a dry transaction
+> [ 9614.110300] bnx2x: [bnx2x_igu_int_disable:902(enP19p1s0f0)]BUG! Proper val not read from IGU!
+> [ 9629.178067] bnx2x: [bnx2x_fw_command:3055(enP19p1s0f0)]FW failed to respond!
+> [ 9629.178085] bnx2x 0013:01:00.0 enP19p1s0f0: bc 7.10.4
+> [ 9629.178091] bnx2x: [bnx2x_fw_dump_lvl:789(enP19p1s0f0)]Cannot dump MCP info while in PCI error
+> [ 9644.241813] bnx2x: [bnx2x_io_slot_reset:14245(enP19p1s0f0)]IO slot reset --> driver unload
+> [...]
+> [ 9644.241819] PCI 0013:01:00.0#10000: EEH: bnx2x driver reports: 'disconnect'
+> [ 9644.241823] PCI 0013:01:00.1#10000: EEH: Invoking bnx2x->slot_reset()
+> [ 9644.241827] bnx2x: [bnx2x_io_slot_reset:14229(enP19p1s0f1)]IO slot reset initializing...
+> [ 9644.241916] bnx2x 0013:01:00.1: enabling device (0140 -> 0142)
+> [ 9644.258604] bnx2x: [bnx2x_io_slot_reset:14245(enP19p1s0f1)]IO slot reset --> driver unload
+> [ 9644.258612] PCI 0013:01:00.1#10000: EEH: bnx2x driver reports: 'disconnect'
+> [ 9644.258615] EEH: Finished:'slot_reset' with aggregate recovery state:'disconnect'
+> [ 9644.258620] EEH: Unable to recover from failure from PHB#13-PE#10000.
+> [ 9644.261811] EEH: Beginning: 'error_detected(permanent failure)'
+> [...]
+> [ 9644.261823] EEH: Finished:'error_detected(permanent failure)'
 > 
-> Changes in v2:
-> - Fixed compilation issue when !CONFIG_OF
-> - Link to v1: https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e890d@ideasonboard.com
-> ---
->  drivers/gpu/drm/drm_bridge.c  | 46 +++++++++++++++++++++++++++++++++++++++++++
->  drivers/gpu/drm/drm_debugfs.c |  3 +++
->  include/drm/drm_bridge.h      |  3 +++
->  3 files changed, 52 insertions(+)
+> Hence, it becomes important to inform driver about the PCI error detection
+> as early as possible, so that driver is aware of PCI error and waits for
+> EEH handler's next action for successful recovery.
+
+I don't really understand the connection between EEH and
+get_adapter_status(), but I guess this probably refers to
+arch/powerpc/kernel/eeh_driver.c, not the PCI core aer.c and err.c?
+
+> Current implementation uses rtas_get_sensor() API which blocks the slot
+> check state until RTAS call returns success. To avoid this, fix the PCI
+> hotplug driver (rpaphp) to return an error (-EBUSY) if the slot presence
+> state can not be detected immediately while PE is in EEH recovery state.
+> Change rpaphp_get_sensor_state() to invoke rtas_call(get-sensor-state)
+> directly only if the respective PE is in EEH recovery state, and take
+> actions based on RTAS return status. This way EEH handler will not be
+> blocked on rpaphp_get_sensor_state() and can immediately notify driver
+> about the PCI error and stop any active operations.
 > 
-> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
-> index c3d69af02e79..39e68e45bb12 100644
-> --- a/drivers/gpu/drm/drm_bridge.c
-> +++ b/drivers/gpu/drm/drm_bridge.c
-> @@ -27,8 +27,10 @@
->  #include <linux/mutex.h>
->  
->  #include <drm/drm_atomic_state_helper.h>
-> +#include <drm/drm_debugfs.h>
->  #include <drm/drm_bridge.h>
->  #include <drm/drm_encoder.h>
-> +#include <drm/drm_file.h>
->  #include <drm/drm_of.h>
->  #include <drm/drm_print.h>
->  
-> @@ -1345,6 +1347,50 @@ struct drm_bridge *of_drm_find_bridge(struct device_node *np)
->  EXPORT_SYMBOL(of_drm_find_bridge);
->  #endif
->  
-> +#ifdef CONFIG_DEBUG_FS
-> +static int drm_bridge_chains_info(struct seq_file *m, void *data)
+> In normal cases (non-EEH case) rpaphp_get_sensor_state() will continue to
+> invoke rtas_get_sensor() as it was earlier with no change in existing
+> behavior.
+> 
+> Signed-off-by: Mahesh Salgaonkar <mahesh@linux.ibm.com>
+> Reviewed-by: Nathan Lynch <nathanl@linux.ibm.com>
+
+Seems like maybe both patches could go via a ppc tree since they seem
+very ppc-specific?  A couple minor comments below.
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> + * get_adapter_status() can be called by the EEH handler during EEH recovery.
+> + * On certain PHB failures, the RTAS call get-seHsor-state() returns extended
+
+Looks like a typo in "get-seHsor-state"?
+
+> +static int __rpaphp_get_sensor_state(struct slot *slot, int *state)
 > +{
-> +	struct drm_debugfs_entry *entry = m->private;
-> +	struct drm_device *dev = entry->dev;
-> +	struct drm_printer p = drm_seq_file_printer(m);
-> +	struct drm_mode_config *config = &dev->mode_config;
-> +	struct drm_encoder *encoder;
-> +	unsigned int bridge_idx = 0;
+> +#ifdef CONFIG_EEH
+
+Is this #ifdef redundant?  It looks like this file is only compiled
+if CONFIG_EEH is set:
+
+  config HOTPLUG_PCI_RPA
+          tristate "RPA PCI Hotplug driver"
+          depends on PPC_PSERIES && EEH
+
+  obj-$(CONFIG_HOTPLUG_PCI_RPA)           += rpaphp.o
+
+  rpaphp-objs             :=      rpaphp_core.o   \
+                                  rpaphp_pci.o    \
+                                  rpaphp_slot.o
+
+> +	int rc;
+> +	int token = rtas_token("get-sensor-state");
+> +	struct pci_dn *pdn;
+> +	struct eeh_pe *pe;
+> +	struct pci_controller *phb = PCI_DN(slot->dn)->phb;
 > +
-> +	list_for_each_entry(encoder, &config->encoder_list, head) {
-> +		struct drm_bridge *bridge;
+> +	if (token == RTAS_UNKNOWN_SERVICE)
+> +		return -ENOENT;
 > +
-> +		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
+> +	/*
+> +	 * Fallback to existing method for empty slot or PE isn't in EEH
+> +	 * recovery.
+> +	 */
+> +	pdn = list_first_entry_or_null(&PCI_DN(phb->dn)->child_list,
+> +					struct pci_dn, list);
+> +	if (!pdn)
+> +		goto fallback;
 > +
-> +		drm_for_each_bridge_in_chain(encoder, bridge) {
-> +			drm_printf(&p, "\tbridge[%u] type: %u, ops: %#x",
-> +				   bridge_idx, bridge->type, bridge->ops);
-> +
-> +#ifdef CONFIG_OF
-> +			if (bridge->of_node)
-> +				drm_printf(&p, ", OF: %pOFfc", bridge->of_node);
-> +#endif
-> +
-> +			drm_printf(&p, "\n");
-> +
-> +			bridge_idx++;
-> +		}
+> +	pe = eeh_dev_to_pe(pdn->edev);
+> +	if (pe && (pe->state & EEH_PE_RECOVERING)) {
+> +		rc = rtas_call(token, 2, 2, state, DR_ENTITY_SENSE,
+> +			       slot->index);
+> +		return rtas_get_sensor_errno(rc);
 > +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct drm_debugfs_info drm_bridge_debugfs_list[] = {
-> +	{ "bridge_chains", drm_bridge_chains_info, 0 },
-> +};
-> +
-> +void drm_bridge_debugfs_init(struct drm_minor *minor)
-> +{
-> +	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
-> +			      ARRAY_SIZE(drm_bridge_debugfs_list));
-> +}
+> +fallback:
 > +#endif
+> +	return rtas_get_sensor(DR_ENTITY_SENSE, slot->index, state);
+> +}
 > +
->  MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
->  MODULE_DESCRIPTION("DRM bridge infrastructure");
->  MODULE_LICENSE("GPL and additional rights");
-> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
-> index a3a488205009..3b1de2c61c89 100644
-> --- a/drivers/gpu/drm/drm_debugfs.c
-> +++ b/drivers/gpu/drm/drm_debugfs.c
-> @@ -31,6 +31,7 @@
+>  int rpaphp_get_sensor_state(struct slot *slot, int *state)
+>  {
+>  	int rc;
+>  	int setlevel;
 >  
->  #include <drm/drm_atomic.h>
->  #include <drm/drm_auth.h>
-> +#include <drm/drm_bridge.h>
->  #include <drm/drm_client.h>
->  #include <drm/drm_debugfs.h>
->  #include <drm/drm_device.h>
-> @@ -274,6 +275,8 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
+> -	rc = rtas_get_sensor(DR_ENTITY_SENSE, slot->index, state);
+> +	rc = __rpaphp_get_sensor_state(slot, state);
 >  
->  	if (drm_drv_uses_atomic_modeset(dev)) {
->  		drm_atomic_debugfs_init(minor);
-> +
-
-You could drop the blank line, up to you.
-
-> +		drm_bridge_debugfs_init(minor);
->  	}
->  
->  	if (drm_core_check_feature(dev, DRIVER_MODESET)) {
-> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
-> index bf964cdfb330..cb10ee108538 100644
-> --- a/include/drm/drm_bridge.h
-> +++ b/include/drm/drm_bridge.h
-> @@ -949,4 +949,7 @@ static inline struct drm_bridge *drmm_of_get_bridge(struct drm_device *drm,
->  }
->  #endif
->  
-> +struct drm_minor;
-
-Let's move this to tbe beginning of the file with the other forward
-declarations. With this addressedn
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
-
-> +void drm_bridge_debugfs_init(struct drm_minor *minor);
-> +
->  #endif
+>  	if (rc < 0) {
+>  		if (rc == -EFAULT || rc == -EEXIST) {
+> @@ -40,8 +117,7 @@ int rpaphp_get_sensor_state(struct slot *slot, int *state)
+>  				dbg("%s: power on slot[%s] failed rc=%d.\n",
+>  				    __func__, slot->name, rc);
+>  			} else {
+> -				rc = rtas_get_sensor(DR_ENTITY_SENSE,
+> -						     slot->index, state);
+> +				rc = __rpaphp_get_sensor_state(slot, state);
+>  			}
+>  		} else if (rc == -ENODEV)
+>  			info("%s: slot is unusable\n", __func__);
 > 
-> ---
-> base-commit: a0c64d153d687756c8719b8d10e609d62e1cb6fd
-> change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
-
--- 
-Regards,
-
-Laurent Pinchart
+> 
