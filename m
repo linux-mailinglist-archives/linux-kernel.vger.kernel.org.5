@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C4476B54A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B575176B54B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbjHAM6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
+        id S232622AbjHAM61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:58:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234014AbjHAM6O (ORCPT
+        with ESMTP id S234075AbjHAM6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:58:14 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB47C1738
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:58:12 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AA5F521D7D;
-        Tue,  1 Aug 2023 12:58:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690894691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bn8oqwHusOPKKT1/bnr8fvY00pXKsVutuyDNzj9Imi0=;
-        b=Gv3aMM5VFPmxjAKdVDT66D1wgBhPyqAzkbWkXPAn+zkJ9TCZUblc2xWjiG5lWC5f+MdMy9
-        MgM2A8J4UASDeT8U9n7+xcL3ic3zfGTEX8JqOZbFCgXeYDg4qIwrIAa0f3DPs1LKqjfL3S
-        PLBup9oVeUGdyRBI5rzaoWyaK6QqkSM=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E207139BD;
-        Tue,  1 Aug 2023 12:58:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id FLOLJmMByWQUNgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 01 Aug 2023 12:58:11 +0000
-Date:   Tue, 1 Aug 2023 14:58:11 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        kernel test robot <lkp@intel.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog/hardlockup: Avoid large stack frames in
- watchdog_hardlockup_check()
-Message-ID: <ZMkBY7K3Dn04YQ65@dhcp22.suse.cz>
-References: <20230731091754.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731091754.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
+        Tue, 1 Aug 2023 08:58:18 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F36551AA;
+        Tue,  1 Aug 2023 05:58:17 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-63d0228d32bso30796556d6.2;
+        Tue, 01 Aug 2023 05:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690894697; x=1691499497;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=52xtRMZBq0GtelXFCLGXXpjBQ9BYFSeOAKYA+Oh87s8=;
+        b=kvXqaj+XplVDOb28tqmrpexUF28oi70HOCK4+onfdTzh9FE74ILEwwwzWOm7u/dQ+W
+         fbafYj/o5j09MrGbiTty2jVcNKP/ilMf0vMOYgg/Zr1gRNhAVxMaK5xGPZ97gS1aSFPt
+         ESe6WsuIjE69o7F1KM0/2Ndnde/qqi+zSWO4Ulv+9a5TjxVdYeo47KZCa6QG7GlmR6a6
+         vyc2MEg7XSeR3wMxpZGUBKd31pBzT25OVd8ojchCX8BzZ3WlvMTXu7XTcWj1TAFg3Ac/
+         9T4fv5z0Xfo6Pg+ZXOdI3BquNpgqs3r0Qhx3yDmMVaeCchKFYpNIXLycnXndoWI08DPj
+         dFvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690894697; x=1691499497;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=52xtRMZBq0GtelXFCLGXXpjBQ9BYFSeOAKYA+Oh87s8=;
+        b=lVA+PRvEgXvCpNWfd2CsOMtwn928gOkiHDJrYukmfhA1p9hLtTwgNMGuEaF34D5qGF
+         7lyAjE1vtdEVSXhyFW/KHolVP9rau2iZT8HQhBARTOnQn6C2sy7pS1zaE6MEoP+yHAYe
+         YihC5BKdTpkTLNm/8hRc6FKXwwqEfckUtyxA1hoOZ1S9Lf4NLsQTNuvH6ne+a4W5RLsd
+         gyaJfHZxGOumyQ+F1E+mSdUPQFMIcHiCIdrsnpc8UNOIsikoPp1SmYhGkVUKWxNK4O8o
+         4r+IzTpidUsySETfRtiyk+suoMJZeKtEkRZn9liRVjKepENnLZHroUffPlkQKpctb9YK
+         d9bA==
+X-Gm-Message-State: ABy/qLZj+4oHBdDXtG1ONorpBNiJ2VkCsDRCnTg91ZILoNFZucIXPhAR
+        NSO0uobMd3+aSLp/3SsDiBAuV/0j+ow=
+X-Google-Smtp-Source: APBJJlEIkqTRVKZLtG2Iljy/p50YykXPDd0qhhxO1UjmNJV6WTEQmOjO1bdp1USUVPMsmBVFFenkFw==
+X-Received: by 2002:ad4:5810:0:b0:636:14d4:4461 with SMTP id dd16-20020ad45810000000b0063614d44461mr9962767qvb.62.1690894696926;
+        Tue, 01 Aug 2023 05:58:16 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id w10-20020a0cb54a000000b0063d47a29e6fsm3944170qvd.55.2023.08.01.05.58.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 05:58:16 -0700 (PDT)
+Date:   Tue, 01 Aug 2023 08:58:16 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     David Howells <dhowells@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     dhowells@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>,
+        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <64c901683e0b6_1b28392946b@willemb.c.googlers.com.notmuch>
+In-Reply-To: <1401696.1690893633@warthog.procyon.org.uk>
+References: <64c7acd57270c_169cd129420@willemb.c.googlers.com.notmuch>
+ <64c6672f580e3_11d0042944e@willemb.c.googlers.com.notmuch>
+ <20230718160737.52c68c73@kernel.org>
+ <000000000000881d0606004541d1@google.com>
+ <0000000000001416bb06004ebf53@google.com>
+ <792238.1690667367@warthog.procyon.org.uk>
+ <831028.1690791233@warthog.procyon.org.uk>
+ <1401696.1690893633@warthog.procyon.org.uk>
+Subject: Re: Endless loop in udp with MSG_SPLICE_READ - Re: [syzbot] [fs?]
+ INFO: task hung in pipe_release (4)
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,97 +87,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 31-07-23 09:17:59, Douglas Anderson wrote:
-> After commit 77c12fc95980 ("watchdog/hardlockup: add a "cpu" param to
-> watchdog_hardlockup_check()") we started storing a `struct cpumask` on
-> the stack in watchdog_hardlockup_check(). On systems with
-> CONFIG_NR_CPUS set to 8192 this takes up 1K on the stack. That
-> triggers warnings with `CONFIG_FRAME_WARN` set to 1024.
+David Howells wrote:
+> The more I look at __ip_append_data(), the more I think the maths is wrong.
+> In the bit that allocates a new skbuff:
 > 
-> Instead of putting this `struct cpumask` on the stack, let's declare
-> it as `static`. This has the downside of taking up 1K of memory all
-> the time on systems with `CONFIG_NR_CPUS` to 8192, but on systems with
-> smaller `CONFIG_NR_CPUS` it's not much emory (with 128 CPUs it's only
-> 16 bytes of memory). Presumably anyone building a system with
-> `CONFIG_NR_CPUS=8192` can afford the extra 1K of memory.
+> 	if (copy <= 0) {
+> 	...
+> 		datalen = length + fraggap;
+> 		if (datalen > mtu - fragheaderlen)
+> 			datalen = maxfraglen - fragheaderlen;
+> 		fraglen = datalen + fragheaderlen;
+> 		pagedlen = 0;
+> 	...
+> 		if ((flags & MSG_MORE) &&
+> 		    !(rt->dst.dev->features&NETIF_F_SG))
+> 	...
+> 		else if (!paged &&
+> 			 (fraglen + alloc_extra < SKB_MAX_ALLOC ||
+> 			  !(rt->dst.dev->features & NETIF_F_SG)))
+> 	...
+> 		else {
+> 			alloclen = fragheaderlen + transhdrlen;
+> 			pagedlen = datalen - transhdrlen;
+> 		}
+> 	...
 > 
-> NOTE: as part of this change, we no longer check the return value of
-> trigger_single_cpu_backtrace(). While we could do this and only call
-> cpumask_clear_cpu() if trigger_single_cpu_backtrace() didn't fail,
-> that's probably not worth it. There's no reason to believe that
-> trigger_cpumask_backtrace() will succeed at backtracing the CPU when
-> trigger_single_cpu_backtrace() failed.
+> In the MSG_SPLICE_READ but not MSG_MORE case, we go through that else clause.
+> The values used here, a few lines further along:
 > 
-> Alternatives considered:
-> - Use kmalloc with GFP_ATOMIC to allocate. I decided against this
->   since relying on kmalloc when the system is hard locked up seems
->   like a bad idea.
-> - Change the arch_trigger_cpumask_backtrace() across all architectures
->   to take an extra parameter to get the needed behavior. This seems
->   like a lot of churn for a small savings.
+> 		copy = datalen - transhdrlen - fraggap - pagedlen;
 > 
-> Fixes: 77c12fc95980 ("watchdog/hardlockup: add a "cpu" param to watchdog_hardlockup_check()")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/r/202307310955.pLZDhpnl-lkp@intel.com
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
+> are constant over the intervening span.  This means that, provided the splice
+> isn't going to exceed the MTU on the second fragment, the calculation of
+> 'copy' can then be simplified algebraically thus:
 > 
->  kernel/watchdog.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
+> 		copy = (length + fraggap) - transhdrlen - fraggap - pagedlen;
 > 
-> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-> index be38276a365f..19db2357969a 100644
-> --- a/kernel/watchdog.c
-> +++ b/kernel/watchdog.c
-> @@ -151,9 +151,6 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
->  	 */
->  	if (is_hardlockup(cpu)) {
->  		unsigned int this_cpu = smp_processor_id();
-> -		struct cpumask backtrace_mask;
-> -
-> -		cpumask_copy(&backtrace_mask, cpu_online_mask);
->  
->  		/* Only print hardlockups once. */
->  		if (per_cpu(watchdog_hardlockup_warned, cpu))
-> @@ -167,10 +164,8 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
->  				show_regs(regs);
->  			else
->  				dump_stack();
-> -			cpumask_clear_cpu(cpu, &backtrace_mask);
->  		} else {
-> -			if (trigger_single_cpu_backtrace(cpu))
-> -				cpumask_clear_cpu(cpu, &backtrace_mask);
-> +			trigger_single_cpu_backtrace(cpu);
->  		}
->  
->  		/*
-> @@ -178,8 +173,13 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
->  		 * hardlockups generating interleaving traces
->  		 */
->  		if (sysctl_hardlockup_all_cpu_backtrace &&
-> -		    !test_and_set_bit(0, &watchdog_hardlockup_all_cpu_dumped))
-> +		    !test_and_set_bit(0, &watchdog_hardlockup_all_cpu_dumped)) {
-> +			static struct cpumask backtrace_mask;
-> +
-> +			cpumask_copy(&backtrace_mask, cpu_online_mask);
-> +			cpumask_clear_cpu(cpu, &backtrace_mask);
->  			trigger_cpumask_backtrace(&backtrace_mask);
+> 		copy = length - transhdrlen - pagedlen;
+> 
+> 		copy = length - transhdrlen - (datalen - transhdrlen);
+> 
+> 		copy = length - transhdrlen - datalen + transhdrlen;
+> 
+> 		copy = length - datalen;
+> 
+> 		copy = length - (length + fraggap);
+> 
+> 		copy = length - length - fraggap;
+> 
+> 		copy = -fraggap;
+> 
+> I think we might need to recalculate copy after the conditional call to
+> getfrag().  Possibly we should skip that entirely for MSG_SPLICE_READ.  The
+> root seems to be that we're subtracting pagedlen from datalen - but probably
+> we shouldn't be doing getfrag() if pagedlen > 0.
 
-This looks rather wasteful to just copy the cpumask over to
-backtrace_mask in nmi_trigger_cpumask_backtrace (which all but sparc
-arches do AFAICS).
+q
 
-Would it be possible to use arch_trigger_cpumask_backtrace(cpu_online_mask, false)
-and special case cpu != this_cpu && sysctl_hardlockup_all_cpu_backtrace?
-
-> +		}
->  
->  		if (hardlockup_panic)
->  			nmi_panic(regs, "Hard LOCKUP");
-> -- 
-> 2.41.0.487.g6d72f3e995-goog
-> 
-
--- 
-Michal Hocko
-SUSE Labs
