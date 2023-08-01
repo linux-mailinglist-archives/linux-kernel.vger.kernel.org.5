@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B372D76C043
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 00:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F1276C049
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 00:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbjHAWOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 18:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
+        id S232590AbjHAWSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 18:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230242AbjHAWOL (ORCPT
+        with ESMTP id S231681AbjHAWSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 18:14:11 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8871BC3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 15:14:09 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6bcaa6d5e2cso1796030a34.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 15:14:09 -0700 (PDT)
+        Tue, 1 Aug 2023 18:18:50 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC6219BE
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 15:18:48 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-52227142a27so8043436a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 15:18:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690928049; x=1691532849;
+        d=cloudflare.com; s=google; t=1690928327; x=1691533127;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WpNjvdyqURVpJ2zUI1mEAiHbIdULXSwVnHK8BVQhnhU=;
-        b=4SMyoopMgqoEw0/F6B5MkJennZdxMY2EtGO2rfkv6UnELFUnWA5Vg6jl+P/m7tKwvd
-         2+FP33M7rwHe3mrVYq3RXK/tuUJ4kBPz76+GmvDDDo+Oe+d/qnTHjlMF1MxSKIEwRGMo
-         F00Hf+vxcbas/ajrgyfqBaPIlHeytFhZ5INR+Ax31S8hxpYRYFceOs32LgzCRI54TUEW
-         opSH1X7BJMeMX6cEQdUH9OqNvAJJ056NV2bdOpbnWGB0UWKih10N/g6Ozg9c0L7+T/8d
-         b4VvZRxjwLWgChBZ8uXy4ndGXEgOZOLFqe9ZNKlqHSZkYh3JtvscUZpj4pUPHWLMIVBT
-         tUDg==
+        bh=qPseTy7IzinUQZpPzP36aZrRMGJ435Us12Gys3Nc6zk=;
+        b=oWRJ4PZkbCJ2ey++KZdiAfsp6lEM0ajwDZWvbZ2+wZ4pZdXAocuW8kuVFjO3dnKtnf
+         8lzUDjsfEiq9ZGq+SNVu1I1PVaPvDvJ+ZeGXNk6rd9FVxoAV+2Y1PfIgtto1waRbirIz
+         66lQccpXqqqoVxMDXlAsWc7hkQOt7OkpsWcx4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690928049; x=1691532849;
+        d=1e100.net; s=20221208; t=1690928327; x=1691533127;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WpNjvdyqURVpJ2zUI1mEAiHbIdULXSwVnHK8BVQhnhU=;
-        b=YXAYZxhQb8vYlS6SAEdqp5tlSAeHX3onAYxwdbheVlELb+4SZD5ZICpDrMUvmVZIGJ
-         uVoXQ7S+xR70XVMjXIXdXcA1YciwA4AjE0j8Zi14ewamG39RyY4TTY5VtwUuSDxfs47u
-         v1afxLbnohoPlRS8bVU0W8HctPpamL3/vx9eRV+uBqKON4ezUOd8FqHYqgIy0tDDB/Oh
-         n1HGFPYkskradazq9k8V/xdqivzVNZ98ryk9SJqcDMMDc53mWtkjoT1eufUQ7qvVHVro
-         ZtglbHmgnwm2c2kxIqGeWlkWrTcyFJlSkdFI98/GleZaQdMmjoGt6RPxwawWa4/9eBy9
-         Y+sQ==
-X-Gm-Message-State: ABy/qLZKRaGihcO0/k1mo1m7pOCGYbheNej1Z2atuMAF/X5zcmf2/jgG
-        2i4HW5MIbGWeYHAteNpKQ2GHpTcS/RY4Jl4PmWGZfg==
-X-Google-Smtp-Source: APBJJlE8GREzg52Zu/8+K0wDx3mHcyDe2LUEP4ybOfNAM7BlHzGg7YgywGt4VVG7BPJEVRJPtQHvkINFBy+onuKKviw=
-X-Received: by 2002:a05:6830:44a:b0:6b9:1917:b4af with SMTP id
- d10-20020a056830044a00b006b91917b4afmr14757444otc.33.1690928048966; Tue, 01
- Aug 2023 15:14:08 -0700 (PDT)
+        bh=qPseTy7IzinUQZpPzP36aZrRMGJ435Us12Gys3Nc6zk=;
+        b=ib2CZr/2ZkeVKr6Hnu6HxnbUWLwhUgb89Ox1CbzzmMaJ423UwAtCW8AiOA14UsqpfV
+         HqGvBOoAz3teAkxM+YCujyt5bJWf5p8CyDnXiRPtxn2j+Fw8nbnBv/7gq6h2ES5Q3rx3
+         9iX7mpeS7hkY/IiAPAahMFcPygJqYN3V01qAJeUsLYtyGJUhIvmkDfPqpkz3dSIS8dvx
+         QAKiUV2GtFj+8bv0AeqdA5I3kGMBtj2EIgyVXdsFqapJfVmyAZT8YDpWCXfhcca6eOIu
+         ZdJfmVbm2La/sM4OzPaasIXWA7m5iNBRKKx/cSKOx7NPE04Oz1sE1198A1He5K+2VQkm
+         DS/w==
+X-Gm-Message-State: ABy/qLb25vp+Em2BLNDyDDleD1FhRyvf07jSTuR9LiG2HR0ldx2zGXG0
+        JfOn9XqOtS/rBWwY71x39lh/yxDXGhi5K3wDzS/wQw==
+X-Google-Smtp-Source: APBJJlF6hKrUdco2WhtqBq/dd/fptQdjNbrXp5Xp8ffyLBxvo4Hhe4gPknw50y7nZFOKqOmpsbN//GRQckBdVERYlwc=
+X-Received: by 2002:a05:6402:125a:b0:51d:e30b:f33a with SMTP id
+ l26-20020a056402125a00b0051de30bf33amr3473017edw.34.1690928327002; Tue, 01
+ Aug 2023 15:18:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230731171233.1098105-1-surenb@google.com> <20230731171233.1098105-2-surenb@google.com>
- <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
- <CAJuCfpFWOknMsBmk1RwsX9_0-eZBoF+cy=P-E7xAmOWyeo4rvA@mail.gmail.com>
- <CAHk-=wiFXOJ_6mnuP5h3ZKNM1+SBNZFZz9p8hyS8NaYUGLioEg@mail.gmail.com>
- <CAJuCfpG4Yk65b=0TLfGRqrO7VpY3ZaYKqbBjEP+45ViC9zySVQ@mail.gmail.com>
- <CAJuCfpF6WcJBSix0PD0cOD_MaeLpfGz1ddS6Ug_M+g0QTfkdzw@mail.gmail.com>
- <ZMl6c+bVxdWW0YnN@x1n> <CAJuCfpG0zACcu3JrU4zWLT4rgOmTThm3N0FaHTsFthCxsBApkQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpG0zACcu3JrU4zWLT4rgOmTThm3N0FaHTsFthCxsBApkQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 1 Aug 2023 15:13:56 -0700
-Message-ID: <CAJuCfpGN+YE+w08cmMw9py_QrPBWNMVG=JGt=3sAWPZKhmnDTg@mail.gmail.com>
-Subject: Re: [PATCH 1/6] mm: enable page walking API to lock vmas during the walk
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, ldufour@linux.ibm.com,
-        vbabka@suse.cz, michel@lespinasse.org, jglisse@google.com,
-        mhocko@suse.com, hannes@cmpxchg.org, dave@stgolabs.net,
-        hughd@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
+References: <cover.1690332693.git.yan@cloudflare.com> <e5d05e56bf41de82f10d33229b8a8f6b49290e98.1690332693.git.yan@cloudflare.com>
+ <a76b300a-e472-4568-b734-37115927621d@moroto.mountain> <ZMEqYOOBc1ZNcEER@debian.debian>
+ <bc3ec02d-4d4e-477a-b8a5-5245425326c6@kadam.mountain> <ZMFFbChK/66/8XZd@debian.debian>
+ <8b681fe1-4cc6-4310-9f50-1cff868f8f7f@kadam.mountain> <38c61917-98b5-4ca0-b04e-64f956ace6e4@kadam.mountain>
+In-Reply-To: <38c61917-98b5-4ca0-b04e-64f956ace6e4@kadam.mountain>
+From:   Yan Zhai <yan@cloudflare.com>
+Date:   Tue, 1 Aug 2023 17:18:36 -0500
+Message-ID: <CAO3-Pbpx8vmC_-o59s61mU=TzYLb+VpZ2qk+QhTMjVM6jf=71g@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf 1/2] bpf: fix skb_do_redirect return values
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@cloudflare.com,
+        Jordan Griege <jgriege@cloudflare.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Jakub Sitnicki <jakub@cloudflare.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 2:46=E2=80=AFPM Suren Baghdasaryan <surenb@google.co=
-m> wrote:
+On Mon, Jul 31, 2023 at 9:26=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro=
+.org> wrote:
 >
-> On Tue, Aug 1, 2023 at 2:34=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote=
-:
-> >
-> > On Tue, Aug 01, 2023 at 01:28:56PM -0700, Suren Baghdasaryan wrote:
-> > > I have the new patchset ready but I see 3 places where we walk the
-> > > pages after mmap_write_lock() while *I think* we can tolerate
-> > > concurrent page faults (don't need to lock the vmas):
-> > >
-> > > s390_enable_sie()
-> > > break_ksm()
-> > > clear_refs_write()
-> >
-> > This one doesn't look right to be listed - tlb flushing is postponed af=
-ter
-> > pgtable lock released, so I assume the same issue can happen like fork(=
-):
-> > where we can have race coditions to corrupt data if, e.g., thread A
-> > writting with a writable (unflushed) tlb, alongside with thread B CoWin=
-g.
->
-> Ah, good point.
->
-> >
-> > It'll indeed be nice to know whether break_ksm() can avoid that lock_vm=
-a
-> > parameter across quite a few function jumps. I don't yet see an immedia=
-te
-> > issue with this one..  No idea on s390_enable_sie(), but to make it sim=
-ple
-> > and safe I'd simply leave it with the write vma lock to match the mmap
-> > write lock.
->
-> Thanks for taking a look, Peter!
->
-> Ok, let me keep all three of them with vma locking in place to be safe
-> and will post v2 for further discussion.
+> I'm not a networking person, but I was looking at some use after free
+> static checker warnings.
 
-v2 posted at https://lore.kernel.org/all/20230801220733.1987762-1-surenb@go=
-ogle.com/
+Did you refer to the gist I posted or something new?
 
-> Thanks,
-> Suren.
 >
-> >
-> > Thanks,
-> >
-> > --
-> > Peter Xu
-> >
+> Apparently the rule with xmit functions is that if they return a value
+> > 15 then that means the skb was not freed.  Otherwise it's supposed to
+> be freed.  So like NETDEV_TX_BUSY is 0x10 so it's not freed.
+>
+> This is checked with using the dev_xmit_complete() function.  So I feel
+> like it would make sense for LWTUNNEL_XMIT_CONTINUE to return higher
+> than 15.
+
+Yes I am adopting your suggestion in v5. Dealing with NETDEV_TX_BUSY
+would be left as another item (potentially more suited for netdev
+rather than bpf). Would be great to find a reproduction of memleak.
+
+>
+> Because that's the bug right?  The original code was assuming that
+> everything besides LWTUNNEL_XMIT_DONE was freed.
+>
+> regards,
+> dan carpenter
+>
+
+
+--=20
+
+Yan
