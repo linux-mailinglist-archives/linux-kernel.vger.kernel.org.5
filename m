@@ -2,90 +2,474 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 066A676B627
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C0676B62C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233820AbjHANqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49022 "EHLO
+        id S233075AbjHANru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbjHANqL (ORCPT
+        with ESMTP id S230310AbjHANrr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:46:11 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4D30DF1;
-        Tue,  1 Aug 2023 06:46:09 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8BxpPCfDMlkCiEOAA--.33403S3;
-        Tue, 01 Aug 2023 21:46:07 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxB82fDMlkHQpEAA--.38821S3;
-        Tue, 01 Aug 2023 21:46:07 +0800 (CST)
-Message-ID: <3af5c8bb-79dd-5e7a-fe5c-a1659b1501bd@loongson.cn>
-Date:   Tue, 1 Aug 2023 21:46:06 +0800
+        Tue, 1 Aug 2023 09:47:47 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D85ED
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 06:47:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690897666; x=1722433666;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=X9LL4W/E66IAZckgliz0F6R+X+6Qomu9XzplGsb3Pyo=;
+  b=dBSxPOPH8LyNE+wqQDvp+ptvmkDjBhU2m4n36+x9XsBdlHoF6xDoYBRX
+   NH5HDXPlboZtcAuwfqvHwyWuO5R29k4JC2zg3eRB+NsR9DKvLN9pCQoT8
+   FLl6Zw4w01+5KAydSxRCg7x9QZ75kA5h8tLdi57TtI+f3w5JJhnheqbOv
+   YEbgb25MRiL3f9tsbves3wGDYTEdUq+4JbivYH54liWTEAHJxEOT/ao7P
+   t2ORyjlvbRXnGA7A/eHsk+lj3XJlrWOffFufiW3YSLtpBdkTe04kQ35jg
+   xNgHRAtqlCFhNIykShVNYFMPV3TcRfk7LLFvcbrOQbcuf3ahJHAX4mhAV
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="348901518"
+X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
+   d="scan'208";a="348901518"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 06:47:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="758352467"
+X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
+   d="scan'208";a="758352467"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga008.jf.intel.com with ESMTP; 01 Aug 2023 06:47:25 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qQpic-0050DO-2l;
+        Tue, 01 Aug 2023 16:47:22 +0300
+Date:   Tue, 1 Aug 2023 16:47:22 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Brent Lu <brent.lu@intel.com>
+Cc:     alsa-devel@alsa-project.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Terry Cheong <htcheong@chromium.org>,
+        Uday M Bhat <uday.m.bhat@intel.com>,
+        Mac Chiang <mac.chiang@intel.com>,
+        "Dharageswari . R" <dharageswari.r@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        ye xingchen <ye.xingchen@zte.com.cn>
+Subject: Re: [PATCH v4 1/1] ASoC: Intel: maxim-common: get codec number from
+ ACPI table
+Message-ID: <ZMkM6l8IqFBFItBk@smile.fi.intel.com>
+References: <20230731103419.2536036-1-brent.lu@intel.com>
+ <20230731103419.2536036-2-brent.lu@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [v1,v1,5/7] drm/vs: Register DRM device
-Content-Language: en-US
-From:   suijingfeng <suijingfeng@loongson.cn>
-To:     Keith Zhao <keith.zhao@starfivetech.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jagan Teki <jagan@edgeble.ai>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Shawn Guo <shawnguo@kernel.org>, christian.koenig@amd.com
-References: <20230801101030.2040-6-keith.zhao@starfivetech.com>
- <6b776c23-9cc1-5a7d-0a85-bd7eb42e847d@loongson.cn>
-In-Reply-To: <6b776c23-9cc1-5a7d-0a85-bd7eb42e847d@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf8BxB82fDMlkHQpEAA--.38821S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
-        BjDU0xBIdaVrnRJUUUmYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
-        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
-        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
-        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E
-        87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0V
-        AS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCF54CYxVAaw2AFwI0_Jw0_GFyl4c8EcI0E
-        c7CjxVAaw2AFwI0_GFv_Wryl4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_GF
-        v_Wrylx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Xr0_Ar1lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-        6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjxUcCD7UUUUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731103419.2536036-2-brent.lu@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jul 31, 2023 at 06:34:19PM +0800, Brent Lu wrote:
+> We implement a helper function to get number of codecs from ACPI
+> subsystem instead of using quirk flag in machine driver. Also refactor
+> module interface by adding max_98390_dai_link() function.
+> 
+> On the sof_rt5682 machine driver side, we remove the quirk flag
+> SOF_MAX98390_TWEETER_SPEAKER_PRESENT and use the new interface of
+> max98390 to setup dai link.
 
-On 2023/8/1 21:40, suijingfeng wrote:
-> So, you patch will be pass the compile test, I guess. 
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+from ACPI utilization point of view.
 
-You patch will *NOT* pass the compile test, I guess.
+The long standing issue with the entire ASoC subsystem, though, is the device
+instance name in use, which is _strictly speaking_ fragile: The device
+enumeration order was never guaranteed as far as I know, it just happened
+to work because ACPICA & ACPI glue layer code doesn't change this, but it
+very well has a right to.
+
+> Signed-off-by: Brent Lu <brent.lu@intel.com>
+> ---
+>  sound/soc/intel/boards/sof_maxim_common.c | 170 +++++++++++++---------
+>  sound/soc/intel/boards/sof_maxim_common.h |  21 ++-
+>  sound/soc/intel/boards/sof_rt5682.c       |  37 +----
+>  3 files changed, 111 insertions(+), 117 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
+> index 112e89951da0..628b6d5d3ee4 100644
+> --- a/sound/soc/intel/boards/sof_maxim_common.c
+> +++ b/sound/soc/intel/boards/sof_maxim_common.c
+> @@ -4,6 +4,7 @@
+>  #include <linux/module.h>
+>  #include <linux/string.h>
+>  #include <sound/pcm.h>
+> +#include <sound/pcm_params.h>
+>  #include <sound/soc.h>
+>  #include <sound/soc-acpi.h>
+>  #include <sound/soc-dai.h>
+> @@ -11,6 +12,18 @@
+>  #include <uapi/sound/asound.h>
+>  #include "sof_maxim_common.h"
+>  
+> +/* helper function to get the number of specific codec */
+> +static unsigned int get_num_codecs(const char *hid)
+> +{
+> +	struct acpi_device *adev;
+> +	unsigned int dev_num = 0;
+> +
+> +	for_each_acpi_dev_match(adev, hid, NULL, -1)
+> +		dev_num++;
+> +
+> +	return dev_num;
+> +}
+> +
+>  #define MAX_98373_PIN_NAME 16
+>  
+>  const struct snd_soc_dapm_route max_98373_dapm_routes[] = {
+> @@ -168,17 +181,6 @@ static struct snd_soc_codec_conf max_98390_codec_conf[] = {
+>  		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
+>  		.name_prefix = "Left",
+>  	},
+> -};
+> -
+> -static struct snd_soc_codec_conf max_98390_4spk_codec_conf[] = {
+> -	{
+> -		.dlc = COMP_CODEC_CONF(MAX_98390_DEV0_NAME),
+> -		.name_prefix = "Right",
+> -	},
+> -	{
+> -		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
+> -		.name_prefix = "Left",
+> -	},
+>  	{
+>  		.dlc = COMP_CODEC_CONF(MAX_98390_DEV2_NAME),
+>  		.name_prefix = "Tweeter Right",
+> @@ -189,19 +191,7 @@ static struct snd_soc_codec_conf max_98390_4spk_codec_conf[] = {
+>  	},
+>  };
+>  
+> -struct snd_soc_dai_link_component max_98390_components[] = {
+> -	{
+> -		.name = MAX_98390_DEV0_NAME,
+> -		.dai_name = MAX_98390_CODEC_DAI,
+> -	},
+> -	{
+> -		.name = MAX_98390_DEV1_NAME,
+> -		.dai_name = MAX_98390_CODEC_DAI,
+> -	},
+> -};
+> -EXPORT_SYMBOL_NS(max_98390_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+> -
+> -struct snd_soc_dai_link_component max_98390_4spk_components[] = {
+> +static struct snd_soc_dai_link_component max_98390_components[] = {
+>  	{
+>  		.name = MAX_98390_DEV0_NAME,
+>  		.dai_name = MAX_98390_CODEC_DAI,
+> @@ -219,62 +209,56 @@ struct snd_soc_dai_link_component max_98390_4spk_components[] = {
+>  		.dai_name = MAX_98390_CODEC_DAI,
+>  	},
+>  };
+> -EXPORT_SYMBOL_NS(max_98390_4spk_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+> +
+> +static const struct {
+> +	unsigned int tx;
+> +	unsigned int rx;
+> +} max_98390_tdm_mask[] = {
+> +	{.tx = 0x01, .rx = 0x3},
+> +	{.tx = 0x02, .rx = 0x3},
+> +	{.tx = 0x04, .rx = 0x3},
+> +	{.tx = 0x08, .rx = 0x3},
+> +};
+>  
+>  static int max_98390_hw_params(struct snd_pcm_substream *substream,
+>  			       struct snd_pcm_hw_params *params)
+>  {
+>  	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
+>  	struct snd_soc_dai *codec_dai;
+> -	int i;
+> +	int i, ret;
+>  
+>  	for_each_rtd_codec_dais(rtd, i, codec_dai) {
+> -		if (i >= ARRAY_SIZE(max_98390_4spk_components)) {
+> +		if (i >= ARRAY_SIZE(max_98390_tdm_mask)) {
+>  			dev_err(codec_dai->dev, "invalid codec index %d\n", i);
+>  			return -ENODEV;
+>  		}
+>  
+> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV0_NAME)) {
+> -			/* DEV0 tdm slot configuration Right */
+> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x01, 3, 4, 32);
+> -		}
+> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV1_NAME)) {
+> -			/* DEV1 tdm slot configuration Left */
+> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x02, 3, 4, 32);
+> -		}
+> -
+> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV2_NAME)) {
+> -			/* DEVi2 tdm slot configuration Tweeter Right */
+> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x04, 3, 4, 32);
+> -		}
+> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV3_NAME)) {
+> -			/* DEV3 tdm slot configuration Tweeter Left */
+> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x08, 3, 4, 32);
+> +		ret = snd_soc_dai_set_tdm_slot(codec_dai, max_98390_tdm_mask[i].tx,
+> +					       max_98390_tdm_mask[i].rx, 4,
+> +					       params_width(params));
+> +		if (ret < 0) {
+> +			dev_err(codec_dai->dev, "fail to set tdm slot, ret %d\n",
+> +				ret);
+> +			return ret;
+>  		}
+>  	}
+>  	return 0;
+>  }
+>  
+> -int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
+> +static int max_98390_init(struct snd_soc_pcm_runtime *rtd)
+>  {
+>  	struct snd_soc_card *card = rtd->card;
+> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
+>  	int ret;
+>  
+> -	/* add regular speakers dapm route */
+> -	ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
+> -				      ARRAY_SIZE(max_98390_dapm_routes));
+> -	if (ret) {
+> -		dev_err(rtd->dev, "unable to add Left/Right Speaker dapm, ret %d\n", ret);
+> -		return ret;
+> -	}
+> -
+> -	/* add widgets/controls/dapm for tweeter speakers */
+> -	if (acpi_dev_present("MX98390", "3", -1)) {
+> +	switch (num_codecs) {
+> +	case 4:
+> +		/* add widgets/controls/dapm for tweeter speakers */
+>  		ret = snd_soc_dapm_new_controls(&card->dapm, max_98390_tt_dapm_widgets,
+>  						ARRAY_SIZE(max_98390_tt_dapm_widgets));
+> -
+>  		if (ret) {
+> -			dev_err(rtd->dev, "unable to add tweeter dapm controls, ret %d\n", ret);
+> +			dev_err(rtd->dev, "unable to add tweeter dapm widgets, ret %d\n",
+> +				ret);
+>  			/* Don't need to add routes if widget addition failed */
+>  			return ret;
+>  		}
+> @@ -282,33 +266,79 @@ int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
+>  		ret = snd_soc_add_card_controls(card, max_98390_tt_kcontrols,
+>  						ARRAY_SIZE(max_98390_tt_kcontrols));
+>  		if (ret) {
+> -			dev_err(rtd->dev, "unable to add tweeter card controls, ret %d\n", ret);
+> +			dev_err(rtd->dev, "unable to add tweeter controls, ret %d\n",
+> +				ret);
+>  			return ret;
+>  		}
+>  
+>  		ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_tt_dapm_routes,
+>  					      ARRAY_SIZE(max_98390_tt_dapm_routes));
+> -		if (ret)
+> -			dev_err(rtd->dev,
+> -				"unable to add Tweeter Left/Right Speaker dapm, ret %d\n", ret);
+> +		if (ret) {
+> +			dev_err(rtd->dev, "unable to add tweeter dapm routes, ret %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +
+> +		fallthrough;
+> +	case 2:
+> +		/* add regular speakers dapm route */
+> +		ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
+> +					      ARRAY_SIZE(max_98390_dapm_routes));
+> +		if (ret) {
+> +			dev_err(rtd->dev, "unable to add dapm routes, ret %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +		break;
+> +	default:
+> +		dev_err(rtd->dev, "invalid codec number %d\n", num_codecs);
+> +		return -EINVAL;
+>  	}
+> +
+>  	return ret;
+>  }
+> -EXPORT_SYMBOL_NS(max_98390_spk_codec_init, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+>  
+> -const struct snd_soc_ops max_98390_ops = {
+> +static const struct snd_soc_ops max_98390_ops = {
+>  	.hw_params = max_98390_hw_params,
+>  };
+> -EXPORT_SYMBOL_NS(max_98390_ops, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+>  
+> -void max_98390_set_codec_conf(struct snd_soc_card *card, int ch)
+> +void max_98390_dai_link(struct device *dev, struct snd_soc_dai_link *link)
+> +{
+> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
+> +
+> +	link->codecs = max_98390_components;
+> +
+> +	switch (num_codecs) {
+> +	case 2:
+> +	case 4:
+> +		link->num_codecs = num_codecs;
+> +		break;
+> +	default:
+> +		dev_err(dev, "invalid codec number %d for %s\n", num_codecs,
+> +			MAX_98390_ACPI_HID);
+> +		break;
+> +	}
+> +
+> +	link->init = max_98390_init;
+> +	link->ops = &max_98390_ops;
+> +}
+> +EXPORT_SYMBOL_NS(max_98390_dai_link, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+> +
+> +void max_98390_set_codec_conf(struct device *dev, struct snd_soc_card *card)
+>  {
+> -	if (ch == ARRAY_SIZE(max_98390_4spk_codec_conf)) {
+> -		card->codec_conf = max_98390_4spk_codec_conf;
+> -		card->num_configs = ARRAY_SIZE(max_98390_4spk_codec_conf);
+> -	} else {
+> -		card->codec_conf = max_98390_codec_conf;
+> -		card->num_configs = ARRAY_SIZE(max_98390_codec_conf);
+> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
+> +
+> +	card->codec_conf = max_98390_codec_conf;
+> +
+> +	switch (num_codecs) {
+> +	case 2:
+> +	case 4:
+> +		card->num_configs = num_codecs;
+> +		break;
+> +	default:
+> +		dev_err(dev, "invalid codec number %d for %s\n", num_codecs,
+> +			MAX_98390_ACPI_HID);
+> +		break;
+>  	}
+>  }
+>  EXPORT_SYMBOL_NS(max_98390_set_codec_conf, SND_SOC_INTEL_SOF_MAXIM_COMMON);
+> diff --git a/sound/soc/intel/boards/sof_maxim_common.h b/sound/soc/intel/boards/sof_maxim_common.h
+> index 7a8c53049e4d..a095b47b856b 100644
+> --- a/sound/soc/intel/boards/sof_maxim_common.h
+> +++ b/sound/soc/intel/boards/sof_maxim_common.h
+> @@ -27,18 +27,15 @@ int max_98373_trigger(struct snd_pcm_substream *substream, int cmd);
+>  /*
+>   * Maxim MAX98390
+>   */
+> -#define MAX_98390_CODEC_DAI     "max98390-aif1"
+> -#define MAX_98390_DEV0_NAME     "i2c-MX98390:00"
+> -#define MAX_98390_DEV1_NAME     "i2c-MX98390:01"
+> -#define MAX_98390_DEV2_NAME     "i2c-MX98390:02"
+> -#define MAX_98390_DEV3_NAME     "i2c-MX98390:03"
+> -
+> -extern struct snd_soc_dai_link_component max_98390_components[2];
+> -extern struct snd_soc_dai_link_component max_98390_4spk_components[4];
+> -extern const struct snd_soc_ops max_98390_ops;
+> -
+> -void max_98390_set_codec_conf(struct snd_soc_card *card, int ch);
+> -int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd);
+> +#define MAX_98390_ACPI_HID	"MX98390"
+> +#define MAX_98390_CODEC_DAI	"max98390-aif1"
+> +#define MAX_98390_DEV0_NAME	"i2c-" MAX_98390_ACPI_HID ":00"
+> +#define MAX_98390_DEV1_NAME	"i2c-" MAX_98390_ACPI_HID ":01"
+> +#define MAX_98390_DEV2_NAME	"i2c-" MAX_98390_ACPI_HID ":02"
+> +#define MAX_98390_DEV3_NAME	"i2c-" MAX_98390_ACPI_HID ":03"
+> +
+> +void max_98390_dai_link(struct device *dev, struct snd_soc_dai_link *link);
+> +void max_98390_set_codec_conf(struct device *dev, struct snd_soc_card *card);
+>  
+>  /*
+>   * Maxim MAX98357A/MAX98360A
+> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
+> index b4f07bdcf8b4..0af1e0c3a9db 100644
+> --- a/sound/soc/intel/boards/sof_rt5682.c
+> +++ b/sound/soc/intel/boards/sof_rt5682.c
+> @@ -59,7 +59,6 @@
+>  #define SOF_SSP_BT_OFFLOAD_PRESENT		BIT(22)
+>  #define SOF_RT5682S_HEADPHONE_CODEC_PRESENT	BIT(23)
+>  #define SOF_MAX98390_SPEAKER_AMP_PRESENT	BIT(24)
+> -#define SOF_MAX98390_TWEETER_SPEAKER_PRESENT	BIT(25)
+>  #define SOF_RT1019_SPEAKER_AMP_PRESENT	BIT(26)
+>  #define SOF_RT5650_HEADPHONE_CODEC_PRESENT	BIT(27)
+>  
+> @@ -195,23 +194,6 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
+>  					SOF_RT5682_SSP_AMP(2) |
+>  					SOF_RT5682_NUM_HDMIDEV(4)),
+>  	},
+> -	{
+> -		.callback = sof_rt5682_quirk_cb,
+> -		.matches = {
+> -			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
+> -			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98390_ALC5682I_I2S_4SPK"),
+> -		},
+> -		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
+> -					SOF_RT5682_SSP_CODEC(0) |
+> -					SOF_SPEAKER_AMP_PRESENT |
+> -					SOF_MAX98390_SPEAKER_AMP_PRESENT |
+> -					SOF_MAX98390_TWEETER_SPEAKER_PRESENT |
+> -					SOF_RT5682_SSP_AMP(1) |
+> -					SOF_RT5682_NUM_HDMIDEV(4) |
+> -					SOF_BT_OFFLOAD_SSP(2) |
+> -					SOF_SSP_BT_OFFLOAD_PRESENT),
+> -
+> -	},
+>  	{
+>  		.callback = sof_rt5682_quirk_cb,
+>  		.matches = {
+> @@ -850,17 +832,7 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
+>  			sof_rt1011_dai_link(&links[id]);
+>  		} else if (sof_rt5682_quirk &
+>  				SOF_MAX98390_SPEAKER_AMP_PRESENT) {
+> -			if (sof_rt5682_quirk &
+> -				SOF_MAX98390_TWEETER_SPEAKER_PRESENT) {
+> -				links[id].codecs = max_98390_4spk_components;
+> -				links[id].num_codecs = ARRAY_SIZE(max_98390_4spk_components);
+> -			} else {
+> -				links[id].codecs = max_98390_components;
+> -				links[id].num_codecs = ARRAY_SIZE(max_98390_components);
+> -			}
+> -			links[id].init = max_98390_spk_codec_init;
+> -			links[id].ops = &max_98390_ops;
+> -
+> +			max_98390_dai_link(dev, &links[id]);
+>  		} else if (sof_rt5682_quirk & SOF_RT5650_HEADPHONE_CODEC_PRESENT) {
+>  			links[id].codecs = &rt5650_components[1];
+>  			links[id].num_codecs = 1;
+> @@ -1019,12 +991,7 @@ static int sof_audio_probe(struct platform_device *pdev)
+>  	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
+>  		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
+>  	else if (sof_rt5682_quirk & SOF_MAX98390_SPEAKER_AMP_PRESENT) {
+> -		if (sof_rt5682_quirk & SOF_MAX98390_TWEETER_SPEAKER_PRESENT)
+> -			max_98390_set_codec_conf(&sof_audio_card_rt5682,
+> -						 ARRAY_SIZE(max_98390_4spk_components));
+> -		else
+> -			max_98390_set_codec_conf(&sof_audio_card_rt5682,
+> -						 ARRAY_SIZE(max_98390_components));
+> +		max_98390_set_codec_conf(&pdev->dev, &sof_audio_card_rt5682);
+>  	}
+>  
+>  	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
+> -- 
+> 2.34.1
+> 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
