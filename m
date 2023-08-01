@@ -2,76 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C81F76B55A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D26076B560
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbjHANC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S232755AbjHANDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229550AbjHANCY (ORCPT
+        with ESMTP id S232364AbjHANDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:02:24 -0400
-Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D890D3;
-        Tue,  1 Aug 2023 06:02:23 -0700 (PDT)
-Received: from quatroqueijos.cascardo.eti.br (201-43-195-14.dsl.telesp.net.br [201.43.195.14])
+        Tue, 1 Aug 2023 09:03:14 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D6D31AA;
+        Tue,  1 Aug 2023 06:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GWiMsfat+BRyslkDKxTk4DrpasSmhXX1x9NIMnqNp+U=; b=pVVMMv9mJ3P7n2Pg071xoYksdK
+        xBLJ8ZTlpFbic/85m30ybcx9Idc+Jq8yP8Rrr5fiUSzzOlYK+JWYhZkQQn/67jGoQyJfVqoJEIeim
+        tTExlHg9EFtChpQPkIoIfdO6XudfnwrXEdT/45vavnCOS9WmZuQk385z1RAFWS9q72iO3bWQUsykW
+        hEYr/hRkJYyUFJrhG2kYooD+k+gIFteiWqD4tE6yK488HbCx6aBNrlYnxDo8sgb5vXbQfpoRtpKXi
+        +fB+tQKIxRtv7Pf5nmMnFbtkbydeM7Gl6c3hNolw6Xjcz8abx2iV5jltmcuV+GRTNu8yvZx5Uu7Ei
+        qUJppYZA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQp1O-008w3Q-3u; Tue, 01 Aug 2023 13:02:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 588853F7B7;
-        Tue,  1 Aug 2023 13:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1690894940;
-        bh=B3pJgstQ03Vg9nlPhSI380gWXGG5YWbwHMBFEXxPt0M=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=iW0jeeErAIbkL4qdMiK5n+kc8PzMx5amc0Tss6fnYCg1+cZ1FPGOYJL9vB4upj9nb
-         jMtSAb2bVkaHiqu/AnfXGSeLFDgJs4NaQvqWjsf8x6gYxh+AM0E+EpbY3EJ3dbuwg3
-         +ckFSdv6lzWtGqT1ltNv+7Os9tRP84iSH2vMLg/yRTQwtp6zEYyzWysNt+a1jrGGQ+
-         0ncxcwhfgZLDkFYyKr7A2jAAPNv2PtCzGrDA9kalFlHGr1B1Z+9Z8jdEgyTdgDWWkA
-         lAbtBkNIrAgSlM27wV1Q3ZOF2hPGC2Ir1MD9Gt/u5wkk/Rqt8tTp/LPd9EWWngIgvj
-         Za6ub5QpSHvJg==
-Date:   Tue, 1 Aug 2023 10:02:16 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH] tty: n_gsm: require CAP_NET_ADMIN to attach N_GSM0710
- ldisc
-Message-ID: <ZMkCWL4r9Z35j3hC@quatroqueijos.cascardo.eti.br>
-References: <20230731185942.279611-1-cascardo@canonical.com>
- <2023080111-lucid-stiffness-ccfa@gregkh>
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B8B633002D3;
+        Tue,  1 Aug 2023 15:02:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 96CCC20A9524A; Tue,  1 Aug 2023 15:02:40 +0200 (CEST)
+Date:   Tue, 1 Aug 2023 15:02:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Xin Li <xin3.li@intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        Breno Leitao <leitao@debian.org>,
+        Nikunj A Dadhania <nikunj@amd.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ze Gao <zegao2021@gmail.com>, Fei Li <fei1.li@intel.com>,
+        Conghui <conghui.chen@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Jane Malalane <jane.malalane@citrix.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Yantengsi <siyanteng@loongson.cn>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Sathvika Vasireddy <sv@linux.ibm.com>
+Subject: Re: [PATCH RESEND v9 00/36] x86: enable FRED for x86-64
+Message-ID: <20230801130240.GA80967@hirez.programming.kicks-ass.net>
+References: <20230801083318.8363-1-xin3.li@intel.com>
+ <20230801105236.GB79828@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2023080111-lucid-stiffness-ccfa@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230801105236.GB79828@hirez.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 06:53:30AM +0200, Greg Kroah-Hartman wrote:
-> On Mon, Jul 31, 2023 at 03:59:42PM -0300, Thadeu Lima de Souza Cascardo wrote:
-> > Any unprivileged user can attach N_GSM0710 ldisc, but it requires
-> > CAP_NET_ADMIN to create a GSM network anyway.
-> > 
-> > Require initial namespace CAP_NET_ADMIN to do that.
-> > 
-> > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-> 
-> What commit id does this fix?  Or has this always been a problem?
-> 
-> thanks,
-> 
-> greg k-h
+On Tue, Aug 01, 2023 at 12:52:36PM +0200, Peter Zijlstra wrote:
 
-This has always been like this. It is not really fixing a specific commit, but
-introducing further restriction on access.
+> I also believe there is a kernel.org service for sending patch series,
+> but i'm not sure I remember the details.
 
-Cascardo.
+https://b4.docs.kernel.org/en/latest/contributor/send.html
+
