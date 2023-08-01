@@ -2,63 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E59176A897
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EA876A899
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbjHAGB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
+        id S231254AbjHAGCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230096AbjHAGB5 (ORCPT
+        with ESMTP id S230096AbjHAGCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:01:57 -0400
-X-Greylist: delayed 16038 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 31 Jul 2023 23:01:54 PDT
-Received: from zg8tmtu5ljg5lje1ms4xmtka.icoremail.net (zg8tmtu5ljg5lje1ms4xmtka.icoremail.net [159.89.151.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 033F7E7D;
-        Mon, 31 Jul 2023 23:01:53 -0700 (PDT)
-Received: from linma$zju.edu.cn ( [42.120.103.60] ) by
- ajax-webmail-mail-app4 (Coremail) ; Tue, 1 Aug 2023 14:01:16 +0800
- (GMT+08:00)
-X-Originating-IP: [42.120.103.60]
-Date:   Tue, 1 Aug 2023 14:01:16 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Lin Ma" <linma@zju.edu.cn>
-To:     "Dan Carpenter" <dan.carpenter@linaro.org>
-Cc:     "Markus Elfring" <Markus.Elfring@web.de>, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        "Alexander Duyck" <alexander.h.duyck@intel.com>,
-        "Daniel Machon" <daniel.machon@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Jeff Kirsher" <jeffrey.t.kirsher@intel.com>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        "Peter P Waskiewicz Jr" <peter.p.waskiewicz.jr@intel.com>,
-        "Petr Machata" <petrm@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: dcb: choose correct policy to parse
- DCB_ATTR_BCN
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
- Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <d29e7d32-1684-4400-9907-f2f69092466d@kadam.mountain>
-References: <20230731045216.3779420-1-linma@zju.edu.cn>
- <fbda76a9-e1f3-d483-ab3d-3c904c54a5db@web.de>
- <3d159780.f2fb6.189aebb4a18.Coremail.linma@zju.edu.cn>
- <d29e7d32-1684-4400-9907-f2f69092466d@kadam.mountain>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Tue, 1 Aug 2023 02:02:01 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5944E7D;
+        Mon, 31 Jul 2023 23:01:59 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3715woir026178;
+        Tue, 1 Aug 2023 06:01:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=rSy7dPqq1OG7Y6hBJX9jb9y8LyPyQfc/Of+5x7X6wfw=;
+ b=iBKwCs4ccCspmHvyG8PFYisnizgHPHKUQNzSCmCWCVZwLc2YAErXMqB229vowCiCq/6H
+ DLq/yKtTDq2KBEibSp4ieEP2iNN8zl2hV2BshfVkeMHVzm7HmpMs5rAt9zLWYxkJkU0/
+ n720ix46ErzmuhhmPhG0tpN32iJ/p8nL/oM43ro8IZTkaDtQq58GV+7MqvC0ojnluQAT
+ GkrROlzCuTPxcfh63RsjaIAGGTrrDzrEyz0Z2rhWd0/xgpfEARMXO77sBdh0QjNMGwcK
+ u7SH0ibWEN5aM8VgQmXoKcpZTIwvgrO/Jvmku++rANJBXbd1lyyCI068duM6wkDrp9N2 Ng== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6a502tpr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 06:01:54 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37161rZ0031148
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 06:01:53 GMT
+Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 31 Jul 2023 23:01:50 -0700
+From:   Prashanth K <quic_prashk@quicinc.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "AngeloGioacchino Del Regno" 
+        <angelogioacchino.delregno@collabora.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Prashanth K <quic_prashk@quicinc.com>
+Subject: [v2] usb: common: usb-conn-gpio: Prevent bailing out if initial role is none
+Date:   Tue, 1 Aug 2023 11:31:35 +0530
+Message-ID: <1690869695-32018-1-git-send-email-quic_prashk@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Message-ID: <5a361992.f3740.189afafbb36.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cS_KCgBHjAmtn8hku11sCg--.56218W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUOEmTIYfoAqwAFsD
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rL03t9C0u4CngsQgmCsE9uu27tZeobvl
+X-Proofpoint-ORIG-GUID: rL03t9C0u4CngsQgmCsE9uu27tZeobvl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 suspectscore=0
+ mlxlogscore=851 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308010055
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,9 +77,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gRGFuLAoKPiAKPiBTaW1vbiByZXZpZXdlZCB0aGUgcGF0Y2ggYWxyZWFkeS4gIERvbid0
-IGxpc3RlbiB0byBNYXJrdXMuICBIZSdzIGJhbm5lZAo+IGZyb20gdmdlci4KPiAKPiBodHRwczov
-L2xvcmUua2VybmVsLm9yZy9hbGwvMjAyMzA3MzEyMy1wb3Nlci1wYW5oYW5kbGUtMWNiN0BncmVn
-a2gvCj4gCj4gcmVnYXJkcywKPiBkYW4gY2FycGVudGVyCgpPb29vb3BzLCBJIG5ldmVyIHRob3Vn
-aHQgb2YgaXQgbGlrZSB0aGlzLiBJIHdpbGwgdGFrZSBub3RlIG9mIHRoYXQgOikuCgpUaGFua3MK
-TGlu
+Currently if we bootup a device without cable connected, then
+usb-conn-gpio won't call set_role() since last_role is same as
+current role. This happens because during probe last_role gets
+initialised to zero.
+
+To avoid this, add a new flag initial_detection in the struct
+usb_conn_info, which prevents from bailing out during initial
+detection.
+
+Fixes: 4602f3bff266 ("usb: common: add USB GPIO based connection detection driver")
+Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+---
+v2: Updated the bool name to initial_detection.
+
+ drivers/usb/common/usb-conn-gpio.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
+index 766005d..501e8bc9 100644
+--- a/drivers/usb/common/usb-conn-gpio.c
++++ b/drivers/usb/common/usb-conn-gpio.c
+@@ -42,6 +42,7 @@ struct usb_conn_info {
+ 
+ 	struct power_supply_desc desc;
+ 	struct power_supply *charger;
++	bool initial_detection;
+ };
+ 
+ /*
+@@ -86,11 +87,13 @@ static void usb_conn_detect_cable(struct work_struct *work)
+ 	dev_dbg(info->dev, "role %s -> %s, gpios: id %d, vbus %d\n",
+ 		usb_role_string(info->last_role), usb_role_string(role), id, vbus);
+ 
+-	if (info->last_role == role) {
++	if (!info->initial_detection && info->last_role == role) {
+ 		dev_warn(info->dev, "repeated role: %s\n", usb_role_string(role));
+ 		return;
+ 	}
+ 
++	info->initial_detection = false;
++
+ 	if (info->last_role == USB_ROLE_HOST && info->vbus)
+ 		regulator_disable(info->vbus);
+ 
+@@ -258,6 +261,7 @@ static int usb_conn_probe(struct platform_device *pdev)
+ 	device_set_wakeup_capable(&pdev->dev, true);
+ 
+ 	/* Perform initial detection */
++	info->initial_detection = true;
+ 	usb_conn_queue_dwork(info, 0);
+ 
+ 	return 0;
+-- 
+2.7.4
+
