@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AE276B223
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6C376B224
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbjHAKqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
+        id S232933AbjHAKqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231285AbjHAKqo (ORCPT
+        with ESMTP id S231462AbjHAKqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:46:44 -0400
+        Tue, 1 Aug 2023 06:46:45 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F08E9
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:46:43 -0700 (PDT)
-Message-ID: <20230801103042.936020332@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455DAF1
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:46:44 -0700 (PDT)
+Message-ID: <20230801103815.207107339@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690886801;
+        s=2020; t=1690886802;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=gddeRoPs5mtWh3jrpXwXoH25By/eZKLOXLpdHngWqR0=;
-        b=I1dTGQAirB5sJR3ctSAkVS9Oh+mvQFxVYJ7rWzu3UtqI2P4IchZWhj9m9zrVQCcqU5qiKE
-        ZJ/oFNr248bBs10UGv4n+a4nIxfSHjAvs4cFDTNmVDlsbJYB/pkor+2Q2A8duFG69tUUZZ
-        Jw/R0FH+9kI74gM0ZnIRkhD8OUlvJoPPwp5H84juT5zhtH/RcbsgOYpcnh8/0kiywBqnfj
-        rnR2XIyR47Fgx0zW/sdG9e4IBXzFtJMAeoHBKQt4LqthjSCRA8hknmkWFgRF3DfkJvYbOJ
-        mPyUwVjEMTHQKUk6pbethfBdvXRLmvHkhadmO6MLPoqfSnPXC0awjia2m87tuA==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=b1myCBgZLHok+K09N26MfWzhxCP4cilngo+YbfwnshU=;
+        b=3EKtAsaVLbSQ76mjgNoPZaN8a0q+gpf2LxDkyy04g4PJ9G4irT3JrD++brfcdfLo0clkCL
+        MBF5nBUdLdY9uZLnJgoSVcSQA3AQnYjrXgCkwDYm9AkwfcxgWMMzHExeTXirQ+98RkahWV
+        h1vzs/Hon5HOQFr6EJsaibwqg+yXhOrt1u9N6lCXRwDsmecSdxWS2c/6P9QjqC5Fl9pljY
+        q9R9nvl+EZtoK9LPizB55znZF6Vat8YSntUeqS+FJrZmFopwBRwGpgFQXB6IF3Oxt+bEyN
+        kp0/ITUptkMAWdHwzpvTuDLI4c4hxN2V0mBZ/75SvLVNSB/C2GJfdAss/ynS7w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690886801;
+        s=2020e; t=1690886802;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=gddeRoPs5mtWh3jrpXwXoH25By/eZKLOXLpdHngWqR0=;
-        b=q6eh3XeA/G4+3zXgklBxQMDXUJanqiYCYHYxZ4gNsXBDLiovFedgiUz3BaUIgKlCBzC16n
-        hhpztFYheqoJABCg==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=b1myCBgZLHok+K09N26MfWzhxCP4cilngo+YbfwnshU=;
+        b=za6iITAafiEVp9sEOLVT4gyhWQGbxcplqujeeSs7jZCSkhpf52074QL+QC1mnYEs4IRo6/
+        6yf+VwgXS47zlmCA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
@@ -40,9 +42,13 @@ Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Juergen Gross <jgross@suse.com>,
         Michael Kelley <mikelley@microsoft.com>,
-        Peter Keresztes Schmidt <peter@keresztesschmidt.de>
-Subject: [patch V3 00/60] x86/apic: Decrapification and static calls
-Date:   Tue,  1 Aug 2023 12:46:41 +0200 (CEST)
+        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [patch V3 01/60] x86/cpu: Make identify_boot_cpu() static
+References: <20230801103042.936020332@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue,  1 Aug 2023 12:46:42 +0200 (CEST)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
@@ -53,99 +59,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+It's not longer used outside the source file.
 
-This is the follow up to:
-
-  https://lore.kernel.org/lkml/20230724131206.500814398@linutronix.de
-
-which addresses the XEN PV fallout decoded by Juergen.
-
-TLDR: This cleans up accrued and partially unused gunk in order to convert
-the APIC callbacks to static calls.
-
-The changes vs. V2:
-
-  - Unbreak XEN/PV - Juergen
-
-    Resulting delta patch below.
-
-  - Rebased to 6.5-rc4 in preparation for the CPUID overhaul on top, which
-    has some collisions due to the recent mitigation muck.
-
-The series is also available from git:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git apic-static-call-v3
-
-Thanks,
-
-	tglx
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
-diff --git a/arch/x86/xen/apic.c b/arch/x86/xen/apic.c
-index 468406f511ff..7ad91225fdf4 100644
---- a/arch/x86/xen/apic.c
-+++ b/arch/x86/xen/apic.c
-@@ -155,20 +155,9 @@ static struct apic xen_pv_apic __ro_after_init = {
- 	.icr_read			= xen_apic_icr_read,
- 	.icr_write			= xen_apic_icr_write,
- };
--
--static void __init xen_apic_check(void)
--{
--	apic_install_driver(&xen_pv_apic);
--}
-+apic_driver(xen_pv_apic);
- 
- void __init xen_init_apic(void)
- {
- 	x86_apic_ops.io_apic_read = xen_io_apic_read;
--	/* On PV guests the APIC CPUID bit is disabled so none of the
--	 * routines end up executing. */
--	if (!xen_initial_domain())
--		apic_install_driver(&xen_pv_apic);
--
--	x86_platform.apic_post_init = xen_apic_check;
- }
--apic_driver(xen_pv_apic);
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 93b658248d01..c393c44892ac 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1326,7 +1326,7 @@ asmlinkage __visible void __init xen_start_kernel(struct start_info *si)
- 
- 	x86_init.resources.memory_setup = xen_memory_setup;
- 	x86_init.irqs.intr_mode_select	= x86_init_noop;
--	x86_init.irqs.intr_mode_init	= x86_init_noop;
-+	x86_init.irqs.intr_mode_init	= x86_64_probe_apic;
- 	x86_init.oem.arch_setup = xen_arch_setup;
- 	x86_init.oem.banner = xen_banner;
- 	x86_init.hyper.init_platform = xen_pv_init_platform;
-@@ -1366,12 +1366,10 @@ asmlinkage __visible void __init xen_start_kernel(struct start_info *si)
- 
- 	xen_init_capabilities();
- 
--#ifdef CONFIG_X86_LOCAL_APIC
- 	/*
- 	 * set up the basic apic ops.
- 	 */
- 	xen_init_apic();
--#endif
- 
- 	machine_ops = xen_machine_ops;
- 
-diff --git a/arch/x86/xen/smp_pv.c b/arch/x86/xen/smp_pv.c
-index c6b42c66c60c..a0f07bbfcd6e 100644
---- a/arch/x86/xen/smp_pv.c
-+++ b/arch/x86/xen/smp_pv.c
-@@ -182,7 +182,8 @@ static void __init _get_smp_config(unsigned int early)
- 	if (subtract)
- 		set_nr_cpu_ids(nr_cpu_ids - subtract);
- #endif
--
-+	/* Pretend to be a proper enumerated system */
-+	smp_found_config = 1;
- }
- 
- static void __init xen_pv_smp_prepare_boot_cpu(void)
+ arch/x86/include/asm/processor.h |    1 -
+ arch/x86/kernel/cpu/common.c     |    2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -190,7 +190,6 @@ static inline unsigned long long l1tf_pf
+ }
+ 
+ extern void early_cpu_init(void);
+-extern void identify_boot_cpu(void);
+ extern void identify_secondary_cpu(struct cpuinfo_x86 *);
+ extern void print_cpu_info(struct cpuinfo_x86 *);
+ void print_cpu_msr(struct cpuinfo_x86 *);
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1937,7 +1937,7 @@ void enable_sep_cpu(void)
+ }
+ #endif
+ 
+-void __init identify_boot_cpu(void)
++static __init void identify_boot_cpu(void)
+ {
+ 	identify_cpu(&boot_cpu_data);
+ 	if (HAS_KERNEL_IBT && cpu_feature_enabled(X86_FEATURE_IBT))
 
