@@ -2,78 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 953A276BF08
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A8A76BF0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229703AbjHAVMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
+        id S230372AbjHAVNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232051AbjHAVL6 (ORCPT
+        with ESMTP id S229485AbjHAVNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:11:58 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D9B2110;
-        Tue,  1 Aug 2023 14:11:53 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40fd276621aso9462211cf.2;
-        Tue, 01 Aug 2023 14:11:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690924313; x=1691529113;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a3zhuV25N+sKl5MeQNDP3GSv+2aK6nHaXNUe9w7Bzhg=;
-        b=QAdnD5dDVzuHGTWPgk+NokNBjRSI0MQVV2bIyVShEg+sHhvL/Im5L2WAOTt3B7+GJU
-         Jwr5VyVI7TNqXQopiGLXsS8Xu6SxysqIAHxsynfEd+HgXpEw//gltw0ahYvc0D0mMNrj
-         GqjxTb9vWZL2s+KLk2rioDTV2lvg5lFVniqjGac1+XJaAee9C747dFEggtPW0S/DjllT
-         p+S9MlwnzxVt0mFfNdBlZmlExTxDn9tupzCw/2HZkVZKsSfHHz3V4NQy7gdjuBhA8tbW
-         RZJ1ofCxrjyoxZ8Cu1mYQW3np/HIQuD+KQFDZjAYpdHRkCrIokw1w7Pu/xPB7mWgGV/z
-         Mm8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690924313; x=1691529113;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=a3zhuV25N+sKl5MeQNDP3GSv+2aK6nHaXNUe9w7Bzhg=;
-        b=j4TVP5SkGX3BHaPhc8V9cssVE+dWjFM7N+HmkbmsBEzFylVgYgr1jM4yRnnfxoaZk/
-         Jd4VTHrGdpbW6qedI9GF8biEcLabkIl6IaxiHyMvTD45iyuI0rmS/n0J9V5W9dfPnAFs
-         W6Az1dIELA6vQgzz03Y3G4t8OyNJLMcTtu6uyshZlHWKBg5lz1cVL4BvWLO9boXw+AxG
-         gsL46WOOdNrz8/aRQG0LzyL0PGJfZRFE765M8wykOZkf/v7EajyI8bdLUykrbzbPkIsm
-         g9YWnbqvUeeNnjRQ9HzprH2JQJBbfD6AheN5Pij5Rlu6Zk3d9woek9BO4dp2BIA9Xqxf
-         Sd/g==
-X-Gm-Message-State: ABy/qLalBC38zPnqf4zxVabtQDwYaeR0lH6Yt/oJfxCDXgNQJIrk2bOR
-        nX5k7Vm4bgUjHRRsClyPsqs=
-X-Google-Smtp-Source: APBJJlFn+X3tW+qdknM5FvgQu6Ze7KHGA3P8xvhRqR6rSXj3+EjRSESXRAxSIoF4UovrhBFcuRHrCA==
-X-Received: by 2002:a05:622a:1aa5:b0:40c:21b2:4090 with SMTP id s37-20020a05622a1aa500b0040c21b24090mr15099218qtc.56.1690924312729;
-        Tue, 01 Aug 2023 14:11:52 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id gx7-20020a05622a27c700b0040f200feb4fsm2117213qtb.80.2023.08.01.14.11.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 14:11:50 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 17:11:49 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     David Howells <dhowells@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
-        syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com,
-        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, axboe@kernel.dk, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Tue, 1 Aug 2023 17:13:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5892C3;
+        Tue,  1 Aug 2023 14:13:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 54CBD61719;
+        Tue,  1 Aug 2023 21:13:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 537D1C433C7;
+        Tue,  1 Aug 2023 21:13:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690924419;
+        bh=1KxlmjVC+rn+4F9/RYKUFaZEGPNwwdoI6N+XeJAaM5M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gacVFyW8XNlN5dEk5cVmSXiFcQajYz6pmrRbtMfj9lFfELvp/UHImqJbC10bPR+PM
+         vUNZLwN5Z5qyhT+V0IebRlsGGV92D5mqQF7mN7eqyvleXYXj218NFORuoVE8RKxG5I
+         URMWarh6S07Ky3cEyDHzrSsgIbdWlzhzBRTOXaN8yFJ6xXTrlcsoatjVs6FKNfKGuw
+         eXuTSiuG1Lu/1TTBPw4Bkod/6gogHuwLGBKFm5EZPAHaNeuN01vbszb1ceKd7ldLOg
+         5e72SsYc9w86LGQ/yGzl17Ha+BAkEGcpFy6KcApVjss49ZbwUP7cvN4fbWKb8OaUlC
+         HeUUHqur/lkeQ==
+Date:   Tue, 1 Aug 2023 22:13:36 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Fabio Estevam <festevam@denx.de>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Message-ID: <64c975155d6f3_1d4d6f2941e@willemb.c.googlers.com.notmuch>
-In-Reply-To: <1501753.1690920713@warthog.procyon.org.uk>
-References: <64c93109c084e_1c5e3529452@willemb.c.googlers.com.notmuch>
- <1420063.1690904933@warthog.procyon.org.uk>
- <1501753.1690920713@warthog.procyon.org.uk>
-Subject: Re: [PATCH net] udp: Fix __ip_append_data()'s handling of
- MSG_SPLICE_PAGES
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Subject: Re: [PATCH] dt-bindings: trivial-devices: Remove the OV5642 entry
+Message-ID: <20230801-dividers-chooser-bd0df9b72d91@spud>
+References: <20230801170015.40965-1-festevam@denx.de>
+ <20230801-clobber-attempt-7033f92b3d08@spud>
+ <8b0e048208220b2ae09eb1a3c52219b9@denx.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kmr4w11r0COYDrE/"
+Content-Disposition: inline
+In-Reply-To: <8b0e048208220b2ae09eb1a3c52219b9@denx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,32 +59,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells wrote:
-> Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
-> 
-> > __ip6_append_data probably needs the same.
-> 
-> Now that's interesting.  __ip6_append_data() has a check for this and returns
-> -EINVAL in this case:
-> 
-> 		copy = datalen - transhdrlen - fraggap - pagedlen;
-> 		if (copy < 0) {
-> 			err = -EINVAL;
-> 			goto error;
-> 		}
-> 
-> but should I bypass that check for MSG_SPLICE_PAGES?  It hits the check when
-> it should be able to get past it.  The code seems to go back to prehistoric
-> times, so I'm not sure why it's there.
 
-Argh, saved by inconsistency between the two stacks.
+--kmr4w11r0COYDrE/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I don't immediately understand the race that caused this code to move,
-in commit 232cd35d0804 ("ipv6: fix out of bound writes in __ip6_append_data()").
-Maybe a race with a mtu update?
+On Tue, Aug 01, 2023 at 06:10:52PM -0300, Fabio Estevam wrote:
+> On 01/08/2023 17:47, Conor Dooley wrote:
+>=20
+> > Removing it without re-adding it elsewhere does not seem right, since
+> > there'll now be some undocumented compatibles in the tree, no?
+>=20
+> Currently, there is no ov5642 support in the kernel.
 
-Technically there is no Fixes tag to apply, so this would not be a fix
-for net.
+It is present in devicetrees.
 
-If we want equivalent behavior, a patch removing this branch is probably
-best sent to net-next, in a way that works from the start.
+> If someone adds the support for the ov5642 camera, then a specific binding
+> will have to be created.
+>=20
+> I prefer to remove it from trivial-devices to avoid confusion.
+>=20
+> As is, it gives a false impression that ov5642 is supported and that it
+> is a trivial device.
+
+The latter only do I agree with.
+
+--kmr4w11r0COYDrE/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMl1fwAKCRB4tDGHoIJi
+0tTCAP9t4aBdr2sp6QMHgkLG3v3WAHiXyvVodsp/wErbCL7QBAEAprGSVLEF0U+g
+61Mt6YUtURwLIGSfRuzo+HqsFTWf6wU=
+=S4Ow
+-----END PGP SIGNATURE-----
+
+--kmr4w11r0COYDrE/--
