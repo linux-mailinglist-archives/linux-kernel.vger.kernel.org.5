@@ -2,231 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE5676C0C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 01:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D680276C0D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 01:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbjHAXVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 19:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57136 "EHLO
+        id S230179AbjHAXZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 19:25:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230481AbjHAXVc (ORCPT
+        with ESMTP id S230022AbjHAXZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 19:21:32 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2066.outbound.protection.outlook.com [40.107.105.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DD4212C;
-        Tue,  1 Aug 2023 16:21:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q0ijentL0TuC/4+7gBqamd2Vteqk3jzXibzOa1Lul/fFOjjf8aeK2DuSq1AKtzzbTFlv6NEMfVAEOBbSn2Sz65Bkc9Y2OVEVabFydeGcS7SlG4RAC8AwBlwehgKJgxrayDeLYb04PX675dXvhVxVmO1WwRMISBq1uR1DvxBlYXuqgjoNo1KJfq+4gbiFz/4n7O4UmFEVpLKxOOHjJ3fJbLtzRKzd5ypGvWETlDazpUyUE3o+bczKJ7CsSreb+A+eO6cIkng0ukdmg0L0tjNhBB5zlI7Tk5oBWm+IGAod/ADWMhHD2XpY6ZKGvpzqqETyO7mHyxMhQfg/nPEKN431JQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DdMbuOVPfc8BK1LppT/mhraduXRrGEr7HP6U1FFj1T8=;
- b=IZUch03gdNJd3E5u8DmHrbypt0mgyfreycET9zk92CN7WtcCvDVwQuVNIeU2eZ2lPusnmwhDHam/O5T9av7fINWLO5SA6xPmz48VPfRwDKuGSgapTobzrN2eLyCDgw/WqDi4AxkAKRTRWWKee1PtJuaMjpZE0KkOe47JQ2emMhNwTUJXD9Cb/XMSWDGevAGOEyVlCusoIB4JvDnqI6bvM3wd6Yoh1wIIZxMX+h3J3j5ALGLTsANTAQxbX2qIYpxbOXsDf4uk2+/UP18aywDG30RW0LGK8lhYgPmX1h5gwtF633jwzbWFfhWr4PAH1SByEvHh/tNNu3CQVZs4KULAyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DdMbuOVPfc8BK1LppT/mhraduXRrGEr7HP6U1FFj1T8=;
- b=QHR0e3ugYCpeTaFmV5D6Rxzjs5CdfOJQhYglsIGAOpXyxCENHLG7DGiosRZASGlgi5nN/qSARpXH1ajH//0BcXPR9JAp1yPe6MsQ8bySkkDl0w+wIySCZVBLo0rPV/2gpDZ/w7sGaRBQGam0O8dmUCIi1Fup2bXpVtPMkRE1CUk=
-Received: from AS1PR04MB9358.eurprd04.prod.outlook.com (2603:10a6:20b:4dc::19)
- by PAXPR04MB9490.eurprd04.prod.outlook.com (2603:10a6:102:2c2::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.44; Tue, 1 Aug
- 2023 23:21:28 +0000
-Received: from AS1PR04MB9358.eurprd04.prod.outlook.com
- ([fe80::4381:3512:5b7b:6bf]) by AS1PR04MB9358.eurprd04.prod.outlook.com
- ([fe80::4381:3512:5b7b:6bf%7]) with mapi id 15.20.6631.045; Tue, 1 Aug 2023
- 23:21:27 +0000
-From:   Vabhav Sharma <vabhav.sharma@nxp.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Horia Geanta <horia.geanta@nxp.com>,
-        Gaurav Jain <gaurav.jain@nxp.com>,
-        Pankaj Gupta <pankaj.gupta@nxp.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Varun Sethi <V.Sethi@nxp.com>
-Subject: RE: [EXT] Re: [PATCH 1/3] dt-bindings: crypto: fsl: add entropy delay
- property
-Thread-Topic: [EXT] Re: [PATCH 1/3] dt-bindings: crypto: fsl: add entropy
- delay property
-Thread-Index: AQHYdFB1/6ZPLK3UVkiqfeFtvvLa6a1BW74AgBELlRCAFK2ygIJxmDvQ
-Date:   Tue, 1 Aug 2023 23:21:27 +0000
-Message-ID: <AS1PR04MB93588FD670415DF85B1A2F6AF30AA@AS1PR04MB9358.eurprd04.prod.outlook.com>
-References: <20220530180924.1792399-1-vabhav.sharma@nxp.com>
- <20220530180924.1792399-2-vabhav.sharma@nxp.com>
- <20220605212114.GA3528129-robh@kernel.org>
- <AS1PR04MB9358BCBEBDC7EBAC6E5DD6A9F3AC9@AS1PR04MB9358.eurprd04.prod.outlook.com>
- <20220629212559.GA843061-robh@kernel.org>
-In-Reply-To: <20220629212559.GA843061-robh@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS1PR04MB9358:EE_|PAXPR04MB9490:EE_
-x-ms-office365-filtering-correlation-id: 8d4cbd66-0efb-4136-e71b-08db92e607fe
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: wyTIMEQh+qXNNXQcfWU99hp+pgxvv1LjM8suhHlFQHB9f7CZvLznSDzXM7l/drSLhHACI3I6bxXWNPRfoDjfmnQiwVlePn1RDoiK8gOJbj1oPumknVIrQoyvhFHaPq3UIKCrPhw63iQGfJZ3u//oUNMa3JNjlgOyBIzXwJub1R3WBej6PQPphjF6Nao3B2ccMyBBRLdvNJ+V+CT2SITVZDNXc4WRFZjPSZa2FYfPBGV38541mE15KEXX40ICOzqcKzQ7Cod1/jZJ6+zadBuij8dyFWfestLMBgrFy6edMS9dBIcnQjKeb7mly7kdpVNCqYlxzvF286vVsm+tIVc+g35keur3CAL2+wUKWMQtE3HB+5ZpfdpLEaqRYcoLts9Y2UprWXvuvaRwnpd9c4NJj2Q63LcbEQaHf3iTPurQtTx7gX7e4HT8xCPMmZoDB+BKwlPQL+VptuXy1jqWs8rptEPdEC13tijc5KksMAUHjdrJOKeKBQHuqaUgwvJldWifel53vw5oWqKw5VsFdT98yfKbl8FkchKLlMKDUJaEbopJvDqAcfKN1YBGqIi3YH9p6Zwp5swMlxEzBifGiYaFKmS39o97S/icjcjMDFRTgJA4hDum7mH0pYvPp5cmg5pF
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS1PR04MB9358.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(396003)(366004)(136003)(346002)(39860400002)(451199021)(33656002)(38100700002)(6506007)(5660300002)(76116006)(53546011)(6916009)(4326008)(55016003)(66446008)(64756008)(71200400001)(66476007)(66946007)(66556008)(54906003)(9686003)(122000001)(52536014)(478600001)(2906002)(8936002)(8676002)(38070700005)(41300700001)(7696005)(186003)(316002)(86362001)(26005)(44832011)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?KYd5DHyHQz5Nvnjy5tS79gAicdewE1kYPNdO2ChtshVDlyw6pSLGk7OsPHxV?=
- =?us-ascii?Q?o42hfrcyQshBd9wpnOJzPXx7QjOBoyxDxqfJtX5nwa2x0Nb8JC2xFFJmqljo?=
- =?us-ascii?Q?A6sq/gYQUf3UN+jTjjz+Hv+z9+EB9c1wt4wuCRsM1fBatXjSQ1wfez+beb9t?=
- =?us-ascii?Q?uW2vaI0HUGpmoHBebmljF7/OZVQqkoO8IlOD5U2iUSL2jf5EXSp1cngsm1Ul?=
- =?us-ascii?Q?XWrCZpS0ftAkwB6xx9KRK1gWV4onRbHM68MHNG4i3F+v1pnbo5FVphxAvAOW?=
- =?us-ascii?Q?aN7f57Y7xV5SUY3IIUaX+IiNAtRCPtT8vKWNfhMXnhqlML5NNe9YxZ2YXJdz?=
- =?us-ascii?Q?vpxxQRfZ9TrtaBmArycEN90xGdLO8FcULAm21vrIxrnmLJTagLcD49DONYTN?=
- =?us-ascii?Q?mo3rwHbaLdLtM69XhGsjgF54b80kurvmRQjSx8bC81yUaoFU9szA65wdp7Rq?=
- =?us-ascii?Q?sxywEwVkAFyCBKQq8gMoxojX5Q4wYD46W9ET4es9RNQTDLK2aiBSW19gQyCq?=
- =?us-ascii?Q?fwj5/4THMPcW9ULkGSyx6do8Hl6n906W+4d9hYKpszv2Faprz242yw5NaNu4?=
- =?us-ascii?Q?xrF8lcpOW7f97wFbaBVPTkChXXnMgsPIYs2BYJpFPDDQkysLG5X+OKKZmPnt?=
- =?us-ascii?Q?+9/IL2TT7yYwcyHzd8tDdI5Dy4m4x1z+DiYnUpZOpvpulU/Kjiey5uTq3Fij?=
- =?us-ascii?Q?TTo02libvRxkHbrBFjjH0w3tGcQANrcBvUaSqd3mVzkIi0NQtK4I9lLT6BVE?=
- =?us-ascii?Q?XWYmB0dwI/eCIu/1/YxxXIiSenBXCQeABmxMPdAZj45SRiy62ub3NfGN6BEK?=
- =?us-ascii?Q?oxz/XYJmfhS4NZSmxT8PgsLEPsoq12qMdbK8Tqo1oWecvZ1XLYPIUkGMlu4e?=
- =?us-ascii?Q?YYVhuD1JkDTbg6kyFe3hSnNOmtp+33V+14Tt1jfUGVfkAQOLtO+u2PUak8n2?=
- =?us-ascii?Q?nnM+wVKRuVRWW7lHWTC9pVYPPa0PpWSn8he7mA5iFHscsyG84X30oi7hLaMI?=
- =?us-ascii?Q?2KaaWpjOG/+M7TZ/F8I3GALKRpPJITBb0CcwpDKr06vHTgScM4Ib8NuYzVd2?=
- =?us-ascii?Q?sbpEud+Xu2aqfpdl7vM8Nh07ExrwDl+FXAVzSG0ElPEfjLE68oM/i1nkjzBS?=
- =?us-ascii?Q?rkPz143BZ3VQcV0VxR6KjfJFPju7yHni+WVvUlr2WFkNb2njZxLjjNNdMsJW?=
- =?us-ascii?Q?TmHOPgnUig8pbggopCcI02N6nZCFXmjTbyGDDvTMqaZmvR8rso89tj8OUHLK?=
- =?us-ascii?Q?LYKOW1mQnQNVeGpGUpir1ppE1CP59+DOrwUESsC9vUnrzP/Xp9nDziKOuvD8?=
- =?us-ascii?Q?OIyqp2DlwdCH4p8PkWUjKbOdYZylT3gX9M/X0wrh4hFmMu3rjsMbS2PRTgA4?=
- =?us-ascii?Q?MiksY5S4pENirAUIJfoMRG/ICYDiS1SSblpC9vLCczsGfIltNOuuDjpZwjN5?=
- =?us-ascii?Q?HZfIN/l7glmg/o1K+qOF9/j0vPifcWw6dQboVhYrnS3usyp0fhsdtYXfb/3n?=
- =?us-ascii?Q?osK7h1kDMhw2rGR0KElAB8hxQLS4g+KbAFGn9MSKBMgENjSgCFNeCuR5G83f?=
- =?us-ascii?Q?Y61triwORy0qBza+DnklFfyFcX4eqTHEDCPePHi4?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 1 Aug 2023 19:25:05 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2D02130
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 16:25:03 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686f94328a4so235013b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 16:25:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1690932303; x=1691537103;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8DB7NbDsAn8EUrVtRgWQWKrnvDzR5ULizdCe1TRVecI=;
+        b=eSuXH06fGHPWanB/YZ+J2QKDAVJRQkq2fZbLn8T9TVWSkFpCr0Q0uINw6ckgd0a1ec
+         JOnnHLRHaXYOhw/f2OYfBG+9VCIXHlmnSyYbI86SGyBNx1i/L7f/LiIoK743mbr5qgv5
+         0Tbh1FmonkuZeJpnc1Ks81So271DhDQXbfVAI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690932303; x=1691537103;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8DB7NbDsAn8EUrVtRgWQWKrnvDzR5ULizdCe1TRVecI=;
+        b=UsmCD+23H2EiBN2G/S76f1xB40Za+/2OUniHnngDwdAtYPjOEwHL+SCvcfFrpvdoZ8
+         cCOIx2FCP6sbGvw8hDX+B+ftOkcmAzCmfZcpqrR2Tnd/f1MPVgCUL3J4eggVwnBlhwk2
+         0eUwmCYhC4NWlDZopg+KpveCDEfwGwjStv2YN2/RQArIxIUVmXbtn2vD6jajmNC6y8gm
+         fETfsVVBbFRcN9vUKYRjcbjJGDQfr1Ck+90KJNeGl1vLAXrauFEVTTsggdtgawWQKLwL
+         aKxxXsYNsRJWBrW51D80wdNpW4psmIrM1QGyBk7G1G+4JwiGhecGXbNohnA3wtEC0CRW
+         HfMA==
+X-Gm-Message-State: ABy/qLZWNbYolCiDcLL6kTN8y6CrGS4XhRV8eqa7Q2PV3KC+GXZc89T8
+        bHroLNb41C8AcLql9IpcJUL/zZPBb+5aOOHxFL4=
+X-Google-Smtp-Source: APBJJlHjQCrnLHz6V1HJoI3U0b00CuliXO6jJnknLdcBbfdeomZRMK4TWzo0biJIxq7OC2cGy15wSQ==
+X-Received: by 2002:a05:6a00:4193:b0:678:11d6:2ad6 with SMTP id ca19-20020a056a00419300b0067811d62ad6mr14678959pfb.9.1690932303240;
+        Tue, 01 Aug 2023 16:25:03 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v26-20020a62a51a000000b006873aa079a8sm4117645pfm.210.2023.08.01.16.25.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 16:25:02 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 16:25:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] wifi: ipw2x00: replace deprecated strncpy with strscpy
+Message-ID: <202308011602.3CC1C0244C@keescook>
+References: <20230801-drivers-net-wireless-intel-ipw2x00-v1-1-ffd185c91292@google.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS1PR04MB9358.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d4cbd66-0efb-4136-e71b-08db92e607fe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Aug 2023 23:21:27.6971
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zeAxOcsM0h6V+UKDTSt9nGGTTw2SuxSI0OPY8v/z9w8xuASG9ma0uIvGs6qSBfZua2hIyXkGRUEXGFfG/mcJCQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9490
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801-drivers-net-wireless-intel-ipw2x00-v1-1-ffd185c91292@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
+On Tue, Aug 01, 2023 at 09:53:36PM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+> 
+> We can massively simplify the implementation by removing the ternary
+> check for the smaller of `count` and `sizeof(buffer) - 1` as `strscpy`
+> guarantees NUL-termination of its destination buffer [2]. This also
+> means we do not need to explicity set the one past-the-last index to
+> zero as `strscpy` handles this.
+> 
+> Furthermore, we can also utilize `strscpy`'s return value to populate
+> `len` and simply pass in `sizeof(buffer)` to the `strscpy` invocation
+> itself.
+> 
+> [1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+> [2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> 
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+>  drivers/net/wireless/intel/ipw2x00/ipw2200.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2200.c b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+> index dfe0f74369e6..8f2a834dbe04 100644
+> --- a/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+> +++ b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+> @@ -1462,15 +1462,12 @@ static ssize_t scan_age_store(struct device *d, struct device_attribute *attr,
+>  	struct ipw_priv *priv = dev_get_drvdata(d);
+>  	struct net_device *dev = priv->net_dev;
+>  	char buffer[] = "00000000";
+> -	unsigned long len =
+> -	    (sizeof(buffer) - 1) > count ? count : sizeof(buffer) - 1;
+>  	unsigned long val;
+>  	char *p = buffer;
+>  
+>  	IPW_DEBUG_INFO("enter\n");
+>  
+> -	strncpy(buffer, buf, len);
+> -	buffer[len] = 0;
+> +	ssize_t len = strscpy(buffer, buf, sizeof(buffer));
 
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Thursday, June 30, 2022 2:56 AM
-> To: Vabhav Sharma <vabhav.sharma@nxp.com>
-> Cc: Horia Geanta <horia.geanta@nxp.com>; Gaurav Jain
-> <gaurav.jain@nxp.com>; Pankaj Gupta <pankaj.gupta@nxp.com>;
-> herbert@gondor.apana.org.au; davem@davemloft.net;
-> shawnguo@kernel.org; linux-crypto@vger.kernel.org; linux-
-> kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
-> devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org; Silvano=
- Di
-> Ninno <silvano.dininno@nxp.com>; Varun Sethi <V.Sethi@nxp.com>
-> Subject: Re: [EXT] Re: [PATCH 1/3] dt-bindings: crypto: fsl: add entropy =
-delay
-> property
->=20
-> Caution: EXT Email
->=20
-> On Thu, Jun 16, 2022 at 05:49:30PM +0000, Vabhav Sharma wrote:
-> > Hello Rob,
-> >
-> > > -----Original Message-----
-> > > From: Rob Herring <robh@kernel.org>
-> > > Sent: Monday, June 6, 2022 2:51 AM
-> > > To: Vabhav Sharma <vabhav.sharma@nxp.com>
-> > > Cc: Horia Geanta <horia.geanta@nxp.com>; Gaurav Jain
-> > > <gaurav.jain@nxp.com>; Pankaj Gupta <pankaj.gupta@nxp.com>;
-> > > herbert@gondor.apana.org.au; davem@davemloft.net;
-> > > shawnguo@kernel.org; linux-crypto@vger.kernel.org; linux-
-> > > kernel@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>;
-> > > devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
-> > > Silvano Di Ninno <silvano.dininno@nxp.com>; Varun Sethi
-> > > <V.Sethi@nxp.com>
-> > > Subject: [EXT] Re: [PATCH 1/3] dt-bindings: crypto: fsl: add entropy
-> > > delay property
-> > >
-> > > Caution: EXT Email
-> > >
-> > > On Mon, May 30, 2022 at 11:39:22PM +0530, Vabhav Sharma wrote:
-> > > > Add entropy delay property which defines the length (in system
-> > > > clocks) of each Entropy sample taken for TRNG configuration.
-> > > >
-> > > > Signed-off-by: Vabhav Sharma <vabhav.sharma@nxp.com>
-> > > > Reviewed-by: Horia Geanta <horia.geanta@nxp.com>
-> > > > Reviewed-by: Varun Sethi <v.sethi@nxp.com>
-> > > > ---
-> > > >  Documentation/devicetree/bindings/crypto/fsl-sec4.txt | 6 ++++++
-> > > >  1 file changed, 6 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/crypto/fsl-sec4.txt
-> > > > b/Documentation/devicetree/bindings/crypto/fsl-sec4.txt
-> > > > index 8f359f473ada..1477294eda38 100644
-> > > > --- a/Documentation/devicetree/bindings/crypto/fsl-sec4.txt
-> > > > +++ b/Documentation/devicetree/bindings/crypto/fsl-sec4.txt
-> > > > @@ -62,6 +62,12 @@ PROPERTIES
-> > > >        Definition: A standard property. Define the 'ERA' of the SEC
-> > > >            device.
-> > > >
-> > > > +   - entropy-delay
-> > > > +      Usage: optional
-> > > > +      Value type: <u32>
-> > > > +      Definition: A property which specifies the length (in system=
- clocks)
-> > > > +          of each Entropy sample taken.
-> > > > +
-> > >
-> > > Seems like this could be common, but should be a time value (with
-> > > unit
-> > > suffix) rather than clocks. If not common, then needs a vendor prefix=
-.
-> > > Is this time to read a value or time between values produced? Not
-> > > really clear from the description.
-> > CAAM TRNG Configuration includes 16-bit field entropy-delay. This field
-> specifies how long the oscillator is given to freely oscillate and genera=
-te a
-> single bit of entropy.
-> > It is specified as number of system clock cycles and this u32 type fiel=
-d
-> already exist in the caam driver code with default value of 3200. However=
-, on
-> some platform this value can vary and support is added to read the value
-> from device tree in order to override default value, Hope this helps to c=
-larify.
-> =09
-> So that is how often a sample can be read? Or what happens if you read a
-> sample too quick (in less than this delay time)?
-This is the fixed value that will work always profiled while offline per So=
-C or SoC family.
-Value will work during initialization and run time.
+This means "len" could become -E2BIG, which changes the behavior of this
+function. The earlier manipulation of "len" seems to be trying to
+explicitly allow for truncation, though. (if buffer could hold more than
+"count", copy "count", otherwise copy less)
 
-Apologize to miss the email and delayed reply.
->=20
-> Look at other h/w and drivers see if something common makes sense here.
->=20
-> Rob
+So it looks like -E2BIG should be ignored here? But since this is a
+sysfs node (static DEVICE_ATTR_RW(scan_age)), I actually think the
+original code may be bugged: it should return how much was read from
+the input... and technically this was true, but it seems the intent
+is to consume the entire buffer and set a result. It's possible "len"
+is entirely unneeded and this should just return "count"?
+
+And, honestly, I think it's likely that most of this entire routine should
+be thrown out in favor of just using kstrtoul() with base 0, as sysfs
+input buffers are always NUL-terminated. (See kernfs_fop_write_iter().)
+
+
+diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2200.c b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+index dfe0f74369e6..780f5613e279 100644
+--- a/drivers/net/wireless/intel/ipw2x00/ipw2200.c
++++ b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+@@ -1461,25 +1461,11 @@ static ssize_t scan_age_store(struct device *d, struct device_attribute *attr,
+ {
+ 	struct ipw_priv *priv = dev_get_drvdata(d);
+ 	struct net_device *dev = priv->net_dev;
+-	char buffer[] = "00000000";
+-	unsigned long len =
+-	    (sizeof(buffer) - 1) > count ? count : sizeof(buffer) - 1;
+ 	unsigned long val;
+-	char *p = buffer;
+ 
+ 	IPW_DEBUG_INFO("enter\n");
+ 
+-	strncpy(buffer, buf, len);
+-	buffer[len] = 0;
+-
+-	if (p[1] == 'x' || p[1] == 'X' || p[0] == 'x' || p[0] == 'X') {
+-		p++;
+-		if (p[0] == 'x' || p[0] == 'X')
+-			p++;
+-		val = simple_strtoul(p, &p, 16);
+-	} else
+-		val = simple_strtoul(p, &p, 10);
+-	if (p == buffer) {
++	if (kstrtoul(buf, 0, &val)) {
+ 		IPW_DEBUG_INFO("%s: user supplied invalid value.\n", dev->name);
+ 	} else {
+ 		priv->ieee->scan_age = val;
+@@ -1487,7 +1473,7 @@ static ssize_t scan_age_store(struct device *d, struct device_attribute *attr,
+ 	}
+ 
+ 	IPW_DEBUG_INFO("exit\n");
+-	return len;
++	return count;
+ }
+ 
+ static DEVICE_ATTR_RW(scan_age);
+
+
+-Kees
+
+>  
+>  	if (p[1] == 'x' || p[1] == 'X' || p[0] == 'x' || p[0] == 'X') {
+>  		p++;
+> 
+> ---
+> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+> change-id: 20230801-drivers-net-wireless-intel-ipw2x00-d7ee2dd17032
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
+
+-- 
+Kees Cook
