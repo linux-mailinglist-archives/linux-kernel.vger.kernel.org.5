@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAC476B7E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4665A76B7E7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234877AbjHAOoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:44:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59472 "EHLO
+        id S234883AbjHAOor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233969AbjHAOoR (ORCPT
+        with ESMTP id S233969AbjHAOoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:44:17 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2043.outbound.protection.outlook.com [40.107.223.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72005122
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 07:44:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EKtiU7+qiq0n3Yl0xAf2sl20qUd0B8d2c06PI8iIWLurOyHNRyMnLqYfMC4wgPhEuxEs2+O7mdMYYc/e9tPLoxJcktU+1IqYo1efwtXUxdxgQSXnLl1Zuph0WrZefqaJfluN+0B8ORSR7lf3vL7nDAyPGRBJlyr6MIiG023Q2BuMeL/1j7CI6GZWvHzXuTyZKiyVSiyW8mT0cNvtZC/mNK3Sxj2Kl10lB1UtOv0aZ6DGwn8biYsApHUQIaSlqEuEgbcO3QKp0E+kuLJFYtAX7HpSjBsy/lBNH2G9GkbrCPacH73no/26EVQrOSiB9BYT77wMCpEIoBI3VZj99GQv0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WXBtWByhlcqC/XNGUq75qVoFghxJapRc6Fa/+v5xu0Y=;
- b=ZxTdEunAhDSzqrSTIGP4HNPgL1YIKn3dzfSIBOxyfY1xK02I6GAaDq0TOYdG94A63aLraELBlJO5JYiMADMx706xmekMkVG20iK9mijzKe/+wNsvvKbXHnqH0Izon41Uv3HfX4rNT/EcZdjUV45s3QSO6KfhYdC38JACh70wWkSU4XtldABETMsMerQB9l+pWVFpimc5kGfXndqaik92bGnpf6krjkhezP9skF3w2mUvyMBgJdR39PhkZrTwSXcyPFe+R7jzf4VJHi1FIpDmoJhoJD0vTp+cfKybPK9nYSNlgHGkVS9j2X0Chwz2ztoMo6bj1A/MMU5BxlLA91PZmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WXBtWByhlcqC/XNGUq75qVoFghxJapRc6Fa/+v5xu0Y=;
- b=XI6KqGdmvr4FvGHyJdboZPjRRGDqL926dDK/IjhkWC3adI0jv8qBOcc1w/hpfY9yVGt9jyDpLj7Cqow4a6bxmak4Y/HhiFcif0fUiPcABwn96QmpYYdIJsJzRNu6bfQVOO25fIzuxM4f/PoKu812LDxYz6a2hBKOzRm4QZNjURpZ7LwSdW7qFfC9naAjhUyo79KebVjKICxRcIgm9TfxuE/Ln2swF3Ko5BlwFGlT+h60FO347Jub2wKeWkcBDbHkv8YV5DUhybK7x0Pp6kIEUGUsvJlvQ4jUAlZbdku2uAoH4ugLGhGEkBmAy5sZ6cHTAFMr99sd/kEP0RTJh7miYQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CY5PR12MB6648.namprd12.prod.outlook.com (2603:10b6:930:3e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.43; Tue, 1 Aug
- 2023 14:44:13 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
- 14:44:13 +0000
-Date:   Tue, 1 Aug 2023 11:44:11 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, will@kernel.org,
-        robin.murphy@arm.com, nicolinc@nvidia.com, jean-philippe@linaro.org
-Subject: Re: [PATCH v2 8/8] iommu/arm-smmu-v3: Rename cdcfg to cd_table
-Message-ID: <ZMkaO9z2HH1cs0+n@nvidia.com>
-References: <20230731104833.800114-1-mshavit@google.com>
- <20230731184817.v2.8.I5ee79793b444ddb933e8bc1eb7b77e728d7f8350@changeid>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731184817.v2.8.I5ee79793b444ddb933e8bc1eb7b77e728d7f8350@changeid>
-X-ClientProxiedBy: YT3PR01CA0113.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:85::16) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Tue, 1 Aug 2023 10:44:46 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B08B1BC3;
+        Tue,  1 Aug 2023 07:44:45 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-c5f98fc4237so4687844276.2;
+        Tue, 01 Aug 2023 07:44:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690901084; x=1691505884;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dXgNoIC2PvO/RdQx7w9iCucEs/VxyEwm+OaXP/sJCPQ=;
+        b=VFMh5LS5z3t+hG68vt3INAW1bmqD8uEWGh7LMqvkYjF7v6fZ/vZkLNxUe9mYT6pjMm
+         65JazsVmxiH3X6IUyXQFHXLVz1mH5F9dIW1GbdgUBwb00JFth2efdOU1NR0w5eWdYAbk
+         8ObzV3Kxly5ZAa4OdMnlE63neLzSJNFjgC2BEhwZ+VvaplEEoAq9BndXYlcuCt02GY2O
+         dIA1d7QrDoL+fMV2YirfEhivh/yO2ytwgD9bMR+qpktysNaz9wuFliMgI2WtaFFTvffP
+         so94wlh17sCKXLmDLTg085cPWzJwdjluHA9d4clhAb0ERK26knfENhZXdyArYbUvkQoT
+         2dcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690901084; x=1691505884;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dXgNoIC2PvO/RdQx7w9iCucEs/VxyEwm+OaXP/sJCPQ=;
+        b=EswM2fgvEh/JA3eAaUC1r/Etp1zki3Q0/MiUV5FiWBRerFch+oG/Ma8v8P9Y4Q2G7S
+         kkvW2pvYpym8ZFMUVlWz1QLjLhW2zo+GAOXuv6CTYrQNTZnk3OgqmUQFS1XImJ3zcGty
+         +HBLdToCZjw8ttRLuSjigTo4Y1fQ4c7rcAU2wCDfVqEXoWFOtdWprFgx7T8zD1VK8mEt
+         rF7tGLjKas8wpKXryrJnwTvYiqOpXtJ8Zf1tJE+s462r9YPyszZZrzsnLHQuelCFnaja
+         VZoNLpAZJY2AvG7Mvbl5jUVQ9ecTbCu7G8ddh3gYDEKqdtGm8vJB9o/m+BCp8kZXtldp
+         L8rg==
+X-Gm-Message-State: ABy/qLa47cDlQiEqL1OKN2KvlzQFXqM30Pt93RwMeTVwoxBkjqrIRUyW
+        cJH6UZDcXcTa9XOSI3G039AmHVGwT6lVVOqlqqA=
+X-Google-Smtp-Source: APBJJlExxDX5gr6eVov8kBtquPdrHK2sGfm+MVVQv8plpRunt/LlfvnCesz2qwdIPlnPHM7oEiSeFP7KKO48sgLUTNE=
+X-Received: by 2002:a25:ac9b:0:b0:d15:bd9f:cac0 with SMTP id
+ x27-20020a25ac9b000000b00d15bd9fcac0mr9856536ybi.39.1690901084347; Tue, 01
+ Aug 2023 07:44:44 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY5PR12MB6648:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0032cb37-9dbb-4a94-92e2-08db929dc5e5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YSjHhhJTqj3gYDPZqmLJba5bAsihyIIavHjzscmNwHpFY4YhdkWihMfIbsTA+R5dQLB5z7AU0FcHvK7Gw81GaSXOfGUN2viWES5SHdpcTtXJAKYjPXR3+sQKYYBEubc7JovHnUGJO3JKxE7cd50BSoO7BqBiLbereQ8UdyZQFfQPc4/mxdEBHZcnXyTLCJwx2SJF0r+9PfWsayKN7yos9eUibHXI1TcKbnwypeJin2Xd/MarakejI9VFRtC4ps10kjKjxCmuAF4sOtzqd4tqs65WBlOuYKOobi2QtQ5EvDH6ATBfDpB9e3CWq3r21AghctOodIxNazrzEf7ZQ1QGdrFVN5gNVJ/hxGqSBGANPyqjY9Xp0ByIk27SmJJsARtXX1wINCAYtGbSiBK74cJx0/XO80C6JmGN2VgXRUYpafgpN0K9tTDQDfIqne4HmT0yCQedqpTKvGajUdP9OIxFiQFkXc6BNjdWLSzVgyil6BQGB8gA82I7U+Fr8GdcxnMJwNewYR8nzWXm/lx6+ARPhK671lHvoJfqpvAbbR+SO+IJfAghhwHWbT6yQRMt7ExEBzY+imr0BTOTc4kUGa8D/FCsgnMCHmTHHYrb2iuHDqc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(366004)(376002)(396003)(136003)(451199021)(2616005)(36756003)(26005)(6506007)(6486002)(6512007)(478600001)(86362001)(38100700002)(186003)(83380400001)(66476007)(4744005)(41300700001)(8676002)(8936002)(316002)(6916009)(5660300002)(4326008)(2906002)(66556008)(66946007)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pXZRlVWGKHDRoFIhzGk8wHWhSHTh39rBfQUvDKj2TP94aE9gyJfwrgnhH8EI?=
- =?us-ascii?Q?QaLTIq/C61ICRdaBERuAxotX82FTCMzYqvMxyQ7XMlL7FlRNdRr6cA9t9Dif?=
- =?us-ascii?Q?n7ujCxT+hZIA8Vf8Ch/qpTtPlPA9NmDWWXW9iKYyHlIihDokk3DJL0V0irc6?=
- =?us-ascii?Q?9AG/4Xf1YCEO0hVVnudl4QPcKUBocaVYtgKcfDNroZnKV/MKKrVlRVfiuu5Z?=
- =?us-ascii?Q?pccmZbosKRbiUWGrKOzuqcahr19t/16dK8gec1j31caq//eSJIop4BwNBtm2?=
- =?us-ascii?Q?jahutXE/G6f/nk15ZWZ7nk8ai8YSpB383+3Qd0kb7z12y/jHNaRyoLtzpE0q?=
- =?us-ascii?Q?QfCe1vAgCgkeucidgT6wIMrPwtn2TqzIjjsTG6vxktkik3ti5FKjMH59qiNs?=
- =?us-ascii?Q?cBv0jJcfn6yB0PRZHgNfX6OTnjlAksxmc+eDzGGlCLROdhE/zPA90BLDweVF?=
- =?us-ascii?Q?CcvWLh3pSmQ1DofZ072mvUGZTqzWQ3q7HpdbjFn45/RHXS9tXVImFhdlcikr?=
- =?us-ascii?Q?UbqxNIAqfGA6uKih7u3RFVAgPa9msI5kM4F4MOi1/5KXi2NjhrOZ737PJ7iH?=
- =?us-ascii?Q?//CUFxK+6+QgLHTynscjVx6gRfC07xEzFLLS14vo1d/e6lR9K37pn3P/aJEF?=
- =?us-ascii?Q?FgE4/NJf105ilvTNeX4SUU/mO6Wzoxubp/IFEtEdD1lNP2Hv8P5+FbF70gjy?=
- =?us-ascii?Q?NP7ANvQdIZCsrucd7wKFfF0yqy4aolaFFoFiyeoE+A0OmrQWNvBOWjO+VNOP?=
- =?us-ascii?Q?5R8o+MTTRrsfrzsfot8u75Vzyn1tFf4Fy00CEks4P1aBW5xZ9YcXX7XkmCwz?=
- =?us-ascii?Q?b+eGijNmQ3r3DDlu/5zZjlapCHNi2xINl/nreQyhj73bKrHY5QFz7P4VawCp?=
- =?us-ascii?Q?B0SSPwtLt1t/bZVLJLbYdwYRJt5u3dkXbqpSa89cMuVc0ab6zVEqzyNWPdxT?=
- =?us-ascii?Q?I1AzadXfAtVQo4FlCAEmmFSQ7M04pLYmQLBU6g3phwUdXOwtW058So0hvobY?=
- =?us-ascii?Q?YPwfaPxlGlFCaAcpLu0P67eGyhkuFxbul3cHQL6+08w3UlDx/wL2MGgPY+YU?=
- =?us-ascii?Q?7MGqYVgvnL3vbsZaRefJgLenlchPVCra3n6tc9U2pl7VNAzy1pktKvpuL1M/?=
- =?us-ascii?Q?X2ea3XaCtkvh1MDWKwxQvuXchw4534pczDF6dnIC7Tzx0mUj+PPIeyIpM5Og?=
- =?us-ascii?Q?olscLpu4PEBIUzopmkhp7/Y6INPYbXRbAxhcC3pylEy6G3D8Ut2fLMUyWSqb?=
- =?us-ascii?Q?/NDEw1zyqy4KMzA4uzjOV8btXCdYzLwOdEiEAi8Tl7L27facoLcjVw7m0iTE?=
- =?us-ascii?Q?cNhhC6KUv8nnuz60/ZznCfXIooVqIi5HQhkk57pF19jpbgNBbvYkoghnfQt8?=
- =?us-ascii?Q?lx59/EUPWmZZrY0IQQxXlvVLOlKgI4AX05wimQ58EHA29EN3t2MSZHi4R66V?=
- =?us-ascii?Q?FPMSh+SPQRsYukCGUFehIyqKxyQxgmnkW1QoyJ/yb1HNwtfu2cHaAeenhZTC?=
- =?us-ascii?Q?nlZnHgtY1EhlW10843/XLSJeRZe8FNVkzCAGM3wkG1N3GpuAUMUIF1WfLxpS?=
- =?us-ascii?Q?wdMaY2lC6T9rNWf7DGMEw/nm9w9WH8gm8PK8tHoU?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0032cb37-9dbb-4a94-92e2-08db929dc5e5
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 14:44:13.2350
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9aptAfWaCjukTNqkLi/6RAaojKQRjg/wa8idrp7d7Tj7Vjv0jZMFYYnSJupnJcTT
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6648
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230720-rustbind-v1-0-c80db349e3b5@google.com> <20230720-rustbind-v1-2-c80db349e3b5@google.com>
+In-Reply-To: <20230720-rustbind-v1-2-c80db349e3b5@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 1 Aug 2023 16:44:32 +0200
+Message-ID: <CANiq72mJjB_ubHx-y316o7b0KNjdHOrA9Wz0ievRvoTi1jVR5A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] rust: macros: add macro to easily run KUnit tests
+To:     David Gow <davidgow@google.com>,
+        =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        Benno Lossin <benno.lossin@proton.me>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 06:48:18PM +0800, Michael Shavit wrote:
-> since cdcfg sounds like it represents a CD entry when it's in fact a CD
-> table.
-> 
-> Signed-off-by: Michael Shavit <mshavit@google.com>
-> ---
-> 
-> Changes in v2:
-> - New commit
-> 
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 66 ++++++++++-----------
->  1 file changed, 33 insertions(+), 33 deletions(-)
+On Thu, Jul 20, 2023 at 8:40=E2=80=AFAM David Gow <davidgow@google.com> wro=
+te:
+>
+> The only difference with user-space tests is that instead of using
+> `#[cfg(test)]`, `#[kunit_tests(kunit_test_suit_name)]` is used.
 
-I think more generally it is confusing what 'cfg' means in the context
-of this driver.
+I may be missing something, but this does not appear to map the
+`assert*!`s to the KUnit APIs, is that correct? (i.e. like we do for
+`rustdoc`-tests).
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+I made an assertion fail, and it seems to use the standard library
+macros, thus panicking and ending up in `BUG()` (rather than a failed
+test):
 
-Jason
+    rust_kernel: panicked at 'assertion failed: `(left =3D=3D right)`
+      left: `true`,
+     right: `false`', rust/kernel/kunit.rs:329:1
+    ------------[ cut here ]------------
+    kernel BUG at rust/helpers.c:34!
+
+Then the test times out eventually and things break:
+
+        # rust_test_kunit_kunit_tests: try timed out
+    ------------[ cut here ]------------
+    refcount_t: addition on 0; use-after-free.
+
+> +    // Add `#[cfg(CONFIG_KUNIT)]` before the module declaration.
+> +    let config_kunit =3D "#[cfg(CONFIG_KUNIT)]".to_owned().parse().unwra=
+p();
+> +    tokens.insert(
+> +        0,
+> +        TokenTree::Group(Group::new(Delimiter::None, config_kunit)),
+> +    );
+
+I wonder about compile-time here with this approach. As far as I
+understand, having the `cfg` explicitly outside the proc macro would
+avoid invoking it.
+
+Do we know the potential compile-time impact, especially when we will
+have many tests?
+ventually it would be ideal to have an approach closer to the
+`rustdoc` one, where the compiler finds the tests for us and we
+generate the needed code in the build system, i.e. outside a proc
+macro.
+
+Cheers,
+Miguel
