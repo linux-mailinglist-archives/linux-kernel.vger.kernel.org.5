@@ -2,240 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5883576BA18
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605B976BA1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233216AbjHAQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:55:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
+        id S233272AbjHAQz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233232AbjHAQyz (ORCPT
+        with ESMTP id S233270AbjHAQz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:54:55 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349272684
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:54:52 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 5A0151BF203;
-        Tue,  1 Aug 2023 16:54:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690908891;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 1 Aug 2023 12:55:56 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53632115;
+        Tue,  1 Aug 2023 09:55:44 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 675E321C5A;
+        Tue,  1 Aug 2023 16:55:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690908943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=V3jHMGbJP3QoNz+rczliCDsMkczh5HGRrxCqzcgnveo=;
-        b=L0LEpiaWM546go+iQHmp9rh1i2Yg5K61mkwNPerpxzqAlx4f3khZ4bJBL6iFmQZEjCi+xU
-        YsEUV/68G6Vp9+N9YN4AeLybuk44fWbn9SI0V+8G1y56B7QP/QfgAih+WGwJj8+nVirCQ5
-        OK1qaFJF2FKFGawoxH1xcJmiUSc4z7B1EmqoOk/DSmKga840HiaS9stCveYL1tbT08E/xr
-        hTPxaNpmChcxpLwAmwz29vfS6KemfblRl3lOJ+fVRrhKZLu7pq5BJh08BIkdZUgPjJoj6+
-        GVzPYq4Ha4IxkoWi5HWU2hAvi4Yl5B8kdp9HTMfufH/4rg9UCmV+fzpaAqBQ6Q==
-Date:   Tue, 1 Aug 2023 18:54:49 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Michael Walle <michael@walle.cc>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v6 3/3] nvmem: core: Expose cells through sysfs
-Message-ID: <20230801185449.5088c8d4@xps-13>
-In-Reply-To: <2023080125-renovate-uptake-86f0@gregkh>
-References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
-        <20230717075147.43326-4-miquel.raynal@bootlin.com>
-        <2023071717-channel-supernova-4cc9@gregkh>
-        <20230717183323.49a55ad0@xps-13>
-        <2023071724-twiddling-morale-157e@gregkh>
-        <20230731164642.49fea651@xps-13>
-        <2023080125-renovate-uptake-86f0@gregkh>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        bh=2wJGrCodiFacIQZflH9R6dQqAyomHz+cFLPpNk0lajQ=;
+        b=TDZ9lKQMhrHc1AR1LuAXp5Tf9AguCo8xpgKK+zjT39q4efiYfn94Cm/Ko5k4J2u1h4VRFR
+        w3vB8r/E1dpFLL4dNofINx/9Six8SvZLoppUT2y29YjHdEMfDage5T1VBrtxL0OLlg1drC
+        AcBJLYMaXgik1cwS5siI8RxGNGcxHuc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690908943;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2wJGrCodiFacIQZflH9R6dQqAyomHz+cFLPpNk0lajQ=;
+        b=U97WmX2iRrPFW29Xxax7UDZILg2veMmwjNvB+tnpBQcLv54/EakR9Ow1Xd6dAkdUZYAXxU
+        B3eRzcWwi/4EuzBA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1862D139BD;
+        Tue,  1 Aug 2023 16:55:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id rIn0BA85yWTiMAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Tue, 01 Aug 2023 16:55:43 +0000
+Message-ID: <70690ae5-c2eb-6f8e-8335-e5052db5204b@suse.de>
+Date:   Tue, 1 Aug 2023 18:55:42 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH 1/4] vgacon: rework Kconfig dependencies
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     javierm@redhat.com, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        dri-devel@lists.freedesktop.org, Ard Biesheuvel <ardb@kernel.org>,
+        Helge Deller <deller@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org
+References: <20230707095415.1449376-1-arnd@kernel.org>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20230707095415.1449376-1-arnd@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------V2Kx07z5UT1mt9SnMBadeWbI"
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------V2Kx07z5UT1mt9SnMBadeWbI
+Content-Type: multipart/mixed; boundary="------------2bQgjjzopkAYok3GbchMEycT";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: javierm@redhat.com, linux-fbdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+ dri-devel@lists.freedesktop.org, Ard Biesheuvel <ardb@kernel.org>,
+ Helge Deller <deller@gmx.de>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org,
+ linux-csky@vger.kernel.org
+Message-ID: <70690ae5-c2eb-6f8e-8335-e5052db5204b@suse.de>
+Subject: Re: [PATCH 1/4] vgacon: rework Kconfig dependencies
+References: <20230707095415.1449376-1-arnd@kernel.org>
+In-Reply-To: <20230707095415.1449376-1-arnd@kernel.org>
 
-gregkh@linuxfoundation.org wrote on Tue, 1 Aug 2023 11:56:40 +0200:
+--------------2bQgjjzopkAYok3GbchMEycT
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> On Mon, Jul 31, 2023 at 05:33:13PM +0200, Miquel Raynal wrote:
-> > Hi Greg,
-> >=20
-> > gregkh@linuxfoundation.org wrote on Mon, 17 Jul 2023 18:59:52 +0200:
-> >  =20
-> > > On Mon, Jul 17, 2023 at 06:33:23PM +0200, Miquel Raynal wrote: =20
-> > > > Hi Greg,
-> > > >=20
-> > > > gregkh@linuxfoundation.org wrote on Mon, 17 Jul 2023 16:32:09 +0200:
-> > > >    =20
-> > > > > On Mon, Jul 17, 2023 at 09:51:47AM +0200, Miquel Raynal wrote:   =
-=20
-> > > > > > The binary content of nvmem devices is available to the user so=
- in the
-> > > > > > easiest cases, finding the content of a cell is rather easy as =
-it is
-> > > > > > just a matter of looking at a known and fixed offset. However, =
-nvmem
-> > > > > > layouts have been recently introduced to cope with more advanced
-> > > > > > situations, where the offset and size of the cells is not known=
- in
-> > > > > > advance or is dynamic. When using layouts, more advanced parser=
-s are
-> > > > > > used by the kernel in order to give direct access to the conten=
-t of each
-> > > > > > cell, regardless of its position/size in the underlying
-> > > > > > device. Unfortunately, these information are not accessible by =
-users,
-> > > > > > unless by fully re-implementing the parser logic in userland.
-> > > > > >=20
-> > > > > > Let's expose the cells and their content through sysfs to avoid=
- these
-> > > > > > situations. Of course the relevant NVMEM sysfs Kconfig option m=
-ust be
-> > > > > > enabled for this support to be available.
-> > > > > >=20
-> > > > > > Not all nvmem devices expose cells. Indeed, the .bin_attrs attr=
-ibute
-> > > > > > group member will be filled at runtime only when relevant and w=
-ill
-> > > > > > remain empty otherwise. In this case, as the cells attribute gr=
-oup will
-> > > > > > be empty, it will not lead to any additional folder/file creati=
-on.
-> > > > > >=20
-> > > > > > Exposed cells are read-only. There is, in practice, everything =
-in the
-> > > > > > core to support a write path, but as I don't see any need for t=
-hat, I
-> > > > > > prefer to keep the interface simple (and probably safer). The i=
-nterface
-> > > > > > is documented as being in the "testing" state which means we ca=
-n later
-> > > > > > add a write attribute if though relevant.
-> > > > > >=20
-> > > > > > There is one limitation though: if a layout is built as a modul=
-e but is
-> > > > > > not properly installed in the system and loaded manually with i=
-nsmod
-> > > > > > while the nvmem device driver was built-in, the cells won't app=
-ear in
-> > > > > > sysfs. But if done like that, the cells won't be usable by the =
-built-in
-> > > > > > kernel drivers anyway.     =20
-> > > > >=20
-> > > > > Wait, what?  That should not be an issue here, if so, then this c=
-hange
-> > > > > is not correct and should be fixed as this is NOT an issue for sy=
-sfs
-> > > > > (otherwise the whole tree wouldn't work.)
-> > > > >=20
-> > > > > Please fix up your dependancies if this is somehow not working pr=
-operly.   =20
-> > > >=20
-> > > > I'm not sure I fully get your point.
-> > > >=20
-> > > > There is no way we can describe any dependency between a storage de=
-vice
-> > > > driver and an nvmem layout. NVMEM is a pure software abstraction, t=
-he
-> > > > layout that will be chosen depends on the device tree, but if the
-> > > > layout has not been installed, there is no existing mechanism in
-> > > > the kernel to prevent it from being loaded (how do you know it's
-> > > > not on purpose?).   =20
-> > >=20
-> > > Once a layout has been loaded, the sysfs files should show up, right?
-> > > Otherwise what does a "layout" do?  (hint, I have no idea, it's an odd
-> > > term to me...) =20
-> >=20
-> > Sorry for the latency in responding to these questions, I'll try to
-> > clarify the situation.
-> >=20
-> > We have:
-> > - device drivers (like NAND flashes, SPI-NOR flashes or EEPROMs) which
-> >   typically probe and register their devices into the nvmem
-> >   layer to expose their content through NVMEM.
-> > - each registration in NVMEM leads to the creation of the relevant
-> >   NVMEM cells which can then be used by other device drivers
-> >   (typically: a network controller retrieving a MAC address from an
-> >   EEPROM through the generic NVMEM abstraction). =20
->=20
->=20
-> So is a "cell" here a device in the device model?  Or something else?
+cGluZyEgV2hhdCdzIHRoZSBzdGF0dXMgb2YgdGhpcyBwYXRjaHNldD8NCg0KQW0gMDcuMDcu
+MjMgdW0gMTE6NTIgc2NocmllYiBBcm5kIEJlcmdtYW5uOg0KPiBGcm9tOiBBcm5kIEJlcmdt
+YW5uIDxhcm5kQGFybmRiLmRlPg0KPiANCj4gVGhlIGxpc3Qgb2YgZGVwZW5kZW5jaWVzIGhl
+cmUgaXMgcGhyYXNlZCBhcyBhbiBvcHQtb3V0LCBidXQgdGhpcyBpcyBtaXNzaW5nDQo+IGEg
+bG90IG9mIGFyY2hpdGVjdHVyZXMgdGhhdCBkb24ndCBhY3R1YWxseSBzdXBwb3J0IFZHQSBj
+b25zb2xlcywgYW5kIHNvbWUNCj4gb2YgdGhlIGVudHJpZXMgYXJlIHN0YWxlOg0KPiANCj4g
+ICAtIHBvd2VycGMgdXNlZCB0byBzdXBwb3J0IFZHQSBjb25zb2xlcyBpbiB0aGUgb2xkIGFy
+Y2gvcHBjIGNvZGViYXNlLCBidXQNCj4gICAgIHRoZSBtZXJnZWQgYXJjaC9wb3dlcnBjIG5l
+dmVyIGRpZA0KPiANCj4gICAtIGFybSBsaXN0cyBmb290YnJpZGdlLCBpbnRlZ3JhdG9yIGFu
+ZCBuZXR3aW5kZXIsIGJ1dCBuZXR3aW5kZXIgaXMgYWN0dWFsbHkNCj4gICAgIHBhcnQgb2Yg
+Zm9vdGJyaWRnZSwgYW5kIGludGVncmF0b3IgZG9lcyBub3QgYXBwZWFyIHRvIGhhdmUgYW4g
+YWN0dWFsDQo+ICAgICBWR0EgaGFyZHdhcmUsIG9yIGxpc3QgaXQgaW4gaXRzIEFUQUcgb3Ig
+RFQuDQo+IA0KPiAgIC0gbWlwcyBoYXMgYSBmZXcgcGxhdGZvcm1zIChqYXp6LCBzaWJ5dGUs
+IGFuZCBzbmkpIHRoYXQgaW5pdGlhbGl6ZQ0KPiAgICAgc2NyZWVuX2luZm8sIG9uIGV2ZXJ5
+dGhpbmcgZWxzZSB0aGUgY29uc29sZSBpcyBzZWxlY3RlZCBidXQgY2Fubm90DQo+ICAgICBh
+Y3R1YWxseSB3b3JrLg0KPiANCj4gICAtIGNza3ksIGhleGdhZ29uLCBsb29uZ2FyY2gsIG5p
+b3MyLCByaXNjdiBhbmQgeHRlbnNhIGFyZSBub3QgbGlzdGVkDQo+ICAgICBpbiB0aGUgb3B0
+LW91dCB0YWJsZSBhbmQgZGVjbGFyZSBhIHNjcmVlbl9pbmZvIHRvIGFsbG93IGJ1aWxkaW5n
+DQo+ICAgICB2Z2FfY29uLCBidXQgdGhpcyBjYW5ub3Qgd29yayBiZWNhdXNlIHRoZSBjb25z
+b2xlIGlzIG5ldmVyIHNlbGVjdGVkLg0KPiANCj4gUmVwbGFjZSB0aGlzIHdpdGggYW4gb3B0
+LWluIHRhYmxlIHRoYXQgbGlzdHMgb25seSB0aGUgcGxhdGZvcm1zIHRoYXQNCj4gcmVtYWlu
+LiBUaGlzIGlzIGVmZmVjdGl2ZWx5IHg4NiwgcGx1cyBhIGNvdXBsZSBvZiBoaXN0b3JpYyB3
+b3Jrc3RhdGlvbg0KPiBhbmQgc2VydmVyIG1hY2hpbmVzIHRoYXQgcmV1c2VkIHBhcnRzIG9m
+IHRoZSB4ODYgc3lzdGVtIGFyY2hpdGVjdHVyZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEFy
+bmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvdmlkZW8v
+Y29uc29sZS9LY29uZmlnIHwgNiArKystLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+dmlkZW8vY29uc29sZS9LY29uZmlnIGIvZHJpdmVycy92aWRlby9jb25zb2xlL0tjb25maWcN
+Cj4gaW5kZXggYTJhODhkNDJlZGYwYy4uNDdjNDk4ZGVmYzIxMSAxMDA2NDQNCj4gLS0tIGEv
+ZHJpdmVycy92aWRlby9jb25zb2xlL0tjb25maWcNCj4gKysrIGIvZHJpdmVycy92aWRlby9j
+b25zb2xlL0tjb25maWcNCj4gQEAgLTcsOSArNyw5IEBAIG1lbnUgIkNvbnNvbGUgZGlzcGxh
+eSBkcml2ZXIgc3VwcG9ydCINCj4gICANCj4gICBjb25maWcgVkdBX0NPTlNPTEUNCj4gICAJ
+Ym9vbCAiVkdBIHRleHQgY29uc29sZSIgaWYgRVhQRVJUIHx8ICFYODYNCj4gLQlkZXBlbmRz
+IG9uICE0eHggJiYgIVBQQ184eHggJiYgIVNQQVJDICYmICFNNjhLICYmICFQQVJJU0MgJiYg
+ICFTVVBFUkggJiYgXA0KPiAtCQkoIUFSTSB8fCBBUkNIX0ZPT1RCUklER0UgfHwgQVJDSF9J
+TlRFR1JBVE9SIHx8IEFSQ0hfTkVUV0lOREVSKSAmJiBcDQo+IC0JCSFBUk02NCAmJiAhQVJD
+ICYmICFNSUNST0JMQVpFICYmICFPUEVOUklTQyAmJiAhUzM5MCAmJiAhVU1MDQo+ICsJZGVw
+ZW5kcyBvbiBBTFBIQSB8fCBJQTY0IHx8IFg4NiB8fCBcDQo+ICsJCShBUk0gJiYgQVJDSF9G
+T09UQlJJREdFKSB8fCBcDQo+ICsJCShNSVBTICYmIChNSVBTX01BTFRBIHx8IFNJQllURV9C
+Q00xMTJYIHx8IFNJQllURV9TQjEyNTAgfHwgU0lCWVRFX0JDTTF4ODAgfHwgU05JX1JNKSkN
+Cj4gICAJc2VsZWN0IEFQRVJUVVJFX0hFTFBFUlMgaWYgKERSTSB8fCBGQiB8fCBWRklPX1BD
+SV9DT1JFKQ0KPiAgIAlkZWZhdWx0IHkNCj4gICAJaGVscA0KDQotLSANClRob21hcyBaaW1t
+ZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0
+aW9ucyBHZXJtYW55IEdtYkgNCkZyYW5rZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJn
+LCBHZXJtYW55DQpHRjogSXZvIFRvdGV2LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFs
+ZCwgQm91ZGllbiBNb2VybWFuDQpIUkIgMzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
 
-It is not a device in the device model, but I am wondering if it should
-not be one actually. I discussed with Rafal about another issue in the
-current design (dependence over a layout driver which might defer
-forever a storage device probe) which might be solved if the core was
-handling these layouts differently.
+--------------2bQgjjzopkAYok3GbchMEycT--
 
-> > We recently covered a slightly new case: the NVMEM cells can be in
-> > random places in the storage devices so we need a "dynamic" way to
-> > discover them: this is the purpose of the NVMEM layouts. We know cell X
-> > is in the device, we just don't know where it is exactly at compile
-> > time, the layout driver will discover it dynamically for us at runtime.=
- =20
->=20
-> So you then create the needed device when it is found?
+--------------V2Kx07z5UT1mt9SnMBadeWbI
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-We don't create devices, but we match the layouts with the NVMEM
-devices thanks to the of_ logic.
+-----BEGIN PGP SIGNATURE-----
 
-> > While the "static cells" parser is built-in the NVMEM subsystem, you
-> > explicitly asked to have the layouts modularized. This means
-> > registering a storage device in nvmem while no layout driver has been
-> > inserted yet is now a scenario. We cannot describe any dependency
-> > between a storage device and a layout driver. We cannot defer the probe
-> > either because device drivers which don't get access to their NVMEM
-> > cell are responsible of choosing what to do (most of the time, the idea
-> > is to fallback to a default value to avoid failing the probe for no
-> > reason).
-> >=20
-> > So to answer your original question:
-> >  =20
-> > > Once a layout has been loaded, the sysfs files should show up, right?=
- =20
-> >=20
-> > No. The layouts are kind of "libraries" that the NVMEM subsystem uses
-> > to try exposing cells *when* a new device is registered in NVMEM (not
-> > later). The registration of an NVMEM layout does not trigger any new
-> > parsing, because that is not how the NVMEM subsystem was designed. =20
->=20
-> So they are a type of "class" right?  Why not just use class devices
-> then?
->=20
-> > I must emphasize that if the layout driver is installed in
-> > /lib/modules/ there is no problem, it will be loaded with
-> > usermodehelper. But if it is not, we can very well have the layout
-> > driver inserted after, and this case, while in practice possible, is
-> > irrelevant from a driver standpoint. It does not make any sense to have
-> > these cells created "after" because they are mostly used during probes.
-> > An easy workaround would be to unregister/register again the underlying
-> > storage device driver. =20
->=20
-> We really do not support any situation where a module is NOT in the
-> proper place when device discovery happens.
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTJOQ4FAwAAAAAACgkQlh/E3EQov+C8
+AA/+KnRDuYQRR/mF98DBfmrHT5Ia6xQSG3uvFuQDrbaKBsjqD2QXy1PNFOGyjSmDdFvEkQgLUEF0
+pU8EoGE0mG7m//BybV/hRDjLmylbBIjgjv4uzYT6sQQ2HFgJe5bhU+lTUJ7ou5S72bFvVbrsU2ed
+7ZJth7Gg/0ISIuQ+YvMlNOubgolEVWpb3vv4iFOMwf/Z8OtmWhXe0hae/PhUtJgtGGpDA22NQMWw
+C8Xgy4sj+oDLHOGKljPDTYphn2wnbBHbniQB6+16mkaCbC0jj83h0aglF3doR5+VtsqJlulUGw2L
+o1Da2b1fj6gNd4j+nUCihbmBjEoyW6Z92ObBaIRPJ6mXGHPylW1ilH9TFvvRqzlgngckgNPN2b5y
+P+mLTquYg1QI2DOue03EH+hs4ENNC8UeIJsAAtk8qtN9U/SsKfRgKn04/PG2zkT1NvB68nfm34g4
+B30CeLIVUSrAPt9s3veG6GovLraSTf4jznRAVXrXwB9AxqRexyVN02g7hXqsBgK/OIyyjd81rvyj
+lzzyMjwCnSnHktiLvoS3Chej5vW3kCLbayrLgkGMbztNuD8bbQgaFYtzqMJ+cBF7xKWNq5Ebx3zc
+SQb+HvTRbdT/2HsCEwaJILuWF9xcbkMMk2yJykvBFCmd9JfOZT55CMp27lyUlKqsMy8nYyV+HyZH
+HMA=
+=PJsE
+-----END PGP SIGNATURE-----
 
-Great, I didn't know. Then there is no issue.
-
->  So this shouldn't be an
-> issue, yet you all mention it?  So how is it happening?
-
-Just transparency, I'm giving all details I can.
-
-I'll try to come with something slightly different than what we have
-with the current approach.
-
-Thanks,
-Miqu=C3=A8l
+--------------V2Kx07z5UT1mt9SnMBadeWbI--
