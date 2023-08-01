@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5320F76A71F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B7976A728
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjHACnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38294 "EHLO
+        id S230345AbjHACp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjHACnk (ORCPT
+        with ESMTP id S229632AbjHACpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:43:40 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A3C10C3;
-        Mon, 31 Jul 2023 19:43:39 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 65FF2612CA;
-        Tue,  1 Aug 2023 02:43:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9319AC433C8;
-        Tue,  1 Aug 2023 02:43:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690857818;
-        bh=n4dsEw0hO1hhcpvbUzRfjMJlHkCbxkrsloRNUT6H/t4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=akFDDuctuT3hHiEMB/+rQBPuCORBi0BotJ2zv0hr8+Wuk4y98aTP6CmXMw6z7tc8v
-         EL423fcpqi+iEBQYH7tcO8+SIRVpRo2F+x2CsiEQDr2AnrnBEbzBqkiq/IH4MqOrkQ
-         17mCW9HJ70Mwb+iISagAUZix/g5dHrWRvX/XuRkUOrhstxgByzP5dnkbHVBByl5L1R
-         CsPlzcwctPldJb77u/+Cs4VNzfoTovj+QB8JJOKxmmhnNePn83SFgoiv6UzPIcMun4
-         3b4YyJoT8mG8OQ6xCNaVS0iGqWPhvOWyFQRjgGGsgTLZkzSm05xdpXa+4+/tAhmY6m
-         gFrcg2qMBADWg==
-Date:   Mon, 31 Jul 2023 19:43:36 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Hwang <hffilwlqm@gmail.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, hawk@kernel.org,
-        rostedt@goodmis.org, mhiramat@kernel.org, mykolal@fb.com,
-        shuah@kernel.org, tangyeechou@gmail.com, kernel-patches-bot@fb.com,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next v4 1/2] bpf, xdp: Add tracepoint to xdp
- attaching failure
-Message-ID: <20230731194336.5b4bd065@kernel.org>
-In-Reply-To: <20230730114951.74067-2-hffilwlqm@gmail.com>
-References: <20230730114951.74067-1-hffilwlqm@gmail.com>
-        <20230730114951.74067-2-hffilwlqm@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 22:45:23 -0400
+Received: from out28-3.mail.aliyun.com (out28-3.mail.aliyun.com [115.124.28.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360081FF5
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:44:57 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1403262|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0171721-0.000360176-0.982468;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5HG1hv_1690857889;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5HG1hv_1690857889)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 10:44:51 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in vega10_baco.c
+Date:   Tue,  1 Aug 2023 02:44:48 +0000
+Message-Id: <20230801024448.4848-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
+        UPPERCASE_50_75 autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 30 Jul 2023 19:49:50 +0800 Leon Hwang wrote:
-> @@ -9472,6 +9473,7 @@ int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->  	struct bpf_link_primer link_primer;
->  	struct bpf_xdp_link *link;
->  	struct net_device *dev;
-> +	struct netlink_ext_ack extack;
+Fix the following errors reported by checkpatch:
 
-This is not initialized. Also, while fixing that, move it up 
-to maintain the line order by decreasing line length.
+ERROR: that open brace { should be on the previous line
+ERROR: space required after that ',' (ctx:VxV)
+ERROR: space prohibited before that ',' (ctx:WxV)
 
->  	int err, fd;
->  
->  	rtnl_lock();
-> @@ -9497,12 +9499,13 @@ int bpf_xdp_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->  		goto unlock;
->  	}
->  
-> -	err = dev_xdp_attach_link(dev, NULL, link);
-> +	err = dev_xdp_attach_link(dev, &extack, link);
->  	rtnl_unlock();
->  
->  	if (err) {
->  		link->dev = NULL;
->  		bpf_link_cleanup(&link_primer);
-> +		trace_bpf_xdp_link_attach_failed(extack._msg);
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ .../drm/amd/pm/powerplay/hwmgr/vega10_baco.c  | 26 ++++++++-----------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_baco.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_baco.c
+index 46bb16c29cf6..6836e98d37be 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_baco.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_baco.c
+@@ -31,24 +31,22 @@
+ 
+ 
+ 
+-static const struct soc15_baco_cmd_entry  pre_baco_tbl[] =
+-{
++static const struct soc15_baco_cmd_entry  pre_baco_tbl[] = {
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBIF_DOORBELL_CNTL), BIF_DOORBELL_CNTL__DOORBELL_MONITOR_EN_MASK, BIF_DOORBELL_CNTL__DOORBELL_MONITOR_EN__SHIFT, 0, 1},
+ 	{CMD_WRITE, SOC15_REG_ENTRY(NBIF, 0, mmBIF_FB_EN), 0, 0, 0, 0},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_DSTATE_BYPASS_MASK, BACO_CNTL__BACO_DSTATE_BYPASS__SHIFT, 0, 1},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_RST_INTR_MASK_MASK, BACO_CNTL__BACO_RST_INTR_MASK__SHIFT, 0, 1}
+ };
+ 
+-static const struct soc15_baco_cmd_entry enter_baco_tbl[] =
+-{
++static const struct soc15_baco_cmd_entry enter_baco_tbl[] = {
+ 	{CMD_WAITFOR, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__SOC_DOMAIN_IDLE_MASK, THM_BACO_CNTL__SOC_DOMAIN_IDLE__SHIFT, 0xffffffff, 0x80000000},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_EN_MASK, BACO_CNTL__BACO_EN__SHIFT, 0, 1},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_BIF_LCLK_SWITCH_MASK, BACO_CNTL__BACO_BIF_LCLK_SWITCH__SHIFT, 0, 1},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_DUMMY_EN_MASK, BACO_CNTL__BACO_DUMMY_EN__SHIFT, 0, 1},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_SOC_VDCI_RESET_MASK, THM_BACO_CNTL__BACO_SOC_VDCI_RESET__SHIFT, 0, 1},
+-	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_SMNCLK_MUX_MASK, THM_BACO_CNTL__BACO_SMNCLK_MUX__SHIFT,0, 1},
++	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_SMNCLK_MUX_MASK, THM_BACO_CNTL__BACO_SMNCLK_MUX__SHIFT, 0, 1},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_ISO_EN_MASK, THM_BACO_CNTL__BACO_ISO_EN__SHIFT, 0, 1},
+-	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_AEB_ISO_EN_MASK, THM_BACO_CNTL__BACO_AEB_ISO_EN__SHIFT,0, 1},
++	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_AEB_ISO_EN_MASK, THM_BACO_CNTL__BACO_AEB_ISO_EN__SHIFT, 0, 1},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_ANA_ISO_EN_MASK, THM_BACO_CNTL__BACO_ANA_ISO_EN__SHIFT, 0, 1},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_SOC_REFCLK_OFF_MASK,     THM_BACO_CNTL__BACO_SOC_REFCLK_OFF__SHIFT, 0, 1},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_POWER_OFF_MASK, BACO_CNTL__BACO_POWER_OFF__SHIFT, 0, 1},
+@@ -58,13 +56,12 @@ static const struct soc15_baco_cmd_entry enter_baco_tbl[] =
+ 	{CMD_WAITFOR, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_MODE_MASK, BACO_CNTL__BACO_MODE__SHIFT, 0xffffffff, 0x100}
+ };
+ 
+-static const struct soc15_baco_cmd_entry exit_baco_tbl[] =
+-{
++static const struct soc15_baco_cmd_entry exit_baco_tbl[] = {
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_POWER_OFF_MASK, BACO_CNTL__BACO_POWER_OFF__SHIFT, 0, 0},
+-	{CMD_DELAY_MS, 0, 0, 0, 0, 0, 0, 10,0},
+-	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_SOC_REFCLK_OFF_MASK, THM_BACO_CNTL__BACO_SOC_REFCLK_OFF__SHIFT, 0,0},
++	{CMD_DELAY_MS, 0, 0, 0, 0, 0, 0, 10, 0},
++	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_SOC_REFCLK_OFF_MASK, THM_BACO_CNTL__BACO_SOC_REFCLK_OFF__SHIFT, 0, 0},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_ANA_ISO_EN_MASK, THM_BACO_CNTL__BACO_ANA_ISO_EN__SHIFT, 0, 0},
+-	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_AEB_ISO_EN_MASK, THM_BACO_CNTL__BACO_AEB_ISO_EN__SHIFT,0, 0},
++	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_AEB_ISO_EN_MASK, THM_BACO_CNTL__BACO_AEB_ISO_EN__SHIFT, 0, 0},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_ISO_EN_MASK, THM_BACO_CNTL__BACO_ISO_EN__SHIFT, 0, 0},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_PWROKRAW_CNTL_MASK, THM_BACO_CNTL__BACO_PWROKRAW_CNTL__SHIFT, 0, 1},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_SMNCLK_MUX_MASK, THM_BACO_CNTL__BACO_SMNCLK_MUX__SHIFT, 0, 0},
+@@ -74,13 +71,12 @@ static const struct soc15_baco_cmd_entry exit_baco_tbl[] =
+ 	{CMD_WAITFOR, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_EXIT_MASK, 0, 0xffffffff, 0},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(THM, 0, mmTHM_BACO_CNTL), THM_BACO_CNTL__BACO_SB_AXI_FENCE_MASK, THM_BACO_CNTL__BACO_SB_AXI_FENCE__SHIFT, 0, 0},
+ 	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_DUMMY_EN_MASK, BACO_CNTL__BACO_DUMMY_EN__SHIFT,  0, 0},
+-	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_BIF_LCLK_SWITCH_MASK ,BACO_CNTL__BACO_BIF_LCLK_SWITCH__SHIFT, 0, 0},
+-	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_EN_MASK , BACO_CNTL__BACO_EN__SHIFT, 0,0},
++	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_BIF_LCLK_SWITCH_MASK, BACO_CNTL__BACO_BIF_LCLK_SWITCH__SHIFT, 0, 0},
++	{CMD_READMODIFYWRITE, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_EN_MASK, BACO_CNTL__BACO_EN__SHIFT, 0, 0},
+ 	{CMD_WAITFOR, SOC15_REG_ENTRY(NBIF, 0, mmBACO_CNTL), BACO_CNTL__BACO_MODE_MASK, 0, 0xffffffff, 0}
+  };
+ 
+-static const struct soc15_baco_cmd_entry clean_baco_tbl[] =
+-{
++static const struct soc15_baco_cmd_entry clean_baco_tbl[] = {
+ 	{CMD_WRITE, SOC15_REG_ENTRY(NBIF, 0, mmBIOS_SCRATCH_6), 0, 0, 0, 0},
+ 	{CMD_WRITE, SOC15_REG_ENTRY(NBIF, 0, mmBIOS_SCRATCH_7), 0, 0, 0, 0},
+ };
+-- 
+2.17.1
+
