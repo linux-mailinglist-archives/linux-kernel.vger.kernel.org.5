@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2230A76AB39
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A05F176AB3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbjHAIkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
+        id S231980AbjHAIlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbjHAIkp (ORCPT
+        with ESMTP id S231940AbjHAIlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:40:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB1F10E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:40:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E768561499
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:40:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D055AC433C8;
-        Tue,  1 Aug 2023 08:40:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690879241;
-        bh=ZvBLYBeZn76K2qP99PMw2nICTG1lNnfIlsFyKhUr5UM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kx/FFC3qDDaNoUrqn9xHxCVzKxLdSVnJLGuQZUKVeiRUrn2FarZIOv0XcethkOSrR
-         OTd2S/rYLXNpV5yJaFerwWZ2VAUckLe5vt9L/rIfNFKsaocXeFuEHcsfk2cKuCjmvw
-         tgF0jXzmLBMeHU9dzfGZ05hUXwZ3A21EbL6MA0H4=
-Date:   Tue, 1 Aug 2023 10:40:38 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Gangurde, Abhijit" <abhijit.gangurde@amd.com>
-Cc:     "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Simek, Michal" <michal.simek@amd.com>,
-        "git (AMD-Xilinx)" <git@amd.com>,
-        "Agarwal, Nikhil" <nikhil.agarwal@amd.com>,
-        "Gupta, Nipun" <Nipun.Gupta@amd.com>
-Subject: Re: [PATCH v2 1/4] cdx: Introduce lock to protect controller ops and
- controller list
-Message-ID: <2023080105-eggnog-probably-9ff3@gregkh>
-References: <20230731120813.123247-1-abhijit.gangurde@amd.com>
- <20230731120813.123247-2-abhijit.gangurde@amd.com>
- <2023073148-carried-unshaved-77e4@gregkh>
- <DM4PR12MB7765398763E00B565AB1C6DB8F0AA@DM4PR12MB7765.namprd12.prod.outlook.com>
+        Tue, 1 Aug 2023 04:41:14 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB26D10FE;
+        Tue,  1 Aug 2023 01:41:07 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9bf52cd08so82445661fa.2;
+        Tue, 01 Aug 2023 01:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690879266; x=1691484066;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fEDttWqgK0CFKCWb2NcBurYWAnq5TrPHr/6xcJLjutQ=;
+        b=JmTFmA/YwVf47WGQzgGNC9Gx2CdqnxgNkk6BJi/OVBNaULhsSmi2x3Jvs7ZplJjAwM
+         ypvMQDX5HWHnKwcQ+/XV+dnvaNL+pvtqYjC5KrKANuSkIYgZ9G4Xza0bNQF1hq3+Vcp9
+         wcLoiajHTwANqrXpV7M1yZa/+1/WWdIW7gXuW4YAXxBsanf7mPrll6cidJQ0pJ1eMCkD
+         W1CEIGvZeEHlcbYNVju3/FKKEC9cqwqJz1hIRrgQZeb7LbSWYV8BeAtNMPg0/YkxPPZ6
+         G+ctwUMYFMSx9T6PLHB7HNiY9XTDYB0/4UDlOq42vEhzHc/cUhMXYNsZbwTEY8q/Br5/
+         Ah9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690879266; x=1691484066;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fEDttWqgK0CFKCWb2NcBurYWAnq5TrPHr/6xcJLjutQ=;
+        b=RDQi7l2rOND2f2mSKnMRWZdmRjqbGOu2ZAEXZA0hsdS9feodgZuhfCsPaKFNbiS9Qv
+         NwhYGTPIdL6h1TgOPhspVeCFdYjwirEyJvWb/znqEMWb3b/3+QijU+cW+1tH6seZl+CR
+         vjZrg0KB7Pu+sgSoUAD25tAWF60HiDPo17OIZX/z2h5kJLeAdT/BkCgIUKyj/2I5apc5
+         lZxLXc21Zw22IFRJ1QF7KPjGJZWN97pt+FwjiRYYa1aEZYFI+H2Kb2BnVwOGrtM3aoYM
+         dyht7N7Ua1HxilmJdPHVbhM6WdaZFMzmTHFpvXzW2KHQmJFqpwtUON6Xk1WkMbR01YMf
+         htMg==
+X-Gm-Message-State: ABy/qLbQwn6JRKEXUh+e4zLmFwPVOJs9uSwJnK1UhMqNpYvENMq97luy
+        mWfLu8eD8Y0lWJw1mT47Ofw/m3pWzMm5qK6efko=
+X-Google-Smtp-Source: APBJJlHigaiD/soq+foL/ueHdSCoL9kwM9uOiteOXtMYbntsGWOD4BdKieuCUt+o8fwYXw0uO3/Sy5quE1gVN+fCcDI=
+X-Received: by 2002:a2e:8ec3:0:b0:2b6:e12f:267 with SMTP id
+ e3-20020a2e8ec3000000b002b6e12f0267mr1845557ljl.5.1690879265602; Tue, 01 Aug
+ 2023 01:41:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM4PR12MB7765398763E00B565AB1C6DB8F0AA@DM4PR12MB7765.namprd12.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20230727202126.1477515-1-iwona.winiarska@intel.com> <20230727202126.1477515-4-iwona.winiarska@intel.com>
+In-Reply-To: <20230727202126.1477515-4-iwona.winiarska@intel.com>
+From:   Tomer Maimon <tmaimon77@gmail.com>
+Date:   Tue, 1 Aug 2023 11:40:54 +0300
+Message-ID: <CAP6Zq1hh_wr81L4vtYDct69rrqdSrxjap9-uZfvmt0xMvrfRJQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] ARM: dts: nuvoton: Add PECI controller node
+To:     Iwona Winiarska <iwona.winiarska@intel.com>
+Cc:     openbmc@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 08:34:00AM +0000, Gangurde, Abhijit wrote:
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > Sent: Monday, July 31, 2023 5:55 PM
-> > To: Gangurde, Abhijit <abhijit.gangurde@amd.com>
-> > Cc: masahiroy@kernel.org; linux-kernel@vger.kernel.org; Simek, Michal
-> > <michal.simek@amd.com>; git (AMD-Xilinx) <git@amd.com>; Agarwal, Nikhil
-> > <nikhil.agarwal@amd.com>; Gupta, Nipun <Nipun.Gupta@amd.com>
-> > Subject: Re: [PATCH v2 1/4] cdx: Introduce lock to protect controller ops and
-> > controller list
-> > 
-> > On Mon, Jul 31, 2023 at 05:38:10PM +0530, Abhijit Gangurde wrote:
-> > > Add a mutex lock to prevent race between controller ops initiated by
-> > > the bus subsystem and the controller registration/unregistration.
-> > >
-> > > Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
-> > > ---
-> > >  drivers/cdx/cdx.c | 14 ++++++++++++++
-> > >  1 file changed, 14 insertions(+)
-> > >
-> > > diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
-> > > index d2cad4c670a0..66797c8fe400 100644
-> > > --- a/drivers/cdx/cdx.c
-> > > +++ b/drivers/cdx/cdx.c
-> > > @@ -72,6 +72,8 @@
-> > >
-> > >  /* CDX controllers registered with the CDX bus */
-> > >  static DEFINE_XARRAY_ALLOC(cdx_controllers);
-> > > +/* Lock to protect controller ops and controller list */
-> > > +static DEFINE_MUTEX(cdx_controller_lock);
-> > 
-> > Wait, why do you have a local list and not just rely on the list the
-> > driver core has for you already?  Isn't this a duplicate list where you
-> > have objects on two different lists with a lifespan controlled only by
-> > one of them?
-> 
-> cdx_controllers list is holding just the controllers registered on the cdx bus system.
+Hi Iwona,
 
-Which are devices on the bus, so why do you need a separate list?
+I have done r-b, Just could you do a small modification
 
-> CDX devices are still maintained by driver core list. Controller list is used by rescan
-> which triggers rescan on all the controllers.
+On Thu, 27 Jul 2023 at 23:23, Iwona Winiarska <iwona.winiarska@intel.com> wrote:
+>
+> Add PECI controller node with all required information.
+>
+> Signed-off-by: Iwona Winiarska <iwona.winiarska@intel.com>
+> ---
+>  arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
+> index c7b5ef15b716..cccc33441050 100644
+> --- a/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
+> +++ b/arch/arm/boot/dts/nuvoton/nuvoton-common-npcm7xx.dtsi
+> @@ -220,6 +220,15 @@ kcs3: kcs3@0 {
+>                                 };
+>                         };
+>
+> +                       peci0: peci-controller@f0100000 {
+Please modify the peci0 to peci we have only one PECI controller.
+> +                               compatible = "nuvoton,npcm750-peci";
+> +                               reg = <0xf0100000 0x200>;
+> +                               interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
+> +                               clocks = <&clk NPCM7XX_CLK_APB3>;
+> +                               cmd-timeout-ms = <1000>;
+> +                               status = "disabled";
+> +                       };
+> +
+>                         spi0: spi@200000 {
+>                                 compatible = "nuvoton,npcm750-pspi";
+>                                 reg = <0x200000 0x1000>;
+> --
+> 2.40.1
+>
 
-Again, why a separate list?  The driver core already tracks these,
-right?
+Reviewed-by: Tomer Maimon <tmaimon77@gmail.com>
 
-thanks,
+Thanks,
 
-greg k-h
+Tomer
