@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D491776BF05
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953A276BF08
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbjHAVL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
+        id S229703AbjHAVMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:12:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232055AbjHAVLw (ORCPT
+        with ESMTP id S232051AbjHAVL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:11:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89087E67;
-        Tue,  1 Aug 2023 14:11:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 076EC61719;
-        Tue,  1 Aug 2023 21:11:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08120C433C7;
-        Tue,  1 Aug 2023 21:11:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690924301;
-        bh=zx03PjfgY07UCKTT9D+a57aqd3/g+SVsstHgr2BvJBk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=sblLoR3kQGCtNkxVEW+NLWBgyfNJOVLJD1dqEJzGWiDAlpPajGeOX+9YR66py8GlS
-         h3+TDJG7WbJ9qG/Vw3xavRlmqLqqhDxttl+YTfpqpGBQPE5Uk8MWl1s9nQVlmX/ecK
-         snTPWPFHsvdLkqenjmJ/F5htbfdTu42CyWxG5Ls3RNfeXWnndeA36mJZ1DE81y9b11
-         ts1SLqVvDfbVQjjJ5ZWAoYjhJ/y4RcD+MavMdz7psXxnvkAfpfH5DIdcLqD37FmAfh
-         mH31ki9VoGdMte6bBBOingw7G3PxdVuSlVSc7g0D+rwjb/AjP5mcPDVl4xRSK9WvwH
-         x35MKBUb9+5Nw==
-Date:   Tue, 1 Aug 2023 16:11:39 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 1/4] kernel.h: Split out COUNT_ARGS() and
- CONCATENATE() to args.h
-Message-ID: <20230801211139.GA51676@bhelgaas>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230718211147.18647-2-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        Tue, 1 Aug 2023 17:11:58 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D9B2110;
+        Tue,  1 Aug 2023 14:11:53 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-40fd276621aso9462211cf.2;
+        Tue, 01 Aug 2023 14:11:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690924313; x=1691529113;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a3zhuV25N+sKl5MeQNDP3GSv+2aK6nHaXNUe9w7Bzhg=;
+        b=QAdnD5dDVzuHGTWPgk+NokNBjRSI0MQVV2bIyVShEg+sHhvL/Im5L2WAOTt3B7+GJU
+         Jwr5VyVI7TNqXQopiGLXsS8Xu6SxysqIAHxsynfEd+HgXpEw//gltw0ahYvc0D0mMNrj
+         GqjxTb9vWZL2s+KLk2rioDTV2lvg5lFVniqjGac1+XJaAee9C747dFEggtPW0S/DjllT
+         p+S9MlwnzxVt0mFfNdBlZmlExTxDn9tupzCw/2HZkVZKsSfHHz3V4NQy7gdjuBhA8tbW
+         RZJ1ofCxrjyoxZ8Cu1mYQW3np/HIQuD+KQFDZjAYpdHRkCrIokw1w7Pu/xPB7mWgGV/z
+         Mm8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690924313; x=1691529113;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=a3zhuV25N+sKl5MeQNDP3GSv+2aK6nHaXNUe9w7Bzhg=;
+        b=j4TVP5SkGX3BHaPhc8V9cssVE+dWjFM7N+HmkbmsBEzFylVgYgr1jM4yRnnfxoaZk/
+         Jd4VTHrGdpbW6qedI9GF8biEcLabkIl6IaxiHyMvTD45iyuI0rmS/n0J9V5W9dfPnAFs
+         W6Az1dIELA6vQgzz03Y3G4t8OyNJLMcTtu6uyshZlHWKBg5lz1cVL4BvWLO9boXw+AxG
+         gsL46WOOdNrz8/aRQG0LzyL0PGJfZRFE765M8wykOZkf/v7EajyI8bdLUykrbzbPkIsm
+         g9YWnbqvUeeNnjRQ9HzprH2JQJBbfD6AheN5Pij5Rlu6Zk3d9woek9BO4dp2BIA9Xqxf
+         Sd/g==
+X-Gm-Message-State: ABy/qLalBC38zPnqf4zxVabtQDwYaeR0lH6Yt/oJfxCDXgNQJIrk2bOR
+        nX5k7Vm4bgUjHRRsClyPsqs=
+X-Google-Smtp-Source: APBJJlFn+X3tW+qdknM5FvgQu6Ze7KHGA3P8xvhRqR6rSXj3+EjRSESXRAxSIoF4UovrhBFcuRHrCA==
+X-Received: by 2002:a05:622a:1aa5:b0:40c:21b2:4090 with SMTP id s37-20020a05622a1aa500b0040c21b24090mr15099218qtc.56.1690924312729;
+        Tue, 01 Aug 2023 14:11:52 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id gx7-20020a05622a27c700b0040f200feb4fsm2117213qtb.80.2023.08.01.14.11.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 14:11:50 -0700 (PDT)
+Date:   Tue, 01 Aug 2023 17:11:49 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     David Howells <dhowells@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
+        syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com,
+        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Message-ID: <64c975155d6f3_1d4d6f2941e@willemb.c.googlers.com.notmuch>
+In-Reply-To: <1501753.1690920713@warthog.procyon.org.uk>
+References: <64c93109c084e_1c5e3529452@willemb.c.googlers.com.notmuch>
+ <1420063.1690904933@warthog.procyon.org.uk>
+ <1501753.1690920713@warthog.procyon.org.uk>
+Subject: Re: [PATCH net] udp: Fix __ip_append_data()'s handling of
+ MSG_SPLICE_PAGES
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,33 +82,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 19, 2023 at 12:11:44AM +0300, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> The COUNT_ARGS() and CONCATENATE() macros may be used in some places
-> without need of the full kernel.h dependency train with it.
+David Howells wrote:
+> Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
 > 
-> Here is the attempt on cleaning it up by splitting out these macros().
+> > __ip6_append_data probably needs the same.
 > 
-> While at it, include new header where it's being used.
+> Now that's interesting.  __ip6_append_data() has a check for this and returns
+> -EINVAL in this case:
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> 		copy = datalen - transhdrlen - fraggap - pagedlen;
+> 		if (copy < 0) {
+> 			err = -EINVAL;
+> 			goto error;
+> 		}
+> 
+> but should I bypass that check for MSG_SPLICE_PAGES?  It hits the check when
+> it should be able to get past it.  The code seems to go back to prehistoric
+> times, so I'm not sure why it's there.
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>	# PCI
+Argh, saved by inconsistency between the two stacks.
 
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 0ff7500772e6..eeb2e6f6130f 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -23,7 +23,7 @@
->  #ifndef LINUX_PCI_H
->  #define LINUX_PCI_H
->  
-> -
-> +#include <linux/args.h>
->  #include <linux/mod_devicetable.h>
->  
->  #include <linux/types.h>
+I don't immediately understand the race that caused this code to move,
+in commit 232cd35d0804 ("ipv6: fix out of bound writes in __ip6_append_data()").
+Maybe a race with a mtu update?
 
-If there's not a reason otherwise, I'd put this in the main list
-instead of the weirdly separated mod_devicetable.h.
+Technically there is no Fixes tag to apply, so this would not be a fix
+for net.
+
+If we want equivalent behavior, a patch removing this branch is probably
+best sent to net-next, in a way that works from the start.
