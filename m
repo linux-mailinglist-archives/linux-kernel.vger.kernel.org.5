@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 369F976B445
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9834076B448
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234478AbjHAMCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
+        id S231566AbjHAMDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234498AbjHAMCE (ORCPT
+        with ESMTP id S232623AbjHAMDe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:02:04 -0400
+        Tue, 1 Aug 2023 08:03:34 -0400
 Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0371C449D;
-        Tue,  1 Aug 2023 05:01:09 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe216edaf7so4862283e87.0;
-        Tue, 01 Aug 2023 05:01:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DA21BD3;
+        Tue,  1 Aug 2023 05:02:53 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe463420fbso828504e87.3;
+        Tue, 01 Aug 2023 05:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690891265; x=1691496065;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B0LjPdjjc4ZMKtqm7lOFvAlr5b1k31FiFS89qat9F8E=;
-        b=eWYh/cUys2QzHEjwByAFe+4BypeE4zktjixesBwnezhhHPfzCGxcE69Sy1+S0JBLGM
-         VfenZn1nm9R1Cq9WV/4H4SuKcJfd0I2lT1Fd2UFb4cAuo7GvK0FJzWsov3r5wdo7pSnj
-         GVBCaO/rk5/O4zdI9FKoRW5hwagE4yFByZ7gXs98hAnCUlbM+AjhgDbAoDHyLehwCUX2
-         QXYDkOSwu5UquWWPs2oHn6vJJV0Q3wlku2Stwq8rPu+f1ZIzIDRFEIrqOCF4JG2ATewW
-         RxIAbSVweepFELcR7pBWI9/PtlLVTBtZfU1nQHUJaWJZmJlUHOn+Cp014ikdbwTjOnVz
-         fJqA==
+        d=gmail.com; s=20221208; t=1690891371; x=1691496171;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=T9RO8UlUTwn3hEH6HK6IaUASxewRiScP6UARVCA4DwU=;
+        b=CbTbEjkuDxtAWmuAnL+js8Un7DPuDyWVGzTLIvCt+LmXDumdE5C361SA3H6RwvCDq5
+         9EZq9crd6VtY7h7ZN08wKKdeIo+2jQI4CplVbieLrZwXGJstsKWvoMhwm07IP6HMYH3Y
+         3ksD8VpUghrQlGDRFY5t8m3/3+WCGC1yzT5Gc1zFF9Z00Ixn5RjbQp2QI10KldX9Nthy
+         vs12jUes6M9QTiGFlpIfSQsw1DAQe4yoxhvdQRzsPBBNZNccwiHXxixQUJV8DqQ6pMqd
+         GawK7CF7/pAySWm8Ny8u6sUKy9tgvswndlcGhU66iYdSNUxWb3U4xTatoofjMwZ+OraE
+         E1eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690891265; x=1691496065;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=B0LjPdjjc4ZMKtqm7lOFvAlr5b1k31FiFS89qat9F8E=;
-        b=Nwg6fxRKQR/TgUJYsKcOjLFlEBVmkuI7S/iisbg6EX4ZfPubLpY9oIclcjCe2NbHhB
-         BHpkv2n6G9glg6+SOqt2nr+l32gRTNPAfW1XoKjRA4N7vtDxbBjgW9AL2yLeUO3FgItq
-         QNQW6+9Y+4UkX/YKINZsazPu7sznCw55LhZaE6KR6+VJMMJ4Sl4hip1KSJSQW0fz+Yrx
-         vaQCLyzoQonCeKKxAkTXeYRui9Is6Ym+c/7V0FL3qUfXwPoefTbA3NtkJHvD2vJ7rAlY
-         Jeatn66bL88vkpO3sfjnL3lHSl78Hhr/4r6f/u1y222kXaaktINfTdENv3S3t5qG7+On
-         TTLw==
-X-Gm-Message-State: ABy/qLbT8x3xN3VVExf5S6ZeOj0CswAV5B1cPVxTI7uIsZfX9wXCGyyV
-        4uMmeOgEk1kUKGN3LivRh3Q=
-X-Google-Smtp-Source: APBJJlHL4GqflpupMzaWBM7H2XZV1jRjRXbT87fu1NbZ8XZ2KVgP10+16KOTPj7YJAZIvQ4uvQXMSg==
-X-Received: by 2002:a05:6512:2010:b0:4fe:3724:fdb6 with SMTP id a16-20020a056512201000b004fe3724fdb6mr944608lfb.30.1690891264259;
-        Tue, 01 Aug 2023 05:01:04 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690891371; x=1691496171;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T9RO8UlUTwn3hEH6HK6IaUASxewRiScP6UARVCA4DwU=;
+        b=Uy7AHi0LxymaXhRmlS2VFRMgRCb9XxlqKZEE28J9YBte7QcKnkDS36naP/GFHPk8nq
+         Xsk33BMaJZU6gCZ7cvGpMVPZVT1HikELLv0TO5IiCUEC2m3KU3bNANA7KmrF+5xIYcap
+         6mAfSsjR4kzB3pw78YuxtdSP4dDxvI7XX9japHNDUtg+/SdCk8gCiGUexVXMG4K+VoDU
+         jPZ1D4JK9MLRhaSVls7kMHVwNEKl5/8ynHuTgGxc6bu/XbeLXdgLUdW4N3inxT5NS8nl
+         9qK2ykawn0uMvd++UBgU4OqgFqW1bucn5G59C/1CVHkgQMlT92LLOR13DEjkayiSVsby
+         T0mw==
+X-Gm-Message-State: ABy/qLZeIH+Mcz0mnkbIZwI204WUrz+RNJ+OXTdZzfrN0mc2sJoUjuwv
+        C5D9LFqYUrhipIaOK1fmaOc=
+X-Google-Smtp-Source: APBJJlH8k9qQDQnZ1nYtZrLLCdpwDqVmgDOxZJZlv3w36+eJv3zO0GNAVNtA6sXmOPXeQ9WKGgsJkg==
+X-Received: by 2002:a05:6512:1141:b0:4fe:4f8:8e75 with SMTP id m1-20020a056512114100b004fe04f88e75mr2039371lfg.68.1690891371256;
+        Tue, 01 Aug 2023 05:02:51 -0700 (PDT)
 Received: from fedora ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id j15-20020ac2550f000000b004fe432108aesm368553lfk.261.2023.08.01.05.01.02
+        by smtp.gmail.com with ESMTPSA id d12-20020a05651221cc00b004f4b42e2d7dsm2518784lft.230.2023.08.01.05.02.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 05:01:03 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 15:00:51 +0300
+        Tue, 01 Aug 2023 05:02:50 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 15:02:47 +0300
 From:   Matti Vaittinen <mazziesaccount@gmail.com>
 To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Marcin Wojtas <mw@semihalf.com>, netdev@vger.kernel.org,
-        Andreas Klinger <ak@it-klinger.de>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, Wolfram Sang <wsa@kernel.org>,
-        Eric Dumazet <edumazet@google.com>, linux-i2c@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
         Michael Hennerich <Michael.Hennerich@analog.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH v8 0/8] fix fwnode_irq_get[_byname()] returnvalue
-Message-ID: <cover.1690890774.git.mazziesaccount@gmail.com>
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v8 2/8] iio: cdc: ad7150: relax return value check for IRQ get
+Message-ID: <3ad1c6f195ead3dfa8711235e1dead139d27f700.1690890774.git.mazziesaccount@gmail.com>
+References: <cover.1690890774.git.mazziesaccount@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hQsyJyfrnR1cLwNR"
+        protocol="application/pgp-signature"; boundary="KY2dqMcsNm14XP28"
 Content-Disposition: inline
+In-Reply-To: <cover.1690890774.git.mazziesaccount@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -85,136 +76,84 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---hQsyJyfrnR1cLwNR
+--KY2dqMcsNm14XP28
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-The fwnode_irq_get() and the fwnode_irq_get_byname() may have returned
-zero if mapping the IRQ fails. This contradicts the
-fwnode_irq_get_byname() documentation. Furthermore, returning zero or
-errno on error is unepected and can easily lead to problems
-like:
+fwnode_irq_get[_byname]() were changed to not return 0 anymore. The
+special error case where device-tree based IRQ mapping fails can't no
+longer be reliably detected from this return value. This yields a
+functional change in the driver where the mapping failure is treated as
+an error.
 
-int probe(foo)
-{
-=2E..
-	ret =3D fwnode_irq_get_byname(...);
-	if (ret < 0)
-		return ret;
-=2E..
-}
+The mapping failure can occur for example when the device-tree IRQ
+information translation call-back(s) (xlate) fail, IRQ domain is not
+found, IRQ type conflicts, etc. In most cases this indicates an error in
+the device-tree and special handling is not really required.
 
-or
+One more thing to note is that ACPI APIs do not return zero for any
+failures so this special handling did only apply on device-tree based
+systems.
 
-int probe(foo)
-{
-=2E..
-	ret =3D fwnode_irq_get_byname(...);
-	if (ret <=3D 0)
-		return ret;
-=2E..
-}
+Drop the special handling for DT mapping failures as these can no longer
+be separated from other errors at driver side. Change all failures in
+IRQ getting to be handled by continuing without the events instead of
+aborting the probe upon certain errors.
 
-which are both likely to be wrong. First treats zero as successful call and
-misses the IRQ mapping failure. Second returns zero from probe even though
-it detects the IRQ mapping failure correvtly.
-
-Thus the fwnode_irq_get() and the fwnode_irq_get_byname() were changed to
-always return a negative errno upon failure.
-
-https://lore.kernel.org/all/fb7241d3-d1d1-1c37-919b-488d6d007484@gmail.com/
-
-This is a clean-up patch to adjust callers. Please note that callers
-were audited based on v6.4-rc2:
-
-fwnode_irq_get_byname():
-drivers/i2c/i2c-smbus.c
-drivers/iio/accel/adxl355_core.c
-drivers/iio/accel/kionix-kx022a.c
-drivers/iio/adc/ad4130.c
-drivers/iio/adc/max11410.c
-drivers/iio/addac/ad74115.c
-drivers/iio/gyro/fxas21002c_core.c
-drivers/iio/imu/adis16480.c
-drivers/iio/imu/bmi160/bmi160_core.c
-drivers/iio/imu/bmi160/bmi160_core.c
-
-fwnode_irq_get():
-drivers/gpio/gpio-dwapb.c
-drivers/iio/chemical/scd30_serial.c
-drivers/iio/proximity/mb1232.c
-drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-drivers/net/mdio/fwnode_mdio.c
-drivers/pinctrl/pinctrl-ingenic.c
-drivers/pinctrl/pinctrl-microchip-sgpio.c
-drivers/pinctrl/pinctrl-pistachio.c
-
-and it seems to me these calls will be Ok after this clean-up. The
-i2c-smbus.c and kionix-kx022a.c will gain a functional change (bugfix?) as
-after this patch the probe will return -EINVAL should the IRQ mapping fail.
-The series will also adjust the return value check for zero to be omitted.
-
-NOTES:
-
-Changes are compile-tested only.
-
-drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
-will also gain a functional change. The pinctrl-wpcm450.c change is easy
-to see - after this series the device-tree mapping failures will be
-handled as any other errors - probe will be aborted with -EINVAL. Other
-feasible option could be treating other errors in IRQ getting same way
-as the DT mapping failures - just silently skip the IRQ. Please see
-comment in the respective patch.
-
-drivers/iio/cdc/ad7150.c
-Changed logic so that all the IRQ getting errors jump to the same
-'no-IRQ' branch as the DT mapping error did.
-
-Revision history:
-v7 =3D> v8:
- - drop ptach 1/N which was merged during 6.4 development.
- - rebase on top of the v6.5-rc4.
-v6 =3D> v7:
- - re-ordered patches per subsystem
- - mvpp2 - added a patch for not shadowing the return value
-v5 =3D> v6:
- - iio: cdc: ad7150 - never abort probe if IRQ getting fails
-v4 =3D> v5:
- - Fix subject lines for mvpp2 and wpcm450
- - drop unnecessary irqno assignment from mb1232
- - add back the drivers/i2c/i2c-smbus.c change which was accidentally
-   dropped during v3 =3D> v4 work
-v3 =3D> v4:
- - Change also the fwnode_irq_get() as was suggested by Jonathan.
-Changelog v2 =3D> v3:
- - rebase/resend/add kx022a fix.
-Changelog v1 =3D> v2:
- - minor styling
+Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
 ---
+Revision history:
+v5 =3D> v6:
+ - Never abort the probe when IRQ getting fails but continue without
+   events.
 
-Matti Vaittinen (8):
-  iio: mb1232: relax return value check for IRQ get
-  iio: cdc: ad7150: relax return value check for IRQ get
-  pinctrl: wpcm450: relax return value check for IRQ get
-  pinctrl: ingenic: relax return value check for IRQ get
-  pinctrl: pistachio: relax return value check for IRQ get
-  i2c: i2c-smbus: fwnode_irq_get_byname() return value fix
-  net-next: mvpp2: relax return value check for IRQ get
-  net-next: mvpp2: don't shadow error
+Please note that I don't have the hardware to test this change.
+Furthermore, testing this type of device-tree error cases is not
+trivial, as the question we probably dive in is "what happens with the
+existing users who have errors in the device-tree". Answering to this
+question is not simple.
 
- drivers/i2c/i2c-smbus.c                         |  2 +-
- drivers/iio/cdc/ad7150.c                        | 10 +++++-----
- drivers/iio/proximity/mb1232.c                  |  7 ++-----
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 12 ++++++------
- drivers/pinctrl/nuvoton/pinctrl-wpcm450.c       |  2 --
- drivers/pinctrl/pinctrl-ingenic.c               |  2 --
- drivers/pinctrl/pinctrl-pistachio.c             |  6 ------
- 7 files changed, 14 insertions(+), 27 deletions(-)
+The patch changing the fwnode_irq_get() got merged during 5.4:
+https://lore.kernel.org/all/fb7241d3-d1d1-1c37-919b-488d6d007484@gmail.com/
+This is a clean-up as agreed.
+---
+ drivers/iio/cdc/ad7150.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+diff --git a/drivers/iio/cdc/ad7150.c b/drivers/iio/cdc/ad7150.c
+index d656d2f12755..4c03b9e834b8 100644
+--- a/drivers/iio/cdc/ad7150.c
++++ b/drivers/iio/cdc/ad7150.c
+@@ -541,6 +541,7 @@ static int ad7150_probe(struct i2c_client *client)
+ 	const struct i2c_device_id *id =3D i2c_client_get_device_id(client);
+ 	struct ad7150_chip_info *chip;
+ 	struct iio_dev *indio_dev;
++	bool use_irq =3D true;
+ 	int ret;
+=20
+ 	indio_dev =3D devm_iio_device_alloc(&client->dev, sizeof(*chip));
+@@ -561,14 +562,13 @@ static int ad7150_probe(struct i2c_client *client)
+=20
+ 	chip->interrupts[0] =3D fwnode_irq_get(dev_fwnode(&client->dev), 0);
+ 	if (chip->interrupts[0] < 0)
+-		return chip->interrupts[0];
+-	if (id->driver_data =3D=3D AD7150) {
++		use_irq =3D false;
++	else if (id->driver_data =3D=3D AD7150) {
+ 		chip->interrupts[1] =3D fwnode_irq_get(dev_fwnode(&client->dev), 1);
+ 		if (chip->interrupts[1] < 0)
+-			return chip->interrupts[1];
++			use_irq =3D false;
+ 	}
+-	if (chip->interrupts[0] &&
+-	    (id->driver_data =3D=3D AD7151 || chip->interrupts[1])) {
++	if (use_irq) {
+ 		irq_set_status_flags(chip->interrupts[0], IRQ_NOAUTOEN);
+ 		ret =3D devm_request_threaded_irq(&client->dev,
+ 						chip->interrupts[0],
 --=20
 2.40.1
 
@@ -231,19 +170,19 @@ Simon says - in Latin please.
 ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
 Thanks to Simon Glass for the translation =3D]=20
 
---hQsyJyfrnR1cLwNR
+--KY2dqMcsNm14XP28
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmTI8+0ACgkQeFA3/03a
-ocWq6AgArSM5A9chUh4M5+/vENizsF6p+0LbIPfIwCcHNYQHv4XehXim+Yv/RJkY
-Faie7r6CXkLdlbLi4glk2/WNiT2pKgBxm0/UbvGdsRe5kjMvS8CTPI3eJZFRXYuk
-eCvwYqPyXd7bVsvBZpqSMn1geHHmeabPjEaP5uyfABDmuM8YBRdmGLaE58EdQbIn
-hFJGWYgBGeVaQw4lDfmV8Qjsj1OFkqH0TY2LhgrEMefmIMU1tkGcr48m1shmUuNf
-IbqyYt4VUfzOG3j/mP5E+CTTE1icgSOOBcmflbXTJSjb/6EOwfhvti6w314CGZeX
-719Kq2PefFeoH1/0OUvKRWpDqM43ZA==
-=Q8AR
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmTI9GcACgkQeFA3/03a
+ocUUjwf8CSetfr27ZZjtC0oqZpp4BdR53XDzoFmfXNXgmIBejxn+1VcyY0VGK86n
+4NdI/EVvuTsZuAr36tSBhy+TQzXkIVKQ4rYlyX40YQ1h5IFVSF2l/2hL2izYUTZ2
+mRcICjmW5fWGvLbw+Lmk7eCoQVo3RGiwbQe8OsIx7jdp9QJ47luFi8xIL3xcL8bX
+109lFBD+7WPSoyOPOrq0kHUsdj8wvIUk2zva8JM9s/cVeYQuAIZHjbV2enMCLeU9
+AKvouzXwpHtBE2owtYXgrzCgo2GPHeVf2cLeO5cARQXltZouvFJoIvNouSbqcQdL
+WatL9bZEndV12NS6dRRCL6lKfhM2uw==
+=hVic
 -----END PGP SIGNATURE-----
 
---hQsyJyfrnR1cLwNR--
+--KY2dqMcsNm14XP28--
