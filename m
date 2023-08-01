@@ -2,210 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CB576B93F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8B676B93C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234609AbjHAP7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
+        id S232362AbjHAP6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:58:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233865AbjHAP7I (ORCPT
+        with ESMTP id S230119AbjHAP6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:59:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41164268E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:58:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690905497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v1Xszfz9uEDrPkkvCMGSkEQEMthpp9oBlq/CbCyVYks=;
-        b=i7KMon5QB9WWZiFZidfpaG6DhicU00itLoLqA8zPtLfKA8DBkwON9SXLxdoVEiAXcevdYg
-        JkaW85sTnRGh3yyXqMBw7AsGlfILkyeGUnbu4us8n8Yx0IlQ9Xa57RT6SGDQVarSBt0ezt
-        W5yjIQOr/RGS7m126Tc+17U0cDD0HHY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-445-x24qKZ6FPHuvf70ETQoxQA-1; Tue, 01 Aug 2023 11:58:12 -0400
-X-MC-Unique: x24qKZ6FPHuvf70ETQoxQA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 1 Aug 2023 11:58:51 -0400
+Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696A4BF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:58:50 -0700 (PDT)
+Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371C55JE004120;
+        Tue, 1 Aug 2023 15:58:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=wHJkRC/1rxNknMvwCpmNDyxOiRsBvdAnVRARJspLqVo=;
+ b=B8f0a7CRI07WhEgXZctfgeudevJgQoduoWVC0Meb0r9gmxuPPfKYm4X2vd8TYYPFqTKm
+ IUX3nX8jFjF11iqhvirSNqDxRMyefB4Zk16jv4XXKtsErU3c6iexYIraO4XO6az1SLgo
+ v7bKc1Ub4l4jaxplvnHZErtuOIKcaasKyIKMh8Dhyjy8xBo6C11d9yeKUwIsKCyTW1pp
+ u8iVoaWlZVHWt56dPD0leUrAHhCU8pLtjTTcnzXzYJQvOK2nZDlHTplWtAXnPV3uszIo
+ SJo31eEsLVNRQX9qLcfj0sxcVKm76K5I52zCPzAuPCU86t6Yio69nyTOO2pqr+m7sjVl Hg== 
+Received: from p1lg14878.it.hpe.com ([16.230.97.204])
+        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3s6wnfckc9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 15:58:15 +0000
+Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 319E4185A791;
-        Tue,  1 Aug 2023 15:58:11 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.107])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 993E42166B25;
-        Tue,  1 Aug 2023 15:57:51 +0000 (UTC)
-Date:   Tue, 1 Aug 2023 23:57:48 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        linux-fsdevel@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>,
-        Will Deacon <will@kernel.org>, Mike Galbraith <efault@gmx.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
-        ardb@kernel.org, David Hildenbrand <david@redhat.com>,
-        Linux regression tracking <regressions@leemhuis.info>,
-        regressions@lists.linux.dev, Matthew Wilcox <willy@infradead.org>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] fs/proc/kcore: reinstate bounce buffer for KCORE_TEXT
- regions
-Message-ID: <ZMkrfBDARIAYFYwz@MiWiFi-R3L-srv>
-References: <20230731215021.70911-1-lstoakes@gmail.com>
+        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id 6ECBB147A3;
+        Tue,  1 Aug 2023 15:58:14 +0000 (UTC)
+Received: from stormcage.eag.rdlabs.hpecorp.net (unknown [16.231.227.36])
+        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id 05BBC80BA2E;
+        Tue,  1 Aug 2023 15:58:14 +0000 (UTC)
+Received: by stormcage.eag.rdlabs.hpecorp.net (Postfix, from userid 605001)
+        id 982F530393F; Tue,  1 Aug 2023 10:58:13 -0500 (CDT)
+From:   Justin Ernst <justin.ernst@hpe.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Andy Shevchenko <andy@infradead.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Joel Granados <j.granados@samsung.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Kyle Meyer <kyle.meyer@hpe.com>,
+        Justin Ernst <justin.ernst@hpe.com>
+Subject: [PATCH] Update HPE Superdome Flex Maintainers
+Date:   Tue,  1 Aug 2023 10:57:56 -0500
+Message-Id: <20230801155756.22308-1-justin.ernst@hpe.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731215021.70911-1-lstoakes@gmail.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: a6dRsFvQrJv_fnzqWi2SEo7oqltqL8gi
+X-Proofpoint-ORIG-GUID: a6dRsFvQrJv_fnzqWi2SEo7oqltqL8gi
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_13,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ mlxscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=999
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308010144
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/31/23 at 10:50pm, Lorenzo Stoakes wrote:
-> Some architectures do not populate the entire range categorised by
-> KCORE_TEXT, so we must ensure that the kernel address we read from is
-> valid.
-> 
-> Unfortunately there is no solution currently available to do so with a
-> purely iterator solution so reinstate the bounce buffer in this instance so
-> we can use copy_from_kernel_nofault() in order to avoid page faults when
-> regions are unmapped.
-> 
-> This change partly reverts commit 2e1c0170771e ("fs/proc/kcore: avoid
-> bounce buffer for ktext data"), reinstating the bounce buffer, but adapts
-> the code to continue to use an iterator.
-> 
-> Fixes: 2e1c0170771e ("fs/proc/kcore: avoid bounce buffer for ktext data")
-> Reported-by: Jiri Olsa <olsajiri@gmail.com>
-> Closes: https://lore.kernel.org/all/ZHc2fm+9daF6cgCE@krava
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> ---
->  fs/proc/kcore.c | 26 +++++++++++++++++++++++++-
->  1 file changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-> index 9cb32e1a78a0..3bc689038232 100644
-> --- a/fs/proc/kcore.c
-> +++ b/fs/proc/kcore.c
-> @@ -309,6 +309,8 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
->  
->  static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
->  {
-> +	struct file *file = iocb->ki_filp;
-> +	char *buf = file->private_data;
->  	loff_t *fpos = &iocb->ki_pos;
->  	size_t phdrs_offset, notes_offset, data_offset;
->  	size_t page_offline_frozen = 1;
-> @@ -554,11 +556,22 @@ static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
->  			fallthrough;
->  		case KCORE_VMEMMAP:
->  		case KCORE_TEXT:
-> +			/*
-> +			 * Sadly we must use a bounce buffer here to be able to
-> +			 * make use of copy_from_kernel_nofault(), as these
-> +			 * memory regions might not always be mapped on all
-> +			 * architectures.
-> +			 */
-> +			if (copy_from_kernel_nofault(buf, (void *)start, tsz)) {
-> +				if (iov_iter_zero(tsz, iter) != tsz) {
-> +					ret = -EFAULT;
-> +					goto out;
-> +				}
->  			/*
->  			 * We use _copy_to_iter() to bypass usermode hardening
->  			 * which would otherwise prevent this operation.
->  			 */
-> -			if (_copy_to_iter((char *)start, tsz, iter) != tsz) {
-> +			} else if (_copy_to_iter(buf, tsz, iter) != tsz) {
->  				ret = -EFAULT;
->  				goto out;
->  			}
-> @@ -595,6 +608,10 @@ static int open_kcore(struct inode *inode, struct file *filp)
->  	if (ret)
->  		return ret;
->  
-> +	filp->private_data = kmalloc(PAGE_SIZE, GFP_KERNEL);
-> +	if (!filp->private_data)
-> +		return -ENOMEM;
-> +
->  	if (kcore_need_update)
->  		kcore_update_ram();
->  	if (i_size_read(inode) != proc_root_kcore->size) {
-> @@ -605,9 +622,16 @@ static int open_kcore(struct inode *inode, struct file *filp)
->  	return 0;
->  }
->  
-> +static int release_kcore(struct inode *inode, struct file *file)
-> +{
-> +	kfree(file->private_data);
-> +	return 0;
-> +}
-> +
->  static const struct proc_ops kcore_proc_ops = {
->  	.proc_read_iter	= read_kcore_iter,
->  	.proc_open	= open_kcore,
-> +	.proc_release	= release_kcore,
->  	.proc_lseek	= default_llseek,
->  };
+Mike Travis has retired. His expertise will be sorely missed.
+Remove Mike's entry under SGI XP/XPC/XPNET DRIVER.
+Replace Mike's entry under UV HPE SUPERDOME FLEX.
 
-On 6.5-rc4, the failures can be reproduced stably on a arm64 machine.
-With patch applied, both makedumpfile and objdump test cases passed.
+Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
+---
+ MAINTAINERS | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-And the code change looks good to me, thanks.
-
-Tested-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Baoquan He <bhe@redhat.com>
-
-
-===============================================
-[root@ ~]# makedumpfile --mem-usage /proc/kcore 
-The kernel version is not supported.
-The makedumpfile operation may be incomplete.
-
-TYPE		PAGES			EXCLUDABLE	DESCRIPTION
-----------------------------------------------------------------------
-ZERO		76234           	yes		Pages filled with zero
-NON_PRI_CACHE	147613          	yes		Cache pages without private flag
-PRI_CACHE	3847            	yes		Cache pages with private flag
-USER		15276           	yes		User process pages
-FREE		15809884        	yes		Free pages
-KERN_DATA	459950          	no		Dumpable kernel data 
-
-page size:		4096            
-Total pages on system:	16512804        
-Total size on system:	67636445184      Byte
-
-[root@ ~]# objdump -d  --start-address=0x^C
-[root@ ~]# cat /proc/kallsyms | grep ksys_read
-ffffab3be77229d8 T ksys_readahead
-ffffab3be782a700 T ksys_read
-[root@ ~]# objdump -d  --start-address=0xffffab3be782a700 --stop-address=0xffffab3be782a710 /proc/kcore 
-
-/proc/kcore:     file format elf64-littleaarch64
-
-
-Disassembly of section load1:
-
-ffffab3be782a700 <load1+0x41a700>:
-ffffab3be782a700:	aa1e03e9 	mov	x9, x30
-ffffab3be782a704:	d503201f 	nop
-ffffab3be782a708:	d503233f 	paciasp
-ffffab3be782a70c:	a9bc7bfd 	stp	x29, x30, [sp, #-64]!
-objdump: error: /proc/kcore(load2) is too large (0x7bff70000000 bytes)
-objdump: Reading section load2 failed because: memory exhausted
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 53b7ca804465..db3dce00a274 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19285,7 +19285,6 @@ F:	drivers/misc/sgi-gru/
+ SGI XP/XPC/XPNET DRIVER
+ M:	Robin Holt <robinmholt@gmail.com>
+ M:	Steve Wahl <steve.wahl@hpe.com>
+-R:	Mike Travis <mike.travis@hpe.com>
+ S:	Maintained
+ F:	drivers/misc/sgi-xp/
+ 
+@@ -23144,7 +23143,8 @@ F:	arch/x86/platform
+ 
+ X86 PLATFORM UV HPE SUPERDOME FLEX
+ M:	Steve Wahl <steve.wahl@hpe.com>
+-R:	Mike Travis <mike.travis@hpe.com>
++R:	Justin Ernst <justin.ernst@hpe.com>
++R:	Kyle Meyer <kyle.meyer@hpe.com>
+ R:	Dimitri Sivanich <dimitri.sivanich@hpe.com>
+ R:	Russ Anderson <russ.anderson@hpe.com>
+ S:	Supported
+-- 
+2.35.3
 
