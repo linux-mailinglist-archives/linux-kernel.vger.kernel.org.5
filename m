@@ -2,162 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2598976A6FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE1F76A6FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232112AbjHACaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:30:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
+        id S232116AbjHACbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232094AbjHACaG (ORCPT
+        with ESMTP id S232102AbjHACbW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:30:06 -0400
+        Mon, 31 Jul 2023 22:31:22 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166691BFD;
-        Mon, 31 Jul 2023 19:30:01 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47288E65;
+        Mon, 31 Jul 2023 19:31:21 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F3A9613EF;
-        Tue,  1 Aug 2023 02:30:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92EBCC433C7;
-        Tue,  1 Aug 2023 02:29:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D74FD6139D;
+        Tue,  1 Aug 2023 02:31:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F803C433C7;
+        Tue,  1 Aug 2023 02:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690857000;
-        bh=JqTpuojuSmByA27/5WGpMBYobl6c+pIwWwOPzzkyoSk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M59G1iH5RSuy/jK4mIM5hLWCgtxG6QNZHLZsxbkscK3O2uHaIhfgKrCYkun1biidL
-         h5BVJLdxwGiZox9SC4yuEbTvH+z0EzZiSzeNeGDkcpQtmDOGuz18ed6j+CDmBfYULM
-         FSWt+bWY62WmfOHlPVtv3pDus3nXq+Hv2dKdKaoX9WZClxjocAw8mWvKBuben0+vgo
-         CfssLd1IF/jInUY88692Dm3tGAJ3uXgHOW2UPvnhH5/PXNJIXRegBmf7wvWvoy10m2
-         gbzQd+7l7Xyzs++sY+u2JtDEluqmu65wPHHY8br4vZKr240aEYaxhq0CKW86BBwYOu
-         KKjk1TWfinwPQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C752240096; Mon, 31 Jul 2023 23:29:56 -0300 (-03)
-Date:   Mon, 31 Jul 2023 23:29:56 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     James Clark <james.clark@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Gaosheng Cui <cuigaosheng1@huawei.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v1 4/6] perf build: Disable fewer flex warnings
-Message-ID: <ZMhuJK/5+pMThsFd@kernel.org>
-References: <20230728064917.767761-1-irogers@google.com>
- <20230728064917.767761-5-irogers@google.com>
- <a8833945-3f0a-7651-39ff-a01e7edc2b3a@arm.com>
- <ZMPJym7DnCkFH7aA@kernel.org>
- <ZMPKekDl+g5PeiH8@kernel.org>
- <CAP-5=fX2LOdd_34ysAYYB5zq5tr7dMje35Nw6hrLXTPLsOHoaw@mail.gmail.com>
- <ZMQEfIi/BYwpDIEB@kernel.org>
- <ZMQMQoCtBytgwB4i@kernel.org>
- <CAP-5=fUOD4hgQBmXjQh0HujO_39zQQhv_Wv5oirgAC4N8Ao1nw@mail.gmail.com>
- <ZMgkthavch7x/z+0@kernel.org>
+        s=k20201202; t=1690857080;
+        bh=mTxd6HdQzFWXD+l9R8aNLIJTw4K0Wg96Ajxe6Cwzwpw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KAG52lTMe9zgens46rA1eqv/cVT1kaIN46yTHYubtyBonBbMQC7xVE46a34uehmga
+         31kWSsZKowpkD2MbkHQGzvlDaG+VeKKeumaCEJFWx1l38kPGdAx445eNnJf9W1AQYI
+         vl1/r2x6mzXlfvj/rLlL6MMd6XlCwD/U6U1THCHc1VAWGL2xf5wHhSbZVLSwvRh++6
+         qvWYTtlQ7AU1tja7v7JykjmZIrgOWlpI+j7yAb/QqsX6cQwhYaaajdO0Sm2Xevw57D
+         uta6SqTz1Cg2sKs9BKsapSAlYej0MqzS9/ntVSPABQsROacNQHjl3FFg0CgrRS4Rfe
+         B8hTP27zKtI8g==
+Date:   Mon, 31 Jul 2023 19:31:18 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     "Lin Ma" <linma@zju.edu.cn>
+Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+        fw@strlen.de, yang.lee@linux.alibaba.com, jgg@ziepe.ca,
+        markzhang@nvidia.com, phaddad@nvidia.com, yuancan@huawei.com,
+        ohartoov@nvidia.com, chenzhongjin@huawei.com, aharonl@nvidia.com,
+        leon@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net v1 1/2] netlink: let len field used to parse
+ type-not-care nested attrs
+Message-ID: <20230731193118.67d79f7b@kernel.org>
+In-Reply-To: <38179c76.f308d.189aed2db99.Coremail.linma@zju.edu.cn>
+References: <20230731121247.3972783-1-linma@zju.edu.cn>
+        <20230731120326.6bdd5bf9@kernel.org>
+        <38179c76.f308d.189aed2db99.Coremail.linma@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMgkthavch7x/z+0@kernel.org>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NUMERIC_HTTP_ADDR,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jul 31, 2023 at 06:16:38PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Fri, Jul 28, 2023 at 12:05:56PM -0700, Ian Rogers escreveu:
-> > On Fri, Jul 28, 2023, 11:43 AM Arnaldo Carvalho de Melo <acme@kernel.org>
-> > > > I haven't checked, lemme do it now.
+On Tue, 1 Aug 2023 10:00:01 +0800 (GMT+08:00) Lin Ma wrote:
+> > > However, this is tedious and just like Leon said: add another layer of
+> > > cabal knowledge. The better solution should leverage the nla_policy and
+> > > discard nlattr whose length is invalid when doing parsing. That is, we
+> > > should defined a nested_policy for the X above like  
+> > 
+> > Hard no. Putting array index into attr type is an advanced case and the
+> > parsing code has to be able to deal with low level netlink details.  
 > 
-> > > It comes directly from flex's m4 files:
+> Well, I just known that the type field for those attributes is used as array
+> index.
+> Hence, for this advanced case, could we define another NLA type, maybe 
+> NLA_NESTED_IDXARRAY enum? That may be much clearer against modifying existing
+> code.
+
+What if the value is of a complex type (nest)?  For 10th time, if
+someone does "interesting things" they must know what they're doing.
+
+> > Higher level API should remove the nla_for_each_nested() completely
+> > which is rather hard to achieve here.  
 > 
-> > > https://github.com/westes/flex/blob/master/src/c99-flex.skl#L2044
+> By investigating the code uses nla_for_each_nested macro. There are basically
+> two scenarios:
 > 
-> > > So I'll keep the -Wno-misleading-indentation, ok?
->  
-> > Makes sense, yes.
+> 1. manually parse nested attributes whose type is not cared (the advance case
+>    use type as index here).
+> 2. manually parse nested attributes for *one* specific type. Such code do
+>    nla_type check.
 > 
-> continuing, changed the version check to:
-     
->     Committer notes:
->     
->     Added this to the list of ignored warnings to get it building on
->     a Fedora 36 machine with flex 2.6.4:
->     
->       -Wno-misleading-indentation
->     
->     Noticed when building with:
->     
->       $ make LLVM=1 -C tools/perf NO_BPF_SKEL=1 DEBUG=1
->     
->     Take two:
->     
->     We can't just try to canonicalize flex versions by just removing the
->     dots, as we end up with:
->     
->             2.6.4 >= 2.5.37
->     
->     becoming:
->     
->             264 >= 2537
->     
->     Failing the build on flex 2.5.37, so instead use the back to the past
->     added $(call version_ge3,2.6.4,$(FLEX_VERSION)) variant to check for
->     that.
->     
->     Making sure $(FLEX_VERSION) keeps the dots as we may want to use 'sort
->     -V' or something nicer when available everywhere.
+> From the API side, to completely remove nla_for_each_nested and avoid the
+> manual  parsing. I think we can choose two solutions.
+> 
+> Solution-1: add a parsing helper that receives a function pointer as an
+>             argument, it will call this pointer after carefully verify the
+>             type and length of an attribute.
+> 
+> Solution-2: add a parsing helper that traverses this nested twice, the first
+>             time  to do counting size for allocating heap buffer (or stack
+>             buffer from the caller if the max count is known). The second
+>             time to fill this buffer with attribute pointers.
+> 
+> Which one is preferred? Please enlighten me about this and I can try to propose
+> a fix. (I personally like the solution-2 as it works like the existing parsers
+> like nla_parse) 
 
-Please take a look at the tmp.perf-tools-next on the perf-tools-next git
-tree, so far it passed on:
+Your initial fix was perfectly fine.
 
-[perfbuilder@five ~]$ export BUILD_TARBALL=http://192.168.86.10/perf/perf-6.5.0-rc2.tar.xz
-[perfbuilder@five ~]$ time dm
-   1   131.37 almalinux:8                   : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-18) , clang version 15.0.7 (Red Hat 15.0.7-1.module_el8.8.0+3466+dfcbc058) flex 2.6.1
-   2   133.63 almalinux:9                   : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.7 (Red Hat 15.0.7-2.el9) flex 2.6.4
-   3   151.31 alpine:3.15                   : Ok   gcc (Alpine 10.3.1_git20211027) 10.3.1 20211027 , Alpine clang version 12.0.1 flex 2.6.4
-   4   148.73 alpine:3.16                   : Ok   gcc (Alpine 11.2.1_git20220219) 11.2.1 20220219 , Alpine clang version 13.0.1 flex 2.6.4
-   5   126.35 alpine:3.17                   : Ok   gcc (Alpine 12.2.1_git20220924-r4) 12.2.1 20220924 , Alpine clang version 15.0.7 flex 2.6.4
-   6   125.43 alpine:3.18                   : Ok   gcc (Alpine 12.2.1_git20220924-r10) 12.2.1 20220924 , Alpine clang version 16.0.6 flex 2.6.4
-   7   143.12 alpine:edge                   : Ok   gcc (Alpine 13.1.1_git20230520) 13.1.1 20230520 , Alpine clang version 16.0.4 flex 2.6.4
-   8   102.10 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-15) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2) flex 2.5.37
-   9    95.36 amazonlinux:2023              : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
-  10    96.15 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
-  11   118.48 archlinux:base                : Ok   gcc (GCC) 12.2.0 , clang version 14.0.6 flex 2.6.4
-  12   106.42 centos:stream                 : Ok   gcc (GCC) 8.5.0 20210514 (Red Hat 8.5.0-18) , clang version 15.0.7 (Red Hat 15.0.7-1.module_el8.8.0+1258+af79b238) flex 2.6.1
-  13   127.88 clearlinux:latest             : Ok   gcc (Clear Linux OS for Intel Architecture) 13.1.1 20230720 releases/gcc-13.1.0-353-g9aac37ab8a , clang version 16.0.6 flex 2.6.4
-  14    88.12 debian:10                     : Ok   gcc (Debian 8.3.0-6) 8.3.0 , Debian clang version 11.0.1-2~deb10u1 flex 2.6.4
-  15   113.56 debian:11                     : Ok   gcc (Debian 10.2.1-6) 10.2.1 20210110 , Debian clang version 13.0.1-6~deb11u1 flex 2.6.4
-  16   122.58 debian:12                     : Ok   gcc (Debian 12.2.0-14) 12.2.0 , Debian clang version 14.0.6 flex 2.6.4
-  17   130.89 debian:experimental           : Ok   gcc (Debian 12.3.0-5) 12.3.0 , Debian clang version 14.0.6 flex 2.6.4
-  18    23.75 fedora:26                     : Ok   gcc (GCC) 7.3.1 20180130 (Red Hat 7.3.1-2)  flex 2.6.1
-  19    23.52 fedora:27                     : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-6)  flex 2.6.1
-  20    24.66 fedora:28                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2)  flex 2.6.1
-  21    26.12 fedora:29                     : Ok   gcc (GCC) 8.3.1 20190223 (Red Hat 8.3.1-2)  flex 2.6.1
-  22    26.06 fedora:30                     : Ok   gcc (GCC) 9.3.1 20200408 (Red Hat 9.3.1-2)  flex 2.6.4
-
-Tomorrow I'll go back to perf-tools, to get what sat on linux-next
-pending-fixes and a few other fixes (the one reported by Thomas, etc)
-to send to Linus for v6.5.
-
-- Arnaldo
+We do need a solution for a normal multi-attr parse, but that's not 
+the case here.
