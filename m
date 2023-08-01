@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2443176BC57
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4329E76BC58
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbjHASZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 14:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40702 "EHLO
+        id S232535AbjHASZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232013AbjHASYz (ORCPT
+        with ESMTP id S232228AbjHASZH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:24:55 -0400
+        Tue, 1 Aug 2023 14:25:07 -0400
 Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2069.outbound.protection.outlook.com [40.107.104.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 098041BC1;
-        Tue,  1 Aug 2023 11:24:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F5C268E;
+        Tue,  1 Aug 2023 11:24:55 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ndRBzVgbS7MdTk/xQS96WfbdqJY7FcWlZprZspWa5uv4TFHtKa5iF/nEUnWnUr2q0ha6FH8JRhzE4Noul1fBihVVLV2PrOMdvkIPoC3h3NNkdkSNpquidFxQq2Jts+whLsnF3ebciqElrrvghAYXUdBVQbZ/WK3aWYPHehrWhmdjPwHMBp3o2MwxxYFEeHOmvJQdouKzwhd2MbUZ9K55fvdNiEh8LSCpgBLqV61psEWBbWH8x/rmIE3hdi0SjPbOFuoo/98wKjGuzgpKN1pPreolLB9wPhbYtNRKAt+VFaGdsCzi8u8cWPvIIvMDroPrMNWk12EFE5t5m815N1A1bA==
+ b=kYH76s5SJLqCB6k+sXQ5R+MdPh1rVBmdy+9BeMtrUHjyrzXKGiPuCpQwICYNrR3QBIgklg6eoKqJkd/FsEejYCiqGIIvQlNuBiZjA3Dr1146SQpiLwAVDaPJnFc/e7mkUDN2XTn5b78tUPKcchHC/YUVZmMwVuWnkprgXSzN6z9HVqVfsRBIEHB9VZBUPFRiHxNo7QPp8O5eb4Mgik4rdRmRlJIWX7yT27OPuzQ6QC/R2g/APhZuk2jvOS6syXz9OhVTKsGIUqpS+6yMSOQcqy5qMneVNXgD1M2I3XhTL2C+x4TAAeBCojdRl4tJ/ja5Xh+Le9ZN/flVayciSY0ojw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZeDFvsIdN/7QAcJlUBNojMuSKMlZ7MhoQMa+oJSHRgQ=;
- b=HjffND+Qum9htlEMP3pnxIwjjmPubP0IhE7lt5b46/XAerFgtdtBt8G35EXk94C1yKyYyaCF0380ifHXy8tNYO5PkHqUPzEtXO3XuzXDl+kNv9B8vnnazLpdwI/aae1/3Pt69Vv35YGj7pXXEWLL3SksMHA0v2N9bmwKIEyHO61uoevR6A1kWg2cIpCllf7SC+9wPUmcF+EzEEDit7h7RYppeEVcsZbEpalN63uRJO9+8BTnGf/ZqOuy34p5B7zQ8kqEktPLrrNJG8TgZVk1VGVWN7VqHoKdfGVHjUVRmKJ4LBVEGaPR1KewKm2aFdfHTchwv4OMdMmraoO5gxuRmg==
+ bh=Ut4OKsw5avDvlwLhWrkm02UHTnbV1chMQ8vNswD502U=;
+ b=c4tfRx491PPLqj2t/XD7o0oP3Nkd2PiMuwP5vtcTXosfOozN8TNp+ak2AnBMOI4Lal3PoyH03htUL8P3dib/InBqM2AhABWDeFr96t1dbva0p8SbHyk07yqiS8Wkrim0yWnwrBN2h3g2AOHTCkYgDYcISk61uopkYM8xEE3KdghMqGokcM9TNP9lw8mv9o69tNkim6CTFxFKIVPA2Jy47pEge799XYVR/UgWBoxe62rful3ytI2zlIQE3ROzLte4qDi3X1Umny1cfSP5EkY4zziTuQ6GQbdEfX312++seAoncIMsKy2KrtRdTzsm800gU+CRkknwjAC55XTsFueBKg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZeDFvsIdN/7QAcJlUBNojMuSKMlZ7MhoQMa+oJSHRgQ=;
- b=XPMAh6SgWOAJlCjrVA6/gHo/JsEef6U4q6RmDK2Hvr1O/IyazZiK+G6Phn/RWP6pjhR4UOOe3iD6PTchQNHypGs7SLAO5G57InxSJt9I1Y0SPGHqozT9XVkO7oBezgrNx9NLdByFwzoSBHijJ4uzoEFnYjiW3wsyms9chD6MXCc=
+ bh=Ut4OKsw5avDvlwLhWrkm02UHTnbV1chMQ8vNswD502U=;
+ b=gqM1xefkC2MSr2dtBmdnwITb16n4l6+Ls+3VIPXO4GNUYRSsff9zgECZHFrenzu8Oa+HdtbugUlNeCQ9PXlCa80fjnVIAUhwunyTfRdf7ETqdkaaUuXYr/r8e5k6dY1VxFCyupITF2xATn2yCDLKfsHX32mV0feeIf4WorzQ2Mk=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
  by AM9PR04MB8796.eurprd04.prod.outlook.com (2603:10a6:20b:40b::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Tue, 1 Aug
- 2023 18:24:50 +0000
+ 2023 18:24:51 +0000
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::6074:afac:3fae:6194]) by AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::6074:afac:3fae:6194%4]) with mapi id 15.20.6631.045; Tue, 1 Aug 2023
- 18:24:50 +0000
+ 18:24:51 +0000
 From:   Vladimir Oltean <vladimir.oltean@nxp.com>
 To:     netdev@vger.kernel.org
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -57,9 +57,9 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Richard Cochran <richardcochran@gmail.com>,
         Zhengchao Shao <shaozhengchao@huawei.com>,
         Maxim Georgiev <glipus@gmail.com>
-Subject: [PATCH v3 net-next 05/10] net/sched: taprio: dump class stats for the actual q->qdiscs[]
-Date:   Tue,  1 Aug 2023 21:24:16 +0300
-Message-Id: <20230801182421.1997560-6-vladimir.oltean@nxp.com>
+Subject: [PATCH v3 net-next 06/10] net: ptp: create a mock-up PTP Hardware Clock driver
+Date:   Tue,  1 Aug 2023 21:24:17 +0300
+Message-Id: <20230801182421.1997560-7-vladimir.oltean@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230801182421.1997560-1-vladimir.oltean@nxp.com>
 References: <20230801182421.1997560-1-vladimir.oltean@nxp.com>
@@ -71,51 +71,51 @@ X-ClientProxiedBy: AM0PR03CA0030.eurprd03.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AM9PR04MB8796:EE_
-X-MS-Office365-Filtering-Correlation-Id: b8b44127-5a31-47dd-0798-08db92bc97a3
+X-MS-Office365-Filtering-Correlation-Id: 65a587cd-f50e-47c4-aecd-08db92bc984e
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2apVDXP6R5nNZz3GFO/Hglb9x71pSA8HSbTj2JohrM+1fO3yP6icvG/fMDBkzVkPwsukQvJz0JCUEGT2wBu3l8iP8mU0bsbVMp7m+BjQJM8v215czB/IVR+1a3EQSAXEi42WaE06KQoFNQRaS3DV24dbvzN5FWwsK2nc8PZzydIoolrexqZ+9i8us7Pbsr/T3whNbiezk3vsxT7kZay0tXpuawKRLIYUTzRDYY0qJTAjFK2vEWFowmWK2R+NIoH2dTOpO9SL6oS9O2Ivp5GBnMVk2GVNtbUasKJYMVKXCJmvGeWMBSwUQUlf/W2eZT9Ycr2kYpALBTZlP4d/KD0NNA7K8w6ynUYWzNGbLOWma9UoCeiKOCp4JjhvsfJyZxxcwnjMPLLq+hSS+IsNBBuQ5b7OeC5AMhVPpkmP3hfn2B3Kdt4HPXqaPzcG3AkP8UDNRsW/Bv86r6FnBU7bJPCK5AZdaq0o3/pW/hk/iReCTSDSE8JqDnsWkQC4aBTnqeod1QY2Bcc2UBJ9TwIsHhFwD4q2wNcRdliBgkt0vTBno9CRUICqRqgIiyqbdjLYNdqIZ/MyfjYKY9Xb0jCs8E431k+x4vdi68aGr0Xay33pMhA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(451199021)(38350700002)(2906002)(1076003)(6506007)(26005)(186003)(38100700002)(52116002)(316002)(83380400001)(2616005)(5660300002)(66946007)(44832011)(8676002)(36756003)(8936002)(6916009)(7416002)(54906003)(41300700001)(478600001)(6512007)(6666004)(6486002)(4326008)(66556008)(66476007)(86362001)(966005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Ftbv6QLkB92l5cnx2v+wG367/YSm5kae3K+wYsi1oQCk8e8GSunCzaPTdypnhjgtRdzQddt+XKEKfE1s6cRteB/fa3aIEzQIFNHmixXfGuIoA0puy+hnurnKKUPHi0LGKyxwExgNNNU4H5dA5eVdnt68g6nRMaOKE6OQCMFf/Bl7mSsYlG+bVBrkDFhuUTDjJOewzhqqcCpFFxTnfEllxsnkfIC4O8z0Fch+i2XbQGKUJGROHc6MMhSol6FrZHPFM14wt/kAPIWX2zar1ONmcFEuE9jv4slYkvC///cRAdb4swASDqgVIlaxOjSvnR+guDMDsDXQ4fmPGdqfP0l6rEwYMKKo43XdozpMRgoYc/v9+SrtkQh4EVgnPA35xIiYM8ZH3JOs6xPCgIT0AqqwzFDmUvle+V8fLbYuY72rdPjNf0enouQM/QfkniX0BV7tWKIy2jy5BD7inVfap5wtjOYwyTAAPGQpVBprAiJp7HaCwFxqcEC0Ys9xubQHke00d8yyByzLJxJZIa/UynRb7oLQQDsIXLKVUNhiR+oORwKCiz2ELm8AYXXrTkP5KIZYRymLrTtOgxquJ/qAm3NCx7LZGl92AufVexJNTaefso8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(451199021)(38350700002)(2906002)(1076003)(6506007)(26005)(186003)(38100700002)(52116002)(316002)(83380400001)(2616005)(5660300002)(66946007)(44832011)(8676002)(36756003)(8936002)(6916009)(7416002)(54906003)(41300700001)(478600001)(6512007)(6666004)(6486002)(4326008)(66556008)(66476007)(86362001)(66899021);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WenMWEn/tR3b8/nZWgudleHKai08EFUCsDA5+tV42HDTqDccpMcuSEPmVvHg?=
- =?us-ascii?Q?yEret8KvVsVkokZVN2/57aSk8yN5OvngkYZQ7VEK11mflQDgMjOy1pvXHe+Y?=
- =?us-ascii?Q?BRnZVm438gLPLFf/TEPwMxH9mm/h/my5CisvTA1deEcmNTkZP3/kgAEUeyk2?=
- =?us-ascii?Q?zWTZ4izWBuEwB+K7fnjyp6+xHghROD0a65ucheNtustzvxUZs1QWHWlC/ooG?=
- =?us-ascii?Q?1J41xay+VEosBxl/62ks+5t1+kHUPB7mL67NLdkxk/ew9wzu5a3Cvj0MFgAe?=
- =?us-ascii?Q?Wo3kHsFkMB7MwhymocGbi0WOPx09Z9BxxHPcCw/Bb6Lc9x0JixiQwZD3dFXy?=
- =?us-ascii?Q?FsPNf1myqyEq0P4BQ9JHLqjI3Q5r2BqmPvOEiTnsj8wuwhReKlqQRsByniLU?=
- =?us-ascii?Q?R9qIwK2gVpRKvuwZDY0u1NodUo50f6MwKi5DCm5kHdrltrpZ4sGd2QpIemgt?=
- =?us-ascii?Q?+6tSzwLSJy6EYmPrR5iGmL69y90d2KnzKpPmulvJclw3muf4ETcIlaELfKCc?=
- =?us-ascii?Q?68Op4+rZeCE8QTQARpxG9nD4YGxAGS9kd4QkglJ1PsSvFvyd8nH7p160M9m/?=
- =?us-ascii?Q?tBAblwWH6c6hqyzT8D+B17IoI/u+Mrq8WEnn8SSOPut9CFS3yBJm2GQ3kg//?=
- =?us-ascii?Q?z8VNp5ti0u3Lssc9IVB5rB0aPon4yQ1x6wxNhIUdb0PQMmvfGOaLOwYWkhpo?=
- =?us-ascii?Q?YqIB45FbNSPRi+GhDO8WYTS50tr42U4D0lUxXRN/mPaXQuYXHwhYoztdIAfr?=
- =?us-ascii?Q?bDFy7PLiarXihVQ6O6ZlrQ06DoWjUWJEANxY117lvXU1klRPonOSWPzIRs3k?=
- =?us-ascii?Q?4ZI0N51DqpVKwdHpRRMkqSVXL8FD/jONx2Z9QftoXQnYuZwCF2HSwGEASADE?=
- =?us-ascii?Q?PRwT8OEd6UZbUSJv0U2L+GnLsgpZRkrBne+Ak9mbQQcf8p9+KfX7HtoQqhFr?=
- =?us-ascii?Q?IPgxGY/fzQMKWD546luIA5uLESjPiylWJyzI1qHwHatiC9GDs4V37jMG93ck?=
- =?us-ascii?Q?wYKt4n/EUcAfjJ9cLB9kyjVnpijLiTaEkE0AyZ7IJlsXDcTFo2kogGKsFfHs?=
- =?us-ascii?Q?fMlbqgwHKUlgybjkNm/2ibJ9mabBriqVWLOYP2Z71tpw3G6i42V7zPI18Om9?=
- =?us-ascii?Q?ovnfBTMri33egv2pwBXb5Msx6ORokLI1WMBGDK8eClCGiEjogQuGrv9Y5pi7?=
- =?us-ascii?Q?mF5deJ6vFrJ+Bb09F3f+m3P+X2VrMIoFs1mGS0PkRPteW9dO3OAwMMQ+qbc+?=
- =?us-ascii?Q?igRzeuQgvjUV1GC5eWOu+mihh7qxh8R2cxzh/DKSgOzfb+WvJz1XAXzqxEf4?=
- =?us-ascii?Q?FEsSWt7vNc1HbTIIG7+7SrhQ8vn//x9VGWb/9RD0qplekcaJjKWee1+uewBF?=
- =?us-ascii?Q?A/Z07mdKrJ7UYcPFCoimgsq9lJWeGad/6PXBBVivJ7wLFgwlzxFsZxW0ZcK9?=
- =?us-ascii?Q?K6IUM6FKo4hO1FVPCNLs/aXSFspxPxkJ6IEVhk/YCW5mFO/fh06LDP2eE5td?=
- =?us-ascii?Q?zcVg5bUjrThOukJYbQWX3lFjLFCr3NdDS4e9NMzMcL8V0lsgFTGYKfTCO0po?=
- =?us-ascii?Q?UZWoBs2sDCP96tmvcKNyW7fGEBQtUaePgrCfHFyc9RI3d2sJdjS9fuxwcWGY?=
- =?us-ascii?Q?4A=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nwlTDwlNjajcJDp4fsbJwwvVyqWn7wzXt9l4AOOgPjvl4ShFe0KzBQ8WF99o?=
+ =?us-ascii?Q?XwTchVZpTmi8C5zkWsi8AtfoEL+eMGk0vwL5gRU4Y8ox/4ClCQqRnkticzVN?=
+ =?us-ascii?Q?cGtmlPC9FAQop2T/4ntdI8ubDmbUOoAAqxIJQZbtWu1lQQxqTBdjCYcG6qra?=
+ =?us-ascii?Q?LOCw5ZRGwLl6W9eumrgRK4D9KyQA/XIBOP0HbG7i2jvAHPT/nJmqhNzVsuvj?=
+ =?us-ascii?Q?X2ZDtVGwWFINNs6QwVGTAMO4tty9b/vm3AOAFbikMhBbCIiDXWZnTlpvUK6E?=
+ =?us-ascii?Q?XkedxN1w2nKVWfkGVbqycQBwt8uGjBAR5I2jnfWvWWae0D/3XgFGfqzbZZ0J?=
+ =?us-ascii?Q?wX/51DctfpqrPXAqhVj6qfLLyH03BxpVHlCCq8AiVpcSUqgvwB5pVltXWbbc?=
+ =?us-ascii?Q?+PzP3NZXlaAf8VrbvlgQuGC684aKMGaIdKRfziuhd9HAWzZGtIyMnIVfiOAU?=
+ =?us-ascii?Q?WgVCFORJAp/BnVVeAEJnhlli5kLeiRm2uZbbY3ynwVtWP1ylIloEgb+6AvHb?=
+ =?us-ascii?Q?DnuL13qUn/JOiOjMjqPy54rWrilGuvQAMfCVylIwSvgYPotYo6Ikcx5rTLLK?=
+ =?us-ascii?Q?UHluoF5uL7d9N+xh7UDdpSJmbDk0UuK5SmFtB/+TCtheTGdTL9YVbYe/wR+E?=
+ =?us-ascii?Q?yd68Dw+bRzrcTgxghvsu9KaQ4s2Hj2sqwfaQRsCMEtttvsTAZgEayeswdJom?=
+ =?us-ascii?Q?B1eNU3t43tmhdaJA3Evcitj9ychyFhmtns8Mti9bqqSEw8lDrKhQcF7P9Wqc?=
+ =?us-ascii?Q?W3MwQIhN2j7RRyMrPyE7Q10Nxm2wsYioyYNJUsBBp/sBGXs+kpe28VQ0vg5d?=
+ =?us-ascii?Q?LUX96JVFBbVSy7EU2XsJGc3YqTNKPI6Ve9P6/IkAKA1Q/gOGOEJ54Wt57jp5?=
+ =?us-ascii?Q?xwXzHF2ZHSFXtrXpdDZWNRYGvaPT8H+477KVoIKyQxK+YcP8vNNXFa5NS2zv?=
+ =?us-ascii?Q?VssUNMRxvvzHHH13Ta9KxNaX1dZ+oRVx+qZ53I9ij0PZ2y8jgl1razGhM5p9?=
+ =?us-ascii?Q?Q8eIw+LxKKNh8GpINCleOKlIJkiv9EvN+SmCW06xkTcPkwf4xT/NZWCF7CbM?=
+ =?us-ascii?Q?K8g3xbfSwlyDF1MfiV6AC4O1DTIoeFisAc8kQ0GUdr+m4kzWR1bRJIfw70p8?=
+ =?us-ascii?Q?9szs7PhkqX647fVlXrGpEVWoH/46Pn2neNqJa+ebh//W8ka15FI23m+8B6I7?=
+ =?us-ascii?Q?QpIHvm3+6FliNpDpl7IVloqI0F3wA+bFWSnR6Y9c5q2kolzYKEtEOhGjJGNz?=
+ =?us-ascii?Q?MBdiWG27DPpRRCQ31mPqGpqnt4wYw2SFu/hnE5mlTKnrMsXv9iz/tFMAEwxC?=
+ =?us-ascii?Q?zcfTvjX3SwR0pys3GsWSRw893LH+B/qIQIosY87p3cmOgimGum0FpTQ8IuHF?=
+ =?us-ascii?Q?7Vnl1bgPKBVNP/SG+t6zvnEzLAk0ptGdbmwrr22eg9Esc8/CHuNJ8ipfL26f?=
+ =?us-ascii?Q?AE7SLdMsUWoWI3YzBcGjjHo4HW77EjKIjtNPNGLv/WYHoo7MTXg7+Zp9eaT9?=
+ =?us-ascii?Q?ib6EDtZXyhVDme/VYl5Vg6U7DZWmdiAj2pRxBWs42af20qT8Yv+EzTkllHJK?=
+ =?us-ascii?Q?odI25XROucEGy9UozeEmFPiIiLEQpchwZSkrOpDQOk+vNXN3ZauAdPhwyo0d?=
+ =?us-ascii?Q?Dw=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8b44127-5a31-47dd-0798-08db92bc97a3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65a587cd-f50e-47c4-aecd-08db92bc984e
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 18:24:50.0165
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 18:24:51.1577
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DCAa79hnqij4GN5DH4JJ/VXfEvzO+VGDjVwDuDAKdrYwXFV64iLh4KOyruDxRBgNQfbZMg2yYht6XKN24FgzFQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: aWN5avut4tTuL6sRNOJoxTHRD7ubOq4irq7/3b6fIF3qJS66U5RuMczhE/7FbGp3baw+gT4KdVcqke4OL8XeYw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8796
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -127,159 +127,321 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This makes a difference for the software scheduling mode, where
-dev_queue->qdisc_sleeping is the same as the taprio root Qdisc itself,
-but when we're talking about what Qdisc and stats get reported for a
-traffic class, the root taprio isn't what comes to mind, but q->qdiscs[]
-is.
+There are several cases where virtual net devices may benefit from
+having a PTP clock, and these have to do with testing. I can see at
+least netdevsim and veth as potential users of a common mock-up PTP
+hardware clock driver.
 
-To understand the difference, I've attempted to send 100 packets in
-software mode through class 8001:5, and recorded the stats before and
-after the change.
+The proposed idea is to create an object which emulates PTP clock
+operations on top of the unadjustable CLOCK_MONOTONIC_RAW plus a
+software-controlled time domain via a timecounter/cyclecounter and then
+link that PHC to the netdevsim device.
 
-Here is before:
+The driver is fully functional for its intended purpose, and it
+successfully passes the PTP selftests.
 
-$ tc -s class show dev eth0
-class taprio 8001:1 root leaf 8001:
- Sent 9400 bytes 100 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:2 root leaf 8001:
- Sent 9400 bytes 100 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:3 root leaf 8001:
- Sent 9400 bytes 100 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:4 root leaf 8001:
- Sent 9400 bytes 100 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:5 root leaf 8001:
- Sent 9400 bytes 100 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:6 root leaf 8001:
- Sent 9400 bytes 100 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:7 root leaf 8001:
- Sent 9400 bytes 100 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:8 root leaf 8001:
- Sent 9400 bytes 100 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
+$ cd tools/testing/selftests/ptp/
+$ ./phc.sh /dev/ptp2
+TEST: settime                          [ OK ]
+TEST: adjtime                          [ OK ]
+TEST: adjfreq                          [ OK ]
 
-and here is after:
-
-class taprio 8001:1 root
- Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:2 root
- Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:3 root
- Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:4 root
- Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:5 root
- Sent 9400 bytes 100 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:6 root
- Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:7 root
- Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-class taprio 8001:8 root leaf 800d:
- Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- backlog 0b 0p requeues 0
- window_drops 0
-
-The most glaring (and expected) difference is that before, all class
-stats reported the global stats, whereas now, they really report just
-the counters for that traffic class.
-
-Finally, Pedro Tammela points out that there is a tc selftest which
-checks specifically which handle do the child Qdiscs corresponding to
-each class have. That's changing here - taprio no longer reports
-tcm->tcm_info as the same handle "1:" as itself (the root Qdisc), but 0
-(the handle of the default pfifo child Qdiscs). Since iproute2 does not
-print a child Qdisc handle of 0, adjust the test's expected output.
-
-Link: https://lore.kernel.org/netdev/3b83fcf6-a5e8-26fb-8c8a-ec34ec4c3342@mojatatu.com/
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 ---
-v2->v3: fix selftest broken by the change
-v1->v2:
-- reword commit message
-- rebase on top of the TAPRIO_CMD_TC_STATS -> TAPRIO_CMD_QUEUE_STATS change
+v2->v3:
+- split off ptp_mock into separate patch
+- fix ptp_mock compilation as a module
+- turn phc->lock into a global spinlock
+- drop bogus support for ptp_clock_register() ever returning NULL
+- add MAINTAINERS entry
+v1->v2: patch is new
 
- net/sched/sch_taprio.c                                    | 8 +++-----
- .../selftests/tc-testing/tc-tests/qdiscs/taprio.json      | 2 +-
- 2 files changed, 4 insertions(+), 6 deletions(-)
+ MAINTAINERS              |   7 ++
+ drivers/ptp/Kconfig      |  11 +++
+ drivers/ptp/Makefile     |   1 +
+ drivers/ptp/ptp_mock.c   | 175 +++++++++++++++++++++++++++++++++++++++
+ include/linux/ptp_mock.h |  38 +++++++++
+ 5 files changed, 232 insertions(+)
+ create mode 100644 drivers/ptp/ptp_mock.c
+ create mode 100644 include/linux/ptp_mock.h
 
-diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-index 06397300b40e..7f275f9f5793 100644
---- a/net/sched/sch_taprio.c
-+++ b/net/sched/sch_taprio.c
-@@ -2461,11 +2461,11 @@ static unsigned long taprio_find(struct Qdisc *sch, u32 classid)
- static int taprio_dump_class(struct Qdisc *sch, unsigned long cl,
- 			     struct sk_buff *skb, struct tcmsg *tcm)
- {
--	struct netdev_queue *dev_queue = taprio_queue_get(sch, cl);
-+	struct Qdisc *child = taprio_leaf(sch, cl);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c4f95a9d03b9..164b7930f5d0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17175,6 +17175,13 @@ F:	drivers/ptp/*
+ F:	include/linux/ptp_cl*
+ K:	(?:\b|_)ptp(?:\b|_)
  
- 	tcm->tcm_parent = TC_H_ROOT;
- 	tcm->tcm_handle |= TC_H_MIN(cl);
--	tcm->tcm_info = rtnl_dereference(dev_queue->qdisc_sleeping)->handle;
-+	tcm->tcm_info = child->handle;
++PTP MOCKUP CLOCK SUPPORT
++M:	Vladimir Oltean <vladimir.oltean@nxp.com>
++L:	netdev@vger.kernel.org
++S:	Maintained
++F:	drivers/ptp/ptp_mock.c
++F:	include/linux/ptp_mock.h
++
+ PTP VIRTUAL CLOCK SUPPORT
+ M:	Yangbo Lu <yangbo.lu@nxp.com>
+ L:	netdev@vger.kernel.org
+diff --git a/drivers/ptp/Kconfig b/drivers/ptp/Kconfig
+index 32dff1b4f891..ed9d97a032f1 100644
+--- a/drivers/ptp/Kconfig
++++ b/drivers/ptp/Kconfig
+@@ -155,6 +155,17 @@ config PTP_1588_CLOCK_IDTCM
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called ptp_clockmatrix.
  
- 	return 0;
- }
-@@ -2475,16 +2475,14 @@ static int taprio_dump_class_stats(struct Qdisc *sch, unsigned long cl,
- 	__releases(d->lock)
- 	__acquires(d->lock)
- {
--	struct netdev_queue *dev_queue = taprio_queue_get(sch, cl);
-+	struct Qdisc *child = taprio_leaf(sch, cl);
- 	struct tc_taprio_qopt_offload offload = {
- 		.cmd = TAPRIO_CMD_QUEUE_STATS,
- 		.queue_stats = {
- 			.queue = cl - 1,
- 		},
- 	};
--	struct Qdisc *child;
- 
--	child = rtnl_dereference(dev_queue->qdisc_sleeping);
- 	if (gnet_stats_copy_basic(d, NULL, &child->bstats, true) < 0 ||
- 	    qdisc_qstats_copy(d, child) < 0)
- 		return -1;
-diff --git a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json
-index a44455372646..68a7264e083d 100644
---- a/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json
-+++ b/tools/testing/selftests/tc-testing/tc-tests/qdiscs/taprio.json
-@@ -104,7 +104,7 @@
-         "cmdUnderTest": "$TC qdisc add dev $ETH root handle 1: taprio num_tc 3 map 2 2 1 0 2 2 2 2 2 2 2 2 2 2 2 2 queues 1@0 1@0 1@0 base-time 1000000000 sched-entry S 01 300000 flags 0x1 clockid CLOCK_TAI",
-         "expExitCode": "0",
-         "verifyCmd": "$TC class show dev $ETH",
--        "matchPattern": "class taprio 1:[0-9]+ root leaf 1:",
-+        "matchPattern": "class taprio 1:[0-9]+ root",
-         "matchCount": "8",
-         "teardown": [
-             "echo \"1\" > /sys/bus/netdevsim/del_device"
++config PTP_1588_CLOCK_MOCK
++	tristate "Mock-up PTP clock"
++	depends on PTP_1588_CLOCK
++	help
++	  This driver offers a set of PTP clock manipulation operations over
++	  the system monotonic time. It can be used by virtual network device
++	  drivers to emulate PTP capabilities.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called ptp_mock.
++
+ config PTP_1588_CLOCK_VMW
+ 	tristate "VMware virtual PTP clock"
+ 	depends on ACPI && HYPERVISOR_GUEST && X86
+diff --git a/drivers/ptp/Makefile b/drivers/ptp/Makefile
+index 553f18bf3c83..dea0cebd2303 100644
+--- a/drivers/ptp/Makefile
++++ b/drivers/ptp/Makefile
+@@ -16,6 +16,7 @@ ptp-qoriq-y				+= ptp_qoriq.o
+ ptp-qoriq-$(CONFIG_DEBUG_FS)		+= ptp_qoriq_debugfs.o
+ obj-$(CONFIG_PTP_1588_CLOCK_IDTCM)	+= ptp_clockmatrix.o
+ obj-$(CONFIG_PTP_1588_CLOCK_IDT82P33)	+= ptp_idt82p33.o
++obj-$(CONFIG_PTP_1588_CLOCK_MOCK)	+= ptp_mock.o
+ obj-$(CONFIG_PTP_1588_CLOCK_VMW)	+= ptp_vmw.o
+ obj-$(CONFIG_PTP_1588_CLOCK_OCP)	+= ptp_ocp.o
+ obj-$(CONFIG_PTP_DFL_TOD)		+= ptp_dfl_tod.o
+diff --git a/drivers/ptp/ptp_mock.c b/drivers/ptp/ptp_mock.c
+new file mode 100644
+index 000000000000..1525aafca752
+--- /dev/null
++++ b/drivers/ptp/ptp_mock.c
+@@ -0,0 +1,175 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Copyright 2023 NXP
++ *
++ * Mock-up PTP Hardware Clock driver for virtual network devices
++ *
++ * Create a PTP clock which offers PTP time manipulation operations
++ * using a timecounter/cyclecounter on top of CLOCK_MONOTONIC_RAW.
++ */
++
++#include <linux/ptp_clock_kernel.h>
++#include <linux/ptp_mock.h>
++#include <linux/timecounter.h>
++
++/* Clamp scaled_ppm between -2,097,152,000 and 2,097,152,000,
++ * and thus "adj" between -68,719,476 and 68,719,476
++ */
++#define MOCK_PHC_MAX_ADJ_PPB		32000000
++/* Timestamps from ktime_get_raw() have 1 ns resolution, so the scale factor
++ * (MULT >> SHIFT) needs to be 1. Pick SHIFT as 31 bits, which translates
++ * MULT(freq 0) into 0x80000000.
++ */
++#define MOCK_PHC_CC_SHIFT		31
++#define MOCK_PHC_CC_MULT		(1 << MOCK_PHC_CC_SHIFT)
++#define MOCK_PHC_FADJ_SHIFT		9
++#define MOCK_PHC_FADJ_DENOMINATOR	15625ULL
++
++/* The largest cycle_delta that timecounter_read_delta() can handle without a
++ * 64-bit overflow during the multiplication with cc->mult, given the max "adj"
++ * we permit, is ~8.3 seconds. Make sure readouts are more frequent than that.
++ */
++#define MOCK_PHC_REFRESH_INTERVAL	(HZ * 5)
++
++#define info_to_phc(d) container_of((d), struct mock_phc, info)
++
++static DEFINE_SPINLOCK(mock_phc_lock);
++
++struct mock_phc {
++	struct ptp_clock_info info;
++	struct ptp_clock *clock;
++	struct timecounter tc;
++	struct cyclecounter cc;
++};
++
++static u64 mock_phc_cc_read(const struct cyclecounter *cc)
++{
++	return ktime_to_ns(ktime_get_raw());
++}
++
++static int mock_phc_adjfine(struct ptp_clock_info *info, long scaled_ppm)
++{
++	struct mock_phc *phc = info_to_phc(info);
++	s64 adj;
++
++	adj = (s64)scaled_ppm << MOCK_PHC_FADJ_SHIFT;
++	adj = div_s64(adj, MOCK_PHC_FADJ_DENOMINATOR);
++
++	spin_lock_bh(&mock_phc_lock);
++	timecounter_read(&phc->tc);
++	phc->cc.mult = MOCK_PHC_CC_MULT + adj;
++	spin_unlock_bh(&mock_phc_lock);
++
++	return 0;
++}
++
++static int mock_phc_adjtime(struct ptp_clock_info *info, s64 delta)
++{
++	struct mock_phc *phc = info_to_phc(info);
++
++	spin_lock_bh(&mock_phc_lock);
++	timecounter_adjtime(&phc->tc, delta);
++	spin_unlock_bh(&mock_phc_lock);
++
++	return 0;
++}
++
++static int mock_phc_settime64(struct ptp_clock_info *info,
++			      const struct timespec64 *ts)
++{
++	struct mock_phc *phc = info_to_phc(info);
++	u64 ns = timespec64_to_ns(ts);
++
++	spin_lock_bh(&mock_phc_lock);
++	timecounter_init(&phc->tc, &phc->cc, ns);
++	spin_unlock_bh(&mock_phc_lock);
++
++	return 0;
++}
++
++static int mock_phc_gettime64(struct ptp_clock_info *info, struct timespec64 *ts)
++{
++	struct mock_phc *phc = info_to_phc(info);
++	u64 ns;
++
++	spin_lock_bh(&mock_phc_lock);
++	ns = timecounter_read(&phc->tc);
++	spin_unlock_bh(&mock_phc_lock);
++
++	*ts = ns_to_timespec64(ns);
++
++	return 0;
++}
++
++static long mock_phc_refresh(struct ptp_clock_info *info)
++{
++	struct timespec64 ts;
++
++	mock_phc_gettime64(info, &ts);
++
++	return MOCK_PHC_REFRESH_INTERVAL;
++}
++
++int mock_phc_index(struct mock_phc *phc)
++{
++	return ptp_clock_index(phc->clock);
++}
++EXPORT_SYMBOL_GPL(mock_phc_index);
++
++struct mock_phc *mock_phc_create(struct device *dev)
++{
++	struct mock_phc *phc;
++	int err;
++
++	phc = kzalloc(sizeof(*phc), GFP_KERNEL);
++	if (!phc) {
++		err = -ENOMEM;
++		goto out;
++	}
++
++	phc->info = (struct ptp_clock_info) {
++		.owner		= THIS_MODULE,
++		.name		= "Mock-up PTP clock",
++		.max_adj	= MOCK_PHC_MAX_ADJ_PPB,
++		.adjfine	= mock_phc_adjfine,
++		.adjtime	= mock_phc_adjtime,
++		.gettime64	= mock_phc_gettime64,
++		.settime64	= mock_phc_settime64,
++		.do_aux_work	= mock_phc_refresh,
++	};
++
++	phc->cc = (struct cyclecounter) {
++		.read	= mock_phc_cc_read,
++		.mask	= CYCLECOUNTER_MASK(64),
++		.mult	= MOCK_PHC_CC_MULT,
++		.shift	= MOCK_PHC_CC_SHIFT,
++	};
++
++	timecounter_init(&phc->tc, &phc->cc, 0);
++
++	phc->clock = ptp_clock_register(&phc->info, dev);
++	if (IS_ERR(phc->clock)) {
++		err = PTR_ERR(phc->clock);
++		goto out_free_phc;
++	}
++
++	ptp_schedule_worker(phc->clock, MOCK_PHC_REFRESH_INTERVAL);
++
++	return phc;
++
++out_free_phc:
++	kfree(phc);
++out:
++	return ERR_PTR(err);
++}
++EXPORT_SYMBOL_GPL(mock_phc_create);
++
++void mock_phc_destroy(struct mock_phc *phc)
++{
++	ptp_clock_unregister(phc->clock);
++	kfree(phc);
++}
++EXPORT_SYMBOL_GPL(mock_phc_destroy);
++
++MODULE_DESCRIPTION("Mock-up PTP Hardware Clock driver");
++MODULE_LICENSE("GPL");
+diff --git a/include/linux/ptp_mock.h b/include/linux/ptp_mock.h
+new file mode 100644
+index 000000000000..72eb401034d9
+--- /dev/null
++++ b/include/linux/ptp_mock.h
+@@ -0,0 +1,38 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++/*
++ * Mock-up PTP Hardware Clock driver for virtual network devices
++ *
++ * Copyright 2023 NXP
++ */
++
++#ifndef _PTP_MOCK_H_
++#define _PTP_MOCK_H_
++
++struct device;
++struct mock_phc;
++
++#if IS_ENABLED(CONFIG_PTP_1588_CLOCK_MOCK)
++
++struct mock_phc *mock_phc_create(struct device *dev);
++void mock_phc_destroy(struct mock_phc *phc);
++int mock_phc_index(struct mock_phc *phc);
++
++#else
++
++static inline struct mock_phc *mock_phc_create(struct device *dev)
++{
++	return NULL;
++}
++
++static inline void mock_phc_destroy(struct mock_phc *phc)
++{
++}
++
++static inline int mock_phc_index(struct mock_phc *phc)
++{
++	return -1;
++}
++
++#endif
++
++#endif /* _PTP_MOCK_H_ */
 -- 
 2.34.1
 
