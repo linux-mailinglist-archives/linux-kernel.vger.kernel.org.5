@@ -2,34 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDEFF76A751
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 05:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7498E76A754
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 05:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231753AbjHADJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 23:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
+        id S231792AbjHADKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 23:10:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbjHADJD (ORCPT
+        with ESMTP id S229810AbjHADKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 23:09:03 -0400
-Received: from out28-147.mail.aliyun.com (out28-147.mail.aliyun.com [115.124.28.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0167F19B0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:09:00 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07528824|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00859234-0.000375804-0.991032;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5IZH8f_1690859332;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5IZH8f_1690859332)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 11:08:55 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd/pm: Clean up errors in smu10_hwmgr.c
-Date:   Tue,  1 Aug 2023 03:08:51 +0000
-Message-Id: <20230801030851.5158-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        Mon, 31 Jul 2023 23:10:02 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686C919B0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:10:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E8410612D8
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:10:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E40A1C433C8;
+        Tue,  1 Aug 2023 03:09:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690859400;
+        bh=X6Z9QOKzikJGxKFX2tBf3wIQdI88JGKWEXi24Ybq4MA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iIfIeVSu/c4UcRznqKtcdxa18wlnj6ChVSHG7EctmvUsjFt5BapHNNtlwbkJMhOfi
+         idGdgH3pQzvmNXj7OI9N9IWV8kI1hur293KpzgusRRmQ08/0nsVuHciWtiIPdUKwNI
+         +SKstyRjcz6u6KKccx3JDeD/FdwgkvcrX7qnj89BqtETiNd5ojEXD8Y8VEY4reu64B
+         enGGr8yrpHakvkmIrapnuPG2KAYSrOB+XnBCBuVadIIVvP0RddBYDKdjJxj7iP7K5h
+         yjRjLmYzhAGFHk4YbcdYWREx+KXVt9c9RN7Phj/XTW9qIWUrrE7eZG/61ZSpxT0Xbj
+         oAZcdQLNpr8fA==
+Date:   Mon, 31 Jul 2023 20:09:59 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
+        <pabeni@redhat.com>, <yoshfuji@linux-ipv6.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <simon.horman@corigine.com>
+Subject: Re: [PATCH v2] ip6mr: Fix skb_under_panic in ip6mr_cache_report()
+Message-ID: <20230731200959.2019cb9c@kernel.org>
+In-Reply-To: <20230728121703.29572-1-yuehaibing@huawei.com>
+References: <20230728121703.29572-1-yuehaibing@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,82 +57,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+On Fri, 28 Jul 2023 20:17:03 +0800 Yue Haibing wrote:
+>  #ifdef CONFIG_IPV6_PIMSM_V2
+> +	int nhoff = skb_network_offset(pkt);
+>  	if (assert == MRT6MSG_WHOLEPKT || assert == MRT6MSG_WRMIFWHOLE)
+> -		skb = skb_realloc_headroom(pkt, -skb_network_offset(pkt)
+> -						+sizeof(*msg));
+> +		skb = skb_realloc_headroom(pkt, -nhoff + sizeof(*msg));
 
-ERROR: spaces required around that '=' (ctx:VxW)
-ERROR: space required after that ',' (ctx:VxV)
+These changes look unnecessary. You can leave this code be (as ugly as
+it is)...
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- .../gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+>  	else
+>  #endif
+>  		skb = alloc_skb(sizeof(struct ipv6hdr) + sizeof(*msg), GFP_ATOMIC);
+> @@ -1073,7 +1073,7 @@ static int ip6mr_cache_report(const struct mr_table *mrt, struct sk_buff *pkt,
+>  		   And all this only to mangle msg->im6_msgtype and
+>  		   to set msg->im6_mbz to "mbz" :-)
+>  		 */
+> -		skb_push(skb, -skb_network_offset(pkt));
+> +		__skb_pull(skb, nhoff);
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c
-index 86d6e88c7386..02ba68d7c654 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c
-@@ -430,37 +430,37 @@ static int smu10_apply_state_adjust_rules(struct pp_hwmgr *hwmgr,
- }
- 
- /* temporary hardcoded clock voltage breakdown tables */
--static const DpmClock_t VddDcfClk[]= {
-+static const DpmClock_t VddDcfClk[] = {
- 	{ 300, 2600},
- 	{ 600, 3200},
- 	{ 600, 3600},
- };
- 
--static const DpmClock_t VddSocClk[]= {
-+static const DpmClock_t VddSocClk[] = {
- 	{ 478, 2600},
- 	{ 722, 3200},
- 	{ 722, 3600},
- };
- 
--static const DpmClock_t VddFClk[]= {
-+static const DpmClock_t VddFClk[] = {
- 	{ 400, 2600},
- 	{1200, 3200},
- 	{1200, 3600},
- };
- 
--static const DpmClock_t VddDispClk[]= {
-+static const DpmClock_t VddDispClk[] = {
- 	{ 435, 2600},
- 	{ 661, 3200},
- 	{1086, 3600},
- };
- 
--static const DpmClock_t VddDppClk[]= {
-+static const DpmClock_t VddDppClk[] = {
- 	{ 435, 2600},
- 	{ 661, 3200},
- 	{ 661, 3600},
- };
- 
--static const DpmClock_t VddPhyClk[]= {
-+static const DpmClock_t VddPhyClk[] = {
- 	{ 540, 2600},
- 	{ 810, 3200},
- 	{ 810, 3600},
-@@ -1358,7 +1358,7 @@ static int smu10_set_watermarks_for_clocks_ranges(struct pp_hwmgr *hwmgr,
- 	struct amdgpu_device *adev = hwmgr->adev;
- 	int i;
- 
--	smu_set_watermarks_for_clocks_ranges(table,wm_with_clock_ranges);
-+	smu_set_watermarks_for_clocks_ranges(table, wm_with_clock_ranges);
- 
- 	if (adev->apu_flags & AMD_APU_IS_RAVEN2) {
- 		for (i = 0; i < NUM_WM_RANGES; i++)
-@@ -1461,7 +1461,7 @@ static int smu10_get_power_profile_mode(struct pp_hwmgr *hwmgr, char *buf)
- 
- 	phm_get_sysfs_buf(&buf, &size);
- 
--	size += sysfs_emit_at(buf, size, "%s %16s %s %s %s %s\n",title[0],
-+	size += sysfs_emit_at(buf, size, "%s %16s %s %s %s %s\n", title[0],
- 			title[1], title[2], title[3], title[4], title[5]);
- 
- 	for (i = 0; i <= PP_SMC_POWER_PROFILE_COMPUTE; i++)
+.. and just replace the push here with:
+
+  __skb_pull(skb, skb_network_offset(pkt));
 -- 
-2.17.1
-
+pw-bot: cr
