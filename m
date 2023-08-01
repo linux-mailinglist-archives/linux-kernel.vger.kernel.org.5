@@ -2,159 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17CD276B27D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52B876B27F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:01:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234239AbjHALAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
+        id S232321AbjHALBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234233AbjHALAH (ORCPT
+        with ESMTP id S234139AbjHALA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:00:07 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 675545B91;
-        Tue,  1 Aug 2023 03:54:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1690887236; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=aAT1gmpYcoMWWL66IjQC0kMJ2YgmRmX/z+QHnQPdM9usmzWv3BMdMKNqfffpdSMpe2
-    X5+uylcHSa/sWOPxMoDiIh7ctMyWvVA2NrMNqmVx4l9DAk63X93VFSN4n+Eke+5WCSPL
-    APILRndDrhKEZZ64eYAIikxB0bsmoSFiG59U+nFyhfsJKqwDZc4yVZRD6985h8WEVvo4
-    60itvMrvdiL1h+fuq9UKhk14eLaanxiOajO4gA4fQrCD6KbRYQY7B8eh9a6uZ7cldwcB
-    sasxH6Jis2llu4NuoospbHo1YBeA/MIhT34f4pU2eAEg9vcU07KSWzZxZHROMmZLCHcn
-    wemg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1690887236;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=qdtofX9rV/JabxOSUq7lzbOdfyHanm5MJ6uMGz3vtho=;
-    b=CAd/JrKD0OV4YhJSBstyLz7bM9tqLgPAG68VmuAtlFL2NmO2OlSQIel/WJLRVJFI0I
-    pSiVCRhxLCP9fd1Rv54lNAP0kwHClrJ/AD+xJhS1zGRgbMhol77dicVX1nomi+dBaLu0
-    dgIo4zcDn6hFSHs4GNcIfxlgARhzbbfWnz4gYhtn/1mW9E8KWIRnBXAEdfuVCtIo5SFN
-    2IXrqHb2KlloYBIfMRULFVvdny8FZjzVhIwqgjHwqe+CRiJPaS1Ie6DaYsY2WS/Q30f5
-    6YsziMfod9Tg+hj6m6P1+HMMP4rDG3jclwNPC9APmCRagMYAuLXPvuYi/FPLsqRczWRJ
-    z50g==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1690887236;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=qdtofX9rV/JabxOSUq7lzbOdfyHanm5MJ6uMGz3vtho=;
-    b=fD9ZyExGq8EC+DerHWU60ByTVFgHkclD+ih/ph9KhGBQSx45CU/Z+vr6IyuFhvU2xg
-    Wrm8LWHIsj8CFk7Y0+YkWVpQ4TkSC7MQjNxSzVG8Y7LfMJCdW6yVUedJAoK6wt4w2DRS
-    2rD7aOR+E75r2VO80LFyidSg3tuFxRw2f886j7cl7xD3fJz4jiLSpQUg414Em7oTUfFE
-    ujF3aUgfscmxd8DJh009323bdixj28rYcHgVG4GHFyFUjQC84hOCuqEpZuhp53lHkjPJ
-    mTKZekUal0Ag/ofCM0s9u5IjQsn8wQA0SYzd3P9tJYKm2mDhTjYsO32S0oOuEtnGZ97D
-    2lMA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1690887235;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=qdtofX9rV/JabxOSUq7lzbOdfyHanm5MJ6uMGz3vtho=;
-    b=oUr5y0ARyOTGFGaAUODubKciTgdGIK9FoaP6DMy3CLqVK2g/c09mVlIHQbEpaFmeV3
-    xaJIFH1Ag8Sxvm4zDfBw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8p+L1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.6.6 DYNA|AUTH)
-    with ESMTPSA id k61817z71ArtNj7
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 1 Aug 2023 12:53:55 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 12:53:48 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 01/10] interconnect: qcom: icc-rpm: Add AB/IB
- calculations coefficients
-Message-ID: <ZMjkPLqBiWW8CpAU@gerhold.net>
-References: <20230726-topic-icc_coeff-v2-0-8c91c6c76076@linaro.org>
- <20230726-topic-icc_coeff-v2-1-8c91c6c76076@linaro.org>
+        Tue, 1 Aug 2023 07:00:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 013F2422D;
+        Tue,  1 Aug 2023 03:55:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B6064614B3;
+        Tue,  1 Aug 2023 10:54:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C8E1C433C9;
+        Tue,  1 Aug 2023 10:54:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690887267;
+        bh=VO7pcsxb+oB+wsS8Ud4w4F+HV0+ydxKFE3sGoD1VYDM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LvsYD/hTg82xvObqT/fOTuY/qbEyrDy2SiPENS5hu4V2VV+Wb2p+Cpn/ufHQXK8A/
+         iqzqoxFbb9DkGLkDaQsLprSKQ9Wl7kTgUPk63stF57ZKx2izMAU1qDtaY7JTenp2ai
+         7x9dH1p4cdmmkH6UosrkXjt3czFgdzrT58WO9IC7nkPwtrB8kuy5FSmCit6CJ8IGUW
+         jSgInZdEghSOynt3rlrHieQGbTasBh4gk4tmbxtx+KEKuDhgKBAfhbFda9CCVtS6Mh
+         B7lpMyYk4VCTVTgipPjwgVAsiqhXacDMQSjN8O2t5OH8gG6Vj6vtOJiw09/CZTX9hX
+         RpLT7chS3o5Lg==
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-51cff235226so11562527a12.0;
+        Tue, 01 Aug 2023 03:54:26 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZHSCj2xRiGY/s/wDSM9+2pbRnD7N/dlz08wGTB71FdpSn5Ewf7
+        lRk7OGWPqbYoBrgwKbVd6JrZczm2qj7HmUogrNY=
+X-Google-Smtp-Source: APBJJlFukzChUGvsSOXUWygUB+0GArc3ZLcnrvtrngLoHxRu+4XYsAq8yQC+cOozTfOJnJ5RtEFuOWHH+6HmrOhgMKM=
+X-Received: by 2002:aa7:c309:0:b0:522:3a1d:c233 with SMTP id
+ l9-20020aa7c309000000b005223a1dc233mr3075933edq.11.1690887265380; Tue, 01 Aug
+ 2023 03:54:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726-topic-icc_coeff-v2-1-8c91c6c76076@linaro.org>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230801081335.523097-1-kernel@xen0n.name>
+In-Reply-To: <20230801081335.523097-1-kernel@xen0n.name>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Tue, 1 Aug 2023 18:54:12 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6Tq7E5sSHUq+FSgs-GpHSMmmp=KDPBpKJt1vXRkMv9Cw@mail.gmail.com>
+Message-ID: <CAAhV-H6Tq7E5sSHUq+FSgs-GpHSMmmp=KDPBpKJt1vXRkMv9Cw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] raid5, raid6: Accelerate RAID math with LoongArch SIMD
+To:     WANG Xuerui <kernel@xen0n.name>
+Cc:     Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        WANG Xuerui <git@xen0n.name>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 12:52:17PM +0200, Konrad Dybcio wrote:
-> Presumably due to the hardware being so complex, some nodes (or busses)
-> have different (usually higher) requirements for bandwidth than what
-> the usual calculations would suggest.
-> 
-> Looking at the available downstream files, it seems like AB values are
-> adjusted per-bus and IB values are adjusted per-node.
-> With that in mind, introduce percentage-based coefficient struct members
-> and use them in the calculations.
-> 
-> One thing to note is that the IB coefficient is inverse (100/ib_percent)
-> which feels a bit backwards, but it's necessary for precision..
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  drivers/interconnect/qcom/icc-rpm.c | 14 +++++++++++---
->  drivers/interconnect/qcom/icc-rpm.h |  6 ++++++
->  2 files changed, 17 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/interconnect/qcom/icc-rpm.c b/drivers/interconnect/qcom/icc-rpm.c
-> index 2c16917ba1fd..a837d20af79e 100644
-> --- a/drivers/interconnect/qcom/icc-rpm.c
-> +++ b/drivers/interconnect/qcom/icc-rpm.c
-> @@ -298,7 +298,8 @@ static int qcom_icc_bw_aggregate(struct icc_node *node, u32 tag, u32 avg_bw,
->   */
->  static void qcom_icc_bus_aggregate(struct icc_provider *provider, u64 *agg_clk_rate)
->  {
-> -	u64 agg_avg_rate, agg_rate;
-> +	struct qcom_icc_provider *qp = to_qcom_provider(provider);
-> +	u64 agg_avg_rate, agg_peak_rate, agg_rate;
->  	struct qcom_icc_node *qn;
->  	struct icc_node *node;
->  	int i;
-> @@ -315,8 +316,15 @@ static void qcom_icc_bus_aggregate(struct icc_provider *provider, u64 *agg_clk_r
->  			else
->  				agg_avg_rate = qn->sum_avg[i];
->  
-> -			agg_rate = max_t(u64, agg_avg_rate, qn->max_peak[i]);
-> -			do_div(agg_rate, qn->buswidth);
-> +			if (qp->ab_coeff)
-> +				agg_avg_rate = mult_frac(qp->ab_coeff, agg_avg_rate, 100);
+Hi, Xuerui,
 
-agg_avg_rate * (qp->ab_coeff / 100) would feel more logical to me (even
-if it should be the same), i.e.
+On Tue, Aug 1, 2023 at 4:13=E2=80=AFPM WANG Xuerui <kernel@xen0n.name> wrot=
+e:
+>
+> From: WANG Xuerui <git@xen0n.name>
+>
+> Hi,
+>
+> Seeing the LoongArch port recently (finally!) gained the ability to use
+> the vector units, I've subsequently ported the RAID5/6 math to LSX and
+> LASX (which are LoongArch's 128-bit and 256-bit SIMD extensions), with
+> nice speedups observed. They are reasonably straight-forward conversions
+> of existing code, and I hope the comments I put in there are helpful
+> enough for anyone not familiar with LoongArch assembly to get a rough
+> picture of how things work here. Performance numbers are included in
+> each commit's commit message.
+>
+> This series needs [1] ("LoongArch: Allow usage of LSX/LASX in the
+> kernel") as a prerequisite, or the vector context would likely get
+> corrupted by the vector-unaware kernel_fpu_{begin,end} calls. I tested
+> the changes on top of next-20230731 with the raid6test build fixes [2]
+> applied, but the series should apply cleanly to v6.5-rc4 (or maybe any
+> other tag) too.
+Thank you for your patches, but the kernel coding style prefers /* ...
+*/ rather than // ...
 
-	agg_avg_rate = mult_frac(agg_avg_rate, qp->ab_coeff, 100);
-
-Not sure why you swapped them.
-
-> +
-> +			if (qp->ib_coeff)
-> +				agg_peak_rate = mult_frac(100, qn->max_peak[i], qp->ib_coeff);
-
-	agg_peak_rate = mult_frac(qn->max_peak[i], 100, qp->ib_coeff);
-
-Anyway, looks like you need to avoid mult_frac anyway for ARM32 compat :/
-
-arm-none-eabi-ld: drivers/interconnect/qcom/icc-rpm.o: in function `qcom_icc_calc_rate':
-drivers/interconnect/qcom/icc-rpm.c:310: undefined reference to `__aeabi_uldivmod'
-arm-none-eabi-ld: drivers/interconnect/qcom/icc-rpm.c:312: undefined reference to `__aeabi_uldivmod'
-
-Thanks,
-Stephan
+Huacai
+>
+> [1]: https://lore.kernel.org/loongarch/20230722072201.2677516-1-chenhuaca=
+i@loongson.cn/
+> [2]: https://lore.kernel.org/linux-raid/20230731104911.411964-1-kernel@xe=
+n0n.name/
+>
+> WANG Xuerui (3):
+>   LoongArch: Add SIMD-optimized XOR routines
+>   raid6: Add LoongArch SIMD syndrome calculation
+>   raid6: Add LoongArch SIMD recovery implementation
+>
+>  arch/loongarch/include/asm/xor.h      |  68 ++++
+>  arch/loongarch/include/asm/xor_simd.h |  42 +++
+>  arch/loongarch/lib/Makefile           |   3 +
+>  arch/loongarch/lib/xor_simd.c         |  92 +++++
+>  arch/loongarch/lib/xor_simd.h         |  46 +++
+>  arch/loongarch/lib/xor_simd_glue.c    |  71 ++++
+>  arch/loongarch/lib/xor_template.c     | 109 ++++++
+>  include/linux/raid/pq.h               |   4 +
+>  lib/raid6/Makefile                    |   1 +
+>  lib/raid6/algos.c                     |  16 +
+>  lib/raid6/loongarch.h                 |  38 ++
+>  lib/raid6/loongarch_simd.c            | 417 +++++++++++++++++++++
+>  lib/raid6/recov_loongarch_simd.c      | 501 ++++++++++++++++++++++++++
+>  lib/raid6/test/Makefile               |  12 +
+>  14 files changed, 1420 insertions(+)
+>  create mode 100644 arch/loongarch/include/asm/xor.h
+>  create mode 100644 arch/loongarch/include/asm/xor_simd.h
+>  create mode 100644 arch/loongarch/lib/xor_simd.c
+>  create mode 100644 arch/loongarch/lib/xor_simd.h
+>  create mode 100644 arch/loongarch/lib/xor_simd_glue.c
+>  create mode 100644 arch/loongarch/lib/xor_template.c
+>  create mode 100644 lib/raid6/loongarch.h
+>  create mode 100644 lib/raid6/loongarch_simd.c
+>  create mode 100644 lib/raid6/recov_loongarch_simd.c
+>
+>
+> base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+> prerequisite-patch-id: 85d08a9828893250ae78dbca9d6e6f8dac755f61
+> prerequisite-patch-id: fe0bba41e0bbc676454365ed16fb13fc0aac6ee0
+> prerequisite-patch-id: 84ef8212b74e696ce019255bbfd9679d7516f7f7
+> prerequisite-patch-id: b1f8fc4e4acdaff7f821a9fcbd063475178e037b
+> prerequisite-patch-id: 82aacbf27f249fdefe40dd6bcc712e5795256926
+> prerequisite-patch-id: ae4e026e18f92ffcc93f6b135a3bd48fbdded39a
+> --
+> 2.40.0
+>
