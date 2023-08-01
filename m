@@ -2,121 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F82976A755
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 05:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 321DC76A759
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 05:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjHADLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 23:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        id S230501AbjHADLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 23:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjHADLQ (ORCPT
+        with ESMTP id S230198AbjHADLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 23:11:16 -0400
-Received: from xry111.site (xry111.site [IPv6:2001:470:683e::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8CB19B0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
-        s=default; t=1690859472;
-        bh=o5T+kQNuX4fm5oyHji4BaVyoYdYzeQvuWfMgaOEgsDI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=EWqvVrxikyW8hDHE1M0bLV4dBqFku6M5JFxdkgExjh7V77P1QoTCtCX4zWjjg73Pr
-         6Bp+lbzY4tT9Q4m9YpVlcv/1q7amCHf9BsrXXPUMZR6CRtZcQbjidfOm1Jwl7QVazx
-         AIsGZtocu/lItXMvJR45uPjQSeJ6NCp+9S7w3jkE=
-Received: from [IPv6:240e:358:11f9:8b00:dc73:854d:832e:3] (unknown [IPv6:240e:358:11f9:8b00:dc73:854d:832e:3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
-        (Client did not present a certificate)
-        (Authenticated sender: xry111@xry111.site)
-        by xry111.site (Postfix) with ESMTPSA id 75EA46599C;
-        Mon, 31 Jul 2023 23:11:02 -0400 (EDT)
-Message-ID: <8573346a40ff1490cdc15d5e11d982a06e98d3bb.camel@xry111.site>
-Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
-From:   Xi Ruoyao <xry111@xry111.site>
-To:     guoren@kernel.org, chenhuacai@kernel.or, kernel@xen0n.name,
-        arnd@arndb.de, andi.shyti@linux.intel.com, wangrui@loongson.cn,
-        andrzej.hajda@intel.com, peterz@infradead.org, will@kernel.org,
-        boqun.feng@gmail.com, mark.rutland@arm.com
-Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
-Date:   Tue, 01 Aug 2023 11:10:55 +0800
-In-Reply-To: <20230801011554.3950435-1-guoren@kernel.org>
-References: <20230801011554.3950435-1-guoren@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 
+        Mon, 31 Jul 2023 23:11:38 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A0D19BD;
+        Mon, 31 Jul 2023 20:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690859497; x=1722395497;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   mime-version:in-reply-to;
+  bh=NryKJShfM8SW3n7svt9Q1jFOZJgpKLahAZiBnH67rZY=;
+  b=TGH+Ak6BtYG8lhfydC3MvxarNyZZUys2c6fynGEl3zKQBXwWPVEruH+g
+   XVqp4r8spKPb09jDkHw1b3NvsHQG/EydZg3OAXwTu3QoMRikYMIZZCZh6
+   L2mM1GarL5KoZUJeL/LYTNnQzB12lxQQPqzrZLMPDjIui9rMyqtxdVvQR
+   h10J6vsHNwz6cd+Yk22+J5gladBisbr1ZfILu2hUyJtsqmiRjueOz08RM
+   iPKwlGxX3uujupjgmXW7uv57KIDWuMTPDAZW4mE8iDs2pthaLiJSRTB/7
+   zOfpQlOjdBCRvS3rQxVgpJdxDzfZDgEn6Ncf0eUsqjT7waZ7XuyfJwrOv
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="372810269"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="asc'?scan'208";a="372810269"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 20:11:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="842555037"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="asc'?scan'208";a="842555037"
+Received: from debian-skl.sh.intel.com (HELO debian-skl) ([10.239.160.45])
+  by fmsmga002.fm.intel.com with ESMTP; 31 Jul 2023 20:11:34 -0700
+Date:   Tue, 1 Aug 2023 11:12:05 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     intel-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        zhi.a.wang@intel.com, zhenyuw@linux.intel.com, kvm@vger.kernel.org
+Subject: Re: [PATCH] drm/i915/gvt: Fix bug in getting msg length in AUX CH
+ registers handler
+Message-ID: <ZMh4BW8a+82Ijzye@debian-scheme>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20230731112033.7275-1-yan.y.zhao@intel.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="2KtKni1zqKU798lM"
+Content-Disposition: inline
+In-Reply-To: <20230731112033.7275-1-yan.y.zhao@intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIzLTA3LTMxIGF0IDIxOjE1IC0wNDAwLCBndW9yZW5Aa2VybmVsLm9yZyB3cm90
-ZToKPiBGcm9tOiBHdW8gUmVuIDxndW9yZW5AbGludXguYWxpYmFiYS5jb20+Cj4gCj4gV2hlbiBj
-bXB4Y2hnIGZhaWxlZCwgbm8gbWVtb3J5IGJhcnJpZXIgd2FzIG5lZWRlZCB0byB0YWtlLiBPbmx5
-Cj4gd2hlbiBjbXB4Y2hnIHN1Y2Nlc3MgYW5kIHRoZSBuZXcgdmFsdWUgaXMgd3JpdHRlbiwgdGhl
-biB0aGUgbWVtb3J5Cj4gYmFycmllcnMgbmVlZGVkLgo+IAo+IMKgLSBjbXB4Y2hnX2FzbTrCoMKg
-IFVubmVjZXNzYXJ5IF9fV0VBS19MTFNDX1dCIGZvciB0aGUgZmFpbCBwYXRoIHdvdWxkCj4gwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWR1Y2UgdGhlIHBlcmZvcm1hbmNlIG9m
-IHRoZSBjbXB4Y2hnIGxvb3AgdHJ5aW5nLgoKSSdtIG5vdCBhbiBleHBlcnQgaW4gbWVtb3J5IG1v
-ZGVscywgYnV0IGluIHByYWN0aWNlIHRoaXMgYmFycmllciBpcwpyZWFsbHkgbmVlZGVkIG9yIGNt
-cHhjaGcgd2lsbCBiZSAibm90IGF0b21pYyIuICBTZWUKaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcv
-bGludXgtbWlwcy8xZDQ5ZGExMS01MWQ1LWUxNDgtY2IwMi05YmQwZWU1N2ZhZTZAZmx5Z29hdC5j
-b20vLgoKPiDCoC0gY21weGNoZ19zbWFsbDogTWlzcyBhbiBuZWNlc3NhcnkgX19XRUFLX0xMU0Nf
-V0Igd2hlbiBzYyBzdWNjZWVkcy4KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IEl0J3MgYSBidWcgYmVjYXVzZSB0aGVyZSBpcyBubyBtZW1vcnkgc3luY2hyb25pemF0aW9uCj4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB3aGVuIHNjIHN1Y2NlZWRzLgo+IAo+
-IFNpZ25lZC1vZmYtYnk6IEd1byBSZW4gPGd1b3JlbkBsaW51eC5hbGliYWJhLmNvbT4KPiBTaWdu
-ZWQtb2ZmLWJ5OiBHdW8gUmVuIDxndW9yZW5Aa2VybmVsLm9yZz4KPiAtLS0KPiDCoGFyY2gvbG9v
-bmdhcmNoL2luY2x1ZGUvYXNtL2NtcHhjaGcuaCB8IDYgKystLS0tCj4gwqAxIGZpbGUgY2hhbmdl
-ZCwgMiBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9hcmNo
-L2xvb25nYXJjaC9pbmNsdWRlL2FzbS9jbXB4Y2hnLmggYi9hcmNoL2xvb25nYXJjaC9pbmNsdWRl
-L2FzbS9jbXB4Y2hnLmgKPiBpbmRleCA5NzlmZGU2MWJiYTguLjZhMDViOTI4MTRiNiAxMDA2NDQK
-PiAtLS0gYS9hcmNoL2xvb25nYXJjaC9pbmNsdWRlL2FzbS9jbXB4Y2hnLmgKPiArKysgYi9hcmNo
-L2xvb25nYXJjaC9pbmNsdWRlL2FzbS9jbXB4Y2hnLmgKPiBAQCAtMTAyLDggKzEwMiw4IEBAIF9f
-YXJjaF94Y2hnKHZvbGF0aWxlIHZvaWQgKnB0ciwgdW5zaWduZWQgbG9uZyB4LCBpbnQgc2l6ZSkK
-PiDCoMKgwqDCoMKgwqDCoMKgIsKgwqDCoMKgwqDCoMKgbW92ZcKgwqDCoMKgJHQwLCAlejTCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBcbiLCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoFwKPiDCoMKgwqDCoMKgwqDCoMKgIsKgwqDCoMKgwqDCoMKgIiBzdCAi
-wqDCoCR0MCwgJTHCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoFxuIsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgXAo+IMKgwqDCoMKgwqDCoMKgwqAiwqDC
-oMKgwqDCoMKgwqBiZXF6wqDCoMKgwqAkdDAsIDFiwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBcbiLCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoFwKPiAt
-wqDCoMKgwqDCoMKgwqAiMjrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBcbiLCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoFwKPiDCoMKgwqDCoMKgwqDCoMKgX19XRUFLX0xMU0NfTULC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgXAo+ICvCoMKgwqDCoMKg
-wqDCoCIyOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoFxuIsKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgXAo+IMKgwqDCoMKgwqDCoMKgwqA6ICI9JnIiIChfX3JldCksICI9WkIiKCpt
-KcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBcCj4gwqDCoMKgwqDCoMKgwqDCoDogIlpCIigqbSksICJKciIg
-KG9sZCksICJKciIgKG5ldynCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBcCj4gwqDCoMKgwqDCoMKgwqDCoDogInQwIiwgIm1lbW9yeSIp
-O8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgXAo+IEBAIC0xNDgsMTAgKzE0OCw4
-IEBAIHN0YXRpYyBpbmxpbmUgdW5zaWduZWQgaW50IF9fY21weGNoZ19zbWFsbCh2b2xhdGlsZSB2
-b2lkICpwdHIsIHVuc2lnbmVkIGludCBvbGQsCj4gwqDCoMKgwqDCoMKgwqDCoCLCoMKgwqDCoMKg
-wqDCoG9ywqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCUxLCAlMSwgJXo2wqDCoMKgwqDCoFxu
-Igo+IMKgwqDCoMKgwqDCoMKgwqAiwqDCoMKgwqDCoMKgwqBzYy53wqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgJTEsICUywqDCoMKgwqDCoMKgwqDCoMKgwqBcbiIKPiDCoMKgwqDCoMKgwqDCoMKgIsKg
-wqDCoMKgwqDCoMKgYmVxesKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCUxLCAxYsKgwqDCoMKgwqDC
-oMKgwqDCoMKgXG4iCj4gLcKgwqDCoMKgwqDCoMKgIsKgwqDCoMKgwqDCoMKgYsKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoDNmwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoFxuIgo+IC3C
-oMKgwqDCoMKgwqDCoCIyOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgXG4iCj4gwqDCoMKgwqDCoMKgwqDCoF9f
-V0VBS19MTFNDX01CCj4gLcKgwqDCoMKgwqDCoMKgIjM6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBcbiIKPiAr
-wqDCoMKgwqDCoMKgwqAiMjrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoFxuIgo+IMKgwqDCoMKgwqDCoMKgwqA6
-ICI9JnIiIChvbGQzMiksICI9JnIiICh0ZW1wKSwgIj1aQyIgKCpwdHIzMikKPiDCoMKgwqDCoMKg
-wqDCoMKgOiAiWkMiICgqcHRyMzIpLCAiSnIiIChtYXNrKSwgIkpyIiAob2xkKSwgIkpyIiAobmV3
-KQo+IMKgwqDCoMKgwqDCoMKgwqA6ICJtZW1vcnkiKTsKCi0tIApYaSBSdW95YW8gPHhyeTExMUB4
-cnkxMTEuc2l0ZT4KU2Nob29sIG9mIEFlcm9zcGFjZSBTY2llbmNlIGFuZCBUZWNobm9sb2d5LCBY
-aWRpYW4gVW5pdmVyc2l0eQo=
 
+--2KtKni1zqKU798lM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 2023.07.31 19:20:33 +0800, Yan Zhao wrote:
+> Msg length should be obtained from value written to AUX_CH_CTL register
+> rather than from enum type of the register.
+>=20
+> Commit 0cad796a2269  ("drm/i915: Use REG_BIT() & co. for AUX CH registers=
+")
+> incorrectly calculates the msg_length from reg type and yields below
+> warning in intel_gvt_i2c_handle_aux_ch_write():
+> "i915 0000:00:02.0: drm_WARN_ON(msg_length !=3D 4)".
+>=20
+> Fixes: 0cad796a2269 ("drm/i915: Use REG_BIT() & co. for AUX CH registers")
+> Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
+> ---
+
+Thanks for the fix!
+
+Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+
+>  drivers/gpu/drm/i915/gvt/edid.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/gpu/drm/i915/gvt/edid.c b/drivers/gpu/drm/i915/gvt/e=
+did.c
+> index 2a0438f12a14..af9afdb53c7f 100644
+> --- a/drivers/gpu/drm/i915/gvt/edid.c
+> +++ b/drivers/gpu/drm/i915/gvt/edid.c
+> @@ -491,7 +491,7 @@ void intel_gvt_i2c_handle_aux_ch_write(struct intel_v=
+gpu *vgpu,
+>  		return;
+>  	}
+> =20
+> -	msg_length =3D REG_FIELD_GET(DP_AUX_CH_CTL_MESSAGE_SIZE_MASK, reg);
+> +	msg_length =3D REG_FIELD_GET(DP_AUX_CH_CTL_MESSAGE_SIZE_MASK, value);
+> =20
+>  	// check the msg in DATA register.
+>  	msg =3D vgpu_vreg(vgpu, offset + 4);
+> --=20
+> 2.17.1
+>=20
+
+--2KtKni1zqKU798lM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCZMh4AQAKCRCxBBozTXgY
+J44nAJ9iw6SM1ZBIOoZovFO1eue/1cWpWQCeK9uQsOBPVhKevT97+erR/pKpjwM=
+=Wsd+
+-----END PGP SIGNATURE-----
+
+--2KtKni1zqKU798lM--
