@@ -2,64 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D483476AACF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF34A76AAD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbjHAIXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
+        id S232090AbjHAIYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbjHAIXU (ORCPT
+        with ESMTP id S229459AbjHAIYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:23:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A16E0
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:23:17 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690878195;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lNPi1oOU5M8df8YEQLwunRsvnR4t3k5RWznSjqk62pY=;
-        b=ZprAeylkenkCRZ6Y3VuvgzII88TrO0euVIP30q5AQ1B1wA/T0XnMczjFNuQVpEGvFPaG+D
-        rCx3CRFAdWHYOdbz3G1vkTA/9u8MEXmR6sOOZn04PSTmWoNYmUnt8M/SmTZMGkkk43yqGJ
-        6KLd4eAsai0Ex43EqEI4OMuoHMjUp0OZukgWVZBqoEjQ2DUr+aLpdMyOpZ6y/ftuw6P7qz
-        mFzgTh/RX7tm+WXrbSQUdcJY3iwTL/jkHilDauzDJfWVMPP671vW55rhOIyM8ZEF7BpdG5
-        ThtG3nd8PZq5N+wXutvynXAR3+1lwdC74niDBcDVBbUBqOVMqQ1fLQItEv8FVg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690878195;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lNPi1oOU5M8df8YEQLwunRsvnR4t3k5RWznSjqk62pY=;
-        b=6cYwlSK5ZosWje+OVrjHn3FPDmR8NWD4j2lWK19NwzyKdHUlYmVIoxrqsJJyEMi8Ki2McE
-        dGhkEtDv2g2lG6Bg==
-To:     Juergen Gross <jgross@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: Re: [patch V2 50/58] x86/apic: Provide common init infrastructure
-In-Reply-To: <3af74b7a-be7f-3fdb-396e-e76b8ca1efaf@suse.com>
-References: <20230724131206.500814398@linutronix.de>
- <20230724132047.554355840@linutronix.de>
- <abfa4548-4367-d8fa-f23f-b2ca4a912258@suse.com> <87v8e0nskd.ffs@tglx>
- <b4f0e874-1e35-e523-8e5a-710bc54af52d@suse.com> <87pm48nktc.ffs@tglx>
- <87v8dzl0wm.ffs@tglx> <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
- <f0d5b71b-4344-2f35-03ee-3af6ebd038b2@suse.com> <87o7jrkyjf.ffs@tglx>
- <3af74b7a-be7f-3fdb-396e-e76b8ca1efaf@suse.com>
-Date:   Tue, 01 Aug 2023 10:23:14 +0200
-Message-ID: <87il9zkw7h.ffs@tglx>
+        Tue, 1 Aug 2023 04:24:15 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A14DE0;
+        Tue,  1 Aug 2023 01:24:14 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 825E56017C;
+        Tue,  1 Aug 2023 10:24:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690878251; bh=4TQh0BeNhMTySjhS+vXT+kiphvu7OUm8Va1VzI9Vi0c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Cxiha4L6MTPGyCWn9lgVLdGtEfGKKW/SJNeREhP3LvVyCXdh5M06DXg8wnNpXhyTX
+         xGZqzDg70SHRtn7yuF7AbN9xmjhIC4QhbG+GrFngvHUjeulB3ZiGdApeuX7QfP5HBM
+         LjsUKBZw05L2XUj++oK1l3U23s0y/1Y4ZkkBUu7Ty+yYKLZgmCeoO6316bAEraw5e4
+         c8mNhZjUnQFoVkKidAXn86Wbpc/k26PwZycVtmzjoa+7L8TDyq/d252BMvRZhN4948
+         um+BQTG7FIPNKHsxQC4L1V0Q36TWqyawKvXmbI8U8ClvOhb9uw+BOa+flyNGWVnBH/
+         rmijcKlk9IEmQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DyhEUB5vQsbH; Tue,  1 Aug 2023 10:24:09 +0200 (CEST)
+Received: from [192.168.1.6] (unknown [94.250.191.183])
+        by domac.alu.hr (Postfix) with ESMTPSA id DD1996015F;
+        Tue,  1 Aug 2023 10:24:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690878249; bh=4TQh0BeNhMTySjhS+vXT+kiphvu7OUm8Va1VzI9Vi0c=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=N9Ej0N1unLq6eAPqz2QO+pTANMbVaGVH9yQAl2MYlCBAiQPiVnmhofE57m0N2nCic
+         zOs/y9MqWZ2weBUfe0OlZFQWL40+8eT1lsbFyVoSyjHqAByKOD6Gjpt1mq1nbuK/im
+         WBlJIkaH0QHmMfUnT7DRTBfLD6MGu/11tDVt1/ECF2sn2Aj9ku66ycTDHaFhL/pNTF
+         CmzW3hhS6EhxYOAXRYeQlNe2AkZJ4GSRbSLsGceVYC1CbYlpa4Wu/rx9uUTndmNzpl
+         kR0uU/UIJR/MKqLl/KObMG4xqWxuuR7Ds9+xNVY8e4KwnmKT9t6da2MJ4ETofLuhVR
+         MPQeHPSeRAjxQ==
+Message-ID: <0e3a740f-60dd-e657-8a5c-79b155fa62b3@alu.unizg.hr>
+Date:   Tue, 1 Aug 2023 10:24:08 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH v1 1/1] test_firmware: prevent race conditions by a
+ correct implementation of locking
+Content-Language: en-US
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Russ Weight <russell.h.weight@intel.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Tianfei Zhang <tianfei.zhang@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
+        Dan Carpenter <error27@gmail.com>
+References: <20230731165018.8233-1-mirsad.todorovac@alu.unizg.hr>
+ <ZMfvAhOfSP5UXN6l@bombadil.infradead.org>
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+In-Reply-To: <ZMfvAhOfSP5UXN6l@bombadil.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,27 +78,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01 2023 at 09:37, Juergen Gross wrote:
-> On 01.08.23 09:32, Thomas Gleixner wrote:
->> On Tue, Aug 01 2023 at 09:08, Juergen Gross wrote:
->>> On 01.08.23 08:49, Juergen Gross wrote:
->>>    void __init xen_init_apic(void)
->>>    {
->>>           x86_apic_ops.io_apic_read = xen_io_apic_read;
->>> -       /* On PV guests the APIC CPUID bit is disabled so none of the
->>> -        * routines end up executing. */
->>> -       if (!xen_initial_domain())
->>> -               apic_install_driver(&xen_pv_apic);
->>> -
->>>           x86_platform.apic_post_init = xen_apic_check;
->> 
->> I don't think this one is needed.
->
-> Indeed.
+On 7/31/23 19:27, Luis Chamberlain wrote:
+> On Mon, Jul 31, 2023 at 06:50:19PM +0200, Mirsad Todorovac wrote:
+>> NOTE: This patch is tested against 5.4 stable
+>>
+>> NOTE: This is a patch for the 5.4 stable branch, not for the torvalds tree.
+>>
+>>        The torvalds tree, and stable tree 5.10, 5.15, 6.1 and 6.4 branches
+>>        were fixed in the separate
+>>        commit ID 4acfe3dfde68 ("test_firmware: prevent race conditions by a correct implementation of locking")
+>>        which was incompatible with 5.4
+>>
+> 
+> The above part is not part of the original commit, you also forgot to
+> mention the upstream commit:
+> 
+> [ Upstream commit 4acfe3dfde685a5a9eaec5555351918e2d7266a1 ]
 
-Can you send a real patch please which I can add to that pile at the
-right place?
+Will fix. Actually, I wasn't sure if it was required, because this backported patch
+isn't verbatim equal to commit 4acfe3dfde685a5a9eaec5555351918e2d7266a1 .
 
-Thanks,
+Though they are cousins, addressing the same issue.
 
-        tglx
+There is a race to be fixed, despite not all racy functions present in the original commit c92316bf8e948.
+
+>> Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
+>> Cc: Luis R. Rodriguez <mcgrof@kernel.org>
+>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Cc: Russ Weight <russell.h.weight@intel.com>
+>> Cc: Takashi Iwai <tiwai@suse.de>
+>> Cc: Tianfei Zhang <tianfei.zhang@intel.com>
+>> Cc: Shuah Khan <shuah@kernel.org>
+>> Cc: Colin Ian King <colin.i.king@gmail.com>
+>> Cc: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: linux-kselftest@vger.kernel.org
+>> Cc: stable@vger.kernel.org # v5.4
+>> Suggested-by: Dan Carpenter <error27@gmail.com>
+> 
+> Here you can add the above note in brackets:
+> 
+> [ explain your changes here from the original commit ]
+> 
+> Then, I see two commits upstream on Linus tree which are also fixes
+> but not merged on v5.4, did you want those applied too?
+
+These seem merged in the stable 5.4?
+
+commit 75d9e00f65cd2e0f2ce9ceeb395f821976773489 test_firmware: fix a memory leak with reqs buffer
+commit 94f3bc7e84af2f17dbfbc7afe93991c2a6f2f25e test_firmware: fix the memory leak of the allocated firmware buffer
+
+Maybe this commit should be backported instead:
+
+test_firmware: return ENOMEM instead of ENOSPC on failed memory allocation
+[ Upstream commit 7dae593cd226a0bca61201cf85ceb9335cf63682 ]
+
+It was also merged into 6.4, 6.1, 5.15 and 5.10 stable, but not on 5.4
+
+I might also check whether the 4.19 and 4.14 are vulnerable to these memory leaks and this race
+(Yes, they are, so it might be prudent that we backport this fix.)
+
+Mirsad
+
+> 
+>    Luis
