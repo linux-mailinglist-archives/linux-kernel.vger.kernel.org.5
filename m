@@ -2,150 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A55A376B001
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADEE876B007
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233459AbjHAJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54334 "EHLO
+        id S233702AbjHAJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbjHAJyu (ORCPT
+        with ESMTP id S233722AbjHAJ4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:54:50 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C5C4BE;
-        Tue,  1 Aug 2023 02:54:49 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C24E81F38D;
-        Tue,  1 Aug 2023 09:54:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690883687; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wO63J1EyZpemnTVHqFZ8CyKvSylFpCyQaYjDytJ5JcI=;
-        b=Xm1y6TPV+ft2mgHUEs0a4S+VBf8IeVMT2AHrnpwxVYWrl3VVPM27WCA62GEGULwRhG07+U
-        n0QYWPeJiNSw5BddFNX4NloFWNI0P/eu+VT8/XaOjKnQpON2VvvYJD09cUF5gpKij+y1c4
-        5kP2fChggBnUHXhaJts/jfCsA5DAVGc=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0B8813919;
-        Tue,  1 Aug 2023 09:54:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Z5loKmfWyGRWUgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 01 Aug 2023 09:54:47 +0000
-Date:   Tue, 1 Aug 2023 11:54:47 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        "T.J. Mercier" <tjmercier@google.com>,
-        Greg Thelen <gthelen@google.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 0/8] memory recharging for offline memcgs
-Message-ID: <ZMjWZwYkhxSNLU+q@dhcp22.suse.cz>
-References: <20230720070825.992023-1-yosryahmed@google.com>
- <20230720153515.GA1003248@cmpxchg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230720153515.GA1003248@cmpxchg.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 05:56:45 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79222E7D
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690883790; x=1722419790;
+  h=date:from:to:cc:subject:message-id;
+  bh=wgWQsg2Q3xIGYG981kdcpnbeECyEfcAQg3zjhu5Mo+0=;
+  b=HHzoTQmON1dM+gxQ77Ga+n2r9lJf6gDoHvwnayudQ6cQfo6jVicTli2X
+   aZBOvPjYc6xXEg2o6KBbJONHNT6f257HYQWOlnFUzOh5FYClU1cmKDqdZ
+   u8iTJf1qUDx4tJgZA5DcCVhTqnasOhtKHC9ME+X6aGVOLCQy0DocDbVzo
+   cY85+G/stvHq6JIF3jMd+DS3NZ+9Noku0ezEX4HcCJmLAxdP5OMPXOTZs
+   gQc2+WNf/8pGA8daa2X561COecFU7loCJbs9xKV1LpXujqg9ZYNerTmat
+   dmKL/PtaRbCBONRXi/A38/HItvAidBuEVsRX1Xmdlg4qr0s3go2Zz0YGr
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="433094774"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="scan'208";a="433094774"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 02:56:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="728631422"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="scan'208";a="728631422"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 01 Aug 2023 02:56:27 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qQm78-0000Ab-2j;
+        Tue, 01 Aug 2023 09:56:26 +0000
+Date:   Tue, 01 Aug 2023 17:55:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/fam01-next20230731] BUILD REGRESSION
+ 686a448268382aefe178130cd2b582db09b14aeb
+Message-ID: <202308011728.yuCjRewL-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Sorry for being late to this discussion]
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/fam01-next20230731
+branch HEAD: 686a448268382aefe178130cd2b582db09b14aeb  cpufreq: brcmstb-avs-cpufreq: Fix -Warray-bounds bug
 
-On Thu 20-07-23 11:35:15, Johannes Weiner wrote:
-[...]
-> I'm super skeptical of this proposal.
+Error/Warning reports:
 
-Agreed.
- 
-> Recharging *might* be the most desirable semantics from a user pov,
-> but only if it applies consistently to the whole memory footprint.
-> There is no mention of slab allocations such as inodes, dentries,
-> network buffers etc. which can be a significant part of a cgroup's
-> footprint. These are currently reparented. I don't think doing one
-> thing with half of the memory, and a totally different thing with the
-> other half upon cgroup deletion is going to be acceptable semantics.
-> 
-> It appears this also brings back the reliability issue that caused us
-> to deprecate charge moving. The recharge path has trylocks, LRU
-> isolation attempts, GFP_ATOMIC allocations. These introduce a variable
-> error rate into the relocation process, which causes pages that should
-> belong to the same domain to be scattered around all over the place.
-> It also means that zombie pinning still exists, but it's now even more
-> influenced by timing and race conditions, and so less predictable.
-> 
-> There are two issues being conflated here:
-> 
-> a) the problem of zombie cgroups, and
-> 
-> b) who controls resources that outlive the control domain.
-> 
-> For a), reparenting is still the most reasonable proposal. It's
-> reliable for one, but it also fixes the problem fully within the
-> established, user-facing semantics: resources that belong to a cgroup
-> also hierarchically belong to all ancestral groups; if those resources
-> outlive the last-level control domain, they continue to belong to the
-> parents. This is how it works today, and this is how it continues to
-> work with reparenting. The only difference is that those resources no
-> longer pin a dead cgroup anymore, but instead are physically linked to
-> the next online ancestor. Since dead cgroups have no effective control
-> parameters anymore, this is semantically equivalent - it's just a more
-> memory efficient implementation of the same exact thing.
-> 
-> b) is a discussion totally separate from this. We can argue what we
-> want this behavior to be, but I'd argue strongly that whatever we do
-> here should apply to all resources managed by the controller equally.
-> 
-> It could also be argued that if you don't want to lose control over a
-> set of resources, then maybe don't delete their control domain while
-> they are still alive and in use. For example, when restarting a
-> workload, and the new instance is expected to have largely the same
-> workingset, consider reusing the cgroup instead of making a new one.
-> 
-> For the zombie problem, I think we should merge Muchun's patches
-> ASAP. They've been proposed several times, they have Roman's reviews
-> and acks, and they do not change user-facing semantics. There is no
-> good reason not to merge them.
+https://lore.kernel.org/oe-kbuild-all/202308010320.Wqt7lyc4-lkp@intel.com
 
-Yes, fully agreed on both points. The problem with zombies is real but
-reparenting should address it for a large part. Ownership is a different
-problem. We have discussed that at LSFMM this year and in the past as
-well I believe. What we probably need is a concept of taking an
-ownership of the memory (something like madvise(MADV_OWN, range) or
-fadvise for fd based resources). This would allow the caller to take
-ownership of the said resource (like memcg charge of it).
+Error/Warning: (recently discovered and may have been fixed)
 
-I understand that would require some changes to existing workloads.
-Whatever the interface will be, it has to be explicit otherwise we
-are hitting problems with unaccounted resources that are sitting without
-any actual ownership and an undeterministic and time dependeing hopping
-over owners. In other words, nobody should be able to drop
-responsibility of any object while it is still consuming resources.
+arch/alpha/include/asm/string.h:22:16: warning: writing 12 bytes into a region of size 1 [-Wstringop-overflow=]
+arch/sparc/include/asm/string.h:15:25: warning: writing 12 bytes into a region of size 1 [-Wstringop-overflow=]
+arch/sparc/mm/init_64.c:3073:31: error: array subscript -1 is outside array bounds of 'char[]' [-Werror=array-bounds]
+drivers/gpu/drm/sun4i/sun8i_tcon_top.c:204:19: warning: array subscript 0 is outside array bounds of 'const bool[0]' {aka 'const _Bool[]'} [-Warray-bounds]
+drivers/net/ethernet/broadcom/bnxt/bnxt_dcb.c:133:17: warning: writing 12 bytes into a region of size 1 [-Wstringop-overflow=]
+drivers/net/ethernet/microchip/sparx5/sparx5_psfp.c:167:31: warning: array subscript 4 is above array bounds of 'const struct sparx5_psfp_gce[4]' [-Warray-bounds]
+drivers/spi/spi-stm32.c:1808:17: warning: array subscript 0 is outside array bounds of 'const bool[0]' {aka 'const _Bool[]'} [-Warray-bounds]
+include/linux/fortify-string.h:57:33: warning: writing 12 bytes into a region of size 1 [-Wstringop-overflow=]
+include/linux/fortify-string.h:57:33: warning: writing 4 bytes into a region of size between 18446744073709551613 and 2 [-Wstringop-overflow=]
+include/linux/iio/buffer.h:42:46: warning: array subscript 'int64_t {aka long long int}[0]' is partly outside array bounds of 's16[1]' {aka 'short int[1]'} [-Warray-bounds]
+include/linux/list.h:73:19: warning: array subscript 0 is outside array bounds of 'struct list_head[0]' [-Warray-bounds]
+kernel/bpf/net_namespace.c:437:27: warning: array subscript [0, 1] is outside array bounds of 'struct bpf_prog *[2]' [-Warray-bounds]
+sound/core/ump.c:716:25: warning: array subscript 'struct snd_ump_block_info[0]' is partly outside array bounds of 'char[20]' [-Warray-bounds]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   |-- arch-alpha-include-asm-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- arc-allyesconfig
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- arm-allmodconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- arm-allyesconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- arm64-allyesconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- i386-allyesconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- i386-randconfig-i006-20230731
+|   `-- sound-core-ump.c:warning:array-subscript-struct-snd_ump_block_info-is-partly-outside-array-bounds-of-char
+|-- m68k-allmodconfig
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- m68k-allyesconfig
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- mips-allmodconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- mips-allyesconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- parisc-allyesconfig
+|   |-- drivers-net-ethernet-broadcom-bnxt-bnxt_dcb.c:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- powerpc-allmodconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- riscv-allmodconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- riscv-allyesconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- s390-allmodconfig
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- s390-allyesconfig
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- sh-allmodconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|   `-- include-linux-list.h:warning:array-subscript-is-outside-array-bounds-of-struct-list_head
+|-- sparc-allyesconfig
+|   |-- arch-sparc-include-asm-string.h:warning:writing-bytes-into-a-region-of-size
+|   |-- arch-sparc-mm-init_64.c:error:array-subscript-is-outside-array-bounds-of-char
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- sparc64-randconfig-r021-20230731
+|   `-- arch-sparc-mm-init_64.c:error:array-subscript-is-outside-array-bounds-of-char
+|-- sparc64-randconfig-r035-20230731
+|   |-- arch-sparc-mm-init_64.c:error:array-subscript-is-outside-array-bounds-of-char
+|   `-- kernel-bpf-net_namespace.c:warning:array-subscript-is-outside-array-bounds-of-struct-bpf_prog
+|-- x86_64-allyesconfig
+|   |-- drivers-net-ethernet-microchip-sparx5-sparx5_psfp.c:warning:array-subscript-is-above-array-bounds-of-const-struct-sparx5_psfp_gce
+|   |-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size
+|   `-- include-linux-iio-buffer.h:warning:array-subscript-int64_t-aka-long-long-int-is-partly-outside-array-bounds-of-s16-aka-short-int
+|-- x86_64-buildonly-randconfig-r002-20230731
+|   |-- drivers-gpu-drm-sun4i-sun8i_tcon_top.c:warning:array-subscript-is-outside-array-bounds-of-const-bool-aka-const-_Bool
+|   |-- drivers-spi-spi-stm32.c:warning:array-subscript-is-outside-array-bounds-of-const-bool-aka-const-_Bool
+|   `-- include-linux-fortify-string.h:warning:writing-bytes-into-a-region-of-size-between-and
+`-- x86_64-randconfig-x015-20230731
+    `-- include-linux-list.h:warning:array-subscript-is-outside-array-bounds-of-struct-list_head
+
+elapsed time: 727m
+
+configs tested: 104
+configs skipped: 7
+
+tested configs:
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+alpha                randconfig-r006-20230731   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                  randconfig-r033-20230731   gcc  
+arc                  randconfig-r043-20230731   gcc  
+arm                              allmodconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                  randconfig-r024-20230731   gcc  
+arm                  randconfig-r025-20230731   gcc  
+arm                  randconfig-r032-20230731   clang
+arm                  randconfig-r046-20230731   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r014-20230731   clang
+arm64                randconfig-r036-20230731   gcc  
+csky                                defconfig   gcc  
+hexagon              randconfig-r001-20230731   clang
+hexagon              randconfig-r026-20230731   clang
+hexagon              randconfig-r041-20230731   clang
+hexagon              randconfig-r045-20230731   clang
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-r004-20230731   gcc  
+i386         buildonly-randconfig-r005-20230731   gcc  
+i386         buildonly-randconfig-r006-20230731   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                 randconfig-i001-20230731   gcc  
+i386                 randconfig-i002-20230731   gcc  
+i386                 randconfig-i003-20230731   gcc  
+i386                 randconfig-i004-20230731   gcc  
+i386                 randconfig-i005-20230731   gcc  
+i386                 randconfig-i006-20230731   gcc  
+i386                 randconfig-i011-20230731   clang
+i386                 randconfig-i012-20230731   clang
+i386                 randconfig-i013-20230731   clang
+i386                 randconfig-i014-20230731   clang
+i386                 randconfig-i015-20230731   clang
+i386                 randconfig-i016-20230731   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc             randconfig-r013-20230731   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc               randconfig-r015-20230731   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                randconfig-r004-20230731   gcc  
+riscv                randconfig-r023-20230731   clang
+riscv                randconfig-r042-20230731   clang
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                 randconfig-r011-20230731   clang
+s390                 randconfig-r044-20230731   clang
+sh                               allmodconfig   gcc  
+sh                   randconfig-r016-20230731   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64              randconfig-r021-20230731   gcc  
+sparc64              randconfig-r035-20230731   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                   randconfig-r034-20230731   clang
+um                           x86_64_defconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-r001-20230731   gcc  
+x86_64       buildonly-randconfig-r002-20230731   gcc  
+x86_64       buildonly-randconfig-r003-20230731   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64               randconfig-r012-20230731   clang
+x86_64               randconfig-x001-20230731   clang
+x86_64               randconfig-x002-20230731   clang
+x86_64               randconfig-x003-20230731   clang
+x86_64               randconfig-x004-20230731   clang
+x86_64               randconfig-x005-20230731   clang
+x86_64               randconfig-x006-20230731   clang
+x86_64               randconfig-x011-20230731   gcc  
+x86_64               randconfig-x012-20230731   gcc  
+x86_64               randconfig-x013-20230731   gcc  
+x86_64               randconfig-x014-20230731   gcc  
+x86_64               randconfig-x015-20230731   gcc  
+x86_64               randconfig-x016-20230731   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
 
 -- 
-Michal Hocko
-SUSE Labs
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
