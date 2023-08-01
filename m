@@ -2,139 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F0476B9D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C2076B9D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:40:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbjHAQkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S231465AbjHAQk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbjHAQkQ (ORCPT
+        with ESMTP id S231547AbjHAQk0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:40:16 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11B11FFE
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:40:14 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so922661566b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:40:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690908013; x=1691512813;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4qjFUw6+lEzkCCKqkbY3T91pufwJOps9NprX6UVn+h8=;
-        b=p6fiXJVO6VAT7ddDlyeNeKo0u9g75XBshHTDYQkWpxGEUOGoOVAa7lHgsGvQZ5v/+W
-         OL8o5krg+sbCk3k/ILPv5kJcGtc7Hl7e/Ptk68GNbUYDFS1ZLOXSdMFbtMgISIwiBvXM
-         xA5PCRA4fUyBY1hNJB6x57RpX4pHwvLO70MzF7vtOTGutOLMa2G02e6PwMjrWoV32oEH
-         b6YlMDU2PYjQiFSB63POIJeR3bgDccie71bMuCrG1M0DF1oPPZLzqfczUjMBmkdzgXbl
-         zrQDN3zGYffW49VbgVfFPFSdFMhkF99msYQ0hnralZcPwwvzI8CmOTzVDqdh+UFOFJjq
-         Lm5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690908013; x=1691512813;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4qjFUw6+lEzkCCKqkbY3T91pufwJOps9NprX6UVn+h8=;
-        b=bJmIMYUb1bQk+Juj0e4+LDujPHeTFX7s/mEF8gj8kY3x/v8BPrESwvdhyEgkJZkL1w
-         wDDJUO65CAvGfdNgEjFLASWcVW7VuO/Yam99VNrOeZ9f/ri2hXx2smOCeM8Wa+o9biew
-         EPwKzjqFg02tWbpD1fKboflLxhg/QPrjlnsl42TXsk/qDEDFsTen1jCFjeJdQRa1bysS
-         GlEJO4iZoSYN+hSpRfFBD9/nqNXMDk1o3rv42ftCcc2Jgv7DfO+zt0csrIsPeGn3C4E2
-         sSpT7VWBK4Xct8fG9zrayq3hxeJGsnnP1TN8uSchCl3VEgf2NRMl8QsRkXhrhH9309n8
-         6XGw==
-X-Gm-Message-State: ABy/qLYB3C+Fh/9hzcF6MRH3f8jMgUvJJGBYsZvbO7DVhHjcmvAMXOuG
-        2wlQ94w1C69BxgMo3EpBJ1or6dta1VboQxemyJXxXw==
-X-Google-Smtp-Source: APBJJlEOr1teCw40TvLuDNBikvF5ICCk1wj7SeHDxgnRGozU1Gwr56AHW9TbZUOhBSqnj1vnRQImF4blOlMh+ybaaJ4=
-X-Received: by 2002:a17:907:75d0:b0:989:450:e567 with SMTP id
- jl16-20020a17090775d000b009890450e567mr2977498ejc.65.1690908012991; Tue, 01
- Aug 2023 09:40:12 -0700 (PDT)
+        Tue, 1 Aug 2023 12:40:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253422108;
+        Tue,  1 Aug 2023 09:40:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B330461625;
+        Tue,  1 Aug 2023 16:40:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE837C433C7;
+        Tue,  1 Aug 2023 16:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690908024;
+        bh=9Zj4ne5Gw6euat2eGPvypb6viKCkkWGRlyGCVFFJRcc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=E9DcE+GSgFKqxSzSWJBElAs0Eto1a+wxzwLRpWuqlvCVEAo2qVQTNCm5W5kfDU6SM
+         kOCmemaorRqWdwSJoYfPG9Uv6ik1DPi9iuSOIJqUuBuIY5pDOgEGtHxdzQvlrG2SHT
+         JG2KPP4whaz/CRc956ZD/mHH9/wdlXOPBotTUXbYSnBC5xE8p6UhqRvpVq6TnzhraQ
+         iaYI/hV8cFVUc0+6NOHQP7pPAzqCSDwAZa5LYHOu0AxaTs/QAx34Ib6QC44yVNYbNw
+         iMGiGRq4QeRLod2YRfWl5Xy41VB9DQj72aufZSORroo1tExdgjyxDg0F6//18y2VQM
+         ZaK4M6ZJobCAw==
+Message-ID: <1cd8af90-c4f3-99c8-50b2-bf379d5b76f0@kernel.org>
+Date:   Tue, 1 Aug 2023 19:40:18 +0300
 MIME-Version: 1.0
-References: <20230726153223.821757-1-yosryahmed@google.com>
- <20230726153223.821757-2-yosryahmed@google.com> <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
-In-Reply-To: <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 1 Aug 2023 09:39:36 -0700
-Message-ID: <CAJD7tkbb8AWR-duWb+at-S9MMz48b0JqnM+b5ok83TzvXvPb+A@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: memcg: use rstat for non-hierarchical stats
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8 4/5] arm64: dts: ti: k3-j784s4-evm: Enable
+ DisplayPort-0
+Content-Language: en-US
+To:     Jayesh Choudhary <j-choudhary@ti.com>, nm@ti.com, vigneshr@ti.com
+Cc:     s-vadapalli@ti.com, afd@ti.com, kristo@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, a-bhatia1@ti.com, r-ravikumar@ti.com,
+        sabiya.d@ti.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230801070019.219660-1-j-choudhary@ti.com>
+ <20230801070019.219660-5-j-choudhary@ti.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20230801070019.219660-5-j-choudhary@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 7:30=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
-:
->
-> On Wed 26-07-23 15:32:23, Yosry Ahmed wrote:
-> > Currently, memcg uses rstat to maintain aggregated hierarchical stats.
-> > Counters are maintained for hierarchical stats at each memcg. Rstat
-> > tracks which cgroups have updates on which cpus to keep those counters
-> > fresh on the read-side.
-> >
-> > Non-hierarchical stats are currently not covered by rstat. Their
-> > per-cpu counters are summed up on every read, which is expensive.
-> > The original implementation did the same. At some point before rstat,
-> > non-hierarchical aggregated counters were introduced by
-> > commit a983b5ebee57 ("mm: memcontrol: fix excessive complexity in
-> > memory.stat reporting"). However, those counters were updated on the
-> > performance critical write-side, which caused regressions, so they were
-> > later removed by commit 815744d75152 ("mm: memcontrol: don't batch
-> > updates of local VM stats and events"). See [1] for more detailed
-> > history.
-> >
-> > Kernel versions in between a983b5ebee57 & 815744d75152 (a year and a
-> > half) enjoyed cheap reads of non-hierarchical stats, specifically on
-> > cgroup v1. When moving to more recent kernels, a performance regression
-> > for reading non-hierarchical stats is observed.
-> >
-> > Now that we have rstat, we know exactly which percpu counters have
-> > updates for each stat. We can maintain non-hierarchical counters again,
-> > making reads much more efficient, without affecting the performance
-> > critical write-side. Hence, add non-hierarchical (i.e local) counters
-> > for the stats, and extend rstat flushing to keep those up-to-date.
-> >
-> > A caveat is that we now need a stats flush before reading
-> > local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
-> > or memcg_events_local(), where we previously only needed a flush to
-> > read hierarchical stats. Most contexts reading non-hierarchical stats
-> > are already doing a flush, add a flush to the only missing context in
-> > count_shadow_nodes().
-> >
-> > With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
-> > machine with 256 cpus on cgroup v1:
-> >  # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
-> >  # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
-> >  real  0m0.125s
-> >  user  0m0.005s
-> >  sys   0m0.120s
-> >
-> > After:
-> >  real  0m0.032s
-> >  user  0m0.005s
-> >  sys   0m0.027s
->
-> Have you measured any potential regression for cgroup v2 which collects
-> all this data without ever using it (AFAICS)?
 
-I did not. I did not expect noticeable regressions given that all the
-extra work is done during flushing, which should mostly be done by the
-asynchronous worker, but can also happen in the stats reading context.
-Let me run the same script on cgroup v2 just in case and report back.
 
-> --
-> Michal Hocko
-> SUSE Labs
+On 01/08/2023 10:00, Jayesh Choudhary wrote:
+> From: Rahul T R <r-ravikumar@ti.com>
+> 
+> Enable display for J784S4 EVM.
+> 
+> Add assigned clocks for DSS, DT node for DisplayPort PHY and pinmux for
+> DP HPD. Add the clock frequency for serdes_refclk.
+> 
+> Add the endpoint nodes to describe connection from:
+> DSS => MHDP => DisplayPort connector.
+> 
+> Also add the GPIO expander-4 node and pinmux for main_i2c4 which is
+> required for controlling DP power. Set status for all required nodes
+> for DP-0 as "okay".
+> 
+> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
+> [j-choudhary@ti.com: move all the changes together to enable DP-0 in EVM]
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 117 +++++++++++++++++++++++
+>  1 file changed, 117 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> index 7ad152a1b90f..1145a7f046e2 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+> @@ -249,6 +249,28 @@ vdd_sd_dv: regulator-TLV71033 {
+>  		states = <1800000 0x0>,
+>  			 <3300000 0x1>;
+>  	};
+> +
+> +	dp0_pwr_3v3: regulator-dp0-prw {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "dp0-pwr";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&exp4 0 GPIO_ACTIVE_HIGH>;
+> +		enable-active-high;
+> +	};
+> +
+> +	dp0: dp0-connector {
+
+dp0-connector is not a standard name.
+
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+how about connector-dp0?
+
+> +		compatible = "dp-connector";
+> +		label = "DP0";
+> +		type = "full-size";
+> +		dp-pwr-supply = <&dp0_pwr_3v3>;
+> +
+> +		port {
+> +			dp0_connector_in: endpoint {
+> +				remote-endpoint = <&dp0_out>;
+> +			};
+> +		};
+> +	};
+>  };
+>  
+>  &main_pmx0 {
+> @@ -286,6 +308,19 @@ vdd_sd_dv_pins_default: vdd-sd-dv-default-pins {
+>  			J784S4_IOPAD(0x020, PIN_INPUT, 7) /* (AJ35) MCAN15_RX.GPIO0_8 */
+>  		>;
+>  	};
+> +
+> +	dp0_pins_default: dp0-pins-default {
+> +		pinctrl-single,pins = <
+> +			J784S4_IOPAD(0x0cc, PIN_INPUT, 12) /* (AM37) SPI0_CS0.DP0_HPD */
+> +		>;
+> +	};
+> +
+> +	main_i2c4_pins_default: main-i2c4-pins-default {
+> +		pinctrl-single,pins = <
+> +			J784S4_IOPAD(0x014, PIN_INPUT_PULLUP, 8) /* (AG33) MCAN14_TX.I2C4_SCL */
+> +			J784S4_IOPAD(0x010, PIN_INPUT_PULLUP, 8) /* (AH33) MCAN13_RX.I2C4_SDA */
+> +		>;
+> +	};
+>  };
+>  
+>  &wkup_pmx2 {
+> @@ -827,3 +862,85 @@ adc {
+>  		ti,adc-channels = <0 1 2 3 4 5 6 7>;
+>  	};
+>  };
+> +
+> +&serdes_refclk {
+> +	status = "okay";
+> +	clock-frequency = <100000000>;
+> +};
+> +
+> +&dss {
+> +	status = "okay";
+> +	assigned-clocks = <&k3_clks 218 2>,
+> +			  <&k3_clks 218 5>,
+> +			  <&k3_clks 218 14>,
+> +			  <&k3_clks 218 18>;
+> +	assigned-clock-parents = <&k3_clks 218 3>,
+> +				 <&k3_clks 218 7>,
+> +				 <&k3_clks 218 16>,
+> +				 <&k3_clks 218 22>;
+> +};
+> +
+> +&serdes_wiz4 {
+> +	status = "okay";
+> +};
+> +
+> +&serdes4 {
+> +	status = "okay";
+> +	serdes4_dp_link: phy@0 {
+> +		reg = <0>;
+> +		cdns,num-lanes = <4>;
+> +		#phy-cells = <0>;
+> +		cdns,phy-type = <PHY_TYPE_DP>;
+> +		resets = <&serdes_wiz4 1>, <&serdes_wiz4 2>,
+> +			 <&serdes_wiz4 3>, <&serdes_wiz4 4>;
+> +	};
+> +};
+> +
+> +&mhdp {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&dp0_pins_default>;
+> +	phys = <&serdes4_dp_link>;
+> +	phy-names = "dpphy";
+> +};
+> +
+> +&dss_ports {
+> +	port {
+> +		dpi0_out: endpoint {
+> +			remote-endpoint = <&dp0_in>;
+> +		};
+> +	};
+> +};
+> +
+> +&main_i2c4 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&main_i2c4_pins_default>;
+> +	clock-frequency = <400000>;
+> +
+> +	exp4: gpio@20 {
+> +		compatible = "ti,tca6408";
+> +		reg = <0x20>;
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +	};
+> +};
+> +
+> +&dp0_ports {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +
+> +	port@0 {
+> +		reg = <0>;
+> +		dp0_in: endpoint {
+> +			remote-endpoint = <&dpi0_out>;
+> +		};
+> +	};
+> +
+> +	port@4 {
+> +		reg = <4>;
+> +		dp0_out: endpoint {
+> +			remote-endpoint = <&dp0_connector_in>;
+> +		};
+> +	};
+> +};
+
+-- 
+cheers,
+-roger
