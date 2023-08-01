@@ -2,124 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F6276B649
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:53:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF7F76B650
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233618AbjHANxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52040 "EHLO
+        id S234060AbjHANxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232909AbjHANx2 (ORCPT
+        with ESMTP id S233931AbjHANxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:53:28 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13D1E4;
-        Tue,  1 Aug 2023 06:53:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690898005; x=1722434005;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nIYKnL0gLdWiIzoPC3kqGQrPs7uvjKL+Tri0yD1cqF8=;
-  b=XU1wwi/1c8SGDwvErMRYqcZmtG7oWGBSwXXzOsRPwl6pwEIkj/0QwXZt
-   c1WpYg9bOADyaBDo1evfXyg7dnTcd4yiQxM5CssS0inbVxZXIHuyAK2JE
-   IJEyGRQXtwAoVJTWoQEfJuGiQJ6MFwJg1LUY1xytpg26Yz0hq2QZ31Hdz
-   l7B8Fy4sju4A/M18obMCumj6ZvUutIq3B5bEiyXozvJfN8QsdAN6TuSJf
-   5T4SvSEdWMcoZAvjnHntcQvKHQFyGSI1KwWJOu7XTQgxyExVXZF0rVgkh
-   eRiNMI+kUXImtVEU7MvjiU9LXtEDWwpn65cuKPYSk/5od6rGEuiwVjmaW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="366769124"
-X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
-   d="scan'208";a="366769124"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 06:53:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="705836404"
-X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
-   d="scan'208";a="705836404"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP; 01 Aug 2023 06:53:22 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qQpoO-005Clu-0y;
-        Tue, 01 Aug 2023 16:53:20 +0300
-Date:   Tue, 1 Aug 2023 16:53:19 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Satish Nagireddy <satish.nagireddy@getcruise.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 7/9] media: i2c: ds90ub953: Restructure clkout
- management
-Message-ID: <ZMkOTwLHdRQqUtBg@smile.fi.intel.com>
-References: <20230731-fpdlink-additions-v3-0-8acfc49c215a@ideasonboard.com>
- <20230731-fpdlink-additions-v3-7-8acfc49c215a@ideasonboard.com>
+        Tue, 1 Aug 2023 09:53:44 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AE4FBEC;
+        Tue,  1 Aug 2023 06:53:41 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8Cxc_BkDslkfCEOAA--.33318S3;
+        Tue, 01 Aug 2023 21:53:40 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxriNiDslkGQxEAA--.5911S3;
+        Tue, 01 Aug 2023 21:53:38 +0800 (CST)
+Message-ID: <00f8d896-7465-384c-dd94-823ad5524e50@loongson.cn>
+Date:   Tue, 1 Aug 2023 21:53:38 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731-fpdlink-additions-v3-7-8acfc49c215a@ideasonboard.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [v1,v1,5/7] drm/vs: Register DRM device
+Content-Language: en-US
+From:   suijingfeng <suijingfeng@loongson.cn>
+To:     Keith Zhao <keith.zhao@starfivetech.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        Jagan Teki <jagan@edgeble.ai>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Shawn Guo <shawnguo@kernel.org>, christian.koenig@amd.com
+References: <20230801101030.2040-6-keith.zhao@starfivetech.com>
+ <6b776c23-9cc1-5a7d-0a85-bd7eb42e847d@loongson.cn>
+In-Reply-To: <6b776c23-9cc1-5a7d-0a85-bd7eb42e847d@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxriNiDslkGQxEAA--.5911S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj9xXoW7XFyrXryxJw15Aw17Zr1rKrX_yoW3ArbEyw
+        sYqr18W3W8JFWUJF1UtFn3ZryIqryj9as5Jay5Ar15Z3W7Xrsavan8JwnYvr4Ygan7G3Wf
+        Grs8ur1fAa47XosvyTuYvTs0mTUanT9S1TB71UUUU17qnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUbgxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVWxJr0_GcWln4kS14v26r1q6r43M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
+        xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26rWY
+        6Fy7McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Wrv_ZF1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Ar0_tr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Cr0_
+        Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jMeH
+        DUUUUU=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 04:24:41PM +0300, Tomi Valkeinen wrote:
-> Separate clkout calculations and register writes into two functions:
-> ub953_calc_clkout_params and ub953_write_clkout_regs, and add a struct
-> ub953_clkout_data that is used to store the clkout parameters.
-> 
-> This simplifies the clkout management.
+Hi,
 
-...
+On 2023/8/1 21:40, suijingfeng wrote:
+>> +if DRM_VERISILICON
+>> +
+>> +config STARFIVE_HDMI
+>> +    bool "Starfive specific extensions HDMI"
+>> +    help
+>> +       This selects support for StarFive SoC specific extensions
+>> +       for the Innosilicon HDMI driver. If you want to enable
+>> +       HDMI on JH7110 based SoC, you should select this option.
+>> +
+>> +       To compile this driver as a module, choose M here.
+>> +endif
+>
+> Why not use 
 
-> +#define UB953_DEFAULT_CLKOUT_RATE	25000000UL
+  Why not use the 'depends on DRM_VERISILICON'  here ?
 
-HZ_PER_MHZ (from units.h)?
 
-...
+```
 
-> +struct ub953_clkout_data {
-> +	u32 hs_div;
-> +	u32 m;
-> +	u32 n;
-> +	unsigned long rate;
+config STARFIVE_HDMI
 
-You may save 4 bytes on some architectures (which do not allow 4-byte alignment
-for 64-bit members) by reshuffling the members.
+     depends on DRM_VERISILICON
+     bool "Starfive specific extensions HDMI"
 
-(besides using u32-fract :-)
+     help
 
-> +};
+```
 
-...
 
-> +		dev_dbg(dev, "%s %llu * %u / (8 * %u) = %lu (requested %lu)",
-> +			__func__, fc_rate, m, n, clkout_rate, target_rate);
-
-__func__ in dev_dbg() is not needed. It's very rare nowadays to debug a kernel
-without Dynamic Debug to be on.
-
-...
-
-> +		dev_dbg(dev, "%s %llu / %u * %u / %u = %lu (requested %lu)",
-> +			__func__, fc_rate, hs_div, m, n, clkout_rate,
-> +			target_rate);
-
-Ditto.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+I see the Kconfig of VC4 using the 'depends on', and most  driver using 
+the 'depends on'
 
