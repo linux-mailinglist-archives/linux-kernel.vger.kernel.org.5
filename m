@@ -2,96 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF3F76AB36
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D6876AB38
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:40:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbjHAIk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:40:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
+        id S231576AbjHAIkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbjHAIkY (ORCPT
+        with ESMTP id S232075AbjHAIkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:40:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C1A10EB;
-        Tue,  1 Aug 2023 01:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690879222; x=1722415222;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=REn/Is4TBVpWaD5oECbSAASATiSAsFC/V8UYQ7o8W6k=;
-  b=XBA79slGsmwlcUUOV09EDNhRW6UgGPRXxQF6hq8vu2P2rYUMxv4yrrV3
-   1PfrQTWXqWssBZYuPCcKOK1TUxnHPnfvy+2gxb4FWNEUdFTIFOrXPAUX+
-   C0F4KtlM5pDsWV1/Wooa4PZ7lZK/UBwq/8FXy+KE73MXF573HZKdPZgQD
-   DF5g+VhewxwDbezOvDWT5G/WrmJU6DpjwTZqagLpSRYiI24/3nFWho4m9
-   jbTtbn9tNRGzl43wmndNgorRaiyCHe/Y3QiG5phyQtxuOp1iCgtxba/0S
-   0KW63GXzN3+pSLHoiTjrl1W2/w82tLoQLJL8HcHc5lO7vnKuPuPBh650U
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366708774"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="366708774"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 01:40:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="842637504"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="842637504"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.213.15]) ([10.254.213.15])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 01:40:18 -0700
-Message-ID: <b67d6f3f-95f0-0421-49ff-471032de0963@linux.intel.com>
-Date:   Tue, 1 Aug 2023 16:40:16 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] iommu: Move pasid array from group to device
-Content-Language: en-US
-To:     "tina.zhang" <tina.zhang@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230801063125.34995-1-baolu.lu@linux.intel.com>
- <20230801063125.34995-3-baolu.lu@linux.intel.com>
- <1254d61b-1f4e-2ef3-c3dc-95180f26f08c@intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <1254d61b-1f4e-2ef3-c3dc-95180f26f08c@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 04:40:37 -0400
+Received: from out28-124.mail.aliyun.com (out28-124.mail.aliyun.com [115.124.28.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5433E1702
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:40:35 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436259|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.167007-0.0010792-0.831913;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5oPFEH_1690879225;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5oPFEH_1690879225)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 16:40:28 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in vega10_pptable.h
+Date:   Tue,  1 Aug 2023 08:40:24 +0000
+Message-Id: <20230801084024.6826-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/1 16:07, tina.zhang wrote:
-> Hi Baolu,
+Fix the following errors reported by checkpatch:
 
-Hi Tina,
+ERROR: open brace '{' following struct go on the same line
 
-> Although this patch moves the domain reference pointer from a per-group
-> structure to a per-device structure, the domain life-cycle is still
-> expected to be managed per-group (i.e., iommu_domain_free() is called in
-> iommu_group_release()). Is this what we expect?
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ .../amd/pm/powerplay/hwmgr/vega10_pptable.h    | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-The lifecycle of an iommu domain is independent of the lifecycle of the
-iommu group that it is attached to. The system domains, such as the
-default domain and the blocking domain, are allocated and managed by the
-iommu core. These domains are freed when the group is freed.
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
+index 9c479bd9a786..8b0590b834cc 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_pptable.h
+@@ -317,16 +317,14 @@ typedef struct _ATOM_Vega10_Thermal_Controller {
+     UCHAR ucFlags;          /* to be defined */
+ } ATOM_Vega10_Thermal_Controller;
+ 
+-typedef struct _ATOM_Vega10_VCE_State_Record
+-{
++typedef struct _ATOM_Vega10_VCE_State_Record {
+     UCHAR  ucVCEClockIndex;         /*index into usVCEDependencyTableOffset of 'ATOM_Vega10_MM_Dependency_Table' type */
+     UCHAR  ucFlag;                  /* 2 bits indicates memory p-states */
+     UCHAR  ucSCLKIndex;             /* index into ATOM_Vega10_SCLK_Dependency_Table */
+     UCHAR  ucMCLKIndex;             /* index into ATOM_Vega10_MCLK_Dependency_Table */
+ } ATOM_Vega10_VCE_State_Record;
+ 
+-typedef struct _ATOM_Vega10_VCE_State_Table
+-{
++typedef struct _ATOM_Vega10_VCE_State_Table {
+     UCHAR ucRevId;
+     UCHAR ucNumEntries;
+     ATOM_Vega10_VCE_State_Record entries[1];
+@@ -361,8 +359,7 @@ typedef struct _ATOM_Vega10_PowerTune_Table {
+ 	USHORT usTemperatureLimitTedge;
+ } ATOM_Vega10_PowerTune_Table;
+ 
+-typedef struct _ATOM_Vega10_PowerTune_Table_V2
+-{
++typedef struct _ATOM_Vega10_PowerTune_Table_V2 {
+ 	UCHAR  ucRevId;
+ 	USHORT usSocketPowerLimit;
+ 	USHORT usBatteryPowerLimit;
+@@ -388,8 +385,7 @@ typedef struct _ATOM_Vega10_PowerTune_Table_V2
+ 	USHORT usTemperatureLimitTedge;
+ } ATOM_Vega10_PowerTune_Table_V2;
+ 
+-typedef struct _ATOM_Vega10_PowerTune_Table_V3
+-{
++typedef struct _ATOM_Vega10_PowerTune_Table_V3 {
+ 	UCHAR  ucRevId;
+ 	USHORT usSocketPowerLimit;
+ 	USHORT usBatteryPowerLimit;
+@@ -428,15 +424,13 @@ typedef struct _ATOM_Vega10_Hard_Limit_Record {
+     USHORT usVddMemLimit;
+ } ATOM_Vega10_Hard_Limit_Record;
+ 
+-typedef struct _ATOM_Vega10_Hard_Limit_Table
+-{
++typedef struct _ATOM_Vega10_Hard_Limit_Table {
+     UCHAR ucRevId;
+     UCHAR ucNumEntries;
+     ATOM_Vega10_Hard_Limit_Record entries[1];
+ } ATOM_Vega10_Hard_Limit_Table;
+ 
+-typedef struct _Vega10_PPTable_Generic_SubTable_Header
+-{
++typedef struct _Vega10_PPTable_Generic_SubTable_Header {
+     UCHAR  ucRevId;
+ } Vega10_PPTable_Generic_SubTable_Header;
+ 
+-- 
+2.17.1
 
-However, any device driver can allocate its own iommu domains. The
-device driver can set/remove the domain to/from the RID or PASID of the
-device.
-
-Best regards,
-baolu
