@@ -2,161 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2198176BF0F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4599776BF12
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231129AbjHAVPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
+        id S230180AbjHAVSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjHAVPD (ORCPT
+        with ESMTP id S232273AbjHAVSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:15:03 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A39BC3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:15:02 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d3ae42d146cso306868276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 14:15:02 -0700 (PDT)
+        Tue, 1 Aug 2023 17:18:07 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA651FF;
+        Tue,  1 Aug 2023 14:18:06 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-4039f7e1d3aso46544271cf.0;
+        Tue, 01 Aug 2023 14:18:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690924501; x=1691529301;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cvCPvXEXJi+AWuMnKm+64/X3uAVVE34xKMNOfWT1BRs=;
-        b=PR7tMSy5f4UYTvY4LrTeHg5FaPYcYdynCZ7BdMeTUjCGQFv3V9+d2wyZpspcsT2Lk2
-         lwZLurzuBUx24t7W9okeaEOLhZWGzAN+Ac9k9MR3EsSKBEA3pv66qqM7dL744LXA4fwu
-         98yACZNsKu3Be7cHWDnwKZa6JnGb6wZslBqVSc4zOgR/35FFx2Lr92lR6rI6tuOmKzs5
-         0qBsLA2GF9pI0XIWbCabH3dB04lZqx9ULoUWh0+i1GQGSmAxEwa2r89230sMVJ1hBbpR
-         6pQPp3LFMFfmtB4oeDv3kVOgapuenW7gLqDSM8eN9Qz6klCRAhk8qyicxnIJN+aH651H
-         tC7Q==
+        d=gmail.com; s=20221208; t=1690924686; x=1691529486;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ENvvMC35pukF5ojzHyo5Z5dKspFSqXLPb4hIWaoW6Vs=;
+        b=QGxwPFTLr0Ijpw8NqwPoLwfTzsV1c/Sbv/icXJRj2I29nkPl4EEqdvtKXCT5JrQ3Tf
+         G4PEAh+sTunfJRQKlEtLHUdRZ2rvRo5MLKx8AM0lKHvxROlhiIu5cDcp9XNeu9PLgV00
+         VrprxXBcMILUoW52lfanhnu3EeQc9WOGOpBxedrNKqCuBYaZlThWTV1rPXWz58eD3MY8
+         8yutgXVMFc+vVgqhxXYmRrzar2zjHxiNVyXlqhGLE0Ev5CWHWb6smI0HMtONn7CJrIHP
+         8iyPj5S59sq6/4u4DRjCfGKlMwH6EBGdJpTKPO5CvrMTnd4q/2+sMft+ktoxAHNvt7/y
+         CdVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690924501; x=1691529301;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cvCPvXEXJi+AWuMnKm+64/X3uAVVE34xKMNOfWT1BRs=;
-        b=li5pSWNAlRcABT4abgocCFKVlfs0YmD6J6VTOS6Ar+TFj9+ZrO/asWP3l214+Tu2jp
-         1ncoZDAkpUyLWEFY6t94p6kDcsfMrThwwmwjhU+W92RGeZ32FhwYaT5F9nzpa6nVZLcQ
-         YCzhLXzQJ4Z72IgL0m7MsYqiYayfAWhQN9dKkqfjRR4/vuuIumrGEMh4MHwlMND21AZ1
-         f8TQSaLaPJrFhBfarDuNHAOyc803ngeHIQKr6xd6tV6Xh4QvkTGiYSQAyly0q8hSFoUL
-         ktwxCrHyo4lCPSrlBKDWijx1C4SKYBQ2qV4SIpfAJQfRq/EpZc/pwex/k+KoDWAeDoEC
-         HQMQ==
-X-Gm-Message-State: ABy/qLboRCyAxtYnVnhpsa3mZ0p7/Gwr6e639vcMXz2idA7g1aiT4Ct2
-        W/fs8o64DWgi+wh4psfox/E+CPU4I0NvfJvJaA==
-X-Google-Smtp-Source: APBJJlH6aRZtqfR1X4T8qWnxez8AGlbXuy2EkOO9dyhBk5KJPlduqXXSo2+gRcBiY1QYA4mWnF6JSgOt/rTMp+KuJQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:dbcc:0:b0:c4d:9831:9712 with SMTP
- id g195-20020a25dbcc000000b00c4d98319712mr91040ybf.0.1690924501488; Tue, 01
- Aug 2023 14:15:01 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 21:14:56 +0000
+        d=1e100.net; s=20221208; t=1690924686; x=1691529486;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ENvvMC35pukF5ojzHyo5Z5dKspFSqXLPb4hIWaoW6Vs=;
+        b=jjErB7jh78sM6AZlVBZZkYLse/SjCthTHNkVIz3CDyPbL6tM5FqRfhxdUD97EmoiOZ
+         jvipcwiEAP2ImW1zOIu3sn4M1Y6iVxrGrG0pU4xQsXgf1xKplw+LBQSBkIIT+bvcUX86
+         jjNN4ObXK/bcags5OLhJWuuOCu35opuNE0GGdM0JzHg8nXyQLyO+uspj75JiTjl1+UC0
+         cXxkOxIIz/Rl5KtlFoTqxfznNdKLGDC/cwVhc2Hsx4ZedPo5QobXJNxpWvmARcsscxny
+         iwvMhBrnQ0sePDKBYMax7vH4apTcsecyL1AxAfw8w8SbKRFhc7uFtGnfC3fREVIqmOwV
+         XSqA==
+X-Gm-Message-State: ABy/qLbCCkaads/efIPSZmiS5Bkh1ZTTHpKp9kTVUzUNLwNx/OvuYEbO
+        IlqpMpqlUwaiSxWH8493gzg=
+X-Google-Smtp-Source: APBJJlEiyHcWyMP4Hr2e0zP22CuZJxyfOPV+G08QykQJpQeWRhVUDa+h8wGLidSMX6FgiNJMd/H17g==
+X-Received: by 2002:ac8:7d4b:0:b0:403:b6d2:8dc4 with SMTP id h11-20020ac87d4b000000b00403b6d28dc4mr17520144qtb.34.1690924685871;
+        Tue, 01 Aug 2023 14:18:05 -0700 (PDT)
+Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
+        by smtp.gmail.com with ESMTPSA id q27-20020ac8411b000000b003f9efa2ddb4sm3363636qtl.66.2023.08.01.14.17.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 14:18:00 -0700 (PDT)
+Date:   Tue, 01 Aug 2023 17:17:56 -0400
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     dhowells@redhat.com,
+        syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com,
+        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Message-ID: <64c97684ee5e3_1d7aa3294da@willemb.c.googlers.com.notmuch>
+In-Reply-To: <1569149.1690924207@warthog.procyon.org.uk>
+References: <1569149.1690924207@warthog.procyon.org.uk>
+Subject: RE: [PATCH net v2] udp: Fix __ip{,6}_append_data()'s handling of
+ MSG_SPLICE_PAGES
 Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAM91yWQC/x3MMQqAMAxA0atIZgOtFi1eRRxKjBqUKimIULy7x
- fEN/2dIrMIJhiqD8i1Jzlhg6wpoC3FllLkYGtO0xhuLQWlDlUQ37qyRD7QuGOeJOtf1ULpLeZH nf47T+34o9Y8zYwAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690924500; l=2927;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=s3m7CWALnl/nC1KMRD2GMsw7JbTdQy5wYGZxtQUQlGM=; b=7eJSjj6jI+aQ7sQWqwG3t2xsmy39xyn26rfVvRq1stqWx/hW8lh8ZtyNbqdNOhiBoBHEvbHbd
- dtYNXKXBITPC026HWfdakwEnyjQW2KzToCm+rBDZJ3IalP45DI9fCa2
-X-Mailer: b4 0.12.3
-Message-ID: <20230801-arch-riscv-kernel-v1-1-2b3f2dc0bc61@google.com>
-Subject: [PATCH] RISC-V: cpu: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-`strncpy` is deprecated for use on NUL-terminated destination strings [1].
+David Howells wrote:
+> __ip_append_data() can get into an infinite loop when asked to splice into
+> a partially-built UDP message that has more than the frag-limit data and up
+> to the MTU limit.  Something like:
+> 
+>         pipe(pfd);
+>         sfd = socket(AF_INET, SOCK_DGRAM, 0);
+>         connect(sfd, ...);
+>         send(sfd, buffer, 8161, MSG_CONFIRM|MSG_MORE);
+>         write(pfd[1], buffer, 8);
+>         splice(pfd[0], 0, sfd, 0, 0x4ffe0ul, 0);
+> 
+> where the amount of data given to send() is dependent on the MTU size (in
+> this instance an interface with an MTU of 8192).
+> 
+> The problem is that the calculation of the amount to copy in
+> __ip_append_data() goes negative in two places, and, in the second place,
+> this gets subtracted from the length remaining, thereby increasing it.
+> 
+> This happens when pagedlen > 0 (which happens for MSG_ZEROCOPY and
+> MSG_SPLICE_PAGES), the terms in:
+> 
+>         copy = datalen - transhdrlen - fraggap - pagedlen;
+> 
+> then mostly cancel when pagedlen is substituted for, leaving just -fraggap.
+> This causes:
+> 
+>         length -= copy + transhdrlen;
+> 
+> to increase the length to more than the amount of data in msg->msg_iter,
+> which causes skb_splice_from_iter() to be unable to fill the request and it
+> returns less than 'copied' - which means that length never gets to 0 and we
+> never exit the loop.
+> 
+> Fix this by:
+> 
+>  (1) Insert a note about the dodgy calculation of 'copy'.
+> 
+>  (2) If MSG_SPLICE_PAGES, clear copy if it is negative from the above
+>      equation, so that 'offset' isn't regressed and 'length' isn't
+>      increased, which will mean that length and thus copy should match the
+>      amount left in the iterator.
+> 
+>  (3) When handling MSG_SPLICE_PAGES, give a warning and return -EIO if
+>      we're asked to splice more than is in the iterator.  It might be
+>      better to not give the warning or even just give a 'short' write.
+> 
+> The same problem occurs in __ip6_append_data(), except that there's a check
+> in there that errors out with EINVAL if copy < 0.  Fix this function in
+> much the same way as the ipv4 variant but also skip the erroring out if
+> copy < 0.
 
-A suitable replacement is `strscpy` [2] due to the fact that it
-guarantees NUL-termination on its destination buffer argument which is
-_not_ the case for `strncpy`!
+I don't think the two should be combined.
 
-The `sv_type` buffer is declared with a size of 16 which is then
-followed by some `strncpy` calls to populate the buffer with one of:
-"sv32", "sv57", "sv48", "sv39" or "none". Hard-coding the max length as 5 is
-error-prone and involves counting the number of characters (and
-hopefully not forgetting to count the NUL-byte) in the raw string.
+Removing that branch actually opens up to new bugs, e.g., in MSG_ZEROCOPY.
 
-Using a pre-determined max length in combination with `strscpy` provides
-a cleaner, less error-prone as well as a less ambiguous implementation.
-`strscpy` guarantees that it's destination buffer is NUL-terminated even
-if it's source argument exceeds the max length as defined by the third
-argument.
+Since the ipv6 stack is not subject to this bug in MSG_SPLICE_PAGES,
+I think v1 on its own is correct, and has the right Fixes tag.
 
-To be clear, there is no bug (i think?) in the current implementation
-but the current hard-coded values in combination with using a deprecated
-interface make this a worthwhile change, IMO.
+If we think this IPv6 branch is mistaken and a bug, then that would
+have a different Fixes tag, going back to ancient history. But arguably
+safer to limit that net-next, if touching that at all.
 
-[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
-[2]: manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
-
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
- arch/riscv/kernel/cpu.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/arch/riscv/kernel/cpu.c b/arch/riscv/kernel/cpu.c
-index a2fc952318e9..1c576e4ec171 100644
---- a/arch/riscv/kernel/cpu.c
-+++ b/arch/riscv/kernel/cpu.c
-@@ -17,6 +17,8 @@
- #include <asm/smp.h>
- #include <asm/pgtable.h>
- 
-+#define SV_TYPE_MAX_LENGTH 16
-+
- /*
-  * Returns the hart ID of the given device tree node, or -ENODEV if the node
-  * isn't an enabled and valid RISC-V hart node.
-@@ -271,21 +273,21 @@ static void print_isa(struct seq_file *f, const char *isa)
- 
- static void print_mmu(struct seq_file *f)
- {
--	char sv_type[16];
-+	char sv_type[SV_TYPE_MAX_LENGTH];
- 
- #ifdef CONFIG_MMU
- #if defined(CONFIG_32BIT)
--	strncpy(sv_type, "sv32", 5);
-+	strscpy(sv_type, "sv32", SV_TYPE_MAX_LENGTH);
- #elif defined(CONFIG_64BIT)
- 	if (pgtable_l5_enabled)
--		strncpy(sv_type, "sv57", 5);
-+		strscpy(sv_type, "sv57", SV_TYPE_MAX_LENGTH);
- 	else if (pgtable_l4_enabled)
--		strncpy(sv_type, "sv48", 5);
-+		strscpy(sv_type, "sv48", SV_TYPE_MAX_LENGTH);
- 	else
--		strncpy(sv_type, "sv39", 5);
-+		strscpy(sv_type, "sv39", SV_TYPE_MAX_LENGTH);
- #endif
- #else
--	strncpy(sv_type, "none", 5);
-+	strscpy(sv_type, "none", SV_TYPE_MAX_LENGTH);
- #endif /* CONFIG_MMU */
- 	seq_printf(f, "mmu\t\t: %s\n", sv_type);
- }
-
----
-base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
-change-id: 20230801-arch-riscv-kernel-14a048cc6467
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
-
+It makes sense to update MSG_SPLICE_PAGES in the IPv6 path to be
+equivalent to the IPv4 path, and to be correct if that branch is
+ever removed.
