@@ -2,52 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF9476B9F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152E376B9FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbjHAQwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:52:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
+        id S232621AbjHAQxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:53:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232520AbjHAQwi (ORCPT
+        with ESMTP id S229495AbjHAQxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:52:38 -0400
+        Tue, 1 Aug 2023 12:53:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBD72698;
-        Tue,  1 Aug 2023 09:52:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8667C2113;
+        Tue,  1 Aug 2023 09:53:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2303B615C2;
-        Tue,  1 Aug 2023 16:52:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35D68C433C8;
-        Tue,  1 Aug 2023 16:52:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2342461467;
+        Tue,  1 Aug 2023 16:53:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C798C433C8;
+        Tue,  1 Aug 2023 16:53:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690908741;
-        bh=KSaGb+S4Sy8ldO6yw8Yex7ClXfz16xEbNtyeKz4Ie0c=;
+        s=k20201202; t=1690908796;
+        bh=NHmRrolFzdbUCu0kGXaymHyZEubMVArK6rwqeVruN0U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VqsIEBx/QR8gxhaQULElabmV4YUorXoSkdiu+5FxFaOhMGfqYidaZu/NLm6xEU7ge
-         yyGI4yUV0FHUFoUqRKt1LVeBiR09pevN4Kurv9ItjfZnHa3S5+dDqeBjMVRjnbf2hU
-         +uXSUstFm2uCYgCaRZMeR0s8VQ3VFcC3GejxZMxfbF/9GOnfMLslmR96P29NZIgl1e
-         o+eKcaXt2/CAxUga35zTivtUV76icffFpQ/5sxbm0kmWYsN4uAOb3xF2iJ9g/zqYBK
-         jSEobqOWjKMJkdASo1SK3iLXUY0r0wHSX/s1EbgnJ5cXWv5ym9sZ8HXYuCP0/MYPdV
-         qiKmJDwJCPfXQ==
-Date:   Tue, 1 Aug 2023 09:52:19 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: Re: [PATCH v2 2/2] kbuild: deb-pkg: split debian/rules
-Message-ID: <20230801165219.GB2472327@dev-arch.thelio-3990X>
-References: <20230801121926.1677205-1-masahiroy@kernel.org>
- <20230801121926.1677205-2-masahiroy@kernel.org>
+        b=HwuBZpEXBkB3CE/V4KajSW3gnSYxF2tTjPViqE5A2oIIqLhUA+0e+IblDugFg9Z2u
+         S0Ck8LhYAevrbvQxgA14aPLtbGABfSIR5vcwXDlVxuid5aG3oZuIZ24GF4qCEi3IIi
+         nquYYS/spIOcUnYGkTZSIhj8c7X3XZblzixj+fUIuO+4mRpF6xrStoQCv057iq9NcN
+         OkLBQr9pYhByRIZ12cquz0en1ISm3gUO4XVCwiWtG4Ia+W8uhfhrgR05V3posavWjw
+         w1nbmtetuo2DR+rp1snmcsOZM8YJBF3KIXGQdzz738GzV9sSr7MiaVVvVM4/dTLin+
+         4LEATCs36iNcA==
+Date:   Tue, 1 Aug 2023 19:52:21 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     broonie@kernel.org, akpm@linux-foundation.org,
+        andrew.cooper3@citrix.com, arnd@arndb.de, bp@alien8.de,
+        bsingharora@gmail.com, christina.schimpe@intel.com, corbet@lwn.net,
+        david@redhat.com, debug@rivosinc.com, dethoma@microsoft.com,
+        eranian@google.com, esyr@redhat.com, fweimer@redhat.com,
+        gorcunov@gmail.com, hjl.tools@gmail.com, hpa@zytor.com,
+        jamorris@linux.microsoft.com, jannh@google.com, john.allen@amd.com,
+        kcc@google.com, keescook@chromium.org,
+        kirill.shutemov@linux.intel.com, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
+        mike.kravetz@oracle.com, mingo@redhat.com, nadav.amit@gmail.com,
+        oleg@redhat.com, pavel@ucw.cz, pengfei.xu@intel.com,
+        peterz@infradead.org, rdunlap@infradead.org, szabolcs.nagy@arm.com,
+        tglx@linutronix.de, torvalds@linux-foundation.org,
+        weijiang.yang@intel.com, willy@infradead.org, x86@kernel.org,
+        yu-cheng.yu@intel.com
+Subject: Re: [PATCH] x86/shstk: Move arch detail comment out of core mm
+Message-ID: <20230801165221.GA2607694@kernel.org>
+References: <ad6df14b-1fbd-4136-abcd-314425c28306@sirena.org.uk>
+ <20230706233248.445713-1-rick.p.edgecombe@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230801121926.1677205-2-masahiroy@kernel.org>
+In-Reply-To: <20230706233248.445713-1-rick.p.edgecombe@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,109 +72,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 09:19:26PM +0900, Masahiro Yamada wrote:
-> debian/rules is generated by shell, but the escape sequence (\$) is
-> unreadable.
-> 
-> debian/rules embeds only two variables (ARCH and KERNELRELEASE).
-> 
-> Split them out to debian/rules.vars, and check-in the rest of Makefile
-> code to scripts/package/debian/rules.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Hi Dave, Rick,
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+It seems it didn't get into the current tip.
 
+On Thu, Jul 06, 2023 at 04:32:48PM -0700, Rick Edgecombe wrote:
+> The comment around VM_SHADOW_STACK in mm.h refers to a lot of x86
+> specific details that don't belong in a cross arch file. Remove these
+> out of core mm, and just leave the non-arch details.
+> 
+> Since the comment includes some useful details that would be good to
+> retain in the source somewhere, put the arch specifics parts in
+> arch/x86/shstk.c near alloc_shstk(), where memory of this type is
+> allocated. Include a reference to the existence of the x86 details near
+> the VM_SHADOW_STACK definition mm.h.
+> 
+> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 > ---
+>  arch/x86/kernel/shstk.c | 25 +++++++++++++++++++++++++
+>  include/linux/mm.h      | 32 ++++++--------------------------
+>  2 files changed, 31 insertions(+), 26 deletions(-)
 > 
-> Changes in v2:
->   - Change ${MAKE} to $(MAKE) for consistency
->   - Fix shellcheck warning
-> 
->  scripts/package/debian/rules | 28 ++++++++++++++++++++++++++++
->  scripts/package/mkdebian     | 34 +++++-----------------------------
->  2 files changed, 33 insertions(+), 29 deletions(-)
->  create mode 100755 scripts/package/debian/rules
-> 
-> diff --git a/scripts/package/debian/rules b/scripts/package/debian/rules
-> new file mode 100755
-> index 000000000000..226e127efd63
-> --- /dev/null
-> +++ b/scripts/package/debian/rules
-> @@ -0,0 +1,28 @@
-> +#!/usr/bin/make -f
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +include debian/rules.vars
-> +
-> +srctree ?= .
-> +
-> +.PHONY: binary binary-indep binary-arch
-> +binary: binary-arch binary-indep
-> +binary-indep: build-indep
-> +binary-arch: build-arch
-> +	$(MAKE) -f $(srctree)/Makefile ARCH=$(ARCH) \
-> +	KERNELRELEASE=$(KERNELRELEASE) \
-> +	run-command KBUILD_RUN_COMMAND=+$(srctree)/scripts/package/builddeb
-> +
-> +.PHONY: build build-indep build-arch
-> +build: build-arch build-indep
-> +build-indep:
-> +build-arch:
-> +	$(MAKE) -f $(srctree)/Makefile ARCH=$(ARCH) \
-> +	KERNELRELEASE=$(KERNELRELEASE) \
-> +	$(shell $(srctree)/scripts/package/deb-build-option) \
-> +	olddefconfig all
-> +
-> +.PHONY: clean
-> +clean:
-> +	rm -rf debian/files debian/linux-*
-> +	$(MAKE) -f $(srctree)/Makefile ARCH=$(ARCH) clean
-> diff --git a/scripts/package/mkdebian b/scripts/package/mkdebian
-> index 2829f5b8aea6..5044224cf671 100755
-> --- a/scripts/package/mkdebian
-> +++ b/scripts/package/mkdebian
-> @@ -263,35 +263,11 @@ Description: Linux kernel debugging symbols for $version
->  EOF
->  fi
+> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+> index b26810c7cd1c..47f5204b0fa9 100644
+> --- a/arch/x86/kernel/shstk.c
+> +++ b/arch/x86/kernel/shstk.c
+> @@ -72,6 +72,31 @@ static int create_rstor_token(unsigned long ssp, unsigned long *token_addr)
+>  	return 0;
+>  }
 >  
-> -cat <<EOF > debian/rules
-> -#!/usr/bin/make -f
-> -
-> -srctree ?= .
-> -KERNELRELEASE = ${KERNELRELEASE}
-> -
-> -.PHONY: clean build build-arch build-indep binary binary-arch binary-indep
-> -
-> -build-indep:
-> -build-arch:
-> -	\$(MAKE) -f \$(srctree)/Makefile ARCH=${ARCH} \
-> -	KERNELRELEASE=\$(KERNELRELEASE) \
-> -	\$(shell \$(srctree)/scripts/package/deb-build-option) \
-> -	olddefconfig all
-> -
-> -build: build-arch
-> -
-> -binary-indep:
-> -binary-arch: build-arch
-> -	\$(MAKE) -f \$(srctree)/Makefile ARCH=${ARCH} \
-> -	KERNELRELEASE=\$(KERNELRELEASE) \
-> -	run-command KBUILD_RUN_COMMAND=+\$(srctree)/scripts/package/builddeb
-> -
-> -clean:
-> -	rm -rf debian/files debian/linux-*
-> -	\$(MAKE) -f \$(srctree)/Makefile ARCH=${ARCH} clean
-> -
-> -binary: binary-arch
-> +cat <<EOF > debian/rules.vars
-> +ARCH := ${ARCH}
-> +KERNELRELEASE := ${KERNELRELEASE}
->  EOF
-> -chmod +x debian/rules
-> +
-> +cp "${srctree}/scripts/package/debian/rules" debian/
+> +/*
+> + * VM_SHADOW_STACK will have a guard page. This helps userspace protect
+> + * itself from attacks. The reasoning is as follows:
+> + *
+> + * The shadow stack pointer(SSP) is moved by CALL, RET, and INCSSPQ. The
+> + * INCSSP instruction can increment the shadow stack pointer. It is the
+> + * shadow stack analog of an instruction like:
+> + *
+> + *   addq $0x80, %rsp
+> + *
+> + * However, there is one important difference between an ADD on %rsp
+> + * and INCSSP. In addition to modifying SSP, INCSSP also reads from the
+> + * memory of the first and last elements that were "popped". It can be
+> + * thought of as acting like this:
+> + *
+> + * READ_ONCE(ssp);       // read+discard top element on stack
+> + * ssp += nr_to_pop * 8; // move the shadow stack
+> + * READ_ONCE(ssp-8);     // read+discard last popped stack element
+> + *
+> + * The maximum distance INCSSP can move the SSP is 2040 bytes, before
+> + * it would read the memory. Therefore a single page gap will be enough
+> + * to prevent any operation from shifting the SSP to an adjacent stack,
+> + * since it would have to land in the gap at least once, causing a
+> + * fault.
+> + */
+>  static unsigned long alloc_shstk(unsigned long addr, unsigned long size,
+>  				 unsigned long token_offset, bool set_res_tok)
+>  {
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 535c58d3b2e4..b647cf2e94ea 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -343,33 +343,13 @@ extern unsigned int kobjsize(const void *objp);
 >  
->  exit 0
+>  #ifdef CONFIG_X86_USER_SHADOW_STACK
+>  /*
+> - * This flag should not be set with VM_SHARED because of lack of support
+> - * core mm. It will also get a guard page. This helps userspace protect
+> - * itself from attacks. The reasoning is as follows:
+> + * VM_SHADOW_STACK should not be set with VM_SHARED because of lack of
+> + * support core mm.
+>   *
+> - * The shadow stack pointer(SSP) is moved by CALL, RET, and INCSSPQ. The
+> - * INCSSP instruction can increment the shadow stack pointer. It is the
+> - * shadow stack analog of an instruction like:
+> - *
+> - *   addq $0x80, %rsp
+> - *
+> - * However, there is one important difference between an ADD on %rsp
+> - * and INCSSP. In addition to modifying SSP, INCSSP also reads from the
+> - * memory of the first and last elements that were "popped". It can be
+> - * thought of as acting like this:
+> - *
+> - * READ_ONCE(ssp);       // read+discard top element on stack
+> - * ssp += nr_to_pop * 8; // move the shadow stack
+> - * READ_ONCE(ssp-8);     // read+discard last popped stack element
+> - *
+> - * The maximum distance INCSSP can move the SSP is 2040 bytes, before
+> - * it would read the memory. Therefore a single page gap will be enough
+> - * to prevent any operation from shifting the SSP to an adjacent stack,
+> - * since it would have to land in the gap at least once, causing a
+> - * fault.
+> - *
+> - * Prevent using INCSSP to move the SSP between shadow stacks by
+> - * having a PAGE_SIZE guard gap.
+> + * These VMAs will get a single end guard page. This helps userspace protect
+> + * itself from attacks. A single page is enough for current shadow stack archs
+> + * (x86). See the comments near alloc_shstk() in arch/x86/kernel/shstk.c
+> + * for more details on the guard size.
+>   */
+>  # define VM_SHADOW_STACK	VM_HIGH_ARCH_5
+>  #else
 > -- 
-> 2.39.2
+> 2.34.1
 > 
+
+-- 
+Sincerely yours,
+Mike.
