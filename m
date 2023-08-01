@@ -2,116 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EF776BDF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820DC76BDFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232560AbjHATlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:41:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32900 "EHLO
+        id S232585AbjHATlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjHATlQ (ORCPT
+        with ESMTP id S232025AbjHATlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:41:16 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E60819AA;
-        Tue,  1 Aug 2023 12:41:13 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id c9b1b73f48a619ce; Tue, 1 Aug 2023 21:41:11 +0200
-Authentication-Results: v370.home.net.pl; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=rjwysocki.net 
-   (client-ip=195.136.19.94; helo=[195.136.19.94]; 
-   envelope-from=rjw@rjwysocki.net; receiver=<UNKNOWN>)
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id B001E6621DD;
-        Tue,  1 Aug 2023 21:41:10 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Kajetan Puchalski <kajetan.puchalski@arm.com>
-Subject: [RFC/RFT][PATCH v1 2/2] cpuidle: teo: Skip tick_nohz_get_sleep_length() call in some cases
-Date:   Tue, 01 Aug 2023 21:40:31 +0200
-Message-ID: <13328817.uLZWGnKmhe@kreacher>
-In-Reply-To: <4511619.LvFx2qVVIh@kreacher>
-References: <4511619.LvFx2qVVIh@kreacher>
+        Tue, 1 Aug 2023 15:41:47 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BC32728;
+        Tue,  1 Aug 2023 12:41:36 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371JEnvf009475;
+        Tue, 1 Aug 2023 19:41:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=IxJqKzdA+lN2GY16Pxzo+j0OHpij2fgQVywHiSBsxyw=;
+ b=FWgP3hyZh5km+ZfGYLJFO0RV954/UmAJfeXh1zj+AvxClGit4y1UlZZGU53SemP2crYi
+ yNtvyt4lCVb8UnWe4bmxodAIm3N19LigG/6smSzu1QEEbIjeYg1UewLChxi/0vSw9pPi
+ SoKvrh43GOG9GPWxzAtA3ajvsibuN99MFsO4Zx2KF6kas8nuPeB3nu7u18TUJufUieui
+ ixCsGjEi4MexSlRno1V7NdF+WCsHsnPIwkYP/USnv6SOwX0MaTLc6UupK9o/rs37cldh
+ WYdJS+en3Xwok38AQjwuCBMwIvb5SUmZQlqSJL/ViA2ZX7+PGDecawO1jQmXm85ZYLPX rg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6gs7k0s3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 19:41:24 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 371JfNDt000576
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 19:41:23 GMT
+Received: from [10.110.76.246] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 1 Aug
+ 2023 12:41:23 -0700
+Message-ID: <590a5f4e-59a6-a449-5174-e4e7f7109ecf@quicinc.com>
+Date:   Tue, 1 Aug 2023 12:41:22 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigddufeeiucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepiedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopegrnhhnrgdqmhgrrhhirgeslhhinhhuthhrohhnihigrdguvgdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehfrhgv
- uggvrhhitgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgrjhgvthgrnhdrphhutghhrghlshhkihesrghrmhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=6 Fuz1=6 Fuz2=6
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH V2] usb: dwc3: gadget: Let pm runtime get/put paired
+Content-Language: en-US
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     Surong Pang <surong.pang@unisoc.com>, <Thinh.Nguyen@synopsys.com>,
+        <felipe.balbi@linux.intel.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rogerq@kernel.org>,
+        <Orson.Zhai@unisoc.com>, <Chunyan.Zhang@unisoc.com>,
+        <Zhiyong.liu@unisoc.com>, <Surong.Pang@gmail.com>
+References: <20230801011548.30232-1-surong.pang@unisoc.com>
+ <e8d9652f-3b81-319a-7ca6-9b656eac6f40@quicinc.com>
+ <2023080128-bubble-frosty-92c8@gregkh>
+From:   Elson Serrao <quic_eserrao@quicinc.com>
+In-Reply-To: <2023080128-bubble-frosty-92c8@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XY_fWXXy-r66omq8J5R91tUgV5tjW7ox
+X-Proofpoint-ORIG-GUID: XY_fWXXy-r66omq8J5R91tUgV5tjW7ox
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_16,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ adultscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=518 spamscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308010177
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Make teo_select() avoid calling tick_nohz_get_sleep_length() if the
-candidate idle state to return is state 0 or if state 0 is a polling
-one and the target residency of the current candidate one is below
-a certain threshold, in which cases it may be assumed that the CPU will
-be woken up immediately by a non-timer wakeup source and the timers
-are not likely to matter.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/cpuidle/governors/teo.c |   22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+On 7/31/2023 9:43 PM, Greg KH wrote:
+> On Mon, Jul 31, 2023 at 06:33:04PM -0700, Elson Serrao wrote:
+>>
+>>
+>> On 7/31/2023 6:15 PM, Surong Pang wrote:
+>>> Pm_runtime_get is called when setting pending_events to true.
+>>> Pm_runtime_put is needed for pairing with pm_runtime_get.
+>>>
+>>> Fixes: fc8bb91bc83e ("usb: dwc3: implement runtime PM")
+>>> Signed-off-by: Surong Pang <surong.pang@unisoc.com>
+>>>
+>>> ---
+>>> V2: add Fixes tag, fix Fixes tag
+>>> ---
+>>>    drivers/usb/dwc3/gadget.c | 1 +
+>>>    1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>> index 5fd067151fbf..9c835c5f9928 100644
+>>> --- a/drivers/usb/dwc3/gadget.c
+>>> +++ b/drivers/usb/dwc3/gadget.c
+>>> @@ -4720,5 +4720,6 @@ void dwc3_gadget_process_pending_events(struct dwc3 *dwc)
+>>>    		dwc3_interrupt(dwc->irq_gadget, dwc->ev_buf);
+>>>    		dwc->pending_events = false;
+>>>    		enable_irq(dwc->irq_gadget);
+>>> +		pm_runtime_put(dwc->dev);
+>>>    	}
+>>>    }
+>>
+>> I am already handling this change as part of below series. Will be uploading
+>> a separate patch based on the feedback from Roger.
+>>
+>> https://lore.kernel.org/all/be57511d-2005-a1f5-d5a5-809e71029aec@quicinc.com/
+> 
+> But this should be fixed now, and properly backported to stable kernels.
+> There's no need to wait for a different patch series if this one is
+> correct, right?
+> 
+Hi Greg
 
-Index: linux-pm/drivers/cpuidle/governors/teo.c
-===================================================================
---- linux-pm.orig/drivers/cpuidle/governors/teo.c
-+++ linux-pm/drivers/cpuidle/governors/teo.c
-@@ -166,6 +166,12 @@
-  */
- #define NR_RECENT	9
- 
-+/*
-+ * Idle state target residency threshold used for deciding whether or not to
-+ * check the time till the closest expected timer event.
-+ */
-+#define RESIDENCY_THRESHOLD_NS	(15 * NSEC_PER_USEC)
-+
- /**
-  * struct teo_bin - Metrics used by the TEO cpuidle governor.
-  * @intercepts: The "intercepts" metric.
-@@ -543,6 +549,22 @@ static int teo_select(struct cpuidle_dri
- 			idx = i;
- 	}
- 
-+	/*
-+	 * Skip the timers check if state 0 is the current candidate one,
-+	 * because an immediate non-timer wakeup is expected in that case.
-+	 */
-+	if (!idx)
-+		goto out_tick;
-+
-+	/*
-+	 * If state 0 is a polling one, check if the target residency of
-+	 * the current candidate state is low enough and skip the timers
-+	 * check in that case too.
-+	 */
-+	if ((drv->states[0].flags & CPUIDLE_FLAG_POLLING) &&
-+	    drv->states[idx].target_residency_ns < RESIDENCY_THRESHOLD_NS)
-+		goto out_tick;
-+
- 	duration_ns = tick_nohz_get_sleep_length(&delta_tick);
- 	cpu_data->sleep_length_ns = duration_ns;
- 
+I have separated this change from the series and have uploaded below 
+change as an independent fix. Based on the earlier feedback and 
+discussion, few additional modifications are needed to properly handle 
+pending events
+https://lore.kernel.org/all/20230801192658.19275-1-quic_eserrao@quicinc.com/
 
+Thanks
+Elson
 
 
