@@ -2,64 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BE676BD6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1F376BD71
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbjHATL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:11:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
+        id S232391AbjHATMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:12:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbjHATL6 (ORCPT
+        with ESMTP id S232305AbjHATMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:11:58 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4844D1BF0;
-        Tue,  1 Aug 2023 12:11:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690917117; x=1722453117;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rrFkhhbjbOMeLFqhmMaRKqF2Hny9pm7kqMF7teDKeh4=;
-  b=A1M1GY2xAypbxRkjJfX9puKTm9iYpGuOtrmg6LK448E6rnhVnQ9lpEhe
-   AXDDJZcdrT/Qs7itcu2CbiOw92m00ngxCZ7fJVh+KH+3j/r0ofolh4eij
-   LFOi1sepJ3Y3XFHreKXpGVMdcKRnUT+uusSwqdpNvwwLLWdR9OE6sqUlp
-   eLhSpgQQ8qOzPcoIawRV/mUEFoqhkiu/S+DqD2MT8KDn15khLQ1DWWi/D
-   vr1XOu1+0yb3iigZX4UZgHUO1W90EVgck0aKF841t9uT6tpsJrE5SfrT1
-   /2gRoH8wIvScMeYvQjMDHIVwXvhcg9n+0yEhm5TNw9si0iH+xC2s3Jv88
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="368292183"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="368292183"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 12:11:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
-   d="scan'208";a="872179339"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Aug 2023 12:11:57 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qQumf-00G2eS-2D;
-        Tue, 01 Aug 2023 22:11:53 +0300
-Date:   Tue, 1 Aug 2023 22:11:53 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH] gpio: sim: mark the GPIO chip as a one that can sleep
-Message-ID: <ZMlY+QU+yXIl4yab@smile.fi.intel.com>
-References: <20230801190951.51818-1-brgl@bgdev.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801190951.51818-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Tue, 1 Aug 2023 15:12:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF3611BF1
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:12:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 43CE1616A2
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 19:12:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 648E4C433C7;
+        Tue,  1 Aug 2023 19:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1690917124;
+        bh=4bXA5LiSffF092ekI7PffAzaTl6bqdrbyGn+kgTWpbE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZEdvlhTzezxEqSfa0ASwLVi0dnTnxkbKdEU2UkKjHfsFUTlLYHL++IN6NTL+wt6xy
+         bDzxreMQo07YDJuakNU+RKRtWd9GaOmcWnM/HsAdz8JTb3I8JesU6O9y4PBfNdN5Es
+         dPUSZe/J7gNzd2X7GnCJGgdhUFdn3XT5yQg2D70c=
+Date:   Tue, 1 Aug 2023 12:12:03 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net,
+        willy@infradead.org, david@redhat.com
+Subject: Re: [PATCH 1/5] mm/compaction: allow blockpfn outside of pageblock
+ for high order buddy page
+Message-Id: <20230801121203.a58e15d4f290721746340801@linux-foundation.org>
+In-Reply-To: <20230729174354.2239980-2-shikemeng@huaweicloud.com>
+References: <20230729174354.2239980-1-shikemeng@huaweicloud.com>
+        <20230729174354.2239980-2-shikemeng@huaweicloud.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,40 +56,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 09:09:51PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Sun, 30 Jul 2023 01:43:50 +0800 Kemeng Shi <shikemeng@huaweicloud.com> wrote:
+
+> Commit 9fcd6d2e052ee ("mm, compaction: skip compound pages by order in
+> free scanner") skiped compound pages to save iterations and limit blockpfn
+> to reach outside of page block in case of bogus compound_order. While this
+> also limit pfnblock outside page block in case a buddy page with order
+> higher than page block is found. After this, isolate_freepages_range will
+> fail unexpectedly as it will fail to isolate the page block which was
+> isolated successfully by high order buddy page in previous page block
+> and abort the free page isolation.
 > 
-> Simulated chips use a mutex for synchronization in driver callbacks so
-> they must not be called from interrupt context. Set the can_sleep field
-> of the GPIO chip to true to force users to only use threaded irqs.
-
-Ah, good catch! Doesn't it deserve a Fixes tag?
-
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  drivers/gpio/gpio-sim.c | 1 +
->  1 file changed, 1 insertion(+)
+> Fix this by allow blockpfn outside of pageblock in case of high order
+> buddy page.
 > 
-> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-> index cfbdade841e8..5f8723ad0048 100644
-> --- a/drivers/gpio/gpio-sim.c
-> +++ b/drivers/gpio/gpio-sim.c
-> @@ -429,6 +429,7 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
->  	gc->set_config = gpio_sim_set_config;
->  	gc->to_irq = gpio_sim_to_irq;
->  	gc->free = gpio_sim_free;
-> +	gc->can_sleep = true;
+> ...
+>
+> @@ -1418,7 +1420,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
+>  	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
 >  
->  	ret = devm_gpiochip_add_data(dev, gc, chip);
->  	if (ret)
-> -- 
-> 2.39.2
-> 
+>  	/* Skip this pageblock in the future as it's full or nearly full */
+> -	if (start_pfn == end_pfn && !cc->no_set_skip_hint)
+> +	if (start_pfn >= end_pfn && !cc->no_set_skip_hint)
+>  		set_pageblock_skip(page);
+>  }
+>  
 
--- 
-With Best Regards,
-Andy Shevchenko
+This needed alteration for mm-unstable changes:
 
+@@ -1441,7 +1443,7 @@ fast_isolate_around(struct compact_contr
+ 	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
+ 
+ 	/* Skip this pageblock in the future as it's full or nearly full */
+-	if (start_pfn == end_pfn)
++	if (start_pfn >= end_pfn)
+ 		set_pageblock_skip(page);
+ 
+ 	return;
 
