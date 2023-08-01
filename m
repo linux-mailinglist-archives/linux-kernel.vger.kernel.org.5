@@ -2,214 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED41476A8BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233D876A8C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbjHAGMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33186 "EHLO
+        id S230209AbjHAGND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjHAGMD (ORCPT
+        with ESMTP id S231394AbjHAGMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:12:03 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD3410C1;
-        Mon, 31 Jul 2023 23:12:01 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3715V9bB016641;
-        Tue, 1 Aug 2023 06:11:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6dNMOPwz0tV094irT4sD0V4XMKMRN8Qjuh3wYCdhz5o=;
- b=UYnkSd1U5r3FkGnr6QqXlNSVHQjvN9cCkVndkosJi60JNnYceUAIgzkFCoo92IWR89IC
- AS4t8tRRYN5hWlL7GNRT+M8GpbcOnw7g8jsPc+gKVyR8L5lvOdwaemcDrsWFWl+TJZl2
- hbxpi/dk7xHVmOwT8z2Au6rtUU0vhnu0I6c9ArQO9h/ugjKnQi0mH0PpWS/UjLy/LnGk
- YIlgI9YExjVjSzkjVb+nPhkX70XgHBcV1n4eUcLw/6OwX3VTL/XPtNeDoq/v2p8LUBZL
- UQHnvet9N+2GkglGC2WtB8Z/v4RyF/XVNvw9r++BzHXk7RkLr4q6n+vBkpPySMtgc65Y Ag== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6d8gt7qc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 06:11:57 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3716Boqf014425
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 1 Aug 2023 06:11:50 GMT
-Received: from [10.214.67.128] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 23:11:46 -0700
-Message-ID: <195c7961-92cc-b41d-52ba-383b10dd9c75@quicinc.com>
-Date:   Tue, 1 Aug 2023 11:41:43 +0530
+        Tue, 1 Aug 2023 02:12:50 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6204C1BFD
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:12:38 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 14FAA1F88B;
+        Tue,  1 Aug 2023 06:12:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690870357; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uXod+oPZWofOb0Ajk4WM3rL3kkkIPaL3yFHPPIYPIQY=;
+        b=pBbcYzxNa/DS3VirgW08nMoa1V2e/8E82kieSX3523VZ2mnUkI1TXNDpzwP2KL2DY5Lbnq
+        vVOgWZxY/MmOzbDpdy+JowrISk7afvLiGF9shNAbxJkD9tcrNcywZRXsMg16JizRvng/c+
+        sjqCUN3Eefi5L0xe63GNeq4B2E+2xIk=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A6051139BD;
+        Tue,  1 Aug 2023 06:12:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id RTicJlSiyGRyXAAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 01 Aug 2023 06:12:36 +0000
+Message-ID: <1abc7aed-c544-c0cd-eccd-00bc4a7e6b5c@suse.com>
+Date:   Tue, 1 Aug 2023 08:12:36 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v5 2/2] nvmem: sec-qfprom: Add Qualcomm secure QFPROM
- support
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [patch V2 16/58] x86/apic: Sanitize num_processors handling
 Content-Language: en-US
-To:     Mukesh Ojha <quic_mojha@quicinc.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230724083849.8277-1-quic_kbajaj@quicinc.com>
- <20230724083849.8277-3-quic_kbajaj@quicinc.com>
- <f6fab6b7-0cfb-6aa5-2043-6c789709d04a@linaro.org>
- <f38f3a60-28c1-7566-3772-21edb70d4c9c@quicinc.com>
-From:   Komal Bajaj <quic_kbajaj@quicinc.com>
-In-Reply-To: <f38f3a60-28c1-7566-3772-21edb70d4c9c@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Beql-8vAudona1Y582V54cqAmLaH91hU
-X-Proofpoint-GUID: Beql-8vAudona1Y582V54cqAmLaH91hU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- bulkscore=0 suspectscore=0 impostorscore=0 spamscore=0 adultscore=0
- phishscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308010056
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+From:   Juergen Gross <jgross@suse.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20230724131206.500814398@linutronix.de>
+ <20230724132045.555787669@linutronix.de>
+ <d232e50f-01fc-ef2e-db29-3f790d960c0e@suse.com> <87y1iwnt34.ffs@tglx>
+ <87mszcnkfa.ffs@tglx> <4bf0020b-dff9-091f-dcb4-45f1ee864e2a@suse.com>
+In-Reply-To: <4bf0020b-dff9-091f-dcb4-45f1ee864e2a@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------ZKJwLQ61rOgeNjrZIwwTvHwv"
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------ZKJwLQ61rOgeNjrZIwwTvHwv
+Content-Type: multipart/mixed; boundary="------------ZktMQY4OQEOQeNFyc0iLaz0S";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Wei Liu <wei.liu@kernel.org>, Arjan van de Ven <arjan@linux.intel.com>,
+ Michael Kelley <mikelley@microsoft.com>,
+ Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Message-ID: <1abc7aed-c544-c0cd-eccd-00bc4a7e6b5c@suse.com>
+Subject: Re: [patch V2 16/58] x86/apic: Sanitize num_processors handling
+References: <20230724131206.500814398@linutronix.de>
+ <20230724132045.555787669@linutronix.de>
+ <d232e50f-01fc-ef2e-db29-3f790d960c0e@suse.com> <87y1iwnt34.ffs@tglx>
+ <87mszcnkfa.ffs@tglx> <4bf0020b-dff9-091f-dcb4-45f1ee864e2a@suse.com>
+In-Reply-To: <4bf0020b-dff9-091f-dcb4-45f1ee864e2a@suse.com>
 
+--------------ZktMQY4OQEOQeNFyc0iLaz0S
+Content-Type: multipart/mixed; boundary="------------ta4NAle2hNubBgq8kvU6FPvk"
 
-On 7/28/2023 1:55 PM, Mukesh Ojha wrote:
->
->
-> On 7/27/2023 4:14 PM, Srinivas Kandagatla wrote:
->>
->>
->> On 24/07/2023 09:38, Komal Bajaj wrote:
->>> For some of the Qualcomm SoC's, it is possible that
->>> some of the fuse regions or entire qfprom region is
->>> protected from non-secure access. In such situations,
->>> Linux will have to use secure calls to read the region.
->>> With that motivation, add secure qfprom driver.
->>>
->>> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
->>> ---
->>>   drivers/nvmem/Kconfig      |  13 +++++
->>>   drivers/nvmem/Makefile     |   2 +
->>>   drivers/nvmem/sec-qfprom.c | 101 
->>> +++++++++++++++++++++++++++++++++++++
->>>   3 files changed, 116 insertions(+)
->>>   create mode 100644 drivers/nvmem/sec-qfprom.c
->>>
->>
->>> diff --git a/drivers/nvmem/sec-qfprom.c b/drivers/nvmem/sec-qfprom.c
->>> new file mode 100644
->>> index 000000000000..bc68053b7d94
->>> --- /dev/null
->>> +++ b/drivers/nvmem/sec-qfprom.c
->>> @@ -0,0 +1,101 @@
->>> +// SPDX-License-Identifier: GPL-2.0-only
->>> +/*
->>> + * Copyright (c) 2023, Qualcomm Innovation Center, Inc. All rights 
->>> reserved.
->>> + */
->>> +
->>> +#include <linux/firmware/qcom/qcom_scm.h>
->>> +#include <linux/mod_devicetable.h>
->>> +#include <linux/nvmem-provider.h>
->>> +#include <linux/platform_device.h>
->>> +#include <linux/pm_runtime.h>
->>
->>> +
->>> +static int sec_qfprom_probe(struct platform_device *pdev)
->>> +{
->>> +    struct nvmem_config econfig = {
->>> +        .name = "sec-qfprom",
->>> +        .stride = 1,
->>> +        .word_size = 1,
->>> +        .id = NVMEM_DEVID_AUTO,
->>> +        .reg_read = sec_qfprom_reg_read,
->>> +    };
->>> +    struct device *dev = &pdev->dev;
->>> +    struct nvmem_device *nvmem;
->>> +    struct sec_qfprom *priv;
->>> +    struct resource *res;
->>> +    int ret;
->>> +
->>> +    priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
->>> +    if (!priv)
->>> +        return -ENOMEM;
->>> +
->>> +    res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->>> +    if (!res)
->>> +        return -EINVAL;
->>> +
->>> +    priv->base = res->start;
->>> +
->>> +    econfig.size = resource_size(res);
->>> +    econfig.dev = dev;
->>> +    econfig.priv = priv;
->>> +
->>> +    priv->dev = dev;
->>> +
->>> +    ret = devm_pm_runtime_enable(dev);
->>> +    if (ret)
->>> +        return ret;
->>
->> Any reason why we need to enable pm runtime for this driver? As Am 
->> not seeing any pm runtime handlers or users in this driver.
->
-> Thanks..
-> Yes, it is not needed as of now..
-> looks like, it got inherited from qfprom.c by mistake.
->
-> Same need to be corrected in Device tree, if any
-> unnecessary reference is there related to this..
+--------------ta4NAle2hNubBgq8kvU6FPvk
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Thanks for pointing it out.
-Will drop it in the next patch series.
+T24gMzEuMDcuMjMgMjA6MTksIEp1ZXJnZW4gR3Jvc3Mgd3JvdGU6DQo+IE9uIDMxLjA3LjIz
+IDE3OjU3LCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6DQo+PiBPbiBNb24sIEp1bCAzMSAyMDIz
+IGF0IDE0OjUwLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6DQo+Pj4gV2h5IGNhbid0IFhFTlBW
+IHByZXRlbmQgdGhhdCBpdCBoYXMgYSBzbXAgY29uZmlndXJhdGlvbiBkZXRlY3RlZCwNCj4+
+PiBpLmUuIHNldHRpbmcgc21wX2ZvdW5kX2NvbmZpZyBhcyBhbnkgb3RoZXIgc3BlY2lhbCBn
+ZXRfc21wX2NvbmZpZygpDQo+Pj4gaW1wbGVtZW50YXRpb24gZG9lcz8NCj4+DQo+PiBUaGUg
+YmVsb3cgc2hvdWxkIGRvIHRoZSB0cmljaywgbm8/DQo+IA0KPiBTb21ldGhpbmcgbGlrZSB0
+aGF0LCB5ZXMuDQo+IA0KPiBJJ20ganVzdCBodW50aW5nIGFub3RoZXIgcmVncmVzc2lvbiBp
+biB0aGUgc2VyaWVzLiBXaXRoIHBhdGNoIDIzIG9mIHRoZQ0KPiB0b3BvbG9neSBzZXJpZXMg
+YXBwbGllZCB0aGUgQVBzIG9mIGEgWGVuIFBWIGd1ZXN0cyB3b24ndCBiZSBvbmxpbmVkLiBJ
+DQo+IGd1ZXNzIHRoaXMgaXMgZHVlIHRvIG1pc3NpbmcgdG9wb2xvZ3kgZGF0YSBpbml0aWFs
+aXphdGlvbiBzb21ld2hlcmUgaW4NCj4gdGhlIFhlbiByZWxhdGVkIGNvZGUuDQo+IA0KPiBJ
+J2xsIGNoZWNrIHlvdXIgc3VnZ2VzdGlvbiBhZnRlciBmaW5kaW5nIHRoZSByZWFzb24gZm9y
+IHRoZSByZWdyZXNzaW9uLg0KPiANCj4+DQo+Pg0KPj4gLS0tIGEvYXJjaC94ODYveGVuL3Nt
+cF9wdi5jDQo+PiArKysgYi9hcmNoL3g4Ni94ZW4vc21wX3B2LmMNCj4+IEBAIC0xODIsNyAr
+MTgyLDggQEAgc3RhdGljIHZvaWQgX19pbml0IF9nZXRfc21wX2NvbmZpZyh1bnNpZw0KPj4g
+wqDCoMKgwqDCoCBpZiAoc3VidHJhY3QpDQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgc2V0X25y
+X2NwdV9pZHMobnJfY3B1X2lkcyAtIHN1YnRyYWN0KTsNCj4+IMKgICNlbmRpZg0KPj4gLQ0K
+Pj4gK8KgwqDCoCAvKiBQcmV0ZW5kIHRvIGJlIGEgcHJvcGVyIGVudW1lcmF0ZWQgc3lzdGVt
+ICovDQo+PiArwqDCoMKgIHNtcF9mb3VuZF9jb25maWcgPSAxOw0KPj4gwqAgfQ0KPj4gwqAg
+c3RhdGljIHZvaWQgX19pbml0IHhlbl9wdl9zbXBfcHJlcGFyZV9ib290X2NwdSh2b2lkKQ0K
+PiANCg0KSXQgaXMgd29ya2luZyBmaW5lLg0KDQoNCkp1ZXJnZW4NCg==
+--------------ta4NAle2hNubBgq8kvU6FPvk
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
-Komal
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
->
-> -Mukesh
->>
->>
->> --srini
->>> +
->>> +    nvmem = devm_nvmem_register(dev, &econfig);
->>> +
->>> +    return PTR_ERR_OR_ZERO(nvmem);
->>> +}
->>> +
->>> +static const struct of_device_id sec_qfprom_of_match[] = {
->>> +    { .compatible = "qcom,sec-qfprom" },
->>> +    {/* sentinel */},
->>> +};
->>> +MODULE_DEVICE_TABLE(of, sec_qfprom_of_match);
->>> +
->>> +static struct platform_driver qfprom_driver = {
->>> +    .probe = sec_qfprom_probe,
->>> +    .driver = {
->>> +        .name = "qcom_sec_qfprom",
->>> +        .of_match_table = sec_qfprom_of_match,
->>> +    },
->>> +};
->>> +module_platform_driver(qfprom_driver);
->>> +MODULE_DESCRIPTION("Qualcomm Secure QFPROM driver");
->>> +MODULE_LICENSE("GPL");
->>> -- 
->>> 2.40.1
->>>
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
+--------------ta4NAle2hNubBgq8kvU6FPvk--
+
+--------------ZktMQY4OQEOQeNFyc0iLaz0S--
+
+--------------ZKJwLQ61rOgeNjrZIwwTvHwv
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTIolQFAwAAAAAACgkQsN6d1ii/Ey+p
+LggAiOM0Z9CDKxPn9qhWrHPyikIgm1EhHiydVFVDh8+G0DbEF65z1qykz31gtj1JkG6aElAJ9d+g
+WpxeLzC/lHTaCQKP650rKW40+2mRegDUiJrSUIBcn7giY5ZgFAz/kALMF1Sn6SyWcdcYtCsNG98V
+iox9nYRO47Ynaa8H6WQC1RRHGCtXRQhS68gHw6yxUQoA5k3Tzt6kXTx94b0ALfW4sDLWQszuzybR
+hHpbKaghDSje2qDQ2rtvPFneebJuvXJixEl9zQwPb150XLz2k39UXrVP9xM87wM8QHsWvhxnND4D
+i0ht5jrDKr520tlOu5d5YLvXceZ2zguiSkvj64HUsw==
+=Bl0h
+-----END PGP SIGNATURE-----
+
+--------------ZKJwLQ61rOgeNjrZIwwTvHwv--
