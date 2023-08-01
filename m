@@ -2,81 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 101AC76C080
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 00:37:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4126076C084
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 00:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbjHAWhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 18:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47946 "EHLO
+        id S229715AbjHAWox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 18:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjHAWhh (ORCPT
+        with ESMTP id S229685AbjHAWou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 18:37:37 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4801BE3;
-        Tue,  1 Aug 2023 15:37:34 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371MGlnn007551;
-        Tue, 1 Aug 2023 22:37:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=bhrIWGIneu9mmTul72Q6nGdWxkny8cxueses2kgomZo=;
- b=Oqe0uVIUrWD6ZIMZ9GVnzkK1O1ug+5g00ZIXefb2vZ2zPrPw0pqZNShYkjnFrtcKMzPV
- yDiznCJiAa2Z6cfG32lYLQ5SSdRTWCkR0+QdT9lCM2uW4vG0Mv9it1XuI1rxonefGsEe
- UVEee56RhtZEp1lA5uWP/mblnzbfldVHhKr35E99f45BjJd0EOgRNhw5qdDmCupZJ0Xb
- 7R0Q4K8ha/3K3sUoUMOE7NiXXP9c0dOaOG8ArzA29ti9pdZ//knTBNae6LW4UmLRgrq0
- x2xmpmP2JlG6J8dwZ044lT2TyDyAqO0QaSZDdKR0o7bJLGfWriLrMUoQmty46PPpyvq4 8A== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6rhate9x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 22:37:19 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 371MbIjv026939
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 1 Aug 2023 22:37:18 GMT
-Received: from [10.110.118.24] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 1 Aug
- 2023 15:37:16 -0700
-Message-ID: <2fa11648-6d51-feb7-4d75-6429b13c682f@quicinc.com>
-Date:   Tue, 1 Aug 2023 15:37:15 -0700
+        Tue, 1 Aug 2023 18:44:50 -0400
+Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED68312B
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 15:44:48 -0700 (PDT)
+Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a36b52afcfso11639721b6e.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 15:44:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690929888; x=1691534688;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zg/s68KC5k1+y1Gb2PPpd4zaf/NW4BA9JdQSwHJsSgA=;
+        b=deKysdGGUnobPnPkJHR2lXmwUGQnUmFQHDm+lxmMFSFxlLTJs/k2Vb16Cet4YIvj6Y
+         b+mY4qyg62UNsP/HZG0DRLwYmeck3dWk7sX/pTePR289CDATftPVHmHnd/8RQt3GXEHW
+         A/vefcn8R5wbXwJ/WEZ1SIuOIgPPPmc0NtRGAokxvHiF47ihQmNU33rbnEGWCD8VJdV6
+         BLmmfSoUxIfdVl2Kn1/1eP22CpWaGYOXX4/Jil6d+4YIO3reI0JSQ/lpNmffoywOAaOb
+         AjBZ49OVqV7rHRIeO7QLenMnH+6nq7P6BAGoQPz1qCCpqWYs4z7VLkXNqnVPPkUjRgDS
+         pLuQ==
+X-Gm-Message-State: ABy/qLasw+J3by2pgfv1cYOeySKQZU4fMYHlqM5qr61HLQOrkoutd1S4
+        h5hw9JUN78x9y9iSXLGof+4BIOFjurG34JujQ1XHZfi5SdLP
+X-Google-Smtp-Source: APBJJlEUIlq6tPzv4eXzjM9WQCm/pB9+67kgXkTx1NFrL6Y+PuzGs0rTd2hMNQVViJSZIhrUBDQODP6nEwJWd4/HwPFfdHWpDkBW
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] EDAC/device: Add sysfs notification for UE,CE count
- change
-Content-Language: en-US
-To:     Trilok Soni <quic_tsoni@quicinc.com>, <james.morse@arm.com>,
-        <mchehab@kernel.org>, <rric@kernel.org>, <bp@alien8.de>,
-        <tony.luck@intel.com>
-CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>, <quic_psodagud@quicinc.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-References: <20230731220059.28474-1-quic_djaggi@quicinc.com>
- <3e2bf03e-2bc1-445e-d8ce-4975c044eea0@quicinc.com>
- <ce06c845-f3c8-a733-dc21-ee0ba4b4ca68@quicinc.com>
-From:   Deepti Jaggi <quic_djaggi@quicinc.com>
-In-Reply-To: <ce06c845-f3c8-a733-dc21-ee0ba4b4ca68@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: f8InXImUNaZNPOnQEieOOEdblc2wZdtl
-X-Proofpoint-ORIG-GUID: f8InXImUNaZNPOnQEieOOEdblc2wZdtl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_19,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 clxscore=1011 impostorscore=0 spamscore=0
- bulkscore=0 phishscore=0 mlxlogscore=619 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308010202
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+X-Received: by 2002:a05:6808:2103:b0:3a5:a925:826b with SMTP id
+ r3-20020a056808210300b003a5a925826bmr23637054oiw.2.1690929888287; Tue, 01 Aug
+ 2023 15:44:48 -0700 (PDT)
+Date:   Tue, 01 Aug 2023 15:44:48 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000054e4d10601e44b24@google.com>
+Subject: [syzbot] [bfs?] KASAN: null-ptr-deref Read in drop_buffers (2)
+From:   syzbot <syzbot+d285c6d0b23c6033d520@syzkaller.appspotmail.com>
+To:     aivazian.tigran@gmail.com, brauner@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,102 +55,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/2023 10:48 PM, Trilok Soni wrote:
-> On 7/31/2023 3:40 PM, Trilok Soni wrote:
->> On 7/31/2023 3:00 PM, Deepti Jaggi wrote:
->>> A daemon running in user space collects information on correctable
->>> and uncorrectable errors from EDAC driver by reading corresponding
->>> sysfs entries and takes appropriate action.
->>
->> Which daemon we are referring here? Can you please provide the link to 
->> the project?
->>
->> Are you using this daemon?
->>
->> https://mcelog.org/ - It is for x86, but is your daemon project 
->> different?
->>
+Hello,
 
-No this daemon is not used. Daemon is under development and it is more 
-specific to Qualcomm use cases.
-Based on my limited understanding of mcelog, this daemon is handling 
-errors in an architecture specific way.
-By adding support for sysfs notification in EDAC framework, drivers 
-which are not using any custom sysfs attributes can take advantage of 
-this modification to notify the user space daemon polling on ue_count 
-and/or ce_count attributes.
+syzbot found the following issue on:
 
->>> This patch adds support for user space daemon to wait on poll() until
->>> the sysfs entries for UE count and CE count change and then read updated
->>> counts instead of continuously monitoring the sysfs entries for
->>> any changes.
->>
->> The modifications below are architecture agnostic so I really want to 
->> know what exactly we are fixing and if there is a problem.
-> 
+HEAD commit:    ec8939156379 Add linux-next specific files for 20230731
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=161e3355a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dc839eae61644ed
+dashboard link: https://syzkaller.appspot.com/bug?extid=d285c6d0b23c6033d520
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-In the change set, adding support for user space to poll on the ue_count 
-and/or ce_count sysfs attributes.
-On changes in ue_count,ce_count attributes, unblock user space poll from 
-EDAC driver framework and user space can read the changed ce_count, 
-ue_count.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-As an example from user space perform the following steps:
-	1. Open the sysfs attribute file for UE count and CE count
-	2. Read the initial CE count and UE count
-	3. Poll on any changes on CE count, UE count fds.
-	4. Once poll unblocks, Read the updated count.
-         5.Take appropriate action on the changed counts.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/084b7f2f7900/disk-ec893915.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/279a4144b6d9/vmlinux-ec893915.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a21cf5ede096/bzImage-ec893915.xz
 
-#####################################################################
-Example Simple User space code Snippet:
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d285c6d0b23c6033d520@syzkaller.appspotmail.com
 
-#define MAX_POLL_FDS     2
-char ue_count_file[] = 
-"/sys/devices/system/edac/qcom-llcc/qcom-llcc0/ue_count";
-char ce_count_file[] = 
-"/sys/devices/system/edac/qcom-llcc/qcom-llcc0/ce_count";
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:68 [inline]
+BUG: KASAN: null-ptr-deref in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+BUG: KASAN: null-ptr-deref in buffer_busy fs/buffer.c:2902 [inline]
+BUG: KASAN: null-ptr-deref in drop_buffers.constprop.0+0x99/0x510 fs/buffer.c:2914
+Read of size 4 at addr 0000000000000060 by task syz-executor.1/17034
 
-struct pollfd *p_poll_fds = NULL;	
-struct pollfd poll_fds[MAX_POLL_FDS] =  {0};
-char data[100];
-
-  poll_fds[0].fd = open(ue_count_file, O_RDONLY);
-  poll_fds[1].fd = open(ce_count_file, O_RDONLY);
-
-/*Read Initial value before poll and set poll events*/	
-for (int i = 0; i < MAX_POLL_FDS; i++)	
-  {	
-	ret = read(poll_fds[i].fd, data, 100);	
-         poll_fds[i].events = POLLPRI ;	
-  }
-p_poll_fds = &poll_fds[0];
-while(1)	
-  {	
-     /*Block on poll until ue_count or ce_count change
-     ret = poll(p_poll_fds, sizeof(poll_fds)/sizeof(struct pollfd) , -1);
-     /*
-      * Read the changed UE/CE count. lseek()
-      * or close/re-open the changed fd
-      */
-     for(int i = 0; i < MAX_POLL_FDS; i++) {	
-	 if( poll_fds[i].revents & POLLPRI)  {
-
-	   ret = read(poll_fds[i].fd, data, 100);
-
-            /*Take an appropriate action*/
-
-	}
-      }
-}
-######################################################################
-
-> + CC linux-arm-msm
-> 
-> Please keep linux-arm-msm in CC if there is a next revision.
-> 
-
-Noted.
+CPU: 1 PID: 17034 Comm: syz-executor.1 Not tainted 6.5.0-rc4-next-20230731-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ check_region_inline mm/kasan/generic.c:181 [inline]
+ kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
+ instrument_atomic_read include/linux/instrumented.h:68 [inline]
+ atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+ buffer_busy fs/buffer.c:2902 [inline]
+ drop_buffers.constprop.0+0x99/0x510 fs/buffer.c:2914
+ try_to_free_buffers+0x21b/0x2d0 fs/buffer.c:2944
+ filemap_release_folio+0x20f/0x270 mm/filemap.c:4089
+ shrink_folio_list+0x28bc/0x3dc0 mm/vmscan.c:2068
+ evict_folios+0x6bc/0x18f0 mm/vmscan.c:5181
+ try_to_shrink_lruvec+0x769/0xb00 mm/vmscan.c:5357
+ lru_gen_shrink_lruvec mm/vmscan.c:5494 [inline]
+ shrink_lruvec+0x314/0x2980 mm/vmscan.c:6269
+ shrink_node_memcgs mm/vmscan.c:6489 [inline]
+ shrink_node+0x807/0x3730 mm/vmscan.c:6524
+ shrink_zones mm/vmscan.c:6763 [inline]
+ do_try_to_free_pages+0x3cf/0x1990 mm/vmscan.c:6825
+ try_to_free_mem_cgroup_pages+0x36f/0x850 mm/vmscan.c:7140
+ try_charge_memcg+0x460/0x1400 mm/memcontrol.c:2692
+ obj_cgroup_charge_pages mm/memcontrol.c:3106 [inline]
+ __memcg_kmem_charge_page+0x179/0x3d0 mm/memcontrol.c:3132
+ __alloc_pages+0x1fc/0x4a0 mm/page_alloc.c:4529
+ alloc_pages+0x1a9/0x270 mm/mempolicy.c:2292
+ vm_area_alloc_pages mm/vmalloc.c:3059 [inline]
+ __vmalloc_area_node mm/vmalloc.c:3135 [inline]
+ __vmalloc_node_range+0xa6e/0x1540 mm/vmalloc.c:3316
+ kvmalloc_node+0x14b/0x1a0 mm/util.c:629
+ kvmalloc include/linux/slab.h:737 [inline]
+ xt_alloc_table_info+0x3e/0xa0 net/netfilter/x_tables.c:1192
+ do_replace net/ipv6/netfilter/ip6_tables.c:1139 [inline]
+ do_ip6t_set_ctl+0x53c/0xbd0 net/ipv6/netfilter/ip6_tables.c:1636
+ nf_setsockopt+0x87/0xe0 net/netfilter/nf_sockopt.c:101
+ ipv6_setsockopt+0x12b/0x190 net/ipv6/ipv6_sockglue.c:1017
+ udpv6_setsockopt+0x7d/0xc0 net/ipv6/udp.c:1690
+ __sys_setsockopt+0x2ca/0x5b0 net/socket.c:2265
+ __do_sys_setsockopt net/socket.c:2276 [inline]
+ __se_sys_setsockopt net/socket.c:2273 [inline]
+ __x64_sys_setsockopt+0xbd/0x150 net/socket.c:2273
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f0509e7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f050aba80c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 00007f0509f9bf80 RCX: 00007f0509e7cae9
+RDX: 0000000000000040 RSI: 0000000000000029 RDI: 0000000000000003
+RBP: 00007f0509ec847a R08: 00000000000003e0 R09: 0000000000000000
+R10: 00000000200014c0 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f0509f9bf80 R15: 00007ffea4aa1d48
+ </TASK>
+==================================================================
 
 
---Deepti
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to change bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
