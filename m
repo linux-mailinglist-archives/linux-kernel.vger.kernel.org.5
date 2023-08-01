@@ -2,62 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D2B76AA20
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8394F76AA26
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230230AbjHAHjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 03:39:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49044 "EHLO
+        id S231894AbjHAHku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 03:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbjHAHjG (ORCPT
+        with ESMTP id S229904AbjHAHks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 03:39:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776E6E4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 00:39:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F55F614AE
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 07:39:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43641C433C8;
-        Tue,  1 Aug 2023 07:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690875543;
-        bh=wwBgT18fdpN0KXFIrhM72nS2dRxAnqmy34KeChSDIbw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gZFNsDxU+dWNETreZWJZKhdqsJ9HV277bK9dY5ji0DIr4M1CpJzjE6HW4RWtY0/aN
-         f0/tDjQxg4Rs/wEhgUJLiwUPavnaiLbt6fpJ/zooFqBSY7/9Fkn+AvmyoNnsxyVTAW
-         Jg/fzRY5Eu8JmQw8rAGCavlAUgcig6AszCEyCFPgHdQzyWiCAelnvPU4poRgZmBHK2
-         YV0wnllckczij6MQOrth/uJLIURqyJCWeO3Z9buPYtVsSscGOiWXGK86F++tNcGRPj
-         dP4IRJ4kpO/aSSjVm8vSxaQFMo+ue8ZHzsNi5oLfiE9K93DfoLLRpcaqQxL3P40gWT
-         6PuFW80SMDF+w==
-Date:   Tue, 1 Aug 2023 08:38:58 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm_pmu: acpi: Add a representative platform device
- for TRBE
-Message-ID: <20230801073857.GB25854@willie-the-truck>
-References: <20230728112733.359620-1-anshuman.khandual@arm.com>
- <20230728112733.359620-2-anshuman.khandual@arm.com>
- <20230728144056.GE21718@willie-the-truck>
- <3ee165d7-3727-53cc-295d-a2108734952d@arm.com>
- <20230731145922.GB24881@willie-the-truck>
- <dffbb48e-cb7d-4862-af1c-9723cdc5652e@arm.com>
+        Tue, 1 Aug 2023 03:40:48 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E251E1726
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 00:40:46 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id d75a77b69052e-4036bd4fff1so222011cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 00:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690875646; x=1691480446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v1ckwMzi+FIp2LWpGFkmYasLA7o5jmHuzGuDzFbHRJI=;
+        b=Z4l96ijOCUV1jCIh7akPgFxUN7n4TGV+4ixXqZrqoMrJu+qGIaelFu/BYkra1Pi/P8
+         893iEXuQuzDXJUimzaHponHU2RQjDGCaneTVA77mXZ6CnhiN3d9U/g6cvrUoqbDaOKC3
+         H//HxyTPW566NzLCjsgOKoEn7W5zJrdMl8iE8OedNPmvqZVmyDr7OUFMIwgLiU5+N/m2
+         y9KYD270Hvq4q2WffLKgxrBLT9bUF2I0dW1faCBavJb2WtWAivOTV6uQo/FU5TJ2wW/U
+         XwWIq3DC+2vaPy0GYXzz20KmvIFM8+ElbJGCMNc9yiD1LKZ2t+AQDqk/FIKJo8lOYCC2
+         mPGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690875646; x=1691480446;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v1ckwMzi+FIp2LWpGFkmYasLA7o5jmHuzGuDzFbHRJI=;
+        b=Bdv1o4K8i/0jRTf7Tru28BvyOgrxoEF4fpMF9Y2H75zj4X6kSWKGdOe0gppTrNBBwQ
+         xBm/xpmfW4CeW9pBHREzN7J0U7KA3AlV+gXmbFbzfLAekEYNImpdiImR+us3i8DsFB2S
+         bXT09wV6FOmdB/mmFkhgVs9dNd2ADo4HLCEbPKRdAEjxusF2EeMCI9ELqz8QT1rzumXa
+         naxCA1qsHGPzlAUu2DZk4JukQPsk218VIiOMz9FLjJOcwc2A8zpQHPAijvpLdVJ6cKPl
+         BbCrttmpgbqaC+POE1DUe0Filyx/vE3525+sPX7WlhAtAEBoCnCGtYfvbmqlWx3LnZB2
+         1Kmg==
+X-Gm-Message-State: ABy/qLbGF2V3t/cIT5RR1a1DNkN4cInK/1eX9IyT7kcaNDX8Ydd+ZqCt
+        RPMk/rpOkAITaGSs6MV1Lf0AB5gesYMmTbsoNxm/Yg==
+X-Google-Smtp-Source: APBJJlE/z1yYLYt6LNaoji+ukmicGnkFXZ2bSaBTlYLoWNAFANjvUdHA7+uDUY1fMUI4yexT4v3uMHavY/A8llix6BA=
+X-Received: by 2002:a05:622a:1827:b0:403:eeb9:a76 with SMTP id
+ t39-20020a05622a182700b00403eeb90a76mr628181qtc.17.1690875645932; Tue, 01 Aug
+ 2023 00:40:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dffbb48e-cb7d-4862-af1c-9723cdc5652e@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230720112955.643283-1-ryan.roberts@arm.com> <20230720112955.643283-3-ryan.roberts@arm.com>
+ <CAOUHufamqn0b8tN1DppfPi7FRnENzYwcSOVcAKNxkj=CYa+OwQ@mail.gmail.com>
+ <ZMFNgmlT1JpI0z5+@casper.infradead.org> <87r0ouw39n.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ZMHX+O0wmjuPXdTi@casper.infradead.org> <faf8d723-afb8-ac4e-7861-4004bb78c5a9@arm.com>
+ <CAOUHufa38H0o0ZoX-KYMSeAiJghMWtjfHM2F4OjUZ-a--_Kt_w@mail.gmail.com> <3c26aa4e-fe11-09d2-c2fb-63546ba80893@arm.com>
+In-Reply-To: <3c26aa4e-fe11-09d2-c2fb-63546ba80893@arm.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Tue, 1 Aug 2023 01:40:09 -0600
+Message-ID: <CAOUHufZKVd72hdzUB+++E9+LL6N2WESuHU2AenUDoG=Nv91N5A@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] mm: Implement folio_remove_rmap_range()
+To:     Ryan Roberts <ryan.roberts@arm.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,96 +79,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 09:05:54AM +0530, Anshuman Khandual wrote:
-> 
-> 
-> On 7/31/23 20:29, Will Deacon wrote:
-> > On Mon, Jul 31, 2023 at 05:38:38PM +0530, Anshuman Khandual wrote:
-> >> On 7/28/23 20:10, Will Deacon wrote:
-> >>> On Fri, Jul 28, 2023 at 04:57:31PM +0530, Anshuman Khandual wrote:
-> >>>> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-> >>>> index 90815ad762eb..dd3df6729808 100644
-> >>>> --- a/drivers/perf/arm_pmu_acpi.c
-> >>>> +++ b/drivers/perf/arm_pmu_acpi.c
-> > 
-> > [...]
-> > 
-> >>>> +	ret = platform_device_register(&trbe_acpi_dev);
-> >>>> +	if (ret < 0) {
-> >>>> +		pr_warn("ACPI: TRBE: Unable to register device\n");
-> >>>> +		acpi_unregister_gsi(gsi);
-> >>>> +	}
-> >>>> +}
-> >>>> +#else
-> >>>> +static inline void arm_trbe_acpi_register_device(void)
-> >>>> +{
-> >>>> +
-> >>>> +}
-> >>>> +#endif /* CONFIG_CORESIGHT_TRBE */
+On Fri, Jul 28, 2023 at 3:00=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.com>=
+ wrote:
+>
+> On 27/07/2023 17:38, Yu Zhao wrote:
+> > On Thu, Jul 27, 2023 at 1:26=E2=80=AFAM Ryan Roberts <ryan.roberts@arm.=
+com> wrote:
+> >>
+> >> On 27/07/2023 03:35, Matthew Wilcox wrote:
+> >>> On Thu, Jul 27, 2023 at 09:29:24AM +0800, Huang, Ying wrote:
+> >>>> Matthew Wilcox <willy@infradead.org> writes:
+> >>>>> I think that can make sense.  Because we limit to a single page tab=
+le,
+> >>>>> specifying 'nr =3D 1 << PMD_ORDER' is the same as 'compound =3D tru=
+e'.
+> >>>>> Just make it folio, page, nr, vma.  I'd actually prefer it as (vma,
+> >>>>> folio, page, nr), but that isn't the convention we've had in rmap u=
+p
+> >>>>> until now.
+> >>>>
+> >>>> IIUC, even if 'nr =3D 1 << PMD_ORDER', we may remove one PMD 'compou=
+nd'
+> >>>> mapping, or 'nr' PTE mapping.  So, we will still need 'compound' (or
+> >>>> some better name) as parameter.
 > >>>
-> >>> This looks like you ran s/spe/trbe/ over the SPE device registration
-> >>> code :)
+> >>> Oh, this is removing ... so you're concerned with the case where we'v=
+e
+> >>> split the PMD into PTEs, but all the PTEs are still present in a sing=
+le
+> >>> page table?  OK, I don't have a good answer to that.  Maybe that torp=
+edoes
+> >>> the whole idea; I'll think about it.
 > >>
-> >> Yeah, almost :) 
-> >>
-> >>> Please can you refactor things so we don't have all the duplication? I
-> >>> suspect this won't be the last device which needs the same treatement.
-> >>
-> >> Should the refactoring just accommodate SPE, and TRBE or make it more generic to
-> >> accommodate future devices as well. Something like the following enumeration.
-> >>
-> >> enum arm_platform_device {
-> >>        ARM_PLATFORM_DEVICE_SPE,
-> >>        ARM_PLATFORM_DEVICE_TRBE,
-> >>        ARM_PLATFORM_DEVICE_MAX,
-> >> };
-> >>
-> >> But that would require adding some helper functions to select these following
-> >> elements based on the above enumeration via a common function
-> >>
-> >> - gicc->XXX_interrupt
-> >> - ACPI_MADT_GICC_SPE/TRBE for header length comparison
-> >> - static struct platform_device/resources (static objects in the file)
-> >>
-> >> Seems like will add much more code for a refactor. Did you have something else
-> >> in mind for the refactor.
-> > 
-> > All I'm saying is that we shouldn't have identical copies of the code to
-> > walk the MADT, pull out the irqs and register the device.
-> > 
-> > So something like the totally untested hack below. I probably broke
-> > something, but hopefully you see what I mean.
-> > 
-> > Will
-> > 
-> > --->8
-> > 
-> > diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
-> > index 90815ad762eb..7f1cf36c6e69 100644
-> > --- a/drivers/perf/arm_pmu_acpi.c
-> > +++ b/drivers/perf/arm_pmu_acpi.c
-> > @@ -69,6 +69,62 @@ static void arm_pmu_acpi_unregister_irq(int cpu)
-> >                 acpi_unregister_gsi(gsi);
-> >  }
-> >  
-> > +static int
-> > +arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
-> > +                            u16 (*parse_gsi)(struct acpi_madt_generic_interrupt *))
-> 
-> This factored out helper should be wrapped inside CONFIG_ARM_SPE_PMU
-> and CONFIG_CORESIGHT_TRBE ? Otherwise, there will be no callers left
-> for this helper triggering warning.
-> 
-> drivers/perf/arm_pmu_acpi.c:73:1: warning: ‘arm_acpi_register_pmu_device’ defined but not used [-Wunused-function]
->    73 | arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
->       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> But in that case, we have to keep adding new configs when new devices
-> require platform devices to be registered. Is there a better way ?
+> >> This is exactly why I think the approach I've already taken is the cor=
+rect one;
+> >> a 'range' makes no sense when you are dealing with 'compound' pages be=
+cause you
+> >> are accounting the entire folio. So surely its better to reflect that =
+by only
+> >> accounting small pages in the range version of the API.
+> >
+> > If the argument is the compound case is a separate one, then why not a
+> > separate API for it?
+> >
+> > I don't really care about whether we think 'range' makes sense for
+> > 'compound' or not. What I'm saying is:
+> > 1. if they are considered one general case, then one API with the
+> > compound parameter.
+> > 2. if they are considered two specific cases, there should be two APIs.
+> > This common design pattern is cleaner IMO.
+>
+> Option 2 definitely makes sense to me and I agree that it would be cleane=
+r to
+> have 2 separate APIs, one for small-page accounting (which can accept a r=
+ange
+> within a folio) and one for large-page accounting (i.e. compound=3Dtrue i=
+n today's
+> API).
+>
+> But...
+>
+> 1) That's not how the rest of the rmap API does it
 
-__maybe_unused?
+Yes, but that's how we convert things: one step a time.
 
-Like I said, I didn't test that thing at all, I was just trying to
-illustrate the sort of refactoring I had in mind.
+> 2) This would be a much bigger change since I'm removing an existing API =
+and
+> replacing it with a completely new one (there are ~20 call sites to fix u=
+p). I
+> was trying to keep the change small and manageable by maintaining the cur=
+rent
+> API but moving all the small-page logic to the new API, so the old API is=
+ a
+> wrapper in that case.
 
-Will
+I don't get how it'd be "much bigger". Isn't it just a straightforward
+replacement?
+
+> 3) You would also need an API for the hugetlb case, which page_remove_rma=
+p()
+> handles today. Perhaps that could also be done by the new API that handle=
+s the
+> compound case. But then you are mixing and matching your API styles - one=
+ caters
+> for 1 specific case, and the other caters for 2 cases and figures out whi=
+ch one.
+
+You are talking about cases *inside* the APIs, and that's irrelevant
+to the number of APIs: we only need two -- one supports a range within
+a folio and the other takes a folio as a single unit.
+
+> > Right now we have an overlap (redundancy) -- people would have to do
+> > two code searches: one for page_remove_rmap() and the other for
+> > folio_remove_rmap_range(nr=3D1), and this IMO is a bad design pattern.
+>
+> I'm open to doing the work to remove this redundancy, but I'd like to hea=
+r
+> concensus on this thread that its the right approach first. Although pers=
+onally
+> I don't see a problem with what I've already done; If you want to operate=
+ on a
+> page (inc the old concept of a "compound page" and a hugetlb page) call t=
+he old
+> one. If you want to operate on a range of pages in a folio, call the new =
+one.
