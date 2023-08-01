@@ -2,122 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB6576BED3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3266A76BED8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbjHAUxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 16:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
+        id S231607AbjHAUzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 16:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbjHAUxi (ORCPT
+        with ESMTP id S229725AbjHAUy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 16:53:38 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B85C1FF0;
-        Tue,  1 Aug 2023 13:53:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 121A561707;
-        Tue,  1 Aug 2023 20:53:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A708C433C7;
-        Tue,  1 Aug 2023 20:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690923216;
-        bh=obhqLQxptseI0LHMuZyhYQYBOS6OSCE3jVqB3HSrzgw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HOEc0TLIPtm4ZvN3lzLjFSbZQU62W4m1Im2JRaopeOR2nHBPcEGqM3rfUqVxG8ivp
-         1jY8d/Cypozuwzb+9bVwkfWZju8q2OnU2FtRM9NDmWtLazQ/9iJKm9LdQKK/LNlU4m
-         E9nvf9CLwIc3PaTvAUr2LcK2TH6AZw+t+RZhNfzIw8un7/SZmhrWypL4KR4oc/m7xY
-         yUIge0NBxC72hLMNZ4G7p8e0TnbZ7bceG/9lCcTglIG8K2AxXAMclIHJaNN8mCcWGv
-         euVUzvyKTava5ISdpq5TBDaf5zWN2lYlPvd5W8GJqrMwJvk3r0L7TNSUTNm5F6Hvwp
-         NQflERAPP9iZw==
-Date:   Tue, 1 Aug 2023 21:53:31 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     niravkumar.l.rabara@intel.com
-Cc:     adrian.ho.yin.ng@intel.com, andrew@lunn.ch, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, dinguyen@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        netdev@vger.kernel.org, p.zabel@pengutronix.de,
-        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
-        wen.ping.teh@intel.com
-Subject: Re: [PATCH v2 1/5] dt-bindings: intel: Add Intel Agilex5 compatible
-Message-ID: <20230801-blatancy-chill-efee6e93f2e0@spud>
-References: <20230618132235.728641-1-niravkumar.l.rabara@intel.com>
- <20230801010234.792557-1-niravkumar.l.rabara@intel.com>
- <20230801010234.792557-2-niravkumar.l.rabara@intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yUkJXzVAcuN13gRW"
-Content-Disposition: inline
-In-Reply-To: <20230801010234.792557-2-niravkumar.l.rabara@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Tue, 1 Aug 2023 16:54:59 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A541BFD
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:54:58 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-cf4cb742715so6109734276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 13:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690923298; x=1691528098;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=01D3Mc0WQ1sIli+WCBM4zperRKd1MnhhHpfIVHiLwx8=;
+        b=1jJu6159CsEIRLvgUdpUI1Kmk2CD/pULRu35xBZarz3VKKiaxvzywe8XhiyRymuz9+
+         VGXNWUH2W7pvQXfMIFXjZmhpOu6k5N8HysyDDxF6SRGYVwcdOjXbrjMZSdm3nL489cDc
+         zNM16qvLpgziUskQ7RgtgbUDHKiLINF17HGx7edKruttIUkYvdFWrvMBgblyiXcIKy2K
+         jA062pKnujX4Aq2su7H2c7Z7HerlA36c3xy6KMqDzQfKJv5GX4lc6ucFYCKTyZD3eDPo
+         0JLAGEHy8Q9zCvLhjp+I25CNKfCJwrDZpC1A6PWm42ykYKs4hAwSlWvUEgc6mbjYXdhO
+         aFJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690923298; x=1691528098;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=01D3Mc0WQ1sIli+WCBM4zperRKd1MnhhHpfIVHiLwx8=;
+        b=fr0Wey8a2SvA1zjGP36A9o2UDyAvzGBfZ0h3sG9hjLYCJSI0NAv7ALwS+hzFTgX3FX
+         k+hhrcbs4W78fa8KGQmRnRArKj1B5OiRjqZJRItBIVWQaquDT5Ik3Yh29EV+1zfk23w8
+         mccoxcUC8IOLWWADCMt6I+xJU3NfT8JPg0DalX/ODz85VFQR7n20ZPhWCLX5bTp+QAkq
+         0Qx6xHyQy5/yPXYNVlHT0MNYvgScSU/bKvPWo4VJL6ePRM8fsuRb1GT6gaay2v/GO4dr
+         aryxZb2eZTvvjUhPT7GcptHRAMzN5IiLIgzYeS8djeu9cUp0+1KwW1ubBBkTEwCg3Vma
+         bVrg==
+X-Gm-Message-State: ABy/qLbXao4B+fPbyjTRxq0Vb2nZ9rqPgJT5aZYFgXknwwzXYuu/ujST
+        pMn6d6yXYcKDEEP/URSxc+R0E2pBszBv
+X-Google-Smtp-Source: APBJJlEq9l+NEtUD1U41TgFedR95hPQqXDoEZJG5YtLGgKxbgLgZUUEM7/8Esq5rFZhfDdXxNAOrT/Xz2wJm
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:bea9:545d:a179:25e7])
+ (user=irogers job=sendgmr) by 2002:a25:d613:0:b0:d12:d6e4:a08d with SMTP id
+ n19-20020a25d613000000b00d12d6e4a08dmr85369ybg.7.1690923298054; Tue, 01 Aug
+ 2023 13:54:58 -0700 (PDT)
+Date:   Tue,  1 Aug 2023 13:54:52 -0700
+Message-Id: <20230801205452.3380578-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
+Subject: [PATCH v1] perf stat: Don't display zero tool counts
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Claire Jensen <cjense@google.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Skip zero counts for tool events.
 
---yUkJXzVAcuN13gRW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/stat-display.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-On Tue, Aug 01, 2023 at 09:02:30AM +0800, niravkumar.l.rabara@intel.com wro=
-te:
-> From: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
->=20
-> Agilex5 is a new SoCFPGA in Intel Agilex SoCFPGA Family,
-> include compatible string for Agilex5 SoCFPGA board.
->=20
-> Reviewed-by: Dinh Nguyen <dinguyen@kernel.org>
-> Signed-off-by: Niravkumar L Rabara <niravkumar.l.rabara@intel.com>
+diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
+index 7329b3340f88..d45d5dcb0e2b 100644
+--- a/tools/perf/util/stat-display.c
++++ b/tools/perf/util/stat-display.c
+@@ -931,6 +931,11 @@ static bool should_skip_zero_counter(struct perf_stat_config *config,
+ 	 */
+ 	if (config->aggr_mode == AGGR_THREAD && config->system_wide)
+ 		return true;
++
++	/* Tool events have the software PMU but are only gathered on 1. */
++	if (evsel__is_tool(counter))
++		return true;
++
+ 	/*
+ 	 * Skip value 0 when it's an uncore event and the given aggr id
+ 	 * does not belong to the PMU cpumask.
+-- 
+2.41.0.585.gd2178a4bd4-goog
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> ---
->  Documentation/devicetree/bindings/arm/intel,socfpga.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/arm/intel,socfpga.yaml b/D=
-ocumentation/devicetree/bindings/arm/intel,socfpga.yaml
-> index 4b4dcf551eb6..2ee0c740eb56 100644
-> --- a/Documentation/devicetree/bindings/arm/intel,socfpga.yaml
-> +++ b/Documentation/devicetree/bindings/arm/intel,socfpga.yaml
-> @@ -21,6 +21,11 @@ properties:
->                - intel,socfpga-agilex-n6000
->                - intel,socfpga-agilex-socdk
->            - const: intel,socfpga-agilex
-> +      - description: Agilex5 boards
-> +        items:
-> +          - enum:
-> +              - intel,socfpga-agilex5-socdk
-> +          - const: intel,socfpga-agilex5
-> =20
->  additionalProperties: true
-> =20
-> --=20
-> 2.25.1
->=20
-
---yUkJXzVAcuN13gRW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMlwygAKCRB4tDGHoIJi
-0vuEAP4uO+JAx0MD0FfkTsZr5gB6MYd9JQhZhpnnnCBxyuFFBwD8DyO4Tugog9dy
-Fi7aNet1WmUff9KNVUbPD2zxc564OQ8=
-=B376
------END PGP SIGNATURE-----
-
---yUkJXzVAcuN13gRW--
