@@ -2,42 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B6ED976A744
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 05:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B795476A745
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 05:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjHADC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 23:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
+        id S231420AbjHADDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 23:03:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjHADCX (ORCPT
+        with ESMTP id S229648AbjHADDq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 23:02:23 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1CB1981
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:02:22 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VojZ4od_1690858938;
-Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VojZ4od_1690858938)
+        Mon, 31 Jul 2023 23:03:46 -0400
+Received: from out28-217.mail.aliyun.com (out28-217.mail.aliyun.com [115.124.28.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B25129
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:03:44 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07467062|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0381289-0.00205072-0.95982;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5JFwAS_1690859016;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5JFwAS_1690859016)
           by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 11:02:19 +0800
-Message-ID: <8c265e65-10b0-1a81-fe9c-ae334162346e@linux.alibaba.com>
-Date:   Tue, 1 Aug 2023 11:02:47 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 8/8] mm/compaction: only set skip flag if
- cc->no_set_skip_hint is false
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        mgorman@techsingularity.net, willy@infradead.org, david@redhat.com
-References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
- <20230728171037.2219226-9-shikemeng@huaweicloud.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20230728171037.2219226-9-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+          Tue, 01 Aug 2023 11:03:38 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm/powerplay/hwmgr/ppevvmath: Clean up errors in ppevvmath.h
+Date:   Tue,  1 Aug 2023 03:03:34 +0000
+Message-Id: <20230801030334.5069-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,31 +37,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following errors reported by checkpatch:
 
+ERROR: return is not a function, parentheses are not required
+ERROR: space required after that ',' (ctx:VxV)
+ERROR: space required before the open parenthesis '('
+ERROR: need consistent spacing around '-' (ctx:WxV)
 
-On 7/29/2023 1:10 AM, Kemeng Shi wrote:
-> Keep the same logic as update_pageblock_skip, only set skip if
-> no_set_skip_hint is false which is more reasonable.
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-Um, the fast_find_migrateblock() and fast_isolate_freepages() will rely 
-on the skip flag and ignore the cc->no_set_skip_hint. So not sure it is 
-helpful. Let's see if Mel has some input.
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h
+index dac29fe6cfc6..6f54c410c2f9 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/ppevvmath.h
+@@ -166,7 +166,7 @@ static fInt fNaturalLog(fInt value)
+ 
+ 	error_term = fAdd(fNegativeOne, value);
+ 
+-	return (fAdd(solution, error_term));
++	return fAdd(solution, error_term);
+ }
+ 
+ static fInt fDecodeLinearFuse(uint32_t fuse_value, fInt f_min, fInt f_range, uint32_t bitlength)
+@@ -230,7 +230,7 @@ static fInt ConvertToFraction(int X) /*Add all range checking here. Is it possib
+ static fInt fNegate(fInt X)
+ {
+ 	fInt CONSTANT_NEGONE = ConvertToFraction(-1);
+-	return (fMultiply(X, CONSTANT_NEGONE));
++	return fMultiply(X, CONSTANT_NEGONE);
+ }
+ 
+ static fInt Convert_ULONG_ToFraction(uint32_t X)
+@@ -382,14 +382,14 @@ static int ConvertBackToInteger (fInt A) /*THIS is the function that will be use
+ 
+ 	scaledDecimal.full = uGetScaledDecimal(A);
+ 
+-	fullNumber = fAdd(scaledDecimal,scaledReal);
++	fullNumber = fAdd(scaledDecimal, scaledReal);
+ 
+ 	return fullNumber.full;
+ }
+ 
+ static fInt fGetSquare(fInt A)
+ {
+-	return fMultiply(A,A);
++	return fMultiply(A, A);
+ }
+ 
+ /* x_new = x_old - (x_old^2 - C) / (2 * x_old) */
+@@ -447,7 +447,7 @@ static fInt fSqrt(fInt num)
+ 
+ 	} while (uAbs(error) > 0);
+ 
+-	return (x_new);
++	return x_new;
+ }
+ 
+ static void SolveQuadracticEqn(fInt A, fInt B, fInt C, fInt Roots[])
+@@ -459,7 +459,7 @@ static void SolveQuadracticEqn(fInt A, fInt B, fInt C, fInt Roots[])
+ 	f_CONSTANT100 = ConvertToFraction(100);
+ 	f_CONSTANT10 = ConvertToFraction(10);
+ 
+-	while(GreaterThan(A, f_CONSTANT100) || GreaterThan(B, f_CONSTANT100) || GreaterThan(C, f_CONSTANT100)) {
++	while (GreaterThan(A, f_CONSTANT100) || GreaterThan(B, f_CONSTANT100) || GreaterThan(C, f_CONSTANT100)) {
+ 		A = fDivide(A, f_CONSTANT10);
+ 		B = fDivide(B, f_CONSTANT10);
+ 		C = fDivide(C, f_CONSTANT10);
+@@ -515,7 +515,7 @@ static int uGetScaledDecimal (fInt A) /*Converts the fractional portion to whole
+ 		dec[i] = tmp / (1 << SHIFT_AMOUNT);
+ 		tmp = tmp - ((1 << SHIFT_AMOUNT)*dec[i]);
+ 		tmp *= 10;
+-		scaledDecimal = scaledDecimal + dec[i]*uPow(10, PRECISION - 1 -i);
++		scaledDecimal = scaledDecimal + dec[i]*uPow(10, PRECISION - 1 - i);
+ 	}
+ 
+ 	return scaledDecimal;
+-- 
+2.17.1
 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   mm/compaction.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 188d610eb3b6..6841c0496223 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1418,7 +1418,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
->   	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
->   
->   	/* Skip this pageblock in the future as it's full or nearly full */
-> -	if (start_pfn == end_pfn)
-> +	if (start_pfn == end_pfn && !cc->no_set_skip_hint)
->   		set_pageblock_skip(page);
->   }
->   
