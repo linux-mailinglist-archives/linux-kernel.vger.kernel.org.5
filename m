@@ -2,173 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C5576A85D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EE176A862
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:37:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbjHAFb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 01:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46666 "EHLO
+        id S229950AbjHAFgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 01:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbjHAFbs (ORCPT
+        with ESMTP id S229812AbjHAFgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 01:31:48 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58AC81FEE;
-        Mon, 31 Jul 2023 22:31:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=YWQyeeI0dgsh9BoI95IqY8St3ayAwC7ynd//yjkbluY=; b=NEUe+kUpvAtG16P/9InHgKqGu0
-        AUYOLe/g7IFU13jJhhKVjGx5N7NhOwLG0DKs+u3ElqFarhHQOlC3sDbxvHYCYgRljZDhd2/QRk86p
-        C8d4VTR4hOlS737/1hktRsUUiruqWBNrIcObkr1rhZn4T0btVs3d/a90Lh/Wx13KLd6JRKlAVMP4W
-        wngb5eo1UiZQ4qr51Ufjct0uZRG8QbfiHh0cySGybspscck6ssCqW/XaknVdbwVMrp/skdf8NFanF
-        izTnWvKmTZEB+OsirvvUlZHj1gNnzxxmP92wCLGfjMhxElJjd8lfQDpKA572TAnFwgoe+00QSKgHX
-        VLprpXJA==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQhyF-000OHn-0y;
-        Tue, 01 Aug 2023 05:30:59 +0000
-Message-ID: <58f88e11-9292-5eca-a4d6-e72d4124078a@infradead.org>
-Date:   Mon, 31 Jul 2023 22:30:57 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] Documentation: devices.txt: reconcile serial/ucc_uart
- minor numers
-Content-Language: en-US
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Timur Tabi <timur@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        Kumar Gala <galak@kernel.crashing.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <20230724063341.28198-1-rdunlap@infradead.org>
- <dc334e93-1487-8058-195d-e90db7bdb53f@csgroup.eu>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <dc334e93-1487-8058-195d-e90db7bdb53f@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 01:36:48 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A45E199E
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 22:36:47 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c83284edf0eso5797491276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 22:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690868206; x=1691473006;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cP8wdd+KwpsAv2ShtYOYpBxbm0STXFlV3eoDNJ7OHtg=;
+        b=mL9zuBLW/gfQT7MkFoHJ+Ct280XnyulVgddTXFXR9aFEfVDgnlG62wUTw3ESbdIiyl
+         53dwyeKWXPWJ73II12Xv2UkRxm8bFwaoIldw0C+qBeYD1XErQISsE/Ovs1qA+Op7sEI0
+         z8m+YnqQF7BgvnDQn1sQ0TCvhQybwd48KVaVQ8UvpPkU94zTxJkSor+/hqJaGqOEOJrT
+         WPCHBhrH9tA6+IV9a7T41Z3FyEUdrB39axZlWUOWB9d258SwAg18KQW6oV0DXDIdOlo2
+         77ule0hjeicz6K5g/s4go6sYONwttRDhVM5GuP/M8z3b4bZ7kS36z4ehNEdbTDLwFqp+
+         jSLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690868206; x=1691473006;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cP8wdd+KwpsAv2ShtYOYpBxbm0STXFlV3eoDNJ7OHtg=;
+        b=jZjWTSbHyrujwzB8ROGNklnytta4Wwe08jSLwOJ6buXi0d4K4emXknFYL8HKCXtJiO
+         ilI3uER7TDrU4oOiU9/JgkvfrwHlY7GBnAQDubLzeBrcbtTTboEn83vaT7jaAKyzDFP2
+         PZQzBhUaTiEe5ehgFamJhFzWLoVnND9E8jgTXdaKBFhQHCln0nMZ4RVKMdf/hhjZqPHF
+         aogVv58DNKSDJ+A1EBu4ZdFC1CH9MWPzYAPe6HQwGNt+VOJg6D2+44Onar8cymPA56CU
+         2x++yLmVLhAyRODXLMgQv55PaDr/d16Tc8dZKyUyyZBoSKYng0T/rucmMITcTA+++0Vq
+         yRdw==
+X-Gm-Message-State: ABy/qLakPrxJtf4XYFrqfGN+rglm6ribQIzey2PnyTsnbPzWVFqLKNlX
+        2EXY/A61ZC3baStqqqh3X2u1WtYEMFQC
+X-Google-Smtp-Source: APBJJlHcD9Xco+3AePtBpEqjlsHJvHtlAXrE2v5r8KY+izHX0/bSjyG5kXlb056okjUC93Go4zLdNcKnNPuM
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:dd0a:f4b:6531:d8dc])
+ (user=irogers job=sendgmr) by 2002:a25:ab86:0:b0:bc0:bfa7:7647 with SMTP id
+ v6-20020a25ab86000000b00bc0bfa77647mr75590ybi.0.1690868206436; Mon, 31 Jul
+ 2023 22:36:46 -0700 (PDT)
+Date:   Mon, 31 Jul 2023 22:36:30 -0700
+Message-Id: <20230801053634.1142634-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
+Subject: [PATCH v1 0/4] Intel metric fixes and event updates
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Weilin Wang <weilin.wang@intel.com>
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+The metric tma_info_pipeline_retire contains uops_retired.slots with
+perf metric events. Patch 1 fixes this event sorting so that
+uops_retired.slots isn't made a group leader as that needs to be
+topdown.slots.
 
-On 7/31/23 22:21, Christophe Leroy wrote:
-> 
-> 
-> Le 24/07/2023 à 08:33, Randy Dunlap a écrit :
->> Reconcile devices.txt with serial/ucc_uart.c regarding device number
->> assignments. ucc_uart.c supports 4 ports and uses minor devnums
->> 46-49, so update devices.txt with that info.
->> Then update ucc_uart.c's reference to the location of the devices.txt
->> list in the kernel source tree.
-> 
-> Devices ttyCPM* belong to cpm_uart driver. As explained in the comment 
-> you have modified in UCC uart driver, UCC uart borrows those devices and 
-> shall not be considered as the reference. But the lines you modify in 
-> device.txt doesn't mention QE UCC, it mentions CPM SCC and CPM SMC.
-> 
-> CPM uart driver supports up to 6 ports (4 SCC and 2 SMC).
-> 
+Patch 2 and 3 update the meteorlake and sapphirerapids events.
 
-Thank you for replying.
+Patch 4 addresses an issue with event grouping discussed in:
+https://lore.kernel.org/lkml/20230719001836.198363-3-irogers@google.com/
+by adding and altering metric constraints. The constraints avoid
+groups for metrics where the kernel PMU fails to not open the group
+(the trigger for the weak group being removed).
 
-Does this mean that the patch should be reverted?
+Ian Rogers (4):
+  perf parse-events x86: Avoid sorting uops_retired.slots
+  perf vendor events intel: Update meteorlake to 1.04
+  perf vendor events intel: Update sapphirerapids to 1.15
+  perf vendor events intel: Update Icelake+ metric constraints
 
-> On one of my boards which has a powerpc mpc866 CPU, I have:
-> 
-> [    2.393872] ff000a80.serial: ttyCPM0 at MMIO 0xfff00a80 (irq = 19, 
-> base_baud = 8250000) is a CPM UART
-> [    2.411899] ff000a90.serial: ttyCPM1 at MMIO 0xfff00a90 (irq = 20, 
-> base_baud = 8250000) is a CPM UART
-> [    2.430352] ff000a00.serial: ttyCPM2 at MMIO 0xfff00a00 (irq = 30, 
-> base_baud = 8250000) is a CPM UART
-> [    2.448944] ff000a20.serial: ttyCPM3 at MMIO 0xfff00a20 (irq = 29, 
-> base_baud = 8250000) is a CPM UART
-> [    2.467435] ff000a40.serial: ttyCPM4 at MMIO 0xfff00a40 (irq = 28, 
-> base_baud = 8250000) is a CPM UART
-> [    2.485924] ff000a60.serial: ttyCPM5 at MMIO 0xfff00a60 (irq = 27, 
-> base_baud = 8250000) is a CPM UART
-> 
-> # ll /dev/ttyCPM*
-> crw-------    1 root     root      204,  46 Jan  1 01:01 /dev/ttyCPM0
-> crw-------    1 root     root      204,  47 Jan  1 01:00 /dev/ttyCPM1
-> crw-------    1 root     root      204,  48 Jan  1 01:00 /dev/ttyCPM2
-> crw-------    1 root     root      204,  49 Jan  1 01:00 /dev/ttyCPM3
-> crw-------    1 root     root      204,  50 Jan  1 01:00 /dev/ttyCPM4
-> crw-------    1 root     root      204,  51 Jan  1 01:00 /dev/ttyCPM5
-
-I don't see minors 50-51 allocated in devices.txt for use by this device/driver.
-Am I overlooking that allocation somewhere?
-
-Thanks for your help.
-
-> 
-> # cat /proc/tty/drivers
-> /dev/tty             /dev/tty        5       0 system:/dev/tty
-> /dev/console         /dev/console    5       1 system:console
-> /dev/ptmx            /dev/ptmx       5       2 system
-> ttyCPM               /dev/ttyCPM   204 46-51 serial
-> pty_slave            /dev/pts      136 0-1048575 pty:slave
-> pty_master           /dev/ptm      128 0-1048575 pty:master
-> pty_slave            /dev/ttyp       3 0-4 pty:slave
-> pty_master           /dev/pty        2 0-4 pty:master
-> 
-> Christophe
-> 
-> 
->>
->> Fixes: d7584ed2b994 ("[POWERPC] qe-uart: add support for Freescale QUICCEngine UART")
->> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Timur Tabi <timur@kernel.org>
->> Cc: Kumar Gala <galak@kernel.crashing.org>
->> Cc: linuxppc-dev@lists.ozlabs.org
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> Cc: Jiri Slaby <jirislaby@kernel.org>
->> Cc: linux-serial@vger.kernel.org
->> Cc: Jonathan Corbet <corbet@lwn.net>
->> Cc: linux-doc@vger.kernel.org
->> ---
->>   Documentation/admin-guide/devices.txt |    2 +-
->>   drivers/tty/serial/ucc_uart.c         |    2 +-
->>   2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff -- a/drivers/tty/serial/ucc_uart.c b/drivers/tty/serial/ucc_uart.c
->> --- a/drivers/tty/serial/ucc_uart.c
->> +++ b/drivers/tty/serial/ucc_uart.c
->> @@ -59,7 +59,7 @@ static int firmware_loaded;
->>   /* #define LOOPBACK */
->>   
->>   /* The major and minor device numbers are defined in
->> - * http://www.lanana.org/docs/device-list/devices-2.6+.txt.  For the QE
->> + * Documentation/admin-guide/devices.txt.  For the QE
->>    * UART, we have major number 204 and minor numbers 46 - 49, which are the
->>    * same as for the CPM2.  This decision was made because no Freescale part
->>    * has both a CPM and a QE.
->> diff -- a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
->> --- a/Documentation/admin-guide/devices.txt
->> +++ b/Documentation/admin-guide/devices.txt
->> @@ -2691,7 +2691,7 @@
->>   		 45 = /dev/ttyMM1		Marvell MPSC - port 1 (obsolete unused)
->>   		 46 = /dev/ttyCPM0		PPC CPM (SCC or SMC) - port 0
->>   		    ...
->> -		 47 = /dev/ttyCPM5		PPC CPM (SCC or SMC) - port 5
->> +		 49 = /dev/ttyCPM5		PPC CPM (SCC or SMC) - port 3
->>   		 50 = /dev/ttyIOC0		Altix serial card
->>   		    ...
->>   		 81 = /dev/ttyIOC31		Altix serial card
+ tools/perf/arch/x86/util/evlist.c             |   7 +-
+ tools/perf/arch/x86/util/evsel.c              |   7 +-
+ .../arch/x86/alderlake/adl-metrics.json       |  11 +-
+ .../arch/x86/alderlaken/adln-metrics.json     |   2 +
+ .../arch/x86/icelake/icl-metrics.json         |  10 +-
+ .../arch/x86/icelakex/icx-metrics.json        |  10 +-
+ tools/perf/pmu-events/arch/x86/mapfile.csv    |   4 +-
+ .../pmu-events/arch/x86/meteorlake/cache.json | 165 ++++++++++++++++++
+ .../arch/x86/meteorlake/floating-point.json   |   8 +
+ .../arch/x86/meteorlake/frontend.json         |  56 ++++++
+ .../arch/x86/meteorlake/memory.json           |  80 +++++++++
+ .../pmu-events/arch/x86/meteorlake/other.json |  16 ++
+ .../arch/x86/meteorlake/pipeline.json         | 159 +++++++++++++++++
+ .../arch/x86/rocketlake/rkl-metrics.json      |  10 +-
+ .../arch/x86/sapphirerapids/other.json        |  18 ++
+ .../arch/x86/sapphirerapids/spr-metrics.json  |   9 +-
+ .../arch/x86/tigerlake/tgl-metrics.json       |  10 +-
+ 17 files changed, 549 insertions(+), 33 deletions(-)
 
 -- 
-~Randy
+2.41.0.585.gd2178a4bd4-goog
+
