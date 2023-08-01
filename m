@@ -2,190 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB6176A6D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2B976A6B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbjHACOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:14:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        id S229777AbjHACFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjHACOR (ORCPT
+        with ESMTP id S229379AbjHACFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:14:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5233F1A3;
-        Mon, 31 Jul 2023 19:14:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690856056; x=1722392056;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=yMcxLFu7PNwSx8/ofUVcH2/9PCBNG2Gh1yBP9lWdBpM=;
-  b=R4Zu1jfATNidZZijXERATxxupz2BPE09HsGWRBbqVn+LHtl0FQc8sYbr
-   Sljpq2yP6kM77WPieWhJdWn9IbnRgiueNcKmYFxhT/cEcV8j00TYFqbmU
-   QEkvfjhMwngf1cLsCl+BmKrDXYYb/xGS3zn02QDobvfsbNecqR6I+651G
-   t6AkOri4lge9D8HuyNUTeUNrCSFguNhbjNWdfFCNYTRE4IfvEPSpQoO5Q
-   2cLILSRLoeAtBeYZbRrio9JFOYj+o4fhMb6Ek0tqo6KIkyekG91sux0Gz
-   zsQ32R/FXu/UHblWX8llJbsogMHMx1tYzpOoUDf4JsKiuhMlvoJWLXaqX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="369174015"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="369174015"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 19:14:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="722310779"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="722310779"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga007.jf.intel.com with ESMTP; 31 Jul 2023 19:14:12 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 31 Jul 2023 19:14:11 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Mon, 31 Jul 2023 19:14:11 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Mon, 31 Jul 2023 19:14:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a8MxvdjNFWA0Jl54Yz17rzxgt8QZRB1xYST53t2Pt/3D+FPpWMq0fhP2phtkxKk+DVrByCTeRccVjq3j5HKPGGVCtFQFxGy0a48ZME90ubKTbVf/zC1BOQtfLQwd6pAh42fAhvnLrvBwXT9RLQWNqk9hFYcaMj8EFUSTzzOgF6ZfkJzJAxfYFoEhXuMR0baiC5SWVwdZAwmg8vigzAV/LuykxdtDXZ/GpS63JVlzTeH8Kny8kjQ5QCd9G765Ri3qDHfQJ2ErvpVo8i8HnMrsvIP/CDFSKVrexUC6Zt90WfhV55z54t8nCH2aUuMuUJrjWZCTGYLbFksOpUnZDsm3fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=buHPO2DLGH9V/oeyvsEPI0CTYnxFWhktFRNOxLxHbQ8=;
- b=GtJfWKlARIs6/xLEQUtf80ZDiyKL8CxSGABLTTRsOSQXuxqJ0xFc/9J1sHnvtJReFhWjAs2207y0kVJKJliV1cbkGzyyNB3aaBbKZ3kcbBam9lWAYTrBrR/y37bqyvkakr1fnrcCNakXh0IEFzwGvMHA/QJtGRtVX0cCmuNRrlkrCPEq0/RUMkPzVwgtMa4o00wnVDbv34/X5zieRRE02H+5fjadwub/O6ZF+9lJga9eVJsFf9uXxIPfALAS+KriP3CIZqA+9nrWYF+SwJGTYaR4WVsh5n3p4M74qL1qxejne6/FiQtPmdOUmYlbCNmq7n4tQW80wm/nqwnLsD87eQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- MN2PR11MB4536.namprd11.prod.outlook.com (2603:10b6:208:26a::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.43; Tue, 1 Aug
- 2023 02:14:09 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::1b1a:af8e:7514:6f63]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::1b1a:af8e:7514:6f63%2]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
- 02:14:09 +0000
-Date:   Tue, 1 Aug 2023 09:47:17 +0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>, <kvm@vger.kernel.org>,
-        <intel-gvt-dev@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Yongwei Ma <yongwei.ma@intel.com>,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH v4 03/29] drm/i915/gvt: Verify hugepages are contiguous
- in physical address space
-Message-ID: <ZMhkJa2/9/aboPju@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20230729013535.1070024-1-seanjc@google.com>
- <20230729013535.1070024-4-seanjc@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230729013535.1070024-4-seanjc@google.com>
-X-ClientProxiedBy: SI2PR01CA0047.apcprd01.prod.exchangelabs.com
- (2603:1096:4:193::10) To DS7PR11MB5966.namprd11.prod.outlook.com
- (2603:10b6:8:71::6)
+        Mon, 31 Jul 2023 22:05:11 -0400
+Received: from out-119.mta0.migadu.com (out-119.mta0.migadu.com [IPv6:2001:41d0:1004:224b::77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37DDB8
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:05:09 -0700 (PDT)
+Message-ID: <b6aaa304-e632-9f8f-ae60-63ae209ad152@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690855508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XFcd0PWa/LzVN9FBDTHBRxRJ7bjV/Fi/yIQ9ks3BIBY=;
+        b=NhjMmp6icNSl4jKc/Z6RCheyP/E+4k48FsyFZaFqx2akhX8K+31gwF3m0wbD1KmregczEs
+        iYPzs+kMmRNV1mWktvvb8YcHFJ42IqsjmjNleBMnD32nvzIAKyHo2/LkXtIbE7h5+ayft6
+        vKLrx7ddHvLSd6YWS1oEs28zwD9ZLZY=
+Date:   Tue, 1 Aug 2023 10:04:59 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|MN2PR11MB4536:EE_
-X-MS-Office365-Filtering-Correlation-Id: db333ebf-a3d2-470b-dd87-08db9234fd40
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nv0v1jtcMnmYdhjCJsZTtt+vHVaMhhcVpZbH6C8QXiLvPYwYYDN3NA2Elw+THMpGG4AN9c7d/rIACQVRhv3RqWwOulu65aN9iA5/Dcxu3Z80lUL/lXxTgR3OvVAimSh8lk5RC1+CAyqGp1ei00mRVmSnEP84kJ+rRI8qBjaSW6JZ9I0+LU6eopn0splfcGs/E0LbWMmiN1fu58XyaqhvPTuqaWLoEKhOBKFgLp5P0a8xIrjhwEdNPbkDtQEtSeG5RxF3vBjvQjNZJtuKWSZ8VHedf1+6QYRN44y2FjlaVqmlVoo/97C6HLi7ZfymFW26EiuiA7qby8iYvIU56uo+M+/huwDWGvK/4DTrKLqrYyXB0wHUsQ1qRCX6xh+SGSkyqaBIFi5CWO1K2gkIk7zbFHHTpXweBtnNbPGKXrMQwxSZe5OgfpVHKQa1qHeE1HtGf75IjDNcG6JMc56kdfZ8HbB2ouTxDmvqkkZd995M3JA445SP2rLiWTpPZhOC7De9eF5t33od5sF08nC7K7XEJmkz9HIN6z8ptOS3XXk0Fl9i8NcuvJgRpdHiVX9JcuiF
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199021)(6512007)(6486002)(6506007)(26005)(83380400001)(186003)(66946007)(66556008)(54906003)(82960400001)(15650500001)(41300700001)(38100700002)(86362001)(66476007)(316002)(5660300002)(6916009)(4326008)(8676002)(8936002)(2906002)(3450700001)(6666004)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?23b/OrVYJ/Mins+wsQ7Wzwt9YJgGvGpdcVN6UJv7dsxAakt1sZbybBLJuLDj?=
- =?us-ascii?Q?BUHtI+60vb4+/HOdzsy9OGr7xrcV2S3gBME8lrPkVvMjmbMLnlcbxQCfmSjM?=
- =?us-ascii?Q?EzjO0pl4mNKSxlHE8Pi0jr9TEi7/H5UvH0Z2vgJSRzlQbQUManIGhR7YxoiV?=
- =?us-ascii?Q?EeHaQAgUuG2bySWm8iYLNfFQAtt9THgwNaVmptH0hOVLJYjM4h8qleE1k3Ai?=
- =?us-ascii?Q?R7cOiErxcpju1RdgOlKTtwYc/uAp0vRglZzkA6OfIJindDRMugr7+IIYkCHH?=
- =?us-ascii?Q?ZEi4rPVTWI7It8PMfGU8spWQep5Ukw5FKqArXOxKHLQSWc5LNIaHl1mT5ZO3?=
- =?us-ascii?Q?T/S7UmQjm8dJG3RYK6XEyvN5OwL1GpiU+vP8fQwgIbLyO7nvwhghg/7cwws9?=
- =?us-ascii?Q?xZwQhCWcfDKbdZb5KNRl9qOlWTsXDwYFigec0uwwo3bu2hdSxj7eT+vpUpUl?=
- =?us-ascii?Q?u3ykdc4UtOzKiLlEUud5blpvfWy/MUr2S6Y+KhNVK4imCwwJC+Lc1+jFUM9w?=
- =?us-ascii?Q?PpW2MrbLfcrd0nGcELtFIi5Gj/Uiz7gYw3keGdfL+UFiiMH8HJjOoQyO7ulw?=
- =?us-ascii?Q?wiJ8mOppuZHtEAIO+pSN90BkAJfu8uzxmylzDnklcIGRwA20mTxbYZ22NAul?=
- =?us-ascii?Q?pWKOM1koyGbRnZjaJKNVFm+4hfL2cmVdK5E5arpSQkwfXgK9Z18siRt1wA16?=
- =?us-ascii?Q?9teZzm6AT5vPunfC6GNMV5BMd19fok7kv6YCXeRoxKBAd/VAuJJwYHSlxURK?=
- =?us-ascii?Q?UBJ6KZTggf+34UES+PbWsbcc5LuDN3TWpKxMtFNVTb39wccGM/vmE6cfHMxM?=
- =?us-ascii?Q?YYEimhZypgpla85qSgjzTdfx1VJwAxRa9hypgVbSuQADEij9oG8/6ssHHPNh?=
- =?us-ascii?Q?kDmsVTzoB3AbLl3bltSbTAzNjqN51S/hzzFUh5/3i+yUWFWw+vBg+b0Y3QhF?=
- =?us-ascii?Q?EaRUKxLMDALEiJpFrPFHczV3b1zBM2rEthp3kmDyGaL2JfxpKt2mBTtE8El/?=
- =?us-ascii?Q?oRKuCNraJbxk7le/bPLxtXWoqudz8Bu25aXQzTab0U67ZkdXU4wSZMSxLO1P?=
- =?us-ascii?Q?KX5n7U7WhUMZdTeBQ11BjjxmTj8d4edYFVqEKJY3rQDZ3xjV7aGMRFf6ukvy?=
- =?us-ascii?Q?RcfBcjhwQwqGz6Kx/P1fkluDEH1m68Szw8K34YvMZIuDm7n1yBHEN5UTcGD3?=
- =?us-ascii?Q?f0a+jHpSqNDLtfP1KpQtu03lMJEoXncRV5cz10jHNDC1Agsyo/CdKt77YxRd?=
- =?us-ascii?Q?7gxQdTpVFozhZZ5/McKJn/FmwNnaRden4HFc6Xf2Yh5BAFJG0Bp1v19XTTGm?=
- =?us-ascii?Q?+HkW68IRhosJ2q4CbY0kqtGIC4Twc58hThfzJ+CadGhl641qpVdtk8oghPix?=
- =?us-ascii?Q?6xiwxF/yvBtIUhN7oKEVuyS8lzy+T93aYrL84iUHcwH4WUcBd1d8It8quX27?=
- =?us-ascii?Q?qfOKdvicRoRTHgRaTdj0KYHtSY4irNbf+RUqJ54Q113SnrqT5EhKgdFWLgY3?=
- =?us-ascii?Q?SNCIvRVQBm28bGisQ725DhjOIuALiBB6W0n3rWmOJ1hkMj4fq+1YKhXcDLo0?=
- =?us-ascii?Q?tCOnnitwJ6rvspiywGSzO5UNIeMdMakDY0wJ6xdY?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: db333ebf-a3d2-470b-dd87-08db9234fd40
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 02:14:09.1287
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4H9Iwdh+QmSGjKzpwvT7xVBTVrFEDZ5qvNwn88XUbuEY3iRJV8QtbRfcuTVu3Z08Kul2ndw/MEXfZZdzr4gVPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB4536
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [v2 1/6] mm: hugetlb: Skip prep of tail pages when HVO is enabled
+To:     Usama Arif <usama.arif@bytedance.com>
+Cc:     linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
+        liangma@liangbit.com, simon.evans@bytedance.com,
+        punit.agrawal@bytedance.com, linux-mm@kvack.org,
+        mike.kravetz@oracle.com, rppt@kernel.org
+References: <20230730151606.2871391-1-usama.arif@bytedance.com>
+ <20230730151606.2871391-2-usama.arif@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230730151606.2871391-2-usama.arif@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Yan Zhao <yan.y.zhao@intel.com>
 
-On Fri, Jul 28, 2023 at 06:35:09PM -0700, Sean Christopherson wrote:
-> When shadowing a GTT entry with a 2M page, verify that the pfns are
-> contiguous, not just that the struct page pointers are contiguous.  The
-> memory map is virtual contiguous if "CONFIG_FLATMEM=y ||
-> CONFIG_SPARSEMEM_VMEMMAP=y", but not for "CONFIG_SPARSEMEM=y &&
-> CONFIG_SPARSEMEM_VMEMMAP=n", so theoretically KVMGT could encounter struct
-> pages that are virtually contiguous, but not physically contiguous.
-> 
-> In practice, this flaw is likely a non-issue as it would cause functional
-> problems iff a section isn't 2M aligned _and_ is directly adjacent to
-> another section with discontiguous pfns.
-> 
-> Tested-by: Yongwei Ma <yongwei.ma@intel.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+
+On 2023/7/30 23:16, Usama Arif wrote:
+> When vmemmap is optimizable, it will free all the duplicated tail
+> pages in hugetlb_vmemmap_optimize while preparing the new hugepage.
+> Hence, there is no need to prepare them.
+>
+> For 1G x86 hugepages, it avoids preparing
+> 262144 - 64 = 262080 struct pages per hugepage.
+>
+> The indirection of using __prep_compound_gigantic_folio is also removed,
+> as it just creates extra functions to indicate demote which can be done
+> with the argument.
+>
+> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
 > ---
->  drivers/gpu/drm/i915/gvt/kvmgt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> index de675d799c7d..429f0f993a13 100644
-> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> @@ -161,7 +161,7 @@ static int gvt_pin_guest_page(struct intel_vgpu *vgpu, unsigned long gfn,
->  
->  		if (npage == 0)
->  			base_page = cur_page;
-> -		else if (base_page + npage != cur_page) {
-> +		else if (page_to_pfn(base_page) + npage != page_to_pfn(cur_page)) {
->  			gvt_vgpu_err("The pages are not continuous\n");
->  			ret = -EINVAL;
->  			npage++;
-> -- 
-> 2.41.0.487.g6d72f3e995-goog
-> 
+>   mm/hugetlb.c         | 32 ++++++++++++++------------------
+>   mm/hugetlb_vmemmap.c |  2 +-
+>   mm/hugetlb_vmemmap.h | 15 +++++++++++----
+>   3 files changed, 26 insertions(+), 23 deletions(-)
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 64a3239b6407..541c07b6d60f 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1942,14 +1942,23 @@ static void prep_new_hugetlb_folio(struct hstate *h, struct folio *folio, int ni
+>   	spin_unlock_irq(&hugetlb_lock);
+>   }
+>   
+> -static bool __prep_compound_gigantic_folio(struct folio *folio,
+> -					unsigned int order, bool demote)
+> +static bool prep_compound_gigantic_folio(struct folio *folio, struct hstate *h, bool demote)
+>   {
+>   	int i, j;
+> +	int order = huge_page_order(h);
+>   	int nr_pages = 1 << order;
+>   	struct page *p;
+>   
+>   	__folio_clear_reserved(folio);
+> +
+> +	/*
+> +	 * No need to prep pages that will be freed later by hugetlb_vmemmap_optimize.
+> +	 * Hence, reduce nr_pages to the pages that will be kept.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP) &&
+> +			vmemmap_should_optimize(h, &folio->page))
+> +		nr_pages = HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page);
+
+We need to initialize the refcount to zero of tail pages (see the big
+comment below in this function), given a situation that someone (maybe
+GUP) could get a ref on the tail pages when the vmemmap is optimizing,
+what prevent this from happening?
+
+Thanks.
+
+> +
+>   	for (i = 0; i < nr_pages; i++) {
+>   		p = folio_page(folio, i);
+>   
+> @@ -2019,18 +2028,6 @@ static bool __prep_compound_gigantic_folio(struct folio *folio,
+>   	return false;
+>   }
+>   
+> -static bool prep_compound_gigantic_folio(struct folio *folio,
+> -							unsigned int order)
+> -{
+> -	return __prep_compound_gigantic_folio(folio, order, false);
+> -}
+> -
+> -static bool prep_compound_gigantic_folio_for_demote(struct folio *folio,
+> -							unsigned int order)
+> -{
+> -	return __prep_compound_gigantic_folio(folio, order, true);
+> -}
+> -
+>   /*
+>    * PageHuge() only returns true for hugetlbfs pages, but not for normal or
+>    * transparent huge pages.  See the PageTransHuge() documentation for more
+> @@ -2185,7 +2182,7 @@ static struct folio *alloc_fresh_hugetlb_folio(struct hstate *h,
+>   	if (!folio)
+>   		return NULL;
+>   	if (hstate_is_gigantic(h)) {
+> -		if (!prep_compound_gigantic_folio(folio, huge_page_order(h))) {
+> +		if (!prep_compound_gigantic_folio(folio, h, false)) {
+>   			/*
+>   			 * Rare failure to convert pages to compound page.
+>   			 * Free pages and try again - ONCE!
+> @@ -3201,7 +3198,7 @@ static void __init gather_bootmem_prealloc(void)
+>   
+>   		VM_BUG_ON(!hstate_is_gigantic(h));
+>   		WARN_ON(folio_ref_count(folio) != 1);
+> -		if (prep_compound_gigantic_folio(folio, huge_page_order(h))) {
+> +		if (prep_compound_gigantic_folio(folio, h, false)) {
+>   			WARN_ON(folio_test_reserved(folio));
+>   			prep_new_hugetlb_folio(h, folio, folio_nid(folio));
+>   			free_huge_page(page); /* add to the hugepage allocator */
+> @@ -3624,8 +3621,7 @@ static int demote_free_hugetlb_folio(struct hstate *h, struct folio *folio)
+>   		subpage = folio_page(folio, i);
+>   		inner_folio = page_folio(subpage);
+>   		if (hstate_is_gigantic(target_hstate))
+> -			prep_compound_gigantic_folio_for_demote(inner_folio,
+> -							target_hstate->order);
+> +			prep_compound_gigantic_folio(inner_folio, target_hstate, true);
+>   		else
+>   			prep_compound_page(subpage, target_hstate->order);
+>   		folio_change_private(inner_folio, NULL);
+> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
+> index c2007ef5e9b0..b721e87de2b3 100644
+> --- a/mm/hugetlb_vmemmap.c
+> +++ b/mm/hugetlb_vmemmap.c
+> @@ -486,7 +486,7 @@ int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head)
+>   }
+>   
+>   /* Return true iff a HugeTLB whose vmemmap should and can be optimized. */
+> -static bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
+> +bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
+>   {
+>   	if (!READ_ONCE(vmemmap_optimize_enabled))
+>   		return false;
+> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
+> index 25bd0e002431..3e7978a9af73 100644
+> --- a/mm/hugetlb_vmemmap.h
+> +++ b/mm/hugetlb_vmemmap.h
+> @@ -10,16 +10,17 @@
+>   #define _LINUX_HUGETLB_VMEMMAP_H
+>   #include <linux/hugetlb.h>
+>   
+> -#ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+> -int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head);
+> -void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head);
+> -
+>   /*
+>    * Reserve one vmemmap page, all vmemmap addresses are mapped to it. See
+>    * Documentation/vm/vmemmap_dedup.rst.
+>    */
+>   #define HUGETLB_VMEMMAP_RESERVE_SIZE	PAGE_SIZE
+>   
+> +#ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
+> +int hugetlb_vmemmap_restore(const struct hstate *h, struct page *head);
+> +void hugetlb_vmemmap_optimize(const struct hstate *h, struct page *head);
+> +bool vmemmap_should_optimize(const struct hstate *h, const struct page *head);
+> +
+>   static inline unsigned int hugetlb_vmemmap_size(const struct hstate *h)
+>   {
+>   	return pages_per_huge_page(h) * sizeof(struct page);
+> @@ -51,6 +52,12 @@ static inline unsigned int hugetlb_vmemmap_optimizable_size(const struct hstate
+>   {
+>   	return 0;
+>   }
+> +
+> +static inline bool vmemmap_should_optimize(const struct hstate *h, const struct page *head)
+> +{
+> +	return false;
+> +}
+> +
+>   #endif /* CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP */
+>   
+>   static inline bool hugetlb_vmemmap_optimizable(const struct hstate *h)
+
