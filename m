@@ -2,189 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D942F76B00E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA11776B010
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:57:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbjHAJ5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55660 "EHLO
+        id S232190AbjHAJ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbjHAJ4v (ORCPT
+        with ESMTP id S233541AbjHAJ5I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:56:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35EB112A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:56:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 875E661482
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:56:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B4E9C433C8;
-        Tue,  1 Aug 2023 09:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690883802;
-        bh=o9NJXNBvxerdPZqQCMCPQoowVldy3VF1ic/qIDVn3Rk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XzkDIAi4uCLHbgpxBahPCuriZQpsHKJWZMbqK+GB6xA0LTt8+zHyr8ufzTou02Q9S
-         9FXkWufmoo0GiVPd+IKsdIQPNjvcNbaWECLRIcF4ELElrPFvJBBEkz5NXo+S6c/RP2
-         +Mq2KRIdSAme0XK0MgPcx3/T4C8Mk29JJRfo3XEA=
-Date:   Tue, 1 Aug 2023 11:56:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Michael Walle <michael@walle.cc>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v6 3/3] nvmem: core: Expose cells through sysfs
-Message-ID: <2023080125-renovate-uptake-86f0@gregkh>
-References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
- <20230717075147.43326-4-miquel.raynal@bootlin.com>
- <2023071717-channel-supernova-4cc9@gregkh>
- <20230717183323.49a55ad0@xps-13>
- <2023071724-twiddling-morale-157e@gregkh>
- <20230731164642.49fea651@xps-13>
+        Tue, 1 Aug 2023 05:57:08 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD87CF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:57:07 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31751d7d96eso4593883f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:57:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690883826; x=1691488626;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1d1V+cLNsVcpTqtIF4+fUcW9E9CXlGy0gRkhFZnoVKg=;
+        b=WF74t1WryOH/fLykzfMBemiBwU/l8L1G9u2aEqqg/ziDdBr7OxmRk8enIar2C394TN
+         ujipU9V0Epftpe1ur7tbDTMjH+v/6K/zBrPjrcH4snHOTxi3xfBFbj9gD5A8+l2/Z7rH
+         2TOA9EHtQffQBHTyqM6InopT76+nNjefrCJyuLlaWJGZinQZmzKc7xbrNYiAljPCvm9L
+         ZuCajJIed9+ZswOx2M6WjWz+57S3Gk69qWXQNTZAjNux4KSgVQzl0lUns0YBH5K5MPl7
+         uMH5Z6YWVT8VIrkBgO7fBIFJcL5riiqK3qhiVsa9+6oDLn4EE+E9izN3zZXyOLdSlM5J
+         IiJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690883826; x=1691488626;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1d1V+cLNsVcpTqtIF4+fUcW9E9CXlGy0gRkhFZnoVKg=;
+        b=HUsE0u/8dWd2f9ZYEL69HTVpFq+e1NBcjInSBXLxztPL6Hl+k6F2rjl6iDUFY6b+2E
+         MOdjxRUkwGnc5kIM+jp+AuRoJyumGSETtKgagGGHV+Y1cWzlT8LdnO53gAbFu1CRMd+R
+         ukHNxixZmqS8ESO+dyY44MRnQgAZN1S+OMGwbQZJE3PVpoeHOiLT7aTvvKvAUS8jgInJ
+         p0wfxy5ksK3kxUvM+sJ9vA0Ldz5pDl7m/0CiaOef9f6AKJcEyHaTLhGnj0M3IHRItjT3
+         Ajq3t5BLb79DlJi/6yH0IVCzung7L+eKqDxBqCI4zbbnVNe6l1F7leN/IsSZb4UZlEW5
+         K+Tw==
+X-Gm-Message-State: ABy/qLZWocCdcjCQ8e5x+OSJDKnrGuNBgVOCdE2b0m0o0rS7szx95q5o
+        eED8BaLdWwZ65NVunxZWQo/o6w==
+X-Google-Smtp-Source: APBJJlHgYYyvvbhT2RjOmVbcb22DHXlapgDLNFjGodT9QTDbjNFNmD/+R/o7vC1LiCsvXidFcFXKrQ==
+X-Received: by 2002:adf:ef8b:0:b0:314:2ea7:af4a with SMTP id d11-20020adfef8b000000b003142ea7af4amr2022493wro.13.1690883825933;
+        Tue, 01 Aug 2023 02:57:05 -0700 (PDT)
+Received: from hackbox.lan ([86.123.96.80])
+        by smtp.gmail.com with ESMTPSA id k1-20020adff5c1000000b00314417f5272sm15730957wrp.64.2023.08.01.02.57.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 02:57:05 -0700 (PDT)
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Rajendra Nayak <quic_rjendra@quicinc.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH] regulator: qcom-rpmh: Fix LDO 12 regulator for PM8550
+Date:   Tue,  1 Aug 2023 12:57:02 +0300
+Message-Id: <20230801095702.2891127-1-abel.vesa@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731164642.49fea651@xps-13>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 05:33:13PM +0200, Miquel Raynal wrote:
-> Hi Greg,
-> 
-> gregkh@linuxfoundation.org wrote on Mon, 17 Jul 2023 18:59:52 +0200:
-> 
-> > On Mon, Jul 17, 2023 at 06:33:23PM +0200, Miquel Raynal wrote:
-> > > Hi Greg,
-> > > 
-> > > gregkh@linuxfoundation.org wrote on Mon, 17 Jul 2023 16:32:09 +0200:
-> > >   
-> > > > On Mon, Jul 17, 2023 at 09:51:47AM +0200, Miquel Raynal wrote:  
-> > > > > The binary content of nvmem devices is available to the user so in the
-> > > > > easiest cases, finding the content of a cell is rather easy as it is
-> > > > > just a matter of looking at a known and fixed offset. However, nvmem
-> > > > > layouts have been recently introduced to cope with more advanced
-> > > > > situations, where the offset and size of the cells is not known in
-> > > > > advance or is dynamic. When using layouts, more advanced parsers are
-> > > > > used by the kernel in order to give direct access to the content of each
-> > > > > cell, regardless of its position/size in the underlying
-> > > > > device. Unfortunately, these information are not accessible by users,
-> > > > > unless by fully re-implementing the parser logic in userland.
-> > > > > 
-> > > > > Let's expose the cells and their content through sysfs to avoid these
-> > > > > situations. Of course the relevant NVMEM sysfs Kconfig option must be
-> > > > > enabled for this support to be available.
-> > > > > 
-> > > > > Not all nvmem devices expose cells. Indeed, the .bin_attrs attribute
-> > > > > group member will be filled at runtime only when relevant and will
-> > > > > remain empty otherwise. In this case, as the cells attribute group will
-> > > > > be empty, it will not lead to any additional folder/file creation.
-> > > > > 
-> > > > > Exposed cells are read-only. There is, in practice, everything in the
-> > > > > core to support a write path, but as I don't see any need for that, I
-> > > > > prefer to keep the interface simple (and probably safer). The interface
-> > > > > is documented as being in the "testing" state which means we can later
-> > > > > add a write attribute if though relevant.
-> > > > > 
-> > > > > There is one limitation though: if a layout is built as a module but is
-> > > > > not properly installed in the system and loaded manually with insmod
-> > > > > while the nvmem device driver was built-in, the cells won't appear in
-> > > > > sysfs. But if done like that, the cells won't be usable by the built-in
-> > > > > kernel drivers anyway.    
-> > > > 
-> > > > Wait, what?  That should not be an issue here, if so, then this change
-> > > > is not correct and should be fixed as this is NOT an issue for sysfs
-> > > > (otherwise the whole tree wouldn't work.)
-> > > > 
-> > > > Please fix up your dependancies if this is somehow not working properly.  
-> > > 
-> > > I'm not sure I fully get your point.
-> > > 
-> > > There is no way we can describe any dependency between a storage device
-> > > driver and an nvmem layout. NVMEM is a pure software abstraction, the
-> > > layout that will be chosen depends on the device tree, but if the
-> > > layout has not been installed, there is no existing mechanism in
-> > > the kernel to prevent it from being loaded (how do you know it's
-> > > not on purpose?).  
-> > 
-> > Once a layout has been loaded, the sysfs files should show up, right?
-> > Otherwise what does a "layout" do?  (hint, I have no idea, it's an odd
-> > term to me...)
-> 
-> Sorry for the latency in responding to these questions, I'll try to
-> clarify the situation.
-> 
-> We have:
-> - device drivers (like NAND flashes, SPI-NOR flashes or EEPROMs) which
->   typically probe and register their devices into the nvmem
->   layer to expose their content through NVMEM.
-> - each registration in NVMEM leads to the creation of the relevant
->   NVMEM cells which can then be used by other device drivers
->   (typically: a network controller retrieving a MAC address from an
->   EEPROM through the generic NVMEM abstraction).
+The LDO 12 is NLDO 515 low voltage type, so fix accordingly.
 
+Fixes: e6e3776d682d ("regulator: qcom-rpmh: Add support for PM8550 regulators")
+Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+---
+ drivers/regulator/qcom-rpmh-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-So is a "cell" here a device in the device model?  Or something else?
+diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
+index 88ddd6c54d04..d990ba19c50e 100644
+--- a/drivers/regulator/qcom-rpmh-regulator.c
++++ b/drivers/regulator/qcom-rpmh-regulator.c
+@@ -1067,7 +1067,7 @@ static const struct rpmh_vreg_init_data pm8550_vreg_data[] = {
+ 	RPMH_VREG("ldo9",   "ldo%s9",  &pmic5_pldo,    "vdd-l8-l9"),
+ 	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_nldo515,    "vdd-l1-l4-l10"),
+ 	RPMH_VREG("ldo11",  "ldo%s11", &pmic5_nldo515,    "vdd-l11"),
+-	RPMH_VREG("ldo12",  "ldo%s12", &pmic5_pldo,    "vdd-l12"),
++	RPMH_VREG("ldo12",  "ldo%s12", &pmic5_nldo515,    "vdd-l12"),
+ 	RPMH_VREG("ldo13",  "ldo%s13", &pmic5_pldo,    "vdd-l2-l13-l14"),
+ 	RPMH_VREG("ldo14",  "ldo%s14", &pmic5_pldo,    "vdd-l2-l13-l14"),
+ 	RPMH_VREG("ldo15",  "ldo%s15", &pmic5_nldo515,    "vdd-l15"),
+-- 
+2.34.1
 
-> We recently covered a slightly new case: the NVMEM cells can be in
-> random places in the storage devices so we need a "dynamic" way to
-> discover them: this is the purpose of the NVMEM layouts. We know cell X
-> is in the device, we just don't know where it is exactly at compile
-> time, the layout driver will discover it dynamically for us at runtime.
-
-So you then create the needed device when it is found?
-
-> While the "static cells" parser is built-in the NVMEM subsystem, you
-> explicitly asked to have the layouts modularized. This means
-> registering a storage device in nvmem while no layout driver has been
-> inserted yet is now a scenario. We cannot describe any dependency
-> between a storage device and a layout driver. We cannot defer the probe
-> either because device drivers which don't get access to their NVMEM
-> cell are responsible of choosing what to do (most of the time, the idea
-> is to fallback to a default value to avoid failing the probe for no
-> reason).
-> 
-> So to answer your original question:
-> 
-> > Once a layout has been loaded, the sysfs files should show up, right?
-> 
-> No. The layouts are kind of "libraries" that the NVMEM subsystem uses
-> to try exposing cells *when* a new device is registered in NVMEM (not
-> later). The registration of an NVMEM layout does not trigger any new
-> parsing, because that is not how the NVMEM subsystem was designed.
-
-So they are a type of "class" right?  Why not just use class devices
-then?
-
-> I must emphasize that if the layout driver is installed in
-> /lib/modules/ there is no problem, it will be loaded with
-> usermodehelper. But if it is not, we can very well have the layout
-> driver inserted after, and this case, while in practice possible, is
-> irrelevant from a driver standpoint. It does not make any sense to have
-> these cells created "after" because they are mostly used during probes.
-> An easy workaround would be to unregister/register again the underlying
-> storage device driver.
-
-We really do not support any situation where a module is NOT in the
-proper place when device discovery happens.  So this shouldn't be an
-issue, yet you all mention it?  So how is it happening?
-
-And if you used the class code, would that work better as mentioned
-above?
-
-thanks
-
-greg k-h
