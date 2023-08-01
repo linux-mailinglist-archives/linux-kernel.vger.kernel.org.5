@@ -2,218 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9397676B949
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7814576B948
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbjHAQCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
+        id S231950AbjHAQC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbjHAQCX (ORCPT
+        with ESMTP id S229454AbjHAQCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:02:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50149DC
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690905695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2XkdV+BwvY5fppShBDqBRTS7/vq3kiC6iaJMHPy1Nf4=;
-        b=U0UqBsIgydzQtDQ8JqO6EmhdlRnNbOkfeR/QXTt5magAvfFV1tK2eVZE/He/ssZBAE0npD
-        y1CWKDVsbedF9LBaQg+QK9B2JOSDjh3f/bTDFCsLDE/DbU6EHrFIQBWbQXvh8ml8mF9J8b
-        xA1la8+XCaATAZIIw4U48UplAu+LXwE=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-670-zOa1_9nCO-uE6Aw5tIi0OQ-1; Tue, 01 Aug 2023 12:01:24 -0400
-X-MC-Unique: zOa1_9nCO-uE6Aw5tIi0OQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 47C431C05AEC;
-        Tue,  1 Aug 2023 16:01:20 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.107])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5769E40C2063;
-        Tue,  1 Aug 2023 16:01:19 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 00:01:16 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        linux-fsdevel@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>,
-        Will Deacon <will@kernel.org>, Mike Galbraith <efault@gmx.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
-        ardb@kernel.org, David Hildenbrand <david@redhat.com>,
-        Linux regression tracking <regressions@leemhuis.info>,
-        regressions@lists.linux.dev, Matthew Wilcox <willy@infradead.org>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] fs/proc/kcore: reinstate bounce buffer for KCORE_TEXT
- regions
-Message-ID: <ZMksTC6pewXDgkFe@MiWiFi-R3L-srv>
-References: <20230731215021.70911-1-lstoakes@gmail.com>
- <ZMkrfBDARIAYFYwz@MiWiFi-R3L-srv>
+        Tue, 1 Aug 2023 12:02:21 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C0A10B
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:02:18 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-63cffc0f95eso29124936d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:02:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690905737; x=1691510537;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=03aieGdgBxbYMor+zrbkfIBxz/KLfdHy7Dl2oJFgL9Q=;
+        b=dtmuBO6Fb+DNoOV0Y2U8m6eJh8nWPZxx7E7wRQNiJO2s+Ifq81nKUpE/0J1ZXHJmga
+         hHaOSLF8rAv1gi+00Uxf+4KnC4PrW4Srbfpenxb52befJwBmxZNOtTXgIW1KsZr26vRc
+         vJeBIt4U+e1DhruiCFR14Pn9fHrZBtEdRI0Zz7F4GnHr4TBvfGPErUjAOaRsUSu/97NF
+         JAq8Mzj2cfRM+RnHPdbvYmWEQr14VJMdc44oQaBYbktAYwuTDL7slK2uCZl3d6Le+fYw
+         upGxuwChc1apybgOHGWzBGcjXH3N8o9ilLYDxX/Q6ZJCao1Vqen84QXVzF8wDuMRIjzi
+         nlRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690905737; x=1691510537;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=03aieGdgBxbYMor+zrbkfIBxz/KLfdHy7Dl2oJFgL9Q=;
+        b=be9tfhUnMgqyw85bUo0EV8u0cqeLu1a6UrI8gfHGqaWAar1Ci1JWoP7cdbzY36fVp9
+         2p2lnbZJgwgluqAsQzuISDmI+bJeMsOnjq0fxm1zkbhKUzgZc37sLL197HMGAzIF60Qb
+         aaW6RGVeS/Mf+J0FhVi2MoYrF1WXPxTgIymLDG79uBd4++qPZ1R8Kbmec48e7VFD8U6y
+         lkLip3D+8u/kC/IDz8sSKgH2t0TaL8ZPYfGqjgttONjN0+h7pnEYalQ4cZSIZaVW10B9
+         PSnSt2zYcvz0LUS8ipTan2ZWr2XEA2ClATWrXyy7xo8BuZOiCD2ZHDdZ98v6fBpoA86J
+         BkNQ==
+X-Gm-Message-State: ABy/qLYpKfj16Fk145tbx3dPoVnYsO1+Wpj6GAJabh37vQXs+j1NeQtg
+        w+7yeyFDVWw6RFIWQfO9Fq4TTzVFVuURgYsmM4gC+w==
+X-Google-Smtp-Source: APBJJlFhlDXyfDh1bir6NtiRwgyu53SQkMwG14hApKnu7Xh4DgS+oyRQEYihjYIk6TpeJYBq4Ki/kTENkUO2wINlBms=
+X-Received: by 2002:a05:6214:459c:b0:63d:1e4e:d745 with SMTP id
+ op28-20020a056214459c00b0063d1e4ed745mr11462027qvb.61.1690905737445; Tue, 01
+ Aug 2023 09:02:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMkrfBDARIAYFYwz@MiWiFi-R3L-srv>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <bde3d2dc933848bbaceeb9b7102f6f4c@AcuMS.aculab.com>
+ <b4ce9dad748e489f9314a2dc95615033@AcuMS.aculab.com> <9c14002108ff49e1a54819133fe9e2a3@AcuMS.aculab.com>
+In-Reply-To: <9c14002108ff49e1a54819133fe9e2a3@AcuMS.aculab.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Aug 2023 09:02:06 -0700
+Message-ID: <CAKwvOdm6ZVSMpzSJ0tFMR_rVb1+=REk8ETLS2SBe3s8QrbYUQw@mail.gmail.com>
+Subject: Re: [PATCH next v2 5/5] minmax: Relax check to allow comparison
+ between int and small unsigned constants.
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/01/23 at 11:57pm, Baoquan He wrote:
-> On 07/31/23 at 10:50pm, Lorenzo Stoakes wrote:
-> > Some architectures do not populate the entire range categorised by
-> > KCORE_TEXT, so we must ensure that the kernel address we read from is
-> > valid.
-> > 
-> > Unfortunately there is no solution currently available to do so with a
-> > purely iterator solution so reinstate the bounce buffer in this instance so
-> > we can use copy_from_kernel_nofault() in order to avoid page faults when
-> > regions are unmapped.
-> > 
-> > This change partly reverts commit 2e1c0170771e ("fs/proc/kcore: avoid
-> > bounce buffer for ktext data"), reinstating the bounce buffer, but adapts
-> > the code to continue to use an iterator.
-> > 
-> > Fixes: 2e1c0170771e ("fs/proc/kcore: avoid bounce buffer for ktext data")
-> > Reported-by: Jiri Olsa <olsajiri@gmail.com>
-> > Closes: https://lore.kernel.org/all/ZHc2fm+9daF6cgCE@krava
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> > ---
-> >  fs/proc/kcore.c | 26 +++++++++++++++++++++++++-
-> >  1 file changed, 25 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-> > index 9cb32e1a78a0..3bc689038232 100644
-> > --- a/fs/proc/kcore.c
-> > +++ b/fs/proc/kcore.c
-> > @@ -309,6 +309,8 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
-> >  
-> >  static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
-> >  {
-> > +	struct file *file = iocb->ki_filp;
-> > +	char *buf = file->private_data;
-> >  	loff_t *fpos = &iocb->ki_pos;
-> >  	size_t phdrs_offset, notes_offset, data_offset;
-> >  	size_t page_offline_frozen = 1;
-> > @@ -554,11 +556,22 @@ static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
-> >  			fallthrough;
-> >  		case KCORE_VMEMMAP:
-> >  		case KCORE_TEXT:
-> > +			/*
-> > +			 * Sadly we must use a bounce buffer here to be able to
-> > +			 * make use of copy_from_kernel_nofault(), as these
-> > +			 * memory regions might not always be mapped on all
-> > +			 * architectures.
-> > +			 */
-> > +			if (copy_from_kernel_nofault(buf, (void *)start, tsz)) {
-> > +				if (iov_iter_zero(tsz, iter) != tsz) {
-> > +					ret = -EFAULT;
-> > +					goto out;
-> > +				}
-> >  			/*
-> >  			 * We use _copy_to_iter() to bypass usermode hardening
-> >  			 * which would otherwise prevent this operation.
-> >  			 */
-> > -			if (_copy_to_iter((char *)start, tsz, iter) != tsz) {
-> > +			} else if (_copy_to_iter(buf, tsz, iter) != tsz) {
-> >  				ret = -EFAULT;
-> >  				goto out;
-> >  			}
-> > @@ -595,6 +608,10 @@ static int open_kcore(struct inode *inode, struct file *filp)
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > +	filp->private_data = kmalloc(PAGE_SIZE, GFP_KERNEL);
-> > +	if (!filp->private_data)
-> > +		return -ENOMEM;
-> > +
-> >  	if (kcore_need_update)
-> >  		kcore_update_ram();
-> >  	if (i_size_read(inode) != proc_root_kcore->size) {
-> > @@ -605,9 +622,16 @@ static int open_kcore(struct inode *inode, struct file *filp)
-> >  	return 0;
-> >  }
-> >  
-> > +static int release_kcore(struct inode *inode, struct file *file)
-> > +{
-> > +	kfree(file->private_data);
-> > +	return 0;
-> > +}
-> > +
-> >  static const struct proc_ops kcore_proc_ops = {
-> >  	.proc_read_iter	= read_kcore_iter,
-> >  	.proc_open	= open_kcore,
-> > +	.proc_release	= release_kcore,
-> >  	.proc_lseek	= default_llseek,
-> >  };
-> 
-> On 6.5-rc4, the failures can be reproduced stably on a arm64 machine.
-> With patch applied, both makedumpfile and objdump test cases passed.
-> 
-> And the code change looks good to me, thanks.
-> 
-> Tested-by: Baoquan He <bhe@redhat.com>
-> Reviewed-by: Baoquan He <bhe@redhat.com>
-> 
-> 
-> ===============================================
-> [root@ ~]# makedumpfile --mem-usage /proc/kcore 
-> The kernel version is not supported.
-> The makedumpfile operation may be incomplete.
-> 
-> TYPE		PAGES			EXCLUDABLE	DESCRIPTION
-> ----------------------------------------------------------------------
-> ZERO		76234           	yes		Pages filled with zero
-> NON_PRI_CACHE	147613          	yes		Cache pages without private flag
-> PRI_CACHE	3847            	yes		Cache pages with private flag
-> USER		15276           	yes		User process pages
-> FREE		15809884        	yes		Free pages
-> KERN_DATA	459950          	no		Dumpable kernel data 
-> 
-> page size:		4096            
-> Total pages on system:	16512804        
-> Total size on system:	67636445184      Byte
-> 
-> [root@ ~]# objdump -d  --start-address=0x^C
-> [root@ ~]# cat /proc/kallsyms | grep ksys_read
-> ffffab3be77229d8 T ksys_readahead
-> ffffab3be782a700 T ksys_read
-> [root@ ~]# objdump -d  --start-address=0xffffab3be782a700 --stop-address=0xffffab3be782a710 /proc/kcore 
-> 
-> /proc/kcore:     file format elf64-littleaarch64
-> 
-> 
-> Disassembly of section load1:
-> 
-> ffffab3be782a700 <load1+0x41a700>:
-> ffffab3be782a700:	aa1e03e9 	mov	x9, x30
-> ffffab3be782a704:	d503201f 	nop
-> ffffab3be782a708:	d503233f 	paciasp
-> ffffab3be782a70c:	a9bc7bfd 	stp	x29, x30, [sp, #-64]!
-> objdump: error: /proc/kcore(load2) is too large (0x7bff70000000 bytes)
-> objdump: Reading section load2 failed because: memory exhausted
+On Mon, Jul 31, 2023 at 6:27=E2=80=AFAM David Laight <David.Laight@aculab.c=
+om> wrote:
+>
+> By the time I've done:
+>
+> #define __is_noneg_int(x)                                       \
+>         __builtin_choose_expr(!__is_constexpr(x), false,        \
+>                 ((x) >=3D (typeof(x))0 && (x) <=3D (typeof((x) + 0))(long=
+)__INT_MAX__))
+>
+> #define __is_signed(x)                                                   =
+      \
+>        __builtin_choose_expr(__is_constexpr(is_signed_type(typeof(x))),  =
+      \
+>                is_signed_type(typeof(x)), 0)
+>
+> #define __types_ok(x, y)                                        \
+>         (__is_signed(x) =3D=3D __is_signed(y) ||                    \
+>                 __is_signed((x) + 0) =3D=3D __is_signed((y) + 0) || \
+>                 __is_noneg_int(x) || __is_noneg_int(y))
+>
+> the error message for
+>
+> >       static_assert(__types_ok(x, y),                 \
+> >               #op "(" #x ", " #y ") signedness error, fix types or cons=
+ider " #op "_unsigned() before " #op "_t()"); \
+>
+> generated by clang 8.0.0 and later is similar to (see https://godbolt.org=
+/z/jq613Gnsa):
+>
+> <source>:49:12: error: static assertion failed due to requirement '__buil=
+tin_choose_expr((sizeof(int) =3D=3D sizeof (*(8 ? ((void *)((long)((((int)(=
+-1)) < (int)1)) * 0L)) : (int *)8))), (((int)(-1)) < (int)1), 0) =3D=3D __b=
+uiltin_choose_expr((sizeof(int) =3D=3D sizeof (*(8 ? ((void *)((long)((((un=
+signed int)(-1)) < (unsigned int)1)) * 0L)) : (int *)8))), (((unsigned int)=
+(-1)) < (unsigned int)1), 0) || __builtin_choose_expr((sizeof(int) =3D=3D s=
+izeof (*(8 ? ((void *)((long)((((int)(-1)) < (int)1)) * 0L)) : (int *)8))),=
+ (((int)(-1)) < (int)1), 0) =3D=3D __builtin_choose_expr((sizeof(int) =3D=
+=3D sizeof (*(8 ? ((void *)((long)((((unsigned int)(-1)) < (unsigned int)1)=
+) * 0L)) : (int *)8))), (((unsigned int)(-1)) < (unsigned int)1), 0) || (__=
+builtin_choose_expr(!(sizeof(int) =3D=3D sizeof (*(8 ? ((void *)((long)(a) =
+* 0L)) : (int *)8))), 0, __builtin_choose_expr(__builtin_choose_expr((sizeo=
+f(int) =3D=3D sizeof (*(8 ? ((void *)((long)((((int)(-1)) < (int)1)) * 0L))=
+ : (int *)8))), (((int)(-1)) < (int)1), 0), a, 0) >=3D 0 && (a) <=3D (int)(=
+long)2147483647)) || (__builtin_choose_expr(!(sizeof(int) =3D=3D sizeof (*(=
+8 ? ((void *)((long)(2147483648U - 0) * 0L)) : (int *)8))), 0, __builtin_ch=
+oose_expr(__builtin_choose_expr((sizeof(int) =3D=3D sizeof (*(8 ? ((void *)=
+((long)((((unsigned int)(-1)) < (unsigned int)1)) * 0L)) : (int *)8))), (((=
+unsigned int)(-1)) < (unsigned int)1), 0), 2147483648U - 0, 0) >=3D 0 && (2=
+147483648U - 0) <=3D (unsigned int)(long)2147483647))': min(a, 0x80000000u =
+- 0) signedness error, fix types or consider min_unsigned() before min_t()
+>
+> Repeating the expression seems somewhat sub-optimal!
+> Surely it shouldn't be outputting the expansion of the
+> input when an error message is supplied?
+>
+> Is there any (sane) way to stop it being that verbose?
 
-By the way, I can still see the objdump error saying kcore is too large
-as above, at the same time there's console printing as below. Haven't
-checked it's objdump's issue or kernel's.
+No, but we can probably change that in clang. Filed:
+https://github.com/llvm/llvm-project/issues/64310
 
-[ 6631.575800] __vm_enough_memory: pid: 5321, comm: objdump, not enough memory for the allocation
-[ 6631.584469] __vm_enough_memory: pid: 5321, comm: objdump, not enough memory for the allocation
+>
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
+ 1PT, UK
+> Registration No: 1397386 (Wales)
 
+
+
+--=20
+Thanks,
+~Nick Desaulniers
