@@ -2,85 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A71976A8B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCC176A8C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbjHAGKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:10:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60928 "EHLO
+        id S231422AbjHAGMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjHAGKw (ORCPT
+        with ESMTP id S231352AbjHAGMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:10:52 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BC510C1;
-        Mon, 31 Jul 2023 23:10:50 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3712OTub021976;
-        Tue, 1 Aug 2023 06:10:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=k0aCpbnFwmp/8D1M9UqaS9hPY06JCFYLbdnWnW8RK8E=;
- b=fCOJKRp5GCf1qyk/d1zmobaAC6VysUZp1oc1Aebnb8uWE2u15ny5kUKLsK5yPYRvhBdM
- G1UfIRwoLDuoDRk9/5/dGkrkvRZpv1ldO4ctij3ncVaSHISQaHzf1ArsPkgl6tkQPu7s
- eCSXv0tlLN+IR8CbsPwpxmcEe6chrPR8DzoA16q7GjMH7jqXphk0ceGbTm8lDphByCi5
- BGYxTCalDRpp1lJCE4osQm4Z/OdWytMzhvucLUMTYdNQ2jlrH57weCN1q/c3hxiZnhJE
- +RxT2vw6xtlfA9efdBPn2fJ+MI5R6kIxE+knhKkMi7EYMwTCboxTWqN1nqJCQ3BK2acY 1w== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6rhare1u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 06:10:47 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3716AkYc010211
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 1 Aug 2023 06:10:46 GMT
-Received: from [10.214.67.128] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 23:10:42 -0700
-Message-ID: <71924c34-c398-22d7-bc79-50b0df482a22@quicinc.com>
-Date:   Tue, 1 Aug 2023 11:40:39 +0530
+        Tue, 1 Aug 2023 02:12:09 -0400
+Received: from mg.ssi.bg (mg.ssi.bg [193.238.174.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14AF219A4;
+        Mon, 31 Jul 2023 23:12:06 -0700 (PDT)
+Received: from mg.bb.i.ssi.bg (localhost [127.0.0.1])
+        by mg.bb.i.ssi.bg (Proxmox) with ESMTP id 0256B17CA9;
+        Tue,  1 Aug 2023 09:12:04 +0300 (EEST)
+Received: from ink.ssi.bg (ink.ssi.bg [193.238.174.40])
+        by mg.bb.i.ssi.bg (Proxmox) with ESMTPS id DD07D17CA8;
+        Tue,  1 Aug 2023 09:12:03 +0300 (EEST)
+Received: from ja.ssi.bg (unknown [213.16.62.126])
+        by ink.ssi.bg (Postfix) with ESMTPSA id D57A13C043A;
+        Tue,  1 Aug 2023 09:11:40 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=ssi.bg; s=ink;
+        t=1690870305; bh=K3ToJDSb0mjMB1NLV0BUwfRmPEJudUn9AtuMI5luR6U=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References;
+        b=g8VQ+wTIFGtpegn5u/tW44R2fuNOJ5mdhEOWERlo2uGAwt4jdYY1YoeeDuqFVo4U0
+         aNfo6ZYRdJcjGbVx6zImrYA50NgX00UwUU7zEkwQHrQkNmmicTuRpjV7FrGXxh9JhJ
+         dK2ADIy7PUVpdMu+utC6V/dK7/xavRUlvurILIL0=
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+        by ja.ssi.bg (8.17.1/8.17.1) with ESMTP id 3716BQUG027447;
+        Tue, 1 Aug 2023 09:11:27 +0300
+Date:   Tue, 1 Aug 2023 09:11:26 +0300 (EEST)
+From:   Julian Anastasov <ja@ssi.bg>
+To:     Joel Granados <joel.granados@gmail.com>
+cc:     mcgrof@kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Kees Cook <keescook@chromium.org>,
+        "D. Wythe" <alibuda@linux.alibaba.com>, mptcp@lists.linux.dev,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Paolo Abeni <pabeni@redhat.com>, coreteam@netfilter.org,
+        Jan Karcher <jaka@linux.ibm.com>,
+        Alexander Aring <alex.aring@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        bridge@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        Joerg Reuter <jreuter@yaina.de>,
+        David Ahern <dsahern@kernel.org>,
+        netfilter-devel@vger.kernel.org, Wen Gu <guwen@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        linux-wpan@vger.kernel.org, lvs-devel@vger.kernel.org,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-sctp@vger.kernel.org, Tony Lu <tonylu@linux.alibaba.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Florian Westphal <fw@strlen.de>, willy@infradead.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-rdma@vger.kernel.org, Roopa Prabhu <roopa@nvidia.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Simon Horman <horms@verge.net.au>,
+        Mat Martineau <martineau@kernel.org>, josh@joshtriplett.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Eric Dumazet <edumazet@google.com>, linux-hams@vger.kernel.org,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        linux-fsdevel@vger.kernel.org, linux-s390@vger.kernel.org,
+        Xin Long <lucien.xin@gmail.com>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        netdev@vger.kernel.org, rds-devel@oss.oracle.com,
+        Joel Granados <j.granados@samsung.com>
+Subject: Re: [PATCH v2 10/14] netfilter: Update to register_net_sysctl_sz
+In-Reply-To: <20230731071728.3493794-11-j.granados@samsung.com>
+Message-ID: <b8564ac4-ab65-6212-2241-0843413e05de@ssi.bg>
+References: <20230731071728.3493794-1-j.granados@samsung.com> <20230731071728.3493794-11-j.granados@samsung.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v5 2/2] nvmem: sec-qfprom: Add Qualcomm secure QFPROM
- support
-Content-Language: en-US
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Mukesh Ojha <quic_mojha@quicinc.com>
-CC:     <agross@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <srinivas.kandagatla@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230724083849.8277-1-quic_kbajaj@quicinc.com>
- <20230724083849.8277-3-quic_kbajaj@quicinc.com>
- <9f417fea-38cf-942b-514e-99b47f27c544@quicinc.com>
- <wst227b45le3ql6ctkdiyiynae7ipy3gqiz6ibhbxau4bogb5o@w25vnllnwnw7>
-From:   Komal Bajaj <quic_kbajaj@quicinc.com>
-In-Reply-To: <wst227b45le3ql6ctkdiyiynae7ipy3gqiz6ibhbxau4bogb5o@w25vnllnwnw7>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: B6VG5gmQ-zwu4vMHH6aINyuxfioYzfsU
-X-Proofpoint-ORIG-GUID: B6VG5gmQ-zwu4vMHH6aINyuxfioYzfsU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 clxscore=1015 impostorscore=0 spamscore=0
- bulkscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308010056
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -88,66 +98,144 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+	Hello,
 
-On 7/31/2023 10:05 PM, Bjorn Andersson wrote:
-> On Thu, Jul 27, 2023 at 12:09:07PM +0530, Mukesh Ojha wrote:
->> On 7/24/2023 2:08 PM, Komal Bajaj wrote:
-> [..]
->>> diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
->>> index f82431ec8aef..e248d3daadf3 100644
->>> --- a/drivers/nvmem/Makefile
->>> +++ b/drivers/nvmem/Makefile
->>> @@ -44,6 +44,8 @@ obj-$(CONFIG_NVMEM_NINTENDO_OTP)	+= nvmem-nintendo-otp.o
->>>    nvmem-nintendo-otp-y			:= nintendo-otp.o
->>>    obj-$(CONFIG_NVMEM_QCOM_QFPROM)		+= nvmem_qfprom.o
->>>    nvmem_qfprom-y				:= qfprom.o
->>> +obj-$(CONFIG_NVMEM_QCOM_SEC_QFPROM)	+= nvmem_sec_qfprom.o
->>> +nvmem_sec_qfprom-y			:= sec-qfprom.o
->> Are we just doing this for just renaming the object ?
->>
-> Correct.
->
->>>    obj-$(CONFIG_NVMEM_RAVE_SP_EEPROM)	+= nvmem-rave-sp-eeprom.o
->>>    nvmem-rave-sp-eeprom-y			:= rave-sp-eeprom.o
->>>    obj-$(CONFIG_NVMEM_RMEM) 		+= nvmem-rmem.o
->>> diff --git a/drivers/nvmem/sec-qfprom.c b/drivers/nvmem/sec-qfprom.c
-> [..]
->>> +static int sec_qfprom_reg_read(void *context, unsigned int reg, void *_val, size_t bytes)
->>> +{
->>> +	struct sec_qfprom *priv = context;
->>> +	unsigned int i;
->>> +	u8 *val = _val;
->>> +	u32 read_val;
->>> +	u8 *tmp;
->>> +
->>> +	for (i = 0; i < bytes; i++, reg++) {
->>> +		if (i == 0 || reg % 4 == 0) {
->>> +			if (qcom_scm_io_readl(priv->base + (reg & ~3), &read_val)) {
->>> +				dev_err(priv->dev, "Couldn't access fuse register\n");
->>> +				return -EINVAL;
->>> +			}
->>> +			tmp = (u8 *)&read_val;
->>> +		}
->>> +
->>> +		val[i] = tmp[reg & 3];
->>> +	}
->> Getting secure read from fuse region is fine here, since we have to read
->> 4 byte from trustzone, but this restriction of reading is also there
->> for sm8{4|5}50 soc's where byte by byte reading is protected and granularity
->> set to 4 byte (qfprom_reg_read() in drivers/nvmem/qfprom.c)
->> is will result in abort, in  that case this function need to export this
->> logic.
->>
-> If qfprom needs similar treatment, then let's land this first and then
-> consider generalizing (i.e. move to some library code) this - or if
-> infeasible, just fix qfprom_reg_read().
+On Mon, 31 Jul 2023, Joel Granados wrote:
 
-Agree, I will implement this logic into qfprom driver (into 
-qfprom_reg_read() ) in a separate patch.
+> Move from register_net_sysctl to register_net_sysctl_sz for all the
+> netfilter related files. Do this while making sure to mirror the NULL
+> assignments with a table_size of zero for the unprivileged users.
+> 
+> We need to move to the new function in preparation for when we change
+> SIZE_MAX to ARRAY_SIZE() in the register_net_sysctl macro. Failing to do
+> so would erroneously allow ARRAY_SIZE() to be called on a pointer. We
+> hold off the SIZE_MAX to ARRAY_SIZE change until we have migrated all
+> the relevant net sysctl registering functions to register_net_sysctl_sz
+> in subsequent commits.
+> 
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
 
-Thanks
-Komal
->
-> Regards,
-> Bjorn
+	The IPVS part in net/netfilter/ipvs/ looks good to me, thanks!
+
+Acked-by: Julian Anastasov <ja@ssi.bg>
+
+> ---
+>  net/bridge/br_netfilter_hooks.c         |  3 ++-
+>  net/ipv6/netfilter/nf_conntrack_reasm.c |  3 ++-
+>  net/netfilter/ipvs/ip_vs_ctl.c          |  8 ++++++--
+>  net/netfilter/ipvs/ip_vs_lblc.c         | 10 +++++++---
+>  net/netfilter/ipvs/ip_vs_lblcr.c        | 10 +++++++---
+>  net/netfilter/nf_conntrack_standalone.c |  4 +++-
+>  net/netfilter/nf_log.c                  |  7 ++++---
+>  7 files changed, 31 insertions(+), 14 deletions(-)
+> 
+
+...
+
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> @@ -4266,6 +4266,7 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
+>  	struct net *net = ipvs->net;
+>  	struct ctl_table *tbl;
+>  	int idx, ret;
+> +	size_t ctl_table_size = ARRAY_SIZE(vs_vars);
+>  
+>  	atomic_set(&ipvs->dropentry, 0);
+>  	spin_lock_init(&ipvs->dropentry_lock);
+> @@ -4282,8 +4283,10 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
+>  			return -ENOMEM;
+>  
+>  		/* Don't export sysctls to unprivileged users */
+> -		if (net->user_ns != &init_user_ns)
+> +		if (net->user_ns != &init_user_ns) {
+>  			tbl[0].procname = NULL;
+> +			ctl_table_size = 0;
+> +		}
+>  	} else
+>  		tbl = vs_vars;
+>  	/* Initialize sysctl defaults */
+> @@ -4353,7 +4356,8 @@ static int __net_init ip_vs_control_net_init_sysctl(struct netns_ipvs *ipvs)
+>  #endif
+>  
+>  	ret = -ENOMEM;
+> -	ipvs->sysctl_hdr = register_net_sysctl(net, "net/ipv4/vs", tbl);
+> +	ipvs->sysctl_hdr = register_net_sysctl_sz(net, "net/ipv4/vs", tbl,
+> +						  ctl_table_size);
+>  	if (!ipvs->sysctl_hdr)
+>  		goto err;
+>  	ipvs->sysctl_tbl = tbl;
+> diff --git a/net/netfilter/ipvs/ip_vs_lblc.c b/net/netfilter/ipvs/ip_vs_lblc.c
+> index 1b87214d385e..cf78ba4ce5ff 100644
+> --- a/net/netfilter/ipvs/ip_vs_lblc.c
+> +++ b/net/netfilter/ipvs/ip_vs_lblc.c
+> @@ -550,6 +550,7 @@ static struct ip_vs_scheduler ip_vs_lblc_scheduler = {
+>  static int __net_init __ip_vs_lblc_init(struct net *net)
+>  {
+>  	struct netns_ipvs *ipvs = net_ipvs(net);
+> +	size_t vars_table_size = ARRAY_SIZE(vs_vars_table);
+>  
+>  	if (!ipvs)
+>  		return -ENOENT;
+> @@ -562,16 +563,19 @@ static int __net_init __ip_vs_lblc_init(struct net *net)
+>  			return -ENOMEM;
+>  
+>  		/* Don't export sysctls to unprivileged users */
+> -		if (net->user_ns != &init_user_ns)
+> +		if (net->user_ns != &init_user_ns) {
+>  			ipvs->lblc_ctl_table[0].procname = NULL;
+> +			vars_table_size = 0;
+> +		}
+>  
+>  	} else
+>  		ipvs->lblc_ctl_table = vs_vars_table;
+>  	ipvs->sysctl_lblc_expiration = DEFAULT_EXPIRATION;
+>  	ipvs->lblc_ctl_table[0].data = &ipvs->sysctl_lblc_expiration;
+>  
+> -	ipvs->lblc_ctl_header =
+> -		register_net_sysctl(net, "net/ipv4/vs", ipvs->lblc_ctl_table);
+> +	ipvs->lblc_ctl_header = register_net_sysctl_sz(net, "net/ipv4/vs",
+> +						       ipvs->lblc_ctl_table,
+> +						       vars_table_size);
+>  	if (!ipvs->lblc_ctl_header) {
+>  		if (!net_eq(net, &init_net))
+>  			kfree(ipvs->lblc_ctl_table);
+> diff --git a/net/netfilter/ipvs/ip_vs_lblcr.c b/net/netfilter/ipvs/ip_vs_lblcr.c
+> index ad8f5fea6d3a..9eddf118b40e 100644
+> --- a/net/netfilter/ipvs/ip_vs_lblcr.c
+> +++ b/net/netfilter/ipvs/ip_vs_lblcr.c
+> @@ -736,6 +736,7 @@ static struct ip_vs_scheduler ip_vs_lblcr_scheduler =
+>  static int __net_init __ip_vs_lblcr_init(struct net *net)
+>  {
+>  	struct netns_ipvs *ipvs = net_ipvs(net);
+> +	size_t vars_table_size = ARRAY_SIZE(vs_vars_table);
+>  
+>  	if (!ipvs)
+>  		return -ENOENT;
+> @@ -748,15 +749,18 @@ static int __net_init __ip_vs_lblcr_init(struct net *net)
+>  			return -ENOMEM;
+>  
+>  		/* Don't export sysctls to unprivileged users */
+> -		if (net->user_ns != &init_user_ns)
+> +		if (net->user_ns != &init_user_ns) {
+>  			ipvs->lblcr_ctl_table[0].procname = NULL;
+> +			vars_table_size = 0;
+> +		}
+>  	} else
+>  		ipvs->lblcr_ctl_table = vs_vars_table;
+>  	ipvs->sysctl_lblcr_expiration = DEFAULT_EXPIRATION;
+>  	ipvs->lblcr_ctl_table[0].data = &ipvs->sysctl_lblcr_expiration;
+>  
+> -	ipvs->lblcr_ctl_header =
+> -		register_net_sysctl(net, "net/ipv4/vs", ipvs->lblcr_ctl_table);
+> +	ipvs->lblcr_ctl_header = register_net_sysctl_sz(net, "net/ipv4/vs",
+> +							ipvs->lblcr_ctl_table,
+> +							vars_table_size);
+>  	if (!ipvs->lblcr_ctl_header) {
+>  		if (!net_eq(net, &init_net))
+>  			kfree(ipvs->lblcr_ctl_table);
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
 
