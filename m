@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8149476BA44
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9680876BA4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbjHARDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45904 "EHLO
+        id S233842AbjHARDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233842AbjHARDN (ORCPT
+        with ESMTP id S233896AbjHARDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:03:13 -0400
-Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBCB2125
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:03:12 -0700 (PDT)
-Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1bb5c259b44so4245744fac.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:03:12 -0700 (PDT)
+        Tue, 1 Aug 2023 13:03:18 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C9172103
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:03:16 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-348de515667so25489475ab.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:03:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690909392; x=1691514192;
+        d=gmail.com; s=20221208; t=1690909396; x=1691514196;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e6NIZdlLmgRQPJbwwmBZ102ypc9HsrQnlZpRMUUA7Yk=;
-        b=kgqoBsP4knHYKSpAXaiTkftVb9gz6Itu9Tl69F/ZMCtxF49bpioU+Idmb9ddL/fS1J
-         9YDzmVLehoKtLZeP66yrojdSXHdmU9vo6oXNnfRyduWIPw2dzKzLRsMBOp2PS01oRTz1
-         OJ7pWk5D9z0QvU2Q9/EMV6hHPkdj8OXjmSqjirQHxSHCmWrPWgj0LPeQ9kXehBfzkt/w
-         lg2NMXVCZlcEF4dwUL+VOXs2SXtoh7T0PPaGM9O9j3mNm++Ypd2ODbpgAcg01Tw++pm1
-         +yWohdgk7kon9zf5HY6EmC0/jssUoFiJP28ZdqwkrDcwK19wIYYb0ExggzF2SYXkVN15
-         oM5Q==
+        bh=/Vt/wHfetwQDHpRz65Llg9LjGES1lnjN8dFqGOHt2Ac=;
+        b=ZiaDkevfnJ+ET3/E1+KGU6hHq3/PIlb0BSs1FiUfYHGgnKdThqy4KHppHnLBhDBFAF
+         F42XOPx6zWICKq8MmL1Y4zBPDdkSeW+oWkEEu4OeuQl1Y6VQa0S2M1kKxAcn9j0RsjXP
+         GIU56DsDz2KKJDndnFBBaGKN2BLz9n3SK/t8Im3ajkCx/2Dn8Xo4OFSjREqh3wG1crJs
+         7CtTADXR2se7VIj+DJfc2aiVwfTQ9FY8PU6WVP91xUCI512OIZBEAGf/u7C3IQHJTbNP
+         Bzi9Ufp9dor29EQJyfvpPpLC7hQHrXvGVCzj/cvhXikXCJw/WBX5iQCithmQTAWVSOXr
+         PyTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690909392; x=1691514192;
+        d=1e100.net; s=20221208; t=1690909396; x=1691514196;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e6NIZdlLmgRQPJbwwmBZ102ypc9HsrQnlZpRMUUA7Yk=;
-        b=dy1rWq3aNfrDhpxodo5dW2ilxdbX1OGcZ04XWxi9OU6t/D6Y+pLx8xqLVnFt/d9bcm
-         cCi1his4eIS2oGaWTfeFCeXdJBZ05Hs+g/gx/jCcZ0pJosnyxEoKItrUaPR5cxii7Xnq
-         1oh3GbtlY/02sB3stfdZyzSVQ+PDPT/T/8X9pC2UQ+yM+aCeJg9Xz0IteKujWRFk1b1w
-         BcAK8UfV2hnBneeuLed3JkVKFT6mxDJCEggKopvMbMGEw2UtuIQcEzDy2zP4IX6ZXGoA
-         6TDl4JvNvfARHIac8te3FJ7vR1xWkeZt2hqlA6RVrx+hDJSXf7RaDPA5rxO2I1iBNpJR
-         exkg==
-X-Gm-Message-State: ABy/qLaGPwwcWcd5zXBd1qbRUVVGrS8UdvFv6DNto25yuKz50y49iWdP
-        Wolj9sl/w64s8l26jT3+mHI=
-X-Google-Smtp-Source: APBJJlG6vK477TfZVBUfqX8g1apQz6NMUABz9WRG7vlOwFFvtNV9GVjB2eC0PU2vGq5znCYC27r/og==
-X-Received: by 2002:a05:6871:216:b0:1bb:b9d6:a879 with SMTP id t22-20020a056871021600b001bbb9d6a879mr14317589oad.38.1690909391823;
-        Tue, 01 Aug 2023 10:03:11 -0700 (PDT)
+        bh=/Vt/wHfetwQDHpRz65Llg9LjGES1lnjN8dFqGOHt2Ac=;
+        b=DXzGH3lisKIl/zgksVq1TwmQZRBevqLAoKi0uaskb6xpybYwwKLpY90jKBktoV9QQI
+         LKVbQvm/AP0IzSggl0OUMN0cj2jEcBNSay11NyuNjPHTI9ZA7VNyhmpC1M6si31cUtJt
+         pI4vXTG/a5imFb0gpfWeewhUl7iaNoMEjmJkQwIxa0E5FSrPz4DHORK8OUGpjosnjV3B
+         CzcXh4ewAeT/1+UbQMIn5/h2Tlq9eafigEjEhwHjq3w5JhFCdKl7e67vYjHVWrEyfUN+
+         0KhcTO8mg9edfZCi6d086BiLEMjPcABEP6nJ96rSTTxcOSt6TcIzH967cVbcWYHsmM2f
+         ewQw==
+X-Gm-Message-State: ABy/qLYYQ/YpKGnbXtmK0zpXX9o1CVnBACUvVevXusaWFznq+Z76tmaS
+        HZp2avmMrevF53MrdLUcpu4=
+X-Google-Smtp-Source: APBJJlFXRa1Etl6yfHFGR6ePAm5/gYzcKoBWdY+UiSYPpDx3PiIMvJYXjeJATdKSxpfNJXMYeySpBg==
+X-Received: by 2002:a92:c248:0:b0:348:f4c1:4817 with SMTP id k8-20020a92c248000000b00348f4c14817mr13197730ilo.6.1690909395900;
+        Tue, 01 Aug 2023 10:03:15 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id o20-20020a02c6b4000000b0042b144abf71sm3768577jan.179.2023.08.01.10.03.10
+        by smtp.googlemail.com with ESMTPSA id o20-20020a02c6b4000000b0042b144abf71sm3768577jan.179.2023.08.01.10.03.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 10:03:11 -0700 (PDT)
+        Tue, 01 Aug 2023 10:03:15 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     daniel.vetter@ffwll.ch, daniel@ffwll.ch, jbaron@akamai.com,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
@@ -59,9 +59,9 @@ To:     daniel.vetter@ffwll.ch, daniel@ffwll.ch, jbaron@akamai.com,
 Cc:     linux@rasmusvillemoes.dk, joe@perches.com, jani.nikula@intel.com,
         ville.syrjala@linux.intel.com, seanpaul@chromium.org,
         robdclark@gmail.com, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v5 02/22] test-dyndbg: fixup CLASSMAP usage error
-Date:   Tue,  1 Aug 2023 11:02:34 -0600
-Message-ID: <20230801170255.163237-3-jim.cromie@gmail.com>
+Subject: [PATCH v5 03/22] dyndbg: make ddebug_class_param union members same size
+Date:   Tue,  1 Aug 2023 11:02:35 -0600
+Message-ID: <20230801170255.163237-4-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230801170255.163237-1-jim.cromie@gmail.com>
 References: <20230801170255.163237-1-jim.cromie@gmail.com>
@@ -77,59 +77,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-more careful reading of test output reveals:
-
-lib/test_dynamic_debug.c:103 [test_dynamic_debug]do_cats =pmf "doing categories\n"
-lib/test_dynamic_debug.c:105 [test_dynamic_debug]do_cats =p "LOW msg\n" class:MID
-lib/test_dynamic_debug.c:106 [test_dynamic_debug]do_cats =p "MID msg\n" class:HI
-lib/test_dynamic_debug.c:107 [test_dynamic_debug]do_cats =_ "HI msg\n" class unknown, _id:13
-
-That last line is wrong, the HI class is declared.
-
-But the enum's 1st val (explicitly initialized) was wrong; it must be
-_base, not _base+1 (a DECLARE_DYNDBG_CLASSMAP[1] param).  So the last
-enumeration exceeded the range of mapped class-id's, which triggered
-the "class unknown" report.  I intentionally coded in an error, but
-forgot to verify its detection and remove it.
-
-RFC:
-
-This patch fixes a bad usage of DECLARE_DYNDBG_CLASSMAP(), showing
-that it is too error-prone.  As noted in test-mod comments:
-
- * Using the CLASSMAP api:
- * - classmaps must have corresponding enum
- * - enum symbols must match/correlate with class-name strings in the map.
- * - base must equal enum's 1st value
- * - multiple maps must set their base to share the 0-62 class_id space !!
- *   (build-bug-on tips welcome)
-
-Those shortcomings could largely be fixed with a __stringify_list
-(which doesn't exist,) used in DECLARE_DYNDBG_CLASSMAP to stringify
-__VA_ARGS__.  Then, API would accept DRM_UT_* values literally; all
-the categories, in order, and not their stringifications, which
-created all the usage complications above.
-
-[1] name changes later to DYNDBG_CLASSMAP_DEFINE
+struct ddebug_class_param keeps a ref to the state-storage of the
+param, make both flavors use the same unsigned long under-type.
+ISTM this is simpler and safer.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/test_dynamic_debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/dynamic_debug.h | 2 +-
+ lib/dynamic_debug.c           | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/lib/test_dynamic_debug.c b/lib/test_dynamic_debug.c
-index 8dd250ad022b..a01f0193a419 100644
---- a/lib/test_dynamic_debug.c
-+++ b/lib/test_dynamic_debug.c
-@@ -75,7 +75,7 @@ DD_SYS_WRAP(disjoint_bits, p);
- DD_SYS_WRAP(disjoint_bits, T);
+diff --git a/include/linux/dynamic_debug.h b/include/linux/dynamic_debug.h
+index 061dd84d09f3..dc41e70dc2e1 100644
+--- a/include/linux/dynamic_debug.h
++++ b/include/linux/dynamic_debug.h
+@@ -122,7 +122,7 @@ struct _ddebug_info {
+ struct ddebug_class_param {
+ 	union {
+ 		unsigned long *bits;
+-		unsigned int *lvl;
++		unsigned long *lvl;
+ 	};
+ 	char flags[8];
+ 	const struct ddebug_class_map *map;
+diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
+index fdd6d9800a70..22a3182bf89f 100644
+--- a/lib/dynamic_debug.c
++++ b/lib/dynamic_debug.c
+@@ -795,7 +795,7 @@ int param_get_dyndbg_classes(char *buffer, const struct kernel_param *kp)
  
- /* symbolic input, independent bits */
--enum cat_disjoint_names { LOW = 11, MID, HI };
-+enum cat_disjoint_names { LOW = 10, MID, HI };
- DECLARE_DYNDBG_CLASSMAP(map_disjoint_names, DD_CLASS_TYPE_DISJOINT_NAMES, 10,
- 			"LOW", "MID", "HI");
- DD_SYS_WRAP(disjoint_names, p);
+ 	case DD_CLASS_TYPE_LEVEL_NAMES:
+ 	case DD_CLASS_TYPE_LEVEL_NUM:
+-		return scnprintf(buffer, PAGE_SIZE, "%d\n", *dcp->lvl);
++		return scnprintf(buffer, PAGE_SIZE, "%ld\n", *dcp->lvl);
+ 	default:
+ 		return -1;
+ 	}
 -- 
 2.41.0
 
