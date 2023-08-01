@@ -2,246 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A8C76A9BC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B9476A9BF
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231537AbjHAHGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 03:06:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
+        id S232037AbjHAHG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 03:06:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjHAHGN (ORCPT
+        with ESMTP id S231604AbjHAHGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 03:06:13 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEDF119;
-        Tue,  1 Aug 2023 00:06:10 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 2A9D9819E;
-        Tue,  1 Aug 2023 15:06:03 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
- 2023 15:06:03 +0800
-Received: from [10.8.0.4] (8.218.107.193) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
- 2023 15:05:51 +0800
-Message-ID: <79e417ee-ef47-3e4b-6b51-bd7f10ac3643@starfivetech.com>
-Date:   Tue, 1 Aug 2023 15:05:46 +0800
+        Tue, 1 Aug 2023 03:06:22 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2070.outbound.protection.outlook.com [40.107.237.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AFEE7C;
+        Tue,  1 Aug 2023 00:06:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hmo0eUr85ki1ZDF/niGdiNUQ++O+RyqPDO9Ni5LQ8WHYmoyrwkWbvlD8Qxeh50CZAa2gsk88vjthEWyt5E7OdFeOcCDus2KIesihLgdlB8MWLmJfSHSICa57DvZSHyX1zWaOEdd0dvsCsHoXr2gSm3GTysC1epRv0qypG4hMC4YNHVpoNAZYFux0bQFLR9n8fT4A2sBB+e+QO2zI4XZ5TdUSZPuGDOlrn2VXCbKJy3k2SelzrLxaX1XCB/GAr1AveV0Fm8AiJW1JE7eA93TUCDKkgh0Am/KcbqvoQfJeehUuLdFLkqijLNmxVe9AARdxUIXj1F1rICPS6j6pdXHg+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7ut2ZHm7voKtBYpSabY12c2aF3UX5vl8kBKwbxzFW+E=;
+ b=n6xTnP/slmYu5dw7//OPnpT7VqYAUx3kZGBPUfwJ/J4ynlsFgSY/tiJq1MdNmXqFMs0RiLzlO/ChdsfKVuKLrRwjqE3vCSwkePmi8DclgUZWTMIvhoMbJvRcQJ/gR8w3eyB7/+qhMS4Q+zIP5KdbodjIMAslJBgK/Xepx5z57ho7ngrsXtGDK6cS2SfFagcTTi24nQ0tb8VhNIa8FvTLRcO6TcTDi2m1MVLZSo0nscEq+93TAlf2g1ByYV7w2Wtp9eLPfVkJD9l6Nmv36EAAc6Mt7Vs98aRuEiFnZo2PSoIF1q+7oYeagETCZlq8cv/v/7rV5TPpRjeGYhTet6qO9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7ut2ZHm7voKtBYpSabY12c2aF3UX5vl8kBKwbxzFW+E=;
+ b=IqyREAotf7McYAdhjBQIESbvVzQHwh2LPhP5tlGfuELpAzrcyPp1swDpSA2c/rICbN/OY8ilw5LLgAmJ/PWzndpVEX6h7NcR+Ni67TYInuDQZQNU+A3PiIY3f2h0NRZBp7CzpW8kEb+//7cMm+3jfU7zDq514Ccsxnz9Tacz5ZY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS7PR12MB8252.namprd12.prod.outlook.com (2603:10b6:8:ee::7) by
+ CYYPR12MB8964.namprd12.prod.outlook.com (2603:10b6:930:bc::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.44; Tue, 1 Aug 2023 07:06:17 +0000
+Received: from DS7PR12MB8252.namprd12.prod.outlook.com
+ ([fe80::2dd6:4ccd:1695:d51f]) by DS7PR12MB8252.namprd12.prod.outlook.com
+ ([fe80::2dd6:4ccd:1695:d51f%6]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
+ 07:06:17 +0000
+Date:   Tue, 1 Aug 2023 12:35:58 +0530
+From:   "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Subject: Re: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
+Message-ID: <ZMiu1t8blYAdm2Br@BLR-5CG11610CF.amd.com>
+References: <20230728105650.565799744@linutronix.de>
+ <20230728120930.839913695@linutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230728120930.839913695@linutronix.de>
+X-ClientProxiedBy: PN3PR01CA0002.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:95::22) To DS7PR12MB8252.namprd12.prod.outlook.com
+ (2603:10b6:8:ee::7)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
-Content-Language: en-US
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Minda Chen <minda.chen@starfivetech.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-References: <20230731231223.GA14721@bhelgaas>
-From:   Kevin Xie <kevin.xie@starfivetech.com>
-In-Reply-To: <20230731231223.GA14721@bhelgaas>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [8.218.107.193]
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB8252:EE_|CYYPR12MB8964:EE_
+X-MS-Office365-Filtering-Correlation-Id: 97c0f596-ed16-46ca-14de-08db925dcd13
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5wjtRnKHk5R5Uwjr/3phAZJZ0soM3w5zxYlJ4kZ//9xDycbvXNgSowKbz88r+GmIVsuKRBF/u8YKXAWzow5GedyTYvooruFQuGVFpIWryBIrRjaQGTI2hlfiy9A5F/TMN90N6L6/FB609m7SAt6QSDJlxEy74z65OQqSWRgLHaFW3kPxLC8J/mxcZhzVJvjPKeVDVdko994tMUQ1xjx+N4ZmLEgaFXUIWv2Rru9OacrWzRyudb9pA2X8qFn6hT7PO65KGepvnTNCc/1JaO0CicjPFT5bTumSjKDNCBPdlU3pnrlkQwzeUb6XE2Z/YLv3FFryORi0I4NuLrxsdMg64pIZOPTFTGotNe1nOMs1GKi194n4DlEvofOJA0T6rxjkAnG0WdyozqgpBRWJOL34QhoQORFPPrj4ge82ALaCdwmUHQuCtqaVbyMSQyrZa4djiTQAAzCzwInl6ltclmUoOXUJprA5UNoLF3vTWxZnRAfxDMgNbriVsih9UV27xMb1qynL+wEjJGIwiN/bMU9yWglLbVKkrNP41sCUmxfUt9f1xZzuZLv6J4CEpoFd2aUo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB8252.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(366004)(136003)(39860400002)(451199021)(6666004)(6486002)(6512007)(2906002)(26005)(186003)(6506007)(38100700002)(54906003)(478600001)(83380400001)(316002)(66946007)(66556008)(66476007)(4326008)(6916009)(41300700001)(8676002)(8936002)(7416002)(86362001)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?95In0x8DZI7tu5t0S0WOfxt+vSkkV2ugDf4kTn09dvwz9EaKFD25GUfK9kx6?=
+ =?us-ascii?Q?qujQlsaVnYaLiNmaEXZ9Oipl0ijwT3KmbhLaQfwH3pdj6TTUXcSFJ7ataGzd?=
+ =?us-ascii?Q?TpfRUR4KmaIqX1stUZnADeApC6M/ZCdgMrLIrnogi+41apwkT39yMtUTuIw2?=
+ =?us-ascii?Q?jC0zvboSSGAxaIUbuu6oHZOdGieV+OsxNk3peH3hkImb1s7BAIPumWoNgNxo?=
+ =?us-ascii?Q?PY3cNKuAWtWDsnREX653mOBcquTyO3VPE5E5kJmfaR95bvvF/YrO2Mmrlc+G?=
+ =?us-ascii?Q?9zXN5J+bO6siBujGkCF1WTJVEGvAwYa42TLYcpPvUbOMpSCbBCk/l+/u+uIw?=
+ =?us-ascii?Q?8Zo1/QkB+wC+viB6UrMgF1nZ/r5Wba3MEEuLCup4o8U2OZ4wTzdC2XQ7+NVl?=
+ =?us-ascii?Q?nGqkElRghIINdSTYpR2iItEi9FLXr+eS/FfNEtxR3ApVuNzDLFMqFvOXoccw?=
+ =?us-ascii?Q?iIqqday51W+x6UGYlWrXgsoFJP/T/ueK6zBET7pvDmUcsPvOylAEl2kBoits?=
+ =?us-ascii?Q?grXananNAkFW9+hbYB9hdiQPAf9nUi0uMbyy1pnzpCLydjqelz/5WIX/5dKM?=
+ =?us-ascii?Q?KNEbvtzjm4tKXEOn6zqngF3Fb+W83lTNdYAIcJi+JV7pYyYo9dTwh8WiZghZ?=
+ =?us-ascii?Q?xT5qH9yA5wC+3hWX+dqKhx5qt+LklEk9alxCDEtddNMNrNG8S90SxmImpum+?=
+ =?us-ascii?Q?RLMEqj0f/WrZlYLD7OjIhRnksq3g3iwNydbGl38j/UDQ41JwKX8EEzusKedJ?=
+ =?us-ascii?Q?DvN1D8LdjmZo5ocU18+bNu/+h9qShvpruv4d9BYedOzIJUB366oLDQGegzM8?=
+ =?us-ascii?Q?bRELfhjNlUziVDMNFSRUVAdUHv7cH6Y7ewY8/QWV/1D5qxjFpU7ouRz39IUy?=
+ =?us-ascii?Q?KWtJgQmDDIiZEoJ20E2wrPit19cEA9oNtmNuhOZeTp45RNrcj8XIFcun9a0b?=
+ =?us-ascii?Q?wRekLswhEHxfRMSLoAIl0fLmGLH8eW1T71teWgmDWvQp1bVzkhbJ/Ojwui8v?=
+ =?us-ascii?Q?/6UarYi1Ke7AtFoIE9IaqPF3kacL+PfM8V4wlzWlOv3gsR0s2tXEg4RVYo0R?=
+ =?us-ascii?Q?I5VN7VAqfdP+UmJ3TcSOE4mCh6V/LrKZKArOFV1g15HVH6nwbWavOv4XB6rr?=
+ =?us-ascii?Q?+aYqnV+NfuIqdKNbxg7TBHyQdEVmU09czkacZaD8XyUEBGxkc05ag3Jbcmz8?=
+ =?us-ascii?Q?cq3UTJZMLsv87gHMmZ/HkmcfuKYwob5IZCQPWbJtVuhN2WWSbCQO3u+7zNBf?=
+ =?us-ascii?Q?ZxiV6IYZ/zgdIDOxJwpznhH1gKadrTJs1Q+2jtlhEQGldSshyDChJ8QDkdz4?=
+ =?us-ascii?Q?aoFz99yJiVGHZFasoqB1ghuTXFb3gX/sdSu+qvalNQ4qOEbBScBPSq4qDrxh?=
+ =?us-ascii?Q?rxQwbXV++l+AzD1RaZAgipdOz6INotzLBgkNzEu6Xr3GlP8Jwwb5zGsNmfUB?=
+ =?us-ascii?Q?Wv/iHulAkTQoRyGVMjstuEVZnkTMQOmhs3VXxXAfjJnKXU22xwY3c4YafHf9?=
+ =?us-ascii?Q?T4I6gmjHVGv1ikLhC4Xq086PVGovpFBEHk6LccAWmAp7b19fX8G0b90T49gn?=
+ =?us-ascii?Q?nCRFnX9/DTdFpAyzhjUSTtIbimxWkeLpifgzCLDf?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 97c0f596-ed16-46ca-14de-08db925dcd13
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB8252.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 07:06:17.7462
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PuPryMXNDnBetBmlfKm8NYSjjsvbzJtD17SsgEKIz3rnfygFaODw+DMGR5Rt5wEcTwLSEjQHCvSdi8ao4FHSiA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8964
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Thomas,
+
+On Fri, Jul 28, 2023 at 02:13:08PM +0200, Thomas Gleixner wrote:
+> Topology evaluation is a complete disaster and impenetrable mess. It's
+> scattered all over the place with some vendor implementatins doing early
+> evaluation and some not. The most horrific part is the permanent
+> overwriting of smt_max_siblings and __max_die_per_package, instead of
+> establishing them once on the boot CPU and validating the result on the
+> APs.
+> 
+> The goals are:
+> 
+>   - One topology evaluation entry point
+> 
+>   - Proper sharing of pointlessly duplicated code
+> 
+>   - Proper structuring of the evaluation logic and preferences.
+> 
+>   - Evaluating important system wide information only once on the boot CPU
+> 
+>   - Making the 0xb/0x1f leaf parsing less convoluted and actually fixing
+>     the short comings of leaf 0x1f evaluation.
+> 
+> Start to consolidate the topology evaluation code by providing the entry
+> points for the early boot CPU evaluation and for the final parsing on the
+> boot CPU and the APs.
+> 
+> Move the trivial pieces into that new code:
+> 
+>    - The initialization of cpuinfo_x86::topo
+> 
+>    - The evaluation of CPUID leaf 1, which presets topo::initial_apicid
+> 
+>    - topo_apicid is set to topo::initial_apicid when invoked from early
+>      boot. When invoked for the final evaluation on the boot CPU it reads
+>      the actual APIC ID, which makes apic_get_initial_apicid() obsolete
+>      once everything is converted over.
+> 
+> Provide a temporary helper function topo_converted() which shields off the
+> not yet converted CPU vendors from invoking code which would break them.
+> This shielding covers all vendor CPUs which support SMP, but not the
+> historical pure UP ones as they only need the topology info init and
+> eventually the initial APIC initialization.
+> 
+> Provide two new members in cpuinfo_x86::topo to store the maximum number of
+> SMT siblings and the number of dies per package and add them to the debugfs
+> readout. These two members will be used to populate this information on the
+> boot CPU and to validate the APs against it.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/topology.h       |   19 +++
+>  arch/x86/kernel/cpu/Makefile          |    3 
+>  arch/x86/kernel/cpu/common.c          |   23 +---
+>  arch/x86/kernel/cpu/cpu.h             |    6 +
+>  arch/x86/kernel/cpu/debugfs.c         |   37 ++++++
+>  arch/x86/kernel/cpu/topology.h        |   32 +++++
+>  arch/x86/kernel/cpu/topology_common.c |  187 ++++++++++++++++++++++++++++++++++
+>  7 files changed, 290 insertions(+), 17 deletions(-)
+> 
+> --- a/arch/x86/include/asm/topology.h
+> +++ b/arch/x86/include/asm/topology.h
+> @@ -102,6 +102,25 @@ static inline void setup_node_to_cpumask
+>  
+>  #include <asm-generic/topology.h>
+>  
+> +/* Topology information */
+> +enum x86_topology_domains {
+> +	TOPO_SMT_DOMAIN,
+> +	TOPO_CORE_DOMAIN,
+> +	TOPO_MODULE_DOMAIN,
+> +	TOPO_TILE_DOMAIN,
+> +	TOPO_DIE_DOMAIN,
+> +	TOPO_PKG_DOMAIN,
+> +	TOPO_ROOT_DOMAIN,
+> +	TOPO_MAX_DOMAIN,
+> +};
+> +
+
+[..snip..]
+
+> +static void topo_set_ids(struct topo_scan *tscan)
+> +{
+> +	struct cpuinfo_x86 *c = tscan->c;
+> +	u32 apicid = c->topo.apicid;
+> +
+> +	c->topo.pkg_id = topo_shift_apicid(apicid, TOPO_ROOT_DOMAIN);
+
+Shouldn't this use TOPO_PKG_DOMAIN instead of TOPO_ROOT_DOMAIN ?
 
 
-On 2023/8/1 7:12, Bjorn Helgaas wrote:
-> [+cc Pali, Marek because I used f76b36d40bee ("PCI: aardvark: Fix link
-> training") as an example]
-> 
-> On Mon, Jul 31, 2023 at 01:52:35PM +0800, Kevin Xie wrote:
->> On 2023/7/28 5:40, Bjorn Helgaas wrote:
->> > On Tue, Jul 25, 2023 at 03:46:35PM -0500, Bjorn Helgaas wrote:
->> >> On Mon, Jul 24, 2023 at 06:48:47PM +0800, Kevin Xie wrote:
->> >> > On 2023/7/21 0:15, Bjorn Helgaas wrote:
->> >> > > On Thu, Jul 20, 2023 at 06:11:59PM +0800, Kevin Xie wrote:
->> >> > >> On 2023/7/20 0:48, Bjorn Helgaas wrote:
->> >> > >> > On Wed, Jul 19, 2023 at 06:20:56PM +0800, Minda Chen wrote:
->> >> > >> >> Add StarFive JH7110 SoC PCIe controller platform
->> >> > >> >> driver codes.
->> >> 
->> >> > >> However, in the compatibility testing with several NVMe SSD, we
->> >> > >> found that Lenovo Thinklife ST8000 NVMe can not get ready in 100ms,
->> >> > >> and it actually needs almost 200ms.  Thus, we increased the T_PVPERL
->> >> > >> value to 300ms for the better device compatibility.
->> >> > > ...
->> >> > > 
->> >> > > Thanks for this valuable information!  This NVMe issue potentially
->> >> > > affects many similar drivers, and we may need a more generic fix so
->> >> > > this device works well with all of them.
->> >> > > 
->> >> > > T_PVPERL is defined to start when power is stable.  Do you have a way
->> >> > > to accurately determine that point?  I'm guessing this:
->> >> > > 
->> >> > >   gpiod_set_value_cansleep(pcie->power_gpio, 1)
->> >> > > 
->> >> > > turns the power on?  But of course that doesn't mean it is instantly
->> >> > > stable.  Maybe your testing is telling you that your driver should
->> >> > > have a hardware-specific 200ms delay to wait for power to become
->> >> > > stable, followed by the standard 100ms for T_PVPERL?
->> >> > 
->> >> > You are right, we did not take the power stable cost into account.
->> >> > T_PVPERL is enough for Lenovo Thinklife ST8000 NVMe SSD to get ready,
->> >> > and the extra cost is from the power circuit of a PCIe to M.2 connector,
->> >> > which is used to verify M.2 SSD with our EVB at early stage.
->> >> 
->> >> Hmm.  That sounds potentially interesting.  I assume you're talking
->> >> about something like this: https://www.amazon.com/dp/B07JKH5VTL
->> >> 
->> >> I'm not familiar with the timing requirements for something like this.
->> >> There is a PCIe M.2 spec with some timing requirements, but I don't
->> >> know whether or how software is supposed to manage this.  There is a
->> >> T_PVPGL (power valid to PERST# inactive) parameter, but it's
->> >> implementation specific, so I don't know what the point of that is.
->> >> And I don't see a way for software to even detect the presence of such
->> >> an adapter.
->> > 
->> > I intended to ask about this on the PCI-SIG forum, but after reading
->> > this thread [1], I don't think we would learn anything.  The question
->> > was:
->> > 
->> >   The M.2 device has 5 voltage rails generated from the 3.3V input
->> >   supply voltage
->> >   -------------------------------------------
->> >   This is re. Table 17 in PCI Express M.2 Specification Revision 1.1
->> >   Power Valid* to PERST# input inactive : Implementation specific;
->> >   recommended 50 ms
->> > 
->> >   What exactly does this mean ?
->> > 
->> >   The Note says
->> > 
->> >     *Power Valid when all the voltage supply rails have reached their
->> >     respective Vmin.
->> > 
->> >   Does this mean that the 50ms to PERSTn is counted from the instant
->> >   when all *5 voltage rails* on the M.2 device have become "good" ?
->> > 
->> > and the answer was:
->> > 
->> >   You wrote;
->> >   Does this mean that the 50ms to PERSTn is counted from the instant
->> >   when all 5 voltage rails on the M.2 device have become "good" ?
->> > 
->> >   Reply:
->> >   This means that counting the recommended 50 ms begins from the time
->> >   when the power rails coming to the device/module, from the host, are
->> >   stable *at the device connector*.
->> > 
->> >   As for the time it takes voltages derived inside the device from any
->> >   of the host power rails (e.g., 3.3V rail) to become stable, that is
->> >   part of the 50ms the host should wait before de-asserting PERST#, in
->> >   order ensure that most devices will be ready by then.
->> > 
->> >   Strictly speaking, nothing disastrous happens if a host violates the
->> >   50ms. If it de-asserts too soon, the device may not be ready, but
->> >   most hosts will try again. If the host de-asserts too late, the
->> >   device has even more time to stabilize. This is why the WG felt that
->> >   an exact minimum number for >>Tpvpgl, was not valid in practice, and
->> >   we made it a recommendation.
->> > 
->> > Since T_PVPGL is implementation-specific, we can't really base
->> > anything in software on the 50ms recommendation.  It sounds to me like
->> > they are counting on software to retry config reads when enumerating.
->> > 
->> > I guess the delays we *can* observe are:
->> > 
->> >   100ms T_PVPERL "Power stable to PERST# inactive" (CEM 2.9.2)
->> >   100ms software delay between reset and config request (Base 6.6.1)
->> 
->> Refer to Figure2-10 in CEM Spec V2.0, I guess this two delays are T2 & T4?
->> In the PATCH v2[4/4], T2 is the msleep(100) for T_PVPERL,
->> and T4 is done by starfive_pcie_host_wait_for_link().
-> 
-> Yes, I think "T2" is T_PVPERL.  The CEM r2.0 Figure 2-10 note is
-> "2. Minimum time from power rails within specified tolerance to
-> PERST# inactive (T_PVPERL)."
-> 
-> As far as T4 ("Minimum PERST# inactive to PCI Express link out of
-> electrical idle"), I don't see a name or a value for that parameter,
-> and I don't think it is the delay required by PCIe r6.0, sec 6.6.1.
-> 
-> The delay required by sec 6.6.1 is a minimum of 100ms following exit
-> from reset or, for fast links, 100ms after link training completes.
-> 
-> The comment at the call of advk_pcie_wait_for_link() [2] says it is
-> the delay required by sec 6.6.1, but that doesn't seem right to me.
-> 
-> For one thing, I don't think 6.6.1 says anything about "link up" being
-> the end of a delay.  So if we want to do the delay required by 6.6.1,
-> "wait_for_link()" doesn't seem like quite the right name.
-> 
-> For another, all the *_wait_for_link() functions can return success
-> after 0ms, 90ms, 180ms, etc.  They're unlikely to return after 0ms,
-> but 90ms is quite possible.  If we avoided the 0ms return and
-> LINK_WAIT_USLEEP_MIN were 100ms instead of 90ms, that should be enough
-> for slow links, where we need 100ms following "exit from reset."
-> 
-> But it's still not enough for fast links where we need 100ms "after
-> link training completes" because we don't know when training
-> completed.  If training completed 89ms into *_wait_for_link(), we only
-> delay 1ms after that.
-> 
+> +	c->topo.die_id = topo_shift_apicid(apicid, TOPO_DIE_DOMAIN);
+> +
+> +	/* Relative core ID */
+> +	c->topo.core_id = topo_relative_domain_id(apicid, TOPO_CORE_DOMAIN);
+> +}
+> +
 
-That's the point, we will add a extra 100ms after PERST# de-assert
-in the patch-v3 according to Base Spec r6.0 - 6.6.1:
-        msleep(100);
-        gpiod_set_value_cansleep(pcie->reset_gpio, 0);
+--
+Thanks and Regards
+gautham.
 
-+       /* As the requirement in PCIe base spec r6.0, system must wait a
-+        * minimum of 100 ms following exit from a Conventional Reset
-+        * before sending a Configuration Request to the device.*/
-+       msleep(100);
-+
-        if (starfive_pcie_host_wait_for_link(pcie))
-                return -EIO;
-
->> > The PCI core doesn't know how to assert PERST#, so the T_PVPERL delay
->> > definitely has to be in the host controller driver.
->> > 
->> > The PCI core observes the second 100ms delay after a reset in
->> > pci_bridge_wait_for_secondary_bus().  But this 100ms delay does not
->> > happen during initial enumeration.  I think the assumption of the PCI
->> > core is that when the host controller driver calls pci_host_probe(),
->> > we can issue config requests immediately.
->> > 
->> > So I think that to be safe, we probably need to do both of those 100ms
->> > delays in the host controller driver.  Maybe there's some hope of
->> > supporting the latter one in the PCI core someday, but that's not
->> > today.
->> > 
->> > Bjorn
->> > 
->> > [1] https://forum.pcisig.com/viewtopic.php?f=74&t=1037
-> 
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pci-aardvark.c?id=v6.4#n433
