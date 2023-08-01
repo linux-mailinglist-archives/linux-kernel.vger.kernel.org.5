@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B15EF76ACCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E5076ACCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230452AbjHAJV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47352 "EHLO
+        id S232645AbjHAJWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232468AbjHAJVl (ORCPT
+        with ESMTP id S231731AbjHAJVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:21:41 -0400
-Received: from out28-146.mail.aliyun.com (out28-146.mail.aliyun.com [115.124.28.146])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AA22D62
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:20:19 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1145429|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0510493-0.00536844-0.943582;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5r7xrd_1690881546;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5r7xrd_1690881546)
+        Tue, 1 Aug 2023 05:21:48 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1810330E6;
+        Tue,  1 Aug 2023 02:20:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=renyu.zj@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VoqCIxF_1690881552;
+Received: from 30.221.149.238(mailfrom:renyu.zj@linux.alibaba.com fp:SMTPD_---0VoqCIxF_1690881552)
           by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 17:19:08 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd: Clean up errors in vega10_processpptables.c
-Date:   Tue,  1 Aug 2023 09:19:06 +0000
-Message-Id: <20230801091906.7270-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+          Tue, 01 Aug 2023 17:19:14 +0800
+Message-ID: <f863dcf3-d7a5-48f6-a07c-94f6f709c238@linux.alibaba.com>
+Date:   Tue, 1 Aug 2023 17:19:09 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.11.2
+Subject: Re: [PATCH v5 3/5] perf test: Add pmu-event test for "Compat" and new
+ event_field.
+To:     John Garry <john.g.garry@oracle.com>,
+        Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
+        Zhuo Song <zhuo.song@linux.alibaba.com>,
+        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <1690525040-77423-1-git-send-email-renyu.zj@linux.alibaba.com>
+ <1690525040-77423-4-git-send-email-renyu.zj@linux.alibaba.com>
+ <abeaafbe-2290-d272-ddd1-f358f7271edc@oracle.com>
+ <2dc21269-2fa0-ea39-454d-5f12a414bc13@linux.alibaba.com>
+ <bbf54737-ed49-5be8-722d-85906c803410@oracle.com>
+From:   Jing Zhang <renyu.zj@linux.alibaba.com>
+In-Reply-To: <bbf54737-ed49-5be8-722d-85906c803410@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
 
-ERROR: "foo* bar" should be "foo *bar"
-ERROR: space required before the open brace '{'
-ERROR: space required before the open parenthesis '('
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- .../gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+在 2023/7/31 下午9:12, John Garry 写道:
+> On 31/07/2023 13:30, Jing Zhang wrote:
+>>>> +        .pmu = {
+>>>> +            .name = (char *)"uncore_arm_cmn_0",
+>>>> +            .is_uncore = 1,
+>>>> +            .id = (char *)"43602",
+>>>> +        },
+>>>> +        .aliases = {
+>>>> +            &sys_cmn_pmu_hnf_cache_miss,
+>>>> +        },
+>>>> +    },
+>>>> +    {
+>>>> +        .pmu = {
+>>>> +            .name = (char *)"uncore_arm_cmn_1",
+>>> Shouldn't this match some perf_pmu_test_event entry with same matching_pmu member? But is perf_pmu_test_event.matching_pmu member ever used for any checking???
+>>>
+>> I need to double check because I was testing against 6.3-rc2.
+> 
+> That 6.3-rc2, was for the the kernel? Or baseline for this series? See see maintainers for git/branch to base perf tool dev on.
+> 
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-index bb90d8abf79b..3be616af327e 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_processpptables.c
-@@ -372,9 +372,9 @@ static int get_mm_clock_voltage_table(
- 	return 0;
- }
- 
--static void get_scl_sda_value(uint8_t line, uint8_t *scl, uint8_t* sda)
-+static void get_scl_sda_value(uint8_t line, uint8_t *scl, uint8_t *sda)
- {
--	switch(line){
-+	switch (line) {
- 	case Vega10_I2CLineID_DDC1:
- 		*scl = Vega10_I2C_DDC1CLK;
- 		*sda = Vega10_I2C_DDC1DATA;
-@@ -954,7 +954,7 @@ static int init_powerplay_extended_tables(
- 	if (!result && powerplay_table->usPixclkDependencyTableOffset)
- 		result = get_pix_clk_voltage_dependency_table(hwmgr,
- 				&pp_table_info->vdd_dep_on_pixclk,
--				(const ATOM_Vega10_PIXCLK_Dependency_Table*)
-+				(const ATOM_Vega10_PIXCLK_Dependency_Table *)
- 				pixclk_dep_table);
- 
- 	if (!result && powerplay_table->usPhyClkDependencyTableOffset)
--- 
-2.17.1
+I have now developed based on the latest perf tool, but I'm still confused.
+"matching_pmu" does not seem to have any effect. No matter what value matching_pmu
+is, it will not affect the final test result.
 
+Thank,
+Jing
