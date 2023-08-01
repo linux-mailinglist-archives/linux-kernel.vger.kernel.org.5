@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED05276B272
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8BF76B250
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbjHAK7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
+        id S233462AbjHAKud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234579AbjHAK6q (ORCPT
+        with ESMTP id S234139AbjHAKto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:58:46 -0400
+        Tue, 1 Aug 2023 06:49:44 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C698176A5
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:53:46 -0700 (PDT)
-Message-ID: <20230801103817.678149419@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BCD3C20
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:48:02 -0700 (PDT)
+Message-ID: <20230801103817.732266247@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690886858;
+        s=2020; t=1690886859;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=4kZ3PvNOs70jkSxz3FTMqFuUfjlVkf/AyOBE0F2Qscg=;
-        b=UIcfOxU3dh4M05uFkNRWpxWkaNlSgfyny0DDSYufqDoYX646Seaiyqylor6goZDVNwb1jb
-        PYNF9Zbw8fFeuMJa4Go5JWDmrByyUXHMVMx1p2XMB1UvyuR7W5CUPuprJQ28/c4+cuGr98
-        NyBYT8eBxQKdPJCWFC+ESwopt6Jd4qWZD4rEPjCG16cMXkWs+f/nKYw5X5+/ebej2qwCrx
-        8DmSQPimPbZjuHJGoNx3bjRCuXnBSdEEAsrMFkndDxDTE/CcHqqJNq45d++fcpogE4v0LI
-        aButKccbptN8I8rAq3DlZ06L7EWA+9onziYffwMZyumoDh7sbeotIqZg2hmAyA==
+         references:references; bh=QxJCd5EJ/bsG/9bO98P8hnP2UT09lEdt9hSBI73j59Y=;
+        b=xp5095/wWIPT22pF6/LFAAyotE258cjR4zwJfjj/YUVo006GYifD3GnBpYK2zCoNcEioeK
+        yZJn5e1UgrIrmYAz4xZluJAHEuh6PF9+PEUZPZXQBJoCKApm8waL8JhmzzFEKmI5FmRxLo
+        3pNE94sx9L9vfL5h21rWJhrbS2oAOhBprpZsbHSSUdz+qPmk20ibMJ037cFQTOMLNh2mNV
+        JYp1C5E5XCUuDiKB1JMmFQ9pxdhyseH75TzHcciDYP474DanCCeDmva/LhW8JDZSlnihnd
+        bGki4HiVMS3Oyram5TtD7ijnnJG08b+Q58QdC1YlomvtH7fjdPG5x8f19QjKsA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690886858;
+        s=2020e; t=1690886859;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=4kZ3PvNOs70jkSxz3FTMqFuUfjlVkf/AyOBE0F2Qscg=;
-        b=RIdBkhb/np0mHP9Y4ZBm5Mv0UEVUdK7d1xCXMr2x2QcmOh11P+gU2TxRN3p/L3zFfIl9k9
-        MVP2wBVReGA1gSBw==
+         references:references; bh=QxJCd5EJ/bsG/9bO98P8hnP2UT09lEdt9hSBI73j59Y=;
+        b=haGigiuLETeD/qzVpJCPStVNkd4JV8b1h/TNTLf4Ov9dTqFKxI/o7eQZjvBV5/URgSTALs
+        1XF7SaLGCcXRpFAQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
@@ -44,11 +44,11 @@ Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
         Michael Kelley <mikelley@microsoft.com>,
         Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V3 46/60] x86/apic: Remove pointless NULL initializations
+Subject: [patch V3 47/60] x86/apic/noop: Tidy up the code
 References: <20230801103042.936020332@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue,  1 Aug 2023 12:47:38 +0200 (CEST)
+Date:   Tue,  1 Aug 2023 12:47:39 +0200 (CEST)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
@@ -59,99 +59,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wasted space for no value.
+First of all apic_noop can't be probed because it's not registered. So
+there is no point for implementing a probe callback. The machine is
+rightfully to die when that is invoked.
+
+Remove the gunk and tidy up the other space consuming dummy callbacks.
+
+This gunk should simply die. Nothing should ever invoke APIC callbacks once
+this is installed, But that's a differrent story for another round of
+cleanups. The comment on top of this file which was intentionally left in
+place tells exactly why this is needed: voodoo programming.
+
+In fact the kernel of today should just outright refuse to boot on a system
+with no (functional) local APIC. That would spare tons of #ifdeffery and
+other nonsense.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/kernel/apic/apic_flat_64.c  |    2 --
- arch/x86/kernel/apic/apic_noop.c     |    2 --
- arch/x86/kernel/apic/apic_numachip.c |    4 ----
- arch/x86/kernel/apic/probe_32.c      |    1 -
- arch/x86/kernel/apic/x2apic_phys.c   |    2 --
- arch/x86/kernel/apic/x2apic_uv_x.c   |    2 --
- 6 files changed, 13 deletions(-)
+ arch/x86/kernel/apic/apic_noop.c |   38 ++++++++------------------------------
+ 1 file changed, 8 insertions(+), 30 deletions(-)
 
---- a/arch/x86/kernel/apic/apic_flat_64.c
-+++ b/arch/x86/kernel/apic/apic_flat_64.c
-@@ -87,9 +87,7 @@ static struct apic apic_flat __ro_after_
- 
- 	.disable_esr			= 0,
- 
--	.check_apicid_used		= NULL,
- 	.init_apic_ldr			= default_init_apic_ldr,
--	.ioapic_phys_id_map		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= flat_phys_pkg_id,
- 
 --- a/arch/x86/kernel/apic/apic_noop.c
 +++ b/arch/x86/kernel/apic/apic_noop.c
-@@ -65,7 +65,6 @@ static void noop_apic_write(u32 reg, u32
+@@ -8,6 +8,10 @@
+  * Though in case if apic is disabled (for some reason) we try
+  * to not uglify the caller's code and allow to call (some) apic routines
+  * like self-ipi, etc...
++ *
++ * FIXME: Remove this gunk. The above argument which was intentionally left
++ * in place is silly to begin with because none of the callbacks except for
++ * APIC::read/write() have a WARN_ON_ONCE() in them. Sigh...
+  */
+ #include <linux/cpumask.h>
+ #include <linux/thread_info.h>
+@@ -21,35 +25,10 @@ static void noop_send_IPI_allbutself(int
+ static void noop_send_IPI_all(int vector) { }
+ static void noop_send_IPI_self(int vector) { }
+ static void noop_apic_icr_write(u32 low, u32 id) { }
+-
+-static int noop_wakeup_secondary_cpu(int apicid, unsigned long start_eip)
+-{
+-	return -1;
+-}
+-
+-static u64 noop_apic_icr_read(void)
+-{
+-	return 0;
+-}
+-
+-static int noop_phys_pkg_id(int cpuid_apic, int index_msb)
+-{
+-	return 0;
+-}
+-
+-static unsigned int noop_get_apic_id(unsigned long x)
+-{
+-	return 0;
+-}
+-
+-static int noop_probe(void)
+-{
+-	/*
+-	 * NOOP apic should not ever be
+-	 * enabled via probe routine
+-	 */
+-	return 0;
+-}
++static int noop_wakeup_secondary_cpu(int apicid, unsigned long start_eip) { return -1; }
++static u64 noop_apic_icr_read(void) { return 0; }
++static int noop_phys_pkg_id(int cpuid_apic, int index_msb) { return 0; }
++static unsigned int noop_get_apic_id(unsigned long x) { return 0; }
+ 
+ static u32 noop_apic_read(u32 reg)
+ {
+@@ -64,7 +43,6 @@ static void noop_apic_write(u32 reg, u32
+ 
  struct apic apic_noop __ro_after_init = {
  	.name				= "noop",
- 	.probe				= noop_probe,
--	.acpi_madt_oem_check		= NULL,
+-	.probe				= noop_probe,
  
  	.delivery_mode			= APIC_DELIVERY_MODE_FIXED,
  	.dest_mode_logical		= true,
-@@ -80,7 +79,6 @@ struct apic apic_noop __ro_after_init =
- 
- 	.max_apic_id			= 0xFE,
- 	.get_apic_id			= noop_get_apic_id,
--	.set_apic_id			= NULL,
- 
- 	.calc_dest_apicid		= apic_flat_calc_apicid,
- 
---- a/arch/x86/kernel/apic/apic_numachip.c
-+++ b/arch/x86/kernel/apic/apic_numachip.c
-@@ -227,8 +227,6 @@ static const struct apic apic_numachip1
- 
- 	.disable_esr			= 0,
- 
--	.check_apicid_used		= NULL,
--	.ioapic_phys_id_map		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= numachip_phys_pkg_id,
- 
-@@ -266,8 +264,6 @@ static const struct apic apic_numachip2
- 
- 	.disable_esr			= 0,
- 
--	.check_apicid_used		= NULL,
--	.ioapic_phys_id_map		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= numachip_phys_pkg_id,
- 
---- a/arch/x86/kernel/apic/probe_32.c
-+++ b/arch/x86/kernel/apic/probe_32.c
-@@ -48,7 +48,6 @@ static struct apic apic_default __ro_aft
- 
- 	.max_apic_id			= 0xFE,
- 	.get_apic_id			= default_get_apic_id,
--	.set_apic_id			= NULL,
- 
- 	.calc_dest_apicid		= apic_flat_calc_apicid,
- 
---- a/arch/x86/kernel/apic/x2apic_phys.c
-+++ b/arch/x86/kernel/apic/x2apic_phys.c
-@@ -150,8 +150,6 @@ static struct apic apic_x2apic_phys __ro
- 
- 	.disable_esr			= 0,
- 
--	.check_apicid_used		= NULL,
--	.ioapic_phys_id_map		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= x2apic_phys_pkg_id,
- 
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -811,8 +811,6 @@ static struct apic apic_x2apic_uv_x __ro
- 
- 	.disable_esr			= 0,
- 
--	.check_apicid_used		= NULL,
--	.ioapic_phys_id_map		= NULL,
- 	.cpu_present_to_apicid		= default_cpu_present_to_apicid,
- 	.phys_pkg_id			= uv_phys_pkg_id,
- 
 
