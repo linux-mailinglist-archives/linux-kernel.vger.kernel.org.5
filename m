@@ -2,55 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C4076BEF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B35A76BEFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbjHAVJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37554 "EHLO
+        id S231382AbjHAVKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbjHAVJe (ORCPT
+        with ESMTP id S229898AbjHAVKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:09:34 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925DAE67;
-        Tue,  1 Aug 2023 14:09:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 00D5961712;
-        Tue,  1 Aug 2023 21:09:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9651EC433C7;
-        Tue,  1 Aug 2023 21:09:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690924172;
-        bh=OhgIZ4crQy03az0u1Ty2iSVe+3Bf0ozyWo3yXY1BtDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SEyvgMSuBdVcLSSHH2W2r0ZWwNTIoUiA63051je82wuyX7UFGtZACxlCVldAc5sYR
-         aPOqhnCf6F/FR0Lh7dN9YdaLygSBs/d3gnOR6VTnHs6kRDUQoK8ZHpE25YEwFYzMK1
-         WeYLuHclcck65auMKEg8yJ0+oMPrwYrfmLGseensV+VmQabWU6fz6Ac+v+dtVRffsp
-         SYpp8JxLPJHlAw4Mc9uVGnEynaMrd2XJh4yuUNxytkTKK1zsGii/txVTDrUFEzJycA
-         J/EMLPdCikWdUhD/MwmC1SrlO1Xuzd+SNIAWBRhyQPzKVCKeA5N14MCUE2mZUBRFsz
-         koOHhLanhE7MQ==
-Date:   Tue, 1 Aug 2023 22:09:28 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     jic23@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: iio: admv1013: add vcc regulators
-Message-ID: <20230801-rasping-petty-5fca54f6f696@spud>
-References: <20230731094455.26742-1-antoniu.miclaus@analog.com>
+        Tue, 1 Aug 2023 17:10:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9638E6F
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690924200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZIFlH9QePx4UbTnSOmrkqZSXnYFrIKMfODf0mljJEfs=;
+        b=a7FIDl8cPtCZNJBd5X8IFRouuDbGD6qMErEc9UvHj/xPU+55jtj18m3V0fKPSHK3QwIJJ1
+        331Yb7RQFCp/IJ8aQSP1NX6IgHMkF4iK7iVVH5VAWUuejR3TCDFjjR0qe1kCqSKAIrBdQs
+        KNFqVN/kyNauhq+nASsfFHyTlsNKPLU=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-481-iORXCzGYMZmBtiaX1k8s8w-1; Tue, 01 Aug 2023 17:09:59 -0400
+X-MC-Unique: iORXCzGYMZmBtiaX1k8s8w-1
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-348cc2cc7ebso67058825ab.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 14:09:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690924199; x=1691528999;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZIFlH9QePx4UbTnSOmrkqZSXnYFrIKMfODf0mljJEfs=;
+        b=IECff4iuAgRWuocOrAXVsx2T/D2J7IyABEBVH2VKcIkmJSL2PxLkEXTbdj1Dz+N0FF
+         LQ02aehVV7BMSQnHN4T0rhpAWMZRJsEpyqRBnpDMm/Z2TNo0jlxJIfdjHvcosmeP/gSy
+         y4o3R/kEiXNivp/+R5Jk9XkulxCvcMcwxAZ7BsLydV06gy7G7fE5SOoT+TahVWU0BWNW
+         CgZLvWp/hmwo9UNEZhqe9ccOtph1NyzG6FGq18u4cxAnJE0ixRQR7SlAcHmGN2aMUP3U
+         /ZATt9m6QdEexb8budRZs6CUJdNVz3NUkVwNlpOnIvt0kjolzgALybOZeVURXnyZOblz
+         LpGQ==
+X-Gm-Message-State: ABy/qLYEDJ42MTgijPhmzLrkI0gItR86bF2030tpQBgwWjrW14axzAFS
+        OPcjveiiEI0xMOiFJiwSdaLKWmQ3X1T4I8zhPZGxeP7WySXu8SXn194EQj0aITFJiUXZidGYOe4
+        bTQJAm9GJ3XnQvdG04JHNJF7O
+X-Received: by 2002:a05:6e02:1091:b0:348:7d72:86f4 with SMTP id r17-20020a056e02109100b003487d7286f4mr10924083ilj.31.1690924198715;
+        Tue, 01 Aug 2023 14:09:58 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlHstcNfonTt1IqmniHYky/GZrWZO5VbQnmoCHR0MIu/YaXVmaD2g7fY3iKv3e+roDbn+ZZ6Cg==
+X-Received: by 2002:a05:6e02:1091:b0:348:7d72:86f4 with SMTP id r17-20020a056e02109100b003487d7286f4mr10924057ilj.31.1690924198351;
+        Tue, 01 Aug 2023 14:09:58 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id n14-20020a056638120e00b0041d73d0a412sm3989964jas.19.2023.08.01.14.09.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 14:09:57 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 15:09:56 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     <ankita@nvidia.com>
+Cc:     <jgg@nvidia.com>, <aniketa@nvidia.com>, <cjia@nvidia.com>,
+        <kwankhede@nvidia.com>, <targupta@nvidia.com>, <vsethi@nvidia.com>,
+        <acurrid@nvidia.com>, <apopple@nvidia.com>, <jhubbard@nvidia.com>,
+        <danw@nvidia.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <20230801150956.72f7aa59.alex.williamson@redhat.com>
+In-Reply-To: <20230801130714.8221-1-ankita@nvidia.com>
+References: <20230801130714.8221-1-ankita@nvidia.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="MmFimgIzQ0ArwSjO"
-Content-Disposition: inline
-In-Reply-To: <20230731094455.26742-1-antoniu.miclaus@analog.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,130 +84,557 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 1 Aug 2023 06:07:14 -0700
+<ankita@nvidia.com> wrote:
 
---MmFimgIzQ0ArwSjO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jul 31, 2023 at 12:44:54PM +0300, Antoniu Miclaus wrote:
-> Add bindings for the VCC regulators of the ADMV1013 microware
-> upconverter.
->=20
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-
-Assuming the driver or regulator core handles the missing regulators on
-older devicetrees (which I think it does with dummy regulators?)
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
+> From: Ankit Agrawal <ankita@nvidia.com>
+> 
+> NVIDIA's upcoming Grace Hopper Superchip provides a PCI-like device
+> for the on-chip GPU that is the logical OS representation of the
+> internal proprietary cache coherent interconnect.
+> 
+> This representation has a number of limitations compared to a real PCI
+> device, in particular, it does not model the coherent GPU memory
+> aperture as a PCI config space BAR, and PCI doesn't know anything
+> about cacheable memory types.
+> 
+> Provide a VFIO PCI variant driver that adapts the unique PCI
+> representation into a more standard PCI representation facing
+> userspace. The GPU memory aperture is obtained from ACPI using
+> device_property_read_u64(), according to the FW specification,
+> and exported to userspace as a separate VFIO_REGION. Since the device
+> implements only one 64-bit BAR (BAR0), the GPU memory aperture is mapped
+> to the next available PCI BAR (BAR2). Qemu will then naturally generate a
+> PCI device in the VM with two 64-bit BARs (where the cacheable aperture
+> reported in BAR2).
+> 
+> Since this memory region is actually cache coherent with the CPU, the
+> VFIO variant driver will mmap it into VMA using a cacheable mapping. The
+> mapping is done using remap_pfn_range().
+> 
+> PCI BAR are aligned to the power-of-2, but the actual memory on the
+> device may not. A read or write access to the physical address from the
+> last device PFN up to the next power-of-2 aligned physical address
+> results in reading -1 and ignored writes.
+> 
+> This goes along with a qemu series to provides the necessary
+> implementation of the Grace Hopper Superchip firmware specification so
+> that the guest operating system can see the correct ACPI modeling for
+> the coherent GPU device.
+> https://www.mail-archive.com/qemu-devel@nongnu.org/msg967557.html
+> 
+> This patch is split from a patch series being pursued separately:
+> https://lore.kernel.org/lkml/20230405180134.16932-1-ankita@nvidia.com/
+> 
+> Applied over next-20230731.
+> 
+> Signed-off-by: Ankit Agrawal <ankita@nvidia.com>
 > ---
-> changes in v3:
->  - add missing spaces in the commit subject.
->  .../bindings/iio/frequency/adi,admv1013.yaml  | 60 +++++++++++++++++++
->  1 file changed, 60 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013=
-=2Eyaml b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> index fc813bcb6532..f2eb2287ed9e 100644
-> --- a/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> +++ b/Documentation/devicetree/bindings/iio/frequency/adi,admv1013.yaml
-> @@ -39,6 +39,46 @@ properties:
->      description:
->        Analog voltage regulator.
-> =20
-> +  vcc-drv-supply:
-> +    description:
-> +      RF Driver voltage regulator.
+> 
+> Link for v5: https://lore.kernel.org/lkml/20230716174333.8221-1-ankita@nvidia.com/t/
+> 
+> v5 -> v6
+> - Added the code to handle BAR2 read/write using memremap to the device
+>   memory.
+> 
+> v4 -> v5
+> - Changed the module name from nvgpu-vfio-pci to nvgrace-gpu-vfio-pci.
+> - Fixed memory leak and added suggested boundary checks on device memory
+>   mapping.
+> - Added code to read all Fs and ignored write on region outside of the
+>   physical memory.
+> - Other miscellaneous cleanup suggestions.
+> 
+> v3 -> v4
+> - Mapping the available device memory using sparse mmap. The region outside
+>   the device memory is handled by read/write ops.
+> - Removed the fault handler added in v3.
+> 
+> v2 -> v3
+> - Added fault handler to map the region outside the physical GPU memory
+>   up to the next power-of-2 to a dummy PFN.
+> - Changed to select instead of "depends on" VFIO_PCI_CORE for all the
+>   vfio-pci variant driver.
+> - Code cleanup based on feedback comments.
+> - Code implemented and tested against v6.4-rc4.
+> 
+> v1 -> v2
+> - Updated the wording of reference to BAR offset and replaced with
+>   index.
+> - The GPU memory is exposed at the fixed BAR2_REGION_INDEX.
+> - Code cleanup based on feedback comments.
+> 
+>  MAINTAINERS                           |   6 +
+>  drivers/vfio/pci/Kconfig              |   2 +
+>  drivers/vfio/pci/Makefile             |   2 +
+>  drivers/vfio/pci/nvgrace-gpu/Kconfig  |  10 +
+>  drivers/vfio/pci/nvgrace-gpu/Makefile |   3 +
+>  drivers/vfio/pci/nvgrace-gpu/main.c   | 362 ++++++++++++++++++++++++++
+>  6 files changed, 385 insertions(+)
+>  create mode 100644 drivers/vfio/pci/nvgrace-gpu/Kconfig
+>  create mode 100644 drivers/vfio/pci/nvgrace-gpu/Makefile
+>  create mode 100644 drivers/vfio/pci/nvgrace-gpu/main.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d7b867c57920..6b611bffc921 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -22482,6 +22482,12 @@ L:	kvm@vger.kernel.org
+>  S:	Maintained
+>  F:	drivers/vfio/platform/
+>  
+> +VFIO NVIDIA GRACE GPU DRIVER
+> +M:	Ankit Agrawal <ankita@nvidia.com>
+> +L:	kvm@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/vfio/pci/nvgrace-gpu/
 > +
-> +  vcc2-drv-supply:
-> +    description:
-> +      RF predriver voltage regulator.
+>  VGA_SWITCHEROO
+>  R:	Lukas Wunner <lukas@wunner.de>
+>  S:	Maintained
+> diff --git a/drivers/vfio/pci/Kconfig b/drivers/vfio/pci/Kconfig
+> index 86bb7835cf3c..0dbdacb929ad 100644
+> --- a/drivers/vfio/pci/Kconfig
+> +++ b/drivers/vfio/pci/Kconfig
+> @@ -63,4 +63,6 @@ source "drivers/vfio/pci/mlx5/Kconfig"
+>  
+>  source "drivers/vfio/pci/hisilicon/Kconfig"
+>  
+> +source "drivers/vfio/pci/nvgrace-gpu/Kconfig"
 > +
-> +  vcc-vva-supply:
-> +    description:
-> +      VVA Control Circuit voltage regulator.
+>  endmenu
+> diff --git a/drivers/vfio/pci/Makefile b/drivers/vfio/pci/Makefile
+> index 24c524224da5..733f684f320a 100644
+> --- a/drivers/vfio/pci/Makefile
+> +++ b/drivers/vfio/pci/Makefile
+> @@ -11,3 +11,5 @@ obj-$(CONFIG_VFIO_PCI) += vfio-pci.o
+>  obj-$(CONFIG_MLX5_VFIO_PCI)           += mlx5/
+>  
+>  obj-$(CONFIG_HISI_ACC_VFIO_PCI) += hisilicon/
 > +
-> +  vcc-amp1-supply:
-> +    description:
-> +      RF Amplifier 1 voltage regulator.
+> +obj-$(CONFIG_NVGRACE_GPU_VFIO_PCI) += nvgrace-gpu/
+> diff --git a/drivers/vfio/pci/nvgrace-gpu/Kconfig b/drivers/vfio/pci/nvgrace-gpu/Kconfig
+> new file mode 100644
+> index 000000000000..b46f2d97a1d6
+> --- /dev/null
+> +++ b/drivers/vfio/pci/nvgrace-gpu/Kconfig
+> @@ -0,0 +1,10 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +config NVGRACE_GPU_VFIO_PCI
+> +	tristate "VFIO support for the GPU in the NVIDIA Grace Hopper Superchip"
+> +	depends on ARM64 || (COMPILE_TEST && 64BIT)
+> +	select VFIO_PCI_CORE
+> +	help
+> +	  VFIO support for the GPU in the NVIDIA Grace Hopper Superchip is
+> +	  required to assign the GPU device to a VM using KVM/qemu/etc.
 > +
-> +  vcc-amp2-supply:
-> +    description:
-> +      RF Amplifier 2 voltage regulator.
+> +	  If you don't know what to do here, say N.
+> diff --git a/drivers/vfio/pci/nvgrace-gpu/Makefile b/drivers/vfio/pci/nvgrace-gpu/Makefile
+> new file mode 100644
+> index 000000000000..3ca8c187897a
+> --- /dev/null
+> +++ b/drivers/vfio/pci/nvgrace-gpu/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +obj-$(CONFIG_NVGRACE_GPU_VFIO_PCI) += nvgrace-gpu-vfio-pci.o
+> +nvgrace-gpu-vfio-pci-y := main.o
+> diff --git a/drivers/vfio/pci/nvgrace-gpu/main.c b/drivers/vfio/pci/nvgrace-gpu/main.c
+> new file mode 100644
+> index 000000000000..9cb616a7611c
+> --- /dev/null
+> +++ b/drivers/vfio/pci/nvgrace-gpu/main.c
+> @@ -0,0 +1,362 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved
+> + */
 > +
-> +  vcc-env-supply:
-> +    description:
-> +      Envelope Detector voltage regulator.
+> +#include <linux/pci.h>
+> +#include <linux/vfio_pci_core.h>
+> +#include <linux/vfio.h>
 > +
-> +  vcc-bg-supply:
-> +    description:
-> +      Mixer Chip Band Gap Circuit voltage regulator.
+> +struct nvgrace_gpu_vfio_pci_core_device {
+> +	struct vfio_pci_core_device core_device;
+> +	u64 hpa;
+> +	u64 mem_length;
+> +};
 > +
-> +  vcc-bg2-supply:
-> +    description:
-> +      VGA Chip Band Gap Circuit voltage regulator.
+> +static int nvgrace_gpu_vfio_pci_open_device(struct vfio_device *core_vdev)
+> +{
+> +	struct vfio_pci_core_device *vdev =
+> +		container_of(core_vdev, struct vfio_pci_core_device, vdev);
+> +	int ret;
 > +
-> +  vcc-mixer-supply:
-> +    description:
-> +      Mixer voltage regulator.
+> +	ret = vfio_pci_core_enable(vdev);
+> +	if (ret)
+> +		return ret;
 > +
-> +  vcc-quad-supply:
-> +    description:
-> +      Quadruppler voltage regulator.
+> +	vfio_pci_core_finish_enable(vdev);
 > +
->    adi,detector-enable:
->      description:
->        Enable the Envelope Detector available at output pins VENV_P and
-> @@ -69,6 +109,16 @@ required:
->    - clocks
->    - clock-names
->    - vcm-supply
-> +  - vcc-drv-supply
-> +  - vcc2-drv-supply
-> +  - vcc-vva-supply
-> +  - vcc-amp1-supply
-> +  - vcc-amp2-supply
-> +  - vcc-env-supply
-> +  - vcc-bg-supply
-> +  - vcc-bg2-supply
-> +  - vcc-mixer-supply
-> +  - vcc-quad-supply
-> =20
->  allOf:
->    - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> @@ -87,6 +137,16 @@ examples:
->          clocks =3D <&admv1013_lo>;
->          clock-names =3D "lo_in";
->          vcm-supply =3D <&vcm>;
-> +        vcc-drv-supply =3D <&vcc_drv>;
-> +        vcc2-drv-supply =3D <&vcc2_drv>;
-> +        vcc-vva-supply =3D <&vcc_vva>;
-> +        vcc-amp1-supply =3D <&vcc_amp1>;
-> +        vcc-amp2-supply =3D <&vcc_amp2>;
-> +        vcc-env-supply =3D <&vcc_env>;
-> +        vcc-bg-supply =3D <&vcc_bg>;
-> +        vcc-bg2-supply =3D <&vcc_bg2>;
-> +        vcc-mixer-supply =3D <&vcc_mixer>;
-> +        vcc-quad-supply =3D <&vcc_quad>;
->          adi,quad-se-mode =3D "diff";
->          adi,detector-enable;
->        };
-> --=20
-> 2.41.0
->=20
+> +	return 0;
+> +}
+> +
+> +static int nvgrace_gpu_vfio_pci_mmap(struct vfio_device *core_vdev,
+> +			struct vm_area_struct *vma)
+> +{
+> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
+> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
+> +
+> +	unsigned long start_pfn;
+> +	unsigned int index;
+> +	u64 req_len, pgoff;
+> +	int ret;
+> +
+> +	index = vma->vm_pgoff >> (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT);
+> +	if (index != VFIO_PCI_BAR2_REGION_INDEX)
+> +		return vfio_pci_core_mmap(core_vdev, vma);
+> +
+> +	/*
+> +	 * Request to mmap the BAR. Map to the CPU accessible memory on the
+> +	 * GPU using the memory information gathered from the system ACPI
+> +	 * tables.
+> +	 */
+> +	start_pfn = PHYS_PFN(nvdev->hpa);
+> +	req_len = vma->vm_end - vma->vm_start;
+> +	pgoff = vma->vm_pgoff &
+> +		((1U << (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT)) - 1);
+> +	if (PFN_PHYS(pgoff) + req_len > nvdev->mem_length)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * Perform a PFN map to the memory. The device BAR is backed by the
+> +	 * GPU memory now. Check that the mapping does not overflow out of
+> +	 * the GPU memory size.
+> +	 *
+> +	 * The available GPU memory size may not be power-of-2 aligned. Given
+> +	 * that the memory is exposed as a BAR, the mapping request is of the
+> +	 * power-of-2 aligned size. Map only up to the size of the GPU memory.
+> +	 * If the memory access is beyond the actual GPU memory size, it will
+> +	 * be handled by the vfio_device_ops read/write.
+> +	 *
+> +	 * During device reset, the GPU is safely disconnected to the CPU
+> +	 * and access to the BAR will be immediately returned preventing
+> +	 * machine check.
+> +	 */
+> +	ret = remap_pfn_range(vma, vma->vm_start, start_pfn + pgoff,
+> +			      req_len, vma->vm_page_prot);
+> +	if (ret)
+> +		return ret;
+> +
+> +	vma->vm_pgoff = start_pfn + pgoff;
+> +
+> +	return 0;
+> +}
+> +
+> +static long nvgrace_gpu_vfio_pci_ioctl(struct vfio_device *core_vdev,
+> +			unsigned int cmd, unsigned long arg)
+> +{
+> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
+> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
+> +
+> +	unsigned long minsz = offsetofend(struct vfio_region_info, offset);
+> +	struct vfio_region_info info;
+> +
+> +	if (cmd == VFIO_DEVICE_GET_REGION_INFO) {
+> +		if (copy_from_user(&info, (void __user *)arg, minsz))
+> +			return -EFAULT;
+> +
+> +		if (info.argsz < minsz)
+> +			return -EINVAL;
+> +
+> +		if (info.index == VFIO_PCI_BAR2_REGION_INDEX) {
+> +			/*
+> +			 * Request to determine the BAR region information. Send the
+> +			 * GPU memory information.
+> +			 */
+> +			uint32_t size;
+> +			struct vfio_region_info_cap_sparse_mmap *sparse;
+> +			struct vfio_info_cap caps = { .buf = NULL, .size = 0 };
+> +
+> +			size = struct_size(sparse, areas, 1);
+> +
+> +			/*
+> +			 * Setup for sparse mapping for the device memory. Only the
+> +			 * available device memory on the hardware is shown as a
+> +			 * mappable region.
+> +			 */
+> +			sparse = kzalloc(size, GFP_KERNEL);
+> +			if (!sparse)
+> +				return -ENOMEM;
+> +
+> +			sparse->nr_areas = 1;
+> +			sparse->areas[0].offset = 0;
+> +			sparse->areas[0].size = nvdev->mem_length;
+> +			sparse->header.id = VFIO_REGION_INFO_CAP_SPARSE_MMAP;
+> +			sparse->header.version = 1;
+> +
+> +			if (vfio_info_add_capability(&caps, &sparse->header, size)) {
+> +				kfree(sparse);
+> +				return -EINVAL;
+> +			}
+> +
+> +			info.offset = VFIO_PCI_INDEX_TO_OFFSET(info.index);
+> +			/*
+> +			 * The available GPU memory size may not be power-of-2 aligned.
+> +			 * Given that the memory is exposed as a BAR and may not be
+> +			 * aligned, roundup to the next power-of-2.
+> +			 */
+> +			info.size = roundup_pow_of_two(nvdev->mem_length);
+> +			info.flags = VFIO_REGION_INFO_FLAG_READ |
+> +				VFIO_REGION_INFO_FLAG_WRITE |
+> +				VFIO_REGION_INFO_FLAG_MMAP;
+> +
+> +			if (caps.size) {
+> +				info.flags |= VFIO_REGION_INFO_FLAG_CAPS;
+> +				if (info.argsz < sizeof(info) + caps.size) {
+> +					info.argsz = sizeof(info) + caps.size;
+> +					info.cap_offset = 0;
+> +				} else {
+> +					vfio_info_cap_shift(&caps, sizeof(info));
+> +					if (copy_to_user((void __user *)arg +
+> +									sizeof(info), caps.buf,
+> +									caps.size)) {
+> +						kfree(caps.buf);
+> +						kfree(sparse);
+> +						return -EFAULT;
+> +					}
+> +					info.cap_offset = sizeof(info);
+> +				}
+> +				kfree(caps.buf);
+> +			}
+> +
+> +			kfree(sparse);
+> +			return copy_to_user((void __user *)arg, &info, minsz) ?
+> +				       -EFAULT : 0;
+> +		}
+> +	}
+> +
+> +	return vfio_pci_core_ioctl(core_vdev, cmd, arg);
+> +}
+> +
+> +static ssize_t nvgrace_gpu_vfio_pci_read(struct vfio_device *core_vdev,
+> +		char __user *buf, size_t count, loff_t *ppos)
+> +{
+> +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
+> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
+> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
+> +	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
+> +	u8 val = 0xFF;
+> +	size_t i;
+> +
+> +	if (index == VFIO_PCI_BAR2_REGION_INDEX) {
+> +		void *addr;
+> +
+> +		/*
+> +		 * Only the device memory present on the hardware is mapped, which may
+> +		 * not be power-of-2 aligned. A read to the BAR2 region implies an
+> +		 * access outside the available device memory on the hardware.
+> +		 * Return -1 for such read requests.
+> +		 */
+> +		if (offset >= nvdev->mem_length) {
+> +			for (i = 0; i < count; i++)
+> +				if (copy_to_user(buf + i, &val, 1))
+> +					return -EFAULT;
+> +
+> +			return count;
+> +		}
 
---MmFimgIzQ0ArwSjO
-Content-Type: application/pgp-signature; name="signature.asc"
+count should be adjusted for the end of the region and offset
+validated.  As implemented, this essentially allows the user to
+successfully read past the end of the region even if they're just
+getting back -1.  A read with offset beyond the reported region size
+should return -EINVAL.
 
------BEGIN PGP SIGNATURE-----
+> +
+> +		/*
+> +		 * Handle read on the BAR2 region. Map to the target device memory
+> +		 * physical address and copy to the request read buffer.
+> +		 */
+> +		addr = memremap(nvdev->hpa + offset, count, MEMREMAP_WB);
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMl0iAAKCRB4tDGHoIJi
-0odZAQDREyu9fGnsq2mMVtQTCuQnqo6DZ6TmTOyC4Loush7LkgD+KzrvcmMN0/h9
-XV4lJeNAkVhWHUbVgQ4TNADZLtUCCAk=
-=rpba
------END PGP SIGNATURE-----
+Yikes, we just let the user specify an arbitrary length of physical
+address space to read beyond the implemented coherent memory range.
 
---MmFimgIzQ0ArwSjO--
+> +		if (!addr)
+> +			return -ENOMEM;
+> +
+> +		if (copy_to_user(buf, addr, count))
+> +			return -EFAULT;
+> +
+> +		memunmap(addr);
+
+If a user is using read(2), they'll probably do it again.  Shouldn't we
+memremap() the whole range and cache it on the nvdev object until the
+device is closed?
+
+We also need to assume that it's possible for the user to cross the
+mem_length boundary in a read(2), so we should probably first satisfy
+the implemented memory range, then fill the remainder as -1, adjusting
+count to not exceed the reported region size.
+
+> +
+> +		return count;
+> +	}
+> +
+> +	return vfio_pci_core_read(core_vdev, buf, count, ppos);
+> +}
+> +
+> +static ssize_t nvgrace_gpu_vfio_pci_write(struct vfio_device *core_vdev,
+> +		const char __user *buf, size_t count, loff_t *ppos)
+> +{
+> +	unsigned int index = VFIO_PCI_OFFSET_TO_INDEX(*ppos);
+> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = container_of(
+> +		core_vdev, struct nvgrace_gpu_vfio_pci_core_device, core_device.vdev);
+> +	u64 offset = *ppos & VFIO_PCI_OFFSET_MASK;
+> +
+> +	if (index == VFIO_PCI_BAR2_REGION_INDEX) {
+> +		void *addr;
+> +
+> +		/*
+> +		 * Only the device memory present on the hardware is mapped, which may
+> +		 * not be power-of-2 aligned. A write to the BAR2 region implies an
+> +		 * access outside the available device memory on the hardware. Drop
+> +		 * those write requests.
+> +		 */
+> +		if (offset >= nvdev->mem_length)
+> +			return count;
+
+But offset beyond reported region size should return -EINVAL.
+
+> +
+> +		/*
+> +		 * Handle write to the BAR2 region. Map to the target device memory
+> +		 * physical address and copy the buffer data to the device memory.
+> +		 */
+> +		addr = memremap(nvdev->hpa + offset, count, MEMREMAP_WB);
+> +		if (!addr)
+> +			return -ENOMEM;
+> +
+> +		if (copy_from_user(addr, buf, count))
+> +			return -EFAULT;
+> +
+> +		memunmap(addr);
+
+Similar to above, offset+count cannot exceed the implemented coherent
+memory size.  The above allows the user to write an arbitrary length
+beyond the end.  Thanks,
+
+Alex
+
+> +
+> +		return count;
+> +	}
+> +
+> +	return vfio_pci_core_write(core_vdev, buf, count, ppos);
+> +}
+> +
+> +static const struct vfio_device_ops nvgrace_gpu_vfio_pci_ops = {
+> +	.name = "nvgrace-gpu-vfio-pci",
+> +	.init = vfio_pci_core_init_dev,
+> +	.release = vfio_pci_core_release_dev,
+> +	.open_device = nvgrace_gpu_vfio_pci_open_device,
+> +	.close_device = vfio_pci_core_close_device,
+> +	.ioctl = nvgrace_gpu_vfio_pci_ioctl,
+> +	.read = nvgrace_gpu_vfio_pci_read,
+> +	.write = nvgrace_gpu_vfio_pci_write,
+> +	.mmap = nvgrace_gpu_vfio_pci_mmap,
+> +	.request = vfio_pci_core_request,
+> +	.match = vfio_pci_core_match,
+> +	.bind_iommufd = vfio_iommufd_physical_bind,
+> +	.unbind_iommufd = vfio_iommufd_physical_unbind,
+> +	.attach_ioas = vfio_iommufd_physical_attach_ioas,
+> +};
+> +
+> +static struct
+> +nvgrace_gpu_vfio_pci_core_device *nvgrace_gpu_drvdata(struct pci_dev *pdev)
+> +{
+> +	struct vfio_pci_core_device *core_device = dev_get_drvdata(&pdev->dev);
+> +
+> +	return container_of(core_device, struct nvgrace_gpu_vfio_pci_core_device,
+> +			    core_device);
+> +}
+> +
+> +static int
+> +nvgrace_gpu_vfio_pci_fetch_memory_property(struct pci_dev *pdev,
+> +				     struct nvgrace_gpu_vfio_pci_core_device *nvdev)
+> +{
+> +	int ret;
+> +
+> +	/*
+> +	 * The memory information is present in the system ACPI tables as DSD
+> +	 * properties nvidia,gpu-mem-base-pa and nvidia,gpu-mem-size.
+> +	 */
+> +	ret = device_property_read_u64(&pdev->dev, "nvidia,gpu-mem-base-pa",
+> +				       &(nvdev->hpa));
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = device_property_read_u64(&pdev->dev, "nvidia,gpu-mem-size",
+> +				       &(nvdev->mem_length));
+> +	return ret;
+> +}
+> +
+> +static int nvgrace_gpu_vfio_pci_probe(struct pci_dev *pdev,
+> +				const struct pci_device_id *id)
+> +{
+> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev;
+> +	int ret;
+> +
+> +	nvdev = vfio_alloc_device(nvgrace_gpu_vfio_pci_core_device, core_device.vdev,
+> +				  &pdev->dev, &nvgrace_gpu_vfio_pci_ops);
+> +	if (IS_ERR(nvdev))
+> +		return PTR_ERR(nvdev);
+> +
+> +	dev_set_drvdata(&pdev->dev, nvdev);
+> +
+> +	ret = nvgrace_gpu_vfio_pci_fetch_memory_property(pdev, nvdev);
+> +	if (ret)
+> +		goto out_put_vdev;
+> +
+> +	ret = vfio_pci_core_register_device(&nvdev->core_device);
+> +	if (ret)
+> +		goto out_put_vdev;
+> +
+> +	return ret;
+> +
+> +out_put_vdev:
+> +	vfio_put_device(&nvdev->core_device.vdev);
+> +	return ret;
+> +}
+> +
+> +static void nvgrace_gpu_vfio_pci_remove(struct pci_dev *pdev)
+> +{
+> +	struct nvgrace_gpu_vfio_pci_core_device *nvdev = nvgrace_gpu_drvdata(pdev);
+> +	struct vfio_pci_core_device *vdev = &nvdev->core_device;
+> +
+> +	vfio_pci_core_unregister_device(vdev);
+> +	vfio_put_device(&vdev->vdev);
+> +}
+> +
+> +static const struct pci_device_id nvgrace_gpu_vfio_pci_table[] = {
+> +	/* GH200 120GB */
+> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_NVIDIA, 0x2342) },
+> +	/* GH200 480GB */
+> +	{ PCI_DRIVER_OVERRIDE_DEVICE_VFIO(PCI_VENDOR_ID_NVIDIA, 0x2345) },
+> +	{}
+> +};
+> +
+> +MODULE_DEVICE_TABLE(pci, nvgrace_gpu_vfio_pci_table);
+> +
+> +static struct pci_driver nvgrace_gpu_vfio_pci_driver = {
+> +	.name = KBUILD_MODNAME,
+> +	.id_table = nvgrace_gpu_vfio_pci_table,
+> +	.probe = nvgrace_gpu_vfio_pci_probe,
+> +	.remove = nvgrace_gpu_vfio_pci_remove,
+> +	.err_handler = &vfio_pci_core_err_handlers,
+> +	.driver_managed_dma = true,
+> +};
+> +
+> +module_pci_driver(nvgrace_gpu_vfio_pci_driver);
+> +
+> +MODULE_LICENSE("GPL v2");
+> +MODULE_AUTHOR("Ankit Agrawal <ankita@nvidia.com>");
+> +MODULE_AUTHOR("Aniket Agashe <aniketa@nvidia.com>");
+> +MODULE_DESCRIPTION(
+> +	"VFIO NVGRACE GPU PF - User Level driver for NVIDIA devices with CPU coherently accessible device memory");
+
