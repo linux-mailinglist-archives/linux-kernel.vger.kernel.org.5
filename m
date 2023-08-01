@@ -2,118 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6261376B278
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F6276B297
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbjHALAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40240 "EHLO
+        id S234279AbjHALDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234266AbjHAK7w (ORCPT
+        with ESMTP id S234156AbjHALDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:59:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED41212A;
-        Tue,  1 Aug 2023 03:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=YE2qKJj0nGqnS749mvZ5YUYTvinBv+jyNwtgFmZ3+Q8=; b=B4FnZuoFBN+F7R8DhAptG4cq8z
-        pPAaq6jCEOFFR82ZVOVboWY8+HWwV3rlE2vVb4LcpJDDaCI4WVTuxm8u6FVkIebNJt/3gcIQm6EhL
-        uXQ9+1AOGEwGNY69X2a3xZYhi/Agcfkhl1LN/EwnbZXdP/CmzjrmglNYVirBrsSPtCbRQsVzvlhp5
-        SDHPPm61BKP47UPCPAMttegoehcM9Ft77iB3YVbCYJpLGtKta4ZnlPIAqWwoHHV5XeZ7nOyk/P+mp
-        XoyolXg40nLd0D8FykoUZP4HDTHUG8dWEBpVmrSeli8/hyAPgtOsPcp1Ip1gsGBrgvP3hSx85WCwW
-        0Lt8kRjw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qQmzW-008Bn5-MT; Tue, 01 Aug 2023 10:52:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 35E773002D3;
-        Tue,  1 Aug 2023 12:52:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D59162119E820; Tue,  1 Aug 2023 12:52:36 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 12:52:36 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Xin Li <xin3.li@intel.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Jim Mattson <jmattson@google.com>,
-        Sandipan Das <sandipan.das@amd.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
-        Breno Leitao <leitao@debian.org>,
-        Nikunj A Dadhania <nikunj@amd.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Ze Gao <zegao2021@gmail.com>, Fei Li <fei1.li@intel.com>,
-        Conghui <conghui.chen@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        "Jason A . Donenfeld" <Jason@zx2c4.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Jane Malalane <jane.malalane@citrix.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Yantengsi <siyanteng@loongson.cn>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Sathvika Vasireddy <sv@linux.ibm.com>
-Subject: Re: [PATCH RESEND v9 00/36] x86: enable FRED for x86-64
-Message-ID: <20230801105236.GB79828@hirez.programming.kicks-ass.net>
-References: <20230801083318.8363-1-xin3.li@intel.com>
+        Tue, 1 Aug 2023 07:03:22 -0400
+Received: from sxb1plsmtpa01-12.prod.sxb1.secureserver.net (sxb1plsmtpa01-12.prod.sxb1.secureserver.net [188.121.53.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83272D79
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:57:28 -0700 (PDT)
+Received: from localhost ([82.27.99.45])
+        by :SMTPAUTH: with ESMTPA
+        id Qmztq8xXiaXv9Qmzwq8J3c; Tue, 01 Aug 2023 03:53:05 -0700
+X-CMAE-Analysis: v=2.4 cv=MIem2uVl c=1 sm=1 tr=0 ts=64c8e412
+ a=YwMIiW7BGddQzL8MrqPWMg==:117 a=YwMIiW7BGddQzL8MrqPWMg==:17
+ a=L74XCNnjbeE16fMD_K4A:9
+X-SECURESERVER-ACCT: atomlin@atomlin.com
+From:   Aaron Tomlin <atomlin@atomlin.com>
+To:     tj@kernel.org
+Cc:     peterz@infradead.org, atomlin@atomlin.com, jiangshanlai@gmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
+Date:   Tue,  1 Aug 2023 11:53:01 +0100
+Message-Id: <20230801105301.952042-1-atomlin@atomlin.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <ZMhFUbL42Ycyc2tI@slm.duckdns.org>
+References: <ZMhFUbL42Ycyc2tI@slm.duckdns.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801083318.8363-1-xin3.li@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfEku1gGyOEJmDPlWWnptZeA1+/Jkee3s0tf4F2N0oGVrD8jx4uc+px/jYwDdTDp+bIfn8Bx3Y31yru2Dqdp6uyZjRamynCJBvwHmBFwyEYGXzX91U2Mm
+ VhbvPYP8vb3wzdkrTV6K5ghZ/TqTPOdfmcUmm6iubIS++tiigGRPKhP2Kkg1oNEBUkSHrVJ2FXzDJ5elJwxLd8HaHEzcpKCzzOdRtjAKg3jnACQ8uSP+3LHW
+ 39bKRF/F0wkxLl2dUmHYf2wzaMJ20da3ISC1r8doA6aqFjXsx5/11qPrOVPMTVptSVtPXXC0G3rxGRTU6fW33g==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -121,23 +46,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 01:32:42AM -0700, Xin Li wrote:
-> Resend because the mail system failed to deliver some messages yesterday.
+> You really shouldn't be setting affinities on kworkers manually. There's
+> no way of knowing which kworker is going to execute which workqueue.
+> Please use the attributes API and sysfs interface to modify per-workqueue
+> worker attributes. If that's not sufficient and you need finer grained
+> control, the right thing to do is using kthread_worker which gives you a
+> dedicated kthread that you can manipulate as appropriate.
 
-Well, you need to figure out how to send patches, because both yesterday
-and today are screwy.
+Hi Tejun,
 
-The one from yesterday came in 6 thread groups: 0-25, 26, 27, 28, 29, 30-36,
-while the one from today comes in 2 thread groups: 0-26, 27-36. Which I
-suppose one can count as an improvement :/
+I completely agree. Each kworker has PF_NO_SETAFFINITY applied anyway.
+If I understand correctly, only an unbound kworker can have their CPU
+affinity modified via sysfs. The objective of this series was to easily
+identify a rescuer kworker from user-mode.
 
-Seriously, it should not be hard to send 36 patches in a single thread.
 
-I see you're trying to send through the regular corporate email
-trainwreck; do you have a linux.intel.com account? Or really anything
-else besides intel.com? You can try sending the series to yourself to
-see if it arrives correctly as a whole before sending it out to the list
-again.
-
-I also believe there is a kernel.org service for sending patch series,
-but i'm not sure I remember the details.
+Kind regards,
+-- 
+Aaron Tomlin
