@@ -2,79 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C4A76AB57
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CEC76AB5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbjHAIwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52644 "EHLO
+        id S231754AbjHAIxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbjHAIwd (ORCPT
+        with ESMTP id S231133AbjHAIxo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:52:33 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 933C0170A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:52:31 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bb9e6c2a90so42812435ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 01:52:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690879951; x=1691484751;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sQb6hWeSHt5AzlUqNhh20pk6zYPdhyIHacjYa5WcAVw=;
-        b=fShC8m0sAxSzyfBCOQCftRJtjAugW5Q74CK11/6Z/7aJGRUOP1SjNs5C6yvXEnrd3F
-         mC4jmWHzDL3Ii05rpo+SZAYNLkZNazAf9vHoPd59ZBsz3xxQZG+kJD2/Tufvdv0Rj3H+
-         l4eCSo4x839DYlntSH5tJza/polLoi3/uKRyBTq16Xo2iadb5gSl+UVAaolJoyxHO+8n
-         5Al57INR4QTnBf/tVo0V8g1Ni8EImtliXIE5IFU/geNc4XqrStasiHUv/6zTHMn1+J0H
-         I2trapnK3BJ+/YZwAwcEznbSZqxOgQ1bdvOucnv8AroAR7bdUDxR1CieJe0S2a0L0AaT
-         EBCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690879951; x=1691484751;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sQb6hWeSHt5AzlUqNhh20pk6zYPdhyIHacjYa5WcAVw=;
-        b=hxd3N2oEaslrcg8xO24XGoJJpa+9IO1mhC9DzrkYseQrmX0FxgJCHU9Fxz6bJFHFMh
-         RrHYmKN+pkcIJJ34pR7jNT52TtLqVgPPZ6tFhxIAtcrK+BMcCLS6EVZxoyatFQpJEa7l
-         pOwiB0fLSTvPrxdCk5BbdGeAJClAyrkXBSzWVnP5oMrwEsQYxRnVqoGMEyNG4X/rbjd6
-         0G+omexrNErJKYCxr6q5z2KzbofBP1WRl1k9Y2AlPlS8y4cVMXHAF/BBpN2COLU06+uh
-         xDVuqNyfYLXZnqisBiZ9lD+sQn/tV5IdWhwEDzNyc/3blbSed0+6A584LNEIDVOPrz3x
-         k6/A==
-X-Gm-Message-State: ABy/qLaqioNrHlysqAYF1Rmu4AfM30RvxL0JWnpXyBaX0KXn9kmUZQAl
-        Ocv/LE5CsLCjrFS5QNacGrrktg==
-X-Google-Smtp-Source: APBJJlH7sFdfOCMX1cyHt9oMrKnAymfqE4PzBGrcLvsl3aP7Bhi9gwsVgnVM9S3nmr9v7kjQ0eNA/g==
-X-Received: by 2002:a17:902:7486:b0:1bc:5d0:e8db with SMTP id h6-20020a170902748600b001bc05d0e8dbmr7361705pll.62.1690879951085;
-        Tue, 01 Aug 2023 01:52:31 -0700 (PDT)
-Received: from localhost ([122.172.87.195])
-        by smtp.gmail.com with ESMTPSA id b11-20020a170903228b00b001b8943b37a5sm9942580plh.24.2023.08.01.01.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 01:52:30 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 14:22:28 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Meng Li <li.meng@amd.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Huang Rui <ray.huang@amd.com>, linux-pm@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org,
-        Nathan Fontenot <nathan.fontenot@amd.com>,
-        Deepak Sharma <deepak.sharma@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Shimmer Huang <shimmer.huang@amd.com>,
-        Perry Yuan <Perry.Yuan@amd.com>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Modify the function to et the highest_perf value
-Message-ID: <20230801085228.6f5xley3aybryfjv@vireshk-i7>
-References: <20230801004719.1298415-1-li.meng@amd.com>
- <5b92239a-4255-346d-1dfe-c7953535083d@amd.com>
+        Tue, 1 Aug 2023 04:53:44 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6E5881711
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:53:43 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 61688D75;
+        Tue,  1 Aug 2023 01:54:26 -0700 (PDT)
+Received: from [10.163.53.114] (unknown [10.163.53.114])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BF3B43F5A1;
+        Tue,  1 Aug 2023 01:53:40 -0700 (PDT)
+Message-ID: <3380a12b-605e-394c-c711-e31ce4112e60@arm.com>
+Date:   Tue, 1 Aug 2023 14:23:38 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5b92239a-4255-346d-1dfe-c7953535083d@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] arm_pmu: acpi: Add a representative platform device
+ for TRBE
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <20230728112733.359620-1-anshuman.khandual@arm.com>
+ <20230728112733.359620-2-anshuman.khandual@arm.com>
+ <20230728144056.GE21718@willie-the-truck>
+ <3ee165d7-3727-53cc-295d-a2108734952d@arm.com>
+ <20230731145922.GB24881@willie-the-truck>
+ <dffbb48e-cb7d-4862-af1c-9723cdc5652e@arm.com>
+ <20230801073857.GB25854@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20230801073857.GB25854@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,19 +54,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31-07-23, 20:10, Mario Limonciello wrote:
-> On 7/31/23 19:47, Meng Li wrote:
-> > The previous function will be deprecated.
-> > 
-> > Signed-off-by: Meng Li <li.meng@amd.com>
-> > ---
+
+
+On 8/1/23 13:08, Will Deacon wrote:
+> On Tue, Aug 01, 2023 at 09:05:54AM +0530, Anshuman Khandual wrote:
+>>
+>>
+>> On 7/31/23 20:29, Will Deacon wrote:
+>>> On Mon, Jul 31, 2023 at 05:38:38PM +0530, Anshuman Khandual wrote:
+>>>> On 7/28/23 20:10, Will Deacon wrote:
+>>>>> On Fri, Jul 28, 2023 at 04:57:31PM +0530, Anshuman Khandual wrote:
+>>>>>> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
+>>>>>> index 90815ad762eb..dd3df6729808 100644
+>>>>>> --- a/drivers/perf/arm_pmu_acpi.c
+>>>>>> +++ b/drivers/perf/arm_pmu_acpi.c
+>>>
+>>> [...]
+>>>
+>>>>>> +	ret = platform_device_register(&trbe_acpi_dev);
+>>>>>> +	if (ret < 0) {
+>>>>>> +		pr_warn("ACPI: TRBE: Unable to register device\n");
+>>>>>> +		acpi_unregister_gsi(gsi);
+>>>>>> +	}
+>>>>>> +}
+>>>>>> +#else
+>>>>>> +static inline void arm_trbe_acpi_register_device(void)
+>>>>>> +{
+>>>>>> +
+>>>>>> +}
+>>>>>> +#endif /* CONFIG_CORESIGHT_TRBE */
+>>>>>
+>>>>> This looks like you ran s/spe/trbe/ over the SPE device registration
+>>>>> code :)
+>>>>
+>>>> Yeah, almost :) 
+>>>>
+>>>>> Please can you refactor things so we don't have all the duplication? I
+>>>>> suspect this won't be the last device which needs the same treatement.
+>>>>
+>>>> Should the refactoring just accommodate SPE, and TRBE or make it more generic to
+>>>> accommodate future devices as well. Something like the following enumeration.
+>>>>
+>>>> enum arm_platform_device {
+>>>>        ARM_PLATFORM_DEVICE_SPE,
+>>>>        ARM_PLATFORM_DEVICE_TRBE,
+>>>>        ARM_PLATFORM_DEVICE_MAX,
+>>>> };
+>>>>
+>>>> But that would require adding some helper functions to select these following
+>>>> elements based on the above enumeration via a common function
+>>>>
+>>>> - gicc->XXX_interrupt
+>>>> - ACPI_MADT_GICC_SPE/TRBE for header length comparison
+>>>> - static struct platform_device/resources (static objects in the file)
+>>>>
+>>>> Seems like will add much more code for a refactor. Did you have something else
+>>>> in mind for the refactor.
+>>>
+>>> All I'm saying is that we shouldn't have identical copies of the code to
+>>> walk the MADT, pull out the irqs and register the device.
+>>>
+>>> So something like the totally untested hack below. I probably broke
+>>> something, but hopefully you see what I mean.
+>>>
+>>> Will
+>>>
+>>> --->8
+>>>
+>>> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
+>>> index 90815ad762eb..7f1cf36c6e69 100644
+>>> --- a/drivers/perf/arm_pmu_acpi.c
+>>> +++ b/drivers/perf/arm_pmu_acpi.c
+>>> @@ -69,6 +69,62 @@ static void arm_pmu_acpi_unregister_irq(int cpu)
+>>>                 acpi_unregister_gsi(gsi);
+>>>  }
+>>>  
+>>> +static int
+>>> +arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
+>>> +                            u16 (*parse_gsi)(struct acpi_madt_generic_interrupt *))
+>>
+>> This factored out helper should be wrapped inside CONFIG_ARM_SPE_PMU
+>> and CONFIG_CORESIGHT_TRBE ? Otherwise, there will be no callers left
+>> for this helper triggering warning.
+>>
+>> drivers/perf/arm_pmu_acpi.c:73:1: warning: ‘arm_acpi_register_pmu_device’ defined but not used [-Wunused-function]
+>>    73 | arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
+>>       | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>
+>> But in that case, we have to keep adding new configs when new devices
+>> require platform devices to be registered. Is there a better way ?
 > 
-> This actually has functional impact; doesn't it?  Can you better describe
-> the reasoning and expected impact in the commit message?
+> __maybe_unused?
+> 
+> Like I said, I didn't test that thing at all, I was just trying to
+> illustrate the sort of refactoring I had in mind.
 
-Also write the $Subject properly like:
-
-cpufreq: amd-pstate-ut: ...
-
--- 
-viresh
+Sure. If it's okay, will use your Co-developed-by/Signed-off-by tags
+for this refactoring patch.
