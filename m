@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6778C76A8F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF6476A8FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230281AbjHAG0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
+        id S231285AbjHAG0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjHAG0B (ORCPT
+        with ESMTP id S230254AbjHAG0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:26:01 -0400
+        Tue, 1 Aug 2023 02:26:18 -0400
 Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BF31BF3;
-        Mon, 31 Jul 2023 23:25:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1F3A1BE6;
+        Mon, 31 Jul 2023 23:26:15 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4RFPvp2DqHz9xvdn;
-        Tue,  1 Aug 2023 14:14:30 +0800 (CST)
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4RFPw76dncz9y7ky;
+        Tue,  1 Aug 2023 14:14:47 +0800 (CST)
 Received: from A2101119013HW2.china.huawei.com (unknown [10.81.220.249])
-        by APP1 (Coremail) with SMTP id LxC2BwCHOroapchkgAwYAA--.27948S3;
-        Tue, 01 Aug 2023 07:25:04 +0100 (CET)
+        by APP1 (Coremail) with SMTP id LxC2BwCHOroapchkgAwYAA--.27948S4;
+        Tue, 01 Aug 2023 07:25:22 +0100 (CET)
 From:   Petr Tesarik <petrtesarik@huaweicloud.com>
 To:     Stefano Stabellini <sstabellini@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
@@ -59,20 +59,20 @@ To:     Stefano Stabellini <sstabellini@kernel.org>,
         iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM),
         linux-mm@kvack.org (open list:SLAB ALLOCATOR)
 Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
-Subject: [PATCH v7 1/9] swiotlb: bail out of swiotlb_init_late() if swiotlb is already allocated
-Date:   Tue,  1 Aug 2023 08:23:56 +0200
-Message-Id: <2d7e1823e264aa1990899cc95736e78e1ec21084.1690871004.git.petr.tesarik.ext@huawei.com>
+Subject: [PATCH v7 2/9] swiotlb: make io_tlb_default_mem local to swiotlb.c
+Date:   Tue,  1 Aug 2023 08:23:57 +0200
+Message-Id: <32456334747b6e7f25e839c21d614815088c3c2f.1690871004.git.petr.tesarik.ext@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
 References: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwCHOroapchkgAwYAA--.27948S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFWxCFyrZr4rWFyUJw18Krg_yoW8Jw1rp3
-        47AFyvgFWFg3WxArW7C3ZrAFyjkaykK347urW5Wry3Jry5J34rG34UtrWa934rWFW8WF4S
-        yFy5ZFyYv3W2qw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID: LxC2BwCHOroapchkgAwYAA--.27948S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4DZw13KF1DAF48Zw13Arb_yoWxZr4Upr
+        yUAFyrGF42qrn7urW3Cw1kAF1Ygwn2kay7CrySgwn8Z3WUJwn8JFWktrWYyr1rJrW8uF4f
+        AFyvvryYkF47Aw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
         9KBjDU0xBIdaVrnRJUUUQm14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
         x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
         Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
         A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
@@ -84,7 +84,7 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7WFWxCFyrZr4rWFyUJw18Krg_yoW8Jw1rp3
         80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE
         2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcV
         CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfU8ApnDUUUU
+        c7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfU8vtCUUUUU
 X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
@@ -98,49 +98,218 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Petr Tesarik <petr.tesarik.ext@huawei.com>
 
-If swiotlb is allocated, immediately return 0, so callers do not have to
-check io_tlb_default_mem.nslabs explicitly.
+SWIOTLB implementation details should not be exposed to the rest of the
+kernel. This will allow to make changes to the implementation without
+modifying non-swiotlb code.
+
+To avoid breaking existing users, provide helper functions for the few
+required fields.
+
+As a bonus, using a helper function to initialize struct device allows to
+get rid of an #ifdef in driver core.
 
 Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
 ---
- arch/arm/xen/mm.c    | 10 ++++------
- kernel/dma/swiotlb.c |  3 +++
- 2 files changed, 7 insertions(+), 6 deletions(-)
+ arch/mips/pci/pci-octeon.c |  2 +-
+ drivers/base/core.c        |  4 +---
+ drivers/xen/swiotlb-xen.c  |  2 +-
+ include/linux/swiotlb.h    | 25 +++++++++++++++++++++++-
+ kernel/dma/swiotlb.c       | 39 +++++++++++++++++++++++++++++++++++++-
+ mm/slab_common.c           |  5 ++---
+ 6 files changed, 67 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
-index 3d826c0b5fee..882cd70c7a2f 100644
---- a/arch/arm/xen/mm.c
-+++ b/arch/arm/xen/mm.c
-@@ -125,12 +125,10 @@ static int __init xen_mm_init(void)
- 		return 0;
+diff --git a/arch/mips/pci/pci-octeon.c b/arch/mips/pci/pci-octeon.c
+index e457a18cbdc5..d19d9d456309 100644
+--- a/arch/mips/pci/pci-octeon.c
++++ b/arch/mips/pci/pci-octeon.c
+@@ -664,7 +664,7 @@ static int __init octeon_pci_setup(void)
  
- 	/* we can work with the default swiotlb */
--	if (!io_tlb_default_mem.nslabs) {
--		rc = swiotlb_init_late(swiotlb_size_or_default(),
--				       xen_swiotlb_gfp(), NULL);
--		if (rc < 0)
--			return rc;
--	}
-+	rc = swiotlb_init_late(swiotlb_size_or_default(),
-+			       xen_swiotlb_gfp(), NULL);
-+	if (rc < 0)
-+		return rc;
+ 		/* BAR1 movable regions contiguous to cover the swiotlb */
+ 		octeon_bar1_pci_phys =
+-			io_tlb_default_mem.start & ~((1ull << 22) - 1);
++			default_swiotlb_base() & ~((1ull << 22) - 1);
  
- 	cflush.op = 0;
- 	cflush.a.dev_bus_addr = 0;
+ 		for (index = 0; index < 32; index++) {
+ 			union cvmx_pci_bar1_indexx bar1_index;
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 3dff5037943e..46d1d78c5beb 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -3108,9 +3108,7 @@ void device_initialize(struct device *dev)
+     defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
+ 	dev->dma_coherent = dma_default_coherent;
+ #endif
+-#ifdef CONFIG_SWIOTLB
+-	dev->dma_io_tlb_mem = &io_tlb_default_mem;
+-#endif
++	swiotlb_dev_init(dev);
+ }
+ EXPORT_SYMBOL_GPL(device_initialize);
+ 
+diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+index 67aa74d20162..946bd56f0ac5 100644
+--- a/drivers/xen/swiotlb-xen.c
++++ b/drivers/xen/swiotlb-xen.c
+@@ -381,7 +381,7 @@ xen_swiotlb_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
+ static int
+ xen_swiotlb_dma_supported(struct device *hwdev, u64 mask)
+ {
+-	return xen_phys_to_dma(hwdev, io_tlb_default_mem.end - 1) <= mask;
++	return xen_phys_to_dma(hwdev, default_swiotlb_limit()) <= mask;
+ }
+ 
+ const struct dma_map_ops xen_swiotlb_dma_ops = {
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index 4e52cd5e0bdc..2d453b3e7771 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -110,7 +110,6 @@ struct io_tlb_mem {
+ 	atomic_long_t used_hiwater;
+ #endif
+ };
+-extern struct io_tlb_mem io_tlb_default_mem;
+ 
+ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+ {
+@@ -128,13 +127,22 @@ static inline bool is_swiotlb_force_bounce(struct device *dev)
+ 
+ void swiotlb_init(bool addressing_limited, unsigned int flags);
+ void __init swiotlb_exit(void);
++void swiotlb_dev_init(struct device *dev);
+ size_t swiotlb_max_mapping_size(struct device *dev);
++bool is_swiotlb_allocated(void);
+ bool is_swiotlb_active(struct device *dev);
+ void __init swiotlb_adjust_size(unsigned long size);
++phys_addr_t default_swiotlb_base(void);
++phys_addr_t default_swiotlb_limit(void);
+ #else
+ static inline void swiotlb_init(bool addressing_limited, unsigned int flags)
+ {
+ }
++
++static inline void swiotlb_dev_init(struct device *dev)
++{
++}
++
+ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+ {
+ 	return false;
+@@ -151,6 +159,11 @@ static inline size_t swiotlb_max_mapping_size(struct device *dev)
+ 	return SIZE_MAX;
+ }
+ 
++static inline bool is_swiotlb_allocated(void)
++{
++	return false;
++}
++
+ static inline bool is_swiotlb_active(struct device *dev)
+ {
+ 	return false;
+@@ -159,6 +172,16 @@ static inline bool is_swiotlb_active(struct device *dev)
+ static inline void swiotlb_adjust_size(unsigned long size)
+ {
+ }
++
++static inline phys_addr_t default_swiotlb_base(void)
++{
++	return 0;
++}
++
++static inline phys_addr_t default_swiotlb_limit(void)
++{
++	return 0;
++}
+ #endif /* CONFIG_SWIOTLB */
+ 
+ extern void swiotlb_print_info(void);
 diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 1c0a49e6685a..ee57fd9949dc 100644
+index ee57fd9949dc..0840bc15fb53 100644
 --- a/kernel/dma/swiotlb.c
 +++ b/kernel/dma/swiotlb.c
-@@ -384,6 +384,9 @@ int swiotlb_init_late(size_t size, gfp_t gfp_mask,
- 	bool retried = false;
- 	int rc = 0;
+@@ -71,7 +71,7 @@ struct io_tlb_slot {
+ static bool swiotlb_force_bounce;
+ static bool swiotlb_force_disable;
  
-+	if (io_tlb_default_mem.nslabs)
-+		return 0;
+-struct io_tlb_mem io_tlb_default_mem;
++static struct io_tlb_mem io_tlb_default_mem;
+ 
+ static unsigned long default_nslabs = IO_TLB_DEFAULT_SIZE >> IO_TLB_SHIFT;
+ static unsigned long default_nareas;
+@@ -489,6 +489,15 @@ void __init swiotlb_exit(void)
+ 	memset(mem, 0, sizeof(*mem));
+ }
+ 
++/**
++ * swiotlb_dev_init() - initialize swiotlb fields in &struct device
++ * @dev:	Device to be initialized.
++ */
++void swiotlb_dev_init(struct device *dev)
++{
++	dev->dma_io_tlb_mem = &io_tlb_default_mem;
++}
 +
- 	if (swiotlb_force_disable)
- 		return 0;
+ /*
+  * Return the offset into a iotlb slot required to keep the device happy.
+  */
+@@ -953,6 +962,14 @@ size_t swiotlb_max_mapping_size(struct device *dev)
+ 	return ((size_t)IO_TLB_SIZE) * IO_TLB_SEGSIZE - min_align;
+ }
+ 
++/**
++ * is_swiotlb_allocated() - check if the default software IO TLB is initialized
++ */
++bool is_swiotlb_allocated(void)
++{
++	return io_tlb_default_mem.nslabs;
++}
++
+ bool is_swiotlb_active(struct device *dev)
+ {
+ 	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+@@ -960,6 +977,26 @@ bool is_swiotlb_active(struct device *dev)
+ 	return mem && mem->nslabs;
+ }
+ 
++/**
++ * default_swiotlb_base() - get the base address of the default SWIOTLB
++ *
++ * Get the lowest physical address used by the default software IO TLB pool.
++ */
++phys_addr_t default_swiotlb_base(void)
++{
++	return io_tlb_default_mem.start;
++}
++
++/**
++ * default_swiotlb_limit() - get the address limit of the default SWIOTLB
++ *
++ * Get the highest physical address used by the default software IO TLB pool.
++ */
++phys_addr_t default_swiotlb_limit(void)
++{
++	return io_tlb_default_mem.end - 1;
++}
++
+ #ifdef CONFIG_DEBUG_FS
+ 
+ static int io_tlb_used_get(void *data, u64 *val)
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index d1555ea2981a..c639dba9a3b7 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -864,10 +864,9 @@ void __init setup_kmalloc_cache_index_table(void)
+ 
+ static unsigned int __kmalloc_minalign(void)
+ {
+-#ifdef CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC
+-	if (io_tlb_default_mem.nslabs)
++	if (IS_ENABLED(CONFIG_DMA_BOUNCE_UNALIGNED_KMALLOC) &&
++	    is_swiotlb_allocated())
+ 		return ARCH_KMALLOC_MINALIGN;
+-#endif
+ 	return dma_get_cache_alignment();
+ }
  
 -- 
 2.25.1
