@@ -2,209 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 287AB76ABE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 635A576AB92
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbjHAJDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59860 "EHLO
+        id S231879AbjHAJBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232299AbjHAJCS (ORCPT
+        with ESMTP id S230372AbjHAJBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:02:18 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7AA213E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:02:03 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qQlFi-0003XY-79; Tue, 01 Aug 2023 11:01:14 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 5AC192004E9;
-        Tue,  1 Aug 2023 09:01:05 +0000 (UTC)
-Date:   Tue, 1 Aug 2023 11:01:04 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Shenwei Wang <shenwei.wang@nxp.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Jose Abreu <joabreu@synopsys.com>, imx@lists.linux.dev,
-        Simon Horman <simon.horman@corigine.com>,
-        Frank Li <frank.li@nxp.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Wong Vee Khee <veekhee@apple.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Revanth Kumar Uppala <ruppala@nvidia.com>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v3 net 2/2] net: stmmac: dwmac-imx: pause the TXC clock
- in fixed-link
-Message-ID: <20230801-casket-sterling-db0e49f154cf-mkl@pengutronix.de>
-References: <20230731161929.2341584-1-shenwei.wang@nxp.com>
- <20230731161929.2341584-3-shenwei.wang@nxp.com>
+        Tue, 1 Aug 2023 05:01:37 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8511724;
+        Tue,  1 Aug 2023 02:01:33 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-563de62f861so3209487a12.1;
+        Tue, 01 Aug 2023 02:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690880493; x=1691485293;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HlJW6u1sZOpuT6avef9gnRgQCJ0eGQk1LzPcuYEotVk=;
+        b=UkLe+vQfHPi6Wc95/4hjftuk9iRk0jhNEqE3orIUoIVTRtaq15v09ltRjCB54SdA72
+         /gIQuQe2oD1/LUYD24wcG47jUuUX+NRG46UQ+Y5vh+WF4CbgcEfaOtGrOXC3cYZPuTBx
+         9OBrnOABp0paIPvr3GSYR5flJvHO/Wlal9m498QMG/gb96gPv3bjon/eqEAqmCSRpuEi
+         YDjJCE/cLf1By1SUpt5/z7anXxpm0pzPZDmj2imFyCXZgps3CAvXMReQuvj1HAZ4jGw+
+         6vnkHg3/KLATxw7y4SuX18pCcfZPMwp745oUhzSHHP1O0LsIoXi1bVxGexeELj89Fw34
+         D+bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690880493; x=1691485293;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HlJW6u1sZOpuT6avef9gnRgQCJ0eGQk1LzPcuYEotVk=;
+        b=SklzSp5u27uy5l3TK7SCddnXujAm3q+oXjokgTfLk27fX3OecsXfOnzGoLij8Mpm8L
+         BQsWk3WbcvSoVoPuGcLQTobeMSakJXUw/OYYlkCl+Z45f8Tkj3swhbKdiFtbBhQ2jAFl
+         +AxL1A0jX353MOBna1bvXFEeF92th+Opdh/EiD2oKWaPlbj6He1HH2s/A63zZeILUu5X
+         uesx6juhljQggchk31wezibxUNKMJ5OEUKNIMDhvbEf0YatVV6aA7T648kx/RREAHAjR
+         6t8I+mpx7zbNuXqVDPccyTAf/uTtMuePLO5/6vZt3ikElQO1cPqeSWXglirunBU9G6q9
+         E8fw==
+X-Gm-Message-State: ABy/qLZh6nvaNqHEqmgEDSGN8UMk3/8KDKJHY+6/W8+qw0PT9ZpHCKLr
+        HrbUZ9pMcKatP/UC4UBxd58=
+X-Google-Smtp-Source: APBJJlF29a/YZq0gOiHwz58dkyP7GeqsFipTwefGHmApUHrxK1n3p3/gbYCZjjmiNXXWcJhV+gmQSg==
+X-Received: by 2002:a17:90b:f10:b0:268:b0b:a084 with SMTP id br16-20020a17090b0f1000b002680b0ba084mr10823169pjb.46.1690880492742;
+        Tue, 01 Aug 2023 02:01:32 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.20])
+        by smtp.googlemail.com with ESMTPSA id x34-20020a17090a6c2500b00264044cca0fsm1592523pjj.1.2023.08.01.02.01.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 02:01:32 -0700 (PDT)
+From:   Ze Gao <zegao2021@gmail.com>
+X-Google-Original-From: Ze Gao <zegao@tencent.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
+Subject: [RFC PATCH v3 0/6] add to report task state in symbolic chars from sched tracepoint
+Date:   Tue,  1 Aug 2023 17:01:18 +0800
+Message-Id: <20230801090124.8050-1-zegao@tencent.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="o4t5srmxt4zkvbfp"
-Content-Disposition: inline
-In-Reply-To: <20230731161929.2341584-3-shenwei.wang@nxp.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the 3rd attempt to fix the report task state issue in sched
+tracepint, you can check out previous discussions here:
 
---o4t5srmxt4zkvbfp
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v1: https://lore.kernel.org/linux-trace-kernel/20230725072254.32045-1-zegao@tencent.com
+v2: https://lore.kernel.org/linux-trace-kernel/20230726121618.19198-1-zegao@tencent.com
 
-On 31.07.2023 11:19:29, Shenwei Wang wrote:
-> When using a fixed-link setup, certain devices like the SJA1105 require a
-> small pause in the TXC clock line to enable their internal tunable
-> delay line (TDL).
->=20
-> To satisfy this requirement, this patch temporarily disables the TX clock,
-> and restarts it after a required period. This provides the required
-> silent interval on the clock line for SJA1105 to complete the frequency
-> transition and enable the internal TDLs.
->=20
-> So far we have only enabled this feature on the i.MX93 platform.
->=20
-> Signed-off-by: Shenwei Wang <shenwei.wang@nxp.com>
-> Reviewed-by: Frank Li <frank.li@nxp.com>
-> ---
->  .../net/ethernet/stmicro/stmmac/dwmac-imx.c   | 42 +++++++++++++++++++
->  1 file changed, 42 insertions(+)
->=20
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c b/drivers/ne=
-t/ethernet/stmicro/stmmac/dwmac-imx.c
-> index 53ee5a42c071..2e4173d099f3 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
-> @@ -32,6 +32,7 @@
->  #define GPR_ENET_QOS_RGMII_EN		(0x1 << 21)
-> =20
->  #define MX93_GPR_ENET_QOS_INTF_MODE_MASK	GENMASK(3, 0)
-> +#define MX93_GPR_ENET_QOS_INTF_MASK		GENMASK(3, 1)
->  #define MX93_GPR_ENET_QOS_INTF_SEL_MII		(0x0 << 1)
->  #define MX93_GPR_ENET_QOS_INTF_SEL_RMII		(0x4 << 1)
->  #define MX93_GPR_ENET_QOS_INTF_SEL_RGMII	(0x1 << 1)
-> @@ -40,6 +41,7 @@
->  #define DMA_BUS_MODE			0x00001000
->  #define DMA_BUS_MODE_SFT_RESET		(0x1 << 0)
->  #define RMII_RESET_SPEED		(0x3 << 14)
-> +#define CTRL_SPEED_MASK			GENMASK(15, 14)
-> =20
->  struct imx_dwmac_ops {
->  	u32 addr_width;
-> @@ -56,6 +58,7 @@ struct imx_priv_data {
->  	struct regmap *intf_regmap;
->  	u32 intf_reg_off;
->  	bool rmii_refclk_ext;
-> +	void __iomem *base_addr;
-> =20
->  	const struct imx_dwmac_ops *ops;
->  	struct plat_stmmacenet_data *plat_dat;
-> @@ -212,6 +215,42 @@ static void imx_dwmac_fix_speed(void *priv, uint spe=
-ed, uint mode)
->  		dev_err(dwmac->dev, "failed to set tx rate %lu\n", rate);
->  }
-> =20
-> +static void imx_dwmac_fix_speed_mx93(void *priv, uint speed, uint mode)
-> +{
-> +	struct imx_priv_data *dwmac =3D priv;
-> +	int ctrl, old_ctrl, iface;
+FYI, this series are designed not to break anything now and still do the 
+1-1 correspondence int-char mapping for each distinct task state we want to
+report, and thus will not lose any details intended for debug purposes. Of
+course, this might be compromised because of bugs introduced due to my
+stupidity. So your sage comments are very important and appreciated!
 
-regmap_read() wants a pointer to an "unsigned int".
 
-> +
-> +	imx_dwmac_fix_speed(priv, speed, mode);
-> +
-> +	if (!dwmac || mode !=3D MLO_AN_FIXED)
-> +		return;
-> +
-> +	if (regmap_read(dwmac->intf_regmap, dwmac->intf_reg_off, &iface))
-> +		return;
-> +
-> +	iface &=3D MX93_GPR_ENET_QOS_INTF_MASK;
-> +	if (iface !=3D MX93_GPR_ENET_QOS_INTF_SEL_RGMII)
-> +		return;
-> +
-> +	old_ctrl =3D readl(dwmac->base_addr + MAC_CTRL_REG);
-> +	ctrl =3D old_ctrl & ~CTRL_SPEED_MASK;
-> +	regmap_update_bits(dwmac->intf_regmap, dwmac->intf_reg_off,
-> +			   MX93_GPR_ENET_QOS_INTF_MODE_MASK, 0);
-> +	writel(ctrl, dwmac->base_addr + MAC_CTRL_REG);
-> +
-> +	/* Ensure the settings for CTRL are applied and avoid CPU/Compiler
-> +	 * reordering.
-> +	 */
-> +	wmb();
-> +
-> +	usleep_range(10, 20);
-> +	iface |=3D MX93_GPR_ENET_QOS_CLK_GEN_EN;
-> +	regmap_update_bits(dwmac->intf_regmap, dwmac->intf_reg_off,
-> +			   MX93_GPR_ENET_QOS_INTF_MODE_MASK, iface);
-> +
-> +	writel(old_ctrl, dwmac->base_addr + MAC_CTRL_REG);
-> +}
+diff from v2:
+1. reorder to condense sched_switch record structure
+2. fallback to older method to maintain backward compatibility
+   for perf/libtraceevent
+3. split housekeeping work into separate ones for readability
 
-Marc
+--
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+In the status quo, we should see three different outcomes of the reported
+sched-out task state from perf-script, perf-sched-timehist, and Tp_printk
+of tracepoint sched_switch.  And it's not hard to figure out that the
+former two are built upon the third one, and the reason why we see this
+inconsistency is that the former two does not catch up with the internal
+change of reported task state definitions as the kernel evolves.
 
---o4t5srmxt4zkvbfp
-Content-Type: application/pgp-signature; name="signature.asc"
+IMHO, exporting internal representations of task state in the tracepoint
+sched_switch is not a good practice and not encouraged at all, which can
+easily break userspace tools that relies on it. Especially when tracepoints
+are massively used in many observability tools nowadays due to its stable
+nature, which makes them no longer used for debug only purpose and we
+should be careful to decide what ought to be reported to userspace and what
+ought not.
 
------BEGIN PGP SIGNATURE-----
+Therefore, to fix the issues mentioned above for good, I proposed to add
+a new variable to report task state in sched_switch with a symbolic char
+along with the old hardcoded value, and save the further processing of
+userspace tools and spare them from knowing implementation details in the
+kernel.
 
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmTIyc4ACgkQvlAcSiqK
-BOhPxwf9HHFOUC0eUgsX05gNkklEhVe6d9mHGi+9XMQabv1kE7r0DR26UXTr1zJJ
-7QEgBjYhAsV2UUZrvVOrkdfOlJeHUjNYw1SoCWXwhL12XS53cpTT6NFJubHX6FAz
-qkyWpe9yJoplJv5iPw9ytKUnyfdv00/s1N3R0Xt6WPUsmvZBmdAKr+jAaIEhYNdS
-G8C5mw4vSxM+C02gPgE0n6IRnjiH+FWGAfLsUbDQ5RtySwHCitWh9SSlhtp1SR0a
-CYQMjQ/caR6IfLBhmdzTrRl3e7IfXQWoSYVERLNGIu3OnKKeqpe561OdnlxVOD6S
-bO8xpuS/V3HwwpAnE3MNcNI7+IMjlw==
-=3m5o
------END PGP SIGNATURE-----
+After this patch seires, we report 'RSDTtXZPI' the same as in procfs, plus
+a 'p' which denotes PREEMP_ACTIVE and is used for sched_switch tracepoint
+only.
 
---o4t5srmxt4zkvbfp--
+Reviews welcome!
+
+Regards,
+Ze
+
+Ze Gao (5):
+  perf sched: sync state char array with the kernel
+  perf sched: reorganize sched-out task state report code
+  sched, tracing: add to report task state in symbolic chars
+  sched, tracing: reorganize fields of switch event struct
+  perf sched: prefer to use prev_state_char introduced in sched_switch
+
+ include/trace/events/sched.h | 68 +++++++++++++++++-------------
+ tools/perf/builtin-sched.c   | 82 ++++++++++++++++--------------------
+ 2 files changed, 76 insertions(+), 74 deletions(-)
+
+Ze Gao (1):
+  libtraceevent: prefer to use prev_state_char introduced in
+    sched_switch
+
+ plugins/plugin_sched_switch.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+-- 
+2.40.1
+
