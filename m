@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DEA76ACD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4894D76ACD9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbjHAJX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:23:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
+        id S232884AbjHAJXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233006AbjHAJXM (ORCPT
+        with ESMTP id S232596AbjHAJXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:23:12 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF023272A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:21:51 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bed101b70so659487566b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:21:51 -0700 (PDT)
+        Tue, 1 Aug 2023 05:23:23 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94CF30EF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:22:10 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bed101b70so659535566b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:22:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1690881710; x=1691486510;
+        d=ventanamicro.com; s=google; t=1690881728; x=1691486528;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Gm17gZxC0/vm/Jdu3xQH50fn0wnKiSVhKMApv17FsGQ=;
-        b=dq5CAvhQQ+vveH4MSteCM4KpxWqvSjfMuOapn0LnoQqDOErjMIbbWNheVH/uLc2KIf
-         UdBwINkexXsFRjBN8poea9hv+4sXzWagYJkGf39toFnDnN3gA3fyjhZTQCaYda/GblQa
-         pkw6dcECiAkZW/+Wy1xwLXzUC7d0jC/4tRCVUhI1fyGS501AuV0YVethzHboQgI7CbyL
-         M5k4ZKy5NVWRN6++5pgESXlnIknAxtut14Hcvq275w4blo8RZfULkrUqc81+6hPmItwP
-         3fxQ350OyrMQNDnLyh3ELg4ylCq9dGO2couVM6uXKHIXQCaUruaeC2pK2fs6kliqSArs
-         ZedQ==
+        bh=Myyg/9EMvFaXxS0MQuf9oic0JS5pwyGRhUlLiVOQ7cg=;
+        b=DGWQ06MMOa/673UDiUbHWfvDEjjljcO9pgXIH6f6q3vLvc/6vEnY+ydAuN/HHflZw7
+         AEtTWAMYn2GMKYtLMtMn0sNzJhSMyTGc72izAJnHuEBYp/kviEPOsfYW3tBXsZLz1PSf
+         nBrWKS8QWxWdlC0S2oc2b2Naf7e+9rX/TpPlLu7KyDtKBI9F9Zrx84HkFyoZTBPXk8MP
+         Jvt8JbrfF2AGM7+dLEe7fEc5iLz5MqPpWIp8f/uPfCunfiL1nnGJHq3jtELhLSbKLAGm
+         mh24x/4jIeOLx+JlPwlkhpN6AUwtg2z4cOQAKda5EfZUA7TbLlBc8zPbXNEKZ6KENpoz
+         nQIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690881710; x=1691486510;
+        d=1e100.net; s=20221208; t=1690881728; x=1691486528;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gm17gZxC0/vm/Jdu3xQH50fn0wnKiSVhKMApv17FsGQ=;
-        b=g2gAQyyf3sLahumOeybxCZMcJlglrvteIp0SMFrzFdPT0mBrzXDSi22MZqnSJB2aq+
-         pgVp/Qa/czKoYHeGrQOK/0tGewZRWZHYk2ZWlzFXeA9nz6aacxw9F58pBP5Y/EqzWP6b
-         T0xOVtNuEUpHl3KZsmhuehX4NGqOTuMBFjh30UCh22o6dIeF3fds1vp0SU6ItcR5xYlD
-         ud6euejRFR2rrmC4S40uhQh+g2GBzcY+/nNSIu26evXCR+mArpJtsuaWoWTbUkgICsP3
-         i1ul6qinsuIrblt8+zrPA+2Dw4rG6RUJYbSzkrHVzRKLXQk79xsptffwOWMX8eG5UJAR
-         7bHQ==
-X-Gm-Message-State: ABy/qLaifTJf3Q29H8tsthMPjU/KxpIsM3h8R29RxbgBFkfoOdi3VwIx
-        /RFtm6B1EWsg5kM/mR8rUJimwhxVkICOVgWB1NSNbg==
-X-Google-Smtp-Source: APBJJlGhr0BuIoveysf7HtzpSl2Jm+kRbIcFJ2Y03OXcder2XbQzIJjvsXJoXuSOYODVVZsM7UAnIg==
-X-Received: by 2002:a17:906:518a:b0:99b:fdbb:31f1 with SMTP id y10-20020a170906518a00b0099bfdbb31f1mr2052678ejk.16.1690881710061;
-        Tue, 01 Aug 2023 02:21:50 -0700 (PDT)
+        bh=Myyg/9EMvFaXxS0MQuf9oic0JS5pwyGRhUlLiVOQ7cg=;
+        b=hlIasWZP/tIoKMq+WVu26aPdJk+Y1qUuYJhgE/NLmpZ1uFO6iBQKW36PSgIylU5+ld
+         t0pgaJGubJXG6ggGuTnFZ2HykjaOnZSoQg+lolnR8+sdfgmYpTAqtyAReZHkE8XZ++62
+         ImMJraDP0syUD9NgCIAqdf13h7kiYjBZzJLWR0RuPa8bOVmf5f5CQcsF/6wgyR5JPaUR
+         NygyCqE4lI/G11GD9lIirc0/6S97x4qtVhZTbhCwF/nWKoKqKIf041i0H3eCghlxYNGd
+         Oha0RDB6Gejq6no/XeoGiEUFMLDvLGfARfz+RFbaKNQljhzFll+A0y6WwiRNJae3Urht
+         Ey7A==
+X-Gm-Message-State: ABy/qLYaITFgntXAzor3ckk2Y5wEBB+ixmEJIAIVl2Fr4idNwRs5mmBC
+        4kQRdBdR8MEih+L9F7b9cgY1aw==
+X-Google-Smtp-Source: APBJJlGm6uA+LAnVlBtxIfLwMvjWRv2Gwia6HLAVmhzKy7IakWIq/kLqxEYhBEJoOBpXfLEql9cNOA==
+X-Received: by 2002:a17:906:768d:b0:993:e691:6dd5 with SMTP id o13-20020a170906768d00b00993e6916dd5mr1914773ejm.7.1690881728816;
+        Tue, 01 Aug 2023 02:22:08 -0700 (PDT)
 Received: from localhost (212-5-140-29.ip.btc-net.bg. [212.5.140.29])
-        by smtp.gmail.com with ESMTPSA id m10-20020a17090607ca00b009931a3adf64sm7529760ejc.17.2023.08.01.02.21.49
+        by smtp.gmail.com with ESMTPSA id x20-20020a1709065ad400b00988be3c1d87sm7375676ejs.116.2023.08.01.02.22.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 02:21:49 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 11:21:48 +0200
+        Tue, 01 Aug 2023 02:22:08 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 11:22:07 +0200
 From:   Andrew Jones <ajones@ventanamicro.com>
 To:     Sean Christopherson <seanjc@google.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
@@ -64,51 +64,38 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
         kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org, Aaron Lewis <aaronlewis@google.com>
-Subject: Re: [PATCH v4.1 1/3] KVM: selftests: Add arch ucall.h and inline
- simple arch hooks
-Message-ID: <20230801-3ab43c432cbaafcadbffb092@orel>
+Subject: Re: [PATCH v4.1 2/3] KVM: selftests: Add #define of expected KVM
+ exit reason for ucall
+Message-ID: <20230801-121c649de93d2bcd54af14c4@orel>
 References: <20230731203026.1192091-1-seanjc@google.com>
- <20230731203026.1192091-2-seanjc@google.com>
+ <20230731203026.1192091-3-seanjc@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731203026.1192091-2-seanjc@google.com>
+In-Reply-To: <20230731203026.1192091-3-seanjc@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 01:30:24PM -0700, Sean Christopherson wrote:
-> Add an architecture specific ucall.h and inline the simple arch hooks,
-> e.g. the init hook for everything except ARM, and the actual "do ucall"
-> hook for everything except x86 (which should be simple, but temporarily
-> isn't due to carrying a workaround).
+On Mon, Jul 31, 2023 at 01:30:25PM -0700, Sean Christopherson wrote:
+> Define the expected architecture specific exit reason for a successful
+> ucall so that common tests can assert that a ucall occurred without the
+> test needing to implement arch specific code.
 > 
-> Having a per-arch ucall header will allow adding a #define for the
-> expected KVM exit reason for a ucall that is colocated (for everything
-> except x86) with the ucall itself.
-> 
+> Suggested-by: Andrew Jones <ajones@ventanamicro.com>
 > Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  .../selftests/kvm/include/aarch64/ucall.h      | 18 ++++++++++++++++++
->  .../selftests/kvm/include/riscv/ucall.h        | 18 ++++++++++++++++++
->  .../selftests/kvm/include/s390x/ucall.h        | 17 +++++++++++++++++
->  .../selftests/kvm/include/ucall_common.h       |  1 +
->  .../selftests/kvm/include/x86_64/ucall.h       | 11 +++++++++++
->  .../testing/selftests/kvm/lib/aarch64/ucall.c  | 11 +----------
->  tools/testing/selftests/kvm/lib/riscv/ucall.c  | 11 -----------
->  tools/testing/selftests/kvm/lib/s390x/ucall.c  | 10 ----------
->  tools/testing/selftests/kvm/lib/x86_64/ucall.c |  4 ----
->  9 files changed, 66 insertions(+), 35 deletions(-)
->  create mode 100644 tools/testing/selftests/kvm/include/aarch64/ucall.h
->  create mode 100644 tools/testing/selftests/kvm/include/riscv/ucall.h
->  create mode 100644 tools/testing/selftests/kvm/include/s390x/ucall.h
->  create mode 100644 tools/testing/selftests/kvm/include/x86_64/ucall.h
+>  tools/testing/selftests/kvm/include/aarch64/ucall.h | 2 ++
+>  tools/testing/selftests/kvm/include/riscv/ucall.h   | 2 ++
+>  tools/testing/selftests/kvm/include/s390x/ucall.h   | 2 ++
+>  tools/testing/selftests/kvm/include/x86_64/ucall.h  | 2 ++
+>  4 files changed, 8 insertions(+)
 >
 
 Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
