@@ -2,85 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9734476A98A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCB8F76A98C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbjHAGxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
+        id S231961AbjHAGxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbjHAGxK (ORCPT
+        with ESMTP id S231481AbjHAGxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:53:10 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C8DC1;
-        Mon, 31 Jul 2023 23:53:08 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VonXRf3_1690872783;
-Received: from 30.240.106.99(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0VonXRf3_1690872783)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 14:53:05 +0800
-Message-ID: <dcf5dbff-df95-0b5e-964e-6e55c843d977@linux.alibaba.com>
-Date:   Tue, 1 Aug 2023 14:53:02 +0800
+        Tue, 1 Aug 2023 02:53:35 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0BABF
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:53:10 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-55b1238a013so4033120a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:53:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1690872789; x=1691477589;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MhlIfhe6t4kTcIvTYJKrWsmkQqO8HfOd2ecUpgycz/E=;
+        b=LVUBwf8RVARX2umwNwUWVEf7YhOcuiEYLwXY42jE8cRMn9jVtUBxM9CsA51m5svKv0
+         aaeUhCMrTtdbEG580lnIn6sz6Pjzl4ivlFdXQ9UcM0cNWIZYnCBaGCMIMTT+nCD/yDcM
+         8WqZZAoBovneVvUyfbdLc2lSR/swmmx0Mt5cA/9HIbWlxcI2YijOrd9Xi3LUCp3pCpFK
+         Gnz1cDFTLnjoNyMq1tE9VUKCWiw90HsfL7jGSkBx0O5lyJapczvJmJQ3xBRYd2r7BEsj
+         odIIdrl/CWQ2zK6UwBflLE8VtNITPGm0Ahs7eMOtcSIT7UWwRVjAsTvL911aHMFigi2X
+         SKrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690872789; x=1691477589;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MhlIfhe6t4kTcIvTYJKrWsmkQqO8HfOd2ecUpgycz/E=;
+        b=lpjJNKIN3guaXOThngSVt/YYPqjqdL1VGaynu29Y6x7K0XqeGw8Gq4xDDWLiuQUOnw
+         2mKHtBWrhIzN/ii/HiY4CVdiA9NSE06M9Gpg+R6ueBXMfT1XRJr6slvJSaeBk4zXPlgN
+         keh9RYsA7QtEN6rKALLb0Gayy4uJbibE/0xsyYSeBmUyjjC586V+Y8cvW+n8Ne7YP89u
+         CGy0zu3Rh/E3GraQgUtM5idJv13olQYwZUWQvdiV774bXYalA05h47ysLO5t9kRmaHZx
+         OSEfEkhGaT5LQ4sgrTitd8UUmekSiPMdyzf3KP+/fE6TEfjvIJr60ZMR+usKXIlUHtfr
+         Ojcg==
+X-Gm-Message-State: ABy/qLYnoG76kAnUrEo3Ag8hEsVBwzgtLo1tLyQUqtOqTeCsQAIzqf8W
+        rjE/qaGB3RYWHtrYh/UXuTUUNw==
+X-Google-Smtp-Source: APBJJlG/SsJjlaV/QMxtmqFCo8lqOiX16OzPxSvFMDwqFsM4rxccjXX+eml0I83yGB5kxChGPp9ZfQ==
+X-Received: by 2002:a17:902:a510:b0:1bc:2188:ef88 with SMTP id s16-20020a170902a51000b001bc2188ef88mr1723154plq.3.1690872789658;
+        Mon, 31 Jul 2023 23:53:09 -0700 (PDT)
+Received: from ?IPV6:fdbd:ff1:ce00:11bb:1457:9302:1528:c8f4? ([240e:694:e21:b::2])
+        by smtp.gmail.com with ESMTPSA id g6-20020a170902740600b001b9ff5aa2e7sm9647662pll.239.2023.07.31.23.53.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 31 Jul 2023 23:53:09 -0700 (PDT)
+Message-ID: <bb1fc46e-5573-71f7-d0fa-cb74fcfc61c3@bytedance.com>
+Date:   Tue, 1 Aug 2023 14:53:03 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH RFC v2 0/4] Add support for sharing page tables across
- processes (Previously mshare)
+ Gecko/20100101 Thunderbird/102.13.1
+Subject: Re: Re: [RFC PATCH 0/5] mm: Select victim memcg using BPF_OOM_POLICY
 Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org,
-        "xuyu@linux.alibaba.com" <xuyu@linux.alibaba.com>
-References: <cover.1682453344.git.khalid.aziz@oracle.com>
- <74fe50d9-9be9-cc97-e550-3ca30aebfd13@linux.alibaba.com>
- <ZMeoHoM8j/ric0Bh@casper.infradead.org>
- <ae3bbfba-4207-ec5b-b4dd-ea63cb52883d@redhat.com>
- <9faea1cf-d3da-47ff-eb41-adc5bd73e5ca@linux.alibaba.com>
- <d3d03475-7977-fc55-188d-7df350ee0f29@redhat.com>
- <ZMfjmhaqVZyZNNMW@casper.infradead.org>
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-In-Reply-To: <ZMfjmhaqVZyZNNMW@casper.infradead.org>
+To:     Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Chuyi Zhou <zhouchuyi@bytedance.com>, hannes@cmpxchg.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robin.lu@bytedance.com
+References: <20230727073632.44983-1-zhouchuyi@bytedance.com>
+ <ZMInlGaW90Uw1hSo@dhcp22.suse.cz> <ZMNESaE/tWgRd4FI@P9FQF9L96D>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <ZMNESaE/tWgRd4FI@P9FQF9L96D>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2023/8/1 00:38, Matthew Wilcox wrote:
-> On Mon, Jul 31, 2023 at 06:30:22PM +0200, David Hildenbrand wrote:
->> Assume we do do the page table sharing at mmap time, if the flags are right.
->> Let's focus on the most common:
+On 7/28/23 12:30 PM, Roman Gushchin wrote:
+> On Thu, Jul 27, 2023 at 10:15:16AM +0200, Michal Hocko wrote:
+>> On Thu 27-07-23 15:36:27, Chuyi Zhou wrote:
+>>> This patchset tries to add a new bpf prog type and use it to select
+>>> a victim memcg when global OOM is invoked. The mainly motivation is
+>>> the need to customizable OOM victim selection functionality so that
+>>> we can protect more important app from OOM killer.
 >>
->> mmap(memfd, PROT_READ | PROT_WRITE, MAP_SHARED)
+>> This is rather modest to give an idea how the whole thing is supposed to
+>> work. I have looked through patches very quickly but there is no overall
+>> design described anywhere either.
 >>
->> And doing the same in each and every process.
-> That may be the most common in your usage, but for a database, you're
-> looking at two usage scenarios.  Postgres calls mmap() on the database
-> file itself so that all processes share the kernel page cache.
-> Some Commercial Databases call mmap() on a hugetlbfs file so that all
-> processes share the same userspace buffer cache.  Other Commecial
-> Databases call shmget() / shmat() with SHM_HUGETLB for the exact
-> same reason.
->
-> This is why I proposed mshare().  Anyone can use it for anything.
+>> Please could you give us a high level design description and reasoning
+>> why certain decisions have been made? e.g. why is this limited to the
+>> global oom sitation, why is the BPF program forced to operate on memcgs
+>> as entities etc...
+>> Also it would be very helpful to call out limitations of the BPF
+>> program, if there are any.
+> 
+> One thing I realized recently: we don't have to make a victim selection
+> during the OOM, we [almost always] can do it in advance.
 
-Hi Matthew
+I agree. We take precautions against memory shortage on over-committed
+machines through oomd-like userspace tools, to mitigate possible SLO
+violations on important services. The kernel OOM-killer in our scenario
+works as a last resort, since userspace tools are not that reliable.
+IMHO it would be useful for kernel to provide such flexibility.
 
-I'm a little confused about this mshare(). Which one is the mshare() you 
-refer to here, previous mshare() based on filesystem or this RFC v2 
-posted by Khalid?
+> 
+> Kernel OOM's must guarantee the forward progress under heavy memory pressure
+> and it creates a lot of limitations on what can and what can't be done in
+> these circumstances.
+> 
+> But in practice most policies except maybe those which aim to catch very fast
+> memory spikes rely on things which are fairly static: a logical importance of
+> several workloads in comparison to some other workloads, "age", memory footprint
+> etc.
+> 
+> So I wonder if the right path is to create a kernel interface which allows
+> to define a OOM victim (maybe several victims, also depending on if it's
+> a global or a memcg oom) and update it periodically from an userspace.
 
-IMHO, they have much difference between previously mshare() and 
-MAP_SHARED_PT now.
+Something like [1] proposed by Chuyi? IIUC there is still lack of some
+triggers to invoke the procedure so we can actually do this in advance.
 
-> We have such a diverse set of users who want to do stuff with shared
-> page tables that we should not be tying it to memfd or any other
-> filesystem.  Not to mention that it's more flexible; you can map
-> individual 4kB files into it and still get page table sharing.
+[1] 
+https://lore.kernel.org/lkml/f8f44103-afba-10ee-b14b-a8e60a7f33d8@bytedance.com/
+
+Thanks & Best,
+	Abel
