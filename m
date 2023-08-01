@@ -2,224 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2497576B2A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE61F76B2AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbjHALGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
+        id S233354AbjHALGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234232AbjHALGH (ORCPT
+        with ESMTP id S232225AbjHALGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:06:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B07B7ABB;
-        Tue,  1 Aug 2023 03:59:59 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA38061531;
-        Tue,  1 Aug 2023 10:59:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AC84C433C9;
-        Tue,  1 Aug 2023 10:59:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690887598;
-        bh=cJ6HxF/ThVR/+zvBOoBquVMaIQzGoP/7I5cRuZVbKXk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GrZtGmBdeIoyU2JiaGKKDBn3Nl8VLA+7Vojpmhlw3zVvHa48VBG3ieI9OytShJwi2
-         U2nN8BFFtw+YOUkkOoSm1BkUwCfjaU2my6TFQ2yTJkdke+21jEZKYk0QTF9wM6KzNc
-         5poC1oTNbMl9oaOWm3lKK7riTCj2rQXfkSzRt4QJTXF1lfTD1lxGZn56rkMo0rGOlT
-         S9c1jBV8AaqiEhfz23ekmGVZ9nTJQ4J6uuNekicEPyjWP0fs2JULp2a20aoICXYuuM
-         bkn6+6+p6T/jRgJ7cw+db3NlG1hEBvbxVnffE0in0mjLKh1n+vYlDqELzaIMGSVrrD
-         781oZ0oHW02Nw==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-522c9d388d2so2553573a12.3;
-        Tue, 01 Aug 2023 03:59:58 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYN8K64K6yFDRrUoPrpgvWop9Zd080I37kbNLkt7lroXplMkD/o
-        o/AItp22Ys/E/r441EYGD/orQOaxv9hAXnGyusU=
-X-Google-Smtp-Source: APBJJlGsjvVUdm0WV1N6LPXXmNwny1y2pnBM4pxtv3fQG12+7vk1ulLoruprtA24W9EggBNpBOOK4g/odFc4GuJfPZk=
-X-Received: by 2002:a50:ec92:0:b0:522:2d1b:5a2e with SMTP id
- e18-20020a50ec92000000b005222d1b5a2emr2092080edr.12.1690887596515; Tue, 01
- Aug 2023 03:59:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230731095534.22842-1-xingmingzheng@iscas.ac.cn> <20230731150511.38140-1-xingmingzheng@iscas.ac.cn>
-In-Reply-To: <20230731150511.38140-1-xingmingzheng@iscas.ac.cn>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 1 Aug 2023 18:59:45 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQ75bFm+=dZBV1dijNv5h-kKuAYKHkakgq-seTS5BWOBw@mail.gmail.com>
-Message-ID: <CAJF2gTQ75bFm+=dZBV1dijNv5h-kKuAYKHkakgq-seTS5BWOBw@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Handle zicsr/zifencei issue between gcc and binutils
-To:     Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Bin Meng <bmeng@tinylab.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 07:06:09 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC43C59CF;
+        Tue,  1 Aug 2023 04:00:02 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxXOqx5chk6wwOAA--.5918S3;
+        Tue, 01 Aug 2023 19:00:01 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLCOv5chkAd9DAA--.26809S2;
+        Tue, 01 Aug 2023 19:00:00 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] MIPS: Remove noreturn attribute for die()
+Date:   Tue,  1 Aug 2023 18:59:59 +0800
+Message-Id: <1690887599-11442-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8CxLCOv5chkAd9DAA--.26809S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxZF4DZF1xuw1rCFWDJF1rKrX_yoW5WFyDpa
+        yqkasrGrW8CFs8u3s8Jr4kCrWayrZ5t3yjkw18KwnaywnIv3yrJF4kJFyjvw4rKry0ga4U
+        XFWjqwn5AFs3ZabCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+        67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6x
+        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcrWFUUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:06=E2=80=AFPM Mingzheng Xing
-<xingmingzheng@iscas.ac.cn> wrote:
->
-> Binutils-2.38 and GCC-12.1.0 bumped[0][1] the default ISA spec to the new=
-er
-> 20191213 version which moves some instructions from the I extension to th=
-e
-> Zicsr and Zifencei extensions. So if one of the binutils and GCC exceeds
-> that version, we should explicitly specifying Zicsr and Zifencei via -mar=
-ch
-> to cope with the new changes. but this only occurs when binutils >=3D 2.3=
-6
-> and GCC >=3D 11.1.0. It's a different story when binutils < 2.36.
->
-> binutils-2.36 supports the Zifencei extension[2] and splits Zifencei and
-> Zicsr from I[3]. GCC-11.1.0 is particular[4] because it add support Zicsr
-> and Zifencei extension for -march. binutils-2.35 does not support the
-> Zifencei extension, and does not need to specify Zicsr and Zifencei when
-> working with GCC >=3D 12.1.0.
->
-> To make our lives easier, let's relax the check to binutils >=3D 2.36 in
-> CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. For the other two cases,
-> where clang < 17 or GCC < 11.1.0, we will deal with them in
-> CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC.
->
-> For more information, please refer to:
-> commit 6df2a016c0c8 ("riscv: fix build with binutils 2.38")
-> commit e89c2e815e76 ("riscv: Handle zicsr/zifencei issues between clang a=
-nd binutils")
-> Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3Daed=
-44286efa8ae8717a77d94b51ac3614e2ca6dc [0]
-> Link: https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3D98416dbb0a62579=
-d4a7a4a76bab51b5b52fec2cd [1]
-> Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3D5a1=
-b31e1e1cee6e9f1c92abff59cdcfff0dddf30 [2]
-> Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=3D729=
-a53530e86972d1143553a415db34e6e01d5d2 [3]
-> Link: https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3Db03be74bad08c38=
-2da47e048007a78fa3fb4ef49 [4]
-> Link: https://lore.kernel.org/all/20230308220842.1231003-1-conor@kernel.o=
-rg
-> Link: https://lore.kernel.org/all/20230223220546.52879-1-conor@kernel.org
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Mingzheng Xing <xingmingzheng@iscas.ac.cn>
-> ---
->  arch/riscv/Kconfig                     | 32 +++++++++++++++-----------
->  arch/riscv/kernel/compat_vdso/Makefile |  8 ++++++-
->  2 files changed, 26 insertions(+), 14 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 4c07b9189c86..10e7a7ad175a 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -570,24 +570,30 @@ config TOOLCHAIN_HAS_ZIHINTPAUSE
->  config TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
->         def_bool y
->         # https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommit;h=
-=3Daed44286efa8ae8717a77d94b51ac3614e2ca6dc
-> -       depends on AS_IS_GNU && AS_VERSION >=3D 23800
-> -       help
-> -         Newer binutils versions default to ISA spec version 20191213 wh=
-ich
-> -         moves some instructions from the I extension to the Zicsr and Z=
-ifencei
-> -         extensions.
-> +       # https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3D98416dbb0a6=
-2579d4a7a4a76bab51b5b52fec2cd
-> +       depends on AS_IS_GNU && AS_VERSION >=3D 23600
-> +       help
-> +         Binutils-2.38 and GCC-12.1.0 bumped the default ISA spec to the=
- newer
-> +         20191213 version, which moves some instructions from the I exte=
-nsion to
-> +         the Zicsr and Zifencei extensions. This requires explicitly spe=
-cifying
-> +         Zicsr and Zifencei when binutils >=3D 2.38 or GCC >=3D 12.1.0. =
-Zicsr
-> +         and Zifencei are supported in binutils from version 2.36 onward=
-s.
-> +         To make life easier, and avoid forcing toolchains that default =
-to a
-> +         newer ISA spec to version 2.2, relax the check to binutils >=3D=
- 2.36.
-> +         For clang < 17 or GCC < 11.1.0, for which this is not possible,=
- this is
-> +         dealt with in CONFIG_TOOLCHAIN_NEEDS_OLD_ISA_SPEC.
->
->  config TOOLCHAIN_NEEDS_OLD_ISA_SPEC
->         def_bool y
->         depends on TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
->         # https://github.com/llvm/llvm-project/commit/22e199e6afb1263c943=
-c0c0d4498694e15bf8a16
-> -       depends on CC_IS_CLANG && CLANG_VERSION < 170000
-> -       help
-> -         Certain versions of clang do not support zicsr and zifencei via=
- -march
-> -         but newer versions of binutils require it for the reasons noted=
- in the
-> -         help text of CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI. Th=
-is
-> -         option causes an older ISA spec compatible with these older ver=
-sions
-> -         of clang to be passed to GAS, which has the same result as pass=
-ing zicsr
-> -         and zifencei to -march.
-> +       # https://gcc.gnu.org/git/?p=3Dgcc.git;a=3Dcommit;h=3Db03be74bad0=
-8c382da47e048007a78fa3fb4ef49
-> +       depends on (CC_IS_CLANG && CLANG_VERSION < 170000) || (CC_IS_GCC =
-&& GCC_VERSION < 110100)
-> +       help
-> +         Certain versions of clang and GCC do not support zicsr and zife=
-ncei via
-> +         -march. This option causes an older ISA spec compatible with th=
-ese older
-> +         versions of clang and GCC to be passed to GAS, which has the sa=
-me result
-> +         as passing zicsr and zifencei to -march.
->
->  config FPU
->         bool "FPU support"
-> diff --git a/arch/riscv/kernel/compat_vdso/Makefile b/arch/riscv/kernel/c=
-ompat_vdso/Makefile
-> index 189345773e7e..b86e5e2c3aea 100644
-> --- a/arch/riscv/kernel/compat_vdso/Makefile
-> +++ b/arch/riscv/kernel/compat_vdso/Makefile
-> @@ -11,7 +11,13 @@ compat_vdso-syms +=3D flush_icache
->  COMPAT_CC :=3D $(CC)
->  COMPAT_LD :=3D $(LD)
->
-> -COMPAT_CC_FLAGS :=3D -march=3Drv32g -mabi=3Dilp32
-> +# binutils 2.35 does not support the zifencei extension, but in the ISA
-> +# spec 20191213, G stands for IMAFD_ZICSR_ZIFENCEI.
-> +ifdef CONFIG_TOOLCHAIN_NEEDS_EXPLICIT_ZICSR_ZIFENCEI
-Acked-by: Guo Ren <guoren@kernel.org>
+If notify_die() returns NOTIFY_STOP, there is no need to call
+make_task_dead(), we can remove noreturn attribute for die(),
+this is similar with arm64, riscv and csky.
 
-> +       COMPAT_CC_FLAGS :=3D -march=3Drv32g -mabi=3Dilp32
-> +else
-> +       COMPAT_CC_FLAGS :=3D -march=3Drv32imafd -mabi=3Dilp32
-> +endif
+While at it, modify the die() declaration in ptrace.h to fix
+the following checkpatch warnings:
 
+  WARNING: function definition argument 'const char *' should also have an identifier name
+  WARNING: function definition argument 'struct pt_regs *' should also have an identifier name
 
->  COMPAT_LD_FLAGS :=3D -melf32lriscv
->
->  # Disable attributes, as they're useless and break the build.
-> --
-> 2.34.1
->
+Additionally, also remove noreturn attribute for nmi_exception_handler
+due to it calls die(), otherwise there exists the following build error:
 
+  arch/mips/kernel/traps.c:2001:1: error: 'noreturn' function does return [-Werror]
 
---=20
-Best Regards
- Guo Ren
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/include/asm/ptrace.h |  2 +-
+ arch/mips/kernel/traps.c       | 14 +++++++-------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
+index daf3cf2..14d2ee9 100644
+--- a/arch/mips/include/asm/ptrace.h
++++ b/arch/mips/include/asm/ptrace.h
+@@ -159,7 +159,7 @@ static inline long regs_return_value(struct pt_regs *regs)
+ extern asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall);
+ extern asmlinkage void syscall_trace_leave(struct pt_regs *regs);
+ 
+-extern void die(const char *, struct pt_regs *) __noreturn;
++void die(const char *str, struct pt_regs *regs);
+ 
+ static inline void die_if_kernel(const char *str, struct pt_regs *regs)
+ {
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 246c6a6..4f5140f 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -391,16 +391,15 @@ void show_registers(struct pt_regs *regs)
+ 
+ static DEFINE_RAW_SPINLOCK(die_lock);
+ 
+-void __noreturn die(const char *str, struct pt_regs *regs)
++void die(const char *str, struct pt_regs *regs)
+ {
+ 	static int die_counter;
+-	int sig = SIGSEGV;
++	int ret;
+ 
+ 	oops_enter();
+ 
+-	if (notify_die(DIE_OOPS, str, regs, 0, current->thread.trap_nr,
+-		       SIGSEGV) == NOTIFY_STOP)
+-		sig = 0;
++	ret = notify_die(DIE_OOPS, str, regs, 0,
++			 current->thread.trap_nr, SIGSEGV);
+ 
+ 	console_verbose();
+ 	raw_spin_lock_irq(&die_lock);
+@@ -422,7 +421,8 @@ void __noreturn die(const char *str, struct pt_regs *regs)
+ 	if (regs && kexec_should_crash(current))
+ 		crash_kexec(regs);
+ 
+-	make_task_dead(sig);
++	if (ret != NOTIFY_STOP)
++		make_task_dead(SIGSEGV);
+ }
+ 
+ extern struct exception_table_entry __start___dbe_table[];
+@@ -1986,7 +1986,7 @@ int register_nmi_notifier(struct notifier_block *nb)
+ 	return raw_notifier_chain_register(&nmi_chain, nb);
+ }
+ 
+-void __noreturn nmi_exception_handler(struct pt_regs *regs)
++void nmi_exception_handler(struct pt_regs *regs)
+ {
+ 	char str[100];
+ 
+-- 
+2.1.0
+
