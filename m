@@ -2,61 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 815A876BFA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E0476BF97
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231886AbjHAVzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57900 "EHLO
+        id S232484AbjHAVzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231269AbjHAVza (ORCPT
+        with ESMTP id S230345AbjHAVzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:55:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008B326A3;
-        Tue,  1 Aug 2023 14:55:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 03A5C61735;
-        Tue,  1 Aug 2023 21:55:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF998C433C9;
-        Tue,  1 Aug 2023 21:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690926925;
-        bh=UWkbtTwArpfxA+PVVNq82HZpmdGnmNashPrlejXB09k=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=X7bRXlm/M/np1MHpLVS4xJ8NWtnSZ1zJMJUGU6InEuIVydMCltMRWhqg40qL2vZ8x
-         tIxthPtUvRMG5TcGyrcJIKIurni4ZTrTX1I4XftP/uDxf5P83kRQ4dKyTAtIcwiCX8
-         TSpPi9V3rNAE7cjy9THYUUts0CAN+igAC8Vi5LasuaXVcEpbQAgSoMHPQQ/LwyYtJn
-         HUJUVa7CbMjpRatKFh8vsV9pcuP0ZwqbnYCvHt2tpof25Hh2samO9RiEPLVfU74GA1
-         9ixnza/pJAaJ5wk0tK1YG4qU008sUroHYkjoffXYCk+spnxnatcDHaGv9Su4gsUX9P
-         k5gieFs26hIOA==
-Received: (nullmailer pid 2469345 invoked by uid 1000);
-        Tue, 01 Aug 2023 21:55:14 -0000
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 01 Aug 2023 15:54:48 -0600
-Subject: [PATCH 5/5] of: Refactor node and property manipulation function
- locking
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230801-dt-changeset-fixes-v1-5-b5203e3fc22f@kernel.org>
-References: <20230801-dt-changeset-fixes-v1-0-b5203e3fc22f@kernel.org>
-In-Reply-To: <20230801-dt-changeset-fixes-v1-0-b5203e3fc22f@kernel.org>
-To:     Frank Rowand <frowand.list@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.13-dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Tue, 1 Aug 2023 17:55:14 -0400
+Received: from hutie.ust.cz (hutie.ust.cz [IPv6:2a03:3b40:fe:f0::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5696F103;
+        Tue,  1 Aug 2023 14:55:06 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cutebit.org; s=mail;
+        t=1690926903; bh=5cd3+VNLF8xZ6lJKYpj4LYc+fiVvPNDsifiAF5qrQSg=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To;
+        b=T4uYuXHSUmW78IqK7Nz0bGZ6cpWR+xquQKx8AsPI3POjrw0muX8ooGGSHs1hK913n
+         pozvZBiD0yS86wekdqQp3PVz6FQqKJ8O49TPnhalDxcVxrdN1zrxpS80mf2q93PR+j
+         MEJnFM6i5RJAScbP3+HgwceG5+2hZC1QcinwUp30=
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.120.41.1.1\))
+Subject: Re: [PATCH 2/2] dmaengine: apple-sio: Add Apple SIO driver
+From:   =?utf-8?Q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
+In-Reply-To: <ZMlLjg9UBi3QO/qV@matsya>
+Date:   Tue, 1 Aug 2023 23:55:02 +0200
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, asahi@lists.linux.dev,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <7D43A9F3-892C-4E74-9618-DB37360B7641@cutebit.org>
+References: <20230712133806.4450-1-povik+lin@cutebit.org>
+ <20230712133806.4450-3-povik+lin@cutebit.org> <ZMlLjg9UBi3QO/qV@matsya>
+To:     Vinod Koul <vkoul@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,323 +48,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All callers of __of_{add,remove,update}_property() and
-__of_{attach,detach}_node() wrap the call with the devtree_lock
-spinlock. Let's move the spinlock into the functions. This allows moving
-the sysfs update functions into those functions as well.
+Hi Vinod!
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- drivers/of/base.c    | 69 ++++++++++++++++++++++++++--------------------------
- drivers/of/dynamic.c | 51 ++++++++++++--------------------------
- 2 files changed, 50 insertions(+), 70 deletions(-)
+> On 1. 8. 2023, at 20:14, Vinod Koul <vkoul@kernel.org> wrote:
+>=20
+> On 12-07-23, 15:38, Martin Povi=C5=A1er wrote:
+>=20
+>> +struct sio_chan {
+>> +	unsigned int no;
+>> +	struct sio_data *host;
+>> +	struct dma_chan chan;
+>> +	struct tasklet_struct tasklet;
+>> +	struct work_struct terminate_wq;
+>> +
+>> +	spinlock_t lock;
+>> +	struct sio_tx *current_tx;
+>> +	/*
+>> +	 * 'tx_cookie' is used for distinguishing between transactions =
+from
+>> +	 * within tag ack/nack callbacks. Without it, we would have no =
+way
+>> +	 * of knowing if the current transaction is the one the callback =
+handler
+>> +	 * was installed for.
+>=20
+> not sure what you mean by here.. I dont see why you would need to =
+store
+> cookie here, care to explain?
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 99c07f3cbf10..4ee050ace11e 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -1536,8 +1536,12 @@ EXPORT_SYMBOL(of_count_phandle_with_args);
-  */
- int __of_add_property(struct device_node *np, struct property *prop)
- {
-+	int rc = 0;
-+	unsigned long flags;
- 	struct property **next;
- 
-+	raw_spin_lock_irqsave(&devtree_lock, flags);
-+
- 	/* If the property is in deadprops then it must be removed */
- 	for (next = &np->deadprops; *next; next = &(*next)->next) {
- 		if (*next == prop) {
-@@ -1549,15 +1553,21 @@ int __of_add_property(struct device_node *np, struct property *prop)
- 	prop->next = NULL;
- 	next = &np->properties;
- 	while (*next) {
--		if (strcmp(prop->name, (*next)->name) == 0)
-+		if (strcmp(prop->name, (*next)->name) == 0) {
- 			/* duplicate ! don't insert it */
--			return -EEXIST;
--
-+			rc = -EEXIST;
-+			goto out;
-+		}
- 		next = &(*next)->next;
- 	}
- 	*next = prop;
- 
--	return 0;
-+out:
-+	raw_spin_unlock_irqrestore(&devtree_lock, flags);
-+	if (!rc)
-+		__of_add_property_sysfs(np, prop);
-+
-+	return rc;
- }
- 
- /**
-@@ -1567,23 +1577,12 @@ int __of_add_property(struct device_node *np, struct property *prop)
-  */
- int of_add_property(struct device_node *np, struct property *prop)
- {
--	unsigned long flags;
- 	int rc;
- 
- 	mutex_lock(&of_mutex);
--
--	raw_spin_lock_irqsave(&devtree_lock, flags);
- 	rc = __of_add_property(np, prop);
--	raw_spin_unlock_irqrestore(&devtree_lock, flags);
--
--	if (!rc)
--		__of_add_property_sysfs(np, prop);
--
- 	mutex_unlock(&of_mutex);
- 
--	if (!rc)
--		of_property_notify(OF_RECONFIG_ADD_PROPERTY, np, prop, NULL);
--
- 	return rc;
- }
- EXPORT_SYMBOL_GPL(of_add_property);
-@@ -1591,20 +1590,29 @@ EXPORT_SYMBOL_GPL(of_add_property);
- int __of_remove_property(struct device_node *np, struct property *prop)
- {
- 	struct property **next;
-+	unsigned long flags;
-+	int rc = 0;
-+
-+	raw_spin_lock_irqsave(&devtree_lock, flags);
- 
- 	for (next = &np->properties; *next; next = &(*next)->next) {
- 		if (*next == prop)
- 			break;
- 	}
--	if (*next == NULL)
--		return -ENODEV;
--
-+	if (*next == NULL) {
-+		rc = -ENODEV;
-+		goto out;
-+	}
- 	/* found the node */
- 	*next = prop->next;
- 	prop->next = np->deadprops;
- 	np->deadprops = prop;
- 
--	return 0;
-+out:
-+	raw_spin_unlock_irqrestore(&devtree_lock, flags);
-+	if (!rc)
-+		__of_remove_property_sysfs(np, prop);
-+	return rc;
- }
- 
- /**
-@@ -1619,21 +1627,13 @@ int __of_remove_property(struct device_node *np, struct property *prop)
-  */
- int of_remove_property(struct device_node *np, struct property *prop)
- {
--	unsigned long flags;
- 	int rc;
- 
- 	if (!prop)
- 		return -ENODEV;
- 
- 	mutex_lock(&of_mutex);
--
--	raw_spin_lock_irqsave(&devtree_lock, flags);
- 	rc = __of_remove_property(np, prop);
--	raw_spin_unlock_irqrestore(&devtree_lock, flags);
--
--	if (!rc)
--		__of_remove_property_sysfs(np, prop);
--
- 	mutex_unlock(&of_mutex);
- 
- 	if (!rc)
-@@ -1647,6 +1647,9 @@ int __of_update_property(struct device_node *np, struct property *newprop,
- 		struct property **oldpropp)
- {
- 	struct property **next, *oldprop;
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&devtree_lock, flags);
- 
- 	/* If the property is in deadprops then it must be removed */
- 	for (next = &np->deadprops; *next; next = &(*next)->next) {
-@@ -1675,6 +1678,10 @@ int __of_update_property(struct device_node *np, struct property *newprop,
- 		*next = newprop;
- 	}
- 
-+	raw_spin_unlock_irqrestore(&devtree_lock, flags);
-+
-+	__of_update_property_sysfs(np, newprop, oldprop);
-+
- 	return 0;
- }
- 
-@@ -1690,21 +1697,13 @@ int __of_update_property(struct device_node *np, struct property *newprop,
- int of_update_property(struct device_node *np, struct property *newprop)
- {
- 	struct property *oldprop;
--	unsigned long flags;
- 	int rc;
- 
- 	if (!newprop->name)
- 		return -EINVAL;
- 
- 	mutex_lock(&of_mutex);
--
--	raw_spin_lock_irqsave(&devtree_lock, flags);
- 	rc = __of_update_property(np, newprop, &oldprop);
--	raw_spin_unlock_irqrestore(&devtree_lock, flags);
--
--	if (!rc)
--		__of_update_property_sysfs(np, newprop, oldprop);
--
- 	mutex_unlock(&of_mutex);
- 
- 	if (!rc)
-diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
-index 4fd3699691b6..c59f581792f1 100644
---- a/drivers/of/dynamic.c
-+++ b/drivers/of/dynamic.c
-@@ -199,6 +199,9 @@ static void __of_attach_node(struct device_node *np)
- {
- 	const __be32 *phandle;
- 	int sz;
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&devtree_lock, flags);
- 
- 	if (!of_node_check_flag(np, OF_OVERLAY)) {
- 		np->name = __of_get_property(np, "name", NULL);
-@@ -221,6 +224,10 @@ static void __of_attach_node(struct device_node *np)
- 	np->parent->child = np;
- 	of_node_clear_flag(np, OF_DETACHED);
- 	np->fwnode.flags |= FWNODE_FLAG_NOT_DEVICE;
-+
-+	raw_spin_unlock_irqrestore(&devtree_lock, flags);
-+
-+	__of_attach_node_sysfs(np);
- }
- 
- /**
-@@ -230,17 +237,12 @@ static void __of_attach_node(struct device_node *np)
- int of_attach_node(struct device_node *np)
- {
- 	struct of_reconfig_data rd;
--	unsigned long flags;
- 
- 	memset(&rd, 0, sizeof(rd));
- 	rd.dn = np;
- 
- 	mutex_lock(&of_mutex);
--	raw_spin_lock_irqsave(&devtree_lock, flags);
- 	__of_attach_node(np);
--	raw_spin_unlock_irqrestore(&devtree_lock, flags);
--
--	__of_attach_node_sysfs(np);
- 	mutex_unlock(&of_mutex);
- 
- 	of_reconfig_notify(OF_RECONFIG_ATTACH_NODE, &rd);
-@@ -251,13 +253,15 @@ int of_attach_node(struct device_node *np)
- void __of_detach_node(struct device_node *np)
- {
- 	struct device_node *parent;
-+	unsigned long flags;
- 
--	if (WARN_ON(of_node_check_flag(np, OF_DETACHED)))
--		return;
-+	raw_spin_lock_irqsave(&devtree_lock, flags);
- 
- 	parent = np->parent;
--	if (WARN_ON(!parent))
-+	if (WARN_ON(of_node_check_flag(np, OF_DETACHED) || !parent)) {
-+		raw_spin_unlock_irqrestore(&devtree_lock, flags);
- 		return;
-+	}
- 
- 	if (parent->child == np)
- 		parent->child = np->sibling;
-@@ -274,6 +278,10 @@ void __of_detach_node(struct device_node *np)
- 
- 	/* race with of_find_node_by_phandle() prevented by devtree_lock */
- 	__of_phandle_cache_inv_entry(np->phandle);
-+
-+	raw_spin_unlock_irqrestore(&devtree_lock, flags);
-+
-+	__of_detach_node_sysfs(np);
- }
- 
- /**
-@@ -283,17 +291,12 @@ void __of_detach_node(struct device_node *np)
- int of_detach_node(struct device_node *np)
- {
- 	struct of_reconfig_data rd;
--	unsigned long flags;
- 
- 	memset(&rd, 0, sizeof(rd));
- 	rd.dn = np;
- 
- 	mutex_lock(&of_mutex);
--	raw_spin_lock_irqsave(&devtree_lock, flags);
- 	__of_detach_node(np);
--	raw_spin_unlock_irqrestore(&devtree_lock, flags);
--
--	__of_detach_node_sysfs(np);
- 	mutex_unlock(&of_mutex);
- 
- 	of_reconfig_notify(OF_RECONFIG_DETACH_NODE, &rd);
-@@ -565,13 +568,11 @@ static int __of_changeset_entry_notify(struct of_changeset_entry *ce,
- 
- static int __of_changeset_entry_apply(struct of_changeset_entry *ce)
- {
--	unsigned long flags;
- 	int ret = 0;
- 
- 	if (pr_debug("changeset: applying: cset<%p> ", ce))
- 		of_changeset_action_print(ce->action, ce->np, ce->prop ? ce->prop->name : NULL);
- 
--	raw_spin_lock_irqsave(&devtree_lock, flags);
- 	switch (ce->action) {
- 	case OF_RECONFIG_ATTACH_NODE:
- 		__of_attach_node(ce->np);
-@@ -592,7 +593,6 @@ static int __of_changeset_entry_apply(struct of_changeset_entry *ce)
- 	default:
- 		ret = -EINVAL;
- 	}
--	raw_spin_unlock_irqrestore(&devtree_lock, flags);
- 
- 	if (ret) {
- 		pr_err("changeset: apply failed: cset<%p> ", ce);
-@@ -600,25 +600,6 @@ static int __of_changeset_entry_apply(struct of_changeset_entry *ce)
- 		return ret;
- 	}
- 
--	switch (ce->action) {
--	case OF_RECONFIG_ATTACH_NODE:
--		__of_attach_node_sysfs(ce->np);
--		break;
--	case OF_RECONFIG_DETACH_NODE:
--		__of_detach_node_sysfs(ce->np);
--		break;
--	case OF_RECONFIG_ADD_PROPERTY:
--		/* ignore duplicate names */
--		__of_add_property_sysfs(ce->np, ce->prop);
--		break;
--	case OF_RECONFIG_REMOVE_PROPERTY:
--		__of_remove_property_sysfs(ce->np, ce->prop);
--		break;
--	case OF_RECONFIG_UPDATE_PROPERTY:
--		__of_update_property_sysfs(ce->np, ce->prop, ce->old_prop);
--		break;
--	}
--
- 	return 0;
- }
- 
+I could have clarified this is not meant to be the dmaengine cookie, =
+just
+a driver-level cookie to address a race between
 
--- 
-2.40.1
+	a dmaengine user calling terminate_all to terminate a running
+	cyclic transaction, then issuing a new one
+
+on one hand, and
+
+	the coprocessor acking the issuing of one of the coprocessor
+	transactions that correspond to the first dmaengine transaction
+
+on the other hand. With the cookie the driver should not get confused
+about which dmaengine transaction the ACK belongs to, since if =
+`current_tx`
+changed in the meantime the cookie won=E2=80=99t match.
+
+But now that I look at it... huh, I never increment that `tx_cookie` =
+field!
+I don=E2=80=99t know if I have considered using the dmaengine cookie to =
+the same
+effect. Maybe we can do that, I see how that would be much desirable.
+
+>> +	 */
+>> +	unsigned long tx_cookie;
+>> +	int nperiod_acks;
+>> +
+>> +	/*
+>> +	 * We maintain a 'submitted' and 'issued' list mainly for =
+interface
+>> +	 * correctness. Typical use of the driver (per channel) will be
+>> +	 * prepping, submitting and issuing a single cyclic transaction =
+which
+>> +	 * will stay current until terminate_all is called.
+>> +	 */
+>> +	struct list_head submitted;
+>> +	struct list_head issued;
+>> +
+>> +	struct list_head to_free;
+>=20
+> can you use virt_dma_chan, that should simplify list handling etc
+
+I looked into that when I wrote the sister driver apple-admac.c, I =
+don=E2=80=99t
+remember anymore why I decided against it, and I don=E2=80=99t think it =
+came up
+during review. Now that this driver is done, I hope we can take it as =
+is.
+
+There=E2=80=99s some benefit from the drivers having a similar =
+structure, I sent
+one or two fixes to apple-admac for things I found out because I was
+writing this other driver.
+
+>> +};
+>> +
+>> +#define SIO_NTAGS		16
+>> +
+>> +typedef void (*sio_ack_callback)(struct sio_chan *, void *, bool);
+>=20
+> any reason not to use dmaengine callbacks?
+
+Not sure what dmaengine callback you mean here. This callback means
+the coprocessor acked a tag, not sure how we can fit something dmaengine
+onto it.
+
+>> +static int sio_alloc_tag(struct sio_data *sio)
+>> +{
+>> +	struct sio_tagdata *tags =3D &sio->tags;
+>> +	int tag, i;
+>> +
+>> +	/*
+>> +	 * Because tag number 0 is special, the usable tag range
+>> +	 * is 1...(SIO_NTAGS - 1). So, to pick the next usable tag,
+>> +	 * we do modulo (SIO_NTAGS - 1) *then* plus one.
+>> +	 */
+>> +
+>> +#define SIO_USABLE_TAGS (SIO_NTAGS - 1)
+>> +	tag =3D (READ_ONCE(tags->last_tag) % SIO_USABLE_TAGS) + 1;
+>> +
+>> +	for (i =3D 0; i < SIO_USABLE_TAGS; i++) {
+>> +		if (!test_and_set_bit(tag, &tags->allocated))
+>> +			break;
+>> +
+>> +		tag =3D (tag % SIO_USABLE_TAGS) + 1;
+>> +	}
+>> +
+>> +	WRITE_ONCE(tags->last_tag, tag);
+>> +
+>> +	if (i < SIO_USABLE_TAGS)
+>> +		return tag;
+>> +	else
+>> +		return -EBUSY;
+>> +#undef SIO_USABLE_TAGS
+>> +}
+>=20
+> can you use kernel mechanisms like ida to alloc and free the tags...
+
+I can look into that.
+
+>> +static struct dma_async_tx_descriptor *sio_prep_dma_cyclic(
+>> +		struct dma_chan *chan, dma_addr_t buf_addr, size_t =
+buf_len,
+>> +		size_t period_len, enum dma_transfer_direction =
+direction,
+>> +		unsigned long flags)
+>> +{
+>> +	struct sio_chan *siochan =3D to_sio_chan(chan);
+>> +	struct sio_tx *siotx =3D NULL;
+>> +	int i, nperiods =3D buf_len / period_len;
+>> +
+>> +	if (direction !=3D sio_chan_direction(siochan->no))
+>> +		return NULL;
+>> +
+>> +	siotx =3D kzalloc(struct_size(siotx, siodesc, nperiods), =
+GFP_NOWAIT);
+>> +	if (!siotx)
+>> +		return NULL;
+>> +
+>> +	init_completion(&siotx->done);
+>> +	dma_async_tx_descriptor_init(&siotx->tx, chan);
+>> +	siotx->period_len =3D period_len;
+>> +	siotx->nperiods =3D nperiods;
+>> +
+>> +	for (i =3D 0; i < nperiods; i++) {
+>> +		struct sio_coproc_desc *d;
+>> +
+>> +		siotx->siodesc[i] =3D d =3D =
+sio_alloc_desc(siochan->host);
+>> +		if (!d) {
+>> +			sio_tx_free(&siotx->tx);
+>> +			return NULL;
+>> +		}
+>> +
+>> +		d->flag =3D 1; // not sure what's up with this
+>> +		d->iova =3D buf_addr + period_len * i;
+>> +		d->size =3D period_len;
+>> +	}
+>> +	dma_wmb();
+>=20
+> why use barrier here? and to what purpose..
+
+Few lines above we are modifying a shared memory buffer that=E2=80=99s =
+mapped into
+the coprocessor=E2=80=99s address space (it=E2=80=99s what `d` points =
+to).
+
+> --=20
+> ~Vinod
+>=20
+
+Best regards, Martin
 
