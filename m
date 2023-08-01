@@ -2,151 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C57676A90C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE3F76A913
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbjHAG2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:28:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
+        id S229847AbjHAG3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbjHAG1s (ORCPT
+        with ESMTP id S229818AbjHAG3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:27:48 -0400
-Received: from out-95.mta0.migadu.com (out-95.mta0.migadu.com [IPv6:2001:41d0:1004:224b::5f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819231BEA
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:27:35 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690871252;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GjPiL+4LjXSLBCxGMeQtGBgOYicqjuvMF+wdwkDOlns=;
-        b=BVeQI85MV804PQr1qQe3DjMi+1F7rL86o2o0lwrOFiyWe49HUAwschBw2NvFJbIx0AO6LH
-        IWMwlggQtKfBszl3tff+FfgvobC5ykPcyYp3Xet2RFFyDNBASoXJeYSsMBjOOwYvyNRKOp
-        qIDZRM7vuYhslGuWAI6QMX3bz0VBZP0=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH] sched/rt: move back to RT_GROUP_SCHED and rename it child
-Date:   Tue,  1 Aug 2023 14:27:14 +0800
-Message-Id: <20230801062714.3424299-1-yajun.deng@linux.dev>
+        Tue, 1 Aug 2023 02:29:01 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E269F19AA;
+        Mon, 31 Jul 2023 23:28:32 -0700 (PDT)
+Received: from canpemm500007.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RFQ9r2JMzzVjrq;
+        Tue,  1 Aug 2023 14:26:40 +0800 (CST)
+Received: from [10.174.179.215] (10.174.179.215) by
+ canpemm500007.china.huawei.com (7.192.104.62) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 1 Aug 2023 14:28:22 +0800
+Subject: Re: [PATCH v2] ip6mr: Fix skb_under_panic in ip6mr_cache_report()
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <dsahern@kernel.org>, <edumazet@google.com>,
+        <pabeni@redhat.com>, <yoshfuji@linux-ipv6.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <simon.horman@corigine.com>
+References: <20230728121703.29572-1-yuehaibing@huawei.com>
+ <20230731200959.2019cb9c@kernel.org>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <f91c3fd7-8d7a-7a91-8d16-935c90ef9b5d@huawei.com>
+Date:   Tue, 1 Aug 2023 14:28:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <20230731200959.2019cb9c@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500007.china.huawei.com (7.192.104.62)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
-it should not place out of RT_GROUP_SCHED, move back to RT_GROUP_SCHED
-and rename it child.
+On 2023/8/1 11:09, Jakub Kicinski wrote:
+> On Fri, 28 Jul 2023 20:17:03 +0800 Yue Haibing wrote:
+>>  #ifdef CONFIG_IPV6_PIMSM_V2
+>> +	int nhoff = skb_network_offset(pkt);
+>>  	if (assert == MRT6MSG_WHOLEPKT || assert == MRT6MSG_WRMIFWHOLE)
+>> -		skb = skb_realloc_headroom(pkt, -skb_network_offset(pkt)
+>> -						+sizeof(*msg));
+>> +		skb = skb_realloc_headroom(pkt, -nhoff + sizeof(*msg));
+> 
+> These changes look unnecessary. You can leave this code be (as ugly as
+> it is)...
+> 
+>>  	else
+>>  #endif
+>>  		skb = alloc_skb(sizeof(struct ipv6hdr) + sizeof(*msg), GFP_ATOMIC);
+>> @@ -1073,7 +1073,7 @@ static int ip6mr_cache_report(const struct mr_table *mrt, struct sk_buff *pkt,
+>>  		   And all this only to mangle msg->im6_msgtype and
+>>  		   to set msg->im6_mbz to "mbz" :-)
+>>  		 */
+>> -		skb_push(skb, -skb_network_offset(pkt));
+>> +		__skb_pull(skb, nhoff);
+> 
+> .. and just replace the push here with:
+> 
+>   __skb_pull(skb, skb_network_offset(pkt));
 
-Init child in init_tg_rt_entry(). Also, remove the case parent is NULL
-because this case is the same as rt_se is NULL and already returned.
-
-Introduce for_each_sched_rt_entity_reverse() to iterate entries from
-top to down.
-
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
- include/linux/sched.h |  2 +-
- kernel/sched/rt.c     | 28 +++++++++++++++-------------
- 2 files changed, 16 insertions(+), 14 deletions(-)
-
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 177b3f3676ef..5635655d6c35 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -594,8 +594,8 @@ struct sched_rt_entity {
- 	unsigned short			on_rq;
- 	unsigned short			on_list;
- 
--	struct sched_rt_entity		*back;
- #ifdef CONFIG_RT_GROUP_SCHED
-+	struct sched_rt_entity		*child;
- 	struct sched_rt_entity		*parent;
- 	/* rq on which this entity is (to be) queued: */
- 	struct rt_rq			*rt_rq;
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 00e0e5074115..75efb1027b9f 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -228,13 +228,10 @@ void init_tg_rt_entry(struct task_group *tg, struct rt_rq *rt_rq,
- 	if (!rt_se)
- 		return;
- 
--	if (!parent)
--		rt_se->rt_rq = &rq->rt;
--	else
--		rt_se->rt_rq = parent->my_q;
--
-+	rt_se->rt_rq = parent->my_q;
- 	rt_se->my_q = rt_rq;
- 	rt_se->parent = parent;
-+	parent->child = rt_se;
- 	INIT_LIST_HEAD(&rt_se->run_list);
- }
- 
-@@ -564,6 +561,9 @@ static inline struct task_group *next_task_group(struct task_group *tg)
- #define for_each_sched_rt_entity(rt_se) \
- 	for (; rt_se; rt_se = rt_se->parent)
- 
-+#define for_each_sched_rt_entity_reverse(rt_se) \
-+	for (; rt_se; rt_se = rt_se->child)
-+
- static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
- {
- 	return rt_se->my_q;
-@@ -669,6 +669,9 @@ typedef struct rt_rq *rt_rq_iter_t;
- #define for_each_sched_rt_entity(rt_se) \
- 	for (; rt_se; rt_se = NULL)
- 
-+#define for_each_sched_rt_entity_reverse(rt_se) \
-+	for_each_sched_rt_entity(rt_se)
-+
- static inline struct rt_rq *group_rt_rq(struct sched_rt_entity *rt_se)
- {
- 	return NULL;
-@@ -1481,22 +1484,21 @@ static void __dequeue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flag
-  */
- static void dequeue_rt_stack(struct sched_rt_entity *rt_se, unsigned int flags)
- {
--	struct sched_rt_entity *back = NULL;
-+	struct sched_rt_entity *parent = NULL;
- 	unsigned int rt_nr_running;
- 
--	for_each_sched_rt_entity(rt_se) {
--		rt_se->back = back;
--		back = rt_se;
--	}
-+	for_each_sched_rt_entity(rt_se)
-+		parent = rt_se;
- 
--	rt_nr_running = rt_rq_of_se(back)->rt_nr_running;
-+	rt_nr_running = rt_rq_of_se(parent)->rt_nr_running;
- 
--	for (rt_se = back; rt_se; rt_se = rt_se->back) {
-+	rt_se = parent;
-+	for_each_sched_rt_entity_reverse(rt_se) {
- 		if (on_rt_rq(rt_se))
- 			__dequeue_rt_entity(rt_se, flags);
- 	}
- 
--	dequeue_top_rt_rq(rt_rq_of_se(back), rt_nr_running);
-+	dequeue_top_rt_rq(rt_rq_of_se(parent), rt_nr_running);
- }
- 
- static void enqueue_rt_entity(struct sched_rt_entity *rt_se, unsigned int flags)
--- 
-2.25.1
-
+Thanks， will do this in v3.
+> 
