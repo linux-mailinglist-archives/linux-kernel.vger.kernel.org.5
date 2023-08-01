@@ -2,88 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F93976BA2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDAF76BA70
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbjHARAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:00:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
+        id S233996AbjHARDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230375AbjHARAv (ORCPT
+        with ESMTP id S233873AbjHARD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:00:51 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408EE10FA;
-        Tue,  1 Aug 2023 10:00:50 -0700 (PDT)
-Received: from fabio-Precision-3551.. (unknown [IPv6:2804:14c:485:4b61:7ec2:b247:1636:c87a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Tue, 1 Aug 2023 13:03:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75FBF270B;
+        Tue,  1 Aug 2023 10:03:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: festevam@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 6246E86A92;
-        Tue,  1 Aug 2023 19:00:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1690909248;
-        bh=aXEFQjxCgLWUDVbVYYJ8MF7PdHlma86ifvLEvAhinEE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=w9jfvLTVpIebtm/Grk/ejMv+fJ2w8uuF7maImnFq/lermk6s5Zsj9XmGjEuUyYHXs
-         dUrkOB9tSYNtF1VJ8boUGF45pnGF1FjilC1dTm+8aE0y5JjJD3fkxdEke1c1hEQTn/
-         VDTC8MIGvsnBm3s1bXchMvz+BxL0sRuc/NznsUnR7yxRlNAkE+3aSewOrF3Qz/PUzX
-         JYi7ZHQ1D3Ss+eNcu+nS4mubk6ng7NSOGr/jRYf6aFODJEvvGLSHPmVg4yHu2HzEgb
-         0oCuwtp6MYwMjfX0tXAmp/aKjxbGRTv54Uwxi2/2uqlZQrnBYBrTZJ7liLwHs7cFhi
-         A0PnKE36mquJQ==
-From:   Fabio Estevam <festevam@denx.de>
-To:     robh+dt@kernel.org
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fabio Estevam <festevam@denx.de>
-Subject: [PATCH] dt-bindings: trivial-devices: Remove the OV5642 entry
-Date:   Tue,  1 Aug 2023 14:00:15 -0300
-Message-Id: <20230801170015.40965-1-festevam@denx.de>
-X-Mailer: git-send-email 2.34.1
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 83F116164B;
+        Tue,  1 Aug 2023 17:03:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14158C433C8;
+        Tue,  1 Aug 2023 17:03:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690909400;
+        bh=n2/9ktpmINrFVuBWg1KAR2bAcG2NpG4kfEtaUDByDfs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AA0UkNhQxwECDyCEaDtc6JhBhvuvyCYYCaSh4HblOm5/sFOqJy8oy4lzt1PHsqe/d
+         TNp/HD+vd9HlKtv5qMTIS+koyMnH6IxwcAdwNwXp4F5+zwZgvrnFbpNoU+QmQ8b5J3
+         ddlGURjkJRGzvvXYAv/2/xdGEsvIazcCS7ipemT/wemv7xW5NPdaO+scLqNwkzr3kd
+         QYfygusILQtsW8OYGbFyAk8m/i1xYFxg47ufEb41rqQx5La8ZysCvnd1hWLGpVELSo
+         6atnVwdyqVnvxRrlqLIxYCR2TAHb6qdezWZ2QfOYTjqX/DgeT6WtV9UpJOx4DAmJz+
+         ldxqcY8ezOQig==
+Date:   Tue, 1 Aug 2023 20:02:31 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 11/36] arm64/mm: Map pages for guarded control stack
+Message-ID: <20230801170231.GC2607694@kernel.org>
+References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
+ <20230731-arm64-gcs-v3-11-cddf9f980d98@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731-arm64-gcs-v3-11-cddf9f980d98@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As explained in the description text:
+On Mon, Jul 31, 2023 at 02:43:20PM +0100, Mark Brown wrote:
+> Map pages flagged as being part of a GCS as such rather than using the
+> full set of generic VM flags.
+> 
+> This is done using a conditional rather than extending the size of
+> protection_map since that would make for a very sparse array.
+> 
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  arch/arm64/mm/mmap.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/mm/mmap.c b/arch/arm64/mm/mmap.c
+> index 8f5b7ce857ed..e2ca770920ed 100644
+> --- a/arch/arm64/mm/mmap.c
+> +++ b/arch/arm64/mm/mmap.c
+> @@ -79,8 +79,23 @@ arch_initcall(adjust_protection_map);
+>  
+>  pgprot_t vm_get_page_prot(unsigned long vm_flags)
+>  {
+> -	pteval_t prot = pgprot_val(protection_map[vm_flags &
+> +	pteval_t prot;
+> +
+> +	/*
+> +	 * If this is a GCS then only interpret VM_WRITE.
+> +	 *
+> +	 * TODO: Just make protection_map[] bigger?  Nothing seems
+> +	 * ideal here.
+> +	 */
 
-"This is a list of trivial I2C and SPI devices that have simple device tree
-bindings, consisting only of a compatible field, an address and possibly an
-interrupt line."
- 
-A camera device does not fall into this category as it needs other
-properties such as regulators, reset and powerdown GPIOs, clocks,
-media endpoint.
+I think extending protection_map and updating adjust_protection_map() is
+cleaner and probably faster.
 
-Remove the OV5642 entry.
+> +	if (system_supports_gcs() && (vm_flags & VM_SHADOW_STACK)) {
+> +		if (vm_flags & VM_WRITE)
+> +			prot = _PAGE_GCS;
+> +		else
+> +			prot = _PAGE_GCS_RO;
+> +	} else {
+> +		prot = pgprot_val(protection_map[vm_flags &
+>  				   (VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]);
+> +	}
+>  
+>  	if (vm_flags & VM_ARM64_BTI)
+>  		prot |= PTE_GP;
+> 
+> -- 
+> 2.30.2
+> 
+> 
 
-Signed-off-by: Fabio Estevam <festevam@denx.de>
----
- Documentation/devicetree/bindings/trivial-devices.yaml | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-index 40bc475ee7e1..ab1423a4aa7f 100644
---- a/Documentation/devicetree/bindings/trivial-devices.yaml
-+++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-@@ -313,8 +313,6 @@ properties:
-           - nuvoton,w83773g
-             # OKI ML86V7667 video decoder
-           - oki,ml86v7667
--            # OV5642: Color CMOS QSXGA (5-megapixel) Image Sensor with OmniBSI and Embedded TrueFocus
--          - ovti,ov5642
-             # 48-Lane, 12-Port PCI Express Gen 2 (5.0 GT/s) Switch
-           - plx,pex8648
-             # Pulsedlight LIDAR range-finding sensor
 -- 
-2.34.1
-
+Sincerely yours,
+Mike.
