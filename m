@@ -2,83 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A908876B4A2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF7476B4A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231861AbjHAMV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
+        id S232170AbjHAMXR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 08:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjHAMV4 (ORCPT
+        with ESMTP id S233907AbjHAMXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:21:56 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B76710C7;
-        Tue,  1 Aug 2023 05:21:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690892512; x=1691497312; i=rwarsow@gmx.de;
- bh=mktVTINu2XoBBO2DUti5V416Vyw65PoMqn/e/11azKw=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
- b=qyzJHP9UYtMhWe+o5l1hJq0yVj+T+tdDQSpexKkMQaVewquVVve33GoklsgjJspf1oJbItl
- UYjahc2eky+BjmEiDLcGVIQes7a2X+wK1YMhTLNS1jTdj0deVXCEPg6rUoubRJxj+1FYTi7sE
- 2zak8fw6cCxqkSbTOx/skPY365t/0pdttGpb4SU7aBMUm6MdhkdJY4V3J6yOrJtJj7Qy6+yxw
- dqIiw6QoFKZDYw38z+unOrPvDnaytFmludvQdVYsfNlcV2cHGreLvo12gJg688/qknh88f+DX
- ZPdFHXVwftjOP5QkDV7pM939bVmtRMDBiqNOO2KHFTQBrlQoW5uw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.100.20] ([46.142.32.0]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MC34X-1qYkSz3F09-00CNrG; Tue, 01
- Aug 2023 14:21:52 +0200
-Message-ID: <d8d90867-4365-d670-76b5-207f2267e1fc@gmx.de>
-Date:   Tue, 1 Aug 2023 14:21:51 +0200
+        Tue, 1 Aug 2023 08:23:15 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC17710C7;
+        Tue,  1 Aug 2023 05:23:12 -0700 (PDT)
+X-QQ-mid: bizesmtp70t1690892583t5qcjea9
+Received: from [172.18.158.193] ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 01 Aug 2023 20:23:01 +0800 (CST)
+X-QQ-SSF: 01200000000000705000000A0000000
+X-QQ-FEAT: /HVSeQejYqeukwY+5U51CoTHCtxI/FujKVlUNhoey4l+spnmPw0fyQVwrZIRa
+        UDsvCxmM76dNz8Wi3KydRfNZkPDenTZjRjS+uDnN7FkoVkJoL0WN8ASn/4XEOyBRXEmX10j
+        Z2xUDXT9doFuQTv16SXmcZ8b7aBNYRywRyDKC7QROkUnBDdEI7s7WP25/gxGuY+Pqeksivn
+        MpBzMN4/woTic5kQZxbMBR1rY/gCXYr3HehHSBY5BvlcbS7JqMSBeRcLyISOlxkNk7CZIJc
+        n0PS3nTR/sVoET2GXfOFpy/6u5yLRxXOiYF+54l1nsc5X0l9JHrK3jZ8uePSgzDmCDANYer
+        +dp0G/7UDGeqO+GBoxFsShXhGogSBb4S35NCBkBhSnuf5AGgAuWdXzmSsTZIg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11186999854354669786
+Message-ID: <CEF9B5A6B5C43FBB+a5f21a530c1baf5229614c8186043e223b9d111f.camel@tinylab.org>
+Subject: Re: [PATCH v2 2/2] selftests/nolibc: add testcase for pipe
+From:   Yuan Tan <tanyuan@tinylab.org>
+To:     Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
+Cc:     w@1wt.eu, falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org
+Date:   Tue, 01 Aug 2023 20:23:02 +0800
+In-Reply-To: <413f70e4-245e-474a-9293-05068fd2eeb5@t-8ch.de>
+References: <cover.1690733545.git.tanyuan@tinylab.org>
+         <9221753abe0509ef5cbb474a31873012e0e40706.1690733545.git.tanyuan@tinylab.org>
+         <a4899657-7d7b-4786-8903-8f51e438535d@t-8ch.de>
+         <C3AF612281F87D1A+733ce5c0d1efe1f81423e6885203d92cdb4eaee7.camel@tinylab.org>
+         <2ba88bae-2986-4e70-9828-824d7b140277@t-8ch.de>
+         <D55D0905148FA2ED+f06092bae15b312ff1b29ad170fb656b89722b30.camel@tinylab.org>
+         <51b39ee9-7645-4759-9cc0-3cfe721a2757@t-8ch.de>
+         <2ADAE3198D1A85E3+c1c957d4706ee51d90e0b2a425a633eafcca8810.camel@tinylab.org>
+         <413f70e4-245e-474a-9293-05068fd2eeb5@t-8ch.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Ronald Warsow <rwarsow@gmx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Content-Language: de-DE, en-US
-Subject: Re: [PATCH 6.4 000/239] 6.4.8-rc1 review
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:6nMkuufbWqz3i7bzxm4ksUbxQl2/jTes0bMkUVYO4gV22JxiIlh
- DhcrNLs2TkttS2pctvMUJIoA5+HaHvAI133EHtglWW3CICAT0ynoqzuff20soUYdd3RYgL0
- dVT5XGVkGfIShfTMAeHNCuWwSWS54gzNJebXcLM1R1245iz1lXcPCL/DkXpMS/Ik3TFIzU4
- JK8IOhmcgpSQDt7PYcHCA==
-UI-OutboundReport: notjunk:1;M01:P0:JjKJ+UlwOnc=;fD/UoziHHd3WtDTdL0GWjyOrRVO
- 4xcJkKM8dFzdVAXFdydtITaLRTF5ghL13PmRsVqKAWw2SDZZIiDOOL70+i9mBWR+Lkt6y9o0V
- oxn1Jle75I8NSyaTFwU+BxVAb131ihfG2dI4ayGTJwY5HKLXuxvCCcCUuWHA/yAstB00hPTQg
- zUHnPi9VVB3b+/dzsKWYGw9+lGXuEXduVzNxvKgKjmXpoQBp5ezSxIfLp2G/esaw1mOcl2q4n
- 2x+rPpux+KhktqNz4EbniD5ya9Ee8gd4xHSg/Bm/Btvh2/1yzfb0/ErSwYcEPhV/PsLONOy0r
- jocHlldVU79eucpjeX0+R0kXPNnxrrXl+TQO/PX/yBhrJqrxmYvxsOTP9Zqo4OzaxD8D7btJ7
- GADSoLU1jtKFd4NWJw6UhaSHktR95nXCvaJvfq+IB/5GIX8UQMxKYxj5x/qZQYQ2sZfRkJmzz
- ycm7gBLLfatIzVjlnrdVXX1eJVT+dHcIkodmHMepzMAfJCS8TNfIVrjfTorafRKn32L4VWdBE
- 6Ir9QVJtJodbn6NstHGSiBsstCJl0XXzaljDGbm0OZSJeW0I5tz36tyczbW/ZaJTZI+7KTKdD
- 7bKIEwvw16ASzanrQ8wSJMT4zhl/TkBbdfgkpBcQY0ge5ZXH5evUayZgA/fd5qhxrqgYHqssv
- BIofz4OTUtGkLgEWcnP3UbYngSchDf22JymesRviJnd1t26121x8KVnljIM5StdnKrB7xi8Xg
- qNe12I9hQ7SZtGFN5eFgxcaBmttSiCExuLxBGT/oebwiKSeBQdtzos2XWY7eHbUPuBkvyiPfJ
- HMRH7GxBIyYw4HYbxCShGj7GcwVabNn15PmL3tl56gp96SkN3cixBcDk2mQbeOFpLUjvYpOM7
- 4UwFAIijLYo4OVxvjSyXU7Il66HhfcwGh6fdEmKukLEabx1BxFcivXpCu4Il8pVZaN3RVhChJ
- +DRdew==
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+Hi Thomas,
 
-6.4.8-rc1
+On Tue, 2023-08-01 at 09:20 +0200, Thomas Weißschuh wrote:
+> On 2023-08-01 14:51:40+0800, Yuan Tan wrote:
+> > Hi Thomas,
+> > 
+> > On Mon, 2023-07-31 at 20:28 +0200, Thomas Weißschuh wrote:
+> > > On 2023-08-01 02:01:36+0800, Yuan Tan wrote:
+> > > > Hi Thomas,
+> > > > On Mon, 2023-07-31 at 17:41 +0200, Thomas Weißschuh wrote:
+> > > > > On 2023-07-31 20:35:28+0800, Yuan Tan wrote:
+> > > > > > On Mon, 2023-07-31 at 08:10 +0200, Thomas Weißschuh wrote:
+> > > > > > > On 2023-07-31 13:51:00+0800, Yuan Tan wrote:
+> > > > > > > > Add a testcase of pipe that child process sends message
+> > > > > > > > to
+> > > > > > > > parent
+> > > > > > > > process.
+> > > > > > > 
+> > > > > > > Thinking about it some more:
+> > > > > > > 
+> > > > > > > What's the advantage of going via a child process?
+> > > > > > > The pipe should work the same within the same process.
+> > > > > > > 
+> > > > > > 
+> > > > > > The pipe is commonly used for process communication, and I
+> > > > > > think as
+> > > > > > a
+> > > > > > test case it is supposed to cover the most common
+> > > > > > scenarios.
+> > > > > 
+> > > > > The testcase is supposed to cover the code of nolibc.
+> > > > > It should be the *minimal* amount of code to be reasonable
+> > > > > sure
+> > > > > that
+> > > > > the
+> > > > > code in nolibc does the correct thing.
+> > > > > If pipe() returns a value that behaves like a pipe I see no
+> > > > > reason to
+> > > > > doubt it will also survive fork().
+> > > > > 
+> > > > > Validating that would mean testing the kernel and not nolibc.
+> > > > > For the kernel there are different testsuites.
+> > > > > 
+> > > > > Less code means less work for everyone involved, now and in
+> > > > > the
+> > > > > future.
+> > > > > 
+> > > > 
+> > > > It's a good point and I never thought about this aspect.
+> > > > 
+> > > > I wonder whether the code below is enough?
+> > > > 
+> > > > static int test_pipe(void)
+> > > > {
+> > > >         int pipefd[2];
+> > > > 
+> > > >         if (pipe(pipefd) == -1)
+> > > >                 return 1;
+> > > > 
+> > > >         close(pipefd[0]);
+> > > >         close(pipefd[1]);
+> > > > 
+> > > >         return 0;
+> > > > }
+> > > 
+> > > That is very barebones.
+> > > 
+> > > If accidentally a wrong syscall number was used and the used
+> > > syscall
+> > > would not take any arguments this test would still succeed.
+> > > 
+> > > Keeping the write-read-cycle from the previous revision would
+> > > test
+> > > that
+> > > nicely. Essentially the same code as before but without the
+> > > fork().
+> > > 
+> > > > 
+> > > > And I forgot to add this line:
+> > > > 
+> > > >         CASE_TEST(pipe); EXPECT_SYSZR(1, test_pipe()); break;
+> > > > 
+> > > > I will add it in next patch.
+> > > > 
+> > > 
+> > 
+> > In the situation you described, that is indeed the case.
+> > 
+> > Would this be fine?
+> > 
+> > static int test_pipe(void)
+> > {
+> >         const char *const msg = "hello, nolibc";
+> >         int pipefd[2];
+> >         char buf[32];
+> >         ssize_t len;
+> > 
+> >         if (pipe(pipefd) == -1)
+> >                 return 1;
+> > 
+> >         write(pipefd[1], msg, strlen(msg));
+> >         close(pipefd[1]);
+> >         len = read(pipefd[0], buf, sizeof(buf));
+> >         close(pipefd[0]);
+> > 
+> >         if (len != strlen(msg))
+> >                 return 1;
+> > 
+> >         return !!memcmp(buf, msg, len);
+> > }
+> 
+> Looks good!
+> 
+> The return value of write() could also be validated but given we
+> validate the return value from read() it shouldn't make a difference.
+> 
+> (Also the manual manipulation of "buf" is gone that necessitated the
+> check in v1 of the series)
+> 
 
-compiles, boots and runs here on x86_64
-(Intel Rocket Lake, i5-11400)
+I am sorry that I didn't catch your last sentence.
 
-Thanks
-
-Tested-by: Ronald Warsow <rwarsow@gmx.de>
+Did you mean this piece of code does not need any further modifications
+right?
 
