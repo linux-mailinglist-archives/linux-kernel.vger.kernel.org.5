@@ -2,230 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF09076A9C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7295076A9C4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:09:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbjHAHIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 03:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
+        id S229750AbjHAHJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 03:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbjHAHIU (ORCPT
+        with ESMTP id S229662AbjHAHJv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 03:08:20 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EF41716
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 00:08:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 00A351F6E6;
-        Tue,  1 Aug 2023 07:08:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690873698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AoBXTXyuz+vRPhe5JwPsPpzufyYSV/OzkOaqo4WkjFA=;
-        b=r7kZE6EoEuUirA3VBp7HBmFqszSmxp1duPgOPBWef0XH/dhZzpIOy8N99/EvpHmjPLk9OD
-        7z9IpC9+lDaf0jF45yKy2OzctiyaNLIjQKSAoWapfHJtlCxmJ0wiV09IiIAp4k7MYFZPP3
-        T6D5BlnF5SAZZwop1r52oIonts3mrYE=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A2ADE13919;
-        Tue,  1 Aug 2023 07:08:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id G4dEJmGvyGSjdwAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 01 Aug 2023 07:08:17 +0000
-Message-ID: <f0d5b71b-4344-2f35-03ee-3af6ebd038b2@suse.com>
-Date:   Tue, 1 Aug 2023 09:08:17 +0200
+        Tue, 1 Aug 2023 03:09:51 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FA51716
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 00:09:49 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31771a876b5so4462699f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 00:09:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690873788; x=1691478588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UGo71aOuZXwwURci+soWYsCVOvbsKQpoaAxtdIvWqfY=;
+        b=BSOivDUzCxZKUNC5L8sjje0+zge0a2fc5YHdfi85DNeAOoRGEgIGTcqx33zDhehXUy
+         Tt7V7oc7AXdyS4Z07ugpljCXzaHo07NLhCEc602JhEH2CrfZfj4V0JSY/u1pusKsKRCi
+         3dEAS1vw4Dlspgd8HsbvQ9iEZ6aQLEU6awYAAQi0ftreMsSfzRQQcq/2zZk5E08Hf5c6
+         O9/NC6WVNl9Dac+7/xznC6syWSbXtyGgyqW66SJZRzYFLqJpjuknRtiBNA3FKRuPdYh2
+         XLD9xTw//wf03tk4ufzIT/vJea+X5Amu/1ATkiBezk7738bCYN8ekEHG5rmHGE10cMUx
+         LktQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690873788; x=1691478588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UGo71aOuZXwwURci+soWYsCVOvbsKQpoaAxtdIvWqfY=;
+        b=b1uw5iTui5H6Ep37a1EpKl21iohdkUm9pW0p3AEsFEXGfo3xKwlD2q0WkV3rWeh0oX
+         waoJIwMRDmjjicZkdobmn91vPixtAOyU4UpxPyOaARJwlq7BkCm7A4YuEJecJIkeKRB2
+         jxXdlFgmzkRmhbaskLRTQD/S6nrqq3XvP2g1L/fTM9oJ/pg/t9iXM8WHeIm8Z2zpdbMu
+         9dpM2pLT+WMVNPd1U9AbVasF6REKAoyDZqNBKovSlPxzRso8AlZ90stDJPUa4JHEuaW2
+         9mn6FC+yS8QrEdnPkSgsYNAxXil5upvri6S6ck3N3ZgXu4smQpwbpmdkXBk5KTxsWLN3
+         v4hg==
+X-Gm-Message-State: ABy/qLbOrTXwObmv9OYcbkcD9DIymVkfYrGvKONoF7kTBYrFfkQTfvu7
+        hPUVKWgZXrr0FdRruxMcSNTyGEkF8MohkcoC8h2B5g==
+X-Google-Smtp-Source: APBJJlEHOxpMX2BydZ4uFDoFLk1ucgaqo7z7bX7/yWGkeNeAipORRLEs8hijy/gGxbs9QHLEWT50Wsq1EHzWXJzVaTU=
+X-Received: by 2002:a5d:44c5:0:b0:317:5d3d:d387 with SMTP id
+ z5-20020a5d44c5000000b003175d3dd387mr1456159wrr.25.1690873787797; Tue, 01 Aug
+ 2023 00:09:47 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Content-Language: en-US
-From:   Juergen Gross <jgross@suse.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20230724131206.500814398@linutronix.de>
- <20230724132047.554355840@linutronix.de>
- <abfa4548-4367-d8fa-f23f-b2ca4a912258@suse.com> <87v8e0nskd.ffs@tglx>
- <b4f0e874-1e35-e523-8e5a-710bc54af52d@suse.com> <87pm48nktc.ffs@tglx>
- <87v8dzl0wm.ffs@tglx> <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
-Subject: Re: [patch V2 50/58] x86/apic: Provide common init infrastructure
-In-Reply-To: <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------jpBGtiV3OGo6AolawpkxNu4A"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230727141428.962286-1-alexghiti@rivosinc.com>
+ <20230727141428.962286-10-alexghiti@rivosinc.com> <CAP-5=fU5XYXrVnRUidpwjV2LiTsdebfidL43_Qo4Z7TBxMsVGA@mail.gmail.com>
+ <CAHVXubgVAe1WsiZx5Ay+3KPK4u24k_vsnTwFFmBeVsHrGXwhfw@mail.gmail.com>
+ <CAHVXubj80rQRShuDS09BeTrfR6nux0A68EMWLbeat8fd_Y3YdA@mail.gmail.com>
+ <CAP-5=fWwzuGZ6a6Z38ndsb7gw7_uwS0a2VGXx08hMeiK8eZ91w@mail.gmail.com>
+ <CAHVXubjhM9C1fw_Us=8+RuSJbW0pacFAk9gp7j2=BtMUPy_Byw@mail.gmail.com> <CAP-5=fUbiaVwSAhTbymyhdUPcVAXHiQZZexAOnrqid0LsPmfpw@mail.gmail.com>
+In-Reply-To: <CAP-5=fUbiaVwSAhTbymyhdUPcVAXHiQZZexAOnrqid0LsPmfpw@mail.gmail.com>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Tue, 1 Aug 2023 09:09:36 +0200
+Message-ID: <CAHVXubgmbz4+Mhg4A9ziRtxSTOjLvx1=p2JPyGujBT7ervPZhQ@mail.gmail.com>
+Subject: Re: [PATCH v4 09/10] tools: lib: perf: Implement riscv mmap support
+To:     Ian Rogers <irogers@google.com>
+Cc:     Brendan Sweeney <brs@rivosinc.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@atishpatra.org>,
+        Anup Patel <anup@brainfault.org>,
+        Will Deacon <will@kernel.org>, Rob Herring <robh@kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        =?UTF-8?Q?R=C3=A9mi_Denis=2DCourmont?= <remi@remlab.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Atish Patra <atishp@rivosinc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------jpBGtiV3OGo6AolawpkxNu4A
-Content-Type: multipart/mixed; boundary="------------gasiVRhyhJm0FBJ084iNFdjy";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
-Cc: x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
- Tom Lendacky <thomas.lendacky@amd.com>, Paolo Bonzini <pbonzini@redhat.com>,
- Wei Liu <wei.liu@kernel.org>, Arjan van de Ven <arjan@linux.intel.com>,
- Michael Kelley <mikelley@microsoft.com>,
- Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Message-ID: <f0d5b71b-4344-2f35-03ee-3af6ebd038b2@suse.com>
-Subject: Re: [patch V2 50/58] x86/apic: Provide common init infrastructure
-References: <20230724131206.500814398@linutronix.de>
- <20230724132047.554355840@linutronix.de>
- <abfa4548-4367-d8fa-f23f-b2ca4a912258@suse.com> <87v8e0nskd.ffs@tglx>
- <b4f0e874-1e35-e523-8e5a-710bc54af52d@suse.com> <87pm48nktc.ffs@tglx>
- <87v8dzl0wm.ffs@tglx> <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
-In-Reply-To: <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
+On Mon, Jul 31, 2023 at 6:46=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> On Mon, Jul 31, 2023 at 9:06=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosi=
+nc.com> wrote:
+> >
+> > On Mon, Jul 31, 2023 at 5:10=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > On Mon, Jul 31, 2023 at 3:27=E2=80=AFAM Alexandre Ghiti <alexghiti@ri=
+vosinc.com> wrote:
+> > > >
+> > > > On Mon, Jul 31, 2023 at 12:15=E2=80=AFPM Alexandre Ghiti <alexghiti=
+@rivosinc.com> wrote:
+> > > > >
+> > > > > Hi Ian,
+> > > > >
+> > > > > On Fri, Jul 28, 2023 at 7:53=E2=80=AFPM Ian Rogers <irogers@googl=
+e.com> wrote:
+> > > > > >
+> > > > > > On Thu, Jul 27, 2023 at 7:28=E2=80=AFAM Alexandre Ghiti <alexgh=
+iti@rivosinc.com> wrote:
+> > > > > > >
+> > > > > > > riscv now supports mmaping hardware counters so add what's ne=
+eded to
+> > > > > > > take advantage of that in libperf.
+> > > > > > >
+> > > > > > > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> > > > > > > Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+> > > > > > > Reviewed-by: Atish Patra <atishp@rivosinc.com>
+> > > > > > > ---
+> > > > > > >  tools/lib/perf/mmap.c | 65 +++++++++++++++++++++++++++++++++=
+++++++++++
+> > > > > > >  1 file changed, 65 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
+> > > > > > > index 0d1634cedf44..378a163f0554 100644
+> > > > > > > --- a/tools/lib/perf/mmap.c
+> > > > > > > +++ b/tools/lib/perf/mmap.c
+> > > > > > > @@ -392,6 +392,71 @@ static u64 read_perf_counter(unsigned in=
+t counter)
+> > > > > > >
+> > > > > > >  static u64 read_timestamp(void) { return read_sysreg(cntvct_=
+el0); }
+> > > > > > >
+> > > > > > > +#elif __riscv_xlen =3D=3D 64
+> > > > > >
+> > > > > > This is something of an odd guard, perhaps:
+> > > > > > #elif defined(__riscv) && __riscv_xlen =3D=3D 64
+> > > > > >
+> > > > > > That way it is more intention revealing that this is riscv code=
+. Could
+> > > > > > you add a comment relating to the __riscv_xlen ?
+> > > > >
+> > > > > I guess Andrew answered that already.
+> > > > >
+> > >
+> > > Not sure. I still think it looks weird:
+> > > ...
+> > > #if defined(__i386__) || defined(__x86_64__)
+> > > ...
+> > > #elif defined(__aarch64__)
+> > > ...
+> > > #elif __riscv_xlen =3D=3D 64
+> > > ...
+> > > #else
+> > > static u64 read_perf_counter(unsigned int counter __maybe_unused) { r=
+eturn 0; }
+> > > static u64 read_timestamp(void) { return 0; }
+> > > #endif
+> > >
+> > > The first two are clearly #ifdef-ing architecture specific assembly
+> > > code, under what conditions I get RISC-V code  =C2=AF\(=E3=83=84)/=C2=
+=AF At least worth
+> > > a comment like "csrr is only available when you have xlens of 64
+> > > because ..."
+> >
+> > __riscv_xlen indicates riscv64, which is the only target of this
+> > patchset. But if you prefer, I don't mind adding back the
+> > defined(__riscv) if I re-spin a new version.
+>
+> This kind of begs the question as to why there is no __riscv64 ifdef.
+> The issue with xlen is it isn't intention revealing so for regular
+> people trying to understand the code it would be nice to document it.
 
---------------gasiVRhyhJm0FBJ084iNFdjy
-Content-Type: multipart/mixed; boundary="------------7VGKm0nFMg0nts76TS09Lrr3"
+I understand, I'll add the defined(__riscv) and a comment to explain
+the __riscv_xlen.
 
---------------7VGKm0nFMg0nts76TS09Lrr3
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+>
+> > >
+> > > > > >
+> > > > > > > +
+> > > > > > > +/* TODO: implement rv32 support */
+> > > > > > > +
+> > > > > > > +#define CSR_CYCLE      0xc00
+> > > > > > > +#define CSR_TIME       0xc01
+> > > > > > > +
+> > > > > > > +#define csr_read(csr)                                       =
+   \
+> > > > > > > +({                                                          =
+   \
+> > > > > > > +       register unsigned long __v;                          =
+   \
+> > > > > > > +               __asm__ __volatile__ ("csrr %0, " #csr       =
+   \
+> > > > > > > +                : "=3Dr" (__v) :                            =
+     \
+> > > > > > > +                : "memory");                                =
+   \
+> > > > > >
+> > > > > > To avoid the macro pasting that could potentially go weird, cou=
+ld this be:
+> > > > > >
+> > > > > > __asm__ __volatile__ ("csrr %0, %1",
+> > > > > >   : "=3Dr"(__v) /* outputs */
+> > > > > >   : "i"(csr) /* inputs */
+> > > > > >   : "memory" /* clobbers */)
+> > > >
+> > > > Forgot to answer this one: it compiles, but I have to admit that I
+> > > > don't understand the difference and if that's correct (all macros i=
+n
+> > > > arch/riscv/include/asm/csr.h use # to do this) and what benefits it
+> > > > brings. Can you elaborate more on things that could "go weird"?
+> > >
+> > > So rather than use an input constraint for the asm block you are usin=
+g
+> > > the C preprocessor to paste in the csr argument. If csr is something
+> > > like "1" then it looks good and you'll get "csrr %0,1". If you pass
+> > > something like "1 << 31" then that will be pasted as "csrr %0, 1 <<
+> > > 31" and that starts to get weird in the context of being in the
+> > > assembler where it is unlikely the C operators work. Using the input
+> > > constraint avoids this, causes the C compiler to check the type of th=
+e
+> > > argument and you'll probably get more intelligible error messages as =
+a
+> > > consequence.
+> > >
+> >
+> > Thanks. So if I'm not mistaken, in this exact context, given we only
+> > use csr_read() through the csr_read_num() function, it seems ok right?
+>
+> So you've formed a cargo cult and the justification is not wanting to
+> stop a copy-paste chain from somewhere else. This code itself will be
+> copy-pasted and we go to some ends to encourage that by placing parts
+> of it in include/uapi/linux/perf_event.h. It seems better to catch
+> this issue early rather than propagate it.
 
-T24gMDEuMDguMjMgMDg6NDksIEp1ZXJnZW4gR3Jvc3Mgd3JvdGU6DQo+IE9uIDAxLjA4LjIz
-IDA4OjQxLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6DQo+PiBPbiBNb24sIEp1bCAzMSAyMDIz
-IGF0IDE3OjQ4LCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6DQo+Pg0KPj4+IE9uIE1vbiwgSnVs
-IDMxIDIwMjMgYXQgMTU6MTAsIEp1ZXJnZW4gR3Jvc3Mgd3JvdGU6DQo+Pj4+IE9uIDMxLjA3
-LjIzIDE1OjAxLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6DQo+Pj4+Pj4gwqDCoMKgIGFwaWNf
-ZHJpdmVyKHhlbl9wdl9hcGljKTsNCj4+Pj4+DQo+Pj4+PiBJIHdvbmRlciB3aGV0aGVyIHRo
-aXMgZXhwbGljaXQgaW5zdGFsbCBpcyBhY3R1YWxseSBuZWVkZWQgYXQgYWxsLg0KPj4+Pj4g
-U2hvdWxkbid0IHRoZSBkcml2ZXIgYmUgaW5zdGFsbGVkIHZpYSB0aGUgQVBJQyBwcm9iaW5n
-IG1lY2hhbmlzbQ0KPj4+Pj4gYXV0b21hZ2ljYWxseT8NCj4+Pj4NCj4+Pj4gT25seSBpbiBj
-YXNlIHg4Nl9pbml0LmlycS5pbnRyX21vZGVfaW5pdCBpcyBzZXQgYXBwcm9wcmlhdGVseS4g
-VG9kYXkgaXQgaXMNCj4+Pj4gYSBub3AgZm9yIFhlbiBQViwgYnV0IHRoYXQgY2FuIGJlIGNo
-YW5nZWQuIEknbGwgaGF2ZSBhIGxvb2suDQo+Pj4NCj4+PiBZb3UgY291bGQgc2ltcGx5IHNl
-dCB0aGF0IGNhbGxiYWNrIHRvIGRlZmF1bHRfc2V0dXBfYXBpY19yb3V0aW5nKCkgYW5kDQo+
-Pj4gYmUgZG9uZSB3aXRoIGl0Lg0KPj4NCj4+IERvZXNuJ3Qgd29yayBiZWNhdXNlIFhFTiBv
-dmVycmlkZXMgaXQgYWxyZWFkeS4gU28gc3VyZSwgbGV0cyBqdXN0IGdvDQo+IA0KPiBJdCBp
-cyBvdmVycmlkaW5nIGl0IHdpdGggeDg2X2luaXRfbm9vcCgpLg0KPiANCj4+IHdpdGggdGhl
-IHNvbHV0aW9uIHlvdSBwcm9wb3NlZC4gT25lIG1vcmUgdWdseSBvciBsZXNzIGluIFhFTi9Q
-ViBkb2VzIG5vdA0KPj4gcmVhbGx5IG1hdHRlciBtdWNoIDopDQo+Pg0KPj4gTGV0IG1lIGdy
-YWIgdGhpcyBhbmQgcHV0IGl0IGludG8gdGhlIHJpZ2h0IHBvc2l0aW9uIGluIHRoZSBxdWV1
-ZS4NCj4gDQo+IFdhaXQgYSBmZXcgbWludXRlcywgcGxlYXNlLiBJJ20ganVzdCBhYm91dCB0
-byB0ZXN0IHlvdXIgc3VnZ2VzdGlvbi4NCg0KVXNpbmcgdGhlIGZvbGxvd2luZyBkaWZmIG9u
-IHRvcCBvZiB5b3VyIHBhdGNoIGlzIHdvcmtpbmcgZmluZToNCg0KZGlmZiAtLWdpdCBhL2Fy
-Y2gveDg2L3hlbi9hcGljLmMgYi9hcmNoL3g4Ni94ZW4vYXBpYy5jDQppbmRleCA4MDRhMjZi
-N2M4NWUuLmQ3NzQzYmEwMjEyZCAxMDA2NDQNCi0tLSBhL2FyY2gveDg2L3hlbi9hcGljLmMN
-CisrKyBiL2FyY2gveDg2L3hlbi9hcGljLmMNCkBAIC0xNjYsMTEgKzE2Niw2IEBAIHN0YXRp
-YyB2b2lkIF9faW5pdCB4ZW5fYXBpY19jaGVjayh2b2lkKQ0KICB2b2lkIF9faW5pdCB4ZW5f
-aW5pdF9hcGljKHZvaWQpDQogIHsNCiAgICAgICAgIHg4Nl9hcGljX29wcy5pb19hcGljX3Jl
-YWQgPSB4ZW5faW9fYXBpY19yZWFkOw0KLSAgICAgICAvKiBPbiBQViBndWVzdHMgdGhlIEFQ
-SUMgQ1BVSUQgYml0IGlzIGRpc2FibGVkIHNvIG5vbmUgb2YgdGhlDQotICAgICAgICAqIHJv
-dXRpbmVzIGVuZCB1cCBleGVjdXRpbmcuICovDQotICAgICAgIGlmICgheGVuX2luaXRpYWxf
-ZG9tYWluKCkpDQotICAgICAgICAgICAgICAgYXBpY19pbnN0YWxsX2RyaXZlcigmeGVuX3B2
-X2FwaWMpOw0KLQ0KICAgICAgICAgeDg2X3BsYXRmb3JtLmFwaWNfcG9zdF9pbml0ID0geGVu
-X2FwaWNfY2hlY2s7DQogIH0NCiAgYXBpY19kcml2ZXIoeGVuX3B2X2FwaWMpOw0KZGlmZiAt
-LWdpdCBhL2FyY2gveDg2L3hlbi9lbmxpZ2h0ZW5fcHYuYyBiL2FyY2gveDg2L3hlbi9lbmxp
-Z2h0ZW5fcHYuYw0KaW5kZXggOTNiNjU4MjQ4ZDAxLi4xNjRlNWJlMjNhNDUgMTAwNjQ0DQot
-LS0gYS9hcmNoL3g4Ni94ZW4vZW5saWdodGVuX3B2LmMNCisrKyBiL2FyY2gveDg2L3hlbi9l
-bmxpZ2h0ZW5fcHYuYw0KQEAgLTEzMjYsNyArMTMyNiw3IEBAIGFzbWxpbmthZ2UgX192aXNp
-YmxlIHZvaWQgX19pbml0IHhlbl9zdGFydF9rZXJuZWwoc3RydWN0IA0Kc3RhcnRfaW5mbyAq
-c2kpDQoNCiAgICAgICAgIHg4Nl9pbml0LnJlc291cmNlcy5tZW1vcnlfc2V0dXAgPSB4ZW5f
-bWVtb3J5X3NldHVwOw0KICAgICAgICAgeDg2X2luaXQuaXJxcy5pbnRyX21vZGVfc2VsZWN0
-ICA9IHg4Nl9pbml0X25vb3A7DQotICAgICAgIHg4Nl9pbml0LmlycXMuaW50cl9tb2RlX2lu
-aXQgICAgPSB4ODZfaW5pdF9ub29wOw0KKyAgICAgICB4ODZfaW5pdC5pcnFzLmludHJfbW9k
-ZV9pbml0ICAgID0geDg2XzY0X3Byb2JlX2FwaWM7DQogICAgICAgICB4ODZfaW5pdC5vZW0u
-YXJjaF9zZXR1cCA9IHhlbl9hcmNoX3NldHVwOw0KICAgICAgICAgeDg2X2luaXQub2VtLmJh
-bm5lciA9IHhlbl9iYW5uZXI7DQogICAgICAgICB4ODZfaW5pdC5oeXBlci5pbml0X3BsYXRm
-b3JtID0geGVuX3B2X2luaXRfcGxhdGZvcm07DQoNCg0KSnVlcmdlbg0K
---------------7VGKm0nFMg0nts76TS09Lrr3
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+OK, nothing to argue here, I'll use your first proposition in the next vers=
+ion.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+>
+> > > >
+> > > > Thanks again,
+> > > >
+> > > > Alex
+> > > >
+> > > > > >
+> > > > > > Also, why is this clobbering memory? Worth adding a comment.
+> > > > >
+> > > > > No idea, I see that it is also done this way in
+> > > > > arch/riscv/include/asm/csr.h. @Atish Kumar Patra , @Palmer Dabbel=
+t ?
+> > >
+> > > It would seem to make sense then not to have a memory constraint unti=
+l
+> > > we know why we're doing it?
+> > >
+> >
+> > I have just had the answer internally (thanks to @Brendan Sweeney):
+> > csr modifications can alter how the memory is accessed (satp which
+> > changes the address space, sum which allows/disallows userspace
+> > access...), so we need the memory barrier to make sure the compiler
+> > does not reorder the memory accesses.
+>
+> The conditions you mention shouldn't apply here though? Even if you
+> add a memory barrier for the compiler what is stopping the hardware
+> reordering loads and stores? If it absolutely has to be there then a
+> comment something like "There is a bug is riscv where the csrr
+> instruction can clobber memory breaking future reads and some how this
+> constraint fixes it by ... ".
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+You're right, it does not apply here, so I can remove this memory
+barrier. Regarding the hardware that could speculate across a csr
+instruction, that's dealt with in the riscv spec:
 
---------------7VGKm0nFMg0nts76TS09Lrr3--
+"In particular, a CSR access is performed after the execution of any
+prior instructions in program order whose behavior modifies or is
+modified by the CSR state and before the execution of any subsequent
+instructions in program order whose behavior modifies or is modified
+by the CSR state"
 
---------------gasiVRhyhJm0FBJ084iNFdjy--
+Thanks for your comments,
 
---------------jpBGtiV3OGo6AolawpkxNu4A
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Alex
 
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTIr2EFAwAAAAAACgkQsN6d1ii/Ey/F
-XAgAmbDnItnibEEdO3lHVQi02J03kD3KgnacGQmUirOvsRcD8qsfKSRcRaZOISC8mFzoXkar+yTa
-Y/rBYH5YekEBA8JTS1HjQY1UmrLYSjGevSlOCMteS6pwB7Qkm2F78hP+X6GGynK+WViqY6vYclHP
-YhQ/d4ZEBweLB2hZpLH5RU4kizj3cTbulrQkba5eIpiK9SY0x5OHuHHHtMmDpZxS9OKayYOjUPQA
-Zv4YrGE2USI72c5WY5kvKfoYRARXhSVwkq0GDWJpLt3yfdSwUIamawlBSB2SWMfkVZyEpjy53W7x
-HqZ26VF7ZIzGrb0mRWwgY7RHppt6Jtuz5fyfbZ0N6A==
-=cFi4
------END PGP SIGNATURE-----
-
---------------jpBGtiV3OGo6AolawpkxNu4A--
+>
+> Thanks,
+> Ian
+>
+> > Thanks,
+> >
+> > Alex
+> >
+> > > Thanks,
+> > > Ian
+> > >
+> > > > >
+> > > > > Thanks for your comments!
+> > > > >
+> > > > > Alex
+> > > > >
+> > > > > >
+> > > > > > Thanks,
+> > > > > > Ian
+> > > > > >
+> > > > > > > +                __v;                                        =
+   \
+> > > > > > > +})
+> > > > > > > +
+> > > > > > > +static unsigned long csr_read_num(int csr_num)
+> > > > > > > +{
+> > > > > > > +#define switchcase_csr_read(__csr_num, __val)           {\
+> > > > > > > +       case __csr_num:                                 \
+> > > > > > > +               __val =3D csr_read(__csr_num);            \
+> > > > > > > +               break; }
+> > > > > > > +#define switchcase_csr_read_2(__csr_num, __val)         {\
+> > > > > > > +       switchcase_csr_read(__csr_num + 0, __val)        \
+> > > > > > > +       switchcase_csr_read(__csr_num + 1, __val)}
+> > > > > > > +#define switchcase_csr_read_4(__csr_num, __val)         {\
+> > > > > > > +       switchcase_csr_read_2(__csr_num + 0, __val)      \
+> > > > > > > +       switchcase_csr_read_2(__csr_num + 2, __val)}
+> > > > > > > +#define switchcase_csr_read_8(__csr_num, __val)         {\
+> > > > > > > +       switchcase_csr_read_4(__csr_num + 0, __val)      \
+> > > > > > > +       switchcase_csr_read_4(__csr_num + 4, __val)}
+> > > > > > > +#define switchcase_csr_read_16(__csr_num, __val)        {\
+> > > > > > > +       switchcase_csr_read_8(__csr_num + 0, __val)      \
+> > > > > > > +       switchcase_csr_read_8(__csr_num + 8, __val)}
+> > > > > > > +#define switchcase_csr_read_32(__csr_num, __val)        {\
+> > > > > > > +       switchcase_csr_read_16(__csr_num + 0, __val)     \
+> > > > > > > +       switchcase_csr_read_16(__csr_num + 16, __val)}
+> > > > > > > +
+> > > > > > > +       unsigned long ret =3D 0;
+> > > > > > > +
+> > > > > > > +       switch (csr_num) {
+> > > > > > > +       switchcase_csr_read_32(CSR_CYCLE, ret)
+> > > > > > > +       default:
+> > > > > > > +               break;
+> > > > > > > +       }
+> > > > > > > +
+> > > > > > > +       return ret;
+> > > > > > > +#undef switchcase_csr_read_32
+> > > > > > > +#undef switchcase_csr_read_16
+> > > > > > > +#undef switchcase_csr_read_8
+> > > > > > > +#undef switchcase_csr_read_4
+> > > > > > > +#undef switchcase_csr_read_2
+> > > > > > > +#undef switchcase_csr_read
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +static u64 read_perf_counter(unsigned int counter)
+> > > > > > > +{
+> > > > > > > +       return csr_read_num(CSR_CYCLE + counter);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > > +static u64 read_timestamp(void)
+> > > > > > > +{
+> > > > > > > +       return csr_read_num(CSR_TIME);
+> > > > > > > +}
+> > > > > > > +
+> > > > > > >  #else
+> > > > > > >  static u64 read_perf_counter(unsigned int counter __maybe_un=
+used) { return 0; }
+> > > > > > >  static u64 read_timestamp(void) { return 0; }
+> > > > > > > --
+> > > > > > > 2.39.2
+> > > > > > >
