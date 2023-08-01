@@ -2,91 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D3876B2B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF64176B2BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbjHALIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
+        id S232981AbjHALJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234360AbjHALIA (ORCPT
+        with ESMTP id S232571AbjHALJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:08:00 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F090044B2;
-        Tue,  1 Aug 2023 04:01:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1690887712; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=HGL87i2fRtICtD2PHpjlgu61PsZ/7Ult8uu66tBtFE+voLN6p+50LG2bJotDXZyJyi
-    Bh/mQi2yTWnkfaFhRYPpKgYlhrqEN2EMnhhCSRrQrVoRPgxfueorQXsta+/1pv8aQIfA
-    YiIMxaEJe3aWpJoAuJD7LBIF6c+Z4wsxzqB3qsj6Cr74m9+vmrHKwUVkepY9KjqZzgLw
-    3HTQlMfr7o2woRb7fBrKhePPNB+dHfp8lQiE2aSPa9Mf8CvkjUVQmI9/j4b9YCF72MSF
-    ypMi9GPZA19qM/sMnd+0cgOpeSJg6jlLoyhN6ebdAAhhchP+eJrc2Vl0ccmR9+wHZEJG
-    iK5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1690887712;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=0jP24gJ7I3DKB93uZ6R213PWPPHn6VvelA25htp1m1o=;
-    b=YxzndEeeOZhm6nKa8CbIFlthJcD/UdsLMdtifSetICouTeWxoO2jCExFNFgxeEOR5E
-    HmgNvqff2fRZvTde7IyW97Srzjk5DjutT5wQshFJ334XggmH+bvld55t3AUy+Je3oHL8
-    Dj1jNAg7+5WHW9/QQnObWpBVM/wj4tHJFKp8B3CilABLeXHyw0jxpWbsDE2dOgdnoz5W
-    C5Ejkd1bXsISpMSz/iWgt23UhyTkDwvOGJnsdH6YcxMEQzgLj/Ms2OThJ0+BafEzVGVP
-    +8l16uVOtpNNrmafLKN1/BSLNBpH6bts6NlRfkc5cNEGqeDMLIxfd0vzNckiOm4N9dxU
-    u75w==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1690887712;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=0jP24gJ7I3DKB93uZ6R213PWPPHn6VvelA25htp1m1o=;
-    b=rkO1/zXJ0gE5+GmSkdsBWnxy4cM2BZt53vF/6y3occBnA0ux2PAz2zkM9tyicqpqag
-    BqAbwcyucomjjkYKSn/C1B05JtQFPoVtTF//GRW4EsgVMq+Owz9w/uvWVxCQOLDJZ2bH
-    DUY2Uj8jx5xRBSrIRFhhd1JiyaQadJzdUJXmhFM6NiA41wZGmKTpLpA1rd6Dc/NERJc0
-    gjWtavoCqtbPK08i3BN8g5Q+RtaXRrSB59Fp8ReBywWoh0YYelMC55UlT7f10gYnq81K
-    264V/CBkw5URK66Kqrr+zzypaSQVoLMJtnhfcC3tzGqw3RYoT9uP5IDjylN5tpWtauiQ
-    scpQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1690887712;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=0jP24gJ7I3DKB93uZ6R213PWPPHn6VvelA25htp1m1o=;
-    b=GLOZC5Ngt+ZliX4O2zxjMG20xmTIY1Tw8qTuxcyPlcPgka1Sw7rlTuoksVtWyDCnhE
-    NHftp+iV0Ly0Tgf2VhDg==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4paA8p+L1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.6.6 DYNA|AUTH)
-    with ESMTPSA id k61817z71B1pNlD
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Tue, 1 Aug 2023 13:01:51 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 13:01:50 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 04/10] interconnect: qcom: icc-rpm: Check for
- node-specific rate coefficients
-Message-ID: <ZMjmHohklxUKQ1QQ@gerhold.net>
-References: <20230726-topic-icc_coeff-v2-0-8c91c6c76076@linaro.org>
- <20230726-topic-icc_coeff-v2-4-8c91c6c76076@linaro.org>
+        Tue, 1 Aug 2023 07:09:20 -0400
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C2949F6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 04:03:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046051;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vor2y66_1690887804;
+Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vor2y66_1690887804)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 19:03:25 +0800
+Message-ID: <8e445d60-e8b1-7172-4577-20e7f28d1e9d@linux.alibaba.com>
+Date:   Tue, 1 Aug 2023 19:03:52 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726-topic-icc_coeff-v2-4-8c91c6c76076@linaro.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] mm: compaction: fix endless looping over same migrate
+ block
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230731172450.1632195-1-hannes@cmpxchg.org>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230731172450.1632195-1-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,69 +46,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 12:52:20PM +0200, Konrad Dybcio wrote:
-> Some nodes may have different coefficients than the general values for
-> bus they're attached to. Check for that and use them if present.
+
+
+On 8/1/2023 1:24 AM, Johannes Weiner wrote:
+> During stress testing, the following situation was observed:
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>       70 root      39  19       0      0      0 R 100.0   0.0 959:29.92 khugepaged
+>   310936 root      20   0   84416  25620    512 R  99.7   1.5 642:37.22 hugealloc
+> 
+> Tracing shows isolate_migratepages_block() endlessly looping over the
+> first block in the DMA zone:
+> 
+>         hugealloc-310936  [001] ..... 237297.415718: mm_compaction_finished: node=0 zone=DMA      order=9 ret=no_suitable_page
+>         hugealloc-310936  [001] ..... 237297.415718: mm_compaction_isolate_migratepages: range=(0x1 ~ 0x400) nr_scanned=513 nr_taken=0
+>         hugealloc-310936  [001] ..... 237297.415718: mm_compaction_finished: node=0 zone=DMA      order=9 ret=no_suitable_page
+>         hugealloc-310936  [001] ..... 237297.415718: mm_compaction_isolate_migratepages: range=(0x1 ~ 0x400) nr_scanned=513 nr_taken=0
+>         hugealloc-310936  [001] ..... 237297.415718: mm_compaction_finished: node=0 zone=DMA      order=9 ret=no_suitable_page
+>         hugealloc-310936  [001] ..... 237297.415718: mm_compaction_isolate_migratepages: range=(0x1 ~ 0x400) nr_scanned=513 nr_taken=0
+>         hugealloc-310936  [001] ..... 237297.415718: mm_compaction_finished: node=0 zone=DMA      order=9 ret=no_suitable_page
+>         hugealloc-310936  [001] ..... 237297.415718: mm_compaction_isolate_migratepages: range=(0x1 ~ 0x400) nr_scanned=513 nr_taken=0
+> 
+> The problem is that the functions tries to test and set the skip bit
+> once on the block, to avoid skipping on its own skip-set, using
+> pageblock_aligned() on the pfn as a test. But because this is the DMA
+> zone which starts at pfn 1, this is never true for the first block,
+> and the skip bit isn't set or tested at all. As a result,
+> fast_find_migrateblock() returns the same pageblock over and over.
+> 
+> If the pfn isn't pageblock-aligned, also check if it's the start of
+> the zone to ensure test-and-set-exactly-once on unaligned ranges.
+> 
+> Thanks to Vlastimil Babka for the help in debugging this.
+> 
+> Fixes: 90ed667c03fe ("Revert "Revert "mm/compaction: fix set skip in fast_find_migrateblock""")
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+
 > ---
->  drivers/interconnect/qcom/icc-rpm.c | 10 +++++++---
->  drivers/interconnect/qcom/icc-rpm.h |  6 ++++++
->  2 files changed, 13 insertions(+), 3 deletions(-)
+>   mm/compaction.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/interconnect/qcom/icc-rpm.c b/drivers/interconnect/qcom/icc-rpm.c
-> index f0e575c95b49..91eb428385f6 100644
-> --- a/drivers/interconnect/qcom/icc-rpm.c
-> +++ b/drivers/interconnect/qcom/icc-rpm.c
-> @@ -300,11 +300,15 @@ static u64 qcom_icc_calc_rate(struct qcom_icc_provider *qp, struct qcom_icc_node
->  	else
->  		agg_avg_rate = qn->sum_avg[ctx];
->  
-> -	/* Check if the node has a specific coefficient first*/
-> -	if (qp->ab_coeff)
-> +	/* Check if the node has a specific coefficient first */
-> +	if (qn->ab_coeff)
-> +		agg_avg_rate = mult_frac(qn->ab_coeff, agg_avg_rate, 100);
-> +	else if (qp->ab_coeff)
->  		agg_avg_rate = mult_frac(qp->ab_coeff, agg_avg_rate, 100);
->  
-> -	if (qp->ib_coeff)
-> +	if (qn->ab_coeff)
-> +		agg_peak_rate = mult_frac(100, qn->max_peak[ctx], qn->ib_coeff);
-> +	else if (qp->ib_coeff)
->  		agg_peak_rate = mult_frac(100, qn->max_peak[ctx], qp->ib_coeff);
->  	else
->  		agg_peak_rate = qn->max_peak[ctx];
-
-Code/data size and likely performance would be slightly better if you
-only add ab_coeff/ib_coeff to the node and not the provider. This is
-slightly inconvenient because you need to duplicate the same value on
-a lot of nodes, but the per-node memory is reserved anyway. You might
-as well use I would say.
-
-> diff --git a/drivers/interconnect/qcom/icc-rpm.h b/drivers/interconnect/qcom/icc-rpm.h
-> index 835b83cfb548..1a26a7b82166 100644
-> --- a/drivers/interconnect/qcom/icc-rpm.h
-> +++ b/drivers/interconnect/qcom/icc-rpm.h
-> @@ -103,6 +103,9 @@ struct qcom_icc_qos {
->   * @mas_rpm_id:	RPM id for devices that are bus masters
->   * @slv_rpm_id:	RPM id for devices that are bus slaves
->   * @qos: NoC QoS setting parameters
-> + * @ab_coeff: a percentage-based coefficient for compensating the AB calculations
-> + * @ib_coeff: an inverse-percentage-based coefficient for compensating the IB calculations
-> + * @bus_clk_rate: a pointer to an array containing bus clock rates in Hz
->   */
->  struct qcom_icc_node {
->  	unsigned char *name;
-> @@ -117,6 +120,9 @@ struct qcom_icc_node {
->  	int mas_rpm_id;
->  	int slv_rpm_id;
->  	struct qcom_icc_qos qos;
-> +	u16 ab_coeff;
-> +	u16 ib_coeff;
-> +	u32 *bus_clk_rate;
-
-bus_clk_rate should be in previous patch :)
-
-Thanks,
-Stephan
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index dbc9f86b1934..eacca2794e47 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -912,11 +912,12 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+>   
+>   		/*
+>   		 * Check if the pageblock has already been marked skipped.
+> -		 * Only the aligned PFN is checked as the caller isolates
+> +		 * Only the first PFN is checked as the caller isolates
+>   		 * COMPACT_CLUSTER_MAX at a time so the second call must
+>   		 * not falsely conclude that the block should be skipped.
+>   		 */
+> -		if (!valid_page && pageblock_aligned(low_pfn)) {
+> +		if (!valid_page && (pageblock_aligned(low_pfn) ||
+> +				    low_pfn == cc->zone->zone_start_pfn)) {
+>   			if (!isolation_suitable(cc, page)) {
+>   				low_pfn = end_pfn;
+>   				folio = NULL;
+> @@ -2002,7 +2003,8 @@ static isolate_migrate_t isolate_migratepages(struct compact_control *cc)
+>   		 * before making it "skip" so other compaction instances do
+>   		 * not scan the same block.
+>   		 */
+> -		if (pageblock_aligned(low_pfn) &&
+> +		if ((pageblock_aligned(low_pfn) ||
+> +		     low_pfn == cc->zone->zone_start_pfn) &&
+>   		    !fast_find_block && !isolation_suitable(cc, page))
+>   			continue;
+>   
