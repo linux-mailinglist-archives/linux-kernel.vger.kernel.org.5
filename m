@@ -2,67 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9B876A6F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA89776A6F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbjHAC1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
+        id S232081AbjHAC21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229807AbjHAC1d (ORCPT
+        with ESMTP id S229724AbjHAC2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:27:33 -0400
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524661BEB;
-        Mon, 31 Jul 2023 19:27:32 -0700 (PDT)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40fcc91258fso6159251cf.1;
-        Mon, 31 Jul 2023 19:27:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690856851; x=1691461651;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0Rbx5pazMUmrAGWXYLJ8jVUiQPXWQGvpwkvAGqlRbh0=;
-        b=h3zOGs2nwMAFflIW+d+RAac8jI3gm3anyQw+AZUM+tFnbQVN6xveU+nCF9wbeOgg8g
-         4tihPpj9lHfVDjtsbHuBYBNrapBMrTgKtIprVlcJfMf0aOnVCNgbj15mQbNrGPXunXHu
-         NLebQ3SybsZgBr373ypfDFFymz55RazrfenDbV3o2dx88m4hsmv40X8k6Bg2s5E1/WzT
-         cbcoAzjwOO+LedfK/KoddJcRHo+wZ8cCHJmLwd8LiaRdSf3wu109gECOQztN+anSVgf7
-         0CLlSPAWMNsY2WfsniuD6/vrzvnQx9bKbLBPjd7zvQhcmViK6NfisWeFa/VhPpTPIDzr
-         L0bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690856851; x=1691461651;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0Rbx5pazMUmrAGWXYLJ8jVUiQPXWQGvpwkvAGqlRbh0=;
-        b=ZRoJSxfveM5JGGcUh9d/siKDeMqeln1lWBRjuIWgmerDuAwE3yJ4e0lq82wP7KCOFN
-         IWD+mAUd6TxTjNO3pDGmX2zqe2fNVB8BuqnA3PrbgqnJevSxM44Tx711fyVykvq5LVy4
-         HqqycXst1MurEuRxkBITZHOm50fjxkDkuTD2ZF9L4CK3NRW5LMeVbe/rQhmuGLagSHJX
-         zNAFYrgD/Kv4yHTmQi9Zj6HohRU3vDlsdW35gHmxrDmU5fBrc+D8XTAYOAUv4SNXVcxW
-         PLeifeMj/duSqpf8scYiBDhmZm80Q3tp11/1bLp0wD6V2xqSnm9RibFJWOb4sIEByH71
-         PDuw==
-X-Gm-Message-State: ABy/qLYicTExb3sscgEt0p4b0m30s/M5nkTKZDuQTd4bvsmPV8VptXW6
-        EklYHKovXrP31VSK3kcDbMbQcovtjE3CpjwNhv1bQY0b8HE=
-X-Google-Smtp-Source: APBJJlGLQ+Ui+4ixTGSUf1KsO8aiWE2TiP6DP67diE/qPfi4ppqInBaGAHwVbcFQfzXaCV1ecUH/q+mLgzAIICHn3LU=
-X-Received: by 2002:a05:622a:24b:b0:40d:b896:1f92 with SMTP id
- c11-20020a05622a024b00b0040db8961f92mr7513815qtx.32.1690856851003; Mon, 31
- Jul 2023 19:27:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230731010104.1781335-1-zhangshida@kylinos.cn> <20230731154133.GA11332@frogsfrogsfrogs>
-In-Reply-To: <20230731154133.GA11332@frogsfrogsfrogs>
-From:   Stephen Zhang <starzhangzsd@gmail.com>
-Date:   Tue, 1 Aug 2023 10:26:55 +0800
-Message-ID: <CANubcdVMdisPOR=VD4mLyiQru4oPOZ_0oDSZXRYOu6ynTji2vA@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: Fix rec_len verify error
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangshida@kylinos.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Mon, 31 Jul 2023 22:28:25 -0400
+Received: from out28-2.mail.aliyun.com (out28-2.mail.aliyun.com [115.124.28.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18181E65
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:28:23 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0744491|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00483132-0.000711951-0.994457;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5Fqw-3_1690856895;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5Fqw-3_1690856895)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 10:28:17 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in amdgpu_smu.c
+Date:   Tue,  1 Aug 2023 02:28:14 +0000
+Message-Id: <20230801022814.4577-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,91 +37,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Darrick J. Wong <djwong@kernel.org> =E4=BA=8E2023=E5=B9=B47=E6=9C=8831=E6=
-=97=A5=E5=91=A8=E4=B8=80 23:41=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Mon, Jul 31, 2023 at 09:01:04AM +0800, zhangshida wrote:
-> > From: Shida Zhang <zhangshida@kylinos.cn>
-> >
-> > With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
-> > a problem occurred when more than 13 million files were directly create=
-d
-> > under a directory:
-> >
-> > EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxx=
-x: dir seems corrupt?  Run e2fsck -D.
-> > EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm x=
-xxxx: dir seems corrupt?  Run e2fsck -D.
-> > EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm =
-xxxxx: Directory index failed checksum
-> >
-> > When enough files are created, the fake_dirent->reclen will be 0xffff.
-> > it doesn't equal to the blocksize 65536, i.e. 0x10000.
-> >
-> > But it is not the same condition when blocksize equals to 4k.
-> > when enough file are created, the fake_dirent->reclen will be 0x1000.
-> > it equals to the blocksize 4k, i.e. 0x1000.
-> >
-> > The problem seems to be related to the limitation of the 16-bit field
-> > when the blocksize is set to 64k. To address this, Modify the check so
-> > as to handle it properly.
->
-> urughghahrhrhr<shudder>
->
-> Sorry that I missed that rec_len is an encoded number, not a plain le16
-> integer...
->
+Fix the following errors reported by checkpatch:
 
-Yep, that's really a point that is easy to forget...
+ERROR: spaces required around that '=' (ctx:WxV)
+ERROR: spaces required around that '&&' (ctx:VxW)
+ERROR: that open brace { should be on the previous line
+ERROR: space required before the open parenthesis '('
+ERROR: space required before the open brace '{'
+ERROR: spaces required around that ':' (ctx:VxW)
 
-> > Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
-> > ---
-> > v1->v2:
-> >   Use a better way to check the condition, as suggested by Andreas.
-> >
-> >  fs/ext4/namei.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> > index 0caf6c730ce3..fffed95f8531 100644
-> > --- a/fs/ext4/namei.c
-> > +++ b/fs/ext4/namei.c
-> > @@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(stru=
-ct inode *inode,
-> >       struct ext4_dir_entry *dp;
-> >       struct dx_root_info *root;
-> >       int count_offset;
-> > +     int blocksize =3D EXT4_BLOCK_SIZE(inode->i_sb);
-> >
-> > -     if (le16_to_cpu(dirent->rec_len) =3D=3D EXT4_BLOCK_SIZE(inode->i_=
-sb))
-> > +     if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) =3D=3D blo=
-cksize)
-> >               count_offset =3D 8;
-> >       else if (le16_to_cpu(dirent->rec_len) =3D=3D 12) {
->
-> ...but what about all the other le16_to_cpu(ext4_dir_entry{,_2}.rec_len)
-> accesses in this file?  Don't those also need to be converted to
-> ext4_rec_len_from_disk calls?
->
-> Also,
-> Fixes: dbe89444042ab ("ext4: Calculate and verify checksums for htree nod=
-es")
->
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
-Thanks for your suggestion, I will try to add all the other conversion
-in this file for the next v3.
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c b/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
+index ce41a8309582..a7199275ffb8 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/amdgpu_smu.c
+@@ -618,7 +618,7 @@ static int smu_set_funcs(struct amdgpu_device *adev)
+ 		adev->pm.pp_feature &= ~PP_GFXOFF_MASK;
+ 		arcturus_set_ppt_funcs(smu);
+ 		/* OD is not supported on Arcturus */
+-		smu->od_enabled =false;
++		smu->od_enabled = false;
+ 		break;
+ 	case IP_VERSION(13, 0, 2):
+ 		aldebaran_set_ppt_funcs(smu);
+@@ -1648,7 +1648,7 @@ static int smu_hw_fini(void *handle)
+ 	struct amdgpu_device *adev = (struct amdgpu_device *)handle;
+ 	struct smu_context *smu = adev->powerplay.pp_handle;
+ 
+-	if (amdgpu_sriov_vf(adev)&& !amdgpu_sriov_is_pp_one_vf(adev))
++	if (amdgpu_sriov_vf(adev) && !amdgpu_sriov_is_pp_one_vf(adev))
+ 		return 0;
+ 
+ 	smu_dpm_set_vcn_enable(smu, false);
+@@ -1700,7 +1700,7 @@ static int smu_suspend(void *handle)
+ 	int ret;
+ 	uint64_t count;
+ 
+-	if (amdgpu_sriov_vf(adev)&& !amdgpu_sriov_is_pp_one_vf(adev))
++	if (amdgpu_sriov_vf(adev) && !amdgpu_sriov_is_pp_one_vf(adev))
+ 		return 0;
+ 
+ 	if (!smu->pm_enabled)
+@@ -2217,8 +2217,7 @@ const struct amd_ip_funcs smu_ip_funcs = {
+ 	.set_powergating_state = smu_set_powergating_state,
+ };
+ 
+-const struct amdgpu_ip_block_version smu_v11_0_ip_block =
+-{
++const struct amdgpu_ip_block_version smu_v11_0_ip_block = {
+ 	.type = AMD_IP_BLOCK_TYPE_SMC,
+ 	.major = 11,
+ 	.minor = 0,
+@@ -2226,8 +2225,7 @@ const struct amdgpu_ip_block_version smu_v11_0_ip_block =
+ 	.funcs = &smu_ip_funcs,
+ };
+ 
+-const struct amdgpu_ip_block_version smu_v12_0_ip_block =
+-{
++const struct amdgpu_ip_block_version smu_v12_0_ip_block = {
+ 	.type = AMD_IP_BLOCK_TYPE_SMC,
+ 	.major = 12,
+ 	.minor = 0,
+@@ -2235,8 +2233,7 @@ const struct amdgpu_ip_block_version smu_v12_0_ip_block =
+ 	.funcs = &smu_ip_funcs,
+ };
+ 
+-const struct amdgpu_ip_block_version smu_v13_0_ip_block =
+-{
++const struct amdgpu_ip_block_version smu_v13_0_ip_block = {
+ 	.type = AMD_IP_BLOCK_TYPE_SMC,
+ 	.major = 13,
+ 	.minor = 0,
+@@ -2337,7 +2334,7 @@ int smu_get_power_limit(void *handle,
+ 	if (!smu->pm_enabled || !smu->adev->pm.dpm_enabled)
+ 		return -EOPNOTSUPP;
+ 
+-	switch(pp_power_type) {
++	switch (pp_power_type) {
+ 	case PP_PWR_TYPE_SUSTAINED:
+ 		limit_type = SMU_DEFAULT_PPT_LIMIT;
+ 		break;
+@@ -2349,7 +2346,7 @@ int smu_get_power_limit(void *handle,
+ 		break;
+ 	}
+ 
+-	switch(pp_limit_level){
++	switch (pp_limit_level) {
+ 	case PP_PWR_LIMIT_CURRENT:
+ 		limit_level = SMU_PPT_LIMIT_CURRENT;
+ 		break;
+@@ -2595,7 +2592,7 @@ static int smu_read_sensor(void *handle,
+ 		*size = 4;
+ 		break;
+ 	case AMDGPU_PP_SENSOR_VCN_POWER_STATE:
+-		*(uint32_t *)data = atomic_read(&smu->smu_power.power_gate.vcn_gated) ? 0: 1;
++		*(uint32_t *)data = atomic_read(&smu->smu_power.power_gate.vcn_gated) ? 0 : 1;
+ 		*size = 4;
+ 		break;
+ 	case AMDGPU_PP_SENSOR_MIN_FAN_RPM:
+@@ -2868,7 +2865,7 @@ static int smu_set_xgmi_pstate(void *handle,
+ 	if (smu->ppt_funcs->set_xgmi_pstate)
+ 		ret = smu->ppt_funcs->set_xgmi_pstate(smu, pstate);
+ 
+-	if(ret)
++	if (ret)
+ 		dev_err(smu->adev->dev, "Failed to set XGMI pstate!\n");
+ 
+ 	return ret;
+-- 
+2.17.1
 
-Cheers,
-Shida
-
-
-
-
-
-> --D
->
-> >               dp =3D (struct ext4_dir_entry *)(((void *)dirent) + 12);
-> > --
-> > 2.27.0
-> >
