@@ -2,265 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA3E76BCDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E5F76BCE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbjHASqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 14:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
+        id S231971AbjHASqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231795AbjHASqK (ORCPT
+        with ESMTP id S231978AbjHASqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:46:10 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFE852698;
-        Tue,  1 Aug 2023 11:45:48 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 349848D;
-        Tue,  1 Aug 2023 20:44:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690915483;
-        bh=X6Z9dROheZMRqOSaTMkT68TI3brpeZO9mR1sRPIFCcM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=csdQq+JqFul5p6+JKxqlsE2xXtJMwZ5nYMTh2rXGYbDMnRoLCst7BJ/uhuyFI5JAq
-         I4+44LLzopkKOYbyiOsNf5KUNq4fxkTTLl2ltvT0ra4p+bbeMpxdO/5kI+84LBYCAt
-         CEPy6oo3rL2uHPAj7x3m0wDkqZW4JYpk+3Q3l8Kg=
-Date:   Tue, 1 Aug 2023 21:45:52 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jack Zhu <jack.zhu@starfivetech.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, changhuang.liang@starfivetech.com
-Subject: Re: [PATCH v7 3/6] media: starfive: camss: Add basic driver
-Message-ID: <20230801184552.GA30382@pendragon.ideasonboard.com>
-References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
- <20230619112838.19797-4-jack.zhu@starfivetech.com>
- <20230727113315.GH25174@pendragon.ideasonboard.com>
- <e8a1b30a-af1b-692b-f5e6-5fe4ba13da93@starfivetech.com>
+        Tue, 1 Aug 2023 14:46:37 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4C830C7
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 11:46:15 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-55b22f82ac8so78229a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 11:46:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1690915575; x=1691520375;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kvbZ9yYuWoTSFKJEhKENxSCBKtYpxpK0EzXBfLVY1p0=;
+        b=IRoyV4Ead+c/d0ks99Zg14YSdO0tXd9vDFI5zWCjNpslgPTEqbT/ERBlexp7Q/JUUA
+         jqDuqlMcyQ/nTpjEo/dQrnCBIwPk8V5i5hq3sMJxHatN1C99Z1yggSsvw7u+RwJLoIFO
+         BUp5lZMfwE7b4BXasRkBB5pG83fbHRP8c13xQJEsMDQOlZ8D4GrW/wB4yixSGwfFQeBH
+         Hy6JMROsMrIzoKN8QS9Z6/zQAOZTfLZPigos5R1dJFfb+DLxLT3cJHesifEklP3RzZAW
+         n4b4fQJeBkaVEyNA7qedDXw1aOR4HZEV7UljyvTmgEGhHhbsLi8d+A/+rBY4ETcDyFBk
+         BZWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690915575; x=1691520375;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kvbZ9yYuWoTSFKJEhKENxSCBKtYpxpK0EzXBfLVY1p0=;
+        b=Yxxf4TJMyZ+ltz1CFdDLMx/i7FTqZHS51qK9jq1gcJtwGy5rWleyCNjZmeJox//IbC
+         BvA0Efesb+e6NGbO5frQmL6/Xa+QsecaMhWQVG96n0IacGpFDDpCLU2zKn4xNIGTmJm3
+         ZC5idz2Qro57ZeMcrPCWCO8Q62IYFZH4LPXZXs81PE2MkVjWHIfYSKhxvrnwg/XvpANx
+         JlDBkio4/RH42dgKer7n6LkkPnuPU0RGXH0hsYrPofAyN0GGFJSqLyFIgELlPej1Bg5T
+         S3vMrQp7fgAvSQaUW8M8UxCWxcdh6P8DlOQZepcXDQbjp0MtphqNH83NvzX2I4D1ZIpj
+         qa7Q==
+X-Gm-Message-State: ABy/qLYjy3heyxM19N7BNHPckeaOE92Cm5CB7N91MbwCaoIuEJKiw6J+
+        9DeGtZcqra0MCDOdyL2sAPBVLmjfZhLkuvfARmf2jA==
+X-Google-Smtp-Source: APBJJlGn2yOBxuyGstntxTVsDJptbHmBTnZxJFLFSa58BxRZujPCSMKq7eDJRr06xgq825y3alknqiVR75AV0LTwJZ4=
+X-Received: by 2002:a17:90b:23ce:b0:262:e589:678f with SMTP id
+ md14-20020a17090b23ce00b00262e589678fmr17592816pjb.10.1690915574722; Tue, 01
+ Aug 2023 11:46:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e8a1b30a-af1b-692b-f5e6-5fe4ba13da93@starfivetech.com>
+References: <20230727091358.3274620-1-Naresh.Solanki@9elements.com>
+ <20230727091358.3274620-2-Naresh.Solanki@9elements.com> <41a8ae4b-0f96-9f26-f25b-b1554b2695d6@roeck-us.net>
+ <CABqG17jKoJ8FJdA-vpX8uda9yi_ir3f2FxFAiE7GTaVM7Mb2aA@mail.gmail.com> <b4097ed6-95d6-b11b-9c9e-edd6e8c51d00@roeck-us.net>
+In-Reply-To: <b4097ed6-95d6-b11b-9c9e-edd6e8c51d00@roeck-us.net>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Wed, 2 Aug 2023 00:16:04 +0530
+Message-ID: <CABqG17iAsx2nysBSX10PTCK=fTpvaz2456a-s6CBwQjuJduWQw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] hwmon: (pmbus/tda38640) Add workaround for bug in
+ SVID mode
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org, linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jack,
+Hi Guenter,
 
-On Tue, Aug 01, 2023 at 11:24:22AM +0800, Jack Zhu wrote:
-> On 2023/7/27 19:33, Laurent Pinchart wrote:
-> > On Mon, Jun 19, 2023 at 07:28:35PM +0800, Jack Zhu wrote:
-> >> Add basic platform driver for StarFive Camera Subsystem.
-> >> 
-> >> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> >> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
-> >> ---
-> >>  MAINTAINERS                                   |   1 +
-> >>  drivers/media/platform/Kconfig                |   1 +
-> >>  drivers/media/platform/Makefile               |   1 +
-> >>  drivers/media/platform/starfive/Kconfig       |   5 +
-> >>  drivers/media/platform/starfive/Makefile      |   2 +
-> >>  drivers/media/platform/starfive/camss/Kconfig |  16 +
-> >>  .../media/platform/starfive/camss/Makefile    |   8 +
-> >>  .../media/platform/starfive/camss/stf_camss.c | 338 ++++++++++++++++++
-> >>  .../media/platform/starfive/camss/stf_camss.h | 146 ++++++++
-> >>  9 files changed, 518 insertions(+)
-> >>  create mode 100644 drivers/media/platform/starfive/Kconfig
-> >>  create mode 100644 drivers/media/platform/starfive/Makefile
-> >>  create mode 100644 drivers/media/platform/starfive/camss/Kconfig
-> >>  create mode 100644 drivers/media/platform/starfive/camss/Makefile
-> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_camss.c
-> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_camss.h
+>
+> On 8/1/23 05:34, Naresh Solanki wrote:
+>
+> [ ... ]
+>
+> >>> +     if (IS_ENABLED(CONFIG_SENSORS_TDA38640_REGULATOR) || svid) {
+> >>
+> >> If you hide this behind IS_ENABLED(CONFIG_SENSORS_TDA38640_REGULATOR), reading
+> >> svid outside the if() statement has no value.
+> > svid mode check is needed only when regulator is enabled for on/off
+> > control later.
+> > Will align the code such that if svid_mode check is done only when
+> > REGULATOR config is enabled
+> > & if it is in svid mode then apply the WA.
+> >
+> >>
+> >>> +             /*
+> >>> +              * Apply ON_OFF_CONFIG workaround as enabling the regulator using the
+> >>> +              * OPERATION register doesn't work in SVID mode.
+> >>> +              *
+> >>> +              * One should configure PMBUS_ON_OFF_CONFIG here, but
+> >>> +              * PB_ON_OFF_CONFIG_POWERUP_CONTROL and PB_ON_OFF_CONFIG_EN_PIN_REQ
+> >>> +              * are ignored by the device.
+> >>> +              * Only PB_ON_OFF_CONFIG_POLARITY_HIGH has an effect.
+> >>
+> >> Hmm, maybe I start to understand. This is really weird, since it changes
+> >> the polarity of the EN input pin, effectively reverting its value.
+> >> In other words, what really happens is that it is not possible to disable
+> >> the chip with PMBUS_ON_OFF_CONFIG in SVID mode, and that reverting
+> >> the EN pin polarity effectively simulates turning the chip on or off by
+> >> software. Maybe software enable is disabled on purpose in VID mode.
+> >> Is that really a bug or is it a feature, and is it really a good idea to
+> >> override it ?
+> > By design, SVID mode only has HW control enabled.
+> > This was with the assumption that PGOOD will be used for controlling
+> > Enable of another rail in Hardware.
+> >
+> > Since my use case needs the complete PMBUS based control,
+> > EN pin polarity flipping can be used for controlling output.
+> >
+>
+> So, effectively, this is not really a bug. It is working around chip functionality.
+>
+> That means we can not just enable this unconditionally in SVID mode after all.
+> Sorry, but it has to be configurable after all, with appropriate explanation.
+By 'configurable' you mean add a dt-property like 'en-svid-control' to have this
+enabled ?
 
-[snip]
-
-> >> diff --git a/drivers/media/platform/starfive/camss/Kconfig b/drivers/media/platform/starfive/camss/Kconfig
-> >> new file mode 100644
-> >> index 000000000000..dafe1d24324b
-> >> --- /dev/null
-> >> +++ b/drivers/media/platform/starfive/camss/Kconfig
-> >> @@ -0,0 +1,16 @@
-> >> +# SPDX-License-Identifier: GPL-2.0-only
-> >> +config VIDEO_STARFIVE_CAMSS
-> >> +	tristate "Starfive Camera Subsystem driver"
-> >> +	depends on V4L_PLATFORM_DRIVERS
-> >> +	depends on VIDEO_DEV && OF
-> >> +	depends on HAS_DMA
-> > 
-> > You need to depend on PM, otherwise the runtime PM operations will be
-> > no-ops and the driver won't work as clocks won't be enabled.
-> 
-> OK, I will add dependency.
-
-By the way, if it makes it easier for you, you don't need to acknowledge
-every single review comment. You can reply to comments you disagree
-with, or comments that you find unclear. Anything that you agree with
-and will address in the next version can be left unanswered in your
-e-mail replies. It's entirely up to you.
-
-> >> +	select MEDIA_CONTROLLER
-> >> +	select VIDEO_V4L2_SUBDEV_API
-> >> +	select VIDEOBUF2_DMA_CONTIG
-> >> +	select V4L2_FWNODE
-> >> +	help
-> >> +	   Enable this to support for the Starfive Camera subsystem
-> >> +	   found on Starfive JH7110 SoC.
-> >> +
-> >> +	   To compile this driver as a module, choose M here: the
-> >> +	   module will be called stf-camss.
-
-[snip]
-
-> >> diff --git a/drivers/media/platform/starfive/camss/stf_camss.c b/drivers/media/platform/starfive/camss/stf_camss.c
-> >> new file mode 100644
-> >> index 000000000000..dc2b5dba7bd4
-> >> --- /dev/null
-> >> +++ b/drivers/media/platform/starfive/camss/stf_camss.c
-> >> @@ -0,0 +1,338 @@
-
-[snip]
-
-> >> +/*
-> >> + * stfcamss_probe - Probe STFCAMSS platform device
-> >> + * @pdev: Pointer to STFCAMSS platform device
-> >> + *
-> >> + * Return 0 on success or a negative error code on failure
-> >> + */
-> >> +static int stfcamss_probe(struct platform_device *pdev)
-> >> +{
-> >> +	struct stfcamss *stfcamss;
-> >> +	struct device *dev = &pdev->dev;
-> >> +	int ret, num_subdevs;
-> >> +	unsigned int i;
-> >> +
-> >> +	stfcamss = devm_kzalloc(dev, sizeof(*stfcamss), GFP_KERNEL);
-> >> +	if (!stfcamss)
-> >> +		return -ENOMEM;
-> >> +
-> >> +	for (i = 0; i < ARRAY_SIZE(stfcamss->irq); ++i) {
-> >> +		stfcamss->irq[i] = platform_get_irq(pdev, i);
-> >> +		if (stfcamss->irq[i] < 0)
-> >> +			return dev_err_probe(&pdev->dev, stfcamss->irq[i],
-> >> +					     "Failed to get irq%d", i);
-> >> +	}
-> >> +
-> >> +	stfcamss->nclks = ARRAY_SIZE(stfcamss->sys_clk);
-> >> +	for (i = 0; i < stfcamss->nclks; ++i)
-> >> +		stfcamss->sys_clk[i].id = stfcamss_clocks[i];
-> >> +	ret = devm_clk_bulk_get(dev, stfcamss->nclks, stfcamss->sys_clk);
-> >> +	if (ret) {
-> >> +		dev_err(dev, "Failed to get clk controls\n");
-> >> +		return ret;
-> >> +	}
-> >> +
-> >> +	stfcamss->nrsts = ARRAY_SIZE(stfcamss->sys_rst);
-> >> +	for (i = 0; i < stfcamss->nrsts; ++i)
-> >> +		stfcamss->sys_rst[i].id = stfcamss_resets[i];
-> >> +	ret = devm_reset_control_bulk_get_shared(dev, stfcamss->nrsts,
-> >> +						 stfcamss->sys_rst);
-> >> +	if (ret) {
-> >> +		dev_err(dev, "Failed to get reset controls\n");
-> >> +		return ret;
-> >> +	}
-> >> +
-> >> +	ret = stfcamss_get_mem_res(pdev, stfcamss);
-> >> +	if (ret) {
-> >> +		dev_err(dev, "Could not map registers\n");
-> >> +		return ret;
-> >> +	}
-> >> +
-> >> +	stfcamss->dev = dev;
-> > 
-> > Move this right after allocating stfcamss, and drop the pdev argument to
-> > stfcamss_get_mem_res(). The platform device can be retrieved in the
-> > function using to_platform_device().
-> 
-> OK, I will modify.
-> 
-> >> +	platform_set_drvdata(pdev, stfcamss);
-> >> +
-> >> +	v4l2_async_nf_init(&stfcamss->notifier);
-> >> +
-> >> +	num_subdevs = stfcamss_of_parse_ports(stfcamss);
-> >> +	if (num_subdevs < 0) {
-> >> +		ret = -ENODEV;
-> > 
-> > An error message would be useful, silent errors are hard to debug.
-> 
-> OK, will add error printing information.
-> 
-> >> +		goto err_cleanup_notifier;
-> >> +	}
-> >> +
-> >> +	stfcamss_mc_init(pdev, stfcamss);
-> >> +
-> >> +	ret = v4l2_device_register(stfcamss->dev, &stfcamss->v4l2_dev);
-> >> +	if (ret < 0) {
-> >> +		dev_err(dev, "Failed to register V4L2 device: %d\n", ret);
-> >> +		goto err_cleanup_notifier;
-> >> +	}
-> >> +
-> >> +	ret = media_device_register(&stfcamss->media_dev);
-> >> +	if (ret) {
-> >> +		dev_err(dev, "Failed to register media device: %d\n", ret);
-> >> +		goto err_unregister_device;
-> >> +	}
-> >> +
-> >> +	pm_runtime_enable(dev);
-> > 
-> > Would it be useful to enable autosuspend too, to avoid expensive
-> > suspend/resume cycles when userspace wants to briefly stop capture and
-> > restart it immediately ?
-> 
-> It seems rare to use autosuspend in the Linux camera system.
-
-It's a relatively recent practice, and is more common in sensor drivers
-than ISP drivers, but I think it's a good practice nonetheless. It makes
-stop-reconfigure-start cycles much faster.
-
-> >> +
-> >> +	stfcamss->notifier.ops = &stfcamss_subdev_notifier_ops;
-> >> +	ret = v4l2_async_nf_register(&stfcamss->v4l2_dev, &stfcamss->notifier);
-> >> +	if (ret) {
-> >> +		dev_err(dev, "Failed to register async subdev nodes: %d\n",
-> >> +			ret);
-> >> +		goto err_unregister_media_dev;
-> > 
-> > You need to disable runtime PM in this error path.
-> 
-> OK, will fix it.
-> 
-> >> +	}
-> >> +
-> >> +	return 0;
-> >> +
-> >> +err_unregister_media_dev:
-> >> +	media_device_unregister(&stfcamss->media_dev);
-> >> +err_unregister_device:
-> >> +	v4l2_device_unregister(&stfcamss->v4l2_dev);
-> >> +err_cleanup_notifier:
-> >> +	v4l2_async_nf_cleanup(&stfcamss->notifier);
-> >> +	return ret;
-> >> +}
-
-[snip]
-
--- 
 Regards,
-
-Laurent Pinchart
+Naresh
+>
+> Guenter
+>
+> >>
+> >> AN_2203_PL12_2204_184108 might really help here.
+> >>
+> >> Guenter
+> >>
+> >>> +              */
+> >>> +             data->info.read_byte_data = tda38640_read_byte_data;
+> >>> +             data->info.write_byte_data = tda38640_write_byte_data;
+> >>> +     }
+> >>> +     return pmbus_do_probe(client, &data->info);
+> >>>    }
+> >>>
+> >>>    static const struct i2c_device_id tda38640_id[] = {
+> >>
+>
