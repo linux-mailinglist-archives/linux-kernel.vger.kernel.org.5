@@ -2,117 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E5476A6E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA16B76A6EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjHACTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
+        id S232072AbjHACYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjHACTp (ORCPT
+        with ESMTP id S229437AbjHACYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:19:45 -0400
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAA3125
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:19:44 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFJhk126sz4f3lx0
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:19:34 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP4 (Coremail) with SMTP id gCh0CgDXg6e4a8hkX5skPQ--.17531S2;
-        Tue, 01 Aug 2023 10:19:36 +0800 (CST)
-Subject: Re: [PATCH 2/8] mm/compaction: correct last_migrated_pfn update in
- compact_zone
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
-        willy@infradead.org, david@redhat.com
-References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
- <20230728171037.2219226-3-shikemeng@huaweicloud.com>
- <fd381e0b-3d83-5a4d-cae1-b9957009e578@linux.alibaba.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <a7d2ba07-8f3c-55db-06c1-b467cb2217e9@huaweicloud.com>
-Date:   Tue, 1 Aug 2023 10:19:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Mon, 31 Jul 2023 22:24:48 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2079.outbound.protection.outlook.com [40.107.21.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A803A1BF8;
+        Mon, 31 Jul 2023 19:24:47 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XbiQDgYRQlc3U2j856vTDAC1hWrO5SZ4w7dJSDpAbMmeZOAW54z1iw7cr0XeRXIGkFI7C9ysku61LjDgF9jSHfnvKqmhnPadv6mp93cnojcUe3wIKBCnYocrPuyPgfYZaBUy0de/eOVICPdswV/rZITWy/vg7xfNbAJbyod6y0SxN34p6DWV26YT6Q30UC11faMAe9bQFxVcqJDN2RRgG+fraCFhqvDUIa66+0umK9CV5oBBdC84dek19njZDoSCSL+A9uirCkz4EnGOlxcoJ8NQ9zkr7idkO9EIyFDjwW6eNYxyiF6dFM9d+9Gt6BOZtn8FQduQJ9Byry26Mc7nFA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Zig7axDUxF1Zm9ohPVaA4T/rg27HQc2URnVNCVKBDNE=;
+ b=B3pYs20of8spgm/+MgngNIpx44u6++o81xgKoFAx8knOiVcbiiMCvzsjiu9+6GObl4cFZdCsDr1FW4GoRVZlgQkwnXrHs002m4XQS1HEJmV8iKbWsMPyFiNK/s9580UizplbGo8Pdq0N6pY65J4YfHz9tdgpgOctiMENjaTM6s4AjxTz8N2C0GJfZVHA1ZKQPn7Rv8Gjoc+5JdBYIWXvMosjz4EMvIS650FMiyrUhssTMxbXR+hzUvDcQGS2IQYe0WBNjsSrWv6KFk53JVVaFxvBoKcpekBLS1G2EXKbfrzMiEKiA48t7lm3vefED8ZrctnEph38XS1zeYyE/WROaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zig7axDUxF1Zm9ohPVaA4T/rg27HQc2URnVNCVKBDNE=;
+ b=lFkocitrGoifcWQ5wYI0S5DB5nfbRyfMJ3RFuuKYo5n53udSKxpWWmKjjsQYZRfb4AMb7VMRATXZdWuAb4xeyFIodEOkNCrdA0uIActYqbKRYkxglxlpoD+6FFnY7FWG7iFgwssSCxtuq8tB7Gy6zExX4coaYktTFFUC6vjtORU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com (2603:10a6:20b:3f8::7)
+ by DU2PR04MB8856.eurprd04.prod.outlook.com (2603:10a6:10:2e3::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.42; Tue, 1 Aug
+ 2023 02:24:44 +0000
+Received: from AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::c5e2:98f8:b03:2189]) by AS8PR04MB8404.eurprd04.prod.outlook.com
+ ([fe80::c5e2:98f8:b03:2189%3]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
+ 02:24:42 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        atsushi.nemoto@sord.co.jp, tomonori.sakita@sord.co.jp
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: [PATCH V2] tty: serial: fsl_lpuart: Clear the error flags by writing 1 for lpuart32 platforms
+Date:   Tue,  1 Aug 2023 10:23:04 +0800
+Message-Id: <20230801022304.24251-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR02CA0075.apcprd02.prod.outlook.com
+ (2603:1096:4:90::15) To AS8PR04MB8404.eurprd04.prod.outlook.com
+ (2603:10a6:20b:3f8::7)
 MIME-Version: 1.0
-In-Reply-To: <fd381e0b-3d83-5a4d-cae1-b9957009e578@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDXg6e4a8hkX5skPQ--.17531S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFWxZr45Zw13Zr4UZr4Dtwb_yoW8tw48p3
-        48G3WxKrWDW3y8CF17tF1kZFyrAw47t3W3JrZ8JFy8Ars5J3Wjq342qr1j9ryUXrsayr90
-        vF4qqa9rZanrZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-        7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AS8PR04MB8404:EE_|DU2PR04MB8856:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0467ceb1-d5e3-4bea-cca8-08db923676d7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /bbCn+Mw4UZ5HO0gEmU7kBBAhSYQKJ7Onym3DmBKKkxA6s+3lj0S1RsgxF24dgWRjHDAMb2PYApVVAUwX8OKQVlIA0l2sbGiY0MrdYqpc+NtbJStVJupJgCvYzTjKoBcGkVpgOmNiYD/hl/gSKR9cKwvhlnFFCeFjFSPsbVdhJtFGpwfQQxUJreP/tcKwA7D8hJjolCOXHg9o0BFAq0/gbY+KBFPxRhwbcmrMDeotX7WjdoHs+2mtRQmulnQpWot/pNJujZdo8QQ5Ah8aXx/BP8YeBsBpZu5/Xp5ra8E6ly4Mwa06wRx9zoBBOsZ/1SgxT+pQ0XN6LiEa9P9HDRgXXyWfzaaLqCR9Y96A+0jaYeY9cRBcz/FYnR6NEU6v5oTCMvDCFri2LIi1vnuKsUy/13o/z4sHPka/g+k6D/Z8vY2YZQ6v9jsvk/qk/zsRI7DhyHQ/zfEABqU2CnnsolFf/mECzT+5NgNGZBvsWZv38LjE1dkcQECIlnb82er4u2SkzVwLpbLJXOb9UoK+hCv2XVSyJs6fuMuKsTCvB5y3KYP7l0nlrYKCOitCsuQ5bb0VAG+lERXHgIlJ4U0jAiyHr4qiPxI4m2JwbKfxXgdEizNXtbLnJBaHEyxaOUyiFIU
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8404.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(366004)(39860400002)(376002)(136003)(396003)(451199021)(44832011)(6512007)(6486002)(52116002)(36756003)(2616005)(6506007)(26005)(1076003)(83380400001)(186003)(66946007)(66556008)(41300700001)(38350700002)(38100700002)(86362001)(66476007)(316002)(5660300002)(4326008)(8676002)(8936002)(2906002)(6666004)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?c9n5qS4gV7rWc5QC21lesxHPQsdMlay1kXDwmzakD4RmoXpk4UtOYovDVpD+?=
+ =?us-ascii?Q?IeNjyOJjIZGdmECPk+zFwqSUv9nk8LaTH8pdWuJKx/od73ODnyV1t/SAhrOJ?=
+ =?us-ascii?Q?UTygE0bwidh7plHdAX7w/1teFpzoHh/gHljrD3jkFzuPflX8+qO4PUqf4uiv?=
+ =?us-ascii?Q?CcEASzcTkjplnmCPi75MJ9DgshGSL9EXsKZn/c5OSCbHcndCMqrMzwTg/m9+?=
+ =?us-ascii?Q?zloMm+Tkc1Op+QA1WXErxNNE8/0M6q4KxgOw+eVhY3Kzglpmn4QBOIKvUIOA?=
+ =?us-ascii?Q?DWgtBx4ZzQ1ZUWN5Rin7EB9b8DqY5JNJA4CHDSFlYGIMtgmuM+fzJK0mKXwE?=
+ =?us-ascii?Q?OPjwl/PzPt12s46nFbyYh1I7zqDUlUZ66ZkUCSOPxauR2Z5SAMxBb7NuhM7u?=
+ =?us-ascii?Q?5CjqVJOCMuHNmklv3WdzfVwLEhtKbQlaRqMbR1HMTKjiMMctw2JJLWysiC7E?=
+ =?us-ascii?Q?UbcKqqQPOYZSgzmer4sZshvYCDCDBzAEboN9ypYXMZA9aMRQtDF9mKcXEDct?=
+ =?us-ascii?Q?48KpW6EmtOQbsTunFU/NgEZKUOPgdv6rPjaSgFfpF8f+ZgQN6dKuW7RLziaw?=
+ =?us-ascii?Q?lx6rJBysLiEslOMFZsxZ3XtCgvmtRZu9r8zBXTIYUNNX1xPq/u1/fUMq/b/r?=
+ =?us-ascii?Q?H1XFWnwLmqu7nn9zKS+GFJyKQlCg2vD0T+4jKl5I1cN4S6NRBy3rD7qmX1V4?=
+ =?us-ascii?Q?jaVoBI4MP8ec7BDUFYwQGBUFk+zYIOyAnudePVB1E8sNYKmYLDMbLe7qodvl?=
+ =?us-ascii?Q?YS0wM9DVHmUGPdwXT7cRGdcLVP5Yas4BYz/ZsRDESiIHy2ve3LlDU8sYPLKw?=
+ =?us-ascii?Q?tgST3FtTOsr28qotgmOz7X1ULwDjzUf4aeCFJW2zLOfcNupDoJGOXsrDDR9M?=
+ =?us-ascii?Q?jXCbNLk4vgixIjItueC3jR5Z8jzeifRpWdqal53L9Sbw4Ki5W3Rtmm/QDJ95?=
+ =?us-ascii?Q?djwCYWpXpRX3Ur4spH5iw21HfQorp8MgCpyUjDePCY9dvQ+6TgEoY5VEsfPE?=
+ =?us-ascii?Q?6lIbmoPdW1uZpiVWp2DtaBG6xg1jZIfBf/nTqQsosEm6pInQk7NYvJg/8Z5W?=
+ =?us-ascii?Q?/1bQmF0sS+eTiyfhWxQRcm9LiBavkxADAO3LvI9hvcwERqQ1V86SorzN00MZ?=
+ =?us-ascii?Q?hRsZ7aQdHCUd/uJZVx2X8nF836z2TEie/ixcnk9hlEmlWy0Y0wV0HbLFVldN?=
+ =?us-ascii?Q?wGQVSmr7wE8TQ4c5/XpgnAg+b1z/JSySe92txUnjPW2sb8joVWDHSpYx2FHN?=
+ =?us-ascii?Q?+cM4byrKoch1+ZQQVpjxXeBFiaCp7dIYWdzfi1sPAKQthRAxmSH1fX6EYVfT?=
+ =?us-ascii?Q?9hkLkRS2KrUSIze2lY4iAzpfgfmER2SdysT8eg9GxdbfztcWWX4KMFTzRCDM?=
+ =?us-ascii?Q?GhhG8HTBvgCcFxJ7KkOpGLk1q7OIBsc2YiY/hwsYZa/SvybP8CjMCNnAKqIK?=
+ =?us-ascii?Q?pmsBugrKp+XJmeqDo5fhvpx5PJHclxlkjIpGK0gZvDrTe2j4IMWNaInbQU+W?=
+ =?us-ascii?Q?GrFJjkweBDPSkPn2atQhYDDK8PYAp0sLFnDOCsgHf1Q/Vwrqe4iH1NPN7yZI?=
+ =?us-ascii?Q?bUh4AtcXPD0j5zGtusYUDIw3tIkL0IWGxqCcafiT?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0467ceb1-d5e3-4bea-cca8-08db923676d7
+X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8404.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 02:24:42.5922
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MsyAlycon3DAhZO9PzJYxZBQiCLFNMR+jZfn8JkLo+15+BZ7uHkRP5JG4MMIaBZFzB4ycI9wmhnwqJ5Yu9QJig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8856
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Do not read the data register to clear the error flags for lpuart32
+platforms, the additional read may cause the receive FIFO underflow
+since the DMA has already read the data register.
+Actually all lpuart32 platforms support write 1 to clear those error
+bits, let's use this method to better clear the error flags.
 
+Fixes: 42b68768e51b ("serial: fsl_lpuart: DMA support for 32-bit variant")
+Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
+---
+Changes in V2:
+1. Improve commit message to avoid confusion as commented by Jiri.
+---
+ drivers/tty/serial/fsl_lpuart.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-on 8/1/2023 10:09 AM, Baolin Wang wrote:
-> 
-> 
-> On 7/29/2023 1:10 AM, Kemeng Shi wrote:
->> We record start pfn of last isolated page block with last_migrated_pfn. And
->> then:
->> 1. We check if we mark the page block skip for exclusive access in
->> isolate_migratepages_block by test if next migrate pfn is still in last
->> isolated page block. If so, we will set finish_pageblock to do the rescan.
->> 2. We check if a full cc->order block is scanned by test if last scan range
->> passes the cc->order block boundary. If so, we flush the pages were freed.
->>
->> We treat cc->migrate_pfn before isolate_migratepages as the start pfn of
->> last isolated page range. However, we always align migrate_pfn to page block
->> or move to another page block in fast_find_migrateblock or in linearly scan
->> forward in isolate_migratepages before do page isolation in
->> isolate_migratepages_block.
-> 
-> Right. But can you describe the impact in detail if the last_migrated_pfn is not set correctly? For example, this will result in rescan not being set correctly to miss a pageblock's rescanning.
-> 
-> Otherwise looks good to me.
-> 
-Sure, the impact will be added in next version. Thanks!
->> Update last_migrated_pfn with pageblock_start_pfn(cc->migrate_pfn - 1)
->> after scan to correctly set start pfn of last isolated page range. > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>   mm/compaction.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/compaction.c b/mm/compaction.c
->> index ce7841363b12..fb250c6b2b6e 100644
->> --- a/mm/compaction.c
->> +++ b/mm/compaction.c
->> @@ -2482,7 +2482,8 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
->>               goto check_drain;
->>           case ISOLATE_SUCCESS:
->>               update_cached = false;
->> -            last_migrated_pfn = iteration_start_pfn;
->> +            last_migrated_pfn = max(cc->zone->zone_start_pfn,
->> +                pageblock_start_pfn(cc->migrate_pfn - 1));
->>           }
->>             err = migrate_pages(&cc->migratepages, compaction_alloc,
-> 
-
+diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
+index f6644c5989d3..f72e1340b47d 100644
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -1120,8 +1120,8 @@ static void lpuart_copy_rx_to_tty(struct lpuart_port *sport)
+ 		unsigned long sr = lpuart32_read(&sport->port, UARTSTAT);
+ 
+ 		if (sr & (UARTSTAT_PE | UARTSTAT_FE)) {
+-			/* Read DR to clear the error flags */
+-			lpuart32_read(&sport->port, UARTDATA);
++			/* Clear the error flags */
++			lpuart32_write(&sport->port, sr, UARTSTAT);
+ 
+ 			if (sr & UARTSTAT_PE)
+ 				sport->port.icount.parity++;
 -- 
-Best wishes
-Kemeng Shi
+2.17.1
 
