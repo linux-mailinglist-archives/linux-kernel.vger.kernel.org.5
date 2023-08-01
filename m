@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E8776B717
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F01076B71D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234557AbjHAOTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42818 "EHLO
+        id S234572AbjHAOTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234562AbjHAOTN (ORCPT
+        with ESMTP id S234562AbjHAOTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:19:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A83E5BF;
-        Tue,  1 Aug 2023 07:19:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 45935615CD;
-        Tue,  1 Aug 2023 14:19:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01565C433C9;
-        Tue,  1 Aug 2023 14:19:09 +0000 (UTC)
-Date:   Tue, 1 Aug 2023 10:19:08 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ze Gao <zegao2021@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: Re: [RFC PATCH v3 6/6] libtraceevent: prefer to use prev_state_char
- introduced in sched_switch
-Message-ID: <20230801101908.4ccc81c8@gandalf.local.home>
-In-Reply-To: <20230801090124.8050-7-zegao@tencent.com>
-References: <20230801090124.8050-1-zegao@tencent.com>
-        <20230801090124.8050-7-zegao@tencent.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 1 Aug 2023 10:19:41 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359F4BF;
+        Tue,  1 Aug 2023 07:19:40 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 371EJWqX055662;
+        Tue, 1 Aug 2023 09:19:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690899572;
+        bh=n2rRx8pB8T/Zi6wh1widcHtcJC9FOdfiiBjMAQ0+Ras=;
+        h=From:To:CC:Subject:Date;
+        b=ZVSg8ir4Kkl0kq9EO4aT9AFj/VQbL/UJl93vLwYGxBu+5YX4j2ri9Bv++1RAl3g4r
+         ru2VZy16ab4KIcEUR84jfz2CJ8nXqf7nrHFSiNNHSK0WYZXjxeLXPUuttLw55PzN3i
+         jyvnjzPN1pU2IrlujweJXxvOiUOHTdfn3eJQtDBw=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 371EJW3T029849
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 1 Aug 2023 09:19:32 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 1
+ Aug 2023 09:19:32 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 1 Aug 2023 09:19:32 -0500
+Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 371EJS3g022895;
+        Tue, 1 Aug 2023 09:19:29 -0500
+From:   Udit Kumar <u-kumar1@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <t-konduru@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <vaishnav.a@ti.com>
+CC:     Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-j784s4-evm: Correct Pin mux offset for ospi
+Date:   Tue, 1 Aug 2023 19:49:20 +0530
+Message-ID: <20230801141920.3317697-1-u-kumar1@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  1 Aug 2023 17:01:24 +0800
-Ze Gao <zegao2021@gmail.com> wrote:
+After splitting wkup_pmx pin mux for J784S4 into four regions.
+Pin mux offset for OSPI nodes were not updated to align with new
+regions, due to this while setting ospi pin muxes out of range
+error was seen.
 
-> Since the sched_switch tracepoint introduces a new variable to
-> report sched-out task state in symbolic char, we prefer to use
-> it to spare from knowing internal implementations in kernel.
-> 
-> Also we keep the old parsing logic intact but sync the state char
-> array with the latest kernel.
+Pin mux offsets for OSPI nodes are corrected in this patch.
 
-This should be two patches. First sync the state char array and then add
-your state_char change. The two changes are agnostic to each other, and
-should be separate commits. Same goes for the perf changes.
+Fixes: 14462bd0b247 ("arm64: dts: ti: k3-j784s4: Fix wakeup pinmux range and pinctrl node offsets")
+Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+---
+Original test log
+https://gist.github.com/uditkumarti/85b5076df99c3019aa56da4268724295
+line 1104 and 1107, out of range error is seen
 
--- Steve
+Test log with patch
+https://gist.github.com/uditkumarti/29b424d0a1527e77947f72d2e8a38f01
 
+ arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 31 +++++++++++++++---------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
-> 
-> Signed-off-by: Ze Gao <zegao@tencent.com>
-> ---
->  plugins/plugin_sched_switch.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
-> index 8752cae..4c57322 100644
-> --- a/plugins/plugin_sched_switch.c
-> +++ b/plugins/plugin_sched_switch.c
-> @@ -11,7 +11,7 @@
->  
->  static void write_state(struct trace_seq *s, int val)
->  {
-> -	const char states[] = "SDTtZXxW";
-> +	const char states[] = "SDTtXZPIp";
->  	int found = 0;
->  	int i;
->  
-> @@ -99,7 +99,12 @@ static int sched_switch_handler(struct trace_seq *s,
->  	if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) == 0)
->  		trace_seq_printf(s, "[%d] ", (int) val);
->  
-> -	if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) == 0)
-> +	//find if has prev_state_char, otherwise fallback to prev_state
-> +	if (tep_find_field(event, "prev_state_char")) {
-> +		if (tep_get_field_val(s,  event, "prev_state_char", record, &val, 1) == 0)
-> +			trace_seq_putc(s, (char) val);
-> +	}
-> +	else if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) == 0)
->  		write_state(s, val);
->  
->  	trace_seq_puts(s, " ==> ");
+diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+index 7ad152a1b90f..1961cd819f5e 100644
+--- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
+@@ -379,21 +379,28 @@ J784S4_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (D34) MCU_OSPI0_D5 */
+ 			J784S4_WKUP_IOPAD(0x024, PIN_INPUT, 0) /* (E34) MCU_OSPI0_D6 */
+ 			J784S4_WKUP_IOPAD(0x028, PIN_INPUT, 0) /* (E33) MCU_OSPI0_D7 */
+ 			J784S4_WKUP_IOPAD(0x008, PIN_INPUT, 0) /* (C34) MCU_OSPI0_DQS */
+-			J784S4_WKUP_IOPAD(0x03c, PIN_OUTPUT, 6) /* (C32) MCU_OSPI0_CSn3.MCU_OSPI0_ECC_FAIL */
+-			J784S4_WKUP_IOPAD(0x038, PIN_OUTPUT, 6) /* (B34) MCU_OSPI0_CSn2.MCU_OSPI0_RESET_OUT0 */
++		>;
++	};
++};
++
++&wkup_pmx1 {
++	mcu_fss0_ospi0_pins1_default: mcu-fss0-ospi0-default-pins1 {
++		pinctrl-single,pins = <
++			J784S4_WKUP_IOPAD(0x004, PIN_OUTPUT, 6) /* (C32) MCU_OSPI0_ECC_FAIL */
++			J784S4_WKUP_IOPAD(0x000, PIN_OUTPUT, 6) /* (B34) MCU_OSPI0_RESET_OUT0 */
+ 		>;
+ 	};
+ 
+-	mcu_fss0_ospi1_pins_default: mcu-fss0-ospi1-default-pins {
++	mcu_fss0_ospi1_pins_default: mcu-fss0-ospi1-pins-default {
+ 		pinctrl-single,pins = <
+-			J784S4_WKUP_IOPAD(0x040, PIN_OUTPUT, 0) /* (F32) MCU_OSPI1_CLK */
+-			J784S4_WKUP_IOPAD(0x05c, PIN_OUTPUT, 0) /* (G32) MCU_OSPI1_CSn0 */
+-			J784S4_WKUP_IOPAD(0x04c, PIN_INPUT, 0) /* (E35) MCU_OSPI1_D0 */
+-			J784S4_WKUP_IOPAD(0x050, PIN_INPUT, 0) /* (D31) MCU_OSPI1_D1 */
+-			J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (G31) MCU_OSPI1_D2 */
+-			J784S4_WKUP_IOPAD(0x058, PIN_INPUT, 0) /* (F33) MCU_OSPI1_D3 */
+-			J784S4_WKUP_IOPAD(0x048, PIN_INPUT, 0) /* (F31) MCU_OSPI1_DQS */
+-			J784S4_WKUP_IOPAD(0x044, PIN_INPUT, 0) /* (C31) MCU_OSPI1_LBCLKO */
++			J784S4_WKUP_IOPAD(0x008, PIN_OUTPUT, 0) /* (F32) MCU_OSPI1_CLK */
++			J784S4_WKUP_IOPAD(0x024, PIN_OUTPUT, 0) /* (G32) MCU_OSPI1_CSn0 */
++			J784S4_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (E35) MCU_OSPI1_D0 */
++			J784S4_WKUP_IOPAD(0x018, PIN_INPUT, 0) /* (D31) MCU_OSPI1_D1 */
++			J784S4_WKUP_IOPAD(0x01C, PIN_INPUT, 0) /* (G31) MCU_OSPI1_D2 */
++			J784S4_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (F33) MCU_OSPI1_D3 */
++			J784S4_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (F31) MCU_OSPI1_DQS */
++			J784S4_WKUP_IOPAD(0x00C, PIN_INPUT, 0) /* (C31) MCU_OSPI1_LBCLKO */
+ 		>;
+ 	};
+ };
+@@ -437,7 +444,7 @@ &fss {
+ &ospi0 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
++	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>, <&mcu_fss0_ospi0_pins1_default>;
+ 
+ 	flash@0 {
+ 		compatible = "jedec,spi-nor";
+-- 
+2.34.1
 
