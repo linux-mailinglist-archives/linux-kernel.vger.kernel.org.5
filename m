@@ -2,157 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B370376B25B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D59276B268
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbjHAKwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
+        id S232231AbjHAKxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:53:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233939AbjHAKvZ (ORCPT
+        with ESMTP id S234414AbjHAKxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:51:25 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C212B49FF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:48:54 -0700 (PDT)
-Message-ID: <20230801103818.426750252@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690886875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=4thjqk06PAC51pOMOTPF8ETngeGfrVOo3TNMYdEenIA=;
-        b=hYq2NTJtqwAScfWO5/gnhubO+QfkSxyd+M/MkH18g+s6QzqQGLTr5NHI0VHPb5aCP48OHg
-        PpFQ8uBWK69rIEQUX9eEzC+eLRpzJVjLEBImVvvEQ7v1znmeLMMmRoL+HBZ7VfYabF8IHW
-        d/yZJvuNJoGMSpysSpkj5wFNo9pruXInHmrCKN9uNsehrbrRWHHpoqTvwXP4KgS5Vvp0Ph
-        TiqYD2eADMpQWdWOSsXmFnkTZJ771S/W3bC6akAMIpwLLpxVdXLODTabWDHBGoKGjADFm/
-        TqNLXZ6uAIYiJNdr5payrEJHQebxL2Zz0E1WconNHVWwdkhAe9oSo+fSAKunmw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690886875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=4thjqk06PAC51pOMOTPF8ETngeGfrVOo3TNMYdEenIA=;
-        b=QUEU8Xbzi99gYLvCQ3CQp5znOVPD5tJCENMJ/3H3hk/jTPMYFYqu2vwt8AKRepk5KCjcaC
-        Uu1eIqlbQyhCFLDA==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V3 60/60] x86/apic: Turn on static calls
-References: <20230801103042.936020332@linutronix.de>
+        Tue, 1 Aug 2023 06:53:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E6F5587
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:50:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ECDAC61519
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:49:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50BF3C433CD
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:49:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690886999;
+        bh=u7I+zdXZxktdq8ChnbQrPRnPNrQrNqrJr3UZE+w6xVM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YEg8q8AGO7PDRDEJdoUZsaCFcZLFriVWXApTzTAVI4en+f56NOAPhRiRI7jyTg0oh
+         igyeJjI16GfahMSl5ri8osu7DEK1txIPZvIydHfEZ32Ot7cU5t61U9sUUMmx4q2/xc
+         NCH1wbq346XELm23p2LOi8eUTU2+pYpIR6sfDC7Dau3fapXStyv4X7dUoxb2zMygXt
+         eIxvk7ChiKlKyCSRqEdOXXN8OtcGoI3EiMwRUI3REjYEhGwTTcfaL+VlqW4fyDeDvX
+         DfT6aj3Nf0MT+a8JR9Op4KlXpHdOdkzXYI9hqZmmgkQoDFAYJMvsm6SgrtAirccr5V
+         mwZZ9x1VBMiBw==
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-522ab301692so5429551a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 03:49:59 -0700 (PDT)
+X-Gm-Message-State: ABy/qLY4JSLdJvQXYrL9JtskoxHER4bMpMIihwEAHZ5eaAiU0sJJ7XJw
+        bxVcZ6sRsuUntaOrENwT9vaPb6lTAafog/LCyig=
+X-Google-Smtp-Source: APBJJlGmfOzudB4zLRHM997HtkvDTsRmGasa+lA5ovwZauli5GP+7Ze4kTI2UNbtuJnb5revLg7J6IglOClWqNcHT40=
+X-Received: by 2002:aa7:d507:0:b0:522:3a28:feca with SMTP id
+ y7-20020aa7d507000000b005223a28fecamr2581715edq.24.1690886997423; Tue, 01 Aug
+ 2023 03:49:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue,  1 Aug 2023 12:47:55 +0200 (CEST)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230801011554.3950435-1-guoren@kernel.org> <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
+ <CAJF2gTRa5erHomJzLgUFO4SGqd5zSDwn6r3WN7kM8aWpv1vesg@mail.gmail.com>
+ <CAJF2gTQ1hV1vipAo3H4X4WiPO84kVVFZcdGq7u4f0bVTry_akQ@mail.gmail.com> <CAHirt9gVqE=9vviJEY=kY=booVRmFPHrnFsKCXPXnXiWTB8bZQ@mail.gmail.com>
+In-Reply-To: <CAHirt9gVqE=9vviJEY=kY=booVRmFPHrnFsKCXPXnXiWTB8bZQ@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 1 Aug 2023 18:49:45 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTR2ON33wc87iV564rkDbNiE56h_t0kzKKXdJtGqgJ1sOQ@mail.gmail.com>
+Message-ID: <CAJF2gTR2ON33wc87iV564rkDbNiE56h_t0kzKKXdJtGqgJ1sOQ@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
+To:     WANG Rui <wangrui@loongson.cn>
+Cc:     chenhuacai@kernel.or, kernel@xen0n.name, arnd@arndb.de,
+        andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
+        peterz@infradead.org, will@kernel.org, boqun.feng@gmail.com,
+        mark.rutland@arm.com, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert all the APIC callback inline wrappers from apic->foo() to
-static_call(apic_call_foo)(), except for the safe_wait_icr_idle() one which
-is only used during SMP bringup when sending INIT/SIPI. That really can do
-the conditional callback. The regular wait_icr_idle() matters as it is used
-in irq_work_raise(), so X2APIC machines spare the conditional.
+On Tue, Aug 1, 2023 at 5:32=E2=80=AFPM WANG Rui <wangrui@loongson.cn> wrote=
+:
+>
+> Hello,
+>
+> On Tue, Aug 1, 2023 at 5:05=E2=80=AFPM Guo Ren <guoren@kernel.org> wrote:
+> >
+> > > The CoRR problem would cause wider problems than this.For this case,
+> > > do you mean your LL -> LL would be reordered?
+> > >
+> > > CPU 0
+> > >           CPU1
+> > > LL(2) (set ex-monitor)
+> > >
+> > >                 store (break the ex-monitor)
+> > > LL(1) (reordered instruction set ex-monitor
+> > > SC(3) (successes ?)
+> > Sorry for the mail client reformat, I mean:
+> >
+> > CPU0  LL(2) (set ex-monitor)
+> > CPU1  STORE (break the ex-monitor)
+> > CPU0  LL(1) (reordered instruction set ex-monitor
+> > CPU0  SC(3) (success?)
+>
+> No. LL and LL won't reorder because LL implies a memory barrier(though
+> not acquire semantics).
+That means we could remove __WEAK_LLSC_MB totally, right?
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/include/asm/apic.h |   27 +++++++++++++--------------
- 1 file changed, 13 insertions(+), 14 deletions(-)
+>
+> Regards,
+> --
+> WANG Rui
+>
 
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -394,68 +394,67 @@ DECLARE_APIC_CALL(write);
- 
- static __always_inline u32 apic_read(u32 reg)
- {
--	return apic->read(reg);
-+	return static_call(apic_call_read)(reg);
- }
- 
- static __always_inline void apic_write(u32 reg, u32 val)
- {
--	apic->write(reg, val);
-+	static_call(apic_call_write)(reg, val);
- }
- 
- static __always_inline void apic_eoi(void)
- {
--	apic->eoi();
-+	static_call(apic_call_eoi)();
- }
- 
- static __always_inline void apic_native_eoi(void)
- {
--	apic->native_eoi();
-+	static_call(apic_call_native_eoi)();
- }
- 
- static __always_inline u64 apic_icr_read(void)
- {
--	return apic->icr_read();
-+	return static_call(apic_call_icr_read)();
- }
- 
- static __always_inline void apic_icr_write(u32 low, u32 high)
- {
--	apic->icr_write(low, high);
-+	static_call(apic_call_icr_write)(low, high);
- }
- 
- static __always_inline void __apic_send_IPI(int cpu, int vector)
- {
--	apic->send_IPI(cpu, vector);
-+	static_call(apic_call_send_IPI)(cpu, vector);
- }
- 
- static __always_inline void __apic_send_IPI_mask(const struct cpumask *mask, int vector)
- {
--	apic->send_IPI_mask(mask, vector);
-+	static_call_mod(apic_call_send_IPI_mask)(mask, vector);
- }
- 
- static __always_inline void __apic_send_IPI_mask_allbutself(const struct cpumask *mask, int vector)
- {
--	apic->send_IPI_mask_allbutself(mask, vector);
-+	static_call(apic_call_send_IPI_mask_allbutself)(mask, vector);
- }
- 
- static __always_inline void __apic_send_IPI_allbutself(int vector)
- {
--	apic->send_IPI_allbutself(vector);
-+	static_call(apic_call_send_IPI_allbutself)(vector);
- }
- 
- static __always_inline void __apic_send_IPI_all(int vector)
- {
--	apic->send_IPI_all(vector);
-+	static_call(apic_call_send_IPI_all)(vector);
- }
- 
- static __always_inline void __apic_send_IPI_self(int vector)
- {
--	apic->send_IPI_self(vector);
-+	static_call_mod(apic_call_send_IPI_self)(vector);
- }
- 
- static __always_inline void apic_wait_icr_idle(void)
- {
--	if (apic->wait_icr_idle)
--		apic->wait_icr_idle();
-+	static_call_cond(apic_call_wait_icr_idle)();
- }
- 
- static __always_inline u32 safe_apic_wait_icr_idle(void)
 
+--=20
+Best Regards
+ Guo Ren
