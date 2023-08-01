@@ -2,184 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6226676BD92
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EC876BD9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbjHATWE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 15:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        id S230331AbjHATWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbjHATWD (ORCPT
+        with ESMTP id S229942AbjHATWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:22:03 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B158C1BF1;
-        Tue,  1 Aug 2023 12:21:58 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qQuwF-001bwY-Bp; Tue, 01 Aug 2023 21:21:47 +0200
-Received: from p57ae5424.dip0.t-ipconnect.de ([87.174.84.36] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qQuwF-001Voi-33; Tue, 01 Aug 2023 21:21:47 +0200
-Message-ID: <c48f6f3c742eaf35e35882064ccf4ed07d4e63fe.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v8 11/19] sh: add <asm-generic/io.h> including
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Christoph Hellwig <hch@lst.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Mike Rapoport <rppt@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Stafford Horne <shorne@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Helge Deller <deller@gmx.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Date:   Tue, 01 Aug 2023 21:21:45 +0200
-In-Reply-To: <09094baf-dadf-4bce-9f63-f2a1f255f9a8@app.fastmail.com>
-References: <20230706154520.11257-1-bhe@redhat.com>
-         <20230706154520.11257-12-bhe@redhat.com>
-         <CAMuHMdWmv-Jdvi7a04JGXuA2QARj8c8mpUvY7TOcetPkG4pW7A@mail.gmail.com>
-         <0f771b11539d5a3871691af901315ee2034b577c.camel@physik.fu-berlin.de>
-         <09094baf-dadf-4bce-9f63-f2a1f255f9a8@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Tue, 1 Aug 2023 15:22:36 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F581BFD
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:22:35 -0700 (PDT)
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2ED231EC00D9;
+        Tue,  1 Aug 2023 21:22:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1690917753;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=c/RRuNGpmCCaUtjrgZ1nbQ0/GjRcNBS+oG40tfrcyF0=;
+        b=jdPXySA0H5noc7+EItmpA25XMlxgEY9VHTlfYa+XWhfIkQZ7mBZVUofE89rjNQxUpW9Ijl
+        9FcDzZLZPta3uWphJQkKJigqOGI5LJhz8X9gjzLztfaz/8H0953MlCXvTHZApI0O99MgM/
+        3gugtaiSdyy1P2SPiQ/DIa2HDXn+t4E=
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id KsIQZoxGU-wo; Tue,  1 Aug 2023 19:22:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1690917750; bh=c/RRuNGpmCCaUtjrgZ1nbQ0/GjRcNBS+oG40tfrcyF0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gzoYB8Iuk2FV6pVat8v2eS6ZhZ+kG+tRIYEC0MJMJe7RO+woPSksGS/k7UxKjEG2D
+         0a084ioLas1j9GE25kjkpD8Bhqw7PgCyaBHIt9rWRYn2iLeRySaBPAiNZXXxxhm1Bb
+         JYeuTQu+SXshT+i3IZz4Xw9QgmzZIE8Q+HDr5NCSM7Z46D3VZFpKaEriBjnCB+LnCT
+         Xw6jxKNhAlvYQkoghTpcJbJyHSm1xL5F2D+sZJvIgVzSGblL5Wcv+CjIfH3hW/YnRX
+         ktipr/0AtDkdCBlNUtUD8Id7ZLx5alez6s621dyPNsSpd7ByFcoOFmsbbeAOLdPd1n
+         Ryr4q1MXJcKj2EW+oRrsonR8mKR3WlxDJWMnX6VEgvVcq0e1tw4Z5SxkOn1Qnr1jna
+         0T3lFiNPo4wKH5lAuzwJYWboyUdqAOiGdXm2ckvI2rQ8aIT4CS6oEFPSv3LEcXdjek
+         5c0SKdXSuV4xpGRDO4reHBz0E4EdYYBTOmbwIUSMgngVZhj7dBZhHCi8iBCCeguMeS
+         gwvjlmpSBTS8Qwar1QlK3YNBNLwQj0StoQ/+/plaYDXkibGIxiSf5wBv5O0DinkLQZ
+         3uV1AQ8cdNu2hOuHIpe7MGMK1U02VMyIvOcZ+DJKHinfpKckPj9plC+lN79PMAbugt
+         0cEuDTNZ0J89l3Xvy7+oPEws=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1B64440E019D;
+        Tue,  1 Aug 2023 19:22:22 +0000 (UTC)
+Date:   Tue, 1 Aug 2023 21:22:17 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 3/5] [RESEND] x86: qspinlock-paravirt: fix
+ mising-prototype warnings
+Message-ID: <20230801192217.GHZMlbaVMBavu909lb@fat_crate.local>
+References: <20230725134837.1534228-1-arnd@kernel.org>
+ <20230725134837.1534228-4-arnd@kernel.org>
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.174.84.36
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230725134837.1534228-4-arnd@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd!
-
-On Mon, 2023-07-10 at 12:47 +0200, Arnd Bergmann wrote:
-> It looks like only the "noioport" variant got some of the
-> extra macro definitions, but the version for PCI still needs the
-> same six macros, plus the ones of inb/outb etc, something like
-> this:
-> 
-> diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
-> index 24c560c065ec7..2135e32145c54 100644
-> --- a/arch/sh/include/asm/io.h
-> +++ b/arch/sh/include/asm/io.h
-> @@ -241,6 +241,26 @@ __BUILD_IOPORT_STRING(q, u64)
+On Tue, Jul 25, 2023 at 03:48:35PM +0200, Arnd Bergmann wrote:
+> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+> index 89842bb7ec9cc..64a6bba70d183 100644
+> --- a/arch/x86/kernel/paravirt.c
+> +++ b/arch/x86/kernel/paravirt.c
+> @@ -73,11 +73,13 @@ DEFINE_PARAVIRT_ASM(pv_native_read_cr2, "mov %cr2, %rax", .noinstr.text);
 >  
->  #endif
+>  DEFINE_STATIC_KEY_TRUE(virt_spin_lock_key);
 >  
-> +#define inb(addr)      inb(addr)
-> +#define inw(addr)      inw(addr)
-> +#define inl(addr)      inl(addr)
-> +#define outb(x, addr)  outb((x), (addr))
-> +#define outw(x, addr)  outw((x), (addr))
-> +#define outl(x, addr)  outl((x), (addr))
-> +
-> +#define inb_p(addr)    inb(addr)
-> +#define inw_p(addr)    inw(addr)
-> +#define inl_p(addr)    inl(addr)
-> +#define outb_p(x, addr)        outb((x), (addr))
-> +#define outw_p(x, addr)        outw((x), (addr))
-> +#define outl_p(x, addr)        outl((x), (addr))
-> +
-> +#define insb insb
-> +#define insw insw
-> +#define insl insl
-> +#define outsb outsb
-> +#define outsw outsw
-> +#define outsl outsl
->  
->  #define IO_SPACE_LIMIT 0xffffffff
->  
-> diff --git a/arch/sh/include/asm/io_noioport.h b/arch/sh/include/asm/io_noioport.h
-> index 5ba4116b4265c..12dad91f41c1e 100644
-> --- a/arch/sh/include/asm/io_noioport.h
-> +++ b/arch/sh/include/asm/io_noioport.h
-> @@ -46,20 +46,6 @@ static inline void ioport_unmap(void __iomem *addr)
->         BUG();
->  }
->  
-> -#define inb_p(addr)    inb(addr)
-> -#define inw_p(addr)    inw(addr)
-> -#define inl_p(addr)    inl(addr)
-> -#define outb_p(x, addr)        outb((x), (addr))
-> -#define outw_p(x, addr)        outw((x), (addr))
-> -#define outl_p(x, addr)        outl((x), (addr))
-> -
-> -#define insb insb
-> -#define insw insw
-> -#define insl insl
-> -#define outsb outsb
-> -#define outsw outsw
-> -#define outsl outsl
-> -
->  static inline void insb(unsigned long port, void *dst, unsigned long count)
+> +#ifdef CONFIG_SMP
+>  void __init native_pv_lock_init(void)
 >  {
->         BUG();
+>  	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
+>  		static_branch_disable(&virt_spin_lock_key);
+>  }
+> +#endif
 
-I am fine with this fix.
+Can you add an empty UP stub instead?
 
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+We all have a great aversion against ifdeffery...
 
-> I think ideally all the I/O port stuff in arch/sh/ could just be
-> removed after the conversion to asm-generic/io.h, but the
-> microdev_ioport_map() function oddity gets in the way of that,
-> unless someone wants to clean up that platform. As far as I
-> can tell, the ethernet, display, USB and PCI devices on it already
-> broke at some point (afbb9d8d5266b, 46bc85872040a), so it might
-> be easier to remove it entirely.
-
-I don't have this particular hardware, so I cannot comment on this.
-
-> > I'm not happy though that this patch is in linux-next without being Acked by me
-> > or being reviewed by anyone. We should always make sure first that the code
-> > actually builds and has been tested on real hardware.
-> 
-> I think that if the series has been posted eight times, you had
-> your chance to do a review, especially since I pointed out that
-> merging this one would have avoid the unxlate_dev_mem_ptr() bug
-> as well.
-
-I have only been the maintainer of arch/sh for a few weeks, so it's natural
-that I am not doing a perfect job and might miss something. Also, I am not
-getting paid for this work, I am doing this in my free time.
-
-> Having the series go into linux-next sounds appropriate like this,
-> the entire purpose of that is to find such bugs and Andrew can jus
-> fold the fixup into the broken patch. 
-> 
-> Let me know if you prefer the simple version with the extra
-> #defines or if we should just use the generic inb/outb implementation
-> immediately and drop microdev in a separate patch.
-
-Please go ahead with the simple version.
-
-Thanks,
-Adrian
+Thx.
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
