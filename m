@@ -2,112 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD4376B9CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F0476B9D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbjHAQjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33222 "EHLO
+        id S231694AbjHAQkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbjHAQjb (ORCPT
+        with ESMTP id S231607AbjHAQkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:39:31 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494F71FE5;
-        Tue,  1 Aug 2023 09:39:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AF72761634;
-        Tue,  1 Aug 2023 16:39:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E39BC433C8;
-        Tue,  1 Aug 2023 16:39:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690907969;
-        bh=peOB4gYXHi9+NQFqAEhqF+m0ecPnTZOeDb0Ne46VrRw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sstKmFBZwEw5V1wDtDA9C654z/Yt8zMozmuZHnlnXA+FW1Bfr3b4cWTxtjWqAVrMc
-         DGtbYQFs7QmqFA7SlAYC0oArqV3nFtR4/0L4aN7rkwIo83nqld1sh7qIz7oBdHAR9i
-         kWqZ66M4DSoRCfRCezLkRP5GmObapL0IaVJeb+prgzS2jCu0lsFrTMet1a6E59wBeS
-         cJR78bviYofqm3PhnqJ4cHr6D4hD10UeWMTjXBosOQISY7JvEccmRLNse6D3BpiG6R
-         1/i/Z4AXElHXBtgQTqbP1oxoGtE0IF18eC5+32UBmpx4NFOPrmEUvG1h06FdZEjCb7
-         pG1VVo7qCb6Lw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A6A0BCE0908; Tue,  1 Aug 2023 09:39:28 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 09:39:28 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests: cgroup: fix test_kmem_basic false positives
-Message-ID: <c40ca485-f52e-411a-9f33-3adabc53c0fc@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230801135632.1768830-1-hannes@cmpxchg.org>
+        Tue, 1 Aug 2023 12:40:16 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C11B11FFE
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:40:14 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-98dfb3f9af6so922661566b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690908013; x=1691512813;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4qjFUw6+lEzkCCKqkbY3T91pufwJOps9NprX6UVn+h8=;
+        b=p6fiXJVO6VAT7ddDlyeNeKo0u9g75XBshHTDYQkWpxGEUOGoOVAa7lHgsGvQZ5v/+W
+         OL8o5krg+sbCk3k/ILPv5kJcGtc7Hl7e/Ptk68GNbUYDFS1ZLOXSdMFbtMgISIwiBvXM
+         xA5PCRA4fUyBY1hNJB6x57RpX4pHwvLO70MzF7vtOTGutOLMa2G02e6PwMjrWoV32oEH
+         b6YlMDU2PYjQiFSB63POIJeR3bgDccie71bMuCrG1M0DF1oPPZLzqfczUjMBmkdzgXbl
+         zrQDN3zGYffW49VbgVfFPFSdFMhkF99msYQ0hnralZcPwwvzI8CmOTzVDqdh+UFOFJjq
+         Lm5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690908013; x=1691512813;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4qjFUw6+lEzkCCKqkbY3T91pufwJOps9NprX6UVn+h8=;
+        b=bJmIMYUb1bQk+Juj0e4+LDujPHeTFX7s/mEF8gj8kY3x/v8BPrESwvdhyEgkJZkL1w
+         wDDJUO65CAvGfdNgEjFLASWcVW7VuO/Yam99VNrOeZ9f/ri2hXx2smOCeM8Wa+o9biew
+         EPwKzjqFg02tWbpD1fKboflLxhg/QPrjlnsl42TXsk/qDEDFsTen1jCFjeJdQRa1bysS
+         GlEJO4iZoSYN+hSpRfFBD9/nqNXMDk1o3rv42ftCcc2Jgv7DfO+zt0csrIsPeGn3C4E2
+         sSpT7VWBK4Xct8fG9zrayq3hxeJGsnnP1TN8uSchCl3VEgf2NRMl8QsRkXhrhH9309n8
+         6XGw==
+X-Gm-Message-State: ABy/qLYB3C+Fh/9hzcF6MRH3f8jMgUvJJGBYsZvbO7DVhHjcmvAMXOuG
+        2wlQ94w1C69BxgMo3EpBJ1or6dta1VboQxemyJXxXw==
+X-Google-Smtp-Source: APBJJlEOr1teCw40TvLuDNBikvF5ICCk1wj7SeHDxgnRGozU1Gwr56AHW9TbZUOhBSqnj1vnRQImF4blOlMh+ybaaJ4=
+X-Received: by 2002:a17:907:75d0:b0:989:450:e567 with SMTP id
+ jl16-20020a17090775d000b009890450e567mr2977498ejc.65.1690908012991; Tue, 01
+ Aug 2023 09:40:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801135632.1768830-1-hannes@cmpxchg.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230726153223.821757-1-yosryahmed@google.com>
+ <20230726153223.821757-2-yosryahmed@google.com> <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
+In-Reply-To: <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 1 Aug 2023 09:39:36 -0700
+Message-ID: <CAJD7tkbb8AWR-duWb+at-S9MMz48b0JqnM+b5ok83TzvXvPb+A@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: memcg: use rstat for non-hierarchical stats
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 09:56:32AM -0400, Johannes Weiner wrote:
-> This test fails routinely in our prod testing environment, and I can
-> reproduce it locally as well.
-> 
-> The test allocates dcache inside a cgroup, then drops the memory limit
-> and checks that usage drops correspondingly. The reason it fails is
-> because dentries are freed with an RCU delay - a debugging sleep shows
-> that usage drops as expected shortly after.
-> 
-> Insert a 1s sleep after dropping the limit. This should be good
-> enough, assuming that machines running those tests are otherwise not
-> very busy.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On Tue, Aug 1, 2023 at 7:30=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Wed 26-07-23 15:32:23, Yosry Ahmed wrote:
+> > Currently, memcg uses rstat to maintain aggregated hierarchical stats.
+> > Counters are maintained for hierarchical stats at each memcg. Rstat
+> > tracks which cgroups have updates on which cpus to keep those counters
+> > fresh on the read-side.
+> >
+> > Non-hierarchical stats are currently not covered by rstat. Their
+> > per-cpu counters are summed up on every read, which is expensive.
+> > The original implementation did the same. At some point before rstat,
+> > non-hierarchical aggregated counters were introduced by
+> > commit a983b5ebee57 ("mm: memcontrol: fix excessive complexity in
+> > memory.stat reporting"). However, those counters were updated on the
+> > performance critical write-side, which caused regressions, so they were
+> > later removed by commit 815744d75152 ("mm: memcontrol: don't batch
+> > updates of local VM stats and events"). See [1] for more detailed
+> > history.
+> >
+> > Kernel versions in between a983b5ebee57 & 815744d75152 (a year and a
+> > half) enjoyed cheap reads of non-hierarchical stats, specifically on
+> > cgroup v1. When moving to more recent kernels, a performance regression
+> > for reading non-hierarchical stats is observed.
+> >
+> > Now that we have rstat, we know exactly which percpu counters have
+> > updates for each stat. We can maintain non-hierarchical counters again,
+> > making reads much more efficient, without affecting the performance
+> > critical write-side. Hence, add non-hierarchical (i.e local) counters
+> > for the stats, and extend rstat flushing to keep those up-to-date.
+> >
+> > A caveat is that we now need a stats flush before reading
+> > local/non-hierarchical stats through {memcg/lruvec}_page_state_local()
+> > or memcg_events_local(), where we previously only needed a flush to
+> > read hierarchical stats. Most contexts reading non-hierarchical stats
+> > are already doing a flush, add a flush to the only missing context in
+> > count_shadow_nodes().
+> >
+> > With this patch, reading memory.stat from 1000 memcgs is 3x faster on a
+> > machine with 256 cpus on cgroup v1:
+> >  # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
+> >  # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
+> >  real  0m0.125s
+> >  user  0m0.005s
+> >  sys   0m0.120s
+> >
+> > After:
+> >  real  0m0.032s
+> >  user  0m0.005s
+> >  sys   0m0.027s
+>
+> Have you measured any potential regression for cgroup v2 which collects
+> all this data without ever using it (AFAICS)?
 
-I am putting together something more formal, but this will certainly
-improve things, as Johannes says, assuming the system goes mostly
-idle during that one-second wait.  So:
+I did not. I did not expect noticeable regressions given that all the
+extra work is done during flushing, which should mostly be done by the
+asynchronous worker, but can also happen in the stats reading context.
+Let me run the same script on cgroup v2 just in case and report back.
 
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-
-Yes, there are corner cases, such as the system having millions of
-RCU callbacks queued and being unable to invoke them all during that
-one-second interval.  But that is a corner case, and that is exactly
-why I will be putting together something more formal.  ;-)
-
-							Thanx, Paul
-
-> ---
->  tools/testing/selftests/cgroup/test_kmem.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
-> index 258ddc565deb..1b2cec9d18a4 100644
-> --- a/tools/testing/selftests/cgroup/test_kmem.c
-> +++ b/tools/testing/selftests/cgroup/test_kmem.c
-> @@ -70,6 +70,10 @@ static int test_kmem_basic(const char *root)
->  		goto cleanup;
->  
->  	cg_write(cg, "memory.high", "1M");
-> +
-> +	/* wait for RCU freeing */
-> +	sleep(1);
-> +
->  	slab1 = cg_read_key_long(cg, "memory.stat", "slab ");
->  	if (slab1 <= 0)
->  		goto cleanup;
-> -- 
-> 2.41.0
-> 
+> --
+> Michal Hocko
+> SUSE Labs
