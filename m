@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F50276BE51
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EA576BE55
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbjHAUNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 16:13:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        id S231795AbjHAUNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 16:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHAUNA (ORCPT
+        with ESMTP id S229538AbjHAUNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 16:13:00 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7639E71
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:12:59 -0700 (PDT)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 371KCTNo103615;
-        Tue, 1 Aug 2023 15:12:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690920749;
-        bh=92E0FyIOdvL/ASqKMYUYhlN3Vb+r/XnDzr2cJExGv3c=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=yzGHZTY0d+g62JArpdrYa35dp0weGCoxzVkmpcX75QH26POeOWz8PpPCBSxxN0xFG
-         f5w51Jz2IMBJKtxgEVKBOBseawBREsE0px/sFmlrejFeChFtelI2ObzYJJoJQAr660
-         4gx0OOOQPVdEFUC3HcSm32175laWTSl1GxAs55Xc=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 371KCSI0003548
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 1 Aug 2023 15:12:29 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 1
- Aug 2023 15:12:28 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 1 Aug 2023 15:12:28 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 371KCSk3103636;
-        Tue, 1 Aug 2023 15:12:28 -0500
-Date:   Tue, 1 Aug 2023 15:12:28 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     "Bajjuri, Praneeth" <praneeth@ti.com>
-CC:     Francesco Dolcini <francesco@dolcini.it>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] arm64: defconfig: enable TI K3 thermal driver
-Message-ID: <20230801201228.rb2lxawcsgjkan2m@twistable>
-References: <20230728113029.403862-1-francesco@dolcini.it>
- <4a295f06-c6f7-e023-61f0-01fdd07deab1@ti.com>
+        Tue, 1 Aug 2023 16:13:30 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B74EB1;
+        Tue,  1 Aug 2023 13:13:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690920809; x=1722456809;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=NeJN8F4X63iN++kJnkzTRl/LpBnHdF5EROGjeqP4Mg0=;
+  b=X1VnuTorY9O8LDeZEVla+26XsoFf0zsR2JJIXktDO2mM8tkb0kioVBKo
+   cry+aJyREPhK63e8nNwMn5yFYA9Wlo+9p8+sDpuZW/YhmzcJ4v+2vbCvw
+   Hs/kkWfV/CMI2c13li3JdhNvGGr8DW95LZjYqt04ibxbFauByCYTnchmW
+   r/oyzK4krRRzXKeOcIwBfURxk8Y+uLI/qGeFdcg6PJdp8+SohIse4MimB
+   6tiRgH0N1Fh1cIjB7dx1IuCvDK3Tq1PTCECBeyJy2T9F+mJxAA8eNatOB
+   9xSqY/Imsn0uQbKmuDQeu8aGwZ5rIS3NN6OWn9vzRhLsdHcxCudIGint0
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="369403663"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="369403663"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 13:13:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="794320081"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="794320081"
+Received: from iweiny-mobl.amr.corp.intel.com (HELO localhost) ([10.212.100.136])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 13:13:28 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+Subject: [PATCH v2 0/2] CXL/events: Fix and improve event dev_dbg()
+ messages
+Date:   Tue, 01 Aug 2023 13:13:27 -0700
+Message-Id: <20230731-cxl-fix-clear-event-debug-print-v2-0-9bdd08d386e9@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4a295f06-c6f7-e023-61f0-01fdd07deab1@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGdnyWQC/42OTQ6CMBCFr0K6dkxbBNSV9zAs+jNAE2jJFBsM4
+ e4WTuBuvveS783GIpLDyJ7FxgiTiy74DPJSMDMo3yM4m5lJLkvelALMOkLnVjAjKgJM6BewqD8
+ 9zOTyXeqqsYrjo6oNyxatIoIm5c1weCYVF6SjmAmz55x+t5kHF5dA3/OTJI70/9EkQMBNGl7fu
+ 4pzK145xfFqwsTafd9/TigZP+cAAAA=
+To:     Davidlohr Bueso <dave@stgolabs.net>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>
+X-Mailer: b4 0.13-dev-c6835
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690920808; l=638;
+ i=ira.weiny@intel.com; s=20221211; h=from:subject:message-id;
+ bh=NeJN8F4X63iN++kJnkzTRl/LpBnHdF5EROGjeqP4Mg0=;
+ b=j6LRYS/DXpPmT5OI6xpvckODQIYMUhRNYiB0Re6A43qUNvgC38Cf7al0/V2ifLA1bhNYk/h7M
+ o6ulr6FfIo3AzlulNVWnVByKMIW90hGkkYV9HpUuePcK05O8UAogG/e
+X-Developer-Key: i=ira.weiny@intel.com; a=ed25519;
+ pk=noldbkG+Wp1qXRrrkfY1QJpDf7QsOEthbOT7vm0PqsE=
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14:31-20230801, Bajjuri, Praneeth wrote:
-> 
-> 
-> On 7/28/2023 6:30 AM, Francesco Dolcini wrote:
-> > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > 
-> > Enable K3 thermal driver, this is used on TI AM62 for example and
-> > various platform based on that SoC.
-> > 
-> > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> 
-> Reviewed-by: Praneeth Bajjuri <praneeth@ti.com>
-> 
-> 
-> > ---
-> >   arch/arm64/configs/defconfig | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> > index 0777bcae9104..cbacae73e9af 100644
-> > --- a/arch/arm64/configs/defconfig
-> > +++ b/arch/arm64/configs/defconfig
-> > @@ -647,6 +647,7 @@ CONFIG_DEVFREQ_THERMAL=y
-> >   CONFIG_THERMAL_EMULATION=y
-> >   CONFIG_IMX_SC_THERMAL=m
-> >   CONFIG_IMX8MM_THERMAL=m
-> > +CONFIG_K3_THERMAL=m
-> >   CONFIG_QORIQ_THERMAL=m
-> >   CONFIG_SUN8I_THERMAL=y
-> >   CONFIG_ROCKCHIP_THERMAL=m
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+Changes in v2:
+- [Dan] split fix from additional debug message
+- Link to v1: https://lore.kernel.org/r/20230731-cxl-fix-clear-event-debug-print-v1-1-42c068f500d1@intel.com
 
-I will be picking up
-https://lore.kernel.org/all/20230731161048.2522154-1-u-kumar1@ti.com/
-instead. going through the usual tests etc..
+---
+Ira Weiny (2):
+      cxl/mbox: Use correct handle in events debug message
+      cxl/mbox: Add handle to event processing debug
 
+ drivers/cxl/core/mbox.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+---
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+change-id: 20230731-cxl-fix-clear-event-debug-print-3b57da0e956c
+
+Best regards,
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+Ira Weiny <ira.weiny@intel.com>
+
