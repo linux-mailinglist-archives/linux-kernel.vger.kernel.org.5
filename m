@@ -2,46 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E38776AE5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E997076AC93
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbjHAJiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35306 "EHLO
+        id S232100AbjHAJOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233136AbjHAJht (ORCPT
+        with ESMTP id S232726AbjHAJMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:37:49 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22624212A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:36:06 -0700 (PDT)
-Received: from dggpemm500019.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RFTq01zspz1GDMk;
-        Tue,  1 Aug 2023 17:10:36 +0800 (CST)
-Received: from dggpemm500007.china.huawei.com (7.185.36.183) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 1 Aug 2023 17:11:36 +0800
-Received: from huawei.com (10.175.103.91) by dggpemm500007.china.huawei.com
- (7.185.36.183) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 1 Aug
- 2023 17:11:36 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <mingo@redhat.com>, <peterz@infradead.org>,
-        <yangyingliang@huawei.com>
-Subject: [PATCH -next] sched/fair: change update_entity_lag() to static
-Date:   Tue, 1 Aug 2023 17:08:57 +0800
-Message-ID: <20230801090857.3994462-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Aug 2023 05:12:53 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17E05584;
+        Tue,  1 Aug 2023 02:10:20 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-98377c5d53eso758205266b.0;
+        Tue, 01 Aug 2023 02:10:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690880941; x=1691485741;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IkBUsAmLUq7YhhUOQ4WRaKkV3LcWzsjvAGeelgGD4l4=;
+        b=IZGPkv5r8wE4IMEsEf7Y0lH8cgbqpgTbPoIXuySgolY9Tq+mQoVK5+Okz+ctGFXwD1
+         JjPq+VvAacHujm4gxTs5xYWua1YXsC0SdY4WpKaYMpeg9LkRZMIYqkkOF9psU9Oz7nzS
+         TUrRBnXCtnZxVfOo+UpU9xaxBulX9uG3PZUwy5zZQ32euczOSEqLPovFiwpcMJIn+DHS
+         Kr8kajmej9C3rniqBCA4dyV2PrJBZ2YEr0huGd97UCMyhfkq1d2jOnwy0XU2DzxifI6A
+         Y3445z6po5Dz3V1dhlr5lDmrhugg3O68yNbPDJ5UMLOiWkfa1i/en3PmEpdgDrVN6+Ai
+         oiQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690880941; x=1691485741;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IkBUsAmLUq7YhhUOQ4WRaKkV3LcWzsjvAGeelgGD4l4=;
+        b=c/175ZGrLDSAe3bPBIReNno6p9XmxMWMgAi4wFHKY61sdUUNpwoStEk5z6EpH+IK3C
+         QBnEW0jdCIGH3N8eC5pum7Z3zXw6bISzxDmojTqhw22JT8tL/s62p7W15A1g4CVgLPeg
+         CiH7Yl4wZvSu5UZVSBkPDB3Cq9LjP/qh1YYP4iJDWNRVnTLPwJfSSpEuaMQfo1prWA91
+         4mnugZzUPSD2tc7SwXHIdzMYYJffebIf+8ktfZ5ZqhcNhsN2sLO12imXGyHlSGkjJfKD
+         vJEJgvSfRL2MOeb4sCLDgkHiqa7CRbBGGrN7lK73eEU4ZdytCr69MBvz/cQ3LwLqJQFC
+         N8Hw==
+X-Gm-Message-State: ABy/qLZwf7XC2M6a7vYpRzZcMr1LpZxlAjkKA4SdfRb3pwhVgxZRjCcL
+        qf/W7LVD8YXzPdFXsxOaEg0=
+X-Google-Smtp-Source: APBJJlEVdIB+36Z+4jiYfcdQeZZFfHRdSGl8GZYK9UI/AT9/05ftbW9b+ZVM85hf0wEsg5B6V2/ojQ==
+X-Received: by 2002:a17:906:73db:b0:993:f996:52d5 with SMTP id n27-20020a17090673db00b00993f99652d5mr1986472ejl.25.1690880940892;
+        Tue, 01 Aug 2023 02:09:00 -0700 (PDT)
+Received: from skbuf ([188.27.184.166])
+        by smtp.gmail.com with ESMTPSA id t26-20020a1709064f1a00b0099bd86f9248sm7371960eju.63.2023.08.01.02.09.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 02:09:00 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 12:08:58 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ante Knezic <ante.knezic@helmholz.de>
+Cc:     netdev@vger.kernel.org, andrew@lunn.ch, f.fainelli@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-kernel@vger.kernel.org,
+        linux@armlinux.org.uk
+Subject: Re: [PATCH net-next v5] net: dsa: mv88e6xxx: Add erratum 3.14 for
+ 88E6390X and 88E6190X
+Message-ID: <20230801090858.4eme7b4mlufy4eva@skbuf>
+References: <20230801064815.25694-1-ante.knezic@helmholz.de>
+ <20230801064815.25694-1-ante.knezic@helmholz.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500007.china.huawei.com (7.185.36.183)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801064815.25694-1-ante.knezic@helmholz.de>
+ <20230801064815.25694-1-ante.knezic@helmholz.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -50,28 +76,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The update_entity_lag() introduced in commit
-86bfbb7ce4f6 ("sched/fair: Add lag based placement")
-is only used in fair.c now, change it to static.
+On Tue, Aug 01, 2023 at 08:48:15AM +0200, Ante Knezic wrote:
+> Fixes XAUI/RXAUI lane alignment errors.
+> Issue causes dropped packets when trying to communicate over
+> fiber via SERDES lanes of port 9 and 10.
+> Errata document applies only to 88E6190X and 88E6390X devices.
+> Requires poking in undocumented registers.
+> 
+> Signed-off-by: Ante Knezic <ante.knezic@helmholz.de>
+> ---
 
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 857c5975c8c9..4e65e3964d96 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -699,7 +699,7 @@ u64 avg_vruntime(struct cfs_rq *cfs_rq)
-  *
-  * XXX could add max_slice to the augmented data to track this.
-  */
--void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
-+static void update_entity_lag(struct cfs_rq *cfs_rq, struct sched_entity *se)
- {
- 	s64 lag, limit;
- 
--- 
-2.25.1
-
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
