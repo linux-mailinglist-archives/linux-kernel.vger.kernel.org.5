@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 512FA76B256
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27B276B257
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234185AbjHAKve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:51:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        id S232261AbjHAKvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234227AbjHAKvD (ORCPT
+        with ESMTP id S234238AbjHAKvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Aug 2023 06:51:03 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91A249D3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:48:43 -0700 (PDT)
-Message-ID: <20230801103817.996980460@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D126049E0
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:48:44 -0700 (PDT)
+Message-ID: <20230801103818.049146509@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690886865;
+        s=2020; t=1690886866;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=Q8bPz8OSR7Dw0div3KJHyiz5smjtpl0ETsImY01rMac=;
-        b=YxBqGI1i1OUJtBhM2j5Ghxb2h7CmNslx+ErwQHf2TTWhmdHDc6EVk0tQ04BVFAc2fa8D+m
-        M8Ot1DFQFNOL3OBXPpJpSQOetpgLK0xbAQFl3GgqQTJ24bRKJzs4ct0zqM4xQiLIQUCNe+
-        QgCmPOZuGFCcxKlOx/h0QoGpfXng24GKNlnkVM9l/P3kEhdzOPpDZ2I5pV3HtnsL0YWNkK
-        CInABts2J+ViQ8Lbv55wfUxMTKhX7OGovUNnNQdsacyJTpVhc7+FtiD9Kt54xqDXqy/hLm
-        dKcBtP14BfmI3ax9a7K9EOoZken0vr/MAHWqpaUy3PLxavg9eHuXHNSQQmq0lQ==
+         references:references; bh=4GFxWOIrpTfqT5fCSkz52w3aacX6yQNA53PA8dS4E0E=;
+        b=CSCyD+r/J6QigzVBMvh6pPAQX18CtRSNEkOquVIZgBge69OkoSNNO0Ts57dRDw5BshD4k6
+        Yswxo9CtHYOGZal62LszSf8ZYvPZ+fSgLdy/uXjhTDol7mD9Bbod9cHxIkdyTUgml/NbhX
+        NJWDNYyzNA7Mz2YIdBAtFEOPLgednd6iocADIUegXfFnoMgHU2/DE8I+Hv21JsYwHjDSRH
+        6b7ZPrepn3vw1i8bTZWY7iKJFm8rkIblZ9CpHc4md1423q/n6AqSj1zUzzawa7j5JE+avx
+        53mfvXRnCUGDA0YSVDkDKzZ0td7b5jAKLESTL0FgbV5Cd4M6rQ5i8wEmn7huww==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690886865;
+        s=2020e; t=1690886866;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=Q8bPz8OSR7Dw0div3KJHyiz5smjtpl0ETsImY01rMac=;
-        b=38ETvICZ3PHedt8pZ667v+ToVqjm87wEQsWaFrWu9bPLMAN/c6ipdtNBwEJNEI2YsXviZ8
-        Y1qxF2E+UrrKqFCg==
+         references:references; bh=4GFxWOIrpTfqT5fCSkz52w3aacX6yQNA53PA8dS4E0E=;
+        b=pjr2s9x15ZhqVgD1vdPF/Xza0uqqjnDMGoYuyW1nSxJxJw3I2HdqxAOnNbFwc+UZOUozmj
+        FZTQEmVS4foDN+Dw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
@@ -42,13 +42,13 @@ Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
         Arjan van de Ven <arjan@linux.intel.com>,
         Juergen Gross <jgross@suse.com>,
         Michael Kelley <mikelley@microsoft.com>,
-        Peter Keresztes Schmidt <peter@keresztesschmidt.de>
-Subject: [patch V3 52/60] x86/xen/apic: Use standard apic driver mechanism for
- Xen PV
+        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Subject: [patch V3 53/60] x86/apic: Provide apic_update_callback()
 References: <20230801103042.936020332@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue,  1 Aug 2023 12:47:45 +0200 (CEST)
+Date:   Tue,  1 Aug 2023 12:47:46 +0200 (CEST)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
@@ -59,69 +59,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of setting the Xen PV apic driver very early during boot, just use
-the standard apic driver probing by setting an appropriate
-x86_init.irqs.intr_mode_init callback.
+There are already two variants of update mechanism for particular callbacks
+and virtualization just writes into the data structure.
 
-At the same time eliminate xen_apic_check() which has never been used.
+Provide an interface and use a shadow data structure to preserve callbacks
+so they can be reapplied when the APIC driver is replaced.
 
-The #ifdef CONFIG_X86_LOCAL_APIC around the call of xen_init_apic()
-can be removed, too, as CONFIG_XEN depends on CONFIG_X86_LOCAL_APIC.
+The extra data structure is intentional as any new callback needs to be
+also updated in the core code. This also prepares for static calls.
 
-Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/lkml/aa086365-fd02-210f-67c6-5c9175c0dfee@suse.com
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
-V3: New patch to address the XenPV fallout
----
- arch/x86/xen/apic.c         |   11 -----------
- arch/x86/xen/enlighten_pv.c |    4 +---
- 2 files changed, 1 insertion(+), 14 deletions(-)
+ arch/x86/include/asm/apic.h |   28 ++++++++++++++++++++++++++++
+ arch/x86/kernel/apic/init.c |   39 ++++++++++++++++++++++++++++++++++++++-
+ arch/x86/kernel/setup.c     |    2 ++
+ 3 files changed, 68 insertions(+), 1 deletion(-)
 
---- a/arch/x86/xen/apic.c
-+++ b/arch/x86/xen/apic.c
-@@ -158,19 +158,8 @@ static struct apic xen_pv_apic = {
- 	.icr_write 			= xen_apic_icr_write,
+--- a/arch/x86/include/asm/apic.h
++++ b/arch/x86/include/asm/apic.h
+@@ -308,6 +308,23 @@ struct apic {
+ 	char	*name;
  };
  
--static void __init xen_apic_check(void)
--{
--	apic_install_driver(&xen_pv_apic);
--}
--
- void __init xen_init_apic(void)
++struct apic_override {
++	void	(*eoi)(void);
++	void	(*native_eoi)(void);
++	void	(*write)(u32 reg, u32 v);
++	u32	(*read)(u32 reg);
++	void	(*send_IPI)(int cpu, int vector);
++	void	(*send_IPI_mask)(const struct cpumask *mask, int vector);
++	void	(*send_IPI_mask_allbutself)(const struct cpumask *msk, int vec);
++	void	(*send_IPI_allbutself)(int vector);
++	void	(*send_IPI_all)(int vector);
++	void	(*send_IPI_self)(int vector);
++	u64	(*icr_read)(void);
++	void	(*icr_write)(u32 low, u32 high);
++	int	(*wakeup_secondary_cpu)(int apicid, unsigned long start_eip);
++	int	(*wakeup_secondary_cpu_64)(int apicid, unsigned long start_eip);
++};
++
+ /*
+  * Pointer to the local APIC driver in use on this system (there's
+  * always just one such driver in use - the kernel decides via an
+@@ -343,9 +360,17 @@ extern int lapic_can_unplug_cpu(void);
+ #endif
+ 
+ #ifdef CONFIG_X86_LOCAL_APIC
++extern struct apic_override __x86_apic_override;
+ 
++void __init apic_setup_apic_calls(void);
+ void __init apic_install_driver(struct apic *driver);
+ 
++#define apic_update_callback(_callback, _fn) {					\
++		__x86_apic_override._callback = _fn;				\
++		apic->_callback = _fn;						\
++		pr_info("APIC: %s() replaced with %ps()\n", #_callback, _fn);	\
++}
++
+ static inline u32 apic_read(u32 reg)
  {
- 	x86_apic_ops.io_apic_read = xen_io_apic_read;
--	/* On PV guests the APIC CPUID bit is disabled so none of the
--	 * routines end up executing. */
--	if (!xen_initial_domain())
--		apic_install_driver(&xen_pv_apic);
--
--	x86_platform.apic_post_init = xen_apic_check;
+ 	return apic->read(reg);
+@@ -405,6 +430,9 @@ static inline void apic_wait_icr_idle(vo
+ static inline u32 safe_apic_wait_icr_idle(void) { return 0; }
+ static inline void apic_set_eoi_cb(void (*eoi)(void)) {}
+ static inline void apic_native_eoi(void) { WARN_ON_ONCE(1); }
++static inline void apic_setup_apic_calls(void) { }
++
++#define apic_update_callback(_callback, _fn) do { } while (0)
+ 
+ #endif /* CONFIG_X86_LOCAL_APIC */
+ 
+--- a/arch/x86/kernel/apic/init.c
++++ b/arch/x86/kernel/apic/init.c
+@@ -5,6 +5,37 @@
+ 
+ #include "local.h"
+ 
++/* The container for function call overrides */
++struct apic_override __x86_apic_override __initdata;
++
++#define apply_override(__cb)					\
++	if (__x86_apic_override.__cb)				\
++		apic->__cb = __x86_apic_override.__cb
++
++static __init void restore_override_callbacks(void)
++{
++	apply_override(eoi);
++	apply_override(native_eoi);
++	apply_override(write);
++	apply_override(read);
++	apply_override(send_IPI);
++	apply_override(send_IPI_mask);
++	apply_override(send_IPI_mask_allbutself);
++	apply_override(send_IPI_allbutself);
++	apply_override(send_IPI_all);
++	apply_override(send_IPI_self);
++	apply_override(icr_read);
++	apply_override(icr_write);
++	apply_override(wakeup_secondary_cpu);
++	apply_override(wakeup_secondary_cpu_64);
++}
++
++void __init apic_setup_apic_calls(void)
++{
++	/* Ensure that the default APIC has native_eoi populated */
++	apic->native_eoi = apic->eoi;
++}
++
+ void __init apic_install_driver(struct apic *driver)
+ {
+ 	if (apic == driver)
+@@ -15,6 +46,13 @@ void __init apic_install_driver(struct a
+ 	if (IS_ENABLED(CONFIG_X86_X2APIC) && apic->x2apic_set_max_apicid)
+ 		apic->max_apic_id = x2apic_max_apicid;
+ 
++	/* Copy the original eoi() callback as KVM/HyperV might overwrite it */
++	if (!apic->native_eoi)
++		apic->native_eoi = apic->eoi;
++
++	/* Apply any already installed callback overrides */
++	restore_override_callbacks();
++
+ 	pr_info("Switched APIC routing to: %s\n", driver->name);
  }
- apic_driver(xen_pv_apic);
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1326,7 +1326,7 @@ asmlinkage __visible void __init xen_sta
  
- 	x86_init.resources.memory_setup = xen_memory_setup;
- 	x86_init.irqs.intr_mode_select	= x86_init_noop;
--	x86_init.irqs.intr_mode_init	= x86_init_noop;
-+	x86_init.irqs.intr_mode_init	= x86_64_probe_apic;
- 	x86_init.oem.arch_setup = xen_arch_setup;
- 	x86_init.oem.banner = xen_banner;
- 	x86_init.hyper.init_platform = xen_pv_init_platform;
-@@ -1366,12 +1366,10 @@ asmlinkage __visible void __init xen_sta
+@@ -41,7 +79,6 @@ void __init apic_set_eoi_cb(void (*eoi)(
+ 	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++) {
+ 		/* Should happen once for each apic */
+ 		WARN_ON((*drv)->eoi == eoi);
+-		(*drv)->native_eoi = (*drv)->eoi;
+ 		(*drv)->eoi = eoi;
+ 	}
+ }
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1017,6 +1017,8 @@ void __init setup_arch(char **cmdline_p)
  
- 	xen_init_capabilities();
+ 	x86_report_nx();
  
--#ifdef CONFIG_X86_LOCAL_APIC
- 	/*
- 	 * set up the basic apic ops.
- 	 */
- 	xen_init_apic();
--#endif
- 
- 	machine_ops = xen_machine_ops;
- 
++	apic_setup_apic_calls();
++
+ 	if (acpi_mps_check()) {
+ #ifdef CONFIG_X86_LOCAL_APIC
+ 		apic_is_disabled = true;
 
