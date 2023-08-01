@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F93176BC37
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EAC576BC38
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbjHASVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 14:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37340 "EHLO
+        id S232050AbjHASVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231734AbjHASVn (ORCPT
+        with ESMTP id S231789AbjHASVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:21:43 -0400
+        Tue, 1 Aug 2023 14:21:44 -0400
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8815F2689
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 11:21:39 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9F357E0003;
-        Tue,  1 Aug 2023 18:21:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6445D269A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 11:21:41 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5BE8CE0008;
+        Tue,  1 Aug 2023 18:21:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690914098;
+        t=1690914099;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=un3Uwaotmlox+IhpuLnflkjcgnz89/YG1Do8CcofnC8=;
-        b=KSm9vmu0f8IIcuOFIlEzau9XSapvbuGrbGmh2i1glN+GtLBpvJYtMLcriL7sQVfOKWyS0o
-        PtghWB/Bn5vMHBcPOhw4J84WduNNP8bNjuuMKSVtjmaZK0sig+/YQhHXYkO/skQVsA4dVi
-        tPbJkpVL3r0mHUfCaZPeTeKmjqe9K7sTK1gck/4Bbc/vp5CAp1SYBE7v87p+f/h5bH1eXS
-        BPoFabs50SX8imkphZYTSwZE8aQxqKBtFjg09NStYeyj7TGiVBdvb4gLHx5tqSkrETQHnI
-        kn31uhXsxa5z47ZpFRwqL0QMPgt7wGtHB/uvN4nMNcWNruNMK53qcQbhTU3Avw==
+        bh=X3Zr5zi6oiutEUY5SskrgH9VYy6BX6UnhftLaueXlCU=;
+        b=Qwc4xWMhuvilEC8gbcLTJ38MSm192xYthNDF4cItf+Qlz+MmsgOA28ca3z/PmVV4hIIbGo
+        /p77PON4HbCwGxBD36wYi/Iybj1PHNX6XKCu+CIB2or+zKU8dzSw7K+i6jMWfFXwBUOuk/
+        EEt8umo6taoe7vA1wcbpE4gJQ85/unuyYegiy3Y4oDdL5G5q0pKO4LSajU/zZvpkyLKfNk
+        /Nu/NYxPne1XMEZL4DBnEM2WfCtnkTMzLGdF3RsuRRDOj2EdR4WGHxAeXoH9ecUQrbT7aA
+        jCMpph1MLWPtg9xi5MWFRe8ebWYaB8LJuMUt2V/i8lXkOBgJDOViGKs2h+m/gA==
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -42,9 +42,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Daniel Golle <daniel@makrotopia.org>,
         =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
         Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v7 1/7] nvmem: core: Create all cells before adding the nvmem device
-Date:   Tue,  1 Aug 2023 20:21:26 +0200
-Message-Id: <20230801182132.1058707-2-miquel.raynal@bootlin.com>
+Subject: [PATCH v7 2/7] nvmem: core: Do not open-code existing functions
+Date:   Tue,  1 Aug 2023 20:21:27 +0200
+Message-Id: <20230801182132.1058707-3-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230801182132.1058707-1-miquel.raynal@bootlin.com>
 References: <20230801182132.1058707-1-miquel.raynal@bootlin.com>
@@ -61,44 +61,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's pack all the cells creation in one place, so they are all created
-before we add the nvmem device.
+Use of_nvmem_layout_get_container() instead of hardcoding it.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/nvmem/core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/nvmem/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 3f8c7718412b..48659106a1e2 100644
+index 48659106a1e2..257328887263 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
-@@ -998,12 +998,6 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	if (rval)
- 		goto err_remove_cells;
+@@ -786,10 +786,10 @@ EXPORT_SYMBOL_GPL(nvmem_layout_unregister);
  
--	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
--
--	rval = device_add(&nvmem->dev);
--	if (rval)
--		goto err_remove_cells;
--
- 	rval = nvmem_add_cells_from_fixed_layout(nvmem);
- 	if (rval)
- 		goto err_remove_cells;
-@@ -1012,6 +1006,12 @@ struct nvmem_device *nvmem_register(const struct nvmem_config *config)
- 	if (rval)
- 		goto err_remove_cells;
+ static struct nvmem_layout *nvmem_layout_get(struct nvmem_device *nvmem)
+ {
+-	struct device_node *layout_np, *np = nvmem->dev.of_node;
++	struct device_node *layout_np;
+ 	struct nvmem_layout *l, *layout = ERR_PTR(-EPROBE_DEFER);
  
-+	dev_dbg(&nvmem->dev, "Registering nvmem device %s\n", config->name);
-+
-+	rval = device_add(&nvmem->dev);
-+	if (rval)
-+		goto err_remove_cells;
-+
- 	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_ADD, nvmem);
+-	layout_np = of_get_child_by_name(np, "nvmem-layout");
++	layout_np = of_nvmem_layout_get_container(nvmem);
+ 	if (!layout_np)
+ 		return NULL;
  
- 	return nvmem;
 -- 
 2.34.1
 
