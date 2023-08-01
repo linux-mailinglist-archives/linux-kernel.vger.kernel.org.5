@@ -2,249 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 463D676BC92
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 589C976BC9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbjHAShM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 14:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49012 "EHLO
+        id S230338AbjHASjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:39:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjHAShK (ORCPT
+        with ESMTP id S230356AbjHASjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:37:10 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AC39010C;
-        Tue,  1 Aug 2023 11:37:08 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8CxruvTUMlkSkgOAA--.30856S3;
-        Wed, 02 Aug 2023 02:37:07 +0800 (CST)
-Received: from openarena.loongson.cn (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3c7SUMlk7F1EAA--.46812S2;
-        Wed, 02 Aug 2023 02:37:06 +0800 (CST)
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, loongson-kernel@lists.loongnix.cn
-Subject: [PATCH] PCI/VGA: Fixup the firmware fb address om demanding time
-Date:   Wed,  2 Aug 2023 02:37:06 +0800
-Message-Id: <20230801183706.702567-1-suijingfeng@loongson.cn>
-X-Mailer: git-send-email 2.34.1
+        Tue, 1 Aug 2023 14:39:16 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A5E26A3
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 11:39:11 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31757edd9edso5358947f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 11:39:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690915149; x=1691519949;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8EFUJZW17T5kR5LxeUj/wsPffO8rw8SB5CP4M13sEbA=;
+        b=nIDdrHwHHJSSZFT4EgZKRFPLGEaASm09NRdE8gzz78gej767WFTlvsJT7biZJvFRGP
+         QnDAX4oyUAmzjyOYGm92j/snTZM/0cSx3xEl2Ksw1Im2uP6sm8RgVarCZ97ButDC8bry
+         b08CRx/IKluU2ShZhUB3U7GZFkDYbl8OgArfBHn3Bm1dOtAbADZtQ4AEX4e7G66/7HqF
+         dcQ2RDGNuWcI6xmQ6CM6zpH2DODt/8xMi6IazZPpee4uAxNhWsTWfRoLn8zl9dntictx
+         MVdBZrlHIHOoyssnGA3naW48L+GCvPUsRPbFx7onUv05o1KWjQ8H6VlUmIcBu0jhJ61I
+         7afQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690915149; x=1691519949;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8EFUJZW17T5kR5LxeUj/wsPffO8rw8SB5CP4M13sEbA=;
+        b=RHeLm2vIW9ngc7xguVRI89M9OwIx7Gox4C1qX7v8zMIN+ThvwN/Q4KXJn9Ow0ccvOO
+         22tJm4SoMIapb0U5Rqm8vCh4XFJ2DCtR+Nyv4IDfTc2yLNGp5E+5Fe5JUpHPwDwQsQt0
+         beHhtA0U2HFIDrL6wKtyOe8l51oVHmGaeMs0IkujmlNDBZAt4PH7bTXzOUu6fxggwUfp
+         95RlrRHYv/qRtVsd9nwKSPxHnEfw+LoLopgOFvXCoj50buDKiway4lFqfXF9sT6nPRp3
+         iXkAykyKiBceOO8LsOyUigWmBbYC+QlnvCmrqNDrjj04MlrhFtOB5g2h8WDSvsmuXNFH
+         itXQ==
+X-Gm-Message-State: ABy/qLbkc1EOIhDbpXqT2ttkn/yR5mqVM8EuYgLnBU/XQ7J74Wswm1Po
+        Jmlzu0mWm3fBg8BPsZ5kdh8wIw==
+X-Google-Smtp-Source: APBJJlGoXOK6T9ffOYXg6zcKFD+rEOM9ac7VCXjHLS2lYi4qWcVAesZsI5YXpRSR90jCU3rLLNxG1Q==
+X-Received: by 2002:a5d:5589:0:b0:317:70cb:4f58 with SMTP id i9-20020a5d5589000000b0031770cb4f58mr2858210wrv.63.1690915149541;
+        Tue, 01 Aug 2023 11:39:09 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id l18-20020a1c7912000000b003fe2bea77ccsm1435499wme.5.2023.08.01.11.39.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 11:39:08 -0700 (PDT)
+Message-ID: <cc972aec-dd21-e025-8984-e48b7c1df4bc@linaro.org>
+Date:   Tue, 1 Aug 2023 20:39:07 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v3 5/8] ACPI: thermal: Hold thermal zone lock around trip
+ updates
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
+ <7552439.EvYhyI6sBW@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <7552439.EvYhyI6sBW@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Ax3c7SUMlk7F1EAA--.46812S2
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW3WrWUXw4kGFyDuF47KFWDWrX_yoW7Cr4Dpr
-        WfAayftrs8Wr4fJr43GF48Xw15ZrsY9FWxKFW7A3Z3Ja47urykGr4FyFWDtrWfJ397Jr4f
-        KF42yrn5GFsrJFgCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
-        8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
-        xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07URa0PUUUUU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the vga_is_firmware_default() function works on x86 and IA64
-architecture only, it is a no-op on ARM64/PPC/RISC-V arch etc. This patch
-complete the implementation for the non-x86 architectures by tracking the
-firmware fb's address range. Which overcome the VRAM bar relocation issue
-by updating the cached firmware fb address range on demanding time.
 
-This make the vga_is_firmware_default() function works on whatever archs
-who has UEFI GOP support.
+Hi Rafael,
 
-Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
----
- drivers/pci/vgaarb.c | 139 ++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 124 insertions(+), 15 deletions(-)
+On 25/07/2023 14:16, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> 
+> There is a race condition between acpi_thermal_trips_update() and
+> acpi_thermal_check_fn(), because the trip points may get updated while
+> the latter is running which in theory may lead to inconsistent results.
+> For example, if two trips are updated together, using the temperature
+> value of one of them from before the update and the temperature value
+> of the other one from after the update may not lead to the expected
+> outcome.
+> 
+> To address this, make acpi_thermal_trips_update() hold the thermal zone
+> lock across the entire update of trip points.
 
-diff --git a/drivers/pci/vgaarb.c b/drivers/pci/vgaarb.c
-index 5a696078b382..8d5c7ee4ee7b 100644
---- a/drivers/pci/vgaarb.c
-+++ b/drivers/pci/vgaarb.c
-@@ -61,6 +61,84 @@ static bool vga_arbiter_used;
- static DEFINE_SPINLOCK(vga_lock);
- static DECLARE_WAIT_QUEUE_HEAD(vga_wait_queue);
- 
-+static struct firmware_fb_tracker {
-+	/* The PCI(e) device who owns the firmware framebuffer */
-+	struct pci_dev *pdev;
-+	/* The index of the VRAM Bar */
-+	unsigned int bar;
-+	/* Firmware fb's offset from the VRAM aperture start */
-+	resource_size_t offset;
-+	/* The firmware fb's size, in bytes */
-+	resource_size_t size;
-+
-+	/* Firmware fb's address range, suffer from change */
-+	resource_size_t start;
-+	resource_size_t end;
-+
-+} firmware_fb;
-+
-+static bool vga_arb_get_fb_range_from_screen_info(resource_size_t *start,
-+						  resource_size_t *end)
-+{
-+	resource_size_t fb_start;
-+	resource_size_t fb_end;
-+	resource_size_t fb_size;
-+
-+	fb_start = screen_info.lfb_base;
-+	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
-+		fb_start |= (u64)screen_info.ext_lfb_base << 32;
-+
-+	fb_size = screen_info.lfb_size;
-+
-+	/* No firmware framebuffer support */
-+	if (!fb_start || !fb_size)
-+		return false;
-+
-+	fb_end = fb_start + fb_size - 1;
-+
-+	*start = fb_start;
-+	*end = fb_end;
-+
-+	return true;
-+}
-+
-+static bool vga_arb_get_fb_range_from_tracker(resource_size_t *start,
-+					      resource_size_t *end)
-+{
-+	struct pci_dev *pdev = firmware_fb.pdev;
-+	resource_size_t new_vram_base;
-+	resource_size_t new_fb_start;
-+	resource_size_t old_fb_start;
-+	resource_size_t old_fb_end;
-+
-+	/*
-+	 * No firmware framebuffer support or No aperture that contains the
-+	 * firmware FB is found, in this case, the firmware_fb.pdev will be
-+	 * NULL. We will return immediately.
-+	 */
-+	if (!pdev)
-+		return false;
-+
-+	new_vram_base = pdev->resource[firmware_fb.bar].start;
-+	new_fb_start = new_vram_base + firmware_fb.offset;
-+	old_fb_start = firmware_fb.start;
-+	old_fb_end = firmware_fb.end;
-+
-+	if (new_fb_start != old_fb_start) {
-+		firmware_fb.start = new_fb_start;
-+		firmware_fb.end = new_fb_start + firmware_fb.size - 1;
-+		/* Firmware fb address range moved */
-+		vgaarb_dbg(&pdev->dev,
-+			   "[0x%llx, 0x%llx] -> [0x%llx, 0x%llx]\n",
-+			   old_fb_start, old_fb_end,
-+			   firmware_fb.start, firmware_fb.end);
-+	}
-+
-+	*start = firmware_fb.start;
-+	*end = firmware_fb.end;
-+
-+	return true;
-+}
- 
- static const char *vga_iostate_to_str(unsigned int iostate)
- {
-@@ -543,20 +621,21 @@ void vga_put(struct pci_dev *pdev, unsigned int rsrc)
- }
- EXPORT_SYMBOL(vga_put);
- 
-+/* Select the device owning the boot framebuffer if there is one */
- static bool vga_is_firmware_default(struct pci_dev *pdev)
- {
--#if defined(CONFIG_X86) || defined(CONFIG_IA64)
--	u64 base = screen_info.lfb_base;
--	u64 size = screen_info.lfb_size;
- 	struct resource *r;
--	u64 limit;
-+	resource_size_t fb_start;
-+	resource_size_t fb_end;
-+	bool ret;
- 
--	/* Select the device owning the boot framebuffer if there is one */
--
--	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
--		base |= (u64)screen_info.ext_lfb_base << 32;
--
--	limit = base + size;
-+#if defined(CONFIG_X86) || defined(CONFIG_IA64)
-+	ret = vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end);
-+#else
-+	ret = vga_arb_get_fb_range_from_tracker(&fb_start, &fb_end);
-+#endif
-+	if (!ret)
-+		return false;
- 
- 	/* Does firmware framebuffer belong to us? */
- 	pci_dev_for_each_resource(pdev, r) {
-@@ -566,12 +645,10 @@ static bool vga_is_firmware_default(struct pci_dev *pdev)
- 		if (!r->start || !r->end)
- 			continue;
- 
--		if (base < r->start || limit >= r->end)
--			continue;
--
--		return true;
-+		if (fb_start >= r->start && fb_end <= r->end)
-+			return true;
- 	}
--#endif
-+
- 	return false;
- }
- 
-@@ -1555,3 +1632,35 @@ static int __init vga_arb_device_init(void)
- 	return rc;
- }
- subsys_initcall_sync(vga_arb_device_init);
-+
-+static void vga_arb_firmware_fb_addr_tracker(struct pci_dev *pdev)
-+{
-+	resource_size_t fb_start;
-+	resource_size_t fb_end;
-+	unsigned int i;
-+
-+	if (!vga_arb_get_fb_range_from_screen_info(&fb_start, &fb_end))
-+		return;
-+
-+	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
-+		struct resource *ap = &pdev->resource[i];
-+
-+		if (resource_type(ap) != IORESOURCE_MEM)
-+			continue;
-+
-+		if (!ap->start || !ap->end)
-+			continue;
-+
-+		if (ap->start <= fb_start && fb_end <= ap->end) {
-+			firmware_fb.pdev = pdev;
-+			firmware_fb.bar = i;
-+			firmware_fb.size = fb_end - fb_start + 1;
-+			firmware_fb.offset = fb_start - ap->start;
-+			firmware_fb.start = fb_start;
-+			firmware_fb.end = fb_end;
-+			break;
-+		}
-+	}
-+}
-+DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_DISPLAY_VGA,
-+			       8, vga_arb_firmware_fb_addr_tracker);
+As commented in patch 3/8, having a driver locking a thermal core 
+structure is not right and goes to the opposite direction of the recent 
+cleanups.
+
+Don't we have 2 race conditions:
+
+acpi_thermal_trips_update() + thermal_zone_device_check()
+
+acpi_thermal_trips_update() + acpi_thermal_trips_update()
+
+For the former, we can disable the thermal zone, update and then enable
+
+For the latter use a driver lock ?
+
+
+> While at it, change the acpi_thermal_trips_update() return data type
+> to void as that function always returns 0 anyway.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> ---
+> 
+> v2 -> v3: No changes.
+> 
+> v1 -> v2:
+>     * Hold the thermal zone lock instead of thermal_check_lock around trip
+>       point updates (this also helps to protect thermal_get_trend() from using
+>       stale trip temperatures).
+>     * Add a comment documenting the purpose of the locking.
+>     * Make acpi_thermal_trips_update() void.
+> 
+> ---
+>   drivers/acpi/thermal.c |   21 ++++++++++++++++-----
+>   1 file changed, 16 insertions(+), 5 deletions(-)
+> 
+> Index: linux-pm/drivers/acpi/thermal.c
+> ===================================================================
+> --- linux-pm.orig/drivers/acpi/thermal.c
+> +++ linux-pm/drivers/acpi/thermal.c
+> @@ -190,7 +190,7 @@ static int acpi_thermal_get_polling_freq
+>   	return 0;
+>   }
+>   
+> -static int acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
+> +static void __acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
+>   {
+>   	acpi_status status;
+>   	unsigned long long tmp;
+> @@ -398,17 +398,28 @@ static int acpi_thermal_trips_update(str
+>   			ACPI_THERMAL_TRIPS_EXCEPTION(flag, tz, "device");
+>   		}
+>   	}
+> +}
+>   
+> -	return 0;
+> +static void acpi_thermal_trips_update(struct acpi_thermal *tz, int flag)
+> +{
+> +	/*
+> +	 * The locking is needed here to protect thermal_get_trend() from using
+> +	 * a stale passive trip temperature and to synchronize with the trip
+> +	 * temperature updates in acpi_thermal_check_fn().
+> +	 */
+> +	thermal_zone_device_lock(tz->thermal_zone);
+> +
+> +	__acpi_thermal_trips_update(tz, flag);
+> +
+> +	thermal_zone_device_unlock(tz->thermal_zone);
+>   }
+>   
+>   static int acpi_thermal_get_trip_points(struct acpi_thermal *tz)
+>   {
+> -	int i, ret = acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+>   	bool valid;
+> +	int i;
+>   
+> -	if (ret)
+> -		return ret;
+> +	__acpi_thermal_trips_update(tz, ACPI_TRIPS_INIT);
+>   
+>   	valid = tz->trips.critical.valid |
+>   		tz->trips.hot.valid |
+> 
+> 
+> 
+
 -- 
-2.34.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
