@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AB476AFFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8FE76AC8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbjHAJyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
+        id S232743AbjHAJM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232249AbjHAJyU (ORCPT
+        with ESMTP id S232711AbjHAJMI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:54:20 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.215])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF898BE;
-        Tue,  1 Aug 2023 02:54:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=BQfXO
-        CjZPrtRckyFX59tE8t/r09gbeMjp4tsbkFXRoA=; b=aJmyFCeU4s3ty/kyWq5+A
-        fBbOzQwFswh9Tk+S8s2IEu/pY5qgOBdnECEVdZ3khAo7JfWHEQLBhovvJS6AYvdZ
-        AZej76aK71UzFaXq6+OobHoVouAqsgCSG9PKSDcTB5GppAQYzEywykf4RI+tVkM8
-        TbnkYcTw74vLpuF7dxH76Q=
-Received: from localhost.localdomain (unknown [39.144.138.221])
-        by zwqz-smtp-mta-g2-4 (Coremail) with SMTP id _____wAnrPhDy8hkKJqFBw--.35093S2;
-        Tue, 01 Aug 2023 17:07:17 +0800 (CST)
-From:   xingtong_wu@163.com
-To:     hdegoede@redhat.com, markgross@kernel.org, xingtong.wu@siemens.com,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gerd.haeussler.ext@siemens.com, tobias.schaffner@siemens.com,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 2/2] platform/x86/siemens: simatic-ipc-batt: fix logic error for BX-59A
-Date:   Tue,  1 Aug 2023 17:07:12 +0800
-Message-Id: <20230801090712.4856-1-xingtong_wu@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230731072148.4781-1-xingtong_wu@163.com>
-References: <20230731072148.4781-1-xingtong_wu@163.com>
+        Tue, 1 Aug 2023 05:12:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B31F659F;
+        Tue,  1 Aug 2023 02:09:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1367B614DC;
+        Tue,  1 Aug 2023 09:07:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D507C433CB;
+        Tue,  1 Aug 2023 09:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690880875;
+        bh=JXpCu7p/CWKp6jZPKSaMbWukxpZFXpkVBsqC2SBekyA=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=mCPPWfmGfXdKrezEfgf+KOFfVTcNZx0K/TebxxhKsXMzcwSfJxxCb2eJvgc9jx2dh
+         dLZqYaBonuGMqrlq+8DChi8+bStP7esX3VEHg1jTRvK4807qAiMV0MLkczC5FAOrIH
+         +RvIexjcALqhHlm/05+s6E2xowislWYJ7QN+iLKCtARlf0B6ntuQWj9X/otVtMIAVB
+         oBdkXvYMcvFEwAVPdKGVm0pERWFzHLni9h45fkrUdXlBs/Wc2psG98zEEEuew0yywf
+         0En+3hmm6ydDGSWBegsOyUE69SQGYz+vE7Yk7Aj5glDuoxbkbWeG1lOR33oNkretGz
+         hXKpAN9fiN3SQ==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        linux-hardening@vger.kernel.org,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] wifi: mt76: Replace strlcpy with strscpy
+References: <20230703181256.3712079-1-azeemshaikh38@gmail.com>
+        <169047317159.2400214.7882697833368890001.b4-ty@chromium.org>
+        <87tttpz6ne.fsf@kernel.org> <202307270959.900E3A345E@keescook>
+Date:   Tue, 01 Aug 2023 12:07:50 +0300
+In-Reply-To: <202307270959.900E3A345E@keescook> (Kees Cook's message of "Thu,
+        27 Jul 2023 10:01:37 -0700")
+Message-ID: <87zg3bxh95.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wAnrPhDy8hkKJqFBw--.35093S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uw1xWr45KF13ZrW7tw4xWFg_yoW8GF1fpF
-        4rAa10kFW5Ww4YywsrGay7ZF45Za13KrW7GFyqyw13Z3sFv3Wftr1fAa13ZrsIyr45Way5
-        JF93trW3Ca1DZFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jhPEfUUUUU=
-X-Originating-IP: [39.144.138.221]
-X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/1tbiTBe+0GI0aQoqpgACsO
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "xingtong.wu" <xingtong.wu@siemens.com>
+Kees Cook <keescook@chromium.org> writes:
 
-There is a bug in if statement that lead to logical error
-and have influence to other IPC, it get correct now.
+> On Thu, Jul 27, 2023 at 07:00:21PM +0300, Kalle Valo wrote:
+>> Kees Cook <keescook@chromium.org> writes:
+>> 
+>> > On Mon, 03 Jul 2023 18:12:56 +0000, Azeem Shaikh wrote:
+>> >> strlcpy() reads the entire source buffer first.
+>> >> This read may exceed the destination size limit.
+>> >> This is both inefficient and can lead to linear read
+>> >> overflows if a source string is not NUL-terminated [1].
+>> >> In an effort to remove strlcpy() completely [2], replace
+>> >> strlcpy() here with strscpy().
+>> >> 
+>> >> [...]
+>> >
+>> > Applied, thanks!
+>> >
+>> > [1/1] wifi: mt76: Replace strlcpy with strscpy
+>> >       https://git.kernel.org/kees/c/535c78cbc0c4
+>> 
+>> Why did you take this? mt76 is in active development so risk of
+>> conflicts is high.
+>
+> There didn't seem to be any further activity for 3 weeks, and it was a
+> relatively mechanical change.
 
-Fixes: c56beff20375 ("platform/x86/siemens: simatic-ipc-batt: add support for module BX-59A")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202308010001.BGYCSQrl-lkp@intel.com/
-Signed-off-by: xingtong.wu <xingtong.wu@siemens.com>
----
- drivers/platform/x86/siemens/simatic-ipc-batt.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+That's because the wireless trees were on a summer break:
 
-diff --git a/drivers/platform/x86/siemens/simatic-ipc-batt.c b/drivers/platform/x86/siemens/simatic-ipc-batt.c
-index d66b9969234b..e6c12c52843c 100644
---- a/drivers/platform/x86/siemens/simatic-ipc-batt.c
-+++ b/drivers/platform/x86/siemens/simatic-ipc-batt.c
-@@ -194,7 +194,8 @@ int simatic_ipc_batt_probe(struct platform_device *pdev, struct gpiod_lookup_tab
- 
- 	if (table->table[2].key) {
- 		flags = GPIOD_OUT_HIGH;
--		if (priv.devmode == SIMATIC_IPC_DEVICE_BX_21A || SIMATIC_IPC_DEVICE_BX_59A)
-+		if (priv.devmode == SIMATIC_IPC_DEVICE_BX_21A ||
-+		    priv.devmode == SIMATIC_IPC_DEVICE_BX_59A)
- 			flags = GPIOD_OUT_LOW;
- 		priv.gpios[2] = devm_gpiod_get_index(dev, "CMOSBattery meter", 2, flags);
- 		if (IS_ERR(priv.gpios[2])) {
+https://lore.kernel.org/all/87y1kncuh4.fsf@kernel.org/
+
+> I can drop it from my tree.
+
+Yes, please drop this. And in the future don't take any wireless patches
+unless acked by Johannes or me, I want to minimize the risk of conflicts
+between the trees. If a patch is missed for whatever reason please let
+me know, do not take it to your tree.
+
+> What's needed for it to be picked up through wireless?
+
+I don't know why Felix didn't take this patch but now I assigned it to
+me on patchwork:
+
+https://patchwork.kernel.org/project/linux-wireless/patch/20230703181256.3712079-1-azeemshaikh38@gmail.com/
+
+It should be in wireless-next this week.
+
 -- 
-2.25.1
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
