@@ -2,104 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C98AF76A88B
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D1F76A88C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbjHAF5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 01:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        id S231203AbjHAF6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 01:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjHAF5n (ORCPT
+        with ESMTP id S230266AbjHAF6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 01:57:43 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA22E7D;
-        Mon, 31 Jul 2023 22:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1690869460;
-        bh=Sxb7+n6qZ5PmXQo2k8+b+wVoId3QKcNBSJ9E1tXXK2s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fdZ7kCZKtxF1tZF8GLScdjKNlezKsMqyMZsYb7pLy9VMxko0bOOCEgeXm0Zx25nO0
-         /y/f/zaj23bQEh7tEIlItAm1HtMRr5LQGtpWZaOFW7EyPi7i88+CXxkJnFE2Rjlj6f
-         arfTjkTtWsZJUQ7DUfGvXZ83k5dmZqri0bsvyQ7M=
-Date:   Tue, 1 Aug 2023 07:57:39 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, tanyuan@tinylab.org, w@1wt.eu
-Subject: Re: [PATCH v2 08/10] selftests/nolibc: avoid sign-compare warnings
-Message-ID: <54502a41-5c35-4c79-812f-263d5e24f056@t-8ch.de>
-References: <20230801-nolibc-warnings-v2-8-1ba5ca57bd9b@weissschuh.net>
- <20230801054819.37659-1-falcon@tinylab.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230801054819.37659-1-falcon@tinylab.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 1 Aug 2023 01:58:38 -0400
+Received: from out28-147.mail.aliyun.com (out28-147.mail.aliyun.com [115.124.28.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8349A10C7
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 22:58:36 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1285285|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0182949-0.000150213-0.981555;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047211;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5e9L-1_1690869507;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5e9L-1_1690869507)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 13:58:29 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in vega10_hwmgr.c
+Date:   Tue,  1 Aug 2023 05:58:26 +0000
+Message-Id: <20230801055826.6000-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhangjin!
+Fix the following errors reported by checkpatch:
 
-On 2023-08-01 13:48:19+0800, Zhangjin Wu wrote:
-> > These warnings will be enabled later so avoid triggering them.
-> > 
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> > ---
-> >  tools/testing/selftests/nolibc/nolibc-test.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-> > index cb17cccd0bc7..82714051c72f 100644
-> > --- a/tools/testing/selftests/nolibc/nolibc-test.c
-> > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
-> > @@ -749,7 +749,7 @@ static int test_mmap_munmap(void)
-> >  	};
-> >  
-> >  	page_size = getpagesize();
-> > -	if (page_size < 0)
-> > +	if (page_size == 0)
-> >  		return -1;
-> >
-> 
-> It was my mistake before, but do we need to align with the one used in
-> test_getpagesize():
-> 
->     static int test_getpagesize(void)
->     {
->             long x = getpagesize();
->             int c;
->     
->             if (x < 0)
->                     return x;
-> 
-> Use 'long' instead of 'size_t' to declare page_size?
+ERROR: trailing statements should be on next line
+ERROR: space required before the open brace '{'
+ERROR: space required before the open parenthesis '('
+ERROR: space required after that ',' (ctx:VxV)
 
-Good point.
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ .../drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c  | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
-Given that getpagesize() is documented as returning "int" I guess we
-should actually change the implementation in nolibc.
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+index 08518bc1cbbe..ba7294daddfe 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+@@ -670,17 +670,23 @@ static int vega10_patch_voltage_dependency_tables_with_lookup_table(
+ 	for (i = 0; i < 6; i++) {
+ 		struct phm_ppt_v1_clock_voltage_dependency_table *vdt;
+ 		switch (i) {
+-		case 0: vdt = table_info->vdd_dep_on_socclk;
++		case 0:
++			vdt = table_info->vdd_dep_on_socclk;
+ 			break;
+-		case 1: vdt = table_info->vdd_dep_on_sclk;
++		case 1:
++			vdt = table_info->vdd_dep_on_sclk;
+ 			break;
+-		case 2: vdt = table_info->vdd_dep_on_dcefclk;
++		case 2:
++			vdt = table_info->vdd_dep_on_dcefclk;
+ 			break;
+-		case 3: vdt = table_info->vdd_dep_on_pixclk;
++		case 3:
++			vdt = table_info->vdd_dep_on_pixclk;
+ 			break;
+-		case 4: vdt = table_info->vdd_dep_on_dispclk;
++		case 4:
++			vdt = table_info->vdd_dep_on_dispclk;
+ 			break;
+-		case 5: vdt = table_info->vdd_dep_on_phyclk;
++		case 5:
++			vdt = table_info->vdd_dep_on_phyclk;
+ 			break;
+ 		}
+ 
+-- 
+2.17.1
 
-> Thanks,
-> Zhangjin
-> 
-> >  	/* find a right file to mmap, existed and accessible */
-> > @@ -998,7 +998,7 @@ static int run_stdlib(int min, int max)
-> >  #define EXPECT_VFPRINTF(c, expected, fmt, ...)				\
-> >  	ret += expect_vfprintf(llen, c, expected, fmt, ##__VA_ARGS__)
-> >  
-> > -static int expect_vfprintf(int llen, size_t c, const char *expected, const char *fmt, ...)
-> > +static int expect_vfprintf(int llen, int c, const char *expected, const char *fmt, ...)
-> >  {
-> >  	int ret, fd, w, r;
-> >  	char buf[100];
-> > 
-> > -- 
-> > 2.41.0
