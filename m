@@ -2,256 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2464776A9CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E3176A9CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230055AbjHAHPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 03:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
+        id S230357AbjHAHQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 03:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjHAHO7 (ORCPT
+        with ESMTP id S230229AbjHAHQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 03:14:59 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799141736;
-        Tue,  1 Aug 2023 00:14:58 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 1 Aug 2023 03:16:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFF91BC6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 00:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690874115;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2xykq6MCLxVS9fhmaOvf4Q67Lhej7GxRvBqCzZn6c5I=;
+        b=It6KQ5JyHE/mqYsIlirgzABAZ1W9N216EC48P94nZ7xRwtNs/i2b0OD2zz+XIBZzYrSzqP
+        9Dw8mUrW2qCqhshKh6hQm/PUYCX3T9zrUpuxQWftZkQ1MRY9DC47ev+2hlyrI+SYyGWbc+
+        adoxrOMM2KqzWDyR8mxNZAEOFX9Cuzw=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-570-Pi5QiCozPYCQOfbdsl5b1g-1; Tue, 01 Aug 2023 03:15:10 -0400
+X-MC-Unique: Pi5QiCozPYCQOfbdsl5b1g-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04F4E614A3;
-        Tue,  1 Aug 2023 07:14:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 062ABC433C8;
-        Tue,  1 Aug 2023 07:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690874097;
-        bh=gPwAbo86LLQU6U1a8yUG1H5lS0lBmxDkHINKahtp7dA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hipvex/JUh2IqzRD7YQx3cOihcKrpYjMvDIamQZp08wLDO2FysHNlgTTvhbCeqQqp
-         srW5ttcbmRh5x0BbPyJ/jQd+Z00FCu+oEo3RImBLxjtu321BRpcdZoOkklawrcn1x0
-         HaXcc+iT43c60luRRCrb4BW9+PyEOc8u5G8oVXwq59vL6yXEOi5oiFNHMLCSumFMOa
-         C3T6DLtmE0L+IbBONZrn5BjcwaP5aY9oi4ora089nU8OFgKmsT40IS4MlMNzK8Biv2
-         pazbd0wBnPiMLjFjH40oh5bJFoZ5UU1InYmJUD9KtP9gNsCNqIXYXj3KBK/yZD2mh5
-         /M5yp/n+ANNgw==
-Received: by pali.im (Postfix)
-        id 13405AB2; Tue,  1 Aug 2023 09:14:54 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 09:14:53 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Kevin Xie <kevin.xie@starfivetech.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Minda Chen <minda.chen@starfivetech.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-pci@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        Leyfoon Tan <leyfoon.tan@starfivetech.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>
-Subject: Re: [PATCH v1 8/9] PCI: PLDA: starfive: Add JH7110 PCIe controller
-Message-ID: <20230801071453.afaulygpczpyhopk@pali>
-References: <20230731231223.GA14721@bhelgaas>
- <79e417ee-ef47-3e4b-6b51-bd7f10ac3643@starfivetech.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22A341C0E0D4;
+        Tue,  1 Aug 2023 07:15:10 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.2.16.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3A5CD40C2063;
+        Tue,  1 Aug 2023 07:15:08 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Harald van Dijk <harald@gigawatt.nl>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Jessica Clarke <jrtc27@jrtc27.com>,
+        Rich Felker <dalias@libc.org>, linux-x86_64@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] x86: Fix x32 System V message queue syscalls
+References: <1156938F-A9A3-4EE9-B059-2294A0B9FBFE@jrtc27.com>
+        <20201012134444.1905-1-jrtc27@jrtc27.com>
+        <CALCETrWKwFD7QhFQu9X_yQeVW1_yy-gEMNEtsWmQK=fNg9y68A@mail.gmail.com>
+        <20201101012202.GM534@brightrain.aerifal.cx>
+        <7842A462-0ADB-4EE3-B4CB-AE6DCD70CE1C@jrtc27.com>
+        <20201101015013.GN534@brightrain.aerifal.cx>
+        <CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com>
+        <04832096-ED7F-4754-993D-F578D4A90843@jrtc27.com>
+        <EEC90B2F-E972-475F-B058-918CDE401618@jrtc27.com>
+        <20201101210102.GO534@brightrain.aerifal.cx>
+        <29423184-A433-42D4-B635-CDEFE7271B40@jrtc27.com>
+        <2AC632C0-EC00-4C4E-92DC-B7F238897C4C@jrtc27.com>
+        <CALCETrWWcVhYoVuvovo558sXpA7X75jNpf8LA+w+k-dzyRiUcg@mail.gmail.com>
+        <347eab9f-b64a-b124-ba7a-ee458e6407f3@gigawatt.nl>
+Date:   Tue, 01 Aug 2023 09:15:06 +0200
+In-Reply-To: <347eab9f-b64a-b124-ba7a-ee458e6407f3@gigawatt.nl> (Harald van
+        Dijk's message of "Tue, 1 Aug 2023 01:43:40 +0100")
+Message-ID: <87zg3b5j45.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <79e417ee-ef47-3e4b-6b51-bd7f10ac3643@starfivetech.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 01 August 2023 15:05:46 Kevin Xie wrote:
-> 
-> 
-> On 2023/8/1 7:12, Bjorn Helgaas wrote:
-> > [+cc Pali, Marek because I used f76b36d40bee ("PCI: aardvark: Fix link
-> > training") as an example]
-> > 
-> > On Mon, Jul 31, 2023 at 01:52:35PM +0800, Kevin Xie wrote:
-> >> On 2023/7/28 5:40, Bjorn Helgaas wrote:
-> >> > On Tue, Jul 25, 2023 at 03:46:35PM -0500, Bjorn Helgaas wrote:
-> >> >> On Mon, Jul 24, 2023 at 06:48:47PM +0800, Kevin Xie wrote:
-> >> >> > On 2023/7/21 0:15, Bjorn Helgaas wrote:
-> >> >> > > On Thu, Jul 20, 2023 at 06:11:59PM +0800, Kevin Xie wrote:
-> >> >> > >> On 2023/7/20 0:48, Bjorn Helgaas wrote:
-> >> >> > >> > On Wed, Jul 19, 2023 at 06:20:56PM +0800, Minda Chen wrote:
-> >> >> > >> >> Add StarFive JH7110 SoC PCIe controller platform
-> >> >> > >> >> driver codes.
-> >> >> 
-> >> >> > >> However, in the compatibility testing with several NVMe SSD, we
-> >> >> > >> found that Lenovo Thinklife ST8000 NVMe can not get ready in 100ms,
-> >> >> > >> and it actually needs almost 200ms.  Thus, we increased the T_PVPERL
-> >> >> > >> value to 300ms for the better device compatibility.
-> >> >> > > ...
-> >> >> > > 
-> >> >> > > Thanks for this valuable information!  This NVMe issue potentially
-> >> >> > > affects many similar drivers, and we may need a more generic fix so
-> >> >> > > this device works well with all of them.
-> >> >> > > 
-> >> >> > > T_PVPERL is defined to start when power is stable.  Do you have a way
-> >> >> > > to accurately determine that point?  I'm guessing this:
-> >> >> > > 
-> >> >> > >   gpiod_set_value_cansleep(pcie->power_gpio, 1)
-> >> >> > > 
-> >> >> > > turns the power on?  But of course that doesn't mean it is instantly
-> >> >> > > stable.  Maybe your testing is telling you that your driver should
-> >> >> > > have a hardware-specific 200ms delay to wait for power to become
-> >> >> > > stable, followed by the standard 100ms for T_PVPERL?
-> >> >> > 
-> >> >> > You are right, we did not take the power stable cost into account.
-> >> >> > T_PVPERL is enough for Lenovo Thinklife ST8000 NVMe SSD to get ready,
-> >> >> > and the extra cost is from the power circuit of a PCIe to M.2 connector,
-> >> >> > which is used to verify M.2 SSD with our EVB at early stage.
-> >> >> 
-> >> >> Hmm.  That sounds potentially interesting.  I assume you're talking
-> >> >> about something like this: https://www.amazon.com/dp/B07JKH5VTL
-> >> >> 
-> >> >> I'm not familiar with the timing requirements for something like this.
-> >> >> There is a PCIe M.2 spec with some timing requirements, but I don't
-> >> >> know whether or how software is supposed to manage this.  There is a
-> >> >> T_PVPGL (power valid to PERST# inactive) parameter, but it's
-> >> >> implementation specific, so I don't know what the point of that is.
-> >> >> And I don't see a way for software to even detect the presence of such
-> >> >> an adapter.
-> >> > 
-> >> > I intended to ask about this on the PCI-SIG forum, but after reading
-> >> > this thread [1], I don't think we would learn anything.  The question
-> >> > was:
-> >> > 
-> >> >   The M.2 device has 5 voltage rails generated from the 3.3V input
-> >> >   supply voltage
-> >> >   -------------------------------------------
-> >> >   This is re. Table 17 in PCI Express M.2 Specification Revision 1.1
-> >> >   Power Valid* to PERST# input inactive : Implementation specific;
-> >> >   recommended 50 ms
-> >> > 
-> >> >   What exactly does this mean ?
-> >> > 
-> >> >   The Note says
-> >> > 
-> >> >     *Power Valid when all the voltage supply rails have reached their
-> >> >     respective Vmin.
-> >> > 
-> >> >   Does this mean that the 50ms to PERSTn is counted from the instant
-> >> >   when all *5 voltage rails* on the M.2 device have become "good" ?
-> >> > 
-> >> > and the answer was:
-> >> > 
-> >> >   You wrote;
-> >> >   Does this mean that the 50ms to PERSTn is counted from the instant
-> >> >   when all 5 voltage rails on the M.2 device have become "good" ?
-> >> > 
-> >> >   Reply:
-> >> >   This means that counting the recommended 50 ms begins from the time
-> >> >   when the power rails coming to the device/module, from the host, are
-> >> >   stable *at the device connector*.
-> >> > 
-> >> >   As for the time it takes voltages derived inside the device from any
-> >> >   of the host power rails (e.g., 3.3V rail) to become stable, that is
-> >> >   part of the 50ms the host should wait before de-asserting PERST#, in
-> >> >   order ensure that most devices will be ready by then.
-> >> > 
-> >> >   Strictly speaking, nothing disastrous happens if a host violates the
-> >> >   50ms. If it de-asserts too soon, the device may not be ready, but
-> >> >   most hosts will try again. If the host de-asserts too late, the
-> >> >   device has even more time to stabilize. This is why the WG felt that
-> >> >   an exact minimum number for >>Tpvpgl, was not valid in practice, and
-> >> >   we made it a recommendation.
-> >> > 
-> >> > Since T_PVPGL is implementation-specific, we can't really base
-> >> > anything in software on the 50ms recommendation.  It sounds to me like
-> >> > they are counting on software to retry config reads when enumerating.
-> >> > 
-> >> > I guess the delays we *can* observe are:
-> >> > 
-> >> >   100ms T_PVPERL "Power stable to PERST# inactive" (CEM 2.9.2)
-> >> >   100ms software delay between reset and config request (Base 6.6.1)
-> >> 
-> >> Refer to Figure2-10 in CEM Spec V2.0, I guess this two delays are T2 & T4?
-> >> In the PATCH v2[4/4], T2 is the msleep(100) for T_PVPERL,
-> >> and T4 is done by starfive_pcie_host_wait_for_link().
-> > 
-> > Yes, I think "T2" is T_PVPERL.  The CEM r2.0 Figure 2-10 note is
-> > "2. Minimum time from power rails within specified tolerance to
-> > PERST# inactive (T_PVPERL)."
-> > 
-> > As far as T4 ("Minimum PERST# inactive to PCI Express link out of
-> > electrical idle"), I don't see a name or a value for that parameter,
-> > and I don't think it is the delay required by PCIe r6.0, sec 6.6.1.
-> > 
-> > The delay required by sec 6.6.1 is a minimum of 100ms following exit
-> > from reset or, for fast links, 100ms after link training completes.
-> > 
-> > The comment at the call of advk_pcie_wait_for_link() [2] says it is
-> > the delay required by sec 6.6.1, but that doesn't seem right to me.
-> > 
-> > For one thing, I don't think 6.6.1 says anything about "link up" being
-> > the end of a delay.  So if we want to do the delay required by 6.6.1,
-> > "wait_for_link()" doesn't seem like quite the right name.
-> > 
-> > For another, all the *_wait_for_link() functions can return success
-> > after 0ms, 90ms, 180ms, etc.  They're unlikely to return after 0ms,
-> > but 90ms is quite possible.  If we avoided the 0ms return and
-> > LINK_WAIT_USLEEP_MIN were 100ms instead of 90ms, that should be enough
-> > for slow links, where we need 100ms following "exit from reset."
-> > 
-> > But it's still not enough for fast links where we need 100ms "after
-> > link training completes" because we don't know when training
-> > completed.  If training completed 89ms into *_wait_for_link(), we only
-> > delay 1ms after that.
-> > 
-> 
-> That's the point, we will add a extra 100ms after PERST# de-assert
-> in the patch-v3 according to Base Spec r6.0 - 6.6.1:
->         msleep(100);
->         gpiod_set_value_cansleep(pcie->reset_gpio, 0);
-> 
-> +       /* As the requirement in PCIe base spec r6.0, system must wait a
-> +        * minimum of 100 ms following exit from a Conventional Reset
-> +        * before sending a Configuration Request to the device.*/
-> +       msleep(100);
-> +
->         if (starfive_pcie_host_wait_for_link(pcie))
->                 return -EIO;
-> 
+* Harald van Dijk:
 
-Maybe this information can be useful here:
-https://lore.kernel.org/linux-pci/20211022183808.jdeo7vntnagqkg7g@pali/
+> There is one complication that I think has not been mentioned yet:
+> when _GNU_SOURCE is defined, glibc does provide a definition of struct
+> msghdr in <sys/msg.h> with a field "__syscall_slong_t mtype;". This
+> makes it slightly more likely that there is code out there in the wild
+> that works fine with current kernels and would be broken by the
+> fix. Given how rare x32 is, and how rare message queues are, this may
+> still be acceptable, but I am mentioning it just in case this would
+> cause a different approach to be preferred. And whatever is done, a
+> fix should also be submitted to glibc.
 
-> >> > The PCI core doesn't know how to assert PERST#, so the T_PVPERL delay
-> >> > definitely has to be in the host controller driver.
-> >> > 
-> >> > The PCI core observes the second 100ms delay after a reset in
-> >> > pci_bridge_wait_for_secondary_bus().  But this 100ms delay does not
-> >> > happen during initial enumeration.  I think the assumption of the PCI
-> >> > core is that when the host controller driver calls pci_host_probe(),
-> >> > we can issue config requests immediately.
-> >> > 
-> >> > So I think that to be safe, we probably need to do both of those 100ms
-> >> > delays in the host controller driver.  Maybe there's some hope of
-> >> > supporting the latter one in the PCI core someday, but that's not
-> >> > today.
-> >> > 
-> >> > Bjorn
-> >> > 
-> >> > [1] https://forum.pcisig.com/viewtopic.php?f=74&t=1037
-> > 
-> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/controller/pci-aardvark.c?id=v6.4#n433
+What should glibc do here?  Just change the definition in the header to
+long and ignore the breakage?
+
+Thanks,
+Florian
+
