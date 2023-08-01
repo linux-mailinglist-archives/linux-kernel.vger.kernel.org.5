@@ -2,153 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFC376BA08
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3175376BA01
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbjHAQyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40992 "EHLO
+        id S232713AbjHAQx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:53:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbjHAQyF (ORCPT
+        with ESMTP id S229495AbjHAQxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:54:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B6E2116;
-        Tue,  1 Aug 2023 09:54:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C0016163D;
-        Tue,  1 Aug 2023 16:54:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE3C1C433C7;
-        Tue,  1 Aug 2023 16:53:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690908843;
-        bh=liMpSScDu0h+PrjpmqiYb+Q+6aHOwyISw4j8BFIcGVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BIFlmOCqJS8iQcXvk8oNZxNGz4QNLszdREetAXo8Uo+jxPN2dAxboF2ywOt+r6sF4
-         1Ce2+7VJBYSGs32seKXUp9myi6IuJy6hA4JORLtRMmgg1V/NnkE6s5/mCkx/yY5eSx
-         hJeilqNSHkRQUd3TgjbR5C3RqdbDv1v8l8q/HRJ5d4R42KAnIGAb5tXRn9g5WJ8qqo
-         mDEv5+Zw5cXJgVkudwVKqN6SYARTjqDZCN6holglfEyaqBXFe9dSofXvT6coPEOgpA
-         xj+s68tMRVaVcMe1Q2cVhtEHL+1/z/BwX05ZAZfo29BBJ2ZA0XJP5VyrA4HxSuC/Yz
-         troFt3trmDEBw==
-Date:   Tue, 1 Aug 2023 19:53:12 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 10/36] mm: Define VM_SHADOW_STACK for arm64 when we
- support GCS
-Message-ID: <20230801165312.GB2607694@kernel.org>
-References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
- <20230731-arm64-gcs-v3-10-cddf9f980d98@kernel.org>
-MIME-Version: 1.0
+        Tue, 1 Aug 2023 12:53:55 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2073.outbound.protection.outlook.com [40.107.20.73])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103A12114;
+        Tue,  1 Aug 2023 09:53:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LQ/DEVNraQyf+RLWomRh2UFAssdI+2B8g5euZzAwVE/4NyA0LmDohEQdni1kvCn1PUQotFJzhXFKeTc5pZEW3n+3c+9J8cEDLJ2G+nyc/A6jgUlzPn+T87JpVuHGwy2s9tYCoaGvk3aJBkNVrWZhs7PzWhmSSmjP84ZX7Uwk7xlYA2XKihif4dbUWhgz2ouG9Z9lufrgAQK6Mukz+0pZ5gATKTA6qvVLNcSXaCpecVIxd0ROUqFOgF+pUNqfvGrZf3Hx4lWIp9FIXBhXCojBRc2G0Tz0b1+lYr7oMV00ZFF7ieIMIN5oyUL3/S0I7oaiGpZjQzcx6nrZHYVRPUD50Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EKQUs0KNzJVUD2HOAXcz/OwWukfqP5igzI7Fqy9VsF8=;
+ b=Wy1OFjWv2zzlcyDsNCH2Uho66QQLcpsfUIxZrPRXhFr6yBMZkGnzdo+CPlcbyKGXulQrtf5phU4FZ0OwDVNtiz6Vzw591mI2dtjq4ixu5lXF1MChcRtq1EdJiLS3vQ6VVetdVw17jvwkpskk/BI2r9kTpa1gye1xsQxEt5C58ZPFIS5lsfvGjliP/KhV14cxHhjjrrptv0I0bG6zxOTF16/9n1FBjGjmeHQNmAXLm8gf6BqilcIJmWKvOgIhlProbvl8fAbR6ymrgDvxeE1ZA6GG8ChM5owIoS9tNKkKKXd14cSnyg2DVDEQkBTVHHZ9RURAsFRwc9/5o5n0Y6ouzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EKQUs0KNzJVUD2HOAXcz/OwWukfqP5igzI7Fqy9VsF8=;
+ b=Dt5ItyPK6qLg3u72OrwR0/cIogRcylYAtalyGYMBprZKREWKI08Tm5Rdh8HHaVmGN6J8TjLBkvYBx/0IqDmqs98MXj+MSQqnUWEezeUFkVzGAmJq97TClJK58DF0QgpqAinUBKYg/kJtyeJPeVf+T9MFW/+C5ZQo89V4PNVF2HM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6459.eurprd04.prod.outlook.com (2603:10a6:10:103::19)
+ by VE1PR04MB7229.eurprd04.prod.outlook.com (2603:10a6:800:1a3::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.44; Tue, 1 Aug
+ 2023 16:53:51 +0000
+Received: from DB8PR04MB6459.eurprd04.prod.outlook.com
+ ([fe80::ceae:2c83:659e:a891]) by DB8PR04MB6459.eurprd04.prod.outlook.com
+ ([fe80::ceae:2c83:659e:a891%5]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
+ 16:53:51 +0000
+Date:   Tue, 1 Aug 2023 19:53:44 +0300
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Pedro Tammela <pctammela@mojatatu.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Zhengchao Shao <shaozhengchao@huawei.com>,
+        Maxim Georgiev <glipus@gmail.com>
+Subject: Re: [PATCH v2 net-next 9/9] selftests/tc-testing: verify that a
+ qdisc can be grafted onto a taprio class
+Message-ID: <20230801165344.3rtleamaqxr2g27k@skbuf>
+References: <20230613215440.2465708-1-vladimir.oltean@nxp.com>
+ <20230613215440.2465708-10-vladimir.oltean@nxp.com>
+ <02c5d2f3-225f-fd56-6540-00a80326d07f@mojatatu.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230731-arm64-gcs-v3-10-cddf9f980d98@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <02c5d2f3-225f-fd56-6540-00a80326d07f@mojatatu.com>
+X-ClientProxiedBy: PA7P264CA0085.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:102:349::11) To DB8PR04MB6459.eurprd04.prod.outlook.com
+ (2603:10a6:10:103::19)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB8PR04MB6459:EE_|VE1PR04MB7229:EE_
+X-MS-Office365-Filtering-Correlation-Id: a098c188-531d-4555-3546-08db92afe079
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SJ8aY9/gqbK7OkyxsIQlNWsuQL/DWIeIGEv+vTaJPg48ZpXdj0nOCxSEhlB6C13sXAMLqXDlMfAQS7ZxeFDc1N6pG4e1qjjNdK6GvgHQi0BFjSoDrh398/qcFKQoScZ4HykO7xlc51+hMLJSXWbyV82MXJ6nQVqOnh1N45vkePOUSnLbSAvyFTLf6QqirKvEMKjcMKy9OcqSBZmhwhiSWNNrKa3uOAkNsBqRq0aonqdE1BkCpBbxckPm+sYr5iagU70ZEJUQVTefEc/ZbBNiFmgNuoQXrUHrci6PCPamNzMnNSDOlQW6yUvz5HCdqOiSAnLMZgZ7Bq0YWlFgyqe8mdLExxMH/sD+5yq9cVLGFuf2GgQo0dWciQ5EVeVyiGF175W3Mh3QHI/chQwpl6/5ExtRoEalQk164xg+M2YjNNT/uJFhV8ypGQpldc19GlgeOUtpoL49kqzErTddjkBCQSqAs2Qg8s+eOShOeHrsORgX31KggV4GVjD8Z7SrIHd1fF3dddwUKqggNyGOgqZMJiTT7oOgXwb39RkCgfPekxLzOWtqGYBOw3IIgZvP4Zsx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6459.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(7916004)(4636009)(136003)(346002)(39860400002)(396003)(366004)(376002)(451199021)(8676002)(33716001)(8936002)(38100700002)(86362001)(26005)(41300700001)(15650500001)(4744005)(2906002)(83380400001)(6506007)(1076003)(44832011)(186003)(5660300002)(7416002)(6916009)(4326008)(66476007)(66556008)(66946007)(6512007)(9686003)(54906003)(6666004)(478600001)(6486002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SpIp6aoGO1L1E8gom1KFshFTBzYvxqqp8cK8hzkVNfLHte2GG2Ugpe8IfG/9?=
+ =?us-ascii?Q?IrTdaRwPoqqOj4Aj2XoDdBEZ2TgyfcydosAig3jIWL4uh0VeAJtnl3iBY1lC?=
+ =?us-ascii?Q?GTc+Sh5zjYSwsuTVpV3zktRjZqANsyPRot+Qe9KWvIxJYW0gZMTVJ7C/8XtL?=
+ =?us-ascii?Q?3DsDjERqRebOVveMVl9YvMt6k1SFAlf9ljjlC1rQ6DK4bKToq0tHMypIJ/l4?=
+ =?us-ascii?Q?YUhb6nJ+h2GUOkpcNJJnG0XBjvvCvEmuomD3qDd2kL4txdhSnPDWONRk1W47?=
+ =?us-ascii?Q?r+q+9B5w4V35ue+bWIodbsxQQ6vXe1XQifh4k0dRoWfCG8hCADBdWg3CNWzO?=
+ =?us-ascii?Q?rSqG4WYkhCTIGXDCm2S5Mrm53tyrDt+BbAodugb/PnWwIfx+OKQjxSABkqFd?=
+ =?us-ascii?Q?E2lRIXbzX8Vkgq1EZJN8X3ICHsAL0nEYwiiYVYM6PspxY01Thy5XZzDEQXHI?=
+ =?us-ascii?Q?72nyT386aqQzWvGYxKwymhqhO2P5dUtYohwd3Qog7SityZc3/BnortrPI7uI?=
+ =?us-ascii?Q?0e4LpWEJPiA2XooZi/Ld1IoRWBIpiAFkEjAWshfKgPBU5NLGaM2OTKTnDIc1?=
+ =?us-ascii?Q?CAYhCUl4G6AL89w+jlIxK5ixzTNK9CirRpWM0dXuJMEzouKJ8jGTUe3DpWzj?=
+ =?us-ascii?Q?O8PFsFXmcMvY4728mpt054/S9eRbUkVN95ivLOvYJc26yJ7jfJV1Rrux0sA/?=
+ =?us-ascii?Q?ST86ckBXuzIz2f4N2CGmsVhFGuhHydPWBp+kHrGyjI1N0Jm21FCp1+FI+kys?=
+ =?us-ascii?Q?G58LbyfH1cOeao88rcDNN2ON0EC+QeXQXdGbt/71FSQAiHolw9ySkCu/yMmX?=
+ =?us-ascii?Q?KUR1YNJNEuRQdIuQyILx3591FWYZ1eBTgtzTzN0DDuWhhWh64paLjtpzb2qF?=
+ =?us-ascii?Q?ocbooVzBlfNqPCqd5bWL/u7vi+h9a4mHQ0Q2dnRR0asEMiPvWXlZbWlSxoeX?=
+ =?us-ascii?Q?0d9druW7IR0R75q9nUl3adJoebl1GVSC3DsB6ctWlXDH3Zvj4hG81/CWJdNg?=
+ =?us-ascii?Q?AgKq9SX+6AbKusEEzhuBIy6xPE/h0OG5J3/KeLSQMTLvjKgFNH2xZqmkxYGC?=
+ =?us-ascii?Q?+3v9JoMHgnEDYTz11n0ys7zCSl/eCyOZ2QJCfM9SW3Jq9KDXvth6Zu1tb33V?=
+ =?us-ascii?Q?mKEA9a49d+OBo9YCHX/tXKxOBfXqQ4woo94sgGSIPcx0E4ID188iA8el19VT?=
+ =?us-ascii?Q?dbCLv5K+SZhQekes4H9T0K5BhhAaq/xBRxLW/IBimGY9LGPm5XNz1YfAGLfY?=
+ =?us-ascii?Q?YmlgmniiArnNwI8wIDVlwXGcdwMgKz8zpDmQqpgLW1H8uZr2g31/nsd87uLf?=
+ =?us-ascii?Q?twJQxhcJY8AmG9g4yuPB7V8BuAWNqdUNtcafGx2qI3u6OkL60LvwtlaO1feR?=
+ =?us-ascii?Q?r3vyqZljdnVIlqbXV7MhSYvNMzkilvyJhbmeJ+A3H3fOb0IvGaGzs5uQ0PBX?=
+ =?us-ascii?Q?3j7DVQpoB+7UIRPkAGzeMjtlAUi9vAFaDugGgdHUeZRDDwRCSpX6t+50Y47O?=
+ =?us-ascii?Q?9XJVaebKzHaQfy5TKa+m6vT9N34GqekS6zyIJYGYoGx7HxiW//p5W15sZKL0?=
+ =?us-ascii?Q?gveccAssSaDnFkgJjsa5QnY0s1pMUkhg25B/YqJfXkTgMZsqfAgaT1s61khs?=
+ =?us-ascii?Q?tw=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a098c188-531d-4555-3546-08db92afe079
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6459.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 16:53:51.4741
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IOSLV3IWPCQxeGczcZCSpL+7t6q83XCRPRLChzaQnuKbpaTZ3bSOdgtmmgcVT9ssNFzjeGIKAnIpd9FTdovObw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7229
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 02:43:19PM +0100, Mark Brown wrote:
-> Use VM_HIGH_ARCH_5 for guarded control stack pages.
+On Wed, Jun 14, 2023 at 01:45:42PM -0300, Pedro Tammela wrote:
+> > +        "cmdUnderTest": "$TC qdisc replace dev $ETH handle 8002: parent 8001:8 cbs idleslope 20000 sendslope -980000 hicredit 30 locredit -1470",
+> > +        "expExitCode": "0",
+> > +        "verifyCmd": "$TC -d qdisc show dev $ETH",
+> > +        "matchPattern": "qdisc cbs 8002: parent 8001:8 hicredit 30 locredit -1470 sendslope -980000 idleslope 20000 offload 0",
 > 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  Documentation/filesystems/proc.rst |  2 +-
->  fs/proc/task_mmu.c                 |  3 +++
->  include/linux/mm.h                 | 12 +++++++++++-
->  3 files changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-> index 6ccb57089a06..086a0408a4d7 100644
-> --- a/Documentation/filesystems/proc.rst
-> +++ b/Documentation/filesystems/proc.rst
-> @@ -566,7 +566,7 @@ encoded manner. The codes are the following:
->      mt    arm64 MTE allocation tags are enabled
->      um    userfaultfd missing tracking
->      uw    userfaultfd wr-protect tracking
-> -    ss    shadow stack page
-> +    ss    shadow/guarded control stack page
+> Seems like this test is missing the 'refcnt 2' in the match pattern
 
-I've missed this in Rick's patches, but it's not a page but area.
-
->      ==    =======================================
->  
->  Note that there is no guarantee that every flag and associated mnemonic will
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index cfab855fe7e9..e8c50848bb16 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -711,6 +711,9 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
->  #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
->  #ifdef CONFIG_X86_USER_SHADOW_STACK
->  		[ilog2(VM_SHADOW_STACK)] = "ss",
-> +#endif
-> +#ifdef CONFIG_ARM64_GCS
-> +		[ilog2(VM_SHADOW_STACK)] = "ss",
->  #endif
->  	};
->  	size_t i;
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 43fe625b85aa..3f939ae212e5 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -372,7 +372,17 @@ extern unsigned int kobjsize(const void *objp);
->   * having a PAGE_SIZE guard gap.
->   */
->  # define VM_SHADOW_STACK	VM_HIGH_ARCH_5
-> -#else
-> +#endif
-> +
-> +#if defined(CONFIG_ARM64_GCS)
-> +/*
-> + * arm64's Guarded Control Stack implements similar functionality and
-> + * has similar constraints to shadow stacks.
-> + */
-> +# define VM_SHADOW_STACK	VM_HIGH_ARCH_5
-> +#endif
-> +
-> +#ifndef VM_SHADOW_STACK
->  # define VM_SHADOW_STACK	VM_NONE
->  #endif
->  
-> 
-> -- 
-> 2.30.2
-> 
-> 
-
--- 
-Sincerely yours,
-Mike.
+Makes sense. This is consistent with the idea of my patch set, which is
+that in offloaded taprio mode, each child Qdisc has a refcount elevated
+by the fact that it's attached to a netdev TX queue (hence the 2 here).
+I had copied this expected output from the "Graft cbs as child of software
+taprio" test a7bf (not sure why I didn't catch the failure), but there,
+the expected refcount of child Qdiscs is 1 (and thus, not shown).
