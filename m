@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E20576BCFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB60F76BCF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbjHASwU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 14:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34184 "EHLO
+        id S231191AbjHASwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjHASwS (ORCPT
+        with ESMTP id S230274AbjHASwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:52:18 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A64126A1;
-        Tue,  1 Aug 2023 11:52:11 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-56d0deeca09so32945eaf.0;
-        Tue, 01 Aug 2023 11:52:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690915930; x=1691520730;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oDF+MyCYxqY1Suy31l3VNJ8qreWErHQzhBqOCnxacPo=;
-        b=GnRNdVeGxggrfPV1lIMsZoJd+xTxbj1fYGN6uugm7cDw+PMnBEIjwqQgiVB/SHh4U6
-         uTZ0SrRrGGgeuxUGnceFSMRe7ZI1AoRkD/Hv89j4Sh9+eO99Msx8796dm9t1cv/1jvlk
-         4qBzsq821urpo4tQqHigyv+xfk9S9uAiERiXT7VSI5LrV4YUAeXFGMUi25hCdNqmIjY6
-         /b/213kJ//7EA0UvXj2aEnEmpqVquzhKecBWMClUscwCf7CIn1bYzxzD5dELl3G64RPo
-         W5RwZTmaJVOxY/PzyEAAsdaHUoaSNhDYL2/adNKv/gzN0tEkzWonOKEt5OQl2xUlJxyv
-         UfDg==
-X-Gm-Message-State: ABy/qLZ1valhqZUNmf3NN4Wa1BJcYDm7c+Hwu5huO5J2CgA/Qt0cbI1C
-        HjpkuYdpkyE9TYXKOQfCqUtytCUYk+5slRbdItdfjS8bI3o=
-X-Google-Smtp-Source: APBJJlGB8BiGH7rdxWxxWgn6VIpoLYNe/FN/bIb8KJ20VqCaACeW/krItvO4XX+Q8DrZOaOQ+S3zBV9rFejyKb/lDqE=
-X-Received: by 2002:a4a:cf14:0:b0:569:a08a:d9c5 with SMTP id
- l20-20020a4acf14000000b00569a08ad9c5mr7986887oos.0.1690915930146; Tue, 01 Aug
- 2023 11:52:10 -0700 (PDT)
+        Tue, 1 Aug 2023 14:52:04 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386CE1BC5;
+        Tue,  1 Aug 2023 11:52:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EE27616A5;
+        Tue,  1 Aug 2023 18:52:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 997E6C433C8;
+        Tue,  1 Aug 2023 18:52:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690915921;
+        bh=pkyYjocoeLmrSGQmrQ8n+dkP7AuTi0HlxfHtfRNzNl8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZmyYDvydqqlT6pfxH0MjZt+4cMcW4PcPrz0Jt7d3E57RYNE4rDNaeQL4Y62BEk8Hu
+         ubm387xoMGtT+8R4IF0ZSFceBZoFZu5FlxPbumjK+VJ3yYe0uOb5T1a9nCK6yiKVrz
+         np8lE9I4v+5R9HeW/Gcw7wzSuUTcSr9O5WhbflMxwsFd8rkdpXfH9UDkTZTkovHeKh
+         9S4hivzFABQqi6urbM9+ulXMFI7shEEJOAEniz/ZhX2nd6+kJRiATMRPnPoJ+oN4Lh
+         k9tSzwXyNk69VlyG0ReELHIUzFrjevzfkNDPNSceUJJfUSIlWhUk3qfGZt71xtAqVq
+         5lQjfXUuAEKCw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 21BB1405DE; Tue,  1 Aug 2023 15:51:59 -0300 (-03)
+Date:   Tue, 1 Aug 2023 15:51:59 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Weilin Wang <weilin.wang@intel.com>
+Subject: Re: [PATCH v1 0/4] Intel metric fixes and event updates
+Message-ID: <ZMlUT27ABCaq8JnV@kernel.org>
+References: <20230801053634.1142634-1-irogers@google.com>
+ <a0d5ec0a-e5d9-5938-fa6b-1d60b2aac019@linux.intel.com>
 MIME-Version: 1.0
-References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
- <7552439.EvYhyI6sBW@kreacher> <cc972aec-dd21-e025-8984-e48b7c1df4bc@linaro.org>
-In-Reply-To: <cc972aec-dd21-e025-8984-e48b7c1df4bc@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 1 Aug 2023 20:51:58 +0200
-Message-ID: <CAJZ5v0iizOkgX6YbMXpOrKBTp+EFV-hZJmJxPkWsBM0GtuK9VA@mail.gmail.com>
-Subject: Re: [PATCH v3 5/8] ACPI: thermal: Hold thermal zone lock around trip updates
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a0d5ec0a-e5d9-5938-fa6b-1d60b2aac019@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,57 +69,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 8:39 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
->
-> Hi Rafael,
->
-> On 25/07/2023 14:16, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Em Tue, Aug 01, 2023 at 01:48:45PM -0400, Liang, Kan escreveu:
+> 
+> 
+> On 2023-08-01 1:36 a.m., Ian Rogers wrote:
+> > The metric tma_info_pipeline_retire contains uops_retired.slots with
+> > perf metric events. Patch 1 fixes this event sorting so that
+> > uops_retired.slots isn't made a group leader as that needs to be
+> > topdown.slots.
+> > 
+> > Patch 2 and 3 update the meteorlake and sapphirerapids events.
+> > 
+> > Patch 4 addresses an issue with event grouping discussed in:
+> > https://lore.kernel.org/lkml/20230719001836.198363-3-irogers@google.com/
+> > by adding and altering metric constraints. The constraints avoid
+> > groups for metrics where the kernel PMU fails to not open the group
+> > (the trigger for the weak group being removed).
+> > 
+> > Ian Rogers (4):
+> >   perf parse-events x86: Avoid sorting uops_retired.slots
+> >   perf vendor events intel: Update meteorlake to 1.04
+> >   perf vendor events intel: Update sapphirerapids to 1.15
+> >   perf vendor events intel: Update Icelake+ metric constraints
 > >
-> > There is a race condition between acpi_thermal_trips_update() and
-> > acpi_thermal_check_fn(), because the trip points may get updated while
-> > the latter is running which in theory may lead to inconsistent results.
-> > For example, if two trips are updated together, using the temperature
-> > value of one of them from before the update and the temperature value
-> > of the other one from after the update may not lead to the expected
-> > outcome.
-> >
-> > To address this, make acpi_thermal_trips_update() hold the thermal zone
-> > lock across the entire update of trip points.
->
-> As commented in patch 3/8, having a driver locking a thermal core
-> structure is not right and goes to the opposite direction of the recent
-> cleanups.
+> 
+> Thanks Ian.
+> 
+> Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 
-It already happens though, because thermal_zone_device_update() locks
-the zone and it is called by the driver.
+Thanks, applied.
 
-> Don't we have 2 race conditions:
->
-> acpi_thermal_trips_update() + thermal_zone_device_check()
->
-> acpi_thermal_trips_update() + acpi_thermal_trips_update()
+- Arnaldo
 
-I'm not sure what you mean.
-
-First off, acpi_thermal_check_fn() needs to be locked against anything
-using the trips in the zone's trips[] table, in particular
-thermal_get_trend().
-
-However, thermal_get_trend() also uses the driver's private trips
-information, so it needs to be locked against
-acpi_thermal_trips_update().
-
-And obviously the latter needs to be locked against acpi_thermal_check_fn().
-
-> For the former, we can disable the thermal zone, update and then enable
-
-Disabling the thermal zone is an idea, but it would be necessary to do
-that in both acpi_thermal_check_fn() and acpi_thermal_trips_update().
-Also I'm not sure how different that would be from holding the zone
-lock across the updates.
-
-Moreover, acpi_thermal_trips_update() would then need to hold the
-local lock around the thermal zone disable/enable which would be way
-uglier than just using the zone lock directly in it.
