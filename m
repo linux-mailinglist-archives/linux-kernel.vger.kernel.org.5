@@ -2,186 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF7476B4A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:23:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E778276B4B0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbjHAMXR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 08:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        id S232380AbjHAM0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233907AbjHAMXP (ORCPT
+        with ESMTP id S230418AbjHAMZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:23:15 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC17710C7;
-        Tue,  1 Aug 2023 05:23:12 -0700 (PDT)
-X-QQ-mid: bizesmtp70t1690892583t5qcjea9
-Received: from [172.18.158.193] ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 01 Aug 2023 20:23:01 +0800 (CST)
-X-QQ-SSF: 01200000000000705000000A0000000
-X-QQ-FEAT: /HVSeQejYqeukwY+5U51CoTHCtxI/FujKVlUNhoey4l+spnmPw0fyQVwrZIRa
-        UDsvCxmM76dNz8Wi3KydRfNZkPDenTZjRjS+uDnN7FkoVkJoL0WN8ASn/4XEOyBRXEmX10j
-        Z2xUDXT9doFuQTv16SXmcZ8b7aBNYRywRyDKC7QROkUnBDdEI7s7WP25/gxGuY+Pqeksivn
-        MpBzMN4/woTic5kQZxbMBR1rY/gCXYr3HehHSBY5BvlcbS7JqMSBeRcLyISOlxkNk7CZIJc
-        n0PS3nTR/sVoET2GXfOFpy/6u5yLRxXOiYF+54l1nsc5X0l9JHrK3jZ8uePSgzDmCDANYer
-        +dp0G/7UDGeqO+GBoxFsShXhGogSBb4S35NCBkBhSnuf5AGgAuWdXzmSsTZIg==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 11186999854354669786
-Message-ID: <CEF9B5A6B5C43FBB+a5f21a530c1baf5229614c8186043e223b9d111f.camel@tinylab.org>
-Subject: Re: [PATCH v2 2/2] selftests/nolibc: add testcase for pipe
-From:   Yuan Tan <tanyuan@tinylab.org>
-To:     Thomas =?ISO-8859-1?Q?Wei=DFschuh?= <thomas@t-8ch.de>
-Cc:     w@1wt.eu, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, tanyuan@tinylab.org
-Date:   Tue, 01 Aug 2023 20:23:02 +0800
-In-Reply-To: <413f70e4-245e-474a-9293-05068fd2eeb5@t-8ch.de>
-References: <cover.1690733545.git.tanyuan@tinylab.org>
-         <9221753abe0509ef5cbb474a31873012e0e40706.1690733545.git.tanyuan@tinylab.org>
-         <a4899657-7d7b-4786-8903-8f51e438535d@t-8ch.de>
-         <C3AF612281F87D1A+733ce5c0d1efe1f81423e6885203d92cdb4eaee7.camel@tinylab.org>
-         <2ba88bae-2986-4e70-9828-824d7b140277@t-8ch.de>
-         <D55D0905148FA2ED+f06092bae15b312ff1b29ad170fb656b89722b30.camel@tinylab.org>
-         <51b39ee9-7645-4759-9cc0-3cfe721a2757@t-8ch.de>
-         <2ADAE3198D1A85E3+c1c957d4706ee51d90e0b2a425a633eafcca8810.camel@tinylab.org>
-         <413f70e4-245e-474a-9293-05068fd2eeb5@t-8ch.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Tue, 1 Aug 2023 08:25:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F195F10C7;
+        Tue,  1 Aug 2023 05:25:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 84FAF6156E;
+        Tue,  1 Aug 2023 12:25:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B2EFC433C8;
+        Tue,  1 Aug 2023 12:25:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690892757;
+        bh=qDmS5AL4Z6d+/dt55lZBTzRFNXfWkRpgfk73IJyzw2o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eHiGs5TpDRAfQTKatB3QCQpE8QcBxTbjItfMQk0Ay7WKlmHRFSTv5X5wdhxFpthYj
+         oDPF/m4bqRv0xCoSFg5ixO7W7GtAEaMy3v2Pf+/oI11xr0hT04b/rfLz+XeCTn3myU
+         Fqio2i16zgTThIEN0BI0MQWeEK7SaBsZs7urM/GqUBQpHCQ9l+ZelAY1drjhoew2Z9
+         C6FwyTO+liNvaDeE22bjTJmAtt2uZ2RCrA8c8XP/9nUB1iNW+D+rZpcN7X2HIccroS
+         IHumSy5ClpiqEm4SZBR3XzXMOf40609V64D9LFoIbEGIssnn3mTqunn/PaYDgGg6AO
+         XSjaCcFg85kYA==
+Date:   Tue, 1 Aug 2023 14:25:53 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Max Staudt <max@enpas.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH 1/2] can: can327: remove casts from tty->disc_data
+Message-ID: <ZMj50QYDsFtf7jT8@kernel.org>
+References: <20230801062237.2687-1-jirislaby@kernel.org>
+ <20230801062237.2687-2-jirislaby@kernel.org>
 MIME-Version: 1.0
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801062237.2687-2-jirislaby@kernel.org>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Tue, Aug 01, 2023 at 08:22:36AM +0200, Jiri Slaby (SUSE) wrote:
+> tty->disc_data is 'void *', so there is no need to cast from that.
+> Therefore remove the casts and assign the pointer directly.
+> 
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 
-On Tue, 2023-08-01 at 09:20 +0200, Thomas Weißschuh wrote:
-> On 2023-08-01 14:51:40+0800, Yuan Tan wrote:
-> > Hi Thomas,
-> > 
-> > On Mon, 2023-07-31 at 20:28 +0200, Thomas Weißschuh wrote:
-> > > On 2023-08-01 02:01:36+0800, Yuan Tan wrote:
-> > > > Hi Thomas,
-> > > > On Mon, 2023-07-31 at 17:41 +0200, Thomas Weißschuh wrote:
-> > > > > On 2023-07-31 20:35:28+0800, Yuan Tan wrote:
-> > > > > > On Mon, 2023-07-31 at 08:10 +0200, Thomas Weißschuh wrote:
-> > > > > > > On 2023-07-31 13:51:00+0800, Yuan Tan wrote:
-> > > > > > > > Add a testcase of pipe that child process sends message
-> > > > > > > > to
-> > > > > > > > parent
-> > > > > > > > process.
-> > > > > > > 
-> > > > > > > Thinking about it some more:
-> > > > > > > 
-> > > > > > > What's the advantage of going via a child process?
-> > > > > > > The pipe should work the same within the same process.
-> > > > > > > 
-> > > > > > 
-> > > > > > The pipe is commonly used for process communication, and I
-> > > > > > think as
-> > > > > > a
-> > > > > > test case it is supposed to cover the most common
-> > > > > > scenarios.
-> > > > > 
-> > > > > The testcase is supposed to cover the code of nolibc.
-> > > > > It should be the *minimal* amount of code to be reasonable
-> > > > > sure
-> > > > > that
-> > > > > the
-> > > > > code in nolibc does the correct thing.
-> > > > > If pipe() returns a value that behaves like a pipe I see no
-> > > > > reason to
-> > > > > doubt it will also survive fork().
-> > > > > 
-> > > > > Validating that would mean testing the kernel and not nolibc.
-> > > > > For the kernel there are different testsuites.
-> > > > > 
-> > > > > Less code means less work for everyone involved, now and in
-> > > > > the
-> > > > > future.
-> > > > > 
-> > > > 
-> > > > It's a good point and I never thought about this aspect.
-> > > > 
-> > > > I wonder whether the code below is enough?
-> > > > 
-> > > > static int test_pipe(void)
-> > > > {
-> > > >         int pipefd[2];
-> > > > 
-> > > >         if (pipe(pipefd) == -1)
-> > > >                 return 1;
-> > > > 
-> > > >         close(pipefd[0]);
-> > > >         close(pipefd[1]);
-> > > > 
-> > > >         return 0;
-> > > > }
-> > > 
-> > > That is very barebones.
-> > > 
-> > > If accidentally a wrong syscall number was used and the used
-> > > syscall
-> > > would not take any arguments this test would still succeed.
-> > > 
-> > > Keeping the write-read-cycle from the previous revision would
-> > > test
-> > > that
-> > > nicely. Essentially the same code as before but without the
-> > > fork().
-> > > 
-> > > > 
-> > > > And I forgot to add this line:
-> > > > 
-> > > >         CASE_TEST(pipe); EXPECT_SYSZR(1, test_pipe()); break;
-> > > > 
-> > > > I will add it in next patch.
-> > > > 
-> > > 
-> > 
-> > In the situation you described, that is indeed the case.
-> > 
-> > Would this be fine?
-> > 
-> > static int test_pipe(void)
-> > {
-> >         const char *const msg = "hello, nolibc";
-> >         int pipefd[2];
-> >         char buf[32];
-> >         ssize_t len;
-> > 
-> >         if (pipe(pipefd) == -1)
-> >                 return 1;
-> > 
-> >         write(pipefd[1], msg, strlen(msg));
-> >         close(pipefd[1]);
-> >         len = read(pipefd[0], buf, sizeof(buf));
-> >         close(pipefd[0]);
-> > 
-> >         if (len != strlen(msg))
-> >                 return 1;
-> > 
-> >         return !!memcmp(buf, msg, len);
-> > }
-> 
-> Looks good!
-> 
-> The return value of write() could also be validated but given we
-> validate the return value from read() it shouldn't make a difference.
-> 
-> (Also the manual manipulation of "buf" is gone that necessitated the
-> check in v1 of the series)
-> 
-
-I am sorry that I didn't catch your last sentence.
-
-Did you mean this piece of code does not need any further modifications
-right?
+Reviewed-by: Simon Horman <horms@kernel.org>
 
