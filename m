@@ -2,232 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 983B976A67F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9566776A684
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229885AbjHABl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 21:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        id S231731AbjHABms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 21:42:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbjHABlw (ORCPT
+        with ESMTP id S230518AbjHABmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 21:41:52 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D131BEC;
-        Mon, 31 Jul 2023 18:41:39 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VFtuHY006332;
-        Mon, 31 Jul 2023 18:41:32 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=rwYjoK+wb+CQ5fgWspTLi2yMGbffC5+/B4dizAAuhNw=;
- b=bJ3ByBP69HzkCmoKb3CkHx0/4UmpdvzQFKAfvQbwcVTCKg+IB8111GT15IRiRVyRK8m5
- vRXdk8XoewydelVehyEJl/Yrxs+7P4ifOQNTJculkIrU0sg43Pgr6Vek0I7XgSDX8a62
- lIZMn5zS89ohl9azPvyH0Um8G/KN4jEhtjy270p4AX5xufwF8YfUMiaeYWFYK+FUS/iE
- y+9puB2JaDCYBqwot9fqYYo1SVbH0/LiUiFaXMAvC+NWrle02TSCx8VV9/XUya8MRTMF
- lDMLdpxbGDCJGGHxNWSoXg6UKLSdoptOh5dlw/jsQ7PabXT3OLXxL6viZMkJw8259/2L eg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3s529k70ee-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 18:41:32 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 31 Jul
- 2023 18:41:30 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 31 Jul 2023 18:41:30 -0700
-Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
-        by maili.marvell.com (Postfix) with ESMTP id 3BE593F7048;
-        Mon, 31 Jul 2023 18:41:24 -0700 (PDT)
-From:   Ratheesh Kannoth <rkannoth@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <gakula@marvell.com>, <jerinj@marvell.com>, <hkelam@marvell.com>,
-        <sbhatta@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        Ratheesh Kannoth <rkannoth@marvell.com>
-Subject: [PATCH v1 net-next 4/4] octeontx2-pf: TC flower offload support for SPI field
-Date:   Tue, 1 Aug 2023 07:11:01 +0530
-Message-ID: <20230801014101.2955887-5-rkannoth@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230801014101.2955887-1-rkannoth@marvell.com>
-References: <20230801014101.2955887-1-rkannoth@marvell.com>
+        Mon, 31 Jul 2023 21:42:47 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A24DF1BF1;
+        Mon, 31 Jul 2023 18:42:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1690854137;
+        bh=R0PEe73zlfYAKebLRzhdfAzKrKATJClV0PH4WjYF9+Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JoH0sr+YSK8u4uQc94xxJYtL0S7C1R0vkckil6rOa2KHb7cYTnbAFpzwKU5spHrER
+         kaqMVgKdhEzIySPt9FF7MnspVVSf/hCU342ZLO8t1oX0Wj/sf/t59WcNULrkv9h7Yi
+         ETuvuOOsmSOcYCfqrMUZG2jbGogMwOuBvozjZ5+bja1QE72zYeJy1GTC1dN3acqBGR
+         s1EM4fPyMtiA2JgPAkQQzcuMVGwMveU0/lK2DKCLux/GVnfKTs3LdawYtW/HtP21Kf
+         Rrlcv853z3Szq0Cr/Ratnhxr4UaLJRw5/7AWBv2J4uvvx0neH2q9njEiBsr4Y4rRQA
+         E9sXHH38Rs8mw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RFHsg6VQwz4wZw;
+        Tue,  1 Aug 2023 11:42:15 +1000 (AEST)
+Date:   Tue, 1 Aug 2023 11:42:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paul Moore <paul@paul-moore.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Guillaume Nault <gnault@redhat.com>,
+        Khadija Kamran <kamrankhadijadj@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the security tree with the net-next
+ tree
+Message-ID: <20230801114214.2e169762@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 5A0BzxxIeEGREsCaYmn-OQBkCjZpDMZg
-X-Proofpoint-ORIG-GUID: 5A0BzxxIeEGREsCaYmn-OQBkCjZpDMZg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-07-31_18,2023-07-31_02,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/SlBZ/wYr8B1uaHmZK/xISTS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Driver support to offload TC flower rules which matches
-against SPI field of IPSEC packets (AH/ESP).
+--Sig_/SlBZ/wYr8B1uaHmZK/xISTS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
----
- .../net/ethernet/marvell/octeontx2/af/mbox.h  |  4 +++
- .../net/ethernet/marvell/octeontx2/af/npc.h   |  1 +
- .../marvell/octeontx2/af/rvu_debugfs.c        |  4 +++
- .../marvell/octeontx2/af/rvu_npc_fs.c         | 11 ++++++++
- .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 27 +++++++++++++++++++
- 5 files changed, 47 insertions(+)
+Hi all,
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index ed66c5989102..a8f3c8faf8af 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -1451,6 +1451,10 @@ struct flow_msg {
- 		__be32 ip4dst;
- 		__be32 ip6dst[4];
- 	};
-+	union {
-+		__be32 spi;
-+	};
-+
- 	u8 tos;
- 	u8 ip_ver;
- 	u8 ip_proto;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-index 9beeead56d7b..534f20c0c5df 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-@@ -204,6 +204,7 @@ enum key_fields {
- 	NPC_DPORT_UDP,
- 	NPC_SPORT_SCTP,
- 	NPC_DPORT_SCTP,
-+	NPC_IPSEC_SPI,
- 	NPC_HEADER_FIELDS_MAX,
- 	NPC_CHAN = NPC_HEADER_FIELDS_MAX, /* Valid when Rx */
- 	NPC_PF_FUNC, /* Valid when Tx */
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index 3b26893efdf8..7cd33edca365 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -2827,6 +2827,10 @@ static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
- 			seq_printf(s, "%d ", ntohs(rule->packet.dport));
- 			seq_printf(s, "mask 0x%x\n", ntohs(rule->mask.dport));
- 			break;
-+		case NPC_IPSEC_SPI:
-+			seq_printf(s, "0x%x ", ntohl(rule->packet.spi));
-+			seq_printf(s, "mask 0x%x\n", ntohl(rule->mask.spi));
-+			break;
- 		default:
- 			seq_puts(s, "\n");
- 			break;
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-index 9c365cc3e736..bb715e616fad 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-@@ -41,6 +41,7 @@ static const char * const npc_flow_names[] = {
- 	[NPC_SPORT_SCTP] = "sctp source port",
- 	[NPC_DPORT_SCTP] = "sctp destination port",
- 	[NPC_LXMB]	= "Mcast/Bcast header ",
-+	[NPC_IPSEC_SPI] = "SPI ",
- 	[NPC_UNKNOWN]	= "unknown",
- };
- 
-@@ -513,6 +514,10 @@ do {									       \
- 	NPC_SCAN_HDR(NPC_VLAN_TAG1, NPC_LID_LB, NPC_LT_LB_CTAG, 2, 2);
- 	NPC_SCAN_HDR(NPC_VLAN_TAG2, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 2, 2);
- 	NPC_SCAN_HDR(NPC_DMAC, NPC_LID_LA, la_ltype, la_start, 6);
-+
-+	NPC_SCAN_HDR(NPC_IPSEC_SPI, NPC_LID_LD, NPC_LT_LD_AH, 4, 4);
-+	NPC_SCAN_HDR(NPC_IPSEC_SPI, NPC_LID_LE, NPC_LT_LE_ESP, 0, 4);
-+
- 	/* SMAC follows the DMAC(which is 6 bytes) */
- 	NPC_SCAN_HDR(NPC_SMAC, NPC_LID_LA, la_ltype, la_start + 6, 6);
- 	/* PF_FUNC is 2 bytes at 0th byte of NPC_LT_LA_IH_NIX_ETHER */
-@@ -564,6 +569,9 @@ static void npc_set_features(struct rvu *rvu, int blkaddr, u8 intf)
- 		if (!npc_check_field(rvu, blkaddr, NPC_LB, intf))
- 			*features &= ~BIT_ULL(NPC_OUTER_VID);
- 
-+	if (*features & (BIT_ULL(NPC_IPPROTO_AH) | BIT_ULL(NPC_IPPROTO_ESP)))
-+		*features |= BIT_ULL(NPC_IPSEC_SPI);
-+
- 	/* for vlan ethertypes corresponding layer type should be in the key */
- 	if (npc_check_field(rvu, blkaddr, NPC_LB, intf))
- 		*features |= BIT_ULL(NPC_VLAN_ETYPE_CTAG) |
-@@ -930,6 +938,9 @@ do {									      \
- 	NPC_WRITE_FLOW(NPC_DPORT_SCTP, dport, ntohs(pkt->dport), 0,
- 		       ntohs(mask->dport), 0);
- 
-+	NPC_WRITE_FLOW(NPC_IPSEC_SPI, spi, ntohl(pkt->spi), 0,
-+		       ntohl(mask->spi), 0);
-+
- 	NPC_WRITE_FLOW(NPC_OUTER_VID, vlan_tci, ntohs(pkt->vlan_tci), 0,
- 		       ntohs(mask->vlan_tci), 0);
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 5a44e9b96fc0..4bb511e3cbe5 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -461,6 +461,7 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_IPV4_ADDRS) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_IPV6_ADDRS) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_PORTS) |
-+	      BIT(FLOW_DISSECTOR_KEY_IPSEC) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_IP))))  {
- 		netdev_info(nic->netdev, "unsupported flow used key 0x%llx",
- 			    dissector->used_keys);
-@@ -482,6 +483,8 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 		     match.key->ip_proto != IPPROTO_UDP &&
- 		     match.key->ip_proto != IPPROTO_SCTP &&
- 		     match.key->ip_proto != IPPROTO_ICMP &&
-+		     match.key->ip_proto != IPPROTO_ESP &&
-+		     match.key->ip_proto != IPPROTO_AH &&
- 		     match.key->ip_proto != IPPROTO_ICMPV6)) {
- 			netdev_info(nic->netdev,
- 				    "ip_proto=0x%x not supported\n",
-@@ -501,6 +504,10 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 			req->features |= BIT_ULL(NPC_IPPROTO_ICMP);
- 		else if (ip_proto == IPPROTO_ICMPV6)
- 			req->features |= BIT_ULL(NPC_IPPROTO_ICMP6);
-+		else if (ip_proto == IPPROTO_ESP)
-+			req->features |= BIT_ULL(NPC_IPPROTO_ESP);
-+		else if (ip_proto == IPPROTO_AH)
-+			req->features |= BIT_ULL(NPC_IPPROTO_AH);
- 	}
- 
- 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_CONTROL)) {
-@@ -545,6 +552,26 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 		}
- 	}
- 
-+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_IPSEC)) {
-+		struct flow_match_ipsec match;
-+
-+		flow_rule_match_ipsec(rule, &match);
-+		if (!match.mask->spi) {
-+			NL_SET_ERR_MSG_MOD(extack, "spi index not specified");
-+			return -EOPNOTSUPP;
-+		}
-+		if (ip_proto != IPPROTO_ESP &&
-+		    ip_proto != IPPROTO_AH) {
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "SPI index is valid only for ESP/AH proto");
-+			return -EOPNOTSUPP;
-+		}
-+
-+		flow_spec->spi = match.key->spi;
-+		flow_mask->spi = match.mask->spi;
-+		req->features |= BIT_ULL(NPC_IPSEC_SPI);
-+	}
-+
- 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_IP)) {
- 		struct flow_match_ip match;
- 
--- 
-2.25.1
+Today's linux-next merge of the security tree got a conflict in:
 
+  security/security.c
+
+between commit:
+
+  5b52ad34f948 ("security: Constify sk in the sk_getsecid hook.")
+
+from the net-next tree and commit:
+
+  bd1f5934e460 ("lsm: add comment block for security_sk_classify_flow LSM h=
+ook")
+
+from the security tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc security/security.c
+index 2dfc7b9f6ed9,9177fd0968bd..000000000000
+--- a/security/security.c
++++ b/security/security.c
+@@@ -4396,7 -4421,14 +4421,14 @@@ void security_sk_clone(const struct soc
+  }
+  EXPORT_SYMBOL(security_sk_clone);
+ =20
++ /**
++  * security_sk_classify_flow() - Set a flow's secid based on socket
++  * @sk: original socket
++  * @flic: target flow
++  *
++  * Set the target flow's secid to socket's secid.
++  */
+ -void security_sk_classify_flow(struct sock *sk, struct flowi_common *flic)
+ +void security_sk_classify_flow(const struct sock *sk, struct flowi_common=
+ *flic)
+  {
+  	call_void_hook(sk_getsecid, sk, &flic->flowic_secid);
+  }
+
+--Sig_/SlBZ/wYr8B1uaHmZK/xISTS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTIYvYACgkQAVBC80lX
+0GxibAf/V0a39pcCXf9IcteRyqNunHpmz4gxlVi7pAUrGkNWZ5HSGOZqW6YzjcUG
+021K7vdkI907fOtYQ78FpckhEykLY2Ibi0iwUezNmd39ycPniL3QTxWzOk6p4N/I
+S5CaQfh9Xib03TWFhoNcMOvHY37RpLMXKbii8Njv8M4DwlwVVtrR1fxmFFoezYlO
+ehGSZRjaEPLDDLze+hxAZi5XRvwdWYW77GuRwSbqw/letpC3r+0jbe6lP0jVGB3F
+BS39zrSDb50l4nN8W6KkIhVSBUckBqgbJlx16VY67aJwov+yTjGqQJCAmgC/Yh7u
+RG0MlqdcCrw+aMtIGZi9Sx6XFmzXeg==
+=LR5K
+-----END PGP SIGNATURE-----
+
+--Sig_/SlBZ/wYr8B1uaHmZK/xISTS--
