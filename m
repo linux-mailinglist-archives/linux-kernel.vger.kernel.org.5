@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E90C76B59E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5C976B5A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbjHANRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
+        id S230297AbjHANRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbjHANRH (ORCPT
+        with ESMTP id S232541AbjHANRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:17:07 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CFFE9;
-        Tue,  1 Aug 2023 06:17:02 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so1059888e87.3;
-        Tue, 01 Aug 2023 06:17:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690895820; x=1691500620;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YIXWLmHWaAppS2BxnmUwozE9qzcrfXtbdStzdLC/lgA=;
-        b=COYlb4Ga4N1eBlWAcXr7YiqPw4OBJOT0EcO5/bzHq6jKC+4SZUg4RwcUkk65mGgCGr
-         LSwXIaq3rCpJ0841e2fgii2K91DtVz+9S4ZOsrHsPiI77c6oQwaW+MYD/mI8roDiLpmR
-         iNGWb+sSmBpy2erneqAUBbDZ2bg0/7VRDWp/vljkiNkPtE7kFXqfq4aftuvsIqNyL43y
-         1B49mLUy9fKqbWzpLnPwh7Y3DqrNOWTtSB9GPbk6tgRvAomhKW/elZxeDxcAMNUwbUSP
-         7jHeGLOANXc9HcB5u9TOGgXkQpBlAF9JMcxCiZ+FapEKrxclrOCNiKFN0t11STAFUhnz
-         qeCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690895820; x=1691500620;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YIXWLmHWaAppS2BxnmUwozE9qzcrfXtbdStzdLC/lgA=;
-        b=T2+eSGYxZI6f1jQ0FK0UTnGDCGB5bqln9qQedPluRvu+jePvUbiazLWDmpgP+QrU94
-         8jXG5ZBTDXt1ay9WKwc5FtQFprkr3LFvXPk2ZJZ0lEmKkb1ABeKp0zSkqVEf9etamtae
-         NzsY7RGVbDCCtxhpqH+i/jw9o5IeAmIeGAbZTmLYiGT69L7uM5WE8iCEQRKNBhh4YrXi
-         8p0PFcoCmFtZ3FqUl823HRmKNVguwDudOjOb8xdoBQLyis8i+aEfQc8C8sKC3eUvNuih
-         arNhrhyF/k2qeE/yzB153HdLv9RRCFmpldifbU2qyjPfgUE1YMWZ3cYIdr/4Lvi+dpSv
-         z08A==
-X-Gm-Message-State: ABy/qLYBFfsutfkHJu0l4RThlNbKm+GznutNTEH44gFEa3mBm6cRHfEH
-        F9+mYFZzjThh0JYxehYB4m3UjUnNBRctZQ4/0EjuxWvFWs0=
-X-Google-Smtp-Source: APBJJlEaeifujEnX/crqUtvzVD864qQAiL4PlyAVphNY10MLKwdXfLjV4kSyQfs69RecRyDEtCRnM5vrhQa0JW41zLY=
-X-Received: by 2002:ac2:51a1:0:b0:4fd:c715:5667 with SMTP id
- f1-20020ac251a1000000b004fdc7155667mr2000808lfk.20.1690895820122; Tue, 01 Aug
- 2023 06:17:00 -0700 (PDT)
+        Tue, 1 Aug 2023 09:17:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0AA10E;
+        Tue,  1 Aug 2023 06:17:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 52A1F615A0;
+        Tue,  1 Aug 2023 13:17:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDB9EC433CD;
+        Tue,  1 Aug 2023 13:17:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690895837;
+        bh=qXIRgH4mK+xtTO6grCOfqyhbajUmr7Zt70n3ttnq9n4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NscodObExuJ6qYr/qZV8BXmcaeXG9huOl7lIweoAgV95TST0F8UJVcvCvkUnyndym
+         CikfBfqRw0A8ScDV7cPNhBLFnD5RSzdT9lebllSUoEYPJhOydWLPs7RWl008p2wU7S
+         s139H2m1rIfRFDWgD47q4RuDCTYMShBiTiRCxFHC4LwCLYkIi7DLBCLyYzPRyJNFCl
+         EcsFWAQQ5n3MxpX/+UX5RDp9QNglJIccXFESxZx10MzJ9nnHpXtIop9Jm2XBgzzdHM
+         WZSGRGgIdgkvkhxxxdIZKDzx43pJC8/NczcR3FY9gIBib0oUJ8SI85XfDbw0GQR6+a
+         toFQxKE1/YxYA==
+Date:   Tue, 1 Aug 2023 15:17:11 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] kunit: Report the count of test suites in a
+ module
+Message-ID: <20230801151711.2765e2eb@coco.lan>
+In-Reply-To: <20230731141021.2854827-6-janusz.krzysztofik@linux.intel.com>
+References: <20230731141021.2854827-5-janusz.krzysztofik@linux.intel.com>
+        <20230731141021.2854827-6-janusz.krzysztofik@linux.intel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20230801090124.8050-1-zegao@tencent.com> <20230801090124.8050-5-zegao@tencent.com>
- <20230801114650.GE79828@hirez.programming.kicks-ass.net>
-In-Reply-To: <20230801114650.GE79828@hirez.programming.kicks-ass.net>
-From:   Ze Gao <zegao2021@gmail.com>
-Date:   Tue, 1 Aug 2023 21:16:49 +0800
-Message-ID: <CAD8CoPCJ0g7CLjQH9NL9bCfiPJqito1XZnitDg1MQOC6=gb=Gg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 4/6] sched, tracing: reorganize fields of switch
- event struct
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, I thought sending this series for RFC is the "effort" you mean
-to audit the users :/
+Em Mon, 31 Jul 2023 16:10:23 +0200
+Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com> escreveu:
 
-Correct me if I'm making stupid moves here and enlighten me what
-I should do furthermore to audit the users.
+> According to KTAP specification[1], results should always start from a
+> header that provides a TAP protocol version, followed by a test plan with
+> a count of items to be executed.  That pattern should be followed at each
+> nesting level.  In the current implementation of the top-most, i.e., test
+> suite level, those rules apply only for test suites built into the kernel,
+> executed and reported on boot.  Results submitted to dmesg from kunit test
+> modules loaded later are missing those top-level headers.
+> 
+> As a consequence, if a kunit test module provides more than one test suite
+> then, without the top level test plan, external tools that are parsing
+> dmesg for kunit test output are not able to tell how many test suites
+> should be expected and whether to continue parsing after complete output
+> from the first test suite is collected.
+> 
+> Submit the top-level headers also from the kunit test module notifier
+> initialization callback.
+> 
+> [1] https://docs.kernel.org/dev-tools/ktap.html#
+> 
+> Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+> ---
+>  lib/kunit/test.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 84e4666555c94..a29ca1acc4d81 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -729,6 +729,11 @@ EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
+>  #ifdef CONFIG_MODULES
+>  static void kunit_module_init(struct module *mod)
+>  {
+> +	if (mod->num_kunit_suites > 0) {
+> +		pr_info("KTAP version 1\n");
+> +		pr_info("1..%d\n", mod->num_kunit_suites);
+> +	}
+> +
+>  	__kunit_test_suites_init(mod->kunit_suites, mod->num_kunit_suites);
+>  }
+
+IMO, the best would be instead to export kunit_exec_run_tests() and
+use it here too.
+
+Except for the nit, LGTM.
+
 
 Thanks,
-Ze
-
-On Tue, Aug 1, 2023 at 7:47=E2=80=AFPM Peter Zijlstra <peterz@infradead.org=
-> wrote:
->
-> On Tue, Aug 01, 2023 at 05:01:22PM +0800, Ze Gao wrote:
-> > Report priorities in 'short' and prev_state in 'int' to save
-> > some buffer space. And also reorder the fields so that we take
-> > struct alignment into consideration to make the record compact.
-> >
-> > Suggested-by: Steven Rostedt (Google) <rostedt@goodmis.org>
->
-> I don't see a single line describing the effort you've done to audit
-> consumers of this tracepoint.
->
-> *IF* you're wanting to break this tracepoint ABI, because seriously
-> that's what it is, then you get to invest the time and effort to audit
-> the users.
+Mauro
