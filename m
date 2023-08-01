@@ -2,78 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 605B976BA1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3D076BA1F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbjHAQz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
+        id S233444AbjHAQ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233270AbjHAQz4 (ORCPT
+        with ESMTP id S233244AbjHAQ4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:55:56 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53632115;
-        Tue,  1 Aug 2023 09:55:44 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Tue, 1 Aug 2023 12:56:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89E42114;
+        Tue,  1 Aug 2023 09:56:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 675E321C5A;
-        Tue,  1 Aug 2023 16:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690908943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2wJGrCodiFacIQZflH9R6dQqAyomHz+cFLPpNk0lajQ=;
-        b=TDZ9lKQMhrHc1AR1LuAXp5Tf9AguCo8xpgKK+zjT39q4efiYfn94Cm/Ko5k4J2u1h4VRFR
-        w3vB8r/E1dpFLL4dNofINx/9Six8SvZLoppUT2y29YjHdEMfDage5T1VBrtxL0OLlg1drC
-        AcBJLYMaXgik1cwS5siI8RxGNGcxHuc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690908943;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2wJGrCodiFacIQZflH9R6dQqAyomHz+cFLPpNk0lajQ=;
-        b=U97WmX2iRrPFW29Xxax7UDZILg2veMmwjNvB+tnpBQcLv54/EakR9Ow1Xd6dAkdUZYAXxU
-        B3eRzcWwi/4EuzBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1862D139BD;
-        Tue,  1 Aug 2023 16:55:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id rIn0BA85yWTiMAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Tue, 01 Aug 2023 16:55:43 +0000
-Message-ID: <70690ae5-c2eb-6f8e-8335-e5052db5204b@suse.de>
-Date:   Tue, 1 Aug 2023 18:55:42 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D7BE61638;
+        Tue,  1 Aug 2023 16:56:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DEE0C433C7;
+        Tue,  1 Aug 2023 16:56:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690908977;
+        bh=bRSvjQunUP9yovqAQ96bucssEOT5sj5mD8xWzV3Px4Q=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=HmtgyFmrFiQBDoe/wT1NEWRCT2cRd7s/N7x7MFxMaNOwRts1yi5Dt1jlCw0ZtIKYt
+         1iAPgviM85CXM05FLS+4jAeH3vy/pmTehsfD+ffIXoG5EYrWmpic3annYv6hnM6Vw6
+         rZZd4bl4zlBcUGjgGx20QRHiEONyJs3j7ruY/TtkalEvjiDYl74ODukQd9onsUI3/K
+         GLsSULAvewtUGYzOhjBPaYnAaGn8FQAc+okVXYmHCrtGrlLXZB6kTP+pBfEgC41RoS
+         RPiUDXTVafRmxqRxuO5MxDMHYK+CBpo3Z7VhyNTU/Vrpdrx/zmFhMWA6xl8v+4Pnum
+         izFL+YMCCq9yg==
+Message-ID: <64ae76ef-a85a-7cc7-6bc3-a8ea46621d73@kernel.org>
+Date:   Tue, 1 Aug 2023 19:56:12 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH 1/4] vgacon: rework Kconfig dependencies
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8 2/5] arm64: dts: ti: k3-j784s4-main: Add WIZ and SERDES
+ PHY nodes
 Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     javierm@redhat.com, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        dri-devel@lists.freedesktop.org, Ard Biesheuvel <ardb@kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org
-References: <20230707095415.1449376-1-arnd@kernel.org>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <20230707095415.1449376-1-arnd@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------V2Kx07z5UT1mt9SnMBadeWbI"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+To:     Jayesh Choudhary <j-choudhary@ti.com>, nm@ti.com, vigneshr@ti.com
+Cc:     s-vadapalli@ti.com, afd@ti.com, kristo@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, a-bhatia1@ti.com, r-ravikumar@ti.com,
+        sabiya.d@ti.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230801070019.219660-1-j-choudhary@ti.com>
+ <20230801070019.219660-3-j-choudhary@ti.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20230801070019.219660-3-j-choudhary@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,98 +63,230 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------V2Kx07z5UT1mt9SnMBadeWbI
-Content-Type: multipart/mixed; boundary="------------2bQgjjzopkAYok3GbchMEycT";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: javierm@redhat.com, linux-fbdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
- dri-devel@lists.freedesktop.org, Ard Biesheuvel <ardb@kernel.org>,
- Helge Deller <deller@gmx.de>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Arnd Bergmann <arnd@arndb.de>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org,
- linux-csky@vger.kernel.org
-Message-ID: <70690ae5-c2eb-6f8e-8335-e5052db5204b@suse.de>
-Subject: Re: [PATCH 1/4] vgacon: rework Kconfig dependencies
-References: <20230707095415.1449376-1-arnd@kernel.org>
-In-Reply-To: <20230707095415.1449376-1-arnd@kernel.org>
 
---------------2bQgjjzopkAYok3GbchMEycT
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
 
-cGluZyEgV2hhdCdzIHRoZSBzdGF0dXMgb2YgdGhpcyBwYXRjaHNldD8NCg0KQW0gMDcuMDcu
-MjMgdW0gMTE6NTIgc2NocmllYiBBcm5kIEJlcmdtYW5uOg0KPiBGcm9tOiBBcm5kIEJlcmdt
-YW5uIDxhcm5kQGFybmRiLmRlPg0KPiANCj4gVGhlIGxpc3Qgb2YgZGVwZW5kZW5jaWVzIGhl
-cmUgaXMgcGhyYXNlZCBhcyBhbiBvcHQtb3V0LCBidXQgdGhpcyBpcyBtaXNzaW5nDQo+IGEg
-bG90IG9mIGFyY2hpdGVjdHVyZXMgdGhhdCBkb24ndCBhY3R1YWxseSBzdXBwb3J0IFZHQSBj
-b25zb2xlcywgYW5kIHNvbWUNCj4gb2YgdGhlIGVudHJpZXMgYXJlIHN0YWxlOg0KPiANCj4g
-ICAtIHBvd2VycGMgdXNlZCB0byBzdXBwb3J0IFZHQSBjb25zb2xlcyBpbiB0aGUgb2xkIGFy
-Y2gvcHBjIGNvZGViYXNlLCBidXQNCj4gICAgIHRoZSBtZXJnZWQgYXJjaC9wb3dlcnBjIG5l
-dmVyIGRpZA0KPiANCj4gICAtIGFybSBsaXN0cyBmb290YnJpZGdlLCBpbnRlZ3JhdG9yIGFu
-ZCBuZXR3aW5kZXIsIGJ1dCBuZXR3aW5kZXIgaXMgYWN0dWFsbHkNCj4gICAgIHBhcnQgb2Yg
-Zm9vdGJyaWRnZSwgYW5kIGludGVncmF0b3IgZG9lcyBub3QgYXBwZWFyIHRvIGhhdmUgYW4g
-YWN0dWFsDQo+ICAgICBWR0EgaGFyZHdhcmUsIG9yIGxpc3QgaXQgaW4gaXRzIEFUQUcgb3Ig
-RFQuDQo+IA0KPiAgIC0gbWlwcyBoYXMgYSBmZXcgcGxhdGZvcm1zIChqYXp6LCBzaWJ5dGUs
-IGFuZCBzbmkpIHRoYXQgaW5pdGlhbGl6ZQ0KPiAgICAgc2NyZWVuX2luZm8sIG9uIGV2ZXJ5
-dGhpbmcgZWxzZSB0aGUgY29uc29sZSBpcyBzZWxlY3RlZCBidXQgY2Fubm90DQo+ICAgICBh
-Y3R1YWxseSB3b3JrLg0KPiANCj4gICAtIGNza3ksIGhleGdhZ29uLCBsb29uZ2FyY2gsIG5p
-b3MyLCByaXNjdiBhbmQgeHRlbnNhIGFyZSBub3QgbGlzdGVkDQo+ICAgICBpbiB0aGUgb3B0
-LW91dCB0YWJsZSBhbmQgZGVjbGFyZSBhIHNjcmVlbl9pbmZvIHRvIGFsbG93IGJ1aWxkaW5n
-DQo+ICAgICB2Z2FfY29uLCBidXQgdGhpcyBjYW5ub3Qgd29yayBiZWNhdXNlIHRoZSBjb25z
-b2xlIGlzIG5ldmVyIHNlbGVjdGVkLg0KPiANCj4gUmVwbGFjZSB0aGlzIHdpdGggYW4gb3B0
-LWluIHRhYmxlIHRoYXQgbGlzdHMgb25seSB0aGUgcGxhdGZvcm1zIHRoYXQNCj4gcmVtYWlu
-LiBUaGlzIGlzIGVmZmVjdGl2ZWx5IHg4NiwgcGx1cyBhIGNvdXBsZSBvZiBoaXN0b3JpYyB3
-b3Jrc3RhdGlvbg0KPiBhbmQgc2VydmVyIG1hY2hpbmVzIHRoYXQgcmV1c2VkIHBhcnRzIG9m
-IHRoZSB4ODYgc3lzdGVtIGFyY2hpdGVjdHVyZS4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEFy
-bmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvdmlkZW8v
-Y29uc29sZS9LY29uZmlnIHwgNiArKystLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNl
-cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-dmlkZW8vY29uc29sZS9LY29uZmlnIGIvZHJpdmVycy92aWRlby9jb25zb2xlL0tjb25maWcN
-Cj4gaW5kZXggYTJhODhkNDJlZGYwYy4uNDdjNDk4ZGVmYzIxMSAxMDA2NDQNCj4gLS0tIGEv
-ZHJpdmVycy92aWRlby9jb25zb2xlL0tjb25maWcNCj4gKysrIGIvZHJpdmVycy92aWRlby9j
-b25zb2xlL0tjb25maWcNCj4gQEAgLTcsOSArNyw5IEBAIG1lbnUgIkNvbnNvbGUgZGlzcGxh
-eSBkcml2ZXIgc3VwcG9ydCINCj4gICANCj4gICBjb25maWcgVkdBX0NPTlNPTEUNCj4gICAJ
-Ym9vbCAiVkdBIHRleHQgY29uc29sZSIgaWYgRVhQRVJUIHx8ICFYODYNCj4gLQlkZXBlbmRz
-IG9uICE0eHggJiYgIVBQQ184eHggJiYgIVNQQVJDICYmICFNNjhLICYmICFQQVJJU0MgJiYg
-ICFTVVBFUkggJiYgXA0KPiAtCQkoIUFSTSB8fCBBUkNIX0ZPT1RCUklER0UgfHwgQVJDSF9J
-TlRFR1JBVE9SIHx8IEFSQ0hfTkVUV0lOREVSKSAmJiBcDQo+IC0JCSFBUk02NCAmJiAhQVJD
-ICYmICFNSUNST0JMQVpFICYmICFPUEVOUklTQyAmJiAhUzM5MCAmJiAhVU1MDQo+ICsJZGVw
-ZW5kcyBvbiBBTFBIQSB8fCBJQTY0IHx8IFg4NiB8fCBcDQo+ICsJCShBUk0gJiYgQVJDSF9G
-T09UQlJJREdFKSB8fCBcDQo+ICsJCShNSVBTICYmIChNSVBTX01BTFRBIHx8IFNJQllURV9C
-Q00xMTJYIHx8IFNJQllURV9TQjEyNTAgfHwgU0lCWVRFX0JDTTF4ODAgfHwgU05JX1JNKSkN
-Cj4gICAJc2VsZWN0IEFQRVJUVVJFX0hFTFBFUlMgaWYgKERSTSB8fCBGQiB8fCBWRklPX1BD
-SV9DT1JFKQ0KPiAgIAlkZWZhdWx0IHkNCj4gICAJaGVscA0KDQotLSANClRob21hcyBaaW1t
-ZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0
-aW9ucyBHZXJtYW55IEdtYkgNCkZyYW5rZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJn
-LCBHZXJtYW55DQpHRjogSXZvIFRvdGV2LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFs
-ZCwgQm91ZGllbiBNb2VybWFuDQpIUkIgMzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
+On 01/08/2023 10:00, Jayesh Choudhary wrote:
+> From: Siddharth Vadapalli <s-vadapalli@ti.com>
+> 
+> J784S4 SoC has 4 Serdes instances along with their respective WIZ
+> instances. Add device-tree nodes for them and disable them by default.
+> 
+> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> [j-choudhary@ti.com: fix serdes_wiz clock order & disable serdes refclk]
+> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 172 +++++++++++++++++++++
+>  1 file changed, 172 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> index 8a816563706b..fbf5ab94d785 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
+> @@ -6,9 +6,19 @@
+>   */
+>  
+>  #include <dt-bindings/mux/mux.h>
+> +#include <dt-bindings/phy/phy.h>
+> +#include <dt-bindings/phy/phy-ti.h>
+>  
+>  #include "k3-serdes.h"
+>  
+> +/ {
+> +	serdes_refclk: serdes-refclk {
 
---------------2bQgjjzopkAYok3GbchMEycT--
+standard name should begin with clock
 
---------------V2Kx07z5UT1mt9SnMBadeWbI
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+> +		#clock-cells = <0>;
+> +		compatible = "fixed-clock";
+> +		status = "disabled";
+> +	};
+> +};
+> +
+>  &cbass_main {
+>  	msmc_ram: sram@70000000 {
+>  		compatible = "mmio-sram";
+> @@ -709,6 +719,168 @@ main_sdhci1: mmc@4fb0000 {
+>  		status = "disabled";
+>  	};
+>  
+> +	serdes_wiz0: wiz@5060000 {
+> +		compatible = "ti,j784s4-wiz-10g";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		power-domains = <&k3_pds 404 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 404 2>, <&k3_clks 404 6>, <&serdes_refclk>, <&k3_clks 404 5>;
+> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
+> +		assigned-clocks = <&k3_clks 404 6>;
+> +		assigned-clock-parents = <&k3_clks 404 10>;
+> +		num-lanes = <4>;
+> +		#reset-cells = <1>;
+> +		#clock-cells = <1>;
+> +		ranges = <0x5060000 0x00 0x5060000 0x10000>;
+> +> +		status = "disabled";
+> +
+drop blank lines here and rest of this file where you set status to "disabled".
 
------BEGIN PGP SIGNATURE-----
+> +		serdes0: serdes@5060000 {
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTJOQ4FAwAAAAAACgkQlh/E3EQov+C8
-AA/+KnRDuYQRR/mF98DBfmrHT5Ia6xQSG3uvFuQDrbaKBsjqD2QXy1PNFOGyjSmDdFvEkQgLUEF0
-pU8EoGE0mG7m//BybV/hRDjLmylbBIjgjv4uzYT6sQQ2HFgJe5bhU+lTUJ7ou5S72bFvVbrsU2ed
-7ZJth7Gg/0ISIuQ+YvMlNOubgolEVWpb3vv4iFOMwf/Z8OtmWhXe0hae/PhUtJgtGGpDA22NQMWw
-C8Xgy4sj+oDLHOGKljPDTYphn2wnbBHbniQB6+16mkaCbC0jj83h0aglF3doR5+VtsqJlulUGw2L
-o1Da2b1fj6gNd4j+nUCihbmBjEoyW6Z92ObBaIRPJ6mXGHPylW1ilH9TFvvRqzlgngckgNPN2b5y
-P+mLTquYg1QI2DOue03EH+hs4ENNC8UeIJsAAtk8qtN9U/SsKfRgKn04/PG2zkT1NvB68nfm34g4
-B30CeLIVUSrAPt9s3veG6GovLraSTf4jznRAVXrXwB9AxqRexyVN02g7hXqsBgK/OIyyjd81rvyj
-lzzyMjwCnSnHktiLvoS3Chej5vW3kCLbayrLgkGMbztNuD8bbQgaFYtzqMJ+cBF7xKWNq5Ebx3zc
-SQb+HvTRbdT/2HsCEwaJILuWF9xcbkMMk2yJykvBFCmd9JfOZT55CMp27lyUlKqsMy8nYyV+HyZH
-HMA=
-=PJsE
------END PGP SIGNATURE-----
+phy@5060000
 
---------------V2Kx07z5UT1mt9SnMBadeWbI--
+> +			compatible = "ti,j721e-serdes-10g";
+> +			reg = <0x05060000 0x010000>;
+> +			reg-names = "torrent_phy";
+> +			resets = <&serdes_wiz0 0>;
+> +			reset-names = "torrent_reset";
+> +			clocks = <&serdes_wiz0 TI_WIZ_PLL0_REFCLK>,
+> +				 <&serdes_wiz0 TI_WIZ_PHY_EN_REFCLK>;
+> +			clock-names = "refclk", "phy_en_refclk";
+> +			assigned-clocks = <&serdes_wiz0 TI_WIZ_PLL0_REFCLK>,
+> +					  <&serdes_wiz0 TI_WIZ_PLL1_REFCLK>,
+> +					  <&serdes_wiz0 TI_WIZ_REFCLK_DIG>;
+> +			assigned-clock-parents = <&k3_clks 404 6>,
+> +						 <&k3_clks 404 6>,
+> +						 <&k3_clks 404 6>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			#clock-cells = <1>;
+> +
+> +			status = "disabled";
+> +		};
+> +	};
+> +
+> +	serdes_wiz1: wiz@5070000 {
+> +		compatible = "ti,j784s4-wiz-10g";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		power-domains = <&k3_pds 405 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 405 2>, <&k3_clks 405 6>, <&serdes_refclk>, <&k3_clks 405 5>;
+> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
+> +		assigned-clocks = <&k3_clks 405 6>;
+> +		assigned-clock-parents = <&k3_clks 405 10>;
+> +		num-lanes = <4>;
+> +		#reset-cells = <1>;
+> +		#clock-cells = <1>;
+> +		ranges = <0x05070000 0x00 0x05070000 0x10000>;
+> +
+> +		status = "disabled";
+> +
+> +		serdes1: serdes@5070000 {
+
+phy@5070000
+> +			compatible = "ti,j721e-serdes-10g";
+> +			reg = <0x05070000 0x010000>;
+> +			reg-names = "torrent_phy";
+> +			resets = <&serdes_wiz1 0>;
+> +			reset-names = "torrent_reset";
+> +			clocks = <&serdes_wiz1 TI_WIZ_PLL0_REFCLK>,
+> +				 <&serdes_wiz1 TI_WIZ_PHY_EN_REFCLK>;
+> +			clock-names = "refclk", "phy_en_refclk";
+> +			assigned-clocks = <&serdes_wiz1 TI_WIZ_PLL0_REFCLK>,
+> +					  <&serdes_wiz1 TI_WIZ_PLL1_REFCLK>,
+> +					  <&serdes_wiz1 TI_WIZ_REFCLK_DIG>;
+> +			assigned-clock-parents = <&k3_clks 405 6>,
+> +						 <&k3_clks 405 6>,
+> +						 <&k3_clks 405 6>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			#clock-cells = <1>;
+> +
+> +			status = "disabled";
+> +		};
+> +	};
+> +
+> +	serdes_wiz2: wiz@5020000 {
+> +		compatible = "ti,j784s4-wiz-10g";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		power-domains = <&k3_pds 406 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 406 2>, <&k3_clks 406 6>, <&serdes_refclk>, <&k3_clks 406 5>;
+> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
+> +		assigned-clocks = <&k3_clks 406 6>;
+> +		assigned-clock-parents = <&k3_clks 406 10>;
+> +		num-lanes = <4>;
+> +		#reset-cells = <1>;
+> +		#clock-cells = <1>;
+> +		ranges = <0x05020000 0x00 0x05020000 0x10000>;
+> +
+> +		status = "disabled";
+> +
+> +		serdes2: serdes@5020000 {
+
+phy@5020000
+
+> +			compatible = "ti,j721e-serdes-10g";
+> +			reg = <0x05020000 0x010000>;
+> +			reg-names = "torrent_phy";
+> +			resets = <&serdes_wiz2 0>;
+> +			reset-names = "torrent_reset";
+> +			clocks = <&serdes_wiz2 TI_WIZ_PLL0_REFCLK>,
+> +				 <&serdes_wiz2 TI_WIZ_PHY_EN_REFCLK>;
+> +			clock-names = "refclk", "phy_en_refclk";
+> +			assigned-clocks = <&serdes_wiz2 TI_WIZ_PLL0_REFCLK>,
+> +					  <&serdes_wiz2 TI_WIZ_PLL1_REFCLK>,
+> +					  <&serdes_wiz2 TI_WIZ_REFCLK_DIG>;
+> +			assigned-clock-parents = <&k3_clks 406 6>,
+> +						 <&k3_clks 406 6>,
+> +						 <&k3_clks 406 6>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			#clock-cells = <1>;
+> +
+> +			status = "disabled";
+> +		};
+> +	};
+> +
+> +	serdes_wiz4: wiz@5050000 {
+> +		compatible = "ti,j784s4-wiz-10g";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		power-domains = <&k3_pds 407 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 407 2>, <&k3_clks 407 6>, <&serdes_refclk>, <&k3_clks 407 5>;
+> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
+> +		assigned-clocks = <&k3_clks 407 6>;
+> +		assigned-clock-parents = <&k3_clks 407 10>;
+> +		num-lanes = <4>;
+> +		#reset-cells = <1>;
+> +		#clock-cells = <1>;
+> +		ranges = <0x05050000 0x00 0x05050000 0x10000>,
+> +			 <0xa030a00 0x00 0xa030a00 0x40>; /* DPTX PHY */
+> +
+> +		status = "disabled";
+> +
+> +		serdes4: serdes@5050000 {
+
+phy@5050000
+
+> +			/*
+> +			 * Note: we also map DPTX PHY registers as the Torrent
+> +			 * needs to manage those.
+> +			 */
+> +			compatible = "ti,j721e-serdes-10g";
+> +			reg = <0x05050000 0x010000>,
+> +			      <0x0a030a00 0x40>; /* DPTX PHY */
+> +			reg-names = "torrent_phy";
+> +			resets = <&serdes_wiz4 0>;
+> +			reset-names = "torrent_reset";
+> +			clocks = <&serdes_wiz4 TI_WIZ_PLL0_REFCLK>,
+> +				 <&serdes_wiz4 TI_WIZ_PHY_EN_REFCLK>;
+> +			clock-names = "refclk", "phy_en_refclk";
+> +			assigned-clocks = <&serdes_wiz4 TI_WIZ_PLL0_REFCLK>,
+> +					  <&serdes_wiz4 TI_WIZ_PLL1_REFCLK>,
+> +					  <&serdes_wiz4 TI_WIZ_REFCLK_DIG>;
+> +			assigned-clock-parents = <&k3_clks 407 6>,
+> +						 <&k3_clks 407 6>,
+> +						 <&k3_clks 407 6>;
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			#clock-cells = <1>;
+> +
+> +			status = "disabled";
+> +		};
+> +	};
+> +
+>  	main_navss: bus@30000000 {
+>  		compatible = "simple-bus";
+>  		#address-cells = <2>;
+
+-- 
+cheers,
+-roger
