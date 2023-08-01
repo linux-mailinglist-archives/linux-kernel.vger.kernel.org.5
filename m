@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B1B76BD68
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3235276BD6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbjHATLK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:11:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45612 "EHLO
+        id S232306AbjHATMG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 15:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbjHATLH (ORCPT
+        with ESMTP id S231812AbjHATMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:11:07 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AB21FFD;
-        Tue,  1 Aug 2023 12:11:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4E75E616AE;
-        Tue,  1 Aug 2023 19:11:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4E61C433C7;
-        Tue,  1 Aug 2023 19:11:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690917064;
-        bh=I5IRbbk5GYsrJAddIdo+1EAx+W7o18ZR/bm/hKMCs0U=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nUeYYOy2Gu9i2qPYiR+4CKM2bYReaet0i38eiL8kxwMksQ1i/bxlHN4OK1RZ8A6p8
-         5ED7U2ui0RUWLiURWSl2vCgwX10E4yqjMrnBMWQ0DcdXzDSqohk7H8AZ/WLcNVgJYx
-         +M3oTCc9tpoHIyJVc8aOyQLP58p3x8UzK6th8cOaF/2VZZYk0cxPQqKJfiHWZ8yQEa
-         mkKhi0koiAJDUx77Zey9rR6VIn1Zr2Wk6uRoMj0OS6dq9uXdEChiT7gdWyqYJsDLUs
-         uXoB4oRObaHkc6Wuwptx3UHgaOABBy2Vdj5xNODaG7DxCOwx7Z6qkASybTS9SxWflG
-         gaG/fmTC3meHQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 42F01CE0908; Tue,  1 Aug 2023 12:11:04 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 12:11:04 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Roy Hopkins <rhopkins@suse.de>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
- 6.4.7-rc1 review)
-Message-ID: <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
- <20230731141934.GK29590@hirez.programming.kicks-ass.net>
- <20230731143954.GB37820@hirez.programming.kicks-ass.net>
- <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
- <20230731145232.GM29590@hirez.programming.kicks-ass.net>
- <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
- <20230731161452.GA40850@hirez.programming.kicks-ass.net>
- <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
- <20230731211517.GA51835@hirez.programming.kicks-ass.net>
- <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
+        Tue, 1 Aug 2023 15:12:01 -0400
+Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B7C1BF0;
+        Tue,  1 Aug 2023 12:12:00 -0700 (PDT)
+Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-56ca74ee539so415448eaf.1;
+        Tue, 01 Aug 2023 12:12:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690917119; x=1691521919;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KWz8bsi29e5gL7t0ui+qKj7hihevBZdVWgd9oh+EkNg=;
+        b=ek65mPDjMkcS5GApwn7+CfS6WUn8phgbObOEL/F7iH8kirj+u9DmOTmsQrj9mok02/
+         MXUBZ6LJgkpvQTlfns66uM3ntzH6hM04PZrf2D43jstG9yUExYqTxwD962SJIiOTTOv1
+         sLFjEMWu7DnkZdEw4AZ1FrmAToB7h3oUqszy5sz+i2gnouF2aKKe7LP5/qpvVpLn4s7i
+         RUJOIJnybhKZwEh782+QyduBlhxa7U+n3LVEid5xeyuumHjW9Sv7Xm9GowwRt7RED+J+
+         +TknQA+b2dQSCsWwp+z7OTxiP3dRCGmrMSbJfWQ3qIBxw+5G3h1Bf6y12E2LttLNZXOf
+         wOYQ==
+X-Gm-Message-State: ABy/qLZDUeK+MZlhVz3oyo8wyWXWzp1dOG95c4CkESqgn3D0aoNXuvPN
+        PQVnMe/YMahjbHr1H4B4kTN+5kfXSHqDICg6UoFKWv5R
+X-Google-Smtp-Source: APBJJlH2FuOTJREKF1NQYafwrdZN/2+4S2VimJtj7Ddlca9DhFN8hB84Pk+ARfkStnXpWAVoTm/f+Seeh6aVNF7XiCU=
+X-Received: by 2002:a05:6820:2201:b0:560:b01a:653d with SMTP id
+ cj1-20020a056820220100b00560b01a653dmr10050480oob.0.1690917119453; Tue, 01
+ Aug 2023 12:11:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
+ <2154273.irdbgypaU6@kreacher> <fee918ad-792c-f4e7-935d-1af9540b7274@linaro.org>
+In-Reply-To: <fee918ad-792c-f4e7-935d-1af9540b7274@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 1 Aug 2023 21:11:48 +0200
+Message-ID: <CAJZ5v0iQpjLpcSZrnLv=0A9duR4Kf9_cB3kBZxJorfuPZzrGmA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/8] thermal: core: Add routines for locking and
+ unlocking thermal zones
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,62 +65,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 10:32:45AM -0700, Guenter Roeck wrote:
-> On 7/31/23 14:15, Peter Zijlstra wrote:
-> > On Mon, Jul 31, 2023 at 09:34:29AM -0700, Guenter Roeck wrote:
-> > > > Ha!, I was poking around the same thing. My hack below seems to (so far,
-> > > > <20 boots) help things.
-> > > > 
-> > > 
-> > > So, dumb question:
-> > > How comes this bisects to "sched/fair: Remove sched_feat(START_DEBIT)" ?
-> > 
-> > That commit changes the timings of things; dumb luck otherwise.
-> 
-> Kind of scary. So I only experienced the problem because the START_DEBIT patch
-> happened to be queued roughly at the same time, and it might otherwise have
-> found its way unnoticed into the upstream kernel. That makes me wonder if this
-> or other similar patches may uncover similar problems elsewhere in the kernel
-> (i.e., either hide new or existing race conditions or expose existing ones).
-> 
-> This in turn makes me wonder if it would be possible to define a test which
-> would uncover such problems without the START_DEBIT patch. Any idea ?
+On Tue, Aug 1, 2023 at 8:30 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>
+>
+> Hi Rafael,
+>
+>
+> On 25/07/2023 14:08, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > Add thermal_zone_device_lock() and thermal_zone_device_unlock() for
+> > acquiring and releasing the thermal zone lock, respectively.
+> >
+> > They will be used by the ACPI thermal driver to protect trip point
+> > temperature updates against races with accesses from elsewhere.
+>
+> This change goes to the opposite direction of the previous thermal zone
+> cleanup and encapsulation we have done recently.
+>
+> Here we give the possibility to a driver to act on the thermal core
+> internals.
+>
+> Ideally, we should see tz->lock only in thermal_core.c
 
-Thank you all for tracking this down!
+There needs to be a way to lock the thing if it needs to be locked.
 
-One way is to put a schedule_timeout_idle(100) right before the call to
-rcu_tasks_one_gp() from synchronize_rcu_tasks_generic().  That is quite
-specific to this particular issue, but it does have the virtue of making
-it actually happen in my testing.
+The thermal zone has been registered by the driver after all, and if
+it needs to be updated, the driver needs to be able to do that safely.
 
-There have been a few academic projects that inject delays at points
-chosen by various heuristics plus some randomness.  But this would be
-a bit of a challenge to those because each kernel only passes through
-this window once at boot time.
+I'm guessing that the suggested way is to disable the thermal zone for
+the time of the update, but I'm kind of unsure if this is going to
+work.
 
-Please see below for my preferred fix.  Does this work for you guys?
-
-Back to figuring out why recent kernels occasionally to blow up all
-rcutorture guest OSes...
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 7294be62727b..2d5b8385c357 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -570,10 +570,12 @@ static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
- 	if (unlikely(midboot)) {
- 		needgpcb = 0x2;
- 	} else {
-+		mutex_unlock(&rtp->tasks_gp_mutex);
- 		set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
- 		rcuwait_wait_event(&rtp->cbs_wait,
- 				   (needgpcb = rcu_tasks_need_gpcb(rtp)),
- 				   TASK_IDLE);
-+		mutex_lock(&rtp->tasks_gp_mutex);
- 	}
- 
- 	if (needgpcb & 0x2) {
+>
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >
+> > v2 -> v3: No changes.
+> >
+> > v1 -> v2: New patch.
+> >
+> > ---
+> >   drivers/thermal/thermal_core.c |   13 +++++++++++++
+> >   include/linux/thermal.h        |    2 ++
+> >   2 files changed, 15 insertions(+)
+> >
+> > Index: linux-pm/drivers/thermal/thermal_core.c
+> > ===================================================================
+> > --- linux-pm.orig/drivers/thermal/thermal_core.c
+> > +++ linux-pm/drivers/thermal/thermal_core.c
+> > @@ -497,6 +498,18 @@ void thermal_zone_device_update(struct t
+> >   }
+> >   EXPORT_SYMBOL_GPL(thermal_zone_device_update);
+> >
+> > +void thermal_zone_device_lock(struct thermal_zone_device *tz)
+> > +{
+> > +     mutex_lock(&tz->lock);
+> > +}
+> > +EXPORT_SYMBOL_GPL(thermal_zone_device_lock);
+> > +
+> > +void thermal_zone_device_unlock(struct thermal_zone_device *tz)
+> > +{
+> > +     mutex_unlock(&tz->lock);
+> > +}
+> > +EXPORT_SYMBOL_GPL(thermal_zone_device_unlock);
+> > +
+> >   static void thermal_zone_device_check(struct work_struct *work)
+> >   {
+> >       struct thermal_zone_device *tz = container_of(work, struct
+> > Index: linux-pm/include/linux/thermal.h
+> > ===================================================================
+> > --- linux-pm.orig/include/linux/thermal.h
+> > +++ linux-pm/include/linux/thermal.h
+> > @@ -336,6 +336,8 @@ int thermal_zone_unbind_cooling_device(s
+> >                                      struct thermal_cooling_device *);
+> >   void thermal_zone_device_update(struct thermal_zone_device *,
+> >                               enum thermal_notify_event);
+> > +void thermal_zone_device_lock(struct thermal_zone_device *tz);
+> > +void thermal_zone_device_unlock(struct thermal_zone_device *tz);
+> >
+> >   struct thermal_cooling_device *thermal_cooling_device_register(const char *,
+> >               void *, const struct thermal_cooling_device_ops *);
+> >
+> >
+> >
