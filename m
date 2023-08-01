@@ -2,71 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E6C76BE77
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E4976BE7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbjHAU3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 16:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49286 "EHLO
+        id S232046AbjHAUe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 16:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjHAU3T (ORCPT
+        with ESMTP id S229500AbjHAUeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 16:29:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5457E45
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:29:17 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A5DC616F2
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 20:29:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CF19C433C8;
-        Tue,  1 Aug 2023 20:29:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690921756;
-        bh=p+7E/WM0NDbhkT9TKeC9SNk+BVr0nurH4zEykwDbelQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XE6BjJp76eN2scRQ4ZgWTyi4mmDNPtMWf1s/Eu3jEi49VoMtTWf2NC9wZbJJl/zEn
-         bk4j1MRrY8D+r0wRfuCE7vprO25GWfwhKa9YzlM4hoGGAmxyXYoJDAYqRFmn9an/QY
-         7bxQ9n+46AkRCW+n7LHUHRQnfS1hRh4Ia7cl0iTqs89//Ge+sPtBkGZgR5FjyvR0Nn
-         j6iI0Pf3ZBKNOsmu5QtZTVcN1shgx1pdAmKAsvnHse7Ycll5/dql7g3P/uReBxNsuv
-         WkGijE12KZl7iF3HITwJkAE/pswqInX3x5i3JB4Vj5huRPlgvi2ZwBnbJlgrD+Lg7/
-         YwE/lS22+gKFw==
-Date:   Tue, 1 Aug 2023 14:29:12 -0600
-From:   Keith Busch <kbusch@kernel.org>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        August Wikerfors <git@augustwikerfors.se>, axboe@fb.com,
-        sagi@grimberg.me, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, nilskruse97@gmail.com,
-        David.Chang@amd.com
-Subject: Re: [PATCH] nvme: Don't fail to resume if NSIDs change
-Message-ID: <ZMlrGNw5OMW3yxId@kbusch-mbp.dhcp.thefacebook.com>
-References: <20230731185103.18436-1-mario.limonciello@amd.com>
- <ZMgHE2wu4T4OfrTR@kbusch-mbp>
- <040c5788-1a7b-26ea-23cc-ba239c76efa9@augustwikerfors.se>
- <39697f68-9dc8-7692-7210-b75cce32c6ce@amd.com>
- <20230731201047.GA14034@lst.de>
- <36319a0f-34a6-9353-bc52-4d4d0fac27a5@amd.com>
- <20230801112403.GA3972@lst.de>
- <ae7fb9b2-d692-f9b8-5130-4555cc489846@amd.com>
+        Tue, 1 Aug 2023 16:34:23 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850E41FFD
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:34:21 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b974031aeaso94580841fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 13:34:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=libre.computer; s=google; t=1690922060; x=1691526860;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8CNOi8uqBp0VRqFV2aTvXXvJ9qTZ+ISs6tIho5/zJFc=;
+        b=jMrHmV0Fn1J9LZX9Q+oeZzwky5JFNfzWGfl20uxacjMXNtznmhPw8NwvkhfKZKSVfX
+         pTST3SKomLEg5fSrIYfG5qdOrruHjXAMeqUOwOf5Nvlz3CWa7wtHQOAiVeQtNnkKvjP3
+         nM6IWZpAy8L0ZweWxA86FHgwrCc+Hejj8ZCqDS/d3LEbYYFQyCdT1ig5jB7t/NmS8SBb
+         3PzLN4AFCvSpGIt8XgG4LYwS2NB/jWPhZZMwsd+0sqnu7FhFlgG2Zu6unnMh/zDpuDqQ
+         DgazoF46QIbM+8aqEyKytvSGnN9Dg8yt26oMfafamHGxVe8AAtf7jkVlY9H473FsqtDT
+         D8jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690922060; x=1691526860;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8CNOi8uqBp0VRqFV2aTvXXvJ9qTZ+ISs6tIho5/zJFc=;
+        b=Vwy1c5957usC4UO3h4hPdLGfiRLmlfHtw0syCpScpU8CCu3dRX5EYonvJZolIqm1wY
+         LjXPir1mFZQANQX1kIHznOwqgpkNAuuPt7FbXcJe/WwAVF7poaaNevJk0SJ5vO0QYlX1
+         m75b1Y6ANV5jtK0IWmNrlofa9WRcG+AHuFGP+V5gOCoH7C4MS5wSQG7z3BQdiVojvlbT
+         sh9CQgjPYIRCB4Qegn9zzhu96wNAm/ft9dOKKdn/PNECCIRbZ3Vfd9ZN447xg4XG9V60
+         WELUYTPOaRCTnZD8QnmMXG8Zjmu9Razeh3+tfitcDNsZ1sKt7Q0Z+lNvIEyAu3rSQlVX
+         WAyA==
+X-Gm-Message-State: ABy/qLZf25hRe9oUd4IYkL06F79qUGB1I1EL0sH2zu+zbIOz7zjMz7OB
+        SBlC4Rv9AMKGg9Byu+JPfzjVsdiJrX1bv9uY4eER
+X-Google-Smtp-Source: APBJJlE46sMvarfXUzqQY3u0s+ouqvsQOql4QLvrIpO8sJ5a0ka8FFJgcq8qtRzSEWzNqKvDaXV4X5I1x4D2G4JRLjU=
+X-Received: by 2002:a2e:8256:0:b0:2b6:df5d:8e05 with SMTP id
+ j22-20020a2e8256000000b002b6df5d8e05mr3245440ljh.33.1690922059651; Tue, 01
+ Aug 2023 13:34:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae7fb9b2-d692-f9b8-5130-4555cc489846@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Da Xue <da@libre.computer>
+Date:   Tue, 1 Aug 2023 16:34:08 -0400
+Message-ID: <CACqvRUZYH2NkOooE78SK6=Ow07y=YnE2QOSNzyb99rV4vSvxpQ@mail.gmail.com>
+Subject: [PATCH net] net: mdio-mux-meson-gxl: set RESERVED0 bit in REG2
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 06:30:52AM -0500, Mario Limonciello wrote:
-> 
-> Do you want that re-sent?  Or can you just pick up from that lore link?
+The first RESERVED register bit needs to be set in order for the PHY
+to come up. Otherwise the ethernet device stays in "No Carrier".
+There's no associated documentation for this register bit in the
+Amlogic datasheets, only the default value to set for the entire
+register.
 
-I got it, and applied to nvme-6.5 now.
+This register bit is normally set in u-boot so it is not noticed in
+Linux. During my testing with u-boot net disabled, this problem crops
+up.
+
+Signed-off-by: Da Xue <da@libre.computer>
+---
+ drivers/net/mdio/mdio-mux-meson-gxl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/mdio/mdio-mux-meson-gxl.c
+b/drivers/net/mdio/mdio-mux-meson-gxl.c
+index 76188575ca1f..210a52d98112 100644
+--- a/drivers/net/mdio/mdio-mux-meson-gxl.c
++++ b/drivers/net/mdio/mdio-mux-meson-gxl.c
+@@ -17,6 +17,7 @@
+ #define  REG2_LEDACT           GENMASK(23, 22)
+ #define  REG2_LEDLINK          GENMASK(25, 24)
+ #define  REG2_DIV4SEL          BIT(27)
++#define  REG2_RESERVED0                BIT(28)
+ #define  REG2_ADCBYPASS                BIT(30)
+ #define  REG2_CLKINSEL         BIT(31)
+ #define ETH_REG3               0x4
+@@ -65,7 +66,7 @@ static void gxl_enable_internal_mdio(struct
+gxl_mdio_mux *priv)
+         * The only constraint is that it must match the one in
+         * drivers/net/phy/meson-gxl.c to properly match the PHY.
+         */
+-       writel(FIELD_PREP(REG2_PHYID, EPHY_GXL_ID),
++       writel(REG2_RESERVED0 | FIELD_PREP(REG2_PHYID, EPHY_GXL_ID),
+               priv->regs + ETH_REG2);
+
+        /* Enable the internal phy */
+-- 
+2.39.2
