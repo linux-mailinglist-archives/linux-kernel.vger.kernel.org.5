@@ -2,72 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 022C076B4CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AC076B4D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbjHAMcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
+        id S233144AbjHAMd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbjHAMcO (ORCPT
+        with ESMTP id S229837AbjHAMdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:32:14 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2007210C7;
-        Tue,  1 Aug 2023 05:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=BcDG6kyS+7oOi8McT/e1cBfxl2o1BolNq+/zXfE9QMM=; b=U3HEPI+50Unc8zQq9w7d+RM/m1
-        bsORfna6VAaa0YgAIFBSxNTtImLm1NJKrPUys4CyIoGdFKwn4OTRLkvcCEHvZjziz25FyjIixzkPA
-        IPSThWh98lDcVISgC/v+SIWoG56O0RbhCy/TMw0VOLSDB/TmzDSvhBV2ExEX+4KcoVIU=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qQoXa-002njw-JF; Tue, 01 Aug 2023 14:31:54 +0200
-Date:   Tue, 1 Aug 2023 14:31:54 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Anvesh Jain P <quic_ajainp@quicinc.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andy Ren <andy.ren@getcruise.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Venkata Rao Kakani <quic_vkakani@quicinc.com>,
-        Vagdhan Kumar <quic_vagdhank@quicinc.com>
-Subject: Re: [PATCH] net: export dev_change_name function
-Message-ID: <447ba1fe-b20b-4ed0-97bc-4137b2ccfb37@lunn.ch>
-References: <20230801112101.15564-1-quic_ajainp@quicinc.com>
+        Tue, 1 Aug 2023 08:33:24 -0400
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B851FC6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:33:21 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFZJp3CqBz4f3kFy
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 20:33:14 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP4 (Coremail) with SMTP id gCh0CgBH_K+L+8hkvHBFPQ--.7542S2;
+        Tue, 01 Aug 2023 20:33:17 +0800 (CST)
+Subject: Re: [PATCH 1/8] mm/compaction: avoid missing last page block in
+ section after skip offline sections
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, mgorman@techsingularity.net,
+        willy@infradead.org, david@redhat.com
+References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
+ <20230728171037.2219226-2-shikemeng@huaweicloud.com>
+ <6e76323f-a1cc-7d20-676e-4eccdbcf6b91@linux.alibaba.com>
+ <9b207dbf-1652-4851-7c6e-16220d5f2f3b@huaweicloud.com>
+ <a4a4c935-d7c8-ffba-cf51-6eaeb88ed19c@huaweicloud.com>
+ <cb028072-6cf7-05b5-cc47-fddd8f5b1174@linux.alibaba.com>
+ <6921ae7e-0c30-0934-168c-9480ca30108f@huaweicloud.com>
+ <d5d3dc39-c825-f040-1c1e-ae6c53921331@linux.alibaba.com>
+ <7b42d243-c62f-856e-2b8c-ba43528528f0@huaweicloud.com>
+ <b04a7905-f19a-6437-0936-f60e6c9c5715@linux.alibaba.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <8b5a1ab4-56d6-cc6a-5213-6586e33a8fdd@huaweicloud.com>
+Date:   Tue, 1 Aug 2023 20:33:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801112101.15564-1-quic_ajainp@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <b04a7905-f19a-6437-0936-f60e6c9c5715@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgBH_K+L+8hkvHBFPQ--.7542S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xry5uw1rtw1kCr45WrW5trb_yoWxGw13pr
+        y8JFy7tryDJ348XF1Utw1DuryUtrs8Ja1UXr47JF1UAF1qqF1vgr1qqr1q9r1UKr48AFyU
+        Zr1UtFW7Zr17A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+        j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+        kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
+        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+        xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+        jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+        0EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF
+        7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 04:51:01PM +0530, Anvesh Jain P wrote:
-> export dev_change_name function to be used by other modules.
+
+
+on 8/1/2023 5:32 PM, Baolin Wang wrote:
 > 
-> Signed-off-by: Vagdhan Kumar <quic_vagdhank@quicinc.com>
-> Signed-off-by: Anvesh Jain P <quic_ajainp@quicinc.com>
+> 
+> On 8/1/2023 4:42 PM, Kemeng Shi wrote:
+>>
+>>
+>> on 8/1/2023 4:01 PM, Baolin Wang wrote:
+>>>
+>>>
+>>> On 8/1/2023 2:08 PM, Kemeng Shi wrote:
+>>>>
+>>>>
+>>>> on 8/1/2023 11:53 AM, Baolin Wang wrote:
+>>>>>
+>>>>>
+>>>>> On 8/1/2023 10:36 AM, Kemeng Shi wrote:
+>>>>>>
+>>>>>>
+>>>>>> on 8/1/2023 10:18 AM, Kemeng Shi wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> on 7/31/2023 8:01 PM, Baolin Wang wrote:
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On 7/29/2023 1:10 AM, Kemeng Shi wrote:
+>>>>>>>>> skip_offline_sections_reverse will return the last pfn in found online
+>>>>>>>>> section. Then we set block_start_pfn to start of page block which
+>>>>>>>>> contains the last pfn in section. Then we continue, move one page
+>>>>>>>>> block forward and ignore the last page block in the online section.
+>>>>>>>>> Make block_start_pfn point to first page block after online section to fix
+>>>>>>>>> this:
+>>>>>>>>> 1. make skip_offline_sections_reverse return end pfn of online section,
+>>>>>>>>> i.e. pfn of page block after online section.
+>>>>>>>>> 2. assign block_start_pfn with next_pfn.
+>>>>>>>>>
+>>>>>>>>> Fixes: f63224525309 ("mm: compaction: skip the memory hole rapidly when isolating free pages")
+>>>>>>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>>>>>>>> ---
+>>>>>>>>>      mm/compaction.c | 5 ++---
+>>>>>>>>>      1 file changed, 2 insertions(+), 3 deletions(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/mm/compaction.c b/mm/compaction.c
+>>>>>>>>> index 9b7a0a69e19f..ce7841363b12 100644
+>>>>>>>>> --- a/mm/compaction.c
+>>>>>>>>> +++ b/mm/compaction.c
+>>>>>>>>> @@ -259,7 +259,7 @@ static unsigned long skip_offline_sections_reverse(unsigned long start_pfn)
+>>>>>>>>>            while (start_nr-- > 0) {
+>>>>>>>>>              if (online_section_nr(start_nr))
+>>>>>>>>> -            return section_nr_to_pfn(start_nr) + PAGES_PER_SECTION - 1;
+>>>>>>>>> +            return section_nr_to_pfn(start_nr + 1);
+>>>>>>>>
+>>>>>>>> This is incorrect, you returned the start pfn of this section.
+>>>>>>>>
+>>>>>>>>>          }
+>>>>>>>>>            return 0;
+>>>>>>>>> @@ -1670,8 +1670,7 @@ static void isolate_freepages(struct compact_control *cc)
+>>>>>>>>>                    next_pfn = skip_offline_sections_reverse(block_start_pfn);
+>>>>>>>>>                  if (next_pfn)
+>>>>>>>>> -                block_start_pfn = max(pageblock_start_pfn(next_pfn),
+>>>>>>>>> -                              low_pfn);
+>>>>>>>>> +                block_start_pfn = max(next_pfn, low_pfn);
+>>>>>>>>
+>>>>>>>> 'block_start_pfn' should be pageblock aligned. If the 'next_pfn' is not pageblock-aligned (though this is not the common case), we should skip it.
+>>>>>>>>
+>>>>>>>> But if the 'next_pfn' is pageblock-aligned, yes, the commit f63224525309 still ignores the last pageblock, which is not right. So I think it should be:
+>>>>>>>> block_start_pfn = pageblock_aligned(next_pfn) ? : pageblock_start_pfn(next_pfn);
+>>>>>>>> block_start_pfn = max(block_start_pfn, low_pfn);
+>>>>>>>>
+>>>>>>> Hi Baolin, thanks for reply! As skip_offline_sections_reverse is based
+>>>>>>> on skip_offline_sections. I make the assumption that section is pageblock
+>>>>>>> aligned based on that we use section start from skip_offline_sections as
+>>>>>>> block_start_fpn without align check.
+>>>>>>> If section size is not pageblock aligned in real world, the pageblock aligned
+>>>>>>> check should be added to skip_offline_sections and skip_offline_sections_reverse.
+>>>>>>> If no one is against this, I will fix this in next version. THanks!
+>>>>>>>
+>>>>>> More information of aligment of section. For powerpc arch, we have SECTION_SIZE_BITS
+>>>>>> with 24 while PAGE_SHIFT could be configured to 18.
+>>>>>> Pageblock order is (18 + MAX_ORDER) which coule be 28 and is > SECTION_SZIE_BITS 24,
+>>>>>
+>>>>> The maximum pageblock order is MAX_ORDER. But after thinking more, I think return the start pfn or end pfn of a section is okay, and it should be aligned to a pageblock order IIUC.
+>>>>>
+>>>> Right, I mixed up the unit.
+>>>>> So I think your change is good:
+>>>>> + block_start_pfn = max(next_pfn, low_pfn);
+>>>>>
+>>>>> But in skip_offline_sections_reverse(), we should still return the last pfn of the online section.
+>>>>>
+>>>> Sure, then we should assign block_start_pfn with following change. Is this good to you?
+>>>> -                block_start_pfn = max(pageblock_start_pfn(next_pfn),
+>>>> +         block_start_pfn = max(pageblock_end_pfn(next_pfn),
+>>>>                                 low_pfn);
+>>>
+>>> The last pfn of a section is already section aligned, so I think no need to call pageblock_end_pfn(), just like your original change is okay to me.
+>>> block_start_pfn = max(next_pfn, low_pfn);
+>>>
+>>>
+>> Um, if we keep "block_start_pfn = max(next_pfn, low_pfn);", should we also keep
+>> returning end of section "section_nr_to_pfn(start_nr + 1);" instead of original last
+>> pfn of the section "section_nr_to_pfn(start_nr) + PAGES_PER_SECTION - 1;" which seems
+>> not aligned.
+>> Assume SECTION_SIZE_BITS = 27, PAGE_SHIFT = 12, pageblock order = 10
+>> Last pfn of the section 0 is 0x7fff, end pfn of section 0 is 0x8000. The last pfn
+>> is not aligned.
+>> Please tell me if I misunderstand anything. Thanks!
+> 
+> Ah, you are right, sorry for my bad arithmetic. Maybe we should return the end pfn (section_nr_to_pfn(start_nr) + PAGES_PER_SECTION) of the section in skip_offline_sections_reverse() with adding some comments to explain the return value like David suggested. Then we can remove the pageblock_end_pfn() in isolate_freepages().
+> 
+> 
+Sure, I will add comments in next version. As (section_nr_to_pfn(start_nr) + PAGES_PER_SECTION)
+is = section_nr_to_pfn(start_nr + 1), I will keep the change to skip_offline_sections_reverse
+if it does not bother you.
 
-It would be normal to include a user of the API when exposing an API.
 
-What module needs to change the name of a device? At the moment, only
-user space can do this via netlink or an IOCTL.
+-- 
+Best wishes
+Kemeng Shi
 
-     Andrew
