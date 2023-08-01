@@ -2,245 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C89276A819
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A22576A824
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbjHAE7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 00:59:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
+        id S230008AbjHAFCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 01:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjHAE7R (ORCPT
+        with ESMTP id S229606AbjHAFCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 00:59:17 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A261FD0;
-        Mon, 31 Jul 2023 21:59:11 -0700 (PDT)
-X-QQ-mid: bizesmtp72t1690865943takhnre8
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 01 Aug 2023 12:59:02 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: kW11ei911QK6B0OE3CAY7C3OEZKNbiYTxRaE8QZqvA8pLEHRtQ/zi3u4ytL33
-        qMZNdk7pvRQSk+8P6rKcxkPjcEwueoy5rFQpOrHyh4R/TIvc1Qij8gxcgshnf1RqNE/cKIs
-        SYAsphcnXucGtHHxA1QdiIl64B+dj4tqj1WVemEt+k22RFnJzWVXPJlIBub43TpfRTq4mGj
-        EaXrZslDz8Hl3wZgA/URHauv6cbOWWOftEdGdqkyLZU4pdecYeh3YFgKPWuEbbigA4KojP3
-        CgpHnir8BVkx7bamJDCkOnGt0dbqX47hf/7QefmTqVhnyITedq0rj80EBpbUe/G/pd7UckJ
-        9IkYm8YoOrvaUjbp2gG2HYUnNhjgRAzDZbdaWLY6Svdc1N0Lkk=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 8745531179724185604
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     linux@weissschuh.net, w@1wt.eu
-Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        tanyuan@tinylab.org
-Subject: tools/nolibc: RFC: report and drop unused functions/data by gc-section 
-Date:   Tue,  1 Aug 2023 12:59:02 +0800
-Message-Id: <20230801045902.37360-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Aug 2023 01:02:03 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8D51FC0;
+        Mon, 31 Jul 2023 22:02:01 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3714ttAh005630;
+        Tue, 1 Aug 2023 05:01:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=wm30csJIa8z9huWOXeGea+qwS8xfPAuLuBvd7DemDJA=;
+ b=QMz7CcVBsJeTJxYEamzA6U3MwbJQBnnB6cEPle4qtJd8z+HqYX8NNNM/4K0A9TEU17z9
+ AAQ48u7LtgC2SLiblM0BCsFr024MRq1wJQ350p68QQF+hYoF/SlKQ/BB+QGW0Q1xbX+5
+ O2siZb8r5Q/FTUjw1NmfElmwfDgoPvD6imJvyMBH2YidsiSjd6esvXIIyXpSJrJYzE6m
+ VZvwOJC4xYuyhcJosH1BVmcwMmE4OFtjxeNzhwbFSmE6AxVMRRkPBuvCsOmJKryRG9i5
+ 9ZmCbwqvX2AwabT/Ptri5j2LeBBq3sP5sbXnNqZ+oSlZsbegmpxyjiZ+QROvS5iRNF2q Mg== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6d8gt4e6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 05:01:51 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37151okm006868
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 05:01:50 GMT
+Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 22:01:45 -0700
+Message-ID: <0a6ca984-9797-88b1-ae12-c64916f6c61c@quicinc.com>
+Date:   Tue, 1 Aug 2023 10:31:42 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v4 3/9] PCI: epf-mhi: Add support for handling D-state
+ notify from EPC
+Content-Language: en-US
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+CC:     <manivannan.sadhasivam@linaro.org>, <helgaas@kernel.org>,
+        <linux-pci@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <krzysztof.kozlowski@linaro.org>,
+        "Lorenzo Pieralisi" <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jeffrey Hugo <quic_jhugo@quicinc.com>,
+        "open list:MHI BUS" <mhi@lists.linux.dev>
+References: <1689232218-28265-1-git-send-email-quic_krichai@quicinc.com>
+ <1689232218-28265-4-git-send-email-quic_krichai@quicinc.com>
+ <20230728040949.GF4433@thinkpad>
+ <1cfa6656-8130-ce1d-e28e-3665f12cc76a@quicinc.com>
+In-Reply-To: <1cfa6656-8130-ce1d-e28e-3665f12cc76a@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: eIDeKjv3DqUaD_b_sypyi86MOCdefaxH
+X-Proofpoint-GUID: eIDeKjv3DqUaD_b_sypyi86MOCdefaxH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_02,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ bulkscore=0 suspectscore=0 impostorscore=0 spamscore=0 adultscore=0
+ phishscore=0 priorityscore=1501 clxscore=1015 mlxlogscore=978
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308010045
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy, Thomas
 
-Currently, since this part of the discussion is out of the original topic [1],
-as suggested by Willy, open a new thread for this.
+On 7/31/2023 11:05 AM, Krishna Chaitanya Chundru wrote:
+>
+> On 7/28/2023 9:39 AM, Manivannan Sadhasivam wrote:
+>> On Thu, Jul 13, 2023 at 12:40:12PM +0530, Krishna chaitanya chundru 
+>> wrote:
+>>> Add support for handling D-state notify for MHI EPF.
+>>>
+>>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>>> ---
+>>>   drivers/pci/endpoint/functions/pci-epf-mhi.c | 11 +++++++++++
+>>>   include/linux/mhi_ep.h                       |  3 +++
+>>>   2 files changed, 14 insertions(+)
+>>>
+>>> diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c 
+>>> b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+>>> index 9c1f5a1..ee91bfc 100644
+>>> --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+>>> +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+>>> @@ -339,6 +339,16 @@ static int pci_epf_mhi_bme(struct pci_epf *epf)
+>>>       return 0;
+>>>   }
+>>>   +static int pci_epf_mhi_dstate_notify(struct pci_epf *epf, 
+>>> pci_power_t state)
+>>> +{
+>>> +    struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
+>>> +    struct mhi_ep_cntrl *mhi_cntrl = &epf_mhi->mhi_cntrl;
+>>> +
+>>> +    mhi_cntrl->dstate = state;
+>> Where is this variable being used? Also, don't we need any locking?
+>>
+>> - Mani
+>
+> we are using this variable in wakeup host op which is introduced on 
+> patch [PATCH v4 8/9] PCI: epf-mhi: Add wakeup host op
+>
+> I will add lock in my next series.
+>
+> - KC
 
-[1]: https://lore.kernel.org/lkml/20230731224929.GA18296@1wt.eu/#R
+Mani, as this is being called from IRQ context do we need to add any 
+lock here.
 
-The original topic [1] tries to enable -Wall (or even -Wextra) to report some
-issues (include the dead unused functions/data) found during compiling stage,
-this further propose a method to enable '-ffunction-sections -fdata-sections
--Wl,--gc-sections,--print-gc-sections to' find the dead unused functions/data
-during linking stage:
+- KC
 
-    Just thought about gc-section, do we need to further remove dead code/data
-    in the binary? I don't think it is necessary for nolibc-test itself, but with
-    '-Wl,--gc-sections -Wl,--print-gc-sections' may be a good helper to show us
-    which ones should be dropped or which ones are wrongly declared as public?
-    
-    Just found '-O3 + -Wl,--gc-section + -Wl,--print-gc-sections' did tell
-    us something as below:
-    
-        removing unused section '.text.nolibc_raise'
-        removing unused section '.text.nolibc_memmove'
-        removing unused section '.text.nolibc_abort'
-        removing unused section '.text.nolibc_memcpy'
-        removing unused section '.text.__stack_chk_init'
-        removing unused section '.text.is_setting_valid'
-    
-    These info may help us further add missing 'static' keyword or find
-    another method to to drop the wrongly used status of some functions from
-    the code side.
-
-Let's continue the discussion as below.
-
-> On Mon, Jul 31, 2023 at 08:36:05PM +0200, Thomas Wei�schuh wrote:
-> 
-> [...]
-> 
-> > > > > It is very easy to add the missing 'static' keyword for is_setting_valid(), but
-> > > > > for __stack_chk_init(), is it ok for us to convert it to 'static' and remove
-> > > > > the 'weak' attrbute and even the 'section' attribute? seems it is only used by
-> > > > > our _start_c() currently.
-> > > > 
-> > > > Making is_setting_valid(), __stack_chk_init() seems indeed useful.
-> > > > Also all the run_foo() test functions.
-> > > 
-> > > Most of them could theoretically be turned to static. *But* it causes a
-> > > problem which is that it will multiply their occurrences in multi-unit
-> > > programs, and that's in part why we've started to use weak instead. Also
-> > > if you run through gdb and want to mark a break point, you won't have the
-> > > symbol when it's static,
-
-Willy, did I misunderstand something again? a simple test shows, seems this is
-not really always like that, static mainly means 'local', the symbol is still
-there if without -O2/-Os and is able to be set a breakpoint at:
-
-    // test.c: gcc -o test test.c
-    #include <stdio.h>
-
-    static int test (void)
-    {
-    	printf("hello, world!\n");
-    }
-
-    int main(void)
-    {
-    	test();
-    
-    	return 0;
-    }
-
-Even with -Os/-O2, an additional '-g' is able to generate the 'test' symbol for
-debug as we expect.
-
->     and the code will appear at multiple locations,
-> > > which is really painful. I'd instead really prefer to avoid static when
-> > > we don't strictly want to inline the code, and prefer weak when possible
-> > > because we know many of them will be dropped at link time (and that's
-> > > the exact purpose).
-
-For the empty __stack_chk_init() one (when the arch not support stackprotector)
-we used, when with 'weak', it is not possible drop it during link time even
-with -O3, the weak one will be dropped may be only when there is a global one
-with the same name is used or the 'weak' one is never really used?
-
-    #include <stdio.h>
-
-    __attribute__((weak,unused,section(".text.nolibc_memset")))
-    int test (void)
-    {
-    	printf("hello, world!\n");
-    }
-
-    int main(void)
-    {
-    	test();
-    
-    	return 0;
-    }
-
-
-    0000000000001060 <main>:
-        1060:       f3 0f 1e fa             endbr64 
-        1064:       48 83 ec 08             sub    $0x8,%rsp
-        1068:       e8 03 01 00 00          callq  1170 <test>
-        106d:       31 c0                   xor    %eax,%eax
-        106f:       48 83 c4 08             add    $0x8,%rsp
-        1073:       c3                      retq   
-        1074:       66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
-        107b:       00 00 00 
-        107e:       66 90                   xchg   %ax,%ax
-
-Seems it is either impossible to add a 'inline' keyword again with the 'weak'
-attribute (warned by compiler), so, the _start_c (itself is always called by
-_start) will always add an empty call to the weak empty __stack_chk_init(),
--Os/-O2/-O3 don't help. for such an empty function, in my opinion, as the size
-we want to care about, the calling place should be simply removed by compiler.
-
-Test also shows, with current __inline__ method, the calling place is removed,
-but with c89, the __stack_chk_init() itself will not be droped automatically,
-only if not with -std=c89, it will be dropped and not appear in the
---print-gc-sections result.
-
-Even for a supported architecture, the shorter __stack_chk_init() may be better
-to inlined to the _start_c()?
-
-So, If my above test is ok, then, we'd better simply convert the whole
-__stack_chk_init() to a static one as below (I didn't investigate this deeply
-due to the warning about static and weak conflict at the first time):
-
-    diff --git a/tools/include/nolibc/crt.h b/tools/include/nolibc/crt.h
-    index 32e128b0fb62..a5f33fef1672 100644
-    --- a/tools/include/nolibc/crt.h
-    +++ b/tools/include/nolibc/crt.h
-    @@ -10,7 +10,7 @@
-     char **environ __attribute__((weak));
-     const unsigned long *_auxv __attribute__((weak));
-
-    -void __stack_chk_init(void);
-    +static void __stack_chk_init(void);
-     static void exit(int);
-
-     void _start_c(long *sp)
-    diff --git a/tools/include/nolibc/stackprotector.h b/tools/include/nolibc/stackprotector.h
-    index b620f2b9578d..13f1d0e60387 100644
-    --- a/tools/include/nolibc/stackprotector.h
-    +++ b/tools/include/nolibc/stackprotector.h
-    @@ -37,8 +37,7 @@ void __stack_chk_fail_local(void)
-     __attribute__((weak,section(".data.nolibc_stack_chk")))
-     uintptr_t __stack_chk_guard;
-
-    -__attribute__((weak,section(".text.nolibc_stack_chk"))) __no_stack_protector
-    -void __stack_chk_init(void)
-    +static __no_stack_protector void __stack_chk_init(void)
-     {
-            my_syscall3(__NR_getrandom, &__stack_chk_guard, sizeof(__stack_chk_guard), 0);
-            /* a bit more randomness in case getrandom() fails, ensure the guard is never 0 */
-    @@ -46,7 +45,7 @@ void __stack_chk_init(void)
-                    __stack_chk_guard ^= (uintptr_t) &__stack_chk_guard;
-     }
-     #else /* !defined(_NOLIBC_STACKPROTECTOR) */
-    -__inline__ void __stack_chk_init(void) {}
-    +static void __stack_chk_init(void) {}
-     #endif /* defined(_NOLIBC_STACKPROTECTOR) */
-
-     #endif /* _NOLIBC_STACKPROTECTOR_H */
-
-> > 
-> > Thanks for the clarification. I forgot about that completely!
-> > 
-> > The stuff from nolibc-test.c itself (run_foo() and is_settings_valid())
-> > should still be done.
-> 
-> Yes, likely. Nolibc-test should be done just like users expect to use
-> nolibc, and nolibc should be the most flexible possible.
-
-For the 'static' keyword we tested above, '-g' may help the debug requirement,
-so, is ok for us to apply 'static' for them safely now?
-
-A further test shows, with 'static' on _start_c() doesn't help the size, for it
-is always called from _start(), will never save move instructions, but we need
-a more 'used' attribute to silence the error 'nolibc-test.c:(.text+0x38cd):
-undefined reference to `_start_c'', so, reserve it as the before simpler 'void
-_start_c(void)' may be better?
-
-    static __attribute__((used)) void _start_c(long *sp)
-
-Thanks,
-Zhangjin
-
-> 
-> Cheers,
-> Willy
+>
+>>
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>>   static int pci_epf_mhi_bind(struct pci_epf *epf)
+>>>   {
+>>>       struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
+>>> @@ -394,6 +404,7 @@ static struct pci_epc_event_ops 
+>>> pci_epf_mhi_event_ops = {
+>>>       .link_up = pci_epf_mhi_link_up,
+>>>       .link_down = pci_epf_mhi_link_down,
+>>>       .bme = pci_epf_mhi_bme,
+>>> +    .dstate_notify = pci_epf_mhi_dstate_notify,
+>>>   };
+>>>     static int pci_epf_mhi_probe(struct pci_epf *epf,
+>>> diff --git a/include/linux/mhi_ep.h b/include/linux/mhi_ep.h
+>>> index f198a8a..c3a0685 100644
+>>> --- a/include/linux/mhi_ep.h
+>>> +++ b/include/linux/mhi_ep.h
+>>> @@ -8,6 +8,7 @@
+>>>     #include <linux/dma-direction.h>
+>>>   #include <linux/mhi.h>
+>>> +#include <linux/pci.h>
+>>>     #define MHI_EP_DEFAULT_MTU 0x8000
+>>>   @@ -139,6 +140,8 @@ struct mhi_ep_cntrl {
+>>>         enum mhi_state mhi_state;
+>>>   +    pci_power_t dstate;
+>>> +
+>>>       u32 max_chan;
+>>>       u32 mru;
+>>>       u32 event_rings;
+>>> -- 
+>>> 2.7.4
+>>>
+>
