@@ -2,141 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EF876B69D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE4876B69C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbjHAOCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S234230AbjHAOCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbjHAOCK (ORCPT
+        with ESMTP id S231761AbjHAOCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Aug 2023 10:02:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1D9C3;
-        Tue,  1 Aug 2023 07:02:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 37363615BF;
-        Tue,  1 Aug 2023 14:02:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C64B6C433C7;
-        Tue,  1 Aug 2023 14:02:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690898528;
-        bh=VNvAGs+RJC/wWP8NPciLgTw7gNKF8Q+/ePEXF/moAHc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lR/o/rPJ09W+mjAX+ibUzyjhGjZT2i3QTLa7TI+URr1LjPnvTY2iC6GPqYl/n4r/3
-         WI/UNzJxW35Q0DDQTuxLw1RSoUoPpdFiCbT65gTE9ERpwX6uJ/Jw1QBGc/dTSkYPJx
-         FNA/RjX6qX7wwn/QnanU4oUFJADcz/1x2My8leQsMuZiS57cY8v120f7Yc2vmUiJfX
-         vtvf4FafJWxsU0fipTM5jzne4OEw4wkHM0zMUZ0QMFQkRlqHkhB82tojzXjPQ815fU
-         iQJjqbsqrrEYQWPmSD+mSbB2ySB0Q0+NzwHtr7edz91j3ub2TQM8/Oy+P0v2YI51MP
-         gpWzFmzYQSEUw==
-Date:   Tue, 1 Aug 2023 15:01:59 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "corbet@lwn.net" <corbet@lwn.net>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>
-Subject: Re: [PATCH v3 21/36] arm64/mm: Implement map_shadow_stack()
-Message-ID: <21d7e814-8608-40ce-b5d3-401f2110ad91@sirena.org.uk>
-References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
- <20230731-arm64-gcs-v3-21-cddf9f980d98@kernel.org>
- <5461c56cf4896f18bddaa66c3beec7b909fc8fb9.camel@intel.com>
- <0a6c90d6-f790-4036-a364-d4761fdd0e95@sirena.org.uk>
- <e827138f9d8800e3db158831bca88d1ea8b559af.camel@intel.com>
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F0FDC
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 07:02:05 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-31759e6a4a1so5094515f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 07:02:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690898524; x=1691503324;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BrksOpqUjAUEy32MmJaMJMaflmISBOfcCLnD5EwZNQs=;
+        b=N9gHHLPjM6IBcosZN6lsCZQB0PC3Qg+0I5sgBo8lc354YLYXjn/OVVOLLNL+ftOW9F
+         hQHRgh2W5rn/4ogvkrA9hwv/XUB+d2QjtnktFa+CKBEoxk8aBTPqLplBs+gXVZdR2jSJ
+         teJPPZSAr2RjGsvaO6bdNfrAbkGxRiP3ciCXFObJlgW30pAK9395ra5kWOIg6xNZg9aw
+         polBTKn6lv/Z0XIY/MgPM7z0SVq0HjiBJfngNPV+38Y7WJZmkb5lsTz3hJs945zkb7Z9
+         ITrbGATJa5wJJ3eDiJ2fTnpwCEwCmzMzdwHYKojmlrQLQVAr09HXoBoe29+6EDJHF+hz
+         fACg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690898524; x=1691503324;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BrksOpqUjAUEy32MmJaMJMaflmISBOfcCLnD5EwZNQs=;
+        b=VQYi4bJo7vtozqh2f9KOTlo0B6puOAn+RtEoCJaP0/SyhF2wrhKKf2/aO7lTwPFcEq
+         gQv0beb373ymq5uPPXmnyGfAZTiEEslvnHwdn6h/+yg5QwOf3mLp43NBg7jpjh5vY5g6
+         SJOGBz1pkMTTEpByRMaU2SLt0l/Z8SAJbWbFkZuTiXahWhDRPzfphgY884o7Kj69ix4o
+         2IBjU8Ck+3qubnWytDejboAgIUKhelOu2jR9JI24HYBeBelpbtFgwlpks0UFj90I1EZ8
+         RwR2WkFElZ35wxmrmFYq6w+PnescqGjE0gwPVXM82/1WYFLTsy/jXJGAk4A60YfpZNIh
+         S8pA==
+X-Gm-Message-State: ABy/qLbMh2bUytztUu4DdNRocOIJ2ehkpnjlQE13d/Und2iPE5FmW4Tj
+        ILxS2ELmTCLGhgmDLpOJApHf+w==
+X-Google-Smtp-Source: APBJJlFGUJ6jKzWwPl5BWHR+yLvQlr2LJvZNj0hJ5Ewi60F1aSJcHQJyjja2O/DLLARvHjfEwo9ahA==
+X-Received: by 2002:adf:f5c2:0:b0:317:7068:4997 with SMTP id k2-20020adff5c2000000b0031770684997mr2414146wrp.60.1690898524261;
+        Tue, 01 Aug 2023 07:02:04 -0700 (PDT)
+Received: from [192.168.69.115] ([176.176.174.59])
+        by smtp.gmail.com with ESMTPSA id f3-20020a5d50c3000000b00317909f9985sm11851806wrt.113.2023.08.01.07.02.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 07:02:03 -0700 (PDT)
+Message-ID: <e3343df1-4ff6-1cbf-2d31-56535bb70858@linaro.org>
+Date:   Tue, 1 Aug 2023 16:02:01 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Nwti0jdLm79TUUP+"
-Content-Disposition: inline
-In-Reply-To: <e827138f9d8800e3db158831bca88d1ea8b559af.camel@intel.com>
-X-Cookie: I thought YOU silenced the guard!
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 09/12] KVM: x86/mmu: Replace MMU_DEBUG with proper
+ KVM_PROVE_MMU Kconfig
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mingwei Zhang <mizhang@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Jim Mattson <jmattson@google.com>
+References: <20230729004722.1056172-1-seanjc@google.com>
+ <20230729004722.1056172-10-seanjc@google.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230729004722.1056172-10-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 29/7/23 02:47, Sean Christopherson wrote:
+> Replace MMU_DEBUG, which requires manually modifying KVM to enable the
+> macro, with a proper Kconfig, KVM_PROVE_MMU.  Now that pgprintk() and
+> rmap_printk() are gone, i.e. the macro guards only KVM_MMU_WARN_ON() and
+> won't flood the kernel logs, enabling the option for debug kernels is both
+> desirable and feasible.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/Kconfig            | 13 +++++++++++++
+>   arch/x86/kvm/mmu/mmu.c          |  2 +-
+>   arch/x86/kvm/mmu/mmu_internal.h |  4 +---
+>   3 files changed, 15 insertions(+), 4 deletions(-)
 
---Nwti0jdLm79TUUP+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-On Mon, Jul 31, 2023 at 11:19:34PM +0000, Edgecombe, Rick P wrote:
-
-> The thing I was trying to get at was, we have this shared syscall that
-> means create shadow stack memory and prepopulate it like this flag
-> says. On x86 we optionally support SHADOW_STACK_SET_TOKEN which means
-> put a token right at the end of size. So maybe arm should have a
-> different flag value that includes putting the marker and then the
-> token, and x86 could match it someday if we get markers too.
-
-Oh, I see.  My mental model was that this was controlling the whole
-thing we put at the top rather than treating the terminator and the cap
-separately.
-
-> It could be a different flag, like SHADOW_STACK_SET_TOKEN_MARKER, or it
-> could be SHADOW_STACK_SET_MARKER, and callers could pass
-> (SHADOW_STACK_SET_TOKEN | SHADOW_STACK_SET_MARKER) to get what you have
-> implemented here. What do you think?
-
-For arm64 code this would mean that it would be possible (and fairly
-easy) to create stacks which don't have a termination record which would
-make life harder for unwinders to rely on.  I don't think this is
-insurmountable, creating manually shouldn't be the standard and it'll
-already be an issue on x86 anyway.
-
-The other minor issue is that the current arm64 marker is all bits 0
-so by itself for arm64 _MARKER would have no perceptible impact, it
-would only serve to push the token down a slot in the stack (I'm
-guessing that's the intended meaning?).  I'm not sure that's a
-particularly big deal though.
-
---Nwti0jdLm79TUUP+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTJEFYACgkQJNaLcl1U
-h9DMNgf+P37hKhxkgQQ2bx5n4uZZFxfRehguU/iRyfY2v786eRp6cHggr3v5zNbn
-YpYL5VP9uY+etSRtnZI8rksKaS4bR/OnIchJ1WVCyFEZOV+IiJrKgRpXYTFH4wd6
-TJBjdEQtaeU7zIyikLOVb7gstveQddLzsUBDcAOoEwjUnd6alGbDGn262PKDeapK
-hu+THENIjRxbrDkn9An5Uuca6c4XeWL/KbLQLP8uGKbz1FiCPUGDAF1i8FkoVxnL
-IZW9d2IOzqXh0G/ZXwQhw9+9QNtN7zIDXIs2WS29VU2QoGJAZdNP9rJFhdK4C+/y
-ih1/WTOQ+rJxgjVUggW+96FlbhxWZg==
-=fLYM
------END PGP SIGNATURE-----
-
---Nwti0jdLm79TUUP+--
