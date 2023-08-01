@@ -2,167 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F48276A6BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 219C676A6BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbjHACFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
+        id S229933AbjHACGj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:06:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjHACFa (ORCPT
+        with ESMTP id S229379AbjHACGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:05:30 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C94A19B4;
-        Mon, 31 Jul 2023 19:05:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=Xvt/xwua6bcASM1QffveSr2Oz/t1oOxs0Q1x3BG3TmI=; b=wNvmIpRjv7p5MBH/DB1MCEpT02
-        02Msdg8qGOfw+BgXo7QxBOJAeJKTAMMVMdbTs3xGSu1ijQHjD66WwkfKhE6KHmmsr1s4KqhY5HgaP
-        /ZJd1b642RFD6jsiUZm3B8//0ub6f4Dm1irCCzvtyWQ4rbxzAqSQVrkV4lgphCQOoIA3VxcyEAj8j
-        1QODoXkttHad9Hk7kWMwbRpDMsxsOy/WUIUQ5ysw4QD2ZjjdziXjaZfUUjnr9NjlkMqSrm5sg0JQA
-        1pfsVgC+2MGtrHD+x1a5ifMqweIvspT3Ae0hbfJPpfV6o6sJIlDzpuXgF/nJQGA7DH9JmbXm6QOJs
-        xxrbAsfQ==;
-Received: from [2601:1c2:980:9ec0::2764] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQel2-000BCw-37;
-        Tue, 01 Aug 2023 02:05:09 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-um@lists.infradead.org, Tejun Heo <tj@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@perex.cz>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH v4] um/drivers: fix hostaudio build errors
-Date:   Mon, 31 Jul 2023 19:05:07 -0700
-Message-ID: <20230801020507.30392-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.41.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 22:06:38 -0400
+Received: from out28-149.mail.aliyun.com (out28-149.mail.aliyun.com [115.124.28.149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137E2103
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:06:36 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08576864|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0754816-0.000674398-0.923844;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5Ek3oJ_1690855589;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5Ek3oJ_1690855589)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 10:06:31 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in smu_v13_0_6_ppt.c
+Date:   Tue,  1 Aug 2023 02:06:25 +0000
+Message-Id: <20230801020625.4281-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use "select"s to ensure that the required kconfig symbols are set
-as expected.
-Drop HOSTAUDIO since it is now equivalent to UML_SOUND.
+Fix the following errors reported by checkpatch:
 
-Allow SOUND with UML regardless of HAS_IOMEM. Otherwise there is a
-kconfig warning for unmet dependencies. (This was not an issue when
-SOUND was defined in arch/um/drivers/Kconfig. I have done 50 randconfig
-builds and didn't find any issues.)
+ERROR: code indent should use tabs where possible
+ERROR: that open brace { should be on the previous line
 
-This fixes build errors when CONFIG_SOUND is not set:
-
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_cleanup_module':
-hostaudio_kern.c:(.exit.text+0xa): undefined reference to `unregister_sound_mixer'
-ld: hostaudio_kern.c:(.exit.text+0x15): undefined reference to `unregister_sound_dsp'
-ld: arch/um/drivers/hostaudio_kern.o: in function `hostaudio_init_module':
-hostaudio_kern.c:(.init.text+0x19): undefined reference to `register_sound_dsp'
-ld: hostaudio_kern.c:(.init.text+0x31): undefined reference to `register_sound_mixer'
-ld: hostaudio_kern.c:(.init.text+0x49): undefined reference to `unregister_sound_dsp'
-
-and this kconfig warning:
-WARNING: unmet direct dependencies detected for SOUND
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Fixes: d886e87cb82b ("sound: make OSS sound core optional")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: lore.kernel.org/r/202307141416.vxuRVpFv-lkp@intel.com
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-um@lists.infradead.org
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: linux-kbuild@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
+Signed-off-by: Ran Sun <sunran001@208suo.com>
 ---
-v2: don't delete the HOSTAUDIO Kconfig entry (Masahiro)
-v3: drop HOSTAUDIO and use CONFIG_UML_SOUND for it in Makefile (Takashi);
-    add SOUND depends on "|| UML" to HAS_IOMEM
-v4: use depends on instead of select for SOUND (Masahiro);
-    use Closes: instead of Link:
+ drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
- arch/um/drivers/Kconfig  |   16 +++-------------
- arch/um/drivers/Makefile |    2 +-
- sound/Kconfig            |    2 +-
- 3 files changed, 5 insertions(+), 15 deletions(-)
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c
+index 1ac552142763..43afa1ee1b4a 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0_6_ppt.c
+@@ -1248,9 +1248,9 @@ static int smu_v13_0_6_get_power_limit(struct smu_context *smu,
+ 				       uint32_t *default_power_limit,
+ 				       uint32_t *max_power_limit)
+ {
+-        struct smu_table_context *smu_table = &smu->smu_table;
+-        struct PPTable_t *pptable =
+-                (struct PPTable_t *)smu_table->driver_pptable;
++	struct smu_table_context *smu_table = &smu->smu_table;
++	struct PPTable_t *pptable =
++		(struct PPTable_t *)smu_table->driver_pptable;
+ 	uint32_t power_limit = 0;
+ 	int ret;
+ 
+@@ -1366,8 +1366,7 @@ static int smu_v13_0_6_set_irq_state(struct amdgpu_device *adev,
+ 	return 0;
+ }
+ 
+-static const struct amdgpu_irq_src_funcs smu_v13_0_6_irq_funcs =
+-{
++static const struct amdgpu_irq_src_funcs smu_v13_0_6_irq_funcs = {
+ 	.set = smu_v13_0_6_set_irq_state,
+ 	.process = smu_v13_0_6_irq_process,
+ };
+-- 
+2.17.1
 
-diff -- a/arch/um/drivers/Kconfig b/arch/um/drivers/Kconfig
---- a/arch/um/drivers/Kconfig
-+++ b/arch/um/drivers/Kconfig
-@@ -111,24 +111,14 @@ config SSL_CHAN
- 
- config UML_SOUND
- 	tristate "Sound support"
-+	depends on SOUND
-+	select SOUND_OSS_CORE
- 	help
- 	  This option enables UML sound support.  If enabled, it will pull in
--	  soundcore and the UML hostaudio relay, which acts as a intermediary
-+	  the UML hostaudio relay, which acts as a intermediary
- 	  between the host's dsp and mixer devices and the UML sound system.
- 	  It is safe to say 'Y' here.
- 
--config SOUND
--	tristate
--	default UML_SOUND
--
--config SOUND_OSS_CORE
--	bool
--	default UML_SOUND
--
--config HOSTAUDIO
--	tristate
--	default UML_SOUND
--
- endmenu
- 
- menu "UML Network Devices"
-diff -- a/sound/Kconfig b/sound/Kconfig
---- a/sound/Kconfig
-+++ b/sound/Kconfig
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menuconfig SOUND
- 	tristate "Sound card support"
--	depends on HAS_IOMEM
-+	depends on HAS_IOMEM || UML
- 	help
- 	  If you have a sound card in your computer, i.e. if it can say more
- 	  than an occasional beep, say Y.
-diff -- a/arch/um/drivers/Makefile b/arch/um/drivers/Makefile
---- a/arch/um/drivers/Makefile
-+++ b/arch/um/drivers/Makefile
-@@ -54,7 +54,7 @@ obj-$(CONFIG_UML_NET) += net.o
- obj-$(CONFIG_MCONSOLE) += mconsole.o
- obj-$(CONFIG_MMAPPER) += mmapper_kern.o 
- obj-$(CONFIG_BLK_DEV_UBD) += ubd.o 
--obj-$(CONFIG_HOSTAUDIO) += hostaudio.o
-+obj-$(CONFIG_UML_SOUND) += hostaudio.o
- obj-$(CONFIG_NULL_CHAN) += null.o 
- obj-$(CONFIG_PORT_CHAN) += port.o
- obj-$(CONFIG_PTY_CHAN) += pty.o
