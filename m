@@ -2,74 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD5276A6EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9B876A6F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbjHAC0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
+        id S232075AbjHAC1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjHAC0d (ORCPT
+        with ESMTP id S229807AbjHAC1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:26:33 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC4410DD;
-        Mon, 31 Jul 2023 19:26:32 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-686ba97e4feso5102151b3a.0;
-        Mon, 31 Jul 2023 19:26:32 -0700 (PDT)
+        Mon, 31 Jul 2023 22:27:33 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524661BEB;
+        Mon, 31 Jul 2023 19:27:32 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-40fcc91258fso6159251cf.1;
+        Mon, 31 Jul 2023 19:27:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690856791; x=1691461591;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cPBkPU6pOihNZ+8qOl23uBpzBus2ZE0LpwP2jVT0H+U=;
-        b=DiTjZdx5vxGxyZrmv4KPJAH/UrwxSUsy+ipCod4w3wSFp+DdhG7jtnITlxnQrDFd9R
-         uN8LDx/9nou7pHANe66gRAciB+i3n3xtLSaah22XN2Ck9hE8dGidr0upSbl7qbdOLR5y
-         8lS2NJMO/nHT97xSbJ0wj3hcqC402licC3XvFottxtNF0KYrWFFaCUZ5qczQ3KJ+Lsmu
-         VrXvGlpcuVdGfH+NiNLAcSVKpHA36vcnnWVJHb89HN/9ngPlrdmWm8BnGzi28w99YDRD
-         BFSP9BehBOaZmZSmzuo9h5fbTCYpCT7LeEgrOuzGhEkNnehk+tillGy9vrmhb4wEskYw
-         ZFKw==
+        d=gmail.com; s=20221208; t=1690856851; x=1691461651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Rbx5pazMUmrAGWXYLJ8jVUiQPXWQGvpwkvAGqlRbh0=;
+        b=h3zOGs2nwMAFflIW+d+RAac8jI3gm3anyQw+AZUM+tFnbQVN6xveU+nCF9wbeOgg8g
+         4tihPpj9lHfVDjtsbHuBYBNrapBMrTgKtIprVlcJfMf0aOnVCNgbj15mQbNrGPXunXHu
+         NLebQ3SybsZgBr373ypfDFFymz55RazrfenDbV3o2dx88m4hsmv40X8k6Bg2s5E1/WzT
+         cbcoAzjwOO+LedfK/KoddJcRHo+wZ8cCHJmLwd8LiaRdSf3wu109gECOQztN+anSVgf7
+         0CLlSPAWMNsY2WfsniuD6/vrzvnQx9bKbLBPjd7zvQhcmViK6NfisWeFa/VhPpTPIDzr
+         L0bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690856791; x=1691461591;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cPBkPU6pOihNZ+8qOl23uBpzBus2ZE0LpwP2jVT0H+U=;
-        b=kMJxVwl5c9gly0hM4MM+URx9/oTg7hmHdkSezcWcU9KDoogHzGQC0iXR78o0bbVTBq
-         bLtcBTxFki6utVt7LazWKiNboNDaIa9gOwrAy4ybeGLiUdSYwY0UbTD9mbT97IziMmmq
-         Ba+6NME0OB3LAbWSabZ8Hgj50Q45ZtrirpX3STl31I+QK18H/lMzjw7iGi4Mi+yrFHPM
-         XtR6E4ILwVcqbyc/99U5CkGNVE+N6z4oZNx9jPAjTmAkvsjGaOo70+D+lYWiH1NER+72
-         KAevHgaI7xY+/P3I2wx9RB87Sfg8bNjNrb/NLXjw5LIVUQX+6aVWPCveGpHQbtlHogFB
-         Jkyg==
-X-Gm-Message-State: ABy/qLYfl+lPg2XnYAUxpy9sqHotyEsJTY8z9xUO7NiwpgngPJRcI1vf
-        B6IrJkd3gl+B82Bs55Q0GdA=
-X-Google-Smtp-Source: APBJJlHsc4sDhFL7ISNWpg43ETHJObEFnNGyB+mXLi30ij9iXjUMm2rq/LKFIp5DpiXsEqRt1BK4FQ==
-X-Received: by 2002:a05:6a00:2449:b0:681:415d:ba2c with SMTP id d9-20020a056a00244900b00681415dba2cmr13659016pfj.31.1690856791115;
-        Mon, 31 Jul 2023 19:26:31 -0700 (PDT)
-Received: from [192.168.255.10] ([103.7.29.32])
-        by smtp.gmail.com with ESMTPSA id l21-20020a62be15000000b0068743cab196sm1755069pff.186.2023.07.31.19.26.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 31 Jul 2023 19:26:30 -0700 (PDT)
-Message-ID: <2a542f07-2158-16aa-e3cb-5431081ee1f6@gmail.com>
-Date:   Tue, 1 Aug 2023 10:26:22 +0800
+        d=1e100.net; s=20221208; t=1690856851; x=1691461651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0Rbx5pazMUmrAGWXYLJ8jVUiQPXWQGvpwkvAGqlRbh0=;
+        b=ZRoJSxfveM5JGGcUh9d/siKDeMqeln1lWBRjuIWgmerDuAwE3yJ4e0lq82wP7KCOFN
+         IWD+mAUd6TxTjNO3pDGmX2zqe2fNVB8BuqnA3PrbgqnJevSxM44Tx711fyVykvq5LVy4
+         HqqycXst1MurEuRxkBITZHOm50fjxkDkuTD2ZF9L4CK3NRW5LMeVbe/rQhmuGLagSHJX
+         zNAFYrgD/Kv4yHTmQi9Zj6HohRU3vDlsdW35gHmxrDmU5fBrc+D8XTAYOAUv4SNXVcxW
+         PLeifeMj/duSqpf8scYiBDhmZm80Q3tp11/1bLp0wD6V2xqSnm9RibFJWOb4sIEByH71
+         PDuw==
+X-Gm-Message-State: ABy/qLYicTExb3sscgEt0p4b0m30s/M5nkTKZDuQTd4bvsmPV8VptXW6
+        EklYHKovXrP31VSK3kcDbMbQcovtjE3CpjwNhv1bQY0b8HE=
+X-Google-Smtp-Source: APBJJlGLQ+Ui+4ixTGSUf1KsO8aiWE2TiP6DP67diE/qPfi4ppqInBaGAHwVbcFQfzXaCV1ecUH/q+mLgzAIICHn3LU=
+X-Received: by 2002:a05:622a:24b:b0:40d:b896:1f92 with SMTP id
+ c11-20020a05622a024b00b0040db8961f92mr7513815qtx.32.1690856851003; Mon, 31
+ Jul 2023 19:27:31 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v3] KVM: x86/tsc: Don't sync user changes to TSC with
- KVM-initiated change
-To:     Oliver Upton <oliver.upton@linux.dev>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230731080758.29482-1-likexu@tencent.com>
- <ZMf9ovBFpGNEOG3c@linux.dev>
-Content-Language: en-US
-From:   Like Xu <like.xu.linux@gmail.com>
-In-Reply-To: <ZMf9ovBFpGNEOG3c@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+References: <20230731010104.1781335-1-zhangshida@kylinos.cn> <20230731154133.GA11332@frogsfrogsfrogs>
+In-Reply-To: <20230731154133.GA11332@frogsfrogsfrogs>
+From:   Stephen Zhang <starzhangzsd@gmail.com>
+Date:   Tue, 1 Aug 2023 10:26:55 +0800
+Message-ID: <CANubcdVMdisPOR=VD4mLyiQru4oPOZ_0oDSZXRYOu6ynTji2vA@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: Fix rec_len verify error
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhangshida@kylinos.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,56 +70,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/8/2023 2:29 am, Oliver Upton wrote:
-> On Mon, Jul 31, 2023 at 04:07:58PM +0800, Like Xu wrote:
->> From: Like Xu <likexu@tencent.com>
->>
->> Add kvm->arch.user_changed_tsc to avoid synchronizing user changes to
->> the TSC with the KVM-initiated change in kvm_arch_vcpu_postcreate() by
->> conditioning this mess on userspace having written the TSC at least
->> once already.
->>
->> Here lies UAPI baggage: user-initiated TSC write with a small delta
->> (1 second) of virtual cycle time against real time is interpreted as an
->> attempt to synchronize the CPU. In such a scenario, the vcpu's tsc_offset
->> is not configured as expected, resulting in significant guest service
->> response latency, which is observed in our production environment.
-> 
-> The changelog reads really weird, because it is taken out of context
-> when it isn't a comment over the affected code. Furthermore, 'our
-> production environment' is a complete black box to the rest of the
-> community, it would be helpful spelling out exactly what the use case
-> is.
-> 
-> Suggested changelog:
-> 
->    KVM interprets writes to the TSC with values within 1 second of each
->    other as an attempt to synchronize the TSC for all vCPUs in the VM,
->    and uses a common offset for all vCPUs in a VM. For brevity's sake
->    let's just ignore what happens on systems with an unstable TSC.
-> 
->    While this may seem odd, it is imperative for VM save/restore, as VMMs
->    such as QEMU have long resorted to saving the TSCs (by value) from all
->    vCPUs in the VM at approximately the same time. Of course, it is
->    impossible to synchronize all the vCPU ioctls to capture the exact
->    instant in time, hence KVM fudges it a bit on the restore side.
-> 
->    This has been useful for the 'typical' VM lifecycle, where in all
->    likelihood the VM goes through save/restore a considerable amount of
->    time after VM creation. Nonetheless, there are some use cases that
->    need to restore a VM snapshot that was created very shortly after boot
->    (<1 second). Unfortunately the TSC sync code makes no distinction
->    between kernel and user-initiated writes, which leads to the target VM
->    synchronizing on the TSC offset from creation instead of the
->    user-intended value.
+Darrick J. Wong <djwong@kernel.org> =E4=BA=8E2023=E5=B9=B47=E6=9C=8831=E6=
+=97=A5=E5=91=A8=E4=B8=80 23:41=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Mon, Jul 31, 2023 at 09:01:04AM +0800, zhangshida wrote:
+> > From: Shida Zhang <zhangshida@kylinos.cn>
+> >
+> > With the configuration PAGE_SIZE 64k and filesystem blocksize 64k,
+> > a problem occurred when more than 13 million files were directly create=
+d
+> > under a directory:
+> >
+> > EXT4-fs error (device xx): ext4_dx_csum_set:492: inode #xxxx: comm xxxx=
+x: dir seems corrupt?  Run e2fsck -D.
+> > EXT4-fs error (device xx): ext4_dx_csum_verify:463: inode #xxxx: comm x=
+xxxx: dir seems corrupt?  Run e2fsck -D.
+> > EXT4-fs error (device xx): dx_probe:856: inode #xxxx: block 8188: comm =
+xxxxx: Directory index failed checksum
+> >
+> > When enough files are created, the fake_dirent->reclen will be 0xffff.
+> > it doesn't equal to the blocksize 65536, i.e. 0x10000.
+> >
+> > But it is not the same condition when blocksize equals to 4k.
+> > when enough file are created, the fake_dirent->reclen will be 0x1000.
+> > it equals to the blocksize 4k, i.e. 0x1000.
+> >
+> > The problem seems to be related to the limitation of the 16-bit field
+> > when the blocksize is set to 64k. To address this, Modify the check so
+> > as to handle it properly.
+>
+> urughghahrhrhr<shudder>
+>
+> Sorry that I missed that rec_len is an encoded number, not a plain le16
+> integer...
+>
 
-Great clarification. Thanks, we're on the same page.
+Yep, that's really a point that is easy to forget...
 
-> 
->    Avoid synchronizing user-initiated changes to the guest TSC with the
->    KVM initiated change in kvm_arch_vcpu_postcreate() by conditioning the
->    logic on userspace having written the TSC at least once.
-> 
-> I'll also note that the whole value-based TSC sync scheme is in
-> desperate need of testing.
-> 
+> > Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+> > ---
+> > v1->v2:
+> >   Use a better way to check the condition, as suggested by Andreas.
+> >
+> >  fs/ext4/namei.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> > index 0caf6c730ce3..fffed95f8531 100644
+> > --- a/fs/ext4/namei.c
+> > +++ b/fs/ext4/namei.c
+> > @@ -445,8 +445,9 @@ static struct dx_countlimit *get_dx_countlimit(stru=
+ct inode *inode,
+> >       struct ext4_dir_entry *dp;
+> >       struct dx_root_info *root;
+> >       int count_offset;
+> > +     int blocksize =3D EXT4_BLOCK_SIZE(inode->i_sb);
+> >
+> > -     if (le16_to_cpu(dirent->rec_len) =3D=3D EXT4_BLOCK_SIZE(inode->i_=
+sb))
+> > +     if (ext4_rec_len_from_disk(dirent->rec_len, blocksize) =3D=3D blo=
+cksize)
+> >               count_offset =3D 8;
+> >       else if (le16_to_cpu(dirent->rec_len) =3D=3D 12) {
+>
+> ...but what about all the other le16_to_cpu(ext4_dir_entry{,_2}.rec_len)
+> accesses in this file?  Don't those also need to be converted to
+> ext4_rec_len_from_disk calls?
+>
+> Also,
+> Fixes: dbe89444042ab ("ext4: Calculate and verify checksums for htree nod=
+es")
+>
+
+Thanks for your suggestion, I will try to add all the other conversion
+in this file for the next v3.
+
+Cheers,
+Shida
+
+
+
+
+
+> --D
+>
+> >               dp =3D (struct ext4_dir_entry *)(((void *)dirent) + 12);
+> > --
+> > 2.27.0
+> >
