@@ -2,136 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B373C76ACC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3671C76ACD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbjHAJTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        id S232859AbjHAJXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232842AbjHAJTP (ORCPT
+        with ESMTP id S233015AbjHAJXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:19:15 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1ABA198C;
-        Tue,  1 Aug 2023 02:17:30 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37189ds0009279;
-        Tue, 1 Aug 2023 09:04:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=KHfLUQGL6faL0F/nqq7dox/0afIBoQuFJvhxwvUo7Oo=;
- b=diTWugTb2yTf4hkW+pNfpS9azQ74t3yZV0fCwa3NekRR9yV+aas5eXl5iYZrkTSioqc4
- t0EKxl/+b82tSbd9zy3q6RwXp0BaVDQwMzIGf0VCiwozB79wKmta5cUZaW6PFLco2eCV
- p67zCtn4LeG+DDrAgnOax/7Y6+EQQpc0uX9SuJo3yXQr+IQeCCzoTZG0QlJPROz6uHDG
- /4a1HMTwEfG/aK0rAECPAZ9G3H9EuscWk48Hx0XIKoD0+0DBGc+Zfj908sKZZ6pNuRD/
- tqC4GfIUdt4rLb+R+OrpgvKbLOLQ+lfNss7uCsgfrfdRlAEz3LHyQD245Yu7ImMJfqai cg== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6ckfjr6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 09:04:11 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3719400G019389
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 1 Aug 2023 09:04:00 GMT
-Received: from hu-prashk-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 1 Aug 2023 02:03:57 -0700
-From:   Prashanth K <quic_prashk@quicinc.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Prashanth K <quic_prashk@quicinc.com>,
-        "# 5 . 4" <stable@vger.kernel.org>
-Subject: [PATCH v3] usb: common: usb-conn-gpio: Prevent bailing out if initial role is none
-Date:   Tue, 1 Aug 2023 14:33:52 +0530
-Message-ID: <1690880632-12588-1-git-send-email-quic_prashk@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 1 Aug 2023 05:23:13 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F21C93C2F;
+        Tue,  1 Aug 2023 02:21:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=BqbBR
+        ygnNivDKtJsUxqFpisfRta6pDIOOG6ye7lk4xE=; b=MpTY6n142V6vKTBIQJRG/
+        3HZ2o9Xsx00f6C4t0giDfO7HrYY6h094K/yrhV75IFSOpOkOs3RnR8N6obUGHV06
+        tArb9kISJ7/BBvGhb2Pvl53jyPlL1aVAaCg4BcOybB0opVi1cfYOpsmLFNyMoal+
+        izs/CquROycRewQGAvtx4s=
+Received: from localhost.localdomain (unknown [39.144.138.221])
+        by zwqz-smtp-mta-g5-2 (Coremail) with SMTP id _____wAHpHClyshkAPmxBw--.34257S2;
+        Tue, 01 Aug 2023 17:04:38 +0800 (CST)
+From:   xingtong_wu@163.com
+To:     hdegoede@redhat.com, markgross@kernel.org,
+        andriy.shevchenko@linux.intel.com, xingtong.wu@siemens.com,
+        lee@kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     gerd.haeussler.ext@siemens.com, tobias.schaffner@siemens.com,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH 1/2] platform/x86/siemens: simatic-ipc: fix logic error in BX-59A
+Date:   Tue,  1 Aug 2023 17:04:23 +0800
+Message-Id: <20230801090423.4747-1-xingtong_wu@163.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230731071424.4663-2-xingtong_wu@163.com>
+References: <20230731071424.4663-2-xingtong_wu@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: WOAdOjPmQ1559TjJLMp9b0ORUc9TQPci
-X-Proofpoint-ORIG-GUID: WOAdOjPmQ1559TjJLMp9b0ORUc9TQPci
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 adultscore=0
- bulkscore=0 mlxlogscore=843 spamscore=0 clxscore=1011 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308010082
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wAHpHClyshkAPmxBw--.34257S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7uw1xWr1Duw48KryxGryxGrg_yoW8GF47pF
+        4rG3WIkrW5W34Utwn5Gay7ZFZ8Z3Z8KrW7GFy7AwnrZwnF9F1jqr12ya1fXFW7tr45Way3
+        Wa9xtr43Gan8ur7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j61v3UUUUU=
+X-Originating-IP: [39.144.138.221]
+X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/1tbiTBe+0GI0aQoqpgABsN
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently if we bootup a device without cable connected, then
-usb-conn-gpio won't call set_role() because last_role is same
-as current role. This happens since last_role gets initialised
-to zero during the probe.
+From: "xingtong.wu" <xingtong.wu@siemens.com>
 
-To avoid this, add a new flag initial_detection into struct
-usb_conn_info, which prevents bailing out during initial
-detection.
+There is a bug in if statement that lead to logical error
+and have influence to other IPC, it get correct now.
 
-Cc: <stable@vger.kernel.org> # 5.4
-Fixes: 4602f3bff266 ("usb: common: add USB GPIO based connection detection driver")
-Signed-off-by: Prashanth K <quic_prashk@quicinc.com>
+Fixes: b8af77951941 ("platform/x86/siemens: simatic-ipc: add new models BX-56A/BX-59A")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202307312322.Aa8upHWK-lkp@intel.com/
+Signed-off-by: xingtong.wu <xingtong.wu@siemens.com>
 ---
-v3: Added cc tag as suggested by the patch-bot.
-v2: Updated the bool name to initial_detection.
+ drivers/platform/x86/siemens/simatic-ipc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/usb/common/usb-conn-gpio.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
-index 766005d..501e8bc9 100644
---- a/drivers/usb/common/usb-conn-gpio.c
-+++ b/drivers/usb/common/usb-conn-gpio.c
-@@ -42,6 +42,7 @@ struct usb_conn_info {
- 
- 	struct power_supply_desc desc;
- 	struct power_supply *charger;
-+	bool initial_detection;
- };
- 
- /*
-@@ -86,11 +87,13 @@ static void usb_conn_detect_cable(struct work_struct *work)
- 	dev_dbg(info->dev, "role %s -> %s, gpios: id %d, vbus %d\n",
- 		usb_role_string(info->last_role), usb_role_string(role), id, vbus);
- 
--	if (info->last_role == role) {
-+	if (!info->initial_detection && info->last_role == role) {
- 		dev_warn(info->dev, "repeated role: %s\n", usb_role_string(role));
- 		return;
- 	}
- 
-+	info->initial_detection = false;
-+
- 	if (info->last_role == USB_ROLE_HOST && info->vbus)
- 		regulator_disable(info->vbus);
- 
-@@ -258,6 +261,7 @@ static int usb_conn_probe(struct platform_device *pdev)
- 	device_set_wakeup_capable(&pdev->dev, true);
- 
- 	/* Perform initial detection */
-+	info->initial_detection = true;
- 	usb_conn_queue_dwork(info, 0);
- 
- 	return 0;
+diff --git a/drivers/platform/x86/siemens/simatic-ipc.c b/drivers/platform/x86/siemens/simatic-ipc.c
+index 02c540cf4070..8ca6e277fa03 100644
+--- a/drivers/platform/x86/siemens/simatic-ipc.c
++++ b/drivers/platform/x86/siemens/simatic-ipc.c
+@@ -129,7 +129,7 @@ static int register_platform_devices(u32 station_id)
+ 		pdevname = KBUILD_MODNAME "_leds";
+ 		if (ledmode == SIMATIC_IPC_DEVICE_127E)
+ 			pdevname = KBUILD_MODNAME "_leds_gpio_apollolake";
+-		if (ledmode == SIMATIC_IPC_DEVICE_227G || SIMATIC_IPC_DEVICE_BX_59A)
++		if (ledmode == SIMATIC_IPC_DEVICE_227G || ledmode == SIMATIC_IPC_DEVICE_BX_59A)
+ 			pdevname = KBUILD_MODNAME "_leds_gpio_f7188x";
+ 		if (ledmode == SIMATIC_IPC_DEVICE_BX_21A)
+ 			pdevname = KBUILD_MODNAME "_leds_gpio_elkhartlake";
 -- 
-2.7.4
+2.25.1
 
