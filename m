@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C460676B1FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:35:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFBF76B200
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbjHAKfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51880 "EHLO
+        id S230209AbjHAKgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229832AbjHAKfo (ORCPT
+        with ESMTP id S230312AbjHAKg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:35:44 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F411719;
-        Tue,  1 Aug 2023 03:35:36 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3B8CDE0003;
-        Tue,  1 Aug 2023 10:35:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690886135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+SvrVZjf5OnwSU9GuipBXCgEg/NuLuQSUax9kncJoss=;
-        b=HuQzMwkymqd89YQoEOX2hMmEco1BS/rW1obWm9cNvo095SSLNpGDkjCz4UJ3BLDfoE9k4R
-        zp6KVAzYGP/2qHBCb4o10LhoepouFfTms8w662mMV28RDhnCwvJmkHWYJ9BenFcSakmPvx
-        FIb1TDkkeh6zFUNFCbsBC0CtVvmjR4CV9TWZG0vX63qv7Ohi+d/V747j0aBktlrPD1SEOh
-        UNofMfWXUwklIq9B+lA9UP0VitUrBr6kYB1ARn1gptVhxnGSAoqPaz+5E2ELot8RfdcQ5/
-        wnDuKt6RwwmpUwi1m19cZlmAcWrcpgYWun/8LKtFIdE4GE6cXVlVpF3MRMr2wg==
-Date:   Tue, 1 Aug 2023 12:35:30 +0200
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 21/28] dt-bindings: net: Add the Lantiq PEF2256
- E1/T1/J1 framer
-Message-ID: <20230801123530.3f92f5da@bootlin.com>
-In-Reply-To: <1f5fbf0a-90fe-491a-91c6-31fefd4b786f@lunn.ch>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
-        <20230726150225.483464-22-herve.codina@bootlin.com>
-        <1f5fbf0a-90fe-491a-91c6-31fefd4b786f@lunn.ch>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 1 Aug 2023 06:36:28 -0400
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB2FA1;
+        Tue,  1 Aug 2023 03:36:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1690886187; x=1722422187;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8CQkOodeAX2v+3iqUQV0g8XdgU4PFpg9fwufh1/EOFo=;
+  b=OZptjQ+t8XbduEcEIRtci9QdmTj4v3+30Nscp6kh3oKKKtGEAMo4/Pbf
+   JfwyJjdDD5rXIq4YoxpYf8XeB7dLjJUEwZVV1i3iOuR7ZVfimNYouIpBz
+   PYgL91WJ5uGs8l2Ea7pc3xfRlVtDB1mhkdQJv0qhqAvKRBk1b+bEymbMR
+   CRpFHrSGiIWMD/rXr2bXE+itYKouoZyme7GExPaL+lqdplKHRFqAnY9kt
+   k0kdOdVyPSCv6l74ooa985o1g/lKjAg/wP5N09coOD42+bFxqrB+geAVD
+   HftOvfpyD6Nboyq9RSgmtIlOG5d40THCZy6/bO2VeXPjG/xgCxvhv/li2
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,246,1684792800"; 
+   d="scan'208";a="32226638"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 01 Aug 2023 12:36:24 +0200
+Received: from localhost.localdomain (SCHIFFERM-M2.tq-net.de [10.121.49.20])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id A02B3280075;
+        Tue,  1 Aug 2023 12:36:24 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Santosh Shilimkar <ssantosh@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Jai Luthra <j-luthra@ti.com>, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux@ew.tq-group.com,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH 0/3] clk: keystone: syscon-clk: fixes for audio refclk
+Date:   Tue,  1 Aug 2023 12:36:06 +0200
+Message-Id: <cover.1690885413.git.matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 12:05:07 +0200
-Andrew Lunn <andrew@lunn.ch> wrote:
+Currently the driver uses of_clk_hw_onecell_get() for all clocks it
+manages, but this is incorrect for the audio refclk, which has 0 rather
+than 1 clock cell according to its binding documentation [1]; attempting
+to look up the clock when referenced like this in the Device Tree leads
+to errors, as uninitialized memory is passed to of_clk_hw_onecell_get()
+as the index.
 
-> > +  clocks:
-> > +    items:
-> > +      - description: Master clock
-> > +      - description: Receive System Clock
-> > +      - description: Transmit System Clock
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: mclk
-> > +      - const: sclkr
-> > +      - const: sclkx  
-> 
-> Nit pick, but "Receive System Clock", but "sclkr'. Maybe "System Clock
-> Receive" so you have the same word order?
-> 
+The actual fix is in patch 3; patches 1 and 2 are preparation and
+related cleanup. I've added a Fixes: tag to all 3 patches, as they
+need to be backported together.
 
-Will also change the 'Transmit System Clock' to 'System Clock Transmit'
+Matthias Schiffer (3):
+  clk: keystone: syscon-clk: use struct instead of array for match data
+  clk: keystone: syscon-clk: specify whether a parent is required in
+    match data
+  clk: keystone: syscon-clk: use of_clk_hw_simple_get() for audio refclk
 
-Regards,
-Hervé
+[1] https://www.kernel.org/doc/Documentation/devicetree/bindings/clock/ti,am62-audio-refclk.yaml
 
 
+ drivers/clk/keystone/syscon-clk.c | 73 ++++++++++++++++++++-----------
+ 1 file changed, 48 insertions(+), 25 deletions(-)
 
 -- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
+
