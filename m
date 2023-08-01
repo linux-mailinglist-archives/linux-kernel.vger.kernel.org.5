@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CA976AE9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E1176AE9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbjHAJkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40346 "EHLO
+        id S233331AbjHAJkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232312AbjHAJjy (ORCPT
+        with ESMTP id S233303AbjHAJjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Aug 2023 05:39:54 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3059319BD
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264021996
         for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:37:41 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fbd33a1819so48505e9.1
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31765792c7cso5679085f8f.0
         for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:37:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690882659; x=1691487459;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3M62lzMT5M72GxSXvEGzGefCfJz1y5FFBC42WxQiRug=;
-        b=Vb8cFPoJb2P0ZwPLqiNLSgQaAng02a45/GY4JR1Pxif45PUI+o75l36LyoVfmsACr7
-         Ka2pa1g2ANFFVJ1g1nbyNcVuo1VXmwhCrC5n9y7/PpD10hn/VwNgY4/Bta3E+ioc8sUD
-         rb/O6ElNeClwTaU6dhtthc29U+Y+xlZbokIoeoOhNiQ16FJ/QgUuIqGmqAJEvxXfD8Go
-         lW9x26DElmw/Yu1UJWK3yjYPczwlvFH0LxvpvlnYkBRtRy0/pe4Y41uDlnhU67dyPI7C
-         HVZFDlduORA2AAJevm8Vb+nhwFP0kMfG8X+BfVjJzFDGJa4a3oeYvHZjOhwX385/Hasx
-         Jggw==
+        d=linaro.org; s=google; t=1690882659; x=1691487459;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=KPQo2Sh4IXaPrcdWyouCsvWXkycrqlPg24jNznzZZU8=;
+        b=xPrZ0QsT+UCwbOrRmQ1iTIgW5yLAxZGGQqiow0SZZkONajlepMLeQGKf+pUxiUVpni
+         KPaXzaJpC85Lp8y3d1XsgoRj9+8WuvMQV9q1yMgrqGsFjlg8ivD+Pl3Q97MZQKakSd23
+         swWMMlKChNDlsbz8BTs96LibCclG20GI8kLt793fFNTbVeHQKp+Y6vq/rigZ92gZwktV
+         jdnOJU7RmWicqqlovnGi2z5Nvcom6MPsZrFYRGgsKfFFrEWVkHuvm9veLdSZaJqvyWzG
+         LnP3Yyc8mzEObLF17JiS/jyqK+RwPdm4zVmxzvoZ5ws04ay7y9PN0H38KB3dNKkoQfLF
+         vt6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1690882659; x=1691487459;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3M62lzMT5M72GxSXvEGzGefCfJz1y5FFBC42WxQiRug=;
-        b=BPpwZzDr7z7yqpkzK+hCdIqxS9w0NVpiERt/QlQ62sghNEB9Jigk0sYjxHP9VG8Q//
-         kUWLsWikHXIu1+s2Je4d9c2IIDUnxxpodc25A5YvQs3tlarV7FHaFQBggjtfO1SqJq8f
-         vmGyI/dv4CFAgHfHgr1TQ83AXc3EbGy2oqVeVk6H/wnSi1ZLOdPoW6MJgXGjAvTefAxh
-         NxlzXEMtcANAT3ATUcAmLZ/OUMfzz2Xaco7TS5E2AZFuBU9P9YLE5yt6wQTRu+vbIz4z
-         NTJPz0xYHChi/GU5tRHDnZsAudKxmONerBrGWuq68wcm/9OWA9gXyIYoidSCAPG8M6oL
-         ScVw==
-X-Gm-Message-State: ABy/qLZJrYVQ4cmD4q7ZTTcRTT85TwIxJRN/IardFx2pUI55dHPGN42v
-        Dwou+7qgrJm6sDBilpg6aetp5Pp0CBgPOJwT7COclg==
-X-Google-Smtp-Source: APBJJlH4ZnN9CuymbZd5SjWQ7VukNUlycKzANvGo/BKrgrjAwCHW6tOHt810QbdF94ncNyVp96NaRDmZnIwYqTfw9Ng=
-X-Received: by 2002:a05:600c:1c90:b0:3f1:6fe9:4a95 with SMTP id
- k16-20020a05600c1c9000b003f16fe94a95mr239758wms.4.1690882659519; Tue, 01 Aug
- 2023 02:37:39 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KPQo2Sh4IXaPrcdWyouCsvWXkycrqlPg24jNznzZZU8=;
+        b=L+Y5b04yJOkSTXB72UkMU6Co1o24jbwYmbZtiJI/Is/FL5BJdpPgnRM5w392kc61xI
+         Ek7IwVrTUa6aw3Sk82MI7xnHrrgRre5JyopBSB+PpVsLNQQt8DvIeUC7hr+XqqrAswih
+         C8CyaFDOyyY3D3olFEG+qSwTOkMAqesv+cNdlNGkHXixBdrKgs54WVSVI6KMMnS1L95T
+         f8eFelmYqUE+s4CmOFeFhVdc7CWPaS8P8A/XkEeiorxARZh+2DVfizlMXDfJ5B3ivued
+         kyBw77f2eDz92FvGR3d2SN1lEifyU7ZgL2Erxcf9Kb4dXSHjQON+032Xhprq/fgTeKJ8
+         YJBw==
+X-Gm-Message-State: ABy/qLb4BGtsO7HD/8svunCR1JiF4qj/bUOsh3p4r8UJAd976GH1jF/P
+        3ZT9ZHf4GP8v0B8Ry7mLBgyz/w==
+X-Google-Smtp-Source: APBJJlFbgnS1mG8QzPSLJ4CJ7E9E15Yo2VWKgpnJaJ46srodTeo/zkoTU+shqPjT/ZJ26C2M++xkdw==
+X-Received: by 2002:adf:ef8c:0:b0:317:62c3:13a7 with SMTP id d12-20020adfef8c000000b0031762c313a7mr1916263wro.19.1690882659482;
+        Tue, 01 Aug 2023 02:37:39 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:b92a:81a9:df6e:1e3? ([2a01:e0a:982:cbb0:b92a:81a9:df6e:1e3])
+        by smtp.gmail.com with ESMTPSA id n5-20020a5d6b85000000b0031455482d1fsm1771236wrx.47.2023.08.01.02.37.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 02:37:39 -0700 (PDT)
+Message-ID: <eb2b978d-cebb-b865-150d-8291ab5ab134@linaro.org>
+Date:   Tue, 1 Aug 2023 11:37:38 +0200
 MIME-Version: 1.0
-References: <20230731230736.109216-1-trdgn@amazon.com>
-In-Reply-To: <20230731230736.109216-1-trdgn@amazon.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 1 Aug 2023 11:37:27 +0200
-Message-ID: <CANn89iLV0iEeQy19wn+Vfmhpgr6srVpf3L+oBvuDyLRQXfoMug@mail.gmail.com>
-Subject: Re: [PATCH v2] tun: avoid high-order page allocation for packet header
-To:     Tahsin Erdogan <trdgn@amazon.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] drm/bridge: it6505: Check power state with
+ it6505->powered in IRQ handler
+Content-Language: en-US
+To:     Pin-yen Lin <treapking@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230727100131.2338127-1-treapking@chromium.org>
+Organization: Linaro Developer Services
+In-Reply-To: <20230727100131.2338127-1-treapking@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 1:07=E2=80=AFAM Tahsin Erdogan <trdgn@amazon.com> wr=
-ote:
->
-> When GSO is not enabled and a packet is transmitted via writev(), all
-> payload is treated as header which requires a contiguous memory allocatio=
-n.
-> This allocation request is harder to satisfy, and may even fail if there =
-is
-> enough fragmentation.
->
-> Note that sendmsg() code path limits the linear copy length, so this chan=
-ge
-> makes writev() and sendmsg() more consistent.
->
-> Signed-off-by: Tahsin Erdogan <trdgn@amazon.com>
+On 27/07/2023 12:01, Pin-yen Lin wrote:
+> On system resume, the driver might call it6505_poweron directly if the
+> runtime PM hasn't been enabled. In such case, pm_runtime_get_if_in_use
+> will always return 0 because dev->power.runtime_status stays at
+> RPM_SUSPENDED, and the IRQ will never be handled.
+> 
+> Use it6505->powered from the driver struct fixes this because it always
+> gets updated when it6505_poweron is called.
+> 
+> Fixes: 5eb9a4314053 ("drm/bridge: it6505: Guard bridge power in IRQ handler")
+> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> 
 > ---
+> 
+>   drivers/gpu/drm/bridge/ite-it6505.c | 4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
+> index 6c2fcd8b8780..2f300f5ca051 100644
+> --- a/drivers/gpu/drm/bridge/ite-it6505.c
+> +++ b/drivers/gpu/drm/bridge/ite-it6505.c
+> @@ -2517,9 +2517,11 @@ static irqreturn_t it6505_int_threaded_handler(int unused, void *data)
+>   	};
+>   	int int_status[3], i;
+>   
+> -	if (it6505->enable_drv_hold || pm_runtime_get_if_in_use(dev) <= 0)
+> +	if (it6505->enable_drv_hold || !it6505->powered)
+>   		return IRQ_HANDLED;
+>   
+> +	pm_runtime_get_sync(dev);
+> +
+>   	int_status[0] = it6505_read(it6505, INT_STATUS_01);
+>   	int_status[1] = it6505_read(it6505, INT_STATUS_02);
+>   	int_status[2] = it6505_read(it6505, INT_STATUS_03);
 
-I will have to tweak one existing packetdrill test, nothing major.
-
-Tested-by: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-
-Thanks.
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
