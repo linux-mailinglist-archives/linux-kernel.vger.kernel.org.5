@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF75876BB2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A334676BB32
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbjHAR1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36208 "EHLO
+        id S232364AbjHAR2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbjHAR1H (ORCPT
+        with ESMTP id S234944AbjHAR2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:27:07 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707F8CC
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:27:04 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bcf2de59cso923051066b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:27:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20221208.gappssmtp.com; s=20221208; t=1690910823; x=1691515623;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zEQoCBAZE+MrFQ0nMFtOlsgCpzDjMhKc4sVhqgkx9HM=;
-        b=SAGRQppniqtpk3rcPElEYgz1NyJdUcNTggSyjoc0wjKjaftLOjT3ugkqywXIIETU74
-         6BtJ7wrTbFM18bf+Ih3ZqtGJXzUTh+NCWcKLkqb7riKqO9wJFFp4rtHIFscwrh21nVPk
-         VI//uuh4Roe2Q7ZNsz3pDzaVhsnZsOaumgPXhIoKTWXWwzxN1VMm1JLRmxGb8SC1rdHY
-         lTNVhRQMXVdGbZJJnuliITa6FvOWoY/DjLZqI2CWp8OM0ckByB16AVQ87sjeGlV2h9de
-         ph+v5rind7isXpqv63AY/5C9xrxFm3drQ6VIZ2ZA1W2+FOb/MJwrEca1YX/EnMBGlCS7
-         fVvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690910823; x=1691515623;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zEQoCBAZE+MrFQ0nMFtOlsgCpzDjMhKc4sVhqgkx9HM=;
-        b=liSK+q5Q6qcWiRzujwHsKMWQTJTLTCZBZ9/XkST9IXsVUAG846SsHJCLFTCGi9SMXP
-         nCXTxY5sGdD7dkFsoCRO3+WI/JexYxMpCqraQqFItgAVv4y10cNmGLFhHVcp9rWHLX03
-         195wPlVniNoGCXfCc1j2JgZ8mhEpUjvmNI2xk2mg3E2n1gSUV6C7jGDAqyn1c9l2IBUa
-         Jhoua+E6Bp8cAH2vytfs6UAwPmI/u9pJl+N6W8jaFFtN9FxXmkr8WKNPxz8PyxX18wdA
-         82HZxBsx7IPq3DJzISrvgFA2ZWGf5JBkkZmoQVcx+FemnLhagHlgCylw8twUsndElYYh
-         IZwQ==
-X-Gm-Message-State: ABy/qLZAl3PDV95riyNUqlHbDHZKMsEFbuXqIH0HGIB6mo8JfZKqqulk
-        +7RsP9npLU41ACWSIRYEMaJEIw==
-X-Google-Smtp-Source: APBJJlEYA4oxxOGVRYBjWgY0YEmsYh+uGbqMnSpHCYWTwyPci+Bj1hZ6C2f4wy1loM47PlodnHEOHA==
-X-Received: by 2002:a17:906:53cd:b0:99b:c2d4:ddd8 with SMTP id p13-20020a17090653cd00b0099bc2d4ddd8mr3250035ejo.31.1690910822788;
-        Tue, 01 Aug 2023 10:27:02 -0700 (PDT)
-Received: from localhost ([212.23.236.67])
-        by smtp.gmail.com with ESMTPSA id i10-20020a170906250a00b009931baa0d44sm8029171ejb.140.2023.08.01.10.27.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 10:27:02 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 19:27:01 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Anvesh Jain P <quic_ajainp@quicinc.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Hangbin Liu <liuhangbin@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andy Ren <andy.ren@getcruise.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Venkata Rao Kakani <quic_vkakani@quicinc.com>,
-        Vagdhan Kumar <quic_vagdhank@quicinc.com>
-Subject: Re: [PATCH] net: export dev_change_name function
-Message-ID: <ZMlAZdWX3EToTUVT@nanopsycho>
-References: <20230801112101.15564-1-quic_ajainp@quicinc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801112101.15564-1-quic_ajainp@quicinc.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 13:28:09 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B5DB0;
+        Tue,  1 Aug 2023 10:28:08 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id BE1443200786;
+        Tue,  1 Aug 2023 13:28:05 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 01 Aug 2023 13:28:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1690910885; x=1690997285; bh=pB
+        pYc/Pf6EGtAPeRfMhWXTZpwXc2kxuh9RaouaWP5Dw=; b=Nsg+7TxwZjrfPQ0oUg
+        Rd6gTA3CErwZSNBVie63BRxs9h6FBgRV8/3PuKHqUYEnEu3EEDOP/AbKtmrfpkjJ
+        46ImZDp7lFRV/tj/HFACQRWOcj5TxnOi/hbEtOxu4jUButpFnUeW8+oEfXeHBIvG
+        eBPQtO0a7cXSeUc3auFEgkTwJIJI59b9LKX2LKqr91BoXjLrh2rWJNH9S0vwTpGE
+        L7YIZ9G3s3aeQyceSuNmGtF+TJ6nMDEShXsE93eVw1TmBypL7a/FUH8eHvXCXkE0
+        kR/AiAPMnXicENica8y8iVSx1GpQ35nyyE8opqcofFl1LJz2Xr4Rp5tSUfBsgSXe
+        MvLA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690910885; x=1690997285; bh=pBpYc/Pf6EGtA
+        PeRfMhWXTZpwXc2kxuh9RaouaWP5Dw=; b=iSXVeUBA4GKKpcMQFBgspREN365eW
+        PnF8/KeAneSZRg+gggl2J22u5eeTprMXHUdYbwL3BUu2kyDdT2OHTeiyPx377FNc
+        P4sR5zN4z899zJWyPPNDRon85E/tOnRiwhHBLR5xCrDnN1DTkKD+Fc6gvnzAnPoR
+        ZFPOquO0ss5gy11sOamUF4bSvbQYZfsf40rXSxF82/dTSax4b8TQq9fXAMEKf/iB
+        DFsKR85PcSwvKR938w2M/GGWKRRmEnp3Y3bR+RNXmU0nW+Pv3RIqvXDjr/Gxwigt
+        u9XfYQflMIeCjja0l4jB29FW9O5y1BRf97KAMfhrcTcCM9M7stfNLEVyQ==
+X-ME-Sender: <xms:pEDJZCFHMoIEi0_cCZO9ZwJjueZCHRyMR8Ofe90iDsIUayKJ2v7tyw>
+    <xme:pEDJZDULshMJlCAsK9bRZmQQvbtyTFUISO0rbDPHpv-pipkNqFmiotqAFCbUFO-ee
+    lJQb-MWRkI_AvKyXs0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigdduuddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:pEDJZMK7HJugwr8VpLH6EMN-UDvUKPbLpsyTkSJibenVWxwhp7h0dg>
+    <xmx:pEDJZMGpp3NkTYEKgECHYNFL6sA_UWIdH_kUZumSIxGEw2qKJjT2SA>
+    <xmx:pEDJZIVxFvnTVTrD5zzJL_VewZKxdu_9DmgyCr298k7iArTkmIQg3A>
+    <xmx:pUDJZJsHq8hLtjehM9o8mpkXz_eDn5miyg0-GrtI6QKuzmxrs1qONA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9176CB60089; Tue,  1 Aug 2023 13:28:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+Mime-Version: 1.0
+Message-Id: <b795ccdf-ad53-407e-ba01-a703e353b3fb@app.fastmail.com>
+In-Reply-To: <z3gp6rcrlotwjwux7chza4vmbgv747v5jlr4xhuaad3y2yofsf@jjiju6zltbmh>
+References: <20230801150304.1980987-1-arnd@kernel.org>
+ <z3gp6rcrlotwjwux7chza4vmbgv747v5jlr4xhuaad3y2yofsf@jjiju6zltbmh>
+Date:   Tue, 01 Aug 2023 19:27:33 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Daniel Xu" <dxu@dxuuu.xyz>, "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
+        "Jozsef Kadlecsik" <kadlec@netfilter.org>,
+        "Florian Westphal" <fw@strlen.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Eric Dumazet" <edumazet@google.com>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        "Paolo Abeni" <pabeni@redhat.com>,
+        "Alexei Starovoitov" <ast@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] netfilter: bpf_link: avoid unused-function warning
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tue, Aug 01, 2023 at 01:21:01PM CEST, quic_ajainp@quicinc.com wrote:
->export dev_change_name function to be used by other modules.
+On Tue, Aug 1, 2023, at 17:20, Daniel Xu wrote:
+> Hi Arnd,
 >
->Signed-off-by: Vagdhan Kumar <quic_vagdhank@quicinc.com>
->Signed-off-by: Anvesh Jain P <quic_ajainp@quicinc.com>
->---
-> net/core/dev.c | 1 +
-> 1 file changed, 1 insertion(+)
+> On Tue, Aug 01, 2023 at 05:02:41PM +0200, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> The newly added function is unused in some random configurations:
+>> 
+>> net/netfilter/nf_bpf_link.c:32:1: error: 'get_proto_defrag_hook' defined but not used [-Werror=unused-function]
+>>    32 | get_proto_defrag_hook(struct bpf_nf_link *link,
+>>       | ^~~~~~~~~~~~~~~~~~~~~
+>> 
 >
->diff --git a/net/core/dev.c b/net/core/dev.c
->index 69a3e544676c..1dad68e2950c 100644
->--- a/net/core/dev.c
->+++ b/net/core/dev.c
->@@ -1254,6 +1254,7 @@ int dev_change_name(struct net_device *dev, const char *newname)
-> 
-> 	return err;
-> }
->+EXPORT_SYMBOL(dev_change_name);
-> 
-> /**
->  *	dev_set_alias - change ifalias of a device
->
->base-commit: 0a8db05b571ad5b8d5c8774a004c0424260a90bd
+> This was fixed in 81584c23f249 ("netfilter: bpf: Only define 
+> get_proto_defrag_hook() if necessary").
 
-nack.
-1) there is no in-tree user
-2) changing name from anywhere else than userspace does not make any
-   sense. I'll eat my shoes if there is a sane reason for it.
+Ok, I guess this will be in tomorrow's linux-next then, right?
 
-Please don't send patches like this.
-
-
->-- 
->2.17.1
->
+    Arnd
