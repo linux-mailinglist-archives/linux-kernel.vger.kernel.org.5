@@ -2,147 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA1276ACC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7F676ACC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232844AbjHAJTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47334 "EHLO
+        id S232570AbjHAJUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231766AbjHAJSl (ORCPT
+        with ESMTP id S232346AbjHAJT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:18:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAF92121
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:16:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690881390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6K6y/X0lpa6BY0LxE0wc3D6uW028bWOkYEEOCtf5xMw=;
-        b=F1iO+czbOWxnH131/1tV3T/VezJxXxn89wX4s7pqmQJXYnYoNqKMHJ6HQmbqQh1juUDSM8
-        W6tLUjvmgz7mijSHc/2DPoDvxmpsKcoC1mFagfqUiIUCS4ZwXTeu2v2RkZM+5kXSP3tZrP
-        kIgV9EjNvP8FDL5siss5x0fpQLz3/y4=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-283-OiCUrQp0PoSF7oEJ_UHnVw-1; Tue, 01 Aug 2023 05:16:29 -0400
-X-MC-Unique: OiCUrQp0PoSF7oEJ_UHnVw-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4054266d0beso12922531cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:16:29 -0700 (PDT)
+        Tue, 1 Aug 2023 05:19:28 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D4944B5
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:17:41 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-3fbab0d0b88so44061255e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:17:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690881456; x=1691486256;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hNhI+9VQvWbiJBwN1rE6OrRPhOX1EdA1Xn7je9kaQf8=;
+        b=upxHVZn58HFzd0k+OMuD5NU/TpL6b/xYEFEHoZmFzEqWvAP444F+aDXHB1G7pc2VzR
+         SRE9JW+4wT7wTPEfDrdMi8kzKbtl3632+aynPLlEb7wM2HSFaq/TTzsThyTOU0WMtZo9
+         bCgRzzf3c95VN5lnU3qHXMv9ZMCI0Tl8M9Ix/krTa5R/8Ate5eYyYMlXE0BFrV4F3JrN
+         ID5IcKRGCu4CM/f1FMmaQdv8isVbS+1SZLM3ErNoUYO16Cn2R5AyDecjQ9ypTJwgRo2G
+         PMZ57mf9DRsXGVIGGxi7WUGJGt0SGiXvjBzgllRxBFV4ddkeDTkZdn7jo8ZrlI813VW9
+         LUug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690881388; x=1691486188;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6K6y/X0lpa6BY0LxE0wc3D6uW028bWOkYEEOCtf5xMw=;
-        b=V6KLfzYhvhAQ8n8bi/Z/RgVnKk2T5VQttcV/E/y6oRUgVj1DvyT5Y06NZD3axRhafS
-         P9CImCChJEJYSzspiFJmfpQygzMu3BzbVmBcpoIgwV6rpxtcxWjR3curXh69FAAHwiu3
-         OUWByPIP8bxCTpEiVTyS1pH2eldE03WhdtEd0/TmtDTtRAktvXTPimjH8vz8k0dJoaMV
-         LGjizt/NzANYkLhgkj7Qq0CM84WMsGHDLP0ddKSKdtc/NKrBTdftoyfNSw7VVd7DvGUg
-         lhk4BICpbPmj1QzJMZIfjguWV2aff63XIYVioD0aeyav68m6dQtIuMOb49Oa+RUg86di
-         iaZg==
-X-Gm-Message-State: ABy/qLbm0iT1iOACHB+oWmmege2elahFW9UZLN8UsmoNmKK4QCVHZP5T
-        obazvhsYyPuSsVblekivf6Gj8aPhQqFBA9pM5siObUxYO5zbcbHAp1ZOgt6auc4yMn3Io+z0b4B
-        BiU0rAfiPQui7XT0/gbm4YqYU
-X-Received: by 2002:ac8:7d90:0:b0:40a:6359:2120 with SMTP id c16-20020ac87d90000000b0040a63592120mr11996451qtd.0.1690881388638;
-        Tue, 01 Aug 2023 02:16:28 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFsAGqmtM1V8U+ivRkVF/ZXpfBg5no8ZWT/4ga3JgRoRvBVkRVKkW2MgFfc8tHkIojui6RpFQ==
-X-Received: by 2002:ac8:7d90:0:b0:40a:6359:2120 with SMTP id c16-20020ac87d90000000b0040a63592120mr11996437qtd.0.1690881388400;
-        Tue, 01 Aug 2023 02:16:28 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-225-251.dyn.eolo.it. [146.241.225.251])
-        by smtp.gmail.com with ESMTPSA id oo18-20020a05620a531200b007592f2016f4sm4009416qkn.110.2023.08.01.02.16.26
+        d=1e100.net; s=20221208; t=1690881456; x=1691486256;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hNhI+9VQvWbiJBwN1rE6OrRPhOX1EdA1Xn7je9kaQf8=;
+        b=A65zOV+1IrBW6EQ/URhZ++y4AomcBa0HFpa/Odi3D3MduNjwcUWYSSm/MdnDhvfcMF
+         5iSqvCSOHGTSu40ZRzSHcrWTa8UyzI8mB2SYRokBPR8Kb31C2F7hH/ntYvD6S5Rnhhih
+         ULddR6aYBpt8quTh1zO5wPDdKP6cLbv4IdLCUB1SFaCx+FjgPiANUwGV3ohFY8HBT8Lb
+         LQ7N29IdrhjIZqAcMC+3QOxdb5S6mxXkZkowQ4nWtAi6JeuMmcN7OrDj5CaxuQoATTSA
+         mp7NQ2e4slVmWeV1WUjwL7D5rrDwAOdGJLYGxH0kKnwGUaFH9WMR86/AcSVqEgofGzi5
+         FgYA==
+X-Gm-Message-State: ABy/qLZ3aDQGiMOcrEhz9odJArwpgJFwn7bcjlCvNBbBUikxguCBOFJu
+        GtcOlBwXs7f3qAyftwXtEHvo1g==
+X-Google-Smtp-Source: APBJJlGUtKBun7QGdW0Syq7pYELabUOBAfMqSTMjItKjZmxXLaBeWWkjT7/UL5CMxkfLCNkC1RVjJg==
+X-Received: by 2002:a05:600c:1d9e:b0:3fe:20f1:fb2 with SMTP id p30-20020a05600c1d9e00b003fe20f10fb2mr1840135wms.6.1690881455734;
+        Tue, 01 Aug 2023 02:17:35 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.gmail.com with ESMTPSA id f2-20020a7bc8c2000000b003fbc9b9699dsm13575810wml.45.2023.08.01.02.17.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 02:16:28 -0700 (PDT)
-Message-ID: <9912df2897bed863ad541807354d49db95970668.camel@redhat.com>
-Subject: Re: [PATCH v3 1/2] net: phy: at803x: fix the wol setting functions
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Leo Li <leoyang.li@nxp.com>, Andrew Lunn <andrew@lunn.ch>,
-        Luo Jie <quic_luoj@quicinc.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Bauer <mail@david-bauer.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Viorel Suman <viorel.suman@nxp.com>,
-        Wei Fang <wei.fang@nxp.com>
-Date:   Tue, 01 Aug 2023 11:16:24 +0200
-In-Reply-To: <AM0PR04MB6289323F6F93E197103A225D8F05A@AM0PR04MB6289.eurprd04.prod.outlook.com>
-References: <20230728215320.31801-1-leoyang.li@nxp.com>
-         <20230728215320.31801-2-leoyang.li@nxp.com>
-         <8071d8c5-1da3-47a0-9da2-a64ee80db6e5@lunn.ch>
-         <AM0PR04MB6289323F6F93E197103A225D8F05A@AM0PR04MB6289.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 01 Aug 2023 02:17:35 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, Komal Bajaj <quic_kbajaj@quicinc.com>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230801064025.17381-1-quic_kbajaj@quicinc.com>
+References: <20230801064025.17381-1-quic_kbajaj@quicinc.com>
+Subject: Re: [PATCH v6 0/2] nvmem: sec-qfprom: Add Qualcomm secure QFPROM
+ support
+Message-Id: <169088145482.47901.8484654769480683561.b4-ty@linaro.org>
+Date:   Tue, 01 Aug 2023 10:17:34 +0100
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-07-31 at 14:58 +0000, Leo Li wrote:
-> > -----Original Message-----
-> > From: Andrew Lunn <andrew@lunn.ch>
-> > Sent: Saturday, July 29, 2023 3:14 AM
-> > To: Leo Li <leoyang.li@nxp.com>
-> > Cc: Heiner Kallweit <hkallweit1@gmail.com>; Russell King
-> > <linux@armlinux.org.uk>; David S . Miller <davem@davemloft.net>; Jakub
-> > Kicinski <kuba@kernel.org>; David Bauer <mail@david-bauer.net>;
-> > netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Viorel Suman
-> > <viorel.suman@nxp.com>; Wei Fang <wei.fang@nxp.com>
-> > Subject: Re: [PATCH v3 1/2] net: phy: at803x: fix the wol setting funct=
-ions
-> >=20
-> > On Fri, Jul 28, 2023 at 04:53:19PM -0500, Li Yang wrote:
-> > > In commit 7beecaf7d507 ("net: phy: at803x: improve the WOL feature"),
-> > > it seems not correct to use a wol_en bit in a 1588 Control Register
-> > > which is only available on AR8031/AR8033(share the same phy_id) to
-> > > determine if WoL is enabled.  Change it back to use
-> > > AT803X_INTR_ENABLE_WOL for determining the WoL status which is
-> > > applicable on all chips supporting wol. Also update the
-> > > at803x_set_wol() function to only update the 1588 register on chips h=
-aving
-> > it.
-> >=20
-> > Do chips which do not have the 1588 register not have WoL? Or WoL
-> > hardware is always enabled, but you still need to enable the interrupt.
->=20
-> Some of them do and some don't, which is removed in the other patch
-> from the series.  Since I don't find the register to enable it, I
-> guess it always enabled.
->=20
-> >=20
-> > Have you tested on a range of PHY? It might be better to split this pat=
-ch up a
-> > bit. If it causes regressions, having smaller patches can make it easie=
-r to find
-> > which change broken it.
->=20
-> No, I only have AR8035 to test with.  Changes for other chips are
-> according to the datasheet.  It would be good if others having the
-> hardware can test it too.
 
-Adding Luo Jie for awareness.
+On Tue, 01 Aug 2023 12:10:23 +0530, Komal Bajaj wrote:
+> Changes in v6 -
+>  - Removed '|' from description in binding.
+>  - Removed the header inclusion under the example in the binding.
+>  - Removed devm_pm_runtime_enable() api as there is no pm runtime handlers or users
+>    in this driver as of now.
+>  - Not keeping Bjorn's reviewed tag as removing the above mentioned api.
+> 
+> [...]
 
-@Luo Jie: do you have access to other chips handled by this driver
-other then AR8035? could you please test this series:
+Applied, thanks!
 
-https://patchwork.kernel.org/project/netdevbpf/list/?series=3D770734
+[1/2] dt-bindings: nvmem: sec-qfprom: Add bindings for secure qfprom
+      commit: 050cd7f49580f2710a11edbc11be5a7ec5b4d8ab
+[2/2] nvmem: sec-qfprom: Add Qualcomm secure QFPROM support
+      commit: 9c7f2bce8a0e26d162ba8de6706b2c0557bb63cd
 
-?
-
-Thanks!
-
-Paolo
+Best regards,
+-- 
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
