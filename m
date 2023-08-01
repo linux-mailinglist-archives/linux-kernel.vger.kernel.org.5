@@ -2,92 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C80976A7EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C3A76A7F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbjHAEep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 00:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
+        id S230519AbjHAElX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 00:41:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjHAEem (ORCPT
+        with ESMTP id S229461AbjHAElV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 00:34:42 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C39919AA
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 21:34:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
- s=s31663417; t=1690864460; x=1691469260; i=efault@gmx.de;
- bh=PQ8MYzj7tx0D6eyvzO9rkGF0u0ZBtZ1Vj9Zolp3Zmx0=;
- h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
- b=YbRUkFlYSVkvCC9TeMj+MwFmupcB/MFDA9zQN46l5LO8ICf3jNyeodX7Xo8JDJS2c1Upc/5
- SqdhcWof1uIM4L3S0aNgAI1hasjD7sjoJfjFUK+eNDgfNvrtgwizpVqCjfub/FUbb1rMD+6Ss
- 0jkE7A5dZGrI1F/L02pjUTv2vdpfoMVcbVjyLSjPw0DvSvCD0lEegZveKbjXMw1hSJ0k/DUCC
- LnUovKQy6OGwy5rAqPiKLz6BqlZfmzz0FgLdLPbeSY3k/IXYdWlfKPa3Pi0Z+PibCw9zryZqR
- /79UZVsWK9nepAMAPmcXSwzhgi+snFt22p5bG25G0dMVkoGxUGvg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer-2.fritz.box ([185.191.216.56]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MCsQ4-1qZWn53Sz2-008pJl; Tue, 01
- Aug 2023 06:34:19 +0200
-Message-ID: <7b94619ad89c9e308c7aedef2cacfa10b8666e69.camel@gmx.de>
-Subject: Re: arm64: perf test 26 rpi4 oops
-From:   Mike Galbraith <efault@gmx.de>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>, Will Deacon <will@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
-        ardb@kernel.org
-Date:   Tue, 01 Aug 2023 06:34:15 +0200
-In-Reply-To: <21777dec0233b1bc65f51764ead9a03efa9baa64.camel@gmx.de>
-References: <b39c62d29a431b023e98959578ba87e96af0e030.camel@gmx.de>
-         <20230728141852.GA21718@willie-the-truck>
-         <8c56256399e2e6c41bc574749d6170d5529f24fc.camel@gmx.de>
-         <20230731104340.GA24767@willie-the-truck>
-         <20230731115207.GB24767@willie-the-truck>
-         <CAA5enKaUYehLZGL3abv4rsS7caoUG-pN9wF3R+qek-DGNZufbA@mail.gmail.com>
-         <CAA5enKYaZ-daLeL3amr2QrQjtUdK=P8B+VbJdea7cB77QWY-eQ@mail.gmail.com>
-         <42ad26cb6c98e028a331f5d73abf85bd965ff89d.camel@gmx.de>
-         <21777dec0233b1bc65f51764ead9a03efa9baa64.camel@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+        Tue, 1 Aug 2023 00:41:21 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486CFE5C;
+        Mon, 31 Jul 2023 21:41:20 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3714NSLe014598;
+        Tue, 1 Aug 2023 04:41:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=NrULh4nHCxDCKZEJwHsBPzOeEYRj8Qd4Tn2IDZGMods=;
+ b=bOUCXaDwiXKNHTWn7mxB4HGd6OQzK5Wbawbf/P9IDedSM3Xw27mUzn+36RQbr6l65xO9
+ D/PcTW6GKXAFF/l5SGwvDhWpLGC4vGvHJ/oGvcvd0k+a9d/fv9jzonnRJHfaqbuHwNNy
+ qmzQco7Rjqem4wCDJc6O7oagfaAIC029hZhoJgukGV6Bg/sXGfszm+HW11I6ke3Wa9S2
+ WLsA2tUgqG4Uvmrm8BqdnflLoPWi1JUgr9opn8Nk83c+t+5ifKDa82i2YAJKa4N5vRWw
+ c0S5erSNtbRPysnNagDd872/M5HQ+O4WesdGhs+oSthTjh7MneUXTbglzTVf7a2ntbAa zA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6gs7h61m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 04:41:14 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3714fCsK013818
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 04:41:12 GMT
+Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 31 Jul 2023 21:41:08 -0700
+Date:   Tue, 1 Aug 2023 10:11:04 +0530
+From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>
+CC:     Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Chris Lew <quic_clew@quicinc.com>,
+        Alex Elder <elder@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>
+Subject: Re: [PATCH 2/4] soc: qcom: aoss: Add debugfs interface for sending
+ messages
+Message-ID: <0ec53a07-0b7d-47d1-9589-32c841cb691e@quicinc.com>
+References: <20230731041013.2950307-1-quic_bjorande@quicinc.com>
+ <20230731041013.2950307-3-quic_bjorande@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:WF3o3Z0bH2Jh5FJFVwqfBurryUQqVFhkgFUlgp+VVvU+OVw0AGw
- QAz0GFvzDjTkZQB8FaLgyXtvzRytLzU7XnREyEStVVyylPaD6/03bJTo9QpxGs7bfG1SwpG
- E9gDpFRF54ylKwBgdpBuPTM4enkVRVv03+aUmdsyabgWWrw28zO6TG2GdLTyOx6vM/58IAT
- 8Wgk/VkKaRaP6UtRl3w3Q==
-UI-OutboundReport: notjunk:1;M01:P0:oLZsSaxHviY=;4N930vPxC4j4xtc5eq3Gv50vNdp
- gzgf00bVdOURdq2BJydI9Y7XtyR+rEGKwA48rFTXFvkyalyLWVhi7XioDdlgJZmJckb02wWd1
- ias8jRGMyAo5TyqD5vsjoRcnv9g8LIseWBdTyAaqDAPOCCLufMkxPNl6oCiT0DCQLn6qM4pSC
- TA9hqF6y6mgg8TK63QoNfAvxG3bI8a/f2oc5sSGn4QJN3jAWFALhGCPnE3AeapSP3SuPQnQuB
- CIACf8ZNOXIE4WEkvFbWMXqLXASRcm5ZLmVzF/yK+ysOzDfvvPAOvCqRdxWvxAN8b1lNrZJlV
- aGDhbNblZdCtAw+fUSSBlMSyg2WQw9VNoYopUcOVRK2pLzQH58LB4Wm2/P7qv0HolbIjxaeAR
- X6Fb9EcA7BLzxdHshVl0EeUNsN2zQcou1Q603P0lptxGGqXkhNKDPVCoOJ3txDnBal/LvHQ/W
- lP7rAnODNAHxKk5ndV4MwFO28+LcUOmh+mXJcQZ7FgDMefBBw6KXJ7daqcCStcG9HkN3ps7h8
- QjVplKKqBJ/DAZ/rJXVv+ScM4S3fJrQSWn0r5gTYZAK6dZTClLJTsqW04YCJMfUmTc3EKXQUP
- 25omxqPZFGvzCGQXL8JjzjRPDgQAiAKv1ajBFwxVgRzneQ1p6Plo805m4AiA9R05XZpUSZExq
- hp3Qdb4SXkgmjA4Lg1qJrI/Wz86BIYe4wsJN2HaSwKmD1apf/42v9aH+gGdfwYhyRZUbIs7oj
- hziXgMhmXLlVX3WkVGvuDLx9E/4Qt4io5uYSjiotyIEo43f7uRt5d7wF+ooBCrkb0u0nZYpwg
- lQ+7AOave/L70w2IaY7dN9XNivEHAYK3eslbSEeycBiWoqB07caOGm8whCkqwoLDyB9ZKocQP
- VySoJa03iXV9QNVAgNXIIYKUgSFmnF5kryb4r7eZDGaBIpUa2tbh2l3Xxhd2xoUFDd3vF/KhL
- 4fg6V+Lv2vJhpQldUO5Y1KIhwbA=
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230731041013.2950307-3-quic_bjorande@quicinc.com>
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 3MsnKKYdkAj5LINRduz0Jk4jJ6CFECB-
+X-Proofpoint-ORIG-GUID: 3MsnKKYdkAj5LINRduz0Jk4jJ6CFECB-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_01,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
+ adultscore=0 malwarescore=0 suspectscore=0 lowpriorityscore=0
+ mlxlogscore=681 spamscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308010042
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-08-01 at 01:48 +0200, Mike Galbraith wrote:
->
-> root@rpi4:~# dmesg|tail -2
-> [=C2=A0 979.003019] __vm_enough_memory: pid: 12439, comm: objdump, not e=
-nough memory for the allocation
-> [=C2=A0 979.003080] __vm_enough_memory: pid: 12439, comm: objdump, not e=
-nough memory for the allocation
+On Sun, Jul 30, 2023 at 09:10:11PM -0700, Bjorn Andersson wrote:
+> From: Chris Lew <clew@codeaurora.org>
+> 
+> In addition to the normal runtime commands, the Always On Processor
+> (AOP) provides a number of debug commands which can be used during
+> system debugging for things such as preventing power collapse or placing
+> floor votes for certain resources. Some of these are documented in the
+> Robotics RB5 "Debug AOP ADB" linked below.
+> 
+> Provide a debugfs interface for the developer/tester to send these
+> commands to the AOP.
+> 
+> Link: https://docs.qualcomm.com/bundle/publicresource/topics/80-88500-3/85_Debugging_AOP_ADB.html
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> [bjorn: Dropped debugfs guards, improve error codes, rewrote commit message]
+> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
 
-Ancient bug droppings are due to VMALLOC_END-VMALLOC_START=3D265885319168.
+Thanks Bjorn and Chris for enabling this interface. It will be very useful. 
+We use this interface  in downstream kernel during throughput/suspend issues debug. 
+I have tested your series with v6.4 on SM8550 and it works as expected.
 
-	-Mike
+Thanks,
+Pavan
