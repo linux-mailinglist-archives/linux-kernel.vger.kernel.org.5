@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CED176C12C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 01:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA4276C12D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 01:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbjHAXmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 19:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
+        id S230155AbjHAXol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 19:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbjHAXmt (ORCPT
+        with ESMTP id S229657AbjHAXoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 19:42:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE7E268E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 16:42:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F14861779
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:42:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCDCDC433C8;
-        Tue,  1 Aug 2023 23:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690933347;
-        bh=z0fmdgzeuoBofNmQQG5TKdCgYOx55EJdXWUBZ5kbeUQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MyPQmhGyJhqdhOy1gTnoZUeiHQGBf/BZ6Lhs/RNyDwzX0pqQnwxFZavOb3fuBRGGD
-         JA23Je9StEtBOlW5+W9EsEEzAiU1pLNLgNzDZrFLQ9zCRjU9rXVVosbM6bOD0FEaV2
-         ZGkg3OjuR9wVf4Uu+XNxFlUMwihPt7ELBGnUIjgaix9wGe8OfRrhYXDBavKrZNk6L3
-         1JkM3pt0CgaWootK5miPPEEAWmgTnZ4jBkUYCoQsy4qhrfH6+D/bpqEPiLjvp8UwZs
-         4N/BS58hWGt62As9/khpNr967iCcPG2B6+VZGAXFLRFxveR4LOWxDq/HM1S4HbxKDL
-         viGmJoawal45g==
-Date:   Wed, 2 Aug 2023 01:42:24 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Feng Liu <feliu@nvidia.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH] virtio: Remove PM #ifdef guards to fix i2c driver
-Message-ID: <20230801234224.e33sikkjug276ktt@intel.intel>
-References: <20230801105846.3708252-1-arnd@kernel.org>
- <c809220b8f10c6c9a3d05bbbd416fbb27d654d2d.camel@crapouillou.net>
+        Tue, 1 Aug 2023 19:44:39 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5652C1B1;
+        Tue,  1 Aug 2023 16:44:38 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b74fa5e7d7so94579011fa.2;
+        Tue, 01 Aug 2023 16:44:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690933476; x=1691538276;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VwrhWFrL0STvLWQ/w2Am6pHectUZNMaxuCR7s7TmsPs=;
+        b=BVZd6vuNbd5uEEFwbFF8xxtnbvzhTqsFMkwqnapndb/x4MMANmKzVC87oRfVxKSdZ7
+         iWigSJ4l4baVJdsbp+zwwTmxyMxoWXzejvZ0v0r7C3TFCWb/zjz4O74nHi+RXSPs31Ch
+         iriv142DyY8aLsvq8gPKFNQjLj1J75t3GvXyK+voPQVNeh6sD7WXfExRd4NkVBuH/peq
+         FPUmJhah5QOHpaL2OZo6AQdnQc0BImoRhoE/j1eJIiRXqd5r1hYENB/jw1/0Q9dDVX+s
+         yKrxgEl/hxcLvSQb4BVupC0DXr85if/LbuI4JFj0/6VJr2CLM/C/3f+/mi1i/ODyIQg5
+         UA+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690933476; x=1691538276;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VwrhWFrL0STvLWQ/w2Am6pHectUZNMaxuCR7s7TmsPs=;
+        b=OI2nHNF4FGK3qTVBkRfwqJWAmmuceG9EtrvsuRExKrRq48coX4R6RSsCKgYp08OKnx
+         BpIWHJZ8UDlVnbN+aCayelYqQ691NGI51uUVIJmQKGyku8cnH8+BuDJdHXfPUip5TGHi
+         cBfE5NXqqtBx6S+tPzcQkmGw92ejg2V/4SlhBc7exORBBPS0tpKoi+XxPF+XrhCQwzta
+         TAKulkLfeN0yGjUys6VpIz39pp9gDugHL5MzTkYuRzu98tMLLTo1V+qe8dMJOG1gGwZV
+         LfYUEEau7gZ3pnp+McqSwibnvWtgqVCWkO1I8i1upOMk9ZlG41ACojjOz06FJyGus43d
+         1wBA==
+X-Gm-Message-State: ABy/qLZXx+jF4+7JS4bX4nZir0T0qVNhffdvuA9abLX3SPP1WoN2qhe3
+        YDIT4wAw//HEyzh/aVYSeCYAxXOsiHJEmB9SDbU=
+X-Google-Smtp-Source: APBJJlGgjHvM7HlL8CTFgXK+BeAFXQBa/Y6rrShLDW4K5b1rEe1Iav5Nl5zoU693Yn5fZYIXEChETxsmaoPrpL56Q10=
+X-Received: by 2002:a2e:2e0c:0:b0:2b9:2e85:2f9b with SMTP id
+ u12-20020a2e2e0c000000b002b92e852f9bmr3788105lju.2.1690933475988; Tue, 01 Aug
+ 2023 16:44:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c809220b8f10c6c9a3d05bbbd416fbb27d654d2d.camel@crapouillou.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+ <169078863449.173706.2322042687021909241.stgit@devnote2> <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+ <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org> <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
+ <20230802000228.158f1bd605e497351611739e@kernel.org> <20230801112036.0d4ee60d@gandalf.local.home>
+ <20230801113240.4e625020@gandalf.local.home> <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
+ <20230801190920.7a1abfd5@gandalf.local.home>
+In-Reply-To: <20230801190920.7a1abfd5@gandalf.local.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 1 Aug 2023 16:44:24 -0700
+Message-ID: <CAADnVQ+WPw0pfGAk+z=hCVrSmCBkKuh8GJm-5bkq5Ow7Md3sGA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a struct/union
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -66,35 +86,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Aug 1, 2023 at 4:09=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org>=
+ wrote>
+> Then I recommend that you give up using fprobes and just stick with kprob=
+es
+> as that's guaranteed to give you full pt_regs (at the overhead of doing
+> things like filing in flags and such). And currently for arm64, fprobes c=
+an
+> only work with ftrace_regs, without the full pt_regs.
 
-On Wed, Aug 02, 2023 at 01:06:47AM +0200, Paul Cercueil wrote:
-> Hi,
-> 
-> Le mardi 01 août 2023 à 12:58 +0200, Arnd Bergmann a écrit :
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > A cleanup in the virtio i2c caused a build failure:
-> > 
-> > drivers/i2c/busses/i2c-virtio.c:270:10: error: 'struct virtio_driver'
-> > has no member named 'freeze'
-> > drivers/i2c/busses/i2c-virtio.c:271:10: error: 'struct virtio_driver'
-> > has no member named 'restore'
-> > 
-> > Change the structure definition to allow this cleanup to
-> > be applied everywhere.
-> > 
-> > Fixes: 73d546c76235b ("i2c: virtio: Remove #ifdef guards for PM
-> > related functions")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> 
-> Thanks, I didn't realize it was merged already.
-> 
-> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+bpf doesn't attach to fprobes directly. That was never requested.
+But Jiri's work to support multi attach
+https://lore.kernel.org/bpf/20220316122419.933957-1-jolsa@kernel.org/
+was a joint effort with Masami that relied on fprobe multi attach api.
+register_fprobe_ips() in particular, because the promise you guys
+give us that callback will get pt_regs as
+described in Documentation/trace/fprobe.rst.
+From bpf side we don't care that such pt_regs is 100% filled in or
+only partial as long as this pt_regs pointer is valid for perf_event_output
+and stack walking that consume pt_regs.
+I believe that was and still is the case for both x86 and arm64.
 
-Actually this fix is taken from linux-next, it's not in
-Wolfram's branch, it's in mine. I can still force-push a fixed
-version in Paul's original patch in order to avoid breaking the
-bisectability.
-
-Andi
+The way I understood Masami's intent is to change that promise and
+fprobe callback will receive ftrace_regs that is incompatible with
+pt_regs and that's obviously bad.
+What you're suggesting "give up on using fprobe" is not up to us.
+We're not using them. We care about register_fprobe_ips() and what
+callback receives. Whatever internal changes to fprobe you're doing
+are ok as long as the callback receives valid pt_regs (even partially fille=
+d).
