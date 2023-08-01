@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FB476B710
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C8D76B743
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234468AbjHAOR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:17:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
+        id S234614AbjHAOXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:23:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234474AbjHAORX (ORCPT
+        with ESMTP id S232086AbjHAOXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:17:23 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C10BF;
-        Tue,  1 Aug 2023 07:17:22 -0700 (PDT)
-Received: from [192.168.88.20] (91-154-35-171.elisa-laajakaista.fi [91.154.35.171])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 370C63D4;
-        Tue,  1 Aug 2023 16:16:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690899378;
-        bh=PW3ghibNBXTd6EXpRXCpq11Kf2aUAXCBKDNCa3a/LVQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=bfAKJQwzWwcBdjtMl3e/kzF8yk3E+Dok316L5RTBHt7p4wohHcvU5xyNsNrlRfEy6
-         Qy5wshJQ6vq8vlpURlDF8OIunTFFfcQDi5xlso/sxpq/bzvAncm9aFwk3uJQlIbclL
-         9G4vKOsxkprz+wPHhm9Rm/zqQoXDKetZLAyJFCH4=
-Message-ID: <68c3c37c-f324-0879-9d70-4df93a445614@ideasonboard.com>
-Date:   Tue, 1 Aug 2023 17:17:17 +0300
+        Tue, 1 Aug 2023 10:23:33 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E360210FA;
+        Tue,  1 Aug 2023 07:23:31 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 75D63120016;
+        Tue,  1 Aug 2023 17:23:30 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 75D63120016
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1690899810;
+        bh=Dhl5VAnaWylNbHoKrXzioSowOtsINKSs8oGEKA4Q7pI=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=NcvrA8wpjg/MbNAyQwwpENo8S7bUvvQCVh+GezYVaOoQy2obioQ8d6B/ksIV6Wvn3
+         r7EXKDHPEC7ypgbw4y1UVx+YjQycS2uwy2t9DeOuYkmo+djCbWVN0v2iP8ks/fd3Fw
+         Al7LFCcTgscdqYAJx6oP8IZMgMa/K3MaLR83gl6pzgLzyxPEVl6+YZBHmCF3hvZKQW
+         F6+xstEs+v+gH4BiqSBU9v1WdCE1EqojOP8Jh7Ys9XbCKgbx6d0FD11drTdqj1ZEKJ
+         fh1wE26SF7wuT4houzipSd547/+yMTgRFdQt2L9cPMufYt005/AdYDoStSJ606Egnl
+         7RoUppofJvR9g==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Tue,  1 Aug 2023 17:23:30 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 1 Aug 2023 17:23:26 +0300
+From:   Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@sberdevices.ru>,
+        Arseniy Krasnov <AVKrasnov@sberdevices.ru>
+Subject: [RFC PATCH v1 0/2] vsock: handle writes to shutdowned socket
+Date:   Tue, 1 Aug 2023 17:17:25 +0300
+Message-ID: <20230801141727.481156-1-AVKrasnov@sberdevices.ru>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 11/16] media: cadence: csi2rx: Fix stream data
- configuration
-Content-Language: en-US
-To:     Jai Luthra <j-luthra@ti.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Benoit Parrot <bparrot@ti.com>,
-        Vaishnav Achath <vaishnav.a@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>, nm@ti.com,
-        devarsht@ti.com
-References: <20230731-upstream_csi-v8-0-fb7d3661c2c9@ti.com>
- <20230731-upstream_csi-v8-11-fb7d3661c2c9@ti.com>
-From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-In-Reply-To: <20230731-upstream_csi-v8-11-fb7d3661c2c9@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/07/23 10:45:00
+X-KSMG-LinksScanning: Clean, bases: 2023/07/23 10:46:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/07/2023 11:29, Jai Luthra wrote:
-> From: Pratyush Yadav <p.yadav@ti.com>
-> 
-> Firstly, there is no VC_EN bit present in the STREAM_DATA_CFG register.
-> Bit 31 is part of the VL_SELECT field. Remove it completely.
-> 
-> Secondly, it makes little sense to enable ith virtual channel for ith
-> stream. Sure, there might be a use-case that demands it. But there might
-> also be a use case that demands all streams to use the 0th virtual
-> channel. Prefer this case over the former because it is less arbitrary
-> and also makes it very clear what the limitations of the current driver
-> is instead of giving a false impression that multiple virtual channels
-> are supported.
-> 
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-> Signed-off-by: Jai Luthra <j-luthra@ti.com>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> ---
-> v7->v8: No change
-> 
->   drivers/media/platform/cadence/cdns-csi2rx.c | 8 +++++---
->   1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
-> index a17ef88dff82..cde7fd6463e1 100644
-> --- a/drivers/media/platform/cadence/cdns-csi2rx.c
-> +++ b/drivers/media/platform/cadence/cdns-csi2rx.c
-> @@ -49,7 +49,6 @@
->   #define CSI2RX_STREAM_STATUS_RDY			BIT(31)
->   
->   #define CSI2RX_STREAM_DATA_CFG_REG(n)		(CSI2RX_STREAM_BASE(n) + 0x008)
-> -#define CSI2RX_STREAM_DATA_CFG_EN_VC_SELECT		BIT(31)
->   #define CSI2RX_STREAM_DATA_CFG_VC_SELECT(n)		BIT((n) + 16)
->   
->   #define CSI2RX_STREAM_CFG_REG(n)		(CSI2RX_STREAM_BASE(n) + 0x00c)
-> @@ -275,8 +274,11 @@ static int csi2rx_start(struct csi2rx_priv *csi2rx)
->   		writel(CSI2RX_STREAM_CFG_FIFO_MODE_LARGE_BUF,
->   		       csi2rx->base + CSI2RX_STREAM_CFG_REG(i));
->   
-> -		writel(CSI2RX_STREAM_DATA_CFG_EN_VC_SELECT |
-> -		       CSI2RX_STREAM_DATA_CFG_VC_SELECT(i),
-> +		/*
-> +		 * Enable one virtual channel. When multiple virtual channels
-> +		 * are supported this will have to be changed.
-> +		 */
-> +		writel(CSI2RX_STREAM_DATA_CFG_VC_SELECT(0),
->   		       csi2rx->base + CSI2RX_STREAM_DATA_CFG_REG(i));
->   
->   		writel(CSI2RX_STREAM_CTRL_START,
-> 
+Hello,
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+this small patchset adds POSIX compliant behaviour on writes to the
+socket which was shutdowned with 'shutdown()' (both sides - local with
+SHUT_WR flag, peer - with SHUT_RD flag). According POSIX we must send
+SIGPIPE in such cases (but SIGPIPE is not send when MSG_NOSIGNAL is set).
 
-  Tomi
+First patch is implemented in the same way as net/ipv4/tcp.c:tcp_sendmsg_locked().
+It uses 'sk_stream_error()' function which handles EPIPE error. Another
+way is to use code from net/unix/af_unix.c:unix_stream_sendmsg() where
+same logic from 'sk_stream_error()' is implemented "from scratch", but
+it doesn't check 'sk_err' field. I think error from this field has more
+priority to be returned from syscall. So I guess it is better to reuse
+currently implemented 'sk_stream_error()' function.
+
+Test is also added.
+
+Head for this patchset is:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=9d0cd5d25f7d45bce01bbb3193b54ac24b3a60f3
+
+Arseniy Krasnov (2):
+  vsock: send SIGPIPE on write to shutdowned socket
+  test/vsock: shutdowned socket test
+
+ net/vmw_vsock/af_vsock.c         |   3 +
+ tools/testing/vsock/vsock_test.c | 138 +++++++++++++++++++++++++++++++
+ 2 files changed, 141 insertions(+)
+
+-- 
+2.25.1
 
