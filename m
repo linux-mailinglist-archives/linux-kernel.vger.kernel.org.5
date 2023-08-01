@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4FC76A812
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CAFA76A817
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbjHAEzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 00:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39800 "EHLO
+        id S229950AbjHAE6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 00:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjHAEz3 (ORCPT
+        with ESMTP id S229437AbjHAE6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 00:55:29 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DD3E10F0;
-        Mon, 31 Jul 2023 21:55:28 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-2681223aaacso3345527a91.0;
-        Mon, 31 Jul 2023 21:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690865728; x=1691470528;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xm+NQg63nei7eSygCGRvfNU1X/Ez/FEbkTbiDrAjRXc=;
-        b=fumgTrisajvYGWBKltv4U12/ivqioC94+AVlzPGDlQTPklivkFo4cICciZJXedvy7F
-         daaW+Okh+FfR02DuSzKrXn8emgIXnRw6uACKQF2jR61AQeNxcm8kmdmIGQe4//zV6FXT
-         EKdySqNNJNg8XUF9f2Hc6W8hPZtGjGwJXBW9Ut8B6BaUIs5CGvAOZ7eYIq88xmFOYzxD
-         nvHKoPFoobgLvd1kQSGZaFL+jRaXQUjkiHu3HwMegkxq+p1LkdqrkRVxsSAgrJ4ZnPln
-         m3gR55tMq6jrg0NIHUaRh+uqRNVFT+bKr3BLZGYZjmP8RkluUGO6xAibAxuWDxwZPUMm
-         2G6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690865728; x=1691470528;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xm+NQg63nei7eSygCGRvfNU1X/Ez/FEbkTbiDrAjRXc=;
-        b=TMzRZQ+NEqILKvMHTsCeMNXqaW0BwJQX1BQM8IAYvnzv/6ORGFPstlnU9R8pER4Cro
-         vlmKRbVOnbarroTT3IGzk04t5GhvyDZnu3ELnCkH7rY2S9F7CyBhofGezyXmKt9tYaJu
-         pNUNVxneZ3PbpP9eyMoTQD+tUl0FaJWQ8BC3XACxB8LNWajLxthuVbOfcS4YNlJHV+BP
-         P3Ih+8XXKyUM7zk2jZAIcXFQUcVipB6dKcf+GWKyvUBc76Y49tekHUj2iHmGryw5lsJU
-         e7wcFscAZNxLNfB6QIyeFx/3iUTkR8mpVf0KwcNO+LlpIza5aqnJMt6qzihbb1msDqaV
-         lkpQ==
-X-Gm-Message-State: ABy/qLYTmFqtlcgNtp8G7S5uRDIF17gD2L7b7n5FasV8FCCvol+PMIEg
-        fABdiHUf5nt/Q8KgXtoznGs=
-X-Google-Smtp-Source: APBJJlHtuYUJSuXxEP0N8UIPKfYl+Roqonwn80qc1IHczfRRE3eIDkuHxzm+m/DnHDSr81P6UDlXSA==
-X-Received: by 2002:a17:90b:3b8a:b0:268:8ff2:5c0d with SMTP id pc10-20020a17090b3b8a00b002688ff25c0dmr13113769pjb.17.1690865728032;
-        Mon, 31 Jul 2023 21:55:28 -0700 (PDT)
-Received: from localhost.localdomain (199.180.119.18.16clouds.com. [199.180.119.18])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c20d00b001aaecc0b6ffsm9417843pll.160.2023.07.31.21.55.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 21:55:27 -0700 (PDT)
-From:   zhouscd <zhouscd@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
-        m.grzeschik@pengutronix.de, john@keeping.me.uk,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhouscd <zhouscd@gmail.com>
-Subject: [PATCH] USB: gadget: Fix the function name error in sourcesink/loopback.
-Date:   Mon, 31 Jul 2023 21:54:49 -0700
-Message-Id: <20230801045449.156348-1-zhouscd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 1 Aug 2023 00:58:43 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC7B1FC0;
+        Mon, 31 Jul 2023 21:58:42 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3711fvgV012636;
+        Tue, 1 Aug 2023 04:58:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=KZxbaDO7QuMFAxblJFKDY2rmUCa1JzWd9myMgUGIk38=;
+ b=B5SiWdzYNVNwLOXeBOrmelu/6YBhoa9szETVNitnX72H1o0dVsTlgqypn9EEyxOyf5Gn
+ yygL7kszE2g+WadPhdxwoq2CGWTDGP4aRpZUjuWn2C6z65cFqheTYljN4F785f0v2LQ6
+ E0AlMEUpEojFAihm0bcCPWMjQL/z4UD42kvEuP7nM32I8tf5N0iLQJ0aqhAzPxnWZySQ
+ izctGn02d2Uyvtlvo1ZAIIOrfB6Z66MVzlZBeOgzkC+GHq4iAnHM5xDcSbiV/YqFpdpW
+ JlweTBsCRwHNXitF8FUNMDWVPJ1olk9MY1VSHUHZdHggpANfSB4AeAiyCZCfng+DQMv4 sQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6fak9far-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 04:58:29 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3714wS8t010784
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 04:58:28 GMT
+Received: from [10.217.219.237] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 21:58:22 -0700
+Message-ID: <5481d9ca-4ba0-2545-131b-4a80669061c3@quicinc.com>
+Date:   Tue, 1 Aug 2023 10:28:18 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v2 2/6] dt-bindings: phy: qcom,qmp: Add sa8775p QMP PCIe
+ PHY
+To:     Andrew Halaney <ahalaney@redhat.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mani@kernel.org>,
+        <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
+        <dmitry.baryshkov@linaro.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>
+References: <1689311319-22054-1-git-send-email-quic_msarkar@quicinc.com>
+ <1689311319-22054-3-git-send-email-quic_msarkar@quicinc.com>
+ <132e9514-7eb9-8915-6130-5bf656c1aaac@linaro.org>
+ <ca51b1dc-5805-5b01-01e0-a7dff535cb6c@quicinc.com>
+ <y7tuvgc7r4o6jhe7hhyqxaksalld4zn5ou53ywdkwfrp2y773v@z3nvbgd2i6lz>
+Content-Language: en-US
+From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
+In-Reply-To: <y7tuvgc7r4o6jhe7hhyqxaksalld4zn5ou53ywdkwfrp2y773v@z3nvbgd2i6lz>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 0kT6QFnbvNxd5NXSxvMwm7KtVb1BwWqB
+X-Proofpoint-GUID: 0kT6QFnbvNxd5NXSxvMwm7KtVb1BwWqB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_01,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 spamscore=0 clxscore=1011 impostorscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308010045
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,93 +98,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Inconsistent function names can cause the USB config FS not work.
 
-Signed-off-by: zhouscd <zhouscd@gmail.com>
----
- drivers/usb/gadget/function/f_loopback.c   | 13 +----------
- drivers/usb/gadget/function/f_sourcesink.c | 25 ++--------------------
- drivers/usb/gadget/function/g_zero.h       |  3 ---
- 3 files changed, 3 insertions(+), 38 deletions(-)
+On 7/25/2023 11:21 PM, Andrew Halaney wrote:
+> On Fri, Jul 21, 2023 at 04:33:20PM +0530, Mrinmay Sarkar wrote:
+>> On 7/17/2023 12:55 PM, Krzysztof Kozlowski wrote:
+>>> On 14/07/2023 07:08, Mrinmay Sarkar wrote:
+>>>> Add devicetree YAML binding for Qualcomm QMP PCIe PHY
+>>>> for SA8775p platform.
+>>>>
+>>>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+>>>> ---
+>>>>    .../bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml      | 19 ++++++++++++++++++-
+>>>>    1 file changed, 18 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>>>> index a0407fc..ca55ed9 100644
+>>>> --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>>>> +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>>>> @@ -16,6 +16,8 @@ description:
+>>>>    properties:
+>>>>      compatible:
+>>>>        enum:
+>>>> +      - qcom,sa8775p-qmp-gen4x2-pcie-phy
+>>>> +      - qcom,sa8775p-qmp-gen4x4-pcie-phy
+>>>>          - qcom,sc8280xp-qmp-gen3x1-pcie-phy
+>>>>          - qcom,sc8280xp-qmp-gen3x2-pcie-phy
+>>>>          - qcom,sc8280xp-qmp-gen3x4-pcie-phy
+>>>> @@ -30,7 +32,7 @@ properties:
+>>>>      clocks:
+>>>>        minItems: 5
+>>>> -    maxItems: 6
+>>>> +    maxItems: 7
+>>>>      clock-names:
+>>>>        minItems: 5
+>>>> @@ -41,6 +43,7 @@ properties:
+>>>>          - const: rchng
+>>>>          - const: pipe
+>>>>          - const: pipediv2
+>>>> +      - const: phy_aux
+>>>>      power-domains:
+>>>>        maxItems: 1
+>>>> @@ -141,6 +144,20 @@ allOf:
+>>>>            compatible:
+>>>>              contains:
+>>>>                enum:
+>>>> +              - qcom,sa8775p-qmp-gen4x2-pcie-phy
+>>>> +              - qcom,sa8775p-qmp-gen4x4-pcie-phy
+>>>> +    then:
+>>>> +      properties:
+>>>> +        clocks:
+>>>> +          minItems: 7
+>>>> +        clock-names:
+>>>> +          minItems: 7
+>>>> +
+>>>> +  - if:
+>>>> +      properties:
+>>>> +        compatible:
+>>>> +          contains:
+>>>> +            enum:
+>>> This probably works but is not obvious and easy to read. You have here
+>>> if:then:else: block, so else applies to your variant. Change all these
+>>> if clauses for clocks into separate clauses per matching variant
+>>> (if:then: ... if:then:... if:then:...)
+> As far as I can tell, this actually doesn't work :(
+>
+>>> Best regards,
+>>> Krzysztof
+>> My Bad here, This patch already applied we will take care this in next patch
+>> set.
+>>
+>> Thanks,
+>> Mrinmay
+>>
+> Mrinmay, do you plan on spinning what Krzysztof suggested? I grabbed
+> linux-next today and ran into this (looks like clocks, clock-names in
+> binding is broken and looks like we're either missing the required
+> power-domain in the dts or it isn't actually required):
+>
+>      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % git diff
+>      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1 DT_SCHEMA_FILES=phy/qcom,sc8280xp-qmp-pcie-phy.yaml qcom/sa8775p-ride.dtb
+>        UPD     include/config/kernel.release
+>        LINT    Documentation/devicetree/bindings
+>        CHKDT   Documentation/devicetree/bindings/processed-schema.json
+>        SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>      /home/ahalaney/git/linux-next/Documentation/devicetree/bindings/power/qcom,kpss-acc-v2.yaml: ignoring, error parsing file
+>        DTC_CHK arch/arm64/boot/dts/qcom/sa8775p-ride.dtb
+>      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c04000: 'power-domains' is a required property
+>          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+>      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c04000: clocks: [[31, 66], [31, 68], [31, 94], [31, 72], [31, 74], [31, 77], [31, 70]] is too long
+>          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+>      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c04000: clock-names: ['aux', 'cfg_ahb', 'ref', 'rchng', 'pipe', 'pipediv2', 'phy_aux'] is too long
+>          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+>      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c14000: 'power-domains' is a required property
+>          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+>      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c14000: clocks: [[31, 80], [31, 82], [31, 94], [31, 86], [31, 88], [31, 91], [31, 84]] is too long
+>          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+>      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c14000: clock-names: ['aux', 'cfg_ahb', 'ref', 'rchng', 'pipe', 'pipediv2', 'phy_aux'] is too long
+>          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
+>      ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1    7.65s user 0.52s system 99% cpu 8.231 total
+>      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] %
+>      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] %
+>      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] %
+>      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % # Total hack just to show our issues in current binding
+>      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % git diff
+>      diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>      index ca55ed9d74ac..5476cf2422da 100644
+>      --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>      +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
+>      @@ -87,7 +87,6 @@ required:
+>         - reg
+>         - clocks
+>         - clock-names
+>      -  - power-domains
+>         - resets
+>         - reset-names
+>         - vdda-phy-supply
+>      @@ -132,12 +131,6 @@ allOf:
+>                 maxItems: 5
+>               clock-names:
+>                 maxItems: 5
+>      -    else:
+>      -      properties:
+>      -        clocks:
+>      -          minItems: 6
+>      -        clock-names:
+>      -          minItems: 6
+>       
+>         - if:
+>             properties:
+>      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1 DT_SCHEMA_FILES=phy/qcom,sc8280xp-qmp-pcie-phy.yaml qcom/sa8775p-ride.dtb
+>        UPD     include/config/kernel.release
+>        LINT    Documentation/devicetree/bindings
+>        CHKDT   Documentation/devicetree/bindings/processed-schema.json
+>        SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+>      /home/ahalaney/git/linux-next/Documentation/devicetree/bindings/power/qcom,kpss-acc-v2.yaml: ignoring, error parsing file
+>        DTC_CHK arch/arm64/boot/dts/qcom/sa8775p-ride.dtb
+>      ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1    7.58s user 0.87s system 98% cpu 8.618 total
+>      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] %
+>
+>
+> Thanks,
+> Andrew
 
-diff --git a/drivers/usb/gadget/function/f_loopback.c b/drivers/usb/gadget/function/f_loopback.c
-index ae41f556eb75..45f542b5ff55 100644
---- a/drivers/usb/gadget/function/f_loopback.c
-+++ b/drivers/usb/gadget/function/f_loopback.c
-@@ -583,16 +583,5 @@ static struct usb_function_instance *loopback_alloc_instance(void)
- 
- 	return  &lb_opts->func_inst;
- }
--DECLARE_USB_FUNCTION(Loopback, loopback_alloc_instance, loopback_alloc);
--
--int __init lb_modinit(void)
--{
--	return usb_function_register(&Loopbackusb_func);
--}
--
--void __exit lb_modexit(void)
--{
--	usb_function_unregister(&Loopbackusb_func);
--}
--
-+DECLARE_USB_FUNCTION_INIT(loopback, loopback_alloc_instance, loopback_alloc);
- MODULE_LICENSE("GPL");
-diff --git a/drivers/usb/gadget/function/f_sourcesink.c b/drivers/usb/gadget/function/f_sourcesink.c
-index 6803cd60cc6d..f6d1c095aa2c 100644
---- a/drivers/usb/gadget/function/f_sourcesink.c
-+++ b/drivers/usb/gadget/function/f_sourcesink.c
-@@ -858,7 +858,7 @@ static struct usb_function *source_sink_alloc_func(
- 	ss->bulk_qlen = ss_opts->bulk_qlen;
- 	ss->iso_qlen = ss_opts->iso_qlen;
- 
--	ss->function.name = "source/sink";
-+	ss->function.name = "sourcesink";
- 	ss->function.bind = sourcesink_bind;
- 	ss->function.set_alt = sourcesink_set_alt;
- 	ss->function.get_alt = sourcesink_get_alt;
-@@ -1263,27 +1263,6 @@ static struct usb_function_instance *source_sink_alloc_inst(void)
- 
- 	return &ss_opts->func_inst;
- }
--DECLARE_USB_FUNCTION(SourceSink, source_sink_alloc_inst,
-+DECLARE_USB_FUNCTION_INIT(sourcesink, source_sink_alloc_inst,
- 		source_sink_alloc_func);
--
--static int __init sslb_modinit(void)
--{
--	int ret;
--
--	ret = usb_function_register(&SourceSinkusb_func);
--	if (ret)
--		return ret;
--	ret = lb_modinit();
--	if (ret)
--		usb_function_unregister(&SourceSinkusb_func);
--	return ret;
--}
--static void __exit sslb_modexit(void)
--{
--	usb_function_unregister(&SourceSinkusb_func);
--	lb_modexit();
--}
--module_init(sslb_modinit);
--module_exit(sslb_modexit);
--
- MODULE_LICENSE("GPL");
-diff --git a/drivers/usb/gadget/function/g_zero.h b/drivers/usb/gadget/function/g_zero.h
-index 98b8462ad538..c1ea28526c73 100644
---- a/drivers/usb/gadget/function/g_zero.h
-+++ b/drivers/usb/gadget/function/g_zero.h
-@@ -62,9 +62,6 @@ struct f_lb_opts {
- 	int				refcnt;
- };
- 
--void lb_modexit(void);
--int lb_modinit(void);
--
- /* common utilities */
- void disable_endpoints(struct usb_composite_dev *cdev,
- 		struct usb_ep *in, struct usb_ep *out,
--- 
-2.25.1
+Hi Andrew,
+Yes, as I mentioned earlier we have plan to send the fixes for this.
+
+Thanks,
+Mrinmay
 
