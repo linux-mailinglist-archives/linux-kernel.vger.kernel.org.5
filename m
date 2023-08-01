@@ -2,69 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B18F76AA71
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3401E76AA70
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbjHAIBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:01:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57334 "EHLO
+        id S231754AbjHAIAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229917AbjHAIBV (ORCPT
+        with ESMTP id S231354AbjHAIAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:01:21 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762C8198D
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:01:20 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40c72caec5cso223621cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 01:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690876879; x=1691481679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xwyr19S0TCJZ5VuRNPaLImVIGikcLg8N0JXke6/SZ1Q=;
-        b=TpIV2fBhjggI66wGECsWZWeQ/ITLWwvObDTn0TOXgtXaOwsaIwcvUx3CRPZBz9C4XI
-         mEAVcn632crZhGSjgl4yAV8HGSEJn3M4V4A5bUqJDmVCdWZDE0nBxjlqqKYgb6c8QnGQ
-         qsmlTaxME7oKUowgbnEX9VF/cP797ZrXOyeExljKsJ9yI9SZho7Za4BR+l0dFrdRuUXf
-         bFj/Vy4i3AQn8+P7IzImbZ7Z9oPUgD5BHIpgJxlJs12bI28IyrgJAUSbu3OQ08ebHpXp
-         94O/+zQxuo47SkaZtti722A3uDu40DdkETYphXqrfUhL4cNit8o6N84aiS0dNYi6lCgO
-         thvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690876879; x=1691481679;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xwyr19S0TCJZ5VuRNPaLImVIGikcLg8N0JXke6/SZ1Q=;
-        b=YEEH9m2pLb1ajOMEUDeDwta+FXtWpI7yvIeNKrqivBUG6hGA1hEtWB67PXKYcIJgzX
-         YMUUiupAS+eOF9arIDsMSbu2WkhCFZAFgCxFA4ICYkq8RVRBvPg1+qvhNz1mm1wPWDIE
-         KSV0dqpBaXBkTkek1sBpY/PThjrFBNEuVd27TUfjouHTO6Q4NiiZtJaKpjOWSF3XyJmE
-         Lnk1EmahkqsSfr5xGxDfPiYn87IOB1OjExoSLnsFqwdpdRtlu7kV0jC+QeRA8Fdcj4p9
-         uZeM0JGjXLbhyq6kmqWYQelh+4qU6iP2Mt7cseAvBBMt5RpfOxZRGBmaCFNq0GE7dfTp
-         iepA==
-X-Gm-Message-State: ABy/qLYVYR5im9EDo/U5B8xjHqzY2lOnf5/N69MOB+abEuyIkZMFz6gt
-        CpeRbzuoMxPFNCOQRDj2x+dtnuKlgCcMebpY4/6R5Q==
-X-Google-Smtp-Source: APBJJlGbJiCGi2WbzNRkqn+UGG9iYkhXZLgCWzz0KD+IVaAUeE8KywhNcy+qIOAh1L8FgvI0JPmRabMsYQzNkljIiYY=
-X-Received: by 2002:a05:622a:1447:b0:3f4:f0fd:fe7e with SMTP id
- v7-20020a05622a144700b003f4f0fdfe7emr597315qtx.3.1690876879525; Tue, 01 Aug
- 2023 01:01:19 -0700 (PDT)
+        Tue, 1 Aug 2023 04:00:52 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B43D199F
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:00:50 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VooXfeW_1690876846;
+Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VooXfeW_1690876846)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 16:00:47 +0800
+Message-ID: <d5d3dc39-c825-f040-1c1e-ae6c53921331@linux.alibaba.com>
+Date:   Tue, 1 Aug 2023 16:01:14 +0800
 MIME-Version: 1.0
-References: <20230731104833.800114-1-mshavit@google.com> <20230731184817.v2.2.I1ef1ed19d7786c8176a0d05820c869e650c8d68f@changeid>
- <ZMiGs5dR6IKF855y@Asurada-Nvidia>
-In-Reply-To: <ZMiGs5dR6IKF855y@Asurada-Nvidia>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Tue, 1 Aug 2023 16:00:43 +0800
-Message-ID: <CAKHBV27cemBkU9e-=UMNizwnEjWScEK1bNzy8O_X7K55Da0aCA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/8] iommu/arm-smmu-v3: Replace s1_cfg with cdtab_cfg
-To:     Nicolin Chen <nicolinc@nvidia.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, will@kernel.org,
-        robin.murphy@arm.com, jgg@nvidia.com, jean-philippe@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/8] mm/compaction: avoid missing last page block in
+ section after skip offline sections
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        mgorman@techsingularity.net, willy@infradead.org, david@redhat.com
+References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
+ <20230728171037.2219226-2-shikemeng@huaweicloud.com>
+ <6e76323f-a1cc-7d20-676e-4eccdbcf6b91@linux.alibaba.com>
+ <9b207dbf-1652-4851-7c6e-16220d5f2f3b@huaweicloud.com>
+ <a4a4c935-d7c8-ffba-cf51-6eaeb88ed19c@huaweicloud.com>
+ <cb028072-6cf7-05b5-cc47-fddd8f5b1174@linux.alibaba.com>
+ <6921ae7e-0c30-0934-168c-9480ca30108f@huaweicloud.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <6921ae7e-0c30-0934-168c-9480ca30108f@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,41 +50,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 12:15=E2=80=AFPM Nicolin Chen <nicolinc@nvidia.com> =
-wrote:
->
-> On Mon, Jul 31, 2023 at 06:48:12PM +0800, Michael Shavit wrote:
->
-> > arm_smmu_ctx_desc_cfg is renamed to arm_smmu_cdtab_cfg to make it more
->
-> There seems to be no change of renaming "arm_smmu_ctx_desc_cfg" to
-> "arm_smmu_cdtab_cfg". Even PATCH-8 only renames the local variable
-> "cdcfg" to "cd_table". Also, we should not use PATCH-8 to justify
-> this change, because it makes this patch less convincing since the
-> PATCH-8 might not get applied at all.
-
-Oof sorry for the mixup. I made the change described in the changelog
-but then undid it based on the last few messages of the last thread.
-This commit is identical to the v1 change where cdcfg is only renamed
-to cd_table in places that we touch.
-Will fix the message.
 
 
+On 8/1/2023 2:08 PM, Kemeng Shi wrote:
+> 
+> 
+> on 8/1/2023 11:53 AM, Baolin Wang wrote:
+>>
+>>
+>> On 8/1/2023 10:36 AM, Kemeng Shi wrote:
+>>>
+>>>
+>>> on 8/1/2023 10:18 AM, Kemeng Shi wrote:
+>>>>
+>>>>
+>>>> on 7/31/2023 8:01 PM, Baolin Wang wrote:
+>>>>>
+>>>>>
+>>>>> On 7/29/2023 1:10 AM, Kemeng Shi wrote:
+>>>>>> skip_offline_sections_reverse will return the last pfn in found online
+>>>>>> section. Then we set block_start_pfn to start of page block which
+>>>>>> contains the last pfn in section. Then we continue, move one page
+>>>>>> block forward and ignore the last page block in the online section.
+>>>>>> Make block_start_pfn point to first page block after online section to fix
+>>>>>> this:
+>>>>>> 1. make skip_offline_sections_reverse return end pfn of online section,
+>>>>>> i.e. pfn of page block after online section.
+>>>>>> 2. assign block_start_pfn with next_pfn.
+>>>>>>
+>>>>>> Fixes: f63224525309 ("mm: compaction: skip the memory hole rapidly when isolating free pages")
+>>>>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>>>>> ---
+>>>>>>     mm/compaction.c | 5 ++---
+>>>>>>     1 file changed, 2 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/mm/compaction.c b/mm/compaction.c
+>>>>>> index 9b7a0a69e19f..ce7841363b12 100644
+>>>>>> --- a/mm/compaction.c
+>>>>>> +++ b/mm/compaction.c
+>>>>>> @@ -259,7 +259,7 @@ static unsigned long skip_offline_sections_reverse(unsigned long start_pfn)
+>>>>>>           while (start_nr-- > 0) {
+>>>>>>             if (online_section_nr(start_nr))
+>>>>>> -            return section_nr_to_pfn(start_nr) + PAGES_PER_SECTION - 1;
+>>>>>> +            return section_nr_to_pfn(start_nr + 1);
+>>>>>
+>>>>> This is incorrect, you returned the start pfn of this section.
+>>>>>
+>>>>>>         }
+>>>>>>           return 0;
+>>>>>> @@ -1670,8 +1670,7 @@ static void isolate_freepages(struct compact_control *cc)
+>>>>>>                   next_pfn = skip_offline_sections_reverse(block_start_pfn);
+>>>>>>                 if (next_pfn)
+>>>>>> -                block_start_pfn = max(pageblock_start_pfn(next_pfn),
+>>>>>> -                              low_pfn);
+>>>>>> +                block_start_pfn = max(next_pfn, low_pfn);
+>>>>>
+>>>>> 'block_start_pfn' should be pageblock aligned. If the 'next_pfn' is not pageblock-aligned (though this is not the common case), we should skip it.
+>>>>>
+>>>>> But if the 'next_pfn' is pageblock-aligned, yes, the commit f63224525309 still ignores the last pageblock, which is not right. So I think it should be:
+>>>>> block_start_pfn = pageblock_aligned(next_pfn) ? : pageblock_start_pfn(next_pfn);
+>>>>> block_start_pfn = max(block_start_pfn, low_pfn);
+>>>>>
+>>>> Hi Baolin, thanks for reply! As skip_offline_sections_reverse is based
+>>>> on skip_offline_sections. I make the assumption that section is pageblock
+>>>> aligned based on that we use section start from skip_offline_sections as
+>>>> block_start_fpn without align check.
+>>>> If section size is not pageblock aligned in real world, the pageblock aligned
+>>>> check should be added to skip_offline_sections and skip_offline_sections_reverse.
+>>>> If no one is against this, I will fix this in next version. THanks!
+>>>>
+>>> More information of aligment of section. For powerpc arch, we have SECTION_SIZE_BITS
+>>> with 24 while PAGE_SHIFT could be configured to 18.
+>>> Pageblock order is (18 + MAX_ORDER) which coule be 28 and is > SECTION_SZIE_BITS 24,
+>>
+>> The maximum pageblock order is MAX_ORDER. But after thinking more, I think return the start pfn or end pfn of a section is okay, and it should be aligned to a pageblock order IIUC.
+>>
+> Right, I mixed up the unit.
+>> So I think your change is good:
+>> + block_start_pfn = max(next_pfn, low_pfn);
+>>
+>> But in skip_offline_sections_reverse(), we should still return the last pfn of the online section.
+>>
+> Sure, then we should assign block_start_pfn with following change. Is this good to you?
+> -                block_start_pfn = max(pageblock_start_pfn(next_pfn),
+> +		 block_start_pfn = max(pageblock_end_pfn(next_pfn),
+>                                low_pfn);
 
->
-> > obvious that it represents a cd table. The max number of CDs that can b=
-e
-> > represented by the CD table is stored in this truct in its log2 form
-> > since it is more useful for users of the CD table, and replaces the
-> > s1cdmax field in s1_cfg. Instead of storing s1_cfg.s1fmt, it can also b=
-e
-> > trivially computed from the cdtab_cfg, and is therefore removed from
-> > s1_cfg.
->
-> The commit message does not quite well describe why "replace s1_cfg
-> with cd_table" in the subject. It could mention that the goal here
-> is to move cdtab to the master structure. And "unwrap s1_cfg" might
-> be more fitting in the subject, IMHO.
->
-> Thanks
-> Nicolin
+The last pfn of a section is already section aligned, so I think no need 
+to call pageblock_end_pfn(), just like your original change is okay to me.
+block_start_pfn = max(next_pfn, low_pfn);
