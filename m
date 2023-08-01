@@ -2,161 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9807776BADE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C813176BAD7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:10:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229843AbjHARLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52726 "EHLO
+        id S231216AbjHARKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:10:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbjHARLY (ORCPT
+        with ESMTP id S233187AbjHARKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:11:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC6A2737
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:10:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690909800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1l/TRXWCo6q5BSenRhC8N4s4Tp9EqB26+z+WAcvOc7U=;
-        b=EHC0cy1NGM8LvfN+M805RlRYXXZdK0COGgZvs/Tzpw9PQf2GPfFj6SacQxOTdElZxc1om7
-        1HLQOJaAOrxN9nkF12P/WPKBFAgfgpiyC95nwm/o1Ur+HgitlRnj/5jt7f133Qm9Bo01GP
-        UeKsqq4yGpYuyVCKMg5sAudA25pjzWg=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-651-TW5lhrtYPMW_z5iFEvd5pw-1; Tue, 01 Aug 2023 13:09:58 -0400
-X-MC-Unique: TW5lhrtYPMW_z5iFEvd5pw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fe1aa39febso20258685e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:09:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690909797; x=1691514597;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1l/TRXWCo6q5BSenRhC8N4s4Tp9EqB26+z+WAcvOc7U=;
-        b=ehuEh2s0WT8MPAN97GNmprXvI0fobl5MS7QpfGC87DL1esJ3/PZdjTDrEJsCAZdyTT
-         LK0AgKLmEZLFc0NRovYuGAYSGlvAgfQXQW89npzYFvc6cJP7DLJeNLK26JsYJapiEQNk
-         INLTt/11x3wlCTNPOL0HwlinWYUXKM9LrQH0ghvbXBNMXGGPlRaGmhNr0vJSUNm8Ijzr
-         3JCKckUM2wgzigjXnr+ritBQLdA8JpjUI8YmBBBPQHGG/c7N0wLRQy//cZEIwxbiRrmt
-         MJvol8zbirMa3NALC1Napkw2Osj0l8LXVwZJtBIA0CBuaYoRtGrmlgkzYbX/wM+dx77q
-         a3cg==
-X-Gm-Message-State: ABy/qLYS6x5grTbt4ygM1e/leBhwImjQrCDBNu+KnCrxlO0WTo1iOG2N
-        XADdBUCBUBtUqa8rHltjeSAM8na2vCrWTsnlLF1lhHxJzi9c3znz5YdHTjOOIMtmSkA3hXWNwn8
-        l+7b+Cy+rUL3IkOvgonobmy7h
-X-Received: by 2002:a7b:cc9a:0:b0:3fc:e1:24b5 with SMTP id p26-20020a7bcc9a000000b003fc00e124b5mr2894748wma.23.1690909797588;
-        Tue, 01 Aug 2023 10:09:57 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEy+R1U+qIKux7XS+l+xQITmSgyj55taDV+mQEkAlldXw1fmNp7lyrJvX5NkSWlbviyLnW9yw==
-X-Received: by 2002:a7b:cc9a:0:b0:3fc:e1:24b5 with SMTP id p26-20020a7bcc9a000000b003fc00e124b5mr2894727wma.23.1690909797209;
-        Tue, 01 Aug 2023 10:09:57 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c705:d100:871b:ec55:67d:5247? (p200300cbc705d100871bec55067d5247.dip0.t-ipconnect.de. [2003:cb:c705:d100:871b:ec55:67d:5247])
-        by smtp.gmail.com with ESMTPSA id z17-20020a05600c221100b003fe24441e23sm4361391wml.24.2023.08.01.10.09.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 10:09:56 -0700 (PDT)
-Message-ID: <d0edd1f3-4bad-f55a-e4f5-e202bc9d09f5@redhat.com>
-Date:   Tue, 1 Aug 2023 19:09:55 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/8] mm/gup: reintroduce FOLL_NUMA as
- FOLL_HONOR_NUMA_FAULT
+        Tue, 1 Aug 2023 13:10:50 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2065.outbound.protection.outlook.com [40.107.22.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52DE52D5E;
+        Tue,  1 Aug 2023 10:10:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IljHEqzM1m941FUnF33Q8dJpX6dO0fqQEiGa2RG3FC1YcgsnKzUZTj/NLWZnQRnwDPZlKi9jImlq/tdzdWqApxfG5lZPJSj1NCnt2kjIS0VhhcYVr8BAMmYHuujts3Xl0ghwo+LVKOAdAzDn8FFvN44ohlzumbWDm09N9jBOmmc2s38eljRiptR99kATc+tK4aAMov65qtwgztDkwkLZrk1SbMbaGZLelAO6ZtTjEyQrB8iYW3rjDDfKnENLM6NkInMOGHDA5lOeQnWNhFSJb3CtFsvO+JbJfiJ4tMs6u0A7LOeR6Ucwa5/RS/XoTmrefsEbwbghApP9Yt7JDM0gMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=n98rouop6UhW+bb2u1wEcn1y8x5ouUwyq2ao7OpYGTY=;
+ b=buNxMiITH9B9LRH0jSjTddgKbdU5utFpntSwL2OZRvZ8jEoIatXrVkg5CKlAKTo6/qsueW7mcqRI1Mewp3IEAZJ+DX+VPukbzBBGaRtHssBYKAIIi9zfwNzXW17HXqtEaHstl71lT2NOq82OFq2c01YDwA7c3wS/r7Exi/DNeNz1hz9rAiZGkETtMNVEnQbX/dS9DuehO6yoBPC/7om944lp9xTg15iF6gSlpaLVWuwJpO3zpS3BoLVLnsbaQHQisiG/cbLQgd6IzCJ4VBQjqWUlXADxX6UmvWuKXS7aRz/Izs94dg73bBJ6rWWJrGLCL9/5fN4VV3puIfrhYIb5kQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=n98rouop6UhW+bb2u1wEcn1y8x5ouUwyq2ao7OpYGTY=;
+ b=Y7pIe0S6TXTp3vciYa5iTCJ79YZLwYBH/OoUqRqxi/apf38MxSXXk64xomzW7tlHboFczyJom80SoA5x016M2U+FqvDA98UIZHipwH/YLM/sDw61RP+VNY/23l05lqlK4URQojZpMHh8YpWHxoXtY3BBaQNM7dNj6fIxG1Qb2Jw=
+Received: from PAXPR04MB9185.eurprd04.prod.outlook.com (2603:10a6:102:231::11)
+ by VI1PR04MB7119.eurprd04.prod.outlook.com (2603:10a6:800:12e::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Tue, 1 Aug
+ 2023 17:10:07 +0000
+Received: from PAXPR04MB9185.eurprd04.prod.outlook.com
+ ([fe80::d4ee:8daa:92f4:9671]) by PAXPR04MB9185.eurprd04.prod.outlook.com
+ ([fe80::d4ee:8daa:92f4:9671%3]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
+ 17:10:07 +0000
+From:   Shenwei Wang <shenwei.wang@nxp.com>
+To:     Johannes Zink <j.zink@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+CC:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Simon Horman <simon.horman@corigine.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "imx@lists.linux.dev" <imx@lists.linux.dev>,
+        Frank Li <frank.li@nxp.com>
+Subject: RE: [EXT] Re: [PATCH v3 net 2/2] net: stmmac: dwmac-imx: pause the
+ TXC clock in fixed-link
+Thread-Topic: [EXT] Re: [PATCH v3 net 2/2] net: stmmac: dwmac-imx: pause the
+ TXC clock in fixed-link
+Thread-Index: AQHZw8rr+4AkxJNLt0GANB66N1LNC6/VZScAgABIh3A=
+Date:   Tue, 1 Aug 2023 17:10:07 +0000
+Message-ID: <PAXPR04MB9185D7D3B088E4786A216044890AA@PAXPR04MB9185.eurprd04.prod.outlook.com>
+References: <20230731161929.2341584-1-shenwei.wang@nxp.com>
+ <20230731161929.2341584-3-shenwei.wang@nxp.com>
+ <bf2979c4-0b63-be53-b530-3d7385796534@pengutronix.de>
+In-Reply-To: <bf2979c4-0b63-be53-b530-3d7385796534@pengutronix.de>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        liubo <liubo254@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, stable@vger.kernel.org
-References: <20230801124844.278698-1-david@redhat.com>
- <20230801124844.278698-2-david@redhat.com> <ZMkpM95vdc9wgs9T@x1n>
- <30d86a2d-4af2-d840-91be-2e68c73a07bd@redhat.com> <ZMk7MqApTDZXzwKX@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZMk7MqApTDZXzwKX@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PAXPR04MB9185:EE_|VI1PR04MB7119:EE_
+x-ms-office365-filtering-correlation-id: e85803bb-2f6e-461e-a164-08db92b227d8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IZpfJpM7U4ZmSxubf0wv42RhSuyWDoPKt3uDnRWKjnuv370xLcLIQlHVd8MDsg6wMjyEEBsFDPEvm9T4xULxsjYejgAdUD+Kw0N+kQt4amo5H2ifBhXCC8LSZzZ4aE1K37+IcIF5eucXkbd1qZKTTzDp9HbAr8EPROwXlUJTehdXDznUUS5pMS7YzVpC/kKa6LKayAndB/p927fz/qQLnsVcvijypQ4HBAQs3MjTVsO5/Lf6lQEguHYfHgI3PzF25cY3rmRz7/yX+QRp8gmShkVNG2FsyD64SCIBFXt9E89BHYgaeGAvycrd5VKjec2zjx6sBrzdD5ZIpbN0v2ttXfzzudwrRDWpR3lBzZoGj4c6yZajZEb7KauOBnFrJeckiFqrE/OUmPxw4TVmnpQSVletwqeNXsGYZHvoFZQMu7L0Nw2RpTbkeoipgy/VhDE41wa2BrG6Lq0SUZh1xFZ7oZwmXZEiUQJXNlhmKt7uR259WiPkJH7s3/YbfnD0O8/1LCU8ufGG/adR0jLJYqIC/LcRMgkIHYIoE+LfBVKCiPqO51oJetQv/xJlrFGy3yTe6giW4PiTY0ZSuUeYwwVezqHgt75T2LU+j8Bi8tcslhonzSxUCfEaU7MllLRAgkpM
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9185.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(346002)(396003)(39860400002)(366004)(451199021)(66946007)(66476007)(66446008)(64756008)(66556008)(4326008)(316002)(966005)(9686003)(83380400001)(2906002)(86362001)(38070700005)(7416002)(7406005)(44832011)(186003)(26005)(52536014)(5660300002)(55236004)(53546011)(6506007)(33656002)(122000001)(921005)(38100700002)(55016003)(41300700001)(8936002)(8676002)(7696005)(45080400002)(71200400001)(478600001)(54906003)(110136005)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ixxDJ2N+YLmD+UgTWq1zFdcM0FXW93PKIWsTjBVgKtvRuXPeduhv0AzuuRpR?=
+ =?us-ascii?Q?D1QHKS0MYH87cO5+qjCqOhJ2bhZecNyuPH3ImoU1cirZYoK9joJbkmqf6NK/?=
+ =?us-ascii?Q?rIYilWlGIpNRg7wPLHHBek92bW/oTtPHsz01uOiEB+R8poHMRSgbvJ/foIJt?=
+ =?us-ascii?Q?l64Vg4UzGXfuDWKAlFKgAZfg5u9U7OYsZjJZEyeE0lyylyXokPzbbbsBXaQs?=
+ =?us-ascii?Q?Xcvh1A4KP8FFiZLcoQEC7HCptGb7tAcFVihs751N2E0Ju3OMpcZuwoAXPi+x?=
+ =?us-ascii?Q?tcmdWqtfHhHERWwxPhJp8hfdfDrsRIlsdRXEsizilCVlJeYkSHZvfiQAixXh?=
+ =?us-ascii?Q?flSuR1tbwJ9qRFQpG1tz7OkuYU/VS+kypw9pDLcaJwrP1GoWo3c3oeWJ0UpG?=
+ =?us-ascii?Q?RE/uwNDm5Rn3O4gMmMKXRJ/VL9tW4ZvKHfkEQLe9EtZ3MTyWI1dlE9MckG+J?=
+ =?us-ascii?Q?/0gzUKUruX+rTV5V4LQGJuNlBCLFGtmDinQTJRiZR6mr536IgX0mlqFhsF3S?=
+ =?us-ascii?Q?Pw7pqLtvz5cLkRQvz7J6pG1iQXFqv88bV0W4x+ioIuQ83+yZAeIAC8VcTRoh?=
+ =?us-ascii?Q?JYbXyGj/LbReVJotXHcen8mIb0RXPn7ZLjJ5a3UfowYLH80USxFBpr8mbxSL?=
+ =?us-ascii?Q?D0FP/Ll6wq3OWb+WRKWWN4rifPHZeIMYbGL3MQvn7CgeAR76zyqE7o90QgOI?=
+ =?us-ascii?Q?gscOcvO2sarKQx73fULIjI6lOG8XCZqNFIgUmsU5R+UK63p/VIHdWVEU1gwb?=
+ =?us-ascii?Q?PSdfiGCRq150zqyiwQ+oB3if39FUMLBl4tiuRD5fWZeio7bwCrvCNjolz2K5?=
+ =?us-ascii?Q?xgFENqPiiWoljNeUrkT0agowMrunDDYj2F/KpWt3j3MNliOBFLOuCYMjLJBr?=
+ =?us-ascii?Q?4Ujey379js7kEPFEoJY/eY/ZfXJMGYNWyLwWUyLcUM5szoxG8v+YR8LggTta?=
+ =?us-ascii?Q?NpwqxW7FCrQ14v9aPWhRkPacqyElrZJQXOe2PHCEx+7VRn2Be99tyV/E5ZZG?=
+ =?us-ascii?Q?bojOpNj+tqYCdVd3brVNcw6zIk50svfFQnCJFSmKZzQKaBqgWAGBBJOnVznR?=
+ =?us-ascii?Q?ZMZr6SjATTKmsSJaMXlBeNxtho51GtrCuypsL2YmygsfD35LLJSY36wH0zMl?=
+ =?us-ascii?Q?U//GJK1xxpqySpviq/1hAYJa1XcY5mcqMC0td27dgR36+0wMxeUOx8A4aLWG?=
+ =?us-ascii?Q?l05GGzEzMWwk2j81WwVslhmNFcXVifsafdMeCqXCig8XL/fTbsole3nXtSQe?=
+ =?us-ascii?Q?Mdvg6LW3WEOWGQvLMskrWEFNT3gc0CBRc2APTYWX6hKrIeieKoYCmirfSQv4?=
+ =?us-ascii?Q?1sGtBgz8rw8WZpnpL3a61jZMkN7uIpXLigI6HZFqw7UAFnKbv3649hJwUVKq?=
+ =?us-ascii?Q?1+2BJoT66cisft2JhhP/Ex7Vfbca7dfSEYmVwf+XzIL9qE2z6oKy5YyOF854?=
+ =?us-ascii?Q?e+TEhBr84mtldktTD5rZoFV2IgsiPpqTBOzGRN1aE/OLockqU1xy0wfZyRHN?=
+ =?us-ascii?Q?KTh/H5FcxDpqALNzB3/Sb8per351zQIrai/hJZ4zHr0q6st7H0FWquBt6ZEG?=
+ =?us-ascii?Q?3qwW5hodlojhWy/UwXUdn3NMwMt1UnkAjPIqxbqE?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9185.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e85803bb-2f6e-461e-a164-08db92b227d8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Aug 2023 17:10:07.2747
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: H7+dkH60P7Wy49w0auOljUgiMga9DHGDnEvJNAnc3tzTvTjCehSXkGM3EtsHDB690VtnoFn9Todi3JREvfHpcQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7119
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.08.23 19:04, Peter Xu wrote:
-> On Tue, Aug 01, 2023 at 06:15:48PM +0200, David Hildenbrand wrote:
->> On 01.08.23 17:48, Peter Xu wrote:
->>> On Tue, Aug 01, 2023 at 02:48:37PM +0200, David Hildenbrand wrote:
->>>> @@ -2240,6 +2244,12 @@ static bool is_valid_gup_args(struct page **pages, int *locked,
->>>>    		gup_flags |= FOLL_UNLOCKABLE;
->>>>    	}
->>>> +	/*
->>>> +	 * For now, always trigger NUMA hinting faults. Some GUP users like
->>>> +	 * KVM really require it to benefit from autonuma.
->>>> +	 */
->>>> +	gup_flags |= FOLL_HONOR_NUMA_FAULT;
->>>
->>> Since at it, do we want to not set it for FOLL_REMOTE, which still sounds
->>> like a good thing to have?
->>
->> I thought about that, but decided against making that patch here more
->> complicated to eventually rip it again all out in #4.
-> 
-> I thought that was the whole point of having patch 4 separate, because we
-> should assume patch 4 may not exist in (at least) some trees, so I ignored
-> patch 4 when commenting here, and we should not assume it's destined to be
-> removed here.
 
-For me, the goal of this patch is to bring it *as close as possible* to 
-the previous state as before, so we can backport it to stable without 
-too many surprises (effectively, only a handful of FOLL_FORCE/ptrace 
-user will get a different behavior).
 
-I could add a separate patch that does the FOLL_REMOTE thing, but then, 
-maybe we should do that if patch #4 runs into real trouble :)
+> -----Original Message-----
+> From: Johannes Zink <j.zink@pengutronix.de>
+> Sent: Tuesday, August 1, 2023 7:48 AM
+> To: Shenwei Wang <shenwei.wang@nxp.com>; Russell King
+> <linux@armlinux.org.uk>; David S. Miller <davem@davemloft.net>; Eric
+> Dumazet <edumazet@google.com>; Jakub Kicinski <kuba@kernel.org>; Paolo
+> Abeni <pabeni@redhat.com>; Maxime Coquelin
+> <mcoquelin.stm32@gmail.com>; Shawn Guo <shawnguo@kernel.org>; Sascha
+> Hauer <s.hauer@pengutronix.de>; Neil Armstrong <neil.armstrong@linaro.org=
+>;
+> Kevin Hilman <khilman@baylibre.com>; Vinod Koul <vkoul@kernel.org>; Chen-
+> Yu Tsai <wens@csie.org>; Jernej Skrabec <jernej.skrabec@gmail.com>; Samue=
+l
+> Holland <samuel@sholland.org>
+> Cc: Giuseppe Cavallaro <peppe.cavallaro@st.com>; Alexandre Torgue
+> <alexandre.torgue@foss.st.com>; Jose Abreu <joabreu@synopsys.com>;
+> Pengutronix Kernel Team <kernel@pengutronix.de>; Fabio Estevam
+> <festevam@gmail.com>; dl-linux-imx <linux-imx@nxp.com>; Jerome Brunet
+> <jbrunet@baylibre.com>; Martin Blumenstingl
+> <martin.blumenstingl@googlemail.com>; Bhupesh Sharma
+> <bhupesh.sharma@linaro.org>; Nobuhiro Iwamatsu
+> <nobuhiro1.iwamatsu@toshiba.co.jp>; Simon Horman
+> <simon.horman@corigine.com>; Andrew Halaney <ahalaney@redhat.com>;
+> Bartosz Golaszewski <bartosz.golaszewski@linaro.org>; Wong Vee Khee
+> <veekhee@apple.com>; Revanth Kumar Uppala <ruppala@nvidia.com>; Jochen
+> Henneberg <jh@henneberg-systemdesign.com>; netdev@vger.kernel.org; linux-
+> stm32@st-md-mailman.stormreply.com; linux-arm-kernel@lists.infradead.org;
+> linux-kernel@vger.kernel.org; linux-amlogic@lists.infradead.org;
+> imx@lists.linux.dev; Frank Li <frank.li@nxp.com>
+> Subject: [EXT] Re: [PATCH v3 net 2/2] net: stmmac: dwmac-imx: pause the T=
+XC
+> clock in fixed-link
+>
+> Caution: This is an external email. Please take care when clicking links =
+or
+> opening attachments. When in doubt, report the message using the 'Report =
+this
+> email' button
+>
+>
+> Hi Shenwei,
+>
+> thanks for your patch.
+>
+> On 7/31/23 18:19, Shenwei Wang wrote:
+> > When using a fixed-link setup, certain devices like the SJA1105
+> > require a small pause in the TXC clock line to enable their internal
+> > tunable delay line (TDL).
+>
+> If this is only required for some devices, is it safe to enforce this beh=
+aviour
+> unconditionally for any kind of fixed link devices connected to the MX93 =
+EQOS
+> or could this possibly break for other devices?
+>
 
-But no strong opinion if this is what everybody wants in this patch.
+It won't impact normal devices. The link layer hasn't built up yet.
 
-> 
->>
->> I fully agree that FOLL_REMOTE does not make too much sense, but let's
->> rather keep it simple for this patch.
-> 
-> It's fine - I suppose this patch fixes whatever we're aware of that's
-> broken with FOLL_NUMA's removal, so it can even be anything on top when
-> needed.  I assume I'm happy to ack this with/without that change, then:
-> 
-> Acked-by: Peter Xu <peterx@redhat.com>
+Thanks,
+Shenwei
 
-Thanks!
-
-> 
-> PS: I still hope that the other oneliner can be squashed here directly; it
-> literally changes exact the same line above so reading this patch alone can
-> be affected.  You said there you didn't want the commit message to be too
-> long here, but this is definitely not long at all!  I bet you have similar
-> understanding to me on defining "long commit message". :) I'd never worry
-> that.  Your call.
-
-No strong opinion, it just felt cleaner to not start adding what I have 
-in that separate patch commit message in here.
-
--- 
-Cheers,
-
-David / dhildenb
+> Best regards
+> Johannes
+>
+> >
+> > To satisfy this requirement, this patch temporarily disables the TX
+> > clock, and restarts it after a required period. This provides the
+> > required silent interval on the clock line for SJA1105 to complete the
+> > frequency transition and enable the internal TDLs.
+> >
+> > So far we have only enabled this feature on the i.MX93 platform.
+> >
+> > Signed-off-by: Shenwei Wang <shenwei.wang@nxp.com>
+> > Reviewed-by: Frank Li <frank.li@nxp.com>
+> > ---
+> >   .../net/ethernet/stmicro/stmmac/dwmac-imx.c   | 42 ++++++++++++++++++=
++
+> >   1 file changed, 42 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> > b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> > index 53ee5a42c071..2e4173d099f3 100644
+> > --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-imx.c
+> > @@ -32,6 +32,7 @@
+> >   #define GPR_ENET_QOS_RGMII_EN               (0x1 << 21)
+> >
+> >   #define MX93_GPR_ENET_QOS_INTF_MODE_MASK    GENMASK(3, 0)
+> > +#define MX93_GPR_ENET_QOS_INTF_MASK          GENMASK(3, 1)
+> >   #define MX93_GPR_ENET_QOS_INTF_SEL_MII              (0x0 << 1)
+> >   #define MX93_GPR_ENET_QOS_INTF_SEL_RMII             (0x4 << 1)
+> >   #define MX93_GPR_ENET_QOS_INTF_SEL_RGMII    (0x1 << 1)
+> > @@ -40,6 +41,7 @@
+> >   #define DMA_BUS_MODE                        0x00001000
+> >   #define DMA_BUS_MODE_SFT_RESET              (0x1 << 0)
+> >   #define RMII_RESET_SPEED            (0x3 << 14)
+> > +#define CTRL_SPEED_MASK                      GENMASK(15, 14)
+> >
+> >   struct imx_dwmac_ops {
+> >       u32 addr_width;
+> > @@ -56,6 +58,7 @@ struct imx_priv_data {
+> >       struct regmap *intf_regmap;
+> >       u32 intf_reg_off;
+> >       bool rmii_refclk_ext;
+> > +     void __iomem *base_addr;
+> >
+> >       const struct imx_dwmac_ops *ops;
+> >       struct plat_stmmacenet_data *plat_dat; @@ -212,6 +215,42 @@
+> > static void imx_dwmac_fix_speed(void *priv, uint speed, uint mode)
+> >               dev_err(dwmac->dev, "failed to set tx rate %lu\n", rate);
+> >   }
+> >
+> > +static void imx_dwmac_fix_speed_mx93(void *priv, uint speed, uint
+> > +mode) {
+> > +     struct imx_priv_data *dwmac =3D priv;
+> > +     int ctrl, old_ctrl, iface;
+> > +
+> > +     imx_dwmac_fix_speed(priv, speed, mode);
+> > +
+> > +     if (!dwmac || mode !=3D MLO_AN_FIXED)
+> > +             return;
+> > +
+> > +     if (regmap_read(dwmac->intf_regmap, dwmac->intf_reg_off, &iface))
+> > +             return;
+> > +
+> > +     iface &=3D MX93_GPR_ENET_QOS_INTF_MASK;
+> > +     if (iface !=3D MX93_GPR_ENET_QOS_INTF_SEL_RGMII)
+> > +             return;
+> > +
+> > +     old_ctrl =3D readl(dwmac->base_addr + MAC_CTRL_REG);
+> > +     ctrl =3D old_ctrl & ~CTRL_SPEED_MASK;
+> > +     regmap_update_bits(dwmac->intf_regmap, dwmac->intf_reg_off,
+> > +                        MX93_GPR_ENET_QOS_INTF_MODE_MASK, 0);
+> > +     writel(ctrl, dwmac->base_addr + MAC_CTRL_REG);
+> > +
+> > +     /* Ensure the settings for CTRL are applied and avoid CPU/Compile=
+r
+> > +      * reordering.
+> > +      */
+> > +     wmb();
+> > +
+> > +     usleep_range(10, 20);
+> > +     iface |=3D MX93_GPR_ENET_QOS_CLK_GEN_EN;
+> > +     regmap_update_bits(dwmac->intf_regmap, dwmac->intf_reg_off,
+> > +                        MX93_GPR_ENET_QOS_INTF_MODE_MASK, iface);
+> > +
+> > +     writel(old_ctrl, dwmac->base_addr + MAC_CTRL_REG); }
+> > +
+> >   static int imx_dwmac_mx93_reset(void *priv, void __iomem *ioaddr)
+> >   {
+> >       struct plat_stmmacenet_data *plat_dat =3D priv; @@ -317,8 +356,11
+> > @@ static int imx_dwmac_probe(struct platform_device *pdev)
+> >       plat_dat->exit =3D imx_dwmac_exit;
+> >       plat_dat->clks_config =3D imx_dwmac_clks_config;
+> >       plat_dat->fix_mac_speed =3D imx_dwmac_fix_speed;
+> > +     if (of_machine_is_compatible("fsl,imx93"))
+> > +             plat_dat->fix_mac_speed =3D imx_dwmac_fix_speed_mx93;
+> >       plat_dat->bsp_priv =3D dwmac;
+> >       dwmac->plat_dat =3D plat_dat;
+> > +     dwmac->base_addr =3D stmmac_res.addr;
+> >
+> >       ret =3D imx_dwmac_clks_config(dwmac, true);
+> >       if (ret)
+>
+> --
+> Pengutronix e.K.                | Johannes Zink                  |
+> Steuerwalder Str. 21            |
+> https://www.pe/
+> ngutronix.de%2F&data=3D05%7C01%7Cshenwei.wang%40nxp.com%7C761fbb75c
+> 1c24cfe091508db928d8ade%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C
+> 0%7C638264908852977732%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjA
+> wMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%
+> 7C&sdata=3D2l2zNfIaNnRJENmERehNae8g%2F%2BQqlxD2YRx7ksY2X%2BE%3D&r
+> eserved=3D0    |
+> 31137 Hildesheim, Germany       | Phone: +49-5121-206917-0       |
+> Amtsgericht Hildesheim, HRA 2686| Fax:   +49-5121-206917-5555    |
 
