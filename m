@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE03C76B6E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023D376B6E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232988AbjHAOLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36148 "EHLO
+        id S232972AbjHAOLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbjHAOLO (ORCPT
+        with ESMTP id S233891AbjHAOLn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:11:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76B7918D;
-        Tue,  1 Aug 2023 07:11:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CA6C615A5;
-        Tue,  1 Aug 2023 14:11:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9157AC433C8;
-        Tue,  1 Aug 2023 14:11:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690899072;
-        bh=Va+3BpK80OaOladXcfkefzEKQDa7NapSdHQhUuxB8IY=;
-        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-        b=aKmKRyrrWqC3G193vS32cSDtgtS7OvNINFtMQGWdR0HnYrOsPwzriMcAg0XAN+QZ7
-         xqLSODj1BmwE1D031eb+P6ERJiuT74u8o/1oo7pVV6HDL+8OL5OJGZS59YUesflW3j
-         5NeMVDSrpKfPlw3unLZH+SXEIAEYFtfOh/lEjCbCgNcbL67i+wXNQsqE3Kqnw0pG7k
-         sR0rL2wb1o7biLoYIbHngkU4IUFNXzn7C9uixH1maqMqWUl9gQMYGp/ghy0K/AlUmC
-         mT9yF49BOgNj1FgJSxQjVG+XKD7RIPZHZFpeH6JH2LevFQxr40wo7K/TMswKpl7Pnv
-         /7G+EHFhRa6UQ==
-Content-Type: text/plain; charset="utf-8"
+        Tue, 1 Aug 2023 10:11:43 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46CE2728;
+        Tue,  1 Aug 2023 07:11:33 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 371EBM2R070104;
+        Tue, 1 Aug 2023 09:11:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690899082;
+        bh=W/F51boW0s52ykPrOys8Lt+Gz7rqGfuRoOXlgbyvudQ=;
+        h=From:To:CC:Subject:Date;
+        b=Kj5QwuC+CxoGWdlnsJiyf70niUD3ikWSuRaA89Q6FlSuN0nkyXSrJzSg5S3tnhOtG
+         KYCopODz/gMtc+Ijimk12oOWcZW15doscugwxmnnsnIvIJcPHm49aiDOLhL4g7vs2v
+         kxPCE5CAgZE1KgaUrfDDdaOeZ1Nh1cL1ZkyDU5eQ=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 371EBMmC000732
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 1 Aug 2023 09:11:22 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 1
+ Aug 2023 09:11:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 1 Aug 2023 09:11:21 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 371EBLMm039003;
+        Tue, 1 Aug 2023 09:11:21 -0500
+From:   Hari Nagalla <hnagalla@ti.com>
+To:     <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
+        <p.zabel@pengutronix.de>, <martyn.welch@collabora.com>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 0/3] TI K3 M4F support on AM64x and AM62x SoCs
+Date:   Tue, 1 Aug 2023 09:11:14 -0500
+Message-ID: <20230801141117.2559-1-hnagalla@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] wifi: rtw88: sdio: Honor the host max_req_size in the RX
- path
-From:   Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <20230709195712.603200-1-martin.blumenstingl@googlemail.com>
-References: <20230709195712.603200-1-martin.blumenstingl@googlemail.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jernej.skrabec@gmail.com, pkshih@realtek.com,
-        ulf.hansson@linaro.org, tony0620emma@gmail.com,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "Lukas F . Hartmann" <lukas@mntre.com>
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <169089906853.212423.17095176293160428610.kvalo@kernel.org>
-Date:   Tue,  1 Aug 2023 14:11:10 +0000 (UTC)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
+The following series introduces K3 M4F remoteproc driver support for
+AM64x and AM62x SoC families. These SoCs have a ARM Cortex M4F core in
+the MCU voltage domain. For safety oriented applications, this core is
+operated independently with out any IPC to other cores on the SoC.
+However, for non safety applications, some customers use it as a remote
+processor and so linux remote proc support is extended to the M4F core.
 
-> Lukas reports skb_over_panic errors on his Banana Pi BPI-CM4 which comes
-> with an Amlogic A311D (G12B) SoC and a RTL8822CS SDIO wifi/Bluetooth
-> combo card. The error he observed is identical to what has been fixed
-> in commit e967229ead0e ("wifi: rtw88: sdio: Check the HISR RX_REQUEST
-> bit in rtw_sdio_rx_isr()") but that commit didn't fix Lukas' problem.
-> 
-> Lukas found that disabling or limiting RX aggregation fix the problem
-> for him. In the following discussion a few key topics have been
-> discussed which have an impact on this problem:
-> - The Amlogic A311D (G12B) SoC has a hardware bug in the SDIO controller
->   which prevents DMA transfers. Instead all transfers need to go through
->   the controller SRAM which limits transfers to 1536 bytes
-> - rtw88 chips don't split incoming (RX) packets, so if a big packet is
->   received this is forwarded to the host in it's original form
-> - rtw88 chips can do RX aggregation, meaning more multiple incoming
->   packets can be pulled by the host from the card with one MMC/SDIO
->   transfer. This Depends on settings in the REG_RXDMA_AGG_PG_TH
->   register (BIT_RXDMA_AGG_PG_TH limits the number of packets that will
->   be aggregated, BIT_DMA_AGG_TO_V1 configures a timeout for aggregation
->   and BIT_EN_PRE_CALC makes the chip honor the limits more effectively)
-> 
-> Use multiple consecutive reads in rtw_sdio_read_port() to limit the
-> number of bytes which are copied by the host from the card in one
-> MMC/SDIO transfer. This allows receiving a buffer that's larger than
-> the hosts max_req_size (number of bytes which can be transferred in
-> one MMC/SDIO transfer). As a result of this the skb_over_panic error
-> is gone as the rtw88 driver is now able to receive more than 1536 bytes
-> from the card (either because the incoming packet is larger than that
-> or because multiple packets have been aggregated).
-> 
-> Fixes: 65371a3f14e7 ("wifi: rtw88: sdio: Add HCI implementation for SDIO based chipsets")
-> Reported-by: Lukas F. Hartmann <lukas@mntre.com>
-> Closes: https://lore.kernel.org/linux-wireless/CAFBinCBaXtebixKbjkWKW_WXc5k=NdGNaGUjVE8NCPNxOhsb2g@mail.gmail.com/
-> Suggested-by: Ping-Ke Shih <pkshih@realtek.com>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> Reviewed-by: Ping-Ke Shih <pkshih@realtek.com>
+See AM64x Technical Reference Manual (SPRUIM2C – SEPTEMBER 2021) for
+further details: https://www.ti.com/lit/pdf/SPRUIM2
 
-Ping, should I take or drop the patch? It wasn't quite clear for me.
+Hari Nagalla (1):
+  dt-bindings: remoteproc: k3-m4f: Add bindings for K3 AM64x SoCs
+
+Martyn Welch (2):
+  remoteproc: k3: Split out functions common with M4 driver
+  remoteproc: k3-m4: Add a remoteproc driver for M4F subsystem
+
+ .../bindings/remoteproc/ti,k3-m4f-rproc.yaml  | 123 ++++
+ drivers/remoteproc/Kconfig                    |  13 +
+ drivers/remoteproc/Makefile                   |   3 +-
+ drivers/remoteproc/ti_k3_common.c             | 513 +++++++++++++++
+ drivers/remoteproc/ti_k3_common.h             | 108 ++++
+ drivers/remoteproc/ti_k3_dsp_remoteproc.c     | 598 +-----------------
+ drivers/remoteproc/ti_k3_m4_remoteproc.c      | 333 ++++++++++
+ 7 files changed, 1121 insertions(+), 570 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.yaml
+ create mode 100644 drivers/remoteproc/ti_k3_common.c
+ create mode 100644 drivers/remoteproc/ti_k3_common.h
+ create mode 100644 drivers/remoteproc/ti_k3_m4_remoteproc.c
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20230709195712.603200-1-martin.blumenstingl@googlemail.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.34.1
 
