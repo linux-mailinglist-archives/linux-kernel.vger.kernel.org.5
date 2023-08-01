@@ -2,149 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A8176B5E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B099A76B5EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234209AbjHANcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:32:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42316 "EHLO
+        id S234247AbjHANdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232664AbjHANcj (ORCPT
+        with ESMTP id S234451AbjHANdM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:32:39 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6885B173F
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 06:32:38 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-63ce8bea776so31176266d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 06:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20221208.gappssmtp.com; s=20221208; t=1690896757; x=1691501557;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=iYKt01xNs8lKsq/e/azafAqVWryO+ACS/uiUEILtBaY=;
-        b=KXZzpdfi6/4bWorYLvW0k2NQagRN1jBmK3wxldJ9gh8zvXztK8RdCu1tWfVjnLCZnx
-         EqQhTIve89Mkr/R7dGqe3f1j4pW4DIxQMBmpKyWMapIqqyl1qSXIIBYwNowEpQJ5mJbg
-         E5y5HCLjIjSaopyi/AmgfMNPSiXh8S9kKhdC6K+Uqeu9LOJSA4dFhyOELgbcM5rwMsNH
-         OtVbW9O5XIZoi6QoI5iU7dhoDe3IugRppraE8q0Jb4oK60JQsdj4WDXLW/ApFe6G5d5x
-         5JGXOpvzy0J7qkgpsj70a0NCZ4roZOitewX+SxRVZON7I1B6VUwNlg5sb2P8xTby1hf8
-         VNwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690896757; x=1691501557;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iYKt01xNs8lKsq/e/azafAqVWryO+ACS/uiUEILtBaY=;
-        b=HzNRzed91aUOEpAMZqTlQoAKQzT4QkvHyk5Ug4cNYIJhAle/mvFpxb/sQNl/o2XIrx
-         pVKcNd8xpLuPH67q54YlH1XY62Xn6bGOnwRLcQC9OxmVe5Oh5hmsoylyELFkd0yZOquV
-         Kr1v+owXzzfqi0k1ko2fGDYDVhVhYGHcRxstvHxxnrc3qI/QoIc+/M8QEDQCws6oft2S
-         QevqZuPiCNymZg3To7NoySfL2bwj+fFhwjp3Nnzl5xOGA5Qlsj7sVkjLttTj9S+a9emg
-         C1bwrTI4C+NSOX/gMxc4cI48azVtVmCPuaUBsMGvuNN33zIDhOLRJwjQCTjBt7mWJ8Qu
-         06zA==
-X-Gm-Message-State: ABy/qLafSXwzjA6hN+18Khdqnyy4cF78knMSU83cTEP7RIopdtoxIQwK
-        G5ZBUeV5LMbe5y7oA47HTrplEg==
-X-Google-Smtp-Source: APBJJlE6OUTwslsBvWYdh6eMYGkPuBDQCm7yMaM4xkorOAUhCMJWW6NJ6LtUTBw76Jx9HymfsnU4xA==
-X-Received: by 2002:a05:6214:5a13:b0:63c:da03:1c12 with SMTP id lu19-20020a0562145a1300b0063cda031c12mr11965162qvb.60.1690896757519;
-        Tue, 01 Aug 2023 06:32:37 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-8f57-5681-ccd3-4a2e.res6.spectrum.com. [2603:7000:c01:2716:8f57:5681:ccd3:4a2e])
-        by smtp.gmail.com with ESMTPSA id h18-20020a0cf212000000b0063007ccaf42sm4621429qvk.57.2023.08.01.06.32.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 06:32:37 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 09:32:35 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Ramazan Safiullin <ram.safiullin2001@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: add documentation to PSI section
-Message-ID: <20230801133235.GA1766885@cmpxchg.org>
-References: <20230728120909.234244-1-ram.safiullin2001@gmail.com>
- <CAJuCfpGyV5nM+4t_RTxDgvgZ_VhjpdoZ4TJZBn7RgxSHC6+Hyw@mail.gmail.com>
- <CAJuCfpEjozCfqfPPttcnWdzhQBCGnr+MzWGN8FT40YObZf_mGA@mail.gmail.com>
- <20230801103936.GA79828@hirez.programming.kicks-ass.net>
- <CAKXUXMwJk2bB-mPpeAj8dU3DVhdX-TRRV6eXSjMVO16Xsivj3g@mail.gmail.com>
- <20230801130301.GB11704@hirez.programming.kicks-ass.net>
+        Tue, 1 Aug 2023 09:33:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A53E1BDB;
+        Tue,  1 Aug 2023 06:33:11 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0FEDC615A4;
+        Tue,  1 Aug 2023 13:33:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC329C433C7;
+        Tue,  1 Aug 2023 13:33:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690896790;
+        bh=qW9IP+djYLOwZukIeqaHto6GDgMjZwheXduDcYTrR/c=;
+        h=From:Date:Subject:To:Cc:From;
+        b=iFu9TKbcb3PzeiZVSO6f9KNXrcQ2wDLU8Z/igj3oTts8ZzyTz6CYgAjBYty8yO4mt
+         a9450h9QLAurU11lxSvBWojiK/h6w1U1KprjTILupy8al6VQZ+0dsb5n7Xs2z78y/N
+         /Wyfq1aTY2wHoqd/M3ZaHUpoLm+L75/YM6xWDI6IYEQbxsTDlNj1R+eiCsOrKqEsWA
+         EFUPNU+HmoqMzj6HHe2yjapybiou+ik+zVI2GCyqMTZ04xIWX8Ri9uJT37DMa5lbFf
+         ugNkBMwAWrX4dwxcSdhWTVOvxrsFRSB6V4XnfUik94SRHKbjMWnmCurT5VWUSUa0T/
+         ArNIhYU9fAD9g==
+From:   Jeff Layton <jlayton@kernel.org>
+Date:   Tue, 01 Aug 2023 09:33:06 -0400
+Subject: [PATCH v2] nfsd: don't hand out write delegations on O_WRONLY
+ opens
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230801130301.GB11704@hirez.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230801-wdeleg-v2-1-20c14252bab4@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAJIJyWQC/2XMQQ7CIBCF4as0sxbTgYjGlfdouigw0IkNNWBQ0
+ 3B3sVuX/8vLt0GmxJTh2m2QqHDmNbaQhw7sPMVAgl1rkL1U/VmheDlaKAhjnNFGniZlNbTzI5H
+ n9w4NY+uZ83NNn90t+Fv/iIIChb94QkuIRunbnVKk5bimAGOt9QtQKItCnQAAAA==
+To:     Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3422; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=qW9IP+djYLOwZukIeqaHto6GDgMjZwheXduDcYTrR/c=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBkyQmVvF49eJYxC8Cze43AUKz+wTs72Hw99FIhD
+ H/3ISU/H/2JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZMkJlQAKCRAADmhBGVaC
+ FUDvEACPOE0efmtrAtjPvrN6+mM0+nCautiP4Et5TfR5vMua2dkdW7Jj+uH9C/ortYSO2HZ1cCM
+ OLNoW6ZR5ehyrc+Xo8g8uW2AyrRe6eCravWjeHFQErTf6Mm3RriI6cSHeBJ05uE/AwPbLqUCZJ6
+ KDPMOU+0Ebr8q9EVvnLMqtkbD0ePEsroFB0UdNmuKKuBH72Ae0CwI+CgZA8s9SGbWXs7mTqmMnE
+ P9co02/XQNX9UgxP1/MopRHJPrpuSFzmVxP6feomQvX242lRmhZrOyjLkiNRbEIhrFuuN1frrBS
+ aFvRTIw9imnVApsTp9xDQz9YQNxh7yzQLHw93SP5GzEaiu3cNAmf8bq4EqBqWKRt2H4S7RtIwMS
+ +FUSu9CXj9GueO/mQOpoIEaCI3PaQRR+HkQMD43dKAGVKpRrYufcv1TLNYa8JeWHkzTAunuc4vc
+ 5iefJdp9dOJAu4hVI++PqwHAYkpwjV/p3OuboJu5J+9V43hHBrwFuJ1Z/UDizkqLyF0q4zci/Zg
+ dsDbuoYTlibqqYIrrBKU10Sy23OUjmesOLK7HfpFRGLwrA9Qq75caQLh/ULQs5Ifw06zHAF9zve
+ 8m10Jz6cMTn4aHucUORJTOZODpNVmGT07lgbKjusM5T0ojGjDg7Or9i9iV2usJtDRczyHJOKfJf
+ TluOvGrnosstehQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 03:03:01PM +0200, Peter Zijlstra wrote:
-> On Tue, Aug 01, 2023 at 01:07:09PM +0200, Lukas Bulwahn wrote:
-> > On Tue, Aug 1, 2023 at 12:39 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Mon, Jul 31, 2023 at 04:12:00PM -0700, Suren Baghdasaryan wrote:
-> > > > On Mon, Jul 31, 2023 at 4:10 PM Suren Baghdasaryan <surenb@google.com> wrote:
-> > > > >
-> > > > > On Fri, Jul 28, 2023 at 5:09 AM Ramazan Safiullin
-> > > > > <ram.safiullin2001@gmail.com> wrote:
-> > > > > >
-> > > > > > While creating a patch for the psi documentation I noticed that
-> > > > > > MAINTENERS was missing an entry in psi.
-> > > > > >
-> > > > > > Add entry for psi documentation.
-> > > > > >
-> > > > > > Signed-off-by: Ramazan Safiullin <ram.safiullin2001@gmail.com>
-> > > > >
-> > > > > Acked-by: Suren Baghdasaryan <surenb@google.com>
-> > > >
-> > > > CC'ing Peter to pick up into his tree.
-> > >
-> > > Well, I'd need the actual patch email, otherwise I can't apply. Either
-> > > bounce the thread or have it be resent.
-> > >
-> > 
-> > Speaking on behalf of Ramazan, who I am working with:
-> > 
-> > Suren, Peter, should we actually better just add you, Peter, as a
-> > reviewer to PSI in MAINTAINERS, so that you get all the patches to psi
-> > stuff in your mailbox and you just need to wait for an Ack from Suren
-> > or Johannes?
-> 
-> Well, mostly psi patches touch kernel/sched/psi.c and then I should get
-> it anyway (throught the kernel/sched/ glob). But sure, one more copy of
-> my email address in that file isn't going to hurt..
+I noticed that xfstests generic/001 was failing against linux-next nfsd.
 
-From f00cd5986718e7ff435444523305d480b54e34e8 Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Tue, 1 Aug 2023 09:18:21 -0400
-Subject: [PATCH] MAINTAINERS: add Peter explicitly to the psi section
+The client would request a OPEN4_SHARE_ACCESS_WRITE open, and the server
+would hand out a write delegation. The client would then try to use that
+write delegation as the source stateid in a COPY or CLONE operation, and
+the server would respond with NFS4ERR_STALE.
 
-Peter is kind enough to route the low-volume psi patches through the
-scheduler tree, but he is frequently not CC'd on them.
+The problem is that the struct file associated with the delegation does
+not necessarily have read permissions. It's handing out a write
+delegation on what is effectively an O_WRONLY open. RFC 8881 states:
 
-While he is matched through the SCHEDULER maintainers and reviewers on
-kern/sched/*, that list is long, and mostly not applicable to psi
-code. Thus, patch submitters often just CC the explicit PSI entries.
+ "An OPEN_DELEGATE_WRITE delegation allows the client to handle, on its
+  own, all opens."
 
-Add him to that section, to make sure he gets those patches.
+Given that the client didn't request any read permissions, and that nfsd
+didn't check for any, it seems wrong to give out a write delegation.
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Only hand out a write delegation if we have a O_RDWR descriptor
+available. If it fails to find an appropriate write descriptor, go
+ahead and try for a read delegation if NFS4_SHARE_ACCESS_READ was
+requested.
+
+This fixes xfstest generic/001.
+
+Closes: https://bugzilla.linux-nfs.org/show_bug.cgi?id=412
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Changes in v2:
+- Rework the logic when finding struct file for the delegation. The
+  earlier patch might still have attached a O_WRONLY file to the deleg
+  in some cases, and could still have handed out a write delegation on
+  an O_WRONLY OPEN request in some cases.
+---
+ fs/nfsd/nfs4state.c | 29 ++++++++++++++++++-----------
+ 1 file changed, 18 insertions(+), 11 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3be1bdfe8ecc..b68f3ab368c1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17037,6 +17037,7 @@ F:	drivers/net/ppp/pptp.c
- PRESSURE STALL INFORMATION (PSI)
- M:	Johannes Weiner <hannes@cmpxchg.org>
- M:	Suren Baghdasaryan <surenb@google.com>
-+R:	Peter Ziljstra <peterz@infradead.org>
- S:	Maintained
- F:	include/linux/psi*
- F:	kernel/sched/psi.c
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index ef7118ebee00..e79d82fd05e7 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -5449,7 +5449,7 @@ nfs4_set_delegation(struct nfsd4_open *open, struct nfs4_ol_stateid *stp,
+ 	struct nfs4_file *fp = stp->st_stid.sc_file;
+ 	struct nfs4_clnt_odstate *odstate = stp->st_clnt_odstate;
+ 	struct nfs4_delegation *dp;
+-	struct nfsd_file *nf;
++	struct nfsd_file *nf = NULL;
+ 	struct file_lock *fl;
+ 	u32 dl_type;
+ 
+@@ -5461,21 +5461,28 @@ nfs4_set_delegation(struct nfsd4_open *open, struct nfs4_ol_stateid *stp,
+ 	if (fp->fi_had_conflict)
+ 		return ERR_PTR(-EAGAIN);
+ 
+-	if (open->op_share_access & NFS4_SHARE_ACCESS_WRITE) {
+-		nf = find_writeable_file(fp);
++	/*
++	 * Try for a write delegation first. We need an O_RDWR file
++	 * since a write delegation allows the client to perform any open
++	 * from its cache.
++	 */
++	if ((open->op_share_access & NFS4_SHARE_ACCESS_BOTH) == NFS4_SHARE_ACCESS_BOTH) {
++		nf = nfsd_file_get(fp->fi_fds[O_RDWR]);
+ 		dl_type = NFS4_OPEN_DELEGATE_WRITE;
+-	} else {
++	}
++
++	/*
++	 * If the file is being opened O_RDONLY or we couldn't get a O_RDWR
++	 * file for some reason, then try for a read deleg instead.
++	 */
++	if (!nf && (open->op_share_access & NFS4_SHARE_ACCESS_READ)) {
+ 		nf = find_readable_file(fp);
+ 		dl_type = NFS4_OPEN_DELEGATE_READ;
+ 	}
+-	if (!nf) {
+-		/*
+-		 * We probably could attempt another open and get a read
+-		 * delegation, but for now, don't bother until the
+-		 * client actually sends us one.
+-		 */
++
++	if (!nf)
+ 		return ERR_PTR(-EAGAIN);
+-	}
++
+ 	spin_lock(&state_lock);
+ 	spin_lock(&fp->fi_lock);
+ 	if (nfs4_delegation_exists(clp, fp))
+
+---
+base-commit: a734662572708cf062e974f659ae50c24fc1ad17
+change-id: 20230731-wdeleg-bbdb6b25a3c6
+
+Best regards,
 -- 
-2.41.0
+Jeff Layton <jlayton@kernel.org>
+
