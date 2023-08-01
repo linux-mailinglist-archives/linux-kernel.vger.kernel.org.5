@@ -2,108 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A2276B8D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7B276B8D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234701AbjHAPkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:40:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57342 "EHLO
+        id S234952AbjHAPkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjHAPkm (ORCPT
+        with ESMTP id S234948AbjHAPkx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:40:42 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C058C18B;
-        Tue,  1 Aug 2023 08:40:32 -0700 (PDT)
-X-QQ-mid: bizesmtp66t1690904426thfpaxec
-Received: from dslab-main2-ubuntu.tail147f4.ts ( [202.201.15.117])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 01 Aug 2023 23:40:25 +0800 (CST)
-X-QQ-SSF: 01200000000000705000000A0000000
-X-QQ-FEAT: kN2ypXZVqgwk/qBTNkd/iwlu662yQb25L197c9fZh4f02d1PhBEH9w+ZHw7Rb
-        DlkUdXFYyspKmDSuSJXiIMbzbjgNRqkjqijFmGNyFtwdsRFrG3oMJnQ3J/4XtKc7ShV2PFG
-        ek1MKLByFcQbrt2zsxytHpsxf5xa1Mh6V9Qi9uAsdEe+9DjTp8LxeiGbEN4fHAUQsvn4rAh
-        NNFDpDG8gVDnEmmNOadR+qCTMNf5yOmt9dZ4LJTR27ApvzJ4uD+M32A451Sft4YN76apPBu
-        vixRcPOdbDHBHVCwLXMuPi04EZOue08fwYz28/EdyooUDGcLljWKfoPUqMlumGAeFHTt8yv
-        QhhuSvEqMsfTJo1HmVLY8qxjQEBjBlQ1WS9Hhyh/iL4x6rNwzyB6ty1JVK3MQ==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5494693937254520093
-From:   Yuan Tan <tanyuan@tinylab.org>
-To:     w@1wt.eu, thomas@t-8ch.de
-Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, Yuan Tan <tanyuan@tinylab.org>
-Subject: [PATCH v3 2/2] selftests/nolibc: add testcase for pipe
-Date:   Tue,  1 Aug 2023 23:40:23 +0800
-Message-Id: <508ed252b8f60494d70cd211debbb297ee916325.1690903601.git.tanyuan@tinylab.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1690903601.git.tanyuan@tinylab.org>
-References: <cover.1690903601.git.tanyuan@tinylab.org>
+        Tue, 1 Aug 2023 11:40:53 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1843A2680;
+        Tue,  1 Aug 2023 08:40:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690904438; x=1722440438;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=muE1e71Qs9F7v4+U0wdllHsFFSc1KZTzZO9B2QRYfko=;
+  b=i2qGIPgwZRxvrG+Km15uGP4kehnjY1Df3+xUhMoqUukBOVjAEbnjLb2o
+   kAFBQDD2BsieOoERl4gVR5xLTyeIXxzq4Y+h9VZ6vJ/i/AB7w2rYvH791
+   bNrqOo8+CmNhAXGm3O7JHBYNhqs+lGfelWtMfk+VBdGuvH5xOE7UUY+oH
+   Ke1HAZyxmFUcwhUmE5pRnLoBwT8n6rhJIZv6es3ELPSeuxPJI5LH8pQxa
+   v9YrSgCOWJPJ93tr3Y5bXmEKqFgHe8cgjNi8idi17SBb+tBNyRFL+fOaw
+   wXSf4A55BeQUK3NxprmXm8AE/TlQkmAV21ePZRsgyjHbKoRpHUv6asTOf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="435659315"
+X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
+   d="scan'208";a="435659315"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 08:40:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="794238163"
+X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
+   d="scan'208";a="794238163"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Aug 2023 08:40:32 -0700
+Received: from [10.212.24.90] (kliang2-mobl1.ccr.corp.intel.com [10.212.24.90])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 0098458068A;
+        Tue,  1 Aug 2023 08:40:30 -0700 (PDT)
+Message-ID: <faca2b35-fdd6-7394-edea-32dd59d3a16f@linux.intel.com>
+Date:   Tue, 1 Aug 2023 11:40:29 -0400
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 1/4] perf parse-events x86: Avoid sorting
+ uops_retired.slots
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Weilin Wang <weilin.wang@intel.com>
+References: <20230801053634.1142634-1-irogers@google.com>
+ <20230801053634.1142634-2-irogers@google.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20230801053634.1142634-2-irogers@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test case of pipe that sends and receives message in a single
-process.
 
-Suggested-by: Thomas Weißschuh <thomas@t-8ch.de>
-Suggested-by: Willy Tarreau <w@1wt.eu>
-Link: https://lore.kernel.org/all/c5de2d13-3752-4e1b-90d9-f58cca99c702@t-8ch.de/
-Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
----
- tools/testing/selftests/nolibc/nolibc-test.c | 22 ++++++++++++++++++++
- 1 file changed, 22 insertions(+)
 
-diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-index 03b1d30f5507..e5667fa3cf0a 100644
---- a/tools/testing/selftests/nolibc/nolibc-test.c
-+++ b/tools/testing/selftests/nolibc/nolibc-test.c
-@@ -767,6 +767,27 @@ int test_mmap_munmap(void)
- 	return ret;
- }
- 
-+static int test_pipe(void)
-+{
-+	const char *const msg = "hello, nolibc";
-+	int pipefd[2];
-+	char buf[32];
-+	ssize_t len;
-+
-+	if (pipe(pipefd) == -1)
-+		return 1;
-+
-+	write(pipefd[1], msg, strlen(msg));
-+	close(pipefd[1]);
-+	len = read(pipefd[0], buf, sizeof(buf));
-+	close(pipefd[0]);
-+
-+	if (len != strlen(msg))
-+		return 1;
-+
-+	return !!memcmp(buf, msg, len);
-+}
-+
- 
- /* Run syscall tests between IDs <min> and <max>.
-  * Return 0 on success, non-zero on failure.
-@@ -851,6 +872,7 @@ int run_syscall(int min, int max)
- 		CASE_TEST(mmap_munmap_good);  EXPECT_SYSZR(1, test_mmap_munmap()); break;
- 		CASE_TEST(open_tty);          EXPECT_SYSNE(1, tmp = open("/dev/null", 0), -1); if (tmp != -1) close(tmp); break;
- 		CASE_TEST(open_blah);         EXPECT_SYSER(1, tmp = open("/proc/self/blah", 0), -1, ENOENT); if (tmp != -1) close(tmp); break;
-+		CASE_TEST(pipe);              EXPECT_SYSZR(1, test_pipe()); break;
- 		CASE_TEST(poll_null);         EXPECT_SYSZR(1, poll(NULL, 0, 0)); break;
- 		CASE_TEST(poll_stdout);       EXPECT_SYSNE(1, ({ struct pollfd fds = { 1, POLLOUT, 0}; poll(&fds, 1, 0); }), -1); break;
- 		CASE_TEST(poll_fault);        EXPECT_SYSER(1, poll((void *)1, 1, 0), -1, EFAULT); break;
--- 
-2.34.1
+On 2023-08-01 1:36 a.m., Ian Rogers wrote:
+> As topdown.slots may appear as slots it may get confused with
+> uops_retired.slots which is an invalid perf metric event group
+> leader. Special case uops_retired.slots to avoid this confusion.
+> 
 
+Does any name with format "name.slots" cause the confusion? If so, I
+don't think we can stop others from naming like the above format.
+
+Is it better to hard code the topdown.slots/slots, rather than
+uops_retired.slots?
+
+Thanks,
+Kan
+
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/arch/x86/util/evlist.c | 7 ++++---
+>  tools/perf/arch/x86/util/evsel.c  | 7 +++----
+>  2 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/arch/x86/util/evlist.c b/tools/perf/arch/x86/util/evlist.c
+> index cbd582182932..b1ce0c52d88d 100644
+> --- a/tools/perf/arch/x86/util/evlist.c
+> +++ b/tools/perf/arch/x86/util/evlist.c
+> @@ -75,11 +75,12 @@ int arch_evlist__add_default_attrs(struct evlist *evlist,
+>  
+>  int arch_evlist__cmp(const struct evsel *lhs, const struct evsel *rhs)
+>  {
+> -	if (topdown_sys_has_perf_metrics() && evsel__sys_has_perf_metrics(lhs)) {
+> +	if (topdown_sys_has_perf_metrics() &&
+> +	    (arch_evsel__must_be_in_group(lhs) || arch_evsel__must_be_in_group(rhs))) {
+>  		/* Ensure the topdown slots comes first. */
+> -		if (strcasestr(lhs->name, "slots"))
+> +		if (strcasestr(lhs->name, "slots") && !strcasestr(lhs->name, "uops_retired.slots"))
+>  			return -1;
+> -		if (strcasestr(rhs->name, "slots"))
+> +		if (strcasestr(rhs->name, "slots") && !strcasestr(rhs->name, "uops_retired.slots"))
+>  			return 1;
+>  		/* Followed by topdown events. */
+>  		if (strcasestr(lhs->name, "topdown") && !strcasestr(rhs->name, "topdown"))
+> diff --git a/tools/perf/arch/x86/util/evsel.c b/tools/perf/arch/x86/util/evsel.c
+> index 81d22657922a..090d0f371891 100644
+> --- a/tools/perf/arch/x86/util/evsel.c
+> +++ b/tools/perf/arch/x86/util/evsel.c
+> @@ -40,12 +40,11 @@ bool evsel__sys_has_perf_metrics(const struct evsel *evsel)
+>  
+>  bool arch_evsel__must_be_in_group(const struct evsel *evsel)
+>  {
+> -	if (!evsel__sys_has_perf_metrics(evsel))
+> +	if (!evsel__sys_has_perf_metrics(evsel) || !evsel->name ||
+> +	    strcasestr(evsel->name, "uops_retired.slots"))
+>  		return false;
+>  
+> -	return evsel->name &&
+> -		(strcasestr(evsel->name, "slots") ||
+> -		 strcasestr(evsel->name, "topdown"));
+> +	return strcasestr(evsel->name, "topdown") || strcasestr(evsel->name, "slots");
+>  }
+>  
+>  int arch_evsel__hw_name(struct evsel *evsel, char *bf, size_t size)
