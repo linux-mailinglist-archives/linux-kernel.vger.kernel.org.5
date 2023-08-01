@@ -2,140 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A12E76B925
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AA276B92C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbjHAPxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
+        id S235027AbjHAPyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjHAPxi (ORCPT
+        with ESMTP id S235022AbjHAPyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:53:38 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBFF90
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:53:36 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bc93523162so2806236a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 08:53:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690905216; x=1691510016;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yNZZO+M2ilGMua+yECx7F0GoXyqlpIpo3cCpiOFYJF0=;
-        b=lc7ryDlbZMcuE9Tv4GPzMVq67D5FcbVAukV1lesQ3snjhCCapGTi5lO5BIib5sfoqH
-         sBD0Skd1DBlaMo83Gt8MUoZ2a8t1namIxdlWcN7K+VgbBsCiH0o8ClRM2FTxtRXsNgaQ
-         kcmRAaGQdgHTXuDvEyAW+Wk3wPsWdfRprf6DCmqla6Moq36PhChfbW5mOCbqE7pvfuAN
-         ky7uYxvnDgMKks4d/g5KwYmepLIM7T38neiGoMih1gO0gDzLcO8UxmCKDAZygxLDyX0Z
-         4q146hw89zu7OoYYUBTY6zokA+veX3IQI+ccnVU1Usz1CVZaeCtsblTK1BKfG2VmD2rD
-         owwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690905216; x=1691510016;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yNZZO+M2ilGMua+yECx7F0GoXyqlpIpo3cCpiOFYJF0=;
-        b=UXWWbmvAaGCMmUcbHO26JjLSIpPDn5IJQklSg+Q234hTKeas7CE70chaKiVAVZkMeL
-         F06QF/KMZWpaM0nTyS4rcBgUVxmUCEqCyskBoY4o/TlhJojSu14ffQsLjLJTEDiwRByK
-         Ouj0EcU3Ucu6cl2ulCr/IUUZZsPKOnyxh4Tp75QXmdMfDBsaU6SImykvP6JQrtQI2GVG
-         aa1pxziDZxoCmEGZVpGLA0/IH5sPtr/prKqQDb4gpgXeFV6Ashj77bXNRsVo/M4WwZkg
-         pLxHvMiYJGORGO/1f5pdRdE3P2d+nHRFL4B1gOgj74DYaucqoA6R/k8mAxBRwdhTkZ8o
-         JD7g==
-X-Gm-Message-State: ABy/qLaQ9jDy607R14QR4dWSADv/10tjz3AGbKm5PS0JwWdBbWBY8BCd
-        x787KkHczTzw8Af6OpBQU5o=
-X-Google-Smtp-Source: APBJJlHFrdSGgyIzG5m0VzcBpcvPcIVA2Ds9TuoBgyBxH0kFBg7GQkasXzbgi+bADT4ewpGbzioHSg==
-X-Received: by 2002:a05:6870:2198:b0:1bb:fdb7:d979 with SMTP id l24-20020a056870219800b001bbfdb7d979mr13829634oae.11.1690905215934;
-        Tue, 01 Aug 2023 08:53:35 -0700 (PDT)
-Received: from alolivei-thinkpadt480s.gru.csb ([2804:14c:bf20:86d6:7871:f7e9:8a15:865a])
-        by smtp.gmail.com with ESMTPSA id n25-20020a9d6f19000000b006b9742a7575sm5116675otq.63.2023.08.01.08.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 08:53:35 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 12:53:30 -0300
-From:   Alexon Oliveira <alexondunkan@gmail.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     gregkh@linuxfoundation.org, martyn@welchs.me.uk,
-        manohar.vanga@gmail.com, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: vme_user: fix check alignment should match open
- parenthesis
-Message-ID: <ZMkqetuQgbVQKvU6@alolivei-thinkpadt480s.gru.csb>
-References: <ZKjeHx/zqrNIqaA6@alolivei-thinkpadt480s.gru.csb>
- <2023072729-sensitive-spyglass-ec96@gregkh>
- <ZMKDeyGaPQHm6/pr@alolivei-thinkpadt480s.gru.csb>
- <2023072741-mankind-ethics-b95b@gregkh>
- <ZMKkgItqf8r8BcRB@alolivei-thinkpadt480s.gru.csb>
- <2023072752-stem-pupil-76ab@gregkh>
- <ZMKrcvpu3b15Hdif@alolivei-thinkpadt480s.gru.csb>
- <2354895b-c127-40eb-8f16-b19e4750e1d0@kadam.mountain>
- <ZMP+MPdQ2IjJjFCE@alolivei-thinkpadt480s.gru.csb>
- <5be80f9a-7dc9-4f56-9b8c-467321321d48@kadam.mountain>
+        Tue, 1 Aug 2023 11:54:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5505E1AA
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:53:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690905237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6ii4XAGrPtq5rfz/6VphDSYMVOAoJKA+/p4wdrDYiew=;
+        b=N64ny0aE/gswuWppgE2Q3IiACIZdC25TaKqpAVp01xK4UwTkNTu4KiPYS3MgoamPuL1VBO
+        78b6KtBUkAL0+vc/rjLJQIVb2Ji7mUjvjymXiccqO0qC28BQM8mcCW12vsVCTTTy5EK5EZ
+        Oh2f+7Gbz+mg0s3dsXeUo6Vdgiaoj64=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-145-6uWu9M3XOamg6JMuPLV17g-1; Tue, 01 Aug 2023 11:53:55 -0400
+X-MC-Unique: 6uWu9M3XOamg6JMuPLV17g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4E3A0185A78F;
+        Tue,  1 Aug 2023 15:53:55 +0000 (UTC)
+Received: from localhost (unknown [10.39.195.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ACDE61454148;
+        Tue,  1 Aug 2023 15:53:54 +0000 (UTC)
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: [PATCH] vfio/type1: fix cap_migration information leak
+Date:   Tue,  1 Aug 2023 11:53:52 -0400
+Message-ID: <20230801155352.1391945-1-stefanha@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5be80f9a-7dc9-4f56-9b8c-467321321d48@kadam.mountain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 08:59:12PM +0300, Dan Carpenter wrote:
-> On Fri, Jul 28, 2023 at 02:43:12PM -0300, Alexon Oliveira wrote:
-> > On Fri, Jul 28, 2023 at 08:24:56AM +0300, Dan Carpenter wrote:
-> > > On Thu, Jul 27, 2023 at 02:37:54PM -0300, Alexon Oliveira wrote:
-> > > > > 
-> > > > > I would have thought you would get a "line is too long" warning, that
-> > > > > didn't happen?
-> > > > $ pwd
-> > > > /home/alolivei/git/kernels/staging
-> > > > $ perl scripts/checkpatch.pl --strict -f drivers/staging/vme_user/vme_bridge.h | grep -i parenthesis
-> > > > $ 
-> > > > Nope. I didn't get any of that. Check it out:
-> > > 
-> > > Heh.  The warning is there but you used grep to remove it.
-> > > 
-> > 
-> > I only used grep so as not to pollute my answer with too long
-> > output, but you can validate the full output by running the following:
-> > 
-> > curl -ks https://people.redhat.com/alolivei/kernel/evidence
-> > 
-> > You'll see there's no warning related to this patch.
-> 
-> I checked before I emailed you...  The warning is there in your URL as
-> well.
-> 
-> CHECK: line length of 121 exceeds 100 columns
-> #133: FILE: drivers/staging/vme_user/vme_bridge.h:133:
-> +	int (*slave_set)(struct vme_slave_resource *, int, unsigned long long, unsigned long long, dma_addr_t, u32, u32);
-> 
+Fix an information leak where an uninitialized hole in struct
+vfio_iommu_type1_info_cap_migration on the stack is exposed to userspace.
 
-It took me some time to finally understand your observation and now I
-get it. I was able to identify these same new warnings. Thank you for
-your patience in explaining that out to me.
+The definition of struct vfio_iommu_type1_info_cap_migration contains a hole as
+shown in this pahole(1) output:
 
-> > As I mentioned, there are other warnings that were already there before
-> > I submitted the patch, and I didn't touch them (yet).
-> 
-> No, these warnings are new.  Here are the relevant lines from the diff.
-> Originally it was short and now it's a bajillion characters long.
-> 
-> -       int (*slave_set)(struct vme_slave_resource *, int, unsigned long long,
-> -               unsigned long long, dma_addr_t, u32, u32);
-> +       int (*slave_set)(struct vme_slave_resource *, int, unsigned long long, unsigned long long, dma_addr_t, u32, u32);
-> 
+  struct vfio_iommu_type1_info_cap_migration {
+          struct vfio_info_cap_header header;              /*     0     8 */
+          __u32                      flags;                /*     8     4 */
 
-You're correct (as so Greg). I've already applied the necessary fixes to
-that and I'm submitting a v2 patch with these changes. Again, thank you
-for your feedback and help.
+          /* XXX 4 bytes hole, try to pack */
 
-> regards,
-> dan carpenter
-> 
+          __u64                      pgsize_bitmap;        /*    16     8 */
+          __u64                      max_dirty_bitmap_size; /*    24     8 */
 
-Thank you.
+          /* size: 32, cachelines: 1, members: 4 */
+          /* sum members: 28, holes: 1, sum holes: 4 */
+          /* last cacheline: 32 bytes */
+  };
 
-Alexon Oliveira
+The cap_mig variable is filled in without initializing the hole:
+
+  static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
+                         struct vfio_info_cap *caps)
+  {
+      struct vfio_iommu_type1_info_cap_migration cap_mig;
+
+      cap_mig.header.id = VFIO_IOMMU_TYPE1_INFO_CAP_MIGRATION;
+      cap_mig.header.version = 1;
+
+      cap_mig.flags = 0;
+      /* support minimum pgsize */
+      cap_mig.pgsize_bitmap = (size_t)1 << __ffs(iommu->pgsize_bitmap);
+      cap_mig.max_dirty_bitmap_size = DIRTY_BITMAP_SIZE_MAX;
+
+      return vfio_info_add_capability(caps, &cap_mig.header, sizeof(cap_mig));
+  }
+
+The structure is then copied to a temporary location on the heap. At this point
+it's already too late and ioctl(VFIO_IOMMU_GET_INFO) copies it to userspace
+later:
+
+  int vfio_info_add_capability(struct vfio_info_cap *caps,
+                   struct vfio_info_cap_header *cap, size_t size)
+  {
+      struct vfio_info_cap_header *header;
+
+      header = vfio_info_cap_add(caps, size, cap->id, cap->version);
+      if (IS_ERR(header))
+          return PTR_ERR(header);
+
+      memcpy(header + 1, cap + 1, size - sizeof(*header));
+
+      return 0;
+  }
+
+This issue was found by code inspection.
+
+Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+---
+ drivers/vfio/vfio_iommu_type1.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index ebe0ad31d0b0..d662aa9d1b4b 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -2732,7 +2732,7 @@ static int vfio_iommu_iova_build_caps(struct vfio_iommu *iommu,
+ static int vfio_iommu_migration_build_caps(struct vfio_iommu *iommu,
+ 					   struct vfio_info_cap *caps)
+ {
+-	struct vfio_iommu_type1_info_cap_migration cap_mig;
++	struct vfio_iommu_type1_info_cap_migration cap_mig = {};
+ 
+ 	cap_mig.header.id = VFIO_IOMMU_TYPE1_INFO_CAP_MIGRATION;
+ 	cap_mig.header.version = 1;
+-- 
+2.41.0
+
