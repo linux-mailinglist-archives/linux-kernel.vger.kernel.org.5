@@ -2,160 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B19EC76BB38
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:29:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFAF76BB3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233350AbjHAR3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
+        id S233928AbjHARaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbjHAR3G (ORCPT
+        with ESMTP id S231206AbjHARaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:29:06 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA70CE0;
-        Tue,  1 Aug 2023 10:29:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F5F66164C;
-        Tue,  1 Aug 2023 17:29:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24956C433C8;
-        Tue,  1 Aug 2023 17:28:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690910944;
-        bh=ZsqAQZoA0AwoghZtsiou8KjavxZCx4Uc9yT9Cen9PwU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C2/wNB2JDb34xXNtBAjWvhO/GaBvzGr/zJJtBjZuERqzx5hCgYqVR2Z+yMEi1nB1g
-         LB0Yo3/DClX0+w88XYSsol0eaOaXOk1/B5cZ1YEJEPd1m/pD4h07rixux7YzOnGQfn
-         73lzCbJsnMCFwfmL8CoCvaegc6szz51GwgMxu1wRjLDWAyBJkdQYbjYlQRUX/3IA9X
-         fbdCmHDjJqIWvELjOL85wJ3Z1UgOHv2a0U/U66LVBpppf9WoEry95VllY3hGwZDVyM
-         RFQCf2Nsp2layhGAkoAPp2zUoFiP/K4PCZefA0ZwfrOBsL0g1dIAaZskC1zvxq7AnR
-         DqO70EKfKhTiQ==
-Date:   Tue, 1 Aug 2023 20:28:14 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "broonie@kernel.org" <broonie@kernel.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "oleg@redhat.com" <oleg@redhat.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "ebiederm@xmission.com" <ebiederm@xmission.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>
-Subject: Re: [PATCH v3 21/36] arm64/mm: Implement map_shadow_stack()
-Message-ID: <20230801172814.GD2607694@kernel.org>
-References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
- <20230731-arm64-gcs-v3-21-cddf9f980d98@kernel.org>
- <5461c56cf4896f18bddaa66c3beec7b909fc8fb9.camel@intel.com>
- <0a6c90d6-f790-4036-a364-d4761fdd0e95@sirena.org.uk>
- <e827138f9d8800e3db158831bca88d1ea8b559af.camel@intel.com>
- <21d7e814-8608-40ce-b5d3-401f2110ad91@sirena.org.uk>
- <a9ea33d31aad0c45eab41b0dcbd4913d863cc930.camel@intel.com>
+        Tue, 1 Aug 2023 13:30:19 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0CAE53
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:30:17 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-51bece5d935so8456048a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:30:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690911016; x=1691515816;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QWyPkbdgs7yx55emQXRqaXaZzIyQirdAz8BzArZ40eU=;
+        b=3YMahqT1T68lBAKLGC6klWlHs6/yoQcVKMihs8hlR5o+bqg0M8L54pskZkt06Cdy/6
+         peUqd8125n6i4m5Ix0JkAVgL2Rl/GZMCGJ92U3RaWPEgl6QroNJ9Zb/UT25pvXvk6yVH
+         EDEKpsRJSX91B50bjz3WQnRgEkZbHP+/LXhrCz90OWxSXXWtIxecGf2Xz+bAqo3EbQGF
+         V/g+rrJv4LGWlojIM4vxR6lEiEupKHUdVqqiawBYFt51n1NovxS0llWPtb+8KKREyNCk
+         wummIomryE/q6enBx1sCWQ6NZhLB3umXzBvp3no92lVinNnDKuii9Z9EcHMa+vIptRrb
+         XU2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690911016; x=1691515816;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QWyPkbdgs7yx55emQXRqaXaZzIyQirdAz8BzArZ40eU=;
+        b=lcOcolMuPqxefqJXVXY2sQ93dEX/DvBn1OBk5KpwKDNyJ10cpmCvlS4Do3rSlbf5g2
+         0lMjgJCB0PavN9RBkmgzWA3KVYyfk1JtnAmh2BZ1ORkqK02AK3BLomaZE0CkmE485hsf
+         tHc9BArIT5xUlyv/RHQam9hrs5m6iMJPHJgAebQ+YhDo1HOmOMYDGdKvPCv2uG5AEZWp
+         TGbiJgkRruXSFbKhwOpU0gp+1XMJPmvzprOhA+rYDvFqDD/lIPGJkAeOTw855Lz2QLVl
+         GhEzSwgS0kP5UzfDg1VwSAET46yF7kHA8PCviUTTfJC9M3DqPe3Vs2jlai7/LpF7zXfc
+         qZbQ==
+X-Gm-Message-State: ABy/qLaBn02RqeTd8j2s0SWFxW0D1S6syQa2pyECL2SGPxVCJg2Pmp3S
+        HTTWRb02ggfMcm8lcsS9pC0xYhi+DOx+ECvNRNw5Gw==
+X-Google-Smtp-Source: APBJJlGJPVqDqQPC7nXfVN/Cb0vCjHGDfw0oAOT5O0W+9Lp/LUzmV3bVYAJWlWHC7S8wuT2dHXGRWIqsfQc4Kfhtbhg=
+X-Received: by 2002:a17:907:7751:b0:99c:281:9987 with SMTP id
+ kx17-20020a170907775100b0099c02819987mr3341587ejc.36.1690911015665; Tue, 01
+ Aug 2023 10:30:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a9ea33d31aad0c45eab41b0dcbd4913d863cc930.camel@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230726153223.821757-1-yosryahmed@google.com>
+ <20230726153223.821757-2-yosryahmed@google.com> <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
+ <CAJD7tkbb8AWR-duWb+at-S9MMz48b0JqnM+b5ok83TzvXvPb+A@mail.gmail.com>
+In-Reply-To: <CAJD7tkbb8AWR-duWb+at-S9MMz48b0JqnM+b5ok83TzvXvPb+A@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 1 Aug 2023 10:29:39 -0700
+Message-ID: <CAJD7tkbZi16w4mYngVK8qA84FMijmHvwzMjHfrJiCsV=WjixOA@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: memcg: use rstat for non-hierarchical stats
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 05:07:00PM +0000, Edgecombe, Rick P wrote:
-> On Tue, 2023-08-01 at 15:01 +0100, Mark Brown wrote:
-> > On Mon, Jul 31, 2023 at 11:19:34PM +0000, Edgecombe, Rick P wrote:
-> > 
-> > > The thing I was trying to get at was, we have this shared syscall
-> > > that
-> > > means create shadow stack memory and prepopulate it like this flag
-> > > says. On x86 we optionally support SHADOW_STACK_SET_TOKEN which
-> > > means
-> > > put a token right at the end of size. So maybe arm should have a
-> > > different flag value that includes putting the marker and then the
-> > > token, and x86 could match it someday if we get markers too.
-> > 
-> > Oh, I see.  My mental model was that this was controlling the whole
-> > thing we put at the top rather than treating the terminator and the
-> > cap
-> > separately.
-> > 
-> > > It could be a different flag, like SHADOW_STACK_SET_TOKEN_MARKER,
-> > > or it
-> > > could be SHADOW_STACK_SET_MARKER, and callers could pass
-> > > (SHADOW_STACK_SET_TOKEN | SHADOW_STACK_SET_MARKER) to get what you
-> > > have
-> > > implemented here. What do you think?
-> > 
-> > For arm64 code this would mean that it would be possible (and fairly
-> > easy) to create stacks which don't have a termination record which
-> > would
-> > make life harder for unwinders to rely on.  I don't think this is
-> > insurmountable, creating manually shouldn't be the standard and it'll
-> > already be an issue on x86 anyway.
-> 
-> If you are going to support optionally writing to shadow stacks (which
-> x86 needed for CRIU, and also seems like a nice thing for several other
-> reasons), you are already at that point. Can't you also do a bunch of
-> gcspopm's to the top of the GCS stack, and have no marker to hit before
-> the end of the stack? (maybe not in GCS, I don't know...)
-> 
-> > 
-> > The other minor issue is that the current arm64 marker is all bits 0
-> > so by itself for arm64 _MARKER would have no perceptible impact, it
-> > would only serve to push the token down a slot in the stack (I'm
-> > guessing that's the intended meaning?).
-> 
-> Pushing the token down a frame is what flags==0 does in this patch,
-> right?
-> 
-> You don't have to support all the flags actually, you could just
-> support the one mode you already have and reject all other
-> combinations... Then it matches between arch's, and you still have the
-> guaranteed-ish end marker.
-> 
-> So the question is not what mode should arm support, but should we have
-> the flags match between x86 and ARM?
+On Tue, Aug 1, 2023 at 9:39=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com> =
+wrote:
+>
+> On Tue, Aug 1, 2023 at 7:30=E2=80=AFAM Michal Hocko <mhocko@suse.com> wro=
+te:
+> >
+> > On Wed 26-07-23 15:32:23, Yosry Ahmed wrote:
+> > > Currently, memcg uses rstat to maintain aggregated hierarchical stats=
+.
+> > > Counters are maintained for hierarchical stats at each memcg. Rstat
+> > > tracks which cgroups have updates on which cpus to keep those counter=
+s
+> > > fresh on the read-side.
+> > >
+> > > Non-hierarchical stats are currently not covered by rstat. Their
+> > > per-cpu counters are summed up on every read, which is expensive.
+> > > The original implementation did the same. At some point before rstat,
+> > > non-hierarchical aggregated counters were introduced by
+> > > commit a983b5ebee57 ("mm: memcontrol: fix excessive complexity in
+> > > memory.stat reporting"). However, those counters were updated on the
+> > > performance critical write-side, which caused regressions, so they we=
+re
+> > > later removed by commit 815744d75152 ("mm: memcontrol: don't batch
+> > > updates of local VM stats and events"). See [1] for more detailed
+> > > history.
+> > >
+> > > Kernel versions in between a983b5ebee57 & 815744d75152 (a year and a
+> > > half) enjoyed cheap reads of non-hierarchical stats, specifically on
+> > > cgroup v1. When moving to more recent kernels, a performance regressi=
+on
+> > > for reading non-hierarchical stats is observed.
+> > >
+> > > Now that we have rstat, we know exactly which percpu counters have
+> > > updates for each stat. We can maintain non-hierarchical counters agai=
+n,
+> > > making reads much more efficient, without affecting the performance
+> > > critical write-side. Hence, add non-hierarchical (i.e local) counters
+> > > for the stats, and extend rstat flushing to keep those up-to-date.
+> > >
+> > > A caveat is that we now need a stats flush before reading
+> > > local/non-hierarchical stats through {memcg/lruvec}_page_state_local(=
+)
+> > > or memcg_events_local(), where we previously only needed a flush to
+> > > read hierarchical stats. Most contexts reading non-hierarchical stats
+> > > are already doing a flush, add a flush to the only missing context in
+> > > count_shadow_nodes().
+> > >
+> > > With this patch, reading memory.stat from 1000 memcgs is 3x faster on=
+ a
+> > > machine with 256 cpus on cgroup v1:
+> > >  # for i in $(seq 1000); do mkdir /sys/fs/cgroup/memory/cg$i; done
+> > >  # time cat /dev/cgroup/memory/cg*/memory.stat > /dev/null
+> > >  real  0m0.125s
+> > >  user  0m0.005s
+> > >  sys   0m0.120s
+> > >
+> > > After:
+> > >  real  0m0.032s
+> > >  user  0m0.005s
+> > >  sys   0m0.027s
+> >
+> > Have you measured any potential regression for cgroup v2 which collects
+> > all this data without ever using it (AFAICS)?
+>
+> I did not. I did not expect noticeable regressions given that all the
+> extra work is done during flushing, which should mostly be done by the
+> asynchronous worker, but can also happen in the stats reading context.
+> Let me run the same script on cgroup v2 just in case and report back.
 
-What if the flag will be called, say, SHADOW_STACK_DEFAULT_INIT?
-Then each arch can push whatever it likes to and from the userspace
-perspective the shadow stack will have some basic init state, no matter
-what architecture it is.
- 
-> >   I'm not sure that's a
-> > particularly big deal though.
-> 
-> Yea, it's not a big problem either way.
+A few runs on mm-unstable with this patch:
 
--- 
-Sincerely yours,
-Mike.
+# time cat /sys/fs/cgroup/cg*/memory.stat > /dev/null
+real 0m0.020s
+user 0m0.005s
+sys 0m0.015s
+
+# time cat /sys/fs/cgroup/cg*/memory.stat > /dev/null
+real 0m0.017s
+user 0m0.005s
+sys 0m0.012s
+
+# time cat /sys/fs/cgroup/cg*/memory.stat > /dev/null
+real 0m0.016s
+user 0m0.004s
+sys 0m0.012s
+
+A few runs on mm-unstable with the patch reverted:
+
+# time cat /sys/fs/cgroup/cg*/memory.stat > /dev/null
+real 0m0.020s
+user 0m0.005s
+sys 0m0.015s
+
+# time cat /sys/fs/cgroup/cg*/memory.stat > /dev/null
+real 0m0.016s
+user 0m0.004s
+sys 0m0.012s
+
+# time cat /sys/fs/cgroup/cg*/memory.stat > /dev/null
+real 0m0.017s
+user 0m0.005s
+sys 0m0.012s
+
+It looks like there are no regressions on cgroup v2 when reading the
+stats. Please let me know if you want me to send a new version with
+the cgroup v2 results as well in the commit log -- or I can just send
+a new commit log. Whatever is easier for Andrew.
+
+>
+> > --
+> > Michal Hocko
+> > SUSE Labs
