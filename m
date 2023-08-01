@@ -2,91 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B85AD76BDA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5113476BDA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231766AbjHATYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52588 "EHLO
+        id S229639AbjHATYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:24:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229657AbjHATYh (ORCPT
+        with ESMTP id S229657AbjHATYn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:24:37 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D32219A4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:24:36 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-44757af136cso2202421137.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:24:36 -0700 (PDT)
+        Tue, 1 Aug 2023 15:24:43 -0400
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14C119A1
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:24:38 -0700 (PDT)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-583c48a9aa1so64141697b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690917875; x=1691522675;
+        d=paul-moore.com; s=google; t=1690917878; x=1691522678;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+aNzctAvCOFsjRX9JcgTWRDXvSWghISVYKDuXeAx6tg=;
-        b=uAF+ympd9Nu7rmVHf1u5CSlWFZUORYZ34u7lmLiDMWDO94fi0S9c7dF93CwkLUM2Gc
-         CX3vtQfYAGNfMns/o7l5WzfpwEdtDcn3qDwPTGm6q2Rl8thL2jaDYCPoSBJuMpQOYJqF
-         qsZ9nCmc90OTje9L4G96m2pZpY8YMRf59k4lNtmYHpi//0w/d98R7dCPCcCNqbQV5Rzc
-         jMIu5SpIHrF89WfHycu9/wE0/0BFw95sRYp6Log4TSJZSLdXOZagwixPh6p7qGPyLoFj
-         S6PTG5/a1QNLLWeHXI1pMdJIA4qHMJpKVLrN25A80nTgX+UQUUT+dpOcX0CTwrwxY9H5
-         mzpw==
+        bh=38Ojwrgj40lNrH18lDVNz7f8CEUxvzjuVRkkOoVXi3c=;
+        b=FS/8h/9QzkAddpIc38jBNvvPbArN96+sXWtLNK/4pkm13UJ56T2KD+wfeAKTqoc4W1
+         XON7LzvI5jz/vOYvYEBTVotH0nd6wHWMEpwyYXjDunvslDbIMQ1qPllyqFb1MfrhD48o
+         SPYc5DhdVv7/cYXbSTlG7ZQidTCJf4aRUDNw9fZmOsSz4qK8HOlJ/AsF8J2ZrS2n72Kg
+         WlG/Xn/L202hOOJQfPPkUPsqzbGMpsqAoYOleIQhIb8XjxQxPyA+UUDRltjbVov0h+RB
+         DDuxtZ92JNeRUoJ0RlXwoT4BybrdDncvjxlzgmk7XItcAWCi/6TkP490V8LPF4DUTwDS
+         iKnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690917875; x=1691522675;
+        d=1e100.net; s=20221208; t=1690917878; x=1691522678;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+aNzctAvCOFsjRX9JcgTWRDXvSWghISVYKDuXeAx6tg=;
-        b=h7l+8qj06rUJyyytZqWXJAOVfznY1GKrEDXrsGf5gVP18UVfCLJZw/LQ1hy0bAE39N
-         +riE7kVp1HkjWs9zsdeZO8R0qotjoHJPyUHlYSX9axIdnCcYFchebyk2tD/63CVaNtfJ
-         DVM2pzyEOBlRFyo2oKf1BDkeHwsQdXADXo05r3iaQo0+PsuiBntmKfVlVa4n68bMgmc+
-         7DPMYaOYiR2Gviudbja6aqL4BejXhp+7k8h9zdzt6wHXS91YpCYxsv9RYB7xKdc+98KS
-         +4MMR2jqUEaql9V3RSA+FMk2lYkc/+hd+Fk/AqgvsnYl+a/Vkl4+WUdF6YkZLcDpxR5w
-         CtNg==
-X-Gm-Message-State: ABy/qLaq+mInM1iZJVX/9RpYfSNGPMcWzLVEcO3EpHxCB2ah7ATaDx27
-        o7lJKjMPGYMPkQ6ekAZ9qxpS9uhCa61rkEm3UECBCA==
-X-Google-Smtp-Source: APBJJlHYpG4QdfiGQbKHc2VahjAIeWLFoShgZExsSHTo84uxP4u7vJCiagobHPeyKch6nmCZ1p1A0SNtnZ8E2WjiWHA=
-X-Received: by 2002:a05:6102:8a:b0:446:de31:c78 with SMTP id
- t10-20020a056102008a00b00446de310c78mr3202383vsp.26.1690917875513; Tue, 01
- Aug 2023 12:24:35 -0700 (PDT)
+        bh=38Ojwrgj40lNrH18lDVNz7f8CEUxvzjuVRkkOoVXi3c=;
+        b=AhYswLmQWufDlIaTg4Ul3np8AraIXwoTcNVr62Nb6HaOdOBO1kEWGndx/iLqUNaL2r
+         mSeo5R03NWDySn8UhcIY8ARPLGfPChzMOAYt0x7iEX2ZUayliBz7zBO6mtTIQM+s3hMJ
+         u9AZNgI9LVzFRLLFkFgycNSU1LdU9+0To1F7q8dUiFW3eZPY+fWb89ocoMXuyp0FQtsc
+         DSNrlN5fsBEvQrGn8kOsElT6ZmpQ/xR/QgSOaJ2t5Eb+iE8JmXVoGiP7b0EduCjS0yLn
+         b3SGNkPUueVEPllmYAfHwWtumjPpiJXbdKv+GhGvd7E3GzHxgAwndZGepsftJRHuloWL
+         uJVw==
+X-Gm-Message-State: ABy/qLbxkHrcPjriP+pny5Wi/unGCMNk2OAKjB52DFVFMwFYb07FQH9I
+        pPZMZz4+CKGqZMfGnH5UZwqNfSrhZdM965tgQ66C
+X-Google-Smtp-Source: APBJJlGVYKkoAlJEdO/pA2Hefr1NaPY8FSCU4/fsSlYHcIHkSndbJ2o+KScsMucfbtmWKA8SCnBFfHX2BsJoBBMxDkE=
+X-Received: by 2002:a25:ab07:0:b0:d0a:7e3:fa0 with SMTP id u7-20020a25ab07000000b00d0a07e30fa0mr12480978ybi.53.1690917878071;
+ Tue, 01 Aug 2023 12:24:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZMaAdG9Zj9AL1NiR@standask-GA-A55M-S2HP>
-In-Reply-To: <ZMaAdG9Zj9AL1NiR@standask-GA-A55M-S2HP>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 1 Aug 2023 21:24:24 +0200
-Message-ID: <CAMRc=McJjD8tDAgTrmAWaxuQ4QE9hRREOg_=Lye9Liew4O2Sdw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: gpio: brcm,kona-gpio: convert to YAML
-To:     Stanislav Jakubek <stano.jakubek@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1687986571-16823-9-git-send-email-wufan@linux.microsoft.com>
+ <ec09144af7c7109d8b457ceccd50ba7a.paul@paul-moore.com> <20230715035738.GG15267@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+In-Reply-To: <20230715035738.GG15267@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 1 Aug 2023 15:24:27 -0400
+Message-ID: <CAHC9VhR-NDzKk-9gPP531ktaacd2wrdh0aGv5GScDgwkcWpcsw@mail.gmail.com>
+Subject: Re: [PATCH RFC v10 8/17] uapi|audit|ipe: add ipe auditing support
+To:     Fan Wu <wufan@linux.microsoft.com>
+Cc:     corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+        serge@hallyn.com, tytso@mit.edu, ebiggers@kernel.org,
+        axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+        eparis@redhat.com, linux-doc@vger.kernel.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, audit@vger.kernel.org,
+        roberto.sassu@huawei.com, linux-kernel@vger.kernel.org,
+        Deven Bowers <deven.desai@linux.microsoft.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jul 30, 2023 at 5:23=E2=80=AFPM Stanislav Jakubek
-<stano.jakubek@gmail.com> wrote:
+On Fri, Jul 14, 2023 at 11:57=E2=80=AFPM Fan Wu <wufan@linux.microsoft.com>=
+ wrote:
+> On Sat, Jul 08, 2023 at 12:23:05AM -0400, Paul Moore wrote:
+> > On Jun 28, 2023 Fan Wu <wufan@linux.microsoft.com> wrote:
+> > >
+> > > Users of IPE require a way to identify when and why an operation fail=
+s,
+> > > allowing them to both respond to violations of policy and be notified
+> > > of potentially malicious actions on their systems with respect to IPE
+> > > itself.
+> > >
+> > > This patch introduces 3 new audit events.
+> > >
+> > > AUDIT_IPE_ACCESS(1420) indicates the result of an IPE policy evaluati=
+on
+> > > of a resource.
+> > > AUDIT_IPE_CONFIG_CHANGE(1421) indicates the current active IPE policy
+> > > has been changed to another loaded policy.
+> > > AUDIT_IPE_POLICY_LOAD(1422) indicates a new IPE policy has been loade=
+d
+> > > into the kernel.
+> > >
+> > > This patch also adds support for success auditing, allowing users to
+> > > identify why an allow decision was made for a resource. However, it i=
+s
+> > > recommended to use this option with caution, as it is quite noisy.
+> > >
+> > > Here are some examples of the new audit record types:
+> > >
+> > > AUDIT_IPE_ACCESS(1420):
+> > >
+> > >     audit: AUDIT1420 path=3D"/root/vol/bin/hello" dev=3D"sda"
+> > >       ino=3D3897 rule=3D"op=3DEXECUTE boot_verified=3DTRUE action=3DA=
+LLOW"
+> >
+> > The 'dev' field is already in use by audit, and is used to log the
+> > device major and minor numbers, see audit_log_name() for an example.
+> >
+> > I would suggest adopting the existing 'dev' field format, but if you
+> > really want to log the device name as a string you will need to find
+> > another audit field name.
 >
-> Convert Broadcom Kona family GPIO controller bindings to DT schema.
->
-> Changes during conversion:
->   - add used, but previously undocumented SoC-specific compatibles
->
-> Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
+> Actually it was copied from https://git.kernel.org/pub/scm/linux/kernel/g=
+it/torvalds/linux.git/tree/security/lsm_audit.c#n228
+> Personally I think using device name is better, I will try to add a new f=
+ield.
 
-Applied, thanks!
+Ha, yes, it does look like the LSM code uses the device name as
+opposed to the major:minor format.  Given that existing use, and that
+IPE is a LSM, sticking with 'dev=3D<name>' seems like the right thing to
+do.  Sorry about that :/
 
-Bartosz
+> > >     audit: AUDIT1420 path=3D"/mnt/ipe/bin/hello" dev=3D"dm-0"
+> > >       ino=3D2 rule=3D"DEFAULT action=3DDENY"
+> > >
+> > >     audit: AUDIT1420 path=3D"/tmp/tmpdp2h1lub/deny/bin/hello" dev=3D"=
+tmpfs"
+> > >       ino=3D131 rule=3D"DEFAULT action=3DDENY"
+> > >
+> > > The above three records were generated when the active IPE policy onl=
+y
+> > > allows binaries from the initial booted drive(sda) to run. The three
+> > > identical `hello` binary were placed at different locations, only the
+> > > first hello from sda was allowed.
+> > >
+> > > Field path followed by the file's path name.
+> > >
+> > > Field dev followed by the device name as found in /dev where the file=
+ is
+> > > from.
+> > > Note that for device mappers it will use the name `dm-X` instead of
+> > > the name in /dev/mapper.
+> > > For a file in a temp file system, which is not from a device, it will=
+ use
+> > > `tmpfs` for the field.
+> > > The implementation of this part is following another existing use cas=
+e
+> > > LSM_AUDIT_DATA_INODE in security/lsm_audit.c
+> > >
+> > > Field ino followed by the file's inode number.
+> > >
+> > > Field rule followed by the IPE rule made the access decision. The who=
+le
+> > > rule must be audited because the decision is based on the combination=
+ of
+> > > all property conditions in the rule.
+> > >
+> > > Along with the syscall audit event, user can know why a blocked
+> > > happened. For example:
+> > >
+> > >     audit: AUDIT1420 path=3D"/mnt/ipe/bin/hello" dev=3D"dm-0"
+> > >       ino=3D2 rule=3D"DEFAULT action=3DDENY"
+> > >     audit[1956]: SYSCALL arch=3Dc000003e syscall=3D59
+> > >       success=3Dno exit=3D-13 a0=3D556790138df0 a1=3D556790135390 a2=
+=3D5567901338b0
+> > >       a3=3Dab2a41a67f4f1f4e items=3D1 ppid=3D147 pid=3D1956 auid=3D42=
+94967295 uid=3D0
+> > >       gid=3D0 euid=3D0 suid=3D0 fsuid=3D0 egid=3D0 sgid=3D0 fsgid=3D0=
+ tty=3Dpts0
+> > >       ses=3D4294967295 comm=3D"bash" exe=3D"/usr/bin/bash" key=3D(nul=
+l)
+> > >
+> > > The above two records showed bash used execve to run "hello" and got
+> > > blocked by IPE. Note that the IPE records are always prior to a SYSCA=
+LL
+> > > record.
+> > >
+> > > AUDIT_IPE_CONFIG_CHANGE(1421):
+> > >
+> > >     audit: AUDIT1421
+> > >       old_active_pol_name=3D"Allow_All" old_active_pol_version=3D0.0.=
+0
+> > >       old_policy_digest=3Dsha256:E3B0C44298FC1C149AFBF4C8996FB92427AE=
+41E4649B934CA495991B7852B855
+> > >       new_active_pol_name=3D"boot_verified" new_active_pol_version=3D=
+0.0.0
+> > >       new_policy_digest=3Dsha256:820EEA5B40CA42B51F68962354BA083122A2=
+0BB846F26765076DD8EED7B8F4DB
+> > >       auid=3D4294967295 ses=3D4294967295 lsm=3Dipe res=3D1
+> >
+> > You can trim hash digest strings so they better fit in terminals, for
+> > example:
+> >
+> >   old_policy_digest=3Dsha256:E3B0C44....
+>
+> Do you mean I could trim it in the documentation and for the real audit
+> record I still record the whole hash?
+
+Yes.  Failure to record the full hash digest string in the record
+would be Very Bad, but for the sake of keeping the line lengths in the
+docs and commit description reasonable you can trim as necessary.
+After all, we all know what a full hash string looks like :)
+
+> > > The above record showed the current IPE active policy switch from
+> > > `Allow_All` to `boot_verified` along with the version and the hash
+> > > digest of the two policies. Note IPE can only have one policy active
+> > > at a time, all access decision evaluation is based on the current act=
+ive
+> > > policy.
+> > > The normal procedure to deploy a policy is loading the policy to depl=
+oy
+> > > into the kernel first, then switch the active policy to it.
+> > >
+> > > AUDIT_IPE_POLICY_LOAD(1422):
+> > >
+> > > audit: AUDIT1422 policy_name=3D"boot_verified" policy_version=3D0.0.0
+> > > policy_digest=3Dsha256:820EEA5B40CA42B51F68962354BA083122A20BB846F267=
+65076DD8EED7B8F4DB
+> > > auid=3D4294967295 ses=3D4294967295 lsm=3Dipe res=3D1
+> > >
+> > > The above record showed a new policy has been loaded into the kernel
+> > > with the policy name, policy version and policy hash.
+> > >
+> > > Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+> > > Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
+> > > ---
+> > >  include/uapi/linux/audit.h |   3 +
+> > >  security/ipe/Kconfig       |   2 +-
+> > >  security/ipe/Makefile      |   1 +
+> > >  security/ipe/audit.c       | 197 +++++++++++++++++++++++++++++++++++=
+++
+> > >  security/ipe/audit.h       |  18 ++++
+> > >  security/ipe/eval.c        |  26 ++++-
+> > >  security/ipe/eval.h        |   8 ++
+> > >  security/ipe/fs.c          |  71 +++++++++++++
+> > >  security/ipe/policy.c      |   5 +
+> > >  9 files changed, 327 insertions(+), 4 deletions(-)
+> > >  create mode 100644 security/ipe/audit.c
+> > >  create mode 100644 security/ipe/audit.h
+
+...
+
+> > > +/**
+> > > + * ipe_audit_match - audit a match for IPE policy.
+> > > + * @ctx: Supplies a pointer to the evaluation context that was used =
+in the
+> > > + *  evaluation.
+> > > + * @match_type: Supplies the scope of the match: rule, operation def=
+ault,
+> > > + *         global default.
+> > > + * @act: Supplies the IPE's evaluation decision, deny or allow.
+> > > + * @r: Supplies a pointer to the rule that was matched, if possible.
+> > > + * @enforce: Supplies the enforcement/permissive state at the point
+> > > + *      the enforcement decision was made.
+> > > + */
+> > > +void ipe_audit_match(const struct ipe_eval_ctx *const ctx,
+> > > +                enum ipe_match match_type,
+> > > +                enum ipe_action_type act, const struct ipe_rule *con=
+st r)
+> > > +{
+> > > +   struct inode *inode;
+> > > +   struct audit_buffer *ab;
+> > > +   const char *op =3D audit_op_names[ctx->op];
+> > > +
+> > > +   if (act !=3D __IPE_ACTION_DENY && !READ_ONCE(success_audit))
+> > > +           return;
+> > > +
+> > > +   ab =3D audit_log_start(audit_context(), GFP_KERNEL, AUDIT_IPE_ACC=
+ESS);
+> > > +   if (!ab)
+> > > +           return;
+> > > +
+> > > +   if (ctx->file) {
+> > > +           audit_log_d_path(ab, "path=3D", &ctx->file->f_path);
+> > > +           inode =3D file_inode(ctx->file);
+> > > +           if (inode) {
+> > > +                   audit_log_format(ab, " dev=3D");
+> > > +                   audit_log_untrustedstring(ab, inode->i_sb->s_id);
+> >
+> > See my comments above about using the 'dev' field name, however, you
+> > shouldn't need to log the device name as an untrusted string as the
+> > string is coming from a trusted source within the kernel (the driver).
+>
+> I was trying to follow the existing code at https://git.kernel.org/pub/sc=
+m/linux/kernel/git/torvalds/linux.git/tree/security/lsm_audit.c#n229
+> But I do agree as it is already in the kernel, it should be trusted.
+
+Hmm.  Given the existing code, I guess stick with the untrusted string
+variant for now.  I'm concerned that there is some device naming code
+which might allow funky device names; although if you can prove that
+is not the case then you can use the normal audit logging functions.
+
+For reference, the characters that audit finds problematic can be
+found in audit_string_contains_control().
+
+--=20
+paul-moore.com
