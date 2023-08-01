@@ -2,164 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 314AB76A672
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A995276A673
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbjHABho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 21:37:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
+        id S231873AbjHABjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 21:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjHABhm (ORCPT
+        with ESMTP id S229724AbjHABjC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 21:37:42 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A7922114;
-        Mon, 31 Jul 2023 18:37:40 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.170])
-        by gateway (Coremail) with SMTP id _____8Ax1fDiYchkpsQNAA--.32592S3;
-        Tue, 01 Aug 2023 09:37:38 +0800 (CST)
-Received: from [10.20.42.170] (unknown [10.20.42.170])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxniPeYchkYWxDAA--.3897S3;
-        Tue, 01 Aug 2023 09:37:34 +0800 (CST)
-Message-ID: <2437ac29-29f0-34f9-b7cb-f0e294db7dc6@loongson.cn>
-Date:   Tue, 1 Aug 2023 09:37:33 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V2] asm-generic: ticket-lock: Optimize
- arch_spin_value_unlocked
-Content-Language: en-US
-To:     Waiman Long <longman@redhat.com>, guoren@kernel.org,
-        David.Laight@ACULAB.COM, will@kernel.org, peterz@infradead.org,
-        mingo@redhat.com
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, Guo Ren <guoren@linux.alibaba.com>
-References: <20230731023308.3748432-1-guoren@kernel.org>
- <c603e7f1-a562-6826-1c86-995c8127abee@redhat.com>
-From:   bibo mao <maobibo@loongson.cn>
-In-Reply-To: <c603e7f1-a562-6826-1c86-995c8127abee@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxniPeYchkYWxDAA--.3897S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxurW5KrykurWrKFW7uF1kXrc_yoW5tFykpr
-        98CFWfCF4UuF1kuFW2yw4jqrn5AwsF9w1UZr90g3ZFyFsxX34rKanYvrn09r1jyan2grs3
-        Jry2gF98uFWjy3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMx
-        k0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l
-        4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4SoGDUUUU
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 31 Jul 2023 21:39:02 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 317E019AF
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 18:39:00 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fbd33a57ddso47613205e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 18:39:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrtc27.com; s=gmail.jrtc27.user; t=1690853938; x=1691458738;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=334XzK4sUQw29izKxXhVMPDqKOQOFm4Il91KEG4/Jt8=;
+        b=AanWT0epf4MShymtvLHSoWkqKvnKTGhrbmMCLffmEcS1CZjw8L7jFwYSCsFdgUcL+Z
+         Iua3Oqaxp09HrQQgzuwpFyI5cF3gXPBLJJXuGQBa2t0AcBlizvEOGzVMsh/JDRqWcEQC
+         zteelzy/yhv3CD8KjnNO0skVQxoynGmIo7om1Ybg9l6I059Zt95hAUGhT2ulawoaKQUF
+         4JsH6df2C0ZfdxLKPNecs5YoHVCECzKCyipbND4c+Fwnjty7bfvCMvmYksUpd8bz+tH4
+         YN1/EAis5L2eKJ8SWevWA9tEndLzJ4C3SPzwIgsfbXTSQ4mt6hi2nmX6UNfZsGHVnFBS
+         /p4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690853938; x=1691458738;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=334XzK4sUQw29izKxXhVMPDqKOQOFm4Il91KEG4/Jt8=;
+        b=EHhUNsAKp7hIGaHYfvCjemyliJYfp1xORE/Zxp3c9c/Pim77D+fETXvMllkiSA+DiB
+         KlysR863twPmHcWa7xnq3/mabWyEnNuB+6eBpdTLzjsFXCYcUGaC5q/94Z6lwZbRUNMn
+         53CRFZ9n04i682Dn/7fxIK2a6tRF9dHbOYYCUjTg93pcuJgVMjenF/yyvuo52E99llqC
+         U6z1dv8HAxMD8bNosHBa43uY1eZfsbypFPPBScWPymc7Hxh6zizvhAfCw5Xzz0/Mi1MU
+         HPLQcnVt5/bMf8Ph0SkwWrlihvEFY1GfhnswivbpLb6FGXnIMsX0lubJwqeUHwzTxuyb
+         3ivQ==
+X-Gm-Message-State: ABy/qLYasxJGcAXBitKje6AGtMD6ZWPHLDseYmOUu6vH7MFUY7do428U
+        0z36UDcDKumGMVVLvL7X4+lggw==
+X-Google-Smtp-Source: APBJJlG8zOALv1XaxPHw32cKXqy4Xd9IRY59uS09ybdBueIiM2qDPOhScVDNregC/9kM33vdQWnqkg==
+X-Received: by 2002:a1c:f019:0:b0:3fb:b5dc:dab1 with SMTP id a25-20020a1cf019000000b003fbb5dcdab1mr1043631wmb.39.1690853938565;
+        Mon, 31 Jul 2023 18:38:58 -0700 (PDT)
+Received: from smtpclient.apple ([131.111.5.246])
+        by smtp.gmail.com with ESMTPSA id u13-20020a5d514d000000b003172510d19dsm14657118wrt.73.2023.07.31.18.38.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 31 Jul 2023 18:38:57 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: [PATCH v2] x86: Fix x32 System V message queue syscalls
+From:   Jessica Clarke <jrtc27@jrtc27.com>
+In-Reply-To: <347eab9f-b64a-b124-ba7a-ee458e6407f3@gigawatt.nl>
+Date:   Tue, 1 Aug 2023 02:38:47 +0100
+Cc:     Andy Lutomirski <luto@kernel.org>, Rich Felker <dalias@libc.org>,
+        linux-x86_64@vger.kernel.org, Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5C330BFF-A81A-465D-BE7D-6DB6A7B263AF@jrtc27.com>
+References: <1156938F-A9A3-4EE9-B059-2294A0B9FBFE@jrtc27.com>
+ <20201012134444.1905-1-jrtc27@jrtc27.com>
+ <CALCETrWKwFD7QhFQu9X_yQeVW1_yy-gEMNEtsWmQK=fNg9y68A@mail.gmail.com>
+ <20201101012202.GM534@brightrain.aerifal.cx>
+ <7842A462-0ADB-4EE3-B4CB-AE6DCD70CE1C@jrtc27.com>
+ <20201101015013.GN534@brightrain.aerifal.cx>
+ <CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com>
+ <04832096-ED7F-4754-993D-F578D4A90843@jrtc27.com>
+ <EEC90B2F-E972-475F-B058-918CDE401618@jrtc27.com>
+ <20201101210102.GO534@brightrain.aerifal.cx>
+ <29423184-A433-42D4-B635-CDEFE7271B40@jrtc27.com>
+ <2AC632C0-EC00-4C4E-92DC-B7F238897C4C@jrtc27.com>
+ <CALCETrWWcVhYoVuvovo558sXpA7X75jNpf8LA+w+k-dzyRiUcg@mail.gmail.com>
+ <347eab9f-b64a-b124-ba7a-ee458e6407f3@gigawatt.nl>
+To:     Harald van Dijk <harald@gigawatt.nl>
+X-Mailer: Apple Mail (2.3731.600.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1 Aug 2023, at 01:43, Harald van Dijk <harald@gigawatt.nl> wrote:
+>=20
+> On 06/12/2020 22:55, Andy Lutomirski wrote:
+>> On Sat, Dec 5, 2020 at 4:01 PM Jessica Clarke <jrtc27@jrtc27.com> =
+wrote:
+>>>=20
+>>> Ping?
+>> Can you submit patches implementing my proposal?  One is your =
+existing
+>> patch plus fixing struct msghdr, with Cc: stable@vger.kernel.org at
+>> the bottom.  The second is a removal of struct msghdr from uapi,
+>> moving it into include/inux (no uapi) if needed.  The second should
+>> not cc stable.
+>=20
+> Hi,
+>=20
+> This looks like it was forgotten, but it is still needed. Jessica, are =
+you interested in submitting the requested change? If not, would it be =
+okay if I do so? I have been running this locally for a long time now.
 
+Hi,
+Please feel free to; sorry that it dropped off my radar. Part of the
+issue is my laptop no longer being x86, making it more annoying to test.
 
-在 2023/7/31 23:16, Waiman Long 写道:
-> On 7/30/23 22:33, guoren@kernel.org wrote:
->> From: Guo Ren <guoren@linux.alibaba.com>
->>
->> The arch_spin_value_unlocked would cause an unnecessary memory
->> access to the contended value. Although it won't cause a significant
->> performance gap in most architectures, the arch_spin_value_unlocked
->> argument contains enough information. Thus, remove unnecessary
->> atomic_read in arch_spin_value_unlocked().
->>
->> The caller of arch_spin_value_unlocked() could benefit from this
->> change. Currently, the only caller is lockref.
->>
->> Signed-off-by: Guo Ren <guoren@kernel.org>
->> Cc: Waiman Long <longman@redhat.com>
->> Cc: David Laight <David.Laight@ACULAB.COM>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
->> ---
->> Changelog
->> V2:
->>   - Fixup commit log with Waiman advice.
->>   - Add Waiman comment in the commit msg.
->> ---
->>   include/asm-generic/spinlock.h | 16 +++++++++-------
->>   1 file changed, 9 insertions(+), 7 deletions(-)
->>
->> diff --git a/include/asm-generic/spinlock.h b/include/asm-generic/spinlock.h
->> index fdfebcb050f4..90803a826ba0 100644
->> --- a/include/asm-generic/spinlock.h
->> +++ b/include/asm-generic/spinlock.h
->> @@ -68,11 +68,18 @@ static __always_inline void arch_spin_unlock(arch_spinlock_t *lock)
->>       smp_store_release(ptr, (u16)val + 1);
->>   }
->>   +static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
->> +{
->> +    u32 val = lock.counter;
->> +
->> +    return ((val >> 16) == (val & 0xffff));
->> +}
->> +
->>   static __always_inline int arch_spin_is_locked(arch_spinlock_t *lock)
->>   {
->> -    u32 val = atomic_read(lock);
->> +    arch_spinlock_t val = READ_ONCE(*lock);
->>   -    return ((val >> 16) != (val & 0xffff));
->> +    return !arch_spin_value_unlocked(val);
->>   }
->>     static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
->> @@ -82,11 +89,6 @@ static __always_inline int arch_spin_is_contended(arch_spinlock_t *lock)
->>       return (s16)((val >> 16) - (val & 0xffff)) > 1;
->>   }
->>   -static __always_inline int arch_spin_value_unlocked(arch_spinlock_t lock)
->> -{
->> -    return !arch_spin_is_locked(&lock);
->> -}
->> -
->>   #include <asm/qrwlock.h>
->>     #endif /* __ASM_GENERIC_SPINLOCK_H */
-> 
-> I am fine with the current change. However, modern optimizing compiler should be able to avoid the redundant memory read anyway. So this patch may not have an impact from the performance point of view.
+> There is one complication that I think has not been mentioned yet: =
+when _GNU_SOURCE is defined, glibc does provide a definition of struct =
+msghdr in <sys/msg.h> with a field "__syscall_slong_t mtype;". This =
+makes it slightly more likely that there is code out there in the wild =
+that works fine with current kernels and would be broken by the fix. =
+Given how rare x32 is, and how rare message queues are, this may still =
+be acceptable, but I am mentioning it just in case this would cause a =
+different approach to be preferred. And whatever is done, a fix should =
+also be submitted to glibc.
 
-arch_spin_value_unlocked is called with lockref like this:
+Given POSIX is very clear on how msghdr works I think we have to break
+whatever oddball code out there might be using this. The alternative is
+violating POSIX in a way that makes correct code compile fine but fail
+at run time on x32, which is a terrible place to be, especially when
+the =E2=80=9Cfix=E2=80=9D is to special-case x32 to go against what =
+POSIX says. I just
+can=E2=80=99t see how that=E2=80=99s a good place to stay in, even if =
+something might
+break when we fix this bug.
 
-#define CMPXCHG_LOOP(CODE, SUCCESS) do {                                        \
-        int retry = 100;                                                        \
-        struct lockref old;                                                     \
-        BUILD_BUG_ON(sizeof(old) != 8);                                         \
-        old.lock_count = READ_ONCE(lockref->lock_count);                        \
-        while (likely(arch_spin_value_unlocked(old.lock.rlock.raw_lock))) {     \
+Thanks,
+Jess
 
-With modern optimizing compiler, Is it possible that old value of 
-old.lock.rlock.raw_lock is cached in register, despite that try_cmpxchg64_relaxed
-modifies the memory of old.lock_count with new value? 
-
-Regards
-Bibo Mao
-
-                struct lockref new = old;                                       \
-                CODE                                                            \
-                if (likely(try_cmpxchg64_relaxed(&lockref->lock_count,          \
-                                                 &old.lock_count,               \
-                                                 new.lock_count))) {            \
-                        SUCCESS;                                                \
-                }                                                               \
-                if (!--retry)                                                   \
-                        break;                                                  \
-        }                                                                       \
-} while (0)
-
-> 
-> Acked-by: Waiman Long <longman@redhat.com>
+> (musl define struct msghdr as well, but defines mtype unconditionally =
+as having type long, so if this approach is still preferred, needs no =
+changes.)
+>=20
+> Cheers,
+> Harald van Dijk
 
