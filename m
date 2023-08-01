@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4329E76BC58
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D6076BC5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbjHASZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 14:25:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
+        id S232323AbjHASZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232228AbjHASZH (ORCPT
+        with ESMTP id S232438AbjHASZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:25:07 -0400
+        Tue, 1 Aug 2023 14:25:10 -0400
 Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2069.outbound.protection.outlook.com [40.107.104.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F5C268E;
-        Tue,  1 Aug 2023 11:24:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3347D26B6;
+        Tue,  1 Aug 2023 11:24:58 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kYH76s5SJLqCB6k+sXQ5R+MdPh1rVBmdy+9BeMtrUHjyrzXKGiPuCpQwICYNrR3QBIgklg6eoKqJkd/FsEejYCiqGIIvQlNuBiZjA3Dr1146SQpiLwAVDaPJnFc/e7mkUDN2XTn5b78tUPKcchHC/YUVZmMwVuWnkprgXSzN6z9HVqVfsRBIEHB9VZBUPFRiHxNo7QPp8O5eb4Mgik4rdRmRlJIWX7yT27OPuzQ6QC/R2g/APhZuk2jvOS6syXz9OhVTKsGIUqpS+6yMSOQcqy5qMneVNXgD1M2I3XhTL2C+x4TAAeBCojdRl4tJ/ja5Xh+Le9ZN/flVayciSY0ojw==
+ b=B2fBZpbgsydlYtemAGgAlKC+8MRVNutWKBh33baEhBpC6wrKAuP60B1XASgvUrnnB25TKI/g0eKRSTkGV3DwUXOwGN7zV/PwOVhXXYUnP+2ZGMb29DkvxvK685onSQlpWsRUMxchhY00+i59DXTMe7tNWAl6nGI61cNIwmAsZ5mxLEdQUSOzSyVGjH9CXJPWMBn4u4vJpjIaEZW9ZJfMuWHBsmGYducywk+T+PCLEIQrLLeVPFnVMH3U8eeQJ35+wpF8DqYlXYjeyE3yCM6wFKvNrO6N4qzxImWn9XmtI5e0EhIpjjBmjpvz8O6cXt6LG+HjVfXgW9MXvP2kKsw+Uw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ut4OKsw5avDvlwLhWrkm02UHTnbV1chMQ8vNswD502U=;
- b=c4tfRx491PPLqj2t/XD7o0oP3Nkd2PiMuwP5vtcTXosfOozN8TNp+ak2AnBMOI4Lal3PoyH03htUL8P3dib/InBqM2AhABWDeFr96t1dbva0p8SbHyk07yqiS8Wkrim0yWnwrBN2h3g2AOHTCkYgDYcISk61uopkYM8xEE3KdghMqGokcM9TNP9lw8mv9o69tNkim6CTFxFKIVPA2Jy47pEge799XYVR/UgWBoxe62rful3ytI2zlIQE3ROzLte4qDi3X1Umny1cfSP5EkY4zziTuQ6GQbdEfX312++seAoncIMsKy2KrtRdTzsm800gU+CRkknwjAC55XTsFueBKg==
+ bh=jb6YYObRRKn19OUN2BCcwSodsdYT0N+nUrwxHMRW3/Q=;
+ b=eEjdLB1siuN6AeeRRAgA75UYRGhTDVLYBjzFtXaXZNxyr/giV1JTdJlj6+ejvW3X/wJByEmsMGT1K+fTNr4BopFoDt0vzHNeK/RJ6psEkmgUFZFBoQwoSrc4bYKaoG9heOYh4bR+vYNYDC2vvWS7/caO/i8KwS1VMBx3zMfG+vodkMHxfWVYnw/iGOr8nhi2I1qosC4ul29c2UWMeJzP68pX6YubISpiCkQpyN5+jjfonLiOJP5XmnWrKzZ6Zs68+/hsK9ker4HuWUiH/2wr7ffYGmDqNex2utuBUmC5MR65F/CrlNx+I4tINnZhX/S0zmEOmrnEAw3lw6+1UvAAUg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ut4OKsw5avDvlwLhWrkm02UHTnbV1chMQ8vNswD502U=;
- b=gqM1xefkC2MSr2dtBmdnwITb16n4l6+Ls+3VIPXO4GNUYRSsff9zgECZHFrenzu8Oa+HdtbugUlNeCQ9PXlCa80fjnVIAUhwunyTfRdf7ETqdkaaUuXYr/r8e5k6dY1VxFCyupITF2xATn2yCDLKfsHX32mV0feeIf4WorzQ2Mk=
+ bh=jb6YYObRRKn19OUN2BCcwSodsdYT0N+nUrwxHMRW3/Q=;
+ b=dn1j+pBzXU3KYzSh1IEaky14fkOGvzUxOSV+RU6DWGRiLDB6juIlSyoV3ezR8/OeakIQ00nv4hsordwcmDrFG1FmNwKq/7x9xbyj9SsbGegmKEYZWQzDim2EXQUdWVZKqv+L7ALWR6twQyJgQfkcQ7jWVqoJJCI29+y2rjGulMw=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
  by AM9PR04MB8796.eurprd04.prod.outlook.com (2603:10a6:20b:40b::23) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.29; Tue, 1 Aug
- 2023 18:24:51 +0000
+ 2023 18:24:52 +0000
 Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::6074:afac:3fae:6194]) by AM0PR04MB6452.eurprd04.prod.outlook.com
  ([fe80::6074:afac:3fae:6194%4]) with mapi id 15.20.6631.045; Tue, 1 Aug 2023
- 18:24:51 +0000
+ 18:24:52 +0000
 From:   Vladimir Oltean <vladimir.oltean@nxp.com>
 To:     netdev@vger.kernel.org
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -57,9 +57,9 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Richard Cochran <richardcochran@gmail.com>,
         Zhengchao Shao <shaozhengchao@huawei.com>,
         Maxim Georgiev <glipus@gmail.com>
-Subject: [PATCH v3 net-next 06/10] net: ptp: create a mock-up PTP Hardware Clock driver
-Date:   Tue,  1 Aug 2023 21:24:17 +0300
-Message-Id: <20230801182421.1997560-7-vladimir.oltean@nxp.com>
+Subject: [PATCH v3 net-next 07/10] net: netdevsim: use mock PHC driver
+Date:   Tue,  1 Aug 2023 21:24:18 +0300
+Message-Id: <20230801182421.1997560-8-vladimir.oltean@nxp.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230801182421.1997560-1-vladimir.oltean@nxp.com>
 References: <20230801182421.1997560-1-vladimir.oltean@nxp.com>
@@ -71,51 +71,51 @@ X-ClientProxiedBy: AM0PR03CA0030.eurprd03.prod.outlook.com
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AM9PR04MB8796:EE_
-X-MS-Office365-Filtering-Correlation-Id: 65a587cd-f50e-47c4-aecd-08db92bc984e
+X-MS-Office365-Filtering-Correlation-Id: 6f3480c7-d04f-4705-1aac-08db92bc98ff
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ftbv6QLkB92l5cnx2v+wG367/YSm5kae3K+wYsi1oQCk8e8GSunCzaPTdypnhjgtRdzQddt+XKEKfE1s6cRteB/fa3aIEzQIFNHmixXfGuIoA0puy+hnurnKKUPHi0LGKyxwExgNNNU4H5dA5eVdnt68g6nRMaOKE6OQCMFf/Bl7mSsYlG+bVBrkDFhuUTDjJOewzhqqcCpFFxTnfEllxsnkfIC4O8z0Fch+i2XbQGKUJGROHc6MMhSol6FrZHPFM14wt/kAPIWX2zar1ONmcFEuE9jv4slYkvC///cRAdb4swASDqgVIlaxOjSvnR+guDMDsDXQ4fmPGdqfP0l6rEwYMKKo43XdozpMRgoYc/v9+SrtkQh4EVgnPA35xIiYM8ZH3JOs6xPCgIT0AqqwzFDmUvle+V8fLbYuY72rdPjNf0enouQM/QfkniX0BV7tWKIy2jy5BD7inVfap5wtjOYwyTAAPGQpVBprAiJp7HaCwFxqcEC0Ys9xubQHke00d8yyByzLJxJZIa/UynRb7oLQQDsIXLKVUNhiR+oORwKCiz2ELm8AYXXrTkP5KIZYRymLrTtOgxquJ/qAm3NCx7LZGl92AufVexJNTaefso8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(451199021)(38350700002)(2906002)(1076003)(6506007)(26005)(186003)(38100700002)(52116002)(316002)(83380400001)(2616005)(5660300002)(66946007)(44832011)(8676002)(36756003)(8936002)(6916009)(7416002)(54906003)(41300700001)(478600001)(6512007)(6666004)(6486002)(4326008)(66556008)(66476007)(86362001)(66899021);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Ek54nCvBYx/+NbAreLjZou67o2qeDJm301MeGjcVHXXj5DUxNGuP7zWtTNjIhv6YeKFTeRelnL/CrbA6B82pgzpxdV+OyQAD1C47hvR6x0h1ssY/P35C5hKLueDEEnKBn+rvicqIe/nOqPRuAsYKK9fy0lMek6Ntws2qBuiGWQToCIjNC3YLv5DFA1IJ++tah1W3bdf7Uu59XX7WRhaHyMQztwubvIFtJX/uQ7ipKe+/dsuvlNcHlSus4e9HUJnd2EzuQ2KOJM1uQHIG4XgeUDEb2TmphIc76af951XzfivCsIt4crVXo7rdh/UAo2FVJoUy2HUm0++nOGltQH6d0vKT5hgUGzCiNCXnfQbMZ6Qpv6rccPeGc9zKJr+uoPa3tsONek+il9MR4CZnhBYQgPFbw6JgalDTV34GDwFzC4OLyi8K7ZUFxaXxWICpklaQZC5XryFGOd1GU8JTl6btMNosTkKgerkQaKbPIWj/uCtShGZc2DD4FxzkyBBGrr8gEqZRhDH8sCR7t2DDPx35wx9sx7XR+eY2hdlR3d5dilAKSDrr25SQ0Hl5aL37348Z7XXcPobpZEWkbDtTzCx+OcnGyeVCLN9vmA2/QPnd0eAsYpSa+1OFUgxrrId/c/Eq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(451199021)(38350700002)(2906002)(1076003)(6506007)(26005)(186003)(38100700002)(52116002)(316002)(83380400001)(2616005)(5660300002)(66946007)(44832011)(8676002)(36756003)(8936002)(6916009)(7416002)(54906003)(41300700001)(478600001)(6512007)(6666004)(6486002)(4326008)(66556008)(66476007)(86362001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nwlTDwlNjajcJDp4fsbJwwvVyqWn7wzXt9l4AOOgPjvl4ShFe0KzBQ8WF99o?=
- =?us-ascii?Q?XwTchVZpTmi8C5zkWsi8AtfoEL+eMGk0vwL5gRU4Y8ox/4ClCQqRnkticzVN?=
- =?us-ascii?Q?cGtmlPC9FAQop2T/4ntdI8ubDmbUOoAAqxIJQZbtWu1lQQxqTBdjCYcG6qra?=
- =?us-ascii?Q?LOCw5ZRGwLl6W9eumrgRK4D9KyQA/XIBOP0HbG7i2jvAHPT/nJmqhNzVsuvj?=
- =?us-ascii?Q?X2ZDtVGwWFINNs6QwVGTAMO4tty9b/vm3AOAFbikMhBbCIiDXWZnTlpvUK6E?=
- =?us-ascii?Q?XkedxN1w2nKVWfkGVbqycQBwt8uGjBAR5I2jnfWvWWae0D/3XgFGfqzbZZ0J?=
- =?us-ascii?Q?wX/51DctfpqrPXAqhVj6qfLLyH03BxpVHlCCq8AiVpcSUqgvwB5pVltXWbbc?=
- =?us-ascii?Q?+PzP3NZXlaAf8VrbvlgQuGC684aKMGaIdKRfziuhd9HAWzZGtIyMnIVfiOAU?=
- =?us-ascii?Q?WgVCFORJAp/BnVVeAEJnhlli5kLeiRm2uZbbY3ynwVtWP1ylIloEgb+6AvHb?=
- =?us-ascii?Q?DnuL13qUn/JOiOjMjqPy54rWrilGuvQAMfCVylIwSvgYPotYo6Ikcx5rTLLK?=
- =?us-ascii?Q?UHluoF5uL7d9N+xh7UDdpSJmbDk0UuK5SmFtB/+TCtheTGdTL9YVbYe/wR+E?=
- =?us-ascii?Q?yd68Dw+bRzrcTgxghvsu9KaQ4s2Hj2sqwfaQRsCMEtttvsTAZgEayeswdJom?=
- =?us-ascii?Q?B1eNU3t43tmhdaJA3Evcitj9ychyFhmtns8Mti9bqqSEw8lDrKhQcF7P9Wqc?=
- =?us-ascii?Q?W3MwQIhN2j7RRyMrPyE7Q10Nxm2wsYioyYNJUsBBp/sBGXs+kpe28VQ0vg5d?=
- =?us-ascii?Q?LUX96JVFBbVSy7EU2XsJGc3YqTNKPI6Ve9P6/IkAKA1Q/gOGOEJ54Wt57jp5?=
- =?us-ascii?Q?xwXzHF2ZHSFXtrXpdDZWNRYGvaPT8H+477KVoIKyQxK+YcP8vNNXFa5NS2zv?=
- =?us-ascii?Q?VssUNMRxvvzHHH13Ta9KxNaX1dZ+oRVx+qZ53I9ij0PZ2y8jgl1razGhM5p9?=
- =?us-ascii?Q?Q8eIw+LxKKNh8GpINCleOKlIJkiv9EvN+SmCW06xkTcPkwf4xT/NZWCF7CbM?=
- =?us-ascii?Q?K8g3xbfSwlyDF1MfiV6AC4O1DTIoeFisAc8kQ0GUdr+m4kzWR1bRJIfw70p8?=
- =?us-ascii?Q?9szs7PhkqX647fVlXrGpEVWoH/46Pn2neNqJa+ebh//W8ka15FI23m+8B6I7?=
- =?us-ascii?Q?QpIHvm3+6FliNpDpl7IVloqI0F3wA+bFWSnR6Y9c5q2kolzYKEtEOhGjJGNz?=
- =?us-ascii?Q?MBdiWG27DPpRRCQ31mPqGpqnt4wYw2SFu/hnE5mlTKnrMsXv9iz/tFMAEwxC?=
- =?us-ascii?Q?zcfTvjX3SwR0pys3GsWSRw893LH+B/qIQIosY87p3cmOgimGum0FpTQ8IuHF?=
- =?us-ascii?Q?7Vnl1bgPKBVNP/SG+t6zvnEzLAk0ptGdbmwrr22eg9Esc8/CHuNJ8ipfL26f?=
- =?us-ascii?Q?AE7SLdMsUWoWI3YzBcGjjHo4HW77EjKIjtNPNGLv/WYHoo7MTXg7+Zp9eaT9?=
- =?us-ascii?Q?ib6EDtZXyhVDme/VYl5Vg6U7DZWmdiAj2pRxBWs42af20qT8Yv+EzTkllHJK?=
- =?us-ascii?Q?odI25XROucEGy9UozeEmFPiIiLEQpchwZSkrOpDQOk+vNXN3ZauAdPhwyo0d?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iNSwUsYoM/G4TZ4gNNDnYEtZaZWAryNx+4rrglMhgd1aT6s+1AyTNi2xmLMO?=
+ =?us-ascii?Q?5CK21hbEPV11wqMkeV0yw1Uo0J1gvcTpYh7Pjl1Wk3FFZyLigaIuhMo9ryUh?=
+ =?us-ascii?Q?qFfqIHu9Mrj1/7qlAXvnijZ8Gh3rWJzHWngE3HKxAk23WzbGW1181f9LJHVr?=
+ =?us-ascii?Q?Vyv6myygoI9SPvueWQ7T0xvSJIUTb8iRH8UtVv5eB7YZ2G7wO/pnqA89gKBC?=
+ =?us-ascii?Q?3sPGByZyQSBJmhp7ki/GejFDedlSxYeoaqXSo11Dux8t2FXHo+1deK5zj9/i?=
+ =?us-ascii?Q?ntIEAnyDr3e2VUacELyP5pKy8tLd62MUtn1OyvBJNKjdO22I827vJtRgeJ8D?=
+ =?us-ascii?Q?e7WscOUQWtKnqTTLimOGeyERHlpOBM4/uQYn2kQwQkf5QghKive/6ayHe6qv?=
+ =?us-ascii?Q?qtHdh+4fJQhvlgEZVmzp1V2sPb43GiNXaNW7T3TGaLm6s17DiQ2ipc42Bpb4?=
+ =?us-ascii?Q?v93I6zChIcsCX2oOXo6lQTSfpRbRPJl9ubsOGjljC4M8mSbnCrDlDOmQccjK?=
+ =?us-ascii?Q?+CC/rm5UevNbgZTT6R6dzC6ue5xWqLRhJVOkK5z3Yy7Fa0LsOLwXYm8FnLHw?=
+ =?us-ascii?Q?D25FBBOAFClGxcvgNNmDs3LON2ARh99P3wSeBWLHaYLRvZsUxWkEmXOqVE92?=
+ =?us-ascii?Q?aFSbLEKd4YHlYDvYWr621jfU12qTszAIefG0Xv7Vy9lrafs6N/vV56gglar4?=
+ =?us-ascii?Q?XMzUpw6nP/dGt9yIM6nQbfzi/1SLZn48ipMR+f1Q/wlqDbWrgyAzriOYFQtr?=
+ =?us-ascii?Q?AmYxQrwljEbLpx3PjV0IZnmQbFoyLr3M09Gfk3R/Ig+mm90dw5ZYIbTBtO9A?=
+ =?us-ascii?Q?JxOBnI3jnp8EiWyIvLdSM4l7/SXHY3S7aSWbMrBlvqia9iXYcIGItyXz/NIx?=
+ =?us-ascii?Q?1VOb0vvTM2xkquIWSw7YhhFFI87GfnmPdNWCDuyPUTDtt3LwaoslflCyVP2t?=
+ =?us-ascii?Q?Wj3BCVuLwnEUpfM7sm9yUys/RXxHGjB4y00ovQG6W/MR4RLRZuWJZ6AWS0i2?=
+ =?us-ascii?Q?vKi46nkc3asEq1XgeydZHDbcK1Fd41n7Z3ZWdemLAX5rN3HtNf2UojNgbJ8j?=
+ =?us-ascii?Q?jJ/YtrskQ+GGwu7aOgWTiPQcxrp2E34Tlga9hRJJUbXRz2qshJ6Y7gfWla3s?=
+ =?us-ascii?Q?2aUOonyfQwRjLkqh0lo71DhPoge9uqc2j4c5n1KI6dZIo9uZAwWd3rtJl22r?=
+ =?us-ascii?Q?mQ1a1Iag3sHNVEwCjTt38hChfUQel8+pwxXPtHFET/FLLXedDQPuF+CjSawd?=
+ =?us-ascii?Q?QI7eyaGjoxZ3jd4tkGiY5elllgZW77oW2cEBXCUjhwnDNU1/vy76MTZGtYl0?=
+ =?us-ascii?Q?9AlxfWcmbqVWJR2dhxsFGBcJXBI4UtflNqp7w7Gz2B+caVUwd49PPsl61pf3?=
+ =?us-ascii?Q?4zw09T/3izqUwFcNd/bW6iu0ULT0vVTspHCmlW3nqkvSNZPRS/4QRB6jdJwf?=
+ =?us-ascii?Q?CM6d3WZUIMBHmrUnM0PASwNJDqCA/AZfr+ip/FTykgTRjYm0pWefgTnU5M8S?=
+ =?us-ascii?Q?uTZU6+Sliupq0cZG4aqppGl5fNgfcHul4Z7fsdtN215v7jXhTR4eJ+RGkp4g?=
+ =?us-ascii?Q?dM+nf6suhSyR8mJ32qhHG7q05E70x6G9YX5CGncL8iyqLa6VzSi/+bVjfELl?=
  =?us-ascii?Q?Dw=3D=3D?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65a587cd-f50e-47c4-aecd-08db92bc984e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f3480c7-d04f-4705-1aac-08db92bc98ff
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 18:24:51.1577
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 18:24:52.3062
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aWN5avut4tTuL6sRNOJoxTHRD7ubOq4irq7/3b6fIF3qJS66U5RuMczhE/7FbGp3baw+gT4KdVcqke4OL8XeYw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: vzszChd2bFIBDo+SmpH/CFO37gd6eyIST4GGBuHv72HoekJHcAAur7MWa50xPB98LrYtcfKbhdoHMFvkdO1Mwg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8796
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -127,321 +127,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several cases where virtual net devices may benefit from
-having a PTP clock, and these have to do with testing. I can see at
-least netdevsim and veth as potential users of a common mock-up PTP
-hardware clock driver.
+I'd like to make netdevsim offload tc-taprio, but currently, this Qdisc
+emits a ETHTOOL_GET_TS_INFO call to the driver to make sure that it has
+a PTP clock, so that it is reasonably capable of offloading the schedule.
 
-The proposed idea is to create an object which emulates PTP clock
-operations on top of the unadjustable CLOCK_MONOTONIC_RAW plus a
-software-controlled time domain via a timecounter/cyclecounter and then
-link that PHC to the netdevsim device.
+By using the mock PHC driver, that becomes possible.
 
-The driver is fully functional for its intended purpose, and it
-successfully passes the PTP selftests.
-
-$ cd tools/testing/selftests/ptp/
-$ ./phc.sh /dev/ptp2
-TEST: settime                          [ OK ]
-TEST: adjtime                          [ OK ]
-TEST: adjfreq                          [ OK ]
+Hardware timestamping is not necessary, and netdevsim does not support
+packet I/O anyway.
 
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 ---
-v2->v3:
-- split off ptp_mock into separate patch
-- fix ptp_mock compilation as a module
-- turn phc->lock into a global spinlock
-- drop bogus support for ptp_clock_register() ever returning NULL
-- add MAINTAINERS entry
+v2->v3: split off from common patch with ptp_mock introduction
 v1->v2: patch is new
 
- MAINTAINERS              |   7 ++
- drivers/ptp/Kconfig      |  11 +++
- drivers/ptp/Makefile     |   1 +
- drivers/ptp/ptp_mock.c   | 175 +++++++++++++++++++++++++++++++++++++++
- include/linux/ptp_mock.h |  38 +++++++++
- 5 files changed, 232 insertions(+)
- create mode 100644 drivers/ptp/ptp_mock.c
- create mode 100644 include/linux/ptp_mock.h
+ drivers/net/Kconfig               |  1 +
+ drivers/net/netdevsim/ethtool.c   | 11 +++++++++++
+ drivers/net/netdevsim/netdev.c    | 11 ++++++++++-
+ drivers/net/netdevsim/netdevsim.h |  2 ++
+ 4 files changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c4f95a9d03b9..164b7930f5d0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17175,6 +17175,13 @@ F:	drivers/ptp/*
- F:	include/linux/ptp_cl*
- K:	(?:\b|_)ptp(?:\b|_)
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index 368c6f5b327e..4953c1494723 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -592,6 +592,7 @@ config NETDEVSIM
+ 	depends on INET
+ 	depends on IPV6 || IPV6=n
+ 	depends on PSAMPLE || PSAMPLE=n
++	depends on PTP_1588_CLOCK_MOCK || PTP_1588_CLOCK_MOCK=n
+ 	select NET_DEVLINK
+ 	help
+ 	  This driver is a developer testing tool and software model that can
+diff --git a/drivers/net/netdevsim/ethtool.c b/drivers/net/netdevsim/ethtool.c
+index ffd9f84b6644..bd546d4d26c6 100644
+--- a/drivers/net/netdevsim/ethtool.c
++++ b/drivers/net/netdevsim/ethtool.c
+@@ -140,6 +140,16 @@ nsim_set_fecparam(struct net_device *dev, struct ethtool_fecparam *fecparam)
+ 	return 0;
+ }
  
-+PTP MOCKUP CLOCK SUPPORT
-+M:	Vladimir Oltean <vladimir.oltean@nxp.com>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	drivers/ptp/ptp_mock.c
-+F:	include/linux/ptp_mock.h
++static int nsim_get_ts_info(struct net_device *dev,
++			    struct ethtool_ts_info *info)
++{
++	struct netdevsim *ns = netdev_priv(dev);
 +
- PTP VIRTUAL CLOCK SUPPORT
- M:	Yangbo Lu <yangbo.lu@nxp.com>
- L:	netdev@vger.kernel.org
-diff --git a/drivers/ptp/Kconfig b/drivers/ptp/Kconfig
-index 32dff1b4f891..ed9d97a032f1 100644
---- a/drivers/ptp/Kconfig
-+++ b/drivers/ptp/Kconfig
-@@ -155,6 +155,17 @@ config PTP_1588_CLOCK_IDTCM
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called ptp_clockmatrix.
++	info->phc_index = mock_phc_index(ns->phc);
++
++	return 0;
++}
++
+ static const struct ethtool_ops nsim_ethtool_ops = {
+ 	.supported_coalesce_params	= ETHTOOL_COALESCE_ALL_PARAMS,
+ 	.get_pause_stats	        = nsim_get_pause_stats,
+@@ -153,6 +163,7 @@ static const struct ethtool_ops nsim_ethtool_ops = {
+ 	.set_channels			= nsim_set_channels,
+ 	.get_fecparam			= nsim_get_fecparam,
+ 	.set_fecparam			= nsim_set_fecparam,
++	.get_ts_info			= nsim_get_ts_info,
+ };
  
-+config PTP_1588_CLOCK_MOCK
-+	tristate "Mock-up PTP clock"
-+	depends on PTP_1588_CLOCK
-+	help
-+	  This driver offers a set of PTP clock manipulation operations over
-+	  the system monotonic time. It can be used by virtual network device
-+	  drivers to emulate PTP capabilities.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called ptp_mock.
-+
- config PTP_1588_CLOCK_VMW
- 	tristate "VMware virtual PTP clock"
- 	depends on ACPI && HYPERVISOR_GUEST && X86
-diff --git a/drivers/ptp/Makefile b/drivers/ptp/Makefile
-index 553f18bf3c83..dea0cebd2303 100644
---- a/drivers/ptp/Makefile
-+++ b/drivers/ptp/Makefile
-@@ -16,6 +16,7 @@ ptp-qoriq-y				+= ptp_qoriq.o
- ptp-qoriq-$(CONFIG_DEBUG_FS)		+= ptp_qoriq_debugfs.o
- obj-$(CONFIG_PTP_1588_CLOCK_IDTCM)	+= ptp_clockmatrix.o
- obj-$(CONFIG_PTP_1588_CLOCK_IDT82P33)	+= ptp_idt82p33.o
-+obj-$(CONFIG_PTP_1588_CLOCK_MOCK)	+= ptp_mock.o
- obj-$(CONFIG_PTP_1588_CLOCK_VMW)	+= ptp_vmw.o
- obj-$(CONFIG_PTP_1588_CLOCK_OCP)	+= ptp_ocp.o
- obj-$(CONFIG_PTP_DFL_TOD)		+= ptp_dfl_tod.o
-diff --git a/drivers/ptp/ptp_mock.c b/drivers/ptp/ptp_mock.c
-new file mode 100644
-index 000000000000..1525aafca752
---- /dev/null
-+++ b/drivers/ptp/ptp_mock.c
-@@ -0,0 +1,175 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Copyright 2023 NXP
-+ *
-+ * Mock-up PTP Hardware Clock driver for virtual network devices
-+ *
-+ * Create a PTP clock which offers PTP time manipulation operations
-+ * using a timecounter/cyclecounter on top of CLOCK_MONOTONIC_RAW.
-+ */
-+
-+#include <linux/ptp_clock_kernel.h>
-+#include <linux/ptp_mock.h>
-+#include <linux/timecounter.h>
-+
-+/* Clamp scaled_ppm between -2,097,152,000 and 2,097,152,000,
-+ * and thus "adj" between -68,719,476 and 68,719,476
-+ */
-+#define MOCK_PHC_MAX_ADJ_PPB		32000000
-+/* Timestamps from ktime_get_raw() have 1 ns resolution, so the scale factor
-+ * (MULT >> SHIFT) needs to be 1. Pick SHIFT as 31 bits, which translates
-+ * MULT(freq 0) into 0x80000000.
-+ */
-+#define MOCK_PHC_CC_SHIFT		31
-+#define MOCK_PHC_CC_MULT		(1 << MOCK_PHC_CC_SHIFT)
-+#define MOCK_PHC_FADJ_SHIFT		9
-+#define MOCK_PHC_FADJ_DENOMINATOR	15625ULL
-+
-+/* The largest cycle_delta that timecounter_read_delta() can handle without a
-+ * 64-bit overflow during the multiplication with cc->mult, given the max "adj"
-+ * we permit, is ~8.3 seconds. Make sure readouts are more frequent than that.
-+ */
-+#define MOCK_PHC_REFRESH_INTERVAL	(HZ * 5)
-+
-+#define info_to_phc(d) container_of((d), struct mock_phc, info)
-+
-+static DEFINE_SPINLOCK(mock_phc_lock);
-+
-+struct mock_phc {
-+	struct ptp_clock_info info;
-+	struct ptp_clock *clock;
-+	struct timecounter tc;
-+	struct cyclecounter cc;
-+};
-+
-+static u64 mock_phc_cc_read(const struct cyclecounter *cc)
-+{
-+	return ktime_to_ns(ktime_get_raw());
-+}
-+
-+static int mock_phc_adjfine(struct ptp_clock_info *info, long scaled_ppm)
-+{
-+	struct mock_phc *phc = info_to_phc(info);
-+	s64 adj;
-+
-+	adj = (s64)scaled_ppm << MOCK_PHC_FADJ_SHIFT;
-+	adj = div_s64(adj, MOCK_PHC_FADJ_DENOMINATOR);
-+
-+	spin_lock_bh(&mock_phc_lock);
-+	timecounter_read(&phc->tc);
-+	phc->cc.mult = MOCK_PHC_CC_MULT + adj;
-+	spin_unlock_bh(&mock_phc_lock);
-+
-+	return 0;
-+}
-+
-+static int mock_phc_adjtime(struct ptp_clock_info *info, s64 delta)
-+{
-+	struct mock_phc *phc = info_to_phc(info);
-+
-+	spin_lock_bh(&mock_phc_lock);
-+	timecounter_adjtime(&phc->tc, delta);
-+	spin_unlock_bh(&mock_phc_lock);
-+
-+	return 0;
-+}
-+
-+static int mock_phc_settime64(struct ptp_clock_info *info,
-+			      const struct timespec64 *ts)
-+{
-+	struct mock_phc *phc = info_to_phc(info);
-+	u64 ns = timespec64_to_ns(ts);
-+
-+	spin_lock_bh(&mock_phc_lock);
-+	timecounter_init(&phc->tc, &phc->cc, ns);
-+	spin_unlock_bh(&mock_phc_lock);
-+
-+	return 0;
-+}
-+
-+static int mock_phc_gettime64(struct ptp_clock_info *info, struct timespec64 *ts)
-+{
-+	struct mock_phc *phc = info_to_phc(info);
-+	u64 ns;
-+
-+	spin_lock_bh(&mock_phc_lock);
-+	ns = timecounter_read(&phc->tc);
-+	spin_unlock_bh(&mock_phc_lock);
-+
-+	*ts = ns_to_timespec64(ns);
-+
-+	return 0;
-+}
-+
-+static long mock_phc_refresh(struct ptp_clock_info *info)
-+{
-+	struct timespec64 ts;
-+
-+	mock_phc_gettime64(info, &ts);
-+
-+	return MOCK_PHC_REFRESH_INTERVAL;
-+}
-+
-+int mock_phc_index(struct mock_phc *phc)
-+{
-+	return ptp_clock_index(phc->clock);
-+}
-+EXPORT_SYMBOL_GPL(mock_phc_index);
-+
-+struct mock_phc *mock_phc_create(struct device *dev)
-+{
+ static void nsim_ethtool_ring_init(struct netdevsim *ns)
+diff --git a/drivers/net/netdevsim/netdev.c b/drivers/net/netdevsim/netdev.c
+index 0c8daeb0d62b..2a4a0c4065cf 100644
+--- a/drivers/net/netdevsim/netdev.c
++++ b/drivers/net/netdevsim/netdev.c
+@@ -291,13 +291,19 @@ static void nsim_setup(struct net_device *dev)
+ 
+ static int nsim_init_netdevsim(struct netdevsim *ns)
+ {
 +	struct mock_phc *phc;
-+	int err;
+ 	int err;
+ 
++	phc = mock_phc_create(&ns->nsim_bus_dev->dev);
++	if (IS_ERR(phc))
++		return PTR_ERR(phc);
 +
-+	phc = kzalloc(sizeof(*phc), GFP_KERNEL);
-+	if (!phc) {
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	phc->info = (struct ptp_clock_info) {
-+		.owner		= THIS_MODULE,
-+		.name		= "Mock-up PTP clock",
-+		.max_adj	= MOCK_PHC_MAX_ADJ_PPB,
-+		.adjfine	= mock_phc_adjfine,
-+		.adjtime	= mock_phc_adjtime,
-+		.gettime64	= mock_phc_gettime64,
-+		.settime64	= mock_phc_settime64,
-+		.do_aux_work	= mock_phc_refresh,
-+	};
-+
-+	phc->cc = (struct cyclecounter) {
-+		.read	= mock_phc_cc_read,
-+		.mask	= CYCLECOUNTER_MASK(64),
-+		.mult	= MOCK_PHC_CC_MULT,
-+		.shift	= MOCK_PHC_CC_SHIFT,
-+	};
-+
-+	timecounter_init(&phc->tc, &phc->cc, 0);
-+
-+	phc->clock = ptp_clock_register(&phc->info, dev);
-+	if (IS_ERR(phc->clock)) {
-+		err = PTR_ERR(phc->clock);
-+		goto out_free_phc;
-+	}
-+
-+	ptp_schedule_worker(phc->clock, MOCK_PHC_REFRESH_INTERVAL);
-+
-+	return phc;
-+
-+out_free_phc:
-+	kfree(phc);
-+out:
-+	return ERR_PTR(err);
-+}
-+EXPORT_SYMBOL_GPL(mock_phc_create);
-+
-+void mock_phc_destroy(struct mock_phc *phc)
-+{
-+	ptp_clock_unregister(phc->clock);
-+	kfree(phc);
-+}
-+EXPORT_SYMBOL_GPL(mock_phc_destroy);
-+
-+MODULE_DESCRIPTION("Mock-up PTP Hardware Clock driver");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/ptp_mock.h b/include/linux/ptp_mock.h
-new file mode 100644
-index 000000000000..72eb401034d9
---- /dev/null
-+++ b/include/linux/ptp_mock.h
-@@ -0,0 +1,38 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+/*
-+ * Mock-up PTP Hardware Clock driver for virtual network devices
-+ *
-+ * Copyright 2023 NXP
-+ */
-+
-+#ifndef _PTP_MOCK_H_
-+#define _PTP_MOCK_H_
-+
-+struct device;
-+struct mock_phc;
-+
-+#if IS_ENABLED(CONFIG_PTP_1588_CLOCK_MOCK)
-+
-+struct mock_phc *mock_phc_create(struct device *dev);
-+void mock_phc_destroy(struct mock_phc *phc);
-+int mock_phc_index(struct mock_phc *phc);
-+
-+#else
-+
-+static inline struct mock_phc *mock_phc_create(struct device *dev)
-+{
-+	return NULL;
-+}
-+
-+static inline void mock_phc_destroy(struct mock_phc *phc)
-+{
-+}
-+
-+static inline int mock_phc_index(struct mock_phc *phc)
-+{
-+	return -1;
-+}
-+
-+#endif
-+
-+#endif /* _PTP_MOCK_H_ */
++	ns->phc = phc;
+ 	ns->netdev->netdev_ops = &nsim_netdev_ops;
+ 
+ 	err = nsim_udp_tunnels_info_create(ns->nsim_dev, ns->netdev);
+ 	if (err)
+-		return err;
++		goto err_phc_destroy;
+ 
+ 	rtnl_lock();
+ 	err = nsim_bpf_init(ns);
+@@ -320,6 +326,8 @@ static int nsim_init_netdevsim(struct netdevsim *ns)
+ err_utn_destroy:
+ 	rtnl_unlock();
+ 	nsim_udp_tunnels_info_destroy(ns->netdev);
++err_phc_destroy:
++	mock_phc_destroy(ns->phc);
+ 	return err;
+ }
+ 
+@@ -383,6 +391,7 @@ void nsim_destroy(struct netdevsim *ns)
+ 	rtnl_unlock();
+ 	if (nsim_dev_port_is_pf(ns->nsim_dev_port))
+ 		nsim_udp_tunnels_info_destroy(dev);
++	mock_phc_destroy(ns->phc);
+ 	free_netdev(dev);
+ }
+ 
+diff --git a/drivers/net/netdevsim/netdevsim.h b/drivers/net/netdevsim/netdevsim.h
+index 7be98b7dcca9..028c825b86db 100644
+--- a/drivers/net/netdevsim/netdevsim.h
++++ b/drivers/net/netdevsim/netdevsim.h
+@@ -19,6 +19,7 @@
+ #include <linux/kernel.h>
+ #include <linux/list.h>
+ #include <linux/netdevice.h>
++#include <linux/ptp_mock.h>
+ #include <linux/u64_stats_sync.h>
+ #include <net/devlink.h>
+ #include <net/udp_tunnel.h>
+@@ -93,6 +94,7 @@ struct netdevsim {
+ 	struct net_device *netdev;
+ 	struct nsim_dev *nsim_dev;
+ 	struct nsim_dev_port *nsim_dev_port;
++	struct mock_phc *phc;
+ 
+ 	u64 tx_packets;
+ 	u64 tx_bytes;
 -- 
 2.34.1
 
