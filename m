@@ -2,98 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA11776B010
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4945976B01C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbjHAJ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
+        id S232301AbjHAJ7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:59:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbjHAJ5I (ORCPT
+        with ESMTP id S233846AbjHAJ6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:57:08 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD87CF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:57:07 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31751d7d96eso4593883f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:57:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690883826; x=1691488626;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1d1V+cLNsVcpTqtIF4+fUcW9E9CXlGy0gRkhFZnoVKg=;
-        b=WF74t1WryOH/fLykzfMBemiBwU/l8L1G9u2aEqqg/ziDdBr7OxmRk8enIar2C394TN
-         ujipU9V0Epftpe1ur7tbDTMjH+v/6K/zBrPjrcH4snHOTxi3xfBFbj9gD5A8+l2/Z7rH
-         2TOA9EHtQffQBHTyqM6InopT76+nNjefrCJyuLlaWJGZinQZmzKc7xbrNYiAljPCvm9L
-         ZuCajJIed9+ZswOx2M6WjWz+57S3Gk69qWXQNTZAjNux4KSgVQzl0lUns0YBH5K5MPl7
-         uMH5Z6YWVT8VIrkBgO7fBIFJcL5riiqK3qhiVsa9+6oDLn4EE+E9izN3zZXyOLdSlM5J
-         IiJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690883826; x=1691488626;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1d1V+cLNsVcpTqtIF4+fUcW9E9CXlGy0gRkhFZnoVKg=;
-        b=HUsE0u/8dWd2f9ZYEL69HTVpFq+e1NBcjInSBXLxztPL6Hl+k6F2rjl6iDUFY6b+2E
-         MOdjxRUkwGnc5kIM+jp+AuRoJyumGSETtKgagGGHV+Y1cWzlT8LdnO53gAbFu1CRMd+R
-         ukHNxixZmqS8ESO+dyY44MRnQgAZN1S+OMGwbQZJE3PVpoeHOiLT7aTvvKvAUS8jgInJ
-         p0wfxy5ksK3kxUvM+sJ9vA0Ldz5pDl7m/0CiaOef9f6AKJcEyHaTLhGnj0M3IHRItjT3
-         Ajq3t5BLb79DlJi/6yH0IVCzung7L+eKqDxBqCI4zbbnVNe6l1F7leN/IsSZb4UZlEW5
-         K+Tw==
-X-Gm-Message-State: ABy/qLZWocCdcjCQ8e5x+OSJDKnrGuNBgVOCdE2b0m0o0rS7szx95q5o
-        eED8BaLdWwZ65NVunxZWQo/o6w==
-X-Google-Smtp-Source: APBJJlHgYYyvvbhT2RjOmVbcb22DHXlapgDLNFjGodT9QTDbjNFNmD/+R/o7vC1LiCsvXidFcFXKrQ==
-X-Received: by 2002:adf:ef8b:0:b0:314:2ea7:af4a with SMTP id d11-20020adfef8b000000b003142ea7af4amr2022493wro.13.1690883825933;
-        Tue, 01 Aug 2023 02:57:05 -0700 (PDT)
-Received: from hackbox.lan ([86.123.96.80])
-        by smtp.gmail.com with ESMTPSA id k1-20020adff5c1000000b00314417f5272sm15730957wrp.64.2023.08.01.02.57.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 02:57:05 -0700 (PDT)
-From:   Abel Vesa <abel.vesa@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Rajendra Nayak <quic_rjendra@quicinc.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH] regulator: qcom-rpmh: Fix LDO 12 regulator for PM8550
-Date:   Tue,  1 Aug 2023 12:57:02 +0300
-Message-Id: <20230801095702.2891127-1-abel.vesa@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Tue, 1 Aug 2023 05:58:00 -0400
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C47E7C;
+        Tue,  1 Aug 2023 02:57:39 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by domac.alu.hr (Postfix) with ESMTP id 49B1B6015F;
+        Tue,  1 Aug 2023 11:57:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690883846; bh=HvFuOQ+AD9vAeGv0bVGl9kIg9XMWNofn3eX/sGBr77Y=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=IKPUJQJYCCJAkPzbTaVmpITL7DojUgTrFvVl1qtS9um44B4zklEEaqyKKBWSqfmk4
+         yfoeFHALqkEVpaWY+2V6ZO42W9uCHD7goKeX5m3pB/0lQf8fdTZL/FZbUeZ26pH9Jq
+         LrKCozI9LaY7+otVV2Dy7vLyqOZiFmBiBLMaGpBPRFyrobrFOM0uZzyMWCuF1drL9K
+         vQMWjEjcAsQNYRM0igKjI+4/xAjga9EzGq58GP3K3PrWST1vRSugtZZiGqQ97bJOJy
+         tuSWlmcVV13Y766sHbT9BeDsham5GvI2298OdkrtgvOrlYGSeYrXPLuHAem6WCQnQT
+         K1z5ywMP5wsVQ==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 5I306fRjD5hA; Tue,  1 Aug 2023 11:57:23 +0200 (CEST)
+Received: from [193.198.186.200] (pc-mtodorov.slava.alu.hr [193.198.186.200])
+        by domac.alu.hr (Postfix) with ESMTPSA id BF3EF6017C;
+        Tue,  1 Aug 2023 11:57:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
+        t=1690883843; bh=HvFuOQ+AD9vAeGv0bVGl9kIg9XMWNofn3eX/sGBr77Y=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=G0gmK1J1sicJCKLGWrDPHzkP00i6il/3BeFgrnArBclfkcN5ltJjqCO31TYzXIbaS
+         dXY5qEfdnWSV7vRhQB8cQ9SXqG2Z1fkRyhBMt6C5Y+JSHxODo4vtPBe922PRJul6Fh
+         QR0+ucG2hmo/4wFPTjy+Gu4z+2FapEBoLbwM/XHvL510WRHnnSYMGGeG7zY28r0vP4
+         i36yy/6UpGLaJm9TSzRf5xJPTIQmVkQYLMdU4E5BFpYINgnB3E/HRaFyuCqkV4Wiht
+         2qlxa7SfjwCGsC9rROKIe+fzERAPd2EOrrjG5e1yuFXPnVfsi/GsJtl8aVQ4zY4UkK
+         pb40ysdJQMOXA==
+Message-ID: <24d27380-544e-66d1-1cb2-14eb87ce89ac@alu.unizg.hr>
+Date:   Tue, 1 Aug 2023 11:57:19 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1 1/1] test_firmware: prevent race conditions by a
+ correct implementation of locking
+From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Russ Weight <russell.h.weight@intel.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Tianfei Zhang <tianfei.zhang@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Colin Ian King <colin.i.king@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kselftest@vger.kernel.org, stable@vger.kernel.org,
+        Dan Carpenter <error27@gmail.com>
+References: <20230731165018.8233-1-mirsad.todorovac@alu.unizg.hr>
+ <ZMfvAhOfSP5UXN6l@bombadil.infradead.org>
+ <0e3a740f-60dd-e657-8a5c-79b155fa62b3@alu.unizg.hr>
+Content-Language: en-US, hr
+In-Reply-To: <0e3a740f-60dd-e657-8a5c-79b155fa62b3@alu.unizg.hr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LDO 12 is NLDO 515 low voltage type, so fix accordingly.
+On 8/1/23 10:24, Mirsad Todorovac wrote:
+> On 7/31/23 19:27, Luis Chamberlain wrote:
+>> On Mon, Jul 31, 2023 at 06:50:19PM +0200, Mirsad Todorovac wrote:
+>>> NOTE: This patch is tested against 5.4 stable
+>>>
+>>> NOTE: This is a patch for the 5.4 stable branch, not for the torvalds tree.
+>>>
+>>>        The torvalds tree, and stable tree 5.10, 5.15, 6.1 and 6.4 branches
+>>>        were fixed in the separate
+>>>        commit ID 4acfe3dfde68 ("test_firmware: prevent race conditions by a correct implementation of locking")
+>>>        which was incompatible with 5.4
+>>>
+>>
+>> The above part is not part of the original commit, you also forgot to
+>> mention the upstream commit:
+>>
+>> [ Upstream commit 4acfe3dfde685a5a9eaec5555351918e2d7266a1 ]
+> 
+> Will fix. Actually, I wasn't sure if it was required, because this backported patch
+> isn't verbatim equal to commit 4acfe3dfde685a5a9eaec5555351918e2d7266a1 .
+> 
+> Though they are cousins, addressing the same issue.
+> 
+> There is a race to be fixed, despite not all racy functions present in the original commit c92316bf8e948.
+> 
+>>> Fixes: c92316bf8e948 ("test_firmware: add batched firmware tests")
+>>> Cc: Luis R. Rodriguez <mcgrof@kernel.org>
+>>> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>> Cc: Russ Weight <russell.h.weight@intel.com>
+>>> Cc: Takashi Iwai <tiwai@suse.de>
+>>> Cc: Tianfei Zhang <tianfei.zhang@intel.com>
+>>> Cc: Shuah Khan <shuah@kernel.org>
+>>> Cc: Colin Ian King <colin.i.king@gmail.com>
+>>> Cc: Randy Dunlap <rdunlap@infradead.org>
+>>> Cc: linux-kselftest@vger.kernel.org
+>>> Cc: stable@vger.kernel.org # v5.4
+>>> Suggested-by: Dan Carpenter <error27@gmail.com>
+>>
+>> Here you can add the above note in brackets:
+>>
+>> [ explain your changes here from the original commit ]
+>>
+>> Then, I see two commits upstream on Linus tree which are also fixes
+>> but not merged on v5.4, did you want those applied too?
+> 
+> These seem merged in the stable 5.4?
+> 
+> commit 75d9e00f65cd2e0f2ce9ceeb395f821976773489 test_firmware: fix a memory leak with reqs buffer
+> commit 94f3bc7e84af2f17dbfbc7afe93991c2a6f2f25e test_firmware: fix the memory leak of the allocated firmware buffer
+> 
+> Maybe this commit should be backported instead:
+> 
+> test_firmware: return ENOMEM instead of ENOSPC on failed memory allocation
+> [ Upstream commit 7dae593cd226a0bca61201cf85ceb9335cf63682 ]
+> 
+> It was also merged into 6.4, 6.1, 5.15 and 5.10 stable, but not on 5.4
+> 
+> I might also check whether the 4.19 and 4.14 are vulnerable to these memory leaks and this race
+> (Yes, they are, so it might be prudent that we backport this fix.)
 
-Fixes: e6e3776d682d ("regulator: qcom-rpmh: Add support for PM8550 regulators")
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- drivers/regulator/qcom-rpmh-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+FYI, just checked, the patch applied w/o modifications to 4.19 and 4.14 LTS stable branches.
 
-diff --git a/drivers/regulator/qcom-rpmh-regulator.c b/drivers/regulator/qcom-rpmh-regulator.c
-index 88ddd6c54d04..d990ba19c50e 100644
---- a/drivers/regulator/qcom-rpmh-regulator.c
-+++ b/drivers/regulator/qcom-rpmh-regulator.c
-@@ -1067,7 +1067,7 @@ static const struct rpmh_vreg_init_data pm8550_vreg_data[] = {
- 	RPMH_VREG("ldo9",   "ldo%s9",  &pmic5_pldo,    "vdd-l8-l9"),
- 	RPMH_VREG("ldo10",  "ldo%s10", &pmic5_nldo515,    "vdd-l1-l4-l10"),
- 	RPMH_VREG("ldo11",  "ldo%s11", &pmic5_nldo515,    "vdd-l11"),
--	RPMH_VREG("ldo12",  "ldo%s12", &pmic5_pldo,    "vdd-l12"),
-+	RPMH_VREG("ldo12",  "ldo%s12", &pmic5_nldo515,    "vdd-l12"),
- 	RPMH_VREG("ldo13",  "ldo%s13", &pmic5_pldo,    "vdd-l2-l13-l14"),
- 	RPMH_VREG("ldo14",  "ldo%s14", &pmic5_pldo,    "vdd-l2-l13-l14"),
- 	RPMH_VREG("ldo15",  "ldo%s15", &pmic5_nldo515,    "vdd-l15"),
+Mirsad
+
 -- 
-2.34.1
+Mirsad Todorovac
+Sistem inženjer
+Grafički fakultet | Akademija likovnih umjetnosti
+Sveučilište u Zagrebu
 
+System engineer
+Faculty of Graphic Arts | Academy of Fine Arts
+University of Zagreb, Republic of Croatia
