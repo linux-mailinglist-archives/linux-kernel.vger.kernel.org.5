@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE1B76C0B9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 01:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57CA76C0B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 01:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbjHAXR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 19:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
+        id S229887AbjHAXRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 19:17:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjHAXRX (ORCPT
+        with ESMTP id S229499AbjHAXRS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 19:17:23 -0400
+        Tue, 1 Aug 2023 19:17:18 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9592103
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 16:17:23 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C88B2103;
+        Tue,  1 Aug 2023 16:17:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C80B26176D
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:17:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A856C433A9
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:17:22 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 297736176A;
+        Tue,  1 Aug 2023 23:17:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B6D6C433C8;
+        Tue,  1 Aug 2023 23:17:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690931842;
-        bh=xM9+38xkTaN7YlIeDutwYzXFMh5cVl6szD/Pylq4X8c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WrzRq8qLP1GUdOwsqs5cbpqjL+mV23IX8e3uQwhDcMU7RXaeBrsr+J9mqo6FFsY0Z
-         Exi0sgw4Q0aOinGyJGU5RyBeTzFNcXV+eVTasfFRj5PK49SDxbF+GNGsSGS7leFhAf
-         7x3zBNZSxX+H3kNUtKs9BkllbkGAGec3BgF+0vBL4s9aYxJ5TMMTFgwFAeF0TOncaN
-         qX1n0F1Lf8K21aRZBl+RQ8Wqaw9s9b7KRokhbHLv4tHu0nVhXTgV6s3VsRSp5hfL+9
-         YXK+vN4dxMSPGIeOxcfVpAyHHn0icLLM/RyhEZAd0mV6D6pE5+GCFvKMNcXbNvrqcM
-         5L1qREEpa7Q/A==
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5222b917e0cso8976638a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 16:17:22 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZ8ExUDyDOAXZdJMSOVMBcmLidxtWO0a5kTyrELrcT3OjryoKdM
-        i+mHYk7PF6yauUAwn4O9aIV5IufpdyUVPQOJyAM=
-X-Google-Smtp-Source: APBJJlHzSbvLp0zlo6ebxGrDPbALgU9POa6/C72klCXoxCkytUo1BaqN3c7kRdocGUEpjAyzR6c6IQsemqRni073Dfw=
-X-Received: by 2002:a05:6402:1650:b0:522:216a:28d4 with SMTP id
- s16-20020a056402165000b00522216a28d4mr3598861edx.7.1690931840292; Tue, 01 Aug
- 2023 16:17:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230801011554.3950435-1-guoren@kernel.org> <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
- <CAJF2gTRa5erHomJzLgUFO4SGqd5zSDwn6r3WN7kM8aWpv1vesg@mail.gmail.com>
- <CAJF2gTQ1hV1vipAo3H4X4WiPO84kVVFZcdGq7u4f0bVTry_akQ@mail.gmail.com>
- <CAHirt9gVqE=9vviJEY=kY=booVRmFPHrnFsKCXPXnXiWTB8bZQ@mail.gmail.com>
- <CAJF2gTR2ON33wc87iV564rkDbNiE56h_t0kzKKXdJtGqgJ1sOQ@mail.gmail.com> <CAHirt9i_osW_Dy5jNAnNOKrm-+38qN7SF+8ofNHePMAYhRKHsA@mail.gmail.com>
-In-Reply-To: <CAHirt9i_osW_Dy5jNAnNOKrm-+38qN7SF+8ofNHePMAYhRKHsA@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Tue, 1 Aug 2023 19:17:08 -0400
-X-Gmail-Original-Message-ID: <CAJF2gTSLD3jwzV59dGj_RENCvE0zMOAkLHqmT55bxL-4vA1wkA@mail.gmail.com>
-Message-ID: <CAJF2gTSLD3jwzV59dGj_RENCvE0zMOAkLHqmT55bxL-4vA1wkA@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
-To:     WANG Rui <wangrui@loongson.cn>
-Cc:     chenhuacai@kernel.or, kernel@xen0n.name, arnd@arndb.de,
-        andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
-        peterz@infradead.org, will@kernel.org, boqun.feng@gmail.com,
-        mark.rutland@arm.com, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        s=k20201202; t=1690931836;
+        bh=88zkvAVDUFWqbW4oJyMLFNy3ju90g2621RUrlMf/Du0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YZTL4fESnAxnkfayIkA5m25sZobaFGsMuDbvhwbG5rk32Vrh/STz+FnVSkmRMuneR
+         sNDPe0AfCByyN7A7sI+zabf/sz1wHHpJp719Xh9zJaO8YwHmxP6MMEEgRMx6BqLg9Y
+         x0LnEGIn+udJHza1m+Ox1PEJI/FGssHLoQ6sNzPnvFb1fwoWU1W/bn4bofvQipirdz
+         7yD8wix5G3U6I9Ki/FRdqSdy+SCW4O1txJ+KJiBwDrX6F3gy1lxajt8wej6Q44FohZ
+         XWS6J6x0izVWJs3g5B4UgglwJ7BJyZy8teHdN+sEbDv/KNA2TJ2lgq5vIZjMx+cOZp
+         6vPF/jmjp2Y0w==
+Date:   Wed, 2 Aug 2023 08:17:11 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
+ struct/union
+Message-Id: <20230802081711.7711f8775ffc730b2c32df5e@kernel.org>
+In-Reply-To: <CAADnVQJ2ixjZUY7hJJMM1iUBAYY2VxdL6v--Rg8wvKypfxBsGw@mail.gmail.com>
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+        <169078863449.173706.2322042687021909241.stgit@devnote2>
+        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+        <20230731211527.3bde484d@gandalf.local.home>
+        <CAADnVQJz41QgpFHr3k0pndjHZ8ragH--=C_bYxrzitj7bN3bbg@mail.gmail.com>
+        <20230802001824.90819c7355283843178d9163@kernel.org>
+        <CAADnVQJ2ixjZUY7hJJMM1iUBAYY2VxdL6v--Rg8wvKypfxBsGw@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 12:37=E2=80=AFPM WANG Rui <wangrui@loongson.cn> wrot=
-e:
->
-> On Tue, Aug 1, 2023 at 6:50=E2=80=AFPM Guo Ren <guoren@kernel.org> wrote:
+On Tue, 1 Aug 2023 15:21:59 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+
+> On Tue, Aug 1, 2023 at 8:18 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
 > >
-> > On Tue, Aug 1, 2023 at 5:32=E2=80=AFPM WANG Rui <wangrui@loongson.cn> w=
-rote:
-> > > No. LL and LL won't reorder because LL implies a memory barrier(thoug=
-h
-> > > not acquire semantics).
-> > That means we could remove __WEAK_LLSC_MB totally, right?
->
-> More precisely, __WEAK_LLSC_MB is intended to prevent reordering
-> between LL and normal LD used to fetch the expected value for cmpxchg.
-Oh, that's unnecessary when cmpxchg fails.
+> > On Mon, 31 Jul 2023 19:24:25 -0700
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> >
+> > > On Mon, Jul 31, 2023 at 6:15 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > >
+> > > > On Mon, 31 Jul 2023 14:59:47 -0700
+> > > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > > >
+> > > > > Assuming that is addressed. How do we merge the series?
+> > > > > The first 3 patches have serious conflicts with bpf trees.
+> > > > >
+> > > > > Maybe send the first 3 with extra selftest for above recursion
+> > > > > targeting bpf-next then we can have a merge commit that Steven can pull
+> > > > > into tracing?
+> > > >
+> > > > Would it be possible to do this by basing it off of one of Linus's tags,
+> > > > and doing the merge and conflict resolution in your tree before it gets to
+> > > > Linus?
+> > > >
+> > > > That way we can pull in that clean branch without having to pull in
+> > > > anything else from BPF. I believe Linus prefers this over having tracing
+> > > > having extra changes from BPF that are not yet in his tree. We only need
+> > > > these particular changes, we shouldn't be pulling in anything specific for
+> > > > BPF, as I believe that will cause issues on Linus's side.
+> > >
+> > > We can try, but I suspect git tricks won't do it.
+> > > Masami's changes depend on patches for kernel/bpf/btf.c that
+> > > are already in bpf-next, so git would have to follow all commits
+> > > that touch this file.
+> >
+> > This point is strange. I'm working on probe/fixes which is based on
+> > v6.5-rc3, so any bpf-next change should not be involved. Can you recheck
+> > this point?
+> >
+> > > I don't think git is smart enough to
+> > > thread the needle and split the commit into files. If one commit touches
+> > > btf.c and something else that whole commit becomes a dependency
+> > > that pulls another commit with all files touched by
+> > > the previous commit and so on.
+> >
+> > As far as I understand Steve's method, we will have an intermediate branch
+> > on bpf or probe tree, like
+> >
+> > linus(some common commit) ---- probes/btf-find-api
+> >
+> > and merge it to both bpf-next and probes/for-next branch
+> >
+> >           +----------------------bpf-next --- (merge bpf patches)
+> >          /                       / merge
+> > common -/\ probes/btf-find-api -/-\
+> >           \                        \ merge
+> >            +----------------------probes/for-next --- (merge probe patches)
+> >
+> > Thus, we can merge both for-next branches at next merge window without
+> > any issue. (But, yes, this is not simple, and needs maxium care)
+> 
+> Sounds like the path of least resistance is to keep the changes
+> in kernel/trace and consolidate with kernel/bpf/btf.c after the next
+> merge window.
 
-Maybe you treat cmpxchg as a CoRR antidote in coincidence. Please
-solve the CoRR problem by READ_ONCE.
+OK, sounds good to me. I will only expose the bpf_find_btf_id() then.
 
-See alpha architecture.
+Thank you,
 
->
-> Regards,
-> --
-> WANG Rui
->
-
-
---=20
-Best Regards
- Guo Ren
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
