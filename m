@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A009176AA11
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A330276AA14
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbjHAHeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 03:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        id S231826AbjHAHee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 03:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjHAHeW (ORCPT
+        with ESMTP id S229874AbjHAHeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 03:34:22 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7171726;
-        Tue,  1 Aug 2023 00:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1690875259;
-        bh=qNGRHKsnBf+CzrhykXYrpIFs3s6raNyDUWsZW5CWNow=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YLyJZJ8k1oRfvQd2F2WbhPPAW9vDexfyDyYd9i2aMcHbw1VWqzMRQEVc0VkK/nqfU
-         sQU2bwlXxslCCqHQIt3pGKwZlwQlkH8vQ4n3lEvn5lf9BbOPKw1NNA+XbQUtgHzg5e
-         STxXs07pQAXghKHPZ56wWLOGMZf5VNIvxcCx4JLA=
-Date:   Tue, 1 Aug 2023 09:34:18 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yuan Tan <tanyuan@tinylab.org>,
-        Zhangjin Wu <falcon@tinylab.org>
-Subject: Re: [PATCH v2 06/10] selftests/nolibc: make functions static if
- possible
-Message-ID: <bf97900a-98bb-45dc-9451-b9728173136e@t-8ch.de>
-References: <20230801-nolibc-warnings-v2-0-1ba5ca57bd9b@weissschuh.net>
- <20230801-nolibc-warnings-v2-6-1ba5ca57bd9b@weissschuh.net>
- <ZMiro1pwVvAzNel5@1wt.eu>
+        Tue, 1 Aug 2023 03:34:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F621726;
+        Tue,  1 Aug 2023 00:34:30 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690875269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=barXOaLcqK7APgvHwy35ku+WMnw5Wwq/VfYIfSWf/UY=;
+        b=hEXIhvWX+SuOx+KXfj/eqYjjEpgeZC4/n4Fpc/+IPsWHJo3nZ6MKdzXczrybyV8tQBtooe
+        VVaNN67MBFQCF0aiH6KQzuyQnp/lhhw9ZkSdf06j8tJZj2R7yLT+tPeb3Fwb9QbL/NzBgj
+        YnD85mc3xW6FWzlUgi7eP9rMu6/TFbWK9VuFTfYpryPyysxPyWP7yG62gbAiBVJTgAhZdr
+        CuKTEHkwhx+rx2ARNXZBpcL3ST26HbKV3DrALaFngofEqhvTY1FpRtE9P+F+2ed64fWwu1
+        H14cm5T8BEl7nYJpOtRbmz1j7qXTT6XST7kB3zcIsI4VqKoKnD0t8pOs8qqdHA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690875269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=barXOaLcqK7APgvHwy35ku+WMnw5Wwq/VfYIfSWf/UY=;
+        b=bBpIEnmh2rLafh4mQOd9MkQxRwNZaxEQ5WNI+LrjQHqzYeh3P+07vsAYLsfNrnGS0ptJVY
+        Kafs3z+qoUp5LfDA==
+To:     "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Dick Kennedy <dick.kennedy@broadcom.com>,
+        James Smart <james.smart@broadcom.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>
+Subject: Re: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
+In-Reply-To: <ZMiu1t8blYAdm2Br@BLR-5CG11610CF.amd.com>
+References: <20230728105650.565799744@linutronix.de>
+ <20230728120930.839913695@linutronix.de>
+ <ZMiu1t8blYAdm2Br@BLR-5CG11610CF.amd.com>
+Date:   Tue, 01 Aug 2023 09:34:28 +0200
+Message-ID: <87leevkygr.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZMiro1pwVvAzNel5@1wt.eu>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-01 08:52:19+0200, Willy Tarreau wrote:
-> On Tue, Aug 01, 2023 at 07:30:13AM +0200, Thomas Weißschuh wrote:
-> > diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
-> > index 1555759bb164..53a3773c7790 100644
-> > --- a/tools/testing/selftests/nolibc/nolibc-test.c
-> > +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+On Tue, Aug 01 2023 at 12:35, Gautham R. Shenoy wrote:
+> On Fri, Jul 28, 2023 at 02:13:08PM +0200, Thomas Gleixner wrote:
+>> +static void topo_set_ids(struct topo_scan *tscan)
+>> +{
+>> +	struct cpuinfo_x86 *c = tscan->c;
+>> +	u32 apicid = c->topo.apicid;
+>> +
+>> +	c->topo.pkg_id = topo_shift_apicid(apicid, TOPO_ROOT_DOMAIN);
+>
+> Shouldn't this use TOPO_PKG_DOMAIN instead of TOPO_ROOT_DOMAIN ?
 
-> [..]
+Yup. It does not make a difference in that case. That's why I didn't
+notice, but let me fix this for conistency sake.
 
-> >  /* prepare what needs to be prepared for pid 1 (stdio, /dev, /proc, etc) */
-> > -int prepare(void)
-> > +static int prepare(void)
-> >  {
-> >  	struct stat stat_buf;
-> >  
-> > @@ -1208,7 +1208,7 @@ static const struct test test_names[] = {
-> >  	{ 0 }
-> >  };
->  
-> For these ones it will prevent gcc from putting breakpoints there, which
-> is counter-productive.
-
-Indeed.
-
-An alternative would be to add -g to CFLAGS (and remove -s from LDFLAGS).
-This way we get full debugability including breakpoints for everything.
-
-I didn't find the reasoning for -s in LDFLAGS.
-
-Thomas
