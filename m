@@ -2,757 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE7B76BB28
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E83B76BB2C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235040AbjHARYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
+        id S231387AbjHARZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:25:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234904AbjHARWm (ORCPT
+        with ESMTP id S235003AbjHARZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:22:42 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3ED2D5E;
-        Tue,  1 Aug 2023 10:22:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=RVck6qCQYZJFvfbDxhURfMxlRTpWL9DSWv+8pYGJghA=; b=St88yfD0BiY/mwCLZiQtcLnaj6
-        gp+l+AMiJCQl7c77Efk7yNLnGHadC8kCMpI0mv+TG1YiwVwapJn8Nwi8NDrhcmdHRuJ2V92HuT82S
-        dxAlv3hWz0pOIN6Z9vmGZSNEGWMCWSvoJzER1sCOWu7mgqW5JYXtzLiukg1G8YAXQ77MfjMmQCUsI
-        HaxU9T92MFhgDesn49Qokozcrw1ji87n4PQuYmaC4Z9b6zU/Kkc9SHdjbsE6zcKzfJIizQez5zENb
-        fASbg+K3pJqgJe0jnk7Ec9JSqH18BSpjqAvMOfJGcIAozkkhfTqB31CK9FH0gNyGuRmNmyHR9tTyu
-        7Bg7Z8jw==;
-Received: from 2a02-8389-2341-5b80-39d3-4735-9a3c-88d8.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:39d3:4735:9a3c:88d8] helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQt4k-002uaV-1s;
-        Tue, 01 Aug 2023 17:22:27 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 6/6] fs: add CONFIG_BUFFER_HEAD
-Date:   Tue,  1 Aug 2023 19:22:01 +0200
-Message-Id: <20230801172201.1923299-7-hch@lst.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230801172201.1923299-1-hch@lst.de>
-References: <20230801172201.1923299-1-hch@lst.de>
+        Tue, 1 Aug 2023 13:25:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC5C2724
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:24:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690910641;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+xn3eAMGq07q5lKeOtXwb0xhFpvRYswY7sySLx8S8uc=;
+        b=RidncO2OLTFh3IKS56L2/+bJ3r1G7lJXs/yy8dbtg8LLnoZv8vnscZ+9fZhs5TLXKRWG+D
+        CzSADByqgF/D3Jkct3JhQHz8PuG9N8LYGgFHWfnLm7hhXv0+pwaAWf46SNIQlZKEpRvIje
+        msSBs6GPyximzVvUddMM2uz0zVjE1yk=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-169-asGjnaczP4uLe17Ejs_Ivg-1; Tue, 01 Aug 2023 13:24:00 -0400
+X-MC-Unique: asGjnaczP4uLe17Ejs_Ivg-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-40fc220d343so21715841cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:24:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690910639; x=1691515439;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+xn3eAMGq07q5lKeOtXwb0xhFpvRYswY7sySLx8S8uc=;
+        b=GQvu8m33VPdzt4YdJod8M1i+J5lJ+obfcauGirBIRZw3mrRoVOKlm5wfL1LWRRw1AX
+         rgCIOWbqTacfjJbA0D6KGA254uAWE98Rtfq1ch2/Ny482/jtkyBBSbhy+x/vrSX+ue+o
+         HkTK1zbcAFmdkp17TEY9IhqA3dKC0ujHmn93eEYcMt3unSHYZHrArqpXQDb2SyCDPMJf
+         FNDCJ5copiLBHorKFoKAt64FRQRCaZsElAPsWg8sHJ+NgNViQgZ/QFE3AflQv+6DxMaq
+         rHuiylPGf+OOuSFHNTlVgDCg1x6dFQ6jU8kE/kt8yuukV8DCcvUgWofg9CmmAdgA0f5A
+         egSQ==
+X-Gm-Message-State: ABy/qLYv1f10aHiLVm3UgJUJ2oTTZoZNtmpAXoedoSZO+UTavNR/dGbs
+        j1x01YBtoo62ynPONvDyG+cI21eJjTG0T+j8FGRSJDsD8sfeBU39+mNEOc1dLjewK/3erTAXwQK
+        F6hOHiZeZIJbckK0p6HIIeLDX
+X-Received: by 2002:ac8:7f82:0:b0:40d:4c6:bcd8 with SMTP id z2-20020ac87f82000000b0040d04c6bcd8mr9326415qtj.58.1690910639752;
+        Tue, 01 Aug 2023 10:23:59 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGSypiuFIG8fuhXUpkOosWEI1DPcjZqq+VDqRQ2Q4IGwgSH7r27Hjm6MOKpRcjM5bj1X8CnKA==
+X-Received: by 2002:ac8:7f82:0:b0:40d:4c6:bcd8 with SMTP id z2-20020ac87f82000000b0040d04c6bcd8mr9326391qtj.58.1690910639458;
+        Tue, 01 Aug 2023 10:23:59 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::45])
+        by smtp.gmail.com with ESMTPSA id y24-20020a37e318000000b0076cb3ea651fsm1602448qki.134.2023.08.01.10.23.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 10:23:59 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 12:23:56 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Shenwei Wang <shenwei.wang@nxp.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Johannes Zink <j.zink@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Simon Horman <simon.horman@corigine.com>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Wong Vee Khee <veekhee@apple.com>,
+        Revanth Kumar Uppala <ruppala@nvidia.com>,
+        Jochen Henneberg <jh@henneberg-systemdesign.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-amlogic@lists.infradead.org" 
+        <linux-amlogic@lists.infradead.org>,
+        "imx@lists.linux.dev" <imx@lists.linux.dev>,
+        Frank Li <frank.li@nxp.com>
+Subject: Re: [EXT] Re: [PATCH v3 net 2/2] net: stmmac: dwmac-imx: pause the
+ TXC clock in fixed-link
+Message-ID: <u5u7cdgfjpvyiu4usegrg3ukrmniq7z7eyzgajlldwqd7r55nr@lal546vvmfdy>
+References: <20230731161929.2341584-1-shenwei.wang@nxp.com>
+ <20230731161929.2341584-3-shenwei.wang@nxp.com>
+ <bf2979c4-0b63-be53-b530-3d7385796534@pengutronix.de>
+ <ZMkBCGJrX/COB5+f@shell.armlinux.org.uk>
+ <PAXPR04MB9185207744645A9064D2ACF5890AA@PAXPR04MB9185.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PAXPR04MB9185207744645A9064D2ACF5890AA@PAXPR04MB9185.eurprd04.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new config option that controls building the buffer_head code, and
-select it from all file systems and stacking drivers that need it.
+On Tue, Aug 01, 2023 at 05:06:46PM +0000, Shenwei Wang wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Russell King <linux@armlinux.org.uk>
+> > Sent: Tuesday, August 1, 2023 7:57 AM
+> > To: Johannes Zink <j.zink@pengutronix.de>
+> > Cc: Shenwei Wang <shenwei.wang@nxp.com>; David S. Miller
+> > <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>; Jakub
+> > Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>; Maxime
+> > Coquelin <mcoquelin.stm32@gmail.com>; Shawn Guo <shawnguo@kernel.org>;
+> > Sascha Hauer <s.hauer@pengutronix.de>; Neil Armstrong
+> > <neil.armstrong@linaro.org>; Kevin Hilman <khilman@baylibre.com>; Vinod
+> > Koul <vkoul@kernel.org>; Chen-Yu Tsai <wens@csie.org>; Jernej Skrabec
+> > <jernej.skrabec@gmail.com>; Samuel Holland <samuel@sholland.org>;
+> > Giuseppe Cavallaro <peppe.cavallaro@st.com>; Alexandre Torgue
+> > <alexandre.torgue@foss.st.com>; Jose Abreu <joabreu@synopsys.com>;
+> > Pengutronix Kernel Team <kernel@pengutronix.de>; Fabio Estevam
+> > <festevam@gmail.com>; dl-linux-imx <linux-imx@nxp.com>; Jerome Brunet
+> > <jbrunet@baylibre.com>; Martin Blumenstingl
+> > <martin.blumenstingl@googlemail.com>; Bhupesh Sharma
+> > <bhupesh.sharma@linaro.org>; Nobuhiro Iwamatsu
+> > <nobuhiro1.iwamatsu@toshiba.co.jp>; Simon Horman
+> > <simon.horman@corigine.com>; Andrew Halaney <ahalaney@redhat.com>;
+> > Bartosz Golaszewski <bartosz.golaszewski@linaro.org>; Wong Vee Khee
+> > <veekhee@apple.com>; Revanth Kumar Uppala <ruppala@nvidia.com>; Jochen
+> > Henneberg <jh@henneberg-systemdesign.com>; netdev@vger.kernel.org; linux-
+> > stm32@st-md-mailman.stormreply.com; linux-arm-kernel@lists.infradead.org;
+> > linux-kernel@vger.kernel.org; linux-amlogic@lists.infradead.org;
+> > imx@lists.linux.dev; Frank Li <frank.li@nxp.com>
+> > Subject: [EXT] Re: [PATCH v3 net 2/2] net: stmmac: dwmac-imx: pause the TXC
+> > clock in fixed-link
+> >
+> > Caution: This is an external email. Please take care when clicking links or
+> > opening attachments. When in doubt, report the message using the 'Report this
+> > email' button
+> >
+> >
+> > On Tue, Aug 01, 2023 at 02:47:46PM +0200, Johannes Zink wrote:
+> > > Hi Shenwei,
+> > >
+> > > thanks for your patch.
+> > >
+> > > On 7/31/23 18:19, Shenwei Wang wrote:
+> > > > When using a fixed-link setup, certain devices like the SJA1105
+> > > > require a small pause in the TXC clock line to enable their internal
+> > > > tunable delay line (TDL).
+> > >
+> > > If this is only required for some devices, is it safe to enforce this
+> > > behaviour unconditionally for any kind of fixed link devices connected
+> > > to the MX93 EQOS or could this possibly break for other devices?
+> >
+> > This same point has been raised by Andrew Halaney in message-id
+> > <4govb566nypifbtqp5lcbsjhvoyble5luww3onaa2liinboguf@4kgihys6vhrg>
+> > and Fabio Estevam in message-id
+> >
+> > <CAOMZO5ANQmVbk_jy7qdVtzs3716FisT2c72W+3WZyu7FoAochw@mail.gmail.
+> > com>
+> > but we don't seem to have any answer for it.
+> >
+> Hi Russell,
+> 
+> I hope you have thoroughly read all of my earlier responses, as I believe I already addressed this question.
+> I'm happy to clarify further, but kindly avoid unsubstantiated comments.
+> 
+> https://lore.kernel.org/imx/20230727152503.2199550-1-shenwei.wang@nxp.com/T/#m08da3797a056d4d8ea4c1d8956b445ae967e7cfa
+> " Yes, that's the purpose because it won't hurt even the other side is not SJA1105."
+> 
+> > Also, the patch still uses wmb() between the write and the delay, and as Will
+> > Deacon pointed out in his message, message-id
+> > <20230728153611.GH21718@willie-the-truck>
+> > this is not safe, yet still a new version was sent.
+> >
+> 
+> Can we conclude that even without the wmb() here, the desired delay time between
+> operations can still be ensured?
 
-For the block device nodes and alternative iomap based buffered I/O path
-is provided when buffer_head support is not enabled, and iomap needs a
-a small tweak to define the IOMAP_F_BUFFER_HEAD flag to 0 to not call
-into the buffer_head code when it doesn't exist.
+Will's talk[0] he linked has the sequence you've done here (writel's
+followed by wmb() followed by a udelay), and he states it is wrong if
+the goal is for the device to see the writes prior to the udelay. That's
+discussed at around 28:00 and followed up by (thankfully, cuz I too
+didn't understand it) a question at 34:10 to discuss why mb() isn't
+sufficient (it completes the write, but the device *may not* see it
+yet, the read forces that).
 
-Otherwise this is just Kconfig and ifdef changes.
+He mentioned that over at [1] in the review here, and suggested reading
+from the device again prior to the udelay() instead to force the writes
+to take affect on the device prior to the udelay.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Luis Chamberlain <mcgrof@kernel.org>
----
- block/fops.c                 | 70 ++++++++++++++++++++++++++++++------
- drivers/md/Kconfig           |  1 +
- fs/Kconfig                   |  4 +++
- fs/Makefile                  |  2 +-
- fs/adfs/Kconfig              |  1 +
- fs/affs/Kconfig              |  1 +
- fs/befs/Kconfig              |  1 +
- fs/bfs/Kconfig               |  1 +
- fs/efs/Kconfig               |  1 +
- fs/exfat/Kconfig             |  1 +
- fs/ext2/Kconfig              |  1 +
- fs/ext4/Kconfig              |  1 +
- fs/f2fs/Kconfig              |  1 +
- fs/fat/Kconfig               |  1 +
- fs/freevxfs/Kconfig          |  1 +
- fs/gfs2/Kconfig              |  1 +
- fs/hfs/Kconfig               |  1 +
- fs/hfsplus/Kconfig           |  1 +
- fs/hpfs/Kconfig              |  1 +
- fs/isofs/Kconfig             |  1 +
- fs/jfs/Kconfig               |  1 +
- fs/minix/Kconfig             |  1 +
- fs/nilfs2/Kconfig            |  1 +
- fs/ntfs/Kconfig              |  1 +
- fs/ntfs3/Kconfig             |  1 +
- fs/ocfs2/Kconfig             |  1 +
- fs/omfs/Kconfig              |  1 +
- fs/qnx4/Kconfig              |  1 +
- fs/qnx6/Kconfig              |  1 +
- fs/reiserfs/Kconfig          |  1 +
- fs/sysv/Kconfig              |  1 +
- fs/udf/Kconfig               |  1 +
- fs/ufs/Kconfig               |  1 +
- include/linux/buffer_head.h  | 32 ++++++++---------
- include/linux/iomap.h        |  4 +++
- include/trace/events/block.h |  2 ++
- mm/migrate.c                 |  4 +--
- 37 files changed, 119 insertions(+), 29 deletions(-)
+I found a quick example in the ufs-qcom.c driver that I'll copy paste
+here too from upstream that follows this advice:
 
-diff --git a/block/fops.c b/block/fops.c
-index 063ece37d44e44..eaa98a987213d2 100644
---- a/block/fops.c
-+++ b/block/fops.c
-@@ -24,15 +24,6 @@ static inline struct inode *bdev_file_inode(struct file *file)
- 	return file->f_mapping->host;
- }
- 
--static int blkdev_get_block(struct inode *inode, sector_t iblock,
--		struct buffer_head *bh, int create)
--{
--	bh->b_bdev = I_BDEV(inode);
--	bh->b_blocknr = iblock;
--	set_buffer_mapped(bh);
--	return 0;
--}
--
- static blk_opf_t dio_bio_write_op(struct kiocb *iocb)
- {
- 	blk_opf_t opf = REQ_OP_WRITE | REQ_SYNC | REQ_IDLE;
-@@ -400,7 +391,7 @@ static int blkdev_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 	iomap->type = IOMAP_MAPPED;
- 	iomap->addr = iomap->offset;
- 	iomap->length = isize - iomap->offset;
--	iomap->flags |= IOMAP_F_BUFFER_HEAD;
-+	iomap->flags |= IOMAP_F_BUFFER_HEAD; /* noop for !CONFIG_BUFFER_HEAD */
- 	return 0;
- }
- 
-@@ -408,6 +399,16 @@ static const struct iomap_ops blkdev_iomap_ops = {
- 	.iomap_begin		= blkdev_iomap_begin,
- };
- 
-+#ifdef CONFIG_BUFFER_HEAD
-+static int blkdev_get_block(struct inode *inode, sector_t iblock,
-+		struct buffer_head *bh, int create)
-+{
-+	bh->b_bdev = I_BDEV(inode);
-+	bh->b_blocknr = iblock;
-+	set_buffer_mapped(bh);
-+	return 0;
-+}
-+
- static int blkdev_writepage(struct page *page, struct writeback_control *wbc)
- {
- 	return block_write_full_page(page, blkdev_get_block, wbc);
-@@ -453,6 +454,55 @@ const struct address_space_operations def_blk_aops = {
- 	.migrate_folio	= buffer_migrate_folio_norefs,
- 	.is_dirty_writeback = buffer_check_dirty_writeback,
- };
-+#else /* CONFIG_BUFFER_HEAD */
-+static int blkdev_read_folio(struct file *file, struct folio *folio)
-+{
-+	return iomap_read_folio(folio, &blkdev_iomap_ops);
-+}
-+
-+static void blkdev_readahead(struct readahead_control *rac)
-+{
-+	iomap_readahead(rac, &blkdev_iomap_ops);
-+}
-+
-+static int blkdev_map_blocks(struct iomap_writepage_ctx *wpc,
-+		struct inode *inode, loff_t offset)
-+{
-+	loff_t isize = i_size_read(inode);
-+
-+	if (WARN_ON_ONCE(offset >= isize))
-+		return -EIO;
-+	if (offset >= wpc->iomap.offset &&
-+	    offset < wpc->iomap.offset + wpc->iomap.length)
-+		return 0;
-+	return blkdev_iomap_begin(inode, offset, isize - offset,
-+				  IOMAP_WRITE, &wpc->iomap, NULL);
-+}
-+
-+static const struct iomap_writeback_ops blkdev_writeback_ops = {
-+	.map_blocks		= blkdev_map_blocks,
-+};
-+
-+static int blkdev_writepages(struct address_space *mapping,
-+		struct writeback_control *wbc)
-+{
-+	struct iomap_writepage_ctx wpc = { };
-+
-+	return iomap_writepages(mapping, wbc, &wpc, &blkdev_writeback_ops);
-+}
-+
-+const struct address_space_operations def_blk_aops = {
-+	.dirty_folio	= filemap_dirty_folio,
-+	.release_folio		= iomap_release_folio,
-+	.invalidate_folio	= iomap_invalidate_folio,
-+	.read_folio		= blkdev_read_folio,
-+	.readahead		= blkdev_readahead,
-+	.writepages		= blkdev_writepages,
-+	.is_partially_uptodate  = iomap_is_partially_uptodate,
-+	.error_remove_page	= generic_error_remove_page,
-+	.migrate_folio		= filemap_migrate_folio,
-+};
-+#endif /* CONFIG_BUFFER_HEAD */
- 
- /*
-  * for a block special file file_inode(file)->i_size is zero
-diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
-index 444517d1a2336a..2a8b081bce7dd8 100644
---- a/drivers/md/Kconfig
-+++ b/drivers/md/Kconfig
-@@ -15,6 +15,7 @@ if MD
- config BLK_DEV_MD
- 	tristate "RAID support"
- 	select BLOCK_HOLDER_DEPRECATED if SYSFS
-+	select BUFFER_HEAD
- 	# BLOCK_LEGACY_AUTOLOAD requirement should be removed
- 	# after relevant mdadm enhancements - to make "names=yes"
- 	# the default - are widely available.
-diff --git a/fs/Kconfig b/fs/Kconfig
-index 18d034ec79539f..e8b17c81b83a8e 100644
---- a/fs/Kconfig
-+++ b/fs/Kconfig
-@@ -18,8 +18,12 @@ config VALIDATE_FS_PARSER
- config FS_IOMAP
- 	bool
- 
-+config BUFFER_HEAD
-+	bool
-+
- # old blockdev_direct_IO implementation.  Use iomap for new code instead
- config LEGACY_DIRECT_IO
-+	depends on BUFFER_HEAD
- 	bool
- 
- if BLOCK
-diff --git a/fs/Makefile b/fs/Makefile
-index e513aaee0603a0..f9541f40be4e08 100644
---- a/fs/Makefile
-+++ b/fs/Makefile
-@@ -17,7 +17,7 @@ obj-y :=	open.o read_write.o file_table.o super.o \
- 		fs_types.o fs_context.o fs_parser.o fsopen.o init.o \
- 		kernel_read_file.o mnt_idmapping.o remap_range.o
- 
--obj-$(CONFIG_BLOCK)		+= buffer.o mpage.o
-+obj-$(CONFIG_BUFFER_HEAD)	+= buffer.o mpage.o
- obj-$(CONFIG_PROC_FS)		+= proc_namespace.o
- obj-$(CONFIG_LEGACY_DIRECT_IO)	+= direct-io.o
- obj-y				+= notify/
-diff --git a/fs/adfs/Kconfig b/fs/adfs/Kconfig
-index 44738fed66251f..1b97058f0c4a92 100644
---- a/fs/adfs/Kconfig
-+++ b/fs/adfs/Kconfig
-@@ -2,6 +2,7 @@
- config ADFS_FS
- 	tristate "ADFS file system support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	help
- 	  The Acorn Disc Filing System is the standard file system of the
- 	  RiscOS operating system which runs on Acorn's ARM-based Risc PC
-diff --git a/fs/affs/Kconfig b/fs/affs/Kconfig
-index 962b86374e1c15..1ae432d266c32f 100644
---- a/fs/affs/Kconfig
-+++ b/fs/affs/Kconfig
-@@ -2,6 +2,7 @@
- config AFFS_FS
- 	tristate "Amiga FFS file system support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	select LEGACY_DIRECT_IO
- 	help
- 	  The Fast File System (FFS) is the common file system used on hard
-diff --git a/fs/befs/Kconfig b/fs/befs/Kconfig
-index 9550b6462b8147..5fcfc4024ffe6f 100644
---- a/fs/befs/Kconfig
-+++ b/fs/befs/Kconfig
-@@ -2,6 +2,7 @@
- config BEFS_FS
- 	tristate "BeOS file system (BeFS) support (read only)"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	select NLS
- 	help
- 	  The BeOS File System (BeFS) is the native file system of Be, Inc's
-diff --git a/fs/bfs/Kconfig b/fs/bfs/Kconfig
-index 3a757805b58568..8e7ef866b62a62 100644
---- a/fs/bfs/Kconfig
-+++ b/fs/bfs/Kconfig
-@@ -2,6 +2,7 @@
- config BFS_FS
- 	tristate "BFS file system support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	help
- 	  Boot File System (BFS) is a file system used under SCO UnixWare to
- 	  allow the bootloader access to the kernel image and other important
-diff --git a/fs/efs/Kconfig b/fs/efs/Kconfig
-index 2df1bac8b375b1..0833e533df9d53 100644
---- a/fs/efs/Kconfig
-+++ b/fs/efs/Kconfig
-@@ -2,6 +2,7 @@
- config EFS_FS
- 	tristate "EFS file system support (read only)"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	help
- 	  EFS is an older file system used for non-ISO9660 CD-ROMs and hard
- 	  disk partitions by SGI's IRIX operating system (IRIX 6.0 and newer
-diff --git a/fs/exfat/Kconfig b/fs/exfat/Kconfig
-index 147edeb044691d..cbeca8e44d9b38 100644
---- a/fs/exfat/Kconfig
-+++ b/fs/exfat/Kconfig
-@@ -2,6 +2,7 @@
- 
- config EXFAT_FS
- 	tristate "exFAT filesystem support"
-+	select BUFFER_HEAD
- 	select NLS
- 	select LEGACY_DIRECT_IO
- 	help
-diff --git a/fs/ext2/Kconfig b/fs/ext2/Kconfig
-index 77393fda99af09..74d98965902e16 100644
---- a/fs/ext2/Kconfig
-+++ b/fs/ext2/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config EXT2_FS
- 	tristate "Second extended fs support"
-+	select BUFFER_HEAD
- 	select FS_IOMAP
- 	select LEGACY_DIRECT_IO
- 	help
-diff --git a/fs/ext4/Kconfig b/fs/ext4/Kconfig
-index 86699c8cab281c..e20d59221fc05b 100644
---- a/fs/ext4/Kconfig
-+++ b/fs/ext4/Kconfig
-@@ -28,6 +28,7 @@ config EXT3_FS_SECURITY
- 
- config EXT4_FS
- 	tristate "The Extended 4 (ext4) filesystem"
-+	select BUFFER_HEAD
- 	select JBD2
- 	select CRC16
- 	select CRYPTO
-diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
-index 03ef087537c7c4..68a1e23e1557c7 100644
---- a/fs/f2fs/Kconfig
-+++ b/fs/f2fs/Kconfig
-@@ -2,6 +2,7 @@
- config F2FS_FS
- 	tristate "F2FS filesystem support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	select NLS
- 	select CRYPTO
- 	select CRYPTO_CRC32
-diff --git a/fs/fat/Kconfig b/fs/fat/Kconfig
-index afe83b4e717280..25fae1c83725bc 100644
---- a/fs/fat/Kconfig
-+++ b/fs/fat/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config FAT_FS
- 	tristate
-+	select BUFFER_HEAD
- 	select NLS
- 	select LEGACY_DIRECT_IO
- 	help
-diff --git a/fs/freevxfs/Kconfig b/fs/freevxfs/Kconfig
-index 0e2fc08f7de492..912107ebea6f40 100644
---- a/fs/freevxfs/Kconfig
-+++ b/fs/freevxfs/Kconfig
-@@ -2,6 +2,7 @@
- config VXFS_FS
- 	tristate "FreeVxFS file system support (VERITAS VxFS(TM) compatible)"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	help
- 	  FreeVxFS is a file system driver that support the VERITAS VxFS(TM)
- 	  file system format.  VERITAS VxFS(TM) is the standard file system
-diff --git a/fs/gfs2/Kconfig b/fs/gfs2/Kconfig
-index 03c966840422ec..be7f87a8e11ae1 100644
---- a/fs/gfs2/Kconfig
-+++ b/fs/gfs2/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config GFS2_FS
- 	tristate "GFS2 file system support"
-+	select BUFFER_HEAD
- 	select FS_POSIX_ACL
- 	select CRC32
- 	select LIBCRC32C
-diff --git a/fs/hfs/Kconfig b/fs/hfs/Kconfig
-index d985066006d588..5ea5cd8ecea9c0 100644
---- a/fs/hfs/Kconfig
-+++ b/fs/hfs/Kconfig
-@@ -2,6 +2,7 @@
- config HFS_FS
- 	tristate "Apple Macintosh file system support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	select NLS
- 	select LEGACY_DIRECT_IO
- 	help
-diff --git a/fs/hfsplus/Kconfig b/fs/hfsplus/Kconfig
-index 8034e7827a690b..8ce4a33a9ac788 100644
---- a/fs/hfsplus/Kconfig
-+++ b/fs/hfsplus/Kconfig
-@@ -2,6 +2,7 @@
- config HFSPLUS_FS
- 	tristate "Apple Extended HFS file system support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	select NLS
- 	select NLS_UTF8
- 	select LEGACY_DIRECT_IO
-diff --git a/fs/hpfs/Kconfig b/fs/hpfs/Kconfig
-index ec975f4668775f..ac1e9318e65a4a 100644
---- a/fs/hpfs/Kconfig
-+++ b/fs/hpfs/Kconfig
-@@ -2,6 +2,7 @@
- config HPFS_FS
- 	tristate "OS/2 HPFS file system support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	select FS_IOMAP
- 	help
- 	  OS/2 is IBM's operating system for PC's, the same as Warp, and HPFS
-diff --git a/fs/isofs/Kconfig b/fs/isofs/Kconfig
-index 08ffd37b9bb8f6..51434f2a471b0f 100644
---- a/fs/isofs/Kconfig
-+++ b/fs/isofs/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config ISO9660_FS
- 	tristate "ISO 9660 CDROM file system support"
-+	select BUFFER_HEAD
- 	help
- 	  This is the standard file system used on CD-ROMs.  It was previously
- 	  known as "High Sierra File System" and is called "hsfs" on other
-diff --git a/fs/jfs/Kconfig b/fs/jfs/Kconfig
-index 51e856f0e4b8d6..17488440eef1a9 100644
---- a/fs/jfs/Kconfig
-+++ b/fs/jfs/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config JFS_FS
- 	tristate "JFS filesystem support"
-+	select BUFFER_HEAD
- 	select NLS
- 	select CRC32
- 	select LEGACY_DIRECT_IO
-diff --git a/fs/minix/Kconfig b/fs/minix/Kconfig
-index de2003974ff0d0..90ddfad2a75e8f 100644
---- a/fs/minix/Kconfig
-+++ b/fs/minix/Kconfig
-@@ -2,6 +2,7 @@
- config MINIX_FS
- 	tristate "Minix file system support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	help
- 	  Minix is a simple operating system used in many classes about OS's.
- 	  The minix file system (method to organize files on a hard disk
-diff --git a/fs/nilfs2/Kconfig b/fs/nilfs2/Kconfig
-index 7d59567465e121..7dae168e346e30 100644
---- a/fs/nilfs2/Kconfig
-+++ b/fs/nilfs2/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config NILFS2_FS
- 	tristate "NILFS2 file system support"
-+	select BUFFER_HEAD
- 	select CRC32
- 	select LEGACY_DIRECT_IO
- 	help
-diff --git a/fs/ntfs/Kconfig b/fs/ntfs/Kconfig
-index f93e69a612833f..7b2509741735a9 100644
---- a/fs/ntfs/Kconfig
-+++ b/fs/ntfs/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config NTFS_FS
- 	tristate "NTFS file system support"
-+	select BUFFER_HEAD
- 	select NLS
- 	help
- 	  NTFS is the file system of Microsoft Windows NT, 2000, XP and 2003.
-diff --git a/fs/ntfs3/Kconfig b/fs/ntfs3/Kconfig
-index 96cc236f7f7bd3..cdfdf51e55d797 100644
---- a/fs/ntfs3/Kconfig
-+++ b/fs/ntfs3/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config NTFS3_FS
- 	tristate "NTFS Read-Write file system support"
-+	select BUFFER_HEAD
- 	select NLS
- 	select LEGACY_DIRECT_IO
- 	help
-diff --git a/fs/ocfs2/Kconfig b/fs/ocfs2/Kconfig
-index 3123da7cfb301f..2514d36cbe0157 100644
---- a/fs/ocfs2/Kconfig
-+++ b/fs/ocfs2/Kconfig
-@@ -2,6 +2,7 @@
- config OCFS2_FS
- 	tristate "OCFS2 file system support"
- 	depends on INET && SYSFS && CONFIGFS_FS
-+	select BUFFER_HEAD
- 	select JBD2
- 	select CRC32
- 	select QUOTA
-diff --git a/fs/omfs/Kconfig b/fs/omfs/Kconfig
-index 42b2ec35a05bfb..8470f6c3e64e6a 100644
---- a/fs/omfs/Kconfig
-+++ b/fs/omfs/Kconfig
-@@ -2,6 +2,7 @@
- config OMFS_FS
- 	tristate "SonicBlue Optimized MPEG File System support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	select CRC_ITU_T
- 	help
- 	  This is the proprietary file system used by the Rio Karma music
-diff --git a/fs/qnx4/Kconfig b/fs/qnx4/Kconfig
-index 45b5b98376c436..a2eb826e76c602 100644
---- a/fs/qnx4/Kconfig
-+++ b/fs/qnx4/Kconfig
-@@ -2,6 +2,7 @@
- config QNX4FS_FS
- 	tristate "QNX4 file system support (read only)"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	help
- 	  This is the file system used by the real-time operating systems
- 	  QNX 4 and QNX 6 (the latter is also called QNX RTP).
-diff --git a/fs/qnx6/Kconfig b/fs/qnx6/Kconfig
-index 6a9d6bce158622..8e865d72204e75 100644
---- a/fs/qnx6/Kconfig
-+++ b/fs/qnx6/Kconfig
-@@ -2,6 +2,7 @@
- config QNX6FS_FS
- 	tristate "QNX6 file system support (read only)"
- 	depends on BLOCK && CRC32
-+	select BUFFER_HEAD
- 	help
- 	  This is the file system used by the real-time operating systems
- 	  QNX 6 (also called QNX RTP).
-diff --git a/fs/reiserfs/Kconfig b/fs/reiserfs/Kconfig
-index 4d22ecfe0fab65..0e6fe26458fede 100644
---- a/fs/reiserfs/Kconfig
-+++ b/fs/reiserfs/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config REISERFS_FS
- 	tristate "Reiserfs support (deprecated)"
-+	select BUFFER_HEAD
- 	select CRC32
- 	select LEGACY_DIRECT_IO
- 	help
-diff --git a/fs/sysv/Kconfig b/fs/sysv/Kconfig
-index b4e23e03fbeba3..67b3f90afbfd67 100644
---- a/fs/sysv/Kconfig
-+++ b/fs/sysv/Kconfig
-@@ -2,6 +2,7 @@
- config SYSV_FS
- 	tristate "System V/Xenix/V7/Coherent file system support"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	help
- 	  SCO, Xenix and Coherent are commercial Unix systems for Intel
- 	  machines, and Version 7 was used on the DEC PDP-11. Saying Y
-diff --git a/fs/udf/Kconfig b/fs/udf/Kconfig
-index 82e8bfa2dfd989..8f7ce30d47fdce 100644
---- a/fs/udf/Kconfig
-+++ b/fs/udf/Kconfig
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- config UDF_FS
- 	tristate "UDF file system support"
-+	select BUFFER_HEAD
- 	select CRC_ITU_T
- 	select NLS
- 	select LEGACY_DIRECT_IO
-diff --git a/fs/ufs/Kconfig b/fs/ufs/Kconfig
-index 6d30adb6b890fc..9301e7ecd09210 100644
---- a/fs/ufs/Kconfig
-+++ b/fs/ufs/Kconfig
-@@ -2,6 +2,7 @@
- config UFS_FS
- 	tristate "UFS file system support (read only)"
- 	depends on BLOCK
-+	select BUFFER_HEAD
- 	help
- 	  BSD and derivate versions of Unix (such as SunOS, FreeBSD, NetBSD,
- 	  OpenBSD and NeXTstep) use a file system called UFS. Some System V
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index 7002a9ff63a3da..c89ef50d5112fc 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -16,8 +16,6 @@
- #include <linux/wait.h>
- #include <linux/atomic.h>
- 
--#ifdef CONFIG_BLOCK
--
- enum bh_state_bits {
- 	BH_Uptodate,	/* Contains valid data */
- 	BH_Dirty,	/* Is dirty */
-@@ -198,7 +196,6 @@ void set_bh_page(struct buffer_head *bh,
- 		struct page *page, unsigned long offset);
- void folio_set_bh(struct buffer_head *bh, struct folio *folio,
- 		  unsigned long offset);
--bool try_to_free_buffers(struct folio *);
- struct buffer_head *folio_alloc_buffers(struct folio *folio, unsigned long size,
- 					bool retry);
- struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
-@@ -213,10 +210,6 @@ void end_buffer_async_write(struct buffer_head *bh, int uptodate);
- 
- /* Things to do with buffers at mapping->private_list */
- void mark_buffer_dirty_inode(struct buffer_head *bh, struct inode *inode);
--int inode_has_buffers(struct inode *);
--void invalidate_inode_buffers(struct inode *);
--int remove_inode_buffers(struct inode *inode);
--int sync_mapping_buffers(struct address_space *mapping);
- int generic_buffers_fsync_noflush(struct file *file, loff_t start, loff_t end,
- 				  bool datasync);
- int generic_buffers_fsync(struct file *file, loff_t start, loff_t end,
-@@ -240,9 +233,6 @@ void __bforget(struct buffer_head *);
- void __breadahead(struct block_device *, sector_t block, unsigned int size);
- struct buffer_head *__bread_gfp(struct block_device *,
- 				sector_t block, unsigned size, gfp_t gfp);
--void invalidate_bh_lrus(void);
--void invalidate_bh_lrus_cpu(void);
--bool has_bh_in_lru(int cpu, void *dummy);
- struct buffer_head *alloc_buffer_head(gfp_t gfp_flags);
- void free_buffer_head(struct buffer_head * bh);
- void unlock_buffer(struct buffer_head *bh);
-@@ -258,8 +248,6 @@ int __bh_read(struct buffer_head *bh, blk_opf_t op_flags, bool wait);
- void __bh_read_batch(int nr, struct buffer_head *bhs[],
- 		     blk_opf_t op_flags, bool force_lock);
- 
--extern int buffer_heads_over_limit;
--
- /*
-  * Generic address_space_operations implementations for buffer_head-backed
-  * address_spaces.
-@@ -304,8 +292,6 @@ extern int buffer_migrate_folio_norefs(struct address_space *,
- #define buffer_migrate_folio_norefs NULL
- #endif
- 
--void buffer_init(void);
--
- /*
-  * inline definitions
-  */
-@@ -465,7 +451,20 @@ __bread(struct block_device *bdev, sector_t block, unsigned size)
- 
- bool block_dirty_folio(struct address_space *mapping, struct folio *folio);
- 
--#else /* CONFIG_BLOCK */
-+#ifdef CONFIG_BUFFER_HEAD
-+
-+void buffer_init(void);
-+bool try_to_free_buffers(struct folio *folio);
-+int inode_has_buffers(struct inode *inode);
-+void invalidate_inode_buffers(struct inode *inode);
-+int remove_inode_buffers(struct inode *inode);
-+int sync_mapping_buffers(struct address_space *mapping);
-+void invalidate_bh_lrus(void);
-+void invalidate_bh_lrus_cpu(void);
-+bool has_bh_in_lru(int cpu, void *dummy);
-+extern int buffer_heads_over_limit;
-+
-+#else /* CONFIG_BUFFER_HEAD */
- 
- static inline void buffer_init(void) {}
- static inline bool try_to_free_buffers(struct folio *folio) { return true; }
-@@ -473,9 +472,10 @@ static inline int inode_has_buffers(struct inode *inode) { return 0; }
- static inline void invalidate_inode_buffers(struct inode *inode) {}
- static inline int remove_inode_buffers(struct inode *inode) { return 1; }
- static inline int sync_mapping_buffers(struct address_space *mapping) { return 0; }
-+static inline void invalidate_bh_lrus(void) {}
- static inline void invalidate_bh_lrus_cpu(void) {}
- static inline bool has_bh_in_lru(int cpu, void *dummy) { return false; }
- #define buffer_heads_over_limit 0
- 
--#endif /* CONFIG_BLOCK */
-+#endif /* CONFIG_BUFFER_HEAD */
- #endif /* _LINUX_BUFFER_HEAD_H */
-diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-index e2b836c2e119ae..54f50d34fd9d4f 100644
---- a/include/linux/iomap.h
-+++ b/include/linux/iomap.h
-@@ -58,7 +58,11 @@ struct vm_fault;
- #define IOMAP_F_DIRTY		(1U << 1)
- #define IOMAP_F_SHARED		(1U << 2)
- #define IOMAP_F_MERGED		(1U << 3)
-+#ifdef CONFIG_BUFFER_HEAD
- #define IOMAP_F_BUFFER_HEAD	(1U << 4)
-+#else
-+#define IOMAP_F_BUFFER_HEAD	0
-+#endif /* CONFIG_BUFFER_HEAD */
- #define IOMAP_F_XATTR		(1U << 5)
- 
- /*
-diff --git a/include/trace/events/block.h b/include/trace/events/block.h
-index 40e60c33cc6f3d..0e128ad5146015 100644
---- a/include/trace/events/block.h
-+++ b/include/trace/events/block.h
-@@ -12,6 +12,7 @@
- 
- #define RWBS_LEN	8
- 
-+#ifdef CONFIG_BUFFER_HEAD
- DECLARE_EVENT_CLASS(block_buffer,
- 
- 	TP_PROTO(struct buffer_head *bh),
-@@ -61,6 +62,7 @@ DEFINE_EVENT(block_buffer, block_dirty_buffer,
- 
- 	TP_ARGS(bh)
- );
-+#endif /* CONFIG_BUFFER_HEAD */
- 
- /**
-  * block_rq_requeue - place block IO request back on a queue
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 24baad2571e314..fe6f8d454aff83 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -684,7 +684,7 @@ int migrate_folio(struct address_space *mapping, struct folio *dst,
- }
- EXPORT_SYMBOL(migrate_folio);
- 
--#ifdef CONFIG_BLOCK
-+#ifdef CONFIG_BUFFER_HEAD
- /* Returns true if all buffers are successfully locked */
- static bool buffer_migrate_lock_buffers(struct buffer_head *head,
- 							enum migrate_mode mode)
-@@ -837,7 +837,7 @@ int buffer_migrate_folio_norefs(struct address_space *mapping,
- 	return __buffer_migrate_folio(mapping, dst, src, mode, true);
- }
- EXPORT_SYMBOL_GPL(buffer_migrate_folio_norefs);
--#endif
-+#endif /* CONFIG_BUFFER_HEAD */
- 
- int filemap_migrate_folio(struct address_space *mapping,
- 		struct folio *dst, struct folio *src, enum migrate_mode mode)
--- 
-2.39.2
+		writel_relaxed(temp, host->dev_ref_clk_ctrl_mmio);
+
+		/*
+		 * Make sure the write to ref_clk reaches the destination and
+		 * not stored in a Write Buffer (WB).
+		 */
+		readl(host->dev_ref_clk_ctrl_mmio);
+
+		/*
+		 * If we call hibern8 exit after this, we need to make sure that
+		 * device ref_clk is stable for at least 1us before the hibern8
+		 * exit command.
+		 */
+		if (enable)
+			udelay(1);
+
+
+[0] https://www.youtube.com/watch?v=i6DayghhA8Q
+[1] https://lore.kernel.org/netdev/20230728153611.GH21718@willie-the-truck/
+
+I hope that helps,
+Andrew
 
