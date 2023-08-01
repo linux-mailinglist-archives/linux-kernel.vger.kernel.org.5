@@ -2,143 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C927076B9D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62A676B9D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbjHAQmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
+        id S231923AbjHAQm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231801AbjHAQmR (ORCPT
+        with ESMTP id S231888AbjHAQmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:42:17 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D21191FE8
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:42:11 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d11f35a0d5cso6648890276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:42:11 -0700 (PDT)
+        Tue, 1 Aug 2023 12:42:25 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8912107
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:42:23 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-63cf8754d95so26750226d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 09:42:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690908131; x=1691512931;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XUkAY/G/q5Go/69C7MwOXOdE9yrJPl7PpisITyFDd7Q=;
-        b=vhto38kKYsPdVVOHWc+ZBPW7FpOxrmqsDyRdd3iekHwbpqM9jTuedcsQ7ppkaW0Bew
-         gYdHqHY6dJZoezPC+mh3LkCz1BhVpz+Ct22mtdbox/cKulplQa4IIgw9T1YuFviXb+8U
-         DN8g+TN5+ZHMPyLWjX9oOzt5zpHDPlVlRuQ2AiFo9r3qONUfOdrs4sunTJmXNoA5aZls
-         OkmULIY/eeT1Kww64TRQ5hNx2xAF98wnIk8C6/esTS3gpa3VHja5piqdyorRpoKSktwz
-         GGyhuBG3UZwwZBp8uFJSnUccnV5IHAndTwFexDWkad/u+xmG4K7nr+4MfHJMYq1DibSG
-         JW5Q==
+        d=google.com; s=20221208; t=1690908142; x=1691512942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7AXRcxN4X2nbD5LSU083hpEJi9dyUxKKAP9wUCW8Yqo=;
+        b=IFLycd+YUlQ7e7S9s6lp9S6XDT8KWx7Edj009JPHpiAomCCtUiVeD4c9cmYqdeWanD
+         s2IOab9PnwUwD4L6PdlvT4VMjnAIKuIuU5LGs+9FWS4V8u/qIl8HYzoTPIP2AErE79u/
+         FSDBM1tIUQg5EDNMR5YZwZmEzD1Ph/7u7+nL6KwReM8VYooWM+Hkp4Dh7sZO4qKGyiYZ
+         xsrNOnxyeV2yEJufXa626hq0XSlopUXzW6PLkDvLltPybskIoDb3N4fkeYnzIWRgZITW
+         NlxuF3ekD5VvqnNTGBPeF3Zo5gPb7ouJQcYvRCdNV/lt+W859Vk/ffOZxucwPZx6ztmo
+         p7AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690908131; x=1691512931;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XUkAY/G/q5Go/69C7MwOXOdE9yrJPl7PpisITyFDd7Q=;
-        b=NFZi54QGZqvTt3SOHEXtoYAcGQ6POE5NuZIh3Hi+FJUFTUubBuvm6vVZZZh3HWroQi
-         6LXAq2EY5RIlxTDWsxAWKlY6QrwtbT0hfcOuuCgkNcFCAB/147XCY0qOJrn7gRNjZkNV
-         EvdmLBUDNhLPjNiCHJRVlVBsxYf0ceuR0ng9ybr1tk8kC1MXu7WDDmvr+8wyvLq3LC2m
-         5hI6xFtb6s6cAkoZCte97Qb22bBvldZH9WXr8nkeHhW3Q9iLzA8vnf/7jp+FdUj9weKH
-         s4uQwiugunzUuMMNPGpP7ng7ilS/SC6vAT1RedvP9m/AEF8aBe+3sWV+FHZbipmsHB41
-         z//g==
-X-Gm-Message-State: ABy/qLZ4tiGhrp0vmwk0bobQuLid2kS7ungd5qwYEEfVh1r4N0cYu3Xv
-        PwtvixKXvknZ48U7S3w/TiDuLWLTZ7U=
-X-Google-Smtp-Source: APBJJlFnVpRXHxBMAAzeylgAR/wCk5R6kUAg+WwTz3hroE3BN30v08zKPdv7SyECwdp4asKLZEgPjNk/wi4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:258d:0:b0:d0a:324c:2c67 with SMTP id
- l135-20020a25258d000000b00d0a324c2c67mr81296ybl.13.1690908131108; Tue, 01 Aug
- 2023 09:42:11 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 09:42:09 -0700
-In-Reply-To: <ZMkj/HORmSy685cH@johallen-workstation>
-Mime-Version: 1.0
-References: <20230524155339.415820-1-john.allen@amd.com> <20230524155339.415820-4-john.allen@amd.com>
- <ZJYzPn7ipYfO0fLZ@google.com> <ZMkj/HORmSy685cH@johallen-workstation>
-Message-ID: <ZMk14YiPw9l7ZTXP@google.com>
-Subject: Re: [RFC PATCH v2 3/6] KVM: x86: SVM: Pass through shadow stack MSRs
-From:   Sean Christopherson <seanjc@google.com>
-To:     John Allen <john.allen@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, weijiang.yang@intel.com,
-        rick.p.edgecombe@intel.com, x86@kernel.org,
-        thomas.lendacky@amd.com, bp@alien8.de
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1690908142; x=1691512942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7AXRcxN4X2nbD5LSU083hpEJi9dyUxKKAP9wUCW8Yqo=;
+        b=kZ7fzfN6akDGkmEvD91fWU5S0dStcjtYHsJza1/pSIxPp7BcHGiyYJp5qT56R0YriG
+         f9s2kjjwYL87ba1bmBtnZpMyZoQCBstQltH90FtWEfUOwA0l6SCN/VZx3SGYPLmlP+2F
+         LkH49MN0dWjiylBaSxVs5yFn06dhmNoiS8xyxE0z932xe97YWcrwS4JZiidoSGJMtQFw
+         +nWRsq6nAVCNw8kL1W1nBk7vL3EQVgNDyj7BzEGVZ8+jDVYaAEJNBQiEvOxbdsVOBMvN
+         owtvpdq+GIuSkKf8Os265AM9N3GjxuegftkCPwgrotNfxi1+MHQLIhVlUHILZJ/kEGwH
+         h7+w==
+X-Gm-Message-State: ABy/qLYfgduLJJmvM5iE7RFKLY1PzZzrVVebVlDZYYf89h+Psp5JH0XN
+        Wt2E8PY0TucgC3oyeZvlx0x0rUI05R4Uo8MLlHQKZQ==
+X-Google-Smtp-Source: APBJJlFimWkkB+UHcacql4MfY2gMzddAHFvsKdoaX4FE0t3+ibG/83drylyfPYFBK598WQtUQzj3WppduOZn349kPCg=
+X-Received: by 2002:ad4:4382:0:b0:63c:f325:5aac with SMTP id
+ s2-20020ad44382000000b0063cf3255aacmr9358248qvr.19.1690908141896; Tue, 01 Aug
+ 2023 09:42:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230728113415.21067-1-will@kernel.org> <20230728113415.21067-4-will@kernel.org>
+In-Reply-To: <20230728113415.21067-4-will@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Aug 2023 09:42:11 -0700
+Message-ID: <CAKwvOdnPWL7ts0PC_NxqxZZRgaT=WLZGQQ-3cVii-jG5GCNjfw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] scripts/faddr2line: Constrain readelf output to
+ symbols from System.map
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Fangrui Song <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023, John Allen wrote:
-> On Fri, Jun 23, 2023 at 05:05:18PM -0700, Sean Christopherson wrote:
-> > On Wed, May 24, 2023, John Allen wrote:
-> > > If kvm supports shadow stack, pass through shadow stack MSRs to improve
-> > > guest performance.
-> > > 
-> > > Signed-off-by: John Allen <john.allen@amd.com>
-> > > ---
-> > >  arch/x86/kvm/svm/svm.c | 17 +++++++++++++++++
-> > >  arch/x86/kvm/svm/svm.h |  2 +-
-> > >  2 files changed, 18 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > > index 6df486bb1ac4..cdbce20989b8 100644
-> > > --- a/arch/x86/kvm/svm/svm.c
-> > > +++ b/arch/x86/kvm/svm/svm.c
-> > > @@ -136,6 +136,13 @@ static const struct svm_direct_access_msrs {
-> > >  	{ .index = X2APIC_MSR(APIC_TMICT),		.always = false },
-> > >  	{ .index = X2APIC_MSR(APIC_TMCCT),		.always = false },
-> > >  	{ .index = X2APIC_MSR(APIC_TDCR),		.always = false },
-> > > +	{ .index = MSR_IA32_U_CET,                      .always = false },
-> > > +	{ .index = MSR_IA32_S_CET,                      .always = false },
-> > > +	{ .index = MSR_IA32_INT_SSP_TAB,                .always = false },
-> > > +	{ .index = MSR_IA32_PL0_SSP,                    .always = false },
-> > > +	{ .index = MSR_IA32_PL1_SSP,                    .always = false },
-> > > +	{ .index = MSR_IA32_PL2_SSP,                    .always = false },
-> > > +	{ .index = MSR_IA32_PL3_SSP,                    .always = false },
-> > >  	{ .index = MSR_INVALID,				.always = false },
-> > >  };
-> > >  
-> > > @@ -1181,6 +1188,16 @@ static inline void init_vmcb_after_set_cpuid(struct kvm_vcpu *vcpu)
-> > >  		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_EIP, 1, 1);
-> > >  		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_SYSENTER_ESP, 1, 1);
-> > >  	}
-> > > +
-> > > +	if (kvm_cet_user_supported() && guest_cpuid_has(vcpu, X86_FEATURE_SHSTK)) {
-> > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_U_CET, 1, 1);
-> > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_S_CET, 1, 1);
-> > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_INT_SSP_TAB, 1, 1);
-> > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_PL0_SSP, 1, 1);
-> > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_PL1_SSP, 1, 1);
-> > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_PL2_SSP, 1, 1);
-> > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_PL3_SSP, 1, 1);
-> > > +	}
-> > 
-> > This is wrong, KVM needs to set/clear interception based on SHSKT, i.e. it can't
-> > be a one-way street.  Userspace *probably* won't toggle SHSTK in guest CPUID, but
-> > weirder things have happened.
-> 
-> Can you clarify what you mean by that? Do you mean that we need to check
-> both guest_cpuid_has and kvm_cpu_cap_has like the guest_can_use function
-> that is used in Weijiang Yang's series? Or is there something else I'm
-> omitting here?
+On Fri, Jul 28, 2023 at 4:34=E2=80=AFAM Will Deacon <will@kernel.org> wrote=
+:
+>
+> Some symbols emitted in the readelf output but filtered from System.map
+> can confuse the 'faddr2line' symbol size calculation, resulting in the
+> erroneous rejection of valid offsets. This is especially prevalent when
+> building an arm64 kernel with CONFIG_CFI_CLANG=3Dy, where most functions
+> are prefixed with a 32-bit data value in a '$d.n' section. For example:
+>
+> 447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_initcal=
+l
+>    104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
+>    106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
+>    111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
+>    112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
+>     36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_proce=
+ss
 
-When init_vmcb_after_set_cpuid() is called, KVM must not assume that the MSRs are
-currently intercepted, i.e. KVM can't just handle the case where userspace enables
-SHSTK, KVM must also handle the case where userspace disables SHSTK.
+Sami,
+Should we change the llvm-ir linkage type for these symbols from
+`internal` to `private`?
+https://llvm.org/docs/LangRef.html#linkage-types
 
-Using guest_can_use() is also a good idea, but it would likely lead to extra work
-on CPUs that don't support CET/SHSTK.  This isn't a fastpath, but toggling
-interception for MSRs that don't exist would be odd.  It's probably better to
-effectively open code guest_can_use(), which the KVM check gating the MSR toggling.
+Then they would not appear in the symbol table.
 
-E.g. something like
+At first, I thought other modules might need to directly reference
+this data, but with the local binding, I don't think they can.
 
-	if (kvm_cpu_cap_has(X86_FEATURE_SHSTK)) {
-		bool shstk_enabled = guest_cpuid_has(vcpu, X86_FEATURE_SHSTK);
+>
+> Adding a warning to do_one_initcall() results in:
+>
+>   | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0x260
+>
+> Which 'faddr2line' refuses to accept:
+>
+> $ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
+> skipping do_one_initcall address at 0xffff800080014c74 due to size mismat=
+ch (0x260 !=3D 0x224)
+> no match for do_one_initcall+0xf4/0x260
+>
+> Filter out entries from readelf using the 'sysmap-ignored-syms.sed'
+> script used to construct System.map, so that the size of a symbol is
+> calculated as a delta to the next symbol present in ksymtab.
+>
+> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+> Cc: John Stultz <jstultz@google.com>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  scripts/faddr2line | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/faddr2line b/scripts/faddr2line
+> index 62a3fa6f6f59..da734af90036 100755
+> --- a/scripts/faddr2line
+> +++ b/scripts/faddr2line
+> @@ -64,6 +64,7 @@ else
+>         UTIL_PREFIX=3D${CROSS_COMPILE:-}
+>  fi
+>
+> +IGNORED_SYMS=3D$(dirname $0)/sysmap-ignored-syms.sed
+>  READELF=3D"${UTIL_PREFIX}readelf"
+>  ADDR2LINE=3D"${UTIL_PREFIX}addr2line"
+>  AWK=3D"awk"
+> @@ -185,7 +186,7 @@ __faddr2line() {
+>                                 found=3D2
+>                                 break
+>                         fi
+> -               done < <(${READELF} --symbols --wide $objfile | sed 's/\[=
+.*\]//' | ${AWK} -v sec=3D$sym_sec '$7 =3D=3D sec' | sort --key=3D2)
+> +               done < <(${READELF} --symbols --wide $objfile | sed -f ${=
+IGNORED_SYMS} -e 's/\[.*\]//' | ${AWK} -v sec=3D$sym_sec '$7 =3D=3D sec' | =
+sort --key=3D2)
+>
+>                 if [[ $found =3D 0 ]]; then
+>                         warn "can't find symbol: sym_name: $sym_name sym_=
+sec: $sym_sec sym_addr: $sym_addr sym_elf_size: $sym_elf_size"
+> --
+> 2.41.0.487.g6d72f3e995-goog
+>
 
-		set_msr_inteception(vcpu, svm->msrpm, MSR_IA32_BLAH,
-				    shstk_enabled, shstk_enabled);
-	}
+
+--=20
+Thanks,
+~Nick Desaulniers
