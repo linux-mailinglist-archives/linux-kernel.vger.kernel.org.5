@@ -2,952 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 361A876A8EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CA776A8F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjHAGYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
+        id S230021AbjHAGZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231589AbjHAGXb (ORCPT
+        with ESMTP id S229455AbjHAGZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:23:31 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539F31BFD;
-        Mon, 31 Jul 2023 23:23:11 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 2163E8008;
-        Tue,  1 Aug 2023 14:23:09 +0800 (CST)
-Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
- 2023 14:23:09 +0800
-Received: from [192.168.1.218] (180.164.60.184) by EXMBX073.cuchost.com
- (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
- 2023 14:23:08 +0800
-Message-ID: <7c4e63e7-ce28-139f-373d-0fecca6839b9@starfivetech.com>
-Date:   Tue, 1 Aug 2023 14:23:07 +0800
+        Tue, 1 Aug 2023 02:25:44 -0400
+Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3093EE5F;
+        Mon, 31 Jul 2023 23:25:42 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4RFPvS4Rrkz9y7ky;
+        Tue,  1 Aug 2023 14:14:12 +0800 (CST)
+Received: from A2101119013HW2.china.huawei.com (unknown [10.81.220.249])
+        by APP1 (Coremail) with SMTP id LxC2BwCHOroapchkgAwYAA--.27948S2;
+        Tue, 01 Aug 2023 07:24:46 +0100 (CET)
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR ARM),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        linux-kernel@vger.kernel.org (open list),
+        linux-mips@vger.kernel.org (open list:MIPS),
+        iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM),
+        linux-mm@kvack.org (open list:SLAB ALLOCATOR)
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: [PATCH v7 0/9] Allow dynamic allocation of software IO TLB bounce buffers
+Date:   Tue,  1 Aug 2023 08:23:55 +0200
+Message-Id: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v7 4/6] media: starfive: camss: Add video driver
-Content-Language: en-US
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>,
-        <bryan.odonoghue@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <changhuang.liang@starfivetech.com>
-References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
- <20230619112838.19797-5-jack.zhu@starfivetech.com>
- <8e381fd6-9475-88fc-9159-927f119a8b9c@xs4all.nl>
-From:   Jack Zhu <jack.zhu@starfivetech.com>
-In-Reply-To: <8e381fd6-9475-88fc-9159-927f119a8b9c@xs4all.nl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [180.164.60.184]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX073.cuchost.com
- (172.16.6.83)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwCHOroapchkgAwYAA--.27948S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Wr1Dtw1rJr47Aw4kKrykZrb_yoWDGrWfpF
+        WrKryftF4qqryxA3s7Ca18GFyrKa1kGrW5GrWFvryrur13Cr1j93WktayrXFW7Gr40vF12
+        qFyYvw13uw1DZ3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBK14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02
+        628vn2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCY1x0264kExVAvwVAq07x20xyl42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
+        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc40Y0x0EwIxGrw
+        CI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1U
+        MIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42
+        IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUjFksDUUUUU=
+        =
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+From: Petr Tesarik <petr.tesarik.ext@huawei.com>
 
-Thank you for your comments.
+Motivation
+==========
 
-On 2023/7/27 16:49, Hans Verkuil wrote:
-> On 19/06/2023 13:28, Jack Zhu wrote:
->> Add video driver for StarFive Camera Subsystem.
->> 
->> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
->> ---
->>  .../media/platform/starfive/camss/Makefile    |   4 +-
->>  .../media/platform/starfive/camss/stf_video.c | 724 ++++++++++++++++++
->>  .../media/platform/starfive/camss/stf_video.h |  92 +++
->>  3 files changed, 819 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/media/platform/starfive/camss/stf_video.c
->>  create mode 100644 drivers/media/platform/starfive/camss/stf_video.h
->> 
->> diff --git a/drivers/media/platform/starfive/camss/Makefile b/drivers/media/platform/starfive/camss/Makefile
->> index d56ddd078a71..eb457917a914 100644
->> --- a/drivers/media/platform/starfive/camss/Makefile
->> +++ b/drivers/media/platform/starfive/camss/Makefile
->> @@ -3,6 +3,8 @@
->>  # Makefile for StarFive Camera Subsystem driver
->>  #
->>  
->> -starfive-camss-objs += stf_camss.o
->> +starfive-camss-objs += \
->> +		stf_camss.o \
->> +		stf_video.o
->>  
->>  obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
->> diff --git a/drivers/media/platform/starfive/camss/stf_video.c b/drivers/media/platform/starfive/camss/stf_video.c
->> new file mode 100644
->> index 000000000000..2e6472fe51c6
->> --- /dev/null
->> +++ b/drivers/media/platform/starfive/camss/stf_video.c
->> @@ -0,0 +1,724 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * stf_video.c
->> + *
->> + * StarFive Camera Subsystem - V4L2 device node
->> + *
->> + * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
->> + */
->> +
->> +#include <linux/pm_runtime.h>
->> +#include <media/v4l2-ctrls.h>
->> +#include <media/v4l2-event.h>
->> +#include <media/v4l2-mc.h>
->> +#include <media/videobuf2-dma-contig.h>
->> +
->> +#include "stf_camss.h"
->> +#include "stf_video.h"
->> +
->> +static const struct stfcamss_format_info formats_pix_wr[] = {
->> +	{
->> +		.code = MEDIA_BUS_FMT_SRGGB10_1X10,
->> +		.pixelformat = V4L2_PIX_FMT_SRGGB10,
->> +		.planes = 1,
->> +		.vsub = { 1 },
->> +		.bpp = 10,
->> +	},
->> +	{
->> +		.code = MEDIA_BUS_FMT_SGRBG10_1X10,
->> +		.pixelformat = V4L2_PIX_FMT_SGRBG10,
->> +		.planes = 1,
->> +		.vsub = { 1 },
->> +		.bpp = 10,
->> +	},
->> +	{
->> +		.code = MEDIA_BUS_FMT_SGBRG10_1X10,
->> +		.pixelformat = V4L2_PIX_FMT_SGBRG10,
->> +		.planes = 1,
->> +		.vsub = { 1 },
->> +		.bpp = 10,
->> +	},
->> +	{
->> +		.code = MEDIA_BUS_FMT_SBGGR10_1X10,
->> +		.pixelformat = V4L2_PIX_FMT_SBGGR10,
->> +		.planes = 1,
->> +		.vsub = { 1 },
->> +		.bpp = 10,
->> +	},
->> +};
->> +
->> +static const struct stfcamss_format_info formats_pix_isp[] = {
->> +	{
->> +		.code = MEDIA_BUS_FMT_Y12_1X12,
->> +		.pixelformat = V4L2_PIX_FMT_NV12,
->> +		.planes = 2,
->> +		.vsub = { 1, 2 },
->> +		.bpp = 8,
->> +	},
->> +};
->> +
->> +/* -----------------------------------------------------------------------------
->> + * Helper functions
->> + */
->> +
->> +static int video_find_format(u32 code, u32 pixelformat,
->> +			     struct stfcamss_video *video)
->> +{
->> +	unsigned int i;
->> +
->> +	for (i = 0; i < video->nformats; ++i) {
->> +		if (video->formats[i].code == code &&
->> +		    video->formats[i].pixelformat == pixelformat)
->> +			return i;
->> +	}
->> +
->> +	for (i = 0; i < video->nformats; ++i)
->> +		if (video->formats[i].code == code)
->> +			return i;
->> +
->> +	for (i = 0; i < video->nformats; ++i)
->> +		if (video->formats[i].pixelformat == pixelformat)
->> +			return i;
->> +
->> +	return -EINVAL;
->> +}
->> +
->> +static int __video_try_fmt(struct stfcamss_video *video, struct v4l2_format *f)
->> +{
->> +	struct v4l2_pix_format *pix;
->> +	const struct stfcamss_format_info *fi;
->> +	u32 width, height;
->> +	u32 bpl;
->> +	unsigned int i;
->> +
->> +	pix = &f->fmt.pix;
->> +
->> +	for (i = 0; i < video->nformats; i++)
->> +		if (pix->pixelformat == video->formats[i].pixelformat)
->> +			break;
->> +
->> +	if (i == video->nformats)
->> +		i = 0; /* default format */
->> +
->> +	fi = &video->formats[i];
->> +	width = pix->width;
->> +	height = pix->height;
->> +
->> +	memset(pix, 0, sizeof(*pix));
->> +
->> +	pix->pixelformat = fi->pixelformat;
->> +	pix->width = clamp_t(u32, width, STFCAMSS_FRAME_MIN_WIDTH,
->> +			     STFCAMSS_FRAME_MAX_WIDTH);
->> +	pix->height = clamp_t(u32, height, STFCAMSS_FRAME_MIN_HEIGHT,
->> +			      STFCAMSS_FRAME_MAX_HEIGHT);
->> +	bpl = pix->width * fi->bpp / 8;
->> +	bpl = ALIGN(bpl, video->bpl_alignment);
->> +	pix->bytesperline = bpl;
->> +
->> +	for (i = 0; i < fi->planes; ++i)
->> +		pix->sizeimage += bpl * pix->height / fi->vsub[i];
->> +
->> +	pix->field = V4L2_FIELD_NONE;
->> +	pix->colorspace = V4L2_COLORSPACE_SRGB;
->> +	pix->flags = 0;
->> +	pix->ycbcr_enc =
->> +		V4L2_MAP_YCBCR_ENC_DEFAULT(pix->colorspace);
->> +	pix->quantization = V4L2_MAP_QUANTIZATION_DEFAULT(true,
->> +							  pix->colorspace,
->> +							  pix->ycbcr_enc);
->> +	pix->xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(pix->colorspace);
->> +
->> +	return 0;
->> +}
->> +
->> +static int stf_video_init_format(struct stfcamss_video *video)
->> +{
->> +	int ret;
->> +	struct v4l2_format format = {
->> +		.type = video->type,
->> +		.fmt.pix = {
->> +			.width = 1920,
->> +			.height = 1080,
->> +			.pixelformat = V4L2_PIX_FMT_RGB565,
->> +		},
->> +	};
->> +
->> +	ret = __video_try_fmt(video, &format);
->> +
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	video->active_fmt = format;
->> +
->> +	return 0;
->> +}
->> +
->> +/* -----------------------------------------------------------------------------
->> + * Video queue operations
->> + */
->> +
->> +static int video_queue_setup(struct vb2_queue *q,
->> +			     unsigned int *num_buffers,
->> +			     unsigned int *num_planes,
->> +			     unsigned int sizes[],
->> +			     struct device *alloc_devs[])
->> +{
->> +	struct stfcamss_video *video = vb2_get_drv_priv(q);
->> +	const struct v4l2_pix_format *format = &video->active_fmt.fmt.pix;
->> +
->> +	if (*num_planes) {
->> +		if (*num_planes != 1)
->> +			return -EINVAL;
->> +
->> +		if (sizes[0] < format->sizeimage)
->> +			return -EINVAL;
->> +	}
->> +
->> +	*num_planes = 1;
->> +	sizes[0] = format->sizeimage;
->> +	if (!sizes[0])
->> +		dev_err(video->stfcamss->dev,
->> +			"%s: error size is zero!!!\n", __func__);
->> +
->> +	dev_dbg(video->stfcamss->dev, "planes = %d, size = %d\n",
->> +		*num_planes, sizes[0]);
->> +
->> +	return 0;
->> +}
->> +
->> +static int video_buf_init(struct vb2_buffer *vb)
->> +{
->> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
->> +	struct stfcamss_video *video = vb2_get_drv_priv(vb->vb2_queue);
->> +	struct stfcamss_buffer *buffer =
->> +		container_of(vbuf, struct stfcamss_buffer, vb);
->> +	const struct v4l2_pix_format *fmt = &video->active_fmt.fmt.pix;
->> +	dma_addr_t *paddr;
->> +
->> +	paddr = vb2_plane_cookie(vb, 0);
->> +	buffer->addr[0] = *paddr;
->> +
->> +	if (fmt->pixelformat == V4L2_PIX_FMT_NV12 ||
->> +	    fmt->pixelformat == V4L2_PIX_FMT_NV21 ||
->> +	    fmt->pixelformat == V4L2_PIX_FMT_NV16 ||
->> +	    fmt->pixelformat == V4L2_PIX_FMT_NV61)
->> +		buffer->addr[1] =
->> +			buffer->addr[0] + fmt->bytesperline * fmt->height;
->> +
->> +	return 0;
->> +}
->> +
->> +static int video_buf_prepare(struct vb2_buffer *vb)
->> +{
->> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
->> +	struct stfcamss_video *video = vb2_get_drv_priv(vb->vb2_queue);
->> +	const struct v4l2_pix_format *fmt = &video->active_fmt.fmt.pix;
->> +
->> +	if (fmt->sizeimage > vb2_plane_size(vb, 0)) {
->> +		dev_err(video->stfcamss->dev,
->> +			"sizeimage = %d, plane size = %d\n",
->> +			fmt->sizeimage, (unsigned int)vb2_plane_size(vb, 0));
->> +		return -EINVAL;
->> +	}
->> +	vb2_set_plane_payload(vb, 0, fmt->sizeimage);
->> +
->> +	vbuf->field = V4L2_FIELD_NONE;
->> +
->> +	return 0;
->> +}
->> +
->> +static void video_buf_queue(struct vb2_buffer *vb)
->> +{
->> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
->> +	struct stfcamss_video *video = vb2_get_drv_priv(vb->vb2_queue);
->> +	struct stfcamss_buffer *buffer =
->> +		container_of(vbuf, struct stfcamss_buffer, vb);
->> +
->> +	video->ops->queue_buffer(video, buffer);
->> +}
->> +
->> +/*
->> + * video_mbus_to_pix - Convert v4l2_mbus_framefmt to v4l2_pix_format
->> + * @mbus: v4l2_mbus_framefmt format (input)
->> + * @pix: v4l2_pix_format_mplane format (output)
->> + * @f: a pointer to formats array element to be used for the conversion
->> + * @alignment: bytesperline alignment value
->> + *
->> + * Fill the output pix structure with information from the input mbus format.
->> + *
->> + * Return 0 on success or a negative error code otherwise
->> + */
->> +static int video_mbus_to_pix(const struct v4l2_mbus_framefmt *mbus,
->> +			     struct v4l2_pix_format *pix,
->> +			     const struct stfcamss_format_info *f,
->> +			     unsigned int alignment)
->> +{
->> +	u32 bytesperline;
->> +	unsigned int i;
->> +
->> +	memset(pix, 0, sizeof(*pix));
->> +	v4l2_fill_pix_format(pix, mbus);
->> +	pix->pixelformat = f->pixelformat;
->> +	bytesperline = pix->width * f->bpp / 8;
->> +	bytesperline = ALIGN(bytesperline, alignment);
->> +	pix->bytesperline = bytesperline;
->> +
->> +	for (i = 0; i < f->planes; ++i)
->> +		pix->sizeimage += bytesperline * pix->height / f->vsub[i];
->> +
->> +	return 0;
->> +}
->> +
->> +static struct v4l2_subdev *video_remote_subdev(struct stfcamss_video *video,
->> +					       u32 *pad)
->> +{
->> +	struct media_pad *remote;
->> +
->> +	remote = media_pad_remote_pad_first(&video->pad);
->> +
->> +	if (!remote || !is_media_entity_v4l2_subdev(remote->entity))
->> +		return NULL;
->> +
->> +	if (pad)
->> +		*pad = remote->index;
->> +
->> +	return media_entity_to_v4l2_subdev(remote->entity);
->> +}
->> +
->> +static int video_get_subdev_format(struct stfcamss_video *video,
->> +				   struct v4l2_format *format)
->> +{
->> +	struct v4l2_pix_format *pix = &video->active_fmt.fmt.pix;
->> +	struct v4l2_subdev_format fmt;
->> +	struct v4l2_subdev *subdev;
->> +	u32 pixelformat;
->> +	u32 pad;
->> +	int ret;
->> +
->> +	subdev = video_remote_subdev(video, &pad);
->> +	if (!subdev)
->> +		return -EPIPE;
->> +
->> +	fmt.pad = pad;
->> +	fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
->> +
->> +	ret = v4l2_subdev_call(subdev, pad, get_fmt, NULL, &fmt);
->> +	if (ret)
->> +		return ret;
->> +
->> +	pixelformat = pix->pixelformat;
->> +	ret = video_find_format(fmt.format.code, pixelformat, video);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	format->type = video->type;
->> +
->> +	return video_mbus_to_pix(&fmt.format, &format->fmt.pix,
->> +				 &video->formats[ret], video->bpl_alignment);
->> +}
->> +
->> +static int video_check_format(struct stfcamss_video *video)
->> +{
->> +	struct v4l2_pix_format *pix = &video->active_fmt.fmt.pix;
->> +	struct v4l2_format format;
->> +	struct v4l2_pix_format *sd_pix = &format.fmt.pix;
->> +	int ret;
->> +
->> +	sd_pix->pixelformat = pix->pixelformat;
->> +	ret = video_get_subdev_format(video, &format);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	if (pix->pixelformat != sd_pix->pixelformat ||
->> +	    pix->height != sd_pix->height ||
->> +	    pix->width != sd_pix->width ||
->> +	    pix->field != format.fmt.pix.field) {
->> +		dev_err(video->stfcamss->dev,
->> +			"not match:\n"
->> +			"pixelformat: 0x%x <-> 0x%x\n"
->> +			"height: %d <-> %d\n"
->> +			"field: %d <-> %d\n",
->> +			pix->pixelformat, sd_pix->pixelformat,
->> +			pix->height, sd_pix->height,
->> +			pix->field, format.fmt.pix.field);
->> +		return -EPIPE;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static int video_start_streaming(struct vb2_queue *q, unsigned int count)
->> +{
->> +	struct stfcamss_video *video = vb2_get_drv_priv(q);
->> +	struct video_device *vdev = &video->vdev;
->> +	struct media_entity *entity;
->> +	struct media_pad *pad;
->> +	struct v4l2_subdev *subdev;
->> +	int ret;
->> +
->> +	ret = video_device_pipeline_start(vdev, &video->stfcamss->pipe);
->> +	if (ret < 0) {
->> +		dev_err(video->stfcamss->dev,
->> +			"Failed to media_pipeline_start: %d\n", ret);
-> 
-> This doesn't call flush_buffers to return the buffers back to the QUEUED state.
-> 
-> You do that correctly elsewhere in this function, but you missed this case.
-> 
+The software IO TLB was designed with these assumptions:
 
-OK, I will fix it.
+1) It would not be used much. Small systems (little RAM) don't need it, and
+   big systems (lots of RAM) would have modern DMA controllers and an IOMMU
+   chip to handle legacy devices.
+2) A small fixed memory area (64 MiB by default) is sufficient to
+   handle the few cases which require a bounce buffer.
+3) 64 MiB is little enough that it has no impact on the rest of the
+   system.
+4) Bounce buffers require large contiguous chunks of low memory. Such
+   memory is precious and can be allocated only early at boot.
 
->> +		return ret;
->> +	}
->> +
->> +	ret = video_check_format(video);
->> +	if (ret < 0)
->> +		goto error;
->> +
->> +	ret = pm_runtime_resume_and_get(video->stfcamss->dev);
->> +	if (ret < 0) {
->> +		dev_err(video->stfcamss->dev, "power up failed %d\n", ret);
->> +		goto error;
->> +	}
->> +
->> +	entity = &vdev->entity;
->> +	while (1) {
->> +		pad = &entity->pads[0];
->> +		if (!(pad->flags & MEDIA_PAD_FL_SINK))
->> +			break;
->> +
->> +		pad = media_pad_remote_pad_first(pad);
->> +		if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
->> +			break;
->> +
->> +		entity = pad->entity;
->> +		subdev = media_entity_to_v4l2_subdev(entity);
->> +
->> +		ret = v4l2_subdev_call(subdev, video, s_stream, 1);
->> +		if (ret < 0 && ret != -ENOIOCTLCMD)
->> +			goto err_pm_put;
->> +	}
->> +	return 0;
->> +
->> +err_pm_put:
->> +	pm_runtime_put(video->stfcamss->dev);
->> +error:
->> +	video_device_pipeline_stop(vdev);
->> +	video->ops->flush_buffers(video, VB2_BUF_STATE_QUEUED);
->> +	return ret;
->> +}
->> +
->> +static void video_stop_streaming(struct vb2_queue *q)
->> +{
->> +	struct stfcamss_video *video = vb2_get_drv_priv(q);
->> +	struct video_device *vdev = &video->vdev;
->> +	struct media_entity *entity;
->> +	struct media_pad *pad;
->> +	struct v4l2_subdev *subdev;
->> +	int ret;
->> +
->> +	entity = &vdev->entity;
->> +	while (1) {
->> +		pad = &entity->pads[0];
->> +		if (!(pad->flags & MEDIA_PAD_FL_SINK))
->> +			break;
->> +
->> +		pad = media_pad_remote_pad_first(pad);
->> +		if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
->> +			break;
->> +
->> +		entity = pad->entity;
->> +		subdev = media_entity_to_v4l2_subdev(entity);
->> +
->> +		v4l2_subdev_call(subdev, video, s_stream, 0);
->> +	}
->> +
->> +	ret = pm_runtime_put(video->stfcamss->dev);
->> +	if (ret < 0)
->> +		dev_err(video->stfcamss->dev, "power down failed:%d\n", ret);
->> +
->> +	video_device_pipeline_stop(vdev);
->> +	video->ops->flush_buffers(video, VB2_BUF_STATE_ERROR);
->> +}
->> +
->> +static const struct vb2_ops stf_video_vb2_q_ops = {
->> +	.queue_setup     = video_queue_setup,
->> +	.wait_prepare    = vb2_ops_wait_prepare,
->> +	.wait_finish     = vb2_ops_wait_finish,
->> +	.buf_init        = video_buf_init,
->> +	.buf_prepare     = video_buf_prepare,
->> +	.buf_queue       = video_buf_queue,
->> +	.start_streaming = video_start_streaming,
->> +	.stop_streaming  = video_stop_streaming,
->> +};
->> +
->> +/* -----------------------------------------------------------------------------
->> + * V4L2 ioctls
->> + */
->> +
->> +static int video_querycap(struct file *file, void *fh,
->> +			  struct v4l2_capability *cap)
->> +{
->> +	strscpy(cap->driver, "stf camss", sizeof(cap->driver));
->> +	strscpy(cap->card, "Starfive Camera Subsystem", sizeof(cap->card));
->> +
->> +	return 0;
->> +}
->> +
->> +static int video_get_pfmt_by_index(struct stfcamss_video *video, int ndx)
->> +{
->> +	int i, j, k;
->> +
->> +	/* find index "i" of "k"th unique pixelformat in formats array */
->> +	k = -1;
->> +	for (i = 0; i < video->nformats; i++) {
->> +		for (j = 0; j < i; j++) {
->> +			if (video->formats[i].pixelformat ==
->> +			    video->formats[j].pixelformat)
->> +				break;
->> +		}
->> +
->> +		if (j == i)
->> +			k++;
->> +
->> +		if (k == ndx)
->> +			return i;
->> +	}
->> +
->> +	return -EINVAL;
->> +}
->> +
->> +static int video_get_pfmt_by_mcode(struct stfcamss_video *video, u32 mcode)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < video->nformats; i++) {
->> +		if (video->formats[i].code == mcode)
->> +			return i;
->> +	}
->> +
->> +	return -EINVAL;
->> +}
->> +
->> +static int video_enum_fmt(struct file *file, void *fh, struct v4l2_fmtdesc *f)
->> +{
->> +	struct stfcamss_video *video = video_drvdata(file);
->> +	int i;
->> +
->> +	if (f->type != video->type)
->> +		return -EINVAL;
->> +	if (f->index >= video->nformats)
->> +		return -EINVAL;
->> +
->> +	if (f->mbus_code) {
->> +		/* Each entry in formats[] table has unique mbus_code */
->> +		if (f->index > 0)
->> +			return -EINVAL;
->> +
->> +		i = video_get_pfmt_by_mcode(video, f->mbus_code);
->> +	} else {
->> +		i = video_get_pfmt_by_index(video, f->index);
->> +	}
->> +
->> +	if (i < 0)
->> +		return -EINVAL;
->> +
->> +	f->pixelformat = video->formats[i].pixelformat;
->> +
->> +	return 0;
->> +}
->> +
->> +static int video_enum_framesizes(struct file *file, void *fh,
->> +				 struct v4l2_frmsizeenum *fsize)
->> +{
->> +	struct stfcamss_video *video = video_drvdata(file);
->> +	int i;
->> +
->> +	if (fsize->index)
->> +		return -EINVAL;
->> +
->> +	for (i = 0; i < video->nformats; i++) {
->> +		if (video->formats[i].pixelformat == fsize->pixel_format)
->> +			break;
->> +	}
->> +
->> +	if (i == video->nformats)
->> +		return -EINVAL;
->> +
->> +	fsize->type = V4L2_FRMSIZE_TYPE_CONTINUOUS;
->> +	fsize->stepwise.min_width = STFCAMSS_FRAME_MIN_WIDTH;
->> +	fsize->stepwise.max_width = STFCAMSS_FRAME_MAX_WIDTH;
->> +	fsize->stepwise.min_height = STFCAMSS_FRAME_MIN_HEIGHT;
->> +	fsize->stepwise.max_height = STFCAMSS_FRAME_MAX_HEIGHT;
->> +	fsize->stepwise.step_width = 1;
->> +	fsize->stepwise.step_height = 1;
->> +
->> +	return 0;
->> +}
->> +
->> +static int video_g_fmt(struct file *file, void *fh, struct v4l2_format *f)
->> +{
->> +	struct stfcamss_video *video = video_drvdata(file);
->> +
->> +	*f = video->active_fmt;
->> +
->> +	return 0;
->> +}
->> +
->> +static int video_s_fmt(struct file *file, void *fh, struct v4l2_format *f)
->> +{
->> +	struct stfcamss_video *video = video_drvdata(file);
->> +	int ret;
->> +
->> +	if (vb2_is_busy(&video->vb2_q))
->> +		return -EBUSY;
->> +
->> +	ret = __video_try_fmt(video, f);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	video->active_fmt = *f;
->> +
->> +	return 0;
->> +}
->> +
->> +static int video_try_fmt(struct file *file, void *fh, struct v4l2_format *f)
->> +{
->> +	struct stfcamss_video *video = video_drvdata(file);
->> +
->> +	return __video_try_fmt(video, f);
->> +}
->> +
->> +static const struct v4l2_ioctl_ops stf_vid_ioctl_ops = {
->> +	.vidioc_querycap                = video_querycap,
->> +	.vidioc_enum_fmt_vid_cap        = video_enum_fmt,
->> +	.vidioc_enum_fmt_vid_out        = video_enum_fmt,
->> +	.vidioc_enum_framesizes         = video_enum_framesizes,
->> +	.vidioc_g_fmt_vid_cap           = video_g_fmt,
->> +	.vidioc_s_fmt_vid_cap           = video_s_fmt,
->> +	.vidioc_try_fmt_vid_cap         = video_try_fmt,
->> +	.vidioc_g_fmt_vid_out           = video_g_fmt,
->> +	.vidioc_s_fmt_vid_out           = video_s_fmt,
->> +	.vidioc_try_fmt_vid_out         = video_try_fmt,
->> +	.vidioc_reqbufs                 = vb2_ioctl_reqbufs,
->> +	.vidioc_querybuf                = vb2_ioctl_querybuf,
->> +	.vidioc_qbuf                    = vb2_ioctl_qbuf,
->> +	.vidioc_expbuf                  = vb2_ioctl_expbuf,
->> +	.vidioc_dqbuf                   = vb2_ioctl_dqbuf,
->> +	.vidioc_create_bufs             = vb2_ioctl_create_bufs,
->> +	.vidioc_prepare_buf             = vb2_ioctl_prepare_buf,
->> +	.vidioc_streamon                = vb2_ioctl_streamon,
->> +	.vidioc_streamoff               = vb2_ioctl_streamoff,
->> +};
->> +
->> +/* -----------------------------------------------------------------------------
->> + * V4L2 file operations
->> + */
->> +
->> +static const struct v4l2_file_operations stf_vid_fops = {
->> +	.owner          = THIS_MODULE,
->> +	.unlocked_ioctl = video_ioctl2,
->> +	.open           = v4l2_fh_open,
->> +	.release        = vb2_fop_release,
->> +	.poll           = vb2_fop_poll,
->> +	.mmap           = vb2_fop_mmap,
->> +	.read           = vb2_fop_read,
->> +};
->> +
->> +/* -----------------------------------------------------------------------------
->> + * STFCAMSS video core
->> + */
->> +
->> +static void stf_video_release(struct video_device *vdev)
->> +{
->> +	struct stfcamss_video *video = video_get_drvdata(vdev);
->> +
->> +	media_entity_cleanup(&vdev->entity);
->> +
->> +	mutex_destroy(&video->q_lock);
->> +	mutex_destroy(&video->lock);
->> +}
->> +
->> +int stf_video_register(struct stfcamss_video *video,
->> +		       struct v4l2_device *v4l2_dev, const char *name)
->> +{
->> +	struct video_device *vdev;
->> +	struct vb2_queue *q;
->> +	struct media_pad *pad = &video->pad;
->> +	int ret;
->> +
->> +	vdev = &video->vdev;
->> +
->> +	mutex_init(&video->q_lock);
->> +
->> +	q = &video->vb2_q;
->> +	q->drv_priv = video;
->> +	q->mem_ops = &vb2_dma_contig_memops;
->> +	q->ops = &stf_video_vb2_q_ops;
->> +	q->type = video->type;
->> +	q->io_modes = VB2_DMABUF | VB2_MMAP | VB2_READ;
-> 
-> VB2_READ support does not generally make sense for uncompressed video since
-> read() always requires a memcpy, and that makes it very inefficient.
-> 
-> It doesn't hurt though, so it is up to you whether or not you want this.
-> 
+It turns out they are not always true:
 
-Yes, we would like to retain this feature to meet some possible special needs.
+1) Embedded systems may have more than 4GiB RAM but no IOMMU and legacy
+   32-bit peripheral busses and/or DMA controllers.
+2) CoCo VMs use bounce buffers for all I/O but may need substantially more
+   than 64 MiB.
+3) Embedded developers put as many features as possible into the available
+   memory. A few dozen "missing" megabytes may limit what features can be
+   implemented.
+4) If CMA is available, it can allocate large continuous chunks even after
+   the system has run for some time.
 
->> +	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
->> +	q->buf_struct_size = sizeof(struct stfcamss_buffer);
->> +	q->dev = video->stfcamss->dev;
->> +	q->lock = &video->q_lock;
->> +	q->min_buffers_needed = STFCAMSS_MIN_BUFFERS;
->> +	ret = vb2_queue_init(q);
->> +	if (ret < 0) {
->> +		dev_err(video->stfcamss->dev,
->> +			"Failed to init vb2 queue: %d\n", ret);
->> +		goto err_vb2_init;
->> +	}
->> +
->> +	pad->flags = MEDIA_PAD_FL_SINK;
->> +	ret = media_entity_pads_init(&vdev->entity, 1, pad);
->> +	if (ret < 0) {
->> +		dev_err(video->stfcamss->dev,
->> +			"Failed to init video entity: %d\n", ret);
->> +		goto err_vb2_init;
->> +	}
->> +
->> +	mutex_init(&video->lock);
->> +
->> +	if (video->id == STF_V_LINE_WR) {
->> +		video->formats = formats_pix_wr;
->> +		video->nformats = ARRAY_SIZE(formats_pix_wr);
->> +		video->bpl_alignment = 8;
->> +	} else {
->> +		video->formats = formats_pix_isp;
->> +		video->nformats = ARRAY_SIZE(formats_pix_isp);
->> +		video->bpl_alignment = 1;
->> +	}
->> +
->> +	ret = stf_video_init_format(video);
->> +	if (ret < 0) {
->> +		dev_err(video->stfcamss->dev,
->> +			"Failed to init format: %d\n", ret);
->> +		goto err_vid_init_format;
->> +	}
->> +
->> +	vdev->fops = &stf_vid_fops;
->> +	vdev->ioctl_ops = &stf_vid_ioctl_ops;
->> +	vdev->device_caps = V4L2_CAP_VIDEO_CAPTURE;
->> +	vdev->vfl_dir = VFL_DIR_RX;
->> +	vdev->device_caps |= V4L2_CAP_STREAMING | V4L2_CAP_READWRITE;
->> +	vdev->release = stf_video_release;
->> +	vdev->v4l2_dev = v4l2_dev;
->> +	vdev->queue = &video->vb2_q;
->> +	vdev->lock = &video->lock;
->> +	strscpy(vdev->name, name, sizeof(vdev->name));
->> +
->> +	ret = video_register_device(vdev, VFL_TYPE_VIDEO, video->id);
->> +	if (ret < 0) {
->> +		dev_err(video->stfcamss->dev,
->> +			"Failed to register video device: %d\n", ret);
->> +		goto err_vid_reg;
->> +	}
->> +
->> +	video_set_drvdata(vdev, video);
->> +	return 0;
->> +
->> +err_vid_reg:
->> +err_vid_init_format:
->> +	media_entity_cleanup(&vdev->entity);
->> +	mutex_destroy(&video->lock);
->> +err_vb2_init:
->> +	mutex_destroy(&video->q_lock);
->> +	return ret;
->> +}
->> +
->> +void stf_video_unregister(struct stfcamss_video *video)
->> +{
->> +	vb2_video_unregister_device(&video->vdev);
->> +}
->> diff --git a/drivers/media/platform/starfive/camss/stf_video.h b/drivers/media/platform/starfive/camss/stf_video.h
->> new file mode 100644
->> index 000000000000..60323c23a40c
->> --- /dev/null
->> +++ b/drivers/media/platform/starfive/camss/stf_video.h
->> @@ -0,0 +1,92 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * stf_video.h
->> + *
->> + * StarFive Camera Subsystem - V4L2 device node
->> + *
->> + * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
->> + */
->> +
->> +#ifndef STF_VIDEO_H
->> +#define STF_VIDEO_H
->> +
->> +#include <linux/list.h>
->> +#include <linux/mutex.h>
->> +#include <linux/videodev2.h>
->> +#include <media/v4l2-dev.h>
->> +#include <media/v4l2-fh.h>
->> +#include <media/v4l2-ioctl.h>
->> +#include <media/videobuf2-v4l2.h>
->> +
->> +#define STFCAMSS_FRAME_MIN_WIDTH		64
->> +#define STFCAMSS_FRAME_MAX_WIDTH		1920
->> +#define STFCAMSS_FRAME_MIN_HEIGHT		64
->> +#define STFCAMSS_FRAME_MAX_HEIGHT		1080
->> +#define STFCAMSS_FRAME_WIDTH_ALIGN_8		8
->> +#define STFCAMSS_FRAME_WIDTH_ALIGN_128		128
->> +#define STFCAMSS_MIN_BUFFERS			2
->> +
->> +#define STFCAMSS_MAX_ENTITY_NAME_LEN		27
->> +
->> +enum stf_v_line_id {
->> +	STF_V_LINE_WR = 0,
->> +	STF_V_LINE_ISP,
->> +	STF_V_LINE_MAX,
->> +};
->> +
->> +struct stfcamss_buffer {
->> +	struct vb2_v4l2_buffer vb;
->> +	dma_addr_t addr[3];
->> +	struct list_head queue;
->> +};
->> +
->> +struct fract {
->> +	u8 numerator;
->> +	u8 denominator;
->> +};
->> +
->> +/*
->> + * struct stfcamss_format_info - ISP media bus format information
->> + * @code: V4L2 media bus format code
->> + * @pixelformat: V4L2 pixel format FCC identifier
->> + * @planes: Number of planes
->> + * @vsub: Vertical subsampling (for each plane)
->> + * @bpp: Bits per pixel when stored in memory (for each plane)
->> + */
->> +struct stfcamss_format_info {
->> +	u32 code;
->> +	u32 pixelformat;
->> +	u8 planes;
->> +	u8 vsub[3];
->> +	u8 bpp;
->> +};
->> +
->> +struct stfcamss_video {
->> +	struct stfcamss *stfcamss;
->> +	u8 id;
->> +	struct vb2_queue vb2_q;
->> +	struct video_device vdev;
->> +	struct media_pad pad;
->> +	struct v4l2_format active_fmt;
->> +	enum v4l2_buf_type type;
->> +	const struct stfcamss_video_ops *ops;
->> +	struct mutex lock;	 /* serialize device access */
->> +	struct mutex q_lock;	 /* protects the queue */
->> +	unsigned int bpl_alignment;
->> +	const struct stfcamss_format_info *formats;
->> +	unsigned int nformats;
->> +};
->> +
->> +struct stfcamss_video_ops {
->> +	int (*queue_buffer)(struct stfcamss_video *vid,
->> +			    struct stfcamss_buffer *buf);
->> +	int (*flush_buffers)(struct stfcamss_video *vid,
->> +			     enum vb2_buffer_state state);
->> +};
->> +
->> +int stf_video_register(struct stfcamss_video *video,
->> +		       struct v4l2_device *v4l2_dev, const char *name);
->> +
->> +void stf_video_unregister(struct stfcamss_video *video);
->> +
->> +#endif /* STF_VIDEO_H */
-> 
-> Regards,
-> 
-> 	Hans
+Goals
+=====
+
+The goal of this work is to start with a small software IO TLB at boot and
+expand it later when/if needed.
+
+Design
+======
+
+This version of the patch series retains the current slot allocation
+algorithm with multiple areas to reduce lock contention, but additional
+slots can be added when necessary.
+
+These alternatives have been considered:
+
+- Allocate and free buffers as needed using direct DMA API. This works
+  quite well, except in CoCo VMs where each allocation/free requires
+  decrypting/encrypting memory, which is a very expensive operation.
+
+- Allocate a very large software IO TLB at boot, but allow to migrate pages
+  to/from it (like CMA does). For systems with CMA, this would mean two big
+  allocations at boot. Finding the balance between CMA, SWIOTLB and rest of
+  available RAM can be challenging. More importantly, there is no clear
+  benefit compared to allocating SWIOTLB memory pools from the CMA.
+
+Implementation Constraints
+==========================
+
+These constraints have been taken into account:
+
+1) Minimize impact on devices which do not benefit from the change.
+2) Minimize the number of memory decryption/encryption operations.
+3) Avoid contention on a lock or atomic variable to preserve parallel
+   scalability.
+
+Additionally, the software IO TLB code is also used to implement restricted
+DMA pools. These pools are restricted to a pre-defined physical memory
+region and must not use any other memory. In other words, dynamic
+allocation of memory pools must be disabled for restricted DMA pools.
+
+Data Structures
+===============
+
+The existing struct io_tlb_mem is the central type for a SWIOTLB allocator,
+but it now contains multiple memory pools::
+
+  io_tlb_mem
+  +---------+   io_tlb_pool
+  | SWIOTLB | 	+-------+   +-------+   +-------+
+  |allocator|-->|default|-->|dynamic|-->|dynamic|-->...
+  |    	    |  	|memory |   |memory |   |memory |
+  +---------+ 	| pool  |   | pool  |   | pool  |
+	      	+-------+   +-------+   +-------+
+
+The allocator structure contains global state (such as flags and counters)
+and structures needed to schedule new allocations. Each memory pool
+contains the actual buffer slots and metadata. The first memory pool in the
+list is the default memory pool allocated statically at early boot.
+
+New memory pools are allocated from a kernel worker thread. That's because
+bounce buffers are allocated when mapping a DMA buffer, which may happen in
+interrupt context where large atomic allocations would probably fail.
+Allocation from process context is much more likely to succeed, especially
+if it can use CMA.
+
+Nonetheless, the onset of a load spike may fill up the SWIOTLB before the
+worker has a chance to run. In that case, try to allocate a small transient
+memory pool to accommodate the request. If memory is encrypted and the
+device cannot do DMA to encrypted memory, this buffer is allocated from the
+coherent atomic DMA memory pool. Reducing the size of SWIOTLB may therefore
+require increasing the size of the coherent pool with the "coherent_pool"
+command-line parameter.
+
+Performance
+===========
+
+All testing compared a vanilla v6.4-rc6 kernel with a fully patched
+kernel. The kernel was booted with "swiotlb=force" to allow stress-testing
+the software IO TLB on a high-performance device that would otherwise not
+need it. CONFIG_DEBUG_FS was set to 'y' to match the configuration of
+popular distribution kernels; it is understood that parallel workloads
+suffer from contention on the recently added debugfs atomic counters.
+
+These benchmarks were run:
+
+- small: single-threaded I/O of 4 KiB blocks,
+- big: single-threaded I/O of 64 KiB blocks,
+- 4way: 4-way parallel I/O of 4 KiB blocks.
+
+In all tested cases, the default 64 MiB SWIOTLB would be sufficient (but
+wasteful). The "default" pair of columns shows performance impact when
+booted with 64 MiB SWIOTLB (i.e. current state). The "growing" pair of
+columns shows the impact when booted with a 1 MiB initial SWIOTLB, which
+grew to 5 MiB at run time. The "var" column in the tables below is the
+coefficient of variance over 5 runs of the test, the "diff" column is the
+difference in read-write I/O bandwidth (MiB/s). The very first column is
+the coefficient of variance in the results of the base unpatched kernel.
+
+First, on an x86 VM against a QEMU virtio SATA driver backed by a RAM-based
+block device on the host:
+
+	base	   default	   growing
+	var	var	diff	var	diff
+small	1.96%	0.47%	-1.5%	0.52%	-2.2%
+big	2.03%	1.35%	+0.9%	2.22%	+2.9%
+4way	0.80%	0.45%	-0.7%	1.22%	<0.1%
+
+Second, on a Raspberry Pi4 with 8G RAM and a class 10 A1 microSD card:
+
+	base	   default	   growing
+	var	var	diff	var	diff
+small	1.09%	1.69%	+0.5%	2.14%	-0.2%
+big	0.03%	0.28%	-0.5%	0.03%	-0.1%
+4way	5.15%	2.39%	+0.2%	0.66%	<0.1%
+
+Third, on a CoCo VM. This was a bigger system, so I also added a 24-thread
+parallel I/O test:
+
+	base	   default	   growing
+	var	var	diff	var	diff
+small	2.41%	6.02%	+1.1%	10.33%	+6.7%
+big	9.20%	2.81%	-0.6%	16.84%	-0.2%
+4way	0.86%	2.66%	-0.1%	 2.22%	-4.9%
+24way	3.19%	6.19%	+4.4%	 4.08%	-5.9%
+
+Note the increased variance of the CoCo VM, although the host was not
+otherwise loaded. These are caused by the first run, which includes the
+overhead of allocating additional bounce buffers and sharing them with the
+hypervisor. The system was not rebooted between successive runs.
+
+Parallel tests suffer from a reduced number of areas in the dynamically
+allocated memory pools. This can be improved by allocating a larger pool
+from CMA (not implemented in this series yet).
+
+I have no good explanation for the increase in performance of the
+24-thread I/O test with the default (non-growing) memory pool. Although the
+difference is within variance, it seems to be real. The average bandwidth
+is consistently above that of the unpatched kernel.
+
+To sum it up:
+
+- All workloads benefit from reduced memory footprint.
+- No performance regressions have been observed with the default size of
+  the software IO TLB.
+- Most workloads retain their former performance even if the software IO
+  TLB grows at run time.
+
+Changelog
+=========
+
+Changes from v6:
+- Rebase on dma-mapping for-next tree. Drop changes to pci-dma.c.
+
+Changes from v5:
+- Re-introduce is_swiotlb_allocated(), now again required because of commit
+  b035f5a6d852 ("mm: slab: reduce the kmalloc() minimum alignment if DMA
+  bouncing possible").
+
+Changes from v4:
+- Guard the code with a CONFIG_SWIOTLB_DYNAMIC option
+- Remove is_swiotlb_allocated(); instead, prevent repeated initialization
+  in swiotlb_init_late()
+- Rename default_swiotlb_start() to default_swiotlb_base()
+- Embed the default struct io_tlb_pool into struct io_tlb_mem
+- Do not re-introduce struct io_tlb_pool.used
+
+Changes from v3:
+- Provide swiotlb_is_allocated() instead of extending swiotlb_is_active().
+- Do not grow SWIOTLB if its address has been queried (affects Octeon).
+- Do not grow SWIOTLB if a remap function is used (affects Xen PV).
+- Use dma_mask instead of coherent_dma_mask.
+- Replace complex ternary operators with if-else blocks.
+
+Changes from v2:
+- Complete rewrite using dynamically allocated memory pools rather
+  than a list of individual buffers
+- Depend on other SWIOTLB fixes (already sent)
+- Fix Xen and MIPS Octeon builds
+
+Changes from RFC:
+- Track dynamic buffers per device instead of per swiotlb
+- Use a linked list instead of a maple tree
+- Move initialization of swiotlb fields of struct device to a
+  helper function
+- Rename __lookup_dyn_slot() to lookup_dyn_slot_locked()
+- Introduce per-device flag if dynamic buffers are in use
+- Add one more user of DMA_ATTR_MAY_SLEEP
+- Add kernel-doc comments for new (and some old) code
+- Properly escape '*' in dma-attributes.rst
+
+Petr Tesarik (9):
+  swiotlb: bail out of swiotlb_init_late() if swiotlb is already
+    allocated
+  swiotlb: make io_tlb_default_mem local to swiotlb.c
+  swiotlb: add documentation and rename swiotlb_do_find_slots()
+  swiotlb: separate memory pool data from other allocator data
+  swiotlb: add a flag whether SWIOTLB is allowed to grow
+  swiotlb: if swiotlb is full, fall back to a transient memory pool
+  swiotlb: determine potential physical address limit
+  swiotlb: allocate a new memory pool when existing pools are full
+  swiotlb: search the software IO TLB only if the device makes use of it
+
+ arch/arm/xen/mm.c           |  10 +-
+ arch/mips/pci/pci-octeon.c  |   2 +-
+ drivers/base/core.c         |   4 +-
+ drivers/xen/swiotlb-xen.c   |   2 +-
+ include/linux/device.h      |  10 +-
+ include/linux/dma-mapping.h |   2 +
+ include/linux/swiotlb.h     | 131 +++++--
+ kernel/dma/Kconfig          |  13 +
+ kernel/dma/direct.c         |   2 +-
+ kernel/dma/swiotlb.c        | 683 ++++++++++++++++++++++++++++++++----
+ mm/slab_common.c            |   5 +-
+ 11 files changed, 764 insertions(+), 100 deletions(-)
 
 -- 
-Regards,
+2.25.1
 
-Jack Zhu
