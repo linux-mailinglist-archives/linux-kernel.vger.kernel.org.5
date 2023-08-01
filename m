@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 417AA76B807
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590F076B81B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 16:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232087AbjHAOxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 10:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35254 "EHLO
+        id S234379AbjHAO5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 10:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233467AbjHAOw6 (ORCPT
+        with ESMTP id S234075AbjHAO5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 10:52:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266D9120
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 07:52:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id AE301615D8
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:52:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D196CC433C8;
-        Tue,  1 Aug 2023 14:52:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690901576;
-        bh=k+zUUbInWgAaGFlhY5b3G3Dz/8tZF2FuJ6EEu0+1bB4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rwbA/Cn3f2qq4GX+8rl8pY/k/Z0al6XHkWCgB1fT30hoL9V2zqvrxdwLIm+JUf/Oe
-         3loHcMsOTRbu01yWY0W+C+vLIpqmpLEAqpYdvpz9vorm1lFuHe1xGIB+lfZqtpwRev
-         pHjqqeZ0iujs9neWkhJfIc1OJ5+B8lV3ku/31CK/oISOvSy5lPs1e2Ti3LJRlKQIan
-         zFcMPMxc2juY2qHP8jm2qTzhTqHqG1dAFC339/jZ3orz1PuvCmncQtYB0SsLD0hT8W
-         0laoATDVaUJJoWIncMyMO7ViPU3W7iFqZsoqFLDufznd4zOjbhT90bZMLttgREtPMu
-         Tdsb54ltZoEDA==
-Date:   Tue, 1 Aug 2023 15:52:50 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        Sami Mujawar <sami.mujawar@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 0/4] coresight: trbe: Enable ACPI based devices
-Message-ID: <20230801145249.GG26253@willie-the-truck>
-References: <20230801094052.750416-1-anshuman.khandual@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801094052.750416-1-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Tue, 1 Aug 2023 10:57:00 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E7212B;
+        Tue,  1 Aug 2023 07:56:58 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id C708A3200973;
+        Tue,  1 Aug 2023 10:56:54 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 01 Aug 2023 10:56:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1690901814; x=1690988214; bh=m5
+        w/FN7NhnyKPGl0XOXnEVsMCY0ctzZc2rLRkLgXhMA=; b=JOsdkIsi/b9dWNyLQ8
+        X1KkXWDDH/ZnpY8Uh33eF0SRVcZBVaPVYVawQXfYeerTRMeNJ1m86GJYSSwsemaR
+        Jq89DQ6yKa2d5ZlvdNDoimGqsfsm/MBbLGuu5srkfM9YdtVgpMNuTxvfwwXL/ypL
+        Hfw8Yk/BqJkvvUGRDrQYw2017BymUbKwYU6CmkC4vg1t8dde7M/HFZj+e6+xAu/r
+        nIlQstCQu4zTqjlUQqpgNhUp/u7MO8yRt+OAxR3BJCiTV6XemFQ89+pNF6VDyVGs
+        OUwZg/wq0oTyQGUqaqUlUE5t5Mh9Pk4q2X6VskUbJuElGkpghmNL9tIR0H0b6tS/
+        WqJg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690901814; x=1690988214; bh=m5w/FN7NhnyKP
+        Gl0XOXnEVsMCY0ctzZc2rLRkLgXhMA=; b=jmu5Md0n9CSOV7Z5moH2KKyqndzH0
+        393L8FYxxZfDSYejFJQ36QLi2KRqptTKu6pxjC+7D/1oTastlUd0+sOl6rbvG3Wx
+        xnotnk0kRZuJeSjC9N8hGfxKLG5E61GYdOOEcYZwqK5rmISuG+SEYydQrb7I0ACQ
+        oMmLFDvVrN2QewFxApMmoKTqhbWvQnJLhtWIKcdh1nmt0PiTbpeSXGrzbiOrYUWK
+        DUdlNgJeGuwOZ4XLPoL/I17vxko+aHM7maMDmGwmwLwd9E6br3FXo5Wpj/p5v42F
+        /GZjkp6Ak2jL//x2zeDVmOiyT9wgU/5QpEXZcrfBzZ6+gfBv16WOCQqmw==
+X-ME-Sender: <xms:NR3JZI-gI3pBaM71ZJ4qYfQbhyvRqP7UbNGrRkUfyLR0gnruA9iDzg>
+    <xme:NR3JZAvzNVFrAgE9jZzsU4gxPGpKi_ygVpDZA51jBmzPaljaJNLxh2mBBKHMGU9Q5
+    5RGWIxK0LtKUAy5m2M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigdektdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpefffefgheejtdejhfefuefggfffudehiefgffekheekffeghfdvkedthfdvjeej
+    ffenucffohhmrghinheplhhinhgrrhhordhorhhgpdhkvghrnhgvlhdrohhrghdpghhoug
+    gsohhlthdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:NR3JZOC12JuP5WwXVgaTbK_1WwJvSyBVYbhPf4917yKzAhNfOTKU0Q>
+    <xmx:NR3JZIccED47NrbQTkOocpqJM-RXWMKnUjtX0g09BprR2VZjtl76Lw>
+    <xmx:NR3JZNMzNYGrJJr4Z-eve96Z1NJhWxTIqd9PXt_vQh7WRHQqY8Ko-g>
+    <xmx:Nh3JZA2XYrfAK00ILGpupCAoHYan74uFcrCpBxbN4HixGlQBbWO7_Q>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id CAD6EB60089; Tue,  1 Aug 2023 10:56:53 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+Mime-Version: 1.0
+Message-Id: <227327a3-399a-4a9f-a775-e9627656b5a1@app.fastmail.com>
+In-Reply-To: <CA+G9fYsYifn9ywPc8KqYHwDDSTRQGOgf_T58Gpt9CYDBs8u+SQ@mail.gmail.com>
+References: <CA+G9fYur8UJoUyTLJFVEJPh-15TJ7kbdD2q8xVz8a3fLjkxxVw@mail.gmail.com>
+ <a660adba-b73b-1c02-f642-c287bb4c72fc@acm.org>
+ <CA+G9fYsYifn9ywPc8KqYHwDDSTRQGOgf_T58Gpt9CYDBs8u+SQ@mail.gmail.com>
+Date:   Tue, 01 Aug 2023 16:56:33 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Naresh Kamboju" <naresh.kamboju@linaro.org>,
+        "Bart Van Assche" <bvanassche@acm.org>
+Cc:     "open list" <linux-kernel@vger.kernel.org>,
+        linux-scsi@vger.kernel.org,
+        linux-next <linux-next@vger.kernel.org>,
+        "Avri Altman" <avri.altman@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        "Anders Roxell" <anders.roxell@linaro.org>
+Subject: Re: next: arm64: gcc-8-defconfig: ufshcd.c:10629:2:
+ /builds/linux/include/linux/compiler_types.h:397:38: error: call to
+ '__compiletime_assert_553' declared with attribute error: BUILD_BUG_ON
+ failed:
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,42 +95,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 03:10:48PM +0530, Anshuman Khandual wrote:
-> This series enables detection of ACPI based TRBE devices via a stand alone
-> purpose built representative platform device. But as a pre-requisite this
-> changes coresight_platform_data structure assignment for the TRBE device.
-> 
-> This series is based on v6.5-rc4 kernel, is also dependent on the following
-> EDK2 changes posted earlier by Sami.
-> 
-> https://edk2.groups.io/g/devel/message/107239
-> https://edk2.groups.io/g/devel/message/107241
-> 
-> Changes in V2:
-> 
-> - Refactored arm_spe_acpi_register_device() in a separate patch
-> - Renamed trbe_acpi_resources as trbe_resources
-> - Renamed trbe_acpi_dev as trbe_dev
-> 
-> Changes in V1:
-> 
-> https://lore.kernel.org/all/20230728112733.359620-1-anshuman.khandual@arm.com/
-> 
-> Cc: Sami Mujawar <sami.mujawar@arm.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: James Clark <james.clark@arm.com>
-> Cc: coresight@lists.linaro.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
+On Tue, Aug 1, 2023, at 16:23, Naresh Kamboju wrote:
+> On Tue, 1 Aug 2023 at 18:53, Bart Van Assche <bvanassche@acm.org> wrote:
 
-FYI: if you pass '--cc-cover' to git send-email, it will CC all these
-folks on the series, which I think is better when you're reviewing stuff
-(I didn't receive patches 3 and 4).
+>> >   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/log
+>> >   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/details/
+>> >   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/history/
+>>
+>> I can't reproduce this build error with a gcc-12 arm64 cross-compiler. How
+>> important is gcc-8 for the ARM community?
+>
+> You are right,
+> gcc-12 build pass.
+> gcc-8 build failed.
 
-Will
+I can also reproduce this with gcc-9.5.0 from
+https://mirrors.edge.kernel.org/pub/tools/crosstool/ but
+not with 10.5.0 or clang.
+
+I get the same results for x86 with gcc-9.5.0.
+
+See https://godbolt.org/z/GjGrW9znc for a partially reduced testcase.
+
+      Arnd
