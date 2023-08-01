@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8B676B93C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A807F76B940
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbjHAP6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:58:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39834 "EHLO
+        id S234930AbjHAP7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbjHAP6v (ORCPT
+        with ESMTP id S234368AbjHAP7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:58:51 -0400
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696A4BF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:58:50 -0700 (PDT)
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371C55JE004120;
-        Tue, 1 Aug 2023 15:58:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
- bh=wHJkRC/1rxNknMvwCpmNDyxOiRsBvdAnVRARJspLqVo=;
- b=B8f0a7CRI07WhEgXZctfgeudevJgQoduoWVC0Meb0r9gmxuPPfKYm4X2vd8TYYPFqTKm
- IUX3nX8jFjF11iqhvirSNqDxRMyefB4Zk16jv4XXKtsErU3c6iexYIraO4XO6az1SLgo
- v7bKc1Ub4l4jaxplvnHZErtuOIKcaasKyIKMh8Dhyjy8xBo6C11d9yeKUwIsKCyTW1pp
- u8iVoaWlZVHWt56dPD0leUrAHhCU8pLtjTTcnzXzYJQvOK2nZDlHTplWtAXnPV3uszIo
- SJo31eEsLVNRQX9qLcfj0sxcVKm76K5I52zCPzAuPCU86t6Yio69nyTOO2pqr+m7sjVl Hg== 
-Received: from p1lg14878.it.hpe.com ([16.230.97.204])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3s6wnfckc9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 15:58:15 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14878.it.hpe.com (Postfix) with ESMTPS id 6ECBB147A3;
-        Tue,  1 Aug 2023 15:58:14 +0000 (UTC)
-Received: from stormcage.eag.rdlabs.hpecorp.net (unknown [16.231.227.36])
-        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id 05BBC80BA2E;
-        Tue,  1 Aug 2023 15:58:14 +0000 (UTC)
-Received: by stormcage.eag.rdlabs.hpecorp.net (Postfix, from userid 605001)
-        id 982F530393F; Tue,  1 Aug 2023 10:58:13 -0500 (CDT)
-From:   Justin Ernst <justin.ernst@hpe.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Andy Shevchenko <andy@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Tue, 1 Aug 2023 11:59:09 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A0B1734
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:59:06 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686e29b058cso4231886b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 08:59:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690905545; x=1691510345;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=r8o0I7bFXQoXFBsz+yibAQciwoQ0SJuiPD2PCWU7Otw=;
+        b=Uub44S7G5XTNBy2dGdavccZncFCbbvHkhOkp4BaauD/bbItRPLE7kciaVVN0dK3r2S
+         /LL5WFJ21zlsVCeBC5aAIMLpy6KQoUSgd11wqkYQloJwtGuNelKHQjwbAkCVNXu2v5cd
+         /c94tYTpFGQ3yqEL90uMQlweLNtRqd6uGltFaRuBouUO4Zyr//2C86CzodU1Lk72PlgZ
+         ZjTXOQC6K0+/hOnaKa5H2pYF9JUBB/cubcywFEaqKA8nlAZwUPqPHhVg6QY6KgBQMnjo
+         Z8IKnBAeo+LngrtM8JO8/MydM4epst3k/8+OYBit4zBMmN18YCYm83hszSRIrsU5wq75
+         ci/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690905545; x=1691510345;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=r8o0I7bFXQoXFBsz+yibAQciwoQ0SJuiPD2PCWU7Otw=;
+        b=U99HlY3QhBY98912TKqB5yhXunXchldt/zfifAANTsi6RyZ1b8l5cB3k9eVuCTTGeK
+         wwiAQKr6UnRwDT3qbEBRGTpP/3BBuhEbRh1TK1bKpOPH1h0rlKmbbuvAARgO90ksvS92
+         AeDUYq05bCcm9CJkSbmvfsg66hGxXpC4+Ij0+BXoogQK3Ih/wfHf3UI4AaWWD48yJStW
+         533qwcAp46the0D0j9iA7KarzHqtiVngAtmIUBqzxLsAtNuEe1XGVcWV/9KF4lTMK/RJ
+         gljoQfRCoS7nzg3UwnCgzaZ08qjvWjS56F2lYsT08YePHwI9VHzHRXy8UvSbZ3uWXXQx
+         FOVg==
+X-Gm-Message-State: ABy/qLbyIxD7wEXwUjBdo4KwgcDCoz/MCvLjBXUWt1HxJxEkZpML5pNk
+        iI3I0qDfXQIaTF9K8IemnVc8m3sAJCYDmzE5
+X-Google-Smtp-Source: APBJJlEtXowFwkc4FOkij4g4rGFxTUIlYcIn941XhpISwMvMx+UpJ6LXLW9pVb9qsntfJieSX+qvlg==
+X-Received: by 2002:a05:6a21:6da1:b0:13d:697a:c31c with SMTP id wl33-20020a056a216da100b0013d697ac31cmr9136804pzb.27.1690905545276;
+        Tue, 01 Aug 2023 08:59:05 -0700 (PDT)
+Received: from manas-VirtualBox.iitr.ac.in ([103.37.201.177])
+        by smtp.gmail.com with ESMTPSA id x25-20020a056a00271900b00653fe2d527esm9520998pfv.32.2023.08.01.08.59.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 08:59:04 -0700 (PDT)
+From:   Manas Ghandat <ghandatmanas@gmail.com>
+To:     salah.triki@gmail.com, luisbg@kernel.org
+Cc:     Manas Ghandat <ghandatmanas@gmail.com>,
         linux-kernel@vger.kernel.org,
-        Joel Granados <j.granados@samsung.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Kyle Meyer <kyle.meyer@hpe.com>,
-        Justin Ernst <justin.ernst@hpe.com>
-Subject: [PATCH] Update HPE Superdome Flex Maintainers
-Date:   Tue,  1 Aug 2023 10:57:56 -0500
-Message-Id: <20230801155756.22308-1-justin.ernst@hpe.com>
-X-Mailer: git-send-email 2.35.3
+        Linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+fc26c366038b54261e53@syzkaller.appspotmail.com
+Subject: [PATCH RESEND] fs/befs: fix shift-out-of-bounds in befs_check_sb
+Date:   Tue,  1 Aug 2023 21:28:23 +0530
+Message-Id: <20230801155823.206985-1-ghandatmanas@gmail.com>
+X-Mailer: git-send-email 2.37.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: a6dRsFvQrJv_fnzqWi2SEo7oqltqL8gi
-X-Proofpoint-ORIG-GUID: a6dRsFvQrJv_fnzqWi2SEo7oqltqL8gi
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_13,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- mlxscore=0 bulkscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0
- phishscore=0 impostorscore=0 priorityscore=1501 mlxlogscore=999
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308010144
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,37 +71,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mike Travis has retired. His expertise will be sorely missed.
-Remove Mike's entry under SGI XP/XPC/XPNET DRIVER.
-Replace Mike's entry under UV HPE SUPERDOME FLEX.
+The consistency check for the block_size by using the block_shift caused
+integer overflow. Thus a max limit to the block_shift was defined named
+BEFS_MAX_BLOCK_SHIFT in befs.h. Also check for the block_shift was added
+so that overflow does not occur.
 
-Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
+Reported-by: syzbot+fc26c366038b54261e53@syzkaller.appspotmail.com
+
+Signed-off-by: Manas Ghandat <ghandatmanas@gmail.com>
 ---
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/befs/befs.h  |  2 +-
+ fs/befs/super.c | 11 +++++++++++
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 53b7ca804465..db3dce00a274 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -19285,7 +19285,6 @@ F:	drivers/misc/sgi-gru/
- SGI XP/XPC/XPNET DRIVER
- M:	Robin Holt <robinmholt@gmail.com>
- M:	Steve Wahl <steve.wahl@hpe.com>
--R:	Mike Travis <mike.travis@hpe.com>
- S:	Maintained
- F:	drivers/misc/sgi-xp/
+diff --git a/fs/befs/befs.h b/fs/befs/befs.h
+index 7cd47245694d..5490024adb33 100644
+--- a/fs/befs/befs.h
++++ b/fs/befs/befs.h
+@@ -13,7 +13,7 @@
  
-@@ -23144,7 +23143,8 @@ F:	arch/x86/platform
+ /* used in debug.c */
+ #define BEFS_VERSION "0.9.3"
+-
++#define BEFS_MAX_BLOCK_SHIFT 31
  
- X86 PLATFORM UV HPE SUPERDOME FLEX
- M:	Steve Wahl <steve.wahl@hpe.com>
--R:	Mike Travis <mike.travis@hpe.com>
-+R:	Justin Ernst <justin.ernst@hpe.com>
-+R:	Kyle Meyer <kyle.meyer@hpe.com>
- R:	Dimitri Sivanich <dimitri.sivanich@hpe.com>
- R:	Russ Anderson <russ.anderson@hpe.com>
- S:	Supported
+ typedef u64 befs_blocknr_t;
+ /*
+diff --git a/fs/befs/super.c b/fs/befs/super.c
+index 7c50025c99d8..f2aeb2ed6e77 100644
+--- a/fs/befs/super.c
++++ b/fs/befs/super.c
+@@ -88,6 +88,17 @@ befs_check_sb(struct super_block *sb)
+ 		return BEFS_ERR;
+ 	}
+ 
++	/*
++	 * block_shift check added so that overflow does not
++	 * occur during the block_size check
++	 */
++
++	if (befs_sb->block_shift > BEFS_MAX_BLOCK_SHIFT) {
++		befs_error(sb, "block_size too large. "
++			   "Corruption likely.");
++		return BEFS_ERR;
++	}
++
+ 	/*
+ 	 * block_shift and block_size encode the same information
+ 	 * in different ways as a consistency check.
 -- 
-2.35.3
+2.37.2
 
