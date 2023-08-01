@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F3F76A6E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F396E76A6E5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbjHACUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56782 "EHLO
+        id S232052AbjHACUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 22:20:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231738AbjHACUF (ORCPT
+        with ESMTP id S229437AbjHACUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:20:05 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993F71BF0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:20:04 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RFJh45z2lzrRx1;
-        Tue,  1 Aug 2023 10:19:00 +0800 (CST)
+        Mon, 31 Jul 2023 22:20:06 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FD31BF1
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:20:05 -0700 (PDT)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RFJgH72XqzVjpg;
+        Tue,  1 Aug 2023 10:18:19 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -33,11 +33,10 @@ To:     Andrew Morton <akpm@linux-foundation.org>,
         <kaleshsingh@google.com>, <linux-mm@kvack.org>
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <21cnbao@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 1/2] mm: hugetlb: use flush_hugetlb_tlb_range() in move_hugetlb_page_tables()
-Date:   Tue, 1 Aug 2023 10:31:44 +0800
-Message-ID: <20230801023145.17026-2-wangkefeng.wang@huawei.com>
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v2 2/2] arm64: hugetlb: enable __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
+Date:   Tue, 1 Aug 2023 10:31:45 +0800
+Message-ID: <20230801023145.17026-3-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230801023145.17026-1-wangkefeng.wang@huawei.com>
 References: <20230801023145.17026-1-wangkefeng.wang@huawei.com>
@@ -58,34 +57,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Archs may need to do special things when flushing hugepage tlb,
-so use the more applicable flush_hugetlb_tlb_range() instead of
-flush_tlb_range().
+It is better to use huge page size instead of PAGE_SIZE
+for stride when flush hugepage, which reduces the loop
+in __flush_tlb_range().
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-Acked-by: Muchun Song <songmuchun@bytedance.com>
-Fixes: 550a7d60bd5e ("mm, hugepages: add mremap() support for hugepage backed vma")
+Let's support arch's flush_hugetlb_tlb_range(), which is
+used in hugetlb_unshare_all_pmds(), move_hugetlb_page_tables()
+and hugetlb_change_protection() for now.
+
+Note, for hugepages based on contiguous bit, it has to be
+invalidated individually since the contiguous PTE bit is
+just a hint, the hardware may or may not take it into account.
+
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- mm/hugetlb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/include/asm/hugetlb.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 64a3239b6407..ac876bfba340 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5281,9 +5281,9 @@ int move_hugetlb_page_tables(struct vm_area_struct *vma,
- 	}
+diff --git a/arch/arm64/include/asm/hugetlb.h b/arch/arm64/include/asm/hugetlb.h
+index 6a4a1ab8eb23..e5c2e3dd9cf0 100644
+--- a/arch/arm64/include/asm/hugetlb.h
++++ b/arch/arm64/include/asm/hugetlb.h
+@@ -60,4 +60,16 @@ extern void huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
  
- 	if (shared_pmd)
--		flush_tlb_range(vma, range.start, range.end);
-+		flush_hugetlb_tlb_range(vma, range.start, range.end);
- 	else
--		flush_tlb_range(vma, old_end - len, old_end);
-+		flush_hugetlb_tlb_range(vma, old_end - len, old_end);
- 	mmu_notifier_invalidate_range_end(&range);
- 	i_mmap_unlock_write(mapping);
- 	hugetlb_vma_unlock_write(vma);
+ #include <asm-generic/hugetlb.h>
+ 
++#define __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
++static inline void flush_hugetlb_tlb_range(struct vm_area_struct *vma,
++					   unsigned long start,
++					   unsigned long end)
++{
++	unsigned long stride = huge_page_size(hstate_vma(vma));
++
++	if (stride != PMD_SIZE && stride != PUD_SIZE)
++		stride = PAGE_SIZE;
++	__flush_tlb_range(vma, start, end, stride, false, 0);
++}
++
+ #endif /* __ASM_HUGETLB_H */
 -- 
 2.41.0
 
