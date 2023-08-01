@@ -2,92 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EAC076B56F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976F876B571
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbjHANFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
+        id S232839AbjHANFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbjHANFa (ORCPT
+        with ESMTP id S232824AbjHANFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:05:30 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3581EE6;
-        Tue,  1 Aug 2023 06:05:28 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BA5291EC00F8;
-        Tue,  1 Aug 2023 15:05:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1690895126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=huhgM4QNcUOJXOMs6XC5tH8KvB31K03DmazQQB0Tyo8=;
-        b=eRAkwh1trGobHEOSOlQqpdLyvw0MBHhJYhg/4WvhYzrqiEJCRq0FVuYsDRlBuASzwLBVun
-        S/iZarGPZfnuM+cUX64IKGTHlKPpPUEN+D4m6ZNcNMsHib/Ggs3tIAREw6pl/UZfgYjoD/
-        5BpDje0pn/w/H5TpDsAAQBbSg/GhpSQ=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 2-ivCAcxjB2i; Tue,  1 Aug 2023 13:05:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1690895124; bh=huhgM4QNcUOJXOMs6XC5tH8KvB31K03DmazQQB0Tyo8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jGU75Dicggb51TMnod649pxf7dWVhB5vqjsPrpfEKyQA0xh+LOUsE0RVBuadBSf96
-         tupG2LhG96VHAOfkw2PVGD7kkaeRGcusmxReDi+FVEXC9UXWF9fWpLF2NmaJoE8q3F
-         SIeBg3+aexD7nURcOUGLW24/oZDeSDKOVj8RQPW+5K5Jyf1HIUz7x3KtAKabQRkoLZ
-         8o/MxBkzH8Z5NUs2WzSH5q2WL3eQwf33P+iyZlI8d5kd4ugWFISCzGGp3Ryeg3Nvvr
-         eeCFWElKTQgnqYYt6WJNiBhX7+bS4hrQ32HfpBwRWKEI3O8c5osxO/XKDS69fJwRJU
-         /Wj3pJezhOZInVaw12gA5QeqOWg77y/mwCP6vt56ugH0ZXQuPSyyaNtgffHCo0RAwK
-         +lvJhVYIWciIZDPPwuqd7FdyeHwONcFdt0yfhw7XE7DS7QarOdatz5ANe3eafVztOG
-         oSK1tK4oe8bt6e1biNZwGytdZt/BCU1mP8woUZYKyCplQD7FmVjonAiyNqRByFDTT9
-         Rkc9+k+N4TftpL2uOyrFp2mMkuHYqny8ZLiNrYd83f7zF9K+zMLpO60TLON2pF4Lzw
-         O7DqvE6xCtLtihab7SsTKJm6UsmoCFUILIiWqRWymTZZvUilNVhM0MfIqnPNeTZwLv
-         qCpfdqigwX+WNmrWvNC5NV5A=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F2FA540E0184;
-        Tue,  1 Aug 2023 13:05:04 +0000 (UTC)
-Date:   Tue, 1 Aug 2023 15:04:59 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Peter Jones <pjones@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v7 14/22] x86/decompressor: Merge trampoline cleanup with
- switching code
-Message-ID: <20230801130459.GHZMkC+0Yu8tHldm8a@fat_crate.local>
-References: <20230728090916.1538550-1-ardb@kernel.org>
- <20230728090916.1538550-15-ardb@kernel.org>
- <20230801120827.GFZMj1uzNMDs2gIi1f@fat_crate.local>
- <CAMj1kXF+=W_oe7MS87rWdJ_z555iz2A8iR42fJ1mwZ+bgCgjmw@mail.gmail.com>
- <20230801124054.GGZMj9VrrB+4a4NiZs@fat_crate.local>
- <CAMj1kXFGN6DAhWk647=jHW5wBMP0y4p9wzPBz3R7h=Gh1v6VEA@mail.gmail.com>
+        Tue, 1 Aug 2023 09:05:44 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86E21738
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 06:05:42 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1bb7b8390e8so34236025ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 06:05:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1690895142; x=1691499942;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kNAKszskixaa3hgdlCtn/3Bo9V9ma0+ARvrVT7ws8lk=;
+        b=ZCuzNn6APf7Wf5WKyrW32GNHO/80jBoq1pCrGN0t5E5cwIUsRt+Tn/GES+T/KnDh4A
+         tLt6wMhodhapCC063cH2e2hxFD7fuxIe89FyLyk+MflUnbkZo8wAf0AgiYflVFpkd6Aj
+         CmmBUe/FhROpxJgkVL/zskys1dhqdnbpSPxtQc3cTvda5v/yzQ3tAZlzNg7/DPyQmQ/2
+         sTGb8bcyYVIKLSZ6XRVJ+gVxZYwqnq8oYBn5fJPqdJe0e0iEc+hAOhC4VH3eP9MOVmjt
+         nT+pq2XgFtqGgZIfqTE6OWa4Z+V0satqrO3PoJ/gpvEvpAdOpMA0RxY6pQQhp7zoD/yF
+         JWgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690895142; x=1691499942;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kNAKszskixaa3hgdlCtn/3Bo9V9ma0+ARvrVT7ws8lk=;
+        b=FoKt2RL1OiArXrNLyLF5pqfuJzeInhleClGUkDujrCprYHe2WV9bcyO0aCQfxhGJrm
+         ltCYNH51Ps4WgRHBIVs+XWNY4/afJcF6zTottn9zVbq0TbvTGeWO/OMapnMrOAm/OGul
+         mARaWt6oog4TCD520JSCUdtSVqs8/wzYASxNS0lhVFavwweCMPG1Nd/7ZxwcB0vguJkk
+         M6/R7NzX//viHjDjRHrIVniw2vGMdWdYCT9fKZmQ9SwuilEpPSqU0U2mAZDPBGvKNA/g
+         iPSkB+0GMq8hSWcqGHAD1U0DoJPhUXYjvR+9h9TweswErPaMvLGu43xOj5Zu/TIpnLNF
+         UAIQ==
+X-Gm-Message-State: ABy/qLazaBaXqLXUWfu2nLEiOtrlUg5kKGzP6l00mWVbzGLci7UhQd7h
+        BFDqkEjeEqEhAMEpu3t301bqMA==
+X-Google-Smtp-Source: APBJJlFjj/UQBxDKWUdx/frDQYBFVDCh2370GVmNUaRC5O6568WBwiYbCtNgfs0MZwMCvU9A3D5z4A==
+X-Received: by 2002:a17:902:bd48:b0:1b5:4679:568f with SMTP id b8-20020a170902bd4800b001b54679568fmr10179994plx.45.1690895142060;
+        Tue, 01 Aug 2023 06:05:42 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-25-194.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.25.194])
+        by smtp.gmail.com with ESMTPSA id p16-20020a170902e75000b001b9fef7f454sm10388131plf.73.2023.08.01.06.05.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 06:05:41 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qQp4F-002ma2-5I;
+        Tue, 01 Aug 2023 10:05:39 -0300
+Date:   Tue, 1 Aug 2023 10:05:39 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        liubo <liubo254@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
+ fallout
+Message-ID: <ZMkDIxFQQljY8Ah1@ziepe.ca>
+References: <20230727212845.135673-1-david@redhat.com>
+ <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
+ <412bb30f-0417-802c-3fc4-a4e9d5891c5d@redhat.com>
+ <66e26ad5-982e-fe2a-e4cd-de0e552da0ca@redhat.com>
+ <ZMfc9+/44kViqjeN@x1n>
+ <a3349cdb-f76f-eb87-4629-9ccba9f435a1@redhat.com>
+ <CAHk-=wiREarX5MQx9AppxPzV6jXCCQRs5KVKgHoGYwATRL6nPg@mail.gmail.com>
+ <a453d403-fc96-e4a0-71ee-c61d527e70da@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMj1kXFGN6DAhWk647=jHW5wBMP0y4p9wzPBz3R7h=Gh1v6VEA@mail.gmail.com>
+In-Reply-To: <a453d403-fc96-e4a0-71ee-c61d527e70da@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -98,18 +90,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 02:46:16PM +0200, Ard Biesheuvel wrote:
-> but GCC 13 seems to be fine with it.
+On Mon, Jul 31, 2023 at 09:00:06PM +0200, David Hildenbrand wrote:
 
-Ah, ok, yeah, it bombs here too with gcc-10.
+> Their logic is "if it's directly in the page table, create, hand it over. If
+> not, please go the slow path.". In many cases user space just touched these
+> pages so they are very likely in the page table.
 
-So either change the assignments, please, or explain in a comment above
-it why exactly is this needed.
+I think it has become pretty confusing, overall.
 
-Thx.
+In my mind 'pin_user_pages_fast()' should be functionally the same as
+'pin_user_pages_unlocked()'.
 
--- 
-Regards/Gruss,
-    Boris.
+Places call fast if they have no idea about what is under memory,
+otherwise they call unlocked if you are pretty sure something is there
+that needs the mmap lock to resolve.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+If we need different behaviors a GUP flag makes the most sense.
+
+> Always honoring NUMA faults here does not sound like the improvement we
+> wanted to have :) ... we actually *don't* want to honor NUMA faults here.
+
+Yeah, I think that is right. We should not really use the CPU running
+PUP as any input to a NUMA algorithm.. If we want NUMA'ness then the
+PUP user should specify the affinity that makes sense.
+
+Jason
