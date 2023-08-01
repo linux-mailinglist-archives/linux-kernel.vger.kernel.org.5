@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E67AD76AB46
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D115B76AB4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbjHAIpS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 04:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
+        id S230124AbjHAItp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 04:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbjHAIpQ (ORCPT
+        with ESMTP id S229459AbjHAItn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:45:16 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DEC10E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:45:15 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-202-eBnQEioCP9Cm7QIsQJ1Wuw-1; Tue, 01 Aug 2023 09:45:12 +0100
-X-MC-Unique: eBnQEioCP9Cm7QIsQJ1Wuw-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 1 Aug
- 2023 09:45:10 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 1 Aug 2023 09:45:10 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'kernel test robot' <lkp@intel.com>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-        'Andrew Morton' <akpm@linux-foundation.org>,
-        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
-        'Christoph Hellwig' <hch@infradead.org>,
-        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
-CC:     "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "Linux Memory Management List" <linux-mm@kvack.org>
-Subject: RE: [PATCH next v2 2/5] minmax: Allow min()/max()/clamp() if the
- arguments have the same signedness.
-Thread-Topic: [PATCH next v2 2/5] minmax: Allow min()/max()/clamp() if the
- arguments have the same signedness.
-Thread-Index: AdnBYvtzc0TxoNEXQSCZpxDmi1SwuQCjLWkAABi9BYA=
-Date:   Tue, 1 Aug 2023 08:45:10 +0000
-Message-ID: <a576676d66284659bc91afe93d2b0159@AcuMS.aculab.com>
-References: <bf92800b0c5445e2b2ca8c88e1f5e90f@AcuMS.aculab.com>
- <202308010559.SEtfkzQU-lkp@intel.com>
-In-Reply-To: <202308010559.SEtfkzQU-lkp@intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 1 Aug 2023 04:49:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCD810FA;
+        Tue,  1 Aug 2023 01:49:38 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690879770;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7y14opVxFYlYAWiVX/5Sl0k5U4rJuCot7ooRCfUHosM=;
+        b=xSBCKEGpQRWVDFGStCmuLyE+mQlyRwhxJqV9v2T37MKHoMSEykElcc5PSp2bfCc80zh6I3
+        CJYu86vWVLBtgt0SEg+cXQbxUMf+lAPAOPB8tRL/WxZ/rnKTuOqMSUxoG5T8HiqRUWwUsq
+        XOdQP1IK8qsMmQdDK2sEzQFyNk8Orh3RRFCsLBCzR5LP1Wo2DutikbelmNpJSuMj+FEnzY
+        bVLnlLkUtFsrK2FRar7mUMj8wT1yjmwKa5sC3MI5NY2ksJIgmGRS2OMo5fHzbMbfxxeJD+
+        acAGZlsc0ZIxwUUamEGP9fpIBddOf0zTm348SFs71JZk5V8e/iQDs/N98s0g1Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690879770;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7y14opVxFYlYAWiVX/5Sl0k5U4rJuCot7ooRCfUHosM=;
+        b=4fCPbVP95QTc1VJ4591RDCaOfcGUPX3GsmIqewJDoQZxV4/B+CQJ5uH/TC5jqQA8Upb2az
+        0q6o3slkGaltNvAg==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     axboe@kernel.dk, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        dvhart@infradead.org, dave@stgolabs.net, andrealmeid@igalia.com,
+        Andrew Morton <akpm@linux-foundation.org>, urezki@gmail.com,
+        hch@infradead.org, lstoakes@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        malteskarupke@web.de
+Subject: Re: [PATCH v1 02/14] futex: Extend the FUTEX2 flags
+In-Reply-To: <20230731225959.GE51835@hirez.programming.kicks-ass.net>
+References: <20230721102237.268073801@infradead.org>
+ <20230721105743.819362688@infradead.org> <87edkonjrk.ffs@tglx>
+ <87mszcm0zw.ffs@tglx>
+ <20230731192012.GA11704@hirez.programming.kicks-ass.net>
+ <87a5vbn5r0.ffs@tglx>
+ <20230731213341.GB51835@hirez.programming.kicks-ass.net>
+ <87y1ivln1v.ffs@tglx>
+ <20230731225959.GE51835@hirez.programming.kicks-ass.net>
+Date:   Tue, 01 Aug 2023 10:49:29 +0200
+Message-ID: <87edknkuzq.ffs@tglx>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot
-> Sent: 31 July 2023 22:44
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on akpm-mm/mm-everything]
-> [also build test ERROR on linus/master crng-random/master v6.5-rc4 next-20230731]
-> [cannot apply to next-20230728]
-...
-> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git
-> f28c006a5895fc0e329fe15fead81e37457cb1d1)
-> reproduce: (https://download.01.org/0day-ci/archive/20230801/202308010559.SEtfkzQU-
-> lkp@intel.com/reproduce)
-> 
-....
-> >> drivers/gpu/drm/drm_modes.c:2474:15: error: static_assert expression is not an integral constant
-> expression
->                    extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
->                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+On Tue, Aug 01 2023 at 00:59, Peter Zijlstra wrote:
+> On Tue, Aug 01, 2023 at 12:43:24AM +0200, Thomas Gleixner wrote:
+> Which then gets people to write garbage like:
+>
+> 	futex_wake(add, 0xFFFF, 1, (union futex_flags){ .flags = FUTEX2_SIZE_U16 | FUTEX2_PRIVATE));
+> or
+> 	futex_wake(add, 0xFFFF, 1, (union futex_flags){ .size = FUTEX2_SIZE_U16, private = true, ));
+>
+> You really want that ?
 
-This is really a bug in clang - fixed in 16.0.0.
-In C (but probably not C++) '(void *)1' should be a compile-time constant.
-Will be fixed in v3 of the patch.
+Well, people write garbage no matter what. So just keep the flags and
+make the names explicit.
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Note to myself: /me shouldn't look at futex patches when tired
