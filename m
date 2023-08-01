@@ -2,78 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5935F76BE08
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DB476BE0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbjHATpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35784 "EHLO
+        id S230212AbjHATqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232557AbjHATph (ORCPT
+        with ESMTP id S231765AbjHATp7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:45:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 758B0B4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:45:36 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qQvIz-0000UE-5A; Tue, 01 Aug 2023 21:45:17 +0200
-Received: from mfe by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1qQvIy-0002VK-3Q; Tue, 01 Aug 2023 21:45:16 +0200
-Date:   Tue, 1 Aug 2023 21:45:16 +0200
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: imx: composite-8m: avoid glitches when set_rate
- would be a no-op
-Message-ID: <20230801194516.h6gxj2lqmmmls62k@pengutronix.de>
-References: <20230801162731.3278396-1-a.fatoum@pengutronix.de>
+        Tue, 1 Aug 2023 15:45:59 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2FA2114;
+        Tue,  1 Aug 2023 12:45:57 -0700 (PDT)
+X-QQ-mid: bizesmtp76t1690919148ty1bac8r
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Wed, 02 Aug 2023 03:45:47 +0800 (CST)
+X-QQ-SSF: 00200000000000E0X000000A0000000
+X-QQ-FEAT: 96VJ2VzXm/qtcW83G+rHd8m5WjuxNQBWKPUUXvOrXDI9B+etoLQfu8ZCvn2fw
+        tYjN7Veqc/sXQ1SSALLcaHQgL+obZbeIdrIFk2aQdIgQAwPMXYO47Ooy3v0yWPpDUybg9b5
+        gbSP0C6G15zDR8IWZ12c8TQppAGXlQiTlyL8lJxbZ2k9aXWuJqUhr/5kyg3QLq7OkzALSiI
+        EXkwSrkiB9TPYkc3UPoZaS+9h01jg0LqY183MwVDopZCh9HsXaGOvcVae4/jA2B/Moq/JZ4
+        IBEjom6N300FTouvb8DksVKEzy4t9JxZ68XvfoNUDDpG6GYw5UGPVlBktbFRIyJU3f0jlk5
+        kpQqRmqaROTQjKkkw0dSYaH+YdqNtIDWk5f0S1bnX6TtnAWwzd7PoM16ZmegmJWtjcoyuhz
+        aLAO4t/cxto=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 5754352481238065369
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     thomas@t-8ch.de
+Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, w@1wt.eu,
+        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Subject: [PATCH v4 09/12] selftests/nolibc: add test support for ppc64le
+Date:   Wed,  2 Aug 2023 03:45:47 +0800
+Message-Id: <9f20dae8ceec373408ab05140710ae1552082982.1690916314.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690916314.git.falcon@tinylab.org>
+References: <cover.1690916314.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801162731.3278396-1-a.fatoum@pengutronix.de>
-User-Agent: NeoMutt/20180716
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-08-01, Ahmad Fatoum wrote:
-> Reconfiguring the clock divider to the exact same value is observed
-> on an i.MX8MN to often cause a short clock pause, probably because
-> the divider restarts counting from the time the register is written.
-> 
-> This issue doesn't show up normally, because the clock framework will
-> take care to not call set_rate when the clock rate is the same.
-> However, when we configure an upstream clock (e.g. an audio_pll), the
-> common code will call set_rate with the newly calculated rate on all
-> children. As the new rate is different, we enter set_rate and compute
-> the same divider values, write them back and cause the glitch (e.g.
-> on a SAI's MCLK).
-> 
-> To avoid the glitch, we skip writing the same value back again.
-> 
-> Fixes: d3ff9728134e ("clk: imx: Add imx composite clock")
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
+ppc64le variant for little endian 64-bit PowerPC, users can pass
+XARCH=ppc64le to test it.
 
-Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
+The powernv machine of qemu-system-ppc64le is used for there is just a
+working powernv_defconfig.
+
+As the document [1] shows:
+
+  PowerNV (as Non-Virtualized) is the “bare metal” platform using the
+  OPAL firmware. It runs Linux on IBM and OpenPOWER systems and it can be
+  used as an hypervisor OS, running KVM guests, or simply as a host OS.
+
+Note, since the VSX support may be disabled in kernel side, to avoid
+"illegal instruction" errors due to missing VSX kernel support, let's
+simply let compiler not generate vector/scalar (VSX) instructions via
+the '-mno-vsx' option.
+
+[1]: https://qemu.readthedocs.io/en/latest/system/ppc/powernv.html
+
+Suggested-by: Willy Tarreau <w@1wt.eu>
+Link: https://lore.kernel.org/lkml/20230722120747.GC17311@1wt.eu/
+Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
+---
+ tools/testing/selftests/nolibc/Makefile | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
+index 29e02b49903a..8ec2ae33fdcd 100644
+--- a/tools/testing/selftests/nolibc/Makefile
++++ b/tools/testing/selftests/nolibc/Makefile
+@@ -38,6 +38,7 @@ XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
+ 
+ # map from user input variants to their kernel supported architectures
+ ARCH_ppc         = powerpc
++ARCH_ppc64le     = powerpc
+ ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
+ 
+ # kernel image names by architecture
+@@ -48,6 +49,7 @@ IMAGE_arm64      = arch/arm64/boot/Image
+ IMAGE_arm        = arch/arm/boot/zImage
+ IMAGE_mips       = vmlinuz
+ IMAGE_ppc        = vmlinux
++IMAGE_ppc64le    = arch/powerpc/boot/zImage
+ IMAGE_riscv      = arch/riscv/boot/Image
+ IMAGE_s390       = arch/s390/boot/bzImage
+ IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
+@@ -62,6 +64,7 @@ DEFCONFIG_arm64      = defconfig
+ DEFCONFIG_arm        = multi_v7_defconfig
+ DEFCONFIG_mips       = malta_defconfig
+ DEFCONFIG_ppc        = pmac32_defconfig
++DEFCONFIG_ppc64le    = powernv_defconfig
+ DEFCONFIG_riscv      = defconfig
+ DEFCONFIG_s390       = defconfig
+ DEFCONFIG_loongarch  = defconfig
+@@ -82,6 +85,7 @@ QEMU_ARCH_arm64      = aarch64
+ QEMU_ARCH_arm        = arm
+ QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
+ QEMU_ARCH_ppc        = ppc
++QEMU_ARCH_ppc64le    = ppc64le
+ QEMU_ARCH_riscv      = riscv64
+ QEMU_ARCH_s390       = s390x
+ QEMU_ARCH_loongarch  = loongarch64
+@@ -95,6 +99,7 @@ QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC
+ QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
++QEMU_ARGS_ppc64le    = -M powernv -append "console=hvc0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+ QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
+@@ -110,6 +115,7 @@ else
+ Q=@
+ endif
+ 
++CFLAGS_ppc64le = -m64 -mlittle-endian -Wl,-EL,-melf64ppc -mno-vsx
+ CFLAGS_s390 = -m64
+ CFLAGS_mips = -EL
+ CFLAGS_STACKPROTECTOR ?= $(call cc-option,-mstack-protector-guard=global $(call cc-option,-fstack-protector-all))
+-- 
+2.25.1
+
