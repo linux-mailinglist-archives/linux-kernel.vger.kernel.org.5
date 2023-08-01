@@ -2,229 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B9476A9BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF09076A9C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbjHAHG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 03:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
+        id S230432AbjHAHIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 03:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbjHAHGW (ORCPT
+        with ESMTP id S230081AbjHAHIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 03:06:22 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2070.outbound.protection.outlook.com [40.107.237.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AFEE7C;
-        Tue,  1 Aug 2023 00:06:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Hmo0eUr85ki1ZDF/niGdiNUQ++O+RyqPDO9Ni5LQ8WHYmoyrwkWbvlD8Qxeh50CZAa2gsk88vjthEWyt5E7OdFeOcCDus2KIesihLgdlB8MWLmJfSHSICa57DvZSHyX1zWaOEdd0dvsCsHoXr2gSm3GTysC1epRv0qypG4hMC4YNHVpoNAZYFux0bQFLR9n8fT4A2sBB+e+QO2zI4XZ5TdUSZPuGDOlrn2VXCbKJy3k2SelzrLxaX1XCB/GAr1AveV0Fm8AiJW1JE7eA93TUCDKkgh0Am/KcbqvoQfJeehUuLdFLkqijLNmxVe9AARdxUIXj1F1rICPS6j6pdXHg+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7ut2ZHm7voKtBYpSabY12c2aF3UX5vl8kBKwbxzFW+E=;
- b=n6xTnP/slmYu5dw7//OPnpT7VqYAUx3kZGBPUfwJ/J4ynlsFgSY/tiJq1MdNmXqFMs0RiLzlO/ChdsfKVuKLrRwjqE3vCSwkePmi8DclgUZWTMIvhoMbJvRcQJ/gR8w3eyB7/+qhMS4Q+zIP5KdbodjIMAslJBgK/Xepx5z57ho7ngrsXtGDK6cS2SfFagcTTi24nQ0tb8VhNIa8FvTLRcO6TcTDi2m1MVLZSo0nscEq+93TAlf2g1ByYV7w2Wtp9eLPfVkJD9l6Nmv36EAAc6Mt7Vs98aRuEiFnZo2PSoIF1q+7oYeagETCZlq8cv/v/7rV5TPpRjeGYhTet6qO9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7ut2ZHm7voKtBYpSabY12c2aF3UX5vl8kBKwbxzFW+E=;
- b=IqyREAotf7McYAdhjBQIESbvVzQHwh2LPhP5tlGfuELpAzrcyPp1swDpSA2c/rICbN/OY8ilw5LLgAmJ/PWzndpVEX6h7NcR+Ni67TYInuDQZQNU+A3PiIY3f2h0NRZBp7CzpW8kEb+//7cMm+3jfU7zDq514Ccsxnz9Tacz5ZY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DS7PR12MB8252.namprd12.prod.outlook.com (2603:10b6:8:ee::7) by
- CYYPR12MB8964.namprd12.prod.outlook.com (2603:10b6:930:bc::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.44; Tue, 1 Aug 2023 07:06:17 +0000
-Received: from DS7PR12MB8252.namprd12.prod.outlook.com
- ([fe80::2dd6:4ccd:1695:d51f]) by DS7PR12MB8252.namprd12.prod.outlook.com
- ([fe80::2dd6:4ccd:1695:d51f%6]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
- 07:06:17 +0000
-Date:   Tue, 1 Aug 2023 12:35:58 +0530
-From:   "Gautham R. Shenoy" <gautham.shenoy@amd.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        James Smart <james.smart@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>
-Subject: Re: [patch v2 21/38] x86/cpu: Provide cpu_init/parse_topology()
-Message-ID: <ZMiu1t8blYAdm2Br@BLR-5CG11610CF.amd.com>
-References: <20230728105650.565799744@linutronix.de>
- <20230728120930.839913695@linutronix.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728120930.839913695@linutronix.de>
-X-ClientProxiedBy: PN3PR01CA0002.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:c01:95::22) To DS7PR12MB8252.namprd12.prod.outlook.com
- (2603:10b6:8:ee::7)
+        Tue, 1 Aug 2023 03:08:20 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41EF41716
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 00:08:19 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 00A351F6E6;
+        Tue,  1 Aug 2023 07:08:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690873698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AoBXTXyuz+vRPhe5JwPsPpzufyYSV/OzkOaqo4WkjFA=;
+        b=r7kZE6EoEuUirA3VBp7HBmFqszSmxp1duPgOPBWef0XH/dhZzpIOy8N99/EvpHmjPLk9OD
+        7z9IpC9+lDaf0jF45yKy2OzctiyaNLIjQKSAoWapfHJtlCxmJ0wiV09IiIAp4k7MYFZPP3
+        T6D5BlnF5SAZZwop1r52oIonts3mrYE=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A2ADE13919;
+        Tue,  1 Aug 2023 07:08:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id G4dEJmGvyGSjdwAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 01 Aug 2023 07:08:17 +0000
+Message-ID: <f0d5b71b-4344-2f35-03ee-3af6ebd038b2@suse.com>
+Date:   Tue, 1 Aug 2023 09:08:17 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB8252:EE_|CYYPR12MB8964:EE_
-X-MS-Office365-Filtering-Correlation-Id: 97c0f596-ed16-46ca-14de-08db925dcd13
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5wjtRnKHk5R5Uwjr/3phAZJZ0soM3w5zxYlJ4kZ//9xDycbvXNgSowKbz88r+GmIVsuKRBF/u8YKXAWzow5GedyTYvooruFQuGVFpIWryBIrRjaQGTI2hlfiy9A5F/TMN90N6L6/FB609m7SAt6QSDJlxEy74z65OQqSWRgLHaFW3kPxLC8J/mxcZhzVJvjPKeVDVdko994tMUQ1xjx+N4ZmLEgaFXUIWv2Rru9OacrWzRyudb9pA2X8qFn6hT7PO65KGepvnTNCc/1JaO0CicjPFT5bTumSjKDNCBPdlU3pnrlkQwzeUb6XE2Z/YLv3FFryORi0I4NuLrxsdMg64pIZOPTFTGotNe1nOMs1GKi194n4DlEvofOJA0T6rxjkAnG0WdyozqgpBRWJOL34QhoQORFPPrj4ge82ALaCdwmUHQuCtqaVbyMSQyrZa4djiTQAAzCzwInl6ltclmUoOXUJprA5UNoLF3vTWxZnRAfxDMgNbriVsih9UV27xMb1qynL+wEjJGIwiN/bMU9yWglLbVKkrNP41sCUmxfUt9f1xZzuZLv6J4CEpoFd2aUo
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB8252.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(396003)(376002)(346002)(366004)(136003)(39860400002)(451199021)(6666004)(6486002)(6512007)(2906002)(26005)(186003)(6506007)(38100700002)(54906003)(478600001)(83380400001)(316002)(66946007)(66556008)(66476007)(4326008)(6916009)(41300700001)(8676002)(8936002)(7416002)(86362001)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?95In0x8DZI7tu5t0S0WOfxt+vSkkV2ugDf4kTn09dvwz9EaKFD25GUfK9kx6?=
- =?us-ascii?Q?qujQlsaVnYaLiNmaEXZ9Oipl0ijwT3KmbhLaQfwH3pdj6TTUXcSFJ7ataGzd?=
- =?us-ascii?Q?TpfRUR4KmaIqX1stUZnADeApC6M/ZCdgMrLIrnogi+41apwkT39yMtUTuIw2?=
- =?us-ascii?Q?jC0zvboSSGAxaIUbuu6oHZOdGieV+OsxNk3peH3hkImb1s7BAIPumWoNgNxo?=
- =?us-ascii?Q?PY3cNKuAWtWDsnREX653mOBcquTyO3VPE5E5kJmfaR95bvvF/YrO2Mmrlc+G?=
- =?us-ascii?Q?9zXN5J+bO6siBujGkCF1WTJVEGvAwYa42TLYcpPvUbOMpSCbBCk/l+/u+uIw?=
- =?us-ascii?Q?8Zo1/QkB+wC+viB6UrMgF1nZ/r5Wba3MEEuLCup4o8U2OZ4wTzdC2XQ7+NVl?=
- =?us-ascii?Q?nGqkElRghIINdSTYpR2iItEi9FLXr+eS/FfNEtxR3ApVuNzDLFMqFvOXoccw?=
- =?us-ascii?Q?iIqqday51W+x6UGYlWrXgsoFJP/T/ueK6zBET7pvDmUcsPvOylAEl2kBoits?=
- =?us-ascii?Q?grXananNAkFW9+hbYB9hdiQPAf9nUi0uMbyy1pnzpCLydjqelz/5WIX/5dKM?=
- =?us-ascii?Q?KNEbvtzjm4tKXEOn6zqngF3Fb+W83lTNdYAIcJi+JV7pYyYo9dTwh8WiZghZ?=
- =?us-ascii?Q?xT5qH9yA5wC+3hWX+dqKhx5qt+LklEk9alxCDEtddNMNrNG8S90SxmImpum+?=
- =?us-ascii?Q?RLMEqj0f/WrZlYLD7OjIhRnksq3g3iwNydbGl38j/UDQ41JwKX8EEzusKedJ?=
- =?us-ascii?Q?DvN1D8LdjmZo5ocU18+bNu/+h9qShvpruv4d9BYedOzIJUB366oLDQGegzM8?=
- =?us-ascii?Q?bRELfhjNlUziVDMNFSRUVAdUHv7cH6Y7ewY8/QWV/1D5qxjFpU7ouRz39IUy?=
- =?us-ascii?Q?KWtJgQmDDIiZEoJ20E2wrPit19cEA9oNtmNuhOZeTp45RNrcj8XIFcun9a0b?=
- =?us-ascii?Q?wRekLswhEHxfRMSLoAIl0fLmGLH8eW1T71teWgmDWvQp1bVzkhbJ/Ojwui8v?=
- =?us-ascii?Q?/6UarYi1Ke7AtFoIE9IaqPF3kacL+PfM8V4wlzWlOv3gsR0s2tXEg4RVYo0R?=
- =?us-ascii?Q?I5VN7VAqfdP+UmJ3TcSOE4mCh6V/LrKZKArOFV1g15HVH6nwbWavOv4XB6rr?=
- =?us-ascii?Q?+aYqnV+NfuIqdKNbxg7TBHyQdEVmU09czkacZaD8XyUEBGxkc05ag3Jbcmz8?=
- =?us-ascii?Q?cq3UTJZMLsv87gHMmZ/HkmcfuKYwob5IZCQPWbJtVuhN2WWSbCQO3u+7zNBf?=
- =?us-ascii?Q?ZxiV6IYZ/zgdIDOxJwpznhH1gKadrTJs1Q+2jtlhEQGldSshyDChJ8QDkdz4?=
- =?us-ascii?Q?aoFz99yJiVGHZFasoqB1ghuTXFb3gX/sdSu+qvalNQ4qOEbBScBPSq4qDrxh?=
- =?us-ascii?Q?rxQwbXV++l+AzD1RaZAgipdOz6INotzLBgkNzEu6Xr3GlP8Jwwb5zGsNmfUB?=
- =?us-ascii?Q?Wv/iHulAkTQoRyGVMjstuEVZnkTMQOmhs3VXxXAfjJnKXU22xwY3c4YafHf9?=
- =?us-ascii?Q?T4I6gmjHVGv1ikLhC4Xq086PVGovpFBEHk6LccAWmAp7b19fX8G0b90T49gn?=
- =?us-ascii?Q?nCRFnX9/DTdFpAyzhjUSTtIbimxWkeLpifgzCLDf?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97c0f596-ed16-46ca-14de-08db925dcd13
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB8252.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 07:06:17.7462
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PuPryMXNDnBetBmlfKm8NYSjjsvbzJtD17SsgEKIz3rnfygFaODw+DMGR5Rt5wEcTwLSEjQHCvSdi8ao4FHSiA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8964
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Content-Language: en-US
+From:   Juergen Gross <jgross@suse.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+References: <20230724131206.500814398@linutronix.de>
+ <20230724132047.554355840@linutronix.de>
+ <abfa4548-4367-d8fa-f23f-b2ca4a912258@suse.com> <87v8e0nskd.ffs@tglx>
+ <b4f0e874-1e35-e523-8e5a-710bc54af52d@suse.com> <87pm48nktc.ffs@tglx>
+ <87v8dzl0wm.ffs@tglx> <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
+Subject: Re: [patch V2 50/58] x86/apic: Provide common init infrastructure
+In-Reply-To: <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------jpBGtiV3OGo6AolawpkxNu4A"
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------jpBGtiV3OGo6AolawpkxNu4A
+Content-Type: multipart/mixed; boundary="------------gasiVRhyhJm0FBJ084iNFdjy";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Wei Liu <wei.liu@kernel.org>, Arjan van de Ven <arjan@linux.intel.com>,
+ Michael Kelley <mikelley@microsoft.com>,
+ Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
+ "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Message-ID: <f0d5b71b-4344-2f35-03ee-3af6ebd038b2@suse.com>
+Subject: Re: [patch V2 50/58] x86/apic: Provide common init infrastructure
+References: <20230724131206.500814398@linutronix.de>
+ <20230724132047.554355840@linutronix.de>
+ <abfa4548-4367-d8fa-f23f-b2ca4a912258@suse.com> <87v8e0nskd.ffs@tglx>
+ <b4f0e874-1e35-e523-8e5a-710bc54af52d@suse.com> <87pm48nktc.ffs@tglx>
+ <87v8dzl0wm.ffs@tglx> <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
+In-Reply-To: <807ac0ad-b2c4-4a10-a82c-6d95649ae4dc@suse.com>
 
-On Fri, Jul 28, 2023 at 02:13:08PM +0200, Thomas Gleixner wrote:
-> Topology evaluation is a complete disaster and impenetrable mess. It's
-> scattered all over the place with some vendor implementatins doing early
-> evaluation and some not. The most horrific part is the permanent
-> overwriting of smt_max_siblings and __max_die_per_package, instead of
-> establishing them once on the boot CPU and validating the result on the
-> APs.
-> 
-> The goals are:
-> 
->   - One topology evaluation entry point
-> 
->   - Proper sharing of pointlessly duplicated code
-> 
->   - Proper structuring of the evaluation logic and preferences.
-> 
->   - Evaluating important system wide information only once on the boot CPU
-> 
->   - Making the 0xb/0x1f leaf parsing less convoluted and actually fixing
->     the short comings of leaf 0x1f evaluation.
-> 
-> Start to consolidate the topology evaluation code by providing the entry
-> points for the early boot CPU evaluation and for the final parsing on the
-> boot CPU and the APs.
-> 
-> Move the trivial pieces into that new code:
-> 
->    - The initialization of cpuinfo_x86::topo
-> 
->    - The evaluation of CPUID leaf 1, which presets topo::initial_apicid
-> 
->    - topo_apicid is set to topo::initial_apicid when invoked from early
->      boot. When invoked for the final evaluation on the boot CPU it reads
->      the actual APIC ID, which makes apic_get_initial_apicid() obsolete
->      once everything is converted over.
-> 
-> Provide a temporary helper function topo_converted() which shields off the
-> not yet converted CPU vendors from invoking code which would break them.
-> This shielding covers all vendor CPUs which support SMP, but not the
-> historical pure UP ones as they only need the topology info init and
-> eventually the initial APIC initialization.
-> 
-> Provide two new members in cpuinfo_x86::topo to store the maximum number of
-> SMT siblings and the number of dies per package and add them to the debugfs
-> readout. These two members will be used to populate this information on the
-> boot CPU and to validate the APs against it.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/include/asm/topology.h       |   19 +++
->  arch/x86/kernel/cpu/Makefile          |    3 
->  arch/x86/kernel/cpu/common.c          |   23 +---
->  arch/x86/kernel/cpu/cpu.h             |    6 +
->  arch/x86/kernel/cpu/debugfs.c         |   37 ++++++
->  arch/x86/kernel/cpu/topology.h        |   32 +++++
->  arch/x86/kernel/cpu/topology_common.c |  187 ++++++++++++++++++++++++++++++++++
->  7 files changed, 290 insertions(+), 17 deletions(-)
-> 
-> --- a/arch/x86/include/asm/topology.h
-> +++ b/arch/x86/include/asm/topology.h
-> @@ -102,6 +102,25 @@ static inline void setup_node_to_cpumask
->  
->  #include <asm-generic/topology.h>
->  
-> +/* Topology information */
-> +enum x86_topology_domains {
-> +	TOPO_SMT_DOMAIN,
-> +	TOPO_CORE_DOMAIN,
-> +	TOPO_MODULE_DOMAIN,
-> +	TOPO_TILE_DOMAIN,
-> +	TOPO_DIE_DOMAIN,
-> +	TOPO_PKG_DOMAIN,
-> +	TOPO_ROOT_DOMAIN,
-> +	TOPO_MAX_DOMAIN,
-> +};
-> +
+--------------gasiVRhyhJm0FBJ084iNFdjy
+Content-Type: multipart/mixed; boundary="------------7VGKm0nFMg0nts76TS09Lrr3"
 
-[..snip..]
+--------------7VGKm0nFMg0nts76TS09Lrr3
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> +static void topo_set_ids(struct topo_scan *tscan)
-> +{
-> +	struct cpuinfo_x86 *c = tscan->c;
-> +	u32 apicid = c->topo.apicid;
-> +
-> +	c->topo.pkg_id = topo_shift_apicid(apicid, TOPO_ROOT_DOMAIN);
+T24gMDEuMDguMjMgMDg6NDksIEp1ZXJnZW4gR3Jvc3Mgd3JvdGU6DQo+IE9uIDAxLjA4LjIz
+IDA4OjQxLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6DQo+PiBPbiBNb24sIEp1bCAzMSAyMDIz
+IGF0IDE3OjQ4LCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6DQo+Pg0KPj4+IE9uIE1vbiwgSnVs
+IDMxIDIwMjMgYXQgMTU6MTAsIEp1ZXJnZW4gR3Jvc3Mgd3JvdGU6DQo+Pj4+IE9uIDMxLjA3
+LjIzIDE1OjAxLCBUaG9tYXMgR2xlaXhuZXIgd3JvdGU6DQo+Pj4+Pj4gwqDCoMKgIGFwaWNf
+ZHJpdmVyKHhlbl9wdl9hcGljKTsNCj4+Pj4+DQo+Pj4+PiBJIHdvbmRlciB3aGV0aGVyIHRo
+aXMgZXhwbGljaXQgaW5zdGFsbCBpcyBhY3R1YWxseSBuZWVkZWQgYXQgYWxsLg0KPj4+Pj4g
+U2hvdWxkbid0IHRoZSBkcml2ZXIgYmUgaW5zdGFsbGVkIHZpYSB0aGUgQVBJQyBwcm9iaW5n
+IG1lY2hhbmlzbQ0KPj4+Pj4gYXV0b21hZ2ljYWxseT8NCj4+Pj4NCj4+Pj4gT25seSBpbiBj
+YXNlIHg4Nl9pbml0LmlycS5pbnRyX21vZGVfaW5pdCBpcyBzZXQgYXBwcm9wcmlhdGVseS4g
+VG9kYXkgaXQgaXMNCj4+Pj4gYSBub3AgZm9yIFhlbiBQViwgYnV0IHRoYXQgY2FuIGJlIGNo
+YW5nZWQuIEknbGwgaGF2ZSBhIGxvb2suDQo+Pj4NCj4+PiBZb3UgY291bGQgc2ltcGx5IHNl
+dCB0aGF0IGNhbGxiYWNrIHRvIGRlZmF1bHRfc2V0dXBfYXBpY19yb3V0aW5nKCkgYW5kDQo+
+Pj4gYmUgZG9uZSB3aXRoIGl0Lg0KPj4NCj4+IERvZXNuJ3Qgd29yayBiZWNhdXNlIFhFTiBv
+dmVycmlkZXMgaXQgYWxyZWFkeS4gU28gc3VyZSwgbGV0cyBqdXN0IGdvDQo+IA0KPiBJdCBp
+cyBvdmVycmlkaW5nIGl0IHdpdGggeDg2X2luaXRfbm9vcCgpLg0KPiANCj4+IHdpdGggdGhl
+IHNvbHV0aW9uIHlvdSBwcm9wb3NlZC4gT25lIG1vcmUgdWdseSBvciBsZXNzIGluIFhFTi9Q
+ViBkb2VzIG5vdA0KPj4gcmVhbGx5IG1hdHRlciBtdWNoIDopDQo+Pg0KPj4gTGV0IG1lIGdy
+YWIgdGhpcyBhbmQgcHV0IGl0IGludG8gdGhlIHJpZ2h0IHBvc2l0aW9uIGluIHRoZSBxdWV1
+ZS4NCj4gDQo+IFdhaXQgYSBmZXcgbWludXRlcywgcGxlYXNlLiBJJ20ganVzdCBhYm91dCB0
+byB0ZXN0IHlvdXIgc3VnZ2VzdGlvbi4NCg0KVXNpbmcgdGhlIGZvbGxvd2luZyBkaWZmIG9u
+IHRvcCBvZiB5b3VyIHBhdGNoIGlzIHdvcmtpbmcgZmluZToNCg0KZGlmZiAtLWdpdCBhL2Fy
+Y2gveDg2L3hlbi9hcGljLmMgYi9hcmNoL3g4Ni94ZW4vYXBpYy5jDQppbmRleCA4MDRhMjZi
+N2M4NWUuLmQ3NzQzYmEwMjEyZCAxMDA2NDQNCi0tLSBhL2FyY2gveDg2L3hlbi9hcGljLmMN
+CisrKyBiL2FyY2gveDg2L3hlbi9hcGljLmMNCkBAIC0xNjYsMTEgKzE2Niw2IEBAIHN0YXRp
+YyB2b2lkIF9faW5pdCB4ZW5fYXBpY19jaGVjayh2b2lkKQ0KICB2b2lkIF9faW5pdCB4ZW5f
+aW5pdF9hcGljKHZvaWQpDQogIHsNCiAgICAgICAgIHg4Nl9hcGljX29wcy5pb19hcGljX3Jl
+YWQgPSB4ZW5faW9fYXBpY19yZWFkOw0KLSAgICAgICAvKiBPbiBQViBndWVzdHMgdGhlIEFQ
+SUMgQ1BVSUQgYml0IGlzIGRpc2FibGVkIHNvIG5vbmUgb2YgdGhlDQotICAgICAgICAqIHJv
+dXRpbmVzIGVuZCB1cCBleGVjdXRpbmcuICovDQotICAgICAgIGlmICgheGVuX2luaXRpYWxf
+ZG9tYWluKCkpDQotICAgICAgICAgICAgICAgYXBpY19pbnN0YWxsX2RyaXZlcigmeGVuX3B2
+X2FwaWMpOw0KLQ0KICAgICAgICAgeDg2X3BsYXRmb3JtLmFwaWNfcG9zdF9pbml0ID0geGVu
+X2FwaWNfY2hlY2s7DQogIH0NCiAgYXBpY19kcml2ZXIoeGVuX3B2X2FwaWMpOw0KZGlmZiAt
+LWdpdCBhL2FyY2gveDg2L3hlbi9lbmxpZ2h0ZW5fcHYuYyBiL2FyY2gveDg2L3hlbi9lbmxp
+Z2h0ZW5fcHYuYw0KaW5kZXggOTNiNjU4MjQ4ZDAxLi4xNjRlNWJlMjNhNDUgMTAwNjQ0DQot
+LS0gYS9hcmNoL3g4Ni94ZW4vZW5saWdodGVuX3B2LmMNCisrKyBiL2FyY2gveDg2L3hlbi9l
+bmxpZ2h0ZW5fcHYuYw0KQEAgLTEzMjYsNyArMTMyNiw3IEBAIGFzbWxpbmthZ2UgX192aXNp
+YmxlIHZvaWQgX19pbml0IHhlbl9zdGFydF9rZXJuZWwoc3RydWN0IA0Kc3RhcnRfaW5mbyAq
+c2kpDQoNCiAgICAgICAgIHg4Nl9pbml0LnJlc291cmNlcy5tZW1vcnlfc2V0dXAgPSB4ZW5f
+bWVtb3J5X3NldHVwOw0KICAgICAgICAgeDg2X2luaXQuaXJxcy5pbnRyX21vZGVfc2VsZWN0
+ICA9IHg4Nl9pbml0X25vb3A7DQotICAgICAgIHg4Nl9pbml0LmlycXMuaW50cl9tb2RlX2lu
+aXQgICAgPSB4ODZfaW5pdF9ub29wOw0KKyAgICAgICB4ODZfaW5pdC5pcnFzLmludHJfbW9k
+ZV9pbml0ICAgID0geDg2XzY0X3Byb2JlX2FwaWM7DQogICAgICAgICB4ODZfaW5pdC5vZW0u
+YXJjaF9zZXR1cCA9IHhlbl9hcmNoX3NldHVwOw0KICAgICAgICAgeDg2X2luaXQub2VtLmJh
+bm5lciA9IHhlbl9iYW5uZXI7DQogICAgICAgICB4ODZfaW5pdC5oeXBlci5pbml0X3BsYXRm
+b3JtID0geGVuX3B2X2luaXRfcGxhdGZvcm07DQoNCg0KSnVlcmdlbg0K
+--------------7VGKm0nFMg0nts76TS09Lrr3
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-Shouldn't this use TOPO_PKG_DOMAIN instead of TOPO_ROOT_DOMAIN ?
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-> +	c->topo.die_id = topo_shift_apicid(apicid, TOPO_DIE_DOMAIN);
-> +
-> +	/* Relative core ID */
-> +	c->topo.core_id = topo_relative_domain_id(apicid, TOPO_CORE_DOMAIN);
-> +}
-> +
+--------------7VGKm0nFMg0nts76TS09Lrr3--
 
---
-Thanks and Regards
-gautham.
+--------------gasiVRhyhJm0FBJ084iNFdjy--
 
+--------------jpBGtiV3OGo6AolawpkxNu4A
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTIr2EFAwAAAAAACgkQsN6d1ii/Ey/F
+XAgAmbDnItnibEEdO3lHVQi02J03kD3KgnacGQmUirOvsRcD8qsfKSRcRaZOISC8mFzoXkar+yTa
+Y/rBYH5YekEBA8JTS1HjQY1UmrLYSjGevSlOCMteS6pwB7Qkm2F78hP+X6GGynK+WViqY6vYclHP
+YhQ/d4ZEBweLB2hZpLH5RU4kizj3cTbulrQkba5eIpiK9SY0x5OHuHHHtMmDpZxS9OKayYOjUPQA
+Zv4YrGE2USI72c5WY5kvKfoYRARXhSVwkq0GDWJpLt3yfdSwUIamawlBSB2SWMfkVZyEpjy53W7x
+HqZ26VF7ZIzGrb0mRWwgY7RHppt6Jtuz5fyfbZ0N6A==
+=cFi4
+-----END PGP SIGNATURE-----
+
+--------------jpBGtiV3OGo6AolawpkxNu4A--
