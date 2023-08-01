@@ -2,230 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8D4C76B212
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557E876B218
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjHAKmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54940 "EHLO
+        id S232545AbjHAKoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbjHAKmv (ORCPT
+        with ESMTP id S230413AbjHAKoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:42:51 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47008BF;
-        Tue,  1 Aug 2023 03:42:49 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bb9e6c2a90so43428025ad.1;
-        Tue, 01 Aug 2023 03:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690886569; x=1691491369;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7g8F/VnuKjDph5IVfFug3xwfi4jeRDr1XbbGu+XsgTg=;
-        b=hXYhSKv8UVtd47xJjvcWwARFS3VulYo3lolZCEZIpvciXUmhWXzGpPTVXgO8eTNOYC
-         i3pjhRJoKAErDncdIY7HkSmLXiolhBQ2p0YRWX/gGsF9dE34h3xrxIg7XiMkyO1gphIH
-         to39Pts5gzxgJ5Aa1TtPIahljfcky+gDXlVSy3MILRCVz1Kd3KC+6djAHuKlVZGdy97/
-         HYDY2umvqRP+iMzEtnoTsv0aL8ymFWH4UbQkdtS8qvNtL7dpgPJQ4FSyoPNJgT3gyRn5
-         +1SkeMuHLBo9FvUzECQv5JxNLJmYhL7v+1XlW7zqhXyY3YDbQPY6mH7mYZDYGm+dr/ib
-         DyKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690886569; x=1691491369;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7g8F/VnuKjDph5IVfFug3xwfi4jeRDr1XbbGu+XsgTg=;
-        b=d9K1q8CXFleSlKxHmj5PBaJenIrnAFYD6TIsqBvwcl1D8N1KwolAQpRgnF20NL6MXy
-         Pb16WOF0hT9Ze8Tpgf5Y2tyWl9pdkJYdLTrsw3uFwPxJVRY5XB6wIRaT9H7cSFzAeRyX
-         7BcMMY4FGcPFilQrGx8WY7Xt2Uaa1BHYtQ0ZDhXzlx7YdzhwNkKtI3O+fkTkGaz3AW9x
-         Cfil0leDz4CXsi3CNU91BTpFBXL/LVuOxJQtfOBhHgDCrg154RwFF8e4JC20CUgnoDbV
-         qmZgt2TPPLLU6GuFDvPPlfIx6kTyZaMtwCpsG+kCQfTyhFPUM8gZMxeYco5NOgeSiMW7
-         KEmw==
-X-Gm-Message-State: ABy/qLbLluxPEa0Gle86Bkyg+9jiVz7QWVnVI+Zk+ieusGkf9aH5OAD/
-        ZHhsgkz97rtdn0Z2FPdKKgc=
-X-Google-Smtp-Source: APBJJlF+2UC1CLNyyzkCHz2ESE0SZusuA54LOKSYoqydC5IB6QI3Z24+yQJH6mwHyFihSdsqtfGpQw==
-X-Received: by 2002:a17:902:da86:b0:1bc:2437:e54 with SMTP id j6-20020a170902da8600b001bc24370e54mr1902482plx.24.1690886568638;
-        Tue, 01 Aug 2023 03:42:48 -0700 (PDT)
-Received: from localhost.localdomain (199.180.119.18.16clouds.com. [199.180.119.18])
-        by smtp.gmail.com with ESMTPSA id j17-20020a170902c3d100b001bb9b5e86b7sm4393340plj.91.2023.08.01.03.42.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 03:42:48 -0700 (PDT)
-From:   chengdong zhou <zhouscd@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     dan.scally@ideasonboard.com, laurent.pinchart@ideasonboard.com,
-        m.grzeschik@pengutronix.de, john@keeping.me.uk,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chengdong zhou <zhouscd@gmail.com>
-Subject: [PATCH] USB: gadget: usb function sourcesink and loopback support usb configfs
-Date:   Tue,  1 Aug 2023 03:42:23 -0700
-Message-Id: <20230801104223.281275-1-zhouscd@gmail.com>
+        Tue, 1 Aug 2023 06:44:06 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C3AEDB;
+        Tue,  1 Aug 2023 03:44:02 -0700 (PDT)
+X-QQ-mid: bizesmtp69t1690886636tmchd546
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 01 Aug 2023 18:43:55 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: ZNeI2QSW/Mx39dK7OEJT1d6tsQHw0YoDJZv+lKDYGz6eUdUvBGfqHNhKXEB5a
+        9Eet6yVB965cUMZqAUYRYtpMMC2pa67MqD342q8iZiwCN/3CY6c/j1yUnNFR0QLFXjUK9UQ
+        XByjUQQHID5nmWmpyvKJ7LHsxANQuFPUdltUgb0c1SpVRMzfqn4xTDbtuCdqoq/JxZiGp6A
+        RpPXMgf0utDx2nJyGGLgfXr6gRhQEnjjSkTH++wpjY1T3mC8hgvQazex4/1CJCVA80C0HlA
+        j2EG8W2KiI7bxhKCZgIEL9K/4vkaNZXab6Mo81C2x5gCVPkJZ2d9K6hPhCt+aCci0CiaF0A
+        EEpgxkvgtxNC29P4NiidaSEmdPCAffa1AOosXGOHNjY/dnT3Ui1BelJvhIOF+V4TRBK5fnN
+        Mdkdesql/to=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 3218652239303942793
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     w@1wt.eu, linux@weissschuh.net
+Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        tanyuan@tinylab.org
+Subject: Re: tools/nolibc: RFC: report and drop unused functions/data by gc-section
+Date:   Tue,  1 Aug 2023 18:43:55 +0800
+Message-Id: <20230801104355.77044-1-falcon@tinylab.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <ZMip5q9C/VuNMrUX@1wt.eu>
+References: <ZMip5q9C/VuNMrUX@1wt.eu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are currently two issues that causes sourcesink and loopback to
-fail to export to usb configfs:
-1. usb_function.name does not match usb_function_driver.name
-2. usb configfs does not support function name with '/'
+Hi, Willy, Hi, Thomas
 
-So, we adjusted usb_function.name to "sourcesink" and "loopback",
-and remove '/'
+> Hi Zhangjin,
+> 
+> On Tue, Aug 01, 2023 at 12:59:02PM +0800, Zhangjin Wu wrote:
+[...]
+> > 
+> > Willy, did I misunderstand something again? a simple test shows, seems this is
+> > not really always like that, static mainly means 'local', the symbol is still
+> > there if without -O2/-Os and is able to be set a breakpoint at:
+> > 
+[...]
+> > 
+> > Even with -Os/-O2, an additional '-g' is able to generate the 'test' symbol for
+> > debug as we expect.
+> 
+> Please compare this:
+> 
+>   $ cat test.c
+>   #include <stdio.h>
+>   
+>   static int test (void)
+>   {
+>       printf("hello, world!\n");
+>   }
+>   
+>   int main(void)
+>   {
+>       test();
+>   
+>       return 0;
+>   }
+>   
+>   $ gcc -Os -o test test.c
+>   $ objdump --disassemble=main  test
+>   (...)
+>   Disassembly of section .text:
+>   
+>   0000000000401040 <main>:
+>     401040:       50                      push   %rax
+>     401041:       bf 04 20 40 00          mov    $0x402004,%edi
+>     401046:       e8 e5 ff ff ff          call   401030 <puts@plt>
+>     40104b:       31 c0                   xor    %eax,%eax
+>     40104d:       5a                      pop    %rdx
+>     40104e:       c3                      ret    
+> 
+>   $ gdb ./test
+>   (...)
+>   Reading symbols from ./test...
+>   (gdb) b test
+>   Function "test" not defined.
+>   (gdb) r
+>   Starting program: /dev/shm/test 
+>   hello, world!
+>   [Inferior 1 (process 8780) exited normally]
+> 
+> To this:
+> 
+>   $ cat test.c
+>   #include <stdio.h>
+>   
+>   /*static*/ int test (void)
+>   {
+>       printf("hello, world!\n");
+>   }
+>   
+>   int main(void)
+>   {
+>       test();
+>   
+>       return 0;
+>   }
+>   
+>   $ gcc -Os -o test test.c
+>   $ objdump --disassemble=main  test
+>   (...)
+>   Disassembly of section .text:
+>   
+>   0000000000401040 <main>:
+>     401040:       50                      push   %rax
+>     401041:       e8 e0 00 00 00          call   401126 <test>
+>     401046:       31 c0                   xor    %eax,%eax
+>     401048:       5a                      pop    %rdx
+>     401049:       c3                      ret    
+> 
+>   $ gdb ./test
+>   (...)
+>   Reading symbols from ./test...
+>   (gdb) b test
+>   Breakpoint 1 at 0x401126
+>   (gdb) r
+>   Starting program: /dev/shm/test 
+>   
+>   Breakpoint 1, 0x0000000000401126 in test ()
+>   (gdb) 
+> 
+> See the difference ?
+>
 
-Signed-off-by: chengdong zhou <zhouscd@gmail.com>
----
- drivers/usb/gadget/function/f_loopback.c   |  6 +++---
- drivers/usb/gadget/function/f_sourcesink.c | 20 ++++++++++----------
- drivers/usb/gadget/legacy/zero.c           |  6 +++---
- 3 files changed, 16 insertions(+), 16 deletions(-)
+Thanks, Willy, I did all tests and mentioned this difference in my
+reply, but is not obviously described ;-)
 
-diff --git a/drivers/usb/gadget/function/f_loopback.c b/drivers/usb/gadget/function/f_loopback.c
-index ae41f556eb75..9900baa31c2d 100644
---- a/drivers/usb/gadget/function/f_loopback.c
-+++ b/drivers/usb/gadget/function/f_loopback.c
-@@ -583,16 +583,16 @@ static struct usb_function_instance *loopback_alloc_instance(void)
- 
- 	return  &lb_opts->func_inst;
- }
--DECLARE_USB_FUNCTION(Loopback, loopback_alloc_instance, loopback_alloc);
-+DECLARE_USB_FUNCTION(loopback, loopback_alloc_instance, loopback_alloc);
- 
- int __init lb_modinit(void)
- {
--	return usb_function_register(&Loopbackusb_func);
-+	return usb_function_register(&loopbackusb_func);
- }
- 
- void __exit lb_modexit(void)
- {
--	usb_function_unregister(&Loopbackusb_func);
-+	usb_function_unregister(&loopbackusb_func);
- }
- 
- MODULE_LICENSE("GPL");
-diff --git a/drivers/usb/gadget/function/f_sourcesink.c b/drivers/usb/gadget/function/f_sourcesink.c
-index 6803cd60cc6d..fc879b785ed0 100644
---- a/drivers/usb/gadget/function/f_sourcesink.c
-+++ b/drivers/usb/gadget/function/f_sourcesink.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0+
- /*
-- * f_sourcesink.c - USB peripheral source/sink configuration driver
-+ * f_sourcesink.c - USB peripheral sourcesink configuration driver
-  *
-  * Copyright (C) 2003-2008 David Brownell
-  * Copyright (C) 2008 by Nokia Corporation
-@@ -19,7 +19,7 @@
- #include "u_f.h"
- 
- /*
-- * SOURCE/SINK FUNCTION ... a primary testing vehicle for USB peripheral
-+ * SOURCESINK FUNCTION ... a primary testing vehicle for USB peripheral
-  * controller drivers.
-  *
-  * This just sinks bulk packets OUT to the peripheral and sources them IN
-@@ -460,7 +460,7 @@ sourcesink_free_func(struct usb_function *f)
- 	kfree(func_to_ss(f));
- }
- 
--/* optionally require specific source/sink data patterns  */
-+/* optionally require specific sourcesink data patterns  */
- static int check_read_data(struct f_sourcesink *ss, struct usb_request *req)
- {
- 	unsigned		i;
-@@ -818,14 +818,14 @@ static int sourcesink_setup(struct usb_function *f,
- 
- 	/* respond with data transfer or status phase? */
- 	if (value >= 0) {
--		VDBG(c->cdev, "source/sink req%02x.%02x v%04x i%04x l%d\n",
-+		VDBG(c->cdev, "sourcesink req%02x.%02x v%04x i%04x l%d\n",
- 			ctrl->bRequestType, ctrl->bRequest,
- 			w_value, w_index, w_length);
- 		req->zero = 0;
- 		req->length = value;
- 		value = usb_ep_queue(c->cdev->gadget->ep0, req, GFP_ATOMIC);
- 		if (value < 0)
--			ERROR(c->cdev, "source/sink response, err %d\n",
-+			ERROR(c->cdev, "sourcesink response, err %d\n",
- 					value);
- 	}
- 
-@@ -858,7 +858,7 @@ static struct usb_function *source_sink_alloc_func(
- 	ss->bulk_qlen = ss_opts->bulk_qlen;
- 	ss->iso_qlen = ss_opts->iso_qlen;
- 
--	ss->function.name = "source/sink";
-+	ss->function.name = "sourcesink";
- 	ss->function.bind = sourcesink_bind;
- 	ss->function.set_alt = sourcesink_set_alt;
- 	ss->function.get_alt = sourcesink_get_alt;
-@@ -1263,24 +1263,24 @@ static struct usb_function_instance *source_sink_alloc_inst(void)
- 
- 	return &ss_opts->func_inst;
- }
--DECLARE_USB_FUNCTION(SourceSink, source_sink_alloc_inst,
-+DECLARE_USB_FUNCTION(sourcesink, source_sink_alloc_inst,
- 		source_sink_alloc_func);
- 
- static int __init sslb_modinit(void)
- {
- 	int ret;
- 
--	ret = usb_function_register(&SourceSinkusb_func);
-+	ret = usb_function_register(&sourcesinkusb_func);
- 	if (ret)
- 		return ret;
- 	ret = lb_modinit();
- 	if (ret)
--		usb_function_unregister(&SourceSinkusb_func);
-+		usb_function_unregister(&sourcesinkusb_func);
- 	return ret;
- }
- static void __exit sslb_modexit(void)
- {
--	usb_function_unregister(&SourceSinkusb_func);
-+	usb_function_unregister(&sourcesinkusb_func);
- 	lb_modexit();
- }
- module_init(sslb_modinit);
-diff --git a/drivers/usb/gadget/legacy/zero.c b/drivers/usb/gadget/legacy/zero.c
-index 23312a07efb4..0cddd20e54ff 100644
---- a/drivers/usb/gadget/legacy/zero.c
-+++ b/drivers/usb/gadget/legacy/zero.c
-@@ -222,7 +222,7 @@ static int ss_config_setup(struct usb_configuration *c,
- }
- 
- static struct usb_configuration sourcesink_driver = {
--	.label                  = "source/sink",
-+	.label                  = "sourcesink",
- 	.setup                  = ss_config_setup,
- 	.bConfigurationValue    = 3,
- 	.bmAttributes           = USB_CONFIG_ATT_SELFPOWER,
-@@ -282,7 +282,7 @@ static int zero_bind(struct usb_composite_dev *cdev)
- 	autoresume_cdev = cdev;
- 	timer_setup(&autoresume_timer, zero_autoresume, 0);
- 
--	func_inst_ss = usb_get_function_instance("SourceSink");
-+	func_inst_ss = usb_get_function_instance("sourcesink");
- 	if (IS_ERR(func_inst_ss))
- 		return PTR_ERR(func_inst_ss);
- 
-@@ -302,7 +302,7 @@ static int zero_bind(struct usb_composite_dev *cdev)
- 		goto err_put_func_inst_ss;
- 	}
- 
--	func_inst_lb = usb_get_function_instance("Loopback");
-+	func_inst_lb = usb_get_function_instance("loopback");
- 	if (IS_ERR(func_inst_lb)) {
- 		status = PTR_ERR(func_inst_lb);
- 		goto err_put_func_ss;
--- 
-2.25.1
+    "static mainly means 'local', the symbol is still there **if without
+    -O2/-Os** and is able to be set a breakpoint at".
 
+> > >     and the code will appear at multiple locations,
+> > > > > which is really painful. I'd instead really prefer to avoid static when
+> > > > > we don't strictly want to inline the code, and prefer weak when possible
+> > > > > because we know many of them will be dropped at link time (and that's
+> > > > > the exact purpose).
+> > 
+> > For the empty __stack_chk_init() one (when the arch not support stackprotector)
+> > we used, when with 'weak', it is not possible drop it during link time even
+> > with -O3, the weak one will be dropped may be only when there is a global one
+> > with the same name is used or the 'weak' one is never really used?
+> 
+> If that's the case for this one, it's sufficient to enclose it within a pair
+> of #if defined(__SSP__).
+>
+
+Yeah, it is a solution, but to be honest, let's think about the '#ifdef'
+ones we have used in in _start asm(), it is better to not add it back
+again ;-) 
+
+[...]
+> 
+> There is not better or worse, it doesn't work like this. What is important
+> to keep in mind is:
+>   - if the symbol needs to be exported, it must not be static. If it risks
+>     to be declared multiple times (since appearing in a .h possibly included
+>     multiple times), it needs to be marked weak.
+> 
+>   - if the symbol benefits from being reused a lot because it's huge and
+>     almost always needed, it can benefit as well from being exported so
+>     that at the end there is only one instead of multiple copies.
+> 
+>   - if the symbol is never needed outside and its duplication is not a
+>     problem, it's better static.
+> 
+> __stack_chk_init() used to be called directly from asm(). We had no other
+> option.
+
+Thanks, it explains clearly about why we use 'weak' for _start asm() before.
+
+> With _start_c() it seems this has changed so maybe it can now be
+> static (I have not checked).
+
+In my test environment (gcc 9.3 + ld 2.34 + x86_64), as I just tested
+about _start_c(), both
+
+    __attribute__((weak))
+
+    and
+
+    static __attribute__((used))
+
+provide the _start_c symbol as required by the _start asm() and it
+compiled without any failure.
+
+> But *these* are the only valid justifications,
+> nothing based on preference or being better or whatever. These serve two
+> completely different goals.
+>
+
+ok, so, the only benefit may be the saving of some bits of the function
+calling instructions.
+
+> > So, If my above test is ok, then, we'd better simply convert the whole
+> > __stack_chk_init() to a static one as below (I didn't investigate this deeply
+> > due to the warning about static and weak conflict at the first time):
+> 
+> Static and weak together make absolutely no sense. Static says "do not export
+> it, it's local" and weak says "when you find multiple copies of it, keep only
+> one". By definition they are mutually exclusive.
+>
+
+Yes, thanks to clarify it, I knew 'weak' is widely used in kernel side to
+override the generic weak functions with architecture specific optimized ones.
+I have used it frequently especially when I was developing the mainline MIPS
+ftrace support, in my memory, the sched_clock() is a very good example.
+
+> > > > Thanks for the clarification. I forgot about that completely!
+> > > > 
+> > > > The stuff from nolibc-test.c itself (run_foo() and is_settings_valid())
+> > > > should still be done.
+> > > 
+> > > Yes, likely. Nolibc-test should be done just like users expect to use
+> > > nolibc, and nolibc should be the most flexible possible.
+> > 
+> > For the 'static' keyword we tested above, '-g' may help the debug requirement,
+> > so, is ok for us to apply 'static' for them safely now?
+> 
+> Please, read above and do not speculate but actually try by yourself and
+> see what doesn't work.
+
+Willy, as I explained above, before sending my last reply, I did all
+tests (by default, tests often before any of my replies) but the issue
+is what you expected is the one I just not wrote obviously in my reply,
+it worths an improvement to avoid info gap ;-)
+
+> I can assure you that it's extremely time consuming
+> to have to justify everything that was done over the last years to reach
+> the current situation, so as to make sure we don't go back several years
+> just due to matters of taste. By definition a libc cannot look nice, and
+> when implemented exclusively in include files there are strong tradeoffs
+> that are needed. The vast majority of them are already documented in the
+> code and others in commit messages. Others will obviously depend on
+> everyone's experience at recognizing certain patterns. I think I'll spend
+> some time writing some doc explaining some design rules, some choices that
+> are imposed to us and certain patterns to adopt or avoid. It will surely
+> help and save us a lot of review and discussion time in the future (at
+> least I hope).
+>
+
+Agree, but I don't think it is a big program, the learning of the commit
+message, comments is a basic step before writing something new.
+
+Friendly to mention, something important I have found during the last
+several discussions among us is, although all of us are friendly and
+kindly enough, but due to some info gap or some info lost, we all may
+persist a direction which may have some traps and sometimes very easy to
+out-of-topic or out of the issues we are really solving, so, I was even
+worried about to send a new patch or start a new reply these days, one
+possible reason may be overloaded ;-)
+
+> > A further test shows, with 'static' on _start_c() doesn't help the size, for it
+> > is always called from _start(), will never save move instructions, but we need
+> > a more 'used' attribute to silence the error 'nolibc-test.c:(.text+0x38cd):
+> > undefined reference to `_start_c'', so, reserve it as the before simpler 'void
+> > _start_c(void)' may be better?
+> > 
+> >     static __attribute__((used)) void _start_c(long *sp)
+> 
+> Again if you test this you'll see that it probably does not work. It's
+> called from asm so it needs to be public. And it needs the weak
+> attribute to avoid clashes.
+
+Willy, I did test it before sending the last reply, and luckily, it
+worked at least with my compiler on x86_64 although we don't really want
+it for _start_c, let's reserve global as-is.
+
+I'm not mean we should use 'used' instead of 'weak' we have used in
+nolibc, just show my test result here as a reference. 
+
+Seems there is also a new 'retain', but it servces something different,
+it tells 'ld --gc-sections' not drop it, but 'used' is for compiler not
+discard it, this page does explain more: https://reviews.llvm.org/D96838
+
+Yuan and me are exploring the compiler and linker options/attributes to
+let our dead syscall patchset being able to drop every syscall (some of
+them are wrongly kept by KEEP), so we found some docs about 'used',
+'retain' and the other more related attributes in the past weeks.
+
+> 
+> At least you've convinced me about something: we need to split nolibc-test
+> into multiple files (e.g. one for syscalls, one for stdlib etc) so that we
+> also catch the cases where we're missing some weak attributes.
+
+Ok, thanks.
+
+As a summary, is it ok for Thomas to add a change like this to his patchset (or
+a standalone patchset from me)?
+
+    diff --git a/tools/include/nolibc/crt.h b/tools/include/nolibc/crt.h
+    index 32e128b0fb62..a5f33fef1672 100644
+    --- a/tools/include/nolibc/crt.h
+    +++ b/tools/include/nolibc/crt.h
+    @@ -10,7 +10,7 @@
+     char **environ __attribute__((weak));
+     const unsigned long *_auxv __attribute__((weak));
+
+    -void __stack_chk_init(void);
+    +static void __stack_chk_init(void);
+     static void exit(int);
+
+     void _start_c(long *sp)
+    diff --git a/tools/include/nolibc/stackprotector.h b/tools/include/nolibc/stackprotector.h
+    index b620f2b9578d..13f1d0e60387 100644
+    --- a/tools/include/nolibc/stackprotector.h
+    +++ b/tools/include/nolibc/stackprotector.h
+    @@ -37,8 +37,7 @@ void __stack_chk_fail_local(void)
+     __attribute__((weak,section(".data.nolibc_stack_chk")))
+     uintptr_t __stack_chk_guard;
+
+    -__attribute__((weak,section(".text.nolibc_stack_chk"))) __no_stack_protector
+    -void __stack_chk_init(void)
+    +static __no_stack_protector void __stack_chk_init(void)
+     {
+            my_syscall3(__NR_getrandom, &__stack_chk_guard, sizeof(__stack_chk_guard), 0);
+            /* a bit more randomness in case getrandom() fails, ensure the guard is never 0 */
+    @@ -46,7 +45,7 @@ void __stack_chk_init(void)
+                    __stack_chk_guard ^= (uintptr_t) &__stack_chk_guard;
+     }
+     #else /* !defined(_NOLIBC_STACKPROTECTOR) */
+    -__inline__ void __stack_chk_init(void) {}
+    +static void __stack_chk_init(void) {}
+     #endif /* defined(_NOLIBC_STACKPROTECTOR) */
+     
+     #endif /* _NOLIBC_STACKPROTECTOR_H */
+
+Best regards,
+Zhangjin
+
+> 
+> Thanks,
+> Willy
