@@ -2,34 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4088576AD8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E03076ADA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:31:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbjHAJaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:30:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58230 "EHLO
+        id S233043AbjHAJbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232951AbjHAJ3r (ORCPT
+        with ESMTP id S233002AbjHAJan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:29:47 -0400
-Received: from out28-77.mail.aliyun.com (out28-77.mail.aliyun.com [115.124.28.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2562707
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:28:33 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07480418|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0163373-0.000708181-0.982955;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5rUvp6_1690882103;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5rUvp6_1690882103)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 17:28:25 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amdgpu/powerplay: Clean up errors in vega20_hwmgr.c
-Date:   Tue,  1 Aug 2023 09:28:21 +0000
-Message-Id: <20230801092821.7495-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        Tue, 1 Aug 2023 05:30:43 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B73F4202;
+        Tue,  1 Aug 2023 02:29:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EDCFD614B2;
+        Tue,  1 Aug 2023 09:29:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79C59C433C7;
+        Tue,  1 Aug 2023 09:29:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690882165;
+        bh=kG7SZXNiyzexHlcARYSO8y3yfKIQTqbHV/gn8ppwj7w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qp1vf7zbWCj83RAWtH4zS6s5sN7zmoIO1oVXN/wXUdICldHhd+o/PzI0CwttdB09b
+         6iuS57v6Uc1frELDjlWj/XRDZjNl+RpDh/Zv3ITCidaAY37rMgqy8dnm/5v675KirV
+         t7Q7eMKwCg5NQdl4cww4n8izCutfzX9sInFZed/h+rmiAHjwZVIEBc8l55OOyxxyaf
+         RourzjLYRlvCcBhbN5OUJJhLAJYhFVkTvMT1ZR6yDpQSGKWjqPEm0OhYVpupj0E6NX
+         gjm6dxZ6vzNPfgLF8zDDXBueY+wmwgSwwYa/R53NBkyHFeqHWrn6as907XM2PhbaWb
+         9tyLHq/4Ss5Mw==
+Date:   Tue, 1 Aug 2023 11:29:21 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     marcelo.leitner@gmail.com, lucien.xin@gmail.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, linux-sctp@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] sctp: Remove unused function declarations
+Message-ID: <ZMjQceSII+1AukF1@kernel.org>
+References: <20230731141030.32772-1-yuehaibing@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731141030.32772-1-yuehaibing@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,68 +57,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+On Mon, Jul 31, 2023 at 10:10:30PM +0800, Yue Haibing wrote:
+> These declarations are never implemented since beginning of git history.
+> 
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 
-ERROR: code indent should use tabs where possible
-ERROR: space required before the open parenthesis '('
-ERROR: space prohibited before that close parenthesis ')'
-
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- .../gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c    | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
-index 4e19ccbdb807..492ca33637d6 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
-@@ -1402,7 +1402,7 @@ static int vega20_od8_set_settings(
- 			"Failed to export over drive table!",
- 			return ret);
- 
--	switch(index) {
-+	switch (index) {
- 	case OD8_SETTING_GFXCLK_FMIN:
- 		od_table.GfxclkFmin = (uint16_t)value;
- 		break;
-@@ -2360,7 +2360,7 @@ static int vega20_notify_smc_display_config_after_ps_adjustment(
- 		dpm_table->dpm_state.hard_min_level = min_clocks.memoryClock / 100;
- 		PP_ASSERT_WITH_CODE(!(ret = smum_send_msg_to_smc_with_parameter(hwmgr,
- 				PPSMC_MSG_SetHardMinByFreq,
--				(PPCLK_UCLK << 16 ) | dpm_table->dpm_state.hard_min_level,
-+				(PPCLK_UCLK << 16) | dpm_table->dpm_state.hard_min_level,
- 				NULL)),
- 				"[SetHardMinFreq] Set hard min uclk failed!",
- 				return ret);
-@@ -3579,7 +3579,7 @@ static int vega20_set_uclk_to_highest_dpm_level(struct pp_hwmgr *hwmgr,
- 		dpm_table->dpm_state.hard_min_level = dpm_table->dpm_levels[dpm_table->count - 1].value;
- 		PP_ASSERT_WITH_CODE(!(ret = smum_send_msg_to_smc_with_parameter(hwmgr,
- 				PPSMC_MSG_SetHardMinByFreq,
--				(PPCLK_UCLK << 16 ) | dpm_table->dpm_state.hard_min_level,
-+				(PPCLK_UCLK << 16) | dpm_table->dpm_state.hard_min_level,
- 				NULL)),
- 				"[SetUclkToHightestDpmLevel] Set hard min uclk failed!",
- 				return ret);
-@@ -3605,7 +3605,7 @@ static int vega20_set_fclk_to_highest_dpm_level(struct pp_hwmgr *hwmgr)
- 		dpm_table->dpm_state.soft_min_level = dpm_table->dpm_levels[dpm_table->count - 1].value;
- 		PP_ASSERT_WITH_CODE(!(ret = smum_send_msg_to_smc_with_parameter(hwmgr,
- 				PPSMC_MSG_SetSoftMinByFreq,
--				(PPCLK_FCLK << 16 ) | dpm_table->dpm_state.soft_min_level,
-+				(PPCLK_FCLK << 16) | dpm_table->dpm_state.soft_min_level,
- 				NULL)),
- 				"[SetFclkToHightestDpmLevel] Set soft min fclk failed!",
- 				return ret);
-@@ -3727,8 +3727,8 @@ static int vega20_apply_clocks_adjust_rules(struct pp_hwmgr *hwmgr)
- 	uint32_t i, latency;
- 
- 	disable_mclk_switching = ((1 < hwmgr->display_config->num_display) &&
--                           !hwmgr->display_config->multi_monitor_in_sync) ||
--                            vblank_too_short;
-+				!hwmgr->display_config->multi_monitor_in_sync) ||
-+				vblank_too_short;
- 	latency = hwmgr->display_config->dce_tolerable_mclk_in_active_latency;
- 
- 	/* gfxclk */
--- 
-2.17.1
+Reviewed-by: Simon Horman <horms@kernel.org>
 
