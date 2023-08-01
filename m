@@ -2,175 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A21976BF8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0055276BF8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbjHAVx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:53:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56428 "EHLO
+        id S232045AbjHAVxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHAVxZ (ORCPT
+        with ESMTP id S232411AbjHAVxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:53:25 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6E9A3103;
-        Tue,  1 Aug 2023 14:53:24 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BB137D75;
-        Tue,  1 Aug 2023 14:54:07 -0700 (PDT)
-Received: from e126311.manchester.arm.com (unknown [10.57.77.133])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6003E3F59C;
-        Tue,  1 Aug 2023 14:53:22 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 22:53:12 +0100
-From:   Kajetan Puchalski <kajetan.puchalski@arm.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: Re: [PATCH v3 0/3] cpuidle: teo: Avoid stopping scheduler tick too
- often
-Message-ID: <ZMl+yH42Ir0AZzoX@e126311.manchester.arm.com>
-References: <4515817.LvFx2qVVIh@kreacher>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4515817.LvFx2qVVIh@kreacher>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 17:53:46 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4C9F212D
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:53:44 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d1c693a29a0so6994600276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 14:53:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690926824; x=1691531624;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=0s9Ij9vBA+8Dxn+A8h2tCJt9Mf1v/5GkMWT8RzF9uak=;
+        b=c4Rdjt9h37wWUjU3aTzC1zIQA1StqtAUF+DknKtfESVPoN0s2oyoxUv6TVaFQFNJzZ
+         rES9RGuIUJoQ5lvOAUwhANYn/0TFahVdDwikuos4m4wZWQw2e6Vo4y9ODAhiCpQbUI76
+         muhMT50oXqA6sN/Z9+iEdcaP6zwUBeKCwap/z2xQmFNlMSgMdO/BGM5ChB9Hu28koRNi
+         gRHyb1rPRAp1AdFbIoFcXYsZsenVvQDGDxFIGivsHUe/bGC9wKYSaAxgDB6TspJqbYIh
+         yMwZ1Da2drE2SR8eAAi6drYZZ/RjOt5AQ1orl+HWBF22YTPwu1L7enFcbBzXTxJ0UzPY
+         cHXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690926824; x=1691531624;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0s9Ij9vBA+8Dxn+A8h2tCJt9Mf1v/5GkMWT8RzF9uak=;
+        b=cw20wCiGyVrSzfhCAEkE5n00yqrp7L1up4iMCPs3W0FG0cjsyXcq5bnA5gPLRTuAyu
+         IuAsbJeGQ+y/SYMInk1bfC10juvnQ+452gp1PKEiIcQWmb5EV9AjMIe5UUT+TenhAnmG
+         u/3nDdqRx5xWKgFR+N+sVEUbIlLlj/EZgMuAoQkulejBwCBMj2ULRzORnHpa+5s86MJO
+         Vufq3ZEKgW4jddMsrpHVRpKLfKOkweIb1grsS31KcDVk0iG1oEFJroCnSMygbTitm8sJ
+         Y4610PAikkmMbIIZ70ATFvrB7AwcdcWkkqjZ7gOCMOUuz8m0aKRUkUSARvIXrrX4mps9
+         sM1g==
+X-Gm-Message-State: ABy/qLYb3ao6cZ+60CU8UdHzmLpP8GNK2ROKcqy8eeDZgB2Vwx0i5qUz
+        IL5Z0kDYnMlXxl811B57Vm3wOHuA7EzVK6uHow==
+X-Google-Smtp-Source: APBJJlHjR+QqYsFFxi0BqybEHISyS5oTupXYpcQVQD9NnHionwHqGL30J/BHp2LZvr3lgY/z7d6TefUBLOOV5rckWw==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:70b:b0:d0f:15a4:5a50 with
+ SMTP id k11-20020a056902070b00b00d0f15a45a50mr121648ybt.9.1690926824002; Tue,
+ 01 Aug 2023 14:53:44 -0700 (PDT)
+Date:   Tue, 01 Aug 2023 21:53:36 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAN9+yWQC/x3NQQrCQAxG4auUrA1k0kXFq4gLMb8aKGNJSlsov
+ XsHl9/mvZ0S4Ui6dTsFFk//1YZy6ej1fdYP2K2ZVLSXqxS28AWRXDHz6oERmex1xsg+rbqJsA2 AmpVBeqUWmgJv3/6T++M4Tpg2XF10AAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1690926823; l=1991;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=6A+GJOrwYihb5Nlog/fMcMKwBjFRuYI+dUgwDlopuWg=; b=slqeS/TZUMd+Q0Atno0SF7YjZvgtRWbIWVp/GIfLhcim4px+zeKjRfBmJ9hX8B1cs7iyVJ34l
+ 9c6U5ai2U4FCmzfbthB8H46kf7IoAksUa+S8WnxZKfFlXvy4rlMAQMU
+X-Mailer: b4 0.12.3
+Message-ID: <20230801-drivers-net-wireless-intel-ipw2x00-v1-1-ffd185c91292@google.com>
+Subject: [PATCH] wifi: ipw2x00: replace deprecated strncpy with strscpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Kalle Valo <kvalo@kernel.org>
+Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+`strncpy` is deprecated for use on NUL-terminated destination strings [1].
 
-> Hi Folks,
-> 
-> Patch [1/3] in this series is a v3 of this patch posted last week:
-> 
-> https://lore.kernel.org/linux-pm/4506480.LvFx2qVVIh@kreacher/
-> 
-> Patch [2/3] (this is the second version of it) addresses some bail out paths
-> in teo_select() in which the scheduler tick may be stopped unnecessarily too.
-> 
-> Patch [3/3] replaces a structure field with a local variable (while at it)
-> and it is the same as its previous version.
-> 
-> According to this message:
-> 
-> https://lore.kernel.org/linux-pm/CAJZ5v0jJxHj65r2HXBTd3wfbZtsg=_StzwO1kA5STDnaPe_dWA@mail.gmail.com/
-> 
-> this series significantly reduces the number of cases in which the governor
-> requests stopping the tick when the selected idle state is shallow, which is
-> incorrect.
-> 
-> Thanks!
-> 
-> 
+We can massively simplify the implementation by removing the ternary
+check for the smaller of `count` and `sizeof(buffer) - 1` as `strscpy`
+guarantees NUL-termination of its destination buffer [2]. This also
+means we do not need to explicity set the one past-the-last index to
+zero as `strscpy` handles this.
 
-I did some initial testing with this on Android (Pixel 6, Android 13).
+Furthermore, we can also utilize `strscpy`'s return value to populate
+`len` and simply pass in `sizeof(buffer)` to the `strscpy` invocation
+itself.
 
-1. Geekbench 6
+[1]: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+[2]: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
 
-+---------------------------+---------------+-----------------+
-|          metric           |      teo      |     teo_tick    |
-+---------------------------+---------------+-----------------+
-|      multicore_score      | 3320.9 (0.0%) | 3303.3 (-0.53%) |
-|           score           | 1415.7 (0.0%) | 1417.7 (0.14%)  |
-|      CPU_total_power      | 2421.3 (0.0%) | 2429.3 (0.33%)  |
-|  latency (AsyncTask #1)   | 49.41μ (0.0%) | 51.07μ (3.36%)  |
-| latency (labs.geekbench6) | 65.63μ (0.0%) | 77.47μ (18.03%) |
-| latency (surfaceflinger)  | 39.46μ (0.0%) | 36.94μ (-6.39%) |
-+---------------------------+---------------+-----------------+
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+ drivers/net/wireless/intel/ipw2x00/ipw2200.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-So the big picture for this workload looks roughly the same, the
-differences are too small for me to be confident in saying that the
-score/power difference is the result of the patches and not something
-random in the system.
-Same with the latency, the difference for labs.gb6 stands out but that's
-a pretty irrelevant task that sets up the benchmark, not the benchmark
-itself so not the biggest deal I think.
+diff --git a/drivers/net/wireless/intel/ipw2x00/ipw2200.c b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+index dfe0f74369e6..8f2a834dbe04 100644
+--- a/drivers/net/wireless/intel/ipw2x00/ipw2200.c
++++ b/drivers/net/wireless/intel/ipw2x00/ipw2200.c
+@@ -1462,15 +1462,12 @@ static ssize_t scan_age_store(struct device *d, struct device_attribute *attr,
+ 	struct ipw_priv *priv = dev_get_drvdata(d);
+ 	struct net_device *dev = priv->net_dev;
+ 	char buffer[] = "00000000";
+-	unsigned long len =
+-	    (sizeof(buffer) - 1) > count ? count : sizeof(buffer) - 1;
+ 	unsigned long val;
+ 	char *p = buffer;
+ 
+ 	IPW_DEBUG_INFO("enter\n");
+ 
+-	strncpy(buffer, buf, len);
+-	buffer[len] = 0;
++	ssize_t len = strscpy(buffer, buf, sizeof(buffer));
+ 
+ 	if (p[1] == 'x' || p[1] == 'X' || p[0] == 'x' || p[0] == 'X') {
+ 		p++;
 
-+---------------+---------+------------+--------+
-|     kernel    | cluster | idle_state |  time  |
-+---------------+---------+------------+--------+
-|      teo      | little  |    0.0     | 146.75 |
-|      teo      | little  |    1.0     | 53.75  |
-|    teo_tick   | little  |    0.0     |  63.5  |
-|    teo_tick   | little  |    1.0     | 146.78 |
-+---------------+---------+------------+--------+
+---
+base-commit: 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4
+change-id: 20230801-drivers-net-wireless-intel-ipw2x00-d7ee2dd17032
 
-+---------------+-------------+------------+
-|     kernel    |    type     | count_perc |
-+---------------+-------------+------------+
-|   teo         |  too deep   |   2.034    |
-|   teo         | too shallow |   15.791   |
-|   teo_tick    |  too deep   |    2.16    |
-|   teo_tick    | too shallow |   20.881   |
-+---------------+-------------+------------+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
-The difference shows up in the idle numbers themselves, looks like we
-get a big shift towards deeper idle on our efficiency cores (little
-cluster) and more missed wakeups overall, both too deep & too shallow.
-
-Notably, the percentage of too shallow sleeps on the performance cores has
-more or less doubled (2% + 0.8% -> 4.3% + 1.8%). This doesn't
-necessarily have to be an issue but I'll do more testing just in case.
-
-2. JetNews (Light UI workload)
-
-+------------------+---------------+----------------+
-|      metric      |      teo      |    teo_tick    |
-+------------------+---------------+----------------+
-|       fps        |  86.2 (0.0%)  |  86.4 (0.16%)  |
-|     janks_pc     |  0.8 (0.0%)   |  0.8 (-0.00%)  |
-| CPU_total_power  | 185.2 (0.0%)  | 178.2 (-3.76%) |
-+------------------+---------------+----------------+
-
-For the UI side, the frame data comes out the same on both variants but
-alongside better power usage which is nice to have.
-
-+---------------+---------+------------+-------+
-|    kernel     | cluster | idle_state | time  |
-+---------------+---------+------------+-------+
-|      teo      | little  |    0.0     | 25.06 |
-|      teo      | little  |    1.0     | 12.21 |
-|      teo      |   mid   |    0.0     | 38.32 |
-|      teo      |   mid   |    1.0     | 17.82 |
-|      teo      |   big   |    0.0     | 30.45 |
-|      teo      |   big   |    1.0     | 38.5  |
-|    teo_tick   | little  |    0.0     | 23.18 |
-|    teo_tick   | little  |    1.0     | 14.21 |
-|    teo_tick   |   mid   |    0.0     | 36.31 |
-|    teo_tick   |   mid   |    1.0     | 19.88 |
-|    teo_tick   |   big   |    0.0     | 27.13 |
-|    teo_tick   |   big   |    1.0     | 42.09 |
-+---------------+---------+------------+-------+
-
-+---------------+-------------+------------+
-|    kernel     |    type     | count_perc |
-+---------------+-------------+------------+
-|      teo      |  too deep   |   0.992    |
-|      teo      | too shallow |   17.085   |
-|   teo_tick    |  too deep   |   0.945    |
-|   teo_tick    | too shallow |   15.236   |
-+---------------+-------------+------------+
-
-For the idle stuff here all 3 clusters shift a bit towards deeper idle
-but the overall miss rate is lower across the board which is perfectly
-fine.
-
-TLDR:
-Mostly no change for a busy workload, no change + better power for a UI
-one. The patches make sense to me & the results look all right so no big
-problems at this stage. I'll do more testing (including the RFC you sent
-out a moment ago) over the next few days and send those out as well.
-
-Short of bumping into any other problems along the way, feel free to
-grab this if you'd like:
-Reviewed-and-tested-by: Kajetan Puchalski <kajetan.puchalski@arm.com>
