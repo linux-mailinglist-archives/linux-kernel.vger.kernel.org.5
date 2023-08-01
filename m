@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DAC276B46D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C0D76B46F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbjHAMI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58518 "EHLO
+        id S232371AbjHAMKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231904AbjHAMI4 (ORCPT
+        with ESMTP id S231904AbjHAMKs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:08:56 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EED11982;
-        Tue,  1 Aug 2023 05:08:55 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 137E31EC0532;
-        Tue,  1 Aug 2023 14:08:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1690891734;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=FxuoKK6iA7jCc7CzQE8tdfsQIpWnMGHsxXnMGYPo8xE=;
-        b=R1puegKKMwq9A7Ettla/ygoHluAOB+uuC+jY4GkGwfhZ8BKNCVDNt7WUPn/f5IxzkS2WJz
-        pEQTFswPQcfVT0N7nH0rDmxVwczi15U4BCd15xjZn+HXJgzkHLXs4iIqIirGpbN0jk9xnQ
-        XS/nJuAKAioJ2k4ttVsc8Vnn32pM9d8=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id d3fCGvSyTQ2D; Tue,  1 Aug 2023 12:08:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1690891731; bh=FxuoKK6iA7jCc7CzQE8tdfsQIpWnMGHsxXnMGYPo8xE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RMpBPOf+j+s+T/X+E3mpvvRXJCKfNR0pdYDI3FMeamHCVEM3xqx22cAnHTNVKrYgr
-         ZjI4e2X7BIf3rq+Zw/azZ55JnIwFkhVnm7nE1fVf+uE2Cqc7OEOLMPXCUtzEzI5xQI
-         aPkNFwuD+OMikuyEHL7HId4vWjPFnUchRUHHRlQfkgApk0Tvu5aLHES00/iVyTkiPO
-         3XUbaqpkK08/EnXk7N+25wYJkGpVZgPz1SZsd/UqUJIfEMZ6mGTa8njnIfiLF73hI0
-         iypIVStCIbnuz1ZEX371VznoV4pSsZiFcZ6OCxIdbWp4kcrAV3cGUvxNnlczdWhZOK
-         /ppc46se1Krl6fbo23wOTE61QJxm+dCA6plkP3E4ZXBHm+xjU/UH4TSfOIAcKkEfAh
-         VOl+kw1TxZTdpiSFzAny9A7Mor1hVOrMwC7F7JVB2GfQe3A57SA0L04VWmlxYkuBXB
-         Yl9rF8p8nVWc0qRHkd4HEGHIpZn6PgdceUMuvyew1N7vxWu7XfToypFqmzNMxHwzvm
-         jOepzoE57PH5fXTh6pXj8KveZayIh6M0i4ueTttScFANvxwbN5dMvRq0FXgYeKfDbq
-         pJOKictcqgEZEZym0f6OcE1/7rphFnCegCT8yl+82yRYq+hLuG6+NQnwh31BuoIeB2
-         MQux4kQSDzjROF8BqJEftI90=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 57E5440E019D;
-        Tue,  1 Aug 2023 12:08:32 +0000 (UTC)
-Date:   Tue, 1 Aug 2023 14:08:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Peter Jones <pjones@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v7 14/22] x86/decompressor: Merge trampoline cleanup with
- switching code
-Message-ID: <20230801120827.GFZMj1uzNMDs2gIi1f@fat_crate.local>
-References: <20230728090916.1538550-1-ardb@kernel.org>
- <20230728090916.1538550-15-ardb@kernel.org>
+        Tue, 1 Aug 2023 08:10:48 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2058.outbound.protection.outlook.com [40.107.220.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2964A1982;
+        Tue,  1 Aug 2023 05:10:43 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OvMgITCZYbfJumqVaQMtjOB9/8RBE/fMxi9Tebzv7jHGGuCuNRsfrFZNQEIoN12w6E3IUCme5YEZaSVIGQ8UmsKSiQlSrsk8IAFnc9OmNZ+fps2HCpppJBhZL/ISP1sjl3bG+f6nsvu+0zqMPJlLTPWfmaOjbFVuJxWiWDqxjJ5PHrntbBLFysNmLGbOFe0MRfG/amBU4xjD4Xpa6kLhTnftY1oNmeJWM6LLqEDneGgOUjg4QboqgXtCZEzSrJlHMF0FnNnAydnlpQ6gwNlo/S+4+Ttrz6SS6z62VetCTqnusqHYlFoHyRnuUE8hG9Sl80vFLV9mGwrXtRt3LfTM/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zuCuYizUkfvDWba+8DB+ujr9FBfshAf5oPH7He5U1Pw=;
+ b=g0PESqrT01teVPTHvu4u0x1XUrKFNbisGgF33H35cfu0EdOSxVGtrwA0MaTLx8EX99nJPXbyJf5Xg/LQ2RHcDc0xYlQKkCRWnIBlTul06vEpm3iI13rqjo8EMEDE2ksa3XmQNY0E0Lp1KzhoXXD4QspwFHcy5FMoajyhOBxAGRke5KUe6zgB8Rk/Q+WJWEPI44vwRGu7sK/VvYNkKf8x7tfSLr8nhIZ3yGf4BJYG5cRj3Tzi7ocKH0fIpU0mns42/qVf/gDuBogTXbv0mx7x84j919+21fcJPGBxF93lF15KNWvnmCPoWRfmvf2V9IpGAHxWkwEb/W70jVyYDCYYbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zuCuYizUkfvDWba+8DB+ujr9FBfshAf5oPH7He5U1Pw=;
+ b=EzIQmohv+21JVnBBe+rfdmJ61+lq6WvjfBa+OL3iJtlsv3uBNvrgKgoCnWxqGdwNGPQljdJtVgAVXrzWeQ8sJXFmPuOriMMBKLNrSPMyI1r1ewAMpP0tW6ki4ODIBO6qpZTnpEPBA7pPJ1hxv+iyQivhH6KhpkdJHoN1MNL0OxL/Ibzn3tOc0xJzio3ic1Zg6iREpf7LHESrMeGJVqaX0CoXo6+04moM+vinGUZi5r1tgBkd5ajwKyvQPsL0qMUsUbb8Q6fjQXKCfjgtj4pFSWsAIT9FNHtu7H8NBTp3G6ThbBqxD/aOX45tHFsGv7PFz/Ls63+oXJRBfZrusBbm9g==
+Received: from CY5PR22CA0099.namprd22.prod.outlook.com (2603:10b6:930:65::24)
+ by PH7PR12MB6394.namprd12.prod.outlook.com (2603:10b6:510:1fe::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.44; Tue, 1 Aug
+ 2023 12:10:41 +0000
+Received: from CY4PEPF0000EDD0.namprd03.prod.outlook.com
+ (2603:10b6:930:65:cafe::8a) by CY5PR22CA0099.outlook.office365.com
+ (2603:10b6:930:65::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45 via Frontend
+ Transport; Tue, 1 Aug 2023 12:10:40 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CY4PEPF0000EDD0.mail.protection.outlook.com (10.167.241.204) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.22 via Frontend Transport; Tue, 1 Aug 2023 12:10:40 +0000
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 1 Aug 2023
+ 05:10:28 -0700
+Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail204.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Tue, 1 Aug 2023
+ 05:10:28 -0700
+Received: from sumitg-l4t.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.129.68.6) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Tue, 1 Aug 2023 05:10:26 -0700
+From:   Sumit Gupta <sumitg@nvidia.com>
+To:     <krzysztof.kozlowski+dt@linaro.org>, <treding@nvidia.com>,
+        <jonathanh@nvidia.com>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <bbasu@nvidia.com>, <sumitg@nvidia.com>
+Subject: [Patch] memory: tegra: add MC client for Tegra234 GPU
+Date:   Tue, 1 Aug 2023 17:40:23 +0530
+Message-ID: <20230801121023.27841-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230728090916.1538550-15-ardb@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EDD0:EE_|PH7PR12MB6394:EE_
+X-MS-Office365-Filtering-Correlation-Id: a98d1820-eacb-4ff5-fa9e-08db92885304
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YUfx6dpO102xxMEVdnoLRr5JezI80InhjL25S7X4RnidhHnnmNKZl/FBjStdIxR0i0yapoHOFMOprpdBIodzFbRKcmkBYexlbAaZQDl1KH4Y3W5eJEa5msuihx61TI7LyCcLURgHbMTYeZzx/kyxbobOiN7Pxi9RhLcx6mt5tORw64MUvTeioIVdb9u55LD9cyjwggg83SEg/oj6mXv3/cI6HeiYDkMqgqNBE4prhPnbh05MrLsbF4VV2U2H2DmK5TZdP76eWfqy1pPjdUNCSPDOJb2qDSlY4U6nSnNyZz03BW/TpN3FrML19MJcVn9O7FJ0FZBUgILVkPZ/nmrivVt95AB+uP+Np/W+yNjfAgX0VHBkMTq8mdzSVyeL8EdbE7Xe9/++1lPDfvlitEvtoys16jICf2lyh9kK30CkVIFXrpxWmb5yld5M2+CVXTtPzf6epqhP/Ajf7kSwCjTJMrgEtFHPI2ZIf4NNnvEYrgNS85UpWRyqj+Zl3mYB7+HphfjnY4vlnwhDEOige6EtZjdpXFYOu8A2AsEeOxU0j9sIwMnJGLABBMpPYs81GnvcFKaZPmMS1mYU9DVHYDpqFLO6WzaLNXtcs+08TcYwUzXQ6h/weY1hW6HhB+aegzBf1dMmOwNYQ1KPY+AwSC99sMXwN1FfQuh/OXuSKtUp5E8LDCB52g1FVmExgdLwe3MBInw3FiOnxJpW4TwcRWudpJ9n9DOvC4oxNdxmgPuvLYgrkwfMiBQkhRn9G3+6nKbi
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(136003)(346002)(376002)(396003)(39860400002)(82310400008)(451199021)(36840700001)(40470700004)(46966006)(356005)(7636003)(40460700003)(36756003)(36860700001)(40480700001)(70586007)(70206006)(316002)(4326008)(8936002)(8676002)(107886003)(41300700001)(186003)(1076003)(26005)(110136005)(5660300002)(336012)(54906003)(478600001)(7696005)(6666004)(82740400003)(4744005)(2906002)(2616005)(426003)(47076005)(86362001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 12:10:40.7693
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a98d1820-eacb-4ff5-fa9e-08db92885304
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EDD0.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6394
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,96 +105,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 11:09:08AM +0200, Ard Biesheuvel wrote:
-> diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
-> index 4016444e6788304f..4f50af23a0854f18 100644
-> --- a/arch/x86/boot/compressed/pgtable_64.c
-> +++ b/arch/x86/boot/compressed/pgtable_64.c
-> @@ -101,9 +101,10 @@ static unsigned long find_trampoline_placement(void)
->  	return bios_start - TRAMPOLINE_32BIT_SIZE;
->  }
->  
-> -asmlinkage void set_paging_levels(void *rmode)
-> +asmlinkage void set_paging_levels(void *rmode, void *pgtable)
+Add the Non-ISO MC client for the Tegra234 GPU to the
+tegra234_mc_clients table.
 
-Please get rid of this silly rmode arg which gets passed in here as
-boot_params and then gets assigned to an extern pointer to boot_params.
-This is just silly. Just do what the other functions get from %r15 now
-- a struct boot_params *bp arg.
+Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+---
+ drivers/memory/tegra/tegra234.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-But perhaps in a separate patch.
-
->  {
->  	void (*toggle_la57)(void *trampoline, bool enable_5lvl);
-> +	void *trampoline_pgtable;
->  	bool l5_required = false;
->  
->  	/* Initialize boot_params. Required for cmdline_find_option_bool(). */
-> @@ -133,7 +134,7 @@ asmlinkage void set_paging_levels(void *rmode)
->  	 * the desired one.
->  	 */
->  	if (l5_required == !!(native_read_cr4() & X86_CR4_LA57))
-> -		return;
-> +		goto out;
->  
->  	trampoline_32bit = (unsigned long *)find_trampoline_placement();
->  
-> @@ -163,6 +164,8 @@ asmlinkage void set_paging_levels(void *rmode)
->  	 * The new page table will be used by trampoline code for switching
->  	 * from 4- to 5-level paging or vice versa.
->  	 */
-> +	trampoline_pgtable = trampoline_32bit +
-> +			     TRAMPOLINE_32BIT_PGTABLE_OFFSET / sizeof(unsigned long);
->  
->  	if (l5_required) {
->  		/*
-> @@ -182,31 +185,21 @@ asmlinkage void set_paging_levels(void *rmode)
->  		 * may be above 4G.
->  		 */
->  		src = *(unsigned long *)__native_read_cr3() & PAGE_MASK;
-> -		memcpy(trampoline_32bit + TRAMPOLINE_32BIT_PGTABLE_OFFSET / sizeof(unsigned long),
-> -		       (void *)src, PAGE_SIZE);
-> +		memcpy(trampoline_pgtable, (void *)src, PAGE_SIZE);
->  	}
->  
->  	toggle_la57(trampoline_32bit, l5_required);
-> -}
-> -
-> -void cleanup_trampoline(void *pgtable)
-> -{
-> -	void *trampoline_pgtable;
-> -
-> -	trampoline_pgtable = trampoline_32bit + TRAMPOLINE_32BIT_PGTABLE_OFFSET / sizeof(unsigned long);
->  
->  	/*
-> -	 * Move the top level page table out of trampoline memory,
-> -	 * if it's there.
-> +	 * Move the top level page table out of trampoline memory.
->  	 */
-> -	if ((void *)__native_read_cr3() == trampoline_pgtable) {
-> -		memcpy(pgtable, trampoline_pgtable, PAGE_SIZE);
-> -		native_write_cr3((unsigned long)pgtable);
-> -	}
-> +	memcpy(pgtable, trampoline_pgtable, PAGE_SIZE);
-> +	native_write_cr3((unsigned long)pgtable);
->  
->  	/* Restore trampoline memory */
->  	memcpy(trampoline_32bit, trampoline_save, TRAMPOLINE_32BIT_SIZE);
->  
-> +out:
->  	/* Initialize variables for 5-level paging */
->  #ifdef CONFIG_X86_5LEVEL
->  	if (__read_cr4() & X86_CR4_LA57) {
-> @@ -215,4 +208,5 @@ void cleanup_trampoline(void *pgtable)
->  		ptrs_per_p4d = 512;
->  	}
->  #endif
-> +	return;
-
-No need for that one. It'll return without it. :-)
-
+diff --git a/drivers/memory/tegra/tegra234.c b/drivers/memory/tegra/tegra234.c
+index 7954f339ca79..9e5b5dbd9c8d 100644
+--- a/drivers/memory/tegra/tegra234.c
++++ b/drivers/memory/tegra/tegra234.c
+@@ -916,6 +916,16 @@ static const struct tegra_mc_client tegra234_mc_clients[] = {
+ 		.name = "sw_cluster2",
+ 		.bpmp_id = TEGRA_ICC_BPMP_CPU_CLUSTER2,
+ 		.type = TEGRA_ICC_NISO,
++	}, {
++		.id = TEGRA234_MEMORY_CLIENT_NVL1R,
++		.name = "nvl1r",
++		.bpmp_id = TEGRA_ICC_BPMP_GPU,
++		.type = TEGRA_ICC_NISO,
++	}, {
++		.id = TEGRA234_MEMORY_CLIENT_NVL1W,
++		.name = "nvl1w",
++		.bpmp_id = TEGRA_ICC_BPMP_GPU,
++		.type = TEGRA_ICC_NISO,
+ 	},
+ };
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
