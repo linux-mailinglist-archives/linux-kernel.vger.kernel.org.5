@@ -2,287 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F5176BC52
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4296D76BC6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 20:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232192AbjHASZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 14:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
+        id S230347AbjHAS1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 14:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231978AbjHASYy (ORCPT
+        with ESMTP id S229741AbjHAS1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:24:54 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6779A2130;
-        Tue,  1 Aug 2023 11:24:52 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-4476a2a5bc9so1859647137.2;
-        Tue, 01 Aug 2023 11:24:52 -0700 (PDT)
+        Tue, 1 Aug 2023 14:27:18 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E581269E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 11:26:44 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-3fbc63c2e84so64438325e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 11:26:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690914291; x=1691519091;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eERMSYYSDZt1sQe+bzSLdAZ0mwIc+3+1BsSvv7e7c+4=;
-        b=NiQRMykLF7Xs03uvpZSQYP57Q2FAKzBabRjCDbaR6+D7iwTRr/qTjc4g8+EBnH2Oyd
-         niVG03ra41M2z/KQ+3UG6CzvGgEVfociw5nwNt0iulsKK9UpFHGw0Xg3ZkAd4qCNaGAZ
-         gdwUfo51ha1whi4dE9w/4kM6UhalP+3mRH6Bx0PwwbHTnb5zf4XIy7eupSv+yY+5AB7E
-         Qz/Hr3WeKz+rbFyE1YVG8MkhMMVsamGrtw3sCv5jVBqZ4/APDjEssOOmLzBQj8MqgsqS
-         FOyIoOYE2FAg7SKuXvZnNdd8NXnE9y1LuTmGUewPMAT1FPuPjpXLTgTVPR0cXf5yLwmn
-         P9XA==
+        d=linaro.org; s=google; t=1690914399; x=1691519199;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tkkS6sKTbNQ3LRfOUF34YGw1W/C6AI1LuWBgt5ptbqM=;
+        b=PAUJTPJSwDHYar5prflFDgLr9WYuNLGRiVytqbObYxBz4NiwC765P4ZeWpHq1GaA1B
+         UyHP57z67sPDOLogMayFmInhBM3WS8mSR+X8fEaihsNYM3QziuBcbgQneBxaStUePMO9
+         PnAZu2SktmCAr27UdcSLjkkqaYuTihJ6t70wYfejY5l+70/48O82rkrR7D2U6vuj+jzH
+         N/V72sC/3zCbCGRifTxDdXiNjSTcLFSy/5gDDRsxWWAw8A3c8ZyV4ovb3fu8tp0wPgy/
+         5n20lqUuKqBG2Vos1vN9H5YrdSOrdJCMdy9tBr8alTpsHUS55fCitYvReCukNw/BvfhH
+         q7gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690914291; x=1691519091;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eERMSYYSDZt1sQe+bzSLdAZ0mwIc+3+1BsSvv7e7c+4=;
-        b=gCl9f083FnSQaopgO2czRqkTWTZWW8ujBX3OhDmO8oA3OdOoeNP+ovbeDhIPCS0bAo
-         OIV80BFNFFp9+uVkocZbOFqUv+vm4qFKiMpCJsSskTQKURdmbSnu9dSAIDtCvJZyMtUm
-         DmSAD13o5zEPE86goiUm5LNHhD5rhImrK8f6xOiNgM3ZWdtnVjNpYXgXSfiVoskkXSc6
-         +MF8Kyxeb4aUsoAE5Y1qo2xEEr7Wx+ROrqd4gZL66+LwEYkTcdoapIK6uQsBD0q5SGm9
-         QEzbHUIFoARXUpQRG/kHQ5f0VF90MHnwEbKCuGH2LabToX74Co9C0pLNMX3/AELhs3IK
-         NWyA==
-X-Gm-Message-State: ABy/qLbIgRD4uHEJ6o3OuztXAopFBwvw3rDEfl0q/x9iC0jkV6X4AOXC
-        eDZZX/4iwkwa3Z0415fkl1F9mDLddLoNPIBr4QXdWT/8TH5mO6QF
-X-Google-Smtp-Source: APBJJlEdO5COyGhE1YTvksy27njVOcMwd/97iTtuAOQfdC/FX5Zppd1JUyFaJ999ov9ZQHyvV/uZlBnt57A1s29vOAA=
-X-Received: by 2002:a05:6102:9cf:b0:447:7cb1:3148 with SMTP id
- g15-20020a05610209cf00b004477cb13148mr2948071vsi.33.1690914291157; Tue, 01
- Aug 2023 11:24:51 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690914399; x=1691519199;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tkkS6sKTbNQ3LRfOUF34YGw1W/C6AI1LuWBgt5ptbqM=;
+        b=LtN1q0KvY2uG4E7NTXhuFyRvY9PuRy2WjKmdjXOSRIHossFLMmBFM9OVl/ThzlVm+D
+         NAA7pXuWnBEZ9VQblSfvQdxoX1Zimb/8onb16wreMtYttUPgW7+/kPcJGK2w85Sqoj/E
+         hM962OPhOojyZ6shod6b5aoc/tNMWhJImgM8wDNvpkd557iohWDhyMf7ibiOQGoGUMCw
+         f6YPxqeViD+afUWUxuEWdUsmvcyyk2ThfzjYyuSjv1BMRKLHPim5gJzmYbo4Nq1buSQp
+         ZhzdZpufTm4uBoYxw0PpzAERD+T9zMPoJomxaRt9mDYSRkWu6aKawOJML+VK3sRco1ks
+         GY/w==
+X-Gm-Message-State: ABy/qLbLUkvrQV40/Nb7uGmHIQ+b4t/Msy9/5sg/hZ24jy3U7SfmJLzX
+        u0pFsX4S5WUikTS83T8epawJdw==
+X-Google-Smtp-Source: APBJJlEvl0U1CkOCk4yo2BP4YgAaX+oApkF7ouGt3yLZCdapsYEkGjbOpcv+6UOfUkCRSIjzL0c9Tw==
+X-Received: by 2002:a05:600c:220a:b0:3fe:2b76:3d7 with SMTP id z10-20020a05600c220a00b003fe2b7603d7mr1622998wml.10.1690914398970;
+        Tue, 01 Aug 2023 11:26:38 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id n19-20020a7bc5d3000000b003fbc30825fbsm14480448wmk.39.2023.08.01.11.26.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 11:26:38 -0700 (PDT)
+Message-ID: <728e22ab-f68c-a891-f4d0-3d66cd03e9ec@linaro.org>
+Date:   Tue, 1 Aug 2023 20:26:37 +0200
 MIME-Version: 1.0
-References: <20230801121824.174556-1-alistair.francis@wdc.com>
- <2023080152-disobey-widen-65a4@gregkh> <CAKmqyKMEqrfP8BrXd9pVd4a5Aodipty-8bAkxK5xcGSewsC9JA@mail.gmail.com>
- <20230801170739.000048cb@Huawei.com>
-In-Reply-To: <20230801170739.000048cb@Huawei.com>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Tue, 1 Aug 2023 14:24:24 -0400
-Message-ID: <CAKmqyKND01=xaiB-VFVsi3+KRbxu4dBKfh_RhCN-jric5VzNpA@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI/DOE: Expose the DOE protocols via sysfs
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, lukas@wunner.de,
-        alex.williamson@redhat.com, christian.koenig@amd.com,
-        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v3 0/8] ACPI: thermal: Use trip point table to register
+ thermal zones
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <12254967.O9o76ZdvQC@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 12:07=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Tue, 1 Aug 2023 09:48:13 -0400
-> Alistair Francis <alistair23@gmail.com> wrote:
->
-> > On Tue, Aug 1, 2023 at 9:28=E2=80=AFAM Greg KH <gregkh@linuxfoundation.=
-org> wrote:
-> > >
-> > > On Tue, Aug 01, 2023 at 08:18:24AM -0400, Alistair Francis wrote:
-> > > > The PCIe 6 specification added support for the Data Object Exchange=
- (DOE).
-> > > > When DOE is supported the Discovery Data Object Protocol must be
-> > > > implemented. The protocol allows a requester to obtain information =
-about
-> > > > the other DOE protocols supported by the device.
-> > > >
-> > > > The kernel is already querying the DOE protocols supported and cach=
-eing
-> > > > the values. This patch exposes the values via sysfs. This will allo=
-w
-> > > > userspace to determine which DOE protocols are supported by the PCI=
-e
-> > > > device.
-> > > >
-> > > > By exposing the information to userspace tools like lspci can relay=
- the
-> > > > information to users. By listing all of the supported protocols we =
-can
-> > > > allow userspace to parse and support the list, which might include
-> > > > vendor specific protocols as well as yet to be supported protocols.
-> > > >
-> > > > Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
-> > > > ---
-> > > >  Documentation/ABI/testing/sysfs-bus-pci | 11 ++++++
-> > > >  drivers/pci/doe.c                       | 52 +++++++++++++++++++++=
-++++
-> > > >  drivers/pci/pci-sysfs.c                 |  8 ++++
-> > > >  include/linux/pci-doe.h                 |  2 +
-> > > >  4 files changed, 73 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentatio=
-n/ABI/testing/sysfs-bus-pci
-> > > > index ecf47559f495..ae969bbfa631 100644
-> > > > --- a/Documentation/ABI/testing/sysfs-bus-pci
-> > > > +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> > > > @@ -500,3 +500,14 @@ Description:
-> > > >               console drivers from the device.  Raw users of pci-sy=
-sfs
-> > > >               resourceN attributes must be terminated prior to resi=
-zing.
-> > > >               Success of the resizing operation is not guaranteed.
-> > > > +
-> > > > +What:                /sys/bus/pci/devices/.../doe_proto
-> > > > +Date:                July 2023
-> > > > +Contact:     Linux PCI developers <linux-pci@vger.kernel.org>
-> > > > +Description:
-> > > > +             This file contains a list of the supported Data Objec=
-t Exchange (DOE)
-> > > > +             protocols. The protocols are seperated by newlines.
-> > > > +             The value comes from the device and specifies the ven=
-dor and
-> > > > +             protocol supported. The lower byte is the protocol an=
-d the next
-> > > > +             two bytes are the vendor ID.
-> > > > +             The file is read only.
-> > >
-> > > Sorry, but sysfs files are "one value per file", you can't have a "li=
-st
-> > > of protocols with new lines" in a one value-per-file rule.
-> > >
-> > >
-> > > > diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
-> > > > index 1b97a5ab71a9..70900b79b239 100644
-> > > > --- a/drivers/pci/doe.c
-> > > > +++ b/drivers/pci/doe.c
-> > > > @@ -563,6 +563,58 @@ static bool pci_doe_supports_prot(struct pci_d=
-oe_mb *doe_mb, u16 vid, u8 type)
-> > > >       return false;
-> > > >  }
-> > > >
-> > > > +#ifdef CONFIG_SYSFS
-> > > > +/**
-> > > > + * pci_doe_sysfs_proto_supports() - Write the supported DOE protoc=
-ols
-> > > > + *                        to a sysfs buffer
-> > > > + * @doe_mb: DOE mailbox capability to query
-> > > > + * @buf: buffer to store the sysfs strings
-> > > > + * @offset: offset in buffer to store the sysfs strings
-> > > > + *
-> > > > + * RETURNS: The number of bytes written, 0 means an error occured
-> > > > + */
-> > > > +static unsigned long pci_doe_sysfs_proto_supports(struct pci_doe_m=
-b *doe_mb,
-> > > > +                                               char *buf, ssize_t =
-offset)
-> > > > +{
-> > > > +     unsigned long index;
-> > > > +     ssize_t ret =3D offset;
-> > > > +     ssize_t r;
-> > > > +     void *entry;
-> > > > +
-> > > > +     xa_for_each(&doe_mb->prots, index, entry) {
-> > > > +             r =3D sysfs_emit_at(buf, ret, "0x%08lX\n", xa_to_valu=
-e(entry));
-> > > > +
-> > >
-> > > No need for a blank line.
-> > >
-> > > > +             if (r =3D=3D 0)
-> > > > +                     return ret;
-> > >
-> > >
-> > >
-> > > > +
-> > > > +             ret +=3D r;
-> > > > +     }
-> > > > +
-> > > > +     return ret;
-> > > > +}
-> > > > +
-> > > > +ssize_t doe_proto_show(struct device *dev, struct device_attribute=
- *attr,
-> > > > +                    char *buf)
-> > > > +{
-> > > > +     struct pci_dev *pci_dev =3D to_pci_dev(dev);
-> > > > +     unsigned long index;
-> > > > +     ssize_t ret =3D 0;
-> > > > +     ssize_t r;
-> > > > +     struct pci_doe_mb *doe_mb;
-> > > > +
-> > > > +     xa_for_each(&pci_dev->doe_mbs, index, doe_mb) {
-> > > > +             r =3D pci_doe_sysfs_proto_supports(doe_mb, buf, ret);
-> > > > +
-> > > > +             if (r =3D=3D 0)
-> > > > +                     return ret;
-> > > > +
-> > > > +             ret +=3D r;
-> > > > +     }
-> > >
-> > > So this is going to be a lot of data, what is ensuring that you didn'=
-t
-> > > truncate it?  Which again, is the reason why this is not a good idea =
-for
-> > > sysfs, sorry.
-> >
-> > Hmm... That's a pain.
-> >
-> > I was hoping to avoid the kernel needing to know the protocols. This
-> > list can include vendor specific protocols, as well as future
-> > protocols that the running kernel doesn't yet support, so I wanted to
-> > directly pass it to userspace without having to parse it in the
-> > kernel.
-> >
-> > Does anyone have any thoughts on a better way to expose the information=
-?
->
-> File per protocol or better yet a directory per protocol vid and prot as =
-files?
 
-A directory per vid and files for each protocol sounds good to me.
-I'll update the patch to do that. If anyone doesn't like that idea let
-me know
+Hi Rafael,
 
-> Files are cheap(ish) :) + expectation is probably a few protocols at
-> most per DOE and a few DOEs per device.
+On 25/07/2023 14:02, Rafael J. Wysocki wrote:
+> Hi Everyone,
+> 
+> This is the second iteration of the $subject patch series and its original
+> description below is still applicable
+> 
+> On Tuesday, July 18, 2023 8:01:20 PM CEST Rafael J. Wysocki wrote:
+>>
+>> This patch series makes the ACPI thermal driver register thermal zones
+>> with the help of thermal_zone_device_register_with_trips(), so it
+>> doesn't need to use the thermal zone callbacks related to trip points
+>> any more (and they are dropped in the last patch).
+>>
+>> The approach presented here is quite radically different from the
+>> previous attempts, as it doesn't really rearrange the driver's
+>> internal data structures, but adds the trip table support on top of
+>> them.  For this purpose, it uses an additional field in struct thermal_trip
+>> introduced in the first patch.
+> 
+> This update is mostly related to the observation that the critical and hot trip
+> points never change after initialization, so they don't really need to be
+> connected back to the corresponding thermal_trip structures.  It also fixes
+> an error code path memory leak in patch [5/8].
 
-I agree that's my expectation as well.
+I've been through the series. It is really cool that we can get rid of 
+the ops usage at the end of the series.
 
->
-> Bit similar to listing out end points for USB devices.
->
-> >
-> > >
-> > > What userspace tool wants this information?
-> >
-> > pciutils (lspci) is the first user [1], but I suspect more userspace
-> > tools will want to query the DOE protocols as SPDM catches on more.
-> > Eventually I would like to expose the DOE mailboxes to userspace (but
-> > that's a separate issue).
->
-> You may find it tricky to get anyone to move on that as I think we
-> had a fairly strong consensus behind a per protocol interface only.
-> One of the early DOE patch sets had a generic interface but we ripped
-> it out based on discussions at the time.
+However, the series introduces a wrapper to the thermal zone lock and 
+exports that in the public header. That goes in the opposite direction 
+of the recent cleanups and obviously will give the opportunity to 
+drivers to do silly things [again].
 
-Fair enough, thanks for letting me know
+On the other side, the structure thermal_trip introduces a circular 
+reference, which is usually something to avoid.
 
->
-> One avenue discussed (after SPDM lands in kernel) was to provide some
-> hooks for some parts of the exchange to be pushed to userspace, but
-> it was never totally clear to me which bits make sense.  If this
+Apart those two points, the ACPI changes look ok.
 
-I think we will need to at least expose a few parts of SPDM to
-userspace. It could either be the kernel passing data back (like the
-measurements for example) or userspace orchestrating the
-communication. That's a future problem at the moment though
+Comments in the different patches will follow
 
-Alistair
+Thanks
 
-> happens it will probably be the AMD SEV-SNP or similar usecase that
-> drives it with a tightly defined interface for this purpose (not
-> a generic DOE one).
->
-> >
-> > 1: https://github.com/pciutils/pciutils/pull/152
-> >
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
->
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
