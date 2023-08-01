@@ -2,240 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262AF76B467
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601AB76B469
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232422AbjHAMG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
+        id S231245AbjHAMHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234126AbjHAMGO (ORCPT
+        with ESMTP id S230315AbjHAMHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:06:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC496198C;
-        Tue,  1 Aug 2023 05:06:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 698D06156E;
-        Tue,  1 Aug 2023 12:06:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D416C433C7;
-        Tue,  1 Aug 2023 12:06:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690891569;
-        bh=s6YECtfwRWz+nn+e8dtTgfPFMuDS2G9MlvdIBiOeJvo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KqMPTZxlteTlX/vW0spt/IyKiVoPJYdtMr2lPEmfbuQmmwhfCC21GhGz+yQWZ8GEd
-         RJW1lK9JN1DnTZJmTBwsvxtaZhWyU6xXWtVcaFKkx5L8z9m/yft5TuURPQh/J+IL7U
-         PHvcq8WNXFxjoQvwm9S5/fvJ1NcSpL5MoMmgslMiMQ5qDQ3DsuwUBL05Ll8j2x2V0T
-         Fmi+ZB4B+y3YDp+rI657BSpL6UbzABRJfYD+Czas7wkqLfwlQX9ueJGii9FSPJqKBt
-         8HPA9376cD/cny4bwakf8t2KopaxquTpFCkgWx5XoRWckS8rxRoyjnuCN7kB9nASW2
-         lheIZ7XLLLVog==
-Date:   Tue, 1 Aug 2023 14:06:06 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Keith Zhao <keith.zhao@starfivetech.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com, Bjorn Andersson <andersson@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jack Zhu <jack.zhu@starfivetech.com>,
-        Shengyang Chen <shengyang.chen@starfivetech.com>,
-        Changhuang Liang <changhuang.liang@starfivetech.com>
-Subject: Re: [PATCH v1 v1 6/7] drm/vs: Add KMS crtc&plane
-Message-ID: <7sfzkc6b46izrfnhcoajllugfofh7otseocbiiftjx344hxiuf@jkjb5syqwo24>
-References: <20230801101030.2040-1-keith.zhao@starfivetech.com>
- <20230801101030.2040-7-keith.zhao@starfivetech.com>
+        Tue, 1 Aug 2023 08:07:03 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E15171E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:06:59 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RFYfc33q6ztRdq;
+        Tue,  1 Aug 2023 20:03:36 +0800 (CST)
+Received: from [10.67.102.169] (10.67.102.169) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 1 Aug 2023 20:06:56 +0800
+CC:     <yangyicong@hisilicon.com>, <peterz@infradead.org>,
+        <mingo@redhat.com>, <juri.lelli@redhat.com>,
+        <vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
+        <tim.c.chen@linux.intel.com>, <gautham.shenoy@amd.com>,
+        <mgorman@suse.de>, <vschneid@redhat.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <rostedt@goodmis.org>,
+        <bsegall@google.com>, <bristot@redhat.com>,
+        <prime.zeng@huawei.com>, <jonathan.cameron@huawei.com>,
+        <ego@linux.vnet.ibm.com>, <srikar@linux.vnet.ibm.com>,
+        <linuxarm@huawei.com>, <21cnbao@gmail.com>,
+        <kprateek.nayak@amd.com>, <wuyun.abel@bytedance.com>
+Subject: Re: [PATCH v9 2/2] sched/fair: Scan cluster before scanning LLC in
+ wake-up path
+To:     Chen Yu <yu.c.chen@intel.com>
+References: <20230719092838.2302-1-yangyicong@huawei.com>
+ <20230719092838.2302-3-yangyicong@huawei.com>
+ <ZLpVZmI8FrQtsfRH@chenyu5-mobl2>
+From:   Yicong Yang <yangyicong@huawei.com>
+Message-ID: <ac8d1fef-ebe2-021f-b621-208c619cc2ea@huawei.com>
+Date:   Tue, 1 Aug 2023 20:06:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="duuftomxabqjg5ol"
-Content-Disposition: inline
-In-Reply-To: <20230801101030.2040-7-keith.zhao@starfivetech.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZLpVZmI8FrQtsfRH@chenyu5-mobl2>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.169]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Chenyu,
 
---duuftomxabqjg5ol
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Sorry for the late reply. Something's wrong and cause this didn't appear
+in my mail box. I check it out on the LKML.
 
-Hi,
+On 2023/7/21 17:52, Chen Yu wrote:
+> Hi Yicong,
+> 
+> Thanks for sending this version!
+> 
+> On 2023-07-19 at 17:28:38 +0800, Yicong Yang wrote:
+>> From: Barry Song <song.bao.hua@hisilicon.com>
+>>
+>> For platforms having clusters like Kunpeng920, CPUs within the same cluster
+>> have lower latency when synchronizing and accessing shared resources like
+>> cache. Thus, this patch tries to find an idle cpu within the cluster of the
+>> target CPU before scanning the whole LLC to gain lower latency. This
+>> will be implemented in 3 steps in select_idle_sibling():
+>> 1. When the prev_cpu/recent_used_cpu are good wakeup candidates, use them
+>>    if they're sharing cluster with the target CPU. Otherwise record them
+>>    and do the scanning first.
+>> 2. Scanning the cluster prior to the LLC of the target CPU for an
+>>    idle CPU to wakeup.
+>> 3. If no idle CPU found after scanning and the prev_cpu/recent_used_cpu
+>>    can be used, use them.
+>>
+>> Testing has been done on Kunpeng920 by pinning tasks to one numa and two
+>> numa. On Kunpeng920, Each numa has 8 clusters and each cluster has 4 CPUs.
+>>
+>> With this patch, We noticed enhancement on tbench and netperf within one
+>> numa or cross two numa on 6.5-rc1:
+>> tbench results (node 0):
+>>              baseline                    patched
+>>   1:        325.9673        378.9117 (   16.24%)
+>>   4:       1311.9667       1501.5033 (   14.45%)
+>>   8:       2629.4667       2961.9100 (   12.64%)
+>>  16:       5259.1633       5928.0833 (   12.72%)
+>>  32:      10368.6333      10566.8667 (    1.91%)
+>>  64:       7868.7700       8182.0100 (    3.98%)
+>> 128:       6528.5733       6801.8000 (    4.19%)
+>> tbench results (node 0-1):
+>>               vanilla                    patched
+>>   1:        329.2757        380.8907 (   15.68%)
+>>   4:       1327.7900       1494.5300 (   12.56%)
+>>   8:       2627.2133       2917.1233 (   11.03%)
+>>  16:       5201.3367       5835.9233 (   12.20%)
+>>  32:       8811.8500      11154.2000 (   26.58%)
+>>  64:      15832.4000      19643.7667 (   24.07%)
+>> 128:      12605.5667      14639.5667 (   16.14%)
+>> netperf results TCP_RR (node 0):
+>>              baseline                    patched
+>>   1:      77302.8667      92172.2100 (   19.24%)
+>>   4:      78724.9200      91581.3100 (   16.33%)
+>>   8:      79168.1296      91091.7942 (   15.06%)
+>>  16:      81079.4200      90546.5225 (   11.68%)
+>>  32:      82201.5799      78910.4982 (   -4.00%)
+>>  64:      29539.3509      29131.4698 (   -1.38%)
+>> 128:      12082.7522      11956.7705 (   -1.04%)
+>> netperf results TCP_RR (node 0-1):
+>>              baseline                    patched
+>>   1:      78340.5233      92101.8733 (   17.57%)
+>>   4:      79644.2483      91326.7517 (   14.67%)
+>>   8:      79557.4313      90737.8096 (   14.05%)
+>>  16:      79215.5304      90568.4542 (   14.33%)
+>>  32:      78999.3983      85460.6044 (    8.18%)
+>>  64:      74198.9494      74325.4361 (    0.17%)
+>> 128:      27397.4810      27757.5471 (    1.31%)
+>> netperf results UDP_RR (node 0):
+>>              baseline                    patched
+>>   1:      95721.9367     111546.1367 (   16.53%)
+>>   4:      96384.2250     110036.1408 (   14.16%)
+>>   8:      97460.6546     109968.0883 (   12.83%)
+>>  16:      98876.1687     109387.8065 (   10.63%)
+>>  32:     104364.6417     105241.6767 (    0.84%)
+>>  64:      37502.6246      37451.1204 (   -0.14%)
+>> 128:      14496.1780      14610.5538 (    0.79%)
+>> netperf results UDP_RR (node 0-1):
+>>              baseline                    patched
+>>   1:      96176.1633     111397.5333 (   15.83%)
+>>   4:      94758.5575     105681.7833 (   11.53%)
+>>   8:      94340.2200     104138.3613 (   10.39%)
+>>  16:      95208.5285     106714.0396 (   12.08%)
+>>  32:      74745.9028     100713.8764 (   34.74%)
+>>  64:      59351.4977      73536.1434 (   23.90%)
+>> 128:      23755.4971      26648.7413 (   12.18%)
+>>
+>> Note neither Kunpeng920 nor x86 Jacobsville supports SMT, so the SMT branch
+>> in the code has not been tested but it supposed to work.
+>>
+>> Chen Yu also noticed this will improve the performance of tbench and
+>> netperf on a 24 CPUs Jacobsville machine, there are 4 CPUs in one
+>> cluster sharing L2 Cache.
+>>
+>> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+>> [https://lore.kernel.org/lkml/Ytfjs+m1kUs0ScSn@worktop.programming.kicks-ass.net]
+>> Tested-by: Yicong Yang <yangyicong@hisilicon.com>
+>> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+>> Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+>> Reviewed-by: Tim Chen <tim.c.chen@linux.intel.com>
+>> Reviewed-by: Chen Yu <yu.c.chen@intel.com>
+>> ---
+>>  kernel/sched/fair.c     | 59 +++++++++++++++++++++++++++++++++++++----
+>>  kernel/sched/sched.h    |  1 +
+>>  kernel/sched/topology.c | 12 +++++++++
+>>  3 files changed, 67 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index b3e25be58e2b..d91bf64f81f5 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -7012,6 +7012,30 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+>>  		}
+>>  	}
+>>  
+>> +	if (static_branch_unlikely(&sched_cluster_active)) {
+>> +		struct sched_group *sg = sd->groups;
+>> +
+>> +		if (sg->flags & SD_CLUSTER) {
+>> +			for_each_cpu_wrap(cpu, sched_group_span(sg), target + 1) {
+>> +				if (!cpumask_test_cpu(cpu, cpus))
+>> +					continue;
+>> +
+>> +				if (has_idle_core) {
+>> +					i = select_idle_core(p, cpu, cpus, &idle_cpu);
+>> +					if ((unsigned int)i < nr_cpumask_bits)
+>> +						return i;
+>> +				} else {
+>> +					if (--nr <= 0)
+>> +						return -1;
+>> +					idle_cpu = __select_idle_cpu(cpu, p);
+>> +					if ((unsigned int)idle_cpu < nr_cpumask_bits)
+>> +						return idle_cpu;
+>> +				}
+>> +			}
+>> +			cpumask_andnot(cpus, cpus, sched_group_span(sg));
+>> +		}
+>> +	}
+>> +
+>>  	for_each_cpu_wrap(cpu, cpus, target + 1) {
+>>  		if (has_idle_core) {
+>>  			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+>> @@ -7019,7 +7043,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+>>  				return i;
+>>  
+>>  		} else {
+>> -			if (!--nr)
+>> +			if (--nr <= 0)
+>>  				return -1;
+>>  			idle_cpu = __select_idle_cpu(cpu, p);
+>>  			if ((unsigned int)idle_cpu < nr_cpumask_bits)
+>> @@ -7121,7 +7145,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>  	bool has_idle_core = false;
+>>  	struct sched_domain *sd;
+>>  	unsigned long task_util, util_min, util_max;
+>> -	int i, recent_used_cpu;
+>> +	int i, recent_used_cpu, prev_aff = -1;
+>>  
+>>  	/*
+>>  	 * On asymmetric system, update task utilization because we will check
+>> @@ -7148,8 +7172,14 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>>  	 */
+>>  	if (prev != target && cpus_share_cache(prev, target) &&
+>>  	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
+>> -	    asym_fits_cpu(task_util, util_min, util_max, prev))
+>> -		return prev;
+>> +	    asym_fits_cpu(task_util, util_min, util_max, prev)) {
+>> +		if (!static_branch_unlikely(&sched_cluster_active))
+>> +			return prev;
+>> +
+>> +		if (cpus_share_resources(prev, target))
+>> +			return prev;
+> 
+> I have one minor question, previously Peter mentioned that he wants to get rid of the
+> percpu sd_share_id, not sure if he means that not using it in select_idle_cpu()
+> or remove that variable completely to not introduce extra space? 
+> Hi Peter, could you please give us more hints on this? thanks.
+> 
+> If we wants to get rid of this variable, would this work?
+> 
+> 	if ((sd->groups->flags & SD_CLUSTER) &&
+> 	    cpumask_test_cpu(prev, sched_group_span(sd->groups))
+> 		return prev
+> 
 
-On Tue, Aug 01, 2023 at 06:10:29PM +0800, Keith Zhao wrote:
-> +static int vs_crtc_atomic_set_property(struct drm_crtc *crtc,
-> +				       struct drm_crtc_state *state,
-> +				       struct drm_property *property,
-> +				       uint64_t val)
-> +{
-> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
-> +	struct vs_crtc_state *vs_crtc_state = to_vs_crtc_state(state);
-> +
-> +	if (property == vs_crtc->sync_mode)
-> +		vs_crtc_state->sync_mode = val;
-> +	else if (property == vs_crtc->mmu_prefetch)
-> +		vs_crtc_state->mmu_prefetch = val;
-> +	else if (property == vs_crtc->bg_color)
-> +		vs_crtc_state->bg_color = val;
-> +	else if (property == vs_crtc->panel_sync)
-> +		vs_crtc_state->sync_enable = val;
-> +	else if (property == vs_crtc->dither)
-> +		vs_crtc_state->dither_enable = val;
-> +	else
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
-> +
-> +static int vs_crtc_atomic_get_property(struct drm_crtc *crtc,
-> +				       const struct drm_crtc_state *state,
-> +				       struct drm_property *property,
-> +				       uint64_t *val)
-> +{
-> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
-> +	const struct vs_crtc_state *vs_crtc_state =
-> +		container_of(state, const struct vs_crtc_state, base);
-> +
-> +	if (property == vs_crtc->sync_mode)
-> +		*val = vs_crtc_state->sync_mode;
-> +	else if (property == vs_crtc->mmu_prefetch)
-> +		*val = vs_crtc_state->mmu_prefetch;
-> +	else if (property == vs_crtc->bg_color)
-> +		*val = vs_crtc_state->bg_color;
-> +	else if (property == vs_crtc->panel_sync)
-> +		*val = vs_crtc_state->sync_enable;
-> +	else if (property == vs_crtc->dither)
-> +		*val = vs_crtc_state->dither_enable;
-> +	else
-> +		return -EINVAL;
-> +
-> +	return 0;
-> +}
+In the current implementation, nop, we haven't deferenced the @sd yet and we don't
+need to if scanning is not needed.
 
-Any new property needs to follow these requirements:
-https://docs.kernel.org/gpu/drm-kms.html#requirements
-https://docs.kernel.org/gpu/drm-uapi.html#open-source-userspace-requirements
+Since we're on the quick path without scanning here, I wonder it'll be a bit more
+efficient to use a per-cpu id rather than deference the rcu and do the bitmap
+computation.
 
-Also, most of them are suspicious, like sync_mode, mmu_prefetch,
-panel_sync or dither_enable. Why would you want userspace to change
-those ?
-
-
-> +static int vs_crtc_late_register(struct drm_crtc *crtc)
-> +{
-> +	return 0;
-> +}
-
-You can drop that.
-
-> +static int vs_crtc_enable_vblank(struct drm_crtc *crtc)
-> +{
-> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
-> +
-> +	vs_dc_enable_vblank(vs_crtc->dev, true);
-> +
-> +	return 0;
-> +}
-> +
-> +static void vs_crtc_disable_vblank(struct drm_crtc *crtc)
-> +{
-> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
-> +
-> +	vs_dc_enable_vblank(vs_crtc->dev, false);
-> +}
-> +
-> +static const struct drm_crtc_funcs vs_crtc_funcs = {
-> +	.set_config		= drm_atomic_helper_set_config,
-> +	.page_flip		= drm_atomic_helper_page_flip,
-> +	.reset			= vs_crtc_reset,
-> +	.atomic_duplicate_state = vs_crtc_atomic_duplicate_state,
-> +	.atomic_destroy_state	= vs_crtc_atomic_destroy_state,
-> +	.atomic_set_property	= vs_crtc_atomic_set_property,
-> +	.atomic_get_property	= vs_crtc_atomic_get_property,
-> +	.late_register		= vs_crtc_late_register,
-> +	.enable_vblank		= vs_crtc_enable_vblank,
-> +	.disable_vblank		= vs_crtc_disable_vblank,
-> +};
-> +
-> +static u8 cal_pixel_bits(u32 bus_format)
-> +{
-> +	u8 bpp;
-> +
-> +	switch (bus_format) {
-> +	case MEDIA_BUS_FMT_RGB565_1X16:
-> +	case MEDIA_BUS_FMT_UYVY8_1X16:
-> +		bpp = 16;
-> +		break;
-> +	case MEDIA_BUS_FMT_RGB666_1X18:
-> +	case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
-> +		bpp = 18;
-> +		break;
-> +	case MEDIA_BUS_FMT_UYVY10_1X20:
-> +		bpp = 20;
-> +		break;
-> +	case MEDIA_BUS_FMT_BGR888_1X24:
-> +	case MEDIA_BUS_FMT_UYYVYY8_0_5X24:
-> +	case MEDIA_BUS_FMT_YUV8_1X24:
-> +		bpp = 24;
-> +		break;
-> +	case MEDIA_BUS_FMT_RGB101010_1X30:
-> +	case MEDIA_BUS_FMT_UYYVYY10_0_5X30:
-> +	case MEDIA_BUS_FMT_YUV10_1X30:
-> +		bpp = 30;
-> +		break;
-> +	default:
-> +		bpp = 24;
-> +		break;
-> +	}
-> +
-> +	return bpp;
-> +}
-> +
-> +static bool vs_crtc_mode_fixup(struct drm_crtc *crtc,
-> +			       const struct drm_display_mode *mode,
-> +			       struct drm_display_mode *adjusted_mode)
-> +{
-> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
-> +
-> +	return vs_dc_mode_fixup(vs_crtc->dev, mode, adjusted_mode);
-> +}
-
-You should be using atomic_check.
-
-Maxime
-
---duuftomxabqjg5ol
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMj1LgAKCRDj7w1vZxhR
-xcuiAQDVAHuCXQLiF4aho3J76b/1omEGtDLrJYqMFou4trNeDQEA9a+4doYz0r8T
-e4MChnbgb7U5q3ndReWR8iY6I4VZ/wc=
-=sNPG
------END PGP SIGNATURE-----
-
---duuftomxabqjg5ol--
+Thanks.
