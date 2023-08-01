@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF51C76BAB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E58976BAB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234291AbjHAREr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:04:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
+        id S233896AbjHARE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:04:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbjHAREP (ORCPT
+        with ESMTP id S234351AbjHAREX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:04:15 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18AC2717
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:03:48 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-34930fe8608so4120095ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:03:48 -0700 (PDT)
+        Tue, 1 Aug 2023 13:04:23 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C893AA6
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:03:54 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1bba254a7d4so4505674fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:03:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690909412; x=1691514212;
+        d=gmail.com; s=20221208; t=1690909414; x=1691514214;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HTIptaY1Q1Cw8tbq8hqtoZUus2V/66qWUMbxjps5ClE=;
-        b=DBM1VlojjC1c4IaxOfDZLDxXUxA9E6CwSVUV5iPtJGlh/jhdn+Z1O05pTkM+QpLBGd
-         msg8B6RQKG2RxTePtA5nAQBJyXNXbckAw+s0K0Re2jABj6rfI07mGBxEfg5A9UuYDUmM
-         +PJWL/pt2POaLEHJd/QKlpgeed76hBWankEcMkTwPSykYwD7m7ifqA59TLeLGxvj0GrK
-         N/lh/wouZUbdd3mOIBlmF6L0Okwdh+P4LSQz2TKwF4BB58nZfScsk6lB8ptXZLGEzqTI
-         VYoJhmoF0AbGxZPzTXkTK8IIMc1OmgZf7+Hlh7kBaKjps/x00BFy3aXCNb1xNrN2zrTC
-         r3qw==
+        bh=gFBA7Lr3JItg7OYfOcjW/1QCQzqvPk7XHacFdueAfEI=;
+        b=fyEaICFFhma8ZDWVxdrVdT9mRYJOqU4wwrKqayrPPIzSX0jgeT8MHqKihpTqpfkPX0
+         AuU1FrgxAstF27oCCP7HObML0aANdtcIuVhVQy/6BcY3Za+6CfR6UZD9RyDXKFmdjeDd
+         j9eVLnXhi+TVfFDHPVlzTPS+WxSeS2sS8V9+k8g2M60r0Yqn//MxO8UkjHL97X1DitKa
+         uNwYK93r5TRV5sMkgolxy0OA7ewh9gqSDelFGBzucaO/d8T3YLjIFtMpJp7R/uIwxsaT
+         QhEiR5Rykzc2qmm1yk+lqFHMii8Za4P2+ZIQ7Ul1pBHT+nM3Di1EFuIgHltaIVEDKoNN
+         xoNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690909412; x=1691514212;
+        d=1e100.net; s=20221208; t=1690909414; x=1691514214;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HTIptaY1Q1Cw8tbq8hqtoZUus2V/66qWUMbxjps5ClE=;
-        b=ekk/t1Af0EAf+uc3ULBhcvyAAtpp+nm08s1h9LjCYDedhhuMVHtQwMZUEuSSqmZIac
-         7YK2ahYp4HzMKeZOOXeLnCBaN1YijxXtBGWA97AHH8VsDrF6Ss5KE7KkDuTg36BwWC4r
-         kAb9RIRVYzQaIGwgugxqCPHZzbQTZgyp2KrZ/w/Q+tAKv32wphAb7D2pU8tbKr/k8Pc7
-         UgEo+itKDrHMsTsbkXSZLsYtBjJppwBWxiX+BxHvnasYNcu6R8iuhpptkBePgJDBCK/S
-         o3/+iu7QHrLa0zLjHITtg8trqnNimToGA8WeIQaTwq+U6z28eT9hLYANgAnRKvGZ8pYu
-         zgMg==
-X-Gm-Message-State: ABy/qLajXpfEJ7bWScAyVx3dKJp56IIHvI8Fuxih7CtTkBSXqNTmFTdd
-        ooT0h9JtIM+qRHi7AD2hcb0=
-X-Google-Smtp-Source: APBJJlEvxEOAmmWhBekjDXEKP44F1wzy+JOf74gmXKw6CXVXw+vjRTBjU6kykBbo/XVcjPeJ6tQHdQ==
-X-Received: by 2002:a05:6e02:1068:b0:348:ec12:fb31 with SMTP id q8-20020a056e02106800b00348ec12fb31mr12258462ilj.0.1690909412652;
-        Tue, 01 Aug 2023 10:03:32 -0700 (PDT)
+        bh=gFBA7Lr3JItg7OYfOcjW/1QCQzqvPk7XHacFdueAfEI=;
+        b=TtcE2ljtrvNXv7jNZ/9I/uXtO4tLYXhkIA2P9ycTJDMpNVfSXrvjjESF3hawpdO3VQ
+         0rTTTsQceg0g9W+RXcMc7bjBf4/gwMBzS3+GEREum7O3mw+UEnZ4Ke1z+WzKhnb+2nzH
+         e5tzPJ1feqr38jVSIgLWPx9pneWveKOPRBiXcYV29e/Xtydyu5h39KTpbw9B5wGWVGlx
+         LkC+LXfWgLzePsujqe/u7eZ7JuwA8C5b6zBmYHexzhTk8BIkExq+QbqX0a89XBKGrYRM
+         o+5hp6IB+GQKTu/3YiL4daLLJ1gIr93Hs93jLNIe8GBH10CjWg5XYUw01dHUzMXh5Xrt
+         RRRQ==
+X-Gm-Message-State: ABy/qLbZ9afjkQ/hDHkDeD+C0dB+RfeVZK9K7K8DxecrLyhLyqgK7Y++
+        LS+3MDM0M3XqwWayxJfSPCc=
+X-Google-Smtp-Source: APBJJlGssyyVGAfHxBiKUeWr+27L5iBh1gEWtkvxA15BwySavPliopjND05fY7zX72MTh1+f20XCag==
+X-Received: by 2002:a05:6870:a548:b0:1be:e066:acc with SMTP id p8-20020a056870a54800b001bee0660accmr7146920oal.50.1690909413929;
+        Tue, 01 Aug 2023 10:03:33 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id o20-20020a02c6b4000000b0042b144abf71sm3768577jan.179.2023.08.01.10.03.31
+        by smtp.googlemail.com with ESMTPSA id o20-20020a02c6b4000000b0042b144abf71sm3768577jan.179.2023.08.01.10.03.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 10:03:32 -0700 (PDT)
+        Tue, 01 Aug 2023 10:03:33 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     daniel.vetter@ffwll.ch, daniel@ffwll.ch, jbaron@akamai.com,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
@@ -60,9 +60,9 @@ Cc:     linux@rasmusvillemoes.dk, joe@perches.com, jani.nikula@intel.com,
         ville.syrjala@linux.intel.com, seanpaul@chromium.org,
         robdclark@gmail.com, Jim Cromie <jim.cromie@gmail.com>,
         apw@canonical.com
-Subject: [PATCH v5 13/22] checkpatch: file-scoped extern special case for linker-symbol
-Date:   Tue,  1 Aug 2023 11:02:45 -0600
-Message-ID: <20230801170255.163237-14-jim.cromie@gmail.com>
+Subject: [PATCH v5 13/22] checkpatch: special case for file-scoped extern linker-symbol
+Date:   Tue,  1 Aug 2023 11:02:46 -0600
+Message-ID: <20230801170255.163237-15-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230801170255.163237-1-jim.cromie@gmail.com>
 References: <20230801170255.163237-1-jim.cromie@gmail.com>
@@ -84,8 +84,11 @@ symbols, like those that mark the start, stop of many kernel sections.
 Since code already checks REALNAME to avoid linker-scripts entirely,
 add a new else-if block to look at them instead.  As a simple
 heuristic, treat all words (in the patch-line) as possible symbols,
-and save them to screen the WARN quoted above.  For my test case, this
-included BOUNDED_BY (a macro), which is extra, but not troublesome.
+and save them to screen the WARN quoted above.
+
+For my test case, this included BOUNDED_BY (a macro), which is extra,
+but not troublesome - any extra words collected would have to also be
+symbols the script would otherwise complain about.
 
 Where the WARN is issued, precede it with an else-if block to catch
 one common extern-in-c use case: "extern struct foo bar[]".  Here we
