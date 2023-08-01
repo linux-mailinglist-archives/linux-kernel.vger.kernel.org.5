@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B5B76B0A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40D1576B19C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbjHAKPp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 06:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
+        id S232830AbjHAKT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbjHAKPf (ORCPT
+        with ESMTP id S234119AbjHAKSk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:15:35 -0400
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F71116;
-        Tue,  1 Aug 2023 03:15:34 -0700 (PDT)
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-56c9f7830c2so253339eaf.0;
-        Tue, 01 Aug 2023 03:15:34 -0700 (PDT)
+        Tue, 1 Aug 2023 06:18:40 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438832D76
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:16:43 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-40c72caec5cso260551cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 03:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690884994; x=1691489794;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TZN9Ev39oJk78sdD2xFuDOdMnPsbmSFEY0jGkX/TZfs=;
+        b=73nIOlxPptDV21sESWCVMAR6SLbm5k0LKaJiE3ztg54DmwekJLjblbGBqzm3h09QHu
+         AcWJk4qzGieKWCBWLUremGY0iLXzASSMapZ+ZaDzkS1QkzfpTFlRVJR7dwDBrxR3ZFvJ
+         Ayq7XHl9VVuT1b1B0GCU7vv6BOqPiXRFbnpvUC37LxYz2afVSi4xkasF8rxGFDVJfHpK
+         XU09LcibSGYjS+FHcB6FeQKd+mqS/i29Kud5Dt8MaQX6gYpJk16rSOjk7CpNo40Mv8Wy
+         oet01eHTcf7iSo8CQF7LMVoKKHW3uRnbv5YnCdi5znln1GS2hMvU8q0ZlF1T7rDMEIZl
+         kb1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690884933; x=1691489733;
+        d=1e100.net; s=20221208; t=1690884994; x=1691489794;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FzHqdne2BG4kkp0BowEqbgS/OCqX4nVAVPjcUk7pJCQ=;
-        b=JngEa0dYtiQ3aTir9VTHkpqjydq7rG0xu31Sx1psjZwkCRCGaBOG8NmWiMlQ5D4+Yc
-         HH/fO/wNbqg1Z3tNxZ1D1lxvS7bX4RoPRq+LDcYuHx8v718LNdKmOasTe1kTY9ZGp7UZ
-         fzeBVrgWKaUFgvnznxzHZFTraR9sD+YGVRbszLActOHxm0qnumkY+nuRCuGlMbMmgIS7
-         u8ng3fNaYTre0tJZ7IHbDI1fyXT9TFNIi/A6tZizVqstFFL0T+UcnnTZKpgXmUcQq8fL
-         7sw/u68rDix3dOzex0FxkGWXjxmoh4t4zwJlf2/m4QMRAVqX6ZtAG/SJsMdTmeU+9op6
-         NPDw==
-X-Gm-Message-State: ABy/qLauZv9repnJDDVEHRneXnBNjR8MJtmHioIWTbpThCnZZgY7uh8x
-        ZzoImiThTtEpn2SSFbszW+F33BEM+oXKZAVd6do=
-X-Google-Smtp-Source: APBJJlGjwZAJQKYHp20dvvuuPFokbdWXCEPK+M3phnsNgqTP5NAAlRdRJ+viLK+HU5lNlTQhqIU8h0svb2P1aPtiM60=
-X-Received: by 2002:a05:6820:1686:b0:56c:5e21:c730 with SMTP id
- bc6-20020a056820168600b0056c5e21c730mr8254193oob.1.1690884933362; Tue, 01 Aug
- 2023 03:15:33 -0700 (PDT)
+        bh=TZN9Ev39oJk78sdD2xFuDOdMnPsbmSFEY0jGkX/TZfs=;
+        b=LG+EKJNXzzFss9UDR7D0BMkK87qkjyF8l1wSHPIEMVvEnpm3lygLc+d6vDduWnEAdU
+         4+h6grfvb3qeNkAnmEGu2KL61uNSw4AZGwjC6SMxJdMQsmuwlMX7c+75QJgLVBs4PGwf
+         UnQG/waGZsI0b1Ewo2Ph4w85YHFn1ua63Ycr7f6qJYbiFjHP7pImj5GSNB7x5/ThxThf
+         RwV04VigoBgX5DsvN9YTSYlj6Pez0mYIzkFtv7YmuZSwC5P73Gp1bJWCcwY/KHdETKLR
+         IotwqdcywkVeUFuy9d0IFODYuGCMI5d1iP/AxOOiQgpcDGX1oq4nCgXJCRa4q3cIAk11
+         exVw==
+X-Gm-Message-State: ABy/qLbn6VbTQUyTDNQNsRycz8hlnUBjZZQCgIwfek8KjnQxXBYrEq8r
+        T+/kLjgKZCM9WoA31NX36UDGdP3eNg5mNigFsKjfiQ==
+X-Google-Smtp-Source: APBJJlHkfcuesWAMGBbcUdF5JPr/MxcZAjwXVj1t5i3BfLfeO0MddaAxywCAexaR5x9uibEQV/Y/qpX2KAXoZIKo3vI=
+X-Received: by 2002:a05:622a:1493:b0:404:8218:83da with SMTP id
+ t19-20020a05622a149300b00404821883damr731987qtx.1.1690884994354; Tue, 01 Aug
+ 2023 03:16:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230711221427.GA250962@bhelgaas> <b82a50eb-8182-84ca-5b24-dbe8870fa871@amd.com>
- <CAJZ5v0i6PviqW7u3i8hmvSCvR_VHqP-mWRy3Da8Ev_1vi9qBQA@mail.gmail.com>
- <a309e3fe-b1f9-e269-cb97-8af87c8d483b@amd.com> <CAJZ5v0jvxrDMR6YHFpYZ4yYpp82-3TtrH==SMRFtUMJsv7=i=g@mail.gmail.com>
- <37b005d5-68fb-f8dd-67e2-c953d677fca2@amd.com> <8298c01c-abec-914b-0542-459f38c635fe@amd.com>
-In-Reply-To: <8298c01c-abec-914b-0542-459f38c635fe@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 1 Aug 2023 12:15:20 +0200
-Message-ID: <CAJZ5v0i3g0JujMwikB8niRZ93hXJZqWtjrCjbaDmkMLUbMmwMA@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] PCI: Don't put non-power manageable PCIe root
- ports into D3
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20230731230736.109216-1-trdgn@amazon.com> <CANn89iLV0iEeQy19wn+Vfmhpgr6srVpf3L+oBvuDyLRQXfoMug@mail.gmail.com>
+In-Reply-To: <CANn89iLV0iEeQy19wn+Vfmhpgr6srVpf3L+oBvuDyLRQXfoMug@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 1 Aug 2023 12:16:23 +0200
+Message-ID: <CANn89iLghUDUSbNv-QOgyJ4dv5DhXGL60caeuVMnHW4HZQVJmg@mail.gmail.com>
+Subject: Re: [PATCH v2] tun: avoid high-order page allocation for packet header
+To:     Tahsin Erdogan <trdgn@amazon.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 5:25 AM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
+On Tue, Aug 1, 2023 at 11:37=E2=80=AFAM Eric Dumazet <edumazet@google.com> =
+wrote:
 >
-> On 7/14/23 19:46, Limonciello, Mario wrote:
+> On Tue, Aug 1, 2023 at 1:07=E2=80=AFAM Tahsin Erdogan <trdgn@amazon.com> =
+wrote:
 > >
-> > On 7/14/2023 2:17 PM, Rafael J. Wysocki wrote:
-> >>>> Generally speaking, pci_bridge_d3_possible() is there to prevent
-> >>>> bridges (and PCIe ports in particular) from being put into D3hot/cold
-> >>>> if there are reasons to believe that it may not work.
-> >>>> acpi_pci_bridge_d3() is part of that.
-> >>>>
-> >>>> Even if it returns 'true', the _SxD/_SxW check should still be applied
-> >>>> via pci_target_state() to determine whether or not the firmware allows
-> >>>> this particular bridge to go into D3hot/cold.  So arguably, the _SxW
-> >>>> check in acpi_pci_bridge_d3() should not be necessary and if it makes
-> >>>> any functional difference, there is a bug somewhere else.
-> >>> But only if it was power manageable would the _SxD/_SxW check be
-> >>> applied.  This issue is around the branch of pci_target_state() where
-> >>> it's not power manageable and so it uses PME or it falls back to D3hot.
-> >> Well, this looks like a spec interpretation difference.
-> >>
-> >> We thought that _SxD/_SxW would only be relevant for devices with ACPI
-> >> PM support, but the firmware people seem to think that those objects
-> >> are also relevant for PCI devices that don't have ACPI PM support
-> >> (because those devices are still power-manageable via PMCSR).  If
-> >> Windows agrees with that viewpoint, we'll need to adjust, but not
-> >> through adding _SxW checks in random places.
-> > I think that depends upon how you want to handle the lack of _S0W.
+> > When GSO is not enabled and a packet is transmitted via writev(), all
+> > payload is treated as header which requires a contiguous memory allocat=
+ion.
+> > This allocation request is harder to satisfy, and may even fail if ther=
+e is
+> > enough fragmentation.
 > >
-> > On these problematic devices there is no _S0W under the PCIe
-> > root port.  As I said; Windows puts them into D0 in this case though.
+> > Note that sendmsg() code path limits the linear copy length, so this ch=
+ange
+> > makes writev() and sendmsg() more consistent.
 > >
-> > So acpi_dev_power_state_for_wake should return ACPI_STATE_UNKNOWN.
-> >
-> > Can you suggest where you think adding a acpi_dev_power_state_for_wake()
-> > does make sense?
-> >
-> > Two areas that I think would work would be in: pci_pm_suspend_noirq()
-> > (to avoid calling pci_prepare_to_sleep)
-> >
-> > or
-> >
-> > directly in pci_prepare_to_sleep() to check that value in lieu of
-> > pci_target_state().
-> >
+> > Signed-off-by: Tahsin Erdogan <trdgn@amazon.com>
+> > ---
 >
-> Rafael,
+> I will have to tweak one existing packetdrill test, nothing major.
 >
-> Did you have any more thoughts on this?
+> Tested-by: Eric Dumazet <edumazet@google.com>
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 
-Reportedly, if there are no ACPI power management objects associated
-with a Root Port, Windows will always leave it in D0.
+I have to take this back, sorry.
 
-In that case, acpi_pci_bridge_d3() will return false unless the
-HotPlugSupportInD3 property is present AFAICS, so the ACPI code will
-not allow the port to be put into D3hot.
+We need to change alloc_skb_with_frags() and tun.c to attempt
+high-order allocations,
+otherwise tun users sending very large buffers will regress.
+(Even if this _could_ fail as you pointed out if memory is tight/fragmented=
+)
 
-Consequently, platform_pci_bridge_d3() will return false and the only
-thing that may allow the port to go into D0 is the dmi_get_bios_year()
-check at the end of pci_bridge_d3_possible().
-
-However, that was added, because there are Intel platforms on which
-Root Ports need to be programmed into D3hot on suspend (which allows
-the whole platform to reduce power significantly) and there are no
-ACPI device power management objects associated with them (Mika should
-know the gory details related to this).  It looks like under Windows
-the additional power reduction would not be possible on those systems,
-but that would be a problem, wouldn't it?
-
-So it looks like there are some systems on which programming Root
-Ports into D3hot is needed to achieve additional power reduction of
-the platform and there are systems on which programming Root Ports
-into D3hot breaks things and there are no ACPI power management
-objects associated with these Root Ports in both cases.
-
-The only way to make progress that I can think about right now is to
-limit the dmi_get_bios_year() check at the end of
-pci_bridge_d3_possible() to Intel platforms.
+I am working to make the change in alloc_skb_with_frags() and in tun,
+we can apply your patch after this prereq.
