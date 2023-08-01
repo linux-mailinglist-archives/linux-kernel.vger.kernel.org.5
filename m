@@ -2,38 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C93D576A96F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 584A776A979
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbjHAGpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54862 "EHLO
+        id S231918AbjHAGrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231288AbjHAGpJ (ORCPT
+        with ESMTP id S230190AbjHAGrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:45:09 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 93811125;
-        Mon, 31 Jul 2023 23:45:06 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 3716isbd030226;
-        Tue, 1 Aug 2023 08:44:54 +0200
-Date:   Tue, 1 Aug 2023 08:44:54 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Zhangjin Wu <falcon@tinylab.org>
-Cc:     linux@weissschuh.net, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        tanyuan@tinylab.org
-Subject: Re: tools/nolibc: RFC: report and drop unused functions/data by
- gc-section
-Message-ID: <ZMip5q9C/VuNMrUX@1wt.eu>
-References: <20230801045902.37360-1-falcon@tinylab.org>
+        Tue, 1 Aug 2023 02:47:31 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAB598;
+        Mon, 31 Jul 2023 23:47:29 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3716I5mm018874;
+        Tue, 1 Aug 2023 06:47:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=QV4vqHuRpxcN0wlOQI2I9Vr6uvqf0Q7mXfqtt31NXWI=;
+ b=cfklhD+IOHaY4NRSrF5U948Vcz9c+5c8fI/TVrSIKJC5kEIriZ2YE0Ng5YCxdo3+tkj9
+ enMeDeQX0uxKSM0uQxKBy6dk2VmZGsheuQZc+rJI709cOlAVDX7X++qHqp/2mvBDGXdR
+ fK3UMLJSz25V/8jK/O06RFVxkrc62GsxFz/HpnzyPMa0iJG2zdN/vyS0J8Zb8MalkIzH
+ YqMZwpAoTythCHxK9c1R0LthcQyAJNNnrMlbjH1TYHuRhTGafSBAUi74CZDZLTT5KYDm
+ Pjp5o0rsKiL7KWXUix/SzQoUSUvtLf+PjYGHaVe67itdtzoebEpxxLkT0PGdZolHCV9/ KA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6d61jcwf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 06:47:26 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3716lPpw030188
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 06:47:25 GMT
+Received: from hu-ipkumar-blr.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 31 Jul 2023 23:47:22 -0700
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_varada@quicinc.com>, <quic_clew@quicinc.com>
+Subject: [PATCH v3] soc: qcom: qmi_encdec: Restrict string length in decode
+Date:   Tue, 1 Aug 2023 12:17:12 +0530
+Message-ID: <20230801064712.3590128-1-quic_ipkumar@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801045902.37360-1-falcon@tinylab.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: ockZpWMMt-3_LtU9gahh4KkhiUaV1FQd
+X-Proofpoint-ORIG-GUID: ockZpWMMt-3_LtU9gahh4KkhiUaV1FQd
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ impostorscore=0 adultscore=0 suspectscore=0 bulkscore=0 mlxscore=0
+ phishscore=0 mlxlogscore=999 clxscore=1015 malwarescore=0
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308010061
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -41,246 +76,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zhangjin,
+From: Chris Lew <quic_clew@quicinc.com>
 
-On Tue, Aug 01, 2023 at 12:59:02PM +0800, Zhangjin Wu wrote:
-> > > > Most of them could theoretically be turned to static. *But* it causes a
-> > > > problem which is that it will multiply their occurrences in multi-unit
-> > > > programs, and that's in part why we've started to use weak instead. Also
-> > > > if you run through gdb and want to mark a break point, you won't have the
-> > > > symbol when it's static,
-> 
-> Willy, did I misunderstand something again? a simple test shows, seems this is
-> not really always like that, static mainly means 'local', the symbol is still
-> there if without -O2/-Os and is able to be set a breakpoint at:
-> 
->     // test.c: gcc -o test test.c
->     #include <stdio.h>
-> 
->     static int test (void)
->     {
->     	printf("hello, world!\n");
->     }
-> 
->     int main(void)
->     {
->     	test();
->     
->     	return 0;
->     }
-> 
-> Even with -Os/-O2, an additional '-g' is able to generate the 'test' symbol for
-> debug as we expect.
+The QMI TLV value for strings in a lot of qmi element info structures
+account for null terminated strings with MAX_LEN + 1. If a string is
+actually MAX_LEN + 1 length, this will cause an out of bounds access
+when the NULL character is appended in decoding.
 
-Please compare this:
+Fixes: 9b8a11e82615 ("soc: qcom: Introduce QMI encoder/decoder")
+Cc: stable@vger.kernel.org
+Signed-off-by: Chris Lew <quic_clew@quicinc.com>
+Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+---
+[v2]:
+	Changed the Author name
+[v2]:
+	Added Fixes and Cc: stable
 
-  $ cat test.c
-  #include <stdio.h>
-  
-  static int test (void)
-  {
-      printf("hello, world!\n");
-  }
-  
-  int main(void)
-  {
-      test();
-  
-      return 0;
-  }
-  
-  $ gcc -Os -o test test.c
-  $ objdump --disassemble=main  test
-  (...)
-  Disassembly of section .text:
-  
-  0000000000401040 <main>:
-    401040:       50                      push   %rax
-    401041:       bf 04 20 40 00          mov    $0x402004,%edi
-    401046:       e8 e5 ff ff ff          call   401030 <puts@plt>
-    40104b:       31 c0                   xor    %eax,%eax
-    40104d:       5a                      pop    %rdx
-    40104e:       c3                      ret    
+ drivers/soc/qcom/qmi_encdec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  $ gdb ./test
-  (...)
-  Reading symbols from ./test...
-  (gdb) b test
-  Function "test" not defined.
-  (gdb) r
-  Starting program: /dev/shm/test 
-  hello, world!
-  [Inferior 1 (process 8780) exited normally]
+diff --git a/drivers/soc/qcom/qmi_encdec.c b/drivers/soc/qcom/qmi_encdec.c
+index b7158e3c3a0b..5c7161b18b72 100644
+--- a/drivers/soc/qcom/qmi_encdec.c
++++ b/drivers/soc/qcom/qmi_encdec.c
+@@ -534,8 +534,8 @@ static int qmi_decode_string_elem(const struct qmi_elem_info *ei_array,
+ 		decoded_bytes += rc;
+ 	}
+ 
+-	if (string_len > temp_ei->elem_len) {
+-		pr_err("%s: String len %d > Max Len %d\n",
++	if (string_len >= temp_ei->elem_len) {
++		pr_err("%s: String len %d >= Max Len %d\n",
+ 		       __func__, string_len, temp_ei->elem_len);
+ 		return -ETOOSMALL;
+ 	} else if (string_len > tlv_len) {
+-- 
+2.34.1
 
-To this:
-
-  $ cat test.c
-  #include <stdio.h>
-  
-  /*static*/ int test (void)
-  {
-      printf("hello, world!\n");
-  }
-  
-  int main(void)
-  {
-      test();
-  
-      return 0;
-  }
-  
-  $ gcc -Os -o test test.c
-  $ objdump --disassemble=main  test
-  (...)
-  Disassembly of section .text:
-  
-  0000000000401040 <main>:
-    401040:       50                      push   %rax
-    401041:       e8 e0 00 00 00          call   401126 <test>
-    401046:       31 c0                   xor    %eax,%eax
-    401048:       5a                      pop    %rdx
-    401049:       c3                      ret    
-
-  $ gdb ./test
-  (...)
-  Reading symbols from ./test...
-  (gdb) b test
-  Breakpoint 1 at 0x401126
-  (gdb) r
-  Starting program: /dev/shm/test 
-  
-  Breakpoint 1, 0x0000000000401126 in test ()
-  (gdb) 
-
-See the difference ?
-
-> >     and the code will appear at multiple locations,
-> > > > which is really painful. I'd instead really prefer to avoid static when
-> > > > we don't strictly want to inline the code, and prefer weak when possible
-> > > > because we know many of them will be dropped at link time (and that's
-> > > > the exact purpose).
-> 
-> For the empty __stack_chk_init() one (when the arch not support stackprotector)
-> we used, when with 'weak', it is not possible drop it during link time even
-> with -O3, the weak one will be dropped may be only when there is a global one
-> with the same name is used or the 'weak' one is never really used?
-
-If that's the case for this one, it's sufficient to enclose it within a pair
-of #if defined(__SSP__).
-
-> 
->     #include <stdio.h>
-> 
->     __attribute__((weak,unused,section(".text.nolibc_memset")))
->     int test (void)
->     {
->     	printf("hello, world!\n");
->     }
-> 
->     int main(void)
->     {
->     	test();
->     
->     	return 0;
->     }
-> 
-> 
->     0000000000001060 <main>:
->         1060:       f3 0f 1e fa             endbr64 
->         1064:       48 83 ec 08             sub    $0x8,%rsp
->         1068:       e8 03 01 00 00          callq  1170 <test>
->         106d:       31 c0                   xor    %eax,%eax
->         106f:       48 83 c4 08             add    $0x8,%rsp
->         1073:       c3                      retq   
->         1074:       66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
->         107b:       00 00 00 
->         107e:       66 90                   xchg   %ax,%ax
-> 
-> Seems it is either impossible to add a 'inline' keyword again with the 'weak'
-> attribute (warned by compiler), so, the _start_c (itself is always called by
-> _start) will always add an empty call to the weak empty __stack_chk_init(),
-> -Os/-O2/-O3 don't help. for such an empty function, in my opinion, as the size
-> we want to care about, the calling place should be simply removed by compiler.
-
-Obviously it's impossible because the precise reason why we're using weak
-is when we *need* the symbol, i.e. it's called from asm code or another
-unit. We only use weak as an alternative to static to share the symbol.
-
-> Test also shows, with current __inline__ method, the calling place is removed,
-> but with c89, the __stack_chk_init() itself will not be droped automatically,
-> only if not with -std=c89, it will be dropped and not appear in the
-> --print-gc-sections result.
-> 
-> Even for a supported architecture, the shorter __stack_chk_init() may be better
-> to inlined to the _start_c()?
-
-There is not better or worse, it doesn't work like this. What is important
-to keep in mind is:
-  - if the symbol needs to be exported, it must not be static. If it risks
-    to be declared multiple times (since appearing in a .h possibly included
-    multiple times), it needs to be marked weak.
-
-  - if the symbol benefits from being reused a lot because it's huge and
-    almost always needed, it can benefit as well from being exported so
-    that at the end there is only one instead of multiple copies.
-
-  - if the symbol is never needed outside and its duplication is not a
-    problem, it's better static.
-
-__stack_chk_init() used to be called directly from asm(). We had no other
-option. With _start_c() it seems this has changed so maybe it can now be
-static (I have not checked). But *these* are the only valid justifications,
-nothing based on preference or being better or whatever. These serve two
-completely different goals.
-
-> So, If my above test is ok, then, we'd better simply convert the whole
-> __stack_chk_init() to a static one as below (I didn't investigate this deeply
-> due to the warning about static and weak conflict at the first time):
-
-Static and weak together make absolutely no sense. Static says "do not export
-it, it's local" and weak says "when you find multiple copies of it, keep only
-one". By definition they are mutually exclusive.
-
-> > > Thanks for the clarification. I forgot about that completely!
-> > > 
-> > > The stuff from nolibc-test.c itself (run_foo() and is_settings_valid())
-> > > should still be done.
-> > 
-> > Yes, likely. Nolibc-test should be done just like users expect to use
-> > nolibc, and nolibc should be the most flexible possible.
-> 
-> For the 'static' keyword we tested above, '-g' may help the debug requirement,
-> so, is ok for us to apply 'static' for them safely now?
-
-Please, read above and do not speculate but actually try by yourself and
-see what doesn't work. I can assure you that it's extremely time consuming
-to have to justify everything that was done over the last years to reach
-the current situation, so as to make sure we don't go back several years
-just due to matters of taste. By definition a libc cannot look nice, and
-when implemented exclusively in include files there are strong tradeoffs
-that are needed. The vast majority of them are already documented in the
-code and others in commit messages. Others will obviously depend on
-everyone's experience at recognizing certain patterns. I think I'll spend
-some time writing some doc explaining some design rules, some choices that
-are imposed to us and certain patterns to adopt or avoid. It will surely
-help and save us a lot of review and discussion time in the future (at
-least I hope).
-
-> A further test shows, with 'static' on _start_c() doesn't help the size, for it
-> is always called from _start(), will never save move instructions, but we need
-> a more 'used' attribute to silence the error 'nolibc-test.c:(.text+0x38cd):
-> undefined reference to `_start_c'', so, reserve it as the before simpler 'void
-> _start_c(void)' may be better?
-> 
->     static __attribute__((used)) void _start_c(long *sp)
-
-Again if you test this you'll see that it probably does not work. It's
-called from asm so it needs to be public. And it needs the weak
-attribute to avoid clashes.
-
-At least you've convinced me about something: we need to split nolibc-test
-into multiple files (e.g. one for syscalls, one for stdlib etc) so that we
-also catch the cases where we're missing some weak attributes.
-
-Thanks,
-Willy
