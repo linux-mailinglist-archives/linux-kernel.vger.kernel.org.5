@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6006176B29A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6C876B2A1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbjHALEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44492 "EHLO
+        id S231944AbjHALFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:05:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234265AbjHALEE (ORCPT
+        with ESMTP id S230086AbjHALEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:04:04 -0400
+        Tue, 1 Aug 2023 07:04:54 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C501358C;
-        Tue,  1 Aug 2023 03:57:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE391526E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:58:55 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D306961528;
-        Tue,  1 Aug 2023 10:57:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A30BBC433C7;
-        Tue,  1 Aug 2023 10:57:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 729016150F
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:58:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48116C433C8;
+        Tue,  1 Aug 2023 10:58:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690887446;
-        bh=igqPclbn33iQ9Myb2xT63wPBpAiGtwav3k7hWqdmNcA=;
+        s=k20201202; t=1690887534;
+        bh=5JszLrVl14NYpDg2t9eZAPFv3d27caE8ile05br6iwY=;
         h=From:To:Cc:Subject:Date:From;
-        b=FAqmARKIqgIZS8LjC46BceHTw/STKMHz9+ICI4AQw6el4u4oXOrOANfItpJENPVfJ
-         e8wh44NYhEwW43unA4jMS5r+wzLR+AYZw5PoNCVz9f6sbgCDXPOHL0VM48ojp6xebI
-         WHmRHNBrSTvaWj/uulKXYP0w2Wwe7HByUGPKEHqcuU23oz2Linx1cXUQGy0S9EPuq2
-         CNO6q0y9jfQgXIYECur8UG9E2d5EFKJmOlJujfQjmxaDA1AwEPERMQz9c1y5ajVibt
-         9mg2zUXIb5l3mar8xP+qi3I/n9IzqxOfoDlJcYqVSVtbs4fZyw6uTazwA2dS9E+ErE
-         FntfCNQnBt4Og==
+        b=BsLJsuBkZ7IsGXvQVTLM0rvXkIdYf1Us6CNONmRdUlJjziGHzVaKyaNjcmw6UrTGw
+         NvVBbySJItFMnTZtVTjTbG7WKmEz1o7RJOtjZJ2E2KsnsYXG9T4wgtNrqMi4s7M3il
+         5THtfTQy6xZo0vvD5XU7kP3l/F7TpPqL6CN2uxkPbnYTRNha0UqHkusRWVTbAILmmj
+         5R/OEz8vVDSD7qkJjYDZp6nra2WnSxiLGomD5CHZhtu8mFDeWg3u/46sV+laiw+/zm
+         3ZI5sGQts4BitwYQdEIGX//WGQhwy81EoShB481+Sys17qA42K8wEZZ5yM9GhoEbYD
+         3liyT1RnICCnQ==
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Stephen Boyd <sboyd@kernel.org>
+To:     Andi Shyti <andi.shyti@kernel.org>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Feng Liu <feliu@nvidia.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: qcom: fix some Kconfig corner cases
-Date:   Tue,  1 Aug 2023 12:56:32 +0200
-Message-Id: <20230801105718.3658612-1-arnd@kernel.org>
+Subject: [PATCH] virtio: Remove PM #ifdef guards to fix i2c driver
+Date:   Tue,  1 Aug 2023 12:58:15 +0200
+Message-Id: <20230801105846.3708252-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,64 +65,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-The SM_GCC_8550 symbol and others can only be built for ARM64 or when
-compile testing, but it gets selected by other drivers that can also be
-built for 32-bit ARCH_QCOM when not compile testing, which results in
-a Kconfig warning:
+A cleanup in the virtio i2c caused a build failure:
 
-WARNING: unmet direct dependencies detected for SM_GCC_8550
-  Depends on [n]: COMMON_CLK [=y] && COMMON_CLK_QCOM [=m] && (ARM64 || COMPILE_TEST [=n])
-  Selected by [m]:
-  - SM_GPUCC_8550 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
-  - SM_VIDEOCC_8550 [=m] && COMMON_CLK [=y] && COMMON_CLK_QCOM [=m]
+drivers/i2c/busses/i2c-virtio.c:270:10: error: 'struct virtio_driver' has no member named 'freeze'
+drivers/i2c/busses/i2c-virtio.c:271:10: error: 'struct virtio_driver' has no member named 'restore'
 
-Add further 'depends on' statements to tighten this in a way that
-avoids the missing dependencies.
+Change the structure definition to allow this cleanup to
+be applied everywhere.
 
-Fixes: fd0b5b106fcab ("clk: qcom: Introduce SM8350 VIDEOCC")
-Fixes: 441fe711be384 ("clk: qcom: videocc-sm8450: Add video clock controller driver for SM8450")
-Fixes: f53153a37969c ("clk: qcom: videocc-sm8550: Add video clock controller driver for SM8550")
+Fixes: 73d546c76235b ("i2c: virtio: Remove #ifdef guards for PM related functions")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/clk/qcom/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/virtio.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index 263e55d75e3f5..ed7dc3349e34e 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -995,6 +995,7 @@ config SM_GPUCC_8450
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index 0f3b9017dff40..9b94e2c9bbb81 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -218,10 +218,8 @@ struct virtio_driver {
+ 	void (*scan)(struct virtio_device *dev);
+ 	void (*remove)(struct virtio_device *dev);
+ 	void (*config_changed)(struct virtio_device *dev);
+-#ifdef CONFIG_PM
+ 	int (*freeze)(struct virtio_device *dev);
+ 	int (*restore)(struct virtio_device *dev);
+-#endif
+ };
  
- config SM_GPUCC_8550
- 	tristate "SM8550 Graphics Clock Controller"
-+	depends on ARM64 || COMPILE_TEST
- 	select SM_GCC_8550
- 	help
- 	  Support for the graphics clock controller on SM8550 devices.
-@@ -1031,6 +1032,7 @@ config SM_VIDEOCC_8250
- 
- config SM_VIDEOCC_8350
- 	tristate "SM8350 Video Clock Controller"
-+	depends on ARM64 || COMPILE_TEST
- 	select SM_GCC_8350
- 	select QCOM_GDSC
- 	help
-@@ -1040,6 +1042,7 @@ config SM_VIDEOCC_8350
- 
- config SM_VIDEOCC_8550
- 	tristate "SM8550 Video Clock Controller"
-+	depends on ARM64 || COMPILE_TEST
- 	select SM_GCC_8550
- 	select QCOM_GDSC
- 	help
-@@ -1088,6 +1091,7 @@ config CLK_GFM_LPASS_SM8250
- 
- config SM_VIDEOCC_8450
- 	tristate "SM8450 Video Clock Controller"
-+	depends on ARM64 || COMPILE_TEST
- 	select SM_GCC_8450
- 	select QCOM_GDSC
- 	help
+ static inline struct virtio_driver *drv_to_virtio(struct device_driver *drv)
 -- 
 2.39.2
 
