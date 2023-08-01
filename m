@@ -2,150 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5370376B84A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C08E76B855
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233232AbjHAPOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41456 "EHLO
+        id S232517AbjHAPRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:17:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbjHAPN7 (ORCPT
+        with ESMTP id S230462AbjHAPRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:13:59 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10AF116;
-        Tue,  1 Aug 2023 08:13:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690902838; x=1722438838;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=D3Gr4CQz5RXEpExSMqhczLYsHj+yuAQsgSmsBQ4YJ6c=;
-  b=CrdxN4KYzAalhwHv9BTvmUYmsCzX/AYiKre100TzFT35yX54fMOh8Wgp
-   +/vDCNMKF+yYIrXui7Qq6vRGXNN0Z2R7c7/JrWa5/2s9nYQbAGWMhVJMH
-   QpG0uWW3pyHKDrhCUbbJBhO1DTxNNQIY9Q9iOT0kaHemPm/cDVaBHUMdy
-   SLPb/a4D1cLzH16P940eAgObD8Oz220H172P4vLPNx5wrtCyFbHJTxHTl
-   nspwrEuFs1dA47DRFFGg7g+2PC6qjQuMwxa6Vni9/5hsm0YZMb7ANajiV
-   iZnxVNDnNspEskMi0bTigye+K7DaZg/VwbEf1ygpizMI95H6e9PiG36CN
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="349619784"
-X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
-   d="scan'208";a="349619784"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 08:13:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="975350300"
-X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
-   d="scan'208";a="975350300"
-Received: from jkrzyszt-mobl2.ger.corp.intel.com ([10.213.27.8])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 08:13:56 -0700
-From:   Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-Subject: Re: [PATCH v3 1/3] kunit: Report the count of test suites in a module
-Date:   Tue, 01 Aug 2023 17:13:53 +0200
-Message-ID: <5405097.29KlJPOoH8@jkrzyszt-mobl2.ger.corp.intel.com>
-Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173,
- 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
-In-Reply-To: <20230801151711.2765e2eb@coco.lan>
-References: <20230731141021.2854827-5-janusz.krzysztofik@linux.intel.com>
- <20230731141021.2854827-6-janusz.krzysztofik@linux.intel.com>
- <20230801151711.2765e2eb@coco.lan>
+        Tue, 1 Aug 2023 11:17:38 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D76116
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KaTVczCiAifY0etxyFsXnvO/WsA+ysZZ7LHyawNWwZc=; b=ZntiGMpWRuk98P8GDQ/ElshiNh
+        sW7DLUFZTT+I9HGcq/NJMCERdDhmRMFah/lNzwcS9XtgjPV+4Nhhmh8jA7mjTugCh8bAqeIQr0PHp
+        pARWkR7SzXPXUZ+m0h2LTXYTzR4rOssMLBeYn+rYU42/PTRG9SKAZadihIXevBB9ou8Qm6wJGS5hf
+        ChJAyRqxfbZaBZdnAbwCdasYP6z4sIs5L3DZgEOweeXkVlfoMq/WzgIlRj1meL+s5RkRFANOoPGY7
+        6KPUSZYDI1oqwE+wk+mmQkwEwPpjYPsfzUAOk679MFKYe+TI/rnay9g3nflyYTfGedRvEtIcwsSPB
+        3dErMELg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQr7u-00EkGl-1T;
+        Tue, 01 Aug 2023 15:17:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1C5363001DD;
+        Tue,  1 Aug 2023 17:17:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EE92F20297BBD; Tue,  1 Aug 2023 17:17:33 +0200 (CEST)
+Date:   Tue, 1 Aug 2023 17:17:33 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Ramazan Safiullin <ram.safiullin2001@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: add documentation to PSI section
+Message-ID: <20230801151733.GA111053@hirez.programming.kicks-ass.net>
+References: <20230728120909.234244-1-ram.safiullin2001@gmail.com>
+ <CAJuCfpGyV5nM+4t_RTxDgvgZ_VhjpdoZ4TJZBn7RgxSHC6+Hyw@mail.gmail.com>
+ <CAJuCfpEjozCfqfPPttcnWdzhQBCGnr+MzWGN8FT40YObZf_mGA@mail.gmail.com>
+ <20230801103936.GA79828@hirez.programming.kicks-ass.net>
+ <CAKXUXMwJk2bB-mPpeAj8dU3DVhdX-TRRV6eXSjMVO16Xsivj3g@mail.gmail.com>
+ <20230801130301.GB11704@hirez.programming.kicks-ass.net>
+ <20230801133235.GA1766885@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801133235.GA1766885@cmpxchg.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
-
-Thanks for review.
-
-On Tuesday, 1 August 2023 15:17:11 CEST Mauro Carvalho Chehab wrote:
-> Em Mon, 31 Jul 2023 16:10:23 +0200
-> Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com> escreveu:
+On Tue, Aug 01, 2023 at 09:32:35AM -0400, Johannes Weiner wrote:
+> From f00cd5986718e7ff435444523305d480b54e34e8 Mon Sep 17 00:00:00 2001
+> From: Johannes Weiner <hannes@cmpxchg.org>
+> Date: Tue, 1 Aug 2023 09:18:21 -0400
+> Subject: [PATCH] MAINTAINERS: add Peter explicitly to the psi section
 > 
-> > According to KTAP specification[1], results should always start from a
-> > header that provides a TAP protocol version, followed by a test plan with
-> > a count of items to be executed.  That pattern should be followed at each
-> > nesting level.  In the current implementation of the top-most, i.e., test
-> > suite level, those rules apply only for test suites built into the kernel,
-> > executed and reported on boot.  Results submitted to dmesg from kunit test
-> > modules loaded later are missing those top-level headers.
-> > 
-> > As a consequence, if a kunit test module provides more than one test suite
-> > then, without the top level test plan, external tools that are parsing
-> > dmesg for kunit test output are not able to tell how many test suites
-> > should be expected and whether to continue parsing after complete output
-> > from the first test suite is collected.
-> > 
-> > Submit the top-level headers also from the kunit test module notifier
-> > initialization callback.
-> > 
-> > [1] https://docs.kernel.org/dev-tools/ktap.html#
-> > 
-> > Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
-> > ---
-> >  lib/kunit/test.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> > index 84e4666555c94..a29ca1acc4d81 100644
-> > --- a/lib/kunit/test.c
-> > +++ b/lib/kunit/test.c
-> > @@ -729,6 +729,11 @@ EXPORT_SYMBOL_GPL(__kunit_test_suites_exit);
-> >  #ifdef CONFIG_MODULES
-> >  static void kunit_module_init(struct module *mod)
-> >  {
-> > +	if (mod->num_kunit_suites > 0) {
-> > +		pr_info("KTAP version 1\n");
-> > +		pr_info("1..%d\n", mod->num_kunit_suites);
-> > +	}
-> > +
-> >  	__kunit_test_suites_init(mod->kunit_suites, mod->num_kunit_suites);
-> >  }
+> Peter is kind enough to route the low-volume psi patches through the
+> scheduler tree, but he is frequently not CC'd on them.
 > 
-> IMO, the best would be instead to export kunit_exec_run_tests() and
-> use it here too.
-
-I was considering a similar approach, i.e., moving those two pr_info() lines 
-from built-in only kunit_exec_run_tests() to __kunit_test_suites_init() which 
-is common to both built-in and modular paths, but please note that with kunit 
-built in, an empty test plan "1..0" is now reported on boot, while we don't 
-want similar reports to appear on loading modules that don't provide any kunit 
-tests.  Then, inside either your exported kunit_exec_run_tests() or my 
-__kunit_test_suites_init(), we would have to check somehow if it has been 
-called from a module notifier initialization callback, and that seemed to me 
-too much complicated and less clean than what I've proposed: keep using 
-unmodified kunit_exec_run_tests() in built-in and updated kunit_module_init() 
-in modular processing path.
-Dropping the empty "1..0" test plan from boot messages would mean an ABI 
-change, I believe, which I'd rather avoid adding to the scope of this patch as 
-not required.
-
-Thanks,
-Janusz
- 
+> While he is matched through the SCHEDULER maintainers and reviewers on
+> kern/sched/*, that list is long, and mostly not applicable to psi
+> code. Thus, patch submitters often just CC the explicit PSI entries.
 > 
-> Except for the nit, LGTM.
+> Add him to that section, to make sure he gets those patches.
 > 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+
+Thanks!
+
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Thanks,
-> Mauro
-> 
-
-
-
-
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3be1bdfe8ecc..b68f3ab368c1 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -17037,6 +17037,7 @@ F:	drivers/net/ppp/pptp.c
+>  PRESSURE STALL INFORMATION (PSI)
+>  M:	Johannes Weiner <hannes@cmpxchg.org>
+>  M:	Suren Baghdasaryan <surenb@google.com>
+> +R:	Peter Ziljstra <peterz@infradead.org>
+>  S:	Maintained
+>  F:	include/linux/psi*
+>  F:	kernel/sched/psi.c
+> -- 
+> 2.41.0
