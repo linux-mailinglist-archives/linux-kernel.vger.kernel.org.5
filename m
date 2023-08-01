@@ -2,120 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A3176BBA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74AEC76BBB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbjHARuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
+        id S231912AbjHARv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:51:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbjHARuL (ORCPT
+        with ESMTP id S229738AbjHARvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:50:11 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900B21BF5;
-        Tue,  1 Aug 2023 10:50:10 -0700 (PDT)
-Received: from mercury (dyndsl-091-248-215-079.ewe-ip-backbone.de [91.248.215.79])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 63D1F6606EEE;
-        Tue,  1 Aug 2023 18:50:09 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690912209;
-        bh=7Hg0E1etExajNXwd23tOTZp+kdpf7HoQD1TpFyCl8ZA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oYsQyNsQw97XKN6vimxBDDLHXBUprgotAZq6Nbq9F+vr+9zeRfac7xeQ44i54km34
-         +FsiZSVlJjvSMBnCYHuVzWuCavLDxbitm+tFNXhMxckTFhQ1Vdt3oE2GCm+AgrQO8A
-         57EfGuw/PBdXTXaJ4+bG2D/M5lL6wJJn0RoU5OX2CRE4wmVqptglWUul5Kya9Hmfi0
-         voeEnCfn8OCvvU76ofmKlmJ50KR4PJsNbRYjnhKT+EEbNH8YZJjG+iCMHgEcRE5aOK
-         7gSk5TFJpfv6nJfPwdgERvJTcT/DvvgCF9TNvIslbkAfdo0YKu/WXhUGE1Iq0Xh2FG
-         BvP0HcOsqYflw==
-Received: by mercury (Postfix, from userid 1000)
-        id 2864C10660D0; Tue,  1 Aug 2023 19:50:07 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 19:50:07 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Elaine Zhang <zhangqing@rock-chips.com>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org,
-        kever.yang@rock-chips.com, heiko@sntech.de,
-        linux-clk@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org, huangtao@rock-chips.com
-Subject: Re: [RESEND PATCH v2 0/3] clk: rockchip: add GATE_LINK
-Message-ID: <20230801175007.kd5j3c6ygjyn5wh5@mercury.elektranox.org>
-References: <20230801074357.10770-1-zhangqing@rock-chips.com>
+        Tue, 1 Aug 2023 13:51:21 -0400
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3046B213C;
+        Tue,  1 Aug 2023 10:51:06 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1bbc64f9a91so50159445ad.0;
+        Tue, 01 Aug 2023 10:51:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690912265; x=1691517065;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JFahkUVAa3Z9C9oggz17jW5h7WEHfUtkbLkvSnyosWQ=;
+        b=UDTa+CU5l9qb0vcEXh/qdM+cbVNE3N58W8aiv19cNfx/hM1rhGn1OxPPvb6LH/Xga+
+         Re0MJDemytNiE5JhI2KfRLo6i4dsy89lrZ9Cu06o71GQD7Bf7zN/4SAAKxRqAXV1+a5c
+         mCKglWMGTjX+YN1HLcwkF85Dpiri6p8v4Q/gdLPDdfRlKxh3fez2pDUULom/GpdLmrI1
+         3QX0Ym2t8a/iRz1DZiLfaEU6s11pxFEi340Rw8U2ie1RHkzzBbG8sJvr7TSWTIae0qD5
+         RoIbhDUFIikvGjuuKxJPEmV5+m+e3iKp7GRmxz04uVDGT4R8dICOJvfrOMP14iYGSllo
+         GWSw==
+X-Gm-Message-State: ABy/qLaw/bxT0/P5OwCqTfz7sRAEgLVZ0Qvqvc5WnjxRjIFQB3Rm/QUU
+        h4VrmdwtkvlQuzjg1wj1hwo=
+X-Google-Smtp-Source: APBJJlGJkiyy679SdLZ+dD5N7/QBXdz+gfTnyyV4bZgjA4yJq4IMUBrHZ6Hb9lSru31wGbdS1kYuLQ==
+X-Received: by 2002:a17:902:c103:b0:1bb:809d:ae6a with SMTP id 3-20020a170902c10300b001bb809dae6amr11968955pli.7.1690912265455;
+        Tue, 01 Aug 2023 10:51:05 -0700 (PDT)
+Received: from [192.168.51.14] ([98.51.102.78])
+        by smtp.gmail.com with ESMTPSA id f16-20020a170902ce9000b001ac6b926621sm10761570plg.292.2023.08.01.10.51.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 10:51:04 -0700 (PDT)
+Message-ID: <67f2a68f-8462-e1de-c016-b84d7c6e3222@acm.org>
+Date:   Tue, 1 Aug 2023 10:51:03 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xlamvs4rdr7wg6vz"
-Content-Disposition: inline
-In-Reply-To: <20230801074357.10770-1-zhangqing@rock-chips.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: next: arm64: gcc-8-defconfig: ufshcd.c:10629:2:
+ /builds/linux/include/linux/compiler_types.h:397:38: error: call to
+ '__compiletime_assert_553' declared with attribute error: BUILD_BUG_ON
+ failed:
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-scsi@vger.kernel.org,
+        linux-next <linux-next@vger.kernel.org>,
+        Avri Altman <avri.altman@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Anders Roxell <anders.roxell@linaro.org>
+References: <CA+G9fYur8UJoUyTLJFVEJPh-15TJ7kbdD2q8xVz8a3fLjkxxVw@mail.gmail.com>
+ <a660adba-b73b-1c02-f642-c287bb4c72fc@acm.org>
+ <CA+G9fYsYifn9ywPc8KqYHwDDSTRQGOgf_T58Gpt9CYDBs8u+SQ@mail.gmail.com>
+ <227327a3-399a-4a9f-a775-e9627656b5a1@app.fastmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <227327a3-399a-4a9f-a775-e9627656b5a1@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/1/23 07:56, Arnd Bergmann wrote:
+> On Tue, Aug 1, 2023, at 16:23, Naresh Kamboju wrote:
+>> On Tue, 1 Aug 2023 at 18:53, Bart Van Assche <bvanassche@acm.org> wrote:
+> 
+>>>>    - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/log
+>>>>    - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/details/
+>>>>    - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230801/testrun/18754886/suite/build/test/gcc-8-defconfig/history/
+>>>
+>>> I can't reproduce this build error with a gcc-12 arm64 cross-compiler. How
+>>> important is gcc-8 for the ARM community?
+>>
+>> You are right,
+>> gcc-12 build pass.
+>> gcc-8 build failed.
+> 
+> I can also reproduce this with gcc-9.5.0 from
+> https://mirrors.edge.kernel.org/pub/tools/crosstool/ but
+> not with 10.5.0 or clang.
+> 
+> I get the same results for x86 with gcc-9.5.0.
+> 
+> See https://godbolt.org/z/GjGrW9znc for a partially reduced testcase.
+Thanks Arnd, this is very helpful. The first error message reported for that
+test case is as follows:
 
---xlamvs4rdr7wg6vz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+<source>:34:286: error: call to '__compiletime_assert_655' declared with attribute error: BUILD_BUG_ON failed: ((u8 *)&(struct request_desc_header){ .enable_crypto = 1})[2] != 0x80
+    34 |  do { __attribute__((__noreturn__)) extern void __compiletime_assert_655(void) __attribute__((__error__("BUILD_BUG_ON failed: " "((u8 *)&(struct request_desc_header){ .enable_crypto = 1})[2] != 0x80")));
+  if (!(!(((u8 *)&(struct request_desc_header){ .enable_crypto = 1})[2] != 0x80))) __compiletime_assert_655(); } while (0);
+       |
 
-Hi,
+If I change the return type of ufshcd_check_header_layout() from void
+into unsigned int and insert the following at the start of that function:
 
-On Tue, Aug 01, 2023 at 03:43:54PM +0800, Elaine Zhang wrote:
-> Recent Rockchip SoCs have a new hardware block called Native Interface
-> Unit (NIU), which gates clocks to devices behind them. These effectively
-> need two parent clocks.
-> Use GATE_LINK to handle this.
->=20
-> change in V2:
-> [PATCH v2 1/3]: fix reported warnings
-> [PATCH v2 2/3]: Bindings submit independent patches
-> [PATCH v2 3/3]: fix reported warnings
->=20
-> Elaine Zhang (3):
->   clk: rockchip: add support for gate link
->   dt-bindings: clock: rk3588: export PCLK_VO1GRF clk id
->   clk: rockchip: rk3588: Adjust the GATE_LINK parameter
->=20
->  drivers/clk/rockchip/Makefile                 |   1 +
->  drivers/clk/rockchip/clk-gate-link.c          | 189 ++++++++++++++++++
->  drivers/clk/rockchip/clk-rk3588.c             | 110 +++++-----
->  drivers/clk/rockchip/clk.c                    |   7 +
->  drivers/clk/rockchip/clk.h                    |  22 ++
->  .../dt-bindings/clock/rockchip,rk3588-cru.h   |   3 +-
->  6 files changed, 280 insertions(+), 52 deletions(-)
->  create mode 100644 drivers/clk/rockchip/clk-gate-link.c
+return ((u8 *)&(struct request_desc_header){ .enable_crypto = 1})[2] != 0x80;
 
-The series is
+then the compiler shows the following in the output window:
 
-Tested-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+xorl    %eax, %eax
 
--- Sebastian
+In other words, the expression next to the return statement evaluates to zero
+but the same expression does not evaluate to zero in the BUILD_BUG_ON()
+statement. Does this perhaps indicate a compiler bug? And if so, what is the
+appropriate way to fix the build error? Insert an #ifdef/#endif pair inside
+ufshcd_check_header_layout() such that the compile-time checks do not happen
+for gcc version 9 or older?
 
---xlamvs4rdr7wg6vz
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmTJRc4ACgkQ2O7X88g7
-+ppnUg//YPiJxGhC4x6wnm2repGisqmL17AG/28MMxHdEQ0NWJyPMw1gaa0dpAR3
-2sA9RYmfGWRE/PqgArXsrdkdByEubVlLkMDoBEjJr6ZVJ5IS8qvPR9GEzIHtjW5D
-o9BdjDqsOyRmiQXBlPV+mW7PQU0OI4mYWem2MewzmYs8gXPpP6iYX0IxPR4w0MSo
-c4XEqorPXMGmf2+kIR5pOlEbtkWlQ8mdJga5Zlw/t9Z6AQ2gT1Q097ZeocKgmDPN
-OiIN+P7YOlJZqqa+nzG9lhKD2c1KozfQR33eDNqqDX0XoiBJ1SzK0Qm2LLCDh3Cq
-yRQGJzD5sl7LaqE/vqq9/2udyvHaZOUYP4SWHTzsEGP5dIm+WjgAo/RrTmKQkihi
-HThdmDq5kXgWUIX5ywAZmcbCufjTOVcGxQUf60S8FV9lV96QJvEydhd1s6UPEhqZ
-ISzRKuzgxQFLIqZjIDvELHR/4nTngukouV2v0TNydMB7UNvwMoFVw3Zt8krLHCwm
-yXFjgKLsrWDwqTzjpuCIonbVl5OfCR11wT+ACeOLKStdxpHUzraWv0piw2X0+dzP
-VtFH9Y5TdTann0CxeV4mEeCOD2iw5aGYm49sYillNBPLwr1FQqeTH987FKKwQthF
-/p2WWpmK56pA2C+HFrPb57QV/3UnAOzj18JmEAQoXXDzKUmGxWE=
-=Utsw
------END PGP SIGNATURE-----
-
---xlamvs4rdr7wg6vz--
+Bart.
