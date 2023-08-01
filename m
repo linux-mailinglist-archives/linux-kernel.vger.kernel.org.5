@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CF276B835
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA43A76B83F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbjHAPES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        id S234738AbjHAPKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbjHAPEQ (ORCPT
+        with ESMTP id S230297AbjHAPKJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:04:16 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22ACEE65
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:04:15 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fbc244d384so53630815e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 08:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690902253; x=1691507053;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5uuNfkxYesmIemPiABp4WONeX4fMNiIa9h0mEc9ZlfQ=;
-        b=ddIC42148FiD1bFz0COMhlRajuwwmXRXtSttwUupyxZT7DuOlagS/guVxTNwy0NTF4
-         bJHJSV96xm6m8m4X/U9hvhUOXVTemku23zEYJdxgXe+Fuol5Z5TrXpO8bMU3qNSA+7Iw
-         0jbgd9V6ctfOHd/ucKm/R1SWBazIqu9uSP+/a8W1mo9khCsWFVJD6yRJvtBDE3fDQDpV
-         CTNlm2eP2hV2tgTIBgJbmZ4CpIO9Awi16CttcrTadBe1/O/kblnek/Kr0FnCNdU+E/dI
-         DzzCOchQvmNP3gzVWF6zsox+jGyUn6UVooc65dsZqnfI+iTioTam9oMwNmOuizW12Rt3
-         oYSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690902253; x=1691507053;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5uuNfkxYesmIemPiABp4WONeX4fMNiIa9h0mEc9ZlfQ=;
-        b=bM3NQjEtOWFkOPNwH4BWhQ10zAfjZbtqXKso/R1HCiAH/Ktyc1K5KjzLdIAUbzXgom
-         8z9EOf7keB8M8lxirg8g+bErbJDwN4EV9Z1HSOo/SUq8Gsqyeb+p/mgIrX+tM34f3olU
-         A8bBV31fRXPPrzHMWzFgNzl7agKyfjWSUL3j2XtVh9hSZj/oNlj/q6atDagUFtD660eM
-         DvWWffNKxp5OMOMeiQQbDur64jczNnw0Ici9NhW62I3+uvrd64dKceS06g9Gi8kc89xO
-         WUHkNbY4VTzM2daHxhkZrgFOm36IloNMV7wYJC6/KK9kk3BBoqFO0DoeQ7IJxep52d/R
-         qb5w==
-X-Gm-Message-State: ABy/qLYOu0qRd/mpDEkWsgpRj4nVQuSJZBBY2VXRET1IkATBnakS/cLX
-        /INNql/i0uO1hVv42pe38ZnojQ==
-X-Google-Smtp-Source: APBJJlE+NvyG8l2+SLSauX+BQGM6V0ql3WRzZWkAP6hg+vtCeXJYp+g9ssAbkVLrMXs1/hRnD++T5w==
-X-Received: by 2002:a1c:7915:0:b0:3fe:16c8:65fa with SMTP id l21-20020a1c7915000000b003fe16c865famr2596721wme.4.1690902253573;
-        Tue, 01 Aug 2023 08:04:13 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id z13-20020a5d654d000000b00314398e4dd4sm16273770wrv.54.2023.08.01.08.04.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 08:04:13 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 18:04:10 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Jorge Lopez <jorgealtxwork@gmail.com>
-Cc:     hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas@t-8ch.de,
-        ilpo.jarvinen@linux.intel.com
-Subject: Re: [PATCH 0/8] hp-bioscfg: Overall fixes and code cleanup
-Message-ID: <6c6143bd-5352-4edc-a44c-143c27fbf1cf@kadam.mountain>
-References: <20230731203141.30044-1-jorge.lopez2@hp.com>
- <c891e1cb-3fb6-448a-850c-e94c48d32c66@kadam.mountain>
- <CAOOmCE8xLxE9fSZNhPeYumRyzg9S-C9++8LH5jDq5vVwgFMdCQ@mail.gmail.com>
+        Tue, 1 Aug 2023 11:10:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCE01B1;
+        Tue,  1 Aug 2023 08:10:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7863E615D9;
+        Tue,  1 Aug 2023 15:10:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8ABAC433C7;
+        Tue,  1 Aug 2023 15:10:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690902607;
+        bh=+bBPLGmDmXfC/yfM3zDVF6K5Ga/agNFu5ARhnA02LuA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r8zuzbiIsBm8TplmUwNtJnkj0WqQ7Bj07Nu9yp5ar/EYSV4LQQ3uL73ELCG1L41jq
+         YvuaYQlYhxf9lYlvrNjTqqiK+hh/mmVXlCFhYNKELooEaDF+I16iw9dkxuoVH8Tf4r
+         MMzAnPUycWbbea6niD+2vJ7S6VYgMcnxfQ/W8n2WzYs3ch5uSe4487LN6555t9Fsr1
+         MEStdbDlfoeEftOw+xyV2O2Pyy2neIm2BVU9icTY0M0HKHFlx8zXeaGqKT88HFeDBP
+         24CXRV2GJ39ZT5XdVsrhKrH4rhJNw34F9/DVHpaPG+sd+VlTEmdea7RgrgWKh2lT9O
+         L985DdCd9UJCA==
+Date:   Tue, 1 Aug 2023 16:09:58 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 00/36] arm64/gcs: Provide support for GCS in userspace
+Message-ID: <09b7a94d-cc88-4372-85de-52db26bc2daf@sirena.org.uk>
+References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
+ <20230801141319.GC26253@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eVo2yRFuK2CxHWEO"
 Content-Disposition: inline
-In-Reply-To: <CAOOmCE8xLxE9fSZNhPeYumRyzg9S-C9++8LH5jDq5vVwgFMdCQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <20230801141319.GC26253@willie-the-truck>
+X-Cookie: I thought YOU silenced the guard!
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,22 +80,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 09:52:05AM -0500, Jorge Lopez wrote:
-> I will submit a new patch replacing 'value_len' for 'size' in line 267
-> as indicated.
-> 'value_len' is utilized earlier in the code so we cannot remove it
-> completely from the function.
-> 
 
-After replacing size then it looks like this.
+--eVo2yRFuK2CxHWEO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-$ grep value_len drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-        int value_len = 0;
-                                                               &str_value, &value_len);
-                                                               &str_value, &value_len);
+On Tue, Aug 01, 2023 at 03:13:20PM +0100, Will Deacon wrote:
+> On Mon, Jul 31, 2023 at 02:43:09PM +0100, Mark Brown wrote:
 
-It's a write only variable.
+> > The arm64 Guarded Control Stack (GCS) feature provides support for
+> > hardware protected stacks of return addresses, intended to provide
+> > hardening against return oriented programming (ROP) attacks and to make
+> > it easier to gather call stacks for applications such as profiling.
 
-regards,
-dan carpenter
+> Why is this better than Clang's software shadow stack implementation? It
+> would be nice to see some justification behind adding all this, rather
+> than it being an architectural tick-box exercise.
 
+Mainly that it's hardware enforced (as the quoted paragraph says).  This
+makes it harder to attack, and hopefully it's also a bit faster (how
+measurable that might be will be an open question, but even NOPs in
+function entry/exit tend to get noticed).
+
+--eVo2yRFuK2CxHWEO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTJIEYACgkQJNaLcl1U
+h9BQawf/f0SGHhLVQUgdnRJbAN6lBuDUQfirqOPQbGb1BDJkA5bBH3gggqgDiUP9
+iuDR87qdT9VDbUW0rgSKaYDAizuTvWthjfPv3Y0JOAgM9fmGmDmyldhVOSrmbRQF
+hW3jgZbWRG0UK44PpWKLX2z13fGx9xVitteScPpIhF9r2o8kmq3SoYO7a681hQLI
+usvrKaEpMYgeGeSm+2qlQj5sQnVNNrRD3u1BLbOuu6uRfWWtoUS+cFxUUUMNcmbi
+1ZrrHuAy4ZanoowjW4HLjzhtQDVSPleqsZGfnChKMuZhXPqpBl74qWAMs8x9bq/F
+iC0yz6XbrIQqfBkmNljqf0Kj03fpLw==
+=2KV+
+-----END PGP SIGNATURE-----
+
+--eVo2yRFuK2CxHWEO--
