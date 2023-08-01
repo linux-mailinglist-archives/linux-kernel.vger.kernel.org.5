@@ -2,474 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C0676B62C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE2D76B635
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbjHANru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
+        id S234145AbjHANst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:48:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230310AbjHANrr (ORCPT
+        with ESMTP id S234327AbjHANsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:47:47 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06D85ED
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 06:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690897666; x=1722433666;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=X9LL4W/E66IAZckgliz0F6R+X+6Qomu9XzplGsb3Pyo=;
-  b=dBSxPOPH8LyNE+wqQDvp+ptvmkDjBhU2m4n36+x9XsBdlHoF6xDoYBRX
-   NH5HDXPlboZtcAuwfqvHwyWuO5R29k4JC2zg3eRB+NsR9DKvLN9pCQoT8
-   FLl6Zw4w01+5KAydSxRCg7x9QZ75kA5h8tLdi57TtI+f3w5JJhnheqbOv
-   YEbgb25MRiL3f9tsbves3wGDYTEdUq+4JbivYH54liWTEAHJxEOT/ao7P
-   t2ORyjlvbRXnGA7A/eHsk+lj3XJlrWOffFufiW3YSLtpBdkTe04kQ35jg
-   xNgHRAtqlCFhNIykShVNYFMPV3TcRfk7LLFvcbrOQbcuf3ahJHAX4mhAV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="348901518"
-X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
-   d="scan'208";a="348901518"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 06:47:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="758352467"
-X-IronPort-AV: E=Sophos;i="6.01,247,1684825200"; 
-   d="scan'208";a="758352467"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP; 01 Aug 2023 06:47:25 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qQpic-0050DO-2l;
-        Tue, 01 Aug 2023 16:47:22 +0300
-Date:   Tue, 1 Aug 2023 16:47:22 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Brent Lu <brent.lu@intel.com>
-Cc:     alsa-devel@alsa-project.org,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Terry Cheong <htcheong@chromium.org>,
-        Uday M Bhat <uday.m.bhat@intel.com>,
-        Mac Chiang <mac.chiang@intel.com>,
-        "Dharageswari . R" <dharageswari.r@intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        ye xingchen <ye.xingchen@zte.com.cn>
-Subject: Re: [PATCH v4 1/1] ASoC: Intel: maxim-common: get codec number from
- ACPI table
-Message-ID: <ZMkM6l8IqFBFItBk@smile.fi.intel.com>
-References: <20230731103419.2536036-1-brent.lu@intel.com>
- <20230731103419.2536036-2-brent.lu@intel.com>
+        Tue, 1 Aug 2023 09:48:41 -0400
+Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4BA1FC9;
+        Tue,  1 Aug 2023 06:48:40 -0700 (PDT)
+Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-486556dea4dso2327650e0c.1;
+        Tue, 01 Aug 2023 06:48:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690897719; x=1691502519;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8myyv9UtQpaVEl1JHFNQCZbgpelNRhntKZL1KtZAYE0=;
+        b=fbizwoBnK0zi2k8mw38HFdIbjEt0SViqTMpdYPhRuQIoh/1Iq6Wb1bukGuQkJCrqyL
+         lPntnQJdjhyaABquOs/XeOsIN1HeL69Ta/htXwUDRVX2NlNUSaSwx/LjgLiRO1vbuWbb
+         hy6AagszQvfdcWGoGHMC9RhOspPjNYJ2jPRfdtyg+qZangBQbkgGhFMiEXIIWbU+bWOw
+         lJ3VJJuzlWcf3aePo+qJ0Tqbg9KhWnJhufdKmW9MuWssl86OoI0QBUiG+1oDI0RdhzvX
+         Q2BdCglsLuuQV4zTR1GIbaWv7LNp+giVKYeXlEcQfPz/TTP5FQ8mGVoRkLDCDxJckHCa
+         mw0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690897719; x=1691502519;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8myyv9UtQpaVEl1JHFNQCZbgpelNRhntKZL1KtZAYE0=;
+        b=JBseIBRxqlEWik6OMnLwo7lt3wRL2/ifSgYUdmYT4Y/CJsvWjVdgsujpYZOQ9juwC4
+         F0544BWot9LeNMmpAfaz66cHvCToEh88UONVWirqI4go67EiIJxSTcBFCteRJt6HlMPv
+         cPXlpOc8Rbk6xDRtUWoR6QV2VSY/LawM2y2frrDfNNIxh4g5iBMT9Xb1R7lLuJuqLHYj
+         cFWQq/0XkxAkLJe7kxtwPuSiOvYi6xN44EX2GElP+b/b+RyaoaBHUIbh4IjGDYXdcTe0
+         GWiLhA8ArDSlqf2ilvncYGoXZkEuCKcnyq6/v1umf0vTivStgDh3wJvpEFSd6xIJsV/g
+         Jiag==
+X-Gm-Message-State: ABy/qLar6TMf0F20THF6QlMXB30UjYt6XMUSZCIPuE4aPSfvtPzCenWm
+        Pl006vJEhuDw2dGg+QpvnEXFcUQoKepGVExvXJU=
+X-Google-Smtp-Source: APBJJlFah66TQQxX06YQDLzPSKMwRTGdfNAgAL+0resdS58kA0oRIwOiMTzBtE3nlgtf9lO5i+fiN9CZQxjbacglirY=
+X-Received: by 2002:a1f:bf4d:0:b0:486:4188:48c9 with SMTP id
+ p74-20020a1fbf4d000000b00486418848c9mr2513134vkf.3.1690897719185; Tue, 01 Aug
+ 2023 06:48:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731103419.2536036-2-brent.lu@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230801121824.174556-1-alistair.francis@wdc.com> <2023080152-disobey-widen-65a4@gregkh>
+In-Reply-To: <2023080152-disobey-widen-65a4@gregkh>
+From:   Alistair Francis <alistair23@gmail.com>
+Date:   Tue, 1 Aug 2023 09:48:13 -0400
+Message-ID: <CAKmqyKMEqrfP8BrXd9pVd4a5Aodipty-8bAkxK5xcGSewsC9JA@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI/DOE: Expose the DOE protocols via sysfs
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        Jonathan.Cameron@huawei.com, lukas@wunner.de,
+        alex.williamson@redhat.com, christian.koenig@amd.com,
+        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
+        Alistair Francis <alistair.francis@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 06:34:19PM +0800, Brent Lu wrote:
-> We implement a helper function to get number of codecs from ACPI
-> subsystem instead of using quirk flag in machine driver. Also refactor
-> module interface by adding max_98390_dai_link() function.
-> 
-> On the sof_rt5682 machine driver side, we remove the quirk flag
-> SOF_MAX98390_TWEETER_SPEAKER_PRESENT and use the new interface of
-> max98390 to setup dai link.
+On Tue, Aug 1, 2023 at 9:28=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org>=
+ wrote:
+>
+> On Tue, Aug 01, 2023 at 08:18:24AM -0400, Alistair Francis wrote:
+> > The PCIe 6 specification added support for the Data Object Exchange (DO=
+E).
+> > When DOE is supported the Discovery Data Object Protocol must be
+> > implemented. The protocol allows a requester to obtain information abou=
+t
+> > the other DOE protocols supported by the device.
+> >
+> > The kernel is already querying the DOE protocols supported and cacheing
+> > the values. This patch exposes the values via sysfs. This will allow
+> > userspace to determine which DOE protocols are supported by the PCIe
+> > device.
+> >
+> > By exposing the information to userspace tools like lspci can relay the
+> > information to users. By listing all of the supported protocols we can
+> > allow userspace to parse and support the list, which might include
+> > vendor specific protocols as well as yet to be supported protocols.
+> >
+> > Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-pci | 11 ++++++
+> >  drivers/pci/doe.c                       | 52 +++++++++++++++++++++++++
+> >  drivers/pci/pci-sysfs.c                 |  8 ++++
+> >  include/linux/pci-doe.h                 |  2 +
+> >  4 files changed, 73 insertions(+)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/AB=
+I/testing/sysfs-bus-pci
+> > index ecf47559f495..ae969bbfa631 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-pci
+> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> > @@ -500,3 +500,14 @@ Description:
+> >               console drivers from the device.  Raw users of pci-sysfs
+> >               resourceN attributes must be terminated prior to resizing=
+.
+> >               Success of the resizing operation is not guaranteed.
+> > +
+> > +What:                /sys/bus/pci/devices/.../doe_proto
+> > +Date:                July 2023
+> > +Contact:     Linux PCI developers <linux-pci@vger.kernel.org>
+> > +Description:
+> > +             This file contains a list of the supported Data Object Ex=
+change (DOE)
+> > +             protocols. The protocols are seperated by newlines.
+> > +             The value comes from the device and specifies the vendor =
+and
+> > +             protocol supported. The lower byte is the protocol and th=
+e next
+> > +             two bytes are the vendor ID.
+> > +             The file is read only.
+>
+> Sorry, but sysfs files are "one value per file", you can't have a "list
+> of protocols with new lines" in a one value-per-file rule.
+>
+>
+> > diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
+> > index 1b97a5ab71a9..70900b79b239 100644
+> > --- a/drivers/pci/doe.c
+> > +++ b/drivers/pci/doe.c
+> > @@ -563,6 +563,58 @@ static bool pci_doe_supports_prot(struct pci_doe_m=
+b *doe_mb, u16 vid, u8 type)
+> >       return false;
+> >  }
+> >
+> > +#ifdef CONFIG_SYSFS
+> > +/**
+> > + * pci_doe_sysfs_proto_supports() - Write the supported DOE protocols
+> > + *                        to a sysfs buffer
+> > + * @doe_mb: DOE mailbox capability to query
+> > + * @buf: buffer to store the sysfs strings
+> > + * @offset: offset in buffer to store the sysfs strings
+> > + *
+> > + * RETURNS: The number of bytes written, 0 means an error occured
+> > + */
+> > +static unsigned long pci_doe_sysfs_proto_supports(struct pci_doe_mb *d=
+oe_mb,
+> > +                                               char *buf, ssize_t offs=
+et)
+> > +{
+> > +     unsigned long index;
+> > +     ssize_t ret =3D offset;
+> > +     ssize_t r;
+> > +     void *entry;
+> > +
+> > +     xa_for_each(&doe_mb->prots, index, entry) {
+> > +             r =3D sysfs_emit_at(buf, ret, "0x%08lX\n", xa_to_value(en=
+try));
+> > +
+>
+> No need for a blank line.
+>
+> > +             if (r =3D=3D 0)
+> > +                     return ret;
+>
+>
+>
+> > +
+> > +             ret +=3D r;
+> > +     }
+> > +
+> > +     return ret;
+> > +}
+> > +
+> > +ssize_t doe_proto_show(struct device *dev, struct device_attribute *at=
+tr,
+> > +                    char *buf)
+> > +{
+> > +     struct pci_dev *pci_dev =3D to_pci_dev(dev);
+> > +     unsigned long index;
+> > +     ssize_t ret =3D 0;
+> > +     ssize_t r;
+> > +     struct pci_doe_mb *doe_mb;
+> > +
+> > +     xa_for_each(&pci_dev->doe_mbs, index, doe_mb) {
+> > +             r =3D pci_doe_sysfs_proto_supports(doe_mb, buf, ret);
+> > +
+> > +             if (r =3D=3D 0)
+> > +                     return ret;
+> > +
+> > +             ret +=3D r;
+> > +     }
+>
+> So this is going to be a lot of data, what is ensuring that you didn't
+> truncate it?  Which again, is the reason why this is not a good idea for
+> sysfs, sorry.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-from ACPI utilization point of view.
+Hmm... That's a pain.
 
-The long standing issue with the entire ASoC subsystem, though, is the device
-instance name in use, which is _strictly speaking_ fragile: The device
-enumeration order was never guaranteed as far as I know, it just happened
-to work because ACPICA & ACPI glue layer code doesn't change this, but it
-very well has a right to.
+I was hoping to avoid the kernel needing to know the protocols. This
+list can include vendor specific protocols, as well as future
+protocols that the running kernel doesn't yet support, so I wanted to
+directly pass it to userspace without having to parse it in the
+kernel.
 
-> Signed-off-by: Brent Lu <brent.lu@intel.com>
-> ---
->  sound/soc/intel/boards/sof_maxim_common.c | 170 +++++++++++++---------
->  sound/soc/intel/boards/sof_maxim_common.h |  21 ++-
->  sound/soc/intel/boards/sof_rt5682.c       |  37 +----
->  3 files changed, 111 insertions(+), 117 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/sof_maxim_common.c b/sound/soc/intel/boards/sof_maxim_common.c
-> index 112e89951da0..628b6d5d3ee4 100644
-> --- a/sound/soc/intel/boards/sof_maxim_common.c
-> +++ b/sound/soc/intel/boards/sof_maxim_common.c
-> @@ -4,6 +4,7 @@
->  #include <linux/module.h>
->  #include <linux/string.h>
->  #include <sound/pcm.h>
-> +#include <sound/pcm_params.h>
->  #include <sound/soc.h>
->  #include <sound/soc-acpi.h>
->  #include <sound/soc-dai.h>
-> @@ -11,6 +12,18 @@
->  #include <uapi/sound/asound.h>
->  #include "sof_maxim_common.h"
->  
-> +/* helper function to get the number of specific codec */
-> +static unsigned int get_num_codecs(const char *hid)
-> +{
-> +	struct acpi_device *adev;
-> +	unsigned int dev_num = 0;
-> +
-> +	for_each_acpi_dev_match(adev, hid, NULL, -1)
-> +		dev_num++;
-> +
-> +	return dev_num;
-> +}
-> +
->  #define MAX_98373_PIN_NAME 16
->  
->  const struct snd_soc_dapm_route max_98373_dapm_routes[] = {
-> @@ -168,17 +181,6 @@ static struct snd_soc_codec_conf max_98390_codec_conf[] = {
->  		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
->  		.name_prefix = "Left",
->  	},
-> -};
-> -
-> -static struct snd_soc_codec_conf max_98390_4spk_codec_conf[] = {
-> -	{
-> -		.dlc = COMP_CODEC_CONF(MAX_98390_DEV0_NAME),
-> -		.name_prefix = "Right",
-> -	},
-> -	{
-> -		.dlc = COMP_CODEC_CONF(MAX_98390_DEV1_NAME),
-> -		.name_prefix = "Left",
-> -	},
->  	{
->  		.dlc = COMP_CODEC_CONF(MAX_98390_DEV2_NAME),
->  		.name_prefix = "Tweeter Right",
-> @@ -189,19 +191,7 @@ static struct snd_soc_codec_conf max_98390_4spk_codec_conf[] = {
->  	},
->  };
->  
-> -struct snd_soc_dai_link_component max_98390_components[] = {
-> -	{
-> -		.name = MAX_98390_DEV0_NAME,
-> -		.dai_name = MAX_98390_CODEC_DAI,
-> -	},
-> -	{
-> -		.name = MAX_98390_DEV1_NAME,
-> -		.dai_name = MAX_98390_CODEC_DAI,
-> -	},
-> -};
-> -EXPORT_SYMBOL_NS(max_98390_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> -
-> -struct snd_soc_dai_link_component max_98390_4spk_components[] = {
-> +static struct snd_soc_dai_link_component max_98390_components[] = {
->  	{
->  		.name = MAX_98390_DEV0_NAME,
->  		.dai_name = MAX_98390_CODEC_DAI,
-> @@ -219,62 +209,56 @@ struct snd_soc_dai_link_component max_98390_4spk_components[] = {
->  		.dai_name = MAX_98390_CODEC_DAI,
->  	},
->  };
-> -EXPORT_SYMBOL_NS(max_98390_4spk_components, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> +
-> +static const struct {
-> +	unsigned int tx;
-> +	unsigned int rx;
-> +} max_98390_tdm_mask[] = {
-> +	{.tx = 0x01, .rx = 0x3},
-> +	{.tx = 0x02, .rx = 0x3},
-> +	{.tx = 0x04, .rx = 0x3},
-> +	{.tx = 0x08, .rx = 0x3},
-> +};
->  
->  static int max_98390_hw_params(struct snd_pcm_substream *substream,
->  			       struct snd_pcm_hw_params *params)
->  {
->  	struct snd_soc_pcm_runtime *rtd = asoc_substream_to_rtd(substream);
->  	struct snd_soc_dai *codec_dai;
-> -	int i;
-> +	int i, ret;
->  
->  	for_each_rtd_codec_dais(rtd, i, codec_dai) {
-> -		if (i >= ARRAY_SIZE(max_98390_4spk_components)) {
-> +		if (i >= ARRAY_SIZE(max_98390_tdm_mask)) {
->  			dev_err(codec_dai->dev, "invalid codec index %d\n", i);
->  			return -ENODEV;
->  		}
->  
-> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV0_NAME)) {
-> -			/* DEV0 tdm slot configuration Right */
-> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x01, 3, 4, 32);
-> -		}
-> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV1_NAME)) {
-> -			/* DEV1 tdm slot configuration Left */
-> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x02, 3, 4, 32);
-> -		}
-> -
-> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV2_NAME)) {
-> -			/* DEVi2 tdm slot configuration Tweeter Right */
-> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x04, 3, 4, 32);
-> -		}
-> -		if (!strcmp(codec_dai->component->name, MAX_98390_DEV3_NAME)) {
-> -			/* DEV3 tdm slot configuration Tweeter Left */
-> -			snd_soc_dai_set_tdm_slot(codec_dai, 0x08, 3, 4, 32);
-> +		ret = snd_soc_dai_set_tdm_slot(codec_dai, max_98390_tdm_mask[i].tx,
-> +					       max_98390_tdm_mask[i].rx, 4,
-> +					       params_width(params));
-> +		if (ret < 0) {
-> +			dev_err(codec_dai->dev, "fail to set tdm slot, ret %d\n",
-> +				ret);
-> +			return ret;
->  		}
->  	}
->  	return 0;
->  }
->  
-> -int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
-> +static int max_98390_init(struct snd_soc_pcm_runtime *rtd)
->  {
->  	struct snd_soc_card *card = rtd->card;
-> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
->  	int ret;
->  
-> -	/* add regular speakers dapm route */
-> -	ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
-> -				      ARRAY_SIZE(max_98390_dapm_routes));
-> -	if (ret) {
-> -		dev_err(rtd->dev, "unable to add Left/Right Speaker dapm, ret %d\n", ret);
-> -		return ret;
-> -	}
-> -
-> -	/* add widgets/controls/dapm for tweeter speakers */
-> -	if (acpi_dev_present("MX98390", "3", -1)) {
-> +	switch (num_codecs) {
-> +	case 4:
-> +		/* add widgets/controls/dapm for tweeter speakers */
->  		ret = snd_soc_dapm_new_controls(&card->dapm, max_98390_tt_dapm_widgets,
->  						ARRAY_SIZE(max_98390_tt_dapm_widgets));
-> -
->  		if (ret) {
-> -			dev_err(rtd->dev, "unable to add tweeter dapm controls, ret %d\n", ret);
-> +			dev_err(rtd->dev, "unable to add tweeter dapm widgets, ret %d\n",
-> +				ret);
->  			/* Don't need to add routes if widget addition failed */
->  			return ret;
->  		}
-> @@ -282,33 +266,79 @@ int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd)
->  		ret = snd_soc_add_card_controls(card, max_98390_tt_kcontrols,
->  						ARRAY_SIZE(max_98390_tt_kcontrols));
->  		if (ret) {
-> -			dev_err(rtd->dev, "unable to add tweeter card controls, ret %d\n", ret);
-> +			dev_err(rtd->dev, "unable to add tweeter controls, ret %d\n",
-> +				ret);
->  			return ret;
->  		}
->  
->  		ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_tt_dapm_routes,
->  					      ARRAY_SIZE(max_98390_tt_dapm_routes));
-> -		if (ret)
-> -			dev_err(rtd->dev,
-> -				"unable to add Tweeter Left/Right Speaker dapm, ret %d\n", ret);
-> +		if (ret) {
-> +			dev_err(rtd->dev, "unable to add tweeter dapm routes, ret %d\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +
-> +		fallthrough;
-> +	case 2:
-> +		/* add regular speakers dapm route */
-> +		ret = snd_soc_dapm_add_routes(&card->dapm, max_98390_dapm_routes,
-> +					      ARRAY_SIZE(max_98390_dapm_routes));
-> +		if (ret) {
-> +			dev_err(rtd->dev, "unable to add dapm routes, ret %d\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +		break;
-> +	default:
-> +		dev_err(rtd->dev, "invalid codec number %d\n", num_codecs);
-> +		return -EINVAL;
->  	}
-> +
->  	return ret;
->  }
-> -EXPORT_SYMBOL_NS(max_98390_spk_codec_init, SND_SOC_INTEL_SOF_MAXIM_COMMON);
->  
-> -const struct snd_soc_ops max_98390_ops = {
-> +static const struct snd_soc_ops max_98390_ops = {
->  	.hw_params = max_98390_hw_params,
->  };
-> -EXPORT_SYMBOL_NS(max_98390_ops, SND_SOC_INTEL_SOF_MAXIM_COMMON);
->  
-> -void max_98390_set_codec_conf(struct snd_soc_card *card, int ch)
-> +void max_98390_dai_link(struct device *dev, struct snd_soc_dai_link *link)
-> +{
-> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
-> +
-> +	link->codecs = max_98390_components;
-> +
-> +	switch (num_codecs) {
-> +	case 2:
-> +	case 4:
-> +		link->num_codecs = num_codecs;
-> +		break;
-> +	default:
-> +		dev_err(dev, "invalid codec number %d for %s\n", num_codecs,
-> +			MAX_98390_ACPI_HID);
-> +		break;
-> +	}
-> +
-> +	link->init = max_98390_init;
-> +	link->ops = &max_98390_ops;
-> +}
-> +EXPORT_SYMBOL_NS(max_98390_dai_link, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> +
-> +void max_98390_set_codec_conf(struct device *dev, struct snd_soc_card *card)
->  {
-> -	if (ch == ARRAY_SIZE(max_98390_4spk_codec_conf)) {
-> -		card->codec_conf = max_98390_4spk_codec_conf;
-> -		card->num_configs = ARRAY_SIZE(max_98390_4spk_codec_conf);
-> -	} else {
-> -		card->codec_conf = max_98390_codec_conf;
-> -		card->num_configs = ARRAY_SIZE(max_98390_codec_conf);
-> +	unsigned int num_codecs = get_num_codecs(MAX_98390_ACPI_HID);
-> +
-> +	card->codec_conf = max_98390_codec_conf;
-> +
-> +	switch (num_codecs) {
-> +	case 2:
-> +	case 4:
-> +		card->num_configs = num_codecs;
-> +		break;
-> +	default:
-> +		dev_err(dev, "invalid codec number %d for %s\n", num_codecs,
-> +			MAX_98390_ACPI_HID);
-> +		break;
->  	}
->  }
->  EXPORT_SYMBOL_NS(max_98390_set_codec_conf, SND_SOC_INTEL_SOF_MAXIM_COMMON);
-> diff --git a/sound/soc/intel/boards/sof_maxim_common.h b/sound/soc/intel/boards/sof_maxim_common.h
-> index 7a8c53049e4d..a095b47b856b 100644
-> --- a/sound/soc/intel/boards/sof_maxim_common.h
-> +++ b/sound/soc/intel/boards/sof_maxim_common.h
-> @@ -27,18 +27,15 @@ int max_98373_trigger(struct snd_pcm_substream *substream, int cmd);
->  /*
->   * Maxim MAX98390
->   */
-> -#define MAX_98390_CODEC_DAI     "max98390-aif1"
-> -#define MAX_98390_DEV0_NAME     "i2c-MX98390:00"
-> -#define MAX_98390_DEV1_NAME     "i2c-MX98390:01"
-> -#define MAX_98390_DEV2_NAME     "i2c-MX98390:02"
-> -#define MAX_98390_DEV3_NAME     "i2c-MX98390:03"
-> -
-> -extern struct snd_soc_dai_link_component max_98390_components[2];
-> -extern struct snd_soc_dai_link_component max_98390_4spk_components[4];
-> -extern const struct snd_soc_ops max_98390_ops;
-> -
-> -void max_98390_set_codec_conf(struct snd_soc_card *card, int ch);
-> -int max_98390_spk_codec_init(struct snd_soc_pcm_runtime *rtd);
-> +#define MAX_98390_ACPI_HID	"MX98390"
-> +#define MAX_98390_CODEC_DAI	"max98390-aif1"
-> +#define MAX_98390_DEV0_NAME	"i2c-" MAX_98390_ACPI_HID ":00"
-> +#define MAX_98390_DEV1_NAME	"i2c-" MAX_98390_ACPI_HID ":01"
-> +#define MAX_98390_DEV2_NAME	"i2c-" MAX_98390_ACPI_HID ":02"
-> +#define MAX_98390_DEV3_NAME	"i2c-" MAX_98390_ACPI_HID ":03"
-> +
-> +void max_98390_dai_link(struct device *dev, struct snd_soc_dai_link *link);
-> +void max_98390_set_codec_conf(struct device *dev, struct snd_soc_card *card);
->  
->  /*
->   * Maxim MAX98357A/MAX98360A
-> diff --git a/sound/soc/intel/boards/sof_rt5682.c b/sound/soc/intel/boards/sof_rt5682.c
-> index b4f07bdcf8b4..0af1e0c3a9db 100644
-> --- a/sound/soc/intel/boards/sof_rt5682.c
-> +++ b/sound/soc/intel/boards/sof_rt5682.c
-> @@ -59,7 +59,6 @@
->  #define SOF_SSP_BT_OFFLOAD_PRESENT		BIT(22)
->  #define SOF_RT5682S_HEADPHONE_CODEC_PRESENT	BIT(23)
->  #define SOF_MAX98390_SPEAKER_AMP_PRESENT	BIT(24)
-> -#define SOF_MAX98390_TWEETER_SPEAKER_PRESENT	BIT(25)
->  #define SOF_RT1019_SPEAKER_AMP_PRESENT	BIT(26)
->  #define SOF_RT5650_HEADPHONE_CODEC_PRESENT	BIT(27)
->  
-> @@ -195,23 +194,6 @@ static const struct dmi_system_id sof_rt5682_quirk_table[] = {
->  					SOF_RT5682_SSP_AMP(2) |
->  					SOF_RT5682_NUM_HDMIDEV(4)),
->  	},
-> -	{
-> -		.callback = sof_rt5682_quirk_cb,
-> -		.matches = {
-> -			DMI_MATCH(DMI_PRODUCT_FAMILY, "Google_Brya"),
-> -			DMI_MATCH(DMI_OEM_STRING, "AUDIO-MAX98390_ALC5682I_I2S_4SPK"),
-> -		},
-> -		.driver_data = (void *)(SOF_RT5682_MCLK_EN |
-> -					SOF_RT5682_SSP_CODEC(0) |
-> -					SOF_SPEAKER_AMP_PRESENT |
-> -					SOF_MAX98390_SPEAKER_AMP_PRESENT |
-> -					SOF_MAX98390_TWEETER_SPEAKER_PRESENT |
-> -					SOF_RT5682_SSP_AMP(1) |
-> -					SOF_RT5682_NUM_HDMIDEV(4) |
-> -					SOF_BT_OFFLOAD_SSP(2) |
-> -					SOF_SSP_BT_OFFLOAD_PRESENT),
-> -
-> -	},
->  	{
->  		.callback = sof_rt5682_quirk_cb,
->  		.matches = {
-> @@ -850,17 +832,7 @@ static struct snd_soc_dai_link *sof_card_dai_links_create(struct device *dev,
->  			sof_rt1011_dai_link(&links[id]);
->  		} else if (sof_rt5682_quirk &
->  				SOF_MAX98390_SPEAKER_AMP_PRESENT) {
-> -			if (sof_rt5682_quirk &
-> -				SOF_MAX98390_TWEETER_SPEAKER_PRESENT) {
-> -				links[id].codecs = max_98390_4spk_components;
-> -				links[id].num_codecs = ARRAY_SIZE(max_98390_4spk_components);
-> -			} else {
-> -				links[id].codecs = max_98390_components;
-> -				links[id].num_codecs = ARRAY_SIZE(max_98390_components);
-> -			}
-> -			links[id].init = max_98390_spk_codec_init;
-> -			links[id].ops = &max_98390_ops;
-> -
-> +			max_98390_dai_link(dev, &links[id]);
->  		} else if (sof_rt5682_quirk & SOF_RT5650_HEADPHONE_CODEC_PRESENT) {
->  			links[id].codecs = &rt5650_components[1];
->  			links[id].num_codecs = 1;
-> @@ -1019,12 +991,7 @@ static int sof_audio_probe(struct platform_device *pdev)
->  	else if (sof_rt5682_quirk & SOF_RT1015P_SPEAKER_AMP_PRESENT)
->  		sof_rt1015p_codec_conf(&sof_audio_card_rt5682);
->  	else if (sof_rt5682_quirk & SOF_MAX98390_SPEAKER_AMP_PRESENT) {
-> -		if (sof_rt5682_quirk & SOF_MAX98390_TWEETER_SPEAKER_PRESENT)
-> -			max_98390_set_codec_conf(&sof_audio_card_rt5682,
-> -						 ARRAY_SIZE(max_98390_4spk_components));
-> -		else
-> -			max_98390_set_codec_conf(&sof_audio_card_rt5682,
-> -						 ARRAY_SIZE(max_98390_components));
-> +		max_98390_set_codec_conf(&pdev->dev, &sof_audio_card_rt5682);
->  	}
->  
->  	if (sof_rt5682_quirk & SOF_SSP_BT_OFFLOAD_PRESENT)
-> -- 
-> 2.34.1
-> 
+Does anyone have any thoughts on a better way to expose the information?
 
--- 
-With Best Regards,
-Andy Shevchenko
+>
+> What userspace tool wants this information?
 
+pciutils (lspci) is the first user [1], but I suspect more userspace
+tools will want to query the DOE protocols as SPDM catches on more.
+Eventually I would like to expose the DOE mailboxes to userspace (but
+that's a separate issue).
 
+1: https://github.com/pciutils/pciutils/pull/152
+
+>
+> thanks,
+>
+> greg k-h
