@@ -2,110 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6554A76B474
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815FC76B475
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbjHAMN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
+        id S232661AbjHAMNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:13:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230509AbjHAMNZ (ORCPT
+        with ESMTP id S230509AbjHAMNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:13:25 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C491990
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:13:23 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fe167d4a18so33149995e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 05:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1690892002; x=1691496802;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Bg3vuHDK1chesb8Cvwh0EPT81VwLYoy6o1zjsPyDao=;
-        b=E6qw1wML4+ZXUwDdL1Ej+y95ntDPygJiIhKDTHKYrn41FGkIC7CN++dKrHWleWOVPB
-         afucCNg7x1yucKeOqzafkDMo/yB2zMetdAl28+Ze26wP2fCJPiEx6RtzH2GHCotEQp20
-         RQs1S5dP633qmtjFXFkeBtZWd0iBp9dLqG4Fi2HaeH5+3w/kGdCL8pTy29U02UM9n7aC
-         +Dy1jJP6vRZ7Qpv2xMXp61YVqQ41Qn7DCpMFyuepijOGA29yjAQHllouccd+A0MrGgF4
-         N/RmI+Ld4oCJZ2kG5oZoqn6sKDvviQcx30dHe8986ow7E4xwfvWBTEzHhugVDtELk2Ju
-         DAIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690892002; x=1691496802;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Bg3vuHDK1chesb8Cvwh0EPT81VwLYoy6o1zjsPyDao=;
-        b=N6Uosuobqbgkx/MJqUi1yrYtVhNFkbXhvCYHQQ8O22IgQJAQZHKUJ8OHg6rkfSRD93
-         oFoZbLFJ4gjKIpe3geKlIs42N2MM1iIGSXMeptkNPgeym5ntzhNbdezbDnpY/m7wbbNz
-         xA2YrkcKhPljIzZwBuR4fipDDetmbDTcJprzlkZ3ACa1v2gbYTy1aQxEFp2JNmO4cKD4
-         2ITwkMUJfVndmq2EjB1+FL0U61vCSajjyqLD6Gex+mzNHh2jf+Z5k1lsszKp9Xz1Y2hF
-         sYW1Q7lgb2jSKXUhK3Cu771mJL1315Z/jExDeFzb3uWwJlF7rEVvdeAkz+Epc9wtJ7Fi
-         Foug==
-X-Gm-Message-State: ABy/qLZ0dROcZgUwKYFJ7v8JqpizAfdXbykCfLcGHZZKwy4cbYFi08jn
-        4G9I6lTSZzYyi+hGqdHqcm22/w==
-X-Google-Smtp-Source: APBJJlECZozkp1Tnu+B2GrFE1jQBQCJFjyh4uah59/l6lR7k4sjW/vX6KGmGr0KKf1ydPTPAryCLVQ==
-X-Received: by 2002:a1c:6a0e:0:b0:3fd:2e89:31bd with SMTP id f14-20020a1c6a0e000000b003fd2e8931bdmr2347615wmc.14.1690892001367;
-        Tue, 01 Aug 2023 05:13:21 -0700 (PDT)
-Received: from localhost ([147.161.155.108])
-        by smtp.gmail.com with ESMTPSA id w17-20020a05600c015100b003fbfef555d2sm16518134wmm.23.2023.08.01.05.13.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 05:13:20 -0700 (PDT)
-References: <20230714072510.47770-1-nmi@metaspace.dk>
- <20230714072510.47770-3-nmi@metaspace.dk> <ZLfQjNK5j5lB68C/@x1-carbon>
-User-agent: mu4e 1.10.5; emacs 28.2.50
-From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Matias =?utf-8?Q?Bj=C3=B8rling?= <Matias.Bjorling@wdc.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "gost.dev@samsung.com" <gost.dev@samsung.com>,
-        "hch@infradead.org" <hch@infradead.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        Hans Holmberg <Hans.Holmberg@wdc.com>,
-        Minwoo Im <minwoo.im.dev@gmail.com>
-Subject: Re: [PATCH v9 2/2] ublk: enable zoned storage support
-Date:   Tue, 01 Aug 2023 14:11:56 +0200
-In-reply-to: <ZLfQjNK5j5lB68C/@x1-carbon>
-Message-ID: <87il9zot9c.fsf@metaspace.dk>
+        Tue, 1 Aug 2023 08:13:51 -0400
+Received: from mail.gigawatt.nl (mail.gigawatt.nl [51.68.198.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75F041990;
+        Tue,  1 Aug 2023 05:13:49 -0700 (PDT)
+Received: from [192.168.178.44] (uk.gigawatt.nl [51.148.134.205])
+        by mail.gigawatt.nl (Postfix) with ESMTPSA id F28AE1118;
+        Tue,  1 Aug 2023 13:13:47 +0100 (BST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.gigawatt.nl F28AE1118
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gigawatt.nl;
+        s=default; t=1690892028;
+        bh=kuuRov0naF5TWWQDqQa6Z0+frZkbiW8DUD6YZNp9hxY=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=He4vGpduczIQA5AHH2ZBrnHzYDbkvwpvG40Cbct4QmnNYiuGcWrqmeNFT+AKAL2aB
+         d94T4xqdJrNrFjtC0HXRkJfEQQlhOUBX7/4nU23hjg6E3MqV2hT1h/Nbls38EftEvu
+         KwYsp68XDqSC4fVLJAnrkC82gp54MWcKpWWc6SrY=
+Message-ID: <dbf75067-afca-6f2b-3709-d459c20ec04c@gigawatt.nl>
+Date:   Tue, 1 Aug 2023 13:13:47 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] x86: Fix x32 System V message queue syscalls
+Content-Language: en-US
+To:     Rich Felker <dalias@libc.org>, Jessica Clarke <jrtc27@jrtc27.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, linux-x86_64@vger.kernel.org,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20201101015013.GN534@brightrain.aerifal.cx>
+ <CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com>
+ <04832096-ED7F-4754-993D-F578D4A90843@jrtc27.com>
+ <EEC90B2F-E972-475F-B058-918CDE401618@jrtc27.com>
+ <20201101210102.GO534@brightrain.aerifal.cx>
+ <29423184-A433-42D4-B635-CDEFE7271B40@jrtc27.com>
+ <2AC632C0-EC00-4C4E-92DC-B7F238897C4C@jrtc27.com>
+ <CALCETrWWcVhYoVuvovo558sXpA7X75jNpf8LA+w+k-dzyRiUcg@mail.gmail.com>
+ <347eab9f-b64a-b124-ba7a-ee458e6407f3@gigawatt.nl>
+ <5C330BFF-A81A-465D-BE7D-6DB6A7B263AF@jrtc27.com>
+ <20230801025340.GA20403@brightrain.aerifal.cx>
+From:   Harald van Dijk <harald@gigawatt.nl>
+In-Reply-To: <20230801025340.GA20403@brightrain.aerifal.cx>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01/08/2023 03:53, Rich Felker wrote:
+> On Tue, Aug 01, 2023 at 02:38:47AM +0100, Jessica Clarke wrote:
+>> On 1 Aug 2023, at 01:43, Harald van Dijk <harald@gigawatt.nl> wrote:
+>>>
+>>> On 06/12/2020 22:55, Andy Lutomirski wrote:
+>>>> On Sat, Dec 5, 2020 at 4:01 PM Jessica Clarke <jrtc27@jrtc27.com> wrote:
+>>>>>
+>>>>> Ping?
+>>>> Can you submit patches implementing my proposal?  One is your existing
+>>>> patch plus fixing struct msghdr, with Cc: stable@vger.kernel.org at
+>>>> the bottom.  The second is a removal of struct msghdr from uapi,
+>>>> moving it into include/inux (no uapi) if needed.  The second should
+>>>> not cc stable.
+>>>
+>>> Hi,
+>>>
+>>> This looks like it was forgotten, but it is still needed. Jessica,
+>>> are you interested in submitting the requested change? If not,
+>>> would it be okay if I do so? I have been running this locally for
+>>> a long time now.
+>>
+>> Hi,
+>> Please feel free to; sorry that it dropped off my radar. Part of the
+>> issue is my laptop no longer being x86, making it more annoying to test.
 
-Niklas Cassel <Niklas.Cassel@wdc.com> writes:
+No worries and thanks, I will do so.
 
-> On Fri, Jul 14, 2023 at 09:25:10AM +0200, Andreas Hindborg wrote:
->> From: Andreas Hindborg <a.hindborg@samsung.com>
->
-> Hello Andreas!
->
+>>> There is one complication that I think has not been mentioned yet:
+>>> when _GNU_SOURCE is defined, glibc does provide a definition of
+>>> struct msghdr in <sys/msg.h> with a field "__syscall_slong_t
+>>> mtype;". This makes it slightly more likely that there is code out
+>>> there in the wild that works fine with current kernels and would
+>>> be broken by the fix. Given how rare x32 is, and how rare message
+>>> queues are, this may still be acceptable, but I am mentioning it
+>>> just in case this would cause a different approach to be
+>>> preferred. And whatever is done, a fix should also be submitted to
+>>> glibc.
+>>
+>> Given POSIX is very clear on how msghdr works I think we have to break
+>> whatever oddball code out there might be using this. The alternative is
+>> violating POSIX in a way that makes correct code compile fine but fail
+>> at run time on x32, which is a terrible place to be, especially when
+>> the “fix” is to special-case x32 to go against what POSIX says. I just
+>> can’t see how that’s a good place to stay in, even if something might
+>> break when we fix this bug.
+> 
+> Absolutely. The application-facing API absolutely needs to have the
+> type of mtype be whatever long is in the application-facing C ABI.
+> However, I'm not sure how best to fix this.
 
-<snip>
+I shall go with Andy's suggested approach. 
+<https://lore.kernel.org/all/CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com/>
 
->>  	/* for READ request, writing data in iod->addr to rq buffers */
->> @@ -1120,6 +1404,11 @@ static void ublk_commit_completion(struct ublk_device *ub,
->>  	/* find the io request and complete */
->>  	req = blk_mq_tag_to_rq(ub->tag_set.tags[qid], tag);
->>  
->> +	if (io->flags & UBLK_IO_FLAG_ZONE_APPEND) {
->
-> Do we really need to introduce a completely new flag just for this?
->
-> if (req_op(req) == REQ_OP_ZONE_APPEND)
->
-> should work just as well, no?
+>                                             A fix now still leaves
+> applications broken on all existing kernels in the wild.
 
-Makes sense, thanks.
+True, but fixing it any other way also leaves applications broken on all 
+existing kernels in the wild, and fixing it this way makes it so that 
+existing applications that are currently broken start to work 
+automatically once people move to new kernels, rather than requiring 
+rebuilds.
 
-BR Andreas
+>                                                          This might be
+> a place where libc should have x32-specific translation code to work
+> around the wrong kernel ABI that became the contract with the kernel.
 
+The problem is that there are two conflicting contracts, the de jure 
+contract and the de facto contract. The de jure contract has always been 
+that the field has type "long" and we have seen from the breakage that 
+that is what applications have been using already. The de facto contract 
+was different, but we do not know of any application that has made use 
+of this. We cannot make it so that both work, so it makes sense to me to 
+make it so that what we do know is out there works.
+
+> I'm not sure how practical this is, since it seems like it would
+> require a temp buffer. Is the message size sufficiently bounded to
+> make that reasonable? Should there me a new x32-specific syscall that
+> takes the right ABI so that translation is only needed on old kernels?
+
+If a libc wishes to detect the current kernel behaviour and implement a 
+workaround, can it technically not also do so without a new syscall by 
+just issuing the syscall with a known payload and seeing what comes back?
+
+But personally, I would be happy to leave that as it is now under Andy's 
+rationale: "If you run user programs on a buggy kernel, you get buggy 
+behavior..."
+
+Cheers,
+Harald van Dijk
