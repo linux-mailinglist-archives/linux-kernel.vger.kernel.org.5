@@ -2,291 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3D076BA1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 247B476BA24
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233444AbjHAQ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:56:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        id S233453AbjHAQ6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:58:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233244AbjHAQ4U (ORCPT
+        with ESMTP id S232062AbjHAQ6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:56:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89E42114;
-        Tue,  1 Aug 2023 09:56:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Tue, 1 Aug 2023 12:58:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFA8010FA
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:57:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690909068;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZKlr7hPRFIg1XM1Mg6RUtTCl8BMjdJxudj9aZC6n25E=;
+        b=TpLbj6X8pNrZgJhJ0DCVOBv1rGG7tvWE0SosQjOQj4RXyaS63CqyEE9Cogr+vLJb6H/Een
+        LyHj9nfsBSfe7m0r5YKA9tj6ipDxG/ykI1wtjU/XsPdJmUa2Snp0VIUVH6GtLesx0kxZcF
+        1bijYcMxlKb0STMKNIBa83bsxNDKGjw=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-651-z-DU3XkbPMy31HetIn3hYg-1; Tue, 01 Aug 2023 12:57:44 -0400
+X-MC-Unique: z-DU3XkbPMy31HetIn3hYg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6D7BE61638;
-        Tue,  1 Aug 2023 16:56:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DEE0C433C7;
-        Tue,  1 Aug 2023 16:56:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690908977;
-        bh=bRSvjQunUP9yovqAQ96bucssEOT5sj5mD8xWzV3Px4Q=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=HmtgyFmrFiQBDoe/wT1NEWRCT2cRd7s/N7x7MFxMaNOwRts1yi5Dt1jlCw0ZtIKYt
-         1iAPgviM85CXM05FLS+4jAeH3vy/pmTehsfD+ffIXoG5EYrWmpic3annYv6hnM6Vw6
-         rZZd4bl4zlBcUGjgGx20QRHiEONyJs3j7ruY/TtkalEvjiDYl74ODukQd9onsUI3/K
-         GLsSULAvewtUGYzOhjBPaYnAaGn8FQAc+okVXYmHCrtGrlLXZB6kTP+pBfEgC41RoS
-         RPiUDXTVafRmxqRxuO5MxDMHYK+CBpo3Z7VhyNTU/Vrpdrx/zmFhMWA6xl8v+4Pnum
-         izFL+YMCCq9yg==
-Message-ID: <64ae76ef-a85a-7cc7-6bc3-a8ea46621d73@kernel.org>
-Date:   Tue, 1 Aug 2023 19:56:12 +0300
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 36A678007CE;
+        Tue,  1 Aug 2023 16:57:43 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 743114024F83;
+        Tue,  1 Aug 2023 16:57:41 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <64c93109c084e_1c5e3529452@willemb.c.googlers.com.notmuch>
+References: <64c93109c084e_1c5e3529452@willemb.c.googlers.com.notmuch> <1420063.1690904933@warthog.procyon.org.uk>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     dhowells@redhat.com, netdev@vger.kernel.org,
+        syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com,
+        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] udp: Fix __ip_append_data()'s handling of MSG_SPLICE_PAGES
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 2/5] arm64: dts: ti: k3-j784s4-main: Add WIZ and SERDES
- PHY nodes
-Content-Language: en-US
-To:     Jayesh Choudhary <j-choudhary@ti.com>, nm@ti.com, vigneshr@ti.com
-Cc:     s-vadapalli@ti.com, afd@ti.com, kristo@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, a-bhatia1@ti.com, r-ravikumar@ti.com,
-        sabiya.d@ti.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230801070019.219660-1-j-choudhary@ti.com>
- <20230801070019.219660-3-j-choudhary@ti.com>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20230801070019.219660-3-j-choudhary@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1481563.1690909060.1@warthog.procyon.org.uk>
+Date:   Tue, 01 Aug 2023 17:57:40 +0100
+Message-ID: <1481564.1690909060@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
 
+> copy -= -fraggap definitely seems off. You point out that it even can
+> turn length negative?
 
-On 01/08/2023 10:00, Jayesh Choudhary wrote:
-> From: Siddharth Vadapalli <s-vadapalli@ti.com>
-> 
-> J784S4 SoC has 4 Serdes instances along with their respective WIZ
-> instances. Add device-tree nodes for them and disable them by default.
-> 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> [j-choudhary@ti.com: fix serdes_wiz clock order & disable serdes refclk]
-> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 172 +++++++++++++++++++++
->  1 file changed, 172 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> index 8a816563706b..fbf5ab94d785 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> @@ -6,9 +6,19 @@
->   */
->  
->  #include <dt-bindings/mux/mux.h>
-> +#include <dt-bindings/phy/phy.h>
-> +#include <dt-bindings/phy/phy-ti.h>
->  
->  #include "k3-serdes.h"
->  
-> +/ {
-> +	serdes_refclk: serdes-refclk {
+Yes.  See the logging I posted:
 
-standard name should begin with clock
+	==>splice_to_socket() 6630
+	udp_sendmsg(8,8)
+	__ip_append_data(copy=-1,len=8, mtu=8192 skblen=8189 maxfl=8188)
+	pagedlen 9 = 9 - 0
+	copy -1 = 9 - 0 - 1 - 9
+	length 8 -= -1 + 0
 
-> +		#clock-cells = <0>;
-> +		compatible = "fixed-clock";
-> +		status = "disabled";
-> +	};
-> +};
-> +
->  &cbass_main {
->  	msmc_ram: sram@70000000 {
->  		compatible = "mmio-sram";
-> @@ -709,6 +719,168 @@ main_sdhci1: mmc@4fb0000 {
->  		status = "disabled";
->  	};
->  
-> +	serdes_wiz0: wiz@5060000 {
-> +		compatible = "ti,j784s4-wiz-10g";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		power-domains = <&k3_pds 404 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 404 2>, <&k3_clks 404 6>, <&serdes_refclk>, <&k3_clks 404 5>;
-> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
-> +		assigned-clocks = <&k3_clks 404 6>;
-> +		assigned-clock-parents = <&k3_clks 404 10>;
-> +		num-lanes = <4>;
-> +		#reset-cells = <1>;
-> +		#clock-cells = <1>;
-> +		ranges = <0x5060000 0x00 0x5060000 0x10000>;
-> +> +		status = "disabled";
-> +
-drop blank lines here and rest of this file where you set status to "disabled".
+Since datalen and transhdrlen cancel, and fraggap is unsigned, if fraggap is
+non-zero, copy will be negative.
 
-> +		serdes0: serdes@5060000 {
+> The WARN_ON_ONCE, if it can be reached, will be user triggerable.
+> Usually for those cases and when there is a viable return with error
+> path, that is preferable. But if you prefer to taunt syzbot, ok. We
+> can always remove this later.
 
-phy@5060000
+It shouldn't be possible for length to exceed msg->msg_iter.count (assuming
+there is a msg) coming from userspace; further, userspace can't directly
+specify MSG_SPLICE_PAGES.
 
-> +			compatible = "ti,j721e-serdes-10g";
-> +			reg = <0x05060000 0x010000>;
-> +			reg-names = "torrent_phy";
-> +			resets = <&serdes_wiz0 0>;
-> +			reset-names = "torrent_reset";
-> +			clocks = <&serdes_wiz0 TI_WIZ_PLL0_REFCLK>,
-> +				 <&serdes_wiz0 TI_WIZ_PHY_EN_REFCLK>;
-> +			clock-names = "refclk", "phy_en_refclk";
-> +			assigned-clocks = <&serdes_wiz0 TI_WIZ_PLL0_REFCLK>,
-> +					  <&serdes_wiz0 TI_WIZ_PLL1_REFCLK>,
-> +					  <&serdes_wiz0 TI_WIZ_REFCLK_DIG>;
-> +			assigned-clock-parents = <&k3_clks 404 6>,
-> +						 <&k3_clks 404 6>,
-> +						 <&k3_clks 404 6>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			#clock-cells = <1>;
-> +
-> +			status = "disabled";
-> +		};
-> +	};
-> +
-> +	serdes_wiz1: wiz@5070000 {
-> +		compatible = "ti,j784s4-wiz-10g";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		power-domains = <&k3_pds 405 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 405 2>, <&k3_clks 405 6>, <&serdes_refclk>, <&k3_clks 405 5>;
-> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
-> +		assigned-clocks = <&k3_clks 405 6>;
-> +		assigned-clock-parents = <&k3_clks 405 10>;
-> +		num-lanes = <4>;
-> +		#reset-cells = <1>;
-> +		#clock-cells = <1>;
-> +		ranges = <0x05070000 0x00 0x05070000 0x10000>;
-> +
-> +		status = "disabled";
-> +
-> +		serdes1: serdes@5070000 {
+> __ip6_append_data probably needs the same.
 
-phy@5070000
-> +			compatible = "ti,j721e-serdes-10g";
-> +			reg = <0x05070000 0x010000>;
-> +			reg-names = "torrent_phy";
-> +			resets = <&serdes_wiz1 0>;
-> +			reset-names = "torrent_reset";
-> +			clocks = <&serdes_wiz1 TI_WIZ_PLL0_REFCLK>,
-> +				 <&serdes_wiz1 TI_WIZ_PHY_EN_REFCLK>;
-> +			clock-names = "refclk", "phy_en_refclk";
-> +			assigned-clocks = <&serdes_wiz1 TI_WIZ_PLL0_REFCLK>,
-> +					  <&serdes_wiz1 TI_WIZ_PLL1_REFCLK>,
-> +					  <&serdes_wiz1 TI_WIZ_REFCLK_DIG>;
-> +			assigned-clock-parents = <&k3_clks 405 6>,
-> +						 <&k3_clks 405 6>,
-> +						 <&k3_clks 405 6>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			#clock-cells = <1>;
-> +
-> +			status = "disabled";
-> +		};
-> +	};
-> +
-> +	serdes_wiz2: wiz@5020000 {
-> +		compatible = "ti,j784s4-wiz-10g";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		power-domains = <&k3_pds 406 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 406 2>, <&k3_clks 406 6>, <&serdes_refclk>, <&k3_clks 406 5>;
-> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
-> +		assigned-clocks = <&k3_clks 406 6>;
-> +		assigned-clock-parents = <&k3_clks 406 10>;
-> +		num-lanes = <4>;
-> +		#reset-cells = <1>;
-> +		#clock-cells = <1>;
-> +		ranges = <0x05020000 0x00 0x05020000 0x10000>;
-> +
-> +		status = "disabled";
-> +
-> +		serdes2: serdes@5020000 {
+Good point.  The arrangement of the code is a bit different, but I think it's
+substantially the same in this regard.
 
-phy@5020000
+David
 
-> +			compatible = "ti,j721e-serdes-10g";
-> +			reg = <0x05020000 0x010000>;
-> +			reg-names = "torrent_phy";
-> +			resets = <&serdes_wiz2 0>;
-> +			reset-names = "torrent_reset";
-> +			clocks = <&serdes_wiz2 TI_WIZ_PLL0_REFCLK>,
-> +				 <&serdes_wiz2 TI_WIZ_PHY_EN_REFCLK>;
-> +			clock-names = "refclk", "phy_en_refclk";
-> +			assigned-clocks = <&serdes_wiz2 TI_WIZ_PLL0_REFCLK>,
-> +					  <&serdes_wiz2 TI_WIZ_PLL1_REFCLK>,
-> +					  <&serdes_wiz2 TI_WIZ_REFCLK_DIG>;
-> +			assigned-clock-parents = <&k3_clks 406 6>,
-> +						 <&k3_clks 406 6>,
-> +						 <&k3_clks 406 6>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			#clock-cells = <1>;
-> +
-> +			status = "disabled";
-> +		};
-> +	};
-> +
-> +	serdes_wiz4: wiz@5050000 {
-> +		compatible = "ti,j784s4-wiz-10g";
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		power-domains = <&k3_pds 407 TI_SCI_PD_EXCLUSIVE>;
-> +		clocks = <&k3_clks 407 2>, <&k3_clks 407 6>, <&serdes_refclk>, <&k3_clks 407 5>;
-> +		clock-names = "fck", "core_ref_clk", "ext_ref_clk", "core_ref1_clk";
-> +		assigned-clocks = <&k3_clks 407 6>;
-> +		assigned-clock-parents = <&k3_clks 407 10>;
-> +		num-lanes = <4>;
-> +		#reset-cells = <1>;
-> +		#clock-cells = <1>;
-> +		ranges = <0x05050000 0x00 0x05050000 0x10000>,
-> +			 <0xa030a00 0x00 0xa030a00 0x40>; /* DPTX PHY */
-> +
-> +		status = "disabled";
-> +
-> +		serdes4: serdes@5050000 {
-
-phy@5050000
-
-> +			/*
-> +			 * Note: we also map DPTX PHY registers as the Torrent
-> +			 * needs to manage those.
-> +			 */
-> +			compatible = "ti,j721e-serdes-10g";
-> +			reg = <0x05050000 0x010000>,
-> +			      <0x0a030a00 0x40>; /* DPTX PHY */
-> +			reg-names = "torrent_phy";
-> +			resets = <&serdes_wiz4 0>;
-> +			reset-names = "torrent_reset";
-> +			clocks = <&serdes_wiz4 TI_WIZ_PLL0_REFCLK>,
-> +				 <&serdes_wiz4 TI_WIZ_PHY_EN_REFCLK>;
-> +			clock-names = "refclk", "phy_en_refclk";
-> +			assigned-clocks = <&serdes_wiz4 TI_WIZ_PLL0_REFCLK>,
-> +					  <&serdes_wiz4 TI_WIZ_PLL1_REFCLK>,
-> +					  <&serdes_wiz4 TI_WIZ_REFCLK_DIG>;
-> +			assigned-clock-parents = <&k3_clks 407 6>,
-> +						 <&k3_clks 407 6>,
-> +						 <&k3_clks 407 6>;
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +			#clock-cells = <1>;
-> +
-> +			status = "disabled";
-> +		};
-> +	};
-> +
->  	main_navss: bus@30000000 {
->  		compatible = "simple-bus";
->  		#address-cells = <2>;
-
--- 
-cheers,
--roger
