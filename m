@@ -2,91 +2,640 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CDC76BD29
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 010B776BD2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231233AbjHATAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
+        id S231726AbjHATB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:01:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231833AbjHAS7s (ORCPT
+        with ESMTP id S229801AbjHATBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 14:59:48 -0400
-Received: from out-77.mta0.migadu.com (out-77.mta0.migadu.com [91.218.175.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ED8D1BE3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 11:59:46 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 14:59:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690916384;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IC+hkFzsraORVL28A/kjM0OytUDIOrQlr7SfFeohqy8=;
-        b=c2RD5mZRt+9NuyWas53Mgwnpp+VIhPCcbfY6GEax8AgF9MRqweC6dyjeiGAS2hUNb+xO4L
-        MfR1rncIoVyDfLJQ5ojrCE4x+JmyTPldISLsk+X4ubRnesBhI4kWaFJBbT6Og+bsefSjDH
-        LkvBWXPu05W12WWSRhtXe4/Y9bePJOY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 04/20] block: Add some exports for bcachefs
-Message-ID: <20230801185940.b4vsd62fjxwzv7ft@moria.home.lan>
-References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
- <20230712211115.2174650-5-kent.overstreet@linux.dev>
- <ZL61WIpYp/tJ6XH1@infradead.org>
- <20230725030037.minycb3oxubajuqw@moria.home.lan>
- <ZMEdqvzAUbQPs0io@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMEdqvzAUbQPs0io@infradead.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 15:01:22 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AB911A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:01:18 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d1ebc896bd7so6858962276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:01:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690916477; x=1691521277;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6dm7mDs/QRbe10huX8K6gEhxhyCrqJzyAo9u27HeE6w=;
+        b=J5GQt97bUuhSZbWtCfXdnF37hw3zRFmggpgXFePbfydkgIO7T1qEq3TC7f2qz7LLlB
+         4S49rV6qgmg3/1l7yVS022ikDEXmKlfxNhAqIDWvOchRNowXWLLBy8iIxpAA/cT2wvOj
+         0Jut4JR9bEMoTT1P2cTZf83PChcuoKX14DaGcu7FEuFVDg3mxNwmKtE3VgJDMNgE7MkD
+         qC/oqkmws4pn49hZ8CNZrDufM0eGNvp8S3xY09c5Nn1FRHXe1bqAvy/+d7JqHlPxTLKn
+         yaIphA2Z9J7Icu9PWR1Vc38L8VhqePDOXgAC9cI1GdFOazdrFTAWSjBwE0/ppSeYpBGV
+         xMeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690916477; x=1691521277;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6dm7mDs/QRbe10huX8K6gEhxhyCrqJzyAo9u27HeE6w=;
+        b=jk1WkMBgjB6x0xD2aOHfFh5xUCCxZUeRH0ohd8dJMnFglOOeNFm7V68nEBIKk86ItH
+         VlhJ67HLg6s8WsffN6bG1wMwz2C3hGxv6Q5EQ2Jxm7IAC+rAWvQs1DtffCefVeUWC1tD
+         BtMpFSLAFoUoar8FNf6lHZ9fytRT0jAbz/AXq6dnWix/LGq+tsLebkoImoT9f3ZZSnP2
+         5NluEpFPgjWcZPXNMnV/1Izbdf1XbcErPcwrIGZbTtipc8LCgjlKJX7Z6x4hou3QhXoI
+         8Wz6im5gU8nuvguQ9wGHcuaov21VfolvT0oU4B56h3YMlm8frGnF9FNp0ovRoMeWYZ3P
+         hIxQ==
+X-Gm-Message-State: ABy/qLZTUKFEgnCG/3K2hKkHd3Pgz2ZbAX17BGjNlx2aR1yBi8DD6Fyh
+        ja7hbN3nH7MPXn1pg5Vk5gMJStWJZ5o=
+X-Google-Smtp-Source: APBJJlGmS9vDxvKMs0vj75dQg8WdrWLo21/ggGbLQ/stLSWTeYc5YOHqkncZwnm3qxat2TVzW25JPR0Oz6k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ad15:0:b0:d12:d6e4:a08f with SMTP id
+ y21-20020a25ad15000000b00d12d6e4a08fmr86035ybi.6.1690916477204; Tue, 01 Aug
+ 2023 12:01:17 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 19:01:15 +0000
+In-Reply-To: <20230801083553.8468-7-xin3.li@intel.com>
+Mime-Version: 1.0
+References: <20230801083553.8468-1-xin3.li@intel.com> <20230801083553.8468-7-xin3.li@intel.com>
+Message-ID: <ZMlWe5TgS6HM98Mg@google.com>
+Subject: Re: [PATCH RESEND v9 33/36] KVM: VMX: Add VMX_DO_FRED_EVENT_IRQOFF
+ for IRQ/NMI handling
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xin Li <xin3.li@intel.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        Breno Leitao <leitao@debian.org>,
+        Nikunj A Dadhania <nikunj@amd.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ze Gao <zegao2021@gmail.com>, Fei Li <fei1.li@intel.com>,
+        Conghui <conghui.chen@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Jane Malalane <jane.malalane@citrix.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Yantengsi <siyanteng@loongson.cn>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Sathvika Vasireddy <sv@linux.ibm.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 06:20:42AM -0700, Christoph Hellwig wrote:
-> On Mon, Jul 24, 2023 at 11:00:37PM -0400, Kent Overstreet wrote:
-> > In short, iomap is heavily callback based, the bcachefs io paths are
-> > not - we pass around data structures instead. I discussed this with
-> > people when iomap was first being written, but iomap ended up being a
-> > much more conservative approach, more in line with the old buffer heads
-> > code where the generic code calls into the filesystem to obtain
-> > mappings.
-> > 
-> > I'm gradually convincing people of the merits of the bcachefs approach -
-> > in particular reducing indirect function calls is getting more attention
-> > these days.
+On Tue, Aug 01, 2023, Xin Li wrote:
 > 
-> FYI, Matthew has had patches that convert iomap to be an iterator,
-> and I've massage the first half of them and actuall got them in
-> before.  I'd much rather finish off that work (even if only for
-> direct I/O initially) than adding another direct I/O code.  But
-> even with out that we should be able to easily pass more private
-> data, in fact btrfs makes pretty heavy use of that.
+> diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+> index 07e927d4d099..5ee6a57b59a5 100644
+> --- a/arch/x86/kvm/vmx/vmenter.S
+> +++ b/arch/x86/kvm/vmx/vmenter.S
+> @@ -2,12 +2,14 @@
+>  #include <linux/linkage.h>
+>  #include <asm/asm.h>
+>  #include <asm/bitsperlong.h>
+> +#include <asm/fred.h>
+>  #include <asm/kvm_vcpu_regs.h>
+>  #include <asm/nospec-branch.h>
+>  #include <asm/percpu.h>
+>  #include <asm/segment.h>
+>  #include "kvm-asm-offsets.h"
+>  #include "run_flags.h"
+> +#include "../../entry/calling.h"
 
-That's wonderful, but getting iomap up to the level of what bcachefs
-needs is still going to be a pretty big project and it's not going to be
-my highest priority.
+Rather than do the low level PUSH_REGS and POP_REGS, I vote to have core code
+expose a FRED-specific wrapper for invoking external_interrupt().  More below.
 
-bcachefs also hangs more state off of the pagecache, in bcachefs's
-equivvalent of iomap_page - we store reservations for dirty data there
-and a few other things, which means the buffered IO paths don't have to
-walk any other data structures.
+>  
+>  #define WORD_SIZE (BITS_PER_LONG / 8)
+>  
+> @@ -31,6 +33,80 @@
+>  #define VCPU_R15	__VCPU_REGS_R15 * WORD_SIZE
+>  #endif
+>  
+> +#ifdef CONFIG_X86_FRED
+> +.macro VMX_DO_FRED_EVENT_IRQOFF branch_insn branch_target nmi=0
 
-I think that's another idea you guys will want to steal, but a higher
-priority for me is getting a proper FUSE port done - and making bcachefs
-more tightly weddded to VFS library code is not likely to make that
-process any easier.
+objtool isn't happy.
 
-Once a proper fuse port is done and we know what that looks like will be
-a better time for some consolidation.
+arch/x86/kvm/vmx/vmenter.o: warning: objtool: vmx_do_fred_interrupt_irqoff+0x6c: return with modified stack frame
+arch/x86/kvm/vmx/vmenter.o: warning: objtool: vmx_do_fred_nmi_irqoff+0x37: sibling call from callable instruction with modified stack frame
+
+The "return with modified stack frame" goes away with my suggested changes, but
+the sibling call remains for the NMI case due to the JMP instead of a call.
+
+> +	/*
+> +	 * Unconditionally create a stack frame, getting the correct RSP on the
+> +	 * stack (for x86-64) would take two instructions anyways, and RBP can
+> +	 * be used to restore RSP to make objtool happy (see below).
+> +	 */
+> +	push %_ASM_BP
+> +	mov %_ASM_SP, %_ASM_BP
+
+The frame stuff is worth throwing in a macro, if only to avoid a copy+pasted
+comment, which by the by, is wrong.  (a) it's ERETS, not IRET.  (b) the IRQ does
+a vanilla RET, not ERETS.  E.g. like so:
+
+.macro VMX_DO_EVENT_FRAME_BEGIN
+	/*
+	 * Unconditionally create a stack frame, getting the correct RSP on the
+	 * stack (for x86-64) would take two instructions anyways, and RBP can
+	 * be used to restore RSP to make objtool happy (see below).
+	 */
+	push %_ASM_BP
+	mov %_ASM_SP, %_ASM_BP
+.endm
+
+.macro VMX_DO_EVENT_FRAME_END
+	/*
+	 * "Restore" RSP from RBP, even though {E,I}RET has already unwound RSP
+	 * to the correct value *in most cases*.  KVM's IRQ handling with FRED
+	 * doesn't do ERETS, and objtool doesn't know the callee will IRET/ERET
+	 * and, without the explicit restore, thinks the stack is getting walloped.
+	 * Using an unwind hint is problematic due to x86-64's dynamic alignment.
+	 */
+	mov %_ASM_BP, %_ASM_SP
+	pop %_ASM_BP
+.endm
+
+> +
+> +	/*
+> +	 * Don't check the FRED stack level, the call stack leading to this
+> +	 * helper is effectively constant and shallow (relatively speaking).
+> +	 *
+> +	 * Emulate the FRED-defined redzone and stack alignment.
+> +	 */
+> +	sub $(FRED_CONFIG_REDZONE_AMOUNT << 6), %rsp
+> +	and $FRED_STACK_FRAME_RSP_MASK, %rsp
+> +
+> +	/*
+> +	 * A FRED stack frame has extra 16 bytes of information pushed at the
+> +	 * regular stack top compared to an IDT stack frame.
+
+There is pretty much no chance that anyone remembers the layout of an IDT stack
+frame off the top of their head.  I.e. saying "FRED has 16 bytes more" isn't all
+that useful.  It also fails to capture the fact that FRED stuff a hell of a lot
+more information in those "common" 48 bytes.
+
+It'll be hard/impossible to capture all of the overload info in a comment, but
+showing the actual layout of the frame would be super helpful, e.g. something like
+this
+
+	/*
+	 * FRED stack frames are always 64 bytes:
+	 *
+	 * ------------------------------
+	 * | Bytes  | Usage             |
+	 * -----------------------------|
+	 * | 63:56  | Reserved          |
+	 * | 55:48  | Event Data        | 
+         * | 47:40  | SS + Event Info   |
+         * | 39:32  | RSP               |
+	 * | 31:24  | RFLAGS            |
+         * | 23:16  | CS + Aux Info     |
+         * |  15:8  | RIP               |
+         * |   7:0  | Error Code        |    
+         * ------------------------------           
+	 */
+
+> +	 */
+> +	push $0		/* Reserved by FRED, must be 0 */
+> +	push $0		/* FRED event data, 0 for NMI and external interrupts */
+> +
+> +	shl $32, %rdi				/* FRED event type and vector */
+> +	.if \nmi
+> +	bts $FRED_SSX_NMI_BIT, %rdi		/* Set the NMI bit */
+
+The spec I have from May 2022 says the NMI bit colocated with CS, not SS.  And
+the cover letter's suggestion to use a search engine to find the spec ain't
+exactly helpful, that just gives me the same "May 2022 Revision 3.0" spec.  So
+either y'all have a spec that I can't find, or this is wrong.
+
+> +	.endif
+> +	bts $FRED_SSX_64_BIT_MODE_BIT, %rdi	/* Set the 64-bit mode */
+> +	or $__KERNEL_DS, %rdi
+> +	push %rdi
+> +	push %rbp
+> +	pushf
+> +	mov $__KERNEL_CS, %rax
+> +	push %rax
+> +
+> +	/*
+> +	 * Unlike the IDT event delivery, FRED _always_ pushes an error code
+> +	 * after pushing the return RIP, thus the CALL instruction CANNOT be
+> +	 * used here to push the return RIP, otherwise there is no chance to
+> +	 * push an error code before invoking the IRQ/NMI handler.
+> +	 *
+> +	 * Use LEA to get the return RIP and push it, then push an error code.
+> +	 */
+> +	lea 1f(%rip), %rax
+
+This is quite misleading for IRQs.  It took me a while to figure out that the only
+reason it's functionally ok is that external_interrupt() will do RET, not ERETS,
+i.e. the RIP that's pushed here isn't used for IRQs!  Expanding the above comment
+would be quite helpful, e.g.
+
+	 *
+	 * Use LEA to get the return RIP and push it, then push an error code.
+	 * Note, only NMI handling does an ERETS to the target!  IRQ handling
+	 * doesn't need to unmask NMIs and so simply uses CALL+RET, i.e. the
+	 * RIP pushed here is only truly consumed for NMIs!
+
+> +	push %rax
+> +	push $0		/* FRED error code, 0 for NMI and external interrupts */
+> +
+> +	.if \nmi == 0
+> +	PUSH_REGS
+> +	mov %rsp, %rdi
+
+Nit, *if* this stays in KVM, please use %_ASM_ARG1 instead of %rdi.  I normally
+dislike unnecessary abstraction, but in this case using _ASM_ARG1 makes it clear
+(without a comment) that this code is loading a param for a funciton call, *not*
+for some FRED magic.
+
+> +	.endif
+
+Jumping way back to providing a wrapper for FRED, if we do that, then there's no
+need to include calling.h, and the weird wrinkle about the ERET target kinda goes
+away too.  E.g. provide this in arch/x86/entry/entry_64_fred.S
+
+	.section .text, "ax"
+
+/* Note, this is instrumentation safe, and returns via RET, not ERETS! */
+#if IS_ENABLED(CONFIG_KVM_INTEL)
+SYM_CODE_START(fred_irq_entry_from_kvm)
+	FRED_ENTER
+	call external_interrupt
+	FRED_EXIT
+	RET
+SYM_CODE_END(fred_irq_entry_from_kvm)
+EXPORT_SYMBOL_GPL(fred_irq_entry_from_kvm);
+#endif
+
+and then the KVM side for this particular chunk is more simply:
+
+	lea 1f(%rip), %rax
+	push %rax
+	push $0		/* FRED error code, 0 for NMI and external interrupts */
+
+	\branch_insn \branch_target
+1:
+	VMX_DO_EVENT_FRAME_END
+	RET
+
+
+Alternatively, the whole thing could be shoved into arch/x86/entry/entry_64_fred.S,
+but at a glance I don't think that would be a net positive due to the need to handle
+IRQs vs. NMIs.
+
+> +	\branch_insn \branch_target
+> +
+> +	.if \nmi == 0
+> +	POP_REGS
+> +	.endif
+> +
+> +1:
+> +	/*
+> +	 * "Restore" RSP from RBP, even though IRET has already unwound RSP to
+
+As mentioned above, this is incorrect on two fronts.
+
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 0ecf4be2c6af..4e90c69a92bf 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6890,6 +6890,14 @@ static void vmx_apicv_post_state_restore(struct kvm_vcpu *vcpu)
+>  	memset(vmx->pi_desc.pir, 0, sizeof(vmx->pi_desc.pir));
+>  }
+>  
+> +#ifdef CONFIG_X86_FRED
+> +void vmx_do_fred_interrupt_irqoff(unsigned int vector);
+> +void vmx_do_fred_nmi_irqoff(unsigned int vector);
+> +#else
+> +#define vmx_do_fred_interrupt_irqoff(x) BUG()
+> +#define vmx_do_fred_nmi_irqoff(x) BUG()
+> +#endif
+
+My slight preference is to open code the BUG() as a ud2 in assembly, purely to
+avoid more #ifdefs.
+
+> +
+>  void vmx_do_interrupt_irqoff(unsigned long entry);
+>  void vmx_do_nmi_irqoff(void);
+>  
+> @@ -6932,14 +6940,16 @@ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
+>  {
+>  	u32 intr_info = vmx_get_intr_info(vcpu);
+>  	unsigned int vector = intr_info & INTR_INFO_VECTOR_MASK;
+> -	gate_desc *desc = (gate_desc *)host_idt_base + vector;
+>  
+>  	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
+>  	    "unexpected VM-Exit interrupt info: 0x%x", intr_info))
+>  		return;
+>  
+>  	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
+> -	vmx_do_interrupt_irqoff(gate_offset(desc));
+> +	if (cpu_feature_enabled(X86_FEATURE_FRED))
+> +		vmx_do_fred_interrupt_irqoff(vector);	/* Event type is 0 */
+
+I strongly prefer to use code to document what's going on.  E.g. the tail comment
+just left me wondering, what event type is 0?  Whereas this makes it quite clear
+that KVM is signaling a hardware interrupt.  The fact that it's a nop as far as
+code generation goes is irrelevant.
+
+	vmx_do_fred_interrupt_irqoff((EVENT_TYPE_HWINT << 16) | vector);
+
+> +	else
+> +		vmx_do_interrupt_irqoff(gate_offset((gate_desc *)host_idt_base + vector));
+>  	kvm_after_interrupt(vcpu);
+>  
+>  	vcpu->arch.at_instruction_boundary = true;
+
+Here's a diff for (hopefully) everything I've suggested above.
+
+---
+ arch/x86/entry/entry_64_fred.S | 17 ++++++-
+ arch/x86/kernel/traps.c        |  5 --
+ arch/x86/kvm/vmx/vmenter.S     | 84 +++++++++++++++-------------------
+ arch/x86/kvm/vmx/vmx.c         |  7 +--
+ 4 files changed, 55 insertions(+), 58 deletions(-)
+
+diff --git a/arch/x86/entry/entry_64_fred.S b/arch/x86/entry/entry_64_fred.S
+index 12063267d2ac..a973c0bd29f6 100644
+--- a/arch/x86/entry/entry_64_fred.S
++++ b/arch/x86/entry/entry_64_fred.S
+@@ -10,7 +10,6 @@
+ #include "calling.h"
+ 
+ 	.code64
+-	.section ".noinstr.text", "ax"
+ 
+ .macro FRED_ENTER
+ 	UNWIND_HINT_END_OF_STACK
+@@ -24,6 +23,22 @@
+ 	POP_REGS
+ .endm
+ 
++	.section .text, "ax"
++
++/* Note, this is instrumentation safe, and returns via RET, not ERETS! */
++#if IS_ENABLED(CONFIG_KVM_INTEL)
++SYM_CODE_START(fred_irq_entry_from_kvm)
++	FRED_ENTER
++	call external_interrupt
++	FRED_EXIT
++	RET
++SYM_CODE_END(fred_irq_entry_from_kvm)
++EXPORT_SYMBOL_GPL(fred_irq_entry_from_kvm);
++#endif
++
++	.section ".noinstr.text", "ax"
++
++
+ /*
+  * The new RIP value that FRED event delivery establishes is
+  * IA32_FRED_CONFIG & ~FFFH for events that occur in ring 3.
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 21eeba7b188f..cbcb83c71dab 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -1566,11 +1566,6 @@ int external_interrupt(struct pt_regs *regs)
+ 	return 0;
+ }
+ 
+-#if IS_ENABLED(CONFIG_KVM_INTEL)
+-/* For KVM VMX to handle IRQs in IRQ induced VM exits. */
+-EXPORT_SYMBOL_GPL(external_interrupt);
+-#endif
+-
+ #endif /* CONFIG_X86_64 */
+ 
+ void __init trap_init(void)
+diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+index 79a4c91d9434..e25df565c3f8 100644
+--- a/arch/x86/kvm/vmx/vmenter.S
++++ b/arch/x86/kvm/vmx/vmenter.S
+@@ -9,7 +9,6 @@
+ #include <asm/segment.h>
+ #include "kvm-asm-offsets.h"
+ #include "run_flags.h"
+-#include "../../entry/calling.h"
+ 
+ #define WORD_SIZE (BITS_PER_LONG / 8)
+ 
+@@ -33,15 +32,31 @@
+ #define VCPU_R15	__VCPU_REGS_R15 * WORD_SIZE
+ #endif
+ 
++.macro VMX_DO_EVENT_FRAME_BEGIN
++	/*
++	 * Unconditionally create a stack frame, getting the correct RSP on the
++	 * stack (for x86-64) would take two instructions anyways, and RBP can
++	 * be used to restore RSP to make objtool happy (see below).
++	 */
++	push %_ASM_BP
++	mov %_ASM_SP, %_ASM_BP
++.endm
++
++.macro VMX_DO_EVENT_FRAME_END
++	/*
++	 * "Restore" RSP from RBP, even though {E,I}RET has already unwound RSP
++	 * to the correct value *in most cases*.  KVM's IRQ handling with FRED
++	 * doesn't do ERETS, and objtool doesn't know the callee will IRET/ERET
++	 * and, without the explicit restore, thinks the stack is getting walloped.
++	 * Using an unwind hint is problematic due to x86-64's dynamic alignment.
++	 */
++	mov %_ASM_BP, %_ASM_SP
++	pop %_ASM_BP
++.endm
++
+ #ifdef CONFIG_X86_FRED
+ .macro VMX_DO_FRED_EVENT_IRQOFF branch_insn branch_target nmi=0
+-	/*
+-	 * Unconditionally create a stack frame, getting the correct RSP on the
+-	 * stack (for x86-64) would take two instructions anyways, and RBP can
+-	 * be used to restore RSP to make objtool happy (see below).
+-	 */
+-	push %_ASM_BP
+-	mov %_ASM_SP, %_ASM_BP
++	VMX_DO_EVENT_FRAME_BEGIN
+ 
+ 	/*
+ 	 * Don't check the FRED stack level, the call stack leading to this
+@@ -78,43 +93,23 @@
+ 	 * push an error code before invoking the IRQ/NMI handler.
+ 	 *
+ 	 * Use LEA to get the return RIP and push it, then push an error code.
++	 * Note, only NMI handling does an ERETS to the target!  IRQ handling
++	 * doesn't need to unmask NMIs and so simply uses CALL+RET, i.e. the
++	 * RIP pushed here is only truly consumed for NMIs!
+ 	 */
+ 	lea 1f(%rip), %rax
+ 	push %rax
+ 	push $0		/* FRED error code, 0 for NMI and external interrupts */
+ 
+-	.if \nmi == 0
+-	PUSH_REGS
+-	mov %rsp, %rdi
+-	.endif
+-
+ 	\branch_insn \branch_target
+-
+-	.if \nmi == 0
+-	POP_REGS
+-	.endif
+-
+ 1:
+-	/*
+-	 * "Restore" RSP from RBP, even though IRET has already unwound RSP to
+-	 * the correct value.  objtool doesn't know the callee will IRET and,
+-	 * without the explicit restore, thinks the stack is getting walloped.
+-	 * Using an unwind hint is problematic due to x86-64's dynamic alignment.
+-	 */
+-	mov %_ASM_BP, %_ASM_SP
+-	pop %_ASM_BP
++	VMX_DO_EVENT_FRAME_END
+ 	RET
+ .endm
+ #endif
+ 
+ .macro VMX_DO_EVENT_IRQOFF call_insn call_target
+-	/*
+-	 * Unconditionally create a stack frame, getting the correct RSP on the
+-	 * stack (for x86-64) would take two instructions anyways, and RBP can
+-	 * be used to restore RSP to make objtool happy (see below).
+-	 */
+-	push %_ASM_BP
+-	mov %_ASM_SP, %_ASM_BP
++	VMX_DO_EVENT_FRAME_BEGIN
+ 
+ #ifdef CONFIG_X86_64
+ 	/*
+@@ -129,14 +124,7 @@
+ 	push $__KERNEL_CS
+ 	\call_insn \call_target
+ 
+-	/*
+-	 * "Restore" RSP from RBP, even though IRET has already unwound RSP to
+-	 * the correct value.  objtool doesn't know the callee will IRET and,
+-	 * without the explicit restore, thinks the stack is getting walloped.
+-	 * Using an unwind hint is problematic due to x86-64's dynamic alignment.
+-	 */
+-	mov %_ASM_BP, %_ASM_SP
+-	pop %_ASM_BP
++	VMX_DO_EVENT_FRAME_END
+ 	RET
+ .endm
+ 
+@@ -375,11 +363,13 @@ SYM_INNER_LABEL_ALIGN(vmx_vmexit, SYM_L_GLOBAL)
+ 
+ SYM_FUNC_END(__vmx_vcpu_run)
+ 
+-#ifdef CONFIG_X86_FRED
+ SYM_FUNC_START(vmx_do_fred_nmi_irqoff)
++#ifdef CONFIG_X86_FRED
+ 	VMX_DO_FRED_EVENT_IRQOFF jmp fred_entrypoint_kernel nmi=1
++#else
++	ud2
++#endif
+ SYM_FUNC_END(vmx_do_fred_nmi_irqoff)
+-#endif
+ 
+ SYM_FUNC_START(vmx_do_nmi_irqoff)
+ 	VMX_DO_EVENT_IRQOFF call asm_exc_nmi_kvm_vmx
+@@ -438,11 +428,13 @@ SYM_FUNC_END(vmread_error_trampoline)
+ #endif
+ 
+ .section .text, "ax"
+-#ifdef CONFIG_X86_FRED
+ SYM_FUNC_START(vmx_do_fred_interrupt_irqoff)
+-	VMX_DO_FRED_EVENT_IRQOFF call external_interrupt
++#ifdef CONFIG_X86_FRED
++	VMX_DO_FRED_EVENT_IRQOFF call fred_irq_entry_from_kvm
++#else
++	ud2
++#endif
+ SYM_FUNC_END(vmx_do_fred_interrupt_irqoff)
+-#endif
+ 
+ SYM_FUNC_START(vmx_do_interrupt_irqoff)
+ 	VMX_DO_EVENT_IRQOFF CALL_NOSPEC _ASM_ARG1
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index bf757f5071e4..cb4675dd87df 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6919,13 +6919,8 @@ static void vmx_apicv_post_state_restore(struct kvm_vcpu *vcpu)
+ 	memset(vmx->pi_desc.pir, 0, sizeof(vmx->pi_desc.pir));
+ }
+ 
+-#ifdef CONFIG_X86_FRED
+ void vmx_do_fred_interrupt_irqoff(unsigned int vector);
+ void vmx_do_fred_nmi_irqoff(unsigned int vector);
+-#else
+-#define vmx_do_fred_interrupt_irqoff(x) BUG()
+-#define vmx_do_fred_nmi_irqoff(x) BUG()
+-#endif
+ 
+ void vmx_do_interrupt_irqoff(unsigned long entry);
+ void vmx_do_nmi_irqoff(void);
+@@ -6976,7 +6971,7 @@ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
+ 
+ 	kvm_before_interrupt(vcpu, KVM_HANDLING_IRQ);
+ 	if (cpu_feature_enabled(X86_FEATURE_FRED))
+-		vmx_do_fred_interrupt_irqoff(vector);	/* Event type is 0 */
++		vmx_do_fred_interrupt_irqoff((EVENT_TYPE_HWINT << 16) | vector);
+ 	else
+ 		vmx_do_interrupt_irqoff(gate_offset((gate_desc *)host_idt_base + vector));
+ 	kvm_after_interrupt(vcpu);
+
+base-commit: 8961078ffe509a97ec7803b17912e57c47b93fa2
+-- 
+
