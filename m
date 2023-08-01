@@ -2,56 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDA376AB4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E67AD76AB46
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbjHAIpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:45:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50182 "EHLO
+        id S231703AbjHAIpS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 04:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231812AbjHAIpS (ORCPT
+        with ESMTP id S230120AbjHAIpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:45:18 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3374F1B6;
-        Tue,  1 Aug 2023 01:45:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=+iCOMUZEBRmp0SfXP3l/d75t5cDd7ZTASaBmWC/aA3g=; b=Hr21qsxB3uCtbyYtTq54zdvsSe
-        LSi1orVTZmDgACnr7OMqBi+zYld5OJZ1RM1gHcmzXtsEHsV5SuYD3iFm3BSo5rp9yREoQayT68pFz
-        fWMRqbZcyz5EXaHHfzjS0N3NLiF1Mvnnj0Ta8kGGy5YoOnT1iig3AvDdcVNgJVykHcY4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qQl00-002mRI-9L; Tue, 01 Aug 2023 10:45:00 +0200
-Date:   Tue, 1 Aug 2023 10:45:00 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc:     Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Chris Lew <quic_clew@quicinc.com>,
-        Alex Elder <elder@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH 2/4] soc: qcom: aoss: Add debugfs interface for sending
- messages
-Message-ID: <98179d9e-0c03-4659-9dcc-73a411bfa00e@lunn.ch>
-References: <20230731041013.2950307-1-quic_bjorande@quicinc.com>
- <20230731041013.2950307-3-quic_bjorande@quicinc.com>
- <21dfb855-8f44-4a4c-9dba-52eb5ae46b9b@lunn.ch>
- <20230731153938.GF1428172@hu-bjorande-lv.qualcomm.com>
+        Tue, 1 Aug 2023 04:45:16 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94DEC10E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 01:45:15 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-202-eBnQEioCP9Cm7QIsQJ1Wuw-1; Tue, 01 Aug 2023 09:45:12 +0100
+X-MC-Unique: eBnQEioCP9Cm7QIsQJ1Wuw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 1 Aug
+ 2023 09:45:10 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Tue, 1 Aug 2023 09:45:10 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'kernel test robot' <lkp@intel.com>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
+        'Andrew Morton' <akpm@linux-foundation.org>,
+        "'Matthew Wilcox (Oracle)'" <willy@infradead.org>,
+        'Christoph Hellwig' <hch@infradead.org>,
+        "'Jason A. Donenfeld'" <Jason@zx2c4.com>
+CC:     "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
+        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
+        "Linux Memory Management List" <linux-mm@kvack.org>
+Subject: RE: [PATCH next v2 2/5] minmax: Allow min()/max()/clamp() if the
+ arguments have the same signedness.
+Thread-Topic: [PATCH next v2 2/5] minmax: Allow min()/max()/clamp() if the
+ arguments have the same signedness.
+Thread-Index: AdnBYvtzc0TxoNEXQSCZpxDmi1SwuQCjLWkAABi9BYA=
+Date:   Tue, 1 Aug 2023 08:45:10 +0000
+Message-ID: <a576676d66284659bc91afe93d2b0159@AcuMS.aculab.com>
+References: <bf92800b0c5445e2b2ca8c88e1f5e90f@AcuMS.aculab.com>
+ <202308010559.SEtfkzQU-lkp@intel.com>
+In-Reply-To: <202308010559.SEtfkzQU-lkp@intel.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731153938.GF1428172@hu-bjorande-lv.qualcomm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,36 +67,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 08:39:38AM -0700, Bjorn Andersson wrote:
-> On Mon, Jul 31, 2023 at 10:21:31AM +0200, Andrew Lunn wrote:
-> > On Sun, Jul 30, 2023 at 09:10:11PM -0700, Bjorn Andersson wrote:
-> > > From: Chris Lew <clew@codeaurora.org>
-> > > 
-> > > In addition to the normal runtime commands, the Always On Processor
-> > > (AOP) provides a number of debug commands which can be used during
-> > > system debugging for things such as preventing power collapse or placing
-> > > floor votes for certain resources. Some of these are documented in the
-> > > Robotics RB5 "Debug AOP ADB" linked below.
-> > > 
-> > > Provide a debugfs interface for the developer/tester to send these
-> > > commands to the AOP.
-> > 
-> > This sort of sending arbitrary binary blob commands is not liked,
-> > since it allow user space closed source drivers. At minimum, please
-> > provide a file per command, with the kernel marshalling parameters
-> > into the binary format, and decoding any returned values.
-> > 
+From: kernel test robot
+> Sent: 31 July 2023 22:44
 > 
-> Thanks for your input Andrew, that is a valid concern.
+> kernel test robot noticed the following build errors:
 > 
-> The interface is in debugfs and as such wouldn't be suitable for closed
-> source drivers, as in the majority of our shipping software debugfs
-> isn't enabled.
+> [auto build test ERROR on akpm-mm/mm-everything]
+> [also build test ERROR on linus/master crng-random/master v6.5-rc4 next-20230731]
+> [cannot apply to next-20230728]
+...
+> compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git
+> f28c006a5895fc0e329fe15fead81e37457cb1d1)
+> reproduce: (https://download.01.org/0day-ci/archive/20230801/202308010559.SEtfkzQU-
+> lkp@intel.com/reproduce)
+> 
+....
+> >> drivers/gpu/drm/drm_modes.c:2474:15: error: static_assert expression is not an integral constant
+> expression
+>                    extra_ptr = max(bpp_end_ptr, refresh_end_ptr);
+>                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There only appears to be 3 commands, so it is now too much of a burden
-to do it properly, and not have a binary blob API.
+This is really a bug in clang - fixed in 16.0.0.
+In C (but probably not C++) '(void *)1' should be a compile-time constant.
+Will be fixed in v3 of the patch.
 
-And most distros do have debugfs at least built and available, but
-maybe not mounted.
+	David
 
-      Andrew
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
