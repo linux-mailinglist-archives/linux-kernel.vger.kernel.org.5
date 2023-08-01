@@ -2,70 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD31576BD8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D0F76BD8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbjHATSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49872 "EHLO
+        id S230179AbjHATUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjHATSp (ORCPT
+        with ESMTP id S229650AbjHATUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:18:45 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74C811BF5;
-        Tue,  1 Aug 2023 12:18:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E512B616BF;
-        Tue,  1 Aug 2023 19:18:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 341FAC433C8;
-        Tue,  1 Aug 2023 19:18:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690917523;
-        bh=qowmyx7qyYO1UJKvfD1fnYIELO95ZZkMKXJeQVTxmmQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=UTZT4d393BEYbKTTMdUCo2FH8HZw+gFUG0nZWQmn2PK2+pl0pfsUbCiiPTT2JOsnA
-         YcyphCZ6g0sol5ThGEMTutWaV0WL9XeT/MibgPc1kVtyhmf4SIVmqSMw8xE7CEDwTM
-         bchfPxwVWA8cW4NJr4C5SHx21PGSXYb9VrhOtWme46vgJU9YAhKNvNwp6L9EndiirM
-         1iJiGDAWlfAku5EWnMJDSy9ASYz05YpgufkDYSKYmUsCxotdoSW6HMDsDgsENYE0Qh
-         +Fj8OrbidYbTNOraM4o96K7cy7pJV6IpfesUjsAUVD+VzXTjJn4GJYcY+dbkkERdgN
-         2i6W6Ogocc4SA==
-Message-ID: <02abeb64fb360245791b467b371f1491.sboyd@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+        Tue, 1 Aug 2023 15:20:52 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B46001BF1
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:20:51 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id ada2fe7eead31-44782e9d485so950897137.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:20:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690917651; x=1691522451;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Mx7BwwXurF50YVscvCcFIAyHMNie8lV8iSngFfBztW8=;
+        b=Q/ryACJY8mOBs7FzuG7mPffOSg1elIHIgquyvCGZzO7AKvm3K/7i6jn+5F7iZVW10U
+         ZipZbcsmOtolOwBiEDf31l39vuN8cRsMbkS5AOSG1M7W4iCTF4hlyMayzFrCcoH1oyMp
+         ezBTHNgUVvNhz+YdHM85U2Vn2Z+HP9xQcYNSoRCqXPohoxS69dzmcbOsPjHVJvuavOEE
+         0r4D1zNojwjyXxrAy6AwHV/XgtWocKveLUvl0aDR+SwWfGrsTiGu4dXWiTXZuhWlBTXl
+         KKJId/fv8ubSb4eoY8ZR69LaDUUXHrfrgrnhoRc4IFsGwbXRl9Hi4JUzXs5ZfHY8pe/p
+         WfuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690917651; x=1691522451;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mx7BwwXurF50YVscvCcFIAyHMNie8lV8iSngFfBztW8=;
+        b=LQeW4Rdvv437BfUMKhjfjfxN55Q23zsnJAaMa54SKrrZfhJnzRBhVY5ZNsistr9isH
+         X8dQiTsNShiyCmPPLburV05e6/jMm9NvnGzCqROumbN19tl+Nd4LsAHhzgX9aqvrEUyL
+         Wft4Aod+siOR6RkY5WnEX5yzHXDRTtaQ7OmCBC9bWyqHtwyi8CRN25ZAZtccshdeN1+O
+         zHR4iYE4sdmfw0JN3hAnORXPPzAKk2E4DJOkbcsMWi0eCRomkvksMaKG1jYCc9dlCHVr
+         ATtyvZCk0KFP0xU8eX73g+MuyTSdU+GBPEzBgEf+0axo1CACH/Lpn+tLoye8NY8D4rxf
+         P3mg==
+X-Gm-Message-State: ABy/qLYfHl/TULQv4PvQSBIfydnUUSIHEczpdOkqs3BHYJdxBgWpSSvF
+        NW8cbcyHZROQ5c3KSRTKwTSyXG0w9/OTvYmA6xo61A==
+X-Google-Smtp-Source: APBJJlFLP7KpI5D4cz6fjxg/9AdfjY+LGxKi41ExFBTmXN3hLhxkaI113sTTfgpZpUsnLsOw7mioSyVPWp+c0G4kVEU=
+X-Received: by 2002:a67:f04b:0:b0:443:6917:215b with SMTP id
+ q11-20020a67f04b000000b004436917215bmr2958771vsm.26.1690917650887; Tue, 01
+ Aug 2023 12:20:50 -0700 (PDT)
 MIME-Version: 1.0
+References: <20230725123045.6367-1-aboutphysycs@gmail.com> <ZL/KZ2Q5G7JHZMhw@smile.fi.intel.com>
+In-Reply-To: <ZL/KZ2Q5G7JHZMhw@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 1 Aug 2023 21:20:40 +0200
+Message-ID: <CAMRc=Mft3dTT+4H=4f4szSCc_NhJkDoG1xs8DkR=urgdhhHeqA@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: mlxbf2: remove unneeded platform_set_drvdata() call
+To:     Andy Shevchenko <andy@kernel.org>
+Cc:     Andrei Coardos <aboutphysycs@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linus.walleij@linaro.org, Alexandru Ardelean <alex@shruggie.ro>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230801085352.22873-2-quic_luoj@quicinc.com>
-References: <20230801085352.22873-1-quic_luoj@quicinc.com> <20230801085352.22873-2-quic_luoj@quicinc.com>
-Subject: Re: [PATCH 1/3] clk: Add the flag CLK_ENABLE_MUTEX_LOCK of enabling clock
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_srichara@quicinc.com, Luo Jie <quic_luoj@quicinc.com>
-To:     Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org,
-        mturquette@baylibre.com, p.zabel@pengutronix.de, robh+dt@kernel.org
-Date:   Tue, 01 Aug 2023 12:18:40 -0700
-User-Agent: alot/0.10
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Luo Jie (2023-08-01 01:53:50)
-> Support the clock controller where the HW register is
-> accessed by MDIO bus, the spin lock can't be used because
-> of sleep during the MDIO operation.
->=20
-> Add the flag CLK_ENABLE_MUTEX_LOCK to hint clock framework
-> to use mutex lock instead of the spin lock.
+On Tue, Jul 25, 2023 at 3:13=E2=80=AFPM Andy Shevchenko <andy@kernel.org> w=
+rote:
+>
+> On Tue, Jul 25, 2023 at 03:30:45PM +0300, Andrei Coardos wrote:
+> > This function call was found to be unnecessary as there is no equivalen=
+t
+> > platform_get_drvdata() call to access the private data of the driver.
+>
+> This is simply not true.
+>
+> NAK.
+>
 
-Why can't you enable the MDIO bus clk in .prepare()?
+Just so you know if that's not obvious from reading the code:
+platform_get_drvdata() is just a wrapper around dev_get_drvdata()
+which is called plenty in PM callbacks of this driver.
+
+Bart
+
+> > Also, the private data is defined in this driver, so there is no risk o=
+f
+> > it being accessed outside of this driver file.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
