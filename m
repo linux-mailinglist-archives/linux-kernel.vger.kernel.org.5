@@ -2,67 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9834076B448
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A00476B44B
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231566AbjHAMDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51294 "EHLO
+        id S232850AbjHAMED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232623AbjHAMDe (ORCPT
+        with ESMTP id S234011AbjHAMDn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:03:34 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DA21BD3;
-        Tue,  1 Aug 2023 05:02:53 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fe463420fbso828504e87.3;
-        Tue, 01 Aug 2023 05:02:53 -0700 (PDT)
+        Tue, 1 Aug 2023 08:03:43 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D61173A;
+        Tue,  1 Aug 2023 05:03:18 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2b9b9f0387dso85806121fa.0;
+        Tue, 01 Aug 2023 05:03:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690891371; x=1691496171;
+        d=gmail.com; s=20221208; t=1690891396; x=1691496196;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=T9RO8UlUTwn3hEH6HK6IaUASxewRiScP6UARVCA4DwU=;
-        b=CbTbEjkuDxtAWmuAnL+js8Un7DPuDyWVGzTLIvCt+LmXDumdE5C361SA3H6RwvCDq5
-         9EZq9crd6VtY7h7ZN08wKKdeIo+2jQI4CplVbieLrZwXGJstsKWvoMhwm07IP6HMYH3Y
-         3ksD8VpUghrQlGDRFY5t8m3/3+WCGC1yzT5Gc1zFF9Z00Ixn5RjbQp2QI10KldX9Nthy
-         vs12jUes6M9QTiGFlpIfSQsw1DAQe4yoxhvdQRzsPBBNZNccwiHXxixQUJV8DqQ6pMqd
-         GawK7CF7/pAySWm8Ny8u6sUKy9tgvswndlcGhU66iYdSNUxWb3U4xTatoofjMwZ+OraE
-         E1eg==
+        bh=UBlaVyXcRzijB9wVsQtSzeKEzoa3c6OzUppL627hjBw=;
+        b=Dp+olNtZ83HKky4tQkPpItoL1j6tF9PvKT3p59x9ZfNBmmu0TfyG3TIuy6hK1f9Rha
+         3aiYIsQo7odhJYsCIJkONjN0YUBgZDzXi3LI82N8CaCwO+TGficuuo8GYjvRdf64T37n
+         kMwJyJ2Y18lZybPYi/ouE09kSKf2l9iHNyFQvJS9JMhHuRuS74e5vF2Losvm75sd0nqz
+         BTsoc5XFbbyRDKrFZSQU+2ouda7GeyKMwgXgGLd7AGqJIkPoFDIaTgIBsgWa5a5MNrXw
+         UcQZ3feLzpdqSDo+2WrDVstNwC4P84Kx8A4dq7Pz7aqh6ZJmSSYauIV/y9+bYXbr+fxG
+         lB+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690891371; x=1691496171;
+        d=1e100.net; s=20221208; t=1690891396; x=1691496196;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T9RO8UlUTwn3hEH6HK6IaUASxewRiScP6UARVCA4DwU=;
-        b=Uy7AHi0LxymaXhRmlS2VFRMgRCb9XxlqKZEE28J9YBte7QcKnkDS36naP/GFHPk8nq
-         Xsk33BMaJZU6gCZ7cvGpMVPZVT1HikELLv0TO5IiCUEC2m3KU3bNANA7KmrF+5xIYcap
-         6mAfSsjR4kzB3pw78YuxtdSP4dDxvI7XX9japHNDUtg+/SdCk8gCiGUexVXMG4K+VoDU
-         jPZ1D4JK9MLRhaSVls7kMHVwNEKl5/8ynHuTgGxc6bu/XbeLXdgLUdW4N3inxT5NS8nl
-         9qK2ykawn0uMvd++UBgU4OqgFqW1bucn5G59C/1CVHkgQMlT92LLOR13DEjkayiSVsby
-         T0mw==
-X-Gm-Message-State: ABy/qLZeIH+Mcz0mnkbIZwI204WUrz+RNJ+OXTdZzfrN0mc2sJoUjuwv
-        C5D9LFqYUrhipIaOK1fmaOc=
-X-Google-Smtp-Source: APBJJlH8k9qQDQnZ1nYtZrLLCdpwDqVmgDOxZJZlv3w36+eJv3zO0GNAVNtA6sXmOPXeQ9WKGgsJkg==
-X-Received: by 2002:a05:6512:1141:b0:4fe:4f8:8e75 with SMTP id m1-20020a056512114100b004fe04f88e75mr2039371lfg.68.1690891371256;
-        Tue, 01 Aug 2023 05:02:51 -0700 (PDT)
+        bh=UBlaVyXcRzijB9wVsQtSzeKEzoa3c6OzUppL627hjBw=;
+        b=jMjylBmoiCjF1zEhTjngoOsgPJ0lPhdhGglsbtjTtz2p01pxi+sBta0yCtgwno43AI
+         MUXolZdap3HBVGbH5JhMQMNgJ0fVwIbpb84aQQ7BygJ+iAktJo/+iN2mSPesPhVSGDYm
+         ZPSykGpBJs8YCx/VMeJnzVZYxtTiM2rmV4vJrrN+plqrfGe1AvUm+3TbEkL5XiwqAcni
+         BqIwk0pkGNlpRigwbYqtga/RliO3bN4IES4S2luGKnqTcG9a0n5BB2HdGouuoDf66p2M
+         I60BsMKKANXkdZETkWF9NS7Pw5Kw7cVHT6QY42PUtjqD3KMM2FpBq9sZeqtI7o1mKJcg
+         6gqA==
+X-Gm-Message-State: ABy/qLaO2Q9hAXyi1lTM6bKrKSzNQBw2ndk93/NbQ3W6Rhf/ndChSDwo
+        LyfaCac8O7AzuRDHZB89s4U=
+X-Google-Smtp-Source: APBJJlG0gkGSqh8g5VaM+e88ZxtYsK4NH8RkcNysALY4B325PIG1JEBhoW4P89rjsPkzYoSmgZsFgg==
+X-Received: by 2002:a2e:3610:0:b0:2b5:974f:385 with SMTP id d16-20020a2e3610000000b002b5974f0385mr2369426lja.9.1690891395968;
+        Tue, 01 Aug 2023 05:03:15 -0700 (PDT)
 Received: from fedora ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id d12-20020a05651221cc00b004f4b42e2d7dsm2518784lft.230.2023.08.01.05.02.50
+        by smtp.gmail.com with ESMTPSA id s23-20020a2e9c17000000b002b6fe751b6esm3048819lji.124.2023.08.01.05.03.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 05:02:50 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 15:02:47 +0300
+        Tue, 01 Aug 2023 05:03:15 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 15:03:11 +0300
 From:   Matti Vaittinen <mazziesaccount@gmail.com>
 To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+Cc:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v8 2/8] iio: cdc: ad7150: relax return value check for IRQ get
-Message-ID: <3ad1c6f195ead3dfa8711235e1dead139d27f700.1690890774.git.mazziesaccount@gmail.com>
+Subject: [PATCH v8 3/8] pinctrl: wpcm450: relax return value check for IRQ get
+Message-ID: <143e6d7a1d2b1fb692097f6c855f2553aca93589.1690890774.git.mazziesaccount@gmail.com>
 References: <cover.1690890774.git.mazziesaccount@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="KY2dqMcsNm14XP28"
+        protocol="application/pgp-signature"; boundary="zUmjDOxnj7pSg+hf"
 Content-Disposition: inline
 In-Reply-To: <cover.1690890774.git.mazziesaccount@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,8 +76,8 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---KY2dqMcsNm14XP28
-Content-Type: text/plain; charset=us-ascii
+--zUmjDOxnj7pSg+hf
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
@@ -96,64 +96,47 @@ One more thing to note is that ACPI APIs do not return zero for any
 failures so this special handling did only apply on device-tree based
 systems.
 
-Drop the special handling for DT mapping failures as these can no longer
-be separated from other errors at driver side. Change all failures in
-IRQ getting to be handled by continuing without the events instead of
-aborting the probe upon certain errors.
+Drop the special (no error, just skip the IRQ) handling for DT mapping
+failures as these can no longer be separated from other errors at driver
+side.
 
 Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+Reviewed-by: Jonathan Neusch=E4fer <j.neuschaefer@gmx.net>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
 ---
 Revision history:
-v5 =3D> v6:
- - Never abort the probe when IRQ getting fails but continue without
-   events.
+v5 =3D> :
+ - No changes
+v4 =3D> v5:
+Fix typo in subject "elax" =3D> "relax"
 
-Please note that I don't have the hardware to test this change.
-Furthermore, testing this type of device-tree error cases is not
-trivial, as the question we probably dive in is "what happens with the
-existing users who have errors in the device-tree". Answering to this
-question is not simple.
+Please note, I took Linus' reply to v4 cover-letter as ack && added the
+tag. Please let me know if this was not Ok.
 
 The patch changing the fwnode_irq_get() got merged during 5.4:
 https://lore.kernel.org/all/fb7241d3-d1d1-1c37-919b-488d6d007484@gmail.com/
 This is a clean-up as agreed.
 ---
- drivers/iio/cdc/ad7150.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/pinctrl/nuvoton/pinctrl-wpcm450.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/iio/cdc/ad7150.c b/drivers/iio/cdc/ad7150.c
-index d656d2f12755..4c03b9e834b8 100644
---- a/drivers/iio/cdc/ad7150.c
-+++ b/drivers/iio/cdc/ad7150.c
-@@ -541,6 +541,7 @@ static int ad7150_probe(struct i2c_client *client)
- 	const struct i2c_device_id *id =3D i2c_client_get_device_id(client);
- 	struct ad7150_chip_info *chip;
- 	struct iio_dev *indio_dev;
-+	bool use_irq =3D true;
- 	int ret;
+diff --git a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c b/drivers/pinctrl/nu=
+voton/pinctrl-wpcm450.c
+index 2d1c1652cfd9..f9326210b5eb 100644
+--- a/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
++++ b/drivers/pinctrl/nuvoton/pinctrl-wpcm450.c
+@@ -1106,8 +1106,6 @@ static int wpcm450_gpio_register(struct platform_devi=
+ce *pdev,
+ 			irq =3D fwnode_irq_get(child, i);
+ 			if (irq < 0)
+ 				break;
+-			if (!irq)
+-				continue;
 =20
- 	indio_dev =3D devm_iio_device_alloc(&client->dev, sizeof(*chip));
-@@ -561,14 +562,13 @@ static int ad7150_probe(struct i2c_client *client)
-=20
- 	chip->interrupts[0] =3D fwnode_irq_get(dev_fwnode(&client->dev), 0);
- 	if (chip->interrupts[0] < 0)
--		return chip->interrupts[0];
--	if (id->driver_data =3D=3D AD7150) {
-+		use_irq =3D false;
-+	else if (id->driver_data =3D=3D AD7150) {
- 		chip->interrupts[1] =3D fwnode_irq_get(dev_fwnode(&client->dev), 1);
- 		if (chip->interrupts[1] < 0)
--			return chip->interrupts[1];
-+			use_irq =3D false;
- 	}
--	if (chip->interrupts[0] &&
--	    (id->driver_data =3D=3D AD7151 || chip->interrupts[1])) {
-+	if (use_irq) {
- 		irq_set_status_flags(chip->interrupts[0], IRQ_NOAUTOEN);
- 		ret =3D devm_request_threaded_irq(&client->dev,
- 						chip->interrupts[0],
+ 			girq->parents[i] =3D irq;
+ 			girq->num_parents++;
 --=20
 2.40.1
 
@@ -170,19 +153,19 @@ Simon says - in Latin please.
 ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
 Thanks to Simon Glass for the translation =3D]=20
 
---KY2dqMcsNm14XP28
+--zUmjDOxnj7pSg+hf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmTI9GcACgkQeFA3/03a
-ocUUjwf8CSetfr27ZZjtC0oqZpp4BdR53XDzoFmfXNXgmIBejxn+1VcyY0VGK86n
-4NdI/EVvuTsZuAr36tSBhy+TQzXkIVKQ4rYlyX40YQ1h5IFVSF2l/2hL2izYUTZ2
-mRcICjmW5fWGvLbw+Lmk7eCoQVo3RGiwbQe8OsIx7jdp9QJ47luFi8xIL3xcL8bX
-109lFBD+7WPSoyOPOrq0kHUsdj8wvIUk2zva8JM9s/cVeYQuAIZHjbV2enMCLeU9
-AKvouzXwpHtBE2owtYXgrzCgo2GPHeVf2cLeO5cARQXltZouvFJoIvNouSbqcQdL
-WatL9bZEndV12NS6dRRCL6lKfhM2uw==
-=hVic
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmTI9H8ACgkQeFA3/03a
+ocVzLgf/YgKMDdpZ4Pk9NHZrrEUe/V5XCiKe2z+FF/mdt9kSKM/6cK/rtvUvOtL2
+Eg3PJr2WxGcR0/nRv4cYAjl+z8XCFZgJrhngDcD7tgGiE0FX8FcJWDfFcd5ZyZy6
+eK6PawT8eMAQrD91ZWRyeASVBGrNcjb3tB6h8so4txWp7zzKY+7pdZg1OtSTa0ZP
+Oa8vhcXb+hR4bd0FQTv5vMZbN7CG+tcEmxXRt5/wOcJEdCvS2gJq1nS3eUQRpqo3
+bBAVbG3880paOiPwoSXp/jWjZS1djf2r+bZ69CjxIFA6p2Gpji9AQHK1hP+PdSPk
+h2snlOT/ipNxnOlr0xGtOMm6DTfaWw==
+=7zsf
 -----END PGP SIGNATURE-----
 
---KY2dqMcsNm14XP28--
+--zUmjDOxnj7pSg+hf--
