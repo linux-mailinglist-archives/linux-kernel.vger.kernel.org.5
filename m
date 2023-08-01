@@ -2,136 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B2E76BE74
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2183376BE76
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbjHAU1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 16:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48130 "EHLO
+        id S232022AbjHAU3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 16:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbjHAU1e (ORCPT
+        with ESMTP id S229669AbjHAU3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 16:27:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF81E2683
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690921605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wy2TkA8uXc4KqWHCSUGw2dDqfqA9SqU7ECQFvC91hnU=;
-        b=cH4PSjoSw7OFn3ihTRPkTVB9wQjjQztC8DeN8IMQtTg7zuU4jE+al2HnR0HfQ0YxV4Sof8
-        C4+1pvsc2+JOUCiSSPVI8pXmHKQswOpbB4RBhnBNIzsLi7IgF8Y4884QV33lDLmbOhf2vp
-        Z3H6TTZtv+tqnuWa/DBHW3ywfWQnq+E=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-457-Utr-QiHnNuWzlcHMCTsJrQ-1; Tue, 01 Aug 2023 16:26:44 -0400
-X-MC-Unique: Utr-QiHnNuWzlcHMCTsJrQ-1
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-34908ea9bf8so34853865ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 13:26:44 -0700 (PDT)
+        Tue, 1 Aug 2023 16:29:12 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E0F127
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:29:10 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d18566dc0c1so6387087276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 13:29:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690921749; x=1691526549;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MXeNNNuvrp7+VHxvQXq6s6V+CxnvfhC2OBXKfNUDQhw=;
+        b=ik7XI1ruE5Zqj9xue4GM0QDvoBivebS1U2K38G6kd1mdfJjkjlnkAesgMqGeIkbXX5
+         1jUBy8/DPyDNRgYE3D+dKOp0f4o62XSX9LXwz4CwLhBx/ZODVwcEZvCSgaemaCBTDfjR
+         bP//Uzj0YhAg4mGakETi5/RI6RMha/Bl72+xXEXnNlEWQWSX/AEraeMY+g15ahH5W11M
+         mBvLvDbvHwyXvKFeiU9SwH/Kdats8OpEDw8fWwCV4G8Gs3pmWACHOQiZj60QE4H2iHoh
+         Ih3M4cXihRmCLHAOmRezIMHF3ic4Nzty6LAS+8e+mDhB1NubTK58OG76UeWdxt3DyWug
+         a3gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690921604; x=1691526404;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1690921749; x=1691526549;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Wy2TkA8uXc4KqWHCSUGw2dDqfqA9SqU7ECQFvC91hnU=;
-        b=Xl+Fm936mD747RYg0du6GUJ14PT/OJKCGbNBhT1cel8MW8nJnPwH5ArRprnnDvTb0p
-         /SxoQW+yyJMRjK5TZ2FxGqOFXcJCts8uI+qJUFhRY4cARFxcVmzEx1CLwhSZfdAoHFfV
-         zBX2zhirWdGYWqSiWZ9yuGCQDHVj5pu344HXLTsdDfCRiH8lSHLBhDrTRLjdW09fH5Ag
-         tbbftmGaId/iguTtL+z/zIyUbLtKsRz8I1iLXYlwWRyXfaJrnlggb/ZmFiuZPRtemH9H
-         fhf7UVhNtbVR3NJWi0fs3JCrQ4tY5W4PUvLx5rbKY/8FwEcfgBbjcrQ9+Wqs8s3GtkTT
-         H4mw==
-X-Gm-Message-State: ABy/qLY1JGhYXGd9IertkPVnV8XaALLx8PktifZBF5jh5mWBHXNpiPuF
-        KwelYb7y2qKeI4vSSgbFXzy8+RjhtJiKcjAShgmU6N4fou6VFxcnykTwnU4Vd1nSGlMBiDlqIIb
-        dH+fUZjCCqJbXmRQd4ziI32rx
-X-Received: by 2002:a05:6e02:1142:b0:348:b114:a3d2 with SMTP id o2-20020a056e02114200b00348b114a3d2mr10362596ill.21.1690921604041;
-        Tue, 01 Aug 2023 13:26:44 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEbGknYdks2X0/d/P9ZjLKRglWMfz6zhjFdkrvnM7ln7ilY6KAPsrDg/JLdp7L+95yKWi2IeA==
-X-Received: by 2002:a05:6e02:1142:b0:348:b114:a3d2 with SMTP id o2-20020a056e02114200b00348b114a3d2mr10362588ill.21.1690921603816;
-        Tue, 01 Aug 2023 13:26:43 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id gs14-20020a0566382d8e00b0042b61a5087csm3838753jab.132.2023.08.01.13.26.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 13:26:43 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 14:26:42 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Like Xu <like.xu.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: eventfd: fix NULL deref irqbypass producer
-Message-ID: <20230801142642.1f73ca45.alex.williamson@redhat.com>
-In-Reply-To: <20230801085408.69597-1-likexu@tencent.com>
-References: <20230801085408.69597-1-likexu@tencent.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        bh=MXeNNNuvrp7+VHxvQXq6s6V+CxnvfhC2OBXKfNUDQhw=;
+        b=iuBxx1pPgZCiwBWiCQ8+fIOsdax6XA2eXUBXxkDGkON0iqLAMsQo4nAqG6GHQqB7QI
+         r2OUSKbS9+ibyH0SfQKebZx2w7mfVlqV4JKT8+vambaKAZK44B4NH8rSHRmzCP4st5Tf
+         SZIeIAns6IVWk+ktDkHxBRsFf2JwLDuaVUeEHi1xRGFb4BcT+9yiUwpfIRd5I72zBd7H
+         TLZATeWsf3BSSx+g7yX+kgGGavdtJ3pCKgPxhdc7VoVMJjfmG7ro4htYZBnHEz9BylH4
+         TEX7PzyYxMVXkEc/PAVQcZ9zmnv403pTKZXetL52i/mN6qOY+SCnyQCVzKtbX4tOZng1
+         UlvA==
+X-Gm-Message-State: ABy/qLZDfLxyXmAzkmed7TuwM5EBrVYRB4IesUBp7QuKX2i8jT8QI/Hr
+        6AEu+xHXI3ucbDKRUzG6NMPsF5fBw5WMnDIpwKJMCA==
+X-Google-Smtp-Source: APBJJlE8MPQmOaM3BSoGV84Nze8nav3rYtjGP81Mve7WcHRieuJTXEakgSrEFuU3KLqePoU23dmE8sp2J7UpJEsGIbw=
+X-Received: by 2002:a25:455:0:b0:cad:347e:2c8f with SMTP id
+ 82-20020a250455000000b00cad347e2c8fmr14278182ybe.39.1690921749289; Tue, 01
+ Aug 2023 13:29:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230731171233.1098105-1-surenb@google.com> <20230731171233.1098105-2-surenb@google.com>
+ <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
+ <CAJuCfpFWOknMsBmk1RwsX9_0-eZBoF+cy=P-E7xAmOWyeo4rvA@mail.gmail.com>
+ <CAHk-=wiFXOJ_6mnuP5h3ZKNM1+SBNZFZz9p8hyS8NaYUGLioEg@mail.gmail.com> <CAJuCfpG4Yk65b=0TLfGRqrO7VpY3ZaYKqbBjEP+45ViC9zySVQ@mail.gmail.com>
+In-Reply-To: <CAJuCfpG4Yk65b=0TLfGRqrO7VpY3ZaYKqbBjEP+45ViC9zySVQ@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 1 Aug 2023 13:28:56 -0700
+Message-ID: <CAJuCfpF6WcJBSix0PD0cOD_MaeLpfGz1ddS6Ug_M+g0QTfkdzw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mm: enable page walking API to lock vmas during the walk
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
+        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
+        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
+        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
+        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  1 Aug 2023 16:54:08 +0800
-Like Xu <like.xu.linux@gmail.com> wrote:
+On Mon, Jul 31, 2023 at 1:24=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> On Mon, Jul 31, 2023 at 12:33=E2=80=AFPM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Mon, 31 Jul 2023 at 12:31, Suren Baghdasaryan <surenb@google.com> wr=
+ote:
+> > >
+> > > I got the idea but a couple of modifications, if I may.
+> >
+> > Ack, sounds sane to me.
+>
+> Ok, I'll wait for more feedback today and will post an update tomorrow. T=
+hanks!
 
-> From: Like Xu <likexu@tencent.com>
-> 
-> Adding guard logic to make irq_bypass_register/unregister_producer()
-> looks for the producer entry based on producer pointer itself instead
-> of pure token matching.
-> 
-> As was attempted commit 4f3dbdf47e15 ("KVM: eventfd: fix NULL deref
-> irqbypass consumer"), two different producers may occasionally have two
-> identical eventfd's. In this case, the later producer may unregister
-> the previous one after the registration fails (since they share the same
-> token), then NULL deref incurres in the path of deleting producer from
-> the producers list.
-> 
-> Registration should also fail if a registered producer changes its
-> token and registers again via the same producer pointer.
-> 
-> Cc: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Like Xu <likexu@tencent.com>
-> ---
->  virt/lib/irqbypass.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+I have the new patchset ready but I see 3 places where we walk the
+pages after mmap_write_lock() while *I think* we can tolerate
+concurrent page faults (don't need to lock the vmas):
 
+s390_enable_sie()
+break_ksm()
+clear_refs_write()
 
-Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+In all these walks we lock PTL when modifying the page table entries,
+that's why I think we can skip locking the vma but maybe I'm missing
+something? Could someone please check these 3 cases and confirm or
+deny my claim?
+Thanks,
+Suren.
 
-
-> 
-> diff --git a/virt/lib/irqbypass.c b/virt/lib/irqbypass.c
-> index 28fda42e471b..e0aabbbf27ec 100644
-> --- a/virt/lib/irqbypass.c
-> +++ b/virt/lib/irqbypass.c
-> @@ -98,7 +98,7 @@ int irq_bypass_register_producer(struct irq_bypass_producer *producer)
->  	mutex_lock(&lock);
->  
->  	list_for_each_entry(tmp, &producers, node) {
-> -		if (tmp->token == producer->token) {
-> +		if (tmp->token == producer->token || tmp == producer) {
->  			ret = -EBUSY;
->  			goto out_err;
->  		}
-> @@ -148,7 +148,7 @@ void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
->  	mutex_lock(&lock);
->  
->  	list_for_each_entry(tmp, &producers, node) {
-> -		if (tmp->token != producer->token)
-> +		if (tmp != producer)
->  			continue;
->  
->  		list_for_each_entry(consumer, &consumers, node) {
-> 
-> base-commit: 5a7591176c47cce363c1eed704241e5d1c42c5a6
-
+>
+> >
+> >              Linus
