@@ -2,128 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2E376B546
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC53176B547
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbjHAM5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
+        id S232555AbjHAM50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjHAM5T (ORCPT
+        with ESMTP id S232504AbjHAM5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:57:19 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3584E6;
-        Tue,  1 Aug 2023 05:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=A1UXyGi4tVO1CNUnpyY8C1O55E/6x79wyybqrcHbfvA=; b=0IC1RGg2Hm6kgEu7PxHbmxTU0D
-        h4LJEtklGDODfDxqL2zvXibphfmcLkhnLMgU90+1UpkswU7hCpTMnwdIqFZ66X7KG2ZWjWUk1udRh
-        AIjs13najytZS+5vLWfUkcs59o4/5QI4VE0ucL1cnJKiYdxOORrbtKxvtnryYUNaRwkcZ25TUwSDi
-        e6+btWY5g4lPajiNzOpQoRTulBSlMq1EaEqiY7RXswMvxBMbMHcHt9m3UwmtICalV3EREDwXtJLXV
-        dXHZurCfRd1AjEA7F8zW64y/dM6jBybCT5fSPMmAq3AKLU1fKA2xjL7nrEQJRhYcOLqvg5fO/RAMA
-        hhpXN4LA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55550)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qQovd-00045o-14;
-        Tue, 01 Aug 2023 13:56:45 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qQovY-0000i5-6Y; Tue, 01 Aug 2023 13:56:40 +0100
-Date:   Tue, 1 Aug 2023 13:56:40 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Johannes Zink <j.zink@pengutronix.de>
-Cc:     Shenwei Wang <shenwei.wang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Simon Horman <simon.horman@corigine.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Wong Vee Khee <veekhee@apple.com>,
-        Revanth Kumar Uppala <ruppala@nvidia.com>,
-        Jochen Henneberg <jh@henneberg-systemdesign.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, imx@lists.linux.dev,
-        Frank Li <frank.li@nxp.com>
-Subject: Re: [PATCH v3 net 2/2] net: stmmac: dwmac-imx: pause the TXC clock
- in fixed-link
-Message-ID: <ZMkBCGJrX/COB5+f@shell.armlinux.org.uk>
-References: <20230731161929.2341584-1-shenwei.wang@nxp.com>
- <20230731161929.2341584-3-shenwei.wang@nxp.com>
- <bf2979c4-0b63-be53-b530-3d7385796534@pengutronix.de>
+        Tue, 1 Aug 2023 08:57:22 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189541FD2
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:57:21 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-3fbb634882dso12226805e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 05:57:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690894639; x=1691499439;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bnCBluV5/peVM0jbJDidt8t/2S3NU8gWwe7j2Nlnw0Y=;
+        b=ztCH3XjCFi/VZjLTNuJ0M23wzispoT6pb4iomI2lAXpfGHDgaFI0uV9S5LULrjjktJ
+         CqQLgh2xoX33qhXxyn0st3EV/n2K1mdNlKmCg49QhMoxh4pltj+2h95LYCMDqmyRhc3r
+         dgTMMY45e92dR++kpZc5UNsQikxBBpJKAKPkk0JRiupM/4oZ4ub7BoIcNXjEF8JOYPaJ
+         JQC0ngMEItSK2pivZk9ypjqGudZHF4LsIYdYUmJTtMCqZBjXKfh0c8kBQBFQPQHjTuBe
+         MGmo22aWPoePMOwOnPw+dPlB7SclvthVQwLsarVAegFF0XJ3ujTy4HapJ54QIVeFzZuM
+         ukYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690894639; x=1691499439;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bnCBluV5/peVM0jbJDidt8t/2S3NU8gWwe7j2Nlnw0Y=;
+        b=IcshxR53nBI1GmlUgTb3oTSU2HL1lFTv7j3HGlSpRhw/Mufru/ET+etz79bijoxwRB
+         y7xJa7xhv1DkZdm/r936Cv43e5YFgk1suwJJ1iA7ElbaJfG9jBV3GY299u6KcIA6B6DK
+         Ftqk2Pc5u8DS3GbbWkBZDOl+Te6hiyzcvd10rSytWVVKXoS3vRsbPQtgwJcSV3hUYStV
+         d55loxy6qpgC93Tt5K7lpqyU+/v54nbSf36CdjJhX+qxB4Ru1/9XUwvWv42uiSMo9HYR
+         0iVKLxJR8za1sS3QGjvAMRczniFrnH1XlJ3srFDmFNqcS49nAWgMsX++NutTTlMpMLHt
+         G8Ew==
+X-Gm-Message-State: ABy/qLbYMpU13wbTZGBJSRlH6MCs7vwdO0C/PvgBVVgpbEEcL8CxapNM
+        WHyHSx02n1nOebtOrSEmUPypwQ==
+X-Google-Smtp-Source: APBJJlEB2tOCWVCbNU0amxLgVmnJw2RVKmeAwXQlrVze2ga0IY0LB2rjfqnJvmRgBL4p28JpqKbxNw==
+X-Received: by 2002:a5d:630c:0:b0:317:5eb8:b1c0 with SMTP id i12-20020a5d630c000000b003175eb8b1c0mr7415154wru.5.1690894639122;
+        Tue, 01 Aug 2023 05:57:19 -0700 (PDT)
+Received: from carbon-x1.home ([2a01:cb15:81c2:f100:94c1:d2b1:7300:5620])
+        by smtp.gmail.com with ESMTPSA id y17-20020adfd091000000b003178dc2371bsm12630712wrh.7.2023.08.01.05.57.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 05:57:18 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
+Subject: [PATCH] scripts/gdb: fix usage of MOD_TEXT not defined when CONFIG_MODULES=n
+Date:   Tue,  1 Aug 2023 14:57:15 +0200
+Message-Id: <20230801125715.139721-1-cleger@rivosinc.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf2979c4-0b63-be53-b530-3d7385796534@pengutronix.de>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 02:47:46PM +0200, Johannes Zink wrote:
-> Hi Shenwei,
-> 
-> thanks for your patch.
-> 
-> On 7/31/23 18:19, Shenwei Wang wrote:
-> > When using a fixed-link setup, certain devices like the SJA1105 require a
-> > small pause in the TXC clock line to enable their internal tunable
-> > delay line (TDL).
-> 
-> If this is only required for some devices, is it safe to enforce this
-> behaviour unconditionally for any kind of fixed link devices connected to
-> the MX93 EQOS or could this possibly break for other devices?
+MOD_TEXT is only defined if CONFIG_MODULES=y which lead to loading failure
+of the gdb scripts when kernel is built without CONFIG_MODULES=y:
 
-This same point has been raised by Andrew Halaney in message-id
- <4govb566nypifbtqp5lcbsjhvoyble5luww3onaa2liinboguf@4kgihys6vhrg>
-and Fabio Estevam in message-id
- <CAOMZO5ANQmVbk_jy7qdVtzs3716FisT2c72W+3WZyu7FoAochw@mail.gmail.com>
-but we don't seem to have any answer for it.
+Reading symbols from vmlinux...
+Traceback (most recent call last):
+  File "/foo/vmlinux-gdb.py", line 25, in <module>
+    import linux.constants
+  File "/foo/scripts/gdb/linux/constants.py", line 14, in <module>
+    LX_MOD_TEXT = gdb.parse_and_eval("MOD_TEXT")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gdb.error: No symbol "MOD_TEXT" in current context.
 
-Also, the patch still uses wmb() between the write and the delay, and as
-Will Deacon pointed out in his message, message-id
- <20230728153611.GH21718@willie-the-truck>
-this is not safe, yet still a new version was sent.
+Add a conditional check on CONFIG_MODULES to fix this error.
 
-It seems the author of these patches is pretty resistant to comments,
-and has shown that when I was requesting changes - it was an awful
-struggle to get changes made. I'm now of the opinion that I really
-can't be bothered to review these patches, precisely because feedback
-is clearly not welcome or if welcome, apparently acted upon.
+Fixes: b4aff7513df3 ("scripts/gdb: use mem instead of core_layout to get the module address")
+Signed-off-by: Clément Léger <cleger@rivosinc.com>
+---
+ scripts/gdb/linux/constants.py.in | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/scripts/gdb/linux/constants.py.in b/scripts/gdb/linux/constants.py.in
+index 50a92c4e9984..866015547b38 100644
+--- a/scripts/gdb/linux/constants.py.in
++++ b/scripts/gdb/linux/constants.py.in
+@@ -63,7 +63,8 @@ LX_GDBPARSED(IRQD_LEVEL)
+ LX_GDBPARSED(IRQ_HIDDEN)
+ 
+ /* linux/module.h */
+-LX_GDBPARSED(MOD_TEXT)
++if IS_BUILTIN(CONFIG_MODULES):
++    LX_GDBPARSED(MOD_TEXT)
+ 
+ /* linux/mount.h */
+ LX_VALUE(MNT_NOSUID)
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.40.1
+
