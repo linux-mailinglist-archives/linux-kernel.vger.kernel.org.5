@@ -2,201 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 558F476B1D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C24276B1D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbjHAKaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
+        id S233157AbjHAKbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbjHAKam (ORCPT
+        with ESMTP id S233056AbjHAKax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:30:42 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602E492;
-        Tue,  1 Aug 2023 03:30:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=KeOeZN8j1Kv4rdUg/08Xyr1q7VbFfZ43LqMnjplQud8=; b=eiy6XJ1+OayMv3ZjecdJgWMT9C
-        Uv5GOK/vQES7nI9CpL7KwfXjXVd5FKQnbNysWgmJl1slR3hFYDF+ttduAxM75xNKTR3wYVnCt6KOh
-        oJmD9ziJMqaYZvpmHWHL2O+EqtZWvujJfqSoTNm77Ddkj4YFYzYuus4k8aBdjREqinVo=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qQme2-002n9O-R9; Tue, 01 Aug 2023 12:30:26 +0200
-Date:   Tue, 1 Aug 2023 12:30:26 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 26/28] ASoC: codecs: Add support for the framer codec
-Message-ID: <2e253048-a36e-4fee-b2f4-22f19230cf54@lunn.ch>
-References: <20230726150225.483464-1-herve.codina@bootlin.com>
- <20230726150225.483464-27-herve.codina@bootlin.com>
+        Tue, 1 Aug 2023 06:30:53 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F33301B6;
+        Tue,  1 Aug 2023 03:30:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690885850; x=1722421850;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=AXZNOWsXQFGRgN/CfdKy8knJkQs1QJiVb5bOiuA/Orc=;
+  b=XHPTELF4PapdQ+6Ay6WCT4wGVsPY9jF4/n0pa2Blno3EfATUoYuMBds1
+   Hc1lGtQNSat/mJLPqOM4S+3nv6bynt0SUh4mg7DDiR4i0IbGqyY8GFqUK
+   zGXliLG3ywisxe81E72qATv9dTAxmX6c2OiG2AZlYbZ5BydqlxGtYJNYC
+   P0Av/a7dO66dJDkoxXARDg0hWIWli1+Hg4gK4DaRIPi2xmv6Nte97p132
+   ZBLT+VbMoSbwvug2nOxHcde8vtCKwwv/SsSFB8YJFy4RwlSz9hGPUox9k
+   HqmubJYkZTDEZY5Yj6MICurgQTZbOZVXfVv2kxPcB2RXqvzEZDplW5WxJ
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="scan'208";a="164286827"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Aug 2023 03:30:49 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 1 Aug 2023 03:30:35 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Tue, 1 Aug 2023 03:30:35 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LzKbMN4xkcBP7FaHjrGLEtu7ANRLLjDjmlLOXXphLpwLTbzKsOrhN4hJT1vIaUn8VP80Z76Eu3QriirYaMEC2Bi3P34ZC/FhOSlLhPa2lOBMkERMbnf4bHKVc8lPd8Vi6am74MpjtEhwDusCp/b0lcTl/hdGucfSIuokf2ALMDJ9j0J+PJLCk4CTujZgnt7Af0+bHMM/8dJ98kNcfDB63Wvi9aBwfQbUwymXi7sxplcgfBtAuQvmy5hkspG8xXrgs185VsaKbm/DqoK8bvPbjFcptvu1aAnQSXNi5GprnIa76K2e7V080QtHp9vduaau7uy2e0qGVDisxVyXhRRWLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AXZNOWsXQFGRgN/CfdKy8knJkQs1QJiVb5bOiuA/Orc=;
+ b=MOPYnNlt2zXC4ORSVe6uGI4Psu9UwyUaaB10qLrI7H1GER0ru2XiDmu0djDxhZGiZ1SR1kigTOXPnw4/GblVXv/G2DaXxihqjM4KTGG7Qx+YfyysMjUFVj3CemXh1/FFgLDFr8RPvW+0Sb/zOvDOisKDifY14evs4VI61doRWHjNtUrX3MJ5bKx3C+JkC923ickCWujJBu14VstAM5RaTWr7Me5bqYHHzaAGD6p9FW7pjcpQmzdhKJbVpOix5IhUnAKFuuzebv0hq8LIu0WbenQJV60O806ZZTbfWRQ1PwiUxCPOV2Y8QLmzBx4dby6FujMFtMmf3kJS/edhKZcpAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AXZNOWsXQFGRgN/CfdKy8knJkQs1QJiVb5bOiuA/Orc=;
+ b=a2PHsf6WRPNSsydY8TUTUpArl8gSFM6kOJ6hX8mPrR3xp+pRAsHseU965Xd6ECCqCsaMfRPWpnty8bD4m3Jfe/G3ILsIX+qglG4kfUj5ejYIErx08gGuujTwmrpQAOAJrFahr3h+uT3X7vF7edTFAsQQkMWNkTlEYVLcFjzOyLM=
+Received: from IA1PR11MB6193.namprd11.prod.outlook.com (2603:10b6:208:3eb::19)
+ by MW4PR11MB6809.namprd11.prod.outlook.com (2603:10b6:303:1e9::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.41; Tue, 1 Aug
+ 2023 10:30:33 +0000
+Received: from IA1PR11MB6193.namprd11.prod.outlook.com
+ ([fe80::4352:94ae:4654:c4b7]) by IA1PR11MB6193.namprd11.prod.outlook.com
+ ([fe80::4352:94ae:4654:c4b7%4]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
+ 10:30:30 +0000
+From:   <Manikandan.M@microchip.com>
+To:     <lee@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <Claudiu.Beznea@microchip.com>, <sam@ravnborg.org>,
+        <bbrezillon@kernel.org>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
+CC:     <Balakrishnan.S@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
+        <Balamanikandan.Gunasundar@microchip.com>,
+        <Varshini.Rajendran@microchip.com>, <Dharma.B@microchip.com>,
+        <Durai.ManickamKR@microchip.com>, <Hari.PrasathGE@microchip.com>
+Subject: Re: [PATCH v2 0/9] Add support for XLCDC to sam9x7 SoC family.
+Thread-Topic: [PATCH v2 0/9] Add support for XLCDC to sam9x7 SoC family.
+Thread-Index: AQHZtGpG07WSjSdJ1Uq8b6fdWM+RZK/VXYwA
+Date:   Tue, 1 Aug 2023 10:30:30 +0000
+Message-ID: <90631430-c9ec-7424-7679-fe8adbe043cb@microchip.com>
+References: <20230712024017.218921-1-manikandan.m@microchip.com>
+In-Reply-To: <20230712024017.218921-1-manikandan.m@microchip.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6193:EE_|MW4PR11MB6809:EE_
+x-ms-office365-filtering-correlation-id: b4566d6d-51c7-48ba-3804-08db927a547f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GGleZB0W/9JL79DtstkQ03OuqYKFFEfGmttOj0esbFbXS/0xVQsDQMjF6t8cN2HcGgHv6ICcW59ru6g6Gv4jsg6lEKEOQHxXDU56aKoLJDBB2FdQNcwt+SEtjWmRO2KEb0/SJK86MC7sLRN6icNH1QvZFEgElZx+tgP+t59A6uZG5VujAun68QZ35bz88OBlac4RDB5nfLKlgik1hjZiZdwtLQTRMTTY1Kw+6ufZ4EfKpPmSbn+B1uXIyOF628dCeGiwfSWwKqWif9eb/RVJqtvvTsg0lEfLfkJ4mZVZFaRd4wgRS21l+tShWuIlZye1K627GNoTSDCBsZB4SXwZlc9ZHnOJC20COgrV5NTVFTH/RTUUfGEhps6dEc2tfajYUZidW/0SKmxZYiupkgFngPLopohOOn4Vchntewp+ZcRMDbiA3v4Hr8+keFz3Rdk55c6Rnz87pGq79WOiY8jA21ipjIKncecyy0C02sLtsaxQGTUDFcTt5IW41T+o+Wco/vPQqkyH/wHr+2arnmKoc1U9aK+tniGWSb/lUypnpp5ccpyBvTBDnJmfFbw3DNB64vGvqs7IAlJSMt8NVj6/T/wOIT2NQAZRV4ENM25u0NLsUezxwheTqCAB5RJELyz0rJYArD3bQrJJKfWpZuw3N+8/6yOH52NhHz41IMaBYC0=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6193.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(136003)(366004)(39860400002)(376002)(346002)(451199021)(2616005)(5660300002)(8936002)(6506007)(186003)(8676002)(53546011)(76116006)(83380400001)(7416002)(316002)(26005)(4326008)(478600001)(54906003)(91956017)(66556008)(66946007)(110136005)(66446008)(64756008)(107886003)(66476007)(86362001)(6486002)(41300700001)(6512007)(71200400001)(38070700005)(36756003)(31696002)(2906002)(38100700002)(921005)(122000001)(31686004)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MzJLbTFPT09XY3Q2OElER3ByL3pUZVZFdU1kOE81QmJjeHpUQWg4cGtoK3By?=
+ =?utf-8?B?SkUrVmdEU1dXYVl0S3UvR1gvTy9qTHJIYTJlL1Q5UitSQTA1eXBrdW1jdGUv?=
+ =?utf-8?B?UXRNR1QrOHlxUHo4eUR1YmhqemxUdnNTRFM4UnNjOVMxc1RsL0lZK2JLU2Rm?=
+ =?utf-8?B?N2piaEdaekZtWEI4eCs4WDJMbmlCNWJQN0JPWjhaakNmWUluRXhFeGg1MUx3?=
+ =?utf-8?B?OVA5MjBVaDFocnloT2d6Qm5mNnJHVnd0YW1RNHRZcXQyUUNUTnVsT3pTU1o2?=
+ =?utf-8?B?UGphWkczMkxPaVNHU3VWQks3ZWxtVUhMOUt3VFdLWXhUQXhZbFVHZ3pTSnZi?=
+ =?utf-8?B?UUYzT1JCSlNwbEJGNHh3ZmZKdzJtN3RTaWcrSWtqMDBxUnBXVys5a0NYSTN0?=
+ =?utf-8?B?NHpGZEljOFZyOW01ZWs4YzdQUm82T1V5Z2ZlZmZ4SFFrcFNHWkxybkx0Rjdp?=
+ =?utf-8?B?Y0tzOGgvTStya3MrWWxnamFpTHpwVWlDZ2F4RnVMaGRyNitjVTAreFNXby82?=
+ =?utf-8?B?MmRUM3ZueDVNVkZzN2NKK2xHUklWNHh2akl6Sm82cGJ0VDFaRmZQQUgvb0FL?=
+ =?utf-8?B?RmNZRWxtblNJN0RQUUFUQ1NnN2MzQUN3VlFxd3hwOUo5NkJHR05oZ2FRWEpx?=
+ =?utf-8?B?VGQvMDUyUXhwZ1VrMVE1QjJiOU5ZODk0NVFNRTd0d2UwM3hwMDV1RTdHOUgz?=
+ =?utf-8?B?RDN0L2lza2E2SHpmVFBBeCsvWGRaV3I1NWhCQkl6WVcvcWlad3pycmM0K25u?=
+ =?utf-8?B?Q3ZTVlM3MnNHOGJ5TEhpc2lqRWpVRWtET083VE5kUU5uZjhFMTJQZWZVaWF0?=
+ =?utf-8?B?WDlsYnR4dkg3WnRScEYzRjJKMVc2aG1WUzYvNUN5V28wNUVZS3F4SW1paWRC?=
+ =?utf-8?B?aXVoaWZENGhSSlBycWU1djNCeDc4dVBVbXRaaWk0emNnd3IvMEtZaVdkWWM1?=
+ =?utf-8?B?TkhzeEhiMEgxcURjZ1FIbnM3Q0JoSzl3S24wMHVXS3FmVlZBUlRscHdkSUR4?=
+ =?utf-8?B?RVI2RWJ6MHk1WDhsZWJmUUNhWml0a25LcWdUVUtlOGlXWkgveGlSYTgxNUNi?=
+ =?utf-8?B?VU1iS3IzUVhzYndpWVM5MlNmSlgrVlRSRXYrNTFibTJyZXZKUm0va0ZCM1d4?=
+ =?utf-8?B?RUM2eG9qNW5SRHdEa0NTRVV6Y000dko0UERRUVJqb08zSkszeWxac1FsOTYy?=
+ =?utf-8?B?SWNxMDNBUWFYWWl4MVUrZHlYUmFhVTYvdjBHYzVUbWJKSFBLM0NEeDRjemJL?=
+ =?utf-8?B?QUUvNW8vbHBwaTEzVW92S1dLNlBHSnEwaUpySUVEdkJWWUJyYnhLQUt2T2l6?=
+ =?utf-8?B?S3dtazEyVDdhMTZGOUxzMlVEajZIbjVwWEJZanBwZWdRVHM3cGhsWXM5bTNl?=
+ =?utf-8?B?eU9hOUNJanN0TlBOYURFVkpuYWRsWDkzUWNXVlc3UU9iOWZ2SXlYdjJ6TzJG?=
+ =?utf-8?B?QnlxVnVxdlB6SmMxOGxDSDlweTYvTGNSM0NMQTQ2elFiMFhOc2hpN0VlMFk1?=
+ =?utf-8?B?RFcyWjVJMGVoOVA1a2kvcXRGQTBMbzlBbSsvem1uaWdDeXdTZXV5UlpDWjNo?=
+ =?utf-8?B?SFRCcHNGdnh3Ly90Y3dYVnMwZE54bTFicElDNlpacjliNm9aQUlXV0lqSkUv?=
+ =?utf-8?B?U0RrYUpoUFdVVXE0OEJUNmtxa1NZSWZnSmIrRml6N0Z4YzA5eHNYTlI4VTUx?=
+ =?utf-8?B?ZEtoZ01JamIzYy9PN0F1MTZmaGJJTWlhcXB6MWZoT0ZQZmJ1U01JYklJZk9l?=
+ =?utf-8?B?ckVjc1JadUpHZlhzS0psc2hvOTlRVlgzSFRyaXVhZDlndWxHRTFXQUQ0eUda?=
+ =?utf-8?B?M3Z3NEthcjRlbW9iTlp3TWI3R0YweDlxanZmR3JKSnNZNFpqRkdFbDJXTDVj?=
+ =?utf-8?B?UkpiL1ZrT2p2QXdpOHJGd3JPcXRTK2c0TytHZWFLY3lrZnFEWE5kYzl6K3Fs?=
+ =?utf-8?B?Rk5NaFJLV3ZOdlJIQVgyM2ZCdzduY0NGYzVXUjJxcDJGYUZ4RUZDVXFqZjF0?=
+ =?utf-8?B?T3NHa0JLZExhdFJxbDhsaEoyR2lCckZMR054a0tHamZqdHc0R096ZE1rZ3Qr?=
+ =?utf-8?B?NWlQendOYTRpN29CcnpCWG5OT2ZJVURyczJMaSttQXo4NUhHTFQzcS9HVE5X?=
+ =?utf-8?Q?1/EJldGgg+09h/YgYJDVN+Gyp?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <577AED1FCD84524EB8FBEF19249835E4@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230726150225.483464-27-herve.codina@bootlin.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6193.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4566d6d-51c7-48ba-3804-08db927a547f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Aug 2023 10:30:30.3933
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: T1US2YhpOpQy56p8SQN7uUrsHt8PmfDShckpTR6rwn5QxpYPGWDJGdWpwYIDqMcKAWxN/yX1HNDHxxqajV5vfTn8rpSNDY4svx0wZCRvcXg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6809
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 05:02:22PM +0200, Herve Codina wrote:
-> The framer codec interracts with a framer.
-> It allows to use some of the framer timeslots as audio channels to
-> transport audio data over the framer E1/T1/J1 lines.
-> It also reports line carrier detection events through the ALSA jack
-> detection feature.
-> 
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
->  sound/soc/codecs/Kconfig        |  15 ++
->  sound/soc/codecs/Makefile       |   2 +
->  sound/soc/codecs/framer-codec.c | 423 ++++++++++++++++++++++++++++++++
->  3 files changed, 440 insertions(+)
->  create mode 100644 sound/soc/codecs/framer-codec.c
-> 
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index f99203ef9b03..a86cdac39b72 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -110,6 +110,7 @@ config SND_SOC_ALL_CODECS
->  	imply SND_SOC_ES8328_I2C
->  	imply SND_SOC_ES7134
->  	imply SND_SOC_ES7241
-> +	imply SND_SOC_FRAMER
->  	imply SND_SOC_GTM601
->  	imply SND_SOC_HDAC_HDMI
->  	imply SND_SOC_HDAC_HDA
-> @@ -1043,6 +1044,20 @@ config SND_SOC_ES8328_SPI
->  	depends on SPI_MASTER
->  	select SND_SOC_ES8328
->  
-> +config SND_SOC_FRAMER
-> +	tristate "Framer codec"
-> +	depends on GENERIC_FRAMER
-> +	help
-> +	  Enable support for the framer codec.
-> +	  The framer codec uses the generic framer infrastructure to transport
-> +	  some audio data over an analog E1/T1/J1 line.
-> +	  This codec allows to use some of the time slots available on the TDM
-> +	  bus on which the framer is connected to transport the audio data.
-> +
-> +	  To compile this driver as a module, choose M here: the module
-> +	  will be called snd-soc-framer.
-> +
-> +
->  config SND_SOC_GTM601
->  	tristate 'GTM601 UMTS modem audio codec'
->  
-> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-> index 32dcc6de58bd..54667274a0f6 100644
-> --- a/sound/soc/codecs/Makefile
-> +++ b/sound/soc/codecs/Makefile
-> @@ -116,6 +116,7 @@ snd-soc-es8326-objs := es8326.o
->  snd-soc-es8328-objs := es8328.o
->  snd-soc-es8328-i2c-objs := es8328-i2c.o
->  snd-soc-es8328-spi-objs := es8328-spi.o
-> +snd-soc-framer-objs := framer-codec.o
->  snd-soc-gtm601-objs := gtm601.o
->  snd-soc-hdac-hdmi-objs := hdac_hdmi.o
->  snd-soc-hdac-hda-objs := hdac_hda.o
-> @@ -499,6 +500,7 @@ obj-$(CONFIG_SND_SOC_ES8326)    += snd-soc-es8326.o
->  obj-$(CONFIG_SND_SOC_ES8328)	+= snd-soc-es8328.o
->  obj-$(CONFIG_SND_SOC_ES8328_I2C)+= snd-soc-es8328-i2c.o
->  obj-$(CONFIG_SND_SOC_ES8328_SPI)+= snd-soc-es8328-spi.o
-> +obj-$(CONFIG_SND_SOC_FRAMER)	+= snd-soc-framer.o
->  obj-$(CONFIG_SND_SOC_GTM601)    += snd-soc-gtm601.o
->  obj-$(CONFIG_SND_SOC_HDAC_HDMI) += snd-soc-hdac-hdmi.o
->  obj-$(CONFIG_SND_SOC_HDAC_HDA) += snd-soc-hdac-hda.o
-> diff --git a/sound/soc/codecs/framer-codec.c b/sound/soc/codecs/framer-codec.c
-> new file mode 100644
-> index 000000000000..52b4546a61ee
-> --- /dev/null
-> +++ b/sound/soc/codecs/framer-codec.c
-> @@ -0,0 +1,423 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +//
-> +// Framer ALSA SoC driver
-> +//
-> +// Copyright 2023 CS GROUP France
-> +//
-> +// Author: Herve Codina <herve.codina@bootlin.com>
-> +
-> +#include <linux/clk.h>
-> +#include <linux/framer/framer.h>
-> +#include <linux/module.h>
-> +#include <linux/notifier.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +#include <sound/jack.h>
-> +#include <sound/pcm_params.h>
-> +#include <sound/soc.h>
-> +#include <sound/tlv.h>
-> +
-> +#define FRAMER_NB_CHANNEL	32
-> +#define FRAMER_JACK_MASK (SND_JACK_LINEIN | SND_JACK_LINEOUT)
-> +
-> +struct framer_codec {
-> +	struct framer *framer;
-> +	struct device *dev;
-> +	struct snd_soc_jack jack;
-> +	struct notifier_block nb;
-> +	struct work_struct carrier_work;
-> +	int max_chan_playback;
-> +	int max_chan_capture;
-> +};
-> +
-> +static int framer_dai_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-> +				   unsigned int rx_mask, int slots, int width)
-> +{
-> +	struct framer_codec *framer = snd_soc_component_get_drvdata(dai->component);
-> +
-> +	switch (width) {
-> +	case 0:
-> +		/* Not set -> default 8 */
-> +	case 8:
-> +		break;
-> +	default:
-> +		dev_err(dai->dev, "tdm slot width %d not supported\n", width);
-> +		return -EINVAL;
-> +	}
-> +
-> +	framer->max_chan_playback = hweight32(tx_mask);
-> +	if (framer->max_chan_playback > FRAMER_NB_CHANNEL) {
-> +		dev_err(dai->dev, "too much tx slots defined (mask = 0x%x) support max %d\n",
-
-"many", not "much".
-
-Also, "supported".
-
-      Andrew
+T24gMTIvMDcvMjMgODoxMCBhbSwgTWFuaWthbmRhbiBNdXJhbGlkaGFyYW4gd3JvdGU6DQo+IEVY
+VEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mgb3Igb3BlbiBhdHRhY2htZW50cyB1bmxl
+c3MgeW91IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQ0KPiANCj4gVGhpcyBwYXRjaCBzZXJpZXMg
+YWltcyB0byBhZGQgc3VwcG9ydCBmb3IgWExDREMgSVAgb2Ygc2FtOXg3IFNvQyBmYW1pbHkNCj4g
+dG8gdGhlIERSTSBzdWJzeXN0ZW0uWExDREMgSVAgaGFzIGFkZGl0aW9uYWwgcmVnaXN0ZXJzIGFu
+ZCBuZXcNCj4gY29uZmlndXJhdGlvbiBiaXRzIGNvbXBhcmVkIHRvIHRoZSBleGlzdGluZyByZWdp
+c3RlciBzZXQgb2YgSExDREMgSVAuDQo+IFRoZSBuZXcgY29tcGF0aWJsZSBzdHJpbmcgIm1pY3Jv
+Y2hpcCxzYW05eDc1LXhsY2RjIiBpcyBkZWZpbmVkIGZvciBzYW05eDc1DQo+IHZhcmlhbnQgb2Yg
+dGhlIHNhbTl4NyBTb0MgZmFtaWx5LlRoZSBpc194bGNkYyBmbGFnIHVuZGVyIGRyaXZlciBkYXRh
+IGhlbHBzDQo+IHRvIGRpZmZlcmVudGlhdGUgdGhlIFhMQ0RDIGFuZCBleGlzdGluZyBITENEQyBj
+b2RlIHdpdGhpbiB0aGUgc2FtZSBkcml2ZXIuDQpIaSBBbGwNCg0KQSBHZW50bGUgcmVtaW5kZXIg
+dG8gcmV2aWV3IHRoaXMgcGF0Y2ggc2VyaWVzIDIvOSB0byA5LzkuDQo+IA0KPiBjaGFuZ2VzIGlu
+IHYyOg0KPiAqIENoYW5nZSB0aGUgZHJpdmVyIGNvbXBhdGlibGUgbmFtZSBmcm9tICJtaWNyb2No
+aXAsc2FtOXg3LXhsY2RjIiB0bw0KPiAibWljcm9jaGlwLHNhbTl4NzUteGxjZGMiLg0KPiAqIE1v
+dmUgaXNfeGxjZGMgZmxhZyB0byBkcml2ZXIgZGF0YS4NCj4gKiBSZW1vdmUgdW5zZWQgTWFjcm8g
+ZGVmaW5pdGlvbnMuDQo+ICogQWRkIGNvLWRldmVsb3BlZC1ieXMgdGFncw0KPiAqIFJlcGxhY2Ug
+cmVnbWFwX3JlYWQoKSB3aXRoIHJlZ21hcF9yZWFkX3BvbGxfdGltZW91dCgpIGNhbGwNCj4gKiBT
+cGxpdCBjb2RlIGludG8gdHdvIGhlbHBlcnMgZm9yIGNvZGUgcmVhZGFibGl0aXR5Lg0KPiANCj4g
+RHVyYWkgTWFuaWNrYW0gS1IgKDEpOg0KPiAgICBkcm06IGF0bWVsLWhsY2RjOiBEZWZpbmUgU0FN
+OVg3IFNvQyBYTENEQyBzcGVjaWZpYyByZWdpc3RlcnMNCj4gDQo+IE1hbmlrYW5kYW4gTXVyYWxp
+ZGhhcmFuICg4KToNCj4gICAgZHQtYmluZGluZ3M6IG1mZDogQWRkIGJpbmRpbmdzIGZvciBTQU05
+WDc1IExDRCBjb250cm9sbGVyDQo+ICAgIG1mZDogYXRtZWwtaGxjZGM6IEFkZCBjb21wYXRpYmxl
+IGZvciBzYW05eDc1IFhMQ0QgY29udHJvbGxlcg0KPiAgICBkcm06IGF0bWVsLWhsY2RjOiBhZGQg
+ZmxhZyB0byBkaWZmZXJlbnRpYXRlIFhMQ0RDIGFuZCBITENEQyBJUA0KPiAgICBkcm06IGF0bWVs
+LWhsY2RjOiBhZGQgTENEIGNvbnRyb2xsZXIgbGF5ZXIgZGVmaW5pdGlvbiBmb3Igc2FtOXg3NQ0K
+PiAgICBkcm06IGF0bWVsX2hsY2RjOiBBZGQgc3VwcG9ydCBmb3IgWExDREMgaW4gYXRtZWwgTENE
+IGRyaXZlcg0KPiAgICBkcm06IGF0bWVsLWhsY2RjOiBhZGQgRFBJIG1vZGUgc3VwcG9ydCBmb3Ig
+WExDREMNCj4gICAgZHJtOiBhdG1lbC1obGNkYzogYWRkIHZlcnRpY2FsIGFuZCBob3Jpem9udGFs
+IHNjYWxpbmcgc3VwcG9ydCBmb3INCj4gICAgICBYTENEQw0KPiAgICBkcm06IGF0bWVsLWhsY2Rj
+OiBhZGQgc3VwcG9ydCBmb3IgRFNJIG91dHB1dCBmb3JtYXRzDQo+IA0KPiAgIC4uLi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL21mZC9hdG1lbC1obGNkYy50eHQgICB8ICAgMSArDQo+ICAgLi4uL2dwdS9k
+cm0vYXRtZWwtaGxjZGMvYXRtZWxfaGxjZGNfY3J0Yy5jICAgIHwgMTcxICsrKysrKystLQ0KPiAg
+IGRyaXZlcnMvZ3B1L2RybS9hdG1lbC1obGNkYy9hdG1lbF9obGNkY19kYy5jICB8ICA5OSArKysr
+Kw0KPiAgIGRyaXZlcnMvZ3B1L2RybS9hdG1lbC1obGNkYy9hdG1lbF9obGNkY19kYy5oICB8ICA0
+OCArKysNCj4gICAuLi4vZ3B1L2RybS9hdG1lbC1obGNkYy9hdG1lbF9obGNkY19wbGFuZS5jICAg
+fCAzNTcgKysrKysrKysrKysrKysrLS0tDQo+ICAgZHJpdmVycy9tZmQvYXRtZWwtaGxjZGMuYyAg
+ICAgICAgICAgICAgICAgICAgIHwgICAxICsNCj4gICBpbmNsdWRlL2xpbnV4L21mZC9hdG1lbC1o
+bGNkYy5oICAgICAgICAgICAgICAgfCAgMTAgKw0KPiAgIDcgZmlsZXMgY2hhbmdlZCwgNTk2IGlu
+c2VydGlvbnMoKyksIDkxIGRlbGV0aW9ucygtKQ0KPiANCj4gLS0NCj4gMi4yNS4xDQo+IA0KDQot
+LSANClRoYW5rcyBhbmQgUmVnYXJkcywNCk1hbmlrYW5kYW4gTS4NCg0K
