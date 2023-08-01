@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555AF76B4EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:41:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7D876B4F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233620AbjHAMlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
+        id S233807AbjHAMmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:42:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbjHAMlB (ORCPT
+        with ESMTP id S232505AbjHAMl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:41:01 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AD3A8;
-        Tue,  1 Aug 2023 05:40:59 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 31AEB1C0006;
-        Tue,  1 Aug 2023 12:40:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690893657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v3Hw1gMaiWhoQKKZK2hbOYHO2XGGZMLV2/iOs78dLbs=;
-        b=fCbAQl2f6bVcczNsiSn20w0R4GSWTzdJtsvxoT8oJuXqRxwzubrCHgT+dTC8KuMsN/hXU4
-        qjlgxD280xtPjU+jrd2UCTJlV2evSae4wIrOFEyZNn49zO/2T1Hwl9Dq8k6YYf7Qw5pL2f
-        2/rgab5/Th6Ca1Sfi6jYkxMHsyMZcRFIubPVoSYgZ+Ondr0OweFT7yzlxUNHpySUpaish4
-        6OK5Hl9YRdThPKmAw0gw5QPio3MahcKkEQ50c/34jJ4Z4TVK+xVHa2t91fGe4w2Q8DZfux
-        ITpMoDX82JKsI2twWhwnEyjxywVLbcY0ZIz9NXGerqpMn7nOBLqJzhNJKWgDuA==
-Date:   Tue, 1 Aug 2023 14:40:56 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Anvesh Jain P <quic_ajainp@quicinc.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Venkata Rao Kakani <quic_vkakani@quicinc.com>
-Subject: Re: [PATCH] rtc: rtc-pm8xxx: control default alarm wake up capability
-Message-ID: <20230801124056fc665814@mail.local>
-References: <20230801114549.26956-1-quic_ajainp@quicinc.com>
+        Tue, 1 Aug 2023 08:41:58 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F4D52102
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:41:55 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-3128fcd58f3so5765949f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 05:41:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690893713; x=1691498513;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=qwSU5RXQg7VsspNAMIrrPontjcHjYD2O86ltcwdGdmA=;
+        b=s9hmaxrUP2ngbn2IUdUbqZhA2+mvvxk4HLjAhIdyYJEztjdMDxdOACPDD++q21vmX3
+         lFfVXoR6GsSxXSLjHJCPRGrrYfxIR9dEKBDlcgGeqv6xT4d+SJC3v/rBYAuS3iv/fgzC
+         IdmN8mLA7MXVQO9zLm1WHghyQT+E/0mPuEAUWvbzFDoK+1jja3u7BNelUPa9sJbemx29
+         ZAmB+br5CnuKRmaxUVjzqVdLx1DzB8Vwz2RNs1qcbiay2q0jOVPJaZLrmP0zMdNvZXN/
+         y+l+ndYf9JyXZIigH6TNKLGv7Eui43ptwYA92O1QOUCT8k7v8eJfGPE+F328LhQCqWKk
+         AJbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690893713; x=1691498513;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qwSU5RXQg7VsspNAMIrrPontjcHjYD2O86ltcwdGdmA=;
+        b=g3a9YrYYcICOXScoWKg+Lz5JGtmqNjCt5h8Jl6S0NYpO8ktEWGduHaM8hkCAeG+VkV
+         FgaD2dDklV5c4kYeLdD1YLn22wzCsh0mny4WdgqZBaockgyXJG6yqQYCvFnJPcBrm7Ho
+         DRJLdrd2e0bKvbgMI8oZVo9jqKy4a0+TTiHCQj2Eb0OYUVDIGv45Rfidsr2wECiEy9bI
+         rKOaIQf2OtijPMnqKYq/9b3EZ+vlh27x7Z7O2sSVpahmrQ6AfL3Elz8cdsvxkbHGERym
+         b9zDTiZftPhsSJTLf6Jrad1mVuPoxau9ljmjhdUf66yZLIaTzrhg+bOIIrvw9EL/Yksc
+         ME8A==
+X-Gm-Message-State: ABy/qLZyWlu6MnTulMbkNXguEeuT3TNT4WcugX+vniU5JOXD4szYKhjU
+        v+zA8/jgs2reyTsxELLH30DpTw==
+X-Google-Smtp-Source: APBJJlFJ7CpyVlemF6FeCX+aVgAhKIaADhcWfW5e1JDrbU0/IflmKJpzpkuSrFVNy+Rm106zsJIM5Q==
+X-Received: by 2002:adf:f102:0:b0:314:a3f:9c08 with SMTP id r2-20020adff102000000b003140a3f9c08mr2248867wro.39.1690893713452;
+        Tue, 01 Aug 2023 05:41:53 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:b92a:81a9:df6e:1e3? ([2a01:e0a:982:cbb0:b92a:81a9:df6e:1e3])
+        by smtp.gmail.com with ESMTPSA id m12-20020adff38c000000b00313f031876esm16089597wro.43.2023.08.01.05.41.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 05:41:52 -0700 (PDT)
+Message-ID: <4f240fb4-b40b-2146-7dcb-e6c26d60ddd7@linaro.org>
+Date:   Tue, 1 Aug 2023 14:41:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801114549.26956-1-quic_ajainp@quicinc.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] arm64: dts: qcom: sm8550-mtp: Add missing supply for L1B
+ regulator
+Content-Language: en-US
+To:     Abel Vesa <abel.vesa@linaro.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20230801095246.2884770-1-abel.vesa@linaro.org>
+Organization: Linaro Developer Services
+In-Reply-To: <20230801095246.2884770-1-abel.vesa@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/08/2023 17:15:49+0530, Anvesh Jain P wrote:
-> Enable & disable rtc alarm wake up capability based on
-> default parameter passed from device tree.
+On 01/08/2023 11:52, Abel Vesa wrote:
+> Even though currently there is no consumer for L1B, add the supply
+> for it anyway.
 > 
-
-I see what you are doing but not why this is necessary, NAK.
-
-> Signed-off-by: Venkata Rao Kakani <quic_vkakani@quicinc.com>
-> Signed-off-by: Anvesh Jain P <quic_ajainp@quicinc.com>
+> Fixes: 71342fb91eae ("arm64: dts: qcom: Add base SM8550 MTP dts")
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
 > ---
->  drivers/rtc/rtc-pm8xxx.c | 3 +++
->  1 file changed, 3 insertions(+)
+>   arch/arm64/boot/dts/qcom/sm8550-mtp.dts | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
-> index f6b779c12ca7..bed57be602b6 100644
-> --- a/drivers/rtc/rtc-pm8xxx.c
-> +++ b/drivers/rtc/rtc-pm8xxx.c
-> @@ -523,6 +523,9 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
->  	if (rc)
->  		return rc;
->  
-> +	if (of_property_read_bool(pdev->dev.of_node, "disable-alarm-wakeup"))
-> +		device_set_wakeup_capable(&pdev->dev, false);
-> +
->  	rc = dev_pm_set_wake_irq(&pdev->dev, rtc_dd->alarm_irq);
->  	if (rc)
->  		return rc;
-> 
-> base-commit: 0a8db05b571ad5b8d5c8774a004c0424260a90bd
-> -- 
-> 2.17.1
-> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
+> index 00c7e1704a8c..0127c6c285b7 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
+> @@ -187,6 +187,7 @@ regulators-0 {
+>   
+>   		vdd-bob1-supply = <&vph_pwr>;
+>   		vdd-bob2-supply = <&vph_pwr>;
+> +		vdd-l1-l4-l10-supply = <&vreg_s6g_1p8>;
+>   		vdd-l2-l13-l14-supply = <&vreg_bob1>;
+>   		vdd-l3-supply = <&vreg_s4g_1p3>;
+>   		vdd-l5-l16-supply = <&vreg_bob1>;
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
