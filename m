@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12E8A76B41F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 869D276B423
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233975AbjHAL7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        id S234208AbjHAL7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbjHAL7H (ORCPT
+        with ESMTP id S233798AbjHAL7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Aug 2023 07:59:07 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44811718
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 04:59:05 -0700 (PDT)
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E8AA1
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 04:59:06 -0700 (PDT)
 Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C720A660718C;
-        Tue,  1 Aug 2023 12:59:03 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id AE44E660718D;
+        Tue,  1 Aug 2023 12:59:04 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690891144;
-        bh=300Y5h80g46COpGlx0H6hu4Nbeunl/5bqJFtVyc6tvo=;
+        s=mail; t=1690891145;
+        bh=D8JgjR51ioF8fx7m/fH4EUDsN30Yt9OdM2Jk9HpBU00=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZFsIaeGOaGgR2WFlvXKzdjA8WLoqx2wu+PFLk+pSwwz7GEvhUY6GqkYhrAQ43a+Gr
-         UxW6OP9qgDGqgo8jgHZt9PQjvEtm3s3InMzSyD7PGmsnny5L0/pemcOjJHnpqFOGLL
-         lPSWTgFs0/8VUQgoljCU52jxqFHSSizfhbL8FBf9IJhvwyO32CTO+g6B5/DsevXdRL
-         +SLPGlfOUpP4qp97K0B72LBNma2myhViGKf4IHNAM79HdRhirifBZi3SC58W4jsrRn
-         O4ZPx0owPi1leyS9K4/Xv1kRLjI8p6TkoNMP6EMPWUB/cML4qN2WKNk+zSp/JRsnrL
-         Qw3bXRvvKmeTw==
+        b=VdVADUYaWzNVJfqjtdMQqkV6N5jXNpykt3jFTjiZA0P/R6eN9GVmjB6u+Ge2cYrs9
+         yeKNF06g0qeQYiEv6YKPuIhGzp2jEJ8co0pvVic7k9NrbOyXUV324L30/eo3hK2D+m
+         HVZ3VivJg827qEps5HvJMZCoOtajdDbq+DUnJtKApVovYwYvGOFt1YlYo221JMWoeN
+         Z/mc/KiYvWJf3p46kO679aVTxRxSlJqbeceK7kGaUPbxWHEdkrrVh8PLOFwEB7RL+l
+         BCdUKBl1SHMK2jfozwkLRqMCrQkKgw7+DM1duySn1JL9xodTOaQntf4xh9LGH+cCwQ
+         q6oOGj8rxzetA==
 From:   AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
 To:     chunkuang.hu@kernel.org
@@ -43,90 +43,83 @@ Cc:     p.zabel@pengutronix.de, airlied@gmail.com, daniel@ffwll.ch,
         kernel@collabora.com, ehristev@collabora.com,
         "Jason-JH . Lin" <jason-jh.lin@mediatek.com>,
         Alexandre Mergnat <amergnat@baylibre.com>
-Subject: [PATCH v8 04/13] drm/mediatek: gamma: Improve and simplify HW LUT calculation
-Date:   Tue,  1 Aug 2023 13:58:45 +0200
-Message-ID: <20230801115854.150346-5-angelogioacchino.delregno@collabora.com>
+Subject: [PATCH v8 05/13] drm/mediatek: gamma: Enable the Gamma LUT table only after programming
+Date:   Tue,  1 Aug 2023 13:58:46 +0200
+Message-ID: <20230801115854.150346-6-angelogioacchino.delregno@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230801115854.150346-1-angelogioacchino.delregno@collabora.com>
 References: <20230801115854.150346-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use drm_color_lut_extract() to avoid open-coding the bits reduction
-calculations for each color channel and use a struct drm_color_lut
-to temporarily store the information instead of an array of u32.
+Move the write to DISP_GAMMA_CFG to enable the Gamma LUT to after
+programming the actual table to avoid potential visual glitches during
+table modification.
 
-Also, slightly improve the precision of the HW LUT calculation in the
-LUT DIFF case by performing the subtractions on the 16-bits values and
-doing the 10 bits conversion later.
+Note:
+GAMMA should get enabled in between vblanks, but this requires many
+efforts in order to make this happen, as that requires migrating all
+of the writes to make use of CMDQ instead of cpu writes and that's
+not trivial. For this reason, this patch only moves the LUT enable.
+The CMDQ rework will come at a later time.
 
 Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 Reviewed-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
 Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
 ---
- drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 30 +++++++++++++++--------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-index bfdecb278b45..1e21dd92c88b 100644
+index 1e21dd92c88b..b9dc8754187d 100644
 --- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
 +++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
-@@ -71,7 +71,6 @@ void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
+@@ -66,11 +66,11 @@ void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
+ 			  struct drm_crtc_state *state, u16 lut_size)
+ {
+ 	struct mtk_disp_gamma *gamma;
+-	unsigned int i, reg;
++	unsigned int i;
+ 	struct drm_color_lut *lut;
  	void __iomem *lut_base;
  	bool lut_diff;
- 	u32 word;
--	u32 diff[3] = {0};
+-	u32 word;
++	u32 cfg_val, word;
  
  	/* If there's no gamma lut there's nothing to do here. */
  	if (!state->gamma_lut)
-@@ -91,18 +90,29 @@ void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
+@@ -84,9 +84,7 @@ void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
+ 	else
+ 		lut_diff = false;
+ 
+-	reg = readl(regs + DISP_GAMMA_CFG);
+-	reg = reg | GAMMA_LUT_EN;
+-	writel(reg, regs + DISP_GAMMA_CFG);
++	cfg_val = readl(regs + DISP_GAMMA_CFG);
  	lut_base = regs + DISP_GAMMA_LUT;
  	lut = (struct drm_color_lut *)state->gamma_lut->data;
  	for (i = 0; i < lut_size; i++) {
-+		struct drm_color_lut diff, hwlut;
-+
-+		hwlut.red = drm_color_lut_extract(lut[i].red, 10);
-+		hwlut.green = drm_color_lut_extract(lut[i].green, 10);
-+		hwlut.blue = drm_color_lut_extract(lut[i].blue, 10);
-+
- 		if (!lut_diff || (i % 2 == 0)) {
--			word = (((lut[i].red >> 6) & LUT_10BIT_MASK) << 20) +
--				(((lut[i].green >> 6) & LUT_10BIT_MASK) << 10) +
--				((lut[i].blue >> 6) & LUT_10BIT_MASK);
-+			word = hwlut.red << 20 +
-+			       hwlut.green << 10 +
-+			       hwlut.red;
- 		} else {
--			diff[0] = (lut[i].red >> 6) - (lut[i - 1].red >> 6);
--			diff[1] = (lut[i].green >> 6) - (lut[i - 1].green >> 6);
--			diff[2] = (lut[i].blue >> 6) - (lut[i - 1].blue >> 6);
-+			diff.red = lut[i].red - lut[i - 1].red;
-+			diff.red = drm_color_lut_extract(diff.red, 10);
-+
-+			diff.green = lut[i].green - lut[i - 1].green;
-+			diff.green = drm_color_lut_extract(diff.green, 10);
-+
-+			diff.blue = lut[i].blue - lut[i - 1].blue;
-+			diff.blue = drm_color_lut_extract(diff.blue, 10);
- 
--			word = ((diff[0] & LUT_10BIT_MASK) << 20) +
--				((diff[1] & LUT_10BIT_MASK) << 10) +
--				(diff[2] & LUT_10BIT_MASK);
-+			word = diff.blue << 20 +
-+			       diff.green << 10 +
-+			       diff.red;
+@@ -116,6 +114,11 @@ void mtk_gamma_set_common(struct device *dev, void __iomem *regs,
  		}
  		writel(word, (lut_base + i * 4));
  	}
++
++	/* Enable the gamma table */
++	cfg_val = cfg_val | GAMMA_LUT_EN;
++
++	writel(cfg_val, regs + DISP_GAMMA_CFG);
+ }
+ 
+ void mtk_gamma_set(struct device *dev, struct drm_crtc_state *state)
 -- 
 2.41.0
 
