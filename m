@@ -2,84 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3010376AD64
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A1B76AD87
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbjHAJ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58442 "EHLO
+        id S232808AbjHAJaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbjHAJ2a (ORCPT
+        with ESMTP id S232990AbjHAJ3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:28:30 -0400
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BC71724
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:27:23 -0700 (PDT)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6b9e081b9f7so8073137a34.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:27:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690882042; x=1691486842;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C27ET6loiS4a597fDoDvp82lhEfceWexZEaZmg7rns4=;
-        b=lfsr8v2xMEW5Nzmj0lvDiNV6Tghot9dOFliC7pUQC2XCrRJ8kiZUEKuvl+2LntMu7v
-         5LNz+ctWwspRKhjmrC2L0VKgZ38rVV1hqSOOladRA2AMU/ITi0A8x9aQk8OoIFeReAt/
-         CH+Il9aanbj0DuMm4tqpne6MeFvTntgfV2J7WLJdV5NVP0B8XaXQEZClfl8/5llY6brf
-         PIi/Tx85zmkqSc33xAnEq1H+1CAhvwH58rzYnivimPkDZClqdagtc5w6/41+tuDt/Gv6
-         w8H9vZSFPcCjJYHMnRZMothR1wtIi+dY7fCL/jMVUehZZp7UyuHLETVllShcCHIFuxS0
-         QxNA==
-X-Gm-Message-State: ABy/qLa3XwQ98dAyjy8axUy1BUzBJTSlmiicsvI0yn6CagDZuooqFlrC
-        a/bJKNj/HtqngvvhmQyiaF/P31QjS5kb6CbMFLtxgYJfyTO8
-X-Google-Smtp-Source: APBJJlF+q8vTSApLRQ0DsriyRIAi3yXyfIxfMoDXTZLqGmWRh5yGZx5GzEG93qqQR4NAAm6evBr0m5ieLt5iW0rGmHW5H8t1P6Mn
+        Tue, 1 Aug 2023 05:29:41 -0400
+Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AB3F2128
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:28:23 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFTvx2Tm4z9xFbF
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 17:14:53 +0800 (CST)
+Received: from [10.81.220.249] (unknown [10.81.220.249])
+        by APP1 (Coremail) with SMTP id LxC2BwC3abkK0Mhkbs4ZAA--.15467S2;
+        Tue, 01 Aug 2023 10:27:51 +0100 (CET)
+Message-ID: <c1b125d6-7031-d0aa-bcaa-8fb3875ac64f@huaweicloud.com>
+Date:   Tue, 1 Aug 2023 11:27:35 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a9d:6c8d:0:b0:6b7:1e75:18e with SMTP id
- c13-20020a9d6c8d000000b006b71e75018emr14153717otr.2.1690882042749; Tue, 01
- Aug 2023 02:27:22 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 02:27:22 -0700
-In-Reply-To: <000000000000fac82605ee97fb72@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000083e9d60601d927a0@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in btrfs_free_reserved_data_space_noquota
-From:   syzbot <syzbot+adec8406ad17413d4c06@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, christophe.leroy@csgroup.eu, clm@fb.com,
-        dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        npiggin@gmail.com, shuah@kernel.org,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        ye.xingchen@zte.com.cn
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] RISC-V: Fix a few kexec_file_load(2) failures
+Content-Language: en-US
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Li Huafei <lihuafei1@huawei.com>,
+        Liao Chang <liaochang1@huawei.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Alyssa Ross <hi@alyssa.is>, Li Zhengyu <lizhengyu3@huawei.com>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        kexec@lists.infradead.org, open list <linux-kernel@vger.kernel.org>
+Cc:     Torsten Duwe <duwe@suse.de>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+References: <cover.1690365011.git.petr.tesarik.ext@huawei.com>
+In-Reply-To: <cover.1690365011.git.petr.tesarik.ext@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LxC2BwC3abkK0Mhkbs4ZAA--.15467S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ury7CFyUKw1fWF1ktF45GFg_yoW8Jw4rpr
+        WfC3ZrG348G3409r1xtw1Du34fGa17Cw15Jr4qvw1rAr1YvrW5AF1Igw40yFyDGryI93s0
+        qryFgr98Zw1kArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkK14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJV
+        W0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Gr0_
+        Cr1lIxAIcVC2z280aVCY1x0267AKxVWxJr0_GcJvcSsGvfC2KfnxnUUI43ZEXa7VUbQVy7
+        UUUUU==
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+Hi,
 
-commit 487c20b016dc48230367a7be017f40313e53e3bd
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu Mar 30 21:53:51 2023 +0000
+On 7/26/2023 11:53 AM, Petr Tesarik wrote:
+> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+> 
+> The kexec_file_load(2) syscall does not work at least in some kernel
+> builds. For details see the relevant section in this blog post:
+> 
+> https://sigillatum.tesarici.cz/2023-07-21-state-of-riscv64-kdump.html
+> 
+> This patch series handles an additional relocation types, removes the need
+> to implement a Global Offset Table (GOT) for the purgatory and fixes the
+> placement of initrd.
 
-    iov: improve copy_iovec_from_user() code generation
+It seems there are no objections, but what is the plan here? Take it
+into 6.5 as a fix, or let it go through for-next?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17cfdf19a80000
-start commit:   4bdec23f971b Merge tag 'hwmon-for-v6.3-rc4' of git://git.k..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=acdb62bf488a8fe5
-dashboard link: https://syzkaller.appspot.com/bug?extid=adec8406ad17413d4c06
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11bf8bcec80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=153d4f75c80000
+Petr T
 
-If the result looks correct, please mark the issue as fixed by replying with:
+> Changelog
+> =========
+> 
+> Changes from v1:
+> - Replace memcmp() with a for loop.
+> - Drop handling of 16-bit add/subtract relocations. They were used only
+>   by alternatives in strcmp(), which was referenced only by string.o.
+> - Add the initrd placement fix.
+> 
+> Petr Tesarik (1):
+>   riscv/purgatory: do not link with string.o and its dependencies
+> 
+> Torsten Duwe (2):
+>   riscv/kexec: handle R_RISCV_CALL_PLT relocation type
+>   riscv/kexec: load initrd high in available memory
+> 
+>  arch/riscv/kernel/elf_kexec.c    |  3 ++-
+>  arch/riscv/purgatory/Makefile    | 26 +-------------------------
+>  arch/riscv/purgatory/purgatory.c |  6 ++++--
+>  3 files changed, 7 insertions(+), 28 deletions(-)
+> 
 
-#syz fix: iov: improve copy_iovec_from_user() code generation
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
