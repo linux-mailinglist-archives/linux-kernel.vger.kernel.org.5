@@ -2,165 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD3E76AC94
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 996DF76ACCB
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjHAJOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:14:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
+        id S232820AbjHAJVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233237AbjHAJNj (ORCPT
+        with ESMTP id S231244AbjHAJVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:13:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87F855B8
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690880941;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n9kdFDWcMyK/1HOobM9v5phnyHdEWyzyFaqhLZWLocA=;
-        b=K9ODMQ0iZGpQPBrlQQz49Ql1kw9ompu+7Pcoy9RWrFYoQHyZfEk2I1GphxrDvv+9u7DB6K
-        zdvOD2DMaRcSldAjETs7X0bIlkCSVfWtof00SiJlEp4umBSd1uirC0rH9iW2YOOksw7kR8
-        Zn2XLK1/ed8qs7xNRSAkvGe4Na13H30=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-92-BZTBZYzPOsmZAW3u822xmQ-1; Tue, 01 Aug 2023 05:05:43 -0400
-X-MC-Unique: BZTBZYzPOsmZAW3u822xmQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-3fd2dec82b7so31962805e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:05:43 -0700 (PDT)
+        Tue, 1 Aug 2023 05:21:18 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C021BF3
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:19:47 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe389d6f19so2853321e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:19:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690881578; x=1691486378;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J2wyUVEaj30Bob6ndcrcawnHtobOTSBQWVvuzzmSJ9c=;
+        b=AlASal8VcczUs/BQH5HHGg+dferWqRm2tLl9nCXimXrs+pKrirmTugCJ1kSuVPSdNl
+         X3AcjCVw5IHNDHjzM8RIS/r5Cc1OC234KeQFgynzDoyhjj3DizoeHCTBXVxevgjYHnfl
+         q6Wr7LJdlAuH/fX9u5dPBGPBUy7W36wRAZujNPCh3FSHWyzbF3E6maLEkyu1ZyBbWpyR
+         bvJHOdl/EMfYnY7HLfib7WzZAdf9gaSnBgXHTw+9lh6gzm7NL6rgZoMcZFDx61W9hYtM
+         BduohPu/SJ4c0appPOni7kCQJexSKGh2l5BGjWg5oNRU17KTS7g9awB0goRaKO9bd1An
+         5AHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690880742; x=1691485542;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=n9kdFDWcMyK/1HOobM9v5phnyHdEWyzyFaqhLZWLocA=;
-        b=ltXr9q196UFkINIFu6IqWwrlLrFU0WlQbJo37I70R66JHu9QiNoIRUf2/zNd6Gh0Uv
-         WC3VLRuMuCHw0M90k8BNZbpQBNhO8lFjgxjqumBQoiyjRwNTZqv0re0/Cf24PA6N6R0R
-         1ceGl0Yuwhfv25AnzP+XqccEHZ8+jJc2WRQABXWYnwgcQGCquwtCUlrcEuZCVsIWVB4m
-         2cHthMcHncvo9sC+ipltz+L8ZthdmOcdVD1fjiEjMkK4DqB8E1kg5jTn1PoSIXdDAjnm
-         +NbrQuWvVJ+G4Cx9aoumG9F5rf0FcYKNhGcJ5R1JA7UYMPhqQZ+r+TGSXoX05HiESeiq
-         AwUg==
-X-Gm-Message-State: ABy/qLYN0cQ5SGvB+1eTWTjzIiEwcpk7sgKeUe2VcJuiz+1Cn1Pg4Jwb
-        rP2OlDolhYCDNKd3YEI5xvJNeDsivVAwQB7BbEHFKPuU8CG8HbCwltEwfhdrhZjEAVh+Juo3GId
-        raDGCY+MUjm0Szm0nhfd1U92W
-X-Received: by 2002:a7b:ce16:0:b0:3fc:521:8492 with SMTP id m22-20020a7bce16000000b003fc05218492mr1796100wmc.5.1690880742247;
-        Tue, 01 Aug 2023 02:05:42 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEC68EW/3Q+u0VSARbq5VNE5NLUF7t+a5naaLWqjf05jsPmAZ5g85TjNh4l1QEK1armULjtOw==
-X-Received: by 2002:a7b:ce16:0:b0:3fc:521:8492 with SMTP id m22-20020a7bce16000000b003fc05218492mr1796077wmc.5.1690880741870;
-        Tue, 01 Aug 2023 02:05:41 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c705:d100:871b:ec55:67d:5247? (p200300cbc705d100871bec55067d5247.dip0.t-ipconnect.de. [2003:cb:c705:d100:871b:ec55:67d:5247])
-        by smtp.gmail.com with ESMTPSA id f17-20020adffcd1000000b00313f61889ecsm15587910wrs.66.2023.08.01.02.05.40
+        d=1e100.net; s=20221208; t=1690881578; x=1691486378;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=J2wyUVEaj30Bob6ndcrcawnHtobOTSBQWVvuzzmSJ9c=;
+        b=RJ6JyxIXca8GwHxlRx5Kf1Bx3up3uyNPTI4ceJVYReRcRZy4pooZDLHtpyPwUoaczC
+         VrT84k/1v6LZaXq650t3sL+M0/W7TcpjoPEnaXxBevbU9Ya1oFAHQijBM3L5n/L5b41a
+         N6Wg68XusN9Y7Gnt3aVWsDKqT5B3JAM2qoPKtm+wBVgwYVA4kh+xODFVczTtm9q1Sk1I
+         HZ6Uo1/HHOtNHCi0qGyiPkpxVchGgnONODweW/A8WxRAyIUsVbr018O+Sq7z6nctnBtG
+         aeULhFjp2oqqSgAo3/ZbNBfhCSfYg69Fwab2UgMfqainpqUoVhOJtF1cvxA2Gi7kTcAG
+         inMA==
+X-Gm-Message-State: ABy/qLYjaCwqEJ68J/QD/ihKx4Fh5aU3oiso1XnHr7UgUYqiYOq+nAKb
+        8aq3fbn4KZg1rTGxNxPsGMj749aEZP5T1FFnFhA=
+X-Google-Smtp-Source: APBJJlGVEHUQph95nKoUsHyXP+yToxbZAUuXGfqliCcyoezN+3gruO2jWGxl0EA6qctUyKa+qdjGAQ==
+X-Received: by 2002:a5d:6387:0:b0:317:6992:855c with SMTP id p7-20020a5d6387000000b003176992855cmr1839121wru.19.1690880776213;
+        Tue, 01 Aug 2023 02:06:16 -0700 (PDT)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id y18-20020adff152000000b0031784ac0babsm14292584wro.28.2023.08.01.02.06.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 02:05:41 -0700 (PDT)
-Message-ID: <0af1bc20-8ba2-c6b6-64e6-c1f58d521504@redhat.com>
-Date:   Tue, 1 Aug 2023 11:05:40 +0200
+        Tue, 01 Aug 2023 02:06:15 -0700 (PDT)
+Message-ID: <44a87823-1bde-7bba-4a38-d768d2754dec@linaro.org>
+Date:   Tue, 1 Aug 2023 10:06:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] fs/proc/kcore: reinstate bounce buffer for KCORE_TEXT
- regions
-To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Baoquan He <bhe@redhat.com>, Uladzislau Rezki <urezki@gmail.com>,
-        linux-fsdevel@vger.kernel.org, Jiri Olsa <olsajiri@gmail.com>,
-        Will Deacon <will@kernel.org>, Mike Galbraith <efault@gmx.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
-        ardb@kernel.org,
-        Linux regression tracking <regressions@leemhuis.info>,
-        regressions@lists.linux.dev, Matthew Wilcox <willy@infradead.org>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        stable@vger.kernel.org
-References: <20230731215021.70911-1-lstoakes@gmail.com>
+Subject: Re: [PATCH v6 1/3] ABI: sysfs-nvmem-cells: Expose cells through sysfs
 Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230731215021.70911-1-lstoakes@gmail.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        John Thomson <lists@johnthomson.fastmail.com.au>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Michael Walle <michael@walle.cc>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
+ <20230717075147.43326-2-miquel.raynal@bootlin.com>
+ <925d1b35-3e70-4b5d-9533-f730a652d242@app.fastmail.com>
+ <20230731175152.5c2adbae@xps-13>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20230731175152.5c2adbae@xps-13>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.07.23 23:50, Lorenzo Stoakes wrote:
-> Some architectures do not populate the entire range categorised by
-> KCORE_TEXT, so we must ensure that the kernel address we read from is
-> valid.
+
+
+On 31/07/2023 16:51, Miquel Raynal wrote:
+> Hi John,
 > 
-> Unfortunately there is no solution currently available to do so with a
-> purely iterator solution so reinstate the bounce buffer in this instance so
-> we can use copy_from_kernel_nofault() in order to avoid page faults when
-> regions are unmapped.
+> Srinivas, a question for you below.
 > 
-> This change partly reverts commit 2e1c0170771e ("fs/proc/kcore: avoid
-> bounce buffer for ktext data"), reinstating the bounce buffer, but adapts
-> the code to continue to use an iterator.
+> lists@johnthomson.fastmail.com.au wrote on Sun, 23 Jul 2023 19:39:50
+> +0000:
 > 
-> Fixes: 2e1c0170771e ("fs/proc/kcore: avoid bounce buffer for ktext data")
-> Reported-by: Jiri Olsa <olsajiri@gmail.com>
-> Closes: https://lore.kernel.org/all/ZHc2fm+9daF6cgCE@krava
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> ---
->   fs/proc/kcore.c | 26 +++++++++++++++++++++++++-
->   1 file changed, 25 insertions(+), 1 deletion(-)
+>> Hi Miquel,
+>>
+>> On Mon, 17 Jul 2023, at 07:51, Miquel Raynal wrote:
+>>> The binary content of nvmem devices is available to the user so in the
+>>> easiest cases, finding the content of a cell is rather easy as it is
+>>> just a matter of looking at a known and fixed offset. However, nvmem
+>>> layouts have been recently introduced to cope with more advanced
+>>> situations, where the offset and size of the cells is not known in
+>>> advance or is dynamic. When using layouts, more advanced parsers are
+>>> used by the kernel in order to give direct access to the content of each
+>>> cell regardless of their position/size in the underlying device, but
+>>> these information were not accessible to the user.
+>>>
+>>> By exposing the nvmem cells to the user through a dedicated cell/ folder
+>>> containing one file per cell, we provide a straightforward access to
+>>> useful user information without the need for re-writing a userland
+>>> parser. Content of nvmem cells is usually: product names, manufacturing
+>>> date, MAC addresses, etc,
+>>>
+>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>>> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>>> ---
+>>>   Documentation/ABI/testing/sysfs-nvmem-cells | 19 +++++++++++++++++++
+>>>   1 file changed, 19 insertions(+)
+>>>   create mode 100644 Documentation/ABI/testing/sysfs-nvmem-cells
+>>>
+>>> diff --git a/Documentation/ABI/testing/sysfs-nvmem-cells
+>>> b/Documentation/ABI/testing/sysfs-nvmem-cells
+>>> new file mode 100644
+>>> index 000000000000..b2d15a8d36e5
+>>> --- /dev/null
+>>> +++ b/Documentation/ABI/testing/sysfs-nvmem-cells
+>>> @@ -0,0 +1,19 @@
+>>> +What:		/sys/bus/nvmem/devices/.../cells/<cell-name>
+>>> +Date:		May 2023
+>>> +KernelVersion:	6.5
+>>> +Contact:	Miquel Raynal <miquel.raynal@bootlin.com>
+>>> +Description:
+>>> +		The "cells" folder contains one file per cell exposed by
+>>> +		the nvmem device. The name of the file is the cell name.
+>>
+>> Could we consider using a file within a folder (name defined by cell propertys) to access the cell bytes?
+>> Example (pick the best path and filename):
+>> /sys/bus/nvmem/devices/.../cells/<cell-name>/bytes
+>>
+>> That way, it is much easier to expand this at a later stage,
+>> like adding an of_node link at
+>> /sys/bus/nvmem/devices/.../cells/<cell-name>/of_node
+>> or exposing other nvmem cell properties.
 > 
-> diff --git a/fs/proc/kcore.c b/fs/proc/kcore.c
-> index 9cb32e1a78a0..3bc689038232 100644
-> --- a/fs/proc/kcore.c
-> +++ b/fs/proc/kcore.c
-> @@ -309,6 +309,8 @@ static void append_kcore_note(char *notes, size_t *i, const char *name,
->   
->   static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
->   {
-> +	struct file *file = iocb->ki_filp;
-> +	char *buf = file->private_data;
->   	loff_t *fpos = &iocb->ki_pos;
->   	size_t phdrs_offset, notes_offset, data_offset;
->   	size_t page_offline_frozen = 1;
-> @@ -554,11 +556,22 @@ static ssize_t read_kcore_iter(struct kiocb *iocb, struct iov_iter *iter)
->   			fallthrough;
->   		case KCORE_VMEMMAP:
->   		case KCORE_TEXT:
-> +			/*
-> +			 * Sadly we must use a bounce buffer here to be able to
-> +			 * make use of copy_from_kernel_nofault(), as these
-> +			 * memory regions might not always be mapped on all
-> +			 * architectures.
-> +			 */
-> +			if (copy_from_kernel_nofault(buf, (void *)start, tsz)) {
-> +				if (iov_iter_zero(tsz, iter) != tsz) {
-> +					ret = -EFAULT;
-> +					goto out;
-> +				}
->   			/*
->   			 * We use _copy_to_iter() to bypass usermode hardening
->   			 * which would otherwise prevent this operation.
->   			 */
+> I have no strong opinion. Srinivas what do you prefer? I'm fine either
+> ways. I like the simplicity of the current approach more, but it's true
+> that it is more easy to make it grow if we follow John idea.
 
-Having a comment at this indentation level looks for the else case looks 
-kind of weird.
-
-(does that comment still apply?)
+Sounds sensible to me.
 
 
--- 
-Cheers,
+> 
+>> This is particularly relevant given the cell-name alone does not always
+>> uniquely represent a cell on an nvmem device.
+>> https://lore.kernel.org/lkml/ZLaZ7fzUSsa0Igx1@makrotopia.org/
+> 
+> It seems like this is gonna be fixed by suffixing @<offset> to the
+> name, as anyway whatever solution we choose, it is gonna be needed.
 
-David / dhildenb
+we have to be careful here not to break the nvmem_cell_get() users.
 
+
+--srini
+
+
+> 
+>> https://lore.kernel.org/lkml/e7173ab2-d3b2-4f75-beb8-32593b868774@www.fastmail.com/
+>>
+>>> +		The length of the file is the size of the cell (when
+>>> +		known). The content of the file is the binary content of
+>>> +		the cell (may sometimes be ASCII, likely without
+>>> +		trailing character).
+>>> +		Note: This file is only present if CONFIG_NVMEM_SYSFS
+>>> +		is enabled.
+>>> +
+>>> +		Example::
+>>> +
+>>> +		  hexdump -C /sys/bus/nvmem/devices/1-00563/cells/product-name
+>>> +		  00000000  54 4e 34 38 4d 2d 50 2d  44 4e         |TN48M-P-DN|
+>>> +		  0000000a
+>>> -- 
+>>> 2.34.1
+>>
+>> Cheers,
+>>
+> 
+> 
+> Thanks,
+> Miquèl
