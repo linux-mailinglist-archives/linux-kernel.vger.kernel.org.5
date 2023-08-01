@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8F676A66D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D1176A670
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbjHABgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 21:36:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
+        id S230100AbjHABhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 21:37:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjHABgM (ORCPT
+        with ESMTP id S229585AbjHABhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 21:36:12 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78970114;
-        Mon, 31 Jul 2023 18:36:11 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe21e7f3d1so5528197e87.3;
-        Mon, 31 Jul 2023 18:36:11 -0700 (PDT)
+        Mon, 31 Jul 2023 21:37:10 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D56A114;
+        Mon, 31 Jul 2023 18:37:09 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-31771bb4869so5336310f8f.0;
+        Mon, 31 Jul 2023 18:37:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690853770; x=1691458570;
+        d=gmail.com; s=20221208; t=1690853828; x=1691458628;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kTN64aQK1aLiDWyd71+xyKuSM4NGn6Hr4yVjOFLrX4Y=;
-        b=BuEGdnqVDsbrkk14K1tG6Ztj9Mi2l4o012+wxn8qUuWF0/XG7f/mKSUanj8c8KVPPf
-         6c5p6ZdK9XObNVdd0SjD0+yQJir6m0pDPmYWZBLefbuHr2UjoHWhVzZGPrETjphG4xOc
-         3NPHCL24vfW4MvA2R/fv2Z3/htkPcP/8fPYgPpKpkbLqaA08n0kZ5OpTGzMw0zIrdE/E
-         Yf6ZFuBvkTfRedDlshcL5co95VoGSev45ZEKi2Um0w7rMnxFRbaoSdZTYsZmtyYVS0gC
-         t5iHTKAthad36u9khz/tzFXDvBov+NEi6rfAEEOzqMSfg1rQu7GcnLm4G+Eo53jcTRSX
-         224w==
+        bh=hyXrFrMGa5vDv1JXbFyGkaG6866MRSC88OmLGwPocMw=;
+        b=VKfZWhFq52c6OvI9vU4cseSRxVuvU0E8af3iFDOR71GbqAD922EXpiKXitjh2F31pu
+         YRzb72EySjkdNdjBUVWbue8Ia5FCSY/Fw5LkdlqqKOO3wxJlrWhFio1zKVKc7lbDUbQO
+         k4uwtClPU9qCjx3QvCKGWrMc2EEuCflgKKc7P0mqkESSHqK2UHCbtdNjW+R5bbS0qQ89
+         3oPZKiIeAXfOQfjKYJN+/++HQOjJ4ohehQQVOT7bBO8vQ7MU6J/SBLvLzn/+DK8Ie5C6
+         cFPwW9/k0av7o53A3e68vAaGmzY5Q8Wz9JGQTjAHgGay+vVoMY0+IQW87wZDpO5UeT4Q
+         Da5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690853770; x=1691458570;
+        d=1e100.net; s=20221208; t=1690853828; x=1691458628;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kTN64aQK1aLiDWyd71+xyKuSM4NGn6Hr4yVjOFLrX4Y=;
-        b=NPU1y/oAyQxcN/331Wni/S02qgx6pUf+9ziAzTf34tyZrNAuBUCq7qxXUZYrNfmOTn
-         Z+XA+dYSFejPszspq0+wA3GkYzmjYF1y6skZfMLjbLAnxFMaFAqVVX1iWoZZYZw7FHTv
-         HOJR49nnlpppra/okM7RY9BusiaqEFraQd5ouvhkWfwAeH4fTxzMhMnbfmM2gqwVg2of
-         aFprrLb7zhduJP6nXRiK29ruFc9FyJ5kJ8wR5DmCfKZKXBfGA1xiRoyVWE1yw06Ehxfs
-         p6YEW5whC1It43cwDfz3D59kZWsKBKbByWyersqvM7V6YE0IyEm2RwkQ0c8SYsS4BbNG
-         HWCA==
-X-Gm-Message-State: ABy/qLbkYzeKEuWg4754aUKpho4dtjPGpIzQqGZOm/ey+y9Onvn+a/kZ
-        a/VW6oTUx06NIZv26gcbfmB5Rt206vqC0xsBN3E=
-X-Google-Smtp-Source: APBJJlFUaediJqXSE+1MQonIwaYh18YkYgKOOVYB4/tx6z3KZnFQ6py22N11b0aG6Hykpk8xq9dxOWPVIwRhDkaS4EI=
-X-Received: by 2002:ac2:4d97:0:b0:4f9:5404:af5 with SMTP id
- g23-20020ac24d97000000b004f954040af5mr991330lfe.46.1690853769397; Mon, 31 Jul
- 2023 18:36:09 -0700 (PDT)
+        bh=hyXrFrMGa5vDv1JXbFyGkaG6866MRSC88OmLGwPocMw=;
+        b=WCnoI1nHGRtxGexylTV2LU94OonH3DbVB16nS7o1v4LCA8Gfd3NlRCjIhFETf9WhO8
+         wiK0qclbWVmWXlnI9r8PIh3Q2fbz/BDw2SZpd9NVk1qmb7ZqoUln00CnqVLGdSDPpkUC
+         4AUmUqjLR3Ov8Hfo3y+Ox98HoeUhK2FYNlDf7Vy4AyeM19IkF0TXBHwb1MowDy0IUXuu
+         9cZAMSaScc/n+flM31Ea0iCRPzkGl8JNE75EyqhIZQ68JcgkTTEyqjqWFyp89jvlxOfs
+         WH3ZeUbGBtfqryqyKfXTRxxeokmvvWUrkxcIAbetkNXSajTilqMPRaLDlM3KxA9Ml8Ec
+         5Ckg==
+X-Gm-Message-State: ABy/qLaLMAlXTlrRN23XAaYLAVOK71oFpTm+eb8rLhvWUh5AGCesC1YA
+        orMkzmQ6cGzJ4950hhJthgo/oehvVtwfHYbXFbw=
+X-Google-Smtp-Source: APBJJlEbsLzxcwW0UPQPfoX9lY/xBDed6oSWGp+RCvL9uW91SfU8JefEyAGw2SqpuW2C6c+T8VeyRvu+l12nKPf8pkk=
+X-Received: by 2002:a5d:67c6:0:b0:317:6f5b:2fbe with SMTP id
+ n6-20020a5d67c6000000b003176f5b2fbemr1047722wrw.69.1690853827446; Mon, 31 Jul
+ 2023 18:37:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230726121618.19198-1-zegao@tencent.com> <20230726121618.19198-2-zegao@tencent.com>
- <20230731113807.1a4a455c@gandalf.local.home>
-In-Reply-To: <20230731113807.1a4a455c@gandalf.local.home>
+References: <20230726121618.19198-1-zegao@tencent.com> <20230726121618.19198-4-zegao@tencent.com>
+ <20230731114003.43842c8e@gandalf.local.home>
+In-Reply-To: <20230731114003.43842c8e@gandalf.local.home>
 From:   Ze Gao <zegao2021@gmail.com>
-Date:   Tue, 1 Aug 2023 09:35:58 +0800
-Message-ID: <CAD8CoPAym8fuL50vevxBxPy6-RU4kU49KV+Sz4OO0+Xh_doDCQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/3] sched, tracing: add to report task state in
- symbolic chars
+Date:   Tue, 1 Aug 2023 09:36:56 +0800
+Message-ID: <CAD8CoPB1hRZb5eRWBxw3SRH+Hcd7JWfDNqGMadB4+5mibJ17qg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 3/3] libtraceevent: use the new prev_state_char
+ instead in tracepoint sched_switch
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Namhyung Kim <namhyung@kernel.org>,
@@ -81,90 +81,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Steven,
-
-Indeed this did not consider the struct alignment. I left the field order i=
-ntact
-because I was not sure whether the order here matters for reporting or pars=
-ing.
-Now I will fix this and send a v3, and again thanks for pointing it out.
+Roger that!
 
 Thanks,
 Ze
 
-On Mon, Jul 31, 2023 at 11:38=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
+On Mon, Jul 31, 2023 at 11:40=E2=80=AFPM Steven Rostedt <rostedt@goodmis.or=
 g> wrote:
 >
-> On Wed, 26 Jul 2023 20:16:16 +0800
+> On Wed, 26 Jul 2023 20:16:18 +0800
 > Ze Gao <zegao2021@gmail.com> wrote:
 >
-> > @@ -231,41 +253,29 @@ TRACE_EVENT(sched_switch,
-> >       TP_STRUCT__entry(
-> >               __array(        char,   prev_comm,      TASK_COMM_LEN   )
-> >               __field(        pid_t,  prev_pid                        )
-> > -             __field(        int,    prev_prio                       )
-> > -             __field(        long,   prev_state                      )
-> > +             __field(        short,  prev_prio                       )
-> > +             __field(        int,    prev_state                      )
-> > +             __field(        char,   prev_state_char                 )
-> >               __array(        char,   next_comm,      TASK_COMM_LEN   )
-> >               __field(        pid_t,  next_pid                        )
-> > -             __field(        int,    next_prio                       )
-> > +             __field(        short,  next_prio                       )
-> >       ),
+> > Since the sched_switch tracepoint introduces a new variable to
+> > report sched-out task state in symbolic char, we switch to use
+> > that instead to spare from knowing internal implementations
+> > in kernel.
 >
-> The above adds a bunch of holes. This needs to be reordered to condense t=
-he
-> event, we don't want to increase it. libtraceevent will handle reordering=
-.
->
-> The above produces:
->
-> struct {
->         char    prev_comm[16];
->         pid_t   prev_pid;
->         short   prev_prio; <-- 2 character padding
->         int     prev_state;
->         char    prev_state_char;
->         char    next_comm[16]; <- 3 character padding
->         pid_t   next_pid;
->         short   next_prio; <- 2 char padding
-> };
->
-> (all events are at least 4 byte aligned, and are multiple of 4 bytes in
-> size, thus that last short of next_prio did nothing)
->
-> The above is a total of 56 bytes (note, that is the same as the current
-> sched_switch event size);
->
-> What the above should be:
->
->         TP_STRUCT__entry(
->                 __field(        pid_t,  prev_pid                        )
->                 __field(        pid_t,  next_pid                        )
->                 __field(        short,  prev_prio                       )
->                 __field(        short,  next_prio                       )
->                 __field(        int,    prev_state                      )
->                 __array(        char,   prev_comm,      TASK_COMM_LEN   )
->                 __array(        char,   next_comm,      TASK_COMM_LEN   )
->                 __field(        char,   prev_state_char                 )
->         ),
->
->
-> Which would be:
->
-> struct {
->         pid_t   prev_pid;
->         pid_t   next_pid;
->         short   prev_prio;
->         short   next_prio;
->         int     prev_state;
->         char    prev_comm[16];
->         char    next_comm[16];
->         char    prev_stat_char; <-- 3 characters of padding
-> }
->
-> which would be 52 byte. Saving us 4 bytes per event. Which is a big deal!
+> This needs to be changed to check if the "prev_state_char" field exists,
+> and if not, then it must use the old method. Same for perf. The tools mus=
+t
+> work with older kernels.
 >
 > -- Steve
+>
+> >
+> > Signed-off-by: Ze Gao <zegao@tencent.com>
+> > ---
+> >  plugins/plugin_sched_switch.c | 29 ++++-------------------------
+> >  1 file changed, 4 insertions(+), 25 deletions(-)
+> >
+> > diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switc=
+h.c
+> > index 8752cae..5dbdc28 100644
+> > --- a/plugins/plugin_sched_switch.c
+> > +++ b/plugins/plugin_sched_switch.c
+> > @@ -9,27 +9,6 @@
+> >  #include "event-parse.h"
+> >  #include "trace-seq.h"
+> >
+> > -static void write_state(struct trace_seq *s, int val)
+> > -{
+> > -     const char states[] =3D "SDTtZXxW";
+> > -     int found =3D 0;
+> > -     int i;
+> > -
+> > -     for (i =3D 0; i < (sizeof(states) - 1); i++) {
+> > -             if (!(val & (1 << i)))
+> > -                     continue;
+> > -
+> > -             if (found)
+> > -                     trace_seq_putc(s, '|');
+> > -
+> > -             found =3D 1;
+> > -             trace_seq_putc(s, states[i]);
+> > -     }
+> > -
+> > -     if (!found)
+> > -             trace_seq_putc(s, 'R');
+> > -}
+> > -
+> >  static void write_and_save_comm(struct tep_format_field *field,
+> >                               struct tep_record *record,
+> >                               struct trace_seq *s, int pid)
+> > @@ -97,10 +76,10 @@ static int sched_switch_handler(struct trace_seq *s=
+,
+> >       trace_seq_printf(s, "%lld ", val);
+> >
+> >       if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) =3D=
+=3D
+> > 0)
+> > -             trace_seq_printf(s, "[%d] ", (int) val);
+> > +             trace_seq_printf(s, "[%d] ", (short) val);
+> >
+> > -     if (tep_get_field_val(s,  event, "prev_state", record, &val, 1)
+> > =3D=3D 0)
+> > -             write_state(s, val);
+> > +     if (tep_get_field_val(s,  event, "prev_state_char", record,
+> > &val, 1) =3D=3D 0)
+> > +             trace_seq_putc(s, (char) val);
+> >
+> >       trace_seq_puts(s, " =3D=3D> ");
+> >
+> > @@ -115,7 +94,7 @@ static int sched_switch_handler(struct trace_seq *s,
+> >       trace_seq_printf(s, "%lld", val);
+> >
+> >       if (tep_get_field_val(s, event, "next_prio", record, &val, 1) =3D=
+=3D
+> > 0)
+> > -             trace_seq_printf(s, " [%d]", (int) val);
+> > +             trace_seq_printf(s, " [%d]", (short) val);
+> >
+> >       return 0;
+> >  }
 >
