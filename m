@@ -2,115 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DC476BAC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB4F076BB01
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbjHARH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
+        id S232390AbjHARUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbjHARHK (ORCPT
+        with ESMTP id S232535AbjHARUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:07:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11822724;
-        Tue,  1 Aug 2023 10:06:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 681E96167E;
-        Tue,  1 Aug 2023 17:05:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8129EC433C7;
-        Tue,  1 Aug 2023 17:05:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690909526;
-        bh=8DvPnZYYz1f7lPkvDNrKkWmFPFTrNmAWxpgz4FHEUes=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YoVbD+bE1jT5KEVa3RTBhfDxOLoOopSVt1Zhim84ydMWSRMuCS34gnUY9sNjsouVh
-         mVw7z3lXAgS31Ga7g16CH26tpqIbTsTa8k4NvHdJzaaJhX3YPXn1HpCcD2x9moO2RJ
-         kC4ONgXzBGmOmfhkLzNVj8bu06rI46lwd5EWEiJ/K355VKsn7ik4HWIFSaNTw5VGAZ
-         91cYdj99nLyHMp5EMWysgO4RCpP6CqTgouo8ZA/i6R5fpx0PskXG/Pd2yQqrnAL4Ai
-         23SDyTuD2G2gq6cI/KHZGvMDU0f+HbAZiXzti4QpsMMWGeyyD0RvXXS3/X0YKPZnD/
-         zLMzRLAW76yqw==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.1 000/228] 6.1.43-rc1 review
-Date:   Tue,  1 Aug 2023 17:05:23 +0000
-Message-Id: <20230801170523.122482-1-sj@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230801091922.799813980@linuxfoundation.org>
-References: 
+        Tue, 1 Aug 2023 13:20:47 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF872100;
+        Tue,  1 Aug 2023 10:20:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=32t8KzBiPK91q9EniM+EKlgz5Oc7/DEkMGke2ASM5EU=; b=unxIrnLNyLPXcSABko4H/SUNuQ
+        mzeaJHPhKbDEH9rWd7Ynct9vQoFC82GeOjKSWTrwiWN3t/A7A/Q9p98WGawABwzWrv+TM4VGn3IeK
+        P8yfGK2FJ92R/tI6iB7lucI9N2VUPXN7w7wDmYS1Q4OED6HgRyoe7B4QXHXdgC+l489GJVabErUMX
+        48FQQp4ZRfu6OVgc/0wBFzUQN5jxzzg9M/ta0sIyBJw3FWzvd/4Sl/wLR3NjFMkrU0KJBvUNIIbFs
+        Qbkb4B03q3lfczTN0gEftqY7RStyietmGv1OJ/d5dI6WwCTsArlAzbITWyW5yUi3S8gr+U0qly+py
+        1fgWWNBQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38416)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qQsok-0004Oc-1r;
+        Tue, 01 Aug 2023 18:05:54 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qQsoi-0000rc-EW; Tue, 01 Aug 2023 18:05:52 +0100
+Date:   Tue, 1 Aug 2023 18:05:52 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>, javierm@redhat.com,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Ard Biesheuvel <ardb@kernel.org>,
+        Helge Deller <deller@gmx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org
+Subject: Re: [PATCH 1/4] vgacon: rework Kconfig dependencies
+Message-ID: <ZMk7cMgZXgZVobq2@shell.armlinux.org.uk>
+References: <20230707095415.1449376-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230707095415.1449376-1-arnd@kernel.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Tue, 1 Aug 2023 11:17:38 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-
-> This is the start of the stable review cycle for the 6.1.43 release.
-> There are 228 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Jul 07, 2023 at 11:52:23AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Responses should be made by Thu, 03 Aug 2023 09:18:38 +0000.
-> Anything received after that time might be too late.
+> The list of dependencies here is phrased as an opt-out, but this is missing
+> a lot of architectures that don't actually support VGA consoles, and some
+> of the entries are stale:
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.43-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+>  - powerpc used to support VGA consoles in the old arch/ppc codebase, but
+>    the merged arch/powerpc never did
+> 
+>  - arm lists footbridge, integrator and netwinder, but netwinder is actually
+>    part of footbridge, and integrator does not appear to have an actual
+>    VGA hardware, or list it in its ATAG or DT.
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+Integrator/AP has PCI, and I have had PCI VGA cards plugged in to that
+hardware when I've had it.
 
-Tested-by: SeongJae Park <sj@kernel.org>
+Provided any platform sets up PCI in a compatible way, and can run the
+VGA's BIOS to initialise the card, then vgacon is supportable.
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] b2c388dc2443 ("Linux 5.15.124-rc1")
-
-
-Thanks,
-SJ
-
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
-
-PASS
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
