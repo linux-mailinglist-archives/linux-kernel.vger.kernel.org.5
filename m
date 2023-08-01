@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A334676BB32
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19EC76BB38
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbjHAR2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
+        id S233350AbjHAR3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:29:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbjHAR2J (ORCPT
+        with ESMTP id S232069AbjHAR3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:28:09 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67B5DB0;
-        Tue,  1 Aug 2023 10:28:08 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id BE1443200786;
-        Tue,  1 Aug 2023 13:28:05 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Tue, 01 Aug 2023 13:28:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690910885; x=1690997285; bh=pB
-        pYc/Pf6EGtAPeRfMhWXTZpwXc2kxuh9RaouaWP5Dw=; b=Nsg+7TxwZjrfPQ0oUg
-        Rd6gTA3CErwZSNBVie63BRxs9h6FBgRV8/3PuKHqUYEnEu3EEDOP/AbKtmrfpkjJ
-        46ImZDp7lFRV/tj/HFACQRWOcj5TxnOi/hbEtOxu4jUButpFnUeW8+oEfXeHBIvG
-        eBPQtO0a7cXSeUc3auFEgkTwJIJI59b9LKX2LKqr91BoXjLrh2rWJNH9S0vwTpGE
-        L7YIZ9G3s3aeQyceSuNmGtF+TJ6nMDEShXsE93eVw1TmBypL7a/FUH8eHvXCXkE0
-        kR/AiAPMnXicENica8y8iVSx1GpQ35nyyE8opqcofFl1LJz2Xr4Rp5tSUfBsgSXe
-        MvLA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690910885; x=1690997285; bh=pBpYc/Pf6EGtA
-        PeRfMhWXTZpwXc2kxuh9RaouaWP5Dw=; b=iSXVeUBA4GKKpcMQFBgspREN365eW
-        PnF8/KeAneSZRg+gggl2J22u5eeTprMXHUdYbwL3BUu2kyDdT2OHTeiyPx377FNc
-        P4sR5zN4z899zJWyPPNDRon85E/tOnRiwhHBLR5xCrDnN1DTkKD+Fc6gvnzAnPoR
-        ZFPOquO0ss5gy11sOamUF4bSvbQYZfsf40rXSxF82/dTSax4b8TQq9fXAMEKf/iB
-        DFsKR85PcSwvKR938w2M/GGWKRRmEnp3Y3bR+RNXmU0nW+Pv3RIqvXDjr/Gxwigt
-        u9XfYQflMIeCjja0l4jB29FW9O5y1BRf97KAMfhrcTcCM9M7stfNLEVyQ==
-X-ME-Sender: <xms:pEDJZCFHMoIEi0_cCZO9ZwJjueZCHRyMR8Ofe90iDsIUayKJ2v7tyw>
-    <xme:pEDJZDULshMJlCAsK9bRZmQQvbtyTFUISO0rbDPHpv-pipkNqFmiotqAFCbUFO-ee
-    lJQb-MWRkI_AvKyXs0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigdduuddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:pEDJZMK7HJugwr8VpLH6EMN-UDvUKPbLpsyTkSJibenVWxwhp7h0dg>
-    <xmx:pEDJZMGpp3NkTYEKgECHYNFL6sA_UWIdH_kUZumSIxGEw2qKJjT2SA>
-    <xmx:pEDJZIVxFvnTVTrD5zzJL_VewZKxdu_9DmgyCr298k7iArTkmIQg3A>
-    <xmx:pUDJZJsHq8hLtjehM9o8mpkXz_eDn5miyg0-GrtI6QKuzmxrs1qONA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 9176CB60089; Tue,  1 Aug 2023 13:28:04 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <b795ccdf-ad53-407e-ba01-a703e353b3fb@app.fastmail.com>
-In-Reply-To: <z3gp6rcrlotwjwux7chza4vmbgv747v5jlr4xhuaad3y2yofsf@jjiju6zltbmh>
-References: <20230801150304.1980987-1-arnd@kernel.org>
- <z3gp6rcrlotwjwux7chza4vmbgv747v5jlr4xhuaad3y2yofsf@jjiju6zltbmh>
-Date:   Tue, 01 Aug 2023 19:27:33 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Daniel Xu" <dxu@dxuuu.xyz>, "Arnd Bergmann" <arnd@kernel.org>
-Cc:     "Pablo Neira Ayuso" <pablo@netfilter.org>,
-        "Jozsef Kadlecsik" <kadlec@netfilter.org>,
-        "Florian Westphal" <fw@strlen.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] netfilter: bpf_link: avoid unused-function warning
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        Tue, 1 Aug 2023 13:29:06 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA70CE0;
+        Tue,  1 Aug 2023 10:29:05 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4F5F66164C;
+        Tue,  1 Aug 2023 17:29:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24956C433C8;
+        Tue,  1 Aug 2023 17:28:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690910944;
+        bh=ZsqAQZoA0AwoghZtsiou8KjavxZCx4Uc9yT9Cen9PwU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C2/wNB2JDb34xXNtBAjWvhO/GaBvzGr/zJJtBjZuERqzx5hCgYqVR2Z+yMEi1nB1g
+         LB0Yo3/DClX0+w88XYSsol0eaOaXOk1/B5cZ1YEJEPd1m/pD4h07rixux7YzOnGQfn
+         73lzCbJsnMCFwfmL8CoCvaegc6szz51GwgMxu1wRjLDWAyBJkdQYbjYlQRUX/3IA9X
+         fbdCmHDjJqIWvELjOL85wJ3Z1UgOHv2a0U/U66LVBpppf9WoEry95VllY3hGwZDVyM
+         RFQCf2Nsp2layhGAkoAPp2zUoFiP/K4PCZefA0ZwfrOBsL0g1dIAaZskC1zvxq7AnR
+         DqO70EKfKhTiQ==
+Date:   Tue, 1 Aug 2023 20:28:14 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "broonie@kernel.org" <broonie@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "oleg@redhat.com" <oleg@redhat.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>
+Subject: Re: [PATCH v3 21/36] arm64/mm: Implement map_shadow_stack()
+Message-ID: <20230801172814.GD2607694@kernel.org>
+References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
+ <20230731-arm64-gcs-v3-21-cddf9f980d98@kernel.org>
+ <5461c56cf4896f18bddaa66c3beec7b909fc8fb9.camel@intel.com>
+ <0a6c90d6-f790-4036-a364-d4761fdd0e95@sirena.org.uk>
+ <e827138f9d8800e3db158831bca88d1ea8b559af.camel@intel.com>
+ <21d7e814-8608-40ce-b5d3-401f2110ad91@sirena.org.uk>
+ <a9ea33d31aad0c45eab41b0dcbd4913d863cc930.camel@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a9ea33d31aad0c45eab41b0dcbd4913d863cc930.camel@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -94,22 +91,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023, at 17:20, Daniel Xu wrote:
-> Hi Arnd,
->
-> On Tue, Aug 01, 2023 at 05:02:41PM +0200, Arnd Bergmann wrote:
->> From: Arnd Bergmann <arnd@arndb.de>
->> 
->> The newly added function is unused in some random configurations:
->> 
->> net/netfilter/nf_bpf_link.c:32:1: error: 'get_proto_defrag_hook' defined but not used [-Werror=unused-function]
->>    32 | get_proto_defrag_hook(struct bpf_nf_link *link,
->>       | ^~~~~~~~~~~~~~~~~~~~~
->> 
->
-> This was fixed in 81584c23f249 ("netfilter: bpf: Only define 
-> get_proto_defrag_hook() if necessary").
+On Tue, Aug 01, 2023 at 05:07:00PM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2023-08-01 at 15:01 +0100, Mark Brown wrote:
+> > On Mon, Jul 31, 2023 at 11:19:34PM +0000, Edgecombe, Rick P wrote:
+> > 
+> > > The thing I was trying to get at was, we have this shared syscall
+> > > that
+> > > means create shadow stack memory and prepopulate it like this flag
+> > > says. On x86 we optionally support SHADOW_STACK_SET_TOKEN which
+> > > means
+> > > put a token right at the end of size. So maybe arm should have a
+> > > different flag value that includes putting the marker and then the
+> > > token, and x86 could match it someday if we get markers too.
+> > 
+> > Oh, I see.  My mental model was that this was controlling the whole
+> > thing we put at the top rather than treating the terminator and the
+> > cap
+> > separately.
+> > 
+> > > It could be a different flag, like SHADOW_STACK_SET_TOKEN_MARKER,
+> > > or it
+> > > could be SHADOW_STACK_SET_MARKER, and callers could pass
+> > > (SHADOW_STACK_SET_TOKEN | SHADOW_STACK_SET_MARKER) to get what you
+> > > have
+> > > implemented here. What do you think?
+> > 
+> > For arm64 code this would mean that it would be possible (and fairly
+> > easy) to create stacks which don't have a termination record which
+> > would
+> > make life harder for unwinders to rely on.  I don't think this is
+> > insurmountable, creating manually shouldn't be the standard and it'll
+> > already be an issue on x86 anyway.
+> 
+> If you are going to support optionally writing to shadow stacks (which
+> x86 needed for CRIU, and also seems like a nice thing for several other
+> reasons), you are already at that point. Can't you also do a bunch of
+> gcspopm's to the top of the GCS stack, and have no marker to hit before
+> the end of the stack? (maybe not in GCS, I don't know...)
+> 
+> > 
+> > The other minor issue is that the current arm64 marker is all bits 0
+> > so by itself for arm64 _MARKER would have no perceptible impact, it
+> > would only serve to push the token down a slot in the stack (I'm
+> > guessing that's the intended meaning?).
+> 
+> Pushing the token down a frame is what flags==0 does in this patch,
+> right?
+> 
+> You don't have to support all the flags actually, you could just
+> support the one mode you already have and reject all other
+> combinations... Then it matches between arch's, and you still have the
+> guaranteed-ish end marker.
+> 
+> So the question is not what mode should arm support, but should we have
+> the flags match between x86 and ARM?
 
-Ok, I guess this will be in tomorrow's linux-next then, right?
+What if the flag will be called, say, SHADOW_STACK_DEFAULT_INIT?
+Then each arch can push whatever it likes to and from the userspace
+perspective the shadow stack will have some basic init state, no matter
+what architecture it is.
+ 
+> >   I'm not sure that's a
+> > particularly big deal though.
+> 
+> Yea, it's not a big problem either way.
 
-    Arnd
+-- 
+Sincerely yours,
+Mike.
