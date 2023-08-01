@@ -2,122 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6115276BABF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B3276BAC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 19:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234284AbjHARGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 13:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46588 "EHLO
+        id S231270AbjHARIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 13:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234409AbjHARGC (ORCPT
+        with ESMTP id S234147AbjHARHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 13:06:02 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FF330F6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:04:39 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-40a47e8e38dso5511cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:04:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690909459; x=1691514259;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TtiZ/2g+uRWOlvdf02o01d3yF2A6nxZGDaY/kcHLaKU=;
-        b=DBSMzQ6mgKsgt1hDGi5ZVgF0h9BEm3p0wT9fus6WIGe4OHTavNXlngjdTRVLBTlswk
-         8lNX8Bm5BQJtReLn1ylzH/1DHl5n7KsFnv2KPv7oGw38xOff4QHynk1DJfBKOKJW5h0O
-         0qUaLecNno+Fg7EJ1wX0DRCHNlE2DGOVRDqCsI/CIBOCURh+g6/DWLprnsuobBhnuaEz
-         PfTol6v95rg03T0UAsyJopKOaNmzNXA3rPlnzSAU3Ii6+QasrWUw/+soO7bnx6JBxN6x
-         Hh25Rz1pQ486Be2zEVjQvNIKc0MVVtXWxfEuMbiycY65XBDlURXrYoV7jtH3sTONXVid
-         RA3g==
+        Tue, 1 Aug 2023 13:07:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0A430FE
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 10:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690909506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iHJDHQhMPESpDTCc7d6m6CZ7cgDoS6a5SZpOnu6DMTE=;
+        b=jLcStyGvbGIbMdNB2Qp9wj8/mgrRE1nLtnwlNo97Pgfa0yCS6VrF0dphk08Wpoqc5HrV0r
+        0rK1VtFbsKsxLd03TsDNLD+Q/pxSbsOnS7EtuPCKGM1SmyxXxL4edgxU4EXxoasg6w8xX0
+        iYrXNZVyZgvHlSmNGjxTQEr4DcCRqwk=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-479-Um2iu1jNMlubNt80E20_cw-1; Tue, 01 Aug 2023 13:05:05 -0400
+X-MC-Unique: Um2iu1jNMlubNt80E20_cw-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4054266d0beso13660531cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 10:05:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690909459; x=1691514259;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TtiZ/2g+uRWOlvdf02o01d3yF2A6nxZGDaY/kcHLaKU=;
-        b=O6GcmTV5jdFNvWSX0fcEN2vsxnAhtMk8ZQK97Iu/95sK1GxdBFq88AKIipA61G1Bu8
-         XxqyP7FvyijRyyki1C4rIUKsCnFnQhhXUuLBXnI6/qY8y48wfBPvUtaBLiz0N0EiuQOD
-         E1SFRBUA+JWWI+fUyoFrnE63Lab6Cu4H3kKz9ECxz+QBzlzrj9MAvcMmCcNzpmZn4Bod
-         wh8A3RX7jqw/0JqBRIAqNqYj9ct/Q6ruEl+s9ar5gHYn3KlMJGZGPQdJ2t/5pTt5hek7
-         Rvjhk/AqytmhlqBeDBBpR7s5EsOZknSCZR1JWZ8qGmTGmtlSZNeQK1dwDXCyDH5VCOiG
-         yodA==
-X-Gm-Message-State: ABy/qLb+aWTWfamNM5HPqw0xVzX/FVX19SZBCGygmQZBeWAmSEcvHbAd
-        wGs7lD2/BXWQK6f35vzFbGBmlGBb5Cd3CQd+4Ptpdg==
-X-Google-Smtp-Source: APBJJlHpos92MVcMyqsUnxl06UQwzPlCnyYB0wP5AYGPjD0cWyAYOalszh5XhLejGTaOSoVqUGELBqR5Gp8/iCbcYNc=
-X-Received: by 2002:ac8:7e87:0:b0:40e:332b:ba30 with SMTP id
- w7-20020ac87e87000000b0040e332bba30mr552428qtj.23.1690909458906; Tue, 01 Aug
- 2023 10:04:18 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690909504; x=1691514304;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iHJDHQhMPESpDTCc7d6m6CZ7cgDoS6a5SZpOnu6DMTE=;
+        b=e/H0usgCiNpACc1SDZQ94LboTy68TUbTC8noeLJW11oZ91Tb7pQmanY3dblY9HubHN
+         NxHaaKwEw1cG/CEfKHIKmZwyw7i+8BXWVYyG52nF9+ya7wrkf4VgUNxJVGl3gqvow2Ue
+         sxrgrBdmZrIgv6HdOpyT0ysXMLkV6eWYoZison+5jGXYGy3IHYGy5BEVDS64f2eboh9w
+         9HFqWe1DBMAqy19QX+UBgW8yChYaM7DVQ+TSA6fDC5NOEksSTSXIjawOpnkLcgedtx3z
+         gCmc5YNMjjf0eHL1tiWpm6OlhemKPpTGWQsHwcp/WDOLRYYH12V5iVz5DPo35UuuFPAX
+         jAHQ==
+X-Gm-Message-State: ABy/qLYUt4XWlG33W2MtLZJlGch3xlKzljzY/9MK+9NCVWOpKetgYAPE
+        YXRH7E7+ySNPyaqkl4xcbpqGlRgZcMCRT08ewEeGzggLz+5LkmvaUGkmpjv/8ncD3EpVbU+ztI5
+        vAgHui70w9QMVAft5MYoI4mGS
+X-Received: by 2002:ad4:5b83:0:b0:63c:f5fd:d30f with SMTP id 3-20020ad45b83000000b0063cf5fdd30fmr13776742qvp.1.1690909504493;
+        Tue, 01 Aug 2023 10:05:04 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFaaBdvX372gnIc+hqJabCioknXLsWVusS1Xd1tIAYtUq1mP4VO3uaCM3OMaXWQ6+iPT5cVCQ==
+X-Received: by 2002:ad4:5b83:0:b0:63c:f5fd:d30f with SMTP id 3-20020ad45b83000000b0063cf5fdd30fmr13776714qvp.1.1690909504219;
+        Tue, 01 Aug 2023 10:05:04 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id e30-20020a0caa5e000000b0063d10086876sm4807945qvb.115.2023.08.01.10.05.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 10:05:03 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 13:04:50 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        liubo <liubo254@huawei.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/8] mm/gup: reintroduce FOLL_NUMA as
+ FOLL_HONOR_NUMA_FAULT
+Message-ID: <ZMk7MqApTDZXzwKX@x1n>
+References: <20230801124844.278698-1-david@redhat.com>
+ <20230801124844.278698-2-david@redhat.com>
+ <ZMkpM95vdc9wgs9T@x1n>
+ <30d86a2d-4af2-d840-91be-2e68c73a07bd@redhat.com>
 MIME-Version: 1.0
-References: <20230731104833.800114-1-mshavit@google.com> <20230731184817.v2.6.I219054a6cf538df5bb22f4ada2d9933155d6058c@changeid>
- <ZMkULTvwIIE3zo5+@nvidia.com>
-In-Reply-To: <ZMkULTvwIIE3zo5+@nvidia.com>
-From:   Michael Shavit <mshavit@google.com>
-Date:   Wed, 2 Aug 2023 01:03:42 +0800
-Message-ID: <CAKHBV25W_UTdhaL2L4ezP60TxgvP86sa_1-8L-aOiyjz64Fkug@mail.gmail.com>
-Subject: Re: [PATCH v2 6/8] iommu/arm-smmu-v3: Refactor write_ctx_desc
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, will@kernel.org,
-        robin.murphy@arm.com, nicolinc@nvidia.com, jean-philippe@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <30d86a2d-4af2-d840-91be-2e68c73a07bd@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 10:18=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
-> You know, you should try to keep the function instead of duplicating
-> these
->
-> arm_smmu_write_ctx_desc_devices()
->
-> And put the four lines in there?
+On Tue, Aug 01, 2023 at 06:15:48PM +0200, David Hildenbrand wrote:
+> On 01.08.23 17:48, Peter Xu wrote:
+> > On Tue, Aug 01, 2023 at 02:48:37PM +0200, David Hildenbrand wrote:
+> > > @@ -2240,6 +2244,12 @@ static bool is_valid_gup_args(struct page **pages, int *locked,
+> > >   		gup_flags |= FOLL_UNLOCKABLE;
+> > >   	}
+> > > +	/*
+> > > +	 * For now, always trigger NUMA hinting faults. Some GUP users like
+> > > +	 * KVM really require it to benefit from autonuma.
+> > > +	 */
+> > > +	gup_flags |= FOLL_HONOR_NUMA_FAULT;
+> > 
+> > Since at it, do we want to not set it for FOLL_REMOTE, which still sounds
+> > like a good thing to have?
+> 
+> I thought about that, but decided against making that patch here more
+> complicated to eventually rip it again all out in #4.
 
-Urhhh yes, I thought I had a reason for this but probably just a lapse
-of judgement. Done.
+I thought that was the whole point of having patch 4 separate, because we
+should assume patch 4 may not exist in (at least) some trees, so I ignored
+patch 4 when commenting here, and we should not assume it's destined to be
+removed here.
 
-> -     ret =3D arm_smmu_write_ctx_desc(smmu_domain, mm->pasid, cd);
-> +     spin_lock_irqsave(&smmu_domain->devices_lock, flags);
-> +     list_for_each_entry(master, &smmu_domain->devices, domain_head) {
-> +             ret =3D arm_smmu_write_ctx_desc(master, mm->pasid, cd);
-> +     }
-> +     spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
+> 
+> I fully agree that FOLL_REMOTE does not make too much sense, but let's
+> rather keep it simple for this patch.
 
-Just noticed that this is problematic; we may not notice a failure if
-it occurs on an earlier iteration of the loop. Will fix.
+It's fine - I suppose this patch fixes whatever we're aware of that's
+broken with FOLL_NUMA's removal, so it can even be anything on top when
+needed.  I assume I'm happy to ack this with/without that change, then:
 
->
-> > @@ -987,19 +985,14 @@ static void arm_smmu_sync_cd(struct arm_smmu_doma=
-in *smmu_domain,
-> >               },
-> >       };
-> >
-> > -     if (!smmu_domain->cd_table.installed)
-> > +     if (!master->domain->cd_table.installed)
-> >               return;
->
-> BTW, do you have locking for this? I didn't check carefully
+Acked-by: Peter Xu <peterx@redhat.com>
 
-This is one of the reasons I wanted to take this as a parameter to the
-function. This relies on callers guaranteeing that the cd table not be
-attached/detached while this call is in progress. This works now
-because:
-1. No domain may be attached/detached while SVA is enabled, which is
-most of the calls that lead to arm_smmu_sync_cd
-2. The other call to arm_smmu_write_ctx_desc in arm-smmu-v3.c is more
-obviously serialized with operations that detach/attach the cd table.
+PS: I still hope that the other oneliner can be squashed here directly; it
+literally changes exact the same line above so reading this patch alone can
+be affected.  You said there you didn't want the commit message to be too
+long here, but this is definitely not long at all!  I bet you have similar
+understanding to me on defining "long commit message". :) I'd never worry
+that.  Your call.
 
-Maybe this should at least be a comment on arm_smmu_write_ctx_desc, if
-not a lock?
+Thanks,
 
+-- 
+Peter Xu
 
-Speaking of.... I should probably flip this bit to false in patch 5
-when the cd table is detached.
