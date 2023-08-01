@@ -2,65 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8B3476A93F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAA876A936
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbjHAGeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:34:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45632 "EHLO
+        id S231674AbjHAGeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:34:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbjHAGeY (ORCPT
+        with ESMTP id S231668AbjHAGeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:34:24 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D70F1FFE;
-        Mon, 31 Jul 2023 23:34:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690871644; x=1722407644;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TmQOj4iLTqJpFp8MSsuwD21k8KlbkD0tFWAuvpU6ezU=;
-  b=MINW39LukKejgk4a9kCEMAezpmgKX2EPibfXVa2Psl3M1MWWgOtVXFou
-   0k27dfycHAlnUwJTIVXEtMwKyhK+L5h7w3RAn387Wo9q4aFCMBklW26s/
-   igPKg9cWnmdIryCxuP5XeKcZ1go6cOyz5bUYCyjvbRX/xEm/xQBlg/zaE
-   asZjJg4FWBgpQ31/nh5pKSW8+98wwU3kdRLuQBvUe9rUwYReNYo2ls4ML
-   hAHyDZvCI1tCtT1VS377UxFEitOBFWLG5AGW1PmRFJ7xqCW5o4c5+8JC7
-   fFsqC98OrDXPw4xL7hGfMoPdz480ugojKGVlZkly1EXholudsaF6Mfw6c
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="372839988"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="372839988"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2023 23:33:43 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="798537925"
-X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
-   d="scan'208";a="798537925"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by fmsmga004.fm.intel.com with ESMTP; 31 Jul 2023 23:33:40 -0700
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 2/2] iommu: Move pasid array from group to device
-Date:   Tue,  1 Aug 2023 14:31:25 +0800
-Message-Id: <20230801063125.34995-3-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230801063125.34995-1-baolu.lu@linux.intel.com>
-References: <20230801063125.34995-1-baolu.lu@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Tue, 1 Aug 2023 02:34:02 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A13472102
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:33:38 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxlPAfp8hkPOYNAA--.32889S3;
+        Tue, 01 Aug 2023 14:33:03 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHCMep8hknJZDAA--.26037S2;
+        Tue, 01 Aug 2023 14:33:02 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] LoongArch: Remove noreturn attribute for die()
+Date:   Tue,  1 Aug 2023 14:33:01 +0800
+Message-Id: <1690871581-23944-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8BxHCMep8hknJZDAA--.26037S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7trW8ur1xtrWfJw45Zr43urX_yoW8KF13pF
+        W7CasrWFWrCFs5WryDtF4kur15trZ5K3ya9w1q93WSkF4avw18Xr4kGFyqvF4rt34rWFy8
+        XFWFgw1ftFW3AabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
+        KfnxnUUI43ZEXa7IU8EeHDUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,198 +57,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PASID (Process Address Space ID) feature is a device feature that
-allows a device driver to manage the PASID value and attach or detach
-its domain to the pasid. The pasid array, which is used to store the
-domain of each pasid, is currently stored in iommu group struct, but
-it would be more natural to move it to the device so that the device
-drivers don't need to understand the internal iommu group concept.
+If notify_die() returns NOTIFY_STOP, there is no need to call
+make_task_dead(), we can remove noreturn attribute for die(),
+this is similar with arm64, riscv and csky.
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+While at it, modify the die() declaration in ptrace.h to fix
+the following checkpatch warnings:
+
+  WARNING: function definition argument 'const char *' should also have an identifier name
+  WARNING: function definition argument 'struct pt_regs *' should also have an identifier name
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- include/linux/iommu.h |  2 ++
- drivers/iommu/iommu.c | 80 ++++++++++++-------------------------------
- 2 files changed, 24 insertions(+), 58 deletions(-)
+ arch/loongarch/include/asm/ptrace.h |  2 +-
+ arch/loongarch/kernel/traps.c       | 12 ++++++------
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index b1dcb1b9b170..90be3efd0e91 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -406,6 +406,7 @@ struct iommu_fault_param {
-  * @iopf_param:	 I/O Page Fault queue and data
-  * @fwspec:	 IOMMU fwspec data
-  * @iommu_dev:	 IOMMU device this device is linked to
-+ * @pasid_array: pasid-indexed array of domains attached to pasid
-  * @priv:	 IOMMU Driver private data
-  * @max_pasids:  number of PASIDs this device can consume
-  * @attach_deferred: the dma domain attachment is deferred
-@@ -420,6 +421,7 @@ struct dev_iommu {
- 	struct iopf_device_param	*iopf_param;
- 	struct iommu_fwspec		*fwspec;
- 	struct iommu_device		*iommu_dev;
-+	struct xarray			pasid_array;
- 	void				*priv;
- 	u32				max_pasids;
- 	u32				attach_deferred:1;
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 1a8fb30341e6..7fd53b9e9754 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -48,7 +48,6 @@ struct iommu_group {
- 	struct kobject kobj;
- 	struct kobject *devices_kobj;
- 	struct list_head devices;
--	struct xarray pasid_array;
- 	struct mutex mutex;
- 	void *iommu_data;
- 	void (*iommu_data_release)(void *iommu_data);
-@@ -302,6 +301,7 @@ static struct dev_iommu *dev_iommu_get(struct device *dev)
- 		return NULL;
+diff --git a/arch/loongarch/include/asm/ptrace.h b/arch/loongarch/include/asm/ptrace.h
+index 35f0958..2101301 100644
+--- a/arch/loongarch/include/asm/ptrace.h
++++ b/arch/loongarch/include/asm/ptrace.h
+@@ -162,7 +162,7 @@ static inline void regs_set_return_value(struct pt_regs *regs, unsigned long val
+ #define instruction_pointer(regs) ((regs)->csr_era)
+ #define profile_pc(regs) instruction_pointer(regs)
  
- 	mutex_init(&param->lock);
-+	xa_init(&param->pasid_array);
- 	dev->iommu = param;
- 	return param;
- }
-@@ -891,7 +891,6 @@ struct iommu_group *iommu_group_alloc(void)
- 	mutex_init(&group->mutex);
- 	INIT_LIST_HEAD(&group->devices);
- 	INIT_LIST_HEAD(&group->entry);
--	xa_init(&group->pasid_array);
+-extern void die(const char *, struct pt_regs *) __noreturn;
++void die(const char *str, struct pt_regs *regs);
  
- 	ret = ida_alloc(&iommu_group_ida, GFP_KERNEL);
- 	if (ret < 0) {
-@@ -3041,8 +3040,11 @@ static bool iommu_is_default_domain(struct iommu_group *group)
-  */
- static void assert_pasid_dma_ownership(struct iommu_group *group)
+ static inline void die_if_kernel(const char *str, struct pt_regs *regs)
  {
-+	struct group_device *device;
-+
- 	lockdep_assert_held(&group->mutex);
--	WARN_ON(!xa_empty(&group->pasid_array));
-+	for_each_group_device(group, device)
-+		WARN_ON(!xa_empty(&device->dev->iommu->pasid_array));
- }
+diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.c
+index 8fb5e7a..bbdfc5b 100644
+--- a/arch/loongarch/kernel/traps.c
++++ b/arch/loongarch/kernel/traps.c
+@@ -383,16 +383,15 @@ void show_registers(struct pt_regs *regs)
  
- /**
-@@ -3281,33 +3283,6 @@ bool iommu_group_dma_owner_claimed(struct iommu_group *group)
- }
- EXPORT_SYMBOL_GPL(iommu_group_dma_owner_claimed);
+ static DEFINE_RAW_SPINLOCK(die_lock);
  
--static int __iommu_set_group_pasid(struct iommu_domain *domain,
--				   struct iommu_group *group, ioasid_t pasid)
--{
--	struct group_device *device;
--	int ret = 0;
--
--	for_each_group_device(group, device) {
--		ret = domain->ops->set_dev_pasid(domain, device->dev, pasid);
--		if (ret)
--			break;
--	}
--
--	return ret;
--}
--
--static void __iommu_remove_group_pasid(struct iommu_group *group,
--				       ioasid_t pasid)
--{
--	struct group_device *device;
--	const struct iommu_ops *ops;
--
--	for_each_group_device(group, device) {
--		ops = dev_iommu_ops(device->dev);
--		ops->remove_dev_pasid(device->dev, pasid);
--	}
--}
--
- /*
-  * iommu_attach_device_pasid() - Attach a domain to pasid of device
-  * @domain: the iommu domain.
-@@ -3319,32 +3294,28 @@ static void __iommu_remove_group_pasid(struct iommu_group *group,
- int iommu_attach_device_pasid(struct iommu_domain *domain,
- 			      struct device *dev, ioasid_t pasid)
+-void __noreturn die(const char *str, struct pt_regs *regs)
++void die(const char *str, struct pt_regs *regs)
  {
--	struct iommu_group *group;
-+	struct dev_iommu *param = dev->iommu;
- 	void *curr;
- 	int ret;
+ 	static int die_counter;
+-	int sig = SIGSEGV;
++	int ret;
  
- 	if (!domain->ops->set_dev_pasid)
- 		return -EOPNOTSUPP;
+ 	oops_enter();
  
--	group = iommu_group_get(dev);
--	if (!group)
-+	if (!param)
- 		return -ENODEV;
+-	if (notify_die(DIE_OOPS, str, regs, 0, current->thread.trap_nr,
+-		       SIGSEGV) == NOTIFY_STOP)
+-		sig = 0;
++	ret = notify_die(DIE_OOPS, str, regs, 0,
++			 current->thread.trap_nr, SIGSEGV);
  
--	mutex_lock(&group->mutex);
--	curr = xa_cmpxchg(&group->pasid_array, pasid, NULL, domain, GFP_KERNEL);
-+	mutex_lock(&param->lock);
-+	curr = xa_cmpxchg(&param->pasid_array, pasid, NULL, domain, GFP_KERNEL);
- 	if (curr) {
- 		ret = xa_err(curr) ? : -EBUSY;
- 		goto out_unlock;
- 	}
+ 	console_verbose();
+ 	raw_spin_lock_irq(&die_lock);
+@@ -414,7 +413,8 @@ void __noreturn die(const char *str, struct pt_regs *regs)
+ 	if (panic_on_oops)
+ 		panic("Fatal exception");
  
--	ret = __iommu_set_group_pasid(domain, group, pasid);
--	if (ret) {
--		__iommu_remove_group_pasid(group, pasid);
--		xa_erase(&group->pasid_array, pasid);
--	}
-+	ret = domain->ops->set_dev_pasid(domain, dev, pasid);
-+	if (ret)
-+		xa_erase(&param->pasid_array, pasid);
- out_unlock:
--	mutex_unlock(&group->mutex);
--	iommu_group_put(group);
-+	mutex_unlock(&param->lock);
- 
- 	return ret;
+-	make_task_dead(sig);
++	if (ret != NOTIFY_STOP)
++		make_task_dead(SIGSEGV);
  }
-@@ -3362,14 +3333,13 @@ EXPORT_SYMBOL_GPL(iommu_attach_device_pasid);
- void iommu_detach_device_pasid(struct iommu_domain *domain, struct device *dev,
- 			       ioasid_t pasid)
- {
--	struct iommu_group *group = iommu_group_get(dev);
-+	const struct iommu_ops *ops = dev_iommu_ops(dev);
-+	struct dev_iommu *param = dev->iommu;
  
--	mutex_lock(&group->mutex);
--	__iommu_remove_group_pasid(group, pasid);
--	WARN_ON(xa_erase(&group->pasid_array, pasid) != domain);
--	mutex_unlock(&group->mutex);
--
--	iommu_group_put(group);
-+	mutex_lock(&param->lock);
-+	ops->remove_dev_pasid(dev, pasid);
-+	WARN_ON(xa_erase(&param->pasid_array, pasid) != domain);
-+	mutex_unlock(&param->lock);
- }
- EXPORT_SYMBOL_GPL(iommu_detach_device_pasid);
- 
-@@ -3392,18 +3362,12 @@ struct iommu_domain *iommu_get_domain_for_dev_pasid(struct device *dev,
- 						    unsigned int type)
- {
- 	struct iommu_domain *domain;
--	struct iommu_group *group;
- 
--	group = iommu_group_get(dev);
--	if (!group)
--		return NULL;
--
--	xa_lock(&group->pasid_array);
--	domain = xa_load(&group->pasid_array, pasid);
-+	xa_lock(&dev->iommu->pasid_array);
-+	domain = xa_load(&dev->iommu->pasid_array, pasid);
- 	if (type && domain && domain->type != type)
- 		domain = ERR_PTR(-EBUSY);
--	xa_unlock(&group->pasid_array);
--	iommu_group_put(group);
-+	xa_unlock(&dev->iommu->pasid_array);
- 
- 	return domain;
- }
+ static inline void setup_vint_size(unsigned int size)
 -- 
-2.34.1
+2.1.0
 
