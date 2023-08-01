@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 687F076B089
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CC976B088
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbjHAKLU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 06:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
+        id S233868AbjHAKLM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 06:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233830AbjHAKKn (ORCPT
+        with ESMTP id S233824AbjHAKKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:10:43 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF6DF1;
+        Tue, 1 Aug 2023 06:10:42 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B963103;
         Tue,  1 Aug 2023 03:10:40 -0700 (PDT)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
         (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id BDD158086;
-        Tue,  1 Aug 2023 18:10:33 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
- 2023 18:10:33 +0800
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 2459C24E2AA;
+        Tue,  1 Aug 2023 18:10:34 +0800 (CST)
+Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
+ 2023 18:10:34 +0800
 Received: from xiaofei.localdomain (180.164.60.184) by EXMBX061.cuchost.com
  (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 1 Aug
  2023 18:10:33 +0800
@@ -51,9 +51,9 @@ CC:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
         Jack Zhu <jack.zhu@starfivetech.com>,
         Shengyang Chen <shengyang.chen@starfivetech.com>,
         Changhuang Liang <changhuang.liang@starfivetech.com>
-Subject: [PATCH v1 v1 2/7] dt-bindings: display: Add yamls for JH7110 display system
-Date:   Tue, 1 Aug 2023 18:10:25 +0800
-Message-ID: <20230801101030.2040-3-keith.zhao@starfivetech.com>
+Subject: [PATCH v1 v1 3/7] riscv: dts: starfive: jh7110: add dc controller and hdmi  node
+Date:   Tue, 1 Aug 2023 18:10:26 +0800
+Message-ID: <20230801101030.2040-4-keith.zhao@starfivetech.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230801101030.2040-1-keith.zhao@starfivetech.com>
 References: <20230801101030.2040-1-keith.zhao@starfivetech.com>
@@ -65,287 +65,191 @@ X-ClientProxiedBy: EXCAS064.cuchost.com (172.16.6.24) To EXMBX061.cuchost.com
 X-YovoleRuleAgent: yovoleflag
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-StarFive SoCs JH7110 display system:
-lcd-controller bases verisilicon dc8200 IP,
-and hdmi bases Innosilicon IP.
-Add bindings for them.
+Add the dc controller and hdmi node for the Starfive JH7110 SoC.
 
 Signed-off-by: Keith Zhao <keith.zhao@starfivetech.com>
 ---
- .../starfive/starfive,display-subsystem.yaml  |  41 +++++++
- .../starfive/starfive,jh7110-dc8200.yaml      | 107 ++++++++++++++++++
- .../starfive/starfive,jh7110-inno-hdmi.yaml   |  92 +++++++++++++++
- 3 files changed, 240 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
- create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
- create mode 100644 Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
+ .../jh7110-starfive-visionfive-2.dtsi         | 87 +++++++++++++++++++
+ arch/riscv/boot/dts/starfive/jh7110.dtsi      | 43 +++++++++
+ 2 files changed, 130 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
-new file mode 100644
-index 000000000..86018a8e6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/starfive/starfive,display-subsystem.yaml
-@@ -0,0 +1,41 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/starfive/starfive,display-subsystem.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+index de0f40a8b..32e5cc96c 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
+@@ -31,6 +31,21 @@ memory@40000000 {
+ 		reg = <0x0 0x40000000 0x1 0x0>;
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
 +
-+title: Starfive DRM master device
++		linux,cma {
++			compatible = "shared-dma-pool";
++			reusable;
++			size = <0x0 0x20000000>;
++			alignment = <0x0 0x1000>;
++			alloc-ranges = <0x0 0x80000000 0x0 0x20000000>;
++			linux,cma-default;
++		};
++	};
 +
-+maintainers:
-+  - Keith Zhao <keith.zhao@starfivetech.com>
-+  - ShengYang Chen <shengyang.chen@starfivetech.com>
+ 	gpio-restart {
+ 		compatible = "gpio-restart";
+ 		gpios = <&sysgpio 35 GPIO_ACTIVE_HIGH>;
+@@ -231,6 +246,41 @@ GPOEN_DISABLE,
+ 			slew-rate = <0>;
+ 		};
+ 	};
 +
-+description:
-+  The Starfive DRM master device is a virtual device needed to list all
-+  display controller or other display interface nodes that comprise the
-+  graphics subsystem.
++	hdmi_pins: hdmi-0 {
++		hdmi-scl-pins {
++			pinmux = <GPIOMUX(0, GPOUT_SYS_HDMI_DDC_SCL,
++					     GPOEN_SYS_HDMI_DDC_SCL,
++					     GPI_SYS_HDMI_DDC_SCL)>;
++			input-enable;
++			bias-pull-up;
++		};
 +
-+properties:
-+  compatible:
-+    const: starfive,display-subsystem
++		hdmi-sda-pins {
++			pinmux = <GPIOMUX(1, GPOUT_SYS_HDMI_DDC_SDA,
++					     GPOEN_SYS_HDMI_DDC_SDA,
++					     GPI_SYS_HDMI_DDC_SDA)>;
++			input-enable;
++			bias-pull-up;
++		};
 +
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
-+    description: |
-+      Should contain a list of phandles pointing to display interface ports
-+      of display controller devices. Display controller definitions as defined
-+      in Documentation/devicetree/bindings/display/starfive/
-+      starfive,jh7110-dc8200.yaml
++		hdmi-cec-pins {
++			pinmux = <GPIOMUX(14, GPOUT_SYS_HDMI_CEC_SDA,
++					     GPOEN_SYS_HDMI_CEC_SDA,
++					     GPI_SYS_HDMI_CEC_SDA)>;
++			input-enable;
++			bias-pull-up;
++		};
 +
-+required:
-+  - compatible
-+  - ports
++		hdmi-hpd-pins {
++			pinmux = <GPIOMUX(15, GPOUT_HIGH,
++					     GPOEN_ENABLE,
++					     GPI_SYS_HDMI_HPD)>;
++			input-enable;
++			bias-disable; /* external pull-up */
++		};
++	};
 +
-+additionalProperties: false
+ };
+ 
+ &uart0 {
+@@ -254,3 +304,40 @@ &U74_3 {
+ &U74_4 {
+ 	cpu-supply = <&vdd_cpu>;
+ };
 +
-+examples:
-+  - |
-+    display-subsystem {
-+        compatible = "starfive,display-subsystem";
-+        ports = <&dc_out>;
-+    };
-diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
-new file mode 100644
-index 000000000..bebe2050c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-dc8200.yaml
-@@ -0,0 +1,107 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/starfive/starfive,jh7110-dc8200.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++&voutcrg {
++	status = "okay";
++};
 +
-+title: StarFive display controller
++&display {
++	status = "okay";
++};
 +
-+description:
-+  The StarFive SoC uses the display controller based on Verisilicon IP
-+  to transfer the image data from a video memory
-+  buffer to an external LCD interface.
++&hdmi {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&hdmi_pins>;
 +
-+maintainers:
-+  - Keith Zhao <keith.zhao@starfivetech.com>
++	hdmi_in: port {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		hdmi_in_dc: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&dc_out_hdmi>;
++		};
++	};
++};
 +
-+properties:
-+  compatible:
-+    const: starfive,jh7110-dc8200
++&dc8200 {
++	status = "okay";
 +
-+  reg:
-+    maxItems: 3
++	dc_out: port {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		dc_out_hdmi: endpoint@0 {
++			reg = <0>;
++			remote-endpoint = <&hdmi_in_dc>;
++		};
 +
-+  interrupts:
-+    items:
-+      - description: The interrupt will be generated when DC finish one frame
++	};
++};
+diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+index 0005fa163..b8c527d9f 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+@@ -282,6 +282,11 @@ tdm_ext: tdm-ext-clock {
+ 		#clock-cells = <0>;
+ 	};
+ 
++	display: display-subsystem {
++		compatible = "starfive,display-subsystem";
++		ports = <&dc_out>;
++	};
 +
-+  clocks:
-+    items:
-+      - description: Clock for display system noc bus.
-+      - description: Pixel clock for display channel 0.
-+      - description: Pixel clock for display channel 1.
-+      - description: Clock for axi interface of display controller.
-+      - description: Core clock for display controller.
-+      - description: Clock for ahb interface of display controller.
-+      - description: External HDMI pixel clock.
-+      - description: Parent clock for pixel clock
+ 	soc {
+ 		compatible = "simple-bus";
+ 		interrupt-parent = <&plic>;
+@@ -613,5 +618,43 @@ voutcrg: clock-controller@295c0000 {
+ 			#reset-cells = <1>;
+ 			power-domains = <&pwrc JH7110_PD_VOUT>;
+ 		};
 +
-+  clock-names:
-+    items:
-+      - const: vout_noc_disp
-+      - const: vout_pix0
-+      - const: vout_pix1
-+      - const: vout_axi
-+      - const: vout_core
-+      - const: vout_vout_ahb
-+      - const: hdmitx0_pixel
-+      - const: vout_dc8200
++		dc8200: lcd-controller@29400000 {
++			compatible = "starfive,jh7110-dc8200";
++			reg = <0x0 0x29400000 0x0 0x100>,
++			      <0x0 0x29400800 0x0 0x2000>,
++			      <0x0 0x295b0000 0x0 0x90>;
++			interrupts = <95>;
++			clocks = <&syscrg JH7110_SYSCLK_NOC_BUS_DISP_AXI>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_PIX0>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_PIX1>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_AXI>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_CORE>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_AHB>,
++				<&hdmitx0_pixelclk>,
++				<&voutcrg JH7110_VOUTCLK_DC8200_PIX>;
++			clock-names = "vout_noc_disp", "vout_pix0", "vout_pix1",
++				      "vout_axi", "vout_core", "vout_vout_ahb",
++				      "hdmitx0_pixel", "vout_dc8200";
++			resets = <&voutcrg JH7110_VOUTRST_DC8200_AXI>,
++				 <&voutcrg JH7110_VOUTRST_DC8200_AHB>,
++				 <&voutcrg JH7110_VOUTRST_DC8200_CORE>;
++			reset-names = "vout_axi","vout_ahb", "vout_core";
++		};
 +
-+  resets:
-+    items:
-+      - description: Reset for axi interface of display controller.
-+      - description: Reset for ahb interface of display controller.
-+      - description: Core reset of display controller.
++		hdmi: hdmi@29590000 {
++			compatible = "starfive,jh7110-inno-hdmi";
++			reg = <0x0 0x29590000 0x0 0x4000>;
++			interrupts = <99>;
 +
-+  reset-names:
-+    items:
-+      - const: vout_axi
-+      - const: vout_ahb
-+      - const: vout_core
-+
-+  port:
-+    $ref: /schemas/graph.yaml#/properties/port
-+    description:
-+      A port node with endpoint definitions as defined in
-+      Documentation/devicetree/bindings/media/video-interfaces.txt.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - resets
-+  - reset-names
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    dc8200: lcd-controller@29400000 {
-+        compatible = "starfive,jh7110-dc8200";
-+        reg = <0x29400000 0x100>, <0x29400800 0x2000>, <0x295b0000 0x90>;
-+        interrupts = <95>;
-+        clocks = <&syscrg 60>,
-+               <&voutcrg 7>,
-+               <&voutcrg 8>,
-+               <&voutcrg 4>,
-+               <&voutcrg 5>,
-+               <&voutcrg 6>,
-+               <&hdmitx0_pixelclk>,
-+               <&voutcrg 1>;
-+        clock-names = "vout_noc_disp", "vout_pix0", "vout_pix1",
-+                      "vout_axi", "vout_core", "vout_vout_ahb",
-+                      "hdmitx0_pixel","vout_dc8200";
-+        resets = <&voutcrg 0>, <&voutcrg 1>, <&voutcrg 2>;
-+        reset-names = "vout_axi", "vout_ahb", "vout_core";
-+        dc_out: port {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            dc_out_hdmi: endpoint@0 {
-+                reg = <0>;
-+                remote-endpoint = <&hdmi_in_dc>;
-+            };
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
-new file mode 100644
-index 000000000..f6927acf6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/starfive/starfive,jh7110-inno-hdmi.yaml
-@@ -0,0 +1,92 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/starfive/starfive,jh7110-inno-hdmi.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Starfive JH7110 HDMI controller
-+
-+description:
-+  The StarFive JH7110 SoC uses the HDMI signal transmiter based on innosilicon IP
-+  to generate HDMI signal from its input and transmit the signal to the screen.
-+
-+maintainers:
-+  - Keith Zhao <keith.zhao@starfivetech.com>
-+
-+properties:
-+  compatible:
-+    const: "starfive,jh7110-inno-hdmi"
-+
-+  reg:
-+    minItems: 1
-+
-+  interrupts:
-+    items:
-+      - description: The HDMI hot plug detection interrupt.
-+
-+  clocks:
-+    items:
-+      - description: System clock of HDMI module.
-+      - description: Mclk clock of HDMI audio.
-+      - description: Bclk clock of HDMI audio.
-+      - description: Pixel clock generated by HDMI module.
-+
-+  clock-names:
-+    items:
-+      - const: sysclk
-+      - const: mclk
-+      - const: bclk
-+      - const: pclk
-+
-+  resets:
-+    items:
-+      - description: Reset for HDMI module.
-+
-+  reset-names:
-+    items:
-+      - const: hdmi_tx
-+
-+  '#sound-dai-cells':
-+    const: 0
-+
-+  port:
-+    $ref: /schemas/graph.yaml#/properties/port
-+    description:
-+      Should contain a remote endpoint phandle of display controller device.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+  - resets
-+  - reset-names
-+  - '#sound-dai-cells'
-+  - port
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    hdmi: hdmi@29590000 {
-+        compatible = "starfive,jh7110-inno-hdmi";
-+        reg = <0x29590000 0x4000>;
-+        interrupts = <99>;
-+        clocks = <&voutcrg 17>,
-+               <&voutcrg 15>,
-+               <&voutcrg 16>,
-+               <&hdmitx0_pixelclk>;
-+        clock-names = "sysclk", "mclk","bclk","pclk";
-+        resets = <&voutcrg 9>;
-+        reset-names = "hdmi_tx";
-+        #sound-dai-cells = <0>;
-+        hdmi_in: port {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            hdmi_in_dc: endpoint@0 {
-+                reg = <0>;
-+                remote-endpoint = <&dc_out_hdmi>;
-+            };
-+        };
-+    };
++			clocks = <&voutcrg JH7110_VOUTCLK_HDMI_TX_SYS>,
++				 <&voutcrg JH7110_VOUTCLK_HDMI_TX_MCLK>,
++				 <&voutcrg JH7110_VOUTCLK_HDMI_TX_BCLK>,
++				 <&hdmitx0_pixelclk>;
++			clock-names = "sysclk", "mclk", "bclk", "pclk";
++			resets = <&voutcrg JH7110_VOUTRST_HDMI_TX_HDMI>;
++			reset-names = "hdmi_tx";
++			#sound-dai-cells = <0>;
++		};
+ 	};
+ };
 -- 
 2.34.1
 
