@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBA676BD4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 212CD76BD44
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbjHATGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41794 "EHLO
+        id S230178AbjHATFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbjHATGH (ORCPT
+        with ESMTP id S232130AbjHATFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:06:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9DD1BE3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:05:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690916714;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/zSSGuAEUWvHjtwjF2gl9W+Rk28AvcJoOE90ZXEQ90k=;
-        b=ZIJMzHCg6ffdkHv6rr7MrpZyqDllafaOQQGNZ2AyrUPuLrEDanNnh8GeAvaUGyCUV8RpQ1
-        DosrcWeO0+vflF9eWJbcBLoy2O0VoBNSnZXXkPS/XR4WJ3vrE/ukYtdb70wnwaiOHv0D5W
-        OCu4iZ4DkZIhmR4SxLDd9wB3h1aTOT4=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-507-cPu_OjluPkCJfSVcCUDW9Q-1; Tue, 01 Aug 2023 15:05:13 -0400
-X-MC-Unique: cPu_OjluPkCJfSVcCUDW9Q-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4053d10ee39so58454861cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:05:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690916713; x=1691521513;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/zSSGuAEUWvHjtwjF2gl9W+Rk28AvcJoOE90ZXEQ90k=;
-        b=Unwc2f4LAJ57ZhLa1SCPX18mHQIiDj33RsmVK+HUJtMX7mhnBBm4FSiegA9zB9TBLS
-         YYiTSt0OzDKspQSiN8h6bWR5kpPlNM/TXxpaKDNfdXImR5zt+nNbBZGtZtB6lWIJeV62
-         Lo0pPqZdfZH/+XuEdLUaeBSMsuYrFmLifVSZN46GA3Dm5QB4zMbhLu2h2gpu3ynqTvZ9
-         mC9mwwLGtrYBaXst7O0PlO63ZLbClIK3CfkG32OYUDfqt5LxQsTnP/w0Hf6WLXcSGMV/
-         Wi1ir4QceiPOikr1syjkIYpYzfJeS+PmzuEXpoTdqgwLCU7at2JQ7QY4aerGJl/FQpDA
-         sMGw==
-X-Gm-Message-State: ABy/qLY0TG9ygW8F4VWSgPB3HfU6GYJPtPloYxcjOT8fkEiVG1ll2nAw
-        y2apEq+rNb4d14B1dOOZ7y0WtpUyaDHG6RU6W1BvyJ7z4ix64/FzxPzevHuVt+Cgx3lMeA0upjy
-        lSvvhk2TUKMuZthzQQDmNj/Wj/g8UQTtgZajXrF5z
-X-Received: by 2002:ac8:4e95:0:b0:40f:d397:d1d5 with SMTP id 21-20020ac84e95000000b0040fd397d1d5mr3466118qtp.49.1690916712855;
-        Tue, 01 Aug 2023 12:05:12 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlGQUKu8fiF8JWX+7vi4hnZrY+5e7nKWuBaVJm2q11PuWFO4uaYfYywhuA/wAC/lqZcDnm1HVWJ9gWnXYO2koko=
-X-Received: by 2002:ac8:4e95:0:b0:40f:d397:d1d5 with SMTP id
- 21-20020ac84e95000000b0040fd397d1d5mr3466102qtp.49.1690916712598; Tue, 01 Aug
- 2023 12:05:12 -0700 (PDT)
+        Tue, 1 Aug 2023 15:05:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAA126A4;
+        Tue,  1 Aug 2023 12:05:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A4F461590;
+        Tue,  1 Aug 2023 19:05:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A61AAC433C8;
+        Tue,  1 Aug 2023 19:05:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690916725;
+        bh=XaEyLOjcTNwc9YeWlOJYScuIZzeMlhSmUXhkTyWOcdo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=grHpsCade+4hhBefcy1y7pfmLc1TAcGI5yfjr3ji+PPlfsj7KES8fDhea9q6wXLgD
+         xrGOW3viFBiZ2vyLfNwKC2X7e0UTc1/jdT+BIQoV/8PnGuJGh7RiYNNQpAaJGGf11f
+         CdB8b0Gn5nYSkS4o8WfpNo99u2ppuAN14a1C5I5IwjPlP7/PUzBYiYFueK9jOe6o1g
+         wKWlPPFaossUwjpE/h96bWJrEMfGbGHML66oQ9wJRkAletVZCNSjo4mwx9aKbjnxmW
+         /wU5qh51gu/TWRN8ejWFeGscGFLY08HjeLHMeUYNUquMcFllxGCj3PCG7S0rJoDSlE
+         IMkXmWaTTxdrg==
+Date:   Tue, 1 Aug 2023 20:05:16 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 11/36] arm64/mm: Map pages for guarded control stack
+Message-ID: <1cbd6d5a-0e58-4a3f-b7e5-bbab09f03c5d@sirena.org.uk>
+References: <20230731-arm64-gcs-v3-0-cddf9f980d98@kernel.org>
+ <20230731-arm64-gcs-v3-11-cddf9f980d98@kernel.org>
+ <20230801170231.GC2607694@kernel.org>
 MIME-Version: 1.0
-References: <20230729083737.38699-2-leobras@redhat.com>
-In-Reply-To: <20230729083737.38699-2-leobras@redhat.com>
-From:   Leonardo Bras Soares Passos <leobras@redhat.com>
-Date:   Tue, 1 Aug 2023 16:05:01 -0300
-Message-ID: <CAJ6HWG4=2xXo6Ck5-P9gYsOy+SaLemz3apnKaU3z+HwgUvuspg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] Improve RT performance & latency w/ local_lock_t()
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zPbhvjZzJERchlQs"
+Content-Disposition: inline
+In-Reply-To: <20230801170231.GC2607694@kernel.org>
+X-Cookie: I thought YOU silenced the guard!
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,88 +82,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CC: Peter Xu
 
-On Sat, Jul 29, 2023 at 5:38=E2=80=AFAM Leonardo Bras <leobras@redhat.com> =
-wrote:
->
-> The problem:
-> We have a few scenarios in mm that make use of local_locks() +
-> schedule_work_on() due to reduced overhead on the most common local
-> references. This scenario is not ideal for RT workloads though: even on
-> isolated cpus, those tasks will schedule-out the sensitive RT workloads t=
-o
-> perform those jobs, and usually cause missing deadlines with this.
->
-> The idea:
-> In PREEMPT_RT, local_locks() end up becoming spinlocks(), so there should
-> be no harm in just getting another cpu's spinlock to perform the work
-> on the per-cpu structure: the cacheline invalidation will already happen
-> due to the usage by schedule_work_on(), and on local functions the lockin=
-g
-> already happens anyway.
->
-> This will avoid schedule_work_on(), and thus avoid scheduling-out an
-> RT workload. Given the usually brief nature of those scheduled tasks, the=
-ir
-> execution end up being faster than doing their scheduling.
->
-> =3D=3D=3D=3D=3D=3D
->
-> While I really belive the solution, there are problems with this patchset=
-,
-> which I need your suggestions for improvement:
->
-> 1) Naming is horrible: I could not think on a good name for the new lock
-> functions, so I lazely named it local_lock_n().
-> The naming should have been making clear that we are in fact dealing
-> with a local_lock but it can in some scenarios be addressing another cpu'=
-s
-> local_lock, and thus we need the extra cpu parameter.
->
-> Dealing with this local & remote duality, all I thought was:
-> mostly_local_lock(), (or local_mostly_lock())
-> local_maybe_remote_lock()  <- LOL
-> remote_local_lock()
-> per_cpu_local_lock()
-> local_lock_cpu()
->
-> Please help !
->
->
-> 2) Maybe naming is this hard because the interface is not the best.
-> My idea was to create a simple interface to easily replace functions
-> already in use, but maybe there is something better I could not see.
->
-> Please contribute!
->
-> 3) I am lazely setting work->data without atomic operations, which may
-> be bad in some scenario. If so, even thought it can be costly, since it
-> happens outside of the hotpath (local per-cpu areas) it should be no
-> problem adding the atomic operation for non-RT kernels.
->
-> For RT kernels, since the whole operation hapens locally, there should be
-> no need of using the atomic set.
->
-> Please let me know of any idea, or suggestion that can improve this RFC.
->
-> Thanks a lot!
-> Leo
->
-> Leonardo Bras (4):
->   Introducing local_lock_n() and local queue & flush
->   swap: apply new local_schedule_work_on() interface
->   memcontrol: apply new local_schedule_work_on() interface
->   slub: apply new local_schedule_work_on() interface
->
->  include/linux/local_lock.h          | 18 ++++++++++
->  include/linux/local_lock_internal.h | 52 +++++++++++++++++++++++++++++
->  mm/memcontrol.c                     | 17 ++++++----
->  mm/slub.c                           | 17 ++++++----
->  mm/swap.c                           | 18 +++++-----
->  5 files changed, 100 insertions(+), 22 deletions(-)
->
-> --
-> 2.41.0
->
+--zPbhvjZzJERchlQs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Tue, Aug 01, 2023 at 08:02:31PM +0300, Mike Rapoport wrote:
+> On Mon, Jul 31, 2023 at 02:43:20PM +0100, Mark Brown wrote:
+
+> >  {
+> > -	pteval_t prot = pgprot_val(protection_map[vm_flags &
+> > +	pteval_t prot;
+> > +
+> > +	/*
+> > +	 * If this is a GCS then only interpret VM_WRITE.
+> > +	 *
+> > +	 * TODO: Just make protection_map[] bigger?  Nothing seems
+> > +	 * ideal here.
+> > +	 */
+
+> I think extending protection_map and updating adjust_protection_map() is
+> cleaner and probably faster.
+
+That was my initial thought but then I immediately started second
+guessing myself about review comments.  Hopefully Will or Catalin will
+weigh in.
+
+--zPbhvjZzJERchlQs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTJV2sACgkQJNaLcl1U
+h9AlrwgAheuf8ghyBKWYbkyMEXdB+oQMSgcGlnFgC7nJJfw06f2XaVrBNE+6Swjh
+pgt+0RrRPIXZHhZXP3vHWP0yM/pgwS3o0K+/jolpahP+ieFfiJa5X4GTuGzPYZiq
+6XYZEXkdOtuuyx3McLXU4Eet7PsnmqDolbBcr2pV1oyvRj6zWbdfv+SYoL8DX6bA
+kUGWitWitEXi8bMTvWWg23s1MoFXLYxUWDZVwCl89aIipWnICzUze6O9FVMsfYJ1
+h8ITi9V3QFo5uKkn1MySOUPaK7TI+VKZhAJMaNEQmCHMFXTkQhpp1jJvY4FFRVi2
+rUxmpnOLBLA3hsMLGXV+tSV8S9P65g==
+=kTpO
+-----END PGP SIGNATURE-----
+
+--zPbhvjZzJERchlQs--
