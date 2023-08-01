@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C9F76B259
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3ED76B25E
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231916AbjHAKvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:51:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
+        id S234121AbjHAKwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:52:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232790AbjHAKvJ (ORCPT
+        with ESMTP id S230026AbjHAKva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:51:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D7D49EB
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:48:46 -0700 (PDT)
-Message-ID: <20230801103818.159719736@linutronix.de>
+        Tue, 1 Aug 2023 06:51:30 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5383E2D42
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:49:04 -0700 (PDT)
+Message-ID: <20230801103818.214469342@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1690886869;
+        s=2020; t=1690886870;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=TEFG8gkU/838HFgL72fmh8n+4W7BVeF0i1tCpnYKDqA=;
-        b=VFbL0HFfrX7TJs82ET0+zn5kp1a2SLQnpxlb1kKGJ/vnK/9i8tNL63nkaCgQWo5q05EEHb
-        5ohNGIi/1RUg6ZGfDEZuDNoPnp+ZjQF2dVtYWNg081xD8m88oh1rFIqsrGnpHEBmA2WJjU
-        He0p+2vmGzwYpfp8R0b0HhdLcT08zgklwsICPilITdfE8SCOH6/eKYF2oewZvcBf9RVQog
-        VfJfeqn0fSXa3cnKY7BaJHFozUa3wYu5NFEAshyI9QApGR2qRxlipPvZ2g3oUW7+WXMGqo
-        aTb48NH38aJxk9182quv7onWrqMCRBbWqLApCdaQrUMfvsI9WRF4CByflU35DA==
+         references:references; bh=rpTRjlnnjgf8oYcfpsFvRp74BGzYvWPgVxB1Kwz9Sb8=;
+        b=b6UmIyWp7JRa3iyD8EaaXENlR2Wrt6psOarGkTEb2TK22UeAXMgwQwcq8h8t03fv0I2C+D
+        IoeacXSH2ZVimObm/LrTcjzdNwhvetGBcpX9cyQEY5sYYGlGjnl6yqbPqlCeVwSYoP9X/l
+        iGOlvDzc31DPS6LEonkItVK6TLlPJSFD0MUOeTWjxN2xozgZeGWrtP/lOp4NnwjYMeJk66
+        xRIL6jRFy4cAvIdRvgrBeBp2tVlBuqW8tM9teQiCrKQ01E0hJGQVLEx7Gtmu7mZzhZkP/y
+        cG1O4LK+x2u/mkgD3YSVOC0TEhjllRbm21/nUDf8HCAjL8WIF4HujNFr/D4BAg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1690886869;
+        s=2020e; t=1690886870;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=TEFG8gkU/838HFgL72fmh8n+4W7BVeF0i1tCpnYKDqA=;
-        b=qeVFuHPpJc9x5zSL7n0FxobJuFKJMjTRpiDyAl4kFvjSUVdE46G+VbaAb4vE3vHGyWAyxz
-        Xl1kWutm2EtnKzBw==
+         references:references; bh=rpTRjlnnjgf8oYcfpsFvRp74BGzYvWPgVxB1Kwz9Sb8=;
+        b=r+PBtLoZFsOTPQkwISDyGcQeGOmDZpoFit4aBnN7GTjjPPz2dGJwRJq1bortUs+c+AZaN0
+        EP5lDTGhc8PU2VCg==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
@@ -44,12 +44,11 @@ Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
         Michael Kelley <mikelley@microsoft.com>,
         Peter Keresztes Schmidt <peter@keresztesschmidt.de>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [patch V3 55/60] x86/apic: Convert other overrides to
- apic_update_callback()
+Subject: [patch V3 56/60] x86/xen/apic: Mark apic __ro_after_init
 References: <20230801103042.936020332@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Tue,  1 Aug 2023 12:47:49 +0200 (CEST)
+Date:   Tue,  1 Aug 2023 12:47:50 +0200 (CEST)
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
@@ -60,94 +59,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert all places which just assign a new function directly to the apic
-callback to use apic_update_callback() which prepares for using static
-calls.
+Nothing can change it post init.
 
-Mark snp_set_wakeup_secondary_cpu() and kvm_setup_pv_ipi() __init, as they
-are only invoked from init code and otherwise trigger a section mismatch as
-they are now invoking a __init function.
+Remove the 32bit callbacks and comments as XENPV is strictly 64bit.
+
+While at it mop up the whitespace damage which causes eyebleed due to an
+editor which is highlighting it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Juergen Gross <jgross@suse.com>
 ---
-V2: Mark snp_set_wakeup_secondary_cpu() and kvm_setup_pv_ipi() __init.
----
- arch/x86/hyperv/hv_apic.c |   20 ++++++++++----------
- arch/x86/kernel/kvm.c     |    6 +++---
- arch/x86/kernel/sev.c     |    4 ++--
- 3 files changed, 15 insertions(+), 15 deletions(-)
+ arch/x86/xen/apic.c |   28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
---- a/arch/x86/hyperv/hv_apic.c
-+++ b/arch/x86/hyperv/hv_apic.c
-@@ -288,12 +288,12 @@ void __init hv_apic_init(void)
- 		 */
- 		orig_apic = *apic;
- 
--		apic->send_IPI = hv_send_ipi;
--		apic->send_IPI_mask = hv_send_ipi_mask;
--		apic->send_IPI_mask_allbutself = hv_send_ipi_mask_allbutself;
--		apic->send_IPI_allbutself = hv_send_ipi_allbutself;
--		apic->send_IPI_all = hv_send_ipi_all;
--		apic->send_IPI_self = hv_send_ipi_self;
-+		apic_update_callback(send_IPI, hv_send_ipi);
-+		apic_update_callback(send_IPI_mask, hv_send_ipi_mask);
-+		apic_update_callback(send_IPI_mask_allbutself, hv_send_ipi_mask_allbutself);
-+		apic_update_callback(send_IPI_allbutself, hv_send_ipi_allbutself);
-+		apic_update_callback(send_IPI_all, hv_send_ipi_all);
-+		apic_update_callback(send_IPI_self, hv_send_ipi_self);
- 	}
- 
- 	if (ms_hyperv.hints & HV_X64_APIC_ACCESS_RECOMMENDED) {
-@@ -312,10 +312,10 @@ void __init hv_apic_init(void)
- 		 */
- 		apic_update_callback(eoi, hv_apic_eoi_write);
- 		if (!x2apic_enabled()) {
--			apic->read      = hv_apic_read;
--			apic->write     = hv_apic_write;
--			apic->icr_write = hv_apic_icr_write;
--			apic->icr_read  = hv_apic_icr_read;
-+			apic_update_callback(read, hv_apic_read);
-+			apic_update_callback(write, hv_apic_write);
-+			apic_update_callback(icr_write, hv_apic_icr_write);
-+			apic_update_callback(icr_read, hv_apic_icr_read);
- 		}
- 	}
+--- a/arch/x86/xen/apic.c
++++ b/arch/x86/xen/apic.c
+@@ -123,43 +123,41 @@ static int xen_cpu_present_to_apicid(int
+ 		return BAD_APICID;
  }
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -622,10 +622,10 @@ late_initcall(setup_efi_kvm_sev_migratio
- /*
-  * Set the IPI entry points
-  */
--static void kvm_setup_pv_ipi(void)
-+static __init void kvm_setup_pv_ipi(void)
+ 
+-static struct apic xen_pv_apic = {
+-	.name 				= "Xen PV",
+-	.probe 				= xen_apic_probe_pv,
++static struct apic xen_pv_apic __ro_after_init = {
++	.name				= "Xen PV",
++	.probe				= xen_apic_probe_pv,
+ 	.acpi_madt_oem_check		= xen_madt_oem_check,
+ 
+ 	/* .delivery_mode and .dest_mode_logical not used by XENPV */
+ 
+ 	.disable_esr			= 0,
+ 
+-	.check_apicid_used		= default_check_apicid_used, /* Used on 32-bit */
+-	.ioapic_phys_id_map		= default_ioapic_phys_id_map, /* Used on 32-bit */
+ 	.cpu_present_to_apicid		= xen_cpu_present_to_apicid,
+ 	.phys_pkg_id			= xen_phys_pkg_id, /* detect_ht */
+ 
+ 	.max_apic_id			= UINT_MAX,
+-	.get_apic_id 			= xen_get_apic_id,
+-	.set_apic_id 			= xen_set_apic_id, /* Can be NULL on 32-bit. */
++	.get_apic_id			= xen_get_apic_id,
++	.set_apic_id			= xen_set_apic_id,
+ 
+ 	.calc_dest_apicid		= apic_flat_calc_apicid,
+ 
+ #ifdef CONFIG_SMP
+-	.send_IPI_mask 			= xen_send_IPI_mask,
+-	.send_IPI_mask_allbutself 	= xen_send_IPI_mask_allbutself,
+-	.send_IPI_allbutself 		= xen_send_IPI_allbutself,
+-	.send_IPI_all 			= xen_send_IPI_all,
+-	.send_IPI_self 			= xen_send_IPI_self,
++	.send_IPI_mask			= xen_send_IPI_mask,
++	.send_IPI_mask_allbutself	= xen_send_IPI_mask_allbutself,
++	.send_IPI_allbutself		= xen_send_IPI_allbutself,
++	.send_IPI_all			= xen_send_IPI_all,
++	.send_IPI_self			= xen_send_IPI_self,
+ #endif
+ 	.read				= xen_apic_read,
+ 	.write				= xen_apic_write,
+ 	.eoi				= xen_apic_eoi,
+ 
+-	.icr_read 			= xen_apic_icr_read,
+-	.icr_write 			= xen_apic_icr_write,
++	.icr_read			= xen_apic_icr_read,
++	.icr_write			= xen_apic_icr_write,
+ };
++apic_driver(xen_pv_apic);
+ 
+ void __init xen_init_apic(void)
  {
--	apic->send_IPI_mask = kvm_send_ipi_mask;
--	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
-+	apic_update_callback(send_IPI_mask, kvm_send_ipi_mask);
-+	apic_update_callback(send_IPI_mask_allbutself, kvm_send_ipi_mask_allbutself);
- 	pr_info("setup PV IPIs\n");
+ 	x86_apic_ops.io_apic_read = xen_io_apic_read;
  }
- 
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -1089,7 +1089,7 @@ static int wakeup_cpu_via_vmgexit(int ap
- 	return ret;
- }
- 
--void snp_set_wakeup_secondary_cpu(void)
-+void __init snp_set_wakeup_secondary_cpu(void)
- {
- 	if (!cc_platform_has(CC_ATTR_GUEST_SEV_SNP))
- 		return;
-@@ -1099,7 +1099,7 @@ void snp_set_wakeup_secondary_cpu(void)
- 	 * required method to start APs under SNP. If the hypervisor does
- 	 * not support AP creation, then no APs will be started.
- 	 */
--	apic->wakeup_secondary_cpu = wakeup_cpu_via_vmgexit;
-+	apic_update_callback(wakeup_secondary_cpu, wakeup_cpu_via_vmgexit);
- }
- 
- int __init sev_es_setup_ap_jump_table(struct real_mode_header *rmh)
+-apic_driver(xen_pv_apic);
 
