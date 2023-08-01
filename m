@@ -2,98 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E3176A9CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E4FE76A9D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 09:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230357AbjHAHQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 03:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38396 "EHLO
+        id S230193AbjHAHRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 03:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbjHAHQH (ORCPT
+        with ESMTP id S229575AbjHAHRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 03:16:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBFF91BC6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 00:15:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690874115;
+        Tue, 1 Aug 2023 03:17:34 -0400
+Received: from out-93.mta1.migadu.com (out-93.mta1.migadu.com [IPv6:2001:41d0:203:375::5d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2B2173D
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 00:17:32 -0700 (PDT)
+Message-ID: <207c6a5b-8a20-ba1c-5ea1-09959b9d6a15@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690874250;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2xykq6MCLxVS9fhmaOvf4Q67Lhej7GxRvBqCzZn6c5I=;
-        b=It6KQ5JyHE/mqYsIlirgzABAZ1W9N216EC48P94nZ7xRwtNs/i2b0OD2zz+XIBZzYrSzqP
-        9Dw8mUrW2qCqhshKh6hQm/PUYCX3T9zrUpuxQWftZkQ1MRY9DC47ev+2hlyrI+SYyGWbc+
-        adoxrOMM2KqzWDyR8mxNZAEOFX9Cuzw=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-570-Pi5QiCozPYCQOfbdsl5b1g-1; Tue, 01 Aug 2023 03:15:10 -0400
-X-MC-Unique: Pi5QiCozPYCQOfbdsl5b1g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22A341C0E0D4;
-        Tue,  1 Aug 2023 07:15:10 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.2.16.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3A5CD40C2063;
-        Tue,  1 Aug 2023 07:15:08 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Harald van Dijk <harald@gigawatt.nl>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Jessica Clarke <jrtc27@jrtc27.com>,
-        Rich Felker <dalias@libc.org>, linux-x86_64@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] x86: Fix x32 System V message queue syscalls
-References: <1156938F-A9A3-4EE9-B059-2294A0B9FBFE@jrtc27.com>
-        <20201012134444.1905-1-jrtc27@jrtc27.com>
-        <CALCETrWKwFD7QhFQu9X_yQeVW1_yy-gEMNEtsWmQK=fNg9y68A@mail.gmail.com>
-        <20201101012202.GM534@brightrain.aerifal.cx>
-        <7842A462-0ADB-4EE3-B4CB-AE6DCD70CE1C@jrtc27.com>
-        <20201101015013.GN534@brightrain.aerifal.cx>
-        <CALCETrUuBR3Pt_9NhRZTLzjZzwdsS2OPW4U2r31_1Uq-=poRDw@mail.gmail.com>
-        <04832096-ED7F-4754-993D-F578D4A90843@jrtc27.com>
-        <EEC90B2F-E972-475F-B058-918CDE401618@jrtc27.com>
-        <20201101210102.GO534@brightrain.aerifal.cx>
-        <29423184-A433-42D4-B635-CDEFE7271B40@jrtc27.com>
-        <2AC632C0-EC00-4C4E-92DC-B7F238897C4C@jrtc27.com>
-        <CALCETrWWcVhYoVuvovo558sXpA7X75jNpf8LA+w+k-dzyRiUcg@mail.gmail.com>
-        <347eab9f-b64a-b124-ba7a-ee458e6407f3@gigawatt.nl>
-Date:   Tue, 01 Aug 2023 09:15:06 +0200
-In-Reply-To: <347eab9f-b64a-b124-ba7a-ee458e6407f3@gigawatt.nl> (Harald van
-        Dijk's message of "Tue, 1 Aug 2023 01:43:40 +0100")
-Message-ID: <87zg3b5j45.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        bh=4fRkD2fAQoApB99hdiZ4/Ry51mJ87TiAaRY+bhVa0E4=;
+        b=dfxd1uWv2Do2ERoaR6KcJ06Iqll8Ugd9SXQL+592jlaGI1DciB9Nj6guRecREAV3Dnifkd
+        tUKYQeO19QY+9Qc0U5QzechPHu5wslso43sbB4JVZ/pNNvOjBlPhFXQl2JhCRQj7utra/t
+        mzeRAIWUmVc1rAm4erPr/un74USeviM=
+Date:   Tue, 1 Aug 2023 15:17:19 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 2/6] PCI/VGA: Deal with PCI VGA compatible devices only
+Content-Language: en-US
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        suijingfeng <suijingfeng@loongson.cn>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, dri-devel@lists.freedesktop.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>
+References: <20230725214928.GA666846@bhelgaas>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <20230725214928.GA666846@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Harald van Dijk:
+Hi,
 
-> There is one complication that I think has not been mentioned yet:
-> when _GNU_SOURCE is defined, glibc does provide a definition of struct
-> msghdr in <sys/msg.h> with a field "__syscall_slong_t mtype;". This
-> makes it slightly more likely that there is code out there in the wild
-> that works fine with current kernels and would be broken by the
-> fix. Given how rare x32 is, and how rare message queues are, this may
-> still be acceptable, but I am mentioning it just in case this would
-> cause a different approach to be preferred. And whatever is done, a
-> fix should also be submitted to glibc.
+On 2023/7/26 05:49, Bjorn Helgaas wrote:
+> On Sat, Jul 22, 2023 at 04:11:07PM +0800, suijingfeng wrote:
+>> ...
+>> In the future, we may want to expand VGAARB to deal all PCI display class
+>> devices, with another patch.
+>>
+>> if (pdev->class >> 16 == PCI_BASE_CLASS_DISPLAY)
+>>
+>>           // accept
+>>
+>> else
+>>
+>>        // return immediately.
+>>
+>>
+>> Then, we will have a more good chance to clarify the programmer interface.
+> I would prefer not to expand vgaarb to deal with all display devices
+> unless they actually need the legacy resources like [pci 0xa0000-0xbffff].
 
-What should glibc do here?  Just change the definition in the header to
-long and ignore the breakage?
+What if a system have multiple non VGA-compatible GPU while all of them can display?
+We still need to select a default for for user-space executable program (X server).
 
-Thanks,
-Florian
+What if the VGA goes away someday?
+I means that hardware vendors may abandon the old VGA standard.
+After all, snooping a fixed address aperture is not absolute necessary for modern graphic card.
+Modern graphic have dedicated VRAM Bar, the occupied address range can be relocatable.
+Thus avoid the address overlap (or occlusion).
 
+
+> But maybe the consumer of these interfaces relies on vgaarb even for
+> devices that don't need those resources? If so, please mention
+> examples of where they depend on vgaarb.
+
+Yes, there do exist some PCI*NON*  VGA-compatible display controllers,
+Strictly speaking, there are not VGA-compatible in the sense that
+they don't respond the fixed legacy VGA aperture.
+Such a display controller also don't cares about the extension ROM (option ROM).
+Loongson display controllers are one of the various examples.
+
+Besides, Intel integrate GPU is capable switch to*NON*  VGA-compatible.
+especially in a multiple GPU co-exist hardware environment.
+Old BIOS of Intel platform will change its class code from 0x0300 to 0x0380.
+Newer BIOS do allow us to choose which one should be the primary GPU,
+but if a user don't choose the Intel integrate GPU as primary,
+the BIOS still will alter its PCI class code from 0x0300 to 0x0380.
+
+
+By listing examples as above, I means that a PCI(e) GPU device do not
+need to be VGA-compatible to display something on screen.
+This is a very important point, I think,
+which lead me to consider expand vgaarb.
+
+I'm not sure if we should handle the programming interface thing here,
+there are a lot of places where just ignore the programming interface.
+
+> I expect the vgaarb interfaces are used by things that need to emulate
+> the option ROM to initialize the device.  If the device has a
+> programming interface other than 0000 0000b, the option ROM should not
+> be using the [pci 0xa0000-0xbffff] resource, so vgaarb should not be
+> needed.
+
+Also, I have another thought for this question.
+The vga_set_default_device() function interface exported by vgaarb
+is not ensure the restriction either.
+I means that it does not check if a device is VGA-compatible,
+it does not examine if the programming interface is 00000000b or 00000001b either.
+In theory, a programmer could set a display device via the vga_set_default_device() interface.
+Maybe this function is intentionally leave some space to workaround.
+
+So, my idea is that leave programming interface related problems to the future.
+I don't want to worry about a non-exist thing(programming interface == 0x01 for an example).
+
+
+Back to my patch set, is this patch acceptable?
+Or I still need to refine this series?
+My other patches are queued up with this.
+
+
+> Bjorn
