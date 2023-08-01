@@ -2,113 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D298276A872
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B7476A877
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:48:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbjHAFqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 01:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
+        id S230238AbjHAFsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 01:48:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbjHAFqa (ORCPT
+        with ESMTP id S229825AbjHAFs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 01:46:30 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4380D12F
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 22:46:28 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-4fe0eb0ca75so8367173e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 22:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690868786; x=1691473586;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=VtfeVm+pZg2c5VCnLnxW1fO82KR5VHswyzC54DKBGoQ=;
-        b=RCrXJYro/hO9TGbgFNl/MGklx4O1HzWnDT98GialYHRAyHMmRaTQWaQBJNHHBRGvCx
-         he8PMaUVxGBZHE2knw1477flscoUt3MDjDVsFarORred6Q2fg0CDP/wICEpAF9F0jq92
-         qAZCyvwsc09QmSl1hJ3DCuqGE+KygIehVbgmfJQcyCIqhlAq4RyCA1MA+z9SHqmGhW53
-         LvI7Mccfm3cTidctkiMUDXupLTb4TBIsU/a65N+6+Bi04CfnA3dW4wEC4V9P1hEV66bw
-         G1szQztPP/jfkA1MEg0QRM+DKqzneQaxiUnZuhLvZnLVk3SXdfYaS4hUndpkAYlmUoUc
-         Fwmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690868786; x=1691473586;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VtfeVm+pZg2c5VCnLnxW1fO82KR5VHswyzC54DKBGoQ=;
-        b=hR42F2gUoQ5v7BL62amHfJzsuk6F+ihH+WDFeQeAnyJmg6ckXC13GdEUsX0VP85hIx
-         2hSeXRVy+XpGVbaP1dupYW53HxZSrBjjyxcQF0efWWyFmuAkLZARuDu95p+7HAnrycAS
-         yJ8XiiiDiD1nsnXAvOHZoQYsa5DJjd/wUNZWuh/OQckfSkJMaS8/1AWcsS/znmVxy98S
-         /qPUUef+kSovt84HsrokXTUvWIe53elS88vFDjGOQ/j6LQPDcmdQM2PU1TY54hT5L9E1
-         0svdAxT58PKoiKFw6eGM6IrIANw60zRsGzkjTJO2EWTKlWt5PFAhQY1xvmadGCFB8Ayw
-         BA2w==
-X-Gm-Message-State: ABy/qLYMV5EbCOIqHQQaxTMzYF5UDEp1sVGjZreUi8ty6ysx6wY5STZn
-        I4QZBqZMh18BLalnIPt/7meeSw==
-X-Google-Smtp-Source: APBJJlHMaC5V5AYOVUvFg1FoZfR2acUsBo8Fh3lxOaTxGZ3kE39gfSC6OwcF8Eywvzt/QzkN0zwM/w==
-X-Received: by 2002:a19:771d:0:b0:4fe:825:a07f with SMTP id s29-20020a19771d000000b004fe0825a07fmr1238613lfc.57.1690868786399;
-        Mon, 31 Jul 2023 22:46:26 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id f9-20020a7bc8c9000000b003fa96fe2bd9sm15814946wml.22.2023.07.31.22.46.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 22:46:26 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 08:46:23 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Lin Ma <linma@zju.edu.cn>
-Cc:     Markus Elfring <Markus.Elfring@web.de>, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Alexander Duyck <alexander.h.duyck@intel.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter P Waskiewicz Jr <peter.p.waskiewicz.jr@intel.com>,
-        Petr Machata <petrm@nvidia.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] net: dcb: choose correct policy to parse DCB_ATTR_BCN
-Message-ID: <d29e7d32-1684-4400-9907-f2f69092466d@kadam.mountain>
-References: <20230731045216.3779420-1-linma@zju.edu.cn>
- <fbda76a9-e1f3-d483-ab3d-3c904c54a5db@web.de>
- <3d159780.f2fb6.189aebb4a18.Coremail.linma@zju.edu.cn>
+        Tue, 1 Aug 2023 01:48:29 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8B31B5;
+        Mon, 31 Jul 2023 22:48:25 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3712gRsm026351;
+        Tue, 1 Aug 2023 05:48:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=4Zn7E0Dl+W5BuwFXIKMOv+P0FYRaC1MsuIZCNeQvZfE=;
+ b=Q8OLNOBhma2YcjkuHn4D1B/UHK/Uvmw+xyUPWJbyiQjhtiLwH6b2nkxKqe8moc6B3u6u
+ O/l2UTHnUYb+vSNv1vNWkq6Vt0DSoP5ktZgEJM3+UhzOeQjgbGFyxl0DqY/D2Z57k0Ds
+ 95yw+hnjEeTsWYzRMtgcnH1q2cVrtinoF+w1AgiQ8ikZuNHJWohP+bPcOz4clc/RpEBt
+ ra/rgdhlVk2JQCl/WB5wvnbP65SoBcyqp8gmeSBx+sDxVsInqZgdrsAvQd62Dxdtbg9i
+ RBCWGORArslGr1KhowBM8nL6t3tFxjF8RhM6p1xQ9zvwDG9CjDWUbiYQLpGVZb4V7Nby cA== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6rharcux-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 05:48:16 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3715mFfJ027519
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 05:48:15 GMT
+Received: from [10.110.54.109] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
+ 2023 22:48:12 -0700
+Message-ID: <ce06c845-f3c8-a733-dc21-ee0ba4b4ca68@quicinc.com>
+Date:   Mon, 31 Jul 2023 22:48:11 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3d159780.f2fb6.189aebb4a18.Coremail.linma@zju.edu.cn>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH] EDAC/device: Add sysfs notification for UE,CE count
+ change
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+To:     Deepti Jaggi <quic_djaggi@quicinc.com>, <james.morse@arm.com>,
+        <mchehab@kernel.org>, <rric@kernel.org>, <bp@alien8.de>,
+        <tony.luck@intel.com>
+CC:     <linux-edac@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@quicinc.com>, <quic_psodagud@quicinc.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>
+References: <20230731220059.28474-1-quic_djaggi@quicinc.com>
+ <3e2bf03e-2bc1-445e-d8ce-4975c044eea0@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <3e2bf03e-2bc1-445e-d8ce-4975c044eea0@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 0dEiw39yIqzBDRsd-yshWhcjDBf25sTv
+X-Proofpoint-ORIG-GUID: 0dEiw39yIqzBDRsd-yshWhcjDBf25sTv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_03,2023-07-31_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 clxscore=1015 impostorscore=0 spamscore=0
+ bulkscore=0 phishscore=0 mlxlogscore=475 lowpriorityscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308010053
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 09:34:17AM +0800, Lin Ma wrote:
-> Hello Markus,
+On 7/31/2023 3:40 PM, Trilok Soni wrote:
+> On 7/31/2023 3:00 PM, Deepti Jaggi wrote:
+>> A daemon running in user space collects information on correctable
+>> and uncorrectable errors from EDAC driver by reading corresponding
+>> sysfs entries and takes appropriate action.
 > 
-> > 
-> > …
-> > > This patch use correct dcbnl_bcn_nest policy to parse the
-> > > tb[DCB_ATTR_BCN] nested TLV.
-> > 
-> > Are imperative change descriptions still preferred?
-> > 
-> > See also:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.5-rc3#n94
-> > 
-> > Regards,
-> > Markus
+> Which daemon we are referring here? Can you please provide the link to 
+> the project?
 > 
-> Yeah, thanks for reminding me. I haven't been paying attention to that
-> and I will remember this ever since. :D
+> Are you using this daemon?
+> 
+> https://mcelog.org/ - It is for x86, but is your daemon project different?
+> 
+>> This patch adds support for user space daemon to wait on poll() until
+>> the sysfs entries for UE count and CE count change and then read updated
+>> counts instead of continuously monitoring the sysfs entries for
+>> any changes.
+> 
+> The modifications below are architecture agnostic so I really want to 
+> know what exactly we are fixing and if there is a problem.
 
-Simon reviewed the patch already.  Don't listen to Markus.  He's banned
-from vger.
++ CC linux-arm-msm
 
-https://lore.kernel.org/all/2023073123-poser-panhandle-1cb7@gregkh/
+Please keep linux-arm-msm in CC if there is a next revision.
 
-regards,
-dan carpenter
+-- 
+---Trilok Soni
 
