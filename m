@@ -2,134 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECC776B490
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E8D76B471
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbjHAMQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:16:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
+        id S232498AbjHAMLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:11:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233801AbjHAMP6 (ORCPT
+        with ESMTP id S231265AbjHAMLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:15:58 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E891990
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:15:55 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-c926075a50cso12372731276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 05:15:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690892155; x=1691496955;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dzgfTpUADHR89gqDoPU9ysqJa9QsDW5j+s8pKt5q+bc=;
-        b=ikEOdI5by007jAg6FK1kB5EEkYYviPEfAJ7oU3HQVCp9XaMxg2xF10p7VNd/a1sIh/
-         +xaiL5tb9w72WVXXtQSeLxnRJ01WOCFGQb1aengGscU61dFN7k6PqVp2w6kacJY5BbgK
-         t4mt//lKDdJs7uwRIykp4YsPk6ZXEqeklfWVEW8MyygelYMwwu6XQ8rhX18u4gi9Vf1Z
-         MdXUOr+zBtiGzLE1bGJOAyKT4KCritdoujibVCyZ+gHCfrYJ6EWdm7cDPEKzf9t+XaNS
-         ii7hLSsDal17JjSOdLmKSmZWhsQvh9WCl0IAcb5YLWzljj1ysVtGzxxpeP3BjsdDtjtt
-         WHnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690892155; x=1691496955;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dzgfTpUADHR89gqDoPU9ysqJa9QsDW5j+s8pKt5q+bc=;
-        b=EGYGeiHb8J3R60HEoxBaPU78mqsu24jyLF+z4qotmwAPRBe0bMZXBxPcbur0OytlG8
-         DsC5V/RMHTCJXHhHPTV98HD6r/m2rXZVFCWzzwuDnzbmrrNLGxJpZ3ieK06xtcJFqQ8d
-         Cmmr8f1LVTC+BzTpBB99dXOYPK80AlRzvPr7JO24hoko787F0d/d5eMCd3od6V6OJx17
-         DHQKs+oBZ27ZQ6NXLVNoSiEIaN8PoRZEdIi7/OsWTc427e0q47GgxQwT0MRH5FxCaGvs
-         U1jGwaz7EQxdFk/AZ7C2H0Qvn1E789Dz4MCAs22MUSFO+wljuBGHv3Kx9nvWOebt+FRm
-         qRCg==
-X-Gm-Message-State: ABy/qLaEdrAqkpGXZ0VyjK2lblYUF0KN8ot+TUntD3diCvrXhmFJY8zC
-        74JG3SI+sdgBrhUOZqBfuXSNDIbZoxM=
-X-Google-Smtp-Source: APBJJlGxNjiuKAk/YPzuCmX9A62GKWZsxkzDOwSYQjySnPptXrz28B3YbYDhLG0sBi2RW/RyccVCQ9NUXR4=
-X-Received: from koudai.c.googlers.com ([fda3:e722:ac3:cc00:3:22c1:c0a8:1150])
- (user=koudai job=sendgmr) by 2002:a25:dbd2:0:b0:d08:95:76d with SMTP id
- g201-20020a25dbd2000000b00d080095076dmr146202ybf.6.1690892154993; Tue, 01 Aug
- 2023 05:15:54 -0700 (PDT)
-Date:   Tue,  1 Aug 2023 05:10:52 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <20230801121052.2475183-1-koudai@google.com>
-Subject: [PATCH RESEND] scripts/gdb: Fix lx-symbols command for arm64 LLVM
-From:   Koudai Iwahori <koudai@google.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kbingham@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Koudai Iwahori <koudai@google.com>,
-        linux-kernel@vger.kernel.org
+        Tue, 1 Aug 2023 08:11:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA417173A;
+        Tue,  1 Aug 2023 05:11:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E57E61587;
+        Tue,  1 Aug 2023 12:11:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7D7FC43395;
+        Tue,  1 Aug 2023 12:11:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690891895;
+        bh=OYOL7Hw5oR70E4y5roEPOfitJ0N6mzz1nz14ilOpiZ8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=itkt8QgTndT6VYDeChXDKnc0qjMtppNb764IozPZuI/3dmnRrvHDEm1BvdYc4ebFe
+         +fM06J4/Yaa+whTYjdcGZItAXtErWrDv8zqT7FKnGaVOTGqgiLWMtRIgtTLDryEH+w
+         Xf/xPRmeIkdgV8XyvcGK0DatGYyBZm63L2YaQdAmVyvBpUr7ta5T4GIaM1eWVI6G+x
+         q8cpyzkAxH7HnAd4rtn3lk8vtQ5Xf9yrptAoTpav8cJW+iwySmyksWDY+UP1MleuUr
+         oIZ03p7Hx9x9i0H8NvVf5cAr/BcVX03MnX+D9aosLyY4lcZRbpOfUCp+IA9iW6sYsR
+         8ROeAtAyvLRTQ==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so944834e87.3;
+        Tue, 01 Aug 2023 05:11:35 -0700 (PDT)
+X-Gm-Message-State: ABy/qLYequrxWzyi8RrDgx9g4ud0V0nACa9XbGG+qWQTV+k1AsGV341C
+        1YNuvC6p2udRQrxx/+vikGr/A6dSq5auQVzH638=
+X-Google-Smtp-Source: APBJJlE0js/FEHRKQdx2Jntw/hUtRYnfsdHU9E2jQGmW0IomWyErlWw/LM2BQ5DFD97hDonmrpLxIq+6OOFCO0Ijt80=
+X-Received: by 2002:a05:6512:280c:b0:4f6:d7b:2f19 with SMTP id
+ cf12-20020a056512280c00b004f60d7b2f19mr2317615lfb.24.1690891893656; Tue, 01
+ Aug 2023 05:11:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230728090916.1538550-1-ardb@kernel.org> <20230728090916.1538550-15-ardb@kernel.org>
+ <20230801120827.GFZMj1uzNMDs2gIi1f@fat_crate.local>
+In-Reply-To: <20230801120827.GFZMj1uzNMDs2gIi1f@fat_crate.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 1 Aug 2023 14:11:21 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXF+=W_oe7MS87rWdJ_z555iz2A8iR42fJ1mwZ+bgCgjmw@mail.gmail.com>
+Message-ID: <CAMj1kXF+=W_oe7MS87rWdJ_z555iz2A8iR42fJ1mwZ+bgCgjmw@mail.gmail.com>
+Subject: Re: [PATCH v7 14/22] x86/decompressor: Merge trampoline cleanup with
+ switching code
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Peter Jones <pjones@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lx-symbols assumes that module's .text sections is located at
-`module->mem[MOD_TEXT].base` and passes it to add-symbol-file command.
-However, .text section follows after .plt section in modules built by
-LLVM toolchain for arm64 target. Symbol addresses are skewed in GDB.
+On Tue, 1 Aug 2023 at 14:09, Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Fri, Jul 28, 2023 at 11:09:08AM +0200, Ard Biesheuvel wrote:
+> > diff --git a/arch/x86/boot/compressed/pgtable_64.c b/arch/x86/boot/compressed/pgtable_64.c
+> > index 4016444e6788304f..4f50af23a0854f18 100644
+> > --- a/arch/x86/boot/compressed/pgtable_64.c
+> > +++ b/arch/x86/boot/compressed/pgtable_64.c
+> > @@ -101,9 +101,10 @@ static unsigned long find_trampoline_placement(void)
+> >       return bios_start - TRAMPOLINE_32BIT_SIZE;
+> >  }
+> >
+> > -asmlinkage void set_paging_levels(void *rmode)
+> > +asmlinkage void set_paging_levels(void *rmode, void *pgtable)
+>
+> Please get rid of this silly rmode arg which gets passed in here as
+> boot_params and then gets assigned to an extern pointer to boot_params.
+> This is just silly. Just do what the other functions get from %r15 now
+> - a struct boot_params *bp arg.
+>
+> But perhaps in a separate patch.
+>
 
-Fix this issue by using the address of .text section stored in
-`module->sect_attrs`.
+OK
 
-Signed-off-by: Koudai Iwahori <koudai@google.com>
----
- scripts/gdb/linux/symbols.py | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+> >  {
+> >       void (*toggle_la57)(void *trampoline, bool enable_5lvl);
+> > +     void *trampoline_pgtable;
+> >       bool l5_required = false;
+> >
+> >       /* Initialize boot_params. Required for cmdline_find_option_bool(). */
+> > @@ -133,7 +134,7 @@ asmlinkage void set_paging_levels(void *rmode)
+> >        * the desired one.
+> >        */
+> >       if (l5_required == !!(native_read_cr4() & X86_CR4_LA57))
+> > -             return;
+> > +             goto out;
+> >
+> >       trampoline_32bit = (unsigned long *)find_trampoline_placement();
+> >
+> > @@ -163,6 +164,8 @@ asmlinkage void set_paging_levels(void *rmode)
+> >        * The new page table will be used by trampoline code for switching
+> >        * from 4- to 5-level paging or vice versa.
+> >        */
+> > +     trampoline_pgtable = trampoline_32bit +
+> > +                          TRAMPOLINE_32BIT_PGTABLE_OFFSET / sizeof(unsigned long);
+> >
+> >       if (l5_required) {
+> >               /*
+> > @@ -182,31 +185,21 @@ asmlinkage void set_paging_levels(void *rmode)
+> >                * may be above 4G.
+> >                */
+> >               src = *(unsigned long *)__native_read_cr3() & PAGE_MASK;
+> > -             memcpy(trampoline_32bit + TRAMPOLINE_32BIT_PGTABLE_OFFSET / sizeof(unsigned long),
+> > -                    (void *)src, PAGE_SIZE);
+> > +             memcpy(trampoline_pgtable, (void *)src, PAGE_SIZE);
+> >       }
+> >
+> >       toggle_la57(trampoline_32bit, l5_required);
+> > -}
+> > -
+> > -void cleanup_trampoline(void *pgtable)
+> > -{
+> > -     void *trampoline_pgtable;
+> > -
+> > -     trampoline_pgtable = trampoline_32bit + TRAMPOLINE_32BIT_PGTABLE_OFFSET / sizeof(unsigned long);
+> >
+> >       /*
+> > -      * Move the top level page table out of trampoline memory,
+> > -      * if it's there.
+> > +      * Move the top level page table out of trampoline memory.
+> >        */
+> > -     if ((void *)__native_read_cr3() == trampoline_pgtable) {
+> > -             memcpy(pgtable, trampoline_pgtable, PAGE_SIZE);
+> > -             native_write_cr3((unsigned long)pgtable);
+> > -     }
+> > +     memcpy(pgtable, trampoline_pgtable, PAGE_SIZE);
+> > +     native_write_cr3((unsigned long)pgtable);
+> >
+> >       /* Restore trampoline memory */
+> >       memcpy(trampoline_32bit, trampoline_save, TRAMPOLINE_32BIT_SIZE);
+> >
+> > +out:
+> >       /* Initialize variables for 5-level paging */
+> >  #ifdef CONFIG_X86_5LEVEL
+> >       if (__read_cr4() & X86_CR4_LA57) {
+> > @@ -215,4 +208,5 @@ void cleanup_trampoline(void *pgtable)
+> >               ptrs_per_p4d = 512;
+> >       }
+> >  #endif
+> > +     return;
+>
+> No need for that one. It'll return without it. :-)
+>
 
-diff --git a/scripts/gdb/linux/symbols.py b/scripts/gdb/linux/symbols.py
-index fdad3f32c747..c8047f4441e6 100644
---- a/scripts/gdb/linux/symbols.py
-+++ b/scripts/gdb/linux/symbols.py
-@@ -89,23 +89,27 @@ lx-symbols command."""
-                 return name
-         return None
- 
--    def _section_arguments(self, module):
-+    def _section_arguments(self, module, module_addr):
-         try:
-             sect_attrs = module['sect_attrs'].dereference()
-         except gdb.error:
--            return ""
-+            return str(module_addr)
-+
-         attrs = sect_attrs['attrs']
-         section_name_to_address = {
-             attrs[n]['battr']['attr']['name'].string(): attrs[n]['address']
-             for n in range(int(sect_attrs['nsections']))}
-+
-+        textaddr = section_name_to_address.get(".text", module_addr)
-         args = []
-         for section_name in [".data", ".data..read_mostly", ".rodata", ".bss",
--                             ".text", ".text.hot", ".text.unlikely"]:
-+                             ".text.hot", ".text.unlikely"]:
-             address = section_name_to_address.get(section_name)
-             if address:
-                 args.append(" -s {name} {addr}".format(
-                     name=section_name, addr=str(address)))
--        return "".join(args)
-+        return "{textaddr} {sections}".format(
-+            textaddr=textaddr, sections="".join(args))
- 
-     def load_module_symbols(self, module):
-         module_name = module['name'].string()
-@@ -125,10 +129,9 @@ lx-symbols command."""
-                 module_addr = hex(int(module_addr, 0) + plt_offset + plt_size)
-             gdb.write("loading @{addr}: {filename}\n".format(
-                 addr=module_addr, filename=module_file))
--            cmdline = "add-symbol-file {filename} {addr}{sections}".format(
-+            cmdline = "add-symbol-file {filename} {sections}".format(
-                 filename=module_file,
--                addr=module_addr,
--                sections=self._section_arguments(module))
-+                sections=self._section_arguments(module, module_addr))
-             gdb.execute(cmdline, to_string=True)
-             if module_name not in self.loaded_modules:
-                 self.loaded_modules.append(module_name)
--- 
-2.41.0.255.g8b1d071c50-goog
+Removing it breaks the build for !CONFIG_X86_5LEVEL
 
+However, I can move these assignments into the conditional at the top
+of the function (the one that sets l5_required) so we don't need the
+label at all. Will fix for v8
