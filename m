@@ -2,84 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF38676B3AF
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E7676B3B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbjHALqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
+        id S233293AbjHALql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:46:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234357AbjHALqM (ORCPT
+        with ESMTP id S234402AbjHALqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:46:12 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBA0B11A;
-        Tue,  1 Aug 2023 04:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ziNPMPkgZbjnyw4o3Yiy+e5PXDvLaLqinVQyax6y4tI=; b=gCImosHCb8eTt1d5VbBVrSEbjF
-        lbZzqpVBYMsdBzCyD77NVrvxMXcJIaL8itHlGapNPvFdOuFeZFzYM6/Hum6o/066Uq1f8Y7srvEop
-        rB/Uz92QRwN1dksks2Nlbh2I1VNfFSYzSXzC2/8NkovxsLlGsSigvpFqM0SIjsZ7sOIN/inVOQKyC
-        DU6prbfAbdLwmkCgSppxuhcAQWq26kFUWVb4uh1vEe4eZM2SI4fvSSvuGEVHhASpl3Uay/ACizKQK
-        SotJp4vOhbmL4q17rZ3V080h3RnYkLzMqnXCEd/QGTx2nNCGN6w2/jv7Vs7210lharyFk5ee7wj+C
-        gYylc0oQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQnow-00EdeF-0n;
-        Tue, 01 Aug 2023 11:45:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3DF3B300134;
-        Tue,  1 Aug 2023 13:45:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 20D71200C570F; Tue,  1 Aug 2023 13:45:45 +0200 (CEST)
-Date:   Tue, 1 Aug 2023 13:45:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ze Gao <zegao2021@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: Re: [RFC PATCH v3 3/6] sched, tracing: add to report task state in
- symbolic chars
-Message-ID: <20230801114545.GD79828@hirez.programming.kicks-ass.net>
-References: <20230801090124.8050-1-zegao@tencent.com>
- <20230801090124.8050-4-zegao@tencent.com>
+        Tue, 1 Aug 2023 07:46:24 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880BE1BF0;
+        Tue,  1 Aug 2023 04:46:18 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37189c5k002608;
+        Tue, 1 Aug 2023 11:46:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=UXNCaCfe8x00qYEAOnhM3SnTOV1Wu1rCLnFGmnwNIcc=;
+ b=NbB50WKn4T1hheDDOo5VcsyC6O5W2KsAokHr+m9o0QLV27rd+w73Oc+W/twe/mm3zs31
+ I/hXE2D/y6gbWtMuOUVojp3Q3G9qBnC+WGmwaY6se+8P7AlwYtK2mPV2+pLoyd6fgt4R
+ JVoMUvr7YOyv8oMJtkrZs2wtdlVkIwB0SqYf6mRZZFnkOlGw29Mx7oIY8u0bVUPXy5/7
+ u28cBBTRgUmDLJq3uIFpFG3f+rCgxwF9Am7kS+dzOlsSCo9vlmJw1WyxEIA0XgpRBvm3
+ h4bGVlVNcCZT0ncOI5hDuebmhEY17mgrvTw3q+xybFLE8zNFUrY6HaYjk3PEgVm5SPNG cg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6a503h2v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 01 Aug 2023 11:46:08 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 371Bk7Gh006901
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 1 Aug 2023 11:46:07 GMT
+Received: from hu-ajainp-blr.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 1 Aug 2023 04:46:05 -0700
+From:   Anvesh Jain P <quic_ajainp@quicinc.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Venkata Rao Kakani" <quic_vkakani@quicinc.com>,
+        Anvesh Jain P <quic_ajainp@quicinc.com>
+Subject: [PATCH] rtc: rtc-pm8xxx: control default alarm wake up capability
+Date:   Tue, 1 Aug 2023 17:15:49 +0530
+Message-ID: <20230801114549.26956-1-quic_ajainp@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801090124.8050-4-zegao@tencent.com>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: kRKcQjerAr_8qcYxPtEWbK_kUdhLRi3o
+X-Proofpoint-ORIG-GUID: kRKcQjerAr_8qcYxPtEWbK_kUdhLRi3o
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-01_06,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ priorityscore=1501 phishscore=0 clxscore=1011 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2306200000 definitions=main-2308010106
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 05:01:21PM +0800, Ze Gao wrote:
-> @@ -233,6 +255,7 @@ TRACE_EVENT(sched_switch,
->  		__field(	pid_t,	prev_pid			)
->  		__field(	int,	prev_prio			)
->  		__field(	long,	prev_state			)
-> +		__field(	char,	prev_state_char			)
->  		__array(	char,	next_comm,	TASK_COMM_LEN	)
->  		__field(	pid_t,	next_pid			)
->  		__field(	int,	next_prio			)
+Enable & disable rtc alarm wake up capability based on
+default parameter passed from device tree.
 
-And this again will wreck everybody that consumes the raw tracepoint
-without looking at tracefs.
+Signed-off-by: Venkata Rao Kakani <quic_vkakani@quicinc.com>
+Signed-off-by: Anvesh Jain P <quic_ajainp@quicinc.com>
+---
+ drivers/rtc/rtc-pm8xxx.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
+index f6b779c12ca7..bed57be602b6 100644
+--- a/drivers/rtc/rtc-pm8xxx.c
++++ b/drivers/rtc/rtc-pm8xxx.c
+@@ -523,6 +523,9 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
+ 	if (rc)
+ 		return rc;
+ 
++	if (of_property_read_bool(pdev->dev.of_node, "disable-alarm-wakeup"))
++		device_set_wakeup_capable(&pdev->dev, false);
++
+ 	rc = dev_pm_set_wake_irq(&pdev->dev, rtc_dd->alarm_irq);
+ 	if (rc)
+ 		return rc;
+
+base-commit: 0a8db05b571ad5b8d5c8774a004c0424260a90bd
+-- 
+2.17.1
+
