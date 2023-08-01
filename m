@@ -2,112 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17ED976BD7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2167C76BD83
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbjHATQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:16:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
+        id S231230AbjHATQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjHATQc (ORCPT
+        with ESMTP id S229650AbjHATQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:16:32 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A55218B;
-        Tue,  1 Aug 2023 12:16:31 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-56ca4d7079aso2152632eaf.0;
-        Tue, 01 Aug 2023 12:16:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690917391; x=1691522191;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=P/DiicnH3axzr7iqL00fOt/VCKsU/0ZbCcF8W8UmQHQ=;
-        b=m26xAZ8i6jKtz/Yl/N5ClIAyAQgUcpy7TFLFCe8Ub5OEYhRIri93peDqRzKZcp7CEJ
-         7Nu+k1nszqz8kyp6IV95lJKs7kDqq9wkSPccrR8OUraCw5RfelGnD6ttAYu92hhS1cb6
-         I3tzvphXvZkV/IuqU/TD9FD3wY75ATeC9EzpO7Q1o8VDySTmfwQqqp7+Vb56fdQWFRNe
-         AozoTFe4OoOwEgJZtod8nMD6qUOWLc3SVuQ+M+u/CLaNxGP34scGKsCEwiJUzJ/rP41p
-         d6AzxVBggpb1Svog5c/c2ZSnvZ9lPdbVzLwtN5/YOJEzJGCXpDc8cclAlY/eflicC7Jj
-         BmUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690917391; x=1691522191;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=P/DiicnH3axzr7iqL00fOt/VCKsU/0ZbCcF8W8UmQHQ=;
-        b=Xd02G1ln0aQ1HoIT/Gz9CYqC5egm3h+hsgTClp8ylK9yAwmVUas1sIBpxVFnM86kpp
-         qw3sQMrIVWvx8hKJBlu6+mKnddgeVaerwpzYlWxKz5MSEqp+h75WdBML3RLNAm2HZQld
-         aMUwG3t95OAv3BL2PUGtNm9YvReVJO3/+fgxg1s9bjgCuhkWSwJwjJ9qHTifYsihwj1f
-         rmlgdvnTx4dh3qb7tsNkI+CCxGaytlyZKvWrQQqm51lBEXWnWjMkKd5+A9qnh50E4Aj+
-         NZEXTJci4d8Dqk/uiiOvDKmUBSp+O182hSA5fU1XXOz1aKR6JzKZhd7khTcd377hd3YQ
-         PeIA==
-X-Gm-Message-State: ABy/qLaeY1XNn4nOw0bQ3Cgj6WWiZUTD3bZ3cX/e+DgN/mDb6rMqcqXA
-        RpRAggU6ZID0EmJFrkEruA8=
-X-Google-Smtp-Source: APBJJlF/MU5mflY7MkJoxsd9baK9GklT2V12HX3LXuGOyGs/LnT5GrfnNMxf7W5HLeKmVqRKkKpVmw==
-X-Received: by 2002:a05:6808:93:b0:3a7:5075:b0b8 with SMTP id s19-20020a056808009300b003a75075b0b8mr1985197oic.4.1690917390865;
-        Tue, 01 Aug 2023 12:16:30 -0700 (PDT)
-Received: from grumpy-VECTOR.hsd1.tx.comcast.net ([2601:2c3:480:7390:2bee:a481:ab2e:3ea2])
-        by smtp.gmail.com with ESMTPSA id p64-20020acaf143000000b003a414415693sm5860738oih.44.2023.08.01.12.16.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 12:16:30 -0700 (PDT)
-From:   Jorge Lopez <jorgealtxwork@gmail.com>
-X-Google-Original-From: Jorge Lopez <jorge.lopez2@hp.com>
-To:     hdegoede@redhat.com, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, thomas@t-8ch.de,
-        ilpo.jarvinen@linux.intel.com, dan.carpenter@linaro.org
-Subject: [PATCH] hp-bioscfg: Update string length calculation
-Date:   Tue,  1 Aug 2023 14:16:29 -0500
-Message-Id: <20230801191629.45942-1-jorge.lopez2@hp.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 1 Aug 2023 15:16:46 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EAA1BF0;
+        Tue,  1 Aug 2023 12:16:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=/uG5YuIody+hzN8XW34EjJfYB8YBu85awJMxvbTsR0U=; b=nZb3jdNV9pDRrob/YUA4R2AdxT
+        d4OGUQW4mPOpYYhOlP6RZo5aMckUC+eMj/Osevp3aMAix17jcr2Cycvp9Vws7XQsaeWhGIRtZLccP
+        gjDnlTAhh6XRdRQ1aY18sZu/dLXlOgb5E/eaSIvPO5eamrxQ2VUUDzQUVOEEjXNOXPAkmfrQd4zRu
+        0amfY19Yu+U3xVl5jP960puoEx4uXkQWLIr7j7yGgWWKV1P8j6S4aJje2UQAzw+IykwFsmKkH6sVK
+        sGsCqVTuu4SRN+2EeJrqOGkPx9Es21MyLltzX3DHBOEjNu58FnemFiRD2esFkxrtWRn/G4sv2NE+e
+        /hhxWVZw==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qQurK-0037O0-1t;
+        Tue, 01 Aug 2023 19:16:42 +0000
+Message-ID: <188bcc4c-7388-ca39-5c3c-629edd78cc9f@infradead.org>
+Date:   Tue, 1 Aug 2023 12:16:41 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/3] clk: qcom: add clock controller driver for
+ qca8386/qca8084
+Content-Language: en-US
+To:     Luo Jie <quic_luoj@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        p.zabel@pengutronix.de
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
+References: <20230801085352.22873-1-quic_luoj@quicinc.com>
+ <20230801085352.22873-4-quic_luoj@quicinc.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230801085352.22873-4-quic_luoj@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace method how the string length is calculated.
-Removed unused variable 'size'
 
-Signed-off-by: Jorge Lopez <jorge.lopez2@hp.com>
 
----
-Based on the latest platform-drivers-x86.git/for-next
----
- drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+On 8/1/23 01:53, Luo Jie wrote:
+> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+> index 263e55d75e3f..a17e8fa5a7e1 100644
+> --- a/drivers/clk/qcom/Kconfig
+> +++ b/drivers/clk/qcom/Kconfig
+> @@ -195,6 +195,14 @@ config IPQ_GCC_9574
+>  	  i2c, USB, SD/eMMC, etc. Select this for the root clock
+>  	  of ipq9574.
+>  
+> +config IPQ_NSSCC_QCA8K
+> +        tristate "QCA8K(QCA8386 or QCA8084) NSS Clock Controller"
+> +        help
 
-diff --git a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-index cffc1c9ba3e7..b19644ed12e0 100644
---- a/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-+++ b/drivers/platform/x86/hp/hp-bioscfg/order-list-attributes.c
-@@ -258,13 +258,11 @@ static int hp_populate_ordered_list_elements_from_package(union acpi_object *ord
- 				eloc++;
- 			break;
- 		case ORD_LIST_ELEMENTS:
--			size = ordered_list_data->elements_size;
--
- 			/*
- 			 * Ordered list data is stored in hex and comma separated format
- 			 * Convert the data and split it to show each element
- 			 */
--			ret = hp_convert_hexstr_to_str(str_value, value_len, &tmpstr, &tmp_len);
-+			ret = hp_convert_hexstr_to_str(str_value, strlen(str_value), &tmpstr, &tmp_len);
- 			if (ret)
- 				goto exit_list;
- 
-@@ -279,7 +277,7 @@ static int hp_populate_ordered_list_elements_from_package(union acpi_object *ord
- 				strscpy(ordered_list_data->elements[olist_elem],
- 					part,
- 					sizeof(ordered_list_data->elements[olist_elem]));
--				part = strsep(&part_tmp, SEMICOLON_SEP);
-+				part = strsep(&part_tmp, COMMA_SEP);
- 			}
- 
- 			kfree(str_value);
+The 2 lines above should be indented with one tab (only; no spaces).
+
+> +          Support for NSS(Network SubSystem) clock controller on
+
+The line above should be indented with one tab + 2 spaces (like the following
+3 lines).
+
+> +	  qca8386/qca8084 chip.
+> +	  Say Y if you want to use network function of switch or PHY
+> +	  function. Select this for the root clock of qca8xxx.
+
 -- 
-2.34.1
-
+~Randy
