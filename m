@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C24476A918
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BE776A91A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjHAGaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:30:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
+        id S231280AbjHAGa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjHAGaP (ORCPT
+        with ESMTP id S229554AbjHAGa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:30:15 -0400
-Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051FC1BF2;
-        Mon, 31 Jul 2023 23:29:57 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4RFPy51q9Nz9v7YW;
-        Tue,  1 Aug 2023 14:16:29 +0800 (CST)
-Received: from [10.81.220.249] (unknown [10.81.220.249])
-        by APP1 (Coremail) with SMTP id LxC2BwC3abkdpshkKRcYAA--.13561S2;
-        Tue, 01 Aug 2023 07:29:03 +0100 (CET)
-Message-ID: <4c2f96bc-f6c0-4a04-e4fa-6ab1b5e56bd6@huaweicloud.com>
-Date:   Tue, 1 Aug 2023 08:28:42 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/9] Allow dynamic allocation of software IO TLB bounce
- buffers
-Content-Language: en-US
-To:     =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>,
-        Christoph Hellwig <hch@lst.de>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
-        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>
-References: <cover.1690459412.git.petr.tesarik.ext@huawei.com>
- <20230731160409.GA8991@lst.de> <20230731214618.6e7cde05@meshulam.tesarici.cz>
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-In-Reply-To: <20230731214618.6e7cde05@meshulam.tesarici.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwC3abkdpshkKRcYAA--.13561S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYc7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87
-        Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx
-        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAC
-        I402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-        1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI
-        42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCTnIWI
-        evJa73UjIFyTuYvjfUoL0eDUUUU
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=1.0 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 02:30:57 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D1C4DB
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:30:55 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8DxRvGdpshk6uUNAA--.32938S3;
+        Tue, 01 Aug 2023 14:30:53 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxPCOcpshk8pVDAA--.26385S2;
+        Tue, 01 Aug 2023 14:30:52 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     loongarch@lists.linux.dev, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] LoongArch: Error out if clang version is less than 17.0.0
+Date:   Tue,  1 Aug 2023 14:30:46 +0800
+Message-Id: <1690871446-23713-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8DxPCOcpshk8pVDAA--.26385S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7AFykXFW8JryfCr47CFWrtFc_yoW8Cr4fpr
+        1rZw1DKr4kXryFvrZ7J34DWryY9F97JryIgFyUJryUWry2qws5WrW8KrWagFZrZws7Zay0
+        gryxG3WS9FyUA3gCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
+        Ja73UjIFyTuYvjxUc0eHDUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/31/2023 9:46 PM, Petr Tesařík wrote:
-> V Mon, 31 Jul 2023 18:04:09 +0200
-> Christoph Hellwig <hch@lst.de> napsáno:
-> 
->> I was just going to apply this, but patch 1 seems to have a non-trivial
->> conflict with the is_swiotlb_active removal in pci-dma.c.  Can you resend
->> against the current dma-mapping for-next tree?
-> 
-> Sure thing, will re-send tomorrow morning.
+On my test machine, the clang version is 16.0.4, when build kernel
+with clang:
 
-After commit f9a38ea5172a ("x86: always initialize xen-swiotlb when
-xen-pcifront is enabling") removed that call to swiotlb_init_late(),
-there is nothing to patch, and the hunk can be dropped.
+  make CC=clang loongson3_defconfig
+  make CC=clang
 
-I have just sent v7.
+there exist many errors such as:
 
-Petr T
+  clang-16: error: argument unused during compilation: '-mabi=lp64s'
+  error: unknown register name 'a0' in asm
+  error: unknown register name 't0' in asm
+
+the above issues have been fixed in the upstream llvm project recently,
+it works well when update clang version to 17.0.0:
+
+  make CC=clang loongson3_defconfig
+  make CC=clang menuconfig (set CONFIG_MODULES=n and CONFIG_RELOCATABLE=n)
+  make CC=clang
+
+thus 17.0.0 is the minimal clang version to build kernel on LoongArch,
+it is better to error out if clang version is less than 17.0.0, then
+we can do the right thing to update clang version and avoid wasting
+time to analysis kernel errors.
+
+By the way, the clang 17.0.0 still have some issues to build kernel on
+LoongArch, you need to unset CONFIG_MODULES and CONFIG_RELOCATABLE to
+avoid build errors. Additionally, if you want a workable kernel, some
+modules should be set as y instead of m if CONFIG_MODULES=n.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1787
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/loongarch/Makefile | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
+index b1e5db5..f07f62a 100644
+--- a/arch/loongarch/Makefile
++++ b/arch/loongarch/Makefile
+@@ -10,6 +10,12 @@ KBUILD_DEFCONFIG := loongson3_defconfig
+ image-name-y			:= vmlinux
+ image-name-$(CONFIG_EFI_ZBOOT)	:= vmlinuz
+ 
++ifdef CONFIG_CC_IS_CLANG
++  ifneq ($(call clang-min-version, 170000),y)
++    $(error Sorry, you need a newer clang version >= 17.0.0)
++  endif
++endif
++
+ ifndef CONFIG_EFI_STUB
+ KBUILD_IMAGE	:= $(boot)/vmlinux.elf
+ else
+-- 
+2.1.0
 
