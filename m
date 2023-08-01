@@ -2,243 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD8A76A7CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4AA76A7CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjHAEOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 00:14:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
+        id S230423AbjHAEPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 00:15:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229662AbjHAEOQ (ORCPT
+        with ESMTP id S229662AbjHAEO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 00:14:16 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A866DE49;
-        Mon, 31 Jul 2023 21:14:14 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-686daaa5f1fso3635342b3a.3;
-        Mon, 31 Jul 2023 21:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690863254; x=1691468054;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D+Qr+Vl6m/WbbDISDjD1yyCZ2hR5HHEvke4EmXEj2Uw=;
-        b=pIz+Kd+2aIGkwz0drO4/9pu9r8QDYtL8kmf1bgJ0EtiKl8D5Dq1pruHje/mBtmcd7D
-         95ay4nhbosIOs7YbjYOFSwpwuKb2x/raH71dbfEbl0ighvQVE/QyedPwMsDk6k8l+GUT
-         VyFMj5qNklAfs0B/ns7Az9lYDYDNXEg/FDmaidwfHjueT5L2gRFBdFZA9WczyFgAqPfT
-         EeeVGL/C19UAdymTIwSQ0NtZxCdNlHGXtANr3/6EwVv13cD4tg07pnYk78ptn7Q4Cb0Y
-         k6uCS9G9oWyxUPltKR8NmVNyvB5UiQRcoUMlDu8wDpTeD0umyjYoMhMLjR+K5eFUG7gl
-         ODcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690863254; x=1691468054;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D+Qr+Vl6m/WbbDISDjD1yyCZ2hR5HHEvke4EmXEj2Uw=;
-        b=kEyqBqwc5KJWS+IHCXPN8zlWs9uxc8gvKXQXjuzdEUM8FRwH0TyxA883+4KKcaSY4R
-         RxCgA/QFbakBUiiyUNecttbQyA8QAfM7f4JhlmYqCAUU48amDZFNt4v8nCdeW17GUEvk
-         1s8758jWsY2dqpZ/+4tVahO+ip0Wgu227F36h3oAX/M78R83tioCaMT375F93eYxf0jr
-         B4CReaMDY/ctHVUkImWKN3jS1OoYXBYIZUAbVt++kEAJgGH4F5ecubephq7/dn2P9mik
-         SwMLGs17Yy/L0FxIdGGi0VR69UA2vNnWjTfLPQ8kiL7mEg6U1MiqbMmQHcWxPR87opi/
-         bGaw==
-X-Gm-Message-State: ABy/qLYkf8ZJNO4rE8ukyM3Ipwfg5NUjQVPB+7BxlHmkSaG5GUgl/eDi
-        rpBZ9PzbI/qAi/dyxg7+mOGWE/Z6cqgWGWdr
-X-Google-Smtp-Source: APBJJlFF11RaQc5lCvP2a1aXSvPrjsc4P1ZZLbtnwCzQ2n4om5Ert1Viv7o7AR3/b8EanH052/XDqw==
-X-Received: by 2002:a05:6a21:498e:b0:12f:dc60:2b9e with SMTP id ax14-20020a056a21498e00b0012fdc602b9emr11084938pzc.48.1690863253921;
-        Mon, 31 Jul 2023 21:14:13 -0700 (PDT)
-Received: from localhost (c-67-166-91-86.hsd1.wa.comcast.net. [67.166.91.86])
-        by smtp.gmail.com with ESMTPSA id d7-20020aa78147000000b0068718aadda7sm5242014pfn.108.2023.07.31.21.14.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 21:14:13 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 04:14:12 +0000
-From:   Bobby Eshleman <bobbyeshleman@gmail.com>
-To:     Arseniy Krasnov <oxffffaa@gmail.com>
-Cc:     Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Vishnu Dasa <vdasa@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH RFC net-next v5 13/14] virtio/vsock: implement datagram
- supporty
-Message-ID: <ZMiGlMj70xd95dTK@bullseye>
-References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
- <20230413-b4-vsock-dgram-v5-13-581bd37fdb26@bytedance.com>
- <adeed3a8-68fe-bdb7-e4a1-48044dbe5436@gmail.com>
- <ZMFetBpO0OdzXtnK@bullseye>
- <f04d2aa5-32d8-cdc4-3b51-f15b0f42a1e8@gmail.com>
+        Tue, 1 Aug 2023 00:14:59 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2085.outbound.protection.outlook.com [40.107.243.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BBBDE49
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 21:14:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VYR7E6+rI3qWny7IcpVYyT9Ep7ZdWssyc7fu8TgvIypDyPheYgO8PsIK8d6xCFXfAb30pu+vxJHlU7v7m/GAlO8XFgglL8TVgXg3MoL5gIbhRDtbo83yUW2TKaqOAuPKoG/y0uDQQhDTK5LeIDUyXnuKXzSNRnFacfewf9AKWbESQC6rGzdRC4q5bXeF8CwPWkLQCkasQyy3rnwJ3Op0BcQ0oMPCw5VKgSW9YworBR780tg03gxpwvEJKSz6FRTwFlOEkb737oq06/XcGFIeih6LZWfIIxIylAl5ZQdyj79JvQK4JDcQXqARc8CUa7d2OH4Z7lQXjdtz+M1NWvB0Aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LX54VxbeJT2rYFLFGBMTryxRdHyaVRPwOQ6RF6p631c=;
+ b=YTxJIgK8PDgWk84UXavT0x1Dv0rXDX+qhuuZfzoMnRf95HDr/OCC3Ph46mqwahdJM/xXCC12uTCrwduHoPfGtFbUqQANi5yF+btnnkOI918DfmTr3rs6Yz9Xbyo/q0zvNaMtSI0boegYzBV0t+bng8N8JFRmRbb51k5hrOvyuOG9F7/HBdKcGMmHZoyLEveUy8lkUeEGjIPlhknl3raCQ+NsCG2AoD7adOpJ5iLHJgTx9Vp5FKiZF4km0u86oNPvz8Fc9sxbuhYD+DXmhBTtu4YOG7RQpd89mcctStnF6Gk0n6WDWTI7eO55ycXiXPQ789m1TZyywAz2RNMUNS8DXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LX54VxbeJT2rYFLFGBMTryxRdHyaVRPwOQ6RF6p631c=;
+ b=V4e0902rdzAh5E3DhaXkq69XZU0/i8hshmdXogZYThL5EXIc6lPdLAPyt1vicy2XKw1VzPMU9bKsojIrVWkRfG50QqnjjXvj3SXbPJVsUQuCzHyK7PpYl65jQzcXCGsUDZnmDHLe6FziVlcx+oqrEy+CeArihjWNckoaTTer3kORtgj9D8mfzn0g/QT9wSyNvZfP9jlKLhGvkblLivH3cjGEUIDK1+sHZ8QJoikcy76BvzOddB//O2zMBuCAe4mE7lPzUDnQvaVpo6Y0DY/WGp6D2YoQh5c5h/lwlZkh1JJyz9qjft6Q8+35MrxO/IbjfdblQU87MAJJeM732UE3fQ==
+Received: from MW2PR16CA0057.namprd16.prod.outlook.com (2603:10b6:907:1::34)
+ by PH7PR12MB5712.namprd12.prod.outlook.com (2603:10b6:510:1e3::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.42; Tue, 1 Aug
+ 2023 04:14:56 +0000
+Received: from CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:907:1:cafe::3e) by MW2PR16CA0057.outlook.office365.com
+ (2603:10b6:907:1::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.42 via Frontend
+ Transport; Tue, 1 Aug 2023 04:14:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ CO1NAM11FT059.mail.protection.outlook.com (10.13.174.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.34 via Frontend Transport; Tue, 1 Aug 2023 04:14:55 +0000
+Received: from rnnvmail205.nvidia.com (10.129.68.10) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Mon, 31 Jul 2023
+ 21:14:45 -0700
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail205.nvidia.com
+ (10.129.68.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Mon, 31 Jul
+ 2023 21:14:45 -0700
+Received: from Asurada-Nvidia (10.127.8.11) by mail.nvidia.com (10.129.68.7)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Mon, 31 Jul 2023 21:14:44 -0700
+Date:   Mon, 31 Jul 2023 21:14:43 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+CC:     <iommu@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <jgg@nvidia.com>,
+        <jean-philippe@linaro.org>
+Subject: Re: [PATCH v2 2/8] iommu/arm-smmu-v3: Replace s1_cfg with cdtab_cfg
+Message-ID: <ZMiGs5dR6IKF855y@Asurada-Nvidia>
+References: <20230731104833.800114-1-mshavit@google.com>
+ <20230731184817.v2.2.I1ef1ed19d7786c8176a0d05820c869e650c8d68f@changeid>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <f04d2aa5-32d8-cdc4-3b51-f15b0f42a1e8@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230731184817.v2.2.I1ef1ed19d7786c8176a0d05820c869e650c8d68f@changeid>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1NAM11FT059:EE_|PH7PR12MB5712:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4d0c93eb-64df-4fdf-9279-08db9245dd03
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VJZcbfVH6gkgQxBcEIue0/vxQUuiAerKPqqlAXKkT2/gxrSEeG0WU+dw4E2sEhV61K/e9D0KKJ84DEJaxdNNu6oLlqx8po9dYhAGCNaCU3+OTFrEXKIwMvXSNqbu3YOK6ww/MhKwZE6DGNDYmR06TWPWWxSQmFTDuCrCLxaN9XgOnpHvR9aL8dR1AmX9eZ1SkKyKNQF57mF1MfjPFd9l8xgezAar25m8TDlnWhdxldGPZlXYh0tZUBjfVtdQDr/5zmWJDhk55LII2Dys5SQegukaPrQqn8Lgsael6n7w7aO56piEj8JPDdsz1FXnhiDTUOgr5kf6eNIgK8bdyBr4YDsKjoZSHUczD8L9aOuaEi21duqRcRKbK7+W+zqa/x+OFNZ6niJ2cHPwC6ux74jIKFrsogU+Uiaq7230+xQ+lz8BfzCaj4kBI0YsrmR9w/IOmww2pEWdYExePXHTf5ACssbP6xEmKqVZWIBe49cJLp4twqnba8TfS27FR/ryt0YeD0qLa/BhuZJxUaoimOO/T2U38nhZ6ZB/t6Ra3lC+IH29DyNMuw3moLACF//APzqei6mOnf5Ohf1UKD1ih4yyR1foMz1/HDv/A6mB+N5fbACk+UTqlTJiUu4L6NWh0kaKW/1/kTPQuyxssZoNUjocclaHjaSJgzl++AM02Vb7SawVX6pDY3+1SkBDBGtLW+MGz3uyBHTgfn0bEK5OprbPCsjzNrZGdXxPV0lITjZo0TtOn49y5fKkRdHbirOcghA1snrZhg/x3SapjWhKKCPCtw7e76OX2jPR7OZiymAvk+I=
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(376002)(346002)(136003)(39860400002)(396003)(82310400008)(451199021)(46966006)(36840700001)(40470700004)(33716001)(82740400003)(356005)(7636003)(55016003)(40480700001)(86362001)(40460700003)(9686003)(478600001)(186003)(336012)(26005)(8676002)(8936002)(5660300002)(70586007)(70206006)(6916009)(54906003)(4326008)(41300700001)(316002)(2906002)(36860700001)(83380400001)(426003)(47076005)(473944003)(414714003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 04:14:55.9736
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d0c93eb-64df-4fdf-9279-08db9245dd03
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT059.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5712
+X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 11:09:21AM +0300, Arseniy Krasnov wrote:
-> 
-> 
-> On 26.07.2023 20:58, Bobby Eshleman wrote:
-> > On Sat, Jul 22, 2023 at 11:45:29AM +0300, Arseniy Krasnov wrote:
-> >>
-> >>
-> >> On 19.07.2023 03:50, Bobby Eshleman wrote:
-> >>> This commit implements datagram support for virtio/vsock by teaching
-> >>> virtio to use the general virtio transport ->dgram_addr_init() function
-> >>> and implementation a new version of ->dgram_allow().
-> >>>
-> >>> Additionally, it drops virtio_transport_dgram_allow() as an exported
-> >>> symbol because it is no longer used in other transports.
-> >>>
-> >>> Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
-> >>> ---
-> >>>  include/linux/virtio_vsock.h            |  1 -
-> >>>  net/vmw_vsock/virtio_transport.c        | 24 +++++++++++++++++++++++-
-> >>>  net/vmw_vsock/virtio_transport_common.c |  6 ------
-> >>>  3 files changed, 23 insertions(+), 8 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
-> >>> index b3856b8a42b3..d0a4f08b12c1 100644
-> >>> --- a/include/linux/virtio_vsock.h
-> >>> +++ b/include/linux/virtio_vsock.h
-> >>> @@ -211,7 +211,6 @@ void virtio_transport_notify_buffer_size(struct vsock_sock *vsk, u64 *val);
-> >>>  u64 virtio_transport_stream_rcvhiwat(struct vsock_sock *vsk);
-> >>>  bool virtio_transport_stream_is_active(struct vsock_sock *vsk);
-> >>>  bool virtio_transport_stream_allow(u32 cid, u32 port);
-> >>> -bool virtio_transport_dgram_allow(u32 cid, u32 port);
-> >>>  void virtio_transport_dgram_addr_init(struct sk_buff *skb,
-> >>>  				      struct sockaddr_vm *addr);
-> >>>  
-> >>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-> >>> index ac2126c7dac5..713718861bd4 100644
-> >>> --- a/net/vmw_vsock/virtio_transport.c
-> >>> +++ b/net/vmw_vsock/virtio_transport.c
-> >>> @@ -63,6 +63,7 @@ struct virtio_vsock {
-> >>>  
-> >>>  	u32 guest_cid;
-> >>>  	bool seqpacket_allow;
-> >>> +	bool dgram_allow;
-> >>>  };
-> >>>  
-> >>>  static u32 virtio_transport_get_local_cid(void)
-> >>> @@ -413,6 +414,7 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
-> >>>  	queue_work(virtio_vsock_workqueue, &vsock->rx_work);
-> >>>  }
-> >>>  
-> >>> +static bool virtio_transport_dgram_allow(u32 cid, u32 port);
-> >>
-> >> May be add body here? Without prototyping? Same for loopback and vhost.
-> >>
-> > 
-> > Sounds okay with me, but this seems to go against the pattern
-> > established by seqpacket. Any reason why?
-> 
-> Stefano Garzarella <sgarzare@redhat.com> commented my patch with the same approach:
-> 
-> https://lore.kernel.org/netdev/lex6l5suez7azhirt22lidndtjomkbagfbpvvi5p7c2t7klzas@4l2qly7at37c/
-> 
-> Thanks, Arseniy
-> 
+On Mon, Jul 31, 2023 at 06:48:12PM +0800, Michael Shavit wrote:
+ 
+> arm_smmu_ctx_desc_cfg is renamed to arm_smmu_cdtab_cfg to make it more
 
-Gotcha, sounds good.
+There seems to be no change of renaming "arm_smmu_ctx_desc_cfg" to
+"arm_smmu_cdtab_cfg". Even PATCH-8 only renames the local variable
+"cdcfg" to "cd_table". Also, we should not use PATCH-8 to justify
+this change, because it makes this patch less convincing since the
+PATCH-8 might not get applied at all.
 
-Thanks,
-Bobby
-> 
-> > 
-> >>>  static bool virtio_transport_seqpacket_allow(u32 remote_cid);
-> >>>  
-> >>>  static struct virtio_transport virtio_transport = {
-> >>> @@ -430,6 +432,7 @@ static struct virtio_transport virtio_transport = {
-> >>>  
-> >>>  		.dgram_enqueue            = virtio_transport_dgram_enqueue,
-> >>>  		.dgram_allow              = virtio_transport_dgram_allow,
-> >>> +		.dgram_addr_init          = virtio_transport_dgram_addr_init,
-> >>>  
-> >>>  		.stream_dequeue           = virtio_transport_stream_dequeue,
-> >>>  		.stream_enqueue           = virtio_transport_stream_enqueue,
-> >>> @@ -462,6 +465,21 @@ static struct virtio_transport virtio_transport = {
-> >>>  	.send_pkt = virtio_transport_send_pkt,
-> >>>  };
-> >>>  
-> >>> +static bool virtio_transport_dgram_allow(u32 cid, u32 port)
-> >>> +{
-> >>> +	struct virtio_vsock *vsock;
-> >>> +	bool dgram_allow;
-> >>> +
-> >>> +	dgram_allow = false;
-> >>> +	rcu_read_lock();
-> >>> +	vsock = rcu_dereference(the_virtio_vsock);
-> >>> +	if (vsock)
-> >>> +		dgram_allow = vsock->dgram_allow;
-> >>> +	rcu_read_unlock();
-> >>> +
-> >>> +	return dgram_allow;
-> >>> +}
-> >>> +
-> >>>  static bool virtio_transport_seqpacket_allow(u32 remote_cid)
-> >>>  {
-> >>>  	struct virtio_vsock *vsock;
-> >>> @@ -655,6 +673,9 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
-> >>>  	if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_SEQPACKET))
-> >>>  		vsock->seqpacket_allow = true;
-> >>>  
-> >>> +	if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_DGRAM))
-> >>> +		vsock->dgram_allow = true;
-> >>> +
-> >>>  	vdev->priv = vsock;
-> >>>  
-> >>>  	ret = virtio_vsock_vqs_init(vsock);
-> >>> @@ -747,7 +768,8 @@ static struct virtio_device_id id_table[] = {
-> >>>  };
-> >>>  
-> >>>  static unsigned int features[] = {
-> >>> -	VIRTIO_VSOCK_F_SEQPACKET
-> >>> +	VIRTIO_VSOCK_F_SEQPACKET,
-> >>> +	VIRTIO_VSOCK_F_DGRAM
-> >>>  };
-> >>>  
-> >>>  static struct virtio_driver virtio_vsock_driver = {
-> >>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-> >>> index 96118e258097..77898f5325cd 100644
-> >>> --- a/net/vmw_vsock/virtio_transport_common.c
-> >>> +++ b/net/vmw_vsock/virtio_transport_common.c
-> >>> @@ -783,12 +783,6 @@ bool virtio_transport_stream_allow(u32 cid, u32 port)
-> >>>  }
-> >>>  EXPORT_SYMBOL_GPL(virtio_transport_stream_allow);
-> >>>  
-> >>> -bool virtio_transport_dgram_allow(u32 cid, u32 port)
-> >>> -{
-> >>> -	return false;
-> >>> -}
-> >>> -EXPORT_SYMBOL_GPL(virtio_transport_dgram_allow);
-> >>> -
-> >>>  int virtio_transport_connect(struct vsock_sock *vsk)
-> >>>  {
-> >>>  	struct virtio_vsock_pkt_info info = {
-> >>>
-> >>
-> >> Thanks, Arseniy
-> > 
-> > Thanks,
-> > Bobby
+> obvious that it represents a cd table. The max number of CDs that can be
+> represented by the CD table is stored in this truct in its log2 form
+> since it is more useful for users of the CD table, and replaces the
+> s1cdmax field in s1_cfg. Instead of storing s1_cfg.s1fmt, it can also be
+> trivially computed from the cdtab_cfg, and is therefore removed from
+> s1_cfg.
+
+The commit message does not quite well describe why "replace s1_cfg
+with cd_table" in the subject. It could mention that the goal here
+is to move cdtab to the master structure. And "unwrap s1_cfg" might
+be more fitting in the subject, IMHO.
+
+Thanks
+Nicolin
