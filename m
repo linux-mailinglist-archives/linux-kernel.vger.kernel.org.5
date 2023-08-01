@@ -2,134 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7873F76BF6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EA176BF6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbjHAVmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52782 "EHLO
+        id S232650AbjHAVnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:43:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbjHAVmw (ORCPT
+        with ESMTP id S230126AbjHAVnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:42:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553D31FDA
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:42:51 -0700 (PDT)
+        Tue, 1 Aug 2023 17:43:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67EE1FDA
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:43:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DDB9B6162C
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:42:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E137C433C8;
-        Tue,  1 Aug 2023 21:42:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7442E6162C
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:43:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E3E8C433C8;
+        Tue,  1 Aug 2023 21:43:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690926170;
-        bh=sVMbvlwuoJ5vjWfQinZxmH1t6ndRFcWLp4U0FAFY/IQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rP1HGRkjQ+WQQb1XzDiMaR8nmI6EwrsJTQmDhvUDiiObY/3S6uj4JTBz0qHwMWNIc
-         jzQk31jBnJ7bKmDS7tfRTBc9udiTQGCvEEsBOvcuZH9ZEkjkScthmhKxFnOjnumtSn
-         DI70RrO1DSF6oJcxx9rB0YUj9tjWtBOm/F7EqBhvI2CtNOiwke0I55FeFlHlle5H1n
-         gKlMD52VO+/yDSSYGnLWKEl3mnuiDFcctvWb7gK5GqMxRSxEr5GCzpuxqZDiuN+rcq
-         GkPdhwO/pQlwGtnglNInT8sbFIRJWd1zWQfy1w3YtyjRZcOYTt4OVpX1B+xWq7KmBq
-         frETTWL2hhV3Q==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 662344012D; Tue,  1 Aug 2023 18:42:47 -0300 (-03)
-Date:   Tue, 1 Aug 2023 18:42:47 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Artem Savkov <asavkov@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Milian Wolff <milian.wolff@kdab.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [PATCH 1/1] Revert "perf report: Append inlines to non-DWARF
- callchains"
-Message-ID: <ZMl8VyhdwhClTM5g@kernel.org>
+        s=k20201202; t=1690926228;
+        bh=usnEviioqoCVwGAiv0lnOrnKLUhwR79yOmsKkexjDRA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tLYQ1R+pmQrIUdQF6GQH/IE5f5FfTkkHu5OjhS6irYTgXtcK0Iva3tfsnZmdDUY63
+         kuKFqF+gpJZd55k3V3n3xMSiJSnI9sa0y6o81qt7J0d8piyOhAq5Layeclr1clUaPV
+         E2xUfDTQ/PgsI6s3yfF8fosGllXXvcRLNwrqdnWbSVuwZilfr9C1loDgIYtL633Yca
+         UsdbDOWau8Bs0xLh/VTF2Z6GKC9iZJIRZCmw9G8Hm0/yF1m1ODHm/nlBX52j9PNX/N
+         dF+0iQsfLTLeu0Kw6Zu3MX40bWTC2Yz0ORKhQ1jnoNevHFBemlHhh2r+wIKL1/7dA+
+         uyMMu5QtSYYKw==
+Date:   Tue, 1 Aug 2023 14:43:47 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Ruan Jinjie <ruanjinjie@huawei.com>, <yisen.zhuang@huawei.com>,
+        <salil.mehta@huawei.com>, <davem@davemloft.net>,
+        <edumazet@google.com>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] net: hisilicon: fix the return value handle and
+ remove redundant netdev_err() for platform_get_irq()
+Message-ID: <20230801144347.140cc06f@kernel.org>
+In-Reply-To: <20230731073858.3633193-1-ruanjinjie@huawei.com>
+References: <20230731073858.3633193-1-ruanjinjie@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Artem,
+On Mon, 31 Jul 2023 15:38:58 +0800 Ruan Jinjie wrote:
+> There is no possible for platform_get_irq() to return 0
+> and the return value of platform_get_irq() is more sensible
+> to show the error reason.
+> 
+> And there is no need to call the netdev_err() function directly to print
+> a custom message when handling an error from platform_get_irq() function as
+> it is going to display an appropriate error message in case of a failure.
+> 
+> Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
 
-	Can you please double check this? I reproduced with:
+Dan, with the sample of one patch from you I just applied I induce 
+that treating 0 as error and returning a -EINVAL in that case may 
+be preferable here?
 
-git checkout 46d21ec067490ab9cdcc89b9de5aae28786a8b8e
-build it
-perf record -a -g sleep 5s
-perf report
-
-	Do you get the same slowness and then reverting it, i.e. just
-going to HEAD~ and rebuilding getting a fast 'perf report' startup, i.e.
-without the inlines in the callchains?
-
-- Arnaldo
-
-----
-
-This reverts commit 46d21ec067490ab9cdcc89b9de5aae28786a8b8e.
-
-The tests were made with a specific workload, further tests on a
-recently updated fedora 38 system with a system wide perf.data file
-shows 'perf report' taking excessive time, so lets revert this until a
-full investigation and improvement on the addr2line support code is
-made.
-
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Artem Savkov <asavkov@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Milian Wolff <milian.wolff@kdab.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/util/machine.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 4e62843d51b7dbf9..f4cb41ee23cdbcfc 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -45,7 +45,6 @@
- 
- static void __machine__remove_thread(struct machine *machine, struct thread_rb_node *nd,
- 				     struct thread *th, bool lock);
--static int append_inlines(struct callchain_cursor *cursor, struct map_symbol *ms, u64 ip);
- 
- static struct dso *machine__kernel_dso(struct machine *machine)
- {
-@@ -2385,10 +2384,6 @@ static int add_callchain_ip(struct thread *thread,
- 	ms.maps = maps__get(al.maps);
- 	ms.map = map__get(al.map);
- 	ms.sym = al.sym;
--
--	if (!branch && append_inlines(cursor, &ms, ip) == 0)
--		goto out;
--
- 	srcline = callchain_srcline(&ms, al.addr);
- 	err = callchain_cursor_append(cursor, ip, &ms,
- 				      branch, flags, nr_loop_iter,
--- 
-2.41.0
+> diff --git a/drivers/net/ethernet/hisilicon/hip04_eth.c b/drivers/net/ethernet/hisilicon/hip04_eth.c
+> index 50c3f5d6611f..ecf92a5d56bb 100644
+> --- a/drivers/net/ethernet/hisilicon/hip04_eth.c
+> +++ b/drivers/net/ethernet/hisilicon/hip04_eth.c
+> @@ -960,8 +960,8 @@ static int hip04_mac_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	irq = platform_get_irq(pdev, 0);
+> -	if (irq <= 0) {
+> -		ret = -EINVAL;
+> +	if (irq < 0) {
+> +		ret = irq;
+>  		goto init_fail;
+>  	}
+>  
+> diff --git a/drivers/net/ethernet/hisilicon/hisi_femac.c b/drivers/net/ethernet/hisilicon/hisi_femac.c
+> index ce2571c16e43..cb7b0293fe85 100644
+> --- a/drivers/net/ethernet/hisilicon/hisi_femac.c
+> +++ b/drivers/net/ethernet/hisilicon/hisi_femac.c
+> @@ -862,8 +862,8 @@ static int hisi_femac_drv_probe(struct platform_device *pdev)
+>  		goto out_disconnect_phy;
+>  
+>  	ndev->irq = platform_get_irq(pdev, 0);
+> -	if (ndev->irq <= 0) {
+> -		ret = -ENODEV;
+> +	if (ndev->irq < 0) {
+> +		ret = ndev->irq;
+>  		goto out_disconnect_phy;
+>  	}
+>  
+> diff --git a/drivers/net/ethernet/hisilicon/hix5hd2_gmac.c b/drivers/net/ethernet/hisilicon/hix5hd2_gmac.c
+> index f867e9531117..26d22bb04b87 100644
+> --- a/drivers/net/ethernet/hisilicon/hix5hd2_gmac.c
+> +++ b/drivers/net/ethernet/hisilicon/hix5hd2_gmac.c
+> @@ -1206,9 +1206,8 @@ static int hix5hd2_dev_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	ndev->irq = platform_get_irq(pdev, 0);
+> -	if (ndev->irq <= 0) {
+> -		netdev_err(ndev, "No irq resource\n");
+> -		ret = -EINVAL;
+> +	if (ndev->irq < 0) {
+> +		ret = ndev->irq;
+>  		goto out_phy_node;
+>  	}
+>  
 
