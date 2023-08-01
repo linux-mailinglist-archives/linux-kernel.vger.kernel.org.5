@@ -2,129 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19BBF76B462
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 262AF76B467
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234127AbjHAMGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:06:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
+        id S232422AbjHAMG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232661AbjHAMGD (ORCPT
+        with ESMTP id S234126AbjHAMGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:06:03 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7839A1FCA
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:05:52 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-317716a4622so5115676f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 05:05:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20221208.gappssmtp.com; s=20221208; t=1690891551; x=1691496351;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QYXM+viaYKXI3b2wBLalCMMxAL01quBkoWhoIA0YF7E=;
-        b=DVylIM1I4qmIQVgui57WAhQLG9WX/L8udh/CvxU77UjUGp5ZUYaPkp2AzvHyo9eLDD
-         fO5k/E04LtA4rXG+elH9RQzkSLsfbvAXt8Ucq6eohDvaSkFBPjVbZV3JD3KjUbFWj09/
-         HOi4+h4bWR+eB4ywps2Kplp2xbsHn9PfAtK8B0G5lU6oeZf7FJCZ1MwxwGOLuAtJ86fK
-         Y2TqsqJfbJKtYJAPyzNBF/7xZG33EWObqREn5oYkDrDf7Q3Vlgx8JqawJNUGLaiygoV1
-         zhvUiy0w1pP+/OOAsv5WpM13HCrbqktrP30BYSsAAh/XhCj2ZHJeTCTjuS1KDGqHQQsa
-         YWSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690891551; x=1691496351;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QYXM+viaYKXI3b2wBLalCMMxAL01quBkoWhoIA0YF7E=;
-        b=iC9uUpuVhPggDSgOVmTAjCiPptysbb1aW0iny33x37S4rZdjPXka3yfhT7e3aYW8lm
-         qJMnTeB6ygcGtYNJFKrqw2+BDE3pohOC5uuiHQZCDO5YXvFw5u5a0ZqGtaJNeLuFOYB7
-         K77zFmpm6ySZqxRHzF4YAMrUrXr0QypraY4BPwe7PvLcla8gtCEwOJBXo/BX5lAKu5DD
-         8qGhdMxLZQET2DFK/WMDCbfz0NdlPXz36Do5UXruu61dxRULFzrz3f38w/aGTQntVSu5
-         G3YXxKhxbYU3eI8zUR9Fazzz3jYzgMCTPMemj9EY0EE9EhywTxFItGfimFUWZR4GP6NX
-         icFw==
-X-Gm-Message-State: ABy/qLYD4022WaJX50eeum4vt15DkQCxNB92/URzit2C9DMLQD3huuJV
-        0793CoyB4gCw3R6aHQr/wePmDw6c28zex527YbCeDw==
-X-Google-Smtp-Source: APBJJlE93xXtEN+UjaHzDpCW3afIyCrZL42w1EbToTukkXUi0VJMMFB0bE6AJHzpRTDyiovJEP3b/kNlH8CNaMchrpg=
-X-Received: by 2002:adf:fc88:0:b0:316:e249:c285 with SMTP id
- g8-20020adffc88000000b00316e249c285mr1958220wrr.71.1690891550325; Tue, 01 Aug
- 2023 05:05:50 -0700 (PDT)
+        Tue, 1 Aug 2023 08:06:14 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC496198C;
+        Tue,  1 Aug 2023 05:06:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 698D06156E;
+        Tue,  1 Aug 2023 12:06:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D416C433C7;
+        Tue,  1 Aug 2023 12:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690891569;
+        bh=s6YECtfwRWz+nn+e8dtTgfPFMuDS2G9MlvdIBiOeJvo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KqMPTZxlteTlX/vW0spt/IyKiVoPJYdtMr2lPEmfbuQmmwhfCC21GhGz+yQWZ8GEd
+         RJW1lK9JN1DnTZJmTBwsvxtaZhWyU6xXWtVcaFKkx5L8z9m/yft5TuURPQh/J+IL7U
+         PHvcq8WNXFxjoQvwm9S5/fvJ1NcSpL5MoMmgslMiMQ5qDQ3DsuwUBL05Ll8j2x2V0T
+         Fmi+ZB4B+y3YDp+rI657BSpL6UbzABRJfYD+Czas7wkqLfwlQX9ueJGii9FSPJqKBt
+         8HPA9376cD/cny4bwakf8t2KopaxquTpFCkgWx5XoRWckS8rxRoyjnuCN7kB9nASW2
+         lheIZ7XLLLVog==
+Date:   Tue, 1 Aug 2023 14:06:06 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Keith Zhao <keith.zhao@starfivetech.com>
+Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        christian.koenig@amd.com, Bjorn Andersson <andersson@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Shawn Guo <shawnguo@kernel.org>, Jagan Teki <jagan@edgeble.ai>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Jack Zhu <jack.zhu@starfivetech.com>,
+        Shengyang Chen <shengyang.chen@starfivetech.com>,
+        Changhuang Liang <changhuang.liang@starfivetech.com>
+Subject: Re: [PATCH v1 v1 6/7] drm/vs: Add KMS crtc&plane
+Message-ID: <7sfzkc6b46izrfnhcoajllugfofh7otseocbiiftjx344hxiuf@jkjb5syqwo24>
+References: <20230801101030.2040-1-keith.zhao@starfivetech.com>
+ <20230801101030.2040-7-keith.zhao@starfivetech.com>
 MIME-Version: 1.0
-References: <20230801111014.1432679-1-suagrfillet@gmail.com>
-In-Reply-To: <20230801111014.1432679-1-suagrfillet@gmail.com>
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-Date:   Tue, 1 Aug 2023 14:05:39 +0200
-Message-ID: <CAHVXubgv1xmH7ZF9WsBQ=hYYk1PpKH5PUmYnSH1QTU-Jg1=xOA@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Correct the MODULES_VADDR
-To:     Song Shuai <suagrfillet@gmail.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
-        guoren@kernel.org, sergey.matyukevich@syntacore.com,
-        david@redhat.com, wangkefeng.wang@huawei.com,
-        panqinglin2020@iscas.ac.cn, woodrow.shen@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="duuftomxabqjg5ol"
+Content-Disposition: inline
+In-Reply-To: <20230801101030.2040-7-keith.zhao@starfivetech.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Song,
 
-On Tue, Aug 1, 2023 at 1:10=E2=80=AFPM Song Shuai <suagrfillet@gmail.com> w=
-rote:
->
-> As Documentation/riscv/vm-layout.rst describes, the 2G-sized "modules, BP=
-F"
-> area should lie right before the "kernel" area. But the current definitio=
-n
-> of MODULES_VADDR isn't consistent with that, so correct it.
->
-> Before this patch, the size of "modules" from print_vm_layout() is not 2G=
-.
->
-> [    0.000000]      modules : 0xffffffff2ff2f000 - 0xffffffffae600000 (20=
-22 MB)
-> [    0.000000]       lowmem : 0xff60000000000000 - 0xff60000040000000 (10=
-24 MB)
-> [    0.000000]       kernel : 0xffffffffae600000 - 0xffffffffffffffff (13=
-05 MB)
->
-> After this patch, the size is 2G.
->
-> [    0.000000]      modules : 0xffffffff3a000000 - 0xffffffffba000000 (20=
-48 MB)
-> [    0.000000]       lowmem : 0xff60000000000000 - 0xff60000040000000 (10=
-24 MB)
-> [    0.000000]       kernel : 0xffffffffba000000 - 0xffffffffffffffff (11=
-19 MB)
->
-> Signed-off-by: Song Shuai <suagrfillet@gmail.com>
-> ---
->  arch/riscv/include/asm/pgtable.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pg=
-table.h
-> index 75970ee2bda2..7c57e17fc758 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -53,8 +53,8 @@
->  #ifdef CONFIG_64BIT
->  /* This is used to define the end of the KASAN shadow region */
->  #define MODULES_LOWEST_VADDR   (KERNEL_LINK_ADDR - SZ_2G)
-> -#define MODULES_VADDR          (PFN_ALIGN((unsigned long)&_end) - SZ_2G)
->  #define MODULES_END            (PFN_ALIGN((unsigned long)&_start))
-> +#define MODULES_VADDR          (MODULES_END - SZ_2G)
->  #endif
->
->  /*
-> --
-> 2.20.1
->
+--duuftomxabqjg5ol
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The documentation is approximative, the modules must stay within a 2GB
-window to *all* the kernel symbols, hence the __end - 2G, not __start.
+Hi,
+
+On Tue, Aug 01, 2023 at 06:10:29PM +0800, Keith Zhao wrote:
+> +static int vs_crtc_atomic_set_property(struct drm_crtc *crtc,
+> +				       struct drm_crtc_state *state,
+> +				       struct drm_property *property,
+> +				       uint64_t val)
+> +{
+> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
+> +	struct vs_crtc_state *vs_crtc_state = to_vs_crtc_state(state);
+> +
+> +	if (property == vs_crtc->sync_mode)
+> +		vs_crtc_state->sync_mode = val;
+> +	else if (property == vs_crtc->mmu_prefetch)
+> +		vs_crtc_state->mmu_prefetch = val;
+> +	else if (property == vs_crtc->bg_color)
+> +		vs_crtc_state->bg_color = val;
+> +	else if (property == vs_crtc->panel_sync)
+> +		vs_crtc_state->sync_enable = val;
+> +	else if (property == vs_crtc->dither)
+> +		vs_crtc_state->dither_enable = val;
+> +	else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static int vs_crtc_atomic_get_property(struct drm_crtc *crtc,
+> +				       const struct drm_crtc_state *state,
+> +				       struct drm_property *property,
+> +				       uint64_t *val)
+> +{
+> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
+> +	const struct vs_crtc_state *vs_crtc_state =
+> +		container_of(state, const struct vs_crtc_state, base);
+> +
+> +	if (property == vs_crtc->sync_mode)
+> +		*val = vs_crtc_state->sync_mode;
+> +	else if (property == vs_crtc->mmu_prefetch)
+> +		*val = vs_crtc_state->mmu_prefetch;
+> +	else if (property == vs_crtc->bg_color)
+> +		*val = vs_crtc_state->bg_color;
+> +	else if (property == vs_crtc->panel_sync)
+> +		*val = vs_crtc_state->sync_enable;
+> +	else if (property == vs_crtc->dither)
+> +		*val = vs_crtc_state->dither_enable;
+> +	else
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+
+Any new property needs to follow these requirements:
+https://docs.kernel.org/gpu/drm-kms.html#requirements
+https://docs.kernel.org/gpu/drm-uapi.html#open-source-userspace-requirements
+
+Also, most of them are suspicious, like sync_mode, mmu_prefetch,
+panel_sync or dither_enable. Why would you want userspace to change
+those ?
+
+
+> +static int vs_crtc_late_register(struct drm_crtc *crtc)
+> +{
+> +	return 0;
+> +}
+
+You can drop that.
+
+> +static int vs_crtc_enable_vblank(struct drm_crtc *crtc)
+> +{
+> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
+> +
+> +	vs_dc_enable_vblank(vs_crtc->dev, true);
+> +
+> +	return 0;
+> +}
+> +
+> +static void vs_crtc_disable_vblank(struct drm_crtc *crtc)
+> +{
+> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
+> +
+> +	vs_dc_enable_vblank(vs_crtc->dev, false);
+> +}
+> +
+> +static const struct drm_crtc_funcs vs_crtc_funcs = {
+> +	.set_config		= drm_atomic_helper_set_config,
+> +	.page_flip		= drm_atomic_helper_page_flip,
+> +	.reset			= vs_crtc_reset,
+> +	.atomic_duplicate_state = vs_crtc_atomic_duplicate_state,
+> +	.atomic_destroy_state	= vs_crtc_atomic_destroy_state,
+> +	.atomic_set_property	= vs_crtc_atomic_set_property,
+> +	.atomic_get_property	= vs_crtc_atomic_get_property,
+> +	.late_register		= vs_crtc_late_register,
+> +	.enable_vblank		= vs_crtc_enable_vblank,
+> +	.disable_vblank		= vs_crtc_disable_vblank,
+> +};
+> +
+> +static u8 cal_pixel_bits(u32 bus_format)
+> +{
+> +	u8 bpp;
+> +
+> +	switch (bus_format) {
+> +	case MEDIA_BUS_FMT_RGB565_1X16:
+> +	case MEDIA_BUS_FMT_UYVY8_1X16:
+> +		bpp = 16;
+> +		break;
+> +	case MEDIA_BUS_FMT_RGB666_1X18:
+> +	case MEDIA_BUS_FMT_RGB666_1X24_CPADHI:
+> +		bpp = 18;
+> +		break;
+> +	case MEDIA_BUS_FMT_UYVY10_1X20:
+> +		bpp = 20;
+> +		break;
+> +	case MEDIA_BUS_FMT_BGR888_1X24:
+> +	case MEDIA_BUS_FMT_UYYVYY8_0_5X24:
+> +	case MEDIA_BUS_FMT_YUV8_1X24:
+> +		bpp = 24;
+> +		break;
+> +	case MEDIA_BUS_FMT_RGB101010_1X30:
+> +	case MEDIA_BUS_FMT_UYYVYY10_0_5X30:
+> +	case MEDIA_BUS_FMT_YUV10_1X30:
+> +		bpp = 30;
+> +		break;
+> +	default:
+> +		bpp = 24;
+> +		break;
+> +	}
+> +
+> +	return bpp;
+> +}
+> +
+> +static bool vs_crtc_mode_fixup(struct drm_crtc *crtc,
+> +			       const struct drm_display_mode *mode,
+> +			       struct drm_display_mode *adjusted_mode)
+> +{
+> +	struct vs_crtc *vs_crtc = to_vs_crtc(crtc);
+> +
+> +	return vs_dc_mode_fixup(vs_crtc->dev, mode, adjusted_mode);
+> +}
+
+You should be using atomic_check.
+
+Maxime
+
+--duuftomxabqjg5ol
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZMj1LgAKCRDj7w1vZxhR
+xcuiAQDVAHuCXQLiF4aho3J76b/1omEGtDLrJYqMFou4trNeDQEA9a+4doYz0r8T
+e4MChnbgb7U5q3ndReWR8iY6I4VZ/wc=
+=sNPG
+-----END PGP SIGNATURE-----
+
+--duuftomxabqjg5ol--
