@@ -2,257 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 017F776B8B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D8476B8BD
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 17:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbjHAPhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 11:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53760 "EHLO
+        id S234815AbjHAPiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 11:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234271AbjHAPha (ORCPT
+        with ESMTP id S234984AbjHAPiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 11:37:30 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 100FB18B;
-        Tue,  1 Aug 2023 08:37:29 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371ALfDC015199;
-        Tue, 1 Aug 2023 08:37:22 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=52nDw2j5LIOpWOMG5A/n9hUZunGiqKJCazA4sgbjrAw=;
- b=jx7zhNb3YNYl0hWddWtexKfWaKOPVX26IsEwVAq663OJHdwgBZwnTKf6gN/QE06G1TXg
- RTFKEmBfRuPsodgOaubfX3z3edbzishfo7boLLut/+AjoYCsZalaLyTRM4LwptPKNdhW
- 8wFAiI280okGjdCQkkm8q6HROlEtXOtpTndH1CnofujxvrBW3ZZqPF6OkwfqCRuyFBs/
- mHSENd6XvqEKD0WiB9rShIpBKMqu0/nOzhBh9MIVxc3IB4jl4pLpiZabMZgNqqbTnCq6
- 58/WorRfwo3W+LWjIu4RlP5l75oatiAxxJENA/111lk4ufisalhVb+Y5olkbWwUyllRY Gg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3s707dh62g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 08:37:22 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 1 Aug
- 2023 08:37:20 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Tue, 1 Aug 2023 08:37:20 -0700
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id 9E7113F70C9;
-        Tue,  1 Aug 2023 08:37:14 -0700 (PDT)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>,
-        <simon.horman@corigine.com>, <jesse.brandeburg@intel.com>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net-next PATCH V4 2/2] octeontx2-af: TC flower offload support for inner VLAN
-Date:   Tue, 1 Aug 2023 21:06:57 +0530
-Message-ID: <20230801153657.2875497-3-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230801153657.2875497-1-sumang@marvell.com>
-References: <20230801153657.2875497-1-sumang@marvell.com>
+        Tue, 1 Aug 2023 11:38:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6822426B0
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 08:37:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QQvm9P3bQLEbjxfH7khUELo8UvP2QUFHLALD1WtUuME=; b=wSvZyfneEW42/vG5ICjcTiXKIZ
+        ntOwC9W9kXXqMcXv4TcMoRj6aO6NvsE+WEfVilyOj7otN+d+C2sHL87Sl9usCT2ZpPGLWWRTH0JlE
+        VZcc7ETB05DjPmxdvZCtQ6gI+UDajr3MtP4SpIdaF44p8dATKSl8hBmadMGOJt4A6yCF48zWJHWbO
+        plKD7A5q1xC6YJCfwRnGkxkoVZ3GNH05+/I+hVXd0p3U918qLPzVUlaRpIW11jL7Alka9Shy01JJN
+        QOlF2zZ0uT94lHhCMaZkaTbiSp0zwzu+et9/ZzsZtbAbRUzbXr07w3t3aG9Y5cA2iMyOijdEVBtjS
+        OGNh9n3A==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qQrRE-009bY8-Lm; Tue, 01 Aug 2023 15:37:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DCFB03001DD;
+        Tue,  1 Aug 2023 17:37:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9D85A201AB903; Tue,  1 Aug 2023 17:37:31 +0200 (CEST)
+Date:   Tue, 1 Aug 2023 17:37:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Ben Segall <bsegall@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH v6 2/2] Sched/fair: Block nohz tick_stop when cfs
+ bandwidth in use
+Message-ID: <20230801153731.GD11704@hirez.programming.kicks-ass.net>
+References: <20230712133357.381137-1-pauld@redhat.com>
+ <20230712133357.381137-3-pauld@redhat.com>
+ <20230731224934.GD51835@hirez.programming.kicks-ass.net>
+ <20230801111342.GA268019@lorien.usersys.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 2EQ_SRBZ6T9rh6OGqLMfc344hek8-biC
-X-Proofpoint-ORIG-GUID: 2EQ_SRBZ6T9rh6OGqLMfc344hek8-biC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_12,2023-08-01_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801111342.GA268019@lorien.usersys.redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the current TC flower offload support to enable filters matching
-inner VLAN, and support offload of those filters to hardware.
+On Tue, Aug 01, 2023 at 07:13:42AM -0400, Phil Auld wrote:
+> On Tue, Aug 01, 2023 at 12:49:34AM +0200 Peter Zijlstra wrote:
+> > On Wed, Jul 12, 2023 at 09:33:57AM -0400, Phil Auld wrote:
+> > > CFS bandwidth limits and NOHZ full don't play well together.  Tasks
+> > > can easily run well past their quotas before a remote tick does
+> > > accounting.  This leads to long, multi-period stalls before such
+> > > tasks can run again. Currently, when presented with these conflicting
+> > > requirements the scheduler is favoring nohz_full and letting the tick
+> > > be stopped. However, nohz tick stopping is already best-effort, there
+> > > are a number of conditions that can prevent it, whereas cfs runtime
+> > > bandwidth is expected to be enforced.
+> > > 
+> > > Make the scheduler favor bandwidth over stopping the tick by setting
+> > > TICK_DEP_BIT_SCHED when the only running task is a cfs task with
+> > > runtime limit enabled. We use cfs_b->hierarchical_quota to
+> > > determine if the task requires the tick.
+> > > 
+> > > Add check in pick_next_task_fair() as well since that is where
+> > > we have a handle on the task that is actually going to be running.
+> > > 
+> > > Add check in sched_can_stop_tick() to cover some edge cases such
+> > > as nr_running going from 2->1 and the 1 remains the running task.
+> > 
+> > These appear fine to me, except:
+> >
+> > > Add sched_feat HZ_BW (off by default) to control the tick_stop
+> > > behavior.
+> > 
+> > What was the thinking here? This means nobody will be using this -- why
+> > would you want this default disabled?
+> > 
+> 
+> That was just a hedge in case it caused issues. I'd probably have had to
+> enable it in RHEL anyway. Using a feature was to make it inocuous when
+> disabled.  Would you prefer me to enable it or remove the sched_feat
+> entirely? (or do you want to just switch that to true when you apply it?)
 
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
----
- .../net/ethernet/marvell/octeontx2/af/mbox.h  |  1 +
- .../net/ethernet/marvell/octeontx2/af/npc.h   |  3 ++
- .../marvell/octeontx2/af/rvu_debugfs.c        |  5 ++++
- .../marvell/octeontx2/af/rvu_npc_fs.c         | 13 +++++++++
- .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 28 +++++++++++++++----
- 5 files changed, 44 insertions(+), 6 deletions(-)
+I've edited it to default enabled -- we can pull the feature flag
+eventually I suppose.
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index ed66c5989102..382764f39702 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -1461,6 +1461,7 @@ struct flow_msg {
- 		u8 ip_flag;
- 		u8 next_header;
- 	};
-+	__be16 vlan_itci;
- };
- 
- struct npc_install_flow_req {
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-index 9beeead56d7b..5b6a1b941ccc 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
-@@ -184,6 +184,7 @@ enum key_fields {
- 	NPC_VLAN_ETYPE_CTAG, /* 0x8100 */
- 	NPC_VLAN_ETYPE_STAG, /* 0x88A8 */
- 	NPC_OUTER_VID,
-+	NPC_INNER_VID,
- 	NPC_TOS,
- 	NPC_IPFRAG_IPV4,
- 	NPC_SIP_IPV4,
-@@ -229,6 +230,8 @@ enum key_fields {
- 	NPC_VLAN_TAG1,
- 	/* outer vlan tci for double tagged frame */
- 	NPC_VLAN_TAG2,
-+	/* inner vlan tci for double tagged frame */
-+	NPC_VLAN_TAG3,
- 	/* other header fields programmed to extract but not of our interest */
- 	NPC_UNKNOWN,
- 	NPC_KEY_FIELDS_MAX,
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-index 3b26893efdf8..3d0825c0685a 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
-@@ -2787,6 +2787,11 @@ static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
- 			seq_printf(s, "mask 0x%x\n",
- 				   ntohs(rule->mask.vlan_tci));
- 			break;
-+		case NPC_INNER_VID:
-+			seq_printf(s, "0x%x ", ntohs(rule->packet.vlan_itci));
-+			seq_printf(s, "mask 0x%x\n",
-+				   ntohs(rule->mask.vlan_itci));
-+			break;
- 		case NPC_TOS:
- 			seq_printf(s, "%d ", rule->packet.tos);
- 			seq_printf(s, "mask 0x%x\n", rule->mask.tos);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-index 9c365cc3e736..f2a7599aa9de 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
-@@ -20,6 +20,7 @@ static const char * const npc_flow_names[] = {
- 	[NPC_VLAN_ETYPE_CTAG] = "vlan ether type ctag",
- 	[NPC_VLAN_ETYPE_STAG] = "vlan ether type stag",
- 	[NPC_OUTER_VID]	= "outer vlan id",
-+	[NPC_INNER_VID]	= "inner vlan id",
- 	[NPC_TOS]	= "tos",
- 	[NPC_IPFRAG_IPV4] = "fragmented IPv4 header ",
- 	[NPC_SIP_IPV4]	= "ipv4 source ip",
-@@ -327,6 +328,8 @@ static void npc_handle_multi_layer_fields(struct rvu *rvu, int blkaddr, u8 intf)
- 	 */
- 	struct npc_key_field *vlan_tag1;
- 	struct npc_key_field *vlan_tag2;
-+	/* Inner VLAN TCI for double tagged frames */
-+	struct npc_key_field *vlan_tag3;
- 	u64 *features;
- 	u8 start_lid;
- 	int i;
-@@ -349,6 +352,7 @@ static void npc_handle_multi_layer_fields(struct rvu *rvu, int blkaddr, u8 intf)
- 	etype_tag2 = &key_fields[NPC_ETYPE_TAG2];
- 	vlan_tag1 = &key_fields[NPC_VLAN_TAG1];
- 	vlan_tag2 = &key_fields[NPC_VLAN_TAG2];
-+	vlan_tag3 = &key_fields[NPC_VLAN_TAG3];
- 
- 	/* if key profile programmed does not extract Ethertype at all */
- 	if (!etype_ether->nr_kws && !etype_tag1->nr_kws && !etype_tag2->nr_kws) {
-@@ -430,6 +434,12 @@ static void npc_handle_multi_layer_fields(struct rvu *rvu, int blkaddr, u8 intf)
- 		goto done;
- 	}
- 	*features |= BIT_ULL(NPC_OUTER_VID);
-+
-+	/* If key profile extracts inner vlan tci */
-+	if (vlan_tag3->nr_kws) {
-+		key_fields[NPC_INNER_VID] = *vlan_tag3;
-+		*features |= BIT_ULL(NPC_INNER_VID);
-+	}
- done:
- 	return;
- }
-@@ -512,6 +522,7 @@ do {									       \
- 	NPC_SCAN_HDR(NPC_ETYPE_TAG2, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 8, 2);
- 	NPC_SCAN_HDR(NPC_VLAN_TAG1, NPC_LID_LB, NPC_LT_LB_CTAG, 2, 2);
- 	NPC_SCAN_HDR(NPC_VLAN_TAG2, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 2, 2);
-+	NPC_SCAN_HDR(NPC_VLAN_TAG3, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 6, 2);
- 	NPC_SCAN_HDR(NPC_DMAC, NPC_LID_LA, la_ltype, la_start, 6);
- 	/* SMAC follows the DMAC(which is 6 bytes) */
- 	NPC_SCAN_HDR(NPC_SMAC, NPC_LID_LA, la_ltype, la_start + 6, 6);
-@@ -932,6 +943,8 @@ do {									      \
- 
- 	NPC_WRITE_FLOW(NPC_OUTER_VID, vlan_tci, ntohs(pkt->vlan_tci), 0,
- 		       ntohs(mask->vlan_tci), 0);
-+	NPC_WRITE_FLOW(NPC_INNER_VID, vlan_itci, ntohs(pkt->vlan_itci), 0,
-+		       ntohs(mask->vlan_itci), 0);
- 
- 	NPC_WRITE_FLOW(NPC_IPFRAG_IPV6, next_header, pkt->next_header, 0,
- 		       mask->next_header, 0);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index f1ebbb7608e0..45acb4e5e7cf 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -447,10 +447,11 @@ static int otx2_tc_process_vlan(struct otx2_nic *nic, struct flow_msg *flow_spec
- 	u16 vlan_tci, vlan_tci_mask;
- 
- 	if (is_inner)
--		return -EOPNOTSUPP;
-+		flow_rule_match_cvlan(rule, &match);
-+	else
-+		flow_rule_match_vlan(rule, &match);
- 
--	flow_rule_match_vlan(rule, &match);
--	if (ntohs(match.key->vlan_tpid) != ETH_P_8021Q) {
-+	if (!eth_type_vlan(match.key->vlan_tpid)) {
- 		netdev_err(nic->netdev, "vlan tpid 0x%x not supported\n",
- 			   ntohs(match.key->vlan_tpid));
- 		return -EOPNOTSUPP;
-@@ -480,9 +481,15 @@ static int otx2_tc_process_vlan(struct otx2_nic *nic, struct flow_msg *flow_spec
- 		vlan_tci_mask = match.mask->vlan_id |
- 				match.mask->vlan_dei << 12 |
- 				match.mask->vlan_priority << 13;
--		flow_spec->vlan_tci = htons(vlan_tci);
--		flow_mask->vlan_tci = htons(vlan_tci_mask);
--		req->features |= BIT_ULL(NPC_OUTER_VID);
-+		if (is_inner) {
-+			flow_spec->vlan_itci = htons(vlan_tci);
-+			flow_mask->vlan_itci = htons(vlan_tci_mask);
-+			req->features |= BIT_ULL(NPC_INNER_VID);
-+		} else {
-+			flow_spec->vlan_tci = htons(vlan_tci);
-+			flow_mask->vlan_tci = htons(vlan_tci_mask);
-+			req->features |= BIT_ULL(NPC_OUTER_VID);
-+		}
- 	}
- 
- 	return 0;
-@@ -507,6 +514,7 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_BASIC) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_ETH_ADDRS) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_VLAN) |
-+	      BIT(FLOW_DISSECTOR_KEY_CVLAN) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_IPV4_ADDRS) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_IPV6_ADDRS) |
- 	      BIT_ULL(FLOW_DISSECTOR_KEY_PORTS) |
-@@ -620,6 +628,14 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
- 			return ret;
- 	}
- 
-+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_CVLAN)) {
-+		int ret;
-+
-+		ret = otx2_tc_process_vlan(nic, flow_spec, flow_mask, rule, req, true);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_IPV4_ADDRS)) {
- 		struct flow_match_ipv4_addrs match;
- 
--- 
-2.25.1
-
+Things didn't readily apply, so I've kicked at it a little. Should be in
+queue/sched/core for the robots to chew on.
