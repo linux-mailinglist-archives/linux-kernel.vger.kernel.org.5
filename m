@@ -2,133 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6B176B5D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C4076B5E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234195AbjHANaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
+        id S233684AbjHANbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:31:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233944AbjHANaC (ORCPT
+        with ESMTP id S232622AbjHANbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:30:02 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4828E1985
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 06:30:01 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D30E0615A9
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:30:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC3F9C433C8;
-        Tue,  1 Aug 2023 13:29:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690896600;
-        bh=d9psugM3kdjDEK4P7pIMibyVGTo8lFybTwVf6CPdblw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=XXwpszJCEPVqiP8v9CysPgOgPPrvsW6uoKwE2JwGB/HtJ7zQY0R6Ii7FdJbhkO41/
-         Y39OYvChkyMWaKTL5Th6blCeP2El+pI1DvIDViK/hsZ0kI7ybDKO+5JoXsCKxeICF2
-         bpT5PWDrcuCmwPXAW/9sx2KVRwK/J9beyMpc3+b4k3NzbyWXPzoaV13qgSzgpr56Qf
-         MAubHObB7hH+3o615gylObQcDkj/653Yk1iaOCRK2AYZd/0i3RgcXi+UMN/l95AQcn
-         IhSYvR2JDMdKkD1JBNpeqPnA/rP/0XG6FzAYLaZautehPBXtXAzi/39RnBodHdTrln
-         opxdELDfov4vw==
-Message-ID: <5cab2f28-b0e5-b6ab-d981-28436fb3e742@kernel.org>
-Date:   Tue, 1 Aug 2023 16:29:55 +0300
+        Tue, 1 Aug 2023 09:31:09 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D4C19A4
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 06:31:02 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-407db3e9669so257511cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 06:31:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690896661; x=1691501461;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nsO+Zl7CUnASQXP0pNGTsohTGDW6byIjsx/QqCHb86M=;
+        b=5gjWQUE+sGzZJUk8GTBNFCY2Ukgx6UJk/M8SSHTXcRt2509TjEJ/WjPI5RKsHCVNAW
+         2LTuYOywqRolGqGCuu54wlTDlrslWqzjzb7KGVcAKKZ7ywpgaaZTliSPzNSsTHl+ats7
+         RJnG6m7Z+lnsV6GjWrrXLjbtjvzFZxLTDU81zurkRAvr8eH6/dIYOQgJKkgpnSy/dOtR
+         5+OHad0k3vx830SWafnBRC7ggC0olu4NBZnUn9VnLw+HCOQ2+x81tIvz8Srgba/ZFmfY
+         TB0kPhcvZd3hhF5KxmSe+4EmBftUaFowGjRHIx0D58zrLg/zIpoS6Fl0h2oGe0ZGSeaQ
+         bZ1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690896661; x=1691501461;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nsO+Zl7CUnASQXP0pNGTsohTGDW6byIjsx/QqCHb86M=;
+        b=Q5vfoDYg4vprYSlLjpXG3vbCg2vS2YA189VcbUGfx0P5CjVTGyPW8GTBCako4x7OBU
+         ejgXi4LVO6WG50+wX7VyNxl78kxelFCjCt2i1ERWbNz9kFOz4kwFamyxsC1jUDfV1bcn
+         wbaq5nEgMcke3ZVLFAlvL9LwqEqhtlCbEi9GyIHRciIxOkx3Tpzo22OXKeS1UwQAlVJX
+         MX+Cjn2AevW4wh8fcp2SmbJ8HveYzMo8AMrR7eY6PqRS8NYmEAgdcOCB+AOZp0CJoSFJ
+         7q6vXD42dHe8SlGxfsuAf8inuU5tzp06JSRK3FBBPdlrFJzYLLb/iJp9EPWcpDTeW53B
+         XDTg==
+X-Gm-Message-State: ABy/qLZd15cY2MYG0ah+EC18V8yTWAUASPN25X8aHQd+txErRlu7whOR
+        atXELVXCFrtQ284MFoXXuPk+63F/7dgHuGbeydI82A0X6ZcZevlf3/Q=
+X-Google-Smtp-Source: APBJJlEqdUmI77KcWGZOQ5yXmFTXtucrwvbdJ6vPrG+TQqRszduBf4M+gW3Q8Pzz3v+94F5oF0OgckOE+YZTgaO5ZTE=
+X-Received: by 2002:ac8:7e8e:0:b0:403:b1e5:bcae with SMTP id
+ w14-20020ac87e8e000000b00403b1e5bcaemr812745qtj.10.1690896661367; Tue, 01 Aug
+ 2023 06:31:01 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH] net: ethernet: ti: am65-cpsw-qos: Add Frame
- Preemption MAC Merge support
-Content-Language: en-US
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, s-vadapalli@ti.com, srk@ti.com,
+References: <20230731230736.109216-1-trdgn@amazon.com> <CANn89iLV0iEeQy19wn+Vfmhpgr6srVpf3L+oBvuDyLRQXfoMug@mail.gmail.com>
+ <CANn89iLghUDUSbNv-QOgyJ4dv5DhXGL60caeuVMnHW4HZQVJmg@mail.gmail.com> <64c905205b2f4_1b41af2947@willemb.c.googlers.com.notmuch>
+In-Reply-To: <64c905205b2f4_1b41af2947@willemb.c.googlers.com.notmuch>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 1 Aug 2023 15:30:50 +0200
+Message-ID: <CANn89i+-CQy3T-uLebzszGBv7m_CQ4DVeC2OORYn-6GpKgPZQA@mail.gmail.com>
+Subject: Re: [PATCH v2] tun: avoid high-order page allocation for packet header
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Tahsin Erdogan <trdgn@amazon.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230725072338.20789-1-rogerq@kernel.org>
- <20230801131418.bhcjtflj3iu77mmc@skbuf>
- <0f18cf9e-9c5b-02dd-b396-729b9fecdfe7@kernel.org>
- <20230801132844.o56h3bsx7zfwbeu6@skbuf>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20230801132844.o56h3bsx7zfwbeu6@skbuf>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 1, 2023 at 3:14=E2=80=AFPM Willem de Bruijn
+<willemdebruijn.kernel@gmail.com> wrote:
+>
+>> This exactly same allocation logic also exists in packet_alloc_skb and
+> tap_alloc_skb. If changing one of them, perhaps should address convert
+> all at the same time, to keep behavior consistent.
 
-
-On 01/08/2023 16:28, Vladimir Oltean wrote:
-> On Tue, Aug 01, 2023 at 04:19:30PM +0300, Roger Quadros wrote:
->>> Also:
->>>
->>> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:173:6: warning: no previous prototype for function 'am65_cpsw_iet_change_preemptible_tcs' [-Wmissing-prototypes]
->>> void am65_cpsw_iet_change_preemptible_tcs(struct am65_cpsw_port *port, u8 preemptible_tcs)
->>>      ^
->>> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:173:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->>> void am65_cpsw_iet_change_preemptible_tcs(struct am65_cpsw_port *port, u8 preemptible_tcs)
->>> ^
->>> static
->>> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:179:6: warning: no previous prototype for function 'am65_cpsw_iet_link_state_update' [-Wmissing-prototypes]
->>> void am65_cpsw_iet_link_state_update(struct net_device *ndev)
->>>      ^
->>> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:179:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
->>> void am65_cpsw_iet_link_state_update(struct net_device *ndev)
->>> ^
->>> static
->>> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:699:33: error: redefinition of 'taprio'
->>>         struct tc_taprio_qopt_offload *taprio = type_data;
->>>                                        ^
->>> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:697:33: note: previous definition is here
->>>         struct tc_taprio_qopt_offload *taprio = type_data;
->>>                                        ^
->>> 2 warnings and 1 error generated.
->>> make[7]: *** [../scripts/Makefile.build:243: drivers/net/ethernet/ti/am65-cpsw-qos.o] Error 1
->>> make[7]: *** Waiting for unfinished jobs....
->>
->> I'm pretty sure there weren't any build errors for me.
->> Did you have and resolve conflicts when applying this patch?
-> 
-> Yup, part of it (the error) is to blame due to an auto-merge (conflict
-> with 2d800bc500fb ("net/sched: taprio: replace tc_taprio_qopt_offload ::
-> enable with a "cmd" enum")) which failed to do the right thing in
-> am65_cpsw_setup_taprio():
-> 
-> $ git b4 0f18cf9e-9c5b-02dd-b396-729b9fecdfe7@kernel.org
-> Looking up https://lore.kernel.org/r/0f18cf9e-9c5b-02dd-b396-729b9fecdfe7%40kernel.org
-> Grabbing thread from lore.kernel.org/all/0f18cf9e-9c5b-02dd-b396-729b9fecdfe7%40kernel.org/t.mbox.gz
-> Analyzing 5 messages in the thread
-> Checking attestation on all messages, may take a moment...
-> ---
->   ✓ [PATCH RFC] net: ethernet: ti: am65-cpsw-qos: Add Frame Preemption MAC Merge support
->   ---
->   ✓ Signed: DKIM/kernel.org
-> ---
-> Total patches: 1
-> ---
->  Link: https://lore.kernel.org/r/20230725072338.20789-1-rogerq@kernel.org
->  Base: not specified
-> Applying: net: ethernet: ti: am65-cpsw-qos: Add Frame Preemption MAC Merge support
-> Using index info to reconstruct a base tree...
-> M       drivers/net/ethernet/ti/am65-cpsw-nuss.c
-> M       drivers/net/ethernet/ti/am65-cpsw-qos.c
-> Falling back to patching base and 3-way merge...
-> Auto-merging drivers/net/ethernet/ti/am65-cpsw-qos.c
-> Auto-merging drivers/net/ethernet/ti/am65-cpsw-nuss.c
-> 
-> But part of it is legit, and I saw it with a W=1 C=1 build.
-> am65_cpsw_iet_link_state_update() and am65_cpsw_iet_change_preemptible_tcs()
-> should be static.
-
-Got it. I'll resolve the warnings. Thanks!
-
--- 
-cheers,
--roger
+Sure, I can take care of them as well.
