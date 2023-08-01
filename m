@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ADEE76BF3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 360D076BF3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbjHAVZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:25:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
+        id S232299AbjHAVZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232258AbjHAVYz (ORCPT
+        with ESMTP id S232272AbjHAVYz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Aug 2023 17:24:55 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3D435A2
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:24:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DC135AA
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:24:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=drbNuL55DYuL5wiscrlTnGAb/cO6SeGIhgtGTiA6PhQ=; b=CmSlmMvBqFeZkasybngqkB/9/Z
-        mUv7r6cmiKzOML5p3sP/7eNW16u9qXgad8LSgfbpyGh4CxsLLmw2+fNFo/ocTFfJNo0Roo/ELwr6o
-        VWbMNAPshVBVeQplDvk7SN1Lgu5HGT6/O2moDQB/+MlNaKc8mQ0s4GL3cEOphzAOK24BFFOkgWJFk
-        GzKQEzHnF7TRhjXrm0ER9eKzep+vUFLQNNxtbR+DusrIdrO6+z7R6eEDn9IfZESBYjm8ARA9ed+eh
-        4e2nwM1i8mQ175codWVx83vH1F5D6LSOw/I4VMx1Ei1MK7jL0k6BtcRWfsQ7puqN0FmXoKGXL4Zph
-        igvkYxww==;
+        bh=q92jsVFPZSP8G7FOeDp8TiMSNcZFRY9w1smIqAIutpc=; b=Zs/CXT4SulTjrAAiY5k/JWkVbm
+        nhCxY6+yMoC+VlPJZokF8S4WA4fqGlAOTXENgeCoeHlkKzuq0wipZHItvz0AG72ro+VhW3Rlw8Fy+
+        ElTqg9gWrlTzSzFSOHOjUXPVGaa4AsavKRfIAD17HosObUFW+rCfubbLhI/BsR7UiLTr3ExI55yRp
+        T0wjF+UVz+E7tCmZssp6z135YlHwBTB0VPKI0UC8Z+JzCUVCktqH0bmCT1imWr3KQA7lvam5+LWJT
+        mWBpEaT7XJ96fmYyMKMQdX53gcJGDStd6CGGK0Ni5ERXhsLs7R/SAuGQH379LjysbNS7AvlYS07Iz
+        M3/Z86xw==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qQwqn-00EvTv-1f;
-        Tue, 01 Aug 2023 21:24:20 +0000
+        id 1qQwqn-00EvTw-1h;
+        Tue, 01 Aug 2023 21:24:19 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BEDCA3006ED;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BEE5930310E;
         Tue,  1 Aug 2023 23:24:15 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 4BEB720282F78; Tue,  1 Aug 2023 23:24:15 +0200 (CEST)
-Message-ID: <20230801211812.168490417@infradead.org>
+        id 52AE820283BA4; Tue,  1 Aug 2023 23:24:15 +0200 (CEST)
+Message-ID: <20230801211812.236247952@infradead.org>
 User-Agent: quilt/0.66
-Date:   Tue, 01 Aug 2023 22:41:27 +0200
+Date:   Tue, 01 Aug 2023 22:41:28 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@redhat.com
 Cc:     peterz@infradead.org, juri.lelli@redhat.com,
@@ -47,7 +47,7 @@ Cc:     peterz@infradead.org, juri.lelli@redhat.com,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, vschneid@redhat.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 6/9] sched: Simplify sched_exec()
+Subject: [PATCH 7/9] sched: Simplify sched_tick_remote()
 References: <20230801204121.929256934@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -65,43 +65,69 @@ Use guards to reduce gotos and simplify control flow.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c |   21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ kernel/sched/core.c |   43 ++++++++++++++++++-------------------------
+ 1 file changed, 18 insertions(+), 25 deletions(-)
 
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -5431,23 +5431,20 @@ unsigned int nr_iowait(void)
- void sched_exec(void)
- {
- 	struct task_struct *p = current;
--	unsigned long flags;
-+	struct migration_arg arg;
- 	int dest_cpu;
+@@ -5651,9 +5651,6 @@ static void sched_tick_remote(struct wor
+ 	struct tick_work *twork = container_of(dwork, struct tick_work, work);
+ 	int cpu = twork->cpu;
+ 	struct rq *rq = cpu_rq(cpu);
+-	struct task_struct *curr;
+-	struct rq_flags rf;
+-	u64 delta;
+ 	int os;
  
--	raw_spin_lock_irqsave(&p->pi_lock, flags);
--	dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p), WF_EXEC);
--	if (dest_cpu == smp_processor_id())
--		goto unlock;
-+	scoped_guard (raw_spinlock_irqsave, &p->pi_lock) {
-+		dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p), WF_EXEC);
-+		if (dest_cpu == smp_processor_id())
-+			return;
+ 	/*
+@@ -5663,30 +5660,26 @@ static void sched_tick_remote(struct wor
+ 	 * statistics and checks timeslices in a time-independent way, regardless
+ 	 * of when exactly it is running.
+ 	 */
+-	if (!tick_nohz_tick_stopped_cpu(cpu))
+-		goto out_requeue;
++	if (tick_nohz_tick_stopped_cpu(cpu)) {
++		guard(rq_lock_irq)(rq);
++		struct task_struct *curr = rq->curr;
++
++		if (cpu_online(cpu)) {
++			update_rq_clock(rq);
++
++			if (!is_idle_task(curr)) {
++				/*
++				 * Make sure the next tick runs within a
++				 * reasonable amount of time.
++				 */
++				u64 delta = rq_clock_task(rq) - curr->se.exec_start;
++				WARN_ON_ONCE(delta > (u64)NSEC_PER_SEC * 3);
++			}
++			curr->sched_class->task_tick(rq, curr, 0);
  
--	if (likely(cpu_active(dest_cpu))) {
--		struct migration_arg arg = { p, dest_cpu };
-+		if (unlikely(!cpu_active(dest_cpu)))
-+			return;
- 
--		raw_spin_unlock_irqrestore(&p->pi_lock, flags);
--		stop_one_cpu(task_cpu(p), migration_cpu_stop, &arg);
--		return;
-+		arg = (struct migration_arg){ p, dest_cpu };
+-	rq_lock_irq(rq, &rf);
+-	curr = rq->curr;
+-	if (cpu_is_offline(cpu))
+-		goto out_unlock;
+-
+-	update_rq_clock(rq);
+-
+-	if (!is_idle_task(curr)) {
+-		/*
+-		 * Make sure the next tick runs within a reasonable
+-		 * amount of time.
+-		 */
+-		delta = rq_clock_task(rq) - curr->se.exec_start;
+-		WARN_ON_ONCE(delta > (u64)NSEC_PER_SEC * 3);
++			calc_load_nohz_remote(rq);
++		}
  	}
--unlock:
--	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
-+	stop_one_cpu(task_cpu(p), migration_cpu_stop, &arg);
- }
+-	curr->sched_class->task_tick(rq, curr, 0);
+-
+-	calc_load_nohz_remote(rq);
+-out_unlock:
+-	rq_unlock_irq(rq, &rf);
+-out_requeue:
  
- #endif
+ 	/*
+ 	 * Run the remote tick once per second (1Hz). This arbitrary
 
 
