@@ -2,75 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 815A876A87C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 772D176A87F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 07:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbjHAFsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 01:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53762 "EHLO
+        id S230347AbjHAFtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 01:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229921AbjHAFst (ORCPT
+        with ESMTP id S231138AbjHAFtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 01:48:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 095AB1FCA;
-        Mon, 31 Jul 2023 22:48:44 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 65A1661473;
-        Tue,  1 Aug 2023 05:48:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46A2FC433C7;
-        Tue,  1 Aug 2023 05:48:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690868923;
-        bh=CSYR83m0hWJjYjIRujwvyFiMN2MH6lGieHS+KpcH5TI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F+v+oBPjg7WgK2jhl4qBub9O18tXXnx6yR9HpjbyTlMTq9j8VrdTh2kEtcaJVlg7o
-         sy4fvYWyyOeeGWhGez0j+4ln+DJHQxEQOJQALxK2wxNEOlvwQiTgJN1yCJJoVGWFqD
-         ypC6WdR6ijmYOJLItZ5htFUzFNLsgyH0cDPpWG4w=
-Date:   Tue, 1 Aug 2023 07:48:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH 0/3] PM / wakeirq: fix wake irq arming
-Message-ID: <2023080129-district-punk-3da3@gregkh>
-References: <20230713145741.30390-1-johan+linaro@kernel.org>
+        Tue, 1 Aug 2023 01:49:02 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3151A1FC8
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 22:48:49 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3175f17a7baso4706476f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 22:48:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690868927; x=1691473727;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Et0y0K2d+vVjwJdOfEnIsO7SeHd2XahanE6nhjTZtyw=;
+        b=ZGI+j/vdjy03FGaaR+xJmI0DMD0W/H7WW0lm3ZBYDDRezadMv0/SINLUbiIcwOtcVB
+         6rWtQ2cJvXxRZSulEQomaoyiqBzEnpaplbDFim591uXPwyf87YmFLWNt8bAd8yRX21DL
+         GPjKd1X6TmlAbHcj+cjT6rSO288MI/s1Ly9eRctTJkVrb4crvbJvy2HCXg0B9TwHFNog
+         exm46xW+eeXJaPHIok5LOyVhVurfSDya4DvT5rzGQTRfvdYmYkmfRftvjki7vmeyBJze
+         IB5E8F2VxjFjcTuEPg8Qfyk/2klnS8EVtHCoM+VIx9+1reKs06NNxqmEiizsalvFHGLR
+         NLEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690868927; x=1691473727;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Et0y0K2d+vVjwJdOfEnIsO7SeHd2XahanE6nhjTZtyw=;
+        b=RywFGaEW1mtmp9360KzAL/SIvxjbpnMjdCHUhn4qQNGEWkBUZHk+mTPNwlJdZ73NT0
+         cE+pIEigiKFjg2xkKdmbJRS2FhCN2FXY0Nk/bEuBdTGjlp+hK+j4Y6U0CFT6iCZhG1Bm
+         eCVH8ULY5bcJgJA2+wMN1gnsLpWuaB+wVLiO+UOZ4+RQSgZWL2buoZ22Z2ymuTwS2SGI
+         eXd60VpGJ09lAC6CG3GiFqUqMuDIysi6nzNjyqqLft9sg5EUbpt7rQHBdst8Cqn781QR
+         +BfcMAZK7vtPJ/kCEguOMR5ZBkIatpWbaGs+ciTo4IlqnM0PJx0p/4EiuLK0b8+werxF
+         QNzQ==
+X-Gm-Message-State: ABy/qLaXdW6xLkQpLPU2GFEIN++ZGMRY0jZ6+WHTUgQxJww0/UkI8dGM
+        hzsGulOUBIG0wnMVkKjL5lmzP6L1EsI3NOYK724=
+X-Google-Smtp-Source: APBJJlHhGeuATSL7uKZn4NPYaNxFYSoHPGkAI7laRJP7KUIdZtITolb3PfjPpmxMeGEj/ExyQbcwog==
+X-Received: by 2002:a05:6000:1808:b0:313:f395:f5a3 with SMTP id m8-20020a056000180800b00313f395f5a3mr1408315wrh.38.1690868926808;
+        Mon, 31 Jul 2023 22:48:46 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id j4-20020a5d6184000000b003142c85fbcdsm14984240wru.11.2023.07.31.22.48.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jul 2023 22:48:46 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 08:48:43 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+Cc:     Tony Huang <tonyhuang.sunplus@gmail.com>,
+        Li-hao Kuo <lhjeff911@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        error27@gmail.com
+Subject: Re: [PATCH next] mmc: sunplus: Fix error handling in
+ spmmc_drv_probe()
+Message-ID: <042ff6f5-58d4-4e93-aa26-79411bf81c54@kadam.mountain>
+References: <20230801052321.1328225-1-harshit.m.mogalapalli@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230713145741.30390-1-johan+linaro@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230801052321.1328225-1-harshit.m.mogalapalli@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 13, 2023 at 04:57:38PM +0200, Johan Hovold wrote:
-> When reviewing the Qualcomm serial-driver suspend implementation I
-> noticed the odd runtime PM state update which had snuck in. Turns out it
-> was added to work around a bug in PM core which prevented drivers not
-> implementing runtime PM from using dedicated wake irqs.
+On Mon, Jul 31, 2023 at 10:23:20PM -0700, Harshit Mogalapalli wrote:
+> There are few issues in spmmc_drv_probe():
 > 
-> This series fixes the wake irq arming and drops the unused wake irq
-> enable helpers before dropping the bogus runtime PM state update in the
-> Qualcomm driver.
+> 1. When mmc allocation fails, goto is a no-op.
+> 2. When mmc allocation succeeds, the error paths should use goto instead
+>    of direct return.
+> 3. platform_get_irq() doesn't return zero, so '<' is sufficient.
 > 
-> I suggest that Rafael takes all of these through his tree.
+> Fix the above issues by adding goto instead of direct return, also
+> remove NULL check in 'probe_free_host' as we changed the goto to return
+> when mmc_alloc_host() fails.
+> 
+> Fixes: 4e268fed8b18 ("mmc: Add mmc driver for Sunplus SP7021")
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/all/a3829ed3-d827-4b9d-827e-9cc24a3ec3bc@moroto.mountain/
+> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+> ---
 
-I agree:
+LGTM.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+
+regards,
+dan carpenter
+
