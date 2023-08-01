@@ -2,247 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CAFA76A817
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C89276A819
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229950AbjHAE6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 00:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
+        id S229973AbjHAE7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 00:59:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjHAE6n (ORCPT
+        with ESMTP id S229437AbjHAE7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 00:58:43 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC7B1FC0;
-        Mon, 31 Jul 2023 21:58:42 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3711fvgV012636;
-        Tue, 1 Aug 2023 04:58:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=KZxbaDO7QuMFAxblJFKDY2rmUCa1JzWd9myMgUGIk38=;
- b=B5SiWdzYNVNwLOXeBOrmelu/6YBhoa9szETVNitnX72H1o0dVsTlgqypn9EEyxOyf5Gn
- yygL7kszE2g+WadPhdxwoq2CGWTDGP4aRpZUjuWn2C6z65cFqheTYljN4F785f0v2LQ6
- E0AlMEUpEojFAihm0bcCPWMjQL/z4UD42kvEuP7nM32I8tf5N0iLQJ0aqhAzPxnWZySQ
- izctGn02d2Uyvtlvo1ZAIIOrfB6Z66MVzlZBeOgzkC+GHq4iAnHM5xDcSbiV/YqFpdpW
- JlweTBsCRwHNXitF8FUNMDWVPJ1olk9MY1VSHUHZdHggpANfSB4AeAiyCZCfng+DQMv4 sQ== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6fak9far-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 04:58:29 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3714wS8t010784
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 1 Aug 2023 04:58:28 GMT
-Received: from [10.217.219.237] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 31 Jul
- 2023 21:58:22 -0700
-Message-ID: <5481d9ca-4ba0-2545-131b-4a80669061c3@quicinc.com>
-Date:   Tue, 1 Aug 2023 10:28:18 +0530
+        Tue, 1 Aug 2023 00:59:17 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A261FD0;
+        Mon, 31 Jul 2023 21:59:11 -0700 (PDT)
+X-QQ-mid: bizesmtp72t1690865943takhnre8
+Received: from linux-lab-host.localdomain ( [116.30.131.233])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 01 Aug 2023 12:59:02 +0800 (CST)
+X-QQ-SSF: 01200000000000E0X000000A0000000
+X-QQ-FEAT: kW11ei911QK6B0OE3CAY7C3OEZKNbiYTxRaE8QZqvA8pLEHRtQ/zi3u4ytL33
+        qMZNdk7pvRQSk+8P6rKcxkPjcEwueoy5rFQpOrHyh4R/TIvc1Qij8gxcgshnf1RqNE/cKIs
+        SYAsphcnXucGtHHxA1QdiIl64B+dj4tqj1WVemEt+k22RFnJzWVXPJlIBub43TpfRTq4mGj
+        EaXrZslDz8Hl3wZgA/URHauv6cbOWWOftEdGdqkyLZU4pdecYeh3YFgKPWuEbbigA4KojP3
+        CgpHnir8BVkx7bamJDCkOnGt0dbqX47hf/7QefmTqVhnyITedq0rj80EBpbUe/G/pd7UckJ
+        9IkYm8YoOrvaUjbp2gG2HYUnNhjgRAzDZbdaWLY6Svdc1N0Lkk=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 8745531179724185604
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     linux@weissschuh.net, w@1wt.eu
+Cc:     falcon@tinylab.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        tanyuan@tinylab.org
+Subject: tools/nolibc: RFC: report and drop unused functions/data by gc-section 
+Date:   Tue,  1 Aug 2023 12:59:02 +0800
+Message-Id: <20230801045902.37360-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v2 2/6] dt-bindings: phy: qcom,qmp: Add sa8775p QMP PCIe
- PHY
-To:     Andrew Halaney <ahalaney@redhat.com>
-CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mani@kernel.org>,
-        <quic_shazhuss@quicinc.com>, <quic_nitegupt@quicinc.com>,
-        <quic_ramkri@quicinc.com>, <quic_nayiluri@quicinc.com>,
-        <dmitry.baryshkov@linaro.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>
-References: <1689311319-22054-1-git-send-email-quic_msarkar@quicinc.com>
- <1689311319-22054-3-git-send-email-quic_msarkar@quicinc.com>
- <132e9514-7eb9-8915-6130-5bf656c1aaac@linaro.org>
- <ca51b1dc-5805-5b01-01e0-a7dff535cb6c@quicinc.com>
- <y7tuvgc7r4o6jhe7hhyqxaksalld4zn5ou53ywdkwfrp2y773v@z3nvbgd2i6lz>
-Content-Language: en-US
-From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
-In-Reply-To: <y7tuvgc7r4o6jhe7hhyqxaksalld4zn5ou53ywdkwfrp2y773v@z3nvbgd2i6lz>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 0kT6QFnbvNxd5NXSxvMwm7KtVb1BwWqB
-X-Proofpoint-GUID: 0kT6QFnbvNxd5NXSxvMwm7KtVb1BwWqB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_01,2023-07-31_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 priorityscore=1501 mlxscore=0 bulkscore=0
- phishscore=0 malwarescore=0 spamscore=0 clxscore=1011 impostorscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308010045
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Willy, Thomas
 
-On 7/25/2023 11:21 PM, Andrew Halaney wrote:
-> On Fri, Jul 21, 2023 at 04:33:20PM +0530, Mrinmay Sarkar wrote:
->> On 7/17/2023 12:55 PM, Krzysztof Kozlowski wrote:
->>> On 14/07/2023 07:08, Mrinmay Sarkar wrote:
->>>> Add devicetree YAML binding for Qualcomm QMP PCIe PHY
->>>> for SA8775p platform.
->>>>
->>>> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
->>>> ---
->>>>    .../bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml      | 19 ++++++++++++++++++-
->>>>    1 file changed, 18 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
->>>> index a0407fc..ca55ed9 100644
->>>> --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
->>>> +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
->>>> @@ -16,6 +16,8 @@ description:
->>>>    properties:
->>>>      compatible:
->>>>        enum:
->>>> +      - qcom,sa8775p-qmp-gen4x2-pcie-phy
->>>> +      - qcom,sa8775p-qmp-gen4x4-pcie-phy
->>>>          - qcom,sc8280xp-qmp-gen3x1-pcie-phy
->>>>          - qcom,sc8280xp-qmp-gen3x2-pcie-phy
->>>>          - qcom,sc8280xp-qmp-gen3x4-pcie-phy
->>>> @@ -30,7 +32,7 @@ properties:
->>>>      clocks:
->>>>        minItems: 5
->>>> -    maxItems: 6
->>>> +    maxItems: 7
->>>>      clock-names:
->>>>        minItems: 5
->>>> @@ -41,6 +43,7 @@ properties:
->>>>          - const: rchng
->>>>          - const: pipe
->>>>          - const: pipediv2
->>>> +      - const: phy_aux
->>>>      power-domains:
->>>>        maxItems: 1
->>>> @@ -141,6 +144,20 @@ allOf:
->>>>            compatible:
->>>>              contains:
->>>>                enum:
->>>> +              - qcom,sa8775p-qmp-gen4x2-pcie-phy
->>>> +              - qcom,sa8775p-qmp-gen4x4-pcie-phy
->>>> +    then:
->>>> +      properties:
->>>> +        clocks:
->>>> +          minItems: 7
->>>> +        clock-names:
->>>> +          minItems: 7
->>>> +
->>>> +  - if:
->>>> +      properties:
->>>> +        compatible:
->>>> +          contains:
->>>> +            enum:
->>> This probably works but is not obvious and easy to read. You have here
->>> if:then:else: block, so else applies to your variant. Change all these
->>> if clauses for clocks into separate clauses per matching variant
->>> (if:then: ... if:then:... if:then:...)
-> As far as I can tell, this actually doesn't work :(
->
->>> Best regards,
->>> Krzysztof
->> My Bad here, This patch already applied we will take care this in next patch
->> set.
->>
->> Thanks,
->> Mrinmay
->>
-> Mrinmay, do you plan on spinning what Krzysztof suggested? I grabbed
-> linux-next today and ran into this (looks like clocks, clock-names in
-> binding is broken and looks like we're either missing the required
-> power-domain in the dts or it isn't actually required):
->
->      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % git diff
->      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1 DT_SCHEMA_FILES=phy/qcom,sc8280xp-qmp-pcie-phy.yaml qcom/sa8775p-ride.dtb
->        UPD     include/config/kernel.release
->        LINT    Documentation/devicetree/bindings
->        CHKDT   Documentation/devicetree/bindings/processed-schema.json
->        SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->      /home/ahalaney/git/linux-next/Documentation/devicetree/bindings/power/qcom,kpss-acc-v2.yaml: ignoring, error parsing file
->        DTC_CHK arch/arm64/boot/dts/qcom/sa8775p-ride.dtb
->      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c04000: 'power-domains' is a required property
->          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
->      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c04000: clocks: [[31, 66], [31, 68], [31, 94], [31, 72], [31, 74], [31, 77], [31, 70]] is too long
->          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
->      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c04000: clock-names: ['aux', 'cfg_ahb', 'ref', 'rchng', 'pipe', 'pipediv2', 'phy_aux'] is too long
->          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
->      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c14000: 'power-domains' is a required property
->          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
->      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c14000: clocks: [[31, 80], [31, 82], [31, 94], [31, 86], [31, 88], [31, 91], [31, 84]] is too long
->          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
->      /home/ahalaney/git/linux-next/arch/arm64/boot/dts/qcom/sa8775p-ride.dtb: phy@1c14000: clock-names: ['aux', 'cfg_ahb', 'ref', 'rchng', 'pipe', 'pipediv2', 'phy_aux'] is too long
->          from schema $id: http://devicetree.org/schemas/phy/qcom,sc8280xp-qmp-pcie-phy.yaml#
->      ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1    7.65s user 0.52s system 99% cpu 8.231 total
->      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] %
->      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] %
->      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] %
->      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % # Total hack just to show our issues in current binding
->      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % git diff
->      diff --git a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
->      index ca55ed9d74ac..5476cf2422da 100644
->      --- a/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
->      +++ b/Documentation/devicetree/bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml
->      @@ -87,7 +87,6 @@ required:
->         - reg
->         - clocks
->         - clock-names
->      -  - power-domains
->         - resets
->         - reset-names
->         - vdda-phy-supply
->      @@ -132,12 +131,6 @@ allOf:
->                 maxItems: 5
->               clock-names:
->                 maxItems: 5
->      -    else:
->      -      properties:
->      -        clocks:
->      -          minItems: 6
->      -        clock-names:
->      -          minItems: 6
->       
->         - if:
->             properties:
->      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] % ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1 DT_SCHEMA_FILES=phy/qcom,sc8280xp-qmp-pcie-phy.yaml qcom/sa8775p-ride.dtb
->        UPD     include/config/kernel.release
->        LINT    Documentation/devicetree/bindings
->        CHKDT   Documentation/devicetree/bindings/processed-schema.json
->        SCHEMA  Documentation/devicetree/bindings/processed-schema.json
->      /home/ahalaney/git/linux-next/Documentation/devicetree/bindings/power/qcom,kpss-acc-v2.yaml: ignoring, error parsing file
->        DTC_CHK arch/arm64/boot/dts/qcom/sa8775p-ride.dtb
->      ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CHECK_DTBS=1    7.58s user 0.87s system 98% cpu 8.618 total
->      (dtb-checker) ahalaney@fedora ~/git/linux-next (git)-[tags/next-20230724] %
->
->
-> Thanks,
-> Andrew
+Currently, since this part of the discussion is out of the original topic [1],
+as suggested by Willy, open a new thread for this.
 
-Hi Andrew,
-Yes, as I mentioned earlier we have plan to send the fixes for this.
+[1]: https://lore.kernel.org/lkml/20230731224929.GA18296@1wt.eu/#R
+
+The original topic [1] tries to enable -Wall (or even -Wextra) to report some
+issues (include the dead unused functions/data) found during compiling stage,
+this further propose a method to enable '-ffunction-sections -fdata-sections
+-Wl,--gc-sections,--print-gc-sections to' find the dead unused functions/data
+during linking stage:
+
+    Just thought about gc-section, do we need to further remove dead code/data
+    in the binary? I don't think it is necessary for nolibc-test itself, but with
+    '-Wl,--gc-sections -Wl,--print-gc-sections' may be a good helper to show us
+    which ones should be dropped or which ones are wrongly declared as public?
+    
+    Just found '-O3 + -Wl,--gc-section + -Wl,--print-gc-sections' did tell
+    us something as below:
+    
+        removing unused section '.text.nolibc_raise'
+        removing unused section '.text.nolibc_memmove'
+        removing unused section '.text.nolibc_abort'
+        removing unused section '.text.nolibc_memcpy'
+        removing unused section '.text.__stack_chk_init'
+        removing unused section '.text.is_setting_valid'
+    
+    These info may help us further add missing 'static' keyword or find
+    another method to to drop the wrongly used status of some functions from
+    the code side.
+
+Let's continue the discussion as below.
+
+> On Mon, Jul 31, 2023 at 08:36:05PM +0200, Thomas Weißschuh wrote:
+> 
+> [...]
+> 
+> > > > > It is very easy to add the missing 'static' keyword for is_setting_valid(), but
+> > > > > for __stack_chk_init(), is it ok for us to convert it to 'static' and remove
+> > > > > the 'weak' attrbute and even the 'section' attribute? seems it is only used by
+> > > > > our _start_c() currently.
+> > > > 
+> > > > Making is_setting_valid(), __stack_chk_init() seems indeed useful.
+> > > > Also all the run_foo() test functions.
+> > > 
+> > > Most of them could theoretically be turned to static. *But* it causes a
+> > > problem which is that it will multiply their occurrences in multi-unit
+> > > programs, and that's in part why we've started to use weak instead. Also
+> > > if you run through gdb and want to mark a break point, you won't have the
+> > > symbol when it's static,
+
+Willy, did I misunderstand something again? a simple test shows, seems this is
+not really always like that, static mainly means 'local', the symbol is still
+there if without -O2/-Os and is able to be set a breakpoint at:
+
+    // test.c: gcc -o test test.c
+    #include <stdio.h>
+
+    static int test (void)
+    {
+    	printf("hello, world!\n");
+    }
+
+    int main(void)
+    {
+    	test();
+    
+    	return 0;
+    }
+
+Even with -Os/-O2, an additional '-g' is able to generate the 'test' symbol for
+debug as we expect.
+
+>     and the code will appear at multiple locations,
+> > > which is really painful. I'd instead really prefer to avoid static when
+> > > we don't strictly want to inline the code, and prefer weak when possible
+> > > because we know many of them will be dropped at link time (and that's
+> > > the exact purpose).
+
+For the empty __stack_chk_init() one (when the arch not support stackprotector)
+we used, when with 'weak', it is not possible drop it during link time even
+with -O3, the weak one will be dropped may be only when there is a global one
+with the same name is used or the 'weak' one is never really used?
+
+    #include <stdio.h>
+
+    __attribute__((weak,unused,section(".text.nolibc_memset")))
+    int test (void)
+    {
+    	printf("hello, world!\n");
+    }
+
+    int main(void)
+    {
+    	test();
+    
+    	return 0;
+    }
+
+
+    0000000000001060 <main>:
+        1060:       f3 0f 1e fa             endbr64 
+        1064:       48 83 ec 08             sub    $0x8,%rsp
+        1068:       e8 03 01 00 00          callq  1170 <test>
+        106d:       31 c0                   xor    %eax,%eax
+        106f:       48 83 c4 08             add    $0x8,%rsp
+        1073:       c3                      retq   
+        1074:       66 2e 0f 1f 84 00 00    nopw   %cs:0x0(%rax,%rax,1)
+        107b:       00 00 00 
+        107e:       66 90                   xchg   %ax,%ax
+
+Seems it is either impossible to add a 'inline' keyword again with the 'weak'
+attribute (warned by compiler), so, the _start_c (itself is always called by
+_start) will always add an empty call to the weak empty __stack_chk_init(),
+-Os/-O2/-O3 don't help. for such an empty function, in my opinion, as the size
+we want to care about, the calling place should be simply removed by compiler.
+
+Test also shows, with current __inline__ method, the calling place is removed,
+but with c89, the __stack_chk_init() itself will not be droped automatically,
+only if not with -std=c89, it will be dropped and not appear in the
+--print-gc-sections result.
+
+Even for a supported architecture, the shorter __stack_chk_init() may be better
+to inlined to the _start_c()?
+
+So, If my above test is ok, then, we'd better simply convert the whole
+__stack_chk_init() to a static one as below (I didn't investigate this deeply
+due to the warning about static and weak conflict at the first time):
+
+    diff --git a/tools/include/nolibc/crt.h b/tools/include/nolibc/crt.h
+    index 32e128b0fb62..a5f33fef1672 100644
+    --- a/tools/include/nolibc/crt.h
+    +++ b/tools/include/nolibc/crt.h
+    @@ -10,7 +10,7 @@
+     char **environ __attribute__((weak));
+     const unsigned long *_auxv __attribute__((weak));
+
+    -void __stack_chk_init(void);
+    +static void __stack_chk_init(void);
+     static void exit(int);
+
+     void _start_c(long *sp)
+    diff --git a/tools/include/nolibc/stackprotector.h b/tools/include/nolibc/stackprotector.h
+    index b620f2b9578d..13f1d0e60387 100644
+    --- a/tools/include/nolibc/stackprotector.h
+    +++ b/tools/include/nolibc/stackprotector.h
+    @@ -37,8 +37,7 @@ void __stack_chk_fail_local(void)
+     __attribute__((weak,section(".data.nolibc_stack_chk")))
+     uintptr_t __stack_chk_guard;
+
+    -__attribute__((weak,section(".text.nolibc_stack_chk"))) __no_stack_protector
+    -void __stack_chk_init(void)
+    +static __no_stack_protector void __stack_chk_init(void)
+     {
+            my_syscall3(__NR_getrandom, &__stack_chk_guard, sizeof(__stack_chk_guard), 0);
+            /* a bit more randomness in case getrandom() fails, ensure the guard is never 0 */
+    @@ -46,7 +45,7 @@ void __stack_chk_init(void)
+                    __stack_chk_guard ^= (uintptr_t) &__stack_chk_guard;
+     }
+     #else /* !defined(_NOLIBC_STACKPROTECTOR) */
+    -__inline__ void __stack_chk_init(void) {}
+    +static void __stack_chk_init(void) {}
+     #endif /* defined(_NOLIBC_STACKPROTECTOR) */
+
+     #endif /* _NOLIBC_STACKPROTECTOR_H */
+
+> > 
+> > Thanks for the clarification. I forgot about that completely!
+> > 
+> > The stuff from nolibc-test.c itself (run_foo() and is_settings_valid())
+> > should still be done.
+> 
+> Yes, likely. Nolibc-test should be done just like users expect to use
+> nolibc, and nolibc should be the most flexible possible.
+
+For the 'static' keyword we tested above, '-g' may help the debug requirement,
+so, is ok for us to apply 'static' for them safely now?
+
+A further test shows, with 'static' on _start_c() doesn't help the size, for it
+is always called from _start(), will never save move instructions, but we need
+a more 'used' attribute to silence the error 'nolibc-test.c:(.text+0x38cd):
+undefined reference to `_start_c'', so, reserve it as the before simpler 'void
+_start_c(void)' may be better?
+
+    static __attribute__((used)) void _start_c(long *sp)
 
 Thanks,
-Mrinmay
+Zhangjin
 
+> 
+> Cheers,
+> Willy
