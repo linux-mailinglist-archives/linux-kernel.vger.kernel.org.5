@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FAD676A688
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334A776A691
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231928AbjHABng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 21:43:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
+        id S231952AbjHABrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 21:47:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjHABnf (ORCPT
+        with ESMTP id S229510AbjHABrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 21:43:35 -0400
-Received: from out28-75.mail.aliyun.com (out28-75.mail.aliyun.com [115.124.28.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E14A7E46
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 18:43:28 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.0994977|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0138158-0.000495978-0.985688;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5Ch.34_1690854200;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5Ch.34_1690854200)
+        Mon, 31 Jul 2023 21:47:53 -0400
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5F6BD;
+        Mon, 31 Jul 2023 18:47:52 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VoiopYR_1690854460;
+Received: from e18g06460.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VoiopYR_1690854460)
           by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 09:43:22 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd/pm: Clean up errors in smu_v13_0.c
-Date:   Tue,  1 Aug 2023 01:43:18 +0000
-Message-Id: <20230801014318.4097-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+          Tue, 01 Aug 2023 09:47:49 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH] erofs: drop unnecessary WARN_ON() in erofs_kill_sb()
+Date:   Tue,  1 Aug 2023 09:47:37 +0800
+Message-Id: <20230801014737.28614-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.4
+In-Reply-To: <20230731-flugbereit-wohnlage-78acdf95ab7e@brauner>
+References: <20230731-flugbereit-wohnlage-78acdf95ab7e@brauner>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+Previously, .kill_sb() will be called only after fill_super fails.
+It will be changed [1].
 
-ERROR: space required before the open parenthesis '('
-ERROR: that open brace { should be on the previous line
+Besides, checking for s_magic in erofs_kill_sb() is unnecessary from
+any point of view.  Let's get rid of it now.
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
+[1] https://lore.kernel.org/r/20230731-flugbereit-wohnlage-78acdf95ab7e@brauner
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
 ---
- drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+will upstream this commit later this week after it lands -next.
 
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-index 9b62b45ebb7f..895cda8e6934 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu13/smu_v13_0.c
-@@ -1121,7 +1121,7 @@ smu_v13_0_display_clock_voltage_request(struct smu_context *smu,
+ fs/erofs/super.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 9d6a3c6158bd..566f68ddfa36 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -889,8 +889,6 @@ static void erofs_kill_sb(struct super_block *sb)
+ {
+ 	struct erofs_sb_info *sbi;
  
- 		ret = smu_v13_0_set_hard_freq_limited_range(smu, clk_select, clk_freq, 0);
- 
--		if(clk_select == SMU_UCLK)
-+		if (clk_select == SMU_UCLK)
- 			smu->hard_min_uclk_req_from_dal = clk_freq;
- 	}
- 
-@@ -1437,8 +1437,7 @@ static int smu_v13_0_irq_process(struct amdgpu_device *adev,
- 	return 0;
- }
- 
--static const struct amdgpu_irq_src_funcs smu_v13_0_irq_funcs =
--{
-+static const struct amdgpu_irq_src_funcs smu_v13_0_irq_funcs = {
- 	.set = smu_v13_0_set_irq_state,
- 	.process = smu_v13_0_irq_process,
- };
-@@ -1933,7 +1932,7 @@ static int smu_v13_0_get_dpm_level_count(struct smu_context *smu,
- 
- 	ret = smu_v13_0_get_dpm_freq_by_index(smu, clk_type, 0xff, value);
- 	/* SMU v13.0.2 FW returns 0 based max level, increment by one for it */
--	if((smu->adev->ip_versions[MP1_HWIP][0] == IP_VERSION(13, 0, 2)) && (!ret && value))
-+	if ((smu->adev->ip_versions[MP1_HWIP][0] == IP_VERSION(13, 0, 2)) && (!ret && value))
- 		++(*value);
- 
- 	return ret;
+-	WARN_ON(sb->s_magic != EROFS_SUPER_MAGIC);
+-
+ 	/* pseudo mount for anon inodes */
+ 	if (sb->s_flags & SB_KERNMOUNT) {
+ 		kill_anon_super(sb);
 -- 
-2.17.1
+2.24.4
 
