@@ -2,34 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4350F76B036
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3287276B030
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233777AbjHAKBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57982 "EHLO
+        id S233741AbjHAKBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233762AbjHAKAr (ORCPT
+        with ESMTP id S231913AbjHAKAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Aug 2023 06:00:47 -0400
-Received: from out28-148.mail.aliyun.com (out28-148.mail.aliyun.com [115.124.28.148])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16371BD3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:00:33 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436259|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0317584-1.51847e-05-0.968226;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5tYPZM_1690884025;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5tYPZM_1690884025)
-          by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 18:00:27 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd/pm: Clean up errors in smu73_discrete.h
-Date:   Tue,  1 Aug 2023 10:00:24 +0000
-Message-Id: <20230801100024.8215-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F591BD2;
+        Tue,  1 Aug 2023 03:00:35 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 0BD0A2065A;
+        Tue,  1 Aug 2023 12:00:34 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id n7Cd7D-Z3Ez1; Tue,  1 Aug 2023 12:00:33 +0200 (CEST)
+Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 85C0620561;
+        Tue,  1 Aug 2023 12:00:33 +0200 (CEST)
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout2.secunet.com (Postfix) with ESMTP id 7F91A80004A;
+        Tue,  1 Aug 2023 12:00:33 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 1 Aug 2023 12:00:33 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 1 Aug
+ 2023 12:00:33 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id CD87C3182B3B; Tue,  1 Aug 2023 12:00:32 +0200 (CEST)
+Date:   Tue, 1 Aug 2023 12:00:32 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Lin Ma <linma@zju.edu.cn>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] xfrm: add forgotten nla_policy for XFRMA_MTIMER_THRESH
+Message-ID: <ZMjXwBJbUPwS5fpB@gauss3.secunet.de>
+References: <20230723074110.3705047-1-linma@zju.edu.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230723074110.3705047-1-linma@zju.edu.cn>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,225 +65,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+On Sun, Jul 23, 2023 at 03:41:10PM +0800, Lin Ma wrote:
+> The previous commit 4e484b3e969b ("xfrm: rate limit SA mapping change
+> message to user space") added one additional attribute named
+> XFRMA_MTIMER_THRESH and described its type at compat_policy
+> (net/xfrm/xfrm_compat.c).
+> 
+> However, the author forgot to also describe the nla_policy at
+> xfrma_policy (net/xfrm/xfrm_user.c). Hence, this suppose NLA_U32 (4
+> bytes) value can be faked as empty (0 bytes) by a malicious user, which
+> leads to 4 bytes overflow read and heap information leak when parsing
+> nlattrs.
+> 
+> To exploit this, one malicious user can spray the SLUB objects and then
+> leverage this 4 bytes OOB read to leak the heap data into
+> x->mapping_maxage (see xfrm_update_ae_params(...)), and leak it to
+> userspace via copy_to_user_state_extra(...).
+> 
+> The above bug is assigned CVE-2023-3773. To fix it, this commit just 
+> completes the nla_policy description for XFRMA_MTIMER_THRESH, which 
+> enforces the length check and avoids such OOB read.
+> 
+> Fixes: 4e484b3e969b ("xfrm: rate limit SA mapping change message to user space")
+> Signed-off-by: Lin Ma <linma@zju.edu.cn>
 
-ERROR: open brace '{' following struct go on the same line
-ERROR: trailing whitespace
-ERROR: space prohibited before open square bracket '['
-
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- .../drm/amd/pm/powerplay/inc/smu73_discrete.h | 73 ++++++++-----------
- 1 file changed, 29 insertions(+), 44 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/inc/smu73_discrete.h b/drivers/gpu/drm/amd/pm/powerplay/inc/smu73_discrete.h
-index 5916be08a7fe..fd0964ac465e 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/inc/smu73_discrete.h
-+++ b/drivers/gpu/drm/amd/pm/powerplay/inc/smu73_discrete.h
-@@ -27,8 +27,7 @@
- 
- #pragma pack(push, 1)
- 
--struct SMIO_Pattern
--{
-+struct SMIO_Pattern {
-   uint16_t Voltage;
-   uint8_t  Smio;
-   uint8_t  padding;
-@@ -36,8 +35,7 @@ struct SMIO_Pattern
- 
- typedef struct SMIO_Pattern SMIO_Pattern;
- 
--struct SMIO_Table
--{
-+struct SMIO_Table {
-   SMIO_Pattern Pattern[SMU_MAX_SMIO_LEVELS];
- };
- 
-@@ -100,8 +98,7 @@ struct SMU73_Discrete_Ulv {
- 
- typedef struct SMU73_Discrete_Ulv SMU73_Discrete_Ulv;
- 
--struct SMU73_Discrete_MemoryLevel
--{
-+struct SMU73_Discrete_MemoryLevel {
-     uint32_t MinVoltage;
-     uint32_t    MinMvdd;
- 
-@@ -124,10 +121,9 @@ struct SMU73_Discrete_MemoryLevel
- 
- typedef struct SMU73_Discrete_MemoryLevel SMU73_Discrete_MemoryLevel;
- 
--struct SMU73_Discrete_LinkLevel
--{
-+struct SMU73_Discrete_LinkLevel {
-     uint8_t     PcieGenSpeed;           ///< 0:PciE-gen1 1:PciE-gen2 2:PciE-gen3
--    uint8_t     PcieLaneCount;          ///< 1=x1, 2=x2, 3=x4, 4=x8, 5=x12, 6=x16 
-+    uint8_t     PcieLaneCount;          ///< 1=x1, 2=x2, 3=x4, 4=x8, 5=x12, 6=x16
-     uint8_t     EnabledForActivity;
-     uint8_t     SPC;
-     uint32_t    DownThreshold;
-@@ -139,8 +135,7 @@ typedef struct SMU73_Discrete_LinkLevel SMU73_Discrete_LinkLevel;
- 
- 
- // MC ARB DRAM Timing registers.
--struct SMU73_Discrete_MCArbDramTimingTableEntry
--{
-+struct SMU73_Discrete_MCArbDramTimingTableEntry {
-     uint32_t McArbDramTiming;
-     uint32_t McArbDramTiming2;
-     uint8_t  McArbBurstTime;
-@@ -151,16 +146,14 @@ struct SMU73_Discrete_MCArbDramTimingTableEntry
- 
- typedef struct SMU73_Discrete_MCArbDramTimingTableEntry SMU73_Discrete_MCArbDramTimingTableEntry;
- 
--struct SMU73_Discrete_MCArbDramTimingTable
--{
-+struct SMU73_Discrete_MCArbDramTimingTable {
-     SMU73_Discrete_MCArbDramTimingTableEntry entries[SMU__NUM_SCLK_DPM_STATE][SMU__NUM_MCLK_DPM_LEVELS];
- };
- 
- typedef struct SMU73_Discrete_MCArbDramTimingTable SMU73_Discrete_MCArbDramTimingTable;
- 
- // UVD VCLK/DCLK state (level) definition.
--struct SMU73_Discrete_UvdLevel
--{
-+struct SMU73_Discrete_UvdLevel {
-     uint32_t VclkFrequency;
-     uint32_t DclkFrequency;
-     uint32_t MinVoltage;
-@@ -172,8 +165,7 @@ struct SMU73_Discrete_UvdLevel
- typedef struct SMU73_Discrete_UvdLevel SMU73_Discrete_UvdLevel;
- 
- // Clocks for other external blocks (VCE, ACP, SAMU).
--struct SMU73_Discrete_ExtClkLevel
--{
-+struct SMU73_Discrete_ExtClkLevel {
-     uint32_t Frequency;
-     uint32_t MinVoltage;
-     uint8_t  Divider;
-@@ -182,8 +174,7 @@ struct SMU73_Discrete_ExtClkLevel
- 
- typedef struct SMU73_Discrete_ExtClkLevel SMU73_Discrete_ExtClkLevel;
- 
--struct SMU73_Discrete_StateInfo
--{
-+struct SMU73_Discrete_StateInfo {
-     uint32_t SclkFrequency;
-     uint32_t MclkFrequency;
-     uint32_t VclkFrequency;
-@@ -206,8 +197,7 @@ struct SMU73_Discrete_StateInfo
- 
- typedef struct SMU73_Discrete_StateInfo SMU73_Discrete_StateInfo;
- 
--struct SMU73_Discrete_DpmTable
--{
-+struct SMU73_Discrete_DpmTable {
-     // Multi-DPM controller settings
-     SMU73_PIDController                  GraphicsPIDController;
-     SMU73_PIDController                  MemoryPIDController;
-@@ -225,9 +215,9 @@ struct SMU73_Discrete_DpmTable
-     uint32_t                            MvddLevelCount;
- 
- 
--    uint8_t                             BapmVddcVidHiSidd        [SMU73_MAX_LEVELS_VDDC];
--    uint8_t                             BapmVddcVidLoSidd        [SMU73_MAX_LEVELS_VDDC];
--    uint8_t                             BapmVddcVidHiSidd2       [SMU73_MAX_LEVELS_VDDC];
-+    uint8_t                             BapmVddcVidHiSidd[SMU73_MAX_LEVELS_VDDC];
-+    uint8_t                             BapmVddcVidLoSidd[SMU73_MAX_LEVELS_VDDC];
-+    uint8_t                             BapmVddcVidHiSidd2[SMU73_MAX_LEVELS_VDDC];
- 
-     uint8_t                             GraphicsDpmLevelCount;
-     uint8_t                             MemoryDpmLevelCount;
-@@ -246,19 +236,19 @@ struct SMU73_Discrete_DpmTable
-     uint32_t                            Reserved[4];
- 
-     // State table entries for each DPM state
--    SMU73_Discrete_GraphicsLevel        GraphicsLevel           [SMU73_MAX_LEVELS_GRAPHICS];
-+    SMU73_Discrete_GraphicsLevel        GraphicsLevel[SMU73_MAX_LEVELS_GRAPHICS];
-     SMU73_Discrete_MemoryLevel          MemoryACPILevel;
--    SMU73_Discrete_MemoryLevel          MemoryLevel             [SMU73_MAX_LEVELS_MEMORY];
--    SMU73_Discrete_LinkLevel            LinkLevel               [SMU73_MAX_LEVELS_LINK];
-+    SMU73_Discrete_MemoryLevel          MemoryLevel[SMU73_MAX_LEVELS_MEMORY];
-+    SMU73_Discrete_LinkLevel            LinkLevel[SMU73_MAX_LEVELS_LINK];
-     SMU73_Discrete_ACPILevel            ACPILevel;
--    SMU73_Discrete_UvdLevel             UvdLevel                [SMU73_MAX_LEVELS_UVD];
--    SMU73_Discrete_ExtClkLevel          VceLevel                [SMU73_MAX_LEVELS_VCE];
--    SMU73_Discrete_ExtClkLevel          AcpLevel                [SMU73_MAX_LEVELS_ACP];
--    SMU73_Discrete_ExtClkLevel          SamuLevel               [SMU73_MAX_LEVELS_SAMU];
-+    SMU73_Discrete_UvdLevel             UvdLevel[SMU73_MAX_LEVELS_UVD];
-+    SMU73_Discrete_ExtClkLevel          VceLevel[SMU73_MAX_LEVELS_VCE];
-+    SMU73_Discrete_ExtClkLevel          AcpLevel[SMU73_MAX_LEVELS_ACP];
-+    SMU73_Discrete_ExtClkLevel          SamuLevel[SMU73_MAX_LEVELS_SAMU];
-     SMU73_Discrete_Ulv                  Ulv;
- 
-     uint32_t                            SclkStepSize;
--    uint32_t                            Smio                    [SMU73_MAX_ENTRIES_SMIO];
-+    uint32_t                            Smio[SMU73_MAX_ENTRIES_SMIO];
- 
-     uint8_t                             UvdBootLevel;
-     uint8_t                             VceBootLevel;
-@@ -368,8 +358,7 @@ typedef struct SMU73_Discrete_DpmTable SMU73_Discrete_DpmTable;
- 
- 
- // --------------------------------------------------- Fan Table -----------------------------------------------------------
--struct SMU73_Discrete_FanTable
--{
-+struct SMU73_Discrete_FanTable {
-     uint16_t FdoMode;
-     int16_t  TempMin;
-     int16_t  TempMed;
-@@ -397,8 +386,7 @@ typedef struct SMU73_Discrete_FanTable SMU73_Discrete_FanTable;
- 
- 
- 
--struct SMU7_MclkDpmScoreboard
--{
-+struct SMU7_MclkDpmScoreboard {
- 
-     uint32_t PercentageBusy;
- 
-@@ -448,8 +436,8 @@ struct SMU7_MclkDpmScoreboard
-     uint8_t  VbiWaitCounter;
-     uint8_t  EnabledLevelsChange;
- 
--    uint16_t LevelResidencyCounters [SMU73_MAX_LEVELS_MEMORY];
--    uint16_t LevelSwitchCounters [SMU73_MAX_LEVELS_MEMORY];
-+    uint16_t LevelResidencyCounters[SMU73_MAX_LEVELS_MEMORY];
-+    uint16_t LevelSwitchCounters[SMU73_MAX_LEVELS_MEMORY];
- 
-     void     (*TargetStateCalculator)(uint8_t);
-     void     (*SavedTargetStateCalculator)(uint8_t);
-@@ -469,8 +457,7 @@ struct SMU7_MclkDpmScoreboard
- 
- typedef struct SMU7_MclkDpmScoreboard SMU7_MclkDpmScoreboard;
- 
--struct SMU7_UlvScoreboard
--{
-+struct SMU7_UlvScoreboard {
-     uint8_t     EnterUlv;
-     uint8_t     ExitUlv;
-     uint8_t     UlvActive;
-@@ -485,8 +472,7 @@ struct SMU7_UlvScoreboard
- 
- typedef struct SMU7_UlvScoreboard SMU7_UlvScoreboard;
- 
--struct VddgfxSavedRegisters
--{
-+struct VddgfxSavedRegisters {
-   uint32_t GPU_DBG[3];
-   uint32_t MEC_BaseAddress_Hi;
-   uint32_t MEC_BaseAddress_Lo;
-@@ -497,8 +483,7 @@ struct VddgfxSavedRegisters
- 
- typedef struct VddgfxSavedRegisters VddgfxSavedRegisters;
- 
--struct SMU7_VddGfxScoreboard
--{
-+struct SMU7_VddGfxScoreboard {
-     uint8_t     VddGfxEnable;
-     uint8_t     VddGfxActive;
-     uint8_t     VPUResetOccured;
--- 
-2.17.1
-
+Also applied, thanks Lin!
