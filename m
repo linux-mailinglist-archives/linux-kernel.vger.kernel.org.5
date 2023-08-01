@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEAF76A58A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 02:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BF676A590
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 02:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbjHAAaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 20:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
+        id S230155AbjHAAbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 20:31:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjHAAaD (ORCPT
+        with ESMTP id S229722AbjHAAbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 20:30:03 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDA01716;
-        Mon, 31 Jul 2023 17:30:02 -0700 (PDT)
+        Mon, 31 Jul 2023 20:31:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562BA1999;
+        Mon, 31 Jul 2023 17:31:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F33461373;
-        Tue,  1 Aug 2023 00:30:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C069C433C8;
-        Tue,  1 Aug 2023 00:29:58 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DBDC661373;
+        Tue,  1 Aug 2023 00:31:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EFA5C433C7;
+        Tue,  1 Aug 2023 00:31:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690849801;
-        bh=6A/vRRp/3F+Q+LhbyAwBQLAhY9o/XYm4IbcM19KIrqc=;
+        s=k20201202; t=1690849881;
+        bh=edKPUxJSfxSwSgMp4ELrc17mhd6XvhBB05dcUDTu8PM=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QxciWeuDZaxQzAOsOd3KTAutoDjqb2mqR1+Lrq9qTOP2OxV1YmqmKLzJJItoBa6WS
-         ve8C9eVHuEKqiMSF453SGb8Z1zSxfr/R6kKlZXPj7q+tcKf5Xk8xIKSYhcISdO6ugZ
-         +W/qF/L41cgzzfp2x3X8R/KZ2mI/iPfs1QimNKmP11o1km6X9QeMmI89gmbj7O4KiE
-         H6doIxXz35VeAjnE3YVZ9YABFc7dy5sEKUMfdx3Wdz00+x/7eJMMDqMYRtyJmBO9ja
-         bnhmS3C8uyfj8MdoDf+i+RNMIWVAVYkk7yZpis4Wp2BkF1yUWHf8so6SFxufYYq4Xc
-         zFVcQCel2M3mw==
-Date:   Tue, 1 Aug 2023 09:29:56 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Georg =?UTF-8?B?TcO8bGxlcg==?= <georgmueller@gmx.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf probe: skip test_uprobe_from_different_cu if there
- is no gcc
-Message-Id: <20230801092956.f03cd462fcf4939523ed4726@kernel.org>
-In-Reply-To: <4085b352-f5e8-c0e8-42cf-7a6ecf23282f@gmx.net>
-References: <20230728151812.454806-2-georgmueller@gmx.net>
-        <20230729093814.d48a7b4fb51fdd74ad50ba42@kernel.org>
-        <4085b352-f5e8-c0e8-42cf-7a6ecf23282f@gmx.net>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        b=o52owDH10zGOWCtUIT8xi646am/uSlnvhQg5alGDBcj6z+WgLHgQr14m1GIENgyko
+         YCmsi6UwSKPXC7H5UCme6ceAfT6mg2qCZwNrxhfhvPhV5FhEMAtNa0LMrkOigaeRNi
+         XTR6LkX+85ifqjNVdK3q2b4/wE0EPneTiOmHgfqx/R9wt+n1Y+4Apn9dxBkwnhDDv+
+         qedsv/MKItKNBFjYfsI/41KDd7LuNjZNg2g+8G3Rq5DEsWapBovfCf1dr33K9NKSmd
+         vIYfqGXElKeaxFaZo2wKq4pgFgsue0aFEu1FydnI+z4eYoBGQv+g71nN+3Qv2BVXHE
+         0ju5++uayZdLg==
+Date:   Mon, 31 Jul 2023 17:31:19 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
+        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
+        wei.liu@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        leon@kernel.org, longli@microsoft.com, ssengar@linux.microsoft.com,
+        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
+        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4,net-next] net: mana: Add page pool for RX buffers
+Message-ID: <20230731173119.3ca14894@kernel.org>
+In-Reply-To: <1690580767-18937-1-git-send-email-haiyangz@microsoft.com>
+References: <1690580767-18937-1-git-send-email-haiyangz@microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 29 Jul 2023 12:59:50 +0200
-Georg Müller <georgmueller@gmx.net> wrote:
+On Fri, 28 Jul 2023 14:46:07 -0700 Haiyang Zhang wrote:
+>  static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
+> -			     dma_addr_t *da, bool is_napi)
+> +			     dma_addr_t *da, bool *from_pool, bool is_napi)
+>  {
+>  	struct page *page;
+>  	void *va;
+>  
+> +	*from_pool = false;
+> +
+>  	/* Reuse XDP dropped page if available */
+>  	if (rxq->xdp_save_va) {
+>  		va = rxq->xdp_save_va;
+> @@ -1533,17 +1543,22 @@ static void *mana_get_rxfrag(struct mana_rxq *rxq, struct device *dev,
+>  			return NULL;
+>  		}
+>  	} else {
+> -		page = dev_alloc_page();
+> +		page = page_pool_dev_alloc_pages(rxq->page_pool);
+>  		if (!page)
+>  			return NULL;
+>  
+> +		*from_pool = true;
+>  		va = page_to_virt(page);
+>  	}
+>  
+>  	*da = dma_map_single(dev, va + rxq->headroom, rxq->datasize,
+>  			     DMA_FROM_DEVICE);
+>  	if (dma_mapping_error(dev, *da)) {
+> -		put_page(virt_to_head_page(va));
+> +		if (*from_pool)
+> +			page_pool_put_full_page(rxq->page_pool, page, is_napi);
 
-> 
-> Am 29.07.23 um 02:38 schrieb Masami Hiramatsu (Google):
-> >
-> > Interesting, so clang will not generate DWARF or perf probe is not able to
-> > handle clang generated DWARF?
-> >
-> 
-> clang does not accept mixed -flto and non-lto CUs and the problem is not
-> reproducible by this sample code using clang if using -flto for all CUs.
-> There might be (bigger?) examples where the same issue is triggered by
-> clang and bigger examples (like systemd on fedora) where I ran into the
-> bug, but this small example only shows the problem when using gcc and
-> mixing -flto and non-lto CUs.
+AFAICT you only pass the is_napi to recycle in case of error?
+It's fine to always pass in false, passing true enables some
+optimizations but it's not worth trying to optimize error paths.
 
-Thanks for the explanation! So the problem will be in the compiler side
-(and maybe fixed when it is updated.)
+Otherwise you may be passing in true, even tho budget was 0,
+see the recently added warnings in this doc:
 
-Thank you,
+https://www.kernel.org/doc/html/next/networking/napi.html
 
+In general the driver seems to be processing Rx regardless
+of budget? This looks like a bug which should be fixed with
+a separate patch for the net tree..
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+pw-bot: cr
