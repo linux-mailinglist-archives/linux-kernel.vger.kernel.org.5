@@ -2,50 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9555A76A750
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 05:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEFF76A751
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 05:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231697AbjHADIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 23:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
+        id S231753AbjHADJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 23:09:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbjHADIP (ORCPT
+        with ESMTP id S229810AbjHADJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 23:08:15 -0400
-Received: from out-85.mta0.migadu.com (out-85.mta0.migadu.com [IPv6:2001:41d0:1004:224b::55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0466619B0
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:08:13 -0700 (PDT)
-Message-ID: <e457b7b2-f268-3219-9639-9b09162aa4a9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690859291;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lahItX7popIJQqXeHszW8t+rej/YXgptagMJlzrk/Mc=;
-        b=l08yyRa7AVbn9IiRcVL+ldDBYvTwLQe9D1gY5ZuVghPkbtBZ2kDDWcxj08Lh6iEcjGdROZ
-        8LzM3U1IcGsAklR+IG73Mvn7ucA2MwBEB0zuWAPuSBUMc0mwaAXuwewhNd8oqGDRQB6dYI
-        uH1Xii0P39zeGhc5SfQHe/oUbeTdyZ8=
-Date:   Tue, 1 Aug 2023 11:07:59 +0800
-MIME-Version: 1.0
-Subject: Re: [v2 5/6] mm: move allocation of gigantic hstates to the start of
- mm_core_init
-To:     Usama Arif <usama.arif@bytedance.com>
-Cc:     linux-kernel@vger.kernel.org, fam.zheng@bytedance.com,
-        liangma@liangbit.com, simon.evans@bytedance.com,
-        punit.agrawal@bytedance.com, linux-mm@kvack.org,
-        mike.kravetz@oracle.com, rppt@kernel.org
-References: <20230730151606.2871391-1-usama.arif@bytedance.com>
- <20230730151606.2871391-6-usama.arif@bytedance.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230730151606.2871391-6-usama.arif@bytedance.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        Mon, 31 Jul 2023 23:09:03 -0400
+Received: from out28-147.mail.aliyun.com (out28-147.mail.aliyun.com [115.124.28.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0167F19B0
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:09:00 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07528824|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00859234-0.000375804-0.991032;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5IZH8f_1690859332;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5IZH8f_1690859332)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 11:08:55 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in smu10_hwmgr.c
+Date:   Tue,  1 Aug 2023 03:08:51 +0000
+Message-Id: <20230801030851.5158-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,108 +37,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following errors reported by checkpatch:
 
+ERROR: spaces required around that '=' (ctx:VxW)
+ERROR: space required after that ',' (ctx:VxV)
 
-On 2023/7/30 23:16, Usama Arif wrote:
-> Whether the initialization of tail struct pages of a hugepage
-> happens or not will become dependent on the commandline
-> parameter hugetlb_free_vmemmap in the future. Hence,
-> hugetlb_hstate_alloc_pages needs to be after command line parameters
-> are parsed and the start of mm_core_init is a good point.
->
-> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
-> ---
->   mm/hugetlb.c  | 18 ++++++++++--------
->   mm/internal.h |  9 +++++++++
->   mm/mm_init.c  |  6 ++++++
->   3 files changed, 25 insertions(+), 8 deletions(-)
->
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 541c07b6d60f..bf60545496d7 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -4400,14 +4400,6 @@ static int __init hugepages_setup(char *s)
->   		}
->   	}
->   
-> -	/*
-> -	 * Global state is always initialized later in hugetlb_init.
-> -	 * But we need to allocate gigantic hstates here early to still
-> -	 * use the bootmem allocator.
-> -	 */
-> -	if (hugetlb_max_hstate && hstate_is_gigantic(parsed_hstate))
-> -		hugetlb_hstate_alloc_pages(parsed_hstate);
-> -
->   	last_mhp = mhp;
->   
->   	return 1;
-> @@ -4419,6 +4411,16 @@ static int __init hugepages_setup(char *s)
->   }
->   __setup("hugepages=", hugepages_setup);
->   
-> +void __init hugetlb_hstate_alloc_gigantic_pages(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < HUGE_MAX_HSTATE; i++) {
-> +		if (hstate_is_gigantic(&hstates[i]))
-> +			hugetlb_hstate_alloc_pages(&hstates[i]);
-> +	}
-> +}
-> +
->   /*
->    * hugepagesz command line processing
->    * A specific huge page size can only be specified once with hugepagesz.
-> diff --git a/mm/internal.h b/mm/internal.h
-> index a7d9e980429a..692bb1136a39 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -1102,4 +1102,13 @@ struct vma_prepare {
->   	struct vm_area_struct *remove;
->   	struct vm_area_struct *remove2;
->   };
-> +
-> +#ifdef CONFIG_HUGETLBFS
-> +void __init hugetlb_hstate_alloc_gigantic_pages(void);
-> +#else
-> +static inline void __init hugetlb_hstate_alloc_gigantic_pages(void);
-> +{
-> +}
-> +#endif /* CONFIG_HUGETLBFS */
-> +
->   #endif	/* __MM_INTERNAL_H */
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index a1963c3322af..f2751ccd7d99 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -26,6 +26,7 @@
->   #include <linux/pgtable.h>
->   #include <linux/swap.h>
->   #include <linux/cma.h>
-> +#include <linux/hugetlb.h>
->   #include "internal.h"
->   #include "slab.h"
->   #include "shuffle.h"
-> @@ -2768,6 +2769,11 @@ static void __init mem_init_print_info(void)
->    */
->   void __init mm_core_init(void)
->   {
-> +	/*
-> +	 * We need to allocate gigantic hstates here early to still use the bootmem
-> +	 * allocator. Non gigantic hstates are initialized later in hugetlb_init.
-> +	 */
-> +	hugetlb_hstate_alloc_gigantic_pages();
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ .../gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Actually, I don't want to add hugetlb related information into a
-common code. You just want to make hugetlb_hstate_alloc_gigantic_page()
-happen after cmdline has been pased, maybe we could review this
-cleanup [1], but it need some changes to satisfy your need. E.g. adding
-"hugetlb_free_vmemmap" cmdline parsing in hugetlb_process_arg(). Then
-we do not need to change mm/mm_init.c.
-
-[1] 
-https://lore.kernel.org/linux-mm/20220616071827.3480-1-songmuchun@bytedance.com/
->   	/* Initializations relying on SMP setup */
->   	build_all_zonelists(NULL);
->   	page_alloc_init_cpuhp();
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c
+index 86d6e88c7386..02ba68d7c654 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu10_hwmgr.c
+@@ -430,37 +430,37 @@ static int smu10_apply_state_adjust_rules(struct pp_hwmgr *hwmgr,
+ }
+ 
+ /* temporary hardcoded clock voltage breakdown tables */
+-static const DpmClock_t VddDcfClk[]= {
++static const DpmClock_t VddDcfClk[] = {
+ 	{ 300, 2600},
+ 	{ 600, 3200},
+ 	{ 600, 3600},
+ };
+ 
+-static const DpmClock_t VddSocClk[]= {
++static const DpmClock_t VddSocClk[] = {
+ 	{ 478, 2600},
+ 	{ 722, 3200},
+ 	{ 722, 3600},
+ };
+ 
+-static const DpmClock_t VddFClk[]= {
++static const DpmClock_t VddFClk[] = {
+ 	{ 400, 2600},
+ 	{1200, 3200},
+ 	{1200, 3600},
+ };
+ 
+-static const DpmClock_t VddDispClk[]= {
++static const DpmClock_t VddDispClk[] = {
+ 	{ 435, 2600},
+ 	{ 661, 3200},
+ 	{1086, 3600},
+ };
+ 
+-static const DpmClock_t VddDppClk[]= {
++static const DpmClock_t VddDppClk[] = {
+ 	{ 435, 2600},
+ 	{ 661, 3200},
+ 	{ 661, 3600},
+ };
+ 
+-static const DpmClock_t VddPhyClk[]= {
++static const DpmClock_t VddPhyClk[] = {
+ 	{ 540, 2600},
+ 	{ 810, 3200},
+ 	{ 810, 3600},
+@@ -1358,7 +1358,7 @@ static int smu10_set_watermarks_for_clocks_ranges(struct pp_hwmgr *hwmgr,
+ 	struct amdgpu_device *adev = hwmgr->adev;
+ 	int i;
+ 
+-	smu_set_watermarks_for_clocks_ranges(table,wm_with_clock_ranges);
++	smu_set_watermarks_for_clocks_ranges(table, wm_with_clock_ranges);
+ 
+ 	if (adev->apu_flags & AMD_APU_IS_RAVEN2) {
+ 		for (i = 0; i < NUM_WM_RANGES; i++)
+@@ -1461,7 +1461,7 @@ static int smu10_get_power_profile_mode(struct pp_hwmgr *hwmgr, char *buf)
+ 
+ 	phm_get_sysfs_buf(&buf, &size);
+ 
+-	size += sysfs_emit_at(buf, size, "%s %16s %s %s %s %s\n",title[0],
++	size += sysfs_emit_at(buf, size, "%s %16s %s %s %s %s\n", title[0],
+ 			title[1], title[2], title[3], title[4], title[5]);
+ 
+ 	for (i = 0; i <= PP_SMC_POWER_PROFILE_COMPUTE; i++)
+-- 
+2.17.1
 
