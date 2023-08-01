@@ -2,87 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9C976A7E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C80976A7EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 06:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbjHAEap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 00:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34168 "EHLO
+        id S230423AbjHAEep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 00:34:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbjHAEaj (ORCPT
+        with ESMTP id S229437AbjHAEem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 00:30:39 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A16A2112;
-        Mon, 31 Jul 2023 21:30:24 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2682b4ca7b7so3024837a91.3;
-        Mon, 31 Jul 2023 21:30:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690864224; x=1691469024;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=776YvuBT2o+3N0jG6Zo+Nima5t92155vc9hfZr1faKk=;
-        b=rt9z56jABU9MJPxF5blwK3g2sD4mB5l21I1sBoCXVcYTv+z7cpr9e3Xc9VTfvr8Efi
-         4BG/GThzY5BREnYDWqImwrijuX2T9TiIChqUDGFwrFMFzzdt1a8JXNauflPN573iOO2Z
-         g0PEucGF4GIjaUHE/sDPIjezhZOj0NLprZvcp+YMh2gEn6I0wBHqMB3GtEOv/Ip+qjFj
-         rxgFg+9QZj+GYYZymTL37SocACHRSZVV+1Yqw3CnRfI96SB+O5oXKyxjkgSFWdqUolEC
-         VlRSPxnfqKibF8MwN4607X6PpJ+dUm08FTf51R49imGBcKS9TGEmefc7X8P0Kb8+ydE9
-         payA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690864224; x=1691469024;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=776YvuBT2o+3N0jG6Zo+Nima5t92155vc9hfZr1faKk=;
-        b=MjGUxLsU5BPNw/ERE+rlQCBCir+EPE36m0cBLH7dDTrlOxPxcGM/yqlbrG8kCYCuCt
-         T3jl9HMV4caOmEVKNIAKaSFosJVFsowYQHkZcYUF29WHS/2bQo18AzUOAYyrXIitg12m
-         Fsr1HTMLFb+CXZHgoZRVpas5G3X3nPGqBP32saCfaTW7wkEUkIYXh/6HWHUOi0yaNcT/
-         I2x8x2i/FPhy6oGZfCzcX8V2ozEGwQ+BCw8MtcL50dkheoES6RvqNz4s118SwQc8sBko
-         ApFzTYz6R+8Xj4KgEyiwPBfX5PS+Unztrr6jo9UlK1axlXWbFPYEW5LsW9BUHeZmvlXz
-         6k4Q==
-X-Gm-Message-State: ABy/qLbY7t4Xk5TN/N3PSyDq/XuOR/sz4G3Tq3w/uMuEmP6G7ww1sr+6
-        dr8RVosYL0Uv9gwHAE+F9GtAH6E8TVkD9XRk
-X-Google-Smtp-Source: APBJJlGwc0D45cABI3SJLqH9UcPn8pe+oOD47SnYfpdI0990kjrICpWC2EDUm24iy3+6DK8rvcAbfw==
-X-Received: by 2002:a17:90a:d808:b0:267:e011:3e9a with SMTP id a8-20020a17090ad80800b00267e0113e9amr9512775pjv.3.1690864223786;
-        Mon, 31 Jul 2023 21:30:23 -0700 (PDT)
-Received: from localhost (c-67-166-91-86.hsd1.wa.comcast.net. [67.166.91.86])
-        by smtp.gmail.com with ESMTPSA id ep11-20020a17090ae64b00b00262eccfa29fsm8389618pjb.33.2023.07.31.21.30.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jul 2023 21:30:23 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 04:30:22 +0000
-From:   Bobby Eshleman <bobbyeshleman@gmail.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        linux-hyperv@vger.kernel.org,
-        Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        virtualization@lists.linux-foundation.org,
-        Eric Dumazet <edumazet@google.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bryan Tan <bryantan@vmware.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Krasnov Arseniy <oxffffaa@gmail.com>,
-        Vishnu Dasa <vdasa@vmware.com>,
-        Jiang Wang <jiang.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH RFC net-next v5 10/14] virtio/vsock: add
- VIRTIO_VSOCK_F_DGRAM feature bit
-Message-ID: <ZMiKXh173b/3Pj1L@bullseye>
-References: <20230413-b4-vsock-dgram-v5-0-581bd37fdb26@bytedance.com>
- <20230413-b4-vsock-dgram-v5-10-581bd37fdb26@bytedance.com>
- <20230726143736-mutt-send-email-mst@kernel.org>
- <tpwk67lij7t7hquduogxzyox5wvq73yriv7vqiizqoxxtxvfwq@jzkcmq4kv3b4>
+        Tue, 1 Aug 2023 00:34:42 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C39919AA
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 21:34:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1690864460; x=1691469260; i=efault@gmx.de;
+ bh=PQ8MYzj7tx0D6eyvzO9rkGF0u0ZBtZ1Vj9Zolp3Zmx0=;
+ h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+ b=YbRUkFlYSVkvCC9TeMj+MwFmupcB/MFDA9zQN46l5LO8ICf3jNyeodX7Xo8JDJS2c1Upc/5
+ SqdhcWof1uIM4L3S0aNgAI1hasjD7sjoJfjFUK+eNDgfNvrtgwizpVqCjfub/FUbb1rMD+6Ss
+ 0jkE7A5dZGrI1F/L02pjUTv2vdpfoMVcbVjyLSjPw0DvSvCD0lEegZveKbjXMw1hSJ0k/DUCC
+ LnUovKQy6OGwy5rAqPiKLz6BqlZfmzz0FgLdLPbeSY3k/IXYdWlfKPa3Pi0Z+PibCw9zryZqR
+ /79UZVsWK9nepAMAPmcXSwzhgi+snFt22p5bG25G0dMVkoGxUGvg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from homer-2.fritz.box ([185.191.216.56]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MCsQ4-1qZWn53Sz2-008pJl; Tue, 01
+ Aug 2023 06:34:19 +0200
+Message-ID: <7b94619ad89c9e308c7aedef2cacfa10b8666e69.camel@gmx.de>
+Subject: Re: arm64: perf test 26 rpi4 oops
+From:   Mike Galbraith <efault@gmx.de>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>, Will Deacon <will@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        wangkefeng.wang@huawei.com, catalin.marinas@arm.com,
+        ardb@kernel.org
+Date:   Tue, 01 Aug 2023 06:34:15 +0200
+In-Reply-To: <21777dec0233b1bc65f51764ead9a03efa9baa64.camel@gmx.de>
+References: <b39c62d29a431b023e98959578ba87e96af0e030.camel@gmx.de>
+         <20230728141852.GA21718@willie-the-truck>
+         <8c56256399e2e6c41bc574749d6170d5529f24fc.camel@gmx.de>
+         <20230731104340.GA24767@willie-the-truck>
+         <20230731115207.GB24767@willie-the-truck>
+         <CAA5enKaUYehLZGL3abv4rsS7caoUG-pN9wF3R+qek-DGNZufbA@mail.gmail.com>
+         <CAA5enKYaZ-daLeL3amr2QrQjtUdK=P8B+VbJdea7cB77QWY-eQ@mail.gmail.com>
+         <42ad26cb6c98e028a331f5d73abf85bd965ff89d.camel@gmx.de>
+         <21777dec0233b1bc65f51764ead9a03efa9baa64.camel@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tpwk67lij7t7hquduogxzyox5wvq73yriv7vqiizqoxxtxvfwq@jzkcmq4kv3b4>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WF3o3Z0bH2Jh5FJFVwqfBurryUQqVFhkgFUlgp+VVvU+OVw0AGw
+ QAz0GFvzDjTkZQB8FaLgyXtvzRytLzU7XnREyEStVVyylPaD6/03bJTo9QpxGs7bfG1SwpG
+ E9gDpFRF54ylKwBgdpBuPTM4enkVRVv03+aUmdsyabgWWrw28zO6TG2GdLTyOx6vM/58IAT
+ 8Wgk/VkKaRaP6UtRl3w3Q==
+UI-OutboundReport: notjunk:1;M01:P0:oLZsSaxHviY=;4N930vPxC4j4xtc5eq3Gv50vNdp
+ gzgf00bVdOURdq2BJydI9Y7XtyR+rEGKwA48rFTXFvkyalyLWVhi7XioDdlgJZmJckb02wWd1
+ ias8jRGMyAo5TyqD5vsjoRcnv9g8LIseWBdTyAaqDAPOCCLufMkxPNl6oCiT0DCQLn6qM4pSC
+ TA9hqF6y6mgg8TK63QoNfAvxG3bI8a/f2oc5sSGn4QJN3jAWFALhGCPnE3AeapSP3SuPQnQuB
+ CIACf8ZNOXIE4WEkvFbWMXqLXASRcm5ZLmVzF/yK+ysOzDfvvPAOvCqRdxWvxAN8b1lNrZJlV
+ aGDhbNblZdCtAw+fUSSBlMSyg2WQw9VNoYopUcOVRK2pLzQH58LB4Wm2/P7qv0HolbIjxaeAR
+ X6Fb9EcA7BLzxdHshVl0EeUNsN2zQcou1Q603P0lptxGGqXkhNKDPVCoOJ3txDnBal/LvHQ/W
+ lP7rAnODNAHxKk5ndV4MwFO28+LcUOmh+mXJcQZ7FgDMefBBw6KXJ7daqcCStcG9HkN3ps7h8
+ QjVplKKqBJ/DAZ/rJXVv+ScM4S3fJrQSWn0r5gTYZAK6dZTClLJTsqW04YCJMfUmTc3EKXQUP
+ 25omxqPZFGvzCGQXL8JjzjRPDgQAiAKv1ajBFwxVgRzneQ1p6Plo805m4AiA9R05XZpUSZExq
+ hp3Qdb4SXkgmjA4Lg1qJrI/Wz86BIYe4wsJN2HaSwKmD1apf/42v9aH+gGdfwYhyRZUbIs7oj
+ hziXgMhmXLlVX3WkVGvuDLx9E/4Qt4io5uYSjiotyIEo43f7uRt5d7wF+ooBCrkb0u0nZYpwg
+ lQ+7AOave/L70w2IaY7dN9XNivEHAYK3eslbSEeycBiWoqB07caOGm8whCkqwoLDyB9ZKocQP
+ VySoJa03iXV9QNVAgNXIIYKUgSFmnF5kryb4r7eZDGaBIpUa2tbh2l3Xxhd2xoUFDd3vF/KhL
+ 4fg6V+Lv2vJhpQldUO5Y1KIhwbA=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -93,48 +80,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 09:48:21AM +0200, Stefano Garzarella wrote:
-> On Wed, Jul 26, 2023 at 02:38:08PM -0400, Michael S. Tsirkin wrote:
-> > On Wed, Jul 19, 2023 at 12:50:14AM +0000, Bobby Eshleman wrote:
-> > > This commit adds a feature bit for virtio vsock to support datagrams.
-> > > 
-> > > Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-> > > Signed-off-by: Bobby Eshleman <bobby.eshleman@bytedance.com>
-> > > ---
-> > >  include/uapi/linux/virtio_vsock.h | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
-> > > index 331be28b1d30..27b4b2b8bf13 100644
-> > > --- a/include/uapi/linux/virtio_vsock.h
-> > > +++ b/include/uapi/linux/virtio_vsock.h
-> > > @@ -40,6 +40,7 @@
-> > > 
-> > >  /* The feature bitmap for virtio vsock */
-> > >  #define VIRTIO_VSOCK_F_SEQPACKET	1	/* SOCK_SEQPACKET supported */
-> > > +#define VIRTIO_VSOCK_F_DGRAM		3	/* SOCK_DGRAM supported */
-> > > 
-> > >  struct virtio_vsock_config {
-> > >  	__le64 guest_cid;
-> > 
-> > pls do not add interface without first getting it accepted in the
-> > virtio spec.
-> 
-> Yep, fortunatelly this series is still RFC.
-> I think by now we've seen that the implementation is doable, so we
-> should discuss the changes to the specification ASAP. Then we can
-> merge the series.
-> 
-> @Bobby can you start the discussion about spec changes?
-> 
+On Tue, 2023-08-01 at 01:48 +0200, Mike Galbraith wrote:
+>
+> root@rpi4:~# dmesg|tail -2
+> [=C2=A0 979.003019] __vm_enough_memory: pid: 12439, comm: objdump, not e=
+nough memory for the allocation
+> [=C2=A0 979.003080] __vm_enough_memory: pid: 12439, comm: objdump, not e=
+nough memory for the allocation
 
-No problem at all. Am I right to assume that a new patch to the spec is
-the standard starting point for discussion?
+Ancient bug droppings are due to VMALLOC_END-VMALLOC_START=3D265885319168.
 
-> Thanks,
-> Stefano
-> 
-> _______________________________________________
-> Virtualization mailing list
-> Virtualization@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+	-Mike
