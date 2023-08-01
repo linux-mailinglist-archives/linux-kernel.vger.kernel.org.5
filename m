@@ -2,59 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD9B76B600
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A3676B619
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233969AbjHANgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:36:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44780 "EHLO
+        id S234403AbjHANmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:42:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232499AbjHANgv (ORCPT
+        with ESMTP id S230472AbjHANmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:36:51 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F337C10DB
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 06:36:49 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RFbhw2SLjzrS3m;
-        Tue,  1 Aug 2023 21:35:44 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 1 Aug 2023 21:36:45 +0800
-Message-ID: <7208b261-d764-2332-1c0b-ff0cda5469dc@huawei.com>
-Date:   Tue, 1 Aug 2023 21:36:44 +0800
+        Tue, 1 Aug 2023 09:42:42 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A90E10DB;
+        Tue,  1 Aug 2023 06:42:40 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 6C225120015;
+        Tue,  1 Aug 2023 16:42:38 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6C225120015
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1690897358;
+        bh=leUECNb8m0aTy27Ms8IWUwmaM7nT+VfrQeB1YRQ7PRE=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=UyvC5thzyDUMbLNyNgezSMelIBa4AdyRq33D36Oz2MgRg7aZtgsruG9uNAKNxyvGp
+         KizF7dCVBi+ANgYqRF7qLhQQ65Da6ZfW7rnz9beyjFyhMdhQoE06Q3YatpNzx9KblD
+         731+VtzcdyptnsKUp3UACtbZDcJtoTrHDwVP0e4KP/MLJbs9PdMC/vKkHQSz6xPcPE
+         arGWV/hO+P2j8d4y2hkHliNA3dHIgo4TXt/GfGTzviTaQDi3Y9XYKWtewo1E8xJDxU
+         u0VcAp14ZD+Kgp9zbeevgEiR5TuUXKU6QGdTzSBCJ3WV/mq5K7Kg1s10r9wpCS7/u3
+         sNk+Twy36uCeA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Tue,  1 Aug 2023 16:42:38 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 1 Aug 2023 16:42:34 +0300
+Message-ID: <1c9f9851-2228-c92b-ce3d-6a84d44e6628@sberdevices.ru>
+Date:   Tue, 1 Aug 2023 16:36:55 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH v2 2/2] arm64: hugetlb: enable
- __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH net-next v5 4/4] vsock/virtio: MSG_ZEROCOPY flag support
 Content-Language: en-US
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Mina Almasry <almasrymina@google.com>, <kirill@shutemov.name>,
-        <joel@joelfernandes.org>, <william.kucharski@oracle.com>,
-        <kaleshsingh@google.com>, <linux-mm@kvack.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <21cnbao@gmail.com>
-References: <20230801023145.17026-1-wangkefeng.wang@huawei.com>
- <20230801023145.17026-3-wangkefeng.wang@huawei.com>
- <ZMjn+68gKrdQSjMD@arm.com> <4b5a3cfb-e13d-4df4-c08a-fb176cc2cbf6@huawei.com>
-In-Reply-To: <4b5a3cfb-e13d-4df4-c08a-fb176cc2cbf6@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     Paolo Abeni <pabeni@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20230730085905.3420811-1-AVKrasnov@sberdevices.ru>
+ <20230730085905.3420811-5-AVKrasnov@sberdevices.ru>
+ <8a7772a50a16fbbcb82fc0c5e09f9e31f3427e3d.camel@redhat.com>
+From:   Arseniy Krasnov <avkrasnov@sberdevices.ru>
+In-Reply-To: <8a7772a50a16fbbcb82fc0c5e09f9e31f3427e3d.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: AVKrasnov@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -63,30 +95,101 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2023/8/1 19:22, Kefeng Wang wrote:
+On 01.08.2023 16:34, Paolo Abeni wrote:
+> On Sun, 2023-07-30 at 11:59 +0300, Arseniy Krasnov wrote:
+>> +static int virtio_transport_fill_skb(struct sk_buff *skb,
+>> +				     struct virtio_vsock_pkt_info *info,
+>> +				     size_t len,
+>> +				     bool zcopy)
+>> +{
+>> +	if (zcopy) {
+>> +		return __zerocopy_sg_from_iter(info->msg, NULL, skb,
+>> +					      &info->msg->msg_iter,
+>> +					      len);
+>> +	} else {
 > 
 > 
-> On 2023/8/1 19:09, Catalin Marinas wrote:
->> On Tue, Aug 01, 2023 at 10:31:45AM +0800, Kefeng Wang wrote:
->>> +#define __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
->>> +static inline void flush_hugetlb_tlb_range(struct vm_area_struct *vma,
->>> +                       unsigned long start,
->>> +                       unsigned long end)
->>> +{
->>> +    unsigned long stride = huge_page_size(hstate_vma(vma));
->>> +
->>> +    if (stride != PMD_SIZE && stride != PUD_SIZE)
->>> +        stride = PAGE_SIZE;
->>> +    __flush_tlb_range(vma, start, end, stride, false, 0);
->>
->> We could use some hints here for the tlb_level (2 for pmd, 1 for pud).
->> Regarding the last_level argument to __flush_tlb_range(), I think it
->> needs to stay false since this function is also called on the
->> hugetlb_unshare_pmds() path where the pud is cleared and needs
->> invalidating.
->>  > That said, maybe you can rewrite it as a switch statement and call
->> flush_pmd_tlb_range() or flush_pud_tlb_range() (just make sure these are
->> defined when CONFIG_HUGETLBFS is enabled).
+> No need for an else statement after 'return'
+> 
+>> +		void *payload;
+>> +		int err;
+>> +
+>> +		payload = skb_put(skb, len);
+>> +		err = memcpy_from_msg(payload, info->msg, len);
+>> +		if (err)
+>> +			return -1;
+>> +
+>> +		if (msg_data_left(info->msg))
+>> +			return 0;
+>> +
+> 
+> This path does not update truesize, evem if it increases the skb len...
 
-I try the way your mentioned, it won't change much, will send v3, thanks.
+Thanks, I'll fix it.
 
+> 
+>> +		return 0;
+>> +	}
+>> +}
+> 
+> [...]
+> 
+>> @@ -214,6 +251,70 @@ static u16 virtio_transport_get_type(struct sock *sk)
+>>  		return VIRTIO_VSOCK_TYPE_SEQPACKET;
+>>  }
+>>  
+>> +static struct sk_buff *virtio_transport_alloc_skb(struct vsock_sock *vsk,
+>> +						  struct virtio_vsock_pkt_info *info,
+>> +						  size_t payload_len,
+>> +						  bool zcopy,
+>> +						  u32 src_cid,
+>> +						  u32 src_port,
+>> +						  u32 dst_cid,
+>> +						  u32 dst_port)
+>> +{
+>> +	struct sk_buff *skb;
+>> +	size_t skb_len;
+>> +
+>> +	skb_len = VIRTIO_VSOCK_SKB_HEADROOM;
+>> +
+>> +	if (!zcopy)
+>> +		skb_len += payload_len;
+>> +
+>> +	skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
+>> +	if (!skb)
+>> +		return NULL;
+>> +
+>> +	virtio_transport_init_hdr(skb, info, src_cid, src_port,
+>> +				  dst_cid, dst_port,
+>> +				  payload_len);
+>> +
+>> +	/* Set owner here, because '__zerocopy_sg_from_iter()' uses
+>> +	 * owner of skb without check to update 'sk_wmem_alloc'.
+>> +	 */
+>> +	if (vsk)
+>> +		skb_set_owner_w(skb, sk_vsock(vsk));
+> 
+> ... which can lead to bad things(TM) if the skb goes trough some later
+> non trivial processing, due to the above skb_set_owner_w().
+> 
+> Additionally can be the following condition be true:
+> 
+> 	vsk == NULL && (info->msg && payload_len > 0) && zcopy
+> 
+> ???
+
+No, vsk == NULL only when we reset connection, in that case both info->msg == NULL and payload_len == 0,
+as this is control message without any data.
+
+> 
+> If so it looks like skb can go through __zerocopy_sg_from_iter() even
+> without a prior skb_set_owner_w()...
+> 
+> 
+> Cheers,
+> 
+> Paolo
+>
+
+Thanks, Arseniy
+ 
