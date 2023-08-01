@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7913176ADC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA7376ADE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:34:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbjHAJdn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 05:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
+        id S233077AbjHAJeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbjHAJdC (ORCPT
+        with ESMTP id S233060AbjHAJd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:33:02 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E87E330F7
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:31:00 -0700 (PDT)
-Received: from loongson.cn (unknown [209.85.128.45])
-        by gateway (Coremail) with SMTP id _____8BxnuvH0MhkagEOAA--.30785S3;
-        Tue, 01 Aug 2023 17:30:48 +0800 (CST)
-Received: from mail-wm1-f45.google.com (unknown [209.85.128.45])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxviPF0MhkCMpDAA--.4638S3;
-        Tue, 01 Aug 2023 17:30:46 +0800 (CST)
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-3fe2bc2701bso1395505e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:30:46 -0700 (PDT)
-X-Gm-Message-State: ABy/qLYXbBfSUqbvyTk0Rz+7e7Xu021HMKtNdggxpVpTwvCx7CdqiOrH
-        TQnyvwZJ4br1e7paWpAmhJyrNkYUJvgcgrGAGe/E6A==
-X-Google-Smtp-Source: APBJJlFL0f5c65vH+FERRq95p4j8qrALvRiIHJcQv3dFHYZmyAKStT05me5UsGMEKTgrx/mqaZFFQzGRUPUduCg+Vuk=
-X-Received: by 2002:adf:edcd:0:b0:314:8d:7eb5 with SMTP id v13-20020adfedcd000000b00314008d7eb5mr1919533wro.29.1690882244713;
- Tue, 01 Aug 2023 02:30:44 -0700 (PDT)
+        Tue, 1 Aug 2023 05:33:58 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC0030D0;
+        Tue,  1 Aug 2023 02:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=rtEWlJyO83/pdRflVwgnsb07PGLvZQOy27saQA+Hr3Y=; b=Ldkgc0vkfzNJfbj4Ae6A1Lxn45
+        hIKCC9qlfiJcd7HdXnHDWNyEUYK7FXjn9AFTjBXOhA01G0WBSTnrJ2ejRDaS5mvYZswMeYBBOgG9k
+        aivgKHvD11VsSiSZXVcq2doyLqiOELy6bQ4QobsPf4vSjX3WlJtDZKVpYNO/m6pwos0E=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qQlj2-002mea-Vy; Tue, 01 Aug 2023 11:31:32 +0200
+Date:   Tue, 1 Aug 2023 11:31:32 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Lee Jones <lee@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v2 06/28] net: wan: Add support for QMC HDLC
+Message-ID: <80341a96-c40f-4a45-9bad-359a890edfc4@lunn.ch>
+References: <20230726150225.483464-1-herve.codina@bootlin.com>
+ <20230726150225.483464-7-herve.codina@bootlin.com>
 MIME-Version: 1.0
-References: <20230801011554.3950435-1-guoren@kernel.org> <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
- <20230801083201.GB26036@willie-the-truck>
-In-Reply-To: <20230801083201.GB26036@willie-the-truck>
-From:   WANG Rui <wangrui@loongson.cn>
-Date:   Tue, 1 Aug 2023 17:30:33 +0800
-X-Gmail-Original-Message-ID: <CAHirt9ggujWPw7KV7qSGjk=-nX16U+u1MwNGSLEkoogcJjOHFA@mail.gmail.com>
-Message-ID: <CAHirt9ggujWPw7KV7qSGjk=-nX16U+u1MwNGSLEkoogcJjOHFA@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
-To:     Will Deacon <will@kernel.org>
-Cc:     guoren@kernel.org, chenhuacai@kernel.or, kernel@xen0n.name,
-        arnd@arndb.de, andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
-        peterz@infradead.org, boqun.feng@gmail.com, mark.rutland@arm.com,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-CM-TRANSID: AQAAf8DxviPF0MhkCMpDAA--.4638S3
-X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
-        BjDU0xBIdaVrnRJUUUBKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
-        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x02
-        67AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
-        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E
-        87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2
-        Ij64vIr41l4c8EcI0En4kS14v26r1q6r43MxAqzxv26xkF7I0En4kS14v26r1q6r43MxC2
-        0s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1q6r43MI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAI
-        cVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230726150225.483464-7-herve.codina@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,20 +70,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> +static inline struct qmc_hdlc *netdev_to_qmc_hdlc(struct net_device *netdev)
+> +{
+> +	return (struct qmc_hdlc *)dev_to_hdlc(netdev)->priv;
 
-On Tue, Aug 1, 2023 at 4:32 PM Will Deacon <will@kernel.org> wrote:
->
-> Hmm, somehow this one passed me by, but I think that puts you in the naughty
-> corner with Itanium. It probably also means your READ_ONCE() is broken,
-> unless the compiler emits barriers for volatile reads (like ia64)?
+priv is a void *, so you don't need the cast.
 
-Hmm, I agree with your perspective. Allowing out-of-order loads for
-the same address in the memory model provides certain performance
-benefits, but it also poses challenges to software. Fortunately,
-hardware supports software to disable this feature when needed.
-
-Regards,
--- 
-WANG Rui
-
+     Andrew
