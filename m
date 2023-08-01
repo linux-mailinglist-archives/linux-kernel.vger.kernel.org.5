@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C0576A58B
+	by mail.lfdr.de (Postfix) with ESMTP id 3FEAF76A58A
 	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 02:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjHAAaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 20:30:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41202 "EHLO
+        id S230000AbjHAAaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 20:30:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjHAAaE (ORCPT
+        with ESMTP id S229798AbjHAAaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 20:30:04 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DB5133;
+        Mon, 31 Jul 2023 20:30:03 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDA01716;
         Mon, 31 Jul 2023 17:30:02 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4f4b2bc1565so8050404e87.2;
-        Mon, 31 Jul 2023 17:30:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690849801; x=1691454601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OP0ss+QFrEDr1W853Rw5boHV+kOYmqr8XMFUdINABY4=;
-        b=UnHjPYlKzePkM6jaAezL/Oz1naX+R2xTssxu/YDfCgIEk9OKvo+Zr1NwgplFVh5wYh
-         Nu8Gn9NgifSqEDUMSps1FPZU7QoNYlffON1zPM/PaeW2J1A6EwJxKFHqtBrRmnzKtFGP
-         VHGhj85Z3vviSlkeQzoy22OkqscKCGzuk2WDkrcGHF6YNUTmV3tYvxS/EIm+stNEr5fZ
-         Dda9dteptkuq4IiV8oQB+25qsCFdNaIpgc3m7V+uWjwyctEQ2z01HhwglI2ELhOtkz/1
-         7+urBeDBtqnJVN3PLJt94akoOsI/33FqMpHTFJ0rseY2qX6icgJq7/U0ZrultIDdLfh8
-         yuWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690849801; x=1691454601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OP0ss+QFrEDr1W853Rw5boHV+kOYmqr8XMFUdINABY4=;
-        b=j24/CTflhoIWMft3A31IX3hgeg3LmwMbmn79WM/itb5u9vxkMyhYdP2aI/QpTkdRQz
-         kn6UsNqII/1+64/ryb9wXRBVzSJv8Jj2UKc89iTSZQain0QAE0XC6tdEhrPgTn88T1F1
-         fqvkyLIs7jnLqF//u9OyXLIJB906Ji7iL7o28WE8ASqwBcBTwD1Y7U6Rh1pYznsVRHoO
-         GdPxTSeB48KvO5V3Zx5pDMwwG2kEBb6NLUYy5nNQ83gTmU5ly65+DAFVGfaYBo33tJAL
-         dWRz6y0eerhGwspwEET6pqvAALoGmaXvtPkpL/99DXiKxa4/vsrFIdC8BU1jM7maIHVG
-         Xr9g==
-X-Gm-Message-State: ABy/qLa5Trp4d/dO2ZO4fkAHyFKr2OVGClvLcFph1+FFZseblWEWje4Z
-        yHWsfQfKRKRHmgL9NgqwCOsMzOSW8GZYVJ7mFNQ=
-X-Google-Smtp-Source: APBJJlGbcB7idTGp1DG44yuQk8uVjeLpj1gIntNzbeoudVEFdAMQd5AEuyi0vN24WE4L3cvSs5UpLJRXwI115dfirDc=
-X-Received: by 2002:a2e:80c3:0:b0:2b7:3633:2035 with SMTP id
- r3-20020a2e80c3000000b002b736332035mr1121930ljg.32.1690849800775; Mon, 31 Jul
- 2023 17:30:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
- <169078863449.173706.2322042687021909241.stgit@devnote2> <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
- <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-In-Reply-To: <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 31 Jul 2023 17:29:49 -0700
-Message-ID: <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a struct/union
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5F33461373;
+        Tue,  1 Aug 2023 00:30:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C069C433C8;
+        Tue,  1 Aug 2023 00:29:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690849801;
+        bh=6A/vRRp/3F+Q+LhbyAwBQLAhY9o/XYm4IbcM19KIrqc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QxciWeuDZaxQzAOsOd3KTAutoDjqb2mqR1+Lrq9qTOP2OxV1YmqmKLzJJItoBa6WS
+         ve8C9eVHuEKqiMSF453SGb8Z1zSxfr/R6kKlZXPj7q+tcKf5Xk8xIKSYhcISdO6ugZ
+         +W/qF/L41cgzzfp2x3X8R/KZ2mI/iPfs1QimNKmP11o1km6X9QeMmI89gmbj7O4KiE
+         H6doIxXz35VeAjnE3YVZ9YABFc7dy5sEKUMfdx3Wdz00+x/7eJMMDqMYRtyJmBO9ja
+         bnhmS3C8uyfj8MdoDf+i+RNMIWVAVYkk7yZpis4Wp2BkF1yUWHf8so6SFxufYYq4Xc
+         zFVcQCel2M3mw==
+Date:   Tue, 1 Aug 2023 09:29:56 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Georg =?UTF-8?B?TcO8bGxlcg==?= <georgmueller@gmx.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf probe: skip test_uprobe_from_different_cu if there
+ is no gcc
+Message-Id: <20230801092956.f03cd462fcf4939523ed4726@kernel.org>
+In-Reply-To: <4085b352-f5e8-c0e8-42cf-7a6ecf23282f@gmx.net>
+References: <20230728151812.454806-2-georgmueller@gmx.net>
+        <20230729093814.d48a7b4fb51fdd74ad50ba42@kernel.org>
+        <4085b352-f5e8-c0e8-42cf-7a6ecf23282f@gmx.net>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,157 +68,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 4:57=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
->
-> On Mon, 31 Jul 2023 14:59:47 -0700
-> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
->
-> > On Mon, Jul 31, 2023 at 12:30=E2=80=AFAM Masami Hiramatsu (Google)
-> > <mhiramat@kernel.org> wrote:
-> > >
-> > > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > >
-> > > Add btf_find_struct_member() API to search a member of a given data s=
-tructure
-> > > or union from the member's name.
-> > >
-> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > > ---
-> > >  Changes in v3:
-> > >   - Remove simple input check.
-> > >   - Fix unneeded IS_ERR_OR_NULL() check for btf_type_by_id().
-> > >   - Move the code next to btf_get_func_param().
-> > >   - Use for_each_member() macro instead of for-loop.
-> > >   - Use btf_type_skip_modifiers() instead of btf_type_by_id().
-> > >  Changes in v4:
-> > >   - Use a stack for searching in anonymous members instead of nested =
-call.
-> > > ---
-> > >  include/linux/btf.h |    3 +++
-> > >  kernel/bpf/btf.c    |   40 ++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 43 insertions(+)
-> > >
-> > > diff --git a/include/linux/btf.h b/include/linux/btf.h
-> > > index 20e3a07eef8f..4b10d57ceee0 100644
-> > > --- a/include/linux/btf.h
-> > > +++ b/include/linux/btf.h
-> > > @@ -226,6 +226,9 @@ const struct btf_type *btf_find_func_proto(const =
-char *func_name,
-> > >                                            struct btf **btf_p);
-> > >  const struct btf_param *btf_get_func_param(const struct btf_type *fu=
-nc_proto,
-> > >                                            s32 *nr);
-> > > +const struct btf_member *btf_find_struct_member(struct btf *btf,
-> > > +                                               const struct btf_type=
- *type,
-> > > +                                               const char *member_na=
-me);
-> > >
-> > >  #define for_each_member(i, struct_type, member)                     =
-   \
-> > >         for (i =3D 0, member =3D btf_type_member(struct_type);      \
-> > > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> > > index f7b25c615269..8d81a4ffa67b 100644
-> > > --- a/kernel/bpf/btf.c
-> > > +++ b/kernel/bpf/btf.c
-> > > @@ -958,6 +958,46 @@ const struct btf_param *btf_get_func_param(const=
- struct btf_type *func_proto, s3
-> > >                 return NULL;
-> > >  }
-> > >
-> > > +#define BTF_ANON_STACK_MAX     16
-> > > +
-> > > +/*
-> > > + * Find a member of data structure/union by name and return it.
-> > > + * Return NULL if not found, or -EINVAL if parameter is invalid.
-> > > + */
-> > > +const struct btf_member *btf_find_struct_member(struct btf *btf,
-> > > +                                               const struct btf_type=
- *type,
-> > > +                                               const char *member_na=
-me)
-> > > +{
-> > > +       const struct btf_type *anon_stack[BTF_ANON_STACK_MAX];
-> > > +       const struct btf_member *member;
-> > > +       const char *name;
-> > > +       int i, top =3D 0;
-> > > +
-> > > +retry:
-> > > +       if (!btf_type_is_struct(type))
-> > > +               return ERR_PTR(-EINVAL);
-> > > +
-> > > +       for_each_member(i, type, member) {
-> > > +               if (!member->name_off) {
-> > > +                       /* Anonymous union/struct: push it for later =
-use */
-> > > +                       type =3D btf_type_skip_modifiers(btf, member-=
->type, NULL);
-> > > +                       if (type && top < BTF_ANON_STACK_MAX)
-> > > +                               anon_stack[top++] =3D type;
-> > > +               } else {
-> > > +                       name =3D btf_name_by_offset(btf, member->name=
-_off);
-> > > +                       if (name && !strcmp(member_name, name))
-> > > +                               return member;
-> > > +               }
-> > > +       }
-> > > +       if (top > 0) {
-> > > +               /* Pop from the anonymous stack and retry */
-> > > +               type =3D anon_stack[--top];
-> > > +               goto retry;
-> > > +       }
-> >
-> > Looks good, but I don't see a test case for this.
-> > The logic is a bit tricky. I'd like to have a selftest that covers it.
->
-> Thanks, and I agree about selftest.
->
-> >
-> > You probably need to drop Alan's reviewed-by, since the patch is quite
-> > different from the time he reviewed it.
->
-> OK. BTW, I found a problem on this function. I guess the member->offset w=
-ill
-> be the offset from the intermediate anonymous union, it is usually 0, but
-> I need the offset from the given structure. Thus the interface design mus=
-t
-> be changed. Passing a 'u32 *offset' and set the correct offset in it. If
-> it has nested intermediate anonymous unions, that offset must also be pus=
-hed.
+On Sat, 29 Jul 2023 12:59:50 +0200
+Georg Müller <georgmueller@gmx.net> wrote:
 
-With all that piling up have you considering reusing btf_struct_walk() ?
-It's doing the opposite off -> btf_id while you need name -> btf_id.
-But it will give an idea of overall complexity if you want to solve it
-for nested arrays and struct/union.
-
+> 
+> Am 29.07.23 um 02:38 schrieb Masami Hiramatsu (Google):
 > >
-> > Assuming that is addressed. How do we merge the series?
-> > The first 3 patches have serious conflicts with bpf trees.
+> > Interesting, so clang will not generate DWARF or perf probe is not able to
+> > handle clang generated DWARF?
 > >
-> > Maybe send the first 3 with extra selftest for above recursion
-> > targeting bpf-next then we can have a merge commit that Steven can pull
-> > into tracing?
-> >
-> > Or if we can have acks for patches 4-9 we can pull the whole set into b=
-pf-next.
->
-> That's a good question. I don't like splitting the whole series in 2 -nex=
-t
-> branches. So I can send this to the bpf-next.
+> 
+> clang does not accept mixed -flto and non-lto CUs and the problem is not
+> reproducible by this sample code using clang if using -flto for all CUs.
+> There might be (bigger?) examples where the same issue is triggered by
+> clang and bigger examples (like systemd on fedora) where I ran into the
+> bug, but this small example only shows the problem when using gcc and
+> mixing -flto and non-lto CUs.
 
-Works for me.
+Thanks for the explanation! So the problem will be in the compiler side
+(and maybe fixed when it is updated.)
 
-> I need to work on another series(*) on fprobes which will not have confli=
-cts with
-> this series. (*Replacing pt_regs with ftrace_regs on fprobe, which will t=
-ake longer
-> time, and need to adjust with eBPF).
+Thank you,
 
-ftrace_regs?
-Ouch. For bpf we rely on pt_regs being an argument.
-fprobe should be 100% compatible replacement of kprobe-at-the-func-start.
-If it diverges from that it's a big issue for bpf.
-We'd have to remove all of fprobe usage.
-I could be missing something, of course.
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
