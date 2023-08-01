@@ -2,51 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5008876ABEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3A476AC08
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232500AbjHAJEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 05:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60548 "EHLO
+        id S232231AbjHAJFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232675AbjHAJDN (ORCPT
+        with ESMTP id S232020AbjHAJEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 05:03:13 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54028E49;
-        Tue,  1 Aug 2023 02:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=lhIx8Z9MwkPqQs5KNClXE/7bclgPKWKNOBpbSuG3HUs=; b=HugPMt4B3WtcqYeQYGV8zc3Zav
-        uZI5gFoXcfkGPrHC5gtDNedNxETtR4oj5N3xU4KNz55V/x518v+q+pkL9D80sm4ubrMsBrGCM/Bqe
-        jveeu8PfGnp/o7VdTm4Pmm6OLuGtVyVj4MxDR11CfMFEXKi8ckWt7XKHomI8AZSjZ2Ek=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qQlGr-002mUP-Qn; Tue, 01 Aug 2023 11:02:25 +0200
-Date:   Tue, 1 Aug 2023 11:02:25 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Jassi Brar <jaswinder.singh@linaro.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] net: netsec: Ignore 'phy-mode' on SynQuacer in DT mode
-Message-ID: <5823fe1b-c994-4ad5-945c-f82500a0843b@lunn.ch>
-References: <20230731-synquacer-net-v3-1-944be5f06428@kernel.org>
+        Tue, 1 Aug 2023 05:04:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45837211B
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 02:03:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 30FC7614CC
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:02:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9156CC433D9
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:02:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690880564;
+        bh=yysbtRG74SbIc4kvWFf/yt8D0zmK33jlQSMHNhB2wik=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=A0GTM2AE72dpcUqSmcfOwmGqe8VJbA+nJCh8Adx7EpCoKBq5AetFc/Y2oOegRt7FQ
+         byGONZNnIeHQ06SZWqYVbslVRMZkBnu1S3RfOl3IOvTQqyz0hS4sorNQb9jmEgUwFv
+         ysQ4uJg6kSV0mI8JbdNKcczUURS/8Gzlx8RBPwAGbquAGl8pW2LpLMSDxZPHlTO/gX
+         2DfmVQDF7v+QHy1L2O4cz2nhYQHDLjxoQN2ytinUmIgp2z8aAmf9SPyKeN/sAS0m/D
+         pYSlS0rDRzMuPZ3YLpZ5FjOMLGLXdyTWyXHJkjARFwP3MlHkVNSbTQUABOTs/JQfpc
+         68W8gJv/t9pDw==
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5221c6a2d3dso7777296a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 02:02:44 -0700 (PDT)
+X-Gm-Message-State: ABy/qLa5yCaH5azr3TYneM0H8N7hNvEcLo+SXVNyrDxPKWSB+8k9RzWD
+        +7jxd4t2bG8lE4x8Hrtq1uTOp2S3dn2GCWIc9Ec=
+X-Google-Smtp-Source: APBJJlGGoZMkogmrxXd1aBmttUxLJ/2UiVvuEB9yAaC63nVShKvzX5/bPnSIX9IEOeKpxZKzoFs4j8M6v5I9QPSsris=
+X-Received: by 2002:a17:907:2718:b0:99b:415f:2e4f with SMTP id
+ w24-20020a170907271800b0099b415f2e4fmr1895566ejk.57.1690880562621; Tue, 01
+ Aug 2023 02:02:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230731-synquacer-net-v3-1-944be5f06428@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230801011554.3950435-1-guoren@kernel.org> <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
+In-Reply-To: <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 1 Aug 2023 17:02:31 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRa5erHomJzLgUFO4SGqd5zSDwn6r3WN7kM8aWpv1vesg@mail.gmail.com>
+Message-ID: <CAJF2gTRa5erHomJzLgUFO4SGqd5zSDwn6r3WN7kM8aWpv1vesg@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
+To:     WANG Rui <wangrui@loongson.cn>
+Cc:     chenhuacai@kernel.or, kernel@xen0n.name, arnd@arndb.de,
+        andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
+        peterz@infradead.org, will@kernel.org, boqun.feng@gmail.com,
+        mark.rutland@arm.com, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,25 +67,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 11:48:32AM +0100, Mark Brown wrote:
-> As documented in acd7aaf51b20 ("netsec: ignore 'phy-mode' device
-> property on ACPI systems") the SocioNext SynQuacer platform ships with
-> firmware defining the PHY mode as RGMII even though the physical
-> configuration of the PHY is for TX and RX delays.  Since bbc4d71d63549bc
-> ("net: phy: realtek: fix rtl8211e rx/tx delay config") this has caused
-> misconfiguration of the PHY, rendering the network unusable.
-> 
-> This was worked around for ACPI by ignoring the phy-mode property but
-> the system is also used with DT.  For DT instead if we're running on a
-> SynQuacer force a working PHY mode, as well as the standard EDK2
-> firmware with DT there are also some of these systems that use u-boot
-> and might not initialise the PHY if not netbooting.  Newer firmware
-> imagaes for at least EDK2 are available from Linaro so print a warning
-> when doing this.
-> 
-> Fixes: 533dd11a12f6 ("net: socionext: Add Synquacer NetSec driver")
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+On Tue, Aug 1, 2023 at 10:29=E2=80=AFAM WANG Rui <wangrui@loongson.cn> wrot=
+e:
+>
+> Hello,
+>
+> On Tue, Aug 1, 2023 at 9:16=E2=80=AFAM <guoren@kernel.org> wrote:
+> > diff --git a/arch/loongarch/include/asm/cmpxchg.h b/arch/loongarch/incl=
+ude/asm/cmpxchg.h
+> > index 979fde61bba8..6a05b92814b6 100644
+> > --- a/arch/loongarch/include/asm/cmpxchg.h
+> > +++ b/arch/loongarch/include/asm/cmpxchg.h
+> > @@ -102,8 +102,8 @@ __arch_xchg(volatile void *ptr, unsigned long x, in=
+t size)
+> >         "       move    $t0, %z4                        \n"            =
+ \
+> >         "       " st "  $t0, %1                         \n"            =
+ \
+> >         "       beqz    $t0, 1b                         \n"            =
+ \
+> > -       "2:                                             \n"            =
+ \
+> >         __WEAK_LLSC_MB                                                 =
+ \
+> > +       "2:                                             \n"            =
+ \
+>
+> Thanks for the patch.
+>
+> This would look pretty good if it weren't for the special memory
+> barrier semantics of the LoongArch's LL and SC instructions.
+>
+> The LL/SC memory barrier behavior of LoongArch:
+>
+> * LL: <memory-barrier> + <load-exclusive>
+> * SC: <store-conditional> + <memory-barrier>
+>
+> and the LoongArch's weak memory model allows load/load reorder for the
+> same address.
+The CoRR problem would cause wider problems than this.For this case,
+do you mean your LL -> LL would be reordered?
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+CPU 0
+          CPU1
+LL(2) (set ex-monitor)
 
-    Andrew
+                store (break the ex-monitor)
+LL(1) (reordered instruction set ex-monitor
+SC(3) (successed ?)
+
+>
+> So, the __WEAK_LLSC_MB[1] is used to prevent load/load reorder and no
+> explicit barrier instruction is required after SC.
+>
+> [1] https://lore.kernel.org/loongarch/20230516124536.535343-1-chenhuacai@=
+loongson.cn/
+>
+> Regards,
+> --
+> WANG Rui
+>
+
+
+--=20
+Best Regards
+ Guo Ren
