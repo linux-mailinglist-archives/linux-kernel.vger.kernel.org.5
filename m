@@ -2,53 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EAA876A936
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371E676A939
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231674AbjHAGeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:34:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        id S231757AbjHAGeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231668AbjHAGeC (ORCPT
+        with ESMTP id S230408AbjHAGeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:34:02 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A13472102
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:33:38 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8AxlPAfp8hkPOYNAA--.32889S3;
-        Tue, 01 Aug 2023 14:33:03 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHCMep8hknJZDAA--.26037S2;
-        Tue, 01 Aug 2023 14:33:02 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Subject: [PATCH] LoongArch: Remove noreturn attribute for die()
-Date:   Tue,  1 Aug 2023 14:33:01 +0800
-Message-Id: <1690871581-23944-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8BxHCMep8hknJZDAA--.26037S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7trW8ur1xtrWfJw45Zr43urX_yoW8KF13pF
-        W7CasrWFWrCFs5WryDtF4kur15trZ5K3ya9w1q93WSkF4avw18Xr4kGFyqvF4rt34rWFy8
-        XFWFgw1ftFW3AabCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
-        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF
-        0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
-        KfnxnUUI43ZEXa7IU8EeHDUUUUU==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        Tue, 1 Aug 2023 02:34:19 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E053F1736;
+        Mon, 31 Jul 2023 23:33:58 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-5633b7e5f90so3974527eaf.1;
+        Mon, 31 Jul 2023 23:33:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690871638; x=1691476438;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LKCc2rKXf8V4+XCXWPe8OLQkPwapI0w4aGB/FpbSmi4=;
+        b=qiemk3mohhg+xAOpbLyh75xBQ0XBf+pyKp8+mn3/iwJr7lb/d6K4Jmd2CT/3NhGxpJ
+         0ig6IJLsSCSM2hjvFqaaE7KRNu/sRSEGscDbk64GseP1uJjscnZNEwJ8nR7gqCrvYNzp
+         IJTtYU/ZnEDQMWEDnHb5vDTYldERmJUQC0kziFDooKMObuBg0P0TIUTM1AHWA2tQ65ME
+         YATRzqFKFQHCn7POVF9LZMKIfw1mQYVFRJkNHd6tszZ01Hd5lECAcuXlfjvrNPCa2dt4
+         kEjF0YibGo2edUsW373dRNmgFcE5zHwPlEAazqLFOaVbpk2oNq5o4AJ1JVxN4OetErIH
+         VcfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690871638; x=1691476438;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LKCc2rKXf8V4+XCXWPe8OLQkPwapI0w4aGB/FpbSmi4=;
+        b=KNWy9yEwjMkl48BdJWOA6oeMeg35HEFfWZTenZ9lJQzCSLkQoa4Z705PIKQKceATf1
+         6021OSrZYbJeG7ojqaiC/B86A2pCU2LSWiElQWe5pea8nTndwoxqHyOSe2ith1rlSnG7
+         cRhcJEGyUI5hd7GuRolRP4bpw8pVbkY1bL3LJeqAnviJzYHMHKAPl/Mf/1Hf05jC8ZPV
+         im2rM5yeAhRrBedS3OZSL+iKfOquVdgO9MLMSuTzpzHORMOw6kcad/tqM3a5D6bu9Utn
+         j74X3cUHGbsziBQaloAVdhiPKwd8GEvkhria3aeQ6E22NlVxIukXWBJitYRH+6ShwZvf
+         /J8g==
+X-Gm-Message-State: ABy/qLZkiNk/veMCzfza9W6CxdloGxpnBeuVJvSxf1JZu1kGD4ubUPwl
+        9rqmwOppEPLNI8NxPQiHUr4HepugymrhdGXhVyQ=
+X-Google-Smtp-Source: APBJJlE7oK2nlXq2a2uZW19q6boXQ0GoIFtAt0DViwCQHqSjaq44TkYovJHXpkKu7Yr24VlvKFZwqsDS2UMCA9m0Fsc=
+X-Received: by 2002:a4a:9c03:0:b0:565:bbc0:2e36 with SMTP id
+ y3-20020a4a9c03000000b00565bbc02e36mr10919110ooj.3.1690871637923; Mon, 31 Jul
+ 2023 23:33:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230729110449.1357-1-zajec5@gmail.com>
+In-Reply-To: <20230729110449.1357-1-zajec5@gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Tue, 1 Aug 2023 08:33:45 +0200
+Message-ID: <CAMhs-H9RpyCTcrRjtALg_aqGR7cmrz_ufQdVYm=WSEgUObpxKA@mail.gmail.com>
+Subject: Re: [PATCH] mips: dts: ralink: reorder MT7621 clocks in Ethernet block
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,70 +80,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If notify_die() returns NOTIFY_STOP, there is no need to call
-make_task_dead(), we can remove noreturn attribute for die(),
-this is similar with arm64, riscv and csky.
+On Sat, Jul 29, 2023 at 1:04=E2=80=AFPM Rafa=C5=82 Mi=C5=82ecki <zajec5@gma=
+il.com> wrote:
+>
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>
+> Use order as specified in the binding (first "ethif" then "fe").
+>
+> This fixes:
+> arch/mips/boot/dts/ralink/mt7621-tplink-hc220-g5-v1.dtb: ethernet@1e10000=
+0: clock-names:0: 'ethif' was expected
+>         From schema: Documentation/devicetree/bindings/net/mediatek,net.y=
+aml
+> arch/mips/boot/dts/ralink/mt7621-tplink-hc220-g5-v1.dtb: ethernet@1e10000=
+0: clock-names:1: 'fe' was expected
+>         From schema: Documentation/devicetree/bindings/net/mediatek,net.y=
+aml
+>
+> Fixes: 7a6ee0bbab25 ("mips: dts: ralink: add MT7621 SoC")
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> ---
+>  arch/mips/boot/dts/ralink/mt7621.dtsi | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
 
-While at it, modify the die() declaration in ptrace.h to fix
-the following checkpatch warnings:
+Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-  WARNING: function definition argument 'const char *' should also have an identifier name
-  WARNING: function definition argument 'struct pt_regs *' should also have an identifier name
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/loongarch/include/asm/ptrace.h |  2 +-
- arch/loongarch/kernel/traps.c       | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/arch/loongarch/include/asm/ptrace.h b/arch/loongarch/include/asm/ptrace.h
-index 35f0958..2101301 100644
---- a/arch/loongarch/include/asm/ptrace.h
-+++ b/arch/loongarch/include/asm/ptrace.h
-@@ -162,7 +162,7 @@ static inline void regs_set_return_value(struct pt_regs *regs, unsigned long val
- #define instruction_pointer(regs) ((regs)->csr_era)
- #define profile_pc(regs) instruction_pointer(regs)
- 
--extern void die(const char *, struct pt_regs *) __noreturn;
-+void die(const char *str, struct pt_regs *regs);
- 
- static inline void die_if_kernel(const char *str, struct pt_regs *regs)
- {
-diff --git a/arch/loongarch/kernel/traps.c b/arch/loongarch/kernel/traps.c
-index 8fb5e7a..bbdfc5b 100644
---- a/arch/loongarch/kernel/traps.c
-+++ b/arch/loongarch/kernel/traps.c
-@@ -383,16 +383,15 @@ void show_registers(struct pt_regs *regs)
- 
- static DEFINE_RAW_SPINLOCK(die_lock);
- 
--void __noreturn die(const char *str, struct pt_regs *regs)
-+void die(const char *str, struct pt_regs *regs)
- {
- 	static int die_counter;
--	int sig = SIGSEGV;
-+	int ret;
- 
- 	oops_enter();
- 
--	if (notify_die(DIE_OOPS, str, regs, 0, current->thread.trap_nr,
--		       SIGSEGV) == NOTIFY_STOP)
--		sig = 0;
-+	ret = notify_die(DIE_OOPS, str, regs, 0,
-+			 current->thread.trap_nr, SIGSEGV);
- 
- 	console_verbose();
- 	raw_spin_lock_irq(&die_lock);
-@@ -414,7 +413,8 @@ void __noreturn die(const char *str, struct pt_regs *regs)
- 	if (panic_on_oops)
- 		panic("Fatal exception");
- 
--	make_task_dead(sig);
-+	if (ret != NOTIFY_STOP)
-+		make_task_dead(SIGSEGV);
- }
- 
- static inline void setup_vint_size(unsigned int size)
--- 
-2.1.0
-
+Thanks,
+    Sergio Paracuellos
