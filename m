@@ -2,48 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1EE76A8A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5C976A8A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 08:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231295AbjHAGFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 02:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
+        id S231269AbjHAGE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 02:04:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231213AbjHAGFf (ORCPT
+        with ESMTP id S231213AbjHAGEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 02:05:35 -0400
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46842127;
-        Mon, 31 Jul 2023 23:05:32 -0700 (PDT)
-Received: from dlp.unisoc.com ([10.29.3.86])
-        by SHSQR01.spreadtrum.com with ESMTP id 37164afZ001233;
-        Tue, 1 Aug 2023 14:04:36 +0800 (+08)
-        (envelope-from Yunlong.Xing@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RFPfR6L1pz2K1r9S;
-        Tue,  1 Aug 2023 14:02:55 +0800 (CST)
-Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 1 Aug 2023 14:04:33 +0800
-From:   Yunlong Xing <yunlong.xing@unisoc.com>
-To:     <keescook@chromium.org>, <tony.luck@intel.com>,
-        <gpiccoli@igalia.com>, <joel@joelfernandes.org>,
-        <enlin.mu@unisoc.com>
-CC:     <linux-hardening@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <enlinmu@gmail.com>, <yunlong.xing23@gmail.com>
-Subject: [PATCH 1/1] pstore/ram: Check member of buffers during the initialization phase of the pstore
-Date:   Tue, 1 Aug 2023 14:04:32 +0800
-Message-ID: <20230801060432.1307717-1-yunlong.xing@unisoc.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.5.32.15]
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL: SHSQR01.spreadtrum.com 37164afZ001233
+        Tue, 1 Aug 2023 02:04:54 -0400
+Received: from out28-194.mail.aliyun.com (out28-194.mail.aliyun.com [115.124.28.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16812187
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 23:04:52 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07723793|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0904852-0.0047855-0.904729;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5eilLU_1690869884;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5eilLU_1690869884)
+          by smtp.aliyun-inc.com;
+          Tue, 01 Aug 2023 14:04:46 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/pm: Clean up errors in vega12_pptable.h
+Date:   Tue,  1 Aug 2023 06:04:43 +0000
+Message-Id: <20230801060443.6090-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,38 +37,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enlin Mu <enlin.mu@unisoc.com>
+Fix the following errors reported by checkpatch:
 
-The commit 30696378f68a("pstore/ram: Do not treat empty buffers as valid")
-would introduce the following issue:
+ERROR: open brace '{' following struct go on the same line
+ERROR: space prohibited before open square bracket '['
 
-When finding the buffer_size is zero, it would return directly.However, at
-the same time, if the buffer's start is a illegal value, the others would
-panic if access the buffer.
-
-To avoid these happenning, check if the members are legal during the
-initialization phase of the pstore.
-
-Fixes: 30696378f68a ("pstore/ram: Do not treat empty buffers as valid")
-Cc: stable@vger.kernel.org
-Signed-off-by: Enlin Mu <enlin.mu@unisoc.com>
+Signed-off-by: Ran Sun <sunran001@208suo.com>
 ---
- fs/pstore/ram_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h   | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/fs/pstore/ram_core.c b/fs/pstore/ram_core.c
-index 85aaf0fc6d7d..eb6df190d752 100644
---- a/fs/pstore/ram_core.c
-+++ b/fs/pstore/ram_core.c
-@@ -519,7 +519,7 @@ static int persistent_ram_post_init(struct persistent_ram_zone *prz, u32 sig,
- 	sig ^= PERSISTENT_RAM_SIG;
+diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h
+index bf4f5095b80d..9b8435a4d306 100644
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_pptable.h
+@@ -72,8 +72,7 @@ enum ATOM_VEGA12_PPCLOCK_ID {
+ typedef enum ATOM_VEGA12_PPCLOCK_ID ATOM_VEGA12_PPCLOCK_ID;
  
- 	if (prz->buffer->sig == sig) {
--		if (buffer_size(prz) == 0) {
-+		if (buffer_size(prz) == 0 && buffer_start(prz) == 0) {
- 			pr_debug("found existing empty buffer\n");
- 			return 0;
- 		}
+ 
+-typedef struct _ATOM_VEGA12_POWERPLAYTABLE
+-{
++typedef struct _ATOM_VEGA12_POWERPLAYTABLE {
+       struct atom_common_table_header sHeader;
+       UCHAR  ucTableRevision;
+       USHORT usTableSize;
+@@ -92,11 +91,11 @@ typedef struct _ATOM_VEGA12_POWERPLAYTABLE
+       USHORT usODPowerSavePowerLimit;
+       USHORT usSoftwareShutdownTemp;
+ 
+-      ULONG PowerSavingClockMax  [ATOM_VEGA12_PPCLOCK_COUNT];
+-      ULONG PowerSavingClockMin  [ATOM_VEGA12_PPCLOCK_COUNT];
++      ULONG PowerSavingClockMax[ATOM_VEGA12_PPCLOCK_COUNT];
++      ULONG PowerSavingClockMin[ATOM_VEGA12_PPCLOCK_COUNT];
+ 
+-      ULONG ODSettingsMax [ATOM_VEGA12_ODSETTING_COUNT];
+-      ULONG ODSettingsMin [ATOM_VEGA12_ODSETTING_COUNT];
++      ULONG ODSettingsMax[ATOM_VEGA12_ODSETTING_COUNT];
++      ULONG ODSettingsMin[ATOM_VEGA12_ODSETTING_COUNT];
+ 
+       USHORT usReserve[5];
+ 
 -- 
-2.25.1
+2.17.1
 
