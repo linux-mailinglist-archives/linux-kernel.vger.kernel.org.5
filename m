@@ -2,113 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F2B776AB77
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 10:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D0C76AC62
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 11:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231324AbjHAIzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 04:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
+        id S232663AbjHAJIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 05:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232302AbjHAIy5 (ORCPT
+        with ESMTP id S232960AbjHAJIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 04:54:57 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE1431FFD;
-        Tue,  1 Aug 2023 01:54:42 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.201])
-        by gateway (Coremail) with SMTP id _____8AxEvCXw8hko_4NAA--.32002S3;
-        Tue, 01 Aug 2023 16:34:31 +0800 (CST)
-Received: from [10.20.42.201] (unknown [10.20.42.201])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Ax3c6Ww8hkZMJDAA--.45466S3;
-        Tue, 01 Aug 2023 16:34:30 +0800 (CST)
-Subject: Re: [PATCH v2 1/2] gpio: dt-bindings: add parsing of loongson gpio
- offset
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jianmin Lv <lvjianmin@loongson.cn>, wanghongliang@loongson.cn,
-        Liu Peibao <liupeibao@loongson.cn>,
-        loongson-kernel@lists.loongnix.cn, zhuyinbo@loongson.cn
-References: <20230731091059.17323-1-zhuyinbo@loongson.cn>
- <20230731091059.17323-2-zhuyinbo@loongson.cn>
- <20230731-setback-such-61815ee3ef51@spud>
- <041bf8a6-8d91-c2ce-6752-aa7255f946c7@loongson.cn>
- <20230801-whenever-imitation-b2759b212f6b@spud>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <a5c27913-2a88-d376-0130-22ca8a3d4516@loongson.cn>
-Date:   Tue, 1 Aug 2023 16:34:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Tue, 1 Aug 2023 05:08:20 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34564EFE;
+        Tue,  1 Aug 2023 02:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690880772; x=1722416772;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BTa7pFRtc5hN79memTk6tlfkpBhDUr274mj/lMgq9SQ=;
+  b=k8ymMUnwrlWuKHlLJTJiqP0MmNuNrfoeCxaXahRbWW18/fNDazT5k2q0
+   oP5JOcovBW2DyakYS0ZH4tUelN27zE9yZNOJcxNNhA3otIo05Hak+zLw5
+   IcvkNl+mNdSu+QVm6SUDC69S8ihSK0B3S9b4SKNb5i1E6fulZv7K0taHD
+   HirwX11kw7g2ka1LmhT/ELBNC0/ZJf251t2v9h/eqg+WdDGDYZjEDEYny
+   SDMCsQc6U19D7lg2XX3WPqKNwdelGCWgUbjx2zb31Mnu1eQETBh44Mr+E
+   s2v7oIkk01731xLCwjGVLyWjWWhJM2cWYZcDY1c9o29E9er3+gNVHlHQ7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="366713454"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="scan'208";a="366713454"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 02:04:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="722420705"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="scan'208";a="722420705"
+Received: from unknown (HELO fred..) ([172.25.112.68])
+  by orsmga007.jf.intel.com with ESMTP; 01 Aug 2023 02:04:25 -0700
+From:   Xin Li <xin3.li@intel.com>
+To:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        kvm@vger.kernel.org, xen-devel@lists.xenproject.org
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Xin Li <xin3.li@intel.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        "Liam R . Howlett" <Liam.Howlett@Oracle.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Jim Mattson <jmattson@google.com>,
+        Sandipan Das <sandipan.das@amd.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Daniel Sneddon <daniel.sneddon@linux.intel.com>,
+        Breno Leitao <leitao@debian.org>,
+        Nikunj A Dadhania <nikunj@amd.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ze Gao <zegao2021@gmail.com>, Fei Li <fei1.li@intel.com>,
+        Conghui <conghui.chen@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        "Jason A . Donenfeld" <Jason@zx2c4.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Jane Malalane <jane.malalane@citrix.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Yantengsi <siyanteng@loongson.cn>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Sathvika Vasireddy <sv@linux.ibm.com>
+Subject: [PATCH RESEND v9 27/36] x86/traps: Add external_interrupt() to dispatch external interrupts
+Date:   Tue,  1 Aug 2023 01:35:44 -0700
+Message-Id: <20230801083553.8468-1-xin3.li@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-In-Reply-To: <20230801-whenever-imitation-b2759b212f6b@spud>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Ax3c6Ww8hkZMJDAA--.45466S3
-X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
-        nUUI43ZEXa7xR_UUUUUUUUU==
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "H. Peter Anvin (Intel)" <hpa@zytor.com>
 
+external_interrupt() dispatches all external interrupts: it checks if an
+external interrupt is a system interrupt, if yes it dipatches it through
+the system_interrupt_handlers table, otherwise to
+dispatch_common_interrupt().
 
-在 2023/8/1 下午3:23, Conor Dooley 写道:
-> On Tue, Aug 01, 2023 at 02:39:49PM +0800, Yinbo Zhu wrote:
->>
->>
->> 在 2023/7/31 下午11:55, Conor Dooley 写道:
->>> On Mon, Jul 31, 2023 at 05:10:58PM +0800, Yinbo Zhu wrote:
->>>> Add parsing GPIO configure, input, output, interrupt register offset
->>>> address and GPIO control mode support.
->>>
->>> This reeks of insufficient use of SoC specific compatibles. Do GPIO
->>> controllers on the same SoC have different register offsets?
->>
->>
->> Yes,
->>
->>> Where are the users for this?
->>
->>
->> For example, ls2k500 contains multiple GPIO chips with different
->> (configure, input, output, interrupt) offset addresses, but all others
->> are the same.
-> 
-> Right. That's admittedly not what I expected to hear! Can you firstly
-> explain this in the commit message,
+Signed-off-by: H. Peter Anvin (Intel) <hpa@zytor.com>
+Co-developed-by: Xin Li <xin3.li@intel.com>
+Tested-by: Shan Kang <shan.kang@intel.com>
+Signed-off-by: Xin Li <xin3.li@intel.com>
+---
 
+Changes since v8:
+* Reword the patch description, which was confusing (Thomas Gleixner).
 
-I will add following explain in the commit message. Do you think it's
-suitable?
+Changes since v5:
+* Initialize system_interrupt_handlers with dispatch_table_spurious_interrupt()
+  instead of NULL to get rid of a branch (Peter Zijlstra).
+---
+ arch/x86/include/asm/traps.h |  2 ++
+ arch/x86/kernel/traps.c      | 18 ++++++++++++++++++
+ 2 files changed, 20 insertions(+)
 
-Loongson GPIO controllers come in multiple variants that are compatible
-except for certain register offset values.  Add support in yaml file for
-device properties allowing to specify them in DT.
-
-
-> and secondly add a soc-specific
-> compatible for the ls2k500 and only allow these properties on that SoC?
-> 
-
-
-Sorry, I may not have described it clearly before, the ls2k500 was only
-as a example, actually, Loongson GPIO controllers (2k500,2k1000,eg)come
-in multiple variants that are compatible except for certain register
-offset values.  So above all offset device property was used to in all
-loongson gpio controller.
-
-Thanks,
-Yinbo
+diff --git a/arch/x86/include/asm/traps.h b/arch/x86/include/asm/traps.h
+index cba3e4dfc329..48daa78ee88c 100644
+--- a/arch/x86/include/asm/traps.h
++++ b/arch/x86/include/asm/traps.h
+@@ -66,4 +66,6 @@ static inline void sysvec_setup_fred(unsigned int vector, system_interrupt_handl
+ 	alloc_intr_gate(vector, asm_##func);				\
+ }
+ 
++int external_interrupt(struct pt_regs *regs);
++
+ #endif /* _ASM_X86_TRAPS_H */
+diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+index 9040c7f01c93..90fdfcccee7a 100644
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -1542,6 +1542,24 @@ void set_sysvec_handler(unsigned int i, system_interrupt_handler func)
+ 	system_interrupt_handlers[i] = func;
+ }
+ 
++int external_interrupt(struct pt_regs *regs)
++{
++	unsigned int vector = regs->vector;
++	unsigned int sysvec = vector - FIRST_SYSTEM_VECTOR;
++
++	if (unlikely(vector < FIRST_EXTERNAL_VECTOR)) {
++		pr_err("invalid external interrupt vector %d\n", vector);
++		return -EINVAL;
++	}
++
++	if (sysvec < NR_SYSTEM_VECTORS)
++		system_interrupt_handlers[sysvec](regs);
++	else
++		dispatch_common_interrupt(regs, vector);
++
++	return 0;
++}
++
+ #endif /* CONFIG_X86_64 */
+ 
+ void __init trap_init(void)
+-- 
+2.34.1
 
