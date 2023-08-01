@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DA176A67C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 983B976A67F
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 03:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbjHABlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 21:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
+        id S229885AbjHABl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 21:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbjHABln (ORCPT
+        with ESMTP id S231902AbjHABlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 21:41:43 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1461BD3;
-        Mon, 31 Jul 2023 18:41:33 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VFuUS6023863;
-        Mon, 31 Jul 2023 18:41:26 -0700
+        Mon, 31 Jul 2023 21:41:52 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D131BEC;
+        Mon, 31 Jul 2023 18:41:39 -0700 (PDT)
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 36VFtuHY006332;
+        Mon, 31 Jul 2023 18:41:32 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=pfpt0220;
- bh=vgx8W1pEDySIT9JiCZ7nyjhqaZPBiW70I9WHZj6ZAG0=;
- b=RxCLdzwRHHVWk5V82Ve89r/vonV2lnuipa2RBC/YLcBJcjCnF2ALb+s8cAiTR/kIrWtS
- uCWKq0VLcCU6Z5OhPyq8BAm5/C2pR9ncOut2UPJ4tijeozzFaAcuvrSE+GzLYrzzDXRH
- r/Idm5H9ID4GVHKWhohbpXxylc+hpjFAtoJA2q5E+fIDOc3Z/0QME+jyXqYJ1yvDO/IR
- 3Pq1xYTgebNW8JdK7tVmPZhtImye+YI1NG1TirYCWJ33SqFm0aORZU9BwrC5J7gVzI5H
- V9DtbhjhPZ8+I4tQrS0XNMfzL/1GLyPxywA2L9GDoVZ/IXCGB3yVETl83+wEUqn7hkXO hQ== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3s6du0acjx-1
+ bh=rwYjoK+wb+CQ5fgWspTLi2yMGbffC5+/B4dizAAuhNw=;
+ b=bJ3ByBP69HzkCmoKb3CkHx0/4UmpdvzQFKAfvQbwcVTCKg+IB8111GT15IRiRVyRK8m5
+ vRXdk8XoewydelVehyEJl/Yrxs+7P4ifOQNTJculkIrU0sg43Pgr6Vek0I7XgSDX8a62
+ lIZMn5zS89ohl9azPvyH0Um8G/KN4jEhtjy270p4AX5xufwF8YfUMiaeYWFYK+FUS/iE
+ y+9puB2JaDCYBqwot9fqYYo1SVbH0/LiUiFaXMAvC+NWrle02TSCx8VV9/XUya8MRTMF
+ lDMLdpxbGDCJGGHxNWSoXg6UKLSdoptOh5dlw/jsQ7PabXT3OLXxL6viZMkJw8259/2L eg== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3s529k70ee-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 31 Jul 2023 18:41:26 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 31 Jul
- 2023 18:41:24 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 31 Jul 2023 18:41:24 -0700
+        Mon, 31 Jul 2023 18:41:32 -0700
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 31 Jul
+ 2023 18:41:30 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
+ Transport; Mon, 31 Jul 2023 18:41:30 -0700
 Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
-        by maili.marvell.com (Postfix) with ESMTP id C8BDD3F7059;
-        Mon, 31 Jul 2023 18:41:19 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id 3BE593F7048;
+        Mon, 31 Jul 2023 18:41:24 -0700 (PDT)
 From:   Ratheesh Kannoth <rkannoth@marvell.com>
 To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     <sgoutham@marvell.com>, <lcherian@marvell.com>,
@@ -48,17 +48,17 @@ CC:     <sgoutham@marvell.com>, <lcherian@marvell.com>,
         <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
         <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
         Ratheesh Kannoth <rkannoth@marvell.com>
-Subject: [PATCH v1 net-next 3/4] tc: flower: Enable offload support IPSEC SPI field.
-Date:   Tue, 1 Aug 2023 07:11:00 +0530
-Message-ID: <20230801014101.2955887-4-rkannoth@marvell.com>
+Subject: [PATCH v1 net-next 4/4] octeontx2-pf: TC flower offload support for SPI field
+Date:   Tue, 1 Aug 2023 07:11:01 +0530
+Message-ID: <20230801014101.2955887-5-rkannoth@marvell.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230801014101.2955887-1-rkannoth@marvell.com>
 References: <20230801014101.2955887-1-rkannoth@marvell.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: LOoid2ZK-h67B-i7AagBpyhcehNwETef
-X-Proofpoint-ORIG-GUID: LOoid2ZK-h67B-i7AagBpyhcehNwETef
+X-Proofpoint-GUID: 5A0BzxxIeEGREsCaYmn-OQBkCjZpDMZg
+X-Proofpoint-ORIG-GUID: 5A0BzxxIeEGREsCaYmn-OQBkCjZpDMZg
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-07-31_18,2023-07-31_02,2023-05-22_02
@@ -72,57 +72,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables offload for TC classifier
-flower rules which matches against SPI field.
+Driver support to offload TC flower rules which matches
+against SPI field of IPSEC packets (AH/ESP).
 
 Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
 ---
- include/net/flow_offload.h | 6 ++++++
- net/core/flow_offload.c    | 7 +++++++
- 2 files changed, 13 insertions(+)
+ .../net/ethernet/marvell/octeontx2/af/mbox.h  |  4 +++
+ .../net/ethernet/marvell/octeontx2/af/npc.h   |  1 +
+ .../marvell/octeontx2/af/rvu_debugfs.c        |  4 +++
+ .../marvell/octeontx2/af/rvu_npc_fs.c         | 11 ++++++++
+ .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 27 +++++++++++++++++++
+ 5 files changed, 47 insertions(+)
 
-diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
-index 118082eae48c..9efa9a59e81f 100644
---- a/include/net/flow_offload.h
-+++ b/include/net/flow_offload.h
-@@ -64,6 +64,10 @@ struct flow_match_tcp {
- 	struct flow_dissector_key_tcp *key, *mask;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index ed66c5989102..a8f3c8faf8af 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -1451,6 +1451,10 @@ struct flow_msg {
+ 		__be32 ip4dst;
+ 		__be32 ip6dst[4];
+ 	};
++	union {
++		__be32 spi;
++	};
++
+ 	u8 tos;
+ 	u8 ip_ver;
+ 	u8 ip_proto;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/npc.h b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+index 9beeead56d7b..534f20c0c5df 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/npc.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/npc.h
+@@ -204,6 +204,7 @@ enum key_fields {
+ 	NPC_DPORT_UDP,
+ 	NPC_SPORT_SCTP,
+ 	NPC_DPORT_SCTP,
++	NPC_IPSEC_SPI,
+ 	NPC_HEADER_FIELDS_MAX,
+ 	NPC_CHAN = NPC_HEADER_FIELDS_MAX, /* Valid when Rx */
+ 	NPC_PF_FUNC, /* Valid when Tx */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+index 3b26893efdf8..7cd33edca365 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_debugfs.c
+@@ -2827,6 +2827,10 @@ static void rvu_dbg_npc_mcam_show_flows(struct seq_file *s,
+ 			seq_printf(s, "%d ", ntohs(rule->packet.dport));
+ 			seq_printf(s, "mask 0x%x\n", ntohs(rule->mask.dport));
+ 			break;
++		case NPC_IPSEC_SPI:
++			seq_printf(s, "0x%x ", ntohl(rule->packet.spi));
++			seq_printf(s, "mask 0x%x\n", ntohl(rule->mask.spi));
++			break;
+ 		default:
+ 			seq_puts(s, "\n");
+ 			break;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+index 9c365cc3e736..bb715e616fad 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_fs.c
+@@ -41,6 +41,7 @@ static const char * const npc_flow_names[] = {
+ 	[NPC_SPORT_SCTP] = "sctp source port",
+ 	[NPC_DPORT_SCTP] = "sctp destination port",
+ 	[NPC_LXMB]	= "Mcast/Bcast header ",
++	[NPC_IPSEC_SPI] = "SPI ",
+ 	[NPC_UNKNOWN]	= "unknown",
  };
  
-+struct flow_match_ipsec {
-+	struct flow_dissector_key_ipsec *key, *mask;
-+};
+@@ -513,6 +514,10 @@ do {									       \
+ 	NPC_SCAN_HDR(NPC_VLAN_TAG1, NPC_LID_LB, NPC_LT_LB_CTAG, 2, 2);
+ 	NPC_SCAN_HDR(NPC_VLAN_TAG2, NPC_LID_LB, NPC_LT_LB_STAG_QINQ, 2, 2);
+ 	NPC_SCAN_HDR(NPC_DMAC, NPC_LID_LA, la_ltype, la_start, 6);
 +
- struct flow_match_mpls {
- 	struct flow_dissector_key_mpls *key, *mask;
- };
-@@ -116,6 +120,8 @@ void flow_rule_match_ports_range(const struct flow_rule *rule,
- 				 struct flow_match_ports_range *out);
- void flow_rule_match_tcp(const struct flow_rule *rule,
- 			 struct flow_match_tcp *out);
-+void flow_rule_match_ipsec(const struct flow_rule *rule,
-+			   struct flow_match_ipsec *out);
- void flow_rule_match_icmp(const struct flow_rule *rule,
- 			  struct flow_match_icmp *out);
- void flow_rule_match_mpls(const struct flow_rule *rule,
-diff --git a/net/core/flow_offload.c b/net/core/flow_offload.c
-index acfc1f88ea79..bc5169482710 100644
---- a/net/core/flow_offload.c
-+++ b/net/core/flow_offload.c
-@@ -146,6 +146,13 @@ void flow_rule_match_tcp(const struct flow_rule *rule,
- }
- EXPORT_SYMBOL(flow_rule_match_tcp);
++	NPC_SCAN_HDR(NPC_IPSEC_SPI, NPC_LID_LD, NPC_LT_LD_AH, 4, 4);
++	NPC_SCAN_HDR(NPC_IPSEC_SPI, NPC_LID_LE, NPC_LT_LE_ESP, 0, 4);
++
+ 	/* SMAC follows the DMAC(which is 6 bytes) */
+ 	NPC_SCAN_HDR(NPC_SMAC, NPC_LID_LA, la_ltype, la_start + 6, 6);
+ 	/* PF_FUNC is 2 bytes at 0th byte of NPC_LT_LA_IH_NIX_ETHER */
+@@ -564,6 +569,9 @@ static void npc_set_features(struct rvu *rvu, int blkaddr, u8 intf)
+ 		if (!npc_check_field(rvu, blkaddr, NPC_LB, intf))
+ 			*features &= ~BIT_ULL(NPC_OUTER_VID);
  
-+void flow_rule_match_ipsec(const struct flow_rule *rule,
-+			   struct flow_match_ipsec *out)
-+{
-+	FLOW_DISSECTOR_MATCH(rule, FLOW_DISSECTOR_KEY_IPSEC, out);
-+}
-+EXPORT_SYMBOL(flow_rule_match_ipsec);
++	if (*features & (BIT_ULL(NPC_IPPROTO_AH) | BIT_ULL(NPC_IPPROTO_ESP)))
++		*features |= BIT_ULL(NPC_IPSEC_SPI);
 +
- void flow_rule_match_icmp(const struct flow_rule *rule,
- 			  struct flow_match_icmp *out)
- {
+ 	/* for vlan ethertypes corresponding layer type should be in the key */
+ 	if (npc_check_field(rvu, blkaddr, NPC_LB, intf))
+ 		*features |= BIT_ULL(NPC_VLAN_ETYPE_CTAG) |
+@@ -930,6 +938,9 @@ do {									      \
+ 	NPC_WRITE_FLOW(NPC_DPORT_SCTP, dport, ntohs(pkt->dport), 0,
+ 		       ntohs(mask->dport), 0);
+ 
++	NPC_WRITE_FLOW(NPC_IPSEC_SPI, spi, ntohl(pkt->spi), 0,
++		       ntohl(mask->spi), 0);
++
+ 	NPC_WRITE_FLOW(NPC_OUTER_VID, vlan_tci, ntohs(pkt->vlan_tci), 0,
+ 		       ntohs(mask->vlan_tci), 0);
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+index 5a44e9b96fc0..4bb511e3cbe5 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
+@@ -461,6 +461,7 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_IPV4_ADDRS) |
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_IPV6_ADDRS) |
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_PORTS) |
++	      BIT(FLOW_DISSECTOR_KEY_IPSEC) |
+ 	      BIT_ULL(FLOW_DISSECTOR_KEY_IP))))  {
+ 		netdev_info(nic->netdev, "unsupported flow used key 0x%llx",
+ 			    dissector->used_keys);
+@@ -482,6 +483,8 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 		     match.key->ip_proto != IPPROTO_UDP &&
+ 		     match.key->ip_proto != IPPROTO_SCTP &&
+ 		     match.key->ip_proto != IPPROTO_ICMP &&
++		     match.key->ip_proto != IPPROTO_ESP &&
++		     match.key->ip_proto != IPPROTO_AH &&
+ 		     match.key->ip_proto != IPPROTO_ICMPV6)) {
+ 			netdev_info(nic->netdev,
+ 				    "ip_proto=0x%x not supported\n",
+@@ -501,6 +504,10 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 			req->features |= BIT_ULL(NPC_IPPROTO_ICMP);
+ 		else if (ip_proto == IPPROTO_ICMPV6)
+ 			req->features |= BIT_ULL(NPC_IPPROTO_ICMP6);
++		else if (ip_proto == IPPROTO_ESP)
++			req->features |= BIT_ULL(NPC_IPPROTO_ESP);
++		else if (ip_proto == IPPROTO_AH)
++			req->features |= BIT_ULL(NPC_IPPROTO_AH);
+ 	}
+ 
+ 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_CONTROL)) {
+@@ -545,6 +552,26 @@ static int otx2_tc_prepare_flow(struct otx2_nic *nic, struct otx2_tc_flow *node,
+ 		}
+ 	}
+ 
++	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_IPSEC)) {
++		struct flow_match_ipsec match;
++
++		flow_rule_match_ipsec(rule, &match);
++		if (!match.mask->spi) {
++			NL_SET_ERR_MSG_MOD(extack, "spi index not specified");
++			return -EOPNOTSUPP;
++		}
++		if (ip_proto != IPPROTO_ESP &&
++		    ip_proto != IPPROTO_AH) {
++			NL_SET_ERR_MSG_MOD(extack,
++					   "SPI index is valid only for ESP/AH proto");
++			return -EOPNOTSUPP;
++		}
++
++		flow_spec->spi = match.key->spi;
++		flow_mask->spi = match.mask->spi;
++		req->features |= BIT_ULL(NPC_IPSEC_SPI);
++	}
++
+ 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_IP)) {
+ 		struct flow_match_ip match;
+ 
 -- 
 2.25.1
 
