@@ -2,164 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4126076C084
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 00:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AA276C086
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 00:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbjHAWox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 18:44:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48798 "EHLO
+        id S229537AbjHAWp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 18:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjHAWou (ORCPT
+        with ESMTP id S230398AbjHAWpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 18:44:50 -0400
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED68312B
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 15:44:48 -0700 (PDT)
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-3a36b52afcfso11639721b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 15:44:48 -0700 (PDT)
+        Tue, 1 Aug 2023 18:45:54 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E24F12B
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 15:45:53 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-7870821d9a1so197671241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 15:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690929952; x=1691534752;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4OdPkX0CC2VjYJ8VMcmkz2D7hthuzhQQ3AXRrePA3BM=;
+        b=t2+9tyXaGpOdn04QANqvLNXV+epcnvNM+l6id6wvpktsmc5++GScBtJNivcq8glPtp
+         Hbq+8fNhuiLvGxs6BtoGMy3GZNSTXRLhouIaapZLUJchFz579SV56lBhZFNQYphKDafv
+         DjwZqSJb/izBo0Jrm7IltsIDgFEtHucJmE2m8asF6E7pq0XIeOc+bCVNM/zbFA5A+iU+
+         Lu9ZDZePX5t1EUn4UdhaV69dio+X9Wwrwix1jV41roWL6MMu4YYWH3r/w9vjK5uP8yQ1
+         vsxg1Y8kJw2JM2e/SbZOcXprK4gBkQAogV8Ms7NEMDjWn0c895bQYeIvGotH4XHfzcPx
+         laDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690929888; x=1691534688;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zg/s68KC5k1+y1Gb2PPpd4zaf/NW4BA9JdQSwHJsSgA=;
-        b=deKysdGGUnobPnPkJHR2lXmwUGQnUmFQHDm+lxmMFSFxlLTJs/k2Vb16Cet4YIvj6Y
-         b+mY4qyg62UNsP/HZG0DRLwYmeck3dWk7sX/pTePR289CDATftPVHmHnd/8RQt3GXEHW
-         A/vefcn8R5wbXwJ/WEZ1SIuOIgPPPmc0NtRGAokxvHiF47ihQmNU33rbnEGWCD8VJdV6
-         BLmmfSoUxIfdVl2Kn1/1eP22CpWaGYOXX4/Jil6d+4YIO3reI0JSQ/lpNmffoywOAaOb
-         AjBZ49OVqV7rHRIeO7QLenMnH+6nq7P6BAGoQPz1qCCpqWYs4z7VLkXNqnVPPkUjRgDS
-         pLuQ==
-X-Gm-Message-State: ABy/qLasw+J3by2pgfv1cYOeySKQZU4fMYHlqM5qr61HLQOrkoutd1S4
-        h5hw9JUN78x9y9iSXLGof+4BIOFjurG34JujQ1XHZfi5SdLP
-X-Google-Smtp-Source: APBJJlEUIlq6tPzv4eXzjM9WQCm/pB9+67kgXkTx1NFrL6Y+PuzGs0rTd2hMNQVViJSZIhrUBDQODP6nEwJWd4/HwPFfdHWpDkBW
+        d=1e100.net; s=20221208; t=1690929952; x=1691534752;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4OdPkX0CC2VjYJ8VMcmkz2D7hthuzhQQ3AXRrePA3BM=;
+        b=YKyvcSKRGF6bwKeBxN0AhPnR4HjgYf/OD11o/3He0mHn5SQa924K/FyP810Gi2W+VT
+         APh2JSlvnhTSqh3TMZEzW6A420UuXIu8wuOYg7s8FO6mzILy8ktXuxoaKAZYrYyTQDBx
+         o3UArlvvo7YtnN27HYx2/OZ67enrGoPzT9qW4y//51xCrObYtdNQOMJlVRYASHF8KqmE
+         FfTesdTy338h+AKYz2l4glhaiqZ6wV+we5spOcshOIGvClMXfRJLJWzBwMZ3w3IPhlVG
+         voZmGYSd57V6sfRZU3DCZzUCup7a7gbP3QohQ7GFSFZGzAL0o9bSmBzuTplaikBlkmoq
+         N+5Q==
+X-Gm-Message-State: ABy/qLZ+nuFLX6umbf+NW8hASqnO+QNSygE5BuXOqVVct+JdA3aH34Xp
+        m7Y4EfPgKwVg1WK2/Wttrwp/3B0vRtsDE9qxgCc60A==
+X-Google-Smtp-Source: APBJJlHpgfpyTAtn7Azsg5rnKPsrEbhD57+ZqKzUUvZ8dViu3PgYhN+OuVad3AX+Gef/CwN0k4mzRRLvp+8kylWiu9o=
+X-Received: by 2002:a05:6102:1347:b0:443:79be:e529 with SMTP id
+ j7-20020a056102134700b0044379bee529mr1744162vsl.11.1690929952134; Tue, 01 Aug
+ 2023 15:45:52 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:2103:b0:3a5:a925:826b with SMTP id
- r3-20020a056808210300b003a5a925826bmr23637054oiw.2.1690929888287; Tue, 01 Aug
- 2023 15:44:48 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 15:44:48 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000054e4d10601e44b24@google.com>
-Subject: [syzbot] [bfs?] KASAN: null-ptr-deref Read in drop_buffers (2)
-From:   syzbot <syzbot+d285c6d0b23c6033d520@syzkaller.appspotmail.com>
-To:     aivazian.tigran@gmail.com, brauner@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <20230801-bitwise-v1-1-799bec468dc4@google.com>
+In-Reply-To: <20230801-bitwise-v1-1-799bec468dc4@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 1 Aug 2023 15:45:40 -0700
+Message-ID: <CAKwvOdk03FoKQ6g09rffj_mtwYHbL15_ctiuBo2Cno6WDvkSkg@mail.gmail.com>
+Subject: Re: [PATCH] word-at-a-time: use the same return type for has_zero
+ regardless of endianness
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 1, 2023 at 3:22=E2=80=AFPM <ndesaulniers@google.com> wrote:
+>
+> Compiling big-endian targets with Clang produces the diagnostic:
+>
+> fs/namei.c:2173:13: warning: use of bitwise '|' with boolean operands
+> [-Wbitwise-instead-of-logical]
+> } while (!(has_zero(a, &adata, &constants) | has_zero(b, &bdata, &constan=
+ts)));
+>           ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~
+>                                            ||
+> fs/namei.c:2173:13: note: cast one or both operands to int to silence
+> this warning
+>
+> It appears that when has_zero was introduced, two definitions were
+> produced with different signatures (in particular different return types)=
+.
+>
+> Looking at the usage in hash_name() in fs/namei.c, I suspect that
+> has_zero() is meant to be invoked twice per while loop iteration; using
+> logical-or would not update `bdata` when `a` did not have zeros. So I
+> think it's preferred to always return an unsigned long rather than a
+> bool then update the while loop in hash_name() to use a logical-or
 
-syzbot found the following issue on:
+s/then/than/
 
-HEAD commit:    ec8939156379 Add linux-next specific files for 20230731
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=161e3355a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dc839eae61644ed
-dashboard link: https://syzkaller.appspot.com/bug?extid=d285c6d0b23c6033d520
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/084b7f2f7900/disk-ec893915.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/279a4144b6d9/vmlinux-ec893915.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a21cf5ede096/bzImage-ec893915.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d285c6d0b23c6033d520@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-BUG: KASAN: null-ptr-deref in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
-BUG: KASAN: null-ptr-deref in buffer_busy fs/buffer.c:2902 [inline]
-BUG: KASAN: null-ptr-deref in drop_buffers.constprop.0+0x99/0x510 fs/buffer.c:2914
-Read of size 4 at addr 0000000000000060 by task syz-executor.1/17034
-
-CPU: 1 PID: 17034 Comm: syz-executor.1 Not tainted 6.5.0-rc4-next-20230731-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/12/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- check_region_inline mm/kasan/generic.c:181 [inline]
- kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
- instrument_atomic_read include/linux/instrumented.h:68 [inline]
- atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
- buffer_busy fs/buffer.c:2902 [inline]
- drop_buffers.constprop.0+0x99/0x510 fs/buffer.c:2914
- try_to_free_buffers+0x21b/0x2d0 fs/buffer.c:2944
- filemap_release_folio+0x20f/0x270 mm/filemap.c:4089
- shrink_folio_list+0x28bc/0x3dc0 mm/vmscan.c:2068
- evict_folios+0x6bc/0x18f0 mm/vmscan.c:5181
- try_to_shrink_lruvec+0x769/0xb00 mm/vmscan.c:5357
- lru_gen_shrink_lruvec mm/vmscan.c:5494 [inline]
- shrink_lruvec+0x314/0x2980 mm/vmscan.c:6269
- shrink_node_memcgs mm/vmscan.c:6489 [inline]
- shrink_node+0x807/0x3730 mm/vmscan.c:6524
- shrink_zones mm/vmscan.c:6763 [inline]
- do_try_to_free_pages+0x3cf/0x1990 mm/vmscan.c:6825
- try_to_free_mem_cgroup_pages+0x36f/0x850 mm/vmscan.c:7140
- try_charge_memcg+0x460/0x1400 mm/memcontrol.c:2692
- obj_cgroup_charge_pages mm/memcontrol.c:3106 [inline]
- __memcg_kmem_charge_page+0x179/0x3d0 mm/memcontrol.c:3132
- __alloc_pages+0x1fc/0x4a0 mm/page_alloc.c:4529
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2292
- vm_area_alloc_pages mm/vmalloc.c:3059 [inline]
- __vmalloc_area_node mm/vmalloc.c:3135 [inline]
- __vmalloc_node_range+0xa6e/0x1540 mm/vmalloc.c:3316
- kvmalloc_node+0x14b/0x1a0 mm/util.c:629
- kvmalloc include/linux/slab.h:737 [inline]
- xt_alloc_table_info+0x3e/0xa0 net/netfilter/x_tables.c:1192
- do_replace net/ipv6/netfilter/ip6_tables.c:1139 [inline]
- do_ip6t_set_ctl+0x53c/0xbd0 net/ipv6/netfilter/ip6_tables.c:1636
- nf_setsockopt+0x87/0xe0 net/netfilter/nf_sockopt.c:101
- ipv6_setsockopt+0x12b/0x190 net/ipv6/ipv6_sockglue.c:1017
- udpv6_setsockopt+0x7d/0xc0 net/ipv6/udp.c:1690
- __sys_setsockopt+0x2ca/0x5b0 net/socket.c:2265
- __do_sys_setsockopt net/socket.c:2276 [inline]
- __se_sys_setsockopt net/socket.c:2273 [inline]
- __x64_sys_setsockopt+0xbd/0x150 net/socket.c:2273
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f0509e7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f050aba80c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 00007f0509f9bf80 RCX: 00007f0509e7cae9
-RDX: 0000000000000040 RSI: 0000000000000029 RDI: 0000000000000003
-RBP: 00007f0509ec847a R08: 00000000000003e0 R09: 0000000000000000
-R10: 00000000200014c0 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f0509f9bf80 R15: 00007ffea4aa1d48
- </TASK>
-==================================================================
+> rather than bitwise-or.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1832
+> Fixes: 36126f8f2ed8 ("word-at-a-time: make the interfaces truly generic")
+> Debugged-by: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+>  include/asm-generic/word-at-a-time.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/asm-generic/word-at-a-time.h b/include/asm-generic/w=
+ord-at-a-time.h
+> index 20c93f08c993..95a1d214108a 100644
+> --- a/include/asm-generic/word-at-a-time.h
+> +++ b/include/asm-generic/word-at-a-time.h
+> @@ -38,7 +38,7 @@ static inline long find_zero(unsigned long mask)
+>         return (mask >> 8) ? byte : byte + 1;
+>  }
+>
+> -static inline bool has_zero(unsigned long val, unsigned long *data, cons=
+t struct word_at_a_time *c)
+> +static inline unsigned long has_zero(unsigned long val, unsigned long *d=
+ata, const struct word_at_a_time *c)
+>  {
+>         unsigned long rhs =3D val | c->low_bits;
+>         *data =3D rhs;
+>
+> ---
+> base-commit: 18b44bc5a67275641fb26f2c54ba7eef80ac5950
+> change-id: 20230801-bitwise-7812b11e5fb7
+>
+> Best regards,
+> --
+> Nick Desaulniers <ndesaulniers@google.com>
+>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to change bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--=20
+Thanks,
+~Nick Desaulniers
