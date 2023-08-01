@@ -2,34 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C6476A73A
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 04:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6ED976A744
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 05:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230526AbjHAC5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 31 Jul 2023 22:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43196 "EHLO
+        id S231258AbjHADC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 31 Jul 2023 23:02:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbjHAC5Q (ORCPT
+        with ESMTP id S229648AbjHADCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 31 Jul 2023 22:57:16 -0400
-Received: from out28-197.mail.aliyun.com (out28-197.mail.aliyun.com [115.124.28.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26A6A114
-        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 19:57:13 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09616855|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0129007-0.000684149-0.986415;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=sunran001@208suo.com;NM=1;PH=DS;RN=7;RT=7;SR=0;TI=SMTPD_---.U5ISByU_1690858625;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U5ISByU_1690858625)
+        Mon, 31 Jul 2023 23:02:23 -0400
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D1CB1981
+        for <linux-kernel@vger.kernel.org>; Mon, 31 Jul 2023 20:02:22 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VojZ4od_1690858938;
+Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VojZ4od_1690858938)
           by smtp.aliyun-inc.com;
-          Tue, 01 Aug 2023 10:57:07 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd/pm: Clean up errors in vega12_hwmgr.c
-Date:   Tue,  1 Aug 2023 02:57:03 +0000
-Message-Id: <20230801025703.4979-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+          Tue, 01 Aug 2023 11:02:19 +0800
+Message-ID: <8c265e65-10b0-1a81-fe9c-ae334162346e@linux.alibaba.com>
+Date:   Tue, 1 Aug 2023 11:02:47 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 8/8] mm/compaction: only set skip flag if
+ cc->no_set_skip_hint is false
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        mgorman@techsingularity.net, willy@infradead.org, david@redhat.com
+References: <20230728171037.2219226-1-shikemeng@huaweicloud.com>
+ <20230728171037.2219226-9-shikemeng@huaweicloud.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230728171037.2219226-9-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,56 +45,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
 
-ERROR: need consistent spacing around '/' (ctx:WxV)
-ERROR: code indent should use tabs where possible
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On 7/29/2023 1:10 AM, Kemeng Shi wrote:
+> Keep the same logic as update_pageblock_skip, only set skip if
+> no_set_skip_hint is false which is more reasonable.
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
-index 1937be1cf5b4..4bd573d815ff 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
-@@ -1623,13 +1623,13 @@ static int vega12_notify_smc_display_config_after_ps_adjustment(
- 
- 	if (data->smu_features[GNLD_DPM_DCEFCLK].supported) {
- 		clock_req.clock_type = amd_pp_dcef_clock;
--		clock_req.clock_freq_in_khz = min_clocks.dcefClock/10;
-+		clock_req.clock_freq_in_khz = min_clocks.dcefClock / 10;
- 		if (!vega12_display_clock_voltage_request(hwmgr, &clock_req)) {
- 			if (data->smu_features[GNLD_DS_DCEFCLK].supported)
- 				PP_ASSERT_WITH_CODE(
- 					!smum_send_msg_to_smc_with_parameter(
- 					hwmgr, PPSMC_MSG_SetMinDeepSleepDcefclk,
--					min_clocks.dcefClockInSR /100,
-+					min_clocks.dcefClockInSR / 100,
- 					NULL),
- 					"Attempt to set divider for DCEFCLK Failed!",
- 					return -1);
-@@ -2354,8 +2354,8 @@ static int vega12_apply_clocks_adjust_rules(struct pp_hwmgr *hwmgr)
- 	uint32_t i, latency;
- 
- 	disable_mclk_switching = ((1 < hwmgr->display_config->num_display) &&
--			          !hwmgr->display_config->multi_monitor_in_sync) ||
--			          vblank_too_short;
-+				!hwmgr->display_config->multi_monitor_in_sync) ||
-+				vblank_too_short;
- 	latency = hwmgr->display_config->dce_tolerable_mclk_in_active_latency;
- 
- 	/* gfxclk */
-@@ -2522,7 +2522,7 @@ static int vega12_set_uclk_to_highest_dpm_level(struct pp_hwmgr *hwmgr,
- 		dpm_table->dpm_state.hard_min_level = dpm_table->dpm_levels[dpm_table->count - 1].value;
- 		PP_ASSERT_WITH_CODE(!(ret = smum_send_msg_to_smc_with_parameter(hwmgr,
- 				PPSMC_MSG_SetHardMinByFreq,
--				(PPCLK_UCLK << 16 ) | dpm_table->dpm_state.hard_min_level,
-+				(PPCLK_UCLK << 16) | dpm_table->dpm_state.hard_min_level,
- 				NULL)),
- 				"[SetUclkToHightestDpmLevel] Set hard min uclk failed!",
- 				return ret);
--- 
-2.17.1
+Um, the fast_find_migrateblock() and fast_isolate_freepages() will rely 
+on the skip flag and ignore the cc->no_set_skip_hint. So not sure it is 
+helpful. Let's see if Mel has some input.
 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> ---
+>   mm/compaction.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 188d610eb3b6..6841c0496223 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1418,7 +1418,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
+>   	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
+>   
+>   	/* Skip this pageblock in the future as it's full or nearly full */
+> -	if (start_pfn == end_pfn)
+> +	if (start_pfn == end_pfn && !cc->no_set_skip_hint)
+>   		set_pageblock_skip(page);
+>   }
+>   
