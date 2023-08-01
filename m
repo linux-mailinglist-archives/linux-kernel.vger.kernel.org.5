@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C5976B4FA
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9854176B4FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbjHAMqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:46:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
+        id S232055AbjHAMqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230327AbjHAMqX (ORCPT
+        with ESMTP id S231604AbjHAMqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:46:23 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11EC51FD0
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:46:22 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fbf09a9139so9094575e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 05:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20221208.gappssmtp.com; s=20221208; t=1690893980; x=1691498780;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Is8zYpLKksJYkV9dheJoep50WM9TZKR1lDw6gL7yZ/4=;
-        b=VENwXiH+kNawpRU7bMwjho9x40IIabsTdfetP3ui5b4yX4YgEVaAIaUXY3IGyGZvEN
-         Z65EwE6GjliIEKWHyxSMC0m1WvO8ZyrN4VtAMmOmuZkgxMKe9NXVR2iT2EdH+q8kKwf2
-         JekAkKzutCDb/nY4MprijzMC1HkDqQJXEJYKyRZs7ihHqBHC69/PHSV3YkMGVRod8V6+
-         iEq9CAeGgHfiQsMASuHVmnZdmUYjo4VdaFvUpWNSjeQiyRkbcElM7xZQmqUx3+ClJE5S
-         XX3g8HvmSYlM5AuQUA9gXg01QL5fCKCgrxbR7YW2duQx2/U9p8ZG+T8V6oY2kp9JKX2I
-         7org==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690893980; x=1691498780;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Is8zYpLKksJYkV9dheJoep50WM9TZKR1lDw6gL7yZ/4=;
-        b=BNr9a7VZ0UePzJgqSaMkx/qI9mlZh/vxrLVKLqvoxlqsgqFD4DG41+eYG9/xhQny3X
-         ruV43rfYKPXycM9Ms6ZWbGjUxoZhXiO0SHmUZPGiCmyeDdN6rOLVc8A67xoii1kS+DUx
-         s7adMtGGWSFvpA6zy/r6SFbo9RzI7hLvwFRmF2uUsdR9D9GOrY0NZPCFdn0deLTQ5DU3
-         PVg4vO7P2DUnDeZ35d4e3UiE/fV4r0NtH0Nphg7e8+ogZfMqcZ3VjadkwvE7Q+sF7tgF
-         PP0YfWQDSAy5SZfbpf0fMI2ATFH7K+1pf9MxgG7N/z6Nv5N74SxHaVMc6UQkreQtyx3Z
-         lcmw==
-X-Gm-Message-State: ABy/qLZK1ibODpr6Ya5k7ju5jlWVHcvmcZ6YlaoOqDzK5XwmQ/PkNUDg
-        s9rRTQ6/0KmZQwf1rTT+rFPk91xkG/OUP/6BLi3Bsg==
-X-Google-Smtp-Source: APBJJlHVztoapKp9UMJzShU6AETqb1CHtJ24YW9uXJjh118Gs8dTOfXnT7tP5YuHwbNE5y2McAgoS6u60gG6TLBxa+E=
-X-Received: by 2002:a19:f719:0:b0:4f8:5717:e421 with SMTP id
- z25-20020a19f719000000b004f85717e421mr2082691lfe.40.1690893980200; Tue, 01
- Aug 2023 05:46:20 -0700 (PDT)
+        Tue, 1 Aug 2023 08:46:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E921FD0;
+        Tue,  1 Aug 2023 05:46:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EA44361592;
+        Tue,  1 Aug 2023 12:46:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 536A5C433CD;
+        Tue,  1 Aug 2023 12:46:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690893990;
+        bh=MXlho9S16+OyJ4ljrjOtHzGNyOHL4ff+oBclsUhFYpI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=e5ukiVqCooJhtidM1Shc5l4sovqkC/PocssFvwu6KOF4hmjjF0QwlD6fEhk8BnkbM
+         fIFVpVDsbJSSdXPXZYwLz3M3/zurjeBF4znqHO5SIiLMP+wgEUR0RWP0vPZFJAnJck
+         a/CevTRiaj/ljXpsOuul9Y31DKVeya63l9/hdxy5IZ2MgtvjopLA+SfvM0d7tBzFou
+         DNN84+2gGFBF+l43U5nG5fFfaDJGRNZ2MnlhXkqsH/hnWFAOWE0cyh5iDfnFRPCinr
+         2YpVx0HTjW+J9Zw/c2f/dGrHRs8XbbJGwSt2nFVVvrlaFhfsck0XYv1UShYOBB/K2g
+         6xx2Iq71SPhGg==
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-4f4b2bc1565so8880439e87.2;
+        Tue, 01 Aug 2023 05:46:30 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZpd4nlGbjpoHlER5koRwXjyT02xWHD4g3xgggl9UAUQII3Q4Vt
+        G9PoD1reaiMSvJq0zRR2ge+uoOoSXKSmTlzVRZI=
+X-Google-Smtp-Source: APBJJlFmF6d0IfZK5B6FMUVZXZ6E2XEzl7+tVo3DUR2cG/2bigstQ32NISDKiQpIzShzf8r8Co56f0lI8stEcneUssg=
+X-Received: by 2002:a19:e01d:0:b0:4fd:bd94:e6cb with SMTP id
+ x29-20020a19e01d000000b004fdbd94e6cbmr2340331lfg.35.1690893988342; Tue, 01
+ Aug 2023 05:46:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230801091922.799813980@linuxfoundation.org>
-In-Reply-To: <20230801091922.799813980@linuxfoundation.org>
-From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date:   Tue, 1 Aug 2023 21:46:09 +0900
-Message-ID: <CAKL4bV45C_iieW5P7FRtRyURPjLZP=U3xioS+hxhxO_AiKQ8vg@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/228] 6.1.43-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
+References: <20230728090916.1538550-1-ardb@kernel.org> <20230728090916.1538550-15-ardb@kernel.org>
+ <20230801120827.GFZMj1uzNMDs2gIi1f@fat_crate.local> <CAMj1kXF+=W_oe7MS87rWdJ_z555iz2A8iR42fJ1mwZ+bgCgjmw@mail.gmail.com>
+ <20230801124054.GGZMj9VrrB+4a4NiZs@fat_crate.local>
+In-Reply-To: <20230801124054.GGZMj9VrrB+4a4NiZs@fat_crate.local>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Tue, 1 Aug 2023 14:46:16 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFGN6DAhWk647=jHW5wBMP0y4p9wzPBz3R7h=Gh1v6VEA@mail.gmail.com>
+Message-ID: <CAMj1kXFGN6DAhWk647=jHW5wBMP0y4p9wzPBz3R7h=Gh1v6VEA@mail.gmail.com>
+Subject: Re: [PATCH v7 14/22] x86/decompressor: Merge trampoline cleanup with
+ switching code
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Peter Jones <pjones@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
-
-On Tue, Aug 1, 2023 at 6:32=E2=80=AFPM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Tue, 1 Aug 2023 at 14:41, Borislav Petkov <bp@alien8.de> wrote:
 >
-> This is the start of the stable review cycle for the 6.1.43 release.
-> There are 228 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> On Tue, Aug 01, 2023 at 02:11:21PM +0200, Ard Biesheuvel wrote:
+> > Removing it breaks the build for !CONFIG_X86_5LEVEL
 >
-> Responses should be made by Thu, 03 Aug 2023 09:18:38 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.1.43-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+> How come?
 >
 
-6.1.43-rc1 tested.
+Because a label cannot be at the end of a block. There needs to be at
+least one statement.
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
+> $ grep 5LEVEL .config
+> # CONFIG_X86_5LEVEL is not set
+>
+> and it builds fine here.
+>
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+I guess it depends on the compiler version. GCC 10 gives me this
 
-Thanks
+<source>: In function 'foo':
+<source>:4:5: error: label at end of compound statement
+    4 |     bar:
+      |     ^~~
 
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+but GCC 13 seems to be fine with it.
+
+https://godbolt.org/z/KnWbY8vEY
