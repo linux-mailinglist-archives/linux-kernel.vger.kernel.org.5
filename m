@@ -2,123 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5763876B9B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE27576B9C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbjHAQfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58482 "EHLO
+        id S231349AbjHAQg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230476AbjHAQfD (ORCPT
+        with ESMTP id S230291AbjHAQgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:35:03 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2078.outbound.protection.outlook.com [40.107.243.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104141BF9
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:35:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QHUta2eP/MSVGtRNj3cZnkP1ujvXPQYjxrSd+LVyFwtQ1TbnlbHr3ON5LpX2eSa0PWISQF0Fm6aSYi0xuUaSNUwIQtPBiqPQVsETGYoYgGwkrYjushn4kmvKLpD9TuvnQ6A1rVOTvwdTLGfG0NOnFPy8LEjXYVYWwuWzr7/1gW9uPhw6IWkaZpiYB120AFaRK05oENSnPTJj8XKSoGn3NoQHWoYZzm6haBVHbNb1l6NHKikqcjBjdQx/YmHNBsj/YR24dMEO7jb5UsS7xXMS9WUdDhgHUKM2S/btcRZT5MuNI/77p5KuvwQ8PYuA7mW0RdYSf4jGs7cIvsA+Rv51GQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HnbTWhJuV8pVukOX55Fhe3/Vr6XNsuV1X/1luR5/ctQ=;
- b=Y2saa3jXzM23SOaCwtnRuUjbY0slQiGE6a3JD7g7SDD6wLMrm5GnbtNAu7CfwppFghqz0tbN4y8vrHEQFk5Rrbh0VMzIoOMufACju4reJYedzcfAZQHT4LAfkAOkp5wUR29EZ8HDNpX1ONKPodo23F/PCfz9pwwvpeu5S1V24Tqo4Jb83/sBo/4+pZ8EHKa7/yaXqrUHTQSFDEQeAvMGJNnPwOOiuy3UJlgE49cgaEEU4H1X0evZVgaUIqAM7kbpE0kZ216N0Dmq9KxDRWSfz1uR1vthRZxDFvY35x+YO1wFAl2u5xDmEW1LpZuRQQNr7mLHL4IM2vDMuu0q1WSnng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HnbTWhJuV8pVukOX55Fhe3/Vr6XNsuV1X/1luR5/ctQ=;
- b=CJBBvsh65Pt4t2fcPxypSCbXGsd+FiYWjm3VIeScE+vZ0e1cgztC7aYq2fIzVhL8jklOLjTkaCtiuABVch4M++cBQWA0VKwCaOm+9EV1eK5p9zhgWa2aMWNcxwaqKOhBry3xzImCrD3/IBu6+UoY6HB1OAkLquNpK8sfGoLcLzE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by DM4PR12MB6012.namprd12.prod.outlook.com (2603:10b6:8:6c::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6631.44; Tue, 1 Aug 2023 16:35:00 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::d267:7b8b:844f:8bcd%7]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
- 16:35:00 +0000
-Message-ID: <525af2f8-f090-37be-df21-78f7d9ca48f6@amd.com>
-Date:   Tue, 1 Aug 2023 11:34:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 06/14] x86/sev: Cache the secrets page address
-Content-Language: en-US
-To:     Nikunj A Dadhania <nikunj@amd.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Cc:     bp@alien8.de, dionnaglaze@google.com, pgonda@google.com,
-        seanjc@google.com, pbonzini@redhat.com
-References: <20230722111909.15166-1-nikunj@amd.com>
- <20230722111909.15166-7-nikunj@amd.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <20230722111909.15166-7-nikunj@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SA0PR11CA0003.namprd11.prod.outlook.com
- (2603:10b6:806:d3::8) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        Tue, 1 Aug 2023 12:36:22 -0400
+Received: from wp534.webpack.hosteurope.de (wp534.webpack.hosteurope.de [80.237.130.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9B01FDA;
+        Tue,  1 Aug 2023 09:36:16 -0700 (PDT)
+Received: from [2001:a61:6215:d040:c80a:ff:fe00:409d] (helo=cs-wrt.lan.local); authenticated
+        by wp534.webpack.hosteurope.de running ExIM with esmtpa
+        id 1qQsLz-0007BE-Ph; Tue, 01 Aug 2023 18:36:11 +0200
+From:   =?UTF-8?q?Carsten=20Spie=C3=9F?= <mail@carsten-spiess.de>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?q?Carsten=20Spie=C3=9F?= <mail@carsten-spiess.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>
+Cc:     linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Subject: [PATCH v3 1/2] hwmon: (isl28022) new driver for ISL28022 power monitor
+Date:   Tue,  1 Aug 2023 18:35:45 +0200
+Message-Id: <20230801163546.3170-2-mail@carsten-spiess.de>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230801163546.3170-1-mail@carsten-spiess.de>
+References: <20230801163546.3170-1-mail@carsten-spiess.de>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|DM4PR12MB6012:EE_
-X-MS-Office365-Filtering-Correlation-Id: e653db3c-d906-462b-37bc-08db92ad3f9a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zhh7tPlF0kmGccgGCBVmdx+EiUmlQ2GKGZCb109oTRl4V8meTGzSuLkGy7MmJnPhRqEKmFYWH0QodlDEFfOmLqc6UlAa+FWIP3Vx1UOZ2HkXoGjnQX+eETd56sb3giv3yzV/1O52mE8lwqrIPvZllays/Pqz85PV4zCbwF/lhmp550gBUd0Qo4GcYbZcWorrIxhrXtoAT3Nyz/JEAua3E0LTviRT34Jd9V4A0wpNRI1KDdSh0EYv89gvHkSF0PUw+ZnwCXD9Ro8smfia53afchIz0oE5Sr0eGXnUNMOrP6felIGioBErIahVvl3Ol1ovHtqqOS1/i7Uhsdm/Qq+WpguZ9IBBp9WAR73abU6b4ntXRwMEWdcts1AqMmIEvYuG3zwAAqW1alAPuVQ+SBlzeQqSP20ovxzSYtgd4Z899VjXXJPRuLwLDEgiaTkviRlJ4OswnkiF6doa07M73udW5yEr5W5iYm7yaASedr+e0DQ12cbqgqtWOUkDPKYTezMJuFe4mlmtbPUiNdaShhej4ylHOLv4aSkx3dNAEQBZau4sasaG4uQSUh9CaqhrjgCB++t7nVZ0U/rxs+1Yh31GG0tcXlOku/8tMH6MNalNRF5TEu05N4hf4rqEEHZkC9njUk2wGajHCQGbze7ShrWFXg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(366004)(136003)(346002)(396003)(376002)(39860400002)(451199021)(38100700002)(53546011)(26005)(6506007)(186003)(83380400001)(4744005)(2906002)(2616005)(8936002)(36756003)(5660300002)(8676002)(31696002)(86362001)(478600001)(6486002)(6512007)(4326008)(316002)(66476007)(66556008)(66946007)(41300700001)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bEZVSEhIRTB1aHprL2tZM0tUN1ZwcklTYlhrWVRjVzA0Vm9sVXFxc2Zpeklt?=
- =?utf-8?B?K1Mrdy9yNmdOd2FGMGt4ZHlKMW9SQ21Td3VXTTBscit5QndRcE9peUFvVnpH?=
- =?utf-8?B?U3RSZjI1VFhXNllhdGZpVlErQkNVR2VpZDNHM041RG1JYTdldzJWR2NpWmV6?=
- =?utf-8?B?TFhhSnFSZ09kckRHWGpHS3VyZVVKUkNqam12RXdvQW1SN25JY1REYVJEQThK?=
- =?utf-8?B?WU9xeHQ5OEozMk5QS3NycGhZYk15NmNTbjJnMDIwcEtERExueUhCckdzNFNj?=
- =?utf-8?B?VTI0U0l1MXVJVjRxZDRyODgvQWtJZk5lRVkwbVg4V01jTWNXZzdBN2x1bXdj?=
- =?utf-8?B?QjdTUUFkQnRRc2w1NUFnTkVINmN0ZjJVNnN2dG1uMDl0Yk1RaXBPVlEvdUpZ?=
- =?utf-8?B?cmI5VjNiN0xKN2RRbDBCSGx1RVlVbWZNV01NRW41UnFHYTlYb0xiK3hieHlo?=
- =?utf-8?B?OFJOdUlDbWNoWnRHZzFwc0ttaFdMd3NrNFpFaVoxQmptM1NjMXVPcnM0cTNn?=
- =?utf-8?B?TVZkcTdkU0VyYXkyamtFM1lWdXZYclROYmtWTytnUDBDQVNQQVdKY0xsSTIr?=
- =?utf-8?B?c0swQStEMnJTYXkycUlVSmpxYytvdHZBUjFncGZhSDBNazNRSzBMM1l2czQy?=
- =?utf-8?B?SWVibjQ5bElKZGJNYS9PemRabkhoSnJDWlg0Z2VYbjBJcnhhVndpeHBtd1A3?=
- =?utf-8?B?Y2d1bHY2eHlucHlYVTJvMUx1UHh2Tnh1OWFCbnhnUjVrdUl2MlJ1dnY0Z2c3?=
- =?utf-8?B?clNMNDhKVEx1U0xlU2NDd1YrU1kxVDFQenNENG1WanBHcUNQYThaeDdVTHBu?=
- =?utf-8?B?UDdaVm42QVFjNVdCUnlDNkFGVmQzL1dvT2Q1UVZnSzEreUVQY2d2T2l1RUxO?=
- =?utf-8?B?Um1qOUFQOXYyaHl2eXVmd3dQNmNuQTQvemhpQ3N0WG5FUGo3VEpLZDF2QnQx?=
- =?utf-8?B?L3prd3hLTjBmbnR3UllSeWVlQzFITG9ualBZQS9pcTZMaGRqWCttL0dxOXBu?=
- =?utf-8?B?TW5aUW1yQ2dnNUxWclJCL1BYRW45akl1Mjh5czJGVmxwWm84bXRPakJidUxK?=
- =?utf-8?B?TmF4czBSV2pSNUsvR25IaWVUZzYyN0pCaTVCY3gySGViNGZJQzRRNXFZdkhx?=
- =?utf-8?B?aURqZ3kxQ2orSlFzZmRSM2NobjUxWkp0V3cyYXFhV0lYY3V1ampadjRXT2sz?=
- =?utf-8?B?UldaWWlmSXdsc0JHbUEyZU5PRDlrd3ZDbTBwUFVONlZoenhCOE84YTZod0Vp?=
- =?utf-8?B?ajNRMmt0ZjFvTnU4TVNOYVMrMHFKeFRnSnpjbXp4cUNKS1kvQ0lmOWRJWjhm?=
- =?utf-8?B?eEg5dzVnV01zL1JYY01vazJuV3lDWEJBWmhNa3A0SGFjeTdtOHJzamVxdzlQ?=
- =?utf-8?B?NG52cWUwejdFalBiZHpEbEFnYU4yeEhjTnRqd0w1d0J2WmhwYmk3K2o5ajFJ?=
- =?utf-8?B?SXp3dW80ZTZ2U0VuSWk1NVhybmEyaHZ6YUs1cUQrMkJOOUtScGp5UGNaSWFW?=
- =?utf-8?B?eDhaUG1CbXBKYmpYUmU1S3JNcXFpWjlwWGs1N1hvc0NWWFEzV0NBTElJUWdQ?=
- =?utf-8?B?VURnRXNHSEJUTGNPWHI3TEFUaDJDcXB1bVhxYnFUNjNIRjZKY2d2NmtQS0wv?=
- =?utf-8?B?Z3pWREFjNXBpOW1aRlNMOFZiWWRTdW5KOXJVK2xzYXU2ZllZMmtTenBJMXJR?=
- =?utf-8?B?U0dKOHZZMDhlRlRxWEpPOXNQWDhSQlZ4VXpzdVQ5YmZUUnNqR3J0MlFvd2Qw?=
- =?utf-8?B?dXRkcWFySGo0L1ppb3RrUU5WZHJSOGhmcHI2dWIwbms4VXZmWGpCaVpjYW1j?=
- =?utf-8?B?dHBwSEJqTUFodXNLSWN0MFVLdWtzV3F1dWtmTld2YlBRSkFjNEdrRFRjZ2sv?=
- =?utf-8?B?Z2ZVU3hrKzhPdzJDQzdZWkJuaWlTK3gveitNT3RZdkxibjhsSUNjN0NxRDBT?=
- =?utf-8?B?bUZkNTM2S282SUQrRUc3S3dqZjNmMDdqRnpNU09SQ0VMQ1VJZnp4TUhFZXpM?=
- =?utf-8?B?aHZmWE1IeUdUbDRqL2xGYjg3RWtnTTNjZFpSTWNVV3Y5L2tUd0RtVWhaU01K?=
- =?utf-8?B?dFkxZ2duKy9QenA1cWRtV0xQZ3BWTmgyU0ppY3NEYWw2NmNycmM2ZGsxYlNP?=
- =?utf-8?Q?zQLGKIuHGjO0feUo8XPBwf4U8?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e653db3c-d906-462b-37bc-08db92ad3f9a
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 16:34:59.9598
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4/fBxr1TNyrmwqGQvkvEMLVY+62wvq1TD0iIWJHWbCsGRJaKe+YVprOan24p39c4EPqSL3Yce2Wih49r3Xj4yA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6012
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;mail@carsten-spiess.de;1690907777;9293435d;
+X-HE-SMSGID: 1qQsLz-0007BE-Ph
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
+        T_SPF_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -126,16 +48,670 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/22/23 06:19, Nikunj A Dadhania wrote:
-> Save the secrets page address during snp_init() from the CC blob. Use
-> secrets_pa instead of calling get_secrets_page() that remaps the CC
-> blob for getting the secrets page every time.
-> 
-> Signed-off-by: Nikunj A Dadhania <nikunj@amd.com>
+Driver for Renesas ISL28022 power monitor with I2C interface.
+The device monitors voltage, current via shunt resistor
+and calculated power.
 
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Carsten Spieß <mail@carsten-spiess.de>
+---
+v3:
+- changelog added
+v2/v3:
+- hwmon input shunt voltage removed
+- debugfs for shunt voltage read access added
+- missing error handling added
+- shunt resistor minimum and default value added
+- properties reworked
+- device_property_* instead of_property fixed
+- possible overflows fixed
+- MAINTAINERS order fixed
+- documentation updated
+---
+ Documentation/hwmon/index.rst    |   1 +
+ Documentation/hwmon/isl28022.rst |  63 ++++
+ MAINTAINERS                      |   7 +
+ drivers/hwmon/Kconfig            |  11 +
+ drivers/hwmon/Makefile           |   1 +
+ drivers/hwmon/isl28022.c         | 496 +++++++++++++++++++++++++++++++
+ 6 files changed, 579 insertions(+)
+ create mode 100644 Documentation/hwmon/isl28022.rst
+ create mode 100644 drivers/hwmon/isl28022.c
 
-> ---
->   arch/x86/kernel/sev.c | 52 +++++++++++++------------------------------
->   1 file changed, 16 insertions(+), 36 deletions(-)
-> 
+diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+index d11924667f76..c9548fc5c40e 100644
+--- a/Documentation/hwmon/index.rst
++++ b/Documentation/hwmon/index.rst
+@@ -90,6 +90,7 @@ Hardware Monitoring Kernel Drivers
+    ir35221
+    ir38064
+    ir36021
++   isl28022
+    isl68137
+    it87
+    jc42
+diff --git a/Documentation/hwmon/isl28022.rst b/Documentation/hwmon/isl28022.rst
+new file mode 100644
+index 000000000000..8d4422a2dacd
+--- /dev/null
++++ b/Documentation/hwmon/isl28022.rst
+@@ -0,0 +1,63 @@
++.. SPDX-License-Identifier: GPL-2.0-or-later
++
++Kernel driver isl28022
++======================
++
++Supported chips:
++
++  * Renesas ISL28022
++
++    Prefix: 'isl28022'
++
++    Addresses scanned: none
++
++    Datasheet: Publicly available at the Renesas website
++
++	       https://www.renesas.com/us/en/www/doc/datasheet/isl28022.pdf
++
++Author:
++    Carsten Spieß <mail@carsten-spiess.de>
++
++Description
++-----------
++
++The ISL28022 is a power monitor with I2C interface. The device monitors
++voltage, current via shunt resistor and calculated power.
++
++Usage Notes
++-----------
++
++This driver does not auto-detect devices. You will have to instantiate the
++device explicitly. Please see Documentation/i2c/instantiating-devices.rst for
++details.
++
++The shunt value in micro-ohms, shunt voltage range and averaging can be set
++with device properties.
++Please refer to the Documentation/devicetree/bindings/hwmon/isl,isl28022.yaml
++for bindings if the device tree is used.
++
++The driver supports only shunt and bus continuous ADC mode at 15bit resolution.
++Averaging can be set from 1 to 128 samples (power of 2) on both channels.
++Shunt voltage range of 40, 80, 160 or 320mV is allowed
++The bus voltage range is 60V fixed.
++
++Sysfs entries
++-------------
++
++The following attributes are supported. All attributes are read-only.
++
++======================= =======================================================
++in0_input		bus voltage (milli Volt)
++
++curr1_input		current (milli Ampere)
++power1_input		power (micro Watt)
++======================= =======================================================
++
++Debugfs entries
++---------------
++
++The following attributes are supported. All attributes are read-only.
++
++======================= =======================================================
++shunt_voltage		shunt voltage (micro Volt)
++======================= =======================================================
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7abb5710e1bb..b02e3b991676 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11065,6 +11065,13 @@ F:	drivers/isdn/Makefile
+ F:	drivers/isdn/hardware/
+ F:	drivers/isdn/mISDN/
+ 
++ISL28022 HARDWARE MONITORING DRIVER
++M:	Carsten Spieß <mail@carsten-spiess.de>
++L:	linux-hwmon@vger.kernel.org
++S:	Maintained
++F:	Documentation/hwmon/isl28022.rst
++F:	drivers/hwmon/isl28022.c
++
+ ISOFS FILESYSTEM
+ M:	Jan Kara <jack@suse.cz>
+ L:	linux-fsdevel@vger.kernel.org
+diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+index 2913299c2c9e..3049c519e6ac 100644
+--- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -800,6 +800,17 @@ config SENSORS_CORETEMP
+ 	  sensor inside your CPU. Most of the family 6 CPUs
+ 	  are supported. Check Documentation/hwmon/coretemp.rst for details.
+ 
++config SENSORS_ISL28022
++	tristate "Renesas ISL28022"
++	depends on I2C
++	select REGMAP_I2C
++	help
++	  If you say yes here you get support for ISL28022 power monitor.
++	  Check Documentation/hwmon/isl28022.rst for details.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called isl28022.
++
+ config SENSORS_IT87
+ 	tristate "ITE IT87xx and compatibles"
+ 	depends on !PPC
+diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+index ff6bfd109c72..4046fed7f48d 100644
+--- a/drivers/hwmon/Makefile
++++ b/drivers/hwmon/Makefile
+@@ -98,6 +98,7 @@ obj-$(CONFIG_SENSORS_INA2XX)	+= ina2xx.o
+ obj-$(CONFIG_SENSORS_INA238)	+= ina238.o
+ obj-$(CONFIG_SENSORS_INA3221)	+= ina3221.o
+ obj-$(CONFIG_SENSORS_INTEL_M10_BMC_HWMON) += intel-m10-bmc-hwmon.o
++obj-$(CONFIG_SENSORS_ISL28022)	+= isl28022.o
+ obj-$(CONFIG_SENSORS_IT87)	+= it87.o
+ obj-$(CONFIG_SENSORS_JC42)	+= jc42.o
+ obj-$(CONFIG_SENSORS_K8TEMP)	+= k8temp.o
+diff --git a/drivers/hwmon/isl28022.c b/drivers/hwmon/isl28022.c
+new file mode 100644
+index 000000000000..18b4481d5ff6
+--- /dev/null
++++ b/drivers/hwmon/isl28022.c
+@@ -0,0 +1,496 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * isl28022.c - driver for Renesas ISL28022 power monitor chip monitoring
++ *
++ * Copyright (c) 2023 Carsten Spieß <mail@carsten-spiess.de>
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/i2c.h>
++#include <linux/hwmon.h>
++#include <linux/hwmon-sysfs.h>
++#include <linux/debugfs.h>
++#include <linux/err.h>
++#include <linux/of_device.h>
++#include <linux/regmap.h>
++#include <linux/util_macros.h>
++#include <linux/regulator/consumer.h>
++
++/* ISL28022 registers */
++#define ISL28022_REG_CONFIG	0x00
++#define ISL28022_REG_SHUNT	0x01
++#define ISL28022_REG_BUS	0x02
++#define ISL28022_REG_POWER	0x03
++#define ISL28022_REG_CURRENT	0x04
++#define ISL28022_REG_CALIB	0x05
++#define ISL28022_REG_SHUNT_THR	0x06
++#define ISL28022_REG_BUS_THR	0x07
++#define ISL28022_REG_INT	0x08
++#define ISL28022_REG_AUX	0x09
++#define ISL28022_REG_MAX	ISL28022_REG_AUX
++
++/* ISL28022 config flags */
++/* mode flags */
++#define ISL28022_MODE_SHIFT	0
++#define ISL28022_MODE_MASK	0x0007
++
++#define ISL28022_MODE_PWR_DOWN	0x0
++#define ISL28022_MODE_TRG_S	0x1
++#define ISL28022_MODE_TRG_B	0x2
++#define ISL28022_MODE_TRG_SB	0x3
++#define ISL28022_MODE_ADC_OFF	0x4
++#define ISL28022_MODE_CONT_S	0x5
++#define ISL28022_MODE_CONT_B	0x6
++#define ISL28022_MODE_CONT_SB	0x7
++
++/* shunt ADC settings */
++#define ISL28022_SADC_SHIFT	3
++#define ISL28022_SADC_MASK	0x0078
++
++#define ISL28022_BADC_SHIFT	7
++#define ISL28022_BADC_MASK	0x0780
++
++#define ISL28022_ADC_12		0x0	/* 12 bit ADC */
++#define ISL28022_ADC_13		0x1	/* 13 bit ADC */
++#define ISL28022_ADC_14		0x2	/* 14 bit ADC */
++#define ISL28022_ADC_15		0x3	/* 15 bit ADC */
++#define ISL28022_ADC_15_1	0x8	/* 15 bit ADC, 1 sample */
++#define ISL28022_ADC_15_2	0x9	/* 15 bit ADC, 2 samples */
++#define ISL28022_ADC_15_4	0xA	/* 15 bit ADC, 4 samples */
++#define ISL28022_ADC_15_8	0xB	/* 15 bit ADC, 8 samples */
++#define ISL28022_ADC_15_16	0xC	/* 15 bit ADC, 16 samples */
++#define ISL28022_ADC_15_32	0xD	/* 15 bit ADC, 32 samples */
++#define ISL28022_ADC_15_64	0xE	/* 15 bit ADC, 64 samples */
++#define ISL28022_ADC_15_128	0xF	/* 15 bit ADC, 128 samples */
++
++/* shunt voltage range */
++#define ISL28022_PG_SHIFT	11
++#define ISL28022_PG_MASK	0x1800
++
++#define ISL28022_PG_40		0x0	/* +/-40 mV */
++#define ISL28022_PG_80		0x1	/* +/-80 mV */
++#define ISL28022_PG_160		0x2	/* +/-160 mV */
++#define ISL28022_PG_320		0x3	/* +/-3200 mV */
++
++/* bus voltage range */
++#define ISL28022_BRNG_SHIFT	13
++#define ISL28022_BRNG_MASK	0x6000
++
++#define ISL28022_BRNG_16	0x0	/* 16 V */
++#define ISL28022_BRNG_32	0x1	/* 32 V */
++#define ISL28022_BRNG_60	0x3	/* 60 V */
++
++/* reset */
++#define ISL28022_RESET		0x8000
++
++struct isl28022_data {
++	struct i2c_client	*client;
++	struct regmap		*regmap;
++#ifdef CONFIG_DEBUG_FS
++	struct dentry		*debugfs;
++#endif
++	u32			shunt;
++	u32			gain;
++	u32			average;
++	u16			config;
++	u16			calib;
++};
++
++static int isl28022_read(struct device *dev, enum hwmon_sensor_types type,
++			 u32 attr, int channel, long *val)
++{
++	struct isl28022_data *data = dev_get_drvdata(dev);
++	unsigned int regval;
++	int err;
++
++	switch (type) {
++	case hwmon_in:
++		switch (attr) {
++		case hwmon_in_input:
++			err = regmap_read(data->regmap,
++					  ISL28022_REG_BUS, &regval);
++			if (err < 0)
++				return err;
++			/* driver supports only 60V mode (BRNG 11) */
++			*val = (long)(((u16)regval) & 0xFFFC);
++			break;
++		default:
++			return -EINVAL;
++		}
++		break;
++	case hwmon_curr:
++		switch (attr) {
++		case hwmon_curr_input:
++			err = regmap_read(data->regmap,
++					  ISL28022_REG_CURRENT, &regval);
++			if (err < 0)
++				return err;
++			*val = ((long)regval * 1250L * (long)data->gain) /
++				(long)data->shunt;
++			break;
++		default:
++			return -EINVAL;
++		}
++		break;
++	case hwmon_power:
++		switch (attr) {
++		case hwmon_power_input:
++			err = regmap_read(data->regmap,
++					  ISL28022_REG_POWER, &regval);
++			if (err < 0)
++				return err;
++			*val = ((51200000L * ((long)data->gain)) /
++				(long)data->shunt) * (long)regval;
++			break;
++		default:
++			return -EINVAL;
++		}
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static umode_t isl28022_is_visible(const void *data, enum hwmon_sensor_types type,
++				   u32 attr, int channel)
++{
++	switch (type) {
++	case hwmon_in:
++		switch (attr) {
++		case hwmon_in_input:
++			return 0444;
++		}
++		break;
++	case hwmon_curr:
++		switch (attr) {
++		case hwmon_curr_input:
++			return 0444;
++		}
++		break;
++	case hwmon_power:
++		switch (attr) {
++		case hwmon_power_input:
++			return 0444;
++		}
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++static const struct hwmon_channel_info *isl28022_info[] = {
++	HWMON_CHANNEL_INFO(in,
++			   HWMON_I_INPUT),	/* channel 0: bus voltage (mV) */
++	HWMON_CHANNEL_INFO(curr,
++			   HWMON_C_INPUT),	/* channel 1: current (mA) */
++	HWMON_CHANNEL_INFO(power,
++			   HWMON_P_INPUT),	/* channel 1: power (µW) */
++	NULL
++};
++
++static const struct hwmon_ops isl28022_hwmon_ops = {
++	.is_visible = isl28022_is_visible,
++	.read = isl28022_read,
++};
++
++static const struct hwmon_chip_info isl28022_chip_info = {
++	.ops = &isl28022_hwmon_ops,
++	.info = isl28022_info,
++};
++
++static bool isl28022_is_writeable_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case ISL28022_REG_CONFIG:
++	case ISL28022_REG_CALIB:
++	case ISL28022_REG_SHUNT_THR:
++	case ISL28022_REG_BUS_THR:
++	case ISL28022_REG_INT:
++	case ISL28022_REG_AUX:
++		return true;
++	}
++
++	return false;
++}
++
++static bool isl28022_is_volatile_reg(struct device *dev, unsigned int reg)
++{
++	switch (reg) {
++	case ISL28022_REG_CONFIG:
++	case ISL28022_REG_SHUNT:
++	case ISL28022_REG_BUS:
++	case ISL28022_REG_POWER:
++	case ISL28022_REG_CURRENT:
++	case ISL28022_REG_INT:
++	case ISL28022_REG_AUX:
++		return true;
++	}
++	return true;
++}
++
++static const struct regmap_config isl28022_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 16,
++	.max_register = ISL28022_REG_MAX,
++	.writeable_reg = isl28022_is_writeable_reg,
++	.volatile_reg = isl28022_is_volatile_reg,
++	.val_format_endian = REGMAP_ENDIAN_BIG,
++	.cache_type = REGCACHE_RBTREE,
++	.use_single_read = true,
++	.use_single_write = true,
++};
++
++static const struct i2c_device_id isl28022_ids[] = {
++	{ "isl28022", 0},
++	{ /* LIST END */ }
++};
++MODULE_DEVICE_TABLE(i2c, isl28022_ids);
++
++#ifdef CONFIG_DEBUG_FS
++static int shunt_voltage_show(struct seq_file *seqf, void *unused)
++{
++	struct isl28022_data *data = seqf->private;
++	unsigned int regval;
++	int err;
++
++	err = regmap_read(data->regmap,
++			  ISL28022_REG_SHUNT, &regval);
++	if (err)
++		return err;
++
++	/* print shunt voltage in micro volt  */
++	seq_printf(seqf, "%d\n", regval * 10);
++
++	return 0;
++}
++DEFINE_SHOW_ATTRIBUTE(shunt_voltage);
++
++static struct dentry *isl28022_debugfs_root;
++
++static void isl28022_debugfs_remove(void *res)
++{
++	debugfs_remove_recursive(res);
++}
++
++static int isl28022_debugfs_init(struct isl28022_data *data)
++{
++	char name[16];
++	int err;
++	struct dentry *entry;
++
++	scnprintf(name, sizeof(name), "%d-%04hx", data->client->adapter->nr, data->client->addr);
++
++	data->debugfs = debugfs_create_dir(name, isl28022_debugfs_root);
++	if (IS_ERR(data->debugfs))
++		return PTR_ERR(data->debugfs);
++
++	err = devm_add_action_or_reset(&data->client->dev, isl28022_debugfs_remove, data->debugfs);
++	if (err)
++		return err;
++
++	entry = debugfs_create_file("shunt_voltage", 0444, data->debugfs, data,
++			    &shunt_voltage_fops);
++	if (IS_ERR(entry))
++		return PTR_ERR(entry);
++
++	return 0;
++}
++#endif /* CONFIG_DEBUG_FS*/
++
++/*
++ * read property values and make consistency checks.
++ *
++ * following values for shunt range and resistor are allowed:
++ *   40 mV -> gain 1, shunt min.  800 micro ohms
++ *   80 mV -> gain 2, shunt min. 1600 micro ohms
++ *  160 mV -> gain 4, shunt min. 3200 micro ohms
++ *  320 mV -> gain 8, shunt min. 6400 micro ohms
++ */
++static int isl28022_read_properties(struct device *dev, struct isl28022_data *data)
++{
++	u32 val;
++	int err;
++
++	err = device_property_read_u32(dev, "shunt-resistor-micro-ohms", &val);
++	if (err == -ENODATA)
++		val = 10000;
++	else if (err < 0)
++		return err;
++	data->shunt = val;
++
++	err = device_property_read_u32(dev, "renesas,shunt-range-microvolt", &val);
++	if (err == -ENODATA)
++		val = 320000;
++	else if (err < 0)
++		return err;
++	switch (val) {
++	case 40000:
++		data->gain = 1;
++		if (data->shunt < 800)
++			goto shunt_invalid;
++		break;
++	case 80000:
++		data->gain = 2;
++		if (data->shunt < 1600)
++			goto shunt_invalid;
++		break;
++	case 160000:
++		data->gain = 4;
++		if (data->shunt < 3200)
++			goto shunt_invalid;
++		break;
++	case 320000:
++		data->gain = 8;
++		if (data->shunt < 6400)
++			goto shunt_invalid;
++		break;
++	default:
++		dev_err(dev, "renesas,shunt-range-microvolt invalid value %d\n", val);
++		return -EINVAL;
++	}
++
++	err = device_property_read_u32(dev, "renesas,average-samples", &val);
++	if (err == -ENODATA)
++		val = 1;
++	else if (err < 0)
++		return err;
++	if ((val > 128) || (BIT(__ffs(val)) != val)) {
++		dev_err(dev, "renesas,average-samples invalid value %d\n", val);
++		return -EINVAL;
++	}
++	data->average = val;
++
++	return 0;
++
++shunt_invalid:
++	dev_err(dev, "renesas,shunt-resistor-microvolt invalid value %d\n", data->shunt);
++	return -EINVAL;
++}
++
++/*
++ * write configuration and calibration registers
++ *
++ * The driver supports only shunt and bus continuous ADC mode at 15bit resolution
++ * with averaging from 1 to 128 samples (pow of 2) on both channels.
++ * Shunt voltage gain 1,2,4 or 8 is allowed.
++ * The bus voltage range is 60V fixed.
++ */
++static int isl28022_config(struct isl28022_data *data)
++{
++	int err;
++
++	data->config = (ISL28022_MODE_CONT_SB << ISL28022_MODE_SHIFT) |
++			(ISL28022_BRNG_60 << ISL28022_BRNG_SHIFT) |
++			(__ffs(data->gain) << ISL28022_PG_SHIFT) |
++			((ISL28022_ADC_15_1 + __ffs(data->average)) << ISL28022_SADC_SHIFT) |
++			((ISL28022_ADC_15_1 + __ffs(data->average)) << ISL28022_BADC_SHIFT);
++
++	data->calib = data->shunt ? 0x8000 / data->gain : 0;
++
++	err = regmap_write(data->regmap, ISL28022_REG_CONFIG, data->config);
++	if (err < 0)
++		return err;
++
++	err = regmap_write(data->regmap, ISL28022_REG_CALIB, data->calib);
++	if (err < 0)
++		return err;
++
++	return 0;
++}
++
++static int isl28022_probe(struct i2c_client *client)
++{
++	struct device *dev = &client->dev;
++	struct device *hwmon_dev;
++	struct isl28022_data *data;
++	int err;
++
++	if (!i2c_check_functionality(client->adapter,
++				     I2C_FUNC_SMBUS_BYTE_DATA |
++				     I2C_FUNC_SMBUS_WORD_DATA))
++		return -ENODEV;
++
++	data = devm_kzalloc(dev, sizeof(struct isl28022_data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	data->client = client;
++
++	err = isl28022_read_properties(dev, data);
++	if (err)
++		return err;
++
++	data->regmap = devm_regmap_init_i2c(client, &isl28022_regmap_config);
++	if (IS_ERR(data->regmap))
++		return PTR_ERR(data->regmap);
++
++	err = isl28022_config(data);
++	if (err)
++		return err;
++
++#ifdef CONFIG_DEBUG_FS
++	err = isl28022_debugfs_init(data);
++	if (err)
++		return err;
++#endif
++
++	hwmon_dev = devm_hwmon_device_register_with_info(dev, "isl28022_hwmon",
++							 data, &isl28022_chip_info, NULL);
++	if (IS_ERR(hwmon_dev))
++		return PTR_ERR(hwmon_dev);
++
++	dev_info(dev, "%s: sensor '%s'\n", dev_name(hwmon_dev), client->name);
++	return 0;
++}
++
++static const struct of_device_id __maybe_unused isl28022_of_match[] = {
++	{ .compatible = "renesas,isl28022"},
++	{ /* LIST END */ }
++};
++MODULE_DEVICE_TABLE(of, isl28022_of_match);
++
++static struct i2c_driver isl28022_driver = {
++	.class		= I2C_CLASS_HWMON,
++	.driver = {
++		.name	= "isl28022",
++	},
++	.probe_new	= isl28022_probe,
++	.id_table	= isl28022_ids,
++};
++
++#ifdef CONFIG_DEBUG_FS
++static int __init
++isl28022_init(void)
++{
++	int err;
++
++	isl28022_debugfs_root = debugfs_create_dir("isl28022", NULL);
++	err = i2c_add_driver(&isl28022_driver);
++	if (!err)
++		return 0;
++
++	debugfs_remove_recursive(isl28022_debugfs_root);
++	return err;
++}
++
++static void __exit
++isl28022_exit(void)
++{
++	i2c_del_driver(&isl28022_driver);
++	debugfs_remove_recursive(isl28022_debugfs_root);
++}
++
++module_init(isl28022_init);
++module_exit(isl28022_exit);
++#else /* CONFIG_DEBUG_FS */
++module_i2c_driver(isl28022_driver);
++#endif /* CONFIG_DEBUG_FS */
++
++MODULE_AUTHOR("Carsten Spieß <mail@carsten-spiess.de>");
++MODULE_DESCRIPTION("ISL28022 driver");
++MODULE_LICENSE("GPL");
+-- 
+2.34.1
+
