@@ -2,524 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 216AE76B327
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F122976B325
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 13:24:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234360AbjHALYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 07:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56462 "EHLO
+        id S234092AbjHALYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 07:24:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234028AbjHALXj (ORCPT
+        with ESMTP id S233804AbjHALXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 07:23:39 -0400
-Received: from mail-40141.protonmail.ch (mail-40141.protonmail.ch [185.70.40.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80780E4;
-        Tue,  1 Aug 2023 04:23:06 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 11:22:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1690888984; x=1691148184;
-        bh=tNHwD+P01gKFsgZ9e8DyYxM5TJb80TlVC4z16No0tCI=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=l/FDG9xA/YQaZ07wpCSCHiMdQvRtFECMbyMMXnOnMnYiex+QV/r/BJdAA2HMzyotF
-         NUv00twtrdZgj9Sd1zpxDGWl064rsxljPTes74ZuUgcPVTq6Z5VmFtQyQdnhrNIuzp
-         pl3U6wa51ufpVyI1Iu3Jsc5CsJuAK8jOboGlZwXEt2DNr/k04e9f4XWKxUbISBdyuY
-         s94FoP6iKeqmtm4OZrXeTtWVkavmw3HExHg2kAXjz8GqrbL5gz9YlE2Oteowe+uEq/
-         qaNHnN7NI9no040iE4Fh4cxyT166H03ODu/MP1/msV7UeEm+dmlNYQTPp0V18HedyS
-         1zasjU5mG0gvg==
-To:     linux-kernel@vger.kernel.org
-From:   "Lin, Meng-Bo" <linmengbo0689@protonmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Walter Broemeling <wallebroem@gmail.com>,
-        Joe Mason <buddyjojo06@outlook.com>,
-        Siddharth Manthan <siddharth.manthan@gmail.com>,
-        Gareth Peoples <mail@gpeopl.es>
-Subject: [PATCH v2 2/3] arm64: dts: qcom: msm8916-samsung-fortuna: Add initial device trees
-Message-ID: <20230801112123.4672-1-linmengbo0689@protonmail.com>
-In-Reply-To: <20230801111745.4629-1-linmengbo0689@protonmail.com>
-References: <20230801111745.4629-1-linmengbo0689@protonmail.com>
-Feedback-ID: 40467236:user:proton
+        Tue, 1 Aug 2023 07:23:38 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B40A1B4;
+        Tue,  1 Aug 2023 04:23:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690888983; x=1722424983;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=VDDWcVGS+hK7IXvS4+aNte96aXqDwd9n+f1OJ3QKozM=;
+  b=Vtxslftgfg1fO78WxmlWEzsE3gvrytR4kXs2R/oO9s9FWoAzI1JgvJ9Z
+   0G+teNJ74nTKo754eNIkQdg8ife4oLoajXsy3+BK4RroeewxmXQhLcGg1
+   Sv1F24tTbK2zPQoFUce9YPZHS73AzvKDttKAw41ZmRRlERPljzTYu50Tt
+   mqR7tLuaDeoFjF9AgNgezRyQwHMJ7XGkY2zNK1PolhyV00X/X8d5Gfs95
+   3Vp1He3fQR1fdqxCXj8M+tYNlR+L9Uzr8HOy/NBZD7FlGD6CBXYtMXCwX
+   KIc4zyTDssve933/W09Xb6g2Bn5T2uTBooTi53SPgREs+G9CJp/Pkd24Z
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="400222158"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="scan'208";a="400222158"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 04:22:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10788"; a="722452742"
+X-IronPort-AV: E=Sophos;i="6.01,246,1684825200"; 
+   d="scan'208";a="722452742"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga007.jf.intel.com with ESMTP; 01 Aug 2023 04:22:59 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 1 Aug 2023 04:22:58 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 1 Aug 2023 04:22:58 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 1 Aug 2023 04:22:58 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 1 Aug 2023 04:22:58 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JoMKwrsw6LM/eW6YDAPq4BnCpmwIepwiDdsvi4K7K4VcoZZvukTeOoylZY+hC4v5W88wkfdo6TfaykrQooJAangQvGy8RPrj21FPmV4O1qPWt3bNQ5Juy8eO7EiccunVdaMdgijIAsPi0xx013kYqOYZAyrD+56f6BVpLxbIFudDoztF07g7+Q8XRKfqrDp8oiM7OPZaz2WVvn3XTo0wy2dMSJ9PxrU4zKkaGAZz1U4GMdi43MXer31mAfiUPHXJEH8etj+3Jgwe7JMWiAMXQZx4cCECWw8NsdmUe4gpTpE15lycJOjXs2FgkZpwc5EnSFguQL9BJ4ZTaXTH5u/wGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bYCMXN12YnfnluR3ICl//DvI+0S34FJQF46VezXg9qw=;
+ b=CUq1KqUFH1tUdjLqyipcWpzwzn9IvMrZFf+iGxAyoKcl6ykaxzAPS1/PGFU2Oxo98C6LHNb+v8JME8780TMCA/KsluwVPEIkrfs95OVc+bM6Mi2aSvWAIDsYgrNSYUC9PxIqPDxOQLjBxEtBuwU56yFRAugwGgN1H5D3SgPVInwqAeUyekMcGt5QGGk8BVQGqLEyaMlE3ylEayV90k4NHp2xLD9MoSBSmwXNyM4kH4KDq+/b/w4BsM/jk4fZOYS76ZT5NEsTwZbH1v+iEFLEq4EMpUAC/RMISlVKzAIlXGfegUDG0B5LeZakqP7bsReqRklQV56EHZYLXl098tmDNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB5549.namprd11.prod.outlook.com (2603:10b6:5:388::7) by
+ CH0PR11MB5521.namprd11.prod.outlook.com (2603:10b6:610:d4::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.44; Tue, 1 Aug 2023 11:22:56 +0000
+Received: from DM4PR11MB5549.namprd11.prod.outlook.com
+ ([fe80::fa3f:a88:b8dd:5c8e]) by DM4PR11MB5549.namprd11.prod.outlook.com
+ ([fe80::fa3f:a88:b8dd:5c8e%2]) with mapi id 15.20.6631.043; Tue, 1 Aug 2023
+ 11:22:56 +0000
+Message-ID: <a865ff81-9d5e-f937-735c-3c619df42785@intel.com>
+Date:   Tue, 1 Aug 2023 14:22:50 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v4 03/29] drm/i915/gvt: Verify hugepages are contiguous in
+ physical address space
+Content-Language: en-US
+To:     Yan Zhao <yan.y.zhao@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+CC:     Paolo Bonzini <pbonzini@redhat.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>, <kvm@vger.kernel.org>,
+        <intel-gvt-dev@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Yongwei Ma <yongwei.ma@intel.com>,
+        Ben Gardon <bgardon@google.com>
+References: <20230729013535.1070024-1-seanjc@google.com>
+ <20230729013535.1070024-4-seanjc@google.com>
+ <ZMhkJa2/9/aboPju@yzhao56-desk.sh.intel.com>
+From:   "Wang, Zhi A" <zhi.a.wang@intel.com>
+In-Reply-To: <ZMhkJa2/9/aboPju@yzhao56-desk.sh.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0047.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:92::14) To DM4PR11MB5549.namprd11.prod.outlook.com
+ (2603:10b6:5:388::7)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB5549:EE_|CH0PR11MB5521:EE_
+X-MS-Office365-Filtering-Correlation-Id: f6ae370a-4f5d-48e2-1bfb-08db9281a74f
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6TvDnzS/9wwB4GyJSHL59PWkt/jYVOW0BXfmmR9iZxfe6WSJi3n++XOm0CAKsGHkZ7iyE9BjvXxcnhaldb5BoXpUzc41lmyOgVKIp+Fbr8MrjYexaronI2pdwDbbpn9jvccQ5spBuKNFqW6YELthFQqpzqS8ZJs2L0sZo+vR9TfERkqqoiOYFYbc2AgU549qZSHOb7CcRks3fVSXq/7JYwGN6Oc7Z5cCQ1Ke0EpmQftYkfXNf9iEjPB/004EIyJeeOIClxsxjzuXHjusJ5t1J9/+V5S3jsfMFivJWwU3rM9eugkH+dvy5qYlwVFVyjueLjBaobYKLFT5XhXWu/ZRsHzF1+1YPGlIOzKD8Bp6QC6HDwkcHTPN5DHnapDA9fDDdXooI0TB9zAENUYxYNe6oc49SF4btxRpseU3v+EFWWDV2fi/502BeBXiQI5zypvrcho2TiXZFHpfF6VqzqOJ6iQWrlaL1WokD3H61hkA1cMFYolSdIkpx6drw+To4eQYYcNn+EInL9q/hFvye7Gaqr5msJ+nNiSXcAdzzebVgUPtHfgEtcUy18T9EqTSZMT2dK1h34sUazRQbtesHSvoYgpoAXNX+A/Pn1kbHbxqYkBKixJlaON/dgUDKGRW3OvzPESzBKN/BdEjlT5abLA7BA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB5549.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(376002)(366004)(136003)(346002)(39860400002)(396003)(451199021)(38100700002)(6506007)(5660300002)(53546011)(4326008)(66946007)(66556008)(66476007)(110136005)(82960400001)(54906003)(6512007)(478600001)(15650500001)(2906002)(2616005)(8936002)(8676002)(6486002)(41300700001)(31686004)(36756003)(31696002)(186003)(316002)(86362001)(6666004)(26005)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3laUmNQSFg1bGJLaTZjN3lveUFaRkV5b0Vpa1JVbXpWcHV2QW5Md3R5eVF6?=
+ =?utf-8?B?QmFoTGoxSDNkdC9nRVRWVnM5UEZyd2cwZXFtSy8vaDZPWTg5UHh1aGZ6WWdU?=
+ =?utf-8?B?Zks2aHNlMGFZWG9xcnUwSFFnSnZNTUlKYkYxY0YzRDZoMGdBMzUzVHVTVnhV?=
+ =?utf-8?B?cGduWThBclZYN0RORUJqZm5oWHJVSjRpeWRvbE5XdXoxOWRBR3V4OXR1NFhk?=
+ =?utf-8?B?Um00a210Z1g0cFlhL0lWN013QXRmN0F6c3Y1am44RFlGSE9kbzY2Qks5SHMz?=
+ =?utf-8?B?WlVpdzhKNHpSeG04Y1Azbjd6M1N0NzlrVG0xdDJyKy9pdTVGWFNpaURtc1do?=
+ =?utf-8?B?YW85WjdybHJiRHM4TEtwYjV0ZUdpTThtU3NHaHNiMlgvcyt2UG1LdWlZWTU1?=
+ =?utf-8?B?L2JYY0ZncnNwY0IrbC8xZllWL3BhSnRCTWt2ZjAydHIvQnh4MW1SWmZJa3FW?=
+ =?utf-8?B?cUZHdVN0VWJGV0ZETldqOHpxZkhjUXhtdkVkaWw3d1piQlBXN2VOakdqN0dh?=
+ =?utf-8?B?S0RuTEJFa24wdzIySzVlVXd4emhnKy9XWlNEZ3RhRkFZdXN0ZEp6UjBzOGpp?=
+ =?utf-8?B?bGwycnhEVjMveEx0ZVdvYmFKNng2NkQrWHdPUUVCd0xvUVU5OVhjaTZrNGUy?=
+ =?utf-8?B?Q1N6aWZkMEhUcUQxVUp3Y3Zid3lYZU54dG9kd25hOGR3ZUVZRGQ1bXVzb3VO?=
+ =?utf-8?B?bWhnazFvMjFESnYrR0tiVUNjTWRGUHlUdHpNeEN2ZzVBTE1RVEV4cVh4Qkxs?=
+ =?utf-8?B?Si81TktiZDl5aDlwMEUvVzREU29ndHhFNFFaSFRDdHRPblJjZmpuekxKVWN3?=
+ =?utf-8?B?MmpHN21CTU9GKzdYRU90UGtPTEk3QTZyQkZPNC9rUGlQY1lpdmxYbnZJeDVZ?=
+ =?utf-8?B?bFdjb3hPMC9qV2Z4b3dZVWh4cCt6MzlsZHJhVnAvMy90SWxzcEo5NzkrTW5L?=
+ =?utf-8?B?OW5sK2JxKzVmT0FZU0ZDcVAyUzBiLzh5a0YzZU9yMWNhWlk5d1ZjWWVsOE1E?=
+ =?utf-8?B?OTJJbHpabWVrczhmUzlMNWtHUHRneExMZitBTTh5T08rVTlqeHdoS3hRWVdC?=
+ =?utf-8?B?OS9jenVRRS9BbTRKWWRIRzg3UFk1d3FxdXpVM2tlS0xvS3RvODN2YTZEZ1dm?=
+ =?utf-8?B?blBsUmY3SEFjYURRbE00eUdpUXhrSDVXdEdKaHBwejFGam5vSTBTNWorNUUx?=
+ =?utf-8?B?Vm1IdUZQWWxhdTRGQi91c0xOQ2M4ak5lSVRZVGVEdjlQMzJIUnFDb1dQcmkx?=
+ =?utf-8?B?a3hrNUlsOXhzVmV3QUlUcFJ1dFVZVExMaTMwWlVGcWVSdUVtQlI0azczdVB5?=
+ =?utf-8?B?UU1vQmxPUXN2L3JsNXU2aXFrbVM1ZDArWGw3Qi9xbWVIQnl6ZDlRQ1Q3QUtV?=
+ =?utf-8?B?d3BQRytDalZsQjNic3FuZ2VEb2JRWjNMd0gzSThVK05ZR2R5M29uMkRSNXpG?=
+ =?utf-8?B?VXhya05aVHhyN3pTMXBEcGR0SHgyNXFmRzA0dnphR2lHNU5KNDdsV1hEWmk4?=
+ =?utf-8?B?dXFZMnc3dHh5eWVndTE2WXJTelBUV3BNSFNuVm53QmNlUDQrenVWbjl2dU9j?=
+ =?utf-8?B?bVlscW5LcHdKOWVFM0hnakU4cVR6SURYMCtDY2IrYXYxVDRhVG4rK2NGdE1s?=
+ =?utf-8?B?QnVLY3Yyc0FSTDMwUFpKeXlxaHRXOXZuZk8rc2VpMkdRVzlPRE1IeFdrRGI0?=
+ =?utf-8?B?aHA5L0VvbGRFZEtTalV2ZEcwWFpwN2ZSTlk5QjFBWkRuWkU5MDhUZ0FYRXJq?=
+ =?utf-8?B?aXg0MWxIcFVudzBpZTJYOXErNGRVQjBWN0RudzcwbUVLbmlOUTVURGhubFo1?=
+ =?utf-8?B?RnFYTTdreHpwcnZNVE91NzFhUHBWZERGNjZ1R3hhdkdXOG0rSTlRRDJwS1U4?=
+ =?utf-8?B?RUFRRUUwY3gwVnA3Mlk4VW1oUFE5U0ZEd1ZNdis4NjhkUmFIc09mNmxZM0xv?=
+ =?utf-8?B?Q0hISjV2dmVWVUdNWjl1WGJiYmJyd1pSNEJ2TEZtbjB1Ull1MVovYkhRZXpO?=
+ =?utf-8?B?cXAzRzJkRzQxK2o5dElRZnFCaGVBS1B1M01vRVpxWURXdVhRcjBFMlVVMFlC?=
+ =?utf-8?B?SzF0VUFPbWN5Tm4zc3VGOVZ1bzBFd3crREVyVDlZSkxHUlY5NHNHZjNpZm92?=
+ =?utf-8?Q?gZTm0a3oMPxSyrgOzIrOiu3Nn?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6ae370a-4f5d-48e2-1bfb-08db9281a74f
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB5549.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2023 11:22:56.0703
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WUDPBXnVAyxAJ94syuYknvu1Ukinh2fi/LBB/sOgKUHHFzPHGkRO1dcqpdcpc+1HWcBUYsEox0ScSLd5uOc7Tg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5521
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Walter Broemeling <wallebroem@gmail.com>
-
-Samsung Galaxy Core Prime, Grand Prime and Ace 4 are phones based on
-MSM8916. They are similar to the other Samsung devices based on MSM8916
-with only a few minor differences.
-
-This initial commit adds support for:
- - fortuna3g (SM-G530H)
- - fortunaltezt (SM-G530Y)
- - gprimeltecan (SM-G530W)
- - grandprimelte (SM-G530FZ)
- - heatqlte (SM-G357FZ)
- - rossa (SM-G360G)
-
-The device trees contain initial support with:
- - GPIO keys
- - Regulator haptic
- - SDHCI (internal and external storage)
- - USB Device Mode
- - UART (on USB connector via the SM5502/SM5504 MUIC)
- - WCNSS (WiFi/BT)
- - Regulators
-
-There are different variants of Grand Prime, with some differences
-in accelerometer, NFC and panel.
-Core Prime and Grand Prime are similar, with some differences in MUIC,
-panel and touchscreen.
-Ace 4 and Core Prime are similar, with some differences in panel and
-touchscreen.
-
-The common parts are shared in
-msm8916-samsung-fortuna-common.dtsi and msm8916-samsung-rossa-common.dtsi
-to reduce duplication.
-
-Unfortunately, SM-G357FZ and SM-G530Y were released with outdated 32-bit
-only firmware and never received any update from Samsung. Since the 32-bit
-TrustZone firmware is signed there seems to be no way currently to
-actually boot this device tree on arm64 Linux at the moment.
-
-However, it is possible to use this device tree by compiling an ARM32
-kernel instead. The device tree can be easily built on ARM32 with
-an #include and it works really well there. To avoid confusion for others
-it is still better to add this device tree on arm64. Otherwise it's easy
-to forget to update this one when making some changes that affect all
-MSM8916 devices.
-
-Maybe someone finds a way to boot ARM64 Linux on this device at some
-point. In this case I expect that this device tree can be simply used
-as-is.
-
-Signed-off-by: Walter Broemeling <wallebroem@gmail.com>
-Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-[Add fortuna-common.dtsi, buttons, and WiFi]
-Co-developed-by: Joe Mason <buddyjojo06@outlook.com>
-Signed-off-by: Joe Mason <buddyjojo06@outlook.com>
-[Add fortuna3g]
-Co-developed-by: Siddharth Manthan <siddharth.manthan@gmail.com>
-Signed-off-by: Siddharth Manthan <siddharth.manthan@gmail.com>
-[Add heatqlte]
-Co-developed-by: Gareth Peoples <mail@gpeopl.es>
-Signed-off-by: Gareth Peoples <mail@gpeopl.es>
-[Add grandprimelte and fortunaltezt]
-[Use msm8916-samsung-rossa-common.dtsi and reword the commit]
-Co-developed-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
-Signed-off-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
----
- arch/arm64/boot/dts/qcom/Makefile             |   6 +
- .../dts/qcom/msm8216-samsung-fortuna3g.dts    |  11 ++
- .../qcom/msm8916-samsung-fortuna-common.dtsi  | 156 ++++++++++++++++++
- .../dts/qcom/msm8916-samsung-fortunaltezt.dts |  23 +++
- .../dts/qcom/msm8916-samsung-gprimeltecan.dts |  22 +++
- .../qcom/msm8916-samsung-grandprimelte.dts    |  11 ++
- .../dts/qcom/msm8916-samsung-heatqlte.dts     |  23 +++
- .../qcom/msm8916-samsung-rossa-common.dtsi    |  16 ++
- .../boot/dts/qcom/msm8916-samsung-rossa.dts   |  11 ++
- 9 files changed, 279 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common=
-.dtsi
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-fortunaltezt.d=
-ts
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.d=
-ts
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.=
-dts
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-heatqlte.dts
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.d=
-tsi
- create mode 100644 arch/arm64/boot/dts/qcom/msm8916-samsung-rossa.dts
-
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/M=
-akefile
-index 337abc4ceb17..f18db5063eda 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -17,6 +17,7 @@ dtb-$(CONFIG_ARCH_QCOM)=09+=3D ipq9574-rdp433.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D ipq9574-rdp449.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D ipq9574-rdp453.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D ipq9574-rdp454.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8216-samsung-fortuna3g.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-acer-a1-724.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-alcatel-idol347.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-asus-z00l.dtb
-@@ -29,11 +30,16 @@ dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-a3u-eur.=
-dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-a5u-eur.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-e5.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-e7.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-fortunaltezt.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-gprimeltecan.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-grandmax.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-grandprimelte.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-gt510.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-gt58.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-heatqlte.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-j5.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-j5x.dtb
-+dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-rossa.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-samsung-serranove.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-thwc-uf896.dtb
- dtb-$(CONFIG_ARCH_QCOM)=09+=3D msm8916-thwc-ufi001c.dtb
-diff --git a/arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts b/arch/=
-arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts
-new file mode 100644
-index 000000000000..366914be7d53
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8216-samsung-fortuna3g.dts
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-fortuna-common.dtsi"
-+
-+/ {
-+=09model =3D "Samsung Galaxy Grand Prime (SM-G530H)";
-+=09compatible =3D "samsung,fortuna3g", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi b=
-/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi
-new file mode 100644
-index 000000000000..175a1e891c7a
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi
-@@ -0,0 +1,156 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include "msm8916-pm8916.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/interrupt-controller/irq.h>
-+
-+/ {
-+=09aliases {
-+=09=09mmc0 =3D &sdhc_1; /* eMMC */
-+=09=09mmc1 =3D &sdhc_2; /* SD card */
-+=09=09serial0 =3D &blsp_uart2;
-+=09};
-+
-+=09chosen {
-+=09=09stdout-path =3D "serial0";
-+=09};
-+
-+=09reserved-memory {
-+=09=09/* Additional memory used by Samsung firmware modifications */
-+=09=09tz-apps@85a00000 {
-+=09=09=09reg =3D <0x0 0x85a00000 0x0 0x600000>;
-+=09=09=09no-map;
-+=09=09};
-+=09};
-+
-+=09gpio-keys {
-+=09=09compatible =3D "gpio-keys";
-+
-+=09=09pinctrl-0 =3D <&gpio_keys_default>;
-+=09=09pinctrl-names =3D "default";
-+
-+=09=09label =3D "GPIO Buttons";
-+
-+=09=09button-volume-up {
-+=09=09=09label =3D "Volume Up";
-+=09=09=09gpios =3D <&tlmm 107 GPIO_ACTIVE_LOW>;
-+=09=09=09linux,code =3D <KEY_VOLUMEUP>;
-+=09=09};
-+
-+=09=09button-home {
-+=09=09=09label =3D "Home";
-+=09=09=09gpios =3D <&tlmm 109 GPIO_ACTIVE_LOW>;
-+=09=09=09linux,code =3D <KEY_HOMEPAGE>;
-+=09=09};
-+=09};
-+
-+=09haptic {
-+=09=09compatible =3D "regulator-haptic";
-+=09=09haptic-supply =3D <&reg_motor_vdd>;
-+=09=09min-microvolt =3D <3300000>;
-+=09=09max-microvolt =3D <3300000>;
-+=09};
-+
-+=09reg_motor_vdd: regulator-motor-vdd {
-+=09=09compatible =3D "regulator-fixed";
-+=09=09regulator-name =3D "motor_vdd";
-+=09=09regulator-min-microvolt =3D <3300000>;
-+=09=09regulator-max-microvolt =3D <3300000>;
-+
-+=09=09gpio =3D <&tlmm 72 GPIO_ACTIVE_HIGH>;
-+=09=09enable-active-high;
-+
-+=09=09pinctrl-0 =3D <&motor_en_default>;
-+=09=09pinctrl-names =3D "default";
-+=09};
-+};
-+
-+&blsp_i2c1 {
-+=09status =3D "okay";
-+
-+=09muic: extcon@25 {
-+=09=09compatible =3D "siliconmitus,sm5502-muic";
-+=09=09reg =3D <0x25>;
-+=09=09interrupts-extended =3D <&tlmm 12 IRQ_TYPE_EDGE_FALLING>;
-+=09=09pinctrl-0 =3D <&muic_int_default>;
-+=09=09pinctrl-names =3D "default";
-+=09};
-+};
-+
-+&blsp_uart2 {
-+=09status =3D "okay";
-+};
-+
-+&pm8916_resin {
-+=09linux,code =3D <KEY_VOLUMEDOWN>;
-+=09status =3D "okay";
-+};
-+
-+&pm8916_rpm_regulators {
-+=09pm8916_l17: l17 {
-+=09=09regulator-min-microvolt =3D <2850000>;
-+=09=09regulator-max-microvolt =3D <2850000>;
-+=09};
-+};
-+
-+&sdhc_1 {
-+=09status =3D "okay";
-+};
-+
-+&sdhc_2 {
-+=09pinctrl-0 =3D <&sdc2_default &sdc2_cd_default>;
-+=09pinctrl-1 =3D <&sdc2_sleep &sdc2_cd_default>;
-+=09pinctrl-names =3D "default", "sleep";
-+
-+=09cd-gpios =3D <&tlmm 38 GPIO_ACTIVE_LOW>;
-+
-+=09status =3D "okay";
-+};
-+
-+&usb {
-+=09extcon =3D <&muic>, <&muic>;
-+=09status =3D "okay";
-+};
-+
-+&usb_hs_phy {
-+=09extcon =3D <&muic>;
-+};
-+
-+&wcnss {
-+=09status =3D "okay";
-+};
-+
-+&wcnss_iris {
-+=09compatible =3D "qcom,wcn3620";
-+};
-+
-+&tlmm {
-+=09gpio_keys_default: gpio-keys-default-state {
-+=09=09pins =3D "gpio107", "gpio109";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-pull-up;
-+=09};
-+
-+=09motor_en_default: motor-en-default-state {
-+=09=09pins =3D "gpio72";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-disable;
-+=09};
-+
-+=09muic_int_default: muic-int-default-state {
-+=09=09pins =3D "gpio12";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-disable;
-+=09};
-+
-+=09sdc2_cd_default: sdc2-cd-default-state {
-+=09=09pins =3D "gpio38";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-disable;
-+=09};
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-fortunaltezt.dts b/ar=
-ch/arm64/boot/dts/qcom/msm8916-samsung-fortunaltezt.dts
-new file mode 100644
-index 000000000000..f7c4dcb34bb3
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-fortunaltezt.dts
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-fortuna-common.dtsi"
-+
-+/*
-+ * NOTE: The original firmware from Samsung can only boot ARM32 kernels.
-+ * Unfortunately, the firmware is signed and cannot be replaced easily.
-+ * There seems to be no way to boot ARM64 kernels on this device at the mo=
-ment,
-+ * even though the hardware would support it.
-+ *
-+ * However, it is possible to use this device tree by compiling an ARM32 k=
-ernel
-+ * instead. For clarity and build testing this device tree is maintained n=
-ext
-+ * to the other MSM8916 device trees. However, it is actually used through
-+ * arch/arm/boot/dts/qcom-msm8916-samsung-fortunaltezt.dts
-+ */
-+
-+/ {
-+=09model =3D "Samsung Galaxy Grand Prime (SM-G530Y)";
-+=09compatible =3D "samsung,fortunaltezt", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts b/ar=
-ch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts
-new file mode 100644
-index 000000000000..883f20554dbe
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-gprimeltecan.dts
-@@ -0,0 +1,22 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-fortuna-common.dtsi"
-+
-+/ {
-+=09model =3D "Samsung Galaxy Grand Prime (SM-G530W)";
-+=09compatible =3D "samsung,gprimeltecan", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+
-+=09reserved-memory {
-+=09=09/* Firmware for gprimeltecan needs more space */
-+=09=09/delete-node/ tz-apps@85a00000;
-+
-+=09=09/* Additional memory used by Samsung firmware modifications */
-+=09=09tz-apps@85500000 {
-+=09=09=09reg =3D <0x0 0x85500000 0x0 0xb00000>;
-+=09=09=09no-map;
-+=09=09};
-+=09};
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts b/a=
-rch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts
-new file mode 100644
-index 000000000000..ea8a1e698dd4
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-grandprimelte.dts
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-fortuna-common.dtsi"
-+
-+/ {
-+=09model =3D "Samsung Galaxy Grand Prime (SM-G530FZ)";
-+=09compatible =3D "samsung,grandprimelte", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-heatqlte.dts b/arch/a=
-rm64/boot/dts/qcom/msm8916-samsung-heatqlte.dts
-new file mode 100644
-index 000000000000..fbf065734cbb
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-heatqlte.dts
-@@ -0,0 +1,23 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-rossa-common.dtsi"
-+
-+/*
-+ * NOTE: The original firmware from Samsung can only boot ARM32 kernels.
-+ * Unfortunately, the firmware is signed and cannot be replaced easily.
-+ * There seems to be no way to boot ARM64 kernels on this device at the mo=
-ment,
-+ * even though the hardware would support it.
-+ *
-+ * However, it is possible to use this device tree by compiling an ARM32 k=
-ernel
-+ * instead. For clarity and build testing this device tree is maintained n=
-ext
-+ * to the other MSM8916 device trees. However, it is actually used through
-+ * arch/arm/boot/dts/qcom-msm8916-samsung-heatqlte.dts
-+ */
-+
-+/ {
-+=09model =3D "Samsung Galaxy Ace 4 (SM-G357FZ)";
-+=09compatible =3D "samsung,heatqlte", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi b/a=
-rch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi
-new file mode 100644
-index 000000000000..d66cf1cbd378
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include "msm8916-samsung-fortuna-common.dtsi"
-+
-+&blsp_i2c1 {
-+=09/* SM5504 MUIC instead of SM5502 */
-+=09/delete-node/ extcon@25;
-+
-+=09muic: extcon@14 {
-+=09=09compatible =3D "siliconmitus,sm5504-muic";
-+=09=09reg =3D <0x14>;
-+=09=09interrupts-extended =3D <&tlmm 12 IRQ_TYPE_EDGE_FALLING>;
-+=09=09pinctrl-0 =3D <&muic_int_default>;
-+=09=09pinctrl-names =3D "default";
-+=09};
-+};
-diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa.dts b/arch/arm6=
-4/boot/dts/qcom/msm8916-samsung-rossa.dts
-new file mode 100644
-index 000000000000..2c6f04ad2cfe
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa.dts
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/dts-v1/;
-+
-+#include "msm8916-samsung-rossa-common.dtsi"
-+
-+/ {
-+=09model =3D "Samsung Galaxy Core Prime LTE";
-+=09compatible =3D "samsung,rossa", "qcom,msm8916";
-+=09chassis-type =3D "handset";
-+};
---=20
-2.39.2
-
+On 8/1/2023 4:47 AM, Yan Zhao wrote:
+> Reviewed-by: Yan Zhao <yan.y.zhao@intel.com>
+>
+> On Fri, Jul 28, 2023 at 06:35:09PM -0700, Sean Christopherson wrote:
+>> When shadowing a GTT entry with a 2M page, verify that the pfns are
+>> contiguous, not just that the struct page pointers are contiguous.  The
+>> memory map is virtual contiguous if "CONFIG_FLATMEM=y ||
+>> CONFIG_SPARSEMEM_VMEMMAP=y", but not for "CONFIG_SPARSEMEM=y &&
+>> CONFIG_SPARSEMEM_VMEMMAP=n", so theoretically KVMGT could encounter struct
+>> pages that are virtually contiguous, but not physically contiguous.
+>>
+>> In practice, this flaw is likely a non-issue as it would cause functional
+>> problems iff a section isn't 2M aligned _and_ is directly adjacent to
+>> another section with discontiguous pfns.
+>>
+>> Tested-by: Yongwei Ma <yongwei.ma@intel.com>
+>> Signed-off-by: Sean Christopherson <seanjc@google.com>
+>> ---
+>>   drivers/gpu/drm/i915/gvt/kvmgt.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
+>> index de675d799c7d..429f0f993a13 100644
+>> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
+>> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+>> @@ -161,7 +161,7 @@ static int gvt_pin_guest_page(struct intel_vgpu *vgpu, unsigned long gfn,
+>>   
+>>   		if (npage == 0)
+>>   			base_page = cur_page;
+>> -		else if (base_page + npage != cur_page) {
+>> +		else if (page_to_pfn(base_page) + npage != page_to_pfn(cur_page)) {
+>>   			gvt_vgpu_err("The pages are not continuous\n");
+>>   			ret = -EINVAL;
+>>   			npage++;
+>> -- 
+>> 2.41.0.487.g6d72f3e995-goog
+>>
+Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
 
