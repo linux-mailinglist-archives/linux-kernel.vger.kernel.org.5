@@ -2,118 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD0376B5A3
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0346076B5AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 15:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234011AbjHANTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 09:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        id S234025AbjHANVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 09:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbjHANTh (ORCPT
+        with ESMTP id S230305AbjHANV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 09:19:37 -0400
+        Tue, 1 Aug 2023 09:21:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4039710C3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 06:19:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3557F10C3;
+        Tue,  1 Aug 2023 06:21:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CE635615A4
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:19:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B5D6C433C8;
-        Tue,  1 Aug 2023 13:19:32 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B830661593;
+        Tue,  1 Aug 2023 13:21:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B10BC433C7;
+        Tue,  1 Aug 2023 13:21:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690895975;
-        bh=jgDvo59fKoODFk8V6StawFdECwLkKl8S5v/X9XKIeMk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gTJGL+u5VaV9ozdmsiTBfhduAGxUOQXSSYgo4ON6dUAO13ulgkusUZzlGqvwaPMPk
-         oU9WmgFa9binj7YJnuXdo6owpdeSSixomqQiL6Zjk6j6+0f4MSJgX2ouWx0QsbMdkc
-         R3gl5WlzaN/oSZl2DwOjKv8kJiTk7RQjw+CutsnZaW4wGsi+ihYjwTAQmCEBK97ur1
-         lySALjfMpbUmh+eFkN1lwCS2Sxpon68kHxXkHz/cXapYwG5SJ9ozaYXuA025dzDbD1
-         Co1T2bwotNneVIrCUekgU8OaFVxkwMbhjhWwvSu8etsvBPZCjw9NG4YqF7z7A8q5ck
-         ho2SjqyIIoBOQ==
-Message-ID: <0f18cf9e-9c5b-02dd-b396-729b9fecdfe7@kernel.org>
-Date:   Tue, 1 Aug 2023 16:19:30 +0300
+        s=k20201202; t=1690896086;
+        bh=rhZs8WvpeDdD/lD7n3xXs2aoj3z1VB7E4PDP0oU22EE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TPWfXHS17ip7EH8JQAphBzmLWL5eFSgkJJTLLMTAbdVxHPI8AgP5eTCauW1vuR/wF
+         EZ5sKnojzysZCIT1MzEfxx0KEBOonbmR5cZN2Gq1wXl3AvUo4HD5y+MwOLtV8a9ZEu
+         KDZkxFsILSLB2BRDtbq+MiVvw7AbH+hsCr3LNhHHwUE+3eT6v6NGErLbJaC+dGc9ex
+         MPfj+2rvCcGFxrq6px/itwngoJ56sc8iTwIV2skbqEuu6pwXzZhmVT1y6lrN05t2Zk
+         zySMZ1CDI993In29OnpByKe4F4uuwiU0blcvA6oLgT+BYJvkuGh2CGObbEm46wIC4n
+         A0uq0BwAAz++A==
+Date:   Tue, 1 Aug 2023 15:21:20 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+Cc:     Brendan Higgins <brendan.higgins@linux.dev>,
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        igt-dev@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] kunit: Make 'list' action available to kunit
+ test modules
+Message-ID: <20230801152120.3f53f876@coco.lan>
+In-Reply-To: <20230731141021.2854827-7-janusz.krzysztofik@linux.intel.com>
+References: <20230731141021.2854827-5-janusz.krzysztofik@linux.intel.com>
+        <20230731141021.2854827-7-janusz.krzysztofik@linux.intel.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH] net: ethernet: ti: am65-cpsw-qos: Add Frame
- Preemption MAC Merge support
-Content-Language: en-US
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, s-vadapalli@ti.com, srk@ti.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230725072338.20789-1-rogerq@kernel.org>
- <20230801131418.bhcjtflj3iu77mmc@skbuf>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20230801131418.bhcjtflj3iu77mmc@skbuf>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Mon, 31 Jul 2023 16:10:24 +0200
+Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com> escreveu:
 
-
-On 01/08/2023 16:14, Vladimir Oltean wrote:
-> On Tue, Jul 25, 2023 at 10:23:38AM +0300, Roger Quadros wrote:
->> Add driver support for viewing / changing the MAC Merge sublayer
->> parameters and seeing the verification state machine's current state
->> via ethtool.
->>
->> As hardware does not support interrupt notification for verification
->> events we resort to polling on link up. On link up we try a couple of
->> times for verification success and if unsuccessful then give up.
->>
->> The Frame Preemption feature is described in the Technical Reference
->> Manual [1] in section:
->> 	12.3.1.4.6.7 Intersperced Express Traffic (IET – P802.3br/D2.0)
->>
->> Due to Silicon Errata i2208 [2] we set limit min IET fragment size to 124.
->>
->> [1] AM62x TRM - https://www.ti.com/lit/ug/spruiv7a/spruiv7a.pdf
->> [2] AM62x Silicon Errata - https://www.ti.com/lit/er/sprz487c/sprz487c.pdf
->>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
+> Results from kunit tests reported via dmesg may be interleaved with other
+> kernel messages.  When parsing dmesg for modular kunit results in real
+> time, external tools, e.g., Intel GPU tools (IGT), may want to insert
+> their own test name markers into dmesg at the start of each test, before
+> any kernel message related to that test appears there, so existing upper
+> level test result parsers have no doubt which test to blame for a specific
+> kernel message.  Unfortunately, kunit reports names of tests only at their
+> completion (with the exeption of a not standarized "# Subtest: <name>"
+> header above a test plan of each test suite or parametrized test).
 > 
-> Also:
+> External tools could be able to insert their own "start of the test"
+> markers with test names included if they new those names in advance.
+> Test names could be learned from a list if provided by a kunit test
+> module.
 > 
-> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:173:6: warning: no previous prototype for function 'am65_cpsw_iet_change_preemptible_tcs' [-Wmissing-prototypes]
-> void am65_cpsw_iet_change_preemptible_tcs(struct am65_cpsw_port *port, u8 preemptible_tcs)
->      ^
-> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:173:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-> void am65_cpsw_iet_change_preemptible_tcs(struct am65_cpsw_port *port, u8 preemptible_tcs)
-> ^
-> static
-> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:179:6: warning: no previous prototype for function 'am65_cpsw_iet_link_state_update' [-Wmissing-prototypes]
-> void am65_cpsw_iet_link_state_update(struct net_device *ndev)
->      ^
-> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:179:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-> void am65_cpsw_iet_link_state_update(struct net_device *ndev)
-> ^
-> static
-> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:699:33: error: redefinition of 'taprio'
->         struct tc_taprio_qopt_offload *taprio = type_data;
->                                        ^
-> ../drivers/net/ethernet/ti/am65-cpsw-qos.c:697:33: note: previous definition is here
->         struct tc_taprio_qopt_offload *taprio = type_data;
->                                        ^
-> 2 warnings and 1 error generated.
-> make[7]: *** [../scripts/Makefile.build:243: drivers/net/ethernet/ti/am65-cpsw-qos.o] Error 1
-> make[7]: *** Waiting for unfinished jobs....
+> There exists a feature of listing kunit tests without actually executing
+> them, but it is now limited to configurations with the kunit module built
+> in and covers only built-in tests, already available at boot time.
+> Moreover, switching from list to normal mode requires reboot.  If that
+> feature was also available when kunit is built as a module, userspace
+> could load the module with action=list parameter, load some kunit test
+> modules they are interested in and learn about the list of tests provided
+> by those modules, then unload them, reload the kunit module in normal mode
+> and execute the tests with their lists already known.
+> 
+> Extend kunit module notifier initialization callback with a processing
+> path for only listing the tests provided by a module if the kunit action
+> parameter is set to "list".  For ease of use, submit the list in the
+> format of a standard KTAP report, with SKIP result from each test case,
+> giving "list mode" as the reason for skipping.  For each test suite
+> provided by a kunit test module, make such list of its test cases also
+> available via kunit debugfs for the lifetime of the module.  For user
+> convenience, make the kunit.action parameter visible in sysfs.
 
-I'm pretty sure there weren't any build errors for me.
-Did you have and resolve conflicts when applying this patch?
+It sounds interesting to have a modprobe option to just list the
+tests without excecuting.
 
--- 
-cheers,
--roger
+> 
+> Signed-off-by: Janusz Krzysztofik <janusz.krzysztofik@linux.intel.com>
+> ---
+>  include/kunit/test.h |  1 +
+>  lib/kunit/executor.c | 19 +++++++++++++------
+>  lib/kunit/test.c     | 30 +++++++++++++++++++++++++++++-
+>  3 files changed, 43 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 23120d50499ef..6d693f21a4833 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -237,6 +237,7 @@ static inline void kunit_set_failure(struct kunit *test)
+>  }
+>  
+>  bool kunit_enabled(void);
+> +const char *kunit_action(void);
+>  
+>  void kunit_init_test(struct kunit *test, const char *name, char *log);
+>  
+> diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
+> index 74982b83707ca..d1c0616569dfd 100644
+> --- a/lib/kunit/executor.c
+> +++ b/lib/kunit/executor.c
+> @@ -12,19 +12,26 @@
+>  extern struct kunit_suite * const __kunit_suites_start[];
+>  extern struct kunit_suite * const __kunit_suites_end[];
+>  
+> +static char *action_param;
+> +
+> +module_param_named(action, action_param, charp, 0400);
+> +MODULE_PARM_DESC(action,
+> +		 "Changes KUnit executor behavior, valid values are:\n"
+> +		 "<none>: run the tests like normal\n"
+> +		 "'list' to list test names instead of running them.\n");
+
+Help message sounded confusing. What about adding a boolean modprobe
+parameter, like "list_tests"?
+
+> +
+> +const char *kunit_action(void)
+> +{
+> +	return action_param;
+> +}
+> +
+>  #if IS_BUILTIN(CONFIG_KUNIT)
+>  
+>  static char *filter_glob_param;
+> -static char *action_param;
+>  
+>  module_param_named(filter_glob, filter_glob_param, charp, 0);
+>  MODULE_PARM_DESC(filter_glob,
+>  		"Filter which KUnit test suites/tests run at boot-time, e.g. list* or list*.*del_test");
+> -module_param_named(action, action_param, charp, 0);
+> -MODULE_PARM_DESC(action,
+> -		 "Changes KUnit executor behavior, valid values are:\n"
+> -		 "<none>: run the tests like normal\n"
+> -		 "'list' to list test names instead of running them.\n");
+>  
+>  /* glob_match() needs NULL terminated strings, so we need a copy of filter_glob_param. */
+>  struct kunit_test_filter {
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index a29ca1acc4d81..413d9fd364a8d 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -674,6 +674,27 @@ int kunit_run_tests(struct kunit_suite *suite)
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_run_tests);
+>  
+> +static void kunit_list_suite(struct kunit_suite *suite)
+> +{
+> +	struct kunit_case *test_case;
+> +
+> +	kunit_print_suite_start(suite);
+> +
+> +	kunit_suite_for_each_test_case(suite, test_case) {
+> +		struct kunit test = { .param_value = NULL, .param_index = 0 };
+> +
+> +		kunit_init_test(&test, test_case->name, test_case->log);
+> +
+> +		kunit_print_ok_not_ok(&test, true, KUNIT_SKIPPED,
+> +				      kunit_test_case_num(suite, test_case),
+> +				      test_case->name, "list mode");
+> +	}
+> +
+> +	kunit_print_ok_not_ok((void *)suite, false, KUNIT_SKIPPED,
+> +			      kunit_suite_counter++,
+> +			      suite->name, "list mode");
+> +}
+> +
+>  static void kunit_init_suite(struct kunit_suite *suite)
+>  {
+>  	kunit_debugfs_create_suite(suite);
+> @@ -688,6 +709,7 @@ bool kunit_enabled(void)
+>  
+>  int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_suites)
+>  {
+> +	const char *action = kunit_action();
+>  	unsigned int i;
+>  
+>  	if (!kunit_enabled() && num_suites > 0) {
+> @@ -699,7 +721,13 @@ int __kunit_test_suites_init(struct kunit_suite * const * const suites, int num_
+>  
+>  	for (i = 0; i < num_suites; i++) {
+>  		kunit_init_suite(suites[i]);
+> -		kunit_run_tests(suites[i]);
+> +
+> +		if (!action)
+> +			kunit_run_tests(suites[i]);
+> +		else if (!strcmp(action, "list"))
+> +			kunit_list_suite(suites[i]);
+> +		else
+> +			pr_err("kunit: unknown action '%s'\n", action);
+>  	}
+>  
+>  	static_branch_dec(&kunit_running);
+
+The remaining code LGTM.
+
+
+Thanks,
+Mauro
