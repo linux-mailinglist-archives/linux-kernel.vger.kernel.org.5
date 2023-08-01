@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68FAC76B9EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F01E76B9EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 18:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232242AbjHAQud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 12:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
+        id S232164AbjHAQua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 12:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbjHAQu3 (ORCPT
+        with ESMTP id S230473AbjHAQu2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 12:50:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50E22114;
-        Tue,  1 Aug 2023 09:50:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 817AB61632;
-        Tue,  1 Aug 2023 16:50:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A9E2C433C8;
-        Tue,  1 Aug 2023 16:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690908627;
-        bh=CMXomY4yotIp2kIkZChPB9St3sxEG+GKrqn91PhJDqw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FAT7aNs/561AUrM0GVltCTks2f5kyQS/a68fwFq4srLQYyFH1g6m0PZk6bgj0c16h
-         OSq1b2QKmneqwx65qmFZUYp0JyWm90CF9CFYLwT0ozKI8y72CvTdAkifcC8m5xinlN
-         NceaVWngozJhDvq1Lnn15zN210aoU7JKyaOFJCW2D6W0dX+Sk9EJsiJBHiE+QJHMHh
-         chCTGeHsOvzGfEMrg7v0y98fqd7dFwML3os0bnlfQBVP6hyKmqJOeJk/faUpq2hEHZ
-         CpLXOWJUidtJglXY7zz2gk3UQ++l6PNswkVfZwDRsKI+JSUtEBIjgeObAxZGd90tbt
-         M3/qb++3q+U3w==
-Message-ID: <390ef20d-a225-e7cb-73bd-9ba8c1985a98@kernel.org>
-Date:   Tue, 1 Aug 2023 19:50:21 +0300
+        Tue, 1 Aug 2023 12:50:28 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B89210E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 09:50:26 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 514D860005;
+        Tue,  1 Aug 2023 16:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1690908624;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fngJDTlQm55UuzieJxHzhuoFqug03dAdiNzE2dkdzJs=;
+        b=U5tp6+G/Z2p2wVrE/fgugGwfU6d0zMOWy1Y4jcr5cjLSuSAMiCr0sQ3HTnfleU5k6y/+y2
+        VD3eyXDBiGKTT/sWIvLylo7PvSdIVLUkzndmFhSzWkOoqDoISkyC8g2WwLKMHdgWhQxxsc
+        BAMqSlivLCWFPUwog9gPg5m3uDwQKNNOGI4lPKR0wArQ9adF3HA8snceofxboNOkbnlY7Y
+        SE4h5dEr+QvBZp6hMQeUEqCAsqkwHa+xOg5cjVc9HbibshihdRAPLhJ+7+BHmWIoU6rM8H
+        3sTJva+pjyKj4vc0ZoY792XvjQu+N8OERsHUWphnUlZnC58fv85YMjBI7H96sQ==
+Date:   Tue, 1 Aug 2023 18:50:22 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     John Thomson <lists@johnthomson.fastmail.com.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Michael Walle <michael@walle.cc>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v6 1/3] ABI: sysfs-nvmem-cells: Expose cells through
+ sysfs
+Message-ID: <20230801185022.03e5aa03@xps-13>
+In-Reply-To: <44a87823-1bde-7bba-4a38-d768d2754dec@linaro.org>
+References: <20230717075147.43326-1-miquel.raynal@bootlin.com>
+        <20230717075147.43326-2-miquel.raynal@bootlin.com>
+        <925d1b35-3e70-4b5d-9533-f730a652d242@app.fastmail.com>
+        <20230731175152.5c2adbae@xps-13>
+        <44a87823-1bde-7bba-4a38-d768d2754dec@linaro.org>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v8 3/5] arm64: dts: ti: k3-j784s4-main: Add DSS and
- DP-bridge node
-Content-Language: en-US
-To:     Jayesh Choudhary <j-choudhary@ti.com>, nm@ti.com, vigneshr@ti.com
-Cc:     s-vadapalli@ti.com, afd@ti.com, kristo@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, a-bhatia1@ti.com, r-ravikumar@ti.com,
-        sabiya.d@ti.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230801070019.219660-1-j-choudhary@ti.com>
- <20230801070019.219660-4-j-choudhary@ti.com>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <20230801070019.219660-4-j-choudhary@ti.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,111 +65,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+srinivas.kandagatla@linaro.org wrote on Tue, 1 Aug 2023 10:06:14 +0100:
 
-On 01/08/2023 10:00, Jayesh Choudhary wrote:
-> From: Rahul T R <r-ravikumar@ti.com>
-> 
-> Add DSS and DP-bridge node for J784S4 SoC. DSS IP in J784S4 is
-> same as DSS IP in J721E, so same compatible is being used.
-> The DP is Cadence MHDP8546.
-> 
-> Signed-off-by: Rahul T R <r-ravikumar@ti.com>
-> [j-choudhary@ti.com: move dss & mhdp node together in main, fix dss node]
-> Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi | 73 ++++++++++++++++++++++
->  1 file changed, 73 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> index fbf5ab94d785..975661948755 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j784s4-main.dtsi
-> @@ -1749,4 +1749,77 @@ c71_3: dsp@67800000 {
->  		resets = <&k3_reset 40 1>;
->  		firmware-name = "j784s4-c71_3-fw";
->  	};
-> +
-> +	mhdp: dp-bridge@a000000 {
+> On 31/07/2023 16:51, Miquel Raynal wrote:
+> > Hi John,
+> >=20
+> > Srinivas, a question for you below.
+> >=20
+> > lists@johnthomson.fastmail.com.au wrote on Sun, 23 Jul 2023 19:39:50
+> > +0000:
+> >  =20
+> >> Hi Miquel,
+> >>
+> >> On Mon, 17 Jul 2023, at 07:51, Miquel Raynal wrote: =20
+> >>> The binary content of nvmem devices is available to the user so in the
+> >>> easiest cases, finding the content of a cell is rather easy as it is
+> >>> just a matter of looking at a known and fixed offset. However, nvmem
+> >>> layouts have been recently introduced to cope with more advanced
+> >>> situations, where the offset and size of the cells is not known in
+> >>> advance or is dynamic. When using layouts, more advanced parsers are
+> >>> used by the kernel in order to give direct access to the content of e=
+ach
+> >>> cell regardless of their position/size in the underlying device, but
+> >>> these information were not accessible to the user.
+> >>>
+> >>> By exposing the nvmem cells to the user through a dedicated cell/ fol=
+der
+> >>> containing one file per cell, we provide a straightforward access to
+> >>> useful user information without the need for re-writing a userland
+> >>> parser. Content of nvmem cells is usually: product names, manufacturi=
+ng
+> >>> date, MAC addresses, etc,
+> >>>
+> >>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> >>> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>> ---
+> >>>   Documentation/ABI/testing/sysfs-nvmem-cells | 19 +++++++++++++++++++
+> >>>   1 file changed, 19 insertions(+)
+> >>>   create mode 100644 Documentation/ABI/testing/sysfs-nvmem-cells
+> >>>
+> >>> diff --git a/Documentation/ABI/testing/sysfs-nvmem-cells
+> >>> b/Documentation/ABI/testing/sysfs-nvmem-cells
+> >>> new file mode 100644
+> >>> index 000000000000..b2d15a8d36e5
+> >>> --- /dev/null
+> >>> +++ b/Documentation/ABI/testing/sysfs-nvmem-cells
+> >>> @@ -0,0 +1,19 @@
+> >>> +What:		/sys/bus/nvmem/devices/.../cells/<cell-name>
+> >>> +Date:		May 2023
+> >>> +KernelVersion:	6.5
+> >>> +Contact:	Miquel Raynal <miquel.raynal@bootlin.com>
+> >>> +Description:
+> >>> +		The "cells" folder contains one file per cell exposed by
+> >>> +		the nvmem device. The name of the file is the cell name. =20
+> >>
+> >> Could we consider using a file within a folder (name defined by cell p=
+ropertys) to access the cell bytes?
+> >> Example (pick the best path and filename):
+> >> /sys/bus/nvmem/devices/.../cells/<cell-name>/bytes
+> >>
+> >> That way, it is much easier to expand this at a later stage,
+> >> like adding an of_node link at
+> >> /sys/bus/nvmem/devices/.../cells/<cell-name>/of_node
+> >> or exposing other nvmem cell properties. =20
+> >=20
+> > I have no strong opinion. Srinivas what do you prefer? I'm fine either
+> > ways. I like the simplicity of the current approach more, but it's true
+> > that it is more easy to make it grow if we follow John idea. =20
+>=20
+> Sounds sensible to me.
 
-bridge@a000000
+I've looked a bit more in depth how to do that and to be honest I did
+not find an easy way. Attributes and attribute groups are meant to be
+used with only one indirection level and making an additional one seems
+terribly more complex. Maybe I'm wrong, if you have a piece of code
+doing that please share it and I'll make my best to integrate it,
+otherwise I think I'll keep the simplest approach.
 
-> +		compatible = "ti,j721e-mhdp8546";
-> +
+> >> This is particularly relevant given the cell-name alone does not always
+> >> uniquely represent a cell on an nvmem device.
+> >> https://lore.kernel.org/lkml/ZLaZ7fzUSsa0Igx1@makrotopia.org/ =20
+> >=20
+> > It seems like this is gonna be fixed by suffixing @<offset> to the
+> > name, as anyway whatever solution we choose, it is gonna be needed. =20
+>=20
+> we have to be careful here not to break the nvmem_cell_get() users.
 
-why the new lines all over the place within nodes?
+I believe this only applies to sysfs names, so nvmem_cell_get() which
+uses real cells names should not be affected.
 
-> +		reg = <0x0 0xa000000 0x0 0x30a00>,
-> +		      <0x0 0x4f40000 0x0 0x20>;
-> +		reg-names = "mhdptx", "j721e-intg";
-> +
-> +		clocks = <&k3_clks 217 11>;
-> +
-> +		interrupt-parent = <&gic500>;
-> +		interrupts = <GIC_SPI 614 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +		power-domains = <&k3_pds 217 TI_SCI_PD_EXCLUSIVE>;
-> +
-> +		status = "disabled";
-> +
-> +		dp0_ports: ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +		};
-> +	};
-> +
-> +	dss: dss@4a00000 {
-> +		compatible = "ti,j721e-dss";
-> +		reg = <0x00 0x04a00000 0x00 0x10000>, /* common_m */
-> +		      <0x00 0x04a10000 0x00 0x10000>, /* common_s0*/
-> +		      <0x00 0x04b00000 0x00 0x10000>, /* common_s1*/
-> +		      <0x00 0x04b10000 0x00 0x10000>, /* common_s2*/
-> +		      <0x00 0x04a20000 0x00 0x10000>, /* vidl1 */
-> +		      <0x00 0x04a30000 0x00 0x10000>, /* vidl2 */
-> +		      <0x00 0x04a50000 0x00 0x10000>, /* vid1 */
-> +		      <0x00 0x04a60000 0x00 0x10000>, /* vid2 */
-> +		      <0x00 0x04a70000 0x00 0x10000>, /* ovr1 */
-> +		      <0x00 0x04a90000 0x00 0x10000>, /* ovr2 */
-> +		      <0x00 0x04ab0000 0x00 0x10000>, /* ovr3 */
-> +		      <0x00 0x04ad0000 0x00 0x10000>, /* ovr4 */
-> +		      <0x00 0x04a80000 0x00 0x10000>, /* vp1 */
-> +		      <0x00 0x04aa0000 0x00 0x10000>, /* vp1 */
-> +		      <0x00 0x04ac0000 0x00 0x10000>, /* vp1 */
-> +		      <0x00 0x04ae0000 0x00 0x10000>, /* vp4 */
-> +		      <0x00 0x04af0000 0x00 0x10000>; /* wb */
-> +
-> +		reg-names = "common_m", "common_s0",
-> +			    "common_s1", "common_s2",
-> +			    "vidl1", "vidl2","vid1","vid2",
-> +			    "ovr1", "ovr2", "ovr3", "ovr4",
-> +			    "vp1", "vp2", "vp3", "vp4",
-> +			    "wb";
-> +
-> +		clocks = <&k3_clks 218 0>,
-> +			 <&k3_clks 218 2>,
-> +			 <&k3_clks 218 5>,
-> +			 <&k3_clks 218 14>,
-> +			 <&k3_clks 218 18>;
-> +		clock-names = "fck", "vp1", "vp2", "vp3", "vp4";
-> +
-> +		power-domains = <&k3_pds 218 TI_SCI_PD_EXCLUSIVE>;
-> +
-> +		interrupts = <GIC_SPI 602 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 603 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 604 IRQ_TYPE_LEVEL_HIGH>,
-> +			     <GIC_SPI 605 IRQ_TYPE_LEVEL_HIGH>;
-> +		interrupt-names = "common_m",
-> +				  "common_s0",
-> +				  "common_s1",
-> +				  "common_s2";
-> +
-> +		status = "disabled";
-> +
-> +		dss_ports: ports {
-> +		};
-> +	};
->  };
-
--- 
-cheers,
--roger
+Thanks,
+Miqu=C3=A8l
