@@ -2,49 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB3E76BE1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2654C76BE20
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232204AbjHATt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
+        id S231540AbjHATuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:50:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbjHATtT (ORCPT
+        with ESMTP id S229981AbjHATt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:49:19 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67A92728;
-        Tue,  1 Aug 2023 12:49:14 -0700 (PDT)
-X-QQ-mid: bizesmtp68t1690919344to62hk3f
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 02 Aug 2023 03:49:03 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: znfcQSa1hKbBLWA55kcreUoddWXsgcsDCazeEwO2EhbsxtiTpktOt/e/Dttm0
-        0d2GKEdeHpAlQwJQc3xXv8/2hBO3KsmrrxKPL3jGr3MWPA9GxVCPnIPATBHor3ACABVMZfj
-        7qWXxXaJP9Iuemw10epz54mNEH5W8RCBv5W7s5kCHNz3OBvvp1+UM2hiwsIhhUbGqqyb0ty
-        SleE80b0rdcpqcWRlPXfV/cBbMXSyzLv4rd2ZV5IkMC57UPTyJZ3Nn53TDpRn89twxNILW/
-        AmBUYGSLbQZEd1guuWP4AnSO0jMoRE69nWaaobj9bGSc3z844fiuw/Pnf+6ZWu0ywsftYTA
-        vQKdfHdaPZ9nrpcs8+OO4zIuN7alsc3WiBUB67iSWwgDQVgrItbEX14GQT/LNoDdEQYXqDi
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 18295623081681766068
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, w@1wt.eu
-Subject: [PATCH v4 12/12] selftests/nolibc: customize CROSS_COMPILE for 32/64-bit powerpc
-Date:   Wed,  2 Aug 2023 03:49:02 +0800
-Message-Id: <2780d43e9d0a1e0e39e98b111766503eab01f4d7.1690916314.git.falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1690916314.git.falcon@tinylab.org>
-References: <cover.1690916314.git.falcon@tinylab.org>
+        Tue, 1 Aug 2023 15:49:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5C42139;
+        Tue,  1 Aug 2023 12:49:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9836B616B7;
+        Tue,  1 Aug 2023 19:49:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41A2EC433C8;
+        Tue,  1 Aug 2023 19:49:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690919394;
+        bh=jx8nkKfZnsZVXx8umqQAQuPAq5SYkh1NN4szn/H3sNs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bNwin6nzcMICQLvRxBzXlbrrbYS5mevgyW4ev5/p1V2gMZk4sp1hxPE+mQJk1ZUSK
+         cAd8sET0dOL93qMWtn93DVNJhGN2P+bPFtVQYFCT2YoWV8hneWNw2y+yFGMofZmZkB
+         KWbWZWrDtS2I23Ciuad/sQK+v3f2OW4TKFCW7rkL1mbXwL3jdko7ymdyFsJbwb4wp0
+         NEwCnVpazNzcNLEhqUeDrn5sMa56oXfo79yHbZrpCdmiVt/Clsy/5UAzLN0ab+c3b3
+         ICWtz1I8dvpIEWfbQla+77y7RyDmhcdrIjIUZO4wIvLkcXIO1zD74WT6hNR75qZr/S
+         LQjwhqdGtjuAw==
+Date:   Tue, 1 Aug 2023 22:49:49 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Lin Ma <linma@zju.edu.cn>, davem@davemloft.net,
+        edumazet@google.com, pabeni@redhat.com, fw@strlen.de,
+        yang.lee@linux.alibaba.com, jgg@ziepe.ca, markzhang@nvidia.com,
+        phaddad@nvidia.com, yuancan@huawei.com, ohartoov@nvidia.com,
+        chenzhongjin@huawei.com, aharonl@nvidia.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net v1 1/2] netlink: let len field used to parse
+ type-not-care nested attrs
+Message-ID: <20230801194949.GC53714@unreal>
+References: <20230731121247.3972783-1-linma@zju.edu.cn>
+ <20230731120326.6bdd5bf9@kernel.org>
+ <20230801081117.GA53714@unreal>
+ <20230801105726.1af6a7e1@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801105726.1af6a7e1@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,63 +64,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The little-endian powerpc64le compilers provided by Ubuntu and Fedora
-are able to compile big endian kernel and big endian nolibc-test [1].
+On Tue, Aug 01, 2023 at 10:57:26AM -0700, Jakub Kicinski wrote:
+> On Tue, 1 Aug 2023 11:11:17 +0300 Leon Romanovsky wrote:
+> > IMHO, you are lowering too much the separation line between simple vs.
+> > advanced use cases. 
+> > 
+> > I had no idea that my use-case of passing nested netlink array is counted
+> > as advanced usage.
+> 
+> Agreed, that's a fair point. I'm guessing it was inspired by the
+> ethtool stats? (Which in hindsight were a mistake on my part.)
 
-These default CROSS_COMPILE settings allow to test target architectures
-with:
+I don't remember which part of kernel can be blamed for it. :)
 
-    $ cd /path/to/tools/testing/selftests/nolibc/
+> 
+> For the longest time there was no docs or best practices for netlink.
+> We have the documentation and more infrastructure in place now.
+> I hope if you wrote the code today the distinction would have been
+> clearer.
+> 
+> If we start adding APIs for various one-(two?)-offs from the past
+> we'll never dig ourselves out of the "no idea what's the normal use
+> of these APIs" hole..
 
-    $ for arch in ppc ppc64 ppc64le; do \
-        make run-user ARCH=$arch | grep "status: "; \
-      done
+I agree with this sentence, just afraid that it is unrealistic goal, due
+to extensive flexibility in netlink UAPI toward user-space, which allows
+you to shoot yourself in the foot without even noticing it.
 
-If want to use another cross compiler, please simply pass CROSS_COMPILE
-or CC as before.
-
-For example, it is able to build 64-bit nolibc-test with the big endian
-powerpc64-linux-gcc crosstool from [2]:
-
-    $ wget -c https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/x86_64/13.1.0/x86_64-gcc-13.1.0-nolibc-powerpc64-linux.tar.xz
-    $ tar xvf x86_64-gcc-13.1.0-nolibc-powerpc64-linux.tar.xz
-    $ export PATH=$PWD/gcc-13.1.0-nolibc/powerpc64-linux/bin/:$PATH
-
-    $ export CROSS_COMPILE_ppc64=powerpc64-linux-
-    $ export CROSS_COMPILE_ppc64le=powerpc64-linux-
-    $ for arch in ppc64 ppc64le; do \
-        make run-user ARCH=$arch | grep "status: "; \
-      done
-
-Or specify CC directly with full path:
-
-    $ export CC=$PWD/gcc-13.1.0-nolibc/powerpc64-linux/bin/powerpc64-linux-gcc
-    $ for arch in ppc64 ppc64le; do \
-        make run-user ARCH=$arch | grep "status: "; \
-      done
-
-[1]: https://github.com/open-power/skiboot
-[2]: https://mirrors.edge.kernel.org/pub/tools/crosstool/
-
-Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
----
- tools/testing/selftests/nolibc/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-index 822cc4bae619..f44a09c39235 100644
---- a/tools/testing/selftests/nolibc/Makefile
-+++ b/tools/testing/selftests/nolibc/Makefile
-@@ -59,6 +59,9 @@ IMAGE            = $(IMAGE_$(XARCH))
- IMAGE_NAME       = $(notdir $(IMAGE))
- 
- # CROSS_COMPILE: cross toolchain prefix by architecture
-+CROSS_COMPILE_ppc       ?= powerpc-linux-gnu-
-+CROSS_COMPILE_ppc64     ?= powerpc64le-linux-gnu-
-+CROSS_COMPILE_ppc64le   ?= powerpc64le-linux-gnu-
- CROSS_COMPILE           ?= $(CROSS_COMPILE_$(XARCH))
- 
- # make sure CC is prefixed with CROSS_COMPILE
--- 
-2.25.1
-
+Thanks
