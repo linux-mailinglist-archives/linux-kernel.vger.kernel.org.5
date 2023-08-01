@@ -2,98 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C8BD76BEA7
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3092176BE95
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbjHAUnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 16:43:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56056 "EHLO
+        id S229543AbjHAUk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 16:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232698AbjHAUnt (ORCPT
+        with ESMTP id S232592AbjHAUkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 16:43:49 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8566198A;
-        Tue,  1 Aug 2023 13:43:48 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4fe0e23a4b1so9687309e87.3;
-        Tue, 01 Aug 2023 13:43:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690922627; x=1691527427;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KNd5c57AON0zLDGVNskCRqDS5DSWPtgyT6et2Ew3gqI=;
-        b=fCOyxqEvbG/08yslzsnSvRyomiGz1K9WbSGh0gzRJsERe7sB7OcKGZQpkV5Izqkqrp
-         TQMhzOTAm5K/S1xbiBTBZsehyc5V0Tz7aNWGdTpRDGo+WJBqrHkYFng5WumI8S/wE5qZ
-         MEaxFMO26WeKXcWAvuEX73EIes7lZER8w45gkp1lTmGStzoUVAxfSkr8UwRONSa1EXf7
-         NqC7O0lIarjR7fiiMPUMSAlzo/QpZ6AoKvCh9JHcgMY/H2smXZh72X5DxmNmYCDmOPno
-         9XDRjPkcVqQGHBpmJQusct6D6xQjvQqkSxd18tiovW/JG9mEe3XfR9gxWYiQI7klW7Ia
-         7iHA==
+        Tue, 1 Aug 2023 16:40:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699FA198A
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:39:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690922383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EHYSwcovOuMESUTA5bYv/hl0ljd1OC0AxmWQtxJBqmI=;
+        b=K/nSGvQsNjiJ3vuyhstxTWBIiiIWY1c8j7FALFrb6/jY3Jwt0cajWmAnWQXUVcrKzYtuXA
+        7lQse9z8adcfIe89CM1KDAx5TnikkbK02uHPr4G5bj0W3RJDvOQIYc2FkGgRqS9udfb5hf
+        EsBVhIcHcLVAk3yF0r9/SXMpWe/Md2o=
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
+ [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-464-5sySfxKfPkCpLryIWOitdA-1; Tue, 01 Aug 2023 16:39:41 -0400
+X-MC-Unique: 5sySfxKfPkCpLryIWOitdA-1
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3492ef8860cso12458645ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 13:39:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690922627; x=1691527427;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KNd5c57AON0zLDGVNskCRqDS5DSWPtgyT6et2Ew3gqI=;
-        b=NDrQ9WA/tKiSyjS7gS1bETsrXrGYJkuxeG4dOScvNZsml/v/sgfzxt1CDZtuhc9gHW
-         ZQwQXpj6EoLjTt18nM7Uji7KyXk8/TiUuQ78aOUGowLxau/OzaQS3GaP77FT01uM2xYM
-         RcjX1278dhpo5XG93fwrW7NkinSWnhnCCs27wm8UmFPTre5freSN6p5/hgmCZGW4HiZR
-         +3BGkt4rD6Xuo8b3Enejd8WTDPdVV/UGs+H02n6uiKlxOAPXj3KlzXMaeGNST5vKEdEH
-         7ls3ya66fsgDdXxVV7Kv95rfDNM3Zs9RHFWpGUYnsOQu6mKgWIS7zdKhVGCv4dD0Glbz
-         hK7Q==
-X-Gm-Message-State: ABy/qLYshVfDSZrw3ycYUQg2Pl9Btto1e5Mbd0iC+jgtEu/XzFgwPeeW
-        Qttw2ELKWAEl2KIb81IR8QKP0QiPbmyk8g==
-X-Google-Smtp-Source: APBJJlHustI3PQFW3+M7Yt2l37ptbAyu9DAzasRdrkrueAzbaQHVMajGhiEJTTc4UzA3BOj8q4Y/uQ==
-X-Received: by 2002:ac2:4e06:0:b0:4fe:993:2218 with SMTP id e6-20020ac24e06000000b004fe09932218mr3587417lfr.31.1690922626431;
-        Tue, 01 Aug 2023 13:43:46 -0700 (PDT)
-Received: from localhost.localdomain ([78.97.234.98])
-        by smtp.gmail.com with ESMTPSA id x4-20020aa7d6c4000000b0051e2cde9e3esm7384740edr.75.2023.08.01.13.43.45
+        d=1e100.net; s=20221208; t=1690922380; x=1691527180;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EHYSwcovOuMESUTA5bYv/hl0ljd1OC0AxmWQtxJBqmI=;
+        b=Y1Fq5S9c2+K3/P5X9xffVoRqzccLsuQY8PzWZjh8V3+VI3uzqSPn1QH6FXJMumQ8hQ
+         doCQro4BRbrcTVFiffmAV1+zy9Iz+ECkgSLL/OvpRF6BDq/IMTfRdMNSsnGMIU3dI1K7
+         XoktBG1E59k5PRvvcomij/HChcK7mQCyQWz9sDArBx0kNBrFvkVHCvI5lbMUZ5BCbmMn
+         qiPgS63kwpFQQrxnB+BjfMXuwUo+bSSfi1mLz0XMaAs1Wgw6U0XxsJ8VhWMfucqsswbz
+         uRTqU3pWZkOUh9Jnw44hW3dTKJrpAnQoY7k1Br73WLDS0vc2wH4EkBK1IlP7ODcZQDGL
+         1Whw==
+X-Gm-Message-State: ABy/qLbH1cDg/HnoN6JnPVl+2df48aWIOyazZOz90IGHhrBh8j2Zoxu4
+        kyB7K6cVqnVDqrPQscmkmYsIgh1/6l5y8UNjFTtt1zb++5I5b65jcD78uUHsHvh6xQqQCfxVAUF
+        1tWoVpeVchjNGmpNhFxYg9rCYR4h44yF4
+X-Received: by 2002:a05:6e02:20ee:b0:349:191:af05 with SMTP id q14-20020a056e0220ee00b003490191af05mr15049949ilv.16.1690922380421;
+        Tue, 01 Aug 2023 13:39:40 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGOUJASa/jIwgyvXrMdyby51VeIncwaGCEDOw9ZUoeasaw0H4nD5GdMoGeqi4XG3CIBY8DLXA==
+X-Received: by 2002:a05:6e02:20ee:b0:349:191:af05 with SMTP id q14-20020a056e0220ee00b003490191af05mr15049938ilv.16.1690922380121;
+        Tue, 01 Aug 2023 13:39:40 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id o7-20020a02cc27000000b0042b1cd4c096sm3887565jap.74.2023.08.01.13.39.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 13:43:46 -0700 (PDT)
-From:   Andrei Coardos <aboutphysycs@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Cc:     andy@kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
-        Andrei Coardos <aboutphysycs@gmail.com>,
-        Alexandru Ardelean <alex@shruggie.ro>
-Subject: [PATCH] gpio: tqmx86: remove unneeded call to platform_set_drvdata()
-Date:   Tue,  1 Aug 2023 23:38:39 +0300
-Message-Id: <20230801203839.9502-1-aboutphysycs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 01 Aug 2023 13:39:39 -0700 (PDT)
+Date:   Tue, 1 Aug 2023 14:39:38 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: irqbypass: Convert producers/consumers single
+ linked list to XArray
+Message-ID: <20230801143938.3d27a199.alex.williamson@redhat.com>
+In-Reply-To: <20230801115646.33990-1-likexu@tencent.com>
+References: <20230801115646.33990-1-likexu@tencent.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function call was found to be unnecessary as there is no equivalent
-platform_get_drvdata() call to access the private data of the driver. Also,
-the private data is defined in this driver, so there is no risk of it being
-accessed outside of this driver file.
+On Tue,  1 Aug 2023 19:56:46 +0800
+Like Xu <like.xu.linux@gmail.com> wrote:
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
----
- drivers/gpio/gpio-tqmx86.c | 2 --
- 1 file changed, 2 deletions(-)
+> From: Like Xu <likexu@tencent.com>
+> 
+> Replace producers/consumers linked list with XArray. There are no changes
+> in functionality, but lookup performance has been improved.
+> 
+> The producers and consumers in current IRQ bypass manager are stored in
+> simple linked lists, and a single mutex is held while traversing the lists
+> and connecting a consumer to a producer (and vice versa). With this design
+> and implementation, if there are a large number of KVM agents concurrently
+> creating irqfds and all requesting to register their irqfds in the global
+> consumers list, the global mutex contention will exponentially increase
+> the avg wait latency, which is no longer tolerable in modern systems with
+> a large number of CPU cores. For example:
+> 
+> the wait time latency to acquire the mutex in a stress test where 174000
+> irqfds were created concurrently on an 2.70GHz ICX w/ 144 cores:
+> 
+> - avg = 117.855314 ms
+> - min = 20 ns
+> - max = 11428.340858 ms
+> 
+> To reduce latency introduced by the irq_bypass_register_consumer() in
+> the above usage scenario, the data structure XArray and its normal API
+> is applied to track the producers and consumers so that lookups don't
+> require a linear walk since the "tokens" used to match producers and
+> consumers are just kernel pointers.
+> 
+> Thanks to the nature of XArray (more memory-efficient, parallelisable
+> and cache friendly), the latecny is significantly reduced (compared to
+> list and hlist proposal) under the same environment and testing:
+> 
+> - avg = 314 ns
+> - min = 124 ns
+> - max = 47637 ns
+> 
+> In this conversion, the non-NULL opaque token to match between producer
+> and consumer () is used as the XArray index. The list_for_each_entry() is
+> replaced by xa_load(), and list_add/del() is replaced by xa_store/erase().
+> The list_head member for linked list is removed, along with comments.
+> 
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Reported-by: Yong He <alexyonghe@tencent.com>
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217379
+> Suggested-by: Sean Christopherson <seanjc@google.com>
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Like Xu <likexu@tencent.com>
+> ---
+> Prerequisite:
+> - https://lore.kernel.org/kvm/20230801085408.69597-1-likexu@tencent.com
 
-diff --git a/drivers/gpio/gpio-tqmx86.c b/drivers/gpio/gpio-tqmx86.c
-index 6f8bd1155db7..3a28c1f273c3 100644
---- a/drivers/gpio/gpio-tqmx86.c
-+++ b/drivers/gpio/gpio-tqmx86.c
-@@ -277,8 +277,6 @@ static int tqmx86_gpio_probe(struct platform_device *pdev)
- 
- 	tqmx86_gpio_write(gpio, (u8)~TQMX86_DIR_INPUT_MASK, TQMX86_GPIODD);
- 
--	platform_set_drvdata(pdev, gpio);
--
- 	chip = &gpio->chip;
- 	chip->label = "gpio-tqmx86";
- 	chip->owner = THIS_MODULE;
--- 
-2.34.1
+Perhaps send it as a series?
+
+> Test Requests:
+> - Please rant to me if it causes a negative impact on vdpa/vfio testing.
+>  include/linux/irqbypass.h |   8 +--
+>  virt/lib/irqbypass.c      | 123 +++++++++++++++++++-------------------
+>  2 files changed, 61 insertions(+), 70 deletions(-)
+> 
+> diff --git a/include/linux/irqbypass.h b/include/linux/irqbypass.h
+> index 9bdb2a781841..dbcc1b4d0ccf 100644
+> --- a/include/linux/irqbypass.h
+> +++ b/include/linux/irqbypass.h
+> @@ -8,14 +8,12 @@
+>  #ifndef IRQBYPASS_H
+>  #define IRQBYPASS_H
+>  
+> -#include <linux/list.h>
+> -
+>  struct irq_bypass_consumer;
+>  
+>  /*
+>   * Theory of operation
+>   *
+> - * The IRQ bypass manager is a simple set of lists and callbacks that allows
+> + * The IRQ bypass manager is a simple set of xarrays and callbacks that allows
+>   * IRQ producers (ex. physical interrupt sources) to be matched to IRQ
+>   * consumers (ex. virtualization hardware that allows IRQ bypass or offload)
+>   * via a shared token (ex. eventfd_ctx).  Producers and consumers register
+> @@ -30,7 +28,6 @@ struct irq_bypass_consumer;
+>  
+>  /**
+>   * struct irq_bypass_producer - IRQ bypass producer definition
+> - * @node: IRQ bypass manager private list management
+>   * @token: opaque token to match between producer and consumer (non-NULL)
+>   * @irq: Linux IRQ number for the producer device
+>   * @add_consumer: Connect the IRQ producer to an IRQ consumer (optional)
+> @@ -43,7 +40,6 @@ struct irq_bypass_consumer;
+>   * for a physical device assigned to a VM.
+>   */
+>  struct irq_bypass_producer {
+> -	struct list_head node;
+>  	void *token;
+>  	int irq;
+>  	int (*add_consumer)(struct irq_bypass_producer *,
+> @@ -56,7 +52,6 @@ struct irq_bypass_producer {
+>  
+>  /**
+>   * struct irq_bypass_consumer - IRQ bypass consumer definition
+> - * @node: IRQ bypass manager private list management
+>   * @token: opaque token to match between producer and consumer (non-NULL)
+>   * @add_producer: Connect the IRQ consumer to an IRQ producer
+>   * @del_producer: Disconnect the IRQ consumer from an IRQ producer
+> @@ -69,7 +64,6 @@ struct irq_bypass_producer {
+>   * portions of the interrupt handling to the VM.
+>   */
+>  struct irq_bypass_consumer {
+> -	struct list_head node;
+>  	void *token;
+>  	int (*add_producer)(struct irq_bypass_consumer *,
+>  			    struct irq_bypass_producer *);
+> diff --git a/virt/lib/irqbypass.c b/virt/lib/irqbypass.c
+> index e0aabbbf27ec..78238c0fa83f 100644
+> --- a/virt/lib/irqbypass.c
+> +++ b/virt/lib/irqbypass.c
+> @@ -15,15 +15,15 @@
+>   */
+>  
+>  #include <linux/irqbypass.h>
+> -#include <linux/list.h>
+>  #include <linux/module.h>
+>  #include <linux/mutex.h>
+> +#include <linux/xarray.h>
+>  
+>  MODULE_LICENSE("GPL v2");
+>  MODULE_DESCRIPTION("IRQ bypass manager utility module");
+>  
+> -static LIST_HEAD(producers);
+> -static LIST_HEAD(consumers);
+> +static DEFINE_XARRAY(producers);
+> +static DEFINE_XARRAY(consumers);
+>  static DEFINE_MUTEX(lock);
+>  
+>  /* @lock must be held when calling connect */
+> @@ -78,11 +78,12 @@ static void __disconnect(struct irq_bypass_producer *prod,
+>   * irq_bypass_register_producer - register IRQ bypass producer
+>   * @producer: pointer to producer structure
+>   *
+> - * Add the provided IRQ producer to the list of producers and connect
+> - * with any matching token found on the IRQ consumers list.
+> + * Add the provided IRQ producer to the xarray of producers and connect
+> + * with any matching token found on the IRQ consumers xarray.
+>   */
+>  int irq_bypass_register_producer(struct irq_bypass_producer *producer)
+>  {
+> +	unsigned long token = (unsigned long)producer->token;
+>  	struct irq_bypass_producer *tmp;
+>  	struct irq_bypass_consumer *consumer;
+>  	int ret;
+> @@ -97,23 +98,22 @@ int irq_bypass_register_producer(struct irq_bypass_producer *producer)
+>  
+>  	mutex_lock(&lock);
+>  
+> -	list_for_each_entry(tmp, &producers, node) {
+> -		if (tmp->token == producer->token || tmp == producer) {
+> -			ret = -EBUSY;
+> +	tmp = xa_load(&producers, token);
+> +	if (tmp || tmp == producer) {
+> +		ret = -EBUSY;
+> +		goto out_err;
+> +	}
+> +
+> +	consumer = xa_load(&consumers, token);
+> +	if (consumer) {
+> +		ret = __connect(producer, consumer);
+> +		if (ret)
+>  			goto out_err;
+> -		}
+>  	}
+>  
+> -	list_for_each_entry(consumer, &consumers, node) {
+> -		if (consumer->token == producer->token) {
+> -			ret = __connect(producer, consumer);
+> -			if (ret)
+> -				goto out_err;
+> -			break;
+> -		}
+> -	}
+> -
+> -	list_add(&producer->node, &producers);
+> +	ret = xa_err(xa_store(&producers, token, producer, GFP_KERNEL));
+> +	if (ret)
+> +		goto out_err;
+
+
+This leaves the producer and consumer connected but not tracked in the
+producers xarray.
+
+>  
+>  	mutex_unlock(&lock);
+>  
+> @@ -129,11 +129,12 @@ EXPORT_SYMBOL_GPL(irq_bypass_register_producer);
+>   * irq_bypass_unregister_producer - unregister IRQ bypass producer
+>   * @producer: pointer to producer structure
+>   *
+> - * Remove a previously registered IRQ producer from the list of producers
+> + * Remove a previously registered IRQ producer from the xarray of producers
+>   * and disconnect it from any connected IRQ consumer.
+>   */
+>  void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
+>  {
+> +	unsigned long token = (unsigned long)producer->token;
+>  	struct irq_bypass_producer *tmp;
+>  	struct irq_bypass_consumer *consumer;
+>  
+> @@ -143,24 +144,18 @@ void irq_bypass_unregister_producer(struct irq_bypass_producer *producer)
+>  	might_sleep();
+>  
+>  	if (!try_module_get(THIS_MODULE))
+> -		return; /* nothing in the list anyway */
+> +		return; /* nothing in the xarray anyway */
+>  
+>  	mutex_lock(&lock);
+>  
+> -	list_for_each_entry(tmp, &producers, node) {
+> -		if (tmp != producer)
+> -			continue;
+> +	tmp = xa_load(&producers, token);
+> +	if (tmp == producer) {
+> +		consumer = xa_load(&consumers, token);
+> +		if (consumer)
+> +			__disconnect(producer, consumer);
+>  
+> -		list_for_each_entry(consumer, &consumers, node) {
+> -			if (consumer->token == producer->token) {
+> -				__disconnect(producer, consumer);
+> -				break;
+> -			}
+> -		}
+> -
+> -		list_del(&producer->node);
+> +		xa_erase(&producers, token);
+>  		module_put(THIS_MODULE);
+> -		break;
+>  	}
+>  
+>  	mutex_unlock(&lock);
+> @@ -173,11 +168,12 @@ EXPORT_SYMBOL_GPL(irq_bypass_unregister_producer);
+>   * irq_bypass_register_consumer - register IRQ bypass consumer
+>   * @consumer: pointer to consumer structure
+>   *
+> - * Add the provided IRQ consumer to the list of consumers and connect
+> - * with any matching token found on the IRQ producer list.
+> + * Add the provided IRQ consumer to the xarray of consumers and connect
+> + * with any matching token found on the IRQ producer xarray.
+>   */
+>  int irq_bypass_register_consumer(struct irq_bypass_consumer *consumer)
+>  {
+> +	unsigned long token = (unsigned long)consumer->token;
+>  	struct irq_bypass_consumer *tmp;
+>  	struct irq_bypass_producer *producer;
+>  	int ret;
+> @@ -193,23 +189,22 @@ int irq_bypass_register_consumer(struct irq_bypass_consumer *consumer)
+>  
+>  	mutex_lock(&lock);
+>  
+> -	list_for_each_entry(tmp, &consumers, node) {
+> -		if (tmp->token == consumer->token || tmp == consumer) {
+> -			ret = -EBUSY;
+> +	tmp = xa_load(&consumers, token);
+> +	if (tmp || tmp == consumer) {
+> +		ret = -EBUSY;
+> +		goto out_err;
+> +	}
+> +
+> +	producer = xa_load(&producers, token);
+> +	if (producer) {
+> +		ret = __connect(producer, consumer);
+> +		if (ret)
+>  			goto out_err;
+> -		}
+>  	}
+>  
+> -	list_for_each_entry(producer, &producers, node) {
+> -		if (producer->token == consumer->token) {
+> -			ret = __connect(producer, consumer);
+> -			if (ret)
+> -				goto out_err;
+> -			break;
+> -		}
+> -	}
+> -
+> -	list_add(&consumer->node, &consumers);
+> +	ret = xa_err(xa_store(&consumers, token, consumer, GFP_KERNEL));
+> +	if (ret)
+> +		goto out_err;
+
+Same as above.  Thanks,
+
+Alex
+
+>  
+>  	mutex_unlock(&lock);
+>  
+> @@ -225,11 +220,12 @@ EXPORT_SYMBOL_GPL(irq_bypass_register_consumer);
+>   * irq_bypass_unregister_consumer - unregister IRQ bypass consumer
+>   * @consumer: pointer to consumer structure
+>   *
+> - * Remove a previously registered IRQ consumer from the list of consumers
+> + * Remove a previously registered IRQ consumer from the xarray of consumers
+>   * and disconnect it from any connected IRQ producer.
+>   */
+>  void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+>  {
+> +	unsigned long token = (unsigned long)consumer->token;
+>  	struct irq_bypass_consumer *tmp;
+>  	struct irq_bypass_producer *producer;
+>  
+> @@ -239,24 +235,18 @@ void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+>  	might_sleep();
+>  
+>  	if (!try_module_get(THIS_MODULE))
+> -		return; /* nothing in the list anyway */
+> +		return; /* nothing in the xarray anyway */
+>  
+>  	mutex_lock(&lock);
+>  
+> -	list_for_each_entry(tmp, &consumers, node) {
+> -		if (tmp != consumer)
+> -			continue;
+> +	tmp = xa_load(&consumers, token);
+> +	if (tmp == consumer) {
+> +		producer = xa_load(&producers, token);
+> +		if (producer)
+> +			__disconnect(producer, consumer);
+>  
+> -		list_for_each_entry(producer, &producers, node) {
+> -			if (producer->token == consumer->token) {
+> -				__disconnect(producer, consumer);
+> -				break;
+> -			}
+> -		}
+> -
+> -		list_del(&consumer->node);
+> +		xa_erase(&consumers, token);
+>  		module_put(THIS_MODULE);
+> -		break;
+>  	}
+>  
+>  	mutex_unlock(&lock);
+> @@ -264,3 +254,10 @@ void irq_bypass_unregister_consumer(struct irq_bypass_consumer *consumer)
+>  	module_put(THIS_MODULE);
+>  }
+>  EXPORT_SYMBOL_GPL(irq_bypass_unregister_consumer);
+> +
+> +static void __exit irqbypass_exit(void)
+> +{
+> +	xa_destroy(&producers);
+> +	xa_destroy(&consumers);
+> +}
+> +module_exit(irqbypass_exit);
+> 
+> base-commit: b580148824057ef8e3cc3a459082ebcb99716880
 
