@@ -2,137 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7FC76B54F
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C4476B54A
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 14:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbjHAM6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 08:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53872 "EHLO
+        id S232504AbjHAM6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 08:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232665AbjHAM6w (ORCPT
+        with ESMTP id S234014AbjHAM6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 08:58:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E3E1B0
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:58:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690894686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Tue, 1 Aug 2023 08:58:14 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB47C1738
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 05:58:12 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AA5F521D7D;
+        Tue,  1 Aug 2023 12:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690894691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ltNwPmf0DBc3jaGW3ILIUgoOOUs5zHEnfulHMvP47V8=;
-        b=Z/sLzLeAKDoWAcHNER2d7aYMY37cjRqNLmwBxLO0fyY8bwZ/cM5mo/NG0N5r4Tvvk0XKKP
-        I53lcbDinJINm65dpGkznYzKAVjfF997yuobKC0Zh+Grk0nh8rQ/ZPPbj8Q3uxtlLdaYox
-        rMN73i9S5LxqLKKVSXbe8O6dvxaTD+Q=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-475-MfikIwM9Nwu5_D9jueGnEA-1; Tue, 01 Aug 2023 08:58:05 -0400
-X-MC-Unique: MfikIwM9Nwu5_D9jueGnEA-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31758708b57so3555350f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 05:58:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690894682; x=1691499482;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ltNwPmf0DBc3jaGW3ILIUgoOOUs5zHEnfulHMvP47V8=;
-        b=CqVwzhxnoDMlYOnL3db0fhzWgIA5Fac2uPnudys8xK7okhB/g2KA4CNqG9qb2V0wPb
-         63HP9QZaSTgVoEQGDtengD/oJxXq3/I/TrgDiyRiDdJw0y2sKYVnfdTFq2vurenvRnf8
-         giZ4nphQTwl1SmxSL8Ztpubol3+0G29ojH9ZCpI27lYzKdfXVoUomfO1luykwYjERBs3
-         VKl/MlJKitwLY6wPbvNKaVjrC77U9GuWsXWmM/LwgraqVna01UviCVWKjWQeFyrQaNNG
-         JKopTrli3B30ysv5cYRPfJz1FYHNivhRXaQPoIX1hcrG4CSn1vFZ+nC4JWyE3cjK0Wnt
-         8LVA==
-X-Gm-Message-State: ABy/qLZyfOl+p5CMSlAREw6PWLOSfpnp7dkZtlM50+djgC+k9M7mlEs5
-        AAjTY6akaGRs8R/Gj5hSGQZnxTQVXFPglLe/cun2HaH0Bcc2UNSXScl92zllzGHSoQzRGx/zyxp
-        CKEAASO0Aj3DYmtiFWumo2diD
-X-Received: by 2002:adf:f40d:0:b0:317:65de:4389 with SMTP id g13-20020adff40d000000b0031765de4389mr1924143wro.61.1690894682305;
-        Tue, 01 Aug 2023 05:58:02 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlHoo11zj1dYrqOlvbGISYlbwfB8BTe7jczhVvLvrEe3m6UwQTYtrvjkuRmcyyJhcOovqeOm5A==
-X-Received: by 2002:adf:f40d:0:b0:317:65de:4389 with SMTP id g13-20020adff40d000000b0031765de4389mr1924128wro.61.1690894681912;
-        Tue, 01 Aug 2023 05:58:01 -0700 (PDT)
-Received: from redhat.com ([2.52.21.81])
-        by smtp.gmail.com with ESMTPSA id h18-20020adff192000000b003113ed02080sm15883453wro.95.2023.08.01.05.57.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 05:58:01 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 08:57:57 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Igor Mammedov <imammedo@redhat.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-kernel@vger.kernel.org,
-        terraluna977@gmail.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, rafael@kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH 1/1] PCI: acpiphp:: use
- pci_assign_unassigned_bridge_resources() only if bus->self not NULL
-Message-ID: <20230801085131-mutt-send-email-mst@kernel.org>
-References: <20230731144418.1d9c2baf@imammedo.users.ipa.redhat.com>
- <20230731214251.GA25106@bhelgaas>
- <20230731175316-mutt-send-email-mst@kernel.org>
- <20230801115751.1e3b5578@imammedo.users.ipa.redhat.com>
+        bh=bn8oqwHusOPKKT1/bnr8fvY00pXKsVutuyDNzj9Imi0=;
+        b=Gv3aMM5VFPmxjAKdVDT66D1wgBhPyqAzkbWkXPAn+zkJ9TCZUblc2xWjiG5lWC5f+MdMy9
+        MgM2A8J4UASDeT8U9n7+xcL3ic3zfGTEX8JqOZbFCgXeYDg4qIwrIAa0f3DPs1LKqjfL3S
+        PLBup9oVeUGdyRBI5rzaoWyaK6QqkSM=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E207139BD;
+        Tue,  1 Aug 2023 12:58:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id FLOLJmMByWQUNgAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 01 Aug 2023 12:58:11 +0000
+Date:   Tue, 1 Aug 2023 14:58:11 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        kernel test robot <lkp@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Pingfan Liu <kernelfans@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog/hardlockup: Avoid large stack frames in
+ watchdog_hardlockup_check()
+Message-ID: <ZMkBY7K3Dn04YQ65@dhcp22.suse.cz>
+References: <20230731091754.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230801115751.1e3b5578@imammedo.users.ipa.redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230731091754.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 11:57:51AM +0200, Igor Mammedov wrote:
-> On Mon, 31 Jul 2023 17:54:21 -0400
-> "Michael S. Tsirkin" <mst@redhat.com> wrote:
+On Mon 31-07-23 09:17:59, Douglas Anderson wrote:
+> After commit 77c12fc95980 ("watchdog/hardlockup: add a "cpu" param to
+> watchdog_hardlockup_check()") we started storing a `struct cpumask` on
+> the stack in watchdog_hardlockup_check(). On systems with
+> CONFIG_NR_CPUS set to 8192 this takes up 1K on the stack. That
+> triggers warnings with `CONFIG_FRAME_WARN` set to 1024.
 > 
-> > On Mon, Jul 31, 2023 at 04:42:51PM -0500, Bjorn Helgaas wrote:
-> > > I would expect hot-add to be handled via a Bus Check to the *parent*
-> > > of a new device, so the device tree would only need to describe
-> > > hardware that's present at boot.  That would mean pci_root.c would
-> > > have some .notify() handler, but I don't see anything there.  
-> > 
-> > That has a big performance cost though - OSPM has no way to figure out
-> > on which slot the new device is, so has to rescan the whole bus.
-> > 
+> Instead of putting this `struct cpumask` on the stack, let's declare
+> it as `static`. This has the downside of taking up 1K of memory all
+> the time on systems with `CONFIG_NR_CPUS` to 8192, but on systems with
+> smaller `CONFIG_NR_CPUS` it's not much emory (with 128 CPUs it's only
+> 16 bytes of memory). Presumably anyone building a system with
+> `CONFIG_NR_CPUS=8192` can afford the extra 1K of memory.
 > 
-> Spec says following about OSPM receiving DeviceCheck
-> ACPI6.5r 5.6.6 Device Object Notifications) "
-> If the device has appeared, OSPM will re-enumerate from the parent.
-> If the device has disappeared, OSPM will invalidate the state of the device.
-> OSPM may optimize out re-enumeration.
-> ...
-> If the device is a bridge, OSPM _may_ re-enumerate the bridge and the child bus.
-> "
-> The later statement is was added somewhere after 1.0b spec.
+> NOTE: as part of this change, we no longer check the return value of
+> trigger_single_cpu_backtrace(). While we could do this and only call
+> cpumask_clear_cpu() if trigger_single_cpu_backtrace() didn't fail,
+> that's probably not worth it. There's no reason to believe that
+> trigger_cpumask_backtrace() will succeed at backtracing the CPU when
+> trigger_single_cpu_backtrace() failed.
 > 
-> According to debug logs when I was testing that hotplug still works
-> I saw 're-enumerate from the parent', behavior.
-> So there is space
-> to optimize if there would be demand for that.
-
-Yes I was talking about unplug.
-
-> And 6.5 spec
-> has 'Device Light Check', though using that would require some
-> ugly juggling with checking supported revisions & co which were
-> never reliable in practice.
-> I don't know what Windows does in that case.
+> Alternatives considered:
+> - Use kmalloc with GFP_ATOMIC to allocate. I decided against this
+>   since relying on kmalloc when the system is hard locked up seems
+>   like a bad idea.
+> - Change the arch_trigger_cpumask_backtrace() across all architectures
+>   to take an extra parameter to get the needed behavior. This seems
+>   like a lot of churn for a small savings.
 > 
-> However if one has deep hierarchy, a BusCheck shall cause
-> expensive deep scan. While for DeviceCheck it's optional 'may',
-> and even that may is vague enough that one can read it as
-> if it's 'a new bridge' then scan behind it while one can ignore
-> existing bridge if it isn't DeviceCheck target.
+> Fixes: 77c12fc95980 ("watchdog/hardlockup: add a "cpu" param to watchdog_hardlockup_check()")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/r/202307310955.pLZDhpnl-lkp@intel.com
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+>  kernel/watchdog.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+> index be38276a365f..19db2357969a 100644
+> --- a/kernel/watchdog.c
+> +++ b/kernel/watchdog.c
+> @@ -151,9 +151,6 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+>  	 */
+>  	if (is_hardlockup(cpu)) {
+>  		unsigned int this_cpu = smp_processor_id();
+> -		struct cpumask backtrace_mask;
+> -
+> -		cpumask_copy(&backtrace_mask, cpu_online_mask);
+>  
+>  		/* Only print hardlockups once. */
+>  		if (per_cpu(watchdog_hardlockup_warned, cpu))
+> @@ -167,10 +164,8 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+>  				show_regs(regs);
+>  			else
+>  				dump_stack();
+> -			cpumask_clear_cpu(cpu, &backtrace_mask);
+>  		} else {
+> -			if (trigger_single_cpu_backtrace(cpu))
+> -				cpumask_clear_cpu(cpu, &backtrace_mask);
+> +			trigger_single_cpu_backtrace(cpu);
+>  		}
+>  
+>  		/*
+> @@ -178,8 +173,13 @@ void watchdog_hardlockup_check(unsigned int cpu, struct pt_regs *regs)
+>  		 * hardlockups generating interleaving traces
+>  		 */
+>  		if (sysctl_hardlockup_all_cpu_backtrace &&
+> -		    !test_and_set_bit(0, &watchdog_hardlockup_all_cpu_dumped))
+> +		    !test_and_set_bit(0, &watchdog_hardlockup_all_cpu_dumped)) {
+> +			static struct cpumask backtrace_mask;
+> +
+> +			cpumask_copy(&backtrace_mask, cpu_online_mask);
+> +			cpumask_clear_cpu(cpu, &backtrace_mask);
+>  			trigger_cpumask_backtrace(&backtrace_mask);
 
-And it's very clear that it's more efficient for removal.
+This looks rather wasteful to just copy the cpumask over to
+backtrace_mask in nmi_trigger_cpumask_backtrace (which all but sparc
+arches do AFAICS).
 
-> Regardless of that we can't just switch to BusCheck exclusively
-> without harming existing setups which can legitimately use both
-> methods.
+Would it be possible to use arch_trigger_cpumask_backtrace(cpu_online_mask, false)
+and special case cpu != this_cpu && sysctl_hardlockup_all_cpu_backtrace?
+
+> +		}
+>  
+>  		if (hardlockup_panic)
+>  			nmi_panic(regs, "Hard LOCKUP");
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
+> 
 
 -- 
-MST
-
+Michal Hocko
+SUSE Labs
