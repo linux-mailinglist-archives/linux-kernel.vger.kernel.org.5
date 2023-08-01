@@ -2,97 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3580A76B1C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:28:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0544D76B1CC
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 12:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbjHAK2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 06:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
+        id S232415AbjHAKal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 06:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231769AbjHAK2w (ORCPT
+        with ESMTP id S230294AbjHAKaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 06:28:52 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85823DF
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 03:28:50 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-5222a38c0a0so8097735a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 03:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690885729; x=1691490529;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=U3Ho+ZTYvFIHB9vt5ml0CuS5M4OvaLd2nOICNHPF+LE=;
-        b=AdbH+iyo3/ENto3SAGhYYdsLNkTJnrggHTQlC5FLAcw8q4SFljrDfQQa8xnUpde/Y3
-         2MTOdK65uduO8xMMa1yqFQx0ZGUtg8vPIM2Ey/ctMR1neOldx9ON4QQDzyHW9sMa7cPr
-         TzYVvBY2qZBRhF7GWxdQLrRkPJjAIuvR0nQaPDpNKW31T/20F/WZwoW4MjDnJkvNnPEr
-         RuVbnPzVDsFOXmxMXJU0DUQBA+03X18aWskTdw1/xyt5y74tMMych92a2qMhzdObLmZw
-         9z61NnOj0u2dKVrGZUJp5vLGJ36nVSIOhjQ+bvbcV36rkduyZvARJHMHcbOosAiN8WK4
-         2/mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690885729; x=1691490529;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U3Ho+ZTYvFIHB9vt5ml0CuS5M4OvaLd2nOICNHPF+LE=;
-        b=HwpZL5JOaFrrqhi/aaR88q/3p+XTmUljsSHFxCK/wtb9BzVokewBhK9xcU5p7L7eZ9
-         7gR5emxY9bPBgZ0p2zDRhbRw4wDn+bAc/rc+9Ssn+oaEhstkB2quU3/e4zzArA2vHsdv
-         q+T70hXQTN3O/Ic7xXKDqkVZFLALMfOB7+IOOxYosSdXiDTRVpYwaRiaWAqQygL6qkGW
-         ZIuZYx+8A0gT4o7E5VMcxK/l3Z/CqZI+T8s6ph4d/U+K2uAHx99msyTpNJpqImD9Y4b6
-         kG5gzzbs/rAEew4WIk2oezIbjr9S1L0Icz1hGT8MxLVjw6+OVhv6Q5BW+c3Dzu8R48NM
-         61bg==
-X-Gm-Message-State: ABy/qLZq1p2ZSfGx5lH+mcnY9QA+FPIguFIsy/P5W2A8ICEUTRGjnSPF
-        tv1vmXoOvtpK71rU11hls66uiQ==
-X-Google-Smtp-Source: APBJJlFn7BpsioeD1x657x2SSLgwnC4u8qjBSo6pmGhWoBdWzdxUgN5MpgtWQK8NmE9jUBXFhoPdQw==
-X-Received: by 2002:aa7:c14b:0:b0:522:27ea:58b with SMTP id r11-20020aa7c14b000000b0052227ea058bmr2067249edp.39.1690885728928;
-        Tue, 01 Aug 2023 03:28:48 -0700 (PDT)
-Received: from localhost (h3221.n1.ips.mtn.co.ug. [41.210.178.33])
-        by smtp.gmail.com with ESMTPSA id c16-20020aa7df10000000b00522bd24790asm3593876edy.58.2023.08.01.03.28.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 03:28:48 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 13:28:37 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Lin Ma <linma@zju.edu.cn>, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Alexander Duyck <alexander.h.duyck@intel.com>,
-        Daniel Machon <daniel.machon@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Peter P Waskiewicz Jr <peter.p.waskiewicz.jr@intel.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Simon Horman <horms@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: net: dcb: Communication challenges for patch reviews?
-Message-ID: <a03f4f45-08c7-4b7d-8f9a-328dbfbe721c@kadam.mountain>
-References: <20230731045216.3779420-1-linma@zju.edu.cn>
- <fbda76a9-e1f3-d483-ab3d-3c904c54a5db@web.de>
- <3d159780.f2fb6.189aebb4a18.Coremail.linma@zju.edu.cn>
- <d29e7d32-1684-4400-9907-f2f69092466d@kadam.mountain>
- <ed7020cb-cee5-16af-55f1-f1adac08f1b6@web.de>
+        Tue, 1 Aug 2023 06:30:39 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB35392;
+        Tue,  1 Aug 2023 03:30:37 -0700 (PDT)
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CFFBC1EC00D9;
+        Tue,  1 Aug 2023 12:30:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1690885835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ZYNCvFLvMTTU8HwtmFrgwvUT3pozsFpio1F/DyX1K4Q=;
+        b=TcaBAy2FqGCFnc7VcnwDyN5hs+JI6sNUu5edOiZR6AIMlbOTD+Yc6lde7rQS1rjp7FdBmc
+        ZDh8qJR+nktNWKoGhBkDC1yoSLwUlpKTMTMg7tcjrAufxgJB6Q9GA+tY9mpywmqaM6pc2x
+        ELTJ9e8Iy7SP+FU0cPc5AvsldQ5QI+k=
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id VFYORMvHGobl; Tue,  1 Aug 2023 10:30:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1690885832; bh=ZYNCvFLvMTTU8HwtmFrgwvUT3pozsFpio1F/DyX1K4Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lqg6DtCNlzgvD5D2M8FY0aQfvDqMog5dIQmezHrROoBvwVYa+363P4mg5mTK3k2lj
+         ZcFj0Es78CA0BytRh8PkcuEYq8Bh8JMljFLhm21EvCJRV3Tbjcy0xKbpwDP37UXpiM
+         PESlkktECcbCp+It8GHgbrf7oxmsV9yZzj3JdEW+4GVBAFdKkc17+j7qGHflWcBtNW
+         bFdUPQC8Zd8xaqcqFCpamQPhRE9hz8SVixfc9JyiGJoT2/i8TE4Q1uvYQyy7ZmEsUg
+         xPsaNhVwc94A62KID6rTUkQZ4dY9nqaKpMkVelCTDL0O9k39It1ogBdn7TxcmZkdFA
+         Zs5fjdLTdM58U7xi1+e0MbYuG3EFZS5QtZnvW1YYswNgkC4MsoTSXYnLENKYqEVGuI
+         cu0wWD6ep7yt1pxfZ3rQ5x6lDB/tPNn6na3OWAh1McBsFIRtXQHoHtz9iqkq+S6rB1
+         yDKD54+frpGE3gy4BYESOYdIH1mmrB2pZA4nkQVp67r3CyIwivahyJeO65l0uQhJPB
+         THe4es56gK+zJRrWXkwCUZp81hh7SUQKYciVHacfHw3D0l27bgyP0BK1FzURw3B4BN
+         Pt4qvnC8SqFXqROuWzWfC09+uQ+bNo9mBIkC17soB7pjxLsmiNb9h4Slzc+4F3Eqs0
+         SlcpUPAnvMgxuwpG9cyAJS4U=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EFE7540E0184;
+        Tue,  1 Aug 2023 10:30:12 +0000 (UTC)
+Date:   Tue, 1 Aug 2023 12:30:08 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Peter Jones <pjones@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH v7 11/22] x86/decompressor: Avoid the need for a stack in
+ the 32-bit trampoline
+Message-ID: <20230801103008.GCZMjesHuwb3IKCh2D@fat_crate.local>
+References: <20230728090916.1538550-1-ardb@kernel.org>
+ <20230728090916.1538550-12-ardb@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ed7020cb-cee5-16af-55f1-f1adac08f1b6@web.de>
+In-Reply-To: <20230728090916.1538550-12-ardb@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm not trying to be mean.  I don't go out looking for Markus's emails,
-but he often adds kernel-janitors to the CC list.  Kernel janitors is a
-vger list so he's banned but we still see the responses to his emails.
+On Fri, Jul 28, 2023 at 11:09:05AM +0200, Ard Biesheuvel wrote:
+> The 32-bit trampoline no longer uses the stack for anything except
+> performing a far return back to long mode. Currently, this stack is
+> placed in the same page that carries the trampoline code, which means
+> this page must be mapped writable and executable, and the stack is
+> therefore executable as well.
+> 
+> Replace the far return with a far jump, so that the return address can
+> be pre-calculated and patched into the code before it is called. This
+> removes the need for a stack entirely, and in a later patch, this will
+> be taken advantage of by removing writable permissions from (and adding
+> executable permissions to) this code page explicitly when booting via
+> the EFI stub.
+> 
+> Not touching the stack pointer also makes it more straight-forward to
+> call the trampoline code as an ordinary 64-bit function from C code.
+> 
+> Note that we need to preserve the value of RSP across the switch into
+	    ^^
 
-In recent months probably seven maintainers have asked him over and over
-(maybe 20 times?) to stop with this nonsense.  So he knew he shouldn't
-have asked Lin Ma to redo the patch.
+Passive voice pls.
 
-regards,
-dan carpenter
+> compatibility mode: the stack pointer may get truncated to 32 bits.
+> 
+> Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  arch/x86/boot/compressed/head_64.S    | 64 ++++++++++----------
+>  arch/x86/boot/compressed/pgtable.h    |  4 +-
+>  arch/x86/boot/compressed/pgtable_64.c | 12 +++-
+>  3 files changed, 44 insertions(+), 36 deletions(-)
+> 
+> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+> index 491d985be75fd5b0..1b0c61d1b389fd37 100644
+> --- a/arch/x86/boot/compressed/head_64.S
+> +++ b/arch/x86/boot/compressed/head_64.S
+> @@ -449,9 +449,6 @@ SYM_CODE_START(startup_64)
+>  	leaq	TRAMPOLINE_32BIT_CODE_OFFSET(%rax), %rax
+>  	call	*%rax
+>  
+> -	/* Restore the stack, the 32-bit trampoline uses its own stack */
+> -	leaq	rva(boot_stack_end)(%rbx), %rsp
+> -
+>  	/*
+>  	 * cleanup_trampoline() would restore trampoline memory.
+>  	 *
+> @@ -537,32 +534,37 @@ SYM_FUNC_END(.Lrelocated)
+>   * EDI contains the base address of the trampoline memory.
+>   * Non-zero ESI means trampoline needs to enable 5-level paging.
+>   */
+> +	.section ".rodata", "a", @progbits
+>  SYM_CODE_START(trampoline_32bit_src)
+> -	/* Grab return address */
+> -	movq	(%rsp), %rax
+> -
+> -	/* Set up 32-bit addressable stack */
+> -	leaq	TRAMPOLINE_32BIT_STACK_END(%rdi), %rsp
+> -
+> -	/* Preserve return address and other live 64-bit registers */
+> -	pushq	%rax
+> +	/* Preserve live 64-bit registers */
+>  	pushq	%r15
+>  	pushq	%rbp
+>  	pushq	%rbx
+>  
+> +	/* Preserve top half of RSP in a legacy mode GPR to avoid truncation */
+> +	movq	%rsp, %rbx
+> +	shrq	$32, %rbx
+> +
+>  	/* Switch to compatibility mode (CS.L = 0 CS.D = 1) via far return */
+>  	pushq	$__KERNEL32_CS
+>  	leaq	0f(%rip), %rax
+>  	pushq	%rax
+>  	lretq
+>  
+> +	/*
+> +	 * The 32-bit code below will do a far jump back to long mode and end
+> +	 * up here after reconfiguring the number of paging levels.
+> +	 */
+> +.Lret:	shlq	$32, %rbx		// Reconstruct stack pointer
+
+No side comments pls.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
