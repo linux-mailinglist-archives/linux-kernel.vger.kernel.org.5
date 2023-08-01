@@ -2,105 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E4876BE70
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8C876BE72
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 22:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230139AbjHAUVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 16:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
+        id S231277AbjHAU1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 16:27:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbjHAUVo (ORCPT
+        with ESMTP id S229724AbjHAU06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 16:21:44 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EB0213E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:21:43 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id ca18e2360f4ac-7748ca56133so55074339f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 13:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1690921303; x=1691526103;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vWGP9BeLTMzvWlvC1x6kX/MLAb6wyiLuscMm6B5HJhI=;
-        b=SB+yJXF9E325EtanROvy4JEKrcCexVyZRSlfTIQt4uPEyotPAqrMDbTf1CTXs7eFBX
-         0LH7nn4ogCoZqaTfQ/MmhG162Dij8g1dl/g6YD+AV2lMEWJwsZa2qFj8ZYKrZQqGiIHX
-         Or3QGfIj97rQSLIcHuHDDGMo/SkssMt0oF2Fc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690921303; x=1691526103;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vWGP9BeLTMzvWlvC1x6kX/MLAb6wyiLuscMm6B5HJhI=;
-        b=XHFoBY9Ri2Uc3XH20hq9qAxRfChMnySXWiNFlXUv3lp0v3KmXs/plj8EGVlecx0YpI
-         kC9OB7EbqN5Yi5Huvee80GUxBZO3im3RR93Ejro67b+iD7PNNWNmqMin1fxFCbPFKxAh
-         LjVYuwUsrebVvDhQenyqlupsIVSWyuEmPPa5QfxLY+YEzZw1NMu+V3GmyAk+6/GglrVZ
-         BR/e7mouIfaM8SGVqo4nqm0ACleKysAAGok4Ufyt4j63XNrHsdLScm6Ryx/vXLgVnunl
-         2K5kM47uK5wEVfRI2h71+sVwQpPEfyJTxGtqzPIUAEYWZH4wTx4IrQooRdtIBuW+x7tJ
-         hpTw==
-X-Gm-Message-State: ABy/qLazJOMBDrXQMhdX/81fGub68axAMRnzCKkdXMot7MmxN9rOZCQ3
-        cFScHo4LlO/GGaElEsxEX/TLUQ==
-X-Google-Smtp-Source: APBJJlEG7CLPzM6d/ScSfm0rELXCLf28lq0W7i3UWqfhg6X2Aa3MIwDj5yD41cSlPkz0Qfy4yqeQ/g==
-X-Received: by 2002:a05:6602:2b91:b0:77a:ee79:652 with SMTP id r17-20020a0566022b9100b0077aee790652mr15320953iov.1.1690921303256;
-        Tue, 01 Aug 2023 13:21:43 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id s18-20020a02cf32000000b0042916ad15bcsm3823190jar.31.2023.08.01.13.21.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 13:21:42 -0700 (PDT)
-Message-ID: <e3e1b789-329f-9d17-67d9-0ffca1450b96@linuxfoundation.org>
-Date:   Tue, 1 Aug 2023 14:21:42 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 5.15 000/155] 5.15.124-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230801091910.165050260@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230801091910.165050260@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 16:26:58 -0400
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92F1268C
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 13:26:57 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 434025C018C;
+        Tue,  1 Aug 2023 16:26:57 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 01 Aug 2023 16:26:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1690921617; x=1691008017; bh=UY
+        atibP40K4I2B9IENly3nEtY126fQ2AXlmH0dKm10Q=; b=Xp+GIn40oDnDFpaLvp
+        19QuHjcHwLGtp5p67HqAy7vMqhoXIEaMxFfdmaT9COFVz7o7w+of5HY4KJMqQ8C0
+        GgNN0gRsE8JcklZs2bcHESNAtbbQwZmG/O7imHnjD4jLJcwGzv9Lv1ZyzBpGxN3H
+        XEpAqpU4fJCus4/VjpdgcqPqTadBw0a24TuyEO5xBtOCybbMyJ32sbIv0xl3ZP1S
+        vzjHrRIGQf8QyM0VOJIrVVFxYDkTp4rF0ckjI9K15ZszJjl29o800j2cSukjgBRJ
+        w5B/3/oRzpHGVonB90uo1Fyamx56nUtUGk3BQyR47JzJFPPBTPaP+Mjps+5XaRSm
+        tuCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1690921617; x=1691008017; bh=UYatibP40K4I2
+        B9IENly3nEtY126fQ2AXlmH0dKm10Q=; b=CnMDC/jyzCnOa2st6mA269KKtKXZg
+        2CcVSp2xQfGMwa47YVu5FByTSknAhHUCR9ptD2x32E1BOYWvHSS4t8xzx7rhtRhX
+        P+pqrPclo7vgmRwKTuwQx/kYlTdkHofn/OuG4vlpnSmLgC3yInjoymHVVwTcjWuO
+        v/ycPMGjuU0YStChJh0iA06JGvC6osn9HJY1mGqyoPKoeOIp7ZQi6/tipo0ZU56h
+        E5Gtfy+IOcbhGa3tcW3z1pp/FS5hSvnQdl7xQnqvr+JkhKOvyojGAmdl21lqVsTD
+        geqGtF+KEA8vlqgMddgIr7Rwmv+rhNzqpzNjE6vVly1ndq6Osjm8g8tyQ==
+X-ME-Sender: <xms:kGrJZKsmXAWqX44hTIvClcH7SGWfBtYZpfbk_zw-brFFrhYolBHrxw>
+    <xme:kGrJZPc0lEr8NC8xoF641EwH8WUs-RHwwV5_FFxrMoagyse7ZOHCtmB_jdkF55CDw
+    n4NLeJUJHh0cptnRQA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeeigddugeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:kGrJZFzPxOXjvLZjKvvCErUFWSpuxbWJq3L6om8ZwOj8jlSRlV1XQg>
+    <xmx:kGrJZFNezNyS-yPOBU_i40nvAhBJtRYGwZvgcAy39n6wX0zdBXMD7A>
+    <xmx:kGrJZK9_isrcW7kvvkikmNZwjV6_FdGA7pEhcNZcFFGgGwnRgXxXjA>
+    <xmx:kWrJZBnvgBPPvh0Je65j-_229gr6pvxFRCsZ_aK0pc0AWMwm6lJIgg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 908BBB60089; Tue,  1 Aug 2023 16:26:56 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
+Mime-Version: 1.0
+Message-Id: <21188533-a56b-484b-8cb7-053f38a4155c@app.fastmail.com>
+In-Reply-To: <20230801192217.GHZMlbaVMBavu909lb@fat_crate.local>
+References: <20230725134837.1534228-1-arnd@kernel.org>
+ <20230725134837.1534228-4-arnd@kernel.org>
+ <20230801192217.GHZMlbaVMBavu909lb@fat_crate.local>
+Date:   Tue, 01 Aug 2023 22:26:36 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Borislav Petkov" <bp@alien8.de>, "Arnd Bergmann" <arnd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Dave Hansen" <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH 3/5] [RESEND] x86: qspinlock-paravirt: fix mising-prototype
+ warnings
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/1/23 03:18, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.124 release.
-> There are 155 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 03 Aug 2023 09:18:38 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.124-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On Tue, Aug 1, 2023, at 21:22, Borislav Petkov wrote:
+> On Tue, Jul 25, 2023 at 03:48:35PM +0200, Arnd Bergmann wrote:
+>> diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+>> index 89842bb7ec9cc..64a6bba70d183 100644
+>> --- a/arch/x86/kernel/paravirt.c
+>> +++ b/arch/x86/kernel/paravirt.c
+>> @@ -73,11 +73,13 @@ DEFINE_PARAVIRT_ASM(pv_native_read_cr2, "mov %cr2, %rax", .noinstr.text);
+>>  
+>>  DEFINE_STATIC_KEY_TRUE(virt_spin_lock_key);
+>>  
+>> +#ifdef CONFIG_SMP
+>>  void __init native_pv_lock_init(void)
+>>  {
+>>  	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
+>>  		static_branch_disable(&virt_spin_lock_key);
+>>  }
+>> +#endif
+>
+> Can you add an empty UP stub instead?
+>
+> We all have a great aversion against ifdeffery...
 
-Compiled and booted on my test system. No dmesg regressions.
+There is already a stub for !CONFIG_PARAVIRT in asm/qspinlock.h,
+but the problem is that this header does not get included
+anywhere in UP configurations. 
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+The variant below would avoid adding more #ifdefs, by moving
+the declaration into asm/paravirt.h to ensure that it's
+declared even if there is no caller.
 
-thanks,
--- Shuah
+Does this look better to you?
+
+     Arnd
+
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index b49778664d2be..fc3a377bb9b79 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -739,6 +739,7 @@ static __always_inline unsigned long arch_local_irq_save(void)
+ 	     ".popsection")
+ 
+ extern void default_banner(void);
++void native_pv_lock_init(void) __init;
+ 
+ #else  /* __ASSEMBLY__ */
+ 
+@@ -776,8 +777,13 @@ extern void default_banner(void);
+ #endif /* __ASSEMBLY__ */
+ #else  /* CONFIG_PARAVIRT */
+ # define default_banner x86_init_noop
++
++static inline void native_pv_lock_init(void)
++{
++}
+ #endif /* !CONFIG_PARAVIRT */
+ 
+ #ifndef __ASSEMBLY__
+diff --git a/arch/x86/include/asm/qspinlock.h b/arch/x86/include/asm/qspinlock.h
+index d87451df480bd..cde8357bb226d 100644
+--- a/arch/x86/include/asm/qspinlock.h
++++ b/arch/x86/include/asm/qspinlock.h
+@@ -74,8 +74,6 @@ static inline bool vcpu_is_preempted(long cpu)
+  */
+ DECLARE_STATIC_KEY_TRUE(virt_spin_lock_key);
+ 
+-void native_pv_lock_init(void) __init;
+-
+ /*
+  * Shortcut for the queued_spin_lock_slowpath() function that allows
+  * virt to hijack it.
+@@ -103,10 +101,7 @@ static inline bool virt_spin_lock(struct qspinlock *lock)
+ 
+ 	return true;
+ }
+-#else
+-static inline void native_pv_lock_init(void)
+-{
+-}
++
+ #endif /* CONFIG_PARAVIRT */
+ 
+ #include <asm-generic/qspinlock.h>
+diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
+index 89842bb7ec9cc..066fc19d2568e 100644
+--- a/arch/x86/kernel/paravirt.c
++++ b/arch/x86/kernel/paravirt.c
+@@ -75,7 +75,8 @@ DEFINE_STATIC_KEY_TRUE(virt_spin_lock_key);
+ 
+ void __init native_pv_lock_init(void)
+ {
+-	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
++	if (IS_ENABLED(CONFIG_PARAVIRT_SPINLOCKS) &&
++	    !boot_cpu_has(X86_FEATURE_HYPERVISOR))
+ 		static_branch_disable(&virt_spin_lock_key);
+ }
+ 
