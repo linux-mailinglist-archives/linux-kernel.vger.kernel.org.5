@@ -2,116 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A7076BF56
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BE676BF58
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 23:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230488AbjHAVfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 17:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50522 "EHLO
+        id S232400AbjHAVfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 17:35:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbjHAVfg (ORCPT
+        with ESMTP id S232314AbjHAVfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 17:35:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9832C3
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690925690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nHR+gYw7cHBLdaoz+kXX0wBV31cLT+GSZK2PmYnjFDI=;
-        b=FYtj53KvOv6CG02vXIxPUW0j5IoMK69VYe7G594u7DHCvRkRBjGbzmfleBQrsN2c5nohzZ
-        VszvvzvLqFy+x7Z6aB3oZATTmMaH7CqXHP0eix1lhKbDp082JHafMYCqP33Q1ESnZRNrNI
-        vFSeecpVtFCYVwkYizjRDPNuC7CmMDU=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-336-ucKNtDjYO8mxS05BOcmVPA-1; Tue, 01 Aug 2023 17:34:49 -0400
-X-MC-Unique: ucKNtDjYO8mxS05BOcmVPA-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-40ec97d5b60so5796891cf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 14:34:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690925689; x=1691530489;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nHR+gYw7cHBLdaoz+kXX0wBV31cLT+GSZK2PmYnjFDI=;
-        b=JkD+huLKUCR38U7gD04wHP8HXtWbp7LLvnyGZ7rNNFhPg32wRhQmcgL86oJrMVy4KG
-         XdFKafH+bOgyQX3hLJZ4jVWM0uy/grBDQq87vXgniWkHnJLZGL725XId8VJmg4UYdA8A
-         PnmpXbZVLu/bMl5Ybo8g8qvLT3SeRpAH/R3gCna3T4EAtfW3ZNifsWF04JWEeqVQ/C7J
-         htq24VTrdUR0x7O5XnXmDizijsxrerCHAH/zor8JExbQN/4w5mfYHtk2/E+an+Qm6L+7
-         xiYRCcYc5FXcT/qGLnMa/WsKiFbC6BHOJ05X+yOb7Gevm/f0lDBROPS/OWA2QCSoNS2r
-         bu2A==
-X-Gm-Message-State: ABy/qLZLpOAmopwYDQY+ObgOu3coWh7kLWVYb3z/1PYRubWIGUDWv3wZ
-        7MfqqaAz53uK9EL9pefaW5oU67ozzW1MpqLWNIdEPntuhRHqEAenbpDzleOCI5CUMacd/1i7+8V
-        UZeSn5qXt9sL/W4f6BtFTntMv
-X-Received: by 2002:a05:622a:148c:b0:403:ae76:12da with SMTP id t12-20020a05622a148c00b00403ae7612damr16141367qtx.1.1690925689349;
-        Tue, 01 Aug 2023 14:34:49 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlERXmNdWW2CNoL1GTyXMrbw7WyphoXCE2tsi7Ar+vBKiuIbu6/USybxg48TLXkKPEj8+66m3Q==
-X-Received: by 2002:a05:622a:148c:b0:403:ae76:12da with SMTP id t12-20020a05622a148c00b00403ae7612damr16141349qtx.1.1690925689073;
-        Tue, 01 Aug 2023 14:34:49 -0700 (PDT)
-Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id bq22-20020a05622a1c1600b0040331a24f16sm4706166qtb.3.2023.08.01.14.34.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 14:34:48 -0700 (PDT)
-Date:   Tue, 1 Aug 2023 17:34:43 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
-        liam.howlett@oracle.com, david@redhat.com, ldufour@linux.ibm.com,
-        vbabka@suse.cz, michel@lespinasse.org, jglisse@google.com,
-        mhocko@suse.com, hannes@cmpxchg.org, dave@stgolabs.net,
-        hughd@google.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/6] mm: enable page walking API to lock vmas during the
- walk
-Message-ID: <ZMl6c+bVxdWW0YnN@x1n>
-References: <20230731171233.1098105-1-surenb@google.com>
- <20230731171233.1098105-2-surenb@google.com>
- <CAHk-=wjEbJS3OhUu+2sV8Kft8GnGcsNFOhYhXYQuk5nvvqR-NQ@mail.gmail.com>
- <CAJuCfpFWOknMsBmk1RwsX9_0-eZBoF+cy=P-E7xAmOWyeo4rvA@mail.gmail.com>
- <CAHk-=wiFXOJ_6mnuP5h3ZKNM1+SBNZFZz9p8hyS8NaYUGLioEg@mail.gmail.com>
- <CAJuCfpG4Yk65b=0TLfGRqrO7VpY3ZaYKqbBjEP+45ViC9zySVQ@mail.gmail.com>
- <CAJuCfpF6WcJBSix0PD0cOD_MaeLpfGz1ddS6Ug_M+g0QTfkdzw@mail.gmail.com>
+        Tue, 1 Aug 2023 17:35:53 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 085C41710
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 14:35:50 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6F5678D;
+        Tue,  1 Aug 2023 23:34:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690925685;
+        bh=MFrgXENkqlcRfX+EcNkS5B5eqVfsBlbWWD9455+s2wU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pXww2BwiAlcpMLRrthanfJuKSooNTgMfkM8H9jjdg/QIIDYgyM3+vFT+VwNq0kS4T
+         10vdRipTLIkDX5qB08/UsjMKX5YmQkrQ8LeyZHoc+CsOhpGarXUBS+eeAt7wnYTMpW
+         P+O+/1AYseQWDYT9uBt9OPYCG7IzfuKap7dDMdzc=
+Date:   Wed, 2 Aug 2023 00:35:54 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/bridge: Add debugfs print for bridge chains
+Message-ID: <20230801213554.GE8578@pendragon.ideasonboard.com>
+References: <20230731-drm-bridge-chain-debugfs-v3-1-7d0739f3efa3@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpF6WcJBSix0PD0cOD_MaeLpfGz1ddS6Ug_M+g0QTfkdzw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230731-drm-bridge-chain-debugfs-v3-1-7d0739f3efa3@ideasonboard.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 01:28:56PM -0700, Suren Baghdasaryan wrote:
-> I have the new patchset ready but I see 3 places where we walk the
-> pages after mmap_write_lock() while *I think* we can tolerate
-> concurrent page faults (don't need to lock the vmas):
+Hi Tomi,
+
+Thank you for the patch.
+
+On Mon, Jul 31, 2023 at 03:13:14PM +0300, Tomi Valkeinen wrote:
+> DRM bridges are not visible to the userspace and it may not be
+> immediately clear if the chain is somehow constructed incorrectly. I
+> have had two separate instances of a bridge driver failing to do a
+> drm_bridge_attach() call, resulting in the bridge connector not being
+> part of the chain. In some situations this doesn't seem to cause issues,
+> but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
 > 
-> s390_enable_sie()
-> break_ksm()
-> clear_refs_write()
+> Add a debugfs file to print the bridge chains. For me, on this TI AM62
+> based platform, I get the following output:
+> 
+> encoder[39]
+> 	bridge[0] type: 0, ops: 0x0
+> 	bridge[1] type: 0, ops: 0x0, OF: /bus@f0000/i2c@20000000/dsi@e:toshiba,tc358778
+> 	bridge[2] type: 0, ops: 0x3, OF: /bus@f0000/i2c@20010000/hdmi@48:lontium,lt8912b
+> 	bridge[3] type: 11, ops: 0x7, OF: /hdmi-connector:hdmi-connector
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+> Changes in v3:
+> - Use drm_for_each_bridge_in_chain()
+> - Drop extra comment
+> - Fix whitespace issue
+> - Call drm_bridge_debugfs_init() only if the driver uses modeset
+> - Drop #ifdef for drm_bridge_debugfs_init() declaration
+> - Link to v2: https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v2-1-76df94347962@ideasonboard.com
+> 
+> Changes in v2:
+> - Fixed compilation issue when !CONFIG_OF
+> - Link to v1: https://lore.kernel.org/r/20230721-drm-bridge-chain-debugfs-v1-1-8614ff7e890d@ideasonboard.com
+> ---
+>  drivers/gpu/drm/drm_bridge.c  | 46 +++++++++++++++++++++++++++++++++++++++++++
+>  drivers/gpu/drm/drm_debugfs.c |  3 +++
+>  include/drm/drm_bridge.h      |  3 +++
+>  3 files changed, 52 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_bridge.c b/drivers/gpu/drm/drm_bridge.c
+> index c3d69af02e79..39e68e45bb12 100644
+> --- a/drivers/gpu/drm/drm_bridge.c
+> +++ b/drivers/gpu/drm/drm_bridge.c
+> @@ -27,8 +27,10 @@
+>  #include <linux/mutex.h>
+>  
+>  #include <drm/drm_atomic_state_helper.h>
+> +#include <drm/drm_debugfs.h>
+>  #include <drm/drm_bridge.h>
+>  #include <drm/drm_encoder.h>
+> +#include <drm/drm_file.h>
+>  #include <drm/drm_of.h>
+>  #include <drm/drm_print.h>
+>  
+> @@ -1345,6 +1347,50 @@ struct drm_bridge *of_drm_find_bridge(struct device_node *np)
+>  EXPORT_SYMBOL(of_drm_find_bridge);
+>  #endif
+>  
+> +#ifdef CONFIG_DEBUG_FS
+> +static int drm_bridge_chains_info(struct seq_file *m, void *data)
+> +{
+> +	struct drm_debugfs_entry *entry = m->private;
+> +	struct drm_device *dev = entry->dev;
+> +	struct drm_printer p = drm_seq_file_printer(m);
+> +	struct drm_mode_config *config = &dev->mode_config;
+> +	struct drm_encoder *encoder;
+> +	unsigned int bridge_idx = 0;
+> +
+> +	list_for_each_entry(encoder, &config->encoder_list, head) {
+> +		struct drm_bridge *bridge;
+> +
+> +		drm_printf(&p, "encoder[%u]\n", encoder->base.id);
+> +
+> +		drm_for_each_bridge_in_chain(encoder, bridge) {
+> +			drm_printf(&p, "\tbridge[%u] type: %u, ops: %#x",
+> +				   bridge_idx, bridge->type, bridge->ops);
+> +
+> +#ifdef CONFIG_OF
+> +			if (bridge->of_node)
+> +				drm_printf(&p, ", OF: %pOFfc", bridge->of_node);
+> +#endif
+> +
+> +			drm_printf(&p, "\n");
+> +
+> +			bridge_idx++;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct drm_debugfs_info drm_bridge_debugfs_list[] = {
+> +	{ "bridge_chains", drm_bridge_chains_info, 0 },
+> +};
+> +
+> +void drm_bridge_debugfs_init(struct drm_minor *minor)
+> +{
+> +	drm_debugfs_add_files(minor->dev, drm_bridge_debugfs_list,
+> +			      ARRAY_SIZE(drm_bridge_debugfs_list));
+> +}
+> +#endif
+> +
+>  MODULE_AUTHOR("Ajay Kumar <ajaykumar.rs@samsung.com>");
+>  MODULE_DESCRIPTION("DRM bridge infrastructure");
+>  MODULE_LICENSE("GPL and additional rights");
+> diff --git a/drivers/gpu/drm/drm_debugfs.c b/drivers/gpu/drm/drm_debugfs.c
+> index a3a488205009..3b1de2c61c89 100644
+> --- a/drivers/gpu/drm/drm_debugfs.c
+> +++ b/drivers/gpu/drm/drm_debugfs.c
+> @@ -31,6 +31,7 @@
+>  
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_auth.h>
+> +#include <drm/drm_bridge.h>
+>  #include <drm/drm_client.h>
+>  #include <drm/drm_debugfs.h>
+>  #include <drm/drm_device.h>
+> @@ -274,6 +275,8 @@ int drm_debugfs_init(struct drm_minor *minor, int minor_id,
+>  
+>  	if (drm_drv_uses_atomic_modeset(dev)) {
+>  		drm_atomic_debugfs_init(minor);
+> +
 
-This one doesn't look right to be listed - tlb flushing is postponed after
-pgtable lock released, so I assume the same issue can happen like fork():
-where we can have race coditions to corrupt data if, e.g., thread A
-writting with a writable (unflushed) tlb, alongside with thread B CoWing.
+You could drop the blank line, up to you.
 
-It'll indeed be nice to know whether break_ksm() can avoid that lock_vma
-parameter across quite a few function jumps. I don't yet see an immediate
-issue with this one..  No idea on s390_enable_sie(), but to make it simple
-and safe I'd simply leave it with the write vma lock to match the mmap
-write lock.
+> +		drm_bridge_debugfs_init(minor);
+>  	}
+>  
+>  	if (drm_core_check_feature(dev, DRIVER_MODESET)) {
+> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> index bf964cdfb330..cb10ee108538 100644
+> --- a/include/drm/drm_bridge.h
+> +++ b/include/drm/drm_bridge.h
+> @@ -949,4 +949,7 @@ static inline struct drm_bridge *drmm_of_get_bridge(struct drm_device *drm,
+>  }
+>  #endif
+>  
+> +struct drm_minor;
 
-Thanks,
+Let's move this to tbe beginning of the file with the other forward
+declarations. With this addressedn
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+
+> +void drm_bridge_debugfs_init(struct drm_minor *minor);
+> +
+>  #endif
+> 
+> ---
+> base-commit: a0c64d153d687756c8719b8d10e609d62e1cb6fd
+> change-id: 20230721-drm-bridge-chain-debugfs-0bbc1522f57a
 
 -- 
-Peter Xu
+Regards,
 
+Laurent Pinchart
