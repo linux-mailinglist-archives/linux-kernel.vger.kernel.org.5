@@ -2,134 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD7C76BDB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385A676BDB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  1 Aug 2023 21:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232354AbjHAT1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 15:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54442 "EHLO
+        id S231778AbjHAT1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 15:27:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbjHAT1W (ORCPT
+        with ESMTP id S230190AbjHAT1T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 15:27:22 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA1F9C;
-        Tue,  1 Aug 2023 12:27:21 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 371HvWQb019512;
-        Tue, 1 Aug 2023 19:27:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=qC6t3oUXIHBy+uYFBXDAZt69xeIT0wgwqsu2FTL8kDg=;
- b=FzYrNBQ6MUZ7WjnX4xeIMfjS64NzTnQ6y6SwDge7IvwquPAboHpu23tWYIxTgBolMMx3
- FZukU+7JTyLwdScdkYgH9GDhb38Vl+NUg/j82FMaTqtAuGz+tca+izCgPExQDTACitZe
- E6pVhikwkPB9jicp8BjfkUmgSRHEEPJPAEh9uL2j9TkFWOhLb2+oYEdIvnhuueoEBDOD
- o1x+2n5OY4SjXRuL48m7y6LP7ns5TEg0qFFGnLqGlylO3C2qdWvZFrgstC5DzHOdLbii
- PrRsVih7RjSolYOcamd40ZrS6RJT3qWLqIImUhlepnNeM+8KI1Je8szUJkUTq7V7wJLR GQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s76jv07pd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 01 Aug 2023 19:27:01 +0000
-Received: from pps.filterd (NALASPPMTA04.qualcomm.com [127.0.0.1])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 371JMVmI015689;
-        Tue, 1 Aug 2023 19:27:00 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by NALASPPMTA04.qualcomm.com (PPS) with ESMTPS id 3s4uum4x09-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 01 Aug 2023 19:27:00 +0000
-Received: from NALASPPMTA04.qualcomm.com (NALASPPMTA04.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 371JQxvE019622;
-        Tue, 1 Aug 2023 19:27:00 GMT
-Received: from hu-devc-lv-u18-c.qualcomm.com (hu-eserrao-lv.qualcomm.com [10.47.235.27])
-        by NALASPPMTA04.qualcomm.com (PPS) with ESMTP id 371JQxX9019621;
-        Tue, 01 Aug 2023 19:26:59 +0000
-Received: by hu-devc-lv-u18-c.qualcomm.com (Postfix, from userid 464172)
-        id AAF6E500171; Tue,  1 Aug 2023 12:26:59 -0700 (PDT)
-From:   Elson Roy Serrao <quic_eserrao@quicinc.com>
-To:     Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org,
-        felipe.balbi@linux.intel.com, rogerq@kernel.org,
-        surong.pang@unisoc.com
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        quic_wcheng@quicinc.com, quic_jackp@quicinc.com,
-        Elson Roy Serrao <quic_eserrao@quicinc.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] usb: dwc3: Properly handle processing of pending events
-Date:   Tue,  1 Aug 2023 12:26:58 -0700
-Message-Id: <20230801192658.19275-1-quic_eserrao@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Md49xazC3fLzIVoM_YxYIPwPfcMvieD-
-X-Proofpoint-GUID: Md49xazC3fLzIVoM_YxYIPwPfcMvieD-
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-01_17,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
- clxscore=1011 mlxscore=0 suspectscore=0 mlxlogscore=386 phishscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308010173
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 15:27:19 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C359C
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 12:27:18 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-78f1210e27fso1717792241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 12:27:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20221208.gappssmtp.com; s=20221208; t=1690918037; x=1691522837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M9v8j1gDl2yQFrNITrHHzLI7f+AvshVPungI27MCr48=;
+        b=o4nxGXrWhh5P/sjYm9o3pPrsYG4DpAxwcAuOnckdTt2w72Z1g6HkP6k8NQfMAa+SwB
+         jsPrCTdEOSTGt+BBFInyD4vMGUJokxvrxKfT1MvFtF9tXerlVWD2uS9Jx7LIRTYWedL/
+         brNuLtHWN45UN2AuYmnjoYVnUTGXLZl9vRkOva1UCDiK9VdxgaEmL28P0ZyYp/IhvIMx
+         1xJUGOK+LW78Fyacncom1/tAXwbb9dkVPvAF2r2l7mAzHhdvELNCfCHsWSyyRx/Eyk4V
+         LLczbVLdz5Dy84ZP+gsMGe3N2SDggxUskkCcbAOeo7JKtfRTx9e03kdNurAewU73PGy0
+         4XHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690918037; x=1691522837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M9v8j1gDl2yQFrNITrHHzLI7f+AvshVPungI27MCr48=;
+        b=OoitzFcnAFpPqx3w5WSSQY2N5kaUSCKxQ6ySXr8L6YnP7vdz7gAYEDqN/uSQnwWt7c
+         ICY2naZqwAG/KAA7Q5wSkGAIz79gBnb8TlW9vXoMrPl/cVisd525YFm3zz7lJAN9VvGJ
+         cJzHHvqMKcLC8n7zX8d8vwKKlF05vh8xJDzUlb7iYj6Mmaut9fNliusu9ZxvhZr52//4
+         GAuCpfh/VSzMZjEQfamfglerKMqPFr0uSreKkS8mqZlwusAtobTorF6GrXn8ikjHW9wp
+         tKbj76ZQXJ6Jkgs1C5xMUfCZ+R0QoJEXDhh7g9Yylf2krj0v71Ih+KUmktdKSTxBqKZk
+         t+XA==
+X-Gm-Message-State: ABy/qLbP9srcKdMvgyTauPS71qxGxgLQ2HosIP9Wu2+4E/ADU1Y/gp3x
+        IQt+cdYYY9ZnuvjDoclfblQuUru+j0m8q9VEh8wtCA==
+X-Google-Smtp-Source: APBJJlFIxquZIRQBAQBXR7MAFOcvfcn1zEiWvBQvDYKkkz4H5OV4hxqlNfxzckNTSrUpPbddsCM+d24mAyKhTLLJaY4=
+X-Received: by 2002:a67:e3b1:0:b0:443:9037:d8e4 with SMTP id
+ j17-20020a67e3b1000000b004439037d8e4mr2803048vsm.8.1690918037521; Tue, 01 Aug
+ 2023 12:27:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230728182009.18445-1-aboutphysycs@gmail.com>
+In-Reply-To: <20230728182009.18445-1-aboutphysycs@gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 1 Aug 2023 21:27:06 +0200
+Message-ID: <CAMRc=McrsV6LG10eC70aCrk6i3T=1kQN8DJNPLLa8HzHNjNQPg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: rc5t583: remove unneeded call to platform_set_drvdata()
+To:     Andrei Coardos <aboutphysycs@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        andy@kernel.org, linus.walleij@linaro.org,
+        Alexandru Ardelean <alex@shruggie.ro>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If dwc3 is runtime suspended we defer processing the event buffer
-until resume, by setting the pending_events flag. Set this flag before
-triggering resume to avoid race with the runtime resume callback.
+On Fri, Jul 28, 2023 at 8:20=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
+com> wrote:
+>
+> This function call was found to be unnecessary as there is no equivalent
+> platform_get_drvdata() call to access the private data of the driver. Als=
+o,
+> the private data is defined in this driver, so there is no risk of it bei=
+ng
+> accessed outside of this driver file.
+>
+> Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
+> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+> ---
+>  drivers/gpio/gpio-rc5t583.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-rc5t583.c b/drivers/gpio/gpio-rc5t583.c
+> index 4fae3ebea790..c34dcadaee36 100644
+> --- a/drivers/gpio/gpio-rc5t583.c
+> +++ b/drivers/gpio/gpio-rc5t583.c
+> @@ -121,8 +121,6 @@ static int rc5t583_gpio_probe(struct platform_device =
+*pdev)
+>         if (pdata && pdata->gpio_base)
+>                 rc5t583_gpio->gpio_chip.base =3D pdata->gpio_base;
+>
+> -       platform_set_drvdata(pdev, rc5t583_gpio);
+> -
+>         return devm_gpiochip_add_data(&pdev->dev, &rc5t583_gpio->gpio_chi=
+p,
+>                                       rc5t583_gpio);
+>  }
+> --
+> 2.34.1
+>
 
-While handling the pending events, in addition to checking the event
-buffer we also need to process it. Handle this by explicitly calling
-dwc3_thread_interrupt(). Also balance the runtime pm get() operation
-that triggered this processing.
+Applied, thanks!
 
-Cc: stable@vger.kernel.org
-Fixes: fc8bb91bc83e ("usb: dwc3: implement runtime PM")
-Signed-off-by: Elson Roy Serrao <quic_eserrao@quicinc.com>
----
-Change separated from below series as an independent fix based on the
-earlier discussion
-https://lore.kernel.org/all/be57511d-2005-a1f5-d5a5-809e71029aec@quicinc.com/
-
- drivers/usb/dwc3/gadget.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 5fd067151fbf..858fe4c299b7 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -4455,9 +4455,14 @@ static irqreturn_t dwc3_check_event_buf(struct dwc3_event_buffer *evt)
- 	u32 count;
- 
- 	if (pm_runtime_suspended(dwc->dev)) {
-+		dwc->pending_events = true;
-+		/*
-+		 * Trigger runtime resume. The get() function will be balanced
-+		 * after processing the pending events in dwc3_process_pending
-+		 * events().
-+		 */
- 		pm_runtime_get(dwc->dev);
- 		disable_irq_nosync(dwc->irq_gadget);
--		dwc->pending_events = true;
- 		return IRQ_HANDLED;
- 	}
- 
-@@ -4718,6 +4723,8 @@ void dwc3_gadget_process_pending_events(struct dwc3 *dwc)
- {
- 	if (dwc->pending_events) {
- 		dwc3_interrupt(dwc->irq_gadget, dwc->ev_buf);
-+		dwc3_thread_interrupt(dwc->irq_gadget, dwc->ev_buf);
-+		pm_runtime_put(dwc->dev);
- 		dwc->pending_events = false;
- 		enable_irq(dwc->irq_gadget);
- 	}
--- 
-2.17.1
-
+Bartosz
