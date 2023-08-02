@@ -2,251 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C73A676D122
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:12:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A74F76D134
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbjHBPMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:12:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        id S234162AbjHBPNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:13:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231788AbjHBPMJ (ORCPT
+        with ESMTP id S234959AbjHBPNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:12:09 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BCF5E210D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:12:07 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 99811113E;
-        Wed,  2 Aug 2023 08:12:50 -0700 (PDT)
-Received: from [10.57.77.90] (unknown [10.57.77.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECCFC3F5A1;
-        Wed,  2 Aug 2023 08:12:05 -0700 (PDT)
-Message-ID: <7c7b8c39-b412-a120-368c-ba4ab2cc2a15@arm.com>
-Date:   Wed, 2 Aug 2023 16:12:04 +0100
+        Wed, 2 Aug 2023 11:13:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACF91BFD
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:12:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690989133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w+0KWNa1xwubY/Ggk8izjhhZVuMUOv4VLooz2GsqEHg=;
+        b=SWxW84pY93ZvXp+k57vxxvhS52f/J8VeuKAdimshI5vQJG9fOBK0C6EumwXWAr69VXptGj
+        nV16gglJ77czKbVcSTExE5hsakSo3h1QY5gUHExyXHpYQlRiH+MTTC87wUPMj2Sqb6r8cn
+        AEVSXjJ5y4FfRBQkJvfMzgCowpUvPkU=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-96-442c_iImMLCbMUbGsF0VBA-1; Wed, 02 Aug 2023 11:12:11 -0400
+X-MC-Unique: 442c_iImMLCbMUbGsF0VBA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-3fe232ba9e5so19043875e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:12:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690989130; x=1691593930;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w+0KWNa1xwubY/Ggk8izjhhZVuMUOv4VLooz2GsqEHg=;
+        b=ao6clywThGRj8s8FuoLOggnomroXqDW12xMQvjJrWrpOyvaOBh2Sf95IbF1EB8Pgy3
+         PlYLMzWZ5OKqlqKwg0BLRQqKt3pysPLEXTza9wbfuiVofRt8NvWcaYw5+pOLn7l12Nnl
+         /4+ZfRpGAD1RWM2Mb8gY7TgZuzx/PYtgqRQ6e078LP+c+hVSzimax3GpCDOQY6VuwckV
+         KMYWUtNRIakBtLKsH+BoM5iFXdjEP9fJhU4O7pz/MODM88pJZNFNeKrEC4sf0cqmVCOD
+         9+9M0XA2SPlhVxzzN8hi6tPpHmKtLpWyRex/vVeunVSqVWQ6lirxcJEVWeBs3OCN8CCq
+         f5Lw==
+X-Gm-Message-State: ABy/qLZV5VOo4C1sISdl/dQ8WC8zXOraVj3DSvsAyylFI3ywX0ufdlas
+        vSFRwiqN9fUMmE7eKLatpotEu8SV/Kam9P4BM6ue+BAGYXybmssdPT41bDyvm0+aQYzskt80ekB
+        BPLILM9vpT2VJDCP5spDswkeS
+X-Received: by 2002:a5d:595b:0:b0:316:f3cf:6f12 with SMTP id e27-20020a5d595b000000b00316f3cf6f12mr4856138wri.48.1690989130092;
+        Wed, 02 Aug 2023 08:12:10 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFiwCmVukTG4b003Kw1jOw/WrbZSFH1/nxmUVT0cf0q5oxfG7XYzDO68q2V6Sj2RMU4SGVtAg==
+X-Received: by 2002:a5d:595b:0:b0:316:f3cf:6f12 with SMTP id e27-20020a5d595b000000b00316f3cf6f12mr4856114wri.48.1690989129710;
+        Wed, 02 Aug 2023 08:12:09 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c70b:e00:b8a4:8613:1529:1caf? (p200300cbc70b0e00b8a4861315291caf.dip0.t-ipconnect.de. [2003:cb:c70b:e00:b8a4:8613:1529:1caf])
+        by smtp.gmail.com with ESMTPSA id c18-20020a5d4f12000000b0030647449730sm19346391wru.74.2023.08.02.08.12.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 08:12:09 -0700 (PDT)
+Message-ID: <fa396bd9-9453-2212-6cfd-9dc0ae1c8c48@redhat.com>
+Date:   Wed, 2 Aug 2023 17:12:07 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] mm: add functions folio_in_range() and
- folio_within_vma()
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        yuzhao@google.com, willy@infradead.org, david@redhat.com,
-        shy828301@gmail.com, hughd@google.com
-References: <20230728070929.2487065-1-fengwei.yin@intel.com>
- <20230728070929.2487065-2-fengwei.yin@intel.com>
- <55c9e3f7-099d-6f57-32da-1f318a9688a0@arm.com>
- <9bba9369-e3f5-53da-bf8f-8ab887d3c3ae@arm.com>
- <a6ff77ba-18f7-f3ed-3f9a-00f04edccdb3@intel.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <a6ff77ba-18f7-f3ed-3f9a-00f04edccdb3@intel.com>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 1/8] mm/gup: reintroduce FOLL_NUMA as
+ FOLL_HONOR_NUMA_FAULT
+Content-Language: en-US
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, stable@vger.kernel.org
+References: <20230801124844.278698-1-david@redhat.com>
+ <20230801124844.278698-2-david@redhat.com>
+ <20230802150816.aaubbx4t7745lqik@techsingularity.net>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230802150816.aaubbx4t7745lqik@techsingularity.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> I also wonder if you should change the name of folio_within_vma() to something
->> like folio_test_cont_in_vma() to disambiguate from the case where the folio may
->> be fully mapped with a discontiguity (although perhaps that's not possible
->> because a mremap would result in distinct vmas... would a new mmap in the hole
->> cause a merge of all 3?).
-> I don't think it's possible as mremap reuse original pgoff of VMA to new VMA. I suppose
-> it will prevent VMA merging. But I didn't check detail.
+>> Reported-by: liubo <liubo254@huawei.com>
+>> Closes: https://lore.kernel.org/r/20230726073409.631838-1-liubo254@huawei.com
+>> Reported-by: Peter Xu <peterx@redhat.com>
+>> Closes: https://lore.kernel.org/all/ZMKJjDaqZ7FW0jfe@x1n/
+>> Fixes: 474098edac26 ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()")
+>> Cc: <stable@vger.kernel.org>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+> 
+> I agree that FOLL_REMOTE probably needs separate treatment but also agree
+> that it's outside the context of this patch, particularly as a -stable
+> candidate so
+> 
+> Acked-by: Mel Gorman <mgorman@techsingularity.net>
+> 
+> I've a minor nit below that would be nice to get fixed up, but not
+> mandatory.
 
-pgoff is not relevant for anon though, right?
+Thanks Mel for taking a look, so I don't mess up once more :)
 
-FWIW, I wrote a test to check if merging is performed. Interestingly, v5.4 (on x86) *does* merge the VMAs in this case, but v6.5-rc3 (on arm64) *does not* merge the VMAs in this case.
+> 
+>> ---
+>>   include/linux/mm.h       | 21 +++++++++++++++------
+>>   include/linux/mm_types.h |  9 +++++++++
+>>   mm/gup.c                 | 29 +++++++++++++++++++++++------
+>>   mm/huge_memory.c         |  2 +-
+>>   4 files changed, 48 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/mm/gup.c b/mm/gup.c
+>> index 2493ffa10f4b..f463d3004ddc 100644
+>> --- a/mm/gup.c
+>> +++ b/mm/gup.c
+>> @@ -2240,6 +2244,12 @@ static bool is_valid_gup_args(struct page **pages, int *locked,
+>>   		gup_flags |= FOLL_UNLOCKABLE;
+>>   	}
+>>   
+>> +	/*
+>> +	 * For now, always trigger NUMA hinting faults. Some GUP users like
+>> +	 * KVM really require it to benefit from autonuma.
+>> +	 */
+>> +	gup_flags |= FOLL_HONOR_NUMA_FAULT;
+>> +
+>>   	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
+>>   	if (WARN_ON_ONCE((gup_flags & (FOLL_PIN | FOLL_GET)) ==
+>>   			 (FOLL_PIN | FOLL_GET)))
+> 
+> Expand on *why* KVM requires it even though I suspect this changes later
+> in the series. Maybe "Some GUP users like KVM require the hint to be as
+> the calling context of GUP is functionally similar to a memory reference
+> from task context"?
 
-I think you should assume it might be possible in some cases.
+It's raised later in this series but it doesn't hurt to discuss it here 
+in a bit more detail.
 
+Sounds good to me.
 
-#define _GNU_SOURCE
-#include <stdlib.h>
-#include <stdio.h>
-#include <sys/mman.h>
-#include <unistd.h>
+> 
+> Also minor nit -- s/autonuma/NUMA Balancing/ or numab. autonuma refers to
+> a specific implementation of automatic balancing that operated similar to
+> khugepaged but not merged. If you grep for it, you'll find that autonuma
+> is only referenced in powerpc-specific code. It's not important these
+> days but very early on, it was very confusing if AutoNUMA was mentioned
+> when NUMAB was intended.
 
-int main(int argc, char **argv)
-{
-	size_t pgsize = getpagesize();
-	char *memarea;
-	char *memlow;
-	char *memmid;
-	char *memhigh;
-	int ret = 0;
+Ah, yes, thanks. That's the one of the only place where that terminology 
+accidentally slipped in.
 
-	// Get a free vm area big enough for 5 pages.
-	memarea = mmap(NULL, pgsize * 5,
-			PROT_NONE,
-			MAP_PRIVATE | MAP_ANONYMOUS,
-			-1, 0);
-	if (memarea == MAP_FAILED) {
-		perror("mmap 1");
-		exit(1);
-	}
+I'll wait for more feedback and resend!
 
-	// Map 2 pages one page into allocated area.
-	memlow = mmap(memarea + pgsize, pgsize * 2,
-			PROT_READ | PROT_WRITE,
-			MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS,
-			-1, 0);
-	if (memlow == MAP_FAILED) {
-		perror("mmap 2");
-		exit(1);
-	}
+-- 
+Cheers,
 
-	// Move the second allocated page one page higher.
-	memhigh = mremap(memarea + pgsize * 2, pgsize, pgsize,
-			MREMAP_FIXED | MREMAP_MAYMOVE,
-			memarea + pgsize * 3);
-	if (memhigh == MAP_FAILED) {
-		perror("mremap");
-		exit(1);
-	}
+David / dhildenb
 
-	// We should now have:
-	// | page 0 | page 1 | page 2 | page 3 | page 4 |
-	// | NONE   | vma 1  | empty  | vma 2  | NONE   |
-	printf("Check for 2 vmas with hole: pid=%d, memarea=%p, memlow=%p, memhigh=%p\n",
-		getpid(), memarea, memlow, memhigh);
-	getchar();
-
-	// Now map a page in the empty space.
-	memmid = mmap(memarea + pgsize * 2, pgsize,
-			PROT_READ | PROT_WRITE,
-			MAP_FIXED | MAP_PRIVATE | MAP_ANONYMOUS,
-			-1, 0);
-	if (memmid == MAP_FAILED) {
-		perror("mmap 2");
-		exit(1);
-	}
-
-	// We should now have:
-	// | page 0 | page 1 | page 2 | page 3 | page 4 |
-	// | NONE   |          vma 1           | NONE   |
-	printf("Check for single merged vma: pid=%d, memarea=%p, memlow=%p, memmid=%p, memhigh=%p\n",
-		getpid(), memarea, memlow, memmid, memhigh);
-	getchar();
-
-	return ret;
-}
-
-
-
-Output on v5.4:
-
-Check for 2 vmas with hole: pid=171038, memarea=0x7fe6c34d9000, memlow=0x7fe6c34da000, memhigh=0x7fe6c34dc000
-Check for single merged vma: pid=171038, memarea=0x7fe6c34d9000, memlow=0x7fe6c34da000, memmid=0x7fe6c34db000, memhigh=0x7fe6c34dc000
-
-And maps output at the 2 check points:
-
-(base) ryarob01@e125769:/data_nvme0n1/ryarob01/granule_perf$ cat /proc/171038/maps
-55e55c258000-55e55c259000 r--p 00000000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c259000-55e55c25a000 r-xp 00001000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c25a000-55e55c25b000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c25b000-55e55c25c000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c25c000-55e55c25d000 rw-p 00003000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c403000-55e55c424000 rw-p 00000000 00:00 0                          [heap]
-7fe6c32d2000-7fe6c32f4000 r--p 00000000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c32f4000-7fe6c346c000 r-xp 00022000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c346c000-7fe6c34ba000 r--p 0019a000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c34ba000-7fe6c34be000 r--p 001e7000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c34be000-7fe6c34c0000 rw-p 001eb000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c34c0000-7fe6c34c6000 rw-p 00000000 00:00 0 
-7fe6c34d9000-7fe6c34da000 ---p 00000000 00:00 0 
-7fe6c34da000-7fe6c34db000 rw-p 00000000 00:00 0 
-7fe6c34dc000-7fe6c34dd000 rw-p 00000000 00:00 0 
-7fe6c34dd000-7fe6c34de000 ---p 00000000 00:00 0 
-7fe6c34de000-7fe6c34df000 r--p 00000000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c34df000-7fe6c3502000 r-xp 00001000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c3502000-7fe6c350a000 r--p 00024000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c350b000-7fe6c350c000 r--p 0002c000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c350c000-7fe6c350d000 rw-p 0002d000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c350d000-7fe6c350e000 rw-p 00000000 00:00 0 
-7fff39a11000-7fff39a32000 rw-p 00000000 00:00 0                          [stack]
-7fff39a83000-7fff39a86000 r--p 00000000 00:00 0                          [vvar]
-7fff39a86000-7fff39a87000 r-xp 00000000 00:00 0                          [vdso]
-ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
-(base) ryarob01@e125769:/data_nvme0n1/ryarob01/granule_perf$ cat /proc/171038/maps
-55e55c258000-55e55c259000 r--p 00000000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c259000-55e55c25a000 r-xp 00001000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c25a000-55e55c25b000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c25b000-55e55c25c000 r--p 00002000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c25c000-55e55c25d000 rw-p 00003000 fd:00 5297466                    /data_nvme0n1/ryarob01/granule_perf/merge
-55e55c403000-55e55c424000 rw-p 00000000 00:00 0                          [heap]
-7fe6c32d2000-7fe6c32f4000 r--p 00000000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c32f4000-7fe6c346c000 r-xp 00022000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c346c000-7fe6c34ba000 r--p 0019a000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c34ba000-7fe6c34be000 r--p 001e7000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c34be000-7fe6c34c0000 rw-p 001eb000 fd:02 9573653                    /lib/x86_64-linux-gnu/libc-2.31.so
-7fe6c34c0000-7fe6c34c6000 rw-p 00000000 00:00 0 
-7fe6c34d9000-7fe6c34da000 ---p 00000000 00:00 0 
-7fe6c34da000-7fe6c34dd000 rw-p 00000000 00:00 0 
-7fe6c34dd000-7fe6c34de000 ---p 00000000 00:00 0 
-7fe6c34de000-7fe6c34df000 r--p 00000000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c34df000-7fe6c3502000 r-xp 00001000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c3502000-7fe6c350a000 r--p 00024000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c350b000-7fe6c350c000 r--p 0002c000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c350c000-7fe6c350d000 rw-p 0002d000 fd:02 9573649                    /lib/x86_64-linux-gnu/ld-2.31.so
-7fe6c350d000-7fe6c350e000 rw-p 00000000 00:00 0 
-7fff39a11000-7fff39a32000 rw-p 00000000 00:00 0                          [stack]
-7fff39a83000-7fff39a86000 r--p 00000000 00:00 0                          [vvar]
-7fff39a86000-7fff39a87000 r-xp 00000000 00:00 0                          [vdso]
-ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsyscall]
-
-
-Output on v6.5-rc3:
-
-Check for 2 vmas with hole: pid=3181, memarea=0xfffff7ff2000, memlow=0xfffff7ff3000, memhigh=0xfffff7ff5000
-Check for single merged vma: pid=3181, memarea=0xfffff7ff2000, memlow=0xfffff7ff3000, memmid=0xfffff7ff4000, memhigh=0xfffff7ff5000
-
-And maps output at the 2 check points:
-
-ubuntu@ubuntuvm:~/linux$ cat /proc/3181/maps 
-aaaaaaaa0000-aaaaaaaa1000 r-xp 00000000 fe:02 8199010                    /home/ubuntu/merge
-aaaaaaab0000-aaaaaaab1000 r--p 00000000 fe:02 8199010                    /home/ubuntu/merge
-aaaaaaab1000-aaaaaaab2000 rw-p 00001000 fe:02 8199010                    /home/ubuntu/merge
-aaaaaaab2000-aaaaaaad3000 rw-p 00000000 00:00 0                          [heap]
-fffff7e00000-fffff7f89000 r-xp 00000000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-fffff7f89000-fffff7f98000 ---p 00189000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-fffff7f98000-fffff7f9c000 r--p 00188000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-fffff7f9c000-fffff7f9e000 rw-p 0018c000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-fffff7f9e000-fffff7faa000 rw-p 00000000 00:00 0 
-fffff7fc2000-fffff7fed000 r-xp 00000000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-fffff7ff2000-fffff7ff3000 ---p 00000000 00:00 0 
-fffff7ff3000-fffff7ff4000 rw-p 00000000 00:00 0 
-fffff7ff5000-fffff7ff6000 rw-p 00000000 00:00 0 
-fffff7ff6000-fffff7ff7000 ---p 00000000 00:00 0 
-fffff7ff7000-fffff7ff9000 rw-p 00000000 00:00 0 
-fffff7ff9000-fffff7ffb000 r--p 00000000 00:00 0                          [vvar]
-fffff7ffb000-fffff7ffc000 r-xp 00000000 00:00 0                          [vdso]
-fffff7ffc000-fffff7ffe000 r--p 0002a000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-fffff7ffe000-fffff8000000 rw-p 0002c000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-fffffffdf000-1000000000000 rw-p 00000000 00:00 0                         [stack]
-ubuntu@ubuntuvm:~/linux$ cat /proc/3181/maps 
-aaaaaaaa0000-aaaaaaaa1000 r-xp 00000000 fe:02 8199010                    /home/ubuntu/merge
-aaaaaaab0000-aaaaaaab1000 r--p 00000000 fe:02 8199010                    /home/ubuntu/merge
-aaaaaaab1000-aaaaaaab2000 rw-p 00001000 fe:02 8199010                    /home/ubuntu/merge
-aaaaaaab2000-aaaaaaad3000 rw-p 00000000 00:00 0                          [heap]
-fffff7e00000-fffff7f89000 r-xp 00000000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-fffff7f89000-fffff7f98000 ---p 00189000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-fffff7f98000-fffff7f9c000 r--p 00188000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-fffff7f9c000-fffff7f9e000 rw-p 0018c000 fe:02 41410085                   /usr/lib/aarch64-linux-gnu/libc.so.6
-fffff7f9e000-fffff7faa000 rw-p 00000000 00:00 0 
-fffff7fc2000-fffff7fed000 r-xp 00000000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-fffff7ff2000-fffff7ff3000 ---p 00000000 00:00 0 
-fffff7ff3000-fffff7ff4000 rw-p 00000000 00:00 0 
-fffff7ff4000-fffff7ff5000 rw-p 00000000 00:00 0 
-fffff7ff5000-fffff7ff6000 rw-p 00000000 00:00 0 
-fffff7ff6000-fffff7ff7000 ---p 00000000 00:00 0 
-fffff7ff7000-fffff7ff9000 rw-p 00000000 00:00 0 
-fffff7ff9000-fffff7ffb000 r--p 00000000 00:00 0                          [vvar]
-fffff7ffb000-fffff7ffc000 r-xp 00000000 00:00 0                          [vdso]
-fffff7ffc000-fffff7ffe000 r--p 0002a000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-fffff7ffe000-fffff8000000 rw-p 0002c000 fe:02 41316494                   /usr/lib/aarch64-linux-gnu/ld-linux-aarch64.so.1
-fffffffdf000-1000000000000 rw-p 00000000 00:00 0                         [stack]
