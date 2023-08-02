@@ -2,49 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D1C76CCAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A420276CCAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234056AbjHBMbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:31:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
+        id S234093AbjHBMbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:31:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232050AbjHBMbC (ORCPT
+        with ESMTP id S234085AbjHBMbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:31:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95C99B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w9tr1AR4GmU5vaVxpOCOeNBoe0QTS0eYPR8meuRf/nA=; b=Sty7cJ5I21M8pIW4vcPtXwcLTD
-        wQ/lq/rUczznk1i6mZJJW+DHIjI6Nyhnqe68OyZW+pH5fn0qrkduW0/m0uhcG9/cdRBqXTuKHVLKy
-        1aD2p+pBmBIy1NAPTwVRde13kciPSuh/DsMZfA8QbLf8YjYISmJQSUIYCvDCKEy52IpVfcHIZijfq
-        yJSIJpJT4Q3ZskApOYQl1lEpvgkIzLXAVII58nPMrPyPWM1UN2P05Qibg3X+6DCr/Ajb0rnnBW8C4
-        LdaQE+uI5nTuVIgXZmZQjVUbYNX1LKxIfkz6oy3BvR56JmkP+kD5ol4M1uEDYVaEtRfiTN7kI8+/m
-        I+1zVq3Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qRB09-00EvsP-Rf; Wed, 02 Aug 2023 12:30:53 +0000
-Date:   Wed, 2 Aug 2023 13:30:53 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH 2/4] mm: migrate: convert numamigrate_isolate_page() to
- numamigrate_isolate_folio()
-Message-ID: <ZMpMfQUktateeN1D@casper.infradead.org>
-References: <20230802095346.87449-1-wangkefeng.wang@huawei.com>
- <20230802095346.87449-3-wangkefeng.wang@huawei.com>
+        Wed, 2 Aug 2023 08:31:08 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293419B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:31:03 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-317744867a6so6020115f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:31:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690979461; x=1691584261;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UOI4p7sf9qm3jp2sWDpRQezaP1VfXV2l/+4frwp+pfo=;
+        b=A4gDM2cSGcaFSfpwa1wXZUvAzPbJfGnX21w0IZ2piv2gfZNKwHWQuq+gaqWdolQDVf
+         wCI3KVW0/Ixb7w3t2VLqLNQXqDKb73smXi1qJ6UqZOcFSxLOarwPSQFWEMwjImCw0hFo
+         tWg6JF3VxLmhFNKRCr8J1PcvPV/p1HwVpN7JWecuylmoKHEuz1qOSXpSx2AE6LG0b3Yl
+         BmMlj2ou1fFpzq32E9btpv24ZHW6OPMbGl4YTzv0ACYHkenO0hx10xtalJl0W+JdTkr3
+         xzuhrNjDjGuq7G9Ucq1QcoL5Pvn4GcrmL1AWaAiQe5tV1vjtUMgRRMvMBVdAk7HNE/mN
+         K6Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690979461; x=1691584261;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UOI4p7sf9qm3jp2sWDpRQezaP1VfXV2l/+4frwp+pfo=;
+        b=H2IVHjVPrCQYeyi8X6Ni5E8aSDsaszz1N9ocx45yOFY+khCtYGtCXCCViSvG33Omxr
+         84t+tgOoaxbG4zJUguCGyeiqps/Iz4/zThgsdusWQsUxh0AbG9SiU8uTKhYTXVvYZI+s
+         Ml3OLuZcxQBAweP4DnMQMOpENRwmPKoMl4cmIS0/d21F4p3vFEK9Z6R7eUkerCp6B5Bd
+         o6U5jKCGCiAD6ldkCAPmLtc+njLtsFGPVz7w71gKx+X3lN7BrmvtXz8sHP1LXdwSjpIA
+         T7HRq3ei9qMgGFm8UeHxUOxgC4+zRD89P4eoFhRpf0iiIkihds/UcklmPiaPCiXmxqxQ
+         OmjA==
+X-Gm-Message-State: ABy/qLaoqGe6fdio96nAy0cA+EQgZ6UdIFTuP5Ip3kgnvem9hpT/8UCx
+        c9B/MWCD+25OvFCiRlxpdrujjQ==
+X-Google-Smtp-Source: APBJJlEyjLeRFbv0ocTWt/riOTgPTvRFCQJRf7UkIZAJEw0W48ptsBLwAM4GeKZgsTMmsU5AhgdzSg==
+X-Received: by 2002:a5d:470d:0:b0:317:5c82:10c5 with SMTP id y13-20020a5d470d000000b003175c8210c5mr4412184wrq.17.1690979461541;
+        Wed, 02 Aug 2023 05:31:01 -0700 (PDT)
+Received: from google.com (65.0.187.35.bc.googleusercontent.com. [35.187.0.65])
+        by smtp.gmail.com with ESMTPSA id z17-20020adfec91000000b003179d7ed4f3sm10643676wrn.12.2023.08.02.05.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 05:31:00 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 13:30:56 +0100
+From:   Vincent Donnefort <vdonnefort@google.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v5 1/2] ring-buffer: Introducing ring-buffer mapping
+ functions
+Message-ID: <ZMpMgA85+DyGirXa@google.com>
+References: <20230728164754.460767-1-vdonnefort@google.com>
+ <20230728164754.460767-2-vdonnefort@google.com>
+ <20230801132603.0b18c0eb@gandalf.local.home>
+ <20230802074526.2fa479ab@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230802095346.87449-3-wangkefeng.wang@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+In-Reply-To: <20230802074526.2fa479ab@gandalf.local.home>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,28 +76,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 05:53:44PM +0800, Kefeng Wang wrote:
-> -static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
-> +static int numamigrate_isolate_folio(pg_data_t *pgdat, struct folio *folio)
->  {
-> -	int nr_pages = thp_nr_pages(page);
-> -	int order = compound_order(page);
-> +	int nr_pages = folio_nr_pages(folio);
-> +	int order = folio_order(folio);
->  
-> -	VM_BUG_ON_PAGE(order && !PageTransHuge(page), page);
-> +	VM_BUG_ON_FOLIO(order && !folio_test_pmd_mappable(folio), folio);
+On Wed, Aug 02, 2023 at 07:45:26AM -0400, Steven Rostedt wrote:
+> On Tue, 1 Aug 2023 13:26:03 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > > +
+> > > +	if (READ_ONCE(cpu_buffer->mapped)) {
+> > > +		/* Ensure the meta_page is ready */
+> > > +		smp_rmb();
+> > > +		WRITE_ONCE(cpu_buffer->meta_page->pages_touched,
+> > > +			   local_read(&cpu_buffer->pages_touched));
+> > > +	}  
+> > 
+> > I was thinking instead of doing this in the semi fast path, put this logic
+> > into the rb_wakeup_waiters() code. That is, if a task is mapped, we call
+> > the irq_work() to do this for us. It could even do more, like handle
+> > blocked mapped waiters.
+> 
+> I was thinking how to implement this, and I worry that it may cause an irq
+> storm. Let's keep this (and the other locations) as is, where we do the
+> updates in place. Then we can look at seeing if it is possible to do it in
+> a delayed fashion another time.
 
-I don't know why we have this assertion.  I would be inclined to delete
-it as part of generalising the migration code to handle arbitrary sizes
-of folio, rather than assert that we only support PMD size folios.
+I actually looking at this. How about:
 
->  	/* Do not migrate THP mapped by multiple processes */
-> -	if (PageTransHuge(page) && total_mapcount(page) > 1)
-> +	if (folio_test_pmd_mappable(folio) && folio_estimated_sharers(folio) > 1)
->  		return 0;
+On the userspace side, a simple poll:
 
-I don't know if this is the right logic.  We've willing to move folios
-mapped by multiple processes, as long as they're smaller than PMD size,
-but once they get to PMD size they're magical and can't be moved?
+  static void wait_entries(int fd)
+  {
+          struct pollfd pollfd = {
+                  .fd     = fd,
+                  .events = POLLIN,
+          };
+  
+          if (poll(&pollfd, 1, -1) == -1)
+                  pdie("poll");
+  }
 
+And on the kernel side, just a function to update the "writer fields" of the
+meta-page:
+
+   static void rb_wake_up_waiters(struct irq_work *work)
+   {
+          struct rb_irq_work *rbwork = container_of(work, struct rb_irq_work, work);
+  +       struct ring_buffer_per_cpu *cpu_buffer =
+  +               container_of(rbwork, struct ring_buffer_per_cpu, irq_work);
+  +
+  +       rb_update_meta_page(cpu_buffer);
+   
+          wake_up_all(&rbwork->waiters);
+
+That would rate limit the number of updates to the meta-page without any irq storm?
+
+> 
+> -- Steve
