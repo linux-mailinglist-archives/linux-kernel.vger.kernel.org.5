@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFA576D956
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185F976D966
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbjHBVS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:18:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
+        id S231701AbjHBVVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbjHBVSz (ORCPT
+        with ESMTP id S231126AbjHBVV3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:18:55 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C060910DA
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:18:53 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d087ffcc43cso212572276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:18:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691011133; x=1691615933;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qy83P9oplZVK/HLt8eR0veDAizYsIGOwrmQzznNbk3Y=;
-        b=KgkO2geO/ZBk5bazDydQOW2OA+ObGf/KDuyZJJ7rUjfiWg3T08mM/WJu1y6PwiFDRY
-         0yYKAnyGSUXmM0tjj6HVMqoLanZK3nzMQhh3g4oynVg0VE/3i7G0VNoNdvQMRE5J4NIR
-         ThY/dsHhLSF3qu2yWvJPJtXBXJe8lZG2ghj6tyLMc0xGLpa+fB73cPOTcXkUb/kJKLZq
-         cG3zxBw15KkxT/cWrNVzufXq2znM8KjG0AbKwT4RFHTxBijU7evo+3VAlHV6MdXksJQR
-         NI/2KTpytLU1+LfojoHyySd3Gemo38aqusVLCnx54BLJwMnbyVbfq2OXGSkIjHTec1iQ
-         utmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691011133; x=1691615933;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qy83P9oplZVK/HLt8eR0veDAizYsIGOwrmQzznNbk3Y=;
-        b=Bj0vI4Q3XfLzQtIIPnzhElrC1SRm9OMI5VYSE7bkqYvIzxUdxqLC16Ixu4QxMi8DT+
-         3VPi08mNkyTcaVzVTmQn+BMEJSmLl8xadMlpErwFHUtFu9aXFGI4gbn1Rg2VDCxqgiFo
-         tIIlgzvwgLEmMsx5bbhozutORZsVacEXTyHj1/oLOrKzi2XcORkEdCRsbWr67SCqJn6r
-         pSpR2dGwHZS4mIOcqqBOrVob2idhTgCKrV+f68ajyTdaZM8DP8QINsN8d3f8nvv6dd6j
-         JcIa8IMTOSSCgvDd1uhWIdEnRklzizKCUAOQzrP1Njj4vVyojRlEhkSksrCqtLVt3sMJ
-         e8Iw==
-X-Gm-Message-State: ABy/qLb/VgUwl/PxYfffrOXZk0qpP3vv5sVNszxUmxF9dX245Rijhlot
-        8LxOXPPzkb6wsrGJu2ZkZ8SgJL4cuVs=
-X-Google-Smtp-Source: APBJJlH7JmfON0JMQ9P4y/J+/y6zreNPhQVHfUsgw6JZ5uUJNyyH0464Q7Jk7VGkg8zVRVS1gLuWQFJhaEc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ce91:0:b0:c4e:3060:41f9 with SMTP id
- x139-20020a25ce91000000b00c4e306041f9mr128345ybe.9.1691011133093; Wed, 02 Aug
- 2023 14:18:53 -0700 (PDT)
-Date:   Wed,  2 Aug 2023 14:18:30 -0700
-In-Reply-To: <20230704122148.11573-1-duminjie@vivo.com>
-Mime-Version: 1.0
-References: <20230704122148.11573-1-duminjie@vivo.com>
-X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <169101110045.1746914.18074564882174503013.b4-ty@google.com>
-Subject: Re: [PATCH v1] tools: remove duplicate assignment
-From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Minjie Du <duminjie@vivo.com>
-Cc:     opensource.kernel@vivo.com
+        Wed, 2 Aug 2023 17:21:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FCEB2D6A;
+        Wed,  2 Aug 2023 14:20:59 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 05FC861B29;
+        Wed,  2 Aug 2023 21:20:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 53901C433C7;
+        Wed,  2 Aug 2023 21:20:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691011221;
+        bh=r3kCRVSYFBLItWe2GV/TfNk+pBsHmyVL2Z8MBrXrPg0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KfzHGHMko0UeGp/f2ND5mAbBMYnRoflMYUXrOCIrcKUS2s+QQwiHjK8oIKAzyCbub
+         RKxePwuIa8y+637dazizHtwLEoUZkgCLyh03bGBDvp46nZ66fmHqG8dQnpZnPFgAF0
+         Y40jmjeZiFYBByXk5XQ/tqHpuMLg2GDMIsewf7ioYwzjOGogm6oz4AJ1ikb4JUL19e
+         OtK6eUQ0HqjrU02q8IUiqmu4N5WnPq6G6PSLAJzD8ILUzc37XkGGtO18sqFpi2l4n7
+         1HnJ00IZk+JwweFreVP19PhWZ6o5FXkBHWiuMsDxTb2TK1fP+6ChiDT7jiL7ZACtUG
+         vyJdLb+Fw4LyQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 339AFE270D7;
+        Wed,  2 Aug 2023 21:20:21 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] [v5] bpf: fix bpf_probe_read_kernel prototype mismatch
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169101122119.28051.8597932529135437329.git-patchwork-notify@kernel.org>
+Date:   Wed, 02 Aug 2023 21:20:21 +0000
+References: <20230801111449.185301-1-arnd@kernel.org>
+In-Reply-To: <20230801111449.185301-1-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        song@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org,
+        arnd@arndb.de, stable@vger.kernel.org, john.fastabend@gmail.com,
+        martin.lau@linux.dev, yonghong.song@linux.dev, kpsingh@kernel.org,
+        sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+        memxor@gmail.com, davemarchevsky@fb.com, void@manifault.com,
+        peterz@infradead.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 04 Jul 2023 20:21:47 +0800, Minjie Du wrote:
-> Fix: make 'nodep' remove duplicate assignment
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Tue,  1 Aug 2023 13:13:58 +0200 you wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
+> bpf_probe_read_kernel() has a __weak definition in core.c and another
+> definition with an incompatible prototype in kernel/trace/bpf_trace.c,
+> when CONFIG_BPF_EVENTS is enabled.
 > 
+> Since the two are incompatible, there cannot be a shared declaration in
+> a header file, but the lack of a prototype causes a W=1 warning:
+> 
+> [...]
 
-Applied to kvm-x86 selftests (with some massaging of the changelog), thanks!
+Here is the summary with links:
+  - [v5] bpf: fix bpf_probe_read_kernel prototype mismatch
+    https://git.kernel.org/bpf/bpf-next/c/6a5a148aaf14
 
-[1/1] tools: remove duplicate assignment
-      https://github.com/kvm-x86/linux/commit/7e4966e6e13d
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
---
-https://github.com/kvm-x86/linux/tree/next
-https://github.com/kvm-x86/linux/tree/fixes
+
