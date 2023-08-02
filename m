@@ -2,208 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA2176D6A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C865076D6A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbjHBSQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S232569AbjHBSRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjHBSQE (ORCPT
+        with ESMTP id S230367AbjHBSRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:16:04 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A12171B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:16:02 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-76cb0d2fc9cso4498985a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:16:02 -0700 (PDT)
+        Wed, 2 Aug 2023 14:17:15 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0191717
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:17:14 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4f14865fcc0so516e87.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:17:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1691000161; x=1691604961;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Jttay3Y7tZ44PZ3pDqY6yaCEufBzLxT6C+Rmg0Bmtnw=;
-        b=d0PA4A+jJfozBkqa8UDo7N4WMrxQqmldV/JhxJQwAwTQxncKxV7wRNigctbcr86AYI
-         clESekvuuB+Wrv1ZtpfR4IysIKu6fag+QBQshGld66Kt0Q5XuzBVE3sezvwdHHM5GBRA
-         /QbFR57HWoXChW9HY4Unpbabt/NXEcF8Mp8W4kKnIVcnINk3NpDlTQ2PvG6h59YoeeXG
-         0UBUUmhk4nFes79N033bvPCT31OiqdAXrld91YhXQF+3Z9q1JUL6gOI1m0L868Lko8rS
-         dBxtDaX/QpbTdFRjMbLdH9vVb6j6uBlTpEPyJ6bFjo/PFc4fUwtLddOSw2bqQJ2b0DU5
-         m/4A==
+        d=google.com; s=20221208; t=1691000232; x=1691605032;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rrCRBhBQL3OtQ+bHa7OyL271Q2ifOyGlImfq9DRj0XA=;
+        b=Bn/S0ROLdNzzMjvQSdQfYLpLYu0ENORnFQwnTNSOJPGeBL705QcFs1SDRoXALnmu/s
+         7uEicafnIa1IrLxAFpt+OXCBbkW82zMn52djGXMnWkk1L/TVi543x888GYfWTaO8xlE5
+         UZvRLuhCM32FQYxclXxSnO/0co8i+zpEl5Olt1NlKDkFxzC0sjsPrDcXH90XZdEQbAt0
+         nA55Zz89QYFDrKkrafHqbN+VkidYLlmlndx0h+VZCm7VwA07C8qhpjP4gNc6gBuNJtCA
+         JZ1l/n7JxXvyxyVdXorsqP+tNjz4euRntkavRVHrHK2RV4AJ2C15ey/8Fl5I8cNeqNuf
+         Z6VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691000161; x=1691604961;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jttay3Y7tZ44PZ3pDqY6yaCEufBzLxT6C+Rmg0Bmtnw=;
-        b=g7U/YQPCODl+8M6+ScrmXyLshTAgCnIsicIuaDJUWEL3Lu1RxqHWVJrB+8XFYaOPPs
-         PlAKrWb0icukdx2ne93g0JCwBsIYNQcKuWDeAjhOK77M41iKdc8ahJtXGsuAFLtZcq2f
-         MNBrVHdkFJsF7mIxeIPnShM5DSGI3A/tq6vNkycFpAewJ5011nXsVgZQh0tZx3stCwgw
-         9HFYgyQwM6Q+8xqRykH+cb6sKW91qJFCE0oqbAeqVLBghsXeLhnrHwuH4SX+k8dxJ8IK
-         QVWmt9+QqqX8jNqZpzjC5BXALInVLmWQBA/ADWD8Z47npvHC4wBsGOONHXBIilHD2bvY
-         PE7A==
-X-Gm-Message-State: ABy/qLY68/Pht3j5DHq7tc/IBzI/8EVGoimS7MD751VuwnnedtX4v7Z5
-        7ntxvcd1ur0yFOt/aFkY1YpL
-X-Google-Smtp-Source: APBJJlGGqbRJcuJCCqcoiQEPQ2nJxHgmcoYfak2Lu/M5Lqa7mfvnk8ungVqsLJDbg3pq5fFNVCUEEg==
-X-Received: by 2002:a05:620a:2204:b0:76c:d007:b544 with SMTP id m4-20020a05620a220400b0076cd007b544mr2485423qkh.26.1691000161351;
-        Wed, 02 Aug 2023 11:16:01 -0700 (PDT)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id u19-20020a05620a121300b007659935ce64sm5224030qkj.71.2023.08.02.11.16.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 11:16:00 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 14:16:00 -0400
-Message-ID: <bac543537058619345b363bbfc745927.paul@paul-moore.com>
-From:   Paul Moore <paul@paul-moore.com>
-To:     Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        David Howells <dhowells@redhat.com>,
-        Scott Mayhew <smayhew@redhat.com>
-Cc:     Stephen Smalley <sds@tycho.nsa.gov>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Subject: Re: [PATCH v6] vfs, security: Fix automount superblock LSM init  problem, preventing NFS sb sharing
-References: <20230802-master-v6-1-45d48299168b@kernel.org>
-In-Reply-To: <20230802-master-v6-1-45d48299168b@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1691000232; x=1691605032;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rrCRBhBQL3OtQ+bHa7OyL271Q2ifOyGlImfq9DRj0XA=;
+        b=VURTWZddr1QuIn83HlOBwCb0IfBwWl5LXE4QOo+kIxEjvI+id+VxgeUH+s+YYvBmSG
+         rrrz6xenhiy2VwnHTPTrBfnHQ6LIedGn0ZBTz8ZxWcg18JCQOtzsiRFdimOnBuGIMqKJ
+         YJ0G6vPoJZsJuzu2hQTI2sX5p+BnFfie6Kv6+PyslO6Fg39ZqKpWl+FKzOxTK7eskZVa
+         PdJlBjYaaSRw9IRc/xhAMZaksWaW5qHXOtDgyxXpqK+vgB7emzUUuZKTeyyflAqh7by+
+         +enRw/gs0NMU7DDJtdAbL23FV7nmaYxvKtbUhsCDo0OLEk0vghh2LbMU0aHZMJHFI/W0
+         QrcQ==
+X-Gm-Message-State: ABy/qLZAbiKrsn24fS8S3R8o3cRwFvAV3XdutHH1zwfOTAskjr866kbm
+        cc9e9za3sTcBp5OPBrKu1/6N+7GDtLaj/3Dvp9XWhg==
+X-Google-Smtp-Source: APBJJlEO1A+9k5TPeXApIKpU5BAdebVzfqO2UFz8PXgDQU3iKOSjIOMUTuSWMd8o+lSP1RhohVYl/vVaYEiQkGFxW1c=
+X-Received: by 2002:ac2:4477:0:b0:4ec:5157:bb37 with SMTP id
+ y23-20020ac24477000000b004ec5157bb37mr290237lfl.2.1691000232445; Wed, 02 Aug
+ 2023 11:17:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230726181738.1.Ic6b8e25120b2aec95e3d0f4ac92c2a35fc7a40e8@changeid>
+ <169079822136.24246.16960757983645261559.git-patchwork-notify@kernel.org>
+In-Reply-To: <169079822136.24246.16960757983645261559.git-patchwork-notify@kernel.org>
+From:   Rob Barnes <robbarnes@google.com>
+Date:   Wed, 2 Aug 2023 12:16:35 -0600
+Message-ID: <CA+Dqm30s282gcs6PHkZkH92mhndLi5YP=NPwS0duorizJfx+oQ@mail.gmail.com>
+Subject: Re: [PATCH] platform/chrome: cros_ec_lpc: Sync filesystem on EC panic
+To:     patchwork-bot+chrome-platform@kernel.org
+Cc:     bleung@chromium.org, groeck@chromium.org, tzungbi@kernel.org,
+        dtor@chromium.org, chrome-platform@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug  2, 2023 Jeff Layton <jlayton@kernel.org> wrote:
-> 
-> When NFS superblocks are created by automounting, their LSM parameters
-> aren't set in the fs_context struct prior to sget_fc() being called,
-> leading to failure to match existing superblocks.
-> 
-> Fix this by adding a new LSM hook to load fc->security for submount
-> creation when alloc_fs_context() is creating the fs_context for it.
-> 
-> However, this uncovers a further bug: nfs_get_root() initialises the
-> superblock security manually by calling security_sb_set_mnt_opts() or
-> security_sb_clone_mnt_opts() - but then vfs_get_tree() calls
-> security_sb_set_mnt_opts(), which can lead to SELinux, at least,
-> complaining.
-> 
-> Fix that by adding a flag to the fs_context that suppresses the
-> security_sb_set_mnt_opts() call in vfs_get_tree().  This can be set by NFS
-> when it sets the LSM context on the new superblock.
+Note: This change is being rejected upstream due to the use of
+ksys_sync_helper. Apparently it's discouraged. I sent a new patch to
+replace this one:
+https://lore.kernel.org/lkml/20230802175847.1.Ie9fc53b6a1f4c6661c5376286a50=
+e0cf51b3e961@changeid/
+
+On Mon, Jul 31, 2023 at 4:10=E2=80=AFAM
+<patchwork-bot+chrome-platform@kernel.org> wrote:
 >
-> The first bug leads to messages like the following appearing in dmesg:
-> 
-> 	NFS: Cache volume key already in use (nfs,4.2,2,108,106a8c0,1,,,,100000,100000,2ee,3a98,1d4c,3a98,1)
-> 
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> Fixes: 9bc61ab18b1d ("vfs: Introduce fs_context, switch vfs_kern_mount() to it.")
-> Fixes: 779df6a5480f ("NFS: Ensure security label is set for root inode)
-> Tested-by: Jeff Layton <jlayton@kernel.org>
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
-> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-> Acked-by: "Christian Brauner (Microsoft)" <brauner@kernel.org>
-> Link: https://lore.kernel.org/r/165962680944.3334508.6610023900349142034.stgit@warthog.procyon.org.uk/ # v1
-> Link: https://lore.kernel.org/r/165962729225.3357250.14350728846471527137.stgit@warthog.procyon.org.uk/ # v2
-> Link: https://lore.kernel.org/r/165970659095.2812394.6868894171102318796.stgit@warthog.procyon.org.uk/ # v3
-> Link: https://lore.kernel.org/r/166133579016.3678898.6283195019480567275.stgit@warthog.procyon.org.uk/ # v4
-> Link: https://lore.kernel.org/r/217595.1662033775@warthog.procyon.org.uk/ # v5
-> ---
-> This patch was originally sent by David several months ago, but it
-> never got merged. I'm resending to resurrect the discussion. Can we
-> get this fixed?
-
-Sorry, I sorta lost track of this after the ROOTCONTEXT_MNT discussion
-back in v3.  Looking at it a bit closer now I have one nitpicky
-request and one larger concern (see below).
-
-> diff --git a/fs/super.c b/fs/super.c
-> index e781226e2880..13adf43e2e5d 100644
-> --- a/fs/super.c
-> +++ b/fs/super.c
-> @@ -1541,10 +1541,12 @@ int vfs_get_tree(struct fs_context *fc)
->  	smp_wmb();
->  	sb->s_flags |= SB_BORN;
->  
-> -	error = security_sb_set_mnt_opts(sb, fc->security, 0, NULL);
-> -	if (unlikely(error)) {
-> -		fc_drop_locked(fc);
-> -		return error;
-> +	if (!(fc->lsm_set)) {
-> +		error = security_sb_set_mnt_opts(sb, fc->security, 0, NULL);
-> +		if (unlikely(error)) {
-> +			fc_drop_locked(fc);
-> +			return error;
-> +		}
->  	}
-
-I generally dislike core kernel code which makes LSM calls conditional
-on some kernel state maintained outside the LSM.  Sometimes it has to
-be done as there is no other good options, but I would like us to try
-and avoid it if possible.  The commit description mentioned that this
-was put here to avoid a SELinux complaint, can you provide an example
-of the complain?  Does it complain about a double/invalid mount, e.g.
-"SELinux: mount invalid.  Same superblock, different security ..."?
-
-I'd like to understand why the sb_set_mnt_opts() call fails when it
-comes after the fs_context_init() call.  I'm particulary curious to
-know if the failure is due to conflicting SELinux state in the
-fs_context, or if it is simply an issue of sb_set_mnt_opts() not
-properly handling existing values.  Perhaps I'm being overly naive,
-but I'm hopeful that we can address both of these within the SELinux
-code itself.
-
-In a worst case situation, we could always implement a flag *inside*
-the SELinux code, similar to what has been done with 'lsm_set' here.
-
-> diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> index d06e350fedee..29cce0fadbeb 100644
-> --- a/security/selinux/hooks.c
-> +++ b/security/selinux/hooks.c
-> @@ -2745,6 +2745,30 @@ static int selinux_umount(struct vfsmount *mnt, int flags)
->  				   FILESYSTEM__UNMOUNT, NULL);
->  }
->  
-> +static int selinux_fs_context_init(struct fs_context *fc,
-> +				   struct dentry *reference)
-> +{
-> +	const struct superblock_security_struct *sbsec;
-> +	struct selinux_mnt_opts *opts;
-> +
-> +	if (fc->purpose == FS_CONTEXT_FOR_SUBMOUNT) {
-> +		opts = kzalloc(sizeof(*opts), GFP_KERNEL);
-> +		if (!opts)
-> +			return -ENOMEM;
-> +
-> +		sbsec = selinux_superblock(reference->d_sb);
-> +		if (sbsec->flags & FSCONTEXT_MNT)
-> +			opts->fscontext_sid	= sbsec->sid;
-> +		if (sbsec->flags & CONTEXT_MNT)
-> +			opts->context_sid	= sbsec->mntpoint_sid;
-> +		if (sbsec->flags & DEFCONTEXT_MNT)
-> +			opts->defcontext_sid	= sbsec->def_sid;
-
-I acknowledge this is very nitpicky, but we're starting to make a
-greater effort towards using consistent style within the SELinux
-code.  With that in mind, please remove the alignment whitespace in
-the assignments above.  Thank you.
-
-> +		fc->security = opts;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int selinux_fs_context_dup(struct fs_context *fc,
->  				  struct fs_context *src_fc)
->  {
-
---
-paul-moore.com
+> Hello:
+>
+> This patch was applied to chrome-platform/linux.git (for-next)
+> by Tzung-Bi Shih <tzungbi@kernel.org>:
+>
+> On Wed, 26 Jul 2023 18:17:39 +0000 you wrote:
+> > Perform a filesystem sync when an EC panic is reported. The
+> > sync is performed twice in case some inodes or pages are
+> > temporarily locked. Testing showed syncing twice significantly
+> > improved reliability.
+> >
+> > hw_protection_shutdown is replaced for a couple reasons. It is
+> > unnecessary because the EC will force reset either way.
+> > hw_protection_shutdown does not reliably sync filesystem
+> > before shutting down.
+> >
+> > [...]
+>
+> Here is the summary with links:
+>   - platform/chrome: cros_ec_lpc: Sync filesystem on EC panic
+>     https://git.kernel.org/chrome-platform/c/0a329167220a
+>
+> You are awesome, thank you!
+> --
+> Deet-doot-dot, I am a bot.
+> https://korg.docs.kernel.org/patchwork/pwbot.html
+>
+>
