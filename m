@@ -2,40 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 698D976C55A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 315D276C55D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbjHBGhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 02:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34378 "EHLO
+        id S231220AbjHBGh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 02:37:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjHBGhG (ORCPT
+        with ESMTP id S232341AbjHBGhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 02:37:06 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 90C9F122
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:37:05 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5CBAFD75;
-        Tue,  1 Aug 2023 23:37:48 -0700 (PDT)
-Received: from a077893.arm.com (unknown [10.163.53.180])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4B8FC3F6C4;
-        Tue,  1 Aug 2023 23:37:02 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        James Clark <james.clark@arm.com>,
-        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] coresight: trbe: Directly use ID_AA64DFR0_EL1_TraceBuffer_IMP
-Date:   Wed,  2 Aug 2023 12:06:58 +0530
-Message-Id: <20230802063658.1069813-1-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 2 Aug 2023 02:37:53 -0400
+Received: from out28-4.mail.aliyun.com (out28-4.mail.aliyun.com [115.124.28.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FFCB1FF3
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:37:51 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.5040528|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.103306-0.00202804-0.894666;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=sunran001@208suo.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.U6YtKML_1690958263;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U6YtKML_1690958263)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Aug 2023 14:37:45 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amdgpu: Clean up errors in vce_v3_0.c
+Date:   Wed,  2 Aug 2023 06:37:42 +0000
+Message-Id: <20230802063742.11697-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -43,36 +37,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-is_trbe_available() checks for the TRBE support via extracting TraceBuffer
-field value from ID_AA64DFR0_EL1, and ensures that it is implemented. This
-replaces the open encoding '0b0001' with 'ID_AA64DFR0_EL1_TraceBuffer_IMP'
-which is now available via sysreg tools. Functional change is not intended.
+Fix the following errors reported by checkpatch:
 
-Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: James Clark <james.clark@arm.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: coresight@lists.linaro.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+ERROR: that open brace { should be on the previous line
+
+Signed-off-by: Ran Sun <sunran001@208suo.com>
 ---
- drivers/hwtracing/coresight/coresight-trbe.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/vce_v3_0.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
-index 94e67009848a..ebb9108d8e24 100644
---- a/drivers/hwtracing/coresight/coresight-trbe.h
-+++ b/drivers/hwtracing/coresight/coresight-trbe.h
-@@ -24,7 +24,7 @@ static inline bool is_trbe_available(void)
- 	unsigned int trbe = cpuid_feature_extract_unsigned_field(aa64dfr0,
- 								 ID_AA64DFR0_EL1_TraceBuffer_SHIFT);
+diff --git a/drivers/gpu/drm/amd/amdgpu/vce_v3_0.c b/drivers/gpu/drm/amd/amdgpu/vce_v3_0.c
+index 8def62c83ffd..18f6e62af339 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vce_v3_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vce_v3_0.c
+@@ -998,8 +998,7 @@ static void vce_v3_0_set_irq_funcs(struct amdgpu_device *adev)
+ 	adev->vce.irq.funcs = &vce_v3_0_irq_funcs;
+ };
  
--	return trbe >= 0b0001;
-+	return trbe >= ID_AA64DFR0_EL1_TraceBuffer_IMP;
- }
+-const struct amdgpu_ip_block_version vce_v3_0_ip_block =
+-{
++const struct amdgpu_ip_block_version vce_v3_0_ip_block = {
+ 	.type = AMD_IP_BLOCK_TYPE_VCE,
+ 	.major = 3,
+ 	.minor = 0,
+@@ -1007,8 +1006,7 @@ const struct amdgpu_ip_block_version vce_v3_0_ip_block =
+ 	.funcs = &vce_v3_0_ip_funcs,
+ };
  
- static inline bool is_trbe_enabled(void)
+-const struct amdgpu_ip_block_version vce_v3_1_ip_block =
+-{
++const struct amdgpu_ip_block_version vce_v3_1_ip_block = {
+ 	.type = AMD_IP_BLOCK_TYPE_VCE,
+ 	.major = 3,
+ 	.minor = 1,
+@@ -1016,8 +1014,7 @@ const struct amdgpu_ip_block_version vce_v3_1_ip_block =
+ 	.funcs = &vce_v3_0_ip_funcs,
+ };
+ 
+-const struct amdgpu_ip_block_version vce_v3_4_ip_block =
+-{
++const struct amdgpu_ip_block_version vce_v3_4_ip_block = {
+ 	.type = AMD_IP_BLOCK_TYPE_VCE,
+ 	.major = 3,
+ 	.minor = 4,
 -- 
-2.25.1
+2.17.1
 
