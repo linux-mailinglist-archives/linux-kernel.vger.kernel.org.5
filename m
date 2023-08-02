@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 651F676CD4D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7635376CD5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbjHBMpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:45:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
+        id S234680AbjHBMp4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 08:45:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234141AbjHBMpF (ORCPT
+        with ESMTP id S234650AbjHBMpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:45:05 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBFC30F1
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:44:36 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7AC5C20004;
-        Wed,  2 Aug 2023 12:44:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1690980270;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8dOawE5kxCNhvhOKy8LNvd/QWehP28IWgnL5mXG3Rew=;
-        b=P0MhsdyMGZ3XJmzlSk4CllYXA1geVTZWmr2Fjyv88Q7ZPbHTwBOY5k2DAO10JT5OBplmOH
-        AkBEeUvauITGmK6ZBJFuyrm00gpgRlP2bOcLdHV440gFQUtFiggkLxUePTWXmrNCKkpqhY
-        EGBLCDf8ZfXprGt5SE+XdzM+LdOBAWV3F79mVQH6J9Ho+ErqTC05FGasNo8+wDhuEmugMM
-        P2t52sXwv0DEpNOjNaTUYrGW2Nnu0EhVpz4IgSJ1QQ6q6zE2V6BXxF5ax4F47OMdGcjYSa
-        OYxOfE1neZ7jzISDyTQOAr6lACPpVNakre4JdzAU23aukqgVknLj69Y+J4mtjA==
-Date:   Wed, 2 Aug 2023 14:44:26 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     "zhangxiaoxu (A)" <zhangxiaoxu5@huawei.com>
-Cc:     "Usyskin, Alexander" <alexander.usyskin@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>,
-        "Lubart, Vitaly" <vitaly.lubart@intel.com>
-Subject: Re: [PATCH] mtd: fix use-after-free in mtd release
-Message-ID: <20230802144426.2411bba2@xps-13>
-In-Reply-To: <d9d56389-7409-79ae-6854-00ab8de7da4d@huawei.com>
-References: <20230727145758.3880967-1-alexander.usyskin@intel.com>
-        <ZMKJRNDoQV8p0DH4@smile.fi.intel.com>
-        <20230727172013.7c85c05d@xps-13>
-        <ZMKUJbl7kFOfgKGg@smile.fi.intel.com>
-        <20230727183611.37d01f51@xps-13>
-        <CY5PR11MB63660B9CE604C0CFF2E088DAED04A@CY5PR11MB6366.namprd11.prod.outlook.com>
-        <d9d56389-7409-79ae-6854-00ab8de7da4d@huawei.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Wed, 2 Aug 2023 08:45:53 -0400
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0BE2D4C;
+        Wed,  2 Aug 2023 05:45:30 -0700 (PDT)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1bb6334fec5so797391fac.1;
+        Wed, 02 Aug 2023 05:45:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690980285; x=1691585085;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=at867tJckf1nQORNLj4OAwSlXms8YsyeqcRBXqkAs8A=;
+        b=Yvk/lIRGkmSm2qtgbWipMTFeQKe0S5WXsxVjmi7UrfG0AtpWJV//WOa2m1Ss2CuEs1
+         iife9vHWcSDeZLdhfBuorf12gmJAKrMZkYE+apn+7p83ZYwc3h52e8YSn2LQyA63eXca
+         d4YJaLWSjK0+x1o8LXoXpiTgE2tXP4RfaelKNST5qDGN8HlsoPcMIDQBjeF6fzif6mWF
+         xUeMtvfJZuwMgnJSVuLnSatW4TY87XeZ33I32p9J7vL/dXq6ZUBbb7uMZdLU7aLa8OQz
+         1YAMMoCG6bNyK+S3qJNi8GlSuVAQ8VCOlyLVaDB43JY/kUhwc1HFFcLFj4JhyCLuyMiD
+         RFYg==
+X-Gm-Message-State: ABy/qLZOMnp/XnwnQnF5yvxiW8mEMLqxSdti6DVVCB2aQ613wE6zPoAI
+        AGncyv7iIwZ5Wm+L1N9SreQ/BLPNeGvzOtF5uPU=
+X-Google-Smtp-Source: APBJJlHrX8CZBRaQSwN8AGSMWlTg21y9BjLbat0wsMulksa1y+4QVEwR8wkHsQPwwckRN/BKrCMGaC0wh63srUFWIwQ=
+X-Received: by 2002:a05:6870:231d:b0:1a7:f79c:2fbc with SMTP id
+ w29-20020a056870231d00b001a7f79c2fbcmr11997663oao.0.1690980285231; Wed, 02
+ Aug 2023 05:44:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230728145515.990749537@infradead.org> <20230728145808.835742568@infradead.org>
+ <CAJZ5v0gNqEuqvV0RtrXiDDGtvKB2hronLwAU8jnmuGppKmyDxA@mail.gmail.com>
+ <20230729084417.GB3945851@hirez.programming.kicks-ass.net>
+ <CAJZ5v0iVKRY5-YvQmMbZ3+eZNHJgXt=CoYedNueAJyT9+Ld5Dg@mail.gmail.com>
+ <20230731090935.GB29590@hirez.programming.kicks-ass.net> <CAJZ5v0jh5oozZm7OvN9j1iHtzYQzPMOJ=Nt0HaJKYyJ218Cezw@mail.gmail.com>
+ <20230731113850.GE29590@hirez.programming.kicks-ass.net> <CAJZ5v0h+KC+uMiOE4m4Dp4=iHMkekutk+B+cwb0de8Fvswv6jA@mail.gmail.com>
+ <20230802103426.GB210177@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230802103426.GB210177@hirez.programming.kicks-ass.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 2 Aug 2023 14:44:33 +0200
+Message-ID: <CAJZ5v0gMrUBqtWfuN4DJwXYY5kM+kikWHiep=p-8Jz3yEO0hfQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH 1/3] cpuidle: Inject tick boundary state
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, anna-maria@linutronix.de,
+        tglx@linutronix.de, frederic@kernel.org, gautham.shenoy@amd.com,
+        linux-kernel@vger.kernel.org, daniel.lezcano@linaro.org,
+        linux-pm@vger.kernel.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi zhang,
+On Wed, Aug 2, 2023 at 12:34 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Jul 31, 2023 at 06:55:35PM +0200, Rafael J. Wysocki wrote:
+>
+> > > In that case you cannot tell the difference between I'm good to use this
+> > > state and I'm good to disable the tick and still use this state.
+> >
+> > No, you don't, but is it really worth the fuss?
+>
+> My somewhat aged IVB-EP sits around 25 us for restarting the tick.
+>
+> Depending on the C state, that is a significant chunk of exit latency,
+> and depending on how often you do the whole NOHZ dance, this can add up
+> to significant lost runtime too.
+>
+> And these are all machines that have a usable TSC, these numbers all go
+> up significantly when you somehow end up on the HPET or similar wreckage.
+>
+> Stopping the tick is slightly more expensive, but in the same order, I
+> get around 30 us on the IVB, vs 25 for restarting it. Reprogramming the
+> timer (LAPIC/TSC-DEADLINE) is the main chunk of it I suspect.
+>
+> So over-all that's 55 us extra latency for the full idle path, which can
+> definitely hurt.
+>
+> So yeah, I would say this is all worth it.
 
-zhangxiaoxu5@huawei.com wrote on Mon, 31 Jul 2023 09:35:42 +0800:
+I agree that, in general, it is good to avoid stopping the tick when
+it is not necessary to stop it.
 
-> =E5=9C=A8 2023/7/30 19:10, Usyskin, Alexander =E5=86=99=E9=81=93:
-> > Miquel, is this patch helps with your original problem of devices not f=
-reed?
-> >=20
-> > Zhang, is this patch helps with your problem with KAsan? =20
-> After this patch applied, the problem can still be reproduced.
+> My ADL is somewhat better, but also much higher clocked, and gets around
+> 10 us for a big core and 16 us for a little core for restarting the
+> tick.
 
-Did you test my patch as well? Does Kasan still complain with it?
+But my overall point is different.
 
-Thanks,
-Miqu=C3=A8l
+An additional bin would possibly help if the deepest state has been
+selected and its target residency is below the tick, and the closest
+timer (other than the tick) is beyond the tick.  So how much of a
+difference would be made by making this particular case more accurate?
