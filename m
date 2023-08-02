@@ -2,125 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D85E76D110
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6984076D115
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232127AbjHBPIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58742 "EHLO
+        id S234121AbjHBPIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234744AbjHBPHj (ORCPT
+        with ESMTP id S234034AbjHBPI0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:07:39 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CD13AA0;
-        Wed,  2 Aug 2023 08:07:12 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bb84194bf3so43578225ad.3;
-        Wed, 02 Aug 2023 08:07:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690988832; x=1691593632;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0jkYV7c5PLMTn5+v3tPIkhhWx21IaP2g8CeWnmycn90=;
-        b=BWOwB+kC+ca19GkjhgxcBsds/x3qJxBoyS2Mv6o6f4kKa+8h1r4XBIX7VU+MZTs+hz
-         ah2LOojfErDO0l4Fb+x29RyibobZu0cEgTBtHU+5/cXXpQLLCFSMZ//fgm/EVAKtlHlH
-         pxhgSrEfFi+3KXedd3BgzihMfkjASj5jhrkCUCwufWHZ0cPdmXOyroACbZL3xJmrlFuH
-         ORVbUUjvi0CBW6IFz2AeaLKx/vTnRdWHdikh7FGKRemrYt1+Hbps1PVU9qfZL9swJN7b
-         Lu0u/cG8tmSm5zY7yxbOfcv9tc6eftXRHg/xOLC3+igXISGRqvsu//oC5Ur9sCB0SE9u
-         ZfYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690988832; x=1691593632;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0jkYV7c5PLMTn5+v3tPIkhhWx21IaP2g8CeWnmycn90=;
-        b=FgB6EpEgz1VBrj7a2kYYBrooX8vkhGFUDc7ZsU1bNoqLYBThTU0h8cGMZ8hWcevnvA
-         IDVyy/JeAXtS77pzQJaEJoExg0G5veVV62MKInbyX73Y+T23MeyC+0CXS4nf+sTsTNT7
-         OUez5Yj60K0XF/YIPSpgAQnboTN7yG3fFtqrCBE7PzhWQkqwOlW7WuWks7h6AUG1ha1o
-         NPP9i6rG4qTMvZaZxpcj+ofQ8ZUzDZ2of4zj8z/iV8bNr+Rp51CNiOjVkNM6Kor4SdRL
-         VvwvkKaDf0zzg1zRoRQgeNylR9t+YOnNk8WSShbFNUuYyNHaKz+8/7v13T6DsrmVEWeT
-         k5sg==
-X-Gm-Message-State: ABy/qLZTbCpKLC+ptU47oB+X0A0GT+LjqHcON2WchXWmLuW0EY0lTssx
-        WxRmF4B0cactTgqtVw7DM0c=
-X-Google-Smtp-Source: APBJJlEygCUlYmzIURk4gjtEnKzK4hnw15QHHhv8QAxHHcCTm0Xbt+OEzBvPahfOd4zzzB7S9XJI+Q==
-X-Received: by 2002:a17:902:8f8b:b0:1b8:9db5:2ec1 with SMTP id z11-20020a1709028f8b00b001b89db52ec1mr12807169plo.67.1690988831647;
-        Wed, 02 Aug 2023 08:07:11 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 18-20020a170902c21200b001bc21222e34sm3995116pll.285.2023.08.02.08.07.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 08:07:11 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 2 Aug 2023 08:07:10 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     Carsten =?iso-8859-1?Q?Spie=DF?= <mail@carsten-spiess.de>,
-        Conor Dooley <conor@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] dt-bindings: hwmon: add renesas,isl28022
-Message-ID: <c46fe1bc-3170-4ab3-9de4-86d6877a004f@roeck-us.net>
-References: <20230801163546.3170-1-mail@carsten-spiess.de>
- <20230801163546.3170-3-mail@carsten-spiess.de>
- <20230801-implicate-mullets-bd160bbda4b2@spud>
- <20230802093023.1a926c9f.mail@carsten-spiess.de>
- <20230802-sandbar-crudely-78a4b8a351b0@wendy>
+        Wed, 2 Aug 2023 11:08:26 -0400
+Received: from outbound-smtp46.blacknight.com (outbound-smtp46.blacknight.com [46.22.136.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFAE2103
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:08:19 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp46.blacknight.com (Postfix) with ESMTPS id A7ABEFAE3B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 16:08:17 +0100 (IST)
+Received: (qmail 16070 invoked from network); 2 Aug 2023 15:08:17 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 2 Aug 2023 15:08:17 -0000
+Date:   Wed, 2 Aug 2023 16:08:16 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/8] mm/gup: reintroduce FOLL_NUMA as
+ FOLL_HONOR_NUMA_FAULT
+Message-ID: <20230802150816.aaubbx4t7745lqik@techsingularity.net>
+References: <20230801124844.278698-1-david@redhat.com>
+ <20230801124844.278698-2-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230802-sandbar-crudely-78a4b8a351b0@wendy>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+In-Reply-To: <20230801124844.278698-2-david@redhat.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 08:43:59AM +0100, Conor Dooley wrote:
-> On Wed, Aug 02, 2023 at 09:30:23AM +0200, Carsten Spieß wrote:
-> > 
-> > On 8/1/23 22:52, Conor Dooley wrote:
-> > > On Tue, Aug 01, 2023 at 06:35:46PM +0200, Carsten Spieß wrote:
-> > > > Add dt-bindings for Renesas ISL28022 power monitor.
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    enum:
-> > > > +      - renesas,isl28022  
-> > > 
-> > > You've only got one compatible, why the enum? Will there be more similar
-> > > devices that have an incompatible programming model?
-> > Yes, there are isl28023 and isl28025 with different register addresses,
-> > might be supported in future releases.
+On Tue, Aug 01, 2023 at 02:48:37PM +0200, David Hildenbrand wrote:
+> Unfortunately commit 474098edac26 ("mm/gup: replace FOLL_NUMA by
+> gup_can_follow_protnone()") missed that follow_page() and
+> follow_trans_huge_pmd() never implicitly set FOLL_NUMA because they really
+> don't want to fail on PROT_NONE-mapped pages -- either due to NUMA hinting
+> or due to inaccessible (PROT_NONE) VMAs.
 > 
-> Right. Unless that's a very strong "might", const: will do the trick
-> here just fine.
-
-It is a very strong "will never be" for isl28023 and isl28025.
-
-Guenter
-
+> As spelled out in commit 0b9d705297b2 ("mm: numa: Support NUMA hinting page
+> faults from gup/gup_fast"): "Other follow_page callers like KSM should not
+> use FOLL_NUMA, or they would fail to get the pages if they use follow_page
+> instead of get_user_pages."
 > 
-> Otherwise,
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> liubo reported [1] that smaps_rollup results are imprecise, because they
+> miss accounting of pages that are mapped PROT_NONE. Further, it's easy
+> to reproduce that KSM no longer works on inaccessible VMAs on x86-64,
+> because pte_protnone()/pmd_protnone() also indictaes "true" in
+> inaccessible VMAs, and follow_page() refuses to return such pages right
+> now.
 > 
-> > > > +  renesas,shunt-range-microvolt:
-> > > > +    description: |  
-> > > 
-> > > You don't need these |s if you have no formatting to preserve in the
-> > > text.
-> > Will fix in v4.
+> As KVM really depends on these NUMA hinting faults, removing the
+> pte_protnone()/pmd_protnone() handling in GUP code completely is not really
+> an option.
 > 
-> There's no need to send a v4 for that alone.
+> To fix the issues at hand, let's revive FOLL_NUMA as FOLL_HONOR_NUMA_FAULT
+> to restore the original behavior for now and add better comments.
+> 
+> Set FOLL_HONOR_NUMA_FAULT independent of FOLL_FORCE in
+> is_valid_gup_args(), to add that flag for all external GUP users.
+> 
+> Note that there are three GUP-internal __get_user_pages() users that don't
+> end up calling is_valid_gup_args() and consequently won't get
+> FOLL_HONOR_NUMA_FAULT set.
+> 
+> 1) get_dump_page(): we really don't want to handle NUMA hinting
+>    faults. It specifies FOLL_FORCE and wouldn't have honored NUMA
+>    hinting faults already.
+> 2) populate_vma_page_range(): we really don't want to handle NUMA hinting
+>    faults. It specifies FOLL_FORCE on accessible VMAs, so it wouldn't have
+>    honored NUMA hinting faults already.
+> 3) faultin_vma_page_range(): we similarly don't want to handle NUMA
+>    hinting faults.
+> 
+> To make the combination of FOLL_FORCE and FOLL_HONOR_NUMA_FAULT work in
+> inaccessible VMAs properly, we have to perform VMA accessibility checks in
+> gup_can_follow_protnone().
+> 
+> As GUP-fast should reject such pages either way in
+> pte_access_permitted()/pmd_access_permitted() -- for example on x86-64 and
+> arm64 that both implement pte_protnone() -- let's just always fallback
+> to ordinary GUP when stumbling over pte_protnone()/pmd_protnone().
+> 
+> As Linus notes [2], honoring NUMA faults might only make sense for
+> selected GUP users.
+> 
+> So we should really see if we can instead let relevant GUP callers specify
+> it manually, and not trigger NUMA hinting faults from GUP as default.
+> Prepare for that by making FOLL_HONOR_NUMA_FAULT an external GUP flag
+> and adding appropriate documenation.
+> 
+> [1] https://lore.kernel.org/r/20230726073409.631838-1-liubo254@huawei.com
+> [2] https://lore.kernel.org/r/CAHk-=wgRiP_9X0rRdZKT8nhemZGNateMtb366t37d8-x7VRs=g@mail.gmail.com
+> 
+> Reported-by: liubo <liubo254@huawei.com>
+> Closes: https://lore.kernel.org/r/20230726073409.631838-1-liubo254@huawei.com
+> Reported-by: Peter Xu <peterx@redhat.com>
+> Closes: https://lore.kernel.org/all/ZMKJjDaqZ7FW0jfe@x1n/
+> Fixes: 474098edac26 ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
+I agree that FOLL_REMOTE probably needs separate treatment but also agree
+that it's outside the context of this patch, particularly as a -stable
+candidate so
 
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
+
+I've a minor nit below that would be nice to get fixed up, but not
+mandatory.
+
+> ---
+>  include/linux/mm.h       | 21 +++++++++++++++------
+>  include/linux/mm_types.h |  9 +++++++++
+>  mm/gup.c                 | 29 +++++++++++++++++++++++------
+>  mm/huge_memory.c         |  2 +-
+>  4 files changed, 48 insertions(+), 13 deletions(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 2493ffa10f4b..f463d3004ddc 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2240,6 +2244,12 @@ static bool is_valid_gup_args(struct page **pages, int *locked,
+>  		gup_flags |= FOLL_UNLOCKABLE;
+>  	}
+>  
+> +	/*
+> +	 * For now, always trigger NUMA hinting faults. Some GUP users like
+> +	 * KVM really require it to benefit from autonuma.
+> +	 */
+> +	gup_flags |= FOLL_HONOR_NUMA_FAULT;
+> +
+>  	/* FOLL_GET and FOLL_PIN are mutually exclusive. */
+>  	if (WARN_ON_ONCE((gup_flags & (FOLL_PIN | FOLL_GET)) ==
+>  			 (FOLL_PIN | FOLL_GET)))
+
+Expand on *why* KVM requires it even though I suspect this changes later
+in the series. Maybe "Some GUP users like KVM require the hint to be as
+the calling context of GUP is functionally similar to a memory reference
+from task context"?
+
+Also minor nit -- s/autonuma/NUMA Balancing/ or numab. autonuma refers to
+a specific implementation of automatic balancing that operated similar to
+khugepaged but not merged. If you grep for it, you'll find that autonuma
+is only referenced in powerpc-specific code. It's not important these
+days but very early on, it was very confusing if AutoNUMA was mentioned
+when NUMAB was intended.
+
+-- 
+Mel Gorman
+SUSE Labs
