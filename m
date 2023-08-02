@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7C176D989
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F83F76D98C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232240AbjHBVbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
+        id S232705AbjHBVcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:32:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjHBVbc (ORCPT
+        with ESMTP id S229744AbjHBVcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:31:32 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238CD19A4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:31:32 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-2682b4ca834so137618a91.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:31:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691011891; x=1691616691;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=V7O3ldpuvwn/jLEEsGaVER0W5WQz6QQVB4o4mWJTPHw=;
-        b=0MpUaXqNR3yN2ZePV6Ehw88TdkHVM4wwC2Ax9LBcBwhrccVQmDk4pUsO2m/W60T/kh
-         4ALsk63SSuRBd3UXVMnSiQB5v2iI8UQfYCb+eIiV9ztG6S6KlhNhk233zQbbCY6jDG0m
-         rtdmAzFLXMLRYfEzbyZNqny8nmMx5u7NTub/RYML7Xn31Nyl8a4U+e01kHF6VCiqYOVM
-         xpL0WtRUyR6fLic8o7wZFKDajLk8nUgQ1I14uVXOA6NUMtV+htB3i1ARMO6mRJ2oAjcz
-         bO63UUfjpoeGbzSi8UO3Ogv8fLbD7MT+Agmc+my/+J8Ci2lSUSrXLjoKrVyUkepwfc+B
-         m9TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691011891; x=1691616691;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V7O3ldpuvwn/jLEEsGaVER0W5WQz6QQVB4o4mWJTPHw=;
-        b=MujvCSim4UsfuXO/zixQDJ3M+0vGlB++bjaR/ziG3Pq864zNeM2a5r4oF0MLsnV92g
-         pbGLueU+0wDqRFHKgbhlxot4oTXHy9Y3Hw+lTSXB425KOuOEOAAt6KyZNE05g78pvw/8
-         T70BKa1LrwGQ3qjHXLvXSx6eFRoC9vIl7f/HaSqc1kIQ03L2+b0aC/IctmsCWcOEAz4W
-         u16X8BKgTMazEGq+8nkBMA88V6BNx9oKB7Y9xKe/5BF30R5H47T0JlevYXMEWr1gyUZF
-         knzhQkekVBo3fzLblDE9meeBsDDftylF2iCwkLl+3UnrqL5MmbAmfTLyM9cZEdTumOd2
-         ffpA==
-X-Gm-Message-State: ABy/qLZ7XJKn95KtxdP+KpAjVxdQHYbsxbR+HIpcXWkNVhQBjt+S+Sbi
-        Rovrs3g3xbf6aguR6nolLVeNQYYoXNI=
-X-Google-Smtp-Source: APBJJlFDudSBR591hmxo+SrOS4iiKae4bolkQa4eRRqibf6eAaJJjg2NfepfTGffX1GgLKifjQS3uqiIERY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e885:b0:1b3:e4f1:1b3f with SMTP id
- w5-20020a170902e88500b001b3e4f11b3fmr93178plg.2.1691011891629; Wed, 02 Aug
- 2023 14:31:31 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 14:31:29 -0700
-In-Reply-To: <ZMq0nYYDbOX1cOKN@google.com>
-Mime-Version: 1.0
-References: <20230712075910.22480-1-thuth@redhat.com> <20230712075910.22480-3-thuth@redhat.com>
- <ZMq0nYYDbOX1cOKN@google.com>
-Message-ID: <ZMrLMYxj3s+vHGrQ@google.com>
-Subject: Re: [PATCH 2/4] KVM: selftests: x86: Use TAP interface in the
- sync_regs test
-From:   Sean Christopherson <seanjc@google.com>
-To:     Thomas Huth <thuth@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kselftest@vger.kernel.org,
-        David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 17:32:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C1F1734;
+        Wed,  2 Aug 2023 14:32:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CCAE861B2A;
+        Wed,  2 Aug 2023 21:32:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B50C433C7;
+        Wed,  2 Aug 2023 21:32:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691011929;
+        bh=2PaiUpifeCse/HhykZzsGpNNXYxG9/8BdqoWXV5HhD0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B7rkboeJ9wyO/0xDXw25KM79GOP/Sk2hWmAI6yRgz0OJU1LXNc2VZ2EcDlvmlMojT
+         oMLdl0v5KEOEh+JZGN/GPMZ9A8PTwps+ZAtjXriNCBvY8zOFKeQBRMh8LjXmxnh5Ww
+         xjYq4xPI7wQ3kWExVVDWvafRG5phJKYNgCZ44oZXgJ3lQTsG5VDSx1/Q2KWCjczcgb
+         XR1vQ7OJv3KOZXHPwylTLzLO9nJhm9AOovT8APRuHBt/bEGgzMajgP/pCPaPqpg82t
+         gNkvvLIHf7PYBKWX989l4eHHC58SdhW1/SRhRkg7ol9qzJfvCclAHdfThEQ6/AP+cv
+         di/Khv2+8EUWQ==
+Date:   Wed, 2 Aug 2023 14:32:06 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>, linux-clk@vger.kernel.org,
+        tsbogend@alpha.franken.de, sboyd@kernel.org,
+        mturquette@baylibre.com, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        clang-built-linux <llvm@lists.linux.dev>
+Subject: Re: [PATCH] clk: ralink: mtmips: quiet unused variable warning
+Message-ID: <20230802213206.GA758420@dev-arch.thelio-3990X>
+References: <20230802092647.3000666-1-sergio.paracuellos@gmail.com>
+ <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023, Sean Christopherson wrote:
-> Oh, and no need to post "KVM: selftests: Rename the ASSERT_EQ macro" in the next
-> version, I'm planning on grabbing that one straightaway.
+On Wed, Aug 02, 2023 at 02:26:43PM -0700, Nick Desaulniers wrote:
+> On Wed, Aug 2, 2023 at 2:26 AM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> >
+> > When CONFIG_OF is disabled then the matching table is not referenced and
+> > the following warning appears:
+> >
+> > drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmips_of_match' [-Wunused-const-variable]
+> > 821 |   static const struct of_device_id mtmips_of_match[] = {
+> >     |                          ^
+> >
+> > Silence it declaring 'mtmips_of_match' with '__maybe_unused'.
+> >
+> > Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIPS SoCs")
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp@intel.com/
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> 
+> I think this is fine; Arnd or Nathan do you have a preference? or thoughts here?
 
-After paging this all back in...
+I do not have much of a preference either, I tend to agree with your
+reasoning for preferring the #ifdef but '__maybe_unused' is relatively
+easy to audit on a per-file basis and I think that is more common than
+the '#ifdef CONFIG_OF'.
 
-I would much prefer that we implement the KVM specific macros[*], e.g. KVM_ONE_VCPU_TEST(),
-and build on top of those.  I'm definitely ok doing a "slow" conversion, i.e. starting
-with a few easy tests.  IIRC at some point I said I strongly preferred an all-or-nothing
-approach, but realistically I don't think we'll make progress anytime soon if we try to
-boil the ocean.
+Small nit, I think __maybe_unused typically goes between the variable
+name and equals, like
 
-But I do think we should spend the time to implement the infrastructure right away.  We
-may end up having to tweak the infrastructure down the road, e.g. to convert other tests,
-but I would rather do that then convert some tests twice.
+  static const struct of_device_id mtmips_of_match[] __maybe_unused = {
 
-[*] https://lore.kernel.org/all/Y2v+B3xxYKJSM%2FfH@google.com
+but this is obviously fine. Regardless:
+
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+
+> If not, thanks for the patch.
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+> 
+> (I have a slight preference for wrapping the use in `#ifdef CONFIG_OF`
+> since with the approach used by this patch, if all users are removed
+> we will never get a warning for this var. But it's a weak preference;
+> it's more important to me that we don't have -Werror promote this
+> warning to a build breakage)
+> 
+> > ---
+> >  drivers/clk/ralink/clk-mtmips.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/clk/ralink/clk-mtmips.c b/drivers/clk/ralink/clk-mtmips.c
+> > index 1e7991439527..6716394b28a3 100644
+> > --- a/drivers/clk/ralink/clk-mtmips.c
+> > +++ b/drivers/clk/ralink/clk-mtmips.c
+> > @@ -820,7 +820,7 @@ static const struct mtmips_clk_data mt76x8_clk_data = {
+> >         .num_clk_periph = ARRAY_SIZE(mt76x8_pherip_clks),
+> >  };
+> >
+> > -static const struct of_device_id mtmips_of_match[] = {
+> > +static const __maybe_unused struct of_device_id mtmips_of_match[] = {
+> >         {
+> >                 .compatible = "ralink,rt2880-sysc",
+> >                 .data = &rt2880_clk_data,
+> > --
+> > 2.25.1
+> >
+> 
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
