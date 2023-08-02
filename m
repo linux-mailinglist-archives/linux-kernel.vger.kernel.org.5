@@ -2,73 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A30076C969
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02CBC76C968
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234052AbjHBJYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:24:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40168 "EHLO
+        id S234035AbjHBJX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234031AbjHBJYQ (ORCPT
+        with ESMTP id S232257AbjHBJX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:24:16 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4801716
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:24:15 -0700 (PDT)
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RG6320rJhz1GDSK;
-        Wed,  2 Aug 2023 17:23:10 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemi500012.china.huawei.com
- (7.221.188.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Wed, 2 Aug
- 2023 17:24:11 +0800
-From:   Li Zetao <lizetao1@huawei.com>
-To:     <lee@kernel.org>
-CC:     <lizetao1@huawei.com>, <bot@kernelci.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] mfd: ipaq-micro: Remove unused variable i in micro_rx_msg()
-Date:   Wed, 2 Aug 2023 17:23:42 +0800
-Message-ID: <20230802092342.970476-1-lizetao1@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 2 Aug 2023 05:23:57 -0400
+Received: from muru.com (muru.com [72.249.23.125])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46784E7;
+        Wed,  2 Aug 2023 02:23:56 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 7D0B480AE;
+        Wed,  2 Aug 2023 09:23:55 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 12:23:54 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Dhruva Gole <d-gole@ti.com>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v5 3/3] serial: core: Fix serial core controller port
+ name to show controller id
+Message-ID: <20230802092354.GC14799@atomide.com>
+References: <20230725054216.45696-4-tony@atomide.com>
+ <202308021529.35b3ad6c-oliver.sang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.90.53.73]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202308021529.35b3ad6c-oliver.sang@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the commit "92d82d76c84", the variable i is unused. Remove it
-to silence the warning.
+* kernel test robot <oliver.sang@intel.com> [230802 08:16]:
+> from serial, we observed last print out is:
+> 
+> [   15.584772][  T954] EDAC MC0: Giving out device to module skx_edac controller Skylake Socket#0 IMC#0: DEV 0000:3a:0a.0 (INTERRUPT)
+> [   15.597328][  T954] EDAC MC1: Giving out device to module skx_edac controller Skylake Socket#0 IMC#1: DEV 0000:3a:0c.0 (INTERRUPT)
+> [   15.610326][  T954] EDAC MC2: Giving out device to module skx_edac controller Skylake Socket#1 IMC#0: DEV 0000:ae:0a.0 (INTERRUPT)
+> [   15.623375][  T954] EDAC MC3: Giving out device to module skx_edac controller Skylake Socket#1 IMC#1: DEV 0000:ae:0c.0 (INTERRUPT)
+> [   15.640145][   T19] intel_rapl_common: Found RAPL domain package
+> [   15.655890][   T19] intel_rapl_common: Found RAPL domain dram
+> [   15.661983][   T19] intel_rapl_common: package-0:package:long_term locked by BIOS
+> [   15.678564][   T19] intel_rapl_common: package-0:package:short_term locked by BIOS
+> [   15.695259][   T19] intel_rapl_common: package-0:dram:long_term locked by BIOS
+> [   15.713068][  T158] intel_rapl_common: Found RAPL domain package
+> [   15.728719][  T158] intel_rapl_common: Found RAPL domain dram
+> [   15.734743][  T158] intel_rapl_common: package-1:package:long_term locked by BIOS
+> [   15.745244][ T1154] raid6: avx512x4 gen() 18153 MB/s
+> [   15.761297][  T158] intel_rapl_common: package-1:package:short_term locked by BIOS
+> [   15.767244][ T1154] raid6: avx512x2 gen() 18130 MB/s
+> [   15.768866][  T158] intel_rapl_common: package-1:dram:long_term locked by BIOS
+> [   15.790243][ T1154] raid6: avx512x1 gen() 18155 MB/s
+> [   15.812245][ T1154] raid6: avx2x4   gen() 18060 MB/s
+> [   15.834244][ T1154] raid6: avx2x2   gen() 18076 MB/s
+> [   15.856244][ T1154] raid6: avx2x1   gen() 13836 MB/s
+> [   15.861474][ T1154] raid6: using algorithm avx512x1 gen() 18155 MB/s
+> [   15.884243][ T1154] raid6: .... xor() 27974 MB/s, rmw enabled
+> [   15.890254][ T1154] raid6: using avx512x2 recovery algorithm
+> [   15.897891][ T1154] xor: measuring software checksum speed
+> [   15.904013][ T1154]    prefetch64-sse  : 31308 MB/sec
+> [   15.909878][ T1154]    generic_sse     : 22929 MB/sec
+> [   15.915230][ T1154] xor: using function: prefetch64-sse (31308 MB/sec)
+> [   16.042623][ T1154] Btrfs loaded, zoned=no, fsverity=no
+> [   16.054593][  T930] BTRFS: device fsid e422031c-19be-42f5-ab4f-be5f306aa6e1 devid 1 transid 39725 /dev/sda2 scanned by systemd-udevd (930)
+> 
+> 
+> then the machine is just stuck there. (whole dmesg captured from serial is
+> attached), and the issue is 100% reproducible for this commit.
+> 
+> for parent, we never observed the boot failure.
+> 
+> it looks quite strange to us why this commit could cause this behavior on our
+> machine. could you help check dmesg, config and kernel command line which is
+> also captured in dmesg, etc. and guide us if anything need to be updated to be
+> compatible with this change? Thanks!
 
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Closes: https://lore.kernel.org/all/64c8aeac.170a0220.e3234.2745@mx.google.com/
-Signed-off-by: Li Zetao <lizetao1@huawei.com>
----
- drivers/mfd/ipaq-micro.c | 2 --
- 1 file changed, 2 deletions(-)
+Thanks for the report. With the ctrl and port prefixes dropped, I broke
+serial_base_match() looks like. As we attempt to continue anyways, things
+still mostly work..
 
-diff --git a/drivers/mfd/ipaq-micro.c b/drivers/mfd/ipaq-micro.c
-index cddfd2e808f2..c964ea6539aa 100644
---- a/drivers/mfd/ipaq-micro.c
-+++ b/drivers/mfd/ipaq-micro.c
-@@ -78,8 +78,6 @@ EXPORT_SYMBOL(ipaq_micro_tx_msg);
- 
- static void micro_rx_msg(struct ipaq_micro *micro, u8 id, int len, u8 *data)
- {
--	int i;
--
- 	dev_dbg(micro->dev, "RX msg: %02x, %d bytes\n", id, len);
- 
- 	spin_lock(&micro->lock);
--- 
-2.34.1
+Greg, can you please drop the related commit?
 
+It's the following commit:
+
+1ef2c2df1199 ("serial: core: Fix serial core controller port name to show controller id")
+
+Regards,
+
+Tony
