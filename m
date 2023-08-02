@@ -2,143 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E8276CF4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F79776CF4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234471AbjHBN4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
+        id S234500AbjHBN5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234432AbjHBN4m (ORCPT
+        with ESMTP id S234495AbjHBN5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:56:42 -0400
+        Wed, 2 Aug 2023 09:57:04 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C0C2115;
-        Wed,  2 Aug 2023 06:56:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF8126A8
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 06:57:01 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 36AFA618F1;
-        Wed,  2 Aug 2023 13:56:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C45C433C7;
-        Wed,  2 Aug 2023 13:56:36 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 012C6619AB
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:57:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56FCBC433C8;
+        Wed,  2 Aug 2023 13:56:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690984600;
-        bh=ZiBT8/57R9cm/kIxNEpf6GtRtnFrBM4/Vdwr+0paa8Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ugALy2+yCr8eRX69mZgOByVs1nn3mkSbeYZA88lApQtXAdR52l0cRdAv437Tav5Eo
-         1PMluo+JefF5Xrd0m1xLGKldl+Tsy1n+Q/HQfVfAhOUvKz8T/La9KVIJUnc9e4/B+P
-         fFTrO9M4qrJn56y+HYjW8MEndIe/Cp11rXj+qcg6ADum52ULhbjeLPrAj4awwyTpQS
-         z+yPOcGy1uiX0pS7cNrOenJp3JRLudGS+94sH5BD/5guLN1oDKfq3ztvOXhfSQ1wXN
-         j+20r6R9gpMWeyhQqODAnvW13e0ulT8IgF4jxaJrsyKFFfzMpW+eBKJcc1pFNN1xR9
-         uYz8IkvC8yxeQ==
-Date:   Wed, 2 Aug 2023 22:56:34 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-Id: <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
-In-Reply-To: <20230801204054.3884688e@rorschach.local.home>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-        <169078863449.173706.2322042687021909241.stgit@devnote2>
-        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-        <20230802000228.158f1bd605e497351611739e@kernel.org>
-        <20230801112036.0d4ee60d@gandalf.local.home>
-        <20230801113240.4e625020@gandalf.local.home>
-        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
-        <20230801190920.7a1abfd5@gandalf.local.home>
-        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-        <20230801204054.3884688e@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        s=k20201202; t=1690984620;
+        bh=nVYITZ3442VbPOgOxFRsX45Sw7B8Dvf9MYJFP4+/ATE=;
+        h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+        b=YeJlWpjoSfqKczx6p8jnSI9ynNyBUJege1FBpTi5Hb5AF0a6RFt1m6IUpqNfKrBbp
+         DRika2vTcRKhdwnFDtXH8LzxU1xZjKsJF8ryQcuMaVvAb/HJMWGHj9Os9wyDv5/AkA
+         UDvej7uuS5Pg3Pu1n+rNsI1jYLddm+XowPLS4awZS+ueyI+3BWQwJ13IQr6/p1ta18
+         01um6QQ1ViFMo2vFWdMeUGfKzS1WbY3gBA/dHucMMd41cPOvUvTx+kEm0V6fVNAhLy
+         KyVl2CvtLnh85pm6VVv0XCGO5/RBXCWsp9ynxnu31TlELRz2Tqc68Qajw+KCumW1CL
+         OPPC4UZoY5nvA==
+Message-ID: <3a66abd7-690e-c15a-54dd-a0719fd723a1@kernel.org>
+Date:   Wed, 2 Aug 2023 15:56:55 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
+Subject: Re: [PATCH v4 2/2] net: core: remove unnecessary frame_sz check in
+ bpf_xdp_adjust_tail()
+Content-Language: en-US
+To:     Andrew Kanner <andrew.kanner@gmail.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        jasowang@redhat.com, netdev@vger.kernel.org, dsahern@gmail.com,
+        jbrouer@redhat.com, john.fastabend@gmail.com,
+        linux-kernel@vger.kernel.org
+References: <20230801220710.464-1-andrew.kanner@gmail.com>
+ <20230801220710.464-2-andrew.kanner@gmail.com>
+From:   Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20230801220710.464-2-andrew.kanner@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 20:40:54 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On Wed, 2 Aug 2023 09:21:46 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+
+On 02/08/2023 00.07, Andrew Kanner wrote:
+> Syzkaller reported the following issue:
+> =======================================
+> Too BIG xdp->frame_sz = 131072
+> WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
+>    ____bpf_xdp_adjust_tail net/core/filter.c:4121 [inline]
+> WARNING: CPU: 0 PID: 5020 at net/core/filter.c:4121
+>    bpf_xdp_adjust_tail+0x466/0xa10 net/core/filter.c:4103
+> ...
+> Call Trace:
+>   <TASK>
+>   bpf_prog_4add87e5301a4105+0x1a/0x1c
+>   __bpf_prog_run include/linux/filter.h:600 [inline]
+>   bpf_prog_run_xdp include/linux/filter.h:775 [inline]
+>   bpf_prog_run_generic_xdp+0x57e/0x11e0 net/core/dev.c:4721
+>   netif_receive_generic_xdp net/core/dev.c:4807 [inline]
+>   do_xdp_generic+0x35c/0x770 net/core/dev.c:4866
+>   tun_get_user+0x2340/0x3ca0 drivers/net/tun.c:1919
+>   tun_chr_write_iter+0xe8/0x210 drivers/net/tun.c:2043
+>   call_write_iter include/linux/fs.h:1871 [inline]
+>   new_sync_write fs/read_write.c:491 [inline]
+>   vfs_write+0x650/0xe40 fs/read_write.c:584
+>   ksys_write+0x12f/0x250 fs/read_write.c:637
+>   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>   do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>   entry_SYSCALL_64_after_hwframe+0x63/0xcd
 > 
-> > > Then use kprobes. When I asked Masami what the difference between fprobes
-> > > and kprobes was, he told me that it would be that it would no longer rely
-> > > on the slower FTRACE_WITH_REGS. But currently, it still does.  
-> > 
-> > kprobes needs to keep using pt_regs because software-breakpoint exception
-> > handler gets that. And fprobe is used for bpf multi-kprobe interface,
-> > but I think it can be optional.
-> > 
-> > So until user-land tool supports the ftrace_regs, you can just disable
-> > using fprobes if CONFIG_DYNAMIC_FTRACE_WITH_REGS=n
+> xdp->frame_sz > PAGE_SIZE check was introduced in commit c8741e2bfe87
+> ("xdp: Allow bpf_xdp_adjust_tail() to grow packet size"). But Jesper
+> Dangaard Brouer <jbrouer@redhat.com> noted that after introducing the
+> xdp_init_buff() which all XDP driver use - it's safe to remove this
+> check. The original intend was to catch cases where XDP drivers have
+> not been updated to use xdp.frame_sz, but that is not longer a concern
+> (since xdp_init_buff).
 > 
-> I'm confused. I asked about the difference between kprobes on ftrace
-> and fprobes, and you said it was to get rid of the requirement of
-> FTRACE_WITH_REGS.
+> Running the initial syzkaller repro it was discovered that the
+> contiguous physical memory allocation is used for both xdp paths in
+> tun_get_user(), e.g. tun_build_skb() and tun_alloc_skb(). It was also
+> stated by Jesper Dangaard Brouer <jbrouer@redhat.com> that XDP can
+> work on higher order pages, as long as this is contiguous physical
+> memory (e.g. a page).
 > 
->  https://lore.kernel.org/all/20230120205535.98998636329ca4d5f8325bc3@kernel.org/
+> Reported-and-tested-by: syzbot+f817490f5bd20541b90a@syzkaller.appspotmail.com
+> Closes: https://lore.kernel.org/all/000000000000774b9205f1d8a80d@google.com/T/
+> Link: https://syzkaller.appspot.com/bug?extid=f817490f5bd20541b90a
+> Link: https://lore.kernel.org/all/20230725155403.796-1-andrew.kanner@gmail.com/T/
+> Fixes: 43b5169d8355 ("net, xdp: Introduce xdp_init_buff utility routine")
+> Signed-off-by: Andrew Kanner <andrew.kanner@gmail.com>
+> ---
 
-Yes, it is for enabling fprobe (and fprobe-event) on more architectures.
-I don't think it's possible to change everything at once. So, it will be
-changed step by step. At the first step, I will replace pt_regs with
-ftrace_regs, and make bpf_trace.c and fprobe_event depends on
-FTRACE_WITH_REGS.
+Acked-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-At this point, we can split the problem into two, how to move bpf on
-ftrace_regs and how to move fprobe-event on ftrace_regs. fprobe-event
-change is not hard because it is closing in the kernel and I can do it.
-But for BPF, I need to ask BPF user-land tools to support ftrace_regs.
+You can include that ACK in V5.
 
+>   net/core/filter.c | 6 ------
+>   1 file changed, 6 deletions(-)
 > 
-> > 
-> > Then you can safely use 
-> > 
-> > struct pt_regs *regs = ftrace_get_regs(fregs);
-> > 
-> > I think we can just replace the CONFIG_FPROBE ifdefs with
-> > CONFIG_DYNAMIC_FTRACE_WITH_REGS in kernel/trace/bpf_trace.c
-> > And that will be the first version of using ftrace_regs in fprobe.
-> 
-> But it is still slow. The FTRACE_WITH_REGS gives us the full pt_regs
-> and saves all registers including flags, which is a very slow operation
-> (and noticeable in profilers).
-
-Yes, to solve this part, we need to work with BPF user-land people.
-I guess the BPF is accessing registers from pt_regs with fixed offset
-which is calculated from pt_regs layout in the user-space.
-
-> 
-> And this still doesn't work on arm64.
-
-Yes, and this makes more motivation to move on ftrace_regs.
-
-Thank you,
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 06ba0e56e369..28a59596987a 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -4116,12 +4116,6 @@ BPF_CALL_2(bpf_xdp_adjust_tail, struct xdp_buff *, xdp, int, offset)
+>   	if (unlikely(data_end > data_hard_end))
+>   		return -EINVAL;
+>   
+> -	/* ALL drivers MUST init xdp->frame_sz, chicken check below */
+> -	if (unlikely(xdp->frame_sz > PAGE_SIZE)) {
+> -		WARN_ONCE(1, "Too BIG xdp->frame_sz = %d\n", xdp->frame_sz);
+> -		return -EINVAL;
+> -	}
+> -
+>   	if (unlikely(data_end < xdp->data + ETH_HLEN))
+>   		return -EINVAL;
+>   
