@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BBF76C2CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F230C76C2D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbjHBCWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 22:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        id S231225AbjHBCXj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 1 Aug 2023 22:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjHBCWQ (ORCPT
+        with ESMTP id S230180AbjHBCXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:22:16 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72845213E;
-        Tue,  1 Aug 2023 19:22:15 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so87264351fa.2;
-        Tue, 01 Aug 2023 19:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690942933; x=1691547733;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tg1SPaJl42hfjSIHYNQoMyEABB2W7molrKSYX8RQGy0=;
-        b=fvNXVl0pgOdLnojeelwiYSfJHuu6BPC0eENGlj1xmr20XORUOkzxvTPNlD0lXcCeoe
-         8DnDV91xWNIZKuTMjkBYiaaSj6OvcuudD1wxCeVPo50eDVJjDOVfWqlimmTxF4EwZBFn
-         e9yDBi8yyi1jM3lHvXRFN2R4wPa20jSFbO5XR0oq5ulz4RtvFhPUPGCxv/0uhOjHddzV
-         tEhXS0QXy5B0oOhExX15EKszy4txYxQuQs5BHI7s0y09auabnOW9+4vM3j8aZ+ZguSKk
-         UnXnGtlBakb+gEXWYMYeUMI1EB0/EGPcCs2gNxAJTbsuYs0i64zsJK0d2lBaAlNTboob
-         Wj6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690942933; x=1691547733;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tg1SPaJl42hfjSIHYNQoMyEABB2W7molrKSYX8RQGy0=;
-        b=iXrW+IZRrMQWh8z5SfdW3rlhUuSX/f9LNOZofLpleqbJ18t5hw9baqM298DtmSjL/Q
-         Edn0FOvWDV8ePWwaCjw2oLzawgxXM7W/nZKZ26iNqzS4eEU70NV25zGVsfOY504305Ri
-         fQKgFcncUlSaOvqcK2ugB+YldXONrP8fcxl4g5T0xM/tz1vsO5d9xU4EtmasJJaPhIml
-         dk8ufvib7ANWXbyK/QQjxPFJKwKcF3rTJUvRJ702kteaMu2eVIoFkqiBMy3xELqvlHAX
-         IJ/fq3gTE7rKhC59C6DhnPcqHufo2micPKAVlFr/Zq0FsjiJSvHsHvZe1vQ//KmD+d1D
-         zkuQ==
-X-Gm-Message-State: ABy/qLbmf4booIJFuM1IqEX71xxOZ0ztc+yBlcEbxtrfPI0hE8Khk3IV
-        laeS2o3bXuUmTbl+FrMSUTqK7ovXOavLJ703+ko=
-X-Google-Smtp-Source: APBJJlGoBvQLp+EM57aM03bT75dxdKy5hCV9qxCpnVKOhabfNLvU4n1NZ1cajNgcCMdejpRr9KSYVEToPM3UZfd8Dsw=
-X-Received: by 2002:a2e:b604:0:b0:2b9:b6e7:bd7 with SMTP id
- r4-20020a2eb604000000b002b9b6e70bd7mr4069527ljn.29.1690942933052; Tue, 01 Aug
- 2023 19:22:13 -0700 (PDT)
+        Tue, 1 Aug 2023 22:23:36 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B1B6E213E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 19:23:34 -0700 (PDT)
+Received: from loongson.cn (unknown [209.85.221.50])
+        by gateway (Coremail) with SMTP id _____8AxEvAlvslk5osOAA--.33118S3;
+        Wed, 02 Aug 2023 10:23:33 +0800 (CST)
+Received: from mail-wr1-f50.google.com (unknown [209.85.221.50])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxDc8ivslkYNdEAA--.47852S3;
+        Wed, 02 Aug 2023 10:23:32 +0800 (CST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-31792ac0fefso3300303f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 19:23:32 -0700 (PDT)
+X-Gm-Message-State: ABy/qLbR4I2Y9xu14JEkQvrrT7w0v2+IhRfEVpSbx9Ze2iXQC7+fRqK5
+        yCRzVGucmGjF4/bAgqBQVnVKOhiNsbZqzHTYRgxVug==
+X-Google-Smtp-Source: APBJJlF1uWj6wIOqIFlfDDRCiTD78Qq9g6nbp+t0la6vtmj1Gk53kAMeZOdghLi9R93+HK/Wj4Dz9sqyDT30UvH5UyU=
+X-Received: by 2002:a05:6000:11c5:b0:317:594a:dbde with SMTP id
+ i5-20020a05600011c500b00317594adbdemr3350887wrx.20.1690943009317; Tue, 01 Aug
+ 2023 19:23:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
- <169078863449.173706.2322042687021909241.stgit@devnote2> <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
- <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org> <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
- <20230802000228.158f1bd605e497351611739e@kernel.org> <20230801112036.0d4ee60d@gandalf.local.home>
- <20230801113240.4e625020@gandalf.local.home> <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
- <20230801190920.7a1abfd5@gandalf.local.home> <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
- <20230801204054.3884688e@rorschach.local.home> <20230801204407.7b284b00@rorschach.local.home>
-In-Reply-To: <20230801204407.7b284b00@rorschach.local.home>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 1 Aug 2023 19:22:01 -0700
-Message-ID: <CAADnVQLkVatr5BTScpuKaKAO+Cp=0KVxhqXwsjZoGhJPu3G4jA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a struct/union
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <20230801011554.3950435-1-guoren@kernel.org> <CAHirt9ht8AsE=FC8+222JDZXH3T58uLt+o=_pq+1zBhv1MKRjg@mail.gmail.com>
+ <CAJF2gTRa5erHomJzLgUFO4SGqd5zSDwn6r3WN7kM8aWpv1vesg@mail.gmail.com>
+ <CAJF2gTQ1hV1vipAo3H4X4WiPO84kVVFZcdGq7u4f0bVTry_akQ@mail.gmail.com>
+ <CAHirt9gVqE=9vviJEY=kY=booVRmFPHrnFsKCXPXnXiWTB8bZQ@mail.gmail.com>
+ <CAJF2gTR2ON33wc87iV564rkDbNiE56h_t0kzKKXdJtGqgJ1sOQ@mail.gmail.com>
+ <CAHirt9i_osW_Dy5jNAnNOKrm-+38qN7SF+8ofNHePMAYhRKHsA@mail.gmail.com> <CAJF2gTSLD3jwzV59dGj_RENCvE0zMOAkLHqmT55bxL-4vA1wkA@mail.gmail.com>
+In-Reply-To: <CAJF2gTSLD3jwzV59dGj_RENCvE0zMOAkLHqmT55bxL-4vA1wkA@mail.gmail.com>
+From:   WANG Rui <wangrui@loongson.cn>
+Date:   Wed, 2 Aug 2023 10:23:18 +0800
+X-Gmail-Original-Message-ID: <CAHirt9iiA_zdBbmnmMNAEmvKBU-1imRxD7wG-0OmnPTsG2RJMA@mail.gmail.com>
+Message-ID: <CAHirt9iiA_zdBbmnmMNAEmvKBU-1imRxD7wG-0OmnPTsG2RJMA@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Fixup cmpxchg sematic for memory barrier
+To:     Guo Ren <guoren@kernel.org>
+Cc:     chenhuacai@kernel.or, kernel@xen0n.name, arnd@arndb.de,
+        andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
+        peterz@infradead.org, will@kernel.org, boqun.feng@gmail.com,
+        mark.rutland@arm.com, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Transfer-Encoding: 8BIT
+X-CM-TRANSID: AQAAf8DxDc8ivslkYNdEAA--.47852S3
+X-CM-SenderInfo: pzdqw2txl6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWrtw4xtrW3tr1UKFWrKFyDArc_yoW8JrWDpr
+        WIyFs0gFZ7Xw40ywsakw48ZFyrtwnaqF17X3sa9rZFyFyav343trW7Gry3XrsxZr93Gw1Y
+        v3yq934FvFyDZFgCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAF
+        wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxAIw28IcxkI7VAKI4
+        8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+        wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+        v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20E
+        Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267
+        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8czVUUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,34 +77,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 5:44=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org>=
- wrote:
+On Wed, Aug 2, 2023 at 7:17 AM Guo Ren <guoren@kernel.org> wrote:
 >
-> On Tue, 1 Aug 2023 20:40:54 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> > Maybe we can add a ftrace_partial_regs(fregs) that returns a
-> > partially filled pt_regs, and the caller that uses this obviously knows
-> > its partial (as it's in the name). But this doesn't quite help out arm6=
-4
-> > because unlike x86, struct ftrace_regs does not contain an address
-> > compatibility with pt_regs fields. It would need to do a copy.
+> On Tue, Aug 1, 2023 at 12:37 PM WANG Rui <wangrui@loongson.cn> wrote:
 > >
-> >  ftrace_partial_regs(fregs, &regs) ?
+> > On Tue, Aug 1, 2023 at 6:50 PM Guo Ren <guoren@kernel.org> wrote:
+> > >
+> > > On Tue, Aug 1, 2023 at 5:32 PM WANG Rui <wangrui@loongson.cn> wrote:
+> > > > No. LL and LL won't reorder because LL implies a memory barrier(though
+> > > > not acquire semantics).
+> > > That means we could remove __WEAK_LLSC_MB totally, right?
+> >
+> > More precisely, __WEAK_LLSC_MB is intended to prevent reordering
+> > between LL and normal LD used to fetch the expected value for cmpxchg.
+> Oh, that's unnecessary when cmpxchg fails.
 >
-> Well, both would be pointers so you wouldn't need the "&", but it was
-> to stress that it would be copying one to the other.
+> Maybe you treat cmpxchg as a CoRR antidote in coincidence. Please
+> solve the CoRR problem by READ_ONCE.
 >
->   void ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_reg=
-s regs);
+> See alpha architecture.
 
-Copy works, but why did you pick a different layout?
-Why not to use pt_regs ? if save of flags is slow, just skip that part
-and whatever else that is slow. You don't even need to zero out
-unsaved fields. Just ask the caller to zero out pt_regs before hand.
-Most users have per-cpu pt_regs that is being reused.
-So there will be one zero-out in the beginning and every partial
-save of regs will be fast.
-Then there won't be any need for copy-converter from ftrace_regs to pt_regs=
-.
-Maybe too much churn at this point. copy is fine.
+Unfortunately, the LL instruction has no acquire semantics. Even if
+our kernel team improves READ_ONCE, it cannot prevent reordering
+between LL and READ_ONCE after cmpxchg fails.
+
+LL (<memory-barrier> + <load-exclusive>); WEAK_LLSC_MB; READ_ONCE
+(<normal-load>); ...
+
+vs
+
+LL (<memory-barrier> + <load-exclusive>); READ_ONCE (<normal-load> +
+<memory-barrier>); ...
+
+Improving READ_ONCE is really important.
+
+Regards,
+-- 
+WANG Rui
+
