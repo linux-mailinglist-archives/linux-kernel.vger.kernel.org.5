@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070DF76D68C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE36176D693
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233979AbjHBSJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56334 "EHLO
+        id S234307AbjHBSKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233053AbjHBSJW (ORCPT
+        with ESMTP id S234257AbjHBSKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:09:22 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446431FED;
-        Wed,  2 Aug 2023 11:09:16 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372AIMp7021128;
-        Wed, 2 Aug 2023 18:09:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=Zg/+5tVh8Qrox2O4PVKE75DQvm4lUmYBc1zOUE28qEk=;
- b=FVzVYBwk5rNbJ3A/ZQ3ZsarWgs8XfbeVGHDIpCwt5YP3v+HXU5AjBwP81PKVc0woh9T5
- EA/RdXoJCp2Vo5ovh7ydSqAfTbUhV/EYQ6j2dCW1Y9yiaIgRsbWr9dMZycMHEl59LiBp
- /4hJifepBK9cnk9vyrj+zVk09NXu4GnHnaBpdGAb+AVTefVSBKItWixAJ+uyF2vlVDNH
- hrOCnuskDgATyqb6NmeDczJtN4jx34kwRdaXIX17JKPKVzdke60SuN692jMwLaMCrUX6
- kEpwdLwlDnI6hIU3CI3sEoDQ0B+WVASlSd2kaz9UL90aT+fsHb6tgN4A7effgLxvAdOQ xQ== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7bp6acxh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 18:09:09 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 372I98LK025333
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 18:09:08 GMT
-Received: from jesszhan-linux.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 2 Aug 2023 11:09:08 -0700
-From:   Jessica Zhang <quic_jesszhan@quicinc.com>
-Date:   Wed, 2 Aug 2023 11:08:51 -0700
-Subject: [PATCH v3 4/4] drm/msm/dsi: Enable widebus for DSI
+        Wed, 2 Aug 2023 14:10:12 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6267A30FD
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:09:52 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d35a9d7a5bdso93857276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690999790; x=1691604590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Iib+Xd2im+vZ2DqX3HEGdgepyyImF3VT4ZisE2yj1ys=;
+        b=oRtOtKDjkVBCb38qf+mS/3skawfAATDJfzXhOCYonPmwyEJ3aDUUHtY12ZPrkfSxrU
+         QHKxlfUXoXekdHWtSbFd2kfposrCnzV6kIJtsRFB7HpejPYEfn5dXGzS679fnY6sz8ax
+         Qcuy0veEvBzAAoNnZSIvAOb93CMlVa/DfdRVftzkvAJC7mCTgs6xKHPfHV9elwBsUuS0
+         oaF4pXYDYZoxVxgkM90NZMCuvK0Sv3/m/d5UIoAnXglUS9MNI6Z4cihQwLH3Ptz7uDbs
+         jS4rqCLwdg8CA89xgDoFxv7IuGDC3Szd7oGret51d/nJFO60hJPIt1BHXTVRXybMODVQ
+         d1XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690999790; x=1691604590;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Iib+Xd2im+vZ2DqX3HEGdgepyyImF3VT4ZisE2yj1ys=;
+        b=UDqSHcduH56jW0XXH49NGeuF5gMQG9qIEJwA6Cx5xrfd+Ld0BSKjvuIyOQoEYy7kAo
+         Eg6QQkJe/N4qtxYztAprd60/W2GDLECI2lxstxJpwHGhr1/Mam96jdO5DOn6IfdYtzkQ
+         1eScpCW9bg6PfgeQ+64zNLxzSR3im8m0wC0ULADrWojjq9dBGEf5M83W0/hEZR4qv+s3
+         sYM1E1oJbWYsfQkRHSiXcC7KFfZMoLv45soEPu7TjhW0BxKwRHt2+qumdIivjrTjsTvV
+         RcFqOTspQN1U5izQDlll0i3T3YtEdAF4kRLU6RZDkrbZHkyv2DGy1whwAEMZ59lZKZ5b
+         ePlA==
+X-Gm-Message-State: AOJu0Ywbt3MGAwQ9GhKBLOokMCCn+DcWsTq9p0M384puL6scJne2k1pv
+        1oo3XwCL9+VdZnbWomjX81i0PKmtJ2s92h2dkqjJ0Q==
+X-Google-Smtp-Source: AGHT+IEUC0dFG99W++f2WyMIi43qQ5eyHn34lPHwz5XXFxFSHJUXCaft8RZj3ShW9s9RbqGok9vSU7ZZRNdeAF3VH8g=
+X-Received: by 2002:a05:6902:100f:b0:d3c:e4aa:4985 with SMTP id
+ w15-20020a056902100f00b00d3ce4aa4985mr2109823ybt.61.1690999790140; Wed, 02
+ Aug 2023 11:09:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230802-add-widebus-support-v3-4-2661706be001@quicinc.com>
-References: <20230802-add-widebus-support-v3-0-2661706be001@quicinc.com>
-In-Reply-To: <20230802-add-widebus-support-v3-0-2661706be001@quicinc.com>
-To:     Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        "Daniel Vetter" <daniel@ffwll.ch>
-CC:     <quic_abhinavk@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>
-X-Mailer: b4 0.13-dev-034f2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1690999747; l=4367;
- i=quic_jesszhan@quicinc.com; s=20230329; h=from:subject:message-id;
- bh=DXCvyanWZlBEzFDdQcRaAJkq+qVMaJpptR/l3i1PuUI=;
- b=8dRGerBAGh8W1OK/vYWsmvtS5zNTidozakMWR2l7sXgxAgSOgu82Pth/SbMq5d8XVVXBXdePz
- okcVJesK4B6BIQVoTs1SbhaQqOJeWojKYJCTO8QOJOp6OwJroNpJW06
-X-Developer-Key: i=quic_jesszhan@quicinc.com; a=ed25519;
- pk=gAUCgHZ6wTJOzQa3U0GfeCDH7iZLlqIEPo4rrjfDpWE=
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Ri23xspvVR3ZG2haC3tze4TQKb5ZVQ4F
-X-Proofpoint-ORIG-GUID: Ri23xspvVR3ZG2haC3tze4TQKb5ZVQ4F
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_13,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0 spamscore=0
- mlxlogscore=826 bulkscore=0 suspectscore=0 clxscore=1015 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308020160
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+References: <20230801220733.1987762-1-surenb@google.com> <20230801220733.1987762-5-surenb@google.com>
+ <CAHk-=wix_+xyyAXf+02Pgt3xEpfKncjT8A6n1Oa+9uKH8bXnEA@mail.gmail.com>
+In-Reply-To: <CAHk-=wix_+xyyAXf+02Pgt3xEpfKncjT8A6n1Oa+9uKH8bXnEA@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Wed, 2 Aug 2023 11:09:37 -0700
+Message-ID: <CAJuCfpFYq4yyj0=nW0iktoH0dma-eFhw1ni7v9R-fCsYH7eQ3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] mm: lock vma explicitly before doing
+ vm_flags_reset and vm_flags_reset_once
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     akpm@linux-foundation.org, jannh@google.com, willy@infradead.org,
+        liam.howlett@oracle.com, david@redhat.com, peterx@redhat.com,
+        ldufour@linux.ibm.com, vbabka@suse.cz, michel@lespinasse.org,
+        jglisse@google.com, mhocko@suse.com, hannes@cmpxchg.org,
+        dave@stgolabs.net, hughd@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,117 +76,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DSI 6G v2.5.x+ supports a data-bus widen mode that allows DSI to send
-48 bits of compressed data instead of 24.
+On Wed, Aug 2, 2023 at 10:49=E2=80=AFAM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Tue, 1 Aug 2023 at 15:07, Suren Baghdasaryan <surenb@google.com> wrote=
+:
+> >
+> >       To make locking more visible, change these
+> > functions to assert that the vma write lock is taken and explicitly loc=
+k
+> > the vma beforehand.
+>
+> So I obviously think this is a good change, but the fact that it
+> touched driver files makes me go "we're still doing something wrong".
+>
+> I'm not super-happy with hfi1_file_mmap() doing something like
+> vma_start_write(), in that I *really* don't think drivers should ever
+> have to think about issues like this.
+>
+> And I think it's unnecessary.  This is the mmap op in the
+> hfi1_file_ops, and I think that any actual mmap() code had _better_
+> had locked the new vma before asking any driver to set things up (and
+> the assert would catch it if somebody didn't).
+>
+> I realize that it doesn't hurt in a technical sense, but I think
+> having drivers call these VM-internal subtle locking functions does
+> hurt in a maintenance sense, so we should make sure to not have it.
 
-Enable this mode whenever DSC is enabled for supported chipsets.
+Ok, IOW the vma would be already locked before mmap() is called...
+Just to confirm, you are suggesting to remove vma_start_write() call
+from hfi1_file_mmap() and let vm_flags_reset() generate an assertion
+if it's ever called with an unlocked vma, correct?
 
-Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
----
- drivers/gpu/drm/msm/dsi/dsi.c      |  5 +++++
- drivers/gpu/drm/msm/dsi/dsi.h      |  1 +
- drivers/gpu/drm/msm/dsi/dsi_host.c | 30 ++++++++++++++++++++++++++----
- 3 files changed, 32 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
-index baab79ab6e74..4fa738dea680 100644
---- a/drivers/gpu/drm/msm/dsi/dsi.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi.c
-@@ -17,6 +17,11 @@ struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi)
- 	return msm_dsi_host_get_dsc_config(msm_dsi->host);
- }
- 
-+bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi)
-+{
-+	return msm_dsi_host_is_widebus_enabled(msm_dsi->host);
-+}
-+
- static int dsi_get_phy(struct msm_dsi *msm_dsi)
- {
- 	struct platform_device *pdev = msm_dsi->pdev;
-diff --git a/drivers/gpu/drm/msm/dsi/dsi.h b/drivers/gpu/drm/msm/dsi/dsi.h
-index bd3763a5d723..a557d2c1aaff 100644
---- a/drivers/gpu/drm/msm/dsi/dsi.h
-+++ b/drivers/gpu/drm/msm/dsi/dsi.h
-@@ -134,6 +134,7 @@ int dsi_calc_clk_rate_6g(struct msm_dsi_host *msm_host, bool is_bonded_dsi);
- void msm_dsi_host_snapshot(struct msm_disp_state *disp_state, struct mipi_dsi_host *host);
- void msm_dsi_host_test_pattern_en(struct mipi_dsi_host *host);
- struct drm_dsc_config *msm_dsi_host_get_dsc_config(struct mipi_dsi_host *host);
-+bool msm_dsi_host_is_widebus_enabled(struct mipi_dsi_host *host);
- 
- /* dsi phy */
- struct msm_dsi_phy;
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-index 645927214871..231b02e5ab6e 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-@@ -710,6 +710,14 @@ static void dsi_ctrl_disable(struct msm_dsi_host *msm_host)
- 	dsi_write(msm_host, REG_DSI_CTRL, 0);
- }
- 
-+bool msm_dsi_host_is_widebus_enabled(struct mipi_dsi_host *host)
-+{
-+	struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
-+
-+	return msm_host->dsc && (msm_host->cfg_hnd->major == MSM_DSI_VER_MAJOR_6G &&
-+			msm_host->cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V2_5_0);
-+}
-+
- static void dsi_ctrl_enable(struct msm_dsi_host *msm_host,
- 			struct msm_dsi_phy_shared_timings *phy_shared_timings, struct msm_dsi_phy *phy)
- {
-@@ -753,10 +761,16 @@ static void dsi_ctrl_enable(struct msm_dsi_host *msm_host,
- 		data |= DSI_CMD_CFG1_INSERT_DCS_COMMAND;
- 		dsi_write(msm_host, REG_DSI_CMD_CFG1, data);
- 
--		if (msm_host->cfg_hnd->major == MSM_DSI_VER_MAJOR_6G &&
--		    msm_host->cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V1_3) {
-+		if (cfg_hnd->major == MSM_DSI_VER_MAJOR_6G) {
- 			data = dsi_read(msm_host, REG_DSI_CMD_MODE_MDP_CTRL2);
--			data |= DSI_CMD_MODE_MDP_CTRL2_BURST_MODE;
-+
-+			if (cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V1_3)
-+				data |= DSI_CMD_MODE_MDP_CTRL2_BURST_MODE;
-+
-+			/* TODO: Allow for video-mode support once tested/fixed */
-+			if (msm_dsi_host_is_widebus_enabled(&msm_host->base))
-+				data |= DSI_CMD_MODE_MDP_CTRL2_DATABUS_WIDEN;
-+
- 			dsi_write(msm_host, REG_DSI_CMD_MODE_MDP_CTRL2, data);
- 		}
- 	}
-@@ -894,6 +908,7 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
- 	u32 hdisplay = mode->hdisplay;
- 	u32 wc;
- 	int ret;
-+	bool widebus_enabled = msm_dsi_host_is_widebus_enabled(&msm_host->base);
- 
- 	DBG("");
- 
-@@ -914,6 +929,7 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
- 
- 	if (msm_host->dsc) {
- 		struct drm_dsc_config *dsc = msm_host->dsc;
-+		u32 bytes_per_pclk;
- 
- 		/* update dsc params with timing params */
- 		if (!dsc || !mode->hdisplay || !mode->vdisplay) {
-@@ -937,7 +953,13 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
- 		 * pulse width same
- 		 */
- 		h_total -= hdisplay;
--		hdisplay = DIV_ROUND_UP(msm_dsc_get_bytes_per_line(msm_host->dsc), 3);
-+		if (widebus_enabled && !(msm_host->mode_flags & MIPI_DSI_MODE_VIDEO))
-+			bytes_per_pclk = 6;
-+		else
-+			bytes_per_pclk = 3;
-+
-+		hdisplay = DIV_ROUND_UP(msm_dsc_get_bytes_per_line(msm_host->dsc), bytes_per_pclk);
-+
- 		h_total += hdisplay;
- 		ha_end = ha_start + hdisplay;
- 	}
-
--- 
-2.41.0
-
+>
+>                    Linus
