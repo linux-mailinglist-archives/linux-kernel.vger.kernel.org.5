@@ -2,176 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4458A76D5AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D874976D568
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233686AbjHBRkR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 13:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
+        id S233397AbjHBRds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:33:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233657AbjHBRkG (ORCPT
+        with ESMTP id S234145AbjHBRdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:40:06 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 528E33583;
-        Wed,  2 Aug 2023 10:39:42 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qRFfp-002UL6-Dq; Wed, 02 Aug 2023 19:30:13 +0200
-Received: from p5b13a085.dip0.t-ipconnect.de ([91.19.160.133] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qRFfp-000el0-6B; Wed, 02 Aug 2023 19:30:13 +0200
-Message-ID: <373656535c754006ca1abe736fffa2be3925b0aa.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH] sh: fix asm-generic/io.h inclusion
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Baoquan He <bhe@redhat.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-sh@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 02 Aug 2023 19:30:11 +0200
-In-Reply-To: <20230802141658.2064864-1-arnd@kernel.org>
-References: <20230802141658.2064864-1-arnd@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Wed, 2 Aug 2023 13:33:23 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7DC49DA
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:31:47 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4036bd4fff1so21541cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690997442; x=1691602242;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d9PIydnqQ3dEyq5utYkLvUYqJvKMSGVMEHB6crTMgkM=;
+        b=wmnjSqR3AEvLOWI2K6c7yK9kn7fO5Pat99S0Bwsp0PE+T/O9vWdpbvSNknU4tUUGkn
+         ca1jFG/o6OZRPOYrIXK5ktFKEkfvXjkyHxiHhOA5bpKtpY3AkRbncUkx0RhnbY1LQG82
+         zNpUMw99ibeIKrEdaaNl226aP4G6mvh65veu+exS44GbVaWmGs9OSAiEivUegBo0AuUG
+         X4+S92GD0p8Xpt42xJT8lOpauoFaUQcvRY3Gu9VwTjs5xpyoABn3qQo2HEanuvVrK6cb
+         9D7jsDgLS7lvLeDPCHsTcGSOcKrOiiPVBpZunRUdc6FXrkmEiy9aKC5ylm5IcoRE1A4c
+         bpAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690997442; x=1691602242;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d9PIydnqQ3dEyq5utYkLvUYqJvKMSGVMEHB6crTMgkM=;
+        b=dvAAZ5l7emdk01wpQaN/OfRzI/hpqrs2+mNVIlQZSyGqQsdBo/M/VOHjOAeEEGIZXU
+         lbQgKOCG0+T7ScSBmEt/qum7TyDBhiARqLgKVX5S6L0cnpyyp5Jkqf+YDybWEf9cTe6J
+         6Uo6wGR1BMLmSyig2ldRQWPFWnNCv84+wxqF7P4F7UOSWyQboNJIa1tG7LacA0/jY8WV
+         E96XmL9N8esThbrwsehod/4reAbMjmr55ej2IxRiC7trxeIKyVhuREzu573/6WwojU7i
+         491qKn2xXaJH/TNSwkcHWaKTJlralDCUxBAbhrMmchYuz3oOz3WTV1vqFy4kKOoeJn6V
+         GWRw==
+X-Gm-Message-State: ABy/qLYrE7p0DaH970DHwmvD/FCf6WWdXU7dVCTFQD08NGEqScU1BAgz
+        NBORrfy6qrz5e/tyM3KVqyYIIhV5DSSPAcNy0O2fDA==
+X-Google-Smtp-Source: APBJJlFI3O33fIDrmQb3T3R+vWt/XUl3W+c523Scknw1Xsezrj9gRXfsmnqvFKS3yUUTAr4rSh9UVAefcI3sHWOzxbY=
+X-Received: by 2002:ac8:5c05:0:b0:3f8:e0a:3e66 with SMTP id
+ i5-20020ac85c05000000b003f80e0a3e66mr1367955qti.3.1690997442291; Wed, 02 Aug
+ 2023 10:30:42 -0700 (PDT)
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.160.133
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <ZMpcTMvnQns81YWA@kernel.org>
+In-Reply-To: <ZMpcTMvnQns81YWA@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Wed, 2 Aug 2023 10:30:30 -0700
+Message-ID: <CAP-5=fW_3vu-XBe2OC07rkwcvQVKEeiLncVRO1CxGEBNa0tvGQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] perf python: Cope with declarations after statements
+ found in Python.h
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd!
+On Wed, Aug 2, 2023 at 6:38=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
+l.org> wrote:
+>
+> With -Werror the build was failing on fedora rawhide:
+>
+>   [perfbuilder@27cfe44d67ed perf-6.5.0-rc2]$ gcc -v
+>   Using built-in specs.
+>   COLLECT_GCC=3Dgcc
+>   COLLECT_LTO_WRAPPER=3D/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapp=
+er
+>   OFFLOAD_TARGET_NAMES=3Dnvptx-none
+>   OFFLOAD_TARGET_DEFAULT=3D1
+>   Target: x86_64-redhat-linux
+>   Configured with: ../configure --enable-bootstrap --enable-languages=3Dc=
+,c++,fortran,objc,obj-c++,ada,go,d,m2,lto --prefix=3D/usr --mandir=3D/usr/s=
+hare/man --infodir=3D/usr/share/info --with-bugurl=3Dhttp://bugzilla.redhat=
+.com/bugzilla --enable-shared --enable-threads=3Dposix --enable-checking=3D=
+release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disabl=
+e-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id =
+--with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx=
+-zoneinfo=3D/usr/share/zoneinfo --with-linker-hash-style=3Dgnu --enable-plu=
+gin --enable-initfini-array --with-isl=3D/builddir/build/BUILD/gcc-13.2.1-2=
+0230728/obj-x86_64-redhat-linux/isl-install --enable-offload-targets=3Dnvpt=
+x-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indire=
+ct-function --enable-cet --with-tune=3Dgeneric --with-arch_32=3Di686 --buil=
+d=3Dx86_64-redhat-linux --with-build-config=3Dbootstrap-lto --enable-link-s=
+erialization=3D1
+>   Thread model: posix
+>   Supported LTO compression algorithms: zlib zstd
+>   gcc version 13.2.1 20230728 (Red Hat 13.2.1-1) (GCC)
+>   [perfbuilder@27cfe44d67ed perf-6.5.0-rc2]$
+>
+>   In file included from /usr/include/python3.12/Python.h:44,
+>                    from /git/perf-6.5.0-rc2/tools/perf/util/python.c:2:
+>   /usr/include/python3.12/object.h: In function =E2=80=98Py_SIZE=E2=80=99=
+:
+>   /usr/include/python3.12/object.h:217:5: error: ISO C90 forbids mixed de=
+clarations and code [-Werror=3Ddeclaration-after-statement]
+>     217 |     PyVarObject *var_ob =3D _PyVarObject_CAST(ob);
+>         |     ^~~~~~~~~~~
+>     LD      /tmp/build/perf/arch/perf-in.o
+>   In file included from /usr/include/python3.12/Python.h:53:
+>   /usr/include/python3.12/cpython/longintrepr.h: In function =E2=80=98_Py=
+Long_CompactValue=E2=80=99:
+>   /usr/include/python3.12/cpython/longintrepr.h:121:5: error: ISO C90 for=
+bids mixed declarations and code [-Werror=3Ddeclaration-after-statement]
+>     121 |     Py_ssize_t sign =3D 1 - (op->long_value.lv_tag & _PyLong_SI=
+GN_MASK);
+>         |     ^~~~~~~~~~
+>
+> So add -Wno-declaration-after-statement to the python binding CFLAGS.
+>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Link: https://lore.kernel.org/lkml/
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-On Wed, 2023-08-02 at 16:16 +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A recent cleanup patch started using the generic asm/io.h header from
-> the sh version, but unfortunately this caused build regressions in many
-> configurations, such as:
-> 
-> include/asm-generic/io.h:636:15: error: redefinition of ‘inb_p’
-> 
-> I added some of the missing defines that are needed to keep using the
-> sh specific implementations rather than the generic ones where they
-> clash. I build all sh defconfig files to catch the various combinations
-> of CONFIG_MMU, CONFIG_GENERIC_IOMAP and CONFIG_NO_IOPORT_MAP, this should
-> cover them all.
-> 
-> A lot of the sh specific functions are equivalent to the generic ones
-> and could in fact be removed, but it would be best to only do that with
-> actual runtime testing.
-> 
-> In particular, the indirect ioport_map() implementation is only used
-> for the "microdev" platform that appears to be broken beyond repair
-> for as long as the git history goes, so removing both microdev and the
-> custom ioport handling in favor of the asm-generic/io.h version would
-> be a great cleanup, but this can be done another time if anyone feels
-> motivated to clean up arch/sh.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-Clean-up will happen with the device tree conversion.
+Thanks,
+Ian
 
-> Fixes: e41f1f7ff6c2b ("sh: add <asm-generic/io.h> including")
-> Link: https://lore.kernel.org/lkml/09094baf-dadf-4bce-9f63-f2a1f255f9a8@app.fastmail.com/
-> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
-> Andrew, can you pick this up into the mm tree on top of the
-> "sh: add <asm-generic/io.h> including" patch?
-> ---
->  arch/sh/include/asm/io.h          | 24 ++++++++++++++++++++++++
->  arch/sh/include/asm/io_noioport.h | 14 --------------
->  2 files changed, 24 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
-> index 24c560c065ec7..f2f38e9d489ac 100644
-> --- a/arch/sh/include/asm/io.h
-> +++ b/arch/sh/include/asm/io.h
-> @@ -119,6 +119,10 @@ void __raw_readsl(const void __iomem *addr, void *data, int longlen);
->  
->  __BUILD_MEMORY_STRING(__raw_, q, u64)
->  
-> +#define ioport_map ioport_map
-> +#define ioport_unmap ioport_unmap
-> +#define pci_iounmap pci_iounmap
+>  tools/perf/util/setup.py | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/tools/perf/util/setup.py b/tools/perf/util/setup.py
+> index 869738fc06c38a4b..79d5e2955f85d8f6 100644
+> --- a/tools/perf/util/setup.py
+> +++ b/tools/perf/util/setup.py
+> @@ -66,6 +66,9 @@ if cc_is_clang:
+>  else:
+>      cflags +=3D ['-Wno-cast-function-type' ]
+>
+> +# The python headers have mixed code with declarations (decls after asse=
+rts, for instance)
+> +cflags +=3D [ "-Wno-declaration-after-statement" ]
 > +
->  #define ioread8 ioread8
->  #define ioread16 ioread16
->  #define ioread16be ioread16be
-> @@ -241,6 +245,26 @@ __BUILD_IOPORT_STRING(q, u64)
->  
->  #endif
->  
-> +#define inb(addr)      inb(addr)
-> +#define inw(addr)      inw(addr)
-> +#define inl(addr)      inl(addr)
-> +#define outb(x, addr)  outb((x), (addr))
-> +#define outw(x, addr)  outw((x), (addr))
-> +#define outl(x, addr)  outl((x), (addr))
-> +
-> +#define inb_p(addr)    inb(addr)
-> +#define inw_p(addr)    inw(addr)
-> +#define inl_p(addr)    inl(addr)
-> +#define outb_p(x, addr)        outb((x), (addr))
-> +#define outw_p(x, addr)        outw((x), (addr))
-> +#define outl_p(x, addr)        outl((x), (addr))
-> +
-> +#define insb insb
-> +#define insw insw
-> +#define insl insl
-> +#define outsb outsb
-> +#define outsw outsw
-> +#define outsl outsl
->  
->  #define IO_SPACE_LIMIT 0xffffffff
->  
-> diff --git a/arch/sh/include/asm/io_noioport.h b/arch/sh/include/asm/io_noioport.h
-> index 5ba4116b4265c..12dad91f41c1e 100644
-> --- a/arch/sh/include/asm/io_noioport.h
-> +++ b/arch/sh/include/asm/io_noioport.h
-> @@ -46,20 +46,6 @@ static inline void ioport_unmap(void __iomem *addr)
->  	BUG();
->  }
->  
-> -#define inb_p(addr)	inb(addr)
-> -#define inw_p(addr)	inw(addr)
-> -#define inl_p(addr)	inl(addr)
-> -#define outb_p(x, addr)	outb((x), (addr))
-> -#define outw_p(x, addr)	outw((x), (addr))
-> -#define outl_p(x, addr)	outl((x), (addr))
-> -
-> -#define insb insb
-> -#define insw insw
-> -#define insl insl
-> -#define outsb outsb
-> -#define outsw outsw
-> -#define outsl outsl
-> -
->  static inline void insb(unsigned long port, void *dst, unsigned long count)
->  {
->  	BUG();
-
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+>  src_perf  =3D getenv('srctree') + '/tools/perf'
+>  build_lib =3D getenv('PYTHON_EXTBUILD_LIB')
+>  build_tmp =3D getenv('PYTHON_EXTBUILD_TMP')
+> --
+> 2.37.1
+>
