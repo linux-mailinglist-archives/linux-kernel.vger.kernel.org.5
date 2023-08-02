@@ -2,130 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D469376C709
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3F376C720
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232988AbjHBHhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:37:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        id S232893AbjHBHi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232959AbjHBHgm (ORCPT
+        with ESMTP id S232748AbjHBHh7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:36:42 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB7C30EB;
-        Wed,  2 Aug 2023 00:36:39 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 9CB3E100020;
-        Wed,  2 Aug 2023 10:36:37 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 9CB3E100020
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1690961797;
-        bh=b/D/LJ/JEmhps4l5xrKdBZ4JUoOucTGmiH6sdU6vmSw=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-        b=asQkXlnrZwtQb8EjKdJdbn87doPjxw8ZkcF0jXGFDNEUolgpT3dW/UJ9/NaMxNmth
-         z+0OtccyG9yCK9ivH1JtmahlrBpXc6LtQLbZbJNMkoq683PhRHPlaFDiR5NfFKn/6S
-         IHGBHsPy2W5bNkQKx74WyYde6Iiqge71INBwIr5x9FAd5qdxqQnVM7T9KsT9EMNX52
-         68cBxdyEWA+cLb7KqrHodbxxBx4LraFGnzyOpjqCyGKyyOmLAUnb5zH1WCXTWvyqz6
-         WbA5XPj8IswtfpSzyOkxHEnyP1bKVUKnB60m6IN3V3Hk9IQcOGT/iForslYKU26KQv
-         zkLBgQ8FY03pw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 2 Aug 2023 03:37:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D551935A5
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:37:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690961821;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Af46NJKmEBmqy5H958slGnADxdkvZPSFCpD9BIDom1E=;
+        b=K8ktEoXkDC0VHvlC8J18KFcIsNz1PRz4+xyG88/SDhQAvtCIr8ZI88Nkg4zOhuBtxMktyn
+        Ai0c9JBXyUJgMY6NjeY3BAw6aFH2VCoHZeyixIB/X6Y8E4Ox/6w2tRs+i3wBlhw6kgk1oQ
+        /tMf54ghoZvM1aqYEMYIcWwJIyjdT9A=
+Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-298-pNGBElBeMeG9lip0cBHItQ-1; Wed, 02 Aug 2023 03:36:55 -0400
+X-MC-Unique: pNGBElBeMeG9lip0cBHItQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Wed,  2 Aug 2023 10:36:37 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
- 2023 10:36:37 +0300
-Date:   Wed, 2 Aug 2023 10:36:37 +0300
-From:   Dmitry Rokosov <ddrokosov@sberdevices.ru>
-To:     Huqiang Qin <huqiang.qin@amlogic.com>
-CC:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <neil.armstrong@linaro.org>,
-        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
-        <martin.blumenstingl@googlemail.com>,
-        <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-amlogic@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH V2 1/4] dt-bindings: watchdog: Add support for Amlogic-T7
- SoCs
-Message-ID: <20230802073637.4dy22fdh5kxukylo@CAB-WSD-L081021>
-References: <20230802033222.4024946-1-huqiang.qin@amlogic.com>
- <20230802033222.4024946-2-huqiang.qin@amlogic.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C335E3828887;
+        Wed,  2 Aug 2023 07:36:53 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C433F7820;
+        Wed,  2 Aug 2023 07:36:51 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+cc:     dhowells@redhat.com,
+        syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com,
+        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next] udp6: Fix __ip6_append_data()'s handling of MSG_SPLICE_PAGES
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230802033222.4024946-2-huqiang.qin@amlogic.com>
-User-Agent: NeoMutt/20220415
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 178796 [Jul 22 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: DDRokosov@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 525 525 723604743bfbdb7e16728748c3fa45e9eba05f7d, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/07/23 10:45:00
-X-KSMG-LinksScanning: Clean, bases: 2023/07/23 10:46:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/07/23 08:49:00 #21663637
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-ID: <1580951.1690961810.1@warthog.procyon.org.uk>
+Date:   Wed, 02 Aug 2023 08:36:50 +0100
+Message-ID: <1580952.1690961810@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 11:32:19AM +0800, Huqiang Qin wrote:
-> Update dt-binding document for watchdog of Amlogic-T7 SoCs.
-> 
-> Signed-off-by: Huqiang Qin <huqiang.qin@amlogic.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+__ip6_append_data() can has a similar problem to __ip_append_data()[1] when
+asked to splice into a partially-built UDP message that has more than the
+frag-limit data and up to the MTU limit, but in the ipv6 case, it errors
+out with EINVAL.  This can be triggered with something like:
 
-Reviewed-by: Dmitry Rokosov <ddrokosov@sberdevices.ru>
+        pipe(pfd);
+        sfd = socket(AF_INET6, SOCK_DGRAM, 0);
+        connect(sfd, ...);
+        send(sfd, buffer, 8137, MSG_CONFIRM|MSG_MORE);
+        write(pfd[1], buffer, 8);
+        splice(pfd[0], 0, sfd, 0, 0x4ffe0ul, 0);
 
-> ---
-> 
-> V1 -> V2: Unchanged.
-> 
->  .../devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml     | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
-> index f5cc7aa1b93b..443e2e7ab467 100644
-> --- a/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/amlogic,meson-gxbb-wdt.yaml
-> @@ -17,6 +17,7 @@ properties:
->    compatible:
->      enum:
->        - amlogic,meson-gxbb-wdt
-> +      - amlogic,t7-wdt
->  
->    reg:
->      maxItems: 1
-> -- 
-> 2.37.1
-> 
-> 
-> _______________________________________________
-> linux-amlogic mailing list
-> linux-amlogic@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+where the amount of data given to send() is dependent on the MTU size (in
+this instance an interface with an MTU of 8192).
 
--- 
-Thank you,
-Dmitry
+The problem is that the calculation of the amount to copy in
+__ip6_append_data() goes negative in two places, but a check has been put
+in to give an error in this case.
+
+This happens because when pagedlen > 0 (which happens for MSG_ZEROCOPY and
+MSG_SPLICE_PAGES), the terms in:
+
+        copy = datalen - transhdrlen - fraggap - pagedlen;
+
+then mostly cancel when pagedlen is substituted for, leaving just -fraggap.
+
+Fix this by:
+
+ (1) Insert a note about the dodgy calculation of 'copy'.
+
+ (2) If MSG_SPLICE_PAGES, clear copy if it is negative from the above
+     equation, so that 'offset' isn't regressed and 'length' isn't
+     increased, which will mean that length and thus copy should match the
+     amount left in the iterator.
+
+ (3) When handling MSG_SPLICE_PAGES, give a warning and return -EIO if
+     we're asked to splice more than is in the iterator.  It might be
+     better to not give the warning or even just give a 'short' write.
+
+ (4) If MSG_SPLICE_PAGES, override the copy<0 check.
+
+[!] Note that this should also affect MSG_ZEROCOPY, but that will return
+-EINVAL for the range of send sizes that requires the skbuff to be split.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+cc: "David S. Miller" <davem@davemloft.net>
+cc: Eric Dumazet <edumazet@google.com>
+cc: Jakub Kicinski <kuba@kernel.org>
+cc: Paolo Abeni <pabeni@redhat.com>
+cc: David Ahern <dsahern@kernel.org>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Matthew Wilcox <willy@infradead.org>
+cc: netdev@vger.kernel.org
+Link: https://lore.kernel.org/r/000000000000881d0606004541d1@google.com/ [1]
+---
+ net/ipv6/ip6_output.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 1e8c90e97608..bc96559bbf0f 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -1693,7 +1693,10 @@ static int __ip6_append_data(struct sock *sk,
+ 			fraglen = datalen + fragheaderlen;
+ 
+ 			copy = datalen - transhdrlen - fraggap - pagedlen;
+-			if (copy < 0) {
++			/* [!] NOTE: copy may be negative if pagedlen>0
++			 * because then the equation may reduces to -fraggap.
++			 */
++			if (copy < 0 && !(flags & MSG_SPLICE_PAGES)) {
+ 				err = -EINVAL;
+ 				goto error;
+ 			}
+@@ -1744,6 +1747,8 @@ static int __ip6_append_data(struct sock *sk,
+ 				err = -EFAULT;
+ 				kfree_skb(skb);
+ 				goto error;
++			} else if (flags & MSG_SPLICE_PAGES) {
++				copy = 0;
+ 			}
+ 
+ 			offset += copy;
+@@ -1791,6 +1796,10 @@ static int __ip6_append_data(struct sock *sk,
+ 		} else if (flags & MSG_SPLICE_PAGES) {
+ 			struct msghdr *msg = from;
+ 
++			err = -EIO;
++			if (WARN_ON_ONCE(copy > msg->msg_iter.count))
++				goto error;
++
+ 			err = skb_splice_from_iter(skb, &msg->msg_iter, copy,
+ 						   sk->sk_allocation);
+ 			if (err < 0)
+
