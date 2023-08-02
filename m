@@ -2,244 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D7C76C3D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56C076C3D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbjHBED5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 00:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41228 "EHLO
+        id S230206AbjHBEEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 00:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjHBEDz (ORCPT
+        with ESMTP id S230392AbjHBEEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 00:03:55 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D6E09B
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:03:47 -0700 (PDT)
-X-UUID: 909d190e30e911ee9cb5633481061a41-20230802
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=J/hP2BMkFWs3UH5TW2EERaEvaZPHQ9Mg0x2qnklmjYw=;
-        b=cEeyAGcc7LnlbbPHhFnMrTJrat3c5Vqj0fEMPkYS0N4C0IU4S7XCjpKnZSF42wN4UEPf62UBBmi3VY2aqYnnNy7qwV/fyRChK7Jalsc4D7aGMchroGGfXe8+7lNdUD5hwZv6pJndqwdFgbNNVTzRRpVGpiPWvq2M3zhzaBwFfYY=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.30,REQID:36991b54-b074-4004-ae87-abff95bccd87,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:45
-X-CID-INFO: VERSION:1.1.30,REQID:36991b54-b074-4004-ae87-abff95bccd87,IP:0,URL
-        :0,TC:0,Content:0,EDM:0,RT:0,SF:45,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-        elease,TS:45
-X-CID-META: VersionHash:1fcc6f8,CLOUDID:b4b60db4-a467-4aa9-9e04-f584452e3794,B
-        ulkID:230802120342SKDK82UN,BulkQuantity:0,Recheck:0,SF:19|48|38|29|28|17|1
-        02,TC:nil,Content:0,EDM:-3,IP:nil,URL:11|1,File:nil,Bulk:nil,QS:nil,BEC:ni
-        l,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:PA,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_SDM,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
-        TF_CID_SPAM_ULN
-X-UUID: 909d190e30e911ee9cb5633481061a41-20230802
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 676958164; Wed, 02 Aug 2023 12:03:40 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 2 Aug 2023 12:03:40 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 2 Aug 2023 12:03:40 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K0guqh1exB6CMXKXdq6l6GD1Za5f5+k+RyWr+XII6M55zCRTEhZghe5WcI4fYWL6wP4TrWp0BoYai4o6aBo44L1ubgShRmUGn44kROHmeQPTJ8KkNnsJvlOx3115IHUUi/47MkWnAsUzxudEuuSA3WOlby8He6xXXPxPdyKcUvOAP+aQWB0xY30/usZmwHOK8ZbUOyDnrNgn/eUKbi0CnH2wtYJWFz34XvzRJy/wSBYFVtMkqXuwx9STkrbgdlaEsofPQsHvTpWZVM5JBJC/h9Y2VWq7nV7TgGXmGZC8ygjPJUBn2NQlLH697awEPgVk03uPyunzpBVXfqJ/WrBpkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=J/hP2BMkFWs3UH5TW2EERaEvaZPHQ9Mg0x2qnklmjYw=;
- b=A8ywzzQUiNsG2c1yS84SoRp3nboyam2nnjAa/KxNmvkGHsCPwaHgBs3+0tf7vvAUS1BFW1fHedcqeUa9TuM6zU7t2H0nC8OoHcPwlB0HKtPFrW3Ru78N9Ks3RMw3NF/K/jUFZk16y9Dna2V7kO8OcreOxvmc0RKYG1N+o8Z2RSoBVDY04PpShd4jEeWYGiojBjNYkqWNL+8Wby9SDBMIhg1CDpThDNxeGm+x/9K9rMIbzTWr/4jNTisR4I8MTQjn+icaKv8bIkENpelWO12I3Sh7TgsaCHPrv8Q6WBbNb7kn8J2H/rU8AD7SZKy6+nBEtdOIoqvVdFlKBlDdzMU71A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J/hP2BMkFWs3UH5TW2EERaEvaZPHQ9Mg0x2qnklmjYw=;
- b=IL+YP3Peu9GCQBFrhEHcxQstlI/q0dAlrhoPCexEw9Qkhi7DTF/uVC8QMf/oKPkbRcxMvoJU1tY3Q0e7GdZfL8aZyOzoPtJOJ/J710GrX0+VAtyc/prRdxZdYTAADIGnUygTWQRgXOJ28ld17XbxqrHfvRfwCzi2kyVqn1zV0W8=
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com (2603:1096:400:1f4::13)
- by KL1PR03MB7492.apcprd03.prod.outlook.com (2603:1096:820:ed::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
- 2023 04:03:37 +0000
-Received: from TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::d126:7f34:9e4f:a95]) by TYZPR03MB6624.apcprd03.prod.outlook.com
- ([fe80::d126:7f34:9e4f:a95%4]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
- 04:03:36 +0000
-From:   =?utf-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>
-To:     "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-CC:     "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        =?utf-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amergnat@baylibre.com" <amergnat@baylibre.com>,
-        "ehristev@collabora.com" <ehristev@collabora.com>,
-        "linux-arm-kernel@lists.infradead.org" 
+        Wed, 2 Aug 2023 00:04:06 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65481FEE;
+        Tue,  1 Aug 2023 21:04:02 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37243rI8004321;
+        Tue, 1 Aug 2023 23:03:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690949033;
+        bh=LtLj/lGP2tAi++udg5DCncfY6MDFxzeQD36/9v9ywUA=;
+        h=From:To:CC:Subject:Date;
+        b=bhdqcnuLSLu241d+fCJDFhnJ/tG0q6rvICvt9scd/gb0XazkzmO3Y4+BjnRjFvxVK
+         0x+RTdSUOIkYGAgInVTylVlhR6qyqX97X3vf2SJqbDayo1cdMgq8L2Te7nPR8jzNtb
+         Qo586xDF66XWzVyfVyrYWjNj3r2GyLjW56Z+YOMM=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37243r5S022972
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 1 Aug 2023 23:03:53 -0500
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 1
+ Aug 2023 23:03:52 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 1 Aug 2023 23:03:53 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37243qQk114423;
+        Tue, 1 Aug 2023 23:03:52 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-Subject: Re: [PATCH v8 07/13] drm/mediatek: gamma: Support specifying number
- of bits per LUT component
-Thread-Topic: [PATCH v8 07/13] drm/mediatek: gamma: Support specifying number
- of bits per LUT component
-Thread-Index: AQHZxG/CnerdgIMLH0uArpzmQ+zMUK/WY7oA
-Date:   Wed, 2 Aug 2023 04:03:36 +0000
-Message-ID: <93251ac3dde7767e6680b31057e034ae7b2d7cff.camel@mediatek.com>
-References: <20230801115854.150346-1-angelogioacchino.delregno@collabora.com>
-         <20230801115854.150346-8-angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230801115854.150346-8-angelogioacchino.delregno@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB6624:EE_|KL1PR03MB7492:EE_
-x-ms-office365-filtering-correlation-id: 197d4dc4-2bc0-4d81-a8f3-08db930d7225
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mOhQGTfnMF/K3aFkAkfA0lwvYedwIwPOP67RmTtJB2EuLnmCxzvHc/yY4psAIxXsknsSsJ4eYOYrKrGTcP5DsNVLKmOcTxPXwvav+rOzp9P8+z4ln1sjhg8zPaWkI/srzIZ1eG1jOmCMYGlZO/ndbliC4V9gsEnfcBOjt0BFVm7mtMxVbTOVpnE7jKwKQplIVTeFumosP/Feihsw6DjHbVSVqW+Y5gQKqDTCmVb7lCnqZoCOYXdSLuucdes9NkA4u4YCt2ziF9T9Mpmq3xCYl26whRdE26CksOBWnag7VNrOiAwpJPJKTy4OUOqenQg4mGXBSUY1vHeWl0owAjDxtCdAPX1Y8i+4oH6NFPxohVvj6fmusIlRvaj2hvpD9embLo46gFXK9idwweg+y58dsp+rHRKxq2KejWJ6htbTZif0FNobjMqilS8EdFry07KuhJxLTJBE+k2XH2Ob9bxKLy73cxJrvUvKMejFB4ql6hU02qvu85fbTvEwG8Pa8TLbbX/KsYSUdgSUf2zpR6sfQ6Ha+jzMaejnF/RT+zYh5hfYyeTkBpG/rFPDOXh7lFiSfJyWH5qfMBrrnoP73srxxJdVNB5O6HvjhPhMRr8l5kCuKxyGqgi8opwSSHxdX6LwOvbm8A+oLrFsLigciZSb66UkzjJwCR6gcJrwXxlxOso=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6624.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(366004)(396003)(136003)(346002)(376002)(451199021)(26005)(6506007)(5660300002)(8676002)(8936002)(7416002)(41300700001)(66446008)(64756008)(66476007)(66556008)(66946007)(316002)(4326008)(2906002)(76116006)(6512007)(110136005)(54906003)(6486002)(71200400001)(478600001)(122000001)(86362001)(83380400001)(2616005)(38100700002)(85182001)(36756003)(186003)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?emMvWUlHWThqNUd3d3BpZ0JuMWxlR1B5S2lYR3MrbHZRS3VvcTNuSmVydEcx?=
- =?utf-8?B?WkM0WkQ5YzkyN0k2c0RSQ0syR1BySHhWRE8zV0cybGFEREd3MmxnWEFTano1?=
- =?utf-8?B?aUZzZnZ4MGxXdldyNmNsUXN5Uk1Ddm9tdVd0TVp6dy9waU9TRThsM0VCYXlh?=
- =?utf-8?B?Y01NK3dSK0NHeThmSk5OdWJzdnM1QW0zODFkUk9QU3RPZVRmc1p5Ni8rUS9v?=
- =?utf-8?B?S3drTXNJMDRWc0RjcjIyWlVFejRRTzBoTWZyUkI3NFBKWkV2b3gwRVk4OG9k?=
- =?utf-8?B?OHlvSkU2SUhYd1NsQUhrYmxNSU8rYlRoUkorZUE4YmFvZ0gxTGFwOTlzeHJk?=
- =?utf-8?B?R05uNUJ6M3VzOGxCQUYyWXU1M1hGV1FtWHltNSt5TDkzM2FEZDhNcEN2Ylgv?=
- =?utf-8?B?bHNnaHJYV3lUNU9SbExrY3QyOXB0N2pZbFVyNTB5SWM4dThJT1FBVHM5Q01U?=
- =?utf-8?B?SkJ0NXpkeTA1UHBaSlA5a3BTZUFQam14OW9haURUSW5MRlZINjFjVnFHTXBC?=
- =?utf-8?B?YklrOFY4QkNnLzJ4MFlLLzBTWjZoUHRnQU5McTBJQVdkc0J0SVZHS0tEcSto?=
- =?utf-8?B?bFYzU3NBZE82SnZOQjYwU2E3SEF0VDZFZmZ3S0tRM1ROQWtoTzVJNjBjcDBP?=
- =?utf-8?B?YW4vUkx6YmJvY0VqWk9naW5xcjFtbVk5QnVlOE5ENSt3Z1VkR3ZxRkVES2JW?=
- =?utf-8?B?dW5vS29Fa00rR21pcGtMa1laaVd6ZEd5bHZrU1VSOEFHSzBuYldpeWc4d1pY?=
- =?utf-8?B?YmlPVElCcS9jYk1SV3dhb2I4UTlzdHRwa0oyVG5CbjgxUktnVmhUSEwxNVB5?=
- =?utf-8?B?QWZtQXFuY1JZSWl0dDd2R09uUVpDQUk5SHUrWGtPa1RSK3VGbktLUWF2cUR3?=
- =?utf-8?B?WjZXN2NFclpSS0t2aThsUkU3OUprdHBlUnZEZkpRSnBVSFhkelhqUDhNWi9q?=
- =?utf-8?B?STVhNGRidjVmcEZUcFdhT09yTG56d0FYYWk3Qjlkb05PdHFYZThDbW82OFJv?=
- =?utf-8?B?cGN3NXhFaUs1NVNrV3NhcFZzYkFQUkZUM25XRFN0blpMcUpIbm1zSmR6WVdt?=
- =?utf-8?B?azhSdjAxaWR0VDl2TXE5NE43TnBreWphM2VhT080WDhzdDdFa2Z4UWFNMTky?=
- =?utf-8?B?eGFocklRbHVNSXFBS3pxcjc2ekVYWUhrb3JsR1RqMGhJUW1HWnBWYnJOYUxx?=
- =?utf-8?B?clZjcUhpeTZXR0xiNDNYSnl4THZ6amJxaGRYcE85elZtb2FXTFBNSUtTRjN0?=
- =?utf-8?B?S0RjK0x4d3RyNHpFNXdmcUhBTk4rS2ZUM0h3N3F6U1BEV0h1ZFBkVE9xMWZV?=
- =?utf-8?B?cHZWbnVoVHFLK09jM3NsSWlXQ3R0VDNoSWFqb0lzeEFQaGFTZ1VTSzBWQm1T?=
- =?utf-8?B?NWltdEZTdm9ocDFEM2d3VlgzSGVTaWVvMW14eXcxelJndEIvcHk4RndOVjZG?=
- =?utf-8?B?bS9PSGZ6M3E3M0xkdXgzb0diMnRWeFBBOTh4MTZmWExPRGVROFJTamV6NXlS?=
- =?utf-8?B?cHplQ3dvN0ZrV1Fmb0xFa2ovSUw1NGkrSWVaV2s2RUZaWTJPMlh5WWpVZENX?=
- =?utf-8?B?czhyZ2RXd3pmblYrN1JmUFdIWE9rQ0dleWlZM3FONGxueWpoTW4xODBYMWVm?=
- =?utf-8?B?MG5iU3lzejJTczhFV0Uvb3F2RkJXWm5iaUtMd2VneVdxTXVTVThQUDgwMUlz?=
- =?utf-8?B?OENVT3V5VW03QmlzYXIwSGp6K1RLRE1wUGE3QmJYZDRMMlZWOEMzeERNUjBt?=
- =?utf-8?B?cjBWNlF6MjFCL1UrZGVJM2lmdUhpN01IMzhoNkEraXpCR1dUcUQxYUx1MXNx?=
- =?utf-8?B?NVBDR0dGSjZNWUVRdGRYWTBUeWErTGFqOEVJTnhPc1ZrYk1XaGhBNlZxRHRu?=
- =?utf-8?B?TkwwdnJ3QUhqM1UraEtnY05maVRjTEZ5dlQ2d0EzUUdvNGo1UDFhY1lWcEZt?=
- =?utf-8?B?Q3dtdFlMZ0VtYXpmUVlGaWpNVGhJK2FHVVZDQlJJRTF5TXJqM3gyNnpoV051?=
- =?utf-8?B?ei9LNEkzWW8wNW4zZFZMb0lFVXc4ZWhEY093azlGbDExTWJ5V2xhT1dZVjlH?=
- =?utf-8?B?b0M1NmFIYlpYTVJuZDlPSncwRE1VZG1JVnlUS0tmY0tFNTBxM2Y0K2pMRmhB?=
- =?utf-8?Q?OGkcpR/sEnqUsm39sSS0v6qHU?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <878EE1778B6CE74788B63BAC8CA6D571@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tero Kristo <kristo@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>, <tony@atomide.com>,
+        Nishanth Menon <nm@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3: Fixup remaining pin group node names for make dtbs checks
+Date:   Tue, 1 Aug 2023 23:03:47 -0500
+Message-ID: <20230802040347.2264339-1-nm@ti.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6624.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 197d4dc4-2bc0-4d81-a8f3-08db930d7225
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2023 04:03:36.1830
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 46y2NkKiP1kCdmk/B33ympstikDO3vHeHm5au418p6ANRtlsTkjkgKynlerhhUI2nHzux1nDLIg0e6q3KdD8Mw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR03MB7492
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEFuZ2VsbzoNCg0KT24gVHVlLCAyMDIzLTA4LTAxIGF0IDEzOjU4ICswMjAwLCBBbmdlbG9H
-aW9hY2NoaW5vIERlbCBSZWdubyB3cm90ZToNCj4gTmV3IFNvQ3MsIGxpa2UgTVQ4MTk1LCBub3Qg
-b25seSBtYXkgc3VwcG9ydCBiaWdnZXIgbG9va3VwIHRhYmxlcywgYnV0DQo+IGhhdmUgZ290IGEg
-ZGlmZmVyZW50IHJlZ2lzdGVyIGxheW91dCB0byBzdXBwb3J0IGJpZ2dlciBwcmVjaXNpb246DQo+
-IHN1cHBvcnQgc3BlY2lmeWluZyB0aGUgbnVtYmVyIG9mIGBsdXRfYml0c2AgZm9yIGVhY2ggU29D
-IGFuZCB1c2UgaXQNCj4gaW4gbXRrX2dhbW1hX3NldF9jb21tb24oKSB0byBwZXJmb3JtIHRoZSBy
-aWdodCBjYWxjdWxhdGlvbi4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IEFuZ2Vsb0dpb2FjY2hpbm8g
-RGVsIFJlZ25vIDwNCj4gYW5nZWxvZ2lvYWNjaGluby5kZWxyZWdub0Bjb2xsYWJvcmEuY29tPg0K
-PiBSZXZpZXdlZC1ieTogSmFzb24tSkguTGluIDxqYXNvbi1qaC5saW5AbWVkaWF0ZWsuY29tPg0K
-PiBSZXZpZXdlZC1ieTogQWxleGFuZHJlIE1lcmduYXQgPGFtZXJnbmF0QGJheWxpYnJlLmNvbT4N
-Cj4gLS0tDQo+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfZ2FtbWEuYyB8IDIz
-ICsrKysrKysrKysrKysrKy0tLS0NCj4gLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDE1IGluc2Vy
-dGlvbnMoKyksIDggZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMNCj4gYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0
-ZWsvbXRrX2Rpc3BfZ2FtbWEuYw0KPiBpbmRleCA0ZjY0MmZlZDQzMmYuLmE2ZjdhZjFhOWU4ZSAx
-MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMN
-Cj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2dhbW1hLmMNCj4gQEAg
-LTM3LDYgKzM3LDcgQEAgc3RydWN0IG10a19kaXNwX2dhbW1hX2RhdGEgew0KPiAgCWJvb2wgaGFz
-X2RpdGhlcjsNCj4gIAlib29sIGx1dF9kaWZmOw0KPiAgCXUxNiBsdXRfc2l6ZTsNCj4gKwl1OCBs
-dXRfYml0czsNCj4gIH07DQo+ICANCj4gIC8qDQo+IEBAIC03OCw2ICs3OSw3IEBAIHZvaWQgbXRr
-X2dhbW1hX3NldF9jb21tb24oc3RydWN0IGRldmljZSAqZGV2LCB2b2lkDQo+IF9faW9tZW0gKnJl
-Z3MsDQo+ICAJc3RydWN0IGRybV9jb2xvcl9sdXQgKmx1dDsNCj4gIAl2b2lkIF9faW9tZW0gKmx1
-dF9iYXNlOw0KPiAgCWJvb2wgbHV0X2RpZmY7DQo+ICsJdTggbHV0X2JpdHM7DQo+ICAJdTMyIGNm
-Z192YWwsIHdvcmQ7DQo+ICANCj4gIAkvKiBJZiB0aGVyZSdzIG5vIGdhbW1hIGx1dCB0aGVyZSdz
-IG5vdGhpbmcgdG8gZG8gaGVyZS4gKi8NCj4gQEAgLTg3LDEwICs4OSwxMyBAQCB2b2lkIG10a19n
-YW1tYV9zZXRfY29tbW9uKHN0cnVjdCBkZXZpY2UgKmRldiwNCj4gdm9pZCBfX2lvbWVtICpyZWdz
-LA0KPiAgCS8qIElmIHdlJ3JlIGNhbGxlZCBmcm9tIEFBTCwgZGV2IGlzIE5VTEwgKi8NCj4gIAln
-YW1tYSA9IGRldiA/IGRldl9nZXRfZHJ2ZGF0YShkZXYpIDogTlVMTDsNCj4gIA0KPiAtCWlmIChn
-YW1tYSAmJiBnYW1tYS0+ZGF0YSkNCj4gKwlpZiAoZ2FtbWEgJiYgZ2FtbWEtPmRhdGEpIHsNCj4g
-IAkJbHV0X2RpZmYgPSBnYW1tYS0+ZGF0YS0+bHV0X2RpZmY7DQo+IC0JZWxzZQ0KPiArCQlsdXRf
-Yml0cyA9IGdhbW1hLT5kYXRhLT5sdXRfYml0czsNCj4gKwl9IGVsc2Ugew0KPiAgCQlsdXRfZGlm
-ZiA9IGZhbHNlOw0KPiArCQlsdXRfYml0cyA9IExVVF9CSVRTX0RFRkFVTFQ7DQoNCkxVVF9CSVRT
-X0RFRkFVTFQgaXMgb25seSBmb3IgQUFMIGRyaXZlciwgc28gcGxhY2UgdGhpcyBkZWZpbml0aW9u
-IGluDQpBQUwgZHJpdmVyIGFuZCBwYXNzIGl0IGludG8gdGhpcyBmdW5jdGlvbi4NCg0KUmVnYXJk
-cywNCkNLDQoNCj4gKwl9DQo+ICANCj4gIAljZmdfdmFsID0gcmVhZGwocmVncyArIERJU1BfR0FN
-TUFfQ0ZHKTsNCj4gIAlsdXRfYmFzZSA9IHJlZ3MgKyBESVNQX0dBTU1BX0xVVDsNCj4gQEAgLTk4
-LDkgKzEwMyw5IEBAIHZvaWQgbXRrX2dhbW1hX3NldF9jb21tb24oc3RydWN0IGRldmljZSAqZGV2
-LCB2b2lkDQo+IF9faW9tZW0gKnJlZ3MsDQo+ICAJZm9yIChpID0gMDsgaSA8IGx1dF9zaXplOyBp
-KyspIHsNCj4gIAkJc3RydWN0IGRybV9jb2xvcl9sdXQgZGlmZiwgaHdsdXQ7DQo+ICANCj4gLQkJ
-aHdsdXQucmVkID0gZHJtX2NvbG9yX2x1dF9leHRyYWN0KGx1dFtpXS5yZWQsDQo+IExVVF9CSVRT
-X0RFRkFVTFQpOw0KPiAtCQlod2x1dC5ncmVlbiA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChsdXRb
-aV0uZ3JlZW4sDQo+IExVVF9CSVRTX0RFRkFVTFQpOw0KPiAtCQlod2x1dC5ibHVlID0gZHJtX2Nv
-bG9yX2x1dF9leHRyYWN0KGx1dFtpXS5ibHVlLA0KPiBMVVRfQklUU19ERUZBVUxUKTsNCj4gKwkJ
-aHdsdXQucmVkID0gZHJtX2NvbG9yX2x1dF9leHRyYWN0KGx1dFtpXS5yZWQsDQo+IGx1dF9iaXRz
-KTsNCj4gKwkJaHdsdXQuZ3JlZW4gPSBkcm1fY29sb3JfbHV0X2V4dHJhY3QobHV0W2ldLmdyZWVu
-LA0KPiBsdXRfYml0cyk7DQo+ICsJCWh3bHV0LmJsdWUgPSBkcm1fY29sb3JfbHV0X2V4dHJhY3Qo
-bHV0W2ldLmJsdWUsDQo+IGx1dF9iaXRzKTsNCj4gIA0KPiAgCQlpZiAoIWx1dF9kaWZmIHx8IChp
-ICUgMiA9PSAwKSkgew0KPiAgCQkJd29yZCA9IEZJRUxEX1BSRVAoRElTUF9HQU1NQV9MVVRfMTBC
-SVRfUiwNCj4gaHdsdXQucmVkKTsNCj4gQEAgLTEwOCwxMyArMTEzLDEzIEBAIHZvaWQgbXRrX2dh
-bW1hX3NldF9jb21tb24oc3RydWN0IGRldmljZSAqZGV2LA0KPiB2b2lkIF9faW9tZW0gKnJlZ3Ms
-DQo+ICAJCQl3b3JkIHw9IEZJRUxEX1BSRVAoRElTUF9HQU1NQV9MVVRfMTBCSVRfQiwNCj4gaHds
-dXQuYmx1ZSk7DQo+ICAJCX0gZWxzZSB7DQo+ICAJCQlkaWZmLnJlZCA9IGx1dFtpXS5yZWQgLSBs
-dXRbaSAtIDFdLnJlZDsNCj4gLQkJCWRpZmYucmVkID0gZHJtX2NvbG9yX2x1dF9leHRyYWN0KGRp
-ZmYucmVkLA0KPiBMVVRfQklUU19ERUZBVUxUKTsNCj4gKwkJCWRpZmYucmVkID0gZHJtX2NvbG9y
-X2x1dF9leHRyYWN0KGRpZmYucmVkLA0KPiBsdXRfYml0cyk7DQo+ICANCj4gIAkJCWRpZmYuZ3Jl
-ZW4gPSBsdXRbaV0uZ3JlZW4gLSBsdXRbaSAtIDFdLmdyZWVuOw0KPiAtCQkJZGlmZi5ncmVlbiA9
-IGRybV9jb2xvcl9sdXRfZXh0cmFjdChkaWZmLmdyZWVuLA0KPiBMVVRfQklUU19ERUZBVUxUKTsN
-Cj4gKwkJCWRpZmYuZ3JlZW4gPSBkcm1fY29sb3JfbHV0X2V4dHJhY3QoZGlmZi5ncmVlbiwNCj4g
-bHV0X2JpdHMpOw0KPiAgDQo+ICAJCQlkaWZmLmJsdWUgPSBsdXRbaV0uYmx1ZSAtIGx1dFtpIC0g
-MV0uYmx1ZTsNCj4gLQkJCWRpZmYuYmx1ZSA9IGRybV9jb2xvcl9sdXRfZXh0cmFjdChkaWZmLmJs
-dWUsDQo+IExVVF9CSVRTX0RFRkFVTFQpOw0KPiArCQkJZGlmZi5ibHVlID0gZHJtX2NvbG9yX2x1
-dF9leHRyYWN0KGRpZmYuYmx1ZSwNCj4gbHV0X2JpdHMpOw0KPiAgDQo+ICAJCQl3b3JkID0gRklF
-TERfUFJFUChESVNQX0dBTU1BX0xVVF8xMEJJVF9SLA0KPiBkaWZmLnJlZCk7DQo+ICAJCQl3b3Jk
-IHw9IEZJRUxEX1BSRVAoRElTUF9HQU1NQV9MVVRfMTBCSVRfRywNCj4gZGlmZi5ncmVlbik7DQo+
-IEBAIC0yMzEsMTAgKzIzNiwxMiBAQCBzdGF0aWMgaW50IG10a19kaXNwX2dhbW1hX3JlbW92ZShz
-dHJ1Y3QNCj4gcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgDQo+ICBzdGF0aWMgY29uc3Qgc3Ry
-dWN0IG10a19kaXNwX2dhbW1hX2RhdGEgbXQ4MTczX2dhbW1hX2RyaXZlcl9kYXRhID0gew0KPiAg
-CS5oYXNfZGl0aGVyID0gdHJ1ZSwNCj4gKwkubHV0X2JpdHMgPSAxMCwNCj4gIAkubHV0X3NpemUg
-PSA1MTIsDQo+ICB9Ow0KPiAgDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG10a19kaXNwX2dhbW1h
-X2RhdGEgbXQ4MTgzX2dhbW1hX2RyaXZlcl9kYXRhID0gew0KPiArCS5sdXRfYml0cyA9IDEwLA0K
-PiAgCS5sdXRfZGlmZiA9IHRydWUsDQo+ICAJLmx1dF9zaXplID0gNTEyLA0KPiAgfTsNCg==
+Fix up outstanding pingroup node names to be compliant with the
+upcoming pinctrl-single schema.
+
+Signed-off-by: Nishanth Menon <nm@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts           | 2 +-
+ arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi   | 2 +-
+ arch/arm64/boot/dts/ti/k3-am654-base-board.dts           | 2 +-
+ arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts | 4 ++--
+ arch/arm64/boot/dts/ti/k3-am68-sk-base-board.dts         | 4 ++--
+ 5 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+index 7c1402b0fa2d..e07ddff22e07 100644
+--- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
++++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+@@ -432,7 +432,7 @@ AM62X_MCU_IOPAD(0x0048, PIN_INPUT, 0) /* (D10) MCU_I2C0_SDA */
+ 		>;
+ 	};
+ 
+-	gbe_pmx_obsclk: gbe-pmx-clk-default {
++	gbe_pmx_obsclk: gbe-pmx-obsclk-default-pins {
+ 		pinctrl-single,pins = <
+ 			AM62X_MCU_IOPAD(0x0004, PIN_OUTPUT, 1) /* (B8) MCU_SPI0_CS1.MCU_OBSCLK0 */
+ 		>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
+index e73458ca6900..e9419c4fe605 100644
+--- a/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am65-iot2050-common-pg2.dtsi
+@@ -10,7 +10,7 @@
+  */
+ 
+ &main_pmx0 {
+-	cp2102n_reset_pin_default: cp2102n-reset-pin-default {
++	cp2102n_reset_pin_default: cp2102n-reset-default-pins {
+ 		pinctrl-single,pins = <
+ 			/* (AF12) GPIO1_24, used as cp2102 reset */
+ 			AM65X_IOPAD(0x01e0, PIN_OUTPUT, 7)
+diff --git a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+index 973a89b04a22..734b051c9700 100644
+--- a/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-am654-base-board.dts
+@@ -192,7 +192,7 @@ AM65X_WKUP_IOPAD(0x002c, PIN_OUTPUT, 0) /* (R4) MCU_OSPI0_CSn0 */
+ 		>;
+ 	};
+ 
+-	wkup_pca554_default: wkup-pca554-default {
++	wkup_pca554_default: wkup-pca554-default-pins {
+ 		pinctrl-single,pins = <
+ 			AM65X_WKUP_IOPAD(0x0034, PIN_INPUT, 7) /* (T1) MCU_OSPI1_CLK.WKUP_GPIO0_25 */
+ 		>;
+diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts
+index cbe44634914f..774eb14ac907 100644
+--- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts
++++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced-m2.dts
+@@ -33,7 +33,7 @@ AM65X_IOPAD(0x01c4, PIN_INPUT_PULLUP, 7)  /* (AH13) GPIO1_17 */
+ 		>;
+ 	};
+ 
+-	main_bkey_pcie_reset: main-bkey-pcie-reset {
++	main_bkey_pcie_reset: main-bkey-pcie-reset-default-pins {
+ 		pinctrl-single,pins = <
+ 			AM65X_IOPAD(0x01bc, PIN_OUTPUT_PULLUP, 7)  /* (AG13) GPIO1_15 */
+ 		>;
+@@ -46,7 +46,7 @@ AM65X_IOPAD(0x01cc, PIN_INPUT_PULLUP, 7)  /* (AD13) GPIO1_19 */
+ 		>;
+ 	};
+ 
+-	main_m2_pcie_mux_control: main-m2-pcie-mux-control {
++	main_m2_pcie_mux_control: main-m2-pcie-mux-control-default-pins {
+ 		pinctrl-single,pins = <
+ 			AM65X_IOPAD(0x0148, PIN_INPUT_PULLUP, 7)  /* (AG22) GPIO0_82 */
+ 			AM65X_IOPAD(0x0160, PIN_INPUT_PULLUP, 7)  /* (AE20) GPIO0_88 */
+diff --git a/arch/arm64/boot/dts/ti/k3-am68-sk-base-board.dts b/arch/arm64/boot/dts/ti/k3-am68-sk-base-board.dts
+index 21ad49cfa7ee..a8172ba55f4b 100644
+--- a/arch/arm64/boot/dts/ti/k3-am68-sk-base-board.dts
++++ b/arch/arm64/boot/dts/ti/k3-am68-sk-base-board.dts
+@@ -273,7 +273,7 @@ J721S2_WKUP_IOPAD(0x088, PIN_OUTPUT, 0) /* (C25) WKUP_GPIO0_12.MCU_UART0_TXD */
+ 		>;
+ 	};
+ 
+-	mcu_rpi_header_gpio0_pins0_default: mcu-rpi-header-gpio0-pins0-default {
++	mcu_rpi_header_gpio0_pins0_default: mcu-rpi-header-gpio0-default-pins-0 {
+ 		pinctrl-single,pins = <
+ 			J721S2_WKUP_IOPAD(0x118, PIN_INPUT, 7) /* (G25) WKUP_GPIO0_66 */
+ 			J721S2_WKUP_IOPAD(0x05C, PIN_INPUT, 7) /* (E24) MCU_SPI1_D0.WKUP_GPIO0_1 */
+@@ -289,7 +289,7 @@ J721S2_WKUP_IOPAD(0x064, PIN_INPUT, 7) /* (C27) MCU_SPI1_CS0.WKUP_GPIO0_3 */
+ };
+ 
+ &wkup_pmx3 {
+-	mcu_rpi_header_gpio0_pins1_default: mcu-rpi-header-gpio0-pins1-default {
++	mcu_rpi_header_gpio0_pins1_default: mcu-rpi-header-gpio0-default-pins-1 {
+ 		pinctrl-single,pins = <
+ 			J721S2_WKUP_IOPAD(0x000, PIN_INPUT, 7) /* (K26) WKUP_GPIO0_49 */
+ 		>;
+-- 
+2.40.0
+
