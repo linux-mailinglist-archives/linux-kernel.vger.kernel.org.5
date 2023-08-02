@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 130CA76D5E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971BA76D5F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbjHBRrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
+        id S233920AbjHBRsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233850AbjHBRrG (ORCPT
+        with ESMTP id S233911AbjHBRsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:47:06 -0400
-Received: from sonic311-30.consmr.mail.ne1.yahoo.com (sonic311-30.consmr.mail.ne1.yahoo.com [66.163.188.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89334358C
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:46:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1690998386; bh=Y1fV31WoZBdOWHfVRCFl5XIEKdH7s/vbHNDfKMxPA8Q=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=Jr3Aj1VUXkzyMebTtF4qRYV1cEaqSxhUTDLVqZq9xTq+55jhT2n22SUv2OOCb9dkfJiZZL+Q2X6hKnhC64yrVov7ABkIYEl1qMKr/y/1Diflbs+hnsH+N/rjNbjNJskr5Djr0DPkcLtp1E9JSs2AtX/2jKvGMH56BOhID8YDj9LL4nJb+Mcvf1hUS+LBXokFEruSlMqc8pcZFILL9wc7Oq9gYCjKKk30C32eU4BCdKJmEOjd5c+3v09NpYrXUvSpB/r/JdU8sg6uqpiSOkdCnsyC2UQM3PzA3asId7y8+YJn050wTmrfDDznSiXX00cfCs5k51vKSBQmk8sq8/kUgw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1690998386; bh=PQ3R8ejLbUqn7UDREfls3q6QZa+4XyICXqpqmVmbt5v=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=QLoPAH/zfNq3IwBGddxNZQNSYg8B1cVUhHPz4btDjbTtJVASwY2yFweAL/N06FJRCcRxZTYC6w2LPjJshipmONGESA3tPzRh3/ETU4ra/pDfgQmreuj0Dmt2hYvlGQCzkvj/sR9K3uHkwHv4F+j7jByiDGX80TaHNZXnRfVWtFiwUuvan9MI6bRJK7kUS07rucQGXy+irUHBrpwjrsmaaJpO79iTOs4j1HxLVbdyUCLF7azqRcY0V/FIjaDmsBFesSK3eYHXLU3Z5Pg9sT09E20XeSo8nP2218mGmNmq/Quat/8i88MQVGI4FOs6BEFRffcWwdbiYn3zzqz5qRUnFQ==
-X-YMail-OSG: T6z1KTwVM1nb9rkn0bLYY5ra5YFGH8lfa85Zu0MXPQzFioctG.ifeJ6VC_ngVoc
- EEoHe6O.tfufRtKy9DUJOLG9BwG4TaP2BiK4TLEfMloEdBp5hWSvQhahsSQY6uR1TTXJQzFsGSKG
- KIietpIPiYJ8bLw9iep0Jn.Xor94jpJqmiHf3EGI3buh0Ym0JU9xepxJJle0N7WRgYA1StwJFYQD
- 16kqqIBLrP.O7ER_IN1reGKozEey4arw9YGZ.0JpHgolbQiFtPec7kST3iLdD.jJZ7BepdUtNpfQ
- B0ijyy1Kdrj.7gDpx_r9bxYoNTTs7BfzdTiIuWrb98Pe_4xeRoSOZWBbw81lDxRTfWbVzKRDxttk
- 2ItndpQW5KwI7VwFB7YC69t6fuD2wYr4lRoJCAlt.PR.XTzxJblJn91Slz7I0lc5NozeLOHnl4_6
- eVYkM90PAaIK_Lt48_AAixPUmjor6kvNyQ5qUknzCVmwKJirlW0ARcpp5GSut4EOjI9Wrj_kPKeW
- QSq.GYXHh7Fp4SuGsjfinIs7ugonoP2V_7nbr3f5Vv3Kgt7Xc4jv93DR7o3jV1LUCb9XOHfAm9Ib
- vEH7p.iZAFFoaPReTZYF44HKZalYilNxYCwzTqCrDdNmmNqIRGKFi1kuqvk6JCmO0OjbDRcoe2O9
- RqVAGWgmR.omH9gRWYFZY8Kw_Lc3ayzx0TAs9tyJci8vi_RRjmv7m_wlYxx2pVux5dMj8YwSaXu6
- 1fBdFO9wqHmvnZd2mL5FYhOXyo7jONMsy8z_KD7pcglHkijCTGvHyMqKII4ill4b44fIbyo4koZi
- Rqt1qICgNIxTnwR6ArMxQJtIYoYGnNB5i_Umitx.aMl8Psb6hhBqypdhpkd5p9VOPW2pUzrU2.jZ
- ewS3hILiwkr0oPoBEacwV2YfTprzn9Af_xF1mUUY7_c_tSczNzNlyg1k8t3xAd1qGiNHw5.4mry4
- HtANIeXud04h.m.JrleBkm8hZKeQMBkYKpyt5qVFupDe.fQvphCppgi..JpXNrSQzC27Kdq7ADvn
- cWwUIvEeBzfbLTHGCrSL.J0dY9J1W6Qy30J2AZMNU3YCIvEyCDdSTV5e.aX5EG_2eoS.mBEXJi3t
- 4UGDo5eFJMSaLXyaSlc_lnKIYMbk7ljubmF0sTd.1.EDSYoNew8TWn5olitfDEM2GJKFveyOdto8
- 5DMgREQKl3NJnvIgp3SYrrjwIkFqvyWXFe2bR8Wu8bnEalKcJS2jL8CnWT.Ko5dYck8gUbSl7mpS
- IiEwgd2mlKhe668.9LtpVsQZZ1tk0WKNmZLzvtmwtsqM21FrzqMzictBsj4W4sxskkXjVVNsA7Ze
- BsDsJXGkf.6swZ32LR3MHVNDB46VHmgL33cD3.iOs6TdpteWumzh8rZ_6UkrPZRoiKUFqimMOPDX
- Cerrk0ejxCBDpoZS115jXGiYiloGQYoJI4r5x8GocM0CQ8zp5JiVeLYU_YzEpUKNoP5xZmcqZRPq
- appVJqAI1CrXLM6vwvdQkyTZqJfQO_GU2T9HkznCXX5VplY_7Uy9.D8AIjHXrzLIKipSabgSieRg
- ostsYpkUpGuuJLsVp92gIMkqoXtRLuDf0EX2al6xHaOkvmNZrfWIoSZG31.pp71w_8.8qWRev7MW
- 2WNPUIKeayHl63oweppoa9b8vSGW2ifpEwYiqE4a44k_1uqJMTrWGAdLrrSLAzTkf.TEt6Oju8ab
- 42gWVZ4iPH375DeYpixXGx6G4cjjds01n6hycen3LSKsKX4tIMoqJZ5NrrdBFagzb8rCdB9XQOdp
- 4SAl_QT9lSMrlfnaRr.s8Hhm2ir6.pl8Kx8g.Dm5OqbhXRH_akLA25FT43.Hmhws9NpAKrzTHTLw
- eiV8a0RLicmsk9gEKGA9NpjzOYfZynCOA7lH5Fkpu1RgCp9pImmwvF3TKPDOUNqlxDqDLHjRlEzp
- OfS45B3lYkXG2Qc.0.oc2jGa9Z5.IlKH8IDbhYroyxVkGbp_YrWeed6AyQhog9RnwSOjfZUfXZjN
- Ts343wfuYaOgZMLfVwCDx9JMYQGR.83dlXa7lL0YHZJiWgd45ahZ8Altn2n_LrKRDC4uiAnlKUff
- ltkvUkqy8lipAxj7WzoG8OnOkWBxsFLnAMck0z.OooH6EBqEeWXy4fU35j2qvwMe0UyqRjGh6JRy
- ximEDYohq5vCpevV9l.A8mLc6f87zLu9Sq5z7AQ4jODYeNmBGpULyMsXyvJVDDrVVUtPg6cglGnM
- F1.rJsWS6rAKjWP9_wOMx8Ij81tTpxZNppbBU
+        Wed, 2 Aug 2023 13:48:17 -0400
+Received: from sonic302-28.consmr.mail.ne1.yahoo.com (sonic302-28.consmr.mail.ne1.yahoo.com [66.163.186.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95B02D70
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1690998479; bh=H+gqT93pGMpLYzs7aWs5HvBFQTz7T+NliWq7UTrCds4=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=aiEjsECQej+3GwX3+70to6ATa0DmgyyXjRIA4eDyf/nw+ai/JzkYsxUO/EdO6h4U8P/+S9KK9z5TQxT8AZMLly+v3fNIo83XMag5c9ePaPBIiM/dyHcs/in2qIOT6ISCPhH4CVu5zwcJvM0AHBdonVwRXt3KpuE7aYP6MkYQN1boy5pnbPkEnf5O46FYsy8gkse0zLYP6zj9iSbGVWN60/AfBeKRSizaUCellFoFBLWtSLm0buBQpqqjuWIKCxm8mf/4jvGpx5iDMve9MgxgHeLrsewryHp8rB5HndMuZBp4Y8qMhoRJQiSFWOW9I9GBEJhS8+Lhejwv4JxvYnNmpA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1690998479; bh=b/tTbfoN/M8SwCV8Ev1gMVdg9sKtzVCI6xU3vjA4ipT=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=ksGns/vZ/6RirHdw9lOo3Woz3Sup7m0WXed4//I+S3Nq5wjtVbHVugeIpXxzTTyatKadTXy2o5GQie3FisdBjSX8+LHgb5HIY85cy9Ar5wANjBsdUIR9JfP46KIq9gURbQLqcR4AAnWWK+4RNS6PfaKtAgs1gH6fK5ZXJgsBrFEPm/aQ/686rc5ekLMVxfhatqoDvnfLTzsnzXuadq3UecilnOHb+yguRMD7FqzsOVPBKeOKYexn1CRgE42MQdEqlJDwq8g9+5MWIIWmZrOt+6qkjUorXq0Y0gmn6OBlGbIIHx91+vX4Pw8b76prNiunUkA5LPuvvK/0kJvX3a5NbA==
+X-YMail-OSG: bUAUj58VM1nm0_VDlPQLCEqwSjpUgzBrwTdz2UnJk1XiDIM19YtBlbeFVfBGsSt
+ USqVjnBFgMp.b0Sc5DvuoP8V4lBzW1QLGL6NTYI_SuUqzhWyhDDaeeFo5cURVas3q73oa50ynHOP
+ YRhljzmfLCp_49LA2.l.6IB.NvgjjWdOvQVIwsXNc54MMDAOC5eNz5oqiWxqwn1oYdJ7PLavGvAX
+ N_haSk5ETYyaU6BvgLB5TGulYnFmcKtSYYgp8sWXzyGNG74yWOqP0PukJfUyBgchuRCHambqSwU3
+ YlmBvAW7axvYzyy8D._du1L7qXan3bNd0SAowNQwk8hGVs4RGfXlrzi8MnYvxEyE_5utzB.pf_rO
+ 5DCwtOW_MKUXh4Tfaan02TjOfD6tL3eorvEPmdyg9EEsadmASA_koyCIEKullDCfAL8zqDneSicN
+ N4a5b4vNpBD6yfFJS3Ncc7uj9GPmpvYo4zplzHg1yo.FPtCc00G18r5Qc7E_vRG5FtiiSJI4H920
+ 2MGsiqONFcKDj6tjBjzUJt_BzTDpM_Hwyu1P3pTdckuMcg2ug2Fw0i40d4NFke18ww9TUObHuMcs
+ MrPjMTQBuGUHkPQYh5g4aC46ggzdJaqh_yb4bX1RfSdcPAI2s0X_6CJdNT9bpceQNJQ_6hQ6VIw7
+ 5dFjH3LQAhE.E5sfn5U3e7vpGeap1jpu1uLDF7Xe8bGuIi30gncpNl5mTtO0eAXJzEotv.VILqs7
+ 9cw6.yFbtfdDznb.nV8MVw4XiS4J1OSzzV5XAxfrFvcQzf4.VeTL2RA3q9zXj13OQdGDZRXckgRf
+ GjtKp8cSVOtkglJ0xHVygEDU19Ao0c2xVZ1lEE03VVAVT5p4Hq5Owz1yMXpt4qAZUFxBgbrZUYp1
+ JkaNrem_lLw.o5.iRkoPpmhMCVzRHrkcyIE6GI97qlObnpGdGE9PPhweGVk0gqdl26H0zDioWDHh
+ QKMnwIY5F4ub41gMEqj6ltdPEtUoZit5QtiaWpHxSOeIG_nSJtSv3r4z87t4YYEdyRc3NGv6IM8C
+ izFdWMduPuiYBtUp.7KgyOnPPxSTXDt9sMd6GgHihld4kD80H9hkg.yU5Q1V8xa4sJWFezyXXglm
+ jbZqJKxl68t7IPXyzhuAKNlXCJXkWBgDbaABAGCoKbFPldZnW1ucj68NGohydF9MJM63Agpa2OEE
+ s1C7cbrJQa0axQzugVlchXAtZ6V.4hMbXN1uJPRnXSzEM8in3smQ36CKen3mtHQpEc4GH5L3eIsg
+ l2o17e72SdJfRHoJPLkV3ATRzQzO3L4ZWKuE3tWrANVafpwVWtp4._JGms3HE0QV6KcHrdXbrj8c
+ TcIPTF8vOGGcsNczhe3iBY_YwokKSqgJD36UfJgyOLEPy5Jk3LZxcX7S1v6csm6Ukha.bJ3V5FZs
+ KyMX.Q2jzb6BC1vFPjoJi3Yfopi73zA7qWL9hDfFdNJoFkNV5tdLJuuB5USjpeiwW9Rcac.nf3OP
+ PYRhuLexm1TcmI1O984IrBDSMTGtyHm2ASdA.qezYw73kov4maZgM3cZSnBZ1xafFcgUEfOV4d5B
+ oS7lM.LsWUCRGOgik_mScmfLQhw_TjuLpewXrIegPHU_KZnwxowL1Uzvg5t5EC5QA0HZQ24DOl9G
+ tjFjf0UZfZxk.bYUBBuWfx1hjDhpLHpiOWWMRq5Js_UkJNCNcr33wMgywW4xlIt1OsRLhIzsf_Ir
+ fds_KH652NqSX_zgBwKZ9GJO5tpgIdru5exUBvi6y.XZ5GaMOHh7OguLknbRKHQ13Gzuc0OOESYC
+ EH6nSIzTnDG85m1n1S0YYZboQc_djjSmFdbToDdNYUxuPAMYENgVyi1Oz2240_Tzh2YNjccXKtaU
+ vzy7ophtnfiIbbMSBaqR7VuDHzzOmBBX4_ZSWf1fxrgsBerEfUEVAF0NoASkDWSSjdwVs4fQFayb
+ Hv92go6pN1PO9LAsUCDgMtHIibXEBT5cnq0OAIYlBlrZhT0M_S7_itT_YoVvVs5DbaXyXzhowyIn
+ x8XMmGXzE_Tp8YsEhBQLS33e9u6zO0c4vVInBFCF9OjEcRjUeNLxgZs6BXmxzF7COOTzJJUCVrV2
+ ObAQjdhpSQNl4wY36VbITrTzIxphQAP8mQs3oBrEMun1TDcolbfX8ZjIRceJbpS6FDKXpYIpjMZY
+ RAXQZ65xEJTc4lYfVMLdp9Zna659SZmo6kjKW.9Y6pmaUkz5_odjwBPqt.jbjDgqtFh1ikLniAnX
+ qpWagFIxemlTOc4_wV90TAagUmefju.FEOJy8ZVKtRsIkKe9NoNsw7NYRqozRTbJLXfQO8F.iIXA
+ _tDBWbYUHbeZNGZMHuA--
 X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: e6279b4d-1066-4855-acaa-946166353edd
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ne1.yahoo.com with HTTP; Wed, 2 Aug 2023 17:46:26 +0000
-Received: by hermes--production-bf1-7c4db57b6-4hrkz (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 49a3a41e5715f67667cdb3b18eebd6de;
-          Wed, 02 Aug 2023 17:46:23 +0000 (UTC)
+X-Sonic-ID: 1ef6f890-2890-4c9f-a3d7-98e0644e2656
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Wed, 2 Aug 2023 17:47:59 +0000
+Received: by hermes--production-gq1-7d844d8954-t8s9w (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 9cf20a3b1a5c807479089b2cf544b53b;
+          Wed, 02 Aug 2023 17:47:57 +0000 (UTC)
 From:   Casey Schaufler <casey@schaufler-ca.com>
 To:     casey@schaufler-ca.com, paul@paul-moore.com,
         linux-security-module@vger.kernel.org
 Cc:     jmorris@namei.org, serge@hallyn.com, keescook@chromium.org,
         john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
         stephen.smalley.work@gmail.com, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, mic@digikod.net
-Subject: [PATCH v13 05/11] LSM: Create lsm_list_modules system call
-Date:   Wed,  2 Aug 2023 10:44:28 -0700
-Message-ID: <20230802174435.11928-6-casey@schaufler-ca.com>
+        linux-api@vger.kernel.org, mic@digikod.net,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v13 06/11] LSM: wireup Linux Security Module syscalls
+Date:   Wed,  2 Aug 2023 10:44:29 -0700
+Message-ID: <20230802174435.11928-7-casey@schaufler-ca.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230802174435.11928-1-casey@schaufler-ca.com>
 References: <20230802174435.11928-1-casey@schaufler-ca.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,110 +81,317 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a system call to report the list of Linux Security Modules
-that are active on the system. The list is provided as an array
-of LSM ID numbers.
-
-The calling application can use this list determine what LSM
-specific actions it might take. That might include choosing an
-output format, determining required privilege or bypassing
-security module specific behavior.
+Wireup lsm_get_self_attr, lsm_set_self_attr and lsm_list_modules
+system calls.
 
 Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Serge Hallyn <serge@hallyn.com>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-api@vger.kernel.org
 ---
- Documentation/userspace-api/lsm.rst |  3 +++
- include/linux/syscalls.h            |  1 +
- kernel/sys_ni.c                     |  1 +
- security/lsm_syscalls.c             | 39 +++++++++++++++++++++++++++++
- 4 files changed, 44 insertions(+)
+ arch/alpha/kernel/syscalls/syscall.tbl              | 3 +++
+ arch/arm/tools/syscall.tbl                          | 3 +++
+ arch/arm64/include/asm/unistd.h                     | 2 +-
+ arch/arm64/include/asm/unistd32.h                   | 6 ++++++
+ arch/ia64/kernel/syscalls/syscall.tbl               | 3 +++
+ arch/m68k/kernel/syscalls/syscall.tbl               | 3 +++
+ arch/microblaze/kernel/syscalls/syscall.tbl         | 3 +++
+ arch/mips/kernel/syscalls/syscall_n32.tbl           | 3 +++
+ arch/mips/kernel/syscalls/syscall_n64.tbl           | 3 +++
+ arch/mips/kernel/syscalls/syscall_o32.tbl           | 3 +++
+ arch/parisc/kernel/syscalls/syscall.tbl             | 3 +++
+ arch/powerpc/kernel/syscalls/syscall.tbl            | 3 +++
+ arch/s390/kernel/syscalls/syscall.tbl               | 3 +++
+ arch/sh/kernel/syscalls/syscall.tbl                 | 3 +++
+ arch/sparc/kernel/syscalls/syscall.tbl              | 3 +++
+ arch/x86/entry/syscalls/syscall_32.tbl              | 3 +++
+ arch/x86/entry/syscalls/syscall_64.tbl              | 3 +++
+ arch/xtensa/kernel/syscalls/syscall.tbl             | 3 +++
+ include/uapi/asm-generic/unistd.h                   | 9 ++++++++-
+ tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl | 3 +++
+ tools/perf/arch/powerpc/entry/syscalls/syscall.tbl  | 3 +++
+ tools/perf/arch/s390/entry/syscalls/syscall.tbl     | 3 +++
+ tools/perf/arch/x86/entry/syscalls/syscall_64.tbl   | 3 +++
+ 23 files changed, 75 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/userspace-api/lsm.rst b/Documentation/userspace-api/lsm.rst
-index f8499f3e2826..a76da373841b 100644
---- a/Documentation/userspace-api/lsm.rst
-+++ b/Documentation/userspace-api/lsm.rst
-@@ -63,6 +63,9 @@ Get the specified security attributes of the current process
- .. kernel-doc:: security/lsm_syscalls.c
-     :identifiers: sys_lsm_get_self_attr
+diff --git a/arch/alpha/kernel/syscalls/syscall.tbl b/arch/alpha/kernel/syscalls/syscall.tbl
+index 1f13995d00d7..bb00aecf1dc4 100644
+--- a/arch/alpha/kernel/syscalls/syscall.tbl
++++ b/arch/alpha/kernel/syscalls/syscall.tbl
+@@ -491,3 +491,6 @@
+ 559	common  futex_waitv                     sys_futex_waitv
+ 560	common	set_mempolicy_home_node		sys_ni_syscall
+ 561	common	cachestat			sys_cachestat
++562	common	lsm_get_self_attr		sys_lsm_get_self_attr
++563	common	lsm_set_self_attr		sys_lsm_set_self_attr
++564	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/arm/tools/syscall.tbl b/arch/arm/tools/syscall.tbl
+index 8ebed8a13874..a148e71905a7 100644
+--- a/arch/arm/tools/syscall.tbl
++++ b/arch/arm/tools/syscall.tbl
+@@ -465,3 +465,6 @@
+ 449	common	futex_waitv			sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
+index 64a514f90131..63a8a9c4abc1 100644
+--- a/arch/arm64/include/asm/unistd.h
++++ b/arch/arm64/include/asm/unistd.h
+@@ -39,7 +39,7 @@
+ #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
+ #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
  
-+.. kernel-doc:: security/lsm_syscalls.c
-+    :identifiers: sys_lsm_list_modules
-+
- Additional documentation
- ========================
+-#define __NR_compat_syscalls		452
++#define __NR_compat_syscalls		455
+ #endif
  
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index a3938850752a..4e1596b5c300 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -958,6 +958,7 @@ asmlinkage long sys_lsm_get_self_attr(unsigned int attr, struct lsm_ctx *ctx,
- 		size_t *size, __u32 flags);
- asmlinkage long sys_lsm_set_self_attr(unsigned int attr, struct lsm_ctx *ctx,
- 		size_t size, __u32 flags);
-+asmlinkage long sys_lsm_list_modules(u64 *ids, size_t *size, u32 flags);
+ #define __ARCH_WANT_SYS_CLONE
+diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
+index d952a28463e0..df214b7ec5dd 100644
+--- a/arch/arm64/include/asm/unistd32.h
++++ b/arch/arm64/include/asm/unistd32.h
+@@ -909,6 +909,12 @@ __SYSCALL(__NR_futex_waitv, sys_futex_waitv)
+ __SYSCALL(__NR_set_mempolicy_home_node, sys_set_mempolicy_home_node)
+ #define __NR_cachestat 451
+ __SYSCALL(__NR_cachestat, sys_cachestat)
++#define __NR_lsm_get_self_attr 452
++__SYSCALL(__NR_lsm_get_self_attr, sys_lsm_get_self_attr)
++#define __NR_lsm_set_self_attr 453
++__SYSCALL(__NR_lsm_set_self_attr, sys_lsm_set_self_attr)
++#define __NR_lsm_list_modules 454
++__SYSCALL(__NR_lsm_list_modules, sys_lsm_list_modules)
  
  /*
-  * Architecture-specific system calls
-diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-index 8b96cd01b485..7663ef16c07e 100644
---- a/kernel/sys_ni.c
-+++ b/kernel/sys_ni.c
-@@ -172,6 +172,7 @@ COND_SYSCALL(fadvise64_64);
- COND_SYSCALL_COMPAT(fadvise64_64);
- COND_SYSCALL(lsm_get_self_attr);
- COND_SYSCALL(lsm_set_self_attr);
-+COND_SYSCALL(lsm_list_modules);
+  * Please add new compat syscalls above this comment and update
+diff --git a/arch/ia64/kernel/syscalls/syscall.tbl b/arch/ia64/kernel/syscalls/syscall.tbl
+index f8c74ffeeefb..1b53f9d28514 100644
+--- a/arch/ia64/kernel/syscalls/syscall.tbl
++++ b/arch/ia64/kernel/syscalls/syscall.tbl
+@@ -372,3 +372,6 @@
+ 449	common  futex_waitv                     sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/m68k/kernel/syscalls/syscall.tbl b/arch/m68k/kernel/syscalls/syscall.tbl
+index 4f504783371f..f7a91d458f0c 100644
+--- a/arch/m68k/kernel/syscalls/syscall.tbl
++++ b/arch/m68k/kernel/syscalls/syscall.tbl
+@@ -451,3 +451,6 @@
+ 449	common  futex_waitv                     sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/microblaze/kernel/syscalls/syscall.tbl b/arch/microblaze/kernel/syscalls/syscall.tbl
+index 858d22bf275c..2b24b19a9bec 100644
+--- a/arch/microblaze/kernel/syscalls/syscall.tbl
++++ b/arch/microblaze/kernel/syscalls/syscall.tbl
+@@ -457,3 +457,6 @@
+ 449	common  futex_waitv                     sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/mips/kernel/syscalls/syscall_n32.tbl b/arch/mips/kernel/syscalls/syscall_n32.tbl
+index 1976317d4e8b..0ff4072ed024 100644
+--- a/arch/mips/kernel/syscalls/syscall_n32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
+@@ -390,3 +390,6 @@
+ 449	n32	futex_waitv			sys_futex_waitv
+ 450	n32	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	n32	cachestat			sys_cachestat
++452	n32	lsm_get_self_attr		sys_lsm_get_self_attr
++453	n32	lsm_set_self_attr		sys_lsm_set_self_attr
++454	n32	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/mips/kernel/syscalls/syscall_n64.tbl b/arch/mips/kernel/syscalls/syscall_n64.tbl
+index cfda2511badf..9c38818dd9f9 100644
+--- a/arch/mips/kernel/syscalls/syscall_n64.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
+@@ -366,3 +366,6 @@
+ 449	n64	futex_waitv			sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	n64	cachestat			sys_cachestat
++452	n64	lsm_get_self_attr		sys_lsm_get_self_attr
++453	n64	lsm_set_self_attr		sys_lsm_set_self_attr
++454	n64	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/mips/kernel/syscalls/syscall_o32.tbl b/arch/mips/kernel/syscalls/syscall_o32.tbl
+index 7692234c3768..a07e1ba91511 100644
+--- a/arch/mips/kernel/syscalls/syscall_o32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
+@@ -439,3 +439,6 @@
+ 449	o32	futex_waitv			sys_futex_waitv
+ 450	o32	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	o32	cachestat			sys_cachestat
++452	o32	lsm_get_self_attr		sys_lsm_get_self_attr
++453	032	lsm_set_self_attr		sys_lsm_set_self_attr
++454	o32	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/parisc/kernel/syscalls/syscall.tbl b/arch/parisc/kernel/syscalls/syscall.tbl
+index a0a9145b6dd4..36cc0130ee1d 100644
+--- a/arch/parisc/kernel/syscalls/syscall.tbl
++++ b/arch/parisc/kernel/syscalls/syscall.tbl
+@@ -450,3 +450,6 @@
+ 449	common	futex_waitv			sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/powerpc/kernel/syscalls/syscall.tbl b/arch/powerpc/kernel/syscalls/syscall.tbl
+index 8c0b08b7a80e..fe2ba9e8a413 100644
+--- a/arch/powerpc/kernel/syscalls/syscall.tbl
++++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+@@ -538,3 +538,6 @@
+ 449	common  futex_waitv                     sys_futex_waitv
+ 450 	nospu	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/s390/kernel/syscalls/syscall.tbl b/arch/s390/kernel/syscalls/syscall.tbl
+index a6935af2235c..fe3fc23697b0 100644
+--- a/arch/s390/kernel/syscalls/syscall.tbl
++++ b/arch/s390/kernel/syscalls/syscall.tbl
+@@ -454,3 +454,6 @@
+ 449  common	futex_waitv		sys_futex_waitv			sys_futex_waitv
+ 450  common	set_mempolicy_home_node	sys_set_mempolicy_home_node	sys_set_mempolicy_home_node
+ 451  common	cachestat		sys_cachestat			sys_cachestat
++452  common	lsm_get_self_attr	sys_lsm_get_self_attr		sys_lsm_get_self_attr
++453  common	lsm_set_self_attr	sys_lsm_set_self_attr		sys_lsm_set_self_attr
++454  common	lsm_list_modules	sys_lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/sh/kernel/syscalls/syscall.tbl b/arch/sh/kernel/syscalls/syscall.tbl
+index 97377e8c5025..319968dccde9 100644
+--- a/arch/sh/kernel/syscalls/syscall.tbl
++++ b/arch/sh/kernel/syscalls/syscall.tbl
+@@ -454,3 +454,6 @@
+ 449	common  futex_waitv                     sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/sparc/kernel/syscalls/syscall.tbl b/arch/sparc/kernel/syscalls/syscall.tbl
+index faa835f3c54a..9ca3fb4c05de 100644
+--- a/arch/sparc/kernel/syscalls/syscall.tbl
++++ b/arch/sparc/kernel/syscalls/syscall.tbl
+@@ -497,3 +497,6 @@
+ 449	common  futex_waitv                     sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/arch/x86/entry/syscalls/syscall_32.tbl b/arch/x86/entry/syscalls/syscall_32.tbl
+index bc0a3c941b35..4caa3c415528 100644
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@ -456,3 +456,6 @@
+ 449	i386	futex_waitv		sys_futex_waitv
+ 450	i386	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	i386	cachestat		sys_cachestat
++452	i386	lsm_get_self_attr	sys_lsm_get_self_attr
++453	i386	lsm_set_self_attr	sys_lsm_set_self_attr
++454	i386	lsm_list_modules	sys_lsm_list_modules
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+index 227538b0ce80..c5f85f93e80b 100644
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -373,6 +373,9 @@
+ 449	common	futex_waitv		sys_futex_waitv
+ 450	common	set_mempolicy_home_node	sys_set_mempolicy_home_node
+ 451	common	cachestat		sys_cachestat
++452	common	lsm_get_self_attr	sys_lsm_get_self_attr
++453	common	lsm_set_self_attr	sys_lsm_set_self_attr
++454	common	lsm_list_modules	sys_lsm_list_modules
  
- /* CONFIG_MMU only */
- COND_SYSCALL(swapon);
-diff --git a/security/lsm_syscalls.c b/security/lsm_syscalls.c
-index ee3881159241..f03f2d17ab49 100644
---- a/security/lsm_syscalls.c
-+++ b/security/lsm_syscalls.c
-@@ -53,3 +53,42 @@ SYSCALL_DEFINE4(lsm_get_self_attr, unsigned int, attr, struct lsm_ctx __user *,
- {
- 	return security_getselfattr(attr, ctx, size, flags);
- }
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
+diff --git a/arch/xtensa/kernel/syscalls/syscall.tbl b/arch/xtensa/kernel/syscalls/syscall.tbl
+index 2b69c3c035b6..509379512c27 100644
+--- a/arch/xtensa/kernel/syscalls/syscall.tbl
++++ b/arch/xtensa/kernel/syscalls/syscall.tbl
+@@ -422,3 +422,6 @@
+ 449	common  futex_waitv                     sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+index fd6c1cb585db..b5588efc0933 100644
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@ -820,8 +820,15 @@ __SYSCALL(__NR_set_mempolicy_home_node, sys_set_mempolicy_home_node)
+ #define __NR_cachestat 451
+ __SYSCALL(__NR_cachestat, sys_cachestat)
+ 
++#define __NR_lsm_get_self_attr 452
++__SYSCALL(__NR_lsm_get_self_attr, sys_lsm_get_self_attr)
++#define __NR_lsm_set_self_attr 453
++__SYSCALL(__NR_lsm_set_self_attr, sys_lsm_set_self_attr)
++#define __NR_lsm_list_modules 454
++__SYSCALL(__NR_lsm_list_modules, sys_lsm_list_modules)
 +
-+/**
-+ * sys_lsm_list_modules - Return a list of the active security modules
-+ * @ids: the LSM module ids
-+ * @size: pointer to size of @ids, updated on return
-+ * @flags: reserved for future use, must be zero
-+ *
-+ * Returns a list of the active LSM ids. On success this function
-+ * returns the number of @ids array elements. This value may be zero
-+ * if there are no LSMs active. If @size is insufficient to contain
-+ * the return data -E2BIG is returned and @size is set to the minimum
-+ * required size. In all other cases a negative value indicating the
-+ * error is returned.
-+ */
-+SYSCALL_DEFINE3(lsm_list_modules, u64 __user *, ids, size_t __user *, size,
-+		u32, flags)
-+{
-+	size_t total_size = lsm_active_cnt * sizeof(*ids);
-+	size_t usize;
-+	int i;
-+
-+	if (flags)
-+		return -EINVAL;
-+
-+	if (get_user(usize, size))
-+		return -EFAULT;
-+
-+	if (put_user(total_size, size) != 0)
-+		return -EFAULT;
-+
-+	if (usize < total_size)
-+		return -E2BIG;
-+
-+	for (i = 0; i < lsm_active_cnt; i++)
-+		if (put_user(lsm_idlist[i]->id, ids++))
-+			return -EFAULT;
-+
-+	return lsm_active_cnt;
-+}
+ #undef __NR_syscalls
+-#define __NR_syscalls 452
++#define __NR_syscalls 455
+ 
+ /*
+  * 32 bit systems traditionally used different
+diff --git a/tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl b/tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl
+index cfda2511badf..9c38818dd9f9 100644
+--- a/tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl
++++ b/tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl
+@@ -366,3 +366,6 @@
+ 449	n64	futex_waitv			sys_futex_waitv
+ 450	common	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	n64	cachestat			sys_cachestat
++452	n64	lsm_get_self_attr		sys_lsm_get_self_attr
++453	n64	lsm_set_self_attr		sys_lsm_set_self_attr
++454	n64	lsm_list_modules		sys_lsm_list_modules
+diff --git a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+index 8c0b08b7a80e..fe2ba9e8a413 100644
+--- a/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
++++ b/tools/perf/arch/powerpc/entry/syscalls/syscall.tbl
+@@ -538,3 +538,6 @@
+ 449	common  futex_waitv                     sys_futex_waitv
+ 450 	nospu	set_mempolicy_home_node		sys_set_mempolicy_home_node
+ 451	common	cachestat			sys_cachestat
++452	common	lsm_get_self_attr		sys_lsm_get_self_attr
++453	common	lsm_set_self_attr		sys_lsm_set_self_attr
++454	common	lsm_list_modules		sys_lsm_list_modules
+diff --git a/tools/perf/arch/s390/entry/syscalls/syscall.tbl b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
+index a6935af2235c..a18e9d7cf92b 100644
+--- a/tools/perf/arch/s390/entry/syscalls/syscall.tbl
++++ b/tools/perf/arch/s390/entry/syscalls/syscall.tbl
+@@ -454,3 +454,6 @@
+ 449  common	futex_waitv		sys_futex_waitv			sys_futex_waitv
+ 450  common	set_mempolicy_home_node	sys_set_mempolicy_home_node	sys_set_mempolicy_home_node
+ 451  common	cachestat		sys_cachestat			sys_cachestat
++452  common	lsm_get_self_attr	sys_lsm_get_self_attr	sys_lsm_get_self_attr
++453  common	lsm_set_self_attr	sys_lsm_set_self_attr	sys_lsm_set_self_attr
++454  common	lsm_list_modules	sys_lsm_list_modules	sys_lsm_list_modules
+diff --git a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+index 227538b0ce80..c5f85f93e80b 100644
+--- a/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/tools/perf/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -373,6 +373,9 @@
+ 449	common	futex_waitv		sys_futex_waitv
+ 450	common	set_mempolicy_home_node	sys_set_mempolicy_home_node
+ 451	common	cachestat		sys_cachestat
++452	common	lsm_get_self_attr	sys_lsm_get_self_attr
++453	common	lsm_set_self_attr	sys_lsm_set_self_attr
++454	common	lsm_list_modules	sys_lsm_list_modules
+ 
+ #
+ # Due to a historical design error, certain syscalls are numbered differently
 -- 
 2.41.0
 
