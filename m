@@ -2,166 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C8D76CBE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CFC76CBE8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234252AbjHBLki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
+        id S234084AbjHBLlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbjHBLkh (ORCPT
+        with ESMTP id S230139AbjHBLlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:40:37 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AD413E;
-        Wed,  2 Aug 2023 04:40:35 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372BeQQA054554;
-        Wed, 2 Aug 2023 06:40:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690976426;
-        bh=MRkc0kA9D0X9GcnGaHhXoOG07XC+S5YO6/kh08XlTEw=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=tlO6fSGLwoEdZ+gDU+XH2m0wICXpRsmtT9veCOnJyqaL7n86mkUG1ETd/C0CoNZJO
-         bAb3SDhWLTtqlmHhYZHUyv6Dpz7SowEFI3+4CCpEWrLAskMHRLVblJ33wlA3kRgDEJ
-         5nQtdJwwEaf7M9ooJ0L2hn+VRcGsx1ai2eag5yTc=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372BeQkQ008531
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Aug 2023 06:40:26 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
- Aug 2023 06:40:26 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 2 Aug 2023 06:40:26 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372BePgV120226;
-        Wed, 2 Aug 2023 06:40:25 -0500
-Date:   Wed, 2 Aug 2023 17:10:29 +0530
-From:   Jai Luthra <j-luthra@ti.com>
-To:     Devarsh Thakkar <devarsht@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jayesh Choudhary <j-choudhary@ti.com>
-Subject: Re: [PATCH 4/5] arm64: dts: ti: k3-am62a7-sk: Enable audio on AM62A
-Message-ID: <52pbbqnp46h33gymoydnjtxoo3dsb6wnytvjnmomtjdtwck536@ewhb2rngomr2>
-References: <20230731-mcasp_am62a-v1-0-8bd137ffa8f1@ti.com>
- <20230731-mcasp_am62a-v1-4-8bd137ffa8f1@ti.com>
- <aa8d2aa6-a121-51e6-77de-0e1c8bdac043@ti.com>
+        Wed, 2 Aug 2023 07:41:10 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF67C0
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:41:09 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-686ba97e4feso6510814b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 04:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690976469; x=1691581269;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cV18Cisizme2k4YqWIWHrJEyGuocEaqPxg924l7XK8Y=;
+        b=IlAptlq+VK98mpA2few2pmW5mYTUzP5uYXmdXaN/l0b1Pr25CRxbZ0IZrpzSaJdLF1
+         LKHy4H0jBlHaaQcmjnw4aWlzvaIwACMlP2WBeG/l5UQNzhjIRfTylB+Pq6rK5vaukdr2
+         hiiSJjYw5JEu+RD0SZ56T1tT3FOdybiUuD7BFDyyMsFiWFoZrVcY8nrCNBeSQOzL8NO2
+         dJ7HzFdMyiYncy74xY8g6S1B/mHPnpS2HfVGQ56v/SUHKBfV03+qJgQQX1u/jceTmP6J
+         KZrEbPROquPw4qnN11yg4pbrK73lUZ1plyqTosBJpn3MiSOS7K3x6MZxtMJOYFOXO15V
+         wkuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690976469; x=1691581269;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cV18Cisizme2k4YqWIWHrJEyGuocEaqPxg924l7XK8Y=;
+        b=gZ5ou8mETlxbQxpZb44F/5Yb4gHgMP6j6nTiqkZZPyog8z+Oka/wsfb00EokgEI0AK
+         3af3Az+Toz33oNkZyZaUnUxzSjR7n3r+97Bkjzw/cZTyEn1fCn6EdEKDeaV5RquXPhLb
+         ldGqG+c+0b5ASLchp10UR5Ebv1R7Q2IwxkrnDl90yvljAfHU4JmRIURAUgLsKdKc9dtI
+         aVBCAjBQ+/HblS3Lpowoh3RZFWrvAkmO7/gs3GoInLhhvRi40gIM14C7khO0SuVI4pLE
+         z+9Dq48CFoa+Ua4rulLw9mq9HY5tFyTbnN6Kg+mR6wOQ9Q8pSNZc24wbT6vvqQxSLsFy
+         eGjw==
+X-Gm-Message-State: ABy/qLaokJY7mbUHHecacQN3725cCxOgP534qrln38nEHGahyGeM/tz6
+        nnIuqPHn36AeanBO1P4fayY=
+X-Google-Smtp-Source: APBJJlF6j5ZE3Y1mkxc9NxRnr/WudTbHe7GtCNVIUFzHuZuAyRVujwhnUraqbCBuy4C/MSirnmQb4g==
+X-Received: by 2002:a05:6a20:a121:b0:13e:1945:8873 with SMTP id q33-20020a056a20a12100b0013e19458873mr9327883pzk.37.1690976468831;
+        Wed, 02 Aug 2023 04:41:08 -0700 (PDT)
+Received: from [192.168.0.105] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id j24-20020aa79298000000b006765cb3255asm10912100pfa.68.2023.08.02.04.41.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 04:41:08 -0700 (PDT)
+Message-ID: <8edde583-2b5f-2332-e59a-f1f4688b9e40@gmail.com>
+Date:   Wed, 2 Aug 2023 18:41:01 +0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="c3zg2pdfn37jmidw"
-Content-Disposition: inline
-In-Reply-To: <aa8d2aa6-a121-51e6-77de-0e1c8bdac043@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Content-Language: en-US
+To:     Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        shenlinghai@163.com, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>, dwmw2@infradead.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux NVMe <linux-nvme@lists.infradead.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Ubuntu 22.04, "nvme list" will hang for 60 seconds after "nvme
+ subsystem-reset"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---c3zg2pdfn37jmidw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi Devarsh,
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-On Aug 02, 2023 at 16:15:12 +0530, Devarsh Thakkar wrote:
-> Hi Jai,
->=20
-> Thanks for the patch.
->=20
-> On 31/07/23 18:14, Jai Luthra wrote:
-> > Add nodes for audio codec and sound card, enable the audio serializer
-> > (McASP1) under use and update pinmux.
-> >=20
-> > Link: https://www.ti.com/lit/zip/sprr459
-> > Signed-off-by: Jai Luthra <j-luthra@ti.com>
-> > Reviewed-by: Jayesh Choudhary <j-choudhary@ti.com>
-> > ---
-> >  arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 77 +++++++++++++++++++++++++=
-++++++++
-> >  1 file changed, 77 insertions(+)
-> >=20
-> > diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts b/arch/arm64/boot/=
-dts/ti/k3-am62a7-sk.dts
-> > index 752c2f640f63..5f68d2eefe0f 100644
-> > --- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-> > +++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
-> > @@ -125,6 +125,41 @@ led-0 {
-> >  			default-state =3D "off";
-> >  		};
-> >  	};
-> > +
-> > +	tlv320_mclk: clk-0 {
-> > +		#clock-cells =3D <0>;
-> > +		compatible =3D "fixed-clock";
-> > +		clock-frequency =3D <12288000>;
-> > +	};
-> > +
-> > +	codec_audio: sound {
-> > +		compatible =3D "simple-audio-card";
-> > +		simple-audio-card,name =3D "AM62Ax-SKEVM";
->=20
-> In my opinion better to give the codec name instead of board name here.
+> Issue description:
+> root:~# lsb_release -a
+> No LSB modules are available.
+> Distributor ID:	Ubuntu
+> Description:	Ubuntu 22.04 LTS
+> Release:	22.04
+> Codename:	jammy
+> 
+> root:~# uname -a
+> Linux dapu-Star-Lake 5.19.0-46-generic #47~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Wed Jun 21 15:35:31 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
+> 
+> root:~#nvme subsystem-reset /dev/nvme0
+> 
+> root:~#nvme list      //This command will hang about 60 seconds. 
+> 
+> Issue analysis:
+> Maybe it hangs in function nvme_wait_reset. When we revert the following commit, this issue will disappear.
+> if (!nvme_wait_reset(ctrl))
+> https://github.com/torvalds/linux/commit/1e866afd4bcdd01a70a5eddb4371158d3035ce03?diff=split
 
-I agree, maybe calling it "sk-am62a-tlv320aic3106" would be the most=20
-clear option.
+See Bugzilla for the full thread.
 
-Running a quick ripgrep on next tree:
+Anyway, I'm adding this regression to be tracked by regzbot:
 
-$ rg "simple-audio-card,name" arch/*/boot/dts/
+#regzbot introduced: 1e866afd4bcdd0 https://bugzilla.kernel.org/show_bug.cgi?id=217745
+#regzbot title: listing nvme devices hangs after subsystem reset
 
-I see a healthy mix of using both board and/or codec name here - with TI=20
-almost always using the board name. Maybe we can change the convention,=20
-but it would be a good idea to at least update SK-AM62 as well to use=20
-the new convention.
+Thanks.
 
-Is it okay with you if it is handled as a separate series?
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217745
 
->=20
-> Regards
-> Devarsh
-
---=20
-Thanks,
-Jai
-
-GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
-
---c3zg2pdfn37jmidw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmTKQKwACgkQQ96R+SSa
-cUUKxQ//ROhdIrrNS1eNNN8J+ubZ5lvP4jdzjeVCBvRNcS3ni/zunXODRYoL7wC5
-5Xip+GeTh0Cv20rCGPmrhD2PGCY9aPZClOPNNd0ESErjQ3G52hofMMyedchxNeCe
-pb74/qvTLo6ReDCLWnXLioP3fxV4yI/xyNImeJv+2oph7gA2khIdqUN8Lb9lO6fK
-SpZWeBRtNKfFoWiy5SCZk3TfIlNcTIPm+wYor6rdRi3wMlCThw9Bt2jkkAWOSVaU
-8WIdzDWnOP2D0x3B8fObEx0mMbrjvmOTIJayGzTF4j9570XkiHcBQVlg4f+7Ea5n
-teeGPlw6bnjztajdB8Why8B4yRrTdECLqqfBHCKXdRLxZ57LJIVXqYB391NBdYBk
-c6KZ8diGO8dwwzvloWt6lVsk8HBiS/JTqQYWlbmoHTAUosYYpGZOQc6qzechBxgq
-nfgErxG6x4Y9SM0tW/Ao8rYO0BiLEXaF6xE+f+B6rnmX4ClJ/PoTMxyXuqe8uMjZ
-YevgHIzmeOvR81B8tyR2pWJQiQ8oDKhAU/yVXbn+XO3fU3McmOzdT35AKKhf1kRO
-Fq5iaoRo5Uaa1uwAuucxQXtINppo8OpNiKUrf8GWwlvcAkM2IE3LBrm4k+B7Nhg+
-HR3B8mluTQuEq5IWEaTe2Zmfp+lH8V0F+ZW7LCqXuufdLrMAeA4=
-=YBBX
------END PGP SIGNATURE-----
-
---c3zg2pdfn37jmidw--
+-- 
+An old man doll... just what I always wanted! - Clara
