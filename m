@@ -2,481 +2,657 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CCE76C35A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE7476C362
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbjHBDKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 23:10:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53894 "EHLO
+        id S231912AbjHBDMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 23:12:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbjHBDKa (ORCPT
+        with ESMTP id S229485AbjHBDMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:10:30 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE138FB;
-        Tue,  1 Aug 2023 20:10:28 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so971379a12.1;
-        Tue, 01 Aug 2023 20:10:28 -0700 (PDT)
+        Tue, 1 Aug 2023 23:12:49 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17EFCFB
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 20:12:47 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-26809f86bd5so3642344a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 20:12:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690945827; x=1691550627;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2a3Ssk8cTe+A9W+eVmPkSF4Nb+GwQDLGB6gwc+P+MSA=;
-        b=NUEq9tKFNn7D8UFJKOrMIlf0hqzP8XiDGQOK+8CdfIoARwSPMMj/1T4t6/EP03e/Pt
-         qBRQz1i1rWLpXZShAEq6jmZGTb0cjfo3etnv+Jo5ZGGz0+ekhYj9NLHC2Tn8BhVy29Mh
-         MB8fKFF31Q6eQWhfXU2Ck1FvgpXuG8i4cd2gDoPZOGdwsJxHGJNbrxaqhjOLCbCArweo
-         VUOPn9B4kKs+l4uj31muOMIFlVWPwn/RFDoUcs0viIYPz18yuB+wfmHjJiQ2QdjymXrP
-         BQFya7H3kKw3a8Dd0Ka+JHMcQIWuGmKX1moY6p4AUYsjwQpxfyAtUTaSbNxske52D861
-         KtvA==
+        d=linaro.org; s=google; t=1690945966; x=1691550766;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6VbNmYwy54JZepIAZ3nN1bA8Lg+Tt+s472qBfSEapIs=;
+        b=iNingO+H5DCW8oF+atfrrvs4+NULh2DmZxAkepQlpJojfKzMJDFJUNxTIaNabP2H6X
+         6p7Gt1K06QK7VjVjH22lreHUDhiQckmWPfcY5GB73ovnSs2k5xJDY487tNzzJtbJZeCC
+         q6LFjjjbHi6lqKKJBAVEQeoL9IXFDj4fA73oPEcmdSdW4M+b8xbUrEZKJH6SNL559N5w
+         VF4038dTPtOcoVKBwkEuOsf6+mRFG23PGSF/B0oEdNKHQKlxkvvspAmolimveZsCuztC
+         XBT1kNp/zoyv33GUa/XCJcA7jDwygNgsfqTKEc5eaDYIPomzuVFOtqwolod6UYic+AhI
+         MX/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690945827; x=1691550627;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2a3Ssk8cTe+A9W+eVmPkSF4Nb+GwQDLGB6gwc+P+MSA=;
-        b=csFnWJVWIJhPFgatpyf9eqUbkDCTbEme0o6sgoSCzP9pObRK9E7Qj5UBFbLJFpXkUK
-         EjbaTlt5XlPPX3UqxnGqk/cQN7aluMFEEtmXk4Tb6bGRZg1JF2ExrA6Jj4E/uAx/JFMA
-         6k4kLJ2abVJm7UwLgADiMMbAQOJVGbpeSHYEVMZVCp3gacJWM3L8vmmQU1gE/y78weYc
-         8E7c1ASjclocHkm45CXmK534HCsE6DuxszQEbMiI27TJqwmx6Tp0LhsBJVm2cRYI5ekH
-         L23dO7WYgDCfFJOh4YJm/MUUWxikBnmK/+OUsn8+phYyOTtsQsB6m+NfxCjLBZib//3F
-         GlfA==
-X-Gm-Message-State: ABy/qLb9EDjcqj6V+ds3TRBCL4MJ4JQnzbcG7UgmwBeMFHYt8xaYmA35
-        9HDP+Jel+pkbfwUuHcNNjrbxUcnCgDDfGUDo4Kc=
-X-Google-Smtp-Source: APBJJlGjQHb7ld0fX4J6DpVlS+EGR8wcya/AW3vbMutHFfSPRDmkYVBjMMZ2BP97SgcgRGW4yD6xW2yeQJgx081DsYU=
-X-Received: by 2002:a05:6402:2747:b0:522:b723:11bd with SMTP id
- z7-20020a056402274700b00522b72311bdmr5717109edd.4.1690945827210; Tue, 01 Aug
- 2023 20:10:27 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690945966; x=1691550766;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6VbNmYwy54JZepIAZ3nN1bA8Lg+Tt+s472qBfSEapIs=;
+        b=DI1LK6APqo1b1ZTfrFKGye+frvCmkKT4unQUcdAxGwCInumRY34y/N6D0dFJ7V9DVe
+         LdVqZ1tid7QzuRzuRWoNBd0rl7idqeHJbbbibhowzD5ass4xXaxjfiKgWXLiu6W76UxS
+         er323ifU3ecX7r2mW5ZcoNRbC1Pv7DRyOhhXfGSU5cfA+m4L0IEyPwA9Pr+2gZcY8THC
+         8GtmK6ogc/eL2wCI533VPoYKF/Df6AX7OACL4FeIkFY+raeTOf9BK0uHuG63AC43XJ5y
+         sJO8nEOYX5wpNFf1fB/Mo0LGPD+P3ivXjMGNAPmveVKre0krETZy6npeI1vQBlDKD1Nu
+         E+ew==
+X-Gm-Message-State: ABy/qLaUk/8t6N8mwwUmQDpRtrNrlXidIQCi6Lqe3PAV0mYMdaDrkj93
+        AtjP1/GBf7Vfw3ETuHdeXkS0JBKOqtomuB0lka65WA==
+X-Google-Smtp-Source: APBJJlEiE1oV/T0m+t5T1lEtTgDid+2uo2M0vwg6VJnyNTyVZdjKEIlk2/QPY1XAXvQJm0gRnaIijmi4DuyBgDufyOc=
+X-Received: by 2002:a17:90b:3e8b:b0:263:f62b:3601 with SMTP id
+ rj11-20020a17090b3e8b00b00263f62b3601mr12121577pjb.10.1690945966316; Tue, 01
+ Aug 2023 20:12:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
- <20230729134318.1694467-9-keguang.zhang@gmail.com> <4qk22kycanwwbx6e7w4uuf7y5re7y4voi5vdurq3usa27py2zk@zms25h4hg2da>
-In-Reply-To: <4qk22kycanwwbx6e7w4uuf7y5re7y4voi5vdurq3usa27py2zk@zms25h4hg2da>
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-Date:   Wed, 2 Aug 2023 11:10:10 +0800
-Message-ID: <CAJhJPsV9E5=GtsjiP8c3A6=4=Vh7cB1g=TaaJnVOjCf=VFiLUA@mail.gmail.com>
-Subject: Re: [PATCH 08/17] MIPS: loongson32: Convert Ethernet platform device
- to DT
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
+References: <20230731065041.1447-1-masahisa.kojima@linaro.org>
+ <20230731065041.1447-4-masahisa.kojima@linaro.org> <20230801173418.00007337@Huawei.com>
+In-Reply-To: <20230801173418.00007337@Huawei.com>
+From:   Masahisa Kojima <masahisa.kojima@linaro.org>
+Date:   Wed, 2 Aug 2023 12:12:35 +0900
+Message-ID: <CADQ0-X_ohh++HHFSt+0P9ys=2P+CKdwVvwqBwyEG0ZHrgydrKw@mail.gmail.com>
+Subject: Re: [PATCH v7 3/5] efi: Add tee-based EFI variable driver
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-efi@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 2:21=E2=80=AFAM Serge Semin <fancer.lancer@gmail.com=
-> wrote:
+On Wed, 2 Aug 2023 at 01:34, Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
 >
-> On Sat, Jul 29, 2023 at 09:43:09PM +0800, Keguang Zhang wrote:
-> > Add Ethernet device nodes for Loongson-1 boards,
-> > and drop the legacy platform devices and data accordingly.
+> On Mon, 31 Jul 2023 15:50:38 +0900
+> Masahisa Kojima <masahisa.kojima@linaro.org> wrote:
 >
-> It seems to me that your conversion breaks the RGMII mode support.
-> What you need to do is to make sure that the respective flags are set
-> in the MUX space.
+> > When the flash is not owned by the non-secure world, accessing the EFI
+> > variables is straightforward and done via EFI Runtime Variable Services.
+> > In this case, critical variables for system integrity and security
+> > are normally stored in the dedicated secure storage and only accessible
+> > from the secure world.
+> >
+> > On the other hand, the small embedded devices don't have the special
+> > dedicated secure storage. The eMMC device with an RPMB partition is
+> > becoming more common, we can use an RPMB partition to store the
+> > EFI Variables.
+> >
+> > The eMMC device is typically owned by the non-secure world(linux in
+> > this case). There is an existing solution utilizing eMMC RPMB partition
+> > for EFI Variables, it is implemented by interacting with
+> > TEE(OP-TEE in this case), StandaloneMM(as EFI Variable Service Pseudo TA),
+> > eMMC driver and tee-supplicant. The last piece is the tee-based
+> > variable access driver to interact with TEE and StandaloneMM.
+> >
+> > So let's add the kernel functions needed.
+> >
+> > This feature is implemented as a kernel module.
+> > StMM PTA has TA_FLAG_DEVICE_ENUM_SUPP flag when registered to OP-TEE
+> > so that this tee_stmm_efi module is probed after tee-supplicant starts,
+> > since "SetVariable" EFI Runtime Variable Service requires to
+> > interact with tee-supplicant.
+> >
+> > Acked-by: Sumit Garg <sumit.garg@linaro.org>
+> > Co-developed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> > Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
 >
-> Regarding the MUX-space. It looks as a pinctrl-setting space. If so
-> adding the new pinctrl driver will be required. Otherwise it can be
-> defined as a syscon-node and then utilized in the Loongson-1 GMAC
-> low-level driver.
->
-Thanks for your reminder.
-I planned to add the pinctrl driver later.
-Now I'm working on it.
+> I was curious - so drive by review. Feel free to ignore :)
+> All general code readability stuff and a suggestion for the subsystem to
+> get rid of boilerplate (like most large subsystems did years ago!)
 
-> -Serge(y)
+Thank you for your review.
+
 >
-> >
-> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > ---
-> >  arch/mips/boot/dts/loongson/loongson1.dtsi    |  16 ++
-> >  arch/mips/boot/dts/loongson/loongson1b.dtsi   |  53 +++++++
-> >  arch/mips/boot/dts/loongson/loongson1c.dtsi   |  17 ++
-> >  arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   |   8 +
-> >  arch/mips/boot/dts/loongson/smartloong_1c.dts |   4 +
-> >  arch/mips/loongson32/common/platform.c        | 146 +-----------------
-> >  arch/mips/loongson32/ls1b/board.c             |   2 -
-> >  arch/mips/loongson32/ls1c/board.c             |   1 -
-> >  8 files changed, 99 insertions(+), 148 deletions(-)
-> >
-> > diff --git a/arch/mips/boot/dts/loongson/loongson1.dtsi b/arch/mips/boo=
-t/dts/loongson/loongson1.dtsi
-> > index c77aa2d0f66c..48bb786bbf10 100644
-> > --- a/arch/mips/boot/dts/loongson/loongson1.dtsi
-> > +++ b/arch/mips/boot/dts/loongson/loongson1.dtsi
-> > @@ -71,6 +71,22 @@ intc3: interrupt-controller@1fd01088 {
-> >                       interrupt-parent =3D <&cpu_intc>;
-> >                       interrupts =3D <5>;
-> >               };
+> Jonathan
+>
+>
+> > diff --git a/drivers/firmware/efi/stmm/tee_stmm_efi.c b/drivers/firmware/efi/stmm/tee_stmm_efi.c
+> > new file mode 100644
+> > index 000000000000..f6623171ae04
+> > --- /dev/null
+> > +++ b/drivers/firmware/efi/stmm/tee_stmm_efi.c
+>
+> ...
+>
+> > +/**
+> > + * tee_mm_communicate() - Pass a buffer to StandaloneMM running in TEE
+> > + *
+> > + * @comm_buf:                locally allocated communication buffer
+> > + * @dsize:           buffer size
+> > + * Return:           status code
+> > + */
+> > +static efi_status_t tee_mm_communicate(void *comm_buf, size_t dsize)
+> > +{
+> > +     size_t buf_size;
+> > +     efi_status_t ret;
+> > +     struct efi_mm_communicate_header *mm_hdr;
+> > +     struct tee_ioctl_invoke_arg arg;
+> > +     struct tee_param param[4];
+> > +     struct tee_shm *shm = NULL;
+> > +     int rc;
 > > +
-> > +             gmac0: ethernet@1fe10000 {
-> > +                     compatible =3D "snps,dwmac-3.70a";
-> > +                     reg =3D <0x1fe10000 0x10000>;
+> > +     if (!comm_buf)
+> > +             return EFI_INVALID_PARAMETER;
 > > +
-> > +                     interrupt-parent =3D <&intc1>;
-> > +                     interrupt-names =3D "macirq";
+> > +     mm_hdr = (struct efi_mm_communicate_header *)comm_buf;
+> > +     buf_size = mm_hdr->message_len + sizeof(efi_guid_t) + sizeof(size_t);
 > > +
-> > +                     clocks =3D <&clkc LS1X_CLKID_AHB>;
-> > +                     clock-names =3D "stmmaceth";
+> > +     if (dsize != buf_size)
+> > +             return EFI_INVALID_PARAMETER;
 > > +
-> > +                     snps,pbl =3D <1>;
+> > +     shm = tee_shm_register_kernel_buf(pvt_data.ctx, comm_buf, buf_size);
+> > +     if (IS_ERR(shm)) {
+> > +             dev_err(pvt_data.dev, "Unable to register shared memory\n");
+> > +             return EFI_UNSUPPORTED;
+> > +     }
 > > +
-> > +                     status =3D "disabled";
-> > +             };
+> > +     memset(&arg, 0, sizeof(arg));
+> > +     arg.func = PTA_STMM_CMD_COMMUNICATE;
+> > +     arg.session = pvt_data.session;
+> > +     arg.num_params = 4;
 > > +
-> >       };
-> >
-> >       apb: bus@1fe40000 {
-> > diff --git a/arch/mips/boot/dts/loongson/loongson1b.dtsi b/arch/mips/bo=
-ot/dts/loongson/loongson1b.dtsi
-> > index 437a77cee163..42b96c557660 100644
-> > --- a/arch/mips/boot/dts/loongson/loongson1b.dtsi
-> > +++ b/arch/mips/boot/dts/loongson/loongson1b.dtsi
-> > @@ -7,6 +7,11 @@
-> >  #include "loongson1.dtsi"
-> >
-> >  / {
-> > +     aliases {
-> > +             ethernet0 =3D &gmac0;
-> > +             ethernet1 =3D &gmac1;
-> > +     };
+> > +     memset(param, 0, sizeof(param));
+> > +     param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT;
+> > +     param[0].u.memref.size = buf_size;
+> > +     param[0].u.memref.shm = shm;
+> > +     param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT;
+> > +     param[2].attr = TEE_IOCTL_PARAM_ATTR_TYPE_NONE;
+> > +     param[3].attr = TEE_IOCTL_PARAM_ATTR_TYPE_NONE;
 > > +
-> >       cpus {
-> >               #address-cells =3D <1>;
-> >               #size-cells =3D <0>;
-> > @@ -74,6 +79,54 @@ clkc: clock-controller@1fe78030 {
-> >       };
-> >  };
-> >
-> > +&ahb {
-> > +     gmac1: ethernet@1fe20000 {
-> > +             compatible =3D "snps,dwmac-3.70a";
-> > +             reg =3D <0x1fe20000 0x10000>;
+> > +     rc = tee_client_invoke_func(pvt_data.ctx, &arg, param);
+> > +     tee_shm_free(shm);
 > > +
-> > +             interrupt-parent =3D <&intc1>;
-> > +             interrupts =3D <3 IRQ_TYPE_LEVEL_HIGH>;
-> > +             interrupt-names =3D "macirq";
+> > +     if (rc < 0 || arg.ret != 0) {
+> > +             dev_err(pvt_data.dev,
+> > +                     "PTA_STMM_CMD_COMMUNICATE invoke error: 0x%x\n", arg.ret);
+> > +             return EFI_DEVICE_ERROR;
+> > +     }
 > > +
-> > +             clocks =3D <&clkc LS1X_CLKID_AHB>;
-> > +             clock-names =3D "stmmaceth";
+> > +     switch (param[1].u.value.a) {
+> > +     case ARM_SVC_SPM_RET_SUCCESS:
+> > +             ret = EFI_SUCCESS;
+> > +             break;
 > > +
-> > +             phy-handle =3D <&phy1>;
-> > +             phy-mode =3D "mii";
+> > +     case ARM_SVC_SPM_RET_INVALID_PARAMS:
+> > +             ret = EFI_INVALID_PARAMETER;
+> > +             break;
 > > +
-> > +             snps,pbl =3D <1>;
+> > +     case ARM_SVC_SPM_RET_DENIED:
+> > +             ret = EFI_ACCESS_DENIED;
+> > +             break;
 > > +
-> > +             status =3D "disabled";
+> > +     case ARM_SVC_SPM_RET_NO_MEMORY:
+> > +             ret = EFI_OUT_OF_RESOURCES;
+> > +             break;
 > > +
-> > +             mdio1 {
-> > +                     #address-cells =3D <1>;
-> > +                     #size-cells =3D <0>;
-> > +                     compatible =3D "snps,dwmac-mdio";
+> > +     default:
+> > +             ret = EFI_ACCESS_DENIED;
+> > +     }
 > > +
-> > +                     phy1: ethernet-phy@0 {
-> > +                             reg =3D <0x0>;
-> > +                     };
-> > +             };
-> > +     };
-> > +};
+> > +     return ret;
+>
+> Direct returns both shorter and easier to review!
+
+OK, I agree.
+
+>
+> > +}
 > > +
-> > +&gmac0 {
-> > +     interrupts =3D <2 IRQ_TYPE_LEVEL_HIGH>;
+>
+> Lots of similar stuff to below...
+
+Yes, I will fix similar cases.
+
+>
+>
 > > +
-> > +     phy-handle =3D <&phy0>;
-> > +     phy-mode =3D "mii";
+> > +static efi_status_t tee_get_variable(u16 *name, efi_guid_t *vendor,
+> > +                                  u32 *attributes, unsigned long *data_size,
+> > +                                  void *data)
+> > +{
+> > +     struct var_check_property var_property;
+> > +     struct smm_variable_access *var_acc;
+> > +     size_t payload_size;
+> > +     size_t name_size;
+> > +     size_t tmp_dsize;
+> > +     u8 *comm_buf = NULL;
+> > +     efi_status_t ret;
 > > +
-> > +     mdio0 {
-> > +             #address-cells =3D <1>;
-> > +             #size-cells =3D <0>;
-> > +             compatible =3D "snps,dwmac-mdio";
+> > +     if (!name || !vendor || !data_size) {
+> > +             ret = EFI_INVALID_PARAMETER;
+> > +             goto out;
+> > +     }
 > > +
-> > +             phy0: ethernet-phy@0 {
-> > +                     reg =3D <0x0>;
-> > +             };
-> > +     };
-> > +};
+> > +     name_size = (ucs2_strnlen(name, EFI_VAR_NAME_LEN) + 1) * sizeof(u16);
+> > +     if (name_size > max_payload_size - MM_VARIABLE_ACCESS_HEADER_SIZE) {
+> > +             ret = EFI_INVALID_PARAMETER;
+> > +             goto out;
+> > +     }
 > > +
-> >  &uart1 {
-> >       interrupts =3D <3 IRQ_TYPE_LEVEL_HIGH>;
-> >  };
-> > diff --git a/arch/mips/boot/dts/loongson/loongson1c.dtsi b/arch/mips/bo=
-ot/dts/loongson/loongson1c.dtsi
-> > index 1dd575b7b2f9..5b3e0f9280f6 100644
-> > --- a/arch/mips/boot/dts/loongson/loongson1c.dtsi
-> > +++ b/arch/mips/boot/dts/loongson/loongson1c.dtsi
-> > @@ -41,6 +41,23 @@ intc4: interrupt-controller@1fd010a0 {
-> >       };
-> >  };
-> >
-> > +&gmac0 {
-> > +     interrupts =3D <3 IRQ_TYPE_LEVEL_HIGH>;
+> > +     /* Trim output buffer size */
+> > +     tmp_dsize = *data_size;
+> > +     if (name_size + tmp_dsize >
+> > +         max_payload_size - MM_VARIABLE_ACCESS_HEADER_SIZE) {
+> > +             tmp_dsize = max_payload_size - MM_VARIABLE_ACCESS_HEADER_SIZE -
+> > +                         name_size;
+> > +     }
 > > +
-> > +     phy-handle =3D <&phy0>;
-> > +     phy-mode =3D "rmii";
+> > +     /* Get communication buffer and initialize header */
+> > +     payload_size = MM_VARIABLE_ACCESS_HEADER_SIZE + name_size + tmp_dsize;
+> > +     var_acc = setup_mm_hdr(&comm_buf, payload_size,
+> > +                            SMM_VARIABLE_FUNCTION_GET_VARIABLE, &ret);
+> > +     if (!comm_buf)
+> > +             goto out;
 > > +
-> > +     mdio0 {
-> > +             #address-cells =3D <1>;
-> > +             #size-cells =3D <0>;
-> > +             compatible =3D "snps,dwmac-mdio";
+> > +     /* Fill in contents */
+> > +     memcpy(&var_acc->guid, vendor, sizeof(var_acc->guid));
+> > +     var_acc->data_size = tmp_dsize;
+> > +     var_acc->name_size = name_size;
+> > +     var_acc->attr = attributes ? *attributes : 0;
+> > +     memcpy(var_acc->name, name, name_size);
 > > +
-> > +             phy0: ethernet-phy@13 {
-> > +                     reg =3D <0x13>;
-> > +             };
-> > +     };
-> > +};
+> > +     /* Communicate */
+>
+> Comment seems a bit obvious.  General rule, don't comment the obvious. It just
+> provides places where the comments might become wrong during future refactors.
+
+OK, I remove the obvious comment.
+
+>
+> > +     ret = mm_communicate(comm_buf, payload_size);
+> > +     if (ret == EFI_SUCCESS || ret == EFI_BUFFER_TOO_SMALL)
+> > +             /* Update with reported data size for trimmed case */
+> > +             *data_size = var_acc->data_size;
+> > +     if (ret != EFI_SUCCESS)
+> > +             goto out;
 > > +
-> >  &uart1 {
-> >       interrupts =3D <4 IRQ_TYPE_LEVEL_HIGH>;
-> >  };
-> > diff --git a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts b/arch/mips/bo=
-ot/dts/loongson/lsgz_1b_dev.dts
-> > index 89c3dfa574f7..a43df21f2904 100644
-> > --- a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-> > +++ b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-> > @@ -28,6 +28,14 @@ xtal: xtal {
-> >       };
-> >  };
-> >
-> > +&gmac0 {
-> > +     status =3D "okay";
-> > +};
+> > +     ret = get_property_int(name, name_size, vendor, &var_property);
+> > +     if (ret != EFI_SUCCESS)
+> > +             goto out;
 > > +
-> > +&gmac1 {
-> > +     status =3D "okay";
-> > +};
+> > +     if (attributes)
+> > +             *attributes = var_acc->attr;
 > > +
-> >  &uart0 {
-> >       status =3D "okay";
-> >  };
-> > diff --git a/arch/mips/boot/dts/loongson/smartloong_1c.dts b/arch/mips/=
-boot/dts/loongson/smartloong_1c.dts
-> > index 188aab9e3685..2d8f304aa2c4 100644
-> > --- a/arch/mips/boot/dts/loongson/smartloong_1c.dts
-> > +++ b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-> > @@ -28,6 +28,10 @@ xtal: xtal {
-> >       };
-> >  };
-> >
-> > +&gmac0 {
-> > +     status =3D "okay";
-> > +};
-> > +
-> >  &uart0 {
-> >       status =3D "okay";
-> >  };
-> > diff --git a/arch/mips/loongson32/common/platform.c b/arch/mips/loongso=
-n32/common/platform.c
-> > index 8272b4133e25..817518531b9b 100644
-> > --- a/arch/mips/loongson32/common/platform.c
-> > +++ b/arch/mips/loongson32/common/platform.c
-> > @@ -8,157 +8,13 @@
-> >  #include <linux/err.h>
-> >  #include <linux/mtd/partitions.h>
-> >  #include <linux/sizes.h>
-> > -#include <linux/phy.h>
-> > -#include <linux/stmmac.h>
-> >  #include <linux/usb/ehci_pdriver.h>
-> >
-> >  #include <platform.h>
-> >  #include <loongson1.h>
-> >  #include <dma.h>
-> >  #include <nand.h>
-> > -
-> > -/* Synopsys Ethernet GMAC */
-> > -static struct stmmac_mdio_bus_data ls1x_mdio_bus_data =3D {
-> > -     .phy_mask       =3D 0,
-> > -};
-> > -
-> > -static struct stmmac_dma_cfg ls1x_eth_dma_cfg =3D {
-> > -     .pbl            =3D 1,
-> > -};
-> > -
-> > -int ls1x_eth_mux_init(struct platform_device *pdev, void *priv)
-> > -{
-> > -     struct plat_stmmacenet_data *plat_dat =3D NULL;
-> > -     u32 val;
-> > -
-> > -     val =3D __raw_readl(LS1X_MUX_CTRL1);
-> > -
-> > -#if defined(CONFIG_LOONGSON1_LS1B)
-> > -     plat_dat =3D dev_get_platdata(&pdev->dev);
-> > -     if (plat_dat->bus_id) {
-> > -             __raw_writel(__raw_readl(LS1X_MUX_CTRL0) | GMAC1_USE_UART=
-1 |
-> > -                          GMAC1_USE_UART0, LS1X_MUX_CTRL0);
-> > -             switch (plat_dat->phy_interface) {
-> > -             case PHY_INTERFACE_MODE_RGMII:
-> > -                     val &=3D ~(GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
-> > -                     break;
-> > -             case PHY_INTERFACE_MODE_MII:
-> > -                     val |=3D (GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
-> > -                     break;
-> > -             default:
-> > -                     pr_err("unsupported mii mode %d\n",
-> > -                            plat_dat->phy_interface);
-> > -                     return -ENOTSUPP;
-> > -             }
-> > -             val &=3D ~GMAC1_SHUT;
-> > -     } else {
-> > -             switch (plat_dat->phy_interface) {
-> > -             case PHY_INTERFACE_MODE_RGMII:
-> > -                     val &=3D ~(GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
-> > -                     break;
-> > -             case PHY_INTERFACE_MODE_MII:
-> > -                     val |=3D (GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
-> > -                     break;
-> > -             default:
-> > -                     pr_err("unsupported mii mode %d\n",
-> > -                            plat_dat->phy_interface);
-> > -                     return -ENOTSUPP;
-> > -             }
-> > -             val &=3D ~GMAC0_SHUT;
-> > -     }
-> > -     __raw_writel(val, LS1X_MUX_CTRL1);
-> > -#elif defined(CONFIG_LOONGSON1_LS1C)
-> > -     plat_dat =3D dev_get_platdata(&pdev->dev);
-> > -
-> > -     val &=3D ~PHY_INTF_SELI;
-> > -     if (plat_dat->phy_interface =3D=3D PHY_INTERFACE_MODE_RMII)
-> > -             val |=3D 0x4 << PHY_INTF_SELI_SHIFT;
-> > -     __raw_writel(val, LS1X_MUX_CTRL1);
-> > -
-> > -     val =3D __raw_readl(LS1X_MUX_CTRL0);
-> > -     __raw_writel(val & (~GMAC_SHUT), LS1X_MUX_CTRL0);
-> > -#endif
-> > -
-> > -     return 0;
-> > -}
-> > -
-> > -static struct plat_stmmacenet_data ls1x_eth0_pdata =3D {
-> > -     .bus_id                 =3D 0,
-> > -     .phy_addr               =3D -1,
-> > -#if defined(CONFIG_LOONGSON1_LS1B)
-> > -     .phy_interface          =3D PHY_INTERFACE_MODE_MII,
-> > -#elif defined(CONFIG_LOONGSON1_LS1C)
-> > -     .phy_interface          =3D PHY_INTERFACE_MODE_RMII,
-> > -#endif
-> > -     .mdio_bus_data          =3D &ls1x_mdio_bus_data,
-> > -     .dma_cfg                =3D &ls1x_eth_dma_cfg,
-> > -     .has_gmac               =3D 1,
-> > -     .tx_coe                 =3D 1,
-> > -     .rx_queues_to_use       =3D 1,
-> > -     .tx_queues_to_use       =3D 1,
-> > -     .init                   =3D ls1x_eth_mux_init,
-> > -};
-> > -
-> > -static struct resource ls1x_eth0_resources[] =3D {
-> > -     [0] =3D {
-> > -             .start  =3D LS1X_GMAC0_BASE,
-> > -             .end    =3D LS1X_GMAC0_BASE + SZ_64K - 1,
-> > -             .flags  =3D IORESOURCE_MEM,
-> > -     },
-> > -     [1] =3D {
-> > -             .name   =3D "macirq",
-> > -             .start  =3D LS1X_GMAC0_IRQ,
-> > -             .flags  =3D IORESOURCE_IRQ,
-> > -     },
-> > -};
-> > -
-> > -struct platform_device ls1x_eth0_pdev =3D {
-> > -     .name           =3D "stmmaceth",
-> > -     .id             =3D 0,
-> > -     .num_resources  =3D ARRAY_SIZE(ls1x_eth0_resources),
-> > -     .resource       =3D ls1x_eth0_resources,
-> > -     .dev            =3D {
-> > -             .platform_data =3D &ls1x_eth0_pdata,
-> > -     },
-> > -};
-> > -
-> > -#ifdef CONFIG_LOONGSON1_LS1B
-> > -static struct plat_stmmacenet_data ls1x_eth1_pdata =3D {
-> > -     .bus_id                 =3D 1,
-> > -     .phy_addr               =3D -1,
-> > -     .phy_interface          =3D PHY_INTERFACE_MODE_MII,
-> > -     .mdio_bus_data          =3D &ls1x_mdio_bus_data,
-> > -     .dma_cfg                =3D &ls1x_eth_dma_cfg,
-> > -     .has_gmac               =3D 1,
-> > -     .tx_coe                 =3D 1,
-> > -     .rx_queues_to_use       =3D 1,
-> > -     .tx_queues_to_use       =3D 1,
-> > -     .init                   =3D ls1x_eth_mux_init,
-> > -};
-> > -
-> > -static struct resource ls1x_eth1_resources[] =3D {
-> > -     [0] =3D {
-> > -             .start  =3D LS1X_GMAC1_BASE,
-> > -             .end    =3D LS1X_GMAC1_BASE + SZ_64K - 1,
-> > -             .flags  =3D IORESOURCE_MEM,
-> > -     },
-> > -     [1] =3D {
-> > -             .name   =3D "macirq",
-> > -             .start  =3D LS1X_GMAC1_IRQ,
-> > -             .flags  =3D IORESOURCE_IRQ,
-> > -     },
-> > -};
-> > -
-> > -struct platform_device ls1x_eth1_pdev =3D {
-> > -     .name           =3D "stmmaceth",
-> > -     .id             =3D 1,
-> > -     .num_resources  =3D ARRAY_SIZE(ls1x_eth1_resources),
-> > -     .resource       =3D ls1x_eth1_resources,
-> > -     .dev            =3D {
-> > -             .platform_data =3D &ls1x_eth1_pdata,
-> > -     },
-> > -};
-> > -#endif       /* CONFIG_LOONGSON1_LS1B */
-> > +#include <irq.h>
-> >
-> >  /* GPIO */
-> >  static struct resource ls1x_gpio0_resources[] =3D {
-> > diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson32/l=
-s1b/board.c
-> > index e8290f200096..f23e4e5c96ee 100644
-> > --- a/arch/mips/loongson32/ls1b/board.c
-> > +++ b/arch/mips/loongson32/ls1b/board.c
-> > @@ -34,8 +34,6 @@ static const struct gpio_led_platform_data ls1x_led_p=
-data __initconst =3D {
-> >  };
-> >
-> >  static struct platform_device *ls1b_platform_devices[] __initdata =3D =
-{
-> > -     &ls1x_eth0_pdev,
-> > -     &ls1x_eth1_pdev,
-> >       &ls1x_ehci_pdev,
-> >       &ls1x_gpio0_pdev,
-> >       &ls1x_gpio1_pdev,
-> > diff --git a/arch/mips/loongson32/ls1c/board.c b/arch/mips/loongson32/l=
-s1c/board.c
-> > index a7096964fb30..29bc467fd149 100644
-> > --- a/arch/mips/loongson32/ls1c/board.c
-> > +++ b/arch/mips/loongson32/ls1c/board.c
-> > @@ -6,7 +6,6 @@
-> >  #include <platform.h>
-> >
-> >  static struct platform_device *ls1c_platform_devices[] __initdata =3D =
-{
-> > -     &ls1x_eth0_pdev,
-> >       &ls1x_rtc_pdev,
-> >       &ls1x_wdt_pdev,
-> >  };
-> > --
-> > 2.39.2
-> >
+> > +     if (data)
+> > +             memcpy(data, (u8 *)var_acc->name + var_acc->name_size,
+> > +                    var_acc->data_size);
+> > +     else
+> > +             ret = EFI_INVALID_PARAMETER;
+>
+> Keep to a simple out of line error flow as it's more readable even when it
+> is a line or 2 more code.
+>
+>         if (!data) {
+>                 ret = EFI_INVALID_PARAMETER;
+>                 goto out;
+>         }
+>         memcpy()...
+
+OK.
 
 
+> > +
+> > +out:
+> > +     kfree(comm_buf);
+> > +     return ret;
+> > +}
+> > +
+> > +static efi_status_t tee_get_next_variable(unsigned long *name_size,
+> > +                                       efi_char16_t *name, efi_guid_t *guid)
+> > +{
+> > +     struct smm_variable_getnext *var_getnext;
+> > +     size_t payload_size;
+> > +     size_t out_name_size;
+> > +     size_t in_name_size;
+> > +     u8 *comm_buf = NULL;
+> > +     efi_status_t ret;
+> > +
+> > +     if (!name_size || !name || !guid) {
+> > +             ret = EFI_INVALID_PARAMETER;
+> > +             goto out;
+>
+> As below.  Direct returns make it clear nothing to do and generally
+> give easier code to review.
+>
+> > +     }
+> > +
+> > +     out_name_size = *name_size;
+> > +     in_name_size = (ucs2_strnlen(name, EFI_VAR_NAME_LEN) + 1) * sizeof(u16);
+> > +
+> > +     if (out_name_size < in_name_size) {
+> > +             ret = EFI_INVALID_PARAMETER;
+> > +             goto out;
+> > +     }
+> > +
+> > +     if (in_name_size >
+> > +         max_payload_size - MM_VARIABLE_GET_NEXT_HEADER_SIZE) {
+> > +             ret = EFI_INVALID_PARAMETER;
+> > +             goto out;
+> > +     }
+> > +
+> > +     /* Trim output buffer size */
+> > +     if (out_name_size > max_payload_size - MM_VARIABLE_GET_NEXT_HEADER_SIZE)
+> > +             out_name_size =
+> > +                     max_payload_size - MM_VARIABLE_GET_NEXT_HEADER_SIZE;
+> > +
+> > +     payload_size = MM_VARIABLE_GET_NEXT_HEADER_SIZE + out_name_size;
+> > +     var_getnext = setup_mm_hdr(&comm_buf, payload_size,
+> > +                                SMM_VARIABLE_FUNCTION_GET_NEXT_VARIABLE_NAME,
+> > +                                &ret);
+> > +     if (!comm_buf)
+>
+> As below (I'm reviewing up the code)
+>
+> > +             goto out;
+> > +
+> > +     /* Fill in contents */
+> > +     memcpy(&var_getnext->guid, guid, sizeof(var_getnext->guid));
+> > +     var_getnext->name_size = out_name_size;
+> > +     memcpy(var_getnext->name, name, in_name_size);
+> > +     memset((u8 *)var_getnext->name + in_name_size, 0x0,
+> > +            out_name_size - in_name_size);
+> > +
+> > +     /* Communicate */
+> > +     ret = mm_communicate(comm_buf, payload_size);
+> > +     if (ret == EFI_SUCCESS || ret == EFI_BUFFER_TOO_SMALL) {
+> > +             /* Update with reported data size for trimmed case */
+> > +             *name_size = var_getnext->name_size;
+> > +     }
+> > +     if (ret != EFI_SUCCESS)
+> > +             goto out;
+> > +
+> > +     memcpy(guid, &var_getnext->guid, sizeof(*guid));
+> > +     memcpy(name, var_getnext->name, var_getnext->name_size);
+> > +
+> > +out:
+> > +     kfree(comm_buf);
+> > +     return ret;
+> > +}
+> > +
+> > +static efi_status_t tee_set_variable(efi_char16_t *name, efi_guid_t *vendor,
+> > +                                  u32 attributes, unsigned long data_size,
+> > +                                  void *data)
+> > +{
+> > +     efi_status_t ret;
+> > +     struct var_check_property var_property;
+> > +     struct smm_variable_access *var_acc;
+> > +     size_t payload_size;
+> > +     size_t name_size;
+> > +     u8 *comm_buf = NULL;
+> > +
+> > +     if (!name || name[0] == 0 || !vendor) {
+> > +             ret = EFI_INVALID_PARAMETER;
+> > +             goto out;
+>
+> Nothing to do so why not return here?
+OK.
 
---=20
-Best regards,
+>
+> > +     }
+> > +     if (data_size > 0 && !data) {
+> > +             ret = EFI_INVALID_PARAMETER;
+> > +             goto out;
+>
+> Also return here?
 
-Keguang Zhang
+OK.
+
+>
+> > +     }
+> > +     /* Check payload size */
+> > +     name_size = (ucs2_strnlen(name, EFI_VAR_NAME_LEN) + 1) * sizeof(u16);
+> > +     payload_size = MM_VARIABLE_ACCESS_HEADER_SIZE + name_size + data_size;
+> > +     if (payload_size > max_payload_size) {
+> > +             ret = EFI_INVALID_PARAMETER;
+> > +             goto out;
+> and here.
+
+OK.
+
+>
+> > +     }
+> > +
+> > +     /*
+> > +      * Allocate the buffer early, before switching to RW (if needed)
+> > +      * so we won't need to account for any failures in reading/setting
+> > +      * the properties, if the allocation fails
+> > +      */
+> > +     var_acc = setup_mm_hdr(&comm_buf, payload_size,
+> > +                            SMM_VARIABLE_FUNCTION_SET_VARIABLE, &ret);
+> > +     if (!comm_buf)
+>
+> In this case still nothing to do. Return here - plus ideally check ret
+> rather than comm_buf so it's clear that an error is being returned without
+> us having to look in setup_mm_hdr()
+
+Yes, the return value of setup_mm_hdr() should be checked.
+
+>
+> > +             goto out;
+> > +
+> > +     /*
+> > +      * The API has the ability to override RO flags. If no RO check was
+> > +      * requested switch the variable to RW for the duration of this call
+> > +      */
+> > +     ret = get_property_int(name, name_size, vendor, &var_property);
+> > +     if (ret != EFI_SUCCESS) {
+> > +             dev_err(pvt_data.dev, "Getting variable property failed\n");
+> > +             goto out;
+> > +     }
+> > +
+> > +     if (var_property.property & VAR_CHECK_VARIABLE_PROPERTY_READ_ONLY) {
+> > +             ret = EFI_WRITE_PROTECTED;
+> > +             goto out;
+> > +     }
+> > +
+> > +     /* Fill in contents */
+> > +     memcpy(&var_acc->guid, vendor, sizeof(var_acc->guid));
+> > +     var_acc->data_size = data_size;
+> > +     var_acc->name_size = name_size;
+> > +     var_acc->attr = attributes;
+> > +     memcpy(var_acc->name, name, name_size);
+> > +     memcpy((u8 *)var_acc->name + name_size, data, data_size);
+> > +
+>
+> Not sure why 2 blank lines here. One probably fine.
+
+I will fix it.
+
+>
+> > +
+> > +     /* Communicate */
+> > +     ret = mm_communicate(comm_buf, payload_size);
+> > +     dev_dbg(pvt_data.dev, "Set Variable %s %d %lx\n", __FILE__, __LINE__, ret);
+> > +out:
+> > +     kfree(comm_buf);
+> > +     return ret;
+> > +}
+> > +
+> > +static efi_status_t tee_set_variable_nonblocking(efi_char16_t *name,
+> > +                                              efi_guid_t *vendor,
+> > +                                              u32 attributes,
+> > +                                              unsigned long data_size,
+> > +                                              void *data)
+> > +{
+> > +     return EFI_UNSUPPORTED;
+> > +}
+> > +
+> > +static efi_status_t tee_query_variable_info(u32 attributes,
+> > +                                         u64 *max_variable_storage_size,
+> > +                                         u64 *remain_variable_storage_size,
+> > +                                         u64 *max_variable_size)
+> > +{
+> > +     struct smm_variable_query_info *mm_query_info;
+> > +     size_t payload_size;
+> > +     efi_status_t ret;
+> > +     u8 *comm_buf;
+> > +
+> > +     payload_size = sizeof(*mm_query_info);
+> > +     mm_query_info = setup_mm_hdr(&comm_buf, payload_size,
+> > +                             SMM_VARIABLE_FUNCTION_QUERY_VARIABLE_INFO,
+> > +                             &ret);
+> > +     if (!comm_buf)
+> > +             goto out;
+>
+> if (!comm_buf) nothing to do (which is good as I'd not expect setup_mm_hdr
+> to have side effects if it fails.  So return ret.  Which is a little odd.
+> Can we just use ret as the check instead? That way it's clear the error returned
+> isn't an accidental success.
+
+Yes, I agree.
+
+>
+> > +
+> > +     mm_query_info->attr = attributes;
+> > +     ret = mm_communicate(comm_buf, payload_size);
+> > +     if (ret != EFI_SUCCESS)
+> > +             goto out;
+> > +     *max_variable_storage_size = mm_query_info->max_variable_storage;
+> > +     *remain_variable_storage_size =
+> > +             mm_query_info->remaining_variable_storage;
+> > +     *max_variable_size = mm_query_info->max_variable_size;
+> > +
+> > +out:
+> > +     kfree(comm_buf);
+> > +     return ret;
+> > +}
+> > +
+> > +static int tee_stmm_efi_probe(struct device *dev)
+> > +{
+> > +     struct tee_ioctl_open_session_arg sess_arg;
+> > +     efi_status_t ret;
+> > +     int rc;
+> > +
+> > +     /* Open context with TEE driver */
+> > +     pvt_data.ctx = tee_client_open_context(NULL, tee_ctx_match, NULL, NULL);
+> > +     if (IS_ERR(pvt_data.ctx))
+> > +             return -ENODEV;
+> > +
+> > +     /* Open session with StMM PTA */
+> > +     memset(&sess_arg, 0, sizeof(sess_arg));
+> > +     export_uuid(sess_arg.uuid, &tee_stmm_efi_id_table[0].uuid);
+> > +     rc = tee_client_open_session(pvt_data.ctx, &sess_arg, NULL);
+> > +     if ((rc < 0) || (sess_arg.ret != 0)) {
+> > +             dev_err(dev, "tee_client_open_session failed, err: %x\n",
+> > +                     sess_arg.ret);
+> > +             rc = -EINVAL;
+> > +             goto out_ctx;
+>
+> Up to you, but I'd be tempted to take this all devm_ managed
+> via devm_add_action_or_reset() and suitable callbacks.
+>
+> Marginal benefit in lines of code but makes it much harder to forget
+> to tidy something up in some future refactoring / reordering of code.
+
+Thank you, I will try to call  devm_add_action_or_reset(), and also
+update remove() callback.
+
+>
+> > +     }
+> > +     pvt_data.session = sess_arg.session;
+> > +     pvt_data.dev = dev;
+> > +
+> > +     ret = get_max_payload(&max_payload_size);
+> > +     if (ret != EFI_SUCCESS) {
+> > +             rc = -EIO;
+> > +             goto out_sess;
+> > +     }
+> > +
+> > +     max_buffer_size = MM_COMMUNICATE_HEADER_SIZE +
+> > +                       MM_VARIABLE_COMMUNICATE_SIZE +
+> > +                       max_payload_size;
+> > +
+> > +     tee_efivar_ops.get_variable = tee_get_variable;
+> > +     tee_efivar_ops.get_next_variable = tee_get_next_variable;
+> > +     tee_efivar_ops.set_variable = tee_set_variable;
+> > +     tee_efivar_ops.set_variable_nonblocking = tee_set_variable_nonblocking;
+> > +     tee_efivar_ops.query_variable_store = efi_query_variable_store;
+> > +     tee_efivar_ops.query_variable_info = tee_query_variable_info;
+> > +
+> > +     efivars_generic_ops_unregister();
+> > +     pr_info("Use tee-based EFI runtime variable services\n");
+> > +     efivars_register(&tee_efivars, &tee_efivar_ops);
+> > +
+> > +     return 0;
+> > +
+> > +out_sess:
+> > +     tee_client_close_session(pvt_data.ctx, pvt_data.session);
+> > +out_ctx:
+> > +     tee_client_close_context(pvt_data.ctx);
+> > +
+> > +     return rc;
+> > +}
+> > +
+> > +static int tee_stmm_efi_remove(struct device *dev)
+> > +{
+> > +     efivars_unregister(&tee_efivars);
+> > +     efivars_generic_ops_register();
+> > +
+> > +     tee_client_close_session(pvt_data.ctx, pvt_data.session);
+> > +     tee_client_close_context(pvt_data.ctx);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +MODULE_DEVICE_TABLE(tee, tee_stmm_efi_id_table);
+> > +
+> > +static struct tee_client_driver tee_stmm_efi_driver = {
+> > +     .id_table       = tee_stmm_efi_id_table,
+> > +     .driver         = {
+> > +             .name           = "tee-stmm-efi",
+> > +             .bus            = &tee_bus_type,
+> > +             .probe          = tee_stmm_efi_probe,
+> > +             .remove         = tee_stmm_efi_remove,
+> > +     },
+> > +};
+> > +
+> > +static int __init tee_stmm_efi_mod_init(void)
+> > +{
+> > +     return driver_register(&tee_stmm_efi_driver.driver);
+> > +}
+> > +
+> > +static void __exit tee_stmm_efi_mod_exit(void)
+> > +{
+> > +     driver_unregister(&tee_stmm_efi_driver.driver);
+> > +}
+> > +
+> > +module_init(tee_stmm_efi_mod_init);
+> > +module_exit(tee_stmm_efi_mod_exit);
+>
+> Looks like tee client drivers could benefit from a
+> #define module_tee_client_driver(__tee_client_driver)
+> similar to module_platform_driver() and similar.
+
+Yes, it simplifies the driver definition of tee client driver.
+Anyway, this modification should be different from this series,
+it is better to be modified together with other tee client drivers.
+
+Thanks,
+Masahisa Kojima
+
+>
+> > +
+> > +MODULE_LICENSE("GPL");
+> > +MODULE_AUTHOR("Ilias Apalodimas <ilias.apalodimas@linaro.org>");
+> > +MODULE_AUTHOR("Masahisa Kojima <masahisa.kojima@linaro.org>");
+> > +MODULE_DESCRIPTION("TEE based EFI runtime variable service driver");
+>
