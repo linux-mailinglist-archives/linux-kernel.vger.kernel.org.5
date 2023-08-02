@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7D976C934
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 774AB76C943
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233873AbjHBJQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
+        id S234056AbjHBJRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234027AbjHBJPi (ORCPT
+        with ESMTP id S232676AbjHBJRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:15:38 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61DC3596;
-        Wed,  2 Aug 2023 02:15:23 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3724TmpU016330;
-        Wed, 2 Aug 2023 09:15:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=C7TkSRRTGunDk3eBEHzSLdZSafVsE7qSWbYNiW77fw8=;
- b=GgG4dGjU6N4+oKCQSvmMhv6eYNkD5j3KwX3IHRybkasqtma+Hgypv+02pAxcBcSruRry
- igZK2cJWAgGjHNjpPWmYYVyYCJGVnwrAf8PLn1jrpUdFRvU+LXibzfVqGAcSG5mEui81
- CTFt2uZPQBWXz91cGvFopf9bYvosuDBJnuz/X8N8mv4q3PTVwkYqRWHFpTNmWHJF7DZn
- dMJ/+MXJm3CX6gw+XDLLER33DHMuT3JPJRMrIlnKaOGVr65lrMG2jYdCz01i9rUdYXtd
- FEDW+mNoqWqWCgdI209sGsgEynobZAgPzH2vkqTPEiwpis+mx6TDYBaOLWXI8WTKUJUL sQ== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s72gqtdps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 09:15:20 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3729FKEo017191
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 09:15:20 GMT
-Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 2 Aug 2023 02:15:16 -0700
-From:   Komal Bajaj <quic_kbajaj@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srinivas.kandagatla@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>
-Subject: [PATCH v6 6/6] soc: qcom: llcc: Add QDU1000 and QRU1000 LLCC support
-Date:   Wed, 2 Aug 2023 14:44:28 +0530
-Message-ID: <20230802091429.20892-7-quic_kbajaj@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230802091429.20892-1-quic_kbajaj@quicinc.com>
-References: <20230802091429.20892-1-quic_kbajaj@quicinc.com>
+        Wed, 2 Aug 2023 05:17:05 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3E32D74
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:16:36 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-7658752ce2fso416078285a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 02:16:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690967795; x=1691572595;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4RqvQQdJp1hFdbPf4OMSlvaFhWgja7uGQCZmj+KNPJo=;
+        b=WWYRFt6UWcgMzlZL5nC3JdxOCVTJWdxzp0Jxn+KUdVY2M25MT0FVMkmrj/SEp/wTRg
+         Tr0AKXCZd1Z2T/qWRVdazVCF4NO3qllZzMyNQRZJgLTPiqX8VDxF5Af6o/xF6HEz0tHX
+         Sa8uhIMgc46GeDVp2TSipQ7kXiW1+sfQSzYtC/J2AaomnjimbYgJiZJyP55T5NM+Rx3v
+         Uxqr7WbFgFbefjxNkImg9rL5O3n4TiD4Gz0XA9yyiZv4OODGqqA1zGPjYMvApwWAOwOQ
+         BQChS4H0f/MurUPwDccnGZzSNdeY6SaWa8CaL1odlR1rEiZsZ8JMXkZdDe68ABXNbJp4
+         imhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690967795; x=1691572595;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4RqvQQdJp1hFdbPf4OMSlvaFhWgja7uGQCZmj+KNPJo=;
+        b=HnOcKHEOSj6RttyuSgWaLP79mH5nky2lLYuzHf8IAbt1GKdr7h5VbNLnDbUF3ePsm6
+         DCkXOCTZDjUxeoaI/CcBG6Ez9lLMkTI8tOBj2I56q+e1nKmyDbfW7pKw3a2CrHa/F9Bm
+         LWWcrrSZUwVWVP//ujOBxSBr3qNv0KsQ84KZMSOEQZvCKeppbLxTobIh/IkW+9ZJMFhC
+         0po4RMALUsjMXsnVkIF4DWs78LFegxePGUfSaMk+eMNoPLwBjpLresqTy9SPoy4MuOtR
+         a61ZtdJLwy7nQwYcSy0cWOX0u6M5mAt9XSNcwzAUn1F9CbHIOL1KL3d7A/c+DkE9dqPg
+         A+YA==
+X-Gm-Message-State: ABy/qLbCiPSFS1ujM2wC1rPmBk5XidROwgnNGRmE2IMCPqNceOxKA35O
+        KKowI00wag8vTuIIK68SauQCUwmFekzLP6ILAi+t/g==
+X-Google-Smtp-Source: APBJJlHNhb6YQYwgaQkW+eQSgd89TWqGTpASPIjO4FBQatVAtmJ/oaGPRCiRuTtehzFZJx+nyEw7ycYC5dIh2IsESJI=
+X-Received: by 2002:a0c:eace:0:b0:63c:fb87:625d with SMTP id
+ y14-20020a0ceace000000b0063cfb87625dmr13972844qvp.3.1690967795200; Wed, 02
+ Aug 2023 02:16:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 1Ixw9_jTmav1B0b9XjSo48a7w0_7hdI_
-X-Proofpoint-ORIG-GUID: 1Ixw9_jTmav1B0b9XjSo48a7w0_7hdI_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_04,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- phishscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 clxscore=1015 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308020082
+References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
+In-Reply-To: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Wed, 2 Aug 2023 14:45:59 +0530
+Message-ID: <CAMi1Hd31A53-87EdnupZio_FCjgMRyPRxvsfzeY=q-iT=3qBfA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
+ and EOT packet"
+To:     Neil Armstrong <neil.armstrong@linaro.org>
+Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Marek Vasut <marex@denx.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -81,112 +77,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LLCC configuration data for QDU1000 and QRU1000 SoCs.
+On Wed, 2 Aug 2023 at 14:22, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>
+> This reverts commit [1] to fix display regression on the Dragonboard 845c
+> (SDM845) devboard.
 
-Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
----
- drivers/soc/qcom/llcc-qcom.c | 67 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
+Tested-by: Amit Pundir <amit.pundir@linaro.org>
 
-diff --git a/drivers/soc/qcom/llcc-qcom.c b/drivers/soc/qcom/llcc-qcom.c
-index 315f7a1b90aa..8e1b2399700d 100644
---- a/drivers/soc/qcom/llcc-qcom.c
-+++ b/drivers/soc/qcom/llcc-qcom.c
-@@ -366,6 +366,36 @@ static const struct llcc_slice_config sm8550_data[] =  {
- 	{LLCC_VIDVSP,   28,  256, 4, 1, 0xFFFFFF, 0x0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, },
- };
+Regards,
+Amit Pundir
 
-+static const struct llcc_slice_config qdu1000_data_2ch[] = {
-+	{ LLCC_MDMHPGRW, 7, 512, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_MODHW,    9, 256, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_MDMPNG,  21, 256, 0, 1, 0x3,   0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_ECC,     26, 512, 3, 1, 0xffc, 0x0, 0, 0, 0, 0, 1, 0, 0 },
-+	{ LLCC_MODPE,   29, 256, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_APTCM,   30, 256, 3, 1, 0x0,   0xc, 1, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_WRCACHE, 31, 128, 1, 1, 0x3,   0x0, 0, 0, 0, 0, 1, 0, 0 },
-+};
-+
-+static const struct llcc_slice_config qdu1000_data_4ch[] = {
-+	{ LLCC_MDMHPGRW, 7, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_MODHW,    9, 512,  1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_MDMPNG,  21, 512,  0, 1, 0x3,   0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_ECC,     26, 1024, 3, 1, 0xffc, 0x0, 0, 0, 0, 0, 1, 0, 0 },
-+	{ LLCC_MODPE,   29, 512,  1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_APTCM,   30, 512,  3, 1, 0x0,   0xc, 1, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_WRCACHE, 31, 256,  1, 1, 0x3,   0x0, 0, 0, 0, 0, 1, 0, 0 },
-+};
-+
-+static const struct llcc_slice_config qdu1000_data_8ch[] = {
-+	{ LLCC_MDMHPGRW, 7, 2048, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_MODHW,    9, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_MDMPNG,  21, 1024, 0, 1, 0x3,   0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_ECC,     26, 2048, 3, 1, 0xffc, 0x0, 0, 0, 0, 0, 1, 0, 0 },
-+	{ LLCC_MODPE,   29, 1024, 1, 1, 0xfff, 0x0, 0, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_APTCM,   30, 1024, 3, 1, 0x0,   0xc, 1, 0, 0, 1, 0, 0, 0 },
-+	{ LLCC_WRCACHE, 31, 512,  1, 1, 0x3,   0x0, 0, 0, 0, 0, 1, 0, 0 },
-+};
-+
- static const struct llcc_edac_reg_offset llcc_v1_edac_reg_offset = {
- 	.trp_ecc_error_status0 = 0x20344,
- 	.trp_ecc_error_status1 = 0x20348,
-@@ -432,6 +462,37 @@ static const u32 llcc_v2_1_reg_offset[] = {
- 	[LLCC_COMMON_STATUS0]	= 0x0003400c,
- };
-
-+static const struct qcom_llcc_config qdu1000_cfg[] = {
-+	{
-+		.sct_data       = qdu1000_data_8ch,
-+		.size		= ARRAY_SIZE(qdu1000_data_8ch),
-+		.need_llcc_cfg	= true,
-+		.reg_offset	= llcc_v2_1_reg_offset,
-+		.edac_reg_offset = &llcc_v2_1_edac_reg_offset,
-+	},
-+	{
-+		.sct_data       = qdu1000_data_4ch,
-+		.size           = ARRAY_SIZE(qdu1000_data_4ch),
-+		.need_llcc_cfg  = true,
-+		.reg_offset     = llcc_v2_1_reg_offset,
-+		.edac_reg_offset = &llcc_v2_1_edac_reg_offset,
-+	},
-+	{
-+		.sct_data       = qdu1000_data_4ch,
-+		.size           = ARRAY_SIZE(qdu1000_data_4ch),
-+		.need_llcc_cfg  = true,
-+		.reg_offset     = llcc_v2_1_reg_offset,
-+		.edac_reg_offset = &llcc_v2_1_edac_reg_offset,
-+	},
-+	{
-+		.sct_data       = qdu1000_data_2ch,
-+		.size           = ARRAY_SIZE(qdu1000_data_2ch),
-+		.need_llcc_cfg  = true,
-+		.reg_offset     = llcc_v2_1_reg_offset,
-+		.edac_reg_offset = &llcc_v2_1_edac_reg_offset,
-+	},
-+};
-+
- static const struct qcom_llcc_config sc7180_cfg[] = {
- 	{
- 		.sct_data	= sc7180_data,
-@@ -553,6 +614,11 @@ static const struct qcom_llcc_config sm8550_cfg[] = {
- 	},
- };
-
-+static const struct qcom_sct_config qdu1000_cfgs = {
-+	.llcc_config	= qdu1000_cfg,
-+	.num_config	= 4,
-+};
-+
- static const struct qcom_sct_config sc7180_cfgs = {
- 	.llcc_config	= sc7180_cfg,
- 	.num_config	= ARRAY_SIZE(sc7180_cfg),
-@@ -1171,6 +1237,7 @@ static int qcom_llcc_probe(struct platform_device *pdev)
- }
-
- static const struct of_device_id qcom_llcc_of_match[] = {
-+	{ .compatible = "qcom,qdu1000-llcc", .data = &qdu1000_cfgs},
- 	{ .compatible = "qcom,sc7180-llcc", .data = &sc7180_cfgs },
- 	{ .compatible = "qcom,sc7280-llcc", .data = &sc7280_cfgs },
- 	{ .compatible = "qcom,sc8180x-llcc", .data = &sc8180x_cfgs },
---
-2.41.0
-
+>
+> There's a mismatch on the real action of the following flags:
+> - MIPI_DSI_MODE_VIDEO_NO_HSA
+> - MIPI_DSI_MODE_VIDEO_NO_HFP
+> - MIPI_DSI_MODE_VIDEO_NO_HBP
+> which leads to a non-working display on qcom platforms.
+>
+> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA and EOT packet")
+>
+> Cc: Marek Vasut <marex@denx.de>
+> Cc: Robert Foss <rfoss@kernel.org>
+> Cc: Jagan Teki <jagan@amarulasolutions.com>
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA and EOT packet")
+> Reported-by: Amit Pundir <amit.pundir@linaro.org>
+> Link: https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
+>  drivers/gpu/drm/bridge/lontium-lt9611.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/lontium-lt9611.c b/drivers/gpu/drm/bridge/lontium-lt9611.c
+> index 5163e5224aad..9663601ce098 100644
+> --- a/drivers/gpu/drm/bridge/lontium-lt9611.c
+> +++ b/drivers/gpu/drm/bridge/lontium-lt9611.c
+> @@ -774,9 +774,7 @@ static struct mipi_dsi_device *lt9611_attach_dsi(struct lt9611 *lt9611,
+>         dsi->lanes = 4;
+>         dsi->format = MIPI_DSI_FMT_RGB888;
+>         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
+> -                         MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_MODE_VIDEO_NO_HSA |
+> -                         MIPI_DSI_MODE_VIDEO_NO_HFP | MIPI_DSI_MODE_VIDEO_NO_HBP |
+> -                         MIPI_DSI_MODE_NO_EOT_PACKET;
+> +                         MIPI_DSI_MODE_VIDEO_HSE;
+>
+>         ret = devm_mipi_dsi_attach(dev, dsi);
+>         if (ret < 0) {
+>
+> ---
+> base-commit: f590814603bf2dd8620584b7d59ae94d7c186c69
+> change-id: 20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-6f042b1ba813
+>
+> Best regards,
+> --
+> Neil Armstrong <neil.armstrong@linaro.org>
+>
