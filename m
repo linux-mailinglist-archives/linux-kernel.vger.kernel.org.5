@@ -2,146 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33FEB76C850
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CE276C853
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233927AbjHBIZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
+        id S233940AbjHBI1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbjHBIZP (ORCPT
+        with ESMTP id S232838AbjHBI1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:25:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A0E31BF0
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:24:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690964670;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DtQormFq6iIvoR/QhqHDlvFGsNl3UyYF/d+disvIy1k=;
-        b=TTAHeXKruCTewgJbPI4W9XQGSlLqkxkFCURXB5zUP4ZtCVqvOLP1h3JRh6um+L3GgwCHcK
-        votK2wcOapJxH7IBjl6F3vWKe/j6yfKXAff9S3qs3ZaqiKRwFJPbWlu/8DJpM17XKKYimP
-        +16BAqkmBgDgYb9yo9giM+352/7fKDU=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-439-05rhWOviO_yEiQovb11B-Q-1; Wed, 02 Aug 2023 04:24:29 -0400
-X-MC-Unique: 05rhWOviO_yEiQovb11B-Q-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2b9bcf13746so57373551fa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 01:24:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690964668; x=1691569468;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DtQormFq6iIvoR/QhqHDlvFGsNl3UyYF/d+disvIy1k=;
-        b=TjDPohI6cDX2ZlHDBjjeG9leLm1Q89B1XKxD5Rp3t2jyfNSwclMTkjIsyNQPBEBvJy
-         kCn6R/VRtCu61VNbL6SE/ygzP1mGkw3lTgR/tAHqndotX+mCWfWDRi6S3RFEqtz5ekCP
-         zKI1DYidO/ZXa9jO6pZkZvfZHjP+Gu4++/MMdWbRZZY2W/cJGVqsutTd5YLTb/WuNFWl
-         EiVp9sCMfxo2EiCOwxJYzKkGnoJRwScND8kHjAbi4Afc6IzMX5Y/PqjZI+qIwetkc8r3
-         DZ709JboA83qJPv6QgxmY7qMmRYMIwSRoRBoKNaU5isPB7X3XL8tHPJr8ir36vddN2J0
-         BVSw==
-X-Gm-Message-State: ABy/qLb2ohLkXGFbiTtiHaZWw5ktqTrqv0GQO9Zg81GSHnejdVfIdY8p
-        +5aMnuxGuqpg6MPdwrbIqtImqt4ObA4Sva6jX62BqtviqWVVs83PhHNLb/9iMJdhOVYs3HtyaX4
-        gIKung/rw4q2+uwkHqUeuYvSLOT3Neapk
-X-Received: by 2002:a2e:3606:0:b0:2b4:6eb0:2a27 with SMTP id d6-20020a2e3606000000b002b46eb02a27mr4403597lja.17.1690964667878;
-        Wed, 02 Aug 2023 01:24:27 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlFNA6gz1FZ8UuYKGErq/QQiavCiN+bzB6Z9bnEb46HGJkYdZuEyaP0A0byE8+ZAaUHNQ1TEHA==
-X-Received: by 2002:a2e:3606:0:b0:2b4:6eb0:2a27 with SMTP id d6-20020a2e3606000000b002b46eb02a27mr4403582lja.17.1690964667450;
-        Wed, 02 Aug 2023 01:24:27 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70b:e00:b8a4:8613:1529:1caf? (p200300cbc70b0e00b8a4861315291caf.dip0.t-ipconnect.de. [2003:cb:c70b:e00:b8a4:8613:1529:1caf])
-        by smtp.gmail.com with ESMTPSA id l22-20020a7bc456000000b003fc06169ab3sm1043916wmi.20.2023.08.02.01.24.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 01:24:26 -0700 (PDT)
-Message-ID: <9b6ffb16-19e0-da2c-c4bc-d95416fdc787@redhat.com>
-Date:   Wed, 2 Aug 2023 10:24:25 +0200
+        Wed, 2 Aug 2023 04:27:20 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 36361E48;
+        Wed,  2 Aug 2023 01:27:18 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3728QaklE004404, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3728QaklE004404
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 2 Aug 2023 16:26:36 +0800
+Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Wed, 2 Aug 2023 16:26:51 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Wed, 2 Aug 2023 16:26:50 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Wed, 2 Aug 2023 16:26:50 +0800
+From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
+        <stanley_chang@realtek.com>
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v2 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue layer driver
+Thread-Topic: [PATCH v2 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue
+ layer driver
+Thread-Index: AQHZxFokPxd4W07ijUGGBrmKl0qPKq/VrnaAgADyIuA=
+Date:   Wed, 2 Aug 2023 08:26:50 +0000
+Message-ID: <ff9ca6f15936450696bff502c0047708@realtek.com>
+References: <20230801092541.25261-1-stanley_chang@realtek.com>
+ <20230802011400.v4jim6ajsqc3tvei@synopsys.com>
+In-Reply-To: <20230802011400.v4jim6ajsqc3tvei@synopsys.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.190.159]
+x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/8] mm/compaction: avoid missing last page block in
- section after skip offline sections
-Content-Language: en-US
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        baolin.wang@linux.alibaba.com, mgorman@techsingularity.net
-References: <20230802093741.2333325-1-shikemeng@huaweicloud.com>
- <20230802093741.2333325-2-shikemeng@huaweicloud.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230802093741.2333325-2-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.08.23 11:37, Kemeng Shi wrote:
-> skip_offline_sections_reverse will return the last pfn in found online
-> section. Then we set block_start_pfn to start of page block which
-> contains the last pfn in section. Then we continue, move one page
-> block forward and ignore the last page block in the online section.
-> Make block_start_pfn point to first page block after online section to fix
-> this:
-> 1. make skip_offline_sections_reverse return end pfn of online section,
-> i.e. pfn of page block after online section.
-> 2. assign block_start_pfn with next_pfn.
-> 
-> Fixes: f63224525309 ("mm: compaction: skip the memory hole rapidly when isolating free pages")
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->   mm/compaction.c | 10 +++++++---
->   1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index cd23da4d2a5b..a8cea916df9d 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -250,6 +250,11 @@ static unsigned long skip_offline_sections(unsigned long start_pfn)
->   	return 0;
->   }
->   
-> +/*
-> + * If the PFN falls into an offline section, return the end PFN of the
-> + * next online section in reverse. If the PFN falls into an online section
-> + * or if there is no next online section in reverse, return 0.
-> + */
->   static unsigned long skip_offline_sections_reverse(unsigned long start_pfn)
->   {
->   	unsigned long start_nr = pfn_to_section_nr(start_pfn);
-> @@ -259,7 +264,7 @@ static unsigned long skip_offline_sections_reverse(unsigned long start_pfn)
->   
->   	while (start_nr-- > 0) {
->   		if (online_section_nr(start_nr))
-> -			return section_nr_to_pfn(start_nr) + PAGES_PER_SECTION - 1;
-> +			return section_nr_to_pfn(start_nr) + PAGES_PER_SECTION;
->   	}
->   
->   	return 0;
-> @@ -1668,8 +1673,7 @@ static void isolate_freepages(struct compact_control *cc)
->   
->   			next_pfn = skip_offline_sections_reverse(block_start_pfn);
->   			if (next_pfn)
-> -				block_start_pfn = max(pageblock_start_pfn(next_pfn),
-> -						      low_pfn);
-> +				block_start_pfn = max(next_pfn, low_pfn);
->   
->   			continue;
->   		}
-
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Cheers,
-
-David / dhildenb
-
+SGkgVGhpbmgsDQoNCj4gPiArc3RydWN0IGR3YzNfcnRrIHsNCj4gPiArICAgICBzdHJ1Y3QgZGV2
+aWNlICpkZXY7DQo+ID4gKyAgICAgdm9pZCBfX2lvbWVtICpyZWdzOw0KPiA+ICsgICAgIHNpemVf
+dCByZWdzX3NpemU7DQo+ID4gKw0KPiA+ICsgICAgIHN0cnVjdCBkd2MzICpkd2M7DQo+ID4gKw0K
+PiA+ICsgICAgIGludCBjdXJfZHJfbW9kZTsgLyogY3VycmVudCBkciBtb2RlICovDQo+ID4gKyAg
+ICAgYm9vbCBzdXBwb3J0X2RyZF9tb2RlOyAvKiBpZiBzdXBwb3J0IEhvc3QvZGV2aWNlIHN3aXRj
+aCAqLw0KPiANCj4gSSB0aGluayB3ZSBtYXkgbm90IG5lZWQgdGhpcyBhbmQgZG8gYXdheSB0aGUg
+Ym9vbGVhbiBzdXBwb3J0X2RyZF9tb2RlLg0KDQpZZXMsIHRoZSBpbml0aWFsIGZsb3cgc2hvdWxk
+IGJlIHNpbXBsaWZpZWQgYXMNCkBAIC0zNDYsMTIgKzM0Miw3IEBAIHN0YXRpYyBpbnQgZHdjM19y
+dGtfcHJvYmVfZHdjM19jb3JlKHN0cnVjdCBkd2MzX3J0ayAqcnRrKQ0KDQogICAgICAgIHJ0ay0+
+Y3VyX2RyX21vZGUgPSBkcl9tb2RlOw0KDQotICAgICAgIGlmIChkZXZpY2VfcHJvcGVydHlfcmVh
+ZF9ib29sKGR3YzNfZGV2LCAidXNiLXJvbGUtc3dpdGNoIikpDQotICAgICAgICAgICAgICAgcnRr
+LT5zdXBwb3J0X2RyZF9tb2RlID0gdHJ1ZTsNCi0gICAgICAgZWxzZQ0KLSAgICAgICAgICAgICAg
+IHJ0ay0+c3VwcG9ydF9kcmRfbW9kZSA9IGZhbHNlOw0KLQ0KLSAgICAgICBpZiAocnRrLT5zdXBw
+b3J0X2RyZF9tb2RlKSB7DQorICAgICAgIGlmIChkZXZpY2VfcHJvcGVydHlfcmVhZF9ib29sKGR3
+YzNfZGV2LCAidXNiLXJvbGUtc3dpdGNoIikpIHsNCiAgICAgICAgICAgICAgICBkd2MzX3J0a19z
+ZXR1cF9yb2xlX3N3aXRjaChydGspOw0KICAgICAgICAgICAgICAgIHJ0ay0+Y3VyX2RyX21vZGUg
+PSBkd2MzX3J0a19nZXRfZHJfbW9kZShydGspOw0KICAgICAgICB9DQoNCj4gPiArc3RhdGljIGlu
+dCBkd2MzX3J0a19zZXRfZHJfbW9kZShzdHJ1Y3QgZHdjM19ydGsgKnJ0aywgaW50IGRyX21vZGUp
+DQo+IA0KPiBXaHkgcmV0dXJuIHRoZSBtb2RlIHJhdGhlciB0aGFuIHN0YXR1cyBpZiB0aGUgc2V0
+dGluZz8gWW91J3JlIG5vdCBjaGVja2luZyB0aGUNCj4gcmV0dXJuIG9mIHRoaXMgZnVuY3Rpb24g
+aW4gdGhlIGNhbGxlciBhbnl3YXkuDQoNCllvdSBhcmUgcmlnaHQsIHRoaXMgcmV0dXJuIHZhbHVl
+IGlzIHVubmVjZXNzYXJ5Lg0KSSB3aWxsIHJlbW92ZSBpdC4NCg0KPiA+ICt7DQo+ID4gKyAgICAg
+aWYgKCFydGstPnN1cHBvcnRfZHJkX21vZGUpDQo+ID4gKyAgICAgICAgICAgICByZXR1cm4gcnRr
+LT5jdXJfZHJfbW9kZTsNCj4gPiArDQo+ID4gKyAgICAgcnRrLT5jdXJfZHJfbW9kZSA9IGRyX21v
+ZGU7DQo+ID4gKw0KPiA+ICsgICAgIHN3aXRjaF9kd2MzX2RyX21vZGUocnRrLCBkcl9tb2RlKTsN
+Cj4gPiArICAgICBtZGVsYXkoMTApOw0KPiA+ICsgICAgIHN3aXRjaF91c2IyX2RyX21vZGUocnRr
+LCBkcl9tb2RlKTsNCj4gPiArDQo+ID4gKyAgICAgcmV0dXJuIHJ0ay0+Y3VyX2RyX21vZGU7DQo+
+ID4gK30NCj4gPiArDQoNCj4gPiArc3RhdGljIGludCBkd2MzX3J0a19zZXR1cF9yb2xlX3N3aXRj
+aChzdHJ1Y3QgZHdjM19ydGsgKnJ0aykNCj4gDQo+IEFueSByZWFzb24gd2h5IHdlJ3JlIGRvaW5n
+IHRoZSByb2xlIHN3aXRjaCBoZXJlIGFuZCBub3Qgd2hhdCdzIGltcGxlbWVudGVkDQo+IGZyb20g
+dGhlIGNvcmU/DQo+IA0KQmVjYXVzZSB3ZSBoYXZlIHRvIHNldCB0aGUgdXNiIDIuMCBwaHkgbW9k
+ZSB0aHJvdWdoIHN3aXRjaF91c2IyX2RyX21vZGUgaW4gdGhlIGZ1bmN0aW9uIGR3YzNfcnRrX3Nl
+dF9kcl9tb2RlLg0KSW4gZmFjdCwgc3dpdGNoX2R3YzNfZHJfbW9kZSB3aWxsIHVzZSB0aGUgcm9s
+ZSBzd2l0Y2hpbmcgaW1wbGVtZW50ZWQgYnkgY29yZS4NCg0KPiA+ICsNCj4gPiArbW9kdWxlX3Bs
+YXRmb3JtX2RyaXZlcihkd2MzX3J0a19kcml2ZXIpOw0KPiA+ICsNCj4gPiArTU9EVUxFX0FVVEhP
+UigiU3RhbmxleSBDaGFuZyA8c3RhbmxleV9jaGFuZ0ByZWFsdGVrLmNvbT4iKTsNCj4gPiArTU9E
+VUxFX0RFU0NSSVBUSU9OKCJEZXNpZ25XYXJlIFVTQjMgUmVhbHRlayBHbHVlIExheWVyIik7DQo+
+ID4gK01PRFVMRV9BTElBUygicGxhdGZvcm06cnRrLWR3YzMiKTsNCj4gPiArTU9EVUxFX0xJQ0VO
+U0UoIkdQTCIpOw0KPiANCj4gSSdtIG5vdCBmYW1pbGlhciB3aXRoIGxpY2Vuc2luZyBtdWNoLCBi
+dXQgY2FuIHRoZSBTUERYIGhlYWRlciBpbmRpY2F0ZXMNCj4gZGlmZmVyZW50IHZlcnNpb24gdGhh
+biB0aGUgbW9kdWxlIGxpY2Vuc2U/DQo+IA0KVGhhbmtzIEdyZWcgZm9yIHlvdXIgY29tbWVudC4N
+CkVpdGhlciBHUEwgb3IgR1BMIHYyIGFyZSBzdWl0YWJsZSBmb3Igb3VyIHNvdXJjZSBjb2RlLg0K
+DQpUaGFua3MsDQpTdGFubGV5DQoNCg==
