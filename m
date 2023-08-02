@@ -2,58 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ED8D76D3AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5102076D3B6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbjHBQbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
+        id S232332AbjHBQce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbjHBQbm (ORCPT
+        with ESMTP id S231909AbjHBQcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:31:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E264210D;
-        Wed,  2 Aug 2023 09:31:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AC7A6199A;
-        Wed,  2 Aug 2023 16:31:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 347FDC433C8;
-        Wed,  2 Aug 2023 16:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690993900;
-        bh=0lpVhKDUd7Tnt1pOBSUzHZtuD1Oebkn4+PkPwpT2kKs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=j0r8Vw0e00dzFIZouvGCpEl3w6wxJOtu5r+oKgbEEIllcsLcOgwkF+oW74VmuJJBr
-         gXosxOrbTcwzjl6Ri2+Vpvwaj+dLrnCki/kBmQADQLYHTqjK1iBIe0nH+4h3waSf4r
-         M5D19Z0MEPM1/zXyX7/FVkLek5okoT7aKTw3f7d3T0A6x3xJp4N5+9kQoMj3Om7XEg
-         o4mGK6UbzNe388NZKfrgdLIRcayKsqL+xqLQhVUYoEmA3lv84UP4bfn656s9Lv9ldl
-         QzrI/ZsQwszGGQoAl5MCHtteyeekqY7TOFtRf2V5B13p4QR5qccuN6FUyqNfPADYIn
-         dtQWeEO7uAhyA==
-Date:   Wed, 2 Aug 2023 11:31:38 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     mani@kernel.org, bhelgaas@google.com, devicetree@vger.kernel.org,
-        gustavo.pimentel@synopsys.com, imx@lists.linux.dev, kw@linux.com,
-        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
-        lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org,
-        minghuan.lian@nxp.com, mingkai.hu@nxp.com, robh+dt@kernel.org,
-        roy.zang@nxp.com, shawnguo@kernel.org, zhiqiang.hou@nxp.com
-Subject: Re: [PATCH v7 1/2] PCI: dwc: Implement general suspend/resume
- functionality for L2/L3 transitions
-Message-ID: <20230802163138.GA61043@bhelgaas>
+        Wed, 2 Aug 2023 12:32:31 -0400
+Received: from frasgout11.his.huawei.com (ecs-14-137-139-23.compute.hwclouds-dns.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CED52137
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:32:30 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.227])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGHK54vnXz9xGgc
+        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:20:57 +0800 (CST)
+Received: from A2101119013HW2.china.huawei.com (unknown [10.81.207.228])
+        by APP1 (Coremail) with SMTP id LxC2BwCnWbn9hMpkgNcsAA--.36049S2;
+        Wed, 02 Aug 2023 17:32:06 +0100 (CET)
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>,
+        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR X86),
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT))
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: [PATCH v1] xen: remove a confusing comment on auto-translated guest I/O
+Date:   Wed,  2 Aug 2023 18:31:51 +0200
+Message-Id: <20230802163151.1486-1-petrtesarik@huaweicloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802155748.212377-1-Frank.Li@nxp.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwCnWbn9hMpkgNcsAA--.36049S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruw1fCF1DKFy5Ary3AFyUGFg_yoWDKwcE9F
+        4xZF48Ww45tr93X34UKr4avaySyan3trWF9Fn2y34YyFWxXFs7XFs2g3Z0kw4xXFWrCrZx
+        XF9xXry7Jw40kjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbSAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJV
+        WxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc7CjxVAKzI0EY4vE52x082I5MxAIw28Icx
+        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
+        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42
+        IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY
+        6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
+        IEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUxUUUUUUUU=
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,47 +68,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 11:57:47AM -0400, Frank Li wrote:
-> Introduce helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
+From: Petr Tesarik <petr.tesarik.ext@huawei.com>
 
-s/dw_pcie_get_ltssm/dw_pcie_get_ltssm()/
+After removing the conditional return from xen_create_contiguous_region(),
+the accompanying comment was left in place, but it now precedes an
+unrelated conditional and confuses readers.
 
-> Add callback .pme_turn_off and .exit_from_l2 for platform specific PME
-> handling.
-> 
-> Add common dw_pcie_suspend(resume)_noirq() API to avoid duplicated code
-> in dwc pci host controller platform driver.
-> 
-> Typical L2 entry workflow/dw_pcie_suspend_noirq()
-> 
-> 1. Transmit PME turn off signal to PCI devices and wait for PME_To_Ack.
-> 2. Await link entering L2_IDLE state.
-> 
-> Typical L2 exit workflow/dw_pcie_resume_noirq()
-> 
-> 1. Issue exit from L2 command.
-> 2. Reinitialize PCI host.
-> 3. Wait for link to become active.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  Change from v6 to v7
->  - change according to Manivannan's comments.
->    fix sleep value 100 (should be 1000 for 1ms).
+Fixes: 989513a735f5 ("xen: cleanup pvh leftovers from pv-only sources")
+Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+---
+ arch/x86/xen/mmu_pv.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-> +	 * PCI Express Base Specification Rev 4.0 Section 5.3.3.2.1 PME
-> +	 * Synchronization Recommends 1ms to 10ms timeout to check L2 ready.
-> +	 */
-> +	ret = read_poll_timeout(dw_pcie_get_ltssm, val, val == DW_PCIE_LTSSM_L2_IDLE,
-> +				1000, 10000, false, pci);
+diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
+index e0a975165de7..804a5441324c 100644
+--- a/arch/x86/xen/mmu_pv.c
++++ b/arch/x86/xen/mmu_pv.c
+@@ -2310,12 +2310,6 @@ int xen_create_contiguous_region(phys_addr_t pstart, unsigned int order,
+ 	int            success;
+ 	unsigned long vstart = (unsigned long)phys_to_virt(pstart);
+ 
+-	/*
+-	 * Currently an auto-translated guest will not perform I/O, nor will
+-	 * it require PAE page directories below 4GB. Therefore any calls to
+-	 * this function are redundant and can be ignored.
+-	 */
+-
+ 	if (unlikely(order > MAX_CONTIG_ORDER))
+ 		return -ENOMEM;
+ 
+-- 
+2.25.1
 
-Thanks for the spec citation.  Can you please reference the current
-spec, i.e., "PCIe r6.0, sec 5.3.3.2.1".
-
-s/Recommends/recommends/
-
-It would really be great to have a #define for this since the bare
-numbers are not very meaningful and they're not specific to DWC so a
-#define would let us find similar situations in other drivers.
-
-Bjorn
