@@ -2,113 +2,436 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D2B76D892
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B187376D885
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbjHBUWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 16:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60286 "EHLO
+        id S232144AbjHBUUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 16:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbjHBUWS (ORCPT
+        with ESMTP id S229924AbjHBUUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 16:22:18 -0400
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDDE10C7;
-        Wed,  2 Aug 2023 13:22:16 -0700 (PDT)
-Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372IWJgr030377;
-        Wed, 2 Aug 2023 20:21:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : subject :
- date : message-id : in-reply-to : references; s=pps0720;
- bh=a1qFwhdGLlotWt2azOSRVBZpAoKwOAAUyw4SiQNQcSc=;
- b=I5/0NHZEgbFwYkM0Wlx1VSHKOxwA9+RgmE2CHWoIWFbiYql3aHtYBAA+CNlxn/7ncs3z
- /vX1MWL2EU2wPZP6WNFNIb3/RaYXVvx1IsMgDcpurn29l7qD4SwEFU7UuBzwz7F3HH8g
- pZzHGKpb54e23tXTykDM3hiMIhnKFHWWTeWwbbF2BV8vkT7fMSMccYRtgrCMvXv3CmhH
- dwlr68biP/V+gtiMXGac80/Czee5QatI3J1ouCSmYW8HH+vdvJvAy0jhk8jld+C+zbIa
- yqZzYdJzfxyEpQAJP55FSHQYNats6W8I6z3SNnvHWDkDFk9di13msRkKV7q/RS+f6qow XA== 
-Received: from p1lg14881.it.hpe.com ([16.230.97.202])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3s7rbntyph-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 20:21:59 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 4A20B8047AC;
-        Wed,  2 Aug 2023 20:21:58 +0000 (UTC)
-Received: from hpe.com (unknown [16.231.227.39])
-        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id 4F5DF80F07E;
-        Wed,  2 Aug 2023 20:21:57 +0000 (UTC)
-From:   nick.hawkins@hpe.com
-To:     christophe.jaillet@wanadoo.fr, simon.horman@corigine.com,
-        andrew@lunn.ch, verdun@hpe.com, nick.hawkins@hpe.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] MAINTAINERS: HPE: Add GXP UMAC Networking Files
-Date:   Wed,  2 Aug 2023 15:18:24 -0500
-Message-Id: <20230802201824.3683-6-nick.hawkins@hpe.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230802201824.3683-1-nick.hawkins@hpe.com>
-References: <20230802201824.3683-1-nick.hawkins@hpe.com>
-X-Proofpoint-GUID: moIPOT1-sUx_3HnJ-L7myeCB6O1afj5j
-X-Proofpoint-ORIG-GUID: moIPOT1-sUx_3HnJ-L7myeCB6O1afj5j
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_16,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- priorityscore=1501 adultscore=0 impostorscore=0 mlxscore=0 malwarescore=0
- spamscore=0 clxscore=1015 mlxlogscore=945 phishscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308020179
+        Wed, 2 Aug 2023 16:20:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4669B10C7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:19:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691007564;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0dBFeHRoTmh4urlfIyx1gmbxIUEWXgvqCq/rZeKcvfo=;
+        b=NXbaPtkkgh3SD8eT1aCPhVrzhJaIxb2HJ3i9tQ/IDhy4GUh2GlqHb1NUb1O7b3GY0n5O9z
+        V8MX+KR1jTrtlmvI22hXS8AvIxJUMR3ldKSvCiVKd5Cw2sgJospIW34NtXvNE4W4prs01/
+        za74VBZdIJ+YqZwaRm3Y3kRxMjiOHFc=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-505-Hr3ETF-tNhGZU75oKywDPQ-1; Wed, 02 Aug 2023 16:19:21 -0400
+X-MC-Unique: Hr3ETF-tNhGZU75oKywDPQ-1
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-40fc220d343so4873841cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 13:19:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691007561; x=1691612361;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0dBFeHRoTmh4urlfIyx1gmbxIUEWXgvqCq/rZeKcvfo=;
+        b=IuTK/czhsAGsQPjmeKy0x7do0AC/MHEuYCnyqs2MaGJB5NuQb9VilhjUlvTV1f1Hfs
+         V5l6v2uAnk/05FkfLw/jMGcLaOBOC0nKL6OQ4/k7jX0RExNon/oyUdxFS1g/FLur3qpW
+         WHugZcTZBzt8/ymzQGo6KXKn/DU9Rfg4mcIs4AqrhD5UTr560Ul7RBmhappjnrJNbfRf
+         sfcIDJMI8z0J4OAWuFda89CM9yaFKMjkSoopjekI77RsugkQaAE9DEB1Z4JXOKnurOFj
+         P8y6pg3D9ZDfM5gltZTpL1EMMPmafsNvIeHod/Z0yYWllFqQjsg1TPcLspu6FrSJRsHO
+         qMfg==
+X-Gm-Message-State: ABy/qLbszd1x49VWaeiZU3PXyqLp+rF0Gu/Jyt81YW4Z/G/3buTr0M2s
+        C8/wGYtiRDdj9pOKw9ejwaqErZBHF/0a8AU0WR6miktRQBmk75+5F6oAKUqgevgo2ZcRe1I35wT
+        /k1GyiyRJ31RdksK5hJ2jG0aLo9qCNdzJ8Jw0E9JT
+X-Received: by 2002:ac8:7f4f:0:b0:403:e853:17c3 with SMTP id g15-20020ac87f4f000000b00403e85317c3mr22771922qtk.38.1691007560699;
+        Wed, 02 Aug 2023 13:19:20 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEy8sMN6nYiiQmEwjb7z+zZkbTmstgQ2upD6g75EF7rNyuGGM77tiUKSgdkfiVPFd0L7K9xi54iwTzcYPzNd6o=
+X-Received: by 2002:ac8:7f4f:0:b0:403:e853:17c3 with SMTP id
+ g15-20020ac87f4f000000b00403e85317c3mr22771908qtk.38.1691007560400; Wed, 02
+ Aug 2023 13:19:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230419062505.257231-1-leobras@redhat.com> <CAJ6HWG6nPdUQ_2_fSj6J7ZE7FB-T+VWT-kq9oW8BLTUtuQEWxA@mail.gmail.com>
+ <CAJF2gTRZO2hogUbZvj0f41JJvmqLNz-MKTHJshgdhNMpp9Bc8w@mail.gmail.com> <CAJ6HWG7kvWtZHTBMiFAQriUn84E8SYuGmtAGmW8YVwqUyoUYgQ@mail.gmail.com>
+In-Reply-To: <CAJ6HWG7kvWtZHTBMiFAQriUn84E8SYuGmtAGmW8YVwqUyoUYgQ@mail.gmail.com>
+From:   Leonardo Bras Soares Passos <leobras@redhat.com>
+Date:   Wed, 2 Aug 2023 17:19:09 -0300
+Message-ID: <CAJ6HWG6fookkruQ1Rcx4t87q6RhqXWPUcPJPJw=ub-G83rVpMA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] riscv/atomic.h: Deduplicate arch_atomic.*
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Hawkins <nick.hawkins@hpe.com>
+On Wed, Aug 2, 2023 at 5:00=E2=80=AFPM Leonardo Bras Soares Passos
+<leobras@redhat.com> wrote:
+>
+> On Thu, May 25, 2023 at 7:07=E2=80=AFAM Guo Ren <guoren@kernel.org> wrote=
+:
+> >
+> > On Thu, May 25, 2023 at 5:31=E2=80=AFPM Leonardo Bras Soares Passos
+> > <leobras@redhat.com> wrote:
+> > >
+> > > Friendly ping?
+> > >
+> > > On Wed, Apr 19, 2023 at 3:25=E2=80=AFAM Leonardo Bras <leobras@redhat=
+.com> wrote:
+> > > >
+> > > > Some functions use mostly the same asm for 32-bit and 64-bit versio=
+ns.
+> > > >
+> > > > Make a macro that is generic enough and avoid code duplication.
+> > > >
+> > > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > > ---
+> > > >  arch/riscv/include/asm/atomic.h | 164 +++++++++++++++-------------=
+----
+> > > >  1 file changed, 76 insertions(+), 88 deletions(-)
+> > > >
+> > > > diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/a=
+sm/atomic.h
+> > > > index 0dfe9d857a762..85eb2edbc8219 100644
+> > > > --- a/arch/riscv/include/asm/atomic.h
+> > > > +++ b/arch/riscv/include/asm/atomic.h
+> > > > @@ -196,22 +196,28 @@ ATOMIC_OPS(xor, xor, i)
+> > > >  #undef ATOMIC_FETCH_OP
+> > > >  #undef ATOMIC_OP_RETURN
+> > > >
+> > > > +#define _arch_atomic_fetch_add_unless(_prev, _rc, counter, _a, _u,=
+ sfx)        \
+> > > > +({                                                                =
+     \
+> > > > +       __asm__ __volatile__ (                                     =
+     \
+> > > > +               "0:     lr." sfx "     %[p],  %[c]\n"              =
+     \
+> > > > +               "       beq            %[p],  %[u], 1f\n"          =
+     \
+> > > > +               "       add            %[rc], %[p], %[a]\n"        =
+     \
+> > > > +               "       sc." sfx ".rl  %[rc], %[rc], %[c]\n"       =
+     \
+> > > > +               "       bnez           %[rc], 0b\n"                =
+     \
+> > > > +               "       fence          rw, rw\n"                   =
+     \
+> > > > +               "1:\n"                                             =
+     \
+> > > > +               : [p]"=3D&r" (_prev), [rc]"=3D&r" (_rc), [c]"+A" (c=
+ounter)  \
+> > > > +               : [a]"r" (_a), [u]"r" (_u)                         =
+     \
+> > > > +               : "memory");                                       =
+     \
+> > > > +})
+> > > > +
+> > > >  /* This is required to provide a full barrier on success. */
+> > > >  static __always_inline int arch_atomic_fetch_add_unless(atomic_t *=
+v, int a, int u)
+> > > >  {
+> > > >         int prev, rc;
+> > > >
+> > > > -       __asm__ __volatile__ (
+> > > > -               "0:     lr.w     %[p],  %[c]\n"
+> > > > -               "       beq      %[p],  %[u], 1f\n"
+> > > > -               "       add      %[rc], %[p], %[a]\n"
+> > > > -               "       sc.w.rl  %[rc], %[rc], %[c]\n"
+> > > > -               "       bnez     %[rc], 0b\n"
+> > > > -               "       fence    rw, rw\n"
+> > > > -               "1:\n"
+> > > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->=
+counter)
+> > > > -               : [a]"r" (a), [u]"r" (u)
+> > > > -               : "memory");
+> > > > +       _arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "=
+w");
+> > > > +
+> > > >         return prev;
+> > > >  }
+> > > >  #define arch_atomic_fetch_add_unless arch_atomic_fetch_add_unless
+> > > > @@ -222,17 +228,8 @@ static __always_inline s64 arch_atomic64_fetch=
+_add_unless(atomic64_t *v, s64 a,
+> > > >         s64 prev;
+> > > >         long rc;
+> > > >
+> > > > -       __asm__ __volatile__ (
+> > > > -               "0:     lr.d     %[p],  %[c]\n"
+> > > > -               "       beq      %[p],  %[u], 1f\n"
+> > > > -               "       add      %[rc], %[p], %[a]\n"
+> > > > -               "       sc.d.rl  %[rc], %[rc], %[c]\n"
+> > > > -               "       bnez     %[rc], 0b\n"
+> > > > -               "       fence    rw, rw\n"
+> > > > -               "1:\n"
+> > > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->=
+counter)
+> > > > -               : [a]"r" (a), [u]"r" (u)
+> > > > -               : "memory");
+> > > > +       _arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "=
+d");
+> > > > +
+> > > >         return prev;
+> > > >  }
+> > > >  #define arch_atomic64_fetch_add_unless arch_atomic64_fetch_add_unl=
+ess
+> > > > @@ -310,61 +307,79 @@ ATOMIC_OPS()
+> > > >  #undef ATOMIC_OPS
+> > > >  #undef ATOMIC_OP
+> > > >
+> > > > +#define _arch_atomic_inc_unless_negative(_prev, _rc, counter, sfx)=
+     \
+> > > > +({                                                                =
+     \
+> > > > +       __asm__ __volatile__ (                                     =
+     \
+> > > > +               "0:     lr." sfx "      %[p],  %[c]\n"             =
+     \
+> > > > +               "       bltz            %[p],  1f\n"               =
+     \
+> > > > +               "       addi            %[rc], %[p], 1\n"          =
+     \
+> > > > +               "       sc." sfx ".rl   %[rc], %[rc], %[c]\n"      =
+     \
+> > > > +               "       bnez            %[rc], 0b\n"               =
+     \
+> > > > +               "       fence           rw, rw\n"                  =
+     \
+> > > > +               "1:\n"                                             =
+     \
+> > > > +               : [p]"=3D&r" (_prev), [rc]"=3D&r" (_rc), [c]"+A" (c=
+ounter)  \
+> > > > +               :                                                  =
+     \
+> > > > +               : "memory");                                       =
+     \
+> > > > +})
+> > > > +
+> > > >  static __always_inline bool arch_atomic_inc_unless_negative(atomic=
+_t *v)
+> > > >  {
+> > > >         int prev, rc;
+> > > >
+> > > > -       __asm__ __volatile__ (
+> > > > -               "0:     lr.w      %[p],  %[c]\n"
+> > > > -               "       bltz      %[p],  1f\n"
+> > > > -               "       addi      %[rc], %[p], 1\n"
+> > > > -               "       sc.w.rl   %[rc], %[rc], %[c]\n"
+> > > > -               "       bnez      %[rc], 0b\n"
+> > > > -               "       fence     rw, rw\n"
+> > > > -               "1:\n"
+> > > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->=
+counter)
+> > > > -               :
+> > > > -               : "memory");
+> > > > +       _arch_atomic_inc_unless_negative(prev, rc, v->counter, "w")=
+;
+> > > > +
+> > > >         return !(prev < 0);
+> > > >  }
+> > > >
+> > > >  #define arch_atomic_inc_unless_negative arch_atomic_inc_unless_neg=
+ative
+> > > >
+> > > > +#define _arch_atomic_dec_unless_positive(_prev, _rc, counter, sfx)=
+     \
+> > > > +({                                                                =
+     \
+> > > > +       __asm__ __volatile__ (                                     =
+     \
+> > > > +               "0:     lr." sfx "      %[p],  %[c]\n"             =
+     \
+> > > > +               "       bgtz            %[p],  1f\n"               =
+     \
+> > > > +               "       addi            %[rc], %[p], -1\n"         =
+     \
+> > > > +               "       sc." sfx ".rl   %[rc], %[rc], %[c]\n"      =
+     \
+> > > > +               "       bnez            %[rc], 0b\n"               =
+     \
+> > > > +               "       fence           rw, rw\n"                  =
+     \
+> > > > +               "1:\n"                                             =
+     \
+> > > > +               : [p]"=3D&r" (_prev), [rc]"=3D&r" (_rc), [c]"+A" (c=
+ounter)  \
+> > > > +               :                                                  =
+     \
+> > > > +               : "memory");                                       =
+     \
+> > > > +})
+> > > > +
+> > > >  static __always_inline bool arch_atomic_dec_unless_positive(atomic=
+_t *v)
+> > > >  {
+> > > >         int prev, rc;
+> > > >
+> > > > -       __asm__ __volatile__ (
+> > > > -               "0:     lr.w      %[p],  %[c]\n"
+> > > > -               "       bgtz      %[p],  1f\n"
+> > > > -               "       addi      %[rc], %[p], -1\n"
+> > > > -               "       sc.w.rl   %[rc], %[rc], %[c]\n"
+> > > > -               "       bnez      %[rc], 0b\n"
+> > > > -               "       fence     rw, rw\n"
+> > > > -               "1:\n"
+> > > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->=
+counter)
+> > > > -               :
+> > > > -               : "memory");
+> > > > +       _arch_atomic_dec_unless_positive(prev, rc, v->counter, "w")=
+;
+> > > > +
+> > > >         return !(prev > 0);
+> > > >  }
+> > > >
+> > > >  #define arch_atomic_dec_unless_positive arch_atomic_dec_unless_pos=
+itive
+> > > >
+> > > > +#define _arch_atomic_dec_if_positive(_prev, _rc, counter, sfx)    =
+     \
+> > > > +({                                                                =
+     \
+> > > > +       __asm__ __volatile__ (                                     =
+     \
+> > > > +               "0:     lr." sfx "     %[p],  %[c]\n"              =
+     \
+> > > > +               "       addi           %[rc], %[p], -1\n"          =
+     \
+> > > > +               "       bltz           %[rc], 1f\n"                =
+     \
+> > > > +               "       sc." sfx ".rl  %[rc], %[rc], %[c]\n"       =
+     \
+> > > > +               "       bnez           %[rc], 0b\n"                =
+     \
+> > > > +               "       fence          rw, rw\n"                   =
+     \
+> > > > +               "1:\n"                                             =
+     \
+> > > > +               : [p]"=3D&r" (_prev), [rc]"=3D&r" (_rc), [c]"+A" (c=
+ounter)  \
+> > > > +               :                                                  =
+     \
+> > > > +               : "memory");                                       =
+     \
+> > > > +})
+> > > > +
+> > > >  static __always_inline int arch_atomic_dec_if_positive(atomic_t *v=
+)
+> > > >  {
+> > > >         int prev, rc;
+> > > >
+> > > > -       __asm__ __volatile__ (
+> > > > -               "0:     lr.w     %[p],  %[c]\n"
+> > > > -               "       addi     %[rc], %[p], -1\n"
+> > > > -               "       bltz     %[rc], 1f\n"
+> > > > -               "       sc.w.rl  %[rc], %[rc], %[c]\n"
+> > > > -               "       bnez     %[rc], 0b\n"
+> > > > -               "       fence    rw, rw\n"
+> > > > -               "1:\n"
+> > > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->=
+counter)
+> > > > -               :
+> > > > -               : "memory");
+> > > > +       _arch_atomic_dec_if_positive(prev, rc, v->counter, "w");
+> > > > +
+> > > >         return prev - 1;
+> > > >  }
+> > > >
+> > > > @@ -376,17 +391,8 @@ static __always_inline bool arch_atomic64_inc_=
+unless_negative(atomic64_t *v)
+> > > >         s64 prev;
+> > > >         long rc;
+> > > >
+> > > > -       __asm__ __volatile__ (
+> > > > -               "0:     lr.d      %[p],  %[c]\n"
+> > > > -               "       bltz      %[p],  1f\n"
+> > > > -               "       addi      %[rc], %[p], 1\n"
+> > > > -               "       sc.d.rl   %[rc], %[rc], %[c]\n"
+> > > > -               "       bnez      %[rc], 0b\n"
+> > > > -               "       fence     rw, rw\n"
+> > > > -               "1:\n"
+> > > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->=
+counter)
+> > > > -               :
+> > > > -               : "memory");
+> > > > +       _arch_atomic_inc_unless_negative(prev, rc, v->counter, "d")=
+;
+> > > > +
+> > > >         return !(prev < 0);
+> > > >  }
+> > > >
+> > > > @@ -397,17 +403,8 @@ static __always_inline bool arch_atomic64_dec_=
+unless_positive(atomic64_t *v)
+> > > >         s64 prev;
+> > > >         long rc;
+> > > >
+> > > > -       __asm__ __volatile__ (
+> > > > -               "0:     lr.d      %[p],  %[c]\n"
+> > > > -               "       bgtz      %[p],  1f\n"
+> > > > -               "       addi      %[rc], %[p], -1\n"
+> > > > -               "       sc.d.rl   %[rc], %[rc], %[c]\n"
+> > > > -               "       bnez      %[rc], 0b\n"
+> > > > -               "       fence     rw, rw\n"
+> > > > -               "1:\n"
+> > > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->=
+counter)
+> > > > -               :
+> > > > -               : "memory");
+> > > > +       _arch_atomic_dec_unless_positive(prev, rc, v->counter, "d")=
+;
+> > > > +
+> > > >         return !(prev > 0);
+> > > >  }
+> > > >
+> > > > @@ -418,17 +415,8 @@ static __always_inline s64 arch_atomic64_dec_i=
+f_positive(atomic64_t *v)
+> > > >         s64 prev;
+> > > >         long rc;
+> > > >
+> > > > -       __asm__ __volatile__ (
+> > > > -               "0:     lr.d     %[p],  %[c]\n"
+> > > > -               "       addi      %[rc], %[p], -1\n"
+> > > > -               "       bltz     %[rc], 1f\n"
+> > > > -               "       sc.d.rl  %[rc], %[rc], %[c]\n"
+> > > > -               "       bnez     %[rc], 0b\n"
+> > > > -               "       fence    rw, rw\n"
+> > > > -               "1:\n"
+> > > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->=
+counter)
+> > > > -               :
+> > > > -               : "memory");
+> > > > +       _arch_atomic_dec_if_positive(prev, rc, v->counter, "d");
+> > > > +
+> > > >         return prev - 1;
+> > > >  }
+> > > >
+> > > > --
+> > > > 2.40.0
+> > > >
+> > >
+> > A safe cleanup, no problem found.
+> >
+> > Reviewed-by: Guo Ren <guoren@kernel.org>
+> >
+> >
+>
+> Hello Palmer,
+>
+> Any improvements you suggest for this patch?
+>
+> Best regards,
+> Leonardo Bras
 
-List the files added for supporting the UMAC networking on GXP.
-
-Signed-off-by: Nick Hawkins <nick.hawkins@hpe.com>
-
----
-
-v2:
- *Changed dt-binding net directory files to "hpe,gxp*"
----
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 27ef11624748..c0bb534bec97 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2243,6 +2243,7 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/arm/hpe,gxp.yaml
- F:	Documentation/devicetree/bindings/hwmon/hpe,gxp-fan-ctrl.yaml
- F:	Documentation/devicetree/bindings/i2c/hpe,gxp-i2c.yaml
-+F:	Documentation/devicetree/bindings/net/hpe,gxp*
- F:	Documentation/devicetree/bindings/spi/hpe,gxp-spifi.yaml
- F:	Documentation/devicetree/bindings/timer/hpe,gxp-timer.yaml
- F:	Documentation/hwmon/gxp-fan-ctrl.rst
-@@ -2252,6 +2253,7 @@ F:	arch/arm/mach-hpe/
- F:	drivers/clocksource/timer-gxp.c
- F:	drivers/hwmon/gxp-fan-ctrl.c
- F:	drivers/i2c/busses/i2c-gxp.c
-+F:	drivers/net/ethernet/hpe/
- F:	drivers/spi/spi-gxp.c
- F:	drivers/watchdog/gxp-wdt.c
- 
--- 
-2.17.1
+CC: Palmer Dabbelt <palmer@rivosinc.com>
 
