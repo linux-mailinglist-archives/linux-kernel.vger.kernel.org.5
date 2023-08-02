@@ -2,57 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0339876C91D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08E876C922
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234003AbjHBJNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
+        id S234024AbjHBJO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231936AbjHBJNp (ORCPT
+        with ESMTP id S231267AbjHBJOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:13:45 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981F0FE;
-        Wed,  2 Aug 2023 02:13:43 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8C3762AC;
-        Wed,  2 Aug 2023 11:12:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1690967558;
-        bh=xPF7K54EvFX5Pp0OPsowfb7GQ6atokj/kDXPJn+d9z0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pE+ryr1fMro7dkcFfFGW4PWOSkXnyudXuwAliUhSlLO2TuVcnEqtEQSaUa1symZXb
-         Jfx5Z20ZTMIlIzKrYxZhuAGniz3hq//aVVFxSA6Uh+JL0LOL11687UANswWFFclCgx
-         onYDlCn7puP0YbzZbKntAgBQgMo/xQnmXAqGH2TM=
-Date:   Wed, 2 Aug 2023 12:13:47 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jack Zhu <jack.zhu@starfivetech.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, changhuang.liang@starfivetech.com
-Subject: Re: [PATCH v7 4/6] media: starfive: camss: Add video driver
-Message-ID: <20230802091347.GB29611@pendragon.ideasonboard.com>
-References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
- <20230619112838.19797-5-jack.zhu@starfivetech.com>
- <20230727152528.GI25174@pendragon.ideasonboard.com>
- <3206c2c5-cbba-6316-07c5-5fdcff88add8@starfivetech.com>
+        Wed, 2 Aug 2023 05:14:54 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5275F0;
+        Wed,  2 Aug 2023 02:14:53 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3724AYHK008361;
+        Wed, 2 Aug 2023 09:14:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=6dNhtgWHf2eSkjW5mjapZqkW+gopiY8ApfUAhMj1HaQ=;
+ b=pUx5qFR2g6WbXT16W4ndtMwqUlRX1yJO3YdQ7Luuk/O0OCaLdxjq5CD9l5SuYBCTPDGT
+ 8AtymUMOkr0lICBK8OyWnSO8W5TmRqvLY9k9+Y6JJPLVwHlAbmp7xFQ0E/M/IIORwDYs
+ PpraFjVDS5EyP36/qxJwNJJzWVESmLhN6NkVTBlW1Ea5f1+bM2l+lCigJuYJM/PxfUSI
+ mNCajZz9P7AWXTG/H/Yz90KDcO49NHSL8mpsNUj27YPCQTErvQtl4io+5vRFxBV8pdBQ
+ ZiJI5Unim6gv7H2E/sYy7uKzJYn1gG5kRMa0LsiLvQ2s50UQ1utaMgf3kL5VwmKgeggc KQ== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s72gqtdnx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 09:14:50 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3729Enmj017801
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Aug 2023 09:14:49 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Wed, 2 Aug 2023 02:14:46 -0700
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srinivas.kandagatla@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH v6 0/6] soc: qcom: llcc: Add support for QDU1000/QRU1000
+Date:   Wed, 2 Aug 2023 14:44:22 +0530
+Message-ID: <20230802091429.20892-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3206c2c5-cbba-6316-07c5-5fdcff88add8@starfivetech.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: FL49ibzzNEzitUySIQwucfxr63YMJDEB
+X-Proofpoint-ORIG-GUID: FL49ibzzNEzitUySIQwucfxr63YMJDEB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_04,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
+ phishscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 clxscore=1015 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308020082
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,449 +79,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jack,
+This patch series does the following -
+ * Refactor LLCC driver to support multiple configuration
+ * Add stub function for nvmem_cell_read_u8
+ * Add support for multi channel DDR configuration in LLCC
+ * Add LLCC support for the Qualcomm QDU1000 and QRU1000 SoCs
 
-On Wed, Aug 02, 2023 at 10:57:03AM +0800, Jack Zhu wrote:
-> On 2023/7/27 23:25, Laurent Pinchart wrote:
-> > On Mon, Jun 19, 2023 at 07:28:36PM +0800, Jack Zhu wrote:
-> >> Add video driver for StarFive Camera Subsystem.
-> >> 
-> >> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
-> >> ---
-> >>  .../media/platform/starfive/camss/Makefile    |   4 +-
-> >>  .../media/platform/starfive/camss/stf_video.c | 724 ++++++++++++++++++
-> >>  .../media/platform/starfive/camss/stf_video.h |  92 +++
-> >>  3 files changed, 819 insertions(+), 1 deletion(-)
-> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_video.c
-> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_video.h
-> >> 
-> >> diff --git a/drivers/media/platform/starfive/camss/Makefile b/drivers/media/platform/starfive/camss/Makefile
-> >> index d56ddd078a71..eb457917a914 100644
-> >> --- a/drivers/media/platform/starfive/camss/Makefile
-> >> +++ b/drivers/media/platform/starfive/camss/Makefile
-> >> @@ -3,6 +3,8 @@
-> >>  # Makefile for StarFive Camera Subsystem driver
-> >>  #
-> >>  
-> >> -starfive-camss-objs += stf_camss.o
-> >> +starfive-camss-objs += \
-> >> +		stf_camss.o \
-> >> +		stf_video.o
-> >>  
-> >>  obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
-> >> diff --git a/drivers/media/platform/starfive/camss/stf_video.c b/drivers/media/platform/starfive/camss/stf_video.c
-> >> new file mode 100644
-> >> index 000000000000..2e6472fe51c6
-> >> --- /dev/null
-> >> +++ b/drivers/media/platform/starfive/camss/stf_video.c
-> >> @@ -0,0 +1,724 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +/*
-> >> + * stf_video.c
-> >> + *
-> >> + * StarFive Camera Subsystem - V4L2 device node
-> >> + *
-> >> + * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
-> >> + */
-> >> +
-> >> +#include <linux/pm_runtime.h>
-> >> +#include <media/v4l2-ctrls.h>
-> >> +#include <media/v4l2-event.h>
-> >> +#include <media/v4l2-mc.h>
-> >> +#include <media/videobuf2-dma-contig.h>
-> >> +
-> >> +#include "stf_camss.h"
-> >> +#include "stf_video.h"
-> >> +
-> >> +static const struct stfcamss_format_info formats_pix_wr[] = {
-> >> +	{
-> >> +		.code = MEDIA_BUS_FMT_SRGGB10_1X10,
-> >> +		.pixelformat = V4L2_PIX_FMT_SRGGB10,
-> >> +		.planes = 1,
-> >> +		.vsub = { 1 },
-> >> +		.bpp = 10,
-> >> +	},
-> >> +	{
-> >> +		.code = MEDIA_BUS_FMT_SGRBG10_1X10,
-> >> +		.pixelformat = V4L2_PIX_FMT_SGRBG10,
-> >> +		.planes = 1,
-> >> +		.vsub = { 1 },
-> >> +		.bpp = 10,
-> >> +	},
-> >> +	{
-> >> +		.code = MEDIA_BUS_FMT_SGBRG10_1X10,
-> >> +		.pixelformat = V4L2_PIX_FMT_SGBRG10,
-> >> +		.planes = 1,
-> >> +		.vsub = { 1 },
-> >> +		.bpp = 10,
-> >> +	},
-> >> +	{
-> >> +		.code = MEDIA_BUS_FMT_SBGGR10_1X10,
-> >> +		.pixelformat = V4L2_PIX_FMT_SBGGR10,
-> >> +		.planes = 1,
-> >> +		.vsub = { 1 },
-> >> +		.bpp = 10,
-> >> +	},
-> >> +};
-> >> +
-> >> +static const struct stfcamss_format_info formats_pix_isp[] = {
-> >> +	{
-> >> +		.code = MEDIA_BUS_FMT_Y12_1X12,
-> >> +		.pixelformat = V4L2_PIX_FMT_NV12,
-> >> +		.planes = 2,
-> >> +		.vsub = { 1, 2 },
-> >> +		.bpp = 8,
-> >> +	},
-> >> +};
-> >> +
-> >> +/* -----------------------------------------------------------------------------
-> >> + * Helper functions
-> >> + */
-> >> +
-> >> +static int video_find_format(u32 code, u32 pixelformat,
-> >> +			     struct stfcamss_video *video)
-> >> +{
-> >> +	unsigned int i;
-> >> +
-> >> +	for (i = 0; i < video->nformats; ++i) {
-> >> +		if (video->formats[i].code == code &&
-> >> +		    video->formats[i].pixelformat == pixelformat)
-> >> +			return i;
-> >> +	}
-> >> +
-> >> +	for (i = 0; i < video->nformats; ++i)
-> >> +		if (video->formats[i].code == code)
-> >> +			return i;
-> >> +
-> >> +	for (i = 0; i < video->nformats; ++i)
-> >> +		if (video->formats[i].pixelformat == pixelformat)
-> >> +			return i;
-> >> +
-> > 
-> > This looks weird, I don't think it does what you expect below. I think
-> > you can drop the function, and instead use video_get_pfmt_by_mcode() to
-> > convert the mbus code to a pixel format, and compare it to the active
-> > pixel format in video_check_format().
-> > 
-> >> +	return -EINVAL;
-> >> +}
-> >> +
-> >> +static int __video_try_fmt(struct stfcamss_video *video, struct v4l2_format *f)
-> >> +{
-> >> +	struct v4l2_pix_format *pix;
-> >> +	const struct stfcamss_format_info *fi;
-> >> +	u32 width, height;
-> >> +	u32 bpl;
-> >> +	unsigned int i;
-> >> +
-> >> +	pix = &f->fmt.pix;
-> > 
-> > You can initialize pix when declaring it.
-> > 
-> >> +
-> >> +	for (i = 0; i < video->nformats; i++)
-> >> +		if (pix->pixelformat == video->formats[i].pixelformat)
-> >> +			break;
-> >> +
-> > 
-> > 	for (i = 0; i < video->nformats; i++) {
-> > 		if (pix->pixelformat == video->formats[i].pixelformat)
-> > 			break;
-> > 	}
-> > 
-> > But a helper function that looks up a format by pixelformat, similar to
-> > video_get_pfmt_by_mcode(), would be useful. I think I would make all
-> > those helpers return a const struct stfcamss_format_info pointer instead
-> > of an index.
-> > 
-> >> +	if (i == video->nformats)
-> >> +		i = 0; /* default format */
-> >> +
-> >> +	fi = &video->formats[i];
-> >> +	width = pix->width;
-> >> +	height = pix->height;
-> >> +
-> >> +	memset(pix, 0, sizeof(*pix));
-> >> +
-> >> +	pix->pixelformat = fi->pixelformat;
-> >> +	pix->width = clamp_t(u32, width, STFCAMSS_FRAME_MIN_WIDTH,
-> >> +			     STFCAMSS_FRAME_MAX_WIDTH);
-> >> +	pix->height = clamp_t(u32, height, STFCAMSS_FRAME_MIN_HEIGHT,
-> >> +			      STFCAMSS_FRAME_MAX_HEIGHT);
-> >> +	bpl = pix->width * fi->bpp / 8;
-> >> +	bpl = ALIGN(bpl, video->bpl_alignment);
-> >> +	pix->bytesperline = bpl;
-> > 
-> > Does the hardware support configuring the stride ?
-> 
-> The hardware does not support.
-> 
-> >> +
-> >> +	for (i = 0; i < fi->planes; ++i)
-> >> +		pix->sizeimage += bpl * pix->height / fi->vsub[i];
-> >> +
-> >> +	pix->field = V4L2_FIELD_NONE;
-> >> +	pix->colorspace = V4L2_COLORSPACE_SRGB;
-> >> +	pix->flags = 0;
-> >> +	pix->ycbcr_enc =
-> >> +		V4L2_MAP_YCBCR_ENC_DEFAULT(pix->colorspace);
-> >> +	pix->quantization = V4L2_MAP_QUANTIZATION_DEFAULT(true,
-> >> +							  pix->colorspace,
-> >> +							  pix->ycbcr_enc);
-> >> +	pix->xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(pix->colorspace);
-> > 
-> > This doesn't seem right for the processed output.
-> > 
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static int stf_video_init_format(struct stfcamss_video *video)
-> >> +{
-> >> +	int ret;
-> >> +	struct v4l2_format format = {
-> >> +		.type = video->type,
-> >> +		.fmt.pix = {
-> >> +			.width = 1920,
-> >> +			.height = 1080,
-> >> +			.pixelformat = V4L2_PIX_FMT_RGB565,
-> > 
-> > That format doesn't seem supported, let's pick V4L2_PIX_FMT_NV12.
-> > 
-> >> +		},
-> >> +	};
-> >> +
-> >> +	ret = __video_try_fmt(video, &format);
-> >> +
-> >> +	if (ret < 0)
-> >> +		return ret;
-> >> +
-> >> +	video->active_fmt = format;
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +/* -----------------------------------------------------------------------------
-> >> + * Video queue operations
-> >> + */
-> >> +
-> >> +static int video_queue_setup(struct vb2_queue *q,
-> >> +			     unsigned int *num_buffers,
-> >> +			     unsigned int *num_planes,
-> >> +			     unsigned int sizes[],
-> >> +			     struct device *alloc_devs[])
-> >> +{
-> >> +	struct stfcamss_video *video = vb2_get_drv_priv(q);
-> >> +	const struct v4l2_pix_format *format = &video->active_fmt.fmt.pix;
-> >> +
-> >> +	if (*num_planes) {
-> >> +		if (*num_planes != 1)
-> >> +			return -EINVAL;
-> >> +
-> >> +		if (sizes[0] < format->sizeimage)
-> >> +			return -EINVAL;
-> >> +	}
-> >> +
-> >> +	*num_planes = 1;
-> >> +	sizes[0] = format->sizeimage;
-> >> +	if (!sizes[0])
-> >> +		dev_err(video->stfcamss->dev,
-> >> +			"%s: error size is zero!!!\n", __func__);
-> > 
-> > Shouldn't you return an error ? Also, use dev_dbg(), printing an error
-> > message based on a condition that can easily be triggered by
-> > unpriviledge userspace opens the door to applications flooding the
-> > kernel log.
-> > 
-> >> +
-> >> +	dev_dbg(video->stfcamss->dev, "planes = %d, size = %d\n",
-> >> +		*num_planes, sizes[0]);
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static int video_buf_init(struct vb2_buffer *vb)
-> >> +{
-> >> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> >> +	struct stfcamss_video *video = vb2_get_drv_priv(vb->vb2_queue);
-> >> +	struct stfcamss_buffer *buffer =
-> >> +		container_of(vbuf, struct stfcamss_buffer, vb);
-> > 
-> > A static inline to_stfcamss_buffer() function that wraps the
-> > container_of() would be nice. You can use it below too.
-> > 
-> >> +	const struct v4l2_pix_format *fmt = &video->active_fmt.fmt.pix;
-> >> +	dma_addr_t *paddr;
-> >> +
-> >> +	paddr = vb2_plane_cookie(vb, 0);
-> >> +	buffer->addr[0] = *paddr;
-> >> +
-> >> +	if (fmt->pixelformat == V4L2_PIX_FMT_NV12 ||
-> >> +	    fmt->pixelformat == V4L2_PIX_FMT_NV21 ||
-> >> +	    fmt->pixelformat == V4L2_PIX_FMT_NV16 ||
-> >> +	    fmt->pixelformat == V4L2_PIX_FMT_NV61)
-> > 
-> > Only V4L2_PIX_FMT_NV12 is listed in formats_pix_isp. Does the hardware
-> > support the other formats ? If so, it would be nice to support them
-> > already.
-> > 
-> >> +		buffer->addr[1] =
-> >> +			buffer->addr[0] + fmt->bytesperline * fmt->height;
-> > 
-> > As the hardware supports non-contiguous planes, you should use the
-> > MPLANE API (V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) and support the NV*M
-> > formats in addition to the NV* formats.
-> > 
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static int video_buf_prepare(struct vb2_buffer *vb)
-> >> +{
-> >> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> >> +	struct stfcamss_video *video = vb2_get_drv_priv(vb->vb2_queue);
-> >> +	const struct v4l2_pix_format *fmt = &video->active_fmt.fmt.pix;
-> >> +
-> >> +	if (fmt->sizeimage > vb2_plane_size(vb, 0)) {
-> >> +		dev_err(video->stfcamss->dev,
-> > 
-> > dev_dbg() here too.
-> > 
-> >> +			"sizeimage = %d, plane size = %d\n",
-> >> +			fmt->sizeimage, (unsigned int)vb2_plane_size(vb, 0));
-> > 
-> > Both are unsigned, use %u instead of %d.
-> > 
-> >> +		return -EINVAL;
-> >> +	}
-> >> +	vb2_set_plane_payload(vb, 0, fmt->sizeimage);
-> >> +
-> >> +	vbuf->field = V4L2_FIELD_NONE;
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static void video_buf_queue(struct vb2_buffer *vb)
-> >> +{
-> >> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-> >> +	struct stfcamss_video *video = vb2_get_drv_priv(vb->vb2_queue);
-> >> +	struct stfcamss_buffer *buffer =
-> >> +		container_of(vbuf, struct stfcamss_buffer, vb);
-> >> +
-> >> +	video->ops->queue_buffer(video, buffer);
-> >> +}
-> >> +
-> >> +/*
-> >> + * video_mbus_to_pix - Convert v4l2_mbus_framefmt to v4l2_pix_format
-> >> + * @mbus: v4l2_mbus_framefmt format (input)
-> >> + * @pix: v4l2_pix_format_mplane format (output)
-> >> + * @f: a pointer to formats array element to be used for the conversion
-> >> + * @alignment: bytesperline alignment value
-> >> + *
-> >> + * Fill the output pix structure with information from the input mbus format.
-> >> + *
-> >> + * Return 0 on success or a negative error code otherwise
-> >> + */
-> >> +static int video_mbus_to_pix(const struct v4l2_mbus_framefmt *mbus,
-> >> +			     struct v4l2_pix_format *pix,
-> >> +			     const struct stfcamss_format_info *f,
-> >> +			     unsigned int alignment)
-> >> +{
-> >> +	u32 bytesperline;
-> >> +	unsigned int i;
-> >> +
-> >> +	memset(pix, 0, sizeof(*pix));
-> >> +	v4l2_fill_pix_format(pix, mbus);
-> >> +	pix->pixelformat = f->pixelformat;
-> >> +	bytesperline = pix->width * f->bpp / 8;
-> >> +	bytesperline = ALIGN(bytesperline, alignment);
-> >> +	pix->bytesperline = bytesperline;
-> >> +
-> >> +	for (i = 0; i < f->planes; ++i)
-> >> +		pix->sizeimage += bytesperline * pix->height / f->vsub[i];
-> > 
-> > This function is used for validation of the format only, the
-> > bytesperline and sizeimage values are never used. You can simplify the
-> > driver by dropping the function and comparing the width, height and
-> > field of the subdev and video device from the v4l2_mbus_framefmt and
-> > v4l2_pix_format respectively in video_check_format().
-> > video_get_subdev_format() will then take a v4l2_mbus_framefmt pointer,
-> > not a v4l2_pix_format.
-> > 
-> > The format match check still needs conversion of the 
-> > 
-> > To check the format, you need to convert the mbus code from the subdev
-> > to a pixel format using the 
-> > 
-> >> +
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static struct v4l2_subdev *video_remote_subdev(struct stfcamss_video *video,
-> >> +					       u32 *pad)
-> >> +{
-> >> +	struct media_pad *remote;
-> >> +
-> >> +	remote = media_pad_remote_pad_first(&video->pad);
-> >> +
-> >> +	if (!remote || !is_media_entity_v4l2_subdev(remote->entity))
-> >> +		return NULL;
-> >> +
-> >> +	if (pad)
-> >> +		*pad = remote->index;
-> >> +
-> >> +	return media_entity_to_v4l2_subdev(remote->entity);
-> > 
-> > As the connected subdev is always the same (the CSI-2 RX for the raw
-> > capture video device and the ISP for the processed capture video
-> > device), I would store a pointer to the connected subdev in the
-> > stfcamss_video structure at registration time. You can pass the pointer
-> > to the stf_video_register() function.
-> 
-> As the hardware also supports the dvp interface, I think the current
-> function implementation should be flexible and easy to expand later.
+Changes in v6 -
+ - Changed variable name from num_cfgs to num_config as suggested by Mukesh.
+ - Added a check for default llcc configuration as per suggestion from Mukesh.
+ - Updated the commit summary for the third and fifth patch.
+ - Fixed alignment in the fourth patch.
+ - Used ARRAY_SIZE() to calculate the num_config as per suggested by Konrad.
 
-Fair enough, I'm fine with that.
+Changes in v5 -
+ - Seperated out the secure qfprom driver changes to a separate series [1].
+ - Created a wrapper struct with a pointer to qcom_llcc_config and
+   length of array qcom_llcc_config.
+ - Added stub function for nvmem_cell_read_u8.
+ - Split commit 6/6 in the previous series into two commits.
 
-> >> +}
-> >> +
-> >> +static int video_get_subdev_format(struct stfcamss_video *video,
-> >> +				   struct v4l2_format *format)
-> >> +{
-> >> +	struct v4l2_pix_format *pix = &video->active_fmt.fmt.pix;
-> >> +	struct v4l2_subdev_format fmt;
-> >> +	struct v4l2_subdev *subdev;
-> >> +	u32 pixelformat;
-> >> +	u32 pad;
-> >> +	int ret;
-> >> +
-> >> +	subdev = video_remote_subdev(video, &pad);
-> >> +	if (!subdev)
-> >> +		return -EPIPE;
-> >> +
-> >> +	fmt.pad = pad;
-> >> +	fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
-> >> +
-> >> +	ret = v4l2_subdev_call(subdev, pad, get_fmt, NULL, &fmt);
-> > 
-> > Use v4l2_subdev_call_state_active() to support the subdev state API.
-> > 
-> >> +	if (ret)
-> >> +		return ret;
-> >> +
-> >> +	pixelformat = pix->pixelformat;
-> >> +	ret = video_find_format(fmt.format.code, pixelformat, video);
-> >> +	if (ret < 0)
-> >> +		return ret;
-> >> +
-> >> +	format->type = video->type;
-> >> +
-> >> +	return video_mbus_to_pix(&fmt.format, &format->fmt.pix,
-> >> +				 &video->formats[ret], video->bpl_alignment);
-> >> +}
-> >> +
+Changes in v4 -
+ - Created a separate driver for reading from secure fuse region as suggested.
+ - Added patch for dt-bindings of secure qfprom driver accordingly.
+ - Added new properties in the dt-bindings for LLCC.
+ - Implemented new logic to read the nvmem cell as suggested by Bjorn.
+ - Separating the DT patches from this series as per suggestion.
 
--- 
-Regards,
+Changes in v3-
+ - Addressed comments from Krzysztof and Mani.
+ - Using qfprom to read DDR configuration from feature register.
 
-Laurent Pinchart
+Changes in v2:
+  - Addressing comments from Konrad.
+
+[1] https://lore.kernel.org/linux-arm-msm/20230724082946.7441-1-quic_kbajaj@quicinc.com/
+
+Komal Bajaj (6):
+  dt-bindings: cache: qcom,llcc: Add LLCC compatible for QDU1000/QRU1000
+  soc: qcom: llcc: Refactor llcc driver to support multiple
+    configuration
+  nvmem: core: Add stub for nvmem_cell_read_u8
+  soc: qcom: Add LLCC support for multi channel DDR
+  soc: qcom: llcc: Updating the macro name
+  soc: qcom: llcc: Add QDU1000 and QRU1000 LLCC support
+
+ .../devicetree/bindings/cache/qcom,llcc.yaml  |  10 +
+ drivers/soc/qcom/llcc-qcom.c                  | 357 +++++++++++++-----
+ include/linux/nvmem-consumer.h                |   6 +
+ include/linux/soc/qcom/llcc-qcom.h            |   2 +-
+ 4 files changed, 287 insertions(+), 88 deletions(-)
+
+--
+2.41.0
+
