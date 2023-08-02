@@ -2,245 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 835B276CE4F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739ED76CE52
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233999AbjHBNT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
+        id S234085AbjHBNTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjHBNT1 (ORCPT
+        with ESMTP id S234018AbjHBNTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:19:27 -0400
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2040.outbound.protection.outlook.com [40.107.6.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D922D1726;
-        Wed,  2 Aug 2023 06:19:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AoBn1kO200SsXoAZ84HnIJWbvBeAuB3tmbzd3FSGS3i9PAxC8swA3ZXsEDSdwMStfwMOtYwMUhQcFtxCbNeoXAvBXp4VQLBqT/CiCiIm0FmgVfRbjoDrfkW4iuoo1nb02ApQKpsJWk3qHbStAqHN174IM/jDUgfTN6xH6pPIGx9RJH9AaBtcrhcgOlKUSVz51Z4hu9mHXsDkaXKtnwIFCsxjTxlEIbm0ufhHGv9lKdquNyGJ1gnAFN8do4lMPUYrkqfhs/8GebpW1CKVs+yr8a+t51xYFG33WFFlyPiVw+MAyoN2acdfmHNnZRnVBR6VYBhBotFPaw36Qs+SlR3zBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pYhMkvTpf4i7gFVinhKItAhZbHK/rmX9BNFrcYK6QdU=;
- b=MGxbRnJAhfpgb6e5PxuIVMw0/g/Yed4HrHsNaYrlbQ1yC2poZrcvrMKF3IiDhqevm5BymkwE70SpM/Bk50H4j0Kj93ISrTW/4o3ekhFLG4+oLEyMN3d7YPKlyPFIPCjRQwVaUr+Kozpr5RoWo8K8APv9Oxcu98pwNazomNzBWhTm1oZbeB5j0xHDZrq/93iWCjfO+DM1yImyf+X9LUC1j6h/dzTN9R6s9El2YF4bA7wzYVU0+8HF3Z/FNMyuEbCrvE7MSphMyl/K2+3wd3nj7M7p1kW1EWn4DF9JZrEQ5MQJAAvVHAM7ZDBOd7DhwiyiX5teKdopFhTg8lq5zO0X4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pYhMkvTpf4i7gFVinhKItAhZbHK/rmX9BNFrcYK6QdU=;
- b=af0MT6Wc44dRMqAupeAbom1WW5Hl2Yy3Ud9ndjMKz9NBPWXF6SWR+bjZDKr8agL9RxvYWOBgFd8vtuei4JXXOcM/wi29lO1ndZWr/H9Ncf+XmRrE5K0rxOSCncTfI/KLVzRQZzMJWMNjvIuJjZf13Mhv77dofgdg7s2/opDyuLY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from GV2PR08MB9158.eurprd08.prod.outlook.com (2603:10a6:150:d2::10)
- by AM0PR08MB5505.eurprd08.prod.outlook.com (2603:10a6:208:18e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.19; Wed, 2 Aug
- 2023 13:19:23 +0000
-Received: from GV2PR08MB9158.eurprd08.prod.outlook.com
- ([fe80::f9cc:2e21:d017:7f66]) by GV2PR08MB9158.eurprd08.prod.outlook.com
- ([fe80::f9cc:2e21:d017:7f66%5]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
- 13:19:22 +0000
-Message-ID: <f7cb2a51-fce1-659d-9c29-3b21b5ba85b9@wolfvision.net>
-Date:   Wed, 2 Aug 2023 15:19:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] drm/panel: sitronix-st7789v: add panel orientation
- support
-Content-Language: en-US
-To:     neil.armstrong@linaro.org, Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230718-feature-st7789v-v1-0-76d6ca9b31d8@wolfvision.net>
- <20230718-feature-st7789v-v1-1-76d6ca9b31d8@wolfvision.net>
- <1e538813-69d4-b3bc-47f9-1ea69d65ef00@linaro.org>
-From:   Michael Riesch <michael.riesch@wolfvision.net>
-In-Reply-To: <1e538813-69d4-b3bc-47f9-1ea69d65ef00@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: ZR0P278CA0101.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:23::16) To GV2PR08MB9158.eurprd08.prod.outlook.com
- (2603:10a6:150:d2::10)
+        Wed, 2 Aug 2023 09:19:30 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCCE1724
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 06:19:29 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fe1a17f983so35233125e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 06:19:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690982367; x=1691587167;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O/2WIVROlZsV9PaE7ZRV5iugvs6edZ71omTT4F/SSvo=;
+        b=b5ttnfL5oEhNHJ+OuMs3TaY01QRb+YOyogeni8rOKLZRF34u4K7seXIEgc9zybGmDy
+         i6CL1VdjafelnmnuFFrUfjUn2XCMDV0Dn0c/CIQ9VnH35f0a/AmkWcnQFD931P2VnAvi
+         ppn66jIET8cdYTFhWERY2AFPKxopY+IyxBsAoKoVMSGyYaEEJ8wLYHFH0qM/WdDzm75M
+         DzRsx+xyBo/RoEwtmvScNiwcPUmZqmpPSfsQ8SI1HOKOfgCjojPjI/zbXUF++XjXeVIu
+         Hc7uLzGLqp0iKRBZg5lmWkB4q5qcyV1ZRNIRmrHJzWBF5GaE84d3dQLZxFnfxu2x7ca0
+         6FBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690982367; x=1691587167;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O/2WIVROlZsV9PaE7ZRV5iugvs6edZ71omTT4F/SSvo=;
+        b=BqDNIY5vbYwiGVJQrgowAEYyirnEBvCe8Ah2f7yM0OHzwU28UqP9CI45vu3/0S9UJP
+         I0YCOO3XsobyfnCDiz89m8FZ0oszDmiq0YMMRGbX93FhoUitcRTU+3UeqnHuKDuN6oS8
+         n/Orw6beMlGyuy/VBkLD9k23yzv1tzdrqlMKC9yJbto8W5JuHrr2r1j0AOj2c+OJg/gy
+         hKsqxMuAFN6EqvWCqRqGWX1rr1n76BftwIIVp4RGI1Tke2HduVPEGWtAoOw/YlRrfbMl
+         hMAODcUTIPOdfpC+CHIrbFqmZzrCHpOgZyR21H3MvO0neLv4//FJAe2gUsaXs/XwUeyR
+         KZVA==
+X-Gm-Message-State: ABy/qLbJtOG40akg/biWX/uKZUIBbcC7BS5nb/imS4JZaMik/x08uyB9
+        X0hYmYTMIFYHAyOLwjVHwdBFyQ==
+X-Google-Smtp-Source: APBJJlHDtPxPkjUQDc9Cgo3moh4rigDIqtwormB9fceq6QeriPzioOsRh/evkwesGLHEjyC7EvY7hw==
+X-Received: by 2002:adf:f44c:0:b0:317:3f64:4901 with SMTP id f12-20020adff44c000000b003173f644901mr4651149wrp.41.1690982367568;
+        Wed, 02 Aug 2023 06:19:27 -0700 (PDT)
+Received: from [192.168.1.14] (host-92-17-103-66.as13285.net. [92.17.103.66])
+        by smtp.gmail.com with ESMTPSA id d14-20020adff2ce000000b003176053506fsm15276105wrp.99.2023.08.02.06.19.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 06:19:27 -0700 (PDT)
+Message-ID: <2c0860e2-40d6-ec91-60cf-2684edd52676@linaro.org>
+Date:   Wed, 2 Aug 2023 14:19:26 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV2PR08MB9158:EE_|AM0PR08MB5505:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2ec95a9e-e7da-4e5c-0ad1-08db935b1634
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: N8x8acoaT4ylUAAUwWDKSR9UN55yhMghKKkCJat6vcUzQMg5URaGmn6pkeGy2A77ufx9ZYc8dFHIOF0bJ9zvWpji8x8Ii9IpaH7HPf72kD/HDzZcwNv01TltPvW7SpP5lsMdBTcKLFz8+XbcAGq5vwog1GY/+zXRg0K1XI/rFEHfYDLLmxZYocDcQAiRDtnl1b5ulMUsCTVrOkfptKrj2GrgbAAudRU+QVPNEJ1iWoYOqCXhotEAjsIxB4B1Y8zQZTVA0dUexxhk9pQGhL+ououXmdeCWDlwuDZ0EAKvxEl+vByzKpwelVt48pOHuYlJNq20iv4ip1phnkmd/uWVl7IsWaNl4eOkdtQ6m5FYI1lzy1b56IBK2vxWxa8YEv8tT6B2fPEYC+fNR0KrgiMiu+kAiSmkX/8OX9H9pt2EtRCzLYgp1QZHPjgj8F2aHIyVwwsBVZGRB/Q7NryLBHsr91Cqns+Q/rz91ldHVzJmRpD9NtDx6d0g3mpcD26C07S9W4XzXfvdHfQHrB6c+emUMMHLNIDo0i6rzQM//qlvYp5+yTpJX7MrzA42Dz7NAyWU6ag5+h8qPoDfz0YyHBLq8XaOu+JVVOmvfkaxA4Q9u1lBlbf1CPqvjP63WMg8kw2V4CLHSqSqIUiZX1XH6uOGn0XdWUbMqYHTKmpisDr1TQo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR08MB9158.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39840400004)(376002)(366004)(136003)(396003)(451199021)(36756003)(86362001)(31696002)(478600001)(6512007)(6486002)(8676002)(8936002)(41300700001)(316002)(5660300002)(31686004)(6636002)(44832011)(66556008)(4326008)(66476007)(83380400001)(7416002)(110136005)(2906002)(38100700002)(66946007)(921005)(2616005)(186003)(6506007)(53546011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UHIwd1V6TG1adkpVd0FZbDlnK3lYSkdiRFRpdVJDcnJOZnV3alpCZkUwQ25R?=
- =?utf-8?B?bVo4TVZkVWlEVXFiM3pVU0FSaVpyMHljbmNQZEMzSDY1ejZuTFcwWDhRd2ZQ?=
- =?utf-8?B?SEs3WGRYendVWC81dTQ5cU5mQnhYTGtORWxOSDRtdDV0bzlKcHBuVWRLcUND?=
- =?utf-8?B?SkJnb1hzR0tIUTlGcDQ2SGd2dng2Z2ZMVFk3ekxBcDRQZFgvckpIcjdPMHhB?=
- =?utf-8?B?TlUveG1oM1hxY0l6TFFEbDkwTVVOdm82QjQ3ZnVqTGlwQUgwUVNZbk5FZWZz?=
- =?utf-8?B?c3JaWU1FU2czR3ZLVmVtTkJjNm92VGd2a2pwYUowZTNGQnRHQ1dpeHhlMXc5?=
- =?utf-8?B?aEZtNjVrc3VmY2x4bVJ3Z0U2N016OHpVUnFOMzUwcWtkRXYxdG42aml2V2tG?=
- =?utf-8?B?SWNaVWtXQTh4WGNXVDNMYjJrT1M5TzlLMkxtT0R0dTU5RTNDNDJZZGczTkNy?=
- =?utf-8?B?dEpYb3dVUkFURHFjUFVSdndrb1FSMEdEdlJPV0Y5aG04enE3eExQb2w3SkIy?=
- =?utf-8?B?S2M4aHpWazdzYXJDVERjdDljeUZzdXA3eVZtOUg1Y0ZZOWNqQlFKU1BrSmk0?=
- =?utf-8?B?R29SR2hNbmtMRVZYREpkNklzM2ZpN2tDL3dIRjRKTE9Zbzl2U1pzbEJkcEF0?=
- =?utf-8?B?RHlJc0dvSXJwYm9ydStkYnlJZjNzZHd0UGZuSU5PS0xZK3BSR1loTG1OZnhY?=
- =?utf-8?B?a1dUa2xlcXYxbDNhYzRBaXNHTHRMTk05SU5OemlHRnpWeGVQbDVmMWxmOEpK?=
- =?utf-8?B?VDA4SnU2cFI1MDIrUmFQajdtV2ZOWGU4ZDZpOGZaQVVaTFg2cGFjWUxlbzRL?=
- =?utf-8?B?WVRiZ2tsNC93RE9aNUlReCsxYTRUcGNYVDllbVYzUUpCQTh5Mjhoak5RMHZ1?=
- =?utf-8?B?QnhwQzRnMWlqY3BpYjgzcjEyV3J5dTNEdXF0MllFN285YmJac3lnZTdRc2Yw?=
- =?utf-8?B?cG15YkFzZW5zTHY0a2pHRThNVUJ5R1l1ODZuV1dJYTdMOGxLbnVHWHF2V2tH?=
- =?utf-8?B?M3NjMzFyN0gyMlUrYzRjZU1vclhvSkQ3RWxQUk54SXpjVEpoS1JtanBtRzZ5?=
- =?utf-8?B?YWNxWlN1dU1WSTRtL2tDaG9MRWNYOUtEQkkra2RTVHBOaE5VSFFQVXg1Umo2?=
- =?utf-8?B?cHJYTEZ2TTZBaDhFaWJJbWVGWTZVdVd6RjJqRW9mRjd5V0xaWUJWNEJEaVpK?=
- =?utf-8?B?SkZ2Y25zZ0VKU085cmNwMSs1K29JY0NvVGV3V1d1MUF4ZXRkN1UzaUJuQU4x?=
- =?utf-8?B?YXBYeHFxYzFhdXROeGpPWDAvaE95bkNqaVdQVGJoM2psc010UTUrTDFuYVpq?=
- =?utf-8?B?Z0x4R1JIazBudjNTSjFJQm9EVGQzM3RSMHFzVjZFb0EwYlVHRGw3bGFLa3lZ?=
- =?utf-8?B?eVFVVzhBVVlNSEQxdlE0Qyt0amdWTC80ZVpyNlNzSDF3OGdHeHFtSEcvNHA2?=
- =?utf-8?B?N0ltNEFua0Jtb2lmUDFOY1U3cE1YMmUwSnQ0Rjl5SW1Mc09WbVpta2ZDcVFn?=
- =?utf-8?B?ZGJ6eXhqVVNhamw1My9SRDc5dE5aMS92RTRsUk5aUFJaUEhGaklXZnUvMW9E?=
- =?utf-8?B?Mmd6ZmQ2RVo3OElTa1hpanVLekxVYnpJRFdHOE95M0RNR2lVZTcxV1BRYU5R?=
- =?utf-8?B?ellRdGhvWE94T0dCaEd3YThmVFpKdCt5OFdvZ291eEppQ2tSb2dRZGcxVElp?=
- =?utf-8?B?M1ZEbUpxdFdYeU5VOUhUUHpkcU81RDNxVEE4elYya29QWDZaN1FwVW91R3Iw?=
- =?utf-8?B?bkdwYXpnM0VtSnBrTTNJdzhaV2dVME1acEJNYVBVMm9MYnhuZlIxS3c4TEVL?=
- =?utf-8?B?Z2V5ZWlwYURaOUtrRHViU3g1SWpRY0hhTFZyRUw0UDlSVyswdFRnL1NydktD?=
- =?utf-8?B?RXBDOHhLYmkzOHdWdHBYdjV1NWNSa2R3aW9OeVhjTFRYbGN3dnN3NTJmOVVC?=
- =?utf-8?B?clFCK3dqd2c4MWJkbkhhZE92UGFCcUhRUmkvZ09DdEZEY04yWjlhYmJhblpI?=
- =?utf-8?B?UVg0TXZNTXo4cUJiUlN0UE5OblJIWkF3NDFSL2RjWndJUG9pdzcxVkpvL1FY?=
- =?utf-8?B?U3ZNc1ZVbkc1Y2dJU0svSFhKZXZaekRyczd1MnN0U0FCYzFtL0REeVFDakZw?=
- =?utf-8?B?SjRzQnZOaytSbC9ZMEJlTE9UYjJaajcxSnd6blhvQVVIbHlMalI5RGJlT3VB?=
- =?utf-8?B?NjN6ZXRaSFhUZWlydmI1Ky9KUUU5WXRGV0o0U2szSTlkUVE0bUhNRE9ReGN3?=
- =?utf-8?B?ZllpQUVFaUV4Qm5yMVFJUVY2U3RnPT0=?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2ec95a9e-e7da-4e5c-0ad1-08db935b1634
-X-MS-Exchange-CrossTenant-AuthSource: GV2PR08MB9158.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 13:19:22.8565
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d2vSgD5fm+aJ+VjHsUWnOzPxZD2VOL00QDz1nQPPRUEY/I3Dsz/zAjfexIFn3Hp2XLmm+0I1JemMaRVIWG4dBAblpaJTiy88LSBGdfvOD2A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB5505
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: drivers/power/supply/qcom_pmi8998_charger.c:565
+ smb2_status_change_work() error: uninitialized symbol 'usb_online'.
+Content-Language: en-US
+To:     kernel test robot <dan.carpenter@linaro.org>,
+        oe-kbuild@lists.linux.dev
+Cc:     lkp@intel.com, Dan Carpenter <error27@gmail.com>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+References: <ZMNWCD66TAhahJ2Y@kadam>
+From:   Caleb Connolly <caleb.connolly@linaro.org>
+In-Reply-To: <ZMNWCD66TAhahJ2Y@kadam>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
 
-On 8/2/23 14:39, Neil Armstrong wrote:
-> On 18/07/2023 17:12, Michael Riesch wrote:
->> Determine the orientation of the display based on the device tree and
->> propagate it.
->>
->> While at it, fix the indentation in the struct drm_panel_funcs.
->>
->> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
->> ---
->>   drivers/gpu/drm/panel/panel-sitronix-st7789v.c | 28
->> +++++++++++++++++++++-----
->>   1 file changed, 23 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
->> b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
->> index bbc4569cbcdc..6575f07d49e3 100644
->> --- a/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
->> +++ b/drivers/gpu/drm/panel/panel-sitronix-st7789v.c
->> @@ -116,6 +116,7 @@ struct st7789v {
->>       struct spi_device *spi;
->>       struct gpio_desc *reset;
->>       struct regulator *power;
->> +    enum drm_panel_orientation orientation;
->>   };
->>     enum st7789v_prefix {
->> @@ -170,6 +171,7 @@ static const struct drm_display_mode default_mode = {
->>   static int st7789v_get_modes(struct drm_panel *panel,
->>                    struct drm_connector *connector)
->>   {
->> +    struct st7789v *ctx = panel_to_st7789v(panel);
->>       struct drm_display_mode *mode;
->>         mode = drm_mode_duplicate(connector->dev, &default_mode);
->> @@ -188,9 +190,22 @@ static int st7789v_get_modes(struct drm_panel
->> *panel,
->>       connector->display_info.width_mm = 61;
->>       connector->display_info.height_mm = 103;
->>   +    /*
->> +     * TODO: Remove once all drm drivers call
->> +     * drm_connector_set_orientation_from_panel()
->> +     */
->> +    drm_connector_set_panel_orientation(connector, ctx->orientation);
->> +
->>       return 1;
->>   }
->>   +static enum drm_panel_orientation st7789v_get_orientation(struct
->> drm_panel *p)
->> +{
->> +    struct st7789v *ctx = panel_to_st7789v(p);
->> +
->> +    return ctx->orientation;
->> +}
->> +
->>   static int st7789v_prepare(struct drm_panel *panel)
->>   {
->>       struct st7789v *ctx = panel_to_st7789v(panel);
->> @@ -346,11 +361,12 @@ static int st7789v_unprepare(struct drm_panel
->> *panel)
->>   }
->>     static const struct drm_panel_funcs st7789v_drm_funcs = {
->> -    .disable    = st7789v_disable,
->> -    .enable        = st7789v_enable,
->> -    .get_modes    = st7789v_get_modes,
->> -    .prepare    = st7789v_prepare,
->> -    .unprepare    = st7789v_unprepare,
->> +    .disable = st7789v_disable,
->> +    .enable    = st7789v_enable,
->> +    .get_modes = st7789v_get_modes,
->> +    .get_orientation = st7789v_get_orientation,
->> +    .prepare = st7789v_prepare,
->> +    .unprepare = st7789v_unprepare,
+
+On 28/07/2023 06:45, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   57012c57536f8814dec92e74197ee96c3498d24e
+> commit: 8648aeb5d7b70e13264ff5f444f22081d37d4670 power: supply: add Qualcomm PMI8998 SMB2 Charger driver
+> config: arm-randconfig-m041-20230727 (https://download.01.org/0day-ci/archive/20230728/202307280638.556PrzIS-lkp@intel.com/config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 12.3.0
+> reproduce: (https://download.01.org/0day-ci/archive/20230728/202307280638.556PrzIS-lkp@intel.com/reproduce)
 > 
-> Changing the indentation of the whole block is a spurious change,
-> either change it in a separate patch or use the current indentation
-> style...
-
-OK, if we agree that the indentation should be changed I'll be happy to
-move the change to an extra patch.
-
->>   };
->>     static int st7789v_probe(struct spi_device *spi)
->> @@ -382,6 +398,8 @@ static int st7789v_probe(struct spi_device *spi)
->>       if (ret)
->>           return ret;
->>   +    of_drm_get_panel_orientation(spi->dev.of_node, &ctx->orientation);
->> +
->>       drm_panel_add(&ctx->panel);
->>         return 0;
->>
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <error27@gmail.com>
+> | Closes: https://lore.kernel.org/r/202307280638.556PrzIS-lkp@intel.com/
 > 
-> With this changed:
-> 
-> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+> smatch warnings:
+> drivers/power/supply/qcom_pmi8998_charger.c:565 smb2_status_change_work() error: uninitialized symbol 'usb_online'.
 
-Thanks!
-
-Best regards,
-Michael
-
+Hi, thanks for the report.
 > 
-> Thanks,
-> Neil
+> vim +/usb_online +565 drivers/power/supply/qcom_pmi8998_charger.c
 > 
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  556  static void smb2_status_change_work(struct work_struct *work)
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  557  {
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  558  	unsigned int charger_type, current_ua;
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  559  	int usb_online, count, rc;
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  560  	struct smb2_chip *chip;
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  561  
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  562  	chip = container_of(work, struct smb2_chip, status_change_work.work);
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  563  
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  564  	smb2_get_prop_usb_online(chip, &usb_online);
+> 
+> This can only happen if regmap_read() fails, and in real life they
+> can't actually fail can they?  We can't really recover if regmap
+> breaks so in that situation this uninitialized variable would be the
+> least of our concerns.  Right?
+
+In this case, the driver is for a peripheral on the SPMI bus, a read
+failing is extremely unlikely but under some conditions like bandwidth
+constraints it could happen. Though admittedly there are likely bigger
+issues to deal with in that situation heh.
+
+It's a trivial fix so I'll send a patch over.
+> 
+> So what I could do is just delete the regmap_read error paths from
+> the DB.  I just add these two lines to smatch_data/db/kernel.delete.return_states
+> 
+> regmap_read (-22)
+> regmap_read (-4095)-(-1)
+> 
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26 @565  	if (!usb_online)
+>                                                      ^^^^^^^^^^
+> 
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  566  		return;
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  567  
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  568  	for (count = 0; count < 3; count++) {
+> 8648aeb5d7b70e Caleb Connolly 2023-05-26  569  		dev_dbg(chip->dev, "get charger type retry %d\n", count);
+> 
+
+-- 
+// Caleb (they/them)
