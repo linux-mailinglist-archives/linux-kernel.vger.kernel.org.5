@@ -2,163 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65ED376D249
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B4176D2AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbjHBPk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:40:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
+        id S235153AbjHBPnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:43:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbjHBPk0 (ORCPT
+        with ESMTP id S235509AbjHBPn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:40:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B531EDA
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:40:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 521DE61A14
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 15:40:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9535EC433C8;
-        Wed,  2 Aug 2023 15:40:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690990821;
-        bh=rhjbjV8sZ1peSZbXxFnvc17eLjF68P5s32OkLyh/sV0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j35hkY5efxTYJI8k0ZpmxUBMnt7mxR6nPTCvfYI7+/094fGf5LfgGwIBvFs4B38GK
-         RDT8sa0ja+ikQ0NisRFWq4wur0SENZ+oF3HQYGAWStF5TjZISF9qyhOK5nZzmxZac2
-         n3rjUK1noMGltxU1VdjaJAGTnj/Br3t46tfAKDX4tS4x0hr6lHxyZLsRy9N1zf4UZa
-         7kMX6fcc/UgS/S4VilqNEZv+9RikXtClqQnRkEakFKWCo5B9fBmQ5jXHlif/3OOApq
-         aBqdlJ8TqE4Y9+vl6CtmCr5TNiqfEeYY/LNV9CxGKR6hZHcTjalOnqxmZ3bgOVfqB8
-         shC6SoUuLN7sw==
-Date:   Wed, 2 Aug 2023 17:40:16 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>
-Subject: Re: [PATCH net-next v3] net: ethernet: mtk_eth_soc: support per-flow
- accounting on MT7988
-Message-ID: <ZMp44GXm6QKG21+u@kernel.org>
-References: <37a0928fa8c1253b197884c68ce1f54239421ac5.1690946442.git.daniel@makrotopia.org>
+        Wed, 2 Aug 2023 11:43:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B222F9B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:43:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=NDZYgKKNmkQ0738L3ra1Xs11boy5q4PyNH1Y5BeFCWQ=; b=jldpaGZwhwgeJhKxJNZKE/bGNP
+        bzSJGPy9Uo+I07AXE0ITW86MbRlaPir7nfwsPOxPmohFCfvQWFXyOxCfOG75Gt+yF4gft4A1uRLeH
+        woLdk0K/FwbZb/4fr/TylvA5dy2fU0JrbeE5JdcPw9v10SZFLYSPuOf5hEey6GOSQSYwAnvOHY8dp
+        CKElFmXvX5+5ucV98CG6on01rDrv9eDvW8Dp6oEXbiR1VaOg3S2PtRUf5rdmkB1yRmoNo/Cg57839
+        kx2yY0TGTOpNwjV9SOHvV+QcFbe3X9oAZWC4wctsQxjLuECygA8rqcUIEjr9P0BW92NR4AhHsj18M
+        GemqlxRg==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qRE0R-005GUn-26;
+        Wed, 02 Aug 2023 15:43:23 +0000
+Message-ID: <0156b0e7-d9a9-0bb6-f0af-e6a49ff87e34@infradead.org>
+Date:   Wed, 2 Aug 2023 08:43:23 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37a0928fa8c1253b197884c68ce1f54239421ac5.1690946442.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH RESEND^2] nios2: support clone3() syscall
+Content-Language: en-US
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <brauner@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
+        Christian Brauner <christian@brauner.io>
+References: <20230802051924.7837-1-rdunlap@infradead.org>
+ <20230802-abgaben-behutsam-92946d2ecbf5@brauner>
+ <d2c8e5ca-44e0-41ec-84d0-ef743a62a2a1@app.fastmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <d2c8e5ca-44e0-41ec-84d0-ef743a62a2a1@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Larysa Zaremba
 
-On Wed, Aug 02, 2023 at 04:31:09AM +0100, Daniel Golle wrote:
-> NETSYS_V3 uses 64 bits for each counters while older SoCs are using
-> 48/40 bits for each counter.
-> Support reading per-flow byte and package counters on NETSYS_V3.
+
+On 8/2/23 01:16, Arnd Bergmann wrote:
+> On Wed, Aug 2, 2023, at 09:40, Christian Brauner wrote:
+>> On Tue, Aug 01, 2023 at 10:19:24PM -0700, Randy Dunlap wrote:
+>>> Add support for the clone3() syscall to prevent a warning from
+>>> checksyscalls.sh:
+>>>
+>>> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+>>>
+>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>> Cc: Dinh Nguyen <dinguyen@kernel.org>
+>>> Cc: Christian Brauner <christian@brauner.io>
+>>> ---
+>>> Is there some reason that NIOS2 should not (does not) support clone3()?
+>>
+>> Cc Arnd, in case he knows.
 > 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-
-Hi Daniel,
-
-I think you missed Larysa's Reviewed-by tag from v2.
-
-In any case, this looks good to me.
-
-Reviewed-by: Simon Horman <horms@kernel.org>
-
-> ---
-> v3: correct calculation, local variables
-> v2: fix typo bytes_cnt_* -> byte_cnt_*
+> As far as I remember, you left a few architectures without clone3
+> during the introduction when there was neither an obvious way to
+> handle the syscall entry nor a maintainer to have a look.
 > 
-> drivers/net/ethernet/mediatek/mtk_eth_soc.c  |  1 +
->  drivers/net/ethernet/mediatek/mtk_ppe.c      | 21 +++++++++++++-------
->  drivers/net/ethernet/mediatek/mtk_ppe_regs.h |  2 ++
->  3 files changed, 17 insertions(+), 7 deletions(-)
+> Right now, it seems to be missing on alpha, hexagon, ia64,
+> microblaze, nios2, sh and sparc.
 > 
-> diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> index 05be702f19c5..1b89f800f6df 100644
-> --- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> +++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-> @@ -5064,6 +5064,7 @@ static const struct mtk_soc_data mt7988_data = {
->  	.version = 3,
->  	.offload_version = 2,
->  	.hash_offset = 4,
-> +	.has_accounting = true,
->  	.foe_entry_size = MTK_FOE_ENTRY_V3_SIZE,
->  	.txrx = {
->  		.txd_size = sizeof(struct mtk_tx_dma_v2),
-> diff --git a/drivers/net/ethernet/mediatek/mtk_ppe.c b/drivers/net/ethernet/mediatek/mtk_ppe.c
-> index bf1ecb0c1c10..973370c3cb51 100644
-> --- a/drivers/net/ethernet/mediatek/mtk_ppe.c
-> +++ b/drivers/net/ethernet/mediatek/mtk_ppe.c
-> @@ -92,7 +92,6 @@ static int mtk_ppe_mib_wait_busy(struct mtk_ppe *ppe)
->  
->  static int mtk_mib_entry_read(struct mtk_ppe *ppe, u16 index, u64 *bytes, u64 *packets)
->  {
-> -	u32 byte_cnt_low, byte_cnt_high, pkt_cnt_low, pkt_cnt_high;
->  	u32 val, cnt_r0, cnt_r1, cnt_r2;
->  	int ret;
->  
-> @@ -107,12 +106,20 @@ static int mtk_mib_entry_read(struct mtk_ppe *ppe, u16 index, u64 *bytes, u64 *p
->  	cnt_r1 = readl(ppe->base + MTK_PPE_MIB_SER_R1);
->  	cnt_r2 = readl(ppe->base + MTK_PPE_MIB_SER_R2);
->  
-> -	byte_cnt_low = FIELD_GET(MTK_PPE_MIB_SER_R0_BYTE_CNT_LOW, cnt_r0);
-> -	byte_cnt_high = FIELD_GET(MTK_PPE_MIB_SER_R1_BYTE_CNT_HIGH, cnt_r1);
-> -	pkt_cnt_low = FIELD_GET(MTK_PPE_MIB_SER_R1_PKT_CNT_LOW, cnt_r1);
-> -	pkt_cnt_high = FIELD_GET(MTK_PPE_MIB_SER_R2_PKT_CNT_HIGH, cnt_r2);
-> -	*bytes = ((u64)byte_cnt_high << 32) | byte_cnt_low;
-> -	*packets = (pkt_cnt_high << 16) | pkt_cnt_low;
-> +	if (mtk_is_netsys_v3_or_greater(ppe->eth)) {
-> +		/* 64 bit for each counter */
-> +		u32 cnt_r3 = readl(ppe->base + MTK_PPE_MIB_SER_R3);
-> +		*bytes = ((u64)cnt_r1 << 32) | cnt_r0;
-> +		*packets = ((u64)cnt_r3 << 32) | cnt_r2;
-> +	} else {
-> +		/* 48 bit byte counter, 40 bit packet counter */
-> +		u32 byte_cnt_low = FIELD_GET(MTK_PPE_MIB_SER_R0_BYTE_CNT_LOW, cnt_r0);
-> +		u32 byte_cnt_high = FIELD_GET(MTK_PPE_MIB_SER_R1_BYTE_CNT_HIGH, cnt_r1);
-> +		u32 pkt_cnt_low = FIELD_GET(MTK_PPE_MIB_SER_R1_PKT_CNT_LOW, cnt_r1);
-> +		u32 pkt_cnt_high = FIELD_GET(MTK_PPE_MIB_SER_R2_PKT_CNT_HIGH, cnt_r2);
-> +		*bytes = ((u64)byte_cnt_high << 32) | byte_cnt_low;
-> +		*packets = ((u64)pkt_cnt_high << 16) | pkt_cnt_low;
-> +	}
->  
->  	return 0;
->  }
-> diff --git a/drivers/net/ethernet/mediatek/mtk_ppe_regs.h b/drivers/net/ethernet/mediatek/mtk_ppe_regs.h
-> index a2e61b3eb006..3ce088eef0ef 100644
-> --- a/drivers/net/ethernet/mediatek/mtk_ppe_regs.h
-> +++ b/drivers/net/ethernet/mediatek/mtk_ppe_regs.h
-> @@ -163,6 +163,8 @@ enum {
->  #define MTK_PPE_MIB_SER_R2			0x348
->  #define MTK_PPE_MIB_SER_R2_PKT_CNT_HIGH		GENMASK(23, 0)
->  
-> +#define MTK_PPE_MIB_SER_R3			0x34c
-> +
->  #define MTK_PPE_MIB_CACHE_CTL			0x350
->  #define MTK_PPE_MIB_CACHE_CTL_EN		BIT(0)
->  #define MTK_PPE_MIB_CACHE_CTL_FLUSH		BIT(2)
-> -- 
-> 2.41.0
+> There are a few architectures that implement a custom entry
+> point for both clone and clone3. The other architectures that
+> provide the generic sys_clone3 also use the generic sys_clone.
+> These are the wrappers I see:
+> 
+> # ARC
+> ENTRY(sys_clone3_wrapper)
+>         SAVE_CALLEE_SAVED_USER
+>         bl  @sys_clone3
+>         DISCARD_CALLEE_SAVED_USER
+> 
+>         GET_CURR_THR_INFO_FLAGS   r10
+>         and.f 0, r10, _TIF_SYSCALL_WORK
+>         bnz   tracesys_exit
+> 
+>         b .Lret_from_system_call
+> END(sys_clone3_wrapper)
+> 
+> # m68k
+> ENTRY(__sys_clone3)
+>         SAVE_SWITCH_STACK
+>         pea     %sp@(SWITCH_STACK_SIZE)
+>         jbsr    m68k_clone3
+>         lea     %sp@(28),%sp
+>         rts
 > 
 > 
+> # mips
+> save_static_function(sys_clone3);
+> 
+> # openrisc
+> ENTRY(__sys_clone3)
+>         l.movhi r29,hi(sys_clone3)
+>         l.j     _fork_save_extra_regs_and_call
+>          l.ori  r29,r29,lo(sys_clone3)
+> 
+> # parisc
+>         .macro  fork_like name
+> ENTRY_CFI(sys_\name\()_wrapper)
+>         mfctl   %cr30,%r1
+>         ldo     TASK_REGS(%r1),%r1
+>         reg_save %r1
+>         mfctl   %cr27, %r28
+>         ldil    L%sys_\name, %r31
+>         be      R%sys_\name(%sr4,%r31)
+>         STREG   %r28, PT_CR27(%r1)
+> ENDPROC_CFI(sys_\name\()_wrapper)
+>         .endm
+> fork_like clone
+> fork_like clone3
+> 
+> Nios3 in turn has a wrapper for sys_clone:
+> ENTRY(sys_clone)
+>         SAVE_SWITCH_STACK
+>         subi    sp, sp, 4 /* make space for tls pointer */
+>         stw     r8, 0(sp) /* pass tls pointer (r8) via stack (5th argument) */
+>         call    nios2_clone
+>         addi    sp, sp, 4
+>         RESTORE_SWITCH_STACK
+>         ret
+> 
+> so my guess would be that it needs the same thing
+> for clone3 as well. Same thing on alpha, ia64 and
+> sparc. On the other hand hexagon, microblaze and sh 
+> use the generic sys_clone() and can probably just
+> enable sys_clone3() without extra work unless it's
+> already broken.
+
+OK, thanks for the help.
+
+-- 
+~Randy
