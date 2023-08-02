@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD0A076C434
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6DE76C43C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbjHBEmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 00:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
+        id S231856AbjHBEpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 00:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbjHBEmW (ORCPT
+        with ESMTP id S229946AbjHBEpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 00:42:22 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747531715
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:42:21 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-31792ac0fefso3350370f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 21:42:21 -0700 (PDT)
+        Wed, 2 Aug 2023 00:45:49 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00E651981
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:45:47 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-3fe1d462762so27872265e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 21:45:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1690951340; x=1691556140;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=tuxon.dev; s=google; t=1690951546; x=1691556346;
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4fq8IrQBjbBrZnSIFTJPM7Fat7+qErOQ84qV/bHh6os=;
-        b=ciew+N7IZc8/zYJoOoA9MQRpRD4eSB0/uUEcXt5BK2GIRdiG+W82nav16fwjX95wtX
-         1TE34RCUFu7duc8u6FfoWNW4XLWJZhCg/4Wb4DVIdaMrvrhHjo5EwjfuPEVp1aaF/nMQ
-         qJgXkiUMMQN9Kz7qxXMMLlvq6FlSAbPtM4HdSfRq/woLpWBPmqglQRMpP6dL8ox+MEdQ
-         9qPSCkhyWmiR57/fcohqz1Ey/vTZvU22gD/wuCY8uKRLuqFjh680Ca3P2GmXNxNuvgGx
-         U5i48AKgB1kx90jnsteaRDLrSWsR5q1plgi3Saaa12IYIznokSiGnhoSXk+0X6AxLdho
-         gkeQ==
+        bh=OAHQ1xVD6mCYyeiHHsFX9UKA5VExLMCp78lQW4TVXnM=;
+        b=BmU/dlqWP9BR2t3cqOtUyIszlumMyzotg5G2gXjdshwDEjfrgkS+yYIPBT2yqbEyBy
+         zQZh2/UneAWy+5R8sMHrgElD2QZOZTzvojG9RrLe6RWOLMAngd1Q5DjQVl6rxEcv3CSk
+         GZxQs+//rpFM6SF4UEOBw2d96dD+lR0xo/Ns3l7teCmAJKJltgeKeH4D1eMn/O0jcTei
+         RNraLAQ3hHGw4wrvkwMhWVAl4GavMxuXIVL2eLHl39rQl9GVgEVbDAS1AJ5Q1LM/NHyi
+         Wrp7y/yIlxxTXw5emyfGIjoHOvaTZfJCl/naQo4GJ6w0zZORRkGdxOaPw2W/yfPJhky2
+         ry2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690951340; x=1691556140;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+        d=1e100.net; s=20221208; t=1690951546; x=1691556346;
+        h=content-transfer-encoding:in-reply-to:from:references:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4fq8IrQBjbBrZnSIFTJPM7Fat7+qErOQ84qV/bHh6os=;
-        b=AtjA0nany8/T89UKdpXoIqTn2g0VUfrvc5qIPDQuUSh4ZaKzrFn5NVpcKHTsQ/7seQ
-         m8dOHQCs2+qq4SShdUZm9v6xwiIXo9V6XUnf7zlwrbkJGxvRVnV+fqwHCh0/VSCM4/Fg
-         kndNH+5NO2XwxV4AdBYWyqcQQJYElfWS7gnqo5JywqhdFDbt3aZCXIzCroA2Q3oc0Gz0
-         B85loSb+3Dft/hsEwlBTDremIJX+gBGVTENRUXJ5dtQPSealwTr9EMrndz5XPn4IPp3g
-         IckACbNJS11gasCC6yjFvzFNgnWKIPHqcw+BnPtzpYG7nArAx3K4qnSwV9MAh4hb4dWD
-         ijwg==
-X-Gm-Message-State: ABy/qLb22L1FrcpzGQz2WIkjFIr53k2OTYYCDLyGrdh3SQ3UdjSOI307
-        R/HWi5uZDRNT6pSKatRRvqHNQA==
-X-Google-Smtp-Source: APBJJlGS+OnsESDFZ79WgVo4WYKLWy66kVmCr7Ouhb8EnWHUI53UgYp0fP9Npwkz8Rjij8mquxOpwg==
-X-Received: by 2002:a05:6000:11:b0:317:5e8e:c2be with SMTP id h17-20020a056000001100b003175e8ec2bemr3590240wrx.63.1690951339976;
-        Tue, 01 Aug 2023 21:42:19 -0700 (PDT)
+        bh=OAHQ1xVD6mCYyeiHHsFX9UKA5VExLMCp78lQW4TVXnM=;
+        b=kgNw7sWDm7auQnx37HfcypRp5Lfj3Z7yyV2PxgaPa5PJDbduXPqifeLl1m12fvi4rB
+         6da7OK0meT23zmSm0ooImgJ7iiczaHsZVysvxYvZA929zSYgJS8xb5Ygim9d/G0juIdv
+         xGBfjX4UZoNnD36ugUqmW4KUwmzeISsl77jwkm5i4PYIfiOig7GityCobvOlZ14QIY3B
+         h7Zh5c6feRngSkHNSJezcEOo2FK09PY0hfS54qFW/V0VWm3UenZ7VyGWxW6Dk36w1EEW
+         ZsOwYZpFEztZyrAJvkLEX2b89Uk4K9fUVr2gkvpvgSkEvnwUKtgkz/x2suWEhXXi/f6c
+         IoLg==
+X-Gm-Message-State: ABy/qLad8StJXbLelrRv8duCgIFezPjFq1lq3rkLFbQKyAApolOld1AS
+        zCALlBY+EjWcp9IxlCU3C/UKfw==
+X-Google-Smtp-Source: APBJJlGtYTEql3jo5gHuxQQNiIFSjGkQMXkUH6rBQhDuXth2jauQBfYAxpIAHPFOMFct74Mb8jKaVw==
+X-Received: by 2002:adf:e505:0:b0:315:9ee6:132f with SMTP id j5-20020adfe505000000b003159ee6132fmr3764483wrm.68.1690951546310;
+        Tue, 01 Aug 2023 21:45:46 -0700 (PDT)
 Received: from [10.0.2.15] ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id g17-20020adfe411000000b0031437299fafsm17940853wrm.34.2023.08.01.21.42.18
+        by smtp.gmail.com with ESMTPSA id x2-20020adfdd82000000b0030e56a9ff25sm17789401wrl.31.2023.08.01.21.45.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 21:42:19 -0700 (PDT)
-Message-ID: <bdcffc0f-5bd7-d6e5-74a1-ae5f934af3ff@tuxon.dev>
-Date:   Wed, 2 Aug 2023 07:42:17 +0300
+        Tue, 01 Aug 2023 21:45:45 -0700 (PDT)
+Message-ID: <a4286b78-7000-2271-513a-6147c68a7ac2@tuxon.dev>
+Date:   Wed, 2 Aug 2023 07:45:44 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH] gpio: sama5d2-piobu: remove unneeded call to
- platform_set_drvdata()
+Subject: Re: [PATCH] ARM: dts: microchip: split interrupts per cells
 Content-Language: en-US
-To:     Andrei Coardos <aboutphysycs@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     andy@kernel.org, brgl@bgdev.pl, linus.walleij@linaro.org,
-        ludovic.desroches@microchip.com,
-        Alexandru Ardelean <alex@shruggie.ro>
-References: <20230728182522.18477-1-aboutphysycs@gmail.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230730111542.98238-1-krzysztof.kozlowski@linaro.org>
 From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230728182522.18477-1-aboutphysycs@gmail.com>
+In-Reply-To: <20230730111542.98238-1-krzysztof.kozlowski@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -81,30 +83,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 28.07.2023 21:25, Andrei Coardos wrote:
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Also,
-> the private data is defined in this driver, so there is no risk of it being
-> accessed outside of this driver file.
+On 30.07.2023 14:15, Krzysztof Kozlowski wrote:
+> Each interrupt should be in its own cell.  This is much more readable.
 > 
-> Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Reviewed-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
-
-> ---
->  drivers/gpio/gpio-sama5d2-piobu.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/gpio/gpio-sama5d2-piobu.c b/drivers/gpio/gpio-sama5d2-piobu.c
-> index 767c33ae3213..d89da7300ddd 100644
-> --- a/drivers/gpio/gpio-sama5d2-piobu.c
-> +++ b/drivers/gpio/gpio-sama5d2-piobu.c
-> @@ -189,7 +189,6 @@ static int sama5d2_piobu_probe(struct platform_device *pdev)
->  	if (!piobu)
->  		return -ENOMEM;
->  
-> -	platform_set_drvdata(pdev, piobu);
->  	piobu->chip.label = pdev->name;
->  	piobu->chip.parent = &pdev->dev;
->  	piobu->chip.owner = THIS_MODULE,
+Applied to at91-dt, thanks!
