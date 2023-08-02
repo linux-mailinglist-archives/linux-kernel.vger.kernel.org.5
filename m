@@ -2,178 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9FA76C83C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7CC76C83F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233836AbjHBIRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
+        id S233885AbjHBISJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjHBIRU (ORCPT
+        with ESMTP id S233921AbjHBIR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:17:20 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2163D19A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:17:19 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 3CFB43200754;
-        Wed,  2 Aug 2023 04:17:18 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 02 Aug 2023 04:17:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690964237; x=1691050637; bh=Zl
-        rPotTm9lgBhSGpA0zjVZ4BgRc4p+WCOMZ7mSc/ZXs=; b=URgVaSPTPr7V4rPjCD
-        lDkR7qdDYd/tWGh3OiQsvKIj7/zbFRfeV6vVZdXctldLnBqYbLZWj6PaoD2duLmy
-        y0roDij9g9fD78xqD0FsZlOrT8ufYuATK3dn5SoliSst45EvCuXxMZocrshqSNey
-        zXJHY2x5Ni8RaCmpLK1VITyh7YxyJv10IJbtttwyPM0dGcTQVwAQY+uKsY+llpv7
-        wLpFPLkxNejUVocoMrYtXL7db89hKMiX1AUeT7DYopV2PJedENQjiOVWwXwNQdu0
-        EAgwlFWRypLTr4Bs7lf7z0avbRxTW6MuDE/wqfspvRTZNreD29pmdsnzh9bmHPSC
-        GBIA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690964237; x=1691050637; bh=ZlrPotTm9lgBh
-        SGpA0zjVZ4BgRc4p+WCOMZ7mSc/ZXs=; b=ReT4wNgMzddIkJ3a4WFmi/HHT2+TU
-        6nu0N4fsVwDLom89Mo1kvc3ObxKW5O0Qo6ipFYsTyeJRygYCyQ+HscS+4ZHOEE0M
-        62W1LvBuoo9jwYWvfHGI8q598r+u/Y1VywpQxjrD6Gf4N1e8OEIuCuVG2aQwILXV
-        VMN1+3tBDhhz83KZZvgd9mBAN5kuyLPC+ac2rF0kOuKVQpfYX0C/kTnteCaNekS0
-        UJ78fs3XCwtjPkMgAQv0no9ZfIShK9vsGEQ0SWDO4eoqJS6Fwl5g672SX8smnQ1V
-        wNxAcHgKs3bDlL3kvGpci0FsHwLi49A3Y1e18aPDtMGPsaKUSBd9QGMJQ==
-X-ME-Sender: <xms:DRHKZNqGOI7P5bytL466aqm0DpvVhY0XX04m_VJ9PTAXDpt-Zw89pQ>
-    <xme:DRHKZPpiJ_wlhOnL3zUXTfGp5AsW4TwEF8oiCie_nMVmKamkWKihpjwQWWoqnCggU
-    EKz53MFg6kmGrlNZwc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeekgddtvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:DRHKZKMYisFg_rhmZZfWnc-PDyB9Zx2xAW7fN6maKdgQv8tVYpfvEg>
-    <xmx:DRHKZI5bFs9R08mP_Tfgwvnpu0XEjdANk0MDiMUdtrO_j3L4ab-YZA>
-    <xmx:DRHKZM5T8gnjCy5jYOQhZL379hsqANo-ORF2Huoo6xWeBFR8uzLd4w>
-    <xmx:DRHKZMHM2pWc6vYdH6QDJ_Per6rYhWDjo_UtbKpm2WzQYTsLdk1OgA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 48915B60089; Wed,  2 Aug 2023 04:17:17 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <d2c8e5ca-44e0-41ec-84d0-ef743a62a2a1@app.fastmail.com>
-In-Reply-To: <20230802-abgaben-behutsam-92946d2ecbf5@brauner>
-References: <20230802051924.7837-1-rdunlap@infradead.org>
- <20230802-abgaben-behutsam-92946d2ecbf5@brauner>
-Date:   Wed, 02 Aug 2023 10:16:56 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Christian Brauner" <brauner@kernel.org>,
-        "Randy Dunlap" <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, "Dinh Nguyen" <dinguyen@kernel.org>,
-        "Christian Brauner" <christian@brauner.io>
-Subject: Re: [PATCH RESEND^2] nios2: support clone3() syscall
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 04:17:58 -0400
+Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A37E9;
+        Wed,  2 Aug 2023 01:17:56 -0700 (PDT)
+Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
+        by ex01.ufhost.com (Postfix) with ESMTP id 998FF24E282;
+        Wed,  2 Aug 2023 16:17:53 +0800 (CST)
+Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX166.cuchost.com
+ (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
+ 2023 16:17:53 +0800
+Received: from [192.168.125.127] (183.27.98.54) by EXMBX171.cuchost.com
+ (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
+ 2023 16:17:52 +0800
+Message-ID: <c42bd997-8795-8bf7-eee1-3ac8b153371a@starfivetech.com>
+Date:   Wed, 2 Aug 2023 16:17:51 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v1] riscv: Using TOOLCHAIN_HAS_ZIHINTPAUSE marco replace
+ zihintpause
+Content-Language: en-US
+To:     Conor Dooley <conor.dooley@microchip.com>
+CC:     Conor Dooley <conor@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Dao Lu <daolu@rivosinc.com>,
+        "Heiko Stuebner" <heiko@sntech.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+        Mason Huo <mason.huo@starfivetech.com>,
+        <stable@vger.kernel.org>
+References: <20230802064215.31111-1-minda.chen@starfivetech.com>
+ <20230802-sharpness-spoon-f9b8804fb66f@wendy>
+ <d64874cb-8628-a6d2-d2f4-8af4d0ebf8b2@starfivetech.com>
+ <20230802-seismic-gallstone-fca0f4b17076@wendy>
+From:   Minda Chen <minda.chen@starfivetech.com>
+In-Reply-To: <20230802-seismic-gallstone-fca0f4b17076@wendy>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.27.98.54]
+X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
+ (172.16.6.91)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SCC_BODY_URI_ONLY,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023, at 09:40, Christian Brauner wrote:
-> On Tue, Aug 01, 2023 at 10:19:24PM -0700, Randy Dunlap wrote:
->> Add support for the clone3() syscall to prevent a warning from
->> checksyscalls.sh:
+
+
+On 2023/8/2 15:48, Conor Dooley wrote:
+> On Wed, Aug 02, 2023 at 03:32:15PM +0800, Minda Chen wrote:
 >> 
->> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
 >> 
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Dinh Nguyen <dinguyen@kernel.org>
->> Cc: Christian Brauner <christian@brauner.io>
->> ---
->> Is there some reason that NIOS2 should not (does not) support clone3()?
->
-> Cc Arnd, in case he knows.
-
-As far as I remember, you left a few architectures without clone3
-during the introduction when there was neither an obvious way to
-handle the syscall entry nor a maintainer to have a look.
-
-Right now, it seems to be missing on alpha, hexagon, ia64,
-microblaze, nios2, sh and sparc.
-
-There are a few architectures that implement a custom entry
-point for both clone and clone3. The other architectures that
-provide the generic sys_clone3 also use the generic sys_clone.
-These are the wrappers I see:
-
-# ARC
-ENTRY(sys_clone3_wrapper)
-        SAVE_CALLEE_SAVED_USER
-        bl  @sys_clone3
-        DISCARD_CALLEE_SAVED_USER
-
-        GET_CURR_THR_INFO_FLAGS   r10
-        and.f 0, r10, _TIF_SYSCALL_WORK
-        bnz   tracesys_exit
-
-        b .Lret_from_system_call
-END(sys_clone3_wrapper)
-
-# m68k
-ENTRY(__sys_clone3)
-        SAVE_SWITCH_STACK
-        pea     %sp@(SWITCH_STACK_SIZE)
-        jbsr    m68k_clone3
-        lea     %sp@(28),%sp
-        rts
-
-
-# mips
-save_static_function(sys_clone3);
-
-# openrisc
-ENTRY(__sys_clone3)
-        l.movhi r29,hi(sys_clone3)
-        l.j     _fork_save_extra_regs_and_call
-         l.ori  r29,r29,lo(sys_clone3)
-
-# parisc
-        .macro  fork_like name
-ENTRY_CFI(sys_\name\()_wrapper)
-        mfctl   %cr30,%r1
-        ldo     TASK_REGS(%r1),%r1
-        reg_save %r1
-        mfctl   %cr27, %r28
-        ldil    L%sys_\name, %r31
-        be      R%sys_\name(%sr4,%r31)
-        STREG   %r28, PT_CR27(%r1)
-ENDPROC_CFI(sys_\name\()_wrapper)
-        .endm
-fork_like clone
-fork_like clone3
-
-Nios3 in turn has a wrapper for sys_clone:
-ENTRY(sys_clone)
-        SAVE_SWITCH_STACK
-        subi    sp, sp, 4 /* make space for tls pointer */
-        stw     r8, 0(sp) /* pass tls pointer (r8) via stack (5th argument) */
-        call    nios2_clone
-        addi    sp, sp, 4
-        RESTORE_SWITCH_STACK
-        ret
-
-so my guess would be that it needs the same thing
-for clone3 as well. Same thing on alpha, ia64 and
-sparc. On the other hand hexagon, microblaze and sh 
-use the generic sys_clone() and can probably just
-enable sys_clone3() without extra work unless it's
-already broken.
-
-       Arnd
+>> On 2023/8/2 14:54, Conor Dooley wrote:
+>> > Hey Minda,
+>> > 
+>> > On Wed, Aug 02, 2023 at 02:42:15PM +0800, Minda Chen wrote:
+>> >> Actually it is a part of Conor's
+>> >> commit aae538cd03bc ("riscv: fix detection of toolchain
+>> >> Zihintpause support").
+>> >> It is looks like a merge issue.
+>> > 
+>> > Yup, spot on.
+>> > 
+>> >> Samuel's
+>> >> commit 0b1d60d6dd9e ("riscv: Fix build with
+>> >> CONFIG_CC_OPTIMIZE_FOR_SIZE=y") do not base on Conor's commit and
+>> >> revert to __riscv_zihintpause. So this patch can fix it.
+>> >> 
+>> >> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+>> > 
+>> > Did you actually manage to trigger this, or was this by inspection?
+>> > clang-15 + binutils 2.35 was, IIRC, how we spotted this because that's
+>> > what the clang-built-linux CI uses to test the LTS kernels from before
+>> > LLVM's IAS was supported for RISC-V. Seemingly all that needs to be
+>> > satisfied there is that zihintpause doesn't appear in -march so this has
+>> > gone unnoticed.
+>> > 
+>> > Fixes: 3c349eacc559 ("Merge patch "riscv: Fix build with CONFIG_CC_OPTIMIZE_FOR_SIZE=y"")
+>> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+>> > 
+>> > Thanks,
+>> > Conor.
+>> > 
+>> Thanks, Conor. I found this just by inspection. I found a issue that vdso.so call cpu_relax
+>> cause application core dump in kernel 6.1.31. I need Samuel'patch to fix this. And I search the log
+>> of processor.h found this issue.
+> 
+> That doesn't look like it is fixed in later stable kernels (we are at
+> 6.1.42-rcN right now I think). It sounds we should ask Greg to backport
+> 0b1d60d6dd9e ("riscv: Fix build with CONFIG_CC_OPTIMIZE_FOR_SIZE=y")
+> to 6.1. Does that make sense to you?
+Yes. 6.1 is lts kernel. Starfive will use this kernel for a long time. Thanks.
