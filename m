@@ -2,110 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AF176D13B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4A376D19A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234361AbjHBPNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
+        id S234998AbjHBPQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234169AbjHBPNs (ORCPT
+        with ESMTP id S234889AbjHBPOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:13:48 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616DF30D1
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:13:36 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-348d1c94fdaso3771435ab.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:13:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20221208.gappssmtp.com; s=20221208; t=1690989215; x=1691594015;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aFN0yTkYJmRYBxe8C0crI4IHgD1XQCao320E85C1eJo=;
-        b=kp7n9nNtSk8/5HElDyrHrxdGYt7rv/xOLxBpQU+qG5wUj+aPhHFt7hOsgBNU+OETht
-         KWYQgN+RSSEkCSHwBiuIn2wqCn91pIcH/6WpiiodnA80qHVCbrbi7a5F7VrS1AWocpGX
-         lkpINsr9WOQxcFPAY8112JHDHuJNcmJ6kzBmZcak+HGIKh1mUfZlmlGg/fFYiljja8Iw
-         hOStezDZIgh7VUM+4wefm3ZdGRsulRhaUdKProubNLnmpS5r9xd7/3JvspGQR7Qmuo3D
-         jGBr6kX71aa/Ip9kVb1+ByoY7pLHM2YwhbYEQr92yRmJOnBOGLIpP3nmoti+KebJ98IT
-         YNZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690989215; x=1691594015;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aFN0yTkYJmRYBxe8C0crI4IHgD1XQCao320E85C1eJo=;
-        b=lMy+Y0aKcDPVHMUlyrj+fHEbFWZSkvdXrSG25hU7pj5oPWH7xoCq5105OGP7iuvfqJ
-         0pejLcL3uDJminxPQgZcZiK01NM/NSq7AeCWsvr4SelLK18FTKNKK3kGIaCJIXZXbRm3
-         s6hBsqPr7INSFwJ9HLf/dfQd4Dzjwg6vLxL5+iLBC26kGkLFKFLZoLcY4PBsRc9orx4T
-         /FIunD1yGrmznz8P3sUOm6TDtfiJMtTGykMoC+WOu+cf3JAX93mLUyRKLr007IO1k+fv
-         GBc7Al3Td+aKe07hAKCcoggvkqzh6T3zj+hLOvdQGk6ly29cqlGPbLYFekVTDpewB2AZ
-         W7NQ==
-X-Gm-Message-State: ABy/qLa20Eln58lVpDvTLtvfHOQgctNIOJQhgmBXDnNieQbUNWtLnWBj
-        eFNdxtUjiNA/oMuQ12pvxZNx4LABnBM92QwacFw=
-X-Google-Smtp-Source: APBJJlGV0GWnRqN4nUuY2j+yBlsWFiPPK/hRERx9kc8EMoqN+d2kaqg0kL1v4ktlNGSiEvEAkXeswA==
-X-Received: by 2002:a05:6e02:4c4:b0:345:a3d0:f0d4 with SMTP id f4-20020a056e0204c400b00345a3d0f0d4mr12930279ils.3.1690989215175;
-        Wed, 02 Aug 2023 08:13:35 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id y8-20020a02a388000000b0042b46224650sm4293136jak.91.2023.08.02.08.13.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 08:13:34 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>,
-        Hannes Reinecke <hare@suse.de>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Christian Brauner <brauner@kernel.org>
-In-Reply-To: <20230801172201.1923299-2-hch@lst.de>
-References: <20230801172201.1923299-1-hch@lst.de>
- <20230801172201.1923299-2-hch@lst.de>
-Subject: Re: [PATCH 1/6] fs: remove emergency_thaw_bdev
-Message-Id: <169098921438.7183.18231196765480619399.b4-ty@kernel.dk>
-Date:   Wed, 02 Aug 2023 09:13:34 -0600
+        Wed, 2 Aug 2023 11:14:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD482130;
+        Wed,  2 Aug 2023 08:14:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=7lDn/wtFMDStStfJSFg4JFdBjyCxjqZcRZNsesSoGFY=; b=NEyqsPqSVW9mPGio75eZb8vstz
+        BwjATcHvubSU38801ClVjqC6T9M8z6Z/kBkSdqAWHV13QQpXH8yi57P/rvidiDEJBvXS6smJX1bZ4
+        kF8RIFwrxaSEtzRUv7tq90xT/8geYsbp7ij1iXYIwDX3yWj8uzV49ELoKS5mA5J5A5wd73YmGijDk
+        zQU9GEMSNz5pBP9qsQJ+6nd3nsUeGEwwgduHihDEorD3tL7mg4oytaJ6TBaSzp2DLHtLyJDpxvFFO
+        A4pG5s7mmIDvtzDsi8nhMuNuQ015e7dJPivYtELxxm7HSSMvIAqiFQ//Eq+5yJJaZMNhO2FBL4tZk
+        3l+xhvhA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qRDY8-00Ffim-Fd; Wed, 02 Aug 2023 15:14:08 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>
+Subject: [PATCH v6 06/38] mm: Add default definition of set_ptes()
+Date:   Wed,  2 Aug 2023 16:13:34 +0100
+Message-Id: <20230802151406.3735276-7-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
+In-Reply-To: <20230802151406.3735276-1-willy@infradead.org>
+References: <20230802151406.3735276-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Most architectures can just define set_pte() and PFN_PTE_SHIFT to
+use this definition.  It's also a handy spot to document the guarantees
+provided by the MM.
 
-On Tue, 01 Aug 2023 19:21:56 +0200, Christoph Hellwig wrote:
-> Fold emergency_thaw_bdev into it's only caller, to prepare for buffer.c
-> to be built only when buffer_head support is enabled.
-> 
-> 
+Suggested-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Mike Rapoport (IBM) <rppt@kernel.org>
+---
+ include/linux/pgtable.h | 81 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 60 insertions(+), 21 deletions(-)
 
-Applied, thanks!
-
-[1/6] fs: remove emergency_thaw_bdev
-      commit: 4a8b719f95c0dcd15fb7a04b806ad8139fa7c850
-[2/6] fs: rename and move block_page_mkwrite_return
-      commit: 2ba39cc46bfe463cb9673bf62a04c4c21942f1f2
-[3/6] block: open code __generic_file_write_iter for blkdev writes
-      commit: 727cfe976758b79f8d2f8051c75a5ccb14539a56
-[4/6] block: stop setting ->direct_IO
-      commit: a05f7bd9578b17521a9a5f3689f3934c082c6390
-[5/6] block: use iomap for writes to block devices
-      commit: 487c607df790d366e67a7d6a30adf785cdd98e55
-[6/6] fs: add CONFIG_BUFFER_HEAD
-      commit: 925c86a19bacf8ce10eb666328fb3fa5aff7b951
-
-Best regards,
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index f34e0f2cb4d8..3fde0d5d1c29 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -182,6 +182,66 @@ static inline int pmd_young(pmd_t pmd)
+ }
+ #endif
+ 
++/*
++ * A facility to provide lazy MMU batching.  This allows PTE updates and
++ * page invalidations to be delayed until a call to leave lazy MMU mode
++ * is issued.  Some architectures may benefit from doing this, and it is
++ * beneficial for both shadow and direct mode hypervisors, which may batch
++ * the PTE updates which happen during this window.  Note that using this
++ * interface requires that read hazards be removed from the code.  A read
++ * hazard could result in the direct mode hypervisor case, since the actual
++ * write to the page tables may not yet have taken place, so reads though
++ * a raw PTE pointer after it has been modified are not guaranteed to be
++ * up to date.  This mode can only be entered and left under the protection of
++ * the page table locks for all page tables which may be modified.  In the UP
++ * case, this is required so that preemption is disabled, and in the SMP case,
++ * it must synchronize the delayed page table writes properly on other CPUs.
++ */
++#ifndef __HAVE_ARCH_ENTER_LAZY_MMU_MODE
++#define arch_enter_lazy_mmu_mode()	do {} while (0)
++#define arch_leave_lazy_mmu_mode()	do {} while (0)
++#define arch_flush_lazy_mmu_mode()	do {} while (0)
++#endif
++
++#ifndef set_ptes
++#ifdef PFN_PTE_SHIFT
++/**
++ * set_ptes - Map consecutive pages to a contiguous range of addresses.
++ * @mm: Address space to map the pages into.
++ * @addr: Address to map the first page at.
++ * @ptep: Page table pointer for the first entry.
++ * @pte: Page table entry for the first page.
++ * @nr: Number of pages to map.
++ *
++ * May be overridden by the architecture, or the architecture can define
++ * set_pte() and PFN_PTE_SHIFT.
++ *
++ * Context: The caller holds the page table lock.  The pages all belong
++ * to the same folio.  The PTEs are all in the same PMD.
++ */
++static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
++		pte_t *ptep, pte_t pte, unsigned int nr)
++{
++	page_table_check_ptes_set(mm, ptep, pte, nr);
++
++	arch_enter_lazy_mmu_mode();
++	for (;;) {
++		set_pte(ptep, pte);
++		if (--nr == 0)
++			break;
++		ptep++;
++		pte = __pte(pte_val(pte) + (1UL << PFN_PTE_SHIFT));
++	}
++	arch_leave_lazy_mmu_mode();
++}
++#ifndef set_pte_at
++#define set_pte_at(mm, addr, ptep, pte) set_ptes(mm, addr, ptep, pte, 1)
++#endif
++#endif
++#else
++#define set_pte_at(mm, addr, ptep, pte) set_ptes(mm, addr, ptep, pte, 1)
++#endif
++
+ #ifndef __HAVE_ARCH_PTEP_SET_ACCESS_FLAGS
+ extern int ptep_set_access_flags(struct vm_area_struct *vma,
+ 				 unsigned long address, pte_t *ptep,
+@@ -1051,27 +1111,6 @@ static inline pgprot_t pgprot_modify(pgprot_t oldprot, pgprot_t newprot)
+ #define pgprot_decrypted(prot)	(prot)
+ #endif
+ 
+-/*
+- * A facility to provide lazy MMU batching.  This allows PTE updates and
+- * page invalidations to be delayed until a call to leave lazy MMU mode
+- * is issued.  Some architectures may benefit from doing this, and it is
+- * beneficial for both shadow and direct mode hypervisors, which may batch
+- * the PTE updates which happen during this window.  Note that using this
+- * interface requires that read hazards be removed from the code.  A read
+- * hazard could result in the direct mode hypervisor case, since the actual
+- * write to the page tables may not yet have taken place, so reads though
+- * a raw PTE pointer after it has been modified are not guaranteed to be
+- * up to date.  This mode can only be entered and left under the protection of
+- * the page table locks for all page tables which may be modified.  In the UP
+- * case, this is required so that preemption is disabled, and in the SMP case,
+- * it must synchronize the delayed page table writes properly on other CPUs.
+- */
+-#ifndef __HAVE_ARCH_ENTER_LAZY_MMU_MODE
+-#define arch_enter_lazy_mmu_mode()	do {} while (0)
+-#define arch_leave_lazy_mmu_mode()	do {} while (0)
+-#define arch_flush_lazy_mmu_mode()	do {} while (0)
+-#endif
+-
+ /*
+  * A facility to provide batching of the reload of page tables and
+  * other process state with the actual context switch code for
 -- 
-Jens Axboe
-
-
+2.40.1
 
