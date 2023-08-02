@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F2576C264
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A5D76C269
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbjHBBk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 21:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
+        id S229758AbjHBBmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 21:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbjHBBkM (ORCPT
+        with ESMTP id S229801AbjHBBmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 21:40:12 -0400
-Received: from out28-112.mail.aliyun.com (out28-112.mail.aliyun.com [115.124.28.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B6E2D4B
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 18:39:47 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.5120696|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_alarm|0.141021-0.000878557-0.858101;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047201;MF=sunran001@208suo.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.U6Iz1dD_1690940380;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U6Iz1dD_1690940380)
-          by smtp.aliyun-inc.com;
-          Wed, 02 Aug 2023 09:39:42 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amd/pm: Clean up errors in hardwaremanager.h
-Date:   Wed,  2 Aug 2023 01:39:39 +0000
-Message-Id: <20230802013939.8855-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 21:42:05 -0400
+Received: from out-93.mta0.migadu.com (out-93.mta0.migadu.com [IPv6:2001:41d0:1004:224b::5d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F1AC2D63
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 18:41:44 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1690940501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qaVnx0ogLsRebhvEO/RDk7RL3G27F+ZRGzTBrTb6zf8=;
+        b=iAdpDBuGb7iLjdqxxYhIW0WswXdLmP9VncJPJDj8ZVQaSUsSQ/xg7K/FD7AzTLD4dyk8hV
+        jKqvAn5m/7PeXdrd3miYik0OjbNoRhvH5CFcMb7jThZCLTQefm8gUFQwCXrwtMB6Wud9P3
+        KXIi/eZnVRkdBwTaUJML668f5pQFMeQ=
+MIME-Version: 1.0
+Subject: Re: [PATCH v4] arm64: hugetlb: enable
+ __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230802012731.62512-1-wangkefeng.wang@huawei.com>
+Date:   Wed, 2 Aug 2023 09:40:55 +0800
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mina Almasry <almasrymina@google.com>, kirill@shutemov.name,
+        joel@joelfernandes.org,
+        William Kucharski <william.kucharski@oracle.com>,
+        kaleshsingh@google.com, Linux-MM <linux-mm@kvack.org>,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>, 21cnbao@gmail.com
+Content-Transfer-Encoding: 7bit
+Message-Id: <5E1DA6D8-4EF8-4273-9C7B-093ADA84AF39@linux.dev>
+References: <20230801135616.165067-1-wangkefeng.wang@huawei.com>
+ <20230802012731.62512-1-wangkefeng.wang@huawei.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
 
-ERROR: open brace '{' following struct go on the same line
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- drivers/gpu/drm/amd/pm/powerplay/inc/hardwaremanager.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> On Aug 2, 2023, at 09:27, Kefeng Wang <wangkefeng.wang@huawei.com> wrote:
+> 
+> It is better to use huge page size instead of PAGE_SIZE
+> for stride when flush hugepage, which reduces the loop
+> in __flush_tlb_range().
+> 
+> Let's support arch's flush_hugetlb_tlb_range(), which is
+> used in hugetlb_unshare_all_pmds(), move_hugetlb_page_tables()
+> and hugetlb_change_protection() for now.
+> 
+> Note, for hugepages based on contiguous bit, it has to be
+> invalidated individually since the contiguous PTE bit is
+> just a hint, the hardware may or may not take it into account.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/inc/hardwaremanager.h b/drivers/gpu/drm/amd/pm/powerplay/inc/hardwaremanager.h
-index 01a7d66864f2..f4f9a104d170 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/inc/hardwaremanager.h
-+++ b/drivers/gpu/drm/amd/pm/powerplay/inc/hardwaremanager.h
-@@ -44,8 +44,7 @@ struct phm_fan_speed_info {
- };
- 
- /* Automatic Power State Throttling */
--enum PHM_AutoThrottleSource
--{
-+enum PHM_AutoThrottleSource {
-     PHM_AutoThrottleSource_Thermal,
-     PHM_AutoThrottleSource_External
- };
--- 
-2.17.1
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+
 
