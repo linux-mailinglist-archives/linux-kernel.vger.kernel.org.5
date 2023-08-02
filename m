@@ -2,139 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 578D876CFE5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED45F76CFEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:19:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233471AbjHBOTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:19:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57718 "EHLO
+        id S233486AbjHBOTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:19:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231868AbjHBOT3 (ORCPT
+        with ESMTP id S231868AbjHBOTv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:19:29 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96910272A;
-        Wed,  2 Aug 2023 07:19:27 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 09D8D5C0089;
-        Wed,  2 Aug 2023 10:19:27 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 02 Aug 2023 10:19:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690985967; x=1691072367; bh=BU
-        dHhNhEjX4ngx2jtG/4TPbrPOMxx6nkx3T9LDhPRYo=; b=mx5MMhewIy2oFRXKKw
-        wvhEueAMLBzedVFA5Hmi2B8U7uRIDJxC679m4oZbq/hdkvHaoWBFDiEIeswdPiH/
-        huIRfA3oKq0SZmbumzCEOJv/HiwpA7+dhvvY0SXNMRq8uHrANY7BpbMSl36yx73U
-        cGVNQdwaqKQROZPWfqSo2LZhV/l01HV/aTuXIKsqGtMhdZVAfusTlcHiRax+TEJ9
-        0muhBW3pRv8x3Q8tTpDYqhYYAODnd5WGu4W0Q1+WVHYiPQAAQTMpSEVa9JPV3uZf
-        tmMQazYaAsLtfzCWSN3hnLZ/bETPj2a6LrEjSTshUJoZ1K6nTk3x03hd3khsn8QI
-        9aVA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690985967; x=1691072367; bh=BUdHhNhEjX4ng
-        x2jtG/4TPbrPOMxx6nkx3T9LDhPRYo=; b=tCqdEg34aM0lFWczPyq3c9sPPcLut
-        VPm17vo7WVHPJjF2pkDv5z0ecScCQtyazhuKad1Bt2DfVJUYexrzgHfOBaZHZIam
-        F++AX77tbOwojiBH3nAk9nG2kUf2mcBrPkCbgMlOtxX3TV70XY7OVJCISS9GG/dk
-        zLV4VQMwQtBZ1yGCuJmX7Dw8rQsMl+T1WUIkI5fAqHdo+mTNGRQMut5TAd0hbvy0
-        AONIKCrS2hULXURdIKm41ESUE0ouNwVkMp/qPLYnQOgD8sSQ/zwrjPf5EXvrn7F8
-        wKtlaqtXB03TGSLe1QajXMHFyNbs/GGaP3cJpvWV8gfLNUoYmJRoJDghg==
-X-ME-Sender: <xms:7GXKZCdwLfUemzGe_EP5hor1BJUfvMXU8ZRCXTADvKQJqfQ1fwS-aA>
-    <xme:7GXKZMPmBbX0Xlp4jUXFxIVDXcytP3LiHuyjZv1R4shBg-XQOIAKlc3TT5i4Rylgt
-    Qi3delCyOzHn-xfj1E>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeekgdejgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:7GXKZDjL-i0B1kkvbWppm5sVdxBk0wgnWR5ejlXyPERSn2O46KJ9Xg>
-    <xmx:7GXKZP9C4BL-B1HfXPPc0D_GGJGe8P9mCvtTneNekgK487HERx1P3A>
-    <xmx:7GXKZOtkBafA77K2BTCJNlPYMgeYxm_i-8_bBrJBK3x5M2mrOAvxog>
-    <xmx:72XKZJmfIagEXMHBV391U4wB9ZMGdsv2kEx7GvYCVHgTA2ZwDvG3xQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7FA53B60089; Wed,  2 Aug 2023 10:19:24 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
-Mime-Version: 1.0
-Message-Id: <39c79971-12fc-41fc-8cae-b2a0089ed034@app.fastmail.com>
-In-Reply-To: <c48f6f3c742eaf35e35882064ccf4ed07d4e63fe.camel@physik.fu-berlin.de>
-References: <20230706154520.11257-1-bhe@redhat.com>
- <20230706154520.11257-12-bhe@redhat.com>
- <CAMuHMdWmv-Jdvi7a04JGXuA2QARj8c8mpUvY7TOcetPkG4pW7A@mail.gmail.com>
- <0f771b11539d5a3871691af901315ee2034b577c.camel@physik.fu-berlin.de>
- <09094baf-dadf-4bce-9f63-f2a1f255f9a8@app.fastmail.com>
- <c48f6f3c742eaf35e35882064ccf4ed07d4e63fe.camel@physik.fu-berlin.de>
-Date:   Wed, 02 Aug 2023 16:19:04 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Baoquan He" <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Andrew Morton" <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        "Christoph Hellwig" <hch@lst.de>,
-        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Matthew Wilcox" <willy@infradead.org>,
-        "Alexander Gordeev" <agordeev@linux.ibm.com>,
-        "Kefeng Wang" <wangkefeng.wang@huawei.com>,
-        "Niklas Schnelle" <schnelle@linux.ibm.com>,
-        "Stafford Horne" <shorne@gmail.com>,
-        "David Laight" <David.Laight@aculab.com>,
-        "Helge Deller" <deller@gmx.de>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        "Yoshinori Sato" <ysato@users.sourceforge.jp>,
-        "Rich Felker" <dalias@libc.org>, linux-sh@vger.kernel.org,
-        "Guenter Roeck" <linux@roeck-us.net>
-Subject: Re: [PATCH v8 11/19] sh: add <asm-generic/io.h> including
-Content-Type: text/plain
+        Wed, 2 Aug 2023 10:19:51 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04704270F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:19:49 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-4fe0e34f498so11113653e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690985987; x=1691590787;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a4wZsqR8LbrTTZv7kmk4RZ3s9EZmYRoAu6PO3sMdZUs=;
+        b=VBAjZfSLPDTNwu0CV0rv4G5xg10wHSM/383f45p5UkzIDihYnJOVr7SFrEPpej4o++
+         qhzsZLmUhm+Y1CguDPHbBSgmSYg4iV1qJA0JQ9pLeE4cUt386BnzSwesNCsvYS5selB8
+         Wst0rOLT902/p2+bofyLyC1+iF4yvjOlIqGikNxnuuuwHodxfIKGfMcXDGwGejpBnSts
+         Zs4hPiQ0F42FIkA4Yucbx6U/ajplONI6YvxD1jAxDvvO5/rmLntQ0Cq+ScNsyl3zCumv
+         cygBhCtVrvN2zcJk9uEKlDvuk7Z6tJZTG0hGg4ItUPkBqmDOtY9tnQxfmsfolnvuvMEz
+         72GA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690985987; x=1691590787;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a4wZsqR8LbrTTZv7kmk4RZ3s9EZmYRoAu6PO3sMdZUs=;
+        b=e56sGYjMLhC6yOCfvbpiQ2b2Bxa6/X0Ihb41ZlRhnWllrgZhxg7IrpbRZLc7v0ILuf
+         feqj4wyKq92Jn1p6bJoeUV11P8IdcvY9nertbDT5s/48i+N4AUJhL8U2CymRqXp67aQv
+         pu/MJ3IWabYA9CLwsFhcgk1a413II9zgaHVXJNAkn/7gZO3UT5edemCeG1Xv3dT9mrJR
+         b2CeJXi5DNnK5y0ipCha2o/R0qkXZNubcwdw5xw90IDMyGpfQ7mtqLkHMSi7ZJJ+Npd7
+         /9AS8oGXfr4Q0Jp9tvOcYHZzT5n9ut3GYDdSyR15r5yWfnWipkMG+rIdOJxdUfSk1ZqH
+         jlTw==
+X-Gm-Message-State: ABy/qLbBh+kg0acwyhjddGQ/uiW9kDeYutHPd0JuDH83Di9b2247x5On
+        W1KmRvCRiiryP9zdhDZ38rFyBw==
+X-Google-Smtp-Source: APBJJlHXFkd0l2Dl0uCDbmr5c23DuUa47sXDSuioFO/K6TtLmZZkga2NjOJcXcM347Gwl2VJkTXPJA==
+X-Received: by 2002:a05:6512:3694:b0:4fe:193a:e15c with SMTP id d20-20020a056512369400b004fe193ae15cmr4097594lfs.40.1690985987197;
+        Wed, 02 Aug 2023 07:19:47 -0700 (PDT)
+Received: from umbar.unikie.fi ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id p15-20020a19f00f000000b004fdfd4c1fcesm2952851lfc.36.2023.08.02.07.19.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 07:19:46 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     freedreno@lists.freedesktop.org, Jonathan Marek <jonathan@marek.ca>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dpu: increase memtype count to 16 for sm8550
+Date:   Wed,  2 Aug 2023 17:19:46 +0300
+Message-Id: <169098596277.4187657.1718002880741720691.b4-ty@linaro.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230802134900.30435-1-jonathan@marek.ca>
+References: <20230802134900.30435-1-jonathan@marek.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023, at 21:21, John Paul Adrian Glaubitz wrote:
 
->> I think ideally all the I/O port stuff in arch/sh/ could just be
->> removed after the conversion to asm-generic/io.h, but the
->> microdev_ioport_map() function oddity gets in the way of that,
->> unless someone wants to clean up that platform. As far as I
->> can tell, the ethernet, display, USB and PCI devices on it already
->> broke at some point (afbb9d8d5266b, 46bc85872040a), so it might
->> be easier to remove it entirely.
->
-> I don't have this particular hardware, so I cannot comment on this.
+On Wed, 02 Aug 2023 09:48:53 -0400, Jonathan Marek wrote:
+> sm8550 has 16 vbif clients.
+> 
+> This fixes the extra 2 clients (DMA4/DMA5) not having their memtype
+> initialized. This fixes DMA4/DMA5 planes not displaying correctly.
+> 
+> 
 
-Sure, as I explained, I'm pretty sure that nobody has
-tried to boot this hardware in a long time, so I did not
-expect you to have one.
+Applied, thanks!
 
-I'll try to follow up with a patch to remove the platform
-later on, based on the explations above.
+[1/1] drm/msm/dpu: increase memtype count to 16 for sm8550
+      https://gitlab.freedesktop.org/lumag/msm/-/commit/08bfcdc2c358
 
->> Having the series go into linux-next sounds appropriate like this,
->> the entire purpose of that is to find such bugs and Andrew can jus
->> fold the fixup into the broken patch. 
->> 
->> Let me know if you prefer the simple version with the extra
->> #defines or if we should just use the generic inb/outb implementation
->> immediately and drop microdev in a separate patch.
->
-> Please go ahead with the simple version.
-
-Done,
-
-     Arnd
+Best regards,
+-- 
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
