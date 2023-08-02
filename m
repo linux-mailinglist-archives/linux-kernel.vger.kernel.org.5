@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7AC76D694
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B8576D695
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234287AbjHBSK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:10:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58068 "EHLO
+        id S234405AbjHBSLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234351AbjHBSKr (ORCPT
+        with ESMTP id S234434AbjHBSKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:10:47 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F28F52704
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:10:35 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bba48b0bd2so1072795ad.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:10:35 -0700 (PDT)
+        Wed, 2 Aug 2023 14:10:55 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F229719A1
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:10:53 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bb982d2572so1217185ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:10:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690999835; x=1691604635;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ldvDwR+TbK2QfS8E1DpAj886KyiAxDSW8+aMumyhSP4=;
-        b=YCD0Qgu9KEs/01vlshq7vgamQUq2iwEcGVAA/dU6ceJRnKZ0R4kTQKnLUs7qoJ1KTw
-         y2WzL0DJw8CLtzDO9d3XYhzUKw6ewLW3gYXDe+AMmM4R0abPYilMxLve0Wg4/fb5vOV7
-         xBYHpxLOrrkladpdurehm8/OlkHS+AbhY65oF6XnBQY2UZzRksq4rJBKKfLRXACS1Vdc
-         XI45SUPCgN35/sOA7ohp9IMl+fMf9EOOEk8MOpl1INLVsn6j0tjLbunLACuQxyPjS+S8
-         Cu8IuSSNgiTWRvTW71MnHrdJuEozIOks6JD9Pv8oprCbwnN9UWO7wfH9mH3103W0k3va
-         lFFQ==
+        d=google.com; s=20221208; t=1690999853; x=1691604653;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hNOi1ejB1pS9dlnPvTd4BYpS5FGTlhXd3925hg/0fm0=;
+        b=1OE6veZg59gsoeCLHSoB+UkPlLRLs1s07mLxso/osH78WHkdAyjyM4PFg5Fl4ie4bF
+         8Qo+8PDNUg50lP5ODwwCYp4j7hvQjDe7PTVUeYd+qQ8VWZ0FPNt4U58Lca5UL+4tPn+h
+         P2AQIfN8/ciTQ7eTvI9WfNCJ2Yw8sJqnjprqmUrBmOebKgbeUxbvIcy83OAqQuxMlUHz
+         Ka/cmhhuQX+2eepM+r+ZZwEm9yWdteKzIfjvrX0OC7HWPhtD3ANjTNIcySs2o1S1qbtD
+         6F64Y2wQS7ACru2HtGrPU40xivGqU91vFZx/cKdsS27iWoCyFLSe/lPv3rzAL4XHHGha
+         Kwdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690999835; x=1691604635;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ldvDwR+TbK2QfS8E1DpAj886KyiAxDSW8+aMumyhSP4=;
-        b=kdo8/+6sicfuA87NkDvGGQEy3Yg7MOXBtwm5tALpIZtQQMbxvlEWzEQzEIMwywmUCF
-         S3J07vt8nunHTcIm3KXrtLvRD6t50bLe/pAwNEXnbJznB7OpiiGQNsDNYzgYDKdZAfhw
-         U54zcFihgVYZjnk1NRn4nmooo3+VOD/m0OH4vY15gzzQkMrqVF1qek/+uw7Ldg0jMrR/
-         kREQOAy7Ju91CNzL2sNzqiUv5lL8t2K/5wzKZ8O1E+shMJwtElWXenk8aesXjSFDbol7
-         0QiRQkNbcgxmbrNMuwJIIElZoTFKVPtJuxdCDzH5p0mVWqim+/KlNDDEKDHUVy1l9Yyr
-         7HmQ==
-X-Gm-Message-State: ABy/qLYMjcYA+uSoAB+By9U3IQsqU1bDmv7+UADatXNNDWHYMZU1u8JZ
-        vOI4vGU6fFgLVdbHGDfliZQ=
-X-Google-Smtp-Source: APBJJlEDNO9oKf3ODmJZdN4zDJ7iVeH5HMme3KrhK5nNF1JkAnS+pS9euqDGAEk4v361jdcFVYPA6w==
-X-Received: by 2002:a17:902:e5c4:b0:1bb:5b88:73da with SMTP id u4-20020a170902e5c400b001bb5b8873damr17310361plf.61.1690999835179;
-        Wed, 02 Aug 2023 11:10:35 -0700 (PDT)
-Received: from localhost (dhcp-72-235-13-41.hawaiiantel.net. [72.235.13.41])
-        by smtp.gmail.com with ESMTPSA id iz12-20020a170902ef8c00b001b9de2b905asm12761279plb.231.2023.08.02.11.10.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 11:10:34 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 2 Aug 2023 08:10:33 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Aaron Tomlin <atomlin@atomlin.com>
-Cc:     peterz@infradead.org, jiangshanlai@gmail.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] workqueue: Introduce PF_WQ_RESCUE_WORKER
-Message-ID: <ZMqcGUderg8v5SEz@slm.duckdns.org>
-References: <ZMhFUbL42Ycyc2tI@slm.duckdns.org>
- <20230801105301.952042-1-atomlin@atomlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801105301.952042-1-atomlin@atomlin.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1690999853; x=1691604653;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hNOi1ejB1pS9dlnPvTd4BYpS5FGTlhXd3925hg/0fm0=;
+        b=DcFtXoPq5oWYQJLynf1YE9wI5iwtiiwOYKWF5QSHjmdxnVrWgwG0FJS0SZNi24Jb3M
+         Q4hOctZWzMPkx+i/1wnieL8bIb0brtn5eFuqJTogsgEdzokv9jXPycxmP7Y/HE4UMHPP
+         +9lpI/xQ4eTRuW79KkVUwSg+3WWQh5ilz4WSJfW/3vuCRTcwPKrjuBoUE/h9i3rdmq5m
+         i+k75wzZPlZtZe7xVXUf4DMLLPz4erz8wY6CCZSAWkmJ3XG8KJjvm0+14NdSzTLBZDl8
+         sojk6S0ac/6YzxOSOssc45NPk6kAeqeGDOofntLR0bR7Tyul2rXZgipdHy3RvXU0Za5w
+         Ot/A==
+X-Gm-Message-State: ABy/qLYfvd31pNcbOb0ZFs0wsIB9xpFJMx2c35fTgEbsx4dPomaisnsu
+        EPkhzF+DQQuUQ/VScTFC+4EspzyuIn4=
+X-Google-Smtp-Source: APBJJlF95ARaqLNa81cSoeQ/yVAVuvkJNFxH1E7bSipo61hU/hVILuvCTY7msX2mF/eehqZ1FtZW+rjYsqE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e5c1:b0:1b7:edcd:8dcf with SMTP id
+ u1-20020a170902e5c100b001b7edcd8dcfmr98453plf.4.1690999853513; Wed, 02 Aug
+ 2023 11:10:53 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 11:10:51 -0700
+In-Reply-To: <20230801020206.1957986-5-zhaotianrui@loongson.cn>
+Mime-Version: 1.0
+References: <20230801020206.1957986-1-zhaotianrui@loongson.cn> <20230801020206.1957986-5-zhaotianrui@loongson.cn>
+Message-ID: <ZMqcKzrSsw9WGeTC@google.com>
+Subject: Re: [PATCH v1 4/4] selftests: kvm: Add LoongArch tests into makefile
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tianrui Zhao <zhaotianrui@loongson.cn>
+Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 01, 2023, Tianrui Zhao wrote:
+> Add LoongArch tests into selftests/kvm makefile.
 
-On Tue, Aug 01, 2023 at 11:53:01AM +0100, Aaron Tomlin wrote:
-> > You really shouldn't be setting affinities on kworkers manually. There's
-> > no way of knowing which kworker is going to execute which workqueue.
-> > Please use the attributes API and sysfs interface to modify per-workqueue
-> > worker attributes. If that's not sufficient and you need finer grained
-> > control, the right thing to do is using kthread_worker which gives you a
-> > dedicated kthread that you can manipulate as appropriate.
+Please elaborate on how the lists of tests was chosen.  E.g. explaing why
+LoongArch isn't supporting kvm_binary_stats_test, rseq_test, etc.
+
+> Based-on: <20230720062813.4126751-1-zhaotianrui@loongson.cn>
+> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
+> ---
+>  tools/testing/selftests/kvm/Makefile | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> I completely agree. Each kworker has PF_NO_SETAFFINITY applied anyway.
-> If I understand correctly, only an unbound kworker can have their CPU
-> affinity modified via sysfs. The objective of this series was to easily
-> identify a rescuer kworker from user-mode.
-
-But why do you need to identify rescue workers? What are you trying to
-achieve?
-
-Thanks.
-
--- 
-tejun
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index c692cc86e7da..36a808c0dd4c 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -55,6 +55,10 @@ LIBKVM_s390x += lib/s390x/ucall.c
+>  LIBKVM_riscv += lib/riscv/processor.c
+>  LIBKVM_riscv += lib/riscv/ucall.c
+>  
+> +LIBKVM_loongarch += lib/loongarch/processor.c
+> +LIBKVM_loongarch += lib/loongarch/ucall.c
+> +LIBKVM_loongarch += lib/loongarch/exception.S
+> +
+>  # Non-compiled test targets
+>  TEST_PROGS_x86_64 += x86_64/nx_huge_pages_test.sh
+>  
+> @@ -181,6 +185,13 @@ TEST_GEN_PROGS_riscv += kvm_page_table_test
+>  TEST_GEN_PROGS_riscv += set_memory_region_test
+>  TEST_GEN_PROGS_riscv += kvm_binary_stats_test
+>  
+> +TEST_GEN_PROGS_loongarch += kvm_create_max_vcpus
+> +TEST_GEN_PROGS_loongarch += demand_paging_test
+> +TEST_GEN_PROGS_loongarch += kvm_page_table_test
+> +TEST_GEN_PROGS_loongarch += set_memory_region_test
+> +TEST_GEN_PROGS_loongarch += memslot_modification_stress_test
+> +TEST_GEN_PROGS_loongarch += memslot_perf_test
+> +
+>  TEST_PROGS += $(TEST_PROGS_$(ARCH_DIR))
+>  TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(ARCH_DIR))
+>  TEST_GEN_PROGS_EXTENDED += $(TEST_GEN_PROGS_EXTENDED_$(ARCH_DIR))
+> -- 
+> 2.39.1
+> 
