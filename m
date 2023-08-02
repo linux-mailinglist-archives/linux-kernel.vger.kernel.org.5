@@ -2,441 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF7876C45F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BABC476C467
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbjHBE6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 00:58:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58556 "EHLO
+        id S232113AbjHBE7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 00:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231347AbjHBE6b (ORCPT
+        with ESMTP id S230138AbjHBE7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 00:58:31 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240072115
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:58:29 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe24b794e5so21905935e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 21:58:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1690952307; x=1691557107;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uP81KN3tQ8cedSyoxZUbQyzR0798MUJKD1PTC8kj42Q=;
-        b=ZSOQR00oVlkinMvxdkLltiOUbOd3IULsHdEos4Aqc2gBLUmIYjXPeg569mZrsOWnBE
-         UIRv6Jfpd+FrxUPGe6g+eln2Qq1rj7hnn6JGwfxzrq6wscOeTJvKmGaezbsqmcqoU7oj
-         SMvMvgEdtiCleixV/oca8x+X5Ec5f6zhQMUEgOPZthS10/5HDM1NOoEsm6VqUMpDLBMg
-         Sq3B5YFf92+/bJVE44Kr3Vfkvjulswyr3R51ER5ZzDa2jjKNpdiUnVi5FaJauJ4OZY2q
-         ezOC5sbII5J8Z+BDcndMjbSOc/7wbM7duPpjySoq5p4gnVktLkh84dSz+ki4n7XnS58m
-         HPGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690952307; x=1691557107;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uP81KN3tQ8cedSyoxZUbQyzR0798MUJKD1PTC8kj42Q=;
-        b=Z2Lu9NqCWcZzzZ8i10fe4Tiy7VSfc/9X9Qj/0GdT/tKgHQvZXHnGcqEccRAt1pOwGg
-         uCxZdgas1/Hc1IArG8PeXo7Wa9IY5c5Ofh1h3Ab8e+SwXLWJGz8NO2mhvnxoUFiW7vwm
-         gh43F4YoqxHyl4/9dtuJpdCS8Q1lvSw8Y7hAPev51b9j/6ihyGdD27zEf4aRl18bD+ko
-         l/YKuXCfiKrucG/6gguDXTtMyK13iqgEPw8GUZcVBr4kPdLfjuhd/MKxIfskujWYf0WC
-         91QoGbao6+qibCS77kRQp3avIM2rp3fwMGG4KbvDggVm8nIikUXkvvELTRTdjaPb3Nqn
-         n89w==
-X-Gm-Message-State: ABy/qLZTKqKEceMypOtqBcVL09TbaSnaz+R2FK8pNOF4eNGojR2STeu4
-        VAa8nUCycijl3PjYChsxXhLx0Q==
-X-Google-Smtp-Source: APBJJlGriELJO65hKA65iyJlfGqVWtftcTeyj0YcSvZb+qQ8uDgkK+hSLZLUxS+gPd3WC3edfz8zLw==
-X-Received: by 2002:a05:600c:2353:b0:3fd:2f8e:2c69 with SMTP id 19-20020a05600c235300b003fd2f8e2c69mr3723241wmq.32.1690952307645;
-        Tue, 01 Aug 2023 21:58:27 -0700 (PDT)
-Received: from [10.0.2.15] ([82.78.167.79])
-        by smtp.gmail.com with ESMTPSA id 25-20020a05600c029900b003fba2734f1esm634740wmk.1.2023.08.01.21.58.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 21:58:27 -0700 (PDT)
-Message-ID: <ea2b76bb-e3ae-eb10-7d9d-c17e7dbd2dc1@tuxon.dev>
-Date:   Wed, 2 Aug 2023 07:58:25 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 50/50] ARM: dts: at91: sam9x75_curiosity: add sam9x75
- curiosity board
-Content-Language: en-US
-To:     Varshini Rajendran <varshini.rajendran@microchip.com>,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, nicolas.ferre@microchip.com,
-        alexandre.belloni@bootlin.com, claudiu.beznea@microchip.com,
-        andre.przywara@arm.com, f.fainelli@gmail.com,
-        romain.perier@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230728103114.267845-1-varshini.rajendran@microchip.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230728103114.267845-1-varshini.rajendran@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 00:59:38 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBF31BFA;
+        Tue,  1 Aug 2023 21:59:37 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3723OI3F020182;
+        Wed, 2 Aug 2023 04:59:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=kMErFIqWFbN25KqkFKK6YzYOatQw6VWpghdd42BrtU0=;
+ b=NXz2w4ld+JJtaEJApD+HC/9MdctewbyB1Pq7q6aleIeWJMJRqNG6BVI4qHnevMhih0CK
+ wvYSavsYKSFGoWb4NPCuo/jYPR6r4TdHq11x6P7BAb4dOx6q+am+DGb+gvfoRARDrWhy
+ lABjlDxuFRqzWTnc6j2waJFy8vagg3htakG46VGUhh3lNUNIt4ndsoHBzGgWblAqgoq9
+ s9Z4s2Jv3ag/77b3uj3UWuv0UVRJQA1k1DC+xylmhm2emw1qwu+ltQCpdiRD9pVVcqJM
+ aiCHmMazBwPhsVCw8M93t4Bzh6vyH+IIGrprvwOTg6mSMxhkemRCm7GuiJyfApL5JTA+ uQ== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7adk8jfd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 04:59:31 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3724xR1H022302;
+        Wed, 2 Aug 2023 04:59:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3s4uukd91t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 02 Aug 2023 04:59:27 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3724xQFJ022282;
+        Wed, 2 Aug 2023 04:59:26 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3724xQ3r022279;
+        Wed, 02 Aug 2023 04:59:26 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
+        id 4890D4B59; Wed,  2 Aug 2023 10:29:25 +0530 (+0530)
+From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
+        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
+        Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Subject: [PATCH v5 0/5]  PCI: EPC: Add support to wake up host from D3 states
+Date:   Wed,  2 Aug 2023 10:29:14 +0530
+Message-Id: <1690952359-8625-1-git-send-email-quic_krichai@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: vr2OErjd5gURnCDKGDRMbywFvrypQxSK
+X-Proofpoint-GUID: vr2OErjd5gURnCDKGDRMbywFvrypQxSK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_03,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=622 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020044
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Here we propose this patch series to add support in PCI endpoint
+driver to wake up host from D3 states.
 
+As endpoint cannot send any data/MSI when the D-state is in
+D3cold or D3hot. Endpoint needs to bring the device back to D0
+to send any kind of data.
 
-On 28.07.2023 13:31, Varshini Rajendran wrote:
-> Add device tree file for sam9x75 curiosity board.
-> 
-> Signed-off-by: Varshini Rajendran <varshini.rajendran@microchip.com>
-> ---
->  arch/arm/boot/dts/microchip/Makefile          |   5 +
->  .../dts/microchip/at91-sam9x75_curiosity.dts  | 311 ++++++++++++++++++
->  2 files changed, 316 insertions(+)
->  create mode 100644 arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts
-> 
-> diff --git a/arch/arm/boot/dts/microchip/Makefile b/arch/arm/boot/dts/microchip/Makefile
-> index 0f5193d05a31..f3d604c30325 100644
-> --- a/arch/arm/boot/dts/microchip/Makefile
-> +++ b/arch/arm/boot/dts/microchip/Makefile
-> @@ -10,6 +10,7 @@ DTC_FLAGS_at91-sama5d3_eds := -@
->  DTC_FLAGS_at91-sama5d3_xplained := -@
->  DTC_FLAGS_at91-sama5d4_xplained := -@
->  DTC_FLAGS_at91-sama7g5ek := -@
-> +DTC_FLAGS_at91-sam9x75_curiosity := -@
->  dtb-$(CONFIG_SOC_AT91RM9200) += \
->  	at91rm9200ek.dtb \
->  	mpa1600.dtb
-> @@ -61,6 +62,10 @@ dtb-$(CONFIG_SOC_SAM9X60) += \
->  	at91-sam9x60_curiosity.dtb \
->  	at91-sam9x60ek.dtb
->  # Enables support for device-tree overlays
-> +DTC_FLAGS_at91-sam9x75_curiosity := -@
-> +dtb-$(CONFIG_SOC_SAM9X7) += \
-> +	at91-sam9x75_curiosity.dtb
-> +# Enables support for device-tree overlays
->  DTC_FLAGS_at91-sama5d27_som1_ek := -@
->  DTC_FLAGS_at91-sama5d27_wlsom1_ek := -@
->  DTC_FLAGS_at91-sama5d2_icp := -@
-> diff --git a/arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts b/arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts
-> new file mode 100644
-> index 000000000000..a9ecb02a9f3c
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/microchip/at91-sam9x75_curiosity.dts
-> @@ -0,0 +1,311 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * at91-sam9x75_curiosity.dts - Device Tree file for Microchip SAM9X75 Curiosity board
-> + *
-> + * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
-> + *
-> + * Author: Varshini Rajendran <varshini.rajendran@microchip.com>
-> + */
-> +/dts-v1/;
-> +#include "sam9x7.dtsi"
-> +#include <dt-bindings/input/input.h>
-> +
-> +/ {
-> +	model = "Microchip SAM9X75 Curiosity";
-> +	compatible = "microchip,sam9x75-curiosity", "microchip,sam9x7", "atmel,at91sam9";
-> +
-> +	aliases {
-> +		i2c0 = &i2c6;
-> +		i2c1 = &i2c7;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	clocks {
-> +		clock-slowxtal {
-> +			clock-frequency = <32768>;
-> +		};
-> +
-> +		clock-mainxtal {
-> +			clock-frequency = <24000000>;
-> +		};
-> +	};
-> +
-> +	gpio-keys {
-> +		compatible = "gpio-keys";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_key_gpio_default>;
-> +
-> +		button-user {
-> +			label = "USER";
-> +			gpios = <&pioC 9 GPIO_ACTIVE_LOW>;
-> +			linux,code = <KEY_PROG1>;
-> +			wakeup-source;
-> +		};
-> +	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_led_gpio_default>;
-> +
-> +		led-0 {
-> +			label = "red";
-> +			gpios = <&pioC 19 GPIO_ACTIVE_HIGH>;
-> +		};
-> +
-> +		led-1 {
-> +			label = "green";
-> +			gpios = <&pioC 21 GPIO_ACTIVE_HIGH>;
-> +		};
-> +
-> +		led-2 {
-> +			label = "blue";
-> +			gpios = <&pioC 20 GPIO_ACTIVE_HIGH>;
-> +			linux,default-trigger = "heartbeat";
-> +		};
-> +	};
-> +
-> +	memory@20000000 {
-> +		device_type = "memory";
-> +		reg = <0x20000000 0x10000000>;
-> +	};
-> +};
-> +
-> +&dbgu {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_dbgu>;
-> +	status = "okay";
-> +};
-> +
-> +&dma0 {
-> +	status = "okay";
-> +};
-> +
-> +&ehci0 {
-> +	status = "okay";
-> +};
-> +
-> +&flx6 {
-> +	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
-> +	status = "okay";
-> +
-> +	i2c6 {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_flx6_default>;
-> +		i2c-analog-filter;
-> +		i2c-digital-filter;
-> +		i2c-digital-filter-width-ns = <35>;
-> +		status = "okay";
-> +
-> +		pmic@5b {
-> +			compatible = "microchip,mcp16502";
-> +			reg = <0x5b>;
-> +
-> +			regulators {
-> +				vdd_3v3: VDD-IO {
-> +					regulator-name = "VDD_IO";
-> +					regulator-min-microvolt = <3000000>;
-> +					regulator-max-microvolt = <3600000>;
+For this endpoint needs to send inband PME the device is in D3 state or
+toggle wake when the device is D3 cold and vaux is not supplied.
 
-Please double check board + SoC supports this range of voltage. Same for
-the other regulator entries.
+Based on the D-state the EPF driver decides to wake host either by
+toggling wake or by sending PME.
 
-> +					regulator-initial-mode = <2>;
-> +					regulator-allowed-modes = <2>, <4>;
-> +					regulator-always-on;
-> +
-> +					regulator-state-standby {
-> +						regulator-on-in-suspend;
-> +						regulator-mode = <4>;
-> +					};
-> +
-> +					regulator-state-mem {
-> +						regulator-mode = <4>;
-> +					};
-> +				};
-> +
-> +				vddioddr: VDD-DDR {
-> +					regulator-name = "VDD_DDR";
-> +					regulator-min-microvolt = <1283000>;
-> +					regulator-max-microvolt = <1450000>;
-> +					regulator-initial-mode = <2>;
-> +					regulator-allowed-modes = <2>, <4>;
-> +					regulator-always-on;
-> +
-> +					regulator-state-standby {
-> +						regulator-on-in-suspend;
-> +						regulator-mode = <4>;
-> +					};
-> +
-> +					regulator-state-mem {
-> +						regulator-on-in-suspend;
-> +						regulator-mode = <4>;
-> +					};
-> +				};
-> +
-> +				vddcore: VDD-CORE {
-> +					regulator-name = "VDD_CORE";
-> +					regulator-min-microvolt = <500000>;
-> +					regulator-max-microvolt = <1210000>;
-> +					regulator-initial-mode = <2>;
-> +					regulator-allowed-modes = <2>, <4>;
-> +					regulator-always-on;
-> +
-> +					regulator-state-standby {
-> +						regulator-on-in-suspend;
-> +						regulator-mode = <4>;
-> +					};
-> +
-> +					regulator-state-mem {
-> +						regulator-mode = <4>;
-> +					};
-> +				};
-> +
-> +				vddcpu: VDD-OTHER {
-> +					regulator-name = "VDD_OTHER";
-> +					regulator-min-microvolt = <1700000>;
-> +					regulator-max-microvolt = <3600000>;
-> +					regulator-initial-mode = <2>;
-> +					regulator-allowed-modes = <2>, <4>;
-> +					regulator-ramp-delay = <3125>;
-> +					regulator-always-on;
-> +
-> +					regulator-state-standby {
-> +						regulator-on-in-suspend;
-> +						regulator-mode = <4>;
-> +					};
-> +
-> +					regulator-state-mem {
-> +						regulator-mode = <4>;
-> +					};
-> +				};
-> +
-> +				vldo1: LDO1 {
-> +					regulator-name = "LDO1";
-> +					regulator-min-microvolt = <1200000>;
-> +					regulator-max-microvolt = <3700000>;
-> +					regulator-always-on;
-> +
-> +					regulator-state-standby {
-> +						regulator-on-in-suspend;
-> +					};
-> +				};
-> +
-> +				vldo2: LDO2 {
-> +					regulator-name = "LDO2";
-> +					regulator-min-microvolt = <1200000>;
-> +					regulator-max-microvolt = <3700000>;
-> +
-> +					regulator-state-standby {
-> +						regulator-on-in-suspend;
-> +					};
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&ohci0 {
-> +	num-ports = <3>;
-> +	atmel,vbus-gpio = <0
-> +			   &pioC 27 GPIO_ACTIVE_HIGH
-> +			   &pioB 18 GPIO_ACTIVE_HIGH>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usb_default>;
-> +	status = "okay";
-> +};
-> +
-> +&pinctrl {
-> +
-> +	dbgu {
-> +		pinctrl_dbgu: dbgu-0 {
-> +			atmel,pins = <AT91_PIOA 26 AT91_PERIPH_A AT91_PINCTRL_PULL_UP
-> +				      AT91_PIOA 27 AT91_PERIPH_A AT91_PINCTRL_NONE>;
-> +		};
-> +	};
-> +
-> +	flexcom {
-> +		pinctrl_flx6_default: flx6-twi {
-> +			atmel,pins =
-> +				<AT91_PIOA 24 AT91_PERIPH_A AT91_PINCTRL_PULL_UP
-> +				 AT91_PIOA 25 AT91_PERIPH_A AT91_PINCTRL_PULL_UP>;
-> +		};
-> +	};
-> +
-> +	gpio-keys {
-> +		pinctrl_key_gpio_default: key-gpio-default {
-> +			atmel,pins = <AT91_PIOC 9 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-> +		};
-> +	};
-> +
-> +	leds {
-> +		pinctrl_led_gpio_default: led-gpio-default {
-> +			atmel,pins = <AT91_PIOC 19 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
-> +				      AT91_PIOC 21 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
-> +				      AT91_PIOC 20 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-> +		};
-> +	};
-> +
-> +	ohci0 {
-> +		pinctrl_usb_default: usb-default {
-> +			atmel,pins = <AT91_PIOC 27 AT91_PERIPH_GPIO AT91_PINCTRL_NONE
-> +				      AT91_PIOB 18 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-> +		};
-> +	};
-> +
-> +	sdmmc0 {
-> +		pinctrl_sdmmc0_default: sdmmc0 {
-> +			atmel,pins =
-> +				<AT91_PIOA 2 AT91_PERIPH_A (AT91_PINCTRL_DRIVE_STRENGTH_HI | AT91_PINCTRL_SLEWRATE_DIS)					/* PA2 CK  periph A with pullup */
-> +				 AT91_PIOA 1 AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_DRIVE_STRENGTH_HI | AT91_PINCTRL_SLEWRATE_DIS)		/* PA1 CMD periph A with pullup */
-> +				 AT91_PIOA 0 AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_DRIVE_STRENGTH_HI | AT91_PINCTRL_SLEWRATE_DIS)		/* PA0 DAT0 periph A */
-> +				 AT91_PIOA 3 AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_DRIVE_STRENGTH_HI | AT91_PINCTRL_SLEWRATE_DIS)		/* PA3 DAT1 periph A with pullup */
-> +				 AT91_PIOA 4 AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_DRIVE_STRENGTH_HI | AT91_PINCTRL_SLEWRATE_DIS)		/* PA4 DAT2 periph A with pullup */
-> +				 AT91_PIOA 5 AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_DRIVE_STRENGTH_HI | AT91_PINCTRL_SLEWRATE_DIS)>;	/* PA5 DAT3 periph A with pullup */
-> +		};
-> +	};
-> +
-> +	usb0 {
-> +		pinctrl_usba_vbus: usba-vbus {
-> +			atmel,pins = <AT91_PIOC 8 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
-> +		};
-> +	};
-> +}; /* pinctrl */
-> +
-> +&rtt {
-> +	atmel,rtt-rtc-time-reg = <&gpbr 0x0>;
-> +};
-> +
-> +&sdmmc0 {
-> +	bus-width = <4>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_sdmmc0_default>;
-> +	cd-gpios = <&pioA 23 GPIO_ACTIVE_LOW>;
-> +	disable-wp;
-> +	status = "okay";
-> +};
-> +
-> +&power_management {
+When the MHI state is in M3 MHI driver will wakeup the host using the
+wakeup op.
 
-Make sure this entry is in dtsi. I know this is shdwc usually. I don't have
-the dtsi at hand (your threading is broken).
+This change is dependent on this series PCI: endpoint: add D-state change notifier
+support
 
-> +	debounce-delay-us = <976>;
-> +	status = "okay";
-> +
-> +	input@0 {
-> +		reg = <0>;
-> +	};
-> +};
-> +
-> +&trng {
-> +	status = "okay";
-> +};
-> +
-> +&usb0 {
-> +	atmel,vbus-gpio = <&pioC 8 GPIO_ACTIVE_HIGH>;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_usba_vbus>;
-> +	status = "okay";
-> +};
-> +
-> +&watchdog {
-> +	status = "okay";
-> +};
+https://lore.kernel.org/linux-pci/1690948281-2143-1-git-send-email-quic_krichai@quicinc.com/
+
+---
+Changes from v4:
+	- removed the enum to select to send PME or toggle wake and use bool variable in 
+	  the api itself as suggested by mani.
+Changes from v3:
+	- changed the bool return type to int for waking the host in mhi ep driver
+	 as suggested by dan and bjorn.
+	- Changed commit logs as suggested by bjorn.
+Changes from v2:
+        - Addressed review comments made by mani.
+Changes from v1:
+        - Moved from RFC patch to regular patch
+        - Inclueded EPF patch and added a new op patch to notify D-state change.
+---
+
+Krishna chaitanya chundru (5):
+  PCI: endpoint: Add wakeup host API to EPC core
+  PCI: dwc: Add wakeup host op to pci_epc_ops
+  PCI: qcom-ep: Add wake up host op to dw_pcie_ep_ops
+  PCI: epf-mhi: Add wakeup host op
+  bus: mhi: ep: wake up host if the MHI state is in M3
+
+ Documentation/PCI/endpoint/pci-endpoint.rst     |  6 +++++
+ drivers/bus/mhi/ep/main.c                       | 28 +++++++++++++++++++++++
+ drivers/pci/controller/dwc/pcie-designware-ep.c | 12 ++++++++++
+ drivers/pci/controller/dwc/pcie-designware.h    |  2 ++
+ drivers/pci/controller/dwc/pcie-qcom-ep.c       | 26 +++++++++++++++++++++
+ drivers/pci/endpoint/functions/pci-epf-mhi.c    | 12 ++++++++++
+ drivers/pci/endpoint/pci-epc-core.c             | 30 +++++++++++++++++++++++++
+ include/linux/mhi_ep.h                          |  1 +
+ include/linux/pci-epc.h                         |  5 +++++
+ 9 files changed, 122 insertions(+)
+
+-- 
+2.7.4
+
