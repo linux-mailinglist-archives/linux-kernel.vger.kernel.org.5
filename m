@@ -2,122 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6E976D55E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9A476D589
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229495AbjHBRcA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 13:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
+        id S233242AbjHBRgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbjHBRbk (ORCPT
+        with ESMTP id S232724AbjHBRgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:31:40 -0400
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D5A3AA6;
-        Wed,  2 Aug 2023 10:29:21 -0700 (PDT)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1qRFe6-002TUY-K1; Wed, 02 Aug 2023 19:28:26 +0200
-Received: from p5b13a085.dip0.t-ipconnect.de ([91.19.160.133] helo=suse-laptop.fritz.box)
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1qRFe6-000eVY-Bd; Wed, 02 Aug 2023 19:28:26 +0200
-Message-ID: <2d82e0312f7d667e36238938a3cb13c95903033e.camel@physik.fu-berlin.de>
-Subject: Re: [PATCH v8 11/19] sh: add <asm-generic/io.h> including
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Christoph Hellwig <hch@lst.de>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Mike Rapoport <rppt@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Stafford Horne <shorne@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Helge Deller <deller@gmx.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Date:   Wed, 02 Aug 2023 19:28:24 +0200
-In-Reply-To: <39c79971-12fc-41fc-8cae-b2a0089ed034@app.fastmail.com>
-References: <20230706154520.11257-1-bhe@redhat.com>
-         <20230706154520.11257-12-bhe@redhat.com>
-         <CAMuHMdWmv-Jdvi7a04JGXuA2QARj8c8mpUvY7TOcetPkG4pW7A@mail.gmail.com>
-         <0f771b11539d5a3871691af901315ee2034b577c.camel@physik.fu-berlin.de>
-         <09094baf-dadf-4bce-9f63-f2a1f255f9a8@app.fastmail.com>
-         <c48f6f3c742eaf35e35882064ccf4ed07d4e63fe.camel@physik.fu-berlin.de>
-         <39c79971-12fc-41fc-8cae-b2a0089ed034@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 
+        Wed, 2 Aug 2023 13:36:17 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0225A1734
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:35:11 -0700 (PDT)
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id D294886863;
+        Wed,  2 Aug 2023 19:34:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1690997642;
+        bh=5SVSATqR9X+QGwFAD+ody3ENAQjB+Ws+LryjglXK6GQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=jgoIiR97HYJ3Esx98FNE1iCDcOKogg8kvLIls7BRwweGczvkuV52H+MBoDwNl7zT1
+         nvu0U6TwbvRjfonfTmMKO16zHGlg9V8ne7FdJJCBd8zwnl2rSEVx1qh+d3VYpm9tHD
+         bau87T4OFkWTwEka97rD+8NlPehdgmUK43Ly89N7MHRcuaNkuBNFIs+LpNPV5mGzMq
+         vKPKeET3W8AqHmU1uofgeysmSlcEMdvEl3JP9THe1T7WFDdKjzqsLxrlrq7o/rxIiO
+         rcjYKSaM8xo/xs3UAohyT1omgsT7Hfu5jwvIcIxkj6ycvoPcQNFz2vDI0jy66ID07K
+         9bxtkgYXFYrjA==
+Message-ID: <a2a5fa44-90d5-d104-2268-29a14a27b514@denx.de>
+Date:   Wed, 2 Aug 2023 19:29:44 +0200
 MIME-Version: 1.0
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.160.133
-X-ZEDAT-Hint: PO
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_HELO_TEMPERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.1
+Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
+ and EOT packet"
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Amit Pundir <amit.pundir@linaro.org>
+References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
+ <6cd079a4-2f5b-0169-cbaf-b59a72f1b32b@denx.de>
+ <6f96cd11-5055-ab36-74e3-20a45c0d8b40@linaro.org>
+From:   Marek Vasut <marex@denx.de>
+In-Reply-To: <6f96cd11-5055-ab36-74e3-20a45c0d8b40@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Arnd!
-
-On Wed, 2023-08-02 at 16:19 +0200, Arnd Bergmann wrote:
-> On Tue, Aug 1, 2023, at 21:21, John Paul Adrian Glaubitz wrote:
+On 8/2/23 15:16, Dmitry Baryshkov wrote:
+> On 02/08/2023 15:07, Marek Vasut wrote:
+>> On 8/2/23 10:52, Neil Armstrong wrote:
+>>> This reverts commit [1] to fix display regression on the Dragonboard 
+>>> 845c
+>>> (SDM845) devboard.
+>>>
+>>> There's a mismatch on the real action of the following flags:
+>>> - MIPI_DSI_MODE_VIDEO_NO_HSA
+>>> - MIPI_DSI_MODE_VIDEO_NO_HFP
+>>> - MIPI_DSI_MODE_VIDEO_NO_HBP
+>>> which leads to a non-working display on qcom platforms.
+>>>
+>>> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA 
+>>> and EOT packet")
+>>>
+>>> Cc: Marek Vasut <marex@denx.de>
+>>> Cc: Robert Foss <rfoss@kernel.org>
+>>> Cc: Jagan Teki <jagan@amarulasolutions.com>
+>>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>>> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>>> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA 
+>>> and EOT packet")
+>>> Reported-by: Amit Pundir <amit.pundir@linaro.org>
+>>> Link: 
+>>> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
+>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>>
+>> This breaks LT9611 operation on i.MX8M Mini/Nano/Plus, so, NAK.
+>>
+>> I am currently using this LT9611 with Linux 6.1.y in production and 
+>> this is not acceptable. I also believe the correct fix is on the MSM 
+>> side, not on the LT9611 driver side, since MSM incorrectly implements 
+>> these flags.
 > 
-> > > I think ideally all the I/O port stuff in arch/sh/ could just be
-> > > removed after the conversion to asm-generic/io.h, but the
-> > > microdev_ioport_map() function oddity gets in the way of that,
-> > > unless someone wants to clean up that platform. As far as I
-> > > can tell, the ethernet, display, USB and PCI devices on it already
-> > > broke at some point (afbb9d8d5266b, 46bc85872040a), so it might
-> > > be easier to remove it entirely.
-> > 
-> > I don't have this particular hardware, so I cannot comment on this.
+> There is no indication that MSM gets these flags wrong.
 > 
-> Sure, as I explained, I'm pretty sure that nobody has
-> tried to boot this hardware in a long time, so I did not
-> expect you to have one.
+> Let me quote the DSI 1.3 (I think Abhinav already quoted DSI 1.2).
 > 
-> I'll try to follow up with a patch to remove the platform
-> later on, based on the explations above.
-
-There is no need to remove any platforms now as we're working on converting
-arch/sh to device trees anyway and will eventually get rid of all the board-
-specific code during that step.
-
-> > > Having the series go into linux-next sounds appropriate like this,
-> > > the entire purpose of that is to find such bugs and Andrew can jus
-> > > fold the fixup into the broken patch. 
-> > > 
-> > > Let me know if you prefer the simple version with the extra
-> > > #defines or if we should just use the generic inb/outb implementation
-> > > immediately and drop microdev in a separate patch.
-> > 
-> > Please go ahead with the simple version.
+> Chapter 8.11.1 Transmission Packet Sequences:
 > 
-> Done,
+> ========
+> If a peripheral timing specification for HBP or HFP minimum period is 
+> zero, the corresponding Blanking
+> Packet may be omitted. If the HBP or HFP maximum period is zero, the 
+> corresponding blanking packet
+> shall be omitted.
+> ========
+> 
+> Next, chapter 8.11.2 Non-Burst Mode with Sync Pulses
+> 
+> ======
+> Normally, periods shown as HSA (Horizontal Sync Active), HBP (Horizontal 
+> Back Porch) and HFP
+> (Horizontal Front Porch) are filled by Blanking Packets, with lengths 
+> (including packet overhead)
+> calculated to match the period specified by the peripheral’s data sheet. 
+> Alternatively, if there is sufficient
+> time to transition from HS to LP mode and back again, a timed interval 
+> in LP mode may substitute for a
+> Blanking Packet, thus saving power. During HSA, HBP and HFP periods, the 
+> bus should stay in the LP-11
+> state.
+> ========
+> 
+> So, by the spec, sending the HSA / HBP / HFP as blanking packets should 
+> always be accepted (and it is the default mode). Switching to LP-11 
+> should be permitted if there is a sufficient time to switch to LP-11 and 
+> back. Not sending the packets is only possible if the peripheral 
+> (lt9611) says so.
+> 
+> We already know that lt9611 breaks if we try switching to LP-11 during 
+> this period. We know that the there is a requirement time for the HSA / 
+> HBP / HFP, because the HDMI monitor needs them. Thus, I can only 
+> emphasise that the behaviour before the offending patch was correct.
+> 
+> Last, but not least, breaking the in-kernel platform for the out-of-tree 
+> peripheral doesn't sound correct.
 
-Thanks,
-Adrian
+Except the MX8M support is all in-tree now, so please drop the 
+"out-of-tree" argument. That I am using 6.1.y on those platforms in 
+production makes no difference.
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+> I can only propose the following steps:
+> 
+> 1. land the revert to unbreak existing users.
+
+That's just trading breaking one set of users for breaking another set 
+of users.
+
+> 2. Marek to propose and land the DT bindings & driver change that will 
+> enable the workaround for the particular platform (i.MX8m).
+
+Since I have no access to the QCOM hardware or datasheet, can you have a 
+look at the NXP.com MX8M M/N/P datasheets (those are available) and 
+compare their behavior with the QCOM behavior ? I assume you do have the 
+QCOM datasheets available.
