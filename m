@@ -2,110 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C90E76C3DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FC876C3DD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbjHBEER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 00:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
+        id S230392AbjHBEEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 00:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbjHBEEN (ORCPT
+        with ESMTP id S230325AbjHBEEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 00:04:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9631FFA;
-        Tue,  1 Aug 2023 21:04:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DD026617A2;
-        Wed,  2 Aug 2023 04:04:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31356C433C8;
-        Wed,  2 Aug 2023 04:04:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690949048;
-        bh=pVu7S5QVKqg8Edil0qyB4hB47nc4PSQZ2wOKymXFxEY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RD7vTzMxtx4I1tyKGePTqvUqu3dIJgUptVZDQQIywIpmErfh04lzdGMkhskcyULRf
-         eQiCywUKBtuw4He3wAe0WV5EJ86clHbSNsaQr79ukZEd1yQlJQOlez0pt5UG5gsubC
-         2GrqVx1MGzYszbJnPtSCtjpcad3z1HFTFwBi+k1eyXLJwAl14cU0AR57X/N56XfRNI
-         TYonNYjhSaOf7Pg46IIETHBT9AvK/C4LptzddwaXT/+Nv3JdjipeNIkmMUtTVJ17FH
-         9vfyVfM7WOoHZTt6QhYU/5WJx1n09Sr9HUfQliBnwQRCyMve7AGAYhtn9B6AdzrX63
-         Zw/C/4nf0LXyw==
-Date:   Wed, 2 Aug 2023 09:33:53 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        andersson@kernel.org, konrad.dybcio@linaro.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-arm-msm@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Brian Masney <bmasney@redhat.com>
-Subject: Re: [PATCH 2/2] scsi: ufs: qcom: Add support for scaling
- interconnects
-Message-ID: <20230802040353.GA2370@thinkpad>
-References: <20230731145020.41262-1-manivannan.sadhasivam@linaro.org>
- <20230731145020.41262-3-manivannan.sadhasivam@linaro.org>
- <43cd0057-c6d8-bc92-08f4-d767336d2cfe@acm.org>
+        Wed, 2 Aug 2023 00:04:41 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498B52D71;
+        Tue,  1 Aug 2023 21:04:26 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37244GAE007792;
+        Tue, 1 Aug 2023 23:04:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690949056;
+        bh=L5rNntOZobIFbs6gTmshtr/XXkSzy2UOU3tMDPEwxT4=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=wuXy8n6KE+whjDVFhXQa4yo5/Pe9yAPIqBcWP+MM3MEIcXj6UjWfZ3+rr8D2L9GPQ
+         ufLXS+NsiogKr1446x2BzTW/RTH7God20RMx7VIQ2cXY074Jq9wka/1r1KPp0Hy9Vj
+         2dX12k06Xzz18CKmwt8ZLse4kC9IUF6SONOJWt94=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37244Gle023196
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 1 Aug 2023 23:04:16 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 1
+ Aug 2023 23:04:15 -0500
+Received: from DLEE107.ent.ti.com ([fe80::1c91:43d:d71:d7b6]) by
+ DLEE107.ent.ti.com ([fe80::1c91:43d:d71:d7b6%17]) with mapi id
+ 15.01.2507.023; Tue, 1 Aug 2023 23:04:15 -0500
+From:   "Kumar, Udit" <u-kumar1@ti.com>
+To:     Esteban Blanc <eblanc@baylibre.com>, "Menon, Nishanth" <nm@ti.com>,
+        "Raghavendra, Vignesh" <vigneshr@ti.com>,
+        "kristo@kernel.org" <kristo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jneanne@baylibre.com" <jneanne@baylibre.com>,
+        "aseketeli@baylibre.com" <aseketeli@baylibre.com>,
+        "jpanis@baylibre.com" <jpanis@baylibre.com>,
+        "Tonking, Reid" <reidt@ti.com>
+Subject: RE: [PATCH v4 1/6] arm64: dts: ti: k3-j7200-som-p0: Add TP6594 family
+ PMICs
+Thread-Topic: [PATCH v4 1/6] arm64: dts: ti: k3-j7200-som-p0: Add TP6594
+ family PMICs
+Thread-Index: AQHZwIuNdcGNTIhLsEagEEzPFiwzg6/WY4kQ
+Date:   Wed, 2 Aug 2023 04:04:15 +0000
+Message-ID: <4efd1c627a934915b4e9b313879d83e9@ti.com>
+References: <20230727130908.10656-1-eblanc@baylibre.com>
+ <20230727130908.10656-2-eblanc@baylibre.com>
+In-Reply-To: <20230727130908.10656-2-eblanc@baylibre.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.249.141.75]
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <43cd0057-c6d8-bc92-08f4-d767336d2cfe@acm.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jul 31, 2023 at 01:09:52PM -0700, Bart Van Assche wrote:
-> On 7/31/23 07:50, Manivannan Sadhasivam wrote:
-> > +struct __ufs_qcom_bw_table {
-> > +	u32 mem_bw;
-> > +	u32 cfg_bw;
-> > +} ufs_qcom_bw_table[MODE_MAX + 1][QCOM_UFS_MAX_GEAR + 1][QCOM_UFS_MAX_LANE + 1] = {
-> > +	[MODE_MIN][0][0]		   = { 0,		0 }, /* Bandwidth values in KB/s */
-> > +	[MODE_PWM][UFS_PWM_G1][UFS_LANE_1] = { 922,		1000 },
-> > +	[MODE_PWM][UFS_PWM_G2][UFS_LANE_1] = { 1844,		1000 },
-> > +	[MODE_PWM][UFS_PWM_G3][UFS_LANE_1] = { 3688,		1000 },
-> > +	[MODE_PWM][UFS_PWM_G4][UFS_LANE_1] = { 7376,		1000 },
-> > +	[MODE_PWM][UFS_PWM_G1][UFS_LANE_2] = { 1844,		1000 },
-> > +	[MODE_PWM][UFS_PWM_G2][UFS_LANE_2] = { 3688,		1000 },
-> > +	[MODE_PWM][UFS_PWM_G3][UFS_LANE_2] = { 7376,		1000 },
-> > +	[MODE_PWM][UFS_PWM_G4][UFS_LANE_2] = { 14752,		1000 },
-> > +	[MODE_HS_RA][UFS_HS_G1][UFS_LANE_1] = { 127796,		1000 },
-> > +	[MODE_HS_RA][UFS_HS_G2][UFS_LANE_1] = { 255591,		1000 },
-> > +	[MODE_HS_RA][UFS_HS_G3][UFS_LANE_1] = { 1492582,	102400 },
-> > +	[MODE_HS_RA][UFS_HS_G4][UFS_LANE_1] = { 2915200,	204800 },
-> > +	[MODE_HS_RA][UFS_HS_G1][UFS_LANE_2] = { 255591,		1000 },
-> > +	[MODE_HS_RA][UFS_HS_G2][UFS_LANE_2] = { 511181,		1000 },
-> > +	[MODE_HS_RA][UFS_HS_G3][UFS_LANE_2] = { 1492582,	204800 },
-> > +	[MODE_HS_RA][UFS_HS_G4][UFS_LANE_2] = { 2915200,	409600 },
-> > +	[MODE_HS_RB][UFS_HS_G1][UFS_LANE_1] = { 149422,		1000 },
-> > +	[MODE_HS_RB][UFS_HS_G2][UFS_LANE_1] = { 298189,		1000 },
-> > +	[MODE_HS_RB][UFS_HS_G3][UFS_LANE_1] = { 1492582,	102400 },
-> > +	[MODE_HS_RB][UFS_HS_G4][UFS_LANE_1] = { 2915200,	204800 },
-> > +	[MODE_HS_RB][UFS_HS_G1][UFS_LANE_2] = { 298189,		1000 },
-> > +	[MODE_HS_RB][UFS_HS_G2][UFS_LANE_2] = { 596378,		1000 },
-> > +	[MODE_HS_RB][UFS_HS_G3][UFS_LANE_2] = { 1492582,	204800 },
-> > +	[MODE_HS_RB][UFS_HS_G4][UFS_LANE_2] = { 2915200,	409600 },
-> > +	[MODE_MAX][0][0]		    = { 7643136,	307200 },
-> > +};
-> 
-> Why has the above data structure not been declared as 'static const'?
-> 
+Hi Esteban,=20
 
-Missed that! Sent a patch now. Thanks for spotting.
+>This patch adds support for TPS6594 PMIC family on wakup I2C0 bus.
+>Theses devices provides regulators (bucks and LDOs), but also
+>GPIOs, a RTC, a watchdog, an ESM (Error Signal Monitor)
+>which monitors the SoC error output signal, and a PFSM
+>(Pre-configurable Finite State Machine) which manages the
+>operational modes of the PMIC.
+>
+>Signed-off-by: Esteban Blanc <eblanc@baylibre.com>
+>---
+> arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi | 157 ++++++++++++++++++++
+> 1 file changed, 157 insertions(+)
+>
+>diff --git a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+>b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+>index b37f4f88ece4..e45d97cc41a5 100644
+>--- a/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+>+++ b/arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi
+>@@ -127,6 +127,14 @@ J721E_WKUP_IOPAD(0x9c, PIN_INPUT_PULLUP, 0) /*
+>(H21) WKUP_I2C0_SDA */
+> 	};
+> };
+>
+>+&wkup_pmx3 {
+>+	pmic_irq_pins_default: pmic-irq-pins-default {
+>+		pinctrl-single,pins =3D <
+>+			J721E_WKUP_IOPAD(0x1c, PIN_INPUT, 7) /* (E18)
+>WKUP_GPIO0_84 */
 
-- Mani
+Could you use 0x01c format instead of 0x1c,=20
+and similar format in other patches in this series too. =20
 
-> Thanks,
-> 
-> Bart.
+Rest LGTM=20
 
--- 
-மணிவண்ணன் சதாசிவம்
+>+		>;
+>+	};
+>+};
+>+
+[..]
+
