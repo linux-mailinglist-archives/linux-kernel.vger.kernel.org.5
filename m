@@ -2,137 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C32376CC35
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7A676CC3B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234426AbjHBMBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
+        id S234385AbjHBMCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232797AbjHBMBE (ORCPT
+        with ESMTP id S231897AbjHBMCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:01:04 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263D810C1;
-        Wed,  2 Aug 2023 05:01:01 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 853545C0074;
-        Wed,  2 Aug 2023 08:00:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 02 Aug 2023 08:00:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dustymabe.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm1; t=1690977658; x=1691064058; bh=zVi/JMA+En+qL3o03VV3UqWYh
-        0j95fdHyEoI1MTCf5w=; b=AivpHne/Xkk6rrPy3ffO1LHbaldmPUFJ2k0jhJlQK
-        gCOI/52kxSG+njHESH6p8RWfv0gf95JdH19GO0YuDqzBV6p8gTrUIlvUYFlB1Dx2
-        ehnqGb5TPOAjd8MGdggkvlWR6SxUmi79le/H951Nee14PPvgxRl3gD4g4pixEBOR
-        9DWzR8oduZ+b2IPhdkzqwhvZKpaP7eiBiLz0NnBHXyrCTuFYjHdOk3c7yHFfz6Tq
-        +5v4pKy+iaCu4BZ6XszHACJgHMhU74ne7QsZQsr8uTKrt9Ts2sFpwxgqtu/fFxy/
-        1r2IzDLaixAZSIcNKHA4XfNROk7Pc9lnrWqIRA2QF+GAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690977658; x=1691064058; bh=zVi/JMA+En+qL3o03VV3UqWYh0j95fdHyEo
-        I1MTCf5w=; b=Esw01sxqLELb0Fu/EdYdkRiRW9z07egIRvlhZADXWi4TRh4VLLv
-        8VGsVTd/GYKGRuYNvsfXOtKhAteLatyktsz5QWHEiLkQ5MY5wl0ImMXTl9oJxiUE
-        X+1RhkzQ+f3c9HuOMdPEKwepurDonW2t9TmrePdfRUg/oFg4Ns2wrBC0IUyAarjM
-        bvQj5tMve/p7rReKO81S79Mc/8OxNUXwQpVlIcjXsqKX00utsb34W5x3A6GVxzmw
-        JB/hu9PenIk5RSaYjx0R08mbz16usTN7dEVD88q3QHe0i+1ASUcSAFYBv2u//IDa
-        WUeCKfJO0Q3l9ZkDBDPMzgOzV89R6rg9jMA==
-X-ME-Sender: <xms:eUXKZBEslFTNgbn-eyrLE-MAaw-crjwnevtCoR55yT4aWHyF1M5hFw>
-    <xme:eUXKZGUlUMgNrj1Pwl-WgdvhXZ748ex2rWr6kYKKeenuPhxnsiLWFmVNw75mspmO9
-    56apUAmF07NxFU8rOE>
-X-ME-Received: <xmr:eUXKZDICNVLT_bWknRyC7DQCuXvVvrzRIYYhXKWilkGjFi6ETDMJ0qduDOJSqTgJTR9G>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeekgdegiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepffhushht
-    hicuofgrsggvuceoughushhthiesughushhthihmrggsvgdrtghomheqnecuggftrfgrth
-    htvghrnhepheejfeetudelheduleeileekveegveevfeegfffgveeihfegleettdefffdt
-    gfdvnecuffhomhgrihhnpehfvgguohhrrghprhhojhgvtghtrdhorhhgnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepughushhthiesughushht
-    hihmrggsvgdrtghomh
-X-ME-Proxy: <xmx:eUXKZHFHhke0LUqC7Yek7J0XqngEKKu0ukxwc0ocg9GR2tEE8L29wg>
-    <xmx:eUXKZHW1yy6RCLefW1qSUBAmnrSTHO41wEuJ7KbkKkLy7H6jmHQrYQ>
-    <xmx:eUXKZCP9hTCBo6dS2HCj5gR2j8DiI0R4llM_KQqJH3p0PItOp_OgMA>
-    <xmx:ekXKZDrb0D8y7bct7NLvqks29zK8LyGZ4FpjwfsnMznpbVBIKMh_kw>
-Feedback-ID: i13394474:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 2 Aug 2023 08:00:57 -0400 (EDT)
-Message-ID: <43843fec-f30a-1edc-b428-1d38ddb1050f@dustymabe.com>
-Date:   Wed, 2 Aug 2023 08:00:56 -0400
+        Wed, 2 Aug 2023 08:02:45 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7870010C1;
+        Wed,  2 Aug 2023 05:02:41 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-2681223aaacso610718a91.0;
+        Wed, 02 Aug 2023 05:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690977761; x=1691582561;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pZ819GwVCo9zR5ZzAiYSpFVr/sz2KTIAVN8PAALo4bo=;
+        b=U8PZHqu5zyydy1mgddoFG96L9VW8L25yjDa/lyNEO64ddWZ33KemFAEis0ddxf/nnj
+         IzU5ZRpsCImPTyezgGd7zS1yY3i/OnsPjP4evLfghD7NT6SOddqlW88ztwBDlvIHEENC
+         pHhiwFrPAayjmeq6e0/mdL0Hr6x3h3ystMpFTt94VESAkM86o0k2zKJAHap0jZBkBhi5
+         +jdI0W3//hHvQOspRYgjhvXtgziuuLO/YVbrv7uLzXp4HrWWc2DpHe1XqWbUMgWa7m/U
+         +/dyWeT0JVoeKPgsSVi3YQA4Pgw23byHNoJCX9MDb9ozZUwx3ltbr4Sr4V6VUCpBrpbb
+         wknw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690977761; x=1691582561;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pZ819GwVCo9zR5ZzAiYSpFVr/sz2KTIAVN8PAALo4bo=;
+        b=RfSYLMHN5c43mzualzUILBVCW72okHumt+UTLCpHN6eH3Iis4cPKkl3bUnk2XdWt+c
+         kMl8/e8Ox9BAxTEisNv465ZWP+N4BVQ21Jwo3UW5VN21vek8QzQU5rbTCuFIfYiNtnCu
+         XQ/ICNpHsekT+74W8FugL46ogwSVvZC/eMAHdR1bGwbQviOX+GbhOb6/MEGSnUiJ/oiO
+         FD6pHRZpyXhLv5PWN/5jRQWdMGy6dfTKLlGWdgQ3AVjK1SPBVO/aYdWviRBaLGNH3WQX
+         SeKo30xRx3eQYE7FiwBMvN6P6RLLhxyi6rVn3C8zsH7gcN8BMabvpNxp7h1GOCtA2G+z
+         c+Ug==
+X-Gm-Message-State: ABy/qLbMsp0YyUufoOPYEVgEoaaLq2+VWThWC0KguFqNX8+moWZt/NdN
+        sHnVcn9hN/iWEZRhJ7Jl7ro9tNjHhubUdAzAvfM=
+X-Google-Smtp-Source: APBJJlHuloA0HTsPSoNz24gU6TOurNeBITpKadl1FpEMN3ek0OYWAF6+FL7hx/VdWb7RYwujlTuWhOvWXMHfDiFVaSw=
+X-Received: by 2002:a17:90a:c210:b0:267:f8f4:73ab with SMTP id
+ e16-20020a17090ac21000b00267f8f473abmr19375725pjt.16.1690977760816; Wed, 02
+ Aug 2023 05:02:40 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: XFS metadata CRC errors on zram block device on ppc64le
- architecture
-Content-Language: en-US
-To:     Hannes Reinecke <hare@suse.de>, wq@lst.de
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>, marmijo@redhat.com
-References: <b2d40565-7868-ba15-4bb1-fca6f0df076b@dustymabe.com>
- <20230802094106.GA28187@lst.de>
- <3f36882c-b429-3ece-989b-a6899c001cbd@suse.de>
-From:   Dusty Mabe <dusty@dustymabe.com>
-In-Reply-To: <3f36882c-b429-3ece-989b-a6899c001cbd@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
+ <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl> <87il9xu1ro.wl-tiwai@suse.de>
+In-Reply-To: <87il9xu1ro.wl-tiwai@suse.de>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Wed, 2 Aug 2023 20:02:29 +0800
+Message-ID: <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 2, 2023 at 7:22=E2=80=AFPM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Wed, 02 Aug 2023 09:32:37 +0200,
+> Hans Verkuil wrote:
+> >
+> > Hi all,
+> >
+> > On 25/07/2023 08:12, Shengjiu Wang wrote:
+> > > Audio signal processing has the requirement for memory to
+> > > memory similar as Video.
+> > >
+> > > This patch is to add this support in v4l2 framework, defined
+> > > new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
+> > > V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
+> > > for audio case usage.
+> > >
+> > > The created audio device is named "/dev/audioX".
+> > >
+> > > And add memory to memory support for two kinds of i.MX ASRC
+> > > module
+> >
+> > Before I spend time on this: are the audio maintainers OK with doing
+> > this in V4L2?
+> >
+> > I do want to have a clear statement on this as it is not something I
+> > can decide.
+>
+> Well, I personally don't mind to have some audio capability in v4l2
+> layer.  But, the only uncertain thing for now is whether this is a
+> must-have or not.
+>
 
+Thanks,  I am also not sure about this.  I am also confused that why
+there is no m2m implementation for audio in the kernel.  Audio also
+has similar decoder encoder post-processing as video.
 
-On 8/2/23 07:03, Hannes Reinecke wrote:
-> On 8/2/23 11:41, Christoph Hellwig wrote:
->> On Tue, Aug 01, 2023 at 11:31:37PM -0400, Dusty Mabe wrote:
->>> We ran a kernel bisect and narrowed it down to offending commit af8b04c6:
->>>
->>> ```
->>> [root@ibm-p8-kvm-03-guest-02 linux]# git bisect good
->>> af8b04c63708fa730c0257084fab91fb2a9cecc4 is the first bad commit
->>> commit af8b04c63708fa730c0257084fab91fb2a9cecc4
->>> Author: Christoph Hellwig <hch@lst.de>
->>> Date:   Tue Apr 11 19:14:46 2023 +0200
->>>
->>>      zram: simplify bvec iteration in __zram_make_request
->>>      
->>>      bio_for_each_segment synthetize bvecs that never cross page boundaries, so
->>>      don't duplicate that work in an inner loop.
->>
->>> Any ideas on how to fix the problem?
->>
->> So the interesting cases are:
->>
->>    - ppc64 usually uses 64k page sizes
->>    - ppc64 is somewhat cache incoherent (compared to say x86)
->>
->> Let me think of this a bit more.
-> 
-> Would need to be confirmed first that 64k pages really are in use
-> (eg we compile ppc64le with 4k page sizes ...).
-> Dusty?
-> For which page size did you compile your kernel?
+>
+> IIRC, the implementation in the sound driver side was never done just
+> because there was no similar implementation?  If so, and if the
+> extension to the v4l2 core layer is needed, shouldn't it be more
+> considered for the possible other route?
+>
 
+Actually I'd like someone could point me to the other route. I'd like to
+try.
 
-For Fedora the configuration is to enable 64k pages with CONFIG_PPC_64K_PAGES=y
-https://src.fedoraproject.org/rpms/kernel/blob/064c1675a16b4d379b42ab6c3397632ca54ad897/f/kernel-ppc64le-fedora.config#_4791
+The reason why I select to extend v4l2 for such audio usage is that v4l2
+looks best for this audio m2m implementation.  v4l2 is designed for m2m
+usage.  if we need implement another 'route',  I don't think it can do bett=
+er
+that v4l2.
 
-I used the same configuration when running the git bisect.
+I appreciate that someone can share his ideas or doable solutions.
+And please don't ignore my request, ignore my patch.
 
-Dusty
+Best regards
+Wang shengjiu
