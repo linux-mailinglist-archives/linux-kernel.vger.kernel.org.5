@@ -2,69 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D00576D710
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F4076D71A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbjHBSqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
+        id S231126AbjHBSsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:48:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbjHBSqU (ORCPT
+        with ESMTP id S229685AbjHBSsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:46:20 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7839119A4
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:46:19 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5D88F9CA;
-        Wed,  2 Aug 2023 20:45:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1691001913;
-        bh=6lMIvnUDmcbkmqo6E/Xm2zfqir/+TekU2+85+m1X+qo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DRhGCqAhLNEY1+DwW1JlMQyZnqagkG6GpLtr+9d5fVZ5c6vTuwXf17B8Gyxuinsoi
-         fWCiDEVmckZVwy4p5G6qt3uqgpiKWVRKDX8j40iG+pkFztNecCmk6CTuZR7yZvWXGb
-         SpJEUnyGymyhvG89qZ/s7mdq4fdbPr3wXW/NaG6E=
-Date:   Wed, 2 Aug 2023 21:46:22 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     neil.armstrong@linaro.org, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Simon Ser <contact@emersion.fr>, Janne Grunau <j@jannau.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH 2/4] drm/bridge-connector: handle subconnector types
-Message-ID: <20230802184622.GA32500@pendragon.ideasonboard.com>
-References: <20230729004913.215872-1-dmitry.baryshkov@linaro.org>
- <20230729004913.215872-3-dmitry.baryshkov@linaro.org>
- <0cc04d99-d7aa-68ff-b304-7d42ae7f0dde@linaro.org>
- <CAA8EJpoMC-YbWvyfCsdAHOL9aw3nfQ=g8BgLp2mb9iozeRgBpg@mail.gmail.com>
+        Wed, 2 Aug 2023 14:48:07 -0400
+Received: from mx.manguebit.com (mx.manguebit.com [167.235.159.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE40112C;
+        Wed,  2 Aug 2023 11:48:05 -0700 (PDT)
+Message-ID: <471c346601a7daace902428e56b8579b.pc@manguebit.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+        s=dkim; t=1691002083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LM5dlnWT81GTwNGuf8M3+0tmWSk26IjSyG3XZJNlGxg=;
+        b=q+WFWoVwU8f/i7FIz0XAfDaWphvSKk6j9cTrweJn7z9x5iBr7hiB35FGPAUBDF4ISjvz5h
+        zznWulE1I6cYjxCc8w+oI7LqEsabOb90uMokjyBo26cUl9nOO1TEwZN8Rko1gnGWvU899Z
+        +EBpH1/sTAIcDBro/WhZd/24PR+naT0wlQBLDVmBmCkMhE+2F6usEQx/ESFOSTzKfD3foi
+        57LqLxR9Es5qHclOHN7ZNd3Wf1NFp5sNHd92kPnDoE27zzkvm/xF1Zegdhw2DWwM4cUSYl
+        FcRs0tYEjK3/9OByMH8nBUpqgGgWvImVoeFcmbN4cGs0tbYOYiDHxrQ3J3/9aA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+        s=dkim; t=1691002083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LM5dlnWT81GTwNGuf8M3+0tmWSk26IjSyG3XZJNlGxg=;
+        b=AoW9sil2tg15RxkemetVcD0MQH7aqHOPx9s45t6q2mXk4iNoevRltavPuQhHJickRN06JC
+        9twitSFZovdSmN54RsIMwcP9LbHZ1K86aCiRYdAMGoHCsXm0u0QTFFXXd8+eXqppmU9Kp1
+        Q9pg/HXE5fSlbCGR+84Z036/rAjhvge6A7ij00bIpSGub9bNIOdCFcEgHSqmL5WMnIl1Uf
+        VF0itzVid71/SBJv2BhC3GrS7WwIz1UW8ofISSDCmwhyuSGM2Z2MEfKyccU/HDsRsX7g/2
+        qop6kKp78QWclngeoV7X+/F2IIcl/qVTZIg1Eck9BzyGSdE1iSwHxnOAmhWl8g==
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=pc@manguebit.com smtp.mailfrom=pc@manguebit.com
+ARC-Seal: i=1; s=dkim; d=manguebit.com; t=1691002083; a=rsa-sha256;
+        cv=none;
+        b=cp3+mC0OMj7F40WMT7qUHuJDwt5m+4Y0ISygYXiZ4GOzzVuy+cXksXQTjexnbnoHqJnkLv
+        A/Xh4iI5m54yLclEpvkUfV+Z5z+yl3bkiSW7DPqp7d3qf2mgApmdG2r6OnrC3HAVdpFkRR
+        FGIzkra0rLP1oeUH2LzXYwCEn0h5f1JOcg5inVxvd5FI0X3iaV9zS9fxN8/uoNWsRSS8bg
+        YveFBiSbZ9Cz5RuNQ9Dpsxd6wNh4r8y+aIu582+NYrL0UgzojRiCHbVTSN7csXMG8yKhXg
+        YDPPznVWXhPSF0A8cu9cmJOJmS32KIv4mwdX1lo6pb8zpon7EJ1dEyaA13ArHw==
+From:   Paulo Alcantara <pc@manguebit.com>
+To:     Jeff Layton <jlayton@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Steve French <sfrench@samba.org>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Richard Weinberger <richard@nod.at>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, linux-xfs@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v6 1/7] fs: pass the request_mask to generic_fillattr
+In-Reply-To: <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
+References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
+ <20230725-mgctime-v6-1-a794c2b7abca@kernel.org>
+Date:   Wed, 02 Aug 2023 15:47:56 -0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAA8EJpoMC-YbWvyfCsdAHOL9aw3nfQ=g8BgLp2mb9iozeRgBpg@mail.gmail.com>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,128 +127,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 12:05:50PM +0300, Dmitry Baryshkov wrote:
-> On Wed, 2 Aug 2023 at 11:35, Neil Armstrong wrote:
-> > On 29/07/2023 02:49, Dmitry Baryshkov wrote:
-> > > If the created connector type supports subconnector type property,
-> > > create and attach corresponding it. The default subtype value is 0,
-> > > which maps to the DRM_MODE_SUBCONNECTOR_Unknown type.
-> > >
-> > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > > ---
-> > >   drivers/gpu/drm/drm_bridge_connector.c | 33 +++++++++++++++++++++++++-
-> > >   include/drm/drm_bridge.h               |  4 ++++
-> > >   2 files changed, 36 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
-> > > index 07b5930b1282..a7b92f0d2430 100644
-> > > --- a/drivers/gpu/drm/drm_bridge_connector.c
-> > > +++ b/drivers/gpu/drm/drm_bridge_connector.c
-> > > @@ -329,7 +329,9 @@ struct drm_connector *drm_bridge_connector_init(struct drm_device *drm,
-> > >       struct drm_connector *connector;
-> > >       struct i2c_adapter *ddc = NULL;
-> > >       struct drm_bridge *bridge, *panel_bridge = NULL;
-> > > +     enum drm_mode_subconnector subconnector;
-> > >       int connector_type;
-> > > +     int ret;
-> > >
-> > >       bridge_connector = kzalloc(sizeof(*bridge_connector), GFP_KERNEL);
-> > >       if (!bridge_connector)
-> > > @@ -365,8 +367,10 @@ struct drm_connector *drm_bridge_connector_init(struct drm_device *drm,
-> > >               if (bridge->ops & DRM_BRIDGE_OP_MODES)
-> > >                       bridge_connector->bridge_modes = bridge;
-> > >
-> > > -             if (!drm_bridge_get_next_bridge(bridge))
-> > > +             if (!drm_bridge_get_next_bridge(bridge)) {
-> > >                       connector_type = bridge->type;
-> > > +                     subconnector = bridge->subtype;
-> > > +             }
-> > >
-> > >   #ifdef CONFIG_OF
-> > >               if (!drm_bridge_get_next_bridge(bridge) &&
-> > > @@ -399,6 +403,33 @@ struct drm_connector *drm_bridge_connector_init(struct drm_device *drm,
-> > >       if (panel_bridge)
-> > >               drm_panel_bridge_set_orientation(connector, panel_bridge);
-> > >
-> > > +     if (connector_type == DRM_MODE_CONNECTOR_DisplayPort) {
-> > > +             drm_connector_attach_dp_subconnector_property(connector, subconnector);
-> > > +     } else if (connector_type == DRM_MODE_CONNECTOR_DVII) {
-> > > +             ret = drm_mode_create_dvi_i_properties(drm);
-> > > +             if (ret)
-> > > +                     return ERR_PTR(ret);
-> > > +
-> > > +             drm_object_attach_property(&connector->base,
-> > > +                                        drm->mode_config.dvi_i_subconnector_property,
-> > > +                                        subconnector);
-> > > +     } else if (connector_type == DRM_MODE_CONNECTOR_TV) {
-> > > +             ret = drm_mode_create_tv_properties(drm,
-> > > +                                                 BIT(DRM_MODE_TV_MODE_NTSC) |
-> > > +                                                 BIT(DRM_MODE_TV_MODE_NTSC_443) |
-> > > +                                                 BIT(DRM_MODE_TV_MODE_NTSC_J) |
-> > > +                                                 BIT(DRM_MODE_TV_MODE_PAL) |
-> > > +                                                 BIT(DRM_MODE_TV_MODE_PAL_M) |
-> > > +                                                 BIT(DRM_MODE_TV_MODE_PAL_N) |
-> > > +                                                 BIT(DRM_MODE_TV_MODE_SECAM));
-> > > +             if (ret)
-> > > +                     return ERR_PTR(ret);
-> >
-> > I don't think this is right, this should be called from the appropriate encoder
-> > device depending on the analog tv mode capabilities.
-> 
-> Good question. My logic was the following: the DRM device can have
-> different TV out ports with different capabilities (yeah, pure
-> theoretical construct). In this case it might be impossible to create
-> a single subset of values. Thus it is more correct to create the
-> property listing all possible values. The property is immutable anyway
-> (and so the user doesn't have control over the value).
+Jeff Layton <jlayton@kernel.org> writes:
 
-Those ports would correspond to different connectors, so I agree with
-Neil, I don't think it's right to create a single property with all
-modes and attach it to all analog output connectors.
+> generic_fillattr just fills in the entire stat struct indiscriminately
+> today, copying data from the inode. There is at least one attribute
+> (STATX_CHANGE_COOKIE) that can have side effects when it is reported,
+> and we're looking at adding more with the addition of multigrain
+> timestamps.
+>
+> Add a request_mask argument to generic_fillattr and have most callers
+> just pass in the value that is passed to getattr. Have other callers
+> (e.g. ksmbd) just pass in STATX_BASIC_STATS. Also move the setting of
+> STATX_CHANGE_COOKIE into generic_fillattr.
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/9p/vfs_inode.c       |  4 ++--
+>  fs/9p/vfs_inode_dotl.c  |  4 ++--
+>  fs/afs/inode.c          |  2 +-
+>  fs/btrfs/inode.c        |  2 +-
+>  fs/ceph/inode.c         |  2 +-
+>  fs/coda/inode.c         |  3 ++-
+>  fs/ecryptfs/inode.c     |  5 +++--
+>  fs/erofs/inode.c        |  2 +-
+>  fs/exfat/file.c         |  2 +-
+>  fs/ext2/inode.c         |  2 +-
+>  fs/ext4/inode.c         |  2 +-
+>  fs/f2fs/file.c          |  2 +-
+>  fs/fat/file.c           |  2 +-
+>  fs/fuse/dir.c           |  2 +-
+>  fs/gfs2/inode.c         |  2 +-
+>  fs/hfsplus/inode.c      |  2 +-
+>  fs/kernfs/inode.c       |  2 +-
+>  fs/libfs.c              |  4 ++--
+>  fs/minix/inode.c        |  2 +-
+>  fs/nfs/inode.c          |  2 +-
+>  fs/nfs/namespace.c      |  3 ++-
+>  fs/ntfs3/file.c         |  2 +-
+>  fs/ocfs2/file.c         |  2 +-
+>  fs/orangefs/inode.c     |  2 +-
+>  fs/proc/base.c          |  4 ++--
+>  fs/proc/fd.c            |  2 +-
+>  fs/proc/generic.c       |  2 +-
+>  fs/proc/proc_net.c      |  2 +-
+>  fs/proc/proc_sysctl.c   |  2 +-
+>  fs/proc/root.c          |  3 ++-
+>  fs/smb/client/inode.c   |  2 +-
+>  fs/smb/server/smb2pdu.c | 22 +++++++++++-----------
+>  fs/smb/server/vfs.c     |  3 ++-
+>  fs/stat.c               | 18 ++++++++++--------
+>  fs/sysv/itree.c         |  3 ++-
+>  fs/ubifs/dir.c          |  2 +-
+>  fs/udf/symlink.c        |  2 +-
+>  fs/vboxsf/utils.c       |  2 +-
+>  include/linux/fs.h      |  2 +-
+>  mm/shmem.c              |  2 +-
+>  40 files changed, 70 insertions(+), 62 deletions(-)
+>
+> [...]
+>
+> diff --git a/fs/smb/client/inode.c b/fs/smb/client/inode.c
+> index 218f03dd3f52..93fe43789d7a 100644
+> --- a/fs/smb/client/inode.c
+> +++ b/fs/smb/client/inode.c
+> @@ -2540,7 +2540,7 @@ int cifs_getattr(struct mnt_idmap *idmap, const struct path *path,
+>  			return rc;
+>  	}
+>  
+> -	generic_fillattr(&nop_mnt_idmap, inode, stat);
+> +	generic_fillattr(&nop_mnt_idmap, request_mask, inode, stat);
+>  	stat->blksize = cifs_sb->ctx->bsize;
+>  	stat->ino = CIFS_I(inode)->uniqueid;
 
-If you want to support multiple analog outputs that have different
-capabilities, this will need changes to drm_mode_create_tv_properties()
-to allow creating multiple properties. If you don't want to do so now,
-and prefer limiting support to devices where all ports support the same
-modes (which includes devices with a single analog output), then the
-modes should reflect what the device supports.
-
-> > > +
-> > > +             drm_object_attach_property(&connector->base,
-> > > +                                        drm->mode_config.tv_subconnector_property,
-> > > +                                        subconnector);
-> >
-> > Here, only add the property if drm->mode_config.tv_subconnector_property exists,
-> > and perhaps add a warning if not.
-> 
-> This property is created in the previous call,
-> drm_mode_create_tv_properties() ->
-> drm_mode_create_tv_properties_legacy().
-> 
-> > AFAIK same for DRM_MODE_CONNECTOR_DVII.
-> >
-> > > +     }
-> > > +
-> > >       return connector;
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(drm_bridge_connector_init);
-> > > diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
-> > > index bf964cdfb330..68b14ac5ac0d 100644
-> > > --- a/include/drm/drm_bridge.h
-> > > +++ b/include/drm/drm_bridge.h
-> > > @@ -739,6 +739,10 @@ struct drm_bridge {
-> > >        * identifies the type of connected display.
-> > >        */
-> > >       int type;
-> > > +     /**
-> > > +      * @subtype: the subtype of the connector for the DP/TV/DVI-I cases.
-> > > +      */
-> > > +     enum drm_mode_subconnector subtype;
-> > >       /**
-> > >        * @interlace_allowed: Indicate that the bridge can handle interlaced
-> > >        * modes.
-
--- 
-Regards,
-
-Laurent Pinchart
+Reviewed-by: Paulo Alcantara (SUSE) <pc@manguebit.com>
