@@ -2,529 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB1D76CBA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6696376CBA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234149AbjHBLUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:20:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
+        id S234014AbjHBLUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:20:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234133AbjHBLUS (ORCPT
+        with ESMTP id S234191AbjHBLU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:20:18 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C85926AB;
-        Wed,  2 Aug 2023 04:20:13 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so1799428a12.1;
-        Wed, 02 Aug 2023 04:20:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690975212; x=1691580012;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CnEXpk+uavKCy6LqIh//ZzJwXbKzuP6vRHynD8MgaI8=;
-        b=ZkXilBGjuMGcVHuZg3MDpRb9eeg0yKQ4y898/Sz43E0qz6xxRsx1FCHGimC2TKEZbK
-         HINBtCJanyQqinARTgZMH94DxFqdcrgRaxOKI/D17n5W8QTt8h6oknJDSuUEHn4vEJUP
-         YtB8BzLE0FXGcHTYgte9h5q5JQOC7i+Ej7GthACsSx0yn4vaNYXyTQokj1N0u2UjGhE6
-         rJ3V6XE8lZZB2UOEp72YUfzMeHW04I5rSMtom9oO44Z7srKkgPTn1u/z79pVOFsiVhF7
-         H7Iebngwl66y2lGUGTIRPLMUSGHDrrs4+isqVMD8cQxjES/26NMRGtNUZg20DNVraHNX
-         w+QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690975212; x=1691580012;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CnEXpk+uavKCy6LqIh//ZzJwXbKzuP6vRHynD8MgaI8=;
-        b=PaQqPz0SRzK7RdszzxE3VgrZWz35JDnTkjZPa3AK7XDholK7dRcmX7a0EYXtde4pW6
-         p06BFdeDJzw/N/jgLwqseLV1Dtl3fp9bAZvue8nvqiBB51N+A5yfFEHn9NeRg0AQS8c9
-         JFRYK3en6lhbD5hvwFxbkbYMkFI7eLsjNQ3hJYXkc0jB0bCTvGyEfKEX6jESuEyQkmnW
-         sFl0A2pB38npc/UicSUeXxG1P8wcSOTUTG7VsEc3SwNfyPpOIGlsD345kWNtAJyXFMNP
-         6v0l0AN97go7xGGZZbnV1e6t5v7rxlCWvTNgaah8P+7kvGWHMGW0jlD0hS729rgxcBdJ
-         Ew2Q==
-X-Gm-Message-State: ABy/qLaPZUxgPFX0+YdeGvJz619vC8kIXLFCMyBp+1+FUUPmP0ddKMRc
-        BtS7en47lMuc+XsBwe9I9bzcHhiRMuql3LJwc14=
-X-Google-Smtp-Source: APBJJlFSsp67HgEQpWH+8V1RpSXNuBjDR/KlCBu1NaqaL0RKfMGwrp09DB9sR9LnuEAcJxgd/2qE7X98lDjJlmwMCiM=
-X-Received: by 2002:aa7:cfda:0:b0:51e:421e:d209 with SMTP id
- r26-20020aa7cfda000000b0051e421ed209mr6459806edy.13.1690975211534; Wed, 02
- Aug 2023 04:20:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230729134318.1694467-1-keguang.zhang@gmail.com>
- <20230729134318.1694467-9-keguang.zhang@gmail.com> <4qk22kycanwwbx6e7w4uuf7y5re7y4voi5vdurq3usa27py2zk@zms25h4hg2da>
- <CAJhJPsV9E5=GtsjiP8c3A6=4=Vh7cB1g=TaaJnVOjCf=VFiLUA@mail.gmail.com> <sxuwhp3jc7e5tma5sj5xfkbs43ax2p7oucgy5aoh66pnyr6x2m@logqlgthsy66>
-In-Reply-To: <sxuwhp3jc7e5tma5sj5xfkbs43ax2p7oucgy5aoh66pnyr6x2m@logqlgthsy66>
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-Date:   Wed, 2 Aug 2023 19:19:55 +0800
-Message-ID: <CAJhJPsUVUZfMtwMniaAeA5wLm9TjCsiYJpU2=ZXY8J+4WT1Gzw@mail.gmail.com>
-Subject: Re: [PATCH 08/17] MIPS: loongson32: Convert Ethernet platform device
- to DT
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 2 Aug 2023 07:20:27 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2070.outbound.protection.outlook.com [40.107.101.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F03C426B5
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:20:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gN4sFykq0NVZUy0RBGEu0ONYxR1GDw9HZF+tZxroG9eiyjEghyoWawQUz2/gW8UkIPovpBVZjxCOn3RlGdpeDZUxc7DmylOitarlMi8ani0x8n4nrhTzWlAolH9hbo6x82OBH45vKMsx3GXqr2tBiviK4Kz6gyIR+nUNdC2SMDCf+Gs9+oHFDPWGnnkb20cs6MIwr1a7gbVlCnycl036LrkOkwY817KzbXIGbFJvRxT0xq3bnKOH7xyZtYytRWh2YWVAXc5yyzG0Eq9tn5VbeMFUXVaCABUknawp5Pi4a3rfJQKEEZPSLp/514v/triG5Q3JbatwGduzGycjmVoGqw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UQoFvlnbVzbk12Q8nhH6muSG3a8DXQQ1dYe6m+cY4M0=;
+ b=U0g8v+MF1BO9I8jj2IGNjgpWX6CwnhVUxZrI8eKRvasZ4O6y6tCjCy+BSsT6wB96b1UuLQNH5k5uHmgojLPIF4nw2FmLLjCEKMZTMUGlHe+XKaJJlpRm1NFoJpAYlOcW0/3PdxGShSQ3bDvVVgSnOoQOnTHoiRYKSDy514WJ/RRzVd0eX5ej9D//I/ZagHfbHQAwkUTW8D5t9kv52E+r+HcwIlHlTqqksUJisZyniXS7r/h2uoxbJnAsTCmTA4xRmds3CgYFzu69K6Q9esKS5N0fSwlDZF+NfQQxEwM7jTSIemi1GrXzog2BNA+UZdehPuCFgxV4Im3DXeGPW+3WeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UQoFvlnbVzbk12Q8nhH6muSG3a8DXQQ1dYe6m+cY4M0=;
+ b=HlFT8SBI74+IKC0/9yIFk7Yz/Fyd5QiPLR0IHLiEFPigycu+3RYrApLF4oaoj2rngJXbzWDfqq/YGh4iyl8UuDy3YRU97o8EbXQt+VOiTM5adn7njh2FVnVJZ9qlEMvhvL4OqreUxuJMAh1T/R+JRR2zZzdsRgwCwlTFf7s9uso=
+Received: from DM4PR12MB7765.namprd12.prod.outlook.com (2603:10b6:8:113::5) by
+ CO6PR12MB5428.namprd12.prod.outlook.com (2603:10b6:5:35c::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6631.45; Wed, 2 Aug 2023 11:20:17 +0000
+Received: from DM4PR12MB7765.namprd12.prod.outlook.com
+ ([fe80::787e:9003:7c48:4f5b]) by DM4PR12MB7765.namprd12.prod.outlook.com
+ ([fe80::787e:9003:7c48:4f5b%5]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
+ 11:20:17 +0000
+From:   "Gangurde, Abhijit" <abhijit.gangurde@amd.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Simek, Michal" <michal.simek@amd.com>,
+        "git (AMD-Xilinx)" <git@amd.com>,
+        "Agarwal, Nikhil" <nikhil.agarwal@amd.com>,
+        "Gupta, Nipun" <Nipun.Gupta@amd.com>
+Subject: RE: [PATCH v2 1/4] cdx: Introduce lock to protect controller ops and
+ controller list
+Thread-Topic: [PATCH v2 1/4] cdx: Introduce lock to protect controller ops and
+ controller list
+Thread-Index: AQHZw6fpekS7+sewHkWP9KKMIHa4dK/TzKGAgAEccwCAADdNAIABuRcg
+Date:   Wed, 2 Aug 2023 11:20:17 +0000
+Message-ID: <DM4PR12MB7765B6284FD9BC113C8482FC8F0BA@DM4PR12MB7765.namprd12.prod.outlook.com>
+References: <20230731120813.123247-1-abhijit.gangurde@amd.com>
+ <20230731120813.123247-2-abhijit.gangurde@amd.com>
+ <2023073148-carried-unshaved-77e4@gregkh>
+ <DM4PR12MB7765398763E00B565AB1C6DB8F0AA@DM4PR12MB7765.namprd12.prod.outlook.com>
+ <2023080105-eggnog-probably-9ff3@gregkh>
+In-Reply-To: <2023080105-eggnog-probably-9ff3@gregkh>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_ActionId=48ed6a3f-1dfc-4bfa-80cb-7ea9f9a01748;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_ContentBits=0;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_Enabled=true;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_Method=Privileged;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_Name=Non-Business-AIP
+ 2.0;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_SetDate=2023-08-02T10:59:32Z;MSIP_Label_64e4cbe8-b4f6-45dc-bcba-6123dfd2d8bf_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM4PR12MB7765:EE_|CO6PR12MB5428:EE_
+x-ms-office365-filtering-correlation-id: 0c7ea24b-94de-431b-88bc-08db934a7341
+x-ld-processed: 3dd8961f-e488-4e60-8e11-a82d994e183d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7jXiWs5Z8uv/KwnmEusJaNCL+HEi4NM4b245uu0mwX6pz78fBBreLcAE8D2zbLGfq2pH2qdoaH6vmlyVwTl6+caDVxGOqlasRtOIFtorw1BrjXJCu+hEZ1QmDjacFxTzXx10Rr/h6yQuZPdeeFokiVHojQrzprZ8oT5uZOOCIgoGOA/Z21OSlkxmTp8i2q8M/nKwo4gWwJwy83DUKkbqbszxzUACWjEuvzx64XJH6kFrnfJVbhQyOt4kG+zame+olLjdbDOG3qEJ9pPDZt7IQqvw5mYXxvC/V0ZKmY1jJPh4Y9g2QYdKmJb3gwbUIKnbmYiGJJMVDP1Mdqg3whdhV54CXKbpnnBsUpz0CVKY+/I38puoJaTFq47W7CJR1W9vl3D/pX7Lr/w2kWUdOUS0ReIMfQmaq7cgFvet0o9JNvfSwr1EVlNYJzHr9Gt3x0iPyEUzHIeYcuFj/IzJrmdrdz+93jtMxkzT+DkvK691R48SvJNaNTMV5q4WGqqn2bnq2JkReXUMB05FWkHWReZjV70ijZf7LD3PWHzyYO0tTZqLxIqs1apHGurA2UIWzd7It+AMkvD/unieUsIqcG0+1evcC4FnuT0Ak9Pp2DaPv5olYtnvj+ffQ0rpMdbqbuOY
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7765.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(396003)(136003)(366004)(39860400002)(376002)(451199021)(8676002)(5660300002)(8936002)(52536014)(26005)(2906002)(38070700005)(83380400001)(41300700001)(55016003)(186003)(122000001)(478600001)(38100700002)(54906003)(316002)(86362001)(53546011)(6506007)(64756008)(7696005)(76116006)(4326008)(71200400001)(66946007)(66556008)(66476007)(66446008)(33656002)(6916009)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?9S8fC0SHVlesMLZDh1x8AwBTBOkyqjehaFIXiyx9XK79FNYRMs0xwRF7gj9K?=
+ =?us-ascii?Q?dAYDhVDBsWyyBCjoZfjwVbShkwFBPqkV/5At1ilSFEUbCZwgvAmt2NNMaxes?=
+ =?us-ascii?Q?ZpMNWDO3OUln2ZSK809tF1Z2iPNcOukWh7z86iBBWuRP6m9ieR3XKSYUZF5P?=
+ =?us-ascii?Q?j93dzTGolEdeWlXoOStH9P8Te2o/sGo7yxPPDCuzFfQOYkuNjPzFTQiRsLsn?=
+ =?us-ascii?Q?zVKf55sdZOrjemehlF6uK0tguowf2VeESxYHEZP1TQ2ScB63d/WrI//zmOHX?=
+ =?us-ascii?Q?cpNnUxXvE/pqaQo/b6/f+4TQOqD6dJoUl9OVQRwZXOrlK8NzZFisDB1QkH6m?=
+ =?us-ascii?Q?Z/eLYRIml+Zofkgr7M6RabzoCvJIOeMbXKAZ4dwEHULeNXPeu4SsXlXO8AJZ?=
+ =?us-ascii?Q?KTZiQpsIcyKfwWtlPmSk8+z3leaJI1LSuP3peG3u1Nj9HkaZKZeQg19t8MjC?=
+ =?us-ascii?Q?ZBXU+WklhM3g9BX9zfo0L5ROu5RjaxOphZcTLHBXihb9hhbu5cAtqM+fuMT7?=
+ =?us-ascii?Q?NdKySxfN52ciknZRlEFAtSxq8qwUWzS3mQwpl44td9N0mLp2IHiLlSmT7+LH?=
+ =?us-ascii?Q?KyC9+Nk+pMxn9OrlRbxy8xieDrYEsc44r8pWezb7YGhJkKuMAUZX8WMk3GiP?=
+ =?us-ascii?Q?e18YC9ht58sppQZgZNNkep8nM3dte5xw7A02i/jf+s4EuuTmnbBELwjsPE/K?=
+ =?us-ascii?Q?SHTf2J6xXZ5GQ/96HpyBOygNsF2qaQS36nEOV9+fKa8OOeIuBBV5XMoGoAkR?=
+ =?us-ascii?Q?Yp95Zv7fzMoFtnMkO8o8r8kuhL6VUJ0i5VxZpxHVTCIswvDttuUDIjFIXdLM?=
+ =?us-ascii?Q?Syu19u8PpXOEmvZpI8QNF7EVRoUc/H6g03J32G/Bh0I95od9x7puZX1xSQIK?=
+ =?us-ascii?Q?tYzaPFeOIC3lJgh0CjbYBFbRcmOkDCzLMNoAmRnwsZvnmSDyUxAXh1nlq+5o?=
+ =?us-ascii?Q?LuHXFpTNwdYdpBkBBzp5Gt/9n2Gfp46fQ7Lpn4vWC7kIlx6UvMTRLW/zOEPg?=
+ =?us-ascii?Q?94jhzx5vIq19OFDI7Q2+5ulfWqvbPDZxTf1XmAW1HgB9n8/8eIQvxurTC1MK?=
+ =?us-ascii?Q?n3odrycK84mSSQafr6ExFTiQbBfQAjWyMZnAZI3BFcYRj7yI0H6/8WG3vBsX?=
+ =?us-ascii?Q?71N4NGqX7d9t7ckI63b7e6ROpNtecxgAhaYsEQDCt8/xVmxOLiXNaaQLrRqq?=
+ =?us-ascii?Q?dBlND2bWTn8zhgIxqSvRxfwS4IrOH4Y/AncRYba5As9/Vk+IMTHiA+Wz93vu?=
+ =?us-ascii?Q?sUsbZlOL27WBn7XeeU5xiBFEiwARV3K62ImBRf2wPo2YGVCrrYWi2hhBwxIi?=
+ =?us-ascii?Q?WasZrX7VZcD+mgFv2P8efZMG1VMHpMGX06vD8+FoREfjfZ2blx74qwo6/ptN?=
+ =?us-ascii?Q?32SRozMvvN8GP66JXKQZVuf+fLND5xGjPh/esHEOEMosCDf5hB7BtSpmI6PI?=
+ =?us-ascii?Q?Vj6ZuTU7bkvzhaQpLQUbdy9l04uWFC/7usa+8rwqoKFlvBptFJ5kEe0UFlgG?=
+ =?us-ascii?Q?uve4c4vx653vCieNR/tpv/INCTfrM1jjsf+hHK29Ug+KYnjt3ot7rKSeda9J?=
+ =?us-ascii?Q?F0olDKkJhetha4z6gpc=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB7765.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0c7ea24b-94de-431b-88bc-08db934a7341
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2023 11:20:17.3264
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GjbZTFUd7+If1RSP4DdXhszLeMkB6P00e8YOEOeizD/NloKO1WPtp2SPghMatC/f/rXz3Nk9fBLfCte7wZxbAA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5428
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 5:44=E2=80=AFPM Serge Semin <fancer.lancer@gmail.com=
-> wrote:
->
-> On Wed, Aug 02, 2023 at 11:10:10AM +0800, Keguang Zhang wrote:
-> > On Wed, Aug 2, 2023 at 2:21=E2=80=AFAM Serge Semin <fancer.lancer@gmail=
-.com> wrote:
+> > > From: Greg KH <gregkh@linuxfoundation.org>
+> > > Sent: Monday, July 31, 2023 5:55 PM
+> > > To: Gangurde, Abhijit <abhijit.gangurde@amd.com>
+> > > Cc: masahiroy@kernel.org; linux-kernel@vger.kernel.org; Simek, Michal
+> > > <michal.simek@amd.com>; git (AMD-Xilinx) <git@amd.com>; Agarwal,
+> Nikhil
+> > > <nikhil.agarwal@amd.com>; Gupta, Nipun <Nipun.Gupta@amd.com>
+> > > Subject: Re: [PATCH v2 1/4] cdx: Introduce lock to protect controller=
+ ops
+> and
+> > > controller list
 > > >
-> > > On Sat, Jul 29, 2023 at 09:43:09PM +0800, Keguang Zhang wrote:
-> > > > Add Ethernet device nodes for Loongson-1 boards,
-> > > > and drop the legacy platform devices and data accordingly.
-> > >
-> > > It seems to me that your conversion breaks the RGMII mode support.
-> > > What you need to do is to make sure that the respective flags are set
-> > > in the MUX space.
-> > >
-> > > Regarding the MUX-space. It looks as a pinctrl-setting space. If so
-> > > adding the new pinctrl driver will be required. Otherwise it can be
-> > > defined as a syscon-node and then utilized in the Loongson-1 GMAC
-> > > low-level driver.
-> > >
->
-> > Thanks for your reminder.
-> > I planned to add the pinctrl driver later.
-> > Now I'm working on it.
->
-> I have been having a patch moving the Loongson32 MAC driver to the
-> STMMAC driver directory for quite a while in my tree. You can use it
-> in your series (completely, as a reference or template, whatever). The
-> only thing you'll need to do is to add the pinctrl-based version of
-> the ls1b_eth_mux_init()/ls1c_eth_mux_init() methods in there and
-> test/debug it of course.
->
-> Note 1. It seems to me that it would work better if you defined the
-> plat_stmmacenet_data.fix_mac_speed() callback instead of
-> plat_stmmacenet_data.init() for LS1B which supports MII and RGMII aka
-> 100Mbps and 1000Mbps speeds.
->
-Thanks!
-I will look into it.
-However, I think ls1x_eth_mux_init() belongs to the scope of pinctrl or sys=
-con.
-IMHO it is not worth implementing a glue driver for Loongson1.
-
-> Note 2. The patch I've sent was only built-tested. I don't have any
-> Loongson hardware.
->
-> Note 3. After the suggested patch is applied you can also completely
-> move the include/linux/stmmac.h header file to the STMMAC-driver
-> directory as a following up cleanup update (it should be renamed to
-> stmmac_platform.h since stmmac.h is already available in there).
-> It can be done since there won't any users of that file outside the
-> STMMAC-driver directory. So there is no point in keeping it in the
-> common headers directory anymore.
->
-> -Serge(y)
->
-> >
-> > > -Serge(y)
-> > >
+> > > On Mon, Jul 31, 2023 at 05:38:10PM +0530, Abhijit Gangurde wrote:
+> > > > Add a mutex lock to prevent race between controller ops initiated b=
+y
+> > > > the bus subsystem and the controller registration/unregistration.
 > > > >
-> > > > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > > > Signed-off-by: Abhijit Gangurde <abhijit.gangurde@amd.com>
 > > > > ---
-> > > >  arch/mips/boot/dts/loongson/loongson1.dtsi    |  16 ++
-> > > >  arch/mips/boot/dts/loongson/loongson1b.dtsi   |  53 +++++++
-> > > >  arch/mips/boot/dts/loongson/loongson1c.dtsi   |  17 ++
-> > > >  arch/mips/boot/dts/loongson/lsgz_1b_dev.dts   |   8 +
-> > > >  arch/mips/boot/dts/loongson/smartloong_1c.dts |   4 +
-> > > >  arch/mips/loongson32/common/platform.c        | 146 +-------------=
-----
-> > > >  arch/mips/loongson32/ls1b/board.c             |   2 -
-> > > >  arch/mips/loongson32/ls1c/board.c             |   1 -
-> > > >  8 files changed, 99 insertions(+), 148 deletions(-)
+> > > >  drivers/cdx/cdx.c | 14 ++++++++++++++
+> > > >  1 file changed, 14 insertions(+)
 > > > >
-> > > > diff --git a/arch/mips/boot/dts/loongson/loongson1.dtsi b/arch/mips=
-/boot/dts/loongson/loongson1.dtsi
-> > > > index c77aa2d0f66c..48bb786bbf10 100644
-> > > > --- a/arch/mips/boot/dts/loongson/loongson1.dtsi
-> > > > +++ b/arch/mips/boot/dts/loongson/loongson1.dtsi
-> > > > @@ -71,6 +71,22 @@ intc3: interrupt-controller@1fd01088 {
-> > > >                       interrupt-parent =3D <&cpu_intc>;
-> > > >                       interrupts =3D <5>;
-> > > >               };
-> > > > +
-> > > > +             gmac0: ethernet@1fe10000 {
-> > > > +                     compatible =3D "snps,dwmac-3.70a";
-> > > > +                     reg =3D <0x1fe10000 0x10000>;
-> > > > +
-> > > > +                     interrupt-parent =3D <&intc1>;
-> > > > +                     interrupt-names =3D "macirq";
-> > > > +
-> > > > +                     clocks =3D <&clkc LS1X_CLKID_AHB>;
-> > > > +                     clock-names =3D "stmmaceth";
-> > > > +
-> > > > +                     snps,pbl =3D <1>;
-> > > > +
-> > > > +                     status =3D "disabled";
-> > > > +             };
-> > > > +
-> > > >       };
+> > > > diff --git a/drivers/cdx/cdx.c b/drivers/cdx/cdx.c
+> > > > index d2cad4c670a0..66797c8fe400 100644
+> > > > --- a/drivers/cdx/cdx.c
+> > > > +++ b/drivers/cdx/cdx.c
+> > > > @@ -72,6 +72,8 @@
 > > > >
-> > > >       apb: bus@1fe40000 {
-> > > > diff --git a/arch/mips/boot/dts/loongson/loongson1b.dtsi b/arch/mip=
-s/boot/dts/loongson/loongson1b.dtsi
-> > > > index 437a77cee163..42b96c557660 100644
-> > > > --- a/arch/mips/boot/dts/loongson/loongson1b.dtsi
-> > > > +++ b/arch/mips/boot/dts/loongson/loongson1b.dtsi
-> > > > @@ -7,6 +7,11 @@
-> > > >  #include "loongson1.dtsi"
-> > > >
-> > > >  / {
-> > > > +     aliases {
-> > > > +             ethernet0 =3D &gmac0;
-> > > > +             ethernet1 =3D &gmac1;
-> > > > +     };
-> > > > +
-> > > >       cpus {
-> > > >               #address-cells =3D <1>;
-> > > >               #size-cells =3D <0>;
-> > > > @@ -74,6 +79,54 @@ clkc: clock-controller@1fe78030 {
-> > > >       };
-> > > >  };
-> > > >
-> > > > +&ahb {
-> > > > +     gmac1: ethernet@1fe20000 {
-> > > > +             compatible =3D "snps,dwmac-3.70a";
-> > > > +             reg =3D <0x1fe20000 0x10000>;
-> > > > +
-> > > > +             interrupt-parent =3D <&intc1>;
-> > > > +             interrupts =3D <3 IRQ_TYPE_LEVEL_HIGH>;
-> > > > +             interrupt-names =3D "macirq";
-> > > > +
-> > > > +             clocks =3D <&clkc LS1X_CLKID_AHB>;
-> > > > +             clock-names =3D "stmmaceth";
-> > > > +
-> > > > +             phy-handle =3D <&phy1>;
-> > > > +             phy-mode =3D "mii";
-> > > > +
-> > > > +             snps,pbl =3D <1>;
-> > > > +
-> > > > +             status =3D "disabled";
-> > > > +
-> > > > +             mdio1 {
-> > > > +                     #address-cells =3D <1>;
-> > > > +                     #size-cells =3D <0>;
-> > > > +                     compatible =3D "snps,dwmac-mdio";
-> > > > +
-> > > > +                     phy1: ethernet-phy@0 {
-> > > > +                             reg =3D <0x0>;
-> > > > +                     };
-> > > > +             };
-> > > > +     };
-> > > > +};
-> > > > +
-> > > > +&gmac0 {
-> > > > +     interrupts =3D <2 IRQ_TYPE_LEVEL_HIGH>;
-> > > > +
-> > > > +     phy-handle =3D <&phy0>;
-> > > > +     phy-mode =3D "mii";
-> > > > +
-> > > > +     mdio0 {
-> > > > +             #address-cells =3D <1>;
-> > > > +             #size-cells =3D <0>;
-> > > > +             compatible =3D "snps,dwmac-mdio";
-> > > > +
-> > > > +             phy0: ethernet-phy@0 {
-> > > > +                     reg =3D <0x0>;
-> > > > +             };
-> > > > +     };
-> > > > +};
-> > > > +
-> > > >  &uart1 {
-> > > >       interrupts =3D <3 IRQ_TYPE_LEVEL_HIGH>;
-> > > >  };
-> > > > diff --git a/arch/mips/boot/dts/loongson/loongson1c.dtsi b/arch/mip=
-s/boot/dts/loongson/loongson1c.dtsi
-> > > > index 1dd575b7b2f9..5b3e0f9280f6 100644
-> > > > --- a/arch/mips/boot/dts/loongson/loongson1c.dtsi
-> > > > +++ b/arch/mips/boot/dts/loongson/loongson1c.dtsi
-> > > > @@ -41,6 +41,23 @@ intc4: interrupt-controller@1fd010a0 {
-> > > >       };
-> > > >  };
-> > > >
-> > > > +&gmac0 {
-> > > > +     interrupts =3D <3 IRQ_TYPE_LEVEL_HIGH>;
-> > > > +
-> > > > +     phy-handle =3D <&phy0>;
-> > > > +     phy-mode =3D "rmii";
-> > > > +
-> > > > +     mdio0 {
-> > > > +             #address-cells =3D <1>;
-> > > > +             #size-cells =3D <0>;
-> > > > +             compatible =3D "snps,dwmac-mdio";
-> > > > +
-> > > > +             phy0: ethernet-phy@13 {
-> > > > +                     reg =3D <0x13>;
-> > > > +             };
-> > > > +     };
-> > > > +};
-> > > > +
-> > > >  &uart1 {
-> > > >       interrupts =3D <4 IRQ_TYPE_LEVEL_HIGH>;
-> > > >  };
-> > > > diff --git a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts b/arch/mip=
-s/boot/dts/loongson/lsgz_1b_dev.dts
-> > > > index 89c3dfa574f7..a43df21f2904 100644
-> > > > --- a/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-> > > > +++ b/arch/mips/boot/dts/loongson/lsgz_1b_dev.dts
-> > > > @@ -28,6 +28,14 @@ xtal: xtal {
-> > > >       };
-> > > >  };
-> > > >
-> > > > +&gmac0 {
-> > > > +     status =3D "okay";
-> > > > +};
-> > > > +
-> > > > +&gmac1 {
-> > > > +     status =3D "okay";
-> > > > +};
-> > > > +
-> > > >  &uart0 {
-> > > >       status =3D "okay";
-> > > >  };
-> > > > diff --git a/arch/mips/boot/dts/loongson/smartloong_1c.dts b/arch/m=
-ips/boot/dts/loongson/smartloong_1c.dts
-> > > > index 188aab9e3685..2d8f304aa2c4 100644
-> > > > --- a/arch/mips/boot/dts/loongson/smartloong_1c.dts
-> > > > +++ b/arch/mips/boot/dts/loongson/smartloong_1c.dts
-> > > > @@ -28,6 +28,10 @@ xtal: xtal {
-> > > >       };
-> > > >  };
-> > > >
-> > > > +&gmac0 {
-> > > > +     status =3D "okay";
-> > > > +};
-> > > > +
-> > > >  &uart0 {
-> > > >       status =3D "okay";
-> > > >  };
-> > > > diff --git a/arch/mips/loongson32/common/platform.c b/arch/mips/loo=
-ngson32/common/platform.c
-> > > > index 8272b4133e25..817518531b9b 100644
-> > > > --- a/arch/mips/loongson32/common/platform.c
-> > > > +++ b/arch/mips/loongson32/common/platform.c
-> > > > @@ -8,157 +8,13 @@
-> > > >  #include <linux/err.h>
-> > > >  #include <linux/mtd/partitions.h>
-> > > >  #include <linux/sizes.h>
-> > > > -#include <linux/phy.h>
-> > > > -#include <linux/stmmac.h>
-> > > >  #include <linux/usb/ehci_pdriver.h>
-> > > >
-> > > >  #include <platform.h>
-> > > >  #include <loongson1.h>
-> > > >  #include <dma.h>
-> > > >  #include <nand.h>
-> > > > -
-> > > > -/* Synopsys Ethernet GMAC */
-> > > > -static struct stmmac_mdio_bus_data ls1x_mdio_bus_data =3D {
-> > > > -     .phy_mask       =3D 0,
-> > > > -};
-> > > > -
-> > > > -static struct stmmac_dma_cfg ls1x_eth_dma_cfg =3D {
-> > > > -     .pbl            =3D 1,
-> > > > -};
-> > > > -
-> > > > -int ls1x_eth_mux_init(struct platform_device *pdev, void *priv)
-> > > > -{
-> > > > -     struct plat_stmmacenet_data *plat_dat =3D NULL;
-> > > > -     u32 val;
-> > > > -
-> > > > -     val =3D __raw_readl(LS1X_MUX_CTRL1);
-> > > > -
-> > > > -#if defined(CONFIG_LOONGSON1_LS1B)
-> > > > -     plat_dat =3D dev_get_platdata(&pdev->dev);
-> > > > -     if (plat_dat->bus_id) {
-> > > > -             __raw_writel(__raw_readl(LS1X_MUX_CTRL0) | GMAC1_USE_=
-UART1 |
-> > > > -                          GMAC1_USE_UART0, LS1X_MUX_CTRL0);
-> > > > -             switch (plat_dat->phy_interface) {
-> > > > -             case PHY_INTERFACE_MODE_RGMII:
-> > > > -                     val &=3D ~(GMAC1_USE_TXCLK | GMAC1_USE_PWM23)=
-;
-> > > > -                     break;
-> > > > -             case PHY_INTERFACE_MODE_MII:
-> > > > -                     val |=3D (GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
-> > > > -                     break;
-> > > > -             default:
-> > > > -                     pr_err("unsupported mii mode %d\n",
-> > > > -                            plat_dat->phy_interface);
-> > > > -                     return -ENOTSUPP;
-> > > > -             }
-> > > > -             val &=3D ~GMAC1_SHUT;
-> > > > -     } else {
-> > > > -             switch (plat_dat->phy_interface) {
-> > > > -             case PHY_INTERFACE_MODE_RGMII:
-> > > > -                     val &=3D ~(GMAC0_USE_TXCLK | GMAC0_USE_PWM01)=
-;
-> > > > -                     break;
-> > > > -             case PHY_INTERFACE_MODE_MII:
-> > > > -                     val |=3D (GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
-> > > > -                     break;
-> > > > -             default:
-> > > > -                     pr_err("unsupported mii mode %d\n",
-> > > > -                            plat_dat->phy_interface);
-> > > > -                     return -ENOTSUPP;
-> > > > -             }
-> > > > -             val &=3D ~GMAC0_SHUT;
-> > > > -     }
-> > > > -     __raw_writel(val, LS1X_MUX_CTRL1);
-> > > > -#elif defined(CONFIG_LOONGSON1_LS1C)
-> > > > -     plat_dat =3D dev_get_platdata(&pdev->dev);
-> > > > -
-> > > > -     val &=3D ~PHY_INTF_SELI;
-> > > > -     if (plat_dat->phy_interface =3D=3D PHY_INTERFACE_MODE_RMII)
-> > > > -             val |=3D 0x4 << PHY_INTF_SELI_SHIFT;
-> > > > -     __raw_writel(val, LS1X_MUX_CTRL1);
-> > > > -
-> > > > -     val =3D __raw_readl(LS1X_MUX_CTRL0);
-> > > > -     __raw_writel(val & (~GMAC_SHUT), LS1X_MUX_CTRL0);
-> > > > -#endif
-> > > > -
-> > > > -     return 0;
-> > > > -}
-> > > > -
-> > > > -static struct plat_stmmacenet_data ls1x_eth0_pdata =3D {
-> > > > -     .bus_id                 =3D 0,
-> > > > -     .phy_addr               =3D -1,
-> > > > -#if defined(CONFIG_LOONGSON1_LS1B)
-> > > > -     .phy_interface          =3D PHY_INTERFACE_MODE_MII,
-> > > > -#elif defined(CONFIG_LOONGSON1_LS1C)
-> > > > -     .phy_interface          =3D PHY_INTERFACE_MODE_RMII,
-> > > > -#endif
-> > > > -     .mdio_bus_data          =3D &ls1x_mdio_bus_data,
-> > > > -     .dma_cfg                =3D &ls1x_eth_dma_cfg,
-> > > > -     .has_gmac               =3D 1,
-> > > > -     .tx_coe                 =3D 1,
-> > > > -     .rx_queues_to_use       =3D 1,
-> > > > -     .tx_queues_to_use       =3D 1,
-> > > > -     .init                   =3D ls1x_eth_mux_init,
-> > > > -};
-> > > > -
-> > > > -static struct resource ls1x_eth0_resources[] =3D {
-> > > > -     [0] =3D {
-> > > > -             .start  =3D LS1X_GMAC0_BASE,
-> > > > -             .end    =3D LS1X_GMAC0_BASE + SZ_64K - 1,
-> > > > -             .flags  =3D IORESOURCE_MEM,
-> > > > -     },
-> > > > -     [1] =3D {
-> > > > -             .name   =3D "macirq",
-> > > > -             .start  =3D LS1X_GMAC0_IRQ,
-> > > > -             .flags  =3D IORESOURCE_IRQ,
-> > > > -     },
-> > > > -};
-> > > > -
-> > > > -struct platform_device ls1x_eth0_pdev =3D {
-> > > > -     .name           =3D "stmmaceth",
-> > > > -     .id             =3D 0,
-> > > > -     .num_resources  =3D ARRAY_SIZE(ls1x_eth0_resources),
-> > > > -     .resource       =3D ls1x_eth0_resources,
-> > > > -     .dev            =3D {
-> > > > -             .platform_data =3D &ls1x_eth0_pdata,
-> > > > -     },
-> > > > -};
-> > > > -
-> > > > -#ifdef CONFIG_LOONGSON1_LS1B
-> > > > -static struct plat_stmmacenet_data ls1x_eth1_pdata =3D {
-> > > > -     .bus_id                 =3D 1,
-> > > > -     .phy_addr               =3D -1,
-> > > > -     .phy_interface          =3D PHY_INTERFACE_MODE_MII,
-> > > > -     .mdio_bus_data          =3D &ls1x_mdio_bus_data,
-> > > > -     .dma_cfg                =3D &ls1x_eth_dma_cfg,
-> > > > -     .has_gmac               =3D 1,
-> > > > -     .tx_coe                 =3D 1,
-> > > > -     .rx_queues_to_use       =3D 1,
-> > > > -     .tx_queues_to_use       =3D 1,
-> > > > -     .init                   =3D ls1x_eth_mux_init,
-> > > > -};
-> > > > -
-> > > > -static struct resource ls1x_eth1_resources[] =3D {
-> > > > -     [0] =3D {
-> > > > -             .start  =3D LS1X_GMAC1_BASE,
-> > > > -             .end    =3D LS1X_GMAC1_BASE + SZ_64K - 1,
-> > > > -             .flags  =3D IORESOURCE_MEM,
-> > > > -     },
-> > > > -     [1] =3D {
-> > > > -             .name   =3D "macirq",
-> > > > -             .start  =3D LS1X_GMAC1_IRQ,
-> > > > -             .flags  =3D IORESOURCE_IRQ,
-> > > > -     },
-> > > > -};
-> > > > -
-> > > > -struct platform_device ls1x_eth1_pdev =3D {
-> > > > -     .name           =3D "stmmaceth",
-> > > > -     .id             =3D 1,
-> > > > -     .num_resources  =3D ARRAY_SIZE(ls1x_eth1_resources),
-> > > > -     .resource       =3D ls1x_eth1_resources,
-> > > > -     .dev            =3D {
-> > > > -             .platform_data =3D &ls1x_eth1_pdata,
-> > > > -     },
-> > > > -};
-> > > > -#endif       /* CONFIG_LOONGSON1_LS1B */
-> > > > +#include <irq.h>
-> > > >
-> > > >  /* GPIO */
-> > > >  static struct resource ls1x_gpio0_resources[] =3D {
-> > > > diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson=
-32/ls1b/board.c
-> > > > index e8290f200096..f23e4e5c96ee 100644
-> > > > --- a/arch/mips/loongson32/ls1b/board.c
-> > > > +++ b/arch/mips/loongson32/ls1b/board.c
-> > > > @@ -34,8 +34,6 @@ static const struct gpio_led_platform_data ls1x_l=
-ed_pdata __initconst =3D {
-> > > >  };
-> > > >
-> > > >  static struct platform_device *ls1b_platform_devices[] __initdata =
-=3D {
-> > > > -     &ls1x_eth0_pdev,
-> > > > -     &ls1x_eth1_pdev,
-> > > >       &ls1x_ehci_pdev,
-> > > >       &ls1x_gpio0_pdev,
-> > > >       &ls1x_gpio1_pdev,
-> > > > diff --git a/arch/mips/loongson32/ls1c/board.c b/arch/mips/loongson=
-32/ls1c/board.c
-> > > > index a7096964fb30..29bc467fd149 100644
-> > > > --- a/arch/mips/loongson32/ls1c/board.c
-> > > > +++ b/arch/mips/loongson32/ls1c/board.c
-> > > > @@ -6,7 +6,6 @@
-> > > >  #include <platform.h>
-> > > >
-> > > >  static struct platform_device *ls1c_platform_devices[] __initdata =
-=3D {
-> > > > -     &ls1x_eth0_pdev,
-> > > >       &ls1x_rtc_pdev,
-> > > >       &ls1x_wdt_pdev,
-> > > >  };
-> > > > --
-> > > > 2.39.2
-> > > >
+> > > >  /* CDX controllers registered with the CDX bus */
+> > > >  static DEFINE_XARRAY_ALLOC(cdx_controllers);
+> > > > +/* Lock to protect controller ops and controller list */
+> > > > +static DEFINE_MUTEX(cdx_controller_lock);
+> > >
+> > > Wait, why do you have a local list and not just rely on the list the
+> > > driver core has for you already?  Isn't this a duplicate list where y=
+ou
+> > > have objects on two different lists with a lifespan controlled only b=
+y
+> > > one of them?
 > >
-> >
-> >
-> > --
-> > Best regards,
-> >
-> > Keguang Zhang
+> > cdx_controllers list is holding just the controllers registered on the =
+cdx bus
+> system.
+>=20
+> Which are devices on the bus, so why do you need a separate list?
+>=20
+> > CDX devices are still maintained by driver core list. Controller list i=
+s used by
+> rescan
+> > which triggers rescan on all the controllers.
+>=20
+> Again, why a separate list?  The driver core already tracks these,
+> right?
 
+As of now, cdx controllers are platform devices and maintained on cdx_contr=
+ollers list.
+CDX controller devices are not added on cdx bus. IIUC, you mean to use driv=
+er core
+list to find out different cdx controllers, in that case cdx bus would need=
+ to scan=20
+platform bus and access the private data of platform device to get a cdx_co=
+ntroller ops.
+IMHO, that would not be a right approach.
 
+Or as an alternative cdx controller could be added on cdx bus as well. And =
+we can then
+get these controllers from driver core list.
 
---=20
-Best regards,
-
-Keguang Zhang
+Thanks,
+Abhijit
