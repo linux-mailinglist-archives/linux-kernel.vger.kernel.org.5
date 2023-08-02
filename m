@@ -2,67 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CDB176D58A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D30676D57B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:35:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbjHBRgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
+        id S233000AbjHBRfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbjHBRgV (ORCPT
+        with ESMTP id S232724AbjHBRfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:36:21 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D992B4234
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:35:14 -0700 (PDT)
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        Wed, 2 Aug 2023 13:35:18 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39EA73AA4;
+        Wed,  2 Aug 2023 10:33:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id D230186888;
-        Wed,  2 Aug 2023 19:34:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1690997645;
-        bh=+erSwR1kI2VsxeBHyUbhbJ+iIvqk1xZClSlMSAoe4jE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Yhlg2BqMWqKrL5rO+jv3TGHbzvTCIxSOxH9HTw0t8PdJUUI9UqZgQiorQcrWiXsIr
-         NJXjYf8UbaOlquXkW79e+aorq+fmHpZyRPS7NzaY+9Tc9du5+MNb+n5YsleiavOu0B
-         U7WXwu900pkadUWMFOowL2XfYv496zZkXm4ctCLslBzINvfzifUG2rMLpzwiwDtPrd
-         3cGhPTfAogt5AKSggGpnYtLVDFtOQpLNn6W20mcJTUKPm17VkhvCyuixVSoY/+45Vl
-         spaidkxTvQGzJ3xz9Oz3r/wLz9vXBhdbHy5fIbf8czbsJnObjPbZb6rbnE0MNbdPPP
-         raPyhPCpa3lrQ==
-Message-ID: <92992f9c-fae0-f1b3-16e7-09ad3e711561@denx.de>
-Date:   Wed, 2 Aug 2023 19:31:29 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 251EF61A69;
+        Wed,  2 Aug 2023 17:32:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3841DC433C7;
+        Wed,  2 Aug 2023 17:32:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690997548;
+        bh=IVsHoudAKm5wnynN475U+dTk4p2E42uQpE/A/qX4K44=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=qV6C6NwhqldioMDH0pXmbheauQxfwNy/a3USfardjeS3SNhCxBVac051BJuJmVBdU
+         a0Gqc91X5ciU6iSl0f9nomaO/sYfthcXwYknKooPRC+C3+X/N5TSme1yruNbgUzd10
+         I+RuMAihq8jwxjeCaQoBxP0HS4IhcqUJj8h5egVySXCRaID70TwAKaGKSaC6lUp2Mv
+         mH4ZNGdGIE1fvj7euX+tbsey1HrAkQhZ/mnBzlh3rYkIiMx8c441xkqUX36MpowulR
+         0gdq3sJ8lLzlnlKmhiMHNUs+Q7am8dSfN1rB7cM7g9KZce8HykcyW8KIB2AV2VnpMP
+         e6sHeOKdz5yMg==
+From:   SeongJae Park <sj@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, damon@lists.linux.dev,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.1 000/225] 6.1.43-rc2 review
+Date:   Wed,  2 Aug 2023 17:32:25 +0000
+Message-Id: <20230802173225.108685-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230802065510.869511253@linuxfoundation.org>
+References: 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
- and EOT packet"
-Content-Language: en-US
-To:     neil.armstrong@linaro.org, Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Amit Pundir <amit.pundir@linaro.org>
-References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
- <6cd079a4-2f5b-0169-cbaf-b59a72f1b32b@denx.de>
- <084ca94e-d694-878e-0646-f4c89043cd28@denx.de>
- <c2644543-2e81-3351-ee1e-76f5f32c4ac5@linaro.org>
-From:   Marek Vasut <marex@denx.de>
-In-Reply-To: <c2644543-2e81-3351-ee1e-76f5f32c4ac5@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,55 +61,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 14:37, Neil Armstrong wrote:
-> On 02/08/2023 14:28, Marek Vasut wrote:
->> On 8/2/23 14:07, Marek Vasut wrote:
->>> On 8/2/23 10:52, Neil Armstrong wrote:
->>>> This reverts commit [1] to fix display regression on the Dragonboard 
->>>> 845c
->>>> (SDM845) devboard.
->>>>
->>>> There's a mismatch on the real action of the following flags:
->>>> - MIPI_DSI_MODE_VIDEO_NO_HSA
->>>> - MIPI_DSI_MODE_VIDEO_NO_HFP
->>>> - MIPI_DSI_MODE_VIDEO_NO_HBP
->>>> which leads to a non-working display on qcom platforms.
->>>>
->>>> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA 
->>>> and EOT packet")
->>>>
->>>> Cc: Marek Vasut <marex@denx.de>
->>>> Cc: Robert Foss <rfoss@kernel.org>
->>>> Cc: Jagan Teki <jagan@amarulasolutions.com>
->>>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>>> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
->>>> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA 
->>>> and EOT packet")
->>>> Reported-by: Amit Pundir <amit.pundir@linaro.org>
->>>> Link: 
->>>> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
->>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->>>
->>> This breaks LT9611 operation on i.MX8M Mini/Nano/Plus, so, NAK.
->>>
->>> I am currently using this LT9611 with Linux 6.1.y
->>
->> Correction, 6.1.y only with the DSIM patches backported.
+Hello,
+
+On Wed, 2 Aug 2023 09:41:55 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+
+> This is the start of the stable review cycle for the 6.1.43 release.
+> There are 225 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Well you'll need to keep [1] backported on your downstream branch,
-> this revert won't propagate to v6.1 stable anyway.
-
-I will still have a problem with those MX8M boards during my development 
-on linux-next, so that isn't helping.
-
->>> in production and this is not acceptable. I also believe the correct 
->>> fix is on the MSM side, not on the LT9611 driver side, since MSM 
->>> incorrectly implements these flags.
->>
+> Responses should be made by Fri, 04 Aug 2023 06:54:28 +0000.
+> Anything received after that time might be too late.
 > 
-> Since [1] breaks Qcom boards on v6.5, and [1] was added for v6.5 to make 
-> the bridge work
-> on i.MX8M Mini/Nano/Plus, it's not acceptable either to keep it for the 
-> v6.5 release.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.43-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
 
-So, we need to find a solution which works for both, I proposed one already.
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
+
+Tested-by: SeongJae Park <sj@kernel.org>
+
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] bdcf4e82a088 ("Linux 6.1.43-rc2")
+
+
+Thanks,
+SJ
+
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: sysfs.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_m68k.sh
+ok 12 selftests: damon-tests: build_arm64.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+
+PASS
