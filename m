@@ -2,118 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C3276CB14
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7158D76CB0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbjHBKjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55586 "EHLO
+        id S233055AbjHBKin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234096AbjHBKjP (ORCPT
+        with ESMTP id S232466AbjHBKiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:39:15 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2049.outbound.protection.outlook.com [40.107.244.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE3E3C3C;
-        Wed,  2 Aug 2023 03:36:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LR/UjfoLdx4LBVF9zpQWKVVYi4EtNyZf51ogLUrv8Bedc9zN2o9//3gyTtEajLtUTfZ4pKbrUvY0aycnNwWFjU/Bb8er++BnJBschpmqYEZChnoKdhvUudlUriB/MFWPGBkueXeoh4HJzW6y68xUSuFwJS7C/W5vlT1/pnGbi77YuTp3oVqBo7hyVcQVfVAYWkpbMPaIMytF0LpILIpIedhgn67GypVKabCU6i9wcxXXyTlmblU9fnWxX/vRGHsZqZeDrOVwj9kFFxCzTTRFuxkeMM/yK3L7XU5AF2bmPXr/8WoDk00xwXDTMIBtsVPbv3wo2DVUQ3hyAxFZiQkBfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FGhYpruplPF195TFVfvabAWZnSrETWnGzoh5M+JMsYY=;
- b=JxlDrtQaPx5hm3NRlzaz/DJk92ZKuvsM/rSvvrP6/raPsFTjPBCWTiwfoKDW/FLCaonoJRgA4utpnSan4zijTrs6MsuEB925Dvv8PoqLbQ7vCNV1fjgUaO+/ufHxcM9L9ElZ2fYFPWntaGWrE7EhyYMBKREFXtXNDUgshKT7ToAmq9WhYd4m37P9b7IpzvKBwuDbAlWMHQqveejxQaX4trFdmPCOtXP0kENxgaavIIZwcYdqbIqD8U/XrGX8Au0YKP7EmCrCTVXOvexZSvVe3U7iheye8lxWEnh5JbZdIO5Sa63eb7AWnk5xpCJ+IbRDLl/4gcCUhznwVNk7A6d8iQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FGhYpruplPF195TFVfvabAWZnSrETWnGzoh5M+JMsYY=;
- b=ojJoKI0CSNtOXhekf44SK07hTdavEe0xx0x83scON/dNkafWzcUI+XYT7EnWVu0TdE4zvX33AMtW3/nbvz1bra7m1i5nwHmAwYF/uAzLYhCKpa7RJON4ezFyX9sJL9+qr7FWwGeddo9Ol9ED7+VYV7El5FM+hc2pbPbCYidelx9VdfbVLrKh1h4O8LQVTeaV/KmK6EsD11RvpGvZsl2MT7uS5eEdx9fphe1skVjX4WB0g4M+54EjCjK9uXOQp1NfEjVQD1tJEJudcI5Sil808BjPCKaKQ+K9SOjMI5vnsnTSGXxEtfJdaWgL/jrIrnooTvMYBcNHq6mz7RfxrQ4JVw==
-Received: from MW4PR04CA0094.namprd04.prod.outlook.com (2603:10b6:303:83::9)
- by PH7PR12MB7283.namprd12.prod.outlook.com (2603:10b6:510:20a::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
- 2023 10:36:07 +0000
-Received: from MWH0EPF000989E9.namprd02.prod.outlook.com
- (2603:10b6:303:83:cafe::d) by MW4PR04CA0094.outlook.office365.com
- (2603:10b6:303:83::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.19 via Frontend
- Transport; Wed, 2 Aug 2023 10:36:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- MWH0EPF000989E9.mail.protection.outlook.com (10.167.241.136) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6652.19 via Frontend Transport; Wed, 2 Aug 2023 10:36:06 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 2 Aug 2023
- 03:35:50 -0700
-Received: from yaviefel (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Wed, 2 Aug 2023
- 03:35:46 -0700
-References: <20230722003609.380549-1-mirsad.todorovac@alu.unizg.hr>
- <ZLzj5oYrbHGvCMkq@shredder>
- <0550924e-dce9-f90d-df8a-db810fd2499f@alu.unizg.hr>
- <adc5e40d-d040-a65e-eb26-edf47dac5b02@alu.unizg.hr>
- <ZL6OljQubhVtQjcD@shredder>
- <cab8ea8a-98f4-ef9b-4215-e2a93cccaab1@alu.unizg.hr>
- <ZMEQGIOQXv6so30x@shredder>
- <a9b6d9f5-14ae-a931-ab7b-d31b5e40f5df@alu.unizg.hr>
- <ZMYXABUN9OzfN5D3@shredder> <875y5zf27p.fsf@nvidia.com>
- <304ba960-0214-82d4-05be-e5956baa64c7@alu.unizg.hr>
-User-agent: mu4e 1.8.11; emacs 28.2
-From:   Petr Machata <petrm@nvidia.com>
-To:     Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-CC:     Petr Machata <petrm@nvidia.com>, Ido Schimmel <idosch@idosch.org>,
-        <razor@blackwall.org>, Ido Schimmel <idosch@nvidia.com>,
-        <netdev@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH v1 01/11] selftests: forwarding:
- custom_multipath_hash.sh: add cleanup for SIGTERM sent by timeout
-Date:   Wed, 2 Aug 2023 12:33:37 +0200
-In-Reply-To: <304ba960-0214-82d4-05be-e5956baa64c7@alu.unizg.hr>
-Message-ID: <87o7jpenpd.fsf@nvidia.com>
+        Wed, 2 Aug 2023 06:38:12 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D603586;
+        Wed,  2 Aug 2023 03:34:24 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3722enkV012009;
+        Wed, 2 Aug 2023 10:34:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=BM3JTqUNkB3VLeEzuItMkXqV/Mnd5xo5sZOy+2pubXM=;
+ b=mBDkhqwvTvvY5nCBV4w2bxt+cx+gPTcb9fAshFiiH3uePpx0RYNmyO07eTM7vM1KHirA
+ 4Q3IhcBjjQwsGmvsI1VQeZWnuC0QbUKi9QXKDqxwCI6FE5N7sq/BcKpdRGc9pTbDsM/z
+ 5OFZD+W883/YAcRuFvzHiWqNg6D/SC5ehj47rn1NYwLDDyvCIQG1IYAWhh5u/UX6bLrw
+ 4hKNSQ2JFY3C4Yr3CUz6on79xlxeT7jciHcBsorOtUfspv3hOZLJTBvc0Ln33m8UdSbN
+ c5UgTqQsuv2NAynEV9yWz/Pmj90N6UG64abxiH3yFVxUIGY+xAofG/t47WiFFdvr3PAF Tg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7bw9hb7t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 10:34:11 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 372AYA3Z026237
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Aug 2023 10:34:10 GMT
+Received: from [10.253.73.93] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
+ 2023 03:34:06 -0700
+Message-ID: <8556fd68-edb1-5b97-6472-ae854f86190b@quicinc.com>
+Date:   Wed, 2 Aug 2023 18:34:04 +0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000989E9:EE_|PH7PR12MB7283:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6e6c6e34-8131-47e6-9e6d-08db93444790
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8Fqf7Ut4D4C6jit1PxHxF5qvI5T4mwICcAUXyvXmnhycvBKjNGfWs52qA5i7WkrD990jCKTbE96kP1BwbFF0dRhauFiLV7zeg6kMmqgJue2epYXdWfAxG8uVoAHTccO6bn1cLkTpyI3p10GoKs5H1iRZwhf/hN8A4/gLH7XWNe83/Uaj4/b4Pcg5ugleu8nnrHxvwZrmCm6KO+DKgiEnSbVm+hjAdnhuVm1FlGIqLvtVcAPWA64wlKUZIrS51enOvlC7CCEKusRxUWbvLm0XP4uKfmKlwVek8CCd0PFtoYw92ewAEj5KGMTHdwWZzinAOnAg9R5acR0o1mDKTjQ47ORaW/WssvTRPgKgvpAaKj9EbYQVEhk73qzmUaamqhmPXAMRbPC96mgtKa67Ysak5b81MsVnUU9xt/5UjiS6nGb5Yw/yoN6QKVJlx1kgO79eDDJEeZnRbwlQinB6b6n4XoIRs0qbuQG3VUb7MgszsRIQKtDCFI02RBG26rHdrbMYKqKmwwrC6L4VHMJkaRsVaPoTiXh5dQGI7TpcmaZVc/Vs03PuCY5xPqFYgV715dE6CEB78yWIvqIrTe9GxyuwaNsqWK7yOPfIHlLYDq/dftHDVWxWKumEkCMOsOpuUng889sxgdCHvXRiFu4wwD7Oh/7ahVT0eYit5SvuQHWjgciZs7FSb8boVDeHHjNdFP2hFUiH0BSeMx8to1ZYCGnB62+XTwti3PZqMk4Y+JcAk67kwncIgsd1/MCHl9UVoDRS
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(346002)(39860400002)(136003)(396003)(376002)(451199021)(82310400008)(36840700001)(40470700004)(46966006)(7416002)(8676002)(5660300002)(36860700001)(426003)(47076005)(82740400003)(83380400001)(2616005)(7636003)(356005)(41300700001)(316002)(336012)(186003)(8936002)(16526019)(53546011)(26005)(4326008)(6916009)(86362001)(70206006)(70586007)(2906002)(6666004)(40460700003)(36756003)(478600001)(54906003)(40480700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 10:36:06.9057
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e6c6e34-8131-47e6-9e6d-08db93444790
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000989E9.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7283
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 3/3] clk: qcom: add clock controller driver for
+ qca8386/qca8084
+Content-Language: en-US
+To:     Randy Dunlap <rdunlap@infradead.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <p.zabel@pengutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20230801085352.22873-1-quic_luoj@quicinc.com>
+ <20230801085352.22873-4-quic_luoj@quicinc.com>
+ <188bcc4c-7388-ca39-5c3c-629edd78cc9f@infradead.org>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <188bcc4c-7388-ca39-5c3c-629edd78cc9f@infradead.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Gg_GPSMSY9OuPWZJVsF9LIhjtd0JUmU7
+X-Proofpoint-GUID: Gg_GPSMSY9OuPWZJVsF9LIhjtd0JUmU7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_06,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 malwarescore=0 bulkscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=949 phishscore=0 lowpriorityscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020093
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -121,40 +88,32 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr> writes:
 
-> On 8/1/23 13:08, Petr Machata wrote:
->> diff --git a/tools/testing/selftests/net/forwarding/mirror_gre_changes.sh
->> b/tools/testing/selftests/net/forwarding/mirror_gre_changes.sh
->> index aff88f78e339..5ea9d63915f7 100755
->> --- a/tools/testing/selftests/net/forwarding/mirror_gre_changes.sh
->> +++ b/tools/testing/selftests/net/forwarding/mirror_gre_changes.sh
->> @@ -72,7 +72,8 @@ test_span_gre_ttl()
->>     	RET=0
->>   -	mirror_install $swp1 ingress $tundev "matchall $tcflags"
->> +	mirror_install $swp1 ingress $tundev \
->> +		"prot ip flower $tcflags ip_prot icmp"
->>   	tc filter add dev $h3 ingress pref 77 prot $prot \
->>   		flower skip_hw ip_ttl 50 action pass
+On 8/2/2023 3:16 AM, Randy Dunlap wrote:
+> 
+> 
+> On 8/1/23 01:53, Luo Jie wrote:
+>> diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
+>> index 263e55d75e3f..a17e8fa5a7e1 100644
+>> --- a/drivers/clk/qcom/Kconfig
+>> +++ b/drivers/clk/qcom/Kconfig
+>> @@ -195,6 +195,14 @@ config IPQ_GCC_9574
+>>   	  i2c, USB, SD/eMMC, etc. Select this for the root clock
+>>   	  of ipq9574.
 >>   
->
-> The problem seems to be fixed in the test run:
->
-> root@defiant:tools/testing/selftests/net/forwarding# ./mirror_gre_changes.sh
-> TEST: mirror to gretap: TTL change (skip_hw)                        [ OK ]
-> TEST: mirror to ip6gretap: TTL change (skip_hw)                     [ OK ]
-> TEST: mirror to gretap: tunnel down/up (skip_hw)                    [ OK ]
-> TEST: mirror to ip6gretap: tunnel down/up (skip_hw)                 [ OK ]
-> TEST: mirror to gretap: egress down/up (skip_hw)                    [ OK ]
-> TEST: mirror to ip6gretap: egress down/up (skip_hw)                 [ OK ]
-> TEST: mirror to gretap: remote address change (skip_hw)             [ OK ]
-> TEST: mirror to ip6gretap: remote address change (skip_hw)          [ OK ]
-> TEST: mirror to gretap: tunnel deleted (skip_hw)                    [ OK ]
-> TEST: mirror to ip6gretap: tunnel deleted (skip_hw)                 [ OK ]
-> TEST: mirror to gretap: underlay route removal (skip_hw)            [ OK ]
-> TEST: mirror to ip6gretap: underlay route removal (skip_hw)         [ OK ]
-> WARN: Could not test offloaded functionality
-> root@defiant:tools/testing/selftests/net/forwarding#
-
-OK, I'll add your Tested-by, let it pass through our regression and send
-upstream.
+>> +config IPQ_NSSCC_QCA8K
+>> +        tristate "QCA8K(QCA8386 or QCA8084) NSS Clock Controller"
+>> +        help
+> 
+> The 2 lines above should be indented with one tab (only; no spaces).
+> 
+>> +          Support for NSS(Network SubSystem) clock controller on
+> 
+> The line above should be indented with one tab + 2 spaces (like the following
+> 3 lines).
+> 
+>> +	  qca8386/qca8084 chip.
+>> +	  Say Y if you want to use network function of switch or PHY
+>> +	  function. Select this for the root clock of qca8xxx.
+> 
+thanks Randy for the review, i will update the patch for this.
