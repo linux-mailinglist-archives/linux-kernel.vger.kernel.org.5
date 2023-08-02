@@ -2,443 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4C476CB52
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27BCB76CB54
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbjHBK4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37202 "EHLO
+        id S233797AbjHBK4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231818AbjHBK4n (ORCPT
+        with ESMTP id S231818AbjHBK4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:56:43 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80181724;
-        Wed,  2 Aug 2023 03:56:41 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3729ElXU014666;
-        Wed, 2 Aug 2023 03:56:33 -0700
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2047.outbound.protection.outlook.com [104.47.56.47])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3s529kc98x-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 03:56:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dcZGTvDqh0SuwMZsi4zM7N2IWzcmT9g9GJ1Roos3CEGaK/5aV31mPsVhv91apKRfsZ4il7Kc6tE8utiSnrOiV8yb9AVYHOXj5meS7DPZ4SxqC9+h4qrTmxXkUaaZGIHec5qo21NUf5aD9/v9gS44b8MNhIcDeNY8fhp23EKIt7S8SoHKa9NvyasTqpckuMELYZbcfm3eL2U+rCltF5wRw2dBguiW3V0jsjZkR5T3aUjM1w6yJCFSSbItyQLklILHdCE60/Pj+MWf+wl7chtS/KH9S526SvH7768BbG8JkJ0AA9B27dQWPHu1DMR2f8/XNC9NbhhSlYL2Dtq2T06KYg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9uUtmmYNJP2eJn9pFO8z4ze5R/OvU7ttuyWEABkERv4=;
- b=J46Npx2RUigi9Hq5cuhXAeKrpXgwFQQ8t3BN94jmRJrncsfeQGd4As/fz/1yivKuW679z79yaLVYLTmlIuL5n8nTXEp2QKjCDe0GTxE+6SvIXGuNgGT2T9MlBW/FGcWUlrmZk4U5C+6CdWq+MKsgw31k1x6q0kD2Y1sAaFw9FVf7uUidAKEzhZ4fGCcHQGbNIGH5yZzMjIYw4jgkCpKMjqqIhdj++kiMxBAL1Y98aPWY0lcI5hWrRZNscWdLq6tczHPobZimFzw8gj4gxhmsQik/DxkKNWhyoCXLZXPx0uUDXXpzHXEGNnoZ7TjVI0yuB8zweKUrZUhx8s7c2ScQ7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9uUtmmYNJP2eJn9pFO8z4ze5R/OvU7ttuyWEABkERv4=;
- b=XH8BHcOk8us2gi/+56ya9Q9UbmMeGpKGABCllwCtQEWdGjepXAyEr7qJoJ5cloQa7vUgcMXOKKt5mS268VvrOniRNBmQ42HaHZ+L6KrvLPvRF/027kn/iwg3LbISoKoq+pe6lLw5dQ4dO+O1P9jdPjNw9+efg0M5vqSlTCQcwLI=
-Received: from BN9PR18MB4251.namprd18.prod.outlook.com (2603:10b6:408:11c::10)
- by CO6PR18MB4402.namprd18.prod.outlook.com (2603:10b6:5:356::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
- 2023 10:56:26 +0000
-Received: from BN9PR18MB4251.namprd18.prod.outlook.com
- ([fe80::cbc9:7998:ae70:6b17]) by BN9PR18MB4251.namprd18.prod.outlook.com
- ([fe80::cbc9:7998:ae70:6b17%4]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
- 10:56:26 +0000
-From:   Elad Nachman <enachman@marvell.com>
-To:     Jonas Gorski <jonas.gorski@bisdn.de>,
-        Taras Chornyi <taras.chornyi@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        "Vadym Kochan [C]" <vkochan@marvell.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXT] [PATCH] prestera: fix fallback to previous version on same
- major version
-Thread-Topic: [EXT] [PATCH] prestera: fix fallback to previous version on same
- major version
-Thread-Index: AQHZxSNHvoGzih8ngEyXRFSXF/Igbq/W1ZTQ
-Date:   Wed, 2 Aug 2023 10:56:25 +0000
-Message-ID: <BN9PR18MB4251FB3CAB47DB8303112DFEDB0BA@BN9PR18MB4251.namprd18.prod.outlook.com>
-References: <20230802092357.163944-1-jonas.gorski@bisdn.de>
-In-Reply-To: <20230802092357.163944-1-jonas.gorski@bisdn.de>
-Accept-Language: he-IL, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?iso-8859-1?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcZW5hY2htYW?=
- =?iso-8859-1?Q?5cYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZi?=
- =?iso-8859-1?Q?ODRiYTI5ZTM1Ylxtc2dzXG1zZy0zNTc5YWRjOS0zMTIzLTExZWUtYjc0Ny?=
- =?iso-8859-1?Q?0xOGNjMTg3OGFiYThcYW1lLXRlc3RcMzU3OWFkY2ItMzEyMy0xMWVlLWI3?=
- =?iso-8859-1?Q?NDctMThjYzE4NzhhYmE4Ym9keS50eHQiIHN6PSI0MzY1IiB0PSIxMzMzNT?=
- =?iso-8859-1?Q?Q0NzM4MTAxNjM5NDgiIGg9Ik1ldHNXVTJIdVZXOFU5RGdiWkI1TFpJTFpj?=
- =?iso-8859-1?Q?QT0iIGlkPSIiIGJsPSIwIiBibz0iMSIgY2k9ImNBQUFBRVJIVTFSU1JVRk?=
- =?iso-8859-1?Q?5DZ1VBQUdJV0FBRHMrS240TDhYWkFTclhZZ1kzbVVKUUt0ZGlCamVaUWxB?=
- =?iso-8859-1?Q?WkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFIQUFBQUJ1RHdBQTNnOEFBSV?=
- =?iso-8859-1?Q?FHQUFBQUFBQUFBQUFBQUFFQUFRRUJBQUFBSTdxVHBBQ0FBUUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBSjRBQUFCaEFHUUFaQUJ5QUdVQWN3QnpBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBRUFBQUFBQUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQU?=
- =?iso-8859-1?Q?FBR01BZFFCekFIUUFid0J0QUY4QWNBQmxBSElBY3dCdkFHNEFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQX?=
- =?iso-8859-1?Q?dBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQUNlQUFBQVl3QjFB?=
- =?iso-8859-1?Q?SE1BZEFCdkFHMEFYd0J3QUdnQWJ3QnVBR1VBYmdCMUFHMEFZZ0JsQUhJQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJqQUhVQWN3QjBBRz?=
- =?iso-8859-1?Q?hBYlFCZkFITUFjd0J1QUY4QVpBQmhBSE1BYUFCZkFIWUFNQUF5QUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-rorf: true
-x-dg-refone: =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbm?=
- =?iso-8859-1?Q?dBQUFHTUFkUUJ6QUhRQWJ3QnRBRjhBY3dCekFHNEFYd0JyQUdVQWVRQjNB?=
- =?iso-8859-1?Q?RzhBY2dCa0FITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBWXdC?=
- =?iso-8859-1?Q?MUFITUFkQUJ2QUcwQVh3QnpBSE1BYmdCZkFHNEFid0JrQUdVQWJBQnBBRz?=
- =?iso-8859-1?Q?BBYVFCMEFHVUFjZ0JmQUhZQU1BQXlBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUo0QUFBQmpBSFVBY3dCME?=
- =?iso-8859-1?Q?FHOEFiUUJmQUhNQWN3QnVBRjhBY3dCd0FHRUFZd0JsQUY4QWRnQXdBRElB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFFQUFBQUFBQUFBQWdBQUFBQUFuZ0FBQUdRQWJBQndBRjhBY3dCckFI?=
- =?iso-8859-1?Q?a0FjQUJsQUY4QVl3Qm9BR0VBZEFCZkFHMEFaUUJ6QUhNQVlRQm5BR1VBWH?=
- =?iso-8859-1?Q?dCMkFEQUFNZ0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUNBQUFBQUFDZUFBQUFaQUJzQUhBQVh3QnpBR3dBWVFCakFHc0?=
- =?iso-8859-1?Q?FYd0JqQUdnQVlRQjBBRjhBYlFCbEFITUFjd0JoQUdjQVpRQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reftwo: =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCa0FHd0FjQU?=
- =?iso-8859-1?Q?JmQUhRQVpRQmhBRzBBY3dCZkFHOEFiZ0JsQUdRQWNnQnBBSFlBWlFCZkFH?=
- =?iso-8859-1?Q?WUFhUUJzQUdVQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBR1VBYlFCaEFHa0FiQUJm?=
- =?iso-8859-1?Q?QUdFQVpBQmtBSElBWlFCekFITUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBREFBQUFBQUFBQUFBQUFBQUFR?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQ0FBQUFBQUNlQUFBQWJRQmhBSElBZGdCbEFHd0FYd0J3QU?=
- =?iso-8859-1?Q?hJQWJ3QnFBR1VBWXdCMEFGOEFiZ0JoQUcwQVpRQnpBRjhBWXdCdkFHNEFa?=
- =?iso-8859-1?Q?Z0JwQUdRQVpRQnVBSFFBYVFCaEFHd0FYd0JoQUd3QWJ3QnVBR1VBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQWdBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUlBQUFBQUFKNEFBQUJ0QUdFQWNnQjJBR1VBYkFCZkFIQUFjZ0J2QUdv?=
- =?iso-8859-1?Q?QVpRQmpBSFFBWHdCdUFHRUFiUUJsQUhNQVh3QnlBR1VBY3dCMEFISUFhUU?=
- =?iso-8859-1?Q?JqQUhRQVpRQmtBRjhBWVFCc0FHOEFiZ0JsQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFB?=
- =?iso-8859-1?Q?QUFBbmdBQUFHMEFZUUJ5QUhZQVpRQnNBRjhBY0FCeUFHOEFhZ0JsQUdNQW?=
- =?iso-8859-1?Q?RBQmZBRzRBWVFCdEFHVUFjd0JmQUhJQVpRQnpBSFFBY2dCcEFHTUFkQUJs?=
- =?iso-8859-1?Q?QUdRQVh3Qm9BR1VBZUFCakFHOEFaQUJsQUhNQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQU?=
- =?iso-8859-1?Q?FBYlFCaEFISUFkZ0JsQUd3QWJBQmZBR0VBY2dCdEFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-refthree: =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QVp3QnZB?=
- =?iso-8859-1?Q?RzhBWndCc0FHVUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQUFBQWdB?=
- =?iso-8859-1?Q?QUFBQUFuZ0FBQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1?=
- =?iso-8859-1?Q?VBWXdCMEFGOEFZd0J2QUdRQVpRQnpBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBUUFBQUFBQUFBQUNBQUFBQUFDZU?=
- =?iso-8859-1?Q?FBQUFiUUJoQUhJQWRnQmxBR3dBYkFCZkFIQUFjZ0J2QUdvQVpRQmpBSFFB?=
- =?iso-8859-1?Q?WHdCakFHOEFaQUJsQUhNQVh3QmtBR2tBWXdCMEFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQkFBQUFBQUFBQUFJQUFBQUFBSjRBQUFCdEFH?=
- =?iso-8859-1?Q?RUFjZ0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBRzRBWV?=
- =?iso-8859-1?Q?FCdEFHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FHVUFiZ0IwQUdrQVlRQnNB?=
- =?iso-8859-1?Q?RjhBYlFCaEFISUFkZ0JsQUd3QWJBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUVBQUFBQUFBQUFBZ0FBQUFBQW5nQUFBRzBBWVFCeUFIWU?=
- =?iso-8859-1?Q?FaUUJzQUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFC?=
- =?iso-8859-1?Q?ekFGOEFZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3QnRBR0?=
- =?iso-8859-1?Q?VBY2dCMkFHVUFiQUJzQUY4QWJ3QnlBRjhBWVFCeUFHMEFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
-x-dg-reffour: =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFRQUFBQUFBQUFBQ0FBQUFBQU?=
- =?iso-8859-1?Q?NlQUFBQWJRQmhBSElBZGdCbEFHd0FiQUJmQUhBQWNnQnZBR29BWlFCakFI?=
- =?iso-8859-1?Q?UUFYd0J1QUdFQWJRQmxBSE1BWHdCakFHOEFiZ0JtQUdrQVpBQmxBRzRBZE?=
- =?iso-8859-1?Q?FCcEFHRUFiQUJmQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J2QUhJQVh3Qm5B?=
- =?iso-8859-1?Q?RzhBYndCbkFHd0FaUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFCQUFBQUFBQUFBQUlBQUFBQUFKNEFBQUJ0?=
- =?iso-8859-1?Q?QUdFQWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHNE?=
- =?iso-8859-1?Q?FZUUJ0QUdVQWN3QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxBR1FBWHdC?=
- =?iso-8859-1?Q?dEFHRUFjZ0IyQUdVQWJBQnNBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBRUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHMEFZUUJ5QU?=
- =?iso-8859-1?Q?hZQVpRQnNBR3dBWHdCd0FISUFid0JxQUdVQVl3QjBBRjhBYmdCaEFHMEFa?=
- =?iso-8859-1?Q?UUJ6QUY4QWNnQmxBSE1BZEFCeUFHa0FZd0IwQUdVQVpBQmZBRzBBWVFCeU?=
- =?iso-8859-1?Q?FIWUFaUUJzQUd3QVh3QnZBSElBWHdCaEFISUFiUUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQVFBQUFBQUFBQUFDQUFBQUFBQ2VBQUFBYlFCaEFISUFkZ0JsQUd3?=
- =?iso-8859-1?Q?QWJBQmZBSFFBWlFCeUFHMEFhUUJ1QUhVQWN3QUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUJB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBSUFBQUFBQUo0QUFBQnRBR0VBY2dCMkFHVUFiQUJzQUY4QW?=
- =?iso-8859-1?Q?R3QnZBSElBWkFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUFBQUFBQUFBQUFBQUFBQWNBQUFBQUFBQUFBQUFBQUFFQUFBQUFBQU?=
- =?iso-8859-1?Q?FBQWdBQUFBQUFoQVlBQUFBQUFBQWNBQUFBQVFBQUFBQUFBQUQ4WE55QW5S?=
- =?iso-8859-1?Q?UW1Rb0w2eUN6clhFWUlIQUFBQUFF?=
-x-dg-reffive: =?iso-8859-1?Q?QUFBQUFBQUFBMTBnZmNiMUxza2VQT3I1SHZQRTFxeW9BQUFBQkFBQUFJZ0?=
- =?iso-8859-1?Q?FBQUFBQUFBQmpBRzhBYmdCbUFHa0FaQUJsQUc0QWRBQnBBR0VBYkFBQUFC?=
- =?iso-8859-1?Q?b0dBQUFaQUFBQUdBQUFBQUVBQUFCaEFHUUFaQUJ5QUdVQWN3QnpBQUFBSk?=
- =?iso-8859-1?Q?FBQUFBTUFBQUJqQUhVQWN3QjBBRzhBYlFCZkFIQUFaUUJ5QUhNQWJ3QnVB?=
- =?iso-8859-1?Q?QUFBTGdBQUFBQUFBQUJqQUhVQWN3QjBBRzhBYlFCZkFIQUFhQUJ2QUc0QV?=
- =?iso-8859-1?Q?pRQnVBSFVBYlFCaUFHVUFjZ0FBQURBQUFBQUFBQUFBWXdCMUFITUFkQUJ2?=
- =?iso-8859-1?Q?QUcwQVh3QnpBSE1BYmdCZkFHUUFZUUJ6QUdnQVh3QjJBREFBTWdBQUFEQU?=
- =?iso-8859-1?Q?FBQUFBQUFBQVl3QjFBSE1BZEFCdkFHMEFYd0J6QUhNQWJnQmZBR3NBWlFC?=
- =?iso-8859-1?Q?NUFIY0Fid0J5QUdRQWN3QUFBRDRBQUFBQUFBQUFZd0IxQUhNQWRBQnZBRz?=
- =?iso-8859-1?Q?BBWHdCekFITUFiZ0JmQUc0QWJ3QmtBR1VBYkFCcEFHMEFhUUIwQUdVQWNn?=
- =?iso-8859-1?Q?QmZBSFlBTUFBeUFBQUFNZ0FBQUFBQUFBQmpBSFVBY3dCMEFHOEFiUUJmQU?=
- =?iso-8859-1?Q?hNQWN3QnVBRjhBY3dCd0FHRUFZd0JsQUY4QWRnQXdBRElBQUFBK0FBQUFB?=
- =?iso-8859-1?Q?QUFBQUdRQWJBQndBRjhBY3dCckFIa0FjQUJsQUY4QVl3Qm9BR0VBZEFCZk?=
- =?iso-8859-1?Q?FHMEFaUUJ6QUhNQVlRQm5BR1VBWHdCMkFEQUFNZ0FBQURZQUFBQUFBQUFB?=
- =?iso-8859-1?Q?WkFCc0FIQUFYd0J6QUd3QVlRQmpBR3NBWHdCakFHZ0FZUUIwQUY4QWJRQm?=
- =?iso-8859-1?Q?xBSE1BY3dCaEFHY0FaUUFBQURnQUFBQUFBQUFBWkFCc0FIQUFYd0IwQUdV?=
- =?iso-8859-1?Q?QVlRQnRBSE1BWHdCdkFHNEFaUUJrQUhJQWFRQjJBR1VBWHdCbUFHa0FiQU?=
- =?iso-8859-1?Q?JsQUFBQUpBQUFBQXdBQUFCbEFHMEFZUUJwQUd3QVh3QmhBR1FBWkFCeUFH?=
- =?iso-8859-1?Q?VUFjd0J6QUFBQVdBQUFBQ0FBQUFCdEFHRUFjZ0IyQUdVQWJBQmZBSEFBY2?=
- =?iso-8859-1?Q?dCdkFHb0FaUUJqQUhRQVh3QnVBR0VBYlFCbEFITUFYd0JqQUc4QWJnQm1B?=
- =?iso-8859-1?Q?R2tBWkFCbEFHNEFkQUJwQUdFQWJBQmZBR0VBYkFCdkFHNEFaUUFBQUZRQU?=
- =?iso-8859-1?Q?FBQUFBQUFBYlFCaEFISUFkZ0JsQUd3QVh3QndBSElBYndCcUFHVUFZd0Iw?=
- =?iso-8859-1?Q?QUY4QWJnQmhBRzBBWlFCekFGOEFjZ0JsQUhNQWRBQnlBR2tBWXdCMEFHVU?=
- =?iso-8859-1?Q?FaQUJmQUdFQWJBQnZBRzRBWlFBQUFGb0FBQUFBQUFBQWJRQmhBSElBZGdC?=
- =?iso-8859-1?Q?bEFHd0FYd0J3QUhJQWJ3QnFBR1VBWXdCMEFGOEFiZ0JoQUcwQVpRQnpBRj?=
- =?iso-8859-1?Q?hBY2dCbEFITUFkQUJ5QUdrQVl3QjBBR1VBWkFCZkFHZ0FaUUI0QUdNQWJ3?=
- =?iso-8859-1?Q?QmtBR1VBY3dBQUFDQUFBQUFBQUFB?=
-x-dg-refsix: =?iso-8859-1?Q?QWJRQmhBSElBZGdCbEFHd0FiQUJmQUdFQWNnQnRBQUFBSmdBQUFBQUFBQU?=
- =?iso-8859-1?Q?J0QUdFQWNnQjJBR1VBYkFCc0FGOEFad0J2QUc4QVp3QnNBR1VBQUFBMEFB?=
- =?iso-8859-1?Q?QUFBQUFBQUcwQVlRQnlBSFlBWlFCc0FHd0FYd0J3QUhJQWJ3QnFBR1VBWX?=
- =?iso-8859-1?Q?dCMEFGOEFZd0J2QUdRQVpRQnpBQUFBUGdBQUFBQUFBQUJ0QUdFQWNnQjJB?=
- =?iso-8859-1?Q?R1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZEFCZkFHTUFid0JrQUdVQW?=
- =?iso-8859-1?Q?N3QmZBR1FBYVFCakFIUUFBQUJlQUFBQUFBQUFBRzBBWVFCeUFIWUFaUUJz?=
- =?iso-8859-1?Q?QUd3QVh3QndBSElBYndCcUFHVUFZd0IwQUY4QWJnQmhBRzBBWlFCekFGOE?=
- =?iso-8859-1?Q?FZd0J2QUc0QVpnQnBBR1FBWlFCdUFIUUFhUUJoQUd3QVh3QnRBR0VBY2dC?=
- =?iso-8859-1?Q?MkFHVUFiQUJzQUFBQWJBQUFBQUFBQUFCdEFHRUFjZ0IyQUdVQWJBQnNBRj?=
- =?iso-8859-1?Q?hBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdEFHVUFjd0JmQUdNQWJ3?=
- =?iso-8859-1?Q?QnVBR1lBYVFCa0FHVUFiZ0IwQUdrQVlRQnNBRjhBYlFCaEFISUFkZ0JsQU?=
- =?iso-8859-1?Q?d3QWJBQmZBRzhBY2dCZkFHRUFjZ0J0QUFBQWNnQUFBQUFBQUFCdEFHRUFj?=
- =?iso-8859-1?Q?Z0IyQUdVQWJBQnNBRjhBY0FCeUFHOEFhZ0JsQUdNQWRBQmZBRzRBWVFCdE?=
- =?iso-8859-1?Q?FHVUFjd0JmQUdNQWJ3QnVBR1lBYVFCa0FHVUFiZ0IwQUdrQVlRQnNBRjhB?=
- =?iso-8859-1?Q?YlFCaEFISUFkZ0JsQUd3QWJBQmZBRzhBY2dCZkFHY0Fid0J2QUdjQWJBQm?=
- =?iso-8859-1?Q?xBQUFBV2dBQUFBQUFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4?=
- =?iso-8859-1?Q?QWFnQmxBR01BZEFCZkFHNEFZUUJ0QUdVQWN3QmZBSElBWlFCekFIUUFjZ0?=
- =?iso-8859-1?Q?JwQUdNQWRBQmxBR1FBWHdCdEFHRUFjZ0IyQUdVQWJBQnNBQUFBYUFBQUFB?=
- =?iso-8859-1?Q?QUFBQUJ0QUdFQWNnQjJBR1VBYkFCc0FGOEFjQUJ5QUc4QWFnQmxBR01BZE?=
- =?iso-8859-1?Q?FCZkFHNEFZUUJ0QUdVQWN3QmZBSElBWlFCekFIUUFjZ0JwQUdNQWRBQmxB?=
- =?iso-8859-1?Q?R1FBWHdCdEFHRUFjZ0IyQUdVQWJBQnNBRjhBYndCeUFGOEFZUUJ5QUcwQU?=
- =?iso-8859-1?Q?FBQXFBQUFBQUFBQUFHMEFZUUJ5QUhZQVpRQnNBR3dBWHdCMEFHVUFjZ0J0?=
- =?iso-8859-1?Q?QUdrQWJnQjFBSE1BQUFBaUFBQUFCd0FBQUcwQVlRQnlBSFlBWlFCc0FHd0?=
- =?iso-8859-1?Q?FYd0IzQUc4QWNnQmtBQUFBIi8+PC9tZXRhPg=3D=3D?=
-x-dg-tag-bcast: {BB38C8B4-BBDA-40C5-8168-0013E523D1A2}
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR18MB4251:EE_|CO6PR18MB4402:EE_
-x-ms-office365-filtering-correlation-id: 006215fc-90f6-4773-6159-08db93471dfc
-x-ld-processed: 70e1fb47-1155-421d-87fc-2e58f638b6e0,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Su26ls0hTJqnqF/+VZoV5WmiZ1CileK2+InQXGe83jP5xo0uudjWA0D8AA4vbt8LSOPOTf5NPqUAlP5Hoy81jXHUFa5Wmk06JQEvSrwTjG0X9+dq7mwjAFXRXx54D4YoAheMzNfMUr7ZSJp2gu/FUX2XxEjDx6lcpwOMi1xZGHi2Q9zKM2SLiLutNhUSl0rg5G2rXw3mPSQ+EAFXuAdR9cgNz3XYcDCjrUznH171nWRWH9b6Iq+2guz36EkjhFAfGbDE8VRV6uNSTPBoOCdLZBvlGDMbJdMigd74O03alXzDL1oEYG83zpnJbujHSowOk3fHmGkjkuUZSzZL4DJNGj1UxIHizz8g8ttODZxixpwbhEG+Po/4Bu6kHeJo0QrYi7LSPRQle1bcjqDiirFul/lYhKTXBP+rdhuhp6EM214Ei61Dm8mXCf6I4nPJF1Sp30569xm4O3IrRc7p+u7gX7r087LfwH7CIto3e0aD1wBGkEWbd1G9zLHl8StbIMq9T1g7uqXOgNEIKs0753HUNJosbfkzKsmUn0PWMA+pCcWznRIDutaWIJ1AYIuEtrF3YmWklz+Uw92/rG4fzCKM9XrCB+/tUX56uR2eaeZBq78=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR18MB4251.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(136003)(366004)(396003)(39860400002)(376002)(451199021)(5660300002)(66574015)(52536014)(53546011)(8936002)(6506007)(186003)(8676002)(83380400001)(26005)(478600001)(66446008)(76116006)(66946007)(110136005)(66556008)(66476007)(4326008)(316002)(64756008)(54906003)(6636002)(7696005)(41300700001)(71200400001)(9686003)(86362001)(38070700005)(55016003)(33656002)(2906002)(38100700002)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?yg4R1epc85a5DwvvfnZasqq48OLKZkkSx+OHCoKl0JC/DXyMC1UsA6gojO?=
- =?iso-8859-1?Q?ZvngVgHzf6dgX5YfRyW8jF+iDz4ji3Szq0euM0JcfacKVQOy5WY1rTNA3l?=
- =?iso-8859-1?Q?0RngpfhzzlZIunKI7XO70Xo3lWkQphVLdB6xkMLg/g20PDjQNWGAOHr2Ut?=
- =?iso-8859-1?Q?/GEtOUm2ie2yMiyQ3J5uwUurwMpudscM16af9W0WUH+Tt4sUwgxD/nLXNe?=
- =?iso-8859-1?Q?72cXHUGz0ua9hFacnfIIX+SXkWmeKMDhGSBDHkQePxGP2OimHhP1p0ZCYd?=
- =?iso-8859-1?Q?eaUaauPyYaHqwRCnH0o7FKGkI5f0RcY7F1LxaS+ykVv1zeVrui+lbJDV0T?=
- =?iso-8859-1?Q?cJXEazF5sRAl3DkzgZlYSBfKD4r/7K1gC8/NOFHWZr7SIeIpk8oZjLtHeG?=
- =?iso-8859-1?Q?inaQi21b7+B/gLeeke81EiL2qOlh5MhpJ/gIyJa0mMJCXfyB43nEJqFdov?=
- =?iso-8859-1?Q?y97lwcIgw32VVZYzUW20I1boqf4v/Ysl52Z+hZwPidvAFmCfTrjBn6Pb13?=
- =?iso-8859-1?Q?q25sTHnND9d12WhsDpXRZYgoPWFSyhvmouJ/Wap+wbk4YojKCoDTQj5nEk?=
- =?iso-8859-1?Q?VsrrvFAU7ExGSW06yE/UnRknsbWDKGj474lMJ+a4gURXR8Zmp44ocReYNv?=
- =?iso-8859-1?Q?jaZoE6qGhP/Kp46692mFvq3U24AHsaJ/syfo1CEJKLJ7XeKcB9eGPiTgrR?=
- =?iso-8859-1?Q?g+dFpxSmeLjn35pZwyGPdcL736ADSNmrnxx3KLwN+dX34uhvQuZV7kFodo?=
- =?iso-8859-1?Q?JCBEEP0vkYhjoXy6J+Po1STVRPP7wfeKofEBCq1geuPH/iwI9BCP8m3hOh?=
- =?iso-8859-1?Q?zxU2oqFkkIZx9WipZT6KEz2N6+T/CIiHCT/8ynsZDsV/jmFBPrs4YFjAeM?=
- =?iso-8859-1?Q?byLijg6kVLj67liwvlV9PMQTIDUR4F80cuzCPsQqGEmVnaKypoAN+5GOct?=
- =?iso-8859-1?Q?C3A181L97FFGcYLcrMMVnF1hasmekMqyoJ5WNOpoAFXKaelbHjTZeifHrw?=
- =?iso-8859-1?Q?Ps2r+Bq4d89hVHcbvi7lT5fxIVItNNCWwhEzRIMzQe3BGun/U1af9Irudx?=
- =?iso-8859-1?Q?V/tD0oQCKddyDMyQTN5v0S4tn35RBYAgnUg1VN8Cmu2BMlUV04HSXbyuOl?=
- =?iso-8859-1?Q?7vF4TIQT5Z48a5JUqe3TzNuA9gh6NO3LJ73TlnfFpp0WPT6iT51BurnGPC?=
- =?iso-8859-1?Q?LQhZ2SPEcOnJFT6U5pyw1FYpAaDL6BFq1MNAb2Smjhm/gXbXoRAHIPHxCU?=
- =?iso-8859-1?Q?Xfc8Bc0VU7h+T5Dxgn0INrATBft1ZxQ2D4mT5yAZ+GkKpBO8IDwGqQhRbh?=
- =?iso-8859-1?Q?MIBSpk/MeGfaNK0vHgYQ1CNomMvtVmPj1LzW9gO/n0OWwXnoSTyPd4AEaf?=
- =?iso-8859-1?Q?xbyzqfc+U7DzMD2s75yGZ26DwP3O2ttiw9V9TqHurv/QHXIYOXfR2dKz5S?=
- =?iso-8859-1?Q?pdlxEibQPTlpXBr/MPeliP+jjCfHBfObsybQAPaKeoSkt0F+BY2RDcvF2I?=
- =?iso-8859-1?Q?2hySrvbnUTz08ZGzHGeIH/Om7peRzg5pYp7yfTGdFlxvQRMrz8Od7z578B?=
- =?iso-8859-1?Q?C7byiDo936649ha7IWFudjXoxQN1gJK8kiWZ+EAOdqoeyndn5hSvhUnWvk?=
- =?iso-8859-1?Q?p9TS74eCsGjD8VBGtX+2a5rkNDmJ1AUpvE?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 2 Aug 2023 06:56:49 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944F51B6;
+        Wed,  2 Aug 2023 03:56:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690973807; x=1722509807;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=f/xYrOLx2w51HM69DIX1kodjgkEAXnjBk61J3pc7woQ=;
+  b=Kh/1wN+OtVNaF1pPK7EUK7Sxex3bABV0t5gBJZ+S/eTMqfaqMTogUJ2O
+   6SFVXdCXAA18K9ykPFpjiaFQpeQeDKn822vXW3gbi658zyYCScV0F8BUR
+   itSmbE0YbXq1mCkKRgL0K66LX5NvX3BNGvgXcQaS6JQ/OB5aCkuIOyBnD
+   4P2wVCLv4tNaKqEvS1A3j8+cJvPyeSQcWh3bQiiUtaunfx5YUeQpPVMcN
+   XQkoj2x4QwpGqHtLzh4WoemUNqr68KkN70QMIp0piWGfJRjvvqp1S5bDu
+   kzy1l5BpRmTNGzXpsf4tUVmj0UNzkOr8W3VjAuYQ7QL7V2DUDoMBHzLER
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="455916160"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="455916160"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 03:56:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.01,202,1684825200"; 
+   d="scan'208";a="872436393"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 02 Aug 2023 03:56:39 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 02 Aug 2023 13:56:36 +0300
+Date:   Wed, 2 Aug 2023 13:56:36 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tcpm: Refactor the PPS APDO selection
+Message-ID: <ZMo2ZDJ7bJH4fbGW@kuha.fi.intel.com>
+References: <20230731162159.19483-1-kyletso@google.com>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR18MB4251.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 006215fc-90f6-4773-6159-08db93471dfc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2023 10:56:25.7778
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: h3agL1QQ335WUKE+udJc23wn2kMTItAVbT7bKY0qWh3QHRDUWJYCtCfZC3fqclU5iI3EuFaUC/+S1qsals4uIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR18MB4402
-X-Proofpoint-GUID: ldKUN-8gpXMzAcwOQ0YL0_7Iju_A3Ot4
-X-Proofpoint-ORIG-GUID: ldKUN-8gpXMzAcwOQ0YL0_7Iju_A3Ot4
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_06,2023-08-01_01,2023-05-22_02
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731162159.19483-1-kyletso@google.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 01, 2023 at 12:21:59AM +0800, Kyle Tso wrote:
+> In current design of the PPS APDO selection, TCPM power supply only
+> accepts the requested voltage which is inside the range of the selected
+> PPS profile. To extend the flexibility and usability, remove the checks
+> about the voltage range in current profile. And try to search all PPS
+> APDOs of the Source that fit the requested voltage.
+> 
+> Also remove some redundant checks in tcpm_pd_build_pps_request.
+> 
+> Signed-off-by: Kyle Tso <kyletso@google.com>
 
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-> -----Original Message-----
-> From: Jonas Gorski <jonas.gorski@bisdn.de>
-> Sent: Wednesday, August 2, 2023 12:24 PM
-> To: Taras Chornyi <taras.chornyi@plvision.eu>; David S. Miller
-> <davem@davemloft.net>; Eric Dumazet <edumazet@google.com>; Jakub
-> Kicinski <kuba@kernel.org>; Paolo Abeni <pabeni@redhat.com>; Andrew
-> Lunn <andrew@lunn.ch>; Vadym Kochan [C] <vkochan@marvell.com>
-> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org
-> Subject: [EXT] [PATCH] prestera: fix fallback to previous version on same
-> major version
->=20
-> External Email
->=20
-> ----------------------------------------------------------------------
-> When both supported and previous version have the same major version,
-> and the firmwares are missing, the driver ends in a loop requesting the s=
-ame
-> (previous) version over and over again:
->=20
->     [   76.327413] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.1.img firmware, fall-back to previous
-> 4.0 version
->     [   76.339802] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous
-> 4.0 version
->     [   76.352162] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous
-> 4.0 version
->     [   76.364502] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous
-> 4.0 version
->     [   76.376848] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous
-> 4.0 version
->     [   76.389183] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous
-> 4.0 version
->     [   76.401522] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous
-> 4.0 version
->     [   76.413860] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous
-> 4.0 version
->     [   76.426199] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.0.img firmware, fall-back to previous
-> 4.0 version
->     ...
->=20
-> Fix this by inverting the check to that we aren't yet at the previous ver=
-sion,
-> and also check the minor version.
->=20
-> This also catches the case where both versions are the same, as it was af=
-ter
-> commit bb5dbf2cc64d ("net: marvell: prestera: add firmware v4.0 support")=
-.
->=20
-> With this fix applied:
->=20
->     [   88.499622] Prestera DX 0000:01:00.0: missing latest
-> mrvl/prestera/mvsw_prestera_fw-v4.1.img firmware, fall-back to previous
-> 4.0 version
->     [   88.511995] Prestera DX 0000:01:00.0: failed to request previous
-> firmware: mrvl/prestera/mvsw_prestera_fw-v4.0.img
->     [   88.522403] Prestera DX: probe of 0000:01:00.0 failed with error -=
-2
->=20
-> Fixes: 47f26018a414 ("net: marvell: prestera: try to load previous fw
-> version")
-> Signed-off-by: Jonas Gorski <jonas.gorski@bisdn.de>
 > ---
->  drivers/net/ethernet/marvell/prestera/prestera_pci.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-> b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-> index f328d957b2db..35857dc19542 100644
-> --- a/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-> +++ b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-> @@ -727,7 +727,8 @@ static int prestera_fw_get(struct prestera_fw *fw)
->=20
->  	err =3D request_firmware_direct(&fw->bin, fw_path, fw->dev.dev);
->  	if (err) {
-> -		if (ver_maj =3D=3D PRESTERA_SUPP_FW_MAJ_VER) {
-> +		if (ver_maj !=3D PRESTERA_PREV_FW_MAJ_VER ||
-> +		    ver_min !=3D PRESTERA_PREV_FW_MIN_VER) {
->  			ver_maj =3D PRESTERA_PREV_FW_MAJ_VER;
->  			ver_min =3D PRESTERA_PREV_FW_MIN_VER;
->=20
-> --
-> 2.41.0
->=20
->=20
-> --
-> BISDN GmbH
-> K=F6rnerstra=DFe 7-10
-> 10785 Berlin
-> Germany
->=20
->=20
-> Phone:
-> +49-30-6108-1-6100
->=20
->=20
-> Managing Directors:
-> Dr.-Ing. Hagen Woesner, Andreas
-> K=F6psel
->=20
->=20
-> Commercial register:
-> Amtsgericht Berlin-Charlottenburg HRB 141569
-> B
-> VAT ID No:=A0DE283257294
->=20
+>  drivers/usb/typec/tcpm/tcpm.c | 122 ++++++----------------------------
+>  1 file changed, 21 insertions(+), 101 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 829d75ebab42..9c496b8302b4 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -3253,23 +3253,12 @@ static int tcpm_pd_select_pdo(struct tcpm_port *port, int *sink_pdo,
+>  	return ret;
+>  }
+>  
+> -#define min_pps_apdo_current(x, y)	\
+> -	min(pdo_pps_apdo_max_current(x), pdo_pps_apdo_max_current(y))
+> -
+>  static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
+>  {
+> -	unsigned int i, j, max_mw = 0, max_mv = 0;
+> -	unsigned int min_src_mv, max_src_mv, src_ma, src_mw;
+> -	unsigned int min_snk_mv, max_snk_mv;
+> -	unsigned int max_op_mv;
+> -	u32 pdo, src, snk;
+> -	unsigned int src_pdo = 0, snk_pdo = 0;
+> +	unsigned int i, src_ma, max_temp_mw = 0, max_op_ma, op_mw;
+> +	unsigned int src_pdo = 0;
+> +	u32 pdo, src;
+>  
+> -	/*
+> -	 * Select the source PPS APDO providing the most power while staying
+> -	 * within the board's limits. We skip the first PDO as this is always
+> -	 * 5V 3A.
+> -	 */
+>  	for (i = 1; i < port->nr_source_caps; ++i) {
+>  		pdo = port->source_caps[i];
+>  
+> @@ -3280,54 +3269,17 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
+>  				continue;
+>  			}
+>  
+> -			min_src_mv = pdo_pps_apdo_min_voltage(pdo);
+> -			max_src_mv = pdo_pps_apdo_max_voltage(pdo);
+> -			src_ma = pdo_pps_apdo_max_current(pdo);
+> -			src_mw = (src_ma * max_src_mv) / 1000;
+> -
+> -			/*
+> -			 * Now search through the sink PDOs to find a matching
+> -			 * PPS APDO. Again skip the first sink PDO as this will
+> -			 * always be 5V 3A.
+> -			 */
+> -			for (j = 1; j < port->nr_snk_pdo; j++) {
+> -				pdo = port->snk_pdo[j];
+> -
+> -				switch (pdo_type(pdo)) {
+> -				case PDO_TYPE_APDO:
+> -					if (pdo_apdo_type(pdo) != APDO_TYPE_PPS) {
+> -						tcpm_log(port,
+> -							 "Not PPS APDO (sink), ignoring");
+> -						continue;
+> -					}
+> -
+> -					min_snk_mv =
+> -						pdo_pps_apdo_min_voltage(pdo);
+> -					max_snk_mv =
+> -						pdo_pps_apdo_max_voltage(pdo);
+> -					break;
+> -				default:
+> -					tcpm_log(port,
+> -						 "Not APDO type (sink), ignoring");
+> -					continue;
+> -				}
+> +			if (port->pps_data.req_out_volt > pdo_pps_apdo_max_voltage(pdo) ||
+> +			    port->pps_data.req_out_volt < pdo_pps_apdo_min_voltage(pdo))
+> +				continue;
+>  
+> -				if (min_src_mv <= max_snk_mv &&
+> -				    max_src_mv >= min_snk_mv) {
+> -					max_op_mv = min(max_src_mv, max_snk_mv);
+> -					src_mw = (max_op_mv * src_ma) / 1000;
+> -					/* Prefer higher voltages if available */
+> -					if ((src_mw == max_mw &&
+> -					     max_op_mv > max_mv) ||
+> -					    src_mw > max_mw) {
+> -						src_pdo = i;
+> -						snk_pdo = j;
+> -						max_mw = src_mw;
+> -						max_mv = max_op_mv;
+> -					}
+> -				}
+> +			src_ma = pdo_pps_apdo_max_current(pdo);
+> +			max_op_ma = min(src_ma, port->pps_data.req_op_curr);
+> +			op_mw = max_op_ma * port->pps_data.req_out_volt / 1000;
+> +			if (op_mw > max_temp_mw) {
+> +				src_pdo = i;
+> +				max_temp_mw = op_mw;
+>  			}
+> -
+>  			break;
+>  		default:
+>  			tcpm_log(port, "Not APDO type (source), ignoring");
+> @@ -3337,16 +3289,10 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
+>  
+>  	if (src_pdo) {
+>  		src = port->source_caps[src_pdo];
+> -		snk = port->snk_pdo[snk_pdo];
+> -
+> -		port->pps_data.req_min_volt = max(pdo_pps_apdo_min_voltage(src),
+> -						  pdo_pps_apdo_min_voltage(snk));
+> -		port->pps_data.req_max_volt = min(pdo_pps_apdo_max_voltage(src),
+> -						  pdo_pps_apdo_max_voltage(snk));
+> -		port->pps_data.req_max_curr = min_pps_apdo_current(src, snk);
+> -		port->pps_data.req_out_volt = min(port->pps_data.req_max_volt,
+> -						  max(port->pps_data.req_min_volt,
+> -						      port->pps_data.req_out_volt));
+> +
+> +		port->pps_data.req_min_volt = pdo_pps_apdo_min_voltage(src);
+> +		port->pps_data.req_max_volt = pdo_pps_apdo_max_voltage(src);
+> +		port->pps_data.req_max_curr = pdo_pps_apdo_max_current(src);
+>  		port->pps_data.req_op_curr = min(port->pps_data.req_max_curr,
+>  						 port->pps_data.req_op_curr);
+>  	}
+> @@ -3464,32 +3410,16 @@ static int tcpm_pd_send_request(struct tcpm_port *port)
+>  static int tcpm_pd_build_pps_request(struct tcpm_port *port, u32 *rdo)
+>  {
+>  	unsigned int out_mv, op_ma, op_mw, max_mv, max_ma, flags;
+> -	enum pd_pdo_type type;
+>  	unsigned int src_pdo_index;
+> -	u32 pdo;
+>  
+>  	src_pdo_index = tcpm_pd_select_pps_apdo(port);
+>  	if (!src_pdo_index)
+>  		return -EOPNOTSUPP;
+>  
+> -	pdo = port->source_caps[src_pdo_index];
+> -	type = pdo_type(pdo);
+> -
+> -	switch (type) {
+> -	case PDO_TYPE_APDO:
+> -		if (pdo_apdo_type(pdo) != APDO_TYPE_PPS) {
+> -			tcpm_log(port, "Invalid APDO selected!");
+> -			return -EINVAL;
+> -		}
+> -		max_mv = port->pps_data.req_max_volt;
+> -		max_ma = port->pps_data.req_max_curr;
+> -		out_mv = port->pps_data.req_out_volt;
+> -		op_ma = port->pps_data.req_op_curr;
+> -		break;
+> -	default:
+> -		tcpm_log(port, "Invalid PDO selected!");
+> -		return -EINVAL;
+> -	}
+> +	max_mv = port->pps_data.req_max_volt;
+> +	max_ma = port->pps_data.req_max_curr;
+> +	out_mv = port->pps_data.req_out_volt;
+> +	op_ma = port->pps_data.req_op_curr;
+>  
+>  	flags = RDO_USB_COMM | RDO_NO_SUSPEND;
+>  
+> @@ -5882,12 +5812,6 @@ static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 req_out_volt)
+>  		goto port_unlock;
+>  	}
+>  
+> -	if (req_out_volt < port->pps_data.min_volt ||
+> -	    req_out_volt > port->pps_data.max_volt) {
+> -		ret = -EINVAL;
+> -		goto port_unlock;
+> -	}
+> -
+>  	target_mw = (port->current_limit * req_out_volt) / 1000;
+>  	if (target_mw < port->operating_snk_mw) {
+>  		ret = -EINVAL;
+> @@ -6440,11 +6364,7 @@ static int tcpm_psy_set_prop(struct power_supply *psy,
+>  		ret = tcpm_psy_set_online(port, val);
+>  		break;
+>  	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
+> -		if (val->intval < port->pps_data.min_volt * 1000 ||
+> -		    val->intval > port->pps_data.max_volt * 1000)
+> -			ret = -EINVAL;
+> -		else
+> -			ret = tcpm_pps_set_out_volt(port, val->intval / 1000);
+> +		ret = tcpm_pps_set_out_volt(port, val->intval / 1000);
+>  		break;
+>  	case POWER_SUPPLY_PROP_CURRENT_NOW:
+>  		if (val->intval > port->pps_data.max_curr * 1000)
+> -- 
+> 2.41.0.487.g6d72f3e995-goog
 
-Acked-by: Elad Nachman <enachman@marvell.com>
-
+-- 
+heikki
