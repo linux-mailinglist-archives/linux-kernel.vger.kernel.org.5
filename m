@@ -2,174 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C87BB76D374
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BCB76D357
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231526AbjHBQNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
+        id S231844AbjHBQJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:09:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233049AbjHBQMz (ORCPT
+        with ESMTP id S230322AbjHBQJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:12:55 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBF119A0
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:12:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690992774; x=1722528774;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qvgaDHQgSlNzPVOo9qiNYCvex5QhghTrjiaZZVn1+QM=;
-  b=aKUseKq9zDzHmux5cAI686hR/0NjHo0M82wVi3K/MQnywA6LYAtx1fDM
-   XdILL2Qr5Kweyo7b1nKiDDB4yIM3jg1o1CTys2wwK8xbNGknlMPrAuug8
-   iJ+Vt+bQTWFm7fehDEirD9rpNsCTRcwAs+AKz+dTLnrNITab+UIVnZLOL
-   LY+QnCHLC48wKyl+HUi2fpbzMO6UwFSi3VbhUsusGs9z/CFTmOJrqil0O
-   KnAkkO38JNj/ekMk8yRqg4ISnVfczajL4ozxw/gTe1iUQEEZ+/NI3PT0y
-   tHj/ZNOEexpknYF6eDfyvGf7feiZuXELqtgNIFdh4UCAbmcSkZZxAptEr
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372360806"
-X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
-   d="scan'208";a="372360806"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 09:07:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="1059891035"
-X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
-   d="scan'208";a="1059891035"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 02 Aug 2023 09:07:24 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qRENf-0001Jp-1G;
-        Wed, 02 Aug 2023 16:07:23 +0000
-Date:   Thu, 3 Aug 2023 00:07:19 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ran Sun <sunran001@208suo.com>, alexander.deucher@amd.com
-Cc:     oe-kbuild-all@lists.linux.dev, Ran Sun <sunran001@208suo.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/amd/display: Clean up errors in dmub_cmd.h
-Message-ID: <202308022342.q4miXfgl-lkp@intel.com>
-References: <20230802062920.11513-1-sunran001@208suo.com>
+        Wed, 2 Aug 2023 12:09:33 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 522231BC7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:09:32 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-521e046f6c7so12457a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 09:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690992571; x=1691597371;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=113LkHbiEvGKznTlJsnRhaby8358mc5nh2oXLk1USVI=;
+        b=LFI4rA25jijMEPPHKR1SNDWldDm9/ygIcRMZrWrVr1goHUdEBej5dsgYlHAgjNaIpt
+         G6i7UXK1qtDX0AXOIqH8oAFj+etZ8ynHGKA1iL5FcdbVW3JmuA8yAdP+8vIm3vtSqlTn
+         Z12jz848KVJgEvqEziKjAeA9r7LZeTvRh+7HUSAwqDvrQE2oT0eRulC/lrXJE02B53Q9
+         VDdPSysD7uX8gGuhLN+DZ+1/FBGu16lB/9Op85GjijDGRcBxDrWWW9NzwWDfhcaYUWK7
+         Er5mVbB+pWBLkIAVj7/JyLtOWmly2Y1VVVwmOHMGrwta4c918Y5NqyMlOtDI5Had2jjY
+         zB7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690992571; x=1691597371;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=113LkHbiEvGKznTlJsnRhaby8358mc5nh2oXLk1USVI=;
+        b=XTTICQiyLZFYoa72NiHm199SIw7qI7oGu3DqovRrCpywoRlkvK7+R6U2eBRoQCU4SG
+         FnyKJqVBmL7SjJhMb+ndYh/4CoNIF/J84qwfyc/NnUYEHxPH+dMVkUzUjiU45UZY7vk9
+         wH+MTsqUTsqON9XwmpgOGWsy88lD6hzTqhQOm3C8ZBimxRW/MlYTIYju0xIpfBr3vRg+
+         AQahnE/EIh6Hr2xc6p4EiGF3SLP6VQiFssnAdF/kzB1wETyj4uUFsPu5CTgwqPIXJIOQ
+         VKsWD1voegvsWsGMDwuTnwIZarf3KAwBvsiUuAjxdHcGA+4EwJPrAs5E+f64hAFrGtZU
+         Q+Cg==
+X-Gm-Message-State: ABy/qLbZ1FIVC/kILzxFCmvjIdFUl7jhOr0RWyYislNOtgeXBi4o9lb6
+        PFU0JWvxm2kW1WBUfhyjh01Ytnl8v6b1Dbwzx4Ao8Q==
+X-Google-Smtp-Source: APBJJlHNSzA+5I+gfFhTC6voqAyJr4aPx2EGDbMFMgCoqcQFETjIFolABaZwMqpX4c04GauX4srYr78Fa/uKx9yPFTQ=
+X-Received: by 2002:a50:8ac1:0:b0:51a:1ffd:10e with SMTP id
+ k1-20020a508ac1000000b0051a1ffd010emr436939edk.3.1690992570625; Wed, 02 Aug
+ 2023 09:09:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802062920.11513-1-sunran001@208suo.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20230802071947.1683318-1-yangcong5@huaqin.corp-partner.google.com>
+ <20230802071947.1683318-3-yangcong5@huaqin.corp-partner.google.com>
+In-Reply-To: <20230802071947.1683318-3-yangcong5@huaqin.corp-partner.google.com>
+From:   Doug Anderson <dianders@google.com>
+Date:   Wed, 2 Aug 2023 09:09:18 -0700
+Message-ID: <CAD=FV=Um8875aMt_kWvCvpNjb3EwSk8VjVTEgv_TJ9WDS+LniA@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] HID: i2c-hid: elan: Add ili9882t timing
+To:     Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
+        benjamin.tissoires@redhat.com,
+        Benjamin Tissoires <bentiss@kernel.org>
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, dmitry.torokhov@gmail.com, jikos@kernel.org,
+        hsinyi@google.com, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ran,
+Benjamin,
 
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on drm-misc/drm-misc-next]
-[also build test ERROR on linus/master v6.5-rc4 next-20230802]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Ran-Sun/drm-amd-display-Clean-up-errors-in-dmub_cmd-h/20230802-142950
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20230802062920.11513-1-sunran001%40208suo.com
-patch subject: [PATCH] drm/amd/display: Clean up errors in dmub_cmd.h
-config: alpha-randconfig-r036-20230801 (https://download.01.org/0day-ci/archive/20230802/202308022342.q4miXfgl-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230802/202308022342.q4miXfgl-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308022342.q4miXfgl-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:40,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/link.h:78,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/link/hwss/link_hwss_hpo_dp.h:29,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dc/link/hwss/link_hwss_hpo_dp.c:25:
->> drivers/gpu/drm/amd/amdgpu/../display/dmub/inc/dmub_cmd.h:1079:33: error: flexible array member not at end of struct
-    1079 |                         uint8_t padding[];
-         |                                 ^~~~~~~
---
-   In file included from drivers/gpu/drm/amd/amdgpu/../display/dmub/src/../dmub_srv.h:67,
-                    from drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn301.c:26:
->> drivers/gpu/drm/amd/amdgpu/../display/dmub/src/../inc/dmub_cmd.h:1079:33: error: flexible array member not at end of struct
-    1079 |                         uint8_t padding[];
-         |                                 ^~~~~~~
+On Wed, Aug 2, 2023 at 12:20=E2=80=AFAM Cong Yang
+<yangcong5@huaqin.corp-partner.google.com> wrote:
+>
+> The ili9882t is a TDDI IC (Touch with Display Driver). The
+> datasheet specifies there should be 60ms between touch SDA
+> sleep and panel RESX. Doug's series[1] allows panels and
+> touchscreens to power on/off together, so we can add the 65 ms
+> delay in i2c_hid_core_suspend before panel_unprepare.
+>
+> Because ili9882t touchscrgeen is a panel follower, and
+> needs to use vccio-supply instead of vcc33-supply, so set
+> it NULL to ili9882t_chip_data, then not use vcc33 regulator.
+>
+> [1]: https://lore.kernel.org/all/20230727171750.633410-1-dianders@chromiu=
+m.org
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Cong Yang <yangcong5@huaqin.corp-partner.google.com>
+> ---
+>  drivers/hid/i2c-hid/i2c-hid-of-elan.c | 50 ++++++++++++++++++++-------
+>  1 file changed, 38 insertions(+), 12 deletions(-)
 
 
-vim +1079 drivers/gpu/drm/amd/amdgpu/../display/dmub/inc/dmub_cmd.h
+>
+> diff --git a/drivers/hid/i2c-hid/i2c-hid-of-elan.c b/drivers/hid/i2c-hid/=
+i2c-hid-of-elan.c
+> index 029045d9661c..31abab57ad44 100644
+> --- a/drivers/hid/i2c-hid/i2c-hid-of-elan.c
+> +++ b/drivers/hid/i2c-hid/i2c-hid-of-elan.c
+> @@ -18,9 +18,11 @@
+>  #include "i2c-hid.h"
+>
+>  struct elan_i2c_hid_chip_data {
+> -       unsigned int post_gpio_reset_delay_ms;
+> +       unsigned int post_gpio_reset_on_delay_ms;
+> +       unsigned int post_gpio_reset_off_delay_ms;
+>         unsigned int post_power_delay_ms;
+>         u16 hid_descriptor_address;
+> +       const char *main_supply_name;
+>  };
+>
+>  struct i2c_hid_of_elan {
+> @@ -38,9 +40,11 @@ static int elan_i2c_hid_power_up(struct i2chid_ops *op=
+s)
+>                 container_of(ops, struct i2c_hid_of_elan, ops);
+>         int ret;
+>
+> -       ret =3D regulator_enable(ihid_elan->vcc33);
+> -       if (ret)
+> -               return ret;
+> +       if (ihid_elan->vcc33) {
+> +               ret =3D regulator_enable(ihid_elan->vcc33);
+> +               if (ret)
+> +                       return ret;
+> +       }
+>
+>         ret =3D regulator_enable(ihid_elan->vccio);
+>         if (ret) {
+> @@ -52,8 +56,8 @@ static int elan_i2c_hid_power_up(struct i2chid_ops *ops=
+)
+>                 msleep(ihid_elan->chip_data->post_power_delay_ms);
+>
+>         gpiod_set_value_cansleep(ihid_elan->reset_gpio, 0);
+> -       if (ihid_elan->chip_data->post_gpio_reset_delay_ms)
+> -               msleep(ihid_elan->chip_data->post_gpio_reset_delay_ms);
+> +       if (ihid_elan->chip_data->post_gpio_reset_on_delay_ms)
+> +               msleep(ihid_elan->chip_data->post_gpio_reset_on_delay_ms)=
+;
+>
+>         return 0;
+>  }
+> @@ -64,8 +68,12 @@ static void elan_i2c_hid_power_down(struct i2chid_ops =
+*ops)
+>                 container_of(ops, struct i2c_hid_of_elan, ops);
+>
+>         gpiod_set_value_cansleep(ihid_elan->reset_gpio, 1);
+> +       if (ihid_elan->chip_data->post_gpio_reset_off_delay_ms)
+> +               msleep(ihid_elan->chip_data->post_gpio_reset_off_delay_ms=
+);
+> +
+>         regulator_disable(ihid_elan->vccio);
+> -       regulator_disable(ihid_elan->vcc33);
+> +       if (ihid_elan->vcc33)
+> +               regulator_disable(ihid_elan->vcc33);
+>  }
+>
+>  static int i2c_hid_of_elan_probe(struct i2c_client *client)
+> @@ -89,24 +97,42 @@ static int i2c_hid_of_elan_probe(struct i2c_client *c=
+lient)
+>         if (IS_ERR(ihid_elan->vccio))
+>                 return PTR_ERR(ihid_elan->vccio);
+>
+> -       ihid_elan->vcc33 =3D devm_regulator_get(&client->dev, "vcc33");
+> -       if (IS_ERR(ihid_elan->vcc33))
+> -               return PTR_ERR(ihid_elan->vcc33);
+> -
+>         ihid_elan->chip_data =3D device_get_match_data(&client->dev);
+>
+> +       if (ihid_elan->chip_data->main_supply_name) {
+> +               ihid_elan->vcc33 =3D devm_regulator_get(&client->dev,
+> +                                                     ihid_elan->chip_dat=
+a->main_supply_name);
+> +               if (IS_ERR(ihid_elan->vcc33))
+> +                       return PTR_ERR(ihid_elan->vcc33);
+> +       }
+> +
+>         return i2c_hid_core_probe(client, &ihid_elan->ops,
+>                                   ihid_elan->chip_data->hid_descriptor_ad=
+dress, 0);
+>  }
+>
+>  static const struct elan_i2c_hid_chip_data elan_ekth6915_chip_data =3D {
+>         .post_power_delay_ms =3D 1,
+> -       .post_gpio_reset_delay_ms =3D 300,
+> +       .post_gpio_reset_on_delay_ms =3D 300,
+> +       .hid_descriptor_address =3D 0x0001,
+> +       .main_supply_name =3D "vcc33",
+> +};
+> +
+> +static const struct elan_i2c_hid_chip_data ilitek_ili9882t_chip_data =3D=
+ {
+> +       .post_power_delay_ms =3D 1,
+> +       .post_gpio_reset_on_delay_ms =3D 200,
+> +       .post_gpio_reset_off_delay_ms =3D 65,
+>         .hid_descriptor_address =3D 0x0001,
+> +       /*
+> +        * this touchscreen is tightly integrated with the panel and assu=
+mes
+> +        * that the relevant power rails (other than the IO rail) have al=
+ready
+> +        * been turned on by the panel driver because we're a panel follo=
+wer.
+> +        */
+> +       .main_supply_name =3D NULL,
+>  };
+>
+>  static const struct of_device_id elan_i2c_hid_of_match[] =3D {
+>         { .compatible =3D "elan,ekth6915", .data =3D &elan_ekth6915_chip_=
+data },
+> +       { .compatible =3D "ilitek,ili9882t", .data =3D &ilitek_ili9882t_c=
+hip_data },
 
-  1038	
-  1039	/* Per pipe struct which stores the MCLK switch mode
-  1040	 * data to be sent to DMUB.
-  1041	 * Named "v2" for now -- once FPO and SUBVP are fully merged
-  1042	 * the type name can be updated
-  1043	 */
-  1044	struct dmub_cmd_fw_assisted_mclk_switch_pipe_data_v2 {
-  1045		union {
-  1046			struct {
-  1047				uint32_t pix_clk_100hz;
-  1048				uint16_t main_vblank_start;
-  1049				uint16_t main_vblank_end;
-  1050				uint16_t mall_region_lines;
-  1051				uint16_t prefetch_lines;
-  1052				uint16_t prefetch_to_mall_start_lines;
-  1053				uint16_t processing_delay_lines;
-  1054				uint16_t htotal; // required to calculate line time for multi-display cases
-  1055				uint16_t vtotal;
-  1056				uint8_t main_pipe_index;
-  1057				uint8_t phantom_pipe_index;
-  1058				/* Since the microschedule is calculated in terms of OTG lines,
-  1059				 * include any scaling factors to make sure when we get accurate
-  1060				 * conversion when programming MALL_START_LINE (which is in terms
-  1061				 * of HUBP lines). If 4K is being downscaled to 1080p, scale factor
-  1062				 * is 1/2 (numerator = 1, denominator = 2).
-  1063				 */
-  1064				uint8_t scale_factor_numerator;
-  1065				uint8_t scale_factor_denominator;
-  1066				uint8_t is_drr;
-  1067				uint8_t main_split_pipe_index;
-  1068				uint8_t phantom_split_pipe_index;
-  1069			} subvp_data;
-  1070	
-  1071			struct {
-  1072				uint32_t pix_clk_100hz;
-  1073				uint16_t vblank_start;
-  1074				uint16_t vblank_end;
-  1075				uint16_t vstartup_start;
-  1076				uint16_t vtotal;
-  1077				uint16_t htotal;
-  1078				uint8_t vblank_pipe_index;
-> 1079				uint8_t padding[];
-  1080				struct {
-  1081					uint8_t drr_in_use;
-  1082					uint8_t drr_window_size_ms;	// Indicates largest VMIN/VMAX adjustment per frame
-  1083					uint16_t min_vtotal_supported;	// Min VTOTAL that supports switching in VBLANK
-  1084					uint16_t max_vtotal_supported;	// Max VTOTAL that can support SubVP static scheduling
-  1085					uint8_t use_ramping;		// Use ramping or not
-  1086					uint8_t drr_vblank_start_margin;
-  1087				} drr_info;				// DRR considered as part of SubVP + VBLANK case
-  1088			} vblank_data;
-  1089		} pipe_config;
-  1090	
-  1091		/* - subvp_data in the union (pipe_config) takes up 27 bytes.
-  1092		 * - Make the "mode" field a uint8_t instead of enum so we only use 1 byte (only
-  1093		 *   for the DMCUB command, cast to enum once we populate the DMCUB subvp state).
-  1094		 */
-  1095		uint8_t mode; // enum mclk_switch_mode
-  1096	};
-  1097	
+Logically, this patch depends on the panel-follower series that's now
+landed in drm-misc-next. With your Ack, I'm willing to land these two
+patches into drm-misc-next too. Other options:
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+a) We could land the two patches in the i2c-hid tree since they don't
+appear to conflict. The touchscreen won't actually function until the
+patches meetup in linux-next but I don't think they'll give any
+compile errors (I haven't double-checked that, but I can). ...though
+it's possible that the dt bindings might generate errors? Again, I can
+investigate if we want to go this way.
+
+b) We can snooze this for a few months and you can pick it to i2c-hid
+when my series reaches mainline.
+
+Let me know how you'd like to proceed.
+
+-Doug
