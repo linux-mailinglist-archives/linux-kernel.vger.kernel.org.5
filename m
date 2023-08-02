@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D1E76C812
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABFE76C818
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233777AbjHBILD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
+        id S233816AbjHBIMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:12:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231796AbjHBILA (ORCPT
+        with ESMTP id S233751AbjHBIL5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:11:00 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCE819A;
-        Wed,  2 Aug 2023 01:10:58 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37262OjY020135;
-        Wed, 2 Aug 2023 08:10:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=smCHiQUBPz96P0liCJANi4we28VIWNrJWsESBimGYGw=;
- b=WGZIvsp1fJAsdErDN61DSBB+Ah63jjJHnTuXCFtPy2LEcz6U4cJUq141CkH5YaPZQNAE
- hPlkyX/NHNkAbyhc+voUHfisRbakCbb+fq+GpxAemLYMdfigsjcQU/yKJccRAqBdpXrU
- 6yKJVuf2gal16o+FpxYWpBCd6szlzU3TWq400oZ/AlsoY5SMh1WBBGWD4gSUUIjGNIFa
- C2dOrCvE/WFfjWj9QOtZtXxcNdqUpJYxGm45k2StK6i8q93vPKHcry6rmitMUsXB2vfZ
- 66UPsB0ZXXRpVH/YCbeg/hrZ/UfxuxGXrBfA6Cn79snKo2UMylmbFSiA4Z3Piy4U3cFI Pw== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s72gqt7ad-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 08:10:53 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3728AqII004396
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 08:10:52 GMT
-Received: from [10.216.21.225] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
- 2023 01:10:46 -0700
-Message-ID: <1ea8fdc9-4e0c-19ff-f340-f746d0fed1fe@quicinc.com>
-Date:   Wed, 2 Aug 2023 13:40:37 +0530
+        Wed, 2 Aug 2023 04:11:57 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2010F7;
+        Wed,  2 Aug 2023 01:11:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690963917; x=1722499917;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=UiSK8hYpddgJIFyikzodWrEoTHw1JzUx9cKD1o/utS0=;
+  b=RLnxFe61dfMLO3ULW3F82JI6mDk/p1wxpEmpJ4QNgjQom/rDydQ9P41Z
+   +jdwLbYobIXcuZ70TU+8DnFuNgDBusbciUCCErRSqKacqJGbIpG6b3puK
+   ajNUu+z2nZqYtyDI6TRiE8l4FBjvvrcSElcyruJIjXO5wm2bbCbWrX99X
+   UqtnvGQZi1BPaq7togQKu4m7KWpbkupyDqZN6bHRTJDlxowvLoE3J6cJl
+   9atgW+z855Mso1tI5DhlG8qq54ax/1XeHWCkO7LOHAANiVfY2vSvIFoPI
+   mbzwHG24LQm+GNv6fTI02bVxrYzB0FJLDwItA8410SPREKKgt1UtJnXyc
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="354435754"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="354435754"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 01:11:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="902904809"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="902904809"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.213.137]) ([10.254.213.137])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 01:11:49 -0700
+Message-ID: <859a2d3e-a892-b02e-db1a-ca2503b8952b@linux.intel.com>
+Date:   Wed, 2 Aug 2023 16:11:47 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.13.0
-Subject: Re: [PATCH V4 4/7] clk: qcom: gcc-qdu1000: Update GCC clocks as per
- the latest hw version
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     Bjorn Andersson <andersson@kernel.org>,
-        Taniya Das <quic_tdas@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Jagadeesh Kona <quic_jkona@quicinc.com>,
-        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
-        Ajit Pandey <quic_ajipan@quicinc.com>
-References: <20230719041450.737929-1-quic_imrashai@quicinc.com>
- <20230719041450.737929-5-quic_imrashai@quicinc.com>
- <b3175a93-0b41-49d7-ca29-bc4ca9b5c8fc@linaro.org>
+Cc:     baolu.lu@linux.intel.com, "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: Re: [PATCH v4 04/12] iommu/vt-d: Add helper to setup pasid nested
+ translation
 Content-Language: en-US
-From:   Imran Shaik <quic_imrashai@quicinc.com>
-In-Reply-To: <b3175a93-0b41-49d7-ca29-bc4ca9b5c8fc@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: WQGxo1FUvojrNRLOz21Ew7SbSaOTB5f9
-X-Proofpoint-ORIG-GUID: WQGxo1FUvojrNRLOz21Ew7SbSaOTB5f9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_03,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=732 adultscore=0
- phishscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 clxscore=1015 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308020072
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>
+References: <20230724111335.107427-1-yi.l.liu@intel.com>
+ <20230724111335.107427-5-yi.l.liu@intel.com>
+ <BN9PR11MB5276C84A20C48B4041BE07B78C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <17e403c0-f2f8-c3d4-9dd0-3a812be79b4a@linux.intel.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <17e403c0-f2f8-c3d4-9dd0-3a812be79b4a@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,27 +89,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 7/26/2023 9:12 PM, Konrad Dybcio wrote:
-> On 19.07.2023 06:14, Imran Shaik wrote:
->> Update the GCC clocks as per the latest hw version of QDU1000 and
->> QRU100 SoCs.
->>
->> Co-developed-by: Taniya Das <quic_tdas@quicinc.com>
->> Signed-off-by: Taniya Das <quic_tdas@quicinc.com>
->> Signed-off-by: Imran Shaik <quic_imrashai@quicinc.com>
->> ---
-> [...]
+On 2023/8/2 16:09, Baolu Lu wrote:
+> On 2023/8/2 15:10, Tian, Kevin wrote:
+>>> +
+>>> +    pasid_set_slptr(pte, virt_to_phys(pgd));
+>>> +    pasid_set_fault_enable(pte);
+>>> +    pasid_set_domain_id(pte, did);
+>>> +    pasid_set_address_width(pte, s2_domain->agaw);
+>>> +    pasid_set_page_snoop(pte, !!ecap_smpwc(iommu->ecap));
+>>> +    pasid_set_translation_type(pte, PASID_ENTRY_PGTT_NESTED);
+>>> +    pasid_set_present(pte);
+>>> +    spin_unlock(&iommu->lock);
+>>> +
+>> this lacks of handling of force_snooping
 > 
->> +	[GCC_GPLL1_OUT_EVEN] = &gcc_gpll1_out_even.clkr,
-> So, this clock was there before, but it was never registered with the
-> clock framework, even though it was referenced as a parent..
+> If stage-2 domain has force_snooping attribute set, then we should set
+> the bit field in the pasid entry, right?
 > 
-> Sounds like a bug!
-> > Konrad
+> How about below additional change?
+> 
+> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+> index 19ac4084913b..86db81ec91f1 100644
+> --- a/drivers/iommu/intel/pasid.c
+> +++ b/drivers/iommu/intel/pasid.c
+> @@ -827,6 +827,9 @@ int intel_pasid_setup_nested(struct intel_iommu 
+> *iommu, struct device *dev,
+>          if (s1_cfg->flags & IOMMU_VTD_S1_EAFE)
+>                  pasid_set_eafe(pte);
+> 
+> +       if (s2_domain>force_snooping)
 
-Yes, I will split this change adding the fixes tag and push another series.
++       if (s2_domain->force_snooping)
 
-Thanks,
-Imran
+Sorry for typo.
+
+> +               pasid_set_pgsnp(pte);
+> +
+>          pasid_set_slptr(pte, virt_to_phys(pgd));
+>          pasid_set_fault_enable(pte);
+>          pasid_set_domain_id(pte, did);
+> 
+> Best regards,
+> baolu
+
