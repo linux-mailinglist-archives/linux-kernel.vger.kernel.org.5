@@ -2,58 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B82376CC81
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAAB76CC82
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:22:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233160AbjHBMVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
+        id S233394AbjHBMWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232847AbjHBMVc (ORCPT
+        with ESMTP id S233242AbjHBMWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:21:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605E4269E
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:21:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ECB2A6194F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:21:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDBC7C433C8;
-        Wed,  2 Aug 2023 12:21:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690978890;
-        bh=ogitFwxiVJEn4CoyxI5FjfjwCwtkte8vNfmXWrRsODE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=noRTLmnPH4uUx0Afpw1gJ8ege5fg4D1a0fUOXhzBHq+DUXSS9jSHxO5biX32qesZW
-         8I7+h1LUbpKCZuAkziXo8HpxyrihD0SEJinYhS/3KBdK+foRNR3rdrIilK+iueUsjg
-         aezU/56qaYPazZzw4GxAPqRkWX4NBPNW4tkIn1rfITfVKPcCrz2NyesyrHw+OO4f1G
-         vmw5XpGWra56wqHoOqc/tjCf0Iow+Pw56psBfzqeRwiBBoZptVcglK01Cr1xiTP9oy
-         UynVEjYZgMQjOm6yVl2mDzeHa5ODiHPws4DPq69umjWMVzDLK51UED+G0PyPP12HrH
-         cp9QGxlh1jJKw==
-Date:   Wed, 2 Aug 2023 13:21:25 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64/fpsimd: Only provide the length to cpufeature for
- xCR registers
-Message-ID: <371e0fb4-0f99-40cc-b93f-0eae700d720c@sirena.org.uk>
-References: <20230727-arm64-sme-fa64-hotplug-v1-1-34ae93afc05b@kernel.org>
- <20230802112122.GA27807@willie-the-truck>
+        Wed, 2 Aug 2023 08:22:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68846269D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:22:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QCOWbNxTPoEqKAFwIDBh0pTUiwLMUpnUoYaj0aoYiOs=; b=gEMB8KpMav/+K8RKzJMV2gvzzj
+        S129f7+76wuz/c48ZqHCwhPtuX+BjWS1l56V9zoXKaGOLEB6PMrBUr64nNAJMkn+e2ta1PhFrr0tp
+        63ZCuGMaYHfbRJ8zJ1EUv8KgPGuTy6x2C1rvviydJiPcYJbN2u3YRQ5nw1fRIqUty4t59q9egJAfJ
+        sPB1TM4+VmNAjDBg+HjrnQciPJCX6AjVqhUFTxqAfcCPisxFKG3C+YevzI5aPUaTZ/MgpzFQ7shis
+        F6weO/Df8hKtSQt4QllXdrHMipCo1deR/FjAn0DByGS0HnegiVb4DPZR1WcQ+IsWhvmciH85qMZJ3
+        7TYiVakQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qRArR-00EvaZ-VE; Wed, 02 Aug 2023 12:21:53 +0000
+Date:   Wed, 2 Aug 2023 13:21:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH 1/4] mm: migrate: use a folio in add_page_for_migration()
+Message-ID: <ZMpKYfNWA/jNgEuL@casper.infradead.org>
+References: <20230802095346.87449-1-wangkefeng.wang@huawei.com>
+ <20230802095346.87449-2-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="1uDqYgO4mPaxFj58"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230802112122.GA27807@willie-the-truck>
-X-Cookie: Humpty Dumpty was pushed.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20230802095346.87449-2-wangkefeng.wang@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,45 +51,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Aug 02, 2023 at 05:53:43PM +0800, Kefeng Wang wrote:
+>  	err = -EACCES;
+> -	if (page_mapcount(page) > 1 && !migrate_all)
+> -		goto out_putpage;
+> +	if (folio_estimated_sharers(folio) > 1 && !migrate_all)
+> +		goto out_putfolio;
 
---1uDqYgO4mPaxFj58
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I do not think this is the correct change.  Maybe leave this line
+alone.
 
-On Wed, Aug 02, 2023 at 12:21:23PM +0100, Will Deacon wrote:
-> On Thu, Jul 27, 2023 at 10:31:44PM +0100, Mark Brown wrote:
+> -	if (PageHuge(page)) {
+> -		if (PageHead(page)) {
+> -			isolated = isolate_hugetlb(page_folio(page), pagelist);
+> +	if (folio_test_hugetlb(folio)) {
+> +		if (folio_test_large(folio)) {
 
-> > -	return zcr;
-> > +	return SYS_FIELD_GET(ZCR_ELx, LEN, zcr);
+This makes no sense when you read it.  All hugetlb folios are large,
+by definition.  Think about what this code used to do, and what it
+should be changed to.
 
-> Hmm, now this function looks like a mixture of code which relies on the
-> LEN field living at the bottom of the register and code which is agnostic
-> to that.
-
-> Can we update the 'zcr |= vq_max - 1' part to use something like
-> FIELD_PREP() instead?
-
-There was a version 2 that was sent already which goes in the opposite
-direction and just returns the value we would munge in without use of
-any FIELD_ macros:
-
-   https://lore.kernel.org/r/20230731-arm64-sme-fa64-hotplug-v2-1
-
-which also addresses your issue?
-
---1uDqYgO4mPaxFj58
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTKSkUACgkQJNaLcl1U
-h9AHJwgAg+nXJyQuf3AqMJk5Q6LltUsyoWN4pcsTj9N7jmAjC3BzckwVSJWaHH8v
-YSuer7bWaeNz+5UV56seMg5J8aOat1K0BdmgTdXK/km64a9QuWJWgVVH/piFZxhN
-vxN0yhxhDKEeSTrL3AcJBs9Hw3bi3WgTAbX93UKL+o1NCjYrq5hG4LgJmOcC/VpA
-AD0c95DbuucmUMAECd8JQjcnNrudyvhPqo+ANrePLtnt9lIDxqXrZYLjuAkDzebL
-DaKuF5EVsunMkDvSYarJ3WHcNbetZx8teAB/NdghbIVZxXmqc2+nhTg6gcGoZ6gx
-/TmPFrvCY3JJv8MspxcTi6mAdhaIMA==
-=oEaC
------END PGP SIGNATURE-----
-
---1uDqYgO4mPaxFj58--
+> +			isolated = isolate_hugetlb(folio, pagelist);
+>  			err = isolated ? 1 : -EBUSY;
+>  		}
+>  	} else {
+> -		struct page *head;
+> -
+> -		head = compound_head(page);
+> -		isolated = isolate_lru_page(head);
+> +		isolated = folio_isolate_lru(folio);
+>  		if (!isolated) {
+>  			err = -EBUSY;
+> -			goto out_putpage;
+> +			goto out_putfolio;
+>  		}
+>  
+>  		err = 1;
+> -		list_add_tail(&head->lru, pagelist);
+> -		mod_node_page_state(page_pgdat(head),
+> -			NR_ISOLATED_ANON + page_is_file_lru(head),
+> -			thp_nr_pages(head));
+> +		list_add_tail(&folio->lru, pagelist);
+> +		node_stat_mod_folio(folio,
+> +			NR_ISOLATED_ANON + folio_is_file_lru(folio),
+> +			folio_nr_pages(folio));
+>  	}
