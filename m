@@ -2,235 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 574C276CD6C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F4F76CD68
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234710AbjHBMrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:47:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
+        id S234721AbjHBMrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234530AbjHBMrW (ORCPT
+        with ESMTP id S234717AbjHBMqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:47:22 -0400
-Received: from Atcsqr.andestech.com (60-248-80-70.hinet-ip.hinet.net [60.248.80.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82455212D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:46:55 -0700 (PDT)
-Received: from mail.andestech.com (ATCPCS16.andestech.com [10.0.1.222])
-        by Atcsqr.andestech.com with ESMTP id 372CkPZs081155;
-        Wed, 2 Aug 2023 20:46:25 +0800 (+08)
-        (envelope-from dylan@andestech.com)
-Received: from atctrx.andestech.com (10.0.15.173) by ATCPCS16.andestech.com
- (10.0.1.222) with Microsoft SMTP Server id 14.3.498.0; Wed, 2 Aug 2023
- 20:46:25 +0800
-Date:   Wed, 2 Aug 2023 20:46:25 +0800
-From:   dylan <dylan@andestech.com>
-To:     Alexandre Ghiti <alex@ghiti.fr>
-CC:     <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <wangkefeng.wang@huawei.com>, <tongtiangen@huawei.com>,
-        <guoren@kernel.org>, <sergey.matyukevich@syntacore.com>,
-        <gregkh@linuxfoundation.org>, <ajones@ventanamicro.com>,
-        <aou@eecs.berkeley.edu>, <palmer@dabbelt.com>,
-        <paul.walmsley@sifive.com>, <conor.dooley@microchip.com>,
-        <x5710999x@gmail.com>, <tim609@andestech.com>,
-        <cl634@andestech.com>, <ycliang@andestech.com>
-Subject: Re: [PATCH] riscv: Flush stale TLB entry with VMAP_STACK enabled
-Message-ID: <ZMpQIXXfFLCFeOtg@atctrx.andestech.com>
-References: <20230801090927.2018653-1-dylan@andestech.com>
- <dc26625b-6658-c078-76d2-7e975a04b1d4@ghiti.fr>
+        Wed, 2 Aug 2023 08:46:55 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05DA2720
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:46:36 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so3078228e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690980394; x=1691585194;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kv9d0Jz3yfYAGJtn1qq8WricQbyuVAjz4IKQI922Gd4=;
+        b=djFbVW58jZ7+Xmdu5eGQsTXkNiuQT1kMx0XtoRjoGwVB2Tu6mlAqwDF5/NCcUWXK0G
+         6riKLY31p7YkJhBKrBLjW9CIjDu6MpH90bO6wmlfbbcn5sgI4pUM9wZt34qcWSZUjzMS
+         O0DiO76YdWpquRcjEGufFPXothnSlV6zZOD0lsxDY/QxmJt0bg69sJpQAAmAfZt+3nIM
+         3WEIhUF5L81woyG3OidPJgZ2yAenAr0/BPrM/4Od9LcADiFrRlPC8rZ7z+HrJyejjfgR
+         Z03534jNcq/S8hJeJg8jIbNc59rL/XQ809ostAigqVGZQVJtIRrEJpuGDeIxAUp4VjOJ
+         7/3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690980394; x=1691585194;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kv9d0Jz3yfYAGJtn1qq8WricQbyuVAjz4IKQI922Gd4=;
+        b=N5xBNZwwBhhs/lEPG8N0B3ZcSwCjjHjvXylWG9ATiQ5MZVcMMKfCLEW4bVH/7iT7ui
+         zjtxemuKmN8VU12NFYsb5PrgFbMFlYgZFERZs0tdDokTDk06bLymdVmqyapQ4SWPqFJJ
+         cBVerdppPAS3+3R6vVcX/GfRPaU73kI1b2qx/gDjbyCZdkHvEpL8IvDHYAGW0zg7lf6v
+         xaIQZXk9BAQRJXmGFHkD4mo5DSEXS9ItCcqaSivoFnPmNEN1OQ6wseL7BWobtarCihDi
+         LvRrUkNpL9B8NLtZV5uJGK8PvkLjgFbqW/+Lg4ZeZ3g0Wwai0yPK/pvRsyjDqQ170z2Y
+         BUeA==
+X-Gm-Message-State: ABy/qLbXpDBiLg2ogreTT+A0uTxYXY4ty513vKll7bke4YJ0dax0kS+5
+        eIOA7k+Fj6qRv6BUq7znsFplRA==
+X-Google-Smtp-Source: APBJJlERlRTNeQU3/IXYV0klcUanbfxWqg2c2tZHr4dC8kJNoo1QdxKSKScsqu/kmbAqZWUHOzhUug==
+X-Received: by 2002:a19:ca0b:0:b0:4f6:2b25:194e with SMTP id a11-20020a19ca0b000000b004f62b25194emr3686618lfg.58.1690980394611;
+        Wed, 02 Aug 2023 05:46:34 -0700 (PDT)
+Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
+        by smtp.gmail.com with ESMTPSA id v11-20020a056512048b00b004f76a88dbcbsm2948635lfq.176.2023.08.02.05.46.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 05:46:34 -0700 (PDT)
+Message-ID: <51902449-11ea-508e-002d-b4b772ffe754@linaro.org>
+Date:   Wed, 2 Aug 2023 14:46:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <dc26625b-6658-c078-76d2-7e975a04b1d4@ghiti.fr>
-User-Agent: Mutt/2.1.4 (2021-12-11)
-X-Originating-IP: [10.0.15.173]
-X-DNSRBL: 
-X-SPAM-SOURCE-CHECK: pass
-X-MAIL: Atcsqr.andestech.com 372CkPZs081155
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 5/8] ARM: dts: qcom: sdx65-mtp: Update the pmic used in
+ sdx65
+Content-Language: en-US
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1690970366-30982-6-git-send-email-quic_rohiagar@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <1690970366-30982-6-git-send-email-quic_rohiagar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 03:56:06PM +0200, Alexandre Ghiti wrote:
-
-Hi Alex,
-
-Thanks for the comment.
-
-> Hi Dylan,
+On 2.08.2023 11:59, Rohit Agarwal wrote:
+> Update the pmic used in sdx65 platform to pm7250b.
 > 
-> 
-> On 01/08/2023 11:09, Dylan Jhong wrote:
-> > When VMAP_STACK is enabled, the kernel stack will be obtained through
-> > vmalloc(). Normally, we rely on the logic in vmalloc_fault() to update stale
-> > P*D entries covering the vmalloc space in a task's page tables when it first
-> > accesses the problematic region.
-> 
-> 
-> I guess that's for rv32 right? Because vmalloc_fault() has been removed for
-> rv64 in 6.5.
-> 
-> Here you describe the issue as being caused by the vmap stack being in a new
-> PGD which then needs a page table synchronization in vmalloc_fault(), which
-> can't happen since vmalloc_fault() needs this same stack in the current page
-> table.
-> 
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+> ---
+Has this changed with a board revision? Was this wrong before?
 
-No. This problem only occurs on rv64. It is triggered when the kernel stack is
-allocated via vmalloc(), which is only eligible if VMAP_STACK is enabled.
-According to riscv/Kconfig, VMAP_STACK can only be enabled under rv64.
+Need more explanation, and this definitely deserves a Fixes: tag.
 
-Sorry I forgot to mention that I was developing on Linux 6.1 LTS, And I did not
-notice that vmalloc_fault() was removed in Linux 6.5. But this should not impact
-the problem this patch aims to solve, as the kernel stack is accessed in
-handle_exception()[1] long before vmalloc_fault() is called.
-
-To verify this, I also backported the "remove vmalloc_fault()" patch [2] to
-Linux 6.1 LTS. The experiment revealed that the problem still persists.
-
-[*1]: https://github.com/torvalds/linux/blob/master/arch/riscv/kernel/entry.S#L42
-[*2]: https://lore.kernel.org/linux-mm/871qiyfhpe.fsf@all.your.base.are.belong.to.us/T/
-
+Konrad
+>  arch/arm/boot/dts/qcom/qcom-sdx65-mtp.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> >   Unfortunately, this is not sufficient when
-> > the kernel stack resides in the vmalloc region, because vmalloc_fault() is a
-> > C function that needs a stack to run. So we need to ensure that these P*D
-> > entries are up to date *before* the MM switch.
-> > 
-> > Here's our symptom:
-> > core 0: A speculative load lead the kernel stack load to the TLB before the
-> >          corresponding kernel stack's page table is created.
-> > core 1: Create page table mapping of that kernel stack.
-> > core 0: After a context switch, the kernel attempts to use the stack region.
-> >          However, even if the page table is correct, the stack address mapping
-> >          in the TLB is invalid, leading to subsequent nested exceptions.
-> 
-> 
-> But here the problem you describe is different since it seems to be caused
-> by the TLB caching invalid entries which then needs a sfence.vma for the
-> page table walker to see the new correct entry.
-> 
-
-TLB caching invalid entries is exactly the problem we encountered, so my modification
-is trying to update the TLB through the arch_sync_kernel_mappings() after vmalloc
-creates the page table.
-
-let me describe the situation we encountered more clearly:
-
-When we execute a multi-threaded user space program on rv64 SMP CPU, we eventually
-encounter the issue of nested exceptions caused by the TLB not being updated.
-
-
-CPU0                                           CPU1
-- (Thread 1) Create page table
-- (Thread 1) Do plist_check_list() to
-  check the kernel stack used by thread 1
-  is valid. But a speculative load will
-  be triggered here, causing the kernel
-  stack address of thread 2 to be loaded
-  to the TLB of CPU0, and thread 2 has
-  not yet been established at this time.
-                                               - (Thread 2) Create page table
-                                               - (Thread 2) Do plist_check_list().
-                                               - Switch MM
-- (Thread 2) Keep executing user program
-  (thread 2) Enter handle_exception().
-  In Handle_excption() will try to access
-  kernel stack to store registers. But the
-  kernel stack mapping in TLB is invalid.
-  So another page fault exception is raised.
-  The nested exception occurs here. System hang.
-
-Therefore, the main intention of this patch is to flush the TLB of all CPUs
-after the page table created by vmalloc() before switching MM.
-
-> 
-> > 
-> > This fix is inspired by ARM's approach[*1], commit a1c510d0adc6 ("ARM:
-> > implement support for vmap'ed stacks"), it also performs a TLB flush after
-> > setting up the page tables in vmalloc().
-> > Fixes: 31da94c25aea ("riscv: add VMAP_STACK overflow detection")
-> > Signed-off-by: Dylan Jhong <dylan@andestech.com>
-> > ---
-> >   arch/riscv/include/asm/page.h |  4 ++++
-> >   arch/riscv/mm/tlbflush.c      | 16 ++++++++++++++++
-> >   2 files changed, 20 insertions(+)
-> > 
-> > diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> > index 349fad5e35de..c9b080a72855 100644
-> > --- a/arch/riscv/include/asm/page.h
-> > +++ b/arch/riscv/include/asm/page.h
-> > @@ -21,6 +21,10 @@
-> >   #define HPAGE_MASK              (~(HPAGE_SIZE - 1))
-> >   #define HUGETLB_PAGE_ORDER      (HPAGE_SHIFT - PAGE_SHIFT)
-> > +#ifdef CONFIG_VMAP_STACK
-> > +#define ARCH_PAGE_TABLE_SYNC_MASK	PGTBL_PTE_MODIFIED
-> > +#endif
-> > +
-> >   /*
-> >    * PAGE_OFFSET -- the first address of the first page of memory.
-> >    * When not using MMU this corresponds to the first free page in
-> > diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> > index ef701fa83f36..0799978913ee 100644
-> > --- a/arch/riscv/mm/tlbflush.c
-> > +++ b/arch/riscv/mm/tlbflush.c
-> > @@ -86,3 +86,19 @@ void flush_pmd_tlb_range(struct vm_area_struct *vma, unsigned long start,
-> >   	__sbi_tlb_flush_range(vma->vm_mm, start, end - start, PMD_SIZE);
-> >   }
-> >   #endif
-> > +
-> > +#ifdef CONFIG_VMAP_STACK
-> > +/*
-> > + * Normally, we rely on the logic in vmalloc_fault() to update stale P*D
-> > + * entries covering the vmalloc space in a task's page tables when it first
-> > + * accesses the problematic region. Unfortunately, this is not sufficient when
-> > + * the kernel stack resides in the vmalloc region, because vmalloc_fault() is a
-> > + * C function that needs a stack to run. So we need to ensure that these P*D
-> > + * entries are up to date *before* the MM switch.
-> > + */
-> > +void arch_sync_kernel_mappings(unsigned long start, unsigned long end)
-> > +{
-> > +	if (start < VMALLOC_END && end > VMALLOC_START)
-> > +		flush_tlb_all();
-> > +}
-> > +#endif
-> 
-> 
-> And if that works for you, I'd say the problem is the latter: the TLB
-> caching invalid entries, since you don't synchronize the page tables here.
-> That looks a lot like the patch I proposed here https://patchwork.kernel.org/project/linux-riscv/patch/20230725132246.817726-1-alexghiti@rivosinc.com/
-> that implements flush_cache_vmap().
-> 
-
-Updating the TLB in flush_cache_vmap() might address the problem I encountered,
-And I noticed that ARM accomplishes this through arch_sync_kernel_mappings()[3].
-As a result, I chose to adopt a similar approach to ARM's solution.
-
-[3]: https://github.com/torvalds/linux/blob/5d0c230f1de8c7515b6567d9afba1f196fb4e2f4/arch/arm/kernel/traps.c#L962
-
-> So I'm not mistaken, we have another problem in 32-bit: I guess that in your
-> example core 0 and core 1 execute in the same address space (ie the same
-> page table) and a simple sfence.vma gets rid of the invalid entry and things
-> can go on. But what if 2 page tables are created with the same vmalloc
-> mappings, one adds a PGD in the vmalloc mapping, then the other one does not
-> have it in its page table but still allocates its vmap stack in this new PGD
-> => the latter would never be able to recover from the vmalloc fault since it
-> needs to update its page table with the new PGD and it needs the new PGD for
-> that.
-> 
-> Let me know if I'm completely wrong here!
-> 
-> Thanks,
-> 
-> Alex
-> 
-> 
-
-Best regards,
-Dylan Jhong
-
-
+> diff --git a/arch/arm/boot/dts/qcom/qcom-sdx65-mtp.dts b/arch/arm/boot/dts/qcom/qcom-sdx65-mtp.dts
+> index 02d8d6e..fcf1c51 100644
+> --- a/arch/arm/boot/dts/qcom/qcom-sdx65-mtp.dts
+> +++ b/arch/arm/boot/dts/qcom/qcom-sdx65-mtp.dts
+> @@ -7,7 +7,7 @@
+>  #include "qcom-sdx65.dtsi"
+>  #include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+>  #include <arm64/qcom/pmk8350.dtsi>
+> -#include <arm64/qcom/pm8150b.dtsi>
+> +#include <arm64/qcom/pm7250b.dtsi>
+>  #include "qcom-pmx65.dtsi"
+>  
+>  / {
