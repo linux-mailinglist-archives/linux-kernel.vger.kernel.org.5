@@ -2,160 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D874976D568
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BC076D565
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233397AbjHBRds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
+        id S231341AbjHBRd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234145AbjHBRdX (ORCPT
+        with ESMTP id S229924AbjHBRcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:33:23 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A7DC49DA
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:31:47 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4036bd4fff1so21541cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:31:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690997442; x=1691602242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d9PIydnqQ3dEyq5utYkLvUYqJvKMSGVMEHB6crTMgkM=;
-        b=wmnjSqR3AEvLOWI2K6c7yK9kn7fO5Pat99S0Bwsp0PE+T/O9vWdpbvSNknU4tUUGkn
-         ca1jFG/o6OZRPOYrIXK5ktFKEkfvXjkyHxiHhOA5bpKtpY3AkRbncUkx0RhnbY1LQG82
-         zNpUMw99ibeIKrEdaaNl226aP4G6mvh65veu+exS44GbVaWmGs9OSAiEivUegBo0AuUG
-         X4+S92GD0p8Xpt42xJT8lOpauoFaUQcvRY3Gu9VwTjs5xpyoABn3qQo2HEanuvVrK6cb
-         9D7jsDgLS7lvLeDPCHsTcGSOcKrOiiPVBpZunRUdc6FXrkmEiy9aKC5ylm5IcoRE1A4c
-         bpAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690997442; x=1691602242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d9PIydnqQ3dEyq5utYkLvUYqJvKMSGVMEHB6crTMgkM=;
-        b=dvAAZ5l7emdk01wpQaN/OfRzI/hpqrs2+mNVIlQZSyGqQsdBo/M/VOHjOAeEEGIZXU
-         lbQgKOCG0+T7ScSBmEt/qum7TyDBhiARqLgKVX5S6L0cnpyyp5Jkqf+YDybWEf9cTe6J
-         6Uo6wGR1BMLmSyig2ldRQWPFWnNCv84+wxqF7P4F7UOSWyQboNJIa1tG7LacA0/jY8WV
-         E96XmL9N8esThbrwsehod/4reAbMjmr55ej2IxRiC7trxeIKyVhuREzu573/6WwojU7i
-         491qKn2xXaJH/TNSwkcHWaKTJlralDCUxBAbhrMmchYuz3oOz3WTV1vqFy4kKOoeJn6V
-         GWRw==
-X-Gm-Message-State: ABy/qLYrE7p0DaH970DHwmvD/FCf6WWdXU7dVCTFQD08NGEqScU1BAgz
-        NBORrfy6qrz5e/tyM3KVqyYIIhV5DSSPAcNy0O2fDA==
-X-Google-Smtp-Source: APBJJlFI3O33fIDrmQb3T3R+vWt/XUl3W+c523Scknw1Xsezrj9gRXfsmnqvFKS3yUUTAr4rSh9UVAefcI3sHWOzxbY=
-X-Received: by 2002:ac8:5c05:0:b0:3f8:e0a:3e66 with SMTP id
- i5-20020ac85c05000000b003f80e0a3e66mr1367955qti.3.1690997442291; Wed, 02 Aug
- 2023 10:30:42 -0700 (PDT)
+        Wed, 2 Aug 2023 13:32:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EA2C3C28;
+        Wed,  2 Aug 2023 10:30:56 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2613861A41;
+        Wed,  2 Aug 2023 17:30:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C4A2C433C8;
+        Wed,  2 Aug 2023 17:30:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690997436;
+        bh=lH1EorD3zk3GKWEsJuCDZ7QgsmxXYbXfbbIODKU0jSw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=qaX4Uo2ysGBuBwAlUUrofmzs01dRfoOr2JeFqx8H1R/9onI6denHz3JBQZewrPegy
+         P/A5uP4qRQ4IbXibfGLi+DLtgADSQU1oykSEiqO/bDRbU260OfPc0XyUwVKUSHVZhl
+         Wl1eYbLV9sHAjVF7dN2jufkbaWyiU7klv5S+h4iKO+Av/4iASSM2YnSHIguIMG8knk
+         TJohy7LRoq57cxcQkJO9zGSgkkDc+fKKFFB5PUCu5KLZD/Og6zbyoadj37IuUBHdqA
+         fznAKjMjo04Nn5pBD/15FUMIUxbTV8bdNA6dXjRv7HFfbTIhNr4s5P4/b3Ax+NVK4M
+         RdOTMfq5lyHdA==
+From:   SeongJae Park <sj@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, damon@lists.linux.dev,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.4 000/235] 6.4.8-rc2 review
+Date:   Wed,  2 Aug 2023 17:30:33 +0000
+Message-Id: <20230802173033.108621-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230802065501.780725463@linuxfoundation.org>
+References: 
 MIME-Version: 1.0
-References: <ZMpcTMvnQns81YWA@kernel.org>
-In-Reply-To: <ZMpcTMvnQns81YWA@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Wed, 2 Aug 2023 10:30:30 -0700
-Message-ID: <CAP-5=fW_3vu-XBe2OC07rkwcvQVKEeiLncVRO1CxGEBNa0tvGQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] perf python: Cope with declarations after statements
- found in Python.h
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 6:38=E2=80=AFAM Arnaldo Carvalho de Melo <acme@kerne=
-l.org> wrote:
->
-> With -Werror the build was failing on fedora rawhide:
->
->   [perfbuilder@27cfe44d67ed perf-6.5.0-rc2]$ gcc -v
->   Using built-in specs.
->   COLLECT_GCC=3Dgcc
->   COLLECT_LTO_WRAPPER=3D/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapp=
-er
->   OFFLOAD_TARGET_NAMES=3Dnvptx-none
->   OFFLOAD_TARGET_DEFAULT=3D1
->   Target: x86_64-redhat-linux
->   Configured with: ../configure --enable-bootstrap --enable-languages=3Dc=
-,c++,fortran,objc,obj-c++,ada,go,d,m2,lto --prefix=3D/usr --mandir=3D/usr/s=
-hare/man --infodir=3D/usr/share/info --with-bugurl=3Dhttp://bugzilla.redhat=
-.com/bugzilla --enable-shared --enable-threads=3Dposix --enable-checking=3D=
-release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disabl=
-e-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id =
---with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx=
--zoneinfo=3D/usr/share/zoneinfo --with-linker-hash-style=3Dgnu --enable-plu=
-gin --enable-initfini-array --with-isl=3D/builddir/build/BUILD/gcc-13.2.1-2=
-0230728/obj-x86_64-redhat-linux/isl-install --enable-offload-targets=3Dnvpt=
-x-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indire=
-ct-function --enable-cet --with-tune=3Dgeneric --with-arch_32=3Di686 --buil=
-d=3Dx86_64-redhat-linux --with-build-config=3Dbootstrap-lto --enable-link-s=
-erialization=3D1
->   Thread model: posix
->   Supported LTO compression algorithms: zlib zstd
->   gcc version 13.2.1 20230728 (Red Hat 13.2.1-1) (GCC)
->   [perfbuilder@27cfe44d67ed perf-6.5.0-rc2]$
->
->   In file included from /usr/include/python3.12/Python.h:44,
->                    from /git/perf-6.5.0-rc2/tools/perf/util/python.c:2:
->   /usr/include/python3.12/object.h: In function =E2=80=98Py_SIZE=E2=80=99=
-:
->   /usr/include/python3.12/object.h:217:5: error: ISO C90 forbids mixed de=
-clarations and code [-Werror=3Ddeclaration-after-statement]
->     217 |     PyVarObject *var_ob =3D _PyVarObject_CAST(ob);
->         |     ^~~~~~~~~~~
->     LD      /tmp/build/perf/arch/perf-in.o
->   In file included from /usr/include/python3.12/Python.h:53:
->   /usr/include/python3.12/cpython/longintrepr.h: In function =E2=80=98_Py=
-Long_CompactValue=E2=80=99:
->   /usr/include/python3.12/cpython/longintrepr.h:121:5: error: ISO C90 for=
-bids mixed declarations and code [-Werror=3Ddeclaration-after-statement]
->     121 |     Py_ssize_t sign =3D 1 - (op->long_value.lv_tag & _PyLong_SI=
-GN_MASK);
->         |     ^~~~~~~~~~
->
-> So add -Wno-declaration-after-statement to the python binding CFLAGS.
->
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Link: https://lore.kernel.org/lkml/
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+On Wed, 2 Aug 2023 09:42:04 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+> This is the start of the stable review cycle for the 6.4.8 release.
+> There are 235 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 04 Aug 2023 06:54:15 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.8-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
+
+Tested-by: SeongJae Park <sj@kernel.org>
+
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 6a44ac630b76 ("Linux 6.4.8-rc2")
+
 
 Thanks,
-Ian
+SJ
 
-> ---
->  tools/perf/util/setup.py | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/tools/perf/util/setup.py b/tools/perf/util/setup.py
-> index 869738fc06c38a4b..79d5e2955f85d8f6 100644
-> --- a/tools/perf/util/setup.py
-> +++ b/tools/perf/util/setup.py
-> @@ -66,6 +66,9 @@ if cc_is_clang:
->  else:
->      cflags +=3D ['-Wno-cast-function-type' ]
->
-> +# The python headers have mixed code with declarations (decls after asse=
-rts, for instance)
-> +cflags +=3D [ "-Wno-declaration-after-statement" ]
-> +
->  src_perf  =3D getenv('srctree') + '/tools/perf'
->  build_lib =3D getenv('PYTHON_EXTBUILD_LIB')
->  build_tmp =3D getenv('PYTHON_EXTBUILD_TMP')
-> --
-> 2.37.1
->
+[...]
+
+---
+
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_m68k.sh
+ok 12 selftests: damon-tests: build_arm64.sh
+ok 13 selftests: damon-tests: build_i386_idle_flag.sh
+ok 14 selftests: damon-tests: build_i386_highpte.sh
+ok 15 selftests: damon-tests: build_nomemcg.sh
+
+PASS
