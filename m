@@ -2,139 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC72E76D91B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E8CB76D91D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbjHBVCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51178 "EHLO
+        id S230360AbjHBVDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230010AbjHBVCB (ORCPT
+        with ESMTP id S231689AbjHBVCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:02:01 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5451E4F;
-        Wed,  2 Aug 2023 14:01:59 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bc3d94d40fso2592155ad.3;
-        Wed, 02 Aug 2023 14:01:59 -0700 (PDT)
+        Wed, 2 Aug 2023 17:02:53 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA1BE57;
+        Wed,  2 Aug 2023 14:02:52 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2b9c0391749so4008221fa.0;
+        Wed, 02 Aug 2023 14:02:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691010119; x=1691614919;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B5eoW13Er2byi3F5AVWdPVCJvLFofz+zD3HXMr0r2JM=;
-        b=P1bVrDOw/XQIdFJy0p0oko56FRhKc/+1jthxROevZRwecRH5Uht2TndqyzxXrGGMog
-         7/30DAYMILosXblR2uDbNqmfTJrJMBW568BcowS8vvbiHkiYdm130TChDOkV8z2pXcMs
-         JIQa7odjTt+Hxyp0rxDAR4JkZ68MimCN76/dauJ6lareMIriz1fgAKe/SjYkFD9foGyk
-         RufJNhvEQAOyBDZciJv+71xUTQgxVCkM9UKYs4VDR4ZbVvgFgnbLsUdnW8PCp73IgO3Z
-         188Gk8UPI+WKN3h4oIfAgFSkQZ2mK/9lQRZpLS9Xo5/AK5XjzeLp31hGu5CfFmzyVgKt
-         ryiw==
+        d=gmail.com; s=20221208; t=1691010170; x=1691614970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QyKdssS3O4EjoRoatGN7f1gu01LsifXS0W03mQDshAY=;
+        b=ap4MO4ZCYH1F8BdhG5nduO3I27RUIorgHhXVGC8KpVpUYxSkEJN2fwRGQb++NwLeBp
+         SOBsR7zhGOTHbf0vz/oElrZsDLcNppOY38P6iz6NTwOUKIp5F/aFOIfxpytTEHflN2QQ
+         603aUJK6xVQRhXarrIZTl0pQPiXy4bVngod8FYlYaoDEro+EEwJwB8IOZG171LIcVh/O
+         7/OE2N2rzGXpCJrs4kc8RAuYGcSFfbQeQALH4pECRat/r3AAERr9ETXAHUPCQrI7XyWT
+         XPNJ1YI2qGY0GxuDWM89lpVQ8R00RLzRj6m57vwkvjhrHjqXvH96HKef9G1jlulWYHuP
+         HZvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691010119; x=1691614919;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691010170; x=1691614970;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B5eoW13Er2byi3F5AVWdPVCJvLFofz+zD3HXMr0r2JM=;
-        b=gCdL3iq1/AbTCzlKMY/dWahKtuxwYyD8jF3ROLrJ6eaxY2sfrAkUZ8qGEypaM0zWCH
-         4HcqBFpcjfnH+OQ6UKjq1tL6Umqa4Jat3GLc+HJEV5G+auxwTl43Ol123GsoR0TXyp92
-         sH5CamxZyZj3Xjcf29O/ycvqixRf1Avm5yr0ZxWw5xeUe7JroK6VdFQhKEBJj1AyM7ic
-         9DlgXKXYlajDXLynuWIApXfnf5t+2iDs9GgnTue2t5aZSLsYFIDpmx6m7YAWSMSkB+ei
-         0dvpXGRRSGNK536LuGsuPxL64Mdlk7xY19+Y3xwFUIEea5+loT9Nua8c23XMVTd4zpW/
-         KXuA==
-X-Gm-Message-State: ABy/qLZyPRAdVPf/FrkpXsen4akUk1sRt57wNPdGbj7i1P4BW7xNHpjN
-        7heCaf8Sjj4DPobBY1JSdlMS9ovsmyM=
-X-Google-Smtp-Source: APBJJlHKOmx4rPr7kbwyaqtRbGAy+Uc0YS+OodbIRX4oI5TwcwnzsjZarxKt+MJcjl9FlZnTJJ7/xw==
-X-Received: by 2002:a17:902:7486:b0:1bc:5d0:e8db with SMTP id h6-20020a170902748600b001bc05d0e8dbmr12291661pll.62.1691010118975;
-        Wed, 02 Aug 2023 14:01:58 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:9d5d])
-        by smtp.gmail.com with ESMTPSA id kb14-20020a170903338e00b001a5260a6e6csm12878628plb.206.2023.08.02.14.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 14:01:58 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 2 Aug 2023 11:01:57 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>
-Subject: Re: [PATCH v5 4/5] cgroup/cpuset: Documentation update for partition
-Message-ID: <ZMrERWeIeEOGzXHO@slm.duckdns.org>
-References: <20230713172601.3285847-1-longman@redhat.com>
- <20230713172601.3285847-5-longman@redhat.com>
+        bh=QyKdssS3O4EjoRoatGN7f1gu01LsifXS0W03mQDshAY=;
+        b=mApOv9fPjuBtaeB5i9wVwiVW5MMgOktLf7ak368JaYlrUXJfDzgVcqU/AcXWebnQW5
+         8VTmVF2E9pY25v2lK19C69Yoqx27j2i24xdtE74XR681dkR30sBBM87RpywXfgLhBOmK
+         bsyoAj5MGjmXxM8cZjiMTtSo9k2FKtFNWzGZPbm0FSEyc2CAHbmym8R7L7JIT9TY50kV
+         1XYC6VnIgw3IJSh0EC6i/21pfovM1abxDNFUZuDJP0EU61DpecvGMyXa7BxKl7w0+za5
+         hqF/bkyyP9LIaPc5l1zI9cDSkIWtLQX9ZaSrVCRhpjTRlO5VTlWMT+Qv2mRdzUYz3jVt
+         iDEw==
+X-Gm-Message-State: ABy/qLZ75NfZLwpzjrSo2VJvXD11jvmOJGD9QdkztwNmYMeFfaOmhBkB
+        AJ+yPRoL2/+byf+bB/Rb4gg9BDrY9jzCm5xBQmM=
+X-Google-Smtp-Source: APBJJlGXV1RF7XwlUTO+8xiygghiya9fKskN4rXSWgydfN37JEVYAtvDvZqxigGx22sGEFuFsiJgZcEcHlgoxkvM6YI=
+X-Received: by 2002:a2e:9b09:0:b0:2b9:b9c8:99 with SMTP id u9-20020a2e9b09000000b002b9b9c80099mr6122338lji.22.1691010170211;
+ Wed, 02 Aug 2023 14:02:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230713172601.3285847-5-longman@redhat.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230626085811.3192402-1-puranjay12@gmail.com>
+ <7e05efe1-0af0-1896-6f6f-dcb02ed8ca27@iogearbox.net> <ZKMCFtlfJA1LfGNJ@FVFF77S0Q05N>
+ <CANk7y0gTXPBj5U-vFK0cEvVe83tP1FqyD=MuLXT_amWO=EssOA@mail.gmail.com> <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
+In-Reply-To: <CANk7y0hRYzpsYoqcU1tHyZThAgg-cx46C4-n2JYZTa7sDwEk-w@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 2 Aug 2023 14:02:39 -0700
+Message-ID: <CAADnVQJJHiSZPZFpu1n-oQLEsUptacSzF7FdOKfO6OEoKz-jXg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/3] bpf, arm64: use BPF prog pack allocator
+ in BPF JIT
+To:     Puranjay Mohan <puranjay12@gmail.com>,
+        Florent Revest <revest@chromium.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Waiman.
+On Sun, Jul 30, 2023 at 10:22=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.c=
+om> wrote:
+>
+> Hi Mark,
+> I am really looking forward to your feedback on this series.
+>
+> On Mon, Jul 17, 2023 at 9:50=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.=
+com> wrote:
+> >
+> > Hi Mark,
+> >
+> > On Mon, Jul 3, 2023 at 7:15=E2=80=AFPM Mark Rutland <mark.rutland@arm.c=
+om> wrote:
+> > >
+> > > On Mon, Jul 03, 2023 at 06:40:21PM +0200, Daniel Borkmann wrote:
+> > > > Hi Mark,
+> > >
+> > > Hi Daniel,
+> > >
+> > > > On 6/26/23 10:58 AM, Puranjay Mohan wrote:
+> > > > > BPF programs currently consume a page each on ARM64. For systems =
+with many BPF
+> > > > > programs, this adds significant pressure to instruction TLB. High=
+ iTLB pressure
+> > > > > usually causes slow down for the whole system.
+> > > > >
+> > > > > Song Liu introduced the BPF prog pack allocator[1] to mitigate th=
+e above issue.
+> > > > > It packs multiple BPF programs into a single huge page. It is cur=
+rently only
+> > > > > enabled for the x86_64 BPF JIT.
+> > > > >
+> > > > > This patch series enables the BPF prog pack allocator for the ARM=
+64 BPF JIT.
+> > >
+> > > > If you get a chance to take another look at the v4 changes from Pur=
+anjay and
+> > > > in case they look good to you reply with an Ack, that would be grea=
+t.
+> > >
+> > > Sure -- this is on my queue of things to look at; it might just take =
+me a few
+> > > days to get the time to give this a proper look.
+> > >
+> > > Thanks,
+> > > Mark.
+> >
+> > I am eagerly looking forward to your feedback on this series.
 
-On Thu, Jul 13, 2023 at 01:26:00PM -0400, Waiman Long wrote:
-...
-> +	When a valid partition is created, the value of this file will
-> +	be automatically set to the largest subset of "cpuset.cpus"
-> +	that can be granted for exclusive access from its parent if
-> +	its value isn't explicitly set before.
-> +
-> +	Users can also manually set it to a value that is different from
-> +	"cpuset.cpus".	In this case, its value becomes invariant and
-> +	may no longer reflect the effective value that is being used
-> +	to create a valid partition if some dependent cpuset control
-> +	files are modified.
-> +
-> +	There are constraints on what values are acceptable to this
-> +	control file.  If a null string is provided, it will invalidate a
-> +	valid partition root and reset its invariant state.  Otherwise,
-> +	its value must be a subset of the cgroup's "cpuset.cpus" value
-> +	and the parent cgroup's "cpuset.cpus.exclusive" value.
+Mark, Catalin, Florent, KP,
 
-As I wrote before, the hidden state really bothers me. This is fine when
-there is one person configuring the system, but working with automated
-management and monitoring tools can be really confusing at scale when there
-are hidden states like this as there's no way to determine the current state
-by looking at what's visible at the interface level.
-
-Can't we do something like the following?
-
-* cpuset.cpus.exclusive can be set to any possible cpus. While I'm not
-  completely against failing certain writes (e.g. siblings having
-  overlapping masks is never correct or useful), expanding that to
-  hierarchical checking quickly gets into trouble around what happens when
-  an ancestor retracts a CPU.
-
-  I don't think it makes sense to reject writes if the applied rules can't
-  be invariants for the same reason given for avoiding hidden states - the
-  system can be managed by multiple agents at different delegation levels.
-  One layer changing resource configuration shouldn't affect the success or
-  failure of configuration operations in other layers.
-
-* cpuset.cpus.exclusive.effective shows what's currently available for
-  exclusive usage - ie. what'd be used for a partition if the cgroup is to
-  become a partition at that point.
-
-  This, I think, gets rid of the need for the hidden states. If .exclusive
-  of a child of a partition is empty, its .exclusive.effective can show all
-  the CPUs allowed in it. If .exclusive is set then, .exclusive.effective
-  shows the available subset.
-
-What do you think?
-
-Thanks.
-
--- 
-tejun
+This patch set was submitted on June 26 !
+It's not acceptable to delay review for so long.
+Please review asap.
