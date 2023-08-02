@@ -2,77 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 056DB76CA2F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F6B76CA06
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbjHBJ7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
+        id S233114AbjHBJ6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234299AbjHBJ6r (ORCPT
+        with ESMTP id S233677AbjHBJ6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:58:47 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C1930F3
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:58:24 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6872c60b572so888041b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 02:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=quanta-corp-partner-google-com.20221208.gappssmtp.com; s=20221208; t=1690970303; x=1691575103;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Yg9EXzX1kgewsMwOeFC+vrgOSvue4qj7vUYgXfqrEs0=;
-        b=0H5bE/ffijlHRbJEhOlAQwMiD0MCm1wQyA9riw/Cl1cWxGSZCA2IMCmk7LQzzgwiux
-         ZFxIw7oBoPzMu1EDnOrLIHNUHzCfjwce5gQVSFUYcJdpVtj36HUXy5wIOq5Yh6F5EEv4
-         LB9Kirr9Adpg174gE3N4pkb30/vvX7z49cic2BZjXaPGM7v+2wTWyKFNy2rhrxZWsHo4
-         rj0yM3QlCE3l1kZYEvbrRc6XxWBBSCvLI8HpcLubQWJWu8hj2NHnDsRBRpkKt4QVc8G+
-         Gb4RoE1/TI9K8bjJHTvk63V91Ch3AaaMw/K4yB5a9A1Kbanzcd7sEkqoE7ovIFkObPmK
-         KS2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690970303; x=1691575103;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yg9EXzX1kgewsMwOeFC+vrgOSvue4qj7vUYgXfqrEs0=;
-        b=l8m5XnhC87Gnw8oDBNN+dsyqpF6Ar/yGlD4Ybl/m4lch+gGWAqvWdD5lgxRwXT3FBv
-         mWp9jGXuVVXA1jEgRypocTNluTFc/Vx8X+W2SIhxYue/w1Fsy6TJzpI8D5ewYDL16RxV
-         9Tft1uSE/YLO4rDrDfrgj8IoWGtSdchTtWwpST62nt0+HHqxstdeyQfoFoTSpOSIXjA+
-         BPkhT+eqJdwMYRzmEEp8BhsAk+l1GHfZ5UIv5O7LIHogNDXNzlnhJbfd/zjZUwAEYDkS
-         vr8atftEIy0p+AQt3v8mUS8YRcuqYYdSdR+dOoc3ZDc65gLXBSnMVLibVruzH2iWIerB
-         qLkA==
-X-Gm-Message-State: ABy/qLYAMT6qHCDBbwkZP2DdRNYT9l5FOYQjAp3kmzla82oH/80Ifirj
-        KV3Y2cV0HJyqdlFT4ByfGi25SZIwXSrJx0QL4FfiTQ==
-X-Google-Smtp-Source: APBJJlGzM9Bn7zEEXu6vCs/8tcvID0v0Gt45w+1nAqoCyc1LJZPIwuv08GJrUzSAm4FneUXIijOJIA==
-X-Received: by 2002:a05:6a21:3385:b0:13e:1d49:7249 with SMTP id yy5-20020a056a21338500b0013e1d497249mr8844632pzb.2.1690970303573;
-        Wed, 02 Aug 2023 02:58:23 -0700 (PDT)
-Received: from liang-Predator-PH517-52.. (60-250-232-247.hinet-ip.hinet.net. [60.250.232.247])
-        by smtp.gmail.com with ESMTPSA id m11-20020aa7900b000000b00686f048bb9dsm10742544pfo.74.2023.08.02.02.58.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 02:58:23 -0700 (PDT)
-From:   Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     dianders@chromium.org,
-        Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH 3/3] arm64: dts: qcom: Add board id for lazor/limozeen
-Date:   Wed,  2 Aug 2023 17:57:53 +0800
-Message-Id: <20230802175628.3.Ie77732a87ab53d21bac47db309b75a796fa19337@changeid>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230802095753.13644-1-sheng-liang.pan@quanta.corp-partner.google.com>
-References: <20230802095753.13644-1-sheng-liang.pan@quanta.corp-partner.google.com>
+        Wed, 2 Aug 2023 05:58:12 -0400
+Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4B3123;
+        Wed,  2 Aug 2023 02:58:05 -0700 (PDT)
+Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
+        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
+        by fd01.gateway.ufhost.com (Postfix) with ESMTP id D808A82ED;
+        Wed,  2 Aug 2023 17:57:58 +0800 (CST)
+Received: from EXMBX073.cuchost.com (172.16.6.83) by EXMBX165.cuchost.com
+ (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
+ 2023 17:57:58 +0800
+Received: from [192.168.1.218] (180.164.60.184) by EXMBX073.cuchost.com
+ (172.16.6.83) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
+ 2023 17:57:58 +0800
+Message-ID: <2504080f-86af-161f-5c0d-284e89e33ce1@starfivetech.com>
+Date:   Wed, 2 Aug 2023 17:57:57 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v7 5/6] media: starfive: camss: Add ISP driver
+Content-Language: en-US
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        <bryan.odonoghue@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <changhuang.liang@starfivetech.com>
+References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
+ <20230619112838.19797-6-jack.zhu@starfivetech.com>
+ <20230727204103.GJ25174@pendragon.ideasonboard.com>
+From:   Jack Zhu <jack.zhu@starfivetech.com>
+In-Reply-To: <20230727204103.GJ25174@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [180.164.60.184]
+X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX073.cuchost.com
+ (172.16.6.83)
+X-YovoleRuleAgent: yovoleflag
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        PDS_OTHER_BAD_TLD,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,346 +67,1849 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add BRD_ID(0, Z, 0) = 10 for new board with ALC5682i-VS
+Hi Laurent,
 
-Signed-off-by: Sheng-Liang Pan <sheng-liang.pan@quanta.corp-partner.google.com>
----
+On 2023/7/28 4:41, Laurent Pinchart wrote:
+> Hi Jack,
+> 
+> Thank you for the patch.
+> 
+> On Mon, Jun 19, 2023 at 07:28:37PM +0800, Jack Zhu wrote:
+>> Add ISP driver for StarFive Camera Subsystem.
+>> 
+>> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
+>> ---
+>>  .../media/platform/starfive/camss/Makefile    |   2 +
+>>  .../media/platform/starfive/camss/stf_camss.c |  76 ++-
+>>  .../media/platform/starfive/camss/stf_camss.h |   3 +
+>>  .../media/platform/starfive/camss/stf_isp.c   | 519 ++++++++++++++++++
+>>  .../media/platform/starfive/camss/stf_isp.h   | 479 ++++++++++++++++
+>>  .../platform/starfive/camss/stf_isp_hw_ops.c  | 468 ++++++++++++++++
+>>  6 files changed, 1544 insertions(+), 3 deletions(-)
+>>  create mode 100644 drivers/media/platform/starfive/camss/stf_isp.c
+>>  create mode 100644 drivers/media/platform/starfive/camss/stf_isp.h
+>>  create mode 100644 drivers/media/platform/starfive/camss/stf_isp_hw_ops.c
+>> 
+>> diff --git a/drivers/media/platform/starfive/camss/Makefile b/drivers/media/platform/starfive/camss/Makefile
+>> index eb457917a914..cdf57e8c9546 100644
+>> --- a/drivers/media/platform/starfive/camss/Makefile
+>> +++ b/drivers/media/platform/starfive/camss/Makefile
+>> @@ -5,6 +5,8 @@
+>>  
+>>  starfive-camss-objs += \
+>>  		stf_camss.o \
+>> +		stf_isp.o \
+>> +		stf_isp_hw_ops.o \
+>>  		stf_video.o
+>>  
+>>  obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
+>> diff --git a/drivers/media/platform/starfive/camss/stf_camss.c b/drivers/media/platform/starfive/camss/stf_camss.c
+>> index dc2b5dba7bd4..6f56b45f57db 100644
+>> --- a/drivers/media/platform/starfive/camss/stf_camss.c
+>> +++ b/drivers/media/platform/starfive/camss/stf_camss.c
+>> @@ -115,12 +115,65 @@ static int stfcamss_of_parse_ports(struct stfcamss *stfcamss)
+>>  	return ret;
+>>  }
+>>  
+>> +/*
+>> + * stfcamss_init_subdevices - Initialize subdev structures and resources
+>> + * @stfcamss: STFCAMSS device
+>> + *
+>> + * Return 0 on success or a negative error code on failure
+>> + */
+>> +static int stfcamss_init_subdevices(struct stfcamss *stfcamss)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = stf_isp_subdev_init(stfcamss);
+>> +	if (ret < 0) {
+>> +		dev_err(stfcamss->dev, "Failed to init isp subdev: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static int stfcamss_register_subdevices(struct stfcamss *stfcamss)
+>> +{
+>> +	int ret;
+>> +	struct stf_isp_dev *isp_dev = &stfcamss->isp_dev;
+>> +
+>> +	ret = stf_isp_register(isp_dev, &stfcamss->v4l2_dev);
+>> +	if (ret < 0) {
+>> +		dev_err(stfcamss->dev,
+>> +			"Failed to register stf isp%d entity: %d\n", 0, ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void stfcamss_unregister_subdevices(struct stfcamss *stfcamss)
+>> +{
+>> +	stf_isp_unregister(&stfcamss->isp_dev);
+>> +}
+>> +
+>>  static int stfcamss_subdev_notifier_bound(struct v4l2_async_notifier *async,
+>>  					  struct v4l2_subdev *subdev,
+>>  					  struct v4l2_async_subdev *asd)
+>>  {
+>> +	struct stfcamss *stfcamss =
+>> +		container_of(async, struct stfcamss, notifier);
+>> +	struct stfcamss_async_subdev *csd =
+>> +		container_of(asd, struct stfcamss_async_subdev, asd);
+>> +	enum stf_port_num port = csd->port;
+>> +	struct stf_isp_dev *isp_dev = &stfcamss->isp_dev;
+>>  	struct media_pad *pad[STF_PADS_NUM];
+>> -	unsigned int i, pad_num = 0;
+>> +	unsigned int i, pad_num;
+>> +
+>> +	if (port == STF_PORT_CSI2RX) {
+>> +		pad[0] = &isp_dev->pads[STF_PAD_SINK];
+>> +		pad_num = 1;
+>> +	} else if (port == STF_PORT_DVP) {
+>> +		dev_err(stfcamss->dev, "Not support DVP sensor\n");
+>> +		return -EPERM;
+>> +	}
+>>  
+>>  	for (i = 0; i < pad_num; ++i) {
+>>  		int ret;
+>> @@ -223,12 +276,18 @@ static int stfcamss_probe(struct platform_device *pdev)
+>>  		goto err_cleanup_notifier;
+>>  	}
+>>  
+>> +	ret = stfcamss_init_subdevices(stfcamss);
+>> +	if (ret < 0) {
+>> +		dev_err(dev, "Failed to init subdevice: %d\n", ret);
+>> +		goto err_cleanup_notifier;
+>> +	}
+>> +
+>>  	stfcamss_mc_init(pdev, stfcamss);
+>>  
+>>  	ret = v4l2_device_register(stfcamss->dev, &stfcamss->v4l2_dev);
+>>  	if (ret < 0) {
+>>  		dev_err(dev, "Failed to register V4L2 device: %d\n", ret);
+>> -		goto err_cleanup_notifier;
+>> +		goto err_cleanup_media_device;
+>>  	}
+>>  
+>>  	ret = media_device_register(&stfcamss->media_dev);
+>> @@ -237,6 +296,12 @@ static int stfcamss_probe(struct platform_device *pdev)
+>>  		goto err_unregister_device;
+>>  	}
+>>  
+>> +	ret = stfcamss_register_subdevices(stfcamss);
+>> +	if (ret < 0) {
+>> +		dev_err(dev, "Failed to register subdevice: %d\n", ret);
+>> +		goto err_unregister_media_dev;
+>> +	}
+>> +
+>>  	pm_runtime_enable(dev);
+>>  
+>>  	stfcamss->notifier.ops = &stfcamss_subdev_notifier_ops;
+>> @@ -244,15 +309,19 @@ static int stfcamss_probe(struct platform_device *pdev)
+>>  	if (ret) {
+>>  		dev_err(dev, "Failed to register async subdev nodes: %d\n",
+>>  			ret);
+>> -		goto err_unregister_media_dev;
+>> +		goto err_unregister_subdevs;
+>>  	}
+>>  
+>>  	return 0;
+>>  
+>> +err_unregister_subdevs:
+>> +	stfcamss_unregister_subdevices(stfcamss);
+>>  err_unregister_media_dev:
+>>  	media_device_unregister(&stfcamss->media_dev);
+>>  err_unregister_device:
+>>  	v4l2_device_unregister(&stfcamss->v4l2_dev);
+>> +err_cleanup_media_device:
+>> +	media_device_cleanup(&stfcamss->media_dev);
+>>  err_cleanup_notifier:
+>>  	v4l2_async_nf_cleanup(&stfcamss->notifier);
+>>  	return ret;
+>> @@ -268,6 +337,7 @@ static int stfcamss_remove(struct platform_device *pdev)
+>>  {
+>>  	struct stfcamss *stfcamss = platform_get_drvdata(pdev);
+>>  
+>> +	stfcamss_unregister_subdevices(stfcamss);
+>>  	v4l2_device_unregister(&stfcamss->v4l2_dev);
+>>  	media_device_cleanup(&stfcamss->media_dev);
+>>  	pm_runtime_disable(&pdev->dev);
+>> diff --git a/drivers/media/platform/starfive/camss/stf_camss.h b/drivers/media/platform/starfive/camss/stf_camss.h
+>> index 15c4f34b9054..9482081288fa 100644
+>> --- a/drivers/media/platform/starfive/camss/stf_camss.h
+>> +++ b/drivers/media/platform/starfive/camss/stf_camss.h
+>> @@ -18,6 +18,8 @@
+>>  #include <media/v4l2-async.h>
+>>  #include <media/v4l2-device.h>
+>>  
+>> +#include "stf_isp.h"
+>> +
+>>  #define STF_DVP_NAME "stf_dvp"
+>>  #define STF_CSI_NAME "cdns_csi2rx"
+>>  #define STF_ISP_NAME "stf_isp"
+>> @@ -65,6 +67,7 @@ struct stfcamss {
+>>  	struct media_device media_dev;
+>>  	struct media_pipeline pipe;
+>>  	struct device *dev;
+>> +	struct stf_isp_dev isp_dev;
+>>  	struct v4l2_async_notifier notifier;
+>>  	void __iomem *syscon_base;
+>>  	void __iomem *isp_base;
+>> diff --git a/drivers/media/platform/starfive/camss/stf_isp.c b/drivers/media/platform/starfive/camss/stf_isp.c
+>> new file mode 100644
+>> index 000000000000..933a583b398c
+>> --- /dev/null
+>> +++ b/drivers/media/platform/starfive/camss/stf_isp.c
+>> @@ -0,0 +1,519 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * stf_isp.c
+>> + *
+>> + * StarFive Camera Subsystem - ISP Module
+>> + *
+>> + * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
+>> + */
+>> +#include <linux/firmware.h>
+> 
+> This doesn't seem needed.
+> 
+>> +#include <media/v4l2-event.h>
+>> +
+>> +#include "stf_camss.h"
+>> +
+>> +#define SINK_FORMATS_INDEX    0
+>> +#define UO_FORMATS_INDEX      1
+> 
+> What does "UO" stand for ?
+> 
 
- arch/arm64/boot/dts/qcom/Makefile             |  5 ++
- ...sc7180-trogdor-lazor-limozeen-nots-r10.dts | 39 +++++++++++++
- .../sc7180-trogdor-lazor-limozeen-nots-r9.dts |  4 +-
- .../sc7180-trogdor-lazor-limozeen-r10.dts     | 55 +++++++++++++++++++
- .../qcom/sc7180-trogdor-lazor-limozeen-r9.dts |  4 +-
- .../dts/qcom/sc7180-trogdor-lazor-r10-kb.dts  | 33 +++++++++++
- .../dts/qcom/sc7180-trogdor-lazor-r10-lte.dts | 37 +++++++++++++
- .../dts/qcom/sc7180-trogdor-lazor-r10.dts     | 29 ++++++++++
- .../dts/qcom/sc7180-trogdor-lazor-r9-kb.dts   |  4 +-
- .../dts/qcom/sc7180-trogdor-lazor-r9-lte.dts  |  4 +-
- .../boot/dts/qcom/sc7180-trogdor-lazor-r9.dts |  4 +-
- 11 files changed, 208 insertions(+), 10 deletions(-)
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
+"UO" is Usual Out, just represents output. :-)
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 337abc4ceb17..73e745fb1ff0 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -109,11 +109,16 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r3-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9-kb.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r9-lte.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10-kb.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-r10-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r9.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-r10.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r5.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r9.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-lazor-limozeen-nots-r10.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-lte-parade.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-lte-ti.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pazquel-parade.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
-new file mode 100644
-index 000000000000..63602feceea6
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r10.dts
-@@ -0,0 +1,39 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor Limozeen board device tree source
-+ *
-+ * Copyright 2021 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-trogdor-lte-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor Limozeen without Touchscreen (rev10+, rt5682s)";
-+	compatible = "google,lazor-sku6", "google,lazor-sku18", "qcom,sc7180";
-+};
-+
-+/delete-node/&ap_ts;
-+
-+&panel {
-+	compatible = "edp-panel";
-+};
-+
-+&sdhc_2 {
-+	status = "okay";
-+};
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts
-index cef57c15b70b..e3f1f30a7fc3 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-nots-r9.dts
-@@ -13,8 +13,8 @@
- #include "sc7180-trogdor-lte-sku.dtsi"
- 
- / {
--	model = "Google Lazor Limozeen without Touchscreen (rev9+)";
--	compatible = "google,lazor-sku6", "google,lazor-sku18", "qcom,sc7180";
-+	model = "Google Lazor Limozeen without Touchscreen (rev9)";
-+	compatible = "google,lazor-rev9-sku6", "google,lazor-rev9-sku18", "qcom,sc7180";
- };
- 
- /delete-node/&ap_ts;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
-new file mode 100644
-index 000000000000..d0395a4b5cbb
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r10.dts
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor Limozeen board device tree source
-+ *
-+ * Copyright 2021 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-trogdor-lte-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor Limozeen (rev10+, rt5682s)";
-+	compatible = "google,lazor-sku4", "google,lazor-sku15", "qcom,sc7180";
-+};
-+
-+/delete-node/&ap_ts;
-+
-+&ap_ts_pen_1v8 {
-+	ap_ts: touchscreen@10 {
-+		compatible = "elan,ekth3500";
-+		reg = <0x10>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ts_int_l>, <&ts_reset_l>;
-+
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <9 IRQ_TYPE_LEVEL_LOW>;
-+
-+		vcc33-supply = <&pp3300_ts>;
-+
-+		reset-gpios = <&tlmm 8 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&panel {
-+	compatible = "auo,b116xa01";
-+};
-+
-+&sdhc_2 {
-+	status = "okay";
-+};
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts
-index 2038a82bc0e7..3b6053f3e62b 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-limozeen-r9.dts
-@@ -13,8 +13,8 @@
- #include "sc7180-trogdor-lte-sku.dtsi"
- 
- / {
--	model = "Google Lazor Limozeen (rev9+)";
--	compatible = "google,lazor-sku4", "google,lazor-sku15", "qcom,sc7180";
-+	model = "Google Lazor Limozeen (rev9)";
-+	compatible = "google,lazor-rev9-sku4", "google,lazor-rev9-sku15", "qcom,sc7180";
- };
- 
- /delete-node/&ap_ts;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
-new file mode 100644
-index 000000000000..26e5cfcd00fe
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-kb.dts
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor board device tree source
-+ *
-+ * Copyright 2020 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-lite.dtsi"
-+
-+/ {
-+	model = "Google Lazor (rev10+, rt5682s) with KB Backlight";
-+	compatible = "google,lazor-sku2", "qcom,sc7180";
-+};
-+
-+&keyboard_backlight {
-+	status = "okay";
-+};
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
-new file mode 100644
-index 000000000000..026460ce3893
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10-lte.dts
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor board device tree source
-+ *
-+ * Copyright 2021 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-trogdor-lte-sku.dtsi"
-+
-+/ {
-+	model = "Google Lazor (rev10+, rt5682s) with LTE";
-+	compatible = "google,lazor-sku0", "google,lazor-sku10", "qcom,sc7180";
-+};
-+
-+&ap_sar_sensor_i2c {
-+	status = "okay";
-+};
-+
-+&keyboard_backlight {
-+	status = "okay";
-+};
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
-new file mode 100644
-index 000000000000..40f618da3c7a
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r10.dts
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Lazor board device tree source
-+ *
-+ * Copyright 2021 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include "sc7180.dtsi"
-+#include "sc7180-trogdor-parade-ps8640.dtsi"
-+#include "sc7180-trogdor-lazor.dtsi"
-+#include "sc7180-lite.dtsi"
-+
-+/ {
-+	model = "Google Lazor (rev10+, rt5682s)";
-+	compatible = "google,lazor", "qcom,sc7180";
-+};
-+
-+&alc5682 {
-+	compatible = "realtek,rt5682s";
-+	realtek,dmic1-clk-pin = <2>;
-+	realtek,dmic-clk-rate-hz = <2048000>;
-+};
-+
-+&sound {
-+	compatible = "google,sc7180-trogdor";
-+	model = "sc7180-rt5682s-max98357a-1mic";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts
-index 960f7b7ce094..f74a1985cac6 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-kb.dts
-@@ -13,8 +13,8 @@
- #include "sc7180-lite.dtsi"
- 
- / {
--	model = "Google Lazor (rev9+) with KB Backlight";
--	compatible = "google,lazor-sku2", "qcom,sc7180";
-+	model = "Google Lazor (rev9) with KB Backlight";
-+	compatible = "google,lazor-rev9-sku2", "qcom,sc7180";
- };
- 
- &keyboard_backlight {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts
-index 438ab9cd3389..15dcf95da311 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9-lte.dts
-@@ -13,8 +13,8 @@
- #include "sc7180-trogdor-lte-sku.dtsi"
- 
- / {
--	model = "Google Lazor (rev9+) with LTE";
--	compatible = "google,lazor-sku0", "google,lazor-sku10", "qcom,sc7180";
-+	model = "Google Lazor (rev9) with LTE";
-+	compatible = "google,lazor-rev9-sku0", "google,lazor-rev9-sku10", "qcom,sc7180";
- };
- 
- &ap_sar_sensor_i2c {
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts
-index 56dd222650d3..44f61bc56f81 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r9.dts
-@@ -13,6 +13,6 @@
- #include "sc7180-lite.dtsi"
- 
- / {
--	model = "Google Lazor (rev9+)";
--	compatible = "google,lazor", "qcom,sc7180";
-+	model = "Google Lazor (rev9)";
-+	compatible = "google,lazor-rev9", "qcom,sc7180";
- };
--- 
-2.34.1
+>> +
+>> +static int isp_set_selection(struct v4l2_subdev *sd,
+>> +			     struct v4l2_subdev_state *state,
+>> +			     struct v4l2_subdev_selection *sel);
+>> +
+>> +static const struct isp_format isp_formats_sink[] = {
+>> +	{ MEDIA_BUS_FMT_SRGGB10_1X10, 10 },
+>> +	{ MEDIA_BUS_FMT_SGRBG10_1X10, 10 },
+>> +	{ MEDIA_BUS_FMT_SGBRG10_1X10, 10 },
+>> +	{ MEDIA_BUS_FMT_SBGGR10_1X10, 10 },
+>> +};
+>> +
+>> +static const struct isp_format isp_formats_uo[] = {
+>> +	{ MEDIA_BUS_FMT_Y12_1X12, 8 },
+> 
+> Y12 is a greyscale format, I don't think that's what you need here.
+> 
+>> +};
+>> +
+>> +static const struct isp_format_table isp_formats_st7110[] = {
+>> +	{ isp_formats_sink, ARRAY_SIZE(isp_formats_sink) },
+>> +	{ isp_formats_uo, ARRAY_SIZE(isp_formats_uo) },
+>> +};
+>> +
+>> +int stf_isp_subdev_init(struct stfcamss *stfcamss)
+> 
+> This function doesn't initialize the subdev, I'd call it stf_isp_init().
+> I would also create a stf_isp_cleanup() function to be consistent, and
+> move the mutex_destroy() call there.
+> 
+>> +{
+>> +	struct stf_isp_dev *isp_dev = &stfcamss->isp_dev;
+>> +
+>> +	isp_dev->stfcamss = stfcamss;
+>> +	isp_dev->formats = isp_formats_st7110;
+>> +	isp_dev->nformats = ARRAY_SIZE(isp_formats_st7110);
+>> +
+>> +	mutex_init(&isp_dev->stream_lock);
+>> +	return 0;
+>> +}
+>> +
+>> +static struct v4l2_mbus_framefmt *
+>> +__isp_get_format(struct stf_isp_dev *isp_dev,
+>> +		 struct v4l2_subdev_state *state,
+>> +		 unsigned int pad,
+>> +		 enum v4l2_subdev_format_whence which)
+>> +{
+>> +	if (which == V4L2_SUBDEV_FORMAT_TRY)
+>> +		return v4l2_subdev_get_try_format(&isp_dev->subdev, state, pad);
+>> +
+>> +	return &isp_dev->fmt[pad];
+> 
+> Use the subdev active state API to store the active format on subdev
+> pads, it will simplify the driver. See commit a2514b9a634a ("media: i2c:
+> imx290: Use V4L2 subdev active state") for an example of a subdev driver
+> being converted to that API, it should help understanding how to use it.
+> You will be able to drop the stf_isp_dev fmt and rect fields. For the
+> bpp value stored in the rect structure, replace it with a const struct
+> isp_format pointer in stf_isp_dev that you set in .set_fmt() (as well as
+> initialization time) to the active format information.
+> 
+>> +}
+>> +
+>> +static int isp_set_stream(struct v4l2_subdev *sd, int enable)
+>> +{
+>> +	struct stf_isp_dev *isp_dev = v4l2_get_subdevdata(sd);
+>> +	int ret = 0;
+>> +	struct v4l2_mbus_framefmt *fmt;
+>> +	struct v4l2_event src_ch = { 0 };
+>> +
+>> +	fmt = __isp_get_format(isp_dev, NULL, STF_ISP_PAD_SINK,
+>> +			       V4L2_SUBDEV_FORMAT_ACTIVE);
+>> +	mutex_lock(&isp_dev->stream_lock);
+>> +	if (enable) {
+>> +		if (isp_dev->stream_count == 0) {
+>> +			stf_isp_clk_enable(isp_dev);
+>> +			stf_isp_reset(isp_dev);
+>> +			stf_isp_init_cfg(isp_dev);
+>> +			stf_isp_settings(isp_dev, isp_dev->rect, fmt->code);
+>> +			stf_isp_stream_set(isp_dev);
+>> +		}
+>> +		isp_dev->stream_count++;
+> 
+> The subdev .s_stream() operation isn't supposed to be called multiple
+> times. If you need to count how many video nodes have started streaming,
+> that should be handled in the vb2 queue .start_streaming() and
+> .stop_streaming() operations.
+> 
+>> +	} else {
+>> +		if (isp_dev->stream_count == 0)
+>> +			goto exit;
+>> +
+>> +		if (isp_dev->stream_count == 1)
+>> +			stf_isp_clk_disable(isp_dev);
+>> +
+>> +		isp_dev->stream_count--;
+>> +	}
+>> +	src_ch.type = V4L2_EVENT_SOURCE_CHANGE,
+> 
+> ; instead of , at the end of the line. Same for the next line.
+> 
+>> +	src_ch.u.src_change.changes = isp_dev->stream_count,
+>> +
+>> +	v4l2_subdev_notify_event(sd, &src_ch);
+> 
+> This doesn't seem right. V4L2_EVENT_SOURCE_CHANGE is meant to report
+> changes to the source format. I would drop support for events
+> completely from this patch, it doesn't seem to be needed.
+> 
+>> +exit:
+>> +	mutex_unlock(&isp_dev->stream_lock);
+>> +
+>> +	return ret;
+> 
+> ret is never set to a value other than 9, return 0 and drop the
+> variable.
+> 
+>> +}
+>> +
+>> +static void isp_try_format(struct stf_isp_dev *isp_dev,
+>> +			   struct v4l2_subdev_state *state,
+>> +			   unsigned int pad,
+>> +			   struct v4l2_mbus_framefmt *fmt,
+>> +			   enum v4l2_subdev_format_whence which)
+>> +{
+>> +	const struct isp_format_table *formats;
+>> +	struct stf_isp_crop *rect;
+>> +	unsigned int i;
+>> +
+>> +	if (pad == STF_ISP_PAD_SINK) {
+>> +		/* Set format on sink pad */
+>> +		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
+>> +		rect = &isp_dev->rect[SINK_FORMATS_INDEX];
+>> +	} else if (pad == STF_ISP_PAD_SRC) {
+>> +		formats = &isp_dev->formats[UO_FORMATS_INDEX];
+>> +		rect = &isp_dev->rect[UO_FORMATS_INDEX];
+>> +	}
+>> +
+>> +	fmt->width = clamp_t(u32, fmt->width, STFCAMSS_FRAME_MIN_WIDTH,
+>> +			     STFCAMSS_FRAME_MAX_WIDTH);
+>> +	fmt->height = clamp_t(u32, fmt->height, STFCAMSS_FRAME_MIN_HEIGHT,
+>> +			      STFCAMSS_FRAME_MAX_HEIGHT);
+>> +	fmt->height &= ~0x1;
+>> +	fmt->field = V4L2_FIELD_NONE;
+>> +	fmt->colorspace = V4L2_COLORSPACE_SRGB;
+>> +	fmt->flags = 0;
+>> +
+>> +	for (i = 0; i < formats->nfmts; i++) {
+>> +		if (fmt->code == formats->fmts[i].code)
+>> +			break;
+>> +	}
+>> +
+>> +	if (i >= formats->nfmts) {
+>> +		fmt->code = formats->fmts[0].code;
+>> +		rect->bpp = formats->fmts[0].bpp;
+>> +	} else {
+>> +		rect->bpp = formats->fmts[i].bpp;
+>> +	}
+>> +}
+>> +
+>> +static int isp_enum_mbus_code(struct v4l2_subdev *sd,
+>> +			      struct v4l2_subdev_state *state,
+>> +			      struct v4l2_subdev_mbus_code_enum *code)
+>> +{
+>> +	struct stf_isp_dev *isp_dev = v4l2_get_subdevdata(sd);
+>> +	const struct isp_format_table *formats;
+>> +
+>> +	if (code->index >= isp_dev->nformats)
+> 
+> That doesn't seem right, isp_dev->nformats isn't the number of formats
+> supported on the ISP, but the number of format types (sink and uo).
+> 
+>> +		return -EINVAL;
+> 
+> Add a blank line here, it makes code easier to read.
+> 
+>> +	if (code->pad == STF_ISP_PAD_SINK) {
+>> +		formats = &isp_dev->formats[SINK_FORMATS_INDEX];
+>> +		code->code = formats->fmts[code->index].code;
+>> +	} else {
+>> +		struct v4l2_mbus_framefmt *sink_fmt;
+>> +
+>> +		sink_fmt = __isp_get_format(isp_dev, state, STF_ISP_PAD_SINK,
+>> +					    code->which);
+>> +
+>> +		code->code = sink_fmt->code;
+> 
+> This doesn't seem right, you need to enumerate the ISP output media bus
+> codes here, and the function returns the sink media bus code instead.
+> 
+>> +		if (!code->code)
+>> +			return -EINVAL;
+>> +	}
+>> +	code->flags = 0;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int isp_enum_frame_size(struct v4l2_subdev *sd,
+>> +			       struct v4l2_subdev_state *state,
+>> +			       struct v4l2_subdev_frame_size_enum *fse)
+>> +{
+>> +	struct stf_isp_dev *isp_dev = v4l2_get_subdevdata(sd);
+>> +	struct v4l2_mbus_framefmt format;
+>> +
+>> +	if (fse->index != 0)
+>> +		return -EINVAL;
+>> +
+>> +	format.code = fse->code;
+>> +	format.width = 1;
+>> +	format.height = 1;
+>> +	isp_try_format(isp_dev, state, fse->pad, &format, fse->which);
+>> +	fse->min_width = format.width;
+>> +	fse->min_height = format.height;
+>> +
+>> +	if (format.code != fse->code)
+>> +		return -EINVAL;
+>> +
+>> +	format.code = fse->code;
+>> +	format.width = -1;
+>> +	format.height = -1;
+>> +	isp_try_format(isp_dev, state, fse->pad, &format, fse->which);
+>> +	fse->max_width = format.width;
+>> +	fse->max_height = format.height;
+> 
+> This seems unnecessarily complicated, you can just set the min and max
+> width and height to STFCAMSS_FRAME_MIN_WIDTH, STFCAMSS_FRAME_MAX_WIDTH,
+> STFCAMSS_FRAME_MIN_HEIGHT and STFCAMSS_FRAME_MAX_HEIGHT here.
+> 
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int isp_get_format(struct v4l2_subdev *sd,
+>> +			  struct v4l2_subdev_state *state,
+>> +			  struct v4l2_subdev_format *fmt)
+>> +{
+>> +	struct stf_isp_dev *isp_dev = v4l2_get_subdevdata(sd);
+>> +	struct v4l2_mbus_framefmt *format;
+>> +
+>> +	format = __isp_get_format(isp_dev, state, fmt->pad, fmt->which);
+>> +	if (!format)
+>> +		return -EINVAL;
+>> +
+>> +	fmt->format = *format;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int isp_set_format(struct v4l2_subdev *sd,
+>> +			  struct v4l2_subdev_state *state,
+>> +			  struct v4l2_subdev_format *fmt)
+>> +{
+>> +	struct stf_isp_dev *isp_dev = v4l2_get_subdevdata(sd);
+>> +	struct v4l2_mbus_framefmt *format;
+>> +
+>> +	format = __isp_get_format(isp_dev, state, fmt->pad, fmt->which);
+>> +	if (!format)
+>> +		return -EINVAL;
+>> +
+>> +	mutex_lock(&isp_dev->stream_lock);
+>> +
+>> +	isp_try_format(isp_dev, state, fmt->pad, &fmt->format, fmt->which);
+>> +	*format = fmt->format;
+>> +
+>> +	mutex_unlock(&isp_dev->stream_lock);
+>> +
+>> +	/* Propagate to in crop */
+>> +	if (fmt->pad == STF_ISP_PAD_SINK) {
+>> +		struct v4l2_subdev_selection sel = { 0 };
+>> +		int ret;
+>> +
+>> +		/* Reset sink pad compose selection */
+>> +		sel.which = fmt->which;
+>> +		sel.pad = STF_ISP_PAD_SINK;
+>> +		sel.target = V4L2_SEL_TGT_CROP;
+>> +		sel.r.width = fmt->format.width;
+>> +		sel.r.height = fmt->format.height;
+>> +		ret = isp_set_selection(sd, state, &sel);
+>> +		if (ret < 0)
+>> +			return ret;
+> 
+> You're setting the which, pad and target values manually, so they're
+> guaranteed to be correct. isp_set_selection() will thus never return an
+> error. You can drop the error check.
+> 
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static struct v4l2_rect *
+>> +__isp_get_crop(struct stf_isp_dev *isp_dev,
+>> +	       struct v4l2_subdev_state *state,
+>> +	       unsigned int pad,
+>> +	       enum v4l2_subdev_format_whence which)
+>> +{
+>> +	if (which == V4L2_SUBDEV_FORMAT_TRY)
+>> +		return v4l2_subdev_get_try_crop(&isp_dev->subdev, state,
+>> +						STF_ISP_PAD_SINK);
+>> +
+>> +	return &isp_dev->rect[pad].rect;
+>> +}
+>> +
+>> +static void isp_try_crop(struct stf_isp_dev *isp_dev,
+>> +			 struct v4l2_subdev_state *state,
+>> +			 struct v4l2_rect *rect,
+>> +			 enum v4l2_subdev_format_whence which)
+>> +{
+>> +	struct v4l2_mbus_framefmt *fmt;
+>> +
+>> +	fmt = __isp_get_format(isp_dev, state, STF_ISP_PAD_SINK, which);
+>> +
+>> +	if (rect->width > fmt->width)
+>> +		rect->width = fmt->width;
+>> +
+>> +	if (rect->width + rect->left > fmt->width)
+>> +		rect->left = fmt->width - rect->width;
+>> +
+>> +	if (rect->height > fmt->height)
+>> +		rect->height = fmt->height;
+>> +
+>> +	if (rect->height + rect->top > fmt->height)
+>> +		rect->top = fmt->height - rect->height;
+>> +
+>> +	if (rect->width < STFCAMSS_FRAME_MIN_WIDTH) {
+>> +		rect->left = 0;
+>> +		rect->width = STFCAMSS_FRAME_MAX_WIDTH;
+>> +	}
+>> +
+>> +	if (rect->height < STFCAMSS_FRAME_MIN_HEIGHT) {
+>> +		rect->top = 0;
+>> +		rect->height = STFCAMSS_FRAME_MAX_HEIGHT;
+>> +	}
+>> +	rect->height &= ~0x1;
+> 
+> The v4l2_rect_set_min_size() and v4l2_rect_map_inside() functions can
+> simplify this code.
+> 
+>> +}
+>> +
+>> +static int isp_get_selection(struct v4l2_subdev *sd,
+>> +			     struct v4l2_subdev_state *state,
+>> +			     struct v4l2_subdev_selection *sel)
+>> +{
+>> +	struct stf_isp_dev *isp_dev = v4l2_get_subdevdata(sd);
+>> +	struct v4l2_subdev_format fmt = { 0 };
+>> +	struct v4l2_rect *rect;
+>> +	int ret;
+>> +
+>> +	switch (sel->target) {
+>> +	case V4L2_SEL_TGT_CROP_BOUNDS:
+>> +		if (sel->pad == STF_ISP_PAD_SINK) {
+>> +			fmt.pad = sel->pad;
+>> +			fmt.which = sel->which;
+>> +			ret = isp_get_format(sd, state, &fmt);
+>> +			if (ret < 0)
+>> +				return ret;
+>> +
+>> +			sel->r.left = 0;
+>> +			sel->r.top = 0;
+>> +			sel->r.width = fmt.format.width;
+>> +			sel->r.height = fmt.format.height;
+>> +		} else if (sel->pad == STF_ISP_PAD_SRC) {
+>> +			rect = __isp_get_crop(isp_dev, state,
+>> +					      sel->pad, sel->which);
+>> +			sel->r = *rect;
+>> +		}
+>> +		break;
+>> +
+>> +	case V4L2_SEL_TGT_CROP:
+>> +		rect = __isp_get_crop(isp_dev, state, sel->pad, sel->which);
+>> +		if (!rect)
+>> +			return -EINVAL;
+>> +
+>> +		sel->r = *rect;
+>> +		break;
+>> +
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int isp_set_selection(struct v4l2_subdev *sd,
+>> +			     struct v4l2_subdev_state *state,
+>> +			     struct v4l2_subdev_selection *sel)
+>> +{
+>> +	struct stf_isp_dev *isp_dev = v4l2_get_subdevdata(sd);
+>> +	struct v4l2_rect *rect;
+>> +	int ret = 0;
+>> +
+> 
+> 	if (sel->target != V4L2_SEL_TGT_CROP)
+> 		return -EINVAL;
+> 
+>> +	if (sel->target == V4L2_SEL_TGT_CROP &&
+>> +	    sel->pad == STF_ISP_PAD_SINK) {
+>> +		struct v4l2_subdev_selection crop = { 0 };
+>> +
+>> +		rect = __isp_get_crop(isp_dev, state, sel->pad, sel->which);
+>> +		if (!rect)
+>> +			return -EINVAL;
+>> +
+>> +		mutex_lock(&isp_dev->stream_lock);
+>> +		isp_try_crop(isp_dev, state, &sel->r, sel->which);
+>> +		*rect = sel->r;
+>> +		mutex_unlock(&isp_dev->stream_lock);
+>> +
+>> +		/* Reset source crop selection */
+>> +		crop.which = sel->which;
+>> +		crop.pad = STF_ISP_PAD_SRC;
+>> +		crop.target = V4L2_SEL_TGT_CROP;
+>> +		crop.r = *rect;
+>> +		ret = isp_set_selection(sd, state, &crop);
+>> +	} else if (sel->target == V4L2_SEL_TGT_CROP &&
+>> +		   sel->pad == STF_ISP_PAD_SRC) {
+>> +		struct v4l2_subdev_format fmt = { 0 };
+>> +
+>> +		rect = __isp_get_crop(isp_dev, state, sel->pad, sel->which);
+>> +		if (!rect)
+>> +			return -EINVAL;
+>> +
+>> +		mutex_lock(&isp_dev->stream_lock);
+>> +		isp_try_crop(isp_dev, state, &sel->r, sel->which);
+>> +		*rect = sel->r;
+>> +		mutex_unlock(&isp_dev->stream_lock);
+>> +
+>> +		/* Reset source pad format width and height */
+>> +		fmt.which = sel->which;
+>> +		fmt.pad = STF_ISP_PAD_SRC;
+>> +		fmt.format.width = rect->width;
+>> +		fmt.format.height = rect->height;
+>> +		ret = isp_set_format(sd, state, &fmt);
+>> +		if (ret < 0)
+>> +			return ret;
+> 
+> You can drop the error check here too.
+> 
+>> +	}
+>> +
+>> +	dev_dbg(isp_dev->stfcamss->dev, "pad: %d sel(%d,%d)/%dx%d\n",
+>> +		sel->pad, sel->r.left, sel->r.top, sel->r.width, sel->r.height);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int isp_init_formats(struct v4l2_subdev *sd,
+>> +			    struct v4l2_subdev_fh *fh)
+>> +{
+>> +	struct v4l2_subdev_format format = {
+>> +		.pad = STF_ISP_PAD_SINK,
+>> +		.which =
+>> +			fh ? V4L2_SUBDEV_FORMAT_TRY : V4L2_SUBDEV_FORMAT_ACTIVE,
+>> +		.format = {
+>> +			.code = MEDIA_BUS_FMT_RGB565_2X8_LE,
+> 
+> Pick a format that the driver supports.
+> 
+>> +			.width = 1920,
+>> +			.height = 1080
+>> +		}
+>> +	};
+>> +
+>> +	return isp_set_format(sd, fh ? fh->state : NULL, &format);
+>> +}
+>> +
+>> +static int isp_link_setup(struct media_entity *entity,
+>> +			  const struct media_pad *local,
+>> +			  const struct media_pad *remote, u32 flags)
+>> +{
+>> +	if (flags & MEDIA_LNK_FL_ENABLED)
+>> +		if (media_pad_remote_pad_first(local))
+>> +			return -EBUSY;
+>> +	return 0;
+> 
+> Is this check really needed ?
+> 
+>> +}
+>> +
+>> +static int stf_isp_subscribe_event(struct v4l2_subdev *sd,
+>> +				   struct v4l2_fh *fh,
+>> +				   struct v4l2_event_subscription *sub)
+>> +{
+>> +	switch (sub->type) {
+>> +	case V4L2_EVENT_SOURCE_CHANGE:
+>> +		return v4l2_src_change_event_subdev_subscribe(sd, fh, sub);
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
+>> +}
+>> +
+>> +static const struct v4l2_subdev_core_ops isp_core_ops = {
+>> +	.subscribe_event = stf_isp_subscribe_event,
+>> +	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+>> +};
+> 
+> Drop events support.
+> 
+>> +
+>> +static const struct v4l2_subdev_video_ops isp_video_ops = {
+>> +	.s_stream = isp_set_stream,
+>> +};
+>> +
+>> +static const struct v4l2_subdev_pad_ops isp_pad_ops = {
+>> +	.enum_mbus_code = isp_enum_mbus_code,
+>> +	.enum_frame_size = isp_enum_frame_size,
+>> +	.get_fmt = isp_get_format,
+>> +	.set_fmt = isp_set_format,
+>> +	.get_selection = isp_get_selection,
+>> +	.set_selection = isp_set_selection,
+>> +};
+>> +
+>> +static const struct v4l2_subdev_ops isp_v4l2_ops = {
+>> +	.core = &isp_core_ops,
+>> +	.video = &isp_video_ops,
+>> +	.pad = &isp_pad_ops,
+>> +};
+>> +
+>> +static const struct v4l2_subdev_internal_ops isp_v4l2_internal_ops = {
+>> +	.open = isp_init_formats,
+>> +};
+> 
+> Replace this with the .init_cfg() pad operation.
+> 
+>> +
+>> +static const struct media_entity_operations isp_media_ops = {
+>> +	.link_setup = isp_link_setup,
+>> +	.link_validate = v4l2_subdev_link_validate,
+>> +};
+>> +
+>> +int stf_isp_register(struct stf_isp_dev *isp_dev, struct v4l2_device *v4l2_dev)
+>> +{
+>> +	struct v4l2_subdev *sd = &isp_dev->subdev;
+>> +	struct media_pad *pads = isp_dev->pads;
+>> +	int ret;
+>> +
+>> +	v4l2_subdev_init(sd, &isp_v4l2_ops);
+>> +	sd->internal_ops = &isp_v4l2_internal_ops;
+>> +	sd->flags |= V4L2_SUBDEV_FL_HAS_DEVNODE | V4L2_SUBDEV_FL_HAS_EVENTS;
+> 
+> Drop events here too.
+> 
+>> +	snprintf(sd->name, ARRAY_SIZE(sd->name), "%s%d", STF_ISP_NAME, 0);
+>> +	v4l2_set_subdevdata(sd, isp_dev);
+>> +
+>> +	ret = isp_init_formats(sd, NULL);
+>> +	if (ret < 0) {
+>> +		dev_err(isp_dev->stfcamss->dev, "Failed to init format: %d\n",
+>> +			ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	pads[STF_ISP_PAD_SINK].flags = MEDIA_PAD_FL_SINK;
+>> +	pads[STF_ISP_PAD_SRC].flags = MEDIA_PAD_FL_SOURCE;
+>> +
+>> +	sd->entity.function = MEDIA_ENT_F_PROC_VIDEO_PIXEL_FORMATTER;
+> 
+> MEDIA_ENT_F_PROC_VIDEO_ISP seems a better match.
+> 
+>> +	sd->entity.ops = &isp_media_ops;
+>> +	ret = media_entity_pads_init(&sd->entity, STF_ISP_PAD_MAX, pads);
+>> +	if (ret < 0) {
+>> +		dev_err(isp_dev->stfcamss->dev,
+>> +			"Failed to init media entity: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = v4l2_device_register_subdev(v4l2_dev, sd);
+>> +	if (ret < 0) {
+>> +		dev_err(isp_dev->stfcamss->dev,
+>> +			"Failed to register subdev: %d\n", ret);
+>> +		goto err_sreg;
+>> +	}
+>> +
+>> +	return 0;
+>> +
+>> +err_sreg:
+>> +	media_entity_cleanup(&sd->entity);
+>> +	return ret;
+>> +}
+>> +
+>> +int stf_isp_unregister(struct stf_isp_dev *isp_dev)
+>> +{
+>> +	v4l2_device_unregister_subdev(&isp_dev->subdev);
+>> +	media_entity_cleanup(&isp_dev->subdev.entity);
+>> +	mutex_destroy(&isp_dev->stream_lock);
+>> +	return 0;
+>> +}
+>> diff --git a/drivers/media/platform/starfive/camss/stf_isp.h b/drivers/media/platform/starfive/camss/stf_isp.h
+>> new file mode 100644
+>> index 000000000000..1e5c98482350
+>> --- /dev/null
+>> +++ b/drivers/media/platform/starfive/camss/stf_isp.h
+>> @@ -0,0 +1,479 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + * stf_isp.h
+>> + *
+>> + * StarFive Camera Subsystem - ISP Module
+>> + *
+>> + * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
+>> + */
+>> +
+>> +#ifndef STF_ISP_H
+>> +#define STF_ISP_H
+>> +
+>> +#include <media/v4l2-subdev.h>
+>> +
+>> +#include "stf_video.h"
+>> +
+>> +#define ISP_RAW_DATA_BITS       12
+>> +#define SCALER_RATIO_MAX        1
+>> +#define STF_ISP_REG_OFFSET_MAX  0x0fff
+>> +#define STF_ISP_REG_DELAY_MAX   100
+>> +
+>> +/* isp registers */
+>> +#define ISP_REG_CSI_INPUT_EN_AND_STATUS	0x000
+>> +#define CSI_SCD_ERR	BIT(6)
+>> +#define CSI_ITU656_ERR	BIT(4)
+>> +#define CSI_ITU656_F	BIT(3)
+>> +#define CSI_SCD_DONE	BIT(2)
+>> +#define CSI_BUSY_S	BIT(1)
+>> +#define CSI_EN_S	BIT(0)
+> 
+> Could you align the macros values consistently in the whole file ? It
+> would be easier to read. For the lines above, that would be
+> 
+> #define ISP_RAW_DATA_BITS       		12
+> #define SCALER_RATIO_MAX        		1
+> #define STF_ISP_REG_OFFSET_MAX  		0x0fff
+> #define STF_ISP_REG_DELAY_MAX   		100
+> 
+> /* isp registers */
+> #define ISP_REG_CSI_INPUT_EN_AND_STATUS		0x000
+> #define CSI_SCD_ERR				BIT(6)
+> #define CSI_ITU656_ERR				BIT(4)
+> #define CSI_ITU656_F				BIT(3)
+> #define CSI_SCD_DONE				BIT(2)
+> #define CSI_BUSY_S				BIT(1)
+> #define CSI_EN_S				BIT(0)
+> 
+> (possibly with additional indentation if some of the lines below require
+> that)
+> 
+> You could also move the register definitions to a stf_isp_regs.h header
+> if desired, as they're only needed by stf_isp_hw_ops.c, not by the other
+> files that include stf_isp.h. up to you.
+> 
+>> +
+>> +#define ISP_REG_CSIINTS	0x008
+>> +#define CSI_INTS(n)	((n) << 16)
+>> +#define CSI_SHA_M(n)	((n) << 0)
+>> +#define CSI_INTS_MASK	GENMASK(17, 16)
+>> +
+>> +#define ISP_REG_CSI_MODULE_CFG	0x010
+>> +#define CSI_DUMP_EN	BIT(19)
+>> +#define CSI_VS_EN	BIT(18)
+>> +#define CSI_SC_EN	BIT(17)
+>> +#define CSI_OBA_EN	BIT(16)
+>> +#define CSI_AWB_EN	BIT(7)
+>> +#define CSI_LCCF_EN	BIT(6)
+>> +#define CSI_OECFHM_EN	BIT(5)
+>> +#define CSI_OECF_EN	BIT(4)
+>> +#define CSI_LCBQ_EN	BIT(3)
+>> +#define CSI_OBC_EN	BIT(2)
+>> +#define CSI_DEC_EN	BIT(1)
+>> +#define CSI_DC_EN	BIT(0)
+>> +
+>> +#define ISP_REG_SENSOR	0x014
+>> +#define DVP_SYNC_POL(n)	((n) << 2)
+>> +#define ITU656_EN(n)	((n) << 1)
+>> +#define IMAGER_SEL(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_RAW_FORMAT_CFG	0x018
+>> +#define SMY13(n)	((n) << 14)
+>> +#define SMY12(n)	((n) << 12)
+>> +#define SMY11(n)	((n) << 10)
+>> +#define SMY10(n)	((n) << 8)
+>> +#define SMY3(n)	((n) << 6)
+>> +#define SMY2(n)	((n) << 4)
+>> +#define SMY1(n)	((n) << 2)
+>> +#define SMY0(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_PIC_CAPTURE_START_CFG	0x01c
+>> +#define VSTART_CAP(n)	((n) << 16)
+>> +#define HSTART_CAP(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_PIC_CAPTURE_END_CFG	0x020
+>> +#define VEND_CAP(n)	((n) << 16)
+>> +#define HEND_CAP(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_DUMP_CFG_0	0x024
+>> +#define ISP_REG_DUMP_CFG_1	0x028
+>> +#define DUMP_ID(n)	((n) << 24)
+>> +#define DUMP_SHT(n)	((n) << 20)
+>> +#define DUMP_BURST_LEN(n)	((n) << 16)
+>> +#define DUMP_SD(n)	((n) << 0)
+>> +#define DUMP_BURST_LEN_MASK	GENMASK(17, 16)
+>> +#define DUMP_SD_MASK	GENMASK(15, 0)
+>> +
+>> +#define ISP_REG_DEC_CFG	0x030
+>> +#define DEC_V_KEEP(n)	((n) << 24)
+>> +#define DEC_V_PERIOD(n)	((n) << 16)
+>> +#define DEC_H_KEEP(n)	((n) << 8)
+>> +#define DEC_H_PERIOD(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_OBC_CFG	0x034
+>> +#define OBC_W_H(y)	((y) << 4)
+>> +#define OBC_W_W(x)	((x) << 0)
+>> +
+>> +#define ISP_REG_DC_CFG_1	0x044
+>> +#define DC_AXI_ID(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_LCCF_CFG_0	0x050
+>> +#define Y_DISTANCE(y)	((y) << 16)
+>> +#define X_DISTANCE(x)	((x) << 0)
+>> +
+>> +#define ISP_REG_LCCF_CFG_1	0x058
+>> +#define LCCF_MAX_DIS(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_LCBQ_CFG_0	0x074
+>> +#define H_LCBQ(y)	((y) << 12)
+>> +#define W_LCBQ(x)	((x) << 8)
+>> +
+>> +#define ISP_REG_LCBQ_CFG_1	0x07c
+>> +#define Y_COOR(y)	((y) << 16)
+>> +#define X_COOR(x)	((x) << 0)
+>> +
+>> +#define ISP_REG_LCCF_CFG_2	0x0e0
+>> +#define ISP_REG_LCCF_CFG_3	0x0e4
+>> +#define ISP_REG_LCCF_CFG_4	0x0e8
+>> +#define ISP_REG_LCCF_CFG_5	0x0ec
+>> +#define LCCF_F2_PAR(n)	((n) << 16)
+>> +#define LCCF_F1_PAR(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_OECF_X0_CFG0	0x100
+>> +#define ISP_REG_OECF_X0_CFG1	0x104
+>> +#define ISP_REG_OECF_X0_CFG2	0x108
+>> +#define ISP_REG_OECF_X0_CFG3	0x10c
+>> +#define ISP_REG_OECF_X0_CFG4	0x110
+>> +#define ISP_REG_OECF_X0_CFG5	0x114
+>> +#define ISP_REG_OECF_X0_CFG6	0x118
+>> +#define ISP_REG_OECF_X0_CFG7	0x11c
+>> +
+>> +#define ISP_REG_OECF_Y3_CFG0	0x1e0
+>> +#define ISP_REG_OECF_Y3_CFG1	0x1e4
+>> +#define ISP_REG_OECF_Y3_CFG2	0x1e8
+>> +#define ISP_REG_OECF_Y3_CFG3	0x1ec
+>> +#define ISP_REG_OECF_Y3_CFG4	0x1f0
+>> +#define ISP_REG_OECF_Y3_CFG5	0x1f4
+>> +#define ISP_REG_OECF_Y3_CFG6	0x1f8
+>> +#define ISP_REG_OECF_Y3_CFG7	0x1fc
+>> +
+>> +#define ISP_REG_OECF_S0_CFG0	0x200
+>> +#define ISP_REG_OECF_S3_CFG7	0x27c
+>> +#define OCEF_PAR_H(n)	((n) << 16)
+>> +#define OCEF_PAR_L(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_AWB_X0_CFG_0	0x280
+>> +#define ISP_REG_AWB_X0_CFG_1	0x284
+>> +#define ISP_REG_AWB_X1_CFG_0	0x288
+>> +#define ISP_REG_AWB_X1_CFG_1	0x28c
+>> +#define ISP_REG_AWB_X2_CFG_0	0x290
+>> +#define ISP_REG_AWB_X2_CFG_1	0x294
+>> +#define ISP_REG_AWB_X3_CFG_0	0x298
+>> +#define ISP_REG_AWB_X3_CFG_1	0x29c
+>> +#define AWB_X_SYMBOL_H(n)	((n) << 16)
+>> +#define AWB_X_SYMBOL_L(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_AWB_Y0_CFG_0	0x2a0
+>> +#define ISP_REG_AWB_Y0_CFG_1	0x2a4
+>> +#define ISP_REG_AWB_Y1_CFG_0	0x2a8
+>> +#define ISP_REG_AWB_Y1_CFG_1	0x2ac
+>> +#define ISP_REG_AWB_Y2_CFG_0	0x2b0
+>> +#define ISP_REG_AWB_Y2_CFG_1	0x2b4
+>> +#define ISP_REG_AWB_Y3_CFG_0	0x2b8
+>> +#define ISP_REG_AWB_Y3_CFG_1	0x2bc
+>> +#define AWB_Y_SYMBOL_H(n)	((n) << 16)
+>> +#define AWB_Y_SYMBOL_L(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_AWB_S0_CFG_0	0x2c0
+>> +#define ISP_REG_AWB_S0_CFG_1	0x2c4
+>> +#define ISP_REG_AWB_S1_CFG_0	0x2c8
+>> +#define ISP_REG_AWB_S1_CFG_1	0x2cc
+>> +#define ISP_REG_AWB_S2_CFG_0	0x2d0
+>> +#define ISP_REG_AWB_S2_CFG_1	0x2d4
+>> +#define ISP_REG_AWB_S3_CFG_0	0x2d8
+>> +#define ISP_REG_AWB_S3_CFG_1	0x2dc
+>> +#define AWB_S_SYMBOL_H(n)	((n) << 16)
+>> +#define AWB_S_SYMBOL_L(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_OBCG_CFG_0	0x2e0
+>> +#define ISP_REG_OBCG_CFG_1	0x2e4
+>> +#define ISP_REG_OBCG_CFG_2	0x2e8
+>> +#define ISP_REG_OBCG_CFG_3	0x2ec
+>> +#define ISP_REG_OBCO_CFG_0	0x2f0
+>> +#define ISP_REG_OBCO_CFG_1	0x2f4
+>> +#define ISP_REG_OBCO_CFG_2	0x2f8
+>> +#define ISP_REG_OBCO_CFG_3	0x2fc
+>> +#define GAIN_D_POINT(x)	((x) << 24)
+>> +#define GAIN_C_POINT(x)	((x) << 16)
+>> +#define GAIN_B_POINT(x)	((x) << 8)
+>> +#define GAIN_A_POINT(x)	((x) << 0)
+>> +#define OFFSET_D_POINT(x)	((x) << 24)
+>> +#define OFFSET_C_POINT(x)	((x) << 16)
+>> +#define OFFSET_B_POINT(x)	((x) << 8)
+>> +#define OFFSET_A_POINT(x)	((x) << 0)
+>> +
+>> +#define ISP_REG_ISP_CTRL_0	0xa00
+>> +#define ISPC_SCFEINT	BIT(27)
+>> +#define ISPC_VSFWINT	BIT(26)
+>> +#define ISPC_VSINT	BIT(25)
+>> +#define ISPC_INTS	BIT(24)
+>> +#define ISPC_ENUO	BIT(20)
+>> +#define ISPC_ENLS	BIT(17)
+>> +#define ISPC_ENSS1	BIT(12)
+>> +#define ISPC_ENSS0	BIT(11)
+>> +#define ISPC_RST	BIT(1)
+>> +#define ISPC_EN	BIT(0)
+>> +#define ISPC_RST_MASK	BIT(1)
+>> +
+>> +#define ISP_REG_ISP_CTRL_1	0xa08
+>> +#define CTRL_SAT(n)	((n) << 28)
+>> +#define CTRL_DBC	BIT(22)
+>> +#define CTRL_CTC	BIT(21)
+>> +#define CTRL_YHIST	BIT(20)
+>> +#define CTRL_YCURVE	BIT(19)
+>> +#define CTRL_CTM	BIT(18)
+>> +#define CTRL_BIYUV	BIT(17)
+>> +#define CTRL_SCE	BIT(8)
+>> +#define CTRL_EE	BIT(7)
+>> +#define CTRL_CCE	BIT(5)
+>> +#define CTRL_RGE	BIT(4)
+>> +#define CTRL_CME	BIT(3)
+>> +#define CTRL_AE	BIT(2)
+>> +#define CTRL_CE	BIT(1)
+>> +#define CTRL_SAT_MASK	GENMASK(31, 28)
+>> +
+>> +#define ISP_REG_PIPELINE_XY_SIZE	0xa0c
+>> +#define H_ACT_CAP(n)	((n) << 16)
+>> +#define W_ACT_CAP(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_ICTC	0xa10
+>> +#define GF_MODE(n)	((n) << 30)
+>> +#define MAXGT(n)	((n) << 16)
+>> +#define MINGT(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_IDBC	0xa14
+>> +#define BADGT(n)	((n) << 16)
+>> +#define BADXT(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_ICFAM	0xa1c
+>> +#define CROSS_COV(n)	((n) << 4)
+>> +#define HV_W(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_CS_GAIN	0xa30
+>> +#define CMAD(n)	((n) << 16)
+>> +#define CMAB(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_CS_THRESHOLD	0xa34
+>> +#define CMD(n)	((n) << 16)
+>> +#define CMB(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_CS_OFFSET	0xa38
+>> +#define VOFF(n)	((n) << 16)
+>> +#define UOFF(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_CS_HUE_F	0xa3c
+>> +#define SIN(n)	((n) << 16)
+>> +#define COS(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_CS_SCALE	0xa40
+>> +#define CMSF(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_IESHD	0xa50
+>> +#define SHAD_UP_M	BIT(1)
+>> +#define SHAD_UP_EN	BIT(0)
+>> +
+>> +#define ISP_REG_YADJ0	0xa54
+>> +#define YOIR(n)	((n) << 16)
+>> +#define YIMIN(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_YADJ1	0xa58
+>> +#define YOMAX(n)	((n) << 16)
+>> +#define YOMIN(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_Y_PLANE_START_ADDR	0xa80
+>> +#define ISP_REG_UV_PLANE_START_ADDR	0xa84
+>> +
+>> +#define ISP_REG_STRIDE	0xa88
+>> +#define IMG_STR(n)	((n) << 0)
+> 
+> For registers that contain a single field at offset 0, you don't need to
+> define a macro, you can pass the value directly to the register write
+> function (IMG_STR is actually not used :-)). Same above and/or below
+> where applicable.
+> 
+>> +
+>> +#define ISP_REG_ITIIWSR	0xb20
+>> +#define ITI_HSIZE(n)	((n) << 16)
+>> +#define ITI_WSIZE(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_ITIDWLSR	0xb24
+>> +#define ITI_WSTRIDE(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_ITIPDFR	0xb38
+>> +#define ITI_PACKAGE_FMT(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_ITIDRLSR	0xb3C
+>> +#define ITI_STRIDE_L(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_DNYUV_YSWR0	0xc00
+>> +#define ISP_REG_DNYUV_YSWR1	0xc04
+>> +#define ISP_REG_DNYUV_CSWR0	0xc08
+>> +#define ISP_REG_DNYUV_CSWR1	0xc0c
+>> +#define YUVSW5(n)	((n) << 20)
+>> +#define YUVSW4(n)	((n) << 16)
+>> +#define YUVSW3(n)	((n) << 12)
+>> +#define YUVSW2(n)	((n) << 8)
+>> +#define YUVSW1(n)	((n) << 4)
+>> +#define YUVSW0(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_DNYUV_YDR0	0xc10
+>> +#define ISP_REG_DNYUV_YDR1	0xc14
+>> +#define ISP_REG_DNYUV_YDR2	0xc18
+>> +#define ISP_REG_DNYUV_CDR0	0xc1c
+>> +#define ISP_REG_DNYUV_CDR1	0xc20
+>> +#define ISP_REG_DNYUV_CDR2	0xc24
+>> +#define CURVE_D_H(n)	((n) << 16)
+>> +#define CURVE_D_L(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_ICAMD_0	0xc40
+>> +#define DNRM_F(n)	((n) << 16)
+>> +#define ISP_REG_ICAMD_12	0xc70
+>> +#define ISP_REG_ICAMD_20	0xc90
+>> +#define ISP_REG_ICAMD_24	0xca0
+>> +#define ISP_REG_ICAMD_25	0xca4
+>> +#define CCM_M_DAT(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_GAMMA_VAL0	0xe00
+>> +#define ISP_REG_GAMMA_VAL1	0xe04
+>> +#define ISP_REG_GAMMA_VAL2	0xe08
+>> +#define ISP_REG_GAMMA_VAL3	0xe0c
+>> +#define ISP_REG_GAMMA_VAL4	0xe10
+>> +#define ISP_REG_GAMMA_VAL5	0xe14
+>> +#define ISP_REG_GAMMA_VAL6	0xe18
+>> +#define ISP_REG_GAMMA_VAL7	0xe1c
+>> +#define ISP_REG_GAMMA_VAL8	0xe20
+>> +#define ISP_REG_GAMMA_VAL9	0xe24
+>> +#define ISP_REG_GAMMA_VAL10	0xe28
+>> +#define ISP_REG_GAMMA_VAL11	0xe2c
+>> +#define ISP_REG_GAMMA_VAL12	0xe30
+>> +#define ISP_REG_GAMMA_VAL13	0xe34
+>> +#define ISP_REG_GAMMA_VAL14	0xe38
+>> +#define GAMMA_S_VAL(n)	((n) << 16)
+>> +#define GAMMA_VAL(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_R2Y_0	0xe40
+>> +#define ISP_REG_R2Y_1	0xe44
+>> +#define ISP_REG_R2Y_2	0xe48
+>> +#define ISP_REG_R2Y_3	0xe4c
+>> +#define ISP_REG_R2Y_4	0xe50
+>> +#define ISP_REG_R2Y_5	0xe54
+>> +#define ISP_REG_R2Y_6	0xe58
+>> +#define ISP_REG_R2Y_7	0xe5c
+>> +#define ISP_REG_R2Y_8	0xe60
+>> +#define CSC_M(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_SHARPEN0	0xe80
+>> +#define ISP_REG_SHARPEN1	0xe84
+>> +#define ISP_REG_SHARPEN2	0xe88
+>> +#define ISP_REG_SHARPEN3	0xe8c
+>> +#define ISP_REG_SHARPEN4	0xe90
+>> +#define ISP_REG_SHARPEN5	0xe94
+>> +#define ISP_REG_SHARPEN6	0xe98
+>> +#define ISP_REG_SHARPEN7	0xe9c
+>> +#define ISP_REG_SHARPEN8	0xea0
+>> +#define ISP_REG_SHARPEN9	0xea4
+>> +#define ISP_REG_SHARPEN10	0xea8
+>> +#define ISP_REG_SHARPEN11	0xeac
+>> +#define ISP_REG_SHARPEN12	0xeb0
+>> +#define ISP_REG_SHARPEN13	0xeb4
+>> +#define ISP_REG_SHARPEN14	0xeb8
+>> +#define S_DELTA(n)	((n) << 16)
+>> +#define S_WEIGHT(n)	((n) << 8)
+>> +
+>> +#define ISP_REG_SHARPEN_FS0	0xebc
+>> +#define ISP_REG_SHARPEN_FS1	0xec0
+>> +#define ISP_REG_SHARPEN_FS2	0xec4
+>> +#define ISP_REG_SHARPEN_FS3	0xec8
+>> +#define ISP_REG_SHARPEN_FS4	0xecc
+>> +#define ISP_REG_SHARPEN_FS5	0xed0
+>> +#define S_FACTOR(n)	((n) << 24)
+>> +#define S_SLOPE(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_SHARPEN_WN	0xed4
+>> +#define PDIRF(n)	((n) << 28)
+>> +#define NDIRF(n)	((n) << 24)
+>> +#define WSUM(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_IUVS1	0xed8
+>> +#define UVDIFF2(n)	((n) << 16)
+>> +#define UVDIFF1(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_IUVS2	0xedc
+>> +#define UVF(n)	((n) << 24)
+>> +#define UVSLOPE(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_IUVCKS1	0xee0
+>> +#define UVCKDIFF2(n)	((n) << 16)
+>> +#define UVCKDIFF1(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_IUVCKS2	0xee4
+>> +#define UVCKSLOPE(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_ISHRPET	0xee8
+>> +#define TH(n)	((n) << 8)
+>> +#define EN(n)	((n) << 0)
+>> +
+>> +#define ISP_REG_YCURVE_0	0xf00
+>> +#define ISP_REG_YCURVE_63	0xffc
+>> +#define L_PARAM(n)	((n) << 0)
+>> +
+>> +#define IMAGE_MAX_WIDTH	1920
+>> +#define IMAGE_MAX_HEIGH	1080
+>> +
+>> +/* The output line of ISP */
+> 
+> What is an ISP "line" ?
+> 
 
+A pipeline contains ISP.
+
+>> +enum isp_line_id {
+>> +	STF_ISP_LINE_INVALID = -1,
+>> +	STF_ISP_LINE_SRC = 1,
+>> +	STF_ISP_LINE_MAX = STF_ISP_LINE_SRC
+>> +};
+>> +
+>> +/* pad id for media framework */
+>> +enum isp_pad_id {
+>> +	STF_ISP_PAD_SINK = 0,
+>> +	STF_ISP_PAD_SRC,
+>> +	STF_ISP_PAD_MAX
+>> +};
+>> +
+>> +enum {
+>> +	EN_INT_NONE                 = 0,
+>> +	EN_INT_ISP_DONE             = (0x1 << 24),
+>> +	EN_INT_CSI_DONE             = (0x1 << 25),
+>> +	EN_INT_SC_DONE              = (0x1 << 26),
+>> +	EN_INT_LINE_INT             = (0x1 << 27),
+>> +	EN_INT_ALL                  = (0xF << 24),
+> 
+> Please use lowercase for hex constants.
+> 
+> But I'm wondering if this is really needed, it seems to duplicate the
+> ISPC_* bits defined above. I would use those directly.
+> 
+>> +};
+>> +
+>> +enum {
+>> +	INTERFACE_DVP = 0,
+>> +	INTERFACE_CSI,
+>> +};
+> 
+> This isn't used.
+> 
+>> +
+>> +struct isp_format {
+>> +	u32 code;
+>> +	u8 bpp;
+>> +};
+>> +
+>> +struct isp_format_table {
+>> +	const struct isp_format *fmts;
+>> +	int nfmts;
+>> +};
+>> +
+>> +struct regval_t {
+>> +	u32 addr;
+>> +	u32 val;
+>> +	u32 delay_ms;
+>> +};
+>> +
+>> +struct reg_table {
+>> +	const struct regval_t *regval;
+>> +	int regval_num;
+>> +};
+> 
+> Those two structures are not used.
+> 
+>> +
+>> +struct stf_isp_crop {
+>> +	struct v4l2_rect rect;
+>> +	u32 bpp;
+>> +};
+>> +
+>> +struct stf_isp_dev {
+>> +	struct stfcamss *stfcamss;
+>> +	struct v4l2_subdev subdev;
+>> +	struct media_pad pads[STF_ISP_PAD_MAX];
+>> +	struct v4l2_mbus_framefmt fmt[STF_ISP_PAD_MAX];
+>> +	struct stf_isp_crop rect[STF_ISP_PAD_MAX];
+>> +	const struct isp_format_table *formats;
+>> +	unsigned int nformats;
+>> +	struct mutex stream_lock;	/* serialize stream control */
+> 
+> You should explicitly list the fields protected by the mutex.
+> 
+>> +	int stream_count;
+>> +};
+>> +
+>> +int stf_isp_clk_enable(struct stf_isp_dev *isp_dev);
+>> +int stf_isp_clk_disable(struct stf_isp_dev *isp_dev);
+>> +int stf_isp_reset(struct stf_isp_dev *isp_dev);
+>> +void stf_isp_init_cfg(struct stf_isp_dev *isp_dev);
+>> +void stf_isp_settings(struct stf_isp_dev *isp_dev,
+>> +		      struct stf_isp_crop *crop_array, u32 mcode);
+>> +void stf_isp_stream_set(struct stf_isp_dev *isp_dev);
+>> +int stf_isp_subdev_init(struct stfcamss *stfcamss);
+>> +int stf_isp_register(struct stf_isp_dev *isp_dev, struct v4l2_device *v4l2_dev);
+>> +int stf_isp_unregister(struct stf_isp_dev *isp_dev);
+>> +
+>> +#endif /* STF_ISP_H */
+>> diff --git a/drivers/media/platform/starfive/camss/stf_isp_hw_ops.c b/drivers/media/platform/starfive/camss/stf_isp_hw_ops.c
+>> new file mode 100644
+>> index 000000000000..2088b6bd0d61
+>> --- /dev/null
+>> +++ b/drivers/media/platform/starfive/camss/stf_isp_hw_ops.c
+>> @@ -0,0 +1,468 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * stf_isp_hw_ops.c
+>> + *
+>> + * Register interface file for StarFive ISP driver
+>> + *
+>> + * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
+>> + *
+>> + */
+>> +
+>> +#include "stf_camss.h"
+>> +
+>> +static void stf_isp_config_obc(struct stfcamss *stfcamss)
+>> +{
+>> +	u32 reg_val, reg_add;
+>> +
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_OBC_CFG, OBC_W_H(11) | OBC_W_W(11));
+>> +
+>> +	reg_val = GAIN_D_POINT(0x40) | GAIN_C_POINT(0x40) |
+>> +		  GAIN_B_POINT(0x40) | GAIN_A_POINT(0x40);
+>> +	for (reg_add = ISP_REG_OBCG_CFG_0; reg_add <= ISP_REG_OBCG_CFG_3;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, reg_val);
+>> +		reg_add += 4;
+>> +	}
+>> +
+>> +	reg_val = OFFSET_D_POINT(0) | OFFSET_C_POINT(0) |
+>> +		  OFFSET_B_POINT(0) | OFFSET_A_POINT(0);
+>> +	for (reg_add = ISP_REG_OBCO_CFG_0; reg_add <= ISP_REG_OBCO_CFG_3;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, reg_val);
+>> +		reg_add += 4;
+>> +	}
+>> +}
+>> +
+>> +static void stf_isp_config_oecf(struct stfcamss *stfcamss)
+>> +{
+>> +	u32 reg_add, par_val;
+>> +	u16 par_h, par_l;
+>> +
+>> +	par_h = 0x10; par_l = 0;
+>> +	par_val = OCEF_PAR_H(par_h) | OCEF_PAR_L(par_l);
+>> +	for (reg_add = ISP_REG_OECF_X0_CFG0; reg_add <= ISP_REG_OECF_Y3_CFG0;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, par_val);
+>> +		reg_add += 0x20;
+>> +	}
+>> +
+>> +	par_h = 0x40; par_l = 0x20;
+>> +	par_val = OCEF_PAR_H(par_h) | OCEF_PAR_L(par_l);
+>> +	for (reg_add = ISP_REG_OECF_X0_CFG1; reg_add <= ISP_REG_OECF_Y3_CFG1;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, par_val);
+>> +		reg_add += 0x20;
+>> +	}
+>> +
+>> +	par_h = 0x80; par_l = 0x60;
+>> +	par_val = OCEF_PAR_H(par_h) | OCEF_PAR_L(par_l);
+>> +	for (reg_add = ISP_REG_OECF_X0_CFG2; reg_add <= ISP_REG_OECF_Y3_CFG2;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, par_val);
+>> +		reg_add += 0x20;
+>> +	}
+>> +
+>> +	par_h = 0xc0; par_l = 0xa0;
+>> +	par_val = OCEF_PAR_H(par_h) | OCEF_PAR_L(par_l);
+>> +	for (reg_add = ISP_REG_OECF_X0_CFG3; reg_add <= ISP_REG_OECF_Y3_CFG3;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, par_val);
+>> +		reg_add += 0x20;
+>> +	}
+>> +
+>> +	par_h = 0x100; par_l = 0xe0;
+>> +	par_val = OCEF_PAR_H(par_h) | OCEF_PAR_L(par_l);
+>> +	for (reg_add = ISP_REG_OECF_X0_CFG4; reg_add <= ISP_REG_OECF_Y3_CFG4;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, par_val);
+>> +		reg_add += 0x20;
+>> +	}
+>> +
+>> +	par_h = 0x200; par_l = 0x180;
+>> +	par_val = OCEF_PAR_H(par_h) | OCEF_PAR_L(par_l);
+>> +	for (reg_add = ISP_REG_OECF_X0_CFG5; reg_add <= ISP_REG_OECF_Y3_CFG5;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, par_val);
+>> +		reg_add += 0x20;
+>> +	}
+>> +
+>> +	par_h = 0x300; par_l = 0x280;
+>> +	par_val = OCEF_PAR_H(par_h) | OCEF_PAR_L(par_l);
+>> +	for (reg_add = ISP_REG_OECF_X0_CFG6; reg_add <= ISP_REG_OECF_Y3_CFG6;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, par_val);
+>> +		reg_add += 0x20;
+>> +	}
+>> +
+>> +	par_h = 0x3fe; par_l = 0x380;
+>> +	par_val = OCEF_PAR_H(par_h) | OCEF_PAR_L(par_l);
+>> +	for (reg_add = ISP_REG_OECF_X0_CFG7; reg_add <= ISP_REG_OECF_Y3_CFG7;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, par_val);
+>> +		reg_add += 0x20;
+>> +	}
+>> +
+>> +	par_h = 0x80; par_l = 0x80;
+>> +	par_val = OCEF_PAR_H(par_h) | OCEF_PAR_L(par_l);
+>> +	for (reg_add = ISP_REG_OECF_S0_CFG0; reg_add <= ISP_REG_OECF_S3_CFG7;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, par_val);
+>> +		reg_add += 4;
+>> +	}
+>> +}
+>> +
+>> +static void stf_isp_config_lccf(struct stfcamss *stfcamss)
+>> +{
+>> +	u32 reg_add;
+>> +
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_LCCF_CFG_0,
+>> +			  Y_DISTANCE(0x21C) | X_DISTANCE(0x3C0));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_LCCF_CFG_1, LCCF_MAX_DIS(0xb));
+>> +
+>> +	for (reg_add = ISP_REG_LCCF_CFG_2; reg_add <= ISP_REG_LCCF_CFG_5;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add,
+>> +				  LCCF_F2_PAR(0x0) | LCCF_F1_PAR(0x0));
+>> +		reg_add += 4;
+>> +	}
+>> +}
+>> +
+>> +static void stf_isp_config_awb(struct stfcamss *stfcamss)
+>> +{
+>> +	u32 reg_val, reg_add;
+>> +	u16 symbol_h, symbol_l;
+>> +
+>> +	symbol_h = 0x0; symbol_l = 0x0;
+>> +	reg_val = AWB_X_SYMBOL_H(symbol_h) | AWB_X_SYMBOL_L(symbol_l);
+>> +
+>> +	for (reg_add = ISP_REG_AWB_X0_CFG_0; reg_add <= ISP_REG_AWB_X3_CFG_1;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, reg_val);
+>> +		reg_add += 4;
+>> +	}
+>> +
+>> +	symbol_h = 0x0, symbol_l = 0x0;
+>> +	reg_val = AWB_Y_SYMBOL_H(symbol_h) | AWB_Y_SYMBOL_L(symbol_l);
+>> +
+>> +	for (reg_add = ISP_REG_AWB_Y0_CFG_0; reg_add <= ISP_REG_AWB_Y3_CFG_1;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, reg_val);
+>> +		reg_add += 4;
+>> +	}
+>> +
+>> +	symbol_h = 0x80, symbol_l = 0x80;
+>> +	reg_val = AWB_S_SYMBOL_H(symbol_h) | AWB_S_SYMBOL_L(symbol_l);
+>> +
+>> +	for (reg_add = ISP_REG_AWB_S0_CFG_0; reg_add <= ISP_REG_AWB_S3_CFG_1;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, reg_val);
+>> +		reg_add += 4;
+>> +	}
+>> +}
+>> +
+>> +static void stf_isp_config_grgb(struct stfcamss *stfcamss)
+>> +{
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_ICTC,
+>> +			  GF_MODE(1) | MAXGT(0x140) | MINGT(0x40));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_IDBC, BADGT(0x200) | BADXT(0x200));
+>> +}
+>> +
+>> +static void stf_isp_config_cfa(struct stfcamss *stfcamss)
+>> +{
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_RAW_FORMAT_CFG,
+>> +			  SMY13(0) | SMY12(1) | SMY11(0) | SMY10(1) | SMY3(2) |
+>> +			  SMY2(3) | SMY1(2) | SMY0(3));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_ICFAM, CROSS_COV(3) | HV_W(2));
+>> +}
+>> +
+>> +static void stf_isp_config_ccm(struct stfcamss *stfcamss)
+>> +{
+>> +	u32 reg_add;
+>> +
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_ICAMD_0, DNRM_F(6) | CCM_M_DAT(0));
+>> +
+>> +	for (reg_add = ISP_REG_ICAMD_12; reg_add <= ISP_REG_ICAMD_20;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, CCM_M_DAT(0x80));
+>> +		reg_add += 0x10;
+>> +	}
+>> +
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_ICAMD_24, CCM_M_DAT(0x700));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_ICAMD_25, CCM_M_DAT(0x200));
+>> +}
+>> +
+>> +static void stf_isp_config_gamma(struct stfcamss *stfcamss)
+>> +{
+>> +	u32 reg_val, reg_add;
+>> +	u16 gamma_slope_v, gamma_v;
+>> +
+>> +	gamma_slope_v = 0x2400; gamma_v = 0x0;
+>> +	reg_val = GAMMA_S_VAL(gamma_slope_v) | GAMMA_VAL(gamma_v);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_GAMMA_VAL0, reg_val);
+>> +
+>> +	gamma_slope_v = 0x800; gamma_v = 0x20;
+>> +	for (reg_add = ISP_REG_GAMMA_VAL1; reg_add <= ISP_REG_GAMMA_VAL7;) {
+>> +		reg_val = GAMMA_S_VAL(gamma_slope_v) | GAMMA_VAL(gamma_v);
+>> +		stf_isp_reg_write(stfcamss, reg_add, reg_val);
+>> +		reg_add += 4;
+>> +		gamma_v += 0x20;
+>> +	}
+>> +
+>> +	gamma_v = 0x100;
+>> +	for (reg_add = ISP_REG_GAMMA_VAL8; reg_add <= ISP_REG_GAMMA_VAL13;) {
+>> +		reg_val = GAMMA_S_VAL(gamma_slope_v) | GAMMA_VAL(gamma_v);
+>> +		stf_isp_reg_write(stfcamss, reg_add, reg_val);
+>> +		reg_add += 4;
+>> +		gamma_v += 0x80;
+>> +	}
+>> +
+>> +	gamma_v = 0x3fe;
+>> +	reg_val = GAMMA_S_VAL(gamma_slope_v) | GAMMA_VAL(gamma_v);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_GAMMA_VAL14, reg_val);
+>> +}
+>> +
+>> +static void stf_isp_config_r2y(struct stfcamss *stfcamss)
+>> +{
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_R2Y_0, CSC_M(0x4C));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_R2Y_1, CSC_M(0x97));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_R2Y_2, CSC_M(0x1d));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_R2Y_3, CSC_M(0x1d5));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_R2Y_4, CSC_M(0x1ac));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_R2Y_5, CSC_M(0x80));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_R2Y_6, CSC_M(0x80));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_R2Y_7, CSC_M(0x194));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_R2Y_8, CSC_M(0x1ec));
+>> +}
+>> +
+>> +static void stf_isp_config_y_curve(struct stfcamss *stfcamss)
+>> +{
+>> +	u32 reg_add;
+>> +	u16 y_curve;
+>> +
+>> +	y_curve = 0x0;
+>> +	for (reg_add = ISP_REG_YCURVE_0; reg_add <= ISP_REG_YCURVE_63;) {
+>> +		stf_isp_reg_write(stfcamss, reg_add, y_curve);
+>> +		reg_add += 4;
+>> +		y_curve += 0x10;
+>> +	}
+>> +}
+>> +
+>> +static void stf_isp_config_sharpen(struct stfcamss *sc)
+>> +{
+>> +	u32 reg_add;
+>> +
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN0, S_DELTA(0x7) | S_WEIGHT(0xf));
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN1, S_DELTA(0x18) | S_WEIGHT(0xf));
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN2, S_DELTA(0x80) | S_WEIGHT(0xf));
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN3, S_DELTA(0x100) | S_WEIGHT(0xf));
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN4, S_DELTA(0x10) | S_WEIGHT(0xf));
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN5, S_DELTA(0x60) | S_WEIGHT(0xf));
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN6, S_DELTA(0x100) | S_WEIGHT(0xf));
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN7, S_DELTA(0x190) | S_WEIGHT(0xf));
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN8, S_DELTA(0x0) | S_WEIGHT(0xf));
+>> +
+>> +	for (reg_add = ISP_REG_SHARPEN9; reg_add <= ISP_REG_SHARPEN14;) {
+>> +		stf_isp_reg_write(sc, reg_add, S_WEIGHT(0xf));
+>> +		reg_add += 4;
+>> +	}
+>> +
+>> +	for (reg_add = ISP_REG_SHARPEN_FS0; reg_add <= ISP_REG_SHARPEN_FS5;) {
+>> +		stf_isp_reg_write(sc, reg_add, S_FACTOR(0x10) | S_SLOPE(0x0));
+>> +		reg_add += 4;
+>> +	}
+>> +
+>> +	stf_isp_reg_write(sc, ISP_REG_SHARPEN_WN,
+>> +			  PDIRF(0x8) | NDIRF(0x8) | WSUM(0xd7c));
+>> +	stf_isp_reg_write(sc, ISP_REG_IUVS1, UVDIFF2(0xC0) | UVDIFF1(0x40));
+>> +	stf_isp_reg_write(sc, ISP_REG_IUVS2, UVF(0xff) | UVSLOPE(0x0));
+>> +	stf_isp_reg_write(sc, ISP_REG_IUVCKS1,
+>> +			  UVCKDIFF2(0xa0) | UVCKDIFF1(0x40));
+>> +}
+>> +
+>> +static void stf_isp_config_dnyuv(struct stfcamss *stfcamss)
+>> +{
+>> +	u32 reg_val;
+>> +
+>> +	reg_val = YUVSW5(7) | YUVSW4(7) | YUVSW3(7) | YUVSW2(7) |
+>> +		  YUVSW1(7) | YUVSW0(7);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_YSWR0, reg_val);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_CSWR0, reg_val);
+>> +
+>> +	reg_val = YUVSW3(7) | YUVSW2(7) | YUVSW1(7) | YUVSW0(7);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_YSWR1, reg_val);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_CSWR1, reg_val);
+>> +
+>> +	reg_val = CURVE_D_H(0x60) | CURVE_D_L(0x40);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_YDR0, reg_val);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_CDR0, reg_val);
+>> +
+>> +	reg_val = CURVE_D_H(0xd8) | CURVE_D_L(0x90);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_YDR1, reg_val);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_CDR1, reg_val);
+>> +
+>> +	reg_val = CURVE_D_H(0x1e6) | CURVE_D_L(0x144);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_YDR2, reg_val);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_DNYUV_CDR2, reg_val);
+>> +}
+>> +
+>> +static void stf_isp_config_sat(struct stfcamss *stfcamss)
+>> +{
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_CS_GAIN, CMAD(0x0) | CMAB(0x100));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_CS_THRESHOLD, CMD(0x1f) | CMB(0x1));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_CS_OFFSET, VOFF(0x0) | UOFF(0x0));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_CS_HUE_F, SIN(0x0) | COS(0x100));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_CS_SCALE, CMSF(0x8));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_YADJ0, YOIR(0x401) | YIMIN(0x1));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_YADJ1, YOMAX(0x3ff) | YOMIN(0x1));
+>> +}
+>> +
+>> +int stf_isp_clk_enable(struct stf_isp_dev *isp_dev)
+>> +{
+>> +	struct stfcamss *stfcamss = isp_dev->stfcamss;
+>> +
+>> +	clk_prepare_enable(stfcamss->sys_clk[STF_CLK_WRAPPER_CLK_C].clk);
+>> +	reset_control_deassert(stfcamss->sys_rst[STF_RST_WRAPPER_C].rstc);
+>> +	reset_control_deassert(stfcamss->sys_rst[STF_RST_WRAPPER_P].rstc);
+> 
+> Missing error handling.
+> 
+> Is there a specific hardware requirement to split the clock enabling and
+> reset deassertion in two, with some of them handled in the runtime PM
+> resume handler and the rest here ? If not, moving all clock and reset
+> control to the runtime PM handlers would simplify the code.
+> 
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +int stf_isp_clk_disable(struct stf_isp_dev *isp_dev)
+>> +{
+>> +	struct stfcamss *stfcamss = isp_dev->stfcamss;
+>> +
+>> +	reset_control_assert(stfcamss->sys_rst[STF_RST_WRAPPER_C].rstc);
+>> +	reset_control_assert(stfcamss->sys_rst[STF_RST_WRAPPER_P].rstc);
+>> +	clk_disable_unprepare(stfcamss->sys_clk[STF_CLK_WRAPPER_CLK_C].clk);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +int stf_isp_reset(struct stf_isp_dev *isp_dev)
+>> +{
+>> +	stf_isp_reg_set_bit(isp_dev->stfcamss, ISP_REG_ISP_CTRL_0,
+>> +			    ISPC_RST_MASK, ISPC_RST);
+>> +	stf_isp_reg_set_bit(isp_dev->stfcamss, ISP_REG_ISP_CTRL_0,
+>> +			    ISPC_RST_MASK, 0);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +void stf_isp_init_cfg(struct stf_isp_dev *isp_dev)
+>> +{
+>> +	stf_isp_reg_write(isp_dev->stfcamss, ISP_REG_DC_CFG_1, DC_AXI_ID(0x0));
+>> +	stf_isp_reg_write(isp_dev->stfcamss, ISP_REG_DEC_CFG,
+>> +			  DEC_V_KEEP(0x0) |
+>> +			  DEC_V_PERIOD(0x0) |
+>> +			  DEC_H_KEEP(0x0) |
+>> +			  DEC_H_PERIOD(0x0));
+>> +
+>> +	stf_isp_config_obc(isp_dev->stfcamss);
+>> +	stf_isp_config_oecf(isp_dev->stfcamss);
+>> +	stf_isp_config_lccf(isp_dev->stfcamss);
+>> +	stf_isp_config_awb(isp_dev->stfcamss);
+>> +	stf_isp_config_grgb(isp_dev->stfcamss);
+>> +	stf_isp_config_cfa(isp_dev->stfcamss);
+>> +	stf_isp_config_ccm(isp_dev->stfcamss);
+>> +	stf_isp_config_gamma(isp_dev->stfcamss);
+>> +	stf_isp_config_r2y(isp_dev->stfcamss);
+>> +	stf_isp_config_y_curve(isp_dev->stfcamss);
+>> +	stf_isp_config_sharpen(isp_dev->stfcamss);
+>> +	stf_isp_config_dnyuv(isp_dev->stfcamss);
+>> +	stf_isp_config_sat(isp_dev->stfcamss);
+> 
+> All these parameters are hardcoded, why are they not exposed to
+> userspace ?
+> 
+
+Here is a basic startup configuration for the ISP registers. The
+function name is confusing, as if it is configuring a specific
+function. In fact, it is just a basic init configuration.
+
+>> +
+>> +	stf_isp_reg_write(isp_dev->stfcamss, ISP_REG_CSI_MODULE_CFG,
+>> +			  CSI_DUMP_EN | CSI_SC_EN | CSI_AWB_EN |
+>> +			  CSI_LCCF_EN | CSI_OECF_EN | CSI_OBC_EN | CSI_DEC_EN);
+>> +	stf_isp_reg_write(isp_dev->stfcamss, ISP_REG_ISP_CTRL_1,
+>> +			  CTRL_SAT(1) | CTRL_DBC | CTRL_CTC | CTRL_YHIST |
+>> +			  CTRL_YCURVE | CTRL_BIYUV | CTRL_SCE | CTRL_EE |
+>> +			  CTRL_CCE | CTRL_RGE | CTRL_CME | CTRL_AE | CTRL_CE);
+>> +}
+>> +
+>> +static void stf_isp_config_crop(struct stfcamss *stfcamss,
+>> +				struct stf_isp_crop *crop)
+>> +{
+>> +	struct v4l2_rect *rect = &crop[STF_ISP_PAD_SRC].rect;
+>> +	u32 bpp = crop[STF_ISP_PAD_SRC].bpp;
+>> +	u32 val;
+>> +
+>> +	val = VSTART_CAP(rect->top) | HSTART_CAP(rect->left);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_PIC_CAPTURE_START_CFG, val);
+>> +
+>> +	val = VEND_CAP(rect->height + rect->top - 1) |
+>> +	      HEND_CAP(rect->width + rect->left - 1);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_PIC_CAPTURE_END_CFG, val);
+>> +
+>> +	val = H_ACT_CAP(rect->height) | W_ACT_CAP(rect->width);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_PIPELINE_XY_SIZE, val);
+>> +
+>> +	val = ALIGN(rect->width * bpp / 8, STFCAMSS_FRAME_WIDTH_ALIGN_8);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_STRIDE, val);
+>> +}
+>> +
+>> +static void stf_isp_config_raw_fmt(struct stfcamss *stfcamss, u32 mcode)
+>> +{
+>> +	u32 val, val1;
+>> +
+>> +	switch (mcode) {
+>> +	case MEDIA_BUS_FMT_SRGGB10_1X10:
+>> +	case MEDIA_BUS_FMT_SRGGB8_1X8:
+>> +		/* 3 2 3 2 1 0 1 0 B Gb B Gb Gr R Gr R */
+>> +		val = SMY13(3) | SMY12(2) | SMY11(3) | SMY10(2) |
+>> +		      SMY3(1) | SMY2(0) | SMY1(1) | SMY0(0);
+>> +		val1 = CTRL_SAT(0x0);
+>> +		break;
+>> +	case MEDIA_BUS_FMT_SGRBG10_1X10:
+>> +	case MEDIA_BUS_FMT_SGRBG8_1X8:
+>> +		/* 2 3 2 3 0 1 0 1, Gb B Gb B R Gr R Gr */
+>> +		val = SMY13(2) | SMY12(3) | SMY11(2) | SMY10(3) |
+>> +		      SMY3(0) | SMY2(1) | SMY1(0) | SMY0(1);
+>> +		val1 = CTRL_SAT(0x2);
+>> +		break;
+>> +	case MEDIA_BUS_FMT_SGBRG10_1X10:
+>> +	case MEDIA_BUS_FMT_SGBRG8_1X8:
+>> +		/* 1 0 1 0 3 2 3 2, Gr R Gr R B Gb B Gb */
+>> +		val = SMY13(1) | SMY12(0) | SMY11(1) | SMY10(0) |
+>> +		      SMY3(3) | SMY2(2) | SMY1(3) | SMY0(2);
+>> +		val1 = CTRL_SAT(0x3);
+>> +		break;
+>> +	case MEDIA_BUS_FMT_SBGGR10_1X10:
+>> +	case MEDIA_BUS_FMT_SBGGR8_1X8:
+>> +		/* 0 1 0 1 2 3 2 3 R Gr R Gr Gb B Gb B */
+>> +		val = SMY13(0) | SMY12(1) | SMY11(0) | SMY10(1) |
+>> +		      SMY3(2) | SMY2(3) | SMY1(2) | SMY0(3);
+>> +		val1 = CTRL_SAT(0x1);
+>> +		break;
+>> +	default:
+>> +		val = SMY13(0) | SMY12(1) | SMY11(0) | SMY10(1) |
+>> +		      SMY3(2) | SMY2(3) | SMY1(2) | SMY0(3);
+>> +		val1 = CTRL_SAT(0x1);
+>> +		break;
+>> +	}
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_RAW_FORMAT_CFG, val);
+>> +	stf_isp_reg_set_bit(stfcamss, ISP_REG_ISP_CTRL_1, CTRL_SAT_MASK, val1);
+>> +}
+>> +
+>> +void stf_isp_settings(struct stf_isp_dev *isp_dev,
+>> +		      struct stf_isp_crop *crop, u32 mcode)
+>> +{
+>> +	struct stfcamss *stfcamss = isp_dev->stfcamss;
+>> +
+>> +	stf_isp_config_crop(stfcamss, crop);
+>> +	stf_isp_config_raw_fmt(stfcamss, mcode);
+>> +
+>> +	stf_isp_reg_set_bit(stfcamss, ISP_REG_DUMP_CFG_1,
+>> +			    DUMP_BURST_LEN_MASK | DUMP_SD_MASK,
+>> +			    DUMP_BURST_LEN(3));
+>> +
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_ITIIWSR,
+>> +			  ITI_HSIZE(IMAGE_MAX_HEIGH) |
+>> +			  ITI_WSIZE(IMAGE_MAX_WIDTH));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_ITIDWLSR, ITI_WSTRIDE(0x960));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_ITIDRLSR, ITI_STRIDE_L(0x960));
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_SENSOR, 0x1);
+> 
+> Should 0x1 be IMAGER_SEL(1) or are those unrelated ?
+> 
+>> +}
+>> +
+>> +void stf_isp_stream_set(struct stf_isp_dev *isp_dev)
+>> +{
+>> +	struct stfcamss *stfcamss = isp_dev->stfcamss;
+>> +
+>> +	stf_isp_reg_write_delay(stfcamss, ISP_REG_ISP_CTRL_0,
+>> +				ISPC_ENUO | ISPC_ENLS | ISPC_RST, 10);
+>> +	stf_isp_reg_write_delay(stfcamss, ISP_REG_ISP_CTRL_0,
+>> +				ISPC_ENUO | ISPC_ENLS, 10);
+>> +	stf_isp_reg_write(stfcamss, ISP_REG_IESHD, SHAD_UP_M);
+>> +	stf_isp_reg_write_delay(stfcamss, ISP_REG_ISP_CTRL_0,
+>> +				ISPC_ENUO | ISPC_ENLS | ISPC_EN, 10);
+>> +	stf_isp_reg_write_delay(stfcamss, ISP_REG_CSIINTS,
+>> +				CSI_INTS(1) | CSI_SHA_M(4), 10);
+>> +	stf_isp_reg_write_delay(stfcamss, ISP_REG_CSIINTS,
+>> +				CSI_INTS(2) | CSI_SHA_M(4), 10);
+>> +	stf_isp_reg_write_delay(stfcamss, ISP_REG_CSI_INPUT_EN_AND_STATUS,
+>> +				CSI_EN_S, 10);
+>> +}
+> 
+
+Regards,
+
+Jack Zhu
