@@ -2,113 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2186076D8C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:44:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBF676D8C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbjHBUoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 16:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
+        id S232085AbjHBUpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 16:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbjHBUoQ (ORCPT
+        with ESMTP id S229534AbjHBUpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 16:44:16 -0400
-Received: from out-118.mta0.migadu.com (out-118.mta0.migadu.com [IPv6:2001:41d0:1004:224b::76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE371FF0
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:44:15 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 16:44:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1691009052;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p+6roQ7aDRsYVdornB0/QF0ZuvdFIKibmGJzuhAsITs=;
-        b=ngeef85pSI2YC4jwYc5pAWo8dkd1cu30hUu+UEEnBkdZVQTzhpvjKba/HvVG8IgedQP6OH
-        ZSRI9qOAxm8Gcm5slEkz9Z/SDXNIm8rTJ30ShPoAXtsCFJho4AY34yp1favy4BFlfFovSM
-        BGh4hdqt0vugZWHSczxCqfuL8KS6FbQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Waiman Long <longman@redhat.com>
-Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH 11/20] locking/osq: Export osq_(lock|unlock)
-Message-ID: <20230802204407.lk5mnj7ua6idddbd@moria.home.lan>
-References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
- <20230712211115.2174650-12-kent.overstreet@linux.dev>
- <bb77f456-8804-b63a-7868-19e0cd9e697f@redhat.com>
+        Wed, 2 Aug 2023 16:45:35 -0400
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BBA1FF0
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:45:33 -0700 (PDT)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1bed90ee8b7so115354fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 13:45:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691009133; x=1691613933;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=g/1Bfm6suFyViDWNlr8+HrMuba+po2ALntmKmq7g2XA=;
+        b=fWDVHQD6E/n9Ca7eabCCX6b0FFMGlyISauUxdo0n2rpIZnfZ95RCQCHEPckZtOKLCA
+         Sddo6fzWI4gkqr1sajuR+gUUXb/J9BJ7WjG/y+FBliSpaWUz/rczqYOGle4EdddiwjtP
+         i4w41LX3Z1PNFXlt8JNAPBre/xxE2c3QRnk/E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691009133; x=1691613933;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g/1Bfm6suFyViDWNlr8+HrMuba+po2ALntmKmq7g2XA=;
+        b=Bvx4JzY9Zbpwpb1S6aH8x+VoVdT3xRmbTOrYvkDG8n5glkGLOG2Dqc7GFuEEjbNqud
+         q+Io+JJY+3Zus8YJpVSRYDh/33GUgFrIdP/pVYy1bM52C7MPL3RRoPZcLwrEKsRB2ypN
+         anCnRXNA/RYQSTJg4Ih5iwE+BDDniCj0Kuy5uuPH8834ll9JOtUkq808br4H3g7Ns7dV
+         RJ30My3vTqBwS4C0TxRNHx/ep2EC2a9rEu7NZyuFAhB5P8x0Y3Mtke3AdPKdydd0fBHp
+         5JV3guauIgHmo6Y+PIOqp48DTRcq99qJ5fDEfy0fQyin1yfEXPefmWtsNWo0Ha+U4Ndi
+         iNfQ==
+X-Gm-Message-State: ABy/qLYx+8lWfmIwlNtcLlXhqNKkLzhdmNwHIf+53wjIr4G7eL5mnKVX
+        fIw/qKvfZjaVtF38fSzHyoNgWV7WwGhTEnqdB3nqsg==
+X-Google-Smtp-Source: APBJJlEqN8WznNoc2+T+MjGzRWpOC67aOcySrJF83niYlI694u4xO01qbb56VWKDeRmZuTqh3OCCclVzdbbzIgJRr4Y=
+X-Received: by 2002:a05:6870:2052:b0:1bb:85c3:929e with SMTP id
+ l18-20020a056870205200b001bb85c3929emr16774760oad.48.1691009133246; Wed, 02
+ Aug 2023 13:45:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb77f456-8804-b63a-7868-19e0cd9e697f@redhat.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230713143406.14342-1-cyphar@cyphar.com> <CABi2SkVCp_MDh9MgD-UJ_hgJ58ynm22XJ53zE+ZCBSsWFBxiOw@mail.gmail.com>
+ <o2tz56m3y2pbbj2sezyqvtw3caqwcqtqqkkfrq632ofpyj4enp@znkxadzn5lmj>
+ <CALmYWFs_dNCzw_pW1yRAo4bGCPEtykroEQaowNULp7svwMLjOg@mail.gmail.com> <20230801.032503-medium.noises.extinct.omen-CStYZUqcNLCS@cyphar.com>
+In-Reply-To: <20230801.032503-medium.noises.extinct.omen-CStYZUqcNLCS@cyphar.com>
+From:   Jeff Xu <jeffxu@chromium.org>
+Date:   Wed, 2 Aug 2023 13:45:21 -0700
+Message-ID: <CABi2SkUnJ4NiRMtSXdLtHXWrY23iKLdGiUuTgc0Yrtq16-KkeA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] memfd: cleanups for vm.memfd_noexec
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Jeff Xu <jeffxu@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 04:16:12PM -0400, Waiman Long wrote:
-> On 7/12/23 17:11, Kent Overstreet wrote:
-> > These are used by bcachefs's six locks.
-> > 
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Ingo Molnar <mingo@redhat.com>
-> > Cc: Waiman Long <longman@redhat.com>
-> > Cc: Boqun Feng <boqun.feng@gmail.com>
-> > ---
-> >   kernel/locking/osq_lock.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
-> > index d5610ad52b..b752ec5cc6 100644
-> > --- a/kernel/locking/osq_lock.c
-> > +++ b/kernel/locking/osq_lock.c
-> > @@ -203,6 +203,7 @@ bool osq_lock(struct optimistic_spin_queue *lock)
-> >   	return false;
-> >   }
-> > +EXPORT_SYMBOL_GPL(osq_lock);
-> >   void osq_unlock(struct optimistic_spin_queue *lock)
-> >   {
-> > @@ -230,3 +231,4 @@ void osq_unlock(struct optimistic_spin_queue *lock)
-> >   	if (next)
-> >   		WRITE_ONCE(next->locked, 1);
-> >   }
-> > +EXPORT_SYMBOL_GPL(osq_unlock);
-> 
-> Have you considered extending the current rw_semaphore to support a SIX lock
-> semantics? There are a number of instances in the kernel that a up_read() is
-> followed by a down_write(). Basically, the code try to upgrade the lock from
-> read to write. I have been thinking about adding a upgrade_read() API to do
-> that. However, the concern that I had was that another writer may come in
-> and make modification before the reader can be upgraded to have exclusive
-> write access and will make the task to repeat what has been done in the read
-> lock part. By adding a read with intent to upgrade to write, we can have
-> that guarantee.
+> > > > >  * vm.memfd_noexec=2 shouldn't reject old-style memfd_create(2) syscalls
+> > > > >    because it will make it far to difficult to ever migrate. Instead it
+> > > > >    should imply MFD_EXEC.
+> > > > >
+> > > > Though the purpose of memfd_noexec=2 is not to help with migration  -
+> > > > but to disable creation of executable memfd for the current system/pid
+> > > > namespace.
+> > > > During the migration,  vm.memfd_noexe = 1 helps overwriting for
+> > > > unmigrated user code as a temporary measure.
+> > >
+> > > My point is that the current behaviour for =2 means that nobody other
+> > > than *maybe* ChromeOS will ever be able to use it because it requires
+> > > auditing every program on the system. In fact, it's possible even
+> > > ChromeOS will run into issues given that one of the arguments made for
+> > > the nosymfollow mount option was that auditing all of ChromeOS to
+> > > replace every open with RESOLVE_NO_SYMLINKS would be too much effort[1]
+> > > (which I agreed with). Maybe this is less of an issue with
+> > > memfd_create(2) (which is much newer than open(2)) but it still seems
+> > > like a lot of busy work when the =1 behaviour is entirely sane even in
+> > > the strict threat model that =2 is trying to protect against.
+> > >
+> > It can also be a container (that have all memfd_create migrated to new API)
+>
+> If ChromeOS would struggle to rewrite all of the libraries they use,
+> containers are in even worse shape -- most container users don't have a
+> complete list of every package installed in a container, let alone the
+> ability to audit whether they pass a (no-op) flag to memfd_create(2) in
+> every codepath.
+>
+> > One option I considered previously was "=2" would do overwrite+block ,
+> > and "=3" just block. But then I worry that applications won't have
+> > motivation to ever change their existing code, the setting will
+> > forever stay at "=2", making "=3" even more impossible to ever be used
+> >  system side.
+>
+> What is the downside of overwriting? Backwards-compatibility is a very
+> important part of Linux -- being able to use old programs without having
+> to modify them is incredibly important. Yes, this behaviour is opt-in --
+> but I don't see the point of making opting in more difficult than
+> necessary. Surely overwite+block provides the security guarantee you
+> need from the threat model -- othewise nobody will be able to use block
+> because you never know if one library will call memfd_create()
+> "incorrectly" without the new flags.
+>
+>
+> > > If you want to block syscalls that don't explicitly pass NOEXEC_SEAL,
+> > > there are several tools for doing this (both seccomp and LSM hooks).
+> > >
+> > > [1]: https://lore.kernel.org/linux-fsdevel/20200131212021.GA108613@google.com/
+> > >
+> > > > Additional functionality/features should be implemented through
+> > > > security hook and LSM, not sysctl, I think.
+> > >
+> > > This issue with =2 cannot be fixed in an LSM. (On the other hand, you
+> > > could implement either =2 behaviour with an LSM using =1, and the
+> > > current strict =2 behaviour could be implemented purely with seccomp.)
+> > >
+> > By migration, I mean  a system that is not fully migrated, such a
+> > system should just use "=0" or "=1". Additional features can be
+> > implemented in SELinux/Landlock/other LSM by a motivated dev.  e.g. if
+> > a system wants to limit executable memfd to specific programs or fully
+> > disable it.
+> > "=2" is for a system/container that is fully migrated, in that case,
+> > SELinux/Landlock/LSM can do the same, but sysctl provides a convenient
+> >  alternative.
+> > Yes, seccomp provides a similar mechanism. Indeed, combining "=1" and
+> > seccomp (block MFD_EXEC), it will overwrite + block X mfd, which is
+> > essentially what you want, iiuc.However, I do not wish to have this
+> > implemented in kernel, due to the thinking that I want kernel to get
+> > out of business of "overwriting" eventually.
+>
+> See my above comments -- "overwriting" is perfectly acceptable to me.
+> There's also no way to "get out of the business of overwriting" -- Linux
+> has strict backwards compatibility requirements.
+>
 
-It's been discussed, Linus had the same thought.
+I agree, if we weigh on the short term goal of letting the user space
+applications to do minimum, then having 4 state sysctl (or 2 sysctl,
+one controls overwrite, one disable/enable executable memfd) will do.
+But with that approach, I'm afraid a version of the future (say in 20
+years), most applications stays with memfd_create with the old API
+style, not setting the NX bit. With the current approach, it might seem
+to be less convenient, but I hope it offers a bit of incentive to make
+applications migrating their code towards the new API, explicitly
+setting the NX bit.  I understand this hope is questionable, we might
+still end up the same in 20 years, but at least I tried :-). I will
+leave this decision to maintainers when you supply patches for that,
+and I wouldn't feel bad either way, there is a valid reason on both sides.
 
-But it'd be a massive change to the rw semaphore code; this "read with
-intent" really is a third lock state which needs all the same
-lock/trylock/unlock paths, and with the way rw semaphore has separate
-entry points for read and write it'd be a _ton_ of new code. It really
-touches everything - waitlist handling included.
+To supplement, there are  two other ways for what you want:
+1> seccomp to block MFD_EXEC, and leaving the setting to 1.
+2> implement the blocking using a security hook and LSM, imo, which is
+probably the most common way to deal with this type of request (block
+something).
+I admit those two ways will be less convenient than just having sysctl
+do all the things, from the user space's perspective.
 
-And six locks have several other features that bcachefs needs, and other
-users may also end up wanting, that rw semaphores don't have; the two
-main features being a percpu read lock mode and support for an external
-cycle detector (which requires exposing lock waitlists, with some
-guarantees about how those waitlists are used).
+Thanks
 
-> With that said, I would prefer to keep osq_{lock/unlock} for internal use by
-> some higher level locking primitives - mutex, rwsem and rt_mutex.
 
-Yeah, I'm aware, but it seems like exposing osq_(lock|unlock) is the
-most palatable solution for now. Long term, I'd like to get six locks
-promoted to kernel/locking.
+
+
+-Jeff
