@@ -2,351 +2,430 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3D176D83D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B54876D850
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbjHBTzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
+        id S230242AbjHBUBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 16:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232007AbjHBTzP (ORCPT
+        with ESMTP id S229893AbjHBUBa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:55:15 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F29742710
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:55:12 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d061f324d64so185361276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 12:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691006112; x=1691610912;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vsTv4l3aM1hxHagjQekhivcP8BzeguBOu+Z/J5EBK6c=;
-        b=1Z3rm52lW1E1rKJETarUbcMZebSxTyOBuPRcpXU6Ehr1utRe3K/BD3K56DJyi+3b5a
-         g/nq4vTlMjA7Pv0e1ir4I/PIPkjNptQqKjUnyyt3egX7Szt6ApLbfg7ghYy2P0hNdSUv
-         p9kRQkUhyY1QtAw8mYU5Y31X+GOPGBoyV4qD24uR8oqhxIWYZTZXrPku4n6lf08vVaHY
-         d4MBneP8M5ztzeFfqTjmuS+wVfilMjNAzut+4jUUJpwzrsKLhQJq9BcVfPAl6b80y2lP
-         9XNV6Nm9Aq36QpnLxbahmvLAf9KBlANqr3PvdwkAGPwPkA+Sf8CQBzON2UTJwGzjzzn/
-         cu6g==
+        Wed, 2 Aug 2023 16:01:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122E81FFA
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:00:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691006443;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wY/Nfh45HwpbJdIjIFwouOX8OJ1MkJG+IEi4LOizmfM=;
+        b=FEi9xhcytpbe/+WNuQNHYrp+Qr+FUY+r4qj6kN2jWQFRtuyvQz6n6o0BAmfo8zz17a4MuZ
+        s+HCmNZgOVxhHbby+q1pjPp0R80bMPdbJLoHOY+pnpa5KT+fSX3i0yJcrAritHd7vp7gzM
+        K+v1nsy1oi5XdAi+mh2QXujegVdUvZY=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-648-RoTWklR3PYGona0x4ufrIQ-1; Wed, 02 Aug 2023 16:00:29 -0400
+X-MC-Unique: RoTWklR3PYGona0x4ufrIQ-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-40ea01f3e3bso2635881cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 13:00:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691006112; x=1691610912;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vsTv4l3aM1hxHagjQekhivcP8BzeguBOu+Z/J5EBK6c=;
-        b=LuA8GpEjHysrqFVdi5z2iaOHR9nVBWWPXWJziYeuWlC0GPPoydM+B659CdiL5nfuXZ
-         iumLT6Io7AvoNSGw20rEFDp/hoGPUodaG3YYLsQn+Ww8rS1YTCAyoi4jepyhnBUKahX/
-         uG5bZl9B7GHRwXAkVIh3fefP9fnK+W2wzddl1XEGzQBmgaj+hbNxrKblTc/gSlxCyKs4
-         JwTi5+QkfGxWnmuZeDfQIF0A4EIC9Z5bSzLz1ECIX4lUzmEIgHePP4/dChAXL2BW9tFK
-         Am7f6FP448sxrKwLGuRovrcCr60ItGe+ZinZdDRGtbgyrM94lU+btNERKFgNJhvAVHZe
-         9daA==
-X-Gm-Message-State: ABy/qLbt64kJpLiuAkI/bBb+hpkrMpM2ZORX/uTuBZf0bVceew6RRXtC
-        DgXcx6lgQaZGYo6tqUzFJYalmM+5yOA=
-X-Google-Smtp-Source: APBJJlGaw2tbZ5PGtoXoBNzA2JGWKl/m0J34RtXjTcrzSkFb8b3iZqAWlBYDvywJxnNUJKFwarIY6gvO2Y0=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:1582:b0:d0a:353b:b93b with SMTP id
- k2-20020a056902158200b00d0a353bb93bmr136607ybu.3.1691006111814; Wed, 02 Aug
- 2023 12:55:11 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 12:55:09 -0700
-In-Reply-To: <20230712075910.22480-3-thuth@redhat.com>
-Mime-Version: 1.0
-References: <20230712075910.22480-1-thuth@redhat.com> <20230712075910.22480-3-thuth@redhat.com>
-Message-ID: <ZMq0nYYDbOX1cOKN@google.com>
-Subject: Re: [PATCH 2/4] KVM: selftests: x86: Use TAP interface in the
- sync_regs test
-From:   Sean Christopherson <seanjc@google.com>
-To:     Thomas Huth <thuth@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kselftest@vger.kernel.org,
-        David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20221208; t=1691006429; x=1691611229;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wY/Nfh45HwpbJdIjIFwouOX8OJ1MkJG+IEi4LOizmfM=;
+        b=Csb83lLJyyYZeNNBPQfTeYEOHc4+3eorwTuwsqL3WP77OFmvWqYhCcyGBu9QRpkfEs
+         7lXYjMfRC/xQNAqhUmJLp+E+nPPR23NKfNsWnhgAAgXsrK6Mau53Yi21d6kakJzUn+It
+         B9uc4y96EUdBhIHHQpcAwaI9MRFS9iCj3OgIW3YenYmErJs9dlkDYIUjU91ZMu/KsZZ3
+         TKOJOapm6xlcvHH31p19xWKaN4NY7aol11l7drgFzonu/Aundtw2TyVdpEGbW8/0xFvm
+         lY47QyXL5HFD0SP6tJqU78LGLWkbHD3shYkZCiY1C6DJvznzUoD7RKNEfN8kUqumIUfr
+         meyw==
+X-Gm-Message-State: ABy/qLbBMXanCP4fPYdvxdxqUINLUbhWegJoH1GzIivpFyTTyx6RufoY
+        hsi9Js1KGlCGo3BUEFZ3I9msCvcadxle+8oNramoj9Jlw2hH+g8POIg1tIqAW249tWiT0yVl1hR
+        9Lw3dd2PRfducd/LMs2+bHOvPjBqDvTBXocjOiDzc
+X-Received: by 2002:a05:622a:20a:b0:403:adf1:8352 with SMTP id b10-20020a05622a020a00b00403adf18352mr21371248qtx.24.1691006429443;
+        Wed, 02 Aug 2023 13:00:29 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlFdfcAWRqOhKjznQcKVbW+9jHs24tBO1aGhDU5g/DP+NaQk30hEz3jDxdOD1iu1O5H+VWqQb1eav5bKL4dI4R0=
+X-Received: by 2002:a05:622a:20a:b0:403:adf1:8352 with SMTP id
+ b10-20020a05622a020a00b00403adf18352mr21371221qtx.24.1691006429150; Wed, 02
+ Aug 2023 13:00:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230419062505.257231-1-leobras@redhat.com> <CAJ6HWG6nPdUQ_2_fSj6J7ZE7FB-T+VWT-kq9oW8BLTUtuQEWxA@mail.gmail.com>
+ <CAJF2gTRZO2hogUbZvj0f41JJvmqLNz-MKTHJshgdhNMpp9Bc8w@mail.gmail.com>
+In-Reply-To: <CAJF2gTRZO2hogUbZvj0f41JJvmqLNz-MKTHJshgdhNMpp9Bc8w@mail.gmail.com>
+From:   Leonardo Bras Soares Passos <leobras@redhat.com>
+Date:   Wed, 2 Aug 2023 17:00:18 -0300
+Message-ID: <CAJ6HWG7kvWtZHTBMiFAQriUn84E8SYuGmtAGmW8YVwqUyoUYgQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] riscv/atomic.h: Deduplicate arch_atomic.*
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 12, 2023, Thomas Huth wrote:
-> The sync_regs test currently does not have any output (unless one
-> of the TEST_ASSERT statement fails), so it's hard to say for a user
-> whether a certain new sub-test has been included in the binary or
-> not. Let's make this a little bit more user-friendly and include
-> some TAP output via the kselftest_harness.h interface.
-> To be able to use the interface, we have to break up the huge main()
-> function here in more fine grained parts - then we can use the
-> TEST_F() macro to define the individual tests. Since these are run
-> with a separate VM now, we have also to make sure to create the
-> expected state at the beginning of each test, so some parts grow
-> a little bit - which should be OK considering that the individual
-> tests are more self-contained now.
-> 
-> Suggested-by: David Matlack <dmatlack@google.com>
-> Signed-off-by: Thomas Huth <thuth@redhat.com>
-> ---
->  .../selftests/kvm/x86_64/sync_regs_test.c     | 113 +++++++++++++++---
+On Thu, May 25, 2023 at 7:07=E2=80=AFAM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Thu, May 25, 2023 at 5:31=E2=80=AFPM Leonardo Bras Soares Passos
+> <leobras@redhat.com> wrote:
+> >
+> > Friendly ping?
+> >
+> > On Wed, Apr 19, 2023 at 3:25=E2=80=AFAM Leonardo Bras <leobras@redhat.c=
+om> wrote:
+> > >
+> > > Some functions use mostly the same asm for 32-bit and 64-bit versions=
+.
+> > >
+> > > Make a macro that is generic enough and avoid code duplication.
+> > >
+> > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > ---
+> > >  arch/riscv/include/asm/atomic.h | 164 +++++++++++++++---------------=
+--
+> > >  1 file changed, 76 insertions(+), 88 deletions(-)
+> > >
+> > > diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/asm=
+/atomic.h
+> > > index 0dfe9d857a762..85eb2edbc8219 100644
+> > > --- a/arch/riscv/include/asm/atomic.h
+> > > +++ b/arch/riscv/include/asm/atomic.h
+> > > @@ -196,22 +196,28 @@ ATOMIC_OPS(xor, xor, i)
+> > >  #undef ATOMIC_FETCH_OP
+> > >  #undef ATOMIC_OP_RETURN
+> > >
+> > > +#define _arch_atomic_fetch_add_unless(_prev, _rc, counter, _a, _u, s=
+fx)        \
+> > > +({                                                                  =
+   \
+> > > +       __asm__ __volatile__ (                                       =
+   \
+> > > +               "0:     lr." sfx "     %[p],  %[c]\n"                =
+   \
+> > > +               "       beq            %[p],  %[u], 1f\n"            =
+   \
+> > > +               "       add            %[rc], %[p], %[a]\n"          =
+   \
+> > > +               "       sc." sfx ".rl  %[rc], %[rc], %[c]\n"         =
+   \
+> > > +               "       bnez           %[rc], 0b\n"                  =
+   \
+> > > +               "       fence          rw, rw\n"                     =
+   \
+> > > +               "1:\n"                                               =
+   \
+> > > +               : [p]"=3D&r" (_prev), [rc]"=3D&r" (_rc), [c]"+A" (cou=
+nter)  \
+> > > +               : [a]"r" (_a), [u]"r" (_u)                           =
+   \
+> > > +               : "memory");                                         =
+   \
+> > > +})
+> > > +
+> > >  /* This is required to provide a full barrier on success. */
+> > >  static __always_inline int arch_atomic_fetch_add_unless(atomic_t *v,=
+ int a, int u)
+> > >  {
+> > >         int prev, rc;
+> > >
+> > > -       __asm__ __volatile__ (
+> > > -               "0:     lr.w     %[p],  %[c]\n"
+> > > -               "       beq      %[p],  %[u], 1f\n"
+> > > -               "       add      %[rc], %[p], %[a]\n"
+> > > -               "       sc.w.rl  %[rc], %[rc], %[c]\n"
+> > > -               "       bnez     %[rc], 0b\n"
+> > > -               "       fence    rw, rw\n"
+> > > -               "1:\n"
+> > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->co=
+unter)
+> > > -               : [a]"r" (a), [u]"r" (u)
+> > > -               : "memory");
+> > > +       _arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "w"=
+);
+> > > +
+> > >         return prev;
+> > >  }
+> > >  #define arch_atomic_fetch_add_unless arch_atomic_fetch_add_unless
+> > > @@ -222,17 +228,8 @@ static __always_inline s64 arch_atomic64_fetch_a=
+dd_unless(atomic64_t *v, s64 a,
+> > >         s64 prev;
+> > >         long rc;
+> > >
+> > > -       __asm__ __volatile__ (
+> > > -               "0:     lr.d     %[p],  %[c]\n"
+> > > -               "       beq      %[p],  %[u], 1f\n"
+> > > -               "       add      %[rc], %[p], %[a]\n"
+> > > -               "       sc.d.rl  %[rc], %[rc], %[c]\n"
+> > > -               "       bnez     %[rc], 0b\n"
+> > > -               "       fence    rw, rw\n"
+> > > -               "1:\n"
+> > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->co=
+unter)
+> > > -               : [a]"r" (a), [u]"r" (u)
+> > > -               : "memory");
+> > > +       _arch_atomic_fetch_add_unless(prev, rc, v->counter, a, u, "d"=
+);
+> > > +
+> > >         return prev;
+> > >  }
+> > >  #define arch_atomic64_fetch_add_unless arch_atomic64_fetch_add_unles=
+s
+> > > @@ -310,61 +307,79 @@ ATOMIC_OPS()
+> > >  #undef ATOMIC_OPS
+> > >  #undef ATOMIC_OP
+> > >
+> > > +#define _arch_atomic_inc_unless_negative(_prev, _rc, counter, sfx)  =
+   \
+> > > +({                                                                  =
+   \
+> > > +       __asm__ __volatile__ (                                       =
+   \
+> > > +               "0:     lr." sfx "      %[p],  %[c]\n"               =
+   \
+> > > +               "       bltz            %[p],  1f\n"                 =
+   \
+> > > +               "       addi            %[rc], %[p], 1\n"            =
+   \
+> > > +               "       sc." sfx ".rl   %[rc], %[rc], %[c]\n"        =
+   \
+> > > +               "       bnez            %[rc], 0b\n"                 =
+   \
+> > > +               "       fence           rw, rw\n"                    =
+   \
+> > > +               "1:\n"                                               =
+   \
+> > > +               : [p]"=3D&r" (_prev), [rc]"=3D&r" (_rc), [c]"+A" (cou=
+nter)  \
+> > > +               :                                                    =
+   \
+> > > +               : "memory");                                         =
+   \
+> > > +})
+> > > +
+> > >  static __always_inline bool arch_atomic_inc_unless_negative(atomic_t=
+ *v)
+> > >  {
+> > >         int prev, rc;
+> > >
+> > > -       __asm__ __volatile__ (
+> > > -               "0:     lr.w      %[p],  %[c]\n"
+> > > -               "       bltz      %[p],  1f\n"
+> > > -               "       addi      %[rc], %[p], 1\n"
+> > > -               "       sc.w.rl   %[rc], %[rc], %[c]\n"
+> > > -               "       bnez      %[rc], 0b\n"
+> > > -               "       fence     rw, rw\n"
+> > > -               "1:\n"
+> > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->co=
+unter)
+> > > -               :
+> > > -               : "memory");
+> > > +       _arch_atomic_inc_unless_negative(prev, rc, v->counter, "w");
+> > > +
+> > >         return !(prev < 0);
+> > >  }
+> > >
+> > >  #define arch_atomic_inc_unless_negative arch_atomic_inc_unless_negat=
+ive
+> > >
+> > > +#define _arch_atomic_dec_unless_positive(_prev, _rc, counter, sfx)  =
+   \
+> > > +({                                                                  =
+   \
+> > > +       __asm__ __volatile__ (                                       =
+   \
+> > > +               "0:     lr." sfx "      %[p],  %[c]\n"               =
+   \
+> > > +               "       bgtz            %[p],  1f\n"                 =
+   \
+> > > +               "       addi            %[rc], %[p], -1\n"           =
+   \
+> > > +               "       sc." sfx ".rl   %[rc], %[rc], %[c]\n"        =
+   \
+> > > +               "       bnez            %[rc], 0b\n"                 =
+   \
+> > > +               "       fence           rw, rw\n"                    =
+   \
+> > > +               "1:\n"                                               =
+   \
+> > > +               : [p]"=3D&r" (_prev), [rc]"=3D&r" (_rc), [c]"+A" (cou=
+nter)  \
+> > > +               :                                                    =
+   \
+> > > +               : "memory");                                         =
+   \
+> > > +})
+> > > +
+> > >  static __always_inline bool arch_atomic_dec_unless_positive(atomic_t=
+ *v)
+> > >  {
+> > >         int prev, rc;
+> > >
+> > > -       __asm__ __volatile__ (
+> > > -               "0:     lr.w      %[p],  %[c]\n"
+> > > -               "       bgtz      %[p],  1f\n"
+> > > -               "       addi      %[rc], %[p], -1\n"
+> > > -               "       sc.w.rl   %[rc], %[rc], %[c]\n"
+> > > -               "       bnez      %[rc], 0b\n"
+> > > -               "       fence     rw, rw\n"
+> > > -               "1:\n"
+> > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->co=
+unter)
+> > > -               :
+> > > -               : "memory");
+> > > +       _arch_atomic_dec_unless_positive(prev, rc, v->counter, "w");
+> > > +
+> > >         return !(prev > 0);
+> > >  }
+> > >
+> > >  #define arch_atomic_dec_unless_positive arch_atomic_dec_unless_posit=
+ive
+> > >
+> > > +#define _arch_atomic_dec_if_positive(_prev, _rc, counter, sfx)      =
+   \
+> > > +({                                                                  =
+   \
+> > > +       __asm__ __volatile__ (                                       =
+   \
+> > > +               "0:     lr." sfx "     %[p],  %[c]\n"                =
+   \
+> > > +               "       addi           %[rc], %[p], -1\n"            =
+   \
+> > > +               "       bltz           %[rc], 1f\n"                  =
+   \
+> > > +               "       sc." sfx ".rl  %[rc], %[rc], %[c]\n"         =
+   \
+> > > +               "       bnez           %[rc], 0b\n"                  =
+   \
+> > > +               "       fence          rw, rw\n"                     =
+   \
+> > > +               "1:\n"                                               =
+   \
+> > > +               : [p]"=3D&r" (_prev), [rc]"=3D&r" (_rc), [c]"+A" (cou=
+nter)  \
+> > > +               :                                                    =
+   \
+> > > +               : "memory");                                         =
+   \
+> > > +})
+> > > +
+> > >  static __always_inline int arch_atomic_dec_if_positive(atomic_t *v)
+> > >  {
+> > >         int prev, rc;
+> > >
+> > > -       __asm__ __volatile__ (
+> > > -               "0:     lr.w     %[p],  %[c]\n"
+> > > -               "       addi     %[rc], %[p], -1\n"
+> > > -               "       bltz     %[rc], 1f\n"
+> > > -               "       sc.w.rl  %[rc], %[rc], %[c]\n"
+> > > -               "       bnez     %[rc], 0b\n"
+> > > -               "       fence    rw, rw\n"
+> > > -               "1:\n"
+> > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->co=
+unter)
+> > > -               :
+> > > -               : "memory");
+> > > +       _arch_atomic_dec_if_positive(prev, rc, v->counter, "w");
+> > > +
+> > >         return prev - 1;
+> > >  }
+> > >
+> > > @@ -376,17 +391,8 @@ static __always_inline bool arch_atomic64_inc_un=
+less_negative(atomic64_t *v)
+> > >         s64 prev;
+> > >         long rc;
+> > >
+> > > -       __asm__ __volatile__ (
+> > > -               "0:     lr.d      %[p],  %[c]\n"
+> > > -               "       bltz      %[p],  1f\n"
+> > > -               "       addi      %[rc], %[p], 1\n"
+> > > -               "       sc.d.rl   %[rc], %[rc], %[c]\n"
+> > > -               "       bnez      %[rc], 0b\n"
+> > > -               "       fence     rw, rw\n"
+> > > -               "1:\n"
+> > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->co=
+unter)
+> > > -               :
+> > > -               : "memory");
+> > > +       _arch_atomic_inc_unless_negative(prev, rc, v->counter, "d");
+> > > +
+> > >         return !(prev < 0);
+> > >  }
+> > >
+> > > @@ -397,17 +403,8 @@ static __always_inline bool arch_atomic64_dec_un=
+less_positive(atomic64_t *v)
+> > >         s64 prev;
+> > >         long rc;
+> > >
+> > > -       __asm__ __volatile__ (
+> > > -               "0:     lr.d      %[p],  %[c]\n"
+> > > -               "       bgtz      %[p],  1f\n"
+> > > -               "       addi      %[rc], %[p], -1\n"
+> > > -               "       sc.d.rl   %[rc], %[rc], %[c]\n"
+> > > -               "       bnez      %[rc], 0b\n"
+> > > -               "       fence     rw, rw\n"
+> > > -               "1:\n"
+> > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->co=
+unter)
+> > > -               :
+> > > -               : "memory");
+> > > +       _arch_atomic_dec_unless_positive(prev, rc, v->counter, "d");
+> > > +
+> > >         return !(prev > 0);
+> > >  }
+> > >
+> > > @@ -418,17 +415,8 @@ static __always_inline s64 arch_atomic64_dec_if_=
+positive(atomic64_t *v)
+> > >         s64 prev;
+> > >         long rc;
+> > >
+> > > -       __asm__ __volatile__ (
+> > > -               "0:     lr.d     %[p],  %[c]\n"
+> > > -               "       addi      %[rc], %[p], -1\n"
+> > > -               "       bltz     %[rc], 1f\n"
+> > > -               "       sc.d.rl  %[rc], %[rc], %[c]\n"
+> > > -               "       bnez     %[rc], 0b\n"
+> > > -               "       fence    rw, rw\n"
+> > > -               "1:\n"
+> > > -               : [p]"=3D&r" (prev), [rc]"=3D&r" (rc), [c]"+A" (v->co=
+unter)
+> > > -               :
+> > > -               : "memory");
+> > > +       _arch_atomic_dec_if_positive(prev, rc, v->counter, "d");
+> > > +
+> > >         return prev - 1;
+> > >  }
+> > >
+> > > --
+> > > 2.40.0
+> > >
+> >
+> A safe cleanup, no problem found.
+>
+> Reviewed-by: Guo Ren <guoren@kernel.org>
+>
+>
 
-FYI, there's an in-flight patch[*] to expand this test's coverage, and I plan on
-grabbing that in some form before this one (sorry).  Let me know if there are
-any tweaks that can be done to Michal's patch to make it easier to convert the
-test to tap.
+Hello Palmer,
 
-I'll also try to get Michal's patch into kvm-x86/next sooner than later so that
-you can use that as the basic.
+Any improvements you suggest for this patch?
 
-Oh, and no need to post "KVM: selftests: Rename the ASSERT_EQ macro" in the next
-version, I'm planning on grabbing that one straightaway.
+Best regards,
+Leonardo Bras
 
-[*] https://lore.kernel.org/all/20230728001606.2275586-3-mhal@rbox.co
-
->  1 file changed, 98 insertions(+), 15 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/kvm/x86_64/sync_regs_test.c b/tools/testing/selftests/kvm/x86_64/sync_regs_test.c
-> index 2da89fdc2471a..e1359a4a07fea 100644
-> --- a/tools/testing/selftests/kvm/x86_64/sync_regs_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/sync_regs_test.c
-> @@ -16,6 +16,7 @@
->  #include <string.h>
->  #include <sys/ioctl.h>
->  
-> +#include "kselftest_harness.h"
->  #include "test_util.h"
->  #include "kvm_util.h"
->  #include "processor.h"
-> @@ -80,23 +81,24 @@ static void compare_vcpu_events(struct kvm_vcpu_events *left,
->  #define TEST_SYNC_FIELDS   (KVM_SYNC_X86_REGS|KVM_SYNC_X86_SREGS|KVM_SYNC_X86_EVENTS)
->  #define INVALID_SYNC_FIELD 0x80000000
->  
-> -int main(int argc, char *argv[])
-> -{
-> -	struct kvm_vcpu *vcpu;
-> +FIXTURE(sync_regs_test) {
->  	struct kvm_vm *vm;
-> -	struct kvm_run *run;
-> -	struct kvm_regs regs;
-> -	struct kvm_sregs sregs;
-> -	struct kvm_vcpu_events events;
-> -	int rv, cap;
-> +	struct kvm_vcpu *vcpu;
-> +};
->  
-> -	cap = kvm_check_cap(KVM_CAP_SYNC_REGS);
-> -	TEST_REQUIRE((cap & TEST_SYNC_FIELDS) == TEST_SYNC_FIELDS);
-> -	TEST_REQUIRE(!(cap & INVALID_SYNC_FIELD));
-> +FIXTURE_SETUP(sync_regs_test) {
-> +	self->vm = vm_create_with_one_vcpu(&self->vcpu, guest_code);
-> +}
->  
-> -	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
-> +FIXTURE_TEARDOWN(sync_regs_test) {
-> +	kvm_vm_free(self->vm);
-> +}
->  
-> -	run = vcpu->run;
-> +TEST_F(sync_regs_test, read_invalid)
-> +{
-> +	struct kvm_vcpu *vcpu = self->vcpu;
-> +	struct kvm_run *run = vcpu->run;
-> +	int rv;
->  
->  	/* Request reading invalid register set from VCPU. */
->  	run->kvm_valid_regs = INVALID_SYNC_FIELD;
-> @@ -112,6 +114,13 @@ int main(int argc, char *argv[])
->  		    "Invalid kvm_valid_regs did not cause expected KVM_RUN error: %d\n",
->  		    rv);
->  	run->kvm_valid_regs = 0;
-> +}
-> +
-> +TEST_F(sync_regs_test, set_invalid)
-> +{
-> +	struct kvm_vcpu *vcpu = self->vcpu;
-> +	struct kvm_run *run = vcpu->run;
-> +	int rv;
->  
->  	/* Request setting invalid register set into VCPU. */
->  	run->kvm_dirty_regs = INVALID_SYNC_FIELD;
-> @@ -127,11 +136,22 @@ int main(int argc, char *argv[])
->  		    "Invalid kvm_dirty_regs did not cause expected KVM_RUN error: %d\n",
->  		    rv);
->  	run->kvm_dirty_regs = 0;
-> +}
-> +
-> +TEST_F(sync_regs_test, req_and_verify_all_valid)
-> +{
-> +	struct kvm_vcpu *vcpu = self->vcpu;
-> +	struct kvm_run *run = vcpu->run;
-> +	struct kvm_vcpu_events events;
-> +	struct kvm_sregs sregs;
-> +	struct kvm_regs regs;
-> +	int rv;
->  
->  	/* Request and verify all valid register sets. */
->  	/* TODO: BUILD TIME CHECK: TEST_ASSERT(KVM_SYNC_X86_NUM_FIELDS != 3); */
->  	run->kvm_valid_regs = TEST_SYNC_FIELDS;
->  	rv = _vcpu_run(vcpu);
-> +	TEST_ASSERT(rv == 0, "vcpu_run failed: %d\n", rv);
-
-Just use vcpu_run() instead of _vcpu_run().  And please post that as a separate
-patch, I think/hope it will make the conversion-to-tap patch smaller.
-
->  	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
->  
->  	vcpu_regs_get(vcpu, &regs);
-> @@ -142,6 +162,22 @@ int main(int argc, char *argv[])
->  
->  	vcpu_events_get(vcpu, &events);
->  	compare_vcpu_events(&events, &run->s.regs.events);
-> +}
-> +
-> +TEST_F(sync_regs_test, set_and_verify_various)
-> +{
-> +	struct kvm_vcpu *vcpu = self->vcpu;
-> +	struct kvm_run *run = vcpu->run;
-> +	struct kvm_vcpu_events events;
-> +	struct kvm_sregs sregs;
-> +	struct kvm_regs regs;
-> +	int rv;
-> +
-> +	/* Run once to get register set */
-> +	run->kvm_valid_regs = TEST_SYNC_FIELDS;
-> +	rv = _vcpu_run(vcpu);
-> +	TEST_ASSERT(rv == 0, "vcpu_run failed: %d\n", rv);
-
-Same comment here.
-
-> +	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
->  
->  	/* Set and verify various register values. */
->  	run->s.regs.regs.rbx = 0xBAD1DEA;
-> @@ -151,6 +187,7 @@ int main(int argc, char *argv[])
->  	run->kvm_valid_regs = TEST_SYNC_FIELDS;
->  	run->kvm_dirty_regs = KVM_SYNC_X86_REGS | KVM_SYNC_X86_SREGS;
->  	rv = _vcpu_run(vcpu);
-> +	TEST_ASSERT(rv == 0, "vcpu_run failed: %d\n", rv);
-
-And here.
-
->  	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
->  	TEST_ASSERT(run->s.regs.regs.rbx == 0xBAD1DEA + 1,
->  		    "rbx sync regs value incorrect 0x%llx.",
-> @@ -167,6 +204,13 @@ int main(int argc, char *argv[])
->  
->  	vcpu_events_get(vcpu, &events);
->  	compare_vcpu_events(&events, &run->s.regs.events);
-> +}
-> +
-> +TEST_F(sync_regs_test, clear_kvm_dirty_regs_bits)
-> +{
-> +	struct kvm_vcpu *vcpu = self->vcpu;
-> +	struct kvm_run *run = vcpu->run;
-> +	int rv;
->  
->  	/* Clear kvm_dirty_regs bits, verify new s.regs values are
->  	 * overwritten with existing guest values.
-> @@ -175,10 +219,25 @@ int main(int argc, char *argv[])
->  	run->kvm_dirty_regs = 0;
->  	run->s.regs.regs.rbx = 0xDEADBEEF;
->  	rv = _vcpu_run(vcpu);
-> +	TEST_ASSERT(rv == 0, "vcpu_run failed: %d\n", rv);
-
-Here too.
-
->  	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
->  	TEST_ASSERT(run->s.regs.regs.rbx != 0xDEADBEEF,
->  		    "rbx sync regs value incorrect 0x%llx.",
->  		    run->s.regs.regs.rbx);
-> +}
-> +
-> +TEST_F(sync_regs_test, clear_kvm_valid_and_dirty_regs)
-> +{
-> +	struct kvm_vcpu *vcpu = self->vcpu;
-> +	struct kvm_run *run = vcpu->run;
-> +	struct kvm_regs regs;
-> +	int rv;
-> +
-> +	/* Run once to get register set */
-> +	run->kvm_valid_regs = TEST_SYNC_FIELDS;
-> +	rv = _vcpu_run(vcpu);
-> +	TEST_ASSERT(rv == 0, "vcpu_run failed: %d\n", rv);
-
-At least you're consistent :-)
-
-> +	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
->  
->  	/* Clear kvm_valid_regs bits and kvm_dirty_bits.
->  	 * Verify s.regs values are not overwritten with existing guest values
-> @@ -187,9 +246,11 @@ int main(int argc, char *argv[])
->  	run->kvm_valid_regs = 0;
->  	run->kvm_dirty_regs = 0;
->  	run->s.regs.regs.rbx = 0xAAAA;
-> +	vcpu_regs_get(vcpu, &regs);
-
-Can you split this change to its own patch too?  I'm pretty sure that change
-stands on its own, and slotting it in here made me do a double-take.
-
->  	regs.rbx = 0xBAC0;
->  	vcpu_regs_set(vcpu, &regs);
->  	rv = _vcpu_run(vcpu);
-> +	TEST_ASSERT(rv == 0, "vcpu_run failed: %d\n", rv);
->  	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
->  	TEST_ASSERT(run->s.regs.regs.rbx == 0xAAAA,
->  		    "rbx sync regs value incorrect 0x%llx.",
-> @@ -198,6 +259,20 @@ int main(int argc, char *argv[])
->  	TEST_ASSERT(regs.rbx == 0xBAC0 + 1,
->  		    "rbx guest value incorrect 0x%llx.",
->  		    regs.rbx);
-> +}
-> +
-> +TEST_F(sync_regs_test, clear_kvm_valid_regs_bits)
-> +{
-> +	struct kvm_vcpu *vcpu = self->vcpu;
-> +	struct kvm_run *run = vcpu->run;
-> +	struct kvm_regs regs;
-> +	int rv;
-> +
-> +	/* Run once to get register set */
-> +	run->kvm_valid_regs = TEST_SYNC_FIELDS;
-> +	rv = _vcpu_run(vcpu);
-> +	TEST_ASSERT(rv == 0, "vcpu_run failed: %d\n", rv);
-
-Once more, with feeling!
-
-> +	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
->  
->  	/* Clear kvm_valid_regs bits. Verify s.regs values are not overwritten
->  	 * with existing guest values but that guest values are overwritten
-> @@ -207,6 +282,7 @@ int main(int argc, char *argv[])
->  	run->kvm_dirty_regs = TEST_SYNC_FIELDS;
->  	run->s.regs.regs.rbx = 0xBBBB;
->  	rv = _vcpu_run(vcpu);
-> +	TEST_ASSERT(rv == 0, "vcpu_run failed: %d\n", rv);
-
-Heh.
-
->  	TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
->  	TEST_ASSERT(run->s.regs.regs.rbx == 0xBBBB,
->  		    "rbx sync regs value incorrect 0x%llx.",
-> @@ -215,8 +291,15 @@ int main(int argc, char *argv[])
->  	TEST_ASSERT(regs.rbx == 0xBBBB + 1,
->  		    "rbx guest value incorrect 0x%llx.",
->  		    regs.rbx);
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int cap;
->  
-> -	kvm_vm_free(vm);
-> +	cap = kvm_check_cap(KVM_CAP_SYNC_REGS);
-> +	TEST_REQUIRE((cap & TEST_SYNC_FIELDS) == TEST_SYNC_FIELDS);
-> +	TEST_REQUIRE(!(cap & INVALID_SYNC_FIELD));
->  
-> -	return 0;
-> +	return test_harness_run(argc, argv);
->  }
-> -- 
-> 2.39.3
-> 
