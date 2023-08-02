@@ -2,52 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E24576C738
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4C676C73C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbjHBHmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:42:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
+        id S232056AbjHBHnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233191AbjHBHmV (ORCPT
+        with ESMTP id S233308AbjHBHmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:42:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB181BF9
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:40:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 2 Aug 2023 03:42:32 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE60130D8;
+        Wed,  2 Aug 2023 00:40:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D301D61849
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:40:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3159C433C8;
-        Wed,  2 Aug 2023 07:40:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690962005;
-        bh=jLElfZCc0HXALipmgfIbgWrzc2uaPkdLw7TlZL5w5oY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cfHlAhS0slkzx9gHMG8sHeET7oXyzk2OnJ8Iisg+rezv1a2cBrTDuIMgpfCpdvj/l
-         E9FM4p3Ydk9uUXqLivnV1e7PFe35HAEIaAjQRexdKOycTyXaAXd7Ci9uXazZ2in1XM
-         mUFKajz6co5xqN0nB99afK4rzadPj4n8gAyuPmIWIgZsZY8FXBTE+7czSKpdW3Z11x
-         njo7tTaYKT3Qa1tWkKDBGG8bvzZPf61Pa4iHlVtVLWQYXo3/zxthU/ANFa3wcEqly+
-         dUm7zroL1l373nRmKZqbI8RmDrxk+MY4V9HSoQfKAe/goou/+R6Y/+5BkwdNMw/hNB
-         eHH23/LB3PJiw==
-Date:   Wed, 2 Aug 2023 09:40:01 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-kernel@vger.kernel.org, Dinh Nguyen <dinguyen@kernel.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH RESEND^2] nios2: support clone3() syscall
-Message-ID: <20230802-abgaben-behutsam-92946d2ecbf5@brauner>
-References: <20230802051924.7837-1-rdunlap@infradead.org>
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8A1631F749;
+        Wed,  2 Aug 2023 07:40:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690962017; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6e6GiqmpyVCzOwvyGHqSNXCNxBFa7aDIzwYUNSYMUSM=;
+        b=J+S11sgO6aiS75myCJ8iLCSy282SRXv1ywdO5YwOTHEIVWLCWo+CmZolywZvDiekiULT7E
+        vWy7yPZAHd+/5e7nl5xlTRsvC9Ke8RqcIZJSFGjS/fxw80Gp6IoVhZvIX5Ru4mir/H7nD1
+        u3KKzJjm5zGmBVBQNz63u0Wcjp13FkY=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6B3A513909;
+        Wed,  2 Aug 2023 07:40:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XYsOF2EIymQ9JwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Wed, 02 Aug 2023 07:40:17 +0000
+Date:   Wed, 2 Aug 2023 09:40:16 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v3] mm: memcg: use rstat for non-hierarchical stats
+Message-ID: <ZMoIYLwITUZzXp4C@dhcp22.suse.cz>
+References: <20230726153223.821757-1-yosryahmed@google.com>
+ <20230726153223.821757-2-yosryahmed@google.com>
+ <ZMkXDuwD8RFRKnNQ@dhcp22.suse.cz>
+ <CAJD7tkbb8AWR-duWb+at-S9MMz48b0JqnM+b5ok83TzvXvPb+A@mail.gmail.com>
+ <CAJD7tkbZi16w4mYngVK8qA84FMijmHvwzMjHfrJiCsV=WjixOA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230802051924.7837-1-rdunlap@infradead.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkbZi16w4mYngVK8qA84FMijmHvwzMjHfrJiCsV=WjixOA@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,16 +72,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 10:19:24PM -0700, Randy Dunlap wrote:
-> Add support for the clone3() syscall to prevent a warning from
-> checksyscalls.sh:
+On Tue 01-08-23 10:29:39, Yosry Ahmed wrote:
+> On Tue, Aug 1, 2023 at 9:39 AM Yosry Ahmed <yosryahmed@google.com> wrote:
+[...]
+> > > Have you measured any potential regression for cgroup v2 which collects
+> > > all this data without ever using it (AFAICS)?
+> >
+> > I did not. I did not expect noticeable regressions given that all the
+> > extra work is done during flushing, which should mostly be done by the
+> > asynchronous worker, but can also happen in the stats reading context.
+> > Let me run the same script on cgroup v2 just in case and report back.
 > 
-> <stdin>:1517:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+> A few runs on mm-unstable with this patch:
 > 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Dinh Nguyen <dinguyen@kernel.org>
-> Cc: Christian Brauner <christian@brauner.io>
-> ---
-> Is there some reason that NIOS2 should not (does not) support clone3()?
+> # time cat /sys/fs/cgroup/cg*/memory.stat > /dev/null
 
-Cc Arnd, in case he knows.
+Is this really representative test to make? I would have expected the
+overhead would be mostly in mem_cgroup_css_rstat_flush (if it is visible
+at all of course). This would be more likely visible in all cpus busy
+situation (you can try heavy parallel kernel build from tmpfs for
+example).
+[...]
+
+> It looks like there are no regressions on cgroup v2 when reading the
+> stats. Please let me know if you want me to send a new version with
+> the cgroup v2 results as well in the commit log -- or I can just send
+> a new commit log. Whatever is easier for Andrew.
+
+Updating the changelog should be good enough.
+-- 
+Michal Hocko
+SUSE Labs
