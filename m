@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFF876C4E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EFC476C4EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbjHBFfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 01:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        id S231433AbjHBFgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 01:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231414AbjHBFfg (ORCPT
+        with ESMTP id S231414AbjHBFg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 01:35:36 -0400
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404B5FE
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 22:35:32 -0700 (PDT)
-Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6b9ef9b1920so9435793a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 22:35:32 -0700 (PDT)
+        Wed, 2 Aug 2023 01:36:27 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A86103
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 22:36:25 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686f090310dso6425787b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 22:36:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690954585; x=1691559385;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=v4Fc7P6F/s9IcK1ZkkE4eKQ9aXOxzO0/vcsB9Z0O/Gk=;
+        b=BBVnGf/vOrDe8m9btKDPytfzv/3xhPsvVTOq6PPU5677am04z3rpQfbGwl5UonDa4R
+         7oHUnEstdprokoKtwBIsc3ttdEXtNM2ePOFFnLtrBs0m8iIHcpvqPONw5X/PFAqWGnvu
+         TX5E8BaZhskQrJ/d3WjL6LFKnto8/IyQ3CMP4lLWIET68PrmxFh9u8o6A9wCG7At/lch
+         5ArMhTg+8YvDFC89vUeYJmouV1H6S0yazsrRKloi4HpCVtvYMQKjWhZFFPvXTn8Hh5p0
+         pN6DCPUYkQgn22EWG4vq1CYg3gLhWsCkdsuhrDeHGW1/a7P0o4mUfnurYjqEpLXNReRg
+         ejSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690954531; x=1691559331;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20221208; t=1690954585; x=1691559385;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=puHHKTR7+kIYGy3TDtVRQB3V5vTcG4bvmKPpiu7MjD0=;
-        b=OZSb/7BgreYqdv8OvF3sGJ4Mq64B9xuhp9QNrdBPfjFnPA8po1EI4OKU512VouP8Hp
-         7Enm547hbWBA3kWjh8GSeSHCTUwWqyjXpl9iK9Ctg23EB7ZUY1NVkXbyqJCnhvgYS9vR
-         pUlnAZEV0I3x8sGzkPz9fEIQEcLV0hii1rj8/ef9y489LIwB+xEeNATenuFnoGYpZ45U
-         sW5XyfF3z/dwvHDDT4CexJB/gn24HcuPrsEMDYmIc4LzXlEIBTkeiMhudIHB4fUbtxQW
-         XH0hwCAnx4gY/B5PUpXUkG+bpx1KM5AshIremcdLpcdjnizqGNK9Klplb6PQN/F3w6US
-         TfWQ==
-X-Gm-Message-State: ABy/qLaTCRCLCOLxXnU2LlrJXsUgp7+c09gEn3bWK5HVsGVMeozjHIee
-        WPLRqh83pzhioydcXUq1klF3IEcfBazdPM2DWLObVAEL6YEQ
-X-Google-Smtp-Source: APBJJlHY7si2ILDgr7QXRY5rvu2C891Bj4w8mHIftnPeituUSrLziiDOwr7rAfck0qHG1wdjHcj99Z/V86mjPTtoUgjjuSMrEMEa
+        bh=v4Fc7P6F/s9IcK1ZkkE4eKQ9aXOxzO0/vcsB9Z0O/Gk=;
+        b=FMZ8/V5BVhKz9uFpHqeEByFVvsy9FjGjxfwm+LmpiaVrPZE2MRMvqAGdBf39GHzLCx
+         +5Q0f8rwB5RPLpni09lH8ijtFptao6BmfnCfHvOHRmhS9SLmLKQIYnKfcWjJs9iF5fv9
+         5ydlPozwAOvjKH1eZkixTpKEsZsID3fXSGqiyTqNx6Gs5bpFcT1emmhH7waq8nW28bOy
+         c2IWvjiOMKUzyBHpnCBO1p+5TJcO7MYdakuU2eRq8KR2pD4FOX2GkDOQDVk1gBlD70pL
+         yb8R/SAO3Jfq8bzECS8/MQGk0fbh9nAuGxMzC6AOK6MaRX3m0jc3+uQ5Fqaeb856Inos
+         SDRw==
+X-Gm-Message-State: ABy/qLaooA4jOm/rNpsmr2OcsKYNNs+ebAZwssoGeIwwcFB44VRC5kEW
+        kjMIPFp5hpAA+kjQhNKkHP5u
+X-Google-Smtp-Source: APBJJlHOPFFjWAsy/EsguxUGZlcRDKZJJ6x7vD35Quk1YIaSvrN0TR8JHhwQG+8BdPDm5/VTrfRfuQ==
+X-Received: by 2002:a05:6a00:1249:b0:674:6dd4:8337 with SMTP id u9-20020a056a00124900b006746dd48337mr17486395pfi.12.1690954585157;
+        Tue, 01 Aug 2023 22:36:25 -0700 (PDT)
+Received: from thinkpad ([117.193.209.129])
+        by smtp.gmail.com with ESMTPSA id y15-20020a637d0f000000b00563b36264besm10780727pgc.85.2023.08.01.22.36.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 22:36:24 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 11:06:13 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        cw00.choi@samsung.com, andersson@kernel.org,
+        konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+        linux-scsi@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        quic_asutoshd@quicinc.com, quic_cang@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_narepall@quicinc.com,
+        quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
+        quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
+        bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/6] scsi: ufs: host: Add support for parsing OPP
+Message-ID: <20230802053613.GF2370@thinkpad>
+References: <20230731163357.49045-1-manivannan.sadhasivam@linaro.org>
+ <20230731163357.49045-5-manivannan.sadhasivam@linaro.org>
+ <20230801090333.pqqugj4tcarwdl2o@vireshk-i7>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:2087:b0:6b9:b1b8:bf0b with SMTP id
- y7-20020a056830208700b006b9b1b8bf0bmr15835099otq.0.1690954531329; Tue, 01 Aug
- 2023 22:35:31 -0700 (PDT)
-Date:   Tue, 01 Aug 2023 22:35:31 -0700
-In-Reply-To: <8d17478c-f1d7-d1fa-3012-06b0ba8d534c@gmx.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002bdb540601ea088c@google.com>
-Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
-From:   syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, nogikh@google.com,
-        quwenruo.btrfs@gmx.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230801090333.pqqugj4tcarwdl2o@vireshk-i7>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Aug 01, 2023 at 02:33:33PM +0530, Viresh Kumar wrote:
+> On 31-07-23, 22:03, Manivannan Sadhasivam wrote:
+> > +int ufshcd_opp_config_clks(struct device *dev, struct opp_table *opp_table,
+> > +			   struct dev_pm_opp *opp, void *data,
+> > +			   bool scaling_down)
+> > +{
+> > +	struct ufs_hba *hba = dev_get_drvdata(dev);
+> > +	struct list_head *head = &hba->clk_list_head;
+> > +	struct ufs_clk_info *clki;
+> > +	unsigned long freq;
+> > +	u8 idx = 0;
+> > +	int ret;
+> > +
+> > +	list_for_each_entry(clki, head, list) {
+> > +		if (!IS_ERR_OR_NULL(clki->clk)) {
+> 
+> NULL is considered as a valid clock AFAIR, so you must only be doing
+> IS_ERR() here I guess.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in prepare_to_merge
+Agree that clk_ APIs accept NULL clk, but we already have IS_ERR_OR_NULL() check
+everywhere in the driver for clk handling. So I used the same for consistency.
 
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -117)
-WARNING: CPU: 2 PID: 8050 at fs/btrfs/relocation.c:1946 prepare_to_merge+0x10e0/0x1460 fs/btrfs/relocation.c:1946
-Modules linked in:
-CPU: 2 PID: 8050 Comm: syz-executor.0 Not tainted 6.5.0-rc3-syzkaller-g8b6f9b585045 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:prepare_to_merge+0x10e0/0x1460 fs/btrfs/relocation.c:1946
-Code: 8b 7e 50 44 89 e2 48 c7 c6 20 d8 b6 8a e8 28 1d 10 00 eb c1 e8 d1 83 00 fe be 8b ff ff ff 48 c7 c7 80 d7 b6 8a e8 f0 4b c7 fd <0f> 0b e9 bf fe ff ff 48 8b 7c 24 28 e8 af 93 53 fe e9 3e f5 ff ff
-RSP: 0018:ffffc90022d4f6b0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff88804485e440 RCX: 0000000000000000
-RDX: ffff888031a78480 RSI: ffffffff814c5346 RDI: 0000000000000001
-RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 000000002d2d2d2d R12: 0000000000000000
-R13: 0000000000000084 R14: ffff88804485e3f0 R15: ffff88801d0eb000
-FS:  00007f6a3df146c0(0000) GS:ffff88806b800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0a76ac56be CR3: 00000000300a1000 CR4: 0000000000350ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- relocate_block_group+0x8d1/0xe70 fs/btrfs/relocation.c:3779
- btrfs_relocate_block_group+0x714/0xd90 fs/btrfs/relocation.c:4117
- btrfs_relocate_chunk+0x143/0x440 fs/btrfs/volumes.c:3277
- __btrfs_balance fs/btrfs/volumes.c:4012 [inline]
- btrfs_balance+0x20fc/0x3ef0 fs/btrfs/volumes.c:4389
- btrfs_ioctl_balance fs/btrfs/ioctl.c:3604 [inline]
- btrfs_ioctl+0x1362/0x5cf0 fs/btrfs/ioctl.c:4637
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:870 [inline]
- __se_sys_ioctl fs/ioctl.c:856 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:856
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f6a3d27cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6a3df140c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f6a3d39bf80 RCX: 00007f6a3d27cae9
-RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
-RBP: 00007f6a3d2c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f6a3d39bf80 R15: 00007ffd18ee1568
- </TASK>
+- Mani
 
+> 
+> -- 
+> viresh
 
-Tested on:
-
-commit:         8b6f9b58 btrfs: reject invalid reloc tree root keys
-git tree:       https://github.com/adam900710/linux graceful_reloc_mismatch
-console output: https://syzkaller.appspot.com/x/log.txt?x=115ab96ea80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=23c579cf0ae1addd
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae97a827ae1c3336bbb4
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
+-- 
+மணிவண்ணன் சதாசிவம்
