@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 902C576CCA5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D1C76CCAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234020AbjHBM25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:28:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
+        id S234056AbjHBMbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbjHBM2z (ORCPT
+        with ESMTP id S232050AbjHBMbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:28:55 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721769B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:28:54 -0700 (PDT)
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 16E9F86851;
-        Wed,  2 Aug 2023 14:28:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1690979332;
-        bh=QOxLJdR5XRfp4X7X/gIx6TVOLqiMYFRqwN278meiSfE=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=ycVTRKnV8c6oMnN9rdSC+9jtwu3WmvF/Hp/2GUaBMhhwHmhSUarneoKT21f0wZVfN
-         Tz2OEsyqxxfFpeBF93ACwNCiRIIilcOGHD/SXu4Y2MI8ftTW4Tj7E9TIMSM7Tn0iyo
-         zbYM8Y6NUs2IgnxMmIel8+Dr8rcbACzBLphBsUrbiKzb+YsVGxeOHemD82g068mSVX
-         bVcWcE9ddnDKg7dknTdKdZQfRMGvKTdlnbci6/SE4Dxf5UgqUF0oa2FXEpx0WUEM9a
-         tHZe0loUcOqPaFlL2cINkb0fkjx3zu9bixr4sOGx56c9e4uxsNmNdKGKZ1SSmDjkl5
-         lokq+fTJkWKBQ==
-Message-ID: <084ca94e-d694-878e-0646-f4c89043cd28@denx.de>
-Date:   Wed, 2 Aug 2023 14:28:51 +0200
+        Wed, 2 Aug 2023 08:31:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95C99B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=w9tr1AR4GmU5vaVxpOCOeNBoe0QTS0eYPR8meuRf/nA=; b=Sty7cJ5I21M8pIW4vcPtXwcLTD
+        wQ/lq/rUczznk1i6mZJJW+DHIjI6Nyhnqe68OyZW+pH5fn0qrkduW0/m0uhcG9/cdRBqXTuKHVLKy
+        1aD2p+pBmBIy1NAPTwVRde13kciPSuh/DsMZfA8QbLf8YjYISmJQSUIYCvDCKEy52IpVfcHIZijfq
+        yJSIJpJT4Q3ZskApOYQl1lEpvgkIzLXAVII58nPMrPyPWM1UN2P05Qibg3X+6DCr/Ajb0rnnBW8C4
+        LdaQE+uI5nTuVIgXZmZQjVUbYNX1LKxIfkz6oy3BvR56JmkP+kD5ol4M1uEDYVaEtRfiTN7kI8+/m
+        I+1zVq3Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qRB09-00EvsP-Rf; Wed, 02 Aug 2023 12:30:53 +0000
+Date:   Wed, 2 Aug 2023 13:30:53 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Huang Ying <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH 2/4] mm: migrate: convert numamigrate_isolate_page() to
+ numamigrate_isolate_folio()
+Message-ID: <ZMpMfQUktateeN1D@casper.infradead.org>
+References: <20230802095346.87449-1-wangkefeng.wang@huawei.com>
+ <20230802095346.87449-3-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
- and EOT packet"
-Content-Language: en-US
-From:   Marek Vasut <marex@denx.de>
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Amit Pundir <amit.pundir@linaro.org>
-References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
- <6cd079a4-2f5b-0169-cbaf-b59a72f1b32b@denx.de>
-In-Reply-To: <6cd079a4-2f5b-0169-cbaf-b59a72f1b32b@denx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802095346.87449-3-wangkefeng.wang@huawei.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 14:07, Marek Vasut wrote:
-> On 8/2/23 10:52, Neil Armstrong wrote:
->> This reverts commit [1] to fix display regression on the Dragonboard 845c
->> (SDM845) devboard.
->>
->> There's a mismatch on the real action of the following flags:
->> - MIPI_DSI_MODE_VIDEO_NO_HSA
->> - MIPI_DSI_MODE_VIDEO_NO_HFP
->> - MIPI_DSI_MODE_VIDEO_NO_HBP
->> which leads to a non-working display on qcom platforms.
->>
->> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA and 
->> EOT packet")
->>
->> Cc: Marek Vasut <marex@denx.de>
->> Cc: Robert Foss <rfoss@kernel.org>
->> Cc: Jagan Teki <jagan@amarulasolutions.com>
->> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
->> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA 
->> and EOT packet")
->> Reported-by: Amit Pundir <amit.pundir@linaro.org>
->> Link: 
->> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> 
-> This breaks LT9611 operation on i.MX8M Mini/Nano/Plus, so, NAK.
-> 
-> I am currently using this LT9611 with Linux 6.1.y
+On Wed, Aug 02, 2023 at 05:53:44PM +0800, Kefeng Wang wrote:
+> -static int numamigrate_isolate_page(pg_data_t *pgdat, struct page *page)
+> +static int numamigrate_isolate_folio(pg_data_t *pgdat, struct folio *folio)
+>  {
+> -	int nr_pages = thp_nr_pages(page);
+> -	int order = compound_order(page);
+> +	int nr_pages = folio_nr_pages(folio);
+> +	int order = folio_order(folio);
+>  
+> -	VM_BUG_ON_PAGE(order && !PageTransHuge(page), page);
+> +	VM_BUG_ON_FOLIO(order && !folio_test_pmd_mappable(folio), folio);
 
-Correction, 6.1.y only with the DSIM patches backported.
+I don't know why we have this assertion.  I would be inclined to delete
+it as part of generalising the migration code to handle arbitrary sizes
+of folio, rather than assert that we only support PMD size folios.
 
-> in production and this 
-> is not acceptable. I also believe the correct fix is on the MSM side, 
-> not on the LT9611 driver side, since MSM incorrectly implements these 
-> flags.
+>  	/* Do not migrate THP mapped by multiple processes */
+> -	if (PageTransHuge(page) && total_mapcount(page) > 1)
+> +	if (folio_test_pmd_mappable(folio) && folio_estimated_sharers(folio) > 1)
+>  		return 0;
+
+I don't know if this is the right logic.  We've willing to move folios
+mapped by multiple processes, as long as they're smaller than PMD size,
+but once they get to PMD size they're magical and can't be moved?
 
