@@ -2,116 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CE276C853
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB4E76C857
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbjHBI1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44780 "EHLO
+        id S233894AbjHBIbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:31:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbjHBI1U (ORCPT
+        with ESMTP id S230396AbjHBIa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:27:20 -0400
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 36361E48;
-        Wed,  2 Aug 2023 01:27:18 -0700 (PDT)
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3728QaklE004404, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3728QaklE004404
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 2 Aug 2023 16:26:36 +0800
-Received: from RTEXMBS01.realtek.com.tw (172.21.6.94) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Wed, 2 Aug 2023 16:26:51 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Wed, 2 Aug 2023 16:26:50 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
- RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
- 15.01.2375.007; Wed, 2 Aug 2023 16:26:50 +0800
-From:   =?utf-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue layer driver
-Thread-Topic: [PATCH v2 1/2] usb: dwc3: add Realtek DHC RTD SoC dwc3 glue
- layer driver
-Thread-Index: AQHZxFokPxd4W07ijUGGBrmKl0qPKq/VrnaAgADyIuA=
-Date:   Wed, 2 Aug 2023 08:26:50 +0000
-Message-ID: <ff9ca6f15936450696bff502c0047708@realtek.com>
-References: <20230801092541.25261-1-stanley_chang@realtek.com>
- <20230802011400.v4jim6ajsqc3tvei@synopsys.com>
-In-Reply-To: <20230802011400.v4jim6ajsqc3tvei@synopsys.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.190.159]
-x-kse-serverinfo: RTEXMBS01.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 2 Aug 2023 04:30:59 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0B9171B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:30:58 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B368F6607077;
+        Wed,  2 Aug 2023 09:30:55 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690965056;
+        bh=gD3G2+Vh4Sx2fq+2r9LQ48BgKjx3ZfLmsLBj3obugz0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=AK5VPExELpYBzwpEnHZ3RL98CEAJEXbn4bDwxsUx7Z2nPwlKiYICQaKdyz/2bIBCB
+         gXXDqWyr7H3+rL784I5VX4Ec3uZmDAM9KLBO2hTdjfPEftkTgRm/N8RcnRwmT0hPYQ
+         R90dNdFG6Paq2f+D8/PAB3EiiCxGpWSkrOBPVKDg4I+vYw67c4bsM/9p8qq5rPizVj
+         F4ONnV9LP9YSxwBkpKySNcMnXUxhDga2bYmEOq48RhyDP7iAeIuI38m0sCKKE5oBJD
+         wOKS203XRUMVMyM5wTw/nGxF+yWcTHVwdSeGNOeEMPCehGhMS3u2BsZ2IDaJCzjLKZ
+         LC3e84+nD6OZQ==
+Message-ID: <ad3c2877-3381-daa1-da38-ce196a645ce3@collabora.com>
+Date:   Wed, 2 Aug 2023 10:30:53 +0200
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v8 08/13] drm/mediatek: gamma: Support multi-bank gamma
+ LUT
+To:     =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "wenst@chromium.org" <wenst@chromium.org>,
+        =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
+        <Jason-JH.Lin@mediatek.com>,
+        "kernel@collabora.com" <kernel@collabora.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amergnat@baylibre.com" <amergnat@baylibre.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "ehristev@collabora.com" <ehristev@collabora.com>
+References: <20230801115854.150346-1-angelogioacchino.delregno@collabora.com>
+ <20230801115854.150346-9-angelogioacchino.delregno@collabora.com>
+ <92e1ddd531f9b029b89b1f234b9a1dfbb38d454a.camel@mediatek.com>
+Content-Language: en-US
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <92e1ddd531f9b029b89b1f234b9a1dfbb38d454a.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgVGhpbmgsDQoNCj4gPiArc3RydWN0IGR3YzNfcnRrIHsNCj4gPiArICAgICBzdHJ1Y3QgZGV2
-aWNlICpkZXY7DQo+ID4gKyAgICAgdm9pZCBfX2lvbWVtICpyZWdzOw0KPiA+ICsgICAgIHNpemVf
-dCByZWdzX3NpemU7DQo+ID4gKw0KPiA+ICsgICAgIHN0cnVjdCBkd2MzICpkd2M7DQo+ID4gKw0K
-PiA+ICsgICAgIGludCBjdXJfZHJfbW9kZTsgLyogY3VycmVudCBkciBtb2RlICovDQo+ID4gKyAg
-ICAgYm9vbCBzdXBwb3J0X2RyZF9tb2RlOyAvKiBpZiBzdXBwb3J0IEhvc3QvZGV2aWNlIHN3aXRj
-aCAqLw0KPiANCj4gSSB0aGluayB3ZSBtYXkgbm90IG5lZWQgdGhpcyBhbmQgZG8gYXdheSB0aGUg
-Ym9vbGVhbiBzdXBwb3J0X2RyZF9tb2RlLg0KDQpZZXMsIHRoZSBpbml0aWFsIGZsb3cgc2hvdWxk
-IGJlIHNpbXBsaWZpZWQgYXMNCkBAIC0zNDYsMTIgKzM0Miw3IEBAIHN0YXRpYyBpbnQgZHdjM19y
-dGtfcHJvYmVfZHdjM19jb3JlKHN0cnVjdCBkd2MzX3J0ayAqcnRrKQ0KDQogICAgICAgIHJ0ay0+
-Y3VyX2RyX21vZGUgPSBkcl9tb2RlOw0KDQotICAgICAgIGlmIChkZXZpY2VfcHJvcGVydHlfcmVh
-ZF9ib29sKGR3YzNfZGV2LCAidXNiLXJvbGUtc3dpdGNoIikpDQotICAgICAgICAgICAgICAgcnRr
-LT5zdXBwb3J0X2RyZF9tb2RlID0gdHJ1ZTsNCi0gICAgICAgZWxzZQ0KLSAgICAgICAgICAgICAg
-IHJ0ay0+c3VwcG9ydF9kcmRfbW9kZSA9IGZhbHNlOw0KLQ0KLSAgICAgICBpZiAocnRrLT5zdXBw
-b3J0X2RyZF9tb2RlKSB7DQorICAgICAgIGlmIChkZXZpY2VfcHJvcGVydHlfcmVhZF9ib29sKGR3
-YzNfZGV2LCAidXNiLXJvbGUtc3dpdGNoIikpIHsNCiAgICAgICAgICAgICAgICBkd2MzX3J0a19z
-ZXR1cF9yb2xlX3N3aXRjaChydGspOw0KICAgICAgICAgICAgICAgIHJ0ay0+Y3VyX2RyX21vZGUg
-PSBkd2MzX3J0a19nZXRfZHJfbW9kZShydGspOw0KICAgICAgICB9DQoNCj4gPiArc3RhdGljIGlu
-dCBkd2MzX3J0a19zZXRfZHJfbW9kZShzdHJ1Y3QgZHdjM19ydGsgKnJ0aywgaW50IGRyX21vZGUp
-DQo+IA0KPiBXaHkgcmV0dXJuIHRoZSBtb2RlIHJhdGhlciB0aGFuIHN0YXR1cyBpZiB0aGUgc2V0
-dGluZz8gWW91J3JlIG5vdCBjaGVja2luZyB0aGUNCj4gcmV0dXJuIG9mIHRoaXMgZnVuY3Rpb24g
-aW4gdGhlIGNhbGxlciBhbnl3YXkuDQoNCllvdSBhcmUgcmlnaHQsIHRoaXMgcmV0dXJuIHZhbHVl
-IGlzIHVubmVjZXNzYXJ5Lg0KSSB3aWxsIHJlbW92ZSBpdC4NCg0KPiA+ICt7DQo+ID4gKyAgICAg
-aWYgKCFydGstPnN1cHBvcnRfZHJkX21vZGUpDQo+ID4gKyAgICAgICAgICAgICByZXR1cm4gcnRr
-LT5jdXJfZHJfbW9kZTsNCj4gPiArDQo+ID4gKyAgICAgcnRrLT5jdXJfZHJfbW9kZSA9IGRyX21v
-ZGU7DQo+ID4gKw0KPiA+ICsgICAgIHN3aXRjaF9kd2MzX2RyX21vZGUocnRrLCBkcl9tb2RlKTsN
-Cj4gPiArICAgICBtZGVsYXkoMTApOw0KPiA+ICsgICAgIHN3aXRjaF91c2IyX2RyX21vZGUocnRr
-LCBkcl9tb2RlKTsNCj4gPiArDQo+ID4gKyAgICAgcmV0dXJuIHJ0ay0+Y3VyX2RyX21vZGU7DQo+
-ID4gK30NCj4gPiArDQoNCj4gPiArc3RhdGljIGludCBkd2MzX3J0a19zZXR1cF9yb2xlX3N3aXRj
-aChzdHJ1Y3QgZHdjM19ydGsgKnJ0aykNCj4gDQo+IEFueSByZWFzb24gd2h5IHdlJ3JlIGRvaW5n
-IHRoZSByb2xlIHN3aXRjaCBoZXJlIGFuZCBub3Qgd2hhdCdzIGltcGxlbWVudGVkDQo+IGZyb20g
-dGhlIGNvcmU/DQo+IA0KQmVjYXVzZSB3ZSBoYXZlIHRvIHNldCB0aGUgdXNiIDIuMCBwaHkgbW9k
-ZSB0aHJvdWdoIHN3aXRjaF91c2IyX2RyX21vZGUgaW4gdGhlIGZ1bmN0aW9uIGR3YzNfcnRrX3Nl
-dF9kcl9tb2RlLg0KSW4gZmFjdCwgc3dpdGNoX2R3YzNfZHJfbW9kZSB3aWxsIHVzZSB0aGUgcm9s
-ZSBzd2l0Y2hpbmcgaW1wbGVtZW50ZWQgYnkgY29yZS4NCg0KPiA+ICsNCj4gPiArbW9kdWxlX3Bs
-YXRmb3JtX2RyaXZlcihkd2MzX3J0a19kcml2ZXIpOw0KPiA+ICsNCj4gPiArTU9EVUxFX0FVVEhP
-UigiU3RhbmxleSBDaGFuZyA8c3RhbmxleV9jaGFuZ0ByZWFsdGVrLmNvbT4iKTsNCj4gPiArTU9E
-VUxFX0RFU0NSSVBUSU9OKCJEZXNpZ25XYXJlIFVTQjMgUmVhbHRlayBHbHVlIExheWVyIik7DQo+
-ID4gK01PRFVMRV9BTElBUygicGxhdGZvcm06cnRrLWR3YzMiKTsNCj4gPiArTU9EVUxFX0xJQ0VO
-U0UoIkdQTCIpOw0KPiANCj4gSSdtIG5vdCBmYW1pbGlhciB3aXRoIGxpY2Vuc2luZyBtdWNoLCBi
-dXQgY2FuIHRoZSBTUERYIGhlYWRlciBpbmRpY2F0ZXMNCj4gZGlmZmVyZW50IHZlcnNpb24gdGhh
-biB0aGUgbW9kdWxlIGxpY2Vuc2U/DQo+IA0KVGhhbmtzIEdyZWcgZm9yIHlvdXIgY29tbWVudC4N
-CkVpdGhlciBHUEwgb3IgR1BMIHYyIGFyZSBzdWl0YWJsZSBmb3Igb3VyIHNvdXJjZSBjb2RlLg0K
-DQpUaGFua3MsDQpTdGFubGV5DQoNCg==
+Il 02/08/23 06:12, CK Hu (胡俊光) ha scritto:
+> Hi, Angelo:
+> 
+> On Tue, 2023-08-01 at 13:58 +0200, AngeloGioacchino Del Regno wrote:
+>> Newer Gamma IP have got multiple LUT banks: support specifying the
+>> size of the LUT banks and handle bank-switching before programming
+>> the LUT in mtk_gamma_set_common() in preparation for adding support
+>> for MT8195 and newer SoCs.
+>>
+>> Suggested-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+>> [Angelo: Refactored original commit]
+>> Signed-off-by: AngeloGioacchino Del Regno <
+>> angelogioacchino.delregno@collabora.com>
+>> Reviewed-by: Alexandre Mergnat <amergnat@baylibre.com>
+>> ---
+>>   drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 73 +++++++++++++++----
+>> ----
+>>   1 file changed, 47 insertions(+), 26 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+>> b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+>> index a6f7af1a9e8e..fb7c3650a9f7 100644
+>> --- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+>> +++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+>> @@ -24,6 +24,8 @@
+>>   #define DISP_GAMMA_SIZE				0x0030
+>>   #define DISP_GAMMA_SIZE_HSIZE				GENMASK
+>> (28, 16)
+>>   #define DISP_GAMMA_SIZE_VSIZE				GENMASK
+>> (12, 0)
+>> +#define DISP_GAMMA_BANK				0x0100
+>> +#define DISP_GAMMA_BANK_BANK				GENMASK(1, 0)
+>>   #define DISP_GAMMA_LUT				0x0700
+>>   
+>>   #define DISP_GAMMA_LUT_10BIT_R			GENMASK(29, 20)
+>> @@ -32,10 +34,12 @@
+>>   
+>>   #define LUT_10BIT_MASK				0x03ff
+>>   #define LUT_BITS_DEFAULT			10
+>> +#define LUT_BANK_SIZE_DEFAULT			512
+>>   
+>>   struct mtk_disp_gamma_data {
+>>   	bool has_dither;
+>>   	bool lut_diff;
+>> +	u16 lut_bank_size;
+>>   	u16 lut_size;
+>>   	u8 lut_bits;
+>>   };
+>> @@ -80,7 +84,9 @@ void mtk_gamma_set_common(struct device *dev, void
+>> __iomem *regs,
+>>   	void __iomem *lut_base;
+>>   	bool lut_diff;
+>>   	u8 lut_bits;
+>> -	u32 cfg_val, word;
+>> +	u16 lut_bank_size;
+>> +	u32 cfg_val, lbank_val, word;
+>> +	int cur_bank, num_lut_banks;
+>>   
+>>   	/* If there's no gamma lut there's nothing to do here. */
+>>   	if (!state->gamma_lut)
+>> @@ -91,41 +97,54 @@ void mtk_gamma_set_common(struct device *dev,
+>> void __iomem *regs,
+>>   
+>>   	if (gamma && gamma->data) {
+>>   		lut_diff = gamma->data->lut_diff;
+>> +		lut_bank_size = gamma->data->lut_bank_size;
+>>   		lut_bits = gamma->data->lut_bits;
+>>   	} else {
+>>   		lut_diff = false;
+>> +		lut_bank_size = LUT_BANK_SIZE_DEFAULT;
+> 
+> LUT_BANK_SIZE_DEFAULT is only for AAL driver, so place it in AAL driver
+> and pass it into this function.
+> 
+
+I completely dislike having a function taking too many parameters.
+
+Since mtk_gamma_set() in DISP_GAMMA will anyway expand in the future to
+support newer hardware, I'm thinking about just removing AAL support from
+this function and duplicate the few (15 or something) lines of code in
+mtk_disp_aal instead, so that we stop commonizing the mtk_gamma_set for
+both DISP_AAL and DISP_GAMMA.
+
+Any opinions on that?
+
+Regards,
+Angelo
+
+> Regards,
+> CK
+> 
