@@ -2,183 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B10A276C788
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F131176C781
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbjHBHx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
+        id S233181AbjHBHxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbjHBHxW (ORCPT
+        with ESMTP id S233853AbjHBHxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:53:22 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E3E49FF;
-        Wed,  2 Aug 2023 00:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690962684; x=1722498684;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=OjVi6oAFwGDJrW+uaOJzko/OOgjU1MnWnooOVf6WufE=;
-  b=Vy4hUO57geKPUeJKmFRuSE6y2SfMqIUZMMg//IKj7saO/SHKThDbJc0F
-   RrH+Gpq79z0P1+kTkX8lH+sORE+kzAKDZKDiqhPeHwnPRgs3szZH5TT6W
-   NdmixoLCzhDbDC5szrp1oA6z6QkgZLoQt/qnVreYsg6UzIEVBfUjBYtRS
-   FWkRHqsOzY0l2tIfO4+zO802/Gyy6nXWymmvSmAspKUjZ2prrF7JO3HL8
-   jBEuPRqCfkoqr5gnwPopNf2KqaGP9zP5FUNTfbAFGOpOr9a6c+kp1cVFG
-   ybtfP7T0l4znRYP2kEhNdwu5zM/EzLBjY2gLRO9lZzCsCLYqmM4J3+5F5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="369506963"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="369506963"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 00:51:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="819099480"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="819099480"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 02 Aug 2023 00:51:19 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qR6da-00010l-1x;
-        Wed, 02 Aug 2023 07:51:18 +0000
-Date:   Wed, 2 Aug 2023 15:50:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, longli@microsoft.com,
-        sharmaajay@microsoft.com, leon@kernel.org, cai.huoqing@linux.dev,
-        ssengar@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, schakrabarti@microsoft.com,
-        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH V7 net] net: mana: Fix MANA VF unload when hardware is
-Message-ID: <202308021532.8iYkExDh-lkp@intel.com>
-References: <1690892953-25201-1-git-send-email-schakrabarti@linux.microsoft.com>
+        Wed, 2 Aug 2023 03:53:09 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEE73AA7;
+        Wed,  2 Aug 2023 00:51:00 -0700 (PDT)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3727efrU023604;
+        Wed, 2 Aug 2023 07:50:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=WUG9XLUVxLD7YIOS1nqOLP6cSeDLTC0hGYP99dM8eH0=;
+ b=bM5ub1zz1WkYeipfcRZrFYrWldGUj2gfIAAKnMOEOACR5ozS4+lO+fWTth6HVudw4u8/
+ eCi6uTohMkcnFfIEORufE4EG04WbZaLgky2xu6RY8UlvqpTrDLsI0Hop9SvyIvMGLaIE
+ a3kKq43chLqb6Y/XkmK7h4Ah9XVmC4wkE0yO6OIK3WW0kfO/kf6x8W2PeNql4lUBurBs
+ rru86ne+R8yAeH0RRZ4xfR8ZhU7UbGRiZ2UoQgbhDytfBOp6+6Q5C5ds6rZ2t9Oa82na
+ 3XPFxNHBvpK2S5IaH+1nkDi87xqguPKWUU5qzgqKSv4XqLOiaA4QyY+PITG1VDW+Linr YA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s7jtbgb28-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 07:50:47 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3727okDX028336;
+        Wed, 2 Aug 2023 07:50:46 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3s7jtbgb1p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 07:50:46 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3725lVkV017127;
+        Wed, 2 Aug 2023 07:50:45 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3s5fajt96q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 07:50:45 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3727ogS439584194
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Aug 2023 07:50:42 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADF9B20043;
+        Wed,  2 Aug 2023 07:50:42 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 53D6E20040;
+        Wed,  2 Aug 2023 07:50:42 +0000 (GMT)
+Received: from osiris (unknown [9.152.212.233])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Wed,  2 Aug 2023 07:50:42 +0000 (GMT)
+Date:   Wed, 2 Aug 2023 09:50:41 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Tom Rix <trix@redhat.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-s390@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: [PATCH] word-at-a-time: use the same return type for has_zero
+ regardless of endianness
+Message-ID: <20230802075041.6227-A-hca@linux.ibm.com>
+References: <20230801-bitwise-v1-1-799bec468dc4@google.com>
+ <CAHk-=wgkC80Ey0Wyi3zHYexUmteeDL3hvZrp=EpMrDccRGmMwA@mail.gmail.com>
+ <847747a8-b773-4b7b-8c14-b8ef4ba7c022@app.fastmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1690892953-25201-1-git-send-email-schakrabarti@linux.microsoft.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <847747a8-b773-4b7b-8c14-b8ef4ba7c022@app.fastmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: mHE9DXdOLlfh0U8erF_iRnnf87LWW2mN
+X-Proofpoint-ORIG-GUID: nV5PTDj8_7vOlCsetG4JPZrIcfMJb1U7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_03,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 phishscore=0 suspectscore=0 mlxscore=0
+ mlxlogscore=579 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020067
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Souradeep,
+On Wed, Aug 02, 2023 at 07:59:48AM +0200, Arnd Bergmann wrote:
+> On Wed, Aug 2, 2023, at 03:07, Linus Torvalds wrote:
+> > On Tue, 1 Aug 2023 at 15:22, <ndesaulniers@google.com> wrote:
+> 
+> > Who ends up being affected by this? Powerpc does its own
+> > word-at-a-time thing because the big-endian case is nasty and you can
+> > do better with special instructions that they have.
+> 
+> powerpc needs the same patch though.
+> 
+> > Who else is even BE any more? Some old 32-bit arm setup?
+> >
+> > I think the patch is fine, but I guess I'd like to know that people
+> > who are affected actually don't see any code generation changes (or
+> > possibly see improvements from not turning it into a bool until later)
+> 
+> s390 is the main one here, maintainers added to Cc.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on net/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Souradeep-Chakrabarti/net-mana-Fix-MANA-VF-unload-when-hardware-is/20230801-203141
-base:   net/main
-patch link:    https://lore.kernel.org/r/1690892953-25201-1-git-send-email-schakrabarti%40linux.microsoft.com
-patch subject: [PATCH V7 net] net: mana: Fix MANA VF unload when hardware is
-config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230802/202308021532.8iYkExDh-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230802/202308021532.8iYkExDh-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308021532.8iYkExDh-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/net/ethernet/microsoft/mana/mana_en.c: In function 'mana_dealloc_queues':
->> drivers/net/ethernet/microsoft/mana/mana_en.c:2398:24: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
-    2398 |                 while (skb = skb_dequeue(&txq->pending_skbs)) {
-         |                        ^~~
-
-
-vim +2398 drivers/net/ethernet/microsoft/mana/mana_en.c
-
-  2345	
-  2346	static int mana_dealloc_queues(struct net_device *ndev)
-  2347	{
-  2348		struct mana_port_context *apc = netdev_priv(ndev);
-  2349		unsigned long timeout = jiffies + 120 * HZ;
-  2350		struct gdma_dev *gd = apc->ac->gdma_dev;
-  2351		struct mana_txq *txq;
-  2352		struct sk_buff *skb;
-  2353		int i, err;
-  2354		u32 tsleep;
-  2355	
-  2356		if (apc->port_is_up)
-  2357			return -EINVAL;
-  2358	
-  2359		mana_chn_setxdp(apc, NULL);
-  2360	
-  2361		if (gd->gdma_context->is_pf)
-  2362			mana_pf_deregister_filter(apc);
-  2363	
-  2364		/* No packet can be transmitted now since apc->port_is_up is false.
-  2365		 * There is still a tiny chance that mana_poll_tx_cq() can re-enable
-  2366		 * a txq because it may not timely see apc->port_is_up being cleared
-  2367		 * to false, but it doesn't matter since mana_start_xmit() drops any
-  2368		 * new packets due to apc->port_is_up being false.
-  2369		 *
-  2370		 * Drain all the in-flight TX packets.
-  2371		 * A timeout of 120 seconds for all the queues is used.
-  2372		 * This will break the while loop when h/w is not responding.
-  2373		 * This value of 120 has been decided here considering max
-  2374		 * number of queues.
-  2375		 */
-  2376	
-  2377		for (i = 0; i < apc->num_queues; i++) {
-  2378			txq = &apc->tx_qp[i].txq;
-  2379			tsleep = 1000;
-  2380			while (atomic_read(&txq->pending_sends) > 0 &&
-  2381			       time_before(jiffies, timeout)) {
-  2382				usleep_range(tsleep, tsleep + 1000);
-  2383				tsleep <<= 1;
-  2384			}
-  2385			if (atomic_read(&txq->pending_sends)) {
-  2386				err = pcie_flr(to_pci_dev(gd->gdma_context->dev));
-  2387				if (err) {
-  2388					netdev_err(ndev, "flr failed %d with %d pkts pending in txq %u\n",
-  2389						   err, atomic_read(&txq->pending_sends),
-  2390						   txq->gdma_txq_id);
-  2391				}
-  2392				break;
-  2393			}
-  2394		}
-  2395	
-  2396		for (i = 0; i < apc->num_queues; i++) {
-  2397			txq = &apc->tx_qp[i].txq;
-> 2398			while (skb = skb_dequeue(&txq->pending_skbs)) {
-  2399				mana_unmap_skb(skb, apc);
-  2400				dev_consume_skb_any(skb);
-  2401			}
-  2402			atomic_set(&txq->pending_sends, 0);
-  2403		}
-  2404		/* We're 100% sure the queues can no longer be woken up, because
-  2405		 * we're sure now mana_poll_tx_cq() can't be running.
-  2406		 */
-  2407	
-  2408		apc->rss_state = TRI_STATE_FALSE;
-  2409		err = mana_config_rss(apc, TRI_STATE_FALSE, false, false);
-  2410		if (err) {
-  2411			netdev_err(ndev, "Failed to disable vPort: %d\n", err);
-  2412			return err;
-  2413		}
-  2414	
-  2415		mana_destroy_vport(apc);
-  2416	
-  2417		return 0;
-  2418	}
-  2419	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The generated code on s390 is identical with and without the patch
+using gcc 13.2.
+So this looks fine from my point of view.
