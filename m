@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5A276CCBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A998F76CCC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234372AbjHBMeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55326 "EHLO
+        id S234453AbjHBMfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234326AbjHBMeJ (ORCPT
+        with ESMTP id S229806AbjHBMfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:34:09 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CBF2701
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:34:06 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31792ac0fefso3706428f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:34:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690979645; x=1691584445;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7WFFSn3jymzrJofl23kw/JQQOzxObljhxr6Q0oYB/RQ=;
-        b=xx5BRTcxYKZ/Iu1R16AD/iXFgV28VQUghKB1YFHqBlSaX3SroAJ9X0Rthy9CeAqpmD
-         i0MyLBuZDWsdaxDYBcMC6pzYkp4lffK6VtpjPJn1z+QYF1T6ctV144gB4fbaj6K9X4t9
-         FxrF0I4FVoLoBSL66GlFIIPeZ4kXTKCPQ9wTMKRORORYSiIl4Eibkpj8bmD+rHaesX6m
-         7RQp+qU8AQlfjUe+V0jkQK7OEU+prGz38sC7JADaEmNZp23g9dIQ962pDa54AXqvwaK7
-         pcYlTFOtTzHEZ3ED3wmHtf4xaEkboPQM7ek47PmkR/xGzMicGA+LeXkr7Nz/+IBooUWH
-         pLtg==
+        Wed, 2 Aug 2023 08:35:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B492711
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690979670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nd6PwvIkgOQbG/ZZUIxqOtQIR8jsXYk0JyqgiV1oL8s=;
+        b=iHM34QYgdydbJJoRALt4c+5iNkvrKQu5WktJCbJazv9/f8fkX6iwsyLDLERiLhVPKf+fds
+        W+occwMFn3wg94T0Kx7Mb8Wkptp1Kew0v8xLuPb/WFobku930aJ5gEX71DW9XwBkVuRnfE
+        1ueV4LYj6Hq2I/69UT4Wh1Dk5+HJlJE=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-19-O_HnjwbqPwKqFDVTKC188g-1; Wed, 02 Aug 2023 08:34:29 -0400
+X-MC-Unique: O_HnjwbqPwKqFDVTKC188g-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-4fe32cab9b7so3261286e87.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:34:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690979645; x=1691584445;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7WFFSn3jymzrJofl23kw/JQQOzxObljhxr6Q0oYB/RQ=;
-        b=K8de9IE1rubZpw5pLJVW43VRFvS5lQ06adXw20IedQcjx0BxesSX+/dzi3Mdmy1kKN
-         VZZJXMyau16G78UV6CxBczDT4rg3WV9SZC72idGvV9+r/kR0/mtAaAOmvMqhm6YeMbSA
-         Y5CqSyO6+HEao+H2Ghy/Q3x5VRyN3hIO135GUxGinJ/j9zP27+dfECDkuK5B+AtqPPZo
-         DgHjATZOCNExH5jov4PwJC3zeeu53EPTvy1TQ3gZfA6eVtDjAfRmzMbKR0sZsv1S2Wf7
-         LxdspiXU8piEailjjhxcLHjkI5bXPI724iflP2Ea3RMRcnRofULus47bWJjpbaFCM9D+
-         mi1A==
-X-Gm-Message-State: ABy/qLYSxDBdiw51ZeGCch7LWBBrPNHEpp8+HPidXZGM5NiPekaruYb1
-        O/mMK558Hr+IZc+kvuGycFA8eNFRfVbkiRJbJ1k=
-X-Google-Smtp-Source: APBJJlG0paexJ7/NKsSD0pFtwMtHj6ducITmLEcN/b1nGlAZfXeHsarFYbC9Jd0rlk1G1CcFXoEmsA==
-X-Received: by 2002:a5d:4b4d:0:b0:317:54de:7315 with SMTP id w13-20020a5d4b4d000000b0031754de7315mr4430222wrs.61.1690979645208;
-        Wed, 02 Aug 2023 05:34:05 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id y7-20020adfdf07000000b00317ab75748bsm5916057wrl.49.2023.08.02.05.34.04
+        d=1e100.net; s=20221208; t=1690979668; x=1691584468;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nd6PwvIkgOQbG/ZZUIxqOtQIR8jsXYk0JyqgiV1oL8s=;
+        b=ePemnxZf2xakNyJ68fXD+M1BEknWsQjr4qV/mRbtBqdjUJLRwhaBrumpmiRs0zjS1v
+         ZwqYnL73nQEFRw8y+VRA1YTnolCvgGuVhXROXaMtohnaFVOraODofLGRnBUWPrxFfK8i
+         9dCUH7TVXR5RHJTJhMdb2AdjMvHJL12SSuRvmSYXpTWEVk6hG6E5zP7tSVrEyE+4A50w
+         N2u8DgGRJ08BaSUMI9xuFc41zO84VXA5uChYycGm+QbCrHuDDX+IPnR3ErXTdfA4wnl7
+         +ReBaUw09otB71qRz4G1qPlVVdbkeJYIrSc3LagviN/yqjjyndclLfB0gwOc4qM+Shhs
+         ydXQ==
+X-Gm-Message-State: ABy/qLbNNQRwUh1/blVWazDW4wEQC35W8YRRvujk64BcQ5Ke9WXSdLSL
+        Z17VRGxQRtrt8XZJ0xm3vURaQddRCvG/UdmwrReZOG/Kl99T9+OapgPKZ6k5e4jOeVKa3tsSlyc
+        dO49GKYMofMp8Xs/tnsJ/Lcyx
+X-Received: by 2002:a19:2d42:0:b0:4fb:9772:6639 with SMTP id t2-20020a192d42000000b004fb97726639mr4145432lft.6.1690979667780;
+        Wed, 02 Aug 2023 05:34:27 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGuTGE0fpv9NDoMuASP5eIoZrg2KEoyn2i2JWE29RyKU9gt7z68YPsntExjobep84onv45CeQ==
+X-Received: by 2002:a19:2d42:0:b0:4fb:9772:6639 with SMTP id t2-20020a192d42000000b004fb97726639mr4145410lft.6.1690979667323;
+        Wed, 02 Aug 2023 05:34:27 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id u18-20020aa7d0d2000000b0051e0f21c43fsm8657234edo.31.2023.08.02.05.34.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 05:34:04 -0700 (PDT)
-Message-ID: <eb279cf1-0605-3b87-5cb6-241a91977455@linaro.org>
-Date:   Wed, 2 Aug 2023 14:34:04 +0200
+        Wed, 02 Aug 2023 05:34:26 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <6cfddca7-0c22-01ca-de43-a2b3f71aa75a@redhat.com>
+Date:   Wed, 2 Aug 2023 14:34:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3 1/8] thermal: core: Add mechanism for connecting trips
- with driver data
+ Thunderbird/102.13.0
+Cc:     brouer@redhat.com, dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
 Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michal Wilczynski <michal.wilczynski@intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-References: <13318886.uLZWGnKmhe@kreacher> <12254967.O9o76ZdvQC@kreacher>
- <4501957.LvFx2qVVIh@kreacher>
- <2d0315d4-35b4-84db-4dcb-c9528abad825@linaro.org>
- <CAJZ5v0iQDOsTOqWFvbf5nom-b3-pbHPRzJQC-1DM9eoh=0AKjg@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <CAJZ5v0iQDOsTOqWFvbf5nom-b3-pbHPRzJQC-1DM9eoh=0AKjg@mail.gmail.com>
+To:     Wei Fang <wei.fang@nxp.com>,
+        Jesper Dangaard Brouer <jbrouer@redhat.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <3d0a8536-6a22-22e5-41c0-98c13dd7b802@redhat.com>
+ <AM5PR04MB31394F01926FB20F95262E0A880BA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+In-Reply-To: <AM5PR04MB31394F01926FB20F95262E0A880BA@AM5PR04MB3139.eurprd04.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -85,113 +100,344 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Hi Rafael,
 
-On 01/08/2023 21:02, Rafael J. Wysocki wrote:
-> On Tue, Aug 1, 2023 at 8:29 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+On 02/08/2023 11.59, Wei Fang wrote:
 >>
->> On 25/07/2023 14:04, Rafael J. Wysocki wrote:
->>> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>> On 31/07/2023 08.00, Wei Fang wrote:
+>>> The XDP_TX feature is not supported before, and all the frames
+>>> which are deemed to do XDP_TX action actually do the XDP_DROP
+>>> action. So this patch adds the XDP_TX support to FEC driver.
 >>>
->>> Some drivers need to update trip point data (temperature and/or
->>> hysteresis) upon notifications from the platform firmware or they
->>> may need to reprogram hardware when trip point parameters are changed
->>> via sysfs.  For those purposes, they need to connect struct thermal_trip
->>> to a private data set associated with the trip or the other way around
->>> and using a trip point index for that may not always work, because the
->>> core may need to reorder the trips during thermal zone registration (in
->>> particular, they may need to be sorted).
+>>> I tested the performance of XDP_TX feature in XDP_DRV and XDP_SKB
+>>> modes on i.MX8MM-EVK and i.MX8MP-EVK platforms respectively, and
+>>> the test steps and results are as follows.
 >>>
->>> To allow that to be done without using a trip point index, introduce
->>> a new field in struct thermal_trip that can be pointed by the driver
->>> to its own data structure containing a trip pointer to be initialized
->>> by the core during thermal zone registration.  That pointer will then
->>> have to be updated by the core every time the location of the given
->>> trip point object in memory changes.
+>>> Step 1: Board A connects to the FEC port of the DUT and runs the
+>>> pktgen_sample03_burst_single_flow.sh script to generate and send
+>>> burst traffic to DUT. Note that the length of packet was set to
+>>> 64 bytes and the procotol of packet was UDP in my test scenario.
 >>>
->>> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>>> Step 2: The DUT runs the xdp2 program to transmit received UDP
+>>> packets back out on the same port where they were received.
+>>>
+>>
+>> Below test result runs should have some more explaination, please.
+>> (more inline code comments below)
+>>
+>>> root@imx8mmevk:~# ./xdp2 eth0
+>>> proto 17:     150326 pkt/s
+>>> proto 17:     141920 pkt/s
+>>> proto 17:     147338 pkt/s
+>>> proto 17:     140783 pkt/s
+>>> proto 17:     150400 pkt/s
+>>> proto 17:     134651 pkt/s
+>>> proto 17:     134676 pkt/s
+>>> proto 17:     134959 pkt/s
+>>> proto 17:     148152 pkt/s
+>>> proto 17:     149885 pkt/s
+>>>
+>>> root@imx8mmevk:~# ./xdp2 -S eth0
+>>> proto 17:     131094 pkt/s
+>>> proto 17:     134691 pkt/s
+>>> proto 17:     138930 pkt/s
+>>> proto 17:     129347 pkt/s
+>>> proto 17:     133050 pkt/s
+>>> proto 17:     132932 pkt/s
+>>> proto 17:     136628 pkt/s
+>>> proto 17:     132964 pkt/s
+>>> proto 17:     131265 pkt/s
+>>> proto 17:     135794 pkt/s
+>>>
+>>> root@imx8mpevk:~# ./xdp2 eth0
+>>> proto 17:     135817 pkt/s
+>>> proto 17:     142776 pkt/s
+>>> proto 17:     142237 pkt/s
+>>> proto 17:     135673 pkt/s
+>>> proto 17:     139508 pkt/s
+>>> proto 17:     147340 pkt/s
+>>> proto 17:     133329 pkt/s
+>>> proto 17:     141171 pkt/s
+>>> proto 17:     146917 pkt/s
+>>> proto 17:     135488 pkt/s
+>>>
+>>> root@imx8mpevk:~# ./xdp2 -S eth0
+>>> proto 17:     133150 pkt/s
+>>> proto 17:     133127 pkt/s
+>>> proto 17:     133538 pkt/s
+>>> proto 17:     133094 pkt/s
+>>> proto 17:     133690 pkt/s
+>>> proto 17:     133199 pkt/s
+>>> proto 17:     133905 pkt/s
+>>> proto 17:     132908 pkt/s
+>>> proto 17:     133292 pkt/s
+>>> proto 17:     133511 pkt/s
+>>>
+>>
+>> For this driver, I would like to see a benchmark comparison between
+>> XDP_TX and XDP_REDIRECT.
+>>
+> Okay, I'll do a comparison test.
+
+Thanks.
+
+> 
+>> As below code does could create a situation where XDP_REDIRECT is just
+>> as fast as XDP_TX.  (Note, that I expect XDP_TX to be faster than
+>> XDP_REDIRECT.)
+>>
+> Could you explain why you expect XDP_TX should be faster than XDP_REDIRECT?
+
+First of all: I explained the changes needed to improve XDP_TX, below as
+comments on the code. Please read and address.
+
+XDP_TX should always be faster than XDP_REDIRECT, because it happens
+locally in the driver and doesn't have to go through any generic
+xdp_do_redirect code.
+
+Like benchmarks shown in our XDP-paper[1] on mlx5 the graph[2] shows
+XDP_TX vs XDP_REDIRECT vs. DPDK.
+
+  [1] https://dl.acm.org/doi/10.1145/3281411.3281443
+  [2] 
+https://github.com/xdp-project/xdp-paper/blob/master/figures/redirect-test.pdf
+
+
+> What's the problem if XDP_TX is as fast ad XDP_REDIRECT?
+> 
+>>> Signed-off-by: Wei Fang <wei.fang@nxp.com>
 >>> ---
+>>> V2 changes:
+>>> According to Jakub's comments, the V2 patch adds two changes.
+>>> 1. Call txq_trans_cond_update() in fec_enet_xdp_tx_xmit() to avoid
+>>> tx timeout as XDP shares the queues with kernel stack.
+>>> 2. Tx processing shouldn't call any XDP (or page pool) APIs if the
+>>> "budget" is 0.
 >>>
->>> v2 -> v3: No changes.
->>>
->>> v1 -> v2: No changes.
->>>
+>>> V3 changes:
+>>> 1. Remove the second change in V2, because this change has been
+>>> separated into another patch and it has been submmitted to the
+>>> upstream [1].
+>>> [1]
+>> https://lore.k/
+>> ernel.org%2Fr%2F20230725074148.2936402-1-wei.fang%40nxp.com&data=
+>> 05%7C01%7Cwei.fang%40nxp.com%7C9a2fc5bab84947e4bea608db933aa5
+>> e9%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C638265652320
+>> 018962%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV
+>> 2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=wc
+>> xe8nBeLS9uQrbphuNI18owgDNHJq9478V53KybWB8%3D&reserved=0
 >>> ---
->>>    drivers/thermal/thermal_core.c |   20 +++++++++++++++++---
->>>    include/linux/thermal.h        |   13 +++++++++++++
->>>    2 files changed, 30 insertions(+), 3 deletions(-)
+>>>    drivers/net/ethernet/freescale/fec.h      |  1 +
+>>>    drivers/net/ethernet/freescale/fec_main.c | 80
+>> ++++++++++++++++++-----
+>>>    2 files changed, 65 insertions(+), 16 deletions(-)
 >>>
->>> Index: linux-pm/include/linux/thermal.h
->>> ===================================================================
->>> --- linux-pm.orig/include/linux/thermal.h
->>> +++ linux-pm/include/linux/thermal.h
->>> @@ -76,16 +76,29 @@ struct thermal_zone_device_ops {
->>>        void (*critical)(struct thermal_zone_device *);
+>>> diff --git a/drivers/net/ethernet/freescale/fec.h
+>> b/drivers/net/ethernet/freescale/fec.h
+>>> index 8f1edcca96c4..f35445bddc7a 100644
+>>> --- a/drivers/net/ethernet/freescale/fec.h
+>>> +++ b/drivers/net/ethernet/freescale/fec.h
+>>> @@ -547,6 +547,7 @@ enum {
+>>>    enum fec_txbuf_type {
+>>>      FEC_TXBUF_T_SKB,
+>>>      FEC_TXBUF_T_XDP_NDO,
+>>> +   FEC_TXBUF_T_XDP_TX,
 >>>    };
 >>>
->>> +struct thermal_trip_ref {
->>> +     struct thermal_trip *trip;
->>> +};
->>
->> That introduces a circular dependency. That should be avoided.
-> 
-> Sorry, but this is an empty statement without any substance.
-
-I'm just pointing that we have a struct A pointing to struct B and 
-struct B pointing to struct A.
-
-[ ... ]
-
->>>    struct thermal_cooling_device_ops {
->>> Index: linux-pm/drivers/thermal/thermal_core.c
->>> ===================================================================
->>> --- linux-pm.orig/drivers/thermal/thermal_core.c
->>> +++ linux-pm/drivers/thermal/thermal_core.c
->>> @@ -1306,14 +1306,28 @@ thermal_zone_device_register_with_trips(
->>>        if (result)
->>>                goto release_device;
+>>>    struct fec_tx_buffer {
+>>> diff --git a/drivers/net/ethernet/freescale/fec_main.c
+>> b/drivers/net/ethernet/freescale/fec_main.c
+>>> index 14d0dc7ba3c9..2068fe95504e 100644
+>>> --- a/drivers/net/ethernet/freescale/fec_main.c
+>>> +++ b/drivers/net/ethernet/freescale/fec_main.c
+>>> @@ -75,6 +75,8 @@
 >>>
->>> +     mutex_lock(&tz->lock);
->>> +
->>>        for (count = 0; count < num_trips; count++) {
->>> -             struct thermal_trip trip;
->>> +             int temperature = 0;
->>> +
->>> +             if (trips) {
->>> +                     temperature = trips[count].temperature;
->>> +                     if (trips[count].driver_ref)
->>> +                             trips[count].driver_ref->trip = &trips[count];
->>> +             } else {
->>> +                     struct thermal_trip trip;
+>>>    static void set_multicast_list(struct net_device *ndev);
+>>>    static void fec_enet_itr_coal_set(struct net_device *ndev);
+>>> +static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
+>>> +                           struct xdp_buff *xdp);
+>>>
+>>>    #define DRIVER_NAME       "fec"
+>>>
+>>> @@ -960,7 +962,8 @@ static void fec_enet_bd_init(struct net_device
+>> *dev)
+>>>                                      txq->tx_buf[i].skb = NULL;
+>>>                              }
+>>>                      } else {
+>>> -                           if (bdp->cbd_bufaddr)
+>>> +                           if (bdp->cbd_bufaddr &&
+>>> +                               txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO)
+>>>                                      dma_unmap_single(&fep->pdev->dev,
+>>>                                                       fec32_to_cpu(bdp->cbd_bufaddr),
+>>>                                                       fec16_to_cpu(bdp->cbd_datlen),
+>>> @@ -1423,7 +1426,8 @@ fec_enet_tx_queue(struct net_device *ndev, u16
+>> queue_id, int budget)
+>>>                              break;
+>>>
+>>>                      xdpf = txq->tx_buf[index].xdp;
+>>> -                   if (bdp->cbd_bufaddr)
+>>> +                   if (bdp->cbd_bufaddr &&
+>>> +                       txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO)
+>>>                              dma_unmap_single(&fep->pdev->dev,
+>>>                                               fec32_to_cpu(bdp->cbd_bufaddr),
+>>>                                               fec16_to_cpu(bdp->cbd_datlen),
+>>> @@ -1482,7 +1486,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16
+>> queue_id, int budget)
+>>>                      /* Free the sk buffer associated with this last transmit */
+>>>                      dev_kfree_skb_any(skb);
+>>>              } else {
+>>> -                   xdp_return_frame(xdpf);
+>>> +                   xdp_return_frame_rx_napi(xdpf);
+>>>
+>>>                      txq->tx_buf[index].xdp = NULL;
+>>>                      /* restore default tx buffer type: FEC_TXBUF_T_SKB */
+>>> @@ -1573,11 +1577,18 @@ fec_enet_run_xdp(struct fec_enet_private
+>> *fep, struct bpf_prog *prog,
+>>>              }
+>>>              break;
+>>>
+>>> -   default:
+>>> -           bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
+>>> -           fallthrough;
+>>> -
+>>>      case XDP_TX:
+>>> +           err = fec_enet_xdp_tx_xmit(fep->netdev, xdp);
 >>
->> As mentioned above, that should not appear in the thermal core code.
+>> You should pass along the "sync" length value to fec_enet_xdp_tx_xmit().
+>> Because we know DMA comes from same device (it is already DMA mapped
+>> to), then we can do a DMA sync "to_device" with only the sync length.
+>>
+>>> +           if (err) {
+>>
+>> Add an unlikely(err) or do like above case XDP_REDIRECT, where it takes
+>> the likely case "if (!err)" first.
+>>
+>>> +                   ret = FEC_ENET_XDP_CONSUMED;
+>>> +                   page = virt_to_head_page(xdp->data);
+>>> +                   page_pool_put_page(rxq->page_pool, page, sync, true);
+>>> +           } else {
+>>> +                   ret = FEC_ENET_XDP_TX;
+>>> +           }
+>>> +           break;
+>>> +
+>>> +   default:
+>>>              bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
+>>>              fallthrough;
+>>>
+>>> @@ -3793,7 +3804,8 @@ fec_enet_xdp_get_tx_queue(struct
+>> fec_enet_private *fep, int index)
+>>>
+>>>    static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+>>>                                 struct fec_enet_priv_tx_q *txq,
+>>> -                              struct xdp_frame *frame)
+>>> +                              struct xdp_frame *frame,
+>>> +                              bool ndo_xmit)
+>>
+>> E.g add parameter dma_sync_len.
+>>
+>>>    {
+>>>      unsigned int index, status, estatus;
+>>>      struct bufdesc *bdp;
+>>> @@ -3813,10 +3825,24 @@ static int fec_enet_txq_xmit_frame(struct
+>> fec_enet_private *fep,
+>>>
+>>>      index = fec_enet_get_bd_index(bdp, &txq->bd);
+>>>
+>>> -   dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
+>>> -                             frame->len, DMA_TO_DEVICE);
+>>> -   if (dma_mapping_error(&fep->pdev->dev, dma_addr))
+>>> -           return -ENOMEM;
+>>> +   if (ndo_xmit) {
+>>> +           dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
+>>> +                                     frame->len, DMA_TO_DEVICE);
+>>> +           if (dma_mapping_error(&fep->pdev->dev, dma_addr))
+>>> +                   return -ENOMEM;
+>>> +
+>>> +           txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
+>>> +   } else {
+>>> +           struct page *page = virt_to_page(frame->data);
+>>> +
+>>> +           dma_addr = page_pool_get_dma_addr(page) + sizeof(*frame) +
+>>> +                      frame->headroom;
+>>> +           dma_sync_single_for_device(&fep->pdev->dev, dma_addr,
+>>> +                                      frame->len, DMA_BIDIRECTIONAL);
+>>
+>> Optimization: use dma_sync_len here instead of frame->len.
+>>
+>>> +           txq->tx_buf[index].type = FEC_TXBUF_T_XDP_TX;
+>>> +   }
+>>> +
+>>> +   txq->tx_buf[index].xdp = frame;
+>>>
+>>>      status |= (BD_ENET_TX_INTR | BD_ENET_TX_LAST);
+>>>      if (fep->bufdesc_ex)
+>>> @@ -3835,9 +3861,6 @@ static int fec_enet_txq_xmit_frame(struct
+>> fec_enet_private *fep,
+>>>              ebdp->cbd_esc = cpu_to_fec32(estatus);
+>>>      }
+>>>
+>>> -   txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
+>>> -   txq->tx_buf[index].xdp = frame;
+>>> -
+>>>      /* Make sure the updates to rest of the descriptor are performed
+>> before
+>>>       * transferring ownership.
+>>>       */
+>>> @@ -3863,6 +3886,31 @@ static int fec_enet_txq_xmit_frame(struct
+>> fec_enet_private *fep,
+>>>      return 0;
+>>>    }
+>>>
+>>> +static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
+>>> +                           struct xdp_buff *xdp)
+>>> +{
+>>
+>> E.g add parameter dma_sync_len.
+>>
+>>> +   struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
+>>
+>> XDP_TX can avoid this conversion to xdp_frame.
+>> It would requires some refactor of fec_enet_txq_xmit_frame().
+>>
+>>> +   struct fec_enet_private *fep = netdev_priv(ndev);
+>>> +   struct fec_enet_priv_tx_q *txq;
+>>> +   int cpu = smp_processor_id();
+>>> +   struct netdev_queue *nq;
+>>> +   int queue, ret;
+>>> +
+>>> +   queue = fec_enet_xdp_get_tx_queue(fep, cpu);
+>>> +   txq = fep->tx_queue[queue];
+>>> +   nq = netdev_get_tx_queue(fep->netdev, queue);
+>>> +
+>>> +   __netif_tx_lock(nq, cpu);
+>>
+>> It is sad that XDP_TX takes a lock for each frame.
+>>
+>>> +
+>>> +   /* Avoid tx timeout as XDP shares the queue with kernel stack */
+>>> +   txq_trans_cond_update(nq);
+>>> +   ret = fec_enet_txq_xmit_frame(fep, txq, xdpf, false);
+>>
+>> Add/pass parameter dma_sync_len to fec_enet_txq_xmit_frame().
+>>
+>>
+>>> +
+>>> +   __netif_tx_unlock(nq);
+>>> +
+>>> +   return ret;
+>>> +}
+>>> +
+>>>    static int fec_enet_xdp_xmit(struct net_device *dev,
+>>>                           int num_frames,
+>>>                           struct xdp_frame **frames,
+>>> @@ -3885,7 +3933,7 @@ static int fec_enet_xdp_xmit(struct net_device
+>> *dev,
+>>>      /* Avoid tx timeout as XDP shares the queue with kernel stack */
+>>>      txq_trans_cond_update(nq);
+>>>      for (i = 0; i < num_frames; i++) {
+>>> -           if (fec_enet_txq_xmit_frame(fep, txq, frames[i]) < 0)
+>>> +           if (fec_enet_txq_xmit_frame(fep, txq, frames[i], true) < 0)
+>>>                      break;
+>>>              sent_frames++;
+>>>      }
 > 
-> Well, this is a matter of opinion to me.  Clearly, I disagree with it.
-
-Why? It is not an opinion. The thermal core code has been very very tied 
-with the ACPI implementation (which is logical given the history of the 
-changes). All the efforts have been made to cut these frictions and make 
-the thermal core code driver agnostic.
-
-The changes put in place a mechanism for the ACPI driver.
-
-The thermal zone lock wrapper is put in place for the ACPI driver.
-
-> Anyway, I want to be productive, so here's the thing: either something
-> like this is done, or drivers need to be allowed to walk the trips
-> table.
-> 
-> Which one is better?
-
-None of them. I think we can find a third solution where the changes are 
-self contained in the ACPI driver. What do you think?
-
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
 
