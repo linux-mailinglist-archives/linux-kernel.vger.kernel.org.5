@@ -2,177 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEBF676D8C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:45:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745FC76D8C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbjHBUpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 16:45:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        id S232177AbjHBUrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 16:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbjHBUpf (ORCPT
+        with ESMTP id S231215AbjHBUrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 16:45:35 -0400
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BBA1FF0
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:45:33 -0700 (PDT)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1bed90ee8b7so115354fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 13:45:33 -0700 (PDT)
+        Wed, 2 Aug 2023 16:47:16 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F2C81FF2
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:47:15 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-686fc0d3c92so183664b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 13:47:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1691009133; x=1691613933;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=g/1Bfm6suFyViDWNlr8+HrMuba+po2ALntmKmq7g2XA=;
-        b=fWDVHQD6E/n9Ca7eabCCX6b0FFMGlyISauUxdo0n2rpIZnfZ95RCQCHEPckZtOKLCA
-         Sddo6fzWI4gkqr1sajuR+gUUXb/J9BJ7WjG/y+FBliSpaWUz/rczqYOGle4EdddiwjtP
-         i4w41LX3Z1PNFXlt8JNAPBre/xxE2c3QRnk/E=
+        d=dabbelt-com.20221208.gappssmtp.com; s=20221208; t=1691009235; x=1691614035;
+        h=message-id:to:from:cc:in-reply-to:subject:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xCeI4cJM5i/F1g7PTNSHGiGltpi2DPORCAOXe5MxMI4=;
+        b=4dpu5FcCNCNRIyqjOzWmgL+NQSi4gYkmtcikJLhem4DJKp7bF2as4gU6+ek8eDxshQ
+         pgFoE3rV9JVD/M8in3QjCrCvkcekpvSzciVT22TjMLAE3O3wrcK/TtbL4Sh9kbqDAWba
+         xpjhQ/VuZLvlfZcxte6bI9tyAtiNQ+1xq8jwNCn55eMrG4AaeKjIRRYfIVr5rF0cg6y4
+         aajuwqzz/F+O/8NnTRJX+/fXOsaEbW4+tJ+u1nG2YZD79SwC7VBQZT8kOyAKJvH7tMlR
+         orrDNtcbh55emdbGrx5asBu7QIxNqdhGBd4RSFkJl3fQCRIi5JuEfbOIwJWYmebYvnKy
+         b86A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691009133; x=1691613933;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=g/1Bfm6suFyViDWNlr8+HrMuba+po2ALntmKmq7g2XA=;
-        b=Bvx4JzY9Zbpwpb1S6aH8x+VoVdT3xRmbTOrYvkDG8n5glkGLOG2Dqc7GFuEEjbNqud
-         q+Io+JJY+3Zus8YJpVSRYDh/33GUgFrIdP/pVYy1bM52C7MPL3RRoPZcLwrEKsRB2ypN
-         anCnRXNA/RYQSTJg4Ih5iwE+BDDniCj0Kuy5uuPH8834ll9JOtUkq808br4H3g7Ns7dV
-         RJ30My3vTqBwS4C0TxRNHx/ep2EC2a9rEu7NZyuFAhB5P8x0Y3Mtke3AdPKdydd0fBHp
-         5JV3guauIgHmo6Y+PIOqp48DTRcq99qJ5fDEfy0fQyin1yfEXPefmWtsNWo0Ha+U4Ndi
-         iNfQ==
-X-Gm-Message-State: ABy/qLYx+8lWfmIwlNtcLlXhqNKkLzhdmNwHIf+53wjIr4G7eL5mnKVX
-        fIw/qKvfZjaVtF38fSzHyoNgWV7WwGhTEnqdB3nqsg==
-X-Google-Smtp-Source: APBJJlEqN8WznNoc2+T+MjGzRWpOC67aOcySrJF83niYlI694u4xO01qbb56VWKDeRmZuTqh3OCCclVzdbbzIgJRr4Y=
-X-Received: by 2002:a05:6870:2052:b0:1bb:85c3:929e with SMTP id
- l18-20020a056870205200b001bb85c3929emr16774760oad.48.1691009133246; Wed, 02
- Aug 2023 13:45:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230713143406.14342-1-cyphar@cyphar.com> <CABi2SkVCp_MDh9MgD-UJ_hgJ58ynm22XJ53zE+ZCBSsWFBxiOw@mail.gmail.com>
- <o2tz56m3y2pbbj2sezyqvtw3caqwcqtqqkkfrq632ofpyj4enp@znkxadzn5lmj>
- <CALmYWFs_dNCzw_pW1yRAo4bGCPEtykroEQaowNULp7svwMLjOg@mail.gmail.com> <20230801.032503-medium.noises.extinct.omen-CStYZUqcNLCS@cyphar.com>
-In-Reply-To: <20230801.032503-medium.noises.extinct.omen-CStYZUqcNLCS@cyphar.com>
-From:   Jeff Xu <jeffxu@chromium.org>
-Date:   Wed, 2 Aug 2023 13:45:21 -0700
-Message-ID: <CABi2SkUnJ4NiRMtSXdLtHXWrY23iKLdGiUuTgc0Yrtq16-KkeA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3] memfd: cleanups for vm.memfd_noexec
-To:     Aleksa Sarai <cyphar@cyphar.com>
-Cc:     Jeff Xu <jeffxu@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        d=1e100.net; s=20221208; t=1691009235; x=1691614035;
+        h=message-id:to:from:cc:in-reply-to:subject:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xCeI4cJM5i/F1g7PTNSHGiGltpi2DPORCAOXe5MxMI4=;
+        b=MrgTkHspCuPtCPtOpGJK/r+3t6LAizv018wjJNiHP7CUT+aN2DEtgb1rVkiqUE8tb5
+         d8I0O+aI4N/SD26Jsvuaqbw7Guc88CRQb4623KhfPoPNXj7WeKReLSkIvP8p5MPscoXx
+         wppbI5BY+kne8xDp7tFRFKBsoxFnIQC9Yicc3G7cNZeObN2VXMQD4DyIkQPsHKGkAB/u
+         cHsnc+GIWX/4H3QXZMHq+4965XhkOHw3QVmiSaPzoY906p3lRBnk2HngAO5xHZcN6ZWO
+         6NDhBi+KZ0EpOZucaECTH/O6irDFkFa/ur2X8+7Ln6sG6ybd0TSGKlJK92jzefGFkuA+
+         nzYQ==
+X-Gm-Message-State: ABy/qLbs04vupggTeLbc4QgQQcgl4Lclguqr/I7J0phhhoazY2ZLmapF
+        YuSxywpOkiVrlHKpi6fLImHHeerm/moZtkq7htQ=
+X-Google-Smtp-Source: APBJJlFjxO+AHPyhX+rLY3nb8bkP8ra4T4tKVG4BPwAGhMlm1XsJK9F47UMjzYiGC9qC+vSrulmZIA==
+X-Received: by 2002:a05:6a00:1687:b0:668:83b7:fd02 with SMTP id k7-20020a056a00168700b0066883b7fd02mr20214796pfc.31.1691009234798;
+        Wed, 02 Aug 2023 13:47:14 -0700 (PDT)
+Received: from localhost ([135.180.227.0])
+        by smtp.gmail.com with ESMTPSA id e7-20020aa78247000000b0066f37665a63sm5852206pfn.73.2023.08.02.13.47.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 13:47:14 -0700 (PDT)
+Date:   Wed, 02 Aug 2023 13:47:14 -0700 (PDT)
+X-Google-Original-Date: Wed, 02 Aug 2023 13:47:11 PDT (-0700)
+Subject:     Re: [PATCH v2] RISC-V: cpu: refactor deprecated strncpy
+In-Reply-To: <mhng-93dd039a-f342-4239-a0a8-f1e31f7d8b5e@palmer-ri-x1c9>
+CC:     justinstitt@google.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ndesaulniers@google.com,
         linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     keescook@chromium.org
+Message-ID: <mhng-724de287-da99-4f58-af50-5d728a28d4ab@palmer-ri-x1c9>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > > >  * vm.memfd_noexec=2 shouldn't reject old-style memfd_create(2) syscalls
-> > > > >    because it will make it far to difficult to ever migrate. Instead it
-> > > > >    should imply MFD_EXEC.
-> > > > >
-> > > > Though the purpose of memfd_noexec=2 is not to help with migration  -
-> > > > but to disable creation of executable memfd for the current system/pid
-> > > > namespace.
-> > > > During the migration,  vm.memfd_noexe = 1 helps overwriting for
-> > > > unmigrated user code as a temporary measure.
-> > >
-> > > My point is that the current behaviour for =2 means that nobody other
-> > > than *maybe* ChromeOS will ever be able to use it because it requires
-> > > auditing every program on the system. In fact, it's possible even
-> > > ChromeOS will run into issues given that one of the arguments made for
-> > > the nosymfollow mount option was that auditing all of ChromeOS to
-> > > replace every open with RESOLVE_NO_SYMLINKS would be too much effort[1]
-> > > (which I agreed with). Maybe this is less of an issue with
-> > > memfd_create(2) (which is much newer than open(2)) but it still seems
-> > > like a lot of busy work when the =1 behaviour is entirely sane even in
-> > > the strict threat model that =2 is trying to protect against.
-> > >
-> > It can also be a container (that have all memfd_create migrated to new API)
+On Wed, 02 Aug 2023 13:41:52 PDT (-0700), Palmer Dabbelt wrote:
+> On Wed, 02 Aug 2023 13:36:03 PDT (-0700), keescook@chromium.org wrote:
+>> On Wed, Aug 02, 2023 at 12:21:58AM +0000, Justin Stitt wrote:
+>>> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
+>>>
+>>> Favor not copying strings onto stack and instead use strings directly.
+>>> This avoids hard-coding sizes and buffer lengths all together.
+>>>
+>>> Link: https://github.com/KSPP/linux/issues/90
+>>> Cc: linux-hardening@vger.kernel.org
+>>> Suggested-by: Kees Cook <keescook@chromium.org>
+>>> Signed-off-by: Justin Stitt <justinstitt@google.com>
+>>
+>> I like it! ;)
+>>
+>> Reviewed-by: Kees Cook <keescook@chromium.org>
 >
-> If ChromeOS would struggle to rewrite all of the libraries they use,
-> containers are in even worse shape -- most container users don't have a
-> complete list of every package installed in a container, let alone the
-> ability to audit whether they pass a (no-op) flag to memfd_create(2) in
-> every codepath.
+> Thanks, I just queue it up for fixes (might take a bit to build test,
+> I'm a bit backed up).
 >
-> > One option I considered previously was "=2" would do overwrite+block ,
-> > and "=3" just block. But then I worry that applications won't have
-> > motivation to ever change their existing code, the setting will
-> > forever stay at "=2", making "=3" even more impossible to ever be used
-> >  system side.
->
-> What is the downside of overwriting? Backwards-compatibility is a very
-> important part of Linux -- being able to use old programs without having
-> to modify them is incredibly important. Yes, this behaviour is opt-in --
-> but I don't see the point of making opting in more difficult than
-> necessary. Surely overwite+block provides the security guarantee you
-> need from the threat model -- othewise nobody will be able to use block
-> because you never know if one library will call memfd_create()
-> "incorrectly" without the new flags.
->
->
-> > > If you want to block syscalls that don't explicitly pass NOEXEC_SEAL,
-> > > there are several tools for doing this (both seccomp and LSM hooks).
-> > >
-> > > [1]: https://lore.kernel.org/linux-fsdevel/20200131212021.GA108613@google.com/
-> > >
-> > > > Additional functionality/features should be implemented through
-> > > > security hook and LSM, not sysctl, I think.
-> > >
-> > > This issue with =2 cannot be fixed in an LSM. (On the other hand, you
-> > > could implement either =2 behaviour with an LSM using =1, and the
-> > > current strict =2 behaviour could be implemented purely with seccomp.)
-> > >
-> > By migration, I mean  a system that is not fully migrated, such a
-> > system should just use "=0" or "=1". Additional features can be
-> > implemented in SELinux/Landlock/other LSM by a motivated dev.  e.g. if
-> > a system wants to limit executable memfd to specific programs or fully
-> > disable it.
-> > "=2" is for a system/container that is fully migrated, in that case,
-> > SELinux/Landlock/LSM can do the same, but sysctl provides a convenient
-> >  alternative.
-> > Yes, seccomp provides a similar mechanism. Indeed, combining "=1" and
-> > seccomp (block MFD_EXEC), it will overwrite + block X mfd, which is
-> > essentially what you want, iiuc.However, I do not wish to have this
-> > implemented in kernel, due to the thinking that I want kernel to get
-> > out of business of "overwriting" eventually.
->
-> See my above comments -- "overwriting" is perfectly acceptable to me.
-> There's also no way to "get out of the business of overwriting" -- Linux
-> has strict backwards compatibility requirements.
->
+> Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+> 
+> If you wanted to take it for some hardening thing, though -- otherwise
+> it'll likely end up on my fixes later today.
 
-I agree, if we weigh on the short term goal of letting the user space
-applications to do minimum, then having 4 state sysctl (or 2 sysctl,
-one controls overwrite, one disable/enable executable memfd) will do.
-But with that approach, I'm afraid a version of the future (say in 20
-years), most applications stays with memfd_create with the old API
-style, not setting the NX bit. With the current approach, it might seem
-to be less convenient, but I hope it offers a bit of incentive to make
-applications migrating their code towards the new API, explicitly
-setting the NX bit.  I understand this hope is questionable, we might
-still end up the same in 20 years, but at least I tried :-). I will
-leave this decision to maintainers when you supply patches for that,
-and I wouldn't feel bad either way, there is a valid reason on both sides.
-
-To supplement, there are  two other ways for what you want:
-1> seccomp to block MFD_EXEC, and leaving the setting to 1.
-2> implement the blocking using a security hook and LSM, imo, which is
-probably the most common way to deal with this type of request (block
-something).
-I admit those two ways will be less convenient than just having sysctl
-do all the things, from the user space's perspective.
-
-Thanks
-
-
-
-
--Jeff
+Sorry this is for-next as it's not a fix, I was just looking at other 
+fixes.  It's queued up aimed at for-next.
