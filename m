@@ -2,133 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC56A76C399
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CC576C388
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbjHBDeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 23:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
+        id S231953AbjHBDbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 23:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbjHBDdp (ORCPT
+        with ESMTP id S229606AbjHBDbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:33:45 -0400
-Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FF52116;
-        Tue,  1 Aug 2023 20:33:42 -0700 (PDT)
-Received: from local
-        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.96)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1qR2cD-00009M-09;
-        Wed, 02 Aug 2023 03:33:37 +0000
-Date:   Wed, 2 Aug 2023 04:31:09 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     netdev@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH net-next v3] net: ethernet: mtk_eth_soc: support per-flow
- accounting on MT7988
-Message-ID: <37a0928fa8c1253b197884c68ce1f54239421ac5.1690946442.git.daniel@makrotopia.org>
+        Tue, 1 Aug 2023 23:31:44 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 870601990;
+        Tue,  1 Aug 2023 20:31:42 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 486445C00F0;
+        Tue,  1 Aug 2023 23:31:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 01 Aug 2023 23:31:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dustymabe.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:date:from:from:in-reply-to:message-id:mime-version
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1690947099; x=
+        1691033499; bh=Te8AisNjEFEr13EgIgUJYL4Wz/sQ7ji3HawsxLNYEIE=; b=N
+        cfzZYQwRFF3vuSFIvsZLsLaXuzCh8eHRi89U0gclAEen5PTbkOvEFBPoW18LXnSn
+        0wJgyRVlJczhXGD0KiMX8BIlYiaXxoFrh0XOrN+TFRDAvW5fFTShGrNwG1HQop/L
+        o2FLh5LgSDEr3sIok7YMa6kin3JQG2qlk7Uzz8+g2TvsDy1r/dHt1+irgSkAy45z
+        fHL7hZABY2fsA8+J/ox2agRahYtgdRLqlFcPV65FVR63L2B4FOinBR/JTowDwzFi
+        vvWCG8JmxqxpbnyWq6ZzHZXHo6owWTJLeAcBMHQBF16bjrRxXASszs41DegKUAo+
+        JlnZ5VV7SISxJDT4cMxCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm3; t=1690947099; x=1691033499; bh=T
+        e8AisNjEFEr13EgIgUJYL4Wz/sQ7ji3HawsxLNYEIE=; b=sJ9naP0T/wpSpWY9A
+        tj9EX4p2kfBmPaCop7BgBV8igIS8jHh0nn573SMfhDecO41imb3EqLMqsHppiWoQ
+        V/TfR3trrFoyU20x34/d9UAABzZIN5NSUttgvl2alQGxS3kqp1FI5oCINYqWcEeT
+        yfgCpd1xBNPPhWoZju+bd/LDh7xA+nA55Vq+uuVmzy3qTedDC0zfVeEgz4zwcw54
+        I72QWSfN0C5TGbfDBfSzPRNMA7EVp46MZ5qQEZcpBpk0Jp4/MK6p1nXAkRjQfq6u
+        tpLv/7dCxMtdmrcdC8ga9huBFwkj60TsRX9mmoA4l/5rquXO1H3dVelIs3Wykve1
+        GUlTQ==
+X-ME-Sender: <xms:Gs7JZBtdqF7aPzXmxPPRgcbBILVg8qJK3wt6F3aGbzdUsVtdmEVwwQ>
+    <xme:Gs7JZKcCMBiNS4D0OJxGjEf0yK1DG39MS8JIXf777kn2KVpINuSl_cJVvp8XzZGoz
+    HnGt5iDi8f3f3pABA0>
+X-ME-Received: <xmr:Gs7JZEyDJ6pgA5fkkexNZAgurEZwPgcMpe5N7B8ciA08HVY-D3QfBxMV8mDwoKuoYVNs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeejgdejtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfvvefhufgtgfesthejredttdefjeenucfhrhhomhepffhushhthicu
+    ofgrsggvuceoughushhthiesughushhthihmrggsvgdrtghomheqnecuggftrfgrthhtvg
+    hrnhepueffvedtteevieegudeileetgfejhffffeeuvdduteekudekieehgeelhfdtveev
+    necuffhomhgrihhnpehgihhthhhusgdrtghomhdprhgvughhrghtrdgtohhmpdhkvghrnh
+    gvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhr
+    ohhmpeguuhhsthihseguuhhsthihmhgrsggvrdgtohhm
+X-ME-Proxy: <xmx:Gs7JZIObvCko3QTtdbr7LWxLBkyFnn6cZ7J1gFen6DQYctmW7MgsZg>
+    <xmx:Gs7JZB-tDWyoeVUPZl36hmf3aiRvdPpduWwBDOvxLdzxiQVfq6c8Sw>
+    <xmx:Gs7JZIUs10ZQBK1InlsB3JQx177GuwtaaZBF0ID_yOemWcNZ1ez3GA>
+    <xmx:G87JZBw_I1VZSJ0Zc0jkwgK1k-n4CykJemF9INp7DSjriAsS94030Q>
+Feedback-ID: i13394474:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 1 Aug 2023 23:31:38 -0400 (EDT)
+Message-ID: <b2d40565-7868-ba15-4bb1-fca6f0df076b@dustymabe.com>
+Date:   Tue, 1 Aug 2023 23:31:37 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.1
+Content-Language: en-US
+To:     Minchan Kim <minchan@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>, marmijo@redhat.com
+From:   Dusty Mabe <dusty@dustymabe.com>
+Subject: XFS metadata CRC errors on zram block device on ppc64le architecture
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NETSYS_V3 uses 64 bits for each counters while older SoCs are using
-48/40 bits for each counter.
-Support reading per-flow byte and package counters on NETSYS_V3.
+In Fedora CoreOS we found an issue with an interaction of an XFS filesystem on a zram block device on ppc64le:
 
-Signed-off-by: Daniel Golle <daniel@makrotopia.org>
----
-v3: correct calculation, local variables
-v2: fix typo bytes_cnt_* -> byte_cnt_*
+- https://github.com/coreos/fedora-coreos-tracker/issues/1489
+- https://bugzilla.redhat.com/show_bug.cgi?id=2221314
 
-drivers/net/ethernet/mediatek/mtk_eth_soc.c  |  1 +
- drivers/net/ethernet/mediatek/mtk_ppe.c      | 21 +++++++++++++-------
- drivers/net/ethernet/mediatek/mtk_ppe_regs.h |  2 ++
- 3 files changed, 17 insertions(+), 7 deletions(-)
+The dmesg output shows several errors:
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index 05be702f19c5..1b89f800f6df 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -5064,6 +5064,7 @@ static const struct mtk_soc_data mt7988_data = {
- 	.version = 3,
- 	.offload_version = 2,
- 	.hash_offset = 4,
-+	.has_accounting = true,
- 	.foe_entry_size = MTK_FOE_ENTRY_V3_SIZE,
- 	.txrx = {
- 		.txd_size = sizeof(struct mtk_tx_dma_v2),
-diff --git a/drivers/net/ethernet/mediatek/mtk_ppe.c b/drivers/net/ethernet/mediatek/mtk_ppe.c
-index bf1ecb0c1c10..973370c3cb51 100644
---- a/drivers/net/ethernet/mediatek/mtk_ppe.c
-+++ b/drivers/net/ethernet/mediatek/mtk_ppe.c
-@@ -92,7 +92,6 @@ static int mtk_ppe_mib_wait_busy(struct mtk_ppe *ppe)
- 
- static int mtk_mib_entry_read(struct mtk_ppe *ppe, u16 index, u64 *bytes, u64 *packets)
- {
--	u32 byte_cnt_low, byte_cnt_high, pkt_cnt_low, pkt_cnt_high;
- 	u32 val, cnt_r0, cnt_r1, cnt_r2;
- 	int ret;
- 
-@@ -107,12 +106,20 @@ static int mtk_mib_entry_read(struct mtk_ppe *ppe, u16 index, u64 *bytes, u64 *p
- 	cnt_r1 = readl(ppe->base + MTK_PPE_MIB_SER_R1);
- 	cnt_r2 = readl(ppe->base + MTK_PPE_MIB_SER_R2);
- 
--	byte_cnt_low = FIELD_GET(MTK_PPE_MIB_SER_R0_BYTE_CNT_LOW, cnt_r0);
--	byte_cnt_high = FIELD_GET(MTK_PPE_MIB_SER_R1_BYTE_CNT_HIGH, cnt_r1);
--	pkt_cnt_low = FIELD_GET(MTK_PPE_MIB_SER_R1_PKT_CNT_LOW, cnt_r1);
--	pkt_cnt_high = FIELD_GET(MTK_PPE_MIB_SER_R2_PKT_CNT_HIGH, cnt_r2);
--	*bytes = ((u64)byte_cnt_high << 32) | byte_cnt_low;
--	*packets = (pkt_cnt_high << 16) | pkt_cnt_low;
-+	if (mtk_is_netsys_v3_or_greater(ppe->eth)) {
-+		/* 64 bit for each counter */
-+		u32 cnt_r3 = readl(ppe->base + MTK_PPE_MIB_SER_R3);
-+		*bytes = ((u64)cnt_r1 << 32) | cnt_r0;
-+		*packets = ((u64)cnt_r3 << 32) | cnt_r2;
-+	} else {
-+		/* 48 bit byte counter, 40 bit packet counter */
-+		u32 byte_cnt_low = FIELD_GET(MTK_PPE_MIB_SER_R0_BYTE_CNT_LOW, cnt_r0);
-+		u32 byte_cnt_high = FIELD_GET(MTK_PPE_MIB_SER_R1_BYTE_CNT_HIGH, cnt_r1);
-+		u32 pkt_cnt_low = FIELD_GET(MTK_PPE_MIB_SER_R1_PKT_CNT_LOW, cnt_r1);
-+		u32 pkt_cnt_high = FIELD_GET(MTK_PPE_MIB_SER_R2_PKT_CNT_HIGH, cnt_r2);
-+		*bytes = ((u64)byte_cnt_high << 32) | byte_cnt_low;
-+		*packets = ((u64)pkt_cnt_high << 16) | pkt_cnt_low;
-+	}
- 
- 	return 0;
- }
-diff --git a/drivers/net/ethernet/mediatek/mtk_ppe_regs.h b/drivers/net/ethernet/mediatek/mtk_ppe_regs.h
-index a2e61b3eb006..3ce088eef0ef 100644
---- a/drivers/net/ethernet/mediatek/mtk_ppe_regs.h
-+++ b/drivers/net/ethernet/mediatek/mtk_ppe_regs.h
-@@ -163,6 +163,8 @@ enum {
- #define MTK_PPE_MIB_SER_R2			0x348
- #define MTK_PPE_MIB_SER_R2_PKT_CNT_HIGH		GENMASK(23, 0)
- 
-+#define MTK_PPE_MIB_SER_R3			0x34c
-+
- #define MTK_PPE_MIB_CACHE_CTL			0x350
- #define MTK_PPE_MIB_CACHE_CTL_EN		BIT(0)
- #define MTK_PPE_MIB_CACHE_CTL_FLUSH		BIT(2)
--- 
-2.41.0
+```
+[ 3247.206007] XFS (zram0): Mounting V5 Filesystem 0b7d6149-614c-4f4c-9a1f-a80a9810f58f
+[ 3247.210781] XFS (zram0): Metadata CRC error detected at xfs_agf_read_verify+0x108/0x150 [xfs], xfs_agf block 0x80008 
+[ 3247.211121] XFS (zram0): Unmount and run xfs_repair
+[ 3247.211198] XFS (zram0): First 128 bytes of corrupted metadata buffer:
+[ 3247.211293] 00000000: fe ed ba be 00 00 00 00 00 00 00 02 00 00 00 00 ................
+[ 3247.211405] 00000010: 00 00 00 00 00 00 00 18 00 00 00 01 00 00 00 00  ................
+[ 3247.211515] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[ 3247.211625] 00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[ 3247.211735] 00000040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[ 3247.211842] 00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[ 3247.211951] 00000060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[ 3247.212063] 00000070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+[ 3247.212171] XFS (zram0): metadata I/O error in "xfs_read_agf+0xb4/0x180 [xfs]" at daddr 0x80008 len 8 error 74
+[ 3247.212485] XFS (zram0): Error -117 reserving per-AG metadata reserve pool.
+[ 3247.212497] XFS (zram0): Corruption of in-memory data (0x8) detected at xfs_fs_reserve_ag_blocks+0x1e0/0x220 [xfs] (fs/xfs/xfs_fsops.c:587).  Shutting down filesystem.
+[ 3247.212828] XFS (zram0): Please unmount the filesystem and rectify the problem(s)
+[ 3247.212943] XFS (zram0): Ending clean mount
+[ 3247.212970] XFS (zram0): Error -5 reserving per-AG metadata reserve pool.
+```
 
+The issue can be reproduced easily with a simple script:
+
+```
+[root@p8 ~]# cat test.sh 
+#!/bin/bash
+set -eux -o pipefail
+modprobe zram num_devices=0
+read dev < /sys/class/zram-control/hot_add
+echo 10G > /sys/block/zram"${dev}"/disksize
+mkfs.xfs /dev/zram"${dev}"
+mkdir -p /tmp/foo
+mount -t xfs /dev/zram"${dev}" /tmp/foo
+```
+
+We ran a kernel bisect and narrowed it down to offending commit af8b04c6:
+
+```
+[root@ibm-p8-kvm-03-guest-02 linux]# git bisect good
+af8b04c63708fa730c0257084fab91fb2a9cecc4 is the first bad commit
+commit af8b04c63708fa730c0257084fab91fb2a9cecc4
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Tue Apr 11 19:14:46 2023 +0200
+
+    zram: simplify bvec iteration in __zram_make_request
+    
+    bio_for_each_segment synthetize bvecs that never cross page boundaries, so
+    don't duplicate that work in an inner loop.
+    
+    Link: https://lkml.kernel.org/r/20230411171459.567614-5-hch@lst.de
+    Signed-off-by: Christoph Hellwig <hch@lst.de>
+    Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+    Acked-by: Minchan Kim <minchan@kernel.org>
+    Cc: Jens Axboe <axboe@kernel.dk>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+
+ drivers/block/zram/zram_drv.c | 42 +++++++++++-------------------------------
+ 1 file changed, 11 insertions(+), 31 deletions(-)
+```
+
+Any ideas on how to fix the problem?
+
+Thanks!
+Dusty
