@@ -2,73 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F1276C592
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E07D76C5A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbjHBGtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 02:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        id S232664AbjHBGt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 02:49:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232592AbjHBGtE (ORCPT
+        with ESMTP id S232523AbjHBGt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 02:49:04 -0400
-Received: from out28-194.mail.aliyun.com (out28-194.mail.aliyun.com [115.124.28.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27759359E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:48:32 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3444751|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.00639894-4.13957e-05-0.99356;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047193;MF=sunran001@208suo.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.U6YuGG9_1690958904;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U6YuGG9_1690958904)
-          by smtp.aliyun-inc.com;
-          Wed, 02 Aug 2023 14:48:25 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amdgpu: Clean up errors in mmhub_v9_4.c
-Date:   Wed,  2 Aug 2023 06:48:22 +0000
-Message-Id: <20230802064822.12093-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 02:49:28 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77C430D1
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:49:04 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3177f520802so321114f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 23:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690958943; x=1691563743;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HB4LMRnKjLUVIuZ5oaRSbvvqwDvW69WwOvTNkZtzmUw=;
+        b=LBX6ZWtPdcIPQjygFVg79ZJiCHojaZBqy6eFaNIcotHmuubg0txtGD0FaWnRJMJPOD
+         Jtdxs3D9zi11mTqh7e2wseMVlWdX7clJZRNGaoPF5VA99ajNIKVSfoJj8nSdAUzsMHkB
+         5deEdSuxU9MQAuNalFCl7zG71yy2uarC8tTIG4kwZ/0egMYHv7WpvUqB+jQpvtH9EXbL
+         F89nBSoaY26z1QC4KijCI7FDuxUfy5lCCgq+bSzCI/F2T7/EqLDfR3OsRzNyaWMfsdxx
+         GltV+HaUX7Gns1Oz+KvazEoTPsPMp6dXvtWd12+CuNaRl15eFWAavDtWYg1SuBc2AepU
+         QuFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690958943; x=1691563743;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HB4LMRnKjLUVIuZ5oaRSbvvqwDvW69WwOvTNkZtzmUw=;
+        b=ISo9yHCTXX5M6o7JEZh0uKwBhpyAfh8cPsKdTX14ZkdO8R3LUzzvHVVVfqsu57WNQl
+         GRmnZoPr2o2Y2wC9UhKk3v96b3pLevH7+bj+7SIZwc1Py1dN1yB28NKjypAa4ArpF2j1
+         vlJ+4WTc/mDuptOV1ZVPJcq3H14gDwEOUL6G7DlLPH6H9/gJ4ZCiQGYGvMjcKMgMB8G2
+         W2O95gjVntO3spL5yPT+Dh38YEm5990ivwBh88sC7UIxeJBBKATvMPWDus4Z3KTKp3PC
+         CN6bCa6mnI0OeXtoD5KmXGcGAaWGalAOg/AJZMqyR9KW90NkffgX6QFqdxwSdsBoMVsg
+         vvsw==
+X-Gm-Message-State: ABy/qLYIdXGxRqSFXv0UHxNj37kUu0K+LBf1mktcdsn+TyKLo+yI27rX
+        bjhmtDaHGNMB7Bldmi936/Q4uA==
+X-Google-Smtp-Source: APBJJlH2quBX4MR6LyRjY6Lqo6Ha+WR2qvJyYNYfWiKULR1xiBxOrUw8YVmK/Z4enjzY0LreAgSPHg==
+X-Received: by 2002:a5d:4986:0:b0:317:417e:a467 with SMTP id r6-20020a5d4986000000b00317417ea467mr4327416wrq.6.1690958942945;
+        Tue, 01 Aug 2023 23:49:02 -0700 (PDT)
+Received: from [192.168.69.115] (bd137-h02-176-184-46-98.dsl.sta.abo.bbox.fr. [176.184.46.98])
+        by smtp.gmail.com with ESMTPSA id l6-20020adfe586000000b0031416362e23sm18173701wrm.3.2023.08.01.23.49.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 01 Aug 2023 23:49:02 -0700 (PDT)
+Message-ID: <7219877c-119d-713f-6302-eabe98df9929@linaro.org>
+Date:   Wed, 2 Aug 2023 08:49:00 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v3 10/12] KVM: x86/mmu: Use BUILD_BUG_ON_INVALID() for
+ KVM_MMU_WARN_ON() stub
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mingwei Zhang <mizhang@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Jim Mattson <jmattson@google.com>
+References: <20230729004722.1056172-1-seanjc@google.com>
+ <20230729004722.1056172-11-seanjc@google.com>
+ <8f2c1cf6-ae4d-f5fb-624f-16a1295612d7@linaro.org>
+ <ZMmYHQwWMpT8s9Vi@google.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <ZMmYHQwWMpT8s9Vi@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+On 2/8/23 01:41, Sean Christopherson wrote:
+> On Tue, Aug 01, 2023, Philippe Mathieu-Daudé wrote:
+>> Hi Sean,
+>>
+>> On 29/7/23 02:47, Sean Christopherson wrote:
+>>> Use BUILD_BUG_ON_INVALID() instead of an empty do-while loop to stub out
+>>> KVM_MMU_WARN_ON() when CONFIG_KVM_PROVE_MMU=n, that way _some_ build
+>>> issues with the usage of KVM_MMU_WARN_ON() will be dected even if the
+>>> kernel is using the stubs, e.g. basic syntax errors will be detected.
+>>>
+>>> Signed-off-by: Sean Christopherson <seanjc@google.com>
+>>> ---
+>>>    arch/x86/kvm/mmu/mmu_internal.h | 2 +-
+>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+>>> index 40e74db6a7d5..f1ef670058e5 100644
+>>> --- a/arch/x86/kvm/mmu/mmu_internal.h
+>>> +++ b/arch/x86/kvm/mmu/mmu_internal.h
+>>> @@ -9,7 +9,7 @@
+>>>    #ifdef CONFIG_KVM_PROVE_MMU
+>>>    #define KVM_MMU_WARN_ON(x) WARN_ON_ONCE(x)
+>>>    #else
+>>> -#define KVM_MMU_WARN_ON(x) do { } while (0)
+>>> +#define KVM_MMU_WARN_ON(x) BUILD_BUG_ON_INVALID(x)
+>>
+>> No need to include <linux/build_bug.h> ?
+> 
+> It's indirectly included via
+> 
+>    linux/kvm_host.h => linux/bug.h => linux/build_bug.h
+> 
+> Depending on the day, I might argue for explicitly including all dependencies, but
+> in this case build_bug.h is a "core" header, and IMO there's no value added by
+> including it directly.
 
-ERROR: code indent should use tabs where possible
-ERROR: space required before the open parenthesis '('
-
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- drivers/gpu/drm/amd/amdgpu/mmhub_v9_4.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/amdgpu/mmhub_v9_4.c b/drivers/gpu/drm/amd/amdgpu/mmhub_v9_4.c
-index e790f890aec6..5718e4d40e66 100644
---- a/drivers/gpu/drm/amd/amdgpu/mmhub_v9_4.c
-+++ b/drivers/gpu/drm/amd/amdgpu/mmhub_v9_4.c
-@@ -108,7 +108,7 @@ static void mmhub_v9_4_setup_vm_pt_regs(struct amdgpu_device *adev, uint32_t vmi
- }
- 
- static void mmhub_v9_4_init_system_aperture_regs(struct amdgpu_device *adev,
--					         int hubid)
-+						int hubid)
- {
- 	uint64_t value;
- 	uint32_t tmp;
-@@ -1568,7 +1568,7 @@ static int mmhub_v9_4_get_ras_error_count(struct amdgpu_device *adev,
- 	uint32_t sec_cnt, ded_cnt;
- 
- 	for (i = 0; i < ARRAY_SIZE(mmhub_v9_4_ras_fields); i++) {
--		if(mmhub_v9_4_ras_fields[i].reg_offset != reg->reg_offset)
-+		if (mmhub_v9_4_ras_fields[i].reg_offset != reg->reg_offset)
- 			continue;
- 
- 		sec_cnt = (value &
--- 
-2.17.1
-
+OK, fine then, thanks!
