@@ -2,153 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9EF76C2B4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615A376C2B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:09:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbjHBCIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 22:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58160 "EHLO
+        id S231243AbjHBCJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 22:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbjHBCIQ (ORCPT
+        with ESMTP id S229606AbjHBCJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:08:16 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B5519A0
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 19:08:15 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-4036bd4fff1so158091cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 19:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690942094; x=1691546894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Aja2sp26dbGeO9esoM3QzIDVku+dq0XwVDIc+IsolCQ=;
-        b=6MnyYdm06DH0WFOhS8+wUQPsLSbrpKWd3npWMcNWWyzAoz/kWWU4HkWHEZkS61E5pe
-         9+jM2Wx2GDwjmZYAXMQ3oB/Ejtai2i/RIC/5EhBihdDTYwCEGEc0i91VlXsTHUJNwSLg
-         HEWLCMrTrjQPcHYz/1kyIkGqMQcNEkWIjapol0tMtvd6wLBG/kZFFiygKH+0VY7jQciM
-         llbYmlAKWBPiPtT85B8qB78/xEDiFTc4jhn4UorM7ZYY2b8Kp0Hsfr/3asBIIHRoIz4G
-         9GRBAmP5iodnS7ZBJgfcQQApGF89b1H00DiaC3rJYn/6IOMhoWejdsbrBkUAlYw2vfXb
-         6EXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690942094; x=1691546894;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Aja2sp26dbGeO9esoM3QzIDVku+dq0XwVDIc+IsolCQ=;
-        b=Bvri7YPJHVhZUossiWmSJbtSVtXX51MMjFr/Q9MwZa/8qnXq572n5zpaHH+qHwe71J
-         fBxqGd8q0DjZ2HrJDz4DyIUK0Aq1KlOQeASNnT0qOcMglwcEIMQtj1oXZIjLrlvkIwcM
-         BIv3gF4EEPvVU5GEi8G8v2FOcI/XyPnAN36K+gslLdK8ccWGugZFYnGzN4beiPSIxGSP
-         K3Nv3fGgjQJyNINvhuGr8XRtoGovvwhjpg3jGnkdIM/AFbnoZo2RuS/Coe5gj0s7lRff
-         qjT7oO5sbXOfK/kFzVnHxxBmWKLkldxfwcyz4ztfPixaYotelhSabb0ZecJS3Z49+5Ca
-         m0Ng==
-X-Gm-Message-State: ABy/qLZvrcMpKuUAab9JyXNpnpavw3lpjy3KKnjieAP+QNrwJYh2IWXM
-        /BgzzOSIuDSzQSi4R6GekpIsOiTMlFhh5lwgddka9w==
-X-Google-Smtp-Source: APBJJlFI0LpzT3Dxb29zrFcaiBceXtmAw2GDelbar44DfZF8uuQLNGEI78+/S1i3xVkHS0a1TO1gl0VExunoRFjXvvE=
-X-Received: by 2002:ac8:584b:0:b0:40f:dc70:fde2 with SMTP id
- h11-20020ac8584b000000b0040fdc70fde2mr129571qth.26.1690942094306; Tue, 01 Aug
- 2023 19:08:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230802001938.3913174-1-kaleshsingh@google.com>
-In-Reply-To: <20230802001938.3913174-1-kaleshsingh@google.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Tue, 1 Aug 2023 20:07:38 -0600
-Message-ID: <CAOUHufbz-VHZ12b9wrCFxZ9mqVnU=Xstkoo5Ym9_tw72R1-2Gg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mm-unstable: Multi-gen LRU: Fix per-zone reclaim
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     akpm@linux-foundation.org, surenb@google.com,
-        android-mm@google.com, kernel-team@android.com,
-        Charan Teja Kalla <quic_charante@quicinc.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 22:09:53 -0400
+Received: from out28-112.mail.aliyun.com (out28-112.mail.aliyun.com [115.124.28.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5573319A0
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 19:09:51 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07440748|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_system_inform|0.0531706-0.0119323-0.934897;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=sunran001@208suo.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.U6LRrkh_1690942184;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U6LRrkh_1690942184)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Aug 2023 10:09:45 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drivers/amd/pm: Clean up errors in smu8_smumgr.h
+Date:   Wed,  2 Aug 2023 02:09:43 +0000
+Message-Id: <20230802020943.9322-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 6:19=E2=80=AFPM Kalesh Singh <kaleshsingh@google.com=
-> wrote:
->
-> MGLRU has a LRU list for each zone for each type (anon/file) in each
-> generation:
->
->         long nr_pages[MAX_NR_GENS][ANON_AND_FILE][MAX_NR_ZONES];
->
-> The min_seq (oldest generation) can progress independently for each
-> type but the max_seq (youngest generation) is shared for both anon and
-> file. This is to maintain a common frame of reference.
->
-> In order for eviction to advance the min_seq of a type, all the per-zone
-> lists in the oldest generation of that type must be empty.
->
-> The eviction logic only considers pages from eligible zones for
-> eviction or promotion.
->
->     scan_folios() {
->         ...
->         for (zone =3D sc->reclaim_idx; zone >=3D 0; zone--)  {
->             ...
->             sort_folio();       // Promote
->             ...
->             isolate_folio();    // Evict
->         }
->         ...
->     }
->
-> Consider the system has the movable zone configured and default 4
-> generations. The current state of the system is as shown below
-> (only illustrating one type for simplicity):
->
-> Type: ANON
->
->         Zone    DMA32     Normal    Movable    Device
->
->         Gen 0       0          0        4GB         0
->
->         Gen 1       0        1GB        1MB         0
->
->         Gen 2     1MB        4GB        1MB         0
->
->         Gen 3     1MB        1MB        1MB         0
->
-> Now consider there is a GFP_KERNEL allocation request (eligible zone
-> index <=3D Normal), evict_folios() will return without doing any work
-> since there are no pages to scan in the eligible zones of the oldest
-> generation. Reclaim won't make progress until triggered from a ZONE_MOVAB=
-LE
-> allocation request; which may not happen soon if there is a lot of free
-> memory in the movable zone. This can lead to OOM kills, although there
-> is 1GB pages in the Normal zone of Gen 1 that we have not yet tried to
-> reclaim.
->
-> This issue is not seen in the conventional active/inactive LRU since
-> there are no per-zone lists.
->
-> If there are no (not enough) folios to scan in the eligible zones, move
-> folios from ineligible zone (zone_index > reclaim_index) to the next
-> generation. This allows for the progression of min_seq and reclaiming
-> from the next generation (Gen 1).
->
-> Qualcomm, Mediatek and raspberrypi [1] discovered this issue independentl=
-y.
->
-> [1] https://github.com/raspberrypi/linux/issues/5395
->
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Reported-by: Charan Teja Kalla <quic_charante@quicinc.com>
-> Reported-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
+Fix the following errors reported by checkpatch:
 
-LGTM. But I think we need the Fixes tag and Cc stable.
+ERROR: that open brace { should be on the previous line
+ERROR: space prohibited before that ',' (ctx:WxW)
+
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c | 48 ++++++++--------------
+ 1 file changed, 17 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c b/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c
+index 36c831b280ed..5d28c951a319 100644
+--- a/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c
++++ b/drivers/gpu/drm/amd/pm/legacy-dpm/kv_dpm.c
+@@ -191,8 +191,7 @@ static void sumo_construct_vid_mapping_table(struct amdgpu_device *adev,
+ }
+ 
+ #if 0
+-static const struct kv_lcac_config_values sx_local_cac_cfg_kv[] =
+-{
++static const struct kv_lcac_config_values sx_local_cac_cfg_kv[] = {
+ 	{  0,       4,        1    },
+ 	{  1,       4,        1    },
+ 	{  2,       5,        1    },
+@@ -204,32 +203,27 @@ static const struct kv_lcac_config_values sx_local_cac_cfg_kv[] =
+ 	{ 0xffffffff }
+ };
+ 
+-static const struct kv_lcac_config_values mc0_local_cac_cfg_kv[] =
+-{
++static const struct kv_lcac_config_values mc0_local_cac_cfg_kv[] = {
+ 	{  0,       4,        1    },
+ 	{ 0xffffffff }
+ };
+ 
+-static const struct kv_lcac_config_values mc1_local_cac_cfg_kv[] =
+-{
++static const struct kv_lcac_config_values mc1_local_cac_cfg_kv[] = {
+ 	{  0,       4,        1    },
+ 	{ 0xffffffff }
+ };
+ 
+-static const struct kv_lcac_config_values mc2_local_cac_cfg_kv[] =
+-{
++static const struct kv_lcac_config_values mc2_local_cac_cfg_kv[] = {
+ 	{  0,       4,        1    },
+ 	{ 0xffffffff }
+ };
+ 
+-static const struct kv_lcac_config_values mc3_local_cac_cfg_kv[] =
+-{
++static const struct kv_lcac_config_values mc3_local_cac_cfg_kv[] = {
+ 	{  0,       4,        1    },
+ 	{ 0xffffffff }
+ };
+ 
+-static const struct kv_lcac_config_values cpl_local_cac_cfg_kv[] =
+-{
++static const struct kv_lcac_config_values cpl_local_cac_cfg_kv[] = {
+ 	{  0,       4,        1    },
+ 	{  1,       4,        1    },
+ 	{  2,       5,        1    },
+@@ -260,39 +254,32 @@ static const struct kv_lcac_config_values cpl_local_cac_cfg_kv[] =
+ 	{ 0xffffffff }
+ };
+ 
+-static const struct kv_lcac_config_reg sx0_cac_config_reg[] =
+-{
++static const struct kv_lcac_config_reg sx0_cac_config_reg[] = {
+ 	{ 0xc0400d00, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00000001, 0 }
+ };
+ 
+-static const struct kv_lcac_config_reg mc0_cac_config_reg[] =
+-{
++static const struct kv_lcac_config_reg mc0_cac_config_reg[] = {
+ 	{ 0xc0400d30, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00000001, 0 }
+ };
+ 
+-static const struct kv_lcac_config_reg mc1_cac_config_reg[] =
+-{
++static const struct kv_lcac_config_reg mc1_cac_config_reg[] = {
+ 	{ 0xc0400d3c, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00000001, 0 }
+ };
+ 
+-static const struct kv_lcac_config_reg mc2_cac_config_reg[] =
+-{
++static const struct kv_lcac_config_reg mc2_cac_config_reg[] = {
+ 	{ 0xc0400d48, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00000001, 0 }
+ };
+ 
+-static const struct kv_lcac_config_reg mc3_cac_config_reg[] =
+-{
++static const struct kv_lcac_config_reg mc3_cac_config_reg[] = {
+ 	{ 0xc0400d54, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00000001, 0 }
+ };
+ 
+-static const struct kv_lcac_config_reg cpl_cac_config_reg[] =
+-{
++static const struct kv_lcac_config_reg cpl_cac_config_reg[] = {
+ 	{ 0xc0400d80, 0x003e0000, 17, 0x3fc00000, 22, 0x0001fffe, 1, 0x00000001, 0 }
+ };
+ #endif
+ 
+-static const struct kv_pt_config_reg didt_config_kv[] =
+-{
++static const struct kv_pt_config_reg didt_config_kv[] = {
+ 	{ 0x10, 0x000000ff, 0, 0x0, KV_CONFIGREG_DIDT_IND },
+ 	{ 0x10, 0x0000ff00, 8, 0x0, KV_CONFIGREG_DIDT_IND },
+ 	{ 0x10, 0x00ff0000, 16, 0x0, KV_CONFIGREG_DIDT_IND },
+@@ -1173,9 +1160,9 @@ static void kv_calculate_dfs_bypass_settings(struct amdgpu_device *adev)
+ 					pi->graphics_level[i].ClkBypassCntl = 2;
+ 				else if (kv_get_clock_difference(table->entries[i].clk, 26600) < 200)
+ 					pi->graphics_level[i].ClkBypassCntl = 7;
+-				else if (kv_get_clock_difference(table->entries[i].clk , 20000) < 200)
++				else if (kv_get_clock_difference(table->entries[i].clk, 20000) < 200)
+ 					pi->graphics_level[i].ClkBypassCntl = 6;
+-				else if (kv_get_clock_difference(table->entries[i].clk , 10000) < 200)
++				else if (kv_get_clock_difference(table->entries[i].clk, 10000) < 200)
+ 					pi->graphics_level[i].ClkBypassCntl = 8;
+ 				else
+ 					pi->graphics_level[i].ClkBypassCntl = 0;
+@@ -1825,7 +1812,7 @@ static void kv_set_valid_clock_range(struct amdgpu_device *adev,
+ 			if ((new_ps->levels[0].sclk -
+ 			     table->entries[pi->highest_valid].sclk_frequency) >
+ 			    (table->entries[pi->lowest_valid].sclk_frequency -
+-			     new_ps->levels[new_ps->num_levels -1].sclk))
++			     new_ps->levels[new_ps->num_levels - 1].sclk))
+ 				pi->highest_valid = pi->lowest_valid;
+ 			else
+ 				pi->lowest_valid =  pi->highest_valid;
+@@ -3333,8 +3320,7 @@ static const struct amd_ip_funcs kv_dpm_ip_funcs = {
+ 	.set_powergating_state = kv_dpm_set_powergating_state,
+ };
+ 
+-const struct amdgpu_ip_block_version kv_smu_ip_block =
+-{
++const struct amdgpu_ip_block_version kv_smu_ip_block = {
+ 	.type = AMD_IP_BLOCK_TYPE_SMC,
+ 	.major = 1,
+ 	.minor = 0,
+-- 
+2.17.1
+
