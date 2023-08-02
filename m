@@ -2,119 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E07D76C5A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2A276C5A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbjHBGt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 02:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        id S231962AbjHBGu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 02:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbjHBGt2 (ORCPT
+        with ESMTP id S232579AbjHBGtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 02:49:28 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77C430D1
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:49:04 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-3177f520802so321114f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 23:49:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690958943; x=1691563743;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HB4LMRnKjLUVIuZ5oaRSbvvqwDvW69WwOvTNkZtzmUw=;
-        b=LBX6ZWtPdcIPQjygFVg79ZJiCHojaZBqy6eFaNIcotHmuubg0txtGD0FaWnRJMJPOD
-         Jtdxs3D9zi11mTqh7e2wseMVlWdX7clJZRNGaoPF5VA99ajNIKVSfoJj8nSdAUzsMHkB
-         5deEdSuxU9MQAuNalFCl7zG71yy2uarC8tTIG4kwZ/0egMYHv7WpvUqB+jQpvtH9EXbL
-         F89nBSoaY26z1QC4KijCI7FDuxUfy5lCCgq+bSzCI/F2T7/EqLDfR3OsRzNyaWMfsdxx
-         GltV+HaUX7Gns1Oz+KvazEoTPsPMp6dXvtWd12+CuNaRl15eFWAavDtWYg1SuBc2AepU
-         QuFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690958943; x=1691563743;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HB4LMRnKjLUVIuZ5oaRSbvvqwDvW69WwOvTNkZtzmUw=;
-        b=ISo9yHCTXX5M6o7JEZh0uKwBhpyAfh8cPsKdTX14ZkdO8R3LUzzvHVVVfqsu57WNQl
-         GRmnZoPr2o2Y2wC9UhKk3v96b3pLevH7+bj+7SIZwc1Py1dN1yB28NKjypAa4ArpF2j1
-         vlJ+4WTc/mDuptOV1ZVPJcq3H14gDwEOUL6G7DlLPH6H9/gJ4ZCiQGYGvMjcKMgMB8G2
-         W2O95gjVntO3spL5yPT+Dh38YEm5990ivwBh88sC7UIxeJBBKATvMPWDus4Z3KTKp3PC
-         CN6bCa6mnI0OeXtoD5KmXGcGAaWGalAOg/AJZMqyR9KW90NkffgX6QFqdxwSdsBoMVsg
-         vvsw==
-X-Gm-Message-State: ABy/qLYIdXGxRqSFXv0UHxNj37kUu0K+LBf1mktcdsn+TyKLo+yI27rX
-        bjhmtDaHGNMB7Bldmi936/Q4uA==
-X-Google-Smtp-Source: APBJJlH2quBX4MR6LyRjY6Lqo6Ha+WR2qvJyYNYfWiKULR1xiBxOrUw8YVmK/Z4enjzY0LreAgSPHg==
-X-Received: by 2002:a5d:4986:0:b0:317:417e:a467 with SMTP id r6-20020a5d4986000000b00317417ea467mr4327416wrq.6.1690958942945;
-        Tue, 01 Aug 2023 23:49:02 -0700 (PDT)
-Received: from [192.168.69.115] (bd137-h02-176-184-46-98.dsl.sta.abo.bbox.fr. [176.184.46.98])
-        by smtp.gmail.com with ESMTPSA id l6-20020adfe586000000b0031416362e23sm18173701wrm.3.2023.08.01.23.49.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 23:49:02 -0700 (PDT)
-Message-ID: <7219877c-119d-713f-6302-eabe98df9929@linaro.org>
-Date:   Wed, 2 Aug 2023 08:49:00 +0200
+        Wed, 2 Aug 2023 02:49:39 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A952D43;
+        Tue,  1 Aug 2023 23:49:36 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3726nWc8053335;
+        Wed, 2 Aug 2023 01:49:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690958972;
+        bh=5dhhBkcIIjQkD4NGE6KjlFSzwhe0pTH+UkvbUnYAUqw=;
+        h=From:To:CC:Subject:Date;
+        b=O2dxfOSlgXvbHD7RANj0PEqYlDtjr3Ib/phyCLHg3rDFPduxMtYlgBGnKTovqF/vO
+         33mEbuc9FqojMjB8ypCFJvNj8yQyx9gB6LbpW97qlIEDU2dprsyqOcYgGkeYZa+Mzf
+         1MepDlBzfQIWPA+qoep9sqgNrsmXuOMcSyb/BiZE=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3726nWUm030628
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 2 Aug 2023 01:49:32 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
+ Aug 2023 01:49:32 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 2 Aug 2023 01:49:32 -0500
+Received: from lelv0854.itg.ti.com (lelv0854.itg.ti.com [10.181.64.140])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3726nWna010081;
+        Wed, 2 Aug 2023 01:49:32 -0500
+Received: from localhost (uda0501179.dhcp.ti.com [172.24.227.217])
+        by lelv0854.itg.ti.com (8.14.7/8.14.7) with ESMTP id 3726nVKx015117;
+        Wed, 2 Aug 2023 01:49:31 -0500
+From:   MD Danish Anwar <danishanwar@ti.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Bjorn Andersson <andersson@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
+        <srk@ti.com>, <danishanwar@ti.com>, <rogerq@kernel.org>,
+        <vigneshr@ti.com>
+Subject: [PATCH] remoteproc: pru: add support for configuring GPMUX based on client setup
+Date:   Wed, 2 Aug 2023 12:19:25 +0530
+Message-ID: <20230802064925.1895750-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.13.0
-Subject: Re: [PATCH v3 10/12] KVM: x86/mmu: Use BUILD_BUG_ON_INVALID() for
- KVM_MMU_WARN_ON() stub
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mingwei Zhang <mizhang@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Jim Mattson <jmattson@google.com>
-References: <20230729004722.1056172-1-seanjc@google.com>
- <20230729004722.1056172-11-seanjc@google.com>
- <8f2c1cf6-ae4d-f5fb-624f-16a1295612d7@linaro.org>
- <ZMmYHQwWMpT8s9Vi@google.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <ZMmYHQwWMpT8s9Vi@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/8/23 01:41, Sean Christopherson wrote:
-> On Tue, Aug 01, 2023, Philippe Mathieu-Daudé wrote:
->> Hi Sean,
->>
->> On 29/7/23 02:47, Sean Christopherson wrote:
->>> Use BUILD_BUG_ON_INVALID() instead of an empty do-while loop to stub out
->>> KVM_MMU_WARN_ON() when CONFIG_KVM_PROVE_MMU=n, that way _some_ build
->>> issues with the usage of KVM_MMU_WARN_ON() will be dected even if the
->>> kernel is using the stubs, e.g. basic syntax errors will be detected.
->>>
->>> Signed-off-by: Sean Christopherson <seanjc@google.com>
->>> ---
->>>    arch/x86/kvm/mmu/mmu_internal.h | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
->>> index 40e74db6a7d5..f1ef670058e5 100644
->>> --- a/arch/x86/kvm/mmu/mmu_internal.h
->>> +++ b/arch/x86/kvm/mmu/mmu_internal.h
->>> @@ -9,7 +9,7 @@
->>>    #ifdef CONFIG_KVM_PROVE_MMU
->>>    #define KVM_MMU_WARN_ON(x) WARN_ON_ONCE(x)
->>>    #else
->>> -#define KVM_MMU_WARN_ON(x) do { } while (0)
->>> +#define KVM_MMU_WARN_ON(x) BUILD_BUG_ON_INVALID(x)
->>
->> No need to include <linux/build_bug.h> ?
-> 
-> It's indirectly included via
-> 
->    linux/kvm_host.h => linux/bug.h => linux/build_bug.h
-> 
-> Depending on the day, I might argue for explicitly including all dependencies, but
-> in this case build_bug.h is a "core" header, and IMO there's no value added by
-> including it directly.
+From: Tero Kristo <t-kristo@ti.com>
 
-OK, fine then, thanks!
+The GPMUX config value for a PRU device can now be configured by client
+by specifying it in the device node ti,pruss-gp-mux-sel.
+
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Signed-off-by: Suman Anna <s-anna@ti.com>
+Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+---
+ drivers/remoteproc/pru_rproc.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/drivers/remoteproc/pru_rproc.c b/drivers/remoteproc/pru_rproc.c
+index 5b2dc75836fc..327f0c7ee3d6 100644
+--- a/drivers/remoteproc/pru_rproc.c
++++ b/drivers/remoteproc/pru_rproc.c
+@@ -110,6 +110,7 @@ struct pru_private_data {
+  * @dbg_single_step: debug state variable to set PRU into single step mode
+  * @dbg_continuous: debug state variable to restore PRU execution mode
+  * @evt_count: number of mapped events
++ * @gpmux_save: saved value for gpmux config
+  */
+ struct pru_rproc {
+ 	int id;
+@@ -128,6 +129,7 @@ struct pru_rproc {
+ 	u32 dbg_single_step;
+ 	u32 dbg_continuous;
+ 	u8 evt_count;
++	u8 gpmux_save;
+ };
+ 
+ static inline u32 pru_control_read_reg(struct pru_rproc *pru, unsigned int reg)
+@@ -229,6 +231,7 @@ struct rproc *pru_rproc_get(struct device_node *np, int index,
+ 	struct device *dev;
+ 	const char *fw_name;
+ 	int ret;
++	u32 mux;
+ 
+ 	rproc = __pru_rproc_get(np, index);
+ 	if (IS_ERR(rproc))
+@@ -253,6 +256,23 @@ struct rproc *pru_rproc_get(struct device_node *np, int index,
+ 	if (pru_id)
+ 		*pru_id = pru->id;
+ 
++	ret = pruss_cfg_get_gpmux(pru->pruss, pru->id, &pru->gpmux_save);
++	if (ret) {
++		dev_err(dev, "failed to get cfg gpmux: %d\n", ret);
++		goto err;
++	}
++
++	/* An error here is acceptable for backward compatibility */
++	ret = of_property_read_u32_index(np, "ti,pruss-gp-mux-sel", index,
++					 &mux);
++	if (!ret) {
++		ret = pruss_cfg_set_gpmux(pru->pruss, pru->id, mux);
++		if (ret) {
++			dev_err(dev, "failed to set cfg gpmux: %d\n", ret);
++			goto err;
++		}
++	}
++
+ 	ret = of_property_read_string_index(np, "firmware-name", index,
+ 					    &fw_name);
+ 	if (!ret) {
+@@ -291,6 +311,8 @@ void pru_rproc_put(struct rproc *rproc)
+ 
+ 	pru = rproc->priv;
+ 
++	pruss_cfg_set_gpmux(pru->pruss, pru->id, pru->gpmux_save);
++
+ 	pru_rproc_set_firmware(rproc, NULL);
+ 
+ 	mutex_lock(&pru->lock);
+-- 
+2.34.1
+
