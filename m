@@ -2,109 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CBC76C968
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E259676C96D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234035AbjHBJX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39894 "EHLO
+        id S234092AbjHBJZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232257AbjHBJX5 (ORCPT
+        with ESMTP id S234075AbjHBJZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:23:57 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46784E7;
-        Wed,  2 Aug 2023 02:23:56 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 7D0B480AE;
-        Wed,  2 Aug 2023 09:23:55 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 12:23:54 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v5 3/3] serial: core: Fix serial core controller port
- name to show controller id
-Message-ID: <20230802092354.GC14799@atomide.com>
-References: <20230725054216.45696-4-tony@atomide.com>
- <202308021529.35b3ad6c-oliver.sang@intel.com>
+        Wed, 2 Aug 2023 05:25:12 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3506AE7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:25:10 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9cdba1228so85898451fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 02:25:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bisdn-de.20221208.gappssmtp.com; s=20221208; t=1690968308; x=1691573108;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=w6+LT5AnXJWqsBFrgMPzoYnhOomhM/UwugjIu3qBxMM=;
+        b=39a6Q/vaKN8itJqe0SnYz5BpgwVJjKra/huKGTY9PvFtAMZuDYJIJ7gDjPXur8DQ4Y
+         HhHzvtk53fS7HAS6ZQG3BeW/4hXHlRHgnIyuSZ7opHsk6n3WkF4hKHCixK+DhgjNmr5V
+         xtKcaSKwDOsSEsyyV6LZePEwOzFCMnmNslOLs8tCZmQElBtxZiCgbUhZxtRTCd2yqUFJ
+         7d3ZYk54Aan2B3RuF9diYg91GhaKOdo5gWyqyUEPuml8YcvGPHJmC8GE0ES31XO3AZHF
+         Biz93nKubVj1wVVGVqgR4BhLgFWD+iQQ5RGF0QVTVK6LnWDFA2/MM4gU1jTIyNANXUrs
+         UrOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690968308; x=1691573108;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=w6+LT5AnXJWqsBFrgMPzoYnhOomhM/UwugjIu3qBxMM=;
+        b=Fqj6+VPR8FWAc36bDS5b6H8kkovAI+8g/mnDiOHBqQELA9Lr+MSnHxDQxT5cC2WpFN
+         1OttV6xrTo3UnYewk79xqxIoYdH555xG/WSCcm5kilRPdATonOW0KpWtBmdXPIFJ6iLn
+         cN0l6M/otCfVC3iBN4a2O4LhBZw5PGZBYRaShXEsJNyJcZon3AGfshOxdkEtTBpXive4
+         AfC14WUIhrkMOUEd5mSfO9jhtTbrp6c0nNnSXCxaV/L0fQdQfmogGRkJi44Cywk8z3vB
+         a2e3bAeR6gxwsSN2EZFz5PCJcBqc07g0FGaH2jAgcJm7Rk6uw97U9iHJc1vdZvS55xMw
+         5eDQ==
+X-Gm-Message-State: ABy/qLawwiKYDh2BTWRi+fsOtg3ei4aCborUqe0C6tXRuUt0MXtnGmHA
+        8LWqYdl0GABPHWvaFm3nu2kf+45xltoct7UR96zm7e6VsS/lxJHZu+JvXgAaUdKMExnQP/kewTz
+        znRs+01NJ2gGpQ/bsqG4b19Zzif/mWZ2FQQ==
+X-Google-Smtp-Source: APBJJlFDRnTyap4fSmGp05DOOvvuyDmRWQi1MlOW0KAriUKx005/o4JVevyoooLIxdWg+WuGBepv2g==
+X-Received: by 2002:a2e:9049:0:b0:2b6:c61c:745b with SMTP id n9-20020a2e9049000000b002b6c61c745bmr4599283ljg.3.1690968308366;
+        Wed, 02 Aug 2023 02:25:08 -0700 (PDT)
+Received: from localhost (dslb-088-076-253-094.088.076.pools.vodafone-ip.de. [88.76.253.94])
+        by smtp.gmail.com with ESMTPSA id l7-20020a1c7907000000b003fbb5506e54sm1136084wme.29.2023.08.02.02.25.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 02:25:07 -0700 (PDT)
+From:   Jonas Gorski <jonas.gorski@bisdn.de>
+To:     Taras Chornyi <taras.chornyi@plvision.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vadym Kochan <vkochan@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] prestera: fix fallback to previous version on same major version
+Date:   Wed,  2 Aug 2023 11:23:56 +0200
+Message-ID: <20230802092357.163944-1-jonas.gorski@bisdn.de>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202308021529.35b3ad6c-oliver.sang@intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="ISO-8859-1"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* kernel test robot <oliver.sang@intel.com> [230802 08:16]:
-> from serial, we observed last print out is:
-> 
-> [   15.584772][  T954] EDAC MC0: Giving out device to module skx_edac controller Skylake Socket#0 IMC#0: DEV 0000:3a:0a.0 (INTERRUPT)
-> [   15.597328][  T954] EDAC MC1: Giving out device to module skx_edac controller Skylake Socket#0 IMC#1: DEV 0000:3a:0c.0 (INTERRUPT)
-> [   15.610326][  T954] EDAC MC2: Giving out device to module skx_edac controller Skylake Socket#1 IMC#0: DEV 0000:ae:0a.0 (INTERRUPT)
-> [   15.623375][  T954] EDAC MC3: Giving out device to module skx_edac controller Skylake Socket#1 IMC#1: DEV 0000:ae:0c.0 (INTERRUPT)
-> [   15.640145][   T19] intel_rapl_common: Found RAPL domain package
-> [   15.655890][   T19] intel_rapl_common: Found RAPL domain dram
-> [   15.661983][   T19] intel_rapl_common: package-0:package:long_term locked by BIOS
-> [   15.678564][   T19] intel_rapl_common: package-0:package:short_term locked by BIOS
-> [   15.695259][   T19] intel_rapl_common: package-0:dram:long_term locked by BIOS
-> [   15.713068][  T158] intel_rapl_common: Found RAPL domain package
-> [   15.728719][  T158] intel_rapl_common: Found RAPL domain dram
-> [   15.734743][  T158] intel_rapl_common: package-1:package:long_term locked by BIOS
-> [   15.745244][ T1154] raid6: avx512x4 gen() 18153 MB/s
-> [   15.761297][  T158] intel_rapl_common: package-1:package:short_term locked by BIOS
-> [   15.767244][ T1154] raid6: avx512x2 gen() 18130 MB/s
-> [   15.768866][  T158] intel_rapl_common: package-1:dram:long_term locked by BIOS
-> [   15.790243][ T1154] raid6: avx512x1 gen() 18155 MB/s
-> [   15.812245][ T1154] raid6: avx2x4   gen() 18060 MB/s
-> [   15.834244][ T1154] raid6: avx2x2   gen() 18076 MB/s
-> [   15.856244][ T1154] raid6: avx2x1   gen() 13836 MB/s
-> [   15.861474][ T1154] raid6: using algorithm avx512x1 gen() 18155 MB/s
-> [   15.884243][ T1154] raid6: .... xor() 27974 MB/s, rmw enabled
-> [   15.890254][ T1154] raid6: using avx512x2 recovery algorithm
-> [   15.897891][ T1154] xor: measuring software checksum speed
-> [   15.904013][ T1154]    prefetch64-sse  : 31308 MB/sec
-> [   15.909878][ T1154]    generic_sse     : 22929 MB/sec
-> [   15.915230][ T1154] xor: using function: prefetch64-sse (31308 MB/sec)
-> [   16.042623][ T1154] Btrfs loaded, zoned=no, fsverity=no
-> [   16.054593][  T930] BTRFS: device fsid e422031c-19be-42f5-ab4f-be5f306aa6e1 devid 1 transid 39725 /dev/sda2 scanned by systemd-udevd (930)
-> 
-> 
-> then the machine is just stuck there. (whole dmesg captured from serial is
-> attached), and the issue is 100% reproducible for this commit.
-> 
-> for parent, we never observed the boot failure.
-> 
-> it looks quite strange to us why this commit could cause this behavior on our
-> machine. could you help check dmesg, config and kernel command line which is
-> also captured in dmesg, etc. and guide us if anything need to be updated to be
-> compatible with this change? Thanks!
+When both supported and previous version have the same major version,
+and the firmwares are missing, the driver ends in a loop requesting the
+same (previous) version over and over again:
 
-Thanks for the report. With the ctrl and port prefixes dropped, I broke
-serial_base_match() looks like. As we attempt to continue anyways, things
-still mostly work..
+    [   76.327413] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.1.img firmware, fall-back to previous 4.0 version
+    [   76.339802] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+    [   76.352162] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+    [   76.364502] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+    [   76.376848] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+    [   76.389183] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+    [   76.401522] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+    [   76.413860] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+    [   76.426199] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.0.img firmware, fall-back to previous 4.0 version
+    ...
 
-Greg, can you please drop the related commit?
+Fix this by inverting the check to that we aren't yet at the previous
+version, and also check the minor version.
 
-It's the following commit:
+This also catches the case where both versions are the same, as it was
+after commit bb5dbf2cc64d ("net: marvell: prestera: add firmware v4.0
+support").
 
-1ef2c2df1199 ("serial: core: Fix serial core controller port name to show controller id")
+With this fix applied:
 
-Regards,
+    [   88.499622] Prestera DX 0000:01:00.0: missing latest mrvl/prestera/m=
+vsw_prestera_fw-v4.1.img firmware, fall-back to previous 4.0 version
+    [   88.511995] Prestera DX 0000:01:00.0: failed to request previous fir=
+mware: mrvl/prestera/mvsw_prestera_fw-v4.0.img
+    [   88.522403] Prestera DX: probe of 0000:01:00.0 failed with error -2
 
-Tony
+Fixes: 47f26018a414 ("net: marvell: prestera: try to load previous fw versi=
+on")
+Signed-off-by: Jonas Gorski <jonas.gorski@bisdn.de>
+---
+ drivers/net/ethernet/marvell/prestera/prestera_pci.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/marvell/prestera/prestera_pci.c b/drivers=
+/net/ethernet/marvell/prestera/prestera_pci.c
+index f328d957b2db..35857dc19542 100644
+--- a/drivers/net/ethernet/marvell/prestera/prestera_pci.c
++++ b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
+@@ -727,7 +727,8 @@ static int prestera_fw_get(struct prestera_fw *fw)
+=20
+ 	err =3D request_firmware_direct(&fw->bin, fw_path, fw->dev.dev);
+ 	if (err) {
+-		if (ver_maj =3D=3D PRESTERA_SUPP_FW_MAJ_VER) {
++		if (ver_maj !=3D PRESTERA_PREV_FW_MAJ_VER ||
++		    ver_min !=3D PRESTERA_PREV_FW_MIN_VER) {
+ 			ver_maj =3D PRESTERA_PREV_FW_MAJ_VER;
+ 			ver_min =3D PRESTERA_PREV_FW_MIN_VER;
+=20
+--=20
+2.41.0
+
+
+--=20
+BISDN GmbH
+K=F6rnerstra=DFe 7-10
+10785 Berlin
+Germany
+
+
+Phone:=20
++49-30-6108-1-6100
+
+
+Managing Directors:=A0
+Dr.-Ing. Hagen Woesner, Andreas=20
+K=F6psel
+
+
+Commercial register:=A0
+Amtsgericht Berlin-Charlottenburg HRB 141569=20
+B
+VAT ID No:=A0DE283257294
+
