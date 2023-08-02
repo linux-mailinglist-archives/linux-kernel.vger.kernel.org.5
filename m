@@ -2,75 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0EA76D697
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB99776D69F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbjHBSMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
+        id S231660AbjHBSQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjHBSMO (ORCPT
+        with ESMTP id S229629AbjHBSP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:12:14 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52F9189
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:12:12 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d3d729a08e4so85608276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690999932; x=1691604732;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dqrDij2SO6O+kcrLN8FbJ03HVYrEeGEEuoAOFklLWnY=;
-        b=t4sNe5zqV1iDlQd58nat+2WCHtvp0oKrP7DCJ/O+KQXZRdUDFAX0GOIkyWs4mkbO1d
-         I8A8Qv+4dQqCTNl2dG1LLYM8yxxmD4G77ZQnJOJyp88rjDnTbroxprVftK3VXjMxRdsi
-         3m4kh1Fy5+kji5UlLgVIy8o2rzd8MTJc39xHh+yAGf+w4nkTH7MNPg1Duq/Wg7VpiVZX
-         SOA0SXsMHJxbBpWB1Tq2v3OUBgVOO/Gira9eRAnUKfH4Y4l8iqYIRIXR/rqSXe2ULSNp
-         qasR9i/jjMm5NpQdpa+C28sGjsMtMbT1Ho0YAVGMSaKs0MdjoJjLosRGeRtB3cJU2lyj
-         x9XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690999932; x=1691604732;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dqrDij2SO6O+kcrLN8FbJ03HVYrEeGEEuoAOFklLWnY=;
-        b=gFno87R0ydbriY+jPzsK2Vpq6LxAOQhmohITC+0trUMmJB/F9SPpmJv1w0pX9FXmXK
-         o6Nib6F8mGI7eLH6BkMkpTAA+3E8awyy4s6B2RrDxseaENy+Ufpk1xonOJtqe7wxu60Z
-         2MQQmC3AjjI5wnQ7OM+2RVEkRlaYtaiatKWo5w09nrsbW6eKYYtNS2RCqjT1B0Yx0BAv
-         b8KAFBsyQL+Y+RG+i3ArIy49582b/8MU2Q49U/eWd6qkyCAQa9r7hjbfdy/BcN+Z2Ay2
-         a676rh0UTE8jLgZs37HOQFAtVuCfu/oNGFmakBEF8qmaiGzA97y1knYYCNoX/fWsw1V+
-         fBzw==
-X-Gm-Message-State: ABy/qLYKH/NmWEH2Z+SDveFiExY6N9dDDNY0bwJFwgzR93Et1C1FdLuH
-        Pe7p/OecUmSVkZYJF3Ei9KyfE+oB1ifzXk0G13uqUA==
-X-Google-Smtp-Source: APBJJlFdnh9mEDcXTT3BwxduNQuaOn5XSODZKW62gjVBtwTIDuk/MZAnaqmS4xfMWr1lAbyB3pzS3PUVl2O4i3q3K3s=
-X-Received: by 2002:a25:aa45:0:b0:d0b:f845:c831 with SMTP id
- s63-20020a25aa45000000b00d0bf845c831mr16060588ybi.13.1690999931880; Wed, 02
- Aug 2023 11:12:11 -0700 (PDT)
+        Wed, 2 Aug 2023 14:15:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CDAB171B;
+        Wed,  2 Aug 2023 11:15:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1A82D61A82;
+        Wed,  2 Aug 2023 18:15:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8689C433C7;
+        Wed,  2 Aug 2023 18:15:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691000157;
+        bh=PiT5woENc2vRLh/R3Ys/yPODxCD7EzJZkfQJ61xnDnY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=g/62gwmBPYqUiLoB/txoVZwdfxQUBqv38oqm4E95qybEDLPdxd/ybIhLu3H+RfXxg
+         ajxwQP57eUzuz8YTKozCB2ruMoeSHkI2nz04Kvdnplu9zDaOuW4MZnd1F7MOtiGtlj
+         xp3dB5QBFKbniC2O1zKwIg+fR/zU25AggBOFHRNO3redrLUTVNIFGy5bCMrYyvZLq3
+         d9Uu+SicvtFmIlihl0Nbo+v7stpXV9ktPdpH7nqi76YAts86ef/ggcEwO+akX4NIFJ
+         xsuZUem63IpGpbRITj4gvezKOBliCdggjrFcJTtLgTIuzLlZtgdr8Ww8ystp+8q1Cj
+         r5XtqhVaia+vQ==
+Message-ID: <c9370f6fde62205356f4c864891a3c35ef811877.camel@kernel.org>
+Subject: Re: [PATCH v2] nfsd: don't hand out write delegations on O_WRONLY
+ opens
+From:   Jeff Layton <jlayton@kernel.org>
+To:     dai.ngo@oracle.com, Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Tom Talpey <tom@talpey.com>
+Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Wed, 02 Aug 2023 14:15:55 -0400
+In-Reply-To: <8c3adfce-39f0-0e60-e35a-2f1be6fb67e6@oracle.com>
+References: <20230801-wdeleg-v2-1-20c14252bab4@kernel.org>
+         <8c3adfce-39f0-0e60-e35a-2f1be6fb67e6@oracle.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
- <6cd079a4-2f5b-0169-cbaf-b59a72f1b32b@denx.de> <084ca94e-d694-878e-0646-f4c89043cd28@denx.de>
- <c2644543-2e81-3351-ee1e-76f5f32c4ac5@linaro.org> <92992f9c-fae0-f1b3-16e7-09ad3e711561@denx.de>
-In-Reply-To: <92992f9c-fae0-f1b3-16e7-09ad3e711561@denx.de>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 2 Aug 2023 21:12:00 +0300
-Message-ID: <CAA8EJpq1KhxPTaQY_Bra0xwC7V6ftr+cAH0CdHgzkU93YksaPA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
- and EOT packet"
-To:     Marek Vasut <marex@denx.de>
-Cc:     neil.armstrong@linaro.org, Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Amit Pundir <amit.pundir@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,63 +60,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 at 20:34, Marek Vasut <marex@denx.de> wrote:
->
-> On 8/2/23 14:37, Neil Armstrong wrote:
-> > On 02/08/2023 14:28, Marek Vasut wrote:
-> >> On 8/2/23 14:07, Marek Vasut wrote:
-> >>> On 8/2/23 10:52, Neil Armstrong wrote:
-> >>>> This reverts commit [1] to fix display regression on the Dragonboard
-> >>>> 845c
-> >>>> (SDM845) devboard.
-> >>>>
-> >>>> There's a mismatch on the real action of the following flags:
-> >>>> - MIPI_DSI_MODE_VIDEO_NO_HSA
-> >>>> - MIPI_DSI_MODE_VIDEO_NO_HFP
-> >>>> - MIPI_DSI_MODE_VIDEO_NO_HBP
-> >>>> which leads to a non-working display on qcom platforms.
-> >>>>
-> >>>> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA
-> >>>> and EOT packet")
-> >>>>
-> >>>> Cc: Marek Vasut <marex@denx.de>
-> >>>> Cc: Robert Foss <rfoss@kernel.org>
-> >>>> Cc: Jagan Teki <jagan@amarulasolutions.com>
-> >>>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >>>> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> >>>> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA
-> >>>> and EOT packet")
-> >>>> Reported-by: Amit Pundir <amit.pundir@linaro.org>
-> >>>> Link:
-> >>>> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
-> >>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> >>>
-> >>> This breaks LT9611 operation on i.MX8M Mini/Nano/Plus, so, NAK.
-> >>>
-> >>> I am currently using this LT9611 with Linux 6.1.y
-> >>
-> >> Correction, 6.1.y only with the DSIM patches backported.
-> >
-> > Well you'll need to keep [1] backported on your downstream branch,
-> > this revert won't propagate to v6.1 stable anyway.
->
-> I will still have a problem with those MX8M boards during my development
-> on linux-next, so that isn't helping.
->
-> >>> in production and this is not acceptable. I also believe the correct
-> >>> fix is on the MSM side, not on the LT9611 driver side, since MSM
-> >>> incorrectly implements these flags.
-> >>
-> >
-> > Since [1] breaks Qcom boards on v6.5, and [1] was added for v6.5 to make
-> > the bridge work
-> > on i.MX8M Mini/Nano/Plus, it's not acceptable either to keep it for the
-> > v6.5 release.
->
-> So, we need to find a solution which works for both, I proposed one already.
+On Wed, 2023-08-02 at 09:29 -0700, dai.ngo@oracle.com wrote:
+> On 8/1/23 6:33 AM, Jeff Layton wrote:
+> > I noticed that xfstests generic/001 was failing against linux-next nfsd=
+.
+> >=20
+> > The client would request a OPEN4_SHARE_ACCESS_WRITE open, and the serve=
+r
+> > would hand out a write delegation. The client would then try to use tha=
+t
+> > write delegation as the source stateid in a COPY
+>=20
+> not sure why the client opens the source file of a COPY operation with
+> OPEN4_SHARE_ACCESS_WRITE?
+>=20
 
-We proposed another one.
+It doesn't. The original open is to write the data for the file being
+copied. It then opens the file again for READ, but since it has a write
+delegation, it doesn't need to talk to the server at all -- it can just
+use that stateid for later operations.
 
--- 
-With best wishes
-Dmitry
+> >   or CLONE operation, and
+> > the server would respond with NFS4ERR_STALE.
+>=20
+> If the server does not allow client to use write delegation for the
+> READ, should the correct error return be NFS4ERR_OPENMODE?
+>=20
+
+The server must allow the client to use a write delegation for read
+operations. It's required by the spec, AFAIU.
+
+The error in this case was just bogus. The vfs copy routine would return
+-EBADF since the file didn't have FMODE_READ, and the nfs server would
+translate that into NFS4ERR_STALE.
+
+Probably there is a better v4 error code that we could translate EBADF
+to, but with this patch it shouldn't be a problem any longer.=20
+
+> >=20
+> > The problem is that the struct file associated with the delegation does
+> > not necessarily have read permissions. It's handing out a write
+> > delegation on what is effectively an O_WRONLY open. RFC 8881 states:
+> >=20
+> >   "An OPEN_DELEGATE_WRITE delegation allows the client to handle, on it=
+s
+> >    own, all opens."
+> >=20
+> > Given that the client didn't request any read permissions, and that nfs=
+d
+> > didn't check for any, it seems wrong to give out a write delegation.
+> >=20
+> > Only hand out a write delegation if we have a O_RDWR descriptor
+> > available. If it fails to find an appropriate write descriptor, go
+> > ahead and try for a read delegation if NFS4_SHARE_ACCESS_READ was
+> > requested.
+> >=20
+> > This fixes xfstest generic/001.
+> >=20
+> > Closes: https://bugzilla.linux-nfs.org/show_bug.cgi?id=3D412
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> > Changes in v2:
+> > - Rework the logic when finding struct file for the delegation. The
+> >    earlier patch might still have attached a O_WRONLY file to the deleg
+> >    in some cases, and could still have handed out a write delegation on
+> >    an O_WRONLY OPEN request in some cases.
+> > ---
+> >   fs/nfsd/nfs4state.c | 29 ++++++++++++++++++-----------
+> >   1 file changed, 18 insertions(+), 11 deletions(-)
+> >=20
+> > diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+> > index ef7118ebee00..e79d82fd05e7 100644
+> > --- a/fs/nfsd/nfs4state.c
+> > +++ b/fs/nfsd/nfs4state.c
+> > @@ -5449,7 +5449,7 @@ nfs4_set_delegation(struct nfsd4_open *open, stru=
+ct nfs4_ol_stateid *stp,
+> >   	struct nfs4_file *fp =3D stp->st_stid.sc_file;
+> >   	struct nfs4_clnt_odstate *odstate =3D stp->st_clnt_odstate;
+> >   	struct nfs4_delegation *dp;
+> > -	struct nfsd_file *nf;
+> > +	struct nfsd_file *nf =3D NULL;
+> >   	struct file_lock *fl;
+> >   	u32 dl_type;
+> >  =20
+> > @@ -5461,21 +5461,28 @@ nfs4_set_delegation(struct nfsd4_open *open, st=
+ruct nfs4_ol_stateid *stp,
+> >   	if (fp->fi_had_conflict)
+> >   		return ERR_PTR(-EAGAIN);
+> >  =20
+> > -	if (open->op_share_access & NFS4_SHARE_ACCESS_WRITE) {
+> > -		nf =3D find_writeable_file(fp);
+> > +	/*
+> > +	 * Try for a write delegation first. We need an O_RDWR file
+> > +	 * since a write delegation allows the client to perform any open
+> > +	 * from its cache.
+> > +	 */
+> > +	if ((open->op_share_access & NFS4_SHARE_ACCESS_BOTH) =3D=3D NFS4_SHAR=
+E_ACCESS_BOTH) {
+> > +		nf =3D nfsd_file_get(fp->fi_fds[O_RDWR]);
+> >   		dl_type =3D NFS4_OPEN_DELEGATE_WRITE;
+> > -	} else {
+>=20
+> Does this mean OPEN4_SHARE_ACCESS_WRITE do not get a write delegation?
+> It does not seem right.
+>=20
+> -Dai
+>=20
+
+Why? Per RFC 8881:
+
+"An OPEN_DELEGATE_WRITE delegation allows the client to handle, on its
+own, all opens."
+
+All opens. That includes read opens.
+
+An OPEN4_SHARE_ACCESS_WRITE open will succeed on a file to which the
+user has no read permissions. Therefore, we can't grant a write
+delegation since can't guarantee that the user is allowed to do that.
+
+
+> > +	}
+> > +
+> > +	/*
+> > +	 * If the file is being opened O_RDONLY or we couldn't get a O_RDWR
+> > +	 * file for some reason, then try for a read deleg instead.
+> > +	 */
+> > +	if (!nf && (open->op_share_access & NFS4_SHARE_ACCESS_READ)) {
+> >   		nf =3D find_readable_file(fp);
+> >   		dl_type =3D NFS4_OPEN_DELEGATE_READ;
+> >   	}
+> > -	if (!nf) {
+> > -		/*
+> > -		 * We probably could attempt another open and get a read
+> > -		 * delegation, but for now, don't bother until the
+> > -		 * client actually sends us one.
+> > -		 */
+> > +
+> > +	if (!nf)
+> >   		return ERR_PTR(-EAGAIN);
+> > -	}
+> > +
+> >   	spin_lock(&state_lock);
+> >   	spin_lock(&fp->fi_lock);
+> >   	if (nfs4_delegation_exists(clp, fp))
+> >=20
+> > ---
+> > base-commit: a734662572708cf062e974f659ae50c24fc1ad17
+> > change-id: 20230731-wdeleg-bbdb6b25a3c6
+> >=20
+> > Best regards,
+
+--=20
+Jeff Layton <jlayton@kernel.org>
