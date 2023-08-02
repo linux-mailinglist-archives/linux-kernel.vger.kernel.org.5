@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4228A76C170
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6087576C171
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbjHBAUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 20:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45654 "EHLO
+        id S231344AbjHBAUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 20:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbjHBAUJ (ORCPT
+        with ESMTP id S231287AbjHBAUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 20:20:09 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CD0A2708
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 17:19:56 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58667d06607so7558327b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 17:19:56 -0700 (PDT)
+        Tue, 1 Aug 2023 20:20:13 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC922710
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 17:20:04 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d326cb4c97fso2589861276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 17:20:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690935595; x=1691540395;
+        d=google.com; s=20221208; t=1690935604; x=1691540404;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oILqqqD951CZa6vFO5lwCGBJV16jZziGq+aTih9CvRM=;
-        b=liEq2TRJ6uphA1n1WRctdr12b14csuDNelgmOB3P8uUfovqp001PwMVQtOenzPkHJi
-         whIzAspyWYUBqUAPEv0+bxGp/kCYHZiDZCj4aPoXHdFKRGOuA0OAPUxh2lZcKRB9DmY4
-         +sVvZ4qnTj42uetZgk1spG0aKDlJUYjhXZPRCghRJr5QNKGlAn8bEhwP4JK0KqRABLaT
-         fhKrvbkr8HehDdLCVM2/wiJlQ2zpWgZOa9ODGSx5g36gQV2AuKOzP/RpJ1d7pqrnbT8W
-         MmvhG/Y18dFWO4yMQQmXypjHnDfl+eqfjiVHy0xIyI41FCe/pW+Xv7cf+eIVYSkn4fkR
-         1ENQ==
+        bh=sQqMGlFvgvQ3yvXEv1c3TG8Zu+eyY93FF0SWidKY8Dg=;
+        b=sjS9Sd/96ChnfQYaR1cO5sk2N9oknVX/qJB2yXG052CqPpTjyq29z2og4PvyAUfuFb
+         BbtTttNXygAAyEGj4VDc+gc5Tv/jJm9VVufAhbVnxD9d2fZv9SEDE3pJ6CmBfTmsJ7/M
+         30pcgTpZEa5b5WZTWX8yFJI4winvc57m0RSu8uswlhLrD88MgHDJlMnwkJUHOUbaDiEX
+         XFB8o/mR1Hsb5CgE+Zf1jutf81sOk0xLQ2PlXcTmJRipNCPc6eQScIC9DvSTQlXma76v
+         y6rPEG/+3EoY9yWeyWMpqj6nc4br7aYthBDJY27Nv4jLmE5k9Zm7VQi5fBGYNijEtZwE
+         qVdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690935595; x=1691540395;
+        d=1e100.net; s=20221208; t=1690935604; x=1691540404;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oILqqqD951CZa6vFO5lwCGBJV16jZziGq+aTih9CvRM=;
-        b=AGXm5dCl6AgVsTJTklYLOrI0//3l/o73w8aedFX1KPS18f7OYvFE/O2yx1JGt98ieH
-         hwMtJo85qqURtL7zeZ+DcvvfTMfgCgfH8AJVD8DBNWk8iPgsSjjzHBtWT3IqKcLjsBd/
-         OjXkGEs93SyabLaGaaxm5MH9t/3+GhHO0so3gEq+oIGtCJepuNZeUflmHhlHglrnrP0v
-         4A/JetUgJDIe1xBmXXVoZOFURKfVSCAGuHzspoKxqy97dwjXUODpqLJA4vlQetfZlufL
-         vuZ3mmdd845gm/MS9mdM2falVDatHiu/AWWoqjRxT/LrbuEelcNB8r6vR8c8kY6A6znq
-         z0Sg==
-X-Gm-Message-State: ABy/qLa4JjSok6WajEDP3QvdrqHc2/aiSwKOJy5uGyG0RXG2KcuDcIa2
-        LchfKZVVXm0uLsfoaqAoFF5Wefp03qbntWOTsQ==
-X-Google-Smtp-Source: APBJJlGVSXTcSf5HWtAwgVhVMNFG4pScdB5810WzB/3elwhK2y7pd9aNX9CzOkX3wIMvukUfcHZ5QeIzWXNdnmzMyw==
+        bh=sQqMGlFvgvQ3yvXEv1c3TG8Zu+eyY93FF0SWidKY8Dg=;
+        b=iyVvg4Dx+cspydffc7xhXdqD/MOkOorrVazUZ27irMG8OAKqmkFx67qU5Bknd95GEg
+         ms56ZeT+8venJrlhcH9moa6TjWCS25+M7hmlpdsGDEtfVio0Zw4EL10VAZ0HD3rASpIH
+         X2Pl8WGMywqGQkyRkEz1cFcxaOPziT3vaoQLMpvZ7h+vq4Xnwy1Y1IHSiB5ygedgNStu
+         6HqT+rk2o+D0KyRHNpAlpjTgwIegGwtPbkJBZPbaPZKGjRcCG0o3pLEIE776ElBnzgB5
+         5NSlpiA9K0cUh6z2NCK7MsOTMtXv9n14ntTG5g4Jlowudg+q+7weHHREoHLNR6nRi8tE
+         MnFA==
+X-Gm-Message-State: ABy/qLYP/56jXEP5vlICzwrQZI8kWtca3jXm0OtOlMmgzhbfsbhU/mWp
+        G5INhQy4HfYqOCawPvDPqGyRVcLefd6SAsKvOg==
+X-Google-Smtp-Source: APBJJlEf7/u2/Z616hvXFPIg4IjabnaZmfD7pavvMQxNa0+Yi7QX2OhFnd4BlpzLjlUWlOxu9nZ4P/MXGt70cu1ftA==
 X-Received: from kalesh.mtv.corp.google.com ([2620:15c:211:201:aa5f:ff75:318:255])
- (user=kaleshsingh job=sendgmr) by 2002:a81:b301:0:b0:576:fdbe:76b2 with SMTP
- id r1-20020a81b301000000b00576fdbe76b2mr121491ywh.3.1690935595421; Tue, 01
- Aug 2023 17:19:55 -0700 (PDT)
-Date:   Tue,  1 Aug 2023 17:19:36 -0700
+ (user=kaleshsingh job=sendgmr) by 2002:a25:48a:0:b0:d37:353:b7eb with SMTP id
+ 132-20020a25048a000000b00d370353b7ebmr33827ybe.11.1690935603866; Tue, 01 Aug
+ 2023 17:20:03 -0700 (PDT)
+Date:   Tue,  1 Aug 2023 17:19:37 -0700
 In-Reply-To: <20230802001938.3913174-1-kaleshsingh@google.com>
 Mime-Version: 1.0
 References: <20230802001938.3913174-1-kaleshsingh@google.com>
 X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230802001938.3913174-2-kaleshsingh@google.com>
-Subject: [PATCH 2/3] mm-unstable: Multi-gen LRU: Avoid race in inc_min_seq()
+Message-ID: <20230802001938.3913174-3-kaleshsingh@google.com>
+Subject: [PATCH 3/3] mm-unstable: Multi-gen LRU: Fix can_swap in lru_gen_look_around()
 From:   Kalesh Singh <kaleshsingh@google.com>
 To:     yuzhao@google.com, akpm@linux-foundation.org
 Cc:     surenb@google.com, android-mm@google.com, kernel-team@android.com,
         Kalesh Singh <kaleshsingh@google.com>,
-        Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>, linux-mm@kvack.org,
@@ -74,73 +73,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-inc_max_seq() will try to inc_min_seq() if nr_gens == MAX_NR_GENS. This
-is because the generations are reused (the last oldest now empty
-generation will become the next youngest generation).
-
-inc_min_seq() is retried until successful, dropping the lru_lock
-and yielding the CPU on each failure, and retaking the lock before
-trying again:
-
-        while (!inc_min_seq(lruvec, type, can_swap)) {
-                spin_unlock_irq(&lruvec->lru_lock);
-                cond_resched();
-                spin_lock_irq(&lruvec->lru_lock);
-        }
-
-However, the initial condition that required incrementing the min_seq
-(nr_gens == MAX_NR_GENS) is not retested. This can change by another
-call to inc_max_seq() from run_aging() with force_scan=true from the
-debugfs interface.
-
-Since the eviction stalls when the nr_gens == MIN_NR_GENS, avoid
-unnecessarily incrementing the min_seq by rechecking the number of
-generations before each attempt.
-
-This issue was uncovered in previous discussion on the list by Yu Zhao
-and Aneesh Kumar [1].
-
-[1] https://lore.kernel.org/linux-mm/CAOUHufbO7CaVm=xjEb1avDhHVvnC8pJmGyKcFf2iY_dpf+zR3w@mail.gmail.com/
+walk->can_swap might be invalid since it's not guaranteed to be
+initialized for the particular lruvec. Instead deduce it from the folio
+type (anon/file).
 
 Cc: Yu Zhao <yuzhao@google.com>
-Cc: Aneesh Kumar K V <aneesh.kumar@linux.ibm.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 ---
- mm/vmscan.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ mm/vmscan.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 489a4fc7d9b1..6eecd291756c 100644
+index 6eecd291756c..b4329f93a682 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -4439,7 +4439,7 @@ static void inc_max_seq(struct lruvec *lruvec, bool can_swap, bool force_scan)
- 	int prev, next;
- 	int type, zone;
- 	struct lru_gen_folio *lrugen = &lruvec->lrugen;
--
-+restart:
- 	spin_lock_irq(&lruvec->lru_lock);
+@@ -4656,6 +4656,7 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
+ 	pte_t *pte = pvmw->pte;
+ 	unsigned long addr = pvmw->address;
+ 	struct folio *folio = pfn_folio(pvmw->pfn);
++	bool can_swap = !folio_is_file_lru(folio);
+ 	struct mem_cgroup *memcg = folio_memcg(folio);
+ 	struct pglist_data *pgdat = folio_pgdat(folio);
+ 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
+@@ -4704,7 +4705,7 @@ void lru_gen_look_around(struct page_vma_mapped_walk *pvmw)
+ 		if (!pte_young(ptent))
+ 			continue;
  
- 	VM_WARN_ON_ONCE(!seq_is_valid(lruvec));
-@@ -4450,11 +4450,12 @@ static void inc_max_seq(struct lruvec *lruvec, bool can_swap, bool force_scan)
+-		folio = get_pfn_folio(pfn, memcg, pgdat, !walk || walk->can_swap);
++		folio = get_pfn_folio(pfn, memcg, pgdat, can_swap);
+ 		if (!folio)
+ 			continue;
  
- 		VM_WARN_ON_ONCE(!force_scan && (type == LRU_GEN_FILE || can_swap));
- 
--		while (!inc_min_seq(lruvec, type, can_swap)) {
--			spin_unlock_irq(&lruvec->lru_lock);
--			cond_resched();
--			spin_lock_irq(&lruvec->lru_lock);
--		}
-+		if (inc_min_seq(lruvec, type, can_swap))
-+			continue;
-+
-+		spin_unlock_irq(&lruvec->lru_lock);
-+		cond_resched();
-+		goto restart;
- 	}
- 
- 	/*
 -- 
 2.41.0.255.g8b1d071c50-goog
 
