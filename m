@@ -2,104 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 060B576C975
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938FB76C978
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234126AbjHBJ0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        id S234136AbjHBJ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbjHBJ0v (ORCPT
+        with ESMTP id S234151AbjHBJ1y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:26:51 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986BBE7;
-        Wed,  2 Aug 2023 02:26:50 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-3179ed1dfbbso3160621f8f.1;
-        Wed, 02 Aug 2023 02:26:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690968409; x=1691573209;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fwoyyCSuhDlyEJpT+9RmMbXec0qXFgA7vWKF7hLqGbo=;
-        b=JzBvHdCsM3egtnmHaiRGiM4DHOnCHceRoF5WCIhTJLKJiuKiIH6XbbD0Qh29JMeWUj
-         H/sh4Q/0D7ITEst34Ox0wqTY5xbJZQaAFTWJKqqJGGN7fMRWoJ87EvCyDes1bOTdDpus
-         fyGyvuMvsSSpV+snkbcntAKC8lRdEUqDP9lf+sl7Mvw2yND7PIBHQyrYxI8ysvaQ6e6z
-         OCOdt/GlhQfoGzYBhK3W+QqwaahwDX3Ssy2enYurHlEvAOB1HPFpzb/VPQKbEkKO2uVy
-         QrMkAj5uTAzw1KxvSD9YbhX3JuAc5PmKbiozTXQXTgeDDCAYoGkfehgjRgGuTRvOcYVS
-         qPxQ==
+        Wed, 2 Aug 2023 05:27:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D70FB198B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:27:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1690968425;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DCD/wbqNT6iBlcLGAqvvx86SGRTFevUmX9c0eZH2vTU=;
+        b=Lu3MFTNnOp9zcukgn998q2p8Y6GbQIDmaJCedBWhxs5OCHAFfvvFq9pylYR/dPuvumg+bz
+        ZwlTQX64OSlHovYLroxgSkIj0Cyxt8g//rwcSSwbk2mNFX3FkpRweoNzyonse5I8isOnhD
+        5LF56iClvupkInvJiMeEnAFvVBGBgws=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-169-Y8X9n8_UMVmqT17C6UfbZw-1; Wed, 02 Aug 2023 05:27:02 -0400
+X-MC-Unique: Y8X9n8_UMVmqT17C6UfbZw-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-52227ea05a9so5037945a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 02:27:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690968409; x=1691573209;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fwoyyCSuhDlyEJpT+9RmMbXec0qXFgA7vWKF7hLqGbo=;
-        b=boMwpyMBuFWdzdzKljgG91rEa2QaHIyByFpes0mr5tCogtz2EAlzSTM9Bb9nX3CGws
-         Alzr00tYU9qHiw/FiNKOEyY5K91Imt0G2ifw+YWG97yzyOjlOj3Z7jo4i7/wFPBSg+DG
-         6PJuprndIc+WcGYa11wKka0UHSmI5hEGwKMyyim8Ue3idBfLS9SKbAnvoPObObquBRTM
-         dj0dW52KUdCvMDkcOhw1jk6bEVTpTMZCRn1LHTfz8VvT50bfx5Cj3hyPbaLdsu/5CnZt
-         4V5nIikMLPoypG6E06DIXL4IrspT76wZGf+Z6+B4o37eLsjurEW/H8nRohiHKVbntg07
-         snbQ==
-X-Gm-Message-State: ABy/qLaFO2zSspyOHI6Ar4WBCnGTeKo2IL6VO1lY33+wTW+r9PBJE4/v
-        Weaz49o0xlE8qhV858LTNTyLd2ZzAgM=
-X-Google-Smtp-Source: APBJJlEb5zTBNuqlYSoO2JKsMjIf2j+Z4ACLA9XHiQDBSAUg5JRNZoUxSlX8phk1tCds1y3YMx5ozA==
-X-Received: by 2002:adf:f091:0:b0:317:6a83:767a with SMTP id n17-20020adff091000000b003176a83767amr4494392wro.51.1690968408538;
-        Wed, 02 Aug 2023 02:26:48 -0700 (PDT)
-Received: from localhost.localdomain (61.red-88-10-54.dynamicip.rima-tde.net. [88.10.54.61])
-        by smtp.gmail.com with ESMTPSA id o3-20020adfe803000000b003143b7449ffsm14732480wrm.25.2023.08.02.02.26.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 02:26:47 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-clk@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, sboyd@kernel.org,
-        mturquette@baylibre.com, linux-kernel@vger.kernel.org,
-        ndesaulniers@google.com, kernel test robot <lkp@intel.com>
-Subject: [PATCH] clk: ralink: mtmips: quiet unused variable warning
-Date:   Wed,  2 Aug 2023 11:26:47 +0200
-Message-Id: <20230802092647.3000666-1-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20221208; t=1690968421; x=1691573221;
+        h=content-transfer-encoding:in-reply-to:references:to
+         :content-language:subject:cc:user-agent:mime-version:date:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DCD/wbqNT6iBlcLGAqvvx86SGRTFevUmX9c0eZH2vTU=;
+        b=MfCAfT7CcIV63MrUmcd9SPLtpnh+Ebn7MuzxbH4qy+NBhDBj/ao5/2V+HhUsCjjYZq
+         zNUWa/8QJBMbjNbh+JDM0xtztU/MiHgj2TDd3HkFGKVZQiT0zVdD+FtcTyIi76U1OjYD
+         tTcxCiyZ/aQg56bNEU5mT8ECX18P5zuW63F/rWfgSb8gPBmTvKC87GwiwYc1MKQHKIO9
+         w18jaCXvWvaEdhnjGASnZpvOP9P2D2k+qv0cjTBW9f9cvLqjtQxERWJtprnLCaup5NRe
+         0KToSZvWzG8ne1IiWHG9bMTFG1Rg9b877GXgxxgfcm2ZvaX5AY7VAe8qBDnX6PLHtHGc
+         VLDQ==
+X-Gm-Message-State: ABy/qLbnAKRpUWmIfUAhyIYpCv1zgZ88xqmEGXofeeEdIwKHbNJtj+5u
+        vzG2WPTvL0leSTR2ymUmXLT9mrrBF4qHOkQwkN6XlzasAP7D1VmESAwih1nusp5FVSDwcCipjDx
+        q+IepEeZ7Wf/SQR3Bcw5QADbF
+X-Received: by 2002:aa7:d5ca:0:b0:522:2019:2020 with SMTP id d10-20020aa7d5ca000000b0052220192020mr4133112eds.17.1690968421688;
+        Wed, 02 Aug 2023 02:27:01 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlEMUlAexT5aq1Ralm3oRm8CFZE9NJi4oAWH3IEHbx5D5vsLGXffbImAOSMR8JUVEYftgKBSNw==
+X-Received: by 2002:aa7:d5ca:0:b0:522:2019:2020 with SMTP id d10-20020aa7d5ca000000b0052220192020mr4133091eds.17.1690968421266;
+        Wed, 02 Aug 2023 02:27:01 -0700 (PDT)
+Received: from [192.168.42.222] (194-45-78-10.static.kviknet.net. [194.45.78.10])
+        by smtp.gmail.com with ESMTPSA id j9-20020aa7ca49000000b0051873c201a0sm8140530edt.26.2023.08.02.02.26.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 02:27:00 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Message-ID: <3d0a8536-6a22-22e5-41c0-98c13dd7b802@redhat.com>
+Date:   Wed, 2 Aug 2023 11:26:59 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Cc:     brouer@redhat.com, linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Content-Language: en-US
+To:     Wei Fang <wei.fang@nxp.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        shenwei.wang@nxp.com, xiaoning.wang@nxp.com, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+In-Reply-To: <20230731060025.3117343-1-wei.fang@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When CONFIG_OF is disabled then the matching table is not referenced and
-the following warning appears:
 
-drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmips_of_match' [-Wunused-const-variable]
-821 |   static const struct of_device_id mtmips_of_match[] = {
-    |                          ^
 
-Silence it declaring 'mtmips_of_match' with '__maybe_unused'.
+On 31/07/2023 08.00, Wei Fang wrote:
+> The XDP_TX feature is not supported before, and all the frames
+> which are deemed to do XDP_TX action actually do the XDP_DROP
+> action. So this patch adds the XDP_TX support to FEC driver.
+> 
+> I tested the performance of XDP_TX feature in XDP_DRV and XDP_SKB
+> modes on i.MX8MM-EVK and i.MX8MP-EVK platforms respectively, and
+> the test steps and results are as follows.
+> 
+> Step 1: Board A connects to the FEC port of the DUT and runs the
+> pktgen_sample03_burst_single_flow.sh script to generate and send
+> burst traffic to DUT. Note that the length of packet was set to
+> 64 bytes and the procotol of packet was UDP in my test scenario.
+> 
+> Step 2: The DUT runs the xdp2 program to transmit received UDP
+> packets back out on the same port where they were received.
+> 
 
-Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIPS SoCs")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp@intel.com/
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- drivers/clk/ralink/clk-mtmips.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Below test result runs should have some more explaination, please.
+(more inline code comments below)
 
-diff --git a/drivers/clk/ralink/clk-mtmips.c b/drivers/clk/ralink/clk-mtmips.c
-index 1e7991439527..6716394b28a3 100644
---- a/drivers/clk/ralink/clk-mtmips.c
-+++ b/drivers/clk/ralink/clk-mtmips.c
-@@ -820,7 +820,7 @@ static const struct mtmips_clk_data mt76x8_clk_data = {
- 	.num_clk_periph = ARRAY_SIZE(mt76x8_pherip_clks),
- };
- 
--static const struct of_device_id mtmips_of_match[] = {
-+static const __maybe_unused struct of_device_id mtmips_of_match[] = {
- 	{
- 		.compatible = "ralink,rt2880-sysc",
- 		.data = &rt2880_clk_data,
--- 
-2.25.1
+> root@imx8mmevk:~# ./xdp2 eth0
+> proto 17:     150326 pkt/s
+> proto 17:     141920 pkt/s
+> proto 17:     147338 pkt/s
+> proto 17:     140783 pkt/s
+> proto 17:     150400 pkt/s
+> proto 17:     134651 pkt/s
+> proto 17:     134676 pkt/s
+> proto 17:     134959 pkt/s
+> proto 17:     148152 pkt/s
+> proto 17:     149885 pkt/s
+> 
+> root@imx8mmevk:~# ./xdp2 -S eth0
+> proto 17:     131094 pkt/s
+> proto 17:     134691 pkt/s
+> proto 17:     138930 pkt/s
+> proto 17:     129347 pkt/s
+> proto 17:     133050 pkt/s
+> proto 17:     132932 pkt/s
+> proto 17:     136628 pkt/s
+> proto 17:     132964 pkt/s
+> proto 17:     131265 pkt/s
+> proto 17:     135794 pkt/s
+> 
+> root@imx8mpevk:~# ./xdp2 eth0
+> proto 17:     135817 pkt/s
+> proto 17:     142776 pkt/s
+> proto 17:     142237 pkt/s
+> proto 17:     135673 pkt/s
+> proto 17:     139508 pkt/s
+> proto 17:     147340 pkt/s
+> proto 17:     133329 pkt/s
+> proto 17:     141171 pkt/s
+> proto 17:     146917 pkt/s
+> proto 17:     135488 pkt/s
+> 
+> root@imx8mpevk:~# ./xdp2 -S eth0
+> proto 17:     133150 pkt/s
+> proto 17:     133127 pkt/s
+> proto 17:     133538 pkt/s
+> proto 17:     133094 pkt/s
+> proto 17:     133690 pkt/s
+> proto 17:     133199 pkt/s
+> proto 17:     133905 pkt/s
+> proto 17:     132908 pkt/s
+> proto 17:     133292 pkt/s
+> proto 17:     133511 pkt/s
+> 
+
+For this driver, I would like to see a benchmark comparison between
+XDP_TX and XDP_REDIRECT.
+
+As below code does could create a situation where XDP_REDIRECT is just
+as fast as XDP_TX.  (Note, that I expect XDP_TX to be faster than
+XDP_REDIRECT.)
+
+> Signed-off-by: Wei Fang <wei.fang@nxp.com>
+> ---
+> V2 changes:
+> According to Jakub's comments, the V2 patch adds two changes.
+> 1. Call txq_trans_cond_update() in fec_enet_xdp_tx_xmit() to avoid
+> tx timeout as XDP shares the queues with kernel stack.
+> 2. Tx processing shouldn't call any XDP (or page pool) APIs if the
+> "budget" is 0.
+> 
+> V3 changes:
+> 1. Remove the second change in V2, because this change has been
+> separated into another patch and it has been submmitted to the
+> upstream [1].
+> [1] https://lore.kernel.org/r/20230725074148.2936402-1-wei.fang@nxp.com
+> ---
+>   drivers/net/ethernet/freescale/fec.h      |  1 +
+>   drivers/net/ethernet/freescale/fec_main.c | 80 ++++++++++++++++++-----
+>   2 files changed, 65 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/freescale/fec.h b/drivers/net/ethernet/freescale/fec.h
+> index 8f1edcca96c4..f35445bddc7a 100644
+> --- a/drivers/net/ethernet/freescale/fec.h
+> +++ b/drivers/net/ethernet/freescale/fec.h
+> @@ -547,6 +547,7 @@ enum {
+>   enum fec_txbuf_type {
+>   	FEC_TXBUF_T_SKB,
+>   	FEC_TXBUF_T_XDP_NDO,
+> +	FEC_TXBUF_T_XDP_TX,
+>   };
+>   
+>   struct fec_tx_buffer {
+> diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
+> index 14d0dc7ba3c9..2068fe95504e 100644
+> --- a/drivers/net/ethernet/freescale/fec_main.c
+> +++ b/drivers/net/ethernet/freescale/fec_main.c
+> @@ -75,6 +75,8 @@
+>   
+>   static void set_multicast_list(struct net_device *ndev);
+>   static void fec_enet_itr_coal_set(struct net_device *ndev);
+> +static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
+> +				struct xdp_buff *xdp);
+>   
+>   #define DRIVER_NAME	"fec"
+>   
+> @@ -960,7 +962,8 @@ static void fec_enet_bd_init(struct net_device *dev)
+>   					txq->tx_buf[i].skb = NULL;
+>   				}
+>   			} else {
+> -				if (bdp->cbd_bufaddr)
+> +				if (bdp->cbd_bufaddr &&
+> +				    txq->tx_buf[i].type == FEC_TXBUF_T_XDP_NDO)
+>   					dma_unmap_single(&fep->pdev->dev,
+>   							 fec32_to_cpu(bdp->cbd_bufaddr),
+>   							 fec16_to_cpu(bdp->cbd_datlen),
+> @@ -1423,7 +1426,8 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
+>   				break;
+>   
+>   			xdpf = txq->tx_buf[index].xdp;
+> -			if (bdp->cbd_bufaddr)
+> +			if (bdp->cbd_bufaddr &&
+> +			    txq->tx_buf[index].type == FEC_TXBUF_T_XDP_NDO)
+>   				dma_unmap_single(&fep->pdev->dev,
+>   						 fec32_to_cpu(bdp->cbd_bufaddr),
+>   						 fec16_to_cpu(bdp->cbd_datlen),
+> @@ -1482,7 +1486,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16 queue_id, int budget)
+>   			/* Free the sk buffer associated with this last transmit */
+>   			dev_kfree_skb_any(skb);
+>   		} else {
+> -			xdp_return_frame(xdpf);
+> +			xdp_return_frame_rx_napi(xdpf);
+>   
+>   			txq->tx_buf[index].xdp = NULL;
+>   			/* restore default tx buffer type: FEC_TXBUF_T_SKB */
+> @@ -1573,11 +1577,18 @@ fec_enet_run_xdp(struct fec_enet_private *fep, struct bpf_prog *prog,
+>   		}
+>   		break;
+>   
+> -	default:
+> -		bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
+> -		fallthrough;
+> -
+>   	case XDP_TX:
+> +		err = fec_enet_xdp_tx_xmit(fep->netdev, xdp);
+
+You should pass along the "sync" length value to fec_enet_xdp_tx_xmit().
+Because we know DMA comes from same device (it is already DMA mapped
+to), then we can do a DMA sync "to_device" with only the sync length.
+
+> +		if (err) {
+
+Add an unlikely(err) or do like above case XDP_REDIRECT, where it takes
+the likely case "if (!err)" first.
+
+> +			ret = FEC_ENET_XDP_CONSUMED;
+> +			page = virt_to_head_page(xdp->data);
+> +			page_pool_put_page(rxq->page_pool, page, sync, true);
+> +		} else {
+> +			ret = FEC_ENET_XDP_TX;
+> +		}
+> +		break;
+> +
+> +	default:
+>   		bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
+>   		fallthrough;
+>   
+> @@ -3793,7 +3804,8 @@ fec_enet_xdp_get_tx_queue(struct fec_enet_private *fep, int index)
+>   
+>   static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+>   				   struct fec_enet_priv_tx_q *txq,
+> -				   struct xdp_frame *frame)
+> +				   struct xdp_frame *frame,
+> +				   bool ndo_xmit)
+
+E.g add parameter dma_sync_len.
+
+>   {
+>   	unsigned int index, status, estatus;
+>   	struct bufdesc *bdp;
+> @@ -3813,10 +3825,24 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+>   
+>   	index = fec_enet_get_bd_index(bdp, &txq->bd);
+>   
+> -	dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
+> -				  frame->len, DMA_TO_DEVICE);
+> -	if (dma_mapping_error(&fep->pdev->dev, dma_addr))
+> -		return -ENOMEM;
+> +	if (ndo_xmit) {
+> +		dma_addr = dma_map_single(&fep->pdev->dev, frame->data,
+> +					  frame->len, DMA_TO_DEVICE);
+> +		if (dma_mapping_error(&fep->pdev->dev, dma_addr))
+> +			return -ENOMEM;
+> +
+> +		txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
+> +	} else {
+> +		struct page *page = virt_to_page(frame->data);
+> +
+> +		dma_addr = page_pool_get_dma_addr(page) + sizeof(*frame) +
+> +			   frame->headroom;
+> +		dma_sync_single_for_device(&fep->pdev->dev, dma_addr,
+> +					   frame->len, DMA_BIDIRECTIONAL);
+
+Optimization: use dma_sync_len here instead of frame->len.
+
+> +		txq->tx_buf[index].type = FEC_TXBUF_T_XDP_TX;
+> +	}
+> +
+> +	txq->tx_buf[index].xdp = frame;
+>   
+>   	status |= (BD_ENET_TX_INTR | BD_ENET_TX_LAST);
+>   	if (fep->bufdesc_ex)
+> @@ -3835,9 +3861,6 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+>   		ebdp->cbd_esc = cpu_to_fec32(estatus);
+>   	}
+>   
+> -	txq->tx_buf[index].type = FEC_TXBUF_T_XDP_NDO;
+> -	txq->tx_buf[index].xdp = frame;
+> -
+>   	/* Make sure the updates to rest of the descriptor are performed before
+>   	 * transferring ownership.
+>   	 */
+> @@ -3863,6 +3886,31 @@ static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+>   	return 0;
+>   }
+>   
+> +static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
+> +				struct xdp_buff *xdp)
+> +{
+
+E.g add parameter dma_sync_len.
+
+> +	struct xdp_frame *xdpf = xdp_convert_buff_to_frame(xdp);
+
+XDP_TX can avoid this conversion to xdp_frame.
+It would requires some refactor of fec_enet_txq_xmit_frame().
+
+> +	struct fec_enet_private *fep = netdev_priv(ndev);
+> +	struct fec_enet_priv_tx_q *txq;
+> +	int cpu = smp_processor_id();
+> +	struct netdev_queue *nq;
+> +	int queue, ret;
+> +
+> +	queue = fec_enet_xdp_get_tx_queue(fep, cpu);
+> +	txq = fep->tx_queue[queue];
+> +	nq = netdev_get_tx_queue(fep->netdev, queue);
+> +
+> +	__netif_tx_lock(nq, cpu);
+
+It is sad that XDP_TX takes a lock for each frame.
+
+> +
+> +	/* Avoid tx timeout as XDP shares the queue with kernel stack */
+> +	txq_trans_cond_update(nq);
+> +	ret = fec_enet_txq_xmit_frame(fep, txq, xdpf, false);
+
+Add/pass parameter dma_sync_len to fec_enet_txq_xmit_frame().
+
+
+> +
+> +	__netif_tx_unlock(nq);
+> +
+> +	return ret;
+> +}
+> +
+>   static int fec_enet_xdp_xmit(struct net_device *dev,
+>   			     int num_frames,
+>   			     struct xdp_frame **frames,
+> @@ -3885,7 +3933,7 @@ static int fec_enet_xdp_xmit(struct net_device *dev,
+>   	/* Avoid tx timeout as XDP shares the queue with kernel stack */
+>   	txq_trans_cond_update(nq);
+>   	for (i = 0; i < num_frames; i++) {
+> -		if (fec_enet_txq_xmit_frame(fep, txq, frames[i]) < 0)
+> +		if (fec_enet_txq_xmit_frame(fep, txq, frames[i], true) < 0)
+>   			break;
+>   		sent_frames++;
+>   	}
 
