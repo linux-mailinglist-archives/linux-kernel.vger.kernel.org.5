@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE9D76CC5B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F26676CC5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbjHBML3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44426 "EHLO
+        id S234441AbjHBMLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjHBML0 (ORCPT
+        with ESMTP id S231171AbjHBMLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:11:26 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEA71BFD;
-        Wed,  2 Aug 2023 05:11:25 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bb8a89b975so40498115ad.1;
-        Wed, 02 Aug 2023 05:11:25 -0700 (PDT)
+        Wed, 2 Aug 2023 08:11:30 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BBF1BF9;
+        Wed,  2 Aug 2023 05:11:29 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1b9c5e07c1bso57245955ad.2;
+        Wed, 02 Aug 2023 05:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690978285; x=1691583085;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=R1tN7he8thFjPHDIsaNU+iObtY2VDwRBXwAdPdmLAVU=;
-        b=PHkgSovXZglHHONXfGhOp6oeZzI+8ofMxRwHgOEl7N07Izh8MQUEfQIHdYclZV0tHG
-         ZIs5DxgO6P3Usy5iStDU0lJFCP62I6pQ54EQnDTungm5++OEr/3M8fCDL8gQxuS/GmjD
-         uYm1ZttXi2/7nCNlmzi5I2dv3KvRZ9aqKwMhNiwOXB99/FGzfwO+6BjKWIOwTAepMsFe
-         54OcwfWQaqERT5mRnhRWIuHlugZaatapUF8+MAS19w4pHNVuFDZnKadi19pCov4v8hyr
-         TryOm0MlfaV1+kKoxa4sf4Eehq9P8TN6hnNxEncjdD0WhYw+cGP1uIheevVH35jpYIT6
-         TJRQ==
+        d=gmail.com; s=20221208; t=1690978289; x=1691583089;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u8lpjzm6rHULKX3RnedYfP137m4qvGL5uKJaH+JzOyE=;
+        b=qDhWpMiPmib0qqnREtOztQZpDsTPdJdWHHMZI23ihdKILrWa9RKCZKneIgluadIyZV
+         k/DsHqzpgh6zo+z0WUcVasAAtxg8wCEIs2YEl4RBmRyoXr9upFn+lca+ZIMRl9p7ysIX
+         gZNZ6xxkEL9DfCNTvL6vQw2J3VlGXgBnpr5A/AYAG6Ymopo8OVNeBofOyPSVLxDDUHHd
+         uOGCP7/mSJomw/L6ZjWH3qg+O8qfQvxIfoQbf4nVoYjQTdechqL/vwrxfsjD1vyzGUGz
+         sL8Xh7n6VyvBeHlEePIscQm0rL23Mdw1HvtiIc2dTLUqumsgeV9dyFWY69Sg02nqdYyz
+         mhQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690978285; x=1691583085;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R1tN7he8thFjPHDIsaNU+iObtY2VDwRBXwAdPdmLAVU=;
-        b=btXKOUmfiPcTG3kD3YN0q4IY+cSZ0ZngE7RIw5Pfm9BqYUYDa45rGUWt6g9I+Df0ru
-         rktF/qizlm2H1NfIFnlLUMLSdNY48t/mcHGnDQYam1M7M+T7RFOAnHBJRkSyfdUHNBkZ
-         oAkd4K/kGd3VedeGaJZxIEuzpdWj8omzqZi8bQr1RtIY//NOxPwWDmGFTw/9wCHz5XLo
-         4VLjMdpRClSZBgNbPdYT9CAtyzBWDKfHboe1YnP/dqfzejcrS7MSWwd1dt9czgoU/DoG
-         loAUQWKX/4mqJmYsVgK9P88rIwuugbRgQevANC/z8iT3DfzXLJkWREorWv2ijdNHMPW0
-         Usjw==
-X-Gm-Message-State: AOJu0Yx4Q5kPbBImdKU8z5zrrk4A/vUuHMK56a0eMM2G40RBmqPrshAn
-        rfFZRAG94t+uXFjDjrGKsBw=
-X-Google-Smtp-Source: AGHT+IHm/iKpL35sYq0BgZAwHg4S9MLkSKH19dI9XidFsh40TfhhQXjX6BI9400SdMeaN11LUo4/IQ==
-X-Received: by 2002:a17:902:b28b:b0:1bc:32f2:812a with SMTP id u11-20020a170902b28b00b001bc32f2812amr1623828plr.27.1690978284689;
-        Wed, 02 Aug 2023 05:11:24 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1690978289; x=1691583089;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=u8lpjzm6rHULKX3RnedYfP137m4qvGL5uKJaH+JzOyE=;
+        b=VPxAOWpMBoIy9/34zfY4MxeERHARZW6TZ7ba0tptNyrHIHksM6Qzdx/84+UTgy+S0j
+         /Wgy4KIglTsBoU7aHgb1IMSb9/UoMb1cBIG+njZuQiWOJk6epUKRNIU6Hx2evRILjGOc
+         rGnWZZEIXTwmykkzJimWQNnhUMwNqcG6xfG72P59LA1Cm0QWUpe8LsizJbV/cO1Z49xG
+         YV+xg8p+8hY4LA2CLtWKXtw3UK+xsesTVTmIXCsbOSiAd6uEwxPFGjsVoQhM/g7Z8CO3
+         2hie5KpjNCjue/geVOan/TnYYzJAaIPwp7+QD/kN0nakryQEb2Wa4RaqV1ELnsaC7Im+
+         WyAw==
+X-Gm-Message-State: ABy/qLbj/5KJUw7LY8+TKmzxGI0/O1ajdwjJuSYGrLQOHrS9eM/d5Ew7
+        SUlUXrbo0fyGmNtq9Rtnzlg=
+X-Google-Smtp-Source: APBJJlHv0s+24DtRzTF7MSff5+HnSMFm9tB/W5D+rEXRTJW+Rzj8gIRgQMZKVyGUTgiH+uNle+Mywg==
+X-Received: by 2002:a17:902:7283:b0:1bc:1270:1bfd with SMTP id d3-20020a170902728300b001bc12701bfdmr7909491pll.55.1690978288680;
+        Wed, 02 Aug 2023 05:11:28 -0700 (PDT)
 Received: from localhost.localdomain ([43.132.98.115])
-        by smtp.googlemail.com with ESMTPSA id kx14-20020a170902f94e00b001b890009634sm12293173plb.139.2023.08.02.05.11.20
+        by smtp.googlemail.com with ESMTPSA id kx14-20020a170902f94e00b001b890009634sm12293173plb.139.2023.08.02.05.11.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 05:11:24 -0700 (PDT)
+        Wed, 02 Aug 2023 05:11:28 -0700 (PDT)
 From:   Ze Gao <zegao2021@gmail.com>
 X-Google-Original-From: Ze Gao <zegao@tencent.com>
 To:     Adrian Hunter <adrian.hunter@intel.com>,
@@ -64,10 +65,12 @@ To:     Adrian Hunter <adrian.hunter@intel.com>,
 Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: [RFC PATCH v4 0/7] fix task state report from sched tracepoint
-Date:   Wed,  2 Aug 2023 08:09:55 -0400
-Message-ID: <20230802121116.324604-1-zegao@tencent.com>
+Subject: [RFC PATCH v4 1/7] libtraceevent: sync state char array with the kernel
+Date:   Wed,  2 Aug 2023 08:09:56 -0400
+Message-ID: <20230802121116.324604-2-zegao@tencent.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230802121116.324604-1-zegao@tencent.com>
+References: <20230802121116.324604-1-zegao@tencent.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -80,80 +83,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the 4th attempt to fix the report task state issue in sched
-tracepint, you can check out previous discussions here:
+Update state char array to match the latest kernel
+definitions.
 
-v1: https://lore.kernel.org/linux-trace-kernel/20230725072254.32045-1-zegao@tencent.com
-v2: https://lore.kernel.org/linux-trace-kernel/20230726121618.19198-1-zegao@tencent.com
-v3: https://lore.kernel.org/linux-trace-kernel/20230801090124.8050-1-zegao@tencent.com
+Signed-off-by: Ze Gao <zegao@tencent.com>
+---
+ plugins/plugin_sched_switch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Against v3, reorganize commits so that they can be cherry-picked
-individually if people indeed have strong opinion over this change.
-
-Note PATCH 1-4 are the normal fixes and cleanup whereas PATCH 5-7
-introduce new changes.
-
---
-
-FYI, this series are designed not to break anything now and still do the 
-1-1 correspondence int-char mapping for each distinct task state we want to
-report, and thus will not lose any details intended for debug purposes. Of
-course, this might be compromised because of bugs introduced due to my
-stupidity. So your sage comments are very important and appreciated!
-
---
-
-In the status quo, we should see three different outcomes of the reported
-sched-out task state from perf-script, perf-sched-timehist, and Tp_printk
-of tracepoint sched_switch.  And it's not hard to figure out that the
-former two are built upon the third one, and the reason why we see this
-inconsistency is that the former two does not catch up with the internal
-change of reported task state definitions as the kernel evolves.
-
-IMHO, exporting internal representations of task state in the tracepoint
-sched_switch is not a good practice and not encouraged at all, which can
-easily break userspace tools that relies on it. Especially when tracepoints
-are massively used in many observability tools nowadays due to its stable
-nature, which makes them no longer used for debug only purpose and we
-should be careful to decide what ought to be reported to userspace and what
-ought not.
-
-Therefore, to fix the issues mentioned above for good, I proposed to add
-a new variable to report task state in sched_switch with a symbolic char
-along with the old hardcoded value, and save the further processing of
-userspace tools and spare them from knowing implementation details in the
-kernel.
-
-After this patch seires, we report 'RSDTtXZPI' the same as in procfs, plus
-a 'p' which denotes PREEMP_ACTIVE and is used for sched_switch tracepoint
-only.
-
-Reviews welcome!
-
-Regards,
-Ze
-
---
-
-Ze Gao (5):
-  perf sched: sync state char array with the kernel
-  perf sched: reorganize sched-out task state report code
-  sched, tracing: reorganize fields of switch event struct
-  sched, tracing: add to report task state in symbolic chars
-  perf sched: prefer to use prev_state_char introduced in sched_switch
-
- include/trace/events/sched.h | 68 +++++++++++++++++-------------
- tools/perf/builtin-sched.c   | 82 ++++++++++++++++--------------------
- 2 files changed, 76 insertions(+), 74 deletions(-)
-
-Ze Gao (2):
-  libtraceevent: sync state char array with the kernel
-  libtraceevent: prefer to use prev_state_char introduced in
-    sched_switch
-
- plugins/plugin_sched_switch.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
-
+diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
+index 8752cae..e0986ac 100644
+--- a/plugins/plugin_sched_switch.c
++++ b/plugins/plugin_sched_switch.c
+@@ -11,7 +11,7 @@
+ 
+ static void write_state(struct trace_seq *s, int val)
+ {
+-	const char states[] = "SDTtZXxW";
++	const char states[] = "SDTtXZPI";
+ 	int found = 0;
+ 	int i;
+ 
 -- 
 2.41.0
 
