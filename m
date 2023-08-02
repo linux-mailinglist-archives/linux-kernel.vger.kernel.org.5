@@ -2,160 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B5C76DB88
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2203676DB93
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232700AbjHBXaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 19:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37404 "EHLO
+        id S232777AbjHBXa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 19:30:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232724AbjHBXaC (ORCPT
+        with ESMTP id S232525AbjHBXax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 19:30:02 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A686B26A2;
-        Wed,  2 Aug 2023 16:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691018998; x=1722554998;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=h99e192bzCZMzg/eEGhvy+QImTiT2HSo8oaY9XUpOy4=;
-  b=gLYydFd3v5JaFCp+cFMHGQbkRNePcOjRxqzfrWl+WuZiZ+e7kOmiMugk
-   nJdBrBWCv2sy3vSr2jwxEY2tIIJhaT3400moJYEgEIeM5YmHVY33P5+28
-   jc1w96+lj3e4xB1XYfcfTfhuu/FuhWm644MMOiI5StVsyiXys3NRu2sDy
-   TUn3hsvuVODRasVRTDbw+YXHbhCpTr/2h7/uDbiPG1MkZVK8Cg6ytzOkV
-   8ZfQB7IfTQQXsjyqqACEdwyuii2YFnVWrFuaxeZNbAs8oTvkX7+D77rVx
-   W1+Kg/PJ1lL9elWx/JQsFFAn7MzAwWLdpMckagJushs/UROgD7vIosDS8
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="369727663"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="369727663"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 16:29:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="819405156"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="819405156"
-Received: from rbappers-mobl2.amr.corp.intel.com (HELO vcostago-mobl3) ([10.209.84.112])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 16:29:56 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org,
-        Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Pedro Tammela <pctammela@mojatatu.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Maxim Georgiev <glipus@gmail.com>
-Subject: Re: [PATCH v3 net-next 09/10] selftests/tc-testing: test that
- taprio can only be attached as root
-In-Reply-To: <20230801182421.1997560-10-vladimir.oltean@nxp.com>
-References: <20230801182421.1997560-1-vladimir.oltean@nxp.com>
- <20230801182421.1997560-10-vladimir.oltean@nxp.com>
-Date:   Wed, 02 Aug 2023 16:29:55 -0700
-Message-ID: <87pm4510r0.fsf@intel.com>
+        Wed, 2 Aug 2023 19:30:53 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8F20269E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 16:30:51 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-3490b737f9aso58265ab.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 16:30:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691019051; x=1691623851;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y9p/r3/7OOEeGD98k45cJqzqj6mNEuBO34pHN8nni+M=;
+        b=fFKN5nHbyv551/4W30i+xv9zwo+3QEZKGkdrHoMkNbWnp7D69/RlaUhp/eF6/2v5F3
+         PY4ootJGDhDcUwe+92UvbjD4/1toXHiTlmtImD9LT/8YQiZYo1yq/3Gd4/VDg79/Fjr+
+         6pmjunqIV0Ca8hZsxV+aVu04NE60qfC1zia2pWkVAMNlEmBowfsdO+ZCG2YoM1jl/JLo
+         g0hFzMkrepyVv2HBAO+grYkMtS7Ff2jFJXIxiFQF080W3PmgZFJzBwbn5Io3N8oYuy6R
+         Dxbqqy14GybNEz0zpdK7tsmDcO74eEg1QwBJKVXI6nZoxgpf0g/I8paf+i1lAj70Gw7g
+         RYxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691019051; x=1691623851;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y9p/r3/7OOEeGD98k45cJqzqj6mNEuBO34pHN8nni+M=;
+        b=Q7pt3XK3+5e7fwT4PQYVetcAyxXssiM2tYaPJxg2DtSDXuJDbFjX1PasRNH/Q3fcjA
+         9ACsJQ/OuqrxQyJZEYctzKxzbwkapKjZGXMMRhAiwO+CIyrbB0dYFkw58IRF4Cg6pFeC
+         NVNnX/U4Pl6MqZAQBUmSpKOV2XzA5Vx7hCbJ/GH/IY9bQsMI9ogXTntVRkUJWnfomI48
+         N51SQfkjoSo3fLfms/k7xvnE3YrY9Q+yVF6Lu3Yf+INqZ3bqFb/RPReWQAC4Ak5WnUpg
+         4kR6Tah5LpgkCaZ9SVTTl0DJaZ2L/OCnSsSh+DeyPgaHPuLaQC6ecDsndj3BT3yHd716
+         e0/Q==
+X-Gm-Message-State: ABy/qLbH2HuVL6RqheCDqXnjwPhFKL/SYTiHWxB6FTSuzC0RsYNd0XDy
+        HcOAag7vcGTmrLJ5X2I//jvX+XObsfJLvpHIBotcyQ==
+X-Google-Smtp-Source: APBJJlELAYNKKPfecK64fKx5Ci1HyUNKE08JkQGkdOgzq5gUkMmu0eZ6vl6aaIwqTlVQfSan7JpwYd6tPF2vIZQ+LNM=
+X-Received: by 2002:a92:c54a:0:b0:340:502b:1487 with SMTP id
+ a10-20020a92c54a000000b00340502b1487mr1178689ilj.12.1691019050973; Wed, 02
+ Aug 2023 16:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-2-rananta@google.com>
+ <87v8e5r6s6.wl-maz@kernel.org> <CAJHc60wtc2Usei3hKj1ykVRvBZFFCBOHMi9HCxnNvGK2dPFApA@mail.gmail.com>
+ <ZMgqueePlmKvgUId@google.com> <CAJHc60xM+KsUKxtoqORnpzrRke4T-sob2uLJRMvBKwruipxnpw@mail.gmail.com>
+ <878ratqw2l.wl-maz@kernel.org> <ZMqABp6OdrgOtsum@google.com>
+In-Reply-To: <ZMqABp6OdrgOtsum@google.com>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Wed, 2 Aug 2023 16:30:39 -0700
+Message-ID: <CAJHc60zvKSoPU6uTzZQCY2ZAeVj18qmu3=U-rUt5er0zGLQ33Q@mail.gmail.com>
+Subject: Re: [PATCH v7 01/12] KVM: Rename kvm_arch_flush_remote_tlb() to kvm_arch_flush_remote_tlbs()
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
+        =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>,
+        Shaoqin Huang <shahuang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vladimir Oltean <vladimir.oltean@nxp.com> writes:
+Okay, so just the #define in the respective arch header with a global
+declaration. I'll consider this in v8.
 
-> Check that the "Can only be attached as root qdisc" error message from
-> taprio is effective by attempting to attach it to a class of another
-> taprio qdisc. That operation should fail.
+Thanks,
+Raghavendra
+
+On Wed, Aug 2, 2023 at 9:10=E2=80=AFAM Sean Christopherson <seanjc@google.c=
+om> wrote:
 >
-> In the bug that was squashed by change "net/sched: taprio: try again to
-> report q->qdiscs[] to qdisc_leaf()", grafting a child taprio to a root
-> software taprio would be misinterpreted as a change() to the root
-> taprio. Catch this by looking at whether the base-time of the root
-> taprio has changed to follow the base-time of the child taprio,
-> something which should have absolutely never happened assuming correct
-> semantics.
+> On Wed, Aug 02, 2023, Marc Zyngier wrote:
+> > On Tue, 01 Aug 2023 01:42:54 +0100,
+> > Raghavendra Rao Ananta <rananta@google.com> wrote:
+> > > Thanks for the suggestions; I can go with a common declaration. Along
+> > > with that, do we want to keep defining
+> > > __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS in the arch code that supports it o=
+r
+> > > convert it into a CONFIG_?
+> >
+> > This isn't something that a user can select, more something that is an
+> > architectural decision. Maybe in a later patch if there is a consensus
+> > around that, but probably not as part of this series.
 >
-
-This test is somehow flaky (all others are fine), 1 in ~4 times, it fails.
-
-Taking a look at the test I couldn't quickly find out the reason for the
-flakyness.
-
-Here's the verbose output of one of the failures:
-
-vcgomes@otc-cfl-clr-30 ~/src/net-next/tools/testing/selftests/tc-testing $ sudo ./tdc.py -e 39b4 -v
- -- ns/SubPlugin.__init__
-ns/SubPlugin.adjust_command
-adjust_command:  return command [/sbin/ip link add v0p0 type veth peer name v0p1]
-_exec_cmd:  command "/sbin/ip link add v0p0 type veth peer name v0p1"
-ns/SubPlugin.adjust_command
-adjust_command:  return command [/sbin/ip link set v0p0 up]
-_exec_cmd:  command "/sbin/ip link set v0p0 up"
-ns/SubPlugin.adjust_command
-adjust_command:  return command [/sbin/ip netns add tcut]
-_exec_cmd:  command "/sbin/ip netns add tcut"
-ns/SubPlugin.adjust_command
-adjust_command:  return command [/sbin/ip link set v0p1 netns tcut]
-_exec_cmd:  command "/sbin/ip link set v0p1 netns tcut"
-ns/SubPlugin.adjust_command
-adjust_command:  return command [/sbin/ip -n tcut link set v0p1 up]
-_exec_cmd:  command "/sbin/ip -n tcut link set v0p1 up"
-	====================
-=====> Test 39b4: Reject grafting taprio as child qdisc of software taprio
------> prepare stage
-ns/SubPlugin.adjust_command
-adjust_command:  stage is setup; inserting netns stuff in command [echo "1 1 8" > /sys/bus/netdevsim/new_device] list [['echo', '"1', '1', '8"', '>', '/sys/bus/netdevsim/new_device']]
-adjust_command:  return command [/sbin/ip netns exec tcut echo "1 1 8" > /sys/bus/netdevsim/new_device]
-command "/sbin/ip netns exec tcut echo "1 1 8" > /sys/bus/netdevsim/new_device"
-ns/SubPlugin.adjust_command
-adjust_command:  stage is setup; inserting netns stuff in command [/sbin/tc qdisc replace dev eth0 handle 8001: parent root stab overhead 24 taprio num_tc 8 map 0 1 2 3 4 5 6 7 queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 base-time 0 sched-entry S ff 20000000 clockid CLOCK_TAI] list [['/sbin/tc', 'qdisc', 'replace', 'dev', 'eth0', 'handle', '8001:', 'parent', 'root', 'stab', 'overhead', '24', 'taprio', 'num_tc', '8', 'map', '0', '1', '2', '3', '4', '5', '6', '7', 'queues', '1@0', '1@1', '1@2', '1@3', '1@4', '1@5', '1@6', '1@7', 'base-time', '0', 'sched-entry', 'S', 'ff', '20000000', 'clockid', 'CLOCK_TAI']]
-adjust_command:  return command [/sbin/ip netns exec tcut /sbin/tc qdisc replace dev eth0 handle 8001: parent root stab overhead 24 taprio num_tc 8 map 0 1 2 3 4 5 6 7 queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 base-time 0 sched-entry S ff 20000000 clockid CLOCK_TAI]
-command "/sbin/ip netns exec tcut /sbin/tc qdisc replace dev eth0 handle 8001: parent root stab overhead 24 taprio num_tc 8 map 0 1 2 3 4 5 6 7 queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 base-time 0 sched-entry S ff 20000000 clockid CLOCK_TAI"
------> execute stage
-ns/SubPlugin.adjust_command
-adjust_command:  stage is execute; inserting netns stuff in command [/sbin/tc qdisc replace dev eth0 parent 8001:7 taprio num_tc 8 map 0 1 2 3 4 5 6 7 queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 base-time 200 sched-entry S ff 20000000 clockid CLOCK_TAI] list [['/sbin/tc', 'qdisc', 'replace', 'dev', 'eth0', 'parent', '8001:7', 'taprio', 'num_tc', '8', 'map', '0', '1', '2', '3', '4', '5', '6', '7', 'queues', '1@0', '1@1', '1@2', '1@3', '1@4', '1@5', '1@6', '1@7', 'base-time', '200', 'sched-entry', 'S', 'ff', '20000000', 'clockid', 'CLOCK_TAI']]
-adjust_command:  return command [/sbin/ip netns exec tcut /sbin/tc qdisc replace dev eth0 parent 8001:7 taprio num_tc 8 map 0 1 2 3 4 5 6 7 queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 base-time 200 sched-entry S ff 20000000 clockid CLOCK_TAI]
-command "/sbin/ip netns exec tcut /sbin/tc qdisc replace dev eth0 parent 8001:7 taprio num_tc 8 map 0 1 2 3 4 5 6 7 queues 1@0 1@1 1@2 1@3 1@4 1@5 1@6 1@7 base-time 200 sched-entry S ff 20000000 clockid CLOCK_TAI"
------> verify stage
-ns/SubPlugin.adjust_command
-adjust_command:  stage is verify; inserting netns stuff in command [/sbin/tc -j qdisc show dev eth0 root | jq '.[].options.base_time'] list [['/sbin/tc', '-j', 'qdisc', 'show', 'dev', 'eth0', 'root', '|', 'jq', "'.[].options.base_time'"]]
-adjust_command:  return command [/sbin/ip netns exec tcut /sbin/tc -j qdisc show dev eth0 root | jq '.[].options.base_time']
-command "/sbin/ip netns exec tcut /sbin/tc -j qdisc show dev eth0 root | jq '.[].options.base_time'"
------> teardown stage
-ns/SubPlugin.adjust_command
-adjust_command:  stage is teardown; inserting netns stuff in command [/sbin/tc qdisc del dev eth0 root] list [['/sbin/tc', 'qdisc', 'del', 'dev', 'eth0', 'root']]
-adjust_command:  return command [/sbin/ip netns exec tcut /sbin/tc qdisc del dev eth0 root]
-command "/sbin/ip netns exec tcut /sbin/tc qdisc del dev eth0 root"
-ns/SubPlugin.adjust_command
-adjust_command:  stage is teardown; inserting netns stuff in command [echo "1" > /sys/bus/netdevsim/del_device] list [['echo', '"1"', '>', '/sys/bus/netdevsim/del_device']]
-adjust_command:  return command [/sbin/ip netns exec tcut echo "1" > /sys/bus/netdevsim/del_device]
-command "/sbin/ip netns exec tcut echo "1" > /sys/bus/netdevsim/del_device"
-ns/SubPlugin.post_suite
-ns/SubPlugin.adjust_command
-adjust_command:  return command [/sbin/ip netns delete tcut]
-_exec_cmd:  command "/sbin/ip netns delete tcut"
-
-All test results:
-
-1..1
-not ok 1 39b4 - Reject grafting taprio as child qdisc of software taprio
-	Could not match regex pattern. Verify command output:
-parse error: Objects must consist of key:value pairs at line 1, column 334
-
-
-Cheers,
--- 
-Vinicius
+> +1.  I agree it's annoying that KVM uses a mix of Kconfigs and manual #de=
+fines
+> for the various "KVM_HAVE" knobs, but we have so many of both that one-of=
+f
+> conversions without a real need don't make much sense.
