@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8EA76CCEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C034E76CCFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234565AbjHBMif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58458 "EHLO
+        id S234554AbjHBMjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234519AbjHBMiX (ORCPT
+        with ESMTP id S234583AbjHBMim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:38:23 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED12326B0
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:38:20 -0700 (PDT)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RGBJJ01GtztRLq;
-        Wed,  2 Aug 2023 20:34:55 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 2 Aug 2023 20:38:17 +0800
-Message-ID: <32b748d2-3d88-87d6-3797-c82d7bb7a927@huawei.com>
-Date:   Wed, 2 Aug 2023 20:38:17 +0800
+        Wed, 2 Aug 2023 08:38:42 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF1530C4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:38:30 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bb9e6c2a90so53809325ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:38:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690979909; x=1691584709;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BCaJfRDcQ/j8NvxBseF28uGTZsyouYPenyGPtBvs7Ag=;
+        b=OQVD00X+fFdoFOV6AIVr9E8zFxSx5ZSdlWn1z9cEHpSHI7fNoaOxt+4YE4hIq/sS0H
+         Tc5t+QY/Af0FPcb0UbOUTKbN/wjHt3x+M1L1EhJbNwv2Yeft9fGLKiBOmOdaJlFBaMCB
+         SA+05FZQ3LxRO8tWClstvW84jkw6GQQYE85CC2iYP4dk1nwSuSKe+ktwGc1OoOxNufBt
+         rHzA+llAGUZSu6H62F4OtIV8VCF0Qoh62wsylG1k4K0GiuIkbpbwqUISRAEgYjMvqv3H
+         xunEdkFirMg+HlQItswVt+0Ps8H3/2T6EIGW7GF0juUEzQ+jtxGI0Lvs97p+PayymOr1
+         XKTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690979909; x=1691584709;
+        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BCaJfRDcQ/j8NvxBseF28uGTZsyouYPenyGPtBvs7Ag=;
+        b=LAw32X5V2x7NUsTW+PUyEGbBojcDX9K69XB1ChrRsQO6WdbxBIR/DTC12z0hWGplV3
+         ie1vLGnDPb2rMRSHzZVHOOzNDpF2jfOZYkoVf2j4Q6EuMgGXZ0zsP0WuxDgjBgP7ApNt
+         Hdu6knt+SES4EnNXkTSlQmzJvb+yttv5gprVQwDJipdAoLKbX5RYrKKWm83w6vRHgji3
+         m11MddrvFMr84DRBr3nS/3IwY/6M/sjZaMPHmsvCfykPow4EkVzCwtvj094skT3cNu5G
+         Bt8gXhJHNdI4MdOVg0DZg/3FU88sTvtR9qvZKOpGmfTLly2jR9mFGhvm+io/vx/u2WnN
+         j9Ng==
+X-Gm-Message-State: ABy/qLa5di5UPhP7dAca6V7lP00SB39n3ZXqSpUL0E0HTN3gExQcqg5f
+        EIBqO1BdJZxQ8brox5IvaVnmOUakJU0=
+X-Google-Smtp-Source: APBJJlHnD8LH6jLPiA1ybE8b0xGJc/HDo+xItbPoicPJ8NQ6sOjqNAamf9Z3J9pUfqgq/hovKFa2Sw==
+X-Received: by 2002:a17:903:2343:b0:1bb:a85c:23cc with SMTP id c3-20020a170903234300b001bba85c23ccmr20078880plh.15.1690979909291;
+        Wed, 02 Aug 2023 05:38:29 -0700 (PDT)
+Received: from [192.168.0.105] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id m24-20020a170902bb9800b001b87bedcc6fsm12310621pls.93.2023.08.02.05.38.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 05:38:28 -0700 (PDT)
+Message-ID: <80e4fe8d-96d0-2eba-918b-7c36f8341568@gmail.com>
+Date:   Wed, 2 Aug 2023 19:38:23 +0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.1
-Subject: Re: [PATCH 0/4] mm: migrate: more folio conversion
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: Fwd: Kernel memory management bug at mm/migrate.c:662 when
+ flushing caches
 Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Alistair Popple <apopple@nvidia.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-CC:     Huang Ying <ying.huang@intel.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20230802095346.87449-1-wangkefeng.wang@huawei.com>
- <bf4b5b30-4ed1-13ed-bba9-234887c9eeb3@redhat.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <bf4b5b30-4ed1-13ed-bba9-234887c9eeb3@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+        Marco <rodomar705@protonmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+References: <428d8fe9-8c19-ddba-b36e-7db5524e8d04@gmail.com>
+In-Reply-To: <428d8fe9-8c19-ddba-b36e-7db5524e8d04@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/8/2 19:47, David Hildenbrand wrote:
-> On 02.08.23 11:53, Kefeng Wang wrote:
->> This patch series converts several functions to use folio in migrate.c.
+On 02/08/2023 18:08, Bagas Sanjaya wrote:
+> #regzbot introduced: v6.2..v6.3 https://bugzilla.kernel.org/show_bug.cgi?id=217747
+> #regzbot title: kernel memory bug when cleaning hugepages before QEMU boot
 > 
-> Please clearly spell out in the patch descriptions when you are changing 
-> mapcount logic and which effects that might have (both, positive and 
-> negative) for PTE-mapped THP.
 
-Oh, I see your comments on another mail[1], the folio_estimated_sharers()
-is not good to evaluate the sharing by multiple processes, will read more
-history of the mail's discussion, maybe just ignore the first three patches.
+The reporter confirmed that this regression is (Open)ZFS-specific,
+so:
 
-Thank.
+#regzbot invalid: out-of-tree (OpenZFS) regression
 
+Sorry for inconvenience.
 
-[1] [PATCH 0/2] don't use mapcount() to check large folio sharing
-> 
+-- 
+An old man doll... just what I always wanted! - Clara
+
