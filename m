@@ -2,150 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC9676D003
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7522D76D032
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233486AbjHBO10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:27:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
+        id S234148AbjHBOiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:38:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233361AbjHBO1W (ORCPT
+        with ESMTP id S234164AbjHBOiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:27:22 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0761A2D52;
-        Wed,  2 Aug 2023 07:27:18 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id 006d021491bc7-56661fe27cbso4674081eaf.3;
-        Wed, 02 Aug 2023 07:27:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690986438; x=1691591238;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q1qQgIORJRlmD0UJ8myQJ3W2VLdY4qHSEBJu+2btObE=;
-        b=m/bhPUCkD7SbtEw2eb/bvy1F39jLWLEwVMcNSLoIyJKWX4L1ghEbu2JC82d9NJ9cbu
-         K/H8DiudsHYUST3HeuuISIWdxNXK0JcTyMkaokgme6aVzjHfC5iQ+nmCuIvgIVPZE1GF
-         ol9DF8YxH/Xh1vCd/hKG9hR757K2M8Ts1QVhyZw0eKvqzGECzxpKLhuXQcy2cJ7VOEFW
-         4EWtGSKVhNJ+69XkPRDY195dD7lL7QA6NhTsgOT7hw3Alfym7x8eotbXx+Unagn7tzCW
-         rcltUSomOFK85TCIv8t3Uid8d7+RWBvxxCG3ZsUhyB3Ba49z+rf2H5PwPhbHQaFuz7g9
-         Jggg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690986438; x=1691591238;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Q1qQgIORJRlmD0UJ8myQJ3W2VLdY4qHSEBJu+2btObE=;
-        b=Uo2nxsAlHT8CEHgDH3579oDseGtUPNA8Tm6/5pYrzuGC49bSjJl/5GRPKKVhnAYobP
-         ms5PFZwa8JdE+rhfRCGPK5AHt28Q13JvBvmULTTyl6GqB2Bo/zuSimNvgKqW0xQLDr+J
-         WU6/1VmFcdt+/e11n//pkw+pHSSXzx2snstilUp6p0eyH7pyCv3CcgYGW1avTUsrXQKR
-         KgFRt6eyLJM/w4HyBWJlksQpBHUsAZqTqo5l4IPd88Tdhll/xwYNxdiBqfEWeoebL9jI
-         piRm78MvGxqdB6gaqPBnNgXpvu2lYWuX/dVLvvKmtcP2V4jtK7gr4QqtTcl6DNLHhyq9
-         8/zg==
-X-Gm-Message-State: ABy/qLbClnwb3WQ6gH2q+idfiVWFsxaRvtY7ESTyt+cMNPzUEsJMj0Ka
-        uQilW7Q3PpIhjyEdg1A5t7I=
-X-Google-Smtp-Source: APBJJlE2tnKHyanb9fqR4kiTgcF0DCMwEBcvtN3sJ72Ud3TWHEHvhM9J+23wYjZgJfSdH0ImOgPmAg==
-X-Received: by 2002:a05:6358:4309:b0:139:cdfa:52e9 with SMTP id r9-20020a056358430900b00139cdfa52e9mr6487878rwc.3.1690986437990;
-        Wed, 02 Aug 2023 07:27:17 -0700 (PDT)
-Received: from localhost (172.174.245.35.bc.googleusercontent.com. [35.245.174.172])
-        by smtp.gmail.com with ESMTPSA id i11-20020a0cf48b000000b0063cf9478fddsm5581091qvm.128.2023.08.02.07.27.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 07:27:17 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 10:27:17 -0400
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     David Howells <dhowells@redhat.com>, netdev@vger.kernel.org,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     dhowells@redhat.com,
-        syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com,
-        bpf@vger.kernel.org, brauner@kernel.org, davem@davemloft.net,
-        dsahern@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, axboe@kernel.dk, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Message-ID: <64ca67c534d71_294ce929485@willemb.c.googlers.com.notmuch>
-In-Reply-To: <1420063.1690904933@warthog.procyon.org.uk>
-References: <1420063.1690904933@warthog.procyon.org.uk>
-Subject: RE: [PATCH net] udp: Fix __ip_append_data()'s handling of
- MSG_SPLICE_PAGES
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 10:38:07 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC5A213D;
+        Wed,  2 Aug 2023 07:38:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690987085; x=1722523085;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=24AT3BpfQv6J5OZlOJTbIyfrZvqPdwnxbYzIc/ExOpA=;
+  b=Jk5n2srX3FKZreQgC0czRN9fQriAMFNiYTNXdnPDqA/A0KVchZZIjwFb
+   4meuB9pVQ4m0C9t+tl2ng4Ea1Nf2RxXm/0pii8D1TT/Efx4e5yPhvqzCH
+   T73vIpkEAinYP7tINpog+lYf8NBitSIjL2pCX8I2dxdhpOs8gVl0eWz3E
+   gkUPDmUMDJ4l9lqs29f4ljdvyyvHIF/TM8rwY4+f+x7P1LcSv9MhhqYnT
+   cZ13pWesnRfOssD/OPMOj4SF4ECfiWbYBTGi758uc30n7fd/XmYNWY9PI
+   P0efyF9Q5XvVSl2n8UBTmPM7a/aXyn5kA+e+H+9oYY8SAcbBx88K+ZtGn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="435925564"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="435925564"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 07:27:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="764230763"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="764230763"
+Received: from tdx-lm.sh.intel.com ([10.239.53.27])
+  by orsmga001.jf.intel.com with ESMTP; 02 Aug 2023 07:27:39 -0700
+From:   Wei Wang <wei.w.wang@intel.com>
+To:     seanjc@google.com, pbonzini@redhat.com, bgardon@google.com,
+        dmatlack@google.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wei Wang <wei.w.wang@intel.com>
+Subject: [PATCH v1] KVM: x86/mmu: refactor kvm_tdp_mmu_map
+Date:   Wed,  2 Aug 2023 22:27:37 +0800
+Message-Id: <20230802142737.5572-1-wei.w.wang@intel.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells wrote:
->     
-> __ip_append_data() can get into an infinite loop when asked to splice into
-> a partially-built UDP message that has more than the frag-limit data and up
-> to the MTU limit.  Something like:
-> 
->         pipe(pfd);
->         sfd = socket(AF_INET, SOCK_DGRAM, 0);
->         connect(sfd, ...);
->         send(sfd, buffer, 8161, MSG_CONFIRM|MSG_MORE);
->         write(pfd[1], buffer, 8);
->         splice(pfd[0], 0, sfd, 0, 0x4ffe0ul, 0);
-> 
-> where the amount of data given to send() is dependent on the MTU size (in
-> this instance an interface with an MTU of 8192).
-> 
-> The problem is that the calculation of the amount to copy in
-> __ip_append_data() goes negative in two places, and, in the second place,
-> this gets subtracted from the length remaining, thereby increasing it.
-> 
-> This happens when pagedlen > 0 (which happens for MSG_ZEROCOPY and
-> MSG_SPLICE_PAGES), because the terms in:
-> 
->         copy = datalen - transhdrlen - fraggap - pagedlen;
-> 
-> then mostly cancel when pagedlen is substituted for, leaving just -fraggap.
-> This causes:
-> 
->         length -= copy + transhdrlen;
-> 
-> to increase the length to more than the amount of data in msg->msg_iter,
-> which causes skb_splice_from_iter() to be unable to fill the request and it
-> returns less than 'copied' - which means that length never gets to 0 and we
-> never exit the loop.
-> 
-> Fix this by:
-> 
->  (1) Insert a note about the dodgy calculation of 'copy'.
-> 
->  (2) If MSG_SPLICE_PAGES, clear copy if it is negative from the above
->      equation, so that 'offset' isn't regressed and 'length' isn't
->      increased, which will mean that length and thus copy should match the
->      amount left in the iterator.
-> 
->  (3) When handling MSG_SPLICE_PAGES, give a warning and return -EIO if
->      we're asked to splice more than is in the iterator.  It might be
->      better to not give the warning or even just give a 'short' write.
-> 
-> [!] Note that this ought to also affect MSG_ZEROCOPY, but MSG_ZEROCOPY
-> avoids the problem by simply assuming that everything asked for got copied,
-> not just the amount that was in the iterator.  This is a potential bug for
-> the future.
-> 
-> Fixes: 7ac7c987850c ("udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES")
-> Reported-by: syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/r/000000000000881d0606004541d1@google.com/
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> cc: "David S. Miller" <davem@davemloft.net>
-> cc: Eric Dumazet <edumazet@google.com>
-> cc: Jakub Kicinski <kuba@kernel.org>
-> cc: Paolo Abeni <pabeni@redhat.com>
-> cc: David Ahern <dsahern@kernel.org>
-> cc: Jens Axboe <axboe@kernel.dk>
-> cc: netdev@vger.kernel.org
+The implementation of kvm_tdp_mmu_map is a bit long. It essentially does
+three things:
+1) adjust the leaf entry level (e.g. 4KB, 2MB or 1GB) to map according to
+   the hugepage configurations;
+2) map the nonleaf entries of the tdp page table; and
+3) map the target leaf entry.
 
-Reviewed-by: Willem de Bruijn <willemb@google.com>
+Improve the readabiliy by moving the implementation of 2) above into a
+subfunction, kvm_tdp_mmu_map_nonleaf, and removing the unnecessary
+"goto"s. No functional changes intended.
 
-I noticed that this is still open in patchwork, no need to resend.
+Signed-off-by: Wei Wang <wei.w.wang@intel.com>
+---
+ arch/x86/kvm/mmu/tdp_mmu.c | 76 ++++++++++++++++++++------------------
+ 1 file changed, 41 insertions(+), 35 deletions(-)
+
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 512163d52194..0b29a7f853b5 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1057,43 +1057,33 @@ static int tdp_mmu_link_sp(struct kvm *kvm, struct tdp_iter *iter,
+ static int tdp_mmu_split_huge_page(struct kvm *kvm, struct tdp_iter *iter,
+ 				   struct kvm_mmu_page *sp, bool shared);
+ 
+-/*
+- * Handle a TDP page fault (NPT/EPT violation/misconfiguration) by installing
+- * page tables and SPTEs to translate the faulting guest physical address.
+- */
+-int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
++static int kvm_tdp_mmu_map_nonleafs(struct kvm_vcpu *vcpu,
++				    struct kvm_page_fault *fault,
++				    struct tdp_iter *iter)
+ {
+ 	struct kvm_mmu *mmu = vcpu->arch.mmu;
+ 	struct kvm *kvm = vcpu->kvm;
+-	struct tdp_iter iter;
+ 	struct kvm_mmu_page *sp;
+-	int ret = RET_PF_RETRY;
+-
+-	kvm_mmu_hugepage_adjust(vcpu, fault);
+-
+-	trace_kvm_mmu_spte_requested(fault);
+-
+-	rcu_read_lock();
+-
+-	tdp_mmu_for_each_pte(iter, mmu, fault->gfn, fault->gfn + 1) {
+-		int r;
++	int ret;
+ 
++	tdp_mmu_for_each_pte((*iter), mmu, fault->gfn, fault->gfn + 1) {
+ 		if (fault->nx_huge_page_workaround_enabled)
+-			disallowed_hugepage_adjust(fault, iter.old_spte, iter.level);
++			disallowed_hugepage_adjust(fault, iter->old_spte,
++						   iter->level);
+ 
+ 		/*
+ 		 * If SPTE has been frozen by another thread, just give up and
+ 		 * retry, avoiding unnecessary page table allocation and free.
+ 		 */
+-		if (is_removed_spte(iter.old_spte))
+-			goto retry;
++		if (is_removed_spte(iter->old_spte))
++			return RET_PF_RETRY;
+ 
+-		if (iter.level == fault->goal_level)
+-			goto map_target_level;
++		if (iter->level == fault->goal_level)
++			return RET_PF_CONTINUE;
+ 
+ 		/* Step down into the lower level page table if it exists. */
+-		if (is_shadow_present_pte(iter.old_spte) &&
+-		    !is_large_pte(iter.old_spte))
++		if (is_shadow_present_pte(iter->old_spte) &&
++		    !is_large_pte(iter->old_spte))
+ 			continue;
+ 
+ 		/*
+@@ -1101,26 +1091,26 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+ 		 * needs to be split.
+ 		 */
+ 		sp = tdp_mmu_alloc_sp(vcpu);
+-		tdp_mmu_init_child_sp(sp, &iter);
++		tdp_mmu_init_child_sp(sp, iter);
+ 
+ 		sp->nx_huge_page_disallowed = fault->huge_page_disallowed;
+ 
+-		if (is_shadow_present_pte(iter.old_spte))
+-			r = tdp_mmu_split_huge_page(kvm, &iter, sp, true);
++		if (is_shadow_present_pte(iter->old_spte))
++			ret = tdp_mmu_split_huge_page(kvm, iter, sp, true);
+ 		else
+-			r = tdp_mmu_link_sp(kvm, &iter, sp, true);
++			ret = tdp_mmu_link_sp(kvm, iter, sp, true);
+ 
+ 		/*
+ 		 * Force the guest to retry if installing an upper level SPTE
+ 		 * failed, e.g. because a different task modified the SPTE.
+ 		 */
+-		if (r) {
++		if (ret) {
+ 			tdp_mmu_free_sp(sp);
+-			goto retry;
++			return RET_PF_RETRY;
+ 		}
+ 
+ 		if (fault->huge_page_disallowed &&
+-		    fault->req_level >= iter.level) {
++		    fault->req_level >= iter->level) {
+ 			spin_lock(&kvm->arch.tdp_mmu_pages_lock);
+ 			if (sp->nx_huge_page_disallowed)
+ 				track_possible_nx_huge_page(kvm, sp);
+@@ -1132,13 +1122,29 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+ 	 * The walk aborted before reaching the target level, e.g. because the
+ 	 * iterator detected an upper level SPTE was frozen during traversal.
+ 	 */
+-	WARN_ON_ONCE(iter.level == fault->goal_level);
+-	goto retry;
++	WARN_ON_ONCE(iter->level == fault->goal_level);
++	return RET_PF_RETRY;
++}
+ 
+-map_target_level:
+-	ret = tdp_mmu_map_handle_target_level(vcpu, fault, &iter);
++/*
++ * Handle a TDP page fault (NPT/EPT violation/misconfiguration) by installing
++ * page tables and SPTEs to translate the faulting guest physical address.
++ */
++int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
++{
++	struct tdp_iter iter;
++	int ret;
++
++	kvm_mmu_hugepage_adjust(vcpu, fault);
++
++	trace_kvm_mmu_spte_requested(fault);
++
++	rcu_read_lock();
++
++	ret = kvm_tdp_mmu_map_nonleafs(vcpu, fault, &iter);
++	if (ret == RET_PF_CONTINUE)
++		ret = tdp_mmu_map_handle_target_level(vcpu, fault, &iter);
+ 
+-retry:
+ 	rcu_read_unlock();
+ 	return ret;
+ }
+-- 
+2.27.0
+
