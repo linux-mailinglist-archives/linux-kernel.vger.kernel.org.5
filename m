@@ -2,81 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 743B676CEEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BF676CEEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjHBNiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
+        id S233722AbjHBNib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:38:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232617AbjHBNiV (ORCPT
+        with ESMTP id S231683AbjHBNi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:38:21 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D0CB2
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 06:38:20 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2b9dc1bff38so67918751fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 06:38:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690983499; x=1691588299;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pMJcLgqq+qsMssEfJ2CwIRiJpFGbiB0yAWJkA5kXxOU=;
-        b=tuWtLApQI+lJ9MCuv940aXrM7xsyVP5NFmuEK4Pr05+2YTVnoffT80ISBeUFH2ITdU
-         DsA8KS1ixGcx0g4iIB1/8h2J39Wd/iznNHJm4E8o5NwJVVOgjjJiw32i8/sKCti8uQrM
-         UkEVRZeVXFSLuGAK5IYdH9QWjvsJ/tdSo1Hv2zoErgEhmxwBMxRQM+rktUTWWn8+4DWq
-         nCQ8vUksJCgNv6MUec2HbR2TmVA0T7IEi0YKaOPaKmJZwckoFnWo1UNMPwguYklaCFiO
-         CtmaCPxt2NS5qKbh0c0E7tiI4s+lzDWkBrCEfNScLGUf63yvPnx0XmRNXSOG2RYqthxm
-         puDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690983499; x=1691588299;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pMJcLgqq+qsMssEfJ2CwIRiJpFGbiB0yAWJkA5kXxOU=;
-        b=agEPHote470x0YtbsFERq2GFdWcX1gH3DzzlvusGMz60xW2K45UrbbTDozxwu+Q5av
-         L9C0Irse6pHUMXik2e/wjJmbMBGePHWKIuZdpe2K3xRhfJ+oCC09G7OeQ2wq0kmwasAi
-         uIqol+TFYOmKGijG4dv5LNucC6k5sAf3OtKoJG3unyFtjE6jv0otLJh63ZKLCEtSl7oA
-         1kqlQBiMAO1ugR0/pCGAkwMZZ2KPWOtR5Si/PxcPiR+kKfj68thR5QWAKf3mJNsOcYvi
-         Sl0iuvSHqvTemM2k57TYHCWrUlPAPBk5GwNh7iQG650cpDZBGfK+cMnRQWKLqDrYAPvg
-         t00w==
-X-Gm-Message-State: ABy/qLbXt74GgEmNXBgt2SOEVgzMDaqPwnGr5EDXUJytt3ZiVwDt5K9w
-        Sfen/VX5fe9gZd6ucJVGWfexzw==
-X-Google-Smtp-Source: APBJJlHzyf/zEcrCxTCJVBOveSBn5qEYuzHmJSmt5lAZM8FgyvRHeoYIVOW4SGs/6XhBbP37lGkKrw==
-X-Received: by 2002:a05:651c:1028:b0:2b6:a763:5d13 with SMTP id w8-20020a05651c102800b002b6a7635d13mr4864222ljm.27.1690983498799;
-        Wed, 02 Aug 2023 06:38:18 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id j8-20020a2eb708000000b002b9e65912cesm1842077ljo.140.2023.08.02.06.38.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 06:38:18 -0700 (PDT)
-Message-ID: <5cf0e3fa-f66d-06c4-cfda-c48efd8c6508@linaro.org>
-Date:   Wed, 2 Aug 2023 16:38:17 +0300
+        Wed, 2 Aug 2023 09:38:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D4CF5
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 06:38:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 558E76199D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:38:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8579FC433C8;
+        Wed,  2 Aug 2023 13:38:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690983503;
+        bh=/Rfr9Oa+qbNuNrp37cKsgxP974KLUixesuKLnDEsj34=;
+        h=Date:From:To:Cc:Subject:From;
+        b=g94VL46nz8zKAq5n+pKJ7xSM5Ch+rlSkp48MQcqMden16GlktzMdSB9unxQwuwEXM
+         Pmg/80OuJWR7sv2OphZDeRC7HejKF/Wtur8jqVvzPD16sY6dGpZlZK/T4uq5wtQw04
+         +4G7bbyBKH68OqMzz7qqt1oap+y9G//AFtZ1PCXOSqDi3xoAaG4OmSf8b1dKLfEyzB
+         utS6vsxTVe3tDNxp8urJ26DEks5XKE6hwFJ0H5eCC+gTWySQoPDshGq/CRmnHe8nDT
+         rhfsr3v9MgExe3ogqUvy9T4UyVYkjHoogWK/Yt01WM6Psavky2z/PVn1z+8dQ7DHDk
+         IJbaq6fUEfCpA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id A9E9F4012D; Wed,  2 Aug 2023 10:38:20 -0300 (-03)
+Date:   Wed, 2 Aug 2023 10:38:20 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/1] perf python: Cope with declarations after statements
+ found in Python.h
+Message-ID: <ZMpcTMvnQns81YWA@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
- and EOT packet"
-Content-Language: en-GB
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Marek Vasut <marex@denx.de>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Amit Pundir <amit.pundir@linaro.org>
-References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -85,38 +58,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2023 11:52, Neil Armstrong wrote:
-> This reverts commit [1] to fix display regression on the Dragonboard 845c
-> (SDM845) devboard.
-> 
-> There's a mismatch on the real action of the following flags:
-> - MIPI_DSI_MODE_VIDEO_NO_HSA
-> - MIPI_DSI_MODE_VIDEO_NO_HFP
-> - MIPI_DSI_MODE_VIDEO_NO_HBP
-> which leads to a non-working display on qcom platforms.
-> 
-> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA and EOT packet")
-> 
-> Cc: Marek Vasut <marex@denx.de>
-> Cc: Robert Foss <rfoss@kernel.org>
-> Cc: Jagan Teki <jagan@amarulasolutions.com>
-> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA and EOT packet")
-> Reported-by: Amit Pundir <amit.pundir@linaro.org>
-> Link: https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
->   drivers/gpu/drm/bridge/lontium-lt9611.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
->
-Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> #fix db845c
+With -Werror the build was failing on fedora rawhide:
 
-The boards broken by [1] are used in production by different parties 
-since 5.10, breaking them doesn't seem more acceptable than breaking the 
-new out-of-tree iMX8m hardware.
+  [perfbuilder@27cfe44d67ed perf-6.5.0-rc2]$ gcc -v
+  Using built-in specs.
+  COLLECT_GCC=gcc
+  COLLECT_LTO_WRAPPER=/usr/libexec/gcc/x86_64-redhat-linux/13/lto-wrapper
+  OFFLOAD_TARGET_NAMES=nvptx-none
+  OFFLOAD_TARGET_DEFAULT=1
+  Target: x86_64-redhat-linux
+  Configured with: ../configure --enable-bootstrap --enable-languages=c,c++,fortran,objc,obj-c++,ada,go,d,m2,lto --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info --with-bugurl=http://bugzilla.redhat.com/bugzilla --enable-shared --enable-threads=posix --enable-checking=release --enable-multilib --with-system-zlib --enable-__cxa_atexit --disable-libunwind-exceptions --enable-gnu-unique-object --enable-linker-build-id --with-gcc-major-version-only --enable-libstdcxx-backtrace --with-libstdcxx-zoneinfo=/usr/share/zoneinfo --with-linker-hash-style=gnu --enable-plugin --enable-initfini-array --with-isl=/builddir/build/BUILD/gcc-13.2.1-20230728/obj-x86_64-redhat-linux/isl-install --enable-offload-targets=nvptx-none --without-cuda-driver --enable-offload-defaulted --enable-gnu-indirect-function --enable-cet --with-tune=generic --with-arch_32=i686 --build=x86_64-redhat-linux --with-build-config=bootstrap-lto --enable-link-serialization=1
+  Thread model: posix
+  Supported LTO compression algorithms: zlib zstd
+  gcc version 13.2.1 20230728 (Red Hat 13.2.1-1) (GCC)
+  [perfbuilder@27cfe44d67ed perf-6.5.0-rc2]$
 
+  In file included from /usr/include/python3.12/Python.h:44,
+                   from /git/perf-6.5.0-rc2/tools/perf/util/python.c:2:
+  /usr/include/python3.12/object.h: In function ‘Py_SIZE’:
+  /usr/include/python3.12/object.h:217:5: error: ISO C90 forbids mixed declarations and code [-Werror=declaration-after-statement]
+    217 |     PyVarObject *var_ob = _PyVarObject_CAST(ob);
+        |     ^~~~~~~~~~~
+    LD      /tmp/build/perf/arch/perf-in.o
+  In file included from /usr/include/python3.12/Python.h:53:
+  /usr/include/python3.12/cpython/longintrepr.h: In function ‘_PyLong_CompactValue’:
+  /usr/include/python3.12/cpython/longintrepr.h:121:5: error: ISO C90 forbids mixed declarations and code [-Werror=declaration-after-statement]
+    121 |     Py_ssize_t sign = 1 - (op->long_value.lv_tag & _PyLong_SIGN_MASK);
+        |     ^~~~~~~~~~
+
+So add -Wno-declaration-after-statement to the python binding CFLAGS.
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ tools/perf/util/setup.py | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tools/perf/util/setup.py b/tools/perf/util/setup.py
+index 869738fc06c38a4b..79d5e2955f85d8f6 100644
+--- a/tools/perf/util/setup.py
++++ b/tools/perf/util/setup.py
+@@ -66,6 +66,9 @@ if cc_is_clang:
+ else:
+     cflags += ['-Wno-cast-function-type' ]
+ 
++# The python headers have mixed code with declarations (decls after asserts, for instance)
++cflags += [ "-Wno-declaration-after-statement" ]
++
+ src_perf  = getenv('srctree') + '/tools/perf'
+ build_lib = getenv('PYTHON_EXTBUILD_LIB')
+ build_tmp = getenv('PYTHON_EXTBUILD_TMP')
 -- 
-With best wishes
-Dmitry
+2.37.1
 
