@@ -2,179 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F5D76CC88
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A237C76CC9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbjHBMXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
+        id S233821AbjHBMZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233053AbjHBMXf (ORCPT
+        with ESMTP id S233782AbjHBMZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:23:35 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2080.outbound.protection.outlook.com [40.107.7.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DA626AF;
-        Wed,  2 Aug 2023 05:23:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gDh/x1VGy8v7F+e9bCjtO1CC4mhIaZSEb8oc/d+BvTEFgTgy+h/IfZy9G0kxlWYa04VzPyfzAQ7KKGqAv9U/VDpIsyXWyQZHkMKab4o/yefxPZAcUFQ/u4K34cHM4a+dj3bRvdtiDhth4CHCiAbPxrPNEkl382H3xjkkZmk0rm/v82iJJC04/veBx/QjZBd7gdI2aCK7k+l67TSvHXZBUd8nxHX8yfY3LHkfSv3aXbHSQ5/cUtSLY4Vn/HeJrqWwGRQIyqS+Fc/hTPwNrRBM3SUKg9CkBupNqdtr3Ejxtyhnh4Dyno7AmI7aZHiSUw5xOX849IYoSzhuvNBHvF4hzg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cSCnzKUcSANrYp+MUTO+dNRJ8euBfLseeNKJrrE9Fxc=;
- b=k34LTnx+vNoyGZUPaxRpX8L710XMGe+Ih44lzvbdZs4SPOu0hZg94IUqFjkTjRhXor0QfY/tPWG2NvjCKU9OiWBA+zNv+iF5868Set0R7nFqKjOpJzj0Ke0HwnSGewURCQJd82QMrVyUuxHNY1lKxufrYzXRj7Qse7oO///anlq6wy9y+QlYTuJrzZvHBBuRk6yN2pRk9pm45S4gUB4DQeXt4iPbjWf1IZWcuIgRYX4RrRpEh770cj65ISKRlXqo/f+crLxtVkvxngtXn62qUNMXWk0N3IfgvwlYL8EbBFJ7fgwlRNLcaMxyxKmT+iIrnvkwraGy0llKignL+JufLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cSCnzKUcSANrYp+MUTO+dNRJ8euBfLseeNKJrrE9Fxc=;
- b=j1N4P7lHszFPgkwoltiEb2Dx3S3/F6W1I1SIIuTvnDS6yUVZAKEBIJWOGv0ScgL4YVahKfkAiYfVWjhEqMjEizjtethLldk7VpFy/gFJ20iOH/F83GfsPi4cE2gWIgJLkQG4LTutWHN/7LkdFTyX9GM21N6fwreEXJICgjzTDhc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from GV2PR08MB9158.eurprd08.prod.outlook.com (2603:10a6:150:d2::10)
- by AS4PR08MB7951.eurprd08.prod.outlook.com (2603:10a6:20b:577::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
- 2023 12:23:30 +0000
-Received: from GV2PR08MB9158.eurprd08.prod.outlook.com
- ([fe80::f9cc:2e21:d017:7f66]) by GV2PR08MB9158.eurprd08.prod.outlook.com
- ([fe80::f9cc:2e21:d017:7f66%5]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
- 12:23:29 +0000
-Message-ID: <b8399e52-4b08-a372-29fb-aad2644221cd@wolfvision.net>
-Date:   Wed, 2 Aug 2023 14:23:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] drm/panel: sitronix-st7789v: add panel orientation
- support
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        Wed, 2 Aug 2023 08:25:32 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E90E426A8
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:25:29 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-26830595676so4764497a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:25:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1690979129; x=1691583929;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xGDC2y4/GIKVyQuDTwjWu7bIkr4WAVPjV1MNJFYZAjA=;
+        b=nOrlb/8WnlhynD/pHfW0h8qOPk7RMA24QDem/0k7GCeTk/ljDpmBN8So1cycaItDz9
+         uOxh06BSqHjejpoSDX1cl6Gs55wYBgUlOUFA+Ma6RJOhjSwE6q+uAlzuWfvCYOhk2E58
+         u1hLVhzsXzFNbWWgFz4Zl+fQaiInZ8ZUnS3S7JSJ1INckJsgj3hIcgzORAF4DUv0fGSL
+         LGeiEeqYyfrnKenp41WH6BJalcWhBF3ROEJujqpUx6AONi36hp+S0uCN6/gyCCj5nXb/
+         YfCnqVepvLEFluA3el4BN+rPxuksWUg5gjh2pZ/MlmK6GX/cuezGRzu1z795CFA4ooef
+         9tyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690979129; x=1691583929;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xGDC2y4/GIKVyQuDTwjWu7bIkr4WAVPjV1MNJFYZAjA=;
+        b=ffLyjSb/WsO9e9r5oL2MQhgfmwekKcCtVIfIgg8u9wKkMBvcq+dBaC3IxYG7SEVGO8
+         mUuP/ZdiQ+2E7LHqdgAOfM6zUgitgiVZJS2MNdOsICxxw/fevfdbkMSq/I4zbz7XKDeW
+         KlUmIuz+H0EY+G37E+NMLzuSXh8XwT2Gw5CX1o38MsQQJSPTzSpT2V0S2By1yV/Jlx1n
+         tHKFKxerPCR3IJTOXRKi0tRG7WlPOnMscccUquH6E2RYi6KPcv54cpJe6ZOXUTWXbIf8
+         hYl8EBTHyfDvNdzRP9X5yM+wwMpa12u9cCzRrrfm4F+qlJJxUpDW0HgCb94qm4k2Jv4w
+         sxSA==
+X-Gm-Message-State: ABy/qLaKoVZS4TM+c8rR4/p17AQ3gpQpPAEV4Crs3MwDm9d/rBkWKq1S
+        Z+W1Pza2HXwNWOJSN8rhQYXXMaemmELJgv68U61UoQ==
+X-Google-Smtp-Source: APBJJlH5Cwhcg/8nWFbj+FX9DBv3vahHDq1M42mj6hRfUzLh/NvzrUJjro6gAeiu1hCV1zqKA17KOHwD54Hn9AKnikU=
+X-Received: by 2002:a17:90b:2551:b0:268:5620:cfc7 with SMTP id
+ nw17-20020a17090b255100b002685620cfc7mr14458070pjb.30.1690979129249; Wed, 02
+ Aug 2023 05:25:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230719113542.2293295-1-apatel@ventanamicro.com>
+ <20230719113542.2293295-5-apatel@ventanamicro.com> <ZMItuhqTCJCirg4s@sunil-laptop>
+In-Reply-To: <ZMItuhqTCJCirg4s@sunil-laptop>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Wed, 2 Aug 2023 17:55:17 +0530
+Message-ID: <CAK9=C2V_Pf2JAKRvufU9J2OmFkaAO3MuonDBvZDKTJGNb=vBOw@mail.gmail.com>
+Subject: Re: [PATCH v6 04/14] irqchip/sifive-plic: Use platform driver probing
+ for PLIC
+To:     Sunil V L <sunilvl@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
         Conor Dooley <conor+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-References: <20230718-feature-st7789v-v1-0-76d6ca9b31d8@wolfvision.net>
-Content-Language: en-US
-From:   Michael Riesch <michael.riesch@wolfvision.net>
-In-Reply-To: <20230718-feature-st7789v-v1-0-76d6ca9b31d8@wolfvision.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: ZR0P278CA0030.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:1c::17) To GV2PR08MB9158.eurprd08.prod.outlook.com
- (2603:10a6:150:d2::10)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV2PR08MB9158:EE_|AS4PR08MB7951:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a289fb7-7dda-406d-025f-08db93534787
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZoQ0tuVeQufUxp+ISXI33br4itlJ9l6vsAFv1TE4s98JPrD0n5Gl2bbyjEJpe2djIzwrospsrU/4/d0XZty07Y7f51oLxVHpWWnzf6qM3PTmc1uIme6icS9yjzIUIkMwsAV1z8rYmotOjy9Tg5hyQOXspc20uGwgEOLXbxPMUg9S6AC0jYZTKK2reH6UXOYzuMF5XkjGOOGBFq7edNmu6X9TNOqwj7m/yRscoE24YKjMrKGitcGjwgHIPGlhspsOUNoUUCkxTvSUHe3KIJO8qjrbaquBQO4ofaInJm9AUR2S5V9ciKk25sNhJgG1As+3GOrCRPg6/hBjD5vc64s+M/IuODrPoMbIiD+I8UIfs/Si/bs1lZFEKFICTV7qGOubH0YQSUcCGMcwkRcQi/yYBJUpceT3KbFKPygreIEhrPGBvR/VW553Kl8eVYXtu84RJ5jo5miKYXHH5A2BzyPQuFh3ip2URpsJZDmBu/IyzGiyD44peRfblHk8cCCSmebhihTk5nmXy9NNcb2Mm63FgyJbnr8K+YBLMTRwUMa1tBgE4FduVv2Lusq/bjeVXAJNxn8nOJ3XuRi4fMs3GqZYGgOUaQALWRaGMEe2GEfS0xh7S70vJLV7gSXCoa1p2fZlF0KhomTeykX+Jh7s+R3YcnEpefTYLR/H2i96aeHfQAo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR08MB9158.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(136003)(376002)(39850400004)(346002)(396003)(366004)(451199021)(2616005)(53546011)(6506007)(186003)(83380400001)(316002)(66946007)(2906002)(66556008)(4326008)(6636002)(66476007)(5660300002)(7416002)(44832011)(41300700001)(8676002)(8936002)(6666004)(6486002)(966005)(6512007)(478600001)(110136005)(38100700002)(921005)(31696002)(86362001)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WG84eWxhUEp6djE1dHBxWHJPMG12cUw4NG9kS0N3UlN5RHpOQ2VyTitRT2cx?=
- =?utf-8?B?ZWh4cEdQdGlXa2VtL2x5ZWd2THZraXJUaXJYNGpBNDIvK0VwbGh4TFJVRFJJ?=
- =?utf-8?B?bnJsb2lvT1pPRTFhTE9vNnE5OHQ3TXVmWUZFb1FQYkVMcE5sdTFrc2hDamh6?=
- =?utf-8?B?TVNvL2tnSzZvQkJzUVpldmVXYjlQMDROU2tuMGViZ1VHVS9ZLzlnYURCdmtj?=
- =?utf-8?B?NnM3M3ZrT05yZHB2TUVOZTZ2V0FyZGlkVGxpdzNxNUpiTzRSUUVxWVFkMnlX?=
- =?utf-8?B?OEwwYUNmcFYwTGdqSDlTRFFpZTZSTnQ5VEhOU3Y4TzhXb3lHR0xrZ3gvVFhB?=
- =?utf-8?B?VnBWeWVFVDl0RDlRb2tmVGFFSk9PTlJnSlNCdVdpWFFwVkNsMFVyNzExWXp0?=
- =?utf-8?B?b1BVTVhHSlpwU2RnU2IzVFlWNHZJME1CM01HQ3N1cy91ZXdMWVdZY1FQNlRn?=
- =?utf-8?B?SVNqL0FXSzZGcDJ4MCt0empUMWRyOXpZK1VpN1kyV1NzbiswYmdhRzFQeDBi?=
- =?utf-8?B?RzMvRGZJbWxIdEVYYm5HdEJtWFpyUnBmTk4xV1k2TndRclNva0R0UmsrR1Rp?=
- =?utf-8?B?OW1LQlZCakJlT3hlalFPd1J5NWV6bDhQTnJpUVNBSmtjK3NWV2xaaE0wUEpy?=
- =?utf-8?B?bSt4SGJQKzhSOG53N0ZwUVlVQlRjWEF4TEN0UlRFbUl2N3pldDFzcW94b2ZC?=
- =?utf-8?B?VCtzSDZVMUtHRGxEc2FVek85aGh1bDZ6MlBYTzZ5cmJzMjNJVzZWckd6NDQ2?=
- =?utf-8?B?ekpxU2lMaDFZeEE0TFFJVXhrMjBER2hOTEZEdDhtVnZXRVJCMHlKVDluVUJx?=
- =?utf-8?B?U1p5M3ZrZE1PZTZpU1Z3Y09wVUY2ekJXS2FjUWJnMmt2ZkVVYStTc3I1dEFk?=
- =?utf-8?B?WUxsV3dXaHNQczU2Y0lLMEFDaXFZTndjSUZxWk93ZEs2OEUrUnMrZGcvN3Zk?=
- =?utf-8?B?bndDRFl5ZHZ3NzFOSElNc3I1VjRzeTFFVVN1dXQ4ME1vaG9zelMyTVJWR2dz?=
- =?utf-8?B?OEFLVnBVVTJGbnVSYi90djZQaXdaSGNCdmgwVEZxL1pVdkk1Y1lUL3FQWHdy?=
- =?utf-8?B?TVFpWWtETFdiSkVncmp2aGFydVRHTnI2K3VPbkY1TXJLOW4wc2pWc01YRWor?=
- =?utf-8?B?eU9iTjVDNTRtaGpUaUxjVHl1NUxFSXhEbzN3QUNxOFhLYkVPNDN4QTdIY0Vq?=
- =?utf-8?B?elJHRjBybElVK1EwU2RDK3ZsZUtvWHRiWjA0a0xJYjRIMUJmb3FTV0R1aGxl?=
- =?utf-8?B?NURhYkgwSStNOExpQVprRmp6R1hMNitRcjJCRTBYWXlPSTJmU3AxaytLaWIr?=
- =?utf-8?B?UXBoU3FZbkpWMGlFQ01sMTgvZUd6NytUU0c3WjNTa05aamdSbWNYUExCcWZl?=
- =?utf-8?B?RjhQSWk1dmkzekUwNkFCZGNBZzV2bUZmWFI3L2JFaW94cXVnaG5QK1E5WEVv?=
- =?utf-8?B?ZUZOam1PK0dTSk1RWlUzV256a0szeEpJT0k3TGY0c3FOSkN6d0pkNTAvYy85?=
- =?utf-8?B?dDJVOEFvaXZSQTBLRktoQ3VqZTk1MXpLekRpT1dCeWJVLzdRbHpVeTlCS1dq?=
- =?utf-8?B?N011Nm9DT01OVFNlZjdHMThFcGpkVlFZQ1VGenZRMWZOcmF2S3E0WGpCWnJI?=
- =?utf-8?B?N0c0QUwxNlNubXlzVkwvamsxQ3ZpblViTUVvRUxkYWVBa1ljY0hpMG1rVm1m?=
- =?utf-8?B?ODZTR25NdnR5NUJROXliQVVwelZERHhHbTFWU1ZPY013d096YVJCYWpXYkxr?=
- =?utf-8?B?Zmcxbi95RDBpWWhNdjFsQ2s5N2grNzhkcmV2bU5VQkhVcDU2NDFBQlozS1hp?=
- =?utf-8?B?QnVERmlOMUJhVDNNWDFHM2lBOEFaSUhmbE9QWFprOHZMNnVIQUFUbmk2dXVP?=
- =?utf-8?B?dDJPNVBTdmdzQzZDbkZPbHB4NTg4SE84YVhVVFFOLzlTc3JIVXpUZXFEajVW?=
- =?utf-8?B?R2FML1lHMlZCRGVvNldPSlM5MldVMktaOTFaQ2tLR3FmNzRnYVpWYmJQQUVH?=
- =?utf-8?B?OEFtVUtHVHZJcXByNGxFYXh0OU1WNlpBamxOMy9tdis3eWpxOU5LekVjS3oy?=
- =?utf-8?B?dXpoakw1eU53aDAxMDJrcGMyUzA2K2trZEFwcHZsUGI5eXJnYmh3eVBXVG4r?=
- =?utf-8?B?QWdTRkRvOC9IZVVGTENsTHhwQlFJRmgyZmREMVM0S29SZFRncmRDVllNU2Vj?=
- =?utf-8?B?WVVxV25ZK2pBcnIwbW9XanJsTStMMkdkeVNSd2hHQWQ3bEhKRGVkK3Uzc0VE?=
- =?utf-8?B?Y2VzeTM0Q0NEcmE5TTJjUUNSdWtnPT0=?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a289fb7-7dda-406d-025f-08db93534787
-X-MS-Exchange-CrossTenant-AuthSource: GV2PR08MB9158.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 12:23:29.6504
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1mJYKpXK6ZTKlE+JFN78Nu8U/PBqph8L78D/ZpJI4zzjJVaOmIogizAF3wlUyGXhxiuV+h1cVDRDzmZvSb99ZuEf6juGHka7Bv1e+6f7ql8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR08MB7951
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Hi Sunil,
 
-On 7/18/23 17:12, Michael Riesch wrote:
-> Hi all,
-> 
-> This series adds support for orientation specification in the device
-> tree to the Sitronix ST7789V panel driver. 
-> 
-> This is can be seen as reduced version of [0] (some things of [0] have
-> been implemented in more general fashion in the scope of [1], other
-> things have been rejected).
-> 
-> Looking forward to your comments!
+On Thu, Jul 27, 2023 at 2:11=E2=80=AFPM Sunil V L <sunilvl@ventanamicro.com=
+> wrote:
+>
+> Hi Anup,
+>
+> On Wed, Jul 19, 2023 at 05:05:32PM +0530, Anup Patel wrote:
+> > The PLIC driver does not require very early initialization so let us
+> > replace use of IRQCHIP_DECLARE() with IRQCHIP_PLATFORM_DRIVER_xyz()
+> > so that PLIC is probed through platform driver probing.
+> >
+> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> > ---
+> >  drivers/irqchip/irq-sifive-plic.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-si=
+five-plic.c
+> > index 56b0544b1f27..dc02f0761ced 100644
+> > --- a/drivers/irqchip/irq-sifive-plic.c
+> > +++ b/drivers/irqchip/irq-sifive-plic.c
+> > @@ -569,8 +569,10 @@ static int __init plic_init(struct device_node *no=
+de,
+> >       return __plic_init(node, parent, 0);
+> >  }
+> >
+> > -IRQCHIP_DECLARE(sifive_plic, "sifive,plic-1.0.0", plic_init);
+> > -IRQCHIP_DECLARE(riscv_plic0, "riscv,plic0", plic_init); /* for legacy =
+systems */
+> > +IRQCHIP_PLATFORM_DRIVER_BEGIN(sifive_plic)
+> > +IRQCHIP_MATCH("sifive,plic-1.0.0", plic_init)
+> > +IRQCHIP_MATCH("riscv,plic0", plic_init) /* for legacy systems */
+> > +IRQCHIP_PLATFORM_DRIVER_END(sifive_plic)
+> >
+> Few observations..
+>
+> 1) IRQCHIP_PLATFORM_DRIVER_xyz work only for DT. Can we have more generic
+> platform driver probe similar to APLIC driver?
 
-Gentle ping!
+Okay, I will convert it into generic platform driver which
+will work for ACPI as well.
 
-The DT part has already received an Acked-by -- are there any objections
-from the DRM side?
+>
+> 2) With platform driver model, there is a crash some times.
+>
+> [    0.198665] CPU: 4 PID: 32 Comm: cpuhp/4 Not tainted
+> 6.5.0-rc3-00038-g782440711cdb #42
+> [    0.198944] Hardware name: riscv-virtio,qemu (DT)
+> [    0.199125] epc : plic_starting_cpu+0x60/0xa6
+> [    0.199545]  ra : plic_starting_cpu+0x58/0xa6
+> [    0.199676] epc : ffffffff8047396e ra : ffffffff80473966 sp :
+> ff20000000173d80
+> [    0.199899]  gp : ffffffff81501740 tp : ff600000019bde00 t0 :
+> ffffffff81200800
+> [    0.200112]  t1 : 0000000000000000 t2 : 0000000000001000 s0 :
+> ff20000000173db0
+> [    0.200324]  s1 : ff6000007ef91eb0 a0 : ff600000019690b0 a1 :
+> 0000000200000020
+> [    0.200502]  a2 : 0000000000000000 a3 : 0000000000000000 a4 :
+> 0000000000000000
+> [    0.200678]  a5 : 0000000000000000 a6 : ff6000000184a108 a7 :
+> ff6000000184a100
+> [    0.200855]  s2 : 000000000000000b s3 : ffffffff8153a550 s4 :
+> 0000000000000004
+> [    0.201032]  s5 : 0000000000000001 s6 : 0000000000000002 s7 :
+> ffffffff8047390e
+> [    0.201210]  s8 : ffffffff80033f8a s9 : ffffffff80033f64 s10:
+> 0000000000000000
+> [    0.201392]  s11: 0000000000000000 t3 : 0000000000000000 t4 :
+> ffffffff81486c20
+> [    0.201567]  t5 : 0000000000000002 t6 : 0000000000000002
+> [    0.201702] status: 0000000200000100 badaddr: 0000000000000000 cause:
+> 000000000000000f
+> [    0.201962] [<ffffffff8047396e>] plic_starting_cpu+0x60/0xa6
+> [    0.202184] [<ffffffff8001069e>] cpuhp_invoke_callback+0xb4/0x164
+> [    0.202346] [<ffffffff80010972>] cpuhp_thread_fun+0x8a/0x11c
+> [    0.202493] [<ffffffff80033f62>] smpboot_thread_fn+0xe4/0x1be
+> [    0.202639] [<ffffffff8003042a>] kthread+0xc4/0xe0
+> [    0.202759] [<ffffffff8000355e>] ret_from_fork+0xa/0x1c
+> [    0.203038] Code: 89bd 854a 3097 ffbf 80e7 51e0 000f 0140 4781 6498
+> (c31c) 2703
 
-Thanks and best regards,
-Michael
+The cpuhp setup needed to change since as platform driver the
+PLIC is probed after all CPUs are brought-up. I will fix this in
+the next revision.
 
-> 
-> [0] https://lore.kernel.org/lkml/20230314115644.3775169-1-gerald.loacker@wolfvision.net/
-> [1] https://lore.kernel.org/lkml/20230714013756.1546769-1-sre@kernel.org/
-> 
-> ---
-> Michael Riesch (2):
->       drm/panel: sitronix-st7789v: add panel orientation support
->       dt-bindings: display: add rotation property to sitronix,st7789v
-> 
->  .../bindings/display/panel/sitronix,st7789v.yaml   |  2 ++
->  drivers/gpu/drm/panel/panel-sitronix-st7789v.c     | 28 ++++++++++++++++++----
->  2 files changed, 25 insertions(+), 5 deletions(-)
-> ---
-> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-> change-id: 20230718-feature-st7789v-4d0c2c6e2429
-> 
-> Best regards,
+>
+> 3) Looks like an existing issue but I get below warning also.
+>
+> [    0.207677] list_add double add: new=3Dffffffff814a0798,
+> prev=3Dffffffff814a0798, next=3Dffffffff814be638.
+> [    0.208243] WARNING: CPU: 4 PID: 1 at lib/list_debug.c:33
+> __list_add_valid+0x46/0xac
+> [    0.208677] Modules linked in:
+> [    0.208780] CPU: 4 PID: 1 Comm: swapper/0 Not tainted
+> 6.5.0-rc3-00038-g782440711cdb #28
+> [    0.208862] Hardware name: riscv-virtio,qemu (DT)
+> [    0.208926] epc : __list_add_valid+0x46/0xac
+> [    0.208961]  ra : __list_add_valid+0x46/0xac
+> [    0.208983] epc : ffffffff803cb356 ra : ffffffff803cb356 sp :
+> ff200000000439f0
+> [    0.208994]  gp : ffffffff81501740 tp : ff600000018f0000 t0 :
+> 2000000000000000
+> [    0.209005]  t1 : 000000000000006c t2 : 206464615f747369 s0 :
+> ff20000000043a00
+> [    0.209015]  s1 : ffffffff814a0798 a0 : 0000000000000058 a1 :
+> ffffffff81486828
+> [    0.209025]  a2 : 0000000000000000 a3 : fffffffffffffffe a4 :
+> 0000000000000000
+> [    0.209034]  a5 : 0000000000000000 a6 : 0000000000000068 a7 :
+> 0000000000000038
+> [    0.209044]  s2 : ffffffff814be5f8 s3 : ffffffff814a0798 s4 :
+> ffffffff814be638
+> [    0.209053]  s5 : ff6000007fff75c0 s6 : 0000000000000060 s7 :
+> ffffffff80c20eb0
+> [    0.209063]  s8 : 0000000000000008 s9 : 0000000000000004 s10:
+> ffffffff80c20eb0
+> [    0.209072]  s11: ffffffff81038e80 t3 : ffffffff815159d7 t4 :
+> ffffffff815159d7
+> [    0.209081]  t5 : ffffffff815159d8 t6 : ff200000000437f8
+> [    0.209090] status: 0000000200000120 badaddr: 0000000000000000 cause:
+> 0000000000000003
+> [    0.209167] [<ffffffff803cb356>] __list_add_valid+0x46/0xac
+> [    0.209219] [<ffffffff805812d4>] register_syscore_ops+0x3e/0x70
+> [    0.209245] [<ffffffff80a1fd0c>] __plic_init.isra.0+0x3e0/0x4e2
+> [    0.209267] [<ffffffff80a1fe3a>] plic_init+0x12/0x1a
+> [    0.209281] [<ffffffff80470c10>] platform_irqchip_probe+0x82/0xb4
+> [    0.209292] [<ffffffff80582aa8>] platform_probe+0x4e/0xa6
+> [    0.209301] [<ffffffff805805a4>] really_probe+0x86/0x242
+> [    0.209308] [<ffffffff805807bc>] __driver_probe_device+0x5c/0xda
+> [    0.209316] [<ffffffff80580866>] driver_probe_device+0x2c/0xb2
+> [    0.209324] [<ffffffff805809e6>] __driver_attach+0x6c/0x11a
+> [    0.209331] [<ffffffff8057e73a>] bus_for_each_dev+0x60/0xae
+> [    0.209343] [<ffffffff8057fff6>] driver_attach+0x1a/0x22
+> [    0.209352] [<ffffffff8057f956>] bus_add_driver+0xd0/0x1ba
+> [    0.209362] [<ffffffff80581634>] driver_register+0x3e/0xd8
+> [    0.209370] [<ffffffff805827c0>] __platform_driver_register+0x1c/0x24
+> [    0.209378] [<ffffffff80a1f902>] sifive_plic_driver_init+0x1a/0x22
+> [    0.209389] [<ffffffff8000212c>] do_one_initcall+0x58/0x19c
+> [    0.209399] [<ffffffff80a01056>] kernel_init_freeable+0x20c/0x276
+> [    0.209410] [<ffffffff808d6686>] kernel_init+0x1e/0x10a
+> [    0.209421] [<ffffffff8000355e>] ret_from_fork+0xa/0x1c
+> [    0.209477] ---[ end trace 0000000000000000 ]---
+
+This is a bug in current PLIC driver where it unconditionally
+registers syscore ops which breaks on multi-socket systems
+having multiple PLICs. I will add a separate patch in the
+next revision to fix this issue.
+
+Regards,
+Anup
