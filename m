@@ -2,89 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 946BB76CB2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80BED76CB2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbjHBKoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
+        id S233863AbjHBKoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232740AbjHBKnn (ORCPT
+        with ESMTP id S233750AbjHBKnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:43:43 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F3E30F7
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:41:35 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso71421975e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 03:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690972893; x=1691577693;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YgNcim2dL7pjjmrHNNKr7SZxjAPH2vynKbx9rcM8Mlw=;
-        b=YWplNLg7UPqde5B60m6OlJf5GN/pzFSb0R/iqkm3PB+Aa3UMsWIbRcf1T/qla7arVx
-         GQ9twU0WygEmXeQtFkliWx6MNXs7fNpNcQqGnGlMmC6tpgp8+EzJrH1v8gU3Flkl+tdm
-         9sayaVbI3FrfxwxpFiWaQX0p/aRVAdhbfS34vwd8iY4O+i+jGGRxXpDR89h07/u1fKkv
-         tQuGN4A97NkVLcgKW3yJ3Byfl5QXCh0xw+kzT7ZFo+CsmYnp0jHYJFxTBeMQVbINlq7A
-         FL68fC/rQwsdl7YoIwjSklcDptw2lXp22joZ/efQNyQmG4GVqv1hExYeL1shzWkT10VG
-         HhKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690972893; x=1691577693;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YgNcim2dL7pjjmrHNNKr7SZxjAPH2vynKbx9rcM8Mlw=;
-        b=JhHyCmukmPro1e4ySzCbhwxnapGr18S16h3Vm6pS8JKJd022eCLCbUY7drH2eXKdf3
-         8dy+wNxDxly9Arvas4nrYI+5dKz4yw9SnWEu7Hw9+fUwwLUB42cwd7qULoPYHkVyY7cC
-         Dyo7mE8weMdZTSkviEmkrr/a8cNIbBcHyY5AdwxZJ1TPQlXIj6e3UmSXXwVY7KUVO3z6
-         Vo2mKoxQL/hZBlXJiATyjN3zgjjdydLePYQPwSNHevuD+4jTZkL8TM/IN+DY2KQI7eI+
-         BLcAHoxBTahN7cgnhZDtMgZSWK/9+xZTikSgh5kP+BM6ov+4vhRe3FxCjL0jgbzPewMQ
-         NsgQ==
-X-Gm-Message-State: ABy/qLZ9nDgxR17GRGIslud8y6a68yyWRlBywCJ4lgi1vzWhTg3+Pm6N
-        X36OlTvZdUeGmZW3bqmdehFNeQ==
-X-Google-Smtp-Source: APBJJlFWb9PEPbh90efGD3Dx/+mVuVjkBG6YAYZKDfYBbdL8Q9HknA2mANvJ1hlVkV/DhTtPLlvnsA==
-X-Received: by 2002:adf:e792:0:b0:317:69c7:98ad with SMTP id n18-20020adfe792000000b0031769c798admr4622443wrm.3.1690972893500;
-        Wed, 02 Aug 2023 03:41:33 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id y1-20020adfd081000000b003179d5aee63sm10531548wrh.91.2023.08.02.03.41.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 03:41:33 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 13:41:30 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Su Hui <suhui@nfschina.com>
-Cc:     chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        trond.myklebust@hammerspace.com, anna@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
-        bfields@fieldses.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] fs: lockd: avoid possible wrong NULL parameter
-Message-ID: <0bd584fd-74ac-4b08-ae03-12e329ab186e@kadam.mountain>
-References: <20230802080544.3239967-1-suhui@nfschina.com>
- <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
+        Wed, 2 Aug 2023 06:43:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1008944B1
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:41:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9600F618FE
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:41:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACBB2C433C8;
+        Wed,  2 Aug 2023 10:41:45 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 11:41:43 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Mina Almasry <almasrymina@google.com>, kirill@shutemov.name,
+        joel@joelfernandes.org, william.kucharski@oracle.com,
+        kaleshsingh@google.com, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        21cnbao@gmail.com
+Subject: Re: [PATCH v4] arm64: hugetlb: enable
+ __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE
+Message-ID: <ZMoy56mk20mP972A@arm.com>
+References: <20230801135616.165067-1-wangkefeng.wang@huawei.com>
+ <20230802012731.62512-1-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20230802012731.62512-1-wangkefeng.wang@huawei.com>
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There was a big fight about memcpy() in 2010.
+On Wed, Aug 02, 2023 at 09:27:31AM +0800, Kefeng Wang wrote:
+> It is better to use huge page size instead of PAGE_SIZE
+> for stride when flush hugepage, which reduces the loop
+> in __flush_tlb_range().
+> 
+> Let's support arch's flush_hugetlb_tlb_range(), which is
+> used in hugetlb_unshare_all_pmds(), move_hugetlb_page_tables()
+> and hugetlb_change_protection() for now.
+> 
+> Note, for hugepages based on contiguous bit, it has to be
+> invalidated individually since the contiguous PTE bit is
+> just a hint, the hardware may or may not take it into account.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 
-https://lwn.net/Articles/416821/
-
-It's sort of related but also sort of different.  My understanding is
-that the glibc memcpy() says that memcpy() always does a dereference so
-it can delete all the NULL checks which come after.  The linux kernel
-uses -fno-delete-null-pointer-checks to turn this behavior off.
-
-regards,
-dan carpenter
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
