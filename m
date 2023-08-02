@@ -2,62 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B071076D3AC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED8D76D3AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbjHBQbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        id S230149AbjHBQbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbjHBQbI (ORCPT
+        with ESMTP id S230352AbjHBQbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:31:08 -0400
-Received: from frasgout11.his.huawei.com (ecs-14-137-139-23.compute.hwclouds-dns.com [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EC26210D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:31:06 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4RGHHV3NbMz9xGgV
-        for <linux-kernel@vger.kernel.org>; Thu,  3 Aug 2023 00:19:34 +0800 (CST)
-Received: from A2101119013HW2.china.huawei.com (unknown [10.81.207.228])
-        by APP1 (Coremail) with SMTP id LxC2BwD3qbmxhMpkI9QsAA--.44769S2;
-        Wed, 02 Aug 2023 17:30:48 +0100 (CET)
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-To:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jianxiong Gao <jxgao@google.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        iommu@lists.linux.dev (open list:DMA MAPPING HELPERS),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
-Subject: [PATCH v1] swiotlb: move slot allocation explanation comment where it belongs
-Date:   Wed,  2 Aug 2023 18:30:34 +0200
-Message-Id: <20230802163034.1410-1-petrtesarik@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 2 Aug 2023 12:31:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E264210D;
+        Wed,  2 Aug 2023 09:31:41 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1AC7A6199A;
+        Wed,  2 Aug 2023 16:31:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 347FDC433C8;
+        Wed,  2 Aug 2023 16:31:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690993900;
+        bh=0lpVhKDUd7Tnt1pOBSUzHZtuD1Oebkn4+PkPwpT2kKs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=j0r8Vw0e00dzFIZouvGCpEl3w6wxJOtu5r+oKgbEEIllcsLcOgwkF+oW74VmuJJBr
+         gXosxOrbTcwzjl6Ri2+Vpvwaj+dLrnCki/kBmQADQLYHTqjK1iBIe0nH+4h3waSf4r
+         M5D19Z0MEPM1/zXyX7/FVkLek5okoT7aKTw3f7d3T0A6x3xJp4N5+9kQoMj3Om7XEg
+         o4mGK6UbzNe388NZKfrgdLIRcayKsqL+xqLQhVUYoEmA3lv84UP4bfn656s9Lv9ldl
+         QzrI/ZsQwszGGQoAl5MCHtteyeekqY7TOFtRf2V5B13p4QR5qccuN6FUyqNfPADYIn
+         dtQWeEO7uAhyA==
+Date:   Wed, 2 Aug 2023 11:31:38 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     mani@kernel.org, bhelgaas@google.com, devicetree@vger.kernel.org,
+        gustavo.pimentel@synopsys.com, imx@lists.linux.dev, kw@linux.com,
+        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org,
+        minghuan.lian@nxp.com, mingkai.hu@nxp.com, robh+dt@kernel.org,
+        roy.zang@nxp.com, shawnguo@kernel.org, zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v7 1/2] PCI: dwc: Implement general suspend/resume
+ functionality for L2/L3 transitions
+Message-ID: <20230802163138.GA61043@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwD3qbmxhMpkI9QsAA--.44769S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cw4fAr15GFy3Ww4xuF45KFg_yoW8Gw4xpF
-        9xA3y5KFWjqF1xZr1qyan5CFy5KaykGry7CFWfW34Sgrnrt34fWFn5K3yfKFn5XF4xXF43
-        t34YvrW0kr1Utr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
-        8cxan2IY04v7MxkF7I0En4kS14v26r1q6r43MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20x
-        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
-        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIx
-        AIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAI
-        cVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU0UUUUUUUU
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L3,RDNS_DYNAMIC,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802155748.212377-1-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,45 +61,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+On Wed, Aug 02, 2023 at 11:57:47AM -0400, Frank Li wrote:
+> Introduce helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
 
-Move the comment down in front of the loop that actually sets the list
-member of struct io_tlb_slot to zero.
+s/dw_pcie_get_ltssm/dw_pcie_get_ltssm()/
 
-Fixes: 26a7e094783d ("swiotlb: refactor swiotlb_tbl_map_single")
-Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
----
- kernel/dma/swiotlb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> Add callback .pme_turn_off and .exit_from_l2 for platform specific PME
+> handling.
+> 
+> Add common dw_pcie_suspend(resume)_noirq() API to avoid duplicated code
+> in dwc pci host controller platform driver.
+> 
+> Typical L2 entry workflow/dw_pcie_suspend_noirq()
+> 
+> 1. Transmit PME turn off signal to PCI devices and wait for PME_To_Ack.
+> 2. Await link entering L2_IDLE state.
+> 
+> Typical L2 exit workflow/dw_pcie_resume_noirq()
+> 
+> 1. Issue exit from L2 command.
+> 2. Reinitialize PCI host.
+> 3. Wait for link to become active.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  Change from v6 to v7
+>  - change according to Manivannan's comments.
+>    fix sleep value 100 (should be 1000 for 1ms).
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index d7eac84f975b..50a0e9c45c39 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -1018,11 +1018,6 @@ static int swiotlb_area_find_slots(struct device *dev, struct io_tlb_pool *pool,
- 			continue;
- 		}
- 
--		/*
--		 * If we find a slot that indicates we have 'nslots' number of
--		 * contiguous buffers, we allocate the buffers from that slot
--		 * and mark the entries as '0' indicating unavailable.
--		 */
- 		if (!iommu_is_span_boundary(slot_index, nslots,
- 					    nr_slots(tbl_dma_addr),
- 					    max_slots)) {
-@@ -1038,6 +1033,11 @@ static int swiotlb_area_find_slots(struct device *dev, struct io_tlb_pool *pool,
- 	return -1;
- 
- found:
-+	/*
-+	 * If we find a slot that indicates we have 'nslots' number of
-+	 * contiguous buffers, we allocate the buffers from that slot onwards
-+	 * and set the list of free entries to '0' indicating unavailable.
-+	 */
- 	for (i = slot_index; i < slot_index + nslots; i++) {
- 		pool->slots[i].list = 0;
- 		pool->slots[i].alloc_size = alloc_size - (offset +
--- 
-2.25.1
+> +	 * PCI Express Base Specification Rev 4.0 Section 5.3.3.2.1 PME
+> +	 * Synchronization Recommends 1ms to 10ms timeout to check L2 ready.
+> +	 */
+> +	ret = read_poll_timeout(dw_pcie_get_ltssm, val, val == DW_PCIE_LTSSM_L2_IDLE,
+> +				1000, 10000, false, pci);
 
+Thanks for the spec citation.  Can you please reference the current
+spec, i.e., "PCIe r6.0, sec 5.3.3.2.1".
+
+s/Recommends/recommends/
+
+It would really be great to have a #define for this since the bare
+numbers are not very meaningful and they're not specific to DWC so a
+#define would let us find similar situations in other drivers.
+
+Bjorn
