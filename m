@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED02C76D6F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19E2576D6F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230195AbjHBSiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
+        id S230310AbjHBSjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:39:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbjHBSix (ORCPT
+        with ESMTP id S229959AbjHBSjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:38:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD881BC1;
-        Wed,  2 Aug 2023 11:38:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DFC0161AB9;
-        Wed,  2 Aug 2023 18:38:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 929D1C433C8;
-        Wed,  2 Aug 2023 18:38:48 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 14:38:45 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-ID: <20230802143845.3ce6ed61@gandalf.local.home>
-In-Reply-To: <CAADnVQLqXjJvCcuQLVz8HxF050jDHaSa2D7cehoYtjXdp3wGLQ@mail.gmail.com>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-        <169078863449.173706.2322042687021909241.stgit@devnote2>
-        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-        <20230802000228.158f1bd605e497351611739e@kernel.org>
-        <20230801112036.0d4ee60d@gandalf.local.home>
-        <20230801113240.4e625020@gandalf.local.home>
-        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
-        <20230801190920.7a1abfd5@gandalf.local.home>
-        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-        <20230801204054.3884688e@rorschach.local.home>
-        <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
-        <CAADnVQLqXjJvCcuQLVz8HxF050jDHaSa2D7cehoYtjXdp3wGLQ@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Wed, 2 Aug 2023 14:39:05 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92F41FFF;
+        Wed,  2 Aug 2023 11:39:03 -0700 (PDT)
+Received: from martin by viti.kaiser.cx with local (Exim 4.89)
+        (envelope-from <martin@viti.kaiser.cx>)
+        id 1qRGkD-0003CV-8a; Wed, 02 Aug 2023 20:38:49 +0200
+Date:   Wed, 2 Aug 2023 20:38:49 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Stephen Boyd <sboyd@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Abel Vesa <abelvesa@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/2] ARM: imx25: print silicon revision at startup
+Message-ID: <20230802183849.2gzlglkskvzkgiwa@viti.kaiser.cx>
+References: <20220602080344.208702-1-martin@kaiser.cx>
+ <20230730163928.70637-1-martin@kaiser.cx>
+ <e0acf791831bcfed56d56c97f6867a89.sboyd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e0acf791831bcfed56d56c97f6867a89.sboyd@kernel.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
+Sender: Martin Kaiser <martin@viti.kaiser.cx>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 11:24:12 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Stephen Boyd (sboyd@kernel.org) wrote:
 
-> This is a non starter.
-> bpf progs expect arch dependent 'struct pt_regs *' and we cannot change that.
+> You need to Cc linux-imx@nxp.com on imx clk patches. I think Abel has
+> some filter that looks for linux-clk@vger and linux-imx.
 
-If the progs are compiled into native code, isn't there optimizations that
-could be done? That is, if ftrace_regs is available, and the bpf program is
-just using the subset of pt_regs, is it possible that it could be compiled
-to use ftrace_regs?
+> Also, please don't send series replies to previous rounds. It buries the
+> patches deep in my MUA and my scripts don't work well to apply patches
+> when they're sent like that.
 
-Forgive my ignorance on how BPF programs turn into executables when running
-in the kernel.
+> I presume that Abel will pick the patches up? Or do you want to land
+> them through Arnd's tree? Either way feel free to add my acked-by
 
--- Steve
+> Acked-by: Stephen Boyd <sboyd@kernel.org>
+
+Thanks for responding, Stephen.
+
+Ok, understood. I'll resend with Cc linux-imx@nxp.com and without the
+reply to previous versions.
+
+Arnd, are you ok with taking these patches through your tree as
+suggested by Stephen?
+
+Thanks,
+Martin
