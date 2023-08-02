@@ -2,219 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1FB76C961
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C389076C95E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbjHBJV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39114 "EHLO
+        id S231845AbjHBJVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230396AbjHBJVz (ORCPT
+        with ESMTP id S230396AbjHBJVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:21:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49060AC;
-        Wed,  2 Aug 2023 02:21:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B10CD618BF;
-        Wed,  2 Aug 2023 09:21:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 249FEC433C8;
-        Wed,  2 Aug 2023 09:21:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690968112;
-        bh=J2tG/ScQRlNnbtP1aLVjnAnya21Uxa58M8ute6dFW0c=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a0SxWMrQPIaK7W+vyl8W74wM/RpUfkJYTI89L0qS0ZML7dpEglRtG5r+jcxC1IT2e
-         Z+fEknXE4N0Ip+NFG8Qly4pBAHpAlhJ6R2j48D9MjdcD43qrSWgNNn7nM6kGqZ1/zS
-         yNyB4NH7rRIo6BSWKP2Vud3xznCRi3WhspWPVAsDYasVkqLtXKugQToGQahuVIaq+M
-         tHuiuIlsX1U85iahLWnXmSiCLnvepittiz3axvYsvqFiiFhDDTvfxxo/kYNTguwus3
-         wpN1WPf0b3A64En2R534kwhsysetABQ47XPJW1SLQLThyVQQXoQKcv7hvvOdT6hCby
-         efjqgYxjs2keQ==
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6b9e478e122so5787814a34.1;
-        Wed, 02 Aug 2023 02:21:52 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZI3KvFmJc5bfMzFrpSOnRwNdtiDvR1jkxSQJe/7imEayZTmEyf
-        YoHJgBi0/OdZYtpxHuC4KTU312lTJVpXcxEAUpg=
-X-Google-Smtp-Source: APBJJlH3c324ht1eos/YhELsl6hmz9tCdWDPwW3/3TMSZ1rYLOZtuFOITsxrCpyDvWQqeVRKE0+zOSsUjG3zFVlE0yg=
-X-Received: by 2002:a05:6870:9107:b0:1bb:7f9f:2fc5 with SMTP id
- o7-20020a056870910700b001bb7f9f2fc5mr17842152oae.17.1690968111305; Wed, 02
- Aug 2023 02:21:51 -0700 (PDT)
+        Wed, 2 Aug 2023 05:21:46 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E3661A8;
+        Wed,  2 Aug 2023 02:21:44 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2036113E;
+        Wed,  2 Aug 2023 02:22:27 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4BD33F5A1;
+        Wed,  2 Aug 2023 02:21:41 -0700 (PDT)
+Message-ID: <fc0098cc-5217-a357-5c91-26a77f164eab@arm.com>
+Date:   Wed, 2 Aug 2023 10:21:33 +0100
 MIME-Version: 1.0
-References: <20220109181529.351420-1-masahiroy@kernel.org> <20220109181529.351420-3-masahiroy@kernel.org>
- <YdwZe9DHJZUaa6aO@buildd.core.avm.de> <20230623144544.GA24871@lxhi-065>
- <20230719190902.GA11207@lxhi-064.domain> <CAK7LNAQhn28Wbb97+U_3n0EwoKnonjFoY3OnKcE7aqnSgRc4ow@mail.gmail.com>
- <20230725092433.GA57787@lxhi-064.domain>
-In-Reply-To: <20230725092433.GA57787@lxhi-064.domain>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 2 Aug 2023 18:21:14 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR4rJwrT2KLjLw-AbBvhO38xCZigC9C+DUVkn_5JM-KyQ@mail.gmail.com>
-Message-ID: <CAK7LNAR4rJwrT2KLjLw-AbBvhO38xCZigC9C+DUVkn_5JM-KyQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] kbuild: rename cmd_{bzip2,lzma,lzo,lz4,xzkern,zstd22}
-To:     Eugeniu Rosca <erosca@de.adit-jv.com>
-Cc:     Nicolas Schier <n.schier@avm.de>,
-        SzuWei Lin <szuweilin@google.com>,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, Matthias.Thomae@de.bosch.com,
-        yyankovskyi@de.adit-jv.com, Dirk.Behme@de.bosch.com,
-        Eugeniu Rosca <roscaeugeniu@gmail.com>
-Content-Type: multipart/mixed; boundary="0000000000009b1ced0601ed3171"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3 4/5] perf vendor events arm64: Update N2-r0p3 and V2
+ metrics and events using Arm telemetry repo
+Content-Language: en-US
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
+        linux-perf-users@vger.kernel.org, renyu.zj@linux.alibaba.com,
+        john.g.garry@oracle.com, namhyung@kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Nick Forrington <nick.forrington@arm.com>,
+        Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230711100218.1651995-1-james.clark@arm.com>
+ <20230711100218.1651995-5-james.clark@arm.com>
+ <CAP-5=fVPriUQZN+OzDOVnMMe0y9QzRHuaBMgrCcSvbE+3ME=Lg@mail.gmail.com>
+ <59630da4-316b-55c4-c2c7-30c53b1ba642@arm.com>
+ <750344ea-d1a2-87c2-b790-38dd79e11223@arm.com>
+ <CAP-5=fU1z2+ZUFP0BdQyvy0DK_am9p=9p3goeB44M2cLiF7y7g@mail.gmail.com>
+ <ZMlM2rTqggT+0iGJ@kernel.org>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <ZMlM2rTqggT+0iGJ@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000009b1ced0601ed3171
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jul 25, 2023 at 6:24=E2=80=AFPM Eugeniu Rosca <erosca@de.adit-jv.co=
-m> wrote:
->
-> Hello Yamada-san,
->
-> Appreciate your willingness to support. Some findings below.
->
-> On Sun, Jul 23, 2023 at 01:08:46AM +0900, Masahiro Yamada wrote:
-> > On Thu, Jul 20, 2023 at 4:09=E2=80=AFAM Eugeniu Rosca <erosca@de.adit-j=
-v.com> wrote:
-> > > On Fri, Jun 23, 2023 at 04:45:44PM +0200, Eugeniu Rosca wrote:
->
-> [..]
->
-> > > > I will continue to increase my understanding behind what's happenin=
-g.
-> > > > In case there are already any suggestions, would appreciate those.
-> > >
-> > > JFYI, we've got confirmation from Qualcomm Customer Support interface
-> > > that reverting [1] heals the issue on QC end as well. However, it loo=
-ks
-> > > like none of us has clear understanding how to properly
-> > > troubleshoot/trace/compare the behavior before and after the commit.
-> > >
-> > > I would happily follow any suggestions.
-> > >
-> > > > [1] https://android.googlesource.com/kernel/common/+/bc6d3d83539512
-> > > >     ("UPSTREAM: kbuild: rename cmd_{bzip2,lzma,lzo,lz4,xzkern,zstd2=
-2}")
-> > > >
-> > > > [2] https://lore.kernel.org/linux-kbuild/20230616194505.GA27753@lxh=
-i-065/
->
-> [..]
->
-> > Please backport 64d8aaa4ef388b22372de4dc9ce3b9b3e5f45b6c
-> > and see if the problem goes away.
->
-> Unfortunately, the problem remains after backporting the above commit.
->
-> After some more bisecting and some more trial-and-error, I finally came
-> up with a reproduction scenario against vanilla. It also shows that
-> after reverting 7ce7e984ab2b21 ("kbuild: rename
-> cmd_{bzip2,lzma,lzo,lz4,xzkern,zstd22}"), the problem goes away.
->
-> It takes <30 seconds to reproduce the issue on my machine (on 2nd run).
->
-> In order to make the test self-sufficient, it also clones the Linux
-> sources (only during 1st run, with --depth 1, for minimal footprint),
-> hence ~1.8 GB free space is required in /tmp .
->
-> The repro.sh script:
->  =3D> https://gist.github.com/erosca/1372fdc24126dc98031444613450c494
->
-> Output against vanilla on 1st run (always OK, matches real-life case):
->  =3D> https://gist.github.com/erosca/0f5b8e0a00a256d80f0c8a6364d81568
->
-> Output against vanilla on 2nd/Nth run (NOK: Argument list too long):
->  =3D> https://gist.github.com/erosca/e5c2c6479cc32244cc38d308deea4cf5
->
-> Output against vanilla + revert_of_7ce7e984ab2b2 on Nth run (always OK):
->  =3D> https://gist.github.com/erosca/57e114f92ea20132e19fc7f5a46e7c65
->
-> Would it be possible to get your thoughts on the above?
->
-> --
-> Best regards,
-> Eugeniu Rosca
 
 
+On 01/08/2023 19:20, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Aug 01, 2023 at 08:56:35AM -0700, Ian Rogers escreveu:
+>> On Tue, Aug 1, 2023 at 3:55 AM James Clark <james.clark@arm.com> wrote:
+>>> On 12/07/2023 09:33, James Clark wrote:
+>>>> On 12/07/2023 02:04, Ian Rogers wrote:
+>>>>> It might be nice to add "beat" to the glossary:
+>>>>> https://perf.wiki.kernel.org/index.php/Glossary
+> 
+>>>> I requested an account and I will add it. There is a definition in the
+>>>> Arm glossary here if, like me, you weren't sure:
+> 
+>>> I'm not sure if my wiki account request worked. I didn't get a response,
+>>> and I also get a "your IP is blocked from editing" on the password reset
+>>> page (this is an Arm internal IP).
+>>> Do you know anything about the account request procedure?
+> 
+>> The wiki is run by RedHat and Arnaldo is able to give permissions.
+>> Arnaldo could you take a look?
+> 
+> Lemme check.
+> 
+> - Arnaldo
 
+Thanks, got it and added the definition successfully
 
-
-Indeed, reverting 7ce7e984ab2b218d6e92d5165629022fe2daf9ee
-makes qcom's external module build successfully
-(but rebuilding is super slow).
-
-Interestingly, revert 7ce7e984ab2b218d6e92d5165629022fe2daf9ee
-then apply the attached patch, then
-'Argument list too long' will come back.
-
-So, this is unrelated to the actual build commands.
-
-
-
-
-I suspect bare 'export', which expands all variables
-while apparently most of them are not meant exported.
-
-
-
-Insert the following in your reproducer, then it will work.
-
-
-# qcom's audio-kernel sprinkles 'export' everywhere.
-# Remove bare use of 'export'
-find "$ABS_KMOD" -name Kbuild | xargs sed -i '/export$/d'
-
-
-
-
---
-Best Regards
-Masahiro Yamada
-
---0000000000009b1ced0601ed3171
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="0001-Add-dummy-commands-to-make-qcom-s-external-module-fa.patch"
-Content-Disposition: attachment; 
-	filename="0001-Add-dummy-commands-to-make-qcom-s-external-module-fa.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lktimmix0>
-X-Attachment-Id: f_lktimmix0
-
-RnJvbSBhMWQ2NDEyMzg4NTFkYmRlMDBhMzdiN2IyMDNiMTEwZTc4NmVkZDFkIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBNYXNhaGlybyBZYW1hZGEgPG1hc2FoaXJveUBrZXJuZWwub3Jn
-PgpEYXRlOiBXZWQsIDIgQXVnIDIwMjMgMTg6MTE6MzIgKzA5MDAKU3ViamVjdDogW1BBVENIXSBB
-ZGQgZHVtbXkgY29tbWFuZHMgdG8gbWFrZSBxY29tJ3MgZXh0ZXJuYWwgbW9kdWxlIGZhaWwKClJl
-dmVydCA3Y2U3ZTk4NGFiMmIyMThkNmU5MmQ1MTY1NjI5MDIyZmUyZGFmOWVlIGFuZAphcHBseSB0
-aGlzIGluc3RlYWQuCgpJIHNlZQoKL2Jpbi9zaDogQXJndW1lbnQgbGlzdCB0b28gbG9uZwoKU2ln
-bmVkLW9mZi1ieTogTWFzYWhpcm8gWWFtYWRhIDxtYXNhaGlyb3lAa2VybmVsLm9yZz4KLS0tCiBz
-Y3JpcHRzL01ha2VmaWxlLmxpYiB8IDMzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KwogMSBmaWxlIGNoYW5nZWQsIDMzIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zY3JpcHRz
-L01ha2VmaWxlLmxpYiBiL3NjcmlwdHMvTWFrZWZpbGUubGliCmluZGV4IDIyNzBlZDgxOWEyOS4u
-YzQ4MTAxOGQxYjVmIDEwMDY0NAotLS0gYS9zY3JpcHRzL01ha2VmaWxlLmxpYgorKysgYi9zY3Jp
-cHRzL01ha2VmaWxlLmxpYgpAQCAtNTU5LDMgKzU1OSwzNiBAQCBkZWZpbmUgZmlsZWNoa19vZmZz
-ZXRzCiAJIGVjaG8gIiI7IFwKIAkgZWNobyAiI2VuZGlmIgogZW5kZWYKKworCisjIFRoZXNlIGR1
-bW15IGNvbW1hbmRzIGFyZSBub3QgdXNlZCBhbnl3aGVyZSwgYnV0CisjIG1ha2UgcWNvbSdzIGV4
-dGVybmFsIG1vZHVsZSBmYWlsIHRvIGJ1aWxkLgorIyBxY29tJ3MgTWFrZWZpbGUgdXNlIGJhcmUg
-J2V4cG9ydCcuCisjIEhhdmluZyBtb3JlIGFuZCBtb3JlIHNoZWxsIGNvbW1hbmRzIG1heSBmbG9v
-ZCB2YXJpYWJsZSBleHBhbnNpb25zLgorCitxdWlldF9jbWRfZHVtbXkxID0gRk9PICAgICRACisg
-ICAgICBjbWRfZHVtbXkxID0gY2F0ICQocmVhbC1wcmVyZXFzKSA+ICRACisKK3F1aWV0X2NtZF9k
-dW1teTIgPSBGT08gICAgJEAKKyAgICAgIGNtZF9kdW1teTIgPSBjYXQgJChyZWFsLXByZXJlcXMp
-ID4gJEAKKworcXVpZXRfY21kX2R1bW15MyA9IEZPTyAgICAkQAorICAgICAgY21kX2R1bW15MyA9
-IGNhdCAkKHJlYWwtcHJlcmVxcykgPiAkQAorCitxdWlldF9jbWRfZHVtbXk0ID0gRk9PICAgICRA
-CisgICAgICBjbWRfZHVtbXk0ID0gY2F0ICQocmVhbC1wcmVyZXFzKSA+ICRACisKK3F1aWV0X2Nt
-ZF9kdW1teTUgPSBGT08gICAgJEAKKyAgICAgIGNtZF9kdW1teTUgPSBjYXQgJChyZWFsLXByZXJl
-cXMpID4gJEAKKworcXVpZXRfY21kX2R1bW15NiA9IEZPTyAgICAkQAorICAgICAgY21kX2R1bW15
-NiA9IGNhdCAkKHJlYWwtcHJlcmVxcykgPiAkQAorCitxdWlldF9jbWRfZHVtbXk3ID0gRk9PICAg
-ICRACisgICAgICBjbWRfZHVtbXk3ID0gY2F0ICQocmVhbC1wcmVyZXFzKSA+ICRACisKK3F1aWV0
-X2NtZF9kdW1teTggPSBGT08gICAgJEAKKyAgICAgIGNtZF9kdW1teTggPSBjYXQgJChyZWFsLXBy
-ZXJlcXMpID4gJEAKKworcXVpZXRfY21kX2R1bW15OSA9IEZPTyAgICAkQAorICAgICAgY21kX2R1
-bW15OSA9IGNhdCAkKHJlYWwtcHJlcmVxcykgPiAkQAotLSAKMi4zOS4yCgo=
---0000000000009b1ced0601ed3171--
+James
