@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A110E76D30F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6DC76D315
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:57:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235408AbjHBP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
+        id S234222AbjHBP5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:57:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235448AbjHBPzn (ORCPT
+        with ESMTP id S235315AbjHBP45 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:55:43 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4FA2103
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:55:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 5753921A3A;
-        Wed,  2 Aug 2023 15:55:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1690991732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YgHBU51w4LXvHyXRHiGVSsQiW98HOPwBuKRYIXq+KV4=;
-        b=KxwFR1cOjbUj29hiLao3h7B7cXrUBCllEi3ejEMXaE3KkrGvdyPBLqnhUrsZjP6xXdVlOR
-        yXhLdeYp676tNjaW0sQSZnic6XxKFTZPrmjMFjTAiONNjEROVCycHCTd0/Ef1rYfYOSsUX
-        JxkMSpwtbMpqUQpwrkDg7MJFURHe+b4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1690991732;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YgHBU51w4LXvHyXRHiGVSsQiW98HOPwBuKRYIXq+KV4=;
-        b=p5VSzDUbP+iTld01djNzeHZsOjYFzzjJMUvwM8b/dDBSKaLF64MgdBRSybHHDintKyamsQ
-        e5dixT5uvDJE4cCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33FCA13909;
-        Wed,  2 Aug 2023 15:55:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Zc24C3R8ymTUOwAAMHmgww
-        (envelope-from <tiwai@suse.de>); Wed, 02 Aug 2023 15:55:32 +0000
-Date:   Wed, 02 Aug 2023 17:55:31 +0200
-Message-ID: <87h6phcubw.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Matthew Anderson <ruinairas1992@gmail.com>
-Cc:     tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org,
+        Wed, 2 Aug 2023 11:56:57 -0400
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7344A199F;
+        Wed,  2 Aug 2023 08:56:51 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1bb84194bf3so875ad.3;
+        Wed, 02 Aug 2023 08:56:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690991810; x=1691596610;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1DUYdxnB2FNg3/y055eS3dja8IzXKkYToY1e5G8lvIE=;
+        b=iZFJPGzOKD4kuZELBjxisC36JMXIalGDi+lqY3ebDMR+uuXO+eIf1v0QtHUfTBHFD7
+         BWgFbeVYTqRvtWryw4cGpcS2N7VlW0BEdopdDRwEjNrE86IUzsYinq5W8KbUaNMPNmdd
+         z3xSYLG4Lcp82if/vNRTpwAPLbiQkfVEPeKqdTF3MSk6GkPgC/2L5Cbaf4Icv8UbPCfA
+         Xc53JConNNEAFDZR9vxxuK4uKt4Aa6jRhjjI0pSVzNpBU+MCEOBrdr/54fVB6CNxIKpY
+         Xvb0qsNIe05Zdcnhe1XxFw4+kXyTGyTkGnzU8LLcj3C1bNdu2gLeZ+0TivfVZq0u3TGX
+         VT0g==
+X-Gm-Message-State: ABy/qLai8Ez2rMYIB0E5jHB1OoSxa1Hl9Y7gdydYBNNBtMpM5xuj38CJ
+        yWjwhJq5RXNesQT17z2LEQQ=
+X-Google-Smtp-Source: APBJJlGf1pSqV9JSKYgTp/bl7ILF6WcP5BFRWmnG+g9QT6rddzR3jFN5rGzwa7EawiOqJVC/rU96+Q==
+X-Received: by 2002:a17:902:dacf:b0:1bb:b74c:88f6 with SMTP id q15-20020a170902dacf00b001bbb74c88f6mr17926330plx.16.1690991810237;
+        Wed, 02 Aug 2023 08:56:50 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:3b5d:5926:23cf:5139? ([2620:15c:211:201:3b5d:5926:23cf:5139])
+        by smtp.gmail.com with ESMTPSA id e16-20020a17090301d000b001b8b2fb52d4sm12599048plh.203.2023.08.02.08.56.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 08:56:49 -0700 (PDT)
+Message-ID: <3c6bd78b-c716-1c47-6d82-f6551e85251e@acm.org>
+Date:   Wed, 2 Aug 2023 08:56:47 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH] scsi: ufs: qcom: Make struct ufs_qcom_bw_table static
+ const
+Content-Language: en-US
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        andersson@kernel.org, konrad.dybcio@linaro.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ALSA: hda/realtek: Add headphone quirk for Aya Neo Geek
-In-Reply-To: <20230802153730.39273-2-ruinairas1992@gmail.com>
-References: <20230802153730.39273-1-ruinairas1992@gmail.com>
-        <20230802153730.39273-2-ruinairas1992@gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230802040154.10652-1-manivannan.sadhasivam@linaro.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230802040154.10652-1-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 02 Aug 2023 17:37:29 +0200,
-Matthew Anderson wrote:
+On 8/1/23 21:01, Manivannan Sadhasivam wrote:
+> ufs_qcom_bw_table is not modified anywhere. So make it static const so that
+> it can be placed in read-only memory.
 > 
-> This fixes the headphones on the Aya Neo Geek handheld.
+> Reported-by: Bart Van Assche <bvanassche@acm.org>
+> Closes: https://lore.kernel.org/linux-scsi/43cd0057-c6d8-bc92-08f4-d767336d2cfe@acm.org/
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>   drivers/ufs/host/ufs-qcom.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index 75a1fd295f34..0341c025e818 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -58,7 +58,7 @@ enum {
+>   	MODE_MAX,
+>   };
+>   
+> -struct __ufs_qcom_bw_table {
+> +static const struct __ufs_qcom_bw_table {
+>   	u32 mem_bw;
+>   	u32 cfg_bw;
+>   } ufs_qcom_bw_table[MODE_MAX + 1][QCOM_UFS_MAX_GEAR + 1][QCOM_UFS_MAX_LANE + 1] = {
 
-It'd be helpful if you describe a bit more about the problem itself.
+Thanks!
 
-> Signed-off-by: Matthew Anderson <ruinairas1992@gmail.com>
-
-Please put a blank line before Signed-off-by line.
-
-
-thanks,
-
-Takashi
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
