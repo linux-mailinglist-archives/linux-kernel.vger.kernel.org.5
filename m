@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D78876DAAF
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8C976DAAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231402AbjHBWVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:21:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
+        id S234123AbjHBWVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:21:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234032AbjHBWUp (ORCPT
+        with ESMTP id S234014AbjHBWUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:20:45 -0400
+        Wed, 2 Aug 2023 18:20:36 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC04B30E2;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3013430E5;
         Wed,  2 Aug 2023 15:19:41 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 22:19:37 -0000
+Date:   Wed, 02 Aug 2023 22:19:38 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691014778;
+        s=2020; t=1691014779;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=KDeZrLCH2fesQigFdV/wPK7AFALHYMjYUrAok/W8Yls=;
-        b=4qbsEgLMJzftrZP/VLc5b5ASlo0NekHn2S3m/28vt2Rx6cI5UIV08nF9m3miHoo8YusKOT
-        HvCveewzIPX9aUAlbhTtW/5YSYPSEWoFw1MaIinT5cPSWrpAZQPAw5FfoV+ucjyUvtMpmx
-        zQ/X9+xobG9h3Rftrq1cbigW9KgZEZIMzKG8HSccBmrv/e15grjBtUBBEhP5jOqcQSEypq
-        Vkc9HqBYmayl0QVoX4++kgqzQex8vxLqrKfPwFrO68AQX4EkzfKs43EcQPWFdTzDVTGtak
-        rchqBWFQEumQJsyOZ9o8QMlSwgjRa5zj0+YZxkuHgcY9SEHu0iMtwCF0FH4avg==
+        bh=OGY0QXP4FHWEhdiR/6iRdVnV9DOt+x/Q7BWwYGxGorU=;
+        b=X+BTeeAgF0G4XyHRhmageWPUUAzxgnwl6P33ao6fcIiTqL9k9eaVM52DoGT4vCK6bNYysB
+        pXBFf+PwoEG7Zu1tWhI+FqdYJQN4tSjDMohfDb+SK8arta+45GeQ3dFtOORoXYiDy7jJ2+
+        ZmEw90nCLSAk5Av1wyAcjoBEXUnETO2rEmY1PbxbWI0DWiu3Aif2+865q2Yi8AZwHM+tOj
+        nnXxoUeg6gkG0zomH5BMeHpEGWg2zb4jOVH9DqfiqWf774IRzcTQM5GWs+c5IIRK5I0wAQ
+        1nTxfboZxSzjV/fn50KIQl/fB3HYCsZVvVqoxdnz5NNAU2z+Gc8vbpG5bkptlw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691014778;
+        s=2020e; t=1691014779;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=KDeZrLCH2fesQigFdV/wPK7AFALHYMjYUrAok/W8Yls=;
-        b=XUruiY8CKyMdDScP7uzwd/u4xFfz/HsXrknmxFMzIPyOhcJ8QHp1r5Cq1+qAO0DewmAfvK
-        ZAFfBb5wURSO5vCQ==
+        bh=OGY0QXP4FHWEhdiR/6iRdVnV9DOt+x/Q7BWwYGxGorU=;
+        b=HRFTmrrnFoP78xDOUn4hrSnm6hbI6rqRLB/sZ67jUWhnVIVbK1ofVC0n5e+lcP7Im6DeB5
+        2IKaDZu49CMR+RAQ==
 From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86/fpu/xstate: Introduce CET MSR and XSAVES
- supervisor states
+Subject: [tip: x86/shstk] Documentation/x86: Add CET shadow stack description
 Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -51,7 +50,7 @@ Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         John Allen <john.allen@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169101477799.28540.16803011669829582593.tip-bot2@tip-bot2>
+Message-ID: <169101477860.28540.9848764492482775049.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -68,55 +67,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/shstk branch of tip:
 
-Commit-ID:     8970ef027b21c58436f93b874286d342db164e3d
-Gitweb:        https://git.kernel.org/tip/8970ef027b21c58436f93b874286d342db164e3d
+Commit-ID:     1eb2b7841c37c6aed20b50551902330c28618415
+Gitweb:        https://git.kernel.org/tip/1eb2b7841c37c6aed20b50551902330c28618415
 Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Mon, 12 Jun 2023 17:10:50 -07:00
+AuthorDate:    Mon, 12 Jun 2023 17:10:49 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
 CommitterDate: Wed, 02 Aug 2023 15:01:50 -07:00
 
-x86/fpu/xstate: Introduce CET MSR and XSAVES supervisor states
+Documentation/x86: Add CET shadow stack description
 
-Shadow stack register state can be managed with XSAVE. The registers
-can logically be separated into two groups:
-        * Registers controlling user-mode operation
-        * Registers controlling kernel-mode operation
-
-The architecture has two new XSAVE state components: one for each group
-of those groups of registers. This lets an OS manage them separately if
-it chooses. Future patches for host userspace and KVM guests will only
-utilize the user-mode registers, so only configure XSAVE to save
-user-mode registers. This state will add 16 bytes to the xsave buffer
-size.
-
-Future patches will use the user-mode XSAVE area to save guest user-mode
-CET state. However, VMCS includes new fields for guest CET supervisor
-states. KVM can use these to save and restore guest supervisor state, so
-host supervisor XSAVE support is not required.
-
-Adding this exacerbates the already unwieldy if statement in
-check_xstate_against_struct() that handles warning about unimplemented
-xfeatures. So refactor these check's by having XCHECK_SZ() set a bool when
-it actually check's the xfeature. This ends up exceeding 80 chars, but was
-better on balance than other options explored. Pass the bool as pointer to
-make it clear that XCHECK_SZ() can change the variable.
-
-While configuring user-mode XSAVE, clarify kernel-mode registers are not
-managed by XSAVE by defining the xfeature in
-XFEATURE_MASK_SUPERVISOR_UNSUPPORTED, like is done for XFEATURE_MASK_PT.
-This serves more of a documentation as code purpose, and functionally,
-only enables a few safety checks.
-
-Both XSAVE state components are supervisor states, even the state
-controlling user-mode operation. This is a departure from earlier features
-like protection keys where the PKRU state is a normal user
-(non-supervisor) state. Having the user state be supervisor-managed
-ensures there is no direct, unprivileged access to it, making it harder
-for an attacker to subvert CET.
-
-To facilitate this privileged access, define the two user-mode CET MSRs,
-and the bits defined in those MSRs relevant to future shadow stack
-enablement patches.
+Introduce a new document on Control-flow Enforcement Technology (CET).
 
 Co-developed-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
@@ -128,222 +88,197 @@ Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 Tested-by: John Allen <john.allen@amd.com>
 Tested-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20230613001108.3040476-25-rick.p.edgecombe%40intel.com
+Link: https://lore.kernel.org/all/20230613001108.3040476-24-rick.p.edgecombe%40intel.com
 ---
- arch/x86/include/asm/fpu/types.h  | 16 ++++-
- arch/x86/include/asm/fpu/xstate.h |  6 +-
- arch/x86/kernel/fpu/xstate.c      | 90 ++++++++++++++----------------
- 3 files changed, 61 insertions(+), 51 deletions(-)
+ Documentation/arch/x86/index.rst |   1 +-
+ Documentation/arch/x86/shstk.rst | 169 ++++++++++++++++++++++++++++++-
+ 2 files changed, 170 insertions(+)
+ create mode 100644 Documentation/arch/x86/shstk.rst
 
-diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-index 7f6d858..eb81007 100644
---- a/arch/x86/include/asm/fpu/types.h
-+++ b/arch/x86/include/asm/fpu/types.h
-@@ -115,8 +115,8 @@ enum xfeature {
- 	XFEATURE_PT_UNIMPLEMENTED_SO_FAR,
- 	XFEATURE_PKRU,
- 	XFEATURE_PASID,
--	XFEATURE_RSRVD_COMP_11,
--	XFEATURE_RSRVD_COMP_12,
-+	XFEATURE_CET_USER,
-+	XFEATURE_CET_KERNEL_UNUSED,
- 	XFEATURE_RSRVD_COMP_13,
- 	XFEATURE_RSRVD_COMP_14,
- 	XFEATURE_LBR,
-@@ -138,6 +138,8 @@ enum xfeature {
- #define XFEATURE_MASK_PT		(1 << XFEATURE_PT_UNIMPLEMENTED_SO_FAR)
- #define XFEATURE_MASK_PKRU		(1 << XFEATURE_PKRU)
- #define XFEATURE_MASK_PASID		(1 << XFEATURE_PASID)
-+#define XFEATURE_MASK_CET_USER		(1 << XFEATURE_CET_USER)
-+#define XFEATURE_MASK_CET_KERNEL	(1 << XFEATURE_CET_KERNEL_UNUSED)
- #define XFEATURE_MASK_LBR		(1 << XFEATURE_LBR)
- #define XFEATURE_MASK_XTILE_CFG		(1 << XFEATURE_XTILE_CFG)
- #define XFEATURE_MASK_XTILE_DATA	(1 << XFEATURE_XTILE_DATA)
-@@ -253,6 +255,16 @@ struct pkru_state {
- } __packed;
- 
- /*
-+ * State component 11 is Control-flow Enforcement user states
-+ */
-+struct cet_user_state {
-+	/* user control-flow settings */
-+	u64 user_cet;
-+	/* user shadow stack pointer */
-+	u64 user_ssp;
-+};
+diff --git a/Documentation/arch/x86/index.rst b/Documentation/arch/x86/index.rst
+index c73d133..8ac64d7 100644
+--- a/Documentation/arch/x86/index.rst
++++ b/Documentation/arch/x86/index.rst
+@@ -22,6 +22,7 @@ x86-specific Documentation
+    mtrr
+    pat
+    intel-hfi
++   shstk
+    iommu
+    intel_txt
+    amd-memory-encryption
+diff --git a/Documentation/arch/x86/shstk.rst b/Documentation/arch/x86/shstk.rst
+new file mode 100644
+index 0000000..f09afa5
+--- /dev/null
++++ b/Documentation/arch/x86/shstk.rst
+@@ -0,0 +1,169 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
-+/*
-  * State component 15: Architectural LBR configuration state.
-  * The size of Arch LBR state depends on the number of LBRs (lbr_depth).
-  */
-diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index cd3dd17..d4427b8 100644
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -50,7 +50,8 @@
- #define XFEATURE_MASK_USER_DYNAMIC	XFEATURE_MASK_XTILE_DATA
- 
- /* All currently supported supervisor features */
--#define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID)
-+#define XFEATURE_MASK_SUPERVISOR_SUPPORTED (XFEATURE_MASK_PASID | \
-+					    XFEATURE_MASK_CET_USER)
- 
- /*
-  * A supervisor state component may not always contain valuable information,
-@@ -77,7 +78,8 @@
-  * Unsupported supervisor features. When a supervisor feature in this mask is
-  * supported in the future, move it to the supported supervisor feature mask.
-  */
--#define XFEATURE_MASK_SUPERVISOR_UNSUPPORTED (XFEATURE_MASK_PT)
-+#define XFEATURE_MASK_SUPERVISOR_UNSUPPORTED (XFEATURE_MASK_PT | \
-+					      XFEATURE_MASK_CET_KERNEL)
- 
- /* All supervisor states including supported and unsupported states. */
- #define XFEATURE_MASK_SUPERVISOR_ALL (XFEATURE_MASK_SUPERVISOR_SUPPORTED | \
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 0bab497..4fa4751 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -39,26 +39,26 @@
-  */
- static const char *xfeature_names[] =
- {
--	"x87 floating point registers"	,
--	"SSE registers"			,
--	"AVX registers"			,
--	"MPX bounds registers"		,
--	"MPX CSR"			,
--	"AVX-512 opmask"		,
--	"AVX-512 Hi256"			,
--	"AVX-512 ZMM_Hi256"		,
--	"Processor Trace (unused)"	,
-+	"x87 floating point registers",
-+	"SSE registers",
-+	"AVX registers",
-+	"MPX bounds registers",
-+	"MPX CSR",
-+	"AVX-512 opmask",
-+	"AVX-512 Hi256",
-+	"AVX-512 ZMM_Hi256",
-+	"Processor Trace (unused)",
- 	"Protection Keys User registers",
- 	"PASID state",
--	"unknown xstate feature"	,
--	"unknown xstate feature"	,
--	"unknown xstate feature"	,
--	"unknown xstate feature"	,
--	"unknown xstate feature"	,
--	"unknown xstate feature"	,
--	"AMX Tile config"		,
--	"AMX Tile data"			,
--	"unknown xstate feature"	,
-+	"Control-flow User registers",
-+	"Control-flow Kernel registers (unused)",
-+	"unknown xstate feature",
-+	"unknown xstate feature",
-+	"unknown xstate feature",
-+	"unknown xstate feature",
-+	"AMX Tile config",
-+	"AMX Tile data",
-+	"unknown xstate feature",
- };
- 
- static unsigned short xsave_cpuid_features[] __initdata = {
-@@ -73,6 +73,7 @@ static unsigned short xsave_cpuid_features[] __initdata = {
- 	[XFEATURE_PT_UNIMPLEMENTED_SO_FAR]	= X86_FEATURE_INTEL_PT,
- 	[XFEATURE_PKRU]				= X86_FEATURE_PKU,
- 	[XFEATURE_PASID]			= X86_FEATURE_ENQCMD,
-+	[XFEATURE_CET_USER]			= X86_FEATURE_SHSTK,
- 	[XFEATURE_XTILE_CFG]			= X86_FEATURE_AMX_TILE,
- 	[XFEATURE_XTILE_DATA]			= X86_FEATURE_AMX_TILE,
- };
-@@ -276,6 +277,7 @@ static void __init print_xstate_features(void)
- 	print_xstate_feature(XFEATURE_MASK_Hi16_ZMM);
- 	print_xstate_feature(XFEATURE_MASK_PKRU);
- 	print_xstate_feature(XFEATURE_MASK_PASID);
-+	print_xstate_feature(XFEATURE_MASK_CET_USER);
- 	print_xstate_feature(XFEATURE_MASK_XTILE_CFG);
- 	print_xstate_feature(XFEATURE_MASK_XTILE_DATA);
- }
-@@ -344,6 +346,7 @@ static __init void os_xrstor_booting(struct xregs_state *xstate)
- 	 XFEATURE_MASK_BNDREGS |		\
- 	 XFEATURE_MASK_BNDCSR |			\
- 	 XFEATURE_MASK_PASID |			\
-+	 XFEATURE_MASK_CET_USER |		\
- 	 XFEATURE_MASK_XTILE)
- 
- /*
-@@ -446,14 +449,15 @@ static void __init __xstate_dump_leaves(void)
- 	}									\
- } while (0)
- 
--#define XCHECK_SZ(sz, nr, nr_macro, __struct) do {			\
--	if ((nr == nr_macro) &&						\
--	    WARN_ONCE(sz != sizeof(__struct),				\
--		"%s: struct is %zu bytes, cpu state %d bytes\n",	\
--		__stringify(nr_macro), sizeof(__struct), sz)) {		\
-+#define XCHECK_SZ(sz, nr, __struct) ({					\
-+	if (WARN_ONCE(sz != sizeof(__struct),				\
-+	    "[%s]: struct is %zu bytes, cpu state %d bytes\n",		\
-+	    xfeature_names[nr], sizeof(__struct), sz)) {		\
- 		__xstate_dump_leaves();					\
- 	}								\
--} while (0)
-+	true;								\
-+})
++======================================================
++Control-flow Enforcement Technology (CET) Shadow Stack
++======================================================
 +
- 
- /**
-  * check_xtile_data_against_struct - Check tile data state size.
-@@ -527,36 +531,28 @@ static bool __init check_xstate_against_struct(int nr)
- 	 * Ask the CPU for the size of the state.
- 	 */
- 	int sz = xfeature_size(nr);
++CET Background
++==============
 +
- 	/*
- 	 * Match each CPU state with the corresponding software
- 	 * structure.
- 	 */
--	XCHECK_SZ(sz, nr, XFEATURE_YMM,       struct ymmh_struct);
--	XCHECK_SZ(sz, nr, XFEATURE_BNDREGS,   struct mpx_bndreg_state);
--	XCHECK_SZ(sz, nr, XFEATURE_BNDCSR,    struct mpx_bndcsr_state);
--	XCHECK_SZ(sz, nr, XFEATURE_OPMASK,    struct avx_512_opmask_state);
--	XCHECK_SZ(sz, nr, XFEATURE_ZMM_Hi256, struct avx_512_zmm_uppers_state);
--	XCHECK_SZ(sz, nr, XFEATURE_Hi16_ZMM,  struct avx_512_hi16_state);
--	XCHECK_SZ(sz, nr, XFEATURE_PKRU,      struct pkru_state);
--	XCHECK_SZ(sz, nr, XFEATURE_PASID,     struct ia32_pasid_state);
--	XCHECK_SZ(sz, nr, XFEATURE_XTILE_CFG, struct xtile_cfg);
--
--	/* The tile data size varies between implementations. */
--	if (nr == XFEATURE_XTILE_DATA)
--		check_xtile_data_against_struct(sz);
--
--	/*
--	 * Make *SURE* to add any feature numbers in below if
--	 * there are "holes" in the xsave state component
--	 * numbers.
--	 */
--	if ((nr < XFEATURE_YMM) ||
--	    (nr >= XFEATURE_MAX) ||
--	    (nr == XFEATURE_PT_UNIMPLEMENTED_SO_FAR) ||
--	    ((nr >= XFEATURE_RSRVD_COMP_11) && (nr <= XFEATURE_RSRVD_COMP_16))) {
-+	switch (nr) {
-+	case XFEATURE_YMM:	  return XCHECK_SZ(sz, nr, struct ymmh_struct);
-+	case XFEATURE_BNDREGS:	  return XCHECK_SZ(sz, nr, struct mpx_bndreg_state);
-+	case XFEATURE_BNDCSR:	  return XCHECK_SZ(sz, nr, struct mpx_bndcsr_state);
-+	case XFEATURE_OPMASK:	  return XCHECK_SZ(sz, nr, struct avx_512_opmask_state);
-+	case XFEATURE_ZMM_Hi256:  return XCHECK_SZ(sz, nr, struct avx_512_zmm_uppers_state);
-+	case XFEATURE_Hi16_ZMM:	  return XCHECK_SZ(sz, nr, struct avx_512_hi16_state);
-+	case XFEATURE_PKRU:	  return XCHECK_SZ(sz, nr, struct pkru_state);
-+	case XFEATURE_PASID:	  return XCHECK_SZ(sz, nr, struct ia32_pasid_state);
-+	case XFEATURE_XTILE_CFG:  return XCHECK_SZ(sz, nr, struct xtile_cfg);
-+	case XFEATURE_CET_USER:	  return XCHECK_SZ(sz, nr, struct cet_user_state);
-+	case XFEATURE_XTILE_DATA: check_xtile_data_against_struct(sz); return true;
-+	default:
- 		XSTATE_WARN_ON(1, "No structure for xstate: %d\n", nr);
- 		return false;
- 	}
++Control-flow Enforcement Technology (CET) covers several related x86 processor
++features that provide protection against control flow hijacking attacks. CET
++can protect both applications and the kernel.
 +
- 	return true;
- }
- 
++CET introduces shadow stack and indirect branch tracking (IBT). A shadow stack
++is a secondary stack allocated from memory which cannot be directly modified by
++applications. When executing a CALL instruction, the processor pushes the
++return address to both the normal stack and the shadow stack. Upon
++function return, the processor pops the shadow stack copy and compares it
++to the normal stack copy. If the two differ, the processor raises a
++control-protection fault. IBT verifies indirect CALL/JMP targets are intended
++as marked by the compiler with 'ENDBR' opcodes. Not all CPU's have both Shadow
++Stack and Indirect Branch Tracking. Today in the 64-bit kernel, only userspace
++shadow stack and kernel IBT are supported.
++
++Requirements to use Shadow Stack
++================================
++
++To use userspace shadow stack you need HW that supports it, a kernel
++configured with it and userspace libraries compiled with it.
++
++The kernel Kconfig option is X86_USER_SHADOW_STACK.  When compiled in, shadow
++stacks can be disabled at runtime with the kernel parameter: nousershstk.
++
++To build a user shadow stack enabled kernel, Binutils v2.29 or LLVM v6 or later
++are required.
++
++At run time, /proc/cpuinfo shows CET features if the processor supports
++CET. "user_shstk" means that userspace shadow stack is supported on the current
++kernel and HW.
++
++Application Enabling
++====================
++
++An application's CET capability is marked in its ELF note and can be verified
++from readelf/llvm-readelf output::
++
++    readelf -n <application> | grep -a SHSTK
++        properties: x86 feature: SHSTK
++
++The kernel does not process these applications markers directly. Applications
++or loaders must enable CET features using the interface described in section 4.
++Typically this would be done in dynamic loader or static runtime objects, as is
++the case in GLIBC.
++
++Enabling arch_prctl()'s
++=======================
++
++Elf features should be enabled by the loader using the below arch_prctl's. They
++are only supported in 64 bit user applications. These operate on the features
++on a per-thread basis. The enablement status is inherited on clone, so if the
++feature is enabled on the first thread, it will propagate to all the thread's
++in an app.
++
++arch_prctl(ARCH_SHSTK_ENABLE, unsigned long feature)
++    Enable a single feature specified in 'feature'. Can only operate on
++    one feature at a time.
++
++arch_prctl(ARCH_SHSTK_DISABLE, unsigned long feature)
++    Disable a single feature specified in 'feature'. Can only operate on
++    one feature at a time.
++
++arch_prctl(ARCH_SHSTK_LOCK, unsigned long features)
++    Lock in features at their current enabled or disabled status. 'features'
++    is a mask of all features to lock. All bits set are processed, unset bits
++    are ignored. The mask is ORed with the existing value. So any feature bits
++    set here cannot be enabled or disabled afterwards.
++
++The return values are as follows. On success, return 0. On error, errno can
++be::
++
++        -EPERM if any of the passed feature are locked.
++        -ENOTSUPP if the feature is not supported by the hardware or
++         kernel.
++        -EINVAL arguments (non existing feature, etc)
++
++The feature's bits supported are::
++
++    ARCH_SHSTK_SHSTK - Shadow stack
++    ARCH_SHSTK_WRSS  - WRSS
++
++Currently shadow stack and WRSS are supported via this interface. WRSS
++can only be enabled with shadow stack, and is automatically disabled
++if shadow stack is disabled.
++
++Proc Status
++===========
++To check if an application is actually running with shadow stack, the
++user can read the /proc/$PID/status. It will report "wrss" or "shstk"
++depending on what is enabled. The lines look like this::
++
++    x86_Thread_features: shstk wrss
++    x86_Thread_features_locked: shstk wrss
++
++Implementation of the Shadow Stack
++==================================
++
++Shadow Stack Size
++-----------------
++
++A task's shadow stack is allocated from memory to a fixed size of
++MIN(RLIMIT_STACK, 4 GB). In other words, the shadow stack is allocated to
++the maximum size of the normal stack, but capped to 4 GB. In the case
++of the clone3 syscall, there is a stack size passed in and shadow stack
++uses this instead of the rlimit.
++
++Signal
++------
++
++The main program and its signal handlers use the same shadow stack. Because
++the shadow stack stores only return addresses, a large shadow stack covers
++the condition that both the program stack and the signal alternate stack run
++out.
++
++When a signal happens, the old pre-signal state is pushed on the stack. When
++shadow stack is enabled, the shadow stack specific state is pushed onto the
++shadow stack. Today this is only the old SSP (shadow stack pointer), pushed
++in a special format with bit 63 set. On sigreturn this old SSP token is
++verified and restored by the kernel. The kernel will also push the normal
++restorer address to the shadow stack to help userspace avoid a shadow stack
++violation on the sigreturn path that goes through the restorer.
++
++So the shadow stack signal frame format is as follows::
++
++    |1...old SSP| - Pointer to old pre-signal ssp in sigframe token format
++                    (bit 63 set to 1)
++    |        ...| - Other state may be added in the future
++
++
++32 bit ABI signals are not supported in shadow stack processes. Linux prevents
++32 bit execution while shadow stack is enabled by the allocating shadow stacks
++outside of the 32 bit address space. When execution enters 32 bit mode, either
++via far call or returning to userspace, a #GP is generated by the hardware
++which, will be delivered to the process as a segfault. When transitioning to
++userspace the register's state will be as if the userspace ip being returned to
++caused the segfault.
++
++Fork
++----
++
++The shadow stack's vma has VM_SHADOW_STACK flag set; its PTEs are required
++to be read-only and dirty. When a shadow stack PTE is not RO and dirty, a
++shadow access triggers a page fault with the shadow stack access bit set
++in the page fault error code.
++
++When a task forks a child, its shadow stack PTEs are copied and both the
++parent's and the child's shadow stack PTEs are cleared of the dirty bit.
++Upon the next shadow stack access, the resulting shadow stack page fault
++is handled by page copy/re-use.
++
++When a pthread child is created, the kernel allocates a new shadow stack
++for the new thread. New shadow stack creation behaves like mmap() with respect
++to ASLR behavior. Similarly, on thread exit the thread's shadow stack is
++disabled.
++
++Exec
++----
++
++On exec, shadow stack features are disabled by the kernel. At which point,
++userspace can choose to re-enable, or lock them.
