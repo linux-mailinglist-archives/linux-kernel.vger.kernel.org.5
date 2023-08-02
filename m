@@ -2,108 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E743576D9B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F3A76D9BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbjHBVju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41358 "EHLO
+        id S233311AbjHBVki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233055AbjHBVjr (ORCPT
+        with ESMTP id S232410AbjHBVkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:39:47 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC46726AF;
-        Wed,  2 Aug 2023 14:39:44 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bc34b32785so2559375ad.3;
-        Wed, 02 Aug 2023 14:39:44 -0700 (PDT)
+        Wed, 2 Aug 2023 17:40:33 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E664B2698
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:40:29 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6b9c9944da8so313928a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:40:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691012384; x=1691617184;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dg1csT6sQap9Rjj/9a7I+zdOC12NSKIzfI8UlxG6Z6s=;
-        b=D5od+G8Q5l6okpcSGorDH8rVDi8dKCBthkqpfYBIBJlUCMIh9J5CpRVct3JKaQvA1B
-         IOL7SasPOzvfL8/mSWNYFSsfFCQWNM5JxkOGVwAatzOmGjXIBKMplWnSyh0G8xhrJ2BM
-         luNIHpVg2gOIh/cf9EmBsozBHMIWBgjLI8ckR675XgH16xGIs4qLRva01KuoNNRPl4kZ
-         oOcthTE0Bt20SOx7bSL00SsleLB3chZI++TfTdJDvk80Z475KNWTj+/NlOOKhwdz6wo5
-         yYKiBWxas6X63T8Vks8qHaljufFTCxBvS8BmXseG1AXraZZ6CUv8U3WDqygStNlRZWxa
-         Z8rw==
+        d=google.com; s=20221208; t=1691012429; x=1691617229;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H+AS/eYgwiGocz0hRMqEzRe/0E7wSQPQ+cMSrzoRj80=;
+        b=JyZOHalDcREGIRUebxJEHeiwXJ6Et6CNw5fbFraZVOMPVaIyM9nO/X3CUPvSHkxdLT
+         rS71x3IqWf0P9Qm6ii3x+1j3X1l+Tc0zM4HxDnED4k5afgaXNiwFiIv4HMhoONjoeJ7q
+         V0WL0O8CaEQPvfe4/zSOrT1xTYOfLK3NwMRJWCbR7VABElDKeg5p0nsPmKdl8kB6tQ/u
+         RFPEb083Fh6dO/CNdzuhypFc9hQpxbBdLH3Y4c/c1XvmhYCf5+gDKniYOZWXLVeJrKxL
+         6gpKDCanfUJMnaOB8QEMiuqv0s1sUGeR29ViiIvsmrXf/26fXZDDhKVyZNGegOCWbwte
+         xHwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691012384; x=1691617184;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1691012429; x=1691617229;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dg1csT6sQap9Rjj/9a7I+zdOC12NSKIzfI8UlxG6Z6s=;
-        b=INJv5mVVo3QZ6kfZCSyR1VsMj/MxF+CH7K0N710VUQ4Y7vau9UCzTclVKxab4ii3JK
-         /cyxy8gnQdmGaTQYwGW0MhSa3/2kgEknoYXRf+Mw+AwyjU8wmJ2mS2KjflduK75wn9gO
-         dqLJAvvol+kkdDz30RTaSfAfCfxMegMc+5Ew7+i6xK8d3irXmSNnLzl97QOQpbgouCpD
-         lX6nJoU0mab7FKbKox2v3tUzroB943C45JStVvzOGCiyAUHcbok5HvxIbD3/n0VY1a9W
-         TZL9MLVO3lT7YjnXxxusNZmgd2MONLzdl9aY/665lunOqTOwEYXD+zHIpxh8uzM4zx3A
-         Cmcg==
-X-Gm-Message-State: ABy/qLbpWAn9Etgw6wGvC3f7RqIzcfzyO/WDoxd7vv/0Z1M9Fs19mGOw
-        GNfP47+LsnAZ735Sru372Wk=
-X-Google-Smtp-Source: APBJJlFJDCjDYsyfzWyMCiBMOkJ6rBp4oH7PlOzBbLdMFCR3Ufc/nU/ktZy/7IyhCRN25QEJJQI2cQ==
-X-Received: by 2002:a17:902:e841:b0:1bb:ee1b:3cdf with SMTP id t1-20020a170902e84100b001bbee1b3cdfmr16535575plg.67.1691012383533;
-        Wed, 02 Aug 2023 14:39:43 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:9d5d])
-        by smtp.gmail.com with ESMTPSA id v11-20020a1709028d8b00b001bb99e188fcsm12850055plo.194.2023.08.02.14.39.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 14:39:43 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 2 Aug 2023 11:39:41 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Hao Jia <jiahao.os@bytedance.com>
-Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [External] Re: [PATCH] cgroup/rstat: record the cumulative
- per-cpu time of cgroup and its descendants
-Message-ID: <ZMrNHf2tg8AZ2F0z@slm.duckdns.org>
-References: <20230717093612.40846-1-jiahao.os@bytedance.com>
- <ZLWb-LsBD041hMvr@slm.duckdns.org>
- <2655026d-6ae4-c14c-95b0-4177eefa434f@bytedance.com>
- <ZLcJ1nH8KzWzoQWj@slm.duckdns.org>
- <b4424767-dce7-08a9-3759-43cc9dfa4273@bytedance.com>
- <3d2b68bf-9f40-c779-dcfd-4cf9939edecc@bytedance.com>
- <ZMKs_GpHEW6Pfusj@slm.duckdns.org>
+        bh=H+AS/eYgwiGocz0hRMqEzRe/0E7wSQPQ+cMSrzoRj80=;
+        b=Lp6udSb+QaoUweY2mNaaX1/4JZxOEmQ7dqpPLJFNV0Vblig0GHynItlvFRWQODQt+F
+         LQg+xDS4Qct/abiLoXgG1HyxAT8GraJQbrswUG2Y8DsqppfQCb4YhK+hzuPEsDmlR9WC
+         zMtHwfkVomDywdNLb6jX7PIK3KrFNe7HHIaFnIFyp46iyx6u/y66KhMlKeSLCdZ8H+gK
+         WzkGtpoqACnC7lFcXmHDi0kvN3NEyw461xCEfCOWwOiipax4N/gPmU7DJueayfSYdolX
+         tcAtCymSXyO/aVP9NFEqlI23CVqLDUp02u6jj2eqp8pKgyl8ctyA0hfiUv6WyzkQ7Ypz
+         OKNw==
+X-Gm-Message-State: ABy/qLY7zOmW6YIm4vADYXrZlUYuB/uqj9lc7WLC2Wnm/tiCtEWrD4Fu
+        pWNDrIrFJTRJTVHJNdB+gK/ZqX2GC6MFcb/HpGvl8w==
+X-Google-Smtp-Source: APBJJlFpo8nVaGFRVuT56BDjEKf8O23JElU7FcvApgZioYBFUBNDtxQczH22U7n95IT3rW7s29tffm7gNlVxtRvxtT8=
+X-Received: by 2002:a05:6358:711:b0:135:85ec:a092 with SMTP id
+ e17-20020a056358071100b0013585eca092mr7354336rwj.26.1691012428979; Wed, 02
+ Aug 2023 14:40:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMKs_GpHEW6Pfusj@slm.duckdns.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <20230802080544.3239967-1-suhui@nfschina.com> <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
+In-Reply-To: <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 2 Aug 2023 14:40:18 -0700
+Message-ID: <CAKwvOdnRwmxGuEidZ=OWxSX60D6ry0Rb__DjSayga6um35Jsrg@mail.gmail.com>
+Subject: Re: [PATCH] fs: lockd: avoid possible wrong NULL parameter
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     Su Hui <suhui@nfschina.com>, chuck.lever@oracle.com,
+        jlayton@kernel.org, neilb@suse.de, kolga@netapp.com,
+        Dai.Ngo@oracle.com, tom@talpey.com,
+        trond.myklebust@hammerspace.com, anna@kernel.org,
+        nathan@kernel.org, trix@redhat.com, bfields@fieldses.org,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Aug 2, 2023 at 3:25=E2=80=AFAM Dan Carpenter <dan.carpenter@linaro.=
+org> wrote:
+>
+> On Wed, Aug 02, 2023 at 04:05:45PM +0800, Su Hui wrote:
+> > clang's static analysis warning: fs/lockd/mon.c: line 293, column 2:
+> > Null pointer passed as 2nd argument to memory copy function.
+> >
+> > Assuming 'hostname' is NULL and calling 'nsm_create_handle()', this wil=
+l
+> > pass NULL as 2nd argument to memory copy function 'memcpy()'. So return
+> > NULL if 'hostname' is invalid.
+> >
+> > Fixes: 77a3ef33e2de ("NSM: More clean up of nsm_get_handle()")
+> > Signed-off-by: Su Hui <suhui@nfschina.com>
+> > ---
+> >  fs/lockd/mon.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/fs/lockd/mon.c b/fs/lockd/mon.c
+> > index 1d9488cf0534..eebab013e063 100644
+> > --- a/fs/lockd/mon.c
+> > +++ b/fs/lockd/mon.c
+> > @@ -358,6 +358,9 @@ struct nsm_handle *nsm_get_handle(const struct net =
+*net,
+> >
+> >       spin_unlock(&nsm_lock);
+> >
+> > +     if (!hostname)
+> > +             return NULL;
+> > +
+> >       new =3D nsm_create_handle(sap, salen, hostname, hostname_len);
+>
+> It's weird that this bug is from 2008 and we haven't found it in
+> testing.  Presumably if hostname is NULL then hostname_len would be zero
+> and in that case, it's not actually a bug.  It's allowed in the kernel
+> to memcpy zero bytes from a NULL pointer.
+>
+>         memcpy(dst, NULL, 0);
+>
+> Outside the kernel it's not allowed though.
 
-On Thu, Jul 27, 2023 at 07:44:28AM -1000, Tejun Heo wrote:
-> Oh yeah, I do. I'm just thinking whether we also want to expose that in the
-> cgroupfs. We are currently not showing anything per-cpu and the output
-> formatting gets nasty with a huge number of CPUs, so maybe that's not going
-> to work out all that well. Anyways, I'll get back to you next week.
+I wonder what kind of implications that has on the compilers ability
+to optimize libcalls to memcpy for targets that don't use
+`-ffreestanding`. Hmm...
 
-I couldn't come up with an answer. Let's go ahead with adding the field but
-can you please do the followings?
+Though let's see what the C standard says, since that's what compilers
+target, rather than consider specifics of glibc.
 
-* Name it to something like subtree_bstat instead of cumul_bstat. The
-  counters are all cumulative.
+https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1548.pdf
+>> The memcpy function copies n characters from the object pointed to by s2=
+ into the
+>> object pointed to by s1. If copying takes place between objects that ove=
+rlap, the behavior
+>> is undefined.
 
-* Are you sure the upward propagation logic is correct? It's calculating
-  global delta and then propagating to the per-cpu delta of the parent. Is
-  that correct because the two delta calculations always end up the same?
+So no mention about what assumptions can be made about source or
+destination being NULL.
 
-* Please add a comment explaining that the field is not currently used
-  outside of being read from bpf / drgn and what not and that we're still
-  trying to determine how to expose that in the cgroupfs interface.
+I noticed that the function in question already has a guard:
+322   if (hostname && memchr(hostname, '/', hostname_len) !=3D NULL) {
 
-Thanks.
+Which implies that hostname COULD be NULL.
 
--- 
-tejun
+Should this perhaps simply be rewritten as:
+
+if (!hostname)
+  return NULL;
+if (memchr(...) !=3D NULL)
+  ...
+
+Rather than bury yet another guard for the same check further down in
+the function? Check once and bail early.
+
+>
+> I noticed a related bug which Smatch doesn't find, because of how Smatch
+> handles the dprintk macro.
+>
+> fs/lockd/host.c
+> truct nlm_host *nlmclnt_lookup_host(const struct sockaddr *sap,
+>    217                                       const size_t salen,
+>    218                                       const unsigned short protoco=
+l,
+>    219                                       const u32 version,
+>    220                                       const char *hostname,
+>    221                                       int noresvport,
+>    222                                       struct net *net,
+>    223                                       const struct cred *cred)
+>    224  {
+>    225          struct nlm_lookup_host_info ni =3D {
+>    226                  .server         =3D 0,
+>    227                  .sap            =3D sap,
+>    228                  .salen          =3D salen,
+>    229                  .protocol       =3D protocol,
+>    230                  .version        =3D version,
+>    231                  .hostname       =3D hostname,
+>    232                  .hostname_len   =3D strlen(hostname),
+>                                                  ^^^^^^^^
+> Dereferenced
+>
+>    233                  .noresvport     =3D noresvport,
+>    234                  .net            =3D net,
+>    235                  .cred           =3D cred,
+>    236          };
+>    237          struct hlist_head *chain;
+>    238          struct nlm_host *host;
+>    239          struct nsm_handle *nsm =3D NULL;
+>    240          struct lockd_net *ln =3D net_generic(net, lockd_net_id);
+>    241
+>    242          dprintk("lockd: %s(host=3D'%s', vers=3D%u, proto=3D%s)\n"=
+, __func__,
+>    243                          (hostname ? hostname : "<none>"), version=
+,
+>                                  ^^^^^^^^
+> Checked too late.
+>
+>    244                          (protocol =3D=3D IPPROTO_UDP ? "udp" : "t=
+cp"));
+>    245
+>
+> regards,
+> dan carpenter
+
+
+
+--=20
+Thanks,
+~Nick Desaulniers
