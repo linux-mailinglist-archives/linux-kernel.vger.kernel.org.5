@@ -2,175 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A0376D83F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D5576D839
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232101AbjHBTzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:55:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
+        id S231738AbjHBTzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbjHBTzT (ORCPT
+        with ESMTP id S229771AbjHBTzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:55:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BB47268D;
-        Wed,  2 Aug 2023 12:55:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DC14C61ACF;
-        Wed,  2 Aug 2023 19:55:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E365C433CA;
-        Wed,  2 Aug 2023 19:55:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691006115;
-        bh=904gM4T11OOi6O099vyBbHZDWZV8LGK6IFJewceXYAQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oIlBv0+zpzX9kmDjs1mCPZK4rhN0NVeaX/Jl2JQLm+aO+xDWHqh7/hr8VvMkw5goy
-         6P9a3PHO6crcXRFp06D/USBMh8OJFw6g68ZITb1KOOHo8zJlKGZzD/sU6JQZT7hT7Y
-         bNZ6NVy2xqj9NkYIbwx+w0jAzj/8d6HCgwUtsmP6ascS8zC1ib9o1nrlVKZo18EryU
-         bP99VpwH0vQeL7K9r7GeLYZNTwT3sIYVPCAiTdMnchR361j/v1RuMeMPrIZkZUvpvs
-         YH7yJVZt4G4NBHqVaWr98TAVVUx4Px6yLfnPbveZLV2HFoyFmj1otZHia6gAlx+mio
-         SPV8XnuIkcBXg==
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3a5a7e7cd61so179509b6e.0;
-        Wed, 02 Aug 2023 12:55:15 -0700 (PDT)
-X-Gm-Message-State: ABy/qLZYBPczGLox9qCO8c79Lj6lMODdgzSC41hMS0MjlKKihKMrJAPN
-        72VEOcEkoW+GP1DQbxkFWqWQNoVEtA+urWw8QdA=
-X-Google-Smtp-Source: APBJJlF2Oy3mIBkYDgknSfPr1iqiO7yW0o6xZaST1qF+3uA4Bzwqjm6gwD0V30don6ksJ2Lxnw0vJWv3yPtu516k7DQ=
-X-Received: by 2002:a05:6808:2223:b0:3a7:2efb:cb7a with SMTP id
- bd35-20020a056808222300b003a72efbcb7amr8732656oib.24.1691006114528; Wed, 02
- Aug 2023 12:55:14 -0700 (PDT)
+        Wed, 2 Aug 2023 15:55:04 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9869519BE
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:55:01 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6bc9efb5091so172846a34.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 12:55:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1691006101; x=1691610901;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2fk7IVszVGEX05tlsz3xS9WSAYRKj6iRdkz3X4m9LLk=;
+        b=a4r1NIwyeNPmYaRDUwHG6QqlAcxCuWFkiQ9bjYob7bVbJcmYh8bb+iFKflVUDLPSTL
+         Dmp1/X7VacHvPtUaNtg/dVJpdgr/HgUZPNCEZgECbUr+47se3QuRhwsTi8iTMgoJm6Mu
+         lyoUzhVLySE85gpxZc4Ev/+WQQWnkqwPq9FOo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691006101; x=1691610901;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2fk7IVszVGEX05tlsz3xS9WSAYRKj6iRdkz3X4m9LLk=;
+        b=J/Z0M5dYWZf3EbZrI9A783jZAgSZeMzmfCXSQU2ukJmriRrLDNfT+fUbj19TWcQN2m
+         Vxsyccw2hSBjWML/rcIIFiH2/ULv6l90+9oEMCrF2KFs2RpY6AabICjdfk/QbP7Zw6HX
+         lWpQPMrC1xUYpNYuBd592AKpQTri2sBxIWLGzgRMEkKuk8r4z6lV0JOn+VyPcXszfGHV
+         RBhdCPLGmXdalw0j3Psjx1+VAIfbaFqvuGXCy8cNcOmPfth5OQ9e0lLj4MPuDegk+e6Q
+         k15MmEZdcCgvqDbHDBsCeiTGnQPTxs4rGeFvECK4eEmo27WuWXvGQ1N5EjZvKsz8AaZ+
+         vAtA==
+X-Gm-Message-State: ABy/qLZVE/3wnuYJ1/JSes+JE8rty9DCb6I5vW1Uxcd+Pqcuxdgv7NTg
+        P7GcZ8TTmKFpnZVoOqukImIsQHhuOwu02K4ZezKi0w==
+X-Google-Smtp-Source: APBJJlGu7kqV6VwbdzSfXnrVqjHk9QX7dxjnDkVK5xVnfSpyzukHJ2KYy3H9D73h3oD02/LXWWYZ+2w+tqBoa3LmXiA=
+X-Received: by 2002:a9d:5a89:0:b0:6b8:b83c:a1f8 with SMTP id
+ w9-20020a9d5a89000000b006b8b83ca1f8mr15064427oth.19.1691006100913; Wed, 02
+ Aug 2023 12:55:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230728113415.21067-1-will@kernel.org> <20230728113415.21067-4-will@kernel.org>
-In-Reply-To: <20230728113415.21067-4-will@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 3 Aug 2023 04:54:37 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARnOUbySnnqOpP-3KBQTT-WvUHfnjV_sVTKe+faB8=86g@mail.gmail.com>
-Message-ID: <CAK7LNARnOUbySnnqOpP-3KBQTT-WvUHfnjV_sVTKe+faB8=86g@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] scripts/faddr2line: Constrain readelf output to
- symbols from System.map
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
+References: <20230713143406.14342-1-cyphar@cyphar.com> <CABi2SkVCp_MDh9MgD-UJ_hgJ58ynm22XJ53zE+ZCBSsWFBxiOw@mail.gmail.com>
+ <o2tz56m3y2pbbj2sezyqvtw3caqwcqtqqkkfrq632ofpyj4enp@znkxadzn5lmj>
+ <CALmYWFs_dNCzw_pW1yRAo4bGCPEtykroEQaowNULp7svwMLjOg@mail.gmail.com>
+ <20230801.032503-medium.noises.extinct.omen-CStYZUqcNLCS@cyphar.com> <CABi2SkXWfup2_UeKqm7C-xkjF5gnhKuxOP7TsRVa5MLbxabFQg@mail.gmail.com>
+In-Reply-To: <CABi2SkXWfup2_UeKqm7C-xkjF5gnhKuxOP7TsRVa5MLbxabFQg@mail.gmail.com>
+From:   Jeff Xu <jeffxu@chromium.org>
+Date:   Wed, 2 Aug 2023 12:54:48 -0700
+Message-ID: <CABi2SkXCsiz+WpPQc=iRjbq-Dp5XR-kDXcVg0A+HDu5Ddni6+g@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] memfd: cleanups for vm.memfd_noexec
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Jeff Xu <jeffxu@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 8:34=E2=80=AFPM Will Deacon <will@kernel.org> wrote=
+On Wed, Aug 2, 2023 at 12:47=E2=80=AFPM Jeff Xu <jeffxu@chromium.org> wrote=
 :
 >
-> Some symbols emitted in the readelf output but filtered from System.map
-> can confuse the 'faddr2line' symbol size calculation, resulting in the
-> erroneous rejection of valid offsets. This is especially prevalent when
-> building an arm64 kernel with CONFIG_CFI_CLANG=3Dy, where most functions
-> are prefixed with a 32-bit data value in a '$d.n' section. For example:
+> On Tue, Aug 1, 2023 at 6:05=E2=80=AFPM Aleksa Sarai <cyphar@cyphar.com> w=
+rote:
+> >
+> This thread is getting longer with different topics, I will try to
+> respond with trimmed interleaved replies [1]
+> There are 3 topics (logging/'migration/ratcheting), this response will
+> be regarding ratcheting.
 >
-> 447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_initcal=
-l
->    104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
->    106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
->    111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
->    112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
->     36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_proce=
-ss
+> [1] https://www.kernel.org/doc/html/latest/process/submitting-patches.htm=
+l?highlight=3Dsigned%20off#use-trimmed-interleaved-replies-in-email-discuss=
+ions
 >
-> Adding a warning to do_one_initcall() results in:
+> >
+> > > > > >  * The ratcheting mechanism for vm.memfd_noexec doesn't make se=
+nse as a
+> > > > > >    security mechanism because a CAP_SYS_ADMIN capable user can =
+create
+> > > > > >    executable binaries in a hidden tmpfs very easily, not to me=
+ntion the
+> > > > > >    many other things they can do.
+> > > > > >
+> > > > > By further limiting CAP_SYS_ADMIN, an attacker can't modify this
+> > > > > sysctl even after compromising some system service with high
+> > > > > privilege, YAMA has the same approach for ptrace_scope=3D3
+> > > >
+> > > > Personally, I also think this behaviour from YAMA is a little goofy=
+ too,
+> > > > but given that it only locks the most extreme setting and there is =
+no
+> > > > way to get around the most extreme setting, I guess it makes some s=
+ense
+> > > > (not to mention it's an LSM and so there is an argument that it sho=
+uld
+> > > > be possible to lock out privileged users from modifying it).
+> > > > There are many other security sysctls, and very few have this behav=
+iour
+> > > > because it doesn't make much sense in most cases.
+> > > >
+> > > > > In addition, this sysctl is pid_name spaced, this means child
+> > > > > pid_namespace will alway have the same or stricter security setti=
+ng
+> > > > > than its parent, this allows admin to maintain a tree like view. =
+If we
+> > > > > allow the child pid namespace to elevate its setting, then the
+> > > > > system-wide setting is no longer meaningful.
+> > > >
+> > > > "no longer meaningful" is too strong of a statement imho. It is sti=
+ll
+> > > > useful for constraining non-root processes and presumably ChromeOS
+> > > > disallows random processes to do CLONE_NEWUSER (otherwise the prote=
+ction
+> > > > of this sysctl is pointless) so in practice for ChromeOS there is n=
+o
+> > > > change in the attack surface.
+> > > >
+> > > > (FWIW, I think tying this to the user namespace would've made more =
+sense
+> > > > since this is about privilege restrictions, but that ship has saile=
+d.)
+> > > >
+> > > The reason that this sysctl is a PID namespace is that I hope a
+> > > container and host can have different sysctl values, e.g. host will
+> > > allow runc's use of X mfd, while a container  doesn't want X mfd. .
+> > > To clarify what you meant, do you mean this: when a container is in
+> > > its own pid_namespace, and has "=3D2", the programs inside the contai=
+ner
+> > > can still use CLONE_NEWUSER to break out "=3D2" ?
+> >
+> > With the current implementation, this is not possible. My point was tha=
+t
+> > even if it were possible to lower the sysctl, ChromeOS presumably
+> > already blocks the operations that a user would be able to use to creat=
+e
+> > a memfd (an unprivileged user cannot CLONE_NEWPID to modify the sysctl
+> > without CLONE_NEWUSER, which is presumably blocked on ChromeOS due to
+> > the other security concerns).
+> >
+> >
+> > > > > The code sample shared in this patch set indicates that the attac=
+ker
+> > > > > already has the ability of creating tmpfs and executing complex s=
+teps,
+> > > > > at that point, it doesn't matter if the code execution is from me=
+mfd
+> > > > > or not. For a safe by default system such as ChromeOS, attackers =
+won't
+> > > > > easily run arbitrary code, memfd is one of the open doors for tha=
+t, so
+> > > > > we are disabling executable memfd in ChromeOS. In other words:  i=
+f an
+> > > > > attacker can already execute the arbitrary code as sample given i=
+n
+> > > > > ChromeOS, without using executable memfd,  then memfd is no longe=
+r the
+> > > > > thing we need to worry about, the arbitrary code execution is alr=
+eady
+> > > > > achieved by the attacker. Even though I use ChromeOS as an exampl=
+e, I
+> > > > > think the same type of threat model applies to any system that wa=
+nts
+> > > > > to disable executable memfd entirely.
+> > > >
+> > > > I understand the threat model this sysctl is blocking, my point is =
+that
+> > > > blocking CAP_SYS_ADMIN from modifying the setting doesn't make sens=
+e
+> > > > from that threat model. An attacker that manages to trick some proc=
+ess
+> > > > into creating a memfd with an executable payload is not going to be=
+ able
+> > > > to change the sysctl setting (unless there's a confused deputy with
+> > > > CAP_SYS_ADMIN, in which case you have much bigger issues).
+> > > >
+> > > It is the reverse.  An attacker that manages to trick some
+> > > CAP_SYSADMIN processes into changing this sysctl value (i.e. lower th=
+e
+> > > setting to 0 if no ratcheting), will be able to continue to use mfd a=
+s
+> > > part of the attack chain.
+> > >  In chromeOS, an attacker that can change sysctl might not necessaril=
+y
+> > > gain full arbitrary code execution already. As I mentioned previously=
+,
+> > > the main threat model here is to prevent  arbitrary code execution
+> > > through mfd.  If an attacker already gains arbitrary code execution,
+> > > at that point, we no longer worry about mfd.
+> >
+> > If an attacker can trick a privileged process into writing to arbitrary
+> > sysctls, the system has much bigger issues than arbitrary (presumably
+> > unprivileged) code execution. On the other hand, requiring you to reboo=
+t
+> > a server due to a misconfigured sysctl *is* broken.
+> >
+> > Again, at the very least, not even allowing capable(CAP_SYS_ADMIN) to
+> > change the setting is actually broken.
+> >
+> > > > If a CAP_SYS_ADMIN-capable user wants to change the sysctl, blockin=
+g it
+> > > > doesn't add any security because that process could create a memfd-=
+like
+> > > > fd to execute without issues.
+> > > >What practical attack does this ratcheting
+> > > > mechanism protect against? (This is a question you can answer with =
+the
+> > > > YAMA sysctl, but not this one AFAICS.)
+> > > >
+> > > > But even if you feel that allowing this in child user namespaces is
+> > > > unsafe or undesirable, it's absolutely necessary that
+> > > > capable(CAP_SYS_ADMIN) should be able to un-brick the running syste=
+m by
+> > > > changing the sysctl. The alternative is that you need to reboot you=
+r
+> > > > server in order to un-set a sysctl that broke some application you =
+run.
+> > > >
+> > >
+> > > > Also, by the same token, this ratcheting mechanism doesn't make sen=
+se
+> > > > with =3D1 *at all* because it could break programs in a way that wo=
+uld
+> > > > require a reboot but it's not a "security setting" (and the YAMA sy=
+sctl
+> > > > mentioned only locks the sysctl at the highest setting).
+> > > >
+> > > I think a system should use "=3D0" when it is unsure about its progra=
+m's
+> > > need or not need executable memfd. Technically, it is not that this
+> > > sysctl breaks the user, but the admin  made the mistake to set the
+> > > wrong sysctl value, and an admin should know what they are doing for =
+a
+> > > sysctl. Yes. rebooting increases the steps to undo the mistake, but
+> > > that could be an incentive for the admin to fully test its programs
+> > > before turning on this sysctl - and avoid unexpected runtime errors.
+> >
+> > I don't think this stance is really acceptable -- if an admin that has
+> > privileges to load kernel modules is not able to disable a sysctl that
+> > can break working programs without rebooting there is
+> >
+> > When this sysctl was first proposed a few years ago (when kernel folks
+> > found out that runc was using executable memfds), my understanding is
+> > that the long-term goal was to switch programs to have
+> > non-executable-memfds by default on most distributions. Making it
+> > impossible for an admin to lower the sysctl value flies in the face of
+> > this goal.
+> >
+> > At the very least, being unable to lower the sysctl from =3D1 to =3D0 i=
+s
+> > just broken (even if you use the yama example -- yama only locks the
+> > sysctl at highest possible setting, not on lower settings). But in my
+> > view, having this sysctl ratchet at all doesn't make sense.
+> >
+> To reiterate/summarize the current mechanism for vm.memfd_noexec
 >
->   | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0x260
+> 1> It is a pid namespace sysctl,  init ns and child pid ns can have
+> different setting values.
+> 2> child pid ns inherits parent's pid ns's sysctl at the time of fork.
+> 3> There are  3 values for the sysctl, each higher value is more
+> restrictive than the lower one. Once set, doesn't allow downgrading.
 >
-> Which 'faddr2line' refuses to accept:
+> It can be used as  following:
+> 1>
+> init ns: vm.memfd_noexec =3D 2 (at boot time)
+> Not allow executable memfd for the entire system, including its container=
+s.
 >
-> $ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
-> skipping do_one_initcall address at 0xffff800080014c74 due to size mismat=
-ch (0x260 !=3D 0x224)
-> no match for do_one_initcall+0xf4/0x260
+> 2>
+> init ns: vm.memfd_noexec =3D 0 or 1
+> container (child init namespace) vm.memfd_noexec =3D 2.
+> The host allows runc's usage of executable memfd during container
+> creation. Inside the container, executable memfd is not allowed.
 >
-> Filter out entries from readelf using the 'sysmap-ignored-syms.sed'
-> script used to construct System.map, so that the size of a symbol is
-> calculated as a delta to the next symbol present in ksymtab.
-
-
-I do not think this patch set is the right approach.
-
-I assume faddr2line is meant to work with both vmlinux
-and modules.
-
-A problem is that we have different filtering policies wrt kallsyms.
-
-scripts/mksysmap filters symbols in vmlinux,
-while kernel/module/kallsyms.c filters ones in modules.
-
-This patch tries to get aligned with the stacktrace of vmlinux,
-but that does not seem optimal to the stacktrace of modules.
-
-
-I have not checked the details, but I guess
-the module kallsyms filters less symbols.
-
-https://github.com/torvalds/linux/blob/v6.5-rc4/kernel/module/kallsyms.c#L2=
-88
-
-
-I prefer filtering symbols in the intersection of vmlinux and modules.
-
-is_mapping_symbol() filters symbols you are addressing.
-
-
-
-
-
-
-
-> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-> Cc: John Stultz <jstultz@google.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  scripts/faddr2line | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> The inherence + not allow downgrading is to reason with how
+> vm.memfd_noexec is applied in the process tree.
+> Without it, essentially we are losing the hierarchy view across the
+> process tree and  a process can evaluate its capability by modifying
+*elevate*
+> the setting. I think that is a less secure approach I would not
+> prefer.
 >
-> diff --git a/scripts/faddr2line b/scripts/faddr2line
-> index 62a3fa6f6f59..da734af90036 100755
-> --- a/scripts/faddr2line
-> +++ b/scripts/faddr2line
-> @@ -64,6 +64,7 @@ else
->         UTIL_PREFIX=3D${CROSS_COMPILE:-}
->  fi
+> Thanks
 >
-> +IGNORED_SYMS=3D$(dirname $0)/sysmap-ignored-syms.sed
->  READELF=3D"${UTIL_PREFIX}readelf"
->  ADDR2LINE=3D"${UTIL_PREFIX}addr2line"
->  AWK=3D"awk"
-> @@ -185,7 +186,7 @@ __faddr2line() {
->                                 found=3D2
->                                 break
->                         fi
-> -               done < <(${READELF} --symbols --wide $objfile | sed 's/\[=
-.*\]//' | ${AWK} -v sec=3D$sym_sec '$7 =3D=3D sec' | sort --key=3D2)
-> +               done < <(${READELF} --symbols --wide $objfile | sed -f ${=
-IGNORED_SYMS} -e 's/\[.*\]//' | ${AWK} -v sec=3D$sym_sec '$7 =3D=3D sec' | =
-sort --key=3D2)
->
->                 if [[ $found =3D 0 ]]; then
->                         warn "can't find symbol: sym_name: $sym_name sym_=
-sec: $sym_sec sym_addr: $sym_addr sym_elf_size: $sym_elf_size"
-> --
-> 2.41.0.487.g6d72f3e995-goog
->
-
-
---
-Best Regards
-Masahiro Yamada
+> -Jeff
