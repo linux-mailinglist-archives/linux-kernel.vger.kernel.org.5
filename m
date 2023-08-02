@@ -2,34 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2F776C5F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F003876C5FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbjHBG6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 02:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
+        id S232516AbjHBG7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 02:59:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbjHBG6O (ORCPT
+        with ESMTP id S232331AbjHBG7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 02:58:14 -0400
-Received: from out28-146.mail.aliyun.com (out28-146.mail.aliyun.com [115.124.28.146])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0878211A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:58:12 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3522126|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0108132-0.00065214-0.988535;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=sunran001@208suo.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.U6a9kda_1690959486;
-Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U6a9kda_1690959486)
-          by smtp.aliyun-inc.com;
-          Wed, 02 Aug 2023 14:58:08 +0800
-From:   Ran Sun <sunran001@208suo.com>
-To:     alexander.deucher@amd.com
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
-Subject: [PATCH] drm/amdgpu: Clean up errors in uvd_v7_0.c
-Date:   Wed,  2 Aug 2023 06:58:04 +0000
-Message-Id: <20230802065804.12360-1-sunran001@208suo.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        Wed, 2 Aug 2023 02:59:06 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B026710E;
+        Tue,  1 Aug 2023 23:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690959546; x=1722495546;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1VOVjYDQD8/gz+/pZmZ6WnPy9qqNJ4oQN6mKmeNp/84=;
+  b=a/DP8Y6M0mAdbQEYVYFd0eE/fi7LS0BmZwLtQqGWLQ8jL9khRIR/fFzz
+   4XFm04vK+ihgwGHMijnollMrYuKKX8I4zKB+LX7VuMtRnyBKGzKuGljME
+   vO1X4WpXn6P11wx2N4UTI9nMYMa6x9wmxMMBZuG26Veq42fvEf3ZBQ+21
+   tzfOBXg7+zIz5nb2G7Ckzj5tmnhzaNBWaFm2D7ILJZl5TRLLA3RqZ5uGk
+   Idlvp8BEuDUbJbzuugFl2wcc2zZPZuwB6PjfGHVjVrPDqTzIEeOuyLjCW
+   hlrr0v4srUez5sBxw3lxgEy5G3TxAnHmelfn2h9nrER4Qk1jYGjCi0pxA
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="asc'?scan'208";a="227517769"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Aug 2023 23:59:05 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Tue, 1 Aug 2023 23:58:50 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Tue, 1 Aug 2023 23:58:47 -0700
+Date:   Wed, 2 Aug 2023 07:58:12 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     "Rabara, Niravkumar L" <niravkumar.l.rabara@intel.com>
+CC:     Conor Dooley <conor@kernel.org>,
+        "Ng, Adrian Ho Yin" <adrian.ho.yin.ng@intel.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dinguyen@kernel.org" <dinguyen@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Turquette, Mike" <mturquette@baylibre.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        "wen.ping.teh@intel.com" <wen.ping.teh@intel.com>
+Subject: Re: [PATCH v2 3/5] dt-bindings: clock: add Intel Agilex5 clock
+ manager
+Message-ID: <20230802-untreated-twice-932a7afbacfc@wendy>
+References: <20230618132235.728641-1-niravkumar.l.rabara@intel.com>
+ <20230801010234.792557-1-niravkumar.l.rabara@intel.com>
+ <20230801010234.792557-4-niravkumar.l.rabara@intel.com>
+ <20230801-handball-glorifier-e55d44a2b638@spud>
+ <DM6PR11MB3291BD9E538528059D199EBCA20BA@DM6PR11MB3291.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="X5cmR5QgCpmYgaum"
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB3291BD9E538528059D199EBCA20BA@DM6PR11MB3291.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -37,44 +86,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following errors reported by checkpatch:
+--X5cmR5QgCpmYgaum
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-ERROR: spaces required around that ':' (ctx:VxE)
-that open brace { should be on the previous line
+On Wed, Aug 02, 2023 at 03:06:51AM +0000, Rabara, Niravkumar L wrote:
+> > From: Conor Dooley <conor@kernel.org>
+> > On Tue, Aug 01, 2023 at 09:02:32AM +0800, niravkumar.l.rabara@intel.com
+> > wrote:
 
-Signed-off-by: Ran Sun <sunran001@208suo.com>
----
- drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+> > > +examples:
+> >=20
+> > > +  # Clock controller node:
+> >=20
+> > This comment seems utterly pointless.
+> > Otherwise this looks okay to me.
+> >=20
+> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> >=20
+> > Thanks,
+> > Conor.
+> >=20
+>=20
+> Removed in [PATCH v3 3/5].
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c b/drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c
-index abaa4463e906..86d1d46e1e5e 100644
---- a/drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/uvd_v7_0.c
-@@ -679,11 +679,11 @@ static void uvd_v7_0_mc_resume(struct amdgpu_device *adev)
- 		if (adev->firmware.load_type == AMDGPU_FW_LOAD_PSP) {
- 			WREG32_SOC15(UVD, i, mmUVD_LMI_VCPU_CACHE_64BIT_BAR_LOW,
- 				i == 0 ?
--				adev->firmware.ucode[AMDGPU_UCODE_ID_UVD].tmr_mc_addr_lo:
-+				adev->firmware.ucode[AMDGPU_UCODE_ID_UVD].tmr_mc_addr_lo :
- 				adev->firmware.ucode[AMDGPU_UCODE_ID_UVD1].tmr_mc_addr_lo);
- 			WREG32_SOC15(UVD, i, mmUVD_LMI_VCPU_CACHE_64BIT_BAR_HIGH,
- 				i == 0 ?
--				adev->firmware.ucode[AMDGPU_UCODE_ID_UVD].tmr_mc_addr_hi:
-+				adev->firmware.ucode[AMDGPU_UCODE_ID_UVD].tmr_mc_addr_hi :
- 				adev->firmware.ucode[AMDGPU_UCODE_ID_UVD1].tmr_mc_addr_hi);
- 			WREG32_SOC15(UVD, i, mmUVD_VCPU_CACHE_OFFSET0, 0);
- 			offset = 0;
-@@ -1908,8 +1908,7 @@ static void uvd_v7_0_set_irq_funcs(struct amdgpu_device *adev)
- 	}
- }
- 
--const struct amdgpu_ip_block_version uvd_v7_0_ip_block =
--{
-+const struct amdgpu_ip_block_version uvd_v7_0_ip_block = {
- 		.type = AMD_IP_BLOCK_TYPE_UVD,
- 		.major = 7,
- 		.minor = 0,
--- 
-2.17.1
+To be clear, you don't need to send a v3 just for that - I gave you the
+reviewed-by after all.
 
+
+--X5cmR5QgCpmYgaum
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMn+gwAKCRB4tDGHoIJi
+0o2/AP4lW8VcXGN8U5mLA1eAOA0nQHnoT7R0w7am8jQclz5I0wEAwXt9GT4Jk4lk
+4+Zvf/M6iC4LLdyL8pgZ7CxYU0KI9QM=
+=tNAR
+-----END PGP SIGNATURE-----
+
+--X5cmR5QgCpmYgaum--
