@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BA176DA94
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 687F076DA95
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbjHBWUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
+        id S233960AbjHBWUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232478AbjHBWTe (ORCPT
+        with ESMTP id S232708AbjHBWTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:19:34 -0400
+        Wed, 2 Aug 2023 18:19:35 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A938272B;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A798272E;
         Wed,  2 Aug 2023 15:19:32 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 22:19:29 -0000
+Date:   Wed, 02 Aug 2023 22:19:30 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691014770;
+        s=2020; t=1691014771;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=wPQMIfrEWGPrOHFLpz9kkKwHb9KzkD6vgxPztn1QXPQ=;
-        b=YFApiAn6ImM6evWr79W3GZueRXxNdFnsvBcbd0x68p+9EVG9fQ63Vy9B92qGxgNnEo/Vj4
-        MSkpzXbnh4ziCUJiEkf9KL3B2dl9WRo3X/yoUrNjg3TPvQAW9rq3T+N/U2bG3BhBRttOJ8
-        /LlPU+YOLq4Ba+28NLfsq4lG13tfgcBccMD0oUzrG13bb2W6WQfe+XYvjA2I/0eEWd3BD6
-        7+MLzLr+JIJ8GUISdoqs81f45g97uq5aULKpxT6iyWpEiLzHcKIClRklBm+tyC3IYZfL1I
-        6Df2av10UwLNS9tvgcPUZUWK6cDypNNoi8hoEjfg8F9MsWx/aY+1GbsxNuG+TA==
+        bh=Qc8dc1TtOiTEmrN/QriOa6izinwXsZpTOnL3vHZnwlw=;
+        b=bv1u3jp845xC/MG4rP6MggVWlwrfNg9B+o/LlEESH6FW/fnhPIE6Mk96zyqmbFeV/fBYKi
+        CB6gVJT+co5dIhfPYknrmvFKYGM2oFQiIFBZvosejwWmdHeAKEQBHHMhRdQ3rFM3Parcwi
+        0aOOoOA9Szi5xBseNRnUpqBtXAe9XBD6OCQ1TpXNTPFC60mJF2ZU7Vwd/pE7mXfVKtAXH4
+        sZPKrwQMoksVjkdwK3Wq6XxGoJGHhLjBoZ35yD0xJ04JgXj2vXd2BSzr6aptt36mI5/TlX
+        kMIehZZnbg9VQjRhFM9nQs3Nu6P1rgWl9dUch0zkTUQ8jLvfrmHCSAbq1lQK6Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691014770;
+        s=2020e; t=1691014771;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=wPQMIfrEWGPrOHFLpz9kkKwHb9KzkD6vgxPztn1QXPQ=;
-        b=ADea7MZm0iEzVOfKIW59iKhL+0F45WlKFaInCptmukMwKIX/rwfKPamVk1sP6N2uuwWGb0
-        0p0UCAwu9l+rlLCg==
+        bh=Qc8dc1TtOiTEmrN/QriOa6izinwXsZpTOnL3vHZnwlw=;
+        b=UgVV5Pp9hV6jS1Vn+VtSG41LqGuQ7JbupYsvPUYpn+yNNusvCp36OGIQKJvi0JsSbIuRQp
+        CKlAQfNJKMqG04Dg==
 From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86: Expose thread features in /proc/$PID/status
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+Subject: [tip: x86/shstk] x86/shstk: Support WRSS for userspace
+Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Borislav Petkov (AMD)" <bp@alien8.de>,
         Kees Cook <keescook@chromium.org>,
@@ -50,7 +49,7 @@ Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         John Allen <john.allen@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169101476951.28540.3773824342086469560.tip-bot2@tip-bot2>
+Message-ID: <169101477014.28540.12975244459079622614.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,29 +66,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/shstk branch of tip:
 
-Commit-ID:     0ee44885fe9cf19eb3870947c8f3c275017e48a7
-Gitweb:        https://git.kernel.org/tip/0ee44885fe9cf19eb3870947c8f3c275017e48a7
+Commit-ID:     1d62c65372ab08599e4cf24af83d004434087ada
+Gitweb:        https://git.kernel.org/tip/1d62c65372ab08599e4cf24af83d004434087ada
 Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Mon, 12 Jun 2023 17:11:02 -07:00
+AuthorDate:    Mon, 12 Jun 2023 17:11:01 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
 CommitterDate: Wed, 02 Aug 2023 15:01:51 -07:00
 
-x86: Expose thread features in /proc/$PID/status
+x86/shstk: Support WRSS for userspace
 
-Applications and loaders can have logic to decide whether to enable
-shadow stack. They usually don't report whether shadow stack has been
-enabled or not, so there is no way to verify whether an application
-actually is protected by shadow stack.
+For the current shadow stack implementation, shadow stacks contents can't
+easily be provisioned with arbitrary data. This property helps apps
+protect themselves better, but also restricts any potential apps that may
+want to do exotic things at the expense of a little security.
 
-Add two lines in /proc/$PID/status to report enabled and locked features.
+The x86 shadow stack feature introduces a new instruction, WRSS, which
+can be enabled to write directly to shadow stack memory from userspace.
+Allow it to get enabled via the prctl interface.
 
-Since, this involves referring to arch specific defines in asm/prctl.h,
-implement an arch breakout to emit the feature lines.
+Only enable the userspace WRSS instruction, which allows writes to
+userspace shadow stacks from userspace. Do not allow it to be enabled
+independently of shadow stack, as HW does not support using WRSS when
+shadow stack is disabled.
 
-[Switched to CET, added to commit log]
+>From a fault handler perspective, WRSS will behave very similar to WRUSS,
+which is treated like a user access from a #PF err code perspective.
 
-Co-developed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
@@ -98,84 +100,81 @@ Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 Tested-by: John Allen <john.allen@amd.com>
 Tested-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20230613001108.3040476-37-rick.p.edgecombe%40intel.com
+Link: https://lore.kernel.org/all/20230613001108.3040476-36-rick.p.edgecombe%40intel.com
 ---
- arch/x86/kernel/cpu/proc.c | 23 +++++++++++++++++++++++
- fs/proc/array.c            |  6 ++++++
- include/linux/proc_fs.h    |  1 +
- 3 files changed, 30 insertions(+)
+ arch/x86/include/uapi/asm/prctl.h |  1 +-
+ arch/x86/kernel/shstk.c           | 43 +++++++++++++++++++++++++++++-
+ 2 files changed, 43 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/cpu/proc.c b/arch/x86/kernel/cpu/proc.c
-index 099b6f0..31c0e68 100644
---- a/arch/x86/kernel/cpu/proc.c
-+++ b/arch/x86/kernel/cpu/proc.c
-@@ -4,6 +4,8 @@
- #include <linux/string.h>
- #include <linux/seq_file.h>
- #include <linux/cpufreq.h>
-+#include <asm/prctl.h>
-+#include <linux/proc_fs.h>
+diff --git a/arch/x86/include/uapi/asm/prctl.h b/arch/x86/include/uapi/asm/prctl.h
+index 6a8e0e1..eedfde3 100644
+--- a/arch/x86/include/uapi/asm/prctl.h
++++ b/arch/x86/include/uapi/asm/prctl.h
+@@ -36,5 +36,6 @@
  
- #include "cpu.h"
+ /* ARCH_SHSTK_ features bits */
+ #define ARCH_SHSTK_SHSTK		(1ULL <<  0)
++#define ARCH_SHSTK_WRSS			(1ULL <<  1)
  
-@@ -175,3 +177,24 @@ const struct seq_operations cpuinfo_op = {
- 	.stop	= c_stop,
- 	.show	= show_cpuinfo,
- };
-+
-+#ifdef CONFIG_X86_USER_SHADOW_STACK
-+static void dump_x86_features(struct seq_file *m, unsigned long features)
-+{
-+	if (features & ARCH_SHSTK_SHSTK)
-+		seq_puts(m, "shstk ");
-+	if (features & ARCH_SHSTK_WRSS)
-+		seq_puts(m, "wrss ");
-+}
-+
-+void arch_proc_pid_thread_features(struct seq_file *m, struct task_struct *task)
-+{
-+	seq_puts(m, "x86_Thread_features:\t");
-+	dump_x86_features(m, task->thread.features);
-+	seq_putc(m, '\n');
-+
-+	seq_puts(m, "x86_Thread_features_locked:\t");
-+	dump_x86_features(m, task->thread.features_locked);
-+	seq_putc(m, '\n');
-+}
-+#endif /* CONFIG_X86_USER_SHADOW_STACK */
-diff --git a/fs/proc/array.c b/fs/proc/array.c
-index d35bbf3..2c2efbe 100644
---- a/fs/proc/array.c
-+++ b/fs/proc/array.c
-@@ -431,6 +431,11 @@ static inline void task_untag_mask(struct seq_file *m, struct mm_struct *mm)
- 	seq_printf(m, "untag_mask:\t%#lx\n", mm_untag_mask(mm));
+ #endif /* _ASM_X86_PRCTL_H */
+diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+index 04c37b3..ea0bf11 100644
+--- a/arch/x86/kernel/shstk.c
++++ b/arch/x86/kernel/shstk.c
+@@ -390,6 +390,47 @@ void shstk_free(struct task_struct *tsk)
+ 	unmap_shadow_stack(shstk->base, shstk->size);
  }
  
-+__weak void arch_proc_pid_thread_features(struct seq_file *m,
-+					  struct task_struct *task)
++static int wrss_control(bool enable)
 +{
++	u64 msrval;
++
++	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK))
++		return -EOPNOTSUPP;
++
++	/*
++	 * Only enable WRSS if shadow stack is enabled. If shadow stack is not
++	 * enabled, WRSS will already be disabled, so don't bother clearing it
++	 * when disabling.
++	 */
++	if (!features_enabled(ARCH_SHSTK_SHSTK))
++		return -EPERM;
++
++	/* Already enabled/disabled? */
++	if (features_enabled(ARCH_SHSTK_WRSS) == enable)
++		return 0;
++
++	fpregs_lock_and_load();
++	rdmsrl(MSR_IA32_U_CET, msrval);
++
++	if (enable) {
++		features_set(ARCH_SHSTK_WRSS);
++		msrval |= CET_WRSS_EN;
++	} else {
++		features_clr(ARCH_SHSTK_WRSS);
++		if (!(msrval & CET_WRSS_EN))
++			goto unlock;
++
++		msrval &= ~CET_WRSS_EN;
++	}
++
++	wrmsrl(MSR_IA32_U_CET, msrval);
++
++unlock:
++	fpregs_unlock();
++
++	return 0;
 +}
 +
- int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
- 			struct pid *pid, struct task_struct *task)
+ static int shstk_disable(void)
  {
-@@ -455,6 +460,7 @@ int proc_pid_status(struct seq_file *m, struct pid_namespace *ns,
- 	task_cpus_allowed(m, task);
- 	cpuset_task_status_allowed(m, task);
- 	task_context_switch_counts(m, task);
-+	arch_proc_pid_thread_features(m, task);
+ 	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK))
+@@ -406,7 +447,7 @@ static int shstk_disable(void)
+ 	fpregs_unlock();
+ 
+ 	shstk_free(current);
+-	features_clr(ARCH_SHSTK_SHSTK);
++	features_clr(ARCH_SHSTK_SHSTK | ARCH_SHSTK_WRSS);
+ 
  	return 0;
  }
- 
-diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
-index 253f267..de407e7 100644
---- a/include/linux/proc_fs.h
-+++ b/include/linux/proc_fs.h
-@@ -159,6 +159,7 @@ int proc_pid_arch_status(struct seq_file *m, struct pid_namespace *ns,
- #endif /* CONFIG_PROC_PID_ARCH_STATUS */
- 
- void arch_report_meminfo(struct seq_file *m);
-+void arch_proc_pid_thread_features(struct seq_file *m, struct task_struct *task);
- 
- #else /* CONFIG_PROC_FS */
- 
