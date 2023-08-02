@@ -2,77 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A5D076C5AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCF676C5B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbjHBGvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 02:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
+        id S232806AbjHBGv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 02:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232775AbjHBGvi (ORCPT
+        with ESMTP id S232807AbjHBGvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 02:51:38 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278D52101
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:50:45 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4fe11652b64so10785083e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 23:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690959036; x=1691563836;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lU+E4yafuV6EQTEck7cJ9TqAerBQYWi6XJ2y5f9cSHc=;
-        b=UhFy44WljPZvQFwXudxGUBGSQFCDb0wdcwNvLa6zgHk5EipUsa5MDWRGR53TSAzGbH
-         sw3fNT4YARCu0ghblM5gj9UCxrum9SPG5XSaYY3SLs9XQsuEvHrXu2l61H8eqVNKBqm5
-         KkOILZEZnUjkAu1iIjPfka77zPToi1C/6XXX/SJAv+yyUCwxOvAAZrcXfkw6bPWrPS6e
-         BdeHW8WRnn0HFPzX0GDg3IG3wZzHfB0NqIXiUj7eUOaQbSR2ueFhjqL5aLZ5qCzgJOna
-         ztZafc25zawTK3MKkNynhaqUQK+tc6XCMZjmmam9T54Gnbd3My6OZaEw4tW9KHQLZ1cf
-         58Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690959036; x=1691563836;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lU+E4yafuV6EQTEck7cJ9TqAerBQYWi6XJ2y5f9cSHc=;
-        b=jka7Cy5Ic3cce/d0X72Nt/rtlMohNF3jhIg3ayB1vBN0jyuy/0s17XcaHmWmofqX+V
-         sbv07jbh0ZizkD7eL4BotIg5JHV9gZLti3R/AHO/dtiHapquNCqAK40dZc2gfMGTF064
-         M0wy3FYfkQcPuN4r+2VAtV2zs8q68+h8CNFfYgDZl0pifEQ2HFHcT+mGYfYun+YIu8Am
-         Df+neN48IhSQq+v0aK0v/XmLIto41RRePQgftjkpgqFYBjZdFLKWkIrmV1HxXLV8Nj7D
-         g0wg1DPXIyP5g1ZuGZVjIc+KxIYzWyCqeBat7tqueQp2BImAk5db8uruLVqjVQzi/lkL
-         NF7A==
-X-Gm-Message-State: ABy/qLaTrW46o5tXpqgYGF1v5PowZLW4roOYT0Rjg2o73hiWaabuZzus
-        aTP2Lb7/h4nQlDXd3XxOspjbxfl6Zso=
-X-Google-Smtp-Source: APBJJlE2SZ4Pne2N8C5vEIlffY6TXsEGavFl8SbuRUWjjGC+kueHZThtNgGn9FTcKR1VAUsbseLsSw==
-X-Received: by 2002:ac2:518a:0:b0:4fb:744e:17db with SMTP id u10-20020ac2518a000000b004fb744e17dbmr3554005lfi.1.1690959035493;
-        Tue, 01 Aug 2023 23:50:35 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::5? (dc78bmyyyyyyyyyyyyyct-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::5])
-        by smtp.gmail.com with ESMTPSA id o12-20020a05651238ac00b004f61187363asm2865653lft.66.2023.08.01.23.50.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Aug 2023 23:50:35 -0700 (PDT)
-Message-ID: <76c7a68f-a448-cda1-ef4f-81a4ddf36dc1@gmail.com>
-Date:   Wed, 2 Aug 2023 09:50:34 +0300
+        Wed, 2 Aug 2023 02:51:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD2530C7;
+        Tue,  1 Aug 2023 23:50:55 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E75F617F5;
+        Wed,  2 Aug 2023 06:50:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FBD5C433C7;
+        Wed,  2 Aug 2023 06:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690959054;
+        bh=kA6LMeMa5KWRXjA4E8xeiCqx2O/5yf0NT93jEs4o2gE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wkhzKWPyWi+DmqzYYFnOGjY59X9M0Yn+CWLhHo9O47R1POH9UoojuU26yWNE1musW
+         /dkzDSDBGFJ+KCqv6kmLLgRwoNC00YMKpHQ/Rr5LLFrI/sAzhsSvs63VCZsjgsO4v4
+         OXX9SEfohahWhrtMDq6zCwlmC4a5LaxJrO8zZ5d4=
+Date:   Wed, 2 Aug 2023 08:50:51 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 5.15 000/155] 5.15.124-rc1 review
+Message-ID: <2023080219-starlight-entryway-0203@gregkh>
+References: <20230801091910.165050260@linuxfoundation.org>
+ <CA+G9fYtCYSQ2fzmJU0t7ZCOUWjeRp9+Dn3gJ=4oRJP_CJttOcw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Content-Language: en-US, en-GB
-To:     Chen-Yu Tsai <wenst@chromium.org>, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230714081408.274567-1-wenst@chromium.org>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-Subject: Re: [PATCH v3] regulator: Use bitfield values for range selectors
-In-Reply-To: <20230714081408.274567-1-wenst@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYtCYSQ2fzmJU0t7ZCOUWjeRp9+Dn3gJ=4oRJP_CJttOcw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,44 +58,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/14/23 11:14, Chen-Yu Tsai wrote:
-> Right now the regulator helpers expect raw register values for the range
-> selectors. This is different from the voltage selectors, which are
-> normalized as bitfield values. This leads to a bit of confusion. Also,
-> raw values are harder to copy from datasheets or match up with them,
-> as datasheets will typically have bitfield values.
+On Wed, Aug 02, 2023 at 07:27:03AM +0530, Naresh Kamboju wrote:
+> On Tue, 1 Aug 2023 at 14:52, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.15.124 release.
+> > There are 155 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 03 Aug 2023 09:18:38 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.124-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> Make the helpers expect bitfield values, and convert existing users. The
-> field in regulator_desc is renamed to |linear_range_selectors_bitfield|.
-> This is intended to cause drivers added in the same merge window and
-> out-of-tree drivers using the incorrect variable and values to break,
-> preventing incorrect values being used on actual hardware and potentially
-> producing magic smoke.
+> Following patch caused build regression on stable-rc 5.15 and stable-rc 6.1,
 > 
-> Also include bitops.h explicitly for ffs(), and reorder the header include
-> statements. While at it, also replace module.h with export.h, since the
-> only use is EXPORT_SYMBOL_GPL.
+> Regressions found on arm:
 > 
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
-> Changes since v2:
-> - Changed .linear_range_selectors to .linear_range_selectors_bitfield,
->    as suggested by David
-> - Dropped Matti's Reviewed-by due to this intrusive change
+>   - build/gcc-12-orion5x_defconfig
+>   - build/clang-nightly-orion5x_defconfig
+>   - build/gcc-8-orion5x_defconfig
+>   - build/clang-16-orion5x_defconfig
+> 
+> gpio: mvebu: Make use of devm_pwmchip_add
+> [ Upstream commit 1945063eb59e64d2919cb14d54d081476d9e53bb ]
+> 
+> Build log:
+> ------
+> drivers/gpio/gpio-mvebu.c: In function 'mvebu_pwm_probe':
+> drivers/gpio/gpio-mvebu.c:877:16: error: implicit declaration of
+> function 'devm_pwmchip_add'; did you mean 'pwmchip_add'?
+> [-Werror=implicit-function-declaration]
+>   877 |         return devm_pwmchip_add(dev, &mvpwm->chip);
+>       |                ^~~~~~~~~~~~~~~~
+>       |                pwmchip_add
+> cc1: some warnings being treated as errors
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Sorry for late reply, I assume this is already merged... I was mostly 
-offline for a month or so - I can recommend, works wonders ;)
+Ah, looks like 88da4e811311 ("pwm: Add a stub for devm_pwmchip_add()")
+is needed, I'll queue that up for 5.15 and 6.1 and push out new -rc
+releases.
 
-Just wanted to say (and in case this is not yet merged) - still looks 
-good to me (helpers and bd718x7 parts).
+thanks,
 
-Yours,
-	Matti
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+greg k-h
