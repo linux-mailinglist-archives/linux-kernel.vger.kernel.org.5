@@ -2,69 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D1276C19A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0831676C1A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbjHBAqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 20:46:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
+        id S231200AbjHBAwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 20:52:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjHBAqh (ORCPT
+        with ESMTP id S229485AbjHBAwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 20:46:37 -0400
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8AA213E
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 17:46:34 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vosjg-X_1690937191;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vosjg-X_1690937191)
-          by smtp.aliyun-inc.com;
-          Wed, 02 Aug 2023 08:46:32 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     airlied@gmail.com, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH -next] drm/tests: Fix one kernel-doc comment
-Date:   Wed,  2 Aug 2023 08:46:30 +0800
-Message-Id: <20230802004630.74104-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Tue, 1 Aug 2023 20:52:04 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 754FD19AA
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 17:52:01 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4AC5CD75;
+        Tue,  1 Aug 2023 17:52:44 -0700 (PDT)
+Received: from [10.163.53.180] (unknown [10.163.53.180])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ED4BA3F5A1;
+        Tue,  1 Aug 2023 17:51:56 -0700 (PDT)
+Message-ID: <17190a14-919b-62f0-cd55-3e819be41e7e@arm.com>
+Date:   Wed, 2 Aug 2023 06:21:55 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH V2 0/4] coresight: trbe: Enable ACPI based devices
+Content-Language: en-US
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
+        Sami Mujawar <sami.mujawar@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org
+References: <20230801094052.750416-1-anshuman.khandual@arm.com>
+ <20230801145249.GG26253@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <20230801145249.GG26253@willie-the-truck>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make @drm_kunit_helper_context_alloc to
-@drm_kunit_helper_acquire_ctx_alloc, to silence the warning:
 
-drivers/gpu/drm/tests/drm_kunit_helpers.c:172: warning: expecting prototype for drm_kunit_helper_context_alloc(). Prototype was for drm_kunit_helper_acquire_ctx_alloc() instead
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6073
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/gpu/drm/tests/drm_kunit_helpers.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 8/1/23 20:22, Will Deacon wrote:
+> On Tue, Aug 01, 2023 at 03:10:48PM +0530, Anshuman Khandual wrote:
+>> This series enables detection of ACPI based TRBE devices via a stand alone
+>> purpose built representative platform device. But as a pre-requisite this
+>> changes coresight_platform_data structure assignment for the TRBE device.
+>>
+>> This series is based on v6.5-rc4 kernel, is also dependent on the following
+>> EDK2 changes posted earlier by Sami.
+>>
+>> https://edk2.groups.io/g/devel/message/107239
+>> https://edk2.groups.io/g/devel/message/107241
+>>
+>> Changes in V2:
+>>
+>> - Refactored arm_spe_acpi_register_device() in a separate patch
+>> - Renamed trbe_acpi_resources as trbe_resources
+>> - Renamed trbe_acpi_dev as trbe_dev
+>>
+>> Changes in V1:
+>>
+>> https://lore.kernel.org/all/20230728112733.359620-1-anshuman.khandual@arm.com/
+>>
+>> Cc: Sami Mujawar <sami.mujawar@arm.com>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>> Cc: James Clark <james.clark@arm.com>
+>> Cc: coresight@lists.linaro.org
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+> 
+> FYI: if you pass '--cc-cover' to git send-email, it will CC all these
+> folks on the series, which I think is better when you're reviewing stuff
+> (I didn't receive patches 3 and 4).
 
-diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-index 3d624ff2f651..c1dfbfcaa000 100644
---- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
-+++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
-@@ -156,7 +156,7 @@ static void action_drm_release_context(void *ptr)
- }
- 
- /**
-- * drm_kunit_helper_context_alloc - Allocates an acquire context
-+ * drm_kunit_helper_acquire_ctx_alloc - Allocates an acquire context
-  * @test: The test context object
-  *
-  * Allocates and initializes a modeset acquire context.
--- 
-2.20.1.7.g153144c
-
+My bad, forgot --cc-cover on the command line.
