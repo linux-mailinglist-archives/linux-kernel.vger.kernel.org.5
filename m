@@ -2,126 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A9D76C374
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A029776C375
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbjHBDS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 23:18:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
+        id S231978AbjHBDTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 23:19:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbjHBDSn (ORCPT
+        with ESMTP id S231953AbjHBDSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:18:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631031713;
-        Tue,  1 Aug 2023 20:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690946322; x=1722482322;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9NCM2C6plWYZlTWDXnxmxP68QKs4h7xrJfHjoOpKpzc=;
-  b=HKVScfi42mwgsATJUFTdoEF/d8ysJsHLoXgzwBGEilbCqHr8C50FUEwC
-   TPHKYD4tlYU6dfr8TU/vVnv6JOOMXOCKgV3bM+G8Kc4JzN6LPWObPfOkZ
-   0hLXJuFBXKISsCaX0ZJXXXdRMLrFAlRJWqyPJKDYobKJ0pmH5S15GP3oe
-   hBWEw87tZpOkDuux4fB6w5WXxMOZbHUvwdOP7lTIbs5uVTElHFqY1y55T
-   l2OZvigm/JmLckZ7RZRBL30rjWtYzsLI29xD5ZfjCPydP17Ux/fWcWx6J
-   YF1KT2e3eRUrBkWQyfgrk+S2TvcDBiQkhoM5nZzG9W+RVoQIhc292UsGl
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="349773127"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="349773127"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 20:18:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="794424914"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="794424914"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Aug 2023 20:18:36 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qR2Nd-00ExOt-1i;
-        Wed, 02 Aug 2023 06:18:33 +0300
-Date:   Wed, 2 Aug 2023 06:18:33 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-pci@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4 1/4] kernel.h: Split out COUNT_ARGS() and
- CONCATENATE() to args.h
-Message-ID: <ZMnLCSsY83IphIrv@smile.fi.intel.com>
-References: <20230718211147.18647-2-andriy.shevchenko@linux.intel.com>
- <20230801211139.GA51676@bhelgaas>
+        Tue, 1 Aug 2023 23:18:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0961724
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 20:18:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7C1D56179A
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:18:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87C2BC433C9;
+        Wed,  2 Aug 2023 03:18:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690946328;
+        bh=pPUw7iVxQvIYg97/YCPzTavNzCKbFieabBAhT15a2Uo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=bkcncHKz/50NbkYBuFySUwMr+ehRZ3ht7OWpcR8GWtU9m5OJRSsRdhOZP45x0rMiD
+         lyx9oHODYj1kNIMtZbddO5jGYdkgXmN1COwQMNkWLN4keMu4QdMN0RHqdPT7Sw3h2S
+         8sw2tGvk5fH6inIRlp4Za54mZBfkfUTJizanswHdHaemnbxhroj9TkO1PS4gkVr3Jx
+         knPz4E1dqyrHQVD38G0/LL6vyuxJIXJxePRJO5wvLBqeKNrFqEK83J7nxMFRCfFc/x
+         1Fj9/5wRTGf13jfSNeHUBBWzT4cvZiFyuMndA0R43CY0RKi5Zfk1cQwBQpbL/1Njwk
+         8ORqcl2mqQHyA==
+Message-ID: <cbefa473-2d48-5df9-f773-8bb6bdcd6be1@kernel.org>
+Date:   Tue, 1 Aug 2023 21:18:47 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801211139.GA51676@bhelgaas>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH v3] ip6mr: Fix skb_under_panic in ip6mr_cache_report()
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Cc:     Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
+        pabeni@redhat.com, yoshfuji@linux-ipv6.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, simon.horman@corigine.com
+References: <20230801064318.34408-1-yuehaibing@huawei.com>
+ <CANn89iJO44CiUjftDZHEjOCy5Q3-PDB12uWTkrbA5JJNXMoeDA@mail.gmail.com>
+ <20230801131146.51a9aaf3@kernel.org>
+ <0e3e2d6f-0e8d-ccb4-0750-928a568ccaaf@kernel.org>
+ <cad2b715-14fc-8424-f85d-b5391e0110dc@huawei.com>
+ <20230801191058.0664b1b8@kernel.org>
+From:   David Ahern <dsahern@kernel.org>
+In-Reply-To: <20230801191058.0664b1b8@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 04:11:39PM -0500, Bjorn Helgaas wrote:
-> On Wed, Jul 19, 2023 at 12:11:44AM +0300, Andy Shevchenko wrote:
-> > kernel.h is being used as a dump for all kinds of stuff for a long time.
-> > The COUNT_ARGS() and CONCATENATE() macros may be used in some places
-> > without need of the full kernel.h dependency train with it.
-> > 
-> > Here is the attempt on cleaning it up by splitting out these macros().
-> > 
-> > While at it, include new header where it's being used.
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+On 8/1/23 8:10 PM, Jakub Kicinski wrote:
+> On Wed, 2 Aug 2023 09:28:31 +0800 YueHaibing wrote:
+>>> that pattern shows up a few times:  
+>>
+>> Ok, I will test and fix these if any.
 > 
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>	# PCI
+> Thanks, we may also want to add a 
+>   DEBUG_NET_WARN_ON_ONCE(len > INT_MAX)
+> in skb_push() but perhaps that's an overkill.
+> Most of those cases are probably legit (skb_.*_offset()
+> can well be negative if headers were already pulled).
 
-Thank you!
-
-...
-
-> > -
-> > +#include <linux/args.h>
-> >  #include <linux/mod_devicetable.h>
-> >  
-> >  #include <linux/types.h>
-> 
-> If there's not a reason otherwise, I'd put this in the main list
-> instead of the weirdly separated mod_devicetable.h.
-
-The idea is to make them alphabetically ordered. currently even main list
-is a mess. And I have no idea why mod_devicetable.h is so special, a few
-bus headers (e.g., i2c, spi) consider that just as yet another header while
-actually ain't using it (in the respective _headers_).
-
-That said, I would take the sorting change as a separate one that can be
-done after this.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Yea, a lot of those could be legit, so it would be best to have a test
+case that shows it can be triggered and then any patch fixes it.
