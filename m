@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 668E576C377
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8E976C37A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231995AbjHBDUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 23:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56760 "EHLO
+        id S231933AbjHBDXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 23:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbjHBDUN (ORCPT
+        with ESMTP id S229800AbjHBDXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:20:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BFAD1708;
-        Tue,  1 Aug 2023 20:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690946412; x=1722482412;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=wP5cpI1WxpDaK0+2mD5lWz2GGol38mq2b5g+itsFQmM=;
-  b=BNUaEWNtwA5kRtj4ge4ZZNrHo/jHg2W2Y8MR46LBD+N7RoO52sApbppv
-   SbrV9gOx/Vh1pxaRLbMIdwWef1LSZEv5wBCsEaE+uOwfBwrSh+7TbdFe/
-   V2e7H0TourM0SowiSSMMCpcN4aSCNtIY7a7K9kdwlI1XxXFNa+wIa9qxU
-   jcBZTiomEw69XufTUBCTneDnK0UJwFNZGmY6VV9yMcooLXw51unzWPbO0
-   XNvH/KlUzfT3eK8HLnCc1nTEqc36PoV6R9zVFNqHsPHiBv7fQ69FbF7sj
-   ZNLz1zv8wjHAmxsdz5oI8gOuqKuIvf90Q3ZncJUPHeo0C0IQyCuZcjlsv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="433308233"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="433308233"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 20:20:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="819020866"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="819020866"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.213.137]) ([10.254.213.137])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 20:20:08 -0700
-Message-ID: <077966f0-d2fe-d85e-268a-a4f14c1870f1@linux.intel.com>
-Date:   Wed, 2 Aug 2023 11:20:06 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] iommu: Consolidate pasid dma ownership check
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230801063125.34995-1-baolu.lu@linux.intel.com>
- <20230801063125.34995-2-baolu.lu@linux.intel.com>
- <BN9PR11MB5276D196F9BFB06D0E59AEF28C0AA@BN9PR11MB5276.namprd11.prod.outlook.com>
- <36fb3548-7206-878e-d095-195c2feb24f1@linux.intel.com>
- <BN9PR11MB5276B0865C9D8DC9060BF1A08C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276B0865C9D8DC9060BF1A08C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 23:23:07 -0400
+Received: from out28-171.mail.aliyun.com (out28-171.mail.aliyun.com [115.124.28.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF4BE4C
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 20:23:05 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08068386|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0424418-0.000212042-0.957346;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=sunran001@208suo.com;NM=1;PH=DS;RN=5;RT=5;SR=0;TI=SMTPD_---.U6PnZk8_1690946577;
+Received: from localhost.localdomain(mailfrom:sunran001@208suo.com fp:SMTPD_---.U6PnZk8_1690946577)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Aug 2023 11:22:59 +0800
+From:   Ran Sun <sunran001@208suo.com>
+To:     alexander.deucher@amd.com
+Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Ran Sun <sunran001@208suo.com>
+Subject: [PATCH] drm/amd/display: Clean up errors in bios_parser2.c
+Date:   Wed,  2 Aug 2023 03:22:56 +0000
+Message-Id: <20230802032256.10846-1-sunran001@208suo.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/2 9:39, Tian, Kevin wrote:
->> From: Baolu Lu<baolu.lu@linux.intel.com>
->> Sent: Tuesday, August 1, 2023 3:44 PM
->>
->> On 2023/8/1 15:03, Tian, Kevin wrote:
->>>>    /**
->>>>     * iommu_device_use_default_domain() - Device driver wants to handle
->>>> device
->>>>     *                                     DMA through the kernel DMA API.
->>>> @@ -3052,14 +3063,14 @@ int
->> iommu_device_use_default_domain(struct
->>>> device *dev)
->>>>
->>>>    	mutex_lock(&group->mutex);
->>>>    	if (group->owner_cnt) {
->>>> -		if (group->owner || !iommu_is_default_domain(group) ||
->>>> -		    !xa_empty(&group->pasid_array)) {
->>>> +		if (group->owner || !iommu_is_default_domain(group)) {
->>>>    			ret = -EBUSY;
->>>>    			goto unlock_out;
->>>>    		}
->>>>    	}
->>>>
->>>>    	group->owner_cnt++;
->>>> +	assert_pasid_dma_ownership(group);
->>> Old code returns error if pasid_xrrary is not empty.
->>>
->>> New code continues to take ownership with a warning.
->>>
->>> this is a functional change. Is it intended or not?
->> If iommu_device_use_default_domain() is called with pasid_array not
->> empty, there must be a bug somewhere in the device driver. We should
->> WARN it instead of returning an error. Probably this is a functional
->> change? If so, I can add this in the commit message.
->>
-> IMHO we should WARN*and*  return an error.
+Fix the following errors reported by checkpatch:
 
-Okay, fine to me. Will make this in the next version.
+ERROR: switch and case should be at the same indent
+ERROR: code indent should use tabs where possible
 
-Best regards,
-baolu
+Signed-off-by: Ran Sun <sunran001@208suo.com>
+---
+ .../drm/amd/display/dc/bios/bios_parser2.c    | 32 +++++++++----------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+index 540d19efad8f..033ce2638eb2 100644
+--- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
++++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+@@ -772,20 +772,20 @@ static enum bp_result bios_parser_get_device_tag(
+ 		return BP_RESULT_BADINPUT;
+ 
+ 	switch (bp->object_info_tbl.revision.minor) {
+-	    case 4:
+-	    default:
++	case 4:
++	default:
+ 	        /* getBiosObject will return MXM object */
+-	        object = get_bios_object(bp, connector_object_id);
++		object = get_bios_object(bp, connector_object_id);
+ 
+ 		if (!object) {
+ 			BREAK_TO_DEBUGGER(); /* Invalid object id */
+ 			return BP_RESULT_BADINPUT;
+ 		}
+ 
+-	        info->acpi_device = 0; /* BIOS no longer provides this */
+-	        info->dev_id = device_type_from_device_id(object->device_tag);
+-	        break;
+-	    case 5:
++		info->acpi_device = 0; /* BIOS no longer provides this */
++		info->dev_id = device_type_from_device_id(object->device_tag);
++		break;
++	case 5:
+ 		object_path_v3 = get_bios_object_from_path_v3(bp, connector_object_id);
+ 
+ 		if (!object_path_v3) {
+@@ -1580,13 +1580,13 @@ static bool bios_parser_is_device_id_supported(
+ 	uint32_t mask = get_support_mask_for_device_id(id);
+ 
+ 	switch (bp->object_info_tbl.revision.minor) {
+-	    case 4:
+-	    default:
+-	        return (le16_to_cpu(bp->object_info_tbl.v1_4->supporteddevices) & mask) != 0;
+-			break;
+-	    case 5:
+-			return (le16_to_cpu(bp->object_info_tbl.v1_5->supporteddevices) & mask) != 0;
+-			break;
++	case 4:
++	default:
++		return (le16_to_cpu(bp->object_info_tbl.v1_4->supporteddevices) & mask) != 0;
++		break;
++	case 5:
++		return (le16_to_cpu(bp->object_info_tbl.v1_5->supporteddevices) & mask) != 0;
++		break;
+ 	}
+ 
+ 	return false;
+@@ -1755,7 +1755,7 @@ static enum bp_result bios_parser_get_firmware_info(
+ 			case 2:
+ 			case 3:
+ 				result = get_firmware_info_v3_2(bp, info);
+-                                break;
++			break;
+ 			case 4:
+ 				result = get_firmware_info_v3_4(bp, info);
+ 				break;
+@@ -2225,7 +2225,7 @@ static enum bp_result bios_parser_get_disp_connector_caps_info(
+ 		return BP_RESULT_BADINPUT;
+ 
+ 	switch (bp->object_info_tbl.revision.minor) {
+-	    case 4:
++	case 4:
+ 	    default:
+ 		    object = get_bios_object(bp, object_id);
+ 
+-- 
+2.17.1
+
