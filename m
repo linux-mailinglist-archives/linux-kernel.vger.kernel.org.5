@@ -2,169 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9A476D589
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24E076D566
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233242AbjHBRgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
+        id S232720AbjHBRdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232724AbjHBRgR (ORCPT
+        with ESMTP id S234015AbjHBRdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:36:17 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0225A1734
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:35:11 -0700 (PDT)
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+        Wed, 2 Aug 2023 13:33:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093B646B7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:31:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id D294886863;
-        Wed,  2 Aug 2023 19:34:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1690997642;
-        bh=5SVSATqR9X+QGwFAD+ody3ENAQjB+Ws+LryjglXK6GQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jgoIiR97HYJ3Esx98FNE1iCDcOKogg8kvLIls7BRwweGczvkuV52H+MBoDwNl7zT1
-         nvu0U6TwbvRjfonfTmMKO16zHGlg9V8ne7FdJJCBd8zwnl2rSEVx1qh+d3VYpm9tHD
-         bau87T4OFkWTwEka97rD+8NlPehdgmUK43Ly89N7MHRcuaNkuBNFIs+LpNPV5mGzMq
-         vKPKeET3W8AqHmU1uofgeysmSlcEMdvEl3JP9THe1T7WFDdKjzqsLxrlrq7o/rxIiO
-         rcjYKSaM8xo/xs3UAohyT1omgsT7Hfu5jwvIcIxkj6ycvoPcQNFz2vDI0jy66ID07K
-         9bxtkgYXFYrjA==
-Message-ID: <a2a5fa44-90d5-d104-2268-29a14a27b514@denx.de>
-Date:   Wed, 2 Aug 2023 19:29:44 +0200
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A468961A7E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:30:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E65E9C433C7;
+        Wed,  2 Aug 2023 17:30:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690997403;
+        bh=lMe/DIyQCl/IwT6SoQDaroFkWtR5k0frE1KQOMf5qgY=;
+        h=From:To:In-Reply-To:References:Subject:Date:From;
+        b=W/pqFquuR8uAEpllrJL/SRzWb/wDWLvGIg07eB/VoDNZwQLyHMBOkFecjwRXnxPEh
+         Ew1bIcw82QYg23XE5WxeXZR0+usfhTH53L7MKRAYSE1fn3UolMGp0ZGDquK+P9ltil
+         tQkXYOPzgU/Da+NjK8QrhKDINpoStsWi4sa1fpKhatNf5hAUIbLXnLk/3l3OqeVbl+
+         01SNKtdhTalz61URTZzwtBa1e4L+y+0kciSAsZot94jksU/vts4NBRN+InsEYANXlP
+         +YUBx/hUQfYM5qZEg2IHDlFqP1Ia9GfQkS1BVQPSpbYAHi//Z8llG1kZ5VLKhBk3ee
+         L5hlspnV2Im/g==
+From:   Mark Brown <broonie@kernel.org>
+To:     shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Chancel Liu <chancel.liu@nxp.com>
+In-Reply-To: <20230802052117.1293029-1-chancel.liu@nxp.com>
+References: <20230802052117.1293029-1-chancel.liu@nxp.com>
+Subject: Re: [PATCH v2 0/3] Update the register list of MICFIL
+Message-Id: <169099740066.237245.1120990059871983197.b4-ty@kernel.org>
+Date:   Wed, 02 Aug 2023 18:30:00 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
- and EOT packet"
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Amit Pundir <amit.pundir@linaro.org>
-References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
- <6cd079a4-2f5b-0169-cbaf-b59a72f1b32b@denx.de>
- <6f96cd11-5055-ab36-74e3-20a45c0d8b40@linaro.org>
-From:   Marek Vasut <marex@denx.de>
-In-Reply-To: <6f96cd11-5055-ab36-74e3-20a45c0d8b40@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 15:16, Dmitry Baryshkov wrote:
-> On 02/08/2023 15:07, Marek Vasut wrote:
->> On 8/2/23 10:52, Neil Armstrong wrote:
->>> This reverts commit [1] to fix display regression on the Dragonboard 
->>> 845c
->>> (SDM845) devboard.
->>>
->>> There's a mismatch on the real action of the following flags:
->>> - MIPI_DSI_MODE_VIDEO_NO_HSA
->>> - MIPI_DSI_MODE_VIDEO_NO_HFP
->>> - MIPI_DSI_MODE_VIDEO_NO_HBP
->>> which leads to a non-working display on qcom platforms.
->>>
->>> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA 
->>> and EOT packet")
->>>
->>> Cc: Marek Vasut <marex@denx.de>
->>> Cc: Robert Foss <rfoss@kernel.org>
->>> Cc: Jagan Teki <jagan@amarulasolutions.com>
->>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->>> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
->>> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA 
->>> and EOT packet")
->>> Reported-by: Amit Pundir <amit.pundir@linaro.org>
->>> Link: 
->>> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
->>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->>
->> This breaks LT9611 operation on i.MX8M Mini/Nano/Plus, so, NAK.
->>
->> I am currently using this LT9611 with Linux 6.1.y in production and 
->> this is not acceptable. I also believe the correct fix is on the MSM 
->> side, not on the LT9611 driver side, since MSM incorrectly implements 
->> these flags.
+On Wed, 02 Aug 2023 13:21:14 +0800, Chancel Liu wrote:
+> MICFIL IP is upgraded on i.MX93 platform. Add new registers and new bit
+> definition.
 > 
-> There is no indication that MSM gets these flags wrong.
+> changes in v2:
+> - rename check_version to use_verid to make it more explicit
+> - rename fsl_micfil_check_version to fsl_micfil_use_verid
 > 
-> Let me quote the DSI 1.3 (I think Abhinav already quoted DSI 1.2).
-> 
-> Chapter 8.11.1 Transmission Packet Sequences:
-> 
-> ========
-> If a peripheral timing specification for HBP or HFP minimum period is 
-> zero, the corresponding Blanking
-> Packet may be omitted. If the HBP or HFP maximum period is zero, the 
-> corresponding blanking packet
-> shall be omitted.
-> ========
-> 
-> Next, chapter 8.11.2 Non-Burst Mode with Sync Pulses
-> 
-> ======
-> Normally, periods shown as HSA (Horizontal Sync Active), HBP (Horizontal 
-> Back Porch) and HFP
-> (Horizontal Front Porch) are filled by Blanking Packets, with lengths 
-> (including packet overhead)
-> calculated to match the period specified by the peripheral’s data sheet. 
-> Alternatively, if there is sufficient
-> time to transition from HS to LP mode and back again, a timed interval 
-> in LP mode may substitute for a
-> Blanking Packet, thus saving power. During HSA, HBP and HFP periods, the 
-> bus should stay in the LP-11
-> state.
-> ========
-> 
-> So, by the spec, sending the HSA / HBP / HFP as blanking packets should 
-> always be accepted (and it is the default mode). Switching to LP-11 
-> should be permitted if there is a sufficient time to switch to LP-11 and 
-> back. Not sending the packets is only possible if the peripheral 
-> (lt9611) says so.
-> 
-> We already know that lt9611 breaks if we try switching to LP-11 during 
-> this period. We know that the there is a requirement time for the HSA / 
-> HBP / HFP, because the HDMI monitor needs them. Thus, I can only 
-> emphasise that the behaviour before the offending patch was correct.
-> 
-> Last, but not least, breaking the in-kernel platform for the out-of-tree 
-> peripheral doesn't sound correct.
+> [...]
 
-Except the MX8M support is all in-tree now, so please drop the 
-"out-of-tree" argument. That I am using 6.1.y on those platforms in 
-production makes no difference.
+Applied to
 
-> I can only propose the following steps:
-> 
-> 1. land the revert to unbreak existing users.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-That's just trading breaking one set of users for breaking another set 
-of users.
+Thanks!
 
-> 2. Marek to propose and land the DT bindings & driver change that will 
-> enable the workaround for the particular platform (i.MX8m).
+[1/3] ASoC: fsl_micfil: Add new registers and new bit definition
+      commit: 51d765f79c8d8016df906afd05410f8bc14167ac
+[2/3] ASoC: fsl_micfil: Add fsl_micfil_use_verid function
+      commit: 367365051b06e172c91172e3273eea72988ce8f6
+[3/3] ASoC: fsl_micfil: Use SET_SYSTEM_SLEEP_PM_OPS to simplify PM
+      commit: a38a4090e2c400c6c49c584cda6f28c73c08f5f1
 
-Since I have no access to the QCOM hardware or datasheet, can you have a 
-look at the NXP.com MX8M M/N/P datasheets (those are available) and 
-compare their behavior with the QCOM behavior ? I assume you do have the 
-QCOM datasheets available.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
