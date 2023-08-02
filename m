@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C55FD76D647
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E96576D648
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234410AbjHBR7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:59:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47838 "EHLO
+        id S234337AbjHBR7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234196AbjHBR7L (ORCPT
+        with ESMTP id S234205AbjHBR70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:59:11 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 495282D67
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:58:33 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe2048c910so1373065e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:58:33 -0700 (PDT)
+        Wed, 2 Aug 2023 13:59:26 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8402D7B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:58:35 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-3fe32016bc8so1310475e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:58:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690999112; x=1691603912;
+        d=gmail.com; s=20221208; t=1690999114; x=1691603914;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oxOrpyuPOmymgtlpLpXF+pVhKHjkFdHFw3wiijDx7h4=;
-        b=oNo4WjetICtChH1ktYq4b21m9aftBtQTSD6LlcebwyItLqzIhF7TAMisJPe7yIgXIz
-         vg0KkchbM4hQ6e/v+haVCtbS1VbuHjGucUljM+pFrC2+o9iwaF0M0l6K2vMadQEaJ+tP
-         Yz7e49XYRobQqI1Augs3Y1352cEwAY7rA69I7fO4UJGyqV+IvRUQapSiCTV6C37ALdYz
-         Kz074OS1rFUpq61Pwc4GhaN6eb1UgKEeTR1IlzIfWNE96bhEN1MzeU8r2HBR8X5gqSup
-         RdXrNniSwS37eV7RCPnUi5kgfVHGqcwaXhRrTx72nPBtD4T+A0aRyaXEMMew0n64o37M
-         PV4g==
+        bh=a+3O1DghoKTsvX8XNtwYPlplZlPGOuzWPkOeAp7AhV4=;
+        b=PgoxqIWgtjL86OEBXvSnfsDkFquIuj6IG9GHhXDef7BAFe669yJ8pdHyvfdrYYwBlD
+         GJC2YPeLVB7RRDLPXxqeK7DpCf64n+Y0JfuX5QUFoCDLTA1cTLmqwK6MWJXNnoQn9lZ9
+         Fnm5eKJbAGoQRfBAAA6Vkn/yc7R5iHcMtX3E9pHKhDjSa85/yQQQfd0ZF1wY8dwEV2AL
+         RoC+t9Qx2nm1lUj1c6k9px/zJAIAwTEAFH73/bvyf5o51OKy6gwrFhdABUXUOoaSHxP5
+         6UfFHPVJT8zl7mMVEEeo5atAu8JrfZkm8Ve/hqIvlWLmt78EyLV8gdlSoDrl+9IaOsBt
+         k2Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690999112; x=1691603912;
+        d=1e100.net; s=20221208; t=1690999114; x=1691603914;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oxOrpyuPOmymgtlpLpXF+pVhKHjkFdHFw3wiijDx7h4=;
-        b=Ka7FLCrulW/QoYMs626XvahNCTovRa2YtZTNnnbz8P+gZr5TBxeYWoz+WYe4mBMb/O
-         1pBSb4Az35Qg9zz+GltaZ8hcEnZ8sh/CrEv8mWmL5o1w3w4YgbGhOYadWV8u+t7utnPf
-         nBRS5GUJTrEXqjfwzmkGx/W/0asSajTItOFLza1QJEN8IUz9SBE8f/7oM5Ycp4wJ5lBe
-         qSTPYe9fEwA/l0WTa09NgFpKP65oZXndT4AXblRr/0B9Spk4hwkd2QTKE6P+IlBIRxlC
-         4L+RsmuECtmckna9ov8EVuMc1x9UM9OKoAKi3aQ3kfWgoDAqAzZjWP9g9Wq/rPhSSI3l
-         tZHA==
-X-Gm-Message-State: ABy/qLYz6TNkNALq9fD30hwlLUXaDpNFwmnbNSAlGay0RiFm+uwdc2IK
-        YOo1dR3KzzKgRJkBEl54zCM=
-X-Google-Smtp-Source: APBJJlE9K3tR2ClpMYZTwTaCYVhiIb9nZbiQ1C7lY7tlCoz1Rl6MrRaS9ngzVQ5fg3zuMCGQaROKgQ==
-X-Received: by 2002:a7b:cb88:0:b0:3fc:f9c:a3e6 with SMTP id m8-20020a7bcb88000000b003fc0f9ca3e6mr5561916wmi.9.1690999111841;
-        Wed, 02 Aug 2023 10:58:31 -0700 (PDT)
+        bh=a+3O1DghoKTsvX8XNtwYPlplZlPGOuzWPkOeAp7AhV4=;
+        b=TeGn/xX2cOeCQwOl5XOyrAXQDIWbi6SnYRaEKMOECGz+UPRaGFqEvivvu+9yfWB0/U
+         UjCcVU4qIJDnKybY0TWfkHTQVI/lx+b4wmSv6k5Wf1N5rgXKgBSaC7507oCptNPlj9z3
+         W/Xu6sTEh7IK1BvkFvog/k7tU1iAjKfCRTOVURpvaejEOGxC2WnglR9jB8pphbm7hok/
+         S2rEmvPJw/NkHNFPT1RhF7QU/pk5yutBXq6Ce8vCnVrvu9YPp93FeRA3wd98PAcmMFVN
+         l3qVNj+LFw7qdvVnVKwF/usjadhzoIS/sIAcltYwPIRxhb8cYiYTZO/M+rjJAOFdufoo
+         CBTw==
+X-Gm-Message-State: ABy/qLbwGfayC7Oyob2NQuPDY/Sp8dzhNTN7Wk2QQlbsf6cs9D11hpLT
+        pHMaRWrPTp9gbNW5LoA5TgU=
+X-Google-Smtp-Source: APBJJlFXfxujtj6YpCKjtWZNCMBWWVwJcXqOlCDQOj6i8alThDmQeh9bj8gaybKQUMc6C5J1umD6GQ==
+X-Received: by 2002:a7b:c5d9:0:b0:3f7:678c:74b0 with SMTP id n25-20020a7bc5d9000000b003f7678c74b0mr5632761wmk.12.1690999113752;
+        Wed, 02 Aug 2023 10:58:33 -0700 (PDT)
 Received: from ALPER-PC.. ([178.233.24.1])
-        by smtp.gmail.com with ESMTPSA id l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.30
+        by smtp.gmail.com with ESMTPSA id l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 10:58:31 -0700 (PDT)
+        Wed, 02 Aug 2023 10:58:33 -0700 (PDT)
 From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
 To:     alsa-devel@alsa-project.org
 Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
@@ -65,9 +65,9 @@ Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
         <nfraprado@collabora.com>
-Subject: [PATCH 19/27] ASoC: qcom: apq8016_sbc: Map missing jack kcontrols
-Date:   Wed,  2 Aug 2023 20:57:29 +0300
-Message-Id: <20230802175737.263412-20-alpernebiyasak@gmail.com>
+Subject: [PATCH 20/27] ASoC: qcom: sc7180: Map missing jack kcontrols
+Date:   Wed,  2 Aug 2023 20:57:30 +0300
+Message-Id: <20230802175737.263412-21-alpernebiyasak@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230802175737.263412-1-alpernebiyasak@gmail.com>
 References: <20230802175737.263412-1-alpernebiyasak@gmail.com>
@@ -84,88 +84,99 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This driver does not properly map jack pins to kcontrols that PulseAudio
-and PipeWire need to handle jack detection events. It seems to support
-detecting Headphone and Headset Mic connections. Expose each to
-userspace as a kcontrol and add the necessary widgets.
+and PipeWire need to handle jack detection events. The RT5682 and
+RT5682s codecs used here can detect Headphone and Headset Mic
+connections. Expose each to userspace as a kcontrol.
 
 Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
 ---
-Tried to match sound/soc/qcom/common.c a bit. But that seems to be
-selected by this, maybe it's jack setup code can be reused?
 
- sound/soc/qcom/apq8016_sbc.c | 37 ++++++++++++++++++++++++++++--------
- 1 file changed, 29 insertions(+), 8 deletions(-)
+ sound/soc/qcom/sc7180.c | 40 +++++++++++++++++++++++++++++++++-------
+ 1 file changed, 33 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/qcom/apq8016_sbc.c b/sound/soc/qcom/apq8016_sbc.c
-index e54b8961112f..6de533d45e7d 100644
---- a/sound/soc/qcom/apq8016_sbc.c
-+++ b/sound/soc/qcom/apq8016_sbc.c
-@@ -44,6 +44,17 @@ struct apq8016_sbc_data {
- #define DEFAULT_MCLK_RATE		9600000
- #define MI2S_BCLK_RATE			1536000
+diff --git a/sound/soc/qcom/sc7180.c b/sound/soc/qcom/sc7180.c
+index f5f7c64b23a2..57c5f35dfcc5 100644
+--- a/sound/soc/qcom/sc7180.c
++++ b/sound/soc/qcom/sc7180.c
+@@ -42,6 +42,17 @@ static void sc7180_jack_free(struct snd_jack *jack)
+ 	snd_soc_component_set_jack(component, NULL, NULL);
+ }
  
-+static struct snd_soc_jack_pin apq8016_sbc_jack_pins[] = {
-+	{
-+		.pin = "Mic Jack",
-+		.mask = SND_JACK_MICROPHONE,
-+	},
++static struct snd_soc_jack_pin sc7180_jack_pins[] = {
 +	{
 +		.pin = "Headphone Jack",
 +		.mask = SND_JACK_HEADPHONE,
 +	},
++	{
++		.pin = "Headset Mic",
++		.mask = SND_JACK_MICROPHONE,
++	},
 +};
 +
- static int apq8016_dai_init(struct snd_soc_pcm_runtime *rtd, int mi2s)
+ static int sc7180_headset_init(struct snd_soc_pcm_runtime *rtd)
  {
- 	struct snd_soc_dai *codec_dai;
-@@ -90,13 +101,15 @@ static int apq8016_dai_init(struct snd_soc_pcm_runtime *rtd, int mi2s)
- 	if (!pdata->jack_setup) {
- 		struct snd_jack *jack;
+ 	struct snd_soc_card *card = rtd->card;
+@@ -51,13 +62,14 @@ static int sc7180_headset_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_jack *jack;
+ 	int rval;
  
--		rval = snd_soc_card_jack_new(card, "Headset Jack",
--					     SND_JACK_HEADSET |
--					     SND_JACK_HEADPHONE |
--					     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
--					     SND_JACK_BTN_2 | SND_JACK_BTN_3 |
--					     SND_JACK_BTN_4,
--					     &pdata->jack);
-+		rval = snd_soc_card_jack_new_pins(card, "Headset Jack",
-+						  SND_JACK_HEADSET |
-+						  SND_JACK_HEADPHONE |
-+						  SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+						  SND_JACK_BTN_2 | SND_JACK_BTN_3 |
-+						  SND_JACK_BTN_4,
-+						  &pdata->jack,
-+						  apq8016_sbc_jack_pins,
-+						  ARRAY_SIZE(apq8016_sbc_jack_pins));
+-	rval = snd_soc_card_jack_new(
+-			card, "Headset Jack",
+-			SND_JACK_HEADSET |
+-			SND_JACK_HEADPHONE |
+-			SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+-			SND_JACK_BTN_2 | SND_JACK_BTN_3,
+-			&pdata->hs_jack);
++	rval = snd_soc_card_jack_new_pins(card, "Headset Jack",
++					  SND_JACK_HEADSET |
++					  SND_JACK_HEADPHONE |
++					  SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++					  SND_JACK_BTN_2 | SND_JACK_BTN_3,
++					  &pdata->hs_jack,
++					  sc7180_jack_pins,
++					  ARRAY_SIZE(sc7180_jack_pins));
  
- 		if (rval < 0) {
- 			dev_err(card->dev, "Unable to add Headphone Jack\n");
-@@ -255,8 +268,14 @@ static void msm8916_qdsp6_add_ops(struct snd_soc_card *card)
- 	}
- }
- 
--static const struct snd_soc_dapm_widget apq8016_sbc_dapm_widgets[] = {
-+static const struct snd_kcontrol_new apq8016_sbc_snd_controls[] = {
-+	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
-+	SOC_DAPM_PIN_SWITCH("Mic Jack"),
-+};
- 
-+static const struct snd_soc_dapm_widget apq8016_sbc_dapm_widgets[] = {
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+	SND_SOC_DAPM_MIC("Mic Jack", NULL),
- 	SND_SOC_DAPM_MIC("Handset Mic", NULL),
+ 	if (rval < 0) {
+ 		dev_err(card->dev, "Unable to add Headset Jack\n");
+@@ -297,6 +309,11 @@ static const struct snd_soc_dapm_widget sc7180_snd_widgets[] = {
  	SND_SOC_DAPM_MIC("Headset Mic", NULL),
- 	SND_SOC_DAPM_MIC("Secondary Mic", NULL),
-@@ -285,6 +304,8 @@ static int apq8016_sbc_platform_probe(struct platform_device *pdev)
- 	card->owner = THIS_MODULE;
- 	card->dapm_widgets = apq8016_sbc_dapm_widgets;
- 	card->num_dapm_widgets = ARRAY_SIZE(apq8016_sbc_dapm_widgets);
-+	card->controls = apq8016_sbc_snd_controls;
-+	card->num_controls = ARRAY_SIZE(apq8016_sbc_snd_controls);
+ };
  
- 	ret = qcom_snd_parse_of(card);
- 	if (ret)
++static const struct snd_kcontrol_new sc7180_snd_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++};
++
+ static const struct snd_soc_dapm_widget sc7180_adau7002_snd_widgets[] = {
+ 	SND_SOC_DAPM_MIC("DMIC", NULL),
+ };
+@@ -320,6 +337,11 @@ static const struct snd_soc_dapm_widget sc7180_snd_dual_mic_widgets[] = {
+ 	SND_SOC_DAPM_MUX("Dmic Mux", SND_SOC_NOPM, 0, 0, &sc7180_dmic_mux_control),
+ };
+ 
++static const struct snd_kcontrol_new sc7180_snd_dual_mic_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++};
++
+ static const struct snd_soc_dapm_route sc7180_snd_dual_mic_audio_route[] = {
+ 	{"Dmic Mux", "Front Mic", "DMIC"},
+ 	{"Dmic Mux", "Rear Mic", "DMIC"},
+@@ -348,10 +370,14 @@ static int sc7180_snd_platform_probe(struct platform_device *pdev)
+ 	card->dev = dev;
+ 	card->dapm_widgets = sc7180_snd_widgets;
+ 	card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_widgets);
++	card->controls = sc7180_snd_controls;
++	card->num_controls = ARRAY_SIZE(sc7180_snd_controls);
+ 
+ 	if (of_property_read_bool(dev->of_node, "dmic-gpios")) {
+ 		card->dapm_widgets = sc7180_snd_dual_mic_widgets,
+ 		card->num_dapm_widgets = ARRAY_SIZE(sc7180_snd_dual_mic_widgets),
++		card->controls = sc7180_snd_dual_mic_controls,
++		card->num_controls = ARRAY_SIZE(sc7180_snd_dual_mic_controls),
+ 		card->dapm_routes = sc7180_snd_dual_mic_audio_route,
+ 		card->num_dapm_routes = ARRAY_SIZE(sc7180_snd_dual_mic_audio_route),
+ 		data->dmic_sel = devm_gpiod_get(&pdev->dev, "dmic", GPIOD_OUT_LOW);
 -- 
 2.40.1
 
