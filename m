@@ -2,239 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D410776CE23
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8B876CE27
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbjHBNO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52480 "EHLO
+        id S233644AbjHBNPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:15:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233817AbjHBNOz (ORCPT
+        with ESMTP id S232130AbjHBNPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:14:55 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B4B268F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 06:14:51 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68706b39c4cso4096447b3a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 06:14:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690982091; x=1691586891;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YVnuD160K1/bLpyFapN48ZIB6cDl10OXwltvfzUcoDg=;
-        b=lKRGyHwfC5W65UY67qnwfkM/FOoiM+bRZpkrMf6xdG/hRDmik91CFrCNaVE4mwQrxT
-         Hfayg31dAoD8KqRs3mmAxsSTnJDrtBGO973KD3IwENZ2ceV7W2GDZs7NKvUusfstRzPR
-         ELx6rtNwrjyPRCa2Tbc6COKuNVOzMF8+0GRQm+hZnBkksuJH+fK5S75Dn15orq9xOrPM
-         iCDUIQ4ZccsyBL4cPQjh7G+8IOlsYBYWWX/bmuFl9KrayxXemSXTbF+nWaC/8MgwTmPg
-         gRphx+xOP6qTlyVzuHjIPKGFxhsouXlWeKEwT7fvsX0owVS9eg1mkCzqPpMmAyat3SFb
-         tcVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690982091; x=1691586891;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YVnuD160K1/bLpyFapN48ZIB6cDl10OXwltvfzUcoDg=;
-        b=JdtyVqs6RSWwMibBxM6XTzSHBrWuHvKdTVf3CaDAcIFmf9Kr//gSm4gktHGIvWKCsK
-         tcAodQrHg8d31dzUBXhWkuXh59eS0/xX0A9tlfKsioFd4AJXT1jzuCgpuuDrNvlTqrWG
-         Zb41C++NVtwF0iimKPMACZCGOP5Ookqo0pVUJD12pSGzaJeDClpHeDtTaUR3Tn7DIFiy
-         yajXEl5DeWoZz4Ip2jdmxf0fXcRARMVWsQwLEyUU0KbFW1C4DX6oR9cgbw9jIjkjIcKI
-         VVHdpkhZG2wdDzy+PHbHp/jYgTiUzQnpIysysDqocawkCMwZguk4AAq2iON/Rt/obSLM
-         F3QQ==
-X-Gm-Message-State: ABy/qLY4vdq2huCzWuC2gcW8yhXM5TCY4Ou+JQTFQJ19jX6uPVIx4Tr1
-        hiEYsTiHkq0g255vpuZUSDQ04sArTkOV18EE
-X-Google-Smtp-Source: APBJJlH6x7+QO5XQsSIqXDhFEZl+mm/X+v84i20gEoNwsZWL5nh3dMGOkb73JgqvYP0lqna4DTa5jA==
-X-Received: by 2002:a05:6a21:a109:b0:127:76ab:a707 with SMTP id aq9-20020a056a21a10900b0012776aba707mr12847347pzc.30.1690982090948;
-        Wed, 02 Aug 2023 06:14:50 -0700 (PDT)
-Received: from 377044c6c369.cse.ust.hk (191host097.mobilenet.cse.ust.hk. [143.89.191.97])
-        by smtp.gmail.com with ESMTPSA id p5-20020a63ab05000000b0054fa8539681sm11612537pgf.34.2023.08.02.06.14.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 06:14:49 -0700 (PDT)
-From:   Chengfeng Ye <dg573847474@gmail.com>
-To:     mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        akpm@linux-foundation.org
-Cc:     ocfs2-devel@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Chengfeng Ye <dg573847474@gmail.com>
-Subject: [PATCH v2] ocfs2: cluster: fix potential deadlock on &o2net_debug_lock
-Date:   Wed,  2 Aug 2023 13:14:36 +0000
-Message-Id: <20230802131436.17765-1-dg573847474@gmail.com>
-X-Mailer: git-send-email 2.17.1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 09:15:40 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3521718;
+        Wed,  2 Aug 2023 06:15:38 -0700 (PDT)
+Received: from ideasonboard.com (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C4ACA9A8;
+        Wed,  2 Aug 2023 15:14:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690982073;
+        bh=JszemgPDEdIW82pNw1iQtVg+iB75Wl8ojD8c8Ol0eKg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aaCmJdNpjhQHSwxMc/Ap68buhkTTofHonRCnKyEFcQ9h+fOhiorHT09KHWp40Kjad
+         WFQ+ieVt9YKm9ZGa0sYb2obaQgPVqwDNFs3j1h7LEPXFeTuiS0mXTFnmPvJ8BmfNwb
+         YlOLKqWY4j8RF42BRSHeGtIVj3bOFP4jRvw2oXKc=
+Date:   Wed, 2 Aug 2023 15:15:33 +0200
+From:   Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+To:     Philipp Zabel <p.zabel@pengutronix.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 2/2] media: video-mux: update driver to active state
+Message-ID: <wy4tvjl7tsfkbb6q544omgbzyk7xb746znyuos3nezrychq64b@zitkjug7hd3s>
+References: <20230524-video-mux-active-state-v1-0-325c69937ac3@pengutronix.de>
+ <20230524-video-mux-active-state-v1-2-325c69937ac3@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230524-video-mux-active-state-v1-2-325c69937ac3@pengutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-&o2net_debug_lock is acquired by timer o2net_idle_timer() along the
-following call chain. Thus the acquisition of the lock under process
-context should disable bottom half, otherwise deadlock could happen
-if the timer happens to preempt the execution while the lock is held
-in process context on the same CPU.
+Hello
 
-<timer interrupt>
-        -> o2net_idle_timer()
-        -> queue_delayed_work()
-        -> sc_put()
-        -> sc_kref_release()
-        -> o2net_debug_del_sc()
-        -> spin_lock(&o2net_debug_lock);
+On Wed, May 24, 2023 at 03:29:25PM +0200, Philipp Zabel wrote:
+> Drop the open coded pad format array, use subdev active state instead.
+>
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
 
-Several lock acquisition of &o2net_debug_lock under process context
-do not disable irq or bottom half. The patch fixes these potential
-deadlocks scenerio by using spin_lock_bh() on &o2net_debug_lock.
+I get a WARN with this patch applied when testing iMX6Q with OV5640
 
-This flaw was found by an experimental static analysis tool I am
-developing for irq-related deadlock. x86_64 allmodconfig using gcc
-shows no new warning.
 
-Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+ media-ctl --links ''\''imx6-mipi-csi2'\'':1->'\''ipu1_csi0_mux'\'':0[1]'
+[   85.377504]
+[   85.379019] ======================================================
+[   85.385208] WARNING: possible circular locking dependency detected
+[   85.391397] 6.4.0-rc5-00109-gd716bd480968 #2 Not tainted
+[   85.396719] ------------------------------------------------------
+[   85.402905] media-ctl/199 is trying to acquire lock:
+[   85.407879] c397d6b8 (video_mux:448:sd->active_state->lock){+.+.}-{3:3}, at: video_mux_link_setup+0xac/0x260
+[   85.417770]
+[   85.417770] but task is already holding lock:
+[   85.423609] c2fcb780 (&vmux->lock){+.+.}-{3:3}, at: video_mux_link_setup+0x48/0x260
+[   85.431305]
+[   85.431305] which lock already depends on the new lock.
+[   85.431305]
+[   85.439489]
+[   85.439489] the existing dependency chain (in reverse order) is:
+[   85.446978]
+[   85.446978] -> #1 (&vmux->lock){+.+.}-{3:3}:
+[   85.452754]        __mutex_lock+0x84/0x8c4
+[   85.456875]        mutex_lock_nested+0x1c/0x24
+[   85.461336]        video_mux_init_cfg+0x1c/0xe0
+[   85.465883]        __v4l2_subdev_state_alloc+0xbc/0x138
+[   85.471135]        __v4l2_subdev_init_finalize+0xc/0x20
+[   85.476379]        video_mux_probe+0x190/0x320
+[   85.480838]        platform_probe+0x58/0xb0
+[   85.485036]        really_probe+0xd8/0x3fc
+[   85.489152]        __driver_probe_device+0x94/0x1f0
+[   85.494047]        driver_probe_device+0x2c/0xc4
+[   85.498679]        __device_attach_driver+0xa4/0x11c
+[   85.503663]        bus_for_each_drv+0x84/0xdc
+[   85.508036]        __device_attach+0xa8/0x1dc
+[   85.512409]        bus_probe_device+0x8c/0x90
+[   85.516782]        deferred_probe_work_func+0x88/0xd4
+[   85.521850]        process_one_work+0x2a4/0x6a0
+[   85.526399]        worker_thread+0x28/0x4ac
+[   85.530596]        kthread+0xf4/0x114
+[   85.534272]        ret_from_fork+0x14/0x28
+[   85.538382]
+[   85.538382] -> #0 (video_mux:448:sd->active_state->lock){+.+.}-{3:3}:
+[   85.546328]        __lock_acquire+0x14b8/0x28e8
+[   85.550873]        lock_acquire.part.0+0xb4/0x250
+[   85.555591]        __mutex_lock+0x84/0x8c4
+[   85.559704]        mutex_lock_nested+0x1c/0x24
+[   85.564163]        video_mux_link_setup+0xac/0x260
+[   85.568969]        __media_entity_setup_link+0x14c/0x1b4
+[   85.574305]        media_device_ioctl+0x158/0x190
+[   85.579027]        sys_ioctl+0x4a8/0xee8
+[   85.582971]        ret_fast_syscall+0x0/0x1c
+[   85.587253]
+[   85.587253] other info that might help us debug this:
+[   85.587253]
+[   85.595263]  Possible unsafe locking scenario:
+[   85.595263]
+[   85.601186]        CPU0                    CPU1
+[   85.605722]        ----                    ----
+[   85.610258]   lock(&vmux->lock);
+[   85.613501]                                lock(video_mux:448:sd->active_state->lock);
+[   85.621434]                                lock(&vmux->lock);
+[   85.627195]   lock(video_mux:448:sd->active_state->lock);
+[   85.632609]
+[   85.632609]  *** DEADLOCK ***
+[   85.632609]
+[   85.638535] 2 locks held by media-ctl/199:
+[   85.642640]  #0: c3856174 (&mdev->graph_mutex){+.+.}-{3:3}, at: media_device_ioctl+0x148/0x190
+[   85.651299]  #1: c2fcb780 (&vmux->lock){+.+.}-{3:3}, at: video_mux_link_setup+0x48/0x260
+[   85.659434]
+[   85.659434] stack backtrace:
+[   85.663800] CPU: 1 PID: 199 Comm: media-ctl Not tainted 6.4.0-rc5-00109-gd716bd480968 #2
+[   85.671904] Hardware name: Freescale i.MX6 Quad/DualLite (Device Tree)
+[   85.678445]  unwind_backtrace from show_stack+0x10/0x14
+[   85.683700]  show_stack from dump_stack_lvl+0x60/0x90
+[   85.688769]  dump_stack_lvl from check_noncircular+0xf4/0x164
+[   85.694547]  check_noncircular from __lock_acquire+0x14b8/0x28e8
+[   85.700576]  __lock_acquire from lock_acquire.part.0+0xb4/0x250
+[   85.706510]  lock_acquire.part.0 from __mutex_lock+0x84/0x8c4
+[   85.712279]  __mutex_lock from mutex_lock_nested+0x1c/0x24
+[   85.717791]  mutex_lock_nested from video_mux_link_setup+0xac/0x260
+[   85.724085]  video_mux_link_setup from __media_entity_setup_link+0x14c/0x1b4
+[   85.731164]  __media_entity_setup_link from media_device_ioctl+0x158/0x190
+[   85.738063]  media_device_ioctl from sys_ioctl+0x4a8/0xee8
+[   85.743577]  sys_ioctl from ret_fast_syscall+0x0/0x1c
+[   85.748649] Exception stack(0xe0f41fa8 to 0xe0f41ff0)
+[   85.753716] 1fa0:                   00e233b8 00000079 00000003 c0347c03 bef629d0 00000001
+[   85.761908] 1fc0: 00e233b8 00000079 00e21150 00000036 bef629d0 00e23230 00000001 00000000
+[   85.770096] 1fe0: 004d9f5c bef629cc 004c37c8 b6e79f4c
 
-Changes in v2
-- Fix typo in commit title
----
- fs/ocfs2/cluster/netdebug.c | 40 ++++++++++++++++++-------------------
- 1 file changed, 20 insertions(+), 20 deletions(-)
+Please note that in my tree I have reverted
+"media: v4l2-async: Use endpoints in __v4l2_async_nf_add_fwnode_remote()"
 
-diff --git a/fs/ocfs2/cluster/netdebug.c b/fs/ocfs2/cluster/netdebug.c
-index 35c05c18de59..bc27301eab6d 100644
---- a/fs/ocfs2/cluster/netdebug.c
-+++ b/fs/ocfs2/cluster/netdebug.c
-@@ -44,17 +44,17 @@ static LIST_HEAD(send_tracking);
- 
- void o2net_debug_add_nst(struct o2net_send_tracking *nst)
- {
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	list_add(&nst->st_net_debug_item, &send_tracking);
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- }
- 
- void o2net_debug_del_nst(struct o2net_send_tracking *nst)
- {
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	if (!list_empty(&nst->st_net_debug_item))
- 		list_del_init(&nst->st_net_debug_item);
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- }
- 
- static struct o2net_send_tracking
-@@ -84,9 +84,9 @@ static void *nst_seq_start(struct seq_file *seq, loff_t *pos)
- {
- 	struct o2net_send_tracking *nst, *dummy_nst = seq->private;
- 
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	nst = next_nst(dummy_nst);
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- 
- 	return nst;
- }
-@@ -95,13 +95,13 @@ static void *nst_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- {
- 	struct o2net_send_tracking *nst, *dummy_nst = seq->private;
- 
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	nst = next_nst(dummy_nst);
- 	list_del_init(&dummy_nst->st_net_debug_item);
- 	if (nst)
- 		list_add(&dummy_nst->st_net_debug_item,
- 			 &nst->st_net_debug_item);
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- 
- 	return nst; /* unused, just needs to be null when done */
- }
-@@ -112,7 +112,7 @@ static int nst_seq_show(struct seq_file *seq, void *v)
- 	ktime_t now;
- 	s64 sock, send, status;
- 
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	nst = next_nst(dummy_nst);
- 	if (!nst)
- 		goto out;
-@@ -145,7 +145,7 @@ static int nst_seq_show(struct seq_file *seq, void *v)
- 		   (long long)status);
- 
- out:
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- 
- 	return 0;
- }
-@@ -191,16 +191,16 @@ static const struct file_operations nst_seq_fops = {
- 
- void o2net_debug_add_sc(struct o2net_sock_container *sc)
- {
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	list_add(&sc->sc_net_debug_item, &sock_containers);
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- }
- 
- void o2net_debug_del_sc(struct o2net_sock_container *sc)
- {
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	list_del_init(&sc->sc_net_debug_item);
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- }
- 
- struct o2net_sock_debug {
-@@ -236,9 +236,9 @@ static void *sc_seq_start(struct seq_file *seq, loff_t *pos)
- 	struct o2net_sock_debug *sd = seq->private;
- 	struct o2net_sock_container *sc, *dummy_sc = sd->dbg_sock;
- 
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	sc = next_sc(dummy_sc);
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- 
- 	return sc;
- }
-@@ -248,12 +248,12 @@ static void *sc_seq_next(struct seq_file *seq, void *v, loff_t *pos)
- 	struct o2net_sock_debug *sd = seq->private;
- 	struct o2net_sock_container *sc, *dummy_sc = sd->dbg_sock;
- 
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	sc = next_sc(dummy_sc);
- 	list_del_init(&dummy_sc->sc_net_debug_item);
- 	if (sc)
- 		list_add(&dummy_sc->sc_net_debug_item, &sc->sc_net_debug_item);
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- 
- 	return sc; /* unused, just needs to be null when done */
- }
-@@ -349,7 +349,7 @@ static int sc_seq_show(struct seq_file *seq, void *v)
- 	struct o2net_sock_debug *sd = seq->private;
- 	struct o2net_sock_container *sc, *dummy_sc = sd->dbg_sock;
- 
--	spin_lock(&o2net_debug_lock);
-+	spin_lock_bh(&o2net_debug_lock);
- 	sc = next_sc(dummy_sc);
- 
- 	if (sc) {
-@@ -359,7 +359,7 @@ static int sc_seq_show(struct seq_file *seq, void *v)
- 			sc_show_sock_stats(seq, sc);
- 	}
- 
--	spin_unlock(&o2net_debug_lock);
-+	spin_unlock_bh(&o2net_debug_lock);
- 
- 	return 0;
- }
--- 
-2.17.1
+to have the imx6 media graph to probe correctly, but I presume this is
+not related to the error here above.
 
+Thanks
+  j
+
+
+> ---
+>  drivers/media/platform/video-mux.c | 78 ++++++++++++--------------------------
+>  1 file changed, 24 insertions(+), 54 deletions(-)
+>
+> diff --git a/drivers/media/platform/video-mux.c b/drivers/media/platform/video-mux.c
+> index 4fe31386afc7..6d273abfe16c 100644
+> --- a/drivers/media/platform/video-mux.c
+> +++ b/drivers/media/platform/video-mux.c
+> @@ -24,7 +24,6 @@ struct video_mux {
+>  	struct v4l2_subdev subdev;
+>  	struct v4l2_async_notifier notifier;
+>  	struct media_pad *pads;
+> -	struct v4l2_mbus_framefmt *format_mbus;
+>  	struct mux_control *mux;
+>  	struct mutex lock;
+>  	int active;
+> @@ -71,6 +70,9 @@ static int video_mux_link_setup(struct media_entity *entity,
+>  	mutex_lock(&vmux->lock);
+>
+>  	if (flags & MEDIA_LNK_FL_ENABLED) {
+> +		struct v4l2_subdev_state *sd_state;
+> +		struct v4l2_mbus_framefmt *source_mbusformat;
+> +
+>  		if (vmux->active == local->index)
+>  			goto out;
+>
+> @@ -86,7 +88,12 @@ static int video_mux_link_setup(struct media_entity *entity,
+>  		vmux->active = local->index;
+>
+>  		/* Propagate the active format to the source */
+> -		vmux->format_mbus[source_pad] = vmux->format_mbus[vmux->active];
+> +		sd_state = v4l2_subdev_lock_and_get_active_state(sd);
+> +		source_mbusformat = v4l2_subdev_get_pad_format(sd, sd_state,
+> +							       source_pad);
+> +		*source_mbusformat = *v4l2_subdev_get_pad_format(sd, sd_state,
+> +								 vmux->active);
+> +		v4l2_subdev_unlock_state(sd_state);
+>  	} else {
+>  		if (vmux->active != local->index)
+>  			goto out;
+> @@ -138,40 +145,6 @@ static const struct v4l2_subdev_video_ops video_mux_subdev_video_ops = {
+>  	.s_stream = video_mux_s_stream,
+>  };
+>
+> -static struct v4l2_mbus_framefmt *
+> -__video_mux_get_pad_format(struct v4l2_subdev *sd,
+> -			   struct v4l2_subdev_state *sd_state,
+> -			   unsigned int pad, u32 which)
+> -{
+> -	struct video_mux *vmux = v4l2_subdev_to_video_mux(sd);
+> -
+> -	switch (which) {
+> -	case V4L2_SUBDEV_FORMAT_TRY:
+> -		return v4l2_subdev_get_try_format(sd, sd_state, pad);
+> -	case V4L2_SUBDEV_FORMAT_ACTIVE:
+> -		return &vmux->format_mbus[pad];
+> -	default:
+> -		return NULL;
+> -	}
+> -}
+> -
+> -static int video_mux_get_format(struct v4l2_subdev *sd,
+> -			    struct v4l2_subdev_state *sd_state,
+> -			    struct v4l2_subdev_format *sdformat)
+> -{
+> -	struct video_mux *vmux = v4l2_subdev_to_video_mux(sd);
+> -
+> -	mutex_lock(&vmux->lock);
+> -
+> -	sdformat->format = *__video_mux_get_pad_format(sd, sd_state,
+> -						       sdformat->pad,
+> -						       sdformat->which);
+> -
+> -	mutex_unlock(&vmux->lock);
+> -
+> -	return 0;
+> -}
+> -
+>  static int video_mux_set_format(struct v4l2_subdev *sd,
+>  			    struct v4l2_subdev_state *sd_state,
+>  			    struct v4l2_subdev_format *sdformat)
+> @@ -181,14 +154,11 @@ static int video_mux_set_format(struct v4l2_subdev *sd,
+>  	struct media_pad *pad = &vmux->pads[sdformat->pad];
+>  	u16 source_pad = sd->entity.num_pads - 1;
+>
+> -	mbusformat = __video_mux_get_pad_format(sd, sd_state, sdformat->pad,
+> -						sdformat->which);
+> +	mbusformat = v4l2_subdev_get_pad_format(sd, sd_state, sdformat->pad);
+>  	if (!mbusformat)
+>  		return -EINVAL;
+>
+> -	source_mbusformat = __video_mux_get_pad_format(sd, sd_state,
+> -						       source_pad,
+> -						       sdformat->which);
+> +	source_mbusformat = v4l2_subdev_get_pad_format(sd, sd_state, source_pad);
+>  	if (!source_mbusformat)
+>  		return -EINVAL;
+>
+> @@ -298,7 +268,8 @@ static int video_mux_set_format(struct v4l2_subdev *sd,
+>
+>  	/* Source pad mirrors active sink pad, no limitations on sink pads */
+>  	if ((pad->flags & MEDIA_PAD_FL_SOURCE) && vmux->active >= 0)
+> -		sdformat->format = vmux->format_mbus[vmux->active];
+> +		sdformat->format = *v4l2_subdev_get_pad_format(sd, sd_state,
+> +							       vmux->active);
+>
+>  	*mbusformat = sdformat->format;
+>
+> @@ -321,7 +292,7 @@ static int video_mux_init_cfg(struct v4l2_subdev *sd,
+>  	mutex_lock(&vmux->lock);
+>
+>  	for (i = 0; i < sd->entity.num_pads; i++) {
+> -		mbusformat = v4l2_subdev_get_try_format(sd, sd_state, i);
+> +		mbusformat = v4l2_subdev_get_pad_format(sd, sd_state, i);
+>  		*mbusformat = video_mux_format_mbus_default;
+>  	}
+>
+> @@ -332,7 +303,7 @@ static int video_mux_init_cfg(struct v4l2_subdev *sd,
+>
+>  static const struct v4l2_subdev_pad_ops video_mux_pad_ops = {
+>  	.init_cfg = video_mux_init_cfg,
+> -	.get_fmt = video_mux_get_format,
+> +	.get_fmt = v4l2_subdev_get_fmt,
+>  	.set_fmt = video_mux_set_format,
+>  };
+>
+> @@ -462,17 +433,9 @@ static int video_mux_probe(struct platform_device *pdev)
+>  	if (!vmux->pads)
+>  		return -ENOMEM;
+>
+> -	vmux->format_mbus = devm_kcalloc(dev, num_pads,
+> -					 sizeof(*vmux->format_mbus),
+> -					 GFP_KERNEL);
+> -	if (!vmux->format_mbus)
+> -		return -ENOMEM;
+> -
+> -	for (i = 0; i < num_pads; i++) {
+> +	for (i = 0; i < num_pads; i++)
+>  		vmux->pads[i].flags = (i < num_pads - 1) ? MEDIA_PAD_FL_SINK
+>  							 : MEDIA_PAD_FL_SOURCE;
+> -		vmux->format_mbus[i] = video_mux_format_mbus_default;
+> -	}
+>
+>  	vmux->subdev.entity.function = MEDIA_ENT_F_VID_MUX;
+>  	ret = media_entity_pads_init(&vmux->subdev.entity, num_pads,
+> @@ -482,12 +445,18 @@ static int video_mux_probe(struct platform_device *pdev)
+>
+>  	vmux->subdev.entity.ops = &video_mux_ops;
+>
+> +	ret = v4l2_subdev_init_finalize(&vmux->subdev);
+> +	if (ret < 0)
+> +		goto err_entity_cleanup;
+> +
+>  	ret = video_mux_async_register(vmux, num_pads - 1);
+>  	if (ret)
+> -		goto err_entity_cleanup;
+> +		goto err_subdev_cleanup;
+>
+>  	return 0;
+>
+> +err_subdev_cleanup:
+> +	v4l2_subdev_cleanup(&vmux->subdev);
+>  err_entity_cleanup:
+>  	media_entity_cleanup(&vmux->subdev.entity);
+>  	return ret;
+> @@ -501,6 +470,7 @@ static void video_mux_remove(struct platform_device *pdev)
+>  	v4l2_async_nf_unregister(&vmux->notifier);
+>  	v4l2_async_nf_cleanup(&vmux->notifier);
+>  	v4l2_async_unregister_subdev(sd);
+> +	v4l2_subdev_cleanup(sd);
+>  	media_entity_cleanup(&sd->entity);
+>  }
+>
+>
+> --
+> 2.39.2
