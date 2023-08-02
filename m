@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB3C276D957
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1AE76D958
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbjHBVT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57798 "EHLO
+        id S232478AbjHBVT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbjHBVTY (ORCPT
+        with ESMTP id S231452AbjHBVTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Aug 2023 17:19:24 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551C3273D
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:19:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75B3F273E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:19:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691011161; x=1722547161;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=7szUAj1MO0pduuFM3N+UrE5TnhGHuzoroH9LPy8/+7A=;
-  b=MdShOnKw1kHsF77QDdM5jfh2hMVChU6SyZQsXaVX9ESmENnvdO+Ebu0C
-   gYsMjKMthxMSyzvKaC2QwbNDad21EqoPninJ1KeMzOMqOgEoM3M0GkDHU
-   Lg8+vOJQplvIRQ7iEDd3IjfsLfEXiV1sKzUMJ6/mfaCxK0Udl84tjuCkD
-   L5vThjjkPPENRpojjMvtqJUzdH4lnzS4++zpKDPzFmCfaiGxZsCRsDQ13
-   lZcBxA0J0t0eNk7TFt57qsCJBoLroFyi3lfu3Kq4RLGfBN/gzdAf0pZw7
-   Sv767q2gu07L4oUUmsHFt/5exd5J500kl619bwFl4mgEec+xyDSzEKyNH
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372436118"
+  t=1691011162; x=1722547162;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=tEk7hMrX5KFjfZK0sZ4WIgm/aTOyKJlLYjDwSd7VdbA=;
+  b=XuChFBgou9NoG63IW9NV2zBwehQA7/isZrg8Id7jqEHE06pCQThxFh6H
+   X6+Wf3QDTLhUphYJGcFlr/PBwgO7pbv9JvBAJRmlMe55Qc7E/7YGTDg8S
+   YXgncHeObl6nWgUxL7ZsF7qO4BODk7ZP89mt0blnGXbH9IRrn/FTXUI29
+   spvpPdhOO5HSAD+QMSVHj24LueOIEldaUmqd/sf2BPiHSnALjZ3xvzLhk
+   af1c2xTQViXrI6Ar0dR5NXqzO/2MTXXNnsP1pcNePHIkKKNPgcx5vPmf7
+   hVttQV0f4zXyC4Y+7lsMRymYlvUftTJPv1Rx2PO5nDzNzo9ThNyRFBDAK
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372436130"
 X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="372436118"
+   d="scan'208";a="372436130"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 14:19:20 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 14:19:21 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="729290759"
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="729290771"
 X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="729290759"
+   d="scan'208";a="729290771"
 Received: from srinivas-otcpl-7600.jf.intel.com (HELO jacob-builder.jf.intel.com) ([10.54.97.184])
-  by orsmga002.jf.intel.com with ESMTP; 02 Aug 2023 14:19:19 -0700
+  by orsmga002.jf.intel.com with ESMTP; 02 Aug 2023 14:19:21 -0700
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
 To:     LKML <linux-kernel@vger.kernel.org>, iommu@lists.linux.dev,
         "Lu Baolu" <baolu.lu@linux.intel.com>,
@@ -49,126 +49,292 @@ Cc:     Jason Gunthorpe <jgg@nvidia.com>, "Will Deacon" <will@kernel.org>,
         "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
         "Yu, Fenghua" <fenghua.yu@intel.com>,
         Tony Luck <tony.luck@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v12 0/8] Re-enable IDXD kernel workqueue under DMA API
-Date:   Wed,  2 Aug 2023 14:24:19 -0700
-Message-Id: <20230802212427.1497170-1-jacob.jun.pan@linux.intel.com>
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Subject: [PATCH v12 1/8] iommu: Generalize PASID 0 for normal DMA w/o PASID
+Date:   Wed,  2 Aug 2023 14:24:20 -0700
+Message-Id: <20230802212427.1497170-2-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230802212427.1497170-1-jacob.jun.pan@linux.intel.com>
+References: <20230802212427.1497170-1-jacob.jun.pan@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.0 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg and all,
+PCIe Process address space ID (PASID) is used to tag DMA traffic, it
+provides finer grained isolation than requester ID (RID).
 
-IDXD kernel work queues were disabled due to the flawed use of kernel VA
-and SVA API.
-Link: https://lore.kernel.org/linux-iommu/20210511194726.GP1002214@nvidia.com/
+For each device/RID, 0 is a special PASID for the normal DMA (no
+PASID). This is universal across all architectures that supports PASID,
+therefore warranted to be reserved globally and declared in the common
+header. Consequently, we can avoid the conflict between different PASID
+use cases in the generic code. e.g. SVA and DMA API with PASIDs.
 
-The solution is to enable it under DMA API where IDXD shared workqueue users
-can use ENQCMDS to submit work on buffers mapped by DMA API.
+This paved away for device drivers to choose global PASID policy while
+continue doing normal DMA.
 
-This patchset adds support for attaching PASID to the device's default
-domain and the ability to allocate global PASIDs from IOMMU APIs. IDXD driver
-can then re-enable the kernel work queues and use them under DMA API.
+Noting that VT-d could support none-zero RID/NO_PASID, but currently not
+used.
 
-This depends on the IOASID removal series. (merged)
-https://lore.kernel.org/all/ZCaUBJvUMsJyD7EW@8bytes.org/
-
-
-Thanks,
-
-Jacob
-
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 ---
-Changelog:
-v12:
-	- no code change, improve commit messages and add Reviewed-by tags
-v11:
-	- Rebased onto Joerg's next tree (v6.5-rc1)
-	- Split RIDPASID check in invalidation code into patch (6/8)
-	- Renamed iommu_alloc_global_pasid_dev to iommu_alloc_global_pasid (2/8)
-	- Added WARN_ON if no dev_pasid is found during remove (7/8)
-v10:
-	- Fix global PASID alloc function with device's max_pasid=0
-v9:
-	- Fix an IDXD driver issue where user interrupt enable bit got cleared
-	  during device enable/disable cycle. Reported and tested by
-	  Tony Zhu <tony.zhu@intel.com>
-	- Rebased to v6.4-rc7
 v8:
-	- further vt-d driver refactoring (3-6) around set/remove device PASID
-	  (Baolu)
-	- make consistent use of NO_PASID in SMMU code (Jean)
-	- fix off-by-one error in max PASID check (Kevin)
+   - make consistent use of NO_PASID in SMMU code
+   - remove PASID_MIN
 v7:
-	- renamed IOMMU_DEF_RID_PASID to be IOMMU_NO_PASID to be more generic
-	  (Jean)
-	- simplify range checking for sva PASID (Baolu) 
+   - renamed IOMMU_DEF_RID_PASID to be IOMMU_NO_PASID to be more generic
 v6:
-	- use a simplified version of vt-d driver change for set_device_pasid
-	  from Baolu.
-	- check and rename global PASID allocation base
-v5:
-	- exclude two patches related to supervisor mode, taken by VT-d
-	maintainer Baolu.
-	- move PASID range check into allocation API so that device drivers
-	  only need to pass in struct device*. (Kevin)
-	- factor out helper functions in device-domain attach (Baolu)
-	- make explicit use of RID_PASID across architectures
-v4:
-	- move dummy functions outside ifdef CONFIG_IOMMU_SVA (Baolu)
-	- dropped domain type check while disabling idxd system PASID (Baolu)
+   - let SMMU code use the common RID_PASID macro
+---
+ .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |  2 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   | 16 ++++++-------
+ drivers/iommu/intel/iommu.c                   | 24 +++++++++----------
+ drivers/iommu/intel/pasid.c                   |  2 +-
+ drivers/iommu/intel/pasid.h                   |  2 --
+ include/linux/iommu.h                         |  1 +
+ 6 files changed, 23 insertions(+), 24 deletions(-)
 
-v3:
-	- moved global PASID allocation API from SVA to IOMMU (Kevin)
-	- remove #ifdef around global PASID reservation during boot (Baolu)
-	- remove restriction on PASID 0 allocation (Baolu)
-	- fix a bug in sysfs domain change when attaching devices
-	- clear idxd user interrupt enable bit after disabling device( Fenghua)
-v2:
-	- refactored device PASID attach domain ops based on Baolu's early patch
-	- addressed TLB flush gap
-	- explicitly reserve RID_PASID from SVA PASID number space
-	- get dma domain directly, avoid checking domain types
-
-Jacob Pan (3):
-  iommu: Generalize PASID 0 for normal DMA w/o PASID
-  iommu: Move global PASID allocation from SVA to core
-  dmaengine/idxd: Re-enable kernel workqueue under DMA API
-
-Lu Baolu (5):
-  iommu/vt-d: Add domain_flush_pasid_iotlb()
-  iommu/vt-d: Remove pasid_mutex
-  iommu/vt-d: Make prq draining code generic
-  iommu/vt-d: Prepare for set_dev_pasid callback
-  iommu/vt-d: Add set_dev_pasid callback for dma domain
-
- drivers/dma/idxd/device.c                     |  39 ++---
- drivers/dma/idxd/dma.c                        |   5 +-
- drivers/dma/idxd/idxd.h                       |   9 +
- drivers/dma/idxd/init.c                       |  54 +++++-
- drivers/dma/idxd/sysfs.c                      |   7 -
- .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   |   2 +-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  16 +-
- drivers/iommu/intel/iommu.c                   | 157 +++++++++++++++---
- drivers/iommu/intel/iommu.h                   |   9 +
- drivers/iommu/intel/pasid.c                   |   2 +-
- drivers/iommu/intel/pasid.h                   |   2 -
- drivers/iommu/intel/svm.c                     |  62 +------
- drivers/iommu/iommu-sva.c                     |  29 ++--
- drivers/iommu/iommu.c                         |  28 ++++
- include/linux/iommu.h                         |  11 ++
- 15 files changed, 287 insertions(+), 145 deletions(-)
-
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+index a5a63b1c947e..5e6b39881c04 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+@@ -80,7 +80,7 @@ arm_smmu_share_asid(struct mm_struct *mm, u16 asid)
+ 	 * be some overlap between use of both ASIDs, until we invalidate the
+ 	 * TLB.
+ 	 */
+-	arm_smmu_write_ctx_desc(smmu_domain, 0, cd);
++	arm_smmu_write_ctx_desc(smmu_domain, IOMMU_NO_PASID, cd);
+ 
+ 	/* Invalidate TLB entries previously associated with that context */
+ 	arm_smmu_tlb_inv_asid(smmu, asid);
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 9b0dc3505601..ee70687f060b 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -1059,7 +1059,7 @@ int arm_smmu_write_ctx_desc(struct arm_smmu_domain *smmu_domain, int ssid,
+ 	/*
+ 	 * This function handles the following cases:
+ 	 *
+-	 * (1) Install primary CD, for normal DMA traffic (SSID = 0).
++	 * (1) Install primary CD, for normal DMA traffic (SSID = IOMMU_NO_PASID = 0).
+ 	 * (2) Install a secondary CD, for SID+SSID traffic.
+ 	 * (3) Update ASID of a CD. Atomically write the first 64 bits of the
+ 	 *     CD, then invalidate the old entry and mappings.
+@@ -1607,7 +1607,7 @@ static void arm_smmu_handle_ppr(struct arm_smmu_device *smmu, u64 *evt)
+ 
+ 	sid = FIELD_GET(PRIQ_0_SID, evt[0]);
+ 	ssv = FIELD_GET(PRIQ_0_SSID_V, evt[0]);
+-	ssid = ssv ? FIELD_GET(PRIQ_0_SSID, evt[0]) : 0;
++	ssid = ssv ? FIELD_GET(PRIQ_0_SSID, evt[0]) : IOMMU_NO_PASID;
+ 	last = FIELD_GET(PRIQ_0_PRG_LAST, evt[0]);
+ 	grpid = FIELD_GET(PRIQ_1_PRG_IDX, evt[1]);
+ 
+@@ -1748,7 +1748,7 @@ arm_smmu_atc_inv_to_cmd(int ssid, unsigned long iova, size_t size,
+ 	 */
+ 	*cmd = (struct arm_smmu_cmdq_ent) {
+ 		.opcode			= CMDQ_OP_ATC_INV,
+-		.substream_valid	= !!ssid,
++		.substream_valid	= (ssid != IOMMU_NO_PASID),
+ 		.atc.ssid		= ssid,
+ 	};
+ 
+@@ -1795,7 +1795,7 @@ static int arm_smmu_atc_inv_master(struct arm_smmu_master *master)
+ 	struct arm_smmu_cmdq_ent cmd;
+ 	struct arm_smmu_cmdq_batch cmds;
+ 
+-	arm_smmu_atc_inv_to_cmd(0, 0, 0, &cmd);
++	arm_smmu_atc_inv_to_cmd(IOMMU_NO_PASID, 0, 0, &cmd);
+ 
+ 	cmds.num = 0;
+ 	for (i = 0; i < master->num_streams; i++) {
+@@ -1875,7 +1875,7 @@ static void arm_smmu_tlb_inv_context(void *cookie)
+ 		cmd.tlbi.vmid	= smmu_domain->s2_cfg.vmid;
+ 		arm_smmu_cmdq_issue_cmd_with_sync(smmu, &cmd);
+ 	}
+-	arm_smmu_atc_inv_domain(smmu_domain, 0, 0, 0);
++	arm_smmu_atc_inv_domain(smmu_domain, IOMMU_NO_PASID, 0, 0);
+ }
+ 
+ static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
+@@ -1968,7 +1968,7 @@ static void arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
+ 	 * Unfortunately, this can't be leaf-only since we may have
+ 	 * zapped an entire table.
+ 	 */
+-	arm_smmu_atc_inv_domain(smmu_domain, 0, iova, size);
++	arm_smmu_atc_inv_domain(smmu_domain, IOMMU_NO_PASID, iova, size);
+ }
+ 
+ void arm_smmu_tlb_inv_range_asid(unsigned long iova, size_t size, int asid,
+@@ -2142,7 +2142,7 @@ static int arm_smmu_domain_finalise_s1(struct arm_smmu_domain *smmu_domain,
+ 	 * the master has been added to the devices list for this domain.
+ 	 * This isn't an issue because the STE hasn't been installed yet.
+ 	 */
+-	ret = arm_smmu_write_ctx_desc(smmu_domain, 0, &cfg->cd);
++	ret = arm_smmu_write_ctx_desc(smmu_domain, IOMMU_NO_PASID, &cfg->cd);
+ 	if (ret)
+ 		goto out_free_cd_tables;
+ 
+@@ -2328,7 +2328,7 @@ static void arm_smmu_enable_ats(struct arm_smmu_master *master)
+ 	pdev = to_pci_dev(master->dev);
+ 
+ 	atomic_inc(&smmu_domain->nr_ats_masters);
+-	arm_smmu_atc_inv_domain(smmu_domain, 0, 0, 0);
++	arm_smmu_atc_inv_domain(smmu_domain, IOMMU_NO_PASID, 0, 0);
+ 	if (pci_enable_ats(pdev, stu))
+ 		dev_err(master->dev, "Failed to enable ATS (STU %zu)\n", stu);
+ }
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index d5ca2387e65c..89013a2913af 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -877,7 +877,7 @@ void dmar_fault_dump_ptes(struct intel_iommu *iommu, u16 source_id,
+ 	}
+ 	/* For request-without-pasid, get the pasid from context entry */
+ 	if (intel_iommu_sm && pasid == IOMMU_PASID_INVALID)
+-		pasid = PASID_RID2PASID;
++		pasid = IOMMU_NO_PASID;
+ 
+ 	dir_index = pasid >> PASID_PDE_SHIFT;
+ 	pde = &dir[dir_index];
+@@ -1449,7 +1449,7 @@ static void __iommu_flush_dev_iotlb(struct device_domain_info *info,
+ 	qdep = info->ats_qdep;
+ 	qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
+ 			   qdep, addr, mask);
+-	quirk_extra_dev_tlb_flush(info, addr, mask, PASID_RID2PASID, qdep);
++	quirk_extra_dev_tlb_flush(info, addr, mask, IOMMU_NO_PASID, qdep);
+ }
+ 
+ static void iommu_flush_dev_iotlb(struct dmar_domain *domain,
+@@ -1484,7 +1484,7 @@ static void iommu_flush_iotlb_psi(struct intel_iommu *iommu,
+ 		ih = 1 << 6;
+ 
+ 	if (domain->use_first_level) {
+-		qi_flush_piotlb(iommu, did, PASID_RID2PASID, addr, pages, ih);
++		qi_flush_piotlb(iommu, did, IOMMU_NO_PASID, addr, pages, ih);
+ 	} else {
+ 		unsigned long bitmask = aligned_pages - 1;
+ 
+@@ -1554,7 +1554,7 @@ static void intel_flush_iotlb_all(struct iommu_domain *domain)
+ 		u16 did = domain_id_iommu(dmar_domain, iommu);
+ 
+ 		if (dmar_domain->use_first_level)
+-			qi_flush_piotlb(iommu, did, PASID_RID2PASID, 0, -1, 0);
++			qi_flush_piotlb(iommu, did, IOMMU_NO_PASID, 0, -1, 0);
+ 		else
+ 			iommu->flush.flush_iotlb(iommu, did, 0, 0,
+ 						 DMA_TLB_DSI_FLUSH);
+@@ -1940,7 +1940,7 @@ static int domain_context_mapping_one(struct dmar_domain *domain,
+ 				context_pdts(pds);
+ 
+ 		/* Setup the RID_PASID field: */
+-		context_set_sm_rid2pasid(context, PASID_RID2PASID);
++		context_set_sm_rid2pasid(context, IOMMU_NO_PASID);
+ 
+ 		/*
+ 		 * Setup the Device-TLB enable bit and Page request
+@@ -2420,13 +2420,13 @@ static int dmar_domain_attach_device(struct dmar_domain *domain,
+ 		/* Setup the PASID entry for requests without PASID: */
+ 		if (hw_pass_through && domain_type_is_si(domain))
+ 			ret = intel_pasid_setup_pass_through(iommu, domain,
+-					dev, PASID_RID2PASID);
++					dev, IOMMU_NO_PASID);
+ 		else if (domain->use_first_level)
+ 			ret = domain_setup_first_level(iommu, domain, dev,
+-					PASID_RID2PASID);
++					IOMMU_NO_PASID);
+ 		else
+ 			ret = intel_pasid_setup_second_level(iommu, domain,
+-					dev, PASID_RID2PASID);
++					dev, IOMMU_NO_PASID);
+ 		if (ret) {
+ 			dev_err(dev, "Setup RID2PASID failed\n");
+ 			device_block_translation(dev);
+@@ -3961,7 +3961,7 @@ static void dmar_remove_one_dev_info(struct device *dev)
+ 	if (!dev_is_real_dma_subdevice(info->dev)) {
+ 		if (dev_is_pci(info->dev) && sm_supported(iommu))
+ 			intel_pasid_tear_down_entry(iommu, info->dev,
+-					PASID_RID2PASID, false);
++					IOMMU_NO_PASID, false);
+ 
+ 		iommu_disable_pci_caps(info);
+ 		domain_context_clear(info);
+@@ -3990,7 +3990,7 @@ static void device_block_translation(struct device *dev)
+ 	if (!dev_is_real_dma_subdevice(dev)) {
+ 		if (sm_supported(iommu))
+ 			intel_pasid_tear_down_entry(iommu, dev,
+-						    PASID_RID2PASID, false);
++						    IOMMU_NO_PASID, false);
+ 		else
+ 			domain_context_clear(info);
+ 	}
+@@ -4324,7 +4324,7 @@ static void domain_set_force_snooping(struct dmar_domain *domain)
+ 
+ 	list_for_each_entry(info, &domain->devices, link)
+ 		intel_pasid_setup_page_snoop_control(info->iommu, info->dev,
+-						     PASID_RID2PASID);
++						     IOMMU_NO_PASID);
+ }
+ 
+ static bool intel_iommu_enforce_cache_coherency(struct iommu_domain *domain)
+@@ -4980,7 +4980,7 @@ void quirk_extra_dev_tlb_flush(struct device_domain_info *info,
+ 		return;
+ 
+ 	sid = PCI_DEVID(info->bus, info->devfn);
+-	if (pasid == PASID_RID2PASID) {
++	if (pasid == IOMMU_NO_PASID) {
+ 		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
+ 				   qdep, address, mask);
+ 	} else {
+diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+index c5d479770e12..23dca3bc319d 100644
+--- a/drivers/iommu/intel/pasid.c
++++ b/drivers/iommu/intel/pasid.c
+@@ -438,7 +438,7 @@ devtlb_invalidation_with_pasid(struct intel_iommu *iommu,
+ 	 * SVA usage, device could do DMA with multiple PASIDs. It is more
+ 	 * efficient to flush devTLB specific to the PASID.
+ 	 */
+-	if (pasid == PASID_RID2PASID)
++	if (pasid == IOMMU_NO_PASID)
+ 		qi_flush_dev_iotlb(iommu, sid, pfsid, qdep, 0, 64 - VTD_PAGE_SHIFT);
+ 	else
+ 		qi_flush_dev_iotlb_pasid(iommu, sid, pfsid, pasid, qdep, 0, 64 - VTD_PAGE_SHIFT);
+diff --git a/drivers/iommu/intel/pasid.h b/drivers/iommu/intel/pasid.h
+index d6b7d21244b1..4e9e68c3c388 100644
+--- a/drivers/iommu/intel/pasid.h
++++ b/drivers/iommu/intel/pasid.h
+@@ -10,8 +10,6 @@
+ #ifndef __INTEL_PASID_H
+ #define __INTEL_PASID_H
+ 
+-#define PASID_RID2PASID			0x0
+-#define PASID_MIN			0x1
+ #define PASID_MAX			0x100000
+ #define PASID_PTE_MASK			0x3F
+ #define PASID_PTE_PRESENT		1
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index b1dcb1b9b170..485e4bb0347e 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -196,6 +196,7 @@ enum iommu_dev_features {
+ 	IOMMU_DEV_FEAT_IOPF,
+ };
+ 
++#define IOMMU_NO_PASID	(0U) /* Reserved for DMA w/o PASID */
+ #define IOMMU_PASID_INVALID	(-1U)
+ typedef unsigned int ioasid_t;
+ 
 -- 
 2.25.1
 
