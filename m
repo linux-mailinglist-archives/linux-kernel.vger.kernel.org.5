@@ -2,110 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F34E76CD2C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2030976CD34
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234549AbjHBMmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
+        id S234614AbjHBMnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:43:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234520AbjHBMmf (ORCPT
+        with ESMTP id S234587AbjHBMnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:42:35 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D222D71
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:42:09 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe0e23a4b1so10851440e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:42:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690980074; x=1691584874;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qTksykLHgPoGjyGnbXpzqbK57FtUlqyGDS/jMgMiJrA=;
-        b=frMaUR21aQcVre5wpIBr2kaDUtIwWbOnKvxzqEE1J0+ArLy2qCd9cc+iAZSVm5yfKu
-         BWrRKzKvyTC10B5KJlhdH/QVwpl44G9H2kY+ABLV8D6fyvx8iftamLy8YKERzT1KNv+P
-         rEQDTha5RM8jCuJW1UpZxZcaZSdVtgo9VDWwWmKHNLFnUPwAnOzslanNJJI685aUrD3R
-         adg6CPU9EInQYUVSaMWup25CBeycju0ZLDNZiCZjNYxyxyGh/J5SP0Jv5I7gEJOu8GwE
-         pUM64pNe765LxtYRbCzEpTGHbLix3xq/7OFMJ8ShbI3hQSlRRmS/9M/3f+EJq6JoLzsR
-         XmnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690980074; x=1691584874;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qTksykLHgPoGjyGnbXpzqbK57FtUlqyGDS/jMgMiJrA=;
-        b=WYvu99ND2FycT/7n2g7xKct1Ld2D0nNu2NjmrM6Vr8YspQ1qUt2zZH3Shkf3gLliVN
-         gc3IW6dG71AkAE6CVM9JzRp4Sr+3Nxfz00VqLIphVhzwBhVJ9LhdekphFCfIBfYYWLHA
-         EWo33x95e3KzZQfgxn+XoacTzVmNCE0nVgnmPARzUVWj8fw6szUO1hAvsrTRtSTjh8aJ
-         A28/BOM5PbdEY3EnBCDI5ep1ZpRbwmPbNpJxMpv0AeUswomlhh658ryrFOajuDTSrcSD
-         HJWCK0oCmBa2Zrbj68uXogqDntZlXQjLm3urXaBtoWH7Ym9BDz2hclZZI3j/jquAWq3V
-         oNxQ==
-X-Gm-Message-State: ABy/qLaqtK4hP2zR0f9iPg1aHzKTamdUv6X8amplCw4LsBIPQqT4fy0F
-        gHtHc4EnAf3f8HTKQxJWqhQ/0A==
-X-Google-Smtp-Source: APBJJlGvede7V152zseTuSWzXeZdrxTDVh/nKhZgkD7zrGxy9LoyBWcOcX6nnyGK0eT7ZUcoF7TDWg==
-X-Received: by 2002:a05:6512:239a:b0:4f8:62a6:8b2 with SMTP id c26-20020a056512239a00b004f862a608b2mr5771255lfv.46.1690980074327;
-        Wed, 02 Aug 2023 05:41:14 -0700 (PDT)
-Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id j15-20020ac2550f000000b004fe432108aesm793107lfk.261.2023.08.02.05.41.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 05:41:13 -0700 (PDT)
-Message-ID: <57f645cb-1148-3423-2b03-f221c3045380@linaro.org>
-Date:   Wed, 2 Aug 2023 14:41:13 +0200
+        Wed, 2 Aug 2023 08:43:10 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C442722;
+        Wed,  2 Aug 2023 05:42:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1690980111;
+        bh=OVp9/5eXr90ixhPTEpgp22DDNgheas8aSJabvLl6ZBc=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=wYfpWYWZtLtDmi4p2IyLnx+xqeaHzaQudIjkJwIUIxiRaQpjrZ35/sbaEkKvH5Z+e
+         3Y5arjwM9mWrkKn95lfLoVubYX8mtVZf9aN+8yGEuEE4I7jg4QXYOvu5DvlvXgtZW8
+         02+KFkY9yagBAn+CTxacejwVEfCaAvbvVnvQBWCk=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id C4E0A128006A;
+        Wed,  2 Aug 2023 08:41:51 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id JV7x_JQ4eBds; Wed,  2 Aug 2023 08:41:51 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1690980111;
+        bh=OVp9/5eXr90ixhPTEpgp22DDNgheas8aSJabvLl6ZBc=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=wYfpWYWZtLtDmi4p2IyLnx+xqeaHzaQudIjkJwIUIxiRaQpjrZ35/sbaEkKvH5Z+e
+         3Y5arjwM9mWrkKn95lfLoVubYX8mtVZf9aN+8yGEuEE4I7jg4QXYOvu5DvlvXgtZW8
+         02+KFkY9yagBAn+CTxacejwVEfCaAvbvVnvQBWCk=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::c14])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id EECA01280255;
+        Wed,  2 Aug 2023 08:41:49 -0400 (EDT)
+Message-ID: <5a76c56a10f6512d0613577a412d2644945dbe77.camel@HansenPartnership.com>
+Subject: Re: [PATCH 0/4] keys: Introduce a keys frontend for attestation
+ reports
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     "Huang, Kai" <kai.huang@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>
+Cc:     "sameo@rivosinc.com" <sameo@rivosinc.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "dionnaglaze@google.com" <dionnaglaze@google.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>
+Date:   Wed, 02 Aug 2023 08:41:47 -0400
+In-Reply-To: <070e2386c99137b59bea114032d22664dd7272f8.camel@intel.com>
+References: <169057265210.180586.7950140104251236598.stgit@dwillia2-xfh.jf.intel.com>
+         <a507ef3302d3afff58d82528ee17e82df1f21de0.camel@HansenPartnership.com>
+         <64c5ed6eb4ca1_a88b2942a@dwillia2-xfh.jf.intel.com.notmuch>
+         <c6576d1682b576ba47556478a98f397ed518a177.camel@HansenPartnership.com>
+         <6dec442c64faf2fecd21bcc77e4a6350e88948b9.camel@intel.com>
+         <55cec220f20c497925f46074fc70eeccccff61c9.camel@HansenPartnership.com>
+         <ebedf39723d465923413b0ab2b50fe6c78aab64b.camel@HansenPartnership.com>
+         <070e2386c99137b59bea114032d22664dd7272f8.camel@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/8] arm64: dts: qcom: Add pinctrl gpio support for
- pm7250b
-Content-Language: en-US
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
- <1690970366-30982-3-git-send-email-quic_rohiagar@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <1690970366-30982-3-git-send-email-quic_rohiagar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,11 +87,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2.08.2023 11:59, Rohit Agarwal wrote:
-> Add pinctrl gpio dts node for pm7250b.
+On Wed, 2023-08-02 at 00:10 +0000, Huang, Kai wrote:
+> On Tue, 2023-08-01 at 08:30 -0400, James Bottomley wrote:
+> > On Tue, 2023-08-01 at 08:03 -0400, James Bottomley wrote:
+> > > On Tue, 2023-08-01 at 11:45 +0000, Huang, Kai wrote:
+> > > [...]
+> > > > 
+> > > > Sorry perhaps a dumb question to ask:
+> > > > 
+> > > > As it has been adequately put, the remote verifiable report
+> > > > normally contains a nonce.  For instance, it can be a per-
+> > > > session or per-request nonce from the remote verification
+> > > > service to the confidential VM.  
+> > > > 
+> > > > IIUC, exposing attestation report via /sysfs means many
+> > > > processes (in the confidential VM) can potentially see the
+> > > > report and the nonce. My question is whether such nonce should
+> > > > be considered as a secret thus should be only visible to the
+> > > > process which is responsible for talking to the remote
+> > > > verification service? 
+> > > > Using IOCTL seems can avoid such exposure.
+> > > 
+> > > OK, so the nonce seems to be a considerably misunderstood piece
+> > > of this (and not just by you), so I'll try to go over carefully
+> > > what it is and why.  The problem we have in pretty much any
+> > > signature based attestation evidence scheme is when I, the
+> > > attesting party, present the signed evidence to you, the relying
+> > > part, how do you know I got it today from the system in question
+> > > not five days ago when I happen to have engineered the correct
+> > > conditions?  The solution to this currency problem is to
+> > > incorporate a challenge supplied by the relying party (called a
+> > > nonce) into the signature.  The nonce must be unpredictable
+> > > enough that the attesting party can't guess it beforehand and it
+> > > must be unique so that the attesting party can't go through its
+> > > records and find an attestation signature with the same
+> > > nonce and supply that instead.
+> > > 
+> > > This property of unpredictability and uniqueness is usually
+> > > satisfied simply by sending a random number.  However, as you can
+> > > also see, since the nonce is supplied by the relying party to the
+> > > attesting party, it eventually gets known to both, so can't be a
+> > > secret to one or the other.  Because of the unpredictability
+> > > requirement, it's generally frowned on to have nonces based on
+> > > anything other than random numbers, because that might lead to
+> > > predictability.
 > 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Thanks for explaining!
+> 
+> So in other words, in general nonce shouldn't be a secret due to it's
+> unpredictability, thus using /sysfs to expose attestation report
+> should be OK?
 
-Konrad
+There's no reason I can think of it should be secret (well, except
+security through obscurity in case someone is monitoring for a replay).
+
+> > I suppose there is a situation where you use the nonce to bind
+> > other details of the attesting party.  For instance, in
+> > confidential computing, the parties often exchange secrets after
+> > successful attestation.  To do this, the attesting party generates
+> > an ephemeral public key.  It then communicates the key binding by
+> > constructing a new nonce as
+> > 
+> > <new nonce> = hash( <relying party nonce> || <public key> )
+> > 
+> > and using that new nonce in the attestation report signature.
+> 
+> This looks like taking advantage of the attestation flow to carry
+> additional info that can be communicated _after_ attestation is done.
+
+Well, no, the <new nonce> must be part of the attestation report.
+
+>   Not sure the benefit?  For instance, shouldn't we normally use
+> symmetric key for exchanging secrets after attestation?
+
+Yes, but how do you get the symmetric key?  A pre-chosen symmetric key
+would have to be in the enclave as an existing secret, which can't be
+done if you have to provision secrets.  The way around this is to use a
+key agreement to generate a symmetric key on the fly.  The problem,
+when you are doing things like Diffie Hellman Ephemeral (DHE) to give
+you this transport encryption key is that of endpoint verification. 
+You can provision a public certificate in the enclave to verify the
+remote (so a malicious remote can't inject false secrets), but the
+remote needs some assurance that it has established communication with
+the correct local (otherwise it would give up its secrets to anyone). 
+A binding of the local public DHE key to the attestation report can do
+this. 
+
+> > So the relying party can also reconstruct the new nonce (if it
+> > knows the key) and verify that it has a current attestation report
+> > *and* that the attesting party wants secrets encrypted to <public
+> > key>.  This scheme does rely on the fact that the thing generating
+> > the attestation signature must only send reports to the owner of
+> > the enclave, so that untrusted third parties, like the host owner,
+> > can't generate a report with their own nonce and thus fake out the
+> > key exchange.
+> 
+> Sorry I am not sure I am following this.
+
+If you use an attestation report for binding, you have to be sure no
+third party could generate the report and give a false binding.
+
+For instance, this isn't true of a TPM2_Quote because anyone who can
+get into the tss group can generate one.
+
+James
+
+
+>   For TDX only the confidential VM can put the nonce to the report
+> (because the specific instruction to get the local-verifiable report
+> out from firmware can only be made from the confidential VM).
+> Not sure other vendors' implementations though.
+> 
+
