@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 413DB76D743
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B3376D742
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbjHBSzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:55:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52408 "EHLO
+        id S233697AbjHBSzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233965AbjHBSy4 (ORCPT
+        with ESMTP id S233765AbjHBSyw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:54:56 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4759126BD
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:54:55 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-407db3e9669so44991cf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:54:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691002494; x=1691607294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zP6AUbuQ4hb9Or4QdvG8nqcEVIonxr5jd7wasq4u8qQ=;
-        b=5jUIP39X/Jx3VAY88P+qLpbQeSDGy7+0Zn5EVxl/eDymAtnLF7TKBjGrI6f3sN3kLt
-         Fa3NB5IVuMN/UasiWKVupI8/7N2ex3yjLlkzbqFNF8Bsd0aGgZlHIHjU2pMBYpLIQfMu
-         UbcUrjfddO0XvnzwUef8L40cAEmcJAD/nRDA/fU4qMZUmoYBkATCdTgv3VkfExSFM0c6
-         W9+jgHMk4pyVxXxGl8WrhrG0Mm+BTP95C/lBJb4wqI73iBAYD12Am13LjIcoD5njijsX
-         fpqzMuOm495g96PuoQ5K0sGXlE6vIYP62k1vqdtHkfMD+p/hoAxoojZhhQnPSblE/Db1
-         QuxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691002494; x=1691607294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zP6AUbuQ4hb9Or4QdvG8nqcEVIonxr5jd7wasq4u8qQ=;
-        b=N5lCdPQE2arQRVFvWtEvmCz0AbzmY4nH17cts9Mjzv0shrYrew6F6krxZ38izLCEMc
-         /54aHMG2QM9HDxzdUhEWk69UeacxHmGdOcUK1+cE7pZA1g6L3xpQCvrtYJx08P88z1Tk
-         QBzbebd+zGHYR1z6x6l3cQuTGtwscDKxguti6nHrokMzST3lsXYi2cwSchIwI9CovCY1
-         UD9tS0Z2I9P9T+RsN6C4d38M2P6U8ZuOAeG++E1svkRdMVoVuNi+yOZNGjSankHoDTkD
-         FpVvwqbRFO7pWzvq99VB/YWGu6vBo4504SSd2NVXKCwbE6+1iQFca70IwamiumdpxOnW
-         wE5Q==
-X-Gm-Message-State: ABy/qLZlXJI72E1jGlymIgg9it4jK7kdsYkLve/D64mogVr50CgNyuZq
-        ZXVIgOVxb0RdrTXIgrEFip2UbeuJWMSVh9LJpRbx2A==
-X-Google-Smtp-Source: APBJJlHKZ+CsaEPZsx3CV6Js57iyo/EFCvUjefGlgik5Dkd1Sll37HUGQd1RJNEtsUrJl1iX/OZCw/vfaLAq6xzy4BQ=
-X-Received: by 2002:a05:622a:1006:b0:3f9:ab2c:88b9 with SMTP id
- d6-20020a05622a100600b003f9ab2c88b9mr1436417qte.25.1691002494273; Wed, 02 Aug
- 2023 11:54:54 -0700 (PDT)
+        Wed, 2 Aug 2023 14:54:52 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C18268F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:54:51 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 467FB9CA;
+        Wed,  2 Aug 2023 20:53:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1691002425;
+        bh=OVx5FkMIa2iYuBp8dPtECHSysjxm0CBaTXkjsc66ca4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ia06q6hZqpsDbC7xY5h03GLveFErvSz+YGlpka6bOhVBWSytIKSianDo9rbuGtVFO
+         AtR4+gipnPbuQyThXfDCWuLsxcAn9ZSZBXoRNQFqyMlhVLCgtzMc/9g6hEH478HAp9
+         T2oLY+ccUPNgwPmrItONuIocN625D9dFjLXX4RBY=
+Date:   Wed, 2 Aug 2023 21:54:54 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Simon Ser <contact@emersion.fr>, Janne Grunau <j@jannau.net>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
+Subject: Re: [PATCH 1/4] drm: allow specifying default subtype for the DP
+ subconnector property
+Message-ID: <20230802185454.GA29718@pendragon.ideasonboard.com>
+References: <20230729004913.215872-1-dmitry.baryshkov@linaro.org>
+ <20230729004913.215872-2-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-References: <20230802175847.1.Ie9fc53b6a1f4c6661c5376286a50e0cf51b3e961@changeid>
-In-Reply-To: <20230802175847.1.Ie9fc53b6a1f4c6661c5376286a50e0cf51b3e961@changeid>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Wed, 2 Aug 2023 11:54:41 -0700
-Message-ID: <CABXOdTd0B2YwXkrr6t7Mx-LwOuV+9O9Q91P7M_=8d3iqGQ+=cg@mail.gmail.com>
-Subject: Re: [PATCH] platform/chrome: cros_ec_lpc: Remove EC panic shutdown timeout
-To:     Rob Barnes <robbarnes@google.com>
-Cc:     bleung@chromium.org, groeck@chromium.org, tzungbi@kernel.org,
-        dtor@chromium.org, chrome-platform@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230729004913.215872-2-dmitry.baryshkov@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,47 +72,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 10:59=E2=80=AFAM Rob Barnes <robbarnes@google.com> w=
-rote:
->
-> Remove the 1 second timeout applied to hw_protection_shutdown after an
-> EC panic. On some platforms this 1 second timeout is insufficient to
-> allow the filesystem to fully sync. Independently the EC will force a
-> full system reset after a short period. So this backup timeout is
-> unnecessary.
->
-> Signed-off-by: Rob Barnes <robbarnes@google.com>
+Hi Dmitry,
 
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
+Thank you for the patch.
 
+On Sat, Jul 29, 2023 at 03:49:10AM +0300, Dmitry Baryshkov wrote:
+> In the embedded usecases the default subtype depends on the bridge
+> chain, so it is easier to specify the subtype at the proprety attachment
+
+s/proprety/property/
+
+> type rather than specifying it later.
+
+Did you mean s/type/time/ ?
+
+I think I understand why you need this, looking at patch 2/4, but the
+commit message isn't very clear. It would benefit from being reworded.
+
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
->
->  drivers/platform/chrome/cros_ec_lpc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/platform/chrome/cros_ec_lpc.c b/drivers/platform/chr=
-ome/cros_ec_lpc.c
-> index 500a61b093e47..356572452898d 100644
-> --- a/drivers/platform/chrome/cros_ec_lpc.c
-> +++ b/drivers/platform/chrome/cros_ec_lpc.c
-> @@ -327,8 +327,8 @@ static void cros_ec_lpc_acpi_notify(acpi_handle devic=
-e, u32 value, void *data)
->                 dev_emerg(ec_dev->dev, "CrOS EC Panic Reported. Shutdown =
-is imminent!");
->                 blocking_notifier_call_chain(&ec_dev->panic_notifier, 0, =
-ec_dev);
->                 kobject_uevent_env(&ec_dev->dev->kobj, KOBJ_CHANGE, (char=
- **)env);
-> -               /* Begin orderly shutdown. Force shutdown after 1 second.=
- */
-> -               hw_protection_shutdown("CrOS EC Panic", 1000);
-> +               /* Begin orderly shutdown. EC will force reset after a sh=
-ort period. */
-> +               hw_protection_shutdown("CrOS EC Panic", -1);
->                 /* Do not query for other events after a panic is reporte=
-d */
->                 return;
->         }
-> --
-> 2.41.0.585.gd2178a4bd4-goog
->
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c              | 3 ++-
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c | 3 ++-
+>  drivers/gpu/drm/drm_connector.c                             | 6 ++++--
+>  drivers/gpu/drm/i915/display/intel_dp.c                     | 3 ++-
+>  include/drm/drm_connector.h                                 | 3 ++-
+>  5 files changed, 12 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+> index d34037b85cf8..c18459ecd4be 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
+> @@ -2022,7 +2022,8 @@ amdgpu_connector_add(struct amdgpu_device *adev,
+>  
+>  	if (connector_type == DRM_MODE_CONNECTOR_DisplayPort ||
+>  	    connector_type == DRM_MODE_CONNECTOR_eDP) {
+> -		drm_connector_attach_dp_subconnector_property(&amdgpu_connector->base);
+> +		drm_connector_attach_dp_subconnector_property(&amdgpu_connector->base,
+> +							      DRM_MODE_SUBCONNECTOR_Unknown);
+>  	}
+>  
+>  	return;
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> index 943959012d04..297321f0199e 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> @@ -759,7 +759,8 @@ void amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
+>  	drm_dp_mst_topology_mgr_init(&aconnector->mst_mgr, adev_to_drm(dm->adev),
+>  				     &aconnector->dm_dp_aux.aux, 16, 4, aconnector->connector_id);
+>  
+> -	drm_connector_attach_dp_subconnector_property(&aconnector->base);
+> +	drm_connector_attach_dp_subconnector_property(&aconnector->base,
+> +						      DRM_MODE_SUBCONNECTOR_Unknown);
+>  }
+>  
+>  int dm_mst_get_pbn_divider(struct dc_link *link)
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+> index a3d3e7dc08b2..a6066e4a5e9a 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1577,10 +1577,12 @@ EXPORT_SYMBOL(drm_mode_create_dvi_i_properties);
+>  /**
+>   * drm_connector_attach_dp_subconnector_property - create subconnector property for DP
+>   * @connector: drm_connector to attach property
+> + * @subtype: initial value for the subconnector type
+>   *
+>   * Called by a driver when DP connector is created.
+>   */
+> -void drm_connector_attach_dp_subconnector_property(struct drm_connector *connector)
+> +void drm_connector_attach_dp_subconnector_property(struct drm_connector *connector,
+> +						   enum drm_mode_subconnector subtype)
+>  {
+>  	struct drm_mode_config *mode_config = &connector->dev->mode_config;
+>  
+> @@ -1594,7 +1596,7 @@ void drm_connector_attach_dp_subconnector_property(struct drm_connector *connect
+>  
+>  	drm_object_attach_property(&connector->base,
+>  				   mode_config->dp_subconnector_property,
+> -				   DRM_MODE_SUBCONNECTOR_Unknown);
+> +				   subtype);
+>  }
+>  EXPORT_SYMBOL(drm_connector_attach_dp_subconnector_property);
+>  
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index 474785110662..5819105187f6 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -5391,7 +5391,8 @@ intel_dp_add_properties(struct intel_dp *intel_dp, struct drm_connector *connect
+>  	enum port port = dp_to_dig_port(intel_dp)->base.port;
+>  
+>  	if (!intel_dp_is_edp(intel_dp))
+> -		drm_connector_attach_dp_subconnector_property(connector);
+> +		drm_connector_attach_dp_subconnector_property(connector,
+> +							      DRM_MODE_SUBCONNECTOR_Unknown);
+>  
+>  	if (!IS_G4X(dev_priv) && port != PORT_A)
+>  		intel_attach_force_audio_property(connector);
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 5a8115dca359..a130a78f6e0f 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1990,7 +1990,8 @@ const char *drm_get_hdcp_content_type_name(int val);
+>  int drm_get_tv_mode_from_name(const char *name, size_t len);
+>  
+>  int drm_mode_create_dvi_i_properties(struct drm_device *dev);
+> -void drm_connector_attach_dp_subconnector_property(struct drm_connector *connector);
+> +void drm_connector_attach_dp_subconnector_property(struct drm_connector *connector,
+> +						   enum drm_mode_subconnector subtype);
+>  
+>  int drm_mode_create_tv_margin_properties(struct drm_device *dev);
+>  int drm_mode_create_tv_properties_legacy(struct drm_device *dev,
+
+-- 
+Regards,
+
+Laurent Pinchart
