@@ -2,139 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B88B376DB25
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79E676DB22
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbjHBXAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 19:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
+        id S232258AbjHBXAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 19:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232252AbjHBXAe (ORCPT
+        with ESMTP id S232452AbjHBXA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 19:00:34 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4900D1704;
-        Wed,  2 Aug 2023 16:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GtHyUyRhmZC/ndCTfFZSi0G5xoy+tfRuoFtXp1YsIVM=; b=JtvkveQpSmLkLcNOVxyh/y4nHb
-        eTYMyA6kStyZj5Yy/jFPb2xF7atWrkAKg1yr4gKtF8N8z1KdGkUi36hjqtQvmKvw6ONUqa/oTe+JD
-        kt6/EsmDPjRYPCMRIJEGusOt7SGcjY0ijKhia2F2Xyix5ogILECyKSBVNJ10l8l70oMpqbX/LjLH1
-        GGp1uZbfwA8mYOp/WHGLLALFPNi1u+TpE5W80l9dyHQzokAsEjgfyZ6lgHuQBp4SrblStNuUiisxc
-        D5qs27eB3aem//Yq4F4NcLvBO9yCrJASk7v3KcFR+aJfufpkez0Xb8sXT03tCjiNNDKzMUpiZyAot
-        VZVb8eyg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42338)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qRKp8-0005zV-0u;
-        Thu, 03 Aug 2023 00:00:11 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qRKp0-0002HP-CR; Thu, 03 Aug 2023 00:00:02 +0100
-Date:   Thu, 3 Aug 2023 00:00:02 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Michael Walle <mwalle@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH net-next v3 02/11] net: phy: introduce
- phy_has_c45_registers()
-Message-ID: <ZMrf8goIsn3PDC2S@shell.armlinux.org.uk>
-References: <20230620-feature-c45-over-c22-v3-2-9eb37edf7be0@kernel.org>
- <7be8b305-f287-4e99-bddd-55646285c427@lunn.ch>
- <867ae3cc05439599d63e4712bca79e27@kernel.org>
- <cf999a14e51b7f2001d9830cc5e11016@kernel.org>
- <ZMkddjabRonGe7Eu@shell.armlinux.org.uk>
- <bce942b71db8c4b9bf741db517e7ca5f@kernel.org>
- <ZMkraPZvWWKhY8lT@shell.armlinux.org.uk>
- <b0e5fbe28757d755d814727181c09f32@kernel.org>
- <ZMp/B2U/qaI/VQDN@shell.armlinux.org.uk>
- <3fa8d14f0a989af971d61af01b13fd8b@kernel.org>
+        Wed, 2 Aug 2023 19:00:29 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560631702;
+        Wed,  2 Aug 2023 16:00:28 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-63d23473ed5so1954306d6.1;
+        Wed, 02 Aug 2023 16:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691017227; x=1691622027;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LxADmvrlLWmDyCAfvF5yFmWfrqeRu+A61EMrjZsBdpU=;
+        b=MCTvs2WU0T65ZORgtIgfJ87PCli+WTdroZQHVcG4PCHRDJaFXjywFGlYS9Btx4uBn4
+         2IliSatuleFIQ6L6o+MPmzZtXLk/+8v1l0xJK9xmEmMyW1xO+fdznksEsfvUiyzCkKdA
+         mb8A3A6Zddk9MVpou1oCuqs5DcgxO4Ol4iOWZdNglz9Gbx6r/Yy6FZoZ1zxQoio9aKe3
+         XnFXeJVAH6Bu6aDgr1JwZ9s2cNN5r5Dy4uplFwA/ZSiuMU7aw2aH9NO1D/Koh0GZ3U4x
+         2x0oP3Y5PT7sDh+qmorH0yuws2CQ2QQulz93ovGs2K7tJX/VHUzyxS2YLqHXhtMRBxB0
+         lVYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691017227; x=1691622027;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LxADmvrlLWmDyCAfvF5yFmWfrqeRu+A61EMrjZsBdpU=;
+        b=R7ISd8BKeENQWESE83I7lo+1t6FwyQhmnfUuC4FVSDTpYAUSZiTnCBMtYzNZP2vqyk
+         gWeXLqBBA92wCSMBDJAOpPNdHO0eb07jq0YkVHALj6JaIVIvc6eR2eltgIPz10Rq8ZdK
+         Z7nLuNDTDh3rDHdD1LU7ui6nXdjEAjuXpGD+kVYTpeH2eWRQ/YsActh1i2A4JiZx3Pz+
+         r3Ul3EX3hsXAWQPaPfW1m4BwSazXIAmNmaHU7nuual1Qk2/kcPq9Ai8oDuD1l36/KZyN
+         FysoBbO9jx/ghuQy49veiJAMKenVmZYore+Q42ddX316Hf957KsYg8r+vJFPxQAuKdGZ
+         K3Bg==
+X-Gm-Message-State: ABy/qLbb6mMwFfK9mrIhR5Gsmfru1+/OCefz0c+jhwREJFfCjyCTfERf
+        GHBVpluCmPjRLrQHYy6zGO0=
+X-Google-Smtp-Source: APBJJlHK7nE7o0Ajw+MONwVK5MWQ4wAv41//AS/uvZj9o4BsInIdqPWTGQ0NHbYfN5uvF3OssOdDTQ==
+X-Received: by 2002:a0c:de0e:0:b0:634:cdae:9931 with SMTP id t14-20020a0cde0e000000b00634cdae9931mr15395990qvk.0.1691017227366;
+        Wed, 02 Aug 2023 16:00:27 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id n16-20020a0ce550000000b0063d585225e0sm4275868qvm.61.2023.08.02.16.00.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 16:00:26 -0700 (PDT)
+Message-ID: <671b5b2c-1913-3693-296a-844abf5852a2@gmail.com>
+Date:   Wed, 2 Aug 2023 16:00:24 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3fa8d14f0a989af971d61af01b13fd8b@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 6.1 000/225] 6.1.43-rc2 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20230802065510.869511253@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230802065510.869511253@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 07:11:27PM +0200, Michael Walle wrote:
-> I'm talking about
+On 8/2/23 00:41, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.43 release.
+> There are 225 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> 	u32 mmd_mask = MDIO_DEVS_PMAPMD | MDIO_DEVS_AN;
-> 	if (!phydev->is_c45 ||
-> 	    (phydev->c45_ids.devices_in_package & mmd_mask) != mmd_mask)
-> 		return -ENODEV;
+> Responses should be made by Fri, 04 Aug 2023 06:54:28 +0000.
+> Anything received after that time might be too late.
 > 
-> How should that look like after this series?
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.43-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-In the case of the marvell10g driver, at least the 88x3310 can be
-accessed via clause 45 bus cycles _or_ the clause 45 indirect
-register access via clause 22. I'm not sure what the clause 22
-registers would contain, whether they contain valid values with
-the exception of the clause 45 indirect access registers because
-there's not enough information in the documentation, and I can't
-access the clause 22 registers on real hardware.
 
-Another issue is this PHY has two different ID values. One is
-0x002b 0x09aa, the other is 0x0141 0x0daa. One or other of these
-values appears in the MMDs - in other words, they are not
-consistently used. This means it's impossible to guess what value
-may be in the clause 22 ID registers for this PHY.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-However, given the way phylib works, the above effectively ensures
-that we detected the PHY using clause 45 accesses, and then goes on
-to verify that we do indeed have the PMAPMD MMD and the AN MMD.
-Effectively, it ensures that get_phy_c45_ids() was used to detect
-the device.
-
-So, in effect, this code is ensuring that we discovered the PHY
-using clause 45 accesses, and that at a minimum the PHY also
-indicates that the PMAPMD and AN MMDs are implemented.
-
-For the bcm84881 driver, it's a similar situation - that's only
-ever been used with a bus that supports _only_ clause 45 accesses.
-Even less idea whether the PHY could respond to clause 22 accesses
-as there is no information available on the PHY.
-
-So, I'd suggest both of these are the same - returns -ENODEV if
-the bus doesn't support clause 45 transfers or if the two MMDs
-are not indicated.
-
-That said, it _can_ be simplified down to just testing the
-devices_in_package member, because that will only be non-zero if
-we successfully probed the PHY via some accessible way to the
-clause 45 registers. So:
-
-	if ((phydev->c45_ids.devices_in_package & mmd_mask) != mmd_mask)
-		return -ENODEV;
-
-is probably entirely sufficient in both cases.
-
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Florian
+
