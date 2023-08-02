@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBE676D59E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941A576D5AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbjHBRjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:39:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58030 "EHLO
+        id S232177AbjHBRk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233686AbjHBRio (ORCPT
+        with ESMTP id S232697AbjHBRkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:38:44 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB02D3AA7;
-        Wed,  2 Aug 2023 10:38:10 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-c5f98fc4237so50473276.2;
-        Wed, 02 Aug 2023 10:38:10 -0700 (PDT)
+        Wed, 2 Aug 2023 13:40:16 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7D372D65;
+        Wed,  2 Aug 2023 10:39:49 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d0a8ae5f8a6so78235276.0;
+        Wed, 02 Aug 2023 10:39:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690997889; x=1691602689;
+        d=gmail.com; s=20221208; t=1690997988; x=1691602788;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L9YfTqlBHpdCjHZ8wcsFDAVRi8zJlQcGYS2MHuel3HQ=;
-        b=mf16aTuPZqATKHCUrtSvP4xUiX9Azz39k2ssx1Astt9oW85AIfLG4PNYDi9103QJZT
-         jNy0JYluuRLBQrimKFUn1h9TtBlkj5bf0KLQDjwL0PNa7zLo/R/7CYSFNIc1t4lLUJs5
-         ME7RhmaT56if8m/wmr8PEYIY9dELR25GaZAgFAAa4YGjOL/LrQmQS2ekNIqgUGW4QjXk
-         AAQVKIp//QJxomSmBLl76J4Iv0feJWWLlA5Q3rku5S/Bspdu4v7Xq3f8O5NXEDFIvqvF
-         KFqghhudqJXsJh35x/2O7OpxcpeBuyguYTF4DMIqtA2MxNIheNX0VaaFSuXwDallilDS
-         /0vQ==
+        bh=sxP//0HpOMlKg6ktr694XCDTCBcPEyH/NZFFfkxgwPk=;
+        b=HTi55FN5M2RPOu7bifbsWU1/2zQ4QtfERt/4y3deSTiDPrJ5FT+rEQMk0sPYPNrZvs
+         1pUJJ2ZwbH+zicLXJ9xvYdrCf3AM0MI7vQ6mqnJE0z7YVRUT9ccqCbES+W/hhg2ab7ap
+         wUcfZusbOop1N1CyL4S7an4mq7gDNxTEpZxhFUG9MV17/ReH2o18y3Lm97ZskkZTOshH
+         fljuVDibqZX/XUhqNd+hVWGrSkdW0RWYD7XVqt5/BV41K+uEndcBlb4CIty3++WhfRXa
+         tgKHog4qPN/tAy482stauUw8m77vcjM9GB8BD4gQIGOKOGfaK44Jh3hGnUD1P2szs3J1
+         gqBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690997889; x=1691602689;
+        d=1e100.net; s=20221208; t=1690997988; x=1691602788;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L9YfTqlBHpdCjHZ8wcsFDAVRi8zJlQcGYS2MHuel3HQ=;
-        b=ZDZtlBROZILZDT+vWvGXiGEXC0S3Lxse5uQaJ7DgqOFCeod1IdrDrWEzEwdWJmrWiL
-         MRNW1w3JNVqLUTEtj4wgmROIHyPWxp0/G+jhBfDjjzzi0/xQlp40jJBIWKmD2dEVLc1r
-         CY5nBDmMqikBZISXP4/cvzZ7vv85W4wY+mwNKI7yQRr+DYfpNeLNqJWECe6pOLz/lUYe
-         B+RD9jJ5W8JhLgzKzVYA/UmqZNEF8y2OW7ePy17Dq76Nh2woni3QWonNZvZFqKHIpKkU
-         o3+aGbqnFpA/SZISiIXqjJIOzQnxTRGKijxfN3KOYd1BJR9jI1cpe3XbWuvfnYQSJ1u2
-         vtIQ==
-X-Gm-Message-State: ABy/qLaWcfWhzXLMa+Yv1P4tbEB2QOJ9KAVuADFN7T11c+Pky2+0fni3
-        a1zbmjzA36A8eOnkwTDCQzlbtfpc5wVQFaWBfeE=
-X-Google-Smtp-Source: APBJJlFQcS8fOH78Kd1/UgYO/uQiTqIgVOFoL07oZo0Zc47rA3sesXasVd5SN+5Bh1YVfAWkgwRxt+ODq5CL589ZlfA=
-X-Received: by 2002:a25:874a:0:b0:d36:3e15:c7cd with SMTP id
- e10-20020a25874a000000b00d363e15c7cdmr6299818ybn.47.1690997889493; Wed, 02
- Aug 2023 10:38:09 -0700 (PDT)
+        bh=sxP//0HpOMlKg6ktr694XCDTCBcPEyH/NZFFfkxgwPk=;
+        b=UarRrlTdyJkjEv16XLzt1hMA9/SYFUCqg+6fSdDhY1fj0ul4e4PrF2vrOJHTJCWHDU
+         hP8OOCCN+eowJ6ncvHqWKVVIYaKx/V2JpHu5mFL34ZikLll1Km9upgPqMFm6RCYu4i80
+         6R6RMOna71Q8i4Bl1EJrqn6HxMMAD1tSI66A9HtQQ+BdOw0iDkKWcBd0LZ/iwJbHFsh2
+         so2WEMDAlFDBEdhZlfQbqkThHESe6IbPve/ZlvGqrjYi2XJ2NcP+3DfRcDsSe9As4piR
+         SyX079O7PZz8L1/uK8JEUbIvyNh7+C/pZFCn4B/F+toSFHre7IDgrKo9N+JSjBb+131A
+         RE6w==
+X-Gm-Message-State: ABy/qLbuCV+hTAbDijwiBSULNImcbiwQqa2wsvdiTb6gC136hpFuwmfU
+        fkaHDU58QMxJ6wDn2DbY265Hf6PB4SuDEG4/eOQ=
+X-Google-Smtp-Source: APBJJlGXdX/trGZcV6zPG7z0PQ2EmAwNi23ZNhngp7RP6lx2r4Und01wwQQnjB6LzY4ojk7rO6ereEUvu//sqnhxiPk=
+X-Received: by 2002:a25:ab09:0:b0:d06:f3e8:e6d2 with SMTP id
+ u9-20020a25ab09000000b00d06f3e8e6d2mr15691045ybi.40.1690997988410; Wed, 02
+ Aug 2023 10:39:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230711071914.133946-1-andrea.righi@canonical.com>
-In-Reply-To: <20230711071914.133946-1-andrea.righi@canonical.com>
+References: <20230626074242.3945398-1-changxian.cqs@antgroup.com> <20230626074242.3945398-2-changxian.cqs@antgroup.com>
+In-Reply-To: <20230626074242.3945398-2-changxian.cqs@antgroup.com>
 From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 2 Aug 2023 19:37:58 +0200
-Message-ID: <CANiq72n3NMU5UgnGNB5B=y9QjpiHzw1turEbKCy5AEKccEUE0A@mail.gmail.com>
-Subject: Re: [PATCH] rust: fix bindgen build error with UBSAN_BOUNDS_STRICT
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
+Date:   Wed, 2 Aug 2023 19:39:37 +0200
+Message-ID: <CANiq72muJwPHuJF++BYptO4_WVA=mU68nn=GWgqYo7pMdxC=pA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] rust: macros: fix redefine const_name in `vtable`
+To:     Qingsong Chen <changxian.cqs@antgroup.com>
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?B?55Sw5rSq5Lqu?= <tate.thl@antgroup.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
         Alex Gaynor <alex.gaynor@gmail.com>,
         Wedson Almeida Filho <wedsonaf@gmail.com>,
         Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
         =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
         Benno Lossin <benno.lossin@proton.me>,
-        Kees Cook <keescook@chromium.org>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+        =?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>,
+        rust-for-linux@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,24 +77,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jul 11, 2023 at 9:19=E2=80=AFAM Andrea Righi <andrea.righi@canonica=
-l.com> wrote:
+On Mon, Jun 26, 2023 at 9:48=E2=80=AFAM Qingsong Chen
+<changxian.cqs@antgroup.com> wrote:
 >
-> With commit 2d47c6956ab3 ("ubsan: Tighten UBSAN_BOUNDS on GCC") if
-> CONFIG_UBSAN is enabled and gcc supports -fsanitize=3Dbounds-strict, we
-> can trigger the following build error due to bindgen lacking support for
-> this additional build option:
+> If the trait has same function name, the `vtable` macro
+> will redefine its `gen_const_name`, e.g.:
+> ```rust
+>     #[vtable]
+>     pub trait Foo {
+>         #[cfg(CONFIG_X)]
+>         fn bar();
 >
->    BINDGEN rust/bindings/bindings_generated.rs
->  error: unsupported argument 'bounds-strict' to option '-fsanitize=3D'
+>         #[cfg(not(CONFIG_X))]
+>         fn bar(x: usize);
+>     }
+> ```
+> Use `HashSet` to avoid this.
 >
-> Fix by adding -fsanitize=3Dbounds-strict to the list of skipped gcc flags
-> for bindgen.
->
-> Fixes: 2d47c6956ab3 ("ubsan: Tighten UBSAN_BOUNDS on GCC")
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+> Signed-off-by: Qingsong Chen <changxian.cqs@antgroup.com>
 
-Applied to `rust-fixes`, thanks!
+Applied to `rust-fixes`, thanks! I have reworded it with content from
+the cover letter to make it more clear. Please double-check if it is
+OK.
+
+By the way, for single-patches, you don't need the cover letter,
+especially if both have the same information like here (in fact, in
+this case the cover letter was more clear, so it should have been part
+of the commit message ideally).
 
 Cheers,
 Miguel
