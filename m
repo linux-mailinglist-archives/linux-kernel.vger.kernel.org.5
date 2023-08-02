@@ -2,65 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2134576C289
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE93276C28B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbjHBB5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 21:57:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53866 "EHLO
+        id S231719AbjHBB5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 21:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230343AbjHBB5M (ORCPT
+        with ESMTP id S231674AbjHBB5T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 21:57:12 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67425212A;
-        Tue,  1 Aug 2023 18:57:11 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1bb84194bf3so39473965ad.3;
-        Tue, 01 Aug 2023 18:57:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690941431; x=1691546231;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lh/FkjR6lchSJbXFoRIJssgs9hs8H+Ud4pBRt1B6DUE=;
-        b=BusafkPr036Qc9TCdzYpEW0rFYns+257Z1qzEVOdcjR9gGep0+whZxA2tQZ5L9UeO+
-         Q5vcS13wVk5fda9loL2By1VnSoSuWKI5C93XRvP6iqXspoiVUYZ3/iq7jE0Bc4cjSR7F
-         oJmimsc+0TV+LaHJilvyLbLYdxknSjVyTuicr05Fi21yjZnJ5asGY6Cb2uoFBG57/gsg
-         n1PL9smX3MHIfB97SskDW3yyJLxuiagRSbQkn1C1QVGcn5dOGRNrBsa45CJOrALtl0sj
-         mUWVVuMf7NakjMPLQlGmNsGSRJpW4T+8Bq7J6VYDJmyd5vt43YBf4hoaVqpBP+grFGmH
-         isKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690941431; x=1691546231;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lh/FkjR6lchSJbXFoRIJssgs9hs8H+Ud4pBRt1B6DUE=;
-        b=HTp+B4Nt77JvJleKflUcI8vj8Lp/O8EfPIJQYAkKiIEsGjEa4huUOlZ6sevICNEMfU
-         /nqlKMMRbi3WX3rY8zYijE9lRX0zPIL5ErLFl63rEPOMnwfMgu5fw4NRR+0R8MrjhxgK
-         ib1kI5L+0+51BtsHWVwtOo47udHYdF2ySdInBKugJMH7kEYmmrkUDiLKWFnI3e6auWqX
-         xL8QdokNLRawldcm69FvUo3GR1p1wpQWGMKynU+Tu1Obl0jqFU9NkH7nt6fmpDD2mNOT
-         /8hwOOhF675oSn/yM5f1Y7zrl+VwpENEvxze0HuxVLoWBUwxXbb8kWq6u7KjJNgT1NBA
-         v58Q==
-X-Gm-Message-State: ABy/qLbCVePs77+dqh+ZcBOMdtfDNVmQ6uRZ2Mz0rZwKYlKhq/cfbkTh
-        0z32qcX7VQe+4Hoya7hglf4=
-X-Google-Smtp-Source: APBJJlHkmvPzkkJZHSnZs53q1v3L+MCypundzGX6iL8Tcc0smthpk1B6PYYMNfzZojtySf7teIop+w==
-X-Received: by 2002:a17:902:788e:b0:1bb:98a0:b78a with SMTP id q14-20020a170902788e00b001bb98a0b78amr11540766pll.18.1690941430739;
-        Tue, 01 Aug 2023 18:57:10 -0700 (PDT)
-Received: from dw-tp ([49.207.232.207])
-        by smtp.gmail.com with ESMTPSA id a12-20020a170902eccc00b001b03b7f8adfsm11115379plh.246.2023.08.01.18.57.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Aug 2023 18:57:09 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 07:27:06 +0530
-Message-Id: <87pm46w6j1.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Subject: Re: [PATCH v2] ext4: Replace CR_FAST macro with inline function for readability
-In-Reply-To: <20230630085927.140137-1-ojaswin@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Tue, 1 Aug 2023 21:57:19 -0400
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB5E2116
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 18:57:14 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Vot1Ora_1690941430;
+Received: from 30.97.48.77(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Vot1Ora_1690941430)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Aug 2023 09:57:11 +0800
+Message-ID: <f77676a5-e30b-d49d-54db-b85f1ad0f65b@linux.alibaba.com>
+Date:   Wed, 2 Aug 2023 09:57:38 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/5] mm/compaction: allow blockpfn outside of pageblock
+ for high order buddy page
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Cc:     mgorman@techsingularity.net, willy@infradead.org, david@redhat.com
+References: <20230729174354.2239980-1-shikemeng@huaweicloud.com>
+ <20230729174354.2239980-2-shikemeng@huaweicloud.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <20230729174354.2239980-2-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,116 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ojaswin Mujoo <ojaswin@linux.ibm.com> writes:
 
-> Replace CR_FAST with ext4_mb_cr_expensive() inline function for better
-> readability. This function returns true if the criteria is one of the
-> expensive/slower ones where lots of disk IO/prefetching is acceptable.
->
-> No functional changes are intended in this patch.
->
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+
+On 7/30/2023 1:43 AM, Kemeng Shi wrote:
+> Commit 9fcd6d2e052ee ("mm, compaction: skip compound pages by order in
+> free scanner") skiped compound pages to save iterations and limit blockpfn
+> to reach outside of page block in case of bogus compound_order. While this
+> also limit pfnblock outside page block in case a buddy page with order
+> higher than page block is found. After this, isolate_freepages_range will
+> fail unexpectedly as it will fail to isolate the page block which was
+> isolated successfully by high order buddy page in previous page block
+> and abort the free page isolation.
+
+Not sure I uderstand the problem, why the isolate_freepages_range() will 
+fail? In isolate_freepages_range(), it did not use the 'blockpfn' cursor 
+to try next candidate pfn, instead using the 'isolated' to calculate 
+next cursor. Or I missed something else?
+
+> Fix this by allow blockpfn outside of pageblock in case of high order
+> buddy page.
+> 
+> Fixes: 9fcd6d2e052ee ("mm, compaction: skip compound pages by order in free scanner")
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 > ---
->
-> Changes since v1 [1] 
->
-> * reworded an if condition in ext_mb_good_group_nolock
->   and added a comment to better describe the intent of the 
-> 	condition
-> * Picked up RVB from Jan.
->
-> [1]
-> https://lore.kernel.org/linux-ext4/ZJ2YIr5EVbz4ezIc@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/T/#ma9428de15c4084937274f4d66dcd4d53f505d32a
->
->  fs/ext4/ext4.h    |  7 ++++---
->  fs/ext4/mballoc.c | 13 +++++++++----
->  2 files changed, 13 insertions(+), 7 deletions(-)
->
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 45a531446ea2..e404169a2858 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -176,9 +176,6 @@ enum criteria {
->  	EXT4_MB_NUM_CRS
->  };
->  
-> -/* criteria below which we use fast block scanning and avoid unnecessary IO */
-> -#define CR_FAST CR_GOAL_LEN_SLOW
-> -
->  /*
->   * Flags used in mballoc's allocation_context flags field.
->   *
-> @@ -2924,6 +2921,10 @@ extern int ext4_trim_fs(struct super_block *, struct fstrim_range *);
->  extern void ext4_process_freed_data(struct super_block *sb, tid_t commit_tid);
->  extern void ext4_mb_mark_bb(struct super_block *sb, ext4_fsblk_t block,
->  		       int len, int state);
-> +static inline bool ext4_mb_cr_expensive(enum criteria cr)
-> +{
-> +	return cr >= CR_GOAL_LEN_SLOW;
-> +}
->  
->  /* inode.c */
->  void ext4_inode_csum_set(struct inode *inode, struct ext4_inode *raw,
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index a2475b8c9fb5..542577f621c6 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2446,7 +2446,7 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
->  			break;
->  		}
->  
-> -		if (ac->ac_criteria < CR_FAST) {
-> +		if (!ext4_mb_cr_expensive(ac->ac_criteria)) {
->  			/*
->  			 * In CR_GOAL_LEN_FAST and CR_BEST_AVAIL_LEN, we are
->  			 * sure that this group will have a large enough
-> @@ -2630,7 +2630,12 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
->  	free = grp->bb_free;
->  	if (free == 0)
->  		goto out;
-> -	if (cr <= CR_FAST && free < ac->ac_g_ex.fe_len)
-> +	/*
-> +	 * In all criterias except CR_ANY_FREE we try to avoid groups that
-> +	 * can't possibly satisfy the full goal request due to insufficient
-> +	 * free blocks.
-> +	 */
-> +	if (cr < CR_ANY_FREE && free < ac->ac_g_ex.fe_len)
->  		goto out;
-
-cr CR_BEST_AVAIL_LEN, is the one where we can allocate something smaller
-than the original goal length. But in that we alter the goal length
-itself while selecting the criteria.
-So checking free < ac->ac_g_ex.fe_len should work here. 
-
-
-Looks good to me. Feel free to add -
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
-
-
->  	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(grp)))
->  		goto out;
-> @@ -2654,7 +2659,7 @@ static int ext4_mb_good_group_nolock(struct ext4_allocation_context *ac,
->  		 * sure we locate metadata blocks in the first block group in
->  		 * the flex_bg if possible.
->  		 */
-> -		if (cr < CR_FAST &&
-> +		if (!ext4_mb_cr_expensive(cr) &&
->  		    (!sbi->s_log_groups_per_flex ||
->  		     ((group & ((1 << sbi->s_log_groups_per_flex) - 1)) != 0)) &&
->  		    !(ext4_has_group_desc_csum(sb) &&
-> @@ -2848,7 +2853,7 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  			 * spend a lot of time loading imperfect groups
->  			 */
->  			if ((prefetch_grp == group) &&
-> -			    (cr >= CR_FAST ||
-> +			    (ext4_mb_cr_expensive(cr) ||
->  			     prefetch_ios < sbi->s_mb_prefetch_limit)) {
->  				nr = sbi->s_mb_prefetch;
->  				if (ext4_has_feature_flex_bg(sb)) {
-> -- 
-> 2.31.1
-
--ritesh
+>   mm/compaction.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 6841c0496223..d1d28d57e5bd 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -681,8 +681,10 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
+>   	/*
+>   	 * There is a tiny chance that we have read bogus compound_order(),
+>   	 * so be careful to not go outside of the pageblock.
+> +	 * Allow blockpfn outside pageblock in normal case that we isolate
+> +	 * buddy page with order more than pageblock order.
+>   	 */
+> -	if (unlikely(blockpfn > end_pfn))
+> +	if (unlikely(blockpfn > end_pfn) && total_isolated <= pageblock_nr_pages)
+>   		blockpfn = end_pfn;
+>   
+>   	trace_mm_compaction_isolate_freepages(*start_pfn, blockpfn,
+> @@ -1418,7 +1420,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
+>   	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
+>   
+>   	/* Skip this pageblock in the future as it's full or nearly full */
+> -	if (start_pfn == end_pfn && !cc->no_set_skip_hint)
+> +	if (start_pfn >= end_pfn && !cc->no_set_skip_hint)
+>   		set_pageblock_skip(page);
+>   }
+>   
+> @@ -1687,7 +1689,7 @@ static void isolate_freepages(struct compact_control *cc)
+>   					block_end_pfn, freelist, stride, false);
+>   
+>   		/* Update the skip hint if the full pageblock was scanned */
+> -		if (isolate_start_pfn == block_end_pfn)
+> +		if (isolate_start_pfn >= block_end_pfn)
+>   			update_pageblock_skip(cc, page, block_start_pfn);
+>   
+>   		/* Are enough freepages isolated? */
