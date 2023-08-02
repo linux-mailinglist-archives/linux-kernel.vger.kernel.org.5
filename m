@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF2F76D4A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BDB76D4AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbjHBRDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58390 "EHLO
+        id S230211AbjHBRGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbjHBRC5 (ORCPT
+        with ESMTP id S229626AbjHBRGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:02:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A7526B5;
-        Wed,  2 Aug 2023 10:02:50 -0700 (PDT)
+        Wed, 2 Aug 2023 13:06:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BCAE57;
+        Wed,  2 Aug 2023 10:06:22 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2FAC361377;
-        Wed,  2 Aug 2023 17:02:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A438C433CD;
-        Wed,  2 Aug 2023 17:02:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1690995769;
-        bh=sjqBXD6oFCrgUqohETGdLnElwGXtye3lxYOYXr8IIBQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tu2qP6Hb8TEFQJFv5V0JPnO5+W3847Kw7qcHa6wLbwOOdz7/AW1SL0kAIhiQiDQa9
-         LGABdIUhh3g3jl/eKOmtnW7Yrb4K7mb8YjCqknHxA8yL2gKi6mVuKgMWfj6tu1STHl
-         +u8dSibFuCdF0pAe0EeTTCFF/4cPweTek6z7CzRQ=
-Date:   Wed, 2 Aug 2023 10:02:48 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Zhu Wang <wangzhu9@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, Al.Smith@aeschi.ch.eu.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH -next] efs: fix -Wunused-const-variable= warning
-Message-Id: <20230802100248.b6e24e19f33e483d4cf55512@linux-foundation.org>
-In-Reply-To: <20230802065753.217179-1-wangzhu9@huawei.com>
-References: <20230802065753.217179-1-wangzhu9@huawei.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A89BF61A4F;
+        Wed,  2 Aug 2023 17:06:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16C88C433D9;
+        Wed,  2 Aug 2023 17:06:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690995979;
+        bh=skWUi5PcvVm7aAMMh7p/LFLr6m46fzBWFlwr2mR+KqQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t8q5cK8/F3VUNLPrZvxOWjfUw38QnpP2qxI4w1cVIAj64yQx0v1jm90/IIAvi9FAC
+         hQ76tJw4gTPD+8fUVgVgamRQqmEOKPqIOTvZf3hc75Bkrwa4/RHs/bFQTNnGi9M2vA
+         9tOC4Co75ohZk2g56b/xDj07zqhLumhox99xFLfCQX6kyju5XTJNpgTCppvOumZDMJ
+         gO2XqQCH6eb+jlvXXZzTl53eQFXEwRYUy79+D0Ue9uo7UfVZXI1RnjgU6kqaI9DHq/
+         2oWcZIqHjKvvv6uMiz7Dy/IiLcL1OTe57bA5EmyaDeblI/opln3F/VPuhShpuM2L8g
+         18w9S7D1WQ/5A==
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-4fe457ec6e7so62836e87.3;
+        Wed, 02 Aug 2023 10:06:18 -0700 (PDT)
+X-Gm-Message-State: ABy/qLapVkcbfcuJXwHFloqAvEgBH12O1Mbtiu4FXOOjkVXzq0D9TSQV
+        QKKeB9yVGgexMBG40MOEDPbhuGRXmw+8GYxNs/w=
+X-Google-Smtp-Source: APBJJlH8aHl8Ev+dsn2WRGd0DFDDeHJfddSlwE3ce49skr8nvJR+ykykzAuC1gEm+0c6TMr5KHuo6lrxbhdnErNWIzc=
+X-Received: by 2002:a19:ca0b:0:b0:4f6:2b25:194e with SMTP id
+ a11-20020a19ca0b000000b004f62b25194emr4208508lfg.58.1690995977047; Wed, 02
+ Aug 2023 10:06:17 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230802151704.2147028-1-ardb@kernel.org> <20230802164603.fzy2lmflp4iann5c@box>
+In-Reply-To: <20230802164603.fzy2lmflp4iann5c@box>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 2 Aug 2023 19:06:05 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGThVygFZNry+tBGdzw0XrFhOiWL_RFYRBy7p1oyT4LOQ@mail.gmail.com>
+Message-ID: <CAMj1kXGThVygFZNry+tBGdzw0XrFhOiWL_RFYRBy7p1oyT4LOQ@mail.gmail.com>
+Subject: Re: [PATCH v2] efi/x86: Ensure that EFI_RUNTIME_MAP is enabled for kexec
+To:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 14:57:53 +0800 Zhu Wang <wangzhu9@huawei.com> wrote:
-
-> When building with W=1, the following warning occurs.
-> 
-> In file included from fs/efs/super.c:18:0:
-> fs/efs/efs.h:22:19: warning: ‘cprt’ defined but not used [-Wunused-const-variable=]
->  static const char cprt[] = "EFS: "EFS_VERSION" - (c) 1999 Al Smith
-> <Al.Smith@aeschi.ch.eu.org>";
->                    ^~~~
-> The header file is included in many C files, there are many
-> similar errors which are not included here. We add __maybe_unsed
-> to remove it.
-> 
-> ...
+On Wed, 2 Aug 2023 at 18:46, Kirill A . Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
 >
-> --- a/fs/efs/efs.h
-> +++ b/fs/efs/efs.h
-> @@ -19,7 +19,8 @@
->  
->  #define EFS_VERSION "1.0a"
->  
-> -static const char cprt[] = "EFS: "EFS_VERSION" - (c) 1999 Al Smith <Al.Smith@aeschi.ch.eu.org>";
-> +static const char __maybe_unused cprt[] =
-> +	"EFS: "EFS_VERSION" - (c) 1999 Al Smith <Al.Smith@aeschi.ch.eu.org>";
->  
->  
->  /* 1 block is 512 bytes */
+> On Wed, Aug 02, 2023 at 05:17:04PM +0200, Ard Biesheuvel wrote:
+> > CONFIG_EFI_RUNTIME_MAP needs to be enabled in order for kexec to be able
+> > to provide the required information about the EFI runtime mappings to
+> > the incoming kernel, regardless of whether kexec_load() or
+> > kexec_file_load() is being used. Without this information, kexec boot in
+> > EFI mode is not possible.
+> >
+> > The CONFIG_EFI_RUNTIME_MAP option is currently directly configurable if
+> > CONFIG_EXPERT is enabled, so that it can be turned on for debugging
+> > purposes even if KEXEC is. However, the upshot of this is that it can
+>
+> s/is/isn't/ ?
+>
 
-I don't know if Al is still around, but I added the Cc anyway.
-
-cprt[] is unreferenced in fs/efs/*.c.  I assume the intent here was to
-embed the copyright strings in the generated binary.  But this doesn't
-work nowadays - the compiler/linker are removing this string entirely.
-
-I guess the best approach is to move this copyright statement into a
-comment as we do in many other places.  See fs/ext2/acl.c for a random
-example.
-
+indeed, will fix.
