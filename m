@@ -2,657 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE7476C362
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5809576C36C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:17:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbjHBDMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 23:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        id S231909AbjHBDRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 23:17:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjHBDMt (ORCPT
+        with ESMTP id S230364AbjHBDRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:12:49 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17EFCFB
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 20:12:47 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-26809f86bd5so3642344a91.3
-        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 20:12:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690945966; x=1691550766;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6VbNmYwy54JZepIAZ3nN1bA8Lg+Tt+s472qBfSEapIs=;
-        b=iNingO+H5DCW8oF+atfrrvs4+NULh2DmZxAkepQlpJojfKzMJDFJUNxTIaNabP2H6X
-         6p7Gt1K06QK7VjVjH22lreHUDhiQckmWPfcY5GB73ovnSs2k5xJDY487tNzzJtbJZeCC
-         q6LFjjjbHi6lqKKJBAVEQeoL9IXFDj4fA73oPEcmdSdW4M+b8xbUrEZKJH6SNL559N5w
-         VF4038dTPtOcoVKBwkEuOsf6+mRFG23PGSF/B0oEdNKHQKlxkvvspAmolimveZsCuztC
-         XBT1kNp/zoyv33GUa/XCJcA7jDwygNgsfqTKEc5eaDYIPomzuVFOtqwolod6UYic+AhI
-         MX/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690945966; x=1691550766;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6VbNmYwy54JZepIAZ3nN1bA8Lg+Tt+s472qBfSEapIs=;
-        b=DI1LK6APqo1b1ZTfrFKGye+frvCmkKT4unQUcdAxGwCInumRY34y/N6D0dFJ7V9DVe
-         LdVqZ1tid7QzuRzuRWoNBd0rl7idqeHJbbbibhowzD5ass4xXaxjfiKgWXLiu6W76UxS
-         er323ifU3ecX7r2mW5ZcoNRbC1Pv7DRyOhhXfGSU5cfA+m4L0IEyPwA9Pr+2gZcY8THC
-         8GtmK6ogc/eL2wCI533VPoYKF/Df6AX7OACL4FeIkFY+raeTOf9BK0uHuG63AC43XJ5y
-         sJO8nEOYX5wpNFf1fB/Mo0LGPD+P3ivXjMGNAPmveVKre0krETZy6npeI1vQBlDKD1Nu
-         E+ew==
-X-Gm-Message-State: ABy/qLaUk/8t6N8mwwUmQDpRtrNrlXidIQCi6Lqe3PAV0mYMdaDrkj93
-        AtjP1/GBf7Vfw3ETuHdeXkS0JBKOqtomuB0lka65WA==
-X-Google-Smtp-Source: APBJJlEiE1oV/T0m+t5T1lEtTgDid+2uo2M0vwg6VJnyNTyVZdjKEIlk2/QPY1XAXvQJm0gRnaIijmi4DuyBgDufyOc=
-X-Received: by 2002:a17:90b:3e8b:b0:263:f62b:3601 with SMTP id
- rj11-20020a17090b3e8b00b00263f62b3601mr12121577pjb.10.1690945966316; Tue, 01
- Aug 2023 20:12:46 -0700 (PDT)
+        Tue, 1 Aug 2023 23:17:19 -0400
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2051.outbound.protection.outlook.com [40.107.102.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D683EFB;
+        Tue,  1 Aug 2023 20:17:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AiuAQNrXSoGzqjHXiYWfkzaSioqeLyJoM7stXeXf2Niw7iVVRy/RLk2AFBo7MGg/MCe7UKiiLKd2b4izlPQWTIrr1aVKFJ+MIjRbqX/QJOT/caW8d3Qj49X2kHat8+T4kSCrfT5Ms0jbGSJGk/OFi5ImthzGUu8cvm6xiNNzX+3KKDaRq4EWfoixD+a2UV0JARPwMM0aQ6If2tyMlyTMmIkq5WGsmgvXdDgO7aWo11XUWfkltnxtxG/iof0vjpfeyipZd64sQolLwwuDIZuHXYjMOGrBMzwQfN7s3HYuhppxTnIkyNW4ZsFDF+2qM6EmFsytYhWozcatjeqpsUx0Og==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=duzsVjeQO+39vn69ReK95ABtk7tdepps2LZAFIp2e6k=;
+ b=P21e13OiSlZtGzbEEzTmx20awNQKDdD3AvC/xPsdRpDBmqvpXtQYWnqekc+U4EtgbKfpt7PKEwuKn6pSSGWDY0pNHIG8BCB3TX/+EtVwY7RWBjVQulaB9tdPgZbzby0U4tgIz3RtLM/wVCACeX46OPuzj02of5GoFUzizyUTVZAFCONBqwvf4CR/EWEl45/5utEJpZYZI26amRBhabW+iEzGAIB7BzXpiCFIzamju3/6pIJB4l1oo7xW4CbWeJZ1+/2JYlHkMcE8jWhWM/BY14R1WpcR6g4k4dg6dh8+uzPjyZuBip60bOap/fX/XK7DQtdo/vrwnt1CBoc4bKbtOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=duzsVjeQO+39vn69ReK95ABtk7tdepps2LZAFIp2e6k=;
+ b=XiruNOyReQfcSvJ8wvwIqXuK0oTxE3mzn8lSyY3nsyMlbeF3OGnZjW2Ny0KEJLeBGs+NXY2IJtbfPsgF7JRyJGEBeihuydkz1bkfcMwosmbCSnCxJMR64UR6isJuhZSaR1I78+rWBsdcK1Zl/PkHVRXn/kU56We0Q3R+UU2UEJo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by LV3PR12MB9440.namprd12.prod.outlook.com (2603:10b6:408:215::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.44; Wed, 2 Aug
+ 2023 03:17:14 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::36f9:ffa7:c770:d146%7]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
+ 03:17:14 +0000
+Message-ID: <d1b2cf1b-de5f-6c2e-c8dc-fdf60cd0882d@amd.com>
+Date:   Tue, 1 Aug 2023 22:17:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v7 2/2] PCI: Don't put non-power manageable PCIe root
+ ports into D3
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20230711221427.GA250962@bhelgaas>
+ <b82a50eb-8182-84ca-5b24-dbe8870fa871@amd.com>
+ <CAJZ5v0i6PviqW7u3i8hmvSCvR_VHqP-mWRy3Da8Ev_1vi9qBQA@mail.gmail.com>
+ <a309e3fe-b1f9-e269-cb97-8af87c8d483b@amd.com>
+ <CAJZ5v0jvxrDMR6YHFpYZ4yYpp82-3TtrH==SMRFtUMJsv7=i=g@mail.gmail.com>
+ <37b005d5-68fb-f8dd-67e2-c953d677fca2@amd.com>
+ <8298c01c-abec-914b-0542-459f38c635fe@amd.com>
+ <CAJZ5v0i3g0JujMwikB8niRZ93hXJZqWtjrCjbaDmkMLUbMmwMA@mail.gmail.com>
+From:   Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <CAJZ5v0i3g0JujMwikB8niRZ93hXJZqWtjrCjbaDmkMLUbMmwMA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR10CA0004.namprd10.prod.outlook.com
+ (2603:10b6:806:a7::9) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 MIME-Version: 1.0
-References: <20230731065041.1447-1-masahisa.kojima@linaro.org>
- <20230731065041.1447-4-masahisa.kojima@linaro.org> <20230801173418.00007337@Huawei.com>
-In-Reply-To: <20230801173418.00007337@Huawei.com>
-From:   Masahisa Kojima <masahisa.kojima@linaro.org>
-Date:   Wed, 2 Aug 2023 12:12:35 +0900
-Message-ID: <CADQ0-X_ohh++HHFSt+0P9ys=2P+CKdwVvwqBwyEG0ZHrgydrKw@mail.gmail.com>
-Subject: Re: [PATCH v7 3/5] efi: Add tee-based EFI variable driver
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-efi@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|LV3PR12MB9440:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9e43aa53-01b0-4e3c-2e9a-08db9306f7be
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: E1VzDVMNykSPnou8JGblArlqFkx8YwUG7hq+1gzkNWQzuae61hQ150osI46qkyHMWXVZ7i1AzQKN0X96KLduV71oour6DZwz20x8aIjQVKzuzq++pMRuO4dBc/0ZgSUrWyOBAwQmPGevjhreTw/FEKYN8V6axPv4ZGqAhH20Zis6n5qT359DOFmBRCiGAI3eMM7fJfYYsE8tu8RKRikB1mYeTqo7XFRvu/Noz6rGMnjKjSrEZPzw9uz3X4BGyh+aMwXWDOrOrJEHDFGgpiJd5LPG98XIXW5k5dx9vJeSDL3Ub2ukhuW4sjSDdhm6m1bx53RYbcuiw4qTpaCi/rZuUD6qynpqvrnm1M3F0xXTpcOrL8vaMpE/bp6v3mRnxzf7hJstSyJgUP82cH+cro+uBkrwoQqLxPt0scY3kMxp7/0Wiq+grt8pM3niUyi0hIZvFiWBh4Ej2lPX+vUeIOZcJcJEzMqSJOrov68Tvl2Wuwoo+pBC300AnH4rLGxxhKazojyZXZsEMXFnTOItMDzksetAF5neHSPJF4U+B0X6hXMARqMUv6+RVB8GVkgPzVUomMnlj8wSdTc/qdkMSw8VL8inGmWRJJQsq7n2NOi2eIzqDIdWbuTACLPIIJKmr+OpXrwjsfJnzqbFSVcJQAcFCQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(376002)(366004)(136003)(346002)(39860400002)(396003)(451199021)(7416002)(38100700002)(6506007)(5660300002)(19627235002)(4326008)(53546011)(110136005)(66476007)(66946007)(66556008)(54906003)(6512007)(478600001)(2906002)(2616005)(8936002)(8676002)(6486002)(41300700001)(36756003)(31686004)(31696002)(186003)(316002)(86362001)(6666004)(44832011)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?UXN6NWFTSXNiUm8rdVZUL1ZqT0EvZ0E4VjVrZnFGTHc5WndaOFhscFRYOGR4?=
+ =?utf-8?B?QnpaS1M3YndVWmhadXNpdmNUaTVtV0xhMlBIbjF0TlhBS01icVI2MEVQOGZS?=
+ =?utf-8?B?RmlneG44U3liaFJ2RVk0Y1VHN0NBU21pWlFTRXRPdjExdDF2YUxiSk8vUWM4?=
+ =?utf-8?B?eGRTRFZ4WkZ6Nmp3QVdYRGJSbUZyVzVMcUQ2ZWYwaG5ZR1RVNExzVENOZW5M?=
+ =?utf-8?B?a3dLTkFYc0hTR0wrZTlZU1VjaUt3Uld2a09WNWFUM1cxamhtRXJLNE43MUJW?=
+ =?utf-8?B?T2ptSVE3TVdnYWo3TkVranhoVllQTHpEb1pRTktBS21FVDBWeHlGOGhWSnEr?=
+ =?utf-8?B?bGRIVzJOOC9hdERHWE9obFVBRi9ZVjR4YUJON3hGK2FXdGdDeGdiZlp0aitw?=
+ =?utf-8?B?bUdXcFNMZ2JWdUgzRG54RE4rVjRPOE1rVHQ5SWtsa3o1OU1QcnpSSElvajNP?=
+ =?utf-8?B?YlNMTmtSN1JFYjZET2l4aHRMUTVPeGMyc0RpeGE5clh3V2t2NVl0YXdKaWFs?=
+ =?utf-8?B?R2RnbkUwaEtNcTVLS08zRXBsOE1FanhlbktuaC9GNUFHLzFpUzBIOVIrYUxW?=
+ =?utf-8?B?L2JSam56ZWNBN0EyWGVBTUJLMG5iY1ZyRElrRUFFV2VkRmR4VDJ5Rno4MVhU?=
+ =?utf-8?B?T2p2UnJDZGpCYlQ4cnZ4MzBiK1VGTHNualNscGNKQ01OY2ZnZVliVkxtR0xz?=
+ =?utf-8?B?NlBTYzFVS29PeXlyTHlTK2RPa3UwRWI0TzZXR1hUL2FXYnFaSnJDLyswY3Jz?=
+ =?utf-8?B?ZTQ5YnpzUkFDQVdDZWVzVDJ2RnhKcFhjSE8wTVRHM0FpSTJKSkh1dE9MUzgz?=
+ =?utf-8?B?NXlUTTJtSXNqRitJYllhYWdHV0FjQVpXdTdYLzFkSk9neGFUUklTTnhURndL?=
+ =?utf-8?B?Rk9KUzkwSkh5cFV2YTdiVXYvK3JVU2sycTA2SEs5Qk1hV0NNMkF3elo4aVc0?=
+ =?utf-8?B?NkJBNTJCNWhGN1c2RGo4N21WeTJhblFzenVYTnFzM2o0eEwvV0MrNnR1S01F?=
+ =?utf-8?B?Sk02b2tFTTZtZ1QyN2V1bkRYMnpCbXQ1cHNUWGgzMDlkVjNLTUhnK0VWNlZY?=
+ =?utf-8?B?OUtndlFCZjNJVXRCSlF4bVR0WGRxTlJVaGo1aWFlZTNETytobnpxWTVXQ3U4?=
+ =?utf-8?B?dlByY2hZTS9pMHpDZkc0NkhQRUIxVCtKS1E0Z3RySGErVVN6bk9tL0FMeklX?=
+ =?utf-8?B?WFplR3REZThYY1JxOFUvQ1R4Ri9qMXVUdjluM3NGMzZHcmFCeE0vV3YvNm05?=
+ =?utf-8?B?QThCbkUwa0tGa2FZc0MwSXFPdmk0OVVmSE9KaEZIbVNTQmQrOHZ4SHpaWWVW?=
+ =?utf-8?B?NW5WUjFBK3hzQ2FOWTl1S3h4a1Q0RHY1N0VpdVpCdTlmUHVkcDE3aHEvcXl6?=
+ =?utf-8?B?SnIxSTBENWNQNHZabDBYYk54eldPcFZFWnBoT2t4a2xHbWdRYXNkNVhjaytp?=
+ =?utf-8?B?S3JNRVpBbUo3RHRtaUE2Vy93MUFzN3VrRG9oNU5jWS9nZkR2U2d4bXk1N2Rq?=
+ =?utf-8?B?d2JnRzBRVEI4eVRQS3VRTi8rUitzMDUxVGlvYU9jVlNZejBWZFp5UnhyV3V3?=
+ =?utf-8?B?L09Sd1dtMnlJM3I1YXpoeHQ4K2ZMUUlaMmdKenFES0xIeDM1Wmd2NVo1aDJu?=
+ =?utf-8?B?TmdQazhQczc2R0MwQi9SYUxvY2c5OXhOcE92VlBHcFh4SDgzaHRXSmV1TnNS?=
+ =?utf-8?B?Z1pmaHdjaDZ6STdDT2F6elk4U3ZqL3ROWE9mWS8zV0hHNUh0SEhkbjBDSzdD?=
+ =?utf-8?B?WHpOT05hVmhDaE4rOGJyMll5NVoxWXR5cFVXdnkyLzcrMlo4NE1xVTA2UkY2?=
+ =?utf-8?B?dmlJWXJKSE95YmF2ajF0bkQzR3FBbjB2VXRub3dEc04wVzhSZkN3ZEZkQ1Ji?=
+ =?utf-8?B?UWtIQkk3NXM0dUVncDN6dWFvZjdWaUw5UUhwWXU1WEhoS2VqdVJZcGJQakZF?=
+ =?utf-8?B?UmdvbzNHZmVGOVFKTDJRSmlDTGJQd0RVWkl3NHc3aEtob0tmNldZaG5ZeThx?=
+ =?utf-8?B?Y0VoY2ZESG14QXFZMmd3elQvZzFYZURyblpzZXYvTlJyQ2MwZFRpTUhraXYr?=
+ =?utf-8?B?NGtkRWk4eHBmN0ZFNUd0dGJlWHlEZkxWYjBXOGo1WXRVaDd3bDVlM2s1KzFP?=
+ =?utf-8?B?dEpKSklENzFVNzhYc1cvWXJCR0pBNlFXUzg3c3NNQ3cyMzNYc0NnOWtodkEy?=
+ =?utf-8?B?Ync9PQ==?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e43aa53-01b0-4e3c-2e9a-08db9306f7be
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 03:17:13.9962
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zYHspxv75602fRChkja993A/rAfN3gYY1vfbgd0cmrUE6tvPw0hJ8+5+BIj8Ax+TUZmYJ70lCh449rXhesTUIw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9440
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 at 01:34, Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Mon, 31 Jul 2023 15:50:38 +0900
-> Masahisa Kojima <masahisa.kojima@linaro.org> wrote:
->
-> > When the flash is not owned by the non-secure world, accessing the EFI
-> > variables is straightforward and done via EFI Runtime Variable Services.
-> > In this case, critical variables for system integrity and security
-> > are normally stored in the dedicated secure storage and only accessible
-> > from the secure world.
-> >
-> > On the other hand, the small embedded devices don't have the special
-> > dedicated secure storage. The eMMC device with an RPMB partition is
-> > becoming more common, we can use an RPMB partition to store the
-> > EFI Variables.
-> >
-> > The eMMC device is typically owned by the non-secure world(linux in
-> > this case). There is an existing solution utilizing eMMC RPMB partition
-> > for EFI Variables, it is implemented by interacting with
-> > TEE(OP-TEE in this case), StandaloneMM(as EFI Variable Service Pseudo TA),
-> > eMMC driver and tee-supplicant. The last piece is the tee-based
-> > variable access driver to interact with TEE and StandaloneMM.
-> >
-> > So let's add the kernel functions needed.
-> >
-> > This feature is implemented as a kernel module.
-> > StMM PTA has TA_FLAG_DEVICE_ENUM_SUPP flag when registered to OP-TEE
-> > so that this tee_stmm_efi module is probed after tee-supplicant starts,
-> > since "SetVariable" EFI Runtime Variable Service requires to
-> > interact with tee-supplicant.
-> >
-> > Acked-by: Sumit Garg <sumit.garg@linaro.org>
-> > Co-developed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> > Signed-off-by: Masahisa Kojima <masahisa.kojima@linaro.org>
->
-> I was curious - so drive by review. Feel free to ignore :)
-> All general code readability stuff and a suggestion for the subsystem to
-> get rid of boilerplate (like most large subsystems did years ago!)
+On 8/1/23 05:15, Rafael J. Wysocki wrote:
+> On Tue, Aug 1, 2023 at 5:25 AM Mario Limonciello
+> <mario.limonciello@amd.com> wrote:
+>>
+>> On 7/14/23 19:46, Limonciello, Mario wrote:
+>>>
+>>> On 7/14/2023 2:17 PM, Rafael J. Wysocki wrote:
+>>>>>> Generally speaking, pci_bridge_d3_possible() is there to prevent
+>>>>>> bridges (and PCIe ports in particular) from being put into D3hot/cold
+>>>>>> if there are reasons to believe that it may not work.
+>>>>>> acpi_pci_bridge_d3() is part of that.
+>>>>>>
+>>>>>> Even if it returns 'true', the _SxD/_SxW check should still be applied
+>>>>>> via pci_target_state() to determine whether or not the firmware allows
+>>>>>> this particular bridge to go into D3hot/cold.  So arguably, the _SxW
+>>>>>> check in acpi_pci_bridge_d3() should not be necessary and if it makes
+>>>>>> any functional difference, there is a bug somewhere else.
+>>>>> But only if it was power manageable would the _SxD/_SxW check be
+>>>>> applied.  This issue is around the branch of pci_target_state() where
+>>>>> it's not power manageable and so it uses PME or it falls back to D3hot.
+>>>> Well, this looks like a spec interpretation difference.
+>>>>
+>>>> We thought that _SxD/_SxW would only be relevant for devices with ACPI
+>>>> PM support, but the firmware people seem to think that those objects
+>>>> are also relevant for PCI devices that don't have ACPI PM support
+>>>> (because those devices are still power-manageable via PMCSR).  If
+>>>> Windows agrees with that viewpoint, we'll need to adjust, but not
+>>>> through adding _SxW checks in random places.
+>>> I think that depends upon how you want to handle the lack of _S0W.
+>>>
+>>> On these problematic devices there is no _S0W under the PCIe
+>>> root port.  As I said; Windows puts them into D0 in this case though.
+>>>
+>>> So acpi_dev_power_state_for_wake should return ACPI_STATE_UNKNOWN.
+>>>
+>>> Can you suggest where you think adding a acpi_dev_power_state_for_wake()
+>>> does make sense?
+>>>
+>>> Two areas that I think would work would be in: pci_pm_suspend_noirq()
+>>> (to avoid calling pci_prepare_to_sleep)
+>>>
+>>> or
+>>>
+>>> directly in pci_prepare_to_sleep() to check that value in lieu of
+>>> pci_target_state().
+>>>
+>>
+>> Rafael,
+>>
+>> Did you have any more thoughts on this?
+> 
+> Reportedly, if there are no ACPI power management objects associated
+> with a Root Port, Windows will always leave it in D0.
+> 
+> In that case, acpi_pci_bridge_d3() will return false unless the
+> HotPlugSupportInD3 property is present AFAICS, so the ACPI code will
+> not allow the port to be put into D3hot.
+> 
+> Consequently, platform_pci_bridge_d3() will return false and the only
+> thing that may allow the port to go into D0 is the dmi_get_bios_year()
+> check at the end of pci_bridge_d3_possible().
+> 
+> However, that was added, because there are Intel platforms on which
+> Root Ports need to be programmed into D3hot on suspend (which allows
+> the whole platform to reduce power significantly) and there are no
+> ACPI device power management objects associated with them (Mika should
+> know the gory details related to this).  It looks like under Windows
+> the additional power reduction would not be possible on those systems,
+> but that would be a problem, wouldn't it?
+> 
 
-Thank you for your review.
+I've been thinking on this today, and I at least have a hypothesis about 
+this behavior.  Perhaps Windows is actually utilizing enabled PEP 
+constraints to enforce what state device should be put into over Modern 
+Standby cycles in the absence of ACPI objects.
 
->
-> Jonathan
->
->
-> > diff --git a/drivers/firmware/efi/stmm/tee_stmm_efi.c b/drivers/firmware/efi/stmm/tee_stmm_efi.c
-> > new file mode 100644
-> > index 000000000000..f6623171ae04
-> > --- /dev/null
-> > +++ b/drivers/firmware/efi/stmm/tee_stmm_efi.c
->
-> ...
->
-> > +/**
-> > + * tee_mm_communicate() - Pass a buffer to StandaloneMM running in TEE
-> > + *
-> > + * @comm_buf:                locally allocated communication buffer
-> > + * @dsize:           buffer size
-> > + * Return:           status code
-> > + */
-> > +static efi_status_t tee_mm_communicate(void *comm_buf, size_t dsize)
-> > +{
-> > +     size_t buf_size;
-> > +     efi_status_t ret;
-> > +     struct efi_mm_communicate_header *mm_hdr;
-> > +     struct tee_ioctl_invoke_arg arg;
-> > +     struct tee_param param[4];
-> > +     struct tee_shm *shm = NULL;
-> > +     int rc;
-> > +
-> > +     if (!comm_buf)
-> > +             return EFI_INVALID_PARAMETER;
-> > +
-> > +     mm_hdr = (struct efi_mm_communicate_header *)comm_buf;
-> > +     buf_size = mm_hdr->message_len + sizeof(efi_guid_t) + sizeof(size_t);
-> > +
-> > +     if (dsize != buf_size)
-> > +             return EFI_INVALID_PARAMETER;
-> > +
-> > +     shm = tee_shm_register_kernel_buf(pvt_data.ctx, comm_buf, buf_size);
-> > +     if (IS_ERR(shm)) {
-> > +             dev_err(pvt_data.dev, "Unable to register shared memory\n");
-> > +             return EFI_UNSUPPORTED;
-> > +     }
-> > +
-> > +     memset(&arg, 0, sizeof(arg));
-> > +     arg.func = PTA_STMM_CMD_COMMUNICATE;
-> > +     arg.session = pvt_data.session;
-> > +     arg.num_params = 4;
-> > +
-> > +     memset(param, 0, sizeof(param));
-> > +     param[0].attr = TEE_IOCTL_PARAM_ATTR_TYPE_MEMREF_INOUT;
-> > +     param[0].u.memref.size = buf_size;
-> > +     param[0].u.memref.shm = shm;
-> > +     param[1].attr = TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT;
-> > +     param[2].attr = TEE_IOCTL_PARAM_ATTR_TYPE_NONE;
-> > +     param[3].attr = TEE_IOCTL_PARAM_ATTR_TYPE_NONE;
-> > +
-> > +     rc = tee_client_invoke_func(pvt_data.ctx, &arg, param);
-> > +     tee_shm_free(shm);
-> > +
-> > +     if (rc < 0 || arg.ret != 0) {
-> > +             dev_err(pvt_data.dev,
-> > +                     "PTA_STMM_CMD_COMMUNICATE invoke error: 0x%x\n", arg.ret);
-> > +             return EFI_DEVICE_ERROR;
-> > +     }
-> > +
-> > +     switch (param[1].u.value.a) {
-> > +     case ARM_SVC_SPM_RET_SUCCESS:
-> > +             ret = EFI_SUCCESS;
-> > +             break;
-> > +
-> > +     case ARM_SVC_SPM_RET_INVALID_PARAMS:
-> > +             ret = EFI_INVALID_PARAMETER;
-> > +             break;
-> > +
-> > +     case ARM_SVC_SPM_RET_DENIED:
-> > +             ret = EFI_ACCESS_DENIED;
-> > +             break;
-> > +
-> > +     case ARM_SVC_SPM_RET_NO_MEMORY:
-> > +             ret = EFI_OUT_OF_RESOURCES;
-> > +             break;
-> > +
-> > +     default:
-> > +             ret = EFI_ACCESS_DENIED;
-> > +     }
-> > +
-> > +     return ret;
->
-> Direct returns both shorter and easier to review!
+In the case of one of my problematic system the PEP constraints for the 
+root port are:
 
-OK, I agree.
+Package (0x04)
+{
+	0x00,
+	"\\_SB.PCI0.GP17",
+	0x00,
+	0x00
+},
 
->
-> > +}
-> > +
->
-> Lots of similar stuff to below...
+That first 0x00 means the constraint isn't actually enabled for the root 
+port.
 
-Yes, I will fix similar cases.
+Mika,
 
->
->
-> > +
-> > +static efi_status_t tee_get_variable(u16 *name, efi_guid_t *vendor,
-> > +                                  u32 *attributes, unsigned long *data_size,
-> > +                                  void *data)
-> > +{
-> > +     struct var_check_property var_property;
-> > +     struct smm_variable_access *var_acc;
-> > +     size_t payload_size;
-> > +     size_t name_size;
-> > +     size_t tmp_dsize;
-> > +     u8 *comm_buf = NULL;
-> > +     efi_status_t ret;
-> > +
-> > +     if (!name || !vendor || !data_size) {
-> > +             ret = EFI_INVALID_PARAMETER;
-> > +             goto out;
-> > +     }
-> > +
-> > +     name_size = (ucs2_strnlen(name, EFI_VAR_NAME_LEN) + 1) * sizeof(u16);
-> > +     if (name_size > max_payload_size - MM_VARIABLE_ACCESS_HEADER_SIZE) {
-> > +             ret = EFI_INVALID_PARAMETER;
-> > +             goto out;
-> > +     }
-> > +
-> > +     /* Trim output buffer size */
-> > +     tmp_dsize = *data_size;
-> > +     if (name_size + tmp_dsize >
-> > +         max_payload_size - MM_VARIABLE_ACCESS_HEADER_SIZE) {
-> > +             tmp_dsize = max_payload_size - MM_VARIABLE_ACCESS_HEADER_SIZE -
-> > +                         name_size;
-> > +     }
-> > +
-> > +     /* Get communication buffer and initialize header */
-> > +     payload_size = MM_VARIABLE_ACCESS_HEADER_SIZE + name_size + tmp_dsize;
-> > +     var_acc = setup_mm_hdr(&comm_buf, payload_size,
-> > +                            SMM_VARIABLE_FUNCTION_GET_VARIABLE, &ret);
-> > +     if (!comm_buf)
-> > +             goto out;
-> > +
-> > +     /* Fill in contents */
-> > +     memcpy(&var_acc->guid, vendor, sizeof(var_acc->guid));
-> > +     var_acc->data_size = tmp_dsize;
-> > +     var_acc->name_size = name_size;
-> > +     var_acc->attr = attributes ? *attributes : 0;
-> > +     memcpy(var_acc->name, name, name_size);
-> > +
-> > +     /* Communicate */
->
-> Comment seems a bit obvious.  General rule, don't comment the obvious. It just
-> provides places where the comments might become wrong during future refactors.
+Could you get an acpidump from one of these problematic Intel systems so 
+we can check the PEP constraints to see if this theory works? Or maybe 
+you have some other ideas why this is different?
 
-OK, I remove the obvious comment.
+> So it looks like there are some systems on which programming Root
+> Ports into D3hot is needed to achieve additional power reduction of
+> the platform and there are systems on which programming Root Ports
+> into D3hot breaks things and there are no ACPI power management
+> objects associated with these Root Ports in both cases.
+> 
+> The only way to make progress that I can think about right now is to
+> limit the dmi_get_bios_year() check at the end of
+> pci_bridge_d3_possible() to Intel platforms.
 
->
-> > +     ret = mm_communicate(comm_buf, payload_size);
-> > +     if (ret == EFI_SUCCESS || ret == EFI_BUFFER_TOO_SMALL)
-> > +             /* Update with reported data size for trimmed case */
-> > +             *data_size = var_acc->data_size;
-> > +     if (ret != EFI_SUCCESS)
-> > +             goto out;
-> > +
-> > +     ret = get_property_int(name, name_size, vendor, &var_property);
-> > +     if (ret != EFI_SUCCESS)
-> > +             goto out;
-> > +
-> > +     if (attributes)
-> > +             *attributes = var_acc->attr;
-> > +
-> > +     if (data)
-> > +             memcpy(data, (u8 *)var_acc->name + var_acc->name_size,
-> > +                    var_acc->data_size);
-> > +     else
-> > +             ret = EFI_INVALID_PARAMETER;
->
-> Keep to a simple out of line error flow as it's more readable even when it
-> is a line or 2 more code.
->
->         if (!data) {
->                 ret = EFI_INVALID_PARAMETER;
->                 goto out;
->         }
->         memcpy()...
-
-OK.
-
-
-> > +
-> > +out:
-> > +     kfree(comm_buf);
-> > +     return ret;
-> > +}
-> > +
-> > +static efi_status_t tee_get_next_variable(unsigned long *name_size,
-> > +                                       efi_char16_t *name, efi_guid_t *guid)
-> > +{
-> > +     struct smm_variable_getnext *var_getnext;
-> > +     size_t payload_size;
-> > +     size_t out_name_size;
-> > +     size_t in_name_size;
-> > +     u8 *comm_buf = NULL;
-> > +     efi_status_t ret;
-> > +
-> > +     if (!name_size || !name || !guid) {
-> > +             ret = EFI_INVALID_PARAMETER;
-> > +             goto out;
->
-> As below.  Direct returns make it clear nothing to do and generally
-> give easier code to review.
->
-> > +     }
-> > +
-> > +     out_name_size = *name_size;
-> > +     in_name_size = (ucs2_strnlen(name, EFI_VAR_NAME_LEN) + 1) * sizeof(u16);
-> > +
-> > +     if (out_name_size < in_name_size) {
-> > +             ret = EFI_INVALID_PARAMETER;
-> > +             goto out;
-> > +     }
-> > +
-> > +     if (in_name_size >
-> > +         max_payload_size - MM_VARIABLE_GET_NEXT_HEADER_SIZE) {
-> > +             ret = EFI_INVALID_PARAMETER;
-> > +             goto out;
-> > +     }
-> > +
-> > +     /* Trim output buffer size */
-> > +     if (out_name_size > max_payload_size - MM_VARIABLE_GET_NEXT_HEADER_SIZE)
-> > +             out_name_size =
-> > +                     max_payload_size - MM_VARIABLE_GET_NEXT_HEADER_SIZE;
-> > +
-> > +     payload_size = MM_VARIABLE_GET_NEXT_HEADER_SIZE + out_name_size;
-> > +     var_getnext = setup_mm_hdr(&comm_buf, payload_size,
-> > +                                SMM_VARIABLE_FUNCTION_GET_NEXT_VARIABLE_NAME,
-> > +                                &ret);
-> > +     if (!comm_buf)
->
-> As below (I'm reviewing up the code)
->
-> > +             goto out;
-> > +
-> > +     /* Fill in contents */
-> > +     memcpy(&var_getnext->guid, guid, sizeof(var_getnext->guid));
-> > +     var_getnext->name_size = out_name_size;
-> > +     memcpy(var_getnext->name, name, in_name_size);
-> > +     memset((u8 *)var_getnext->name + in_name_size, 0x0,
-> > +            out_name_size - in_name_size);
-> > +
-> > +     /* Communicate */
-> > +     ret = mm_communicate(comm_buf, payload_size);
-> > +     if (ret == EFI_SUCCESS || ret == EFI_BUFFER_TOO_SMALL) {
-> > +             /* Update with reported data size for trimmed case */
-> > +             *name_size = var_getnext->name_size;
-> > +     }
-> > +     if (ret != EFI_SUCCESS)
-> > +             goto out;
-> > +
-> > +     memcpy(guid, &var_getnext->guid, sizeof(*guid));
-> > +     memcpy(name, var_getnext->name, var_getnext->name_size);
-> > +
-> > +out:
-> > +     kfree(comm_buf);
-> > +     return ret;
-> > +}
-> > +
-> > +static efi_status_t tee_set_variable(efi_char16_t *name, efi_guid_t *vendor,
-> > +                                  u32 attributes, unsigned long data_size,
-> > +                                  void *data)
-> > +{
-> > +     efi_status_t ret;
-> > +     struct var_check_property var_property;
-> > +     struct smm_variable_access *var_acc;
-> > +     size_t payload_size;
-> > +     size_t name_size;
-> > +     u8 *comm_buf = NULL;
-> > +
-> > +     if (!name || name[0] == 0 || !vendor) {
-> > +             ret = EFI_INVALID_PARAMETER;
-> > +             goto out;
->
-> Nothing to do so why not return here?
-OK.
-
->
-> > +     }
-> > +     if (data_size > 0 && !data) {
-> > +             ret = EFI_INVALID_PARAMETER;
-> > +             goto out;
->
-> Also return here?
-
-OK.
-
->
-> > +     }
-> > +     /* Check payload size */
-> > +     name_size = (ucs2_strnlen(name, EFI_VAR_NAME_LEN) + 1) * sizeof(u16);
-> > +     payload_size = MM_VARIABLE_ACCESS_HEADER_SIZE + name_size + data_size;
-> > +     if (payload_size > max_payload_size) {
-> > +             ret = EFI_INVALID_PARAMETER;
-> > +             goto out;
-> and here.
-
-OK.
-
->
-> > +     }
-> > +
-> > +     /*
-> > +      * Allocate the buffer early, before switching to RW (if needed)
-> > +      * so we won't need to account for any failures in reading/setting
-> > +      * the properties, if the allocation fails
-> > +      */
-> > +     var_acc = setup_mm_hdr(&comm_buf, payload_size,
-> > +                            SMM_VARIABLE_FUNCTION_SET_VARIABLE, &ret);
-> > +     if (!comm_buf)
->
-> In this case still nothing to do. Return here - plus ideally check ret
-> rather than comm_buf so it's clear that an error is being returned without
-> us having to look in setup_mm_hdr()
-
-Yes, the return value of setup_mm_hdr() should be checked.
-
->
-> > +             goto out;
-> > +
-> > +     /*
-> > +      * The API has the ability to override RO flags. If no RO check was
-> > +      * requested switch the variable to RW for the duration of this call
-> > +      */
-> > +     ret = get_property_int(name, name_size, vendor, &var_property);
-> > +     if (ret != EFI_SUCCESS) {
-> > +             dev_err(pvt_data.dev, "Getting variable property failed\n");
-> > +             goto out;
-> > +     }
-> > +
-> > +     if (var_property.property & VAR_CHECK_VARIABLE_PROPERTY_READ_ONLY) {
-> > +             ret = EFI_WRITE_PROTECTED;
-> > +             goto out;
-> > +     }
-> > +
-> > +     /* Fill in contents */
-> > +     memcpy(&var_acc->guid, vendor, sizeof(var_acc->guid));
-> > +     var_acc->data_size = data_size;
-> > +     var_acc->name_size = name_size;
-> > +     var_acc->attr = attributes;
-> > +     memcpy(var_acc->name, name, name_size);
-> > +     memcpy((u8 *)var_acc->name + name_size, data, data_size);
-> > +
->
-> Not sure why 2 blank lines here. One probably fine.
-
-I will fix it.
-
->
-> > +
-> > +     /* Communicate */
-> > +     ret = mm_communicate(comm_buf, payload_size);
-> > +     dev_dbg(pvt_data.dev, "Set Variable %s %d %lx\n", __FILE__, __LINE__, ret);
-> > +out:
-> > +     kfree(comm_buf);
-> > +     return ret;
-> > +}
-> > +
-> > +static efi_status_t tee_set_variable_nonblocking(efi_char16_t *name,
-> > +                                              efi_guid_t *vendor,
-> > +                                              u32 attributes,
-> > +                                              unsigned long data_size,
-> > +                                              void *data)
-> > +{
-> > +     return EFI_UNSUPPORTED;
-> > +}
-> > +
-> > +static efi_status_t tee_query_variable_info(u32 attributes,
-> > +                                         u64 *max_variable_storage_size,
-> > +                                         u64 *remain_variable_storage_size,
-> > +                                         u64 *max_variable_size)
-> > +{
-> > +     struct smm_variable_query_info *mm_query_info;
-> > +     size_t payload_size;
-> > +     efi_status_t ret;
-> > +     u8 *comm_buf;
-> > +
-> > +     payload_size = sizeof(*mm_query_info);
-> > +     mm_query_info = setup_mm_hdr(&comm_buf, payload_size,
-> > +                             SMM_VARIABLE_FUNCTION_QUERY_VARIABLE_INFO,
-> > +                             &ret);
-> > +     if (!comm_buf)
-> > +             goto out;
->
-> if (!comm_buf) nothing to do (which is good as I'd not expect setup_mm_hdr
-> to have side effects if it fails.  So return ret.  Which is a little odd.
-> Can we just use ret as the check instead? That way it's clear the error returned
-> isn't an accidental success.
-
-Yes, I agree.
-
->
-> > +
-> > +     mm_query_info->attr = attributes;
-> > +     ret = mm_communicate(comm_buf, payload_size);
-> > +     if (ret != EFI_SUCCESS)
-> > +             goto out;
-> > +     *max_variable_storage_size = mm_query_info->max_variable_storage;
-> > +     *remain_variable_storage_size =
-> > +             mm_query_info->remaining_variable_storage;
-> > +     *max_variable_size = mm_query_info->max_variable_size;
-> > +
-> > +out:
-> > +     kfree(comm_buf);
-> > +     return ret;
-> > +}
-> > +
-> > +static int tee_stmm_efi_probe(struct device *dev)
-> > +{
-> > +     struct tee_ioctl_open_session_arg sess_arg;
-> > +     efi_status_t ret;
-> > +     int rc;
-> > +
-> > +     /* Open context with TEE driver */
-> > +     pvt_data.ctx = tee_client_open_context(NULL, tee_ctx_match, NULL, NULL);
-> > +     if (IS_ERR(pvt_data.ctx))
-> > +             return -ENODEV;
-> > +
-> > +     /* Open session with StMM PTA */
-> > +     memset(&sess_arg, 0, sizeof(sess_arg));
-> > +     export_uuid(sess_arg.uuid, &tee_stmm_efi_id_table[0].uuid);
-> > +     rc = tee_client_open_session(pvt_data.ctx, &sess_arg, NULL);
-> > +     if ((rc < 0) || (sess_arg.ret != 0)) {
-> > +             dev_err(dev, "tee_client_open_session failed, err: %x\n",
-> > +                     sess_arg.ret);
-> > +             rc = -EINVAL;
-> > +             goto out_ctx;
->
-> Up to you, but I'd be tempted to take this all devm_ managed
-> via devm_add_action_or_reset() and suitable callbacks.
->
-> Marginal benefit in lines of code but makes it much harder to forget
-> to tidy something up in some future refactoring / reordering of code.
-
-Thank you, I will try to call  devm_add_action_or_reset(), and also
-update remove() callback.
-
->
-> > +     }
-> > +     pvt_data.session = sess_arg.session;
-> > +     pvt_data.dev = dev;
-> > +
-> > +     ret = get_max_payload(&max_payload_size);
-> > +     if (ret != EFI_SUCCESS) {
-> > +             rc = -EIO;
-> > +             goto out_sess;
-> > +     }
-> > +
-> > +     max_buffer_size = MM_COMMUNICATE_HEADER_SIZE +
-> > +                       MM_VARIABLE_COMMUNICATE_SIZE +
-> > +                       max_payload_size;
-> > +
-> > +     tee_efivar_ops.get_variable = tee_get_variable;
-> > +     tee_efivar_ops.get_next_variable = tee_get_next_variable;
-> > +     tee_efivar_ops.set_variable = tee_set_variable;
-> > +     tee_efivar_ops.set_variable_nonblocking = tee_set_variable_nonblocking;
-> > +     tee_efivar_ops.query_variable_store = efi_query_variable_store;
-> > +     tee_efivar_ops.query_variable_info = tee_query_variable_info;
-> > +
-> > +     efivars_generic_ops_unregister();
-> > +     pr_info("Use tee-based EFI runtime variable services\n");
-> > +     efivars_register(&tee_efivars, &tee_efivar_ops);
-> > +
-> > +     return 0;
-> > +
-> > +out_sess:
-> > +     tee_client_close_session(pvt_data.ctx, pvt_data.session);
-> > +out_ctx:
-> > +     tee_client_close_context(pvt_data.ctx);
-> > +
-> > +     return rc;
-> > +}
-> > +
-> > +static int tee_stmm_efi_remove(struct device *dev)
-> > +{
-> > +     efivars_unregister(&tee_efivars);
-> > +     efivars_generic_ops_register();
-> > +
-> > +     tee_client_close_session(pvt_data.ctx, pvt_data.session);
-> > +     tee_client_close_context(pvt_data.ctx);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +MODULE_DEVICE_TABLE(tee, tee_stmm_efi_id_table);
-> > +
-> > +static struct tee_client_driver tee_stmm_efi_driver = {
-> > +     .id_table       = tee_stmm_efi_id_table,
-> > +     .driver         = {
-> > +             .name           = "tee-stmm-efi",
-> > +             .bus            = &tee_bus_type,
-> > +             .probe          = tee_stmm_efi_probe,
-> > +             .remove         = tee_stmm_efi_remove,
-> > +     },
-> > +};
-> > +
-> > +static int __init tee_stmm_efi_mod_init(void)
-> > +{
-> > +     return driver_register(&tee_stmm_efi_driver.driver);
-> > +}
-> > +
-> > +static void __exit tee_stmm_efi_mod_exit(void)
-> > +{
-> > +     driver_unregister(&tee_stmm_efi_driver.driver);
-> > +}
-> > +
-> > +module_init(tee_stmm_efi_mod_init);
-> > +module_exit(tee_stmm_efi_mod_exit);
->
-> Looks like tee client drivers could benefit from a
-> #define module_tee_client_driver(__tee_client_driver)
-> similar to module_platform_driver() and similar.
-
-Yes, it simplifies the driver definition of tee client driver.
-Anyway, this modification should be different from this series,
-it is better to be modified together with other tee client drivers.
-
-Thanks,
-Masahisa Kojima
-
->
-> > +
-> > +MODULE_LICENSE("GPL");
-> > +MODULE_AUTHOR("Ilias Apalodimas <ilias.apalodimas@linaro.org>");
-> > +MODULE_AUTHOR("Masahisa Kojima <masahisa.kojima@linaro.org>");
-> > +MODULE_DESCRIPTION("TEE based EFI runtime variable service driver");
->
+Yeah if we can't come up with a method that works for both this might be 
+the only real option.
