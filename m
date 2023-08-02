@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55DD276CE6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDF076CE72
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233416AbjHBNWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
+        id S233701AbjHBNXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbjHBNWX (ORCPT
+        with ESMTP id S230239AbjHBNXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:22:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77051729
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 06:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690982501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nS6ICdo1UiQMcc3JZa9rf8CNFRuNpTXhvpaUSM5J8uw=;
-        b=XFW4eUri+xCZkfzmFP2kl/RBrT7AeT/0mPs28P5yQJdXwX8g47LKV2XPunOaMtoXhO4LH7
-        xebeMCQ9TxXN2d9og6oWGFcH/1YL5tM/fB0D7FK85w2zKRsU++MOEZBTgddFTIeZutMLOT
-        wAGrFCgAV02UWsdwPn60r3tkNXlkuTE=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-401-A_H0zQvBNomvSgE9eCr-IQ-1; Wed, 02 Aug 2023 09:21:37 -0400
-X-MC-Unique: A_H0zQvBNomvSgE9eCr-IQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 22CB81C09A45;
-        Wed,  2 Aug 2023 13:21:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 393BA492CA6;
-        Wed,  2 Aug 2023 13:21:35 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <0000000000001416bb06004ebf53@google.com>
-References: <0000000000001416bb06004ebf53@google.com>
-To:     syzbot <syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com>
-Cc:     dhowells@redhat.com, bpf@vger.kernel.org, brauner@kernel.org,
-        davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
-        kuba@kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [fs?] INFO: task hung in pipe_release (4)
+        Wed, 2 Aug 2023 09:23:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD961E9;
+        Wed,  2 Aug 2023 06:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=kiCDXAgTv56WYg1u5yZBu8q/sciM0XlEJzovVFtAEUo=; b=DwemZ3dYdMloL6ab7QPNiSDZ7P
+        MgIxcaw/gnuaPQa7g6BTTsuswnKLvqlzgbhurubUCSDIOhjAMccbX85q8e9Kz7du5bnboTZrOXf6S
+        xLs4K90ZwwFuqbSSqvgRgr75jckcJcTeqwfiljvlsq9Zo2efe/+I2gHAs5Nv87RjrXnmPm+f8UyOC
+        gA003mGHfjFymmBFWeBEBgcciOS4EEEqEUoRGl3PiK1JODggQ4oe2TCTlgQBSWx3IG58WnbLNnse3
+        x3pHR/XFKShWXblN3QGjx+6YZJTs8PKk6U97wjNwKsz7Y0sKrNqjzMYdI0p9E43U2Ms3KDNcvDhvy
+        tQr4SEOA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qRBp3-00FBPw-Lv; Wed, 02 Aug 2023 13:23:29 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6079430007E;
+        Wed,  2 Aug 2023 15:23:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4BCFA2107C44A; Wed,  2 Aug 2023 15:23:28 +0200 (CEST)
+Date:   Wed, 2 Aug 2023 15:23:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     anna-maria@linutronix.de, tglx@linutronix.de, frederic@kernel.org,
+        gautham.shenoy@amd.com, linux-kernel@vger.kernel.org,
+        daniel.lezcano@linaro.org, linux-pm@vger.kernel.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com
+Subject: Re: [RFC][PATCH 1/3] cpuidle: Inject tick boundary state
+Message-ID: <20230802132328.GA214207@hirez.programming.kicks-ass.net>
+References: <20230728145808.835742568@infradead.org>
+ <CAJZ5v0gNqEuqvV0RtrXiDDGtvKB2hronLwAU8jnmuGppKmyDxA@mail.gmail.com>
+ <20230729084417.GB3945851@hirez.programming.kicks-ass.net>
+ <CAJZ5v0iVKRY5-YvQmMbZ3+eZNHJgXt=CoYedNueAJyT9+Ld5Dg@mail.gmail.com>
+ <20230731090935.GB29590@hirez.programming.kicks-ass.net>
+ <CAJZ5v0jh5oozZm7OvN9j1iHtzYQzPMOJ=Nt0HaJKYyJ218Cezw@mail.gmail.com>
+ <20230731113850.GE29590@hirez.programming.kicks-ass.net>
+ <CAJZ5v0h+KC+uMiOE4m4Dp4=iHMkekutk+B+cwb0de8Fvswv6jA@mail.gmail.com>
+ <20230802103426.GB210177@hirez.programming.kicks-ass.net>
+ <CAJZ5v0gMrUBqtWfuN4DJwXYY5kM+kikWHiep=p-8Jz3yEO0hfQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1796029.1690982494.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 02 Aug 2023 14:21:34 +0100
-Message-ID: <1796030.1690982494@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0gMrUBqtWfuN4DJwXYY5kM+kikWHiep=p-8Jz3yEO0hfQ@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,118 +73,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
+On Wed, Aug 02, 2023 at 02:44:33PM +0200, Rafael J. Wysocki wrote:
+> On Wed, Aug 2, 2023 at 12:34 PM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Mon, Jul 31, 2023 at 06:55:35PM +0200, Rafael J. Wysocki wrote:
+> >
+> > > > In that case you cannot tell the difference between I'm good to use this
+> > > > state and I'm good to disable the tick and still use this state.
+> > >
+> > > No, you don't, but is it really worth the fuss?
+> >
+> > My somewhat aged IVB-EP sits around 25 us for restarting the tick.
+> >
+> > Depending on the C state, that is a significant chunk of exit latency,
+> > and depending on how often you do the whole NOHZ dance, this can add up
+> > to significant lost runtime too.
+> >
+> > And these are all machines that have a usable TSC, these numbers all go
+> > up significantly when you somehow end up on the HPET or similar wreckage.
+> >
+> > Stopping the tick is slightly more expensive, but in the same order, I
+> > get around 30 us on the IVB, vs 25 for restarting it. Reprogramming the
+> > timer (LAPIC/TSC-DEADLINE) is the main chunk of it I suspect.
+> >
+> > So over-all that's 55 us extra latency for the full idle path, which can
+> > definitely hurt.
+> >
+> > So yeah, I would say this is all worth it.
+> 
+> I agree that, in general, it is good to avoid stopping the tick when
+> it is not necessary to stop it.
+> 
+> > My ADL is somewhat better, but also much higher clocked, and gets around
+> > 10 us for a big core and 16 us for a little core for restarting the
+> > tick.
+> 
+> But my overall point is different.
+> 
+> An additional bin would possibly help if the deepest state has been
+> selected and its target residency is below the tick, and the closest
+> timer (other than the tick) is beyond the tick.  So how much of a
+> difference would be made by making this particular case more accurate?
 
-udp: Fix __ip_append_data()'s handling of MSG_SPLICE_PAGES
-    =
+Many of the server parts have a deepest idle state around 600us, distros
+have HZ=250. So every idle 600us < x < 4000us would unnecessarily
+disable the tick.
 
-__ip_append_data() can get into an infinite loop when asked to splice into
-a partially-built UDP message that has more than the frag-limit data and u=
-p
-to the MTU limit.  Something like:
+How often this happens is of course workload dependent, but if unlucky
+it could be a lot. It also adds the above mentioned latency to the idle
+state, which for those parts is a significant chunk of the exit latency
+extra.
 
-        pipe(pfd);
-        sfd =3D socket(AF_INET, SOCK_DGRAM, 0);
-        connect(sfd, ...);
-        send(sfd, buffer, 8161, MSG_CONFIRM|MSG_MORE);
-        write(pfd[1], buffer, 8);
-        splice(pfd[0], 0, sfd, 0, 0x4ffe0ul, 0);
+The fix is 'trivial', why not do it?
 
-where the amount of data given to send() is dependent on the MTU size (in
-this instance an interface with an MTU of 8192).
-
-The problem is that the calculation of the amount to copy in
-__ip_append_data() goes negative in two places, and, in the second place,
-this gets subtracted from the length remaining, thereby increasing it.
-
-This happens when pagedlen > 0 (which happens for MSG_ZEROCOPY and
-MSG_SPLICE_PAGES), because the terms in:
-
-        copy =3D datalen - transhdrlen - fraggap - pagedlen;
-
-then mostly cancel when pagedlen is substituted for, leaving just -fraggap=
-.
-This causes:
-
-        length -=3D copy + transhdrlen;
-
-to increase the length to more than the amount of data in msg->msg_iter,
-which causes skb_splice_from_iter() to be unable to fill the request and i=
-t
-returns less than 'copied' - which means that length never gets to 0 and w=
-e
-never exit the loop.
-
-Fix this by:
-
- (1) Insert a note about the dodgy calculation of 'copy'.
-
- (2) If MSG_SPLICE_PAGES, clear copy if it is negative from the above
-     equation, so that 'offset' isn't regressed and 'length' isn't
-     increased, which will mean that length and thus copy should match the
-     amount left in the iterator.
-
- (3) When handling MSG_SPLICE_PAGES, give a warning and return -EIO if
-     we're asked to splice more than is in the iterator.  It might be
-     better to not give the warning or even just give a 'short' write.
-
-[!] Note that this ought to also affect MSG_ZEROCOPY, but MSG_ZEROCOPY
-avoids the problem by simply assuming that everything asked for got copied=
-,
-not just the amount that was in the iterator.  This is a potential bug for
-the future.
-
-Fixes: 7ac7c987850c ("udp: Convert udp_sendpage() to use MSG_SPLICE_PAGES"=
-)
-Reported-by: syzbot+f527b971b4bdc8e79f9e@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/000000000000881d0606004541d1@google.com/
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: David Ahern <dsahern@kernel.org>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: netdev@vger.kernel.org
----
- net/ipv4/ip_output.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index 6e70839257f7..91715603cf6e 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -1158,10 +1158,15 @@ static int __ip_append_data(struct sock *sk,
- 			}
- =
-
- 			copy =3D datalen - transhdrlen - fraggap - pagedlen;
-+			/* [!] NOTE: copy will be negative if pagedlen>0
-+			 * because then the equation reduces to -fraggap.
-+			 */
- 			if (copy > 0 && getfrag(from, data + transhdrlen, offset, copy, fragga=
-p, skb) < 0) {
- 				err =3D -EFAULT;
- 				kfree_skb(skb);
- 				goto error;
-+			} else if (flags & MSG_SPLICE_PAGES) {
-+				copy =3D 0;
- 			}
- =
-
- 			offset +=3D copy;
-@@ -1209,6 +1214,10 @@ static int __ip_append_data(struct sock *sk,
- 		} else if (flags & MSG_SPLICE_PAGES) {
- 			struct msghdr *msg =3D from;
- =
-
-+			err =3D -EIO;
-+			if (WARN_ON_ONCE(copy > msg->msg_iter.count))
-+				goto error;
-+
- 			err =3D skb_splice_from_iter(skb, &msg->msg_iter, copy,
- 						   sk->sk_allocation);
- 			if (err < 0)
-
+Anyway, let me post my latest hackery :-)
