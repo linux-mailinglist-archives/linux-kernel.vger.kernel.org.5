@@ -2,47 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CEC76C30A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C7776C30C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbjHBCoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 22:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
+        id S231334AbjHBCqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 22:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbjHBCom (ORCPT
+        with ESMTP id S230057AbjHBCqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:44:42 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1F8C1FD6
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 19:44:40 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5DDFD75;
-        Tue,  1 Aug 2023 19:45:23 -0700 (PDT)
-Received: from [10.163.53.180] (unknown [10.163.53.180])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1AF9E3F5A1;
-        Tue,  1 Aug 2023 19:44:37 -0700 (PDT)
-Message-ID: <e0c378fc-15f8-0f7f-1fa7-9b498294b9bb@arm.com>
-Date:   Wed, 2 Aug 2023 08:14:36 +0530
+        Tue, 1 Aug 2023 22:46:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261881BFD
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 19:46:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A971161796
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:46:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E5A7C433CA
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 02:46:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690944368;
+        bh=HnyEuLoO+VDuqcAShwayzrYa97t99kvrkI3g8nRH1bE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LMopKQllqF6Rron/qahG6z+UEuJwBxvo5RihH5w3huG2b4uIaKRh1R610l1VHaqLn
+         OhRxlj7cU9zvuKincTSSr0Rd3KPk/OsMsJECy2YSJ14wr1RZzGapY0XgwnzaMKd9Jn
+         xawTu8ZtgqouoAO3ueUxn2rGB09tQHSbUYKN2Q19k19Gaa4fBIz7kcklHtUjWvn8Lj
+         QfkNGXPwe0iBW2uBPG96AttICFGGYh6xBNtoRO4OBKwmen2dZ0K55kuqqbjGiURcRm
+         oWqt6KFR+Bjq3QU6Mq+fKfFp9bBjr9Cnsjw/6VZvwH0BCukp1XMj9z8y9JtjGDshlX
+         qOml0V3Kmcu/A==
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5221c6a2d3dso8954780a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 19:46:07 -0700 (PDT)
+X-Gm-Message-State: ABy/qLa7xIe9lRGzRPW8YIgoAg3LwVCwrnj9IGml7YyBNxs3LKxTNL9p
+        tj5B8Jt2xRRETiwkNMV5EmsAWlCodkA1mWEFBpY=
+X-Google-Smtp-Source: APBJJlFuiC7ZzXS/kRnzvzMpMllUD8gfEnDXCb/hhlZigEgSGAVYYR5o0GTxYcx/i8l0nWh8fGyQova7C3051NeSTcs=
+X-Received: by 2002:aa7:cf8e:0:b0:522:219b:ce05 with SMTP id
+ z14-20020aa7cf8e000000b00522219bce05mr3687014edx.7.1690944366224; Tue, 01 Aug
+ 2023 19:46:06 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH V2 1/4] arm_pmu: acpi: Refactor
- arm_spe_acpi_register_device()
-Content-Language: en-US
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <20230801094052.750416-1-anshuman.khandual@arm.com>
- <20230801094052.750416-2-anshuman.khandual@arm.com>
- <20230801144936.GE26253@willie-the-truck>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <20230801144936.GE26253@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+References: <1690871446-23713-1-git-send-email-yangtiezhu@loongson.cn> <20230801134034.GA3831650@dev-arch.thelio-3990X>
+In-Reply-To: <20230801134034.GA3831650@dev-arch.thelio-3990X>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Wed, 2 Aug 2023 10:45:53 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H7MeiZpSh28j2TDSwS1ae0L+rGMA7hi+MV2Z3uCiguLkw@mail.gmail.com>
+Message-ID: <CAAhV-H7MeiZpSh28j2TDSwS1ae0L+rGMA7hi+MV2Z3uCiguLkw@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Error out if clang version is less than 17.0.0
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        loongarch@lists.linux.dev, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,169 +66,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+On Tue, Aug 1, 2023 at 9:40=E2=80=AFPM Nathan Chancellor <nathan@kernel.org=
+> wrote:
+>
+> Hi Tiezhu,
+>
+> On Tue, Aug 01, 2023 at 02:30:46PM +0800, Tiezhu Yang wrote:
+> > On my test machine, the clang version is 16.0.4, when build kernel
+> > with clang:
+> >
+> >   make CC=3Dclang loongson3_defconfig
+> >   make CC=3Dclang
+> >
+> > there exist many errors such as:
+> >
+> >   clang-16: error: argument unused during compilation: '-mabi=3Dlp64s'
+> >   error: unknown register name 'a0' in asm
+> >   error: unknown register name 't0' in asm
+> >
+> > the above issues have been fixed in the upstream llvm project recently,
+> > it works well when update clang version to 17.0.0:
+> >
+> >   make CC=3Dclang loongson3_defconfig
+> >   make CC=3Dclang menuconfig (set CONFIG_MODULES=3Dn and CONFIG_RELOCAT=
+ABLE=3Dn)
+> >   make CC=3Dclang
+> >
+> > thus 17.0.0 is the minimal clang version to build kernel on LoongArch,
+> > it is better to error out if clang version is less than 17.0.0, then
+> > we can do the right thing to update clang version and avoid wasting
+> > time to analysis kernel errors.
+> >
+> > By the way, the clang 17.0.0 still have some issues to build kernel on
+> > LoongArch, you need to unset CONFIG_MODULES and CONFIG_RELOCATABLE to
+> > avoid build errors. Additionally, if you want a workable kernel, some
+> > modules should be set as y instead of m if CONFIG_MODULES=3Dn.
+> >
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1787
+> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> > ---
+> >  arch/loongarch/Makefile | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/arch/loongarch/Makefile b/arch/loongarch/Makefile
+> > index b1e5db5..f07f62a 100644
+> > --- a/arch/loongarch/Makefile
+> > +++ b/arch/loongarch/Makefile
+> > @@ -10,6 +10,12 @@ KBUILD_DEFCONFIG :=3D loongson3_defconfig
+> >  image-name-y                 :=3D vmlinux
+> >  image-name-$(CONFIG_EFI_ZBOOT)       :=3D vmlinuz
+> >
+> > +ifdef CONFIG_CC_IS_CLANG
+> > +  ifneq ($(call clang-min-version, 170000),y)
+> > +    $(error Sorry, you need a newer clang version >=3D 17.0.0)
+> > +  endif
+> > +endif
+> > +
+>
+> Thanks for the patch! I agree that we should restrict LoongArch to LLVM
+> 17 and newer. However, there is already existing infrastructure for this
+> type of check in Kconfig, so we don't need to add anything to
+> arch/loongarch. Just modify scripts/min-tool-version.sh like so then
+> there will be a message during configuration time that the compiler is
+> too old.
+>
+> diff --git a/scripts/min-tool-version.sh b/scripts/min-tool-version.sh
+> index 2ade63149466..572c0526ad61 100755
+> --- a/scripts/min-tool-version.sh
+> +++ b/scripts/min-tool-version.sh
+> @@ -26,6 +26,8 @@ gcc)
+>  llvm)
+>         if [ "$SRCARCH" =3D s390 ]; then
+>                 echo 15.0.0
+> +       elif [ "$SRCARCH" =3D loongarch ]; then
+> +               echo 17.0.0
+>         else
+>                 echo 11.0.0
+>         fi
+>
+> ***
+> *** C compiler is too old.
+> ***   Your Clang version:    16.0.6
+> ***   Minimum Clang version: 17.0.0
+> ***
+> scripts/Kconfig.include:44: Sorry, this C compiler is not supported.
+This method is better, but since Clang17 cannot build a
+full-functional kernel (CONFIG_MODULES, may be solved in Clang18), I
+suggest "fix" it in future until all features can be enabled.
 
-On 8/1/23 20:19, Will Deacon wrote:
-> On Tue, Aug 01, 2023 at 03:10:49PM +0530, Anshuman Khandual wrote:
->> Sanity checking all the GICC tables for same interrupt number, and ensuring
->> a homogeneous ACPI based machine, could be used for other platform devices
->> as well. Hence this refactors arm_spe_acpi_register_device() into a common
->> helper arm_acpi_register_pmu_device().
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Co-developed-by: Will Deacon <will@kernel.org>
->> Signed-off-by: Will Deacon <will@kernel.org>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  drivers/perf/arm_pmu_acpi.c | 110 +++++++++++++++++++++++-------------
->>  1 file changed, 70 insertions(+), 40 deletions(-)
->>
->> diff --git a/drivers/perf/arm_pmu_acpi.c b/drivers/perf/arm_pmu_acpi.c
->> index 90815ad762eb..d9d5a7bbb92f 100644
->> --- a/drivers/perf/arm_pmu_acpi.c
->> +++ b/drivers/perf/arm_pmu_acpi.c
->> @@ -70,6 +70,68 @@ static void arm_pmu_acpi_unregister_irq(int cpu)
->>  }
->>  
->>  #if IS_ENABLED(CONFIG_ARM_SPE_PMU)
->> +static int
->> +arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
->> +			     u16 (*parse_gsi)(struct acpi_madt_generic_interrupt *))
->> +{
->> +	int cpu, hetid, irq, ret;
->> +	bool matched = false;
->> +	u16 gsi = 0;
->> +
->> +	/*
->> +	 * Ensure that platform device must have IORESOURCE_IRQ
->> +	 * resource to hold gsi interrupt.
->> +	 */
->> +	if (pdev->num_resources != 1)
->> +		return -ENXIO;
->> +
->> +	if (pdev->resource[0].flags != IORESOURCE_IRQ)
->> +		return -ENXIO;
->> +
->> +	/*
->> +	 * Sanity check all the GICC tables for the same interrupt
->> +	 * number. For now, only support homogeneous ACPI machines.
->> +	 */
->> +	for_each_possible_cpu(cpu) {
->> +		struct acpi_madt_generic_interrupt *gicc;
->> +		u16 this_gsi;
->> +
->> +		gicc = acpi_cpu_get_madt_gicc(cpu);
->> +		if (gicc->header.length < len)
->> +			return matched ? -ENXIO : 0;
->> +
->> +		this_gsi = parse_gsi(gicc);
->> +		if (!this_gsi)
->> +			return matched ? -ENXIO : 0;
-> 
-> I think you can push this check into the conditional below...
-> 
->> +
->> +		if (!matched) {
->> +			hetid = find_acpi_cpu_topology_hetero_id(cpu);
-> 
-> ... i.e. add a:
-> 
-> 			if (!this_gsi)
-> 				return -ENXIO;
-> 
-> here.
-> 
->> +			gsi = this_gsi;
->> +			matched = true;
-> 
-> And then, come to think of it, can we get rid of 'matched' altogether?
-> Since a gsi of 0 is treated as invalid, we could just check that instead,
-> no? So this becomes:
-> 
-> 
-> 		gicc = acpi_cpu_get_madt_gicc(cpu);
-> 		if (gicc->header.length < len)
-> 			return gsi ? -ENXIO : 0;
-> 
-> 		this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
-> 		this_gsi = parse_gsi(gicc);
-> 		if (!gsi) {
-> 			if (!this_gsi)
-> 				return -ENXIO;
-
-Unlike before, this returns -ENXIO on the very first instance itself without
-a match. Previously this returned 0 in such cases. But I guess that is okay.
-
-> 			gsi = this_gsi;
-> 			hetid = this_hetid;
-> 		} else if (hetid != this_hetid || gsi != this_gsi) {
-> 			pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
-> 			return -ENXIO;
-> 		}
-> 
-> 
-> What do you reckon?
-
-This makes sense, and the modified function will look something like
-
-arm_acpi_register_pmu_device(struct platform_device *pdev, u8 len,
-                             u16 (*parse_gsi)(struct acpi_madt_generic_interrupt *))
-{
-        int cpu, irq, ret;
-        u16 gsi = 0;
-
-        /*
-         * Ensure that platform device must have IORESOURCE_IRQ
-         * resource to hold gsi interrupt.
-         */
-        if (pdev->num_resources != 1)
-                return -ENXIO;
-
-        if (pdev->resource[0].flags != IORESOURCE_IRQ)
-                return -ENXIO;
-
-        /*
-         * Sanity check all the GICC tables for the same interrupt
-         * number. For now, only support homogeneous ACPI machines.
-         */
-        for_each_possible_cpu(cpu) {
-                struct acpi_madt_generic_interrupt *gicc;
-                int this_hetid, hetid;
-                u16 this_gsi;
-
-                gicc = acpi_cpu_get_madt_gicc(cpu);
-                if (gicc->header.length < len)
-                        return gsi ? -ENXIO : 0;
-
-                this_hetid = find_acpi_cpu_topology_hetero_id(cpu);
-                this_gsi = parse_gsi(gicc);
-                if (!gsi) {
-                        if (!this_gsi)
-                                return -ENXIO;
-
-                        hetid = this_hetid;
-                        gsi = this_gsi;
-                } else if (hetid != this_hetid || gsi != this_gsi) {
-                        pr_warn("ACPI: %s: must be homogeneous\n", pdev->name);
-                        return -ENXIO;
-                }
-        }
-
-        irq = acpi_register_gsi(NULL, gsi, ACPI_LEVEL_SENSITIVE, ACPI_ACTIVE_HIGH);
-        if (irq < 0) {
-                pr_warn("ACPI: %s Unable to register interrupt: %d\n", pdev->name, gsi);
-                return -ENXIO;
-        }
-
-        pdev->resource[0].start = irq;
-        ret = platform_device_register(pdev);
-        if (ret < 0) {
-                pr_warn("ACPI: %s: Unable to register device\n", pdev->name);
-                acpi_unregister_gsi(gsi);
-        }
-        return ret;
-}
+Huacai
+>
+> >  ifndef CONFIG_EFI_STUB
+> >  KBUILD_IMAGE :=3D $(boot)/vmlinux.elf
+> >  else
+> > --
+> > 2.1.0
+> >
+> >
+>
+> Cheers,
+> Nathan
