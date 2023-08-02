@@ -2,84 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF0076D6CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C795C76D6D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbjHBSY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37180 "EHLO
+        id S234206AbjHBSZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:25:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjHBSY0 (ORCPT
+        with ESMTP id S230444AbjHBSZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:24:26 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC8611717;
-        Wed,  2 Aug 2023 11:24:25 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9c66e2e36so1834231fa.1;
-        Wed, 02 Aug 2023 11:24:25 -0700 (PDT)
+        Wed, 2 Aug 2023 14:25:18 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F8F1717
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:25:17 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d167393b95aso1833809276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:25:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691000664; x=1691605464;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ts9PjQF+d06CnZ4NHHtCvTIMUe8RTgL9534A2fuPK1U=;
-        b=l1Sq1p2CrCPnOa7VKOCx+PpzLFNmbxuPIdrniaIMzhAo+hX2a7fAWRdhP1rwiGGNl9
-         ZzJgNaoctxHOGc0EoE2aGQmJZ4v1xYQx9R35X7nwrZAjxtCEBJcnXiazHrjLIxkffhem
-         gFz+sFdMXDhvybJi8su0Kt4vJd4LXC2TP02FbggLHPGmnhUeVuhWle/Fd17cMFZkmhnf
-         J/g1SsMbHFJ0Qgwh6QCIah8pOp/XqWdEf4DV9UZXBuZhuPDmVX1duuKqbpwurxuyaXlj
-         /+B9RM3Jm+kLdaDsKlv5R2RmzScx5PNYyPIiemZj4rmUcW9Pifntv5bEqtFm5+t5rsyT
-         v+tQ==
+        d=linaro.org; s=google; t=1691000716; x=1691605516;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5rqnhpukvnuroNpgIhuZ9KfllzGzBjkAWHO7GNn33Zk=;
+        b=tdRmHORtrVoProVKvDSNsGAlMh6mwrIM4BGH/OGo+JVYBufe7LKoaKZCOFd71mVztY
+         6xkHD5yCeVF6KBSYOy+BWCcf72ACYn40XNHI/oZocmLWnrgaKX9IDmQNicEhOdZO4vTJ
+         QXM6flWto7fGK8mbbKG1CuYY9hDOcIBiGyVkqMopus0PR+4p7NzhIKat8qPeepBJIkfA
+         oBSOD1LnxQ4uoN/TkOL+IgLy/I8OyZClvbmizvM+c1wrUm2/IIz2THu9ca4L94pByOcO
+         NtXJcb2FxwGlBF4c4Z+QSlS/saM30gG2XtmZhBdp0kCH8l+SviR2gVLCkSg6s+RuMIxX
+         fSBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691000664; x=1691605464;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ts9PjQF+d06CnZ4NHHtCvTIMUe8RTgL9534A2fuPK1U=;
-        b=WXQrXUmRgwn3EpDFjq31vT4JCNBAvY82OHVNJV5ofbommxlypKoRmEc8Z3CVYBBGQE
-         Thdv6yuq9JCGLm6nWgF9zkbjRkX5ikouceqpi5Zkjg1v535MMC7NnuI70eEE/IujdQjx
-         D4nm/irwzufGRkd6xHTgsECKc/BpaVj/aw624GFRHc/mIszwwcOTjds7euTLvHBuBdmU
-         go6iIwUi+Ao+WB7anCrLXfbVe+w1SI4fAkLKQiCwHIo+Ect8mnw/BliCfDGfKc0jq5Sc
-         +WBtHEIMbFGN0ziU6punra22RQF68ci8XD9xfhg/PH0H2Fyx/GV6y1V91zGoXF/IXRvY
-         eKsA==
-X-Gm-Message-State: ABy/qLYAmerzgrGQQ+mGLJ5mCEqEcTDBjQodFaYehxE52bZT+MhcVKIs
-        VCwtC68skr9/i6oNlMDhlOfox3BxnT9UhVzBIdc=
-X-Google-Smtp-Source: APBJJlH70XQzAjJ43HuabtPY+JfTpxCEUJEQ9MndguEVsTBqK4KmWMDKIjQJe1gZv7tYXXNHGY7pP7G+aIqNEze18DU=
-X-Received: by 2002:a2e:b98b:0:b0:2b9:90fb:3502 with SMTP id
- p11-20020a2eb98b000000b002b990fb3502mr2441722ljp.9.1691000663641; Wed, 02 Aug
- 2023 11:24:23 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691000716; x=1691605516;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5rqnhpukvnuroNpgIhuZ9KfllzGzBjkAWHO7GNn33Zk=;
+        b=QoQEwkRN1KpZueqbLkoVYLy8bXFp9CCtPmT/WNzVDRXuI/OI9ZTgLdUrp2MRSvjjWL
+         wm00QXalfvlJDG4DqFPnhVyUGNIw+1ikT3GGl7isnABd87fPgCED0AK4ShYfalR5IpAz
+         rFk1kOFgCSCg8ukDaiT1VgY7+X0FUbwa3qH9OQ86SYH3D4Rw6FkqvaJ4wbRh6GFtgF/l
+         I1eTq6Kj+47qUDNBLL7LjOD0rsfAN3sk1qOCJNyynHwbeGssFmM4vBOjNoN0SkE6lTeq
+         QbBeOhxZZpnGY+x1kC7vcObjNa/LMxe0h2XGZ8CLwhgB8RRPmZbH6Dv08fp53EGw9eOu
+         9L4g==
+X-Gm-Message-State: ABy/qLaCkt5S43TYMLwDArIp6d3MHV7CdjjVKc+Qo86/jkbuuh7o5YYX
+        UdQQMWeWF/rdU0gguyibcO3yTYWoewHXSrNNwSEYmg==
+X-Google-Smtp-Source: APBJJlGURMqux6vjsKCyEZh5uiiRc2JPbZFyh118s++aogxKu7iUDz2oUe6gsb+DYPZiJrvV3yPjpFvKrpB5WxbFELI=
+X-Received: by 2002:a25:d3d0:0:b0:d0e:3831:fa26 with SMTP id
+ e199-20020a25d3d0000000b00d0e3831fa26mr21044770ybf.9.1691000716085; Wed, 02
+ Aug 2023 11:25:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
- <169078863449.173706.2322042687021909241.stgit@devnote2> <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
- <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org> <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
- <20230802000228.158f1bd605e497351611739e@kernel.org> <20230801112036.0d4ee60d@gandalf.local.home>
- <20230801113240.4e625020@gandalf.local.home> <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
- <20230801190920.7a1abfd5@gandalf.local.home> <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
- <20230801204054.3884688e@rorschach.local.home> <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
-In-Reply-To: <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 2 Aug 2023 11:24:12 -0700
-Message-ID: <CAADnVQLqXjJvCcuQLVz8HxF050jDHaSa2D7cehoYtjXdp3wGLQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a struct/union
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <20230802-add-widebus-support-v3-0-2661706be001@quicinc.com> <20230802-add-widebus-support-v3-4-2661706be001@quicinc.com>
+In-Reply-To: <20230802-add-widebus-support-v3-4-2661706be001@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 2 Aug 2023 21:25:05 +0300
+Message-ID: <CAA8EJpoodqcWXsvjjpfMhMxmmvjNfYu5KUM6iOxqxYRH6wxsRA@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] drm/msm/dsi: Enable widebus for DSI
+To:     Jessica Zhang <quic_jesszhan@quicinc.com>
+Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, quic_abhinavk@quicinc.com,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,66 +71,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 6:56=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
+On Wed, 2 Aug 2023 at 21:09, Jessica Zhang <quic_jesszhan@quicinc.com> wrote:
 >
-> On Tue, 1 Aug 2023 20:40:54 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
+> DSI 6G v2.5.x+ supports a data-bus widen mode that allows DSI to send
+> 48 bits of compressed data instead of 24.
 >
-> > On Wed, 2 Aug 2023 09:21:46 +0900
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> >
-> > > > Then use kprobes. When I asked Masami what the difference between f=
-probes
-> > > > and kprobes was, he told me that it would be that it would no longe=
-r rely
-> > > > on the slower FTRACE_WITH_REGS. But currently, it still does.
-> > >
-> > > kprobes needs to keep using pt_regs because software-breakpoint excep=
-tion
-> > > handler gets that. And fprobe is used for bpf multi-kprobe interface,
-> > > but I think it can be optional.
-> > >
-> > > So until user-land tool supports the ftrace_regs, you can just disabl=
-e
-> > > using fprobes if CONFIG_DYNAMIC_FTRACE_WITH_REGS=3Dn
-> >
-> > I'm confused. I asked about the difference between kprobes on ftrace
-> > and fprobes, and you said it was to get rid of the requirement of
-> > FTRACE_WITH_REGS.
-> >
-> >  https://lore.kernel.org/all/20230120205535.98998636329ca4d5f8325bc3@ke=
-rnel.org/
+> Enable this mode whenever DSC is enabled for supported chipsets.
 >
-> Yes, it is for enabling fprobe (and fprobe-event) on more architectures.
-> I don't think it's possible to change everything at once. So, it will be
-> changed step by step. At the first step, I will replace pt_regs with
-> ftrace_regs, and make bpf_trace.c and fprobe_event depends on
-> FTRACE_WITH_REGS.
+> Signed-off-by: Jessica Zhang <quic_jesszhan@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/dsi/dsi.c      |  5 +++++
+>  drivers/gpu/drm/msm/dsi/dsi.h      |  1 +
+>  drivers/gpu/drm/msm/dsi/dsi_host.c | 30 ++++++++++++++++++++++++++----
+>  3 files changed, 32 insertions(+), 4 deletions(-)
 >
-> At this point, we can split the problem into two, how to move bpf on
-> ftrace_regs and how to move fprobe-event on ftrace_regs. fprobe-event
-> change is not hard because it is closing in the kernel and I can do it.
-> But for BPF, I need to ask BPF user-land tools to support ftrace_regs.
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi.c b/drivers/gpu/drm/msm/dsi/dsi.c
+> index baab79ab6e74..4fa738dea680 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi.c
+> @@ -17,6 +17,11 @@ struct drm_dsc_config *msm_dsi_get_dsc_config(struct msm_dsi *msm_dsi)
+>         return msm_dsi_host_get_dsc_config(msm_dsi->host);
+>  }
 >
-> >
-> > >
-> > > Then you can safely use
-> > >
-> > > struct pt_regs *regs =3D ftrace_get_regs(fregs);
-> > >
-> > > I think we can just replace the CONFIG_FPROBE ifdefs with
-> > > CONFIG_DYNAMIC_FTRACE_WITH_REGS in kernel/trace/bpf_trace.c
-> > > And that will be the first version of using ftrace_regs in fprobe.
-> >
-> > But it is still slow. The FTRACE_WITH_REGS gives us the full pt_regs
-> > and saves all registers including flags, which is a very slow operation
-> > (and noticeable in profilers).
->
-> Yes, to solve this part, we need to work with BPF user-land people.
-> I guess the BPF is accessing registers from pt_regs with fixed offset
-> which is calculated from pt_regs layout in the user-space.
+> +bool msm_dsi_is_widebus_enabled(struct msm_dsi *msm_dsi)
+> +{
+> +       return msm_dsi_host_is_widebus_enabled(msm_dsi->host);
+> +}
 
-This is a non starter.
-bpf progs expect arch dependent 'struct pt_regs *' and we cannot change tha=
-t.
+If this function is not provided at the time of the previous patch,
+compilation will break. I'd suggest to provide a stub first and then
+change it in this patch.
+
+> +
+>  static int dsi_get_phy(struct msm_dsi *msm_dsi)
+>  {
+>         struct platform_device *pdev = msm_dsi->pdev;
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi.h b/drivers/gpu/drm/msm/dsi/dsi.h
+> index bd3763a5d723..a557d2c1aaff 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi.h
+> +++ b/drivers/gpu/drm/msm/dsi/dsi.h
+> @@ -134,6 +134,7 @@ int dsi_calc_clk_rate_6g(struct msm_dsi_host *msm_host, bool is_bonded_dsi);
+>  void msm_dsi_host_snapshot(struct msm_disp_state *disp_state, struct mipi_dsi_host *host);
+>  void msm_dsi_host_test_pattern_en(struct mipi_dsi_host *host);
+>  struct drm_dsc_config *msm_dsi_host_get_dsc_config(struct mipi_dsi_host *host);
+> +bool msm_dsi_host_is_widebus_enabled(struct mipi_dsi_host *host);
+>
+>  /* dsi phy */
+>  struct msm_dsi_phy;
+> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> index 645927214871..231b02e5ab6e 100644
+> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> @@ -710,6 +710,14 @@ static void dsi_ctrl_disable(struct msm_dsi_host *msm_host)
+>         dsi_write(msm_host, REG_DSI_CTRL, 0);
+>  }
+>
+> +bool msm_dsi_host_is_widebus_enabled(struct mipi_dsi_host *host)
+> +{
+> +       struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
+> +
+> +       return msm_host->dsc && (msm_host->cfg_hnd->major == MSM_DSI_VER_MAJOR_6G &&
+
+Please add a line break after the first &&. Compare two following statements:
+
+> +                       msm_host->cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V2_5_0);
+> +}
+> +
+>  static void dsi_ctrl_enable(struct msm_dsi_host *msm_host,
+>                         struct msm_dsi_phy_shared_timings *phy_shared_timings, struct msm_dsi_phy *phy)
+>  {
+> @@ -753,10 +761,16 @@ static void dsi_ctrl_enable(struct msm_dsi_host *msm_host,
+>                 data |= DSI_CMD_CFG1_INSERT_DCS_COMMAND;
+>                 dsi_write(msm_host, REG_DSI_CMD_CFG1, data);
+>
+> -               if (msm_host->cfg_hnd->major == MSM_DSI_VER_MAJOR_6G &&
+> -                   msm_host->cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V1_3) {
+> +               if (cfg_hnd->major == MSM_DSI_VER_MAJOR_6G) {
+>                         data = dsi_read(msm_host, REG_DSI_CMD_MODE_MDP_CTRL2);
+> -                       data |= DSI_CMD_MODE_MDP_CTRL2_BURST_MODE;
+> +
+> +                       if (cfg_hnd->minor >= MSM_DSI_6G_VER_MINOR_V1_3)
+> +                               data |= DSI_CMD_MODE_MDP_CTRL2_BURST_MODE;
+> +
+> +                       /* TODO: Allow for video-mode support once tested/fixed */
+> +                       if (msm_dsi_host_is_widebus_enabled(&msm_host->base))
+> +                               data |= DSI_CMD_MODE_MDP_CTRL2_DATABUS_WIDEN;
+> +
+>                         dsi_write(msm_host, REG_DSI_CMD_MODE_MDP_CTRL2, data);
+>                 }
+>         }
+> @@ -894,6 +908,7 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+>         u32 hdisplay = mode->hdisplay;
+>         u32 wc;
+>         int ret;
+> +       bool widebus_enabled = msm_dsi_host_is_widebus_enabled(&msm_host->base);
+>
+>         DBG("");
+>
+> @@ -914,6 +929,7 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+>
+>         if (msm_host->dsc) {
+>                 struct drm_dsc_config *dsc = msm_host->dsc;
+> +               u32 bytes_per_pclk;
+>
+>                 /* update dsc params with timing params */
+>                 if (!dsc || !mode->hdisplay || !mode->vdisplay) {
+> @@ -937,7 +953,13 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+>                  * pulse width same
+>                  */
+>                 h_total -= hdisplay;
+> -               hdisplay = DIV_ROUND_UP(msm_dsc_get_bytes_per_line(msm_host->dsc), 3);
+> +               if (widebus_enabled && !(msm_host->mode_flags & MIPI_DSI_MODE_VIDEO))
+> +                       bytes_per_pclk = 6;
+> +               else
+> +                       bytes_per_pclk = 3;
+> +
+> +               hdisplay = DIV_ROUND_UP(msm_dsc_get_bytes_per_line(msm_host->dsc), bytes_per_pclk);
+> +
+>                 h_total += hdisplay;
+>                 ha_end = ha_start + hdisplay;
+>         }
+>
+> --
+> 2.41.0
+>
+
+
+-- 
+With best wishes
+Dmitry
