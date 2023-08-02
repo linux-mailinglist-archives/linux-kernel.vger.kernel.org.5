@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8AA76D37E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBE476D38A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbjHBQQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        id S231322AbjHBQUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbjHBQP5 (ORCPT
+        with ESMTP id S229528AbjHBQT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:15:57 -0400
+        Wed, 2 Aug 2023 12:19:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E161982;
-        Wed,  2 Aug 2023 09:15:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C032019AD;
+        Wed,  2 Aug 2023 09:19:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 67D74619CB;
-        Wed,  2 Aug 2023 16:15:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6689FC433C9;
-        Wed,  2 Aug 2023 16:15:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 55BFB61A39;
+        Wed,  2 Aug 2023 16:19:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B059C433C9;
+        Wed,  2 Aug 2023 16:19:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690992955;
-        bh=aFB7V+3UZPnXI2t7HCSOEac0MGFqyimdDX0kPkq9PJY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FcGDg/QoAgueCnjJ9htQ21ACnmhEnP0HCMC52BIWD717UyZgx8nRkDxGhxFbuZHHP
-         Vt8nmloqhzQ+kreiqcdM9z98m0TUC5I9yHpVh5PWkbLEae7niNndRzm4U25INskyXG
-         nzo/QO+8fgzpwBW95+RmRGtEJ3Qm8P9llSmcyrpA8p3KOd2xpU10b4Sus2IaauQN7R
-         sm0wC3ji2L1BnZ4zwgIuy8XM7MMba58e+JO07lbDb/HKmEdXgaBK7iW8pA45ACUMhL
-         Y50QJvBdQVgDP+eSoVsMvKTVcBd2W+A+PJd1m53TzNJPriX3GsPFin+4iPM90jal3t
-         jP7BzbnsPCqvw==
-Date:   Wed, 2 Aug 2023 09:15:53 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ndesaulniers@google.com, Arnd Bergmann <arnd@arndb.de>,
-        Tom Rix <trix@redhat.com>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] word-at-a-time: use the same return type for has_zero
- regardless of endianness
-Message-ID: <20230802161553.GA2108867@dev-arch.thelio-3990X>
-References: <20230801-bitwise-v1-1-799bec468dc4@google.com>
- <CAHk-=wgkC80Ey0Wyi3zHYexUmteeDL3hvZrp=EpMrDccRGmMwA@mail.gmail.com>
+        s=k20201202; t=1690993195;
+        bh=QTwasRuhNebEV2x038dVhKhR/ojnqWPqXsBjFOvKkoo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=VmYKxiz2lH82VF3/Bh1HznBLPf0W8KvQ7pBRWT8k4Z+w6V3WuH1GTVLPq/Ub3JGMs
+         Kr3DPgEej2Tx35mcn+2ZYGEu3MjL0FuGAs7bDXrBTvP2cJiezprBmoqEPmNNQBunbG
+         sNLzDiE760QgvDIf0vxzftb+u+Oc7UH71tOWm2bHi7ZQplXI81FHmaTkGUBCqrQiY/
+         5WdM1X7iFK7kPJ5QfhqOEtkrcNamn50Rh/9fSH18K7JmkBdjOgvEj1kpf7WkVcUIhx
+         VrBkWHIjhtV4/p2Z3BtJsaqSrXhVo02c7o35nymFRDXAsND573IWJuStxcB6vRKpHR
+         HhVTrl3lAzkFg==
+Date:   Wed, 2 Aug 2023 11:19:53 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Achal Verma <a-verma1@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof Wilczy_ski <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: cadence: Set the AFS bit in Device Capabilities 2
+ Register
+Message-ID: <20230802161953.GA60043@bhelgaas>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgkC80Ey0Wyi3zHYexUmteeDL3hvZrp=EpMrDccRGmMwA@mail.gmail.com>
+In-Reply-To: <20230802103059.3492181-1-a-verma1@ti.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -58,33 +61,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 06:07:08PM -0700, Linus Torvalds wrote:
-> I think the patch is fine, but I guess I'd like to know that people
-> who are affected actually don't see any code generation changes (or
-> possibly see improvements from not turning it into a bool until later)
+In subject, "Advertise ARI Forwarding Supported".
 
-We see this warning with ARCH=arm64 defconfig + CONFIG_CPU_BIG_ENDIAN=y.
-With both clang 18.0.0 (tip of tree) and GCC 13.1.0, I don't see any
-actual code generation changes in fs/namei.o with this configuration.
-I'd be pretty surprised if any of the other uses of has_zero() show any
-changes, I at least checked lib/string.o with that configuration and
-s390 and did not see anything.
+It's not obvious that "AFS" refers to ARI Forwarding Supported, and
+the bit name is enough; we don't need to know that it's in Dev Cap 2.
+"Advertise" shows that we're just *advertising* the functionality, not
+*enabling* it.
 
-As far as I can tell, arm and arm64 with CONFIG_CPU_BIG_ENDIAN=y are the
-only configurations that can hit the particular bit of code with the
-generic big endian has_zero() implementation because the version of
-hash_name() that uses has_zero() in this manner is only used when
-CONFIG_DCACHE_WORD_ACCESS is set, which only arm, arm64, powerpc (little
-endian), and x86 select.
+On Wed, Aug 02, 2023 at 04:00:59PM +0530, Achal Verma wrote:
+> J7 PCIe Root Complex has ARI Forwarding Support, means supporting
+> forwarding of TLPs addressed to functions with function number greater than
+> 7 but some PCIe instances on J7 have this bit cleared which results in
+> failure of forwarding of TLPs destined for function number > 7.
+> Setting the AFS bit in Device Capabilities 2 Register explicitly, resolves
+> the issue and leads to successful access to function number > 7.
 
-arch/arm/Kconfig:49:         select DCACHE_WORD_ACCESS if HAVE_EFFICIENT_UNALIGNED_ACCESS
-arch/arm64/Kconfig:121:        select DCACHE_WORD_ACCESS
-arch/powerpc/Kconfig:183:        select DCACHE_WORD_ACCESS                if PPC64 && CPU_LITTLE_ENDIAN
-arch/x86/Kconfig:140:        select DCACHE_WORD_ACCESS                if !KMSAN
-arch/x86/um/Kconfig:12:         select DCACHE_WORD_ACCESS
+s/AFS/ARI Forwarding Supported/
 
-So seems like a pretty low risk patch to me but I could be missing
-something.
+> Some observations:
+> 1. J7200-EVB has single PCIe instance(PCIe1) for which ARIFwd bit is not
+>    set. Enumeration gracefully fails for funciton number greater than 7 but
+>    later read/write access to these funcitons results in a crash.
 
-Cheers,
-Nathan
+By "ARIFwd bit" here, I assume you mean PCI_EXP_DEVCAP2_ARI in the Root
+Port?  Maybe you can use the #define to make this more greppable.
+
+s/funciton/function/ (twice)
+
+If we don't enumerate function numbers greater than 7, we shouldn't
+have pci_dev structs for them, so why are there later read/write
+config accesses to them?
+
+If the Root Port doesn't advertise ARI Forwarding Supported,
+bridge->ari_enabled will not be set, and we shouldn't even try to
+enumerate functions greater than 7.  So it's not that enumeration
+*fails*; it just doesn't happen at all.
+
+> 2. On J721E-EVB, PCIe1 instance has ARIFwd bit set while it is cleared for
+>    PCIe0 instance. This issue combined with errata i2086
+>    (Unsupported Request (UR) Response Results in External Abort) results in
+>    SERROR while scanning multi-function endpoint device.
+
+Is the SERROR when scanning under PCIe0 or under PCIe1?
+
+I'm not clear on what's happening here:
+
+  1) Root Port advertises PCI_EXP_DEVCAP2_ARI, we set
+     bridge->ari_enabled and scan functions > 7, we do a config read
+     to function 8, get a UR response (as expected during enumeration)
+     and that results in SERROR?
+
+  2) Root Port *doesn't* advertise PCI_EXP_DEVCAP2_ARI, we don't set
+     bridge->ari_enabled, so we don't try config read to function 8,
+     and something blows up later?
+
+  3) Something else?
+
+> @@ -507,6 +507,7 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>  	struct cdns_pcie *pcie;
+>  	struct resource *res;
+>  	int ret;
+> +	u32 pcie_cap2;
+>  
+>  	bridge = pci_host_bridge_from_priv(rc);
+>  	if (!bridge)
+> @@ -536,6 +537,12 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+>  	if (rc->quirk_detect_quiet_flag)
+>  		cdns_pcie_detect_quiet_min_delay_set(&rc->pcie);
+>  
+> +	if (rc->set_afs_bit) {
+> +		pcie_cap2 = cdns_pcie_rp_readl(pcie, CDNS_PCIE_RP_CAP_OFFSET + PCI_EXP_DEVCAP2);
+> +		pcie_cap2 |= PCI_EXP_DEVCAP2_ARI;
+> +		cdns_pcie_rp_writel(pcie, CDNS_PCIE_RP_CAP_OFFSET + PCI_EXP_DEVCAP2, pcie_cap2);
+> +	}
+
+This seems like a j721e defect; why does the workaround need to be in
+the generic cadence code?
+
+Bjorn
