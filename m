@@ -2,208 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC2B76D985
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7C176D989
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbjHBV31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
+        id S232240AbjHBVbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231350AbjHBV3Y (ORCPT
+        with ESMTP id S229744AbjHBVbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:29:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8681FCB
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:29:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6FB5561B27
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 21:29:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 452C0C433C8;
-        Wed,  2 Aug 2023 21:29:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691011761;
-        bh=s5Dw8JAhBv9uOSsXCyz3+dkPe5gQVfLZ75VqV/yv0LE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KpTuLIeDqDwUT5zzLPSj9dMfMPwqB6NB07gEGFDkfmm5hQkfIERn5Tb46wIx86a/t
-         EDxFMTHRNMRYWHAgodmY67Y5L9JvVln7KNkh1i58i+Ufy+LmyI0ql1TaO+EMIG57KI
-         xACefXuRYyqlHx2F0lczTCANaoVNR4PT5i2WXvszQRHUOLl/HJ/v7TIk68HYerpJJF
-         V8qNQ0Xz5hAzIYG/sWTWk5zd7gUGbJRNAnuQdt8TKq/VLOcKjSS8zd099L+XbFLDoc
-         tAlXWLgdAjiWbFYndzK6tEm12I7F+7/OVYFmdWxmZ/fHdfIbl9c6gPJVcBmz/XTn0R
-         kJDgmaNvPMKaQ==
-Date:   Wed, 2 Aug 2023 14:29:20 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Larysa Zaremba <larysa.zaremba@intel.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Ilias Apalodimas" <ilias.apalodimas@linaro.org>,
-        Simon Horman <simon.horman@corigine.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 5/9] page_pool: don't use driver-set flags
- field directly
-Message-ID: <20230802142920.4a777079@kernel.org>
-In-Reply-To: <0fe906a2-5ba1-f24a-efd8-7804ef0683b6@intel.com>
-References: <20230727144336.1646454-1-aleksander.lobakin@intel.com>
-        <20230727144336.1646454-6-aleksander.lobakin@intel.com>
-        <a0be882e-558a-9b1d-7514-0aad0080e08c@huawei.com>
-        <6f8147ec-b8ad-3905-5279-16817ed6f5ae@intel.com>
-        <a7782cf1-e04a-e274-6a87-4952008bcc0c@huawei.com>
-        <0fe906a2-5ba1-f24a-efd8-7804ef0683b6@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 17:31:32 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238CD19A4
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:31:32 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id 98e67ed59e1d1-2682b4ca834so137618a91.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691011891; x=1691616691;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V7O3ldpuvwn/jLEEsGaVER0W5WQz6QQVB4o4mWJTPHw=;
+        b=0MpUaXqNR3yN2ZePV6Ehw88TdkHVM4wwC2Ax9LBcBwhrccVQmDk4pUsO2m/W60T/kh
+         4ALsk63SSuRBd3UXVMnSiQB5v2iI8UQfYCb+eIiV9ztG6S6KlhNhk233zQbbCY6jDG0m
+         rtdmAzFLXMLRYfEzbyZNqny8nmMx5u7NTub/RYML7Xn31Nyl8a4U+e01kHF6VCiqYOVM
+         xpL0WtRUyR6fLic8o7wZFKDajLk8nUgQ1I14uVXOA6NUMtV+htB3i1ARMO6mRJ2oAjcz
+         bO63UUfjpoeGbzSi8UO3Ogv8fLbD7MT+Agmc+my/+J8Ci2lSUSrXLjoKrVyUkepwfc+B
+         m9TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691011891; x=1691616691;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V7O3ldpuvwn/jLEEsGaVER0W5WQz6QQVB4o4mWJTPHw=;
+        b=MujvCSim4UsfuXO/zixQDJ3M+0vGlB++bjaR/ziG3Pq864zNeM2a5r4oF0MLsnV92g
+         pbGLueU+0wDqRFHKgbhlxot4oTXHy9Y3Hw+lTSXB425KOuOEOAAt6KyZNE05g78pvw/8
+         T70BKa1LrwGQ3qjHXLvXSx6eFRoC9vIl7f/HaSqc1kIQ03L2+b0aC/IctmsCWcOEAz4W
+         u16X8BKgTMazEGq+8nkBMA88V6BNx9oKB7Y9xKe/5BF30R5H47T0JlevYXMEWr1gyUZF
+         knzhQkekVBo3fzLblDE9meeBsDDftylF2iCwkLl+3UnrqL5MmbAmfTLyM9cZEdTumOd2
+         ffpA==
+X-Gm-Message-State: ABy/qLZ7XJKn95KtxdP+KpAjVxdQHYbsxbR+HIpcXWkNVhQBjt+S+Sbi
+        Rovrs3g3xbf6aguR6nolLVeNQYYoXNI=
+X-Google-Smtp-Source: APBJJlFDudSBR591hmxo+SrOS4iiKae4bolkQa4eRRqibf6eAaJJjg2NfepfTGffX1GgLKifjQS3uqiIERY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e885:b0:1b3:e4f1:1b3f with SMTP id
+ w5-20020a170902e88500b001b3e4f11b3fmr93178plg.2.1691011891629; Wed, 02 Aug
+ 2023 14:31:31 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 14:31:29 -0700
+In-Reply-To: <ZMq0nYYDbOX1cOKN@google.com>
+Mime-Version: 1.0
+References: <20230712075910.22480-1-thuth@redhat.com> <20230712075910.22480-3-thuth@redhat.com>
+ <ZMq0nYYDbOX1cOKN@google.com>
+Message-ID: <ZMrLMYxj3s+vHGrQ@google.com>
+Subject: Re: [PATCH 2/4] KVM: selftests: x86: Use TAP interface in the
+ sync_regs test
+From:   Sean Christopherson <seanjc@google.com>
+To:     Thomas Huth <thuth@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kselftest@vger.kernel.org,
+        David Matlack <dmatlack@google.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 15:36:33 +0200 Alexander Lobakin wrote:
-> >> You would need a separate patch to convert all the page_pool_create()
-> >> users then either way.
-> >> And it doesn't look really natural to me to pass both driver-set params
-> >> and driver-set flags as separate function arguments. Someone may then
-> >> think "why aren't flags just put in the params itself". The fact that
-> >> Page Pool copies the whole params in the page_pool struct after
-> >> allocating it is internals, page_pool_create() prototype however isn't.
-> >> Thoughts? =20
-> >=20
-> > It just seems odd to me that dma_map and page_frag is duplicated as we
-> > seems to have the same info in the page_pool->p.flags. =20
->=20
-> It's just because we copy the whole &page_pool_params passed by the
-> driver. It doesn't look good to me to define a new structure and copy
-> the values field-by-field just to avoid duplicating 3 bits :s
+On Wed, Aug 02, 2023, Sean Christopherson wrote:
+> Oh, and no need to post "KVM: selftests: Rename the ASSERT_EQ macro" in the next
+> version, I'm planning on grabbing that one straightaway.
 
-FWIW I'm tempted to do something like the patch below (an obvious move,
-I suspect). I want to add another pointer (netdev) to the params and=20
-I don't want it to eat up bytes in the first cache line.
-The patch is incomplete, we need to stash a one-bit indication in=20
-the first cache line to know init_callback is not present without
-having to look at @slow. I'll defer doing that cleanly until your
-patches land.
-With this in place we can move flags outside of @fast, and interpret
-it manually while copying all the other members in one go.
+After paging this all back in...
 
---->8-------------------------------
+I would much prefer that we implement the KVM specific macros[*], e.g. KVM_ONE_VCPU_TEST(),
+and build on top of those.  I'm definitely ok doing a "slow" conversion, i.e. starting
+with a few easy tests.  IIRC at some point I said I strongly preferred an all-or-nothing
+approach, but realistically I don't think we'll make progress anytime soon if we try to
+boil the ocean.
 
-=46rom c1290e74c3ec54090a49d0c88ca9d56c3bede825 Mon Sep 17 00:00:00 2001
-From: Jakub Kicinski <kuba@kernel.org>
-Date: Wed, 2 Aug 2023 14:16:51 -0700
-Subject: [PATCH] net: page_pool: split the page_pool_params into fast and s=
-low
+But I do think we should spend the time to implement the infrastructure right away.  We
+may end up having to tweak the infrastructure down the road, e.g. to convert other tests,
+but I would rather do that then convert some tests twice.
 
-struct page_pool is rather performance critical and we use
-16B of the first cache line to store 2 pointers used only
-by test code. Future patches will add more informational
-(non-fast path) attributes.
-
-It's convenient for the user of the API to not have to worry
-which fields are fast and which are slow path. Use struct
-groups to split the params into the two categories internally.
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
- include/net/page_pool.h | 31 +++++++++++++++++++------------
- net/core/page_pool.c    |  7 ++++---
- 2 files changed, 23 insertions(+), 15 deletions(-)
-
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index 73d4f786418d..f0267279a8cd 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -83,18 +83,22 @@ struct pp_alloc_cache {
-  * @offset:	DMA sync address offset for PP_FLAG_DMA_SYNC_DEV
-  */
- struct page_pool_params {
--	unsigned int	flags;
--	unsigned int	order;
--	unsigned int	pool_size;
--	int		nid;
--	struct device	*dev;
--	struct napi_struct *napi;
--	enum dma_data_direction dma_dir;
--	unsigned int	max_len;
--	unsigned int	offset;
-+	struct_group_tagged(page_pool_params_fast, fast,
-+		unsigned int	flags;
-+		unsigned int	order;
-+		unsigned int	pool_size;
-+		int		nid;
-+		struct device	*dev;
-+		struct napi_struct *napi;
-+		enum dma_data_direction dma_dir;
-+		unsigned int	max_len;
-+		unsigned int	offset;
-+	);
-+	struct_group_tagged(page_pool_params_slow, slow,
- /* private: used by test code only */
--	void (*init_callback)(struct page *page, void *arg);
--	void *init_arg;
-+		void (*init_callback)(struct page *page, void *arg);
-+		void *init_arg;
-+	);
- };
-=20
- #ifdef CONFIG_PAGE_POOL_STATS
-@@ -177,7 +181,7 @@ static inline u64 *page_pool_ethtool_stats_get(u64 *dat=
-a, void *stats)
- #endif
-=20
- struct page_pool {
--	struct page_pool_params p;
-+	struct page_pool_params_fast p;
-=20
- 	struct delayed_work release_dw;
- 	void (*disconnect)(void *);
-@@ -236,6 +240,9 @@ struct page_pool {
- 	refcount_t user_cnt;
-=20
- 	u64 destroy_cnt;
-+
-+	/* Slow/Control-path information follows */
-+	struct page_pool_params_slow slow;
- };
-=20
- struct page *page_pool_alloc_pages(struct page_pool *pool, gfp_t gfp);
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 5d615a169718..fc3f6878a002 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -173,7 +173,8 @@ static int page_pool_init(struct page_pool *pool,
- {
- 	unsigned int ring_qsize =3D 1024; /* Default */
-=20
--	memcpy(&pool->p, params, sizeof(pool->p));
-+	memcpy(&pool->p, &params->fast, sizeof(pool->p));
-+	memcpy(&pool->slow, &params->slow, sizeof(pool->slow));
-=20
- 	/* Validate only known flags were used */
- 	if (pool->p.flags & ~(PP_FLAG_ALL))
-@@ -372,8 +373,8 @@ static void page_pool_set_pp_info(struct page_pool *poo=
-l,
- {
- 	page->pp =3D pool;
- 	page->pp_magic |=3D PP_SIGNATURE;
--	if (pool->p.init_callback)
--		pool->p.init_callback(page, pool->p.init_arg);
-+	if (pool->slow.init_callback)
-+		pool->slow.init_callback(page, pool->slow.init_arg);
- }
-=20
- static void page_pool_clear_pp_info(struct page *page)
---=20
-2.41.0
-
+[*] https://lore.kernel.org/all/Y2v+B3xxYKJSM%2FfH@google.com
