@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B3076D758
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE0876D75A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbjHBTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
+        id S231396AbjHBTB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231167AbjHBTAZ (ORCPT
+        with ESMTP id S229883AbjHBTBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:00:25 -0400
-Received: from progateway7-pub.mail.pro1.eigbox.com (gproxy5-pub.mail.unifiedlayer.com [67.222.38.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275EBE46
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:00:24 -0700 (PDT)
-Received: from cmgw11.mail.unifiedlayer.com (unknown [10.0.90.126])
-        by progateway7.mail.pro1.eigbox.com (Postfix) with ESMTP id CC26710041F64
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 19:00:23 +0000 (UTC)
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTP
-        id RH55q5Nb1mdP7RH55q06gn; Wed, 02 Aug 2023 19:00:23 +0000
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.4 cv=EbYN/NqC c=1 sm=1 tr=0 ts=64caa7c7
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10:nop_charset_1 a=UttIx32zK-AA:10:nop_rcvd_month_year
- a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10:nop_charset_2
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=RRbu5eSsvrqsp40HlHQDKUyV6Ki57xhdQEnr8EmePSM=; b=rep3i2DB+SHVr8t3DVtUEOsYHh
-        RuleyhFLh8FkRQGnuJ+Y6KNJ+GR6/Ay9ZKff8Y3dHIYXjvr/kGfZRyH5Ubt3CqhzGOqWx+n5RkpKl
-        EbCizak+EWKYlP6fHB7WKK701uEMM0p9WQ4BQFLle7w8i8cPYIh+FnBbJpN2gSpEYSE9siIpLtlGx
-        CLnMdFWknrhp0Q+bFMd2Dy1x7umDJMKeQxd/YeWVQTzmUXo5lwtPnRVtOaB77aSQoap4bhigiSo1C
-        /cSQoCzdQKTyFvlkr2cLLlYLXoJ4AItPjoA/LJxALw6qA6zAVsKwblNb9XqINtAqx55i/v1j0dVX/
-        MTYUW+Lw==;
-Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:50476 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <re@w6rz.net>)
-        id 1qRH54-001PF4-1V;
-        Wed, 02 Aug 2023 13:00:22 -0600
-Subject: Re: [PATCH 6.4 000/235] 6.4.8-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230802065501.780725463@linuxfoundation.org>
-In-Reply-To: <20230802065501.780725463@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <b8665637-a694-68e6-0dd6-98c1c1b6a9f4@w6rz.net>
-Date:   Wed, 2 Aug 2023 12:00:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 2 Aug 2023 15:01:25 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE5FAC
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:01:24 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99c1f6f3884so22975166b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 12:01:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1691002883; x=1691607683;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=osatjqbzo6JXPILQNRf8QUtP7yGmhdrE/e+FRS4B8NY=;
+        b=Q6qrnGQGmpFmn2tv1ponn9yGlDVg5Ek+b3lggx0DNPLeBggUAlhbvMr1jJ2Ka7dNhi
+         EEO4CJJvjy4VIrpKL6pI/J2TUDtvSFOmlKswXNY7IoA6QeSKZGt9NJeazaCdp1PP7YXb
+         mR8U5/2w+nMEXBSsJgfzBrMxnzD2Vbkwuuir6dp2XKYLGB1VmY+ekoThUGmjK26/illo
+         JOGea7UmxK5ojg1+U/pPGCpk7DAO+JkK9NoPODmRXJQ9+je6mMqZYQFbxwtt4to8tEy7
+         YmvuW/fuj0b81Z4nrzQ4beKqyq+cO9MEtE8gCh8O9KOU5jTN/+UglZ/BHznwjUGJiYVB
+         iT8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691002883; x=1691607683;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=osatjqbzo6JXPILQNRf8QUtP7yGmhdrE/e+FRS4B8NY=;
+        b=OO2nY7NqR8vGRs9nJ50Nmu+BObSx+C0YA6YlPQP23dSiueb3suof5Cs2ByYdmxsA4t
+         RGpzY+MOEg1HM5e3TRrQ2jhagLwvwDrDeKi/AvkoMOzLQE8FvXcfjrRPexvQB5f8mcch
+         Wim3EuNfTLbopACFV1g8h481M9wrsSPQbL5WpgyVEV19MdX14ig7ZX1z3bdEDAGhpLhB
+         xS5sml9NqEabOhs/L2n2g5YVWdB7UBq7RSvijbGC2aAsrMcc8VEho2slllYTRXnhmGtT
+         Fq8xgQobrM/2ENf+eO2aLM4aePq1HeNE65J7NZjYaVluQbXm5WUtl21O/5ZCVunMIOXM
+         yFrA==
+X-Gm-Message-State: ABy/qLY1Q93N0dHlbktwuwHPh1Ql+4wEYwXDE0iTalqKib2kh5fjbbTZ
+        F12w4HVSfSyByHZq5t39vrlzRw==
+X-Google-Smtp-Source: APBJJlGQs27IGKD1hLzqWX1o2A+XRPg/fCz8VX60XxBKLLEPVEnAqXC7Ba2YEC7T9oK7L8iZwnYR8w==
+X-Received: by 2002:a17:906:224b:b0:99b:d435:e994 with SMTP id 11-20020a170906224b00b0099bd435e994mr5895647ejr.32.1691002883015;
+        Wed, 02 Aug 2023 12:01:23 -0700 (PDT)
+Received: from [10.10.15.130] ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id jp21-20020a170906f75500b00988c0c175c6sm9441808ejb.189.2023.08.02.12.01.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 12:01:22 -0700 (PDT)
+Message-ID: <a32ce695-038f-0ef8-3584-5bd1ba528131@linaro.org>
+Date:   Wed, 2 Aug 2023 22:01:19 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 3/4] drm/uapi: document the USB subconnector type
+Content-Language: en-GB
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Simon Ser <contact@emersion.fr>, Janne Grunau <j@jannau.net>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
+References: <20230729004913.215872-1-dmitry.baryshkov@linaro.org>
+ <20230729004913.215872-4-dmitry.baryshkov@linaro.org>
+ <20230802185547.GC32500@pendragon.ideasonboard.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230802185547.GC32500@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 73.162.232.9
-X-Source-L: No
-X-Exim-ID: 1qRH54-001PF4-1V
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:50476
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 12:42 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.8 release.
-> There are 235 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 04 Aug 2023 06:54:15 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.8-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 02/08/2023 21:55, Laurent Pinchart wrote:
+> Hi Dmitry,
+> 
+> Thank you for the patch.
+> 
+> On Sat, Jul 29, 2023 at 03:49:12AM +0300, Dmitry Baryshkov wrote:
+>> To properly define the USB-C DP altmode connectors, add the USB
+>> subconnector type.
+>>
+>> Suggested-by: Simon Ser <contact@emersion.fr>
+>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> ---
+>>   drivers/gpu/drm/drm_connector.c | 1 +
+>>   include/uapi/drm/drm_mode.h     | 1 +
+>>   2 files changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+>> index a6066e4a5e9a..9e96b038f5d0 100644
+>> --- a/drivers/gpu/drm/drm_connector.c
+>> +++ b/drivers/gpu/drm/drm_connector.c
+>> @@ -1050,6 +1050,7 @@ static const struct drm_prop_enum_list drm_dp_subconnector_enum_list[] = {
+>>   	{ DRM_MODE_SUBCONNECTOR_DisplayPort, "DP"        }, /* DP */
+>>   	{ DRM_MODE_SUBCONNECTOR_Wireless,    "Wireless"  }, /* DP */
+>>   	{ DRM_MODE_SUBCONNECTOR_Native,	     "Native"    }, /* DP */
+>> +	{ DRM_MODE_SUBCONNECTOR_USB,	     "USB"       }, /* DP */
+> 
+> Should this be DRM_MODE_SUBCONNECTOR_USB_C and "USB-C", in case we get
+> another USB type later ?
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+Hmm, which id should I use for micro-USB then? (consider anx7808, 
+SlimPort). I thought about using DRM_MODE_SUBCONNECTOR_USB for both of 
+them. But maybe I should add another subtype for SlimPort.
 
-Tested-by: Ron Economos <re@w6rz.net>
+> 
+>>   };
+>>   
+>>   DRM_ENUM_NAME_FN(drm_get_dp_subconnector_name,
+>> diff --git a/include/uapi/drm/drm_mode.h b/include/uapi/drm/drm_mode.h
+>> index 92d96a2b6763..0f74918b011c 100644
+>> --- a/include/uapi/drm/drm_mode.h
+>> +++ b/include/uapi/drm/drm_mode.h
+>> @@ -398,6 +398,7 @@ enum drm_mode_subconnector {
+>>   	DRM_MODE_SUBCONNECTOR_HDMIA       = 11, /*            DP */
+>>   	DRM_MODE_SUBCONNECTOR_Native      = 15, /*            DP */
+>>   	DRM_MODE_SUBCONNECTOR_Wireless    = 18, /*            DP */
+>> +	DRM_MODE_SUBCONNECTOR_USB         = 20, /*            DP */
+>>   };
+>>   
+>>   #define DRM_MODE_CONNECTOR_Unknown	0
+> 
+
+-- 
+With best wishes
+Dmitry
 
