@@ -2,67 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2BEC76CF49
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E8276CF4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbjHBN4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
+        id S234471AbjHBN4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:56:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbjHBN4L (ORCPT
+        with ESMTP id S234432AbjHBN4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:56:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 287462114;
-        Wed,  2 Aug 2023 06:56:10 -0700 (PDT)
+        Wed, 2 Aug 2023 09:56:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C0C2115;
+        Wed,  2 Aug 2023 06:56:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B9F49619AB;
-        Wed,  2 Aug 2023 13:56:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97436C433C8;
-        Wed,  2 Aug 2023 13:56:07 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 36AFA618F1;
+        Wed,  2 Aug 2023 13:56:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0C45C433C7;
+        Wed,  2 Aug 2023 13:56:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690984569;
-        bh=yazmUit565hUeHAtinXm9td8iAqacyHbn0It+r4iReA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WBrNvdlSvI0RZYhXvNe737obQUaTAslGfSsNrj8jlkkBdnfchImM9Ku3gJmK5/M1/
-         xsLkffTf5rSWFH5DsaBWJh16L+AAjcgqbukl7rWf+cYoLDWW+ongELmSAhCnEa45hJ
-         ZlNaYfc4RmCnrnV0kRMANvaLmv1ka//qxqk6WaJPD8DKRUXUj04BfKvOIruQhyLB7J
-         hJt2nqkTvrypasF41m1EjKiGGFNgE6WOfUSczT7nRvxR67qUifvs34L3C6rauRnPIU
-         aAJu7WS4A/9LokqKh9Lm0jAPvhzAEqGWdf1bVS10cMnj7Gdgokml005NRuEtqgik1b
-         pF+ilz7BINo9w==
-Date:   Wed, 2 Aug 2023 15:56:04 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Frank Jungclaus <frank.jungclaus@esd.eu>
-Cc:     linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Stefan =?utf-8?B?TcOkdGpl?= <stefan.maetje@esd.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] can: esd_usb: Add support for esd CAN-USB/3
-Message-ID: <ZMpgdM4mindkDys0@kernel.org>
-References: <20230728150857.2374886-1-frank.jungclaus@esd.eu>
- <20230728150857.2374886-2-frank.jungclaus@esd.eu>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230728150857.2374886-2-frank.jungclaus@esd.eu>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        s=k20201202; t=1690984600;
+        bh=ZiBT8/57R9cm/kIxNEpf6GtRtnFrBM4/Vdwr+0paa8Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ugALy2+yCr8eRX69mZgOByVs1nn3mkSbeYZA88lApQtXAdR52l0cRdAv437Tav5Eo
+         1PMluo+JefF5Xrd0m1xLGKldl+Tsy1n+Q/HQfVfAhOUvKz8T/La9KVIJUnc9e4/B+P
+         fFTrO9M4qrJn56y+HYjW8MEndIe/Cp11rXj+qcg6ADum52ULhbjeLPrAj4awwyTpQS
+         z+yPOcGy1uiX0pS7cNrOenJp3JRLudGS+94sH5BD/5guLN1oDKfq3ztvOXhfSQ1wXN
+         j+20r6R9gpMWeyhQqODAnvW13e0ulT8IgF4jxaJrsyKFFfzMpW+eBKJcc1pFNN1xR9
+         uYz8IkvC8yxeQ==
+Date:   Wed, 2 Aug 2023 22:56:34 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
+ struct/union
+Message-Id: <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
+In-Reply-To: <20230801204054.3884688e@rorschach.local.home>
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+        <169078863449.173706.2322042687021909241.stgit@devnote2>
+        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
+        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
+        <20230802000228.158f1bd605e497351611739e@kernel.org>
+        <20230801112036.0d4ee60d@gandalf.local.home>
+        <20230801113240.4e625020@gandalf.local.home>
+        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
+        <20230801190920.7a1abfd5@gandalf.local.home>
+        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
+        <20230801204054.3884688e@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 05:08:57PM +0200, Frank Jungclaus wrote:
-> Add support for esd CAN-USB/3 and CAN FD to esd_usb.c.
+On Tue, 1 Aug 2023 20:40:54 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Wed, 2 Aug 2023 09:21:46 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 > 
-> Signed-off-by: Frank Jungclaus <frank.jungclaus@esd.eu>
+> > > Then use kprobes. When I asked Masami what the difference between fprobes
+> > > and kprobes was, he told me that it would be that it would no longer rely
+> > > on the slower FTRACE_WITH_REGS. But currently, it still does.  
+> > 
+> > kprobes needs to keep using pt_regs because software-breakpoint exception
+> > handler gets that. And fprobe is used for bpf multi-kprobe interface,
+> > but I think it can be optional.
+> > 
+> > So until user-land tool supports the ftrace_regs, you can just disable
+> > using fprobes if CONFIG_DYNAMIC_FTRACE_WITH_REGS=n
+> 
+> I'm confused. I asked about the difference between kprobes on ftrace
+> and fprobes, and you said it was to get rid of the requirement of
+> FTRACE_WITH_REGS.
+> 
+>  https://lore.kernel.org/all/20230120205535.98998636329ca4d5f8325bc3@kernel.org/
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+Yes, it is for enabling fprobe (and fprobe-event) on more architectures.
+I don't think it's possible to change everything at once. So, it will be
+changed step by step. At the first step, I will replace pt_regs with
+ftrace_regs, and make bpf_trace.c and fprobe_event depends on
+FTRACE_WITH_REGS.
 
+At this point, we can split the problem into two, how to move bpf on
+ftrace_regs and how to move fprobe-event on ftrace_regs. fprobe-event
+change is not hard because it is closing in the kernel and I can do it.
+But for BPF, I need to ask BPF user-land tools to support ftrace_regs.
+
+> 
+> > 
+> > Then you can safely use 
+> > 
+> > struct pt_regs *regs = ftrace_get_regs(fregs);
+> > 
+> > I think we can just replace the CONFIG_FPROBE ifdefs with
+> > CONFIG_DYNAMIC_FTRACE_WITH_REGS in kernel/trace/bpf_trace.c
+> > And that will be the first version of using ftrace_regs in fprobe.
+> 
+> But it is still slow. The FTRACE_WITH_REGS gives us the full pt_regs
+> and saves all registers including flags, which is a very slow operation
+> (and noticeable in profilers).
+
+Yes, to solve this part, we need to work with BPF user-land people.
+I guess the BPF is accessing registers from pt_regs with fixed offset
+which is calculated from pt_regs layout in the user-space.
+
+> 
+> And this still doesn't work on arm64.
+
+Yes, and this makes more motivation to move on ftrace_regs.
+
+Thank you,
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
