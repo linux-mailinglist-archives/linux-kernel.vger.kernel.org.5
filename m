@@ -2,196 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 353DF76CBD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 851B176CBD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbjHBLcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:32:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55486 "EHLO
+        id S233830AbjHBLfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbjHBLcT (ORCPT
+        with ESMTP id S233300AbjHBLfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:32:19 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2658E211E;
-        Wed,  2 Aug 2023 04:32:18 -0700 (PDT)
-Received: from [192.168.0.116] (unknown [109.229.201.16])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: david.heidelberg)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6725366003B0;
-        Wed,  2 Aug 2023 12:32:15 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690975936;
-        bh=7I9L6yyTsIG8sjyONcyZaSV0J5UVP4PnaTFoHvVwaw8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=EGNPzrq4j26eIRJbvmeGBhm31XfGovIIgPJw2xvmM6zrw8y1Qt6xfgbPajhlQSjef
-         f2qN4LTLkSrUgBC4tz3H5jPCtznpZiIYggK/TuueJC0lVvZ8lm/Wx+75YZpjNCVW9h
-         1DBjoatZcBS2GHcPmOxZL5V3pzIQ9rqPWMw6oG0eyZaKZg8DIUye7pouNeUac157Go
-         02QayArhkBzXe/FD5hW/uLAsby9t/uAfs+vuaz65nTaPxuZz7JCQDZcklkGxn0m5rb
-         xqF21nW6WqgfV7Ct6MGllwH64Zxk9RYUhp2foSa4uVw4zQd+MqoiyaJkXfXYGrmYaB
-         DVCnzIevz40VA==
-Message-ID: <338ed966-0337-16e0-3758-55ede0e2ea0d@collabora.com>
-Date:   Wed, 2 Aug 2023 14:32:12 +0300
+        Wed, 2 Aug 2023 07:35:21 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FBD7211E;
+        Wed,  2 Aug 2023 04:35:19 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372BZDIc115644;
+        Wed, 2 Aug 2023 06:35:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690976113;
+        bh=N3aEGUEAKcwcM0z+aACk3Ka+pcKGBojvrgHFZ09VgPw=;
+        h=From:To:CC:Subject:Date;
+        b=chE8mybTllWQFbxRNvPdc0QBRf2OYCPtX/1qAWImgMbuMw1ihn6jaAemLYV0MmJb2
+         tiNXCBhkV7LnD6icHO+NTtkrDI2m4IWob95IjVgqSYOMq2WuHMBuCBq/HsZ1HeQsx2
+         O6bdEkoagqmBsHGtut1dxqnwwwcDqIyxExJ+AjUY=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372BZD6P107984
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 2 Aug 2023 06:35:13 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
+ Aug 2023 06:35:12 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 2 Aug 2023 06:35:12 -0500
+Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372BZ8Mp116138;
+        Wed, 2 Aug 2023 06:35:09 -0500
+From:   Udit Kumar <u-kumar1@ti.com>
+To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <sinthu.raja@ti.com>, <t-konduru@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH v2] arm64: dts: ti: k3-j721s2-som-p0: Correct pinmux offset for ospi0
+Date:   Wed, 2 Aug 2023 17:05:00 +0530
+Message-ID: <20230802113500.162276-1-u-kumar1@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v10] drm: Add initial ci/ subdirectory
-To:     =?UTF-8?B?SnVhbiBBLiBTdcOhcmV6?= <jasuarez@igalia.com>,
-        Maira Canal <mcanal@igalia.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        dri-devel@lists.freedesktop.org, eric@igalia.com
-Cc:     emma@anholt.net, linux-doc@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, jbrunet@baylibre.com,
-        robdclark@google.com, corbet@lwn.net, khilman@baylibre.com,
-        sergi.blanch.torne@collabora.com, gustavo.padovan@collabora.com,
-        linux-rockchip@lists.infradead.org, daniels@collabora.com,
-        martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
-        anholt@google.com, linux-mediatek@lists.infradead.org,
-        mripard@kernel.org, matthias.bgg@gmail.com,
-        linux-arm-kernel@lists.infradead.org,
-        angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
-        guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
-        tzimmermann@suse.de
-References: <20230720152737.102382-1-helen.koike@collabora.com>
- <52d1d9e5-00c8-2260-57fc-310cc2f712fd@igalia.com>
- <ad029e1c-8f00-9f5e-e25a-957b3f70c385@collabora.com>
- <ef84ccedbf880c8605688f26ebedc04046c1dd78.camel@igalia.com>
-Content-Language: en-US
-From:   David Heidelberg <david.heidelberg@collabora.com>
-Autocrypt: addr=david.heidelberg@collabora.com; keydata=
- xjMEYlvLOxYJKwYBBAHaRw8BAQdA5CoWEzz4igpwK4h6lK6ZformRk84+ymcfkGNPwqEeILN
- MURhdmlkIEhlaWRlbGJlcmcgPGRhdmlkLmhlaWRlbGJlcmdAY29sbGFib3JhLmNvbT7ClgQT
- FggAPhYhBEo7kSl22BK0F1Np/mn1Z4YcHsAUBQJiW8s7AhsDBQkFo5qABQsJCAcCBhUKCQgL
- AgQWAgMBAh4BAheAAAoJEGn1Z4YcHsAU84kBAK5YqSWAOuIumAqgWvke6BEsaIGWGQzXSuKj
- er/TXuFuAQCwc9ITSVXWWTSpdFt2+4z7Wch8tIGlbIFcS9dCFddwCc44BGJbyzsSCisGAQQB
- l1UBBQEBB0AEk7jXEwDApGOwMH/X0UAPBH8Y3isjxhNMjpyRcnl2CwMBCAfCfgQYFggAJhYh
- BEo7kSl22BK0F1Np/mn1Z4YcHsAUBQJiW8s7AhsMBQkFo5qAAAoJEGn1Z4YcHsAU0PEA/j0Y
- uAOKJCnnwrkf3ozPP0sutA5bojoARwcIaZKO/zvIAP9PwTC9DGLg+8LJm7m2Lyf0LxLA8FXD
- wueLHBdwHg6zAQ==
-In-Reply-To: <ef84ccedbf880c8605688f26ebedc04046c1dd78.camel@igalia.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------gZ4q2nvi1ImwMXIXleAIN9mH"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------gZ4q2nvi1ImwMXIXleAIN9mH
-Content-Type: multipart/mixed; boundary="------------FfDTAhzj7y6MRLROQfvQYWPK";
- protected-headers="v1"
-From: David Heidelberg <david.heidelberg@collabora.com>
-To: =?UTF-8?B?SnVhbiBBLiBTdcOhcmV6?= <jasuarez@igalia.com>,
- Maira Canal <mcanal@igalia.com>, Helen Koike <helen.koike@collabora.com>,
- dri-devel@lists.freedesktop.org, eric@igalia.com
-Cc: emma@anholt.net, linux-doc@vger.kernel.org,
- linux-amlogic@lists.infradead.org, jbrunet@baylibre.com,
- robdclark@google.com, corbet@lwn.net, khilman@baylibre.com,
- sergi.blanch.torne@collabora.com, gustavo.padovan@collabora.com,
- linux-rockchip@lists.infradead.org, daniels@collabora.com,
- martin.blumenstingl@googlemail.com, robclark@freedesktop.org,
- anholt@google.com, linux-mediatek@lists.infradead.org, mripard@kernel.org,
- matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
- angelogioacchino.delregno@collabora.com, neil.armstrong@linaro.org,
- guilherme.gallo@collabora.com, linux-kernel@vger.kernel.org,
- tzimmermann@suse.de
-Message-ID: <338ed966-0337-16e0-3758-55ede0e2ea0d@collabora.com>
-Subject: Re: [PATCH v10] drm: Add initial ci/ subdirectory
-References: <20230720152737.102382-1-helen.koike@collabora.com>
- <52d1d9e5-00c8-2260-57fc-310cc2f712fd@igalia.com>
- <ad029e1c-8f00-9f5e-e25a-957b3f70c385@collabora.com>
- <ef84ccedbf880c8605688f26ebedc04046c1dd78.camel@igalia.com>
-In-Reply-To: <ef84ccedbf880c8605688f26ebedc04046c1dd78.camel@igalia.com>
+Due to non-addressable regions in J721S2 SOC wkup_pmx was split
+into four regions from wkup_pmx0 to wkup_pmx3.
 
---------------FfDTAhzj7y6MRLROQfvQYWPK
-Content-Type: multipart/mixed; boundary="------------Ehh4rGbkOREHlVohl5eVMsUV"
+After split while updating the pin mux references to newly defined
+four wkup_pmx, pin mux for OSPI0 was left.
 
---------------Ehh4rGbkOREHlVohl5eVMsUV
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Pin mux for OSPI0 is spread over two range wkup_pmx0
+and wkup_pmx1, along with correcting pin mux for ospi
+adding correct pin mux setting within ospi node.
 
-T24gMzEvMDcvMjAyMyAxMDozOCwgSnVhbiBBLiBTdcOhcmV6IHdyb3RlOg0KPiBPbiBTYXQs
-IDIwMjMtMDctMjkgYXQgMTI6MDggKzAzMDAsIERhdmlkIEhlaWRlbGJlcmcgd3JvdGU6DQo+
-PiBIZWxsbyBNYWlyYSwNCj4+DQo+PiBSZWdhcmRpbmcgdGhlIHNlY29uZCBxdWVzdGlvbiBh
-Ym91dCBWM0QgYW5kIFYzRFY6IGluIHRoZSBNZXNhM0QgQ0ksIHdlDQo+PiBjdXJyZW50bHkg
-dXNlIGRvd25zdHJlYW0ga2VybmVscywgc28gd2UgZG9uJ3QgYnVpbGQgdGhlIGtlcm5lbCBm
-b3INCj4+IFJhc3BiZXJyeSBQaS4NCj4+DQo+Pg0KPj4NCj4NCj4gQk1fQk9PVEZTIG9wdGlv
-biBjYW4gcG9pbnQgdG8gYSBsaW5rIHRhcmJhbGwgY29udGFpbmluZyBhbiBhbHRlcm5hdGl2
-ZSANCj4ga2VybmVsIHRvIHVzZSBpbnN0ZWFkIG9mIGRvd25zdHJlYW0gb25lLg0KPg0KPiBU
-aGUgb25seSBkcmF3YmFjayBpcyB0aGF0IHRoaXMgdGFyYmFsbCBtdXN0IGJlIGFuIGFscmVh
-ZHkgY29tcGlsZWQgDQo+IGtlcm5lbDsgaXQgd29uJ3QgY29tcGlsZSBpdC4NCkl0IHdvdWxk
-IGJlIGdyZWF0IGlmIHlvdSBjb3VsZCBmaWxsIGluIG1pc3Npbmcga2VybmVsIGNvbmZpZyBv
-cHRpb25zIGZvciANCm1hY2hpbmVzIHlvdSB1c2UgZm9yIFYzRChWKSBpbg0KdGhlIGBrZXJu
-ZWwvY29uZmlncy9tZXNhKi5jb25maWdgIHdpdGhpbiB0aGUgYGdmeC1jaS9MaW51eCByZXBv
-c2l0b3J5IA0KKHRoZSBjb25maWcgZmlsZXMgaGVyZSBvcmlnaW4gZnJvbSB0aGVyZSkuDQoN
-CklmIHRoZSBjb21waWxlZCBrZXJuZWwgd2lsbCB3b3JrIG9uIFJQaXMsIHRoZW4gdGhlIG5l
-eHQgc3RlcCB3b3VsZCBiZSANCmFkZGluZyBrZXJuZWwgZm9ybWF0DQphbmQgRFRCIG5hbWVz
-IHRvIHRoZSBgc3JjL2Jyb2FkY29tL2NpL2dpdGxhYi1jaS55bWxgIGluIHRoZSBNZXNhIA0K
-cmVwb3NpdG9yeSBzbyB0aGF0IHlvdSBjYW4gdXNlIG15IE1lc2EgZHJhZnQgTVIgWzFdDQp0
-byBxdWlja2x5IHRlc3QgaWYgeW91ciBqb2JzIHdvdWxkIHdvcmsgd2l0aCB0aGUgbWFpbmxp
-bmUga2VybmVsIGFuZCBhbnkgDQpvdGhlciBib2FyZCB0aGF0IHdvbid0IGJyZWFrIGR1ZSB0
-byB5b3VyIGNoYW5nZXMuDQoNCldoZW4gdGhpcyBpbnRlZ3JhdGlvbiBpcyBkb25lIOKAkiBp
-dCdzIGVhc3kgdG8gcnVuIGRybS1jaSB0ZXN0aW5nIG9uIHRoZXNlIA0KbWFjaGluZXMuDQoN
-CkRhdmlkDQoNClsxXSBodHRwczovL2dpdGxhYi5mcmVlZGVza3RvcC5vcmcvbWVzYS9tZXNh
-Ly0vbWVyZ2VfcmVxdWVzdHMvMjM1NjMNCg0KDQo+DQo+PiBIb3dldmVyLCBJJ3ZlIGJlZW4g
-dGhpbmtpbmcgYWJvdXQgdGhlIHBvc3NpYmlsaXR5IG9mIGFkZGluZyBhbiBvdmVycmlkZQ0K
-Pj4gZm9yIHRoZSBrZXJuZWwgZnJvbSBhbiBleHRlcm5hbCBzb3VyY2UgdG8gb3VyIENJLiBU
-aGlzIHdheSwgd2UgY2FuIGFsc28NCj4+IHRlc3Qgd2l0aCBhIHByb3ZpZGVkIGtlcm5lbCBh
-bmQgb3ZlcnJpZGUgdGhlIGRlZmF1bHQgb3B0aW9uIG9mIHVzaW5nIHRoZQ0KPj4gZG93bnN0
-cmVhbSBrZXJuZWwgb24gUmFzcGJlcnJ5IFBpLg0KPj4NCj4+IElmIHdlIHByb2NlZWQgd2l0
-aCB0aGlzLCBpdCB3b3VsZCBiZSBzZW5zaWJsZSB0byBpbmNsdWRlIFYzRCogb3B0aW9ucyBp
-bg0KPj4gb3VyIGtlcm5lbCBidWlsZHMuDQo+Pg0KPj4gSSdtIGluY2x1ZGluZyBKdWFuIGFu
-ZCBFcmljIGZvciB0aGVpciBpbnB1dCBvbiB0aGlzIHRvcGljLg0KPj4NCj4+DQo+DQo+IFRo
-ZSBpZGVhIHNvdW5kcyBncmVhdC4gQXJlbid0IHdlIGFscmVhZHkgY29tcGlsaW5nIGtlcm5l
-bHMgZm9yIG90aGVyIA0KPiBoYXJkd2FyZT8gTWF5YmUgd2UgY2FuIGluY2x1ZGUgc3BlY2lm
-aWMgdmVyc2lvbnMgZm9yIFJwaS4NCj4NCj4gSi5BLg0KPg0KLS0gDQpEYXZpZCBIZWlkZWxi
-ZXJnDQpDb25zdWx0YW50IFNvZnR3YXJlIEVuZ2luZWVyDQoNCkNvbGxhYm9yYSBMdGQuDQpQ
-bGF0aW51bSBCdWlsZGluZywgU3QgSm9obidzIElubm92YXRpb24gUGFyaywgQ2FtYnJpZGdl
-IENCNCAwRFMsIFVLDQpSZWdpc3RlcmVkIGluIEVuZ2xhbmQgJiBXYWxlcywgbm8uIDU1MTM3
-MTgNCg0K
---------------Ehh4rGbkOREHlVohl5eVMsUV
-Content-Type: application/pgp-keys; name="OpenPGP_0x69F567861C1EC014.asc"
-Content-Disposition: attachment; filename="OpenPGP_0x69F567861C1EC014.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+Fixes: 6bc829ceea41 ("arm64: dts: ti: k3-j721s2: Fix wkup pinmux range")
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+Signed-off-by: Udit Kumar <u-kumar1@ti.com>
+---
+Logs with v2
+https://gist.github.com/uditkumarti/701f5f21edd4a10d22abe5f70a752279
 
-xjMEYlvLOxYJKwYBBAHaRw8BAQdA5CoWEzz4igpwK4h6lK6ZformRk84+ymcfkGN
-PwqEeILNMURhdmlkIEhlaWRlbGJlcmcgPGRhdmlkLmhlaWRlbGJlcmdAY29sbGFi
-b3JhLmNvbT7ClgQTFggAPhYhBEo7kSl22BK0F1Np/mn1Z4YcHsAUBQJiW8s7AhsD
-BQkFo5qABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEGn1Z4YcHsAU84kBAK5Y
-qSWAOuIumAqgWvke6BEsaIGWGQzXSuKjer/TXuFuAQCwc9ITSVXWWTSpdFt2+4z7
-Wch8tIGlbIFcS9dCFddwCc44BGJbyzsSCisGAQQBl1UBBQEBB0AEk7jXEwDApGOw
-MH/X0UAPBH8Y3isjxhNMjpyRcnl2CwMBCAfCfgQYFggAJhYhBEo7kSl22BK0F1Np
-/mn1Z4YcHsAUBQJiW8s7AhsMBQkFo5qAAAoJEGn1Z4YcHsAU0PEA/j0YuAOKJCnn
-wrkf3ozPP0sutA5bojoARwcIaZKO/zvIAP9PwTC9DGLg+8LJm7m2Lyf0LxLA8FXD
-wueLHBdwHg6zAQ=3D=3D
-=3DOQS+
------END PGP PUBLIC KEY BLOCK-----
+Change log:
 
---------------Ehh4rGbkOREHlVohl5eVMsUV--
+Changes in v2:
+  Changed name of pin mux to align with
+  https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/ patch
 
---------------FfDTAhzj7y6MRLROQfvQYWPK--
+v1: https://lore.kernel.org/all/20230801125626.3287306-1-u-kumar1@ti.com/
 
---------------gZ4q2nvi1ImwMXIXleAIN9mH
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+ arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
+index d57dd43da0ef..fd1d6c884736 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi
+@@ -45,8 +45,6 @@ mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-default-pins {
+ 			J721S2_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (D19) MCU_OSPI0_CLK */
+ 			J721S2_WKUP_IOPAD(0x02c, PIN_OUTPUT, 0) /* (F15) MCU_OSPI0_CSn0 */
+ 			J721S2_WKUP_IOPAD(0x030, PIN_OUTPUT, 0) /* (G17) MCU_OSPI0_CSn1 */
+-			J721S2_WKUP_IOPAD(0x038, PIN_OUTPUT, 0) /* (F14) MCU_OSPI0_CSn2 */
+-			J721S2_WKUP_IOPAD(0x03c, PIN_OUTPUT, 0) /* (F17) MCU_OSPI0_CSn3 */
+ 			J721S2_WKUP_IOPAD(0x00c, PIN_INPUT, 0) /* (C19) MCU_OSPI0_D0 */
+ 			J721S2_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (F16) MCU_OSPI0_D1 */
+ 			J721S2_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (G15) MCU_OSPI0_D2 */
+@@ -61,6 +59,15 @@ J721S2_WKUP_IOPAD(0x004, PIN_INPUT, 0) /* (E20) MCU_OSPI0_LBCLKO */
+ 	};
+ };
+ 
++&wkup_pmx1 {
++	mcu_fss0_ospi0_1_pins_default: mcu-fss0-ospi0-1-default-pins {
++		pinctrl-single,pins = <
++			J721S2_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (F14) MCU_OSPI0_CSn2 */
++			J721S2_WKUP_IOPAD(0x004, PIN_OUTPUT, 0) /* (F17) MCU_OSPI0_CSn3 */
++		>;
++	};
++};
++
+ &wkup_pmx2 {
+ 	wkup_i2c0_pins_default: wkup-i2c0-default-pins {
+ 		pinctrl-single,pins = <
+@@ -127,7 +134,7 @@ &main_mcan16 {
+ &ospi0 {
+ 	status = "okay";
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
++	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>, <&mcu_fss0_ospi0_1_pins_default>;
+ 
+ 	flash@0 {
+ 		compatible = "jedec,spi-nor";
+-- 
+2.34.1
 
-iHUEARYIAB0WIQRKO5EpdtgStBdTaf5p9WeGHB7AFAUCZMo+vAAKCRBp9WeGHB7A
-FNQcAP4oF5UtDxrYf/MIQwqiHByXB05UlH51Of8QA584U++zsAEA/jWhcpOj2YXI
-9hirWMneCsvShLQ3XdS9DufpQRQifgg=
-=Vn8P
------END PGP SIGNATURE-----
-
---------------gZ4q2nvi1ImwMXIXleAIN9mH--
