@@ -2,100 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 546FB76D0CE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5087176D0D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234734AbjHBPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:00:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
+        id S234919AbjHBPBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232749AbjHBPAl (ORCPT
+        with ESMTP id S234721AbjHBPAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:00:41 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1252B210A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:00:35 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso6401701f8f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:00:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690988433; x=1691593233;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mPj5oQb/gSwDVKB5Tdu3got89oVLm0S9QauyfF4BC3U=;
-        b=b5zvHi6U2ftxA/daZ7INtzzCNjyerUNKLetDSNHdGRZMQM1iOUCknfguL5BWmGNDoY
-         k3S7k3CR9cjL1XEvhUCBHw0leJiOioqsL83yRyRoKwjZnvo5r0nexJ8TF2QGvd/acTA3
-         NwLMIg67O2+zHQZIOatQvBMeu/7wBuhHiE6SUSpaLTq7eVIKFLitGGwg/daxNqE7bwQg
-         gTUuFDfGixDy+ajPZFBqtRKKQU/z04Z+OY2AgExra6vJd4Rem564FnSlgOxl+Jg3A4mj
-         qOKrylji9wKTHxGQBK6Tvi0FDkZ/q9a6LR/QfLl66wKG5Lx4pWMizihHiGeRtTGXx+ik
-         a7/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690988433; x=1691593233;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mPj5oQb/gSwDVKB5Tdu3got89oVLm0S9QauyfF4BC3U=;
-        b=F+7zy3H94f9yxaKEsZnh7lNebA2M75ma781emtZxsHYPecu0zDzmjlVGWT5kVsfrBr
-         PZDxFfipABRYbwMKdy1LdvVEgwMh1aQu5NjH6Or7EvOGfxVptncMh33WxoEDm54CIt9m
-         FA4h+p1sAE6tg5sMTDUlG5ElbyK6mRsiX9zMJIzkHpqJtQF6FvgGTxorXGVAbx7ThdSt
-         uDvPa9fm4OymvZcEgchNac+38ralSSeM3orYxBGVZnbkwjj2EVo97YeOhOvxMXkoKL+L
-         B7Uiq9SPdhP7xA+bT58XXY10FPWUDFzKoBM00GXJbUuPoGcfmRlpLTmeCOafx1ZdS0Su
-         fnPQ==
-X-Gm-Message-State: ABy/qLYdZSs0RDw2/rFpeyz2L+Hlr4XrV4/CR9iA9FrC9bXtuRoDB2Aa
-        x2RJmHuKQ1sjikHiT6iQpxlxQQ==
-X-Google-Smtp-Source: APBJJlFPLB9LoRRGImnN9+NIw0ge7AsUxBWoGqVXruAg6ZTGUgY9KCieZjFbfnhRAq9VbFPrJ7pi9A==
-X-Received: by 2002:adf:efd1:0:b0:313:ebf3:f817 with SMTP id i17-20020adfefd1000000b00313ebf3f817mr4761979wrp.22.1690988432883;
-        Wed, 02 Aug 2023 08:00:32 -0700 (PDT)
-Received: from [192.168.1.195] ([5.133.47.210])
-        by smtp.gmail.com with ESMTPSA id w10-20020a1cf60a000000b003fe1afb99a9sm1918418wmc.11.2023.08.02.08.00.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 08:00:32 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     linux-arm-msm@vger.kernel.org,
-        Ekansh Gupta <quic_ekangupt@quicinc.com>
-Cc:     ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com,
-        stable <stable@kernel.org>
-In-Reply-To: <1690984411-4448-1-git-send-email-quic_ekangupt@quicinc.com>
-References: <1690984411-4448-1-git-send-email-quic_ekangupt@quicinc.com>
-Subject: Re: [PATCH v4] misc: fastrpc: Pass proper scm arguments for static
- process init
-Message-Id: <169098843172.77085.14958655683805861888.b4-ty@linaro.org>
-Date:   Wed, 02 Aug 2023 16:00:31 +0100
+        Wed, 2 Aug 2023 11:00:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584C32690;
+        Wed,  2 Aug 2023 08:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690988449; x=1722524449;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Nm7xh9afr3+itg6U0oA7NAvWHcM1bQ1T0gO+IUBX07I=;
+  b=DDe3nC+sswx/52P1X+Og1rB/mXr+2hJv1kecU0pMuB0oswyKnExHzbrC
+   yJ7c1qIIm5jhAFS4Dp6hFvXXJmP7W48ORFcRLw5tw/DLkw78RCKd8RJBN
+   Z6u6UbX83dhNpCCBpRHNDofy/ZjjZj2KFxb6cptfWGqr0QeunMn2W7nTs
+   COaBXkTlvmm4Ywl5uMRyZVi22rw17/QeKKwV1iY+ha7ufMhOCPeRmMR5n
+   nDLRZKkp17mSUOOci3O6UGV5XXLsYEwpy9GLGJhPX9AGcxioEF4/LSyEF
+   2nfDkD7wWtrF4kvb+IpWMx+YNfLYgnW3MP02Q+dyOoVcwFds3wactrPc9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="435931710"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="435931710"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 08:00:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="1059864191"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="1059864191"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Aug 2023 08:00:33 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 3979713F; Wed,  2 Aug 2023 18:00:40 +0300 (EEST)
+Date:   Wed, 2 Aug 2023 18:00:40 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v7 2/2] PCI: Don't put non-power manageable PCIe root
+ ports into D3
+Message-ID: <20230802150040.GU14638@black.fi.intel.com>
+References: <a309e3fe-b1f9-e269-cb97-8af87c8d483b@amd.com>
+ <CAJZ5v0jvxrDMR6YHFpYZ4yYpp82-3TtrH==SMRFtUMJsv7=i=g@mail.gmail.com>
+ <37b005d5-68fb-f8dd-67e2-c953d677fca2@amd.com>
+ <8298c01c-abec-914b-0542-459f38c635fe@amd.com>
+ <CAJZ5v0i3g0JujMwikB8niRZ93hXJZqWtjrCjbaDmkMLUbMmwMA@mail.gmail.com>
+ <d1b2cf1b-de5f-6c2e-c8dc-fdf60cd0882d@amd.com>
+ <20230802052601.GM14638@black.fi.intel.com>
+ <e82ec662-22d9-b331-0880-886bd28624eb@amd.com>
+ <20230802143142.GS14638@black.fi.intel.com>
+ <0fa90fa4-af41-52c1-0e6f-3ce6a84fa461@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0fa90fa4-af41-52c1-0e6f-3ce6a84fa461@amd.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Wed, 02 Aug 2023 19:23:31 +0530, Ekansh Gupta wrote:
-> Memory is allocated for dynamic loading when audio daemon is trying
-> to attach to audioPD on DSP side. This memory is allocated from
-> reserved CMA memory region and needs ownership assignment to
-> new VMID in order to use it from audioPD.
+On Wed, Aug 02, 2023 at 09:35:35AM -0500, Mario Limonciello wrote:
 > 
-> In the current implementation, arguments are not correctly passed
-> to the scm call which might result in failure of dynamic loading
-> on audioPD. Added changes to pass correct arguments during daemon
-> attach request.
 > 
-> [...]
+> On 8/2/23 09:31, Mika Westerberg wrote:
+> > Hi,
+> > 
+> > On Wed, Aug 02, 2023 at 09:10:38AM -0500, Mario Limonciello wrote:
+> > > 
+> > > 
+> > > On 8/2/23 00:26, Mika Westerberg wrote:
+> > > > Hi Mario,
+> > > > 
+> > > > On Tue, Aug 01, 2023 at 10:17:11PM -0500, Mario Limonciello wrote:
+> > > > > > Consequently, platform_pci_bridge_d3() will return false and the only
+> > > > > > thing that may allow the port to go into D0 is the dmi_get_bios_year()
+> > > > > > check at the end of pci_bridge_d3_possible().
+> > > > > > 
+> > > > > > However, that was added, because there are Intel platforms on which
+> > > > > > Root Ports need to be programmed into D3hot on suspend (which allows
+> > > > > > the whole platform to reduce power significantly) and there are no
+> > > > > > ACPI device power management objects associated with them (Mika should
+> > > > > > know the gory details related to this).  It looks like under Windows
+> > > > > > the additional power reduction would not be possible on those systems,
+> > > > > > but that would be a problem, wouldn't it?
+> > > > > > 
+> > > > > 
+> > > > > I've been thinking on this today, and I at least have a hypothesis about
+> > > > > this behavior.  Perhaps Windows is actually utilizing enabled PEP
+> > > > > constraints to enforce what state device should be put into over Modern
+> > > > > Standby cycles in the absence of ACPI objects.
+> > > > > 
+> > > > > In the case of one of my problematic system the PEP constraints for the root
+> > > > > port are:
+> > > > > 
+> > > > > Package (0x04)
+> > > > > {
+> > > > > 	0x00,
+> > > > > 	"\\_SB.PCI0.GP17",
+> > > > > 	0x00,
+> > > > > 	0x00
+> > > > > },
+> > > > > 
+> > > > > That first 0x00 means the constraint isn't actually enabled for the root
+> > > > > port.
+> > > > > 
+> > > > > Mika,
+> > > > > 
+> > > > > Could you get an acpidump from one of these problematic Intel systems so we
+> > > > > can check the PEP constraints to see if this theory works? Or maybe you have
+> > > > > some other ideas why this is different?
+> > > > 
+> > > > The patch adding this was merged in 2016 and unfortunately I don't have
+> > > > any of the ACPI dumps from them available anymore (and do not recall the
+> > > > details either). I think these were Apollo Lake-P based systems with the
+> > > > initial runtime D3cold and S0ix support at the time.
+> > > 
+> > > 
+> > > I scoured the web looking for acpidumps a bit an Apollo Lake system and came
+> > > across this random bug report:
+> > > 
+> > > https://bugzilla.redhat.com/show_bug.cgi?id=1591307
+> > > 
+> > > "Intel(R) Celeron(R) CPU N3450 @ 1.10GHz (family: 0x6, model: 0x5c,
+> > > stepping: 0x9)"
+> > > 
+> > > I looked at the acpidump, and I notice:
+> > > 
+> > > Low Power S0 Idle (V5) : 0
+> > > 
+> > > That means that Windows wouldn't actually be putting it into Modern Standby
+> > > at suspend but would rather use S3.
+> > 
+> > Same goes for Linux AFAICT. The ones needed this actually used S0ix so
+> > the bit should definitely be set.
+> 
+> OK.
+> 
+> > 
+> > > Considering that result, could we perhaps adjust the check to:
+> > > 
+> > > if ((c->x86_vendor == X86_VENDOR_INTEL) && !(acpi_gbl_FADT.flags &
+> > > ACPI_FADT_LOW_POWER_S0))
+> > > 
+> > > Or could we quirk the PCI root ports from Apollo Lake to opt into D3?
+> > 
+> > It is not just Apollo Lake, but all "modern" systems as well (sorry if
+> > this was unclear). Apollo Lake just was the first one that needed this.
+> > We also have the Low Power S0 Idle bit set in recent systems too.
+> 
+> Ah got it; I misunderstood it as Apollo Lake was the only one that needed
+> it.
+> 
+> So modern systems that set the bit in the FADT, do they also lack _S0W and
+> _S0D on the root ports?
 
-Applied, thanks!
+That's a good question. I would think they have those but I cannot be
+sure for all the existing ones. I checked the RPL system I have here and
+it does have _S0W and the HotPlugSupportInD3 at least.
 
-[1/1] misc: fastrpc: Pass proper scm arguments for static process init
-      commit: 64227235abd9a3ebfb5927dff2202771ffc92b8b
+> Does my PEP constraints theory hold steam at all?
 
-Best regards,
--- 
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+I think it might be worthile to dig into it futher. Not sure if this
+helps at all but the matching PEP constraint for the one of the root
+ports mentioned above looks like this:
+
+               Package (0x03)
+               {
+                    "\\_SB.PC00.RP09",
+                    Zero,
+                    Package (0x02)
+                    {
+                        Zero, 
+                        Package (0x02)
+                        {
+                            0xFF, 
+                            0x03
+                        }
+                    } 
+                }, 
 
