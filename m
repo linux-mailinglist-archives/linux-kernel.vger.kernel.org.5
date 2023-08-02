@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AB6976D97E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A701276D97F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbjHBV2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:28:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
+        id S232511AbjHBV3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231453AbjHBV2j (ORCPT
+        with ESMTP id S231453AbjHBV3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:28:39 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9DF1734
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:28:38 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5867fe87d16so1760157b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:28:38 -0700 (PDT)
+        Wed, 2 Aug 2023 17:29:05 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF781734;
+        Wed,  2 Aug 2023 14:29:04 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9b9f0387dso4070511fa.0;
+        Wed, 02 Aug 2023 14:29:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691011717; x=1691616517;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=icjiEwYAydMlzsRZ8GnEIvFOFSe1szS76VxxnsFH640=;
-        b=gs1AYJ4+CvQT/+aMUh1flJrlvS3Qzwy5Q2A3K7MBW4sLteIo/kC24KqrmQFPM7t55S
-         a2BhoOC55cwvp7PnytvAezuMeq0d301xQtaQbdFdct2XWWVdGm+3ID2oDQuqqdB57cdN
-         ddH/bqDFQbWpU8thUIMs/CD2+GOifMgxCgu+O+Q7uU5kgFR5ttJnY7qknE14tffEEgHA
-         dBFoP01vN5NBqV4vvKyRoG0KAgCntsT8skuZb8NyXLUpvK+77snvXHcvdVJ7eY71rq76
-         oqqGbxYJdlDRZx8U13Ey+T6MWkYdeofxzX2m8mwi+05nimAhCgjvD0uJ5riI+RZQxN2L
-         nYgA==
+        d=gmail.com; s=20221208; t=1691011742; x=1691616542;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0utdvIhX3amp8utvvS+BAk3g+AmsUNViXEgeD6WJsZ4=;
+        b=EuhMrUrxRGKAFB4uDxWeh2sbofFgEXon1HQFmho2U6hPIm9c7pGsR0PFFr1ShuhOGM
+         XxjCspEy/2Dr1X99sL97YkjEFgfNeTM9rNAMfIv4JhwKXKCkoj2acZXhC2aOQv5a1HHc
+         Sp+KGaSYtC5xgo9+9S7xBiwA1uzFw6Oc6D1zSl6tc+C/+iLgt0JzaKNn6Jt5V4/QAUFW
+         FBNqDFrqY5FlQeRInStqV2gLHL31JWId5EBr79DB6E7yMBtdmDqrJEir3PNoJOcdVg0z
+         buRHv2SgyvnBfAyf4vGmxqa9lkEo07D+K4+YIQNoVOxWpIKXlbFGLreBFtRAcnzDvOzS
+         R9ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691011717; x=1691616517;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=icjiEwYAydMlzsRZ8GnEIvFOFSe1szS76VxxnsFH640=;
-        b=bYjYcMp7tVEz3hJVHv4sKZgp+8XUF4jebENRq6VVFB5vkDwYfAXdZXYzFziAzNizNc
-         apgbnU8t3CtUts0G8zJklTuD42bGyV6pqQmLUfaHqyka6BGSXMn5SHebSQw6NtNclzNJ
-         DchoAEi8nYV5fdM/3MYPJ6qirURR5SE7ugJz/RVUVqg+kZCZJVoO61HoeI6ptg8XgkF+
-         b1RuVXDZRdp6OKHoTlfIbnDBzu/Ep1iAJAkOK677+WLTB2UVUY8z1hdnfcTjvl8lnvXK
-         E48+h78Pj+ZwoNCK8EmCIHGme+GrF8VeP+93X2MBhmQTDFFnjPnOvECnERk0H5IR1P4S
-         0VtA==
-X-Gm-Message-State: ABy/qLaRpkejIFm/PvTjpji8jJa8aAfcLid6mamDYsLhbh+JQuag5U10
-        opVZHkJpp6pOKocB3fXLFvhRgEKR/Q==
-X-Google-Smtp-Source: APBJJlG4oGBttMFLWAh4wb5lb/djVKbLKECONDMHKlsL1QIilZzq4Q9LdpyJ77FpiG3xEaVEoL2hzxOv7g==
-X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
- (user=rmoar job=sendgmr) by 2002:a81:4304:0:b0:584:43af:7b0d with SMTP id
- q4-20020a814304000000b0058443af7b0dmr148419ywa.2.1691011717332; Wed, 02 Aug
- 2023 14:28:37 -0700 (PDT)
-Date:   Wed,  2 Aug 2023 21:28:34 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.41.0.585.gd2178a4bd4-goog
-Message-ID: <20230802212834.761327-1-rmoar@google.com>
-Subject: [PATCH -next] kunit: fix uninitialized variables bug in attributes filtering
-From:   Rae Moar <rmoar@google.com>
-To:     shuah@kernel.org, davidgow@google.com, brendan.higgins@linux.dev
-Cc:     ruanjinjie@huawei.com, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Rae Moar <rmoar@google.com>, kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
+        d=1e100.net; s=20221208; t=1691011742; x=1691616542;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0utdvIhX3amp8utvvS+BAk3g+AmsUNViXEgeD6WJsZ4=;
+        b=lcGAvyb7veiTSlYZsqwVtS+55MMUxE15U8aha8mnXk7OhfKvgeBNvqjpxyJ6RCSdwf
+         IPnsgPREpGuPIY80gFyVZu7sZ/q2C69ogKL3L+ba6HvNPV5pFcimbCqQh1Yzp3lF0QnY
+         3O4wgAQFPV55GRWHNl9dWcD4Gb2zuFP6XYstVnpVUX6J0zwg1MBtKUkm0EJeb1jvFLT1
+         GnKss3LBisrtZ2ag+//AkcoYWNegfgsOL6SlqBziuWBsgi70zD7rOJ70MSR1gqqrScG6
+         eM+DDbsjgSi269UBXJp1ZmdE62SkN5gBmhsbcCjKMYKbG9yWli+NMH69sEQeLw1SqAuy
+         dCIw==
+X-Gm-Message-State: ABy/qLbQuiuLB1Sko4Cm3Je6ydWWRcRwsxe+51jFC7Ud681UDHPsOiJb
+        KUpucu2m5yB28CBWppDsY/u88iYAO78aaWZgO98=
+X-Google-Smtp-Source: APBJJlG0emxHL6mSNkEUCVWAQARSUCcQMmVUOsR3dTZxgltNZ+78Zs2AP7iA5PYgSC0XH6HGm/MHGU6k1Qoa3sMeMVA=
+X-Received: by 2002:a2e:959a:0:b0:2b6:e283:32cb with SMTP id
+ w26-20020a2e959a000000b002b6e28332cbmr5472066ljh.23.1691011742309; Wed, 02
+ Aug 2023 14:29:02 -0700 (PDT)
+MIME-Version: 1.0
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+ <169078863449.173706.2322042687021909241.stgit@devnote2> <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+ <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org> <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
+ <20230802000228.158f1bd605e497351611739e@kernel.org> <20230801112036.0d4ee60d@gandalf.local.home>
+ <20230801113240.4e625020@gandalf.local.home> <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
+ <20230801190920.7a1abfd5@gandalf.local.home> <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
+ <20230801204054.3884688e@rorschach.local.home> <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
+ <CAADnVQLqXjJvCcuQLVz8HxF050jDHaSa2D7cehoYtjXdp3wGLQ@mail.gmail.com>
+ <20230802143845.3ce6ed61@gandalf.local.home> <CAADnVQKrL3LZaRcgoTdGN-csPt=eyujPbw9qoxgv9tPYPmZiZA@mail.gmail.com>
+ <20230802161220.579b2220@gandalf.local.home>
+In-Reply-To: <20230802161220.579b2220@gandalf.local.home>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Wed, 2 Aug 2023 14:28:50 -0700
+Message-ID: <CAADnVQ+hrW3TuR1HLa2ZJ+7xxTP2YA_Rjsc0pz8wnR0skNP_-w@mail.gmail.com>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a struct/union
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,180 +90,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix smatch warnings regarding uninitialized variables in the filtering
-patch of the new KUnit Attributes feature.
+On Wed, Aug 2, 2023 at 1:12=E2=80=AFPM Steven Rostedt <rostedt@goodmis.org>=
+ wrote:
+>
+> On Wed, 2 Aug 2023 12:48:14 -0700
+> Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+>
+> > On Wed, Aug 2, 2023 at 11:38=E2=80=AFAM Steven Rostedt <rostedt@goodmis=
+.org> wrote:
+> > >
+> > > On Wed, 2 Aug 2023 11:24:12 -0700
+> > > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > > This is a non starter.
+> > > > bpf progs expect arch dependent 'struct pt_regs *' and we cannot ch=
+ange that.
+> > >
+> > > If the progs are compiled into native code, isn't there optimizations=
+ that
+> > > could be done? That is, if ftrace_regs is available, and the bpf prog=
+ram is
+> > > just using the subset of pt_regs, is it possible that it could be com=
+piled
+> > > to use ftrace_regs?
+> > >
+> > > Forgive my ignorance on how BPF programs turn into executables when r=
+unning
+> > > in the kernel.
+> >
+> > Right. It's possible for the verifier to do an offset rewrite,
+> > forbid certain access, always return 0 on load from certain offset,
+> > and so on.
+> > It's all non trivial amount of work.
+> > ftrace_partial_regs() from ftrace_regs into pt_regs is so much simpler.
+>
+> Sure, and the copy could be the solution we have in the near future, but =
+if
+> we could optimize it in the future, then perhaps it would be worth doing =
+it.
+>
+> Also, how are the bpf programs referencing the pt_regs?
 
-Fixes: 529534e8cba3 ("kunit: Add ability to filter attributes")
+Typically through macros that abstract arch differences away in
+tools/lib/bpf/bpf_tracing.h
+PT_REGS_PARM1
+PT_REGS_PARM1_CORE
+PT_REGS_PARM1_SYSCALL
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/r/202307270610.s0w4NKEn-lkp@intel.com/
+pt_regs at syscall entry is special, since syscall calling convention
+is different from the rest of the kernel.
+ftrace_regs cannot help with that either.
 
-Signed-off-by: Rae Moar <rmoar@google.com>
----
+> Could a ftrace_regs
+> API be added too?
 
-Note that this is rebased on top of the recent fix:
-("kunit: fix possible memory leak in kunit_filter_suites()").
+Potentially yes, but I don't see the value.
+bpf users are slowly migrating to fentry/fexit that has accurate
+args and return value and much faster.
+kprobes are still heavily used, of course.
+multi-kprobe (with fprobe_ips underneath) is a new addition that is
+also very important to some users.
 
- lib/kunit/attributes.c | 40 +++++++++++++++++-----------------------
- lib/kunit/executor.c   | 10 +++++++---
- 2 files changed, 24 insertions(+), 26 deletions(-)
-
-diff --git a/lib/kunit/attributes.c b/lib/kunit/attributes.c
-index d37c40c0ce4f..5e3034b6be99 100644
---- a/lib/kunit/attributes.c
-+++ b/lib/kunit/attributes.c
-@@ -102,7 +102,7 @@ static int int_filter(long val, const char *op, int input, int *err)
- static int attr_enum_filter(void *attr, const char *input, int *err,
- 		const char * const str_list[], int max)
- {
--	int i, j, input_int;
-+	int i, j, input_int = -1;
- 	long test_val = (long)attr;
- 	const char *input_val = NULL;
- 
-@@ -124,7 +124,7 @@ static int attr_enum_filter(void *attr, const char *input, int *err,
- 			input_int = j;
- 	}
- 
--	if (!input_int) {
-+	if (input_int < 0) {
- 		*err = -EINVAL;
- 		pr_err("kunit executor: invalid filter input: %s\n", input);
- 		return false;
-@@ -186,8 +186,10 @@ static void *attr_module_get(void *test_or_suite, bool is_test)
- 	// Suites get their module attribute from their first test_case
- 	if (test)
- 		return ((void *) test->module_name);
--	else
-+	else if (kunit_suite_num_test_cases(suite) > 0)
- 		return ((void *) suite->test_cases[0].module_name);
-+	else
-+		return (void *) "";
- }
- 
- /* List of all Test Attributes */
-@@ -221,7 +223,7 @@ const char *kunit_attr_filter_name(struct kunit_attr_filter filter)
- void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level)
- {
- 	int i;
--	bool to_free;
-+	bool to_free = false;
- 	void *attr;
- 	const char *attr_name, *attr_str;
- 	struct kunit_suite *suite = is_test ? NULL : test_or_suite;
-@@ -255,7 +257,7 @@ void kunit_print_attr(void *test_or_suite, bool is_test, unsigned int test_level
- 
- int kunit_get_filter_count(char *input)
- {
--	int i, comma_index, count = 0;
-+	int i, comma_index = 0, count = 0;
- 
- 	for (i = 0; input[i]; i++) {
- 		if (input[i] == ',') {
-@@ -272,7 +274,7 @@ int kunit_get_filter_count(char *input)
- struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err)
- {
- 	struct kunit_attr_filter filter = {};
--	int i, j, comma_index, new_start_index;
-+	int i, j, comma_index = 0, new_start_index = 0;
- 	int op_index = -1, attr_index = -1;
- 	char op;
- 	char *input = *filters;
-@@ -316,7 +318,7 @@ struct kunit_attr_filter kunit_next_attr_filter(char **filters, int *err)
- 		filter.attr = &kunit_attr_list[attr_index];
- 	}
- 
--	if (comma_index) {
-+	if (comma_index > 0) {
- 		input[comma_index] = '\0';
- 		filter.input = input + op_index;
- 		input = input + new_start_index;
-@@ -356,31 +358,22 @@ struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suit
- 
- 	/* Save filtering result on default value */
- 	default_result = filter.attr->filter(filter.attr->attr_default, filter.input, err);
--	if (*err) {
--		kfree(copy);
--		kfree(filtered);
--		return NULL;
--	}
-+	if (*err)
-+		goto err;
- 
- 	/* Save suite attribute value and filtering result on that value */
- 	suite_val = filter.attr->get_attr((void *)suite, false);
- 	suite_result = filter.attr->filter(suite_val, filter.input, err);
--	if (*err) {
--		kfree(copy);
--		kfree(filtered);
--		return NULL;
--	}
-+	if (*err)
-+		goto err;
- 
- 	/* For each test case, save test case if passes filtering. */
- 	kunit_suite_for_each_test_case(suite, test_case) {
- 		test_val = filter.attr->get_attr((void *) test_case, true);
- 		test_result = filter.attr->filter(filter.attr->get_attr(test_case, true),
- 				filter.input, err);
--		if (*err) {
--			kfree(copy);
--			kfree(filtered);
--			return NULL;
--		}
-+		if (*err)
-+			goto err;
- 
- 		/*
- 		 * If attribute value of test case is set, filter on that value.
-@@ -406,7 +399,8 @@ struct kunit_suite *kunit_filter_attr_tests(const struct kunit_suite *const suit
- 		}
- 	}
- 
--	if (n == 0) {
-+err:
-+	if (n == 0 || *err) {
- 		kfree(copy);
- 		kfree(filtered);
- 		return NULL;
-diff --git a/lib/kunit/executor.c b/lib/kunit/executor.c
-index 481901d245d0..b6e07de2876a 100644
---- a/lib/kunit/executor.c
-+++ b/lib/kunit/executor.c
-@@ -130,7 +130,7 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
- 	struct kunit_suite **copy, *filtered_suite, *new_filtered_suite;
- 	struct suite_set filtered;
- 	struct kunit_glob_filter parsed_glob;
--	struct kunit_attr_filter *parsed_filters;
-+	struct kunit_attr_filter *parsed_filters = NULL;
- 
- 	const size_t max = suite_set->end - suite_set->start;
- 
-@@ -147,7 +147,11 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
- 	/* Parse attribute filters */
- 	if (filters) {
- 		filter_count = kunit_get_filter_count(filters);
--		parsed_filters = kcalloc(filter_count + 1, sizeof(*parsed_filters), GFP_KERNEL);
-+		parsed_filters = kcalloc(filter_count, sizeof(*parsed_filters), GFP_KERNEL);
-+		if (!parsed_filters) {
-+			kfree(copy);
-+			return filtered;
-+		}
- 		for (j = 0; j < filter_count; j++)
- 			parsed_filters[j] = kunit_next_attr_filter(&filters, err);
- 		if (*err)
-@@ -166,7 +170,7 @@ static struct suite_set kunit_filter_suites(const struct suite_set *suite_set,
- 				goto err;
- 			}
- 		}
--		if (filter_count) {
-+		if (filter_count > 0 && parsed_filters != NULL) {
- 			for (k = 0; k < filter_count; k++) {
- 				new_filtered_suite = kunit_filter_attr_tests(filtered_suite,
- 						parsed_filters[k], filter_action, err);
-
-base-commit: 3bffe185ad11e408903d2782727877388d08d94e
--- 
-2.41.0.585.gd2178a4bd4-goog
-
+> If the verifier sees that the program is using
+> ftrace_regs, it could then use the lighter weight fprobes for access,
+> otherwise it falls back to the kprobe version.
+>
+> -- Steve
