@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E1176CF5F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4407576CF64
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234599AbjHBN7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
+        id S234602AbjHBOAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjHBN7W (ORCPT
+        with ESMTP id S231508AbjHBOAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:59:22 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67EFE4E;
-        Wed,  2 Aug 2023 06:59:20 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8D4711EC00F8;
-        Wed,  2 Aug 2023 15:59:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1690984758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=QOfMj0yRD5e1Y7ZVsdyLC7SaQJiL2vnicxgkKfeEGcQ=;
-        b=CZ4qmkgRU9PIcQ/ZHTBvKpUITHvq9JLZlUXNpJ77g0HP2KcNvFSAQogIGCmbfIa87ckwRl
-        dbGLvvn5G4buwri1WDHhX1UoMeTNn626H+mR3exJU2Mnn1DmT/QY9R8YwIjnr8RfBXHc4E
-        A0x6kBqAs5pVZZcIrnH5BpuBzNPDBX0=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id VfcAOxr6NmCU; Wed,  2 Aug 2023 13:59:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1690984755; bh=QOfMj0yRD5e1Y7ZVsdyLC7SaQJiL2vnicxgkKfeEGcQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZkvRJ2vbdyXkzctAg2muud/4V82jYKu05V31/emaUcJHnutqPYhNBIBnBZW3dJU/D
-         bPH04+DeWXZ6PWwop0MwFMl+gUYDUOEfA7GlcmAWvpqqOi8yKykEDgVnBl+gOl3G28
-         B0Ko7Wg/H0L/54XMBXt+0UuDWGRR8OBRz+vwOOoPAlOG6gUrXX9/hRemT7fX5hXzpW
-         AhhGtQdTXToPEJc5LL9Br4YBLmN0oPsmU7EEgQBr+nQj1wzdR3tr27xtDUAtkU2NmU
-         ks5TzoifyTSrgzzU0Q6Sb53hIrn7i0kuBZPWWDRa6l65Bsinobp0YNfNvxvr41eMER
-         MHKStL8GhuJzpOMpnxsTy5QlDj9sqa1a/KbgSH8VSaQs72WPTAGyxHm2o+eJO/3mkJ
-         8H8ZXUYpiLxYz7Vgwp2UdCiTwvkROLZw1XrejBizpVjSc6KxSKQ6RuDBVZWVFVmevL
-         DNZcQj4Jps0u0cc4E9WP7fZe0pA8KQMx8MCY8F8k4R0E3PBpJ1K+WHIyBhcNn+h39U
-         VqsdRdu0XVbD0eRvGRG/WB7v3GLkAkYsgIKnmSX3pvPPBtMIlMp3Fr0Lv8RO/Csv+0
-         vjR9ftMwi5lHmlH5CbtV8gpmMgx3qnKGFQJ5fXUwKraef1yKsourdr5T7ZBHtySydJ
-         54sKXze/yrrfurrD0CORuS54=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0D58640E01FF;
-        Wed,  2 Aug 2023 13:59:01 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 15:58:56 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Tao Liu <ltao@redhat.com>, Michael Roth <michael.roth@amd.com>,
-        tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, ardb@kernel.org,
-        linux-kernel@vger.kernel.org, bhe@redhat.com, dyoung@redhat.com,
-        kexec@lists.infradead.org, linux-efi@vger.kernel.org
-Subject: Re: [PATCH v2] x86/kexec: Add EFI config table identity mapping for
- kexec kernel
-Message-ID: <20230802135856.GBZMphIHHLa3dXRRVe@fat_crate.local>
-References: <20230601072043.24439-1-ltao@redhat.com>
- <20230713100459.GEZK/MS69XbphJa+tN@fat_crate.local>
- <CAO7dBbVMNKTSDi5eP4BseEUexsk0Mo0GWJpyHfOcp+tHs6cSUw@mail.gmail.com>
- <20230717141409.GGZLVMsU6d/9mpJvMO@fat_crate.local>
- <CAO7dBbXJv9JzDbSa-DLT03+osYCQXNUXFwz63gbq=NGDxEVyEA@mail.gmail.com>
- <20230728165535.GDZMPzB/ek5QM+xJqA@fat_crate.local>
- <CAO7dBbVyuLHH6RfdVQkU5ThXaJ-F4yvFAYD1PDNGkOpph9xvnA@mail.gmail.com>
- <20230802093927.GAZMokT57anC5jBISK@fat_crate.local>
- <99cb3813-1737-9d10-1f24-77565e460c55@amd.com>
+        Wed, 2 Aug 2023 10:00:21 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E662114
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:00:20 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-54290603887so4282621a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690984820; x=1691589620;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BWu78CyIRi+I6jQezlGgcdcqqfSvnjtnlx/cnoDJEBU=;
+        b=j7PtBattAMJcVlTIZSik7K9WyHYO7kBuUDSifXrXNIl1oasWxi6zpqyS/cROQk/zBS
+         LOGhG3okFPZ3G6ADgxVmhBlcmRhDspHD3r0yc0+fQVotKwt5JtfIpgqoPfXalqF6UAWW
+         ABye3gjY5WHF8hadsYrLqhRuRpcp73c7WH5kf3FLc0kYSzgKV9BwwGiDFgJOZlJF9V7d
+         xwroWfJ2sZ/MKtWoCC5zfKqzhtQbZN0wZB2vCMy6464f6bltj0DRik90daatGBp8+1Uw
+         sJhQfTg/VLdPHWf1pxxWqpd1BOZ+OdK9NyAojdopWTg11rKXszrUHruvsSb3gDsL8vqC
+         yFWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690984820; x=1691589620;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BWu78CyIRi+I6jQezlGgcdcqqfSvnjtnlx/cnoDJEBU=;
+        b=MKi+N0acLdw/lh6Kp0EsZrRMoKuOD2S4kCX94fxxNxiWnaknpJmH4+UsCsu7zsRTVX
+         NGIoDkHsrT61RaexDTeRLJ/cBhDvYMIRWTH6Q2SQ/RvlXsCtQGj5XHbMBo0ttJbQt/y5
+         7b7WtR9Yyw0WnEdbSOln+3Giyn4TmxsNOpyDpDnvFeqeKVVBAEsWgkqKQGmyoqewFJv4
+         JaNai6M8d3Zem3ebj7UgGmTdKCUa8CAlbYCgR66RimD/4nov7kwvAKtaA4wIZJaCMXWv
+         nYObwNP2ceyINwESpDHTRmYO1yxPKnZD1rSuCnK40K4hj5XWpDzPDaa/Ln0O8eUM/RbR
+         I92g==
+X-Gm-Message-State: ABy/qLbxYaI0gnQKC46lZW62AfgAE252Jf87MDxbE8oLhd4GX9F8J1fr
+        5AjmG+/FORdHJGFKkILg+A2I5gEAcl557zBg/p0=
+X-Google-Smtp-Source: APBJJlHUKfSAmMcU2lFHRnZSGmVlhtExiiwqgWpyM62zbZmr417EEDIY9Yc4e4TrhkdgjuVzUau9R49zbDeynuf52RY=
+X-Received: by 2002:a17:90a:a58d:b0:263:f7ce:335e with SMTP id
+ b13-20020a17090aa58d00b00263f7ce335emr13576114pjq.43.1690984819995; Wed, 02
+ Aug 2023 07:00:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <99cb3813-1737-9d10-1f24-77565e460c55@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6a10:c592:b0:4d9:93ea:8cf4 with HTTP; Wed, 2 Aug 2023
+ 07:00:19 -0700 (PDT)
+Reply-To: p8731577@gmail.com
+From:   "Mr. Philip  Edward" <kj4487936@gmail.com>
+Date:   Wed, 2 Aug 2023 07:00:19 -0700
+Message-ID: <CADaUBnrvC_wS23xP0S0br+Yw83-z08ZciJ0LvVB_0S2eMcPQgw@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 08:40:36AM -0500, Tom Lendacky wrote:
-> Short of figuring out how to map page accesses earlier through the
-> boot_page_fault IDT routine
+Greetings Friend
 
-And you want to do that because?
+I am Mr. Philip  Edward, I am 53 years, from USA Please forgive me for
+stressing you with my predicaments and am sorry to approach you
+through this media  because it serves the
+fastest means of communication
 
--- 
-Regards/Gruss,
-    Boris.
+I came across your E-mail from my personal search and I decided to
+contact you believing you will be honest to handle this transfer
+proposal
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Please let me know immediately if you can handle this transfer. I will
+appreciate your utmost confidentiality as I wait for your reply for
+more details.
+
+Best Regards
+
+Philip  Edward
