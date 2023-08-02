@@ -2,130 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A51376D16C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E448C76D1A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235064AbjHBPPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37514 "EHLO
+        id S235122AbjHBPRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:17:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234331AbjHBPOU (ORCPT
+        with ESMTP id S235143AbjHBPPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:14:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5970530C6;
-        Wed,  2 Aug 2023 08:14:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=nv6mG4/l7H3PNgCsHrZF/ygxFjAa7ZRftAbjaaMLtfU=; b=qzVcnmGnCsgZ+JOYQS6BahTO8Y
-        4fDBiRQz18mhL7VWDmt+dEhAq3Sa5V5SKNqJlpEUHzHABS6JtgC5YuZl2PoExrpyD8AaocAYrVL0F
-        kZOD8nQ41FvXgl/QA/ZuvG8dBS9zKlb18eK+B21iVqCHpxywaoE23ictHd/iNF3rIOD2HGkDTJIvx
-        kfl4cXXMk7Ue0xHMPdyStav5FoVJ0PeXiJjv0ATED/kYh0KKVQOz6g64xjsWqMVN5kNRgcOMcklQ1
-        D/q8Qnz61oyymYEfIzTuQ6/SOMDCbqbF4Eo9VoW5m98bWEzT4szSXsV1wTLL2S1QdgPKFh0BO1pgB
-        5MH2+1ZA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qRDYC-00FfmP-GT; Wed, 02 Aug 2023 15:14:12 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 38/38] mm: Call update_mmu_cache_range() in more page fault handling paths
-Date:   Wed,  2 Aug 2023 16:14:06 +0100
-Message-Id: <20230802151406.3735276-39-willy@infradead.org>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20230802151406.3735276-1-willy@infradead.org>
-References: <20230802151406.3735276-1-willy@infradead.org>
+        Wed, 2 Aug 2023 11:15:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CD03592;
+        Wed,  2 Aug 2023 08:14:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C83E3619F7;
+        Wed,  2 Aug 2023 15:14:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C0CFC433C8;
+        Wed,  2 Aug 2023 15:14:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690989276;
+        bh=XfSU6iM72jxAI3h3l7DrR7eqMZzluEovcVBf1mWYoeM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RBg2obuZ4zyzAqv0xXhX6SHfCoTfRT9iHmGPDp3Y1QBc/FgGrwLxrKqLmrYVOztwY
+         vviEaSDD/zwdzOLSyoz5Osulj6tE/YmNSHKoM4YwLQBAbPkbrQg5qAKtmn5wsY4Phn
+         vbd0JlC7MNpdi0H5+nVThF4G3+rXM1Zehr6t6aBHW8VBc+zIcFiSBtblNjwOuCkUzK
+         LT8n9TOcjqbLTrfQXmPABTMCuYlQxEmFOz/DPmaYFoM+jAPXNtaoSw1g+YoOwfEKSJ
+         l6rKmST+GFA+hFgcsNElzM3fntwGGRzavJkx/KHMZjCv034vcligcS8ucqiwdn4O+l
+         W+tD8kuS5/U4g==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-4fe3678010eso5793049e87.3;
+        Wed, 02 Aug 2023 08:14:36 -0700 (PDT)
+X-Gm-Message-State: ABy/qLZBTrOY0IR/YzyLX2KM+FY+i3S6ENEv9OeJ95MAdCptvOiHpJ1F
+        ONCoswUhAlrkq/oWZ+lr9AOVCitK5jfB3Cm7Gfk=
+X-Google-Smtp-Source: APBJJlGyAjPZ3t4Djl2bd3Puem+X0BE7aF/aMcDnxKjt0sv49xBRYEWDNMFiRsXoi2MX8r9wXhR2Q/5MrOb/T/QBktg=
+X-Received: by 2002:a19:e052:0:b0:4fb:8987:734e with SMTP id
+ g18-20020a19e052000000b004fb8987734emr4902135lfj.68.1690989274245; Wed, 02
+ Aug 2023 08:14:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230802133704.2146580-1-ardb@kernel.org> <20230802142523.t5o36uy3z366jh27@box.shutemov.name>
+In-Reply-To: <20230802142523.t5o36uy3z366jh27@box.shutemov.name>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 2 Aug 2023 17:14:23 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEkbHjmkZuDD3NMi5r-D_kyi5LOSnpbYFTv=NjKHjahbw@mail.gmail.com>
+Message-ID: <CAMj1kXEkbHjmkZuDD3NMi5r-D_kyi5LOSnpbYFTv=NjKHjahbw@mail.gmail.com>
+Subject: Re: [PATCH] efi/x86: Ensure that EFI_RUNTIME_MAP is enabled for kexec
+To:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass the vm_fault to the architecture to help it make smarter decisions
-about which PTEs to insert into the TLB.
+On Wed, 2 Aug 2023 at 16:26, Kirill A . Shutemov
+<kirill.shutemov@linux.intel.com> wrote:
+>
+> On Wed, Aug 02, 2023 at 03:37:04PM +0200, Ard Biesheuvel wrote:
+> > CONFIG_EFI_RUNTIME_MAP needs to be enabled in order for kexec to be able
+> > to provide the required information about the EFI runtime mappings to
+> > the incoming kernel, regardless of whether kexec_load() or
+> > kexec_file_load() is being used. Without this information, kexec boot in
+> > EFI mode is not possible.
+> >
+> > The CONFIG_EFI_RUNTIME_MAP option is currently directly configurable if
+> > CONFIG_EXPERT is enabled, so that it can be turned on for debugging
+> > purposes even if KEXEC is. However, the upshot of this is that it can
+> > also be disabled even when it shouldn't.
+> >
+> > So tweak the Kconfig declarations to avoid this situation.
+> >
+> > Reported-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+>
+> With the patch 'make oldconfig' updates config to enable
+> EFI_NEED_RUNTIME_MAP.
+>
+> Tested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>
+> Thanks.
+> > ---
+> >  arch/x86/Kconfig | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 7422db4097701c96..616498cdc91e8f01 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -2027,10 +2027,14 @@ config EFI_MAX_FAKE_MEM
+> >         Ranges can be set up to this value using comma-separated list.
+> >         The default value is 8.
+> >
+> > +config EFI_NEED_RUNTIME_MAP
+> > +     def_bool y
+> > +     depends on EFI && KEXEC_CORE
+> > +     select EFI_RUNTIME_MAP
+> > +
+>
+> Just curious, why not extend 'config EFI' with 'select EFI_RUNTIME_MAP if KEXEC_CORE'?
+> It seems functionally equivalent, but more concise.
+>
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/memory.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+Yeah, agreed - I didn't realize every arch has its own 'config EFI' definition.
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 621716109627..236c46e85dc2 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2997,7 +2997,7 @@ static inline int __wp_page_copy_user(struct page *dst, struct page *src,
- 
- 		entry = pte_mkyoung(vmf->orig_pte);
- 		if (ptep_set_access_flags(vma, addr, vmf->pte, entry, 0))
--			update_mmu_cache(vma, addr, vmf->pte);
-+			update_mmu_cache_range(vmf, vma, addr, vmf->pte, 1);
- 	}
- 
- 	/*
-@@ -3174,7 +3174,7 @@ static inline void wp_page_reuse(struct vm_fault *vmf)
- 	entry = pte_mkyoung(vmf->orig_pte);
- 	entry = maybe_mkwrite(pte_mkdirty(entry), vma);
- 	if (ptep_set_access_flags(vma, vmf->address, vmf->pte, entry, 1))
--		update_mmu_cache(vma, vmf->address, vmf->pte);
-+		update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
- 	count_vm_event(PGREUSE);
- }
-@@ -3298,7 +3298,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		 */
- 		BUG_ON(unshare && pte_write(entry));
- 		set_pte_at_notify(mm, vmf->address, vmf->pte, entry);
--		update_mmu_cache(vma, vmf->address, vmf->pte);
-+		update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
- 		if (old_folio) {
- 			/*
- 			 * Only after switching the pte to the new page may
-@@ -4181,7 +4181,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 	}
- 
- 	/* No need to invalidate - it was non-present before */
--	update_mmu_cache(vma, vmf->address, vmf->pte);
-+	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
- unlock:
- 	if (vmf->pte)
- 		pte_unmap_unlock(vmf->pte, vmf->ptl);
-@@ -4305,7 +4305,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
- 	set_pte_at(vma->vm_mm, vmf->address, vmf->pte, entry);
- 
- 	/* No need to invalidate - it was non-present before */
--	update_mmu_cache(vma, vmf->address, vmf->pte);
-+	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
- unlock:
- 	if (vmf->pte)
- 		pte_unmap_unlock(vmf->pte, vmf->ptl);
-@@ -4994,7 +4994,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 	if (writable)
- 		pte = pte_mkwrite(pte);
- 	ptep_modify_prot_commit(vma, vmf->address, vmf->pte, old_pte, pte);
--	update_mmu_cache(vma, vmf->address, vmf->pte);
-+	update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
- 	pte_unmap_unlock(vmf->pte, vmf->ptl);
- 	goto out;
- }
-@@ -5165,7 +5165,8 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
- 	entry = pte_mkyoung(entry);
- 	if (ptep_set_access_flags(vmf->vma, vmf->address, vmf->pte, entry,
- 				vmf->flags & FAULT_FLAG_WRITE)) {
--		update_mmu_cache(vmf->vma, vmf->address, vmf->pte);
-+		update_mmu_cache_range(vmf, vmf->vma, vmf->address,
-+				vmf->pte, 1);
- 	} else {
- 		/* Skip spurious TLB flush for retried page fault */
- 		if (vmf->flags & FAULT_FLAG_TRIED)
--- 
-2.40.1
-
+> >  config EFI_RUNTIME_MAP
+> >       bool "Export EFI runtime maps to sysfs" if EXPERT
+> >       depends on EFI
+> > -     default KEXEC_CORE
+> >       help
+> >         Export EFI runtime memory regions to /sys/firmware/efi/runtime-map.
+> >         That memory map is required by the 2nd kernel to set up EFI virtual
+> > --
+> > 2.39.2
+> >
+>
+> --
+>   Kiryl Shutsemau / Kirill A. Shutemov
