@@ -2,119 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 913BE76CAE1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C34776CAE5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbjHBKca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:32:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
+        id S231267AbjHBKdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232870AbjHBKcL (ORCPT
+        with ESMTP id S232449AbjHBKc4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:32:11 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D7B526E;
-        Wed,  2 Aug 2023 03:27:47 -0700 (PDT)
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 83EEE1EC0136;
-        Wed,  2 Aug 2023 12:26:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1690971987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=E5SRgg90inBEHJEYH3h/WS+6AGYSjZhAFoNjFVUNv6w=;
-        b=hzBqcOno0YKB8w61ox0jTvyJ/PcjeW/EFpvzrOk2DwYRf1zXhQottn30NO2AGxW0lnkNcv
-        GS/vcCAaaoKHZ+CDNZ+1+zC6ot3XSkkqpjI5IZIseo1gps2dBh2x3CV+aS6Pk0ycqUlnI/
-        iG6WBdBKrMG5d7J4GW2Kq71d1Y2BOL4=
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id eFHyyk35vKiQ; Wed,  2 Aug 2023 10:26:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1690971984; bh=E5SRgg90inBEHJEYH3h/WS+6AGYSjZhAFoNjFVUNv6w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y1WIpX4xiDHoRO8dgoqMTctvLS0hqFszF5bom0mw1qdnVPYgoFRRe9Tih2i3RsT2Y
-         H+zR8T49rcmkdRROdGOGep62KhdxCby4vKbs1gMHqd1WkYnIuQsZFfy1ITkgCXCCaI
-         Ntb7Fze9hlgU0Y+dBL7CO//P8QJsqz1aFTTsPvxwN5rs9grjPBdlgr8scRT37S3x67
-         sPB0raYbFBzhxt3Ag687ss8Fu/Jr+qBvr6OZXpB3rmU/G0ISNjkm1DTa9z8t6Qfv1b
-         NDFV5bmutb4jpwkiU3cEkhhyXQ+I1GjEgjboe6Z9C1d+OcqbZVA+jCUgVzefbjEgbc
-         HxLF9otvRyc1Yk+Vzu/OttYxJXwTRuNcI5k3GsxsR11+7gJBGD8TiWgNytTOU2IXdW
-         xEkDPiZ9/B+WAAV6hJQ9yZntXq6LgJSs7T0BB4lQXtGneSKDuDkNwlLp7TUVAoTbG0
-         naylcIcbteHB61rqRE4BTTmzZRF7g9C01znxwcBdRCowuh7SCoNVRb0uLhSjdh/bS6
-         GOaPGC6rtwqfInTFZRMdVrlvYMHAvLQprH2w774d1G/WhFAahVESf4w1XjA7i1+wU6
-         Gj+gMNdc9TlprMFKXbqXiSTj5diZwPeS6JatBO5QVGzUnxROu8XWUb7+xoHj4N9UhP
-         MKWV4r+yWcHJGmoDB8goJES4=
-Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8FEDC40E01D3;
-        Wed,  2 Aug 2023 10:26:05 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 12:26:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Evgeniy Baskov <baskov@ispras.ru>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>,
-        Peter Jones <pjones@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Dave Young <dyoung@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Kees Cook <keescook@chromium.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH v7 22/22] x86/efistub: Avoid legacy decompressor when
- doing EFI boot
-Message-ID: <20230802102600.GIZMovOIUDAJAXu0F5@fat_crate.local>
-References: <20230728090916.1538550-1-ardb@kernel.org>
- <20230728090916.1538550-23-ardb@kernel.org>
+        Wed, 2 Aug 2023 06:32:56 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 043AF59F1;
+        Wed,  2 Aug 2023 03:28:27 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47B39113E;
+        Wed,  2 Aug 2023 03:28:12 -0700 (PDT)
+Received: from [10.57.77.90] (unknown [10.57.77.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 64DCE3F6C4;
+        Wed,  2 Aug 2023 03:27:26 -0700 (PDT)
+Message-ID: <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com>
+Date:   Wed, 2 Aug 2023 11:27:24 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230728090916.1538550-23-ardb@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
+To:     Yin Fengwei <fengwei.yin@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        akpm@linux-foundation.org, willy@infradead.org,
+        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
+        minchan@kernel.org, yuzhao@google.com, david@redhat.com,
+        shy828301@gmail.com
+References: <20230728161356.1784568-1-fengwei.yin@intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20230728161356.1784568-1-fengwei.yin@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 11:09:16AM +0200, Ard Biesheuvel wrote:
-> The bare metal decompressor code was never really intended to run in a
-> hosted environment such as the EFI boot services, and does a few things
-> that are problematic in the context of EFI boot now that the logo
-> requirements are getting tighter.
+On 28/07/2023 17:13, Yin Fengwei wrote:
+> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
+> folio_mapcount() is used to check whether the folio is shared. But it's
+> not correct as folio_mapcount() returns total mapcount of large folio.
+> 
+> Use folio_estimated_sharers() here as the estimated number is enough.
+> 
+> Yin Fengwei (2):
+>   madvise: don't use mapcount() against large folio for sharing check
+>   madvise: don't use mapcount() against large folio for sharing check
+> 
+>  mm/huge_memory.c | 2 +-
+>  mm/madvise.c     | 6 +++---
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
 
-Please spend a sentence or two explaining those. After some time has
-passed, no one will remember what that tightening of the requirements
-was.
+As a set of fixes, I agree this is definitely an improvement, so:
 
-So yeah, other than those minor nitpicks, I like the thing, all in all.
+Reviewed-By: Ryan Roberts
 
-Pls send v8 so that I can run it here on my machines. A git branch would
-be cool too.
 
-As to merging this, I presume you want it to go through tip?
+But I have a couple of comments around further improvements;
 
-Thx.
+Once we have the scheme that David is working on to be able to provide precise
+exclusive vs shared info, we will probably want to move to that. Although that
+scheme will need access to the mm_struct of a process known to be mapping the
+folio. We have that info, but its not passed to folio_estimated_sharers() so we
+can't just reimplement folio_estimated_sharers() - we will need to rework these
+call sites again.
 
--- 
-Regards/Gruss,
-    Boris.
+Given the aspiration for most of the memory to be large folios going forwards,
+wouldn't it be better to avoid splitting the large folio where the large folio
+is mapped entirely within the range of the madvise operation? Sorry if this has
+already been discussed and decided against - I didn't follow the RFC too
+closely. Or perhaps you plan to do this as a follow up?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Ryan
+
