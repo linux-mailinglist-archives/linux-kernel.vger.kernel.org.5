@@ -2,117 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1936176D1B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AA376D1AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235057AbjHBPV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        id S235187AbjHBPTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbjHBPVj (ORCPT
+        with ESMTP id S235098AbjHBPTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:21:39 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 097293AA4;
-        Wed,  2 Aug 2023 08:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690989507; x=1722525507;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=c4x99QoiLN8BrAgqpLS2SVCvTXSrSU7F9mL186k74oA=;
-  b=P8DCLwgoaZPAfMzrDWchcl1kRaALgb9aUPdmeL/jCD3C6NYT4WpSXMZM
-   UKe6DLP452VUxpb8b0HfuvvOLiqZJnXV7ST8tKREI8X10tHSuvU3yTfjy
-   M5xYEO0jw5wpdU+YQzbrcHnKsesc+pAW8cNj9UPZyN7pHI4TcmG8tprwt
-   SV2YgrWH7ZL057gzqrWLjU5EgBWUxg24xhevDXZ8qck4KAsoCwFeqLfPz
-   b21C97DiILd7PH2X6LGJy3lssbqwhMvfixVhpRiS155HFC59TrvrcV2pi
-   htEjMoEJCdcO5kjkB4Gs7Ha5r9fYLK+VxHnDqGAvD5iFMVYSA4U9+YqVt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="433452764"
-X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
-   d="scan'208";a="433452764"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 08:14:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="706210933"
-X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
-   d="scan'208";a="706210933"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP; 02 Aug 2023 08:14:53 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qRDYp-0045bG-1l;
-        Wed, 02 Aug 2023 18:14:51 +0300
-Date:   Wed, 2 Aug 2023 18:14:51 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] of: Refactor node and property manipulation function
- locking
-Message-ID: <ZMpy6x+GBKKIv1VP@smile.fi.intel.com>
-References: <20230801-dt-changeset-fixes-v1-0-b5203e3fc22f@kernel.org>
- <20230801-dt-changeset-fixes-v1-5-b5203e3fc22f@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801-dt-changeset-fixes-v1-5-b5203e3fc22f@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 2 Aug 2023 11:19:24 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772014498
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:15:13 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-56942667393so83601887b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:15:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690989299; x=1691594099;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D3LyAPm1LNXozV2RDmYRg8+vON4aRYGJGm2Cl/7lnow=;
+        b=XxAyvJEO7IvzK8IYMYZ+WS/J+sA7iCGeO/qEfRRUawL+imOo+d6hkk9tUh5jHbyo4S
+         vQGbWg2rHOmo3vI3I8eZsYP1MfuQXLf9tXkE98BN2ljOVo+WO9GF4PRR4fZ1Io64i9rt
+         AquHoHU8QjHE3a7+B2EG89Fo8JyzzEgz6ts5yrVgkIAGsaNjBLvqGGKD7sZGTktwjbSp
+         PptLKLD7gPBiCT4/8eD89DjQsFM0/odFsivt5nb+kBZwwUbLru7oJo12lu5FUG9wopW7
+         KEZDagprbTjCdGzJLcNvieS7/L2XPpLKz8lMisUkuvGdDJn1gDVJWecEDcY1025O5keW
+         oHyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690989299; x=1691594099;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D3LyAPm1LNXozV2RDmYRg8+vON4aRYGJGm2Cl/7lnow=;
+        b=ITqovL1wpZjcQv5miyYqDRfvRMn6649ZYmTZm3EG2+M8Fi4njSX1RmXP0wnHFZCUW4
+         3qraMZHUoP9vH0PK2qpV+KSUvCL7yjgEYtOwlAgnaL4KyC/8go9z81y8PmL6vVCwFmdE
+         d2FRu2r6S9RexVAopQoAgej3kmy8hyhPpS5xelJoP0ld5sxbQtr3WvLxWfsbtUtPDIi6
+         4ivMVgNULaP/ZjDEB5Xk+hR83kKnOfwJjio6lqFWEGty3/MVM3PTm697GJ3rSPNWq17I
+         jwndjNjteV8e4S21dvg1nj7Z0f2knRtm/qvEDtSMIsAZ/Gpb2j2on3s51DjQyFgrFi49
+         Coew==
+X-Gm-Message-State: ABy/qLZR5zctsEOVjSSOxIXn6vnwra5zG+2w2NGay89KBJxFBH5zACVs
+        9mMuFqU+xJ55fZrO1YKedONOz9rxQww=
+X-Google-Smtp-Source: APBJJlFe2+t6w0L/91zFwfj+ThLLNQdAgY8DrVCuc0sOklYI7DhI1WhyrzKFNJT/kn6NkoRoeM0hhJO8ghs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:ac58:0:b0:584:3d8f:a423 with SMTP id
+ z24-20020a81ac58000000b005843d8fa423mr143956ywj.8.1690989299390; Wed, 02 Aug
+ 2023 08:14:59 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 08:14:58 -0700
+In-Reply-To: <20230802142737.5572-1-wei.w.wang@intel.com>
+Mime-Version: 1.0
+References: <20230802142737.5572-1-wei.w.wang@intel.com>
+Message-ID: <ZMpy8qvKTtAqaDWM@google.com>
+Subject: Re: [PATCH v1] KVM: x86/mmu: refactor kvm_tdp_mmu_map
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wei Wang <wei.w.wang@intel.com>
+Cc:     pbonzini@redhat.com, bgardon@google.com, dmatlack@google.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 03:54:48PM -0600, Rob Herring wrote:
-> All callers of __of_{add,remove,update}_property() and
-> __of_{attach,detach}_node() wrap the call with the devtree_lock
-> spinlock. Let's move the spinlock into the functions. This allows moving
-> the sysfs update functions into those functions as well.
+On Wed, Aug 02, 2023, Wei Wang wrote:
+> The implementation of kvm_tdp_mmu_map is a bit long. It essentially does
+> three things:
+> 1) adjust the leaf entry level (e.g. 4KB, 2MB or 1GB) to map according to
+>    the hugepage configurations;
+> 2) map the nonleaf entries of the tdp page table; and
+> 3) map the target leaf entry.
+> 
+> Improve the readabiliy by moving the implementation of 2) above into a
+> subfunction, kvm_tdp_mmu_map_nonleaf, and removing the unnecessary
+> "goto"s. No functional changes intended.
 
-...
+Eh, I prefer the current code from a readability perspective.  I like being able
+to see the entire flow, and I especially like that this
 
-> +out:
+		if (iter.level == fault->goal_level)
+			goto map_target_level;
 
-out_unlock: ?
+very clearly and explicitly captures that reaching the goal leavel means that it's
+time to map the target level, whereas IMO this does not, in no small part because
+seeing "continue" in a loop makes me think "continue the loop", not "continue on
+to the next part of the page fault"
 
-> +	raw_spin_unlock_irqrestore(&devtree_lock, flags);
-> +	if (!rc)
-> +		__of_add_property_sysfs(np, prop);
+		if (iter->level == fault->goal_level)
+			return RET_PF_CONTINUE;
+
+And the existing code follows the patter of the other page fault paths, direct_map()
+and FNAME(fetch).  That doesn't necessarily mean that the existing pattern is
+"better", but I personally place a lot of value on consistency.
+
+> +/*
+> + * Handle a TDP page fault (NPT/EPT violation/misconfiguration) by installing
+> + * page tables and SPTEs to translate the faulting guest physical address.
+> + */
+> +int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+> +{
+> +	struct tdp_iter iter;
+> +	int ret;
 > +
-> +	return rc;
+> +	kvm_mmu_hugepage_adjust(vcpu, fault);
+> +
+> +	trace_kvm_mmu_spte_requested(fault);
+> +
+> +	rcu_read_lock();
+> +
+> +	ret = kvm_tdp_mmu_map_nonleafs(vcpu, fault, &iter);
+> +	if (ret == RET_PF_CONTINUE)
+> +		ret = tdp_mmu_map_handle_target_level(vcpu, fault, &iter);
 
-Why not
+And I also don't like passing in an uninitialized tdp_iter, and then consuming
+it too.
 
-	if (rc)
-		return rc;
-
-	__of_add_property_sysfs(np, prop);
-	return 0;
-
-?
-
-...
-
-> +out:
-> +	raw_spin_unlock_irqrestore(&devtree_lock, flags);
-> +	if (!rc)
-> +		__of_remove_property_sysfs(np, prop);
-> +	return rc;
-
-As per above.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>  
+> -retry:
+>  	rcu_read_unlock();
+>  	return ret;
+>  }
+> -- 
+> 2.27.0
+> 
