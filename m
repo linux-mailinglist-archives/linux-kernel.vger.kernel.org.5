@@ -2,80 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7215976CFA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75C876CFB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234756AbjHBOIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49516 "EHLO
+        id S234176AbjHBOJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234982AbjHBOII (ORCPT
+        with ESMTP id S234847AbjHBOIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:08:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715B9359C;
-        Wed,  2 Aug 2023 07:07:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 80307619BA;
-        Wed,  2 Aug 2023 14:07:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3DA2C433C9;
-        Wed,  2 Aug 2023 14:07:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690985264;
-        bh=bJNValHUjzspsGmERMVn8LUzA2cKwOnf4DUJY1j/1pQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bDfKnaHt6TLKDIdJzeXIdoYUzA1Y9aEHuYTtsjNqmDcueBDleqo9LzmIqenZP41As
-         ESe1I5Outu5972eAywedMd0nX/Ut3onQEahHL7SIXffjYjWwIp5MmeDoR4F7eirofW
-         o5y5H329SMBec4sTvZ77TD9PJ/kK39Gf6LJ+Kb1lsTc1euM65Pe8O7cphvu2D11mJp
-         txoXyXBMjZrianJSkzdmxfO+kOd44W6ATTTTDUUr5MWFbGdp+AJxjL2t0lnLqzathT
-         sKyPuu9hf+ED/nJiPlcoZ+F+uh8jDm+bxcrDogP/CtJfUav2ZEPmxieevybBNFtmWI
-         es49ti3hgnRgg==
-Date:   Wed, 2 Aug 2023 23:07:38 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-Id: <20230802230738.2b22cef561feb5d498f22f49@kernel.org>
-In-Reply-To: <CAADnVQLkVatr5BTScpuKaKAO+Cp=0KVxhqXwsjZoGhJPu3G4jA@mail.gmail.com>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-        <169078863449.173706.2322042687021909241.stgit@devnote2>
-        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-        <20230802000228.158f1bd605e497351611739e@kernel.org>
-        <20230801112036.0d4ee60d@gandalf.local.home>
-        <20230801113240.4e625020@gandalf.local.home>
-        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
-        <20230801190920.7a1abfd5@gandalf.local.home>
-        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-        <20230801204054.3884688e@rorschach.local.home>
-        <20230801204407.7b284b00@rorschach.local.home>
-        <CAADnVQLkVatr5BTScpuKaKAO+Cp=0KVxhqXwsjZoGhJPu3G4jA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        Wed, 2 Aug 2023 10:08:47 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2500E273C
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:08:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7015113E;
+        Wed,  2 Aug 2023 07:09:01 -0700 (PDT)
+Received: from [10.57.77.90] (unknown [10.57.77.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07F303F5A1;
+        Wed,  2 Aug 2023 07:08:16 -0700 (PDT)
+Message-ID: <8dcf002a-088e-32de-7868-5dc5ca6b1206@arm.com>
+Date:   Wed, 2 Aug 2023 15:08:15 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] mm: add functions folio_in_range() and
+ folio_within_vma()
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        yuzhao@google.com, willy@infradead.org, david@redhat.com,
+        shy828301@gmail.com, hughd@google.com
+References: <20230728070929.2487065-1-fengwei.yin@intel.com>
+ <20230728070929.2487065-2-fengwei.yin@intel.com>
+ <55c9e3f7-099d-6f57-32da-1f318a9688a0@arm.com>
+ <eb50a427-3738-c1bb-b8cd-8636902deffb@intel.com>
+ <65a36b41-d69e-4072-cfd2-253ed6e4e040@arm.com>
+ <286cbca6-ab5e-ad06-ea2a-89ea08ee53d4@intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <286cbca6-ab5e-ad06-ea2a-89ea08ee53d4@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,47 +51,173 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 19:22:01 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
-
-> On Tue, Aug 1, 2023 at 5:44 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Tue, 1 Aug 2023 20:40:54 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > > Maybe we can add a ftrace_partial_regs(fregs) that returns a
-> > > partially filled pt_regs, and the caller that uses this obviously knows
-> > > its partial (as it's in the name). But this doesn't quite help out arm64
-> > > because unlike x86, struct ftrace_regs does not contain an address
-> > > compatibility with pt_regs fields. It would need to do a copy.
-> > >
-> > >  ftrace_partial_regs(fregs, &regs) ?
-> >
-> > Well, both would be pointers so you wouldn't need the "&", but it was
-> > to stress that it would be copying one to the other.
-> >
-> >   void ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs regs);
+On 02/08/2023 14:46, Yin, Fengwei wrote:
 > 
-> Copy works, but why did you pick a different layout?
+> 
+> On 8/2/2023 9:09 PM, Ryan Roberts wrote:
+>> On 02/08/2023 13:50, Yin, Fengwei wrote:
+>>>
+>>>
+>>> On 8/2/2023 7:14 PM, Ryan Roberts wrote:
+>>>> On 28/07/2023 08:09, Yin Fengwei wrote:
+>>>>> It will be used to check whether the folio is mapped to specific
+>>>>> VMA and whether the mapping address of folio is in the range.
+>>>>>
+>>>>> Also a helper function folio_within_vma() to check whether folio
+>>>>> is in the range of vma based on folio_in_range().
+>>>>>
+>>>>> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+>>>>> ---
+>>>>>  mm/internal.h | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>>>>>  1 file changed, 69 insertions(+)
+>>>>>
+>>>>> diff --git a/mm/internal.h b/mm/internal.h
+>>>>> index 5a03bc4782a2..63de32154a48 100644
+>>>>> --- a/mm/internal.h
+>>>>> +++ b/mm/internal.h
+>>>>> @@ -585,6 +585,75 @@ extern long faultin_vma_page_range(struct vm_area_struct *vma,
+>>>>>  				   bool write, int *locked);
+>>>>>  extern bool mlock_future_ok(struct mm_struct *mm, unsigned long flags,
+>>>>>  			       unsigned long bytes);
+>>>>> +
+>>>>> +/*
+>>>>> + * Check whether the folio is in specific range
+>>>>> + *
+>>>>> + * First, check whether the folio is in the range of vma.
+>>>>> + * Then, check whether the folio is mapped to the range of [start, end].
+>>>>> + * In the end, check whether the folio is fully mapped to the range.
+>>>>> + *
+>>>>> + * @pte page table pointer will be checked whether the large folio
+>>>>> + *      is fully mapped to. Currently, if mremap in the middle of
+>>>>> + *      large folio, the large folio could be mapped to to different
+>>>>> + *      VMA and address check can't identify this situation.
+>>>>> + */
+>>>>> +static inline bool
+>>>>> +folio_in_range(struct folio *folio, struct vm_area_struct *vma,
+>>>>> +		unsigned long start, unsigned long end, pte_t *pte)
+>>>>
+>>>> This api seems a bit redundant to me. Wouldn't it be better to remove the vma
+>>>> parameter and instead fix up the start/end addresses in folio_within_vma()?
+>>> My understanding is it's necessary. As for madvise, we need to check whether
+>>> the folio is both in the range of VMA and also in the range of [start, end).
+>>
+>> But in folio_within_vma() you pass start as vma->vm_start and end as
+>> vma->vm_end. And in this function, you narrow start/end to be completely
+>> contained in vma. So surely there is only really one start/end you are
+>> interested in? Just seems a bit odd to me.
+> madvise() will call filio_in_range() with VMA and real range [start, end) passed
+> from user space.
+> 
+>>
+>>>
+>>>>
+>>>>> +{
+>>>>> +	pte_t ptent;
+>>>>> +	unsigned long i, nr = folio_nr_pages(folio);
+>>>>> +	pgoff_t pgoff, addr;
+>>>>> +	unsigned long vma_pglen = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+>>>>> +
+>>>>> +	VM_WARN_ON_FOLIO(folio_test_ksm(folio), folio);
+>>>>> +
+>>>>> +	if (start < vma->vm_start)
+>>>>> +		start = vma->vm_start;
+>>>>> +	if (end > vma->vm_end)
+>>>>> +		end = vma->vm_end;
+>>>>> +
+>>>>> +	pgoff = folio_pgoff(folio);
+>>>>> +	/* if folio start address is not in vma range */
+>>>>> +	if (pgoff < vma->vm_pgoff || pgoff > vma->vm_pgoff + vma_pglen)
+>>>>> +		return false;
+>>>>> +
+>>>>> +	addr = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+>>>>> +	if (addr < start || end - addr < folio_size(folio))
+>>>>> +		return false;
+>>>>> +
+>>>>> +	/* not necessary to check pte for none large folio */
+>>>>> +	if (!folio_test_large(folio))
+>>>>> +		return true;
+>>>>> +
+>>>>> +	if (!pte)
+>>>>> +		return false;
+>>>>> +
+>>>>> +	/* check whether parameter pte is associated with folio */
+>>>>> +	ptent = ptep_get(pte);
+>>>>> +	if (pte_none(ptent) || !pte_present(ptent) ||
+>>>>> +			pte_pfn(ptent) - folio_pfn(folio) >= nr)
+>>>>> +		return false;
+>>>>> +
+>>>>> +	pte -= pte_pfn(ptent) - folio_pfn(folio);
+>>>>> +	for (i = 0; i < nr; i++, pte++) {
+>>>>> +		ptent = ptep_get(pte);
+>>>>> +
+>>>>> +		if (pte_none(ptent) || !pte_present(ptent) ||
+>>>>> +				pte_pfn(ptent) - folio_pfn(folio) >= nr)
+>>>>> +			return false;
+>>>>> +	}
+>>>>
+>>>> I don't think I see anything to ensure you don't wander off the end (or start)
+>>>> of the pgtable? If the folio is mremapped so that it straddles multiple tables
+>>>> (or is bigger than a single table?) then I think pte can become invalid? Perhaps
+>>>> you intended start/end to always be within the same pgtable, but that is not
+>>>> guarranteed in the case that folio_within_vma() is making the call.
+>>> If pte is invalid for any reason (pass wrong parameter, not fully mapped etc), this
+>>> function just return false in page table entry check phase.
+>>
+>> Sorry I don't think this covers the issue I'm describing. If you have a
+>> pte-mapped THP that gets mremapped to straddle 2 pte tables, don't you have a
+>> problem?
+>>
+>> example for 4K base page set up:
+>>
+>> folio_nr_pages = 512
+>> first page of folio mapped at vaddr = 2M - 4K = 0x1FF000
+>>
+>> If you then call this function with the pte pointer for the second page in the
+>> folio, which is mapped at address 0x200000, that pte is pointing to the first
+>> pte entry in the table pointed to by the second pmd entry. The pte pointer can
+>> be legitimately manipulated to point to any entry within that table,
+>> corrsponding to vaddrs [0x200000, 0x400000). But you will end up subtracting 1
+>> from the pointer, intending that it now points to the pte entry that represents
+>> vaddr 0x1FF000. But actually it has fallen off the front of the table into some
+>> other arbitrary memory in the linear map. 0x1FF000 is represented in a different
+>> table, pointed to by the first pmd entry.
+> Yes. This can be an issue as hold the second page table lock can't prevent the first
+> part unmapped. Let me add another check vaddr align to folio_size in next version. 
 
-I think it is for minimize the stack consumption. pt_regs on arm64 will
-consume 42*u64 = 336 bytes, on the other hand ftrace_regs will use
-14*unsigned long = 112 bytes. And most of the registers in pt_regs are not
-accessed usually. (as you may know RISC processors usually have many
-registers - and x86 will be if we use APX in kernel. So pt_regs is big.)
+Locking is a problem but its not the only problem. The 2 tables are almost
+certainly not contiguous in virtual memory. So once you have moved the pointer
+to before the start of the second table, then you are pointing to arbitrary memory.
 
-> Why not to use pt_regs ? if save of flags is slow, just skip that part
-> and whatever else that is slow. You don't even need to zero out
-> unsaved fields. Just ask the caller to zero out pt_regs before hand.
-> Most users have per-cpu pt_regs that is being reused.
-> So there will be one zero-out in the beginning and every partial
-> save of regs will be fast.
-> Then there won't be any need for copy-converter from ftrace_regs to pt_regs.
-> Maybe too much churn at this point. copy is fine.
+> 
+> Regards
+> Yin, Fengwei
+> 
+>>
+>>
+>>>
+>>>>
+>>>> Also I want to check that this function is definitely always called under the
+>>>> PTL for the table that pte belongs to?
+>>> Yes. I should spell it out. Thanks.
+>>>
+>>>
+>>> Regards
+>>> Yin, Fengwei
+>>>
+>>>>
+>>>>> +
+>>>>> +	return true;
+>>>>> +}
+>>>>> +
+>>>>> +static inline bool
+>>>>> +folio_within_vma(struct folio *folio, struct vm_area_struct *vma, pte_t *pte)
+>>>>> +{
+>>>>> +	return folio_in_range(folio, vma, vma->vm_start, vma->vm_end, pte);
+>>>>> +}
+>>>>> +
+>>>>>  /*
+>>>>>   * mlock_vma_folio() and munlock_vma_folio():
+>>>>>   * should be called with vma's mmap_lock held for read or write,
+>>>>
+>>
 
-If there is no nested call, yeah, per-cpu pt_regs will work.
-
-Thank you,
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
