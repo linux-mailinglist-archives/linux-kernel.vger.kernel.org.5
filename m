@@ -2,170 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A90976D800
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9AF76D80B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231771AbjHBTiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44536 "EHLO
+        id S233828AbjHBTik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233960AbjHBTiH (ORCPT
+        with ESMTP id S229638AbjHBTie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:38:07 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2C613D;
-        Wed,  2 Aug 2023 12:38:06 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B25161F38D;
-        Wed,  2 Aug 2023 19:38:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1691005084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hQKpatODDlYJjI5h6ON2K0Xm2qnmIDyhIc44gu3NWBE=;
-        b=LhplXH4J5uUbAjgtJUQ8qRPaaSWgOUuCpAHU5WpGZ3ZAa8UXXkk/2huxZA8KHPddB0sxWg
-        82L3KRAWJBUdPEoSRzDYuyi9h1xUjxTNvcAYVw2CReEhTitiu/Xav/t4Oc3Djs3GIk7CnS
-        UDsWSZfelZno+J9gahI+zq5QLWxp4pM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1691005084;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hQKpatODDlYJjI5h6ON2K0Xm2qnmIDyhIc44gu3NWBE=;
-        b=OOAabGwwpODl/y0IYa1Ey56S8QpPiHacMq0qFwPFteERmRpVU6lGbeF0lh1V5mr0JH+VK9
-        pnHPb7fzF+uFUUAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 998F013919;
-        Wed,  2 Aug 2023 19:38:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Jvt9JZywymRbHwAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 02 Aug 2023 19:38:04 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EBAAAA076B; Wed,  2 Aug 2023 21:38:03 +0200 (CEST)
-Date:   Wed, 2 Aug 2023 21:38:03 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Tyler Hicks <code@tyhicks.com>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Richard Weinberger <richard@nod.at>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Anthony Iliopoulos <ailiop@suse.com>, v9fs@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-afs@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, ecryptfs@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        cluster-devel@redhat.com, linux-nfs@vger.kernel.org,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH v6 6/7] ext4: switch to multigrain timestamps
-Message-ID: <20230802193803.onjopgwdqjonzkwa@quack3>
-References: <20230725-mgctime-v6-0-a794c2b7abca@kernel.org>
- <20230725-mgctime-v6-6-a794c2b7abca@kernel.org>
+        Wed, 2 Aug 2023 15:38:34 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256CF2D62;
+        Wed,  2 Aug 2023 12:38:19 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6bcade59b24so210694a34.0;
+        Wed, 02 Aug 2023 12:38:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691005098; x=1691609898;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HGZYAlYoxklSxp+0rfvYKT0X2lcn2CrtNxj5gHKMWqA=;
+        b=H0zyghXvQ6QELgoTQI+HxL9wqBt7AeShb9cF8ZMiw/lQylkQtm0H/HSEUj4pKWhh2h
+         u0kT4xv3H1N4gK1NmInwfVo4wKJ5mWr91qAUSWmOUS5nYV5ecYeu2Om+UXNd9HWz/9bz
+         q/N4nzhH9FfFMwm3keoxAHEqbZPBnqJzHx45ov/yuTM/IqL76srJaVFlYhi615OVj+zT
+         D4TJC4mO0+Hpsr5sTrdC+4U8wM8bO08kAN97ct9yxJNEbsPYtpWkubXmJd9To4Xui21s
+         IlMRw+pRB7Lfflz5zA65mx4reNkNpfgO85rBvLdTHd9tye8Y8RtOfNBAktja8ciuczGH
+         23GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691005098; x=1691609898;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HGZYAlYoxklSxp+0rfvYKT0X2lcn2CrtNxj5gHKMWqA=;
+        b=Ez2HKYcgmPOlAthWYl2Zl1Sxqrt4prLGl+7QALG+WCNJRz3QpCCMElee0l0vQA7deI
+         C7aug/aS2MCNhETXV1zsbyiWRKLECGAWzjlS07bdmU3HlxulXuKGse9eVrdiNY+PMcYo
+         PuUZ62Z3SKoHz1B6kE6mIziLhMntYQdBlO+EPhzHu6Z+UlxENCe55g3TJP5aH//whutn
+         lzyn6QxqRwZzUi0SaGSsO6b9mZ8sZGDepWWNw9JSeh6CA4nbLl2iYTgPyiT3Wlg07WjE
+         zRGLLbRHpI8zEnrVno01t0vJy0LRtbG1cYZ9fYQzWOT0sVVZdk7GnKckYmCGupc49ntU
+         gW2A==
+X-Gm-Message-State: ABy/qLbMGjkW9l1/mAFzg+eOu/WVggEg4Zo/miOPAMjMjlQnQH3X0Yqx
+        Uh3modc7G9S8j6mS8+iUtl8=
+X-Google-Smtp-Source: APBJJlETxluvvBXdBxXg4cZEJLqWHe1+uiyQpatfYiD/4Pftz2VFEkEGtErn3+ycQ+KgRIOiy16KGg==
+X-Received: by 2002:a05:6870:912b:b0:1b7:2879:a0e with SMTP id o43-20020a056870912b00b001b728790a0emr19899769oae.12.1691005098171;
+        Wed, 02 Aug 2023 12:38:18 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:9d5d])
+        by smtp.gmail.com with ESMTPSA id 9-20020a17090a030900b00263dccf96a3sm1508759pje.54.2023.08.02.12.38.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 12:38:17 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 2 Aug 2023 09:38:16 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     hannes@cmpxchg.org, lizefan.x@bytedance.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: fix obsolete function name above
+ css_free_rwork_fn()
+Message-ID: <ZMqwqHhOkskbdqBR@slm.duckdns.org>
+References: <20230801124034.2245419-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230725-mgctime-v6-6-a794c2b7abca@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230801124034.2245419-1-linmiaohe@huawei.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 25-07-23 10:58:19, Jeff Layton wrote:
-> Enable multigrain timestamps, which should ensure that there is an
-> apparent change to the timestamp whenever it has been written after
-> being actively observed via getattr.
+On Tue, Aug 01, 2023 at 08:40:34PM +0800, Miaohe Lin wrote:
+> Since commit 8f36aaec9c92 ("cgroup: Use rcu_work instead of explicit rcu
+> and work item"), css_free_work_fn has been renamed to css_free_rwork_fn.
+> Update corresponding comment.
 > 
-> For ext4, we only need to enable the FS_MGTIME flag.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Looks good. Feel free to add:
+Applied to cgroup/for-6.6.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Thanks.
 
-								Honza
-
-> ---
->  fs/ext4/super.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index b54c70e1a74e..cb1ff47af156 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -7279,7 +7279,7 @@ static struct file_system_type ext4_fs_type = {
->  	.init_fs_context	= ext4_init_fs_context,
->  	.parameters		= ext4_param_specs,
->  	.kill_sb		= kill_block_super,
-> -	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
-> +	.fs_flags		= FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME,
->  };
->  MODULE_ALIAS_FS("ext4");
->  
-> 
-> -- 
-> 2.41.0
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+tejun
