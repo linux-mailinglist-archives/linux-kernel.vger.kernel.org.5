@@ -2,129 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D55276DB76
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DCD76DB7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbjHBXXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 19:23:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34208 "EHLO
+        id S231941AbjHBXZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 19:25:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbjHBXWy (ORCPT
+        with ESMTP id S231219AbjHBXZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 19:22:54 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24B1D9;
-        Wed,  2 Aug 2023 16:22:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1691018568;
-        bh=s+wJuNHRcXYhlpADMo06g8Fz7nrpZ9yYMbSWWaXuWCE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UrTM6UqB+P6V1xZ1F8md9RIfXE9XHfMDu6QPbvIDFa5COXX3gn5poDUGQjbXmBM6n
-         7nsRyZwr+uXys7tPJ31OhLfc/CV5eywFmZOk28zFkGGv0TFG3jMgWVklPIXusW00Kl
-         NiAU/SQQ6aDhCrQD2hVtECB6oBFSX1Cco7Za6eMXqB5uo8p4s4k1JBsLEPm7DRnfD2
-         8h0TcN2bUHfpsWMxxn2WW5het+QE08R7QGTK/kveRnr/Zq9e04OYutWamhkQHn7uKo
-         /HCe/QPyjwcN3FX2dezfkM/JRg8Z3V8CeFqrhJWPXdVvx7rtipBFUm233SO2LTrGmP
-         4FoyGN3RohRVA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Wed, 2 Aug 2023 19:25:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3705BD9;
+        Wed,  2 Aug 2023 16:25:39 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RGSgr1CK1z4wZJ;
-        Thu,  3 Aug 2023 09:22:47 +1000 (AEST)
-Date:   Thu, 3 Aug 2023 09:22:45 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Peng Fan <peng.fan@nxp.com>, Udit Kumar <u-kumar1@ti.com>
-Subject: linux-next: manual merge of the ti tree with the imx-mxs tree
-Message-ID: <20230803092245.4c0fc299@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Tu2vuV8DJFVY+E_42AY.OxX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ADD5861B7D;
+        Wed,  2 Aug 2023 23:25:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 053E6C433C8;
+        Wed,  2 Aug 2023 23:25:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691018738;
+        bh=Zx3cU1AZGQaxXPGcCJrj5p1vHuj6co3/D60PUthhRSM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vKnBfzTb81DgZpoziNV0oB22VyDwO1WFiZhXntDBeusTiG8UdC5Z2OBiQnbAP1ShY
+         qcuVlWga2yTSL9HcGToI/faLHDLtyqdkcwgrnVTv0MeEqPqiEBtXPKl6+Eukjy7qty
+         c9qlVnmi43y4FVC5mIhwmWAGEPylLQWbxx21TFKR2ZfzElIbR5PnIVSf3qFhbGyqlN
+         JZ2zTwgl97buvmko9yGDiH2GvZFPoFmBLQ6Senku43wvuASp8IQU/sNScOMUfc75dv
+         QbQjPqFkxNRUe4FslUdhHpAR2Qr2cVW0rUL2ZigJTMP5rHkKx6JfytnjvMFSE6X3gc
+         GjBlx97VwG1XQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qRLDj-001Vp2-FV;
+        Thu, 03 Aug 2023 00:25:35 +0100
+Date:   Thu, 03 Aug 2023 00:25:35 +0100
+Message-ID: <86h6ph58nk.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
+        Shaoqin Huang <shahuang@redhat.com>
+Subject: Re: [PATCH v7 08/12] KVM: arm64: Define kvm_tlb_flush_vmid_range()
+In-Reply-To: <CAJHc60xC-Bs-0uoqkytDVcwHTxVnW7eyVxfHhO0mRrupVbdaYg@mail.gmail.com>
+References: <20230722022251.3446223-1-rananta@google.com>
+        <20230722022251.3446223-9-rananta@google.com>
+        <87o7jxr06t.wl-maz@kernel.org>
+        <87lef1qzim.wl-maz@kernel.org>
+        <CAJHc60xC-Bs-0uoqkytDVcwHTxVnW7eyVxfHhO0mRrupVbdaYg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, seanjc@google.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, gshan@redhat.com, shahuang@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Tu2vuV8DJFVY+E_42AY.OxX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, 31 Jul 2023 19:01:53 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+>=20
+> On Thu, Jul 27, 2023 at 6:01=E2=80=AFAM Marc Zyngier <maz@kernel.org> wro=
+te:
+> >
+> > On Thu, 27 Jul 2023 13:47:06 +0100,
+> > Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Sat, 22 Jul 2023 03:22:47 +0100,
+> > > Raghavendra Rao Ananta <rananta@google.com> wrote:
+> > > >
+> > > > Implement the helper kvm_tlb_flush_vmid_range() that acts
+> > > > as a wrapper for range-based TLB invalidations. For the
+> > > > given VMID, use the range-based TLBI instructions to do
+> > > > the job or fallback to invalidating all the TLB entries.
+> > > >
+> > > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > > Reviewed-by: Gavin Shan <gshan@redhat.com>
+> > > > Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+> > > > ---
+> > > >  arch/arm64/include/asm/kvm_pgtable.h | 10 ++++++++++
+> > > >  arch/arm64/kvm/hyp/pgtable.c         | 20 ++++++++++++++++++++
+> > > >  2 files changed, 30 insertions(+)
+> > > >
+> > > > diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/incl=
+ude/asm/kvm_pgtable.h
+> > > > index 8294a9a7e566..5e8b1ff07854 100644
+> > > > --- a/arch/arm64/include/asm/kvm_pgtable.h
+> > > > +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> > > > @@ -754,4 +754,14 @@ enum kvm_pgtable_prot kvm_pgtable_stage2_pte_p=
+rot(kvm_pte_t pte);
+> > > >   *    kvm_pgtable_prot format.
+> > > >   */
+> > > >  enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte);
+> > > > +
+> > > > +/**
+> > > > + * kvm_tlb_flush_vmid_range() - Invalidate/flush a range of TLB en=
+tries
+> > > > + *
+> > > > + * @mmu:   Stage-2 KVM MMU struct
+> > > > + * @addr:  The base Intermediate physical address from which to in=
+validate
+> > > > + * @size:  Size of the range from the base to invalidate
+> > > > + */
+> > > > +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> > > > +                           phys_addr_t addr, size_t size);
+> > > >  #endif     /* __ARM64_KVM_PGTABLE_H__ */
+> > > > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgta=
+ble.c
+> > > > index aa740a974e02..5d14d5d5819a 100644
+> > > > --- a/arch/arm64/kvm/hyp/pgtable.c
+> > > > +++ b/arch/arm64/kvm/hyp/pgtable.c
+> > > > @@ -670,6 +670,26 @@ static bool stage2_has_fwb(struct kvm_pgtable =
+*pgt)
+> > > >     return !(pgt->flags & KVM_PGTABLE_S2_NOFWB);
+> > > >  }
+> > > >
+> > > > +void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
+> > > > +                           phys_addr_t addr, size_t size)
+> > > > +{
+> > > > +   unsigned long pages, inval_pages;
+> > > > +
+> > > > +   if (!system_supports_tlb_range()) {
+> > > > +           kvm_call_hyp(__kvm_tlb_flush_vmid, mmu);
+> > > > +           return;
+> > > > +   }
+> > > > +
+> > > > +   pages =3D size >> PAGE_SHIFT;
+> > > > +   while (pages > 0) {
+> > > > +           inval_pages =3D min(pages, MAX_TLBI_RANGE_PAGES);
+> > > > +           kvm_call_hyp(__kvm_tlb_flush_vmid_range, mmu, addr, inv=
+al_pages);
+> > > > +
+> > > > +           addr +=3D inval_pages << PAGE_SHIFT;
+> > > > +           pages -=3D inval_pages;
+> > > > +   }
+> > > > +}
+> > > > +
+> > >
+> > > This really shouldn't live in pgtable.c. This code gets linked into
+> > > the EL2 object. What do you think happens if, for some reason, this
+> > > gets called *from EL2*?
+> >
+> > Ah, actually, nothing too bad would happen, as we convert the
+> > kvm_call_hyp() into a function call.
+> >
+> > But still, we don't need two copies of this stuff, and it can live in
+> > mmu.c.
+> >
+> But since we have a couple of references in pgtable.c to
+> kvm_tlb_flush_vmid_range(), wouldn't that be an (linking) issue if we
+> moved the definition to mmu.c?
+>=20
+> ld: error: undefined symbol: __kvm_nvhe_kvm_tlb_flush_vmid_range
+> >>> referenced by pgtable.c:1148 (./arch/arm64/kvm/hyp/nvhe/../pgtable.c:=
+1148)
+> >>>               arch/arm64/kvm/hyp/nvhe/kvm_nvhe.o:(__kvm_nvhe_kvm_pgta=
+ble_stage2_unmap) in archive vmlinux.a
+> ...
 
-Hi all,
+Ah crap, I missed that. What a mess. Forget it then. It really is a
+shame that all the neat separation between mmu.c and pgtable.c that we
+were aiming for is ultimately lost.
 
-Today's linux-next merge of the ti tree got a conflict in:
-
-  arch/arm64/configs/defconfig
-
-between commit:
-
-  b940e6846cf7 ("arm64: defconfig: select IMX_REMOTEPROC and RPMSG_VIRTIO")
-
-from the imx-mxs tree and commit:
-
-  8127ab5fbaee ("arm64: defconfig: Enable various configs for TI K3 platfor=
-ms")
-
-from the ti tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+	M.
 
 --=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/arm64/configs/defconfig
-index 03fce1752521,700d5571f12b..000000000000
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@@ -938,8 -929,8 +943,9 @@@ CONFIG_SND_SOC_GTM601=3D
-  CONFIG_SND_SOC_MSM8916_WCD_ANALOG=3Dm
-  CONFIG_SND_SOC_MSM8916_WCD_DIGITAL=3Dm
-  CONFIG_SND_SOC_PCM3168A_I2C=3Dm
- +CONFIG_SND_SOC_RK817=3Dm
-  CONFIG_SND_SOC_RT5640=3Dm
-+ CONFIG_SND_SOC_J721E_EVM=3Dm
-  CONFIG_SND_SOC_RT5659=3Dm
-  CONFIG_SND_SOC_SIMPLE_AMPLIFIER=3Dm
-  CONFIG_SND_SOC_SIMPLE_MUX=3Dm
-@@@ -1255,7 -1246,8 +1265,9 @@@ CONFIG_ARM_SMMU_V3=3D
-  CONFIG_MTK_IOMMU=3Dy
-  CONFIG_QCOM_IOMMU=3Dy
-  CONFIG_REMOTEPROC=3Dy
- +CONFIG_IMX_REMOTEPROC=3Dy
-+ CONFIG_TI_K3_R5_REMOTEPROC=3Dm
-+ CONFIG_TI_K3_DSP_REMOTEPROC=3Dm
-  CONFIG_MTK_SCP=3Dm
-  CONFIG_QCOM_Q6V5_ADSP=3Dm
-  CONFIG_QCOM_Q6V5_MSS=3Dm
-
---Sig_/Tu2vuV8DJFVY+E_42AY.OxX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTK5UYACgkQAVBC80lX
-0GzoRQgAiRfAOFYqze+KUqtVAAosm4u/4U9fFVu076q+jeJ/eegrdPjhjq9Y3l4J
-rjBlslqu+YSiMIH69RrllOOxkpbUZnYOo7ddBZZUpXpICxqZ/I16+m7fM+fWsyjW
-9N6uyTgnamLdKUFrl4SRzernmBRuAJOcdHrPvqJPXdz8bLbA5CEsCkwCiHG8YVe+
-CFflxp98B4ujagcCMnUiCyksQIFLRCralVfnrdve9yyqF9RyFpBlLq/sIPSgl1EK
-LbJpw04L60WeJO8SH+fDxx1YHvsY0RSrLxAKA3PAL+RFyt/fw/3ze5m1AnOvmeuy
-ty5R1lB6DFNYjxexO29rmCWEKjKYMQ==
-=kU2V
------END PGP SIGNATURE-----
-
---Sig_/Tu2vuV8DJFVY+E_42AY.OxX--
+Without deviation from the norm, progress is not possible.
