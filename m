@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D5F76CC63
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C9076CC65
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234516AbjHBMM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
+        id S234507AbjHBMMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:12:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234502AbjHBMMR (ORCPT
+        with ESMTP id S233845AbjHBMMW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:12:17 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70D12D67;
-        Wed,  2 Aug 2023 05:11:50 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bbc06f830aso6317755ad.0;
-        Wed, 02 Aug 2023 05:11:50 -0700 (PDT)
+        Wed, 2 Aug 2023 08:12:22 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B623598;
+        Wed,  2 Aug 2023 05:11:54 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bb775625e2so6239035ad.1;
+        Wed, 02 Aug 2023 05:11:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690978309; x=1691583109;
+        d=gmail.com; s=20221208; t=1690978313; x=1691583113;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KWetw+9fo7xpR+/Y1RDX5IOHvVHf8sfB8Rgzd3Bsv2A=;
-        b=PaK8I2pkE/WPQvl+laJR/GJw/w02Y7dJDqAA5GgpevxcqOGG13yboTTT5Md2wJv3ST
-         yUlTF6785qm0HTky1cm31dKOVmmyaC2APjqWE/34WvEn5iwWl84Ejox14uRwoXk3rRt2
-         bVtriVwHhLSWlbP2gpRrpvXL4Jf0pW/EwwkVGaJKanE8iE0ySp6KmC18f4rmIp41nSmx
-         X8lk8qU34Vja2V/FTZ3tXVTr3pc8THhHVGBLOtTxsPbWYAMn+CltDI+c9lpn1Lh3hFW9
-         KRo1d9RaIXDsBHf7kWoSm0tq0VPVB19gUhxt+Iwl65AxQQluEOIx0brGxn9Er0rC9w0N
-         MxqA==
+        bh=GPn/mgTWKV+oBePvxacidtJnH5NXaYh0/ilB9/OG6C4=;
+        b=mc45EmmtV/Q7oq8TvX7NxwbUG3N2cWSLCMYDnJhAaGMTC3hdT7RjVpSaZNs+mFSdQ9
+         v5bWNo26P1bPdS9OyeYlyyK+t0enQvHxYSETe/5pKPfT45ajR2+u6Gj+onzM582zPJLk
+         LXLXdhhgzmxiO+b70ZwZAP6Jb1b45c/0XHxpCoYaPLMQMBYxHC7zLf5PG90xKEG3qZGO
+         c2qBaWhWp6QU9wbOE0k7J1esoKTsll8myh2eOuD3SZffaOl75HFZPCeVSSb9QlkfYxTK
+         LF37kESuUQtd6tX6mJWDSeSw+u4bNdFmZPJylzbxjmuQK6t3+KXwfLpvFqVtb5MXxylT
+         WHFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690978309; x=1691583109;
+        d=1e100.net; s=20221208; t=1690978313; x=1691583113;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KWetw+9fo7xpR+/Y1RDX5IOHvVHf8sfB8Rgzd3Bsv2A=;
-        b=FMK8hjm16VdCZQ/x752e9cwkAUOC4z3HJUyGCx3QsVmEoQUeODfCmBBM6LfmTMwcUF
-         gvGyAu5wAr7KIU9V487n3fndFWpuXi6fjVCYUnhWIbQxayYASb9I0mIuw23hfAPEbe3v
-         HzppD/5yOvpTxZGsLONddf4VwK9oZdMLkUW1uyGZqbh6//vl3GMjSIbBQLeKZUoPWsWL
-         SnhYXUviuZa/QGWVFywo+M3xJRGPkTNqDkGOgZzLBgkJ2yKvccYQgZRCuqP6kt+ujfUv
-         oejRYQgrTZ0coCYiiLjNTEyXFQxXYXUkmzFZhOWcFWW3vtv8ri7dcN3rkBzWao+nafbQ
-         tO7w==
-X-Gm-Message-State: ABy/qLbU2GpVcHAEjtnP8cO4BIhbtl8jhnDEkwz2LFqcW3RTZ6IkQe/I
-        VYk2EcpnPRRXJ++t8Nxg0EI=
-X-Google-Smtp-Source: APBJJlFo+Ep23l/5zl7HB5pJos/ZlOO6Cp9DEkOPyXKkibeYCOf8uXFLXhe5Vk4qcIWhW0ciD+vvig==
-X-Received: by 2002:a17:902:d511:b0:1b8:76cb:c6a4 with SMTP id b17-20020a170902d51100b001b876cbc6a4mr20219434plg.21.1690978309236;
-        Wed, 02 Aug 2023 05:11:49 -0700 (PDT)
+        bh=GPn/mgTWKV+oBePvxacidtJnH5NXaYh0/ilB9/OG6C4=;
+        b=KDt6hlyH24pe5ZhMuirPmSSwrw/gKrY1s+11BGNlzOev1cey9OODeZKyrAC0DKhXP3
+         UuH9v9w2SpTKwd6DECSuYK02yRay8jK1Qy3oYvvz5NUZDFwUJBNpaQ7+xDhFrDiZDQ3w
+         jGupCixohev/J+BXVLGuDV6219rfLSCg9fhdUIIAMP6AXDYA8HSG73RH9FxIj+TMbaFP
+         5xYFEiu9Kiv7rZkXIft9UEsC5IXxDb10Kp7HpVHjJZZxE0pCOWqHgL25e1Qr+x0NvyLd
+         5v2xN31pO9mPB83eAV21DrGkOVtt3zENCfqYqsK0ciP52WcekcXxokDRQlHxYwvpVhOh
+         +pDw==
+X-Gm-Message-State: ABy/qLbSxlOCP8NAZ7JqiBYupPYeRxI0+Pcs1ZZHbaCgAhV4/K6CspXl
+        4JnlGkYZ2/MdXLMqfcZuJXlSPa3zMQLR6g==
+X-Google-Smtp-Source: APBJJlE1hPI0N7A/fZmGmw3xgp2PHC4kcoZFRbMOnihD+ucaetXjldjU0n3gx+y9C4fqVGzmITNOQg==
+X-Received: by 2002:a17:902:e745:b0:1b8:af5e:853c with SMTP id p5-20020a170902e74500b001b8af5e853cmr20084789plf.26.1690978313225;
+        Wed, 02 Aug 2023 05:11:53 -0700 (PDT)
 Received: from localhost.localdomain ([43.132.98.115])
-        by smtp.googlemail.com with ESMTPSA id kx14-20020a170902f94e00b001b890009634sm12293173plb.139.2023.08.02.05.11.45
+        by smtp.googlemail.com with ESMTPSA id kx14-20020a170902f94e00b001b890009634sm12293173plb.139.2023.08.02.05.11.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 05:11:48 -0700 (PDT)
+        Wed, 02 Aug 2023 05:11:52 -0700 (PDT)
 From:   Ze Gao <zegao2021@gmail.com>
 X-Google-Original-From: Ze Gao <zegao@tencent.com>
 To:     Adrian Hunter <adrian.hunter@intel.com>,
@@ -65,9 +65,9 @@ To:     Adrian Hunter <adrian.hunter@intel.com>,
 Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
         linux-trace-kernel@vger.kernel.org,
         linux-trace-devel@vger.kernel.org, Ze Gao <zegao@tencent.com>
-Subject: [RFC PATCH v4 6/7] perf sched: prefer to use prev_state_char introduced in sched_switch
-Date:   Wed,  2 Aug 2023 08:10:01 -0400
-Message-ID: <20230802121116.324604-7-zegao@tencent.com>
+Subject: [RFC PATCH v4 7/7] libtraceevent: prefer to use prev_state_char introduced in sched_switch
+Date:   Wed,  2 Aug 2023 08:10:02 -0400
+Message-ID: <20230802121116.324604-8-zegao@tencent.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230802121116.324604-1-zegao@tencent.com>
 References: <20230802121116.324604-1-zegao@tencent.com>
@@ -75,7 +75,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,54 +92,36 @@ array with the latest kernel.
 
 Signed-off-by: Ze Gao <zegao@tencent.com>
 ---
- tools/perf/builtin-sched.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+ plugins/plugin_sched_switch.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-index eb310d1a7625..7f76ba51e36d 100644
---- a/tools/perf/builtin-sched.c
-+++ b/tools/perf/builtin-sched.c
-@@ -837,7 +837,7 @@ replay_wakeup_event(struct perf_sched *sched,
+diff --git a/plugins/plugin_sched_switch.c b/plugins/plugin_sched_switch.c
+index e0986ac..4c57322 100644
+--- a/plugins/plugin_sched_switch.c
++++ b/plugins/plugin_sched_switch.c
+@@ -11,7 +11,7 @@
  
- static inline char task_state_char(int state)
+ static void write_state(struct trace_seq *s, int val)
  {
--	static const char state_to_char[] = "RSDTtXZPI";
-+	static const char state_to_char[] = "RSDTtXZPIp";
- 	unsigned bit = state ? ffs(state) : 0;
- 	return bit < sizeof(state_to_char) - 1 ? state_to_char[bit] : '?';
- }
-@@ -845,8 +845,20 @@ static inline char task_state_char(int state)
- static inline char get_task_prev_state(struct evsel *evsel,
- 				       struct perf_sample *sample)
- {
--	const int prev_state = evsel__intval(evsel, sample, "prev_state");
--	return task_state_char(prev_state);
-+	char prev_state_char;
-+	int prev_state;
-+
-+	//prefer to use prev_state_char
-+	if (evsel__field(evsel, "prev_state_char"))
-+		prev_state_char = (char) evsel__intval(evsel,
-+				sample, "prev_state_char");
-+	else {
-+		prev_state = (int) evsel__intval(evsel,
-+				sample, "prev_state");
-+		prev_state_char = task_state_char(prev_state);
+-	const char states[] = "SDTtXZPI";
++	const char states[] = "SDTtXZPIp";
+ 	int found = 0;
+ 	int i;
+ 
+@@ -99,7 +99,12 @@ static int sched_switch_handler(struct trace_seq *s,
+ 	if (tep_get_field_val(s, event, "prev_prio", record, &val, 1) == 0)
+ 		trace_seq_printf(s, "[%d] ", (int) val);
+ 
+-	if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) == 0)
++	//find if has prev_state_char, otherwise fallback to prev_state
++	if (tep_find_field(event, "prev_state_char")) {
++		if (tep_get_field_val(s,  event, "prev_state_char", record, &val, 1) == 0)
++			trace_seq_putc(s, (char) val);
 +	}
-+
-+	return prev_state_char;
- }
++	else if (tep_get_field_val(s,  event, "prev_state", record, &val, 1) == 0)
+ 		write_state(s, val);
  
- static int replay_switch_event(struct perf_sched *sched,
-@@ -2143,7 +2155,7 @@ static void timehist_update_runtime_stats(struct thread_runtime *r,
- 		else if (r->last_time) {
- 			u64 dt_wait = tprev - r->last_time;
- 
--			if (r->last_state == 'R')
-+			if (r->last_state == 'R' || r->last_state == 'p')
- 				r->dt_preempt = dt_wait;
- 			else if (r->last_state == 'D')
- 				r->dt_iowait = dt_wait;
+ 	trace_seq_puts(s, " ==> ");
 -- 
 2.41.0
 
