@@ -2,71 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D875576D344
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E36B76D349
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235326AbjHBQFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
+        id S231361AbjHBQHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbjHBQFG (ORCPT
+        with ESMTP id S230086AbjHBQHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:05:06 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A147171B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:05:05 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id ECACC21A3B;
-        Wed,  2 Aug 2023 16:05:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1690992303; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Oaf9OiK+Z/3ZKNxgCRAgS8nishHk/qhpHK2g5tj/wZk=;
-        b=sO0ovHXL1ZEriALtXGmGukvxHWrXWyA+OU2+lhR+G50C65KNZtabDzTaGhHY6JARXX7YfT
-        3NWWklAMLLWhSEmM4XKjVGlSKRzo7cLSncFL3uLejB0x0Msq6LhwZFsBWb3JoTA1Y7eFMx
-        9xIJLxC/26VMU44cto9UTLNWIyczShY=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C54EB13909;
-        Wed,  2 Aug 2023 16:05:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id aXuCLa9+ymRVQAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 02 Aug 2023 16:05:03 +0000
-Date:   Wed, 2 Aug 2023 18:05:02 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        kernel test robot <lkp@intel.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Pingfan Liu <kernelfans@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog/hardlockup: Avoid large stack frames in
- watchdog_hardlockup_check()
-Message-ID: <ZMp+rgDT5jYhi/1p@dhcp22.suse.cz>
-References: <20230731091754.1.I501ab68cb926ee33a7c87e063d207abf09b9943c@changeid>
- <ZMkBY7K3Dn04YQ65@dhcp22.suse.cz>
- <CAD=FV=V5hx7Zy-XMB=sPYcD_h-iP5VknmEoJwvw3Akd_1wDnRw@mail.gmail.com>
- <ZMkkNpYcaYPAMj0Z@dhcp22.suse.cz>
- <CAD=FV=Ujmyq-1GAvNJsrp=mj_Vg=9b6fmfMfkHq3+8ZQ5KiaRw@mail.gmail.com>
- <ZMoFWK0uGdneJYVc@dhcp22.suse.cz>
- <CAD=FV=XQMH8sun7XCXJNjOC7tP1yt8=mt1NG3f8Xm9-x5TJFsA@mail.gmail.com>
+        Wed, 2 Aug 2023 12:07:04 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E001717;
+        Wed,  2 Aug 2023 09:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=GhV0w7crBJbODzErPckGWnIryyuHLk0BAAHnw95ry+I=; b=W36DJ0opAlVjOjjwsM8pYL2kC5
+        V2On4Eki+qp6OcD5EPhy2fIArYHHZgZYaw8MgAzi14NLSU9RJcg6dwswyNZbWhsezfy2id9syh54/
+        5B1GTl1qg6FyI+ZTcAqIeX7UpcjSkf/zehUPs7tVRUUL2/X+DgK6JOUMt860id36N7Y0V+effSbnG
+        CKegIg2SeiVEgBDPaRZ+cmuBILim/itJRHM/TrxWaHBJE23xQIVFYjePBQMCrJqobb/vn2frW8cTv
+        oD2pJ7ao0lunvEv3nq59TsPCjflk/uMcTBT2nWTLn/95XX9Gn9pfkvoF5i8NQqIqvdvyz5ZYF7ayl
+        3q50Wzmg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33750)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qREMu-0005cf-0l;
+        Wed, 02 Aug 2023 17:06:36 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qREMp-00020q-UW; Wed, 02 Aug 2023 17:06:31 +0100
+Date:   Wed, 2 Aug 2023 17:06:31 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Michael Walle <mwalle@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Simon Horman <simon.horman@corigine.com>
+Subject: Re: [PATCH net-next v3 02/11] net: phy: introduce
+ phy_has_c45_registers()
+Message-ID: <ZMp/B2U/qaI/VQDN@shell.armlinux.org.uk>
+References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
+ <20230620-feature-c45-over-c22-v3-2-9eb37edf7be0@kernel.org>
+ <7be8b305-f287-4e99-bddd-55646285c427@lunn.ch>
+ <867ae3cc05439599d63e4712bca79e27@kernel.org>
+ <cf999a14e51b7f2001d9830cc5e11016@kernel.org>
+ <ZMkddjabRonGe7Eu@shell.armlinux.org.uk>
+ <bce942b71db8c4b9bf741db517e7ca5f@kernel.org>
+ <ZMkraPZvWWKhY8lT@shell.armlinux.org.uk>
+ <b0e5fbe28757d755d814727181c09f32@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=XQMH8sun7XCXJNjOC7tP1yt8=mt1NG3f8Xm9-x5TJFsA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+In-Reply-To: <b0e5fbe28757d755d814727181c09f32@kernel.org>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,87 +81,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 02-08-23 07:12:29, Doug Anderson wrote:
-> Hi,
+On Wed, Aug 02, 2023 at 05:33:20PM +0200, Michael Walle wrote:
+> Am 2023-08-01 17:57, schrieb Russell King (Oracle):
+> > On Tue, Aug 01, 2023 at 05:20:22PM +0200, Michael Walle wrote:
+> > > > In the case of the above (the code in __phy_read_mmd()), I wouldn't
+> > > > at least initially change the test there.
+> > > >
+> > > > phydev->is_c45 will only be true if we probed the PHY using clause
+> > > > 45 accesses. Thus, it will be set if "the bus supports clause 45
+> > > > accesses" _and_ "the PHY responds to those accesses".
+> > > >
+> > > > Changing that to only "the bus supports clause 45 accesses" means
+> > > > that a PHY supporting only clause 22 access with indirect clause
+> > > > 45 access then fails if it's used with a bus that supports both
+> > > > clause 22 and clause 45 accesses.
+> > > 
+> > > Yeah of course. It was more about the naming, but I just realized
+> > > that with mdiobus_supports_c45() you can't access the original
+> > > "is_c45" property of the PHY. So maybe this patch needs to be split
+> > > into two to get rid of .is_c45:
+> > > 
+> > > First a mechanical one:
+> > > phy_has_c45_registers() {
+> > >    return phydev->is_c45;
+> > > }
+> > 
+> > Andrew's objection was that "phy_has_c45_registers" is a misnomer, and
+> > suggested "_transfers" instead - because a PHY can have C45 registers
+> > that are accessible via the indirect registers in C22 space.
 > 
-> On Wed, Aug 2, 2023 at 12:27 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Tue 01-08-23 08:41:49, Doug Anderson wrote:
-> > [...]
-> > > Ah, I see what you mean. The one issue I have with your solution is
-> > > that the ordering of the stack crawls is less ideal in the "dump all"
-> > > case when cpu != this_cpu. We really want to see the stack crawl of
-> > > the locked up CPU first and _then_ see the stack crawls of other CPUs.
-> > > With your solution the locked up CPU will be interspersed with all the
-> > > others and will be harder to find in the output (you've got to match
-> > > it up with the "Watchdog detected hard LOCKUP on cpu N" message).
-> > > While that's probably not a huge deal, it's nicer to make the output
-> > > easy to understand for someone trying to parse it...
-> >
-> > Is it worth to waste memory for this arguably nicer output? Identifying
-> > the stack of the locked up CPU is trivial.
+> I'm confused now. Andrew suggested to split it into four different
+> functions:
 > 
-> I guess it's debatable, but as someone who has spent time staring at
-> trawling through reports generated like this, I'd say "yes", it's
-> super helpful in understanding the problem to have the hung CPU first.
+> phy_has_c22_registers()
+> phy_has_c45_registers()
+> phy_has_c22_transfers()
+> phy_has_c45_transfers()
 
-Well, I have to admit that most lockdep splats I have dealt with
-recently do not come with sysctl_hardlockup_all_cpu_backtrace so I
-cannot really judge.
+Honestly, I don't think we can come up with tests that satisfy all of
+these. Particularly the question whether a PHY has c45 registers or
+not is a difficult one, as there is no sane way to determine that with
+a clause 22 PHY.
 
-> Putting the memory usage in perspective:
+I'm also not sure what use the c22 transfers one would be, since if a
+PHY doesn't have c22 registers, then that's probably all we need to
+know.
+
+> Without a functional change. That is, either return phydev->is_c45
+> or the inverse.
+
+I think I've already explained why !phydev->is_c45 can't be interpeted
+as a PHY having C22 registers, but let me restate. It is _entirely_
+possible for a PHY to have C45 registers _and_ C22 registers, and
+that is indicated by bit 0 of the devices-in-package field.
+
 > 
-> * On a kernel built with a more normal number of max CPUs, like 256,
-> this is only a use of 32 bytes of memory. That's 8 CPU instructions
-> worth of memory.
-
-Think of distribution kernels that many people use. E.g SLES kernel uses
-8k CONFIG_NR_CPUS
-
-> * Even on a system with the largest number of max CPUs we currently
-> allow (8192), this is only a use of 1024 bytes of memory. Sure, that's
-> a big chunk, but this is also something on our largest systems.
-
-This is independent on the size of the machine if you are using
-pre-built kernels.
-
-> In any case, how about this. We only need the memory allocated if
-> `sysctl_hardlockup_all_cpu_backtrace` is non-zero. I can hook in
-> whenever that's changed (should be just at bootup) and then kmalloc
-> memory then.
-
-this is certainly better than the original proposal
-
-> This really limits the extra memory to just cases when
-> it's useful. Presumably on systems that are designed to run massively
-> SMP they wouldn't want to turn this knob on anyway since it would spew
-> far too much data. If you took a kernel compiled for max SMP, ran it
-> on a machine with only a few cores, and wanted this feature turned on
-> then at most you'd be chewing up 1K. In the average case this would
-> chew up some extra memory (extra CPU instructions to implement the
-> function take code space, extra overhead around kmalloc) but it would
-> avoid the 1K chunk in most cases.
+> You seem to suggest to use either
+> phy_supports_c45_transfers() or
+> phy_has_c22_registers()
 > 
-> Does that sound reasonable?
-
-If the locked up cpu needs to be first is a real requirement (and this
-seems debateable) then sure why not. I do not feel strongly to argue one
-way or the other, maybe others have an opinion on that.
-
-> I guess my last alternative would be to keep the special case of
-> tracing the hung CPU first (this is the most important part IMO) and
-> then accept the double trace, AKA:
-
-That sounds wrong.
- 
-> /* Try to avoid re-dumping the stack on the hung CPU if possible */
-> if (cpu == this_cpu))
->   trigger_allbutself_cpu_backtrace();
-> else
->   trigger_all_cpu_backtrace();
+> I'm not sure how to continue now.
 > 
-> -Doug
+> > I'd go one further:
+> > 
+> > static bool phy_supports_c45_transfers(struct phy_device *phydev)
+> > {
+> > 	return phydev->is_c45;
+> > }
+> > 
+> > Since that covers that (a) the bus needs to support C45 transfers and
+> > (b) the PHY also needs to respond to C45 transfers.
+> > 
+> > If we want to truly know whether a clause 22 PHY has clause 45
+> > registers, that's difficult to answer, because then you're into the
+> > realms of "does this PHY implement the indirect access method" and
+> > we haven't been keeping track of that for the PHYs we have drivers
+> > for - many will do, but it's optional in clause 22. The problem is
+> > that when it's not implemented, the registers could be serving some
+> > other function.
+> > 
+> > > phy_has_c22_registers() {
+> > >   return !phydev->is_c45;
+> > > }
+> > 
+> > The reverse is not true, as clause 45 PHYs can also support clause 22
+> > registers - from 802.3:
+> > 
+> >  "For cases where a single entity combines Clause 45 MMDs with  Clause
+> > 22
+> >  registers, then the Clause 22 registers may be accessed using the
+> > Clause
+> >  45 electrical interface and the Clause 22 management frame structure."
+> > 
+> >  "Bit 5.0 is used to indicate that Clause 22 functionality has been
+> >  implemented within a Clause 45 electrical interface device."
+> > 
+> > Therefore, this would more accurately describe when Clause 22 registers
+> > are present for a PHY:
+> > 
+> > static bool phy_has_c22_registers(struct phy_device *phydev)
+> > {
+> > 	/* If we probed the PHY without clause 45 accesses, then by
+> > 	 * definition, clause 22 registers must be present.
+> > 	 */
+> > 	if (!phydev->is_c45)
+> > 		return true;
+> > 
+> > 	/* If we probed the PHY with clause 45 accesses, clause 22
+> > 	 * registers may be present if bit 0 in the Devices-in-pacakge
+> > 	 * register pair is set.
+> > 	 */
+> > 	return phydev->c45_ids.devices_in_package & BIT(0);
+> > }
+> > 
+> > Note that this doesn't take account of whether the bus supports clause
+> > 22 register access - there are a number of MDIO buses that do not
+> > support such accesses, and they may be coupled with a PHY that does
+> > support clause 22 registers.
+> > 
+> > I'm aware of a SFP with a Realtek PHY on that falls into this exact
+> > case, and getting that working is progressing at the moment.
+> > 
+> > > For all the places Andrew said it's correct. Leave all the
+> > > other uses of .is_c45 as is for now and rework them in a
+> > > later patch to use mdiobus_supports_{c22,c45}().
+> > 
+> > For the two cases in marvell10g and bcm84881, the test there for
+> > is_c45 is purely to determine "was this ID found on a PHY supporting
+> > clause 45 access" - however, in both cases, a check is made for MMDs
+> > present in devices_in_package which will fail if the PHY wasn't
+> > discovered in clause 45 mode.
+> > 
+> > Note that 88x3310 does not support clause 22 access. I forget whether
+> > bcm84881 does or not.
+> 
+> So a simple "phydev->is_c45" should be enough? Why do you test
+> for the MMD presence bits?
+
+Okay, so if quoting the bits from IEEE 802.3 doesn't provide sufficient
+explanation, I'm at a loss what would...
 
 -- 
-Michal Hocko
-SUSE Labs
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
