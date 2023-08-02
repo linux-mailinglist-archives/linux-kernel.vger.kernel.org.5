@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7472076D632
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C83176D638
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:58:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbjHBR5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:57:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
+        id S233993AbjHBR6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjHBR5W (ORCPT
+        with ESMTP id S234166AbjHBR6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:57:22 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380B19C;
-        Wed,  2 Aug 2023 10:57:21 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372HYZlV001884;
-        Wed, 2 Aug 2023 17:57:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=LrzR88o+DIj7W/tEDw0tIz5VvK34qlOm4eMbpqUNBiw=;
- b=SVCHGX8h36IG/gv504EsZinMMlDLNbGwQi97qErFC3GKOLKpXW3qzRg62NnzPOqYW46S
- VDCYqctLArfJCYDC+HsInFWTnIDtpdR9RtavS1kl6NeWrx7+gQld2FyDX6yPJ2fOuU9C
- h2Oemm1MlDZIhlMeLa6YOiFGRmmR7B6ISfTZ34IQ1C4PQmh28lmRR8jopYlRjmPJzSMa
- M9XDORmm82uHEaUEKUlxs6Y/faPMt7N+1pGZQUvoHVY83ZFgnXBkHoJQXWWb5DeZJVeh
- aQsXonlWeSxqugx3vyx8d0BKD2Njr4GQuEdLI7nQV0RmJEAi+Zny0FV8KWVW6jvopzLU zg== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s72gquju5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 17:57:18 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 372HvHkt022081
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 17:57:17 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Wed, 2 Aug 2023 10:57:17 -0700
-Date:   Wed, 2 Aug 2023 10:57:15 -0700
-From:   Bjorn Andersson <quic_bjorande@quicinc.com>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-CC:     Rohit Agarwal <quic_rohiagar@quicinc.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 8/8] arm64: dts: qcom: sdx75-idp: Add regulator nodes
-Message-ID: <20230802175715.GJ1428172@hu-bjorande-lv.qualcomm.com>
-References: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
- <1690970366-30982-9-git-send-email-quic_rohiagar@quicinc.com>
- <41b9bbd2-e58f-810d-ad3b-715423ffe74b@linaro.org>
+        Wed, 2 Aug 2023 13:58:08 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE59CA3
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:58:07 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-3fe2ba3e260so1395665e9.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690999086; x=1691603886;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l9P3TP3wzncRhOXgecZRN30Iatpmdu19th61qwxb3TI=;
+        b=bnCWrvBW33Hc3lH7E3ojnUXu9Ro8w0Y5gsvpJtoeUNAkcrDtks3psfwf5mrnHNwCyT
+         3deFDBbk+9b8/B2aEH7EyMbouK0typo/n9x3MJ998k97nDuFHx2dcxRPVaHPQyvb4nN9
+         0TUe+jsmNGDMxGiNEoqWQ9YBTaFZe5aDkOwmBKuQuB5WJ/r1GGlG3mi/JZfbYNYJc4gz
+         aTczta8+OM12jgy7iZ8C8/xvbhiMXRAeDuLwC44bv82QfsukQS8UcpvgkYK7GYZRSr7M
+         gcB7pFpv2kCTwlPyicYgRdMsnu6pGZ0ZNouy0H0z0Jsfy68v5Q6uzHsE6ARmN85VSsO2
+         blIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690999086; x=1691603886;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=l9P3TP3wzncRhOXgecZRN30Iatpmdu19th61qwxb3TI=;
+        b=PI8rMnZ/0PYaLvfCo4ukuvJL2tM0YEeCWsBvHd7jFvAF1kSN3mdPtFuJYIK9sXDAg0
+         HbDSoiUrS1ZEZb6DypfniznamNuf9tgAoPOj1pARFhwwYLQ6jqulvKNO/skXUtG5pXb5
+         JDhTj5RIqAwi0PYNxNisQiDgfE5N7ZhEvbC4KqCvV6f9CHtUeYRTKYX/kfTM895VADa/
+         0Peoow0VnSFlGO+kjruDH3kT/HEO6Y9EIj2VqsdJ8m20vnKWTqQLXFtebGubYn6lmOhq
+         noKgXWlm+BopaHujL6YZRfuU/TtVzGmbJqIPD1GlGeiZcHk4QB+wnXv1GOmt8ju8OJpf
+         /E/w==
+X-Gm-Message-State: ABy/qLbuE5Z9czRwXuUS9koZ+wz99n95jevuiH+9apgJpKaB+MQZ03/G
+        Mdp42tIZdekWb+wTB5Q5ifc=
+X-Google-Smtp-Source: APBJJlEwjdDlcnSWCJ6DvL86bdak4jW/RJj56mLBJrICwRStZ4ojrxzFQe31Kb6pdeyPp60om6IkRQ==
+X-Received: by 2002:a05:600c:2198:b0:3fe:e1e:5041 with SMTP id e24-20020a05600c219800b003fe0e1e5041mr5573612wme.32.1690999086221;
+        Wed, 02 Aug 2023 10:58:06 -0700 (PDT)
+Received: from ALPER-PC.. ([178.233.24.1])
+        by smtp.gmail.com with ESMTPSA id l23-20020a7bc457000000b003fe20db88ebsm2192439wmi.31.2023.08.02.10.58.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 10:58:05 -0700 (PDT)
+From:   Alper Nebi Yasak <alpernebiyasak@gmail.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Alper Nebi Yasak <alpernebiyasak@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org,
+        Akihiko Odaki <akihiko.odaki@gmail.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
+        <nfraprado@collabora.com>
+Subject: [PATCH 06/27] ASoC: Intel: bxt_da7219_max98357a: Map missing Line Out jack kcontrol
+Date:   Wed,  2 Aug 2023 20:57:16 +0300
+Message-Id: <20230802175737.263412-7-alpernebiyasak@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230802175737.263412-1-alpernebiyasak@gmail.com>
+References: <20230802175737.263412-1-alpernebiyasak@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <41b9bbd2-e58f-810d-ad3b-715423ffe74b@linaro.org>
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: KYVvwMTgX8Az_itE7xG6rELIjHWeH6Tm
-X-Proofpoint-ORIG-GUID: KYVvwMTgX8Az_itE7xG6rELIjHWeH6Tm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_14,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=760 adultscore=0
- phishscore=0 spamscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 clxscore=1015 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308020158
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,36 +83,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 02:49:56PM +0200, Konrad Dybcio wrote:
-> On 2.08.2023 11:59, Rohit Agarwal wrote:
-> > Add the regulators found on SDX75 IDP.
-> > 
-> > Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> > ---
-> [...]
-> 
-> 
-> > +		vreg_s2b_1p224: smps2 {
-> Even though most RPMh devices use the schematic-like names, I think naming
-> the labels like pmicname_regname, e.g. pm8550_l2 would be easier to read..
-> (Bjorn, Krzysztof - opinions?)
-> 
+Commit bbdd4ea2190b4 ("ASoC: Intel: bxt_da7219_max98357a: remap jack
+pins") maps kcontrols for Headphone and Headset Mic jacks for this
+driver so that PulseAudio and PipeWire can handle detection events for
+these peripherals.
 
-Using the naming from the schematics is preferred, and avoid various
-levels of ambiguity.
+The DA7219 codec used here can also distinguish between Headphone and
+Line Out connections that go into the same physical port. Expose the
+latter to userspace as a kcontrol as well and add the necessary widgets.
 
-> On top of that, please add labels to all of the regulators you're
-> introducing to limit unnecessary diff in the future.
-> 
+Signed-off-by: Alper Nebi Yasak <alpernebiyasak@gmail.com>
+---
+Tested on a "Lick" Chromebook.
 
-There are cases where regulators are left on by the bootloader, but
-doesn't have a function, or name, in the particular board. In this case
-it might be unnecessary (or not possible) to label the regulator, but we
-still might want to list the regulator so it will be turned off
-automatically.
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-But such decision is explicit and should be mentioned either in a
-comment or in the commit message.
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index c593995facaa..cbfff466c5c8 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -90,6 +90,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ static const struct snd_kcontrol_new broxton_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Line Out"),
+ };
+ 
+ static const struct snd_kcontrol_new max98357a_controls[] = {
+@@ -104,6 +105,7 @@ static const struct snd_kcontrol_new max98390_controls[] = {
+ static const struct snd_soc_dapm_widget broxton_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_LINE("Line Out", NULL),
+ 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI1", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI2", NULL),
+@@ -150,6 +152,7 @@ static const struct snd_soc_dapm_route audio_map[] = {
+ 
+ 	{ "Headphone Jack", NULL, "Platform Clock" },
+ 	{ "Headset Mic", NULL, "Platform Clock" },
++	{ "Line Out", NULL, "Platform Clock" },
+ };
+ 
+ static const struct snd_soc_dapm_route max98357a_routes[] = {
+@@ -194,6 +197,10 @@ static struct snd_soc_jack_pin jack_pins[] = {
+ 		.pin    = "Headset Mic",
+ 		.mask   = SND_JACK_MICROPHONE,
+ 	},
++	{
++		.pin    = "Line Out",
++		.mask   = SND_JACK_LINEOUT,
++	},
+ };
+ 
+ static int broxton_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+-- 
+2.40.1
 
-Regards,
-Bjorn
