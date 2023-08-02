@@ -2,97 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A68B576C8DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3CE876C8E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbjHBI61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        id S232848AbjHBJAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:00:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232360AbjHBI6X (ORCPT
+        with ESMTP id S230139AbjHBJAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:58:23 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA4D115
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:58:22 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fbef8ad9bbso70436085e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 01:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690966700; x=1691571500;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DKacoYBhafR10JvvkyZ4j4gyiT1DNxLnWoSCLRFnVfU=;
-        b=AWa/iPaFw5XFT+9QkWWjxhWsUN0N71PxFxhwMv0R1UjwWQh1WSdpAbd/e/x2vpSpNP
-         XyiZuFlUUyfL2yY+dPymzAfV9X+cngqRA7B71vyUMV/p45GwrwkitHFj/RdSy2rHksx0
-         TGZ0NO2jhexdYc+S0++842cB+vRZqpRwgcgYWFJX/s2SBiM1tbvGYZYLTSvpIodxTpmM
-         5rYajw1fAgK/rfR7nt9q1BGMbXYCmzurtinzjZs3nDFv4xGY3oJanB9aBcRSuPur0tyK
-         1QlLJznshobNG+fE8zQrNhZzE+g/NxX9ZIzf6ZLEcMC5HV66H2VTukKXE0nznmcQVDJB
-         2aGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690966700; x=1691571500;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DKacoYBhafR10JvvkyZ4j4gyiT1DNxLnWoSCLRFnVfU=;
-        b=duXzTMCoOrRo304FCgiYOswCBnvJUCCtyTWqoH+xWa2C1nqt+XxwiDbeQD8XJE7BMB
-         n6EUsy0A67wyEAcaMkoDD0QhQKuJmXqJYf9PfE/996uEARf7dAC6bUqxAkZgoiPuLCin
-         dSiml4nIJDLBdWgs9V8YZmZwkmZdjLtym1fKwlOUE4EHiwlXJRVQS1ICyw2c27Rl7+bZ
-         GoUkF8qi0fp1483LKR6xoRc8hTW1PqG/cqwK1wIdeCeWkDwEoYigsbZtpU7URtYP8Ijm
-         On49XzZ8wEh+JQDhCq1DuTbV4+6QFweoj51kwFyVQ9231Ai26ZOOfMFXjIubH7M5jkEW
-         xs9A==
-X-Gm-Message-State: ABy/qLaL0pQDNmD4Fybtm+1q+5nTocquQB/4X+touCiEBmH91aTFKUQR
-        g0z0ekSgqICsBgVxNoM3nNiJvw==
-X-Google-Smtp-Source: APBJJlEdnBHU7cqzNc3pMckBNKjRN95SYy691YYhfyhVJaDEzM/thCfEvh7gkb2/LJ9duF0czLeMaA==
-X-Received: by 2002:a05:600c:220a:b0:3fe:2b76:3d7 with SMTP id z10-20020a05600c220a00b003fe2b7603d7mr2763113wml.10.1690966700562;
-        Wed, 02 Aug 2023 01:58:20 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id x8-20020a05600c2a4800b003fe29dc0ff2sm1094874wme.21.2023.08.02.01.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 01:58:20 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Artur Weber <aweber.kernel@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nikita Travkin <nikita@trvn.ru>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230802-gt5-panel-dtable-v1-1-c0a765c175e2@trvn.ru>
-References: <20230802-gt5-panel-dtable-v1-1-c0a765c175e2@trvn.ru>
-Subject: Re: [PATCH] drm/panel: samsung-s6d7aa0: Add MODULE_DEVICE_TABLE
-Message-Id: <169096669979.1696778.2368037632749809262.b4-ty@linaro.org>
-Date:   Wed, 02 Aug 2023 10:58:19 +0200
+        Wed, 2 Aug 2023 05:00:41 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53FF115;
+        Wed,  2 Aug 2023 02:00:40 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3724Y6ej022364;
+        Wed, 2 Aug 2023 09:00:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=n2H3++VwuuWxG88O+gvsJuTcEr7Ar4wIkbAH5+PfnRM=;
+ b=S2qZg6u5yOeVpjj4xSwdGfA404dymU00N5Hhpdwx93a1rSTCXFCs8D+DyeqjpVo9Z5lp
+ gfl/AVdjDB7j9WfJPIIPNl3CiP2jYgm+kgwCa20C1XNLJUUXK5Z2OKqzMCiNBrOwAfEj
+ 8caCBzAG+DEs3hhdFYnz3pMpWgrNNUCQl2kesfN+VksJKO7Au1jlX4Bpq8H234Ui0JC/
+ iGb7NNsTLPbIkJh1+vHPyFbp1Cp7NSgF/j7uifOsbMqVgto0eK9MzhD/cNRG6KgBbwWM
+ m95jA2IfhTI3sYdvR0+OBX08vp0pL2T6nmzRaybdblyMtuYFGdNg0+wqYmbKU9+63mCv Ww== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s75b31xcq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 09:00:37 +0000
+Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37290a9u017179
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Aug 2023 09:00:36 GMT
+Received: from [10.214.67.128] (10.80.80.8) by nasanex01b.na.qualcomm.com
+ (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
+ 2023 02:00:32 -0700
+Message-ID: <3ed4b1c1-bd1d-3b88-49ad-4eeb0fd6b83d@quicinc.com>
+Date:   Wed, 2 Aug 2023 14:30:29 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v5 6/6] soc: qcom: llcc: Add QDU1000 and QRU1000 LLCC
+ support
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mukesh Ojha <quic_mojha@quicinc.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <srinivas.kandagatla@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230724084155.8682-1-quic_kbajaj@quicinc.com>
+ <20230724084155.8682-7-quic_kbajaj@quicinc.com>
+ <34868b94-abe3-aa67-fb76-35d9a2481cfd@quicinc.com>
+ <2a68b891-b855-1998-3eaf-a21473da0851@linaro.org>
+From:   Komal Bajaj <quic_kbajaj@quicinc.com>
+In-Reply-To: <2a68b891-b855-1998-3eaf-a21473da0851@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: flAgz96zKyghite3BKYb1qkvjCvnp5mT
+X-Proofpoint-ORIG-GUID: flAgz96zKyghite3BKYb1qkvjCvnp5mT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_03,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxscore=0 spamscore=0 mlxlogscore=798 bulkscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020079
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Wed, 02 Aug 2023 11:41:22 +0500, Nikita Travkin wrote:
-> The driver can be built as a module, however the lack of the
-> MODULE_DEVICE_TABLE macro prevents it from being automatically probed
-> from the DT in such case.
-> 
-> Add the missed macro to make sure the module can load automatically.
-> 
-> 
+
+On 7/24/2023 6:25 PM, Konrad Dybcio wrote:
+> On 24.07.2023 14:45, Mukesh Ojha wrote:
+>>
+>> On 7/24/2023 2:11 PM, Komal Bajaj wrote:
+>>> Add LLCC configuration data for QDU1000 and QRU1000 SoCs.
+>>>
+>>> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
+>>> ---
 > [...]
+>
+>>>    static const struct qcom_sct_config sc7180_cfgs = {
+>>>        .llcc_config    = sc7180_cfg,
+>>>        .num_cfgs    = 1,
+>>> @@ -611,6 +672,11 @@ static const struct qcom_sct_config sm8550_cfgs = {
+>>>        .num_cfgs    = 1,
+>>>    };
+>>>    +static const struct qcom_sct_config qdu1000_cfgs = {
+>>> +    .llcc_config    = qdu1000_cfg,
+>>> +    .num_cfgs    = 1,
+>>
+>> Should not this be 4 ?
+> Even better, use ARRAY_SIZE(name_of_arr)
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-fixes)
+Yes, Thanks for suggesting it.
 
-[1/1] drm/panel: samsung-s6d7aa0: Add MODULE_DEVICE_TABLE
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=c71b7aa8619a0c9700132d0733e33999fb614339
+-Komal
 
--- 
-Neil
+>
+> Konrad
 
