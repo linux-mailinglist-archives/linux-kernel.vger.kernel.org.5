@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C5C76CD28
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F34E76CD2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234504AbjHBMmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33866 "EHLO
+        id S234549AbjHBMmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234056AbjHBMmN (ORCPT
+        with ESMTP id S234520AbjHBMmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:42:13 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBE03581
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:41:43 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-4fe45da0a89so1114063e87.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:41:43 -0700 (PDT)
+        Wed, 2 Aug 2023 08:42:35 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D222D71
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:42:09 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-4fe0e23a4b1so10851440e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:42:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690980032; x=1691584832;
+        d=linaro.org; s=google; t=1690980074; x=1691584874;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RU7egs2LiLlo94w/Ve+4pxpzbrlg5N9jxVZz8FuH8uk=;
-        b=Rbgd7W2JAFnf7G5kp/X/mgMBWM6VkzdZ3F6c2JrJ420yqYrmlmVO4QwIN0MmXM0t9G
-         UJfq74w8QEO5p1D7WnYFrv2CVwxqIbkx4EHYKkX4nhA6txhoIrBxRLM9l2b7EW26Dfab
-         DZoJmMEvfVwTUTGHBLmu0x0yi4HO076Vtk5u5WybylPs5fjGml8EgyynBdrWA0lhR/ca
-         yr8bRhx8LVIidA9hgmgLl+DhXUBlEoO55oE2u43nM7j3ttTURqPLXfTzNjC6j8FhNrvw
-         X94NLcxEE7yVFhJiALfj15rgHAhtG5jLI564dxr8dPsNE4crLYeqH0JMoQJKeYlj+rp1
-         9WKg==
+        bh=qTksykLHgPoGjyGnbXpzqbK57FtUlqyGDS/jMgMiJrA=;
+        b=frMaUR21aQcVre5wpIBr2kaDUtIwWbOnKvxzqEE1J0+ArLy2qCd9cc+iAZSVm5yfKu
+         BWrRKzKvyTC10B5KJlhdH/QVwpl44G9H2kY+ABLV8D6fyvx8iftamLy8YKERzT1KNv+P
+         rEQDTha5RM8jCuJW1UpZxZcaZSdVtgo9VDWwWmKHNLFnUPwAnOzslanNJJI685aUrD3R
+         adg6CPU9EInQYUVSaMWup25CBeycju0ZLDNZiCZjNYxyxyGh/J5SP0Jv5I7gEJOu8GwE
+         pUM64pNe765LxtYRbCzEpTGHbLix3xq/7OFMJ8ShbI3hQSlRRmS/9M/3f+EJq6JoLzsR
+         XmnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690980032; x=1691584832;
+        d=1e100.net; s=20221208; t=1690980074; x=1691584874;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RU7egs2LiLlo94w/Ve+4pxpzbrlg5N9jxVZz8FuH8uk=;
-        b=LSEWB70CSi7RuXX7qFtYWgdwa/xz0EAsDpbaBRBKoF6ZAvogxbjz0fI3HbxNXrISBR
-         yiwcTEFbBsWkfj7CRDqs5V1UrLKWG5wySgiqV8QkktO/G+gerDueyj/UhVqSiJFUAQGI
-         bxmeIkyXWlj/yAcXv8VYWgzS0ysm2F0KkZFMT8Eg211HF+jOCemEp1rccLLtpSfXnq/2
-         Wyu34nMRELKkxMjHC6XpHPX9Lb7Fjinpdj53L/qC6GbO+FySXFSoMPk8WxKqFb2QqZa3
-         MlTka8siCaZ43l35jJUTKPm2gNLYdPt0VDriMmd5uoNFEQuq0k0NCmJ4U1EFgHeNfuws
-         6xWQ==
-X-Gm-Message-State: ABy/qLbTaRWcWSegs0XqA+3jzYvZ69emmgbbwDL461SBOZUbBZ+p4sl4
-        POUPQt2/L5MMyrxug4SEeBYshg==
-X-Google-Smtp-Source: APBJJlHrGFppFXU8yTl+lMATmGnTZzlyE3gAXM9FXDbbwfGdSJLUeR9imLN5Va8zq/USOk9AbGxx5A==
-X-Received: by 2002:a05:6512:3b8e:b0:4f9:6adf:3981 with SMTP id g14-20020a0565123b8e00b004f96adf3981mr2119812lfv.33.1690980032026;
-        Wed, 02 Aug 2023 05:40:32 -0700 (PDT)
+        bh=qTksykLHgPoGjyGnbXpzqbK57FtUlqyGDS/jMgMiJrA=;
+        b=WYvu99ND2FycT/7n2g7xKct1Ld2D0nNu2NjmrM6Vr8YspQ1qUt2zZH3Shkf3gLliVN
+         gc3IW6dG71AkAE6CVM9JzRp4Sr+3Nxfz00VqLIphVhzwBhVJ9LhdekphFCfIBfYYWLHA
+         EWo33x95e3KzZQfgxn+XoacTzVmNCE0nVgnmPARzUVWj8fw6szUO1hAvsrTRtSTjh8aJ
+         A28/BOM5PbdEY3EnBCDI5ep1ZpRbwmPbNpJxMpv0AeUswomlhh658ryrFOajuDTSrcSD
+         HJWCK0oCmBa2Zrbj68uXogqDntZlXQjLm3urXaBtoWH7Ym9BDz2hclZZI3j/jquAWq3V
+         oNxQ==
+X-Gm-Message-State: ABy/qLaqtK4hP2zR0f9iPg1aHzKTamdUv6X8amplCw4LsBIPQqT4fy0F
+        gHtHc4EnAf3f8HTKQxJWqhQ/0A==
+X-Google-Smtp-Source: APBJJlGvede7V152zseTuSWzXeZdrxTDVh/nKhZgkD7zrGxy9LoyBWcOcX6nnyGK0eT7ZUcoF7TDWg==
+X-Received: by 2002:a05:6512:239a:b0:4f8:62a6:8b2 with SMTP id c26-20020a056512239a00b004f862a608b2mr5771255lfv.46.1690980074327;
+        Wed, 02 Aug 2023 05:41:14 -0700 (PDT)
 Received: from [192.168.1.101] (abyk53.neoplus.adsl.tpnet.pl. [83.9.30.53])
-        by smtp.gmail.com with ESMTPSA id j15-20020ac2550f000000b004fe432108aesm793107lfk.261.2023.08.02.05.40.30
+        by smtp.gmail.com with ESMTPSA id j15-20020ac2550f000000b004fe432108aesm793107lfk.261.2023.08.02.05.41.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 05:40:31 -0700 (PDT)
-Message-ID: <77d437eb-8edd-344d-61be-71aae7866a69@linaro.org>
-Date:   Wed, 2 Aug 2023 14:40:30 +0200
+        Wed, 02 Aug 2023 05:41:13 -0700 (PDT)
+Message-ID: <57f645cb-1148-3423-2b03-f221c3045380@linaro.org>
+Date:   Wed, 2 Aug 2023 14:41:13 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/8] arm64: dts: qcom: sdx75: Add spmi node
+Subject: Re: [PATCH 2/8] arm64: dts: qcom: Add pinctrl gpio support for
+ pm7250b
 Content-Language: en-US
 To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, robh+dt@kernel.org,
@@ -62,7 +63,7 @@ To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
- <1690970366-30982-2-git-send-email-quic_rohiagar@quicinc.com>
+ <1690970366-30982-3-git-send-email-quic_rohiagar@quicinc.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -99,13 +100,13 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <1690970366-30982-2-git-send-email-quic_rohiagar@quicinc.com>
+In-Reply-To: <1690970366-30982-3-git-send-email-quic_rohiagar@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -113,28 +114,10 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 2.08.2023 11:59, Rohit Agarwal wrote:
-> Add SPMI node to SDX75 dtsi.
+> Add pinctrl gpio dts node for pm7250b.
 > 
 > Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
 > ---
->  arch/arm64/boot/dts/qcom/sdx75.dtsi | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
-> index 21d5d55..5e9602cd 100644
-> --- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
-> @@ -469,6 +469,29 @@
->  			interrupt-controller;
->  		};
->  
-> +		spmi_bus: spmi@c400000 {
-> +			compatible = "qcom,spmi-pmic-arb";
-> +			reg = <0x0 0xc400000 0x0 0x3000>,
-> +			      <0x0 0xc500000 0x0 0x400000>,
-> +			      <0x0 0xc440000 0x0 0x80000>,
-> +			      <0x0 0xc4c0000 0x0 0x10000>,
-> +			      <0x0 0xc42d000 0x0 0x4000>;
-Please pad the address part to 8 hex digits (add leading zeroes)
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
 Konrad
