@@ -2,210 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3386176D9CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B25776D9CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233125AbjHBVnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
+        id S233250AbjHBVnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232085AbjHBVnS (ORCPT
+        with ESMTP id S232190AbjHBVnT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:43:18 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8740198A
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:43:17 -0700 (PDT)
+        Wed, 2 Aug 2023 17:43:19 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAE2211F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:43:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4473661B38
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CC38761B40
         for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 21:43:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 411BEC433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5911C433C9;
         Wed,  2 Aug 2023 21:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691012596;
-        bh=kMVc66oZXCOktM4R7/awXD6J4keYYzNjFUaNutsI2bU=;
+        s=k20201202; t=1691012597;
+        bh=JP7uB7/G+cUBWmCMFTcCRqLSa2LcbVSrJBh+8gJznBY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XTxyZN9wgm81uYCBD8tsYa8GiyQrknkGGCqGP+Zp6Wc+lvHBHfpOQUmIBlKSTGYmh
-         1UKD17lJBeOavBqNqJh3fOpnflBOMfvY+Bx0jYBVEh9fZDHTjC1jP/dOaSqYFRl+jQ
-         veY9IxAu4ARncosqjFWMds8VXLP9r2WxtyD1BaEJhw27OGS7l0Q+iUKN5psDk0se7K
-         fo0JmD6X43tdBI8eG86p92nY0vo9ypmrouOlHNvXMWIrOP1qktU2tIGPQ6yqqpzsfG
-         st/A6Dt42kSWmistvHhdf0bjHrvd2e8qx+VIySEG2VKdtpNHM1uHAeQMlcVifJDMHs
-         fhvvpLexHQ2Hw==
+        b=d7xhpD4E6+xzHmLfpPR8xGJeolAoLBdQ9cU9bmsPDrhUUzqAQB3BxkMswSpzjfR7F
+         bZc3Fqr8n6GnLlqOfjjloocRUENNRBb6HKHdzqmAYeY82HvBo/5IlyyO6BqiyHQnij
+         dUzqJPM7nGRPpbnBigsMKPqICuvROkUfZbHmLB9QiP7TRI7y7YStlKiqvORxaaIrYO
+         56CifiuxP5cepT2YUYx7ld/O9AQQw5Kf1eRKYDuxPmxQSJZeaYsRmtMiZlcXClpoPh
+         emu8Mso4037QQC16Eiv96YfdCCV3p08+4tqrovf0W5WO8TOlmLqyn9Ra5cl2E9Xze4
+         IAfLeY30ehFPQ==
 From:   SeongJae Park <sj@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     SeongJae Park <sj@kernel.org>, damon@lists.linux.dev,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 01/13] mm/damon/core: introduce address range type damos filter
-Date:   Wed,  2 Aug 2023 21:43:00 +0000
-Message-Id: <20230802214312.110532-2-sj@kernel.org>
+Subject: [PATCH 02/13] mm/damon/sysfs-schemes: support address range type DAMOS filter
+Date:   Wed,  2 Aug 2023 21:43:01 +0000
+Message-Id: <20230802214312.110532-3-sj@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230802214312.110532-1-sj@kernel.org>
 References: <20230802214312.110532-1-sj@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Users can know special characteristic of specific address ranges.  NUMA
-nodes or special objects or buffers in virtual address space could be
-such examples.  For such cases, DAMOS schemes could required to be
-applied to only specific address ranges.  Implement yet another type of
-DAMOS filter for the purpose.
-
-Note that the existing filter types, namely anon pages and memcg DAMOS
-filters needed page level type check.  Because such check can be done
-efficiently in the opertions set layer, those filters are handled in
-operations set layer.  Specifically, only paddr operations set
-implementation supports these filters.  Also, because statistics
-counting is done in the DAMON core layer, the regions that filtered out
-by these filters are counted as tried but failed to the statistics.
-
-Unlike those, address range based filters can efficiently handled in the
-core layer.  Hence, do the handling in the layer, and count the regions
-that filtered out by those as the scheme has not tried for the region.
-This difference should clearly documented.
+Extend DAMON sysfs interface to support address range based DAMOS
+filters, by adding a special keyword for the filter/<N>/type file,
+namely 'addr', and two files under filter/<N>/ for specifying the start
+and the end addresses of the range, namely 'addr_start' and 'addr_end'.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- include/linux/damon.h | 22 +++++++++++++-----
- mm/damon/core.c       | 52 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 68 insertions(+), 6 deletions(-)
+ mm/damon/sysfs-schemes.c | 56 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index d5d4d19928e0..476f37a883a4 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -226,16 +226,24 @@ struct damos_stat {
-  * enum damos_filter_type - Type of memory for &struct damos_filter
-  * @DAMOS_FILTER_TYPE_ANON:	Anonymous pages.
-  * @DAMOS_FILTER_TYPE_MEMCG:	Specific memcg's pages.
-+ * @DAMOS_FILTER_TYPE_ADDR:	Address range.
-  * @NR_DAMOS_FILTER_TYPES:	Number of filter types.
-  *
-- * The support of each filter type is up to running &struct damon_operations.
-- * &enum DAMON_OPS_PADDR is supporting all filter types, while
-- * &enum DAMON_OPS_VADDR and &enum DAMON_OPS_FVADDR are not supporting any
-- * filter types.
-+ * The anon pages type and memcg type filters are handled by underlying
-+ * &struct damon_operations as a part of scheme action trying, and therefore
-+ * accounted as 'tried'.  In contrast, other types are handled by core layer
-+ * before trying of the action and therefore not accounted as 'tried'.
-+ *
-+ * The support of the filters that handled by &struct damon_operations depend
-+ * on the running &struct damon_operations.
-+ * &enum DAMON_OPS_PADDR supports both anon pages type and memcg type filters,
-+ * while &enum DAMON_OPS_VADDR and &enum DAMON_OPS_FVADDR don't support any of
-+ * the two types.
-  */
- enum damos_filter_type {
- 	DAMOS_FILTER_TYPE_ANON,
- 	DAMOS_FILTER_TYPE_MEMCG,
-+	DAMOS_FILTER_TYPE_ADDR,
- 	NR_DAMOS_FILTER_TYPES,
- };
- 
-@@ -244,18 +252,20 @@ enum damos_filter_type {
-  * @type:	Type of the page.
-  * @matching:	If the matching page should filtered out or in.
-  * @memcg_id:	Memcg id of the question if @type is DAMOS_FILTER_MEMCG.
-+ * @addr_range:	Address range if @type is DAMOS_FILTER_TYPE_ADDR.
-  * @list:	List head for siblings.
-  *
-  * Before applying the &damos->action to a memory region, DAMOS checks if each
-  * page of the region matches to this and avoid applying the action if so.
-- * Note that the check support is up to &struct damon_operations
-- * implementation.
-+ * Support of each filter type depends on the running &struct damon_operations
-+ * and the type.  Refer to &enum damos_filter_type for more detai.
-  */
- struct damos_filter {
+diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
+index 9a015079f3a4..03ddba3e216d 100644
+--- a/mm/damon/sysfs-schemes.c
++++ b/mm/damon/sysfs-schemes.c
+@@ -282,6 +282,7 @@ struct damon_sysfs_scheme_filter {
  	enum damos_filter_type type;
  	bool matching;
- 	union {
- 		unsigned short memcg_id;
-+		struct damon_addr_range addr_range;
- 	};
- 	struct list_head list;
+ 	char *memcg_path;
++	struct damon_addr_range addr_range;
  };
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index eb9580942a5c..f3a821215230 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -878,6 +878,56 @@ static void damos_update_stat(struct damos *s,
- 	s->stat.sz_applied += sz_applied;
+ 
+ static struct damon_sysfs_scheme_filter *damon_sysfs_scheme_filter_alloc(void)
+@@ -293,6 +294,7 @@ static struct damon_sysfs_scheme_filter *damon_sysfs_scheme_filter_alloc(void)
+ static const char * const damon_sysfs_scheme_filter_type_strs[] = {
+ 	"anon",
+ 	"memcg",
++	"addr",
+ };
+ 
+ static ssize_t type_show(struct kobject *kobj,
+@@ -373,6 +375,44 @@ static ssize_t memcg_path_store(struct kobject *kobj,
+ 	return count;
  }
  
-+static bool __damos_filter_out(struct damon_target *t, struct damon_region *r,
-+		struct damos_filter *filter)
++static ssize_t addr_start_show(struct kobject *kobj,
++		struct kobj_attribute *attr, char *buf)
 +{
-+	bool matched = false;
-+	unsigned long start, end;
++	struct damon_sysfs_scheme_filter *filter = container_of(kobj,
++			struct damon_sysfs_scheme_filter, kobj);
 +
-+	switch (filter->type) {
-+	case DAMOS_FILTER_TYPE_ADDR:
-+		start = ALIGN_DOWN(filter->addr_range.start, DAMON_MIN_REGION);
-+		end = ALIGN_DOWN(filter->addr_range.end, DAMON_MIN_REGION);
-+
-+		/* inside the range */
-+		if (start <= r->ar.start && r->ar.end <= end) {
-+			matched = true;
-+			break;
-+		}
-+		/* outside of the range */
-+		if (r->ar.end <= start || end <= r->ar.start) {
-+			matched = false;
-+			break;
-+		}
-+		/* start before the range and overlap */
-+		if (r->ar.start < start) {
-+			damon_split_region_at(t, r, start - r->ar.start);
-+			matched = false;
-+			break;
-+		}
-+		/* start inside the range */
-+		damon_split_region_at(t, r, end - r->ar.start);
-+		matched = true;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return matched == filter->matching;
++	return sysfs_emit(buf, "%lu\n", filter->addr_range.start);
 +}
 +
-+static bool damos_filter_out(struct damon_target *t, struct damon_region *r,
-+		struct damos *s)
++static ssize_t addr_start_store(struct kobject *kobj,
++		struct kobj_attribute *attr, const char *buf, size_t count)
 +{
-+	struct damos_filter *filter;
++	struct damon_sysfs_scheme_filter *filter = container_of(kobj,
++			struct damon_sysfs_scheme_filter, kobj);
++	int err = kstrtoul(buf, 0, &filter->addr_range.start);
 +
-+	damos_for_each_filter(filter, s) {
-+		if (__damos_filter_out(t, r, filter))
-+			return true;
-+	}
-+	return false;
++	return err ? err : count;
 +}
 +
- static void damos_apply_scheme(struct damon_ctx *c, struct damon_target *t,
- 		struct damon_region *r, struct damos *s)
++static ssize_t addr_end_show(struct kobject *kobj,
++		struct kobj_attribute *attr, char *buf)
++{
++	struct damon_sysfs_scheme_filter *filter = container_of(kobj,
++			struct damon_sysfs_scheme_filter, kobj);
++
++	return sysfs_emit(buf, "%lu\n", filter->addr_range.end);
++}
++
++static ssize_t addr_end_store(struct kobject *kobj,
++		struct kobj_attribute *attr, const char *buf, size_t count)
++{
++	struct damon_sysfs_scheme_filter *filter = container_of(kobj,
++			struct damon_sysfs_scheme_filter, kobj);
++	int err = kstrtoul(buf, 0, &filter->addr_range.end);
++
++	return err ? err : count;
++}
++
+ static void damon_sysfs_scheme_filter_release(struct kobject *kobj)
  {
-@@ -895,6 +945,8 @@ static void damos_apply_scheme(struct damon_ctx *c, struct damon_target *t,
- 				goto update_stat;
- 			damon_split_region_at(t, r, sz);
+ 	struct damon_sysfs_scheme_filter *filter = container_of(kobj,
+@@ -391,10 +431,18 @@ static struct kobj_attribute damon_sysfs_scheme_filter_matching_attr =
+ static struct kobj_attribute damon_sysfs_scheme_filter_memcg_path_attr =
+ 		__ATTR_RW_MODE(memcg_path, 0600);
+ 
++static struct kobj_attribute damon_sysfs_scheme_filter_addr_start_attr =
++		__ATTR_RW_MODE(addr_start, 0600);
++
++static struct kobj_attribute damon_sysfs_scheme_filter_addr_end_attr =
++		__ATTR_RW_MODE(addr_end, 0600);
++
+ static struct attribute *damon_sysfs_scheme_filter_attrs[] = {
+ 	&damon_sysfs_scheme_filter_type_attr.attr,
+ 	&damon_sysfs_scheme_filter_matching_attr.attr,
+ 	&damon_sysfs_scheme_filter_memcg_path_attr.attr,
++	&damon_sysfs_scheme_filter_addr_start_attr.attr,
++	&damon_sysfs_scheme_filter_addr_end_attr.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(damon_sysfs_scheme_filter);
+@@ -1484,7 +1532,15 @@ static int damon_sysfs_set_scheme_filters(struct damos *scheme,
+ 				damos_destroy_filter(filter);
+ 				return err;
+ 			}
++		} else if (filter->type == DAMOS_FILTER_TYPE_ADDR) {
++			if (sysfs_filter->addr_range.end <
++					sysfs_filter->addr_range.start) {
++				damos_destroy_filter(filter);
++				return -EINVAL;
++			}
++			filter->addr_range = sysfs_filter->addr_range;
  		}
-+		if (damos_filter_out(t, r, s))
-+			return;
- 		ktime_get_coarse_ts64(&begin);
- 		if (c->callback.before_damos_apply)
- 			err = c->callback.before_damos_apply(c, t, r, s);
++
+ 		damos_add_filter(scheme, filter);
+ 	}
+ 	return 0;
 -- 
 2.25.1
 
