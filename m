@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC4A76C85F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FF076C862
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233949AbjHBIcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
+        id S233950AbjHBIde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbjHBIcT (ORCPT
+        with ESMTP id S231322AbjHBIdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:32:19 -0400
+        Wed, 2 Aug 2023 04:33:32 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF32171B;
-        Wed,  2 Aug 2023 01:32:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83202171B;
+        Wed,  2 Aug 2023 01:33:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B589461890;
-        Wed,  2 Aug 2023 08:32:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95A8FC433C9;
-        Wed,  2 Aug 2023 08:32:17 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1A11C6184D;
+        Wed,  2 Aug 2023 08:33:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF834C433C7;
+        Wed,  2 Aug 2023 08:33:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1690965138;
-        bh=WCYaS7WaNcg3pjGQ1y5KfJ2f08APy0pqC/hoQFKvh9A=;
+        s=korg; t=1690965210;
+        bh=6L87WFqpRWoyspDs3L6KZduy9PxJ66o4a4lAQyjQVr4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FviH/yt2U1vWUE6LFvpQgWeIe8Wug2QurDoKIat1aeRLlclKM+q6B8SlFgppeacGQ
-         zP5YCQOtSG93RA+FK6zmokU3/UqdfC57uu1JgwF8HelIu9eBp9UabWtoLjezJYbGCI
-         SXdgL0zo0o4jwHF6UNbNRF/e7ngOwmXcYU5nIPEM=
-Date:   Wed, 2 Aug 2023 10:32:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>, stable@vger.kernel.org,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Andy Shevchenko <andy@kernel.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 6.1 000/228] 6.1.43-rc1 review
-Message-ID: <2023080200-expediter-dingo-8fd0@gregkh>
-References: <20230801091922.799813980@linuxfoundation.org>
- <CA+G9fYsqEE6P8vKKvWgFDjpgT64FebUssPNS48n6qfUriu6Z1w@mail.gmail.com>
- <20230802082226.ok23iygasc3byc35@pengutronix.de>
+        b=YYxMnfhfp/hn8Iri+SxArk/uuPg4mGzMWdOpzu5oZn5Pl5CNy8ezbaDd8McBJ203o
+         7uOOUooPxq83PZsOSkVUDxZtrWzX1UDk3HR1+FGCP3YJJKYI8Av65YNjiKhedbM25m
+         jgI2e0TgWX7c+FRdsmJ8yJ6LLy+35xiTC7jd5P4k=
+Date:   Wed, 2 Aug 2023 10:33:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Minda Chen <minda.chen@starfivetech.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Conor Dooley <conor@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Dao Lu <daolu@rivosinc.com>, Heiko Stuebner <heiko@sntech.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Mason Huo <mason.huo@starfivetech.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v1] riscv: Using TOOLCHAIN_HAS_ZIHINTPAUSE marco replace
+ zihintpause
+Message-ID: <2023080253-headache-moneybags-a833@gregkh>
+References: <20230802064215.31111-1-minda.chen@starfivetech.com>
+ <20230802-sharpness-spoon-f9b8804fb66f@wendy>
+ <d64874cb-8628-a6d2-d2f4-8af4d0ebf8b2@starfivetech.com>
+ <20230802-seismic-gallstone-fca0f4b17076@wendy>
+ <c42bd997-8795-8bf7-eee1-3ac8b153371a@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230802082226.ok23iygasc3byc35@pengutronix.de>
+In-Reply-To: <c42bd997-8795-8bf7-eee1-3ac8b153371a@starfivetech.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -63,36 +65,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 10:22:26AM +0200, Uwe Kleine-König wrote:
-> On Wed, Aug 02, 2023 at 07:24:23AM +0530, Naresh Kamboju wrote:
-> > On Tue, 1 Aug 2023 at 15:00, Greg Kroah-Hartman
-> > <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > This is the start of the stable review cycle for the 6.1.43 release.
-> > > There are 228 patches in this series, all will be posted as a response
-> > > to this one.  If anyone has any issues with these being applied, please
-> > > let me know.
-> > >
-> > > Responses should be made by Thu, 03 Aug 2023 09:18:38 +0000.
-> > > Anything received after that time might be too late.
-> > >
-> > > The whole patch series can be found in one patch at:
-> > >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.43-rc1.gz
-> > > or in the git tree and branch at:
-> > >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> > > and the diffstat can be found below.
-> > >
-> > > thanks,
-> > >
-> > > greg k-h
-> > 
-> > Following patch caused build regression on stable-rc 6.1 and 5.15,
+On Wed, Aug 02, 2023 at 04:17:51PM +0800, Minda Chen wrote:
 > 
-> Looking at 6.1.x, cherry-picking
-> 88da4e8113110d5f4ebdd2f8cd0899e300cd1954 can be done without conflicts
-> and fixes this regression.
+> 
+> On 2023/8/2 15:48, Conor Dooley wrote:
+> > On Wed, Aug 02, 2023 at 03:32:15PM +0800, Minda Chen wrote:
+> >> 
+> >> 
+> >> On 2023/8/2 14:54, Conor Dooley wrote:
+> >> > Hey Minda,
+> >> > 
+> >> > On Wed, Aug 02, 2023 at 02:42:15PM +0800, Minda Chen wrote:
+> >> >> Actually it is a part of Conor's
+> >> >> commit aae538cd03bc ("riscv: fix detection of toolchain
+> >> >> Zihintpause support").
+> >> >> It is looks like a merge issue.
+> >> > 
+> >> > Yup, spot on.
+> >> > 
+> >> >> Samuel's
+> >> >> commit 0b1d60d6dd9e ("riscv: Fix build with
+> >> >> CONFIG_CC_OPTIMIZE_FOR_SIZE=y") do not base on Conor's commit and
+> >> >> revert to __riscv_zihintpause. So this patch can fix it.
+> >> >> 
+> >> >> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+> >> > 
+> >> > Did you actually manage to trigger this, or was this by inspection?
+> >> > clang-15 + binutils 2.35 was, IIRC, how we spotted this because that's
+> >> > what the clang-built-linux CI uses to test the LTS kernels from before
+> >> > LLVM's IAS was supported for RISC-V. Seemingly all that needs to be
+> >> > satisfied there is that zihintpause doesn't appear in -march so this has
+> >> > gone unnoticed.
+> >> > 
+> >> > Fixes: 3c349eacc559 ("Merge patch "riscv: Fix build with CONFIG_CC_OPTIMIZE_FOR_SIZE=y"")
+> >> > Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> >> > 
+> >> > Thanks,
+> >> > Conor.
+> >> > 
+> >> Thanks, Conor. I found this just by inspection. I found a issue that vdso.so call cpu_relax
+> >> cause application core dump in kernel 6.1.31. I need Samuel'patch to fix this. And I search the log
+> >> of processor.h found this issue.
+> > 
+> > That doesn't look like it is fixed in later stable kernels (we are at
+> > 6.1.42-rcN right now I think). It sounds we should ask Greg to backport
+> > 0b1d60d6dd9e ("riscv: Fix build with CONFIG_CC_OPTIMIZE_FOR_SIZE=y")
+> > to 6.1. Does that make sense to you?
+> Yes. 6.1 is lts kernel. Starfive will use this kernel for a long time. Thanks.
 
-Already done and in -rc2!
+What is preventing you from moving to a newer kernel version?  All of
+your kernel changes are already properly merged into Linus's tree,
+right?
 
 thanks,
 
