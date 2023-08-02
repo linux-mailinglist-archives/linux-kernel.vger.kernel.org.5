@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F15A376D93E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F6076D940
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbjHBVKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54084 "EHLO
+        id S231200AbjHBVKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231833AbjHBVK0 (ORCPT
+        with ESMTP id S231824AbjHBVK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Aug 2023 17:10:26 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC09D273E
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:10:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938FA30C3;
+        Wed,  2 Aug 2023 14:10:24 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4B58C61B29
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 21:10:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A35E8C433CA;
-        Wed,  2 Aug 2023 21:10:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D48B961B23;
+        Wed,  2 Aug 2023 21:10:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 428B7C433C9;
+        Wed,  2 Aug 2023 21:10:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691010621;
-        bh=BdosRve/1vfQeMLTfUBO5k42yoYp/cyiP43a62UOc6U=;
+        s=k20201202; t=1691010623;
+        bh=HKZo0dVHBh4Cp5PSXTEsqA47UzzSgcKTLbt7nmNF2Zg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=oqumx8W9D+/hwn6ORB/oyhkDY+eEmmWfjtjnUOFva6X0C17qbyxEJy777dS6Fm8zA
-         ykk7FWf8KXUoXwWFQeIOvQ9QwPpPj8wt5gTC6+zB8KOQSn55j7SwluR6zsSLMY/h8t
-         hjPBsKynmu6iTAGVx5oriJ5zATy9fI07eKwAH09xduV5rchomigR6+7Iwv7AeXAEru
-         DxU19I7qVYVy+hX5nq3bAYqmPCpO0tiyYtHtKlMRXhUi3Xi7dzHaz0wE/grqEneCEh
-         2AZSjMTpxtpLhnmk0pWadz5VJq64hSTmUXkXYNHC2ZK5GBRiS1IdgOHGdxZChG1Btd
-         1pdaq/LBQ/Pbw==
+        b=RYCOpfpkILLMWlN96Tqg2OLxcjBZEc46bhIaiN8Pbe8hhtHX93X2RsPuXvPLCHasH
+         3Gdpy29jVVxpv7FWibv7Fy/EHe6I0miEABqZ9M/3CflXNsEV0LmDB4V0gebU/wK+nL
+         vO6GyC6BpkaEaOfSurXVrrWJgR8O6PDxxN8/mpKe1LAxUEnYs5x2ckZyph9d4ekxgQ
+         g5QdjP5NZU2onRp4OR/2wtdOm+LYp8mJw+pMLlXhXjVeZwL1Yro1wI49Hr0XohxC4F
+         +Hrq3NhYLbb1qGbGGaDTIHwL1QqLfm2molNRTUkv5k5bGGJX3S0Pwx2GVba97OJX4E
+         i/0HKNqix9oPg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8C8C4C6445B;
-        Wed,  2 Aug 2023 21:10:21 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2B7C4C6445B;
+        Wed,  2 Aug 2023 21:10:23 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] libbpf: fix typos in Makefile
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169101062157.23031.3643802072740316226.git-patchwork-notify@kernel.org>
-Date:   Wed, 02 Aug 2023 21:10:21 +0000
-References: <20230722065236.17010-1-rdunlap@infradead.org>
-In-Reply-To: <20230722065236.17010-1-rdunlap@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, bpf@vger.kernel.org, liuxin350@huawei.com
+Subject: Re: [PATCH v3 -next] Bluetooth: Remove unused declaration
+ amp_read_loc_info()
+From:   patchwork-bot+bluetooth@kernel.org
+Message-Id: <169101062317.23031.2805028576245980577.git-patchwork-notify@kernel.org>
+Date:   Wed, 02 Aug 2023 21:10:23 +0000
+References: <20230728033011.12096-1-yuehaibing@huawei.com>
+In-Reply-To: <20230728033011.12096-1-yuehaibing@huawei.com>
+To:     Yue Haibing <yuehaibing@huawei.com>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pmenzel@molgen.mpg.de
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -60,25 +62,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Fri, 21 Jul 2023 23:52:36 -0700 you wrote:
-> Capitalize ABI (acronym) and fix spelling of "destination".
+On Fri, 28 Jul 2023 11:30:11 +0800 you wrote:
+> This is introduced in commit 903e45411099 ("Bluetooth: AMP: Use HCI cmd to Read Loc AMP Assoc")
+> and never be implemented.
 > 
-> Fixes: 706819495921 ("libbpf: Improve usability of libbpf Makefile")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: bpf@vger.kernel.org
-> Cc: Xin Liu <liuxin350@huawei.com>
+> Fixes: 903e45411099 ("Bluetooth: AMP: Use HCI cmd to Read Loc AMP Assoc")
+> Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
+> ---
+> v3: Add Fixes tag
+> v2: fix SOB and update commit log
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf] libbpf: fix typos in Makefile
-    https://git.kernel.org/bpf/bpf-next/c/94e38c956b97
+  - [v3,-next] Bluetooth: Remove unused declaration amp_read_loc_info()
+    https://git.kernel.org/bluetooth/bluetooth-next/c/c8573f208a12
 
 You are awesome, thank you!
 -- 
