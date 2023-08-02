@@ -2,72 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F95C76C4A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE58E76C4A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232299AbjHBFKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 01:10:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39654 "EHLO
+        id S232302AbjHBFOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 01:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231903AbjHBFKq (ORCPT
+        with ESMTP id S231903AbjHBFOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 01:10:46 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7965D1FCB;
-        Tue,  1 Aug 2023 22:10:44 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3724WEPx028031;
-        Wed, 2 Aug 2023 05:10:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=JGQQ2RRYZ1qf9bibWVUm1IHA4vj9lwvMXXEvTgPZB9s=;
- b=BwGucw4cad6IJRVo6KTZ34lqAdCgdb/NXM6gSF1Z/NsI0zhryTDNxveTJogT3mR+rCRg
- Xogjwil1SrVOmzcc3ly/KQ3aEdoJjPFE9SiRCzVikk8Q5xnOwDH4mwE2YtGwufGmsWIR
- cWIPJhgdwBW+Pp9a8Zv5TUEf0DmzcW2REhsVsHicNvJa7BCnK/DkDYwecEWN0Cw1v2CR
- MrfVCtKvN/7GMi8mz3S1ersYW7t//CLFwk3KEgJWZkARmU1CXTMPrx0OUhnM9lgJv4eo
- CJGvnOFbPvqDvLWBcm4UYZaCpYI68yoXxMQdqsXK/VC76L/9XTcT2JCS26EkO8HTgomi 2Q== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7adk8m0g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 05:10:40 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3725AdmW023636
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 05:10:39 GMT
-Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 1 Aug 2023 22:10:36 -0700
-From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
-To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
-CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>,
-        <fastrpc.upstream@qti.qualcomm.com>, stable <stable@kernel.org>
-Subject: [PATCH v3] misc: fastrpc: Fix incorrect DMA mapping unmap request
-Date:   Wed, 2 Aug 2023 10:40:32 +0530
-Message-ID: <1690953032-17070-1-git-send-email-quic_ekangupt@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 2 Aug 2023 01:14:12 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FDD91736;
+        Tue,  1 Aug 2023 22:14:11 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3725E3Io018420;
+        Wed, 2 Aug 2023 00:14:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690953243;
+        bh=n4aigKabrSs75QcXiNTIKIjgLT6W4FsnITVc3fjQhhE=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=QlaksAkPQ/uwx0Umhp4FNNJzOaDCWxjnVePM9l8qqb0npxqyM2FGGP13jlqZnFES7
+         BElXI59abYvB1RNMRmwHk2CLL0puJU8HBUNsLIrfAPTSsQz2MS0XzCF+4TatP21EUA
+         LpG7Qhqx0VrxqEuZ9hjTDHTjc5N2TR3mKMntm5nM=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3725E3CE012656
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 2 Aug 2023 00:14:03 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
+ Aug 2023 00:14:03 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 2 Aug 2023 00:14:03 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3725E2AN043159;
+        Wed, 2 Aug 2023 00:14:02 -0500
+Date:   Wed, 2 Aug 2023 00:14:02 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Judith Mendez <jm@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH]  arm64: dts: ti: k3-am62a7: Add MCU MCAN nodes
+Message-ID: <20230802051402.totwmtw2oadqrai7@herself>
+References: <20230724183844.635319-1-jm@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: gTMHd-1VJt47SGVj2KF1yS310-ZxNrcN
-X-Proofpoint-GUID: gTMHd-1VJt47SGVj2KF1yS310-ZxNrcN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_03,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- priorityscore=1501 phishscore=0 bulkscore=0 impostorscore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=967 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308020046
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230724183844.635319-1-jm@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,55 +68,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Scatterlist table is obtained during map create request and the same
-table is used for DMA mapping unmap. In case there is any failure
-while getting the sg_table, ERR_PTR is returned instead of sg_table.
+On 13:38-20230724, Judith Mendez wrote:
+> On AM62ax there are no hardware interrupts routed to A53 GIC
+> interrupt controller for MCU MCAN IPs, so MCU MCAN nodes were
+> omitted from MCU dtsi.
+> 
+> Timer polling was introduced in commits [1][2] enabling 3x MCAN
+> on AM62ax, so now add MCU MCAN nodes to the mcu dtsi for the Cortex A53.
+> 
+> [1] commit b382380c0d2d ("can: m_can: Add hrtimer to generate software interrupt")
+> [2] commit bb410c03b999 ("dt-bindings: net: can: Remove interrupt properties for MCAN")
+> 
+> Signed-off-by: Judith Mendez <jm@ti.com>
+> ---
+>  arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi b/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
+> index 04599762c2b7..3fca702e7f2d 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am62a-mcu.dtsi
+> @@ -143,4 +143,28 @@ mcu_rti0: watchdog@4880000 {
+>  		/* Tightly coupled to M4F */
+>  		status = "reserved";
+>  	};
+> +
+> +	mcu_mcan0: can@4e00000 {
 
-When the map is getting freed, there is only a non-NULL check of
-sg_table which will also be true in case failure was returned instead
-of sg_table. This would result in improper unmap request. Add proper
-check before setting map table to avoid bad unmap request.
+s/4e00000/4e08000
 
-Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context Invoke method")
-Cc: stable <stable@kernel.org>
-Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
----
-Changes in v2:
-  - Added fixes information to commit text
-Changes in v3:
-  - Set map->table only if attachment for successful
+> +		compatible = "bosch,m_can";
+> +		reg = <0x00 0x4e08000 0x00 0x200>,
+> +		      <0x00 0x4e00000 0x00 0x8000>;
+> +		reg-names = "m_can", "message_ram";
+> +		power-domains = <&k3_pds 188 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 188 6>, <&k3_clks 188 1>;
+> +		clock-names = "hclk", "cclk";
+> +		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
+> +		status = "disabled";
+> +	};
+> +
+> +	mcu_mcan1: can@4e10000 {
 
- drivers/misc/fastrpc.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+s/4e10000/4e18000
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 9666d28..de7c812 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -756,6 +756,7 @@ static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
- {
- 	struct fastrpc_session_ctx *sess = fl->sctx;
- 	struct fastrpc_map *map = NULL;
-+	struct sg_table *table;
- 	int err = 0;
- 
- 	if (!fastrpc_map_lookup(fl, fd, ppmap, true))
-@@ -783,11 +784,12 @@ static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
- 		goto attach_err;
- 	}
- 
--	map->table = dma_buf_map_attachment_unlocked(map->attach, DMA_BIDIRECTIONAL);
--	if (IS_ERR(map->table)) {
--		err = PTR_ERR(map->table);
-+	table = dma_buf_map_attachment(map->attach, DMA_BIDIRECTIONAL);
-+	if (IS_ERR(table)) {
-+		err = PTR_ERR(table);
- 		goto map_err;
- 	}
-+	map->table = table;
- 
- 	if (attr & FASTRPC_ATTR_SECUREMAP) {
- 		map->phys = sg_phys(map->table->sgl);
+> +		compatible = "bosch,m_can";
+> +		reg = <0x00 0x4e18000 0x00 0x200>,
+> +		      <0x00 0x4e10000 0x00 0x8000>;
+> +		reg-names = "m_can", "message_ram";
+> +		power-domains = <&k3_pds 189 TI_SCI_PD_EXCLUSIVE>;
+> +		clocks = <&k3_clks 189 6>, <&k3_clks 189 1>;
+> +		clock-names = "hclk", "cclk";
+> +		bosch,mram-cfg = <0x0 128 64 64 64 64 32 32>;
+> +		status = "disabled";
+> +	};
+>  };
+> -- 
+> 2.34.1
+> 
+
 -- 
-2.7.4
-
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
