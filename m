@@ -2,63 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C210976C88E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA2076C893
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233985AbjHBInV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 04:43:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
+        id S231479AbjHBIor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233957AbjHBInK (ORCPT
+        with ESMTP id S234046AbjHBIoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:43:10 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50E710F1;
-        Wed,  2 Aug 2023 01:43:08 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 44FD724E295;
-        Wed,  2 Aug 2023 16:43:07 +0800 (CST)
-Received: from EXMBX061.cuchost.com (172.16.6.61) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
- 2023 16:43:07 +0800
-Received: from localhost.localdomain (183.27.98.54) by EXMBX061.cuchost.com
- (172.16.6.61) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
- 2023 16:43:06 +0800
-From:   Xingyu Wu <xingyu.wu@starfivetech.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Maxim Kochetkov" <fido_max@inbox.ru>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>
-CC:     Jose Abreu <joabreu@synopsys.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        "Xingyu Wu" <xingyu.wu@starfivetech.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <linux-riscv@lists.infradead.org>
-Subject: [PATCH v1 5/5] riscv: dts: starfive: Add the nodes and pins of I2Srx/I2Stx0/I2Stx1
-Date:   Wed, 2 Aug 2023 16:43:01 +0800
-Message-ID: <20230802084301.134122-6-xingyu.wu@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230802084301.134122-1-xingyu.wu@starfivetech.com>
-References: <20230802084301.134122-1-xingyu.wu@starfivetech.com>
+        Wed, 2 Aug 2023 04:44:34 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BDF2733
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:44:20 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 71AFC6601F5E;
+        Wed,  2 Aug 2023 09:44:18 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690965858;
+        bh=nwhyDlk6TAwpAhBI3YFnIgFq7eJSx5UC/NeXeHfryAk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GssfvuMohyVAsC3K3gUBIXV/rDYVKejdiVwfIKe4BYGKoMOjQc4IuSHolUc4EZJ6X
+         z7xyFKJxsH44UrdQzxLnkpo8zynVZhOzxLGH/rxhM+I1t57+ogHK+sZV4ZxBYygp3a
+         7wfp8mkoNfpQWMJ0NV1YagtKAOkrdqQBoqxddcz2ai+gN5HDeSCbSqEfY3pl9jEpM1
+         YSpsAfSU8lA+2a73zpQ2VAlwZeiohftwYsFY1miCyeIrDOWa3m9H5gnR04xfOLwjky
+         NPU/pEIOmGbxul2ja7BsAmpLV0eFWy9hDyij5qrsv8oM//txir2CIAY55Eapj+7KIz
+         1oSlEZndz5mPQ==
+Date:   Wed, 2 Aug 2023 10:44:15 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Christian =?UTF-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        trix@redhat.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        naresh.kamboju@linaro.org, dakr@redhat.com
+Subject: Re: [PATCH 1/2] drm/exec: use unique instead of local label
+Message-ID: <20230802104415.7fe64b67@collabora.com>
+In-Reply-To: <CAKwvOdmRm=vOjNXGWeuKw-h78CXMrkcwc5vnCRVqFxMxWzhCcg@mail.gmail.com>
+References: <20230731123625.3766-1-christian.koenig@amd.com>
+        <CAKwvOdmRm=vOjNXGWeuKw-h78CXMrkcwc5vnCRVqFxMxWzhCcg@mail.gmail.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [183.27.98.54]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX061.cuchost.com
- (172.16.6.61)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,174 +61,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add I2Srx/I2Stx0/I2Stx1 nodes and pins configuration for the
-StarFive JH7110 SoC.
+On Tue, 1 Aug 2023 13:35:13 -0700
+Nick Desaulniers <ndesaulniers@google.com> wrote:
 
-Signed-off-by: Xingyu Wu <xingyu.wu@starfivetech.com>
----
- .../jh7110-starfive-visionfive-2.dtsi         | 58 +++++++++++++++++
- arch/riscv/boot/dts/starfive/jh7110.dtsi      | 65 +++++++++++++++++++
- 2 files changed, 123 insertions(+)
+> On Mon, Jul 31, 2023 at 5:36=E2=80=AFAM Christian K=C3=B6nig
+> <ckoenig.leichtzumerken@gmail.com> wrote:
+> >
+> > GCC forbids to jump to labels in loop conditions and a new clang
+> > check stumbled over this.
+> >
+> > So instead using a local label inside the loop condition use an
+> > unique label outside of it.
+> >
+> > Fixes: commit 09593216bff1 ("drm: execution context for GEM buffers v7")
+> > Link: https://gcc.gnu.org/onlinedocs/gcc/Statement-Exprs.html
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1890
+> > Link: https://github.com/llvm/llvm-project/commit/20219106060208f0c2f5d=
+096eb3aed7b712f5067
+> > Reported-by: Nathan Chancellor <nathan@kernel.org>
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> > CC: Boris Brezillon <boris.brezillon@collabora.com>
+> > Signed-off-by: Christian K=C3=B6nig <christian.koenig@amd.com> =20
+>=20
+> Works for me; thanks for the patch!
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>=20
+> I suspect it's possible to change the indirect goto into a direct goto
+> with some further refactoring (macros can take block statements; if
+> drm_exec_until_all_locked accepted a block statement arg then you
+> could introduce a new scope, and a new local label to that scope, then
+> just use direct goto),
 
-diff --git a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-index f874d31006a6..8f90d1b6fd66 100644
---- a/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110-starfive-visionfive-2.dtsi
-@@ -185,6 +185,24 @@ &i2c6 {
- 	status = "okay";
- };
- 
-+&i2srx {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2srx_pins>;
-+	status = "okay";
-+};
-+
-+&i2stx0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mclk_ext_pins>;
-+	status = "okay";
-+};
-+
-+&i2stx1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2stx1_pins>;
-+	status = "okay";
-+};
-+
- &spi0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&spi0_pins>;
-@@ -254,6 +272,46 @@ GPOEN_SYS_I2C6_DATA,
- 		};
- 	};
- 
-+	i2srx_pins: i2srx-0 {
-+		clk-sd-pins {
-+			pinmux = <GPIOMUX(38, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2SRX_BCLK)>,
-+				 <GPIOMUX(63, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2SRX_LRCK)>,
-+				 <GPIOMUX(38, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2STX1_BCLK)>,
-+				 <GPIOMUX(63, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2STX1_LRCK)>,
-+				 <GPIOMUX(61, GPOUT_LOW,
-+					      GPOEN_DISABLE,
-+					      GPI_SYS_I2SRX_SDIN0)>;
-+			input-enable;
-+		};
-+	};
-+
-+	i2stx1_pins: i2stx1-0 {
-+		sd-pins {
-+			pinmux = <GPIOMUX(44, GPOUT_SYS_I2STX1_SDO0,
-+					      GPOEN_ENABLE,
-+					      GPI_NONE)>;
-+			bias-disable;
-+			input-disable;
-+		};
-+	};
-+
-+	mclk_ext_pins: mclk-ext-0 {
-+		mclk-ext-pins {
-+			pinmux = <GPIOMUX(4, GPOUT_LOW,
-+					     GPOEN_DISABLE,
-+					     GPI_SYS_MCLK_EXT)>;
-+			input-enable;
-+		};
-+	};
-+
- 	spi0_pins: spi0-0 {
- 		mosi-pins {
- 			pinmux = <GPIOMUX(52, GPOUT_SYS_SPI0_TXD,
-diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-index 05f843b8ca03..507312eb6053 100644
---- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
-+++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
-@@ -512,6 +512,30 @@ tdm: tdm@10090000 {
- 			status = "disabled";
- 		};
- 
-+		i2srx: i2srx@100e0000 {
-+			compatible = "starfive,jh7110-i2srx";
-+			reg = <0x0 0x100e0000 0x0 0x1000>;
-+			clocks = <&syscrg JH7110_SYSCLK_I2SRX_BCLK_MST>,
-+				 <&syscrg JH7110_SYSCLK_I2SRX_APB>,
-+				 <&syscrg JH7110_SYSCLK_MCLK>,
-+				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
-+				 <&mclk_ext>,
-+				 <&syscrg JH7110_SYSCLK_I2SRX_BCLK>,
-+				 <&syscrg JH7110_SYSCLK_I2SRX_LRCK>,
-+				 <&i2srx_bclk_ext>,
-+				 <&i2srx_lrck_ext>;
-+			clock-names = "i2sclk", "apb", "mclk",
-+				      "mclk_inner", "mclk_ext", "bclk",
-+				      "lrck", "bclk_ext", "lrck_ext";
-+			resets = <&syscrg JH7110_SYSRST_I2SRX_APB>,
-+				 <&syscrg JH7110_SYSRST_I2SRX_BCLK>;
-+			dmas = <0>, <&dma 24>;
-+			dma-names = "tx", "rx";
-+			starfive,syscon = <&sys_syscon 0x18 0x2>;
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		usb0: usb@10100000 {
- 			compatible = "starfive,jh7110-usb";
- 			ranges = <0x0 0x0 0x10100000 0x100000>;
-@@ -736,6 +760,47 @@ spi6: spi@120a0000 {
- 			status = "disabled";
- 		};
- 
-+		i2stx0: i2stx0@120b0000 {
-+			compatible = "starfive,jh7110-i2stx0";
-+			reg = <0x0 0x120b0000 0x0 0x1000>;
-+			clocks = <&syscrg JH7110_SYSCLK_I2STX0_BCLK_MST>,
-+				 <&syscrg JH7110_SYSCLK_I2STX0_APB>,
-+				 <&syscrg JH7110_SYSCLK_MCLK>,
-+				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
-+				 <&mclk_ext>;
-+			clock-names = "i2sclk", "apb", "mclk",
-+				      "mclk_inner","mclk_ext";
-+			resets = <&syscrg JH7110_SYSRST_I2STX0_APB>,
-+				 <&syscrg JH7110_SYSRST_I2STX0_BCLK>;
-+			dmas = <&dma 47>;
-+			dma-names = "tx";
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2stx1: i2stx1@120c0000 {
-+			compatible = "starfive,jh7110-i2stx1";
-+			reg = <0x0 0x120c0000 0x0 0x1000>;
-+			clocks = <&syscrg JH7110_SYSCLK_I2STX1_BCLK_MST>,
-+				 <&syscrg JH7110_SYSCLK_I2STX1_APB>,
-+				 <&syscrg JH7110_SYSCLK_MCLK>,
-+				 <&syscrg JH7110_SYSCLK_MCLK_INNER>,
-+				 <&mclk_ext>,
-+				 <&syscrg JH7110_SYSCLK_I2STX1_BCLK>,
-+				 <&syscrg JH7110_SYSCLK_I2STX1_LRCK>,
-+				 <&i2stx_bclk_ext>,
-+				 <&i2stx_lrck_ext>;
-+			clock-names = "i2sclk", "apb", "mclk",
-+				      "mclk_inner", "mclk_ext", "bclk",
-+				      "lrck", "bclk_ext", "lrck_ext";
-+			resets = <&syscrg JH7110_SYSRST_I2STX1_APB>,
-+				 <&syscrg JH7110_SYSRST_I2STX1_BCLK>;
-+			dmas = <&dma 48>;
-+			dma-names = "tx";
-+			#sound-dai-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		sfctemp: temperature-sensor@120e0000 {
- 			compatible = "starfive,jh7110-temp";
- 			reg = <0x0 0x120e0000 0x0 0x10000>;
--- 
-2.25.1
+Maybe I'm wrong, but this sounds like the version I proposed here [1].
 
+> but this will probably apply cleaner. (oh, is
+> 09593216bff1 only in next at the moment? The AuthorDate threw me.)
+>=20
+> There are some curious cases where __attribute__((cleanup())) doesn't
+> mesh well with indirect gotos.
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D37722
+>=20
+> May not ever be a problem here...
+
+[1]https://patchwork.freedesktop.org/patch/543077/
