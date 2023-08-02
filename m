@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD9576C17B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F419876C17E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229738AbjHBA0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 20:26:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
+        id S231287AbjHBA1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 20:27:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjHBA0p (ORCPT
+        with ESMTP id S229628AbjHBA1w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 20:26:45 -0400
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4FC972113;
-        Tue,  1 Aug 2023 17:26:42 -0700 (PDT)
-Received: from linma$zju.edu.cn ( [10.181.233.175] ) by
- ajax-webmail-mail-app3 (Coremail) ; Wed, 2 Aug 2023 08:26:06 +0800
- (GMT+08:00)
-X-Originating-IP: [10.181.233.175]
-Date:   Wed, 2 Aug 2023 08:26:06 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "Lin Ma" <linma@zju.edu.cn>
-To:     "Jakub Kicinski" <kuba@kernel.org>
-Cc:     "Leon Romanovsky" <leon@kernel.org>, davem@davemloft.net,
-        edumazet@google.com, pabeni@redhat.com, fw@strlen.de,
-        yang.lee@linux.alibaba.com, jgg@ziepe.ca, markzhang@nvidia.com,
-        phaddad@nvidia.com, yuancan@huawei.com, ohartoov@nvidia.com,
-        chenzhongjin@huawei.com, aharonl@nvidia.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net v1 1/2] netlink: let len field used to parse
- type-not-care nested attrs
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220622(41e5976f)
- Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <20230801105726.1af6a7e1@kernel.org>
-References: <20230731121247.3972783-1-linma@zju.edu.cn>
- <20230731120326.6bdd5bf9@kernel.org> <20230801081117.GA53714@unreal>
- <20230801105726.1af6a7e1@kernel.org>
+        Tue, 1 Aug 2023 20:27:52 -0400
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6301926BD;
+        Tue,  1 Aug 2023 17:27:51 -0700 (PDT)
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.77 with qID 3720RIQJ0009427, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.81/5.90) with ESMTPS id 3720RIQJ0009427
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Wed, 2 Aug 2023 08:27:18 +0800
+Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Wed, 2 Aug 2023 08:27:32 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.34; Wed, 2 Aug 2023 08:27:32 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d]) by
+ RTEXMBS04.realtek.com.tw ([fe80::e138:e7f1:4709:ff4d%5]) with mapi id
+ 15.01.2375.007; Wed, 2 Aug 2023 08:27:32 +0800
+From:   Ping-Ke Shih <pkshih@realtek.com>
+To:     Kalle Valo <kvalo@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "tony0620emma@gmail.com" <tony0620emma@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        "Lukas F . Hartmann" <lukas@mntre.com>
+Subject: RE: [PATCH] wifi: rtw88: sdio: Honor the host max_req_size in the RX path
+Thread-Topic: [PATCH] wifi: rtw88: sdio: Honor the host max_req_size in the RX
+ path
+Thread-Index: AQHZsp+XbJMjQ56edkCHhTIfjugPgq/VGK8AgAEwmsA=
+Date:   Wed, 2 Aug 2023 00:27:32 +0000
+Message-ID: <d18405744d004aa8a4556db1919c7a12@realtek.com>
+References: <20230709195712.603200-1-martin.blumenstingl@googlemail.com>
+ <169089906853.212423.17095176293160428610.kvalo@kernel.org>
+In-Reply-To: <169089906853.212423.17095176293160428610.kvalo@kernel.org>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.69.188]
+x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Message-ID: <385b9766.f63d7.189b3a33c6b.Coremail.linma@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgC3v5+foslkxqYjDA--.43974W
-X-CM-SenderInfo: qtrwiiyqvtljo62m3hxhgxhubq/1tbiAwUPEmTIYfoZ3QABsp
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGVsbG8gdGhlcmUsCgo+IEZvciB0aGUgbG9uZ2VzdCB0aW1lIHRoZXJlIHdhcyBubyBkb2NzIG9y
-IGJlc3QgcHJhY3RpY2VzIGZvciBuZXRsaW5rLgo+IFdlIGhhdmUgdGhlIGRvY3VtZW50YXRpb24g
-YW5kIG1vcmUgaW5mcmFzdHJ1Y3R1cmUgaW4gcGxhY2Ugbm93Lgo+IEkgaG9wZSBpZiB5b3Ugd3Jv
-dGUgdGhlIGNvZGUgdG9kYXkgdGhlIGRpc3RpbmN0aW9uIHdvdWxkIGhhdmUgYmVlbgo+IGNsZWFy
-ZXIuCj4gCj4gSWYgd2Ugc3RhcnQgYWRkaW5nIEFQSXMgZm9yIHZhcmlvdXMgb25lLSh0d28/KS1v
-ZmZzIGZyb20gdGhlIHBhc3QKPiB3ZSdsbCBuZXZlciBkaWcgb3Vyc2VsdmVzIG91dCBvZiB0aGUg
-Im5vIGlkZWEgd2hhdCdzIHRoZSBub3JtYWwgdXNlCj4gb2YgdGhlc2UgQVBJcyIgaG9sZS4uCgpU
-aGlzIGlzIHRydWUuIEFjdHVhbGx5LCB0aG9zZSBjaGVjayBtaXNzaW5nIGNvZGVzIGFyZSBtb3N0
-bHkgb2xkIGNvZGVzIGFuZAptb2Rlcm4gbmV0bGluayBjb25zdW1lcnMgd2lsbCBjaG9vc2UgdGhl
-IGdlbmVyYWwgbmV0bGluayBpbnRlcmZhY2Ugd2hpY2gKY2FuIGF1dG9tYXRpY2FsbHkgZ2V0IGF0
-dHJpYnV0ZXMgZGVzY3JpcHRpb24gZnJvbSBZQU1MIGFuZCBuZXZlciBuZWVkIHRvCmRvIHRoaW5n
-cyBsaWtlICptYW51YWwgcGFyc2luZyogYW55bW9yZS4KCkhvd2V2ZXIsIGFjY29yZGluZyB0byBt
-eSBwcmFjdGljZSBpbiBhdWRpdGluZyB0aGUgY29kZSwgSSBmb3VuZCB0aGVyZSBhcmUKc29tZSBn
-ZW5lcmFsIG5ldGxpbmsgaW50ZXJmYWNlIHVzZXJzIGNvbmZyb250IG90aGVyIGlzc3VlcyBsaWtl
-IGNob29zaW5nCkdFTkxfRE9OVF9WQUxJREFURV9TVFJJQ1Qgd2l0aG91dCB0aGlua2luZyBvciBm
-b3JnZXR0aW5nIGFkZCBhIG5ldwpubGFfcG9saWN5IHdoZW4gaW50cm9kdWNpbmcgbmV3IGF0dHJp
-YnV0ZXMuCgpUbyB0aGlzIGVuZCwgSSdtIGN1cnJlbnRseSB3cml0aW5nIGEgc2ltcGxlIGRvY3Vt
-ZW50YXRpb24gYWJvdXQgTmV0bGluawppbnRlcmZhY2UgYmVzdCBwcmFjdGljZXMgZm9yIHRoZSBr
-ZXJuZWwgZGV2ZWxvcGVyICh0aGUgbmV3bHkgY29taW5nIGRvY3MKYXJlIG1vc3RseSBhYm91dCB0
-aGUgdXNlciBBUEkgcGFydCkuIAoKSSBndWVzcyBJIHdpbGwgcHV0IHRoaXMgZG9jIGluIERvY3Vt
-ZW50YXRpb24vc3RhZ2luZyA6KQphbmQgSSB3aWxsIGZpbmlzaCB0aGUgZHJhZnQgQVNBUC4KClRo
-YW5rcwpMaW4=
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS2FsbGUgVmFsbyA8a3Zh
+bG9Aa2VybmVsLm9yZz4NCj4gU2VudDogVHVlc2RheSwgQXVndXN0IDEsIDIwMjMgMTA6MTEgUE0N
+Cj4gVG86IE1hcnRpbiBCbHVtZW5zdGluZ2wgPG1hcnRpbi5ibHVtZW5zdGluZ2xAZ29vZ2xlbWFp
+bC5jb20+DQo+IENjOiBsaW51eC13aXJlbGVzc0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5l
+bEB2Z2VyLmtlcm5lbC5vcmc7IGplcm5lai5za3JhYmVjQGdtYWlsLmNvbTsgUGluZy1LZSBTaGlo
+DQo+IDxwa3NoaWhAcmVhbHRlay5jb20+OyB1bGYuaGFuc3NvbkBsaW5hcm8ub3JnOyB0b255MDYy
+MGVtbWFAZ21haWwuY29tOyBNYXJ0aW4gQmx1bWVuc3RpbmdsDQo+IDxtYXJ0aW4uYmx1bWVuc3Rp
+bmdsQGdvb2dsZW1haWwuY29tPjsgTHVrYXMgRiAuIEhhcnRtYW5uIDxsdWthc0BtbnRyZS5jb20+
+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0hdIHdpZmk6IHJ0dzg4OiBzZGlvOiBIb25vciB0aGUgaG9z
+dCBtYXhfcmVxX3NpemUgaW4gdGhlIFJYIHBhdGgNCj4gDQo+IFBpbmcsIHNob3VsZCBJIHRha2Ug
+b3IgZHJvcCB0aGUgcGF0Y2g/IEl0IHdhc24ndCBxdWl0ZSBjbGVhciBmb3IgbWUuDQoNClBsZWFz
+ZSBkcm9wIHRoaXMgcGF0Y2gsIGJlY2F1c2UgdGhpcyBwYXRjaCBzdGlsbCBub3QgZml4ZXMgcHJv
+YmxlbSBvbiBMdWthcycgcGxhdGZvcm0uDQpJIGdhdmUgbXkgcmV2aWV3ZWQtYnkgdG9vIGVhcmx5
+LiBTb3JyeSBmb3IgdGhhdC4gDQoNClBpbmctS2UNCg0K
