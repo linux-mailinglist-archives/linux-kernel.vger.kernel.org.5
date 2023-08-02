@@ -2,91 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 355EA76C864
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A164976C868
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbjHBIeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46786 "EHLO
+        id S232887AbjHBIfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:35:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230386AbjHBIef (ORCPT
+        with ESMTP id S230386AbjHBIfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:34:35 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C595171B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:34:33 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4RG4ys2vdcz9sTy;
-        Wed,  2 Aug 2023 10:34:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1690965269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fPZCXWwaboiCsosFBV+TGKPHI0NZRD50bC97h4h0b6M=;
-        b=xrKrYKWk7/9Bk+7eCol7EaX/N4y3Pz1aH1PnjKD71QZcedm26Jh9Mm9niIonqFhr8MDYkn
-        AbjGhgo3g0szGmjT/aAR+YWy764hlSZsWlQFQ4Cmjh9RAcJBUmhQxm9jAmT4sv/V8MNZBO
-        UJzI35F4HJ7rIZMtfrUPGaAxwYg8WAKsHeTmdK0tIxfDLzxV1z045Yt2AkOVaq4bc77G38
-        Hn+OYwq8wIhN0HgrT6P8A0NghZJOs6mmAR7VHQzyWfGdlA+qrhgdrbjYAj6c8gsFwo5USl
-        8te9MAgp+Mk+D3iYHoG4S/WRdVlWsyg7dHktbEof5M2Th6a6N8G1oUqWoad6eA==
-Message-ID: <a9f88c90-5777-02b0-09b1-26979432b3bc@mailbox.org>
-Date:   Wed, 2 Aug 2023 10:34:26 +0200
+        Wed, 2 Aug 2023 04:35:38 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2931C171B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:35:37 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3fe24b794e5so23356055e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 01:35:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690965335; x=1691570135;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=nccZbYTMU4XTf23zmFShAvmIVZGTF6OsvwBuFhpeRho=;
+        b=VceW1/4XR3qfn1OXNxtGph2jHwFibPUVVAizdg1jakOV5F5Q30U5eQoTvAn8iDzqhi
+         cv0wWmGEPoz6r0wJNIMwCQUKxxt/kRbBO+1LzUPftOa9R7oAqb6JG/fp3Q4CcjUj4qRg
+         rfqa5FokTBYph18P2HoJeGnVaVrhT6Qyk12nru6x56gl/49oYMrqATX0imvikoNh3YsN
+         7q9kPjjgTjuVnj9iZHQre67sp9jGaxNCB7ndfU97DzWvxUj36Rvmk/n9MajCd8clQ1Ll
+         XttH7oi4DHtPtOljJzyGguIGIhbuAZCJOZDulHwag8DNkPLbQ2IKIxsI/BLt/l4l9hvK
+         76XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690965335; x=1691570135;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:from:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nccZbYTMU4XTf23zmFShAvmIVZGTF6OsvwBuFhpeRho=;
+        b=dB/AbesUzaDgq4L2Ccb+Mo0gB6PCyLqBcvfTfdoodSHBtnnaqUiVPGi3vXcfHsYDsu
+         Oz5zbP+yvYREifoeh7FZ+cMpz1MG2oWCtiEmOqGRMxWp0wMfkJUe0cWwuMq4GRYiaDRj
+         k5lQI9hi1/cFe8c5c9bAif/BNujtdQCbOxPN/kt7rO7pvA26YSX0UqQ584BgiXJXGxJ4
+         5YAgVewyckTLbALQLsYVWpTuK42pm4hoCZQlG3tDJkErVKmexE1QaEUIXNtgYHhJpQWj
+         5dcCsYjKiiR8GzdMlpFtsusIeIZXSXbWTGXRykIzj2rPVYNnhMsBukIaR0iZhCzW/M9c
+         C3Ug==
+X-Gm-Message-State: ABy/qLZ+S77CsZiRuKLG7X4d50VddTQHstRxhaz82Dv1JLAbE2oxK0/A
+        wIhNyP9jrAzgxBU5xKGzFGEJuZ+XxXpIuJgD145r3A==
+X-Google-Smtp-Source: APBJJlHKiU3bwvuZX7xt9EgDuBghAyqLtwE3u4kuH22Jpbiud0K34hpThBOwveiNjNYxwIVj9kt+8A==
+X-Received: by 2002:a7b:c5c6:0:b0:3fa:9823:407 with SMTP id n6-20020a7bc5c6000000b003fa98230407mr4014627wmk.18.1690965335583;
+        Wed, 02 Aug 2023 01:35:35 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:c5bb:5b4:61e3:d196? ([2a01:e0a:982:cbb0:c5bb:5b4:61e3:d196])
+        by smtp.gmail.com with ESMTPSA id i15-20020adffdcf000000b003145559a691sm18257513wrs.41.2023.08.02.01.35.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 01:35:34 -0700 (PDT)
+Message-ID: <0cc04d99-d7aa-68ff-b304-7d42ae7f0dde@linaro.org>
+Date:   Wed, 2 Aug 2023 10:35:33 +0200
 MIME-Version: 1.0
-Subject: Re: Non-robust apps and resets (was Re: [PATCH v5 1/1] drm/doc:
- Document DRM device reset expectations)
-Content-Language: de-CH-frami, en-CA
-To:     =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>
-Cc:     pierre-eric.pelloux-prayer@amd.com,
-        Samuel Pitoiset <samuel.pitoiset@gmail.com>,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        =?UTF-8?Q?Timur_Krist=c3=b3f?= <timur.kristof@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        dri-devel@lists.freedesktop.org, kernel-dev@igalia.com,
-        alexander.deucher@amd.com,
-        Pekka Paalanen <pekka.paalanen@collabora.com>,
-        christian.koenig@amd.com
-References: <20230627132323.115440-1-andrealmeid@igalia.com>
- <e292a30f-5cad-1968-de4f-0d43c9c1e943@igalia.com>
- <45a1e527-f5dc-aa6f-9482-8958566ecb96@mailbox.org>
- <a1fecc5c-30c0-2754-70a1-2edb2fe118fb@igalia.com>
- <8eb58a5f-02d0-fadf-1d5a-790b6af2d81e@mailbox.org>
- <CAAxE2A6xy5yi7yMH-tzEfC2f3AgL7aesYQNpr=1oZ8Rx0K4=Ug@mail.gmail.com>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <CAAxE2A6xy5yi7yMH-tzEfC2f3AgL7aesYQNpr=1oZ8Rx0K4=Ug@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: 6a027a11499082f043b
-X-MBO-RS-META: qnjcf7y89rjz4khb5t5tdbymgemp7ina
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH 2/4] drm/bridge-connector: handle subconnector types
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Simon Ser <contact@emersion.fr>, Janne Grunau <j@jannau.net>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
+References: <20230729004913.215872-1-dmitry.baryshkov@linaro.org>
+ <20230729004913.215872-3-dmitry.baryshkov@linaro.org>
+Organization: Linaro Developer Services
+In-Reply-To: <20230729004913.215872-3-dmitry.baryshkov@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 09:38, Marek Olšák wrote:
+On 29/07/2023 02:49, Dmitry Baryshkov wrote:
+> If the created connector type supports subconnector type property,
+> create and attach corresponding it. The default subtype value is 0,
+> which maps to the DRM_MODE_SUBCONNECTOR_Unknown type.
 > 
-> The precedent from the CPU land is pretty strong here. There is
-> SIGSEGV for invalid CPU memory access and SIGILL for invalid CPU
-> instructions, yet we do nothing for invalid GPU memory access and
-> invalid GPU instructions. Sending a terminating signal from the kernel
-> would be the most natural thing to do.
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>   drivers/gpu/drm/drm_bridge_connector.c | 33 +++++++++++++++++++++++++-
+>   include/drm/drm_bridge.h               |  4 ++++
+>   2 files changed, 36 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
+> index 07b5930b1282..a7b92f0d2430 100644
+> --- a/drivers/gpu/drm/drm_bridge_connector.c
+> +++ b/drivers/gpu/drm/drm_bridge_connector.c
+> @@ -329,7 +329,9 @@ struct drm_connector *drm_bridge_connector_init(struct drm_device *drm,
+>   	struct drm_connector *connector;
+>   	struct i2c_adapter *ddc = NULL;
+>   	struct drm_bridge *bridge, *panel_bridge = NULL;
+> +	enum drm_mode_subconnector subconnector;
+>   	int connector_type;
+> +	int ret;
+>   
+>   	bridge_connector = kzalloc(sizeof(*bridge_connector), GFP_KERNEL);
+>   	if (!bridge_connector)
+> @@ -365,8 +367,10 @@ struct drm_connector *drm_bridge_connector_init(struct drm_device *drm,
+>   		if (bridge->ops & DRM_BRIDGE_OP_MODES)
+>   			bridge_connector->bridge_modes = bridge;
+>   
+> -		if (!drm_bridge_get_next_bridge(bridge))
+> +		if (!drm_bridge_get_next_bridge(bridge)) {
+>   			connector_type = bridge->type;
+> +			subconnector = bridge->subtype;
+> +		}
+>   
+>   #ifdef CONFIG_OF
+>   		if (!drm_bridge_get_next_bridge(bridge) &&
+> @@ -399,6 +403,33 @@ struct drm_connector *drm_bridge_connector_init(struct drm_device *drm,
+>   	if (panel_bridge)
+>   		drm_panel_bridge_set_orientation(connector, panel_bridge);
+>   
+> +	if (connector_type == DRM_MODE_CONNECTOR_DisplayPort) {
+> +		drm_connector_attach_dp_subconnector_property(connector, subconnector);
+> +	} else if (connector_type == DRM_MODE_CONNECTOR_DVII) {
+> +		ret = drm_mode_create_dvi_i_properties(drm);
+> +		if (ret)
+> +			return ERR_PTR(ret);
+> +
+> +		drm_object_attach_property(&connector->base,
+> +					   drm->mode_config.dvi_i_subconnector_property,
+> +					   subconnector);
+> +	} else if (connector_type == DRM_MODE_CONNECTOR_TV) {
+> +		ret = drm_mode_create_tv_properties(drm,
+> +						    BIT(DRM_MODE_TV_MODE_NTSC) |
+> +						    BIT(DRM_MODE_TV_MODE_NTSC_443) |
+> +						    BIT(DRM_MODE_TV_MODE_NTSC_J) |
+> +						    BIT(DRM_MODE_TV_MODE_PAL) |
+> +						    BIT(DRM_MODE_TV_MODE_PAL_M) |
+> +						    BIT(DRM_MODE_TV_MODE_PAL_N) |
+> +						    BIT(DRM_MODE_TV_MODE_SECAM));
+> +		if (ret)
+> +			return ERR_PTR(ret);
 
-After an unhandled SIGSEGV or SIGILL, the process is in an inconsistent state and cannot safely continue executing. That's why the process is terminated by default in those cases.
+I don't think this is right, this should be called from the appropriate encoder
+device depending on the analog tv mode capabilities.
 
-The same is not true when an OpenGL context stops working. Any threads / other parts of the process not using that OpenGL context continue working normally. And any attempts to use that OpenGL context can be safely ignored (or the OpenGL implementation couldn't support the robustness extensions).
 
+> +
+> +		drm_object_attach_property(&connector->base,
+> +					   drm->mode_config.tv_subconnector_property,
+> +					   subconnector);
 
--- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+Here, only add the property if drm->mode_config.tv_subconnector_property exists,
+and perhaps add a warning if not.
+
+AFAIK same for DRM_MODE_CONNECTOR_DVII.
+
+> +	}
+> +
+>   	return connector;
+>   }
+>   EXPORT_SYMBOL_GPL(drm_bridge_connector_init);
+> diff --git a/include/drm/drm_bridge.h b/include/drm/drm_bridge.h
+> index bf964cdfb330..68b14ac5ac0d 100644
+> --- a/include/drm/drm_bridge.h
+> +++ b/include/drm/drm_bridge.h
+> @@ -739,6 +739,10 @@ struct drm_bridge {
+>   	 * identifies the type of connected display.
+>   	 */
+>   	int type;
+> +	/**
+> +	 * @subtype: the subtype of the connector for the DP/TV/DVI-I cases.
+> +	 */
+> +	enum drm_mode_subconnector subtype;
+>   	/**
+>   	 * @interlace_allowed: Indicate that the bridge can handle interlaced
+>   	 * modes.
 
