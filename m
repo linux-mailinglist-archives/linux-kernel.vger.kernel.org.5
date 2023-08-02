@@ -2,88 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 983E176D3EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B29A76D3F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbjHBQoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:44:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        id S230195AbjHBQqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229923AbjHBQoo (ORCPT
+        with ESMTP id S230023AbjHBQqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:44:44 -0400
-Received: from out-114.mta1.migadu.com (out-114.mta1.migadu.com [95.215.58.114])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C19D19F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:44:43 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 12:44:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1690994681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pZgu6VYBtVmDJxB8/yQqdmC5ll//zvqWRVFeO9x8huE=;
-        b=fce+OLsEemL82w3gvvoTSKcithaQm7VhHQwGW1Rlpuf7kw3knwpOdgJ+tuUuunjiijUxHa
-        5N6DI50igXJhCvKGa5fTTo9x5aho5jo0/fXftHomHmeD0u0LvDU2NigvOpU2xEFPcGEWQ5
-        lZzSqKR+IqsPHWoPCg0YnnvAh13JbEc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Kent Overstreet <kent.overstreet@linux.dev>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH 05/20] block: Allow bio_iov_iter_get_pages() with
- bio->bi_bdev unset
-Message-ID: <20230802164437.jskidimw32dofxpi@moria.home.lan>
-References: <20230712211115.2174650-1-kent.overstreet@linux.dev>
- <20230712211115.2174650-6-kent.overstreet@linux.dev>
- <ZL62HKrAJapXfcaR@infradead.org>
- <20230725024312.alq7df33ckede2gb@moria.home.lan>
- <ZMEeOZZcOu2p0SDP@infradead.org>
- <20230801190450.3lbr2hjdi7t52anx@moria.home.lan>
- <ZMpCRpNyt0EJpg9G@infradead.org>
+        Wed, 2 Aug 2023 12:46:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63018273A;
+        Wed,  2 Aug 2023 09:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690994769; x=1722530769;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=RrRdBl2qy7E3l7kO+e4ZQVEOkVwYkIaDQc+CdA7Vt9A=;
+  b=nQHeBRUOvBh3PgvU3zbFFpKZu6HfsD8ySpcYDEg9tl30QRKhyFDprTqU
+   rnAK3tdgMXcsGFrLixjLF1xKPEsKyEtLk/X5Cg95BWqyR+He4MaBR3Hhx
+   fgkWKTyV3JEJi1yzr2Ud4kpK5ia4KYuEXQtto3Wfk+xithxqeBnZQKukK
+   xH4YbwIwJ/GvWQK+THBe+eikOgEaaxc/NZLetiWNRLZKoZQQKfHl1rZ1H
+   0L+UIT/m0T2ixnjhsEJ30xmGIOP+Sm7K9dx89JYwuGWhAwI8VrjFPM6Fd
+   mX7q3pqNR+SdHRZbxz0fb1bL0MgTVdh/4kmuDk2ZNIzQFOUW5J+MI0hLW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="369644791"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="369644791"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 09:46:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="732451876"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="732451876"
+Received: from dustindi-mobl2.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.37.50])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 09:46:06 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 1B89110A112; Wed,  2 Aug 2023 19:46:03 +0300 (+03)
+Date:   Wed, 2 Aug 2023 19:46:03 +0300
+From:   "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH v2] efi/x86: Ensure that EFI_RUNTIME_MAP is enabled for
+ kexec
+Message-ID: <20230802164603.fzy2lmflp4iann5c@box>
+References: <20230802151704.2147028-1-ardb@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZMpCRpNyt0EJpg9G@infradead.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230802151704.2147028-1-ardb@kernel.org>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 04:47:18AM -0700, Christoph Hellwig wrote:
-> On Tue, Aug 01, 2023 at 03:04:50PM -0400, Kent Overstreet wrote:
-> > > Because blk-cgroup not only works at the lowest level in the stack,
-> > > but also for stackable block devices.  It's not a design decision I
-> > > particularly agree with, but it's been there forever.
-> > 
-> > You're setting the association only to the highest block device in the
-> > stack - how on earth is it supposed to work with anything lower?
+On Wed, Aug 02, 2023 at 05:17:04PM +0200, Ard Biesheuvel wrote:
+> CONFIG_EFI_RUNTIME_MAP needs to be enabled in order for kexec to be able
+> to provide the required information about the EFI runtime mappings to
+> the incoming kernel, regardless of whether kexec_load() or
+> kexec_file_load() is being used. Without this information, kexec boot in
+> EFI mode is not possible.
 > 
-> Hey, ask the cgroup folks as they come up with it.  I'm not going to
-> defend the logic here.
-> 
-> > And looking at bio_associate_blkg(), this code looks completely broken.
-> > It's checking bio->bi_blkg, but that's just been set to NULL in
-> > bio_init().
-> 
-> It's checking bi_blkg because it can also be called from bio_set_dev.
+> The CONFIG_EFI_RUNTIME_MAP option is currently directly configurable if
+> CONFIG_EXPERT is enabled, so that it can be turned on for debugging
+> purposes even if KEXEC is. However, the upshot of this is that it can
 
-So bio_set_dev() has subtly different behaviour than passing the block
-device to bio_init()?
+s/is/isn't/ ?
 
-That's just broken.
-
+> also be disabled even when it shouldn't.
 > 
-> > And this is your code, so I think you need to go over this again.
+> So tweak the Kconfig declarations to avoid this situation.
 > 
-> It's "my code" in the sene of that I did one big round of unwinding
-> the even bigger mess that was there.  There is another few rounds needed
-> for the code to vaguely make sense.
+> Reported-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 
-Well, I'll watch for those patches then...
+Tested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
