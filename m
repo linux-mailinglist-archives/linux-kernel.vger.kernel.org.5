@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CF076C39C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1914476C39F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjHBDgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 23:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60314 "EHLO
+        id S230033AbjHBDjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 23:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbjHBDfr (ORCPT
+        with ESMTP id S229606AbjHBDjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:35:47 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EE3E9;
-        Tue,  1 Aug 2023 20:35:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690947312; x=1722483312;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6seOVYkZPhd0/nRx3CimmnLqX740zVArqWZ8lxRy1n4=;
-  b=C8ANfuBIMnhWF7po+sAHP3xNU56maQmIZkdI2VGd6ESaUmttXG1ZgSql
-   A14oRcRVWoP13BzBYNyW3r6k2oaUeTHKv+M8jeSTgxeQSgV+LRpvBiOkA
-   eKZGDLJv06qSv5kZyEigJtc5SMA96mqIqBBgGVUDPu+BjRwov4l7LKcxZ
-   PDjnEmG2uJU+6ksTeyz/GsPONEvC1+X4giH6ycY7fL+6hnENFRkCNYaak
-   k80I0vJoVkIlM1fBUeikl8uJ2KGJDYq0X01+KzrAqcLphtiX/bBXnDe6j
-   tdQLmaUXJ3/rGnLuEf/nCQayT3lG3tRLy93+ZGzEVaiYjLYdk/R0WJRIU
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="400417417"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="400417417"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 20:35:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="706023612"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="706023612"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga006.jf.intel.com with ESMTP; 01 Aug 2023 20:35:09 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qR2df-00FWdW-2K;
-        Wed, 02 Aug 2023 06:35:07 +0300
-Date:   Wed, 2 Aug 2023 06:35:07 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] of: dynamic: Refactor action prints to not use
- "%pOF" inside devtree_lock
-Message-ID: <ZMnO67avEY25XzB1@smile.fi.intel.com>
-References: <20230801-dt-changeset-fixes-v1-0-b5203e3fc22f@kernel.org>
- <20230801-dt-changeset-fixes-v1-2-b5203e3fc22f@kernel.org>
- <ZMnNcJ2KW1qUZUA5@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMnNcJ2KW1qUZUA5@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Tue, 1 Aug 2023 23:39:10 -0400
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 490141712;
+        Tue,  1 Aug 2023 20:39:06 -0700 (PDT)
+Received: from ubuntu.localdomain (unknown [218.12.19.119])
+        by mail-app2 (Coremail) with SMTP id by_KCgAXbhiCz8lkx8zpCg--.8405S2;
+        Wed, 02 Aug 2023 11:37:52 +0800 (CST)
+From:   Duoming Zhou <duoming@zju.edu.cn>
+To:     ysato@users.sourceforge.jp
+Cc:     dalias@libc.org, glaubitz@physik.fu-berlin.de, kvalo@kernel.org,
+        pavel@ucw.cz, pabeni@redhat.com, rostedt@goodmis.org,
+        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Duoming Zhou <duoming@zju.edu.cn>
+Subject: [PATCH] sh: push-switch: reorder cleanup operations to avoid UAF bug
+Date:   Wed,  2 Aug 2023 11:37:37 +0800
+Message-Id: <20230802033737.9738-1-duoming@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgAXbhiCz8lkx8zpCg--.8405S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4rAw4xZr45WFyDur43trb_yoW8GF4Dpr
+        Z5XFn7GrW0qrWqk34UGwn7uFW5WanFgry7XrWfu3WxXwn8XF95J34ftryfKF47Cr97XF43
+        Jr1Fqw1fWa4DuFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfUYnYwUUUUU
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwMPAWTIYfoZuQA5sg
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 06:28:48AM +0300, Andy Shevchenko wrote:
-> On Tue, Aug 01, 2023 at 03:54:45PM -0600, Rob Herring wrote:
-> > While originally it was fine to format strings using "%pOF" while
-> > holding devtree_lock, this now causes a deadlock.  Lockdep reports:
-> > 
-> >     of_get_parent from of_fwnode_get_parent+0x18/0x24
-> >     ^^^^^^^^^^^^^
-> >     of_fwnode_get_parent from fwnode_count_parents+0xc/0x28
-> >     fwnode_count_parents from fwnode_full_name_string+0x18/0xac
-> >     fwnode_full_name_string from device_node_string+0x1a0/0x404
-> >     device_node_string from pointer+0x3c0/0x534
-> >     pointer from vsnprintf+0x248/0x36c
-> >     vsnprintf from vprintk_store+0x130/0x3b4
-> > 
-> > To fix this, move the printing in __of_changeset_entry_apply() outside the
-> > lock. As there's already similar printing of the same changeset actions,
-> > refactor all of them to use a common action print function. This has the
-> > side benefit of getting rid of some ifdefs.
+The original code puts flush_work() before timer_shutdown_sync()
+in switch_drv_remove(). Although we use flush_work() to stop
+the worker, it could be re-scheduled in switch_timer. As a result,
+the UAF bug will happen. The detail is shown below:
 
-...
+      (cpu 0)                    |      (cpu 1)
+switch_drv_remove()              |
+ flush_work()                    |
+  ...                            |  switch_timer //timer
+                                 |   schedule_work(&psw->work)
+ timer_shutdown_sync()           |
+ ...                             |  switch_work_handler //worker
+ kfree(psw) //free               |
+                                 |   psw->state = 0 //use
 
-> > v3:
-> >  - Add missing 'static' reported by 0-day
-> 
-> It reported two issues (at least what I see).
+This patch puts timer_shutdown_sync() before flush_work() to
+mitigate the bugs. As a result, the worker and timer could
+be stopped safely before the deallocate operations.
 
-...
+Fixes: 9f5e8eee5cfe ("sh: generic push-switch framework.")
+Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
+---
+ arch/sh/drivers/push-switch.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > +	if (pr_debug("notify "))
-> 
-> This is weird. How did you compile it?
-
-Urgh, you need to fix dynamic debug macros to return an error code.
-
-> > +		of_changeset_action_print(action, pr->dn, pr->prop ? pr->prop->name : NULL);
-
+diff --git a/arch/sh/drivers/push-switch.c b/arch/sh/drivers/push-switch.c
+index c95f48ff3f6..6ecba5f521e 100644
+--- a/arch/sh/drivers/push-switch.c
++++ b/arch/sh/drivers/push-switch.c
+@@ -101,8 +101,8 @@ static int switch_drv_remove(struct platform_device *pdev)
+ 		device_remove_file(&pdev->dev, &dev_attr_switch);
+ 
+ 	platform_set_drvdata(pdev, NULL);
+-	flush_work(&psw->work);
+ 	timer_shutdown_sync(&psw->debounce);
++	flush_work(&psw->work);
+ 	free_irq(irq, pdev);
+ 
+ 	kfree(psw);
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.17.1
 
