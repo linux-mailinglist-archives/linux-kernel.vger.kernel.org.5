@@ -2,191 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC3A76C44F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:55:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C807076C452
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:56:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231991AbjHBEzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 00:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
+        id S232051AbjHBE4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 00:56:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbjHBEzN (ORCPT
+        with ESMTP id S230365AbjHBE43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 00:55:13 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058D81BFA
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:55:12 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3724gs7m010188;
-        Wed, 2 Aug 2023 04:54:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=vc/7WSOuh6cWhE5ykLDo46lNfe9kjgqo/J5DK5M+6r4=;
- b=prQ0xwv28PYk7j6jC4COxvXAvvNDW3nf1OqEbgSj2H0MfEsybVuCZg7feJZPCtIdiUOS
- Wq4gBZepTwZKrK9bfeab7sRlfSdiPADnCdD2NpXVD+Abr65n3Io8HvVhQ+D2D5RGuBWU
- kTa2ZnsqGxSb8nIhXXdz7KqnzOQO839woX9OfRFUiMwe4BaITM1pArqyrBf6vMIAA/yR
- JvGRpByuFpReI8k/vVskUU58ybj/cmuSw5i/2XGZk2jbv0GHmrNrCbWM6Wjr8zfMpYYm
- usvXyWIYBF7SlrjOwpp1gBBx1IqNJs3j71adGdDXs37ytUihmGEIfAS4nwd28LNJgd86 Aw== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7gc080v6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 04:54:37 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3724saW6009884
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 04:54:36 GMT
-Received: from hu-gurus-sd.qualcomm.com (10.80.80.8) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 1 Aug 2023 21:54:36 -0700
-From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Nicolas Schier" <nicolas@fjasle.eu>,
-        Kees Cook <keescook@chromium.org>,
-        "Bjorn Andersson" <andersson@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Guru Das Srinagesh <quic_gurus@quicinc.com>
-Subject: [PATCH 1/1] scripts: Add add-maintainer.py
-Date:   Tue, 1 Aug 2023 21:54:29 -0700
-Message-ID: <0d000c48e939beaa97c744c0a8b652396a0b045d.1690951441.git.quic_gurus@quicinc.com>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <cover.1690951441.git.quic_gurus@quicinc.com>
-References: <cover.1690951441.git.quic_gurus@quicinc.com>
+        Wed, 2 Aug 2023 00:56:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0BD19B0;
+        Tue,  1 Aug 2023 21:56:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 52D67617CA;
+        Wed,  2 Aug 2023 04:56:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42BBDC433C8;
+        Wed,  2 Aug 2023 04:56:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690952186;
+        bh=jkqNebjbGSnF+JKGgJsSItHww469pXN74F0m7mNutlM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WIyEnXcHkhv1jvgI3nCnc6/9PJqXc9fTIm3eiqeI1DuD1AoXQVEOow+6u6MNiW5rq
+         03CLmHo3PLrZAqBT9yu8cN2nVN46FpTyDhxucWQ+84KDNLSoBU7gMBBPYPly/FGNiN
+         831dyR8JJfxxif73t+y1EIr0novEH/FyXEgd2iC9k0JXWwVs/sfepV/7Iq1dPCBCjf
+         8U+41Tq1GY6RPznJk7iuHRrNbJ0AoJohx6XGDohou7ALTh00dnlWNYIjk23nVhWdFy
+         ftf6N0MFSetfy1iKT6t2chVyOIrrBzpJOnNyiWEopjSmObJ8hnzgiapQqukZLa1+vm
+         4BiBxufmURavw==
+Date:   Wed, 2 Aug 2023 10:26:10 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     lpieralisi@kernel.org, bhelgaas@google.com,
+        devicetree@vger.kernel.org, gustavo.pimentel@synopsys.com,
+        helgaas@kernel.org, imx@lists.linux.dev, kw@linux.com,
+        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        manivannan.sadhasivam@linaro.org, minghuan.lian@nxp.com,
+        mingkai.hu@nxp.com, robh+dt@kernel.org, roy.zang@nxp.com,
+        shawnguo@kernel.org, zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v6 2/2] PCI: layerscape: Add power management support for
+ ls1028a
+Message-ID: <20230802045610.GE2370@thinkpad>
+References: <20230731194010.73016-1-Frank.Li@nxp.com>
+ <20230731194010.73016-2-Frank.Li@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 7QLohHK_WQTobbPAg2hEEpffrDB8WcNU
-X-Proofpoint-GUID: 7QLohHK_WQTobbPAg2hEEpffrDB8WcNU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_02,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=498 phishscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 priorityscore=1501
- mlxscore=0 suspectscore=0 clxscore=1011 impostorscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308020044
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230731194010.73016-2-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This script runs get_maintainer.py on a given patch file and adds its
-output to the patch file in place with the appropriate email headers
-"To: " or "Cc: " as the case may be. These new headers are added after
-the "From: " line in the patch.
+On Mon, Jul 31, 2023 at 03:40:10PM -0400, Frank Li wrote:
+> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> 
+> Add PME_Turn_Off/PME_TO_Ack handshake sequence, and finally
+> put the PCIe controller into D3 state after the L2/L3 ready
+> state transition process completion.
+> 
 
-Currently, maintainers are added as "To: ", mailing lists are added as
-"Cc: " and all others are addded as "Cc: " as well.
+This commit message is wrong/outdated. Please describe what _this_ patch does.
 
-The script is quiet by default (only prints errors) and its verbosity
-can be adjusted via an optional parameter.
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+> - Change from v5 to v6
+>   change to NOIRQ_SYSTEM_SLEEP_PM_OPS to remove #ifdef PM_CONFIG
+>   
+> - Change from v3 to v5
+>   none
+> 
+> -  change at v3
+>   Basic rewrite whole patch according rob herry suggestion.
+>   put common function into dwc, so more soc can share the same logic.
+> 
+>  drivers/pci/controller/dwc/pci-layerscape.c | 146 ++++++++++++++++++--
+>  1 file changed, 137 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-layerscape.c b/drivers/pci/controller/dwc/pci-layerscape.c
+> index ed5fb492fe084..f235c79600277 100644
+> --- a/drivers/pci/controller/dwc/pci-layerscape.c
+> +++ b/drivers/pci/controller/dwc/pci-layerscape.c
+> @@ -8,9 +8,11 @@
+>   * Author: Minghuan Lian <Minghuan.Lian@freescale.com>
+>   */
+>  
+> +#include <linux/delay.h>
+>  #include <linux/kernel.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/init.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/of_pci.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/of_address.h>
+> @@ -27,12 +29,33 @@
+>  #define PCIE_ABSERR		0x8d0 /* Bridge Slave Error Response Register */
+>  #define PCIE_ABSERR_SETTING	0x9401 /* Forward error of non-posted request */
+>  
+> +/* PF Message Command Register */
+> +#define LS_PCIE_PF_MCR		0x2c
+> +#define PF_MCR_PTOMR		BIT(0)
+> +#define PF_MCR_EXL2S		BIT(1)
+> +
+>  #define PCIE_IATU_NUM		6
+>  
+> +struct ls_pcie;
+> +
 
-Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
----
- scripts/add-maintainer.py | 82 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 82 insertions(+)
- create mode 100755 scripts/add-maintainer.py
+Why do you need foward declaration?
 
-diff --git a/scripts/add-maintainer.py b/scripts/add-maintainer.py
-new file mode 100755
-index 000000000000..942d331cf8d4
---- /dev/null
-+++ b/scripts/add-maintainer.py
-@@ -0,0 +1,82 @@
-+#! /usr/bin/env python3
-+
-+import argparse
-+import logging
-+import os
-+import sys
-+import subprocess
-+import re
-+
-+def add_maintainers_to_file(patch_file):
-+    # Run get_maintainer.pl on patch file
-+    logging.info("Patch: {}".format(os.path.basename(patch_file)))
-+    cmd = ['scripts/get_maintainer.pl']
-+    cmd.extend([patch_file])
-+    p = subprocess.run(cmd, stdout=subprocess.PIPE, check=True)
-+    logging.debug("\n{}".format(p.stdout.decode()))
-+
-+    entries = p.stdout.decode().splitlines()
-+
-+    maintainers = []
-+    lists = []
-+    others = []
-+
-+    for entry in entries:
-+        entity = entry.split('(')[0].strip()
-+        if "maintainer" in entry:
-+            maintainers.append(entity)
-+        elif "list" in entry:
-+            lists.append(entity)
-+        else:
-+            others.append(entity)
-+
-+    # Specify email headers appropriately
-+    to_maintainers  = ["To: " + m for m in maintainers]
-+    cc_lists        = ["Cc: " + l for l in lists]
-+    cc_others       = ["Cc: " + o for o in others]
-+    logging.debug("To Maintainers:\n{}".format('\n'.join(to_maintainers)))
-+    logging.debug("Cc Lists:\n{}".format('\n'.join(cc_lists)))
-+    logging.debug("Cc Others:\n{}".format('\n'.join(cc_others)))
-+
-+    # Edit patch file in place to add maintainers
-+    with open(patch_file, "r") as pf:
-+        lines = pf.readlines()
-+
-+    from_line = [i for i, line in enumerate(lines) if re.search("From: ", line)]
-+    if len(from_line) > 1:
-+        logging.error("Only one From: line is allowed in a patch file")
-+        sys.exit(1)
-+
-+    next_line_after_from = from_line[0] + 1
-+
-+    # Reverse lists to maintain same order as in get_maintainer.py output
-+    # as we will be insert()-ing the elements
-+    to_maintainers.reverse()
-+    cc_lists.reverse()
-+    cc_others.reverse()
-+
-+    for o in cc_others:
-+        lines.insert(next_line_after_from, o + "\n")
-+    for l in cc_lists:
-+        lines.insert(next_line_after_from, l + "\n")
-+    for m in to_maintainers:
-+        lines.insert(next_line_after_from, m + "\n")
-+
-+    with open(patch_file, "w") as pf:
-+        pf.writelines(lines)
-+
-+def main():
-+    parser = argparse.ArgumentParser(description='Add the respective maintainers and mailing lists to patch files')
-+    parser.add_argument('patches', nargs='*', help="One or more patch files")
-+    parser.add_argument('--verbosity', choices=['debug', 'info', 'error'], default='error', help="Verbosity level of script output")
-+    args = parser.parse_args()
-+
-+    logging.basicConfig(level=args.verbosity.upper(), format='%(levelname)s: %(message)s')
-+
-+    for patch in args.patches:
-+        add_maintainers_to_file(patch)
-+
-+    logging.info("Maintainers added to all patch files successfully")
-+
-+if __name__ == "__main__":
-+    main()
+> +struct ls_pcie_drvdata {
+> +	const u32 pf_off;
+> +	const u32 lut_off;
+> +	bool pm_support;
+> +};
+> +
+>  struct ls_pcie {
+>  	struct dw_pcie *pci;
+> +	const struct ls_pcie_drvdata *drvdata;
+> +	void __iomem *pf_base;
+> +	void __iomem *lut_base;
+> +	bool big_endian;
+> +	bool ep_presence;
+
+Where is this variable used?
+
+> +	struct regmap *scfg;
+> +	int index;
+>  };
+>  
+> +#define ls_pcie_pf_readl_addr(addr)	ls_pcie_pf_readl(pcie, addr)
+>  #define to_ls_pcie(x)	dev_get_drvdata((x)->dev)
+>  
+>  static bool ls_pcie_is_bridge(struct ls_pcie *pcie)
+> @@ -73,6 +96,57 @@ static void ls_pcie_fix_error_response(struct ls_pcie *pcie)
+>  	iowrite32(PCIE_ABSERR_SETTING, pci->dbi_base + PCIE_ABSERR);
+>  }
+>  
+> +static u32 ls_pcie_pf_readl(struct ls_pcie *pcie, u32 off)
+> +{
+> +	if (pcie->big_endian)
+> +		return ioread32be(pcie->pf_base + off);
+> +
+> +	return ioread32(pcie->pf_base + off);
+> +}
+> +
+> +static void ls_pcie_pf_writel(struct ls_pcie *pcie, u32 off, u32 val)
+> +{
+> +	if (pcie->big_endian)
+> +		return iowrite32be(val, pcie->pf_base + off);
+
+Return value of this function is marked as void. So you should not return
+anything.
+
+> +
+> +	return iowrite32(val, pcie->pf_base + off);
+> +
+> +}
+> +
+> +static void ls_pcie_send_turnoff_msg(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +	u32 val;
+> +	int ret;
+> +
+> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val |= PF_MCR_PTOMR;
+> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +
+> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +				 val, !(val & PF_MCR_PTOMR), 100, 10000);
+
+As I mentioned in previous patch, if you intend to use 1ms, please change the
+value to 1000.
+
+> +	if (ret)
+> +		dev_info(pcie->pci->dev, "poll turn off message timeout\n");
+
+dev_err? Same below.
+
+> +}
+> +
+> +static void ls_pcie_exit_from_l2(struct dw_pcie_rp *pp)
+> +{
+> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +	struct ls_pcie *pcie = to_ls_pcie(pci);
+> +	u32 val;
+> +	int ret;
+> +
+> +	val = ls_pcie_pf_readl(pcie, LS_PCIE_PF_MCR);
+> +	val |= PF_MCR_EXL2S;
+> +	ls_pcie_pf_writel(pcie, LS_PCIE_PF_MCR, val);
+> +
+> +	ret = readx_poll_timeout(ls_pcie_pf_readl_addr, LS_PCIE_PF_MCR,
+> +				 val, !(val & PF_MCR_EXL2S), 100, 10000);
+> +	if (ret)
+> +		dev_info(pcie->pci->dev, "poll exit L2 state timeout\n");
+
+Same as above.
+
+> +}
+> +
+>  static int ls_pcie_host_init(struct dw_pcie_rp *pp)
+>  {
+>  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> @@ -91,18 +165,33 @@ static int ls_pcie_host_init(struct dw_pcie_rp *pp)
+>  
+>  static const struct dw_pcie_host_ops ls_pcie_host_ops = {
+>  	.host_init = ls_pcie_host_init,
+> +	.pme_turn_off = ls_pcie_send_turnoff_msg,
+> +	.exit_from_l2 = ls_pcie_exit_from_l2,
+> +};
+> +
+> +static const struct ls_pcie_drvdata ls1021a_drvdata = {
+> +};
+> +
+> +static const struct ls_pcie_drvdata ls1043a_drvdata = {
+> +	.lut_off = 0x10000,
+> +};
+> +
+> +static const struct ls_pcie_drvdata layerscape_drvdata = {
+> +	.lut_off = 0x80000,
+> +	.pf_off = 0xc0000,
+> +	.pm_support = true,
+>  };
+>  
+>  static const struct of_device_id ls_pcie_of_match[] = {
+> -	{ .compatible = "fsl,ls1012a-pcie", },
+> -	{ .compatible = "fsl,ls1021a-pcie", },
+> -	{ .compatible = "fsl,ls1028a-pcie", },
+> -	{ .compatible = "fsl,ls1043a-pcie", },
+> -	{ .compatible = "fsl,ls1046a-pcie", },
+> -	{ .compatible = "fsl,ls2080a-pcie", },
+> -	{ .compatible = "fsl,ls2085a-pcie", },
+> -	{ .compatible = "fsl,ls2088a-pcie", },
+> -	{ .compatible = "fsl,ls1088a-pcie", },
+> +	{ .compatible = "fsl,ls1012a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls1021a-pcie", .data = &ls1021a_drvdata },
+> +	{ .compatible = "fsl,ls1028a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls1043a-pcie", .data = &ls1043a_drvdata },
+> +	{ .compatible = "fsl,ls1046a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls2080a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls2085a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls2088a-pcie", .data = &layerscape_drvdata },
+> +	{ .compatible = "fsl,ls1088a-pcie", .data = &layerscape_drvdata },
+>  	{ },
+>  };
+>  
+> @@ -121,6 +210,8 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  	if (!pci)
+>  		return -ENOMEM;
+>  
+> +	pcie->drvdata = of_device_get_match_data(dev);
+> +
+>  	pci->dev = dev;
+>  	pci->pp.ops = &ls_pcie_host_ops;
+>  
+> @@ -131,6 +222,14 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  	if (IS_ERR(pci->dbi_base))
+>  		return PTR_ERR(pci->dbi_base);
+>  
+> +	pcie->big_endian = of_property_read_bool(dev->of_node, "big-endian");
+> +
+> +	if (pcie->drvdata->lut_off)
+> +		pcie->lut_base = pci->dbi_base + pcie->drvdata->lut_off;
+
+Where is lut_base being used?
+
+> +
+> +	if (pcie->drvdata->pf_off)
+
+No need of this check. In the absence of "pf_off", pf_base is going to be 0
+which is anyway wrong if used. So just use "pf_off" directly.
+
+If you really need the check, then you should use "pm_support" as below:
+
+	if (pcie->drvdata->pm_support)
+		pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
+
+This makes it clear that "pf_base" is only used if pm_support is enabled.
+
+> +		pcie->pf_base = pci->dbi_base + pcie->drvdata->pf_off;
+> +
+>  	if (!ls_pcie_is_bridge(pcie))
+>  		return -ENODEV;
+>  
+> @@ -139,12 +238,41 @@ static int ls_pcie_probe(struct platform_device *pdev)
+>  	return dw_pcie_host_init(&pci->pp);
+>  }
+>  
+> +static int ls_pcie_suspend_noirq(struct device *dev)
+> +{
+> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
+> +	struct dw_pcie *pci = pcie->pci;
+> +
+> +	if (!pcie->drvdata->pm_support)
+> +		return 0;
+> +
+> +	return dw_pcie_suspend_noirq(pci);
+> +}
+> +
+> +static int ls_pcie_resume_noirq(struct device *dev)
+> +{
+> +
+
+Remove newline.
+
+- Mani
+
+> +	struct ls_pcie *pcie = dev_get_drvdata(dev);
+> +	struct dw_pcie *pci = pcie->pci;
+> +
+> +	if (!pcie->drvdata->pm_support)
+> +		return 0;
+> +
+> +	return dw_pcie_resume_noirq(pci);
+> +}
+> +
+> +static const struct dev_pm_ops ls_pcie_pm_ops = {
+> +	NOIRQ_SYSTEM_SLEEP_PM_OPS(ls_pcie_suspend_noirq,
+> +				      ls_pcie_resume_noirq)
+> +};
+> +
+>  static struct platform_driver ls_pcie_driver = {
+>  	.probe = ls_pcie_probe,
+>  	.driver = {
+>  		.name = "layerscape-pcie",
+>  		.of_match_table = ls_pcie_of_match,
+>  		.suppress_bind_attrs = true,
+> +		.pm = &ls_pcie_pm_ops,
+>  	},
+>  };
+>  builtin_platform_driver(ls_pcie_driver);
+> -- 
+> 2.34.1
+> 
+
 -- 
-2.40.0
-
+மணிவண்ணன் சதாசிவம்
