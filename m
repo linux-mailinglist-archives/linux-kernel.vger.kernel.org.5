@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9972B76DA8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B03776DA8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233753AbjHBWTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60206 "EHLO
+        id S233891AbjHBWTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:19:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231414AbjHBWTa (ORCPT
+        with ESMTP id S232390AbjHBWTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:19:30 -0400
+        Wed, 2 Aug 2023 18:19:33 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46445272B;
-        Wed,  2 Aug 2023 15:19:28 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 22:19:25 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC9026BD;
+        Wed,  2 Aug 2023 15:19:31 -0700 (PDT)
+Date:   Wed, 02 Aug 2023 22:19:26 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691014766;
+        s=2020; t=1691014767;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4E/G06uHPkpK//F/IJZHWnjR5EPqdEo6JHivIa3wrzY=;
-        b=NxsmXEW7Xs+ILRRSrV0YPt9SBv97bqRmDAEpA0jm82F0usU28D60dow65BTHRyXozdf4p4
-        lyDLe2TLWsRgE8nfGAKB/DsJnHy4Iv1xB3Hb/iYONYsH6kG7wOpM+DDXpDcteGDf2VZDV5
-        PsX1tGENg4S7P8DtkIucTfO4WzpRCk1NtbO9YBzhZz6hsRQFW1Ae3rFTfC7NsrkBkFkMjd
-        /+UBZ71M2FEvz3EJCH0xY7s7OwwlOZrXMDFr1E66PbD0GYrC0Bzi1IphjaQb1fLKmJuPPE
-        28tgiViehevHoREeJqTbB8e5EZZTJOZhjILWtNMf9sLfRTmsMbaRmIQjN4s2zA==
+        bh=vZlMtUj4lnzzgyx26bW8bmj5oyYEPdTTuofDqPEg2bI=;
+        b=bXVK3WFJDiLBEpHtPei1+f3FjUIuFO59FrGSPMTrpypN5jhoDh+anNRhw8zMGxyA/kFlb3
+        a4eGuL/zrtSpWgvI2NqRNkOlAbppWNuBFaJSC1Tuv4o23n5gFSaKymFSL9EuWu3E4Axm+U
+        UzJvfEmedmHAnJWZVQRUa6Emmxkb4quHb5qaiUWkakO+PdFvHLqgSIevwGjITv88oGqPKM
+        JwZIcdlq774nRpHMBucKL88ETNNvZyhm5YZvT+kHCDQUyrM/5H4JdmRNbn68uHQ34fYgER
+        h//t4LHXQtecCbgl/yfGMkVIIuVX6yVANQd6iKZj7l1p7H+WlV1plIqe3yjvvQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691014766;
+        s=2020e; t=1691014767;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=4E/G06uHPkpK//F/IJZHWnjR5EPqdEo6JHivIa3wrzY=;
-        b=zGHt9Uk8zipN+ei78C+iHO9UeNXqNQWlPPegLNrFjO5dyJa++f6FzKHlwPjcxBiDsMWWKx
-        u2kjkuSUcLzNDhBg==
-From:   "tip-bot2 for Mike Rapoport" <tip-bot2@linutronix.de>
+        bh=vZlMtUj4lnzzgyx26bW8bmj5oyYEPdTTuofDqPEg2bI=;
+        b=JHbaNyD/vd3gAmWEYP7qg1IBq7hR1psh6y002/+FXgCFB3/N1noX8zCL1moqyXGQNXaYKG
+        gQGC95lU24tBkCBg==
+From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86/shstk: Add ARCH_SHSTK_UNLOCK
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
+Subject: [tip: x86/shstk] x86: Add PTRACE interface for shadow stack
+Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "Borislav Petkov (AMD)" <bp@alien8.de>,
         Kees Cook <keescook@chromium.org>,
-        David Hildenbrand <david@redhat.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
         Pengfei Xu <pengfei.xu@intel.com>,
         John Allen <john.allen@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169101476562.28540.7349079429427785804.tip-bot2@tip-bot2>
+Message-ID: <169101476639.28540.13323655680166863883.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,97 +67,232 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/shstk branch of tip:
 
-Commit-ID:     680ed2f15e70d079c8148589a3ce9426fc0ff914
-Gitweb:        https://git.kernel.org/tip/680ed2f15e70d079c8148589a3ce9426fc0ff914
-Author:        Mike Rapoport <rppt@linux.ibm.com>
-AuthorDate:    Mon, 12 Jun 2023 17:11:07 -07:00
+Commit-ID:     2fab02b25ae7cf5f714ab456b03d9a3fe5ae98c9
+Gitweb:        https://git.kernel.org/tip/2fab02b25ae7cf5f714ab456b03d9a3fe5ae98c9
+Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
+AuthorDate:    Mon, 12 Jun 2023 17:11:06 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
 CommitterDate: Wed, 02 Aug 2023 15:01:51 -07:00
 
-x86/shstk: Add ARCH_SHSTK_UNLOCK
+x86: Add PTRACE interface for shadow stack
 
-Userspace loaders may lock features before a CRIU restore operation has
-the chance to set them to whatever state is required by the process
-being restored. Allow a way for CRIU to unlock features. Add it as an
-arch_prctl() like the other shadow stack operations, but restrict it being
-called by the ptrace arch_pctl() interface.
+Some applications (like GDB) would like to tweak shadow stack state via
+ptrace. This allows for existing functionality to continue to work for
+seized shadow stack applications. Provide a regset interface for
+manipulating the shadow stack pointer (SSP).
 
-[Merged into recent API changes, added commit log and docs]
+There is already ptrace functionality for accessing xstate, but this
+does not include supervisor xfeatures. So there is not a completely
+clear place for where to put the shadow stack state. Adding it to the
+user xfeatures regset would complicate that code, as it currently shares
+logic with signals which should not have supervisor features.
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+Don't add a general supervisor xfeature regset like the user one,
+because it is better to maintain flexibility for other supervisor
+xfeatures to define their own interface. For example, an xfeature may
+decide not to expose all of it's state to userspace, as is actually the
+case for  shadow stack ptrace functionality. A lot of enum values remain
+to be used, so just put it in dedicated shadow stack regset.
+
+The only downside to not having a generic supervisor xfeature regset,
+is that apps need to be enlightened of any new supervisor xfeature
+exposed this way (i.e. they can't try to have generic save/restore
+logic). But maybe that is a good thing, because they have to think
+through each new xfeature instead of encountering issues when a new
+supervisor xfeature was added.
+
+By adding a shadow stack regset, it also has the effect of including the
+shadow stack state in a core dump, which could be useful for debugging.
+
+The shadow stack specific xstate includes the SSP, and the shadow stack
+and WRSS enablement status. Enabling shadow stack or WRSS in the kernel
+involves more than just flipping the bit. The kernel is made aware that
+it has to do extra things when cloning or handling signals. That logic
+is triggered off of separate feature enablement state kept in the task
+struct. So the flipping on HW shadow stack enforcement without notifying
+the kernel to change its behavior would severely limit what an application
+could do without crashing, and the results would depend on kernel
+internal implementation details. There is also no known use for controlling
+this state via ptrace today. So only expose the SSP, which is something
+that userspace already has indirect control over.
+
+Co-developed-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
 Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 Tested-by: John Allen <john.allen@amd.com>
 Tested-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20230613001108.3040476-42-rick.p.edgecombe%40intel.com
+Link: https://lore.kernel.org/all/20230613001108.3040476-41-rick.p.edgecombe%40intel.com
 ---
- Documentation/arch/x86/shstk.rst  |  4 ++++
- arch/x86/include/uapi/asm/prctl.h |  1 +
- arch/x86/kernel/process_64.c      |  1 +
- arch/x86/kernel/shstk.c           |  9 +++++++--
- 4 files changed, 13 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/fpu/regset.h |  7 +--
+ arch/x86/kernel/fpu/regset.c      | 81 ++++++++++++++++++++++++++++++-
+ arch/x86/kernel/ptrace.c          | 12 ++++-
+ include/uapi/linux/elf.h          |  2 +-
+ 4 files changed, 99 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/arch/x86/shstk.rst b/Documentation/arch/x86/shstk.rst
-index f09afa5..f3553cc 100644
---- a/Documentation/arch/x86/shstk.rst
-+++ b/Documentation/arch/x86/shstk.rst
-@@ -75,6 +75,10 @@ arch_prctl(ARCH_SHSTK_LOCK, unsigned long features)
-     are ignored. The mask is ORed with the existing value. So any feature bits
-     set here cannot be enabled or disabled afterwards.
+diff --git a/arch/x86/include/asm/fpu/regset.h b/arch/x86/include/asm/fpu/regset.h
+index 4f928d6..697b77e 100644
+--- a/arch/x86/include/asm/fpu/regset.h
++++ b/arch/x86/include/asm/fpu/regset.h
+@@ -7,11 +7,12 @@
  
-+arch_prctl(ARCH_SHSTK_UNLOCK, unsigned long features)
-+    Unlock features. 'features' is a mask of all features to unlock. All
-+    bits set are processed, unset bits are ignored. Only works via ptrace.
+ #include <linux/regset.h>
+ 
+-extern user_regset_active_fn regset_fpregs_active, regset_xregset_fpregs_active;
++extern user_regset_active_fn regset_fpregs_active, regset_xregset_fpregs_active,
++				ssp_active;
+ extern user_regset_get2_fn fpregs_get, xfpregs_get, fpregs_soft_get,
+-				 xstateregs_get;
++				 xstateregs_get, ssp_get;
+ extern user_regset_set_fn fpregs_set, xfpregs_set, fpregs_soft_set,
+-				 xstateregs_set;
++				 xstateregs_set, ssp_set;
+ 
+ /*
+  * xstateregs_active == regset_fpregs_active. Please refer to the comment
+diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
+index 6d056b6..6bc1eb2 100644
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -8,6 +8,7 @@
+ #include <asm/fpu/api.h>
+ #include <asm/fpu/signal.h>
+ #include <asm/fpu/regset.h>
++#include <asm/prctl.h>
+ 
+ #include "context.h"
+ #include "internal.h"
+@@ -174,6 +175,86 @@ out:
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_X86_USER_SHADOW_STACK
++int ssp_active(struct task_struct *target, const struct user_regset *regset)
++{
++	if (target->thread.features & ARCH_SHSTK_SHSTK)
++		return regset->n;
 +
- The return values are as follows. On success, return 0. On error, errno can
- be::
- 
-diff --git a/arch/x86/include/uapi/asm/prctl.h b/arch/x86/include/uapi/asm/prctl.h
-index eedfde3..3189c4a 100644
---- a/arch/x86/include/uapi/asm/prctl.h
-+++ b/arch/x86/include/uapi/asm/prctl.h
-@@ -33,6 +33,7 @@
- #define ARCH_SHSTK_ENABLE		0x5001
- #define ARCH_SHSTK_DISABLE		0x5002
- #define ARCH_SHSTK_LOCK			0x5003
-+#define ARCH_SHSTK_UNLOCK		0x5004
- 
- /* ARCH_SHSTK_ features bits */
- #define ARCH_SHSTK_SHSTK		(1ULL <<  0)
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index 0f89aa0..e6db21c 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -899,6 +899,7 @@ long do_arch_prctl_64(struct task_struct *task, int option, unsigned long arg2)
- 	case ARCH_SHSTK_ENABLE:
- 	case ARCH_SHSTK_DISABLE:
- 	case ARCH_SHSTK_LOCK:
-+	case ARCH_SHSTK_UNLOCK:
- 		return shstk_prctl(task, option, arg2);
- 	default:
- 		ret = -EINVAL;
-diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-index d723cdc..d43b7a9 100644
---- a/arch/x86/kernel/shstk.c
-+++ b/arch/x86/kernel/shstk.c
-@@ -489,9 +489,14 @@ long shstk_prctl(struct task_struct *task, int option, unsigned long features)
- 		return 0;
- 	}
- 
--	/* Don't allow via ptrace */
--	if (task != current)
-+	/* Only allow via ptrace */
-+	if (task != current) {
-+		if (option == ARCH_SHSTK_UNLOCK && IS_ENABLED(CONFIG_CHECKPOINT_RESTORE)) {
-+			task->thread.features_locked &= ~features;
-+			return 0;
-+		}
- 		return -EINVAL;
++	return 0;
++}
++
++int ssp_get(struct task_struct *target, const struct user_regset *regset,
++	    struct membuf to)
++{
++	struct fpu *fpu = &target->thread.fpu;
++	struct cet_user_state *cetregs;
++
++	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK))
++		return -ENODEV;
++
++	sync_fpstate(fpu);
++	cetregs = get_xsave_addr(&fpu->fpstate->regs.xsave, XFEATURE_CET_USER);
++	if (WARN_ON(!cetregs)) {
++		/*
++		 * This shouldn't ever be NULL because shadow stack was
++		 * verified to be enabled above. This means
++		 * MSR_IA32_U_CET.CET_SHSTK_EN should be 1 and so
++		 * XFEATURE_CET_USER should not be in the init state.
++		 */
++		return -ENODEV;
 +	}
++
++	return membuf_write(&to, (unsigned long *)&cetregs->user_ssp,
++			    sizeof(cetregs->user_ssp));
++}
++
++int ssp_set(struct task_struct *target, const struct user_regset *regset,
++	    unsigned int pos, unsigned int count,
++	    const void *kbuf, const void __user *ubuf)
++{
++	struct fpu *fpu = &target->thread.fpu;
++	struct xregs_state *xsave = &fpu->fpstate->regs.xsave;
++	struct cet_user_state *cetregs;
++	unsigned long user_ssp;
++	int r;
++
++	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) ||
++	    !ssp_active(target, regset))
++		return -ENODEV;
++
++	if (pos != 0 || count != sizeof(user_ssp))
++		return -EINVAL;
++
++	r = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &user_ssp, 0, -1);
++	if (r)
++		return r;
++
++	/*
++	 * Some kernel instructions (IRET, etc) can cause exceptions in the case
++	 * of disallowed CET register values. Just prevent invalid values.
++	 */
++	if (user_ssp >= TASK_SIZE_MAX || !IS_ALIGNED(user_ssp, 8))
++		return -EINVAL;
++
++	fpu_force_restore(fpu);
++
++	cetregs = get_xsave_addr(xsave, XFEATURE_CET_USER);
++	if (WARN_ON(!cetregs)) {
++		/*
++		 * This shouldn't ever be NULL because shadow stack was
++		 * verified to be enabled above. This means
++		 * MSR_IA32_U_CET.CET_SHSTK_EN should be 1 and so
++		 * XFEATURE_CET_USER should not be in the init state.
++		 */
++		return -ENODEV;
++	}
++
++	cetregs->user_ssp = user_ssp;
++	return 0;
++}
++#endif /* CONFIG_X86_USER_SHADOW_STACK */
++
+ #if defined CONFIG_X86_32 || defined CONFIG_IA32_EMULATION
  
- 	/* Do not allow to change locked features */
- 	if (features & task->thread.features_locked)
+ /*
+diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
+index dfaa270..095f04b 100644
+--- a/arch/x86/kernel/ptrace.c
++++ b/arch/x86/kernel/ptrace.c
+@@ -58,6 +58,7 @@ enum x86_regset_64 {
+ 	REGSET64_FP,
+ 	REGSET64_IOPERM,
+ 	REGSET64_XSTATE,
++	REGSET64_SSP,
+ };
+ 
+ #define REGSET_GENERAL \
+@@ -1267,6 +1268,17 @@ static struct user_regset x86_64_regsets[] __ro_after_init = {
+ 		.active		= ioperm_active,
+ 		.regset_get	= ioperm_get
+ 	},
++#ifdef CONFIG_X86_USER_SHADOW_STACK
++	[REGSET64_SSP] = {
++		.core_note_type	= NT_X86_SHSTK,
++		.n		= 1,
++		.size		= sizeof(u64),
++		.align		= sizeof(u64),
++		.active		= ssp_active,
++		.regset_get	= ssp_get,
++		.set		= ssp_set
++	},
++#endif
+ };
+ 
+ static const struct user_regset_view user_x86_64_view = {
+diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
+index 0c8cf35..786d517 100644
+--- a/include/uapi/linux/elf.h
++++ b/include/uapi/linux/elf.h
+@@ -409,6 +409,8 @@ typedef struct elf64_shdr {
+ #define NT_386_TLS	0x200		/* i386 TLS slots (struct user_desc) */
+ #define NT_386_IOPERM	0x201		/* x86 io permission bitmap (1=deny) */
+ #define NT_X86_XSTATE	0x202		/* x86 extended state using xsave */
++/* Old binutils treats 0x203 as a CET state */
++#define NT_X86_SHSTK	0x204		/* x86 SHSTK state */
+ #define NT_S390_HIGH_GPRS	0x300	/* s390 upper register halves */
+ #define NT_S390_TIMER	0x301		/* s390 timer register */
+ #define NT_S390_TODCMP	0x302		/* s390 TOD clock comparator register */
