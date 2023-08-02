@@ -2,294 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FE676CCB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B5C76CCB6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234206AbjHBMdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        id S234269AbjHBMdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232364AbjHBMdQ (ORCPT
+        with ESMTP id S232364AbjHBMdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:33:16 -0400
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E64532701;
-        Wed,  2 Aug 2023 05:33:12 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0Vov0kNP_1690979588;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0Vov0kNP_1690979588)
-          by smtp.aliyun-inc.com;
-          Wed, 02 Aug 2023 20:33:09 +0800
-Date:   Wed, 2 Aug 2023 20:33:04 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Gerd Bayer <gbayer@linux.ibm.com>
-Cc:     Wenjia Zhang <wenjia@linux.ibm.com>,
-        Jan Karcher <jaka@linux.ibm.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        "D . Wythe" <alibuda@linux.alibaba.com>,
-        Wen Gu <guwen@linux.alibaba.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net 1/2] net/smc: Fix setsockopt and sysctl to specify
- same buffer size again
-Message-ID: <ZMpNALPfBbSFmBAS@TONYMAC-ALIBABA.local>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <20230802093313.1501605-1-gbayer@linux.ibm.com>
- <20230802093313.1501605-2-gbayer@linux.ibm.com>
+        Wed, 2 Aug 2023 08:33:39 -0400
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2087.outbound.protection.outlook.com [40.107.21.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E5AE26B0;
+        Wed,  2 Aug 2023 05:33:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iyiGlEvLvfQ11Lsapaz7OnD7sH2/ljnOO96qsu8i6UNf7BgjWVmv/Ao1AiUTwAD6tW5sZcDoul49Vm5KkehSN/Vy49HEL2HAkrjichwx9pnz//m1vKTc2oYPxV7M9LfsQgA3UWxb8rsn9oG+PNz2fwLIHvKcLzdVckfyCVS3JeGnbiSE3DoS74n+cd5QJZvJhRAZtm78o0q/8IvvIyYWMR5B8eoX/ikyvLpVsp/iH96e6wy6ZbBCq68pI/iPl1GJsQ1i+zWhJtkpmMJFbwesgMwTjLZ1kMJ1MuEPBVVJ2TAh9jAzXgkHqrIiaAQEJEGYHFrPPnFdIItZsR+RfS9yug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TkoppINBLfamUneXUPV6yyRaqg5azFjlc2NK4pZ0Tuk=;
+ b=RAxSyor5/ozXkJT/P1EkghLt9onkFNouu+LmCSIb6udJTeCo3m7R/fb0KexE0Lh8PMWeJyx/kz0VUqJBaBMReGD4ZEFBTP1FNJQmyaZN21QbzCRRemv2v1y7nzwMeEKjfBk+58WQg/7m+OoYknUEJqGrAYXaHA8J175vIDdtZN8JIxC5UeGqOrZ6K/9phEIqeX57gMw+4dGiclNuaG5duhAY2dQ+SbY6tvohmSFwRltiGoJEMuKLsTBtTew5dyb9lKfafm5gUCbQw/FGcX890BbwwtujCQUE3z/bdeLTj50YeeFYyJxOTB99X9lMi6PtQFDymMqVicL3nxup3KBa8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TkoppINBLfamUneXUPV6yyRaqg5azFjlc2NK4pZ0Tuk=;
+ b=E3cqcxp5NlPz2NPqViqHFU+dsIoT0KlcM9peQF9tcMLKnTeLubKUvXQjW4xZZi4UnveoBen7zp7aFqOLhOcFDnGb64xYDIUOlCJGedgECv5sK1HScQLWnGS8Dic8fyM2w5b7Q9e+S3GopjY+od0T5CKkVbA9Y3dg12PhIy0olag=
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com (2603:10a6:206:8::20)
+ by AS8PR04MB8740.eurprd04.prod.outlook.com (2603:10a6:20b:42d::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
+ 2023 12:33:34 +0000
+Received: from AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e]) by AM5PR04MB3139.eurprd04.prod.outlook.com
+ ([fe80::2468:a15e:aa9b:7f8e%4]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
+ 12:33:34 +0000
+From:   Wei Fang <wei.fang@nxp.com>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+CC:     "brouer@redhat.com" <brouer@redhat.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Shenwei Wang <shenwei.wang@nxp.com>,
+        Clark Wang <xiaoning.wang@nxp.com>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "hawk@kernel.org" <hawk@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: RE: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Thread-Topic: [PATCH V3 net-next] net: fec: add XDP_TX feature support
+Thread-Index: AQHZw3VFF5NSBizeREOxLxVc18wksa/WwA6AgAAZpQA=
+Date:   Wed, 2 Aug 2023 12:33:34 +0000
+Message-ID: <AM5PR04MB3139E5A9A0B407922A33BF99880BA@AM5PR04MB3139.eurprd04.prod.outlook.com>
+References: <20230731060025.3117343-1-wei.fang@nxp.com>
+ <3d0a8536-6a22-22e5-41c0-98c13dd7b802@redhat.com>
+In-Reply-To: <3d0a8536-6a22-22e5-41c0-98c13dd7b802@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM5PR04MB3139:EE_|AS8PR04MB8740:EE_
+x-ms-office365-filtering-correlation-id: 0a22e14e-c85c-44d9-59fa-08db9354b019
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pQllXwtVCC9RCCZBNpHPToJW1OHWy9Kn795+2/ZhjH7sH2dWi2y+17ECuTSwJ+FtjltyY1tfl5giN8cuA5nt4BRhoZs5dWJgcZ4Py/PoqH6sC7771zalI7PlWdRS3uCu+ifrRHrQv7nUcXldSNP92JLamIPIZ6XpPd4G7r7PkI5mMMHFrjPpxvW9B/DW3YQvdLkaoteKz5n1Dm20aFB9G+ciFoj+DQsi5fwFCKfmTN1ICXscKGokTZW0OYJ8VaMPv8Xi/BOFygiTwhKSXfBjssfihfTM3Xu8UAFLIZZ0UbRNX6jMpAyWaHn2DBUjkiCjYPHq+xQjAmpApCsBr3kC60ZiAtQs4tnT9Vy+EC/LoZw2IM41XgaGgk30JaOhorVA7Ryvm5hJzyEU4QSCNuwCxlB9NZsqxkxyYR6fy2EgUneQ4jXBn2zRQjUrksK7SqeIZIEJk6mRiuO+KYXGrW/3pQgvwjIMq/ujv86Y9GoKP4Uw9pYwiuiluGbXpdtI9YWwpzcK4CNoyMVGCg5EOgrefQftnBEzl3ooIs6EufwL5kE0N3QlVvJDcQMhAMsyE3I9ORTKyipFDx3dRgLaV7rzz16nE/uYtVSTDvfG3AYffIYTfqvwqsLkJ6nWZ44tkhOX
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3139.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(396003)(136003)(366004)(376002)(39860400002)(451199021)(186003)(8936002)(83380400001)(8676002)(26005)(41300700001)(2906002)(5660300002)(7416002)(38070700005)(52536014)(44832011)(55016003)(86362001)(478600001)(122000001)(54906003)(316002)(38100700002)(6506007)(33656002)(66446008)(7696005)(76116006)(66946007)(71200400001)(66476007)(66556008)(64756008)(6916009)(4326008)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?ca4CNxQFUjPHpwcEyNn96s7YkS64hwGjAB7GJJjj/VgTq+PAhpvmaFceIpJH?=
+ =?us-ascii?Q?7MXp/olXHBe6OC0BkAuS7OmkwIK1UFgzGNBm5LxH6GnxFfR1D8w4FvtdFESY?=
+ =?us-ascii?Q?7hqGCNjHJ+MJBMmnlOI6JdP8Jm8F8/aJXRHijUqLm0Ksz6PMUMJUpKGeN1Vz?=
+ =?us-ascii?Q?e3Da6wZrC5EIVFtl1rwa2dlkVKbgwFStu+uR91E1ufjeLzaKGXM+eSRIwWBX?=
+ =?us-ascii?Q?qmPlfFVsyoQUbfpAaQwDWWW8vTwiuMeFNG27KPXVefVfZMZtHwn9dWlqirQa?=
+ =?us-ascii?Q?z1V63MdjMWNotfXHk59HaVVJ6oW0/JpKiVRuofIbPrV0Sl6KCz8V9wxGbRd8?=
+ =?us-ascii?Q?pKlyRTa2sS1nnU8Lbz7+lZTDK03t/SCt31y9orvhTAg+ZZHifV6nkaYoQicw?=
+ =?us-ascii?Q?xk973UjjoOrYCOOiQonY9io7wy2+wMBgxHjCrLfyhvDjx5E1+mO1j8UclfuL?=
+ =?us-ascii?Q?IkT0amuAIKqAbuX04LWqLB2vS1XfRx9iiv+3B0bHkdvp1vAB7J6w7fvSaCYu?=
+ =?us-ascii?Q?l8EMOQwzX0tJjgYqruo73aKnVXvut/c6xchWdc8CxGKZ1zWtxx9cvDdVblXt?=
+ =?us-ascii?Q?o0a5KliaSOjPiQVeGj2gQV2/j24bX+pDy3LaMm1UikCk61+jZJ2Y/uFmInuR?=
+ =?us-ascii?Q?+uJQPfor5lsDGxeLuSuk9vq9d8xhc/uHuKGQ0pGKKfWBnVoGhb5dR/j/7aso?=
+ =?us-ascii?Q?rUgpOvBQpvwT6qHpEkkh4gqMRrBJGWtB8b1h2r0hnLor58NtD3ZLFbWECIDf?=
+ =?us-ascii?Q?EI2H9NmMdCTpZTkL+NoNgZ0WbnM8KtsQfmcwQ2DNYgi2dZSFE1FBYZsXbW6W?=
+ =?us-ascii?Q?wwgOOOU4f3sQZb2CUvIgleRFiswUpocfjsSeTq079RWSvjZcmnSHXya+nSvk?=
+ =?us-ascii?Q?P4aLGxJhXK+tSukSUQKPGeAsDQCraG8Wra8PtDT4nCglcMCbpnngRKynkO9e?=
+ =?us-ascii?Q?PRhJ5vPpGOUYsbtPJLASVAkPIv3+/Zu9FPB8sSZybcWG6doeA4xSkF1Ss4V7?=
+ =?us-ascii?Q?W7gI8uz4dsf8MiUymahk72sz1vn8F46FfMnKAw5p/yzq8Q5ryaFaPMVLF2ur?=
+ =?us-ascii?Q?1y2yTa1N5nyhdtfexPQlhLGCsglmyzcMzN+yn97ogYEqPxxJv+mAYRxqEM/Z?=
+ =?us-ascii?Q?RzVHli6tZgRdmfeZBiOAt8GN/wb/j6TrKezJQmBKYRj1IMRRItxaSCOLurbS?=
+ =?us-ascii?Q?7azsys53ufX0u42AvZ1H84GBYG/6hocElOY1/fa+ugm2OpdY19Py0C751H92?=
+ =?us-ascii?Q?HzmgPrfe9aTN8pYxInhUBe0PPPQUxiEdiL+sXAX+DPlUla/BG+DxgOGxU5hO?=
+ =?us-ascii?Q?kK3Szu0zA2zW5nmcCdrEN0eOBCr3/bSUfqcov+Sa7Fe71E8DhlJNyO/Gy6NK?=
+ =?us-ascii?Q?fFZWqV40vJi3fJZlFXAGozQoHV07ovQnd4V1JUuRZKPJS9fD9+aVx27qVzib?=
+ =?us-ascii?Q?/gXX1rcrqR46A2UVc4w+XEzkbvehphTUG6iTTbWrd3/0a6hY/hl2fYHlZ4hZ?=
+ =?us-ascii?Q?P8A+ZFCT3bNzoP4lTauuqRC/OBhK30PXWOWz6iGsFGHB17HlSCRgIQWpXgKh?=
+ =?us-ascii?Q?O+Tzs/ItKlVJB+9oTMU=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230802093313.1501605-2-gbayer@linux.ibm.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3139.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a22e14e-c85c-44d9-59fa-08db9354b019
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2023 12:33:34.3878
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VfPjXrVsaIZUbaWtewvmkD+vo8CrIjE/VSZY8XeHOpHfmSmOoszSYeBMnhDVbi9XWlMs9eEqR7aL4rYmcrIFdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8740
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 11:33:12AM +0200, Gerd Bayer wrote:
-> Commit 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock
-> and make them tunable") introduced the net.smc.rmem and net.smc.wmem
-> sysctls to specify the size of buffers to be used for SMC type
-> connections. This created a regression for users that specified the
-> buffer size via setsockopt() as the effective buffer size was now
-> doubled.
+Sorry, I missed some comments before.
 
-The idea of the original patch is going to unbind buffer from clcsock.
-It's great here to determine whether to use original value or doubled.
+> > @@ -1482,7 +1486,7 @@ fec_enet_tx_queue(struct net_device *ndev, u16
+> queue_id, int budget)
+> >   			/* Free the sk buffer associated with this last transmit */
+> >   			dev_kfree_skb_any(skb);
+> >   		} else {
+> > -			xdp_return_frame(xdpf);
+> > +			xdp_return_frame_rx_napi(xdpf);
+> >
+> >   			txq->tx_buf[index].xdp =3D NULL;
+> >   			/* restore default tx buffer type: FEC_TXBUF_T_SKB */
+> > @@ -1573,11 +1577,18 @@ fec_enet_run_xdp(struct fec_enet_private
+> *fep, struct bpf_prog *prog,
+> >   		}
+> >   		break;
+> >
+> > -	default:
+> > -		bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
+> > -		fallthrough;
+> > -
+> >   	case XDP_TX:
+> > +		err =3D fec_enet_xdp_tx_xmit(fep->netdev, xdp);
+>=20
+> You should pass along the "sync" length value to fec_enet_xdp_tx_xmit().
+> Because we know DMA comes from same device (it is already DMA mapped
+> to), then we can do a DMA sync "to_device" with only the sync length.
+>=20
+I think it's okay if the frame length does not change, but if we increase t=
+he
+length of the received frame, such as add a VLAN header into the frame, I
+think the "sync" length value is not correct.
 
-> 
-> Re-introduce the division by 2 in the SMC buffer create code and level
-> this out by duplicating the net.smc.[rw]mem values used for initializing
-> sk_rcvbuf/sk_sndbuf at socket creation time. This gives users of both
-> methods (setsockopt or sysctl) the effective buffer size that they
-> expect.
-> 
-> Initialize net.smc.[rw]mem from its own constant of 64kB, respectively.
-> Internal performance tests show that this value is a good compromise
-> between throughput/latency and memory consumption. Also, this decouples
-> it from any tuning that was done to net.ipv4.tcp_[rw]mem[1] before the
-> module for SMC protocol was loaded. Check that no more than INT_MAX / 2
-> is assigned to net.smc.[rw]mem, in order to avoid any overflow condition
-> when that is doubled for use in sk_sndbuf or sk_rcvbuf.
+> > +		if (err) {
+>=20
+> Add an unlikely(err) or do like above case XDP_REDIRECT, where it takes
+> the likely case "if (!err)" first.
+Yes, you are right, I will improve it.
 
-64kB may be small in our environment, but that's okay to change it with
-systemd during boot. Different networking environment, such as with
-higher latency, should have different buffer size. So two tunable knobs
-are good enough.
+>=20
+> > +			ret =3D FEC_ENET_XDP_CONSUMED;
+> > +			page =3D virt_to_head_page(xdp->data);
+> > +			page_pool_put_page(rxq->page_pool, page, sync, true);
+> > +		} else {
+> > +			ret =3D FEC_ENET_XDP_TX;
+> > +		}
+> > +		break;
+> > +
+> > +	default:
+> >   		bpf_warn_invalid_xdp_action(fep->netdev, prog, act);
+> >   		fallthrough;
+> >
+> > @@ -3793,7 +3804,8 @@ fec_enet_xdp_get_tx_queue(struct
+> fec_enet_private *fep, int index)
+> >
+> >   static int fec_enet_txq_xmit_frame(struct fec_enet_private *fep,
+> >   				   struct fec_enet_priv_tx_q *txq,
+> > -				   struct xdp_frame *frame)
+> > +				   struct xdp_frame *frame,
+> > +				   bool ndo_xmit)
+>=20
+> E.g add parameter dma_sync_len.
+>=20
+> >   {
+> >   	unsigned int index, status, estatus;
+> >   	struct bufdesc *bdp;
+> > @@ -3813,10 +3825,24 @@ static int fec_enet_txq_xmit_frame(struct
+> fec_enet_private *fep,
+> >
+> >   	index =3D fec_enet_get_bd_index(bdp, &txq->bd);
+> >
+> > -	dma_addr =3D dma_map_single(&fep->pdev->dev, frame->data,
+> > -				  frame->len, DMA_TO_DEVICE);
+> > -	if (dma_mapping_error(&fep->pdev->dev, dma_addr))
+> > -		return -ENOMEM;
+> > +	if (ndo_xmit) {
+> > +		dma_addr =3D dma_map_single(&fep->pdev->dev, frame->data,
+> > +					  frame->len, DMA_TO_DEVICE);
+> > +		if (dma_mapping_error(&fep->pdev->dev, dma_addr))
+> > +			return -ENOMEM;
+> > +
+> > +		txq->tx_buf[index].type =3D FEC_TXBUF_T_XDP_NDO;
+> > +	} else {
+> > +		struct page *page =3D virt_to_page(frame->data);
+> > +
+> > +		dma_addr =3D page_pool_get_dma_addr(page) + sizeof(*frame) +
+> > +			   frame->headroom;
+> > +		dma_sync_single_for_device(&fep->pdev->dev, dma_addr,
+> > +					   frame->len, DMA_BIDIRECTIONAL);
+>=20
+> Optimization: use dma_sync_len here instead of frame->len.
+>=20
+> > +		txq->tx_buf[index].type =3D FEC_TXBUF_T_XDP_TX;
+> > +	}
+> > +
+> > +	txq->tx_buf[index].xdp =3D frame;
+> >
+> >   	status |=3D (BD_ENET_TX_INTR | BD_ENET_TX_LAST);
+> >   	if (fep->bufdesc_ex)
+> > @@ -3835,9 +3861,6 @@ static int fec_enet_txq_xmit_frame(struct
+> fec_enet_private *fep,
+> >   		ebdp->cbd_esc =3D cpu_to_fec32(estatus);
+> >   	}
+> >
+> > -	txq->tx_buf[index].type =3D FEC_TXBUF_T_XDP_NDO;
+> > -	txq->tx_buf[index].xdp =3D frame;
+> > -
+> >   	/* Make sure the updates to rest of the descriptor are performed
+> before
+> >   	 * transferring ownership.
+> >   	 */
+> > @@ -3863,6 +3886,31 @@ static int fec_enet_txq_xmit_frame(struct
+> fec_enet_private *fep,
+> >   	return 0;
+> >   }
+> >
+> > +static int fec_enet_xdp_tx_xmit(struct net_device *ndev,
+> > +				struct xdp_buff *xdp)
+> > +{
+>=20
+> E.g add parameter dma_sync_len.
+>=20
+> > +	struct xdp_frame *xdpf =3D xdp_convert_buff_to_frame(xdp);
+>=20
+> XDP_TX can avoid this conversion to xdp_frame.
+> It would requires some refactor of fec_enet_txq_xmit_frame().
+>=20
+Yes, but I'm not intend to change it, using the existing interface is enoug=
+h.
 
-> 
-> While at it, drop the confusing sk_buf_size variable from
-> __smc_buf_create and name "compressed" buffer size variables more
-> consistently.
-> 
-> Background:
-> 
-> Before the commit mentioned above, SMC's buffer allocator in
-> __smc_buf_create() always used half of the sockets' sk_rcvbuf/sk_sndbuf
-> value as initial value to search for appropriate buffers. If the search
-> resorted to using a bigger buffer when all buffers of the specified
-> size were busy, the duplicate of the used effective buffer size is
-> stored back to sk_rcvbuf/sk_sndbuf.
-> 
-> When available, buffers of exactly the size that a user had specified as
-> input to setsockopt() were used, despite setsockopt()'s documentation in
-> "man 7 socket" talking of a mandatory duplication:
-> 
-> [...]
->        SO_SNDBUF
->               Sets  or  gets the maximum socket send buffer in bytes.
->               The kernel doubles this value (to allow space for book‐
->               keeping  overhead)  when it is set using setsockopt(2),
->               and this doubled value is  returned  by  getsockopt(2).
->               The     default     value     is     set     by     the
->               /proc/sys/net/core/wmem_default file  and  the  maximum
->               allowed value is set by the /proc/sys/net/core/wmem_max
->               file.  The minimum (doubled) value for this  option  is
->               2048.
-> [...]
-> 
-> Fixes: 0227f058aa29 ("net/smc: Unbind r/w buffer size from clcsock and make them tunable")
-> Co-developed-by: Jan Karcher <jaka@linux.ibm.com>
-> Signed-off-by: Jan Karcher <jaka@linux.ibm.com>
-> Signed-off-by: Gerd Bayer <gbayer@linux.ibm.com>
-> Reviewed-by: Wenjia Zhang <wenjia@linux.ibm.com>
+> > +	struct fec_enet_private *fep =3D netdev_priv(ndev);
+> > +	struct fec_enet_priv_tx_q *txq;
+> > +	int cpu =3D smp_processor_id();
+> > +	struct netdev_queue *nq;
+> > +	int queue, ret;
+> > +
+> > +	queue =3D fec_enet_xdp_get_tx_queue(fep, cpu);
+> > +	txq =3D fep->tx_queue[queue];
+> > +	nq =3D netdev_get_tx_queue(fep->netdev, queue);
+> > +
+> > +	__netif_tx_lock(nq, cpu);
+>=20
+> It is sad that XDP_TX takes a lock for each frame.
+>=20
+Yes, but the XDP path share the queue with the kernel network stack, so
+we need a lock here, unless there is a dedicated queue for XDP path. Do
+you have a better solution?
 
-Reviewed-by: Tony Lu <tonylu@linux.alibaba.com>
+> > +
+> > +	/* Avoid tx timeout as XDP shares the queue with kernel stack */
+> > +	txq_trans_cond_update(nq);
+> > +	ret =3D fec_enet_txq_xmit_frame(fep, txq, xdpf, false);
+>=20
+> Add/pass parameter dma_sync_len to fec_enet_txq_xmit_frame().
+>=20
+>=20
+> > +
+> > +	__netif_tx_unlock(nq);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >   static int fec_enet_xdp_xmit(struct net_device *dev,
+> >   			     int num_frames,
+> >   			     struct xdp_frame **frames,
+> > @@ -3885,7 +3933,7 @@ static int fec_enet_xdp_xmit(struct net_device
+> *dev,
+> >   	/* Avoid tx timeout as XDP shares the queue with kernel stack */
+> >   	txq_trans_cond_update(nq);
+> >   	for (i =3D 0; i < num_frames; i++) {
+> > -		if (fec_enet_txq_xmit_frame(fep, txq, frames[i]) < 0)
+> > +		if (fec_enet_txq_xmit_frame(fep, txq, frames[i], true) < 0)
+> >   			break;
+> >   		sent_frames++;
+> >   	}
 
-> ---
->  net/smc/af_smc.c     |  4 ++--
->  net/smc/smc.h        |  2 +-
->  net/smc/smc_clc.c    |  4 ++--
->  net/smc/smc_core.c   | 25 ++++++++++++-------------
->  net/smc/smc_sysctl.c | 10 ++++++++--
->  5 files changed, 25 insertions(+), 20 deletions(-)
-> 
-> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-> index a7f887d91d89..1fcf1e42474a 100644
-> --- a/net/smc/af_smc.c
-> +++ b/net/smc/af_smc.c
-> @@ -378,8 +378,8 @@ static struct sock *smc_sock_alloc(struct net *net, struct socket *sock,
->  	sk->sk_state = SMC_INIT;
->  	sk->sk_destruct = smc_destruct;
->  	sk->sk_protocol = protocol;
-> -	WRITE_ONCE(sk->sk_sndbuf, READ_ONCE(net->smc.sysctl_wmem));
-> -	WRITE_ONCE(sk->sk_rcvbuf, READ_ONCE(net->smc.sysctl_rmem));
-> +	WRITE_ONCE(sk->sk_sndbuf, 2 * READ_ONCE(net->smc.sysctl_wmem));
-> +	WRITE_ONCE(sk->sk_rcvbuf, 2 * READ_ONCE(net->smc.sysctl_rmem));
->  	smc = smc_sk(sk);
->  	INIT_WORK(&smc->tcp_listen_work, smc_tcp_listen_work);
->  	INIT_WORK(&smc->connect_work, smc_connect_work);
-> diff --git a/net/smc/smc.h b/net/smc/smc.h
-> index 2eeea4cdc718..1f2b912c43d1 100644
-> --- a/net/smc/smc.h
-> +++ b/net/smc/smc.h
-> @@ -161,7 +161,7 @@ struct smc_connection {
->  
->  	struct smc_buf_desc	*sndbuf_desc;	/* send buffer descriptor */
->  	struct smc_buf_desc	*rmb_desc;	/* RMBE descriptor */
-> -	int			rmbe_size_short;/* compressed notation */
-> +	int                     rmbe_size_comp; /* compressed notation */
-
-nit: spaces are used here, better to use two tabs.
-
->  	int			rmbe_update_limit;
->  						/* lower limit for consumer
->  						 * cursor update
-> diff --git a/net/smc/smc_clc.c b/net/smc/smc_clc.c
-> index b9b8b07aa702..c90d9e5dda54 100644
-> --- a/net/smc/smc_clc.c
-> +++ b/net/smc/smc_clc.c
-> @@ -1007,7 +1007,7 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
->  		clc->d0.gid =
->  			conn->lgr->smcd->ops->get_local_gid(conn->lgr->smcd);
->  		clc->d0.token = conn->rmb_desc->token;
-> -		clc->d0.dmbe_size = conn->rmbe_size_short;
-> +		clc->d0.dmbe_size = conn->rmbe_size_comp;
->  		clc->d0.dmbe_idx = 0;
->  		memcpy(&clc->d0.linkid, conn->lgr->id, SMC_LGR_ID_SIZE);
->  		if (version == SMC_V1) {
-> @@ -1050,7 +1050,7 @@ static int smc_clc_send_confirm_accept(struct smc_sock *smc,
->  			clc->r0.qp_mtu = min(link->path_mtu, link->peer_mtu);
->  			break;
->  		}
-> -		clc->r0.rmbe_size = conn->rmbe_size_short;
-> +		clc->r0.rmbe_size = conn->rmbe_size_comp;
->  		clc->r0.rmb_dma_addr = conn->rmb_desc->is_vm ?
->  			cpu_to_be64((uintptr_t)conn->rmb_desc->cpu_addr) :
->  			cpu_to_be64((u64)sg_dma_address
-> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-> index 3f465faf2b68..6b78075404d7 100644
-> --- a/net/smc/smc_core.c
-> +++ b/net/smc/smc_core.c
-> @@ -2309,31 +2309,30 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
->  	struct smc_connection *conn = &smc->conn;
->  	struct smc_link_group *lgr = conn->lgr;
->  	struct list_head *buf_list;
-> -	int bufsize, bufsize_short;
-> +	int bufsize, bufsize_comp;
->  	struct rw_semaphore *lock;	/* lock buffer list */
->  	bool is_dgraded = false;
-> -	int sk_buf_size;
->  
->  	if (is_rmb)
->  		/* use socket recv buffer size (w/o overhead) as start value */
-> -		sk_buf_size = smc->sk.sk_rcvbuf;
-> +		bufsize = smc->sk.sk_rcvbuf / 2;
->  	else
->  		/* use socket send buffer size (w/o overhead) as start value */
-> -		sk_buf_size = smc->sk.sk_sndbuf;
-> +		bufsize = smc->sk.sk_sndbuf / 2;
->  
-> -	for (bufsize_short = smc_compress_bufsize(sk_buf_size, is_smcd, is_rmb);
-> -	     bufsize_short >= 0; bufsize_short--) {
-> +	for (bufsize_comp = smc_compress_bufsize(bufsize, is_smcd, is_rmb);
-> +	     bufsize_comp >= 0; bufsize_comp--) {
->  		if (is_rmb) {
->  			lock = &lgr->rmbs_lock;
-> -			buf_list = &lgr->rmbs[bufsize_short];
-> +			buf_list = &lgr->rmbs[bufsize_comp];
->  		} else {
->  			lock = &lgr->sndbufs_lock;
-> -			buf_list = &lgr->sndbufs[bufsize_short];
-> +			buf_list = &lgr->sndbufs[bufsize_comp];
->  		}
-> -		bufsize = smc_uncompress_bufsize(bufsize_short);
-> +		bufsize = smc_uncompress_bufsize(bufsize_comp);
->  
->  		/* check for reusable slot in the link group */
-> -		buf_desc = smc_buf_get_slot(bufsize_short, lock, buf_list);
-> +		buf_desc = smc_buf_get_slot(bufsize_comp, lock, buf_list);
->  		if (buf_desc) {
->  			buf_desc->is_dma_need_sync = 0;
->  			SMC_STAT_RMB_SIZE(smc, is_smcd, is_rmb, bufsize);
-> @@ -2377,8 +2376,8 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
->  
->  	if (is_rmb) {
->  		conn->rmb_desc = buf_desc;
-> -		conn->rmbe_size_short = bufsize_short;
-> -		smc->sk.sk_rcvbuf = bufsize;
-> +		conn->rmbe_size_comp = bufsize_comp;
-> +		smc->sk.sk_rcvbuf = bufsize * 2;
->  		atomic_set(&conn->bytes_to_rcv, 0);
->  		conn->rmbe_update_limit =
->  			smc_rmb_wnd_update_limit(buf_desc->len);
-> @@ -2386,7 +2385,7 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
->  			smc_ism_set_conn(conn); /* map RMB/smcd_dev to conn */
->  	} else {
->  		conn->sndbuf_desc = buf_desc;
-> -		smc->sk.sk_sndbuf = bufsize;
-> +		smc->sk.sk_sndbuf = bufsize * 2;
->  		atomic_set(&conn->sndbuf_space, bufsize);
->  	}
->  	return 0;
-> diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
-> index b6f79fabb9d3..0b2a957ca5f5 100644
-> --- a/net/smc/smc_sysctl.c
-> +++ b/net/smc/smc_sysctl.c
-> @@ -21,6 +21,10 @@
->  
->  static int min_sndbuf = SMC_BUF_MIN_SIZE;
->  static int min_rcvbuf = SMC_BUF_MIN_SIZE;
-> +static int max_sndbuf = INT_MAX / 2;
-> +static int max_rcvbuf = INT_MAX / 2;
-> +static const int net_smc_wmem_init = (64 * 1024);
-> +static const int net_smc_rmem_init = (64 * 1024);
->  
->  static struct ctl_table smc_table[] = {
->  	{
-> @@ -53,6 +57,7 @@ static struct ctl_table smc_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= &min_sndbuf,
-> +		.extra2		= &max_sndbuf,
->  	},
->  	{
->  		.procname	= "rmem",
-> @@ -61,6 +66,7 @@ static struct ctl_table smc_table[] = {
->  		.mode		= 0644,
->  		.proc_handler	= proc_dointvec_minmax,
->  		.extra1		= &min_rcvbuf,
-> +		.extra2		= &max_rcvbuf,
->  	},
->  	{  }
->  };
-> @@ -88,8 +94,8 @@ int __net_init smc_sysctl_net_init(struct net *net)
->  	net->smc.sysctl_autocorking_size = SMC_AUTOCORKING_DEFAULT_SIZE;
->  	net->smc.sysctl_smcr_buf_type = SMCR_PHYS_CONT_BUFS;
->  	net->smc.sysctl_smcr_testlink_time = SMC_LLC_TESTLINK_DEFAULT_TIME;
-> -	WRITE_ONCE(net->smc.sysctl_wmem, READ_ONCE(net->ipv4.sysctl_tcp_wmem[1]));
-> -	WRITE_ONCE(net->smc.sysctl_rmem, READ_ONCE(net->ipv4.sysctl_tcp_rmem[1]));
-> +	WRITE_ONCE(net->smc.sysctl_wmem, net_smc_wmem_init);
-> +	WRITE_ONCE(net->smc.sysctl_rmem, net_smc_rmem_init);
->  
->  	return 0;
->  
-> -- 
-> 2.41.0
