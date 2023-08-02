@@ -2,198 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED4176CC19
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5206876CC1D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbjHBLxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36644 "EHLO
+        id S234393AbjHBLzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231428AbjHBLxg (ORCPT
+        with ESMTP id S232415AbjHBLzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:53:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC2B2D40
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:52:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690977164;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Wed, 2 Aug 2023 07:55:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE601710
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:55:19 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 92A2521B0A;
+        Wed,  2 Aug 2023 11:55:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1690977318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5SbuVFR03MYvfb13U1nMAvAGZ+NkapiDklKoMGko6wE=;
-        b=dJ/oqlGa8irg5Q4b8rhkZ1WZJJh+cuf1ulVqLEqiQqLL314DMVR87ysfpvUerK2Cdp/tpk
-        5NU/2Iyp/jsFrVBqIDDKxfAQmIk9GgWt7Et8yb0SXR30DIEqCfN/AhwaBsRXub3qglpZST
-        eCo60RcK0O/TRGnaZLtJFSP9143It8k=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-355-h1O9bO1eM9GpBbrAHteaBA-1; Wed, 02 Aug 2023 07:52:43 -0400
-X-MC-Unique: h1O9bO1eM9GpBbrAHteaBA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-30793c16c78so4295075f8f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 04:52:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690977162; x=1691581962;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5SbuVFR03MYvfb13U1nMAvAGZ+NkapiDklKoMGko6wE=;
-        b=KZzkC32rgG6ix++qIBasN52b6YukW7np1VHzFh6kOPUT//RpWDdNv0pHPRFYqIXXeE
-         +HWOqf45z4vMa4EQaV2nLPVdPy/PZAe45hyfvKyzk1p1JaRZmlS4SD/CkP4lw7g57LwY
-         U6HGJhkXb6+1kNuqeZ6stA0IHT+9J1zylEC68qQJ9BDkZ7i6Kvjyf/VGiWDlXfATeQFQ
-         S93zK5XEUTHKYNqCrTEHb4jHDbpB1yMZM204xZyqzGwBUHXXrRBfu4NYmTEWMwrZ3j5A
-         NWKSX7NwNuyqXmRxJRS2KBnrFhKId22Tc3YFz9dpv/Pbq/Czq/U2aG6Q37iQyxLeki61
-         /Pqg==
-X-Gm-Message-State: ABy/qLYUgEJ8ghc/YNDt9Iu/fffExhKcdgQwEySJausy/9OSqV0PxWlT
-        4Al+23ZtDWy/FsVjZ4TEOaLvu9R8CV4B4ll4NlZllqiqr/XxH6B8sMHwGrgI39R/sAMwGmmZgOO
-        Zk4FtWaKq6awbJXHIkCFx0gZ1
-X-Received: by 2002:adf:e7cb:0:b0:314:2132:a277 with SMTP id e11-20020adfe7cb000000b003142132a277mr5076684wrn.9.1690977161970;
-        Wed, 02 Aug 2023 04:52:41 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlEXKitccTNjLbBaunJd/lIcNHXV0fS8ByyqZPsRwUJgtwC37K9kQMbP0eifwf8QDG7nU35foQ==
-X-Received: by 2002:adf:e7cb:0:b0:314:2132:a277 with SMTP id e11-20020adfe7cb000000b003142132a277mr5076659wrn.9.1690977161481;
-        Wed, 02 Aug 2023 04:52:41 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c70b:e00:b8a4:8613:1529:1caf? (p200300cbc70b0e00b8a4861315291caf.dip0.t-ipconnect.de. [2003:cb:c70b:e00:b8a4:8613:1529:1caf])
-        by smtp.gmail.com with ESMTPSA id l9-20020a05600012c900b003143801f8d8sm18828317wrx.103.2023.08.02.04.52.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 04:52:40 -0700 (PDT)
-Message-ID: <df78f949-dfaf-7378-fe64-c39235e7afb8@redhat.com>
-Date:   Wed, 2 Aug 2023 13:52:39 +0200
+        bh=fyXFrlmlEuxjB2gPFhddRNbTtG90QXCVOzv8x2AJbZY=;
+        b=O/T2p/k4hn8kjGbqy6Us/oZlXHl9jiyukpw87o2/zVyaXgHro+1YGZ92Mk6/abwQj77aiK
+        rLI93DBjQ8zsWtroQsvqvZfoNESvpI8gYgDxC9M+XOlkLsGJzB86fA8lB7AgbcWWEIFoRd
+        ZdpITi/sgGhGNSuWGCjVPmT37yQSNu8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 42E3B13909;
+        Wed,  2 Aug 2023 11:55:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AXmaDiZEymQrOAAAMHmgww
+        (envelope-from <jgross@suse.com>); Wed, 02 Aug 2023 11:55:18 +0000
+Message-ID: <a340a4e1-c9ae-f959-dade-d79cfe9f4eb5@suse.com>
+Date:   Wed, 2 Aug 2023 13:55:17 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/2] don't use mapcount() to check large folio sharing
+ Thunderbird/102.12.0
+Subject: Re: [patch V3 00/60] x86/apic: Decrapification and static calls
 Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Yin Fengwei <fengwei.yin@intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        akpm@linux-foundation.org, willy@infradead.org,
-        vishal.moola@gmail.com, wangkefeng.wang@huawei.com,
-        minchan@kernel.org, yuzhao@google.com, shy828301@gmail.com
-References: <20230728161356.1784568-1-fengwei.yin@intel.com>
- <3bbfde16-ced1-dca8-6a3f-da893e045bc5@arm.com>
- <31093c49-5baa-caed-9871-9503cb89454b@redhat.com>
- <20419779-b5f5-7240-3f90-fe5c4b590e4d@arm.com>
- <2722c9ad-370a-70ff-c374-90a94eca742a@redhat.com>
- <2d64ca09-06fe-a32f-16f9-c277b7033b57@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <2d64ca09-06fe-a32f-16f9-c277b7033b57@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Peter Keresztes Schmidt <peter@keresztesschmidt.de>
+References: <20230801103042.936020332@linutronix.de>
+From:   Juergen Gross <jgross@suse.com>
+In-Reply-To: <20230801103042.936020332@linutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------vC19l9f9XC8W0nHpXasNyca0"
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.08.23 13:51, Ryan Roberts wrote:
-> On 02/08/2023 12:36, David Hildenbrand wrote:
->> On 02.08.23 13:20, Ryan Roberts wrote:
->>> On 02/08/2023 11:48, David Hildenbrand wrote:
->>>> On 02.08.23 12:27, Ryan Roberts wrote:
->>>>> On 28/07/2023 17:13, Yin Fengwei wrote:
->>>>>> In madvise_cold_or_pageout_pte_range() and madvise_free_pte_range(),
->>>>>> folio_mapcount() is used to check whether the folio is shared. But it's
->>>>>> not correct as folio_mapcount() returns total mapcount of large folio.
->>>>>>
->>>>>> Use folio_estimated_sharers() here as the estimated number is enough.
->>>>>>
->>>>>> Yin Fengwei (2):
->>>>>>      madvise: don't use mapcount() against large folio for sharing check
->>>>>>      madvise: don't use mapcount() against large folio for sharing check
->>>>>>
->>>>>>     mm/huge_memory.c | 2 +-
->>>>>>     mm/madvise.c     | 6 +++---
->>>>>>     2 files changed, 4 insertions(+), 4 deletions(-)
->>>>>>
->>>>>
->>>>> As a set of fixes, I agree this is definitely an improvement, so:
->>>>>
->>>>> Reviewed-By: Ryan Roberts
->>>>>
->>>>>
->>>>> But I have a couple of comments around further improvements;
->>>>>
->>>>> Once we have the scheme that David is working on to be able to provide precise
->>>>> exclusive vs shared info, we will probably want to move to that. Although that
->>>>> scheme will need access to the mm_struct of a process known to be mapping the
->>>>
->>>> There are probably ways to work around lack of mm_struct, but it would not be
->>>> completely for free. But passing the mm_struct should probably be an easy
->>>> refactoring.
->>>>
->>>>> folio. We have that info, but its not passed to folio_estimated_sharers() so we
->>>>> can't just reimplement folio_estimated_sharers() - we will need to rework these
->>>>> call sites again.
->>>>
->>>> We should probably just have a
->>>>
->>>> folio_maybe_mapped_shared()
->>>>
->>>> with proper documentation. Nobody should care about the exact number.
->>>>
->>>>
->>>> If my scheme for anon pages makes it in, that would be precise for anon pages
->>>> and we could document that. Once we can handle pagecache pages as well to get a
->>>> precise answer, we could change to folio_mapped_shared() and adjust the
->>>> documentation.
->>>
->>> Makes sense to me. I'm assuming your change would allow us to get rid of
->>> PG_anon_exclusive too? In which case we would also want a precise API
->>> specifically for anon folios for the CoW case, without waiting for pagecache
->>> page support.
->>
->> Not necessarily and I'm currently not planning that
->>
->> On the COW path, I'm planning on using it only when PG_anon_exclusive is clear
->> for a compound page, combined with a check that there are no other page
->> references besides from mappings: all mappings from me and #refs == #mappings ->
->> reuse (set PG_anon_exclusive). That keeps the default (no fork) as fast as
->> possible and simple.
->>
->>>>
->>>> I just saw
->>>>
->>>> https://lkml.kernel.org/r/20230802095346.87449-1-wangkefeng.wang@huawei.com
->>>>
->>>> that converts a lot of code to folio_estimated_sharers().
->>>>
->>>>
->>>> That patchset, for example, also does
->>>>
->>>> total_mapcount(page) > 1 -> folio_estimated_sharers(folio) > 1
->>>>
->>>> I'm not 100% sure what to think about that at this point. We eventually add
->>>> false negatives (actually shared but we fail to detect it) all over the place,
->>>> instead of having false positives (actually exclusive, but we fail to detect
->>>> it).
->>>>
->>>> And that patch set doesn't even spell that out.
->>>>
->>>>
->>>> Maybe it's as good as we will get, especially if my scheme doesn't make it in.
->>>
->>> I've been working on the assumption that your scheme is plan A, and I'm waiting
->>> for it to unblock forward progress on large anon folios. Is this the right
->>> approach, or do you think your scheme is sufficiently riskly and/or far out that
->>> I should aim not to depend on it?
->>
->> It is plan A. IMHO, it does not feel too risky and/or far out at this point --
->> and the implementation should not end up too complicated. But as always, I
->> cannot promise anything before it's been implemented and discussed upstream.
-> 
-> OK, good we are on the same folio... (stolen from Hugh; if a joke is worth
-> telling once, its worth telling 1000 times ;-)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------vC19l9f9XC8W0nHpXasNyca0
+Content-Type: multipart/mixed; boundary="------------4Sy4recgA7lQesFz63cWYq9e";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Thomas Gleixner <tglx@linutronix.de>, LKML <linux-kernel@vger.kernel.org>
+Cc: x86@kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+ Tom Lendacky <thomas.lendacky@amd.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Wei Liu <wei.liu@kernel.org>, Arjan van de Ven <arjan@linux.intel.com>,
+ Michael Kelley <mikelley@microsoft.com>,
+ Peter Keresztes Schmidt <peter@keresztesschmidt.de>
+Message-ID: <a340a4e1-c9ae-f959-dade-d79cfe9f4eb5@suse.com>
+Subject: Re: [patch V3 00/60] x86/apic: Decrapification and static calls
+References: <20230801103042.936020332@linutronix.de>
+In-Reply-To: <20230801103042.936020332@linutronix.de>
 
-Heard it first the time :))
+--------------4Sy4recgA7lQesFz63cWYq9e
+Content-Type: multipart/mixed; boundary="------------83dbtYTDd4raYOV5Y30uetkQ"
 
--- 
-Cheers,
+--------------83dbtYTDd4raYOV5Y30uetkQ
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-David / dhildenb
+T24gMDEuMDguMjMgMTI6NDYsIFRob21hcyBHbGVpeG5lciB3cm90ZToNCj4gSGkhDQo+IA0K
+PiBUaGlzIGlzIHRoZSBmb2xsb3cgdXAgdG86DQo+IA0KPiAgICBodHRwczovL2xvcmUua2Vy
+bmVsLm9yZy9sa21sLzIwMjMwNzI0MTMxMjA2LjUwMDgxNDM5OEBsaW51dHJvbml4LmRlDQo+
+IA0KPiB3aGljaCBhZGRyZXNzZXMgdGhlIFhFTiBQViBmYWxsb3V0IGRlY29kZWQgYnkgSnVl
+cmdlbi4NCj4gDQo+IFRMRFI6IFRoaXMgY2xlYW5zIHVwIGFjY3J1ZWQgYW5kIHBhcnRpYWxs
+eSB1bnVzZWQgZ3VuayBpbiBvcmRlciB0byBjb252ZXJ0DQo+IHRoZSBBUElDIGNhbGxiYWNr
+cyB0byBzdGF0aWMgY2FsbHMuDQo+IA0KPiBUaGUgY2hhbmdlcyB2cy4gVjI6DQo+IA0KPiAg
+ICAtIFVuYnJlYWsgWEVOL1BWIC0gSnVlcmdlbg0KPiANCj4gICAgICBSZXN1bHRpbmcgZGVs
+dGEgcGF0Y2ggYmVsb3cuDQo+IA0KPiAgICAtIFJlYmFzZWQgdG8gNi41LXJjNCBpbiBwcmVw
+YXJhdGlvbiBmb3IgdGhlIENQVUlEIG92ZXJoYXVsIG9uIHRvcCwgd2hpY2gNCj4gICAgICBo
+YXMgc29tZSBjb2xsaXNpb25zIGR1ZSB0byB0aGUgcmVjZW50IG1pdGlnYXRpb24gbXVjay4N
+Cj4gDQo+IFRoZSBzZXJpZXMgaXMgYWxzbyBhdmFpbGFibGUgZnJvbSBnaXQ6DQo+IA0KPiAg
+ICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGdseC9k
+ZXZlbC5naXQgYXBpYy1zdGF0aWMtY2FsbC12Mw0KPiANCj4gVGhhbmtzLA0KPiANCj4gCXRn
+bHgNCg0KRm9yIFhlbiBQViAoZG9tMCBhbmQgdW5wcml2aWxlZ2VkIGd1ZXN0KToNCg0KVGVz
+dGVkLWJ5OiBKdWVyZ2VuIEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+DQoNCg0KSnVlcmdlbg0K
+DQo=
+--------------83dbtYTDd4raYOV5Y30uetkQ
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------83dbtYTDd4raYOV5Y30uetkQ--
+
+--------------4Sy4recgA7lQesFz63cWYq9e--
+
+--------------vC19l9f9XC8W0nHpXasNyca0
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmTKRCUFAwAAAAAACgkQsN6d1ii/Ey8H
+zAgAgFvBIVNzLMmdQ3hiQLrAH087mtpJiDknPyBajTnLVF2Ziq8bmDoiRRTpL97ulnAGPZxU5Qgv
+aFaSIdNXkl3Th8kPDbAthCb0RiRigdXsTYc1a1lFqW6hhiXCLlgO7eaMNf/IyKflEFK2JIQDoQTK
+txvZUJc5a1dEsi2igdXygRG0INSq4+49BkcQDPJHxLlVeujdRpZSpUlzXNfEYC3b52z65vHE+5o3
+0O7GPVHaijjTzjEYMqlOPN10fR27aa7k+nxUG/F27mfzE+pYBaZt+NnSBRI1PyTgedlqpgcdR3qj
+Rs/kyBDv8uLoJwKN9hLTSaoHuQ5kZIPdiuU5JpzATg==
+=kzUf
+-----END PGP SIGNATURE-----
+
+--------------vC19l9f9XC8W0nHpXasNyca0--
