@@ -2,104 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 451A776D39A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B2DC76D33B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbjHBQ0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:26:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
+        id S235381AbjHBQDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbjHBQ0K (ORCPT
+        with ESMTP id S233847AbjHBQDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:26:10 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BB91FFA;
-        Wed,  2 Aug 2023 09:26:06 -0700 (PDT)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372E7f1i028328;
-        Wed, 2 Aug 2023 15:16:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=l27L1z+fYh8L3ZhSSl3etbSXBI7anqfGlqjXvz1VcQM=;
- b=cUrJgIK4QWL8orqSU9cB9WcD9MoUcdP7a+IgT2POv4gUjWMRWLRWbXRzlOZF0Bjl9MRM
- MbbshXB43bGPH3uRIKQqoCxPWRp6twV8GkC4+6ShWffxyjjReBDxSfsTWrjc9M0mgaHO
- aallzm6bWIeHUxQs/He2Vq74229RhIvFdmOvoxQGtp95T5l34EP2aj7EjUCGiwq3qOjF
- NTTaIxpZtwkpO8tFM9CUz/yhcDjqP/OKv0nGiw26HoJq4tVz1U1hbmxy+ccVtatczamM
- 0PD1oNNlUrQr7YLrAFLiGoAUJoeiP4UQMwr83DYQWlRqyzvvE453e8KJZ5w3kPpDsRq8 /w== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s75dgasd1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 15:16:04 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 372FG32r000824
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 15:16:03 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
- 2023 08:16:02 -0700
-Message-ID: <a36af0d6-f6bf-39f8-825d-c743dbd6e84e@quicinc.com>
-Date:   Wed, 2 Aug 2023 09:16:01 -0600
+        Wed, 2 Aug 2023 12:03:45 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 266681981;
+        Wed,  2 Aug 2023 09:03:44 -0700 (PDT)
+Received: from fabio-Precision-3551.. (unknown [IPv6:2804:14c:485:4b61:2f8f:bd6c:fc72:9ea8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: festevam@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id B40328686A;
+        Wed,  2 Aug 2023 18:03:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1690992222;
+        bh=stsIjxq9S++0PLJnDOzwLCJ+2e49dPweR6ZLwENhcQw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ti1awV4eem1BWH3AsgUHnXFNYBEMNvc5GwJ+6Zb+5oTj9riwaYyUlohFLY0DGTI9d
+         MxOefi4o50u+MCX+5pBCa+MlGRlvpFtVFbFT6tLBKp3zH057iELNz/OMrKappz8q/Z
+         A+BZ4Cosk2SF7zAc0zPnjFI82VNK8su850J5sJlUBV1lqygIwn+c0C0pggmYT/G65H
+         gTECzLj/95UcaEcG+gDWFObvnk5GEkYDfxziAZYmhFq/CVsbdEQCEFe1B3Y672O2AG
+         le3rjayy5M7zBoidz1MxJMmJcXwi7/ZUkTsadl02pX/wFSmrvCzU0JL7hTw8+myJYw
+         pgBOYFZeCArWQ==
+From:   Fabio Estevam <festevam@denx.de>
+To:     robh+dt@kernel.org
+Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        Fabio Estevam <festevam@denx.de>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v3] dt-bindings: media: Add OV5642
+Date:   Wed,  2 Aug 2023 13:03:26 -0300
+Message-Id: <20230802160326.293420-1-festevam@denx.de>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH][V2][next] accel/qaic: remove redundant pointer pexec
-Content-Language: en-US
-To:     Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>,
-        Colin Ian King <colin.i.king@gmail.com>,
-        Carl Vanderlip <quic_carlv@quicinc.com>,
-        "Oded Gabbay" <ogabbay@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>
-CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20230726140626.264952-1-colin.i.king@gmail.com>
- <dc7fdd8a-b3c4-b931-61be-b9bc467c6a85@quicinc.com>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <dc7fdd8a-b3c4-b931-61be-b9bc467c6a85@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 71YLkLg0-fdy5LzX6hH5l4uUHqpY7jSM
-X-Proofpoint-ORIG-GUID: 71YLkLg0-fdy5LzX6hH5l4uUHqpY7jSM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_11,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
- suspectscore=0 bulkscore=0 adultscore=0 impostorscore=0 spamscore=0
- mlxlogscore=752 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308020135
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/1/2023 8:05 AM, Pranjal Ramajor Asha Kanojiya wrote:
-> 
-> 
-> On 7/26/2023 7:36 PM, Colin Ian King wrote:
->> Pointer pexec is being assigned a value however it is never read. The
->> assignment is redundant and can be removed. Replace sizeof(*pexec)
->> with sizeof the type and remove the declaration of pointer pexec.
->>
->> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> 
-> Reviewed-by: Pranjal Ramajor Asha Kanojiya <quic_pkanojiy@quicinc.com>
-> 
+As explained in the description text from trivial-devices.yaml:
 
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+"This is a list of trivial I2C and SPI devices that have simple device tree
+bindings, consisting only of a compatible field, an address and possibly an
+interrupt line."
 
-Applied to drm-misc-next
+A camera device does not fall into this category as it needs other
+properties such as regulators, reset and powerdown GPIOs, clocks,
+media endpoint.
 
-Thanks!
+Remove the OV5642 entry from trivial-devices.yaml and add its own
+ovti,ov5642.yaml.
 
--Jeff
+Signed-off-by: Fabio Estevam <festevam@denx.de>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+---
+Changes since v2:
+- Made ovti,ov5642.yaml dual-licensed (Conor)
+- Fixed whitespace warning (Conor)
+- Squased both patches (Conor)
+- Added Conor's Reviewed-by tag.
+- Added linux-media on Cc.
+
+ .../bindings/media/i2c/ovti,ov5642.yaml       | 118 ++++++++++++++++++
+ .../devicetree/bindings/trivial-devices.yaml  |   2 -
+ 2 files changed, 118 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov5642.yaml
+
+diff --git a/Documentation/devicetree/bindings/media/i2c/ovti,ov5642.yaml b/Documentation/devicetree/bindings/media/i2c/ovti,ov5642.yaml
+new file mode 100644
+index 000000000000..b48f1bc6aca4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/ovti,ov5642.yaml
+@@ -0,0 +1,118 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/ovti,ov5642.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: OmniVision OV5642 Image Sensor
++
++maintainers:
++  - Fabio Estevam <festevam@gmail.com>
++
++allOf:
++  - $ref: /schemas/media/video-interface-devices.yaml#
++
++properties:
++  compatible:
++    const: ovti,ov5642
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    description: XCLK Input Clock
++
++  clock-names:
++    const: xclk
++
++  AVDD-supply:
++    description: Analog voltage supply, 2.8V.
++
++  DVDD-supply:
++    description: Digital core voltage supply, 1.5V.
++
++  DOVDD-supply:
++    description: Digital I/O voltage supply, 1.8V.
++
++  powerdown-gpios:
++    maxItems: 1
++    description: Reference to the GPIO connected to the powerdown pin, if any.
++
++  reset-gpios:
++    maxItems: 1
++    description: Reference to the GPIO connected to the reset pin, if any.
++
++  rotation:
++    enum:
++      - 0
++      - 180
++
++  port:
++    description: Digital Output Port
++    $ref: /schemas/graph.yaml#/$defs/port-base
++    additionalProperties: false
++
++    properties:
++      endpoint:
++        $ref: /schemas/media/video-interfaces.yaml#
++        unevaluatedProperties: false
++
++        properties:
++          clock-lanes:
++            const: 0
++
++          data-lanes:
++            minItems: 1
++            maxItems: 2
++            items:
++              enum: [1, 2]
++
++          bus-width:
++            enum: [8, 10]
++
++          data-shift:
++            enum: [0, 2]
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++      #include <dt-bindings/gpio/gpio.h>
++
++      i2c {
++          #address-cells = <1>;
++          #size-cells = <0>;
++
++          camera@3c {
++              compatible = "ovti,ov5642";
++              pinctrl-names = "default";
++              pinctrl-0 = <&pinctrl_ov5642>;
++              reg = <0x3c>;
++              clocks = <&clk_ext_camera>;
++              clock-names = "xclk";
++              DOVDD-supply = <&vgen4_reg>;
++              AVDD-supply = <&vgen3_reg>;
++              DVDD-supply = <&vgen2_reg>;
++              powerdown-gpios = <&gpio1 19 GPIO_ACTIVE_HIGH>;
++              reset-gpios = <&gpio1 20 GPIO_ACTIVE_LOW>;
++
++              port {
++                  /* Parallel bus endpoint */
++                  ov5642_to_parallel: endpoint {
++                      remote-endpoint = <&parallel_from_ov5642>;
++                      bus-width = <8>;
++                      data-shift = <2>; /* lines 9:2 are used */
++                      hsync-active = <0>;
++                      vsync-active = <0>;
++                      pclk-sample = <1>;
++                  };
++              };
++          };
++      };
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index 40bc475ee7e1..ab1423a4aa7f 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -313,8 +313,6 @@ properties:
+           - nuvoton,w83773g
+             # OKI ML86V7667 video decoder
+           - oki,ml86v7667
+-            # OV5642: Color CMOS QSXGA (5-megapixel) Image Sensor with OmniBSI and Embedded TrueFocus
+-          - ovti,ov5642
+             # 48-Lane, 12-Port PCI Express Gen 2 (5.0 GT/s) Switch
+           - plx,pex8648
+             # Pulsedlight LIDAR range-finding sensor
+-- 
+2.34.1
+
