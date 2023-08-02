@@ -2,143 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2A176CB28
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946BB76CB2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbjHBKns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:43:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
+        id S233426AbjHBKoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234407AbjHBKnT (ORCPT
+        with ESMTP id S232740AbjHBKnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:43:19 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C802D73
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:41:05 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 76C7A66018CF;
-        Wed,  2 Aug 2023 11:41:03 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1690972863;
-        bh=TrhwwG3QrrMmg/W1ATIbTGu9eOuiVphNZE4suN3mq0s=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=MI2ZWz0/dRBbh6O+gTO95tHTji6IthyxgaWUF03Cau2KNopLADiedZ+hedjPNu2p4
-         l1ar6/CMwRdRrPr5cCrDmQZPfMP7j30poLK1RzLoW+QGBT9zCi0wCQx4seyXCaGB9h
-         ifAV6es/KuEVQHTV9taxu0cSGfEvIoFQ+foDRYfdZXz8GX0foUAfqWgxUDlDyWI8pK
-         mnVHXEk6L4mdD5GK9f7ZQ2Szuzax+cwNtOgrMqgUhEUrBS7f6vFnNmaF0L1PuJhER1
-         oTApsY0tbDJADzDy35NQOzadUhOPUk32GwDB+1/28KuWIF3RRHBC/vOrvPmGX//AXt
-         2tnvcFzzq0kFg==
-Message-ID: <0acd286d-d4f4-97b2-c296-b2860a00def6@collabora.com>
-Date:   Wed, 2 Aug 2023 12:41:00 +0200
+        Wed, 2 Aug 2023 06:43:43 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F3E30F7
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:41:35 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso71421975e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 03:41:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690972893; x=1691577693;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YgNcim2dL7pjjmrHNNKr7SZxjAPH2vynKbx9rcM8Mlw=;
+        b=YWplNLg7UPqde5B60m6OlJf5GN/pzFSb0R/iqkm3PB+Aa3UMsWIbRcf1T/qla7arVx
+         GQ9twU0WygEmXeQtFkliWx6MNXs7fNpNcQqGnGlMmC6tpgp8+EzJrH1v8gU3Flkl+tdm
+         9sayaVbI3FrfxwxpFiWaQX0p/aRVAdhbfS34vwd8iY4O+i+jGGRxXpDR89h07/u1fKkv
+         tQuGN4A97NkVLcgKW3yJ3Byfl5QXCh0xw+kzT7ZFo+CsmYnp0jHYJFxTBeMQVbINlq7A
+         FL68fC/rQwsdl7YoIwjSklcDptw2lXp22joZ/efQNyQmG4GVqv1hExYeL1shzWkT10VG
+         HhKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690972893; x=1691577693;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YgNcim2dL7pjjmrHNNKr7SZxjAPH2vynKbx9rcM8Mlw=;
+        b=JhHyCmukmPro1e4ySzCbhwxnapGr18S16h3Vm6pS8JKJd022eCLCbUY7drH2eXKdf3
+         8dy+wNxDxly9Arvas4nrYI+5dKz4yw9SnWEu7Hw9+fUwwLUB42cwd7qULoPYHkVyY7cC
+         Dyo7mE8weMdZTSkviEmkrr/a8cNIbBcHyY5AdwxZJ1TPQlXIj6e3UmSXXwVY7KUVO3z6
+         Vo2mKoxQL/hZBlXJiATyjN3zgjjdydLePYQPwSNHevuD+4jTZkL8TM/IN+DY2KQI7eI+
+         BLcAHoxBTahN7cgnhZDtMgZSWK/9+xZTikSgh5kP+BM6ov+4vhRe3FxCjL0jgbzPewMQ
+         NsgQ==
+X-Gm-Message-State: ABy/qLZ9nDgxR17GRGIslud8y6a68yyWRlBywCJ4lgi1vzWhTg3+Pm6N
+        X36OlTvZdUeGmZW3bqmdehFNeQ==
+X-Google-Smtp-Source: APBJJlFWb9PEPbh90efGD3Dx/+mVuVjkBG6YAYZKDfYBbdL8Q9HknA2mANvJ1hlVkV/DhTtPLlvnsA==
+X-Received: by 2002:adf:e792:0:b0:317:69c7:98ad with SMTP id n18-20020adfe792000000b0031769c798admr4622443wrm.3.1690972893500;
+        Wed, 02 Aug 2023 03:41:33 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id y1-20020adfd081000000b003179d5aee63sm10531548wrh.91.2023.08.02.03.41.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 03:41:33 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 13:41:30 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Su Hui <suhui@nfschina.com>
+Cc:     chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        trond.myklebust@hammerspace.com, anna@kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
+        bfields@fieldses.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] fs: lockd: avoid possible wrong NULL parameter
+Message-ID: <0bd584fd-74ac-4b08-ae03-12e329ab186e@kadam.mountain>
+References: <20230802080544.3239967-1-suhui@nfschina.com>
+ <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/3] drm/mediatek: Dynamically allocate CMDQ and use
- helper functions
-Content-Language: en-US
-To:     =?UTF-8?B?Q0sgSHUgKOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "kernel@collabora.com" <kernel@collabora.com>,
-        "wenst@chromium.org" <wenst@chromium.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-References: <20230623094931.117918-1-angelogioacchino.delregno@collabora.com>
- <20230623094931.117918-2-angelogioacchino.delregno@collabora.com>
- <bd19faf644fa80f8fa77ed0841a724aa3ca871f5.camel@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <bd19faf644fa80f8fa77ed0841a724aa3ca871f5.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 02/08/23 08:24, CK Hu (胡俊光) ha scritto:
-> Hi, Angelo:
-> 
-> On Fri, 2023-06-23 at 11:49 +0200, AngeloGioacchino Del Regno wrote:
->>   	
->> External email : Please do not click links or open attachments until
->> you have verified the sender or the content.
->>   Instead of stack allocating the cmdq_client and cmdq_handle
->> structures
->> switch them to pointers, allowing us to migrate this driver to use
->> the
->> common functions provided by mtk-cmdq-helper.
->> In order to do this, it was also necessary to add a `priv` pointer to
->> struct cmdq_client, as that's used to pass (in this case) a mtk_crtc
->> handle to the ddp_cmdq_cb() mailbox RX callback function.
->>
->> Signed-off-by: AngeloGioacchino Del Regno <
->> angelogioacchino.delregno@collabora.com>
->> ---
->>   drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 107 +++++++---------------
->> --
->>   include/linux/soc/mediatek/mtk-cmdq.h   |   1 +
->>   2 files changed, 32 insertions(+), 76 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->> b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->> index 0df62b076f49..b63289ab6787 100644
->> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->> @@ -50,8 +50,8 @@ struct mtk_drm_crtc {
->>   	bool				pending_async_planes;
->>   
->>   #if IS_REACHABLE(CONFIG_MTK_CMDQ)
->> -	struct cmdq_client		cmdq_client;
->> -	struct cmdq_pkt			cmdq_handle;
->> +	struct cmdq_client		*cmdq_client;
->> +	struct cmdq_pkt			*cmdq_handle;
->>   	u32				cmdq_event;
->>   	u32				cmdq_vblank_cnt;
->>   	wait_queue_head_t		cb_blocking_queue;
->> @@ -108,47 +108,6 @@ static void mtk_drm_finish_page_flip(struct
->> mtk_drm_crtc *mtk_crtc)
->>   	}
->>   }
->>   
->> -#if IS_REACHABLE(CONFIG_MTK_CMDQ)
->> -static int mtk_drm_cmdq_pkt_create(struct cmdq_client *client,
->> struct cmdq_pkt *pkt,
->> -				   size_t size)
->> -{
->> -	struct device *dev;
->> -	dma_addr_t dma_addr;
->> -
->> -	pkt->va_base = kzalloc(size, GFP_KERNEL);
->> -	if (!pkt->va_base) {
->> -		kfree(pkt);
->> -		return -ENOMEM;
->> -	}
->> -	pkt->buf_size = size;
->> -	pkt->cl = (void *)client;
-> 
-> I have a plan to remove cl in struct cmdq_pkt. But this modification
-> would make this plan more difficult. So I would pending this patch
-> until cl is removed from struct cmdq_pkt.
-> 
+There was a big fight about memcpy() in 2010.
 
-I think that this ifdef cleanup is more urgent than the removal of `cl` from
-struct cmdq_pkt, as those ifdefs shouldn't have reached upstream in the first
-place, don't you agree?
+https://lwn.net/Articles/416821/
 
-Regards,
-Angelo
+It's sort of related but also sort of different.  My understanding is
+that the glibc memcpy() says that memcpy() always does a dereference so
+it can delete all the NULL checks which come after.  The linux kernel
+uses -fno-delete-null-pointer-checks to turn this behavior off.
 
+regards,
+dan carpenter
