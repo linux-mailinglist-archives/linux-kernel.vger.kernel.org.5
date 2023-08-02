@@ -2,356 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E15B76DB48
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7FD76DB4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbjHBXMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 19:12:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        id S232249AbjHBXN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 19:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjHBXMj (ORCPT
+        with ESMTP id S230512AbjHBXNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 19:12:39 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9441996
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 16:12:35 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-40c72caec5cso124321cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 16:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691017955; x=1691622755;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3RSc2mv52VJAw0IWJVMgPvl170FHZjlXhjTzAhGmjS8=;
-        b=TxnUEgwM/Aq99m5DWV/8HhG1NHZt/kCAIFL0bKffotQ6QI9eGPgvoQnlM9bpI3qX56
-         BHt9zKEEM/Mn59Sgc6kf09fKcYGIRNELRpQP7zHfoxqa6XMYnHAVgTRB6/8pC27RZQzB
-         3GvNhRArFHBh6yBSjFYDZob88QNW6a7cZTjZi3YbUWFqgTW7+zHDmTvMUVvhI0MIUm7e
-         EYsGMgeoS9eJc2l3SRPpVvt/L8u8GjPUppsjx+C0BXVuvHRMW9rcuYhkNzoJi7Zb9Oh5
-         Am4alu9VUUQRuA+zESCkma02lzf5Qi2E78hgyvbypltbXiFTw9Wo3ltujyxR30FghEjs
-         w1BQ==
+        Wed, 2 Aug 2023 19:13:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF47FB
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 16:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691017989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=20Np0whiILikZWPV0Tm+DkfZOvMb6xU6aDilwDNR8Lg=;
+        b=DqzhmOWV76IC7G6Vitt+S08ADe8+uy2hWDwuRks6XAhntBg0XSCkYDvbxEGWqIJ5OnIMM9
+        qEAL5m9oTt+e4MzIdIrqILUd9HBQ3c2zj/bTrAX2zuPpJ2ICM8ka59nrFcc6XusWTCSy2M
+        Fj2/+fAu+nZpwcdzKAINpsdC0YG5UbI=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-454-dnQq1jRHM1qw_P9_3Om1WQ-1; Wed, 02 Aug 2023 19:13:08 -0400
+X-MC-Unique: dnQq1jRHM1qw_P9_3Om1WQ-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1bba270c62dso3106795ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 16:13:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691017955; x=1691622755;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3RSc2mv52VJAw0IWJVMgPvl170FHZjlXhjTzAhGmjS8=;
-        b=YjGaOkGVzvLeK92zACVL2eo5df3pReBQXKOhG64SeOIGMtILjp8aZ4BlrwKA5AQtZo
-         CfqynqvfTL5S900LIlAzPGkuEUQtsErL84MjTWIxy26eZ6BOCzjKBUpSslWcX8KjZ604
-         5gaqXUkZEPNkLD0RbM/rM0AecYLjCqnnqbOfTUaSrOvamBf/fk803LyRwiticCXJxrgp
-         wuj3xHgKX+xZDbS6vLbMuYTDUhArzzZQYvNJsFuinbwuusb0fcOpwTQjzp+nw5U7XQ6h
-         MDDMDYVw4+FTYdBdib8q/xjRX7ai8L0ei8tSjfiMwzBV671Z8KedNxzMTPT6AzNoKtmQ
-         VLAQ==
-X-Gm-Message-State: ABy/qLYeSC91GO8m2cq/YgO4TNDD0BvNq1w9efJY6JgTLdTSRDJiP4Ih
-        /92vhTNU5mQRffYzQTFFiUzyfPTh3rUabP3Q6uWCFA==
-X-Google-Smtp-Source: APBJJlE+QhHFJEBtiL0WPJlY+j+UBoOoAIoJn6AFQ8PeAUlwaZyEmJnC5Mwlj9SQvLZjeXlaBsol3Dv3OWqnXOf5rEI=
-X-Received: by 2002:a05:622a:28e:b0:405:432b:9973 with SMTP id
- z14-20020a05622a028e00b00405432b9973mr1176243qtw.0.1691017954844; Wed, 02 Aug
- 2023 16:12:34 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1691017987; x=1691622787;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=20Np0whiILikZWPV0Tm+DkfZOvMb6xU6aDilwDNR8Lg=;
+        b=NqyaEEmRKDah5HuD401KI02L1TxR999C4xcELC5XFdESLdyHWIOpR8mt6TWvRlJ6yY
+         QyCMpPvQVV3lrSAWmhEwrGKvj3sWgHnFGrEixKb2V8Gs6a8RI7acB1ieBZC1Vv3XnOjo
+         /jnjNJcNXomVRo6KEbh3mmri07oYEnFzSwWNjxsVtA5LOnL0SRUsqyCaEtceRztkaL+f
+         HKEJE8zObQ5zpgE3eR5kqw6Wp//Wl0VSUA5S+8IFSraE+tg/CoOh8arciPseTBD7nCVw
+         yQ4imH7QjiW4yTFZS0i68QutO43Zxyr/OqRbM2bdadQ+cvSi67MVwtIx5i/zVOURhD/J
+         B3Qw==
+X-Gm-Message-State: ABy/qLYVGXTbxDZtSCXWw6fiLT9oz3nklOxXt7qBUcaitsfUgkyNujlF
+        fW+bvlh3gpk6ESfdFuGCGPShf8oZxRDyyHH06SUKvg2qbkICEFIqlpQkkDztH8BWGiFXPRkN5oN
+        7iT2YXJBTUXJQpIIsqcPERs2l
+X-Received: by 2002:a17:903:234d:b0:1b6:6c32:59a8 with SMTP id c13-20020a170903234d00b001b66c3259a8mr16368694plh.36.1691017987195;
+        Wed, 02 Aug 2023 16:13:07 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlGUasP1ILLvLjYv7dds9M1+TNQWo0lRyGqDpoahYttq390Z2rmdy2dwB1sArRMDxIfc57+UQg==
+X-Received: by 2002:a17:903:234d:b0:1b6:6c32:59a8 with SMTP id c13-20020a170903234d00b001b66c3259a8mr16368677plh.36.1691017986871;
+        Wed, 02 Aug 2023 16:13:06 -0700 (PDT)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id v5-20020a170902b7c500b001b891259eddsm12882039plz.197.2023.08.02.16.13.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 16:13:06 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 16:13:04 -0700
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniil Stas <daniil.stas@posteo.net>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        James.Bottomley@hansenpartnership.com, Jason@zx2c4.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@leemhuis.info, stable@vger.kernel.org
+Subject: Re: [PATCH 1/1] tpm: disable hwrng for fTPM on some AMD designs
+Message-ID: <ejqnhdrhktfrhcb76bxx6y73hydjov34t7m4wrvzjc22gdtzts@p4g7yqxdnijn>
+References: <65a1c307-826d-4ca3-0336-07a185684e5d@amd.com>
+ <20230727195019.41abb48d@g14>
+ <67eefe98-e6df-e152-3169-44329e22478d@amd.com>
+ <20230727200527.4080c595@g14>
+ <CAHk-=whqT0PxBazwfjWwoHQQFzZt50tV6Jfgq3iYceKMJtyuUg@mail.gmail.com>
+ <CUGAV1Y993FB.1O2Q691015Z2C@seitikki>
+ <CAHk-=whphk8Jp=NYmnm7Qv+vZ6ScYCz+rV8a2G1nD-AQY3z+mQ@mail.gmail.com>
+ <CUHF67ZOFOTN.1UFE7Q1IFRQMX@suppilovahvero>
+ <CAHk-=wgK0Z-LrJGExwG=e=oxjD93LJhY3jMmi_2O2_Pkjf8Tsg@mail.gmail.com>
+ <CUHG1TB7IELF.PVXOXEXBGEPP@suppilovahvero>
 MIME-Version: 1.0
-References: <20230713143406.14342-1-cyphar@cyphar.com> <CABi2SkVCp_MDh9MgD-UJ_hgJ58ynm22XJ53zE+ZCBSsWFBxiOw@mail.gmail.com>
- <o2tz56m3y2pbbj2sezyqvtw3caqwcqtqqkkfrq632ofpyj4enp@znkxadzn5lmj>
- <CALmYWFs_dNCzw_pW1yRAo4bGCPEtykroEQaowNULp7svwMLjOg@mail.gmail.com>
- <20230801.032503-medium.noises.extinct.omen-CStYZUqcNLCS@cyphar.com>
- <CABi2SkXWfup2_UeKqm7C-xkjF5gnhKuxOP7TsRVa5MLbxabFQg@mail.gmail.com> <20230802.211829-obedient.verb.pointed.walk-inxghgNcxn@cyphar.com>
-In-Reply-To: <20230802.211829-obedient.verb.pointed.walk-inxghgNcxn@cyphar.com>
-From:   Jeff Xu <jeffxu@google.com>
-Date:   Wed, 2 Aug 2023 16:11:57 -0700
-Message-ID: <CALmYWFuahdUF7cT4cm7_TGLqPanuHXJ-hVSfZt7vpTnc18DPrw@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3] memfd: cleanups for vm.memfd_noexec
-To:     Aleksa Sarai <cyphar@cyphar.com>
-Cc:     Jeff Xu <jeffxu@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <brauner@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CUHG1TB7IELF.PVXOXEXBGEPP@suppilovahvero>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 2:39=E2=80=AFPM Aleksa Sarai <cyphar@cyphar.com> wro=
-te:
->
-> On 2023-08-02, Jeff Xu <jeffxu@chromium.org> wrote:
-> > On Tue, Aug 1, 2023 at 6:05=E2=80=AFPM Aleksa Sarai <cyphar@cyphar.com>=
- wrote:
+On Tue, Aug 01, 2023 at 10:09:58PM +0300, Jarkko Sakkinen wrote:
+> On Tue Aug 1, 2023 at 9:42 PM EEST, Linus Torvalds wrote:
+> > On Tue, 1 Aug 2023 at 11:28, Jarkko Sakkinen <jarkko@kernel.org> wrote:
 > > >
-> > This thread is getting longer with different topics, I will try to
-> > respond with trimmed interleaved replies [1]
-> > There are 3 topics (logging/'migration/ratcheting), this response will
-> > be regarding ratcheting.
->
-> The migration and ratcheting topics are interconnected because the
-> migration issue makes ratcheting an even more severe issue. But I'll
-> respond to each thread separately.
->
-> > [1] https://www.kernel.org/doc/html/latest/process/submitting-patches.h=
-tml?highlight=3Dsigned%20off#use-trimmed-interleaved-replies-in-email-discu=
-ssions
+> > > I would disable it inside tpm_crb driver, which is the driver used
+> > > for fTPM's: they are identified by MSFT0101 ACPI identifier.
+> > >
+> > > I think the right scope is still AMD because we don't have such
+> > > regressions with Intel fTPM.
 > >
-> > >
-> > > > > > >  * The ratcheting mechanism for vm.memfd_noexec doesn't make =
-sense as a
-> > > > > > >    security mechanism because a CAP_SYS_ADMIN capable user ca=
-n create
-> > > > > > >    executable binaries in a hidden tmpfs very easily, not to =
-mention the
-> > > > > > >    many other things they can do.
-> > > > > > >
-> > > > > > By further limiting CAP_SYS_ADMIN, an attacker can't modify thi=
-s
-> > > > > > sysctl even after compromising some system service with high
-> > > > > > privilege, YAMA has the same approach for ptrace_scope=3D3
-> > > > >
-> > > > > Personally, I also think this behaviour from YAMA is a little goo=
-fy too,
-> > > > > but given that it only locks the most extreme setting and there i=
-s no
-> > > > > way to get around the most extreme setting, I guess it makes some=
- sense
-> > > > > (not to mention it's an LSM and so there is an argument that it s=
-hould
-> > > > > be possible to lock out privileged users from modifying it).
-> > > > > There are many other security sysctls, and very few have this beh=
-aviour
-> > > > > because it doesn't make much sense in most cases.
-> > > > >
-> > > > > > In addition, this sysctl is pid_name spaced, this means child
-> > > > > > pid_namespace will alway have the same or stricter security set=
-ting
-> > > > > > than its parent, this allows admin to maintain a tree like view=
-. If we
-> > > > > > allow the child pid namespace to elevate its setting, then the
-> > > > > > system-wide setting is no longer meaningful.
-> > > > >
-> > > > > "no longer meaningful" is too strong of a statement imho. It is s=
-till
-> > > > > useful for constraining non-root processes and presumably ChromeO=
-S
-> > > > > disallows random processes to do CLONE_NEWUSER (otherwise the pro=
-tection
-> > > > > of this sysctl is pointless) so in practice for ChromeOS there is=
- no
-> > > > > change in the attack surface.
-> > > > >
-> > > > > (FWIW, I think tying this to the user namespace would've made mor=
-e sense
-> > > > > since this is about privilege restrictions, but that ship has sai=
-led.)
-> > > > >
-> > > > The reason that this sysctl is a PID namespace is that I hope a
-> > > > container and host can have different sysctl values, e.g. host will
-> > > > allow runc's use of X mfd, while a container  doesn't want X mfd. .
-> > > > To clarify what you meant, do you mean this: when a container is in
-> > > > its own pid_namespace, and has "=3D2", the programs inside the cont=
-ainer
-> > > > can still use CLONE_NEWUSER to break out "=3D2" ?
-> > >
-> > > With the current implementation, this is not possible. My point was t=
-hat
-> > > even if it were possible to lower the sysctl, ChromeOS presumably
-> > > already blocks the operations that a user would be able to use to cre=
-ate
-> > > a memfd (an unprivileged user cannot CLONE_NEWPID to modify the sysct=
-l
-> > > without CLONE_NEWUSER, which is presumably blocked on ChromeOS due to
-> > > the other security concerns).
-> > >
-> > >
-> > > > > > The code sample shared in this patch set indicates that the att=
-acker
-> > > > > > already has the ability of creating tmpfs and executing complex=
- steps,
-> > > > > > at that point, it doesn't matter if the code execution is from =
-memfd
-> > > > > > or not. For a safe by default system such as ChromeOS, attacker=
-s won't
-> > > > > > easily run arbitrary code, memfd is one of the open doors for t=
-hat, so
-> > > > > > we are disabling executable memfd in ChromeOS. In other words: =
- if an
-> > > > > > attacker can already execute the arbitrary code as sample given=
- in
-> > > > > > ChromeOS, without using executable memfd,  then memfd is no lon=
-ger the
-> > > > > > thing we need to worry about, the arbitrary code execution is a=
-lready
-> > > > > > achieved by the attacker. Even though I use ChromeOS as an exam=
-ple, I
-> > > > > > think the same type of threat model applies to any system that =
-wants
-> > > > > > to disable executable memfd entirely.
-> > > > >
-> > > > > I understand the threat model this sysctl is blocking, my point i=
-s that
-> > > > > blocking CAP_SYS_ADMIN from modifying the setting doesn't make se=
-nse
-> > > > > from that threat model. An attacker that manages to trick some pr=
-ocess
-> > > > > into creating a memfd with an executable payload is not going to =
-be able
-> > > > > to change the sysctl setting (unless there's a confused deputy wi=
-th
-> > > > > CAP_SYS_ADMIN, in which case you have much bigger issues).
-> > > > >
-> > > > It is the reverse.  An attacker that manages to trick some
-> > > > CAP_SYSADMIN processes into changing this sysctl value (i.e. lower =
-the
-> > > > setting to 0 if no ratcheting), will be able to continue to use mfd=
- as
-> > > > part of the attack chain.
-> > > >  In chromeOS, an attacker that can change sysctl might not necessar=
-ily
-> > > > gain full arbitrary code execution already. As I mentioned previous=
-ly,
-> > > > the main threat model here is to prevent  arbitrary code execution
-> > > > through mfd.  If an attacker already gains arbitrary code execution=
-,
-> > > > at that point, we no longer worry about mfd.
-> > >
-> > > If an attacker can trick a privileged process into writing to arbitra=
-ry
-> > > sysctls, the system has much bigger issues than arbitrary (presumably
-> > > unprivileged) code execution. On the other hand, requiring you to reb=
-oot
-> > > a server due to a misconfigured sysctl *is* broken.
-> > >
-> > > Again, at the very least, not even allowing capable(CAP_SYS_ADMIN) to
-> > > change the setting is actually broken.
-> > >
-> > > > > If a CAP_SYS_ADMIN-capable user wants to change the sysctl, block=
-ing it
-> > > > > doesn't add any security because that process could create a memf=
-d-like
-> > > > > fd to execute without issues.
-> > > > >What practical attack does this ratcheting
-> > > > > mechanism protect against? (This is a question you can answer wit=
-h the
-> > > > > YAMA sysctl, but not this one AFAICS.)
-> > > > >
-> > > > > But even if you feel that allowing this in child user namespaces =
-is
-> > > > > unsafe or undesirable, it's absolutely necessary that
-> > > > > capable(CAP_SYS_ADMIN) should be able to un-brick the running sys=
-tem by
-> > > > > changing the sysctl. The alternative is that you need to reboot y=
-our
-> > > > > server in order to un-set a sysctl that broke some application yo=
-u run.
-> > > > >
-> > > >
-> > > > > Also, by the same token, this ratcheting mechanism doesn't make s=
-ense
-> > > > > with =3D1 *at all* because it could break programs in a way that =
-would
-> > > > > require a reboot but it's not a "security setting" (and the YAMA =
-sysctl
-> > > > > mentioned only locks the sysctl at the highest setting).
-> > > > >
-> > > > I think a system should use "=3D0" when it is unsure about its prog=
-ram's
-> > > > need or not need executable memfd. Technically, it is not that this
-> > > > sysctl breaks the user, but the admin  made the mistake to set the
-> > > > wrong sysctl value, and an admin should know what they are doing fo=
-r a
-> > > > sysctl. Yes. rebooting increases the steps to undo the mistake, but
-> > > > that could be an incentive for the admin to fully test its programs
-> > > > before turning on this sysctl - and avoid unexpected runtime errors=
-.
-> > >
-> > > I don't think this stance is really acceptable -- if an admin that ha=
-s
-> > > privileges to load kernel modules is not able to disable a sysctl tha=
-t
-> > > can break working programs without rebooting there is
-> > >
-> > > When this sysctl was first proposed a few years ago (when kernel folk=
-s
-> > > found out that runc was using executable memfds), my understanding is
-> > > that the long-term goal was to switch programs to have
-> > > non-executable-memfds by default on most distributions. Making it
-> > > impossible for an admin to lower the sysctl value flies in the face o=
-f
-> > > this goal.
-> > >
-> > > At the very least, being unable to lower the sysctl from =3D1 to =3D0=
- is
-> > > just broken (even if you use the yama example -- yama only locks the
-> > > sysctl at highest possible setting, not on lower settings). But in my
-> > > view, having this sysctl ratchet at all doesn't make sense.
-> > >
-> > To reiterate/summarize the current mechanism for vm.memfd_noexec
+> > I'm ok with that.
 > >
-> > 1> It is a pid namespace sysctl,  init ns and child pid ns can have
-> > different setting values.
-> > 2> child pid ns inherits parent's pid ns's sysctl at the time of fork.
-> > 3> There are  3 values for the sysctl, each higher value is more
-> > restrictive than the lower one. Once set, doesn't allow downgrading.
+> > > I.e. I would move the helper I created inside tpm_crb driver, and
+> > > a new flag, let's say "TPM_CHIP_FLAG_HWRNG_DISABLED", which tpm_crb
+> > > sets before calling tpm_chip_register().
+> > >
+> > > Finally, tpm_add_hwrng() needs the following invariant:
+> > >
+> > >         if (chip->flags & TPM_CHIP_FLAG_HWRNG_DISABLED)
+> > >                 return 0;
+> > >
+> > > How does this sound? I can refine this quickly from my first trial.
 > >
-> > It can be used as  following:
-> > 1>
-> > init ns: vm.memfd_noexec =3D 2 (at boot time)
-> > Not allow executable memfd for the entire system, including its contain=
-ers.
-> >
-> > 2>
-> > init ns: vm.memfd_noexec =3D 0 or 1
-> > container (child init namespace) vm.memfd_noexec =3D 2.
-> > The host allows runc's usage of executable memfd during container
-> > creation. Inside the container, executable memfd is not allowed.
-> >
-> > The inherence + not allow downgrading is to reason with how
-> > vm.memfd_noexec is applied in the process tree.
-> > Without it, essentially we are losing the hierarchy view across the
-> > process tree and  a process can evaluate its capability by modifying
-> > the setting. I think that is a less secure approach I would not
-> > prefer.
->
-> If you really want the hierarchical aspect, we can implement it so that
-> it's _actually_ hierarchical like so:
->
->  * By default, your setting is the same as your parent (this is checked
->    by going up the pidns tree -- a-la cgroups). This is less efficient
->    but you want a hierarchy, so we can do it this way instead.
->  * If you set a specific setting, that takes precedence but only if it's
->    a greater or equal setting to your parent.
->  * Trying to set a lower setting than your parent fails regardless of
->    privileges.
->
-> This will allow *privileged users* to lower the setting, but only if
-> the parent pidns also has a lower setting. This allows a system admin to
-> enforce the setting. It seems to me that this fulfils all the
-> requirements you have.
->
-> Most importantly, this would allow for a hierarchical view without
-> having a sysctl that will break systems and nobody will use. I need to
-> re-iterate this point -- nobody is going to use this sysctl as it
-> currently works because it ratchets in a way that admins cannot undo. In
-> practice this would mean you would need to reboot your whole datacenter
-> if you didn't catch that an update to one of you dependencies didn't
-> pass a required *noop* flag to memfd_create().
->
-Yes. I agree this is another way to implement a hierarchical view,
-which is a little more costly,  because it goes up the process tree.
-I respectfully disagree that nobody will use the current sysctl
-though, I can still see that a container might want this,  e.g. a
-small container that doesn't require a lot of refactoring to add NX,
-and restarting container usually isn't a problem, and container might
-like the fact that downgrade is denied at run time.
+> > Sounds fine.
+> 
+> Mario, it would be good if you could send a fix candidate but take my
+> suggestion for a new TPM chip flag into account, while doing it. Please
+> send it as a separate patch, not attachment to this thread.
+> 
+> I can test and ack it, if it looks reasonable.
+> 
+> > My only worry comes from my ignorance: do these fTPM devices *always*
+> > end up being enumerated through CRB, or do they potentially look
+> > "normal enough" that you can actually end up using them even without
+> > having that CRB driver loaded?
+> 
+> I know that QEMU has TPM passthrough but I don't know how it behaves
+> exactly.
+> 
 
-Thanks
-Best regards,
--Jeff
+I just created a passthrough tpm device with a guest which it is using
+the tis driver, while the host is using crb (and apparently one of the
+amd devices that has an impacted fTPM). It looks like there is a
+complete separation between the frontend and backends, with the front
+end providing either a tis or crb interface to the guest, and then the
+backend sending commands by writing to the passthrough device that was
+given, such as /dev/tpm0, or an emulator such as swtpm. Stefan can
+probably explain it much better than I.
+
+Regards,
+Jerry
+
+> > Put another way: is the CRB driver the _only_ way they are visible, or
+> > could some people hit on this through the TPM TIS interface if they
+> > have CRB disabled?
+> 
+> I'm not aware of such implementations.
+> 
+> > I see, for example, that qemu ends up emulating the TIS layer, and it
+> > might end up forwarding the TPM requests to something that is natively
+> > CRB?
+> >
+> > But again: I don't know enough about CRB vs TIS, so the above may be a
+> > stupid question.
+> >
+> >            Linus
+> 
+> I would focus exactly what is known not to work and disable exactly
+> that.
+> 
+> If someone still wants to enable TPM on such hardware, we can later
+> on add a kernel command-line flag to enforce hwrng. This ofc based
+> on user feedback, not something I would add right now.
+> 
+> BR, Jarkko
+
