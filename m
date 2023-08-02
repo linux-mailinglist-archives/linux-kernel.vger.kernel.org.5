@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B92576C411
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D34076C415
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbjHBEVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 00:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
+        id S231176AbjHBEXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 00:23:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbjHBEVk (ORCPT
+        with ESMTP id S229499AbjHBEXJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 00:21:40 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B8C11D;
-        Tue,  1 Aug 2023 21:21:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1690950098;
-        bh=ytTzxjT9vf+qopNiuLBYKW6ydrwJGNWZZ6Ruz09thxQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GQdU8s+d7Sq8evVo33NXW6Jx6nuVQEjrLjld9OXk4NLl1v9HteJg0ECjqXkjAZZAo
-         QT2Hk59HvFCIysY47XhMlv11+Rt9xxVeufEgngwmu4lUCE2cQOQwoP3z8xWP8zowXr
-         o7JAmOhVIbCArDT6Ptplz7E0T6ToyM4amMOaJQTDQKc2KQ6TXVvgMq7t79ZJrXhn5O
-         hz1jc4t+edOo+M/kQI9HtEUefOYaK74jfnChH/VLXbsiuI7xPORuZn5yopCYmLuYDe
-         20ZIzALjKCrK+VKks+wPj9+wwnu5H1/CniJ9uuhdn6/4Y/0sFBfnoi5kdEY308ENat
-         yJFP51+43eZUw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Wed, 2 Aug 2023 00:23:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A384AC;
+        Tue,  1 Aug 2023 21:23:08 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RFzM60zTNz4yMK;
-        Wed,  2 Aug 2023 14:21:38 +1000 (AEST)
-Date:   Wed, 2 Aug 2023 14:21:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the drm-misc tree
-Message-ID: <20230802142136.0f67b762@canb.auug.org.au>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 180C9617A4;
+        Wed,  2 Aug 2023 04:23:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53F69C433C8;
+        Wed,  2 Aug 2023 04:23:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690950187;
+        bh=mHOlubQuduaY+CSZBFzy3ucDx4u6oKY3tnkmhd0qwJI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H8yy87I5DKbj6SP2MfJCqjnNE3iMgkHjJ3hXVTTin8Gj5XmdkKqukK9/u+o7FbYIp
+         E8RI9KUKUKcH4x6oY0IXyUSw76eGqGrW6d7QkE3rtsEgdYAv+rIE9reWF1jZjfNX5S
+         7p43JsPDBJgpakq0RmGgDjtHh1ak+KV6W47MkaRi1Tt3/75bucQN/IDDyXdr2fHuOo
+         ep4PKL1B87xVzR2yN4IeRO8u969qeXqfNIFUG24P6h5EqqbAB76aDwJGnUQ8ahvE6O
+         y3ZapN6GDWlBmuHF0N9UY50SgMkLxiBaKuErS2aA02YFWlAfg8q1hJcKa1dde1j7Cz
+         pNXyqEp9VHn5g==
+Date:   Tue, 1 Aug 2023 21:23:05 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     =?iso-8859-1?Q?Lu=EDs?= Henriques <lhenriques@suse.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix memory leak in ext4_fname_setup_filename()
+ error path
+Message-ID: <20230802042305.GB1543@sol.localdomain>
+References: <20230801144136.23565-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rfB=1CgUJuio3xNdF5E4QJD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230801144136.23565-1-lhenriques@suse.de>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rfB=1CgUJuio3xNdF5E4QJD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, Aug 01, 2023 at 03:41:36PM +0100, Luís Henriques wrote:
+> If casefolding the filename fails, we'll be leaking fscrypt_buf name.
+> Make sure we free it in the error path.
+> 
+> Signed-off-by: Luís Henriques <lhenriques@suse.de>
+> ---
+>  fs/ext4/crypto.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
+> index e20ac0654b3f..9e4503b051c4 100644
+> --- a/fs/ext4/crypto.c
+> +++ b/fs/ext4/crypto.c
+> @@ -33,6 +33,8 @@ int ext4_fname_setup_filename(struct inode *dir, const struct qstr *iname,
+>  
+>  #if IS_ENABLED(CONFIG_UNICODE)
+>  	err = ext4_fname_setup_ci_filename(dir, iname, fname);
+> +	if (err)
+> +		fscrypt_free_filename(&name);
+>  #endif
+>  	return err;
+>  }
 
-Hi all,
+Doesn't ext4_fname_prepare_lookup() have the same bug?
 
-After merging the drm-misc tree, today's linux-next build (htmldocs)
-produced this warning:
+Also, please include a Fixes tag.
 
-include/drm/drm_panel.h:270: warning: Function parameter or member 'followe=
-r_lock' not described in 'drm_panel'
-
-Introduced by commit
-
-  de0874165b83 ("drm/panel: Add a way for other devices to follow panel sta=
-te")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/rfB=1CgUJuio3xNdF5E4QJD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmTJ2dAACgkQAVBC80lX
-0GzEigf9GkZipAJ97rJJHzIQGzIBLx4DxDxnYu5qb6eYT8vM5YhA0m974OsBjkZM
-xaukeiWxczEgnYy/DnLMwxZtV7XVALg0cuvE9KlA8OTKCaGCSXJM0cu19WjVFqNJ
-tt9827VvLK/qfKuTpjm4C84UEMERipzBY10v75ZP47osAvBSyzmQgY/EsY61xvz3
-aMGLwDrjUz4tYoYPhFTETtxDAexqj8y58o5TD8IaEY/p1NnEXJeSwYvBBscpxCge
-MyS3MoGPpH2cGOrfkKh+l6Ew2gQfvUEjUtTDDEWYx1RDyhK9/RC9BlVoA7v0fW++
-MjxxZKABac+dADLSEB+efpC31qt6wA==
-=ncfs
------END PGP SIGNATURE-----
-
---Sig_/rfB=1CgUJuio3xNdF5E4QJD--
+- Eric
