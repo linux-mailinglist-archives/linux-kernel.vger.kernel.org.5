@@ -2,133 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F73F76CF66
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5FD576CF69
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:01:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbjHBOAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
+        id S233677AbjHBOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:01:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234604AbjHBOAh (ORCPT
+        with ESMTP id S233910AbjHBOBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:00:37 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C762122;
-        Wed,  2 Aug 2023 07:00:35 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372E0KxD084046;
-        Wed, 2 Aug 2023 09:00:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690984820;
-        bh=QzqUq95aQ6oOsHQEGnGJgGG3G9lbd6Qhpv7J5KatXFw=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=AchlSEZZiQeb+b18wnz2ff3sMHKWIggDanc0l3IzevUUB0QAatH+EUXxVP2mPVl6T
-         Fr+Ph9NqTNRgXn1kg7RZIRS/YnTPGE/GuhFgk1KIhVdbOsUO9gMmJHGXHGopawJv2M
-         8A+g3y4NLqOk80ZKCOqQ8EboKkX3hnIhbVGvvZbU=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372E0Kjv109363
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Aug 2023 09:00:20 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
- Aug 2023 09:00:20 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 2 Aug 2023 09:00:20 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372E0Kmh118210;
-        Wed, 2 Aug 2023 09:00:20 -0500
-Date:   Wed, 2 Aug 2023 09:00:20 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Francesco Dolcini <francesco@dolcini.it>
-CC:     Jai Luthra <j-luthra@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: Re: [PATCH v1 1/4] arm64: dts: ti: k3-am62x: Enable AUDIO_REFCLKx
-Message-ID: <20230802140020.k233zqpjar5ag4iv@outbreak>
-References: <20230731142135.108477-1-francesco@dolcini.it>
- <20230731142135.108477-2-francesco@dolcini.it>
- <itvg2zmmapbfmgbwos6c4y5zsc2rb3sffv2znhwz6i2vahe4y6@uu2547kcz5sd>
- <23C6E13C-3F10-490B-A18E-C67B91CBAF35@dolcini.it>
- <20230802133244.b66pg3mztotgqotm@steerable>
- <ZMpc7x8U91JLVakd@francesco-nb.int.toradex.com>
-MIME-Version: 1.0
+        Wed, 2 Aug 2023 10:01:36 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E1A2119
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:01:35 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c647150c254so1729979276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:01:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690984894; x=1691589694;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LWQhgcpOHDr1rw8y2Xbv/aNJIPmCPmv4Y4vUkSeErdM=;
+        b=qhpzbe5SFqOiIrHvQHgOqDoxegwElVej3r0xmxwLd7SQG26HPdgavSHYZak5haXn9H
+         U2y0MbkYKjUUoIEop6x4GmtgEWy4X+ks6QSZ7elCQFh0Hws/FnbZ4c35mRi4TvSy0OSq
+         en/oMx6ixoQO5YXiQoJUwVrO79aK3kMZPWkxxa5SQCS2XGh32xSlFQbEueGyeBGfVjl9
+         7emEzrJhp9MnBpKQDwqxXLupfKVS946VBgivBYdx3hitHZL+2WiHcKbQkAVCOYp/YbsM
+         J7QmMs5q2nFKRn1/OVlAj5aaMCgTZrMjxi0as2SRoKyIF0VQBUKpk/cdKRxsmbGI1zu6
+         TArA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690984894; x=1691589694;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LWQhgcpOHDr1rw8y2Xbv/aNJIPmCPmv4Y4vUkSeErdM=;
+        b=GYNlwim9F9aAaYYZZrdxIYnVYoO2ZmamWlSMZ3Gx+P87fp12/7jC/ThbjEMRpEz67L
+         Crx0SoBnOOtkq3HETXsV3Y8tYcGEy4O15AiStJN8f51KqkJsmTmlbgXgIreG8nRddnWE
+         c260JqK2W62ArRiNpcYpdKjkWBjgRLPpxutU2cL/WvmJSNbiSHMywl/MVijFHa/rgCBI
+         93p6dy4gEk7Ybd26mc8DTGq2YsDUP3UsM73RF76swBrflaRyPGhZn6ZoBEqysQcE+Cpc
+         vYYTBitJdh389HuOvGfdaVfi4t0yU4sUXYDoJANSs6ep601Xe9x6Bvs1f8IGmr99UYj2
+         j5Kg==
+X-Gm-Message-State: ABy/qLapJrk2YwT2K875fLLJbloWltb+t9LLgfjf8axEuD7yIezVNTvU
+        /17w19hUicfkdfM5YvUynIVrSePiSA8=
+X-Google-Smtp-Source: APBJJlHg+Xe6hYniFjo5V5A9YHAm4vVueRG5AdwMAFAOIdfDulVy0asCFDgtH1f/gmpKpCh5WHs9WGMyhbQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:11cb:b0:d16:7ccc:b406 with SMTP id
+ n11-20020a05690211cb00b00d167cccb406mr187562ybu.5.1690984894557; Wed, 02 Aug
+ 2023 07:01:34 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 07:01:32 -0700
+In-Reply-To: <ZMpEUVsv5hSmrcH8@iZuf6hx7901barev1c282cZ>
+Mime-Version: 1.0
+References: <8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn>
+ <ZMfFaF2M6Vrh/QdW@google.com> <4ebb3e20-a043-8ad3-ef6c-f64c2443412c@amd.com>
+ <544b7f95-4b34-654d-a57b-3791a6f4fd5f@mail.ustc.edu.cn> <ZMpEUVsv5hSmrcH8@iZuf6hx7901barev1c282cZ>
+Message-ID: <ZMphvF+0H9wHQr5B@google.com>
+Subject: Re: [Question] int3 instruction generates a #UD in SEV VM
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        linux-coco@lists.linux.dev
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZMpc7x8U91JLVakd@francesco-nb.int.toradex.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15:41-20230802, Francesco Dolcini wrote:
-> On Wed, Aug 02, 2023 at 08:32:44AM -0500, Nishanth Menon wrote:
-> > On 13:37-20230802, Francesco Dolcini wrote:
-> > > Il 2 agosto 2023 13:23:50 CEST, Jai Luthra <j-luthra@ti.com> ha scritto:
-> > > >On Jul 31, 2023 at 16:21:32 +0200, Francesco Dolcini wrote:
-> > > >> From: Jai Luthra <j-luthra@ti.com>
-> > > >> 
-> > > >> On AM62-based SoCs the AUDIO_REFCLKx clocks can be used as an input to
-> > > >> external peripherals when configured through CTRL_MMR, so add the
-> > > >> clock nodes.
-> > > >> 
-> > > >> Signed-off-by: Jai Luthra <j-luthra@ti.com>
-> > > >> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> > > >> ---
-> > > >>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 18 ++++++++++++++++++
-> > > >>  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++++++
-> > > >
-> > > >Given currently none of the AM62A boards are using the refclks, can you 
-> > > >drop those or just mark the nodes as disabled. Whoever is the first user 
-> > > >can enable them.
-> > > 
-> > > I can drop the 2 clocks from AM62A, however, should we really do it?
-> > > These clocks exist and they are just defined in the DTS, they are
-> > > not going to be enabled if not used, "ti,am62-epwm-tbclk" is also
-> > > not disabled for example.
+On Wed, Aug 02, 2023, Wu Zongyo wrote:
+> On Mon, Jul 31, 2023 at 11:45:29PM +0800, wuzongyong wrote:
 > > 
-> > Overall, the SoC clock as such has nothing to do with board specific, so
-> > leave it default (enabled) in SoC.dts - just want to make sure that the
-> > clk-parent selection doesn't get in the way of platforms and is a sane
-> > default.
+> > On 2023/7/31 23:03, Tom Lendacky wrote:
+> > > On 7/31/23 09:30, Sean Christopherson wrote:
+> > >> On Sat, Jul 29, 2023, wuzongyong wrote:
+> > >>> Hi,
+> > >>> I am writing a firmware in Rust to support SEV based on project td-shim[1].
+> > >>> But when I create a SEV VM (just SEV, no SEV-ES and no SEV-SNP) with the firmware,
+> > >>> the linux kernel crashed because the int3 instruction in int3_selftest() cause a
+> > >>> #UD.
+> > >>
+> > >> ...
+> > >>
+> > >>> BTW, if a create a normal VM without SEV by qemu & OVMF, the int3 instruction always generates a
+> > >>> #BP.
+> > >>> So I am confused now about the behaviour of int3 instruction, could anyone help to explain the behaviour?
+> > >>> Any suggestion is appreciated!
+> > >>
+> > >> Have you tried my suggestions from the other thread[*]?
+> > Firstly, I'm sorry for sending muliple mails with the same content. I thought the mails I sent previously 
+> > didn't be sent successfully.
+> > And let's talk the problem here.
+> > >>
+> > >>    : > > I'm curious how this happend. I cannot find any condition that would
+> > >>    : > > cause the int3 instruction generate a #UD according to the AMD's spec.
+> > >>    :
+> > >>    : One possibility is that the value from memory that gets executed diverges from the
+> > >>    : value that is read out be the #UD handler, e.g. due to patching (doesn't seem to
+> > >>    : be the case in this test), stale cache/tlb entries, etc.
+> > >>    :
+> > >>    : > > BTW, it worked nomarlly with qemu and ovmf.
+> > >>    : >
+> > >>    : > Does this happen every time you boot the guest with your firmware? What
+> > >>    : > processor are you running on?
+> > >>    :
+> > Yes, every time.
+> > The processor I used is EPYC 7T83.
+> > >>    : And have you ruled out KVM as the culprit?  I.e. verified that KVM is NOT injecting
+> > >>    : a #UD.  That obviously shouldn't happen, but it should be easy to check via KVM
+> > >>    : tracepoints.
+> > >
+> > > I have a feeling that KVM is injecting the #UD, but it will take instrumenting KVM to see which path the #UD is being injected from.
+> > >
+> > > Wu Zongyo, can you add some instrumentation to figure that out if the trace points towards KVM injecting the #UD?
+> > Ok, I will try to do that.
+> You're right. The #UD is injected by KVM.
 > 
-> When I looked into that, months ago, this looked to me the correct and a
-> sane default. I had the same in our downstream way before the addition
-> from Jai Luthra to the SoC dtsi.
+> The path I found is:
+>     svm_vcpu_run
+>         svm_complete_interrupts
+> 	    kvm_requeue_exception // vector = 3
+> 	        kvm_make_request
 > 
-> Not sure if Jai can add more on that regard.
+>     vcpu_enter_guest
+>         kvm_check_and_inject_events
+> 	    svm_inject_exception
+> 	        svm_update_soft_interrupt_rip
+> 		    __svm_skip_emulated_instruction
+> 		        x86_emulate_instruction
+> 			    svm_can_emulate_instruction
+> 			        kvm_queue_exception(vcpu, UD_VECTOR)
 > 
-> > pll2_hsdiv8 output - which looks like the default mux value anyways..
-> > I am ok for it being explicit, but wondering if that works for boards
-> > that do not use this default.
-> 
-> IFF needed, it would be very easy to just override from the board dts,
-> using the labels that are already there (audio_refclk0, audio_refclk1).
+> Does this mean a #PF intercept occur when the guest try to deliver a
+> #BP through the IDT? But why?
 
-Jai: This sounds sane to me, if you are OK as well, I'd appreciate a reviewed-by
+I doubt it's a #PF.  A #NPF is much more likely, though it could be something
+else entirely, but I'm pretty sure that would require bugs in both the host and
+guest.
 
-> 
-> > (sidenote): Fransesco - your new mail client has line wrap issues ;)
-> Yep, I had the crazy idea to reply from my mobile phone while having a
-> walk. It's already a success that I did not top post ;-)
-
-hehe ;)
-
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+What is the last exit recorded by trace_kvm_exit() before the #UD is injected?
