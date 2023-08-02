@@ -2,216 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A817F76CAA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB55376CAA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:21:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbjHBKUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:20:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
+        id S232617AbjHBKVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:21:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbjHBKUN (ORCPT
+        with ESMTP id S231860AbjHBKVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:20:13 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7912685
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:20:11 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fb4146e8fcso4940175e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 03:20:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20221208.gappssmtp.com; s=20221208; t=1690971610; x=1691576410;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=z4rJUp9E40rL5+8CP32mycBdPuI07UiAoVNbdysH/2w=;
-        b=IHZHoNJee0qngDGi7rgLFsu2Fj3ALWVZqdunZfkstaFa3525boASabLF5QNjW/aDLh
-         Wb1HSXHuoj0HRIpsriTPJoocccS4SdS6rNVWiuR8pt4I9tm3VjGN6Qyr8oXsYyACZryt
-         qUbxszJNfgNIeGkLvg2LE7M9/piNcPmHx5pdOLgCKECr6CIAylmmAxxMnHY5N586RGtG
-         dm4AKWtC8wdaV+ktiEZddrna0uwdSau4gXLHsddTHKH0UTrUYkqxzezp1zuPbbn0S7CP
-         bhZYTPDEdnrj4Gatz5BqoGjlObqw90upHoOmmz61UCPUzwidEm0XBMIC4MinoZ6yQPCE
-         fB7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690971610; x=1691576410;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=z4rJUp9E40rL5+8CP32mycBdPuI07UiAoVNbdysH/2w=;
-        b=WJRKA9pwVfLEybeMJk6onRigB9pmGqFag1GK7qfCHQ3BIeBrmPfOI9dS3TdUIG61HA
-         GiySxnAxKQbbLIMzdVuiNc2QuZ15ablWpedjWVbs48/dD0ct2ZYnxPCcw1fIROkOO9YB
-         kyLRW+GBqiMaUB/u0/GFY/RNWRVc7HpXc2J8LQTJ6zQgv60yicL/5aXj3aAQmxCb/UMy
-         FkqHQLxFriLYzIlW86Q9K4a00jsbDjt0mlMTk3NczYXI7i6AmaDGOZ31C47mDtFoHsYa
-         1jix2EK8vN/5G0tvdh0S2q10FzA3v5x4jdSlKCd2u5FM+sd3jJo8To3zWih8NByr2rJc
-         9ttg==
-X-Gm-Message-State: ABy/qLZSVIPO0X2sOcovoumY4WZHawM4AD56uczzdzZA9Q3BBkIwUJ4+
-        juaYO0Bw4qhwyeqSfeOQ8Gg5OA==
-X-Google-Smtp-Source: APBJJlFo+ohuERZxmfjaTrMzYUhCBVxfbYhKnGmeFRtFDL8Dh535ATJwmkvaXoavUylHY7WzkW7zkA==
-X-Received: by 2002:a05:600c:4792:b0:3fe:21f1:aba8 with SMTP id k18-20020a05600c479200b003fe21f1aba8mr4750448wmo.12.1690971609857;
-        Wed, 02 Aug 2023 03:20:09 -0700 (PDT)
-Received: from localhost ([165.225.194.216])
-        by smtp.gmail.com with ESMTPSA id a13-20020a05600c224d00b003fc05b89e5bsm1253536wmm.34.2023.08.02.03.20.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 03:20:09 -0700 (PDT)
-References: <20230714072510.47770-1-nmi@metaspace.dk>
- <20230714072510.47770-3-nmi@metaspace.dk>
- <ZLesM5flOn2aet8p@ovpn-8-17.pek2.redhat.com>
- <ZLfZ/I2O3d7V9v7d@ovpn-8-21.pek2.redhat.com>
-User-agent: mu4e 1.10.5; emacs 28.2.50
-From:   "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Matias Bjorling <Matias.Bjorling@wdc.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, gost.dev@samsung.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Aravind Ramesh <Aravind.Ramesh@wdc.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        Hans Holmberg <Hans.Holmberg@wdc.com>,
-        Minwoo Im <minwoo.im.dev@gmail.com>
-Subject: Re: [PATCH v9 2/2] ublk: enable zoned storage support
-Date:   Wed, 02 Aug 2023 12:19:26 +0200
-In-reply-to: <ZLfZ/I2O3d7V9v7d@ovpn-8-21.pek2.redhat.com>
-Message-ID: <875y5xpwyv.fsf@metaspace.dk>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Wed, 2 Aug 2023 06:21:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD2D2137
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:21:00 -0700 (PDT)
+Message-ID: <20230802101635.459108805@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1690971658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=GXI1rxtTlDn076yBDU5q43lJu832PeBcBNlVRoAlR7A=;
+        b=lkvb9WpTp3m9eviLXL1u0dyNvIY/VHkDhRcFWa0onoLAD6TLQ64Vgewq59KzalceZbYqTV
+        Vm+BmoSYUbFzmr6ot1Dh0zdBc144BSo7stXPxHJkRDBNz4+kxg7ItzC+LkK2vX9rS+ynDt
+        sHV/cIzt8Z+RDW9P9G+tOtGOs+HWFp48UtQ9Vp8ua7KqCAkxOZ2OnvRCEMhG1bNYywUG6i
+        JCnlMVKRFyumqY+t3KPPSr06QYIggFFBnYZjRLcYIIKLP9nMZCuLmBdsSJnrHGdKjj8P0j
+        38bBiN9a6M+wIpOH5ZNa6Hy5ECF/daZ0UUz27r4MLXTCwnKjk3dpkCTxifOHVg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1690971658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=GXI1rxtTlDn076yBDU5q43lJu832PeBcBNlVRoAlR7A=;
+        b=C/tX3hJTvJdglNVY3bXTpVGy9bEiNQrATUdzsnMgM46/ecyP9NQ/KaFHJEDSpybHR+ZgxO
+        W+jBETQiHTwR98Cg==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [patch V3 00/40] x86/cpu: Rework the topology evaluation
+Date:   Wed,  2 Aug 2023 12:20:57 +0200 (CEST)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi!
 
-Ming Lei <ming.lei@redhat.com> writes:
+This is the follow up to V2:
 
-> On Wed, Jul 19, 2023 at 05:26:11PM +0800, Ming Lei wrote:
->> On Fri, Jul 14, 2023 at 09:25:10AM +0200, Andreas Hindborg wrote:
->> > From: Andreas Hindborg <a.hindborg@samsung.com>
->> > 
->> > Add zoned storage support to ublk: report_zones and operations:
->> >  - REQ_OP_ZONE_OPEN
->> >  - REQ_OP_ZONE_CLOSE
->> >  - REQ_OP_ZONE_FINISH
->> >  - REQ_OP_ZONE_RESET
->> >  - REQ_OP_ZONE_APPEND
->> > 
->> > The zone append feature uses the `addr` field of `struct ublksrv_io_cmd` to
->> > communicate ALBA back to the kernel. Therefore ublk must be used with the
->> > user copy feature (UBLK_F_USER_COPY) for zoned storage support to be
->> > available. Without this feature, ublk will not allow zoned storage support.
->> > 
->> > Signed-off-by: Andreas Hindborg <a.hindborg@samsung.com>
->> > ---
->> 
->> ...
->> 
->> > +/*
->> > + * Construct a zone report. The report request is carried in `struct
->> > + * ublksrv_io_desc`. The `start_sector` field must be the first sector of a zone
->> > + * and shall indicate the first zone of the report. The `nr_sectors` shall
->> > + * indicate how many zones should be reported (divide by zone size to get number
->> > + * of zones in the report) and must be an integer multiple of the zone size. The
->> > + * report shall be delivered as a `struct blk_zone` array. To report fewer zones
->> > + * than requested, zero the last entry of the returned array.
->> > + */
->> > +#define		UBLK_IO_OP_REPORT_ZONES		18
->> 
->> Actually, I meant the following delta change in V8 comment, then the UAPI
->> looks more clean & readable wrt. reporting how many zones in UBLK_IO_OP_REPORT_ZONES
->> and reusing ublksrv_io_cmd->addr.
->> 
->> Otherwise, this patchset looks fine.
->> 
->> 
->> diff --git a/drivers/block/ublk_drv.c b/drivers/block/ublk_drv.c
->> index 5698f4575e05..454c852ed328 100644
->> --- a/drivers/block/ublk_drv.c
->> +++ b/drivers/block/ublk_drv.c
->> @@ -70,7 +70,7 @@ struct ublk_rq_data {
->>  	struct kref ref;
->>  	__u64 sector;
->>  	__u32 operation;
->> -	__u32 nr_sectors;
->> +	__u32 nr_zones;
->>  };
->>  
->>  struct ublk_uring_cmd_pdu {
->> @@ -335,7 +335,7 @@ static int ublk_report_zones(struct gendisk *disk, sector_t sector,
->>  		pdu = blk_mq_rq_to_pdu(req);
->>  		pdu->operation = UBLK_IO_OP_REPORT_ZONES;
->>  		pdu->sector = sector;
->> -		pdu->nr_sectors = zones_in_request * zone_size_sectors;
->> +		pdu->nr_zones = zones_in_request;
->>  
->>  		ret = blk_rq_map_kern(disk->queue, req, buffer, buffer_length,
->>  					GFP_KERNEL);
->> @@ -404,7 +404,7 @@ static blk_status_t ublk_setup_iod_zoned(struct ublk_queue *ubq,
->>  		switch (ublk_op) {
->>  		case UBLK_IO_OP_REPORT_ZONES:
->>  			iod->op_flags = ublk_op | ublk_req_build_flags(req);
->> -			iod->nr_sectors = pdu->nr_sectors;
->> +			iod->nr_zones = pdu->nr_zones;
->>  			iod->start_sector = pdu->sector;
->>  			return BLK_STS_OK;
->>  		default:
->> diff --git a/include/uapi/linux/ublk_cmd.h b/include/uapi/linux/ublk_cmd.h
->> index 4d97eb0f7d13..602a788a650e 100644
->> --- a/include/uapi/linux/ublk_cmd.h
->> +++ b/include/uapi/linux/ublk_cmd.h
->> @@ -249,11 +249,13 @@ struct ublksrv_ctrl_dev_info {
->>  /*
->>   * Construct a zone report. The report request is carried in `struct
->>   * ublksrv_io_desc`. The `start_sector` field must be the first sector of a zone
->> - * and shall indicate the first zone of the report. The `nr_sectors` shall
->> - * indicate how many zones should be reported (divide by zone size to get number
->> - * of zones in the report) and must be an integer multiple of the zone size. The
->> - * report shall be delivered as a `struct blk_zone` array. To report fewer zones
->> - * than requested, zero the last entry of the returned array.
->> + * and shall indicate the first zone of the report. The `nr_zones` shall
->> + * indicate how many zones should be reported at most. The report shall be
->> + * delivered as a `struct blk_zone` array. To report fewer zones than
->> + * requested, zero the last entry of the returned array.
->> + *
->> + * So related definitions(blk_zone, blk_zone_cond, blk_zone_type, ...) in
->> + * include/uapi/linux/blkzoned.h are part of ublk UAPI.
->>   */
->>  #define		UBLK_IO_OP_REPORT_ZONES		18
->>  
->> @@ -276,7 +278,10 @@ struct ublksrv_io_desc {
->>  	/* op: bit 0-7, flags: bit 8-31 */
->>  	__u32		op_flags;
->>  
->> -	__u32		nr_sectors;
->> +	union {
->> +		__u32		nr_sectors;
->> +		__u32		nr_zones; /* for UBLK_IO_OP_REPORT_ZONES only */
->> +	};
->>  
->>  	/* start sector for this io */
->>  	__u64		start_sector;
->> @@ -308,6 +313,12 @@ struct ublksrv_io_cmd {
->>  	/*
->>  	 * userspace buffer address in ublksrv daemon process, valid for
->>  	 * FETCH* command only
->> +	 *
->> +	 * This field shouldn't be used if UBLK_F_USER_COPY is enabled,
->> +	 * because userspace deals with data copy by pread()/pwrite() over
->> +	 * /dev/ublkcN. But in case of UBLK_F_ZONED, 'addr' is re-used to
->> +	 * pass back the allocated LBA for UBLK_IO_OP_ZONE_APPEND which
->> +	 * actually depends on UBLK_F_USER_COPY
->>  	 */
->>  	__u64	addr;
->
-> Or use union to cover zoned_append_lba, and we still need above
-> document about UBLK_F_USER_COPY & UBLK_F_ZONED uses.
->
-> 	union {
-> 		__u64	addr;
-> 		__u64	zoned_append_lba;
-> 	}
->
+  https://lore.kernel.org/lkml/20230728105650.565799744@linutronix.de
 
-Thanks, I'll add this to the next version.
+which addresses the review feedback and some fallout reported on and
+off-list.
 
-BR Andreas
+TLDR:
+
+This reworks the way how topology information is evaluated via CPUID
+in preparation for a larger topology management overhaul to address
+shortcomings of the current code vs. hybrid systems and systems which make
+use of the extended topology domains in leaf 0x1f. Aside of that it's an
+overdue spring cleaning to get rid of accumulated layers of duct tape and
+haywire.
+
+What changed vs. V2:
+
+  - Decoded and fixed the fallout vs. XEN/PV reported by Juergen. Thanks to
+    Juergen for the remote hand debugging sessions!
+
+    That's addressed in the first two new patches in this series. Summary:
+    XEN/PV booted by pure chance since the addition of SMT control 5 years
+    ago.
+
+  - Fixed the off by one in the AMD parser which was debugged by Michael
+
+  - Addressed review comments from various people
+
+As discussed in:
+
+  https://lore.kernel.org/lkml/BYAPR21MB16889FD224344B1B28BE22A1D705A@BYAPR21MB1688.namprd21.prod.outlook.com
+  ....
+  https://lore.kernel.org/lkml/87r0omjt8c.ffs@tglx
+
+this series unfortunately brings the Hyper-V BIOS inconsistency into
+effect, which results in a slight performance impact. The L3 association
+which "worked" so far by exploiting the inconsistency of the Linux topology
+code is not longer supportable as we really need to get the actual short
+comings of our topology management addressed in a consistent way.
+
+The series is based on V3 of the APIC cleanup series:
+
+  https://lore.kernel.org/lkml/20230801103042.936020332@linutronix.de
+
+and also available on top of that from git:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git topo-cpuid-v3
+
+Thanks,
+
+	tglx
+---
+ arch/x86/kernel/cpu/topology.c              |  168 -------------------
+ b/Documentation/arch/x86/topology.rst       |   12 -
+ b/arch/x86/events/amd/core.c                |    2 
+ b/arch/x86/events/amd/uncore.c              |    2 
+ b/arch/x86/events/intel/uncore.c            |    2 
+ b/arch/x86/hyperv/hv_vtl.c                  |    2 
+ b/arch/x86/include/asm/apic.h               |   32 +--
+ b/arch/x86/include/asm/cacheinfo.h          |    3 
+ b/arch/x86/include/asm/cpuid.h              |   36 ++++
+ b/arch/x86/include/asm/mpspec.h             |    2 
+ b/arch/x86/include/asm/processor.h          |   60 ++++---
+ b/arch/x86/include/asm/smp.h                |    4 
+ b/arch/x86/include/asm/topology.h           |   51 +++++
+ b/arch/x86/include/asm/x86_init.h           |    2 
+ b/arch/x86/kernel/acpi/boot.c               |    4 
+ b/arch/x86/kernel/amd_nb.c                  |    8 
+ b/arch/x86/kernel/apic/apic.c               |   25 +-
+ b/arch/x86/kernel/apic/apic_common.c        |    4 
+ b/arch/x86/kernel/apic/apic_flat_64.c       |   13 -
+ b/arch/x86/kernel/apic/apic_noop.c          |    9 -
+ b/arch/x86/kernel/apic/apic_numachip.c      |   21 --
+ b/arch/x86/kernel/apic/bigsmp_32.c          |   10 -
+ b/arch/x86/kernel/apic/local.h              |    6 
+ b/arch/x86/kernel/apic/probe_32.c           |   10 -
+ b/arch/x86/kernel/apic/x2apic_cluster.c     |    1 
+ b/arch/x86/kernel/apic/x2apic_phys.c        |   10 -
+ b/arch/x86/kernel/apic/x2apic_uv_x.c        |   67 +------
+ b/arch/x86/kernel/cpu/Makefile              |    5 
+ b/arch/x86/kernel/cpu/amd.c                 |  156 ------------------
+ b/arch/x86/kernel/cpu/cacheinfo.c           |   51 ++---
+ b/arch/x86/kernel/cpu/centaur.c             |    4 
+ b/arch/x86/kernel/cpu/common.c              |  111 +-----------
+ b/arch/x86/kernel/cpu/cpu.h                 |   14 +
+ b/arch/x86/kernel/cpu/debugfs.c             |   97 +++++++++++
+ b/arch/x86/kernel/cpu/hygon.c               |  133 ---------------
+ b/arch/x86/kernel/cpu/intel.c               |   38 ----
+ b/arch/x86/kernel/cpu/mce/amd.c             |    4 
+ b/arch/x86/kernel/cpu/mce/apei.c            |    4 
+ b/arch/x86/kernel/cpu/mce/core.c            |    4 
+ b/arch/x86/kernel/cpu/mce/inject.c          |    7 
+ b/arch/x86/kernel/cpu/proc.c                |    8 
+ b/arch/x86/kernel/cpu/topology.h            |   51 +++++
+ b/arch/x86/kernel/cpu/topology_amd.c        |  179 ++++++++++++++++++++
+ b/arch/x86/kernel/cpu/topology_common.c     |  240 ++++++++++++++++++++++++++++
+ b/arch/x86/kernel/cpu/topology_ext.c        |  136 +++++++++++++++
+ b/arch/x86/kernel/cpu/zhaoxin.c             |   18 --
+ b/arch/x86/kernel/kvm.c                     |    6 
+ b/arch/x86/kernel/sev.c                     |    2 
+ b/arch/x86/kernel/smpboot.c                 |   97 ++++++-----
+ b/arch/x86/kernel/vsmp_64.c                 |   13 -
+ b/arch/x86/mm/amdtopology.c                 |   35 +---
+ b/arch/x86/mm/numa.c                        |    4 
+ b/arch/x86/xen/apic.c                       |   14 -
+ b/arch/x86/xen/smp_pv.c                     |    3 
+ b/drivers/edac/amd64_edac.c                 |    4 
+ b/drivers/edac/mce_amd.c                    |    4 
+ b/drivers/gpu/drm/amd/amdkfd/kfd_topology.c |    2 
+ b/drivers/hwmon/fam15h_power.c              |    7 
+ b/drivers/scsi/lpfc/lpfc_init.c             |    8 
+ b/drivers/virt/acrn/hsm.c                   |    2 
+ b/kernel/cpu.c                              |    6 
+ 61 files changed, 1077 insertions(+), 956 deletions(-)
+
+
