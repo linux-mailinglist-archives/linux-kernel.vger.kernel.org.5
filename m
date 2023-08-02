@@ -2,109 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99C0376C5E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A3376C5D6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbjHBGy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 02:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42296 "EHLO
+        id S232328AbjHBGyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 02:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232834AbjHBGwk (ORCPT
+        with ESMTP id S232579AbjHBGxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 02:52:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2F33C0F
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:52:20 -0700 (PDT)
-Received: from ptz.office.stw.pengutronix.de ([2a0a:edc0:0:900:1d::77] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1qR5hq-0008Kt-SF; Wed, 02 Aug 2023 08:51:38 +0200
-Message-ID: <7f98d5f3-eb5b-d98b-a5ab-a7f54319c99a@pengutronix.de>
-Date:   Wed, 2 Aug 2023 08:51:37 +0200
+        Wed, 2 Aug 2023 02:53:50 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587BC3C1E;
+        Tue,  1 Aug 2023 23:53:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E9F4261805;
+        Wed,  2 Aug 2023 06:53:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDF90C433C7;
+        Wed,  2 Aug 2023 06:53:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1690959189;
+        bh=FpU2fyhNMs7CHd9y1zToO5EeJxJhSPteDxDb++5tacw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p71HyxiJx9QcD7JeKHHHb/gShyaHoJUJGdr3TJ7jDIQpsJpW2Kb0gcBZAiugw9BNv
+         C6fxiJ3XlBsU2NCkq4K/iIqZVDuWeq82IE7vIw+nFTWKPeFfy18mAUB8eNOLxyc9pW
+         e/Cs1dbir9xYJY+kWLQLlcvx8W8cs2lGOS8ahMhQ=
+Date:   Wed, 2 Aug 2023 08:53:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, Aaron Lewis <aaronlewis@google.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 6.4 000/239] 6.4.8-rc1 review
+Message-ID: <2023080245-papaya-simple-cd09@gregkh>
+References: <20230801091925.659598007@linuxfoundation.org>
+ <CA+G9fYsv5dFJfjNq7O+CW3J9jEV0zDQiOR+8dyacwhpDih0xJw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 0/9] Add legacy i.MX PCIe EP mode supports
-Content-Language: en-US
-To:     Richard Zhu <hongxing.zhu@nxp.com>, l.stach@pengutronix.de,
-        shawnguo@kernel.org, lpieralisi@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     devicetree@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org
-References: <1690956412-2439-1-git-send-email-hongxing.zhu@nxp.com>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-In-Reply-To: <1690956412-2439-1-git-send-email-hongxing.zhu@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:1d::77
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYsv5dFJfjNq7O+CW3J9jEV0zDQiOR+8dyacwhpDih0xJw@mail.gmail.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Richard,
+On Wed, Aug 02, 2023 at 08:22:59AM +0530, Naresh Kamboju wrote:
+> On Tue, 1 Aug 2023 at 15:11, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 6.4.8 release.
+> > There are 239 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 03 Aug 2023 09:18:38 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.8-rc1.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
+> 
+> Following kselftest build regression found,
+> 
+>     selftests/rseq: Play nice with binaries statically linked against
+> glibc 2.35+
+>     commit 3bcbc20942db5d738221cca31a928efc09827069 upstream.
+> 
+> 
+>     To allow running rseq and KVM's rseq selftests as statically linked
+>     binaries, initialize the various "trampoline" pointers to point directly
+>     at the expect glibc symbols, and skip the dlysm() lookups if the rseq
+>     size is non-zero, i.e. the binary is statically linked *and* the libc
+>     registered its own rseq.
+> 
+>     Define weak versions of the symbols so as not to break linking against
+>     libc versions that don't support rseq in any capacity.
+> 
+>     The KVM selftests in particular are often statically linked so that they
+>     can be run on targets with very limited runtime environments, i.e. test
+>     machines.
+> 
+>     Fixes: 233e667e1ae3 ("selftests/rseq: Uplift rseq selftests for
+> compatibility with glibc-2.35")
+>     Cc: Aaron Lewis <aaronlewis@google.com>
+>     Cc: kvm@vger.kernel.org
+>     Cc: stable@vger.kernel.org
+>     Signed-off-by: Sean Christopherson <seanjc@google.com>
+>     Message-Id: <20230721223352.2333911-1-seanjc@google.com>
+>     Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> 
+> Build log:
+> ----
+> x86_64-linux-gnu-gcc -O2 -Wall -g -I./ -isystem
+> /home/tuxbuild/.cache/tuxmake/builds/1/build/usr/include
+> -L/home/tuxbuild/.cache/tuxmake/builds/1/build/kselftest/rseq
+> -Wl,-rpath=./   -shared -fPIC rseq.c -lpthread -ldl -o
+> /home/tuxbuild/.cache/tuxmake/builds/1/build/kselftest/rseq/librseq.so
+> rseq.c:41:1: error: unknown type name '__weak'
+>    41 | __weak ptrdiff_t __rseq_offset;
+>       | ^~~~~~
+> rseq.c:41:18: error: expected '=', ',', ';', 'asm' or '__attribute__'
+> before '__rseq_offset'
+>    41 | __weak ptrdiff_t __rseq_offset;
+>       |                  ^~~~~~~~~~~~~
+> rseq.c:42:7: error: expected ';' before 'unsigned'
+>    42 | __weak unsigned int __rseq_size;
+>       |       ^~~~~~~~~
+>       |       ;
+> rseq.c:43:7: error: expected ';' before 'unsigned'
+>    43 | __weak unsigned int __rseq_flags;
+>       |       ^~~~~~~~~
+>       |       ;
+> rseq.c:45:47: error: '__rseq_offset' undeclared here (not in a
+> function); did you mean 'rseq_offset'?
+>    45 | static const ptrdiff_t *libc_rseq_offset_p = &__rseq_offset;
+>       |                                               ^~~~~~~~~~~~~
+>       |                                               rseq_offset
+> make[3]: Leaving directory 'tools/testing/selftests/rseq'
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> Links:
+>  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2TNSVjRCfcIaJWQNkPwDQ9jn2ls/build.log
+>  - https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.4.y/build/v6.4.7-240-g2c273bf138a4/testrun/18770115/suite/kselftest-rseq/test/shardfile-rseq/details/
 
-On 02.08.23 08:06, Richard Zhu wrote:
-> Add legacy 32bit i.MX PCIe EP mode support
-> 
-> The PCI controller contained in i.MX6/7 legacy SOCs is one dual mode
-> PCIe controller, and can work either as RC or EP.
-> 
-> This series add i.MX6/7 PCIe EP mode supports. And had been verified
-> on i.MX6 sabresd and i.MX7 SDB boards.
-> 
-> In the verification, one board PCIe is used as RC, the other one is used
-> as EP.
-> Use the cross TX/RX differential cable connect the two PCIe ports of
-> these two boards.
-> 
-> +-----------+                +------------+
-> |   PCIe TX |<-------------->|PCIe RX     |
-> |           |                |            |
-> |    Board  |                |    Board   |
-> |           |                |            |
-> |   PCIe RX |<-------------->|PCIe TX     |
-> +-----------+                +------------+
+Odd this didn't also show up in 6.1.  I'll go drop the offending commit
+for now.
 
-I am curious what software you are running on both sides to test?
-Do you use CONFIG_PCI_EPF_TEST? What do you run on RC side?
+thanks,
 
-Thanks,
-Ahmad
-
-> 
-> [PATCH 1/9] dt-bindings: PCI: fsl,imx6q: Add i.MX6Q and i.MX6QP PCIe
-> [PATCH 2/9] dt-bindings: PCI: fsl,imx6q: Add i.MX6SX PCIe EP
-> [PATCH 3/9] dt-bindings: PCI: fsl,imx6q: Add i.MX7D PCIe EP
-> [PATCH 4/9] arm: dts: nxp: Add i.MX6QDL and i.MX6QP PCIe EP supports
-> [PATCH 5/9] arm: dts: nxp: Add i.MX6SX PCIe EP support
-> [PATCH 6/9] arm: dts: nxp: Add i.MX7D PCIe EP support
-> [PATCH 7/9] PCI: imx6: Add i.MX6Q and i.MX6QP PCIe EP supports
-> [PATCH 8/9] PCI: imx6: Add i.MX6SX PCIe EP support
-> [PATCH 9/9] PCI: imx6: Add i.MX7D PCIe EP support
-> 
-> Documentation/devicetree/bindings/pci/fsl,imx6q-pcie-ep.yaml | 50 +++++++++++++++++++++++++++++++++++++++++----
-> arch/arm/boot/dts/nxp/imx/imx6qdl.dtsi                       | 14 +++++++++++++
-> arch/arm/boot/dts/nxp/imx/imx6qp.dtsi                        |  4 ++++
-> arch/arm/boot/dts/nxp/imx/imx6sx.dtsi                        | 17 +++++++++++++++
-> arch/arm/boot/dts/nxp/imx/imx7d.dtsi                         | 27 ++++++++++++++++++++++++
-> drivers/pci/controller/dwc/pci-imx6.c                        | 93 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
-> 6 files changed, 200 insertions(+), 5 deletions(-)
-> 
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
+greg k-h
