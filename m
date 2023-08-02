@@ -2,189 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A93276C2E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204A076C2F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbjHBC2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 22:28:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36040 "EHLO
+        id S229865AbjHBCeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 22:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjHBC2I (ORCPT
+        with ESMTP id S229685AbjHBCeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 22:28:08 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7053213E;
-        Tue,  1 Aug 2023 19:28:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1690943286; x=1722479286;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=00ybSWj/CYZrSLL9FE5JS5iIpOHI720pdL7DCsfZB0A=;
-  b=W5SGEK4Gh5hYRleZxM5khguzGhH+/ZKGAljWu3LxPsNjWkr1EHkTXsw2
-   YmjuHgtrUwsDGk5y7MwMz4OuAlmdjuy4Se/Cd9egF8e18ESfzxJITLs2j
-   NON1wcPht+x9N3c1lj4JKv48qTqdAkmIOUap6DSzQtxU1MLCm65tTqC5P
-   AEpNnVy/naCy/yPY8NKHERq3BVICgXy5t7I96ijkhc9RM5u+T2gssNINa
-   XZDBFmntcLZLydTwdHRB0dU28yMhFRptEnRvgfje/nxHZ3iQW61JnFZX/
-   XfRnrR4YOVBTAsYnrHNkB08/UlFIIWVVm8cFiHT6OPAxTI/RPSvnaah8j
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="366925866"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="366925866"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 19:28:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="732204942"
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="scan'208";a="732204942"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 01 Aug 2023 19:28:04 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qR1al-0000mJ-11;
-        Wed, 02 Aug 2023 02:28:03 +0000
-Date:   Wed, 2 Aug 2023 10:27:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH] PCI/VGA: Fixup the firmware fb address om demanding time
-Message-ID: <202308021027.rCgALJ5d-lkp@intel.com>
-References: <20230801183706.702567-1-suijingfeng@loongson.cn>
+        Tue, 1 Aug 2023 22:34:06 -0400
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAC1139;
+        Tue,  1 Aug 2023 19:34:04 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3722UWPq049048;
+        Wed, 2 Aug 2023 10:30:32 +0800 (+08)
+        (envelope-from Yunlong.Xing@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RFwrx0tqrz2NmLXW;
+        Wed,  2 Aug 2023 10:28:49 +0800 (CST)
+Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
+ BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 2 Aug 2023 10:30:27 +0800
+From:   Yunlong Xing <yunlong.xing@unisoc.com>
+To:     <ulf.hansson@linaro.org>, <adrian.hunter@intel.com>,
+        <CLoehle@hyperstone.com>, <brauner@kernel.org>, <hare@suse.de>,
+        <asuk4.q@gmail.com>, <avri.altman@wdc.com>, <beanhuo@micron.com>
+CC:     <linus.walleij@linaro.org>, <linux-mmc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <hongyu.jin@unisoc.com>, <zhiguo.niu@unisoc.com>,
+        <yunlong.xing23@gmail.com>, <yibin.ding@unisoc.com>,
+        <dongliang.cui@unisoc.com>
+Subject: [PATCH V2] mmc: block: Fix in_flight[issue_type] value error
+Date:   Wed, 2 Aug 2023 10:30:23 +0800
+Message-ID: <20230802023023.1318134-1-yunlong.xing@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801183706.702567-1-suijingfeng@loongson.cn>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.5.32.15]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX02.spreadtrum.com (10.0.64.8)
+X-MAIL: SHSQR01.spreadtrum.com 3722UWPq049048
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sui,
+From: Yibin Ding <yibin.ding@unisoc.com>
 
-kernel test robot noticed the following build warnings:
+For a completed request, after the mmc_blk_mq_complete_rq(mq, req)
+function is executed, the bitmap_tags corresponding to the
+request will be cleared, that is, the request will be regarded as
+idle. If the request is acquired by a different type of process at
+this time, the issue_type of the request may change. It further
+caused the value of mq->in_flight[issue_type] to be abnormal,
+and a large number of requests could not be sent.
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.5-rc4 next-20230801]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+p1:					      p2:
+mmc_blk_mq_complete_rq
+  blk_mq_free_request
+					      blk_mq_get_request
+					        blk_mq_rq_ctx_init
+mmc_blk_mq_dec_in_flight
+  mmc_issue_type(mq, req)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sui-Jingfeng/PCI-VGA-Fixup-the-firmware-fb-address-om-demanding-time/20230802-023743
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20230801183706.702567-1-suijingfeng%40loongson.cn
-patch subject: [PATCH] PCI/VGA: Fixup the firmware fb address om demanding time
-config: arm-randconfig-r004-20230731 (https://download.01.org/0day-ci/archive/20230802/202308021027.rCgALJ5d-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce: (https://download.01.org/0day-ci/archive/20230802/202308021027.rCgALJ5d-lkp@intel.com/reproduce)
+This strategy can ensure the consistency of issue_type
+before and after executing mmc_blk_mq_complete_rq.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308021027.rCgALJ5d-lkp@intel.com/
+Fixes: 81196976ed94 ("mmc: block: Add blk-mq support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Yibin Ding <yibin.ding@unisoc.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+changes of v2: Sort local declarations in descending order of
+line length
+---
+ drivers/mmc/core/block.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-All warnings (new ones prefixed by >>):
-
->> drivers/pci/vgaarb.c:133:7: warning: format specifies type 'unsigned long long' but the argument has type 'resource_size_t' (aka 'unsigned int') [-Wformat]
-                              old_fb_start, old_fb_end,
-                              ^~~~~~~~~~~~
-   drivers/pci/vgaarb.c:13:69: note: expanded from macro 'vgaarb_dbg'
-   #define vgaarb_dbg(dev, fmt, arg...)    dev_dbg(dev, "vgaarb: " fmt, ##arg)
-                                                                   ~~~    ^~~
-   include/linux/dev_printk.h:163:47: note: expanded from macro 'dev_dbg'
-                   dev_printk(KERN_DEBUG, dev, dev_fmt(fmt), ##__VA_ARGS__); \
-                                                       ~~~     ^~~~~~~~~~~
-   include/linux/dev_printk.h:129:34: note: expanded from macro 'dev_printk'
-                   _dev_printk(level, dev, fmt, ##__VA_ARGS__);            \
-                                           ~~~    ^~~~~~~~~~~
-   drivers/pci/vgaarb.c:133:21: warning: format specifies type 'unsigned long long' but the argument has type 'resource_size_t' (aka 'unsigned int') [-Wformat]
-                              old_fb_start, old_fb_end,
-                                            ^~~~~~~~~~
-   drivers/pci/vgaarb.c:13:69: note: expanded from macro 'vgaarb_dbg'
-   #define vgaarb_dbg(dev, fmt, arg...)    dev_dbg(dev, "vgaarb: " fmt, ##arg)
-                                                                   ~~~    ^~~
-   include/linux/dev_printk.h:163:47: note: expanded from macro 'dev_dbg'
-                   dev_printk(KERN_DEBUG, dev, dev_fmt(fmt), ##__VA_ARGS__); \
-                                                       ~~~     ^~~~~~~~~~~
-   include/linux/dev_printk.h:129:34: note: expanded from macro 'dev_printk'
-                   _dev_printk(level, dev, fmt, ##__VA_ARGS__);            \
-                                           ~~~    ^~~~~~~~~~~
-   drivers/pci/vgaarb.c:134:7: warning: format specifies type 'unsigned long long' but the argument has type 'resource_size_t' (aka 'unsigned int') [-Wformat]
-                              firmware_fb.start, firmware_fb.end);
-                              ^~~~~~~~~~~~~~~~~
-   drivers/pci/vgaarb.c:13:69: note: expanded from macro 'vgaarb_dbg'
-   #define vgaarb_dbg(dev, fmt, arg...)    dev_dbg(dev, "vgaarb: " fmt, ##arg)
-                                                                   ~~~    ^~~
-   include/linux/dev_printk.h:163:47: note: expanded from macro 'dev_dbg'
-                   dev_printk(KERN_DEBUG, dev, dev_fmt(fmt), ##__VA_ARGS__); \
-                                                       ~~~     ^~~~~~~~~~~
-   include/linux/dev_printk.h:129:34: note: expanded from macro 'dev_printk'
-                   _dev_printk(level, dev, fmt, ##__VA_ARGS__);            \
-                                           ~~~    ^~~~~~~~~~~
-   drivers/pci/vgaarb.c:134:26: warning: format specifies type 'unsigned long long' but the argument has type 'resource_size_t' (aka 'unsigned int') [-Wformat]
-                              firmware_fb.start, firmware_fb.end);
-                                                 ^~~~~~~~~~~~~~~
-   drivers/pci/vgaarb.c:13:69: note: expanded from macro 'vgaarb_dbg'
-   #define vgaarb_dbg(dev, fmt, arg...)    dev_dbg(dev, "vgaarb: " fmt, ##arg)
-                                                                   ~~~    ^~~
-   include/linux/dev_printk.h:163:47: note: expanded from macro 'dev_dbg'
-                   dev_printk(KERN_DEBUG, dev, dev_fmt(fmt), ##__VA_ARGS__); \
-                                                       ~~~     ^~~~~~~~~~~
-   include/linux/dev_printk.h:129:34: note: expanded from macro 'dev_printk'
-                   _dev_printk(level, dev, fmt, ##__VA_ARGS__);            \
-                                           ~~~    ^~~~~~~~~~~
-   4 warnings generated.
-
-
-vim +133 drivers/pci/vgaarb.c
-
-   104	
-   105	static bool vga_arb_get_fb_range_from_tracker(resource_size_t *start,
-   106						      resource_size_t *end)
-   107	{
-   108		struct pci_dev *pdev = firmware_fb.pdev;
-   109		resource_size_t new_vram_base;
-   110		resource_size_t new_fb_start;
-   111		resource_size_t old_fb_start;
-   112		resource_size_t old_fb_end;
-   113	
-   114		/*
-   115		 * No firmware framebuffer support or No aperture that contains the
-   116		 * firmware FB is found, in this case, the firmware_fb.pdev will be
-   117		 * NULL. We will return immediately.
-   118		 */
-   119		if (!pdev)
-   120			return false;
-   121	
-   122		new_vram_base = pdev->resource[firmware_fb.bar].start;
-   123		new_fb_start = new_vram_base + firmware_fb.offset;
-   124		old_fb_start = firmware_fb.start;
-   125		old_fb_end = firmware_fb.end;
-   126	
-   127		if (new_fb_start != old_fb_start) {
-   128			firmware_fb.start = new_fb_start;
-   129			firmware_fb.end = new_fb_start + firmware_fb.size - 1;
-   130			/* Firmware fb address range moved */
-   131			vgaarb_dbg(&pdev->dev,
-   132				   "[0x%llx, 0x%llx] -> [0x%llx, 0x%llx]\n",
- > 133				   old_fb_start, old_fb_end,
-   134				   firmware_fb.start, firmware_fb.end);
-   135		}
-   136	
-   137		*start = firmware_fb.start;
-   138		*end = firmware_fb.end;
-   139	
-   140		return true;
-   141	}
-   142	
-
+diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+index f701efb1fa78..b6f4be25b31b 100644
+--- a/drivers/mmc/core/block.c
++++ b/drivers/mmc/core/block.c
+@@ -2097,14 +2097,14 @@ static void mmc_blk_mq_poll_completion(struct mmc_queue *mq,
+ 	mmc_blk_urgent_bkops(mq, mqrq);
+ }
+ 
+-static void mmc_blk_mq_dec_in_flight(struct mmc_queue *mq, struct request *req)
++static void mmc_blk_mq_dec_in_flight(struct mmc_queue *mq, enum mmc_issue_type issue_type)
+ {
+ 	unsigned long flags;
+ 	bool put_card;
+ 
+ 	spin_lock_irqsave(&mq->lock, flags);
+ 
+-	mq->in_flight[mmc_issue_type(mq, req)] -= 1;
++	mq->in_flight[issue_type] -= 1;
+ 
+ 	put_card = (mmc_tot_in_flight(mq) == 0);
+ 
+@@ -2117,6 +2117,7 @@ static void mmc_blk_mq_dec_in_flight(struct mmc_queue *mq, struct request *req)
+ static void mmc_blk_mq_post_req(struct mmc_queue *mq, struct request *req,
+ 				bool can_sleep)
+ {
++	enum mmc_issue_type issue_type = mmc_issue_type(mq, req);
+ 	struct mmc_queue_req *mqrq = req_to_mmc_queue_req(req);
+ 	struct mmc_request *mrq = &mqrq->brq.mrq;
+ 	struct mmc_host *host = mq->card->host;
+@@ -2136,7 +2137,7 @@ static void mmc_blk_mq_post_req(struct mmc_queue *mq, struct request *req,
+ 			blk_mq_complete_request(req);
+ 	}
+ 
+-	mmc_blk_mq_dec_in_flight(mq, req);
++	mmc_blk_mq_dec_in_flight(mq, issue_type);
+ }
+ 
+ void mmc_blk_mq_recovery(struct mmc_queue *mq)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1
+
