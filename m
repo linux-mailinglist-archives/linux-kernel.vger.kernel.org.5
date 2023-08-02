@@ -2,89 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B54F176C7B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3351B76C7BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbjHBIAY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:00:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
+        id S232389AbjHBIAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbjHBIAF (ORCPT
+        with ESMTP id S229685AbjHBIAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:00:05 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036F149D6;
-        Wed,  2 Aug 2023 00:58:19 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 3C0CA320069B;
-        Wed,  2 Aug 2023 03:58:16 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute6.internal (MEProxy); Wed, 02 Aug 2023 03:58:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=readahead.eu; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1690963095; x=1691049495; bh=hgNvOgWnhU72CHJJjI7j1ZEp7Bx+lB7eT5b
-        N2SgTrYg=; b=bXWTfWLTwbScOLXbA5h+G+00oArw+EjOc3OBeYXRWBQz+AMZJ7F
-        Q9ownNe8/H85vcjuzeZSAsTmoEns2nJgWu2lsl+KHKVju/5XkZtiST181OHgayHt
-        e9OiLwprgMy4K52qw/DukiweP4q/LMDCaHmlAJMdtE0Q5YyksqkDK3Xe1muQL5oQ
-        eCXGHIJgm8gZZ6oFrKU+LcjxupqhmZI49h0ndRsGn8SIZxSz5RHbWe7pNbRrjTzC
-        YoQgmzLyDQGCtZSegezKxiBKX0Rj6rfe7A/+bBW5mYKFHXEwMqRw6Im4aGSGzbh/
-        1eVswehFD+5d4zrUSoNqZFHPbF/elmizWkg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690963095; x=1691049495; bh=hgNvOgWnhU72CHJJjI7j1ZEp7Bx+lB7eT5b
-        N2SgTrYg=; b=Hk7lbC2fBtvFOp3I75OKZL5c17qW1+y/l6GuZ1vxtklo75diNPR
-        R8R53NOH14gRnVPSAkBzLFj67tbO6/oKXEJlPTuJeEcc65HijmZ7FBgXH6WWeokc
-        MkTqOt+WKNQUYuyJ11ZcWzQsTHtxnPNeedJNie+KEpQKrOpXU3H5+6g3VlqjI6k8
-        HO5ZE2DVQ+rlgtGL3xd7JLomVTckch8kZo1IN4PVnvXiPL9g2iDIS046ncPXe5/j
-        LyWou9knXmvB56f3EU17g2ihrfR0cmJb5xFVJPI1mJ8+PusaOL6+N+djQg9bJtAw
-        WRXyGwNm4YJtRmqQfsKz0So196D5gSW+sgQ==
-X-ME-Sender: <xms:lwzKZAkDVOR7MxDysayQSIaBGe-nuq3WpJfzCnE9FkF79rZLDqTwBw>
-    <xme:lwzKZP18wZRiCEjbLLTovN5rJGpWqro4a74U8G4i2KBLlcYaJ3xn9TMeSA4U54F09
-    A9H12-IqXcouglgtb4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeejgdduvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdff
-    rghvihguucfthhgvihhnshgsvghrghdfuceouggrvhhiugesrhgvrggurghhvggrugdrvg
-    huqeenucggtffrrghtthgvrhhnpeejgeeutdeufedtjeffvdfghfdvvdetteejfedtieff
-    keduffeiheeijeehvdekteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpegurghvihgusehrvggruggrhhgvrggurdgvuh
-X-ME-Proxy: <xmx:lwzKZOrdScOs-0-JktXEeeBVyWR5lfDZfGAA6b-J6o5Ho0ICWm4hvw>
-    <xmx:lwzKZMkkb0iYQeAxiHr-91QMnUPU_EhntHCSeQHxPloBEHLu3SgmeQ>
-    <xmx:lwzKZO0D7yXglCMylD-H3LIj9lEtRZi0975ysQLik3L-m_OwrhNHJQ>
-    <xmx:lwzKZIo83AyeLK_fFkz7J06AE1Gs-GB2XI_YIhkvMRnD3fsg-BJhcw>
-Feedback-ID: id2994666:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 2C38B1700089; Wed,  2 Aug 2023 03:58:15 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <dadfd8d3-fe83-4aee-b8aa-3b31d4408f66@app.fastmail.com>
-In-Reply-To: <CABi2SkUOxngcDwRDtFFD2Uef=BUXVN08dMYhmpuS_b1xC39L7g@mail.gmail.com>
-References: <20230714114753.170814-1-david@readahead.eu>
- <CALmYWFsjy2jOfKyM3Gd3Ag+p6u5ejDoBp6RhqcXkcAkMiby4SA@mail.gmail.com>
- <fb464cbf-04c4-4346-a96b-e0b2ab804e16@app.fastmail.com>
- <CABi2SkUOxngcDwRDtFFD2Uef=BUXVN08dMYhmpuS_b1xC39L7g@mail.gmail.com>
-Date:   Wed, 02 Aug 2023 09:56:42 +0200
-From:   "David Rheinsberg" <david@readahead.eu>
-To:     "Jeff Xu" <jeffxu@chromium.org>
-Cc:     "Jeff Xu" <jeffxu@google.com>, linux-kernel@vger.kernel.org,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Daniel Verkamp" <dverkamp@chromium.org>, linux-mm@kvack.org,
-        "Peter Xu" <peterx@redhat.com>, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] memfd: support MFD_NOEXEC alongside MFD_EXEC
-Content-Type: text/plain;charset=utf-8
+        Wed, 2 Aug 2023 04:00:18 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBA41BE;
+        Wed,  2 Aug 2023 00:59:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690963196; x=1722499196;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=giGuHtZJAm5TX32Em94MFKJ/A3VAUq85/qhV90+B+BE=;
+  b=Btic43IY0ElGMoNjwzdsYVd+t9E6kEp7Lx+GUm39Bjgu9vuua9yrj9CD
+   fpL8YaVU0u5MUzqOTEMMw2JzTA9oAJ0VgupMcSLNBuKKewvAnImvAp0kb
+   KyWS7y8SxEcltavk1HsiL554JSyZlsPrBlxvb7tjHNL3LsOrQicQnBJth
+   ccfp1OQuMxalkl5enOqTAwaWYYKI4uinhK+MpNd/T2R1nf0IX+ND2+8Vc
+   Ofd7rTy7dPY23f/BTcN65pPmIJcuwqFgYoUZi8K6S/PydGv0/hvt7Yxed
+   byLPbbvj5sRPNSCb25af475epl0CgDX/FGx64//aI+iGcZ35xE8UVCa3e
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="400457018"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="400457018"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 00:59:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="852791189"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="852791189"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga004.jf.intel.com with ESMTP; 02 Aug 2023 00:59:55 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 2 Aug 2023 00:59:55 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 2 Aug 2023 00:59:54 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 00:59:54 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 2 Aug 2023 00:59:54 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ULCoVK5a5F4LxIMEsp72e9XMo2S5Lk4aAffvzpQ8Jv5KL1PKXfMUdcxhbxDy504kG7QQlKq4RoXsuzIcD3cl8vaVqitywMcyYKs3qOVME1gaQSz3UzaU7k4F9avvKlsvc/CmvrzSCDoPd85bSp7HBBZdVp4KcC8EEWA8p5JYDoqpIPmRzSTYLr6/A8phidCbMlAv4iixYk7KtCSD/sJ36XqPhqH1OgsXycBHYgaRg2NkWV144tWWcds6UkrK0AZ35AdovBLkvryHg4xA0eqiu/O7HcJ5FB8vFwC1AQhSKznM1//xfEjV0PxYpehrhiqo34cCTi4h803By0JQS5u+FA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xqTPJQqQk/lofFiJ6bQUKxnEE4OXYthBy6fVbjR0dSw=;
+ b=bkejjt84ahWsTcaz9rr8qQ6ECrkY48B3n93V499B/muTzLOhZ3sSF+UXyDpdoXQtpyDsYKRLfrEXEUX03FGhsxosO5O5074bwIcxPCI/BDpQYGrA0kEfzQxCQGbVN7WyA+2nHvQEfT/fED1gFSugEWsmQPsORnRSvzFka3y2VcRbaRLOv0/L0cukh7Kv3fvHwJmNehJTpw+le597ztmIdnPvFRbqyZORYcjJKrzh4Y4gBTnOPwMh052mr4I0NcLRsAUJKDZcVwqPbOcv/SOYQONltqL/UIpvqZ/RV4nJ7BdNqpVcENmAX9wW81bVODjzfzPa8Wz5ZoUXURe45ABZGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
+ by MW4PR11MB5774.namprd11.prod.outlook.com (2603:10b6:303:182::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
+ 2023 07:59:52 +0000
+Received: from BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed]) by BN9PR11MB5276.namprd11.prod.outlook.com
+ ([fe80::dcf3:7bac:d274:7bed%4]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
+ 07:59:52 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>
+CC:     "cohuck@redhat.com" <cohuck@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "yi.y.sun@linux.intel.com" <yi.y.sun@linux.intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "lulu@redhat.com" <lulu@redhat.com>,
+        "suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Duan, Zhenzhong" <zhenzhong.duan@intel.com>
+Subject: RE: [PATCH v4 12/12] iommu/vt-d: Disallow nesting on domains with
+ read-only mappings
+Thread-Topic: [PATCH v4 12/12] iommu/vt-d: Disallow nesting on domains with
+ read-only mappings
+Thread-Index: AQHZvh/xpJ4WurReCk6xBF9LLfi+N6/Wr/7A
+Date:   Wed, 2 Aug 2023 07:59:52 +0000
+Message-ID: <BN9PR11MB52767DF0C8F25AB893B38B678C0BA@BN9PR11MB5276.namprd11.prod.outlook.com>
+References: <20230724111335.107427-1-yi.l.liu@intel.com>
+ <20230724111335.107427-13-yi.l.liu@intel.com>
+In-Reply-To: <20230724111335.107427-13-yi.l.liu@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|MW4PR11MB5774:EE_
+x-ms-office365-filtering-correlation-id: 0945a300-09ab-4d51-e351-08db932e73a2
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: g848N5KJzwzj3oe3ZSiJ4VLGuLqaSEm5eKowXZhJGfpE9gHFwvCwwjOldR8t38I0+4OH1pcxRPR8ReO4pRKra39Kc/FPOg8P/7sd4+o2TKnWtLRsGTut4fzbY7R2u62ZY3y/+JsdH3M30uzwweDQl3SSNH86XpE+MfjEMaUO5viNult/8NeBNyNNRNocpRBvZnCUOmuOR8C2O/kY9uJwWYY97vgbZDjJdr6uxLd//FQvG0FxCk1A6jh0ertWG9zxpZCjyNC6vDrX1bP4N4D1e014OF/AEa6X6UFPdFML56ipOGMIgKqgCPfbZjJ87vzAtO7blZGev78X8wENqoXLnTnYyN0bSbmKo2cxJewVQpL7PyYca13RRV8PJ+w64jNnZ5qXUmD8BVIHRrEFmhpZaZg0JirM6YCkpn1Zg14U8Tui0Tsqhpg1J5OhMTePXXXBHcIChGyFbtjGVMW6xbt+PvLYPBnWgHRGluUZ/QAWAcyDKbRhD6jnWdZANofG6hoKeCidvFqeq87+TLIHewx7PBZygkQHTL6RdmPMHqH2pV3WstYNcAQcNEf4tO/0bRPQTx7dfcX3h4GralpWZN8dfXkvC6mi5J4AmX6U+vgro5HyhORmgZaMXQsJqXHNqGAi
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(376002)(366004)(136003)(396003)(346002)(451199021)(55016003)(186003)(9686003)(316002)(86362001)(478600001)(122000001)(54906003)(110136005)(38100700002)(76116006)(71200400001)(66946007)(66556008)(66476007)(66446008)(33656002)(64756008)(7696005)(4326008)(82960400001)(6506007)(41300700001)(26005)(52536014)(8676002)(5660300002)(8936002)(2906002)(38070700005)(7416002)(83380400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?3g5ZDavB7Mv2obZYQVC+lkTy3xJqW8UvWZyBQm7FUfwZiTKt8mM0UuewmeNN?=
+ =?us-ascii?Q?VFluyW+xVEZClA1YXitTQ8OBRxTZ+IAfav2j/p6kjDXO8TiX4PxyWz15tHFa?=
+ =?us-ascii?Q?gGWbPcz2yOwW5SVRrKJJ3U18ClVFNvJ5nnOnpMzTBXY/mMMq2XRSJUouATpB?=
+ =?us-ascii?Q?ZE0ZnidPXIrijysvvrDn/LMcn+gZx+oF66oNhMgKFmh4FKpqOHMf83BCaY//?=
+ =?us-ascii?Q?IhdzZQ1xjfULc/1P29KM2SwbaPEqUjdWYzUBc+rIa8XGC/rKa2gnc/ouXZVP?=
+ =?us-ascii?Q?HyzNuR1pcxJRB2BgzXNhrazHsG1gQQtNbVyGFucTmR+Cr8LSSfgbnRiUVD0p?=
+ =?us-ascii?Q?dKJ+jqYPpv+kjQIM8+Rn9DT40F4/COQeyTnd9ARZ4b4jpEMgn2e74Phjnmr9?=
+ =?us-ascii?Q?LuffQjVzNFHt+A3XEhcxRLzxMeDQ5rnX8R66NS4VGrVHuo4FUeMg2VTumBXE?=
+ =?us-ascii?Q?X6KYjq/dzEk5YRo4Cg4uPiuEik08M+IFOFSyuIoRByCcvOlyF5BHiv93R1C7?=
+ =?us-ascii?Q?o0VPWYVU+fxxmKgUZiyzJxtthhfT/DryHNwZTUVOu8jwcW5fI05WGU6hkCKd?=
+ =?us-ascii?Q?i9oGt29pxYSR58zYrVPEkA0AenRk4sJUxSfsVAtJjBM+DrLJ/MUejna/Y2j0?=
+ =?us-ascii?Q?NjE0QaAMihcC3qDwJQFPzR5FbXus1+Xl/WK9Byg2+sQ3S8/P5VavIq/Eo/rv?=
+ =?us-ascii?Q?evzi4Pg68DjH92V8sDJt/xcxC5O5z91du8P1ZJBhE/nSVXMjLR7Ag1D+hSZ3?=
+ =?us-ascii?Q?sXWa0e5FpXgIxmIT1DMW70Q3uk1nLhjWTF5+laPOW3xgqH8d6/g7yXgwcmj2?=
+ =?us-ascii?Q?LGXjD7wctscRgCWzyJBZo587xNMLwhbOvX76TJgXi4mKs0jBSH1oHLigyP0j?=
+ =?us-ascii?Q?QgfNT+Nmw9V9c/2wTHvRekesKW/N3d9mi/BkwdK3Vh1zPO6tf2mUbd6zwjXs?=
+ =?us-ascii?Q?gOya8qUi5zruGspXWJ03hisi5cdOR8455rC98AE4m8JEhC9T1jWlZxCN8750?=
+ =?us-ascii?Q?776nG405lNrnrvbJyO4wbgPK5nIV57pmTP+KG1HZ6mGDcKOW/xXDIHKZy/kt?=
+ =?us-ascii?Q?ozERyKiA9p1FSGMqC6eWX82EQlVVOG3abUyflE39umDbnU+rOT0U9BvM1uGI?=
+ =?us-ascii?Q?yrh7dUoD7xcdDu2vtQ6UOwq5rQf0Yg+Td7SYr09B0PzH0isVMKsJV4G2fjy2?=
+ =?us-ascii?Q?42Ww/UdTbkxqxn854GPricVFpbDyAOKToVdogJlnC7uzlBu/tWPMzyeZtOiL?=
+ =?us-ascii?Q?a/B64D3fYrUe1n1hDnUHYOuHUUHFvNbKyM/oiPznTzM96SDl/JdMnaRL8UkN?=
+ =?us-ascii?Q?xqzeEcgKV0xgCbz4eRPIoU/gEauXs7l/q9t0yeymm4oNg35M6igINvDOUQ3N?=
+ =?us-ascii?Q?yRN84Jq9rtq38anfyLnI/i4f2oZry/FNItjmROLoefpv/GBB9lI6suLDyXig?=
+ =?us-ascii?Q?Tjg2q9BBy+mbSl60jjo3/mo1L9zL5hSHzP62DV21FymvEcXumxPdINg7gyJe?=
+ =?us-ascii?Q?HgupELX9dE5ggFGVRB2W0s2WhYgBQz+8odIY1VeIaMu52liNpZqOBBUHEQBk?=
+ =?us-ascii?Q?C4CqlIaf8xvvZQV/rl2hH44ey/Wpw/YN7ETAxZ6N?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0945a300-09ab-4d51-e351-08db932e73a2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2023 07:59:52.0542
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y0VUUDkwwEf55Povpx07EUJkjLDf3AmIB1fH/Ry9dOPn/bFlU8kE9mG5pfx7w1mYIYWtq9hc8zOwoc/NR7qLeg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB5774
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,134 +175,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeff!
-
-On Tue, Aug 1, 2023, at 9:24 PM, Jeff Xu wrote:
->> My point is, an application might decide to *not* seal a property, be=
-cause it knows it has to change it later on. But it might still want to =
-disable the executable bit initially, so to avoid having executable page=
-s around that can be exploited.
->>
+> From: Liu, Yi L <yi.l.liu@intel.com>
+> Sent: Monday, July 24, 2023 7:14 PM
 >
-> I understand that.
-> My argument was this application can do this in two steps, as in my
-> previous email:
-> 1> memfd_create(MFD_EXEC)
-> 2> chmod
->
-> Two system calls back to back isn't too terrible,  and I know this
-> might seem to be not optimized for your user case, I will explain it
-> later, please read on.
+> @@ -2147,6 +2148,18 @@ __domain_mapping(struct dmar_domain
+> *domain, unsigned long iov_pfn,
+>  	if ((prot & (DMA_PTE_READ|DMA_PTE_WRITE)) =3D=3D 0)
+>  		return -EINVAL;
+>=20
+> +	if (!(prot & DMA_PTE_WRITE) && !domain->read_only_mapped) {
+> +		spin_lock_irqsave(&domain->lock, flags);
+> +		if (domain->set_nested) {
+> +			pr_err_ratelimited("No read-only mapping
+> permitted\n");
 
-Yes, I agree that MFD_NOEXEC would be rather simple to imitate. So this =
-is mostly a discussion about the intention and side-effects of this work=
-around, which is also likely why we haven't found an agreement, yet.
+"Read-only mapping is disallowed on the domain which serves as the
+parent in a nested configuration, due to HW errata (ERRATA_772415_SPR17)"
 
-[...]
->> I think I didn't get my point across. Imagine an application that doe=
-s *NOT* use sealing, but uses memfds. This application shares memfds wit=
-h untrusted clients, and does this in a safe way (SIGBUS protected). Eve=
-rything works fine, unless someone decides to enable `vm.memfd_noexec=3D=
-2`. Suddenly, the memfd will have sealing enabled *without* the applicat=
-ion ever requesting this. Now any untrusted client that got the memfd ca=
-n add seals to the memfd, even though the creator of the memfd did not e=
-nable sealing. This client can now seal WRITES on the memfd, even though=
- it really should not be able to do that.
->>
->> (This is not an hypothetical setup, we have such setups for data shar=
-ing already)
->
-> Thanks, this helps me understand your point better.
->
-> I'm not convinced that sysctl needs to consider the threat model of
-> "someone" changing and breaking an application.  If we follow that
-> threat model, there are a lot of other sysctls to worry about.
->
-> Also, in the system that you described, if memfd is handled to an
-> untrusted process, not only "sealing"  can cause damage, but also
-> chmod, arbitrary rw,  imo the right approach is to harden the process
-> or mechanism of passing the memfd.
+> +	u8 read_only_mapped:1;		/* domain has mappings with
+> read-only
+> +					 * permission.
+> +					 */
+> +	u8 set_nested:1;		/* has other domains nested on it */
 
-No. The model I describe is carefully designed to hand out file-descript=
-ors to inodes that the clients have *no* access to. They cannot run fchm=
-od(2), unlink(2), etc. All they can do is operate on the open file. And =
-all access to this shared file is properly guarded against possible dama=
-ge the other concurrent clients can do. The entire model is already hard=
-ened against malicious actors.
+what about "is_parent"?
 
-With the new sysctl, a new attack-vector is introduced, which was not po=
-ssible before.
+>=20
+> +	spin_lock_irqsave(&s2_dmar_domain->lock, flags);
+> +	if (s2_dmar_domain->read_only_mapped) {
+> +		spin_unlock_irqrestore(&s2_dmar_domain->lock, flags);
+> +		pr_err_ratelimited("S2 domain has read-only mappings\n");
 
-I was *explicitly* told to add `MFD_ALLOW_SEALING` for that exact reason=
- when introducing memfd_create(2). So I am a bit baffled why it is now o=
-k to enable sealing behind the users back.
+"Nested configuration is disallowed when the stage-2 domain already
+has read-only mappings, due to HW errata (ERRATA_772415_SPR17)"
 
-I agree that the new sysctl is a root-only option. But I fail to see *wh=
-y* it implies `MFD_ALLOW_SEALING`? This behavior is not documented nor i=
-s it explained in the original commit-messages, nor mentioned *anywhere*.
-
->> Thus, setting the security-option `memfd_noexec` *breaks* application=
-s, because it enables sealing. If `MFD_NOEXEC_SEAL` would *not* imply `M=
-FD_ALLOW_SEALING`, this would not be an issue. IOW, why does =C2=B4MFD_N=
-OEXEC_SEAL` clear `F_SEAL_SEAL` even if `MFD_ALLOW_SEALING` is not set?
->>
->
-> If MFD_NOEXEC_SEAL is not desired, then it should not be used to
-> overwrite memfd_create() in this system.
->
-> For the question of why the sysctl adding a seal without application
-> setting it , the rationale here is, as summary of previous/this
-> emails:
-
-I still think we are not talking about the same thing. I completely unde=
-rstand why you add the seal! I am just questioning why you *CLEAR* `F_SE=
-AL_SEAL`? That is, why do you enable `MFD_ALLOW_SEALING` without the use=
-r requesting it? You could just set `F_SEAL_EXEC` without clearing `F_SE=
-AL_SEAL`. And then require `MFD_ALLOW_SEALING` on top to clear `F_SEAL_S=
-EAL`.
-
-[...]
->> The downside of `MFD_NOEXEC` is that it might be picked over `MFD_NOE=
-XEC_SEAL` by uneducated users, thus reducing security. But right now, th=
-e alternative is that existing code picks `MFD_EXEC` instead and never c=
-lears the executable bit, because it is a hassle to do so.
->>
->
-> Yes. This is the downside I was thinking about.
->
-> I lean to believe the kernel API shouldn't be feature rich, it could
-> be simple, optimized towards the majority of user cases, and ideally,
-> is self-explained without devs to look through documentation. For
-> example, if I had to choose one to implement between MFD_NOEXEC and
-> MFD_NOEXEC_SEAL, I would choose MFD_NOEXEC_SEAL because it should be
-> what most users care about.
-
-Well, if we were to go back, we would make MFD_NOEXEC(_SEAL) the default=
- and just add `MFD_EXEC` :)
-
->> Or is there another reason *not* to include `MFD_NOEXEC`? I am not su=
-re I understand fully why you fight it so vehemently?
->>
->
-> I wouldn't add it myself, I hope to convince you not to :-).
-> If you still think it is beneficial to add MFD_NOEXEC (saving one
-> chmod call and making it easy to use), I wouldn't feel bad about that.
-> I would suggest going with documentation to help devs to choose
-> between those two, i.e. recommend MFD_NOEXEC_SEAL in most cases.
-
-Any application that cannot use `F_SEAL_EXEC` (e.g., because its peers v=
-erify for historic reasons that the seal is not set) now has to do an ex=
-tra dance to get the "safer" behavior, rather than getting the "safer" b=
-ehavior by default. That is, we make it easier to get the unsafe behavio=
-r than to get the safe behavior (in this particular scenario).
-
-Without `MFD_NOEXEC`, it is easier to end up with a 0777 memfd than not.=
- I want the application that desires `S_IXUSR` to jump through hoops, no=
-t the application that does *not* require it.
-
-In other words, I would prefer `MFD_ALLOW_EXEC`, which requires fchmod(2=
-)` to set `S_IXUSR`, rather than requiring a call to fchmod(2) to clear =
-it for everyone that does not need it.
-
-Thanks
-David
