@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB9E76D77E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5A676D782
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbjHBTMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60086 "EHLO
+        id S232714AbjHBTMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:12:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbjHBTMP (ORCPT
+        with ESMTP id S230494AbjHBTMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Aug 2023 15:12:15 -0400
 Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74A1826B0;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7429126AF;
         Wed,  2 Aug 2023 12:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date
-        :Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:
-        References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:
-        List-Owner:List-Archive; bh=8WLpw6r5gAvcjcRiv8zlx0QGc4QyV5Z8Lyq6blhWPEk=; b=T
-        I4T/GT2WUPvcY20vXyfr8xfGUq8ezI58z2FD6FQIvlo9xkcpuwneALGou7HZMTtbBQLXH2me8X51G
-        p+gJTh1+n947WJJqiPOVsMhw4+m0Ncu5e4pYfG/AOb0FFU9+k3kC9bvWKW2cYaxJypnxxCCJkA8G3
-        KG1QnpWSV2EVSD+Q=;
+        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:References:
+        In-Reply-To:Message-Id:Date:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=2M9zvtOliYXrV0ybBkqt2uj1GMVFpZCfGqdA7mS2T1Q=; b=wOtxU9lty+rX4TtQ9/Cpb/XdE2
+        oYucuMjAWDvAZ2xty1gP6wKKZhB6kXCNW3isjuW4TFmV9B2GQoGYCi5C4v/hUJBzqvsFr8LkDelTm
+        CcbIofaBYXZJH52DoDvMiqGBgCT4Lv8NW1k85gCcoyXhCHBxyyZ/HD3hkFjkbFSDRSFo=;
 Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:50458 helo=localhost.localdomain)
         by mail.hugovil.com with esmtpa (Exim 4.92)
         (envelope-from <hugo@hugovil.com>)
-        id 1qRHGK-0003z2-IX; Wed, 02 Aug 2023 15:12:01 -0400
+        id 1qRHGL-0003z2-J1; Wed, 02 Aug 2023 15:12:01 -0400
 From:   Hugo Villeneuve <hugo@hugovil.com>
 To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -35,9 +35,11 @@ To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
 Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, hugo@hugovil.com,
         bruno.thomsen@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date:   Wed,  2 Aug 2023 15:11:51 -0400
-Message-Id: <20230802191153.952667-1-hugo@hugovil.com>
+Date:   Wed,  2 Aug 2023 15:11:52 -0400
+Message-Id: <20230802191153.952667-2-hugo@hugovil.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230802191153.952667-1-hugo@hugovil.com>
+References: <20230802191153.952667-1-hugo@hugovil.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 184.161.19.61
@@ -49,7 +51,7 @@ X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
-Subject: [PATCH 0/2] rtc: pcf2127: add default battery-related power-on values
+Subject: [PATCH 1/2] dt-bindings: rtc: add properties to set battery-related functions
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
@@ -58,39 +60,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 
-Hello,
-this patch series adds support for setting default battery-related
-functions for RTC devices.
+These properties can be defined in the board's device tree to set the
+default power-on values for battery-related functions.
 
-This evolved from previous discussions about PCF2127 and also when reviewing
-PCF2131 driver:
+Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+---
+ .../devicetree/bindings/rtc/rtc.yaml          | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-Link: https://lore.kernel.org/linux-rtc/20190910143945.9364-1-bruno.thomsen@gmail.com/
-Link: https://lore.kernel.org/linux-rtc/20191211163354.GC1463890@piout.net/
-Link: https://lore.kernel.org/linux-rtc/20230123170731.6064430c50f5fb7b484d8734@hugovil.com/
-
-I decided to add these two new DT properties as generic RTC properties, in the
-hope that they can be reused by other RTC drivers if needed.
-
-Patch 1 adds two new DT properties to set battery-related functions. These
-properties are generic for all RTC devices.
-
-Patch 2 adds support for these two new DT properties to the PCF2127 driver.
-This is especially important for PCF2131 devices which have default PWRMNG
-values which disable battery-related functions.
-
-Thank you.
-
-Hugo Villeneuve (2):
-  dt-bindings: rtc: add properties to set battery-related functions
-  rtc: pcf2127: add support for battery-related DT properties
-
- .../devicetree/bindings/rtc/rtc.yaml          | 19 ++++++
- drivers/rtc/rtc-pcf2127.c                     | 59 +++++++++++++++++++
- 2 files changed, 78 insertions(+)
-
-
-base-commit: 3c87b351809f220294aec3c0df7b078ff5c5b15b
+diff --git a/Documentation/devicetree/bindings/rtc/rtc.yaml b/Documentation/devicetree/bindings/rtc/rtc.yaml
+index efb66df82782..0217d229e3fa 100644
+--- a/Documentation/devicetree/bindings/rtc/rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/rtc.yaml
+@@ -26,6 +26,25 @@ properties:
+       0: not chargeable
+       1: chargeable
+ 
++  battery-low-detect:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0, 1]
++    description: |
++      For RTC devices supporting a backup battery/supercap, this flag can be
++      used to configure the battery low detection reporting function:
++      0: disabled
++      1: enabled
++
++  battery-switch-over:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0, 1]
++    description: |
++      For RTC devices supporting a backup battery/supercap, this flag can be
++      used to configure the battery switch over when the main voltage source is
++      turned off:
++      0: disabled
++      1: enabled
++
+   quartz-load-femtofarads:
+     description:
+       The capacitive load of the quartz(x-tal), expressed in femto
 -- 
 2.30.2
 
