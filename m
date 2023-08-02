@@ -2,89 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C25BC76C257
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0393A76C2AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 04:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231445AbjHBBiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 21:38:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42450 "EHLO
+        id S231637AbjHBCFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 22:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231349AbjHBBhc (ORCPT
+        with ESMTP id S231468AbjHBCFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 21:37:32 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0072E269A
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 18:37:31 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RFvjh3Zmkz4f3nbJ
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:37:28 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAXzrFTs8lkvrtvPQ--.56352S10;
-        Wed, 02 Aug 2023 09:37:29 +0800 (CST)
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
-        mgorman@techsingularity.net, david@redhat.com
-Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH v2 8/8] mm/compaction: only set skip flag if cc->no_set_skip_hint is false
-Date:   Wed,  2 Aug 2023 17:37:41 +0800
-Message-Id: <20230802093741.2333325-9-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20230802093741.2333325-1-shikemeng@huaweicloud.com>
-References: <20230802093741.2333325-1-shikemeng@huaweicloud.com>
+        Tue, 1 Aug 2023 22:05:15 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D7A212D;
+        Tue,  1 Aug 2023 19:05:14 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9e6cc93c6so46950491fa.2;
+        Tue, 01 Aug 2023 19:05:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690941912; x=1691546712;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=33FGRO0uiP6qTJBMh3rf02rvPSySzQ+cG5TwspD9eRg=;
+        b=f3NvgaeSAWtk/Wu+VcamVFH4Q9indsZ08iIwci/KzL+4hqWjX876YurFCS9x0+xLtD
+         bAHulBtcK0RwTaVUxZuXdSm/txfwxi5bPyc/pDPqLk9b9zN32zk9w0D4oUkgVMO+MrLX
+         nSdQhl0Sb4gmj5LR4DBjY6WULMtolrLNhrDk19fJZwn3/tBNPbOVOcwZiREBuJVSmX/T
+         huPRF6RuaE/0TazoDW3S5iozA9bv0ALjAGe+x5n30/DS3KIaltguIBMGmbHLouBVsEs/
+         zouGj4OJBDJarSNW6tqOweA6gxBes/21spg2qNdUDxKj1VqqT6iSamPJBibn2/KIFZdz
+         Kiqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690941912; x=1691546712;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=33FGRO0uiP6qTJBMh3rf02rvPSySzQ+cG5TwspD9eRg=;
+        b=aljhVYnOCEzsGBpWNVfKAews/czgQ88uGDYZBWHiXX9sSghO6YG9J0+z/hLwXL5QGq
+         8eQkyh0ijkJGfsk9wivXHBFBNT0Q4YAztQxaMcKwIjsmL9n/zQpyrip/Q10UH/PsVAA9
+         9A0nkA7jhdptfR7fVuk7eDis9wAHclqYw3X+yzE3fx+QBaI8lacrWNq9u2bidXkgmyeJ
+         JO3+FVdMFCNg2fyul9FabNHHnNLXlWx14GU6aTEf2/1SAPycREtYyicBnHCSvS3Lr+nu
+         5CLIsBcPtfgDudWu4G+BYfmbccvpJBKEFI4JoANFFVLk+uFAkq5N0CQtL5I7Xqkiq61l
+         uvVg==
+X-Gm-Message-State: ABy/qLayp6244rpBg9cjnLXFkw1XzQ9dyK/UpNHPTZmL8RmARzY4/D95
+        o2T87+MgYf7/rPngGKHkBXTVh+20tuvq+meEmrk=
+X-Google-Smtp-Source: APBJJlEE29GNJN/lG7oFpSff+TdO8x0Tale5Vjg1bNF1bLSbg84oM9Loz4BY7DDRVROs9f5kxpx5NW4/U0LUoMzKucg=
+X-Received: by 2002:a2e:860b:0:b0:2b9:55c9:c228 with SMTP id
+ a11-20020a2e860b000000b002b955c9c228mr3729409lji.27.1690941912186; Tue, 01
+ Aug 2023 19:05:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXzrFTs8lkvrtvPQ--.56352S10
-X-Coremail-Antispam: 1UD129KBjvdXoWrtw4ktF1DJF1Utw1kKw43trb_yoW3trc_Jr
-        10yF4rtw1avr93AFn8Xw47Cr1kKrWDCrnrWF1kXr4ay3yqya1vq3WDXrnrXw15XFW7ur9x
-        GaykZF48GFya9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbDAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
-        A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
-        M28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2I
-        x0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK
-        6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4
-        xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8
-        JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20V
-        AGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
-        wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc4
-        0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AK
-        xVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F
-        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRvJPtU
-        UUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <cover.1690364259.git.haibo1.xu@intel.com> <35ce2b9f7ca655eb3af13730b1ca9f05b518e08f.1690364259.git.haibo1.xu@intel.com>
+ <20230728-879500f157954d849fb303ec@orel>
+In-Reply-To: <20230728-879500f157954d849fb303ec@orel>
+From:   Haibo Xu <xiaobo55x@gmail.com>
+Date:   Wed, 2 Aug 2023 10:05:00 +0800
+Message-ID: <CAJve8onDLEC1JFdERi098sTmN3-UkwaJ1aJz3CJNYU-GShkEyg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] tools: riscv: Add header file csr.h
+To:     Andrew Jones <ajones@ventanamicro.com>
+Cc:     Haibo Xu <haibo1.xu@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Colton Lewis <coltonlewis@google.com>,
+        Andrew Jones <andrew.jones@linux.dev>,
+        Vishal Annapurve <vannapurve@google.com>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kvm-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Keep the same logic as update_pageblock_skip, only set skip if
-no_set_skip_hint is false which is more reasonable.
+On Fri, Jul 28, 2023 at 5:43=E2=80=AFPM Andrew Jones <ajones@ventanamicro.c=
+om> wrote:
+>
+> On Thu, Jul 27, 2023 at 03:20:05PM +0800, Haibo Xu wrote:
+> > Borrow some of the csr definitions and operations from kernel's
+> > arch/riscv/include/asm/csr.h to tools/ for riscv.
+>
+> You should copy the entire file verbatim.
+>
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
----
- mm/compaction.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ok, will copy all the definitions in the original csr.h
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index a1cc327d1b32..afc31d27f1ba 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1421,7 +1421,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
- 	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
- 
- 	/* Skip this pageblock in the future as it's full or nearly full */
--	if (start_pfn >= end_pfn)
-+	if (start_pfn >= end_pfn && !cc->no_set_skip_hint)
- 		set_pageblock_skip(page);
- }
- 
--- 
-2.30.0
-
+> Thanks,
+> drew
