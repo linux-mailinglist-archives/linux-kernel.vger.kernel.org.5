@@ -2,151 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D512976CBEC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D380D76CBEE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234285AbjHBLlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
+        id S234282AbjHBLmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234214AbjHBLlp (ORCPT
+        with ESMTP id S232050AbjHBLmt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:41:45 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EAF2695;
-        Wed,  2 Aug 2023 04:41:40 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372BfYPa116792;
-        Wed, 2 Aug 2023 06:41:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690976494;
-        bh=iiBbvgZRrd57qOqKAzEj05nOiffuzIZCpWjS9hmJzfw=;
-        h=From:To:CC:Subject:Date;
-        b=YsUutzJX7aLi1pbm37+3cx8Te2tl1w1Nx5sTCbiOiCYPQDCX0E2QErwdFbajeAAut
-         2DQAx5hnlc3N00AmK+uc+epZJ60WEzBAl3vtaMQjXO7Wk/q1h3fIHy6Hefs63OcU0b
-         ChLrbzR6ti9pq7iXCvs1d6FLcv585U2FmX6YoV8s=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372BfY5c009180
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Aug 2023 06:41:34 -0500
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
- Aug 2023 06:41:34 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 2 Aug 2023 06:41:34 -0500
-Received: from udit-HP-Z2-Tower-G9-Workstation-Desktop-PC.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372BfUaK015671;
-        Wed, 2 Aug 2023 06:41:31 -0500
-From:   Udit Kumar <u-kumar1@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <t-konduru@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <vaishnav.a@ti.com>
-CC:     Udit Kumar <u-kumar1@ti.com>
-Subject: [PATCH v2] arm64: dts: ti: k3-j784s4-evm: Correct Pin mux offset for ospi
-Date:   Wed, 2 Aug 2023 17:11:26 +0530
-Message-ID: <20230802114126.162445-1-u-kumar1@ti.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 2 Aug 2023 07:42:49 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EE8213D;
+        Wed,  2 Aug 2023 04:42:48 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372A4vrJ024218;
+        Wed, 2 Aug 2023 11:41:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=guJ37QtxG3DruOPStXclgXIZhZya9NYk/GyruzfWmAI=;
+ b=jGV80U9YdS9bZXgflbUXpSYPJWzA+z5lrlg7c33gz4aRov3T/A0YFAZsa8na1LRUyLzW
+ s7/8FnucO3QJlkdvxdfmhzCytyW7z0rva737tldPWdvAMLyKDzrRGmdNcIcTZUsvIbC4
+ Eedh2m3l2m8Ypm71y7s6BRFab81DZ9I+voWA2Q84JAlMPFA8ONWzf+NPQHcR4aZKnCmo
+ eEjNvpX4ktoG1g7puAK4C2TNwB7nhPC2CzHO08u2eenqLZK6v2gHpHjidJVIyFyXYJKE
+ DqXE9bYkDuNQN71nIiOa8+nv6U8fHZ41lxCEogTyl4NDu8tPJ0/TffJylxjIpb1tGH2m LA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7bp69gdn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 11:41:57 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 372BfuTr005620
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Aug 2023 11:41:56 GMT
+Received: from [10.216.58.189] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
+ 2023 04:41:50 -0700
+Message-ID: <447aa786-b7c5-807e-1a6e-fb8369fc8a97@quicinc.com>
+Date:   Wed, 2 Aug 2023 17:11:47 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH v2 1/3] mm-unstable: Multi-gen LRU: Fix per-zone reclaim
+Content-Language: en-US
+To:     Kalesh Singh <kaleshsingh@google.com>, <yuzhao@google.com>,
+        <akpm@linux-foundation.org>
+CC:     <surenb@google.com>, <android-mm@google.com>,
+        <kernel-team@android.com>, <stable@vger.kernel.org>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Suleiman Souhlal <suleiman@google.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        "Jan Alexander Steffens (heftig)" <heftig@archlinux.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        Steven Barrett <steven@liquorix.net>,
+        Brian Geffon <bgeffon@google.com>,
+        Barry Song <baohua@kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+References: <20230802025606.346758-1-kaleshsingh@google.com>
+From:   Charan Teja Kalla <quic_charante@quicinc.com>
+In-Reply-To: <20230802025606.346758-1-kaleshsingh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4XUYOAFIT1jf5-1o0YBu2i45mHyWOX_D
+X-Proofpoint-ORIG-GUID: 4XUYOAFIT1jf5-1o0YBu2i45mHyWOX_D
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_06,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 suspectscore=0 clxscore=1011 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020103
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After splitting wkup_pmx pin mux for J784S4 into four regions.
-Pin mux offset for OSPI nodes were not updated to align with new
-regions, due to this while setting ospi pin muxes out of range
-error was seen.
+Thanks Kalesh for taking this to upstream.
 
-Pin mux offsets for OSPI nodes are corrected in this patch.
+On 8/2/2023 8:26 AM, Kalesh Singh wrote:
+> MGLRU has a LRU list for each zone for each type (anon/file) in each
+> generation:
+> 
+> 	long nr_pages[MAX_NR_GENS][ANON_AND_FILE][MAX_NR_ZONES];
+> The min_seq (oldest generation) can progress independently for each
+> type but the max_seq (youngest generation) is shared for both anon and
+> file. This is to maintain a common frame of reference.
+> 
+> In order for eviction to advance the min_seq of a type, all the per-zone
+> lists in the oldest generation of that type must be empty.
+> 
+> The eviction logic only considers pages from eligible zones for
+> eviction or promotion.
+> 
+>     scan_folios() {
+> 	...
+> 	for (zone = sc->reclaim_idx; zone >= 0; zone--)  {
+> 	    ...
+> 	    sort_folio(); 	// Promote
+> 	    ...
+> 	    isolate_folio(); 	// Evict
+> 	}
+> 	...
+>     }
+> 
+> Consider the system has the movable zone configured and default 4
+> generations. The current state of the system is as shown below
+> (only illustrating one type for simplicity):
+> 
+> Type: ANON
+> 
+> 	Zone    DMA32     Normal    Movable    Device
+> 
+> 	Gen 0       0          0        4GB         0
+> 
+> 	Gen 1       0        1GB        1MB         0
+> 
+> 	Gen 2     1MB        4GB        1MB         0
+> 
+> 	Gen 3     1MB        1MB        1MB         0
+> 
+> Now consider there is a GFP_KERNEL allocation request (eligible zone
+> index <= Normal), evict_folios() will return without doing any work
+> since there are no pages to scan in the eligible zones of the oldest
+> generation. Reclaim won't make progress until triggered from a ZONE_MOVABLE
+> allocation request; which may not happen soon if there is a lot of free
+> memory in the movable zone. This can lead to OOM kills, although there
+> is 1GB pages in the Normal zone of Gen 1 that we have not yet tried to
+> reclaim.
+> 
+> This issue is not seen in the conventional active/inactive LRU since
+> there are no per-zone lists.
+> 
+> If there are no (not enough) folios to scan in the eligible zones, move
+> folios from ineligible zone (zone_index > reclaim_index) to the next
+> generation. This allows for the progression of min_seq and reclaiming
+> from the next generation (Gen 1).
+> 
+As discussing offline, I think this can make system to spend too much
+time in scan_folios() in moving the pages from Gen-0 to Gen-1 of the
+other zone which can result into OOM is not active when necessary.
 
-Fixes: 14462bd0b247 ("arm64: dts: ti: k3-j784s4: Fix wakeup pinmux range and pinctrl node offsets")
-Signed-off-by: Udit Kumar <u-kumar1@ti.com>
----
-Logs
-https://gist.github.com/uditkumarti/f3b1a5402f7202931a4b905f7d331502
+> Qualcomm, Mediatek and raspberrypi [1] discovered this issue independently.
+> 
+> [1] https://github.com/raspberrypi/linux/issues/5395
+> 
+> Fixes: ac35a4902374 ("mm: multi-gen LRU: minimal implementation")
+> Cc: stable@vger.kernel.org
+> Cc: Yu Zhao <yuzhao@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Reported-by: Charan Teja Kalla <quic_charante@quicinc.com>
+> Reported-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
 
-Please apply patch https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/
-before this
+We tested this patch on our systems for couple of weeks and aggressive
+OOM is not observed which otherwise is easily reproducible.
 
-Change log:
-
-Change in v2
-  Changed name of pin mux to align with
-  https://lore.kernel.org/all/20230721082654.27036-1-tony@atomide.com/ patch
-  
-
-v1: https://lore.kernel.org/all/20230801141920.3317697-1-u-kumar1@ti.com/
- 
- arch/arm64/boot/dts/ti/k3-j784s4-evm.dts | 29 +++++++++++++++---------
- 1 file changed, 18 insertions(+), 11 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-index 7ad152a1b90f..d594d233af87 100644
---- a/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j784s4-evm.dts
-@@ -379,21 +379,28 @@ J784S4_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (D34) MCU_OSPI0_D5 */
- 			J784S4_WKUP_IOPAD(0x024, PIN_INPUT, 0) /* (E34) MCU_OSPI0_D6 */
- 			J784S4_WKUP_IOPAD(0x028, PIN_INPUT, 0) /* (E33) MCU_OSPI0_D7 */
- 			J784S4_WKUP_IOPAD(0x008, PIN_INPUT, 0) /* (C34) MCU_OSPI0_DQS */
--			J784S4_WKUP_IOPAD(0x03c, PIN_OUTPUT, 6) /* (C32) MCU_OSPI0_CSn3.MCU_OSPI0_ECC_FAIL */
--			J784S4_WKUP_IOPAD(0x038, PIN_OUTPUT, 6) /* (B34) MCU_OSPI0_CSn2.MCU_OSPI0_RESET_OUT0 */
-+		>;
-+	};
-+};
-+
-+&wkup_pmx1 {
-+	mcu_fss0_ospi0_1_pins_default: mcu-fss0-ospi0-1-default-pins {
-+		pinctrl-single,pins = <
-+			J784S4_WKUP_IOPAD(0x004, PIN_OUTPUT, 6) /* (C32) MCU_OSPI0_ECC_FAIL */
-+			J784S4_WKUP_IOPAD(0x000, PIN_OUTPUT, 6) /* (B34) MCU_OSPI0_RESET_OUT0 */
- 		>;
- 	};
- 
- 	mcu_fss0_ospi1_pins_default: mcu-fss0-ospi1-default-pins {
- 		pinctrl-single,pins = <
--			J784S4_WKUP_IOPAD(0x040, PIN_OUTPUT, 0) /* (F32) MCU_OSPI1_CLK */
--			J784S4_WKUP_IOPAD(0x05c, PIN_OUTPUT, 0) /* (G32) MCU_OSPI1_CSn0 */
--			J784S4_WKUP_IOPAD(0x04c, PIN_INPUT, 0) /* (E35) MCU_OSPI1_D0 */
--			J784S4_WKUP_IOPAD(0x050, PIN_INPUT, 0) /* (D31) MCU_OSPI1_D1 */
--			J784S4_WKUP_IOPAD(0x054, PIN_INPUT, 0) /* (G31) MCU_OSPI1_D2 */
--			J784S4_WKUP_IOPAD(0x058, PIN_INPUT, 0) /* (F33) MCU_OSPI1_D3 */
--			J784S4_WKUP_IOPAD(0x048, PIN_INPUT, 0) /* (F31) MCU_OSPI1_DQS */
--			J784S4_WKUP_IOPAD(0x044, PIN_INPUT, 0) /* (C31) MCU_OSPI1_LBCLKO */
-+			J784S4_WKUP_IOPAD(0x008, PIN_OUTPUT, 0) /* (F32) MCU_OSPI1_CLK */
-+			J784S4_WKUP_IOPAD(0x024, PIN_OUTPUT, 0) /* (G32) MCU_OSPI1_CSn0 */
-+			J784S4_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (E35) MCU_OSPI1_D0 */
-+			J784S4_WKUP_IOPAD(0x018, PIN_INPUT, 0) /* (D31) MCU_OSPI1_D1 */
-+			J784S4_WKUP_IOPAD(0x01C, PIN_INPUT, 0) /* (G31) MCU_OSPI1_D2 */
-+			J784S4_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (F33) MCU_OSPI1_D3 */
-+			J784S4_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (F31) MCU_OSPI1_DQS */
-+			J784S4_WKUP_IOPAD(0x00C, PIN_INPUT, 0) /* (C31) MCU_OSPI1_LBCLKO */
- 		>;
- 	};
- };
-@@ -437,7 +444,7 @@ &fss {
- &ospi0 {
- 	status = "okay";
- 	pinctrl-names = "default";
--	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
-+	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>, <&mcu_fss0_ospi0_1_pins_default>;
- 
- 	flash@0 {
- 		compatible = "jedec,spi-nor";
--- 
-2.34.1
+Tested-by: Charan Teja Kalla <quic_charante@quicinc.com>
 
