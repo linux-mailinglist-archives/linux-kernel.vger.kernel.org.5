@@ -2,41 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6349176D705
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5DBE76D6FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbjHBSnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:43:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43920 "EHLO
+        id S230096AbjHBSmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:42:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbjHBSnf (ORCPT
+        with ESMTP id S229697AbjHBSmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:43:35 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7B71BC1;
-        Wed,  2 Aug 2023 11:43:34 -0700 (PDT)
-Received: from dslb-094-219-037-101.094.219.pools.vodafone-ip.de ([94.219.37.101] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1qRGoj-0003Eh-48; Wed, 02 Aug 2023 20:43:29 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Arnd Bergmann <arnd@arndb.de>, Abel Vesa <abelvesa@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Shawn Guo <shawnguo@kernel.org>, linux-imx@nxp.com,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v7 2/2] clk: imx25: make __mx25_clocks_init return void
-Date:   Wed,  2 Aug 2023 20:40:46 +0200
-Message-Id: <20230802184046.153394-3-martin@kaiser.cx>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230802184046.153394-1-martin@kaiser.cx>
-References: <20230802184046.153394-1-martin@kaiser.cx>
+        Wed, 2 Aug 2023 14:42:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E8D61BF9
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1691001677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=1UYMawsk0oCgqDs8Xb3YIEArI5yAvmzUq9f9k4hm6BI=;
+        b=W9nA/g8AbvhKkRyD8y5SWla6yhuSnSEKfURHKnpY5nnGG3k6i8gTkSITTsvrj7B/IuDUFY
+        LyIjkOdl7IPNEF8bcEfcpk8q+oqvDXlf7OnbWjFDr+JNJW25F5rdyPqj2IwU/56kgZBS46
+        Jn7YIldr7ekwXnKJv9JVF9W8SXqBXfM=
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
+ [209.85.161.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-682-S9YRtVu0OROtCI9tiqQAKQ-1; Wed, 02 Aug 2023 14:41:16 -0400
+X-MC-Unique: S9YRtVu0OROtCI9tiqQAKQ-1
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-56ca7604435so53801eaf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:41:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691001675; x=1691606475;
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1UYMawsk0oCgqDs8Xb3YIEArI5yAvmzUq9f9k4hm6BI=;
+        b=QQiwFt3dTQTygFxXprDB2j44UAl1aSZMJafZj0VrGBPS/w9lMLc+ZgksOadWHNo1ez
+         TNZM6ibpXPslaL1g9it6NL7bIHfk42FgWtgkG7KcHiX/MLpMozQoT6SktKjd5kjJRnV+
+         ezLvBn+rcPegZy33Iiou0CuSZ8pf3tAzuOYAU+j1MT/1dRdyuAOaspfBYWarNFtgb8zh
+         1w5s2q0k+g4POg5AOfHtUg4pm7ina3KjZGXuDir+KFNE09JevAKnbXsu6XFbN8LdB6LD
+         m8mjbHJ5SNJLjaYCejcbJYy3hG/6466e9m5W9S2fiAopMLCvqfVDMQPcpyluyho6UYWH
+         20IQ==
+X-Gm-Message-State: ABy/qLbV7Z8FJ6pW0S9KUqyR6w6pstBOwKd5gOacx5FNbbDcLKlJ0gYT
+        fpUdIHKdc7LBzNr1EFMZARDi0Yl9s/5lYfbIhAbuLEOOGW+T2qmae2VhJI7vRTG9V+yDORWOy7A
+        C8UYfPlqgu/02zSUWl7/B1bQ1
+X-Received: by 2002:a05:6358:5918:b0:130:e0a9:a7b4 with SMTP id g24-20020a056358591800b00130e0a9a7b4mr7076768rwf.13.1691001675289;
+        Wed, 02 Aug 2023 11:41:15 -0700 (PDT)
+X-Google-Smtp-Source: APBJJlF1osoJlfc9v59xe7LwsMDO2S8I2onE4ro0S+jGWhtYYkSU3sePcQ+wmFSxNttOEIGLNBil8w==
+X-Received: by 2002:a05:6358:5918:b0:130:e0a9:a7b4 with SMTP id g24-20020a056358591800b00130e0a9a7b4mr7076758rwf.13.1691001674997;
+        Wed, 02 Aug 2023 11:41:14 -0700 (PDT)
+Received: from fedora ([174.89.37.244])
+        by smtp.gmail.com with ESMTPSA id d28-20020a0caa1c000000b006363f2c37f0sm5742380qvb.91.2023.08.02.11.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 11:41:14 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 14:41:05 -0400
+From:   Lucas Karpinski <lkarpins@redhat.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev, tj@kernel.org,
+        lizefan.x@bytedance.com, shuah@kernel.org
+Cc:     muchun.song@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] kselftests: cgroup: fix kmem test slab1 check
+Message-ID: <m6jbt5hzq27ygt3l4xyiaxxb7i5auvb2lahbcj4yaxxigqzu5e@5rn6s2yjzv7u>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20230517
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,39 +78,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __mx25_clocks_init function always returns 0 and its only
-caller does not check the return value. Let's remove it.
+test_kmem_basic creates 100,000 negative dentries, with each one mapping
+to a slab object. After memory.high is set, these are reclaimed through
+the shrink_slab function call which reclaims all 100,000 entries. The test
+passes the majority of the time because when slab1 is calculated, it is
+often above 0, however, 0 is also an acceptable value.
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
 ---
- drivers/clk/imx/clk-imx25.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ tools/testing/selftests/cgroup/test_kmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/imx/clk-imx25.c b/drivers/clk/imx/clk-imx25.c
-index bee3da2e21e1..c566be848c2d 100644
---- a/drivers/clk/imx/clk-imx25.c
-+++ b/drivers/clk/imx/clk-imx25.c
-@@ -74,7 +74,7 @@ enum mx25_clks {
+diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+index 258ddc565deb..ba0a0bfc5a98 100644
+--- a/tools/testing/selftests/cgroup/test_kmem.c
++++ b/tools/testing/selftests/cgroup/test_kmem.c
+@@ -71,7 +71,7 @@ static int test_kmem_basic(const char *root)
  
- static struct clk *clk[clk_max];
+ 	cg_write(cg, "memory.high", "1M");
+ 	slab1 = cg_read_key_long(cg, "memory.stat", "slab ");
+-	if (slab1 <= 0)
++	if (slab1 < 0)
+ 		goto cleanup;
  
--static int __init __mx25_clocks_init(void __iomem *ccm_base)
-+static void __init __mx25_clocks_init(void __iomem *ccm_base)
- {
- 	BUG_ON(!ccm_base);
- 
-@@ -222,8 +222,6 @@ static int __init __mx25_clocks_init(void __iomem *ccm_base)
- 	imx_register_uart_clocks();
- 
- 	imx_print_silicon_rev("i.MX25", mx25_revision());
--
--	return 0;
- }
- 
- static void __init mx25_clocks_init_dt(struct device_node *np)
+ 	current = cg_read_long(cg, "memory.current");
 -- 
-2.39.2
+2.41.0
 
