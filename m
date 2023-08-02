@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4794876D8B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D928F76D86C
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231309AbjHBUbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 16:31:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
+        id S231874AbjHBUM1 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 16:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbjHBUbG (ORCPT
+        with ESMTP id S229525AbjHBUMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 16:31:06 -0400
-X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Aug 2023 13:31:05 PDT
-Received: from 5.mo576.mail-out.ovh.net (5.mo576.mail-out.ovh.net [46.105.43.105])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EEA10E
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:31:04 -0700 (PDT)
-Received: from director1.ghost.mail-out.ovh.net (unknown [10.109.146.137])
-        by mo576.mail-out.ovh.net (Postfix) with ESMTP id 78C0023DCA
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:11:52 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-6cqtb (unknown [10.110.171.144])
-        by director1.ghost.mail-out.ovh.net (Postfix) with ESMTPS id BEA6D1FD73;
-        Wed,  2 Aug 2023 20:11:50 +0000 (UTC)
-Received: from etezian.org ([37.59.142.105])
-        by ghost-submission-6684bf9d7b-6cqtb with ESMTPSA
-        id SgH5Koa4ymSYJQAAgyrAAA
-        (envelope-from <andi@etezian.org>); Wed, 02 Aug 2023 20:11:50 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-105G006804341e4-daf0-46ff-a296-e082e55f34d6,
-                    0C641BB37B7CC30D107EA61C426C60CA54BC1A77) smtp.auth=andi@etezian.org
-X-OVh-ClientIp: 178.238.172.51
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Ruan Jinjie <ruanjinjie@huawei.com>
-Cc:     Andi Shyti <andi.shyti@kernel.org>
-Subject: Re: [PATCH -next] i2c: s3c2410: Remove redundant dev_err()
-Date:   Wed,  2 Aug 2023 22:10:35 +0200
-Message-Id: <169100562768.1919254.7407243487471763166.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230726174226.2480552-1-ruanjinjie@huawei.com>
-References: <20230726174226.2480552-1-ruanjinjie@huawei.com>
+        Wed, 2 Aug 2023 16:12:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916E6E75;
+        Wed,  2 Aug 2023 13:12:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1C2DF61AB8;
+        Wed,  2 Aug 2023 20:12:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDB70C433C7;
+        Wed,  2 Aug 2023 20:12:21 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 16:12:20 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
+ struct/union
+Message-ID: <20230802161220.579b2220@gandalf.local.home>
+In-Reply-To: <CAADnVQKrL3LZaRcgoTdGN-csPt=eyujPbw9qoxgv9tPYPmZiZA@mail.gmail.com>
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+        <169078863449.173706.2322042687021909241.stgit@devnote2>
+        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
+        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
+        <20230802000228.158f1bd605e497351611739e@kernel.org>
+        <20230801112036.0d4ee60d@gandalf.local.home>
+        <20230801113240.4e625020@gandalf.local.home>
+        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
+        <20230801190920.7a1abfd5@gandalf.local.home>
+        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
+        <20230801204054.3884688e@rorschach.local.home>
+        <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
+        <CAADnVQLqXjJvCcuQLVz8HxF050jDHaSa2D7cehoYtjXdp3wGLQ@mail.gmail.com>
+        <20230802143845.3ce6ed61@gandalf.local.home>
+        <CAADnVQKrL3LZaRcgoTdGN-csPt=eyujPbw9qoxgv9tPYPmZiZA@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 13296877901830949447
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedviedrkedtgdehtdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkffojghfgggtgfesthekredtredtjeenucfhrhhomheptehnughiucfuhhihthhiuceorghnughirdhshhihthhisehkvghrnhgvlhdrohhrgheqnecuggftrfgrthhtvghrnhepveevieffieefgfefuddvteelffeuhfelffejteejuddvveekveehvdejgeefteevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepuddvjedrtddrtddruddpudejkedrvdefkedrudejvddrhedupdefjedrheelrddugedvrddutdehnecuvehluhhsthgvrhfuihiivgepgeenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeorghnughisegvthgviihirghnrdhorhhgqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheejiedpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Wed, 2 Aug 2023 12:48:14 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-On Wed, 26 Jul 2023 17:42:26 +0000, Ruan Jinjie wrote:
-> There is no need to call the dev_err() function directly to print a custom
-> message when handling an error from platform_get_irq() function as
-> it is going to display an appropriate error message in case of a failure.
+> On Wed, Aug 2, 2023 at 11:38 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> >
+> > On Wed, 2 Aug 2023 11:24:12 -0700
+> > Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+> >  
+> > > This is a non starter.
+> > > bpf progs expect arch dependent 'struct pt_regs *' and we cannot change that.  
+> >
+> > If the progs are compiled into native code, isn't there optimizations that
+> > could be done? That is, if ftrace_regs is available, and the bpf program is
+> > just using the subset of pt_regs, is it possible that it could be compiled
+> > to use ftrace_regs?
+> >
+> > Forgive my ignorance on how BPF programs turn into executables when running
+> > in the kernel.  
 > 
-> 
+> Right. It's possible for the verifier to do an offset rewrite,
+> forbid certain access, always return 0 on load from certain offset,
+> and so on.
+> It's all non trivial amount of work.
+> ftrace_partial_regs() from ftrace_regs into pt_regs is so much simpler.
 
-Applied to i2c/andi-for-next on
+Sure, and the copy could be the solution we have in the near future, but if
+we could optimize it in the future, then perhaps it would be worth doing it.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git
+Also, how are the bpf programs referencing the pt_regs? Could a ftrace_regs
+API be added too? If the verifier sees that the program is using
+ftrace_regs, it could then use the lighter weight fprobes for access,
+otherwise it falls back to the kprobe version.
 
-Please note that this patch may still undergo further evaluation
-and the final decision will be made in collaboration with
-Wolfram.
-
-Thank you,
-Andi
-
-Patches applied
-===============
-[1/1] i2c: s3c2410: Remove redundant dev_err()
-      commit: c0e109161aad5d543145d79921d1a577c8fa2eee
+-- Steve
