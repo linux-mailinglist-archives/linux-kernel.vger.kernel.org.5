@@ -2,153 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A2176D6A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9808A76D6AB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232163AbjHBSQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
+        id S232720AbjHBSSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjHBSQw (ORCPT
+        with ESMTP id S232364AbjHBSSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:16:52 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586E01717
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:16:51 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-d3563cb41e9so107484276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:16:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691000210; x=1691605010;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pXrsjRwbQ0i9WYPA2zZDm0hKTxjaNDtODB5//GV9BKg=;
-        b=Wc2PQOqapUpcm9cw2WmudF0rziszOymA/cnrsah2sRinuo4/OhGhCDy5qJs4yAEDtU
-         PM1UMmk7lucKnmoqjnpbznHCWvJ2dhyr8F3vFKGbo72j5lTshMoOtunXZmKtIKM/RAmj
-         NblVTDUYBj4Wojz3NNXVCZM134/DUX/qGeV/AgNrP7xltwh+gfEJ+fK2MKkY36r3oYMo
-         a3uRWZueUZp/RDK7DcFP8AbB+LvINcOxOR/lj6QUkU/cjxkh3reZSN8QVTtsc1R3lumy
-         DBUIsymru6WvPhHNLuJ0hWrg6d0+q7/2Kdg1JR6etY8eH/4AVRiMWn2bDpgGCdIJ36D3
-         uc3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691000210; x=1691605010;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pXrsjRwbQ0i9WYPA2zZDm0hKTxjaNDtODB5//GV9BKg=;
-        b=QlInwtpbR1T6EpeticqJoWSOrUZXTMPaccWq+PEY8+iO6pHH6qrnGlTsLVwVNvt7Lp
-         CtGfZ+J9KsLKzIF9YYdo2nTHW83jl3aDucHAexvCnDMtahJ3zViYANuQwnh00Qybfx/b
-         o3MkT9DNWvWS3OPfwM15vqhxKpKMKx8rSnhn884vYm3vA2oOd/MNHwQyXGe+ZJ+3qTQg
-         mb7oRPocwiEGYDffN5ubQLsVsM4IKaiG61aNLeOYMGGIqZOMUz9XLebPplbZBmakvQ/r
-         PRu89c6NmdJo1wAHSEeUiPZXocrfTw336w/v1wVeKixfYll9SMP1oLtsbzNd86ky++Lr
-         24KQ==
-X-Gm-Message-State: AOJu0YwAqN2FbfaVchgz8KqdVUdnfSVZCW5yizkhQFCSBTRL5vWBGvBG
-        IIX+dO6Mm03to1VktpngMIDbsL0H5qmH8yzSPNVBKQ==
-X-Google-Smtp-Source: AGHT+IFyFGtRP+XqcacYiefZAE6cjaQRA61VxSBcnHHyEu24yGmybugGIsHGUh0vKfetYBrQ/QSMTkASgf6PVQhDsLk=
-X-Received: by 2002:a25:938d:0:b0:d0d:4910:cf08 with SMTP id
- a13-20020a25938d000000b00d0d4910cf08mr849153ybm.41.1691000210550; Wed, 02 Aug
- 2023 11:16:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
- <5cf0e3fa-f66d-06c4-cfda-c48efd8c6508@linaro.org> <bf95af44-2510-1835-dec9-183144de8413@denx.de>
-In-Reply-To: <bf95af44-2510-1835-dec9-183144de8413@denx.de>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 2 Aug 2023 21:16:39 +0300
-Message-ID: <CAA8EJppp_ZJr-DcoZGd1GZmWuo=AECNS+X9zx0dNB4Edn8M2zg@mail.gmail.com>
-Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
- and EOT packet"
-To:     Marek Vasut <marex@denx.de>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Amit Pundir <amit.pundir@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 2 Aug 2023 14:18:33 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B5832103;
+        Wed,  2 Aug 2023 11:18:27 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 498BF3200754;
+        Wed,  2 Aug 2023 14:18:23 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 02 Aug 2023 14:18:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1691000302; x=1691086702; bh=Sm
+        MQ6kJN4Wc3hcGgVxP+bMiAcMtZCScse6Dh72DQZNY=; b=RS2lZDrqYqL/YCzd28
+        LQCEyYTBpZ9AsOx0epUPG7MNbrjDFXtbn2z9kisIrwzEFRddS8DfdcM4pINxZ//S
+        5OZE92Kstnns7ub7HeGv0fpTJBX8OtBSFKJpxGDUGHF8XRBobYAx/rMNGnyCjym7
+        YMESHJFdKICPLHtuv6ikqbcVe3W7vyxG+OaoTho+CZi9nYIvCwjRJdKhf57NElLn
+        jPBvbA2kRk8Sx+ttZ0omoSfqXeXMjP/gBLwz+9y5dTYLnxLIhGtXkGiqnOpt9v5m
+        43bdfIu9/HZyez1rthW6GvPxKTxX20wVPxAZiNEZjpSFXabaFM6wVQdH0mFK2RUy
+        vAKw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; t=1691000302; x=1691086702; bh=SmMQ6kJN4Wc3h
+        cGgVxP+bMiAcMtZCScse6Dh72DQZNY=; b=xi6gI5pRORVFWj2yXsvH8AwNVpnA9
+        A5a1Fyq0dj4s0Io3/eZsSzAY4OFS64wWHck4CM0gPb81+pJadaLf00nsSoPmHJGI
+        yqdSVZAjgY8ehq3RhWDC8UYbVMzAjmVMcHBwywcIOa99Qy8QIUW+xbMGwUSFU/Hs
+        FsKW2jX4AqemuoL3171ZDDO0JyfwO5hM/zB1YSrSGeShaHj08n4uujRORratQFhl
+        PdYVWLxvY+XY+sg3MZG5ljs1mFykrJFTKazhDfBDkPHOoXt9PCcCQyRrdFxl5fzU
+        UzHNPG8eosDSYySxkWrL7sJIGGLzV7IY67xLvNFuQEpYFlAws4/AKP5Bw==
+X-ME-Sender: <xms:7Z3KZCgwPzHXYeemGEu9Qyj5ErRzXXH7EmceR0J370__O_AtKGSjjQ>
+    <xme:7Z3KZDCNARqZ3h2BImuDxS4dIQevS2UNF-oTbZUqXfYBpaiOyAILrbSyW8-38C9LE
+    EfCTFet5V4DvB9mokg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrkedtgddvjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:7Z3KZKGVIjfLGAQDf86B3N3SiiyttqfRRZrEnPxSrvNnVIeMTrgxGQ>
+    <xmx:7Z3KZLTHd1_k1KnwARlCRCdU78UDy3la_61mG4Ce8f6O-CyIIGuYXA>
+    <xmx:7Z3KZPyDn7GRtzeLKBJWaBVSepGHmVV8VtgKVnt7SFKOubhKGBQC1Q>
+    <xmx:7p3KZGkolqmrhhVrqabX3Jmlg1oqsm7SuSv25c8SSN5llD02sVBiBQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9F7D1B60089; Wed,  2 Aug 2023 14:18:21 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
+Mime-Version: 1.0
+Message-Id: <dd48b4ff-1009-41fe-baf5-be89432c5d28@app.fastmail.com>
+In-Reply-To: <CAHk-=wjmWjd+xe88cf14hFGkSK7fYJBSixK8Ym0DLYCa+dTxtg@mail.gmail.com>
+References: <20230801-bitwise-v1-1-799bec468dc4@google.com>
+ <CAHk-=wgkC80Ey0Wyi3zHYexUmteeDL3hvZrp=EpMrDccRGmMwA@mail.gmail.com>
+ <20230802161553.GA2108867@dev-arch.thelio-3990X>
+ <CAHk-=wjmWjd+xe88cf14hFGkSK7fYJBSixK8Ym0DLYCa+dTxtg@mail.gmail.com>
+Date:   Wed, 02 Aug 2023 20:17:32 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Linus Torvalds" <torvalds@linux-foundation.org>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Will Deacon" <will.deacon@arm.com>,
+        "Catalin Marinas" <catalin.marinas@arm.com>
+Cc:     "Nick Desaulniers" <ndesaulniers@google.com>,
+        "Tom Rix" <trix@redhat.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH] word-at-a-time: use the same return type for has_zero regardless
+ of endianness
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2 Aug 2023 at 20:34, Marek Vasut <marex@denx.de> wrote:
+On Wed, Aug 2, 2023, at 19:37, Linus Torvalds wrote:
+> On Wed, 2 Aug 2023 at 09:16, Nathan Chancellor <nathan@kernel.org> wrote:
+>>
+>> We see this warning with ARCH=arm64 defconfig + CONFIG_CPU_BIG_ENDIAN=y.
 >
-> On 8/2/23 15:38, Dmitry Baryshkov wrote:
-> > On 02/08/2023 11:52, Neil Armstrong wrote:
-> >> This reverts commit [1] to fix display regression on the Dragonboard 845c
-> >> (SDM845) devboard.
-> >>
-> >> There's a mismatch on the real action of the following flags:
-> >> - MIPI_DSI_MODE_VIDEO_NO_HSA
-> >> - MIPI_DSI_MODE_VIDEO_NO_HFP
-> >> - MIPI_DSI_MODE_VIDEO_NO_HBP
-> >> which leads to a non-working display on qcom platforms.
-> >>
-> >> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA and
-> >> EOT packet")
-> >>
-> >> Cc: Marek Vasut <marex@denx.de>
-> >> Cc: Robert Foss <rfoss@kernel.org>
-> >> Cc: Jagan Teki <jagan@amarulasolutions.com>
-> >> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> >> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA
-> >> and EOT packet")
-> >> Reported-by: Amit Pundir <amit.pundir@linaro.org>
-> >> Link:
-> >> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
-> >> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> >> ---
-> >>   drivers/gpu/drm/bridge/lontium-lt9611.c | 4 +---
-> >>   1 file changed, 1 insertion(+), 3 deletions(-)
-> >>
-> > Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> #fix db845c
-> >
-> > The boards broken by [1] are used in production by different parties
-> > since 5.10, breaking them doesn't seem more acceptable than breaking the
-> > new out-of-tree iMX8m hardware.
+> Oh Christ. I didn't even realize that arm64 allowed a BE config.
 >
-> The MX8M is also in-tree, so this does not apply.
+> The config option goes back to 2013 - are there actually BE user space
+> implementations around?
 
-v6.5-rc4:
+At least NXP's Layerscape and Huawei's SoCs ended up in big-endian
+appliances, running legacy software ported from mips or powerpc.
+I agree this was a mistake, but that wasn't nearly as obvious ten
+years ago when there were still new BE-only sparc, mips and powerpc
+put on the market -- that really only ended in 2017.
 
-$ git grep lontium,lt9611 | grep -v 9611uxc
-Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:$id:
-http://devicetree.org/schemas/display/bridge/lontium,lt9611.yaml#
-Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
-    - lontium,lt9611
-Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
-      compatible = "lontium,lt9611";
-arch/arm64/boot/dts/qcom/sdm845-db845c.dts: compatible = "lontium,lt9611";
-drivers/gpu/drm/bridge/lontium-lt9611.c: { "lontium,lt9611", 0 },
-drivers/gpu/drm/bridge/lontium-lt9611.c: { .compatible = "lontium,lt9611" },
+> People, why do we do that? That's positively crazy. BE is dead and
+> should be relegated to legacy platforms. There are no advantages to
+> being different just for the sake of being different - any "security
+> by obscurity" argument would be far outweighed by the inconvenience to
+> actual users.
+>
+> Yes, yes, I know the aarch64 architecture technically allows BE
+> implementations - and apparently you can even do it by exception
+> level, which I had to look up. But do any actually exist?
+>
+> Does the kernel even work right in BE mode? It's really easy to miss
+> some endianness check when all the actual hardware and use is LE, and
+> when (for example) instruction encoding and IO is then always LE
+> anyway.
 
-next-20230802:
+This was always only done for compatibility with non-portable
+software when companies with large custom network stacks argued
+that it was cheaper to build the entire open source software to
+big-endian than port their own product to little-endian. ;-)
 
-$ git grep lontium,lt9611 | grep -v 9611uxc
-Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:$id:
-http://devicetree.org/schemas/display/bridge/lontium,lt9611.yaml#
-Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
-    - lontium,lt9611
-Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
-      compatible = "lontium,lt9611";
-arch/arm64/boot/dts/qcom/sdm845-db845c.dts: compatible = "lontium,lt9611";
-drivers/gpu/drm/bridge/lontium-lt9611.c: { "lontium,lt9611", 0 },
-drivers/gpu/drm/bridge/lontium-lt9611.c: { .compatible = "lontium,lt9611" },
+We (Linaro) used to test all toolchain and kernel releases in
+big-endian mode as member companies had customers that asked
+for it, but that stopped a while ago as those legacy software
+stacks either got more portable or got replaced over time.
 
-Your device is not in the tree. Your commit broke existing users.
+Many Arm systems won't boot BE kernels any more because UEFI
+firmware only supports LE, or because of driver bugs.
+Virtual machines are still likely to work fine though.
+I'm fairly sure that all Arm Cortex and Neoverse cores still\
+support BE mode in all exception levels, OTOH at least Apple's
+custom CPUs do not implement it at all.
 
-Can we please end the argument, land the fix (this revert) for 6.5 and
-work on the solution for 6.6 or 6.7?
-
--- 
-With best wishes
-Dmitry
+     Arnd
