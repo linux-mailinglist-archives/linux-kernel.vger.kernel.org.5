@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6D076C758
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0129C76C756
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233187AbjHBHrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:47:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
+        id S233354AbjHBHrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbjHBHrH (ORCPT
+        with ESMTP id S233295AbjHBHqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:47:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EA63C0F
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:43:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690962227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JFUcGNyD24U1i9MJG6CCP0tDnMgYNxQlSEqN/mEfB+g=;
-        b=b610DIcZ4VhaOL9B4zHACRxPzlwdLqTpHaGt06/Yh4zbtuY7mUwGXlz1r18UQRtWFL0fhQ
-        25KYrNi6hfsv41JkC43m95kxYuXPV9zD3/s5arSVKJ4fAEdtdBwwxG+b07qi7n581MdbqW
-        rCS45sQhQXpYVVKAfkdQIVm3jqCxtYs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-340-i4C96D6YMCaibwFKS7edOA-1; Wed, 02 Aug 2023 03:43:40 -0400
-X-MC-Unique: i4C96D6YMCaibwFKS7edOA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 15A448910E9;
-        Wed,  2 Aug 2023 07:43:40 +0000 (UTC)
-Received: from alecto.usersys.redhat.com (unknown [10.43.17.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 13CC840C2063;
-        Wed,  2 Aug 2023 07:43:37 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 09:43:35 +0200
-From:   Artem Savkov <asavkov@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Milian Wolff <milian.wolff@kdab.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] Revert "perf report: Append inlines to non-DWARF
- callchains"
-Message-ID: <20230802074335.GA622710@alecto.usersys.redhat.com>
-References: <ZMl8VyhdwhClTM5g@kernel.org>
+        Wed, 2 Aug 2023 03:46:45 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0259135A5
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:44:02 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so6548044f8f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 00:44:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690962240; x=1691567040;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=zrfr8demoIbS0/fY7FGFGHUvwM9dqz7KGdFUzvSMnB4=;
+        b=SQ0Jmtsd6fDkK+VaTExixKraao2PdwInKoTajuVotP1pQ1FPyv409LVbP9v/bMIqEw
+         VoJcEqWxkG1QCm2ugsqmnlRX6nPvEdKEXEYtD4O4lRTI03300HRKUfQqgWvcGmOb5HyP
+         wXz1F3U/RzYBlZ6JpHDdtJtpxsDMOJrhp+UWTBI0FlWZMkt6AVF5KOHBJbv8yoNOjN4A
+         MIosrKok2qAQR/tvHmLn+Az/PLp2iGy8Kj/UweBlIeG48eMkxPlua3zHMNlJISEspHz1
+         AwAaE+DWWHdW8WNFbFZ0JcgVfRqxmUvR1fC1nF5mpJHwOLJeJ1GyaeaEod0UoJdFT6d9
+         N39w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690962240; x=1691567040;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zrfr8demoIbS0/fY7FGFGHUvwM9dqz7KGdFUzvSMnB4=;
+        b=bECcCpkEXba7wupPfr/p1tHFYS5J9Jw3kL9x85BHs9teIpbwrvpJ21H8PQZqcT+QW9
+         A1DYcbEHcLuTVMEugFQK2vxOOmUb544HJYmLnoHcDnTHPhlUCMinabdhaG+WgBwdaK3e
+         VvJV8hLVgmKQx9wk3iqwdEWVc4WhbFLV+RnTqXR6Owq51qSedif1zzkfPACi56EjDrzV
+         7oS9jLy7Y2gqW3pnmU+REq6Ka9IKbR+7qvu3F3Q6Z+ksuVMlIpPT8/jgdFH6pjPgClLb
+         WqYCdxYJ2/rwxoCcrZnVzP248GCLMD/VyfDI7L9W+eCrCqgXpxukTkArtJy8yV3i/+Oi
+         d6YA==
+X-Gm-Message-State: ABy/qLZwHbzXy60TzKVcHqO2C2PlwPUfp3tCm4gDlRy6jEvvD937uAMx
+        hK3yax0cAjRQr6vJ3F5qoQCNug==
+X-Google-Smtp-Source: APBJJlHR+6nvvNO3+YmG+iuU8bYWQGf23hXA05GwI6Tl5IAu5Z/Y9z2rBt7aF/BbyZ8pIhHmTV1+5g==
+X-Received: by 2002:adf:e883:0:b0:317:6e08:ed35 with SMTP id d3-20020adfe883000000b003176e08ed35mr4518025wrm.1.1690962240440;
+        Wed, 02 Aug 2023 00:44:00 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:43ac:b106:31d5:42b7])
+        by smtp.gmail.com with ESMTPSA id y18-20020a5d6212000000b003143c6e09ccsm18306002wru.16.2023.08.02.00.43.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 00:44:00 -0700 (PDT)
+References: <CACqvRUZYH2NkOooE78SK6=Ow07y=YnE2QOSNzyb99rV4vSvxpQ@mail.gmail.com>
+User-agent: mu4e 1.8.13; emacs 28.2
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Da Xue <da@libre.computer>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: mdio-mux-meson-gxl: set RESERVED0 bit in REG2
+Date:   Wed, 02 Aug 2023 09:43:38 +0200
+In-reply-to: <CACqvRUZYH2NkOooE78SK6=Ow07y=YnE2QOSNzyb99rV4vSvxpQ@mail.gmail.com>
+Message-ID: <1ja5v9q474.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZMl8VyhdwhClTM5g@kernel.org>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
 
-On Tue, Aug 01, 2023 at 06:42:47PM -0300, Arnaldo Carvalho de Melo wrote:
-> Hi Artem,
-> 
-> 	Can you please double check this? I reproduced with:
-> 
-> git checkout 46d21ec067490ab9cdcc89b9de5aae28786a8b8e
-> build it
-> perf record -a -g sleep 5s
-> perf report
-> 
-> 	Do you get the same slowness and then reverting it, i.e. just
-> going to HEAD~ and rebuilding getting a fast 'perf report' startup, i.e.
-> without the inlines in the callchains?
+On Tue 01 Aug 2023 at 16:34, Da Xue <da@libre.computer> wrote:
 
-With a simple test like this I definitely get a slowdown, but not sure
-if it can be called excessive.
+> The first RESERVED register bit needs to be set in order for the PHY
+> to come up. Otherwise the ethernet device stays in "No Carrier".
+> There's no associated documentation for this register bit in the
+> Amlogic datasheets, only the default value to set for the entire
+> register.
+>
+> This register bit is normally set in u-boot so it is not noticed in
+> Linux. During my testing with u-boot net disabled, this problem crops
+> up.
+>
+> Signed-off-by: Da Xue <da@libre.computer>
 
-Below are the times I got by running 'time perf report' and hitting 'q'
-during load so that it quits as soon as it is loads up. Tested on a
-freshly updated fedora 38.
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
 
-For 'perf record -a -g sleep 60' (Event count (approx.): 774055090):
-
-with inlines:
-$ time ./perf report
-
-real    0m1.477s
-user    0m1.324s
-sys     0m0.147s
-
-without inlines:
-$ time ./perf report
-
-real    0m1.349s
-user    0m1.232s
-sys     0m0.111s
-
-For 'perf record -a -g sleep 5' (Event count (approx.): 90179399):
-
-with inlines:
-$ time ./perf report
-
-real    0m0.657s
-user    0m0.555s
-sys     0m0.099s
-
-without inlines:
-$ time ./perf report
-
-real    0m0.559s
-user    0m0.498s
-sys     0m0.060s
-
-
-> - Arnaldo
-> 
-> ----
-> 
-> This reverts commit 46d21ec067490ab9cdcc89b9de5aae28786a8b8e.
-> 
-> The tests were made with a specific workload, further tests on a
-> recently updated fedora 38 system with a system wide perf.data file
-> shows 'perf report' taking excessive time, so lets revert this until a
-> full investigation and improvement on the addr2line support code is
-> made.
-> 
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Artem Savkov <asavkov@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Milian Wolff <milian.wolff@kdab.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 > ---
->  tools/perf/util/machine.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-> index 4e62843d51b7dbf9..f4cb41ee23cdbcfc 100644
-> --- a/tools/perf/util/machine.c
-> +++ b/tools/perf/util/machine.c
-> @@ -45,7 +45,6 @@
->  
->  static void __machine__remove_thread(struct machine *machine, struct thread_rb_node *nd,
->  				     struct thread *th, bool lock);
-> -static int append_inlines(struct callchain_cursor *cursor, struct map_symbol *ms, u64 ip);
->  
->  static struct dso *machine__kernel_dso(struct machine *machine)
->  {
-> @@ -2385,10 +2384,6 @@ static int add_callchain_ip(struct thread *thread,
->  	ms.maps = maps__get(al.maps);
->  	ms.map = map__get(al.map);
->  	ms.sym = al.sym;
-> -
-> -	if (!branch && append_inlines(cursor, &ms, ip) == 0)
-> -		goto out;
-> -
->  	srcline = callchain_srcline(&ms, al.addr);
->  	err = callchain_cursor_append(cursor, ip, &ms,
->  				      branch, flags, nr_loop_iter,
-> -- 
-> 2.41.0
-> 
-
--- 
- Artem
+>  drivers/net/mdio/mdio-mux-meson-gxl.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/mdio/mdio-mux-meson-gxl.c
+> b/drivers/net/mdio/mdio-mux-meson-gxl.c
+> index 76188575ca1f..210a52d98112 100644
+> --- a/drivers/net/mdio/mdio-mux-meson-gxl.c
+> +++ b/drivers/net/mdio/mdio-mux-meson-gxl.c
+> @@ -17,6 +17,7 @@
+>  #define  REG2_LEDACT           GENMASK(23, 22)
+>  #define  REG2_LEDLINK          GENMASK(25, 24)
+>  #define  REG2_DIV4SEL          BIT(27)
+> +#define  REG2_RESERVED0                BIT(28)
+>  #define  REG2_ADCBYPASS                BIT(30)
+>  #define  REG2_CLKINSEL         BIT(31)
+>  #define ETH_REG3               0x4
+> @@ -65,7 +66,7 @@ static void gxl_enable_internal_mdio(struct
+> gxl_mdio_mux *priv)
+>          * The only constraint is that it must match the one in
+>          * drivers/net/phy/meson-gxl.c to properly match the PHY.
+>          */
+> -       writel(FIELD_PREP(REG2_PHYID, EPHY_GXL_ID),
+> +       writel(REG2_RESERVED0 | FIELD_PREP(REG2_PHYID, EPHY_GXL_ID),
+>                priv->regs + ETH_REG2);
+>
+>         /* Enable the internal phy */
 
