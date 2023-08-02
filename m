@@ -2,121 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0173D76D0FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CDD776D102
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234261AbjHBPGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58546 "EHLO
+        id S234442AbjHBPGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234211AbjHBPGE (ORCPT
+        with ESMTP id S232019AbjHBPGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:06:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91305421A;
-        Wed,  2 Aug 2023 08:05:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 665BF619D3;
-        Wed,  2 Aug 2023 15:05:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB4CAC433C8;
-        Wed,  2 Aug 2023 15:05:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690988708;
-        bh=r1VqFu8OfO1u5SoU4EmzmyOkzQIjy5fxk4p2tga+KAM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=OwkIN+dIl1O3NsTYTQe/70zZ0rznSUs8gByfm0OBc7zvmQMLiMvn3CLkT+eKbTOUj
-         PAil3+ubHsZ183mPtIUzm7PUQB6y0mAJCa+ZRi4IFyAsz+TTY/1TkUdSiXarHW0wAz
-         iOQIdIMPD+I6kqL3/keDQMu2JiUg6eDoND0lZQeE8NMIt/M0MS6SiHL4vgzDv8IXWm
-         SbiGyEPgRIcHXNwuZR+KJ0+uo/YJIVF0VevuHZ1ptU8COE5mi0ssQMF5ifOCf/ll3L
-         X216QF4sppcAbe5WSg6P4NdMjHWOwYBPW6WG3U0mSYjjAHuD4c86lo34qhNQpb9FZp
-         ZZ0ci2gx+3C6w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 5C2E3CE092F; Wed,  2 Aug 2023 08:05:08 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 08:05:08 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Roy Hopkins <rhopkins@suse.de>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
-Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
- 6.4.7-rc1 review)
-Message-ID: <063a2eba-6b5e-40bc-afd4-7d26f12762e4@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230731143954.GB37820@hirez.programming.kicks-ass.net>
- <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net>
- <20230731145232.GM29590@hirez.programming.kicks-ass.net>
- <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de>
- <20230731161452.GA40850@hirez.programming.kicks-ass.net>
- <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net>
- <20230731211517.GA51835@hirez.programming.kicks-ass.net>
- <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net>
- <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
- <4f18d78411a5477690640a168e0e5d9f28d1c015.camel@suse.de>
+        Wed, 2 Aug 2023 11:06:19 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0282830DD;
+        Wed,  2 Aug 2023 08:05:32 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-686f38692b3so6676977b3a.2;
+        Wed, 02 Aug 2023 08:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690988732; x=1691593532;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PzadGlULFzQVJWWvB++6o5+mmWXFSdKSmJT1jbq3YkI=;
+        b=WCLO2YcbMrKo6eePoovLntMmgFULUdd75VQFA+0Z2jOf9QY/X/IPpsGXnJr4oQ1GfP
+         Y7nU9EduI17HM5bFX0apyYWTi+u+9/GU+ObnksoEncBYmocBD0ObZMewInze9B5AupRH
+         bQAj+7sD9rm076tbktrAPN8uHCT0rTf58N0IxYrKqlZzBmQvr1EzuqSsqFpEWzamfwZJ
+         RwLhtSQWnJKBfjEaz0X1V3XXHhzvSZsWmmXUR58DW1xCAeT2Zbrq5+XTG2AlHMqIP9hx
+         8EnL0WejvkFh5mfrH/T73RTAf+KZOW3oyD+kafbBlb6Ay4un22uKnGwweWfw9gxcr162
+         Z2jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690988732; x=1691593532;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PzadGlULFzQVJWWvB++6o5+mmWXFSdKSmJT1jbq3YkI=;
+        b=RY9iSzHFqgPJWcoJpiZmXZZmt/zPOMhrNb2ULjWvdhu5rlRXl4VCX+HwayGcHkRsEa
+         GryZFRJZsmktKTyfwKgY9pzVEha712k4f2+InMBBdBTJH85ePykDbd4163qMyjfgoCCT
+         /1dQ3qZZsyVxuI8sNUANTDsLdcesYJs1hp3Nwbd+0OMh7hHUQLY5fbsi127VMW2/al9p
+         nm0K8F7D8GENFZJ8xnu3vP7Ytqq03nYNS+UgbI1+J2T12l1N4OWmHn3JSgl9vGmQaZEw
+         HyOe6AkcKzI/Ejyx1LIhufaXhBCy+wh1AoWN60iAF0IGrJ+qM57ogyiGp5mqwCv51rDW
+         KbUg==
+X-Gm-Message-State: ABy/qLbtmOe/Ov790DSVW6dxePCQdXM1kCg93MoeuFKp4dvZ4IWb3nRG
+        zXHuqOglEsW3jPzyg1iU/vzUrvdSGTk=
+X-Google-Smtp-Source: APBJJlHWONgGtJ2QBarYYs0V+4FZ6OsrwdK1jnK6sLA+2GFUIKaQ6XJBOtdyMcs+jkk/NvmrDhQ91w==
+X-Received: by 2002:aa7:88d6:0:b0:687:5dfe:a9c9 with SMTP id k22-20020aa788d6000000b006875dfea9c9mr4683469pff.2.1690988732296;
+        Wed, 02 Aug 2023 08:05:32 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x18-20020aa793b2000000b0064928cb5f03sm11162172pff.69.2023.08.02.08.05.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 08:05:31 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 2 Aug 2023 08:05:30 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Carsten =?iso-8859-1?Q?Spie=DF?= <mail@carsten-spiess.de>
+Cc:     Conor Dooley <conor@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] dt-bindings: hwmon: add renesas,isl28022
+Message-ID: <fc0b3cf7-3bd5-43a3-a1fb-5706180774b7@roeck-us.net>
+References: <20230801163546.3170-1-mail@carsten-spiess.de>
+ <20230801163546.3170-3-mail@carsten-spiess.de>
+ <20230801-implicate-mullets-bd160bbda4b2@spud>
+ <20230802093023.1a926c9f.mail@carsten-spiess.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4f18d78411a5477690640a168e0e5d9f28d1c015.camel@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <20230802093023.1a926c9f.mail@carsten-spiess.de>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 02:57:56PM +0100, Roy Hopkins wrote:
-> On Tue, 2023-08-01 at 12:11 -0700, Paul E. McKenney wrote:
-> > On Tue, Aug 01, 2023 at 10:32:45AM -0700, Guenter Roeck wrote:
-> > 
-> > 
-> > Please see below for my preferred fix.  Does this work for you guys?
-> > 
-> > Back to figuring out why recent kernels occasionally to blow up all
-> > rcutorture guest OSes...
-> > 
-> >                                                         Thanx, Paul
-> > 
-> > ------------------------------------------------------------------------
-> > 
-> > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > index 7294be62727b..2d5b8385c357 100644
-> > --- a/kernel/rcu/tasks.h
-> > +++ b/kernel/rcu/tasks.h
-> > @@ -570,10 +570,12 @@ static void rcu_tasks_one_gp(struct rcu_tasks *rtp, bool midboot)
-> >         if (unlikely(midboot)) {
-> >                 needgpcb = 0x2;
-> >         } else {
-> > +               mutex_unlock(&rtp->tasks_gp_mutex);
-> >                 set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
-> >                 rcuwait_wait_event(&rtp->cbs_wait,
-> >                                    (needgpcb = rcu_tasks_need_gpcb(rtp)),
-> >                                    TASK_IDLE);
-> > +               mutex_lock(&rtp->tasks_gp_mutex);
-> >         }
-> >  
-> >         if (needgpcb & 0x2) {
+On Wed, Aug 02, 2023 at 09:30:23AM +0200, Carsten Spieß wrote:
 > 
-> Your preferred fix looks good to me.
+> On 8/1/23 22:52, Conor Dooley wrote:
+> > On Tue, Aug 01, 2023 at 06:35:46PM +0200, Carsten Spieß wrote:
+> > > Add dt-bindings for Renesas ISL28022 power monitor.
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - renesas,isl28022  
+> > 
+> > You've only got one compatible, why the enum? Will there be more similar
+> > devices that have an incompatible programming model?
+> Yes, there are isl28023 and isl28025 with different register addresses,
+> might be supported in future releases.
+
+This is misleading. ISL28023 and ISL28025 are PMBus compatible chips
+and would be added as PMBus driver(s) (if needed). Support for those chips
+will never be part of the isl28022 driver, and any devicetree properties
+of those chips would not be described in this file.
+
+Guenter
+
 > 
-> With the original code I can quite easily reproduce the problem on my 
-> system every 10 reboots or so. With your fix in place the problem no
-> longer occurs.
+> > > +  renesas,shunt-range-microvolt:
+> > > +    description: |  
+> > 
+> > You don't need these |s if you have no formatting to preserve in the
+> > text.
+> Will fix in v4.
+> 
+> > Otherwise, this does look good to me.
+> Thanks, regards
+> Carsten
 
-Very good, thank you!  May I add your Tested-by?
 
-							Thanx, Paul
