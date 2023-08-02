@@ -2,157 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A2B76C4CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9838176C4D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 07:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbjHBFWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 01:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
+        id S230189AbjHBFZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 01:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229829AbjHBFWI (ORCPT
+        with ESMTP id S229537AbjHBFZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 01:22:08 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EBF2137;
-        Tue,  1 Aug 2023 22:22:04 -0700 (PDT)
-X-QQ-mid: bizesmtp64t1690953711tpgrmgb5
-Received: from linux-lab-host.localdomain ( [116.30.131.233])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 02 Aug 2023 13:21:50 +0800 (CST)
-X-QQ-SSF: 01200000000000E0X000000A0000000
-X-QQ-FEAT: zT6n3Y95oi3BNQ283kmFfmeO4lwPDSt0J5JDNOhNs39E3Gc3Lbi6ZIvwiSn5I
-        fzAs2cHLPio8pBluisDzG3gHd1+ftovD1yT0mV82eJNB4Iwg3l+QIng73RKwy/Pw2fXFifU
-        PrzMCzJVQw0GNa1HO80YXeJmIQjrI3QSTr8edXa4kcU1Svo+7BoaxHJv/1PmDR9FTn3Nrjo
-        cJXfRJnDtZt4f131giJsuLzYIWpxG0GYoDktYifwT7GTroLSdGB8lv0TqnNLBd2ezXlK22o
-        pEBJp7avut+tsLuS3RajxofZS5xF0hNn/mpZBYhY6lVTzu19r6jPZk7+XEEX7auneb3rFce
-        J9OjfkR6NZKL5iA00viRaKRYoV/UnN4scg7BBaLWXmOLXOq3JfTTQH/2jF/M7qT/xxTE9RM
-        kd1J+VbjHdc=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 17801687012396113882
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     thomas@t-8ch.de, w@1wt.eu
-Cc:     falcon@tinylab.org, arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux@weissschuh.net
-Subject: [PATCH v4 08/12] selftests/nolibc: add test support for ppc
-Date:   Wed,  2 Aug 2023 13:21:50 +0800
-Message-Id: <20230802052150.138283-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <0833846b9fc9e2260f9aa2c732a12d9dfa329286.1690916314.git.falcon@tinylab.org>
-References: <0833846b9fc9e2260f9aa2c732a12d9dfa329286.1690916314.git.falcon@tinylab.org>
+        Wed, 2 Aug 2023 01:25:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05EF8EE;
+        Tue,  1 Aug 2023 22:25:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690953954; x=1722489954;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=SUYyiEFaOXroKQDsrvyWD1ilNyTYr4fVpzmSKVWFGCo=;
+  b=iWz30P3aHgJ+eISBJX5FEIjlH4N+wXjVR0TOAk5ZRNLf5rwnquVXiSrF
+   KuwTJuTpiIWo2Q2h9WeNRF4iqAbMEEl6KxIwgniPjz3a7uTfr0qpi9e5y
+   9d6+9q+ipksxV62N50Pc9T1juj7r/G0V11kvXODLI+qb8f1F8PCjEGbb0
+   4NxktdDuk03vqNMu8o2D8Pnf9KahjpteZ7aRKxE8xomx8KUx4WVsUnNQE
+   OygD13h9CMMr+gn/20qxvsSJuII8vTlB8f1c+tuilXqmb3PQm9jrKm4ww
+   wMm0VDMlSQo4CYzYe7NEUCE/ZlL9Ki/Exa0kyo/o0ecFaTMFyFXF4CWVP
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="372215666"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="372215666"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 22:25:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="758611562"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="758611562"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga008.jf.intel.com with ESMTP; 01 Aug 2023 22:25:51 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 7132213F; Wed,  2 Aug 2023 08:26:01 +0300 (EEST)
+Date:   Wed, 2 Aug 2023 08:26:01 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, Iain Lane <iain@orangesquash.org.uk>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v7 2/2] PCI: Don't put non-power manageable PCIe root
+ ports into D3
+Message-ID: <20230802052601.GM14638@black.fi.intel.com>
+References: <20230711221427.GA250962@bhelgaas>
+ <b82a50eb-8182-84ca-5b24-dbe8870fa871@amd.com>
+ <CAJZ5v0i6PviqW7u3i8hmvSCvR_VHqP-mWRy3Da8Ev_1vi9qBQA@mail.gmail.com>
+ <a309e3fe-b1f9-e269-cb97-8af87c8d483b@amd.com>
+ <CAJZ5v0jvxrDMR6YHFpYZ4yYpp82-3TtrH==SMRFtUMJsv7=i=g@mail.gmail.com>
+ <37b005d5-68fb-f8dd-67e2-c953d677fca2@amd.com>
+ <8298c01c-abec-914b-0542-459f38c635fe@amd.com>
+ <CAJZ5v0i3g0JujMwikB8niRZ93hXJZqWtjrCjbaDmkMLUbMmwMA@mail.gmail.com>
+ <d1b2cf1b-de5f-6c2e-c8dc-fdf60cd0882d@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d1b2cf1b-de5f-6c2e-c8dc-fdf60cd0882d@amd.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Willy, Thomas
+Hi Mario,
 
-Yuan is helping me to test this series and the tinyconfig series with
-the latest compilers.
+On Tue, Aug 01, 2023 at 10:17:11PM -0500, Mario Limonciello wrote:
+> > Consequently, platform_pci_bridge_d3() will return false and the only
+> > thing that may allow the port to go into D0 is the dmi_get_bios_year()
+> > check at the end of pci_bridge_d3_possible().
+> > 
+> > However, that was added, because there are Intel platforms on which
+> > Root Ports need to be programmed into D3hot on suspend (which allows
+> > the whole platform to reduce power significantly) and there are no
+> > ACPI device power management objects associated with them (Mika should
+> > know the gory details related to this).  It looks like under Windows
+> > the additional power reduction would not be possible on those systems,
+> > but that would be a problem, wouldn't it?
+> > 
+> 
+> I've been thinking on this today, and I at least have a hypothesis about
+> this behavior.  Perhaps Windows is actually utilizing enabled PEP
+> constraints to enforce what state device should be put into over Modern
+> Standby cycles in the absence of ACPI objects.
+> 
+> In the case of one of my problematic system the PEP constraints for the root
+> port are:
+> 
+> Package (0x04)
+> {
+> 	0x00,
+> 	"\\_SB.PCI0.GP17",
+> 	0x00,
+> 	0x00
+> },
+> 
+> That first 0x00 means the constraint isn't actually enabled for the root
+> port.
+> 
+> Mika,
+> 
+> Could you get an acpidump from one of these problematic Intel systems so we
+> can check the PEP constraints to see if this theory works? Or maybe you have
+> some other ideas why this is different?
 
-His first test found this ppc support failed with stackprotector when
-using a newer compiler (I used an older compiler without stackprotector
-for ppc), I'm debugging it, so, please ignore this revision too, of
-course, if time allows, welcome to take a look at the other patches.
-
-His other tests are trying to find out the exact poweroff support
-options for every architecture one by one, let's fill this gap ...
-
-Thanks,
-Zhangjin
-
-> Kernel uses ARCH=powerpc for both 32-bit and 64-bit PowerPC, here adds a
-> ppc variant for 32-bit PowerPC and uses it as the default variant of
-> powerpc architecture.
-> 
-> Users can pass ARCH=powerpc or XARCH=ppc to test 32-bit PowerPC.
-> 
-> The default qemu-system-ppc g3beige machine [1] is used to run 32-bit
-> powerpc kernel.
-> 
-> The pmac32_defconfig is used with extra PMACZILOG console options to
-> enable normal print.
-> 
-> Note, zImage doesn't boot due to "qemu-system-ppc: Some ROM regions are
-> overlapping" error, so, vmlinux is used instead.
-> 
-> [1]: https://qemu.readthedocs.io/en/latest/system/ppc/powermac.html
-> 
-> Suggested-by: Willy Tarreau <w@1wt.eu>
-> Link: https://lore.kernel.org/lkml/ZL9leVOI25S2+0+g@1wt.eu/
-> Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-> Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> ---
->  tools/testing/selftests/nolibc/Makefile                     | 6 ++++++
->  .../testing/selftests/nolibc/configs/nolibc-test-ppc.config | 3 +++
->  2 files changed, 9 insertions(+)
->  create mode 100644 tools/testing/selftests/nolibc/configs/nolibc-test-ppc.config
-> 
-> diff --git a/tools/testing/selftests/nolibc/Makefile b/tools/testing/selftests/nolibc/Makefile
-> index 3c9e3963fbad..29e02b49903a 100644
-> --- a/tools/testing/selftests/nolibc/Makefile
-> +++ b/tools/testing/selftests/nolibc/Makefile
-> @@ -33,9 +33,11 @@ endif
->  # architectures where both are equal.
->  
->  # configure default variants for target kernel supported architectures
-> +XARCH_powerpc    = ppc
->  XARCH            = $(or $(XARCH_$(ARCH)),$(ARCH))
->  
->  # map from user input variants to their kernel supported architectures
-> +ARCH_ppc         = powerpc
->  ARCH            := $(or $(ARCH_$(XARCH)),$(XARCH))
->  
->  # kernel image names by architecture
-> @@ -45,6 +47,7 @@ IMAGE_x86        = arch/x86/boot/bzImage
->  IMAGE_arm64      = arch/arm64/boot/Image
->  IMAGE_arm        = arch/arm/boot/zImage
->  IMAGE_mips       = vmlinuz
-> +IMAGE_ppc        = vmlinux
->  IMAGE_riscv      = arch/riscv/boot/Image
->  IMAGE_s390       = arch/s390/boot/bzImage
->  IMAGE_loongarch  = arch/loongarch/boot/vmlinuz.efi
-> @@ -58,6 +61,7 @@ DEFCONFIG_x86        = defconfig
->  DEFCONFIG_arm64      = defconfig
->  DEFCONFIG_arm        = multi_v7_defconfig
->  DEFCONFIG_mips       = malta_defconfig
-> +DEFCONFIG_ppc        = pmac32_defconfig
->  DEFCONFIG_riscv      = defconfig
->  DEFCONFIG_s390       = defconfig
->  DEFCONFIG_loongarch  = defconfig
-> @@ -77,6 +81,7 @@ QEMU_ARCH_x86        = x86_64
->  QEMU_ARCH_arm64      = aarch64
->  QEMU_ARCH_arm        = arm
->  QEMU_ARCH_mips       = mipsel  # works with malta_defconfig
-> +QEMU_ARCH_ppc        = ppc
->  QEMU_ARCH_riscv      = riscv64
->  QEMU_ARCH_s390       = s390x
->  QEMU_ARCH_loongarch  = loongarch64
-> @@ -89,6 +94,7 @@ QEMU_ARGS_x86        = -M pc -append "console=ttyS0,9600 i8042.noaux panic=-1 $(
->  QEMU_ARGS_arm64      = -M virt -cpu cortex-a53 -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_arm        = -M virt -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_mips       = -M malta -append "panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-> +QEMU_ARGS_ppc        = -M g3beige -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_riscv      = -M virt -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_s390       = -M s390-ccw-virtio -m 1G -append "console=ttyS0 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
->  QEMU_ARGS_loongarch  = -M virt -append "console=ttyS0,115200 panic=-1 $(TEST:%=NOLIBC_TEST=%)"
-> diff --git a/tools/testing/selftests/nolibc/configs/nolibc-test-ppc.config b/tools/testing/selftests/nolibc/configs/nolibc-test-ppc.config
-> new file mode 100644
-> index 000000000000..b1975f8253f7
-> --- /dev/null
-> +++ b/tools/testing/selftests/nolibc/configs/nolibc-test-ppc.config
-> @@ -0,0 +1,3 @@
-> +CONFIG_SERIAL_PMACZILOG=y
-> +CONFIG_SERIAL_PMACZILOG_TTYS=y
-> +CONFIG_SERIAL_PMACZILOG_CONSOLE=y
-> -- 
-> 2.25.1
+The patch adding this was merged in 2016 and unfortunately I don't have
+any of the ACPI dumps from them available anymore (and do not recall the
+details either). I think these were Apollo Lake-P based systems with the
+initial runtime D3cold and S0ix support at the time.
