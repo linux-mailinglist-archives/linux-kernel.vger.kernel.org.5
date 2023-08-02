@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBE976D20A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA54176D206
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:34:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbjHBPeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        id S234202AbjHBPd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbjHBPdz (ORCPT
+        with ESMTP id S233788AbjHBPdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Aug 2023 11:33:55 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35372212D;
-        Wed,  2 Aug 2023 08:33:51 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372FXcDD026499;
-        Wed, 2 Aug 2023 10:33:38 -0500
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37A1DA;
+        Wed,  2 Aug 2023 08:33:52 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372FXdJM038424;
+        Wed, 2 Aug 2023 10:33:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690990418;
-        bh=r+JdV9FLj/3epip3XtfMo5XJIt803D680i9VqPKIdP8=;
+        s=ti-com-17Q1; t=1690990419;
+        bh=E+VGS47csajJZTjVjnSNTvFFQIK4oWbl5GpFgMjZMEw=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=pxjhhsreMpFaow6Yx+F6m3Uyit3fDHPGzZdnNPNlFRMRzNtFUyFMVBLmMGZTIlWgw
-         au7fio/nhtGKcvD+R1C+DWxbI3yuHFYnVC6qzCgsaCq3/jT+AlGzatzwOgArfw/1ew
-         unFZtd/TCOoPBe3qfxpQ94R4YArU/C5MyKNCZx0o=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372FXc95020430
+        b=DpetOyH7ekAQ57WCr/zVEdOUpLhZKXYnJvX1ePKAmuXm1Lxggjwue3Vy6AW/0ntcg
+         HOo8zU6NvMhU/NxEXE3a4P7pwQMFodJpPjvhR2WuFcGSZuGhK+f44m5h4s0bFNvf9u
+         qilZcrY57xo85NL5xO1sryHRRXiBFrGw4fwZrzrQ=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372FXdRd120814
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 2 Aug 2023 10:33:38 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+        Wed, 2 Aug 2023 10:33:39 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
- Aug 2023 10:33:38 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ Aug 2023 10:33:39 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
  Frontend Transport; Wed, 2 Aug 2023 10:33:38 -0500
 Received: from lelv0327.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372FXYq2072743;
-        Wed, 2 Aug 2023 10:33:37 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372FXYq3072743;
+        Wed, 2 Aug 2023 10:33:38 -0500
 From:   Andrew Davis <afd@ti.com>
 To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -51,9 +51,9 @@ To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
 CC:     <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v8 4/9] ARM: dts: nspire: Fix vbus_reg node to conform with DT binding
-Date:   Wed, 2 Aug 2023 10:33:28 -0500
-Message-ID: <20230802153333.55546-5-afd@ti.com>
+Subject: [PATCH v8 5/9] ARM: dts: nspire: Fix uart node to conform with DT binding
+Date:   Wed, 2 Aug 2023 10:33:29 -0500
+Message-ID: <20230802153333.55546-6-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230802153333.55546-1-afd@ti.com>
 References: <20230802153333.55546-1-afd@ti.com>
@@ -73,26 +73,28 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This node does not follow the DT binding schema, correct this.
-All "regulator-fixed" are voltage type, so drop "regulator-type".
+The arm,pl011 binding requires the first clock to be named "uartclk".
 Should result in no functional change.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/arm/boot/dts/nspire/nspire.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm/boot/dts/nspire/nspire-cx.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/nspire/nspire.dtsi b/arch/arm/boot/dts/nspire/nspire.dtsi
-index f979b28e2576e..9587e1ebeb931 100644
---- a/arch/arm/boot/dts/nspire/nspire.dtsi
-+++ b/arch/arm/boot/dts/nspire/nspire.dtsi
-@@ -71,7 +71,6 @@ vbus_reg: vbus_reg {
- 		compatible = "regulator-fixed";
+diff --git a/arch/arm/boot/dts/nspire/nspire-cx.dts b/arch/arm/boot/dts/nspire/nspire-cx.dts
+index 590b7dff6ae50..837dbdd9af552 100644
+--- a/arch/arm/boot/dts/nspire/nspire-cx.dts
++++ b/arch/arm/boot/dts/nspire/nspire-cx.dts
+@@ -24,7 +24,7 @@ &uart {
+ 	compatible = "arm,pl011", "arm,primecell";
  
- 		regulator-name = "USB VBUS output";
--		regulator-type = "voltage";
+ 	clocks = <&uart_clk>, <&apb_pclk>;
+-	clock-names = "uart_clk", "apb_pclk";
++	clock-names = "uartclk", "apb_pclk";
+ };
  
- 		regulator-min-microvolt = <5000000>;
- 		regulator-max-microvolt = <5000000>;
+ &timer0 {
 -- 
 2.39.2
 
