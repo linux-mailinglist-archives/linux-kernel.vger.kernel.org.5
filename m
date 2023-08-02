@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B2276C6DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F89776C6E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232661AbjHBHcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:32:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38562 "EHLO
+        id S232712AbjHBHdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:33:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbjHBHcU (ORCPT
+        with ESMTP id S232220AbjHBHcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:32:20 -0400
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1131EA
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:32:18 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 0021224E03C;
-        Wed,  2 Aug 2023 15:32:16 +0800 (CST)
-Received: from EXMBX171.cuchost.com (172.16.6.91) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
- 2023 15:32:17 +0800
-Received: from [192.168.125.127] (183.27.98.54) by EXMBX171.cuchost.com
- (172.16.6.91) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 2 Aug
- 2023 15:32:15 +0800
-Message-ID: <d64874cb-8628-a6d2-d2f4-8af4d0ebf8b2@starfivetech.com>
-Date:   Wed, 2 Aug 2023 15:32:15 +0800
+        Wed, 2 Aug 2023 03:32:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED4C11B;
+        Wed,  2 Aug 2023 00:32:43 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CEF0C61820;
+        Wed,  2 Aug 2023 07:32:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9D1AC433C7;
+        Wed,  2 Aug 2023 07:32:38 +0000 (UTC)
+Message-ID: <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl>
+Date:   Wed, 2 Aug 2023 09:32:37 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v1] riscv: Using TOOLCHAIN_HAS_ZIHINTPAUSE marco replace
- zihintpause
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
 Content-Language: en-US
-To:     Conor Dooley <conor.dooley@microchip.com>
-CC:     Conor Dooley <conor@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Dao Lu <daolu@rivosinc.com>,
-        "Heiko Stuebner" <heiko@sntech.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Palmer Dabbelt" <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        Mason Huo <mason.huo@starfivetech.com>
-References: <20230802064215.31111-1-minda.chen@starfivetech.com>
- <20230802-sharpness-spoon-f9b8804fb66f@wendy>
-From:   Minda Chen <minda.chen@starfivetech.com>
-In-Reply-To: <20230802-sharpness-spoon-f9b8804fb66f@wendy>
-Content-Type: text/plain; charset="UTF-8"
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+In-Reply-To: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [183.27.98.54]
-X-ClientProxiedBy: EXCAS061.cuchost.com (172.16.6.21) To EXMBX171.cuchost.com
- (172.16.6.91)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SCC_BODY_URI_ONLY,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi all,
 
+On 25/07/2023 08:12, Shengjiu Wang wrote:
+> Audio signal processing has the requirement for memory to
+> memory similar as Video.
+> 
+> This patch is to add this support in v4l2 framework, defined
+> new buffer type V4L2_BUF_TYPE_AUDIO_CAPTURE and
+> V4L2_BUF_TYPE_AUDIO_OUTPUT, defined new format v4l2_audio_format
+> for audio case usage.
+> 
+> The created audio device is named "/dev/audioX".
+> 
+> And add memory to memory support for two kinds of i.MX ASRC
+> module
 
-On 2023/8/2 14:54, Conor Dooley wrote:
-> Hey Minda,
+Before I spend time on this: are the audio maintainers OK with doing
+this in V4L2?
+
+I do want to have a clear statement on this as it is not something I
+can decide.
+
+Regards,
+
+	Hans
+
 > 
-> On Wed, Aug 02, 2023 at 02:42:15PM +0800, Minda Chen wrote:
->> Actually it is a part of Conor's
->> commit aae538cd03bc ("riscv: fix detection of toolchain
->> Zihintpause support").
->> It is looks like a merge issue.
+> changes in v2:
+> - decouple the implementation in v4l2 and ALSA
+> - implement the memory to memory driver as a platfrom driver
+>   and move it to driver/media
+> - move fsl_asrc_common.h to include/sound folder
 > 
-> Yup, spot on.
+> Shengjiu Wang (7):
+>   ASoC: fsl_asrc: define functions for memory to memory usage
+>   ASoC: fsl_easrc: define functions for memory to memory usage
+>   ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
+>   media: v4l2: Add audio capture and output support
+>   media: imx: fsl_asrc: Add memory to memory driver
+>   ASoC: fsl_asrc: register m2m platform device
+>   ASoC: fsl_easrc: register m2m platform device
 > 
->> Samuel's
->> commit 0b1d60d6dd9e ("riscv: Fix build with
->> CONFIG_CC_OPTIMIZE_FOR_SIZE=y") do not base on Conor's commit and
->> revert to __riscv_zihintpause. So this patch can fix it.
->> 
->> Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
+>  .../media/common/videobuf2/videobuf2-v4l2.c   |   4 +
+>  drivers/media/platform/nxp/Kconfig            |  12 +
+>  drivers/media/platform/nxp/Makefile           |   1 +
+>  drivers/media/platform/nxp/fsl_asrc_m2m.c     | 962 ++++++++++++++++++
+>  drivers/media/v4l2-core/v4l2-dev.c            |  17 +
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |  52 +
+>  include/media/v4l2-dev.h                      |   2 +
+>  include/media/v4l2-ioctl.h                    |  34 +
+>  .../fsl => include/sound}/fsl_asrc_common.h   |  48 +
+>  include/uapi/linux/videodev2.h                |  19 +
+>  sound/soc/fsl/fsl_asrc.c                      | 150 +++
+>  sound/soc/fsl/fsl_asrc.h                      |   4 +-
+>  sound/soc/fsl/fsl_asrc_dma.c                  |   2 +-
+>  sound/soc/fsl/fsl_easrc.c                     | 227 +++++
+>  sound/soc/fsl/fsl_easrc.h                     |   8 +-
+>  15 files changed, 1539 insertions(+), 3 deletions(-)
+>  create mode 100644 drivers/media/platform/nxp/fsl_asrc_m2m.c
+>  rename {sound/soc/fsl => include/sound}/fsl_asrc_common.h (63%)
 > 
-> Did you actually manage to trigger this, or was this by inspection?
-> clang-15 + binutils 2.35 was, IIRC, how we spotted this because that's
-> what the clang-built-linux CI uses to test the LTS kernels from before
-> LLVM's IAS was supported for RISC-V. Seemingly all that needs to be
-> satisfied there is that zihintpause doesn't appear in -march so this has
-> gone unnoticed.
-> 
-> Fixes: 3c349eacc559 ("Merge patch "riscv: Fix build with CONFIG_CC_OPTIMIZE_FOR_SIZE=y"")
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> 
-> Thanks,
-> Conor.
-> 
-Thanks, Conor. I found this just by inspection. I found a issue that vdso.so call cpu_relax
-cause application core dump in kernel 6.1.31. I need Samuel'patch to fix this. And I search the log
-of processor.h found this issue.
->> ---
->>  arch/riscv/include/asm/vdso/processor.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/arch/riscv/include/asm/vdso/processor.h b/arch/riscv/include/asm/vdso/processor.h
->> index 14f5d27783b8..96b65a5396df 100644
->> --- a/arch/riscv/include/asm/vdso/processor.h
->> +++ b/arch/riscv/include/asm/vdso/processor.h
->> @@ -14,7 +14,7 @@ static inline void cpu_relax(void)
->>  	__asm__ __volatile__ ("div %0, %0, zero" : "=r" (dummy));
->>  #endif
->>  
->> -#ifdef __riscv_zihintpause
->> +#ifdef CONFIG_TOOLCHAIN_HAS_ZIHINTPAUSE
->>  	/*
->>  	 * Reduce instruction retirement.
->>  	 * This assumes the PC changes.
->> -- 
->> 2.17.1
->> 
+
