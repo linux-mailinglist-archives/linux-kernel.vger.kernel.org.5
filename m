@@ -2,221 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC3C76D75E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7BF76D763
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbjHBTBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        id S231690AbjHBTGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231690AbjHBTBp (ORCPT
+        with ESMTP id S229589AbjHBTGK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:01:45 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AC51BF1
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:01:43 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99c4923195dso20654066b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 12:01:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691002901; x=1691607701;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/uiXLFyqi0TndokC8iIHz7AB81dmdZPxdDe2lbHBIzg=;
-        b=xH5Jx9JeUwB4GKaJHzrgaIT/rj7R0LF5NIlk0zUNeO3OO5E+5ha1rO3JAwqGYNwwKK
-         a5Hk6WyByeQ4psaheJn/mUzrEVZTmtfgmxf57fcTUmSWE1cFBpwL/UBSE1pACxpH535t
-         vTZAufALnNiIqoL5TibeGRK4Yy5ysdveiFnn3f+pnRrFwSVsWoaaq6H9MB1/TxsIiSUJ
-         yPtc3UlHszp5DozN9hmfCR1Xbe9u+wIg958zyp12OtPgi3rTNs/+LSw132hs3bmZJhCF
-         iBlC+ZfFBfhwxT3QtZQhGbPOhEDpoQ1eOQ+33xHIwYnAndFBS2o51vjSmTfQPWKIHq3n
-         43Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691002901; x=1691607701;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/uiXLFyqi0TndokC8iIHz7AB81dmdZPxdDe2lbHBIzg=;
-        b=CVGYuRO0MxQgPS0PFtxrxVxyrdS9vIS9BvHKe/MEOxPkl7Ail15I/Ad9RhD3tc8yqG
-         mhozpZo7dQg268BR4YqUINqh/hxbaXYeNX4aC0YvPrmk/3XmzCX4O3oPr0Cgh05jV+HQ
-         Wn4sOQP2OQYGaUul6lo9vP11Y7kCsf8MM0zR6l9PSudwaa1Fi95hKrFkrQSs90Myuz+p
-         jK8g9hfHGLag+xKefzMOwIPLry5d9jwdyz+xpulO8tr0eGQywP8hXvDFu4RINfOL+uz5
-         +BpCOZZ0JAMaJQQWvJyBvyfy/JzOqenbZkpEx7QaGEkctj5LgwGVeAfjmlbIX5/K0630
-         S0nQ==
-X-Gm-Message-State: ABy/qLaPetRLOhm39MOuGhvUqpzC7izfrTnK3HnFP51WX+Gvt5oG7tkf
-        vg6okuIE8Jmg9nEM8ZLfZQXFow==
-X-Google-Smtp-Source: APBJJlE0H43SsQYhz99YLYTzxIw5ENQZXyxljRBlHAGwbqHbO06ZdJLEg9WMvEDC4tAwWU+YeOVzcQ==
-X-Received: by 2002:a17:906:31c2:b0:98e:419b:4cbc with SMTP id f2-20020a17090631c200b0098e419b4cbcmr5254910ejf.12.1691002901628;
-        Wed, 02 Aug 2023 12:01:41 -0700 (PDT)
-Received: from [10.10.15.130] ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id ks18-20020a170906f85200b00977ca5de275sm9663559ejb.13.2023.08.02.12.01.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 12:01:41 -0700 (PDT)
-Message-ID: <3ddc1074-a428-c253-d630-2257de28ade2@linaro.org>
-Date:   Wed, 2 Aug 2023 22:01:39 +0300
+        Wed, 2 Aug 2023 15:06:10 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F247A2129;
+        Wed,  2 Aug 2023 12:06:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7F37061AC3;
+        Wed,  2 Aug 2023 19:06:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69053C433C8;
+        Wed,  2 Aug 2023 19:06:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691003168;
+        bh=R0/Y/OgJC88hx/QGYFFgUJRv81sXFf1ZczNdRm7daqw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=KOOusFW+uebA8FXjwEmlh+Nd3frDaJQtci1gV7iasXPYsXDDAoDmgrq73Y2MzzyVg
+         vAphdNYEWuXni7ENa4e4VakRc95edEuNwXIJ7Q6w6IJhGiC7jZBy/2Oqeihcd2yz2e
+         fZWuP452I2OLpG9vs6+cc3jyyoaK4Z6e/4HW4VOLCqbnrRfXA5vXDsfqoYKj+Fn4PK
+         8VzSmjHw+eCEYUVg4Uhc2DMul1EdBeLYifQHi0+XzkibNwG/57TsTwwA9HErhcmrsC
+         kd/uES1wXLtD8UGH1JMrFTJA98m7cjGpWpHZhtCYEW8EtUNJe7AZ66OKP9/AAyO765
+         1maO9DwLPofEA==
+Date:   Wed, 2 Aug 2023 14:06:06 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     mani@kernel.org, bhelgaas@google.com, devicetree@vger.kernel.org,
+        gustavo.pimentel@synopsys.com, imx@lists.linux.dev, kw@linux.com,
+        leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, lorenzo.pieralisi@arm.com,
+        lpieralisi@kernel.org, manivannan.sadhasivam@linaro.org,
+        minghuan.lian@nxp.com, mingkai.hu@nxp.com, robh+dt@kernel.org,
+        roy.zang@nxp.com, shawnguo@kernel.org, zhiqiang.hou@nxp.com
+Subject: Re: [PATCH v7 1/2] PCI: dwc: Implement general suspend/resume
+ functionality for L2/L3 transitions
+Message-ID: <20230802190606.GA64564@bhelgaas>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/4] drm: allow specifying default subtype for the DP
- subconnector property
-Content-Language: en-GB
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Simon Ser <contact@emersion.fr>, Janne Grunau <j@jannau.net>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
-References: <20230729004913.215872-1-dmitry.baryshkov@linaro.org>
- <20230729004913.215872-2-dmitry.baryshkov@linaro.org>
- <20230802185454.GA29718@pendragon.ideasonboard.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230802185454.GA29718@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZMqj/4Yc6U5YqmHJ@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2023 21:54, Laurent Pinchart wrote:
-> Hi Dmitry,
-> 
-> Thank you for the patch.
-> 
-> On Sat, Jul 29, 2023 at 03:49:10AM +0300, Dmitry Baryshkov wrote:
->> In the embedded usecases the default subtype depends on the bridge
->> chain, so it is easier to specify the subtype at the proprety attachment
-> 
-> s/proprety/property/
-> 
->> type rather than specifying it later.
-> 
-> Did you mean s/type/time/ ?
-> 
-> I think I understand why you need this, looking at patch 2/4, but the
-> commit message isn't very clear. It would benefit from being reworded.
+On Wed, Aug 02, 2023 at 02:44:52PM -0400, Frank Li wrote:
+> On Wed, Aug 02, 2023 at 11:31:38AM -0500, Bjorn Helgaas wrote:
+> > On Wed, Aug 02, 2023 at 11:57:47AM -0400, Frank Li wrote:
+> > > Introduce helper function dw_pcie_get_ltssm to retrieve SMLH_LTSS_STATE.
+> > > Add callback .pme_turn_off and .exit_from_l2 for platform specific PME
+> > > handling.
 
-Ack, thanks for the feedback.
+> > > +	 * PCI Express Base Specification Rev 4.0 Section 5.3.3.2.1 PME
+> > > +	 * Synchronization Recommends 1ms to 10ms timeout to check L2 ready.
+> > > +	 */
+> > > +	ret = read_poll_timeout(dw_pcie_get_ltssm, val, val == DW_PCIE_LTSSM_L2_IDLE,
+> > > +				1000, 10000, false, pci);
 
+> > It would really be great to have a #define for this since the bare
+> > numbers are not very meaningful and they're not specific to DWC so a
+> > #define would let us find similar situations in other drivers.
 > 
->> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> ---
->>   drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c              | 3 ++-
->>   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c | 3 ++-
->>   drivers/gpu/drm/drm_connector.c                             | 6 ++++--
->>   drivers/gpu/drm/i915/display/intel_dp.c                     | 3 ++-
->>   include/drm/drm_connector.h                                 | 3 ++-
->>   5 files changed, 12 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
->> index d34037b85cf8..c18459ecd4be 100644
->> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
->> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_connectors.c
->> @@ -2022,7 +2022,8 @@ amdgpu_connector_add(struct amdgpu_device *adev,
->>   
->>   	if (connector_type == DRM_MODE_CONNECTOR_DisplayPort ||
->>   	    connector_type == DRM_MODE_CONNECTOR_eDP) {
->> -		drm_connector_attach_dp_subconnector_property(&amdgpu_connector->base);
->> +		drm_connector_attach_dp_subconnector_property(&amdgpu_connector->base,
->> +							      DRM_MODE_SUBCONNECTOR_Unknown);
->>   	}
->>   
->>   	return;
->> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
->> index 943959012d04..297321f0199e 100644
->> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
->> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
->> @@ -759,7 +759,8 @@ void amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
->>   	drm_dp_mst_topology_mgr_init(&aconnector->mst_mgr, adev_to_drm(dm->adev),
->>   				     &aconnector->dm_dp_aux.aux, 16, 4, aconnector->connector_id);
->>   
->> -	drm_connector_attach_dp_subconnector_property(&aconnector->base);
->> +	drm_connector_attach_dp_subconnector_property(&aconnector->base,
->> +						      DRM_MODE_SUBCONNECTOR_Unknown);
->>   }
->>   
->>   int dm_mst_get_pbn_divider(struct dc_link *link)
->> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
->> index a3d3e7dc08b2..a6066e4a5e9a 100644
->> --- a/drivers/gpu/drm/drm_connector.c
->> +++ b/drivers/gpu/drm/drm_connector.c
->> @@ -1577,10 +1577,12 @@ EXPORT_SYMBOL(drm_mode_create_dvi_i_properties);
->>   /**
->>    * drm_connector_attach_dp_subconnector_property - create subconnector property for DP
->>    * @connector: drm_connector to attach property
->> + * @subtype: initial value for the subconnector type
->>    *
->>    * Called by a driver when DP connector is created.
->>    */
->> -void drm_connector_attach_dp_subconnector_property(struct drm_connector *connector)
->> +void drm_connector_attach_dp_subconnector_property(struct drm_connector *connector,
->> +						   enum drm_mode_subconnector subtype)
->>   {
->>   	struct drm_mode_config *mode_config = &connector->dev->mode_config;
->>   
->> @@ -1594,7 +1596,7 @@ void drm_connector_attach_dp_subconnector_property(struct drm_connector *connect
->>   
->>   	drm_object_attach_property(&connector->base,
->>   				   mode_config->dp_subconnector_property,
->> -				   DRM_MODE_SUBCONNECTOR_Unknown);
->> +				   subtype);
->>   }
->>   EXPORT_SYMBOL(drm_connector_attach_dp_subconnector_property);
->>   
->> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
->> index 474785110662..5819105187f6 100644
->> --- a/drivers/gpu/drm/i915/display/intel_dp.c
->> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
->> @@ -5391,7 +5391,8 @@ intel_dp_add_properties(struct intel_dp *intel_dp, struct drm_connector *connect
->>   	enum port port = dp_to_dig_port(intel_dp)->base.port;
->>   
->>   	if (!intel_dp_is_edp(intel_dp))
->> -		drm_connector_attach_dp_subconnector_property(connector);
->> +		drm_connector_attach_dp_subconnector_property(connector,
->> +							      DRM_MODE_SUBCONNECTOR_Unknown);
->>   
->>   	if (!IS_G4X(dev_priv) && port != PORT_A)
->>   		intel_attach_force_audio_property(connector);
->> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
->> index 5a8115dca359..a130a78f6e0f 100644
->> --- a/include/drm/drm_connector.h
->> +++ b/include/drm/drm_connector.h
->> @@ -1990,7 +1990,8 @@ const char *drm_get_hdcp_content_type_name(int val);
->>   int drm_get_tv_mode_from_name(const char *name, size_t len);
->>   
->>   int drm_mode_create_dvi_i_properties(struct drm_device *dev);
->> -void drm_connector_attach_dp_subconnector_property(struct drm_connector *connector);
->> +void drm_connector_attach_dp_subconnector_property(struct drm_connector *connector,
->> +						   enum drm_mode_subconnector subtype);
->>   
->>   int drm_mode_create_tv_margin_properties(struct drm_device *dev);
->>   int drm_mode_create_tv_properties_legacy(struct drm_device *dev,
+> how about define as
 > 
+> #define PCI_PME_TO_L2_TIMEOUT 10000
+> 
+> ret = read_poll_timeout(dw_pcie_get_ltssm, val, val == DW_PCIE_LTSSM_L2_IDLE,
+>                            PCI_PME_TO_L2_TIMEOUT/10, PCI_PME_TO_L2_TIMEOUT, false, pci);
+> 
+> where is good place PCI_PME_TO_L2_TIMEOUT in?
+> 
+> pcie-designware.h or pci.h?
 
--- 
-With best wishes
-Dmitry
+I think drivers/pci/pci.h since it's only useful inside drivers/pci,
+and it's not specific to dwc.
 
+Maybe "PCIE_" (not "PCI_") since this is a PCIe-specific thing.
+You could put it next to PCIE_LINK_RETRAIN_TIMEOUT_MS and add a "_US"
+suffix so we know what the units are.
+
+Bjorn
