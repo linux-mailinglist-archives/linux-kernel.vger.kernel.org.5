@@ -2,118 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E87376D1CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:24:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC3576D1DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235011AbjHBPYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:24:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43540 "EHLO
+        id S234135AbjHBP03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:26:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235302AbjHBPXG (ORCPT
+        with ESMTP id S235119AbjHBP0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:23:06 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDAD30FA
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:19:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Wed, 2 Aug 2023 11:26:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD06DA1;
+        Wed,  2 Aug 2023 08:23:37 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E5D0E1F8A4;
-        Wed,  2 Aug 2023 15:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1690989491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pKIweQamxfw0ZZ0aSOi6JqFL+eQxAp+j1VDPErEK1gA=;
-        b=KJRZPyx+5B/Ak0fQd2ZrAyISKSzXy2B+oMdHxqCaPaBRFNwVPz7+F2cTybcjx+QWJIWHLY
-        F2rhlPeoEWnZKxdoh6rFW2G2mMXrYTtIk+gedFc/ka+Wg7e7LAX61toOdjJdSLDwHx6K3V
-        YrDsLFYcpFZs2v/UBPRag+e+BsckDy4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1690989491;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pKIweQamxfw0ZZ0aSOi6JqFL+eQxAp+j1VDPErEK1gA=;
-        b=L2RlHRWU0ZWPXiqwbtP1Ze5XJSUg75pgzizNBuqHtuM7BkMJzrv7bkY13k7N/roXmcknDP
-        rbqY4Mu+kGq6nyDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D073313919;
-        Wed,  2 Aug 2023 15:18:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id kRCWMbNzymRnKAAAMHmgww
-        (envelope-from <chrubis@suse.cz>); Wed, 02 Aug 2023 15:18:11 +0000
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     ltp@lists.linux.it, Cyril Hrubis <chrubis@suse.cz>,
-        Jiri Bohac <jbohac@suse.cz>, Petr Vorel <pvorel@suse.cz>
-Subject: [PATCH 2/2 RESEND] sched/rt: sysctl_sched_rr_timeslice show default timeslice after reset
-Date:   Wed,  2 Aug 2023 17:19:06 +0200
-Message-ID: <20230802151906.25258-3-chrubis@suse.cz>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230802151906.25258-1-chrubis@suse.cz>
-References: <20230802151906.25258-1-chrubis@suse.cz>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9D3C3619D9;
+        Wed,  2 Aug 2023 15:23:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA495C433C7;
+        Wed,  2 Aug 2023 15:23:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690989816;
+        bh=03Ss9QaH4LJUp+idfEBSD6LOlA3Q9HWXg0H9LoXdUeI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JdW/FfP2uNxyWqABdFtAYnBz/ABJ/a3oxBZbSM3N8PWw+wT4wJc1z/8C5t2lqDIdL
+         IF2OHGj1eW+ion3J6Oq7RDPu+D6QH/N+fwLl75z7CQA5+GzjlAmLwNjCHtZsR9QlYq
+         e0UG/mN9CU5+ZTiT3kx1Ocr9Fz839FcN6lr/2yMLru8Cy7V3sr0Jw5m2Or5zLleJwq
+         DKNsmmH18x91M+m44Z5q7xqluiiLavHsPPh/nKVoCqZmLhLUD7yimWgzK2rC0FYOMQ
+         F9anU5Ak36lnR+MeX7MjnbnSNw2PfANgkcLoyG1dS/ViXw5eatZF8FZmk0a66jfHw1
+         Mw/Rjxcm3XxNw==
+Date:   Wed, 2 Aug 2023 17:23:31 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 2/4][next] i40e: Replace one-element array with
+ flex-array member in struct i40e_profile_segment
+Message-ID: <ZMp080Vxne1eKtdK@kernel.org>
+References: <cover.1690938732.git.gustavoars@kernel.org>
+ <52da391229a45fe3dbd5c43167cdb0701a17a361.1690938732.git.gustavoars@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <52da391229a45fe3dbd5c43167cdb0701a17a361.1690938732.git.gustavoars@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sched_rr_timeslice can be reset to default by writing value that is
-<= 0. However after reading from this file we always got the last value
-written, which is not useful at all.
+On Tue, Aug 01, 2023 at 11:05:59PM -0600, Gustavo A. R. Silva wrote:
+> One-element and zero-length arrays are deprecated. So, replace
+> one-element array in struct i40e_profile_segment with flexible-array
+> member.
+> 
+> This results in no differences in binary output.
+> 
+> Link: https://github.com/KSPP/linux/issues/335
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-$ echo -1 > /proc/sys/kernel/sched_rr_timeslice_ms
-$ cat /proc/sys/kernel/sched_rr_timeslice_ms
--1
-
-Fix this by setting the variable that holds the sysctl file value to the
-jiffies_to_msecs(RR_TIMESLICE) in case that <= 0 value was written.
-
-CC: Jiri Bohac <jbohac@suse.cz>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Acked-by: Mel Gorman <mgorman@suse.de>
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
-Tested-by: Petr Vorel <pvorel@suse.cz>
----
- kernel/sched/rt.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 185d3d749f6b..0597ba0f85ff 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -3062,6 +3062,9 @@ static int sched_rr_handler(struct ctl_table *table, int write, void *buffer,
- 		sched_rr_timeslice =
- 			sysctl_sched_rr_timeslice <= 0 ? RR_TIMESLICE :
- 			msecs_to_jiffies(sysctl_sched_rr_timeslice);
-+
-+		if (sysctl_sched_rr_timeslice <= 0)
-+			sysctl_sched_rr_timeslice = jiffies_to_msecs(RR_TIMESLICE);
- 	}
- 	mutex_unlock(&mutex);
- 
--- 
-2.41.0
+Reviewed-by: Simon Horman <horms@kernel.org>
 
