@@ -2,113 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5805576CA5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:04:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD5F76CA6F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbjHBKEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
+        id S234218AbjHBKEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:04:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233018AbjHBKE1 (ORCPT
+        with ESMTP id S233978AbjHBKEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:04:27 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818EBB2;
-        Wed,  2 Aug 2023 03:04:26 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-686bc261111so4807797b3a.3;
-        Wed, 02 Aug 2023 03:04:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690970666; x=1691575466;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jzdlr2mIcU2IrFz9o3Jf4YUjcTGYzuN5We6AMeqKFnM=;
-        b=e0A+IMR4AQ69oBEH2PJ3vOWNecXFxEcr7qFduFBebgjyFo/sQDQvHu5QC18G567l9P
-         wXBGYZ5gSQuuqopSKqJZMyjQqMuAK3sUmf3J5tO3RXgK8bHckDXyiv6bnH8+MGic7xTG
-         LiH3GyxzC6EYqefD3tC2GjuB7nALQYZPEaXjkHNUxCrDm8Sh9rarVZijiPaf+aezchZx
-         /01US6LpZsPrV6dYm6BZ0y2IsjGRoSUiHMHjW8o3JQFgfoTRFk+wlyGDoGU5LfeDizoO
-         SUwz6orr/dfou3oyzIPdEIwpjIjyfw7FhpLk4MwYKzT9ubMn0IdTTLkSLmNkWHaYGDpH
-         f2ZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690970666; x=1691575466;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jzdlr2mIcU2IrFz9o3Jf4YUjcTGYzuN5We6AMeqKFnM=;
-        b=NJGmxZt4GDTLYMy0zHvrtG95KV0C9htFCs1b3WA44FgVkZy8snApFvqHFUHct1c91/
-         gEAVXWVou8HxAd7e8XZVOebkaBuqMUIJaIotNo3nApi/FZuLjLcq2JrL4dzppnnIcu8g
-         S1Z7Y51F6nQbGTQwNhWCZrjdQMRqXZB44rLrJyD1BYodWC2jv0K1b2xLLxm2t/gdHBZL
-         WFVt14gD8LJtcQCqYwVrhCSOhaTH49k4lp5WWBxjmiyA34BS99JAIR0Ou2ptEjsROc6Q
-         YQE0P3RK/oiAYAld68f15vwHiYBq6EDMJ8LU/yJaEDF3ZpvVK9RLYfDv47DO1qfM+WJJ
-         QzWw==
-X-Gm-Message-State: ABy/qLZKLAYWrHthg6TRGJkjwJeH5IvlUqG/ULUfXNqC1K/BIUXyQLon
-        UEDUivZoLvslBnfgiZEbTZE=
-X-Google-Smtp-Source: APBJJlGonZPiBMK7/fd5/8vi7ZRncqWa4B1zav+8WCXhfN2F1WjwSMGZnigR6KOpwFBPpoHzeQfiUg==
-X-Received: by 2002:a05:6a21:338c:b0:13c:b7e9:7a22 with SMTP id yy12-20020a056a21338c00b0013cb7e97a22mr15598546pzb.13.1690970665781;
-        Wed, 02 Aug 2023 03:04:25 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id c24-20020aa78c18000000b0067b643b814csm10771972pfd.6.2023.08.02.03.04.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 03:04:25 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id E10748197C37; Wed,  2 Aug 2023 17:04:21 +0700 (WIB)
-Date:   Wed, 2 Aug 2023 17:04:21 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 000/228] 6.1.43-rc1 review
-Message-ID: <ZMoqJXlKE/Z3zIEx@debian.me>
-References: <20230801091922.799813980@linuxfoundation.org>
+        Wed, 2 Aug 2023 06:04:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE5919B9;
+        Wed,  2 Aug 2023 03:04:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690970688; x=1722506688;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=PzZF7rmesK94EuU0OFUxjXjzDJ2Wb9i4El3T2lkjt20=;
+  b=OcBDq3yaG6IfKHn/iFhm/lYjfncbHCnIs3LLtDXI53dqr3CC+zuz2s47
+   mNNQQzIaz63Rt+LOGqZDQ4jYhFPYKB4f5GvFWgG7MWKVP2Xixw6qYdmVc
+   GVs/BCSCjw3rL9eSg7bRPkzZoD2FfqdWKGSwJCwhBOJZGOgPlr3elBIH0
+   82/fwavfaP4NUAXzOzR981WLxcSreVc/B565zQGYfbcGogI8Crf5buM54
+   9xRU9BAMN+tTaX2VXPteJ2z9SWfCxnffgMtvh/uHw2oNDseHVmHHfu5hl
+   Tj5bNBIL1ngMdnAcEsGdWoXO0tNYq+dtekuwk8g7eSlU7WP2x0riwSaRk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="367001579"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="367001579"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 03:04:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="679014600"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="679014600"
+Received: from osalyk-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.62.215])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 03:04:42 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Ziqi Zhao <astrajoan@yahoo.com>,
+        syzbot+622bba18029bcde672e1@syzkaller.appspotmail.com,
+        astrajoan@yahoo.com, airlied@gmail.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, ivan.orlov0322@gmail.com,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        skhan@linuxfoundation.org, tzimmermann@suse.de
+Cc:     davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+        jacob.e.keller@intel.com, jiri@nvidia.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH v2] drm/modes: Fix division by zero error
+In-Reply-To: <20230801215538.105255-1-astrajoan@yahoo.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <00000000000034cf5d05fea52dd4@google.com>
+ <20230801215538.105255-1-astrajoan@yahoo.com>
+Date:   Wed, 02 Aug 2023 13:04:39 +0300
+Message-ID: <87sf91vjyg.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wKNwIsNqkSXovGwe"
-Content-Disposition: inline
-In-Reply-To: <20230801091922.799813980@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 01 Aug 2023, Ziqi Zhao <astrajoan@yahoo.com> wrote:
+> In the bug reported by Syzbot, the variable `den == (1 << 22)` and
+> `mode->vscan == (1 << 10)`, causing the multiplication to overflow and
+> accidentally make `den == 0`. To prevent any chance of overflow, we
+> replace `num` and `den` with 64-bit unsigned integers, and explicitly
+> check if the divisor `den` will overflow. If so, we employ full 64-bit
+> division with rounding; otherwise we keep the 64-bit to 32-bit division
+> that could potentially be better optimized.
+>
+> In order to minimize the performance overhead, the overflow check for
+> `den` is wrapped with an `unlikely` condition. Please let me know if
+> this usage is appropriate.
+>
+> Reported-by: syzbot+622bba18029bcde672e1@syzkaller.appspotmail.com
+> Signed-off-by: Ziqi Zhao <astrajoan@yahoo.com>
 
---wKNwIsNqkSXovGwe
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Come to think of it, maybe the subject should mention "fix overflow"
+instead, but no biggie.
 
-On Tue, Aug 01, 2023 at 11:17:38AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.43 release.
-> There are 228 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> ---
+> V1 -> V2: address style comments suggested by Jani Nikula
+> <jani.nikula@linux.intel.com>
+>
+>  drivers/gpu/drm/drm_modes.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_modes.c b/drivers/gpu/drm/drm_modes.c
+> index ac9a406250c5..137101960690 100644
+> --- a/drivers/gpu/drm/drm_modes.c
+> +++ b/drivers/gpu/drm/drm_modes.c
+> @@ -1285,13 +1285,13 @@ EXPORT_SYMBOL(drm_mode_set_name);
+>   */
+>  int drm_mode_vrefresh(const struct drm_display_mode *mode)
+>  {
+> -	unsigned int num, den;
+> +	u64 num, den;
+>  
+>  	if (mode->htotal == 0 || mode->vtotal == 0)
+>  		return 0;
+>  
+> -	num = mode->clock;
+> -	den = mode->htotal * mode->vtotal;
+> +	num = mul_u32_u32(mode->clock, 1000);
+> +	den = mul_u32_u32(mode->htotal, mode->vtotal);
+>  
+>  	if (mode->flags & DRM_MODE_FLAG_INTERLACE)
+>  		num *= 2;
+> @@ -1300,7 +1300,10 @@ int drm_mode_vrefresh(const struct drm_display_mode *mode)
+>  	if (mode->vscan > 1)
+>  		den *= mode->vscan;
+>  
+> -	return DIV_ROUND_CLOSEST_ULL(mul_u32_u32(num, 1000), den);
+> +	if (unlikely(den > UINT_MAX))
+> +		return DIV64_U64_ROUND_CLOSEST(num, den);
+> +
+> +	return DIV_ROUND_CLOSEST_ULL(num, (u32) den);
+>  }
+>  EXPORT_SYMBOL(drm_mode_vrefresh);
 
---=20
-An old man doll... just what I always wanted! - Clara
-
---wKNwIsNqkSXovGwe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZMoqGwAKCRD2uYlJVVFO
-o/7zAQCS7CnZISr6lL2mKcyEz5apiccehhYMQWs8cNZZcWfLZwD/d1fCvAmWTQjk
-pKjMathiJyOsJm5lW1eN44F21g4vSQU=
-=Hspl
------END PGP SIGNATURE-----
-
---wKNwIsNqkSXovGwe--
+-- 
+Jani Nikula, Intel Open Source Graphics Center
