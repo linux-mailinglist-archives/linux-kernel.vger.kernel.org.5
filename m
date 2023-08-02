@@ -2,101 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A96F76D6E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0CA76D6E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbjHBScb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
+        id S229737AbjHBSgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbjHBSc3 (ORCPT
+        with ESMTP id S229632AbjHBSgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:32:29 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB80A1724;
-        Wed,  2 Aug 2023 11:32:28 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6A53761AA9;
-        Wed,  2 Aug 2023 18:32:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAE1BC433C7;
-        Wed,  2 Aug 2023 18:32:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691001147;
-        bh=835Hv4QBvbzeO4Zgwkya1w0YOfQH/0t6IhAjHwIhDMU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZVNjGtFaE0zjnFTk9s+HwpDFCo/tpQHAZJ84BNz6ff88tcX10hojL68VkjR+ohlry
-         u96A0/ygy4xIFByKUAL91b2N4ShiMoKsScqhl+PxOUET/g/rbMcI8teRAadrGMCV4g
-         rzmEJi5QW+tU9FtkrzqDcbomYmGrZoxQsfmi5AG5yPQo1o1Ph5XpoK2/tPz+/ap/CK
-         PgAE5xCCXICBgDN2z7nupHjl1natQOsi2YTdCrfA+DN13WbuywRnoLlgXqA3hLN7dc
-         LEGYIo4Z3dx819TRF0fpk3g02H6afmE65wgqYasJv2CPdqRbN30+kJdFB19QYigh0s
-         kT2ajEkWg0Z3g==
-Date:   Wed, 2 Aug 2023 19:32:21 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH] serial: core: Fix serial_base_match() after fixing
- controller port name
-Message-ID: <1aac1375-e9f8-4fda-9f07-a4cc7cf23142@sirena.org.uk>
-References: <20230802114846.21899-1-tony@atomide.com>
+        Wed, 2 Aug 2023 14:36:19 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970BE19AD
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:36:18 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbc63c2e84so1620785e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:36:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1691001377; x=1691606177;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TAs2W0UQPvG+IMRnbk4btgVlH770IjvAYL2tx8M/WQo=;
+        b=Y0WhxoV/BzAocRJ6IJmR0uV2Pq0+TNdd0NezQ/SRyF+Kbz8K4DGauZiFY/NktvtwR0
+         1IBGENdk8cwRnPqNa33a+uZXNT9V4HdV0yfHr/VWbEekJctSBupAqMset2u9zbJOZ976
+         bhsank+kn1yQpM9JJ4BooL1vewrYaI2dLDP9umlvIPMbfuAXNtzSR00hhscVorvRA+lQ
+         KMhZqxbj/QJ9zVLnG6kFquAUgKvNJOBI/kNU8+QYQB0Q29xGXT8v9pYI/G/JPWA5GriJ
+         RjRHb9hVHKjvzAGFIWl3Q+FkXr9reiTFWq+TZQUxmug9fhUJyfVc62Sh4R08PiOuDd1G
+         /JSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691001377; x=1691606177;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TAs2W0UQPvG+IMRnbk4btgVlH770IjvAYL2tx8M/WQo=;
+        b=BOwDwOiwpf1yQe6ulemJU0Ohy7hHMOfYXCUKVQNXMsL4FS75pQoop5swZdosfCXz+H
+         3rNr/YaoLGxNVIKduOuCARlduRMshCWgGZrNltasKd57l+G8pilyq/EW4tJaPogyAggr
+         WD4Fys62Gftm/S65gsRyRX8CdaSQXzrwN49jKRaAxceTXSmptV/BDw7eGrGaH6x0mgOz
+         sF+gJITINbsttRfwWWM7lVmoJi4L4gfLi3ezCqFq1RMWvHAXWFM5Ggf9rIJVxH910Dg7
+         4/rLPQjZEcpHL9BCnCtT+i/7rWdLODfGKRHG8BIVjTindqoTjIpyu+tZLilCGhWlxfSX
+         CsPQ==
+X-Gm-Message-State: ABy/qLZCMKzOFt6g9ZCCEXpKG348e6z32IdJgciO9ZOSb8cbpt3OmMnK
+        ys95jxW98nrjBHIfnES2xmo=
+X-Google-Smtp-Source: APBJJlFhUQqZe+Xo9YYnuL4IdIpOPvWU+jVICi15RIjPf7K8uwY+77EYoazV0uQThsil71PmxVQrgA==
+X-Received: by 2002:adf:ce8a:0:b0:317:5c18:f31d with SMTP id r10-20020adfce8a000000b003175c18f31dmr5318090wrn.35.1691001376650;
+        Wed, 02 Aug 2023 11:36:16 -0700 (PDT)
+Received: from localhost.localdomain (host31-52-141-59.range31-52.btcentralplus.com. [31.52.141.59])
+        by smtp.gmail.com with ESMTPSA id z1-20020adfd0c1000000b0031424f4ef1dsm19839681wrh.19.2023.08.02.11.36.16
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 02 Aug 2023 11:36:16 -0700 (PDT)
+From:   Levi Yun <ppbuk5246@gmail.com>
+To:     rppt@kernel.org, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Levi Yun <ppbuk5246@gmail.com>
+Subject: [PATCH] mm/mm_init: Ignore kernelcore=mirror boot option when no mirror memory presents.
+Date:   Wed,  2 Aug 2023 19:36:14 +0100
+Message-ID: <20230802183614.15520-1-ppbuk5246@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UO+8QaAxAAuPqQDH"
-Content-Disposition: inline
-In-Reply-To: <20230802114846.21899-1-tony@atomide.com>
-X-Cookie: if it GLISTENS, gobble it!!
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the machine where no mirror memory is set,
+All memory region in ZONE_NORMAL is used as ZONE_MOVABLE
+when kernelcore=mirror boot option is used.
+So, ZONE_NORMAL couldn't be populated properly
+because all of ZONE_NORMAL pages is absent.
 
---UO+8QaAxAAuPqQDH
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To avoid this abnormal situation,
+ignore disable kernelcore=mirror option when no mirror memory is found.
 
-On Wed, Aug 02, 2023 at 02:48:43PM +0300, Tony Lindgren wrote:
-> While fixing DEVNAME to be more usable, I broke serial_base_match() as
-> the ctrl and port prefix for device seemed unnecessary.
->=20
-> Let's fix the issue by checking against dev->type and drv->name.
+Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
+---
+ mm/mm_init.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-This fixes boot on at least i.MX8MP-EVK:
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index a1963c3322af..4c180ef1a993 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -376,10 +376,13 @@ static void __init find_zone_movable_pfns_for_nodes(void)
+ 	 */
+ 	if (mirrored_kernelcore) {
+ 		bool mem_below_4gb_not_mirrored = false;
++		bool no_mirror_mem = true;
+ 
+ 		for_each_mem_region(r) {
+-			if (memblock_is_mirror(r))
++			if (memblock_is_mirror(r)) {
++				no_mirror_mem = false;
+ 				continue;
++			}
+ 
+ 			nid = memblock_get_region_node(r);
+ 
+@@ -398,6 +401,12 @@ static void __init find_zone_movable_pfns_for_nodes(void)
+ 		if (mem_below_4gb_not_mirrored)
+ 			pr_warn("This configuration results in unmirrored kernel memory.\n");
+ 
++		if (no_mirror_mem) {
++			pr_warn("There is no mirrored memory. Ignore kernelcore=mirror.\n");
++			mirrored_kernelcore = false;
++			memset(zone_movable_pfn, 0x00, sizeof(zone_movable_pfn));
++		}
++
+ 		goto out2;
+ 	}
+ 
+-- 
+2.37.2
 
-Tested-by: Mark Brown <broonie@kernel.org>
-
---UO+8QaAxAAuPqQDH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTKoTQACgkQJNaLcl1U
-h9B7gwf/eHZzom2Lp5Q3hgclWUDcKlP8GAmA2ed+mD6j+1niucW8gGqaV3Op/7ck
-KbAD34YqjIKLI8xsPYfJO9mKdtVGvks95BnA9EQwyrv12lgfaNI8r/5NZ/zfbAsl
-fjSjQiiwQLOT/yZXgr74kOfN8lPNCR8fIsDcU7JjStqonh0lTRcMEBbf5C3c0rKg
-P2il1HvODhxdayoBSCJ13W7ugEys4cVK7AGWeM3mjSmmujDsDLXj2otpDhn2bLkL
-AOsWxANuSosxrYdcpI4KIZhokbE4xgOWorIS7q3leDvG/nJuM1iDWZnYMy+FApC1
-UhIYerNTSoHW3DzEbvBS9jBRY3i+Rw==
-=pAuJ
------END PGP SIGNATURE-----
-
---UO+8QaAxAAuPqQDH--
