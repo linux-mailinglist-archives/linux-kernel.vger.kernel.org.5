@@ -2,149 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C7A76DADB
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A02DA76DAEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbjHBWcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41426 "EHLO
+        id S231651AbjHBWpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:45:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbjHBWcu (ORCPT
+        with ESMTP id S230400AbjHBWpr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:32:50 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05598C3;
-        Wed,  2 Aug 2023 15:32:50 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8EEB261B49;
-        Wed,  2 Aug 2023 22:32:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64491C433C8;
-        Wed,  2 Aug 2023 22:32:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691015569;
-        bh=jcZLzzbL9wnv1JEHajJmzq503m5f5HVduTznpCsCWvw=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=DRDzq6PTQMyiaQpla5kRhe9EUpXUWOVAepi7seaIS6scR4PXg6HfWk1wUuaCHG1XK
-         wmlr0FkPsWAKWfd7sIfNMXYRtwcIaiklF2GlDKbH0Fm31Xq2mg7tXO8AlVMuN2Z+Eq
-         ocqSUg0ZMAloSZ5+K9ZyHtx/OsizdwkB0ICJC5L+LPwic8XOaCtjDs9PJt1toW5XfW
-         eq6EIKW+D/whKUcdFXO38EpuFhX/tLq6NEzVdxJMlLUiPc0vwu/tQZB1jdInT70TcX
-         ys0V2E9oBVbakzpdT43IoSETPE2i11t6C4QEHAa+/vTpZ+w96LghdV7YVbmgBmPIns
-         nDpuCY+4iqfkA==
-Message-ID: <b1f2b859-d223-eb90-994b-8741ab7af087@kernel.org>
-Date:   Thu, 3 Aug 2023 00:32:37 +0200
+        Wed, 2 Aug 2023 18:45:47 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A196213F;
+        Wed,  2 Aug 2023 15:45:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=1UcJsU12/KrKnVoMkRz5A+Cc9aIwAd1y+80OQ5wKfdI=; b=jInjYDz7xVlxQvYMJx/l8ko6gq
+        i2KciupKuVKQQ5G99+LO6MpAmKWWOQLTYOYxf+prAnp5K6oN8ju3yQvZUEfyLmu5ALRh/z0YIWmiT
+        M86UKbSajjeicSg62JDMzOckbLDkqx2Kn5++7y6aGh0dh9ARwtmh/F+OLaqP0hkZz3HQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qRKVX-002vfn-Om; Thu, 03 Aug 2023 00:39:55 +0200
+Date:   Thu, 3 Aug 2023 00:39:55 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     nick.hawkins@hpe.com
+Cc:     christophe.jaillet@wanadoo.fr, simon.horman@corigine.com,
+        verdun@hpe.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] net: hpe: Add GXP UMAC MDIO
+Message-ID: <0b227994-2577-4a74-b604-79410f5607b8@lunn.ch>
+References: <20230802201824.3683-1-nick.hawkins@hpe.com>
+ <20230802201824.3683-3-nick.hawkins@hpe.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.1
-Subject: man-pages-6.05.01 released
-Content-Language: en-US
-From:   Alejandro Colomar <alx@kernel.org>
-To:     linux-man <linux-man@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        GNU C Library <libc-alpha@sourceware.org>,
-        Sam James <sam@gentoo.org>, Jonathan Corbet <corbet@lwn.net>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Marcos Fouces <marcos@debian.org>,
-        Luna Jernberg <droidbittin@gmail.com>
-References: <9d2898a0-239a-1bc7-4929-aa042f727ff4@kernel.org>
-Organization: Linux
-In-Reply-To: <9d2898a0-239a-1bc7-4929-aa042f727ff4@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------BSJFrqdY1NMfQWTGqKdCMem5"
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802201824.3683-3-nick.hawkins@hpe.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------BSJFrqdY1NMfQWTGqKdCMem5
-Content-Type: multipart/mixed; boundary="------------xkFL6XKMFEJ0800gUNJSnMcs";
- protected-headers="v1"
-From: Alejandro Colomar <alx@kernel.org>
-To: linux-man <linux-man@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- GNU C Library <libc-alpha@sourceware.org>, Sam James <sam@gentoo.org>,
- Jonathan Corbet <corbet@lwn.net>, Michael Kerrisk <mtk.manpages@gmail.com>,
- Marcos Fouces <marcos@debian.org>, Luna Jernberg <droidbittin@gmail.com>
-Message-ID: <b1f2b859-d223-eb90-994b-8741ab7af087@kernel.org>
-Subject: man-pages-6.05.01 released
-References: <9d2898a0-239a-1bc7-4929-aa042f727ff4@kernel.org>
-In-Reply-To: <9d2898a0-239a-1bc7-4929-aa042f727ff4@kernel.org>
+> +config GXP_UMAC_MDIO
+> +	tristate "GXP UMAC mdio support"
+> +	depends on ARCH_HPE || COMPILE_TEST
+> +	depends on OF_MDIO && HAS_IOMEM
+> +	depends on MDIO_DEVRES
+> +        help
 
---------------xkFL6XKMFEJ0800gUNJSnMcs
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+nitpick: help should be indented same as depends.
 
-Gidday!
+> +	  Say y here to support the GXP UMAC MDIO bus. The
+> +	  MDIO(mdio0) interface from the primary MAC (umac0)
+> +	  is used for external PHY status and configuration.
 
-On 2023-08-01 15:19, Alejandro Colomar wrote:
-> Gidday!
->=20
-> I'm proud to announce:
->=20
-> 	man-pages-6.05 - manual pages for GNU/Linux
->=20
-> The release tarball is already available at <kernel.org>
->=20
-> Tarball download:
-> 	<https://mirrors.edge.kernel.org/pub/linux/docs/man-pages/>
-> Git repository:
-> 	<https://git.kernel.org/cgit/docs/man-pages/man-pages.git/>
+Is it an external MDIO bus? So anything could be connected to it,
+e.g. an Ethernet switch. 
 
-There was a small problem while packaging for Debian.  quilt(1)
-produces a .pc/ dir in the root of the repository, and the patches
-stored in there confuse the build system to try to lint those patches
-as if they were manual pages.  If you successfully packaged 6.05
-without noticing this issue, you can safely ignore this bugfix
-release.  If you noticed the issue, or haven't yet started, I suggest
-you package 6.05.01.
+> +	  The MDIO(mdio1) interface from the secondary MAC
+> +	  (umac1) is routed to the SGMII/100Base-X IP blocks
+> +	  on the two SERDES interface connections.
 
-Changes since man-pages-6.05:
+Is this one purely internal? If so, then the text is valid. If it also
+goes external, there is no reason you could not put a PHY or an
+Ethernet switch on it. You can then skip using the first MDIO bus all
+together.
 
-man-pages-6.05.01:
+> +#define UMAC_MII                0x00  /* R/W MII Register */
+> +#define UMAC_MII_PHY_ADDR_MASK  0x001F0000
+> +#define UMAC_MII_PHY_ADDR_SHIFT 16
+> +#define UMAC_MII_MOWNER         0x00000200
+> +#define UMAC_MII_MRNW           0x00000100
 
--  Build system:
-   -  Ignore dot-dirs within $MANDIR
+Are these two bits? If so, please use BIT().
 
+> +static int umac_mdio_read(struct mii_bus *bus, int phy_id, int reg)
+> +{
+> +	struct umac_mdio_priv *umac_mdio = bus->priv;
+> +	unsigned int status;
+> +	unsigned int value;
+> +	int ret;
+> +
+> +	status = __raw_readl(umac_mdio->base + UMAC_MII);
+> +
+> +	status &= ~(UMAC_MII_PHY_ADDR_MASK | UMAC_MII_REG_ADDR_MASK);
+> +	status |= ((phy_id << UMAC_MII_PHY_ADDR_SHIFT) &
+> +			UMAC_MII_PHY_ADDR_MASK);
+> +	status |= (reg & UMAC_MII_REG_ADDR_MASK);
+> +	status |= UMAC_MII_MRNW; /* set bit for read mode */
+> +	__raw_writel(status, umac_mdio->base + UMAC_MII);
+> +
+> +	status |= UMAC_MII_MOWNER; /* set bit to activate mii transfer */
+> +	__raw_writel(status, umac_mdio->base + UMAC_MII);
 
-Cheers,
-Alex
+I assume UMAC_MII_MOWNER must be set in a separate operation? But
+using __raw_writel() i'm not sure there is any barrier between the two
+writes.
 
---=20
-<http://www.alejandro-colomar.es/>
-GPG key fingerprint: A9348594CE31283A826FBDD8D57633D441E25BB5
-
-
---------------xkFL6XKMFEJ0800gUNJSnMcs--
-
---------------BSJFrqdY1NMfQWTGqKdCMem5
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmTK2YYACgkQnowa+77/
-2zKNMA/6AiQF3ZR0PVEVVieuI7CBClQzPaZ0RJwdP+VMpFOJNT04CfK+gZdCvdvc
-80BYTrnLQSU8DjY+6ikCtyMg4i19mDw+AMTZbWsFy7Wu/NWbu9zxImuy92U5DjdD
-bx5z3Yf/zIkjkrtKLD3mPqA4R5+MIJJnmJx4FY4FlZAB0mZ2g380SKFjJJtvkrFj
-wcGljj638YMRYfw0PL2REx4hhPIbwPuUUe49/7wkO0mrbjDUNTbP7EbLNcBtM73o
-h+rVnJim3EonVe34btWcVCn0uljKiQOxOSNu2d2r+lxscHii0i5tr+mr0YyLLGIO
-bfNeVMv1t5m1FJqvgPnYvY+PCwsWx3XoscGxZfJCqRs4muxTCE3o+DAWWB1uh9Hm
-t60wgbWOeUv5Wnb0wZn95570iQgGo8/x7uOVCNksFcZU8pKCOpGafcIXSNjbQ9aT
-W9LiU1POVAN+/vT0rb7JW6P4kjjO8rRoKgfmF3fiPD2aHt5hSR2ODuuFUujBoIlA
-UJ75bfr2PvX8NB5QckWPrg5YlDqUDydOGfnJYyPNNiJ4MiyTwSDQL1p0ptDV1pQ6
-nMRwcQfKCh14N0u5IO9qyPTWwtZlX56P85EAs/6FeiR3ZVAlzaLnd0E6bKcUIyzJ
-2bXQ7bmkGYDPTPNPF8/Phaw24NF1mZ7HUwaFr8iYg0/usANRSWQ=
-=ci5d
------END PGP SIGNATURE-----
-
---------------BSJFrqdY1NMfQWTGqKdCMem5--
+	Andrew
