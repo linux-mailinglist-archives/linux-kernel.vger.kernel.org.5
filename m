@@ -2,69 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 682F876CEDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6042176CEE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbjHBNff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
+        id S231897AbjHBNhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233722AbjHBNfW (ORCPT
+        with ESMTP id S229958AbjHBNhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:35:22 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2CD2701;
-        Wed,  2 Aug 2023 06:35:20 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4fbf09a9139so11314021e87.2;
-        Wed, 02 Aug 2023 06:35:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690983318; x=1691588118;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cIdVDpJXzS+NvG6cPE69v+Vo8D8lHdK5ntY+IO2Phoo=;
-        b=D2kDCBtAttEWumqYhWLnqvzu6wleezJOq2vuwf5ntVyQ2rTwT6EjhipQarm7eSaZM0
-         c1p/UpO91vnGCCn0bVnT2mogT1Dl0G55aWrYyug7/TMfrZa6rXcHSGBgIpxgtgX0N8zw
-         UzzjBeDVkF95OdNCm7kbjHxJyxForQRSK20cO1Uh8XysUwBmVSrXe92W1R7b6k97Za1C
-         1CXlFiyofIeMw1Xu8uL38AzhkKL1DPVDlapdESRsHP0Oo+gsxx/J/fU5bkKfl2w37Kk5
-         R/Ij0OLkqBVnu9lbCq9ix8ykKxNtTirJVLgLpPmx1M0hJNdUwbI/JJ4w2udZ9a2XfuGp
-         VNXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690983318; x=1691588118;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cIdVDpJXzS+NvG6cPE69v+Vo8D8lHdK5ntY+IO2Phoo=;
-        b=h/zcyyqPB94MXbVhYctbh2iOVxn/TfXDljKpyvrkmIubsYF7levmqNh48dCbG5KZM5
-         r74l2ssc8IVQmolQvhMk7fctsBl9/A24BOs4VSIjVR2tRM7nmh+qC9zLd8pavWpAQLAe
-         7zuP07U/lEsHS0DEVX8o8WtN2KHH600Oj6+kWx+rl5Npe/gtHX6H/xA6OriJTigiAF+Y
-         c1p5FV6yoeZeW9sAvsxunxBVpwQ/CWhe3sByRCMFILHT4iIQjwd/j4EWP3xLoigZVeyy
-         fKnsji9XJYz2vJ7MFtIGIH2BH9lC21t84Uy2lFICycgA+b6u4mRLQl4pi5BZfIEhX8EU
-         qmjw==
-X-Gm-Message-State: ABy/qLYwPGj5JVOpPu1ylfcD0sfMEYiWQBoAtvwpN0t6SAUpvNCqLNSD
-        tSfA4K+QrdsF9JmkgPGbo3OzOJYF8PV1mA==
-X-Google-Smtp-Source: APBJJlEHTtK/CnKxbSzEwYziNluvzwpl4TyauHGwMYXt4Y6XTzcawP+k/3a8BYfEbHGb3QZCY1jRUg==
-X-Received: by 2002:a19:501a:0:b0:4fe:2f8a:457e with SMTP id e26-20020a19501a000000b004fe2f8a457emr4109315lfb.43.1690983317800;
-        Wed, 02 Aug 2023 06:35:17 -0700 (PDT)
-Received: from localhost.localdomain ([78.97.234.98])
-        by smtp.gmail.com with ESMTPSA id d15-20020aa7d68f000000b00522594a614fsm8547719edr.13.2023.08.02.06.35.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 06:35:17 -0700 (PDT)
-From:   Andrei Coardos <aboutphysycs@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com, linux-iio@vger.kernel.org
-Cc:     alexandre.torgue@foss.st.com, mcoquelin.stm32@gmail.com,
-        lars@metafoo.de, jic23@kernel.org,
-        Andrei Coardos <aboutphysycs@gmail.com>,
-        Alexandru Ardelean <alex@shruggie.ro>
-Subject: [PATCH v2] iio: trigger: stm32-lptimer-trigger: remove unneeded platform_set_drvdata()
-Date:   Wed,  2 Aug 2023 16:35:09 +0300
-Message-Id: <20230802133509.29381-1-aboutphysycs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 2 Aug 2023 09:37:04 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846941BF9;
+        Wed,  2 Aug 2023 06:37:03 -0700 (PDT)
+Received: from mercury (dyndsl-091-248-189-241.ewe-ip-backbone.de [91.248.189.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id CB6946607033;
+        Wed,  2 Aug 2023 14:37:01 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1690983421;
+        bh=Q916s/RETmFvwEeE9hvCKAFRN4VWxOOiZNW6vUujMug=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JVO7zJMyAJBlHEYRN61mcvK2EwXu6Uj78TAHI/G1Nq2Z6qCWyEjp6invGFAHnu0gF
+         L9H338eDPYCBtjKb/2m0YS9+F0XfbOovJi77iBNlyZjCXkwYGO5tgUBu+VLUTB1M24
+         K1yYs2dboz3aakOVwV7kfcm7AoNOqQGrEGeulcA4k8p52lyc5HChle8SF4IZTc65gg
+         OzXopN+Nb3hJTDDjQSiWYrun2XVEIJQc7M5vCOrlyG94YIqQ8JsVwYgliUTlvCbcW0
+         Y+Gy11SuJ6t1nrVLdUJVYcpnV4wr3m9nh4pJHIsao/+8RFm+XNANHNn89Q95mLxj0A
+         J+jVbmuLrVpvw==
+Received: by mercury (Postfix, from userid 1000)
+        id DAE131060359; Wed,  2 Aug 2023 15:36:59 +0200 (CEST)
+Date:   Wed, 2 Aug 2023 15:36:59 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     "Sicelo A. Mhlongo" <absicsz@gmail.com>
+Cc:     linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        maemo-leste@lists.dyne.org
+Subject: Re: [PATCH v3] bus: omap_l3_smx: identify timeout cause before
+ rebooting
+Message-ID: <20230802133659.kelu7tfz27ovi364@mercury.elektranox.org>
+References: <20230801192240.1063764-1-absicsz@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kvmbmryvhzknqvw7"
+Content-Disposition: inline
+In-Reply-To: <20230801192240.1063764-1-absicsz@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,41 +58,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function call was found to be unnecessary as there is no equivalent
-platform_get_drvdata() call to access the private data of the driver. Also,
-the private data is defined in this driver, so there is no risk of it being
-accessed outside of this driver file.
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
----
+--kvmbmryvhzknqvw7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Changelog V1->V2:
+Hi,
 
-* https://lore.kernel.org/linux-iio/CAH3L5QpuoDYU6qvWH7_z5Yx0cW2qPMbCA8AFEYAPsiEkSzCiwQ@mail.gmail.com/T/#t
-* Adjusted the returning values of the function
+On Tue, Aug 01, 2023 at 09:22:40PM +0200, Sicelo A. Mhlongo wrote:
+> Identify and print the error source before rebooting the board due to an =
+l3
+> timeout error. This is helpful when debugging, e.g. via serial.
+>=20
+> Signed-off-by: Sicelo A. Mhlongo <absicsz@gmail.com>
+> ---
+>  drivers/bus/omap_l3_smx.c | 21 ++++++++++-----------
+>  1 file changed, 10 insertions(+), 11 deletions(-)
 
+nice, adding features with a negative diffstat :)
 
- drivers/iio/trigger/stm32-lptimer-trigger.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-diff --git a/drivers/iio/trigger/stm32-lptimer-trigger.c b/drivers/iio/trigger/stm32-lptimer-trigger.c
-index df2416e33375..ab1cc6a05f26 100644
---- a/drivers/iio/trigger/stm32-lptimer-trigger.c
-+++ b/drivers/iio/trigger/stm32-lptimer-trigger.c
-@@ -88,11 +88,7 @@ static int stm32_lptim_trigger_probe(struct platform_device *pdev)
- 	priv->dev = &pdev->dev;
- 	priv->trg = stm32_lptim_triggers[index];
- 
--	ret = stm32_lptim_setup_trig(priv);
--	if (ret)
--		return ret;
--
--	return 0;
-+	return stm32_lptim_setup_trig(priv);
- }
- 
- static const struct of_device_id stm32_lptim_trig_of_match[] = {
--- 
-2.34.1
+-- Sebastian
 
+> diff --git a/drivers/bus/omap_l3_smx.c b/drivers/bus/omap_l3_smx.c
+> index bb1606f5ce2d..8e1a38bfcd8b 100644
+> --- a/drivers/bus/omap_l3_smx.c
+> +++ b/drivers/bus/omap_l3_smx.c
+> @@ -166,19 +166,10 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *=
+_l3)
+>  	irqreturn_t ret =3D IRQ_NONE;
+> =20
+>  	int_type =3D irq =3D=3D l3->app_irq ? L3_APPLICATION_ERROR : L3_DEBUG_E=
+RROR;
+> -	if (!int_type) {
+> +	if (!int_type)
+>  		status =3D omap3_l3_readll(l3->rt, L3_SI_FLAG_STATUS_0);
+> -		/*
+> -		 * if we have a timeout error, there's nothing we can
+> -		 * do besides rebooting the board. So let's BUG on any
+> -		 * of such errors and handle the others. timeout error
+> -		 * is severe and not expected to occur.
+> -		 */
+> -		BUG_ON(status & L3_STATUS_0_TIMEOUT_MASK);
+> -	} else {
+> +	else
+>  		status =3D omap3_l3_readll(l3->rt, L3_SI_FLAG_STATUS_1);
+> -		/* No timeout error for debug sources */
+> -	}
+> =20
+>  	/* identify the error source */
+>  	err_source =3D __ffs(status);
+> @@ -190,6 +181,14 @@ static irqreturn_t omap3_l3_app_irq(int irq, void *_=
+l3)
+>  		ret |=3D omap3_l3_block_irq(l3, error, error_addr);
+>  	}
+> =20
+> +	/*
+> +	 * if we have a timeout error, there's nothing we can
+> +	 * do besides rebooting the board. So let's BUG on any
+> +	 * of such errors and handle the others. timeout error
+> +	 * is severe and not expected to occur.
+> +	 */
+> +	BUG_ON(!int_type && status & L3_STATUS_0_TIMEOUT_MASK);
+> +
+>  	/* Clear the status register */
+>  	clear =3D (L3_AGENT_STATUS_CLEAR_IA << int_type) |
+>  		L3_AGENT_STATUS_CLEAR_TA;
+> --=20
+> 2.40.1
+>=20
+
+--kvmbmryvhzknqvw7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmTKW+8ACgkQ2O7X88g7
++poe8Q//SSYjPstLhqYXg3QRvPJ7iD3mLuqV7NBikaw6dLkhURzD2dKM4Fo+v9Pd
+szFXGiwKvJ21EyMqan6aIsctF+c8JD1uGZ9PrO8XPId0pTL9101Bwo4VpFJUjtwP
+Z3TK1JonlsIm0J+HoGImZU318Rrr4CBxL4x3TyBaPXCH2hGSUzIRai6WLdYw8rkq
+My4vgQ4jsm08ySRg02AAmDFJciLiN8eviEdt3cLHoMupce2iyWy8WW4yz8hLpbs7
+MkE3cS9muqlTblaaumVLU924Ait+uIGC+tBhKsoF1J+RaZ0gUwFwREt2tm34kC0o
+oRxIDWXCtTD94XImpShU9JE8zRTnXn4lBhyTfVWCBGC7b4e3Vh2Gqbm8Tt1Czy0P
+GMmxW45XJfeF6IMqnMcZyiwxqqMDK0dVGSuz5IOrG/4ppG0xNVOOrKOKaneqjYKv
+UFOinZ6ANho1V1Dfe3kEIS0RBlnKRtovyvXu0lQGkXrz+dLu2k+/uYnR41yXNj9V
+yhfbNlU4IJPino+QuTXCkmhLuWT9HCYxZ3JCaZGBEpgsLC5HvRzxEx0o7hTZumlO
+HhuwkhynqKhLKTzK8PfwZ40X0xVo4wxdc/VQxQFEiL5sXr0UNZj/OHeG/3aaToyx
+j4Itbn+M7HwIjpe3kcbvj1UMPoTJnNwnQVWkO3kjRCWMDY8qWOk=
+=XXDb
+-----END PGP SIGNATURE-----
+
+--kvmbmryvhzknqvw7--
