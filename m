@@ -2,74 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A7976C7F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FB376C7F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbjHBIG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33402 "EHLO
+        id S232871AbjHBIGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232756AbjHBIG0 (ORCPT
+        with ESMTP id S232782AbjHBIGe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:06:26 -0400
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 8F516F7;
-        Wed,  2 Aug 2023 01:06:23 -0700 (PDT)
-Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id A65DE606AC671;
-        Wed,  2 Aug 2023 16:06:10 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-To:     chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        trond.myklebust@hammerspace.com, anna@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com
-Cc:     bfields@fieldses.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        kernel-janitors@vger.kernel.org, Su Hui <suhui@nfschina.com>
-Subject: [PATCH] fs: lockd: avoid possible wrong NULL parameter
-Date:   Wed,  2 Aug 2023 16:05:45 +0800
-Message-Id: <20230802080544.3239967-1-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 2 Aug 2023 04:06:34 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CECE7D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:06:32 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fc0aecf15bso69843405e9.1
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 01:06:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690963590; x=1691568390;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DNk+5FeNJPiJG592NX1er3sYDqhDbBZgamMwV29XaFU=;
+        b=D6W60OMPxwjMSyLMYGaGQsrLp6NpG03niyWuWwIcs+oqG4p2HJChBDvNezZm6F807C
+         vFbtiT2ggM8IxLlXQr9Xw8NsWhKCruGuW5iJPeT1b0c7BB9a8diJxMAp3L+9xyOCRxkM
+         UbMACORbB7E7UD608w1/VLXx/IowIHWqJ29jR6tJlOlpSM3ZTbUtYEIvVUU7du5F6ur9
+         6FiONAZOI91JbdIxdxp62vFoUCr+EOA/5Ek+FIkk1DBJigR5krc/ms5CR0SVj6llFGnS
+         pG/STBO3IGpszsplU3eUZRDH3l+g7ZRHuSF4Gj8AccrBUSBzSyJGgZm6oJVb35/TkI1Y
+         fxDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690963590; x=1691568390;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DNk+5FeNJPiJG592NX1er3sYDqhDbBZgamMwV29XaFU=;
+        b=j6zyRaTMoR1T7PlHDgi4ycRilfKCDipl2ohh8ru+Gz+Xnym164VXqzhLZogT6FfwaN
+         KRhTOmv2kHOtusqrBPSbwDyeA+Bfc+SNeG2kyDr/n1SIcu0vqd4D3KOImc6VsF2IEG6A
+         /l+4AJByG8RAxdumhbPsqMWdlLjp3qc7tPdl6KObFS6zyA8PMc7GsI3jV7YVW06FKEWe
+         BLvfvztCzZx7ltiCwwlLh6de+5vZ4Biqz8K83gkosnJobjlv8r6KdMO9ifuocBWOAou1
+         9Qt0u8FvBs+sbwEu6ef5kCBmx+p5BWWrrrmpS6GgybHntyGrFNvK+KCSfgPEHtKDwMYf
+         Ax+A==
+X-Gm-Message-State: ABy/qLYzBt67FeGxA8uGbFx6AcTm440sYXwmL+b7fnNeh/PnkyMBIPpc
+        e5h6XSsUZYYomulkUW5dsr1GKQ==
+X-Google-Smtp-Source: APBJJlHCdqOOXKiYMw7LUPV4j+hT7oQIKomGK4x4ZnBX8mHfERcZpD5jG8s6GHbktw4avi72qFd6jA==
+X-Received: by 2002:a05:600c:cb:b0:3fb:fef3:53f8 with SMTP id u11-20020a05600c00cb00b003fbfef353f8mr4239074wmm.25.1690963590479;
+        Wed, 02 Aug 2023 01:06:30 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id y11-20020a05600c364b00b003fbe791a0e8sm1032290wmq.0.2023.08.02.01.06.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 01:06:30 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Alexander Stein <alexander.stein@ew.tq-group.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+In-Reply-To: <20230802-drm-bridge-chain-debugfs-v4-1-7e3ae3d137c0@ideasonboard.com>
+References: <20230802-drm-bridge-chain-debugfs-v4-1-7e3ae3d137c0@ideasonboard.com>
+Subject: Re: [PATCH v4] drm/bridge: Add debugfs print for bridge chains
+Message-Id: <169096358947.1556882.730502701298336758.b4-ty@linaro.org>
+Date:   Wed, 02 Aug 2023 10:06:29 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang's static analysis warning: fs/lockd/mon.c: line 293, column 2:
-Null pointer passed as 2nd argument to memory copy function.
+Hi,
 
-Assuming 'hostname' is NULL and calling 'nsm_create_handle()', this will
-pass NULL as 2nd argument to memory copy function 'memcpy()'. So return
-NULL if 'hostname' is invalid.
+On Wed, 02 Aug 2023 10:04:11 +0300, Tomi Valkeinen wrote:
+> DRM bridges are not visible to the userspace and it may not be
+> immediately clear if the chain is somehow constructed incorrectly. I
+> have had two separate instances of a bridge driver failing to do a
+> drm_bridge_attach() call, resulting in the bridge connector not being
+> part of the chain. In some situations this doesn't seem to cause issues,
+> but it will if DRM_BRIDGE_ATTACH_NO_CONNECTOR flag is used.
+> 
+> [...]
 
-Fixes: 77a3ef33e2de ("NSM: More clean up of nsm_get_handle()")
-Signed-off-by: Su Hui <suhui@nfschina.com>
----
- fs/lockd/mon.c | 3 +++
- 1 file changed, 3 insertions(+)
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
 
-diff --git a/fs/lockd/mon.c b/fs/lockd/mon.c
-index 1d9488cf0534..eebab013e063 100644
---- a/fs/lockd/mon.c
-+++ b/fs/lockd/mon.c
-@@ -358,6 +358,9 @@ struct nsm_handle *nsm_get_handle(const struct net *net,
- 
- 	spin_unlock(&nsm_lock);
- 
-+	if (!hostname)
-+		return NULL;
-+
- 	new = nsm_create_handle(sap, salen, hostname, hostname_len);
- 	if (unlikely(new == NULL))
- 		return NULL;
+[1/1] drm/bridge: Add debugfs print for bridge chains
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8e4bb53c902ed2b06a2c4778e6dbb2c1eeec4960
+
 -- 
-2.30.2
+Neil
 
