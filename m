@@ -2,201 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF80D76D201
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C73DD76D215
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbjHBPd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55100 "EHLO
+        id S235262AbjHBPe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjHBPd1 (ORCPT
+        with ESMTP id S233683AbjHBPd5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:33:27 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CACBA1
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:33:26 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 20C6F619B3
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 15:33:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A767CC433C8;
-        Wed,  2 Aug 2023 15:33:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690990405;
-        bh=wOrVQh93yxG+Y2EIIGb+qX2RZdr8Go7LBd4Mj9zrAhk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PJGyt9PqGw68JEnvfJX1aQM+906gFjPf7o7vKmhU+vcl6Tfo0SfqzOD4anhlQydgD
-         h/vY6ft23Be8HNq7rr5h7oZvLopH93pI1CrtYUE6Og/Os4rjNDbAw+nKY2jBMCL0r7
-         4L80dUzchMOkeP4lL3Z0lGjKaDMnuxqOGdxbIyJahLIEyPefC6Gn0BDMHxut1RRby4
-         dqnynkbbwvURz5uInrA7OvsvGOOB4DlJRBLOBq1RZJbybE1obscMVBZP1XRLiTtCz1
-         uuEE9WSpelQpoDYHyaRuFCfiItN7p8PObtXKSTEQtwaEmptRB8cC8JQ3qHTsa8jFq5
-         HXdNmuwCfG9pQ==
+        Wed, 2 Aug 2023 11:33:57 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0111BF9;
+        Wed,  2 Aug 2023 08:33:54 -0700 (PDT)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372FXa4W105647;
+        Wed, 2 Aug 2023 10:33:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690990416;
+        bh=nLd3Vn8vlTe/h/zk8+jjq6q1zplV0I7CB3Lip2XFWrc=;
+        h=From:To:CC:Subject:Date;
+        b=iLws4c3sk7+TQefCVQBQxHzGvEz62WMtguqnGXWMzQyAxoRInGQpJe0hpUnj2vkXM
+         eqtPpNsWCSY325hVpKz29y53oYex7uZhtkgNTp0YdBf0drC1SEInmbfqC10GqiplME
+         ohl3N0WUrOMn/WIDGeOKX+OuKolpFZ8UmU6+F3Ns=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372FXa0Y120780
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 2 Aug 2023 10:33:36 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
+ Aug 2023 10:33:35 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 2 Aug 2023 10:33:35 -0500
+Received: from lelv0327.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372FXYpw072743;
+        Wed, 2 Aug 2023 10:33:35 -0500
+From:   Andrew Davis <afd@ti.com>
+To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Fabian Vogt <fabian@ritter-vogt.de>
+CC:     <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
+Subject: [PATCH v8 0/9] TI-Nspire cleanups
+Date:   Wed, 2 Aug 2023 10:33:24 -0500
+Message-ID: <20230802153333.55546-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Date:   Wed, 02 Aug 2023 17:33:20 +0200
-From:   Michael Walle <mwalle@kernel.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        =?UTF-8?Q?Marek_B?= =?UTF-8?Q?eh=C3=BAn?= <kabel@kernel.org>,
-        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH net-next v3 02/11] net: phy: introduce
- phy_has_c45_registers()
-In-Reply-To: <ZMkraPZvWWKhY8lT@shell.armlinux.org.uk>
-References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
- <20230620-feature-c45-over-c22-v3-2-9eb37edf7be0@kernel.org>
- <7be8b305-f287-4e99-bddd-55646285c427@lunn.ch>
- <867ae3cc05439599d63e4712bca79e27@kernel.org>
- <cf999a14e51b7f2001d9830cc5e11016@kernel.org>
- <ZMkddjabRonGe7Eu@shell.armlinux.org.uk>
- <bce942b71db8c4b9bf741db517e7ca5f@kernel.org>
- <ZMkraPZvWWKhY8lT@shell.armlinux.org.uk>
-Message-ID: <b0e5fbe28757d755d814727181c09f32@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2023-08-01 17:57, schrieb Russell King (Oracle):
-> On Tue, Aug 01, 2023 at 05:20:22PM +0200, Michael Walle wrote:
->> > In the case of the above (the code in __phy_read_mmd()), I wouldn't
->> > at least initially change the test there.
->> >
->> > phydev->is_c45 will only be true if we probed the PHY using clause
->> > 45 accesses. Thus, it will be set if "the bus supports clause 45
->> > accesses" _and_ "the PHY responds to those accesses".
->> >
->> > Changing that to only "the bus supports clause 45 accesses" means
->> > that a PHY supporting only clause 22 access with indirect clause
->> > 45 access then fails if it's used with a bus that supports both
->> > clause 22 and clause 45 accesses.
->> 
->> Yeah of course. It was more about the naming, but I just realized
->> that with mdiobus_supports_c45() you can't access the original
->> "is_c45" property of the PHY. So maybe this patch needs to be split
->> into two to get rid of .is_c45:
->> 
->> First a mechanical one:
->> phy_has_c45_registers() {
->>    return phydev->is_c45;
->> }
-> 
-> Andrew's objection was that "phy_has_c45_registers" is a misnomer, and
-> suggested "_transfers" instead - because a PHY can have C45 registers
-> that are accessible via the indirect registers in C22 space.
+Hello all,
 
-I'm confused now. Andrew suggested to split it into four different
-functions:
+This series is an extended version of the series started here[0]
+and here[1].
 
-phy_has_c22_registers()
-phy_has_c45_registers()
-phy_has_c22_transfers()
-phy_has_c45_transfers()
+We break out what was the first patch into one for DTS change and
+one for code changes as suggested by Krzysztof. Those are now patches
+1 and 8 of this series (I kept the ACKs, hope that is okay).
 
-Without a functional change. That is, either return phydev->is_c45
-or the inverse.
+While I was adding that, I noticed some other dtbs_check issues,
+so while here fixed some of those up too (patches 2-6).
 
-You seem to suggest to use either
-phy_supports_c45_transfers() or
-phy_has_c22_registers()
+Thanks,
+Andrew
 
-I'm not sure how to continue now.
+[0] https://lore.kernel.org/lkml/20221026161302.5319-1-afd@ti.com/
+[1] https://lore.kernel.org/linux-arm-kernel/20221027181337.8651-1-afd@ti.com/
 
-> I'd go one further:
-> 
-> static bool phy_supports_c45_transfers(struct phy_device *phydev)
-> {
-> 	return phydev->is_c45;
-> }
-> 
-> Since that covers that (a) the bus needs to support C45 transfers and
-> (b) the PHY also needs to respond to C45 transfers.
-> 
-> If we want to truly know whether a clause 22 PHY has clause 45
-> registers, that's difficult to answer, because then you're into the
-> realms of "does this PHY implement the indirect access method" and
-> we haven't been keeping track of that for the PHYs we have drivers
-> for - many will do, but it's optional in clause 22. The problem is
-> that when it's not implemented, the registers could be serving some
-> other function.
-> 
->> phy_has_c22_registers() {
->>   return !phydev->is_c45;
->> }
-> 
-> The reverse is not true, as clause 45 PHYs can also support clause 22
-> registers - from 802.3:
-> 
->  "For cases where a single entity combines Clause 45 MMDs with  Clause 
-> 22
->  registers, then the Clause 22 registers may be accessed using the 
-> Clause
->  45 electrical interface and the Clause 22 management frame structure."
-> 
->  "Bit 5.0 is used to indicate that Clause 22 functionality has been
->  implemented within a Clause 45 electrical interface device."
-> 
-> Therefore, this would more accurately describe when Clause 22 registers
-> are present for a PHY:
-> 
-> static bool phy_has_c22_registers(struct phy_device *phydev)
-> {
-> 	/* If we probed the PHY without clause 45 accesses, then by
-> 	 * definition, clause 22 registers must be present.
-> 	 */
-> 	if (!phydev->is_c45)
-> 		return true;
-> 
-> 	/* If we probed the PHY with clause 45 accesses, clause 22
-> 	 * registers may be present if bit 0 in the Devices-in-pacakge
-> 	 * register pair is set.
-> 	 */
-> 	return phydev->c45_ids.devices_in_package & BIT(0);
-> }
-> 
-> Note that this doesn't take account of whether the bus supports clause
-> 22 register access - there are a number of MDIO buses that do not
-> support such accesses, and they may be coupled with a PHY that does
-> support clause 22 registers.
-> 
-> I'm aware of a SFP with a Realtek PHY on that falls into this exact
-> case, and getting that working is progressing at the moment.
-> 
->> For all the places Andrew said it's correct. Leave all the
->> other uses of .is_c45 as is for now and rework them in a
->> later patch to use mdiobus_supports_{c22,c45}().
-> 
-> For the two cases in marvell10g and bcm84881, the test there for
-> is_c45 is purely to determine "was this ID found on a PHY supporting
-> clause 45 access" - however, in both cases, a check is made for MMDs
-> present in devices_in_package which will fail if the PHY wasn't
-> discovered in clause 45 mode.
-> 
-> Note that 88x3310 does not support clause 22 access. I forget whether
-> bcm84881 does or not.
+Changes from v7:
+ - Rebase on latest with new dts dirs
 
-So a simple "phydev->is_c45" should be enough? Why do you test
-for the MMD presence bits?
+Changes from v6:
+ - Old first patch was taken, remove from series
+ - Add new patch 7/9, should be trivial enough
 
--michael
+Changes from v5:
+ - Rebase on latest master
+ - Fix DT binding comments from Rob and add ACK
+
+Changes from v4:
+ - Rebase on latest master
+
+Changes from v3:
+ - Add Reviewed-by
+ - Make new binding for patch #1
+
+Changes from v2:
+ - See cover letter message
+
+Changes from v1:
+ - Add ACKs
+ - Rebase on latest
+
+Andrew Davis (9):
+  ARM: dts: nspire: Use syscon-reboot to handle restart
+  ARM: dts: nspire: Fix cpu node to conform with DT binding
+  ARM: dts: nspire: Fix sram node to conform with DT binding
+  ARM: dts: nspire: Fix vbus_reg node to conform with DT binding
+  ARM: dts: nspire: Fix uart node to conform with DT binding
+  ARM: dts: nspire: Use MATRIX_KEY macro for linux,keymap
+  ARM: dts: nspire: Remove file name from the files themselves
+  ARM: nspire: Use syscon-reboot to handle restart
+  ARM: nspire: Remove unused header file mmio.h
+
+ arch/arm/boot/dts/nspire/nspire-classic.dtsi |  2 -
+ arch/arm/boot/dts/nspire/nspire-clp.dts      | 93 ++++++++++++++-----
+ arch/arm/boot/dts/nspire/nspire-cx.dts       | 95 ++++++++++++++------
+ arch/arm/boot/dts/nspire/nspire-tp.dts       | 93 ++++++++++++++-----
+ arch/arm/boot/dts/nspire/nspire.dtsi         | 26 ++++--
+ arch/arm/mach-nspire/Kconfig                 |  2 +
+ arch/arm/mach-nspire/mmio.h                  | 16 ----
+ arch/arm/mach-nspire/nspire.c                | 24 -----
+ 8 files changed, 231 insertions(+), 120 deletions(-)
+ delete mode 100644 arch/arm/mach-nspire/mmio.h
+
+-- 
+2.39.2
+
