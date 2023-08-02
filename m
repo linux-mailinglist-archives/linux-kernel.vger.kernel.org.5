@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B79E676DB22
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA0076DB2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 01:02:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbjHBXAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 19:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50816 "EHLO
+        id S231331AbjHBXCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 19:02:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232452AbjHBXA3 (ORCPT
+        with ESMTP id S229480AbjHBXCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 19:00:29 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560631702;
-        Wed,  2 Aug 2023 16:00:28 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-63d23473ed5so1954306d6.1;
-        Wed, 02 Aug 2023 16:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691017227; x=1691622027;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LxADmvrlLWmDyCAfvF5yFmWfrqeRu+A61EMrjZsBdpU=;
-        b=MCTvs2WU0T65ZORgtIgfJ87PCli+WTdroZQHVcG4PCHRDJaFXjywFGlYS9Btx4uBn4
-         2IliSatuleFIQ6L6o+MPmzZtXLk/+8v1l0xJK9xmEmMyW1xO+fdznksEsfvUiyzCkKdA
-         mb8A3A6Zddk9MVpou1oCuqs5DcgxO4Ol4iOWZdNglz9Gbx6r/Yy6FZoZ1zxQoio9aKe3
-         XnFXeJVAH6Bu6aDgr1JwZ9s2cNN5r5Dy4uplFwA/ZSiuMU7aw2aH9NO1D/Koh0GZ3U4x
-         2x0oP3Y5PT7sDh+qmorH0yuws2CQ2QQulz93ovGs2K7tJX/VHUzyxS2YLqHXhtMRBxB0
-         lVYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691017227; x=1691622027;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LxADmvrlLWmDyCAfvF5yFmWfrqeRu+A61EMrjZsBdpU=;
-        b=R7ISd8BKeENQWESE83I7lo+1t6FwyQhmnfUuC4FVSDTpYAUSZiTnCBMtYzNZP2vqyk
-         gWeXLqBBA92wCSMBDJAOpPNdHO0eb07jq0YkVHALj6JaIVIvc6eR2eltgIPz10Rq8ZdK
-         Z7nLuNDTDh3rDHdD1LU7ui6nXdjEAjuXpGD+kVYTpeH2eWRQ/YsActh1i2A4JiZx3Pz+
-         r3Ul3EX3hsXAWQPaPfW1m4BwSazXIAmNmaHU7nuual1Qk2/kcPq9Ai8oDuD1l36/KZyN
-         FysoBbO9jx/ghuQy49veiJAMKenVmZYore+Q42ddX316Hf957KsYg8r+vJFPxQAuKdGZ
-         K3Bg==
-X-Gm-Message-State: ABy/qLbb6mMwFfK9mrIhR5Gsmfru1+/OCefz0c+jhwREJFfCjyCTfERf
-        GHBVpluCmPjRLrQHYy6zGO0=
-X-Google-Smtp-Source: APBJJlHK7nE7o0Ajw+MONwVK5MWQ4wAv41//AS/uvZj9o4BsInIdqPWTGQ0NHbYfN5uvF3OssOdDTQ==
-X-Received: by 2002:a0c:de0e:0:b0:634:cdae:9931 with SMTP id t14-20020a0cde0e000000b00634cdae9931mr15395990qvk.0.1691017227366;
-        Wed, 02 Aug 2023 16:00:27 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id n16-20020a0ce550000000b0063d585225e0sm4275868qvm.61.2023.08.02.16.00.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 16:00:26 -0700 (PDT)
-Message-ID: <671b5b2c-1913-3693-296a-844abf5852a2@gmail.com>
-Date:   Wed, 2 Aug 2023 16:00:24 -0700
+        Wed, 2 Aug 2023 19:02:46 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E758FC;
+        Wed,  2 Aug 2023 16:02:45 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C354F61B79;
+        Wed,  2 Aug 2023 23:02:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7534C433C7;
+        Wed,  2 Aug 2023 23:02:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691017364;
+        bh=cfH1Wn5ANNlrJt7DWhWpG027gOS6ON3wWgbPYyfHg2A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LQqZjVbpqvaYrfpPF+ZuGTyM9v/7WYukRsrEKCce8tMCyOYENKpuCIQkj6LLnVvbb
+         8L/RhLv/2SityWjurSyeKZelbk1jYpJzlnSCJR7jpsIKVQGLwplUXN4xGFatlrDhXh
+         A1vCi7I1AA1CAnyKxOmkTp3b71zy4xe0I1PRoJV+Ufb5lLtpS726ZyrXinWOEy1QJn
+         eriCtwHf0fThLhEye2SOAW9445hlsWJZxPy983W0GXtV7GfrFCoNDKRavsBbmYvLIO
+         kTTJh+gk8dPGMtBPqMOxols9/P0nnUtUuKMDyN1yiG6f5mos9n57qL7NwG0kcIGyl5
+         XTbKmNiJaFZNg==
+Date:   Thu, 3 Aug 2023 00:02:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        "Sahin, Okan" <okan.sahin@analog.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "zzzzTilki, zzzzIbrahim" <Ibrahim.Tilki@analog.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>, linux@leemhuis.info
+Subject: Re: [PATCH v3 2/2] regulator: max77857: Add ADI MAX77857/59/MAX77831
+ Regulator Support
+Message-ID: <32af6891-8246-46de-ba1d-ae1999f6eb10@sirena.org.uk>
+References: <20230717050736.10075-1-okan.sahin@analog.com>
+ <20230717050736.10075-3-okan.sahin@analog.com>
+ <20230718155502.GA3542993@dev-arch.thelio-3990X>
+ <20230726161033.GA1102409@dev-arch.thelio-3990X>
+ <PH7PR03MB739122A373964651D995EA5AE701A@PH7PR03MB7391.namprd03.prod.outlook.com>
+ <20230727145143.GB2013261@dev-arch.thelio-3990X>
+ <CAKwvOdnPQEdbTGBO0hBn7CC4d0xtRV2zmfrYDfAhH0stfDYeJA@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6.1 000/225] 6.1.43-rc2 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230802065510.869511253@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230802065510.869511253@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xsT/aKpxiPD2wK9M"
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnPQEdbTGBO0hBn7CC4d0xtRV2zmfrYDfAhH0stfDYeJA@mail.gmail.com>
+X-Cookie: Humpty Dumpty was pushed.
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 00:41, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.43 release.
-> There are 225 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 04 Aug 2023 06:54:28 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.43-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
+--xsT/aKpxiPD2wK9M
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+On Wed, Aug 02, 2023 at 03:52:52PM -0700, Nick Desaulniers wrote:
+> Hi Okan,
+> Have you sent a follow up fix? The build should not remain broken for
+> so long.  Otherwise I think Broonie should drop your patch.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+Someone sent what's probably a fix but I was waiting for some
+confirmation that the change actually works on hardware, it's not super
+obvious.
 
+--xsT/aKpxiPD2wK9M
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTK4I0ACgkQJNaLcl1U
+h9C/cAf/Tj2hLig3hug1poNGwvUVoCQfdIIBy1Ybx7LkG8n1omgEmswStsUBjxr4
+rNPSu+ZhhT1q1/pX+ciSndTwLwktOVMVY6seYNReSlpmkzz1mK6Yfg1ep8jM2LS7
+a9Y8FLZFXE2MUqYJBKTjkGo0VA1CFCwsBeHdARO/q0NsXMDX+qO2jf/CChE4rstF
+KO+Nu9aRx+ZjBs5C8EHnXuo9MLOVSI1OcW62ysTUDjcLY9SJXUDLoDr7zyzi5ZJt
+pKAnmWW4cA21bV3J3PDtk8e16vQztRzAZdD395iakCyrI/UK9VeqouIzkPYWeWYo
+b9ZErWJakmX21UGhw/LY09fAeljuQA==
+=6Hvo
+-----END PGP SIGNATURE-----
+
+--xsT/aKpxiPD2wK9M--
