@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 637A676CDE8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD22B76CDF6
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 15:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbjHBNIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 09:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
+        id S232990AbjHBNJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 09:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbjHBNIQ (ORCPT
+        with ESMTP id S231176AbjHBNJd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 09:08:16 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C80DF;
-        Wed,  2 Aug 2023 06:08:11 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372CpeJc000686;
-        Wed, 2 Aug 2023 13:08:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Aak+kmw72Z4LWeb4q+Xj28N9GFyJZEdd0yYqO3oTKsc=;
- b=Gwh0hNnjr9QpEBRuLJKzyRTSIqJnmNFw+7G38SsYOrH9mUi7VtlXGabEjDT8964Lyytt
- 2o8rtuWAK1SKBiCSUcB5SRSqWZoJqWLV5wmmJpxghoId0xV8cExrWmrvjgx3Ymwd8Th+
- amZ7u7ory9OKvJLuej5E/441pGf5whxJQiOOPaBBRnZ1w65r1R4rBd4LusjK5QlMWQt0
- tRzu1Tmbc+oZa6gUpZxFa/dIb5zi985r+ltHKovTbOHXBpPi5b+0KFmvKuVc/3y4p+9P
- CclzogrZ1rH4St2FjVroJpTjl40855lzu03sCDUkxfiJIQMbMQsaQhRKdaiFoO87Qww2 Og== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s75b32eg9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 13:08:04 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 372D83gU005638
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 2 Aug 2023 13:08:03 GMT
-Received: from [10.214.66.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
- 2023 06:08:00 -0700
-Message-ID: <b3c2fa94-76ee-c903-d656-0dab6fd91687@quicinc.com>
-Date:   Wed, 2 Aug 2023 18:37:57 +0530
+        Wed, 2 Aug 2023 09:09:33 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0527268E;
+        Wed,  2 Aug 2023 06:09:30 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RGC431vmCz4f3nwj;
+        Wed,  2 Aug 2023 21:09:23 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgAHvbCBVcpkDKSVPQ--.59231S4;
+        Wed, 02 Aug 2023 21:09:24 +0800 (CST)
+From:   thunder.leizhen@huaweicloud.com
+To:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH v4 0/2] rcu: Dump memory object info if callback function is invalid
+Date:   Wed,  2 Aug 2023 21:09:16 +0800
+Message-Id: <20230802130918.1132-1-thunder.leizhen@huaweicloud.com>
+X-Mailer: git-send-email 2.37.3.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH 1/8] arm64: dts: qcom: sdx75: Add spmi node
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
- <1690970366-30982-2-git-send-email-quic_rohiagar@quicinc.com>
- <77d437eb-8edd-344d-61be-71aae7866a69@linaro.org>
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-In-Reply-To: <77d437eb-8edd-344d-61be-71aae7866a69@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: _4I0ToN6QRU9ZaRn6goCnJZFrp-mOlgA
-X-Proofpoint-ORIG-GUID: _4I0ToN6QRU9ZaRn6goCnJZFrp-mOlgA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_08,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
- mlxscore=0 spamscore=0 mlxlogscore=580 bulkscore=0 clxscore=1015
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2306200000 definitions=main-2308020115
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgAHvbCBVcpkDKSVPQ--.59231S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFWfXrW8KrWrCr4rXry8Grg_yoW8Gw13pw
+        nxW3sxWr15Jry3CF13ZF1Ikry5Gay8KFsIk3ZxZws5Zw15Zr97uFykJr1IqF9xGF97K3W0
+        ya1YkF1jkr4DArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7M4kE6xkI
+        j40Ew7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+        UKfO7UUUUU=
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,34 +76,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-On 8/2/2023 6:10 PM, Konrad Dybcio wrote:
-> On 2.08.2023 11:59, Rohit Agarwal wrote:
->> Add SPMI node to SDX75 dtsi.
->>
->> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/sdx75.dtsi | 23 +++++++++++++++++++++++
->>   1 file changed, 23 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
->> index 21d5d55..5e9602cd 100644
->> --- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
->> @@ -469,6 +469,29 @@
->>   			interrupt-controller;
->>   		};
->>   
->> +		spmi_bus: spmi@c400000 {
->> +			compatible = "qcom,spmi-pmic-arb";
->> +			reg = <0x0 0xc400000 0x0 0x3000>,
->> +			      <0x0 0xc500000 0x0 0x400000>,
->> +			      <0x0 0xc440000 0x0 0x80000>,
->> +			      <0x0 0xc4c0000 0x0 0x10000>,
->> +			      <0x0 0xc42d000 0x0 0x4000>;
-> Please pad the address part to 8 hex digits (add leading zeroes)
-Sure will update this.
-Thanks,
-Rohit.
->
-> Konrad
+v3 --> v4:
+1. Remove kmem_valid_obj() and convert kmem_dump_obj() to work the same way
+   as vmalloc_dump_obj().
+2. In kernel/rcu/rcu.h
+-#include <linux/mm.h>
++#include <linux/slab.h>
+
+v2 --> v3:
+1. I made statistics about the source of 'rhp'. kmem_valid_obj() accounts for
+   more than 97.5%, and vmalloc accounts for less than 1%. So change call
+   mem_dump_obj() to call kmem_dump_obj() can meet debugging requirements and
+   avoid the potential deadlock risk of vmalloc_dump_obj().
+-		mem_dump_obj(rhp);
++		if (kmem_valid_obj(rhp))
++			kmem_dump_obj(rhp);
+
+   The discussion about vmap_area_lock deadlock in v2:
+   https://lkml.org/lkml/2022/11/11/493
+
+2. Provide static inline empty functions for kmem_valid_obj() and kmem_dump_obj()
+   when CONFIG_PRINTK=n.
+
+v1 --> v2:
+1. Remove condition "(unsigned long)rhp->func & 0x3", it have problems on x86.
+2. Paul E. McKenney helped me update the commit message, thanks.
+
+
+Zhen Lei (2):
+  mm: Remove kmem_valid_obj()
+  rcu: Dump memory object info if callback function is invalid
+
+ include/linux/slab.h  |  5 +++--
+ kernel/rcu/rcu.h      |  7 +++++++
+ kernel/rcu/srcutiny.c |  1 +
+ kernel/rcu/srcutree.c |  1 +
+ kernel/rcu/tasks.h    |  1 +
+ kernel/rcu/tiny.c     |  1 +
+ kernel/rcu/tree.c     |  1 +
+ mm/slab_common.c      | 41 +++++++++++------------------------------
+ mm/util.c             |  4 +---
+ 9 files changed, 27 insertions(+), 35 deletions(-)
+
+-- 
+2.34.1
+
