@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B03776DA8F
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9139D76DA91
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233891AbjHBWTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60242 "EHLO
+        id S233340AbjHBWT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232390AbjHBWTd (ORCPT
+        with ESMTP id S232408AbjHBWTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:19:33 -0400
+        Wed, 2 Aug 2023 18:19:34 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC9026BD;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE342733;
         Wed,  2 Aug 2023 15:19:31 -0700 (PDT)
-Date:   Wed, 02 Aug 2023 22:19:26 -0000
+Date:   Wed, 02 Aug 2023 22:19:27 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1691014767;
+        s=2020; t=1691014768;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=vZlMtUj4lnzzgyx26bW8bmj5oyYEPdTTuofDqPEg2bI=;
-        b=bXVK3WFJDiLBEpHtPei1+f3FjUIuFO59FrGSPMTrpypN5jhoDh+anNRhw8zMGxyA/kFlb3
-        a4eGuL/zrtSpWgvI2NqRNkOlAbppWNuBFaJSC1Tuv4o23n5gFSaKymFSL9EuWu3E4Axm+U
-        UzJvfEmedmHAnJWZVQRUa6Emmxkb4quHb5qaiUWkakO+PdFvHLqgSIevwGjITv88oGqPKM
-        JwZIcdlq774nRpHMBucKL88ETNNvZyhm5YZvT+kHCDQUyrM/5H4JdmRNbn68uHQ34fYgER
-        h//t4LHXQtecCbgl/yfGMkVIIuVX6yVANQd6iKZj7l1p7H+WlV1plIqe3yjvvQ==
+        bh=U5TI9eUVhciyNUwXUGgT/NKDN7f0lb+8FLyXuruuTvI=;
+        b=SU7Gn2+RaxMBF81Nfm0LfZWkwJdYpNhFtISuKHh6W0AoweSRIxTiAagQDdQaE68tMW0s0q
+        QjYnLTv11xCEgLSJIzv0oq0FHmqi9+GOv3TaaBuAW7fvXkT8dimAojhSCi09oKO+jcFqaI
+        36ObP+kVuutBrvWe4/TCqCqdT1K/cnPf2zifDscfTzFt2o+8gtJ1BTuyTrgR/sRYmdwo9z
+        d/b/hFOgidBZ6Knvh+IkKQb5BUwLbD9P5DAqno4J1PhZuwTiWv6R1G+4b1F3nSUZRMGPa1
+        hTLAXg9yanCzJhnMks4qdtdJauGsk6QcaI5nCLOTJTsYxNP6cFptxb3gu23arw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1691014767;
+        s=2020e; t=1691014768;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=vZlMtUj4lnzzgyx26bW8bmj5oyYEPdTTuofDqPEg2bI=;
-        b=JHbaNyD/vd3gAmWEYP7qg1IBq7hR1psh6y002/+FXgCFB3/N1noX8zCL1moqyXGQNXaYKG
-        gQGC95lU24tBkCBg==
+        bh=U5TI9eUVhciyNUwXUGgT/NKDN7f0lb+8FLyXuruuTvI=;
+        b=BNOVvP79PGs36hHhViUWWE78ouXpzZUHt3nQKMs8nprpqxRkXNYS0veZqQXzYu8lqaqOye
+        ljPVo/dFnUT7ikAg==
 From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/shstk] x86: Add PTRACE interface for shadow stack
+Subject: [tip: x86/shstk] x86/cpufeatures: Enable CET CR4 bit for shadow stack
 Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         Rick Edgecombe <rick.p.edgecombe@intel.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -50,7 +50,7 @@ Cc:     "Yu-cheng Yu" <yu-cheng.yu@intel.com>,
         John Allen <john.allen@amd.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <169101476639.28540.13323655680166863883.tip-bot2@tip-bot2>
+Message-ID: <169101476797.28540.9568036632645118391.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,54 +67,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/shstk branch of tip:
 
-Commit-ID:     2fab02b25ae7cf5f714ab456b03d9a3fe5ae98c9
-Gitweb:        https://git.kernel.org/tip/2fab02b25ae7cf5f714ab456b03d9a3fe5ae98c9
+Commit-ID:     0dc2a76092d9d513f5ea5eb3992d1459a67a3e7a
+Gitweb:        https://git.kernel.org/tip/0dc2a76092d9d513f5ea5eb3992d1459a67a3e7a
 Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Mon, 12 Jun 2023 17:11:06 -07:00
+AuthorDate:    Mon, 12 Jun 2023 17:11:04 -07:00
 Committer:     Dave Hansen <dave.hansen@linux.intel.com>
 CommitterDate: Wed, 02 Aug 2023 15:01:51 -07:00
 
-x86: Add PTRACE interface for shadow stack
+x86/cpufeatures: Enable CET CR4 bit for shadow stack
 
-Some applications (like GDB) would like to tweak shadow stack state via
-ptrace. This allows for existing functionality to continue to work for
-seized shadow stack applications. Provide a regset interface for
-manipulating the shadow stack pointer (SSP).
+Setting CR4.CET is a prerequisite for utilizing any CET features, most of
+which also require setting MSRs.
 
-There is already ptrace functionality for accessing xstate, but this
-does not include supervisor xfeatures. So there is not a completely
-clear place for where to put the shadow stack state. Adding it to the
-user xfeatures regset would complicate that code, as it currently shares
-logic with signals which should not have supervisor features.
+Kernel IBT already enables the CET CR4 bit when it detects IBT HW support
+and is configured with kernel IBT. However, future patches that enable
+userspace shadow stack support will need the bit set as well. So change
+the logic to enable it in either case.
 
-Don't add a general supervisor xfeature regset like the user one,
-because it is better to maintain flexibility for other supervisor
-xfeatures to define their own interface. For example, an xfeature may
-decide not to expose all of it's state to userspace, as is actually the
-case for  shadow stack ptrace functionality. A lot of enum values remain
-to be used, so just put it in dedicated shadow stack regset.
-
-The only downside to not having a generic supervisor xfeature regset,
-is that apps need to be enlightened of any new supervisor xfeature
-exposed this way (i.e. they can't try to have generic save/restore
-logic). But maybe that is a good thing, because they have to think
-through each new xfeature instead of encountering issues when a new
-supervisor xfeature was added.
-
-By adding a shadow stack regset, it also has the effect of including the
-shadow stack state in a core dump, which could be useful for debugging.
-
-The shadow stack specific xstate includes the SSP, and the shadow stack
-and WRSS enablement status. Enabling shadow stack or WRSS in the kernel
-involves more than just flipping the bit. The kernel is made aware that
-it has to do extra things when cloning or handling signals. That logic
-is triggered off of separate feature enablement state kept in the task
-struct. So the flipping on HW shadow stack enforcement without notifying
-the kernel to change its behavior would severely limit what an application
-could do without crashing, and the results would depend on kernel
-internal implementation details. There is also no known use for controlling
-this state via ptrace today. So only expose the SSP, which is something
-that userspace already has indirect control over.
+Clear MSR_IA32_U_CET in cet_disable() so that it can't live to see
+userspace in a new kexec-ed kernel that has CR4.CET set from kernel IBT.
 
 Co-developed-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
 Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
@@ -126,173 +97,74 @@ Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 Tested-by: John Allen <john.allen@amd.com>
 Tested-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/all/20230613001108.3040476-41-rick.p.edgecombe%40intel.com
+Link: https://lore.kernel.org/all/20230613001108.3040476-39-rick.p.edgecombe%40intel.com
 ---
- arch/x86/include/asm/fpu/regset.h |  7 +--
- arch/x86/kernel/fpu/regset.c      | 81 ++++++++++++++++++++++++++++++-
- arch/x86/kernel/ptrace.c          | 12 ++++-
- include/uapi/linux/elf.h          |  2 +-
- 4 files changed, 99 insertions(+), 3 deletions(-)
+ arch/x86/kernel/cpu/common.c | 35 +++++++++++++++++++++++++++--------
+ 1 file changed, 27 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/regset.h b/arch/x86/include/asm/fpu/regset.h
-index 4f928d6..697b77e 100644
---- a/arch/x86/include/asm/fpu/regset.h
-+++ b/arch/x86/include/asm/fpu/regset.h
-@@ -7,11 +7,12 @@
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 52683fd..cf5275a 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -588,27 +588,43 @@ __noendbr void ibt_restore(u64 save)
  
- #include <linux/regset.h>
+ static __always_inline void setup_cet(struct cpuinfo_x86 *c)
+ {
+-	u64 msr = CET_ENDBR_EN;
++	bool user_shstk, kernel_ibt;
  
--extern user_regset_active_fn regset_fpregs_active, regset_xregset_fpregs_active;
-+extern user_regset_active_fn regset_fpregs_active, regset_xregset_fpregs_active,
-+				ssp_active;
- extern user_regset_get2_fn fpregs_get, xfpregs_get, fpregs_soft_get,
--				 xstateregs_get;
-+				 xstateregs_get, ssp_get;
- extern user_regset_set_fn fpregs_set, xfpregs_set, fpregs_soft_set,
--				 xstateregs_set;
-+				 xstateregs_set, ssp_set;
+-	if (!HAS_KERNEL_IBT ||
+-	    !cpu_feature_enabled(X86_FEATURE_IBT))
++	if (!IS_ENABLED(CONFIG_X86_CET))
+ 		return;
  
- /*
-  * xstateregs_active == regset_fpregs_active. Please refer to the comment
-diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
-index 6d056b6..6bc1eb2 100644
---- a/arch/x86/kernel/fpu/regset.c
-+++ b/arch/x86/kernel/fpu/regset.c
-@@ -8,6 +8,7 @@
- #include <asm/fpu/api.h>
- #include <asm/fpu/signal.h>
- #include <asm/fpu/regset.h>
-+#include <asm/prctl.h>
+-	wrmsrl(MSR_IA32_S_CET, msr);
++	kernel_ibt = HAS_KERNEL_IBT && cpu_feature_enabled(X86_FEATURE_IBT);
++	user_shstk = cpu_feature_enabled(X86_FEATURE_SHSTK) &&
++		     IS_ENABLED(CONFIG_X86_USER_SHADOW_STACK);
++
++	if (!kernel_ibt && !user_shstk)
++		return;
++
++	if (user_shstk)
++		set_cpu_cap(c, X86_FEATURE_USER_SHSTK);
++
++	if (kernel_ibt)
++		wrmsrl(MSR_IA32_S_CET, CET_ENDBR_EN);
++	else
++		wrmsrl(MSR_IA32_S_CET, 0);
++
+ 	cr4_set_bits(X86_CR4_CET);
  
- #include "context.h"
- #include "internal.h"
-@@ -174,6 +175,86 @@ out:
- 	return ret;
+-	if (!ibt_selftest()) {
++	if (kernel_ibt && !ibt_selftest()) {
+ 		pr_err("IBT selftest: Failed!\n");
+ 		wrmsrl(MSR_IA32_S_CET, 0);
+ 		setup_clear_cpu_cap(X86_FEATURE_IBT);
+-		return;
+ 	}
  }
  
-+#ifdef CONFIG_X86_USER_SHADOW_STACK
-+int ssp_active(struct task_struct *target, const struct user_regset *regset)
-+{
-+	if (target->thread.features & ARCH_SHSTK_SHSTK)
-+		return regset->n;
+ __noendbr void cet_disable(void)
+ {
+-	if (cpu_feature_enabled(X86_FEATURE_IBT))
+-		wrmsrl(MSR_IA32_S_CET, 0);
++	if (!(cpu_feature_enabled(X86_FEATURE_IBT) ||
++	      cpu_feature_enabled(X86_FEATURE_SHSTK)))
++		return;
 +
-+	return 0;
-+}
-+
-+int ssp_get(struct task_struct *target, const struct user_regset *regset,
-+	    struct membuf to)
-+{
-+	struct fpu *fpu = &target->thread.fpu;
-+	struct cet_user_state *cetregs;
-+
-+	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK))
-+		return -ENODEV;
-+
-+	sync_fpstate(fpu);
-+	cetregs = get_xsave_addr(&fpu->fpstate->regs.xsave, XFEATURE_CET_USER);
-+	if (WARN_ON(!cetregs)) {
-+		/*
-+		 * This shouldn't ever be NULL because shadow stack was
-+		 * verified to be enabled above. This means
-+		 * MSR_IA32_U_CET.CET_SHSTK_EN should be 1 and so
-+		 * XFEATURE_CET_USER should not be in the init state.
-+		 */
-+		return -ENODEV;
-+	}
-+
-+	return membuf_write(&to, (unsigned long *)&cetregs->user_ssp,
-+			    sizeof(cetregs->user_ssp));
-+}
-+
-+int ssp_set(struct task_struct *target, const struct user_regset *regset,
-+	    unsigned int pos, unsigned int count,
-+	    const void *kbuf, const void __user *ubuf)
-+{
-+	struct fpu *fpu = &target->thread.fpu;
-+	struct xregs_state *xsave = &fpu->fpstate->regs.xsave;
-+	struct cet_user_state *cetregs;
-+	unsigned long user_ssp;
-+	int r;
-+
-+	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) ||
-+	    !ssp_active(target, regset))
-+		return -ENODEV;
-+
-+	if (pos != 0 || count != sizeof(user_ssp))
-+		return -EINVAL;
-+
-+	r = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &user_ssp, 0, -1);
-+	if (r)
-+		return r;
-+
-+	/*
-+	 * Some kernel instructions (IRET, etc) can cause exceptions in the case
-+	 * of disallowed CET register values. Just prevent invalid values.
-+	 */
-+	if (user_ssp >= TASK_SIZE_MAX || !IS_ALIGNED(user_ssp, 8))
-+		return -EINVAL;
-+
-+	fpu_force_restore(fpu);
-+
-+	cetregs = get_xsave_addr(xsave, XFEATURE_CET_USER);
-+	if (WARN_ON(!cetregs)) {
-+		/*
-+		 * This shouldn't ever be NULL because shadow stack was
-+		 * verified to be enabled above. This means
-+		 * MSR_IA32_U_CET.CET_SHSTK_EN should be 1 and so
-+		 * XFEATURE_CET_USER should not be in the init state.
-+		 */
-+		return -ENODEV;
-+	}
-+
-+	cetregs->user_ssp = user_ssp;
-+	return 0;
-+}
-+#endif /* CONFIG_X86_USER_SHADOW_STACK */
-+
- #if defined CONFIG_X86_32 || defined CONFIG_IA32_EMULATION
++	wrmsrl(MSR_IA32_S_CET, 0);
++	wrmsrl(MSR_IA32_U_CET, 0);
+ }
  
  /*
-diff --git a/arch/x86/kernel/ptrace.c b/arch/x86/kernel/ptrace.c
-index dfaa270..095f04b 100644
---- a/arch/x86/kernel/ptrace.c
-+++ b/arch/x86/kernel/ptrace.c
-@@ -58,6 +58,7 @@ enum x86_regset_64 {
- 	REGSET64_FP,
- 	REGSET64_IOPERM,
- 	REGSET64_XSTATE,
-+	REGSET64_SSP,
- };
+@@ -1470,6 +1486,9 @@ static void __init cpu_parse_early_param(void)
+ 	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
+ 		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
  
- #define REGSET_GENERAL \
-@@ -1267,6 +1268,17 @@ static struct user_regset x86_64_regsets[] __ro_after_init = {
- 		.active		= ioperm_active,
- 		.regset_get	= ioperm_get
- 	},
-+#ifdef CONFIG_X86_USER_SHADOW_STACK
-+	[REGSET64_SSP] = {
-+		.core_note_type	= NT_X86_SHSTK,
-+		.n		= 1,
-+		.size		= sizeof(u64),
-+		.align		= sizeof(u64),
-+		.active		= ssp_active,
-+		.regset_get	= ssp_get,
-+		.set		= ssp_set
-+	},
-+#endif
- };
- 
- static const struct user_regset_view user_x86_64_view = {
-diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
-index 0c8cf35..786d517 100644
---- a/include/uapi/linux/elf.h
-+++ b/include/uapi/linux/elf.h
-@@ -409,6 +409,8 @@ typedef struct elf64_shdr {
- #define NT_386_TLS	0x200		/* i386 TLS slots (struct user_desc) */
- #define NT_386_IOPERM	0x201		/* x86 io permission bitmap (1=deny) */
- #define NT_X86_XSTATE	0x202		/* x86 extended state using xsave */
-+/* Old binutils treats 0x203 as a CET state */
-+#define NT_X86_SHSTK	0x204		/* x86 SHSTK state */
- #define NT_S390_HIGH_GPRS	0x300	/* s390 upper register halves */
- #define NT_S390_TIMER	0x301		/* s390 timer register */
- #define NT_S390_TODCMP	0x302		/* s390 TOD clock comparator register */
++	if (cmdline_find_option_bool(boot_command_line, "nousershstk"))
++		setup_clear_cpu_cap(X86_FEATURE_USER_SHSTK);
++
+ 	arglen = cmdline_find_option(boot_command_line, "clearcpuid", arg, sizeof(arg));
+ 	if (arglen <= 0)
+ 		return;
