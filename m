@@ -2,224 +2,507 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2CB476C918
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0339876C91D
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234007AbjHBJM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        id S234003AbjHBJNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234003AbjHBJMY (ORCPT
+        with ESMTP id S231936AbjHBJNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:12:24 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB432D40;
-        Wed,  2 Aug 2023 02:12:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com;
- s=s31663417; t=1690967531; x=1691572331; i=quwenruo.btrfs@gmx.com;
- bh=hx3IByo9OBm/sfhGGa21X9t5gR5jnr8TcT1M7n0r4bc=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=GzbdQTxULWlIntybjZWdAv2Bx/OwIB3c77UGDd0+/S28zkbIGJ9CLVfy0FistAq0lbZk3e1
- JQg2Q6LMljPdPUl0BaXJIK0FkgT5Ocx6yXs7BGh9OzFRwCO7mFqDZcSAxR8iLsQZZ+Y5jb5WQ
- 7bFATA/JIFhD29WlG9xeM1IIGoEOoDkLrCBgpa4apqAUlFOBCOEJhLoMfp9BR+Ri4onej1Pup
- Z1bNB0XyHKxz7WlHvwNnSsUwhEoBACjzNnziqK0bLWHvSG0AHSluwiDpSekDuiOZrKdXrBPPd
- IZiTyzNYJ7PEuTaDN0ZDdMxzN4LHNNFNriSdvzQNEgKYPOp6GjvA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5wPb-1qT1iD2dR5-007UZr; Wed, 02
- Aug 2023 11:12:11 +0200
-Message-ID: <73e2d2a8-9c15-0865-bc38-4cfb17c4c19d@gmx.com>
-Date:   Wed, 2 Aug 2023 17:12:05 +0800
+        Wed, 2 Aug 2023 05:13:45 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981F0FE;
+        Wed,  2 Aug 2023 02:13:43 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8C3762AC;
+        Wed,  2 Aug 2023 11:12:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690967558;
+        bh=xPF7K54EvFX5Pp0OPsowfb7GQ6atokj/kDXPJn+d9z0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pE+ryr1fMro7dkcFfFGW4PWOSkXnyudXuwAliUhSlLO2TuVcnEqtEQSaUa1symZXb
+         Jfx5Z20ZTMIlIzKrYxZhuAGniz3hq//aVVFxSA6Uh+JL0LOL11687UANswWFFclCgx
+         onYDlCn7puP0YbzZbKntAgBQgMo/xQnmXAqGH2TM=
+Date:   Wed, 2 Aug 2023 12:13:47 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jack Zhu <jack.zhu@starfivetech.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, changhuang.liang@starfivetech.com
+Subject: Re: [PATCH v7 4/6] media: starfive: camss: Add video driver
+Message-ID: <20230802091347.GB29611@pendragon.ideasonboard.com>
+References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
+ <20230619112838.19797-5-jack.zhu@starfivetech.com>
+ <20230727152528.GI25174@pendragon.ideasonboard.com>
+ <3206c2c5-cbba-6316-07c5-5fdcff88add8@starfivetech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [btrfs?] kernel BUG in prepare_to_merge
-Content-Language: en-US
-To:     syzbot <syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com>,
-        clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000a3d67705ff730522@google.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
- pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
- BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
- XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
- jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
- LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
- mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
- CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
- tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
- INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
- DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
- iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
-In-Reply-To: <000000000000a3d67705ff730522@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7evTPCTACus+qpXGWvA5jbYXsPEPK0QQWrY9nS5cGiv+EUJhq0j
- 2wHdmstRdGUD3tVJKLcAru1/Dv9zcDApWje8vpitgTbH/EKwZPVl5IqT8pVUxjqlBzcTzcy
- bh1zFd62jxjv7Jk6o4MQVft+Gl9TV6iOvajNIgbWAES0SG4sCdizv2mCzFVcCV+Jhc5GB0l
- CqYIyVTizgIaB+ujfiryQ==
-UI-OutboundReport: notjunk:1;M01:P0:BiYx0PuhM6k=;fzjN03DiRwVnUq6foNROO9814N7
- p3aSe0E5ZAuaxj1OY9tLM+pdniiabQs1IKAlYVKeA7byQ7DlDx/DbQ4KzcvVab+UaGsnuAHob
- THdiZz+rQnCzCiAXAZnfQMd93K7l1c+pBQlCw6BT19b1r6vGDJzXz9wiViJ8MSHPPcLNSihIW
- YeIm30umo8Dl+S8XdUEeAUwwijtBTReWuBGdWvZ0y89UBBAAAjsiMuG05HRnrevhqevZyPnmp
- jrobwMqY8qJqY/iR4rh0PTXh/8qnM6CBUjv1Ht9g8bd0zgYG90SvxQ/+F+CBm5T3eBxA4BpGm
- rakRHivgZT9B3zetqNXxURueJgPKCOkrrAJBWncXna0WLYzj326tsm941mA4zE/uS9hRKRmq4
- u2OIPxy0zh/v1YhmsUVjfTPLEwVx8jlDI2n72UB5YYhSEGQidaQf174CWRN+4aoMXqD3+Ewu4
- cq18tEctv6zNeS0rjObQzaF0y4ZEcbgspJ74fninmNBWJkPHLvMkk4K8NbP9h7jPm+g2MNluh
- MjPn3428yCdpnPx0anZGLSBctwqfLubcxAIYVauN6JoMHXHV+Wue72qXr6qF27r+OeQBs5KM3
- OaU9wPUAiRfyj1w8p9m0/q6IjLM6WBuL404wmZkavpH/67mBY11MidTn/aOugYLuoJhwIWaTf
- oANDGdgHxq3m/DuabiZ+0m4Nu4G84EttiVfGDRK7KJ1PEruwXAWsgT5jZ55qJn7SxQ41nIWrm
- 3e0O3+Z+cGMslCDzhYmQT2CsqAGXkYjFm727Ue7mDe18em5P4IcsYYVn+qSgedgiLlEJB2jdV
- W3AF3f8OdgD7wToRKmMsv+EKY5HzCCPV6Y9xmxdCg1wfywQE2zfWu0915P4+et6TSR7g8LyEv
- VehKPbydrv3Ibukq2L/rTddjH9eR7UhiXgQj+fIIK+Coi46l5f3oU73ehjMJYn5LpsaXfj7UQ
- kavcUP2Mjr5X+/tZLRlO7D3T20Q=
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3206c2c5-cbba-6316-07c5-5fdcff88add8@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jack,
 
+On Wed, Aug 02, 2023 at 10:57:03AM +0800, Jack Zhu wrote:
+> On 2023/7/27 23:25, Laurent Pinchart wrote:
+> > On Mon, Jun 19, 2023 at 07:28:36PM +0800, Jack Zhu wrote:
+> >> Add video driver for StarFive Camera Subsystem.
+> >> 
+> >> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
+> >> ---
+> >>  .../media/platform/starfive/camss/Makefile    |   4 +-
+> >>  .../media/platform/starfive/camss/stf_video.c | 724 ++++++++++++++++++
+> >>  .../media/platform/starfive/camss/stf_video.h |  92 +++
+> >>  3 files changed, 819 insertions(+), 1 deletion(-)
+> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_video.c
+> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_video.h
+> >> 
+> >> diff --git a/drivers/media/platform/starfive/camss/Makefile b/drivers/media/platform/starfive/camss/Makefile
+> >> index d56ddd078a71..eb457917a914 100644
+> >> --- a/drivers/media/platform/starfive/camss/Makefile
+> >> +++ b/drivers/media/platform/starfive/camss/Makefile
+> >> @@ -3,6 +3,8 @@
+> >>  # Makefile for StarFive Camera Subsystem driver
+> >>  #
+> >>  
+> >> -starfive-camss-objs += stf_camss.o
+> >> +starfive-camss-objs += \
+> >> +		stf_camss.o \
+> >> +		stf_video.o
+> >>  
+> >>  obj-$(CONFIG_VIDEO_STARFIVE_CAMSS) += starfive-camss.o
+> >> diff --git a/drivers/media/platform/starfive/camss/stf_video.c b/drivers/media/platform/starfive/camss/stf_video.c
+> >> new file mode 100644
+> >> index 000000000000..2e6472fe51c6
+> >> --- /dev/null
+> >> +++ b/drivers/media/platform/starfive/camss/stf_video.c
+> >> @@ -0,0 +1,724 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * stf_video.c
+> >> + *
+> >> + * StarFive Camera Subsystem - V4L2 device node
+> >> + *
+> >> + * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
+> >> + */
+> >> +
+> >> +#include <linux/pm_runtime.h>
+> >> +#include <media/v4l2-ctrls.h>
+> >> +#include <media/v4l2-event.h>
+> >> +#include <media/v4l2-mc.h>
+> >> +#include <media/videobuf2-dma-contig.h>
+> >> +
+> >> +#include "stf_camss.h"
+> >> +#include "stf_video.h"
+> >> +
+> >> +static const struct stfcamss_format_info formats_pix_wr[] = {
+> >> +	{
+> >> +		.code = MEDIA_BUS_FMT_SRGGB10_1X10,
+> >> +		.pixelformat = V4L2_PIX_FMT_SRGGB10,
+> >> +		.planes = 1,
+> >> +		.vsub = { 1 },
+> >> +		.bpp = 10,
+> >> +	},
+> >> +	{
+> >> +		.code = MEDIA_BUS_FMT_SGRBG10_1X10,
+> >> +		.pixelformat = V4L2_PIX_FMT_SGRBG10,
+> >> +		.planes = 1,
+> >> +		.vsub = { 1 },
+> >> +		.bpp = 10,
+> >> +	},
+> >> +	{
+> >> +		.code = MEDIA_BUS_FMT_SGBRG10_1X10,
+> >> +		.pixelformat = V4L2_PIX_FMT_SGBRG10,
+> >> +		.planes = 1,
+> >> +		.vsub = { 1 },
+> >> +		.bpp = 10,
+> >> +	},
+> >> +	{
+> >> +		.code = MEDIA_BUS_FMT_SBGGR10_1X10,
+> >> +		.pixelformat = V4L2_PIX_FMT_SBGGR10,
+> >> +		.planes = 1,
+> >> +		.vsub = { 1 },
+> >> +		.bpp = 10,
+> >> +	},
+> >> +};
+> >> +
+> >> +static const struct stfcamss_format_info formats_pix_isp[] = {
+> >> +	{
+> >> +		.code = MEDIA_BUS_FMT_Y12_1X12,
+> >> +		.pixelformat = V4L2_PIX_FMT_NV12,
+> >> +		.planes = 2,
+> >> +		.vsub = { 1, 2 },
+> >> +		.bpp = 8,
+> >> +	},
+> >> +};
+> >> +
+> >> +/* -----------------------------------------------------------------------------
+> >> + * Helper functions
+> >> + */
+> >> +
+> >> +static int video_find_format(u32 code, u32 pixelformat,
+> >> +			     struct stfcamss_video *video)
+> >> +{
+> >> +	unsigned int i;
+> >> +
+> >> +	for (i = 0; i < video->nformats; ++i) {
+> >> +		if (video->formats[i].code == code &&
+> >> +		    video->formats[i].pixelformat == pixelformat)
+> >> +			return i;
+> >> +	}
+> >> +
+> >> +	for (i = 0; i < video->nformats; ++i)
+> >> +		if (video->formats[i].code == code)
+> >> +			return i;
+> >> +
+> >> +	for (i = 0; i < video->nformats; ++i)
+> >> +		if (video->formats[i].pixelformat == pixelformat)
+> >> +			return i;
+> >> +
+> > 
+> > This looks weird, I don't think it does what you expect below. I think
+> > you can drop the function, and instead use video_get_pfmt_by_mcode() to
+> > convert the mbus code to a pixel format, and compare it to the active
+> > pixel format in video_check_format().
+> > 
+> >> +	return -EINVAL;
+> >> +}
+> >> +
+> >> +static int __video_try_fmt(struct stfcamss_video *video, struct v4l2_format *f)
+> >> +{
+> >> +	struct v4l2_pix_format *pix;
+> >> +	const struct stfcamss_format_info *fi;
+> >> +	u32 width, height;
+> >> +	u32 bpl;
+> >> +	unsigned int i;
+> >> +
+> >> +	pix = &f->fmt.pix;
+> > 
+> > You can initialize pix when declaring it.
+> > 
+> >> +
+> >> +	for (i = 0; i < video->nformats; i++)
+> >> +		if (pix->pixelformat == video->formats[i].pixelformat)
+> >> +			break;
+> >> +
+> > 
+> > 	for (i = 0; i < video->nformats; i++) {
+> > 		if (pix->pixelformat == video->formats[i].pixelformat)
+> > 			break;
+> > 	}
+> > 
+> > But a helper function that looks up a format by pixelformat, similar to
+> > video_get_pfmt_by_mcode(), would be useful. I think I would make all
+> > those helpers return a const struct stfcamss_format_info pointer instead
+> > of an index.
+> > 
+> >> +	if (i == video->nformats)
+> >> +		i = 0; /* default format */
+> >> +
+> >> +	fi = &video->formats[i];
+> >> +	width = pix->width;
+> >> +	height = pix->height;
+> >> +
+> >> +	memset(pix, 0, sizeof(*pix));
+> >> +
+> >> +	pix->pixelformat = fi->pixelformat;
+> >> +	pix->width = clamp_t(u32, width, STFCAMSS_FRAME_MIN_WIDTH,
+> >> +			     STFCAMSS_FRAME_MAX_WIDTH);
+> >> +	pix->height = clamp_t(u32, height, STFCAMSS_FRAME_MIN_HEIGHT,
+> >> +			      STFCAMSS_FRAME_MAX_HEIGHT);
+> >> +	bpl = pix->width * fi->bpp / 8;
+> >> +	bpl = ALIGN(bpl, video->bpl_alignment);
+> >> +	pix->bytesperline = bpl;
+> > 
+> > Does the hardware support configuring the stride ?
+> 
+> The hardware does not support.
+> 
+> >> +
+> >> +	for (i = 0; i < fi->planes; ++i)
+> >> +		pix->sizeimage += bpl * pix->height / fi->vsub[i];
+> >> +
+> >> +	pix->field = V4L2_FIELD_NONE;
+> >> +	pix->colorspace = V4L2_COLORSPACE_SRGB;
+> >> +	pix->flags = 0;
+> >> +	pix->ycbcr_enc =
+> >> +		V4L2_MAP_YCBCR_ENC_DEFAULT(pix->colorspace);
+> >> +	pix->quantization = V4L2_MAP_QUANTIZATION_DEFAULT(true,
+> >> +							  pix->colorspace,
+> >> +							  pix->ycbcr_enc);
+> >> +	pix->xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(pix->colorspace);
+> > 
+> > This doesn't seem right for the processed output.
+> > 
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static int stf_video_init_format(struct stfcamss_video *video)
+> >> +{
+> >> +	int ret;
+> >> +	struct v4l2_format format = {
+> >> +		.type = video->type,
+> >> +		.fmt.pix = {
+> >> +			.width = 1920,
+> >> +			.height = 1080,
+> >> +			.pixelformat = V4L2_PIX_FMT_RGB565,
+> > 
+> > That format doesn't seem supported, let's pick V4L2_PIX_FMT_NV12.
+> > 
+> >> +		},
+> >> +	};
+> >> +
+> >> +	ret = __video_try_fmt(video, &format);
+> >> +
+> >> +	if (ret < 0)
+> >> +		return ret;
+> >> +
+> >> +	video->active_fmt = format;
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +/* -----------------------------------------------------------------------------
+> >> + * Video queue operations
+> >> + */
+> >> +
+> >> +static int video_queue_setup(struct vb2_queue *q,
+> >> +			     unsigned int *num_buffers,
+> >> +			     unsigned int *num_planes,
+> >> +			     unsigned int sizes[],
+> >> +			     struct device *alloc_devs[])
+> >> +{
+> >> +	struct stfcamss_video *video = vb2_get_drv_priv(q);
+> >> +	const struct v4l2_pix_format *format = &video->active_fmt.fmt.pix;
+> >> +
+> >> +	if (*num_planes) {
+> >> +		if (*num_planes != 1)
+> >> +			return -EINVAL;
+> >> +
+> >> +		if (sizes[0] < format->sizeimage)
+> >> +			return -EINVAL;
+> >> +	}
+> >> +
+> >> +	*num_planes = 1;
+> >> +	sizes[0] = format->sizeimage;
+> >> +	if (!sizes[0])
+> >> +		dev_err(video->stfcamss->dev,
+> >> +			"%s: error size is zero!!!\n", __func__);
+> > 
+> > Shouldn't you return an error ? Also, use dev_dbg(), printing an error
+> > message based on a condition that can easily be triggered by
+> > unpriviledge userspace opens the door to applications flooding the
+> > kernel log.
+> > 
+> >> +
+> >> +	dev_dbg(video->stfcamss->dev, "planes = %d, size = %d\n",
+> >> +		*num_planes, sizes[0]);
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static int video_buf_init(struct vb2_buffer *vb)
+> >> +{
+> >> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> >> +	struct stfcamss_video *video = vb2_get_drv_priv(vb->vb2_queue);
+> >> +	struct stfcamss_buffer *buffer =
+> >> +		container_of(vbuf, struct stfcamss_buffer, vb);
+> > 
+> > A static inline to_stfcamss_buffer() function that wraps the
+> > container_of() would be nice. You can use it below too.
+> > 
+> >> +	const struct v4l2_pix_format *fmt = &video->active_fmt.fmt.pix;
+> >> +	dma_addr_t *paddr;
+> >> +
+> >> +	paddr = vb2_plane_cookie(vb, 0);
+> >> +	buffer->addr[0] = *paddr;
+> >> +
+> >> +	if (fmt->pixelformat == V4L2_PIX_FMT_NV12 ||
+> >> +	    fmt->pixelformat == V4L2_PIX_FMT_NV21 ||
+> >> +	    fmt->pixelformat == V4L2_PIX_FMT_NV16 ||
+> >> +	    fmt->pixelformat == V4L2_PIX_FMT_NV61)
+> > 
+> > Only V4L2_PIX_FMT_NV12 is listed in formats_pix_isp. Does the hardware
+> > support the other formats ? If so, it would be nice to support them
+> > already.
+> > 
+> >> +		buffer->addr[1] =
+> >> +			buffer->addr[0] + fmt->bytesperline * fmt->height;
+> > 
+> > As the hardware supports non-contiguous planes, you should use the
+> > MPLANE API (V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) and support the NV*M
+> > formats in addition to the NV* formats.
+> > 
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static int video_buf_prepare(struct vb2_buffer *vb)
+> >> +{
+> >> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> >> +	struct stfcamss_video *video = vb2_get_drv_priv(vb->vb2_queue);
+> >> +	const struct v4l2_pix_format *fmt = &video->active_fmt.fmt.pix;
+> >> +
+> >> +	if (fmt->sizeimage > vb2_plane_size(vb, 0)) {
+> >> +		dev_err(video->stfcamss->dev,
+> > 
+> > dev_dbg() here too.
+> > 
+> >> +			"sizeimage = %d, plane size = %d\n",
+> >> +			fmt->sizeimage, (unsigned int)vb2_plane_size(vb, 0));
+> > 
+> > Both are unsigned, use %u instead of %d.
+> > 
+> >> +		return -EINVAL;
+> >> +	}
+> >> +	vb2_set_plane_payload(vb, 0, fmt->sizeimage);
+> >> +
+> >> +	vbuf->field = V4L2_FIELD_NONE;
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static void video_buf_queue(struct vb2_buffer *vb)
+> >> +{
+> >> +	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+> >> +	struct stfcamss_video *video = vb2_get_drv_priv(vb->vb2_queue);
+> >> +	struct stfcamss_buffer *buffer =
+> >> +		container_of(vbuf, struct stfcamss_buffer, vb);
+> >> +
+> >> +	video->ops->queue_buffer(video, buffer);
+> >> +}
+> >> +
+> >> +/*
+> >> + * video_mbus_to_pix - Convert v4l2_mbus_framefmt to v4l2_pix_format
+> >> + * @mbus: v4l2_mbus_framefmt format (input)
+> >> + * @pix: v4l2_pix_format_mplane format (output)
+> >> + * @f: a pointer to formats array element to be used for the conversion
+> >> + * @alignment: bytesperline alignment value
+> >> + *
+> >> + * Fill the output pix structure with information from the input mbus format.
+> >> + *
+> >> + * Return 0 on success or a negative error code otherwise
+> >> + */
+> >> +static int video_mbus_to_pix(const struct v4l2_mbus_framefmt *mbus,
+> >> +			     struct v4l2_pix_format *pix,
+> >> +			     const struct stfcamss_format_info *f,
+> >> +			     unsigned int alignment)
+> >> +{
+> >> +	u32 bytesperline;
+> >> +	unsigned int i;
+> >> +
+> >> +	memset(pix, 0, sizeof(*pix));
+> >> +	v4l2_fill_pix_format(pix, mbus);
+> >> +	pix->pixelformat = f->pixelformat;
+> >> +	bytesperline = pix->width * f->bpp / 8;
+> >> +	bytesperline = ALIGN(bytesperline, alignment);
+> >> +	pix->bytesperline = bytesperline;
+> >> +
+> >> +	for (i = 0; i < f->planes; ++i)
+> >> +		pix->sizeimage += bytesperline * pix->height / f->vsub[i];
+> > 
+> > This function is used for validation of the format only, the
+> > bytesperline and sizeimage values are never used. You can simplify the
+> > driver by dropping the function and comparing the width, height and
+> > field of the subdev and video device from the v4l2_mbus_framefmt and
+> > v4l2_pix_format respectively in video_check_format().
+> > video_get_subdev_format() will then take a v4l2_mbus_framefmt pointer,
+> > not a v4l2_pix_format.
+> > 
+> > The format match check still needs conversion of the 
+> > 
+> > To check the format, you need to convert the mbus code from the subdev
+> > to a pixel format using the 
+> > 
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >> +static struct v4l2_subdev *video_remote_subdev(struct stfcamss_video *video,
+> >> +					       u32 *pad)
+> >> +{
+> >> +	struct media_pad *remote;
+> >> +
+> >> +	remote = media_pad_remote_pad_first(&video->pad);
+> >> +
+> >> +	if (!remote || !is_media_entity_v4l2_subdev(remote->entity))
+> >> +		return NULL;
+> >> +
+> >> +	if (pad)
+> >> +		*pad = remote->index;
+> >> +
+> >> +	return media_entity_to_v4l2_subdev(remote->entity);
+> > 
+> > As the connected subdev is always the same (the CSI-2 RX for the raw
+> > capture video device and the ISP for the processed capture video
+> > device), I would store a pointer to the connected subdev in the
+> > stfcamss_video structure at registration time. You can pass the pointer
+> > to the stf_video_register() function.
+> 
+> As the hardware also supports the dvp interface, I think the current
+> function implementation should be flexible and easy to expand later.
 
-On 2023/7/2 04:46, syzbot wrote:
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    533925cb7604 Merge tag 'riscv-for-linus-6.5-mw1' of git:=
-//..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D14d8b610a800=
-00
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D12464973c17d=
-2b37
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dae97a827ae1c33=
-36bbb4
-> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for De=
-bian) 2.35.2
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/7b23da6a6f6c/di=
-sk-533925cb.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/f163e9ea9946/vmlin=
-ux-533925cb.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5b943aa5a1e1/=
-bzImage-533925cb.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the com=
-mit:
-> Reported-by: syzbot+ae97a827ae1c3336bbb4@syzkaller.appspotmail.com
->
+Fair enough, I'm fine with that.
 
-#syz test: https://github.com/adam900710/linux graceful_reloc_mismatch
+> >> +}
+> >> +
+> >> +static int video_get_subdev_format(struct stfcamss_video *video,
+> >> +				   struct v4l2_format *format)
+> >> +{
+> >> +	struct v4l2_pix_format *pix = &video->active_fmt.fmt.pix;
+> >> +	struct v4l2_subdev_format fmt;
+> >> +	struct v4l2_subdev *subdev;
+> >> +	u32 pixelformat;
+> >> +	u32 pad;
+> >> +	int ret;
+> >> +
+> >> +	subdev = video_remote_subdev(video, &pad);
+> >> +	if (!subdev)
+> >> +		return -EPIPE;
+> >> +
+> >> +	fmt.pad = pad;
+> >> +	fmt.which = V4L2_SUBDEV_FORMAT_ACTIVE;
+> >> +
+> >> +	ret = v4l2_subdev_call(subdev, pad, get_fmt, NULL, &fmt);
+> > 
+> > Use v4l2_subdev_call_state_active() to support the subdev state API.
+> > 
+> >> +	if (ret)
+> >> +		return ret;
+> >> +
+> >> +	pixelformat = pix->pixelformat;
+> >> +	ret = video_find_format(fmt.format.code, pixelformat, video);
+> >> +	if (ret < 0)
+> >> +		return ret;
+> >> +
+> >> +	format->type = video->type;
+> >> +
+> >> +	return video_mbus_to_pix(&fmt.format, &format->fmt.pix,
+> >> +				 &video->formats[ret], video->bpl_alignment);
+> >> +}
+> >> +
 
-> assertion failed: root->reloc_root =3D=3D reloc_root, in fs/btrfs/reloca=
-tion.c:1919
-> ------------[ cut here ]------------
-> kernel BUG at fs/btrfs/relocation.c:1919!
-> invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-> CPU: 0 PID: 9904 Comm: syz-executor.3 Not tainted 6.4.0-syzkaller-08881-=
-g533925cb7604 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS =
-Google 05/27/2023
-> RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
-> Code: fe e9 f5 f7 ff ff e8 6d 62 ec fd 48 c7 c7 20 5e 4b 8b 48 c7 c6 c0 =
-6d 4b 8b 48 c7 c2 a0 5e 4b 8b b9 7f 07 00 00 e8 8e d8 15 07 <0f> 0b e8 d7 =
-17 18 07 f3 0f 1e fa e8 3e 62 ec fd 43 80 3c 2f 00 74
-> RSP: 0018:ffffc9000325f760 EFLAGS: 00010246
-> RAX: 000000000000004f RBX: ffff888075644030 RCX: 1481ccc522da5800
-> RDX: ffffc90005c09000 RSI: 00000000000364ca RDI: 00000000000364cb
-> RBP: ffffc9000325f870 R08: ffffffff816f33ac R09: 1ffff9200064bea0
-> R10: dffffc0000000000 R11: fffff5200064bea1 R12: ffff888075644000
-> R13: ffff88803b166000 R14: ffff88803b166560 R15: ffff88803b166558
-> FS:  00007f4e305fd700(0000) GS:ffff8880b9800000(0000) knlGS:000000000000=
-0000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000056080679c000 CR3: 00000000193ad000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   relocate_block_group+0xa5d/0xcd0 fs/btrfs/relocation.c:3749
->   btrfs_relocate_block_group+0x7ab/0xd70 fs/btrfs/relocation.c:4087
->   btrfs_relocate_chunk+0x12c/0x3b0 fs/btrfs/volumes.c:3283
->   __btrfs_balance+0x1b06/0x2690 fs/btrfs/volumes.c:4018
->   btrfs_balance+0xbdb/0x1120 fs/btrfs/volumes.c:4402
->   btrfs_ioctl_balance+0x496/0x7c0 fs/btrfs/ioctl.c:3604
->   vfs_ioctl fs/ioctl.c:51 [inline]
->   __do_sys_ioctl fs/ioctl.c:870 [inline]
->   __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x63/0xcd
-> RIP: 0033:0x7f4e2f88c389
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 19 00 00 90 48 89 f8 48 89 =
-f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 =
-ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f4e305fd168 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00007f4e2f9abf80 RCX: 00007f4e2f88c389
-> RDX: 00000000200003c0 RSI: 00000000c4009420 RDI: 0000000000000005
-> RBP: 00007f4e2f8d7493 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffdbefc213f R14: 00007f4e305fd300 R15: 0000000000022000
->   </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:prepare_to_merge+0xbb2/0xc40 fs/btrfs/relocation.c:1919
-> Code: fe e9 f5 f7 ff ff e8 6d 62 ec fd 48 c7 c7 20 5e 4b 8b 48 c7 c6 c0 =
-6d 4b 8b 48 c7 c2 a0 5e 4b 8b b9 7f 07 00 00 e8 8e d8 15 07 <0f> 0b e8 d7 =
-17 18 07 f3 0f 1e fa e8 3e 62 ec fd 43 80 3c 2f 00 74
-> RSP: 0018:ffffc9000325f760 EFLAGS: 00010246
-> RAX: 000000000000004f RBX: ffff888075644030 RCX: 1481ccc522da5800
-> RDX: ffffc90005c09000 RSI: 00000000000364ca RDI: 00000000000364cb
-> RBP: ffffc9000325f870 R08: ffffffff816f33ac R09: 1ffff9200064bea0
-> R10: dffffc0000000000 R11: fffff5200064bea1 R12: ffff888075644000
-> R13: ffff88803b166000 R14: ffff88803b166560 R15: ffff88803b166558
-> FS:  00007f4e305fd700(0000) GS:ffff8880b9800000(0000) knlGS:000000000000=
-0000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055555657e888 CR3: 00000000193ad000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want to change bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
+-- 
+Regards,
+
+Laurent Pinchart
