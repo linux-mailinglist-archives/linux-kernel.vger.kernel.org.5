@@ -2,44 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8148076D4BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F8276D4BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbjHBRJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:09:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34522 "EHLO
+        id S231781AbjHBRJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbjHBRJV (ORCPT
+        with ESMTP id S229541AbjHBRJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:09:21 -0400
+        Wed, 2 Aug 2023 13:09:22 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1EF7173A;
-        Wed,  2 Aug 2023 10:09:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5FD01723;
+        Wed,  2 Aug 2023 10:09:20 -0700 (PDT)
 Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.147.181])
-        by linux.microsoft.com (Postfix) with ESMTPSA id E1D3F238C432;
-        Wed,  2 Aug 2023 10:09:18 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E1D3F238C432
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5545A238C44A;
+        Wed,  2 Aug 2023 10:09:20 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5545A238C44A
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1690996159;
-        bh=34PwN6LabNXeFf++2y+BLpbiwBMV7JSsPbGv6UCAaSw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=XRzNVaSQ4ySOx7wyo3Mll6BVJmW7zsC91pHcJ9VLU4XAv3DJED05WO/2LPWJRtLQ4
-         yxJlFF7405ukJMEk85abNHR46tnmD7h4BmMydMgUTcNiK00X1eLFhECuMsFhiePa6J
-         k0C3KJfyvyEWQowCFETmuYlqXa8hlEEUt099Hoa8=
+        s=default; t=1690996160;
+        bh=fDMlaBv0OrmjGT2rCt6r3VpG49OJGOp86FWwQR6AG8I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MBrgUE5yyF4lmQsGR5fA3xCwtE6REdRcq3HEpVDdlPJU1X3nSlJC4O3K93CWGLCVS
+         +fIRyAe9Xt/odCqQ6+lRf/gJgmIzf/5vjCa9EIEiiS1dlF7aESNG02wqsq+BMIBSnN
+         eg+dumcBJvFcSR4Ejt30AUd0M+B8rAjPTOdjyEcw=
 From:   Easwar Hariharan <eahariha@linux.microsoft.com>
 To:     stable@vger.kernel.org
 Cc:     easwar.hariharan@microsoft.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
         Robin Murphy <robin.murphy@arm.com>,
+        Nicolin Chen <nicolinc@nvidia.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, iommu@lists.linux.dev
-Subject: [PATCH v2 6.1 0/4] ARM SMMUv3 errata for 6.1
-Date:   Wed,  2 Aug 2023 17:09:07 +0000
-Message-Id: <20230802170911.1593275-1-eahariha@linux.microsoft.com>
+        Sasha Levin <sashal@kernel.org>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Tomas Krcka <krckatom@amazon.de>,
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT
+        (AARCH64 ARCHITECTURE)),
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list),
+        iommu@lists.linux-foundation.org (open list:IOMMU DRIVERS),
+        iommu@lists.linux.dev (open list:IOMMU DRIVERS)
+Subject: [PATCH v2 6.1 1/4] iommu/arm-smmu-v3: Work around MMU-600 erratum 1076982
+Date:   Wed,  2 Aug 2023 17:09:08 +0000
+Message-Id: <20230802170911.1593275-2-eahariha@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230802170911.1593275-1-eahariha@linux.microsoft.com>
+References: <20230802170911.1593275-1-eahariha@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -52,33 +62,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: iommu@lists.linux.dev
+From: Robin Murphy <robin.murphy@arm.com>
 
-Changelog:
-==========
-v1 -> v2:
- - Backport other relevant errata patches from the same series as MMU-700 erratum 2812531
- - v1 link: https://lore.kernel.org/stable/20230724185107.1675882-1-eahariha@linux.microsoft.com/T/#u
+commit f322e8af35c7f23a8c08b595c38d6c855b2d836f upstream
 
-Robin Murphy (4):
-  iommu/arm-smmu-v3: Work around MMU-600 erratum 1076982
-  iommu/arm-smmu-v3: Document MMU-700 erratum 2812531
-  iommu/arm-smmu-v3: Add explicit feature for nesting
-  iommu/arm-smmu-v3: Document nesting-related errata
+MMU-600 versions prior to r1p0 fail to correctly generate a WFE wakeup
+event when the command queue transitions fom full to non-full. We can
+easily work around this by simply hiding the SEV capability such that we
+fall back to polling for space in the queue - since MMU-600 implements
+MSIs we wouldn't expect to need SEV for sync completion either, so this
+should have little to no impact.
 
- Documentation/arm64/silicon-errata.rst      |  4 ++
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 50 +++++++++++++++++++++
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  8 ++++
- 3 files changed, 62 insertions(+)
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
+Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+Link: https://lore.kernel.org/r/08adbe3d01024d8382a478325f73b56851f76e49.1683731256.git.robin.murphy@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
+---
+ Documentation/arm64/silicon-errata.rst      |  2 ++
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 29 +++++++++++++++++++++
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  6 +++++
+ 3 files changed, 37 insertions(+)
 
+diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
+index f64354f8a79f..55e1e074dec1 100644
+--- a/Documentation/arm64/silicon-errata.rst
++++ b/Documentation/arm64/silicon-errata.rst
+@@ -122,6 +122,8 @@ stable kernels.
+ +----------------+-----------------+-----------------+-----------------------------+
+ | ARM            | MMU-500         | #841119,826419  | N/A                         |
+ +----------------+-----------------+-----------------+-----------------------------+
++| ARM            | MMU-600         | #1076982        | N/A                         |
+++----------------+-----------------+-----------------+-----------------------------+
+ +----------------+-----------------+-----------------+-----------------------------+
+ | Broadcom       | Brahma-B53      | N/A             | ARM64_ERRATUM_845719        |
+ +----------------+-----------------+-----------------+-----------------------------+
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index bcdb2cbdda97..782d040a829c 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -3459,6 +3459,33 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
+ 	return 0;
+ }
+ 
++#define IIDR_IMPLEMENTER_ARM		0x43b
++#define IIDR_PRODUCTID_ARM_MMU_600	0x483
++
++static void arm_smmu_device_iidr_probe(struct arm_smmu_device *smmu)
++{
++	u32 reg;
++	unsigned int implementer, productid, variant, revision;
++
++	reg = readl_relaxed(smmu->base + ARM_SMMU_IIDR);
++	implementer = FIELD_GET(IIDR_IMPLEMENTER, reg);
++	productid = FIELD_GET(IIDR_PRODUCTID, reg);
++	variant = FIELD_GET(IIDR_VARIANT, reg);
++	revision = FIELD_GET(IIDR_REVISION, reg);
++
++	switch (implementer) {
++	case IIDR_IMPLEMENTER_ARM:
++		switch (productid) {
++		case IIDR_PRODUCTID_ARM_MMU_600:
++			/* Arm erratum 1076982 */
++			if (variant == 0 && revision <= 2)
++				smmu->features &= ~ARM_SMMU_FEAT_SEV;
++			break;
++		}
++		break;
++	}
++}
++
+ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ {
+ 	u32 reg;
+@@ -3664,6 +3691,8 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ 
+ 	smmu->ias = max(smmu->ias, smmu->oas);
+ 
++	arm_smmu_device_iidr_probe(smmu);
++
+ 	if (arm_smmu_sva_supported(smmu))
+ 		smmu->features |= ARM_SMMU_FEAT_SVA;
+ 
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+index 4cb136f07914..5964e02c4e57 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+@@ -69,6 +69,12 @@
+ #define IDR5_VAX			GENMASK(11, 10)
+ #define IDR5_VAX_52_BIT			1
+ 
++#define ARM_SMMU_IIDR			0x18
++#define IIDR_PRODUCTID			GENMASK(31, 20)
++#define IIDR_VARIANT			GENMASK(19, 16)
++#define IIDR_REVISION			GENMASK(15, 12)
++#define IIDR_IMPLEMENTER		GENMASK(11, 0)
++
+ #define ARM_SMMU_CR0			0x20
+ #define CR0_ATSCHK			(1 << 4)
+ #define CR0_CMDQEN			(1 << 3)
 -- 
 2.25.1
 
