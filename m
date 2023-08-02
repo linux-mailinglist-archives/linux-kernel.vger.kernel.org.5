@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 182DD76D30B
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A110E76D30F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbjHBPzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44110 "EHLO
+        id S235408AbjHBP4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:56:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235418AbjHBPza (ORCPT
+        with ESMTP id S235448AbjHBPzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:55:30 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4296D199F;
-        Wed,  2 Aug 2023 08:55:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Wed, 2 Aug 2023 11:55:43 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4FA2103
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:55:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CE1B961857;
-        Wed,  2 Aug 2023 15:55:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 371B5C433C8;
-        Wed,  2 Aug 2023 15:55:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690991713;
-        bh=vmS3y3vEprt4Ee9EVdT/KBotedRLV0L1wK1C8giiJQ0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WeiXGksNCeqBY0D4Z/8Ow3J9XqjC9OJyQu+88uQz8TQaiKoIgPzO9Yl9TRNFTlF3D
-         N39NOOXy/Mz33yVrblUjCuLOvbkllNtHrbplC8Lqq3XEZb+5b6hwCMns6zjmiGDiR5
-         WyKju8MvL8RFMV0pD03r+FySvZn1XdniQk0Eq3w2KYJ+neD3VaPmcPNIxN2Y2gg+sv
-         DUsm6xoKz5G2XuJa48wmKk8Acu4wfo23otwQde0jhhtejTCMbDPpc0JiEX4uvF0xoL
-         oztN3yS/UAXRXhwX7BD0euPVgBUKmEnA+m7EZc5otPguhtVvE1+tJsa8wHuWBmvo03
-         IzWfXQNHWVpaQ==
-Received: from [104.132.1.99] (helo=wait-a-minute.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1qREBq-001PtL-B3;
-        Wed, 02 Aug 2023 16:55:10 +0100
-Date:   Wed, 02 Aug 2023 16:55:05 +0100
-Message-ID: <877cqdqw12.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-In-Reply-To: <ZMgsjx8dwKd4xBGe@google.com>
-References: <20230722022251.3446223-1-rananta@google.com>
-        <20230722022251.3446223-3-rananta@google.com>
-        <87tttpr6qy.wl-maz@kernel.org>
-        <ZMgsjx8dwKd4xBGe@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 5753921A3A;
+        Wed,  2 Aug 2023 15:55:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1690991732; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YgHBU51w4LXvHyXRHiGVSsQiW98HOPwBuKRYIXq+KV4=;
+        b=KxwFR1cOjbUj29hiLao3h7B7cXrUBCllEi3ejEMXaE3KkrGvdyPBLqnhUrsZjP6xXdVlOR
+        yXhLdeYp676tNjaW0sQSZnic6XxKFTZPrmjMFjTAiONNjEROVCycHCTd0/Ef1rYfYOSsUX
+        JxkMSpwtbMpqUQpwrkDg7MJFURHe+b4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1690991732;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YgHBU51w4LXvHyXRHiGVSsQiW98HOPwBuKRYIXq+KV4=;
+        b=p5VSzDUbP+iTld01djNzeHZsOjYFzzjJMUvwM8b/dDBSKaLF64MgdBRSybHHDintKyamsQ
+        e5dixT5uvDJE4cCQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33FCA13909;
+        Wed,  2 Aug 2023 15:55:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Zc24C3R8ymTUOwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Wed, 02 Aug 2023 15:55:32 +0000
+Date:   Wed, 02 Aug 2023 17:55:31 +0200
+Message-ID: <87h6phcubw.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Matthew Anderson <ruinairas1992@gmail.com>
+Cc:     tiwai@suse.com, perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] ALSA: hda/realtek: Add headphone quirk for Aya Neo Geek
+In-Reply-To: <20230802153730.39273-2-ruinairas1992@gmail.com>
+References: <20230802153730.39273-1-ruinairas1992@gmail.com>
+        <20230802153730.39273-2-ruinairas1992@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 104.132.1.99
-X-SA-Exim-Rcpt-To: seanjc@google.com, rananta@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 22:50:07 +0100,
-Sean Christopherson <seanjc@google.com> wrote:
+On Wed, 02 Aug 2023 17:37:29 +0200,
+Matthew Anderson wrote:
 > 
-> On Thu, Jul 27, 2023, Marc Zyngier wrote:
-> > On Sat, 22 Jul 2023 03:22:41 +0100,
-> > Raghavendra Rao Ananta <rananta@google.com> wrote:
-> > > 
-> > > Stop depending on CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL and opt to
-> > > standardize on kvm_arch_flush_remote_tlbs() since it avoids
-> > > duplicating the generic TLB stats across architectures that implement
-> > > their own remote TLB flush.
-> > > 
-> > > This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
-> > > path, but that is a small cost in comparison to flushing remote TLBs.
-> > 
-> > Well, there is no such thing as a "remote TLB" anyway. We either have
-> > a non-shareable or inner-shareable invalidation. The notion of remote
-> > would imply that we track who potentially has a TLB, which we
-> > obviously don't.
-> 
-> Maybe kvm_arch_flush_vm_tlbs()?  The "remote" part is misleading even on x86 when
-> running on Hyper-V, as the flush may be done via a single hypercall and by kicking
-> "remote" vCPUs.
+> This fixes the headphones on the Aya Neo Geek handheld.
 
-Yup, this would be much better.
+It'd be helpful if you describe a bit more about the problem itself.
 
-Thanks,
+> Signed-off-by: Matthew Anderson <ruinairas1992@gmail.com>
 
-	M.
+Please put a blank line before Signed-off-by line.
 
--- 
-Without deviation from the norm, progress is not possible.
+
+thanks,
+
+Takashi
