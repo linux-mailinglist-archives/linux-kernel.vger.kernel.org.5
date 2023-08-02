@@ -2,174 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C71FB76D781
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F7676D784
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232594AbjHBTMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60092 "EHLO
+        id S232829AbjHBTMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjHBTMP (ORCPT
+        with ESMTP id S229832AbjHBTMr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:12:15 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74BFC26B2;
-        Wed,  2 Aug 2023 12:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:References:
-        In-Reply-To:Message-Id:Date:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=l0fagwpjnO0mCXCu/hb1J7U1QL4bJjiaBDvQnvA0kiY=; b=ZJHc5KT4QuCBR5z+VPN0cY+pvX
-        WORp8NjEOqITE7KRFKUnPYZq88XtaWHbNuuPPJ7/20deZo9pJflnY07ZnqZDJe7UQI3R4Y86bkLd6
-        hBgQT3V0R7mfT3J0g6YIIE0IgeKl/sj7Z6kAyLcaiRb4kprANGXj3No1FuQQMRWaJpog=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:50458 helo=localhost.localdomain)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qRHGM-0003z2-Ie; Wed, 02 Aug 2023 15:12:03 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hugo@hugovil.com,
-        bruno.thomsen@gmail.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Date:   Wed,  2 Aug 2023 15:11:53 -0400
-Message-Id: <20230802191153.952667-3-hugo@hugovil.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230802191153.952667-1-hugo@hugovil.com>
-References: <20230802191153.952667-1-hugo@hugovil.com>
+        Wed, 2 Aug 2023 15:12:47 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD062D49
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:12:36 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 93AC429A;
+        Wed,  2 Aug 2023 21:11:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1691003490;
+        bh=79gCi+ljQNxU5kGfbaU4eODO3ztjzxCR2y1UIHcBH+A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SPEG/sa7I0CPMVolb6AYy5D/t2GM+kTk/VrYzBMUVpHC/7u45CCt4N1iDdakbFR6D
+         5bJZWgd5TvYP3IVWRifufmCS01sQguhRL+w74YoP2NLWw7lnFH0XzoL9Mf9wDYehR0
+         f6LGCI4oHEwAEOh+K3Kd8f1klINbupJ8eREDknUY=
+Date:   Wed, 2 Aug 2023 22:12:39 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Marek Vasut <marex@denx.de>, Amit Pundir <amit.pundir@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
+ and EOT packet"
+Message-ID: <20230802191239.GA1142@pendragon.ideasonboard.com>
+References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
+ <5cf0e3fa-f66d-06c4-cfda-c48efd8c6508@linaro.org>
+ <bf95af44-2510-1835-dec9-183144de8413@denx.de>
+ <CAA8EJppp_ZJr-DcoZGd1GZmWuo=AECNS+X9zx0dNB4Edn8M2zg@mail.gmail.com>
+ <c5597c50-d41c-9f7e-fb85-4e4a1bc29f15@denx.de>
+ <69900221-503a-693a-f52e-cfa5841230a6@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Level: 
+In-Reply-To: <69900221-503a-693a-f52e-cfa5841230a6@linaro.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
-Subject: [PATCH 2/2] rtc: pcf2127: add support for battery-related DT properties
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On Wed, Aug 02, 2023 at 09:49:42PM +0300, Dmitry Baryshkov wrote:
+> On 02/08/2023 21:45, Marek Vasut wrote:
+> > On 8/2/23 20:16, Dmitry Baryshkov wrote:
+> >> On Wed, 2 Aug 2023 at 20:34, Marek Vasut wrote:
+> >>> On 8/2/23 15:38, Dmitry Baryshkov wrote:
+> >>>> On 02/08/2023 11:52, Neil Armstrong wrote:
+> >>>>> This reverts commit [1] to fix display regression on the 
+> >>>>> Dragonboard 845c
+> >>>>> (SDM845) devboard.
+> >>>>>
+> >>>>> There's a mismatch on the real action of the following flags:
+> >>>>> - MIPI_DSI_MODE_VIDEO_NO_HSA
+> >>>>> - MIPI_DSI_MODE_VIDEO_NO_HFP
+> >>>>> - MIPI_DSI_MODE_VIDEO_NO_HBP
+> >>>>> which leads to a non-working display on qcom platforms.
+> >>>>>
+> >>>>> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA and
+> >>>>> EOT packet")
+> >>>>>
+> >>>>> Cc: Marek Vasut <marex@denx.de>
+> >>>>> Cc: Robert Foss <rfoss@kernel.org>
+> >>>>> Cc: Jagan Teki <jagan@amarulasolutions.com>
+> >>>>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >>>>> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> >>>>> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA
+> >>>>> and EOT packet")
+> >>>>> Reported-by: Amit Pundir <amit.pundir@linaro.org>
+> >>>>> Link:
+> >>>>> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
+> >>>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> >>>>> ---
+> >>>>>    drivers/gpu/drm/bridge/lontium-lt9611.c | 4 +---
+> >>>>>    1 file changed, 1 insertion(+), 3 deletions(-)
+> >>>>>
+> >>>> Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org> #fix db845c
+> >>>>
+> >>>> The boards broken by [1] are used in production by different parties
+> >>>> since 5.10, breaking them doesn't seem more acceptable than breaking the
+> >>>> new out-of-tree iMX8m hardware.
+> >>>
+> >>> The MX8M is also in-tree, so this does not apply.
+> >>
+> >> v6.5-rc4:
+> >>
+> >> $ git grep lontium,lt9611 | grep -v 9611uxc
+> >> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:$id:
+> >> http://devicetree.org/schemas/display/bridge/lontium,lt9611.yaml#
+> >> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
+> >>      - lontium,lt9611
+> >> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
+> >>        compatible = "lontium,lt9611";
+> >> arch/arm64/boot/dts/qcom/sdm845-db845c.dts: compatible = "lontium,lt9611";
+> >> drivers/gpu/drm/bridge/lontium-lt9611.c: { "lontium,lt9611", 0 },
+> >> drivers/gpu/drm/bridge/lontium-lt9611.c: { .compatible = "lontium,lt9611" },
+> >>
+> >> next-20230802:
+> >>
+> >> $ git grep lontium,lt9611 | grep -v 9611uxc
+> >> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:$id:
+> >> http://devicetree.org/schemas/display/bridge/lontium,lt9611.yaml#
+> >> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
+> >>      - lontium,lt9611
+> >> Documentation/devicetree/bindings/display/bridge/lontium,lt9611.yaml:
+> >>        compatible = "lontium,lt9611";
+> >> arch/arm64/boot/dts/qcom/sdm845-db845c.dts: compatible = "lontium,lt9611";
+> >> drivers/gpu/drm/bridge/lontium-lt9611.c: { "lontium,lt9611", 0 },
+> >> drivers/gpu/drm/bridge/lontium-lt9611.c: { .compatible = "lontium,lt9611" },
+> >>
+> >> Your device is not in the tree. Your commit broke existing users.
+> > 
+> > These devices are in tree:
+> > arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dts
+> > arch/arm64/boot/dts/freescale/imx8mp-data-modul-edm-sbc.dts
+> > 
+> > The LT9211 and LT9611 are both expansion modules handled by DTOs and 
+> > bound to the DSIM (which is also in tree).
+> 
+> And they DT for them is not in the tree, that was my point. You have 
+> broken the existing user for the DTBO that is not present even in 
+> linux-next.
+> 
+> >> Can we please end the argument, land the fix (this revert) for 6.5 and
+> >> work on the solution for 6.6 or 6.7?
+> > 
+> > I would much prefer a solution which does not break my existing use 
+> > case. It is still not even clear whether the problem really is on MX8M 
+> > side at all, or whether it is QCOM misinterpreting flags. I cannot debug 
+> > the later, since I have no access to that platform, nor its documentation.
+> 
+> You can get the RB1 for $199 and check the DSI behaviour on that 
+> platform. It has newer bridge, but the DSI controller is (mostly) the same.
 
-Add support for "battery-switch-over-enable" DT property which can be
-used to enable/disable the battery switch over function.
+Could everybody please get away from the keyboard for a few hours, take
+a deep breath, and resume the discussion in a less aggressive and more
+constructive way ?
 
-Also add support for "battery-low-detect-enable" DT property which can
-be used to enable/disable the battery low detection function.
+Without judging the technical merits of the arguments, and which
+platform gets it wrong, the commit being reverted landed in v6.5-rc1,
+and breaks in-tree users. Reverting and retrying thus seems the usual
+practice to me, as we are getting too close to the v6.5 release to
+ensure a correct fix can be developed and merged in time. This will not
+cause a regression on i.MX8M, as the commit has never appeared in a
+release kernel.
 
-If any of these properties is not defined, then no alteration to the
-PWRMNG field will occur.
+This is however an unfortunate event. It is not a nice feeling to work
+on enabling features for a platform and see the work being reverted at
+the last minute. Neil, Dmitry, could you please help Marek figuring out
+a good solution for v6.6 ? I don't think it's reasonable to ask him to
+buy an RB1 and investigate the MSM side, when Linaro has access to
+hardware and support.
 
-These properties can be used to change the default power-on values
-(PWRMNG) for battery-related functions. It is especially useful for
-the PCF2131 where the default PWRMNG power-on values disable by
-default the battery-related functions (contrary to the PCF2127).
-
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
----
- drivers/rtc/rtc-pcf2127.c | 59 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
-
-diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-index 78141bb06ab0..3bb3ad95c67e 100644
---- a/drivers/rtc/rtc-pcf2127.c
-+++ b/drivers/rtc/rtc-pcf2127.c
-@@ -20,6 +20,7 @@
- #include <linux/i2c.h>
- #include <linux/spi/spi.h>
- #include <linux/bcd.h>
-+#include <linux/bitfield.h>
- #include <linux/rtc.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-@@ -48,6 +49,7 @@
- #define PCF2127_BIT_CTRL3_BLF			BIT(2)
- #define PCF2127_BIT_CTRL3_BF			BIT(3)
- #define PCF2127_BIT_CTRL3_BTSE			BIT(4)
-+#define PCF2127_CTRL3_PWRMNG_MASK		GENMASK(7, 5)
- /* Time and date registers */
- #define PCF2127_REG_TIME_BASE		0x03
- #define PCF2127_BIT_SC_OSF			BIT(7)
-@@ -1080,6 +1082,57 @@ static int pcf2127_enable_ts(struct device *dev, int ts_id)
- 	return ret;
- }
- 
-+/*
-+ * By default, do not reconfigure or set default power management mode,
-+ * unless explicitly requested via DT properties:
-+ *   battery-switch-over
-+ *   battery-low-detect
-+ */
-+static int pcf2127_configure_power_management(struct device *dev)
-+{
-+	struct pcf2127 *pcf2127 = dev_get_drvdata(dev);
-+	int ret;
-+	u8 pwrmng;
-+	u32 bat_sw_over, bat_low_detect;
-+
-+	/*
-+	 * The PWRMNG field is defined in a peculiar way for PCF21XX
-+	 * devices: there is no individual bit defined for the
-+	 * battery-switch-over or battery-low-detect functions.
-+	 * Therefore, we require that both properties must be defined
-+	 * to alter the PWRMNG field.
-+	 */
-+	if (device_property_read_u32(dev, "battery-switch-over", &bat_sw_over))
-+		return 0;
-+
-+	if (device_property_read_u32(dev, "battery-low-detect",
-+				     &bat_low_detect))
-+		return 0;
-+
-+	if (!bat_sw_over) {
-+		/*
-+		 * If battery-switch-over is disabled, then the
-+		 * battery-low-detect function is always disabled.
-+		 */
-+		pwrmng = BIT(2) | BIT(1) | BIT(0);
-+	} else {
-+		if (bat_low_detect)
-+			pwrmng = 0;
-+		else
-+			pwrmng = BIT(0);
-+	}
-+
-+	ret = regmap_update_bits(pcf2127->regmap, PCF2127_REG_CTRL3,
-+				 PCF2127_CTRL3_PWRMNG_MASK,
-+				 FIELD_PREP(PCF2127_CTRL3_PWRMNG_MASK, pwrmng));
-+	if (ret < 0) {
-+		dev_dbg(dev, "PWRMNG config failed\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /* Route all interrupt sources to INT A pin. */
- static int pcf2127_configure_interrupt_pins(struct device *dev)
- {
-@@ -1163,6 +1216,12 @@ static int pcf2127_probe(struct device *dev, struct regmap *regmap,
- 		pcf2127->irq_enabled = true;
- 	}
- 
-+	ret = pcf2127_configure_power_management(dev);
-+	if (ret) {
-+		dev_err(dev, "failed to configure power management\n");
-+		return ret;
-+	}
-+
- 	if (alarm_irq > 0 || device_property_read_bool(dev, "wakeup-source")) {
- 		device_init_wakeup(dev, true);
- 		set_bit(RTC_FEATURE_ALARM, pcf2127->rtc->features);
 -- 
-2.30.2
+Regards,
 
+Laurent Pinchart
