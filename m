@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFB4D76D72A
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31AC076D727
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbjHBStb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:49:31 -0400
+        id S232145AbjHBStW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:49:22 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbjHBStO (ORCPT
+        with ESMTP id S231897AbjHBStN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:49:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C015B0;
-        Wed,  2 Aug 2023 11:49:08 -0700 (PDT)
+        Wed, 2 Aug 2023 14:49:13 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AFF1734;
+        Wed,  2 Aug 2023 11:49:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A60FF615A2;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9F0FD61AFB;
+        Wed,  2 Aug 2023 18:49:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84374C433CB;
         Wed,  2 Aug 2023 18:49:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A751C433C7;
-        Wed,  2 Aug 2023 18:49:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691002147;
-        bh=8sWKkZNorXOypXVvP38K2n3qna7aVMNUTVCHpXKWpLo=;
+        s=k20201202; t=1691002149;
+        bh=WYKfkfr7MebQWbq9faERXzPtA07lKx6EmcLFTn6CB2w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rmqr9ksY3VT9dfOc8hY2hvGwRlgiCjC5jlplSp0DBRamBfrpf8tR/3FFfK6EvQi0C
-         j6M+NYrnF4Y1hAPY6C2U8DwDS8a2jbEfcIBajoQ8CFZMuRYdlzOiMV8k192AlHgqD9
-         qItUmaD4yPM3kbxrcKF4AiPxtjvhecTJ+kDNKssW/xU2VzJNAgDB2OzKY6839dKyfv
-         QYDMbboofkH+1TenzjcV29s3r5dXyw0w+GEWdP096R/8z1QDX+q0RHPnICkV4jsgwE
-         RIzvePrpIrHtvJac9nsQRMfmG9S7YvLyUdz91K8t37ow55BNTqGI0vm8qYkDgqRok/
-         2ZlkNwSrPAXww==
+        b=cn+VZaY8lMvlmlTfVKNePJotkfJKqjUlKZcWScSemSjw/30kG7ayyX4xn54AyicAK
+         woCQXOz72VOsNW7LZXdIpQZf3iQlV5/sKexruF+XUqNRDZjQ5TAvEGrVKmPl3dN07t
+         y+cslHEo0B4HsmB61mp5uk5dmGBfk7iMsV6VuBs46T//rxlbNAdyGJbItW2ZdBXMF/
+         pnvhXtz8tgrL7ClXGkeSkrpUBIK9uLBs//D7eSoZR3ioOPdO0rsSrdiWD0TorMYp0O
+         QHIWq/f8J2+Rr/1N4pqDe+baG/Ml/QyMRMF/vkjLNPe//JDctKB3QCD8IckxW+9StM
+         rNhw1qVpB9eGQ==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
 Cc:     linux-sh@vger.kernel.org, Rich Felker <dalias@libc.org>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 3/4] sh: remove superhyway bus support
-Date:   Wed,  2 Aug 2023 20:48:48 +0200
-Message-Id: <20230802184849.1019466-3-arnd@kernel.org>
+Subject: [PATCH 4/4] sh: machvec: remove custom ioport_{un,}map()
+Date:   Wed,  2 Aug 2023 20:48:49 +0200
+Message-Id: <20230802184849.1019466-4-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230802184849.1019466-1-arnd@kernel.org>
 References: <20230802184849.1019466-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -59,701 +59,93 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-superhyway was only referenced on sh4-202, which is now gone, so remove
-it all as well.
+These functions were only used on the microdev
+board that is now gone, so remove them to simplify
+the ioport handling.
 
-I could find no trace of anything ever calling
-superhyway_register_driver(), not in the git history but also not on the
-web, so I assume this has never served any purpose on mainline kernels.
+This could be further simplified to use the generic
+I/O port accessors now.
 
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- Documentation/arch/sh/index.rst          |   6 -
- arch/sh/Kconfig                          |   4 -
- arch/sh/drivers/Makefile                 |   1 -
- arch/sh/drivers/superhyway/Makefile      |   7 -
- arch/sh/drivers/superhyway/ops-sh4-202.c | 168 ----------------
- drivers/sh/Makefile                      |   1 -
- drivers/sh/superhyway/Makefile           |   8 -
- drivers/sh/superhyway/superhyway-sysfs.c |  54 ------
- drivers/sh/superhyway/superhyway.c       | 234 -----------------------
- include/linux/superhyway.h               | 107 -----------
- 10 files changed, 590 deletions(-)
- delete mode 100644 arch/sh/drivers/superhyway/Makefile
- delete mode 100644 arch/sh/drivers/superhyway/ops-sh4-202.c
- delete mode 100644 drivers/sh/superhyway/Makefile
- delete mode 100644 drivers/sh/superhyway/superhyway-sysfs.c
- delete mode 100644 drivers/sh/superhyway/superhyway.c
- delete mode 100644 include/linux/superhyway.h
+ arch/sh/include/asm/io.h      |  4 ++--
+ arch/sh/include/asm/machvec.h |  5 -----
+ arch/sh/kernel/ioport.c       | 13 +------------
+ 3 files changed, 3 insertions(+), 19 deletions(-)
 
-diff --git a/Documentation/arch/sh/index.rst b/Documentation/arch/sh/index.rst
-index c64776738cf6b..01fce7c131f13 100644
---- a/Documentation/arch/sh/index.rst
-+++ b/Documentation/arch/sh/index.rst
-@@ -43,12 +43,6 @@ mach-x3proto
- Busses
- ======
+diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
+index f2f38e9d489ac..ac521f287fa59 100644
+--- a/arch/sh/include/asm/io.h
++++ b/arch/sh/include/asm/io.h
+@@ -181,7 +181,7 @@ static inline void pfx##out##bwlq##p(type val, unsigned long port)	\
+ {									\
+ 	volatile type *__addr;						\
+ 									\
+-	__addr = __ioport_map(port, sizeof(type));			\
++	__addr = (void __iomem *)sh_io_port_base + port;		\
+ 	*__addr = val;							\
+ 	slow;								\
+ }									\
+@@ -191,7 +191,7 @@ static inline type pfx##in##bwlq##p(unsigned long port)			\
+ 	volatile type *__addr;						\
+ 	type __val;							\
+ 									\
+-	__addr = __ioport_map(port, sizeof(type));			\
++	__addr = (void __iomem *)sh_io_port_base + port;		\
+ 	__val = *__addr;						\
+ 	slow;								\
+ 									\
+diff --git a/arch/sh/include/asm/machvec.h b/arch/sh/include/asm/machvec.h
+index 2b4b085e8f219..4e5314b921f19 100644
+--- a/arch/sh/include/asm/machvec.h
++++ b/arch/sh/include/asm/machvec.h
+@@ -19,11 +19,6 @@ struct sh_machine_vector {
+ 	int (*mv_irq_demux)(int irq);
+ 	void (*mv_init_irq)(void);
  
--SuperHyway
------------
--
--.. kernel-doc:: drivers/sh/superhyway/superhyway.c
--   :export:
--
- Maple
- -----
- 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index d785329e57151..7500521b2b984 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -737,10 +737,6 @@ endmenu
- 
- menu "Bus options"
- 
--config SUPERHYWAY
--	tristate "SuperHyway Bus support"
--	depends on CPU_SUBTYPE_SH4_202
--
- config MAPLE
- 	bool "Maple Bus support"
- 	depends on SH_DREAMCAST
-diff --git a/arch/sh/drivers/Makefile b/arch/sh/drivers/Makefile
-index 56b0acace6e7c..8bd10b904bf93 100644
---- a/arch/sh/drivers/Makefile
-+++ b/arch/sh/drivers/Makefile
-@@ -6,6 +6,5 @@
- obj-y		+= dma/ platform_early.o
- 
- obj-$(CONFIG_PCI)		+= pci/
--obj-$(CONFIG_SUPERHYWAY)	+= superhyway/
- obj-$(CONFIG_PUSH_SWITCH)	+= push-switch.o
- obj-$(CONFIG_HEARTBEAT)		+= heartbeat.o
-diff --git a/arch/sh/drivers/superhyway/Makefile b/arch/sh/drivers/superhyway/Makefile
-deleted file mode 100644
-index aa6e3267c055d..0000000000000
---- a/arch/sh/drivers/superhyway/Makefile
-+++ /dev/null
-@@ -1,7 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--#
--# Makefile for the SuperHyway specific kernel interface routines under Linux.
--#
--
--obj-$(CONFIG_CPU_SUBTYPE_SH4_202)	+= ops-sh4-202.o
--
-diff --git a/arch/sh/drivers/superhyway/ops-sh4-202.c b/arch/sh/drivers/superhyway/ops-sh4-202.c
-deleted file mode 100644
-index 490142274e3b0..0000000000000
---- a/arch/sh/drivers/superhyway/ops-sh4-202.c
-+++ /dev/null
-@@ -1,168 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * arch/sh/drivers/superhyway/ops-sh4-202.c
-- *
-- * SuperHyway bus support for SH4-202
-- *
-- * Copyright (C) 2005  Paul Mundt
-- */
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <linux/superhyway.h>
--#include <linux/string.h>
--#include <asm/addrspace.h>
--#include <asm/io.h>
--
--#define PHYS_EMI_CBLOCK		P4SEGADDR(0x1ec00000)
--#define PHYS_EMI_DBLOCK		P4SEGADDR(0x08000000)
--#define PHYS_FEMI_CBLOCK	P4SEGADDR(0x1f800000)
--#define PHYS_FEMI_DBLOCK	P4SEGADDR(0x00000000)
--
--#define PHYS_EPBR_BLOCK		P4SEGADDR(0x1de00000)
--#define PHYS_DMAC_BLOCK		P4SEGADDR(0x1fa00000)
--#define PHYS_PBR_BLOCK		P4SEGADDR(0x1fc00000)
--
--static struct resource emi_resources[] = {
--	[0] = {
--		.start	= PHYS_EMI_CBLOCK,
--		.end	= PHYS_EMI_CBLOCK + 0x00300000 - 1,
--		.flags	= IORESOURCE_MEM,
--	},
--	[1] = {
--		.start	= PHYS_EMI_DBLOCK,
--		.end	= PHYS_EMI_DBLOCK + 0x08000000 - 1,
--		.flags	= IORESOURCE_MEM,
--	},
--};
--
--static struct superhyway_device emi_device = {
--	.name		= "emi",
--	.num_resources	= ARRAY_SIZE(emi_resources),
--	.resource	= emi_resources,
--};
--
--static struct resource femi_resources[] = {
--	[0] = {
--		.start	= PHYS_FEMI_CBLOCK,
--		.end	= PHYS_FEMI_CBLOCK + 0x00100000 - 1,
--		.flags	= IORESOURCE_MEM,
--	},
--	[1] = {
--		.start	= PHYS_FEMI_DBLOCK,
--		.end	= PHYS_FEMI_DBLOCK + 0x08000000 - 1,
--		.flags	= IORESOURCE_MEM,
--	},
--};
--
--static struct superhyway_device femi_device = {
--	.name		= "femi",
--	.num_resources	= ARRAY_SIZE(femi_resources),
--	.resource	= femi_resources,
--};
--
--static struct resource epbr_resources[] = {
--	[0] = {
--		.start	= P4SEGADDR(0x1e7ffff8),
--		.end	= P4SEGADDR(0x1e7ffff8 + (sizeof(u32) * 2) - 1),
--		.flags	= IORESOURCE_MEM,
--	},
--	[1] = {
--		.start	= PHYS_EPBR_BLOCK,
--		.end	= PHYS_EPBR_BLOCK + 0x00a00000 - 1,
--		.flags	= IORESOURCE_MEM,
--	},
--};
--
--static struct superhyway_device epbr_device = {
--	.name		= "epbr",
--	.num_resources	= ARRAY_SIZE(epbr_resources),
--	.resource	= epbr_resources,
--};
--
--static struct resource dmac_resource = {
--	.start	= PHYS_DMAC_BLOCK,
--	.end	= PHYS_DMAC_BLOCK + 0x00100000 - 1,
--	.flags	= IORESOURCE_MEM,
--};
--
--static struct superhyway_device dmac_device = {
--	.name		= "dmac",
--	.num_resources	= 1,
--	.resource	= &dmac_resource,
--};
--
--static struct resource pbr_resources[] = {
--	[0] = {
--		.start	= P4SEGADDR(0x1ffffff8),
--		.end	= P4SEGADDR(0x1ffffff8 + (sizeof(u32) * 2) - 1),
--		.flags	= IORESOURCE_MEM,
--	},
--	[1] = {
--		.start	= PHYS_PBR_BLOCK,
--		.end	= PHYS_PBR_BLOCK + 0x00400000 - (sizeof(u32) * 2) - 1,
--		.flags	= IORESOURCE_MEM,
--	},
--};
--
--static struct superhyway_device pbr_device = {
--	.name		= "pbr",
--	.num_resources	= ARRAY_SIZE(pbr_resources),
--	.resource	= pbr_resources,
--};
--
--static struct superhyway_device *sh4202_devices[] __initdata = {
--	&emi_device, &femi_device, &epbr_device, &dmac_device, &pbr_device,
--};
--
--static int sh4202_read_vcr(unsigned long base, struct superhyway_vcr_info *vcr)
--{
--	u32 vcrh, vcrl;
--	u64 tmp;
--
--	/*
--	 * XXX: Even though the SH4-202 Evaluation Device documentation
--	 * indicates that VCRL is mapped first with VCRH at a + 0x04
--	 * offset, the opposite seems to be true.
--	 *
--	 * Some modules (PBR and ePBR for instance) also appear to have
--	 * VCRL/VCRH flipped in the documentation, but on the SH4-202
--	 * itself it appears that these are all consistently mapped with
--	 * VCRH preceding VCRL.
--	 *
--	 * Do not trust the documentation, for it is evil.
--	 */
--	vcrh = __raw_readl(base);
--	vcrl = __raw_readl(base + sizeof(u32));
--
--	tmp = ((u64)vcrh << 32) | vcrl;
--	memcpy(vcr, &tmp, sizeof(u64));
--
--	return 0;
--}
--
--static int sh4202_write_vcr(unsigned long base, struct superhyway_vcr_info vcr)
--{
--	u64 tmp = *(u64 *)&vcr;
--
--	__raw_writel((tmp >> 32) & 0xffffffff, base);
--	__raw_writel(tmp & 0xffffffff, base + sizeof(u32));
--
--	return 0;
--}
--
--static struct superhyway_ops sh4202_superhyway_ops = {
--	.read_vcr	= sh4202_read_vcr,
--	.write_vcr	= sh4202_write_vcr,
--};
--
--struct superhyway_bus superhyway_channels[] = {
--	{ &sh4202_superhyway_ops, },
--	{ 0, },
--};
--
--int __init superhyway_scan_bus(struct superhyway_bus *bus)
--{
--	return superhyway_add_devices(bus, sh4202_devices,
--				      ARRAY_SIZE(sh4202_devices));
--}
--
-diff --git a/drivers/sh/Makefile b/drivers/sh/Makefile
-index c53262835e85e..0aa152b1587ad 100644
---- a/drivers/sh/Makefile
-+++ b/drivers/sh/Makefile
-@@ -7,6 +7,5 @@ ifneq ($(CONFIG_COMMON_CLK),y)
- obj-$(CONFIG_HAVE_CLK)			+= clk/
- endif
- obj-$(CONFIG_MAPLE)			+= maple/
--obj-$(CONFIG_SUPERHYWAY)		+= superhyway/
- 
- obj-y					+= pm_runtime.o
-diff --git a/drivers/sh/superhyway/Makefile b/drivers/sh/superhyway/Makefile
-deleted file mode 100644
-index 6dfa41f160af6..0000000000000
---- a/drivers/sh/superhyway/Makefile
-+++ /dev/null
-@@ -1,8 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--#
--# Makefile for the SuperHyway bus drivers.
--#
--
--obj-$(CONFIG_SUPERHYWAY)	+= superhyway.o
--obj-$(CONFIG_SYSFS)		+= superhyway-sysfs.o
--
-diff --git a/drivers/sh/superhyway/superhyway-sysfs.c b/drivers/sh/superhyway/superhyway-sysfs.c
-deleted file mode 100644
-index 774f31b564f8f..0000000000000
---- a/drivers/sh/superhyway/superhyway-sysfs.c
-+++ /dev/null
-@@ -1,54 +0,0 @@
--/*
-- * drivers/sh/superhyway/superhyway-sysfs.c
-- *
-- * SuperHyway Bus sysfs interface
-- *
-- * Copyright (C) 2004, 2005  Paul Mundt <lethal@linux-sh.org>
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file "COPYING" in the main directory of this archive
-- * for more details.
-- */
--#include <linux/kernel.h>
--#include <linux/device.h>
--#include <linux/types.h>
--#include <linux/superhyway.h>
--
--#define superhyway_ro_attr(name, fmt, field)				\
--static ssize_t name##_show(struct device *dev, struct device_attribute *attr, char *buf)		\
--{									\
--	struct superhyway_device *s = to_superhyway_device(dev);	\
--	return sprintf(buf, fmt, s->field);				\
--}									\
--static DEVICE_ATTR_RO(name);
--
--/* VCR flags */
--superhyway_ro_attr(perr_flags, "0x%02x\n", vcr.perr_flags);
--superhyway_ro_attr(merr_flags, "0x%02x\n", vcr.merr_flags);
--superhyway_ro_attr(mod_vers, "0x%04x\n", vcr.mod_vers);
--superhyway_ro_attr(mod_id, "0x%04x\n", vcr.mod_id);
--superhyway_ro_attr(bot_mb, "0x%02x\n", vcr.bot_mb);
--superhyway_ro_attr(top_mb, "0x%02x\n", vcr.top_mb);
--
--/* Misc */
--superhyway_ro_attr(resource, "0x%08lx\n", resource[0].start);
--
--static struct attribute *superhyway_dev_attrs[] = {
--	&dev_attr_perr_flags.attr,
--	&dev_attr_merr_flags.attr,
--	&dev_attr_mod_vers.attr,
--	&dev_attr_mod_id.attr,
--	&dev_attr_bot_mb.attr,
--	&dev_attr_top_mb.attr,
--	&dev_attr_resource.attr,
--	NULL,
--};
--
--static const struct attribute_group superhyway_dev_group = {
--	.attrs = superhyway_dev_attrs,
--};
--
--const struct attribute_group *superhyway_dev_groups[] = {
--	&superhyway_dev_group,
--	NULL,
--};
-diff --git a/drivers/sh/superhyway/superhyway.c b/drivers/sh/superhyway/superhyway.c
-deleted file mode 100644
-index 44324abe21dad..0000000000000
---- a/drivers/sh/superhyway/superhyway.c
-+++ /dev/null
-@@ -1,234 +0,0 @@
--/*
-- * drivers/sh/superhyway/superhyway.c
-- *
-- * SuperHyway Bus Driver
-- *
-- * Copyright (C) 2004, 2005  Paul Mundt <lethal@linux-sh.org>
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file "COPYING" in the main directory of this archive
-- * for more details.
-- */
--#include <linux/kernel.h>
--#include <linux/device.h>
--#include <linux/init.h>
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/list.h>
--#include <linux/superhyway.h>
--#include <linux/string.h>
--#include <linux/slab.h>
--
--static int superhyway_devices;
--
--static struct device superhyway_bus_device = {
--	.init_name = "superhyway",
--};
--
--static void superhyway_device_release(struct device *dev)
--{
--	struct superhyway_device *sdev = to_superhyway_device(dev);
--
--	kfree(sdev->resource);
--	kfree(sdev);
--}
--
--/**
-- * superhyway_add_device - Add a SuperHyway module
-- * @base: Physical address where module is mapped.
-- * @sdev: SuperHyway device to add, or NULL to allocate a new one.
-- * @bus: Bus where SuperHyway module resides.
-- *
-- * This is responsible for adding a new SuperHyway module. This sets up a new
-- * struct superhyway_device for the module being added if @sdev == NULL.
-- *
-- * Devices are initially added in the order that they are scanned (from the
-- * top-down of the memory map), and are assigned an ID based on the order that
-- * they are added. Any manual addition of a module will thus get the ID after
-- * the devices already discovered regardless of where it resides in memory.
-- *
-- * Further work can and should be done in superhyway_scan_bus(), to be sure
-- * that any new modules are properly discovered and subsequently registered.
-- */
--int superhyway_add_device(unsigned long base, struct superhyway_device *sdev,
--			  struct superhyway_bus *bus)
--{
--	struct superhyway_device *dev = sdev;
--
--	if (!dev) {
--		dev = kzalloc(sizeof(struct superhyway_device), GFP_KERNEL);
--		if (!dev)
--			return -ENOMEM;
--
--	}
--
--	dev->bus = bus;
--	superhyway_read_vcr(dev, base, &dev->vcr);
--
--	if (!dev->resource) {
--		dev->resource = kzalloc(sizeof(struct resource), GFP_KERNEL);
--		if (!dev->resource) {
--			kfree(dev);
--			return -ENOMEM;
--		}
--
--		dev->resource->name	= dev->name;
--		dev->resource->start	= base;
--		dev->resource->end	= dev->resource->start + 0x01000000;
--	}
--
--	dev->dev.parent		= &superhyway_bus_device;
--	dev->dev.bus		= &superhyway_bus_type;
--	dev->dev.release	= superhyway_device_release;
--	dev->id.id		= dev->vcr.mod_id;
--
--	sprintf(dev->name, "SuperHyway device %04x", dev->id.id);
--	dev_set_name(&dev->dev, "%02x", superhyway_devices);
--
--	superhyway_devices++;
--
--	return device_register(&dev->dev);
--}
--
--int superhyway_add_devices(struct superhyway_bus *bus,
--			   struct superhyway_device **devices,
--			   int nr_devices)
--{
--	int i, ret = 0;
--
--	for (i = 0; i < nr_devices; i++) {
--		struct superhyway_device *dev = devices[i];
--		ret |= superhyway_add_device(dev->resource[0].start, dev, bus);
--	}
--
--	return ret;
--}
--
--static int __init superhyway_init(void)
--{
--	struct superhyway_bus *bus;
--	int ret;
--
--	ret = device_register(&superhyway_bus_device);
--	if (unlikely(ret))
--		return ret;
--
--	for (bus = superhyway_channels; bus->ops; bus++)
--		ret |= superhyway_scan_bus(bus);
--
--	return ret;
--}
--postcore_initcall(superhyway_init);
--
--static const struct superhyway_device_id *
--superhyway_match_id(const struct superhyway_device_id *ids,
--		    struct superhyway_device *dev)
--{
--	while (ids->id) {
--		if (ids->id == dev->id.id)
--			return ids;
--
--		ids++;
--	}
--
--	return NULL;
--}
--
--static int superhyway_device_probe(struct device *dev)
--{
--	struct superhyway_device *shyway_dev = to_superhyway_device(dev);
--	struct superhyway_driver *shyway_drv = to_superhyway_driver(dev->driver);
--
--	if (shyway_drv && shyway_drv->probe) {
--		const struct superhyway_device_id *id;
--
--		id = superhyway_match_id(shyway_drv->id_table, shyway_dev);
--		if (id)
--			return shyway_drv->probe(shyway_dev, id);
--	}
--
--	return -ENODEV;
--}
--
--static void superhyway_device_remove(struct device *dev)
--{
--	struct superhyway_device *shyway_dev = to_superhyway_device(dev);
--	struct superhyway_driver *shyway_drv = to_superhyway_driver(dev->driver);
--
--	if (shyway_drv->remove)
--		shyway_drv->remove(shyway_dev);
--}
--
--/**
-- * superhyway_register_driver - Register a new SuperHyway driver
-- * @drv: SuperHyway driver to register.
-- *
-- * This registers the passed in @drv. Any devices matching the id table will
-- * automatically be populated and handed off to the driver's specified probe
-- * routine.
-- */
--int superhyway_register_driver(struct superhyway_driver *drv)
--{
--	drv->drv.name	= drv->name;
--	drv->drv.bus	= &superhyway_bus_type;
--
--	return driver_register(&drv->drv);
--}
--
--/**
-- * superhyway_unregister_driver - Unregister a SuperHyway driver
-- * @drv: SuperHyway driver to unregister.
-- *
-- * This cleans up after superhyway_register_driver(), and should be invoked in
-- * the exit path of any module drivers.
-- */
--void superhyway_unregister_driver(struct superhyway_driver *drv)
--{
--	driver_unregister(&drv->drv);
--}
--
--static int superhyway_bus_match(struct device *dev, struct device_driver *drv)
--{
--	struct superhyway_device *shyway_dev = to_superhyway_device(dev);
--	struct superhyway_driver *shyway_drv = to_superhyway_driver(drv);
--	const struct superhyway_device_id *ids = shyway_drv->id_table;
--
--	if (!ids)
--		return -EINVAL;
--	if (superhyway_match_id(ids, shyway_dev))
--		return 1;
--
--	return -ENODEV;
--}
--
--struct bus_type superhyway_bus_type = {
--	.name		= "superhyway",
--	.match		= superhyway_bus_match,
--#ifdef CONFIG_SYSFS
--	.dev_groups	= superhyway_dev_groups,
+-#ifdef CONFIG_HAS_IOPORT_MAP
+-	void __iomem *(*mv_ioport_map)(unsigned long port, unsigned int size);
+-	void (*mv_ioport_unmap)(void __iomem *);
 -#endif
--	.probe		= superhyway_device_probe,
--	.remove		= superhyway_device_remove,
--};
 -
--static int __init superhyway_bus_init(void)
+ 	int (*mv_clk_init)(void);
+ 	int (*mv_mode_pins)(void);
+ 
+diff --git a/arch/sh/kernel/ioport.c b/arch/sh/kernel/ioport.c
+index f39446a658bdb..c8aff8a20164d 100644
+--- a/arch/sh/kernel/ioport.c
++++ b/arch/sh/kernel/ioport.c
+@@ -12,15 +12,6 @@
+ unsigned long sh_io_port_base __read_mostly = -1;
+ EXPORT_SYMBOL(sh_io_port_base);
+ 
+-void __iomem *__ioport_map(unsigned long addr, unsigned int size)
 -{
--	return bus_register(&superhyway_bus_type);
+-	if (sh_mv.mv_ioport_map)
+-		return sh_mv.mv_ioport_map(addr, size);
+-
+-	return (void __iomem *)(addr + sh_io_port_base);
 -}
+-EXPORT_SYMBOL(__ioport_map);
 -
--static void __exit superhyway_bus_exit(void)
--{
--	device_unregister(&superhyway_bus_device);
--	bus_unregister(&superhyway_bus_type);
--}
--
--core_initcall(superhyway_bus_init);
--module_exit(superhyway_bus_exit);
--
--EXPORT_SYMBOL(superhyway_bus_type);
--EXPORT_SYMBOL(superhyway_add_device);
--EXPORT_SYMBOL(superhyway_add_devices);
--EXPORT_SYMBOL(superhyway_register_driver);
--EXPORT_SYMBOL(superhyway_unregister_driver);
--
--MODULE_LICENSE("GPL");
-diff --git a/include/linux/superhyway.h b/include/linux/superhyway.h
-deleted file mode 100644
-index 8d3376775813d..0000000000000
---- a/include/linux/superhyway.h
-+++ /dev/null
-@@ -1,107 +0,0 @@
--/*
-- * include/linux/superhyway.h
-- *
-- * SuperHyway Bus definitions
-- *
-- * Copyright (C) 2004, 2005  Paul Mundt <lethal@linux-sh.org>
-- *
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file "COPYING" in the main directory of this archive
-- * for more details.
-- */
--#ifndef __LINUX_SUPERHYWAY_H
--#define __LINUX_SUPERHYWAY_H
--
--#include <linux/device.h>
--
--/*
-- * SuperHyway IDs
-- */
--#define SUPERHYWAY_DEVICE_ID_SH5_DMAC	0x0183
--
--struct superhyway_vcr_info {
--	u8	perr_flags;	/* P-port Error flags */
--	u8	merr_flags;	/* Module Error flags */
--	u16	mod_vers;	/* Module Version */
--	u16	mod_id;		/* Module ID */
--	u8	bot_mb;		/* Bottom Memory block */
--	u8	top_mb;		/* Top Memory block */
--};
--
--struct superhyway_ops {
--	int (*read_vcr)(unsigned long base, struct superhyway_vcr_info *vcr);
--	int (*write_vcr)(unsigned long base, struct superhyway_vcr_info vcr);
--};
--
--struct superhyway_bus {
--	struct superhyway_ops *ops;
--};
--
--extern struct superhyway_bus superhyway_channels[];
--
--struct superhyway_device_id {
--	unsigned int id;
--	unsigned long driver_data;
--};
--
--struct superhyway_device;
--extern struct bus_type superhyway_bus_type;
--
--struct superhyway_driver {
--	char *name;
--
--	const struct superhyway_device_id *id_table;
--	struct device_driver drv;
--
--	int (*probe)(struct superhyway_device *dev, const struct superhyway_device_id *id);
--	void (*remove)(struct superhyway_device *dev);
--};
--
--#define to_superhyway_driver(d)	container_of((d), struct superhyway_driver, drv)
--
--struct superhyway_device {
--	char name[32];
--
--	struct device dev;
--
--	struct superhyway_device_id id;
--	struct superhyway_driver *drv;
--	struct superhyway_bus *bus;
--
--	int num_resources;
--	struct resource *resource;
--	struct superhyway_vcr_info vcr;
--};
--
--#define to_superhyway_device(d)	container_of((d), struct superhyway_device, dev)
--
--#define superhyway_get_drvdata(d)	dev_get_drvdata(&(d)->dev)
--#define superhyway_set_drvdata(d,p)	dev_set_drvdata(&(d)->dev, (p))
--
--static inline int
--superhyway_read_vcr(struct superhyway_device *dev, unsigned long base,
--		    struct superhyway_vcr_info *vcr)
--{
--	return dev->bus->ops->read_vcr(base, vcr);
--}
--
--static inline int
--superhyway_write_vcr(struct superhyway_device *dev, unsigned long base,
--		     struct superhyway_vcr_info vcr)
--{
--	return dev->bus->ops->write_vcr(base, vcr);
--}
--
--extern int superhyway_scan_bus(struct superhyway_bus *);
--
--/* drivers/sh/superhyway/superhyway.c */
--int superhyway_register_driver(struct superhyway_driver *);
--void superhyway_unregister_driver(struct superhyway_driver *);
--int superhyway_add_device(unsigned long base, struct superhyway_device *, struct superhyway_bus *);
--int superhyway_add_devices(struct superhyway_bus *bus, struct superhyway_device **devices, int nr_devices);
--
--/* drivers/sh/superhyway/superhyway-sysfs.c */
--extern const struct attribute_group *superhyway_dev_groups[];
--
--#endif /* __LINUX_SUPERHYWAY_H */
--
+ void __iomem *ioport_map(unsigned long port, unsigned int nr)
+ {
+ 	void __iomem *ret;
+@@ -29,13 +20,11 @@ void __iomem *ioport_map(unsigned long port, unsigned int nr)
+ 	if (ret)
+ 		return ret;
+ 
+-	return __ioport_map(port, nr);
++	return (void __iomem *)(port + sh_io_port_base);
+ }
+ EXPORT_SYMBOL(ioport_map);
+ 
+ void ioport_unmap(void __iomem *addr)
+ {
+-	if (sh_mv.mv_ioport_unmap)
+-		sh_mv.mv_ioport_unmap(addr);
+ }
+ EXPORT_SYMBOL(ioport_unmap);
 -- 
 2.39.2
 
