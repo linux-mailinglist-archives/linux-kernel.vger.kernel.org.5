@@ -2,87 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4407576CF64
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F73F76CF66
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbjHBOAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
+        id S234616AbjHBOAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:00:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231508AbjHBOAV (ORCPT
+        with ESMTP id S234604AbjHBOAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:00:21 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E662114
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:00:20 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-54290603887so4282621a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690984820; x=1691589620;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BWu78CyIRi+I6jQezlGgcdcqqfSvnjtnlx/cnoDJEBU=;
-        b=j7PtBattAMJcVlTIZSik7K9WyHYO7kBuUDSifXrXNIl1oasWxi6zpqyS/cROQk/zBS
-         LOGhG3okFPZ3G6ADgxVmhBlcmRhDspHD3r0yc0+fQVotKwt5JtfIpgqoPfXalqF6UAWW
-         ABye3gjY5WHF8hadsYrLqhRuRpcp73c7WH5kf3FLc0kYSzgKV9BwwGiDFgJOZlJF9V7d
-         xwroWfJ2sZ/MKtWoCC5zfKqzhtQbZN0wZB2vCMy6464f6bltj0DRik90daatGBp8+1Uw
-         sJhQfTg/VLdPHWf1pxxWqpd1BOZ+OdK9NyAojdopWTg11rKXszrUHruvsSb3gDsL8vqC
-         yFWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690984820; x=1691589620;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BWu78CyIRi+I6jQezlGgcdcqqfSvnjtnlx/cnoDJEBU=;
-        b=MKi+N0acLdw/lh6Kp0EsZrRMoKuOD2S4kCX94fxxNxiWnaknpJmH4+UsCsu7zsRTVX
-         NGIoDkHsrT61RaexDTeRLJ/cBhDvYMIRWTH6Q2SQ/RvlXsCtQGj5XHbMBo0ttJbQt/y5
-         7b7WtR9Yyw0WnEdbSOln+3Giyn4TmxsNOpyDpDnvFeqeKVVBAEsWgkqKQGmyoqewFJv4
-         JaNai6M8d3Zem3ebj7UgGmTdKCUa8CAlbYCgR66RimD/4nov7kwvAKtaA4wIZJaCMXWv
-         nYObwNP2ceyINwESpDHTRmYO1yxPKnZD1rSuCnK40K4hj5XWpDzPDaa/Ln0O8eUM/RbR
-         I92g==
-X-Gm-Message-State: ABy/qLbxYaI0gnQKC46lZW62AfgAE252Jf87MDxbE8oLhd4GX9F8J1fr
-        5AjmG+/FORdHJGFKkILg+A2I5gEAcl557zBg/p0=
-X-Google-Smtp-Source: APBJJlHUKfSAmMcU2lFHRnZSGmVlhtExiiwqgWpyM62zbZmr417EEDIY9Yc4e4TrhkdgjuVzUau9R49zbDeynuf52RY=
-X-Received: by 2002:a17:90a:a58d:b0:263:f7ce:335e with SMTP id
- b13-20020a17090aa58d00b00263f7ce335emr13576114pjq.43.1690984819995; Wed, 02
- Aug 2023 07:00:19 -0700 (PDT)
+        Wed, 2 Aug 2023 10:00:37 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C762122;
+        Wed,  2 Aug 2023 07:00:35 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372E0KxD084046;
+        Wed, 2 Aug 2023 09:00:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1690984820;
+        bh=QzqUq95aQ6oOsHQEGnGJgGG3G9lbd6Qhpv7J5KatXFw=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=AchlSEZZiQeb+b18wnz2ff3sMHKWIggDanc0l3IzevUUB0QAatH+EUXxVP2mPVl6T
+         Fr+Ph9NqTNRgXn1kg7RZIRS/YnTPGE/GuhFgk1KIhVdbOsUO9gMmJHGXHGopawJv2M
+         8A+g3y4NLqOk80ZKCOqQ8EboKkX3hnIhbVGvvZbU=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372E0Kjv109363
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 2 Aug 2023 09:00:20 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
+ Aug 2023 09:00:20 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Wed, 2 Aug 2023 09:00:20 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372E0Kmh118210;
+        Wed, 2 Aug 2023 09:00:20 -0500
+Date:   Wed, 2 Aug 2023 09:00:20 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Francesco Dolcini <francesco@dolcini.it>
+CC:     Jai Luthra <j-luthra@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v1 1/4] arm64: dts: ti: k3-am62x: Enable AUDIO_REFCLKx
+Message-ID: <20230802140020.k233zqpjar5ag4iv@outbreak>
+References: <20230731142135.108477-1-francesco@dolcini.it>
+ <20230731142135.108477-2-francesco@dolcini.it>
+ <itvg2zmmapbfmgbwos6c4y5zsc2rb3sffv2znhwz6i2vahe4y6@uu2547kcz5sd>
+ <23C6E13C-3F10-490B-A18E-C67B91CBAF35@dolcini.it>
+ <20230802133244.b66pg3mztotgqotm@steerable>
+ <ZMpc7x8U91JLVakd@francesco-nb.int.toradex.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:c592:b0:4d9:93ea:8cf4 with HTTP; Wed, 2 Aug 2023
- 07:00:19 -0700 (PDT)
-Reply-To: p8731577@gmail.com
-From:   "Mr. Philip  Edward" <kj4487936@gmail.com>
-Date:   Wed, 2 Aug 2023 07:00:19 -0700
-Message-ID: <CADaUBnrvC_wS23xP0S0br+Yw83-z08ZciJ0LvVB_0S2eMcPQgw@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ****
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZMpc7x8U91JLVakd@francesco-nb.int.toradex.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings Friend
+On 15:41-20230802, Francesco Dolcini wrote:
+> On Wed, Aug 02, 2023 at 08:32:44AM -0500, Nishanth Menon wrote:
+> > On 13:37-20230802, Francesco Dolcini wrote:
+> > > Il 2 agosto 2023 13:23:50 CEST, Jai Luthra <j-luthra@ti.com> ha scritto:
+> > > >On Jul 31, 2023 at 16:21:32 +0200, Francesco Dolcini wrote:
+> > > >> From: Jai Luthra <j-luthra@ti.com>
+> > > >> 
+> > > >> On AM62-based SoCs the AUDIO_REFCLKx clocks can be used as an input to
+> > > >> external peripherals when configured through CTRL_MMR, so add the
+> > > >> clock nodes.
+> > > >> 
+> > > >> Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> > > >> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> > > >> ---
+> > > >>  arch/arm64/boot/dts/ti/k3-am62-main.dtsi  | 18 ++++++++++++++++++
+> > > >>  arch/arm64/boot/dts/ti/k3-am62a-main.dtsi | 18 ++++++++++++++++++
+> > > >
+> > > >Given currently none of the AM62A boards are using the refclks, can you 
+> > > >drop those or just mark the nodes as disabled. Whoever is the first user 
+> > > >can enable them.
+> > > 
+> > > I can drop the 2 clocks from AM62A, however, should we really do it?
+> > > These clocks exist and they are just defined in the DTS, they are
+> > > not going to be enabled if not used, "ti,am62-epwm-tbclk" is also
+> > > not disabled for example.
+> > 
+> > Overall, the SoC clock as such has nothing to do with board specific, so
+> > leave it default (enabled) in SoC.dts - just want to make sure that the
+> > clk-parent selection doesn't get in the way of platforms and is a sane
+> > default.
+> 
+> When I looked into that, months ago, this looked to me the correct and a
+> sane default. I had the same in our downstream way before the addition
+> from Jai Luthra to the SoC dtsi.
+> 
+> Not sure if Jai can add more on that regard.
+> 
+> > pll2_hsdiv8 output - which looks like the default mux value anyways..
+> > I am ok for it being explicit, but wondering if that works for boards
+> > that do not use this default.
+> 
+> IFF needed, it would be very easy to just override from the board dts,
+> using the labels that are already there (audio_refclk0, audio_refclk1).
 
-I am Mr. Philip  Edward, I am 53 years, from USA Please forgive me for
-stressing you with my predicaments and am sorry to approach you
-through this media  because it serves the
-fastest means of communication
+Jai: This sounds sane to me, if you are OK as well, I'd appreciate a reviewed-by
 
-I came across your E-mail from my personal search and I decided to
-contact you believing you will be honest to handle this transfer
-proposal
+> 
+> > (sidenote): Fransesco - your new mail client has line wrap issues ;)
+> Yep, I had the crazy idea to reply from my mobile phone while having a
+> walk. It's already a success that I did not top post ;-)
 
-Please let me know immediately if you can handle this transfer. I will
-appreciate your utmost confidentiality as I wait for your reply for
-more details.
+hehe ;)
 
-Best Regards
-
-Philip  Edward
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
