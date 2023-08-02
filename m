@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A6E76D223
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:36:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC01B76D1C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234980AbjHBPgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56376 "EHLO
+        id S234487AbjHBPYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbjHBPfy (ORCPT
+        with ESMTP id S235266AbjHBPXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:35:54 -0400
-Received: from outbound-smtp07.blacknight.com (outbound-smtp07.blacknight.com [46.22.139.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A983C22
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:35:20 -0700 (PDT)
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp07.blacknight.com (Postfix) with ESMTPS id 8CF841C4097
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 16:16:15 +0100 (IST)
-Received: (qmail 9455 invoked from network); 2 Aug 2023 15:16:15 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 2 Aug 2023 15:16:15 -0000
-Date:   Wed, 2 Aug 2023 16:16:13 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Mel Gorman <mgorman@suse.de>, Shuah Khan <shuah@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 2/8] smaps: use vm_normal_page_pmd() instead of
- follow_trans_huge_pmd()
-Message-ID: <20230802151613.3nyg3xof3gyovlxu@techsingularity.net>
-References: <20230801124844.278698-1-david@redhat.com>
- <20230801124844.278698-3-david@redhat.com>
+        Wed, 2 Aug 2023 11:23:01 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A5E43C3F;
+        Wed,  2 Aug 2023 08:19:32 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2E050619F7;
+        Wed,  2 Aug 2023 15:18:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C0CCC433C9;
+        Wed,  2 Aug 2023 15:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690989506;
+        bh=tRQPMDxU+F3jAUXl9q55Kx+aMQJoipoNjURVaaxY4UM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gXRkQn0BN6bkcNs7HUTgvw8CBgYUu1WUoq4n2EXGZPCNUeKZbqtQFQbRBnsuM8pGQ
+         pxtBrLUPZwV0zNRnbwPpkuxq62aT75dBr4a6uKJHpFuCLLyMUOSApkQgHkkbYQJ+9Y
+         GdEgdzPKWmniUTo1RUf9s12pjM/IzSBeBALuw7sSPEGsnNLabFzOpAOyWhwMW/L+a3
+         KCCtlhWZfRarqQeJOIlTUrsRcFrLpDe2lyJDoNZ7LQSnpvBWnp8aa4SWuQ8/eieCmV
+         xuUfXmNto8uY3OK/YO9yQY4zjaF3ENEiQhGg6jR7y5IRS/MSH/RT/UY+fmMQ5PnXv0
+         5wX40+pZDv0bA==
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-efi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCH v2] efi/x86: Ensure that EFI_RUNTIME_MAP is enabled for kexec
+Date:   Wed,  2 Aug 2023 17:17:04 +0200
+Message-Id: <20230802151704.2147028-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20230801124844.278698-3-david@redhat.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1659; i=ardb@kernel.org; h=from:subject; bh=tRQPMDxU+F3jAUXl9q55Kx+aMQJoipoNjURVaaxY4UM=; b=owGbwMvMwCFmkMcZplerG8N4Wi2JIeVUcf66rqmbvzCaX1km8nPlqUmKu2+vSrgr7bd1lXN5S UjkdTuBjlIWBjEOBlkxRRaB2X/f7Tw9UarWeZYszBxWJpAhDFycAjCR/FRGhoX9a9KvhaV8qnt2 Ijx/XvddG4tJx7tzlERirEXD1Tp2/GD4HzF575vLVhxep3lUVv43PlBXW9D1755B4pYu317lT80 vuAE=
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 02:48:38PM +0200, David Hildenbrand wrote:
-> We shouldn't be using a GUP-internal helper if it can be avoided.
-> 
-> Similar to smaps_pte_entry() that uses vm_normal_page(), let's use
-> vm_normal_page_pmd() that similarly refuses to return the huge zeropage.
-> 
-> In contrast to follow_trans_huge_pmd(), vm_normal_page_pmd():
-> 
-> (1) Will always return the head page, not a tail page of a THP.
-> 
->  If we'd ever call smaps_account with a tail page while setting "compound
->  = true", we could be in trouble, because smaps_account() would look at
->  the memmap of unrelated pages.
-> 
->  If we're unlucky, that memmap does not exist at all. Before we removed
->  PG_doublemap, we could have triggered something similar as in
->  commit 24d7275ce279 ("fs/proc: task_mmu.c: don't read mapcount for
->  migration entry").
-> 
->  This can theoretically happen ever since commit ff9f47f6f00c ("mm: proc:
->  smaps_rollup: do not stall write attempts on mmap_lock"):
-> 
->   (a) We're in show_smaps_rollup() and processed a VMA
->   (b) We release the mmap lock in show_smaps_rollup() because it is
->       contended
->   (c) We merged that VMA with another VMA
->   (d) We collapsed a THP in that merged VMA at that position
-> 
->  If the end address of the original VMA falls into the middle of a THP
->  area, we would call smap_gather_stats() with a start address that falls
->  into a PMD-mapped THP. It's probably very rare to trigger when not
->  really forced.
-> 
-> (2) Will succeed on a is_pci_p2pdma_page(), like vm_normal_page()
-> 
->  Treat such PMDs here just like smaps_pte_entry() would treat such PTEs.
->  If such pages would be anonymous, we most certainly would want to
->  account them.
-> 
-> (3) Will skip over pmd_devmap(), like vm_normal_page() for pte_devmap()
-> 
->  As noted in vm_normal_page(), that is only for handling legacy ZONE_DEVICE
->  pages. So just like smaps_pte_entry(), we'll now also ignore such PMD
->  entries.
-> 
->  Especially, follow_pmd_mask() never ends up calling
->  follow_trans_huge_pmd() on pmd_devmap(). Instead it calls
->  follow_devmap_pmd() -- which will fail if neither FOLL_GET nor FOLL_PIN
->  is set.
-> 
->  So skipping pmd_devmap() pages seems to be the right thing to do.
-> 
-> (4) Will properly handle VM_MIXEDMAP/VM_PFNMAP, like vm_normal_page()
-> 
->  We won't be returning a memmap that should be ignored by core-mm, or
->  worse, a memmap that does not even exist. Note that while
->  walk_page_range() will skip VM_PFNMAP mappings, walk_page_vma() won't.
-> 
->  Most probably this case doesn't currently really happen on the PMD level,
->  otherwise we'd already be able to trigger kernel crashes when reading
->  smaps / smaps_rollup.
-> 
-> So most probably only (1) is relevant in practice as of now, but could only
-> cause trouble in extreme corner cases.
-> 
-> Fixes: ff9f47f6f00c ("mm: proc: smaps_rollup: do not stall write attempts on mmap_lock")
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+CONFIG_EFI_RUNTIME_MAP needs to be enabled in order for kexec to be able
+to provide the required information about the EFI runtime mappings to
+the incoming kernel, regardless of whether kexec_load() or
+kexec_file_load() is being used. Without this information, kexec boot in
+EFI mode is not possible.
 
-Maybe move the follow_trans_huge_pmd() declaration from linux/huge_mm.h
-to mm/internal.h to discourage future mistakes? Otherwise
+The CONFIG_EFI_RUNTIME_MAP option is currently directly configurable if
+CONFIG_EXPERT is enabled, so that it can be turned on for debugging
+purposes even if KEXEC is. However, the upshot of this is that it can
+also be disabled even when it shouldn't.
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+So tweak the Kconfig declarations to avoid this situation.
 
+Reported-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+v2: use simpler conditional 'select EFI_RUNTIME_MAP' in CONFIG_EFI
+
+ arch/x86/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7422db4097701c96..bfbf53b49fee95a3 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1955,6 +1955,7 @@ config EFI
+ 	select UCS2_STRING
+ 	select EFI_RUNTIME_WRAPPERS
+ 	select ARCH_USE_MEMREMAP_PROT
++	select EFI_RUNTIME_MAP if KEXEC_CORE
+ 	help
+ 	  This enables the kernel to use EFI runtime services that are
+ 	  available (such as the EFI variable services).
+@@ -2030,7 +2031,6 @@ config EFI_MAX_FAKE_MEM
+ config EFI_RUNTIME_MAP
+ 	bool "Export EFI runtime maps to sysfs" if EXPERT
+ 	depends on EFI
+-	default KEXEC_CORE
+ 	help
+ 	  Export EFI runtime memory regions to /sys/firmware/efi/runtime-map.
+ 	  That memory map is required by the 2nd kernel to set up EFI virtual
 -- 
-Mel Gorman
-SUSE Labs
+2.39.2
+
