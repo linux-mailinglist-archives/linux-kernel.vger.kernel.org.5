@@ -2,126 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4364776D8A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3D576D8A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231481AbjHBUYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 16:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
+        id S231665AbjHBUZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 16:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232493AbjHBUYi (ORCPT
+        with ESMTP id S230432AbjHBUZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 16:24:38 -0400
-Received: from mgamail.intel.com (unknown [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F583586
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691007838; x=1722543838;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wNJE+tHOkA2JBFbffGog0gKl+eASCvV9DEWQPDfL5Iw=;
-  b=DJBm5jqbp3wzHbbjA992e5AzgQriKgsO9xVMYR9k/iHOybqhsc6j/aeN
-   nckHBsiCGmxEMbuqLDZ/0eMRqjaRVZtNX+QxX1KhlOnrbaBhBFPTQ+ycq
-   mrDmGM63hiG0GxvvyKu5/AMEEm3M9K23V/OmsU+KYqicViMR7clGBBDCU
-   OwNrbrPd6m1foLj9H1rlB2rGpUVLErnv959OOL3EIzS/0KfMG2+AIDZS8
-   2EdqZxoFFhuh9LAvgzpHzrAzVfBrAc0FHd+nY7+bDccjK7ha+jlYCNUB+
-   smOCR6jJMom/sU/f4D5UVy/jA3NDcrloKOvRIktWjaaqyX1FnX42Fn0Kn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="436007942"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="436007942"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 13:23:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="975808122"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="975808122"
-Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 02 Aug 2023 13:23:26 -0700
-Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qRINQ-0001Sh-31;
-        Wed, 02 Aug 2023 20:23:24 +0000
-Date:   Thu, 3 Aug 2023 04:23:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>, perex@perex.cz,
-        tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
-        zhangyiqun@phytium.com.cn, peter.ujfalusi@linux.intel.com,
-        broonie@kernel.org, chenhuacai@kernel.org,
-        cezary.rojewski@intel.com, siyanteng@loongson.cn,
-        amadeuszx.slawinski@linux.intel.com, evan.quan@amd.com,
-        jasontao@glenfly.com, kai.vehmanen@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, mkumard@nvidia.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, CobeChen@zhaoxin.com,
-        TimGuo@zhaoxin.com, LeoLiu-oc@zhaoxin.com
-Subject: Re: [PATCH] ALSA: hda: Zhaoxin: Add HDAC PCI IDs and HDMI Codec
- Vendor IDs
-Message-ID: <202308030402.Y1yMDGnZ-lkp@intel.com>
-References: <20230731055932.4336-1-TonyWWang-oc@zhaoxin.com>
+        Wed, 2 Aug 2023 16:25:40 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB8126A0
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 13:25:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CF5B361AFE
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 20:25:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 437F4C433C7;
+        Wed,  2 Aug 2023 20:25:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691007921;
+        bh=+O8qluPv0JxAbf7ZatxXqZjsT+TjZ01Aqc8qllKD3Z8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fbe01a2wiD0NKAGOOQ+Z/Aldho4ww1deCdZHhsXr7nJ30qKpP8ue9MzYguW3mi0B3
+         ccDZtPKQA4X3XAuW/073Bia42VRCrERZCNh3sPbH42uqmNylg2NtaJLpkUHP/9ARO4
+         Klxc4MNqHl73nfnxDkySvLRoPAIueWO5qxYOQjOuAhHqyZkOjZRdsJ6j24aSmQ2+Cs
+         +EfevmIhMQUsnionoYY/PSvSXO5ySKTPUU1Qpgt7YOGdW/MCAp0vVrfIAWyEcE05x1
+         RG60J7zMgS5JxN9PKkL1yxG1ss6JNVZMPABtI+aXCw1RHha1TR/zqTXw4juf9gST4x
+         pQeQdORSZr7dw==
+Date:   Wed, 2 Aug 2023 21:25:15 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Tomasz Jeznach <tjeznach@rivosinc.com>
+Cc:     Zong Li <zong.li@sifive.com>, Joerg Roedel <joro@8bytes.org>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <apatel@ventanamicro.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, linux@rivosinc.com,
+        linux-kernel@vger.kernel.org, Sebastien Boeuf <seb@rivosinc.com>,
+        iommu@lists.linux.dev, Palmer Dabbelt <palmer@dabbelt.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 01/11] RISC-V: drivers/iommu: Add RISC-V IOMMU - Ziommu
+ support.
+Message-ID: <20230802-maimed-spotted-5fa1fe4be386@spud>
+References: <cover.1689792825.git.tjeznach@rivosinc.com>
+ <c33c24036c06c023947ecb47177da273569b3ac7.1689792825.git.tjeznach@rivosinc.com>
+ <CANXhq0qRYvTffMnep-aQyTq2tMxbP-s_Lunc+cZ2Rio+BvAE=g@mail.gmail.com>
+ <CAH2o1u5Sr0XigUbhna0E-Zk=U76CLZZ4LbM0u4ahPaN5+nOK6A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ma68l5vGJ6Lc1SF4"
 Content-Disposition: inline
-In-Reply-To: <20230731055932.4336-1-TonyWWang-oc@zhaoxin.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAH2o1u5Sr0XigUbhna0E-Zk=U76CLZZ4LbM0u4ahPaN5+nOK6A@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
 
-kernel test robot noticed the following build warnings:
+--ma68l5vGJ6Lc1SF4
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[auto build test WARNING on tiwai-sound/for-next]
-[also build test WARNING on next-20230802]
-[cannot apply to tiwai-sound/for-linus linus/master v6.5-rc4]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Wed, Aug 02, 2023 at 01:15:22PM -0700, Tomasz Jeznach wrote:
+> On Thu, Jul 27, 2023 at 7:42=E2=80=AFPM Zong Li <zong.li@sifive.com> wrot=
+e:
+> >
+> > On Thu, Jul 20, 2023 at 3:34=E2=80=AFAM Tomasz Jeznach <tjeznach@rivosi=
+nc.com> wrote:
+> > >
+> > > +static int riscv_iommu_platform_probe(struct platform_device *pdev)
+> > > +{
+> > > +       struct device *dev =3D &pdev->dev;
+> > > +       struct riscv_iommu_device *iommu =3D NULL;
+> > > +       struct resource *res =3D NULL;
+> > > +       int ret =3D 0;
+> > > +
+> > > +       iommu =3D devm_kzalloc(dev, sizeof(*iommu), GFP_KERNEL);
+> > > +       if (!iommu)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       iommu->dev =3D dev;
+> > > +       dev_set_drvdata(dev, iommu);
+> > > +
+> > > +       res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > > +       if (!res) {
+> > > +               dev_err(dev, "could not find resource for register re=
+gion\n");
+> > > +               return -EINVAL;
+> > > +       }
+> > > +
+> > > +       iommu->reg =3D devm_platform_get_and_ioremap_resource(pdev, 0=
+, &res);
+> > > +       if (IS_ERR(iommu->reg)) {
+> > > +               ret =3D dev_err_probe(dev, PTR_ERR(iommu->reg),
+> > > +                                   "could not map register region\n"=
+);
+> > > +               goto fail;
+> > > +       };
+> > > +
+> > > +       iommu->reg_phys =3D res->start;
+> > > +
+> > > +       ret =3D -ENODEV;
+> > > +
+> > > +       /* Sanity check: Did we get the whole register space ? */
+> > > +       if ((res->end - res->start + 1) < RISCV_IOMMU_REG_SIZE) {
+> > > +               dev_err(dev, "device region smaller than register fil=
+e (0x%llx)\n",
+> > > +                       res->end - res->start);
+> > > +               goto fail;
+> > > +       }
+> >
+> > Could we assume that DT should be responsible for specifying the right =
+size?
+> >
+>=20
+> This only to validate DT provided info and driver expected register
+> file size. Expectation is that DT will provide right size.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Tony-W-Wang-oc/ALSA-hda-Zhaoxin-Add-HDAC-PCI-IDs-and-HDMI-Codec-Vendor-IDs/20230731-140118
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230731055932.4336-1-TonyWWang-oc%40zhaoxin.com
-patch subject: [PATCH] ALSA: hda: Zhaoxin: Add HDAC PCI IDs and HDMI Codec Vendor IDs
-config: nios2-randconfig-r093-20230730 (https://download.01.org/0day-ci/archive/20230803/202308030402.Y1yMDGnZ-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 12.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230803/202308030402.Y1yMDGnZ-lkp@intel.com/reproduce)
+FWIW this check seems needless to me, it's not the kernels job to
+validate the devicetree.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308030402.Y1yMDGnZ-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
->> sound/pci/hda/hda_controller.c:1051:38: sparse: sparse: cast removes address space '__iomem' of expression
->> sound/pci/hda/hda_controller.c:1051:66: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   sound/pci/hda/hda_controller.c:1051:66: sparse:     expected void volatile [noderef] __iomem *addr
-   sound/pci/hda/hda_controller.c:1051:66: sparse:     got char *
-   sound/pci/hda/hda_controller.c:1053:44: sparse: sparse: cast removes address space '__iomem' of expression
-   sound/pci/hda/hda_controller.c:1053:72: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void volatile [noderef] __iomem *addr @@     got char * @@
-   sound/pci/hda/hda_controller.c:1053:72: sparse:     expected void volatile [noderef] __iomem *addr
-   sound/pci/hda/hda_controller.c:1053:72: sparse:     got char *
+--ma68l5vGJ6Lc1SF4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-vim +/__iomem +1051 sound/pci/hda/hda_controller.c
+-----BEGIN PGP SIGNATURE-----
 
-  1046	
-  1047	static void azx_rirb_zxdelay(struct azx *chip, int enable)
-  1048	{
-  1049		if (chip->remap_diu_addr) {
-  1050			if (!enable)
-> 1051				writel(0x0, (char *)chip->remap_diu_addr + 0x490a8);
-  1052			else
-  1053				writel(0x1000000, (char *)chip->remap_diu_addr + 0x490a8);
-  1054		}
-  1055	}
-  1056	
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMq7qwAKCRB4tDGHoIJi
+0tRtAP9nGZaGgIQrAaYTLppahmjpJ+B4A4f+5TIiS3irhCOhSgD+IoyNLqVkVsKP
+MLzN0x3g4i4TUarzD0mHByZ86FQ9eAQ=
+=fGg5
+-----END PGP SIGNATURE-----
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--ma68l5vGJ6Lc1SF4--
