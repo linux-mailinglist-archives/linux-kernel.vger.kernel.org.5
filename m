@@ -2,130 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F83F76D98C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6F176D991
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232705AbjHBVcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
+        id S230414AbjHBVcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjHBVcL (ORCPT
+        with ESMTP id S232714AbjHBVca (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:32:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C1F1734;
-        Wed,  2 Aug 2023 14:32:10 -0700 (PDT)
+        Wed, 2 Aug 2023 17:32:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733A819B0;
+        Wed,  2 Aug 2023 14:32:28 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CCAE861B2A;
-        Wed,  2 Aug 2023 21:32:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B50C433C7;
-        Wed,  2 Aug 2023 21:32:08 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0F3D361B38;
+        Wed,  2 Aug 2023 21:32:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B19D4C433C8;
+        Wed,  2 Aug 2023 21:32:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1691011929;
-        bh=2PaiUpifeCse/HhykZzsGpNNXYxG9/8BdqoWXV5HhD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B7rkboeJ9wyO/0xDXw25KM79GOP/Sk2hWmAI6yRgz0OJU1LXNc2VZ2EcDlvmlMojT
-         oMLdl0v5KEOEh+JZGN/GPMZ9A8PTwps+ZAtjXriNCBvY8zOFKeQBRMh8LjXmxnh5Ww
-         xjYq4xPI7wQ3kWExVVDWvafRG5phJKYNgCZ44oZXgJ3lQTsG5VDSx1/Q2KWCjczcgb
-         XR1vQ7OJv3KOZXHPwylTLzLO9nJhm9AOovT8APRuHBt/bEGgzMajgP/pCPaPqpg82t
-         gNkvvLIHf7PYBKWX989l4eHHC58SdhW1/SRhRkg7ol9qzJfvCclAHdfThEQ6/AP+cv
-         di/Khv2+8EUWQ==
-Date:   Wed, 2 Aug 2023 14:32:06 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>, linux-clk@vger.kernel.org,
-        tsbogend@alpha.franken.de, sboyd@kernel.org,
-        mturquette@baylibre.com, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        clang-built-linux <llvm@lists.linux.dev>
-Subject: Re: [PATCH] clk: ralink: mtmips: quiet unused variable warning
-Message-ID: <20230802213206.GA758420@dev-arch.thelio-3990X>
-References: <20230802092647.3000666-1-sergio.paracuellos@gmail.com>
- <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
+        s=k20201202; t=1691011947;
+        bh=/ftIGNZIuawFka3qmkPFpRU27GdmRegiQSCJekF9zMg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SMs6Q6ZLjcKQ70/cbYrqn+cDVQOadSajdkI3plnyvICz2+rhNp9AToICIqXEdaQqK
+         78gtgnaAfsbCdredfTwNdYSWzOrOLcVIxF2mZkwysEyL9WwatL6omtiFREvOjpz1Wm
+         MT+M+JbOT2ScvuHnKGualv/DlISwYU1ziCMxwGHoY91NAvrHMUITc2GnKzIePTGc7b
+         p9Rrh6GXcDrHtJu4EEDtxRPz38MtvltU9qlsBsQSglAIFVgBYOhp1WM+d4XJk64DTs
+         qepBo+1WuZ2C5aXpPXL00t0CeR6r/C6meqWHbggyS81NMgMHq2G7g+AeyB0Vv7TIPq
+         wgXAXWG6hPWkw==
+From:   SeongJae Park <sj@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     SeongJae Park <sj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <shuah@kernel.org>, damon@lists.linux.dev,
+        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH 0/5] mm/damon/sysfs-schemes: implement DAMOS tried total bytes file
+Date:   Wed,  2 Aug 2023 21:32:16 +0000
+Message-Id: <20230802213222.109841-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 02:26:43PM -0700, Nick Desaulniers wrote:
-> On Wed, Aug 2, 2023 at 2:26 AM Sergio Paracuellos
-> <sergio.paracuellos@gmail.com> wrote:
-> >
-> > When CONFIG_OF is disabled then the matching table is not referenced and
-> > the following warning appears:
-> >
-> > drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmips_of_match' [-Wunused-const-variable]
-> > 821 |   static const struct of_device_id mtmips_of_match[] = {
-> >     |                          ^
-> >
-> > Silence it declaring 'mtmips_of_match' with '__maybe_unused'.
-> >
-> > Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIPS SoCs")
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp@intel.com/
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> 
-> I think this is fine; Arnd or Nathan do you have a preference? or thoughts here?
+Changes from RFC[1]
+- Rebase on latest mm-unstable
+- Add base-commit
 
-I do not have much of a preference either, I tend to agree with your
-reasoning for preferring the #ifdef but '__maybe_unused' is relatively
-easy to audit on a per-file basis and I think that is more common than
-the '#ifdef CONFIG_OF'.
+----
 
-Small nit, I think __maybe_unused typically goes between the variable
-name and equals, like
+The tried_regions directory of DAMON sysfs interface is useful for
+retrieving monitoring results snapshot or DAMOS debugging.  However, for
+common use case that need to monitor only the total size of the scheme
+tried regions (e.g., monitoring working set size), the kernel overhead
+for directory construction and user overhead for reading the content
+could be high if the number of monitoring region is not small.  This
+patchset implements DAMON sysfs files for efficient support of the use
+case.
 
-  static const struct of_device_id mtmips_of_match[] __maybe_unused = {
+The first patch implements the sysfs file to reduce the user space
+overhead, and the second patch implements a command for reducing the
+kernel space overhead.
 
-but this is obviously fine. Regardless:
+The third patch adds a selftest for the new file, and following two
+patches update documents.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+[1] https://lore.kernel.org/damon/20230728201817.70602-1-sj@kernel.org/
 
-> If not, thanks for the patch.
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-> 
-> (I have a slight preference for wrapping the use in `#ifdef CONFIG_OF`
-> since with the approach used by this patch, if all users are removed
-> we will never get a warning for this var. But it's a weak preference;
-> it's more important to me that we don't have -Werror promote this
-> warning to a build breakage)
-> 
-> > ---
-> >  drivers/clk/ralink/clk-mtmips.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/clk/ralink/clk-mtmips.c b/drivers/clk/ralink/clk-mtmips.c
-> > index 1e7991439527..6716394b28a3 100644
-> > --- a/drivers/clk/ralink/clk-mtmips.c
-> > +++ b/drivers/clk/ralink/clk-mtmips.c
-> > @@ -820,7 +820,7 @@ static const struct mtmips_clk_data mt76x8_clk_data = {
-> >         .num_clk_periph = ARRAY_SIZE(mt76x8_pherip_clks),
-> >  };
-> >
-> > -static const struct of_device_id mtmips_of_match[] = {
-> > +static const __maybe_unused struct of_device_id mtmips_of_match[] = {
-> >         {
-> >                 .compatible = "ralink,rt2880-sysc",
-> >                 .data = &rt2880_clk_data,
-> > --
-> > 2.25.1
-> >
-> 
-> 
-> -- 
-> Thanks,
-> ~Nick Desaulniers
+SeongJae Park (5):
+  mm/damon/sysfs-schemes: implement DAMOS tried total bytes file
+  mm/damon/sysfs: implement a command for updating only schemes tried
+    total bytes
+  selftests/damon/sysfs: test tried_regions/total_bytes file
+  Docs/ABI/damon: update for tried_regions/total_bytes
+  Docs/admin-guide/mm/damon/usage: update for tried_regions/total_bytes
+
+ .../ABI/testing/sysfs-kernel-mm-damon         | 13 +++++-
+ Documentation/admin-guide/mm/damon/usage.rst  | 42 ++++++++++++-------
+ mm/damon/sysfs-common.h                       |  2 +-
+ mm/damon/sysfs-schemes.c                      | 24 ++++++++++-
+ mm/damon/sysfs.c                              | 26 +++++++++---
+ tools/testing/selftests/damon/sysfs.sh        |  1 +
+ 6 files changed, 83 insertions(+), 25 deletions(-)
+
+
+base-commit: a57d8094e1946e9dbdba0dddf0e10f9f4dceae0d
+-- 
+2.25.1
+
