@@ -2,165 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C94276D505
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63EEB76D4FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbjHBRVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
+        id S232167AbjHBRVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:21:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232122AbjHBRVO (ORCPT
+        with ESMTP id S232122AbjHBRVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:21:14 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C9D1194;
-        Wed,  2 Aug 2023 10:21:12 -0700 (PDT)
-Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.1.149])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 10D65238C437;
-        Wed,  2 Aug 2023 10:21:12 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 10D65238C437
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1690996872;
-        bh=sKKApMwyJFmWVhauSK1wQoyrcn+Ery6qaOjHGnd/wxQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bFRZfOUrXSilQF9dK36C5+89dh5FfAmYc/wfeo2Do8HUdlLrhcWUQbXcNyhp+Q6AH
-         +200YcpSKOs5MfmddMtf5WuHQwK5k0++8LeiDEqjQ6BJDNfW820boRjbfK9kfYnqeK
-         2Zg/d+ic7XjuGxHI8XMCrVA1faAgf5LXXymvvB4o=
-From:   Easwar Hariharan <eahariha@linux.microsoft.com>
-To:     stable@vger.kernel.org
-Cc:     easwar.hariharan@microsoft.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM64 PORT
-        (AARCH64 ARCHITECTURE)),
-        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
-        linux-kernel@vger.kernel.org (open list),
-        iommu@lists.linux.dev (open list:IOMMU SUBSYSTEM)
-Subject: [PATCH v3 6.1 2/4] iommu/arm-smmu-v3: Document MMU-700 erratum 2812531
-Date:   Wed,  2 Aug 2023 17:20:58 +0000
-Message-Id: <20230802172100.1599164-3-eahariha@linux.microsoft.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230802172100.1599164-1-eahariha@linux.microsoft.com>
-References: <20230802172100.1599164-1-eahariha@linux.microsoft.com>
+        Wed, 2 Aug 2023 13:21:08 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A0011D;
+        Wed,  2 Aug 2023 10:21:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C16A961377;
+        Wed,  2 Aug 2023 17:21:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5E76C433C7;
+        Wed,  2 Aug 2023 17:21:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690996865;
+        bh=V+7J5iMl8WESEj4Cb67K/RCJO33+poqVvT0BwhRiAxM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IgN5nEWimzIHei44JnWou6LQO2Xz9xfPWdUscdopUP3nSooYinHWCg51jQogAfXCh
+         IkP6GhQ+mWg9fu5H5Ylu5pp8M8S9DubR+sNfef+b7QkdlI3aLBv+VY9kbCSFXNko1M
+         a4LpE7eIjsqQMxv6qZvfVOJI5KaJjkEcsyDVfbPAsTHiTjH7gzARVyv3ls+Rk7dAcw
+         oFluHqcZAfL5yarEIALIealee/EZtOXpNYeHws0R8PE5Cit3KKuP7M7F5RUJEfKHvf
+         3h90SnbMmrxXFmpJTfEh1knoGeZOmGYAPY2XvZEweDFLZBWuON3IFtLaTBq4zHtY3D
+         S2iJcB24T0hyg==
+Date:   Wed, 2 Aug 2023 18:20:59 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v7 01/15] RISC-V: Add riscv_get_intc_hartid() function
+Message-ID: <20230802-deviancy-vengeful-cbecf4350526@spud>
+References: <20230802150018.327079-1-apatel@ventanamicro.com>
+ <20230802150018.327079-2-apatel@ventanamicro.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2kdZzoSQMTLDssYb"
+Content-Disposition: inline
+In-Reply-To: <20230802150018.327079-2-apatel@ventanamicro.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robin Murphy <robin.murphy@arm.com>
 
-commit 309a15cb16bb075da1c99d46fb457db6a1a2669e upstream
+--2kdZzoSQMTLDssYb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-To work around MMU-700 erratum 2812531 we need to ensure that certain
-sequences of commands cannot be issued without an intervening sync. In
-practice this falls out of our current command-batching machinery
-anyway - each batch only contains a single type of invalidation command,
-and ends with a sync. The only exception is when a batch is sufficiently
-large to need issuing across multiple command queue slots, wherein the
-earlier slots will not contain a sync and thus may in theory interleave
-with another batch being issued in parallel to create an affected
-sequence across the slot boundary.
+On Wed, Aug 02, 2023 at 08:30:04PM +0530, Anup Patel wrote:
 
-Since MMU-700 supports range invalidate commands and thus we will prefer
-to use them (which also happens to avoid conditions for other errata),
-I'm not entirely sure it's even possible for a single high-level
-invalidate call to generate a batch of more than 63 commands, but for
-the sake of robustness and documentation, wire up an option to enforce
-that a sync is always inserted for every slot issued.
+> +/* Find hart ID of the INTC fwnode. */
+> +int riscv_get_intc_hartid(struct fwnode_handle *node, unsigned long *hartid)
+> +{
+> +	int rc;
+> +	u64 temp;
+> +
+> +	if (!is_of_node(node)) {
+> +		rc = fwnode_property_read_u64_array(node, "hartid", &temp, 1);
+> +		if (!rc)
+> +			*hartid = temp;
+> +	} else
+> +		rc = riscv_of_parent_hartid(to_of_node(node), hartid);
 
-The other aspect is that the relative order of DVM commands cannot be
-controlled, so DVM cannot be used. Again that is already the status quo,
-but since we have at least defined ARM_SMMU_FEAT_BTM, we can explicitly
-disable it for documentation purposes even if it's not wired up anywhere
-yet.
+This branch needs to be enclosed in braces too.
 
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
-Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
-Link: https://lore.kernel.org/r/330221cdfd0003cd51b6c04e7ff3566741ad8374.1683731256.git.robin.murphy@arm.com
-Signed-off-by: Will Deacon <will@kernel.org>
-Signed-off-by: Easwar Hariharan <eahariha@linux.microsoft.com>
----
- Documentation/arm64/silicon-errata.rst      |  2 ++
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 12 ++++++++++++
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  1 +
- 3 files changed, 15 insertions(+)
+> +
+> +	return rc;
+> +}
+> +
+>  DEFINE_PER_CPU(struct riscv_cpuinfo, riscv_cpuinfo);
 
-diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
-index d7f664c5bd75..120784507bc0 100644
---- a/Documentation/arm64/silicon-errata.rst
-+++ b/Documentation/arm64/silicon-errata.rst
-@@ -140,6 +140,8 @@ stable kernels.
- +----------------+-----------------+-----------------+-----------------------------+
- | ARM            | MMU-600         | #1076982        | N/A                         |
- +----------------+-----------------+-----------------+-----------------------------+
-+| ARM            | MMU-700         | #2812531        | N/A                         |
-++----------------+-----------------+-----------------+-----------------------------+
- +----------------+-----------------+-----------------+-----------------------------+
- | Broadcom       | Brahma-B53      | N/A             | ARM64_ERRATUM_845719        |
- +----------------+-----------------+-----------------+-----------------------------+
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index c12b57910c51..aed038f7d66c 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -882,6 +882,12 @@ static void arm_smmu_cmdq_batch_add(struct arm_smmu_device *smmu,
- {
- 	int index;
- 
-+	if (cmds->num == CMDQ_BATCH_ENTRIES - 1 &&
-+	    (smmu->options & ARM_SMMU_OPT_CMDQ_FORCE_SYNC)) {
-+		arm_smmu_cmdq_issue_cmdlist(smmu, cmds->cmds, cmds->num, true);
-+		cmds->num = 0;
-+	}
-+
- 	if (cmds->num == CMDQ_BATCH_ENTRIES) {
- 		arm_smmu_cmdq_issue_cmdlist(smmu, cmds->cmds, cmds->num, false);
- 		cmds->num = 0;
-@@ -3412,6 +3418,7 @@ static int arm_smmu_device_reset(struct arm_smmu_device *smmu, bool bypass)
- 
- #define IIDR_IMPLEMENTER_ARM		0x43b
- #define IIDR_PRODUCTID_ARM_MMU_600	0x483
-+#define IIDR_PRODUCTID_ARM_MMU_700	0x487
- 
- static void arm_smmu_device_iidr_probe(struct arm_smmu_device *smmu)
- {
-@@ -3432,6 +3439,11 @@ static void arm_smmu_device_iidr_probe(struct arm_smmu_device *smmu)
- 			if (variant == 0 && revision <= 2)
- 				smmu->features &= ~ARM_SMMU_FEAT_SEV;
- 			break;
-+		case IIDR_PRODUCTID_ARM_MMU_700:
-+			/* Arm erratum 2812531 */
-+			smmu->features &= ~ARM_SMMU_FEAT_BTM;
-+			smmu->options |= ARM_SMMU_OPT_CMDQ_FORCE_SYNC;
-+			break;
- 		}
- 		break;
- 	}
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index ce5e44a13d84..d9e4357c6869 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -650,6 +650,7 @@ struct arm_smmu_device {
- #define ARM_SMMU_OPT_SKIP_PREFETCH	(1 << 0)
- #define ARM_SMMU_OPT_PAGE0_REGS_ONLY	(1 << 1)
- #define ARM_SMMU_OPT_MSIPOLL		(1 << 2)
-+#define ARM_SMMU_OPT_CMDQ_FORCE_SYNC	(1 << 3)
- 	u32				options;
- 
- 	struct arm_smmu_cmdq		cmdq;
--- 
-2.25.1
 
+--2kdZzoSQMTLDssYb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMqQewAKCRB4tDGHoIJi
+0oI/AP4mfxD8KI2kW8xjXStGxSzehmET1254kpoBNm9rD/RP+gEAuB0Z2Cgramuw
+EoCQ4U+WeJmvdDUdCguKiECHDM8AZgo=
+=w4op
+-----END PGP SIGNATURE-----
+
+--2kdZzoSQMTLDssYb--
