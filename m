@@ -2,122 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD02F76C455
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD8876C457
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 06:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbjHBE5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 00:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
+        id S232082AbjHBE6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 00:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbjHBE46 (ORCPT
+        with ESMTP id S231258AbjHBE5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 00:56:58 -0400
-Received: from qproxy4-pub.mail.unifiedlayer.com (qproxy4-pub.mail.unifiedlayer.com [66.147.248.250])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063282127
-        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 21:56:54 -0700 (PDT)
-Received: from outbound-ss-820.bluehost.com (outbound-ss-820.bluehost.com [69.89.24.241])
-        by qproxy4.mail.unifiedlayer.com (Postfix) with ESMTP id 6D66C8032D20
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:56:54 +0000 (UTC)
-Received: from cmgw10.mail.unifiedlayer.com (unknown [10.0.90.125])
-        by progateway2.mail.pro1.eigbox.com (Postfix) with ESMTP id BAFCC10046B31
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 04:56:53 +0000 (UTC)
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTP
-        id R3unqIOe16i54R3unqqbtk; Wed, 02 Aug 2023 04:56:53 +0000
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.4 cv=QsWbYX+d c=1 sm=1 tr=0 ts=64c9e215
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10:nop_charset_1 a=UttIx32zK-AA:10:nop_rcvd_month_year
- a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=-bzUqt0TETRoYEF9vdkA:9 a=QEXdDO2ut3YA:10:nop_charset_2
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=A17FSjpY+5f4WB8mKlrZcnRgMKodYKjZAOy1FKmB8X0=; b=yrHaHiTllf7U0ckc4MOhbStymv
-        9pQ+7j+FQxpsT7w/48Pn0vLvkH610GxEvir6NxRlm47qfHn/r2zwm+KToUPfe/SrJpLwZRLs3go9k
-        LEXhITlF1llfPPci0g6M62Iuj/s+Q7H1PNSgMN4kGp+t+bVNVfXQ28mZKhRn2EAKcCXATbH9kVvPu
-        ggUl0fZNLNFr08Ps+zUMTDs3mOKF3+79YfiO/GZc4hmtff8IkKZTNl+1PjxsK3JiUbxGK22KvjkL5
-        TQabZGzLuRQWYC0FTVDt7B90USP65r0cr3kasbsAyHJ6/q005tCGgocpUIHSfc7tNymbuCEXMvzZs
-        6hRGyxQQ==;
-Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:50352 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <re@w6rz.net>)
-        id 1qR3um-000jWS-0k;
-        Tue, 01 Aug 2023 22:56:52 -0600
-Subject: Re: [PATCH 6.4 000/239] 6.4.8-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20230801091925.659598007@linuxfoundation.org>
-In-Reply-To: <20230801091925.659598007@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <92ff1bca-3e6d-2743-e8a3-55bc45f08c65@w6rz.net>
-Date:   Tue, 1 Aug 2023 21:56:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Wed, 2 Aug 2023 00:57:55 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCBA19B0;
+        Tue,  1 Aug 2023 21:57:53 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3724LVX9004633;
+        Wed, 2 Aug 2023 04:57:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=Uw4pWzd4yqDlj0SnBrdTj0genxMDTxppvIzuJneDixY=;
+ b=XFN+g4PjBkz8/gni9bJB0AMch+5TdYPiFmg3uVr74Mlg/dUrwhDChCEDi5BrrNROlOwp
+ mCCGKibHAZk3YL0XCdPA52XAsYip3LogL4Ob0tBwOGB5+md66V7/2H+K43aeWyPJTMRF
+ wFuLvmIj+V2NqTPHqTHa6gvnOKdX8VV0mprznE4qFC+6mT7gqq9UaKoz5DZtA/KaWDlZ
+ Rh2BZ+ZRCzopAhpuV04kvwb4o4guHxtC0A2xQuEzCM37jnabGRy3qdolb5QG+2PVRSXJ
+ B6DtdcyQ3cxMuBBmr+OOlkDJpBOSc5XroJTMOiMymaOlH8hy8VlQygnBMQwyAwKBFP5D qg== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7bw9gek3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 04:57:47 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3724vkmP030985
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Aug 2023 04:57:46 GMT
+Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 1 Aug 2023 21:57:43 -0700
+From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
+To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
+CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        <fastrpc.upstream@qti.qualcomm.com>, stable <stable@kernel.org>
+Subject: [PATCH v3] misc: fastrpc: Fix remote heap allocation request
+Date:   Wed, 2 Aug 2023 10:27:38 +0530
+Message-ID: <1690952258-31364-1-git-send-email-quic_ekangupt@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 73.162.232.9
-X-Source-L: No
-X-Exim-ID: 1qR3um-000jWS-0k
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:50352
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: zAsM2xHJ4ccq4ryr-mzZjHZhxLMYGvJ7
+X-Proofpoint-GUID: zAsM2xHJ4ccq4ryr-mzZjHZhxLMYGvJ7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_02,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 malwarescore=0 bulkscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020044
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/1/23 2:17 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.8 release.
-> There are 239 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 03 Aug 2023 09:18:38 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.8-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Remote heap is used by DSP audioPD on need basis. This memory is
+allocated from reserved CMA memory region and is then shared with
+audioPD to use it for it's functionality.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+Current implementation of remote heap is not allocating the memory
+from CMA region, instead it is allocating the memory from SMMU
+context bank. The arguments passed to scm call for the reassignment
+of ownership is also not correct. Added changes to allocate CMA
+memory and have a proper ownership reassignment.
 
-Tested-by: Ron Economos <re@w6rz.net>
+Fixes: 532ad70c6d44 ("misc: fastrpc: Add mmap request assigning for static PD pool")
+Cc: stable <stable@kernel.org>
+Tested-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+---
+Changes in v2:
+  - Removed redundant code
+Changes in v3:
+  - Reuse channel context perms for source perms
+
+ drivers/misc/fastrpc.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+index 30d4d04..8e002a4 100644
+--- a/drivers/misc/fastrpc.c
++++ b/drivers/misc/fastrpc.c
+@@ -1866,7 +1866,11 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
+ 		return -EINVAL;
+ 	}
+ 
+-	err = fastrpc_buf_alloc(fl, fl->sctx->dev, req.size, &buf);
++	if (req.flags == ADSP_MMAP_REMOTE_HEAP_ADDR)
++		err = fastrpc_remote_heap_alloc(fl, dev, req.size, &buf);
++	else
++		err = fastrpc_buf_alloc(fl, dev, req.size, &buf);
++
+ 	if (err) {
+ 		dev_err(dev, "failed to allocate buffer\n");
+ 		return err;
+@@ -1905,12 +1909,8 @@ static int fastrpc_req_mmap(struct fastrpc_user *fl, char __user *argp)
+ 
+ 	/* Add memory to static PD pool, protection thru hypervisor */
+ 	if (req.flags == ADSP_MMAP_REMOTE_HEAP_ADDR && fl->cctx->vmcount) {
+-		struct qcom_scm_vmperm perm;
+-
+-		perm.vmid = QCOM_SCM_VMID_HLOS;
+-		perm.perm = QCOM_SCM_PERM_RWX;
+-		err = qcom_scm_assign_mem(buf->phys, buf->size,
+-			&fl->cctx->perms, &perm, 1);
++		err = qcom_scm_assign_mem(buf->phys, (u64)buf->size,
++			&fl->cctx->perms, fl->cctx->vmperms, fl->cctx->vmcount);
+ 		if (err) {
+ 			dev_err(fl->sctx->dev, "Failed to assign memory phys 0x%llx size 0x%llx err %d",
+ 					buf->phys, buf->size, err);
+-- 
+2.7.4
 
