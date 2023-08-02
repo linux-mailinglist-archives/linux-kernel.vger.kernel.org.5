@@ -2,117 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B8576D695
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A0EA76D697
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbjHBSLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58212 "EHLO
+        id S232361AbjHBSMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:12:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234434AbjHBSKz (ORCPT
+        with ESMTP id S229545AbjHBSMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:10:55 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F229719A1
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:10:53 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1bb982d2572so1217185ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:10:53 -0700 (PDT)
+        Wed, 2 Aug 2023 14:12:14 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52F9189
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:12:12 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d3d729a08e4so85608276.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:12:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690999853; x=1691604653;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hNOi1ejB1pS9dlnPvTd4BYpS5FGTlhXd3925hg/0fm0=;
-        b=1OE6veZg59gsoeCLHSoB+UkPlLRLs1s07mLxso/osH78WHkdAyjyM4PFg5Fl4ie4bF
-         8Qo+8PDNUg50lP5ODwwCYp4j7hvQjDe7PTVUeYd+qQ8VWZ0FPNt4U58Lca5UL+4tPn+h
-         P2AQIfN8/ciTQ7eTvI9WfNCJ2Yw8sJqnjprqmUrBmOebKgbeUxbvIcy83OAqQuxMlUHz
-         Ka/cmhhuQX+2eepM+r+ZZwEm9yWdteKzIfjvrX0OC7HWPhtD3ANjTNIcySs2o1S1qbtD
-         6F64Y2wQS7ACru2HtGrPU40xivGqU91vFZx/cKdsS27iWoCyFLSe/lPv3rzAL4XHHGha
-         Kwdw==
+        d=linaro.org; s=google; t=1690999932; x=1691604732;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dqrDij2SO6O+kcrLN8FbJ03HVYrEeGEEuoAOFklLWnY=;
+        b=t4sNe5zqV1iDlQd58nat+2WCHtvp0oKrP7DCJ/O+KQXZRdUDFAX0GOIkyWs4mkbO1d
+         I8A8Qv+4dQqCTNl2dG1LLYM8yxxmD4G77ZQnJOJyp88rjDnTbroxprVftK3VXjMxRdsi
+         3m4kh1Fy5+kji5UlLgVIy8o2rzd8MTJc39xHh+yAGf+w4nkTH7MNPg1Duq/Wg7VpiVZX
+         SOA0SXsMHJxbBpWB1Tq2v3OUBgVOO/Gira9eRAnUKfH4Y4l8iqYIRIXR/rqSXe2ULSNp
+         qasR9i/jjMm5NpQdpa+C28sGjsMtMbT1Ho0YAVGMSaKs0MdjoJjLosRGeRtB3cJU2lyj
+         x9XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690999853; x=1691604653;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hNOi1ejB1pS9dlnPvTd4BYpS5FGTlhXd3925hg/0fm0=;
-        b=DcFtXoPq5oWYQJLynf1YE9wI5iwtiiwOYKWF5QSHjmdxnVrWgwG0FJS0SZNi24Jb3M
-         Q4hOctZWzMPkx+i/1wnieL8bIb0brtn5eFuqJTogsgEdzokv9jXPycxmP7Y/HE4UMHPP
-         +9lpI/xQ4eTRuW79KkVUwSg+3WWQh5ilz4WSJfW/3vuCRTcwPKrjuBoUE/h9i3rdmq5m
-         i+k75wzZPlZtZe7xVXUf4DMLLPz4erz8wY6CCZSAWkmJ3XG8KJjvm0+14NdSzTLBZDl8
-         sojk6S0ac/6YzxOSOssc45NPk6kAeqeGDOofntLR0bR7Tyul2rXZgipdHy3RvXU0Za5w
-         Ot/A==
-X-Gm-Message-State: ABy/qLYfvd31pNcbOb0ZFs0wsIB9xpFJMx2c35fTgEbsx4dPomaisnsu
-        EPkhzF+DQQuUQ/VScTFC+4EspzyuIn4=
-X-Google-Smtp-Source: APBJJlF95ARaqLNa81cSoeQ/yVAVuvkJNFxH1E7bSipo61hU/hVILuvCTY7msX2mF/eehqZ1FtZW+rjYsqE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e5c1:b0:1b7:edcd:8dcf with SMTP id
- u1-20020a170902e5c100b001b7edcd8dcfmr98453plf.4.1690999853513; Wed, 02 Aug
- 2023 11:10:53 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 11:10:51 -0700
-In-Reply-To: <20230801020206.1957986-5-zhaotianrui@loongson.cn>
-Mime-Version: 1.0
-References: <20230801020206.1957986-1-zhaotianrui@loongson.cn> <20230801020206.1957986-5-zhaotianrui@loongson.cn>
-Message-ID: <ZMqcKzrSsw9WGeTC@google.com>
-Subject: Re: [PATCH v1 4/4] selftests: kvm: Add LoongArch tests into makefile
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tianrui Zhao <zhaotianrui@loongson.cn>
-Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Vishal Annapurve <vannapurve@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev,
-        Peter Xu <peterx@redhat.com>,
-        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1690999932; x=1691604732;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dqrDij2SO6O+kcrLN8FbJ03HVYrEeGEEuoAOFklLWnY=;
+        b=gFno87R0ydbriY+jPzsK2Vpq6LxAOQhmohITC+0trUMmJB/F9SPpmJv1w0pX9FXmXK
+         o6Nib6F8mGI7eLH6BkMkpTAA+3E8awyy4s6B2RrDxseaENy+Ufpk1xonOJtqe7wxu60Z
+         2MQQmC3AjjI5wnQ7OM+2RVEkRlaYtaiatKWo5w09nrsbW6eKYYtNS2RCqjT1B0Yx0BAv
+         b8KAFBsyQL+Y+RG+i3ArIy49582b/8MU2Q49U/eWd6qkyCAQa9r7hjbfdy/BcN+Z2Ay2
+         a676rh0UTE8jLgZs37HOQFAtVuCfu/oNGFmakBEF8qmaiGzA97y1knYYCNoX/fWsw1V+
+         fBzw==
+X-Gm-Message-State: ABy/qLYKH/NmWEH2Z+SDveFiExY6N9dDDNY0bwJFwgzR93Et1C1FdLuH
+        Pe7p/OecUmSVkZYJF3Ei9KyfE+oB1ifzXk0G13uqUA==
+X-Google-Smtp-Source: APBJJlFdnh9mEDcXTT3BwxduNQuaOn5XSODZKW62gjVBtwTIDuk/MZAnaqmS4xfMWr1lAbyB3pzS3PUVl2O4i3q3K3s=
+X-Received: by 2002:a25:aa45:0:b0:d0b:f845:c831 with SMTP id
+ s63-20020a25aa45000000b00d0bf845c831mr16060588ybi.13.1690999931880; Wed, 02
+ Aug 2023 11:12:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230802-revert-do-not-generate-hfp-hbp-hsa-eot-packet-v1-1-f8a20084e15a@linaro.org>
+ <6cd079a4-2f5b-0169-cbaf-b59a72f1b32b@denx.de> <084ca94e-d694-878e-0646-f4c89043cd28@denx.de>
+ <c2644543-2e81-3351-ee1e-76f5f32c4ac5@linaro.org> <92992f9c-fae0-f1b3-16e7-09ad3e711561@denx.de>
+In-Reply-To: <92992f9c-fae0-f1b3-16e7-09ad3e711561@denx.de>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 2 Aug 2023 21:12:00 +0300
+Message-ID: <CAA8EJpq1KhxPTaQY_Bra0xwC7V6ftr+cAH0CdHgzkU93YksaPA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "drm/bridge: lt9611: Do not generate HFP/HBP/HSA
+ and EOT packet"
+To:     Marek Vasut <marex@denx.de>
+Cc:     neil.armstrong@linaro.org, Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Amit Pundir <amit.pundir@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023, Tianrui Zhao wrote:
-> Add LoongArch tests into selftests/kvm makefile.
+On Wed, 2 Aug 2023 at 20:34, Marek Vasut <marex@denx.de> wrote:
+>
+> On 8/2/23 14:37, Neil Armstrong wrote:
+> > On 02/08/2023 14:28, Marek Vasut wrote:
+> >> On 8/2/23 14:07, Marek Vasut wrote:
+> >>> On 8/2/23 10:52, Neil Armstrong wrote:
+> >>>> This reverts commit [1] to fix display regression on the Dragonboard
+> >>>> 845c
+> >>>> (SDM845) devboard.
+> >>>>
+> >>>> There's a mismatch on the real action of the following flags:
+> >>>> - MIPI_DSI_MODE_VIDEO_NO_HSA
+> >>>> - MIPI_DSI_MODE_VIDEO_NO_HFP
+> >>>> - MIPI_DSI_MODE_VIDEO_NO_HBP
+> >>>> which leads to a non-working display on qcom platforms.
+> >>>>
+> >>>> [1] 8ddce13ae696 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA
+> >>>> and EOT packet")
+> >>>>
+> >>>> Cc: Marek Vasut <marex@denx.de>
+> >>>> Cc: Robert Foss <rfoss@kernel.org>
+> >>>> Cc: Jagan Teki <jagan@amarulasolutions.com>
+> >>>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> >>>> Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> >>>> Fixes: 8ddce13ae69 ("drm/bridge: lt9611: Do not generate HFP/HBP/HSA
+> >>>> and EOT packet")
+> >>>> Reported-by: Amit Pundir <amit.pundir@linaro.org>
+> >>>> Link:
+> >>>> https://lore.kernel.org/r/CAMi1Hd0TD=2z_=bcDrht3H_wiLvAFcv8Z-U_r_KUOoeMc6UMjw@mail.gmail.com/
+> >>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> >>>
+> >>> This breaks LT9611 operation on i.MX8M Mini/Nano/Plus, so, NAK.
+> >>>
+> >>> I am currently using this LT9611 with Linux 6.1.y
+> >>
+> >> Correction, 6.1.y only with the DSIM patches backported.
+> >
+> > Well you'll need to keep [1] backported on your downstream branch,
+> > this revert won't propagate to v6.1 stable anyway.
+>
+> I will still have a problem with those MX8M boards during my development
+> on linux-next, so that isn't helping.
+>
+> >>> in production and this is not acceptable. I also believe the correct
+> >>> fix is on the MSM side, not on the LT9611 driver side, since MSM
+> >>> incorrectly implements these flags.
+> >>
+> >
+> > Since [1] breaks Qcom boards on v6.5, and [1] was added for v6.5 to make
+> > the bridge work
+> > on i.MX8M Mini/Nano/Plus, it's not acceptable either to keep it for the
+> > v6.5 release.
+>
+> So, we need to find a solution which works for both, I proposed one already.
 
-Please elaborate on how the lists of tests was chosen.  E.g. explaing why
-LoongArch isn't supporting kvm_binary_stats_test, rseq_test, etc.
+We proposed another one.
 
-> Based-on: <20230720062813.4126751-1-zhaotianrui@loongson.cn>
-> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
-> ---
->  tools/testing/selftests/kvm/Makefile | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index c692cc86e7da..36a808c0dd4c 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -55,6 +55,10 @@ LIBKVM_s390x += lib/s390x/ucall.c
->  LIBKVM_riscv += lib/riscv/processor.c
->  LIBKVM_riscv += lib/riscv/ucall.c
->  
-> +LIBKVM_loongarch += lib/loongarch/processor.c
-> +LIBKVM_loongarch += lib/loongarch/ucall.c
-> +LIBKVM_loongarch += lib/loongarch/exception.S
-> +
->  # Non-compiled test targets
->  TEST_PROGS_x86_64 += x86_64/nx_huge_pages_test.sh
->  
-> @@ -181,6 +185,13 @@ TEST_GEN_PROGS_riscv += kvm_page_table_test
->  TEST_GEN_PROGS_riscv += set_memory_region_test
->  TEST_GEN_PROGS_riscv += kvm_binary_stats_test
->  
-> +TEST_GEN_PROGS_loongarch += kvm_create_max_vcpus
-> +TEST_GEN_PROGS_loongarch += demand_paging_test
-> +TEST_GEN_PROGS_loongarch += kvm_page_table_test
-> +TEST_GEN_PROGS_loongarch += set_memory_region_test
-> +TEST_GEN_PROGS_loongarch += memslot_modification_stress_test
-> +TEST_GEN_PROGS_loongarch += memslot_perf_test
-> +
->  TEST_PROGS += $(TEST_PROGS_$(ARCH_DIR))
->  TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(ARCH_DIR))
->  TEST_GEN_PROGS_EXTENDED += $(TEST_GEN_PROGS_EXTENDED_$(ARCH_DIR))
-> -- 
-> 2.39.1
-> 
+-- 
+With best wishes
+Dmitry
