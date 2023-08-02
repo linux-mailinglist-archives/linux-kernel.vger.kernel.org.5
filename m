@@ -2,146 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2A2476D87E
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F29C76D898
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 22:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbjHBUS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 16:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58890 "EHLO
+        id S232400AbjHBUW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 16:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229924AbjHBUS2 (ORCPT
+        with ESMTP id S232161AbjHBUWT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 16:18:28 -0400
-Received: from mgamail.intel.com (unknown [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894E9FF;
-        Wed,  2 Aug 2023 13:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1691007507; x=1722543507;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=qE6+czYu3P5RjbUSv/VqrQ8rPSt0rDJqz7xRsFgoR/A=;
-  b=VBtqxaZSHX0jnRGndNOnYqBbF057vyvqg7k22usU7/711Bv0wylZBKJy
-   5UhWDZUGZgw0H6ocD9Rfumt489f6/zYY6RNKMi5opbBD/cCdpn7rdwI14
-   ptCQ8+T6zqCNle7BNzyJtRMViBmGJUpOB6Y8BN9yxsa5ALJpeSM3+xWXU
-   7hxC6C5x2DEHGjkRsYXqf5Axpo5Q5iKFPMVr1+48nrV3eFTLY1KLeGqXp
-   fF1k/lvnowci6imey0pGOMVzNYR7b6Pkp6VSFsAkgnMDqZP/EikEU3jz0
-   kE3lDnbbAYHxD564jkt6llgspN+lscsb8QuG8aSxBoHXpEWMLfrWVaEHg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="368588195"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="368588195"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 13:18:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="799255593"
-X-IronPort-AV: E=Sophos;i="6.01,250,1684825200"; 
-   d="scan'208";a="799255593"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga004.fm.intel.com with ESMTP; 02 Aug 2023 13:18:19 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Wed, 2 Aug 2023 13:18:19 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Wed, 2 Aug 2023 13:18:19 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Wed, 2 Aug 2023 13:18:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XaoYGxXEBBUy195+WjM+3rMVmuk4g7FBzUn7mKcN3QKw/Om4ruREp7lR7UO/4aCJJeFhmkW+bwmTgXDYwXY75pHNmj/qzKNkVWtYIKNWhOzc48bmRgR6uEFo+fakBLgVEHZt5CQe6E0Yw6f6WkMaq2C/sGTI36wX1Yhu+Sn/bC/GvuBB2tkDJRjIuPSZ1fr1htRWI7gQQQM6rWsSzLfYOo76qKoHSjnr2sjK26ZGmgF4LM63q4n+moUfU91KqAyAd9EOtVapqW3Ufi8XdBbAnRx4EfgIHPH7BhstClEkZRmqQRhtuFDyNb7HLRgIrjoFz+V7A+aojrlNwCWP3tVpqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qE6+czYu3P5RjbUSv/VqrQ8rPSt0rDJqz7xRsFgoR/A=;
- b=PpuyXgQDKqdWM+XFhnnK7vq8MD8j7wg7O5n8kPM1OUxUCkc8IoWiJrbPGx876BjMc6ZbnThtQUz+ELFzRHolEuqubsbPD2r+T2I262yTTE4joNE8oA303aPcLF9CxISlIIKzP9VRdiImJcNuH9OylRFE5hfOa4injYBFb6os5xFVqQ+UU99anahXAZ1saiz1gbKADiAekO57BuaKvO3bttfsf8lzAlMa9ob1fT6nc6qWu8BdcZmb0YltHWRy9LepuNJ/xE6LfCgEkTD73mYN1QJaVntZySM3DURajdTLvAU+xl8Djbw7Ty0f2DntAQYZGZ2wEcem3uO1Qz8NMSp8hg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by DS0PR11MB7384.namprd11.prod.outlook.com (2603:10b6:8:134::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.47; Wed, 2 Aug
- 2023 20:18:17 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::52e8:9695:e645:1092]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::52e8:9695:e645:1092%5]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
- 20:18:17 +0000
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-CC:     Borislav Petkov <bp@alien8.de>, Aristeu Rozanski <aris@redhat.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Lim, Ee Wey" <ee.wey.lim@intel.com>
-Subject: RE: [PATCH 1/1] EDAC/igen6: Fix the issue of no error events
-Thread-Topic: [PATCH 1/1] EDAC/igen6: Fix the issue of no error events
-Thread-Index: AQHZvs70AZA+3i1QEU28InVclO7Ajq/XfnFw
-Date:   Wed, 2 Aug 2023 20:18:17 +0000
-Message-ID: <SJ1PR11MB608356E4C19E9A3D7FE030D4FC0BA@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <20230725080427.23883-1-qiuxu.zhuo@intel.com>
-In-Reply-To: <20230725080427.23883-1-qiuxu.zhuo@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|DS0PR11MB7384:EE_
-x-ms-office365-filtering-correlation-id: e15a3c63-e8d9-457c-e6c5-08db93959bb6
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: M8MKGwafeA1Wj2G/1LP8f8TztljwkITkC4iOaFM8Pf2saV43IOw7w/x/pTVWtxWUNDe1WXk17rPyW9deHCTG/KZ4W4OsNuxX0Lwa2yEOB0Q5A+z9sDnETwNLyVhwXeb5Q7ehlqgw2OIEqpH0sahyC56H1QySAt1qAIVeN+9Y5ef4hqcQ08xRx6jCTKOzNAa+N65/oJWGlQS9SkbfTdECrmT6YsfZ8bSQj8Sm9Kl4B+nzmCqk+aIvj5MOLFk2MU0KgyxHtfvoM+PFU8bIz28ZiD+ku5sJVowSOIxeN4nYgCUNLktSPGYAPCo5S5mhpl/zEb5Hwj2kVwYNoeEVgFnX/iI6yBsmfNb2aFOnPRpHu15G80l55Fsu4gUM3NifQlUK8slhJiMWDeEEYpACeRbItwkQXlig536j4/JibJFvlHgLlPIg0inPLmAIo51SYguvsa9jg7/OLGT7KVYU5rt6LqBAW0B+oSnLP3oEhsnwNyxoIqc6L2H1MeQXCkGdNZQYqVJSg/TKgeBAOw9KvEQZqNmhkes7Kvw2TtindVZt0CV0YApdfyXxJlN4PP1dfTrTmnFlrEUJ7INeSb+iTNHqJokYcAf0Ic/2gncqkl3HlwadZKn/uNPfZTeJgGGwsavB
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(396003)(346002)(39860400002)(136003)(376002)(366004)(451199021)(107886003)(6506007)(26005)(186003)(4744005)(316002)(76116006)(2906002)(66946007)(4326008)(6636002)(64756008)(66446008)(66476007)(66556008)(5660300002)(52536014)(6862004)(41300700001)(8676002)(8936002)(7696005)(71200400001)(9686003)(478600001)(54906003)(55016003)(38100700002)(82960400001)(122000001)(33656002)(86362001)(38070700005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?mwRkD9CjFC3+wuZwsZR+wjZON/Es3bDE1f580gvQxjNCBawjbCC5xw2HeoNi?=
- =?us-ascii?Q?Qy8gMEsNMysAuGgDYHlo/mk3kCXCdj3QoTZ+5aGL7z/aECW3YzKhfCS2IxUu?=
- =?us-ascii?Q?QXBhGUj4g52vJEkXLHzDbVmw+zsL4H67ATnhbeOEdP62ekizZkhOqTxMOC7I?=
- =?us-ascii?Q?PQV4WBHi3VLa3AHy4wr0tKHeYThVETvEJFEmsusoOgwlaD3QPgqFyGoJEKfo?=
- =?us-ascii?Q?CQ3n3yHwy67nQ+0QKkYKL8Lrtj/8nSOQW+Uhuo+IuNSerHi4NBo3KSPB8BJu?=
- =?us-ascii?Q?oSFFt4Bc4Qre2TqyqymuA262MGwMCjDFRC19Mo4+RDwsQN5/Rn1HZnB8zohA?=
- =?us-ascii?Q?SqLdOqKl5oXNPO/deZh7IWrG+FjkxxYNSnSI3fTnWjQrF7Hr2QgrqG+wo0Jg?=
- =?us-ascii?Q?m0ZlPZip1pfmk5GJ2rhi3PE6Xf+oLelreKMYiZoqO8wnrx/vo+gdzRbOmwf4?=
- =?us-ascii?Q?RFEEMB5iSMk+9ApQ1lvDjtNtq2oFPSiov56r726nv4XFM1BxJ0TgfIJFua45?=
- =?us-ascii?Q?f6Eifu/YdQZvhdJQrGp4KhTF8/quSjIgfsdSpQi5ALO+16Mcuz0pe/h/Eauw?=
- =?us-ascii?Q?hWexuBX21xltj2cw/m8bT98Er7KS2GcAB84hnusmOANFvupAu9QXhsZu7oAG?=
- =?us-ascii?Q?exW0Z6LjeAmridrOY7lPgTcSmUpKJGQPnuSMJrtZ/04owSL6DEHJC/KDPCpC?=
- =?us-ascii?Q?JtAphsGGmxVDFB+aVhbQGpF/svPavyVvndhBIiwtOPTaPq34u81uQoPf5OEZ?=
- =?us-ascii?Q?nyjMHMUeehkzfQVtNri6qdyp9BJDsFVZ5Jw9xCSJsilKejQ1RhIAXDyiJhM/?=
- =?us-ascii?Q?h4k3zDRCxdG4/Qs5nKRNYmpv428+ZswyvxJMfiikXp1sV3xXzCJ3ucZuW/Vb?=
- =?us-ascii?Q?nGc3uOnVhbfYcFrfyEVJ/FWqHcokZpFGyT2c9hLxI+X96SYWFQiBySt8vdA+?=
- =?us-ascii?Q?iwxSW9ieP/H8Ng43fkd6qMALzgCAqxtlBVlw437pAwJVo8tZxw5M7NoCI4f/?=
- =?us-ascii?Q?sXCozOVFMG8tcJmtP7bVg6myx6IU2Cq/3syvRbeCXlLjcERzhwmZQxgICp7N?=
- =?us-ascii?Q?uEEcnft00uUyt2A4X2fszeyt0k6YgdewkbdbkmLQrp4VQItkhYIeeBR2VYXo?=
- =?us-ascii?Q?x3Cj4LxW4u7U8gYn9lBDMzdJPms2XvDrJ4jAm6R/CHsNaUFDvwWHDU04KY7K?=
- =?us-ascii?Q?DYUvrsxCOCAa0XGHd/nPkvHJxfsbPl0XNKJHZ8srAbYFrxHVlicmyRNAAVjN?=
- =?us-ascii?Q?dR8NZRBqzZ00qobZUkO9sxHrIQEAyUDCeJZBQIBC7RwvDIiHg0jeYjvVRVgV?=
- =?us-ascii?Q?mXK+52cdWy3aATylnNRJr7zneTaVGOoPgEizAZFPt19u4WOGgjfzOTNyfpxE?=
- =?us-ascii?Q?GPQwpNZVbugr+7plGENKiOZuyw0cYqLqMiWIlLr/zeWBv+eSqXBGmIcp/ph4?=
- =?us-ascii?Q?Y27wUmkCcrVS+Ul09d4SRYrro1zerpQcxGu2Ho5ShPHBiLN6Qx2WSbkbFsdO?=
- =?us-ascii?Q?4Yg1IptDmEy1heZhcYGcD2tJJI+M0hiSh32E29cg2bH/R8PZvYf+QeFiMhha?=
- =?us-ascii?Q?qJGyznEz9gRt/iMSwNQ=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e15a3c63-e8d9-457c-e6c5-08db93959bb6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2023 20:18:17.4395
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g+3sf68s+zgFrTKRlZ1r3yhc6KNi+/rnCNhB2KVLahpQBKJnKk3wxRM01yR0jFa+/+XBb/Z+MW0KM8cftVTryw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7384
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        Wed, 2 Aug 2023 16:22:19 -0400
+Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3BAF268F;
+        Wed,  2 Aug 2023 13:22:16 -0700 (PDT)
+Received: from pps.filterd (m0148663.ppops.net [127.0.0.1])
+        by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 372FVvh9010627;
+        Wed, 2 Aug 2023 20:21:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : subject :
+ date : message-id; s=pps0720;
+ bh=G0kiRdSmBdyx4TfhxwwXuA3DkCJaC8w3wSHrV5TtevA=;
+ b=losdoeyMauHKGt0wydRV31KeTYN3hmJ9cixTbBQwjdm69XrvUe64/9Rnvvf0CrXjLvsR
+ gsTsHDYLUOvJejw5FHREL8c3pboJ3vWi3sRagLcNdr+swGk0gdRK3RhFoozYUSzAvo5l
+ 3aRK21DjB/zdx5QrWJKKkmp9pkE5iX3Opxi5D1peRcy08MiWJNCZV6RDJEUwlLL4Tl7h
+ p5Ay3BQCQF5dIbJHIcIZHVDJ6gpTuDxMqrAFaQWKGVssngsWRfgN6X4s/43u3MvOhnCi
+ 1X9opa5Xotm/F/NJhdRsiRr4tzEChpK3RMrm/e5hmg4q7gZHi0wlHg/Zz4gg5hb2+qL/ YQ== 
+Received: from p1lg14880.it.hpe.com ([16.230.97.201])
+        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3s7hb76myd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 20:21:55 +0000
+Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by p1lg14880.it.hpe.com (Postfix) with ESMTPS id D2B07800187;
+        Wed,  2 Aug 2023 20:21:53 +0000 (UTC)
+Received: from hpe.com (unknown [16.231.227.39])
+        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTP id 4656580E885;
+        Wed,  2 Aug 2023 20:21:52 +0000 (UTC)
+From:   nick.hawkins@hpe.com
+To:     christophe.jaillet@wanadoo.fr, simon.horman@corigine.com,
+        andrew@lunn.ch, verdun@hpe.com, nick.hawkins@hpe.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] ARM: Add GXP UMAC Support
+Date:   Wed,  2 Aug 2023 15:18:19 -0500
+Message-Id: <20230802201824.3683-1-nick.hawkins@hpe.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-GUID: x9Sy7t70ZgbTuaig2oIaHBpPQUSxddJI
+X-Proofpoint-ORIG-GUID: x9Sy7t70ZgbTuaig2oIaHBpPQUSxddJI
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_16,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ phishscore=0 priorityscore=1501 spamscore=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 impostorscore=0 mlxscore=0 clxscore=1011 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
+ definitions=main-2308020178
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -150,23 +73,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Current igen6_edac checks for pending errors before the registration
-> of the error handler. However, there is a possibility that the error
-> occurs during the registration process, leading to unhandled pending
-> errors and no future error events. This issue can be reproduced by
-> repeatedly injecting errors during the loading of the igen6_edac.
->
-> Fix this issue by moving the pending error handler after the registration
-> of the error handler, ensuring that no pending errors are left unhandled.
->
-> Fixes: 10590a9d4f23 ("EDAC/igen6: Add EDAC driver for Intel client SoCs u=
-sing IBECC")
-> Reported-by: Ee Wey Lim <ee.wey.lim@intel.com>
-> Tested-by: Ee Wey Lim <ee.wey.lim@intel.com>
-> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+From: Nick Hawkins <nick.hawkins@hpe.com>
 
-Applied to RAS tree for next merge window.
+The GXP contains two Ethernet MACs that can be
+connected externally to several physical devices. From an external
+interface perspective the BMC provides two SERDES interface connections
+capable of either SGMII or 1000Base-X operation. The BMC also provides
+a RMII interface for sideband connections to external Ethernet controllers.
 
-Thanks
+The primary MAC (umac0) can be mapped to either SGMII/1000-BaseX
+SERDES interface.  The secondary MAC (umac1) can be mapped to only
+the second SGMII/1000-Base X Serdes interface or it can be mapped for
+RMII sideband.
 
--Tony
+The MDIO(mdio0) interface from the primary MAC (umac0) is used for
+external PHY status and configuration. The MDIO(mdio1) interface from
+the secondary MAC (umac1) is routed to the SGMII/100Base-X IP blocks
+on the two SERDES interface connections. In most cases the internal
+phy connects directly to the external phy.
+
+---
+
+Changes since v1:
+ *Corrected improper descriptions and use of | in yaml files
+ *Used reverse christmas tree format for network drivers
+ *Moved gxp-umac-mdio.c to /mdio/
+ *Fixed dependencies on both Kconfigs
+ *Added COMPILE_TEST to both Kconfigs
+ *Used devm_ functions where possible in both drivers
+ *Moved mac-address to inside of port in yaml files
+ *Exchanged listing individual yaml files for hpe,gxp*
+ *Restricted use of le32
+
+Nick Hawkins (5):
+  dt-bindings: net: Add HPE GXP UMAC MDIO
+  net: hpe: Add GXP UMAC MDIO
+  dt-bindings: net: Add HPE GXP UMAC
+  net: hpe: Add GXP UMAC Driver
+  MAINTAINERS: HPE: Add GXP UMAC Networking Files
+
+ .../bindings/net/hpe,gxp-umac-mdio.yaml       |  50 +
+ .../devicetree/bindings/net/hpe,gxp-umac.yaml | 112 +++
+ MAINTAINERS                                   |   2 +
+ drivers/net/ethernet/Kconfig                  |   1 +
+ drivers/net/ethernet/Makefile                 |   1 +
+ drivers/net/ethernet/hpe/Kconfig              |  32 +
+ drivers/net/ethernet/hpe/Makefile             |   1 +
+ drivers/net/ethernet/hpe/gxp-umac.c           | 889 ++++++++++++++++++
+ drivers/net/ethernet/hpe/gxp-umac.h           |  89 ++
+ drivers/net/mdio/Kconfig                      |  13 +
+ drivers/net/mdio/Makefile                     |   1 +
+ drivers/net/mdio/mdio-gxp-umac.c              | 142 +++
+ 12 files changed, 1333 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/hpe,gxp-umac-mdio.yaml
+ create mode 100644 Documentation/devicetree/bindings/net/hpe,gxp-umac.yaml
+ create mode 100644 drivers/net/ethernet/hpe/Kconfig
+ create mode 100644 drivers/net/ethernet/hpe/Makefile
+ create mode 100644 drivers/net/ethernet/hpe/gxp-umac.c
+ create mode 100644 drivers/net/ethernet/hpe/gxp-umac.h
+ create mode 100644 drivers/net/mdio/mdio-gxp-umac.c
+
+-- 
+2.17.1
+
