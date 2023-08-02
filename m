@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB53776C51D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2496D76C518
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 08:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231990AbjHBGAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 02:00:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53534 "EHLO
+        id S231858AbjHBGAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 02:00:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232118AbjHBGAU (ORCPT
+        with ESMTP id S231510AbjHBGAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 02:00:20 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD24C213D;
-        Tue,  1 Aug 2023 23:00:13 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id E63BD320094E;
-        Wed,  2 Aug 2023 02:00:10 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Wed, 02 Aug 2023 02:00:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1690956010; x=1691042410; bh=Yt
-        vb0mJTCqFvSWUzjrpJ3J+FljcDta2FuHCw3g9+xyM=; b=X8GskQHKcF/CLu6sH9
-        eHdMyaeNGKePN3uazuZn7+yG1MgasXQeSW+4D5a9qh01PZJ7ruxAhWLUmqLv/5A1
-        W6H07qlbCkDckdcSq23RL5reCF4qGn2CJ7AFFzvrvuiIyF6avFGWDuPiIDTDDza7
-        sITrpD0bLEVEOugi610GvCf2CpcRN/uAN7rFDfopQ9Kls2M+mvohHTIgclscWePT
-        IzeLsuUrotGQT+H+7RNajuQNxx1XCoa1DvJJ5Hga0P3V/DrFgmlN48jWyzxywzvR
-        EIsEeQt1j8VMOaYXXdnLEFTpd/PIDbv3gVRDO2Rf4qW2CutL5wCa7f3aFyUesjBm
-        qnXA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1690956010; x=1691042410; bh=Ytvb0mJTCqFvS
-        WUzjrpJ3J+FljcDta2FuHCw3g9+xyM=; b=rVZI7NEq96ProyK7mRRMmZ9uNP1XY
-        U60ejYdcwBAhAR8FRm0b43P47NNM4476RHXJVqz/nect8HFS32ww2FrZLZfDJNFj
-        nTnKfBQ8SOHjto76Bp9hInu8Z2aQgIa95Tj0/F+hnsevQld0WJob9UOapGSFOrr5
-        N+cc0kc4CXtrZ9sb+emUOVvGisqm5TaiFNe0yyVC4BFqIe069x7BSdzhm3i9GTlL
-        AxvGwPLPUCK3283/Shk2fhcVU6K8QFI2TOkxy+6PQD4C/MzdLPr25hYGQV6ncCu9
-        K1tQdzUC8qIQLrxnIQQcYoqNk6IjHludpZUC7nMTg3HpQ+ejVpLz7Nv/A==
-X-ME-Sender: <xms:6fDJZAxUer9v1pqOKwDKxJPmHD6m2WEnq-gFKAVMUjSs92lscT1I2w>
-    <xme:6fDJZEStnpkvBnfb_iENwlU_lnFYxbd-7Ho7ravoYFk-448ZPHdfLsBkq7D46yGlE
-    bia4TPj1nkIiLw9Bhw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrjeejgddutddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:6fDJZCU2S6Lh3XFdHrkVmf5T2UyWJ4LVI0770K80Yb5gBkjxojhaXA>
-    <xmx:6fDJZOi3qvEj8IktGXtLSuF7DBXnlsvyVKHFAUaYBLa9QLkaV2_Mxw>
-    <xmx:6fDJZCCCDj2SyFda5G2C6Lr1Bd-i411TdgCr_MhafwfaBdfxVAY9sw>
-    <xmx:6vDJZDK3c5_EB4fgcQFgzX4-go5CWzYwLeKaw7J7u6zkYYoyze36mQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D5750B60089; Wed,  2 Aug 2023 02:00:09 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-592-ga9d4a09b4b-fm-defalarms-20230725.001-ga9d4a09b
-Mime-Version: 1.0
-Message-Id: <847747a8-b773-4b7b-8c14-b8ef4ba7c022@app.fastmail.com>
-In-Reply-To: <CAHk-=wgkC80Ey0Wyi3zHYexUmteeDL3hvZrp=EpMrDccRGmMwA@mail.gmail.com>
-References: <20230801-bitwise-v1-1-799bec468dc4@google.com>
- <CAHk-=wgkC80Ey0Wyi3zHYexUmteeDL3hvZrp=EpMrDccRGmMwA@mail.gmail.com>
-Date:   Wed, 02 Aug 2023 07:59:48 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Linus Torvalds" <torvalds@linux-foundation.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>
-Cc:     "Nathan Chancellor" <nathan@kernel.org>,
-        "Tom Rix" <trix@redhat.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        "Heiko Carstens" <hca@linux.ibm.com>,
-        "Vasily Gorbik" <gor@linux.ibm.com>,
-        "Alexander Gordeev" <agordeev@linux.ibm.com>,
-        "Christian Borntraeger" <borntraeger@linux.ibm.com>,
-        "Sven Schnelle" <svens@linux.ibm.com>, linux-s390@vger.kernel.org,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Subject: Re: [PATCH] word-at-a-time: use the same return type for has_zero regardless
- of endianness
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 2 Aug 2023 02:00:13 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2F8212B
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 23:00:08 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4fe11652b64so10720337e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 01 Aug 2023 23:00:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690956006; x=1691560806;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=l3cBDFlmb0rLF7U5GOTszA6HHKFGynKk1sTqKDLZ/qc=;
+        b=GzLGd6zt9F36vIYWCCnW7JC4cohWO1OJumfTx8hZ7k1Js0REj9KbY4Iimnmg1WT8OF
+         TLPFyznT9cyeI8fi8odvIwHLQetGrRKNwempF5YxE3YPc7RgezWPE6wagjLjSjqxF669
+         6ZjKkCvFNFN6XGG5MDoKz1uqESXiiOfiGbq4sphDa0wwPvXipUSiZuF9SzNUsbMM9xHH
+         +skOsZPAmit/E7Iykx3eFUKIO2qgA55dhpFPUCksGZRvRKwTtWLLSReSXZyGWrEzv8wi
+         IkHvMLqe9Puo/SdThRI2c17qBPeMePB1tkjuvdCRG+WxO6LZuFUcqP446gLy4L21LHgu
+         qJBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690956006; x=1691560806;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=l3cBDFlmb0rLF7U5GOTszA6HHKFGynKk1sTqKDLZ/qc=;
+        b=KqymGELXgMMkwkulw4sJJ2IyrVnDT4gttJpuBD+PcgHHiQyqntFGdfI1rUeiZTzLGH
+         DN9YSoPtAmQBgr+xxWkXs4Trs8nUWpIoTizd/HpgM9aaXJdurhITT2W1NuOt4KJp8zwj
+         Gou/2JTvWQp7zpBXBnFvWc4synyG0rTcGMDSwPPRX49uNYP35rfUSY9ZfcRL6Xw6U8Vj
+         M0FGiLenT4VqlFsicdBOXgzguJJCKizSfj6EI9EcRbO7MbPIvia6NLzGVfRzwDPTo01y
+         jL2v0qUoTIEInL5umfzDHeeXTTl0UDEXO09C/TuNtXNsB7xcz9ZwLdX/B3Hh7NONwoN1
+         +Vpg==
+X-Gm-Message-State: ABy/qLYgkyqXkkdv/5hWSlRVUpVJ5EQFxku4fWnUK/4wnn5TkXtyxUgK
+        hhscawLZjdoYV4l5P2bg7O+juw==
+X-Google-Smtp-Source: APBJJlFGk/uFoEFmSJSgr6va1DLUes/+N8hdaYJZu7fVLQH5vlglbTPNtnJ1o23FikkmSh62nEDj9Q==
+X-Received: by 2002:a05:6512:3291:b0:4fb:91c5:fd38 with SMTP id p17-20020a056512329100b004fb91c5fd38mr3437958lfe.0.1690956006505;
+        Tue, 01 Aug 2023 23:00:06 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id n22-20020a7bc5d6000000b003fe195cecb3sm735815wmk.38.2023.08.01.23.00.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 01 Aug 2023 23:00:06 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 09:00:03 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Ruan Jinjie <ruanjinjie@huawei.com>, yisen.zhuang@huawei.com,
+        salil.mehta@huawei.com, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] net: hisilicon: fix the return value handle and
+ remove redundant netdev_err() for platform_get_irq()
+Message-ID: <079063f5-e8e1-4a5f-8124-34d79d2fc9bd@kadam.mountain>
+References: <20230731073858.3633193-1-ruanjinjie@huawei.com>
+ <20230801144347.140cc06f@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801144347.140cc06f@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023, at 03:07, Linus Torvalds wrote:
-> On Tue, 1 Aug 2023 at 15:22, <ndesaulniers@google.com> wrote:
+On Tue, Aug 01, 2023 at 02:43:47PM -0700, Jakub Kicinski wrote:
+> On Mon, 31 Jul 2023 15:38:58 +0800 Ruan Jinjie wrote:
+> > There is no possible for platform_get_irq() to return 0
+> > and the return value of platform_get_irq() is more sensible
+> > to show the error reason.
+> > 
+> > And there is no need to call the netdev_err() function directly to print
+> > a custom message when handling an error from platform_get_irq() function as
+> > it is going to display an appropriate error message in case of a failure.
+> > 
+> > Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
+> 
+> Dan, with the sample of one patch from you I just applied I induce
+> that treating 0 as error and returning a -EINVAL in that case may
+> be preferable here?
 
-> Who ends up being affected by this? Powerpc does its own
-> word-at-a-time thing because the big-endian case is nasty and you can
-> do better with special instructions that they have.
+This patch is correct.
 
-powerpc needs the same patch though.
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-> Who else is even BE any more? Some old 32-bit arm setup?
->
-> I think the patch is fine, but I guess I'd like to know that people
-> who are affected actually don't see any code generation changes (or
-> possibly see improvements from not turning it into a bool until later)
+The comments for platform_get_irq() say it returns negatives on error
+and that's also how the code is implemented.
 
-s390 is the main one here, maintainers added to Cc.
+Is zero an error code?  Historically, a lot of IRQ functions returned
+0 on error and some of those haven't been replaced with new functions
+that return negative error codes.  irq_of_parse_and_map() is an example
+of this.  I've been meaning to make a complete list but apparently
+that's the only one Smatch checks for.
 
-Atheros and Realtek MIPS are older but still shipping in low-end
-network equipment, and there are still users on old embedded
-big-endian mips (broadcom, cavium, intel/lantiq and arm
-(intel ixp4xx) hardware. All modern Arm hardware (v6/v7/v8/v9)
-can do both big-endian and little-endian, but actual user numbers
-for big-endian are close to zero -- I have not heard from anyone
-actually using it in years.
+Is zero a valid IRQ?  In upstream code the answer is no and it never
+will be.  In this code the platform_get_irq_optional() will trigger a
+warning for that.
+	if (WARN(!ret, "0 is an invalid IRQ number\n"))
+However there are some old out of tree arches where zero is a valid IRQ.
 
-And then there was a lot of the old-school workstation/server
-hardware (m68k, mips, parisc and sparc, not alpha/ia64) that is
-mostly big-endian and still maintained to some degree.
+regards,
+dan carpenter
 
-      Arnd
