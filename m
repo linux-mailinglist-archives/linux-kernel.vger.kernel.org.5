@@ -2,225 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E36B76D349
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87BB76D374
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 18:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231361AbjHBQHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 12:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
+        id S231526AbjHBQNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 12:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbjHBQHE (ORCPT
+        with ESMTP id S233049AbjHBQMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 12:07:04 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E001717;
-        Wed,  2 Aug 2023 09:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GhV0w7crBJbODzErPckGWnIryyuHLk0BAAHnw95ry+I=; b=W36DJ0opAlVjOjjwsM8pYL2kC5
-        V2On4Eki+qp6OcD5EPhy2fIArYHHZgZYaw8MgAzi14NLSU9RJcg6dwswyNZbWhsezfy2id9syh54/
-        5B1GTl1qg6FyI+ZTcAqIeX7UpcjSkf/zehUPs7tVRUUL2/X+DgK6JOUMt860id36N7Y0V+effSbnG
-        CKegIg2SeiVEgBDPaRZ+cmuBILim/itJRHM/TrxWaHBJE23xQIVFYjePBQMCrJqobb/vn2frW8cTv
-        oD2pJ7ao0lunvEv3nq59TsPCjflk/uMcTBT2nWTLn/95XX9Gn9pfkvoF5i8NQqIqvdvyz5ZYF7ayl
-        3q50Wzmg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33750)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qREMu-0005cf-0l;
-        Wed, 02 Aug 2023 17:06:36 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qREMp-00020q-UW; Wed, 02 Aug 2023 17:06:31 +0100
-Date:   Wed, 2 Aug 2023 17:06:31 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Michael Walle <mwalle@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH net-next v3 02/11] net: phy: introduce
- phy_has_c45_registers()
-Message-ID: <ZMp/B2U/qaI/VQDN@shell.armlinux.org.uk>
-References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
- <20230620-feature-c45-over-c22-v3-2-9eb37edf7be0@kernel.org>
- <7be8b305-f287-4e99-bddd-55646285c427@lunn.ch>
- <867ae3cc05439599d63e4712bca79e27@kernel.org>
- <cf999a14e51b7f2001d9830cc5e11016@kernel.org>
- <ZMkddjabRonGe7Eu@shell.armlinux.org.uk>
- <bce942b71db8c4b9bf741db517e7ca5f@kernel.org>
- <ZMkraPZvWWKhY8lT@shell.armlinux.org.uk>
- <b0e5fbe28757d755d814727181c09f32@kernel.org>
+        Wed, 2 Aug 2023 12:12:55 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBF119A0
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:12:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690992774; x=1722528774;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qvgaDHQgSlNzPVOo9qiNYCvex5QhghTrjiaZZVn1+QM=;
+  b=aKUseKq9zDzHmux5cAI686hR/0NjHo0M82wVi3K/MQnywA6LYAtx1fDM
+   XdILL2Qr5Kweyo7b1nKiDDB4yIM3jg1o1CTys2wwK8xbNGknlMPrAuug8
+   iJ+Vt+bQTWFm7fehDEirD9rpNsCTRcwAs+AKz+dTLnrNITab+UIVnZLOL
+   LY+QnCHLC48wKyl+HUi2fpbzMO6UwFSi3VbhUsusGs9z/CFTmOJrqil0O
+   KnAkkO38JNj/ekMk8yRqg4ISnVfczajL4ozxw/gTe1iUQEEZ+/NI3PT0y
+   tHj/ZNOEexpknYF6eDfyvGf7feiZuXELqtgNIFdh4UCAbmcSkZZxAptEr
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="372360806"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="372360806"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 09:07:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10790"; a="1059891035"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="1059891035"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Aug 2023 09:07:24 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qRENf-0001Jp-1G;
+        Wed, 02 Aug 2023 16:07:23 +0000
+Date:   Thu, 3 Aug 2023 00:07:19 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ran Sun <sunran001@208suo.com>, alexander.deucher@amd.com
+Cc:     oe-kbuild-all@lists.linux.dev, Ran Sun <sunran001@208suo.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/amd/display: Clean up errors in dmub_cmd.h
+Message-ID: <202308022342.q4miXfgl-lkp@intel.com>
+References: <20230802062920.11513-1-sunran001@208suo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b0e5fbe28757d755d814727181c09f32@kernel.org>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230802062920.11513-1-sunran001@208suo.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 05:33:20PM +0200, Michael Walle wrote:
-> Am 2023-08-01 17:57, schrieb Russell King (Oracle):
-> > On Tue, Aug 01, 2023 at 05:20:22PM +0200, Michael Walle wrote:
-> > > > In the case of the above (the code in __phy_read_mmd()), I wouldn't
-> > > > at least initially change the test there.
-> > > >
-> > > > phydev->is_c45 will only be true if we probed the PHY using clause
-> > > > 45 accesses. Thus, it will be set if "the bus supports clause 45
-> > > > accesses" _and_ "the PHY responds to those accesses".
-> > > >
-> > > > Changing that to only "the bus supports clause 45 accesses" means
-> > > > that a PHY supporting only clause 22 access with indirect clause
-> > > > 45 access then fails if it's used with a bus that supports both
-> > > > clause 22 and clause 45 accesses.
-> > > 
-> > > Yeah of course. It was more about the naming, but I just realized
-> > > that with mdiobus_supports_c45() you can't access the original
-> > > "is_c45" property of the PHY. So maybe this patch needs to be split
-> > > into two to get rid of .is_c45:
-> > > 
-> > > First a mechanical one:
-> > > phy_has_c45_registers() {
-> > >    return phydev->is_c45;
-> > > }
-> > 
-> > Andrew's objection was that "phy_has_c45_registers" is a misnomer, and
-> > suggested "_transfers" instead - because a PHY can have C45 registers
-> > that are accessible via the indirect registers in C22 space.
-> 
-> I'm confused now. Andrew suggested to split it into four different
-> functions:
-> 
-> phy_has_c22_registers()
-> phy_has_c45_registers()
-> phy_has_c22_transfers()
-> phy_has_c45_transfers()
+Hi Ran,
 
-Honestly, I don't think we can come up with tests that satisfy all of
-these. Particularly the question whether a PHY has c45 registers or
-not is a difficult one, as there is no sane way to determine that with
-a clause 22 PHY.
+kernel test robot noticed the following build errors:
 
-I'm also not sure what use the c22 transfers one would be, since if a
-PHY doesn't have c22 registers, then that's probably all we need to
-know.
+[auto build test ERROR on drm-misc/drm-misc-next]
+[also build test ERROR on linus/master v6.5-rc4 next-20230802]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> Without a functional change. That is, either return phydev->is_c45
-> or the inverse.
+url:    https://github.com/intel-lab-lkp/linux/commits/Ran-Sun/drm-amd-display-Clean-up-errors-in-dmub_cmd-h/20230802-142950
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20230802062920.11513-1-sunran001%40208suo.com
+patch subject: [PATCH] drm/amd/display: Clean up errors in dmub_cmd.h
+config: alpha-randconfig-r036-20230801 (https://download.01.org/0day-ci/archive/20230802/202308022342.q4miXfgl-lkp@intel.com/config)
+compiler: alpha-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230802/202308022342.q4miXfgl-lkp@intel.com/reproduce)
 
-I think I've already explained why !phydev->is_c45 can't be interpeted
-as a PHY having C22 registers, but let me restate. It is _entirely_
-possible for a PHY to have C45 registers _and_ C22 registers, and
-that is indicated by bit 0 of the devices-in-package field.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308022342.q4miXfgl-lkp@intel.com/
 
-> 
-> You seem to suggest to use either
-> phy_supports_c45_transfers() or
-> phy_has_c22_registers()
-> 
-> I'm not sure how to continue now.
-> 
-> > I'd go one further:
-> > 
-> > static bool phy_supports_c45_transfers(struct phy_device *phydev)
-> > {
-> > 	return phydev->is_c45;
-> > }
-> > 
-> > Since that covers that (a) the bus needs to support C45 transfers and
-> > (b) the PHY also needs to respond to C45 transfers.
-> > 
-> > If we want to truly know whether a clause 22 PHY has clause 45
-> > registers, that's difficult to answer, because then you're into the
-> > realms of "does this PHY implement the indirect access method" and
-> > we haven't been keeping track of that for the PHYs we have drivers
-> > for - many will do, but it's optional in clause 22. The problem is
-> > that when it's not implemented, the registers could be serving some
-> > other function.
-> > 
-> > > phy_has_c22_registers() {
-> > >   return !phydev->is_c45;
-> > > }
-> > 
-> > The reverse is not true, as clause 45 PHYs can also support clause 22
-> > registers - from 802.3:
-> > 
-> >  "For cases where a single entity combines Clause 45 MMDs with  Clause
-> > 22
-> >  registers, then the Clause 22 registers may be accessed using the
-> > Clause
-> >  45 electrical interface and the Clause 22 management frame structure."
-> > 
-> >  "Bit 5.0 is used to indicate that Clause 22 functionality has been
-> >  implemented within a Clause 45 electrical interface device."
-> > 
-> > Therefore, this would more accurately describe when Clause 22 registers
-> > are present for a PHY:
-> > 
-> > static bool phy_has_c22_registers(struct phy_device *phydev)
-> > {
-> > 	/* If we probed the PHY without clause 45 accesses, then by
-> > 	 * definition, clause 22 registers must be present.
-> > 	 */
-> > 	if (!phydev->is_c45)
-> > 		return true;
-> > 
-> > 	/* If we probed the PHY with clause 45 accesses, clause 22
-> > 	 * registers may be present if bit 0 in the Devices-in-pacakge
-> > 	 * register pair is set.
-> > 	 */
-> > 	return phydev->c45_ids.devices_in_package & BIT(0);
-> > }
-> > 
-> > Note that this doesn't take account of whether the bus supports clause
-> > 22 register access - there are a number of MDIO buses that do not
-> > support such accesses, and they may be coupled with a PHY that does
-> > support clause 22 registers.
-> > 
-> > I'm aware of a SFP with a Realtek PHY on that falls into this exact
-> > case, and getting that working is progressing at the moment.
-> > 
-> > > For all the places Andrew said it's correct. Leave all the
-> > > other uses of .is_c45 as is for now and rework them in a
-> > > later patch to use mdiobus_supports_{c22,c45}().
-> > 
-> > For the two cases in marvell10g and bcm84881, the test there for
-> > is_c45 is purely to determine "was this ID found on a PHY supporting
-> > clause 45 access" - however, in both cases, a check is made for MMDs
-> > present in devices_in_package which will fail if the PHY wasn't
-> > discovered in clause 45 mode.
-> > 
-> > Note that 88x3310 does not support clause 22 access. I forget whether
-> > bcm84881 does or not.
-> 
-> So a simple "phydev->is_c45" should be enough? Why do you test
-> for the MMD presence bits?
+All errors (new ones prefixed by >>):
 
-Okay, so if quoting the bits from IEEE 802.3 doesn't provide sufficient
-explanation, I'm at a loss what would...
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/core_types.h:40,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/inc/link.h:78,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/link/hwss/link_hwss_hpo_dp.h:29,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dc/link/hwss/link_hwss_hpo_dp.c:25:
+>> drivers/gpu/drm/amd/amdgpu/../display/dmub/inc/dmub_cmd.h:1079:33: error: flexible array member not at end of struct
+    1079 |                         uint8_t padding[];
+         |                                 ^~~~~~~
+--
+   In file included from drivers/gpu/drm/amd/amdgpu/../display/dmub/src/../dmub_srv.h:67,
+                    from drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn301.c:26:
+>> drivers/gpu/drm/amd/amdgpu/../display/dmub/src/../inc/dmub_cmd.h:1079:33: error: flexible array member not at end of struct
+    1079 |                         uint8_t padding[];
+         |                                 ^~~~~~~
+
+
+vim +1079 drivers/gpu/drm/amd/amdgpu/../display/dmub/inc/dmub_cmd.h
+
+  1038	
+  1039	/* Per pipe struct which stores the MCLK switch mode
+  1040	 * data to be sent to DMUB.
+  1041	 * Named "v2" for now -- once FPO and SUBVP are fully merged
+  1042	 * the type name can be updated
+  1043	 */
+  1044	struct dmub_cmd_fw_assisted_mclk_switch_pipe_data_v2 {
+  1045		union {
+  1046			struct {
+  1047				uint32_t pix_clk_100hz;
+  1048				uint16_t main_vblank_start;
+  1049				uint16_t main_vblank_end;
+  1050				uint16_t mall_region_lines;
+  1051				uint16_t prefetch_lines;
+  1052				uint16_t prefetch_to_mall_start_lines;
+  1053				uint16_t processing_delay_lines;
+  1054				uint16_t htotal; // required to calculate line time for multi-display cases
+  1055				uint16_t vtotal;
+  1056				uint8_t main_pipe_index;
+  1057				uint8_t phantom_pipe_index;
+  1058				/* Since the microschedule is calculated in terms of OTG lines,
+  1059				 * include any scaling factors to make sure when we get accurate
+  1060				 * conversion when programming MALL_START_LINE (which is in terms
+  1061				 * of HUBP lines). If 4K is being downscaled to 1080p, scale factor
+  1062				 * is 1/2 (numerator = 1, denominator = 2).
+  1063				 */
+  1064				uint8_t scale_factor_numerator;
+  1065				uint8_t scale_factor_denominator;
+  1066				uint8_t is_drr;
+  1067				uint8_t main_split_pipe_index;
+  1068				uint8_t phantom_split_pipe_index;
+  1069			} subvp_data;
+  1070	
+  1071			struct {
+  1072				uint32_t pix_clk_100hz;
+  1073				uint16_t vblank_start;
+  1074				uint16_t vblank_end;
+  1075				uint16_t vstartup_start;
+  1076				uint16_t vtotal;
+  1077				uint16_t htotal;
+  1078				uint8_t vblank_pipe_index;
+> 1079				uint8_t padding[];
+  1080				struct {
+  1081					uint8_t drr_in_use;
+  1082					uint8_t drr_window_size_ms;	// Indicates largest VMIN/VMAX adjustment per frame
+  1083					uint16_t min_vtotal_supported;	// Min VTOTAL that supports switching in VBLANK
+  1084					uint16_t max_vtotal_supported;	// Max VTOTAL that can support SubVP static scheduling
+  1085					uint8_t use_ramping;		// Use ramping or not
+  1086					uint8_t drr_vblank_start_margin;
+  1087				} drr_info;				// DRR considered as part of SubVP + VBLANK case
+  1088			} vblank_data;
+  1089		} pipe_config;
+  1090	
+  1091		/* - subvp_data in the union (pipe_config) takes up 27 bytes.
+  1092		 * - Make the "mode" field a uint8_t instead of enum so we only use 1 byte (only
+  1093		 *   for the DMCUB command, cast to enum once we populate the DMCUB subvp state).
+  1094		 */
+  1095		uint8_t mode; // enum mclk_switch_mode
+  1096	};
+  1097	
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
