@@ -2,132 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 108DC76CFED
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DFB76D00B
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbjHBOVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:21:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
+        id S233297AbjHBO2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:28:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbjHBOVT (ORCPT
+        with ESMTP id S234007AbjHBO2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:21:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B9BA2
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:20:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690986030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4cULcRDzjAEp5tsRJsYNJAOaHhUEHwj8tmDruDkdM4Q=;
-        b=E44dLJnb3pyLZV+0S1BzZMyO7SUQMd8cOwAsYBD1i5cevr0HlPvc0l9HCr5MDzM3TWktuy
-        PVsEjAb9qXVx0MEKb1e+CNBAHrUp7uzEMvPYPB+HwL1vCXQmY99btssGfWNDT61bPMn0GR
-        g/rpvUs6Jhssxfq1NYB30wldNIKNlM0=
-Received: from mimecast-mx02.redhat.com (66.187.233.73 [66.187.233.73]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-687-Bxh9ZkkBPbKkq3-wRp9Qnw-1; Wed, 02 Aug 2023 10:20:26 -0400
-X-MC-Unique: Bxh9ZkkBPbKkq3-wRp9Qnw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D059F3815F71;
-        Wed,  2 Aug 2023 14:20:25 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.39.192.77])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 90A17F7FA4;
-        Wed,  2 Aug 2023 14:20:22 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 10:20:19 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH v6 2/2] Sched/fair: Block nohz tick_stop when cfs
- bandwidth in use
-Message-ID: <20230802142019.GB325565@lorien.usersys.redhat.com>
-References: <20230712133357.381137-1-pauld@redhat.com>
- <20230712133357.381137-3-pauld@redhat.com>
- <20230731224934.GD51835@hirez.programming.kicks-ass.net>
- <20230801111342.GA268019@lorien.usersys.redhat.com>
- <20230801153731.GD11704@hirez.programming.kicks-ass.net>
+        Wed, 2 Aug 2023 10:28:00 -0400
+Received: from mgamail.intel.com (unknown [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC201728;
+        Wed,  2 Aug 2023 07:27:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690986479; x=1722522479;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=p/SGJRV93Cj6BkuM7fuzVQ4z+KIw1N5smHREmEpUMUg=;
+  b=T+apWSPdyK+p0TBkR1pHIvn4pke3d3m0oYsqGhPeWwYR5J/UW2A0O3tq
+   syoJ686Ut+OAW8n/N+aWiTT1MYVP2jh8/jMb7kjRpP2Xvo+hTIOmMkNmy
+   V63XXLIWKGg6a/Reek0vuvMypZPB3c7iN7KT+1LGxocGidhrVuK6XTxIc
+   uG3lkkBkGisy018QAUNwR+pbg0dVyK/LXtVzVFUTIooDI0SyROlLdqS06
+   MwaMAeta1ZOQEWXLq6Y5VouEg3G6j10kW2gin8oJdwiNlOzxkIaZx2Edt
+   Ylc+wsaq4SFfsx6Ts/UVz7cjsx0VQWMSZo1Wbf8GOYWxgnV3Jd9RvBSdQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="435922197"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="435922197"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 07:20:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="706200507"
+X-IronPort-AV: E=Sophos;i="6.01,249,1684825200"; 
+   d="scan'208";a="706200507"
+Received: from rbstewar-mobl1.amr.corp.intel.com (HELO [10.212.249.107]) ([10.212.249.107])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Aug 2023 07:20:22 -0700
+Message-ID: <bc950efd-b7f7-5fc9-b41d-ebddcf4a459e@intel.com>
+Date:   Wed, 2 Aug 2023 07:20:22 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230801153731.GD11704@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] crypto: Zhaoxin: Hardware Engine Driver for
+ SHA1/256/384/512
+Content-Language: en-US
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        seanjc@google.com, kim.phillips@amd.com, peterz@infradead.org,
+        pbonzini@redhat.com, pawan.kumar.gupta@linux.intel.com,
+        babu.moger@amd.com, jiaxi.chen@linux.intel.com,
+        jmattson@google.com, sandipan.das@amd.com,
+        linux-crypto@vger.kernel.org
+Cc:     CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, LeoLiu-oc@zhaoxin.com
+References: <20230802110741.4077-1-TonyWWang-oc@zhaoxin.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <20230802110741.4077-1-TonyWWang-oc@zhaoxin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 05:37:31PM +0200 Peter Zijlstra wrote:
-> On Tue, Aug 01, 2023 at 07:13:42AM -0400, Phil Auld wrote:
-> > On Tue, Aug 01, 2023 at 12:49:34AM +0200 Peter Zijlstra wrote:
-> > > On Wed, Jul 12, 2023 at 09:33:57AM -0400, Phil Auld wrote:
-> > > > CFS bandwidth limits and NOHZ full don't play well together.  Tasks
-> > > > can easily run well past their quotas before a remote tick does
-> > > > accounting.  This leads to long, multi-period stalls before such
-> > > > tasks can run again. Currently, when presented with these conflicting
-> > > > requirements the scheduler is favoring nohz_full and letting the tick
-> > > > be stopped. However, nohz tick stopping is already best-effort, there
-> > > > are a number of conditions that can prevent it, whereas cfs runtime
-> > > > bandwidth is expected to be enforced.
-> > > > 
-> > > > Make the scheduler favor bandwidth over stopping the tick by setting
-> > > > TICK_DEP_BIT_SCHED when the only running task is a cfs task with
-> > > > runtime limit enabled. We use cfs_b->hierarchical_quota to
-> > > > determine if the task requires the tick.
-> > > > 
-> > > > Add check in pick_next_task_fair() as well since that is where
-> > > > we have a handle on the task that is actually going to be running.
-> > > > 
-> > > > Add check in sched_can_stop_tick() to cover some edge cases such
-> > > > as nr_running going from 2->1 and the 1 remains the running task.
-> > > 
-> > > These appear fine to me, except:
-> > >
-> > > > Add sched_feat HZ_BW (off by default) to control the tick_stop
-> > > > behavior.
-> > > 
-> > > What was the thinking here? This means nobody will be using this -- why
-> > > would you want this default disabled?
-> > > 
-> > 
-> > That was just a hedge in case it caused issues. I'd probably have had to
-> > enable it in RHEL anyway. Using a feature was to make it inocuous when
-> > disabled.  Would you prefer me to enable it or remove the sched_feat
-> > entirely? (or do you want to just switch that to true when you apply it?)
-> 
-> I've edited it to default enabled -- we can pull the feature flag
-> eventually I suppose.
-> 
-> Things didn't readily apply, so I've kicked at it a little. Should be in
-> queue/sched/core for the robots to chew on.
->
+This code looks pretty rough.
 
-Or "choke on" as the case may be :)
-I sent you something that will hopefully clean that up.
+> +static int zhaoxin_sha1_update(struct shash_desc *desc,
+> +			const u8 *data,	unsigned int len)
+> +{
+> +	struct sha1_state *sctx = shash_desc_ctx(desc);
+> +	unsigned int partial, done;
+> +	const u8 *src;
+> +	/*The PHE require the out buffer must 128 bytes and 16-bytes aligned*/
+> +	u8 buf[128 + ZHAOXIN_SHA_ALIGNMENT - STACK_ALIGN] __attribute__
+> +		((aligned(STACK_ALIGN)));
+> +	u8 *dst = PTR_ALIGN(&buf[0], ZHAOXIN_SHA_ALIGNMENT);
 
+All of the different alignments here are pretty dazzling.
 
-Thanks!
+> +	partial = sctx->count & 0x3f;
 
+"0x3f" is a random magic number.
 
-Cheers,
-Phil
--- 
+> +	sctx->count += len;
+> +	done = 0;
+> +	src = data;
+> +	memcpy(dst, (u8 *)(sctx->state), SHA1_DIGEST_SIZE);
+> +
+> +	if ((partial + len) >= SHA1_BLOCK_SIZE) {
+> +
+> +		/* Append the bytes in state's buffer to a block to handle */
+> +		if (partial) {
+> +			done = -partial;
+> +			memcpy(sctx->buffer + partial, data,
+> +				done + SHA1_BLOCK_SIZE);
+> +			src = sctx->buffer;
+> +			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
+> +			: "+S"(src), "+D"(dst)
+> +			: "a"((long)-1), "c"(1UL));
 
+Please look around the codebase for examples on how to do this.  We
+usually try to use real instructions when binutils supports them and
+also don't repeatedly open-code the ".byte ...".
+
+> +			done += SHA1_BLOCK_SIZE;
+> +			src = data + done;
+> +		}
+> +
+> +		/* Process the left bytes from the input data */
+> +		if (len - done >= SHA1_BLOCK_SIZE) {
+> +			asm volatile (".byte 0xf3,0x0f,0xa6,0xc8"
+> +			: "+S"(src), "+D"(dst)
+> +			: "a"((long)-1),
+> +			"c"((unsigned long)((len - done) / SHA1_BLOCK_SIZE)));
+> +			done += ((len - done) - (len - done) % SHA1_BLOCK_SIZE);
+> +			src = data + done;
+> +		}
+> +		partial = 0;
+> +	}
+> +	memcpy((u8 *)(sctx->state), dst, SHA1_DIGEST_SIZE);
+
+What's the purpose of the cast?
+
+> +	memcpy(sctx->buffer + partial, src, len - done);
+> +
+> +	return 0;
+> +}
+> +
+> +static int zhaoxin_sha1_final(struct shash_desc *desc, u8 *out)
+> +{
+> +	struct sha1_state *state = (struct sha1_state *)shash_desc_ctx(desc);
+
+What's the purpose of *this* cast?
+
+> +	unsigned int partial, padlen;
+> +	__be64 bits;
+> +	static const u8 padding[64] = { 0x80, };
+> +
+> +	bits = cpu_to_be64(state->count << 3);
+> +
+> +	/* Pad out to 56 mod 64 */
+> +	partial = state->count & 0x3f;
+> +	padlen = (partial < 56) ? (56 - partial) : ((64+56) - partial);
+> +	zhaoxin_sha1_update(desc, padding, padlen);
+> +
+> +	/* Append length field bytes */
+> +	zhaoxin_sha1_update(desc, (const u8 *)&bits, sizeof(bits));
+> +
+> +	/* Swap to output */
+> +	zhaoxin_output_block((uint32_t *)(state->state), (uint32_t *)out, 5);
+> +
+> +	return 0;
+> +}
+> +
+> +static int zhaoxin_sha256_init(struct shash_desc *desc)
+> +{
+> +	struct sha256_state *sctx = shash_desc_ctx(desc);
+> +
+> +	*sctx = (struct sha256_state){
+> +		.state = { SHA256_H0, SHA256_H1, SHA256_H2, SHA256_H3,
+> +				SHA256_H4, SHA256_H5, SHA256_H6, SHA256_H7},
+> +	};
+> +
+> +	return 0;
+> +}
+> +
+> +static int zhaoxin_sha256_update(struct shash_desc *desc, const u8 *data,
+> +			  unsigned int len)
+> +{
+> +	struct sha256_state *sctx = shash_desc_ctx(desc);
+> +	unsigned int partial, done;
+> +	const u8 *src;
+> +	/*The PHE require the out buffer must 128 bytes and 16-bytes aligned*/
+> +	u8 buf[128 + ZHAOXIN_SHA_ALIGNMENT - STACK_ALIGN] __attribute__
+> +		((aligned(STACK_ALIGN)));
+> +	u8 *dst = PTR_ALIGN(&buf[0], ZHAOXIN_SHA_ALIGNMENT);
+> +
+> +	partial = sctx->count & 0x3f;
+> +	sctx->count += len;
+> +	done = 0;
+> +	src = data;
+> +	memcpy(dst, (u8 *)(sctx->state), SHA256_DIGEST_SIZE);
+
+That looks familiar.
+
+This patch needs some serious cleanups and refactoring.  It seems to be
+missing even the basics like avoiding copy-and-pasting code.  The
+changelog is quite sparse.
+
+Could you spend some more time on this and give it another go, please?
