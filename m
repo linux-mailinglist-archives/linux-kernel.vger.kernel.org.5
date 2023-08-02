@@ -2,117 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5766376D071
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E204E76D06A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232732AbjHBOqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44614 "EHLO
+        id S234372AbjHBOp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232607AbjHBOqd (ORCPT
+        with ESMTP id S234343AbjHBOpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:46:33 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190BD1FCB
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:46:32 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3fe2a116565so75835e9.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690987590; x=1691592390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HQEBxGKtSk58z+0MjuXwFB9gXKkCzQHhRWqk9TNbNqY=;
-        b=J9MwT/Xna/NJQqygoWM2Nj2plQseg0B08J95nmpHY2BJ78EhbQQCqoSzFIkDPk+QX1
-         EeB4n/zjiKpnjNYuHjsHbk9OzOK+RQD04MA6v6HvGxW9M7zGmV5kuvuvPXFChLyAfl+S
-         tRiMW9PMd2iqUgEIbqsGhZXmrMCsfpfbsxCYKB+WZnW/yyUW9Ksg5Ps4we9vI0II0Y0Z
-         tdPt9Tavi3JfZFAtfhsmPEGLujuPMY0NtYci1JHAfn1U0kQ3ufGWG2Z3/tkXcIiugBJe
-         Zj9IPMNvlfHsDaJoojMDOYQK79Pfrr7i2lr54cDDcbd6uqA8s1AX+9NoHPm+l3+pngCo
-         w97w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690987590; x=1691592390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HQEBxGKtSk58z+0MjuXwFB9gXKkCzQHhRWqk9TNbNqY=;
-        b=bQcaHDGWVE6LTpXXkf7x5sWn2y6b1qcFqXyTHnpy8klDeb8Sh5nREgbtCQtaKzNuNl
-         fgbZWv8rLGc/38sPQVNeJ5K+/lalcsGuz5261vsCv5DsCmuOm+byeugYd1Q8Znf5TEnI
-         +FbvxEJp/77yZS2OzBKtt8yb6319asR9Qj8HkzV/zn/o/2LnC+TAujgOave6s7ncxk+i
-         3Ba7dHz0sltStx8tzbiS9i+RMPYnQQyd94kTkWob88jXHWv94FbEiLM6BeTYUuPy1IPh
-         IxTQ0JizOsrIH/yq9R3AW/ysI/IiLAgjSBpYx6MQKVNTwEejtuAvxOtzJMzLVRpU50z8
-         E0dw==
-X-Gm-Message-State: ABy/qLbGAu9zF7KXt1bZoTCJsL85UwWJpE9Us1wnXWugMJ90kOuqgMF5
-        C9apRW/uTfCFEvd5jE10Kc8mQrVdN2FhqNPO9f0oIA==
-X-Google-Smtp-Source: APBJJlGdXWirO502Ltmd6OHrZfzw9V2WLhk5Dj8XByT7AeyjZk00Xh/8Qh6rrUlV9NsNsXpuQCBLYInp8sN5Qc0E+SE=
-X-Received: by 2002:a05:600c:860f:b0:3f4:2736:b5eb with SMTP id
- ha15-20020a05600c860f00b003f42736b5ebmr351010wmb.1.1690987590553; Wed, 02 Aug
- 2023 07:46:30 -0700 (PDT)
+        Wed, 2 Aug 2023 10:45:24 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8091FF3;
+        Wed,  2 Aug 2023 07:45:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 183D761935;
+        Wed,  2 Aug 2023 14:45:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D4C1C433C8;
+        Wed,  2 Aug 2023 14:45:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690987522;
+        bh=MoMUpb0Ss3thYLsphFCCaQgq68tYvFO+u3uZ4M9Dy5I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jgjaj4FwqBc7wTc9bYPMguqpKlMXlSWf/QhAxjpeNESH/Zfj+v3pky5NH8khA3Vrp
+         Cu2Da+UFFnbQR2n2x0y5QmegpPGudZ6sLdS6qvGQrTdPdEdPRP67Lie96yj6y8AlfL
+         E7h/RvQWUkKo0SmfjA+yVnN42o0UndbmE+8Gep6IHFVV79jjF0pL/2s3UIJhzRJY2V
+         ay3sWw1gEogD4PPxEM0Ts4SRZ8bAM0vt1J9yjWKdqWS0C/0k5idlKAx/hJgJEDDm1j
+         vQRR9Xo7p6KpbotDXIifxda0/idPl7zjbdMovQ86mhUm/NmgjkqZtiLsks7al8k5Jd
+         16ozUiwvbn8mA==
+Date:   Wed, 2 Aug 2023 08:46:26 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] RDMA/irdma: Replace one-element array with
+ flexible-array member
+Message-ID: <ZMpsQrZadBaJGkt4@work>
 MIME-Version: 1.0
-References: <00000000000091164305fe966bdd@google.com> <000000000000be8b800601a71d81@google.com>
-In-Reply-To: <000000000000be8b800601a71d81@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Wed, 2 Aug 2023 16:46:18 +0200
-Message-ID: <CANp29Y7uMKggecMZo20KyB4XBWhXOtNr09XH3yox6LrW18H05w@mail.gmail.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in emit_fiemap_extent
-To:     syzbot <syzbot+9992306148b06272f3bb@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, brauner@kernel.org, clm@fb.com,
-        dhowells@redhat.com, dsterba@suse.com, dsterba@suse.cz, hch@lst.de,
-        josef@toxicpanda.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 11:45=E2=80=AFPM syzbot
-<syzbot+9992306148b06272f3bb@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit aa3dbde878961dd333cdd3c326b93e6c84a23ed4
-> Author: David Howells <dhowells@redhat.com>
-> Date:   Mon May 22 13:49:54 2023 +0000
->
->     splice: Make splice from an O_DIRECT fd use copy_splice_read()
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D14dc6319a8=
-0000
-> start commit:   40f71e7cd3c6 Merge tag 'net-6.4-rc7' of git://git.kernel.=
-o..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D7ff8f87c7ab0e=
-04e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9992306148b0627=
-2f3bb
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10c65e87280=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1094a78b28000=
-0
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: splice: Make splice from an O_DIRECT fd use copy_splice_read()
+One-element and zero-length arrays are deprecated. So, replace
+one-element array in struct irdma_qvlist_info with flexible-array
+member.
 
-Hmm, no. It looks like this change indeed stopped that particular
-reproducer from triggering the bug (the commit changed the kernel code
-that is executed by sendfile(r0, r0, 0x0, 0x8800d00)), but the bug
-itself is still present.
+A patch for this was sent a while ago[1]. However, it seems that, at
+the time, the changes were partially folded[2][3], and the actual
+flexible-array transformation was omitted. This patch fixes that.
 
-Today syzbot has found a new reproducer, see
-https://syzkaller.appspot.com/bug?extid=3D9992306148b06272f3bb
+The only binary difference seen before/after changes is shown below:
 
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
+|  drivers/infiniband/hw/irdma/hw.o
+| @@ -868,7 +868,7 @@
+| drivers/infiniband/hw/irdma/hw.c:484 (discriminator 2)
+|	size += struct_size(iw_qvlist, qv_info, rf->msix_count);
+|      55b:      imul   $0x45c,%rdi,%rdi
+|-     562:      add    $0x10,%rdi
+|+     562:      add    $0x4,%rdi
+
+which is, of course, expected as it reflects the mistake made
+while folding the patch I've mentioned above.
+
+Worth mentioning is the fact that with this change we save 12 bytes
+of memory, as can be inferred from the diff snapshot above. Notice
+that:
+
+$ pahole -C rdma_qv_info idrivers/infiniband/hw/irdma/hw.o
+struct irdma_qv_info {
+	u32                        v_idx;                /*     0     4 */
+	u16                        ceq_idx;              /*     4     2 */
+	u16                        aeq_idx;              /*     6     2 */
+	u8                         itr_idx;              /*     8     1 */
+
+	/* size: 12, cachelines: 1, members: 4 */
+	/* padding: 3 */
+	/* last cacheline: 12 bytes */
+};
+
+Link: https://lore.kernel.org/linux-hardening/20210525230038.GA175516@embeddedor/ [1]
+Link: https://lore.kernel.org/linux-hardening/bf46b428deef4e9e89b0ea1704b1f0e5@intel.com/ [2]
+Link: https://lore.kernel.org/linux-rdma/20210520143809.819-1-shiraz.saleem@intel.com/T/#u [3]
+Fixes: 44d9e52977a1 ("RDMA/irdma: Implement device initialization definitions")
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/infiniband/hw/irdma/main.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/irdma/main.h b/drivers/infiniband/hw/irdma/main.h
+index 5483684a534c..82fc5f5b002c 100644
+--- a/drivers/infiniband/hw/irdma/main.h
++++ b/drivers/infiniband/hw/irdma/main.h
+@@ -239,7 +239,7 @@ struct irdma_qv_info {
+ 
+ struct irdma_qvlist_info {
+ 	u32 num_vectors;
+-	struct irdma_qv_info qv_info[1];
++	struct irdma_qv_info qv_info[];
+ };
+ 
+ struct irdma_gen_ops {
+-- 
+2.34.1
+
