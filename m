@@ -2,185 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2972676D755
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B3076D758
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbjHBTAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55392 "EHLO
+        id S231302AbjHBTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbjHBTAB (ORCPT
+        with ESMTP id S231167AbjHBTAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:00:01 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A63C3;
-        Wed,  2 Aug 2023 12:00:00 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bbbbb77b38so1498345ad.3;
-        Wed, 02 Aug 2023 12:00:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691002800; x=1691607600;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wK/nsG+p1ZVeBh1KHC2T5H7Nze4MLELKiO/q+jiRasI=;
-        b=SLwicSkhC9Icednrp6S3yyFO6DhJzZf2CsyG4EhAYHmZKY+KT1XdmDMYre6sg/9nXD
-         MgSRimrmSU0q+QBy1mZlFZ/eT4x39OWBSuoO0qeZwHS0eUqreq2rDeRXME6M9pAJ5d2d
-         JclRcB1udxKIsLRlyTZ8sODg6ik69CTg+/pVWov5MSTkOoBl02OX4sR/qmcPhZgCwM1c
-         PVsr7Q4Y5oewfVhbF9R38x1THfJ1fnzEav8UfExTbYVE7xvfVnixjYBaWfRCwrlO4TCO
-         ne+G0t8pLY7AL+PavCZLt5GYzTVXxUvzqbdaMUhjzDcnk+7jkatWkWIadp57Iw+MPTtZ
-         kQgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691002800; x=1691607600;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wK/nsG+p1ZVeBh1KHC2T5H7Nze4MLELKiO/q+jiRasI=;
-        b=TieCzPANLPB5tlY/37vVg+tJFdMAwdYiqE8fvO72iR+Gs/eoalTdRDYg7EAim3pRrw
-         xrlCiJV+ER1Np+OPDBaJErZ73c+mPEZ99XUdjWX/NKQRZqOas15xlsAZDs01oxpFNbgl
-         oS5LS0cAZYi5fVeCACZ4C/FWWGrfV7zSn2uulKZft9rlm6w019ouFUC8GkI42bFpN5qi
-         nUzED94MOZ4Vzcyn+340x/r+h1xW/cUVDjX63xu96dwmzd0ie14kxnxdu/dpkVeum1Cs
-         6F1MWCwetYi3n8dbDkTIfxkf3GJfWeP0uZlmicsdqXOuSe6f9ODXGVUWgyzCZCB93NJ9
-         /ZTg==
-X-Gm-Message-State: ABy/qLbg8pbu/Ly9+kEL4kw9O99OyDPhghUm7e6/OJ0hoa4Rzj4DSjCZ
-        MQ1n+pmJs/weuSr/FwGMk0I=
-X-Google-Smtp-Source: APBJJlEt2RJcmsvzveK84xRan/cpBdhSiDdbM7jqA4Nvz/7gHi+9jxaxSLpECtPWi8kWbGC2HC3X2Q==
-X-Received: by 2002:a17:902:7242:b0:1b5:532e:33b8 with SMTP id c2-20020a170902724200b001b5532e33b8mr13524790pll.35.1691002799585;
-        Wed, 02 Aug 2023 11:59:59 -0700 (PDT)
-Received: from yoga ([2400:1f00:13:9882:cd17:239a:4f43:dc90])
-        by smtp.gmail.com with ESMTPSA id iy15-20020a170903130f00b001b801044466sm12823093plb.114.2023.08.02.11.59.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 11:59:58 -0700 (PDT)
-From:   Anup Sharma <anupnewsmail@gmail.com>
-X-Google-Original-From: Anup Sharma <AnupSharma>
-Date:   Thu, 3 Aug 2023 00:29:51 +0530
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Anup Sharma <anupnewsmail@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC] Adding Support for Firefox's Gecko Profile Format
-Message-ID: <ZMqnp1kBv1ACIiGS@yoga>
-References: <ZIHPXV5/ZopqcSSc@yoga>
- <ZIofrGKElc3nkNk0@yoga>
- <CAP-5=fV9tXNpYHH9DW0cVbRoFLGvG9SNn-MUhuyKuVBRuDqjoA@mail.gmail.com>
- <ZJyT8bt0LFLw6hKV@yoga>
- <CAM9d7ch7TdagV+dzj6MCp4fY15Vc4oGJjKAoQDyc=BXqy7qi+A@mail.gmail.com>
- <287bf3c8-fa0e-8c36-df14-7d728c63c265@intel.com>
- <ZKQu00bJZwO+Fc6m@yoga>
- <ZKRcTqAsKxF/Q3fQ@yoga>
- <ZMFgIekihhoGFBpn@yoga>
- <ZMFyi5S4JlFeZ/9c@kernel.org>
+        Wed, 2 Aug 2023 15:00:25 -0400
+Received: from progateway7-pub.mail.pro1.eigbox.com (gproxy5-pub.mail.unifiedlayer.com [67.222.38.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 275EBE46
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:00:24 -0700 (PDT)
+Received: from cmgw11.mail.unifiedlayer.com (unknown [10.0.90.126])
+        by progateway7.mail.pro1.eigbox.com (Postfix) with ESMTP id CC26710041F64
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 19:00:23 +0000 (UTC)
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTP
+        id RH55q5Nb1mdP7RH55q06gn; Wed, 02 Aug 2023 19:00:23 +0000
+X-Authority-Reason: nr=8
+X-Authority-Analysis: v=2.4 cv=EbYN/NqC c=1 sm=1 tr=0 ts=64caa7c7
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10:nop_charset_1 a=UttIx32zK-AA:10:nop_rcvd_month_year
+ a=-Ou01B_BuAIA:10:endurance_base64_authed_username_1 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10:nop_charset_2
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=RRbu5eSsvrqsp40HlHQDKUyV6Ki57xhdQEnr8EmePSM=; b=rep3i2DB+SHVr8t3DVtUEOsYHh
+        RuleyhFLh8FkRQGnuJ+Y6KNJ+GR6/Ay9ZKff8Y3dHIYXjvr/kGfZRyH5Ubt3CqhzGOqWx+n5RkpKl
+        EbCizak+EWKYlP6fHB7WKK701uEMM0p9WQ4BQFLle7w8i8cPYIh+FnBbJpN2gSpEYSE9siIpLtlGx
+        CLnMdFWknrhp0Q+bFMd2Dy1x7umDJMKeQxd/YeWVQTzmUXo5lwtPnRVtOaB77aSQoap4bhigiSo1C
+        /cSQoCzdQKTyFvlkr2cLLlYLXoJ4AItPjoA/LJxALw6qA6zAVsKwblNb9XqINtAqx55i/v1j0dVX/
+        MTYUW+Lw==;
+Received: from c-73-162-232-9.hsd1.ca.comcast.net ([73.162.232.9]:50476 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <re@w6rz.net>)
+        id 1qRH54-001PF4-1V;
+        Wed, 02 Aug 2023 13:00:22 -0600
+Subject: Re: [PATCH 6.4 000/235] 6.4.8-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20230802065501.780725463@linuxfoundation.org>
+In-Reply-To: <20230802065501.780725463@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <b8665637-a694-68e6-0dd6-98c1c1b6a9f4@w6rz.net>
+Date:   Wed, 2 Aug 2023 12:00:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMFyi5S4JlFeZ/9c@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 73.162.232.9
+X-Source-L: No
+X-Exim-ID: 1qRH54-001PF4-1V
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-73-162-232-9.hsd1.ca.comcast.net ([10.0.1.47]) [73.162.232.9]:50476
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 04:22:51PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Wed, Jul 26, 2023 at 11:34:17PM +0530, Anup Sharma escreveu:
-> > Dear all,
-> > 
-> > I want to share a recent development in our project that
-> > I have been working on this week. I have successfully
-> > implemented a new feature that allows users to directly
-> > open the browser and visualize the output of perf.data
-> > on Firefox Profiler.
-> 
-> Excellent news!
->  
-> > To enhance user experience, I have made sure this option
-> > is enabled by default. Additionally, I've also added a
-> > handy command line argument, "--save-only," which allows
-> > users to save the output file as needed. This enhancement
-> > replaces the previous standard output method, providing a
-> > much-improved experience.
-> > 
-> > Moreover, Everything is processed locally, and no data is
-> > sent to any server.
-> 
-> That addresses the worry about sending possibly sensitive data over the
-> network by default, great.
->  
-> > During this implementation, I had the opportunity to delve
-> > into several exciting topics, including threading, HTTP server,
-> > and CORS mechanisms. The learning process has been both
-> > challenging and rewarding.
-> 
-> Cool that you're so excited learning all this.
->  
-> > Currently, I am in the process of performing some clean-up tasks.
-> > Once that is complete, I will be sharing the next version of the
-> > series, which includes this fantastic new feature, with all of
-> > you very soon.
-> > 
-> > Thank you for your ongoing support and encouragement.
-> 
-> Keep it up!
+On 8/2/23 12:42 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.8 release.
+> There are 235 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 04 Aug 2023 06:54:15 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.8-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-This week, I'm working on documenting the gecko converter for our wiki.
-I've dedicated a significant amount of time to think about the content
-and how to approach it. So far, I've written sections covering the
-introduction to Firefox Profiler and the formatting guidelines(not
-published yet).
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-However, I've left the usage part blank because I'm uncertain about how
-to enable gecko.py arguments when executing the "perf script gecko" command.
-I've looked at examples like flamegraph-report and sctop-report, but I'm
-still confused. I attempted to enable the script to take the gecko.py
-command example "perf script report gecko --save-only=profiler.json,"
-but this caused issues when running "perf script gecko -a sleep 3" again.
-This has left me feeling rather puzzled, and I would appreciate discussing
-this during our office hour, or any help here.
+Tested-by: Ron Economos <re@w6rz.net>
 
-Due to this blocker, I haven't been able to send the updated patch
-for test_gecko yet. However, I hope I'll find a solution soon and overcome
-this obstacle.
-
-> - Arnaldo
-> 
-> > Thanks,
-> > Anup
-> > 
-> > > > Regards,
-> > > > Anup
-> > > > > > 
-> > > > > >>
-> > > > > >> The second challenge revolved around the usage of event hooks provided with the perf script
-> > > > > >> python event handlers. I found myself deliberating between two approaches. The first
-> > > > > >> approach involved creating custom functions that would be called using the event
-> > > > > >> handlers. These functions would then save the data in an organized format within
-> > > > > >> globally created data structures. The alternative approach was to write the entire
-> > > > > >> logic inside the event handlers themselves.
-> > > > > >>
-> > > > > >> Additionally, I contemplated whether it would be more suitable to handle the creation of
-> > > > > >> a Gecko format for JSON and the profile format within the same script or to separate
-> > > > > >> them into different scripts.
-> > > > > >>
-> > > > > >> I will discuss this points during tomorrow's office hour.
-> > > > > >>
-> > > > > >> However, I have gained a deeper understanding of the problem at hand and will use this
-> > > > > >> knowledge to make more informed decisions and progress more effectively in the coming weeks.
-> > > > > > 
-> > > > > > Sounds like you did a good amount of research on how perf script
-> > > > > > works.  We can talk about the details in the meeting.
-> > > > > > 
-> > > > > > Thanks,
-> > > > > > Namhyung
-> > > > > 
-> 
-> -- 
-> 
-> - Arnaldo
