@@ -2,234 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4235C76D4CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4EA76D4D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231577AbjHBRLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36580 "EHLO
+        id S229932AbjHBRND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbjHBRLj (ORCPT
+        with ESMTP id S229937AbjHBRM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:11:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1674C1729
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:11:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3D08D61A55
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 17:11:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBBFDC433C9;
-        Wed,  2 Aug 2023 17:11:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1690996292;
-        bh=F9DfBBNJp0Eix0jh6pJTYP+XC+GhI7pk3Lklg3YvhM8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SXgEDL8m3jCqhZzg5zTecOFTi++w77uKuUcBnuS6E1Q8IKSmJqxSZYwyIQpSRcfvM
-         oDYMqK1WqTM9+2OH7+cVn43cTCBx8fz0K4IEe7oFb6xdKpDee5pZz3N23Z6YKlC4IY
-         e5dlJjs0eC4uhKTMD0sMP0+54F30GdCGEvfcP4tRs7IYWF8q4Yy1O0fen89A5vTFdb
-         RV+/qJX3PxG72zOrXdttj6YmaAtoeQxaYE0KSK7BecVHJRq5Yek1lq0h32WUU8azZC
-         jUNk4sGsSPHSzUh08oNhWPjZa+EdfqT08RJB114tL3uc1RdvYXjpgUn2rC4uDDtYpP
-         DWAtwORDLA7Dw==
+        Wed, 2 Aug 2023 13:12:56 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2062.outbound.protection.outlook.com [40.107.220.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A16126
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:12:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bdeMWv6Oh+cxvPRyWEy3tKivLNTuHV75fPsBHQl245wntz1Cd+rg9d16PRVjwnwuFrzUBWaBJnmddY5byxTVR1SFXdU5m0JymN4fZgOLRIVX9ZDuKkA909Cst5FlSP4itC91ztw8j78ETENm5jrZmM8K/5aKX7P8+du90mTpVZvF69mxbGbxRZUmfshi1XThPcAkSBh8rwWoWUvzK+jMET4Jz78LWyVMu0zgFVRS4DOEAtJlXrSZ+eaxSLk7IzhBxWuXIBOnh5LqUNODuuDJHJIcye1fgJr2v/4A/FSZx1x7ujNRMJqySiKalsloaGfQDl20dwhKhvZnSRGLr5NVCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SLGNZq4aSRD4xDkXIi5veZzG9OCBnia9Zx3catdaVCM=;
+ b=RR8ldGgeHfXGYS8jR/nFGLppXYFXGAvkA61kT7DG90z/vP2HqdcTKLBwGCMIFVG75djQ9aYnR99UtfsylI7XSYZqAPMNGqoVc8VFCkGPZQcB/8PbqJk6qzrP+a8IUrS2y34AwtBtumVGVLnnWvcOtwNPQVFMekJavrvap6EWXoJHKe+sYSJ1pBTOCEJUi8UFVsereZtpD1WlkmHNErFX9ipbqsnKgZzKulSogC5kQTryrXUv9EdFsuP2/9lM/jKNupG9/JCtLohC7/k5hyWYfyaD2/yhLc8Mk8Pf42zvpNZPLCWnlXhKH/zwFC0uWQAMbHdGh4NHpz8cftuP0KY+RQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.161) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SLGNZq4aSRD4xDkXIi5veZzG9OCBnia9Zx3catdaVCM=;
+ b=n48r0S6iEHXmwsr1hiW85ULbzmlhIeImf0MjM7IpRPSpWqp6xk74AZofxACCZltVP5cMIhS3A2ei2/+oiBZKG01rRA99rLlzYiG1iughPIsAZP1ArOK7a1ky9uaT5inpV02hCaQnueH6sTmK6VVk2b8Te9hFUsitWwmUmx0pcd4XlYnhpIxXavUdb3HxgqeYaFbIdsL7qFWpOsn7agma+cPBH9P21++NrfyjTFtlt3NzSkCugyik6/s2TXnRF7a1JbhmzPD2Wxn11/6wTgGuVbplBq1R0Gv4V+/Y+S1bppjMEiYfXXrBZlW0W1MkFguoVYAv1MQRvtln2S2fi1iFEg==
+Received: from MW4PR03CA0064.namprd03.prod.outlook.com (2603:10b6:303:b6::9)
+ by DM4PR12MB5374.namprd12.prod.outlook.com (2603:10b6:5:39a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
+ 2023 17:12:52 +0000
+Received: from MWH0EPF000971E2.namprd02.prod.outlook.com
+ (2603:10b6:303:b6:cafe::fd) by MW4PR03CA0064.outlook.office365.com
+ (2603:10b6:303:b6::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6652.19 via Frontend
+ Transport; Wed, 2 Aug 2023 17:12:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.161)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.161 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.161; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.161) by
+ MWH0EPF000971E2.mail.protection.outlook.com (10.167.243.69) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6652.20 via Frontend Transport; Wed, 2 Aug 2023 17:12:52 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.67) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Wed, 2 Aug 2023
+ 10:12:35 -0700
+Received: from rnnvmail203.nvidia.com (10.129.68.9) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Wed, 2 Aug 2023
+ 10:12:35 -0700
+Received: from c-237-113-220-225.mtl.labs.mlnx (10.127.8.12) by
+ mail.nvidia.com (10.129.68.9) with Microsoft SMTP Server id 15.2.986.37 via
+ Frontend Transport; Wed, 2 Aug 2023 10:12:33 -0700
+From:   Dragos Tatulea <dtatulea@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+CC:     Dragos Tatulea <dtatulea@nvidia.com>,
+        <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>
+Subject: [PATCH 0/2] vdpa/mlx5: Fixes for ASID handling 
+Date:   Wed, 2 Aug 2023 20:12:16 +0300
+Message-ID: <20230802171231.11001-1-dtatulea@nvidia.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Date:   Wed, 02 Aug 2023 19:11:27 +0200
-From:   Michael Walle <mwalle@kernel.org>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        =?UTF-8?Q?Marek_B?= =?UTF-8?Q?eh=C3=BAn?= <kabel@kernel.org>,
-        Xu Liang <lxu@maxlinear.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Simon Horman <simon.horman@corigine.com>
-Subject: Re: [PATCH net-next v3 02/11] net: phy: introduce
- phy_has_c45_registers()
-In-Reply-To: <ZMp/B2U/qaI/VQDN@shell.armlinux.org.uk>
-References: <20230620-feature-c45-over-c22-v3-0-9eb37edf7be0@kernel.org>
- <20230620-feature-c45-over-c22-v3-2-9eb37edf7be0@kernel.org>
- <7be8b305-f287-4e99-bddd-55646285c427@lunn.ch>
- <867ae3cc05439599d63e4712bca79e27@kernel.org>
- <cf999a14e51b7f2001d9830cc5e11016@kernel.org>
- <ZMkddjabRonGe7Eu@shell.armlinux.org.uk>
- <bce942b71db8c4b9bf741db517e7ca5f@kernel.org>
- <ZMkraPZvWWKhY8lT@shell.armlinux.org.uk>
- <b0e5fbe28757d755d814727181c09f32@kernel.org>
- <ZMp/B2U/qaI/VQDN@shell.armlinux.org.uk>
-Message-ID: <3fa8d14f0a989af971d61af01b13fd8b@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E2:EE_|DM4PR12MB5374:EE_
+X-MS-Office365-Filtering-Correlation-Id: 262abb30-4129-4907-b150-08db937bb49c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: biI+EvAGhE0rAYume5AMoadn0cejD50/e6+NAr7dczDnGjH9xGgYgt58YrfQxVK4OtOG54QAc7oYuxxEonum7ALjaAsKXeW0K6weWVRygYt7jFYKEMdQ0RC61uuh0f1WwSyevndRY6YDpqqDMJtSaCW3Ysc2+b1J8RpGWMBV5Z17tGdkEU5lUhleAGUKBUKeK0OAWdGE2+T1pZcPkMUYfslfI1GsBY0/RNfmvLU1ijG9IMBgOJ9TXNhoz1nX+83XCbyZDHItjo0gw1FI3A5Ll7OLEs2BA+uHYAfDWNwQDD147o7lLcW7Ir5BBwxjAvrc7JfaBnYXc4MR/EJG7/+QFRxoi5Z/afVCiqJ2kAtWnLHaTPhGzLFnbuaqnMO2nupcwajtNq5sDksfeJ1NN3j/oMNO+u6nEIFw9nowjRIhZJC5YWCK3oRf83pkkQn/EHClmJzr7IwuZb5rYDTq0VGsvN3+cuCp6YcneA+LnNTsubVT+mkzStWK6b6QCbFMj3oZfLoYkdAhOmxWJ9SuLVb/Qnw56CvNNVB5kAVWlXgEa23ICy8c6UvPFgcRAOzKDh8SI7juiA/5pchyMe6RNSm4dYUSuuHZ/FvQmF4SiJlwOJ/9KD+5aN9zsan3kc+krQHIvZLeQQ8QKRGxZpJ0DNkXzaeX07jDJNqwDWw3Gv03R22hxfLjW+lhphu0VauKR1pOWNVl+0unAZuP0Z8aNSV09cN1DIiugZXA+BHS0Pc4v5Tyo+1k1HWgdePAplziavPUm8OIOPmEEYR9Dig4xnbucT9GXIn0G2Y2FNiQ21bhzLo=
+X-Forefront-Antispam-Report: CIP:216.228.117.161;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge2.nvidia.com;CAT:NONE;SFS:(13230028)(4636009)(39860400002)(346002)(396003)(136003)(376002)(451199021)(82310400008)(46966006)(36840700001)(40470700004)(40480700001)(186003)(336012)(4743002)(40460700003)(2616005)(36756003)(966005)(316002)(478600001)(54906003)(7636003)(86362001)(110136005)(6666004)(70206006)(70586007)(4326008)(82740400003)(1076003)(356005)(26005)(41300700001)(8936002)(8676002)(66574015)(4744005)(426003)(47076005)(83380400001)(36860700001)(5660300002)(2906002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 17:12:52.1923
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 262abb30-4129-4907-b150-08db937bb49c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.161];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E2.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5374
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2023-08-02 18:06, schrieb Russell King (Oracle):
-> On Wed, Aug 02, 2023 at 05:33:20PM +0200, Michael Walle wrote:
->> Am 2023-08-01 17:57, schrieb Russell King (Oracle):
->> > On Tue, Aug 01, 2023 at 05:20:22PM +0200, Michael Walle wrote:
->> > > > In the case of the above (the code in __phy_read_mmd()), I wouldn't
->> > > > at least initially change the test there.
->> > > >
->> > > > phydev->is_c45 will only be true if we probed the PHY using clause
->> > > > 45 accesses. Thus, it will be set if "the bus supports clause 45
->> > > > accesses" _and_ "the PHY responds to those accesses".
->> > > >
->> > > > Changing that to only "the bus supports clause 45 accesses" means
->> > > > that a PHY supporting only clause 22 access with indirect clause
->> > > > 45 access then fails if it's used with a bus that supports both
->> > > > clause 22 and clause 45 accesses.
->> > >
->> > > Yeah of course. It was more about the naming, but I just realized
->> > > that with mdiobus_supports_c45() you can't access the original
->> > > "is_c45" property of the PHY. So maybe this patch needs to be split
->> > > into two to get rid of .is_c45:
->> > >
->> > > First a mechanical one:
->> > > phy_has_c45_registers() {
->> > >    return phydev->is_c45;
->> > > }
->> >
->> > Andrew's objection was that "phy_has_c45_registers" is a misnomer, and
->> > suggested "_transfers" instead - because a PHY can have C45 registers
->> > that are accessible via the indirect registers in C22 space.
->> 
->> I'm confused now. Andrew suggested to split it into four different
->> functions:
->> 
->> phy_has_c22_registers()
->> phy_has_c45_registers()
->> phy_has_c22_transfers()
->> phy_has_c45_transfers()
-> 
-> Honestly, I don't think we can come up with tests that satisfy all of
-> these. Particularly the question whether a PHY has c45 registers or
-> not is a difficult one, as there is no sane way to determine that with
-> a clause 22 PHY.
+This patch series is based on Eugenio's fix for handling CVQs in
+a different ASID [0].
 
-And that is exactly the one which Andrew suggested to use for almost all
-cases. It doesn't make sense to me to introduce that function if it 
-can't
-really be made to return a correct value (in a later patch).
+The first patch is the actual fix.
 
-> I'm also not sure what use the c22 transfers one would be, since if a
-> PHY doesn't have c22 registers, then that's probably all we need to
-> know.
-> 
->> Without a functional change. That is, either return phydev->is_c45
->> or the inverse.
-> 
-> I think I've already explained why !phydev->is_c45 can't be interpeted
-> as a PHY having C22 registers, but let me restate. It is _entirely_
-> possible for a PHY to have C45 registers _and_ C22 registers, and
-> that is indicated by bit 0 of the devices-in-package field.
-> 
->> You seem to suggest to use either
->> phy_supports_c45_transfers() or
->> phy_has_c22_registers()
->> 
->> I'm not sure how to continue now.
->> 
->> > I'd go one further:
->> >
->> > static bool phy_supports_c45_transfers(struct phy_device *phydev)
->> > {
->> > 	return phydev->is_c45;
->> > }
->> >
->> > Since that covers that (a) the bus needs to support C45 transfers and
->> > (b) the PHY also needs to respond to C45 transfers.
->> >
->> > If we want to truly know whether a clause 22 PHY has clause 45
->> > registers, that's difficult to answer, because then you're into the
->> > realms of "does this PHY implement the indirect access method" and
->> > we haven't been keeping track of that for the PHYs we have drivers
->> > for - many will do, but it's optional in clause 22. The problem is
->> > that when it's not implemented, the registers could be serving some
->> > other function.
->> >
->> > > phy_has_c22_registers() {
->> > >   return !phydev->is_c45;
->> > > }
->> >
->> > The reverse is not true, as clause 45 PHYs can also support clause 22
->> > registers - from 802.3:
->> >
->> >  "For cases where a single entity combines Clause 45 MMDs with  Clause
->> > 22
->> >  registers, then the Clause 22 registers may be accessed using the
->> > Clause
->> >  45 electrical interface and the Clause 22 management frame structure."
->> >
->> >  "Bit 5.0 is used to indicate that Clause 22 functionality has been
->> >  implemented within a Clause 45 electrical interface device."
->> >
->> > Therefore, this would more accurately describe when Clause 22 registers
->> > are present for a PHY:
->> >
->> > static bool phy_has_c22_registers(struct phy_device *phydev)
->> > {
->> > 	/* If we probed the PHY without clause 45 accesses, then by
->> > 	 * definition, clause 22 registers must be present.
->> > 	 */
->> > 	if (!phydev->is_c45)
->> > 		return true;
->> >
->> > 	/* If we probed the PHY with clause 45 accesses, clause 22
->> > 	 * registers may be present if bit 0 in the Devices-in-pacakge
->> > 	 * register pair is set.
->> > 	 */
->> > 	return phydev->c45_ids.devices_in_package & BIT(0);
->> > }
->> >
->> > Note that this doesn't take account of whether the bus supports clause
->> > 22 register access - there are a number of MDIO buses that do not
->> > support such accesses, and they may be coupled with a PHY that does
->> > support clause 22 registers.
->> >
->> > I'm aware of a SFP with a Realtek PHY on that falls into this exact
->> > case, and getting that working is progressing at the moment.
->> >
->> > > For all the places Andrew said it's correct. Leave all the
->> > > other uses of .is_c45 as is for now and rework them in a
->> > > later patch to use mdiobus_supports_{c22,c45}().
->> >
->> > For the two cases in marvell10g and bcm84881, the test there for
->> > is_c45 is purely to determine "was this ID found on a PHY supporting
->> > clause 45 access" - however, in both cases, a check is made for MMDs
->> > present in devices_in_package which will fail if the PHY wasn't
->> > discovered in clause 45 mode.
->> >
->> > Note that 88x3310 does not support clause 22 access. I forget whether
->> > bcm84881 does or not.
->> 
->> So a simple "phydev->is_c45" should be enough? Why do you test
->> for the MMD presence bits?
-> 
-> Okay, so if quoting the bits from IEEE 802.3 doesn't provide sufficient
-> explanation, I'm at a loss what would...
+The next 2 patches are fixing a possible issue that I found while
+implementing patch 1. The patches are ordered like this for clarity.
 
-I'm talking about
+[0] https://lore.kernel.org/lkml/20230112142218.725622-1-eperezma@redhat.com/
 
-	u32 mmd_mask = MDIO_DEVS_PMAPMD | MDIO_DEVS_AN;
-	if (!phydev->is_c45 ||
-	    (phydev->c45_ids.devices_in_package & mmd_mask) != mmd_mask)
-		return -ENODEV;
+Dragos Tatulea (1):
+  vdpa/mlx5: Fix mr->initialized semantics
 
-How should that look like after this series?
+Eugenio Pérez (1):
+  vdpa/mlx5: Delete control vq iotlb in destroy_mr only when necessary
+
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |  2 +
+ drivers/vdpa/mlx5/core/mr.c        | 97 +++++++++++++++++++++---------
+ drivers/vdpa/mlx5/net/mlx5_vnet.c  |  4 +-
+ 3 files changed, 74 insertions(+), 29 deletions(-)
+
+-- 
+2.41.0
+
