@@ -2,203 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F29A976D0FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E327C76D0F8
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbjHBPGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58524 "EHLO
+        id S231974AbjHBPF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:05:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbjHBPFo (ORCPT
+        with ESMTP id S234756AbjHBPFl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:05:44 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2048.outbound.protection.outlook.com [40.107.7.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7FF3C3C;
-        Wed,  2 Aug 2023 08:04:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M/iysbE5rD9H2WFia2ZDNVVueSDowzZ3GPxUNPEkrofxnyGXpuugtpZaYb0eqGqzCDQLSxz/difwqHRbf4dpMuAMBTVgHh34dLMj+yD3xNqees684GdU3G1iZk38LTmRSyxT6KWA3JchC5UbQT8lg7gLynsnVcuOmXnSkDRhBUrSq4dAo2DEkcSBpQdTpoIDRQe6a81CgZHWRSfZPOo9+UJKEzQqXBtXXF0VfwPSDLrADjcAw0Yt/zvZGDM1sCcIn/LbgWZCn8G5xx5W03+ivZp337Sae/LLsgS8NbH1LfNf4IPHinA4NEl8t/KtIiNLV/SW8PEmua0OL+E71b4x7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VACH8YlUJRSkqqo9p/EMtOCqwx368GPRpwQKjr934eU=;
- b=KZ2SGA81/XJn4fF+cK3rxIjLUG2KCEq6LopHGrx3zx5pmGY24oxNfjstMgGAfdE623TKZ0RcYEpSKkjg+i0JTO+vsCxKQ7DbYgEMdKmh93gseeSgx+m56Wy0KwqMFMoaS7+3Yn5AQMrEgfyzOK4pV5l1lsEr7X0nTdKfCTcLKV6szVdt1iaALAkddRIJ82+Gt2DC47rqmaDQmFX+Ed0RnDW7cS4BrNkMa12Jh48XoLy4AUFLAXwTLO6dAYsD0fWN0S+O42g5TKM2OrQhO8A208kRaIfobSPBgHuFTpfwLAqT6C1h5ks4UvtEOuQoD+7DSOfv3eWAKIzoahIuQAr/Kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wolfvision.net; dmarc=pass action=none
- header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VACH8YlUJRSkqqo9p/EMtOCqwx368GPRpwQKjr934eU=;
- b=JADAhCY2XTkIFYlfMIyashLg0guL+VjQ7LbGbBW8Wnq6YMJwlHN1ZsP8YKMJunJkc79mvZzwAih0bEPoNXzOz90yBmhIq4EiaJCfXmfrSlq0CWO4/47by2NQyXJETTDOVXghRpTxzt3bkiQEGShoy+Y0fK9QRTw4b04OCpMnmG0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wolfvision.net;
-Received: from GV2PR08MB9158.eurprd08.prod.outlook.com (2603:10a6:150:d2::10)
- by PAVPR08MB8918.eurprd08.prod.outlook.com (2603:10a6:102:323::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6631.45; Wed, 2 Aug
- 2023 15:04:03 +0000
-Received: from GV2PR08MB9158.eurprd08.prod.outlook.com
- ([fe80::f9cc:2e21:d017:7f66]) by GV2PR08MB9158.eurprd08.prod.outlook.com
- ([fe80::f9cc:2e21:d017:7f66%5]) with mapi id 15.20.6631.045; Wed, 2 Aug 2023
- 15:04:03 +0000
-Message-ID: <22f45713-84f5-4a94-bd47-99aceb2df84b@wolfvision.net>
-Date:   Wed, 2 Aug 2023 17:03:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 3/4] drm/panel: sitronix-st7789v: add support for partial
- mode
-Content-Language: en-US
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Gerald Loacker <gerald.loacker@wolfvision.net>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230718-feature-lcd-panel-v1-0-e9a85d5374fd@wolfvision.net>
- <20230718-feature-lcd-panel-v1-3-e9a85d5374fd@wolfvision.net>
- <tbdwgfr4rqgytttoxhidsil42mda77qj3qmhw2do3k5rmwsaeh@qronuzdubv6q>
- <097de164-6d62-6a1d-f7b5-cbd7d4408ab7@wolfvision.net>
- <jfmsb4tmgx5rej4ae4npzq4zjh2dnydukxuk34oejbqdpe4a42@a2bbo3bwa3yq>
-From:   Michael Riesch <michael.riesch@wolfvision.net>
-In-Reply-To: <jfmsb4tmgx5rej4ae4npzq4zjh2dnydukxuk34oejbqdpe4a42@a2bbo3bwa3yq>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: ZR2P278CA0007.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:50::13) To GV2PR08MB9158.eurprd08.prod.outlook.com
- (2603:10a6:150:d2::10)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: GV2PR08MB9158:EE_|PAVPR08MB8918:EE_
-X-MS-Office365-Filtering-Correlation-Id: b8e315db-d656-4c69-dd7f-08db9369b565
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CjDHYSIsPazKWvCki5QRJv1xJsfpKy/VSn8Xq1Q0PxnA5w03G6/O/+ckw+2r1Xwv1FWplWOZz1+fQoFuLi88G8/cKI6TvscI+iDBtw36jLykwqnRJfU49e0YLsDg2i9zzw+jAOpjfAmenUykgC+mCihfBOFPZS/9+bFvDJG18djhY17ebmnormo5WO7iaBGzJi8C/Gc1AVpQvqZLo3Lrr1CW1MJWdvXBIuywgSEVAzqIyW1NRrrXyX4NWQVgCQPUEgi6UbrTB+vDLFesSspCepfrlUdb50HrMqBvbSMV4V4G6IBQCcfW1OHR5GsgJ3wdY+PgOpfOxCvdNSnEvCxu3hRHURY+ldfWLn5WdqNUfBWJhx/nsIFUzNA1n7XrCv8NBAl+fSj7p+XE+dbPSX0ypdoKsVJEMWx2MG1ZxhcAMNM01WFSQZhwbjlk8rWZEq5PJBxCcJIvSNhoAO8zC4thp5kfl/EyIjUmbHOymLFI260IGKU0RZP6962uA4fHcsUslkf1VEcnBiAB5a2y0nl5TyDxXcnr8cqJiUaAH0yQ3Osc69O2UENe2bOKKVYvLgg6kFom7YP3KT7gEh3xTgLo/0KcRsVZlz62KIcPdSKckkU8VSTmJeqUFb7a0qMnINQY7hKE8C7yUP7BckCCJc+U2Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR08MB9158.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(4636009)(346002)(39840400004)(366004)(136003)(396003)(376002)(451199021)(7416002)(8676002)(5660300002)(83380400001)(2616005)(41300700001)(38100700002)(316002)(186003)(8936002)(53546011)(6506007)(31686004)(4326008)(6916009)(86362001)(66946007)(31696002)(66556008)(66476007)(6512007)(966005)(2906002)(6486002)(6666004)(36756003)(478600001)(54906003)(44832011)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R3dTakNhZXF5VmFWcUdkNTVld3NVOHNjd25KQ3RKSWxNR1I2TDJSTU8zR3Y0?=
- =?utf-8?B?ZnRzKzkyVG1iZmlJWUZHeWQ2S3U2UFJFSlNjNHBYbXlWTmJxbXdsdldCUnFZ?=
- =?utf-8?B?UlR2NXlKU1cwR1lEZGhJNG9oblpjMUR3OFkxRUFDUGRjeDdUT1QyT0NpbE9k?=
- =?utf-8?B?NE1DWnNwU3NIZ0d2YWp6TWV6eDV2dmtVcUU3L2FIbnN5YjNFK2tNYkI4aVV3?=
- =?utf-8?B?Y0tyMVQwSnQ5WXh1bWRkdUdjKzYraGtFcGdoVnoyQlY5YXU2YVpZdFg4WE5E?=
- =?utf-8?B?eDE0alI2T2p6TUozSi8ybTRORlQvbHp6dm16UTRyR1laRmdlZGcrelNIMWha?=
- =?utf-8?B?OGNNM0ZCUW9rdmsyaU5Wc0NucFEyaldPd2doQ3lTOG5wNFNwMmZsdGJmSEl5?=
- =?utf-8?B?NmtJUHRSNnl3U0ZOb3BER1dUQjlScG9wUlh2K0ZacXlUK0Y3clNBR05BK0du?=
- =?utf-8?B?VHRMaHE5cndaSzk4YVJWMkRCOU42YTVGeCtqbmI4VWhucnp0OFNXRjZMaS8w?=
- =?utf-8?B?aWh4MUs1NFlnbEpwcmNSNWx1L2RVUlcxVU1EQXJTdGtrWWtRSmFNYUZtUVQ4?=
- =?utf-8?B?citodmV3bU01VWhBeC9yVnZTa1JXUmR3Mzk0VWJCR296am92SVk1aFhFYXNa?=
- =?utf-8?B?QWV0czlGOTBqVnJ4THFOWVVSUnBxT1Rkdk1YYkQwSWF6bDRZU2pXMm1LeUhk?=
- =?utf-8?B?bmliK1ppVDBUTjZRelVoRnRja21OQ1hXWWdpcWxua1UxbG1TUWwyaiszWHVz?=
- =?utf-8?B?dGFvRlhqWmJsdnF5SUZyem5hZzRMMDBVdXBkbE91VmNaM05DTW5uajJHRDRi?=
- =?utf-8?B?V0p6QnlLeFJOSmpFWGxwTzFBS2NVRXVocFcwSDFDKzBOaHRxTTBSWFdwSTZZ?=
- =?utf-8?B?RXJwdk5zTGY5OVRhbTFHbWFqcFplcS96ZmhpUFlzUlU0YjlxVTl4cTB1MFhh?=
- =?utf-8?B?RFhqdlEwd2lqMWF5bmRnU1BzbFRRYjlZQ1F4eEEzYmovNnB6MkN3ak1yV2RO?=
- =?utf-8?B?NFNTRGRjV2x6WUJjYm1ua0J0NndtOEJxTEJYTGZ6RzdtK2ZtQlMxeEVEcHVy?=
- =?utf-8?B?blNUejRQakxXTDEzUWVmaEY2OW5CUmNHNHJWS2ZjOWt2WnZIYlR3RGNPdW82?=
- =?utf-8?B?QnpveCtYZFBZN0hVTVZEUjdOdGpQYWdGMEdzMHFhK0t1dDUvb2tUbUFPNDBD?=
- =?utf-8?B?OEdYdkRJNkRsSnpmZ2RwRFhuZjYxMGk0Q0ZlSmdnUW9RN01YcnZ3M3lvRFhS?=
- =?utf-8?B?Mkc1dlJ6OHg2djBjdjFnakxtV0hKVFN6MHlwU1BCbXZ1RC9jUWpTUytBVVJF?=
- =?utf-8?B?b1J0KzlWWUJucTg0dEs0dVFhMDhrRDFiUUFQZ0N0SGxBRFpucTc1MXBKclps?=
- =?utf-8?B?WjhZNHoxWUFkT1p2TS84QnBhQzZzWnByNzJrcERLcDNETjJHNkl1R005N3Ew?=
- =?utf-8?B?eitaNWU1TVg4QnFHMXdTcmMvUFRhenpoUU5lclJDYy9Wck1rWWtvd1dYcGNo?=
- =?utf-8?B?cjRlaVZkZUZtTTFFNGRCK3VvOUx0b3JJYUcyWmZLK2JTR2F0UzNPNVV5dllO?=
- =?utf-8?B?eFNnNTdvaXFYODFtNjZtd2NqdG56bzBqNGcrMVBoOXozZHFUK3NwMVdOVlNP?=
- =?utf-8?B?STdWK3FaQWpFVkdzWWhvTTI5UnB3OTI3TCtSZHFQT0N1M0Y0bHhJVDY5ekdi?=
- =?utf-8?B?emNaSG85bHMwR0VrTkU5ZnZMWmlmZUI3aTVFQXV6WmU3bVZ4L2tNKytvZ3VB?=
- =?utf-8?B?NW5GbDRKWDgreTlYc3pycnVBVFMrZE1lMFh4cUFwSWFCdyt2WVBUeVB5QWxP?=
- =?utf-8?B?N1EycEdFaHB0Q05yc1N2dFNuZzhod1FhMWp4TUN0dVdZNzBlWEhVMk1Id0Ir?=
- =?utf-8?B?azNFalVCelpTT010cTJnZ25HS01JckhRUndRS3d0c1ByNnlteHBUSFRhRnFH?=
- =?utf-8?B?emVoSndadTM5L3lhRXM0N3dFcmxURXZsMVBQT1BNNVBYMnlFRXJRRkJUSnpm?=
- =?utf-8?B?TE9GR1BCSzhpN3FDSFFKRDF5MDBZL2d6M1VHMVFDUWU0S0o2TURUM1h0dHVv?=
- =?utf-8?B?TERZajhEbW14VGJwTjdjTGNxWm9IanJITml3WW1LUlRhZlovYm0xUitTcloy?=
- =?utf-8?B?OGxCdE9ZVHVVMWlxdjdhRU81QkFTWkkvK1ZSS3Blby83Z0Y1TVRTRXI2SGN0?=
- =?utf-8?B?dHV6WGxDdmt3UXJaNFNPNFpTTkZnOWJqMzZROXNBSjh2WE1LMEorL1NnRDRn?=
- =?utf-8?B?TjdVUVdDV0pqMlFtNy81T0l3ZVlRPT0=?=
-X-OriginatorOrg: wolfvision.net
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8e315db-d656-4c69-dd7f-08db9369b565
-X-MS-Exchange-CrossTenant-AuthSource: GV2PR08MB9158.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Aug 2023 15:04:02.9140
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KLmzXdHofj9k0IGK/9UEn1hIBnkgE6LdC3LnIRieN1D8Jp4c2zZHawaNHI+eOi2MJ+5ksZYN/ALORPW9ZURUu2F+UlQul1L+5A9j4rEx3bg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR08MB8918
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        Wed, 2 Aug 2023 11:05:41 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B006C3AAB
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:04:44 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d1d9814b89fso6331144276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1690988683; x=1691593483;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UUMABgRf8+JLrJEPYxIPAcBfEzRgqars/lrXYCb1BUE=;
+        b=rSbGrQHo3VRf0sw+Ax8g0TxoxBZdQnoZh2HFkFM71zPpXZx/A3RCmEzkepLrMt7T3k
+         xPLUVeQYTz7USaEGMHSpxHS+MfkHoKSv4GhxoPCGB6E+IoC64HSHnvrcIHe1J2Uo6KHs
+         p5OvsWht9tX3QU5dCiNxQC1FNRnP8KthSqNyvyPAuBNG8rSshP07rWmGsTj33H1UpuZF
+         UyUCZbphP1jFYX6CJ3iF3GjZJJ2hECe2bfvdUOndflz7Jcp4QY29J09VRVPPTmgYOV28
+         ZCghnJ0ohRCf16vO0Jf9WIFO0ag+NO1xE594ltOegaPWmFCRa9ZRcmIKgSIWs/Wx8QTY
+         NXSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690988683; x=1691593483;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=UUMABgRf8+JLrJEPYxIPAcBfEzRgqars/lrXYCb1BUE=;
+        b=cDHWI5KRlOoLXKHGsuiRqYsPYCjuI1rsvDmV+3MjuxWM0bHAd/OhEoiP4lQbnLG+Ve
+         0AfDBqoRTe1NPxIJD1BeIZTKDY3JZ4KdUx+jZQEtgjOU5ciI1cgDahwU/UtNmzh46sSG
+         +kUTV2i+4NAd5BiC+v0YJtd+nN9BLCYp0dhzSsu4W2Z8jWBmh2TNvYyg1o4yhkp83Zxn
+         N5stJxSAtpIVrOGlVw18VJXlJiE93gnArmJV6+cqOIJC4K29YwyEJ7vJyFWfQaWnIpOx
+         bMKK92LAqeVCzkq1ZXbUbKsSkZ4vej56R1/U4aCtpN90QUdVElX3BT2XmXe/KKQQX31s
+         FA8w==
+X-Gm-Message-State: ABy/qLYgJ8uPilKUrthjepfkyfSD0ZvG6gIY5ig074DCOUijPhMEOM5I
+        P6/m00+NWkHvuPwpo0WzoFqSS6RwC1Y=
+X-Google-Smtp-Source: APBJJlEDEY0vSR2vn4i6PKsne/SSwUoYgKvwd++64qeUXGXac8cOKaNc1PGFy/Ghcc7t9rpN566hdBQ5LiM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:69c6:0:b0:d0f:cf5:3282 with SMTP id
+ e189-20020a2569c6000000b00d0f0cf53282mr123293ybc.1.1690988683739; Wed, 02 Aug
+ 2023 08:04:43 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 08:04:41 -0700
+In-Reply-To: <7a4f3f59-1482-49c4-92b2-aa621e9b06b3@amd.com>
+Mime-Version: 1.0
+References: <8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn>
+ <ZMfFaF2M6Vrh/QdW@google.com> <4ebb3e20-a043-8ad3-ef6c-f64c2443412c@amd.com>
+ <544b7f95-4b34-654d-a57b-3791a6f4fd5f@mail.ustc.edu.cn> <ZMpEUVsv5hSmrcH8@iZuf6hx7901barev1c282cZ>
+ <ZMphvF+0H9wHQr5B@google.com> <bbc52f40-2661-3fa2-8e09-bec772728812@amd.com> <7a4f3f59-1482-49c4-92b2-aa621e9b06b3@amd.com>
+Message-ID: <ZMpwiSw9CBZh9xcc@google.com>
+Subject: Re: [Question] int3 instruction generates a #UD in SEV VM
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Wu Zongyo <wuzongyo@mail.ustc.edu.cn>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        linux-coco@lists.linux.dev
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Wed, Aug 02, 2023, Tom Lendacky wrote:
+> On 8/2/23 09:25, Tom Lendacky wrote:
+> > On 8/2/23 09:01, Sean Christopherson wrote:
+> > > > You're right. The #UD is injected by KVM.
+> > > >=20
+> > > > The path I found is:
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0 svm_vcpu_run
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 svm_complete_inter=
+rupts
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_requeue_exception //=
+ vector =3D 3
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+kvm_make_request
+> > > >=20
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0 vcpu_enter_guest
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_check_and_inje=
+ct_events
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 svm_inject_exception
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+svm_update_soft_interrupt_rip
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+__svm_skip_emulated_instruction
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 x86_emulate_instruction
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 svm_can_emulate_instruction
+> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_queue_exception(vcpu, =
+UD_VECTOR)
+> > > >=20
+> > > > Does this mean a #PF intercept occur when the guest try to deliver =
+a
+> > > > #BP through the IDT? But why?
+> > >=20
+> > > I doubt it's a #PF.=C2=A0 A #NPF is much more likely, though it could=
+ be
+> > > something
+> > > else entirely, but I'm pretty sure that would require bugs in both
+> > > the host and
+> > > guest.
+> > >=20
+> > > What is the last exit recorded by trace_kvm_exit() before the #UD is
+> > > injected?
+> >=20
+> > I'm guessing it was a #NPF, too. Could it be related to the changes tha=
+t
+> > went in around svm_update_soft_interrupt_rip()?
+> >=20
+> > 6ef88d6e36c2 ("KVM: SVM: Re-inject INT3/INTO instead of retrying the
+> > instruction")
+>=20
+> Sorry, that should have been:
+>=20
+> 7e5b5ef8dca3 ("KVM: SVM: Re-inject INTn instead of retrying the insn on "=
+failure"")
+>=20
+> >=20
+> > Before this the !nrips check would prevent the call into
+> > svm_skip_emulated_instruction(). But now, there is a call to:
+> >=20
+> >  =C2=A0 svm_update_soft_interrupt_rip()
+> >  =C2=A0=C2=A0=C2=A0 __svm_skip_emulated_instruction()
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_emulate_instruction()
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 x86_emulate_instruction() (=
+passed a NULL insn pointer)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 kvm_can_emulate=
+_insn() (passed a NULL insn pointer)
+> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 svm=
+_can_emulate_instruction() (passed NULL insn pointer)
+> >=20
+> > Because it is an SEV guest, it ends up in the "if (unlikely(!insn))" pa=
+th
+> > and injects the #UD.
 
-In order to avoid spamming the list, I sparked a discussion in
-#dri-devel. FTR the log can be found here:
-https://oftc.irclog.whitequark.org/dri-devel/2023-08-02#32360491;
+Yeah, my money is on that too.  I believe this is the least awful solution:
 
-On 8/2/23 14:47, Maxime Ripard wrote:
-> Hi,
-> 
-> On Wed, Aug 02, 2023 at 02:34:28PM +0200, Michael Riesch wrote:
->> On 7/19/23 08:39, Maxime Ripard wrote:
->>> On Tue, Jul 18, 2023 at 05:31:52PM +0200, Michael Riesch wrote:
->>>> The ST7789V controller features support for the partial mode. Here,
->>>> the area to be displayed can be restricted in one direction (by default,
->>>> in vertical direction). This is useful for panels that are partially
->>>> occluded by design. Add support for the partial mode.
->>>>
->>>> Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
->>>
->>> We already had that discussion, but I think we shouldn't treat this any
->>> differently than overscan for other output.
->>
->> Indeed we had that discussion. For reference, it can be found here:
->> https://lore.kernel.org/dri-devel/20230329091636.mu6ml3gvw5mvkhm4@penduick/#t
->> The thing is that I am still clueless how the overscan approach could work.
->>
->> I found some DRM properties related to overscan/margins and I guess
->> userspace needs to set those. On my system weston is running. Is weston
->> in charge of configuring the corresponding output so that the correct
->> margins are applied? If so, how can this be achieved?
-> 
-> I don't really know Weston, but my guess would be based on some
-> configuration or user feedback, depending on which case we're in.
-> 
-> We also set the default using some kernel command-line options.
-> 
->> Will DRM handle the properties generically or does the driver need to do
->> some work as well?
-> 
-> What do you mean by generically?
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index d381ad424554..2eace114a934 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -385,6 +385,9 @@ static int __svm_skip_emulated_instruction(struct kvm_v=
+cpu *vcpu,
+        }
+=20
+        if (!svm->next_rip) {
++               if (sev_guest(vcpu->kvm))
++                       return 0;
++
+                if (unlikely(!commit_side_effects))
+                        old_rflags =3D svm->vmcb->save.rflags;
+=20
+I'll send a formal patch (with a comment) if that solves the problem.
 
-I guess my question can be reduced to "What does the driver have to do
-to support this overscan thingy?" If the overscan approach is the
-preferred one, then I'd appreciate some pointers as to how this could work.
 
->> In any case it could make sense to write the partial mode registers and
->> enter the effective dimensions. At least I have seen this in other panel
->> drivers.
-> 
-> Sure, it makes sense. It shouldn't come from the DT and be fixed though.
+Side topic, KVM should require nrips for SEV and beyond, I don't see how SE=
+V can
+possibly work if KVM doesn't utilize nrips.  E.g. this
 
-However, as indicated in Daniel Vetter's summary of the IRC discussion,
-the overscan properties may not be the preferred solution in this case.
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 2eace114a934..43e500503d48 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -5111,9 +5111,11 @@ static __init int svm_hardware_setup(void)
+=20
+        svm_adjust_mmio_mask();
+=20
++       nrips =3D nrips && boot_cpu_has(X86_FEATURE_NRIPS);
++
+        /*
+         * Note, SEV setup consumes npt_enabled and enable_mmio_caching (wh=
+ich
+-        * may be modified by svm_adjust_mmio_mask()).
++        * may be modified by svm_adjust_mmio_mask()), as well as nrips.
+         */
+        sev_hardware_setup();
+=20
+@@ -5125,11 +5127,6 @@ static __init int svm_hardware_setup(void)
+                        goto err;
+        }
+=20
+-       if (nrips) {
+-               if (!boot_cpu_has(X86_FEATURE_NRIPS))
+-                       nrips =3D false;
+-       }
+-
+        enable_apicv =3D avic =3D avic && avic_hardware_setup();
+=20
+        if (!enable_apicv) {
 
-Looking forward to further comments (alternatively, to seeing this patch
-series getting applied :-))
-
-Best regards,
-Michael
