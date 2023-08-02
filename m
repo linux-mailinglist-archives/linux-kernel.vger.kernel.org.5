@@ -2,119 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0129C76C756
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E13A476C760
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbjHBHrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
+        id S233466AbjHBHsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:48:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233295AbjHBHqp (ORCPT
+        with ESMTP id S233677AbjHBHrw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:46:45 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0259135A5
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:44:02 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3090d3e9c92so6548044f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 00:44:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20221208.gappssmtp.com; s=20221208; t=1690962240; x=1691567040;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=zrfr8demoIbS0/fY7FGFGHUvwM9dqz7KGdFUzvSMnB4=;
-        b=SQ0Jmtsd6fDkK+VaTExixKraao2PdwInKoTajuVotP1pQ1FPyv409LVbP9v/bMIqEw
-         VoJcEqWxkG1QCm2ugsqmnlRX6nPvEdKEXEYtD4O4lRTI03300HRKUfQqgWvcGmOb5HyP
-         wXz1F3U/RzYBlZ6JpHDdtJtpxsDMOJrhp+UWTBI0FlWZMkt6AVF5KOHBJbv8yoNOjN4A
-         MIosrKok2qAQR/tvHmLn+Az/PLp2iGy8Kj/UweBlIeG48eMkxPlua3zHMNlJISEspHz1
-         AwAaE+DWWHdW8WNFbFZ0JcgVfRqxmUvR1fC1nF5mpJHwOLJeJ1GyaeaEod0UoJdFT6d9
-         N39w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690962240; x=1691567040;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zrfr8demoIbS0/fY7FGFGHUvwM9dqz7KGdFUzvSMnB4=;
-        b=bECcCpkEXba7wupPfr/p1tHFYS5J9Jw3kL9x85BHs9teIpbwrvpJ21H8PQZqcT+QW9
-         A1DYcbEHcLuTVMEugFQK2vxOOmUb544HJYmLnoHcDnTHPhlUCMinabdhaG+WgBwdaK3e
-         VvJV8hLVgmKQx9wk3iqwdEWVc4WhbFLV+RnTqXR6Owq51qSedif1zzkfPACi56EjDrzV
-         7oS9jLy7Y2gqW3pnmU+REq6Ka9IKbR+7qvu3F3Q6Z+ksuVMlIpPT8/jgdFH6pjPgClLb
-         WqYCdxYJ2/rwxoCcrZnVzP248GCLMD/VyfDI7L9W+eCrCqgXpxukTkArtJy8yV3i/+Oi
-         d6YA==
-X-Gm-Message-State: ABy/qLZwHbzXy60TzKVcHqO2C2PlwPUfp3tCm4gDlRy6jEvvD937uAMx
-        hK3yax0cAjRQr6vJ3F5qoQCNug==
-X-Google-Smtp-Source: APBJJlHR+6nvvNO3+YmG+iuU8bYWQGf23hXA05GwI6Tl5IAu5Z/Y9z2rBt7aF/BbyZ8pIhHmTV1+5g==
-X-Received: by 2002:adf:e883:0:b0:317:6e08:ed35 with SMTP id d3-20020adfe883000000b003176e08ed35mr4518025wrm.1.1690962240440;
-        Wed, 02 Aug 2023 00:44:00 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:43ac:b106:31d5:42b7])
-        by smtp.gmail.com with ESMTPSA id y18-20020a5d6212000000b003143c6e09ccsm18306002wru.16.2023.08.02.00.43.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 00:44:00 -0700 (PDT)
-References: <CACqvRUZYH2NkOooE78SK6=Ow07y=YnE2QOSNzyb99rV4vSvxpQ@mail.gmail.com>
-User-agent: mu4e 1.8.13; emacs 28.2
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Da Xue <da@libre.computer>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: mdio-mux-meson-gxl: set RESERVED0 bit in REG2
-Date:   Wed, 02 Aug 2023 09:43:38 +0200
-In-reply-to: <CACqvRUZYH2NkOooE78SK6=Ow07y=YnE2QOSNzyb99rV4vSvxpQ@mail.gmail.com>
-Message-ID: <1ja5v9q474.fsf@starbuckisacylon.baylibre.com>
+        Wed, 2 Aug 2023 03:47:52 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EA74201;
+        Wed,  2 Aug 2023 00:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1690962287; x=1722498287;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=2szau/+aok62TKXNIGTEyyDGMJzaRmIjwYE4GSf6VkE=;
+  b=k3qUberxhzxTnE1hKlltBJ8v3lNf130epX2s2nE+sopKkSXfcbBWiNWl
+   My8ApH7Obj2HFhBud/mBigPpCYs29xW/nIJ6XVNsxpMKfYrSU8bIRHZN4
+   iD7aUsXExsfcomsYyIO6eW1Tsv3zSDMSbG+dErngu7oWGQxQ1FR8TmWy8
+   uwK/aJOgouY6uFO72BwFDTkSnk7Mtf7axW4I/c139joEIzcUZD1NXsP3K
+   fccAmsZQvvmWGVUQM446L+4VdiTtvHL0jhhS1rxr3zuuldB+UxxkfLZXJ
+   RAa2dzNEj2NxB0dUiCChatAPDSVyeIEkK7DV9Pi1g1RFtK0VuqdffSEXH
+   A==;
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="asc'?scan'208";a="227771449"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Aug 2023 00:44:38 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 2 Aug 2023 00:44:37 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 2 Aug 2023 00:44:35 -0700
+Date:   Wed, 2 Aug 2023 08:43:59 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Carsten =?iso-8859-1?Q?Spie=DF?= <mail@carsten-spiess.de>
+CC:     Conor Dooley <conor@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] dt-bindings: hwmon: add renesas,isl28022
+Message-ID: <20230802-sandbar-crudely-78a4b8a351b0@wendy>
+References: <20230801163546.3170-1-mail@carsten-spiess.de>
+ <20230801163546.3170-3-mail@carsten-spiess.de>
+ <20230801-implicate-mullets-bd160bbda4b2@spud>
+ <20230802093023.1a926c9f.mail@carsten-spiess.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rvwxYB0l/gGvqvqZ"
+Content-Disposition: inline
+In-Reply-To: <20230802093023.1a926c9f.mail@carsten-spiess.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--rvwxYB0l/gGvqvqZ
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue 01 Aug 2023 at 16:34, Da Xue <da@libre.computer> wrote:
+On Wed, Aug 02, 2023 at 09:30:23AM +0200, Carsten Spie=DF wrote:
+>=20
+> On 8/1/23 22:52, Conor Dooley wrote:
+> > On Tue, Aug 01, 2023 at 06:35:46PM +0200, Carsten Spie=DF wrote:
+> > > Add dt-bindings for Renesas ISL28022 power monitor.
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - renesas,isl28022 =20
+> >=20
+> > You've only got one compatible, why the enum? Will there be more similar
+> > devices that have an incompatible programming model?
+> Yes, there are isl28023 and isl28025 with different register addresses,
+> might be supported in future releases.
 
-> The first RESERVED register bit needs to be set in order for the PHY
-> to come up. Otherwise the ethernet device stays in "No Carrier".
-> There's no associated documentation for this register bit in the
-> Amlogic datasheets, only the default value to set for the entire
-> register.
->
-> This register bit is normally set in u-boot so it is not noticed in
-> Linux. During my testing with u-boot net disabled, this problem crops
-> up.
->
-> Signed-off-by: Da Xue <da@libre.computer>
+Right. Unless that's a very strong "might", const: will do the trick
+here just fine.
 
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+Otherwise,
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-> ---
->  drivers/net/mdio/mdio-mux-meson-gxl.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/mdio/mdio-mux-meson-gxl.c
-> b/drivers/net/mdio/mdio-mux-meson-gxl.c
-> index 76188575ca1f..210a52d98112 100644
-> --- a/drivers/net/mdio/mdio-mux-meson-gxl.c
-> +++ b/drivers/net/mdio/mdio-mux-meson-gxl.c
-> @@ -17,6 +17,7 @@
->  #define  REG2_LEDACT           GENMASK(23, 22)
->  #define  REG2_LEDLINK          GENMASK(25, 24)
->  #define  REG2_DIV4SEL          BIT(27)
-> +#define  REG2_RESERVED0                BIT(28)
->  #define  REG2_ADCBYPASS                BIT(30)
->  #define  REG2_CLKINSEL         BIT(31)
->  #define ETH_REG3               0x4
-> @@ -65,7 +66,7 @@ static void gxl_enable_internal_mdio(struct
-> gxl_mdio_mux *priv)
->          * The only constraint is that it must match the one in
->          * drivers/net/phy/meson-gxl.c to properly match the PHY.
->          */
-> -       writel(FIELD_PREP(REG2_PHYID, EPHY_GXL_ID),
-> +       writel(REG2_RESERVED0 | FIELD_PREP(REG2_PHYID, EPHY_GXL_ID),
->                priv->regs + ETH_REG2);
->
->         /* Enable the internal phy */
+> > > +  renesas,shunt-range-microvolt:
+> > > +    description: | =20
+> >=20
+> > You don't need these |s if you have no formatting to preserve in the
+> > text.
+> Will fix in v4.
 
+There's no need to send a v4 for that alone.
+
+--rvwxYB0l/gGvqvqZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMoJMwAKCRB4tDGHoIJi
+0tMPAQDjQ697+EDhnCuyxLgCr9usLC3Co7rI5JVp14gTVjUuZgEAvAae+pGt9k8D
+JU5YHsjUkBO+KWZi/AFxYKh1cmMOmwE=
+=s4Ye
+-----END PGP SIGNATURE-----
+
+--rvwxYB0l/gGvqvqZ--
