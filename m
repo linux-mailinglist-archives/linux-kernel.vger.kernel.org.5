@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C15576C256
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25BC76C257
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 03:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231651AbjHBBh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 21:37:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42478 "EHLO
+        id S231445AbjHBBiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 21:38:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbjHBBhc (ORCPT
+        with ESMTP id S231349AbjHBBhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 1 Aug 2023 21:37:32 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A98210D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0072E269A
         for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 18:37:31 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RFvjh4ps8z4f3pCB
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RFvjh3Zmkz4f3nbJ
         for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 09:37:28 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-        by APP4 (Coremail) with SMTP id gCh0CgAXzrFTs8lkvrtvPQ--.56352S9;
+        by APP4 (Coremail) with SMTP id gCh0CgAXzrFTs8lkvrtvPQ--.56352S10;
         Wed, 02 Aug 2023 09:37:29 +0800 (CST)
 From:   Kemeng Shi <shikemeng@huaweicloud.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
         mgorman@techsingularity.net, david@redhat.com
 Cc:     shikemeng@huaweicloud.com
-Subject: [PATCH v2 7/8] mm/compaction: remove unnecessary return for void function
-Date:   Wed,  2 Aug 2023 17:37:40 +0800
-Message-Id: <20230802093741.2333325-8-shikemeng@huaweicloud.com>
+Subject: [PATCH v2 8/8] mm/compaction: only set skip flag if cc->no_set_skip_hint is false
+Date:   Wed,  2 Aug 2023 17:37:41 +0800
+Message-Id: <20230802093741.2333325-9-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20230802093741.2333325-1-shikemeng@huaweicloud.com>
 References: <20230802093741.2333325-1-shikemeng@huaweicloud.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXzrFTs8lkvrtvPQ--.56352S9
-X-Coremail-Antispam: 1UD129KBjvdXoWrtryxtr1UAF4UZry3Kr1UAwb_yoWDCFX_Jr
-        yIyrWFqw4Yvr18AFnxCF4avrykGF4DCr1aqa1DXr1fAa4qya1vv3srZr13X3yYqa9rur9x
-        G3WkZFs2kF1avjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID: gCh0CgAXzrFTs8lkvrtvPQ--.56352S10
+X-Coremail-Antispam: 1UD129KBjvdXoWrtw4ktF1DJF1Utw1kKw43trb_yoW3trc_Jr
+        10yF4rtw1avr93AFn8Xw47Cr1kKrWDCrnrWF1kXr4ay3yqya1vq3WDXrnrXw15XFW7ur9x
+        GaykZF48GFya9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
         9fnUUIcSsGvfJTRUUUbDAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
         6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M28IrcIa0xkI8V
         A2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJ
@@ -48,8 +48,8 @@ X-Coremail-Antispam: 1UD129KBjvdXoWrtryxtr1UAF4UZry3Kr1UAwb_yoWDCFX_Jr
         JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20V
         AGYxC7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAF
         wI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc4
-        0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AK
-        xVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+        0Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AK
+        xVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F
         4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0pRvJPtU
         UUUU=
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
@@ -63,36 +63,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unnecessary return for void function
+Keep the same logic as update_pageblock_skip, only set skip if
+no_set_skip_hint is false which is more reasonable.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
- mm/compaction.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ mm/compaction.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/mm/compaction.c b/mm/compaction.c
-index 5581e4cccac5..a1cc327d1b32 100644
+index a1cc327d1b32..afc31d27f1ba 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -1423,8 +1423,6 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
+@@ -1421,7 +1421,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
+ 	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
+ 
  	/* Skip this pageblock in the future as it's full or nearly full */
- 	if (start_pfn >= end_pfn)
+-	if (start_pfn >= end_pfn)
++	if (start_pfn >= end_pfn && !cc->no_set_skip_hint)
  		set_pageblock_skip(page);
--
--	return;
  }
- 
- /* Search orders in round-robin fashion */
-@@ -2878,7 +2876,7 @@ int compaction_register_node(struct node *node)
- 
- void compaction_unregister_node(struct node *node)
- {
--	return device_remove_file(&node->dev, &dev_attr_compact);
-+	device_remove_file(&node->dev, &dev_attr_compact);
- }
- #endif /* CONFIG_SYSFS && CONFIG_NUMA */
  
 -- 
 2.30.0
