@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A00AC76D211
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3917176D20F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235237AbjHBPeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        id S235084AbjHBPeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233700AbjHBPd4 (ORCPT
+        with ESMTP id S232146AbjHBPd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 2 Aug 2023 11:33:56 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293B61716;
-        Wed,  2 Aug 2023 08:33:54 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372FXbgo026490;
-        Wed, 2 Aug 2023 10:33:37 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C39A127;
+        Wed,  2 Aug 2023 08:33:53 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 372FXceq105653;
+        Wed, 2 Aug 2023 10:33:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1690990417;
-        bh=9zdE/wDyMvT7HHQmEeQ3MIMBBQsSbN5WNnnS4nYQEzs=;
+        s=ti-com-17Q1; t=1690990418;
+        bh=qwlvI+pFIN+oiWi75HwiEw730Fz9tSQAREE3irO3458=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=mCpp/QooBl3/Wso0CW7dMOPcjnC6MzfDYVdIcd0TQzyP94IqZqEiy1Q864owLChAp
-         HEpov6QtA9A96D3677Y+2B+iBRjnpHoJ0dQ59PUTGtq2yrkLKPVb1PpRIkXsF1AukE
-         gZp5Y5NDO5i+PLg+nikwsGb6nGuwReMsTnW00XvA=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372FXbWR034535
+        b=WCHjoSwDM31fWYiDYaWycD0AYFM2QPBlbY2dC1PLBceelqmzaWl9WcGECOqvTCNAB
+         +uH8TK8tJBIbHN/8JAmr2TiujD97l2CZvLwI0h/niwIHuJG/fau2aO7ET9ls6vhU3W
+         Hpc8vahIA4IN5TS+kYU6R9dBw7uLL5wLkwx1fgPc=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 372FXb5S012749
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
         Wed, 2 Aug 2023 10:33:37 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 2
  Aug 2023 10:33:37 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 2 Aug 2023 10:33:36 -0500
+ Frontend Transport; Wed, 2 Aug 2023 10:33:37 -0500
 Received: from lelv0327.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372FXYq0072743;
-        Wed, 2 Aug 2023 10:33:36 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 372FXYq1072743;
+        Wed, 2 Aug 2023 10:33:37 -0500
 From:   Andrew Davis <afd@ti.com>
 To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -51,9 +51,9 @@ To:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
 CC:     <devicetree@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v8 2/9] ARM: dts: nspire: Fix cpu node to conform with DT binding
-Date:   Wed, 2 Aug 2023 10:33:26 -0500
-Message-ID: <20230802153333.55546-3-afd@ti.com>
+Subject: [PATCH v8 3/9] ARM: dts: nspire: Fix sram node to conform with DT binding
+Date:   Wed, 2 Aug 2023 10:33:27 -0500
+Message-ID: <20230802153333.55546-4-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230802153333.55546-1-afd@ti.com>
 References: <20230802153333.55546-1-afd@ti.com>
@@ -63,9 +63,8 @@ Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -77,27 +76,31 @@ Should result in no functional change.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- arch/arm/boot/dts/nspire/nspire.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm/boot/dts/nspire/nspire.dtsi | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm/boot/dts/nspire/nspire.dtsi b/arch/arm/boot/dts/nspire/nspire.dtsi
-index 48fbc9d533c39..cb72370515126 100644
+index cb72370515126..f979b28e2576e 100644
 --- a/arch/arm/boot/dts/nspire/nspire.dtsi
 +++ b/arch/arm/boot/dts/nspire/nspire.dtsi
-@@ -11,8 +11,13 @@ / {
- 	interrupt-parent = <&intc>;
- 
- 	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
- 		cpu@0 {
- 			compatible = "arm,arm926ej-s";
-+			device_type = "cpu";
-+			reg = <0>;
- 		};
+@@ -26,8 +26,15 @@ bootrom: bootrom@0 {
  	};
  
+ 	sram: sram@a4000000 {
+-		device = "memory";
+-		reg = <0xa4000000 0x20000>;
++		compatible = "mmio-sram";
++		reg = <0xa4000000 0x20000>; /* 128k */
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0 0xa4000000 0x20000>;
++
++		sram@0 {
++			reg = <0x0 0x20000>;
++		};
+ 	};
+ 
+ 	timer_clk: timer_clk {
 -- 
 2.39.2
 
