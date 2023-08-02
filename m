@@ -2,138 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC1C76C9D8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B78D76C9DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 11:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232404AbjHBJvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 05:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S233441AbjHBJv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 05:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbjHBJvG (ORCPT
+        with ESMTP id S232803AbjHBJvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 05:51:06 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B37E57;
-        Wed,  2 Aug 2023 02:51:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1690969865; x=1722505865;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vzNzAgti1mALKRkB7nhHCwcw9iaYKtu7Mwjj/hXtAh8=;
-  b=YC4sgU/6B0VC6GNPIchqCnmp/cwJ2DrScFtLbhsewCcBQe9bzEl//uA5
-   HCOVPLz4D4k+jwi6FPvJLIE4Xcm4nmkqz+SNFsqBYWq2MOnhd0XC8zHTP
-   ThlDqcG27Y10qy0fWHBpabfCENHaVtjEUIOuGn7tYOFNYPyMIpYeK3bNb
-   7MRiAl7Aghvsfs0ubG1y3Asr3+VouAn8yqmgEXsQ+ZTcs59LHB8cvTJqc
-   kcTRIDmxsJgqZyO+4yDzJ37xaaEy4xKsfDmNwz/rqmCG62U0eoqtJkTF/
-   MjrDvrJJBc7NcGpWvz3C0MHuH/gNrU1IT7bLGBJooH1c266+w1HXwIoaU
-   g==;
-X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
-   d="asc'?scan'208";a="164455134"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 02 Aug 2023 02:51:04 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Wed, 2 Aug 2023 02:51:04 -0700
-Received: from wendy (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Wed, 2 Aug 2023 02:51:01 -0700
-Date:   Wed, 2 Aug 2023 10:50:25 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Minda Chen <minda.chen@starfivetech.com>,
-        Conor Dooley <conor@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Dao Lu <daolu@rivosinc.com>, Heiko Stuebner <heiko@sntech.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        <linux-kernel@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        Mason Huo <mason.huo@starfivetech.com>,
-        <stable@vger.kernel.org>
-Subject: Re: [PATCH v1] riscv: Using TOOLCHAIN_HAS_ZIHINTPAUSE marco replace
- zihintpause
-Message-ID: <20230802-tightwad-squeezing-bcdded12330d@wendy>
-References: <20230802064215.31111-1-minda.chen@starfivetech.com>
- <20230802-sharpness-spoon-f9b8804fb66f@wendy>
- <d64874cb-8628-a6d2-d2f4-8af4d0ebf8b2@starfivetech.com>
- <20230802-seismic-gallstone-fca0f4b17076@wendy>
- <c42bd997-8795-8bf7-eee1-3ac8b153371a@starfivetech.com>
- <2023080253-headache-moneybags-a833@gregkh>
- <20230802-decibel-unshaved-fde1cfba2d20@wendy>
- <2023080255-stomp-smell-43ae@gregkh>
+        Wed, 2 Aug 2023 05:51:25 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17FB212B;
+        Wed,  2 Aug 2023 02:51:23 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3726xPt9002676;
+        Wed, 2 Aug 2023 09:50:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=a5NjeYH3HnsFOY6h/fPBHbvlp/RSe0G0J/X9vljpGpA=;
+ b=mtU59eVcWaafJHOFq8n+96hhjQvsRo4v98zRJ5tg4yeNNnS//JU9qsOT5Z5w3u307uW/
+ fKO0VbUV0MSN0ipqxLt3xIbIkd+5def8//iYKWjsP2nNdXD2bNWpiC6AaC1bNQMyEfpX
+ LeRcOskRQZfhRDS1AVx4jCd3k9+lDcPu5JH1T+v/EsQUK1f0xEGz7VDwpIH1oXg0k6GM
+ zmKmYxK3E9vfwxIOy4W0tgcu6ygQCvCJLJV5Zqg8jDho7QEfoC72J/OW9gGGn2cRYOUW
+ v/qC08/VPJqBuelyhrRAT0b+RgjocyDlgMB4sTEwxy7mv3qPSSGJMuSchM0PgUMbHeH8 3w== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6yq4avh9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 09:50:47 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3729olVr013411
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Aug 2023 09:50:47 GMT
+Received: from [10.253.73.93] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
+ 2023 02:50:44 -0700
+Message-ID: <5b647893-6208-e360-fea8-ba7496f6bc61@quicinc.com>
+Date:   Wed, 2 Aug 2023 17:50:41 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7mmglFYMmxEffWC0"
-Content-Disposition: inline
-In-Reply-To: <2023080255-stomp-smell-43ae@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3 1/2] net: phy: at803x: fix the wol setting functions
+To:     Paolo Abeni <pabeni@redhat.com>, Leo Li <leoyang.li@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>
+CC:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Bauer <mail@david-bauer.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Viorel Suman <viorel.suman@nxp.com>,
+        Wei Fang <wei.fang@nxp.com>
+References: <20230728215320.31801-1-leoyang.li@nxp.com>
+ <20230728215320.31801-2-leoyang.li@nxp.com>
+ <8071d8c5-1da3-47a0-9da2-a64ee80db6e5@lunn.ch>
+ <AM0PR04MB6289323F6F93E197103A225D8F05A@AM0PR04MB6289.eurprd04.prod.outlook.com>
+ <9912df2897bed863ad541807354d49db95970668.camel@redhat.com>
+Content-Language: en-US
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <9912df2897bed863ad541807354d49db95970668.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ePQbXI9HmfjcDAASCbowBFtEqOtazpux
+X-Proofpoint-GUID: ePQbXI9HmfjcDAASCbowBFtEqOtazpux
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_04,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ impostorscore=0 phishscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020087
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---7mmglFYMmxEffWC0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 02, 2023 at 11:42:59AM +0200, Greg KH wrote:
-> On Wed, Aug 02, 2023 at 09:52:45AM +0100, Conor Dooley wrote:
-> > On Wed, Aug 02, 2023 at 10:33:27AM +0200, Greg KH wrote:
-> > > On Wed, Aug 02, 2023 at 04:17:51PM +0800, Minda Chen wrote:
-> > > > On 2023/8/2 15:48, Conor Dooley wrote:
-> > > > > On Wed, Aug 02, 2023 at 03:32:15PM +0800, Minda Chen wrote:
-> > > > >> On 2023/8/2 14:54, Conor Dooley wrote:
 
-> > > > >> Thanks, Conor. I found this just by inspection. I found a issue =
-that vdso.so call cpu_relax
-> > > > >> cause application core dump in kernel 6.1.31. I need Samuel'patc=
-h to fix this. And I search the log
-> > > > >> of processor.h found this issue.
-> > > > >=20
-> > > > > That doesn't look like it is fixed in later stable kernels (we ar=
-e at
-> > > > > 6.1.42-rcN right now I think). It sounds we should ask Greg to ba=
-ckport
-> > > > > 0b1d60d6dd9e ("riscv: Fix build with CONFIG_CC_OPTIMIZE_FOR_SIZE=
-=3Dy")
-> > > > > to 6.1. Does that make sense to you?
-> > > > Yes. 6.1 is lts kernel. Starfive will use this kernel for a long ti=
-me. Thanks.
-> > >=20
-> > > What is preventing you from moving to a newer kernel version?  All of
-> > > your kernel changes are already properly merged into Linus's tree,
-> > > right?
-> >=20
-> > Regardless of their reasons, "vdso.so call cpu_relax cause application
-> > core dump" is something that we should fix in stable kernels, no?
->=20
-> Yes.
+On 8/1/2023 5:16 PM, Paolo Abeni wrote:
+> On Mon, 2023-07-31 at 14:58 +0000, Leo Li wrote:
+>>> -----Original Message-----
+>>> From: Andrew Lunn <andrew@lunn.ch>
+>>> Sent: Saturday, July 29, 2023 3:14 AM
+>>> To: Leo Li <leoyang.li@nxp.com>
+>>> Cc: Heiner Kallweit <hkallweit1@gmail.com>; Russell King
+>>> <linux@armlinux.org.uk>; David S . Miller <davem@davemloft.net>; Jakub
+>>> Kicinski <kuba@kernel.org>; David Bauer <mail@david-bauer.net>;
+>>> netdev@vger.kernel.org; linux-kernel@vger.kernel.org; Viorel Suman
+>>> <viorel.suman@nxp.com>; Wei Fang <wei.fang@nxp.com>
+>>> Subject: Re: [PATCH v3 1/2] net: phy: at803x: fix the wol setting functions
+>>>
+>>> On Fri, Jul 28, 2023 at 04:53:19PM -0500, Li Yang wrote:
+>>>> In commit 7beecaf7d507 ("net: phy: at803x: improve the WOL feature"),
+>>>> it seems not correct to use a wol_en bit in a 1588 Control Register
+>>>> which is only available on AR8031/AR8033(share the same phy_id) to
+>>>> determine if WoL is enabled.  Change it back to use
+>>>> AT803X_INTR_ENABLE_WOL for determining the WoL status which is
+>>>> applicable on all chips supporting wol. Also update the
+>>>> at803x_set_wol() function to only update the 1588 register on chips having
+>>> it.
+>>>
+>>> Do chips which do not have the 1588 register not have WoL? Or WoL
+>>> hardware is always enabled, but you still need to enable the interrupt.
+>>
+>> Some of them do and some don't, which is removed in the other patch
+>> from the series.  Since I don't find the register to enable it, I
+>> guess it always enabled.
+>>
+>>>
+>>> Have you tested on a range of PHY? It might be better to split this patch up a
+>>> bit. If it causes regressions, having smaller patches can make it easier to find
+>>> which change broken it.
+>>
+>> No, I only have AR8035 to test with.  Changes for other chips are
+>> according to the datasheet.  It would be good if others having the
+>> hardware can test it too.
+> 
+> Adding Luo Jie for awareness.
+> 
+> @Luo Jie: do you have access to other chips handled by this driver
+> other then AR8035? could you please test this series:
+> 
+> https://patchwork.kernel.org/project/netdevbpf/list/?series=770734
+> 
+> ?
+> 
+> Thanks!
+> 
+> Paolo
+> 
 
-It doesn't apply cleanly as a cherry-pick onto linux-6.1, so it'll need
-to be submitted. Maybe Minda can do that, since they've got an already
-tested version of the patch. Failing that, I will.
+Hi Paolo & Leo,
+To make WoL feature working, we need to enable bit 
+MDIO_MMD_PCS.AT803X_PHY_MMD3_WOL_CTRL.AT803X_WOL_EN on both PHY
+qca8081 and at803x, which does not depend on the 1588 feature.
 
---7mmglFYMmxEffWC0
-Content-Type: application/pgp-signature; name="signature.asc"
+The bit AT803X_INTR_ENABLE.AT803X_INTR_ENABLE_WOL is just for triggering 
+the external WoL interrupt PIN when the WOL interrupt occurs.
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZMom4QAKCRB4tDGHoIJi
-0ic9AP9ecnH7XK0svOPmGN8QdpCH7CToY7UNWnokQhm/lLP35AD5ASAuSUm4fkdF
-mj9dosTVhTn+FzFakG4X8lLMnfEMwwM=
-=5zWd
------END PGP SIGNATURE-----
-
---7mmglFYMmxEffWC0--
+Thanks,
+Jie
