@@ -2,129 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16AA376D1AA
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02D076D1EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235187AbjHBPTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 11:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39056 "EHLO
+        id S234219AbjHBP20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235098AbjHBPTY (ORCPT
+        with ESMTP id S235267AbjHBP2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 11:19:24 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772014498
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:15:13 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-56942667393so83601887b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:15:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690989299; x=1691594099;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D3LyAPm1LNXozV2RDmYRg8+vON4aRYGJGm2Cl/7lnow=;
-        b=XxAyvJEO7IvzK8IYMYZ+WS/J+sA7iCGeO/qEfRRUawL+imOo+d6hkk9tUh5jHbyo4S
-         vQGbWg2rHOmo3vI3I8eZsYP1MfuQXLf9tXkE98BN2ljOVo+WO9GF4PRR4fZ1Io64i9rt
-         AquHoHU8QjHE3a7+B2EG89Fo8JyzzEgz6ts5yrVgkIAGsaNjBLvqGGKD7sZGTktwjbSp
-         PptLKLD7gPBiCT4/8eD89DjQsFM0/odFsivt5nb+kBZwwUbLru7oJo12lu5FUG9wopW7
-         KEZDagprbTjCdGzJLcNvieS7/L2XPpLKz8lMisUkuvGdDJn1gDVJWecEDcY1025O5keW
-         oHyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690989299; x=1691594099;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D3LyAPm1LNXozV2RDmYRg8+vON4aRYGJGm2Cl/7lnow=;
-        b=ITqovL1wpZjcQv5miyYqDRfvRMn6649ZYmTZm3EG2+M8Fi4njSX1RmXP0wnHFZCUW4
-         3qraMZHUoP9vH0PK2qpV+KSUvCL7yjgEYtOwlAgnaL4KyC/8go9z81y8PmL6vVCwFmdE
-         d2FRu2r6S9RexVAopQoAgej3kmy8hyhPpS5xelJoP0ld5sxbQtr3WvLxWfsbtUtPDIi6
-         4ivMVgNULaP/ZjDEB5Xk+hR83kKnOfwJjio6lqFWEGty3/MVM3PTm697GJ3rSPNWq17I
-         jwndjNjteV8e4S21dvg1nj7Z0f2knRtm/qvEDtSMIsAZ/Gpb2j2on3s51DjQyFgrFi49
-         Coew==
-X-Gm-Message-State: ABy/qLZR5zctsEOVjSSOxIXn6vnwra5zG+2w2NGay89KBJxFBH5zACVs
-        9mMuFqU+xJ55fZrO1YKedONOz9rxQww=
-X-Google-Smtp-Source: APBJJlFe2+t6w0L/91zFwfj+ThLLNQdAgY8DrVCuc0sOklYI7DhI1WhyrzKFNJT/kn6NkoRoeM0hhJO8ghs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ac58:0:b0:584:3d8f:a423 with SMTP id
- z24-20020a81ac58000000b005843d8fa423mr143956ywj.8.1690989299390; Wed, 02 Aug
- 2023 08:14:59 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 08:14:58 -0700
-In-Reply-To: <20230802142737.5572-1-wei.w.wang@intel.com>
-Mime-Version: 1.0
-References: <20230802142737.5572-1-wei.w.wang@intel.com>
-Message-ID: <ZMpy8qvKTtAqaDWM@google.com>
-Subject: Re: [PATCH v1] KVM: x86/mmu: refactor kvm_tdp_mmu_map
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wei Wang <wei.w.wang@intel.com>
-Cc:     pbonzini@redhat.com, bgardon@google.com, dmatlack@google.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Wed, 2 Aug 2023 11:28:03 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5334A5BA1
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:25:47 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 627C8113E;
+        Wed,  2 Aug 2023 08:16:20 -0700 (PDT)
+Received: from [10.57.77.90] (unknown [10.57.77.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B73053F5A1;
+        Wed,  2 Aug 2023 08:15:35 -0700 (PDT)
+Message-ID: <f1d07ca4-3d69-67cd-a14d-333e4be699b9@arm.com>
+Date:   Wed, 2 Aug 2023 16:15:34 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] mm: add functions folio_in_range() and
+ folio_within_vma()
+To:     Yin Fengwei <fengwei.yin@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        yuzhao@google.com, willy@infradead.org, david@redhat.com,
+        shy828301@gmail.com, hughd@google.com
+References: <20230728070929.2487065-1-fengwei.yin@intel.com>
+ <20230728070929.2487065-2-fengwei.yin@intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <20230728070929.2487065-2-fengwei.yin@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023, Wei Wang wrote:
-> The implementation of kvm_tdp_mmu_map is a bit long. It essentially does
-> three things:
-> 1) adjust the leaf entry level (e.g. 4KB, 2MB or 1GB) to map according to
->    the hugepage configurations;
-> 2) map the nonleaf entries of the tdp page table; and
-> 3) map the target leaf entry.
+On 28/07/2023 08:09, Yin Fengwei wrote:
+> It will be used to check whether the folio is mapped to specific
+> VMA and whether the mapping address of folio is in the range.
 > 
-> Improve the readabiliy by moving the implementation of 2) above into a
-> subfunction, kvm_tdp_mmu_map_nonleaf, and removing the unnecessary
-> "goto"s. No functional changes intended.
-
-Eh, I prefer the current code from a readability perspective.  I like being able
-to see the entire flow, and I especially like that this
-
-		if (iter.level == fault->goal_level)
-			goto map_target_level;
-
-very clearly and explicitly captures that reaching the goal leavel means that it's
-time to map the target level, whereas IMO this does not, in no small part because
-seeing "continue" in a loop makes me think "continue the loop", not "continue on
-to the next part of the page fault"
-
-		if (iter->level == fault->goal_level)
-			return RET_PF_CONTINUE;
-
-And the existing code follows the patter of the other page fault paths, direct_map()
-and FNAME(fetch).  That doesn't necessarily mean that the existing pattern is
-"better", but I personally place a lot of value on consistency.
-
+> Also a helper function folio_within_vma() to check whether folio
+> is in the range of vma based on folio_in_range().
+> 
+> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+> ---
+>  mm/internal.h | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+> 
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 5a03bc4782a2..63de32154a48 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -585,6 +585,75 @@ extern long faultin_vma_page_range(struct vm_area_struct *vma,
+>  				   bool write, int *locked);
+>  extern bool mlock_future_ok(struct mm_struct *mm, unsigned long flags,
+>  			       unsigned long bytes);
+> +
 > +/*
-> + * Handle a TDP page fault (NPT/EPT violation/misconfiguration) by installing
-> + * page tables and SPTEs to translate the faulting guest physical address.
+> + * Check whether the folio is in specific range
+> + *
+> + * First, check whether the folio is in the range of vma.
+> + * Then, check whether the folio is mapped to the range of [start, end].
+> + * In the end, check whether the folio is fully mapped to the range.
+> + *
+> + * @pte page table pointer will be checked whether the large folio
+> + *      is fully mapped to. Currently, if mremap in the middle of
+> + *      large folio, the large folio could be mapped to to different
+> + *      VMA and address check can't identify this situation.
 > + */
-> +int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+> +static inline bool
+> +folio_in_range(struct folio *folio, struct vm_area_struct *vma,
+> +		unsigned long start, unsigned long end, pte_t *pte)
 > +{
-> +	struct tdp_iter iter;
-> +	int ret;
+> +	pte_t ptent;
+> +	unsigned long i, nr = folio_nr_pages(folio);
+> +	pgoff_t pgoff, addr;
+> +	unsigned long vma_pglen = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
 > +
-> +	kvm_mmu_hugepage_adjust(vcpu, fault);
+> +	VM_WARN_ON_FOLIO(folio_test_ksm(folio), folio);
 > +
-> +	trace_kvm_mmu_spte_requested(fault);
+> +	if (start < vma->vm_start)
+> +		start = vma->vm_start;
+> +	if (end > vma->vm_end)
+> +		end = vma->vm_end;
 > +
-> +	rcu_read_lock();
-> +
-> +	ret = kvm_tdp_mmu_map_nonleafs(vcpu, fault, &iter);
-> +	if (ret == RET_PF_CONTINUE)
-> +		ret = tdp_mmu_map_handle_target_level(vcpu, fault, &iter);
+> +	pgoff = folio_pgoff(folio);
+> +	/* if folio start address is not in vma range */
+> +	if (pgoff < vma->vm_pgoff || pgoff > vma->vm_pgoff + vma_pglen)
+> +		return false;
 
-And I also don't like passing in an uninitialized tdp_iter, and then consuming
-it too.
+I'm struggling with this logic. What happens for an anonymous folio in a
+(private) file mapping? Wouldn't the folio's pgoff be 0? In this case you could
+return false incorrectly?
 
->  
-> -retry:
->  	rcu_read_unlock();
->  	return ret;
->  }
-> -- 
-> 2.27.0
-> 
+> +
+> +	addr = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+> +	if (addr < start || end - addr < folio_size(folio))
+> +		return false;
+> +
+> +	/* not necessary to check pte for none large folio */
+> +	if (!folio_test_large(folio))
+> +		return true;
+> +
+> +	if (!pte)
+> +		return false;
+> +
+> +	/* check whether parameter pte is associated with folio */
+> +	ptent = ptep_get(pte);
+> +	if (pte_none(ptent) || !pte_present(ptent) ||
+> +			pte_pfn(ptent) - folio_pfn(folio) >= nr)
+> +		return false;
+> +
+> +	pte -= pte_pfn(ptent) - folio_pfn(folio);
+> +	for (i = 0; i < nr; i++, pte++) {
+> +		ptent = ptep_get(pte);
+> +
+> +		if (pte_none(ptent) || !pte_present(ptent) ||
+> +				pte_pfn(ptent) - folio_pfn(folio) >= nr)
+> +			return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+> +static inline bool
+> +folio_within_vma(struct folio *folio, struct vm_area_struct *vma, pte_t *pte)
+> +{
+> +	return folio_in_range(folio, vma, vma->vm_start, vma->vm_end, pte);
+> +}
+> +
+>  /*
+>   * mlock_vma_folio() and munlock_vma_folio():
+>   * should be called with vma's mmap_lock held for read or write,
+
