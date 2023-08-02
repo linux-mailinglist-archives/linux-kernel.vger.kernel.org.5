@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1914476C39F
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A3C76C3A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbjHBDjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 23:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
+        id S230005AbjHBDlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 23:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbjHBDjK (ORCPT
+        with ESMTP id S229606AbjHBDlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:39:10 -0400
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 490141712;
-        Tue,  1 Aug 2023 20:39:06 -0700 (PDT)
-Received: from ubuntu.localdomain (unknown [218.12.19.119])
-        by mail-app2 (Coremail) with SMTP id by_KCgAXbhiCz8lkx8zpCg--.8405S2;
-        Wed, 02 Aug 2023 11:37:52 +0800 (CST)
-From:   Duoming Zhou <duoming@zju.edu.cn>
-To:     ysato@users.sourceforge.jp
-Cc:     dalias@libc.org, glaubitz@physik.fu-berlin.de, kvalo@kernel.org,
-        pavel@ucw.cz, pabeni@redhat.com, rostedt@goodmis.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH] sh: push-switch: reorder cleanup operations to avoid UAF bug
-Date:   Wed,  2 Aug 2023 11:37:37 +0800
-Message-Id: <20230802033737.9738-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: by_KCgAXbhiCz8lkx8zpCg--.8405S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4rAw4xZr45WFyDur43trb_yoW8GF4Dpr
-        Z5XFn7GrW0qrWqk34UGwn7uFW5WanFgry7XrWfu3WxXwn8XF95J34ftryfKF47Cr97XF43
-        Jr1Fqw1fWa4DuFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCY02Avz4vE14v_Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjfUYnYwUUUUU
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAwMPAWTIYfoZuQA5sg
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 23:41:16 -0400
+Received: from mgamail.intel.com (unknown [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 688D81712;
+        Tue,  1 Aug 2023 20:41:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1690947675; x=1722483675;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Alv4LIt+me26FKI8aUKd7sa+qxe9P74mpHMU0PpwyFA=;
+  b=DbkUC1PyNyFzuJTPvy48D7D2BPZxjBCS+zqx7Zc0Go03Zx6Of8N2P3Ir
+   Xo1rBx5X39IQhNshXdM5qsSqXzNAz3XJmrx8SE3+3T7oKWMYRojK8HL/P
+   efIasv6z/K/zV7KLRHiGatZAaRXyKUQ4Or7jVCFQbFsa96uMeFcjf6zQ0
+   KqTsqX4PCGM1fSvn1P7GeCf1cXmR6tvrLaJpbvWg/AyrT1XcaCVcJETc3
+   UYdlpy6qeP0N3pviPn9+CdchhmYOx/dKFJQrl7p/JN43U3HKOO43y3a0w
+   Ykj0+9pYl/JZvucMgBA4dwkRi0ksYNABcQ808cZ/9ovv52pfCJ7Jq+X3o
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="400418305"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="400418305"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Aug 2023 20:41:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10789"; a="1059661650"
+X-IronPort-AV: E=Sophos;i="6.01,248,1684825200"; 
+   d="scan'208";a="1059661650"
+Received: from lkp-server01.sh.intel.com (HELO d1ccc7e87e8f) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Aug 2023 20:41:05 -0700
+Received: from kbuild by d1ccc7e87e8f with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qR2jQ-0000og-2d;
+        Wed, 02 Aug 2023 03:41:04 +0000
+Date:   Wed, 2 Aug 2023 11:40:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sui Jingfeng <suijingfeng@loongson.cn>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH] PCI/VGA: Fixup the firmware fb address om demanding time
+Message-ID: <202308021153.w0leLadx-lkp@intel.com>
+References: <20230801183706.702567-1-suijingfeng@loongson.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230801183706.702567-1-suijingfeng@loongson.cn>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The original code puts flush_work() before timer_shutdown_sync()
-in switch_drv_remove(). Although we use flush_work() to stop
-the worker, it could be re-scheduled in switch_timer. As a result,
-the UAF bug will happen. The detail is shown below:
+Hi Sui,
 
-      (cpu 0)                    |      (cpu 1)
-switch_drv_remove()              |
- flush_work()                    |
-  ...                            |  switch_timer //timer
-                                 |   schedule_work(&psw->work)
- timer_shutdown_sync()           |
- ...                             |  switch_work_handler //worker
- kfree(psw) //free               |
-                                 |   psw->state = 0 //use
+kernel test robot noticed the following build errors:
 
-This patch puts timer_shutdown_sync() before flush_work() to
-mitigate the bugs. As a result, the worker and timer could
-be stopped safely before the deallocate operations.
+[auto build test ERROR on pci/next]
+[also build test ERROR on pci/for-linus linus/master v6.5-rc4 next-20230801]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Fixes: 9f5e8eee5cfe ("sh: generic push-switch framework.")
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
- arch/sh/drivers/push-switch.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+url:    https://github.com/intel-lab-lkp/linux/commits/Sui-Jingfeng/PCI-VGA-Fixup-the-firmware-fb-address-om-demanding-time/20230802-023743
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
+patch link:    https://lore.kernel.org/r/20230801183706.702567-1-suijingfeng%40loongson.cn
+patch subject: [PATCH] PCI/VGA: Fixup the firmware fb address om demanding time
+config: parisc64-defconfig (https://download.01.org/0day-ci/archive/20230802/202308021153.w0leLadx-lkp@intel.com/config)
+compiler: hppa64-linux-gcc (GCC) 12.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230802/202308021153.w0leLadx-lkp@intel.com/reproduce)
 
-diff --git a/arch/sh/drivers/push-switch.c b/arch/sh/drivers/push-switch.c
-index c95f48ff3f6..6ecba5f521e 100644
---- a/arch/sh/drivers/push-switch.c
-+++ b/arch/sh/drivers/push-switch.c
-@@ -101,8 +101,8 @@ static int switch_drv_remove(struct platform_device *pdev)
- 		device_remove_file(&pdev->dev, &dev_attr_switch);
- 
- 	platform_set_drvdata(pdev, NULL);
--	flush_work(&psw->work);
- 	timer_shutdown_sync(&psw->debounce);
-+	flush_work(&psw->work);
- 	free_irq(irq, pdev);
- 
- 	kfree(psw);
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308021153.w0leLadx-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   hppa64-linux-ld: drivers/pci/vgaarb.o: in function `vga_arb_firmware_fb_addr_tracker':
+>> (.text+0x1d0): undefined reference to `screen_info'
+>> hppa64-linux-ld: (.text+0x1d4): undefined reference to `screen_info'
+
 -- 
-2.17.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
