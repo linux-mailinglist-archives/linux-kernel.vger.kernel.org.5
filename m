@@ -2,131 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A420276CCAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21D276CCB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234093AbjHBMbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 08:31:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
+        id S233725AbjHBMcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbjHBMbI (ORCPT
+        with ESMTP id S232364AbjHBMcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:31:08 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293419B
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:31:03 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-317744867a6so6020115f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 05:31:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690979461; x=1691584261;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UOI4p7sf9qm3jp2sWDpRQezaP1VfXV2l/+4frwp+pfo=;
-        b=A4gDM2cSGcaFSfpwa1wXZUvAzPbJfGnX21w0IZ2piv2gfZNKwHWQuq+gaqWdolQDVf
-         wCI3KVW0/Ixb7w3t2VLqLNQXqDKb73smXi1qJ6UqZOcFSxLOarwPSQFWEMwjImCw0hFo
-         tWg6JF3VxLmhFNKRCr8J1PcvPV/p1HwVpN7JWecuylmoKHEuz1qOSXpSx2AE6LG0b3Yl
-         BmMlj2ou1fFpzq32E9btpv24ZHW6OPMbGl4YTzv0ACYHkenO0hx10xtalJl0W+JdTkr3
-         xzuhrNjDjGuq7G9Ucq1QcoL5Pvn4GcrmL1AWaAiQe5tV1vjtUMgRRMvMBVdAk7HNE/mN
-         K6Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690979461; x=1691584261;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UOI4p7sf9qm3jp2sWDpRQezaP1VfXV2l/+4frwp+pfo=;
-        b=H2IVHjVPrCQYeyi8X6Ni5E8aSDsaszz1N9ocx45yOFY+khCtYGtCXCCViSvG33Omxr
-         84t+tgOoaxbG4zJUguCGyeiqps/Iz4/zThgsdusWQsUxh0AbG9SiU8uTKhYTXVvYZI+s
-         Ml3OLuZcxQBAweP4DnMQMOpENRwmPKoMl4cmIS0/d21F4p3vFEK9Z6R7eUkerCp6B5Bd
-         o6U5jKCGCiAD6ldkCAPmLtc+njLtsFGPVz7w71gKx+X3lN7BrmvtXz8sHP1LXdwSjpIA
-         T7HRq3ei9qMgGFm8UeHxUOxgC4+zRD89P4eoFhRpf0iiIkihds/UcklmPiaPCiXmxqxQ
-         OmjA==
-X-Gm-Message-State: ABy/qLaoqGe6fdio96nAy0cA+EQgZ6UdIFTuP5Ip3kgnvem9hpT/8UCx
-        c9B/MWCD+25OvFCiRlxpdrujjQ==
-X-Google-Smtp-Source: APBJJlEyjLeRFbv0ocTWt/riOTgPTvRFCQJRf7UkIZAJEw0W48ptsBLwAM4GeKZgsTMmsU5AhgdzSg==
-X-Received: by 2002:a5d:470d:0:b0:317:5c82:10c5 with SMTP id y13-20020a5d470d000000b003175c8210c5mr4412184wrq.17.1690979461541;
-        Wed, 02 Aug 2023 05:31:01 -0700 (PDT)
-Received: from google.com (65.0.187.35.bc.googleusercontent.com. [35.187.0.65])
-        by smtp.gmail.com with ESMTPSA id z17-20020adfec91000000b003179d7ed4f3sm10643676wrn.12.2023.08.02.05.31.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 05:31:00 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 13:30:56 +0100
-From:   Vincent Donnefort <vdonnefort@google.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v5 1/2] ring-buffer: Introducing ring-buffer mapping
- functions
-Message-ID: <ZMpMgA85+DyGirXa@google.com>
-References: <20230728164754.460767-1-vdonnefort@google.com>
- <20230728164754.460767-2-vdonnefort@google.com>
- <20230801132603.0b18c0eb@gandalf.local.home>
- <20230802074526.2fa479ab@gandalf.local.home>
+        Wed, 2 Aug 2023 08:32:21 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8C9689B
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:32:19 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EC97113E;
+        Wed,  2 Aug 2023 05:33:02 -0700 (PDT)
+Received: from [10.57.1.113] (unknown [10.57.1.113])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 326043F6C4;
+        Wed,  2 Aug 2023 05:32:18 -0700 (PDT)
+Message-ID: <463b2ab6-f7b5-f1fc-8e99-e2ad93c21675@arm.com>
+Date:   Wed, 2 Aug 2023 13:32:16 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230802074526.2fa479ab@gandalf.local.home>
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
-        FSL_HELO_FAKE,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [RESEND PATCH] coresight: tmc: Explicit type conversions to
+ prevent integer overflow
+Content-Language: en-US
+To:     Ruidong Tian <tianruidong@linux.alibaba.com>,
+        coresight@lists.linaro.org
+Cc:     mike.leach@linaro.org, alexander.shishkin@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230714084349.31567-1-tianruidong@linux.alibaba.com>
+ <61f11ffe-473c-a36e-c51d-9e526a6fd375@arm.com>
+ <a448f505-fef4-e1b7-c31e-e1f310c16e8f@linux.alibaba.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <a448f505-fef4-e1b7-c31e-e1f310c16e8f@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,SUSPICIOUS_RECIPS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 07:45:26AM -0400, Steven Rostedt wrote:
-> On Tue, 1 Aug 2023 13:26:03 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
+
+
+On 02/08/2023 13:25, Ruidong Tian wrote:
+> Hi James,
 > 
-> > > +
-> > > +	if (READ_ONCE(cpu_buffer->mapped)) {
-> > > +		/* Ensure the meta_page is ready */
-> > > +		smp_rmb();
-> > > +		WRITE_ONCE(cpu_buffer->meta_page->pages_touched,
-> > > +			   local_read(&cpu_buffer->pages_touched));
-> > > +	}  
-> > 
-> > I was thinking instead of doing this in the semi fast path, put this logic
-> > into the rb_wakeup_waiters() code. That is, if a task is mapped, we call
-> > the irq_work() to do this for us. It could even do more, like handle
-> > blocked mapped waiters.
+> Sorry, some local patch caused inaccurate information. Please allow me
+> to reintroduce the question:
 > 
-> I was thinking how to implement this, and I worry that it may cause an irq
-> storm. Let's keep this (and the other locations) as is, where we do the
-> updates in place. Then we can look at seeing if it is possible to do it in
-> a delayed fashion another time.
+> If you use perf with 1G AUX buffer, you can get 1G perf data. Perf
+> workload is kernel build here:
+> 
+>     perf record -C 0 -m ,1G -e cs_etm// taskset -c 0 make
+> 
+>     [ perf record: Captured and wrote 1025.557 MB perf.data ]
+> 
+> But if you use 2G AUX buffer, perf was executed unexpectedly：
+> 
+>     perf record -C 0 -m ,2G -e cs_etm// taskset -c 0 make
+> 
+>     [ perf record: Captured and wrote 2.615 MB perf.data ]
+> 
+> There are just 2.615 MB perf data rather than 2G, if you probe function
+> "tmc_alloc_etr_buf" in
+> 
+> coresight_tmc module, you can find some clues:
+> 
+>   perf probe -m coresight_tmc "tmc_alloc_etr_buf size:s64"
+> 
+>   perf record -e probe:tmc_alloc_etr_buf -aR -- perf record -C 0 -m ,2G
+> -e cs_etm// -o cs.data taskset -c 0 make
+> 
+>   perf script
+>             perf 118267 [064]  4640.324670: probe:tmc_alloc_etr_buf:
+> (ffff80007a9dce60) size_s64=-2147483648
+>             perf 118267 [064]  4640.324681: probe:tmc_alloc_etr_buf:
+> (ffff80007a9dce60) size_s64=1048576
+> 
+> It's pretty obvious what's going on here. The first call of
+> tmc_alloc_etr_buf in alloc_etr_buf was
+> 
+> failed because of overflow, the second call of tmc_alloc_etr_buf just
+> alloc 1M AUX buffer which
+> 
+> is default ETR buffer size rather than 2G. That is why we can just get
+> 2.615MB ( 1M AUX data
+> 
+> + perf header ).
+> 
+> It is necessary to check the conversion from int to s64 in coresight_tmc
+> driver. The issue[1] also
+> 
+> exists in coresight/perf, but it's different from this topic.
+> 
 
-I actually looking at this. How about:
+Thanks for the investigation, that makes more sense to me now. Are you
+able to send a v2 of the patch with an updated commit message describing
+these symptoms instead?
 
-On the userspace side, a simple poll:
+And you can also add:
 
-  static void wait_entries(int fd)
-  {
-          struct pollfd pollfd = {
-                  .fd     = fd,
-                  .events = POLLIN,
-          };
-  
-          if (poll(&pollfd, 1, -1) == -1)
-                  pdie("poll");
-  }
-
-And on the kernel side, just a function to update the "writer fields" of the
-meta-page:
-
-   static void rb_wake_up_waiters(struct irq_work *work)
-   {
-          struct rb_irq_work *rbwork = container_of(work, struct rb_irq_work, work);
-  +       struct ring_buffer_per_cpu *cpu_buffer =
-  +               container_of(rbwork, struct ring_buffer_per_cpu, irq_work);
-  +
-  +       rb_update_meta_page(cpu_buffer);
-   
-          wake_up_all(&rbwork->waiters);
-
-That would rate limit the number of updates to the meta-page without any irq storm?
+Reviewed-by: James Clark <james.clark@arm.com>
 
 > 
-> -- Steve
+> [1]:
+> https://lore.kernel.org/bpf/20230711014120.53461-1-xueshuai@linux.alibaba.com/
+> 
+> Thanks
+> Ruidong
+> 
+> On 2023/7/24 23:38, James Clark wrote:
+>>
+>> On 14/07/2023 09:43, Ruidong Tian wrote:
+>>> Perf cs_etm session will failed when AUX buffer > 1G.
+>>>
+>>>    perf record -C 0 -m ,2G -e cs_etm// -- taskset -c 0 ls
+>>>    failed to mmap with 12 (Cannot allocate memory)
+>>>
+>>> In coresight tmc driver, "nr_pages << PAGE_SHIFT" will overflow when
+>>> nr_pages >= 0x80000(correspond to 1G AUX buffer). Explicit convert
+>>> nr_pages
+>>> to 64 bit to avoid overflow.
+>>>
+>> Hi Ruidong,
+>>
+>> I couldn't reproduce this exact issue with the error message in the
+>> commit message. Is it not another manifestation related to this change
+>> [1]? I don't actually get any error message, but I was able to get a
+>> warning in dmesg even with [1] applied.
+>>
+>> Does the overflow not result in a successful session but with the wrong
+>> buffer size?
+>>
+>> I think the change makes sense, but maybe we also need a check for
+>> MAX_ORDER because I can trigger the same WARN_ON from [1]. Or maybe I'm
+>> a bit confused because of the other change and not being able to
+>> reproduce this exactly coming at the same time.
+>>
+>> [1]:
+>> https://lore.kernel.org/bpf/20230711014120.53461-1-xueshuai@linux.alibaba.com/
+>>
+>> Thanks
+>> James
+>>
+>>> Signed-off-by: Ruidong Tian <tianruidong@linux.alibaba.com>
+>>> ---
+>>>   drivers/hwtracing/coresight/coresight-tmc-etr.c | 2 +-
+>>>   drivers/hwtracing/coresight/coresight-tmc.h     | 2 +-
+>>>   2 files changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c
+>>> b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+>>> index 766325de0e29..1425ecd1cf78 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
+>>> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+>>> @@ -1267,7 +1267,7 @@ alloc_etr_buf(struct tmc_drvdata *drvdata,
+>>> struct perf_event *event,
+>>>        * than the size requested via sysfs.
+>>>        */
+>>>       if ((nr_pages << PAGE_SHIFT) > drvdata->size) {
+>>> -        etr_buf = tmc_alloc_etr_buf(drvdata, (nr_pages << PAGE_SHIFT),
+>>> +        etr_buf = tmc_alloc_etr_buf(drvdata, ((ssize_t)nr_pages <<
+>>> PAGE_SHIFT),
+>>>                           0, node, NULL);
+>>>           if (!IS_ERR(etr_buf))
+>>>               goto done;
+>>> diff --git a/drivers/hwtracing/coresight/coresight-tmc.h
+>>> b/drivers/hwtracing/coresight/coresight-tmc.h
+>>> index b97da39652d2..0ee48c5ba764 100644
+>>> --- a/drivers/hwtracing/coresight/coresight-tmc.h
+>>> +++ b/drivers/hwtracing/coresight/coresight-tmc.h
+>>> @@ -325,7 +325,7 @@ ssize_t tmc_sg_table_get_data(struct tmc_sg_table
+>>> *sg_table,
+>>>   static inline unsigned long
+>>>   tmc_sg_table_buf_size(struct tmc_sg_table *sg_table)
+>>>   {
+>>> -    return sg_table->data_pages.nr_pages << PAGE_SHIFT;
+>>> +    return (unsigned long)sg_table->data_pages.nr_pages << PAGE_SHIFT;
+>>>   }
+>>>     struct coresight_device *tmc_etr_get_catu_device(struct
+>>> tmc_drvdata *drvdata);
