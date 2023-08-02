@@ -2,156 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE0F76CAE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913BE76CAE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbjHBKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
+        id S233300AbjHBKca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232400AbjHBKcX (ORCPT
+        with ESMTP id S232870AbjHBKcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:32:23 -0400
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139042D78
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:28:01 -0700 (PDT)
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-3fbea147034so62086615e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 03:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690971951; x=1691576751;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=R3xsXxqRa3tPBSRkvz1oPB/eL3+99UKxKxOJFNA9MY0=;
-        b=m18MhcmMCSfWzAK9MNiH7Q4bVVQhKDDmtHnfSFcKMKQIzPIhhHtO6zLhGkYyHwiT6h
-         K2g1bdYuCLFw+WBGg6I8sPMnwFJ9NnDdSMiIB4V/3ROu82pFGA1vuVgxKWZS/rmSVjAd
-         lgB0DMsEZnbTMzhq3ySLutsNfQCD9jGyJSgaI75q9aDGGjXn/6NUP+xGutZn1UVZipP/
-         dhZu/fN4s2DD6oM6is7t06khRwzq3xdOd0N7CtjtHB/Qoq3OeuaHotoIkOo+Vg3KdMVe
-         +dnYBiuPbdhfwmgQvM1d8XAcFyCWRF8tH6dH5ESMgi1uzDhFjiRKNjy5DGr83ndj1boN
-         s9dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690971951; x=1691576751;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R3xsXxqRa3tPBSRkvz1oPB/eL3+99UKxKxOJFNA9MY0=;
-        b=Nq03C11O4QKGNv5IzfOBs3rcaRt6YAESdQAuyM3ChtwHPcEet8W3XOSNdlOtXZOuTT
-         H5kcDc2wsOzEtuWBDFVjgLXIdJPe3WU0ziI2YngGGAGtKnwobAhxQ+QruuJ7ZGElxSTz
-         F1PVr7QrQ5zcxWFNmldYe6aYl2f5eBqnIFkWHQQxqAU5eC0QbgVkzFMrp+uRLA48woko
-         Ebwh8ARvk6RPg89pJeHym10jn4eAYCTWcmz3u2kM03BIssATo7S8vO6BDUxFBkMZcI7B
-         4/N90ZBUIsJwYAO7jUlb5BdBq7nBiJ4FwLjvvPx7Lc31ssqL5cquf/a4VAjeQ1LWP1q/
-         kgUQ==
-X-Gm-Message-State: ABy/qLb+LrXokuOTLr2k1DqtOhdK8Oe1rLNXQBe380iqxX4rc9Drfw3k
-        e+2s6UK0xKvo2nCgSFPPpuZGkA==
-X-Google-Smtp-Source: APBJJlEk4snBLq3TyctOwWDs/lvn3Y5F4HIa1dBj5Swh00i83Ft02caDhSARnn+7/wDqmMsxVfUnbQ==
-X-Received: by 2002:a7b:cbd8:0:b0:3fe:228a:e782 with SMTP id n24-20020a7bcbd8000000b003fe228ae782mr4398543wmi.37.1690971951228;
-        Wed, 02 Aug 2023 03:25:51 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id m13-20020a7bca4d000000b003fa96fe2bd9sm1325004wml.22.2023.08.02.03.25.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 03:25:50 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 13:25:47 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Su Hui <suhui@nfschina.com>
-Cc:     chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        trond.myklebust@hammerspace.com, anna@kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
-        bfields@fieldses.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] fs: lockd: avoid possible wrong NULL parameter
-Message-ID: <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
-References: <20230802080544.3239967-1-suhui@nfschina.com>
+        Wed, 2 Aug 2023 06:32:11 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D7B526E;
+        Wed,  2 Aug 2023 03:27:47 -0700 (PDT)
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 83EEE1EC0136;
+        Wed,  2 Aug 2023 12:26:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1690971987;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=E5SRgg90inBEHJEYH3h/WS+6AGYSjZhAFoNjFVUNv6w=;
+        b=hzBqcOno0YKB8w61ox0jTvyJ/PcjeW/EFpvzrOk2DwYRf1zXhQottn30NO2AGxW0lnkNcv
+        GS/vcCAaaoKHZ+CDNZ+1+zC6ot3XSkkqpjI5IZIseo1gps2dBh2x3CV+aS6Pk0ycqUlnI/
+        iG6WBdBKrMG5d7J4GW2Kq71d1Y2BOL4=
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id eFHyyk35vKiQ; Wed,  2 Aug 2023 10:26:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1690971984; bh=E5SRgg90inBEHJEYH3h/WS+6AGYSjZhAFoNjFVUNv6w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y1WIpX4xiDHoRO8dgoqMTctvLS0hqFszF5bom0mw1qdnVPYgoFRRe9Tih2i3RsT2Y
+         H+zR8T49rcmkdRROdGOGep62KhdxCby4vKbs1gMHqd1WkYnIuQsZFfy1ITkgCXCCaI
+         Ntb7Fze9hlgU0Y+dBL7CO//P8QJsqz1aFTTsPvxwN5rs9grjPBdlgr8scRT37S3x67
+         sPB0raYbFBzhxt3Ag687ss8Fu/Jr+qBvr6OZXpB3rmU/G0ISNjkm1DTa9z8t6Qfv1b
+         NDFV5bmutb4jpwkiU3cEkhhyXQ+I1GjEgjboe6Z9C1d+OcqbZVA+jCUgVzefbjEgbc
+         HxLF9otvRyc1Yk+Vzu/OttYxJXwTRuNcI5k3GsxsR11+7gJBGD8TiWgNytTOU2IXdW
+         xEkDPiZ9/B+WAAV6hJQ9yZntXq6LgJSs7T0BB4lQXtGneSKDuDkNwlLp7TUVAoTbG0
+         naylcIcbteHB61rqRE4BTTmzZRF7g9C01znxwcBdRCowuh7SCoNVRb0uLhSjdh/bS6
+         GOaPGC6rtwqfInTFZRMdVrlvYMHAvLQprH2w774d1G/WhFAahVESf4w1XjA7i1+wU6
+         Gj+gMNdc9TlprMFKXbqXiSTj5diZwPeS6JatBO5QVGzUnxROu8XWUb7+xoHj4N9UhP
+         MKWV4r+yWcHJGmoDB8goJES4=
+Received: from zn.tnic (pd9530d32.dip0.t-ipconnect.de [217.83.13.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8FEDC40E01D3;
+        Wed,  2 Aug 2023 10:26:05 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 12:26:00 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Evgeniy Baskov <baskov@ispras.ru>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        Peter Jones <pjones@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Dave Young <dyoung@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH v7 22/22] x86/efistub: Avoid legacy decompressor when
+ doing EFI boot
+Message-ID: <20230802102600.GIZMovOIUDAJAXu0F5@fat_crate.local>
+References: <20230728090916.1538550-1-ardb@kernel.org>
+ <20230728090916.1538550-23-ardb@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230802080544.3239967-1-suhui@nfschina.com>
+In-Reply-To: <20230728090916.1538550-23-ardb@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 02, 2023 at 04:05:45PM +0800, Su Hui wrote:
-> clang's static analysis warning: fs/lockd/mon.c: line 293, column 2:
-> Null pointer passed as 2nd argument to memory copy function.
-> 
-> Assuming 'hostname' is NULL and calling 'nsm_create_handle()', this will
-> pass NULL as 2nd argument to memory copy function 'memcpy()'. So return
-> NULL if 'hostname' is invalid.
-> 
-> Fixes: 77a3ef33e2de ("NSM: More clean up of nsm_get_handle()")
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
->  fs/lockd/mon.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/lockd/mon.c b/fs/lockd/mon.c
-> index 1d9488cf0534..eebab013e063 100644
-> --- a/fs/lockd/mon.c
-> +++ b/fs/lockd/mon.c
-> @@ -358,6 +358,9 @@ struct nsm_handle *nsm_get_handle(const struct net *net,
->  
->  	spin_unlock(&nsm_lock);
->  
-> +	if (!hostname)
-> +		return NULL;
-> +
->  	new = nsm_create_handle(sap, salen, hostname, hostname_len);
+On Fri, Jul 28, 2023 at 11:09:16AM +0200, Ard Biesheuvel wrote:
+> The bare metal decompressor code was never really intended to run in a
+> hosted environment such as the EFI boot services, and does a few things
+> that are problematic in the context of EFI boot now that the logo
+> requirements are getting tighter.
 
-It's weird that this bug is from 2008 and we haven't found it in
-testing.  Presumably if hostname is NULL then hostname_len would be zero
-and in that case, it's not actually a bug.  It's allowed in the kernel
-to memcpy zero bytes from a NULL pointer.
+Please spend a sentence or two explaining those. After some time has
+passed, no one will remember what that tightening of the requirements
+was.
 
-	memcpy(dst, NULL, 0);
+So yeah, other than those minor nitpicks, I like the thing, all in all.
 
-Outside the kernel it's not allowed though.
+Pls send v8 so that I can run it here on my machines. A git branch would
+be cool too.
 
-I noticed a related bug which Smatch doesn't find, because of how Smatch
-handles the dprintk macro.
+As to merging this, I presume you want it to go through tip?
 
-fs/lockd/host.c
-truct nlm_host *nlmclnt_lookup_host(const struct sockaddr *sap,
-   217                                       const size_t salen,
-   218                                       const unsigned short protocol,
-   219                                       const u32 version,
-   220                                       const char *hostname,
-   221                                       int noresvport,
-   222                                       struct net *net,
-   223                                       const struct cred *cred)
-   224  {
-   225          struct nlm_lookup_host_info ni = {
-   226                  .server         = 0,
-   227                  .sap            = sap,
-   228                  .salen          = salen,
-   229                  .protocol       = protocol,
-   230                  .version        = version,
-   231                  .hostname       = hostname,
-   232                  .hostname_len   = strlen(hostname),
-                                                 ^^^^^^^^
-Dereferenced
+Thx.
 
-   233                  .noresvport     = noresvport,
-   234                  .net            = net,
-   235                  .cred           = cred,
-   236          };
-   237          struct hlist_head *chain;
-   238          struct nlm_host *host;
-   239          struct nsm_handle *nsm = NULL;
-   240          struct lockd_net *ln = net_generic(net, lockd_net_id);
-   241  
-   242          dprintk("lockd: %s(host='%s', vers=%u, proto=%s)\n", __func__,
-   243                          (hostname ? hostname : "<none>"), version,
-                                 ^^^^^^^^
-Checked too late.
+-- 
+Regards/Gruss,
+    Boris.
 
-   244                          (protocol == IPPROTO_UDP ? "udp" : "tcp"));
-   245  
-
-regards,
-dan carpenter
+https://people.kernel.org/tglx/notes-about-netiquette
