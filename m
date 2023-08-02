@@ -2,190 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A4876CAEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE0F76CAE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232356AbjHBKfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52392 "EHLO
+        id S233564AbjHBKct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbjHBKfR (ORCPT
+        with ESMTP id S232400AbjHBKcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:35:17 -0400
-Received: from outbound-smtp57.blacknight.com (outbound-smtp57.blacknight.com [46.22.136.241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D603595
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:30:24 -0700 (PDT)
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp57.blacknight.com (Postfix) with ESMTPS id C94CCFAD99
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:24:05 +0100 (IST)
-Received: (qmail 650 invoked from network); 2 Aug 2023 10:24:05 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 2 Aug 2023 10:24:05 -0000
-Date:   Wed, 2 Aug 2023 11:24:02 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        liubo <liubo254@huawei.com>, Peter Xu <peterx@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: Re: [PATCH v1 0/4] smaps / mm/gup: fix gup_can_follow_protnone
- fallout
-Message-ID: <20230802102402.at2lvqp3hlbksoz4@techsingularity.net>
-References: <20230727212845.135673-1-david@redhat.com>
- <CAHk-=wiig=N75AGP7UAG9scmghWAqsTB5NRO6RiWLOB5YWfcTQ@mail.gmail.com>
- <eaa67cf6-4896-bb62-0899-ebdae8744c7a@redhat.com>
+        Wed, 2 Aug 2023 06:32:23 -0400
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139042D78
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 03:28:01 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-3fbea147034so62086615e9.0
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 03:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1690971951; x=1691576751;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=R3xsXxqRa3tPBSRkvz1oPB/eL3+99UKxKxOJFNA9MY0=;
+        b=m18MhcmMCSfWzAK9MNiH7Q4bVVQhKDDmtHnfSFcKMKQIzPIhhHtO6zLhGkYyHwiT6h
+         K2g1bdYuCLFw+WBGg6I8sPMnwFJ9NnDdSMiIB4V/3ROu82pFGA1vuVgxKWZS/rmSVjAd
+         lgB0DMsEZnbTMzhq3ySLutsNfQCD9jGyJSgaI75q9aDGGjXn/6NUP+xGutZn1UVZipP/
+         dhZu/fN4s2DD6oM6is7t06khRwzq3xdOd0N7CtjtHB/Qoq3OeuaHotoIkOo+Vg3KdMVe
+         +dnYBiuPbdhfwmgQvM1d8XAcFyCWRF8tH6dH5ESMgi1uzDhFjiRKNjy5DGr83ndj1boN
+         s9dw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690971951; x=1691576751;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R3xsXxqRa3tPBSRkvz1oPB/eL3+99UKxKxOJFNA9MY0=;
+        b=Nq03C11O4QKGNv5IzfOBs3rcaRt6YAESdQAuyM3ChtwHPcEet8W3XOSNdlOtXZOuTT
+         H5kcDc2wsOzEtuWBDFVjgLXIdJPe3WU0ziI2YngGGAGtKnwobAhxQ+QruuJ7ZGElxSTz
+         F1PVr7QrQ5zcxWFNmldYe6aYl2f5eBqnIFkWHQQxqAU5eC0QbgVkzFMrp+uRLA48woko
+         Ebwh8ARvk6RPg89pJeHym10jn4eAYCTWcmz3u2kM03BIssATo7S8vO6BDUxFBkMZcI7B
+         4/N90ZBUIsJwYAO7jUlb5BdBq7nBiJ4FwLjvvPx7Lc31ssqL5cquf/a4VAjeQ1LWP1q/
+         kgUQ==
+X-Gm-Message-State: ABy/qLb+LrXokuOTLr2k1DqtOhdK8Oe1rLNXQBe380iqxX4rc9Drfw3k
+        e+2s6UK0xKvo2nCgSFPPpuZGkA==
+X-Google-Smtp-Source: APBJJlEk4snBLq3TyctOwWDs/lvn3Y5F4HIa1dBj5Swh00i83Ft02caDhSARnn+7/wDqmMsxVfUnbQ==
+X-Received: by 2002:a7b:cbd8:0:b0:3fe:228a:e782 with SMTP id n24-20020a7bcbd8000000b003fe228ae782mr4398543wmi.37.1690971951228;
+        Wed, 02 Aug 2023 03:25:51 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id m13-20020a7bca4d000000b003fa96fe2bd9sm1325004wml.22.2023.08.02.03.25.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Aug 2023 03:25:50 -0700 (PDT)
+Date:   Wed, 2 Aug 2023 13:25:47 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Su Hui <suhui@nfschina.com>
+Cc:     chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        trond.myklebust@hammerspace.com, anna@kernel.org,
+        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
+        bfields@fieldses.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] fs: lockd: avoid possible wrong NULL parameter
+Message-ID: <531df8ee-ba09-49df-8201-4221df5853c6@kadam.mountain>
+References: <20230802080544.3239967-1-suhui@nfschina.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eaa67cf6-4896-bb62-0899-ebdae8744c7a@redhat.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230802080544.3239967-1-suhui@nfschina.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jul 28, 2023 at 07:30:33PM +0200, David Hildenbrand wrote:
-> On 28.07.23 18:18, Linus Torvalds wrote:
-> > On Thu, 27 Jul 2023 at 14:28, David Hildenbrand <david@redhat.com> wrote:
-> > > 
-> > > This is my proposal on how to handle the fallout of 474098edac26
-> > > ("mm/gup: replace FOLL_NUMA by gup_can_follow_protnone()") where I
-> > > accidentially missed that follow_page() and smaps implicitly kept the
-> > > FOLL_NUMA flag clear by *not* setting it if FOLL_FORCE is absent, to
-> > > not trigger faults on PROT_NONE-mapped PTEs.
-> > 
-> > Ugh.
+On Wed, Aug 02, 2023 at 04:05:45PM +0800, Su Hui wrote:
+> clang's static analysis warning: fs/lockd/mon.c: line 293, column 2:
+> Null pointer passed as 2nd argument to memory copy function.
 > 
-> I was hoping for that reaction, with the assumption that we would get
-> something cleaner :)
+> Assuming 'hostname' is NULL and calling 'nsm_create_handle()', this will
+> pass NULL as 2nd argument to memory copy function 'memcpy()'. So return
+> NULL if 'hostname' is invalid.
 > 
-> > 
-> > I hate how it uses FOLL_FORCE that is inherently scary.
+> Fixes: 77a3ef33e2de ("NSM: More clean up of nsm_get_handle()")
+> Signed-off-by: Su Hui <suhui@nfschina.com>
+> ---
+>  fs/lockd/mon.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> I hate FOLL_FORCE, but I hate FOLL_NUMA even more, because to me it
-> is FOLL_FORCE in disguise (currently and before 474098edac26, if
-> FOLL_FORCE is set, FOLL_NUMA won't be set and the other way around).
-> 
+> diff --git a/fs/lockd/mon.c b/fs/lockd/mon.c
+> index 1d9488cf0534..eebab013e063 100644
+> --- a/fs/lockd/mon.c
+> +++ b/fs/lockd/mon.c
+> @@ -358,6 +358,9 @@ struct nsm_handle *nsm_get_handle(const struct net *net,
+>  
+>  	spin_unlock(&nsm_lock);
+>  
+> +	if (!hostname)
+> +		return NULL;
+> +
+>  	new = nsm_create_handle(sap, salen, hostname, hostname_len);
 
-FOLL_NUMA being conflated with FOLL_FORCE is almost certainly a historical
-accident.
+It's weird that this bug is from 2008 and we haven't found it in
+testing.  Presumably if hostname is NULL then hostname_len would be zero
+and in that case, it's not actually a bug.  It's allowed in the kernel
+to memcpy zero bytes from a NULL pointer.
 
-> > 
-> > Why do we have that "gup_can_follow_protnone()" logic AT ALL?
-> 
-> That's what I was hoping for.
-> 
-> > 
-> > Couldn't we just get rid of that disgusting thing, and just say that
-> > GUP (and follow_page()) always just ignores NUMA hinting, and always
-> > just follows protnone?
-> > 
-> > We literally used to have this:
-> > 
-> >          if (!(gup_flags & FOLL_FORCE))
-> >                  gup_flags |= FOLL_NUMA;
-> > 
-> > ie we *always* set FOLL_NUMA for any sane situation. FOLL_FORCE should
-> > be the rare crazy case.
-> 
-> Yes, but my point would be that we now spell that "rare crazy case"
-> out for follow_page().
-> 
-> If you're talking about patch #1, I agree, therefore patch #3 to
-> avoid all that nasty FOLL_FORCE handling in GUP callers.
-> 
-> But yeah, if we can avoid all that, great.
-> 
-> > 
-> > The original reason for not setting FOLL_NUMA all the time is
-> > documented in commit 0b9d705297b2 ("mm: numa: Support NUMA hinting
-> > page faults from gup/gup_fast") from way back in 2012:
-> > 
-> >           * If FOLL_FORCE and FOLL_NUMA are both set, handle_mm_fault
-> >           * would be called on PROT_NONE ranges. We must never invoke
-> >           * handle_mm_fault on PROT_NONE ranges or the NUMA hinting
-> >           * page faults would unprotect the PROT_NONE ranges if
-> >           * _PAGE_NUMA and _PAGE_PROTNONE are sharing the same pte/pmd
-> >           * bitflag. So to avoid that, don't set FOLL_NUMA if
-> >           * FOLL_FORCE is set.
-> 
-> 
-> In handle_mm_fault(), we never call do_numa_page() if
-> !vma_is_accessible(). Same for do_huge_pmd_numa_page().
-> 
-> So, if we would ever end up triggering a page fault on
-> mprotect(PROT_NONE) ranges (i.e., via FOLL_FORCE), we
-> would simply do nothing.
-> 
-> At least that's the hope, I'll take a closer look just to make
-> sure we're good on all call paths.
-> 
-> > 
-> > but I don't think the original reason for this is *true* any more.
-> > 
-> > Because then two years later in 2014, in commit c46a7c817e66 ("x86:
-> > define _PAGE_NUMA by reusing software bits on the PMD and PTE levels")
-> > Mel made the code able to distinguish between PROT_NONE and NUMA
-> > pages, and he changed the comment above too.
-> 
-> CCing Mel.
-> 
-> I remember that pte_protnone() can only distinguished between
-> NUMA vs. actual mprotect(PROT_NONE) by looking at the VMA -- vma_is_accessible().
-> 
+	memcpy(dst, NULL, 0);
 
-Ok, as usual, I'm far behind and this thread massive but I'll respond
-to this part before trying to digest the history of this and the current
-implementation.
+Outside the kernel it's not allowed though.
 
-To the best of my recollection, FOLL_NUMA used to be a correctness issue
-but that should no longer true. Initially, it was to prevent mixing up
-"PROT_NONE" that was for NUMA hinting and "PROT_NONE" due to VMA
-protections. Now the bits are different so this case should be
-avoidable.
+I noticed a related bug which Smatch doesn't find, because of how Smatch
+handles the dprintk macro.
 
-Later it was still a different correctness issue because PMD migration had
-a hacky implementation without migration entries and a GUP could find a
-page that was being collapsed and had to be serialised. That should also
-now be avoidable.
+fs/lockd/host.c
+truct nlm_host *nlmclnt_lookup_host(const struct sockaddr *sap,
+   217                                       const size_t salen,
+   218                                       const unsigned short protocol,
+   219                                       const u32 version,
+   220                                       const char *hostname,
+   221                                       int noresvport,
+   222                                       struct net *net,
+   223                                       const struct cred *cred)
+   224  {
+   225          struct nlm_lookup_host_info ni = {
+   226                  .server         = 0,
+   227                  .sap            = sap,
+   228                  .salen          = salen,
+   229                  .protocol       = protocol,
+   230                  .version        = version,
+   231                  .hostname       = hostname,
+   232                  .hostname_len   = strlen(hostname),
+                                                 ^^^^^^^^
+Dereferenced
 
-At some point, FOLL_FORCE and FOLL_NUMA got conflated but they really should
-not be related even if they are by accident. FOLL_FORCE (e.g. ptrace)
-may have to process the fault and make the page resident and accessible
-regardless of any other consequences. FOLL_NUMA ideally should be much
-more specific. If the calling context only cares about the struct page
-(e.g. smaps) then it's ok to get a reference to the page. If necessary,
-it could clear the protection and lose the hinting fault although it's less
-than ideal. Just needing the struct page for informational purposes though
-should not be treated as a NUMA hinting fault because it has nothing to
-do with the tasks memory reference behaviour.
+   233                  .noresvport     = noresvport,
+   234                  .net            = net,
+   235                  .cred           = cred,
+   236          };
+   237          struct hlist_head *chain;
+   238          struct nlm_host *host;
+   239          struct nsm_handle *nsm = NULL;
+   240          struct lockd_net *ln = net_generic(net, lockd_net_id);
+   241  
+   242          dprintk("lockd: %s(host='%s', vers=%u, proto=%s)\n", __func__,
+   243                          (hostname ? hostname : "<none>"), version,
+                                 ^^^^^^^^
+Checked too late.
 
-A variant of FOLL_NUMA (FOLL_NUMA_HINT?) may still be required to indicate
-the calling context is accessing the page for reasons that are equivalent
-to a real memory access from a CPU related to the task mapping the page.
-I didn't check but KVM may be an example of this when dealing with some MMU
-faults as the page is being looked up on behalf of the task and presumably
-from the same CPU the task was running run. Something like reading smaps
-only needs the struct page but it should not be treated as a NUMA hinting
-fault as the access has nothing to do with the task mapping the page.
+   244                          (protocol == IPPROTO_UDP ? "udp" : "tcp"));
+   245  
 
-> > The original reason for FOLL_NUMA simply does not exist any more. We
-> > know exactly when a page is marked for NUMA faulting, and we should
-> > simply *ignore* it for GUP and follow_page().
-> > 
-
-I'd be wary of completely ignoring it if there is any known calling context
-that is equivalent to a memory access and the hinting fault should be
-processed -- KVM may be an example.
-
--- 
-Mel Gorman
-SUSE Labs
+regards,
+dan carpenter
