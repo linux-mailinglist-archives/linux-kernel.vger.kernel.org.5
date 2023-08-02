@@ -2,76 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27ADF76D0BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960C476D0BE
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234219AbjHBO7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
+        id S234033AbjHBO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 10:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234105AbjHBO7H (ORCPT
+        with ESMTP id S234686AbjHBO7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:59:07 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6238D19AD
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:59:05 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3a716f1ec3fso473565b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:59:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1690988344; x=1691593144;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pkmn55yZh1Rz2MwlfyBOzuu4eBd6dwrDT9L9Cwq53pI=;
-        b=OtTCxZ1uO6KGb/7Vy+iET/QDAClw9bYJdjMQW2anIJXeLYWTLukaWJ5plk49aE85YL
-         TNMMtTu6wuQf5Iyoz6rgoIVSDddrA79p8WUKfWw9xTOiK9Oy9KQHBTvEro6vYv2K0Wz1
-         rCA1DBZoDP9ZSyC8RT8C7A5MHk2Pq+iZgGNDQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690988344; x=1691593144;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pkmn55yZh1Rz2MwlfyBOzuu4eBd6dwrDT9L9Cwq53pI=;
-        b=jM+OcxFZtkFWRVPsP45vqiFqhg3RxoFMnmHVj3tZiqz31XSbuCJpxjNpAIK6jJqXI0
-         Tpr6x6hmSxgVRA9YL3685Lg4xORbbg2tMTtK2PoiYdDnD4sUqD+US67EZgD38ZEDeFEY
-         Grq6WzGw73YTogxyc1zPa5bI2UKNjTHKo0Ct3OmNccJ7+9TElH2oMELctdqVIF7WsV+V
-         W70jfb1eyX8d1swlnBr3/pHnIhsEI7UqBUTMvtUsUCnFzbh6asRT6nwmtbal5t10WH5f
-         ctEhLD6ZKk+eodA8j+Oo3AtJmeV5/8xVY6Ks8WvGA5A9AYdWLi0fjPTL/51PZe6gm32B
-         mKNA==
-X-Gm-Message-State: ABy/qLYiodNCC6/qocugQz+FaXfB0RzgS7a05LgZEeY6oY2oZjJhhMgU
-        CcvvwM9MyCTB9WS8hbgHAClYX7N0evkKETtHBQMZGg==
-X-Google-Smtp-Source: APBJJlG7s6LInHyvHFYr1Mc+JjNw0wI3JAe6FASZYgSUHMNQkbDcagsLdus2tHIGWJRIhFSeeDhMRcI3pXptt+vnN3w=
-X-Received: by 2002:a05:6808:1926:b0:3a7:16f3:a46e with SMTP id
- bf38-20020a056808192600b003a716f3a46emr12040217oib.2.1690988344485; Wed, 02
- Aug 2023 07:59:04 -0700 (PDT)
+        Wed, 2 Aug 2023 10:59:20 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3C0CA2D6D
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:59:17 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DAA73113E;
+        Wed,  2 Aug 2023 07:59:59 -0700 (PDT)
+Received: from [10.57.77.90] (unknown [10.57.77.90])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3AEDB3F5A1;
+        Wed,  2 Aug 2023 07:59:15 -0700 (PDT)
+Message-ID: <d863b403-6737-7c76-ab47-e6bdddbfe37f@arm.com>
+Date:   Wed, 2 Aug 2023 15:59:13 +0100
 MIME-Version: 1.0
-References: <20230707224059.305474-1-andrealmeid@igalia.com>
- <20230707224059.305474-7-andrealmeid@igalia.com> <ZK0ZlciR66oTO+Td@phenom.ffwll.local>
- <20230713105142.122a0cc1@eldfell> <35a8e502-c36c-e67e-29ba-a20ae6134c6d@igalia.com>
-In-Reply-To: <35a8e502-c36c-e67e-29ba-a20ae6134c6d@igalia.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 2 Aug 2023 16:58:52 +0200
-Message-ID: <CAKMK7uFMYjueTT8DTE5MER6wPNCHCS8gJriQsAR=4WnzAXRp8w@mail.gmail.com>
-Subject: Re: [PATCH v5 6/6] drm/doc: Define KMS atomic state set
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-Cc:     Pekka Paalanen <ppaalanen@gmail.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, wayland-devel@lists.freedesktop.org,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
-        Simon Ser <contact@emersion.fr>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Stone <daniel@fooishbar.org>,
-        =?UTF-8?B?TWFyZWsgT2zFocOhaw==?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>, hwentlan@amd.com,
-        joshua@froggi.es, ville.syrjala@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] mm: add functions folio_in_range() and
+ folio_within_vma()
+To:     "Yin, Fengwei" <fengwei.yin@intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        yuzhao@google.com, willy@infradead.org, david@redhat.com,
+        shy828301@gmail.com, hughd@google.com
+References: <20230728070929.2487065-1-fengwei.yin@intel.com>
+ <20230728070929.2487065-2-fengwei.yin@intel.com>
+ <55c9e3f7-099d-6f57-32da-1f318a9688a0@arm.com>
+ <eb50a427-3738-c1bb-b8cd-8636902deffb@intel.com>
+ <65a36b41-d69e-4072-cfd2-253ed6e4e040@arm.com>
+ <286cbca6-ab5e-ad06-ea2a-89ea08ee53d4@intel.com>
+ <8dcf002a-088e-32de-7868-5dc5ca6b1206@arm.com>
+ <6f5301b4-57f5-bcef-45d4-68b0efbd4e67@intel.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <6f5301b4-57f5-bcef-45d4-68b0efbd4e67@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,180 +53,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 31 Jul 2023 at 04:01, Andr=C3=A9 Almeida <andrealmeid@igalia.com> w=
-rote:
->
-> Em 13/07/2023 04:51, Pekka Paalanen escreveu:
-> > On Tue, 11 Jul 2023 10:57:57 +0200
-> > Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> >> On Fri, Jul 07, 2023 at 07:40:59PM -0300, Andr=C3=A9 Almeida wrote:
-> >>> From: Pekka Paalanen <pekka.paalanen@collabora.com>
-> >>>
-> >>> Specify how the atomic state is maintained between userspace and
-> >>> kernel, plus the special case for async flips.
-> >>>
-> >>> Signed-off-by: Pekka Paalanen <pekka.paalanen@collabora.com>
-> >>> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
-> >>> ---
-> >>> v4: total rework by Pekka
-> >>> ---
-> >>>   Documentation/gpu/drm-uapi.rst | 41 +++++++++++++++++++++++++++++++=
-+++
-> >>>   1 file changed, 41 insertions(+)
-> >>>
-> >>> diff --git a/Documentation/gpu/drm-uapi.rst b/Documentation/gpu/drm-u=
-api.rst
-> >>> index 65fb3036a580..6a1662c08901 100644
-> >>> --- a/Documentation/gpu/drm-uapi.rst
-> >>> +++ b/Documentation/gpu/drm-uapi.rst
-> >>> @@ -486,3 +486,44 @@ and the CRTC index is its position in this array=
-.
-> >>>
-> >>>   .. kernel-doc:: include/uapi/drm/drm_mode.h
-> >>>      :internal:
-> >>> +
-> >>> +KMS atomic state
-> >>> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>> +
-> >>> +An atomic commit can change multiple KMS properties in an atomic fas=
-hion,
-> >>> +without ever applying intermediate or partial state changes.  Either=
- the whole
-> >>> +commit succeeds or fails, and it will never be applied partially. Th=
-is is the
-> >>> +fundamental improvement of the atomic API over the older non-atomic =
-API which is
-> >>> +referred to as the "legacy API".  Applying intermediate state could =
-unexpectedly
-> >>> +fail, cause visible glitches, or delay reaching the final state.
-> >>> +
-> >>> +An atomic commit can be flagged with DRM_MODE_ATOMIC_TEST_ONLY, whic=
-h means the
-> >>> +complete state change is validated but not applied.  Userspace shoul=
-d use this
-> >>> +flag to validate any state change before asking to apply it. If vali=
-dation fails
-> >>> +for any reason, userspace should attempt to fall back to another, pe=
-rhaps
-> >>> +simpler, final state.  This allows userspace to probe for various co=
-nfigurations
-> >>> +without causing visible glitches on screen and without the need to u=
-ndo a
-> >>> +probing change.
-> >>> +
-> >>> +The changes recorded in an atomic commit apply on top the current KM=
-S state in
-> >>> +the kernel. Hence, the complete new KMS state is the complete old KM=
-S state with
-> >>> +the committed property settings done on top. The kernel will automat=
-ically avoid
-> >>> +no-operation changes, so it is safe and even expected for userspace =
-to send
-> >>> +redundant property settings.  No-operation changes do not count towa=
-rds actually
-> >>> +needed changes, e.g.  setting MODE_ID to a different blob with ident=
-ical
-> >>> +contents as the current KMS state shall not be a modeset on its own.
-> >>
-> >> Small clarification: The kernel indeed tries very hard to make redunda=
-nt
-> >> changes a no-op, and I think we should consider any issues here bugs. =
-But
-> >> it still has to check, which means it needs to acquire the right locks=
- and
-> >> put in the right (cross-crtc) synchronization points, and due to
-> >> implmentation challenges it's very hard to try to avoid that in all ca=
-ses.
-> >> So adding redundant changes especially across crtc (and their connecte=
-d
-> >> planes/connectors) might result in some oversynchronization issues, an=
-d
-> >> userspace should therefore avoid them if feasible.
-> >>
-> >> With some sentences added to clarify this:
-> >>
-> >> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> >
-> > After talking on IRC yesterday, we realized that the no-op rule is
-> > nowhere near as generic as I have believed. Roughly:
-> > https://oftc.irclog.whitequark.org/dri-devel/2023-07-12#1689152446-1689=
-157291;
-> >
-> >
->
-> How about:
->
-> The changes recorded in an atomic commit apply on top the current KMS
-> state in the kernel. Hence, the complete new KMS state is the complete
-> old KMS state with the committed property settings done on top. The
-> kernel will try to avoid no-operation changes, so it is safe for
-> userspace to send redundant property settings. However, the kernel can
-> not assure that every redundant information will always result in a
-> no-op, giving the need to take locks to check par of the state. Giving
-> that, some redundant information can lead to a full damage path. This is
-> not something bad by itself, but userspace need to be aware of that side
-> effect.
+On 02/08/2023 15:14, Yin, Fengwei wrote:
+> 
+> 
+> On 8/2/2023 10:08 PM, Ryan Roberts wrote:
+>> On 02/08/2023 14:46, Yin, Fengwei wrote:
+>>>
+>>>
+>>> On 8/2/2023 9:09 PM, Ryan Roberts wrote:
+>>>> On 02/08/2023 13:50, Yin, Fengwei wrote:
+>>>>>
+>>>>>
+>>>>> On 8/2/2023 7:14 PM, Ryan Roberts wrote:
+>>>>>> On 28/07/2023 08:09, Yin Fengwei wrote:
+>>>>>>> It will be used to check whether the folio is mapped to specific
+>>>>>>> VMA and whether the mapping address of folio is in the range.
+>>>>>>>
+>>>>>>> Also a helper function folio_within_vma() to check whether folio
+>>>>>>> is in the range of vma based on folio_in_range().
+>>>>>>>
+>>>>>>> Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+>>>>>>> ---
+>>>>>>>  mm/internal.h | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>>>>>>>  1 file changed, 69 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/mm/internal.h b/mm/internal.h
+>>>>>>> index 5a03bc4782a2..63de32154a48 100644
+>>>>>>> --- a/mm/internal.h
+>>>>>>> +++ b/mm/internal.h
+>>>>>>> @@ -585,6 +585,75 @@ extern long faultin_vma_page_range(struct vm_area_struct *vma,
+>>>>>>>  				   bool write, int *locked);
+>>>>>>>  extern bool mlock_future_ok(struct mm_struct *mm, unsigned long flags,
+>>>>>>>  			       unsigned long bytes);
+>>>>>>> +
+>>>>>>> +/*
+>>>>>>> + * Check whether the folio is in specific range
+>>>>>>> + *
+>>>>>>> + * First, check whether the folio is in the range of vma.
+>>>>>>> + * Then, check whether the folio is mapped to the range of [start, end].
+>>>>>>> + * In the end, check whether the folio is fully mapped to the range.
+>>>>>>> + *
+>>>>>>> + * @pte page table pointer will be checked whether the large folio
+>>>>>>> + *      is fully mapped to. Currently, if mremap in the middle of
+>>>>>>> + *      large folio, the large folio could be mapped to to different
+>>>>>>> + *      VMA and address check can't identify this situation.
+>>>>>>> + */
+>>>>>>> +static inline bool
+>>>>>>> +folio_in_range(struct folio *folio, struct vm_area_struct *vma,
+>>>>>>> +		unsigned long start, unsigned long end, pte_t *pte)
+>>>>>>
+>>>>>> This api seems a bit redundant to me. Wouldn't it be better to remove the vma
+>>>>>> parameter and instead fix up the start/end addresses in folio_within_vma()?
+>>>>> My understanding is it's necessary. As for madvise, we need to check whether
+>>>>> the folio is both in the range of VMA and also in the range of [start, end).
+>>>>
+>>>> But in folio_within_vma() you pass start as vma->vm_start and end as
+>>>> vma->vm_end. And in this function, you narrow start/end to be completely
+>>>> contained in vma. So surely there is only really one start/end you are
+>>>> interested in? Just seems a bit odd to me.
+>>> madvise() will call filio_in_range() with VMA and real range [start, end) passed
+>>> from user space.
+>>>
+>>>>
+>>>>>
+>>>>>>
+>>>>>>> +{
+>>>>>>> +	pte_t ptent;
+>>>>>>> +	unsigned long i, nr = folio_nr_pages(folio);
+>>>>>>> +	pgoff_t pgoff, addr;
+>>>>>>> +	unsigned long vma_pglen = (vma->vm_end - vma->vm_start) >> PAGE_SHIFT;
+>>>>>>> +
+>>>>>>> +	VM_WARN_ON_FOLIO(folio_test_ksm(folio), folio);
+>>>>>>> +
+>>>>>>> +	if (start < vma->vm_start)
+>>>>>>> +		start = vma->vm_start;
+>>>>>>> +	if (end > vma->vm_end)
+>>>>>>> +		end = vma->vm_end;
+>>>>>>> +
+>>>>>>> +	pgoff = folio_pgoff(folio);
+>>>>>>> +	/* if folio start address is not in vma range */
+>>>>>>> +	if (pgoff < vma->vm_pgoff || pgoff > vma->vm_pgoff + vma_pglen)
+>>>>>>> +		return false;
+>>>>>>> +
+>>>>>>> +	addr = vma->vm_start + ((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+>>>>>>> +	if (addr < start || end - addr < folio_size(folio))
+>>>>>>> +		return false;
+>>>>>>> +
+>>>>>>> +	/* not necessary to check pte for none large folio */
+>>>>>>> +	if (!folio_test_large(folio))
+>>>>>>> +		return true;
+>>>>>>> +
+>>>>>>> +	if (!pte)
+>>>>>>> +		return false;
+>>>>>>> +
+>>>>>>> +	/* check whether parameter pte is associated with folio */
+>>>>>>> +	ptent = ptep_get(pte);
+>>>>>>> +	if (pte_none(ptent) || !pte_present(ptent) ||
+>>>>>>> +			pte_pfn(ptent) - folio_pfn(folio) >= nr)
+>>>>>>> +		return false;
+>>>>>>> +
+>>>>>>> +	pte -= pte_pfn(ptent) - folio_pfn(folio);
+>>>>>>> +	for (i = 0; i < nr; i++, pte++) {
+>>>>>>> +		ptent = ptep_get(pte);
+>>>>>>> +
+>>>>>>> +		if (pte_none(ptent) || !pte_present(ptent) ||
+>>>>>>> +				pte_pfn(ptent) - folio_pfn(folio) >= nr)
+>>>>>>> +			return false;
+>>>>>>> +	}
+>>>>>>
+>>>>>> I don't think I see anything to ensure you don't wander off the end (or start)
+>>>>>> of the pgtable? If the folio is mremapped so that it straddles multiple tables
+>>>>>> (or is bigger than a single table?) then I think pte can become invalid? Perhaps
+>>>>>> you intended start/end to always be within the same pgtable, but that is not
+>>>>>> guarranteed in the case that folio_within_vma() is making the call.
+>>>>> If pte is invalid for any reason (pass wrong parameter, not fully mapped etc), this
+>>>>> function just return false in page table entry check phase.
+>>>>
+>>>> Sorry I don't think this covers the issue I'm describing. If you have a
+>>>> pte-mapped THP that gets mremapped to straddle 2 pte tables, don't you have a
+>>>> problem?
+>>>>
+>>>> example for 4K base page set up:
+>>>>
+>>>> folio_nr_pages = 512
+>>>> first page of folio mapped at vaddr = 2M - 4K = 0x1FF000
+>>>>
+>>>> If you then call this function with the pte pointer for the second page in the
+>>>> folio, which is mapped at address 0x200000, that pte is pointing to the first
+>>>> pte entry in the table pointed to by the second pmd entry. The pte pointer can
+>>>> be legitimately manipulated to point to any entry within that table,
+>>>> corrsponding to vaddrs [0x200000, 0x400000). But you will end up subtracting 1
+>>>> from the pointer, intending that it now points to the pte entry that represents
+>>>> vaddr 0x1FF000. But actually it has fallen off the front of the table into some
+>>>> other arbitrary memory in the linear map. 0x1FF000 is represented in a different
+>>>> table, pointed to by the first pmd entry.
+>>> Yes. This can be an issue as hold the second page table lock can't prevent the first
+>>> part unmapped. Let me add another check vaddr align to folio_size in next version. 
+>>
+>> Locking is a problem but its not the only problem. The 2 tables are almost
+>> certainly not contiguous in virtual memory. So once you have moved the pointer
+>> to before the start of the second table, then you are pointing to arbitrary memory.
+> If vaddr is aligned to folio_size, suppose we are OK here (I have assumption that
+> large folio will not be larger than PMD size. Or it's possible on ARM platform?).
 
-I think the addition about damage tracking should be a separate
-paragraph, and not mixed in with the general explanation that no-op
-updates might lead to oversync/overlocking issues. Because the damage
-tracking issue is more a question of efficiency/power usage, but
-should not (for most drivers/hw at least) result in delays and missed
-updates due to oversynchronization of updates.
+I *think* your assumption that a folio will never be bigger than PMD size is ok.
+(I'm guessing page cache never allocates bigger folios than that?).
 
-Also in my opinion the exact damage update rules are more a plane
-property issue, and should probably be clarified there if the current
-documentation is not clear enough. Since it's not about whether no-op
-updates get avoided by the kernel, but what exact damage is implied in
-various cases (and that implied damage has to exist, otherwise
-backwards compatibility is broken, but userspace can avoid these
-issues by setting an empty damage property for that plane update
-explicitly).
+But its a bad assumption to assume folios are always mapped in a naturally
+aligned manner. mremapping a thp will cause non-natural alignment. User space
+requesting a file (that is in a large folio in pagecache) to be mapped to
+arbitrary (page-aligned) address will do that.
 
-So I think for this doc part here the discussed text is still good
-enough, but we might need more in other places.
--Sima
+> 
+> 
+> Regards
+> Yin, Fengwei
+> 
+>>
+>>>
+>>> Regards
+>>> Yin, Fengwei
+>>>
+>>>>
+>>>>
+>>>>>
+>>>>>>
+>>>>>> Also I want to check that this function is definitely always called under the
+>>>>>> PTL for the table that pte belongs to?
+>>>>> Yes. I should spell it out. Thanks.
+>>>>>
+>>>>>
+>>>>> Regards
+>>>>> Yin, Fengwei
+>>>>>
+>>>>>>
+>>>>>>> +
+>>>>>>> +	return true;
+>>>>>>> +}
+>>>>>>> +
+>>>>>>> +static inline bool
+>>>>>>> +folio_within_vma(struct folio *folio, struct vm_area_struct *vma, pte_t *pte)
+>>>>>>> +{
+>>>>>>> +	return folio_in_range(folio, vma, vma->vm_start, vma->vm_end, pte);
+>>>>>>> +}
+>>>>>>> +
+>>>>>>>  /*
+>>>>>>>   * mlock_vma_folio() and munlock_vma_folio():
+>>>>>>>   * should be called with vma's mmap_lock held for read or write,
+>>>>>>
+>>>>
+>>
 
-
->
-> > Thanks,
-> > pq
-> >
-> >>> +
-> >>> +A "modeset" is a change in KMS state that might enable, disable, or =
-temporarily
-> >>> +disrupt the emitted video signal, possibly causing visible glitches =
-on screen. A
-> >>> +modeset may also take considerably more time to complete than other =
-kinds of
-> >>> +changes, and the video sink might also need time to adapt to the new=
- signal
-> >>> +properties. Therefore a modeset must be explicitly allowed with the =
-flag
-> >>> +DRM_MODE_ATOMIC_ALLOW_MODESET.  This in combination with
-> >>> +DRM_MODE_ATOMIC_TEST_ONLY allows userspace to determine if a state c=
-hange is
-> >>> +likely to cause visible disruption on screen and avoid such changes =
-when end
-> >>> +users do not expect them.
-> >>> +
-> >>> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed t=
-o
-> >>> +effectively change only the FB_ID property on any planes. No-operati=
-on changes
-> >>> +are ignored as always. Changing any other property will cause the co=
-mmit to be
-> >>> +rejected.
-> >>> --
-> >>> 2.41.0
-> >>>
-> >>
-> >
-
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
