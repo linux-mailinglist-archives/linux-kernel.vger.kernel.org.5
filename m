@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0CA76D6E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED02C76D6F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 20:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229737AbjHBSgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 14:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40986 "EHLO
+        id S230195AbjHBSiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 14:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjHBSgT (ORCPT
+        with ESMTP id S229959AbjHBSix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 14:36:19 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970BE19AD
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 11:36:18 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3fbc63c2e84so1620785e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 11:36:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691001377; x=1691606177;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TAs2W0UQPvG+IMRnbk4btgVlH770IjvAYL2tx8M/WQo=;
-        b=Y0WhxoV/BzAocRJ6IJmR0uV2Pq0+TNdd0NezQ/SRyF+Kbz8K4DGauZiFY/NktvtwR0
-         1IBGENdk8cwRnPqNa33a+uZXNT9V4HdV0yfHr/VWbEekJctSBupAqMset2u9zbJOZ976
-         bhsank+kn1yQpM9JJ4BooL1vewrYaI2dLDP9umlvIPMbfuAXNtzSR00hhscVorvRA+lQ
-         KMhZqxbj/QJ9zVLnG6kFquAUgKvNJOBI/kNU8+QYQB0Q29xGXT8v9pYI/G/JPWA5GriJ
-         RjRHb9hVHKjvzAGFIWl3Q+FkXr9reiTFWq+TZQUxmug9fhUJyfVc62Sh4R08PiOuDd1G
-         /JSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691001377; x=1691606177;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TAs2W0UQPvG+IMRnbk4btgVlH770IjvAYL2tx8M/WQo=;
-        b=BOwDwOiwpf1yQe6ulemJU0Ohy7hHMOfYXCUKVQNXMsL4FS75pQoop5swZdosfCXz+H
-         3rNr/YaoLGxNVIKduOuCARlduRMshCWgGZrNltasKd57l+G8pilyq/EW4tJaPogyAggr
-         WD4Fys62Gftm/S65gsRyRX8CdaSQXzrwN49jKRaAxceTXSmptV/BDw7eGrGaH6x0mgOz
-         sF+gJITINbsttRfwWWM7lVmoJi4L4gfLi3ezCqFq1RMWvHAXWFM5Ggf9rIJVxH910Dg7
-         4/rLPQjZEcpHL9BCnCtT+i/7rWdLODfGKRHG8BIVjTindqoTjIpyu+tZLilCGhWlxfSX
-         CsPQ==
-X-Gm-Message-State: ABy/qLZCMKzOFt6g9ZCCEXpKG348e6z32IdJgciO9ZOSb8cbpt3OmMnK
-        ys95jxW98nrjBHIfnES2xmo=
-X-Google-Smtp-Source: APBJJlFhUQqZe+Xo9YYnuL4IdIpOPvWU+jVICi15RIjPf7K8uwY+77EYoazV0uQThsil71PmxVQrgA==
-X-Received: by 2002:adf:ce8a:0:b0:317:5c18:f31d with SMTP id r10-20020adfce8a000000b003175c18f31dmr5318090wrn.35.1691001376650;
-        Wed, 02 Aug 2023 11:36:16 -0700 (PDT)
-Received: from localhost.localdomain (host31-52-141-59.range31-52.btcentralplus.com. [31.52.141.59])
-        by smtp.gmail.com with ESMTPSA id z1-20020adfd0c1000000b0031424f4ef1dsm19839681wrh.19.2023.08.02.11.36.16
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 02 Aug 2023 11:36:16 -0700 (PDT)
-From:   Levi Yun <ppbuk5246@gmail.com>
-To:     rppt@kernel.org, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Levi Yun <ppbuk5246@gmail.com>
-Subject: [PATCH] mm/mm_init: Ignore kernelcore=mirror boot option when no mirror memory presents.
-Date:   Wed,  2 Aug 2023 19:36:14 +0100
-Message-ID: <20230802183614.15520-1-ppbuk5246@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 2 Aug 2023 14:38:53 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD881BC1;
+        Wed,  2 Aug 2023 11:38:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DFC0161AB9;
+        Wed,  2 Aug 2023 18:38:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 929D1C433C8;
+        Wed,  2 Aug 2023 18:38:48 +0000 (UTC)
+Date:   Wed, 2 Aug 2023 14:38:45 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Florent Revest <revest@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
+ struct/union
+Message-ID: <20230802143845.3ce6ed61@gandalf.local.home>
+In-Reply-To: <CAADnVQLqXjJvCcuQLVz8HxF050jDHaSa2D7cehoYtjXdp3wGLQ@mail.gmail.com>
+References: <169078860386.173706.3091034523220945605.stgit@devnote2>
+        <169078863449.173706.2322042687021909241.stgit@devnote2>
+        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
+        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
+        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
+        <20230802000228.158f1bd605e497351611739e@kernel.org>
+        <20230801112036.0d4ee60d@gandalf.local.home>
+        <20230801113240.4e625020@gandalf.local.home>
+        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
+        <20230801190920.7a1abfd5@gandalf.local.home>
+        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
+        <20230801204054.3884688e@rorschach.local.home>
+        <20230802225634.f520080cd9de759d687a2b0a@kernel.org>
+        <CAADnVQLqXjJvCcuQLVz8HxF050jDHaSa2D7cehoYtjXdp3wGLQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,52 +71,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the machine where no mirror memory is set,
-All memory region in ZONE_NORMAL is used as ZONE_MOVABLE
-when kernelcore=mirror boot option is used.
-So, ZONE_NORMAL couldn't be populated properly
-because all of ZONE_NORMAL pages is absent.
+On Wed, 2 Aug 2023 11:24:12 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-To avoid this abnormal situation,
-ignore disable kernelcore=mirror option when no mirror memory is found.
+> This is a non starter.
+> bpf progs expect arch dependent 'struct pt_regs *' and we cannot change that.
 
-Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
----
- mm/mm_init.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+If the progs are compiled into native code, isn't there optimizations that
+could be done? That is, if ftrace_regs is available, and the bpf program is
+just using the subset of pt_regs, is it possible that it could be compiled
+to use ftrace_regs?
 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index a1963c3322af..4c180ef1a993 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -376,10 +376,13 @@ static void __init find_zone_movable_pfns_for_nodes(void)
- 	 */
- 	if (mirrored_kernelcore) {
- 		bool mem_below_4gb_not_mirrored = false;
-+		bool no_mirror_mem = true;
- 
- 		for_each_mem_region(r) {
--			if (memblock_is_mirror(r))
-+			if (memblock_is_mirror(r)) {
-+				no_mirror_mem = false;
- 				continue;
-+			}
- 
- 			nid = memblock_get_region_node(r);
- 
-@@ -398,6 +401,12 @@ static void __init find_zone_movable_pfns_for_nodes(void)
- 		if (mem_below_4gb_not_mirrored)
- 			pr_warn("This configuration results in unmirrored kernel memory.\n");
- 
-+		if (no_mirror_mem) {
-+			pr_warn("There is no mirrored memory. Ignore kernelcore=mirror.\n");
-+			mirrored_kernelcore = false;
-+			memset(zone_movable_pfn, 0x00, sizeof(zone_movable_pfn));
-+		}
-+
- 		goto out2;
- 	}
- 
--- 
-2.37.2
+Forgive my ignorance on how BPF programs turn into executables when running
+in the kernel.
 
+-- Steve
