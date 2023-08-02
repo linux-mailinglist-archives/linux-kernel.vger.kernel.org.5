@@ -2,179 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C61176D0C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 16:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B3D76D0CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 17:00:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234447AbjHBO7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 10:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        id S234815AbjHBPA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 11:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233762AbjHBO7n (ORCPT
+        with ESMTP id S234663AbjHBPAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 10:59:43 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B6941FD6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 07:59:41 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-40fd2de0ddcso14869911cf.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 07:59:41 -0700 (PDT)
+        Wed, 2 Aug 2023 11:00:41 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3172690
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 08:00:35 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bc0d39b52cso22498105ad.2
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 08:00:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20221208.gappssmtp.com; s=20221208; t=1690988380; x=1691593180;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=kYt/Og8p2momDhgHcuYS5iX+cpuUqKiX9hwxMzS4blc=;
-        b=Xi+WBCiziQ3cHF88fwmCmkWvQI4yv33QxIjWVB51ktnlyBEAsL28b4oQ1BUdZaK+JF
-         nYbXVEI1IGoSZKvYjJDrZnj+uDpTze3WdybGoiBgC83QaiCL/YWh2RlxRCdkgOzvXCaz
-         VEgvXPDbTkYrVUc6FvsfNSIvLofL7CMKqg4yzMLGxjx50ssakplERt+G1CwdMJlGbbta
-         XnndwNq881nOEH5sWbRYEzqVPQkzQe7rXBdTcvanlWM0NOLfGm+FhYwQfUZF5OA25rf5
-         UfVpGn3qACVSexIk5541LPj2bx9+EoBerbxih3qj+iuXzCrRoxWS7cKgnwY25ARbwrWD
-         kbnA==
+        d=ventanamicro.com; s=google; t=1690988435; x=1691593235;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tfKkoXa7+kBOyCwMU8T00sJTcJ4VkfjJ/hsTco4Kb4w=;
+        b=hT+nD43/E+Kv1QbuZjiqSWxMesbtkoQmPihv+chtZ8HvmZRxOH5fa7vnp6ppyDsqMo
+         fDORcMAl6lIY+ApBzphm8qFqBveteN2ckvFdGe1jeZ8F9MADqEzwMbQC+rLC+rR8ImhV
+         /Bud6UflnE9M0L2jQgBaTjIpwThDO9ik26AHIB3Kj4BhuvVHxK/h5SwPzIRsuVcX0hl3
+         FRexBaF2OcZm0CsY55ybFrP4HPFABD3h0k3kMHSrbs/k0sxtTRTPf58t1G9BlvogdAGF
+         Tv2fJGJMbwr3m6RHt3wlUBzv3p4pVkdC/n7xOvOxeT8z5SHhs/u92Ku/wXqaT8Hrg3fL
+         WEYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690988380; x=1691593180;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kYt/Og8p2momDhgHcuYS5iX+cpuUqKiX9hwxMzS4blc=;
-        b=c6oRev9PbsAAk4+6Tr8IlztFyhZJ5+qLj2ZkxQ+Fao38MwcnDrrIPnrByLh17WXpVL
-         aopXLzlLxvXFjV3KQ3Y88aPP8ifthgLYpyzPEPUcvb1wuXh56YGCJoFKdJyQTZLSoygL
-         IyZOAPVJd3qsPmVSHi5Wgg6WG9BXxYEzRLz1hs+VaA1EClG1jbY8+sgRHXzMUi2FD5D5
-         8z9tuOZyN/1CnFIk4DVLBqdPac9M6GxoKasidg9NJ+IwK5dutTRiII+RDXKkccfj73qQ
-         zpsE/bHbZPBtGiWao1BmGMxE79iBTAJ+kWTXxvBxzvtdjsd7XLPaWE7o0euGMqG3omMC
-         B+Kg==
-X-Gm-Message-State: ABy/qLZOL9BshULeXC58KSPgquZ3i3cC+PzRXELqECF2T74ST0rR4ZRJ
-        nHS5YsgmPvl5V7QYWlie2E67eg==
-X-Google-Smtp-Source: APBJJlEtOXevsfG2Yv79DAn4/lz0ItSRpvVSeZStBYQZom93mQdmljLYQZ2CJSUmNHoJL/XXeyC+Qg==
-X-Received: by 2002:a05:622a:1786:b0:403:aa49:606e with SMTP id s6-20020a05622a178600b00403aa49606emr21938733qtk.30.1690988380513;
-        Wed, 02 Aug 2023 07:59:40 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:10:2688::7a9])
-        by smtp.gmail.com with ESMTPSA id z1-20020ac83e01000000b003e3918f350dsm5438001qtf.25.2023.08.02.07.59.39
+        d=1e100.net; s=20221208; t=1690988435; x=1691593235;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tfKkoXa7+kBOyCwMU8T00sJTcJ4VkfjJ/hsTco4Kb4w=;
+        b=Gq7b06K3bAzrsVR1xDCVrWHO5uLZv9C833h95pbG+v1v3fu73K2z1RnxO7jB7wU8O/
+         frgHw8Cr4sBjVBptkcgcKJJ2JdvzsDl2x3kWkz6INp0Ebncyp1gMzEsBmp2ymL9yPxXu
+         uoATOLdbAhd7xtPJ3OQ0cVPjqus5alWFE9iBnZR9k6zP7bmu4LBPVdxHeTopTt/p5PU/
+         lNtI2gDdgYi775lx12q9mFO+IMzBjl5b6qd7R9tA9XPeMAyTinmU/btPOUp/hQ2HtXx0
+         Hk+w29ajN0BEZtaPz994BPSjG1telWnwOteVllcgKCKswFvkt/4A39g7955GCcouYMqx
+         d6Gg==
+X-Gm-Message-State: ABy/qLbdR2S7nZbRGEwjvOoSbc0guA7/c9xHgWK9aANqx22LZCJkbbKp
+        ktxXJexcSGE9RH/KUN2dMSkLwA==
+X-Google-Smtp-Source: APBJJlH1CXm/FL0c603RsVOXfeCdy6u3gDMRG0mrhvuqgTX61IyM7sVcbgLdtHiJu2i+eXs1SD2B7Q==
+X-Received: by 2002:a17:902:cec5:b0:1bb:d7d4:e0d with SMTP id d5-20020a170902cec500b001bbd7d40e0dmr18658909plg.64.1690988434697;
+        Wed, 02 Aug 2023 08:00:34 -0700 (PDT)
+Received: from anup-ubuntu-vm.localdomain ([103.97.165.210])
+        by smtp.gmail.com with ESMTPSA id v11-20020a1709028d8b00b001bb99e188fcsm12503963plo.194.2023.08.02.08.00.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 07:59:40 -0700 (PDT)
-Message-ID: <95eb0ff22da269ad6df5685aee6fa8d4ad0ca738.camel@ndufresne.ca>
-Subject: Re: [v2] media: mediatek: vcodec: fix AV1 decode fail for 36bit iova
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Xiaoyong Lu <xiaoyong.lu@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Wed, 02 Aug 2023 08:00:34 -0700 (PDT)
+From:   Anup Patel <apatel@ventanamicro.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>
-Cc:     George Sun <george.sun@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        Steve Cho <stevecho@chromium.org>, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Date:   Wed, 02 Aug 2023 10:59:39 -0400
-In-Reply-To: <20230704015135.31850-1-xiaoyong.lu@mediatek.com>
-References: <20230704015135.31850-1-xiaoyong.lu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Anup Patel <apatel@ventanamicro.com>
+Subject: [PATCH v7 00/15] Linux RISC-V AIA Support
+Date:   Wed,  2 Aug 2023 20:30:03 +0530
+Message-Id: <20230802150018.327079-1-apatel@ventanamicro.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The RISC-V AIA specification is now frozen as-per the RISC-V international
+process. The latest frozen specifcation can be found at:
+https://github.com/riscv/riscv-aia/releases/download/1.0/riscv-interrupts-1.0.pdf
 
-Le mardi 04 juillet 2023 =C3=A0 09:51 +0800, Xiaoyong Lu a =C3=A9crit=C2=A0=
-:
-> Fix av1 decode fail when iova is 36bit.
+At a high-level, the AIA specification adds three things:
+1) AIA CSRs
+   - Improved local interrupt support
+2) Incoming Message Signaled Interrupt Controller (IMSIC)
+   - Per-HART MSI controller
+   - Support MSI virtualization
+   - Support IPI along with virtualization
+3) Advanced Platform-Level Interrupt Controller (APLIC)
+   - Wired interrupt controller
+   - In MSI-mode, converts wired interrupt into MSIs (i.e. MSI generator)
+   - In Direct-mode, injects external interrupts directly into HARTs
 
-I'd change the subject to "media: mediatek: vcodec: fix AV1 decoding on MT8=
-188"
-And rephrase this one to:
+For an overview of the AIA specification, refer the AIA virtualization
+talk at KVM Forum 2022:
+https://static.sched.com/hosted_files/kvmforum2022/a1/AIA_Virtualization_in_KVM_RISCV_final.pdf
+https://www.youtube.com/watch?v=r071dL8Z0yo
 
-  Fix AV1 decoding failure when the iova is 36bit.
+To test this series, use QEMU v7.2 (or higher) and OpenSBI v1.2 (or higher).
 
->=20
-> Decoder hardware will access incorrect iova address when tile buffer is
-> 36bit, it will lead to iommu fault when hardware access dram data.
+These patches can also be found in the riscv_aia_v7 branch at:
+https://github.com/avpatel/linux.git
 
-Suggest to rephrase this:
+Changes since v6:
+ - Rebased on Linux-6.5-rc4
+ - Updated PATCH2 to use IS_ENABLED(CONFIG_SPARC) instead of
+   !IS_ENABLED(CONFIG_OF_IRQ)
+ - Added new PATCH4 to fix syscore registration in PLIC driver
+ - Update PATCH5 to convert PLIC driver into full-blown platform driver
+   with a re-written probe function.
 
-   Before this fix, the decoder was accessing incorrect addresses with 36bi=
-t
-   iova tile buffer, leading to iommu faults.
+Changes since v5:
+ - Rebased on Linux-6.5-rc2
+ - Updated the overall series to ensure that only IPI, timer, and
+   INTC drivers are probed very early whereas rest of the interrupt
+   controllers (such as PLIC, APLIC, and IMISC) are probed as
+   regular platform drivers.
+ - Renamed riscv_fw_parent_hartid() to riscv_get_intc_hartid()
+ - New PATCH1 to add fw_devlink support for msi-parent DT property
+ - New PATCH2 to ensure all INTC suppliers are initialized which in-turn
+   fixes the probing issue for PLIC, APLIC and IMSIC as platform driver
+ - New PATCH3 to use platform driver probing for PLIC
+ - Re-structured the IMSIC driver into two separate drivers: early and
+   platform. The IMSIC early driver (PATCH7) only initialized IMSIC state
+   and provides IPIs whereas the IMSIC platform driver (PATCH8) is probed
+   provides MSI domain for platform devices.
+ - Re-structure the APLIC platform driver into three separe sources: main,
+   direct mode, and MSI mode.
 
->=20
-> Fixes: 2f5d0aef37c6 ("media: mediatek: vcodec: support stateless AV1 deco=
-der")
-> Signed-off-by: Xiaoyong Lu<xiaoyong.lu@mediatek.com>
+Changes since v4:
+ - Rebased on Linux-6.5-rc1
+ - Added "Dependencies" in the APLIC bindings (PATCH6 in v4)
+ - Dropped the PATCH6 which was changing the IOMMU DMA domain APIs
+ - Dropped use of IOMMU DMA APIs in the IMSIC driver (PATCH4)
 
-With some rework of the commit message, see my suggestions above:
+Changes since v3:
+ - Rebased on Linux-6.4-rc6
+ - Droped PATCH2 of v3 series instead we now set FWNODE_FLAG_BEST_EFFORT via
+   IRQCHIP_DECLARE()
+ - Extend riscv_fw_parent_hartid() to support both DT and ACPI in PATCH1
+ - Extend iommu_dma_compose_msi_msg() instead of adding iommu_dma_select_msi()
+   in PATCH6
+ - Addressed Conor's comments in PATCH3
+ - Addressed Conor's and Rob's comments in PATCH7
 
-Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Changes since v2:
+ - Rebased on Linux-6.4-rc1
+ - Addressed Rob's comments on DT bindings patches 4 and 8.
+ - Addessed Marc's comments on IMSIC driver PATCH5
+ - Replaced use of OF apis in APLIC and IMSIC drivers with FWNODE apis
+   this makes both drivers easily portable for ACPI support. This also
+   removes unnecessary indirection from the APLIC and IMSIC drivers.
+ - PATCH1 is a new patch for portability with ACPI support
+ - PATCH2 is a new patch to fix probing in APLIC drivers for APLIC-only systems.
+ - PATCH7 is a new patch which addresses the IOMMU DMA domain issues pointed
+   out by SiFive
 
-> ---
-> Changes from v1
->=20
-> - prefer '|' rather than '+'
-> - prefer '&' rather than shift operation
-> - add comments for address operations
->=20
-> v1:
-> - VDEC HW can access tile buffer and decode normally.
-> - Test ok by mt8195 32bit and mt8188 36bit iova.
->=20
-> ---
->  .../mediatek/vcodec/vdec/vdec_av1_req_lat_if.c       | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat=
-_if.c b/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c
-> index 404a1a23fd402..e9f2393f6a883 100644
-> --- a/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c
-> +++ b/drivers/media/platform/mediatek/vcodec/vdec/vdec_av1_req_lat_if.c
-> @@ -1658,9 +1658,9 @@ static void vdec_av1_slice_setup_tile_buffer(struct=
- vdec_av1_slice_instance *ins
->  	u32 allow_update_cdf =3D 0;
->  	u32 sb_boundary_x_m1 =3D 0, sb_boundary_y_m1 =3D 0;
->  	int tile_info_base;
-> -	u32 tile_buf_pa;
-> +	u64 tile_buf_pa;
->  	u32 *tile_info_buf =3D instance->tile.va;
-> -	u32 pa =3D (u32)bs->dma_addr;
-> +	u64 pa =3D (u64)bs->dma_addr;
-> =20
->  	if (uh->disable_cdf_update =3D=3D 0)
->  		allow_update_cdf =3D 1;
-> @@ -1673,8 +1673,12 @@ static void vdec_av1_slice_setup_tile_buffer(struc=
-t vdec_av1_slice_instance *ins
->  		tile_info_buf[tile_info_base + 0] =3D (tile_group->tile_size[tile_num]=
- << 3);
->  		tile_buf_pa =3D pa + tile_group->tile_start_offset[tile_num];
-> =20
-> -		tile_info_buf[tile_info_base + 1] =3D (tile_buf_pa >> 4) << 4;
-> -		tile_info_buf[tile_info_base + 2] =3D (tile_buf_pa % 16) << 3;
-> +		/* save av1 tile high 4bits(bit 32-35) address in lower 4 bits positio=
-n
-> +		 * and clear original for hw requirement.
-> +		 */
-> +		tile_info_buf[tile_info_base + 1] =3D (tile_buf_pa & 0xFFFFFFF0ull) |
-> +			((tile_buf_pa & 0xF00000000ull) >> 32);
-> +		tile_info_buf[tile_info_base + 2] =3D (tile_buf_pa & 0xFull) << 3;
-> =20
->  		sb_boundary_x_m1 =3D
->  			(tile->mi_col_starts[tile_col + 1] - tile->mi_col_starts[tile_col] - =
-1) &
+Changes since v1:
+ - Rebased on Linux-6.2-rc2
+ - Addressed comments on IMSIC DT bindings for PATCH4
+ - Use raw_spin_lock_irqsave() on ids_lock for PATCH5
+ - Improved MMIO alignment checks in PATCH5 to allow MMIO regions
+   with holes.
+ - Addressed comments on APLIC DT bindings for PATCH6
+ - Fixed warning splat in aplic_msi_write_msg() caused by
+   zeroed MSI message in PATCH7
+ - Dropped DT property riscv,slow-ipi instead will have module
+   parameter in future.
+
+Anup Patel (15):
+  RISC-V: Add riscv_get_intc_hartid() function
+  of: property: Add fw_devlink support for msi-parent
+  drivers: irqchip/riscv-intc: Mark all INTC nodes as initialized
+  irqchip/sifive-plic: Fix syscore registration for multi-socket systems
+  irqchip/sifive-plic: Convert PLIC driver into a platform driver
+  irqchip/riscv-intc: Add support for RISC-V AIA
+  dt-bindings: interrupt-controller: Add RISC-V incoming MSI controller
+  irqchip: Add RISC-V incoming MSI controller early driver
+  irqchip/riscv-imsic: Add support for platform MSI irqdomain
+  irqchip/riscv-imsic: Add support for PCI MSI irqdomain
+  dt-bindings: interrupt-controller: Add RISC-V advanced PLIC
+  irqchip: Add RISC-V advanced PLIC driver for direct-mode
+  irqchip/riscv-aplic: Add support for MSI-mode
+  RISC-V: Select APLIC and IMSIC drivers
+  MAINTAINERS: Add entry for RISC-V AIA drivers
+
+ .../interrupt-controller/riscv,aplic.yaml     | 172 ++++++
+ .../interrupt-controller/riscv,imsics.yaml    | 172 ++++++
+ MAINTAINERS                                   |  14 +
+ arch/riscv/Kconfig                            |   2 +
+ arch/riscv/include/asm/processor.h            |   4 +-
+ arch/riscv/kernel/cpu.c                       |  26 +-
+ drivers/irqchip/Kconfig                       |  25 +-
+ drivers/irqchip/Makefile                      |   3 +
+ drivers/irqchip/irq-riscv-aplic-direct.c      | 326 +++++++++++
+ drivers/irqchip/irq-riscv-aplic-main.c        | 240 ++++++++
+ drivers/irqchip/irq-riscv-aplic-main.h        |  53 ++
+ drivers/irqchip/irq-riscv-aplic-msi.c         | 285 ++++++++++
+ drivers/irqchip/irq-riscv-imsic-early.c       | 258 +++++++++
+ drivers/irqchip/irq-riscv-imsic-platform.c    | 328 +++++++++++
+ drivers/irqchip/irq-riscv-imsic-state.c       | 523 ++++++++++++++++++
+ drivers/irqchip/irq-riscv-imsic-state.h       |  67 +++
+ drivers/irqchip/irq-riscv-intc.c              |  46 +-
+ drivers/irqchip/irq-sifive-plic.c             | 200 ++++---
+ drivers/of/property.c                         |  32 ++
+ include/linux/irqchip/riscv-aplic.h           | 119 ++++
+ include/linux/irqchip/riscv-imsic.h           |  86 +++
+ 21 files changed, 2879 insertions(+), 102 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,aplic.yaml
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,imsics.yaml
+ create mode 100644 drivers/irqchip/irq-riscv-aplic-direct.c
+ create mode 100644 drivers/irqchip/irq-riscv-aplic-main.c
+ create mode 100644 drivers/irqchip/irq-riscv-aplic-main.h
+ create mode 100644 drivers/irqchip/irq-riscv-aplic-msi.c
+ create mode 100644 drivers/irqchip/irq-riscv-imsic-early.c
+ create mode 100644 drivers/irqchip/irq-riscv-imsic-platform.c
+ create mode 100644 drivers/irqchip/irq-riscv-imsic-state.c
+ create mode 100644 drivers/irqchip/irq-riscv-imsic-state.h
+ create mode 100644 include/linux/irqchip/riscv-aplic.h
+ create mode 100644 include/linux/irqchip/riscv-imsic.h
+
+-- 
+2.34.1
 
