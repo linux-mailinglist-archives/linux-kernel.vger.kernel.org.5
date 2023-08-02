@@ -2,152 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A3F76C3C5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E943576C3CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 05:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbjHBDwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 23:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38276 "EHLO
+        id S230033AbjHBD6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 23:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232182AbjHBDwC (ORCPT
+        with ESMTP id S229558AbjHBD6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 23:52:02 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5EBA30C8;
-        Tue,  1 Aug 2023 20:51:45 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3722NIGu028791;
-        Wed, 2 Aug 2023 03:51:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=iv9VMeggZweWL3QOIkADDj2WzrjlhjhC5j1kulPSJ7c=;
- b=KO3b3yWU9Yeiv/hmJGVWpLLB8uLD+mEBgj+fPeDktexvcG3HKxJzjfLvJeZsc3+Zbjqn
- N8KG0dNYg7w/fqGUje064kAqIj3jeylY7AafHWUFaGIzQj1bbKvnDMsfGC3ReipPbvN9
- Oa0ti8LjtuJKStoEIkpQCSvytinlVladvPR5vlZE17p85OcIZ7Ud/tla+Rfcg+zWoIIf
- 0sQaK8sIBBf7DjgvUca6NjFCuicieY2ApaIe1H0YDkDfge+ypiiEqBtP+Ir0mBjr82kL
- RQykojQAZJ7qF0pAqZYgKlFWpi2ao+rRANjZ06BLZB/D4ersTNk/z+PbDVLBsu6lgwir dw== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s6rhatudq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Aug 2023 03:51:32 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3723pS43022512;
-        Wed, 2 Aug 2023 03:51:28 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3s4uukryxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 02 Aug 2023 03:51:28 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3723pSSJ022504;
-        Wed, 2 Aug 2023 03:51:28 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-krichai-hyd.qualcomm.com [10.213.110.112])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3723pR5Q022503;
-        Wed, 02 Aug 2023 03:51:28 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 4058933)
-        id 5B7344B59; Wed,  2 Aug 2023 09:21:27 +0530 (+0530)
-From:   Krishna chaitanya chundru <quic_krichai@quicinc.com>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     helgaas@kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_vbadigan@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_skananth@quicinc.com, quic_ramkri@quicinc.com,
-        quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org,
-        Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        mhi@lists.linux.dev (open list:MHI BUS)
-Subject: [PATCH v5 4/4] PCI: epf-mhi: Add support for handling D-state notify from EPC
-Date:   Wed,  2 Aug 2023 09:21:21 +0530
-Message-Id: <1690948281-2143-5-git-send-email-quic_krichai@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1690948281-2143-1-git-send-email-quic_krichai@quicinc.com>
-References: <1690948281-2143-1-git-send-email-quic_krichai@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: BstDsv_bIAOsUCh53GyUGQ2obw2nsynp
-X-Proofpoint-ORIG-GUID: BstDsv_bIAOsUCh53GyUGQ2obw2nsynp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
- definitions=2023-08-02_01,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- priorityscore=1501 adultscore=0 clxscore=1015 impostorscore=0 spamscore=0
- bulkscore=0 phishscore=0 mlxlogscore=776 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2306200000
- definitions=main-2308020033
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        Tue, 1 Aug 2023 23:58:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD7B103;
+        Tue,  1 Aug 2023 20:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1sxh7WBnvHVhsALDL7UYNMUiOC+6/e9sMU+u5Ot8mLc=; b=v/OfBmitMKXbq60FtWwAjeBzPD
+        rHrouKtj7RhHZCdeJfVP87aaiq3a4NJoBF0hxzExrnEssr28/oU8mEXEW4Hs1C/AkDDqxxNrzwqLh
+        tLq58oHhLkRLu0/KTfJfIJ30KY1Ip6O0z0KkdJ9948Y9knve/1zDrSJBUVhQvg6JR9iQe2Wpfi3IS
+        RUjIfpbnSBORbjuT+4lHQQedW577OMpZWQLx9aCZ+ffNKBIFbRvJQ5cWhklc01w389Cmlt6ktxd+V
+        9uq7t2DYYa5mR3LoyLaMuMRmlspok+w0dVi9cTk4UeJZdExtQ82vDxNZt4J1iSVQb8FH5/1Bx/SkJ
+        ABFAu7Vg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qR2zn-00Ckt2-3N; Wed, 02 Aug 2023 03:57:59 +0000
+Date:   Wed, 2 Aug 2023 04:57:59 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     thunder.leizhen@huaweicloud.com
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Zqiang <qiang.zhang1211@gmail.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, openeuler <kernel@openeuler.org>
+Subject: Re: [PATCH v3 1/2] mm: Provide empty function for kmem_dump_obj()
+ when CONFIG_PRINTK=n
+Message-ID: <ZMnUR61eFmO014EL@casper.infradead.org>
+References: <20230802034518.1115-1-thunder.leizhen@huaweicloud.com>
+ <20230802034518.1115-2-thunder.leizhen@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230802034518.1115-2-thunder.leizhen@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for handling D-state notify for MHI EPF.
+On Wed, Aug 02, 2023 at 11:45:16AM +0800, thunder.leizhen@huaweicloud.com wrote:
+> +++ b/include/linux/slab.h
+> @@ -246,6 +246,9 @@ size_t ksize(const void *objp);
+>  #ifdef CONFIG_PRINTK
+>  bool kmem_valid_obj(void *object);
+>  void kmem_dump_obj(void *object);
+> +#else
+> +static inline bool kmem_valid_obj(void *object) { return false; }
 
-Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
----
- drivers/pci/endpoint/functions/pci-epf-mhi.c | 11 +++++++++++
- include/linux/mhi_ep.h                       |  3 +++
- 2 files changed, 14 insertions(+)
+That is very confusing.  kmem_valid_obj() looks like a function which
+should exist regardless of CONFIG_PRINTK and to have it always return
+false if CONFIG_PRINTK isn't set seems weird.
 
-diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-index 9c1f5a1..ee91bfc 100644
---- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-+++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-@@ -339,6 +339,16 @@ static int pci_epf_mhi_bme(struct pci_epf *epf)
- 	return 0;
- }
- 
-+static int pci_epf_mhi_dstate_notify(struct pci_epf *epf, pci_power_t state)
-+{
-+	struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
-+	struct mhi_ep_cntrl *mhi_cntrl = &epf_mhi->mhi_cntrl;
-+
-+	mhi_cntrl->dstate = state;
-+
-+	return 0;
-+}
-+
- static int pci_epf_mhi_bind(struct pci_epf *epf)
+I see we have one caller of kmem_valid_obj() right now.  Which means it
+shouldn't be an EXPORT_SYMBOL since that caller is not a module.
+
+I think the right solution is to convert kmem_dump_obj() to
+work the same way as vmalloc_dump_obj().  ie:
+
++++ b/mm/util.c
+@@ -1057,11 +1057,8 @@ void mem_dump_obj(void *object)
  {
- 	struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
-@@ -394,6 +404,7 @@ static struct pci_epc_event_ops pci_epf_mhi_event_ops = {
- 	.link_up = pci_epf_mhi_link_up,
- 	.link_down = pci_epf_mhi_link_down,
- 	.bme = pci_epf_mhi_bme,
-+	.dstate_notify = pci_epf_mhi_dstate_notify,
- };
- 
- static int pci_epf_mhi_probe(struct pci_epf *epf,
-diff --git a/include/linux/mhi_ep.h b/include/linux/mhi_ep.h
-index f198a8a..c3a0685 100644
---- a/include/linux/mhi_ep.h
-+++ b/include/linux/mhi_ep.h
-@@ -8,6 +8,7 @@
- 
- #include <linux/dma-direction.h>
- #include <linux/mhi.h>
-+#include <linux/pci.h>
- 
- #define MHI_EP_DEFAULT_MTU 0x8000
- 
-@@ -139,6 +140,8 @@ struct mhi_ep_cntrl {
- 
- 	enum mhi_state mhi_state;
- 
-+	pci_power_t dstate;
-+
- 	u32 max_chan;
- 	u32 mru;
- 	u32 event_rings;
--- 
-2.7.4
+        const char *type;
+
+-       if (kmem_valid_obj(object)) {
+-               kmem_dump_obj(object);
++       if (kmem_dump_obj(object))
+                return;
+-       }
+-
+        if (vmalloc_dump_obj(object))
+                return;
+
+... with corresponding changes to eliminate kmem_valid_obj() as a
+symbol.
 
