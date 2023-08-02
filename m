@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C290D76C7C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B2D76C7CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 10:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbjHBIBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 04:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57862 "EHLO
+        id S230316AbjHBIB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 04:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232314AbjHBIBe (ORCPT
+        with ESMTP id S231966AbjHBIBn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 04:01:34 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F4A103
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 01:01:33 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-317b31203c7so883568f8f.2
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 01:01:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1690963291; x=1691568091;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lra3q/h8SM1TJz6A0xEiw6O+E+QZRKqoZawzR3yHXXU=;
-        b=WG73QsGDeqbfFjtwLTViQKxw6vZp2+DccJge8CopyqgNhzxZm+NQPurbPNE/zbpvMb
-         bEgOEWX0oPDIaBXZIVkSUELuXPvZj6JYHj5uJrgQ2jE9KduNryz1mDgdOixfYtF4h98o
-         qfKCJiugBJqKJVVmo1lAc4nyjob3fEmOS3ht6W7HnrqGou0fnckbspaaFoQoxqsWasnj
-         MaoTR/Dc2Lt4Bco2VSIl4V4Z3tTFkfVb/IyxeFiTZgCQRAGry2qAwp0dDSG299dmrK1A
-         UKRE0hvOGpw44zgPPdF+CqB9s4CZ9dVWFD/cM48hcfQxiGdKHgiUT8exP1Aroz+G1uLV
-         KTbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690963291; x=1691568091;
-        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
-         :content-language:subject:reply-to:from:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Lra3q/h8SM1TJz6A0xEiw6O+E+QZRKqoZawzR3yHXXU=;
-        b=XxL6CsRAoq0H4Um/deEYEgLp+MGJpNylZWRcAfyEFzvy5hE0rrY3You+L9IPXRdLJb
-         /JBis2nH/ymN/LGYK+yDu4bl6zGvFfcRcmw8z+vuwBsMogko4gExuAX2krfQW6tPXMRU
-         QiS3+yOEnkPqvM9o3Hvu9kuzrRY49TsQWbzTJP25Did7RSrPbIpI862WIIOyEeDNsm+J
-         BqxPv5AXYz1Qxzus4M8vlllBhaEdqTBNAcxxrUuvdIPNnXtDcqWkKa8OpEm0U0hP10fS
-         /iAKgYDiQn4MvuesDCwM8+eszALllt8bpGOtVijB1wtyX28zq0PhCUq7k1nTDe1srqve
-         2fJQ==
-X-Gm-Message-State: ABy/qLYgjqOAHTS8MQYjfQkMPTe+q9PDf93z/9k6dmcu8KqnMTRDz004
-        JSbGv9/j2OaOPBS8sozjFLxzGg==
-X-Google-Smtp-Source: APBJJlGdsZhFMf93cQbrmr7O2hMk9KbKDVaIKgraQYohQlJ5ll+m53ZGUG4Ri6G3YFdBEvdtu0kh7Q==
-X-Received: by 2002:adf:e291:0:b0:317:67bf:3376 with SMTP id v17-20020adfe291000000b0031767bf3376mr4297267wri.57.1690963291548;
-        Wed, 02 Aug 2023 01:01:31 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:c5bb:5b4:61e3:d196? ([2a01:e0a:982:cbb0:c5bb:5b4:61e3:d196])
-        by smtp.gmail.com with ESMTPSA id z13-20020a5d654d000000b00314398e4dd4sm18128546wrv.54.2023.08.02.01.01.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 01:01:30 -0700 (PDT)
-Message-ID: <32876ecc-4f20-2b59-937d-7923a4d20594@linaro.org>
-Date:   Wed, 2 Aug 2023 10:01:29 +0200
+        Wed, 2 Aug 2023 04:01:43 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5D3B4;
+        Wed,  2 Aug 2023 01:01:42 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37211fkI008077;
+        Wed, 2 Aug 2023 08:01:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=NqWLVpp+y1y0zXW6k+mxHCmC9rdsQy22hgANj0VoGkQ=;
+ b=eNZ6KWmzjSuNq1MtdNJXi5VcWoI2G0mv/WzoUy+Q2vO7iyQDk7Duw/g4slwQaLJHpsTz
+ /SUrqDQHVkfqmAS+hRh6kF78RM+69Y+DhBFb7ygy3+5ohDSDxlppXZahWmdgBho564bq
+ H1fCUfCy1BXzTK7Dbp9bcJVjifwwMf2ZGyQHziqYlC6QmsMGb5TYAaVS8S5Lre1SwSL6
+ I1oLfevEeJR/QfDstGMlorb2ly0+FfU8oH5pahsQyjtsi20rA6/h2UOjMJ+oiACE+A94
+ gz2bta8BZ/kqIcEeYJQwvfzwJMbCFsE3mmXnanoxy4CXcVK95/nyzf8Ax2bdVVoGxO2n 1A== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s75b31qpb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Aug 2023 08:01:36 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37281ZtD026320
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 2 Aug 2023 08:01:35 GMT
+Received: from [10.239.104.229] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Wed, 2 Aug
+ 2023 01:01:32 -0700
+Message-ID: <39e7dec4-8c84-2406-3490-251ff942282c@quicinc.com>
+Date:   Wed, 2 Aug 2023 16:01:30 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/panel: samsung-s6d7aa0: Add MODULE_DEVICE_TABLE
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v14 0/2] Bluetooth: hci_qca: Add support for Qualcomm
+ Bluetooth SoC QCA2066
 Content-Language: en-US
-To:     Nikita Travkin <nikita@trvn.ru>,
-        Artur Weber <aweber.kernel@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230802-gt5-panel-dtable-v1-1-c0a765c175e2@trvn.ru>
-Organization: Linaro Developer Services
-In-Reply-To: <20230802-gt5-panel-dtable-v1-1-c0a765c175e2@trvn.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     <johan@kernel.org>
+CC:     <marcel@holtmann.org>, <luiz.dentz@gmail.com>,
+        <johan.hedberg@gmail.com>, <linux-kernel@vger.kernel.org>,
+        <linux-bluetooth@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <quic_bgodavar@quicinc.com>, <quic_hemantg@quicinc.com>
+References: <20230727083555.1023992-1-quic_tjiang@quicinc.com>
+From:   Tim Jiang <quic_tjiang@quicinc.com>
+In-Reply-To: <20230727083555.1023992-1-quic_tjiang@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: -Iq4voRhO5Cm_Q6Bj98KzKBCe9oaft-1
+X-Proofpoint-ORIG-GUID: -Iq4voRhO5Cm_Q6Bj98KzKBCe9oaft-1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-08-02_03,2023-08-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ mlxscore=0 spamscore=0 mlxlogscore=837 bulkscore=0 clxscore=1015
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2306200000 definitions=main-2308020070
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
@@ -81,36 +82,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/08/2023 08:41, Nikita Travkin wrote:
-> The driver can be built as a module, however the lack of the
-> MODULE_DEVICE_TABLE macro prevents it from being automatically probed
-> from the DT in such case.
-> 
-> Add the missed macro to make sure the module can load automatically.
-> 
-> Fixes: 6810bb390282 ("drm/panel: Add Samsung S6D7AA0 panel controller driver")
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
->   drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c b/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
-> index 0583360b1280..ea5a85779382 100644
-> --- a/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
-> +++ b/drivers/gpu/drm/panel/panel-samsung-s6d7aa0.c
-> @@ -567,6 +567,7 @@ static const struct of_device_id s6d7aa0_of_match[] = {
->   	},
->   	{ /* sentinel */ }
->   };
-> +MODULE_DEVICE_TABLE(of, s6d7aa0_of_match);
->   
->   static struct mipi_dsi_driver s6d7aa0_driver = {
->   	.probe = s6d7aa0_probe,
-> 
-> ---
-> base-commit: 626c67169f9972fffcdf3bc3864de421f162ebf5
-> change-id: 20230802-gt5-panel-dtable-d9d6ca407f26
-> 
-> Best regards,
+Hi Johan:
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+   sorry to disturb you , any other comments for this version ? could 
+you help merge this patch, thank you very much.
+
+
+On 7/27/23 16:35, Tim Jiang wrote:
+> This series adds support for qualcomm bluetooth soc qca2066
+>
+> Changes in v14
+>   - remove stray newline
+>
+> Changes in v13
+>   - change the subject name for patch 1/2, and move the qca066 type code to patch 2/2.
+>   - correct log style and sort qca2066 btsoc type for patch 2/2
+>
+> Changes in v12
+>   - fix compile error issue for patch 1/2
+>
+> Changes in v11
+>   - reverse two patches order
+>
+> Changes in v10
+>   - break out btsoc type print into seperate patch
+>
+> Changes in v2-v9
+>   - solve review comments for code style and commit message context
+>
+>
+> Tim Jiang (2):
+>    Bluetooth: hci_qca: adjust qca btsoc type print expression
+>    Bluetooth: hci_qca: Add support for Qualcomm Bluetooth SoC QCA2066
+>
+>   drivers/bluetooth/btqca.c   | 76 ++++++++++++++++++++++++++++++++++++-
+>   drivers/bluetooth/btqca.h   |  4 +-
+>   drivers/bluetooth/hci_qca.c | 41 ++++++++++++++++++--
+>   3 files changed, 114 insertions(+), 7 deletions(-)
+>
