@@ -2,195 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 176D076CC7D
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B82376CC81
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 14:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbjHBMUn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 2 Aug 2023 08:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
+        id S233160AbjHBMVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 08:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230262AbjHBMUl (ORCPT
+        with ESMTP id S232847AbjHBMVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 08:20:41 -0400
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C28326AF;
-        Wed,  2 Aug 2023 05:20:40 -0700 (PDT)
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1bb3df62b34so881086fac.0;
-        Wed, 02 Aug 2023 05:20:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690978839; x=1691583639;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VORnzW/QpwQXhPl9SE+Jx3veoxk4wpWoU9SWAgDYUEU=;
-        b=j1ROu5LZycWtabVbFHtue6htCqQB5Y80wqn/LwGuOYkf/xR5TCyEOrmvO2EGllQaol
-         29JUr1+tEQASDCwR1zQgAZS6/qacSxGWCracLk4ZdUQd9q9eu/yY+a3tBS3G16ii+Plm
-         CrRxt5ebFoGRv5O+U5DWcjNNochsIIa6wwyPz5i5qJFo9dDh41Be5P/MZULYaSH5KosM
-         9DeNJ/k3bSi4lNeG5U7tlq7MDXXK1443l0lE+zVM71/OfS249bGZLdESG2V4mQ9hfTpQ
-         IVPizB0FVs9Gu0OyTg2poRQIEanH4tPiirVRzqVNeQ+ER/B5Sxd37My78l+BjtBPo0In
-         ryFg==
-X-Gm-Message-State: ABy/qLZhqzAhe7yXAMbJlnA2PcMt0H3da98QCuinpDkVzOlHBWvz0g9b
-        QtAIN/vvQVNIzmdDuvRWYLiGjMSMeOx0MsO05+AdpYfo
-X-Google-Smtp-Source: APBJJlGIcF4+HcMFuhetkl9UJwu6PjHO5Gs8MUcoQCh/U2SusCOe1NGS0JTdoXb3NI8DtessbXrRcKRYK2LvnKFu7jY=
-X-Received: by 2002:a05:6870:d793:b0:1b3:afdc:6c08 with SMTP id
- bd19-20020a056870d79300b001b3afdc6c08mr11960946oab.0.1690978839408; Wed, 02
- Aug 2023 05:20:39 -0700 (PDT)
+        Wed, 2 Aug 2023 08:21:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605E4269E
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 05:21:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ECB2A6194F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:21:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDBC7C433C8;
+        Wed,  2 Aug 2023 12:21:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1690978890;
+        bh=ogitFwxiVJEn4CoyxI5FjfjwCwtkte8vNfmXWrRsODE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=noRTLmnPH4uUx0Afpw1gJ8ege5fg4D1a0fUOXhzBHq+DUXSS9jSHxO5biX32qesZW
+         8I7+h1LUbpKCZuAkziXo8HpxyrihD0SEJinYhS/3KBdK+foRNR3rdrIilK+iueUsjg
+         aezU/56qaYPazZzw4GxAPqRkWX4NBPNW4tkIn1rfITfVKPcCrz2NyesyrHw+OO4f1G
+         vmw5XpGWra56wqHoOqc/tjCf0Iow+Pw56psBfzqeRwiBBoZptVcglK01Cr1xiTP9oy
+         UynVEjYZgMQjOm6yVl2mDzeHa5ODiHPws4DPq69umjWMVzDLK51UED+G0PyPP12HrH
+         cp9QGxlh1jJKw==
+Date:   Wed, 2 Aug 2023 13:21:25 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/fpsimd: Only provide the length to cpufeature for
+ xCR registers
+Message-ID: <371e0fb4-0f99-40cc-b93f-0eae700d720c@sirena.org.uk>
+References: <20230727-arm64-sme-fa64-hotplug-v1-1-34ae93afc05b@kernel.org>
+ <20230802112122.GA27807@willie-the-truck>
 MIME-Version: 1.0
-References: <4515817.LvFx2qVVIh@kreacher> <ZMl+yH42Ir0AZzoX@e126311.manchester.arm.com>
-In-Reply-To: <ZMl+yH42Ir0AZzoX@e126311.manchester.arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 2 Aug 2023 14:20:27 +0200
-Message-ID: <CAJZ5v0grLBbRNJHq=_OvC3HqE3BEy=BOwgde_gPk2qyUOWKuZQ@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] cpuidle: teo: Avoid stopping scheduler tick too often
-To:     Kajetan Puchalski <kajetan.puchalski@arm.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>,
-        Frederic Weisbecker <frederic@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1uDqYgO4mPaxFj58"
+Content-Disposition: inline
+In-Reply-To: <20230802112122.GA27807@willie-the-truck>
+X-Cookie: Humpty Dumpty was pushed.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 1, 2023 at 11:53 PM Kajetan Puchalski
-<kajetan.puchalski@arm.com> wrote:
->
-> Hi Rafael,
->
-> > Hi Folks,
-> >
-> > Patch [1/3] in this series is a v3 of this patch posted last week:
-> >
-> > https://lore.kernel.org/linux-pm/4506480.LvFx2qVVIh@kreacher/
-> >
-> > Patch [2/3] (this is the second version of it) addresses some bail out paths
-> > in teo_select() in which the scheduler tick may be stopped unnecessarily too.
-> >
-> > Patch [3/3] replaces a structure field with a local variable (while at it)
-> > and it is the same as its previous version.
-> >
-> > According to this message:
-> >
-> > https://lore.kernel.org/linux-pm/CAJZ5v0jJxHj65r2HXBTd3wfbZtsg=_StzwO1kA5STDnaPe_dWA@mail.gmail.com/
-> >
-> > this series significantly reduces the number of cases in which the governor
-> > requests stopping the tick when the selected idle state is shallow, which is
-> > incorrect.
-> >
-> > Thanks!
-> >
-> >
->
-> I did some initial testing with this on Android (Pixel 6, Android 13).
->
-> 1. Geekbench 6
->
-> +---------------------------+---------------+-----------------+
-> |          metric           |      teo      |     teo_tick    |
-> +---------------------------+---------------+-----------------+
-> |      multicore_score      | 3320.9 (0.0%) | 3303.3 (-0.53%) |
-> |           score           | 1415.7 (0.0%) | 1417.7 (0.14%)  |
-> |      CPU_total_power      | 2421.3 (0.0%) | 2429.3 (0.33%)  |
-> |  latency (AsyncTask #1)   | 49.41μ (0.0%) | 51.07μ (3.36%)  |
-> | latency (labs.geekbench6) | 65.63μ (0.0%) | 77.47μ (18.03%) |
-> | latency (surfaceflinger)  | 39.46μ (0.0%) | 36.94μ (-6.39%) |
-> +---------------------------+---------------+-----------------+
->
-> So the big picture for this workload looks roughly the same, the
-> differences are too small for me to be confident in saying that the
-> score/power difference is the result of the patches and not something
-> random in the system.
-> Same with the latency, the difference for labs.gb6 stands out but that's
-> a pretty irrelevant task that sets up the benchmark, not the benchmark
-> itself so not the biggest deal I think.
->
-> +---------------+---------+------------+--------+
-> |     kernel    | cluster | idle_state |  time  |
-> +---------------+---------+------------+--------+
-> |      teo      | little  |    0.0     | 146.75 |
-> |      teo      | little  |    1.0     | 53.75  |
-> |    teo_tick   | little  |    0.0     |  63.5  |
-> |    teo_tick   | little  |    1.0     | 146.78 |
-> +---------------+---------+------------+--------+
->
-> +---------------+-------------+------------+
-> |     kernel    |    type     | count_perc |
-> +---------------+-------------+------------+
-> |   teo         |  too deep   |   2.034    |
-> |   teo         | too shallow |   15.791   |
-> |   teo_tick    |  too deep   |    2.16    |
-> |   teo_tick    | too shallow |   20.881   |
-> +---------------+-------------+------------+
->
-> The difference shows up in the idle numbers themselves, looks like we
-> get a big shift towards deeper idle on our efficiency cores (little
-> cluster) and more missed wakeups overall, both too deep & too shallow.
->
-> Notably, the percentage of too shallow sleeps on the performance cores has
-> more or less doubled (2% + 0.8% -> 4.3% + 1.8%). This doesn't
-> necessarily have to be an issue but I'll do more testing just in case.
->
-> 2. JetNews (Light UI workload)
->
-> +------------------+---------------+----------------+
-> |      metric      |      teo      |    teo_tick    |
-> +------------------+---------------+----------------+
-> |       fps        |  86.2 (0.0%)  |  86.4 (0.16%)  |
-> |     janks_pc     |  0.8 (0.0%)   |  0.8 (-0.00%)  |
-> | CPU_total_power  | 185.2 (0.0%)  | 178.2 (-3.76%) |
-> +------------------+---------------+----------------+
->
-> For the UI side, the frame data comes out the same on both variants but
-> alongside better power usage which is nice to have.
->
-> +---------------+---------+------------+-------+
-> |    kernel     | cluster | idle_state | time  |
-> +---------------+---------+------------+-------+
-> |      teo      | little  |    0.0     | 25.06 |
-> |      teo      | little  |    1.0     | 12.21 |
-> |      teo      |   mid   |    0.0     | 38.32 |
-> |      teo      |   mid   |    1.0     | 17.82 |
-> |      teo      |   big   |    0.0     | 30.45 |
-> |      teo      |   big   |    1.0     | 38.5  |
-> |    teo_tick   | little  |    0.0     | 23.18 |
-> |    teo_tick   | little  |    1.0     | 14.21 |
-> |    teo_tick   |   mid   |    0.0     | 36.31 |
-> |    teo_tick   |   mid   |    1.0     | 19.88 |
-> |    teo_tick   |   big   |    0.0     | 27.13 |
-> |    teo_tick   |   big   |    1.0     | 42.09 |
-> +---------------+---------+------------+-------+
->
-> +---------------+-------------+------------+
-> |    kernel     |    type     | count_perc |
-> +---------------+-------------+------------+
-> |      teo      |  too deep   |   0.992    |
-> |      teo      | too shallow |   17.085   |
-> |   teo_tick    |  too deep   |   0.945    |
-> |   teo_tick    | too shallow |   15.236   |
-> +---------------+-------------+------------+
->
-> For the idle stuff here all 3 clusters shift a bit towards deeper idle
-> but the overall miss rate is lower across the board which is perfectly
-> fine.
->
-> TLDR:
-> Mostly no change for a busy workload, no change + better power for a UI
-> one. The patches make sense to me & the results look all right so no big
-> problems at this stage. I'll do more testing (including the RFC you sent
-> out a moment ago) over the next few days and send those out as well.
->
-> Short of bumping into any other problems along the way, feel free to
-> grab this if you'd like:
-> Reviewed-and-tested-by: Kajetan Puchalski <kajetan.puchalski@arm.com>
 
-Thank you!
+--1uDqYgO4mPaxFj58
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Aug 02, 2023 at 12:21:23PM +0100, Will Deacon wrote:
+> On Thu, Jul 27, 2023 at 10:31:44PM +0100, Mark Brown wrote:
+
+> > -	return zcr;
+> > +	return SYS_FIELD_GET(ZCR_ELx, LEN, zcr);
+
+> Hmm, now this function looks like a mixture of code which relies on the
+> LEN field living at the bottom of the register and code which is agnostic
+> to that.
+
+> Can we update the 'zcr |= vq_max - 1' part to use something like
+> FIELD_PREP() instead?
+
+There was a version 2 that was sent already which goes in the opposite
+direction and just returns the value we would munge in without use of
+any FIELD_ macros:
+
+   https://lore.kernel.org/r/20230731-arm64-sme-fa64-hotplug-v2-1
+
+which also addresses your issue?
+
+--1uDqYgO4mPaxFj58
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTKSkUACgkQJNaLcl1U
+h9AHJwgAg+nXJyQuf3AqMJk5Q6LltUsyoWN4pcsTj9N7jmAjC3BzckwVSJWaHH8v
+YSuer7bWaeNz+5UV56seMg5J8aOat1K0BdmgTdXK/km64a9QuWJWgVVH/piFZxhN
+vxN0yhxhDKEeSTrL3AcJBs9Hw3bi3WgTAbX93UKL+o1NCjYrq5hG4LgJmOcC/VpA
+AD0c95DbuucmUMAECd8JQjcnNrudyvhPqo+ANrePLtnt9lIDxqXrZYLjuAkDzebL
+DaKuF5EVsunMkDvSYarJ3WHcNbetZx8teAB/NdghbIVZxXmqc2+nhTg6gcGoZ6gx
+/TmPFrvCY3JJv8MspxcTi6mAdhaIMA==
+=oEaC
+-----END PGP SIGNATURE-----
+
+--1uDqYgO4mPaxFj58--
