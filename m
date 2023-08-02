@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 981E176C196
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23D1276C19A
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 02:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbjHBAoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 1 Aug 2023 20:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
+        id S231194AbjHBAqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 1 Aug 2023 20:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjHBAoN (ORCPT
+        with ESMTP id S229485AbjHBAqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 1 Aug 2023 20:44:13 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2441710C7;
-        Tue,  1 Aug 2023 17:44:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A5C0761780;
-        Wed,  2 Aug 2023 00:44:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C2DDC433C7;
-        Wed,  2 Aug 2023 00:44:09 +0000 (UTC)
-Date:   Tue, 1 Aug 2023 20:44:07 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Florent Revest <revest@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 3/9] bpf/btf: Add a function to search a member of a
- struct/union
-Message-ID: <20230801204407.7b284b00@rorschach.local.home>
-In-Reply-To: <20230801204054.3884688e@rorschach.local.home>
-References: <169078860386.173706.3091034523220945605.stgit@devnote2>
-        <169078863449.173706.2322042687021909241.stgit@devnote2>
-        <CAADnVQ+C64_C1w1kqScZ6C5tr6_juaWFaQdAp9Mt3uzaQp2KOw@mail.gmail.com>
-        <20230801085724.9bb07d2c82e5b6c6a6606848@kernel.org>
-        <CAADnVQLaFpd2OhqP7W3xWB1b9P2GAKgrVQU1FU2yeNYKbCkT=Q@mail.gmail.com>
-        <20230802000228.158f1bd605e497351611739e@kernel.org>
-        <20230801112036.0d4ee60d@gandalf.local.home>
-        <20230801113240.4e625020@gandalf.local.home>
-        <CAADnVQ+N7b8_0UhndjwW9-5Vx2wUVvojujFLOCFr648DUv-Y2Q@mail.gmail.com>
-        <20230801190920.7a1abfd5@gandalf.local.home>
-        <20230802092146.9bda5e49528e6988ab97899c@kernel.org>
-        <20230801204054.3884688e@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 1 Aug 2023 20:46:37 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8AA213E
+        for <linux-kernel@vger.kernel.org>; Tue,  1 Aug 2023 17:46:34 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Vosjg-X_1690937191;
+Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Vosjg-X_1690937191)
+          by smtp.aliyun-inc.com;
+          Wed, 02 Aug 2023 08:46:32 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     airlied@gmail.com, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: [PATCH -next] drm/tests: Fix one kernel-doc comment
+Date:   Wed,  2 Aug 2023 08:46:30 +0800
+Message-Id: <20230802004630.74104-1-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1.7.g153144c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 1 Aug 2023 20:40:54 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Make @drm_kunit_helper_context_alloc to
+@drm_kunit_helper_acquire_ctx_alloc, to silence the warning:
 
-> Maybe we can add a ftrace_partial_regs(fregs) that returns a
-> partially filled pt_regs, and the caller that uses this obviously knows
-> its partial (as it's in the name). But this doesn't quite help out arm64
-> because unlike x86, struct ftrace_regs does not contain an address
-> compatibility with pt_regs fields. It would need to do a copy.
-> 
->  ftrace_partial_regs(fregs, &regs) ?
+drivers/gpu/drm/tests/drm_kunit_helpers.c:172: warning: expecting prototype for drm_kunit_helper_context_alloc(). Prototype was for drm_kunit_helper_acquire_ctx_alloc() instead
 
-Well, both would be pointers so you wouldn't need the "&", but it was
-to stress that it would be copying one to the other.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6073
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/gpu/drm/tests/drm_kunit_helpers.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  void ftrace_partial_regs(const struct ftrace_regs *fregs, struct pt_regs regs);
+diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+index 3d624ff2f651..c1dfbfcaa000 100644
+--- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
++++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
+@@ -156,7 +156,7 @@ static void action_drm_release_context(void *ptr)
+ }
+ 
+ /**
+- * drm_kunit_helper_context_alloc - Allocates an acquire context
++ * drm_kunit_helper_acquire_ctx_alloc - Allocates an acquire context
+  * @test: The test context object
+  *
+  * Allocates and initializes a modeset acquire context.
+-- 
+2.20.1.7.g153144c
 
--- Steve
