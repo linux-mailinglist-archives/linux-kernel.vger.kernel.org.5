@@ -2,234 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3B2E76D4E6
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A67076D4E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230187AbjHBRPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:15:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
+        id S230509AbjHBRPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjHBRPR (ORCPT
+        with ESMTP id S231815AbjHBRPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:15:17 -0400
-Received: from DM5PR00CU002.outbound.protection.outlook.com (mail-centralusazon11021016.outbound.protection.outlook.com [52.101.62.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD8493581;
-        Wed,  2 Aug 2023 10:14:46 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MUmxV9BXYCEYDkdAr6SHMZ4II0dNf3ieQH5jJEfWU/Yo+i1j2BM+jcwxAS6LCtl5nwYOjvI/T15AXNp4D7hXiUQrFmafP43Nz6x2BedrCzDYHVn4W4Ak5Wbc8rSXaGcjt/lO12NWAFSTtm0KripQVN99oXepoxjNadaQJ1at8CEqzaWAvXhLVKO+m3evxiO7yLIHWvu1FhkodSZLqV2l0KUfx89mNZ89Hsqxp4Qhfmy6l98i8VP1HNdMKjhegxfxDxNF6PivxMD5srZ0sinrSqxHyLY+qgCl3xgiw7IZVSfcu4ZtSEOhueJoaJBRB9p7AzGn9PTMBqBlfKJ8feQJ8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=YnKvyJ18gz16wnYGJ8j7zI1nVCDVm6zDfWA7kj8CBD0=;
- b=mZ38O4ZsvZIMP/CL7y65vwXZODi14l1zLwNaoGaa93vIGq3zw8Anbg8hVZvlV1xhh5Wixpf/wyrm8pKixlK2zEAOA9HPBp9jUdoyNYnnIG3hjvhoeAHrItEe5ZEGlS9QPtgrApbs72KFdcY1uETFPytW5N6getzaGfwq4EPANIDR0gVodGeS173oad5sTeqzyfEdj0FBZSPqOPJnlVZ6+RN31YSh8BTmcNSCYng6BaTkAPk9vOyGOHGf4dEkR2+d3U4BbERZCZRbywUS5HYMmNKxSrsl/KmXvJImPeGr5BHh/jC1vrLvP3UUlEUXRg4iHxYBGuYzk26EeKbcpb6S3w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YnKvyJ18gz16wnYGJ8j7zI1nVCDVm6zDfWA7kj8CBD0=;
- b=F9XZ2bPxTFfpzx0b7X0hiNucr/xZRSKEJ9c6aiWRIXkXFPG/1ogg0tC79oT2CXvtBzShBdLhwkDq7IAKcFIjWA44YySunE/MtHOD44avv5shDXWCQ2QyBD2YDQCWsv2Z1L8VsvHWL3uaFcPLtmDAbxZz8nl3szpceZBDLufCkcQ=
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com (2603:10b6:a02:bf::26)
- by BL1PR21MB3209.namprd21.prod.outlook.com (2603:10b6:208:396::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6678.8; Wed, 2 Aug
- 2023 17:14:43 +0000
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::b588:458f:b0dd:8b9f]) by BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::b588:458f:b0dd:8b9f%3]) with mapi id 15.20.6652.004; Wed, 2 Aug 2023
- 17:14:43 +0000
-From:   "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-To:     Sonia Sharma <sosha@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Sonia Sharma <Sonia.Sharma@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>
-Subject: RE: [PATCH] hv_netvsc: fix netvsc_send_completion to avoid multiple
- message length checks
-Thread-Topic: [PATCH] hv_netvsc: fix netvsc_send_completion to avoid multiple
- message length checks
-Thread-Index: AQHZxQVQdXJzjtZSzk6I2z3MndS5yK/XPhqw
-Date:   Wed, 2 Aug 2023 17:14:43 +0000
-Message-ID: <BYAPR21MB168878FE729DB8E57CABBB69D70BA@BYAPR21MB1688.namprd21.prod.outlook.com>
-References: <1690955450-5994-1-git-send-email-sosha@linux.microsoft.com>
-In-Reply-To: <1690955450-5994-1-git-send-email-sosha@linux.microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=96cc346b-c973-4882-86ac-acfdcb222869;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-08-02T17:09:18Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BYAPR21MB1688:EE_|BL1PR21MB3209:EE_
-x-ms-office365-filtering-correlation-id: 8acbbe37-9d3f-459f-38d2-08db937bf69e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: zj7TXXZVsbSpjwQGiqN6/F2pDWz/+RPgfnEuLQfUoLKb5U7uQ+k4JgNVFsODfGKjwT6T9UKryuq8NLsKwHmruvJQ1GC3u4p1uku/ce5QkAdqCqtmhBSWbC81QfZZonnQNj+DHRBSgP7nWi0sMTmiPo9bJIGUNr5UndPYj8eHrDBwmoqKwmRnPA3yYiKxX43IX7PdaxKFfHMJTUfbx8jjkAP7oqsW4OzK2IZvw0Hg2iQN0UiaLTf3GWDSHMrmN9qU7Z5b0mMTGzHztwF8PWIfCjpyeGtededLhEq/bzBkm4VZIX5KMEs7j1K9TxAbHK9rn0B/A5MOdRIFHNbvT5NgMJH9xhuHVKP+VG6n/htbDXKWKctUHFmFh4zzt7ZMBtlEtPOzFGfLyTlQqgEVYmMLbsYhCaFCh2LXaU7nw3aATpZiUFryfJeXmm2zKFsn42vrWGQGq5tV8aO9EYlcMH4jfh128CBE3GFb97YRevFq4QF0OVsQYl0dZrhYol64b72W6rZlqaVxrSH3zNr+ee9L6W6LrjUdktj+siQ2pW47u146rIbt4aVeDmwh8EM6qyN9P2LOzf26ugFoqw4GYGnWNQd0qTM3BkB5Xf/v5HSWFsPG/TtLJFoXIU9QeT6uIbx9mMZSXFs3dubBUjonfryMEMzXr5944BjjciBAxKPC+bY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1688.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(376002)(136003)(346002)(366004)(451199021)(33656002)(10290500003)(8990500004)(110136005)(9686003)(2906002)(38070700005)(478600001)(7696005)(83380400001)(54906003)(82960400001)(86362001)(82950400001)(122000001)(71200400001)(76116006)(52536014)(786003)(316002)(4326008)(64756008)(66556008)(66946007)(66446008)(66476007)(8936002)(8676002)(186003)(38100700002)(26005)(55016003)(5660300002)(41300700001)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?/Rwo5v/M8Q51YF89jmftbU8dLOwcVuih2FxQh8PrmS6LrrqFoXzQ3NXZrOvm?=
- =?us-ascii?Q?xnFz/2rLuqdUYB4Z8OZrjqa1SxiR+Nx+bfuRynFTQHRU2cbX1ZKYjCDohVKr?=
- =?us-ascii?Q?s6vgm/QmdaiF+7RCNmVO/IzCxeRwyKw136E06TN86YslsGhBb/V59aFhzYuQ?=
- =?us-ascii?Q?c2TsgEv5R/imeL+ZD2A9/56YMVA6LOe/1GqYlqlQqj7ZxW33l0Z1L8JoRtDN?=
- =?us-ascii?Q?iqk7JLltYSPyxrbntgFTRTNukAWo8596FVrB9mzATl/O3j/aa9sunQ8731zw?=
- =?us-ascii?Q?MLHkOeNxiQGwF+ox8+T+BpRZFpx6ALsHgwOoeEX6n0R0grb5N7BAU/OVLcln?=
- =?us-ascii?Q?YtnhxpNdrRw05xwcJX2F+IZ/Qdw3L0RKTLA6Q05Kk6CKQHF6tuNK8TpR6RAN?=
- =?us-ascii?Q?2xG6CnJkO9cpr1d9OCHCt1+RSiPSYqvowGGxPBVI0xDNWy4IAx2InDTRDiu3?=
- =?us-ascii?Q?3JQZaYtiSWJWkddKY/1xF5KL2diZ7Ovkqelfdq29Aj+7o9DRVa6ugbOSK4O2?=
- =?us-ascii?Q?Gg3ygLuB+fIR7BTgSzrow1beEdlyUEcSe3mSTQ6Eb1EkCOclwk/ZM8c6Y2GX?=
- =?us-ascii?Q?8nREnVL38T+cvwf+tO+MoGxmugCoUmjnysY5GLhZA5G7oGT2brtsOLExVP8i?=
- =?us-ascii?Q?RV/IyLb5Cm+uq/GoZ6xVzMOw95m5Je4/i8IjiAl0ZD02L7ohhn6zvhg+2W4d?=
- =?us-ascii?Q?dycQ2glXVYm3gB4Jlzxkj7ADK3P9KU0K7Oe3SN1o0gdanjEfACpTU+utifSU?=
- =?us-ascii?Q?BBLMD37Hk4VgmyK3qY5CDAqI1k8cy4S3R3cmnQnOqewXqYQpp0IXwXV0G7n7?=
- =?us-ascii?Q?pND4wY8MbwLbGLToEsHyxnkUdVETRzdQ5DpOCCKrcH17ZkWhIw7QMoPfYn1r?=
- =?us-ascii?Q?i5czDDJNBOcY3X9AJzOmwyy3l4s+goeVhR8FYmqQSeGaXRuwuoYiqWsw9ZHs?=
- =?us-ascii?Q?Fjp9u7UiZ0Q4veQljgkYqTHKiz4M0sNCg0LsiPCY8kWHJIGeuRVSIxBKdwfL?=
- =?us-ascii?Q?RiE4pMcTDjTrcgqmXlNxmDfU1jK/6q0eJ2coIQv9BDAFi9oK3KCojFeAPQY3?=
- =?us-ascii?Q?xuuHDzYLVLbSXQUO16QeTB3hEFzG4uGaF/U0290d2H41sFHHaLfs1XVd/FEQ?=
- =?us-ascii?Q?28sg7NgqclbTAu4cQv2kJUu0mSAh+if3HvNG8BPhXCe5cbiBg4rxH4LBcGO2?=
- =?us-ascii?Q?zgO3KzCj/b9uOjbMPl2uKuHUqBPUJfaZJwJxPTgx3hU3mMlsn9sOYlGpnWAP?=
- =?us-ascii?Q?+Dw78m1nce2hw/LUQlEYSddWO7Q1iF/3uMwBNcIwNTui5xGcl3Yn7eB/bsRZ?=
- =?us-ascii?Q?jYMidGaPeK1WKShILWGb/iyi61wAuBSmbHXXxvh7D5hJaeinA+KvQCKRoH9K?=
- =?us-ascii?Q?0lByM8fbiE+shvPCR50ed88TW0Y0e7sg2k95UalpjXPhqvqPpqpvWoVGBqmu?=
- =?us-ascii?Q?QB5ONJHJc/ia+omoMOet13HNLD1piDop8Zv0659y25sy2ve3AC2S8IUZpTjy?=
- =?us-ascii?Q?jMOjB19MEHgiBtaYaUJYZ3Fbk5CksPuFqn6LcO0Vb5ZOLBPsWwUmRbtrozGf?=
- =?us-ascii?Q?MYFC/5FpgasRaTZkR1d9iDJps77nE0mqiVn6WyYq/z5cXKl9XfUnS65LcGgO?=
- =?us-ascii?Q?Hw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 2 Aug 2023 13:15:33 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F2F2D71
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 10:15:13 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-4fe463420fbso86362e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:15:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1690996511; x=1691601311;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=us0CaLITIVnj4VszPxxEKlt0TWFj+St3gLNGsd+vgGs=;
+        b=bvgYFIw4iR13VgxlLvGnO+zVTwCTy3GenoEMwwcYXvMaobQSOp1VPwYAn+0BTIYJ3y
+         eMt4cvhYxI5Em1VuBtphyB+z1Icj0at166qPurcdrCV7NlYr+6c4wM5wSHqFneLFHpB2
+         EjpQYA32A8TIMBpSsFTQbPTsNRQK5DrSb1o88=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690996511; x=1691601311;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=us0CaLITIVnj4VszPxxEKlt0TWFj+St3gLNGsd+vgGs=;
+        b=Zbe7kJa5Qg3qSOUG9wfTe358wIs8eASxCxpSaLsLqM8HJ2bdHvQWpoyIoqJtMYradS
+         7GqORrvXkKl4951mQp2eFIZr46+pPP3YIm1L41hdewqvid0tJ+F0U8pPiJyEqnZtCivB
+         a0ckFzrakl/4zfb8rsfJqoDA/5MLFiPMQ9rBA5avhxEJCFgdwL2lfLGco6VY3gK6XF/w
+         1TtvLb9wiXgAC2EAjSDvR/QCUUFGhfqVhSbxVMi4gjil/zRagNCsUqLJcCH2AFNvGTWg
+         n1jmi8ioIET5Wd1hMs7ipAWi/XKb5ViwcRUCK5xtiUmb1I8qb27hoMigdc19Lc1AyZoS
+         rCPw==
+X-Gm-Message-State: ABy/qLaCyseKI8JR0269VebwKHb4xSQmXLoL47XfTtCu2tYFl3XBIFnq
+        Q31/27EOv3T69S7rG5hg2GEsMWDVQfNyN2IhZ6lXu9pK
+X-Google-Smtp-Source: APBJJlHxkSn+D/CiY7Utph/SKUjGYRNHILpgByiQZz2/pe2Z++Hj1TPwT+KseoCV3P86huquuwUdtg==
+X-Received: by 2002:a05:6512:32ce:b0:4fb:748f:604e with SMTP id f14-20020a05651232ce00b004fb748f604emr5920206lfg.36.1690996510634;
+        Wed, 02 Aug 2023 10:15:10 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id d18-20020ac244d2000000b004fe26e36350sm2148129lfm.253.2023.08.02.10.15.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 02 Aug 2023 10:15:10 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-4fe463420fbso86257e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 10:15:09 -0700 (PDT)
+X-Received: by 2002:a19:6d17:0:b0:4fb:89e2:fc27 with SMTP id
+ i23-20020a196d17000000b004fb89e2fc27mr4136280lfc.54.1690996508881; Wed, 02
+ Aug 2023 10:15:08 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1688.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8acbbe37-9d3f-459f-38d2-08db937bf69e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2023 17:14:43.0495
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mybnfMIgQcD54Z/fRYoGnqp46NMuUhzHqC0sW4RcH+P0Bz6sZxTqxMLS24e8wlmBvaNH1POVffDraqSf6xv02DOwilpRDGWx8bMQvb9CWcI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR21MB3209
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <3da81a5c-700b-8e21-1bde-27dd3a0b8945@roeck-us.net>
+ <20230731141934.GK29590@hirez.programming.kicks-ass.net> <20230731143954.GB37820@hirez.programming.kicks-ass.net>
+ <f5a18aa3-9db7-6ad2-33d5-3335a18e4e2f@roeck-us.net> <20230731145232.GM29590@hirez.programming.kicks-ass.net>
+ <7ff2a2393d78275b14ff867f3af902b5d4b93ea2.camel@suse.de> <20230731161452.GA40850@hirez.programming.kicks-ass.net>
+ <baa58a8e-54f0-2309-b34e-d62999a452a1@roeck-us.net> <20230731211517.GA51835@hirez.programming.kicks-ass.net>
+ <a05743a3-4dec-6af7-302f-d1d2a0db7d3e@roeck-us.net> <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
+In-Reply-To: <8215f037-63e9-4e92-8403-c5431ada9cc9@paulmck-laptop>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 2 Aug 2023 10:14:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj5iESP-=gJSHe0Mfi=Xh2HdSsy+nm8NSr7DbXB9aBDGQ@mail.gmail.com>
+Message-ID: <CAHk-=wj5iESP-=gJSHe0Mfi=Xh2HdSsy+nm8NSr7DbXB9aBDGQ@mail.gmail.com>
+Subject: Re: scheduler problems in -next (was: Re: [PATCH 6.4 000/227]
+ 6.4.7-rc1 review)
+To:     paulmck@kernel.org
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Roy Hopkins <rhopkins@suse.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Pavel Machek <pavel@denx.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        rcu@vger.kernel.org, Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sonia Sharma <sosha@linux.microsoft.com> Sent: Tuesday, August 1, 202=
-3 10:51 PM
->=20
+Two quick comments, both of them "this code is a bit odd" rather than
+anything else.
 
-The Subject line for networking patches should be tagged
-with "net" for fixes to the release that's currently in progress,
-or "net-next" for the next release.  Bug fixes like this one can
-be "net".   Look through the mailing list archives for examples.
+On Tue, 1 Aug 2023 at 12:11, Paul E. McKenney <paulmck@kernel.org> wrote:
+>
+> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
 
-> switch statement in netvsc_send_completion() is incorrectly validating
+Why is this file called "tasks.h"?
 
-s/switch/The switch/
+It's not a header file. It makes no sense. It's full of C code. It's
+included in only one place. It's just _weird_.
 
-> the length of incoming network packets by falling through next case.
+However, more relevantly:
 
-s/through next case/through to the next case/
+> +               mutex_unlock(&rtp->tasks_gp_mutex);
+>                 set_tasks_gp_state(rtp, RTGS_WAIT_CBS);
 
-> Avoid the fallthrough, instead break after a case match and then process
+Isn't the tasks_gp_mutex the thing that protects the gp state here?
+Shouldn't it be after setting?
 
-s/fallthrough, instead/fallthrough.  Instead,/
+>                 rcuwait_wait_event(&rtp->cbs_wait,
+>                                    (needgpcb = rcu_tasks_need_gpcb(rtp)),
+>                                    TASK_IDLE);
 
-> the complete() call.
->=20
-> Signed-off-by: Sonia Sharma <sonia.sharma@linux.microsoft.com>
-> ---
->  drivers/net/hyperv/netvsc.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
->=20
-> diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-> index 82e9796c8f5e..347688dd2eb9 100644
-> --- a/drivers/net/hyperv/netvsc.c
-> +++ b/drivers/net/hyperv/netvsc.c
-> @@ -851,7 +851,7 @@ static void netvsc_send_completion(struct net_device =
-*ndev,
->  				   msglen);
->  			return;
->  		}
-> -		fallthrough;
-> +		break;
->=20
->  	case NVSP_MSG1_TYPE_SEND_RECV_BUF_COMPLETE:
->  		if (msglen < sizeof(struct nvsp_message_header) +
-> @@ -860,7 +860,7 @@ static void netvsc_send_completion(struct net_device =
-*ndev,
->  				   msglen);
->  			return;
->  		}
-> -		fallthrough;
-> +		break;
->=20
->  	case NVSP_MSG1_TYPE_SEND_SEND_BUF_COMPLETE:
->  		if (msglen < sizeof(struct nvsp_message_header) +
-> @@ -869,7 +869,7 @@ static void netvsc_send_completion(struct net_device =
-*ndev,
->  				   msglen);
->  			return;
->  		}
-> -		fallthrough;
-> +		break;
->=20
->  	case NVSP_MSG5_TYPE_SUBCHANNEL:
->  		if (msglen < sizeof(struct nvsp_message_header) +
-> @@ -878,10 +878,6 @@ static void netvsc_send_completion(struct net_device=
- *ndev,
->  				   msglen);
->  			return;
->  		}
-> -		/* Copy the response back */
-> -		memcpy(&net_device->channel_init_pkt, nvsp_packet,
-> -		       sizeof(struct nvsp_message));
-> -		complete(&net_device->channel_init_wait);
->  		break;
->=20
->  	case NVSP_MSG1_TYPE_SEND_RNDIS_PKT_COMPLETE:
-> @@ -904,13 +900,18 @@ static void netvsc_send_completion(struct net_devic=
-e *ndev,
->=20
->  		netvsc_send_tx_complete(ndev, net_device, incoming_channel,
->  					desc, budget);
-> -		break;
-> +		return;
->=20
->  	default:
->  		netdev_err(ndev,
->  			   "Unknown send completion type %d received!!\n",
->  			   nvsp_packet->hdr.msg_type);
+Also, looking at rcu_tasks_need_gpcb() that is now called outside the
+lock, it does something quite odd.
 
-Need to add a "return" statement here so that the error case doesn't
-try to do the memcpy() and complete().
+At the very top of the function does
 
->  	}
-> +
-> +	/* Copy the response back */
-> +	memcpy(&net_device->channel_init_pkt, nvsp_packet,
-> +			sizeof(struct nvsp_message));
-> +	complete(&net_device->channel_init_wait);
->  }
->=20
->  static u32 netvsc_get_next_send_section(struct netvsc_device *net_device=
-)
-> --
-> 2.25.1
+        for (cpu = 0; cpu < smp_load_acquire(&rtp->percpu_dequeue_lim); cpu++) {
 
+and 'smp_load_acquire()' is all about saying "everything *after* this
+load is ordered,
+
+But the way it is done in that loop, it is indeed done at the
+beginning of the loop, but then it's done *after* the loop too, so the
+last smp_load_acquire seems a bit nonsensical.
+
+If you want to load a value and say "this value is now sensible for
+everything that follows", I think you should load it *first*. No?
+
+IOW, wouldn't the whole sequence make more sense as
+
+        dequeue_limit = smp_load_acquire(&rtp->percpu_dequeue_lim);
+        for (cpu = 0; cpu < dequeue_limit; cpu++) {
+
+and say that everything in rcu_tasks_need_gpcb() is ordered wrt the
+initial limit on entry?
+
+I dunno. That use of "smp_load_acquire()" just seems odd. Memory
+ordering is hard to understand to begin with, but then when you have
+things like loops that do the same ordered load multiple times, it
+goes from "hard to understand" to positively confusing.
+
+         Linus
