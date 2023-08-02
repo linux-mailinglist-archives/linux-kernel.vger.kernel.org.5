@@ -2,49 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D46B276CB3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5684E76CB3F
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:49:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbjHBKsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33474 "EHLO
+        id S232603AbjHBKs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbjHBKsB (ORCPT
+        with ESMTP id S233813AbjHBKsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:48:01 -0400
-Received: from muru.com (muru.com [72.249.23.125])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 414C71FD6;
-        Wed,  2 Aug 2023 03:47:54 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 612DB80AE;
-        Wed,  2 Aug 2023 10:47:53 +0000 (UTC)
-Date:   Wed, 2 Aug 2023 13:47:52 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Dhruva Gole <d-gole@ti.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v5 3/3] serial: core: Fix serial core controller port
- name to show controller id
-Message-ID: <20230802104752.GD14799@atomide.com>
-References: <20230725054216.45696-4-tony@atomide.com>
- <202308021529.35b3ad6c-oliver.sang@intel.com>
- <20230802092354.GC14799@atomide.com>
- <2023080236-gurgling-violet-b54e@gregkh>
+        Wed, 2 Aug 2023 06:48:38 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29300127;
+        Wed,  2 Aug 2023 03:48:36 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2C0608DA;
+        Wed,  2 Aug 2023 12:47:31 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1690973251;
+        bh=BQQuyIYqigAYelg5Ief38eObVX2dLE8ROydCS9EGEEM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MDbOx5sfyvuE7MogjBFDsqypfGjddGYz8O8dq9ValVjbY1at1P15qHSG8/uF9P0h2
+         p0NhuPlH/mq8knezlapfPfMXeX0ro0arIIJsau3E9K+KJRxPUX8MNt+V6vjsQrVelv
+         Md1pcJ6qAM86P56V864lUr1ZmFBJFeuHyL/Hy0EQ=
+Date:   Wed, 2 Aug 2023 13:48:40 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jack Zhu <jack.zhu@starfivetech.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Todor Tomov <todor.too@gmail.com>, bryan.odonoghue@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Eugen Hristev <eugen.hristev@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, changhuang.liang@starfivetech.com
+Subject: Re: [PATCH v7 5/6] media: starfive: camss: Add ISP driver
+Message-ID: <20230802104840.GC5269@pendragon.ideasonboard.com>
+References: <20230619112838.19797-1-jack.zhu@starfivetech.com>
+ <20230619112838.19797-6-jack.zhu@starfivetech.com>
+ <20230727204103.GJ25174@pendragon.ideasonboard.com>
+ <2504080f-86af-161f-5c0d-284e89e33ce1@starfivetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2023080236-gurgling-violet-b54e@gregkh>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+In-Reply-To: <2504080f-86af-161f-5c0d-284e89e33ce1@starfivetech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,66 +60,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Greg Kroah-Hartman <gregkh@linuxfoundation.org> [230802 09:40]:
-> On Wed, Aug 02, 2023 at 12:23:54PM +0300, Tony Lindgren wrote:
-> > * kernel test robot <oliver.sang@intel.com> [230802 08:16]:
-> > > from serial, we observed last print out is:
-> > > 
-> > > [   15.584772][  T954] EDAC MC0: Giving out device to module skx_edac controller Skylake Socket#0 IMC#0: DEV 0000:3a:0a.0 (INTERRUPT)
-> > > [   15.597328][  T954] EDAC MC1: Giving out device to module skx_edac controller Skylake Socket#0 IMC#1: DEV 0000:3a:0c.0 (INTERRUPT)
-> > > [   15.610326][  T954] EDAC MC2: Giving out device to module skx_edac controller Skylake Socket#1 IMC#0: DEV 0000:ae:0a.0 (INTERRUPT)
-> > > [   15.623375][  T954] EDAC MC3: Giving out device to module skx_edac controller Skylake Socket#1 IMC#1: DEV 0000:ae:0c.0 (INTERRUPT)
-> > > [   15.640145][   T19] intel_rapl_common: Found RAPL domain package
-> > > [   15.655890][   T19] intel_rapl_common: Found RAPL domain dram
-> > > [   15.661983][   T19] intel_rapl_common: package-0:package:long_term locked by BIOS
-> > > [   15.678564][   T19] intel_rapl_common: package-0:package:short_term locked by BIOS
-> > > [   15.695259][   T19] intel_rapl_common: package-0:dram:long_term locked by BIOS
-> > > [   15.713068][  T158] intel_rapl_common: Found RAPL domain package
-> > > [   15.728719][  T158] intel_rapl_common: Found RAPL domain dram
-> > > [   15.734743][  T158] intel_rapl_common: package-1:package:long_term locked by BIOS
-> > > [   15.745244][ T1154] raid6: avx512x4 gen() 18153 MB/s
-> > > [   15.761297][  T158] intel_rapl_common: package-1:package:short_term locked by BIOS
-> > > [   15.767244][ T1154] raid6: avx512x2 gen() 18130 MB/s
-> > > [   15.768866][  T158] intel_rapl_common: package-1:dram:long_term locked by BIOS
-> > > [   15.790243][ T1154] raid6: avx512x1 gen() 18155 MB/s
-> > > [   15.812245][ T1154] raid6: avx2x4   gen() 18060 MB/s
-> > > [   15.834244][ T1154] raid6: avx2x2   gen() 18076 MB/s
-> > > [   15.856244][ T1154] raid6: avx2x1   gen() 13836 MB/s
-> > > [   15.861474][ T1154] raid6: using algorithm avx512x1 gen() 18155 MB/s
-> > > [   15.884243][ T1154] raid6: .... xor() 27974 MB/s, rmw enabled
-> > > [   15.890254][ T1154] raid6: using avx512x2 recovery algorithm
-> > > [   15.897891][ T1154] xor: measuring software checksum speed
-> > > [   15.904013][ T1154]    prefetch64-sse  : 31308 MB/sec
-> > > [   15.909878][ T1154]    generic_sse     : 22929 MB/sec
-> > > [   15.915230][ T1154] xor: using function: prefetch64-sse (31308 MB/sec)
-> > > [   16.042623][ T1154] Btrfs loaded, zoned=no, fsverity=no
-> > > [   16.054593][  T930] BTRFS: device fsid e422031c-19be-42f5-ab4f-be5f306aa6e1 devid 1 transid 39725 /dev/sda2 scanned by systemd-udevd (930)
-> > > 
-> > > 
-> > > then the machine is just stuck there. (whole dmesg captured from serial is
-> > > attached), and the issue is 100% reproducible for this commit.
-> > > 
-> > > for parent, we never observed the boot failure.
-> > > 
-> > > it looks quite strange to us why this commit could cause this behavior on our
-> > > machine. could you help check dmesg, config and kernel command line which is
-> > > also captured in dmesg, etc. and guide us if anything need to be updated to be
-> > > compatible with this change? Thanks!
+Hi Jack,
+
+On Wed, Aug 02, 2023 at 05:57:57PM +0800, Jack Zhu wrote:
+> On 2023/7/28 4:41, Laurent Pinchart wrote:
+> > On Mon, Jun 19, 2023 at 07:28:37PM +0800, Jack Zhu wrote:
+> >> Add ISP driver for StarFive Camera Subsystem.
+> >> 
+> >> Signed-off-by: Jack Zhu <jack.zhu@starfivetech.com>
+> >> ---
+> >>  .../media/platform/starfive/camss/Makefile    |   2 +
+> >>  .../media/platform/starfive/camss/stf_camss.c |  76 ++-
+> >>  .../media/platform/starfive/camss/stf_camss.h |   3 +
+> >>  .../media/platform/starfive/camss/stf_isp.c   | 519 ++++++++++++++++++
+> >>  .../media/platform/starfive/camss/stf_isp.h   | 479 ++++++++++++++++
+> >>  .../platform/starfive/camss/stf_isp_hw_ops.c  | 468 ++++++++++++++++
+> >>  6 files changed, 1544 insertions(+), 3 deletions(-)
+> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_isp.c
+> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_isp.h
+> >>  create mode 100644 drivers/media/platform/starfive/camss/stf_isp_hw_ops.c
+
+[snip]
+
+> >> diff --git a/drivers/media/platform/starfive/camss/stf_isp.c b/drivers/media/platform/starfive/camss/stf_isp.c
+> >> new file mode 100644
+> >> index 000000000000..933a583b398c
+> >> --- /dev/null
+> >> +++ b/drivers/media/platform/starfive/camss/stf_isp.c
+> >> @@ -0,0 +1,519 @@
+> >> +// SPDX-License-Identifier: GPL-2.0
+> >> +/*
+> >> + * stf_isp.c
+> >> + *
+> >> + * StarFive Camera Subsystem - ISP Module
+> >> + *
+> >> + * Copyright (C) 2021-2023 StarFive Technology Co., Ltd.
+> >> + */
+> >> +#include <linux/firmware.h>
 > > 
-> > Thanks for the report. With the ctrl and port prefixes dropped, I broke
-> > serial_base_match() looks like. As we attempt to continue anyways, things
-> > still mostly work..
+> > This doesn't seem needed.
 > > 
-> > Greg, can you please drop the related commit?
+> >> +#include <media/v4l2-event.h>
+> >> +
+> >> +#include "stf_camss.h"
+> >> +
+> >> +#define SINK_FORMATS_INDEX    0
+> >> +#define UO_FORMATS_INDEX      1
 > > 
-> > It's the following commit:
-> > 
-> > 1ef2c2df1199 ("serial: core: Fix serial core controller port name to show controller id")
+> > What does "UO" stand for ?
 > 
-> Please send me a revert, I can't rewrite history in my public branches.
+> "UO" is Usual Out, just represents output. :-)
 
-OK. The fix might be just to check for device_type in serial_base_match().
+Maybe "out", "output" or "source" would make the code easier to read
+then ?
 
+> >> +
+> >> +static int isp_set_selection(struct v4l2_subdev *sd,
+> >> +			     struct v4l2_subdev_state *state,
+> >> +			     struct v4l2_subdev_selection *sel);
+> >> +
+> >> +static const struct isp_format isp_formats_sink[] = {
+> >> +	{ MEDIA_BUS_FMT_SRGGB10_1X10, 10 },
+> >> +	{ MEDIA_BUS_FMT_SGRBG10_1X10, 10 },
+> >> +	{ MEDIA_BUS_FMT_SGBRG10_1X10, 10 },
+> >> +	{ MEDIA_BUS_FMT_SBGGR10_1X10, 10 },
+> >> +};
+
+[snip]
+
+> >> diff --git a/drivers/media/platform/starfive/camss/stf_isp.h b/drivers/media/platform/starfive/camss/stf_isp.h
+> >> new file mode 100644
+> >> index 000000000000..1e5c98482350
+> >> --- /dev/null
+> >> +++ b/drivers/media/platform/starfive/camss/stf_isp.h
+> >> @@ -0,0 +1,479 @@
+
+[snip]
+
+> >> +/* The output line of ISP */
+> > 
+> > What is an ISP "line" ?
+> 
+> A pipeline contains ISP.
+
+Patch 6/6 uses STF_ISP_LINE_MAX to iterate over the ISP lines. This
+makes the code somehow generic, but you only support a single line at
+the moment. Does this or other SoCs in your product line integrate the
+same ISP with multiple lines ? If so, would it be possible to share a
+block diagram, to better understand the other hardware architectures
+that this driver will need to support in the future ?
+
+> >> +enum isp_line_id {
+> >> +	STF_ISP_LINE_INVALID = -1,
+> >> +	STF_ISP_LINE_SRC = 1,
+> >> +	STF_ISP_LINE_MAX = STF_ISP_LINE_SRC
+> >> +};
+
+[snip]
+
+> >> +void stf_isp_init_cfg(struct stf_isp_dev *isp_dev)
+> >> +{
+> >> +	stf_isp_reg_write(isp_dev->stfcamss, ISP_REG_DC_CFG_1, DC_AXI_ID(0x0));
+> >> +	stf_isp_reg_write(isp_dev->stfcamss, ISP_REG_DEC_CFG,
+> >> +			  DEC_V_KEEP(0x0) |
+> >> +			  DEC_V_PERIOD(0x0) |
+> >> +			  DEC_H_KEEP(0x0) |
+> >> +			  DEC_H_PERIOD(0x0));
+> >> +
+> >> +	stf_isp_config_obc(isp_dev->stfcamss);
+> >> +	stf_isp_config_oecf(isp_dev->stfcamss);
+> >> +	stf_isp_config_lccf(isp_dev->stfcamss);
+> >> +	stf_isp_config_awb(isp_dev->stfcamss);
+> >> +	stf_isp_config_grgb(isp_dev->stfcamss);
+> >> +	stf_isp_config_cfa(isp_dev->stfcamss);
+> >> +	stf_isp_config_ccm(isp_dev->stfcamss);
+> >> +	stf_isp_config_gamma(isp_dev->stfcamss);
+> >> +	stf_isp_config_r2y(isp_dev->stfcamss);
+> >> +	stf_isp_config_y_curve(isp_dev->stfcamss);
+> >> +	stf_isp_config_sharpen(isp_dev->stfcamss);
+> >> +	stf_isp_config_dnyuv(isp_dev->stfcamss);
+> >> +	stf_isp_config_sat(isp_dev->stfcamss);
+> > 
+> > All these parameters are hardcoded, why are they not exposed to
+> > userspace ?
+> 
+> Here is a basic startup configuration for the ISP registers. The
+> function name is confusing, as if it is configuring a specific
+> function. In fact, it is just a basic init configuration.
+
+Did I miss a place in the patch series where all these parameters can be
+configured by userspace, or is that not possible at the moment ? If it
+isn't possible, do you plan to implement that ?
+
+> >> +
+> >> +	stf_isp_reg_write(isp_dev->stfcamss, ISP_REG_CSI_MODULE_CFG,
+> >> +			  CSI_DUMP_EN | CSI_SC_EN | CSI_AWB_EN |
+> >> +			  CSI_LCCF_EN | CSI_OECF_EN | CSI_OBC_EN | CSI_DEC_EN);
+> >> +	stf_isp_reg_write(isp_dev->stfcamss, ISP_REG_ISP_CTRL_1,
+> >> +			  CTRL_SAT(1) | CTRL_DBC | CTRL_CTC | CTRL_YHIST |
+> >> +			  CTRL_YCURVE | CTRL_BIYUV | CTRL_SCE | CTRL_EE |
+> >> +			  CTRL_CCE | CTRL_RGE | CTRL_CME | CTRL_AE | CTRL_CE);
+> >> +}
+
+[snip]
+
+-- 
 Regards,
 
-Tony
+Laurent Pinchart
