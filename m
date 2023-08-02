@@ -2,125 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B6976C778
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63EC76C793
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 09:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233743AbjHBHwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 03:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
+        id S233783AbjHBHzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 03:55:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232417AbjHBHvj (ORCPT
+        with ESMTP id S233659AbjHBHy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 03:51:39 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4401FC6
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 00:49:56 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so108045566b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 00:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03; t=1690962595; x=1691567395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c0VJhH2Z756QKOs3JZdHMzRvuHXC7tOpXij3aANtcuY=;
-        b=Og7ZHsEohQK5gYKe0PKPpZmtqnSLba+zO0Hc3g1vhp26ob/YEsPA/vYuYs3R2k9vAH
-         bDjXL+l1tDQUffpFsyketbLsigIqcppC3CsVb/lPXoq+T1stMompu09UbE9sQg6paLTy
-         asWZ3r0Dx1vkonGTGf+z7UEV0L8sqaj/BKZRvLudBnQstzPyRpwJ8wBlwwHWTjb9D/td
-         X/6rDTbf/Lc3eZpatSdk9916uZHmyk4Ht2zNBjx7LzoHAy8dcSV03yo+1aFyqOFkGzFY
-         ybuwytlo28jNOrXG7Qi6duJuU/ZL6cW87OKXS8/4JsFbTdbwnDwnPzCgBIV4mMgjd1bu
-         m+gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690962595; x=1691567395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c0VJhH2Z756QKOs3JZdHMzRvuHXC7tOpXij3aANtcuY=;
-        b=VvlAzScWbauWuDY0lRkZP6JPC6P1h2nbwZNvz/jDz2bOEqF0D/qo2Y2iaTdaY18V6o
-         m3QXMDQm+NtKBfXhccj2branPzBGwZTAKiGo79t8ebqLkFfittGsgXjjk3PUVRFpp6Ng
-         36e5VpnZ9P4vrPK5GjdFAJX4RKjDH9UE7tXkPuhZB14PiqMTBR9vv7bTY5GVKQGJaGiA
-         qk0rgjTStlGY6VL/uP3WrzwhhUD+dIbJKs+p5yXk4F0DN4xqU9hncnYnhUwtBYzWnq8r
-         yqfGiqLn1qpNL7/U7MRpj1nnOzseC9aKQ0SuU5PfvxvCj8gPo52mlJ6viEhYEwx5O4nW
-         CK4Q==
-X-Gm-Message-State: ABy/qLbWITULIH9uLwWE6F8h6f56kB3INapjrzH0/Sp/UHPAuR1KLWbi
-        Q/o05gid/gDBusJWsVX5IjTREc9RM3hMVlhKyJ8mZA==
-X-Google-Smtp-Source: APBJJlH2YkiZGbYVtxer1W7isty1PVaWaBz7UcC5TW/uFSLk6MRTNTLb52mcEMYXUbNlQNO8Fpo6SQSvROqt/6IYpCQ=
-X-Received: by 2002:a17:907:a070:b0:99b:ed18:7a10 with SMTP id
- ia16-20020a170907a07000b0099bed187a10mr3803171ejc.36.1690962595084; Wed, 02
- Aug 2023 00:49:55 -0700 (PDT)
+        Wed, 2 Aug 2023 03:54:28 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498724EF6;
+        Wed,  2 Aug 2023 00:52:26 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RG3z92pG8zLp2c;
+        Wed,  2 Aug 2023 15:49:41 +0800 (CST)
+Received: from localhost.localdomain (10.67.174.95) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 2 Aug 2023 15:52:23 +0800
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>, <irogers@google.com>,
+        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+        <james.clark@arm.com>, <tmricht@linux.ibm.com>,
+        <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+CC:     <yangjihong1@huawei.com>
+Subject: [PATCH v4 3/7] perf record: Move setting dummy tracking before record__init_thread_masks()
+Date:   Wed, 2 Aug 2023 07:49:44 +0000
+Message-ID: <20230802074948.136468-4-yangjihong1@huawei.com>
+X-Mailer: git-send-email 2.30.GIT
+In-Reply-To: <20230802074948.136468-1-yangjihong1@huawei.com>
+References: <20230802074948.136468-1-yangjihong1@huawei.com>
 MIME-Version: 1.0
-References: <20230729220317.416771-1-ojeda@kernel.org> <20230729220317.416771-2-ojeda@kernel.org>
-In-Reply-To: <20230729220317.416771-2-ojeda@kernel.org>
-From:   Trevor Gross <tmgross@umich.edu>
-Date:   Wed, 2 Aug 2023 03:49:43 -0400
-Message-ID: <CALNs47sn5GT9_VKn-SGb+STFwpbUipoNyU_+ZbpDwzLXUknUUQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] rust: enable `no_mangle_with_rust_abi` Clippy lint
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.174.95]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jul 29, 2023 at 6:05=E2=80=AFPM Miguel Ojeda <ojeda@kernel.org> wro=
-te:
->
-> Introduced in Rust 1.69.0 [1], this lint prevents forgetting to set
-> the C ABI when using `#[no_mangle]` (or thinking it is implied).
->
-> For instance, it would have prevented the issue [2] fixed by commit
-> c682e4c37d2b ("rust: kernel: Mark rust_fmt_argument as extern "C"").
->
->     error: `#[no_mangle]` set on a function with the default (`Rust`) ABI
->       --> rust/kernel/print.rs:21:1
->        |
->     21 | / unsafe fn rust_fmt_argument(
->     22 | |     buf: *mut c_char,
->     23 | |     end: *mut c_char,
->     24 | |     ptr: *const c_void,
->     25 | | ) -> *mut c_char {
->        | |________________^
->        |
->        =3D help: for further information visit https://rust-lang.github.i=
-o/rust-clippy/master/index.html#no_mangle_with_rust_abi
->        =3D note: requested on the command line with `-D clippy::no-mangle=
--with-rust-abi`
->     help: set an ABI
->        |
->     21 | unsafe extern "C" fn rust_fmt_argument(
->        |        ++++++++++
->     help: or explicitly set the default
->        |
->     21 | unsafe extern "Rust" fn rust_fmt_argument(
->        |        +++++++++++++
->
-> Thus enable it.
->
-> In rare cases, we may need to use the Rust ABI even with `#[no_mangle]`
-> (e.g. one case, before 1.71.0, would have been the `__rust_*`
-> functions). In those cases, we would need to `#[allow(...)]` the lint,
-> since using `extern "Rust"` explicitly (as the compiler suggests)
-> currently gets overwritten by `rustfmt` [3].
->
-> Link: https://github.com/rust-lang/rust-clippy/issues/10347 [1]
-> Link: https://github.com/Rust-for-Linux/linux/pull/967 [2]
-> Link: https://github.com/rust-lang/rustfmt/issues/5701 [3]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
-> [...]
+When dummy tracking go system wide, the mmap cpu mask is changed.
+Therefore, needs to be placed before record__init_thread_masks().
+Dummy tracking has been set in record__open(), move it before
+record__init_thread_masks() and add a helper for unified processing.
 
-Reviewed-by: Trevor Gross <tmgross@umich.edu>
+The sys_perf_event_open invoked is as follows:
+
+  # perf --debug verbose=3 record -e cpu-clock -D 100 true
+  <SNIP>
+  Opening: cpu-clock
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             1 (PERF_TYPE_SOFTWARE)
+    size                             136
+    config                           0 (PERF_COUNT_SW_CPU_CLOCK)
+    { sample_period, sample_freq }   4000
+    sample_type                      IP|TID|TIME|PERIOD|IDENTIFIER
+    read_format                      ID|LOST
+    disabled                         1
+    inherit                          1
+    freq                             1
+    sample_id_all                    1
+    exclude_guest                    1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid 10318  cpu 0  group_fd -1  flags 0x8 = 5
+  sys_perf_event_open: pid 10318  cpu 1  group_fd -1  flags 0x8 = 6
+  sys_perf_event_open: pid 10318  cpu 2  group_fd -1  flags 0x8 = 7
+  sys_perf_event_open: pid 10318  cpu 3  group_fd -1  flags 0x8 = 9
+  sys_perf_event_open: pid 10318  cpu 4  group_fd -1  flags 0x8 = 10
+  sys_perf_event_open: pid 10318  cpu 5  group_fd -1  flags 0x8 = 11
+  sys_perf_event_open: pid 10318  cpu 6  group_fd -1  flags 0x8 = 12
+  sys_perf_event_open: pid 10318  cpu 7  group_fd -1  flags 0x8 = 13
+  Opening: dummy:u
+  ------------------------------------------------------------
+  perf_event_attr:
+    type                             1 (PERF_TYPE_SOFTWARE)
+    size                             136
+    config                           0x9 (PERF_COUNT_SW_DUMMY)
+    { sample_period, sample_freq }   1
+    sample_type                      IP|TID|TIME|IDENTIFIER
+    read_format                      ID|LOST
+    disabled                         1
+    inherit                          1
+    exclude_kernel                   1
+    exclude_hv                       1
+    mmap                             1
+    comm                             1
+    enable_on_exec                   1
+    task                             1
+    sample_id_all                    1
+    exclude_guest                    1
+    mmap2                            1
+    comm_exec                        1
+    ksymbol                          1
+    bpf_event                        1
+  ------------------------------------------------------------
+  sys_perf_event_open: pid 10318  cpu 0  group_fd -1  flags 0x8 = 14
+  sys_perf_event_open: pid 10318  cpu 1  group_fd -1  flags 0x8 = 15
+  sys_perf_event_open: pid 10318  cpu 2  group_fd -1  flags 0x8 = 16
+  sys_perf_event_open: pid 10318  cpu 3  group_fd -1  flags 0x8 = 17
+  sys_perf_event_open: pid 10318  cpu 4  group_fd -1  flags 0x8 = 18
+  sys_perf_event_open: pid 10318  cpu 5  group_fd -1  flags 0x8 = 19
+  sys_perf_event_open: pid 10318  cpu 6  group_fd -1  flags 0x8 = 20
+  sys_perf_event_open: pid 10318  cpu 7  group_fd -1  flags 0x8 = 21
+  <SNIP>
+
+Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+---
+ tools/perf/builtin-record.c | 59 +++++++++++++++++++++++--------------
+ 1 file changed, 37 insertions(+), 22 deletions(-)
+
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index ca83599cc50c..3ff9d972225e 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -908,6 +908,37 @@ static int record__config_off_cpu(struct record *rec)
+ 	return off_cpu_prepare(rec->evlist, &rec->opts.target, &rec->opts);
+ }
+ 
++static int record__config_tracking_events(struct record *rec)
++{
++	struct record_opts *opts = &rec->opts;
++	struct evlist *evlist = rec->evlist;
++	struct evsel *evsel;
++
++	/*
++	 * For initial_delay, system wide or a hybrid system, we need to add a
++	 * dummy event so that we can track PERF_RECORD_MMAP to cover the delay
++	 * of waiting or event synthesis.
++	 */
++	if (opts->target.initial_delay || target__has_cpu(&opts->target) ||
++	    perf_pmus__num_core_pmus() > 1) {
++		evsel = evlist__findnew_tracking_event(evlist, false);
++		if (!evsel)
++			return -ENOMEM;
++
++		/*
++		 * Enable the dummy event when the process is forked for
++		 * initial_delay, immediately for system wide.
++		 */
++		if (opts->target.initial_delay && !evsel->immediate &&
++		    !target__has_cpu(&opts->target))
++			evsel->core.attr.enable_on_exec = 1;
++		else
++			evsel->immediate = 1;
++	}
++
++	return 0;
++}
++
+ static bool record__kcore_readable(struct machine *machine)
+ {
+ 	char kcore[PATH_MAX];
+@@ -1288,28 +1319,6 @@ static int record__open(struct record *rec)
+ 	struct record_opts *opts = &rec->opts;
+ 	int rc = 0;
+ 
+-	/*
+-	 * For initial_delay, system wide or a hybrid system, we need to add a
+-	 * dummy event so that we can track PERF_RECORD_MMAP to cover the delay
+-	 * of waiting or event synthesis.
+-	 */
+-	if (opts->target.initial_delay || target__has_cpu(&opts->target) ||
+-	    perf_pmus__num_core_pmus() > 1) {
+-		pos = evlist__findnew_tracking_event(evlist, false);
+-		if (!pos)
+-			return -ENOMEM;
+-
+-		/*
+-		 * Enable the dummy event when the process is forked for
+-		 * initial_delay, immediately for system wide.
+-		 */
+-		if (opts->target.initial_delay && !pos->immediate &&
+-		    !target__has_cpu(&opts->target))
+-			pos->core.attr.enable_on_exec = 1;
+-		else
+-			pos->immediate = 1;
+-	}
+-
+ 	evlist__config(evlist, opts, &callchain_param);
+ 
+ 	evlist__for_each_entry(evlist, pos) {
+@@ -4235,6 +4244,12 @@ int cmd_record(int argc, const char **argv)
+ 		goto out;
+ 	}
+ 
++	err = record__config_tracking_events(rec);
++	if (err) {
++		pr_err("record__config_tracking_events failed, error %d\n", err);
++		goto out;
++	}
++
+ 	err = record__init_thread_masks(rec);
+ 	if (err) {
+ 		pr_err("Failed to initialize parallel data streaming masks\n");
+-- 
+2.30.GIT
+
