@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2373C76D4B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8148076D4BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 19:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbjHBRJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 13:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34294 "EHLO
+        id S231639AbjHBRJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 13:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjHBRJE (ORCPT
+        with ESMTP id S231483AbjHBRJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 13:09:04 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 119BA1A5;
-        Wed,  2 Aug 2023 10:09:04 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6bc9254a1baso74820a34.2;
-        Wed, 02 Aug 2023 10:09:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690996143; x=1691600943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VzgOK7S/nDkSxIWVLP6Niz2nC5TbUp6AvvmSTjYDoz0=;
-        b=fPw/kdvfhtWEf4UBlljKxHTeCnXzAczix4g5kutrq7CH0rJnQKdQVspzYFHMZDDs/T
-         G/JNOATOQJoDlFrS7qbXFyw97Sar/IhQAYWdjudC/9i0EmPT/+spzXX9oaLLM++MaELe
-         s+HfTuVyDtdxU4dU3ngRnCLrjDPUyPH4TtLUuB9tVg0SSLVtb4EyLyRyuAbnpKBGzUol
-         PxpK86twd7NPi9GzrENjM4dy5nTMYz06aj3adfEymnxYaBxlEWUj3LpiJUyMrESIKBVi
-         dMM/u7xvWZQlPRKFDqFayN7aTgTy5DCS2vs0lYi/a1MgFmntRe+Fe0kJaVRT8CMYkS/J
-         FNGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690996143; x=1691600943;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VzgOK7S/nDkSxIWVLP6Niz2nC5TbUp6AvvmSTjYDoz0=;
-        b=Svije5ZSQ296NH9PP4qWgh9uqBwZFoXYQazDpfXdKwmLYusSSQJgIHK52GZ13B80zp
-         UN7ds2Mqe/rDnwZZzjpcPLYaO9HWUEOkdU4ETdPlqPkRQAmKy/q2XGDmSo33sWuD3hsm
-         /MIvSDzbwZXzo+BjePNZE94Zftf2Fsf0saS/BSWTvyPEU905k0siYVuYEaJjeWckLaV4
-         W0y1D+OrAtn3a9P1HYL+dt1dGOx4kvyq3oF5cQblyYVIeXY8efw4J1ew7ix+3aWe7TVG
-         4BUzZR2J9B4/c51PR/mjDu5+IEUtoqwoh34RUpBgNW/XvNwqNnwyaToKWXIrIdbnrG99
-         CjhQ==
-X-Gm-Message-State: ABy/qLZFQL93kWCbjhBMkmyaYccrNIDUC6OFCrGqs3kZRhHxvkxwV0fL
-        PuCzdSvwxexLcgLG9eFwavsXmCENII4esNrcC5I=
-X-Google-Smtp-Source: APBJJlEunU1vMsI7Ba5iPzVifoTkFdqWTVRlsIl1b3LmpG0allJXwK4ZcEhL9CUMO+GM4B+HRL4Vd9l6rafbjWpjMjs=
-X-Received: by 2002:a9d:7a41:0:b0:6b9:482e:ed10 with SMTP id
- z1-20020a9d7a41000000b006b9482eed10mr18099228otm.21.1690996143376; Wed, 02
- Aug 2023 10:09:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230802150712.3583252-1-elver@google.com> <CANpmjNPVO_t058c6Wcwr9TBwxeoH7Ba0ECsf6Wapn60br8EtkQ@mail.gmail.com>
-In-Reply-To: <CANpmjNPVO_t058c6Wcwr9TBwxeoH7Ba0ECsf6Wapn60br8EtkQ@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 2 Aug 2023 19:08:51 +0200
-Message-ID: <CANiq72k7_Ujg31UHfivv8zyog-6Vs7YehTpk2y-qRiuT-KMmAw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] Compiler attributes: Introduce the __preserve_most
- function attribute
-To:     Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
+        Wed, 2 Aug 2023 13:09:21 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C1EF7173A;
+        Wed,  2 Aug 2023 10:09:19 -0700 (PDT)
+Received: from rrs24-12-35.corp.microsoft.com (unknown [131.107.147.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E1D3F238C432;
+        Wed,  2 Aug 2023 10:09:18 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E1D3F238C432
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1690996159;
+        bh=34PwN6LabNXeFf++2y+BLpbiwBMV7JSsPbGv6UCAaSw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XRzNVaSQ4ySOx7wyo3Mll6BVJmW7zsC91pHcJ9VLU4XAv3DJED05WO/2LPWJRtLQ4
+         yxJlFF7405ukJMEk85abNHR46tnmD7h4BmMydMgUTcNiK00X1eLFhECuMsFhiePa6J
+         k0C3KJfyvyEWQowCFETmuYlqXa8hlEEUt099Hoa8=
+From:   Easwar Hariharan <eahariha@linux.microsoft.com>
+To:     stable@vger.kernel.org
+Cc:     easwar.hariharan@microsoft.com,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Tom Rix <trix@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev
+Subject: [PATCH v2 6.1 0/4] ARM SMMUv3 errata for 6.1
+Date:   Wed,  2 Aug 2023 17:09:07 +0000
+Message-Id: <20230802170911.1593275-1-eahariha@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-19.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 2, 2023 at 6:51=E2=80=AFPM Marco Elver <elver@google.com> wrote=
-:
->
-> Mark says that there may be an issue with using this in combination
-> with ftrace because arm64 tracing relies on AAPCS. Probably not just
-> arm64, but also other architectures (x86?).
->
-> To make this safe, I'm going to move __preserve_most to
-> compiler_types.h and always pair it with notrace and some comments in
-> v2.
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: iommu@lists.linux.dev
 
-Sounds good, thanks! The patch here was otherwise good in terms of
-`compiler_attributes.h`.
+Changelog:
+==========
+v1 -> v2:
+ - Backport other relevant errata patches from the same series as MMU-700 erratum 2812531
+ - v1 link: https://lore.kernel.org/stable/20230724185107.1675882-1-eahariha@linux.microsoft.com/T/#u
 
-I was also thinking about the implications for Rust. I guess if we
-need to call them, we will go through a C helper for the moment, and
-later on if we get cross-language LTO (or the LLVM IR hacks), it will
-hopefully not be a performance penalty.
+Robin Murphy (4):
+  iommu/arm-smmu-v3: Work around MMU-600 erratum 1076982
+  iommu/arm-smmu-v3: Document MMU-700 erratum 2812531
+  iommu/arm-smmu-v3: Add explicit feature for nesting
+  iommu/arm-smmu-v3: Document nesting-related errata
 
-Cheers,
-Miguel
+ Documentation/arm64/silicon-errata.rst      |  4 ++
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 50 +++++++++++++++++++++
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  8 ++++
+ 3 files changed, 62 insertions(+)
+
+-- 
+2.25.1
+
