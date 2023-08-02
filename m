@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE1676CA93
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4ACD76CA85
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 12:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232718AbjHBKOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 06:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39344 "EHLO
+        id S232782AbjHBKKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 06:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbjHBKOM (ORCPT
+        with ESMTP id S231358AbjHBKJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 06:14:12 -0400
+        Wed, 2 Aug 2023 06:09:56 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187B8132;
-        Wed,  2 Aug 2023 03:14:09 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3729tOBF003946;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194AB10D2;
+        Wed,  2 Aug 2023 03:09:55 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3725laIE007187;
         Wed, 2 Aug 2023 09:59:33 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=wHJuMwuZ/Vw4MXbbd2L5abyoDfmMeHqb93P6phcpxac=;
- b=oCIKa8qCW/DXn3eb3RbSVqjUZfm8ewjBoY8wfU9poC7ew319TtPpD/fyD5dQ/7UZ3R1X
- CLfipKC2VOmdyAYaclE615UZpT0Mw8at5DN48VqXm/e1MBlaJDxZe/wpk2ML6rxkXXvN
- ztzIG3wfgbrBtXvjd/Q4VG/GyGAljQDpceYhvy53So365s4D4J3qSDIWQqkn/ZtRGoQI
- nkV+GTC3pwgZwDfEBAeopo0l7Not/GkGXUKQ28qX7w19VOclqdgzaSNvqfuucyBeOLrJ
- joHev+rcvaCrV7q4BFumf03jyzGTNZ8VONqMk5AN/4+GVnyaWX1mbhPf1+JLVbUV+Nm5 Ug== 
+ bh=381fQTQzR03LVtnC3U8u6zKfXD5VsZoaKm+UDGYE+kU=;
+ b=Gkv1YDKwGrUQ+raF+TozK3V0+AanFgSGnhKKEB3Wj0VzAzoiqMQ6pcYz3F94dKSOHUPq
+ rLFy86sTXr0xnbwetmsDumEj3lPNB2g9I7GwFArzoFzyEgrdyrGZHu+x3/iAoFsdkb8G
+ JjT4lrn60xVRjnBOGGBy5FSu8pHeF1OeIFVD6MTm6hobSaUvX76dwF9xZ1UHmbYLMdLB
+ qqPetd4RXofh3vCOInsLWcnDBcIJ322UrGR6pvo6eRYVT0Nb52ns7DyxNCxF4J2lK8Tj
+ eff04v0ld0p3xunO726fD9hYmpP6/yhqFI7d7zlfw8rI/6jQcBHUebs6lMtOw4NxCIcN ag== 
 Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s760c204j-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3s7bp69a46-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Wed, 02 Aug 2023 09:59:32 +0000
 Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3729xTt3006625;
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3729xT1j006642;
         Wed, 2 Aug 2023 09:59:29 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3s4uuke10b-1
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTPS id 3s4uuke10e-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
         Wed, 02 Aug 2023 09:59:29 +0000
 Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3729xSVR006579;
-        Wed, 2 Aug 2023 09:59:28 GMT
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3729xTPB006619;
+        Wed, 2 Aug 2023 09:59:29 GMT
 Received: from hu-sgudaval-hyd.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.213.106.138])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3729xSPB006594;
-        Wed, 02 Aug 2023 09:59:28 +0000
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3729xSf4006611;
+        Wed, 02 Aug 2023 09:59:29 +0000
 Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3970568)
-        id 1CB471B01; Wed,  2 Aug 2023 15:29:28 +0530 (+0530)
+        id 6AC471A80; Wed,  2 Aug 2023 15:29:28 +0530 (+0530)
 From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
 To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
@@ -52,9 +52,9 @@ To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Rohit Agarwal <quic_rohiagar@quicinc.com>
-Subject: [PATCH 3/8] arm64: dts: qcom: Add PMIC pm7550ba dtsi
-Date:   Wed,  2 Aug 2023 15:29:21 +0530
-Message-Id: <1690970366-30982-4-git-send-email-quic_rohiagar@quicinc.com>
+Subject: [PATCH 4/8] arm64: dts: qcom: Add PMIC pmx75 dtsi
+Date:   Wed,  2 Aug 2023 15:29:22 +0530
+Message-Id: <1690970366-30982-5-git-send-email-quic_rohiagar@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
 References: <1690970366-30982-1-git-send-email-quic_rohiagar@quicinc.com>
@@ -62,15 +62,15 @@ X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: uzh62-bBGn8GrMF7oa_4y8k1XQp8dTCc
-X-Proofpoint-ORIG-GUID: uzh62-bBGn8GrMF7oa_4y8k1XQp8dTCc
+X-Proofpoint-GUID: wEkqbyQSk2748kDjkwL7TRbl1fmQCxO3
+X-Proofpoint-ORIG-GUID: wEkqbyQSk2748kDjkwL7TRbl1fmQCxO3
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
  definitions=2023-08-02_04,2023-08-01_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 mlxlogscore=443 impostorscore=0 mlxscore=0
- phishscore=0 clxscore=1015 bulkscore=0 priorityscore=1501 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0 spamscore=0
+ mlxlogscore=443 bulkscore=0 suspectscore=0 clxscore=1015 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2306200000 definitions=main-2308020087
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -82,20 +82,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dtsi for PMIC pm7550ba found in Qualcomm platforms.
+Add dtsi for PMIC pmx75 found in Qualcomm platforms.
 
 Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/pm7550ba.dtsi | 70 ++++++++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/pm7550ba.dtsi
+ arch/arm64/boot/dts/qcom/pmx75.dtsi | 64 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/pmx75.dtsi
 
-diff --git a/arch/arm64/boot/dts/qcom/pm7550ba.dtsi b/arch/arm64/boot/dts/qcom/pm7550ba.dtsi
+diff --git a/arch/arm64/boot/dts/qcom/pmx75.dtsi b/arch/arm64/boot/dts/qcom/pmx75.dtsi
 new file mode 100644
-index 0000000..97b28bb
+index 0000000..28d99bc
 --- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/pm7550ba.dtsi
-@@ -0,0 +1,70 @@
++++ b/arch/arm64/boot/dts/qcom/pmx75.dtsi
+@@ -0,0 +1,64 @@
 +// SPDX-License-Identifier: BSD-3-Clause
 +/*
 + * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
@@ -106,11 +106,11 @@ index 0000000..97b28bb
 +
 +/ {
 +	thermal-zones {
-+		pm7550ba-thermal {
++		pmx75-thermal {
 +			polling-delay-passive = <100>;
 +			polling-delay = <0>;
 +
-+			thermal-sensors = <&pm7550ba_temp>;
++			thermal-sensors = <&pmx75_temp>;
 +
 +			trips {
 +				trip0 {
@@ -136,33 +136,27 @@ index 0000000..97b28bb
 +};
 +
 +&spmi_bus {
-+	pm7550ba: pmic@7 {
-+		compatible = "qcom,pm7550ba", "qcom,spmi-pmic";
-+		reg = <7 SPMI_USID>;
++	pmx75: pmic@1 {
++		compatible = "qcom,pmx75", "qcom,spmi-pmic";
++		reg = <1 SPMI_USID>;
 +		#address-cells = <1>;
 +		#size-cells = <0>;
 +
-+		pm7550ba_temp: temp-alarm@a00 {
++		pmx75_temp: temp-alarm@a00 {
 +			compatible = "qcom,spmi-temp-alarm";
 +			reg = <0xa00>;
-+			interrupts = <0x7 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
++			interrupts = <0x1 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
 +			#thermal-sensor-cells = <0>;
 +		};
 +
-+		pm7550ba_gpios: gpio@8800 {
-+			compatible = "qcom,pm7550ba-gpio", "qcom,spmi-gpio";
++		pmx75_gpios: gpio@8800 {
++			compatible = "qcom,pmx75-gpio", "qcom,spmi-gpio";
 +			reg = <0x8800>;
 +			gpio-controller;
-+			gpio-ranges = <&pm7550ba_gpios 0 0 8>;
++			gpio-ranges = <&pmx75_gpios 0 0 16>;
 +			#gpio-cells = <2>;
 +			interrupt-controller;
 +			#interrupt-cells = <2>;
-+		};
-+
-+		pm7550ba_eusb2_repeater: phy@fd00 {
-+			compatible = "qcom,pm8550b-eusb2-repeater";
-+			reg = <0xfd00>;
-+			#phy-cells = <0>;
 +		};
 +	};
 +};
