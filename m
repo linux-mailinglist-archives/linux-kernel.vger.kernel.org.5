@@ -2,78 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1970D76DA7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8093C76DA86
+	for <lists+linux-kernel@lfdr.de>; Thu,  3 Aug 2023 00:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233772AbjHBWQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 18:16:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59112 "EHLO
+        id S230280AbjHBWTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 18:19:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231309AbjHBWQq (ORCPT
+        with ESMTP id S229610AbjHBWT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 18:16:46 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97158271C
-        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 15:16:45 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d10792c7582so253069276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 15:16:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691014605; x=1691619405;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RUKe0tndPE8THtppbQ2T+ebrmbNyYQbFqdjBVqfHPSc=;
-        b=38kWKGnIr9nG7NEImMKN/kYSbzmt49a74eU6F0kFCbveiePdOPvNcSEILmD2Jrj89V
-         5s3HlMArUkW/HBVjC+BKGdl78VEbeZGDRzpzebvzFmuEnfdGuYFrCh3LXUe2ON7XsDcJ
-         XDSLeSHsdI1bdoXHmvcO1jlgRNqVX9i7F64mW3dIaLVO9uUlcnnTV8K4Ciie8zUrBEma
-         T3UfOaEFJQ/Gp4fnvYg3Li6J3QtmUyuB1OzkNZ28bLiFkz/bN6RFDN4Eyei9qrn/QWZT
-         hpTPIOVK7oPnJ3vimIJk7oKHDviRjKFyB8E7Hn/7QR0uMlBKyc9mGCI06sxNJxlvAPN5
-         ZCXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691014605; x=1691619405;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RUKe0tndPE8THtppbQ2T+ebrmbNyYQbFqdjBVqfHPSc=;
-        b=IgD9fYyovwxefhRuwBhZo8fc2Z/YremRxRYYom8XWQ26P+mv8CfXoo5cuL0hp8+QdG
-         cgg4hLh4PAj3ew3RS9/WZNPC6bI5mHEL27Qd2K+wnWzTQlQ/3bIpxDQdDeVBs9cHODNi
-         f1PUKZLYfYacFHRNIbUd/HKEpGLDCXw1/0Z04bf0I5MzzFnNy3ipda+vzLUX7AB9svNG
-         C2oPZW8BPxHRrIwB7E4VHBqjv9YK/SGePPH/tpIMz5r5T0c8GKor19kvhfT9s2qJMQUO
-         7cJT6C1Z/frK7b244ll7ruxAiekLqdOf3wxFppyGrPG2fu+DDH9JmukK5LK/7kT+MZO2
-         kbCA==
-X-Gm-Message-State: ABy/qLb5WgXG/TlSo31sch7Zi2D8wDKGpza//JaB04W2RhAfGvF1l0a9
-        4k1O38xHd6jrS/vFZzoj4hgCo/2vupg=
-X-Google-Smtp-Source: APBJJlHy/PqtmZyQAWZYe0P365x5lyVjJbw50xRf2ugSL9QxHVv9uASQitOtxhGFeAyfSZaX2h+IOYFbSyM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:aaae:0:b0:d04:d397:352d with SMTP id
- t43-20020a25aaae000000b00d04d397352dmr130484ybi.4.1691014604767; Wed, 02 Aug
- 2023 15:16:44 -0700 (PDT)
-Date:   Wed, 2 Aug 2023 15:16:43 -0700
-In-Reply-To: <cover.1690364259.git.haibo1.xu@intel.com>
-Mime-Version: 1.0
-References: <cover.1690364259.git.haibo1.xu@intel.com>
-Message-ID: <ZMrVrXlvu/FJEayx@google.com>
-Subject: Re: [PATCH 0/4] RISCV: Add kvm Sstc timer selftest
-From:   Sean Christopherson <seanjc@google.com>
-To:     Haibo Xu <haibo1.xu@intel.com>
-Cc:     xiaobo55x@gmail.com, ajones@ventanamicro.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <andrew.jones@linux.dev>,
-        Vishal Annapurve <vannapurve@google.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        Wed, 2 Aug 2023 18:19:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85072703;
+        Wed,  2 Aug 2023 15:19:26 -0700 (PDT)
+Date:   Wed, 02 Aug 2023 22:19:22 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691014764;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=LNRvVa6+ZCTmAy1D1RLwyuNTOalFwUFV4pzniqzVN0A=;
+        b=ttWGX0FX7b/yFG9HQGkGA3VjOmysOUUqGgdoebCxR4d8fe4vPQDxCVuWFk63n7xZDcNa1b
+        HTk+UOhY9x5BeqI5Wgx/oOjst4ruDl8hVuOwKnTB0YOsLtNmX22KkENuLHQFLGBy5okmFj
+        keNdGWizqHd12Ah07YRy741/JYPvveZ3n90Buxz9+k7RiDuvNTkTj1P9s7V97bwPww/5zT
+        q5c7mIn8cenYtWLVuhC2byNbL0wmaFgCg7OWdEzqU9lVfyLAzW2uAl+WT03hCF7MbgjxTk
+        wVWGz6Yj0t+ZUpfS3Qa54lqwYkaA79Koyp0wk4YjjdgOXtIrSZ6yJje6UzD3iA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691014764;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=LNRvVa6+ZCTmAy1D1RLwyuNTOalFwUFV4pzniqzVN0A=;
+        b=8azskVm0mzQZL+VVCmpqqgPXyblXCY7psZ/TP7jwzcU+q/bDIeTwuHH2Oe6QhQiFj5JwCZ
+        CslYqtaWcrHGE/CQ==
+From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/shstk] x86/shstk: Don't retry vm_munmap() on -EINTR
+Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Message-ID: <169101476285.28540.9496788715875076111.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,23 +59,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 27, 2023, Haibo Xu wrote:
-> The sstc_timer selftest is used to validate Sstc timer functionality
-> in a guest, which sets up periodic timer interrupts and check the
-> basic interrupt status upon its receipt.
-> 
-> This KVM selftest was ported from aarch64 arch_timer and tested
-> with Linux v6.5-rc3 on a Qemu riscv64 virt machine.
-> 
-> Haibo Xu (4):
->   tools: riscv: Add header file csr.h
->   KVM: riscv: selftests: Add exception handling support
->   KVM: riscv: selftests: Add guest helper to get vcpu id
->   KVM: riscv: selftests: Add sstc_timer test
+The following commit has been merged into the x86/shstk branch of tip:
 
-FYI, patch 4 will conflict with the in-flight guest printf changes[*], as will
-reworking the existing arch_timer test.  My plan is to create an immutable tag
-later this week (waiting to make sure nothing explodes).  I highly recommend basing
-v2 on top of that.
+Commit-ID:     c6b53dcec07c842af75123d9b29684bdbd36a407
+Gitweb:        https://git.kernel.org/tip/c6b53dcec07c842af75123d9b29684bdbd36a407
+Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
+AuthorDate:    Thu, 06 Jul 2023 16:38:58 -07:00
+Committer:     Dave Hansen <dave.hansen@linux.intel.com>
+CommitterDate: Wed, 02 Aug 2023 15:01:51 -07:00
 
-[*] https://lore.kernel.org/all/20230729003643.1053367-1-seanjc@google.com
+x86/shstk: Don't retry vm_munmap() on -EINTR
+
+The existing comment around handling vm_munmap() failure when freeing a
+shadow stack is wrong. It asserts that vm_munmap() returns -EINTR when
+the mmap lock is only being held for a short time, and so the caller
+should retry. Based on this wrong understanding, unmap_shadow_stack() will
+loop retrying vm_munmap().
+
+What -EINTR actually means in this case is that the process is going
+away (see ae79878), and the whole MM will be torn down soon. In order
+to facilitate this, the task should not linger in the kernel, but
+actually do the opposite. So don't loop in this scenario, just abandon
+the operation and let exit_mmap() clean it up. Also, update the comment
+to reflect the actual meaning of the error code.
+
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+Link: https://lore.kernel.org/all/20230706233858.446232-1-rick.p.edgecombe%40intel.com
+---
+ arch/x86/kernel/shstk.c | 38 +++++++++++++++++---------------------
+ 1 file changed, 17 insertions(+), 21 deletions(-)
+
+diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+index 47f5204..cd10d07 100644
+--- a/arch/x86/kernel/shstk.c
++++ b/arch/x86/kernel/shstk.c
+@@ -134,28 +134,24 @@ static unsigned long adjust_shstk_size(unsigned long size)
+ 
+ static void unmap_shadow_stack(u64 base, u64 size)
+ {
+-	while (1) {
+-		int r;
+-
+-		r = vm_munmap(base, size);
+-
+-		/*
+-		 * vm_munmap() returns -EINTR when mmap_lock is held by
+-		 * something else, and that lock should not be held for a
+-		 * long time.  Retry it for the case.
+-		 */
+-		if (r == -EINTR) {
+-			cond_resched();
+-			continue;
+-		}
++	int r;
+ 
+-		/*
+-		 * For all other types of vm_munmap() failure, either the
+-		 * system is out of memory or there is bug.
+-		 */
+-		WARN_ON_ONCE(r);
+-		break;
+-	}
++	r = vm_munmap(base, size);
++
++	/*
++	 * mmap_write_lock_killable() failed with -EINTR. This means
++	 * the process is about to die and have it's MM cleaned up.
++	 * This task shouldn't ever make it back to userspace. In this
++	 * case it is ok to leak a shadow stack, so just exit out.
++	 */
++	if (r == -EINTR)
++		return;
++
++	/*
++	 * For all other types of vm_munmap() failure, either the
++	 * system is out of memory or there is bug.
++	 */
++	WARN_ON_ONCE(r);
+ }
+ 
+ static int shstk_setup(void)
