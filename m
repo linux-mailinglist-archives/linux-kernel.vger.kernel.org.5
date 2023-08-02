@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC2076D972
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210ED76D976
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 23:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbjHBV0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 17:26:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34114 "EHLO
+        id S232226AbjHBV1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 17:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjHBV03 (ORCPT
+        with ESMTP id S232100AbjHBV07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 17:26:29 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB2AE6F;
-        Wed,  2 Aug 2023 14:26:28 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1b8b2886364so2651755ad.0;
-        Wed, 02 Aug 2023 14:26:28 -0700 (PDT)
+        Wed, 2 Aug 2023 17:26:59 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDBDE6F
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 14:26:54 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3a36b30aa7bso160456b6e.3
+        for <linux-kernel@vger.kernel.org>; Wed, 02 Aug 2023 14:26:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691011588; x=1691616388;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vpxv8V9L5JZbPZfIFzQxedIS3P5Jxl68SXEqUp5VX1Y=;
-        b=X6WSbmzaTIAv/HyInxOx9KeKlbuu9qh8gZsOBYMIUykFA/ug53wGtt9o0XTD2lkmTc
-         ljR5lXKVVZeAIvylCU4LYiWAIxc55b9bE9LMZpb4oQ8fudh5x2w1WSGbz1JLCRpJ19/q
-         moU7gWPvm+vYtyiG2IRP05ydm65gmrGOx0yirkOhnirpqfYnMJRsbiLIcwUzpkEB9Y3d
-         EqX97wClSGNXXrRqulK/HrlUNk2vx30wbiz0q11Alfd0tYh1cnszWdN9wMMOwOLvrBT1
-         J/PazZwAi+wvfehWkHrfIEMzDVSh5wwUb8KXSP2U1Z59R5ywT3FSJY0lFY2esxpdxB3R
-         RizA==
+        d=google.com; s=20221208; t=1691011614; x=1691616414;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jUEKuWb/qRWGPcwpGm7URWDdQ7oovJb2rcmtaobVWAE=;
+        b=RtvSGxJ+mav+wPCHXdVYU99ayoscEV2EM98/HQ0bElZBkBhCnY52dJk3jZmCfir+bQ
+         L8eAzwIAR2sBr3vw3uj7w5jHFASc0kRvhRLops40/wOaRkGdBtQZL0B2JXDVUq/DTidq
+         UwYpDpC3VbqG8FBd2+huJtyaBTMmNB05ZP73hP+qD1Exlyqr9dr1fWYofRcuCA2WmTzd
+         XRXdvyboVi8POQ/f4NS95xvWVD4BwvCCGv2lTwbCaaz6EbycEglhuXXD6usNr6E/nU6f
+         gM0GDl24nkATrFuswOptpea2z3rdCPAdNGFYtmJQnrRsSO3UrYwln4f4QN4w4WrqQg+Q
+         GYNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691011588; x=1691616388;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vpxv8V9L5JZbPZfIFzQxedIS3P5Jxl68SXEqUp5VX1Y=;
-        b=FXjm67PEH2lHlVZInJBzlLjrrvMy1NpGiEQs/wl2ZV6s5n6F7SGt2Ucgwo9cCzGS//
-         l+hcDyhAU/afOjKHUWGVwAa9+hIZ3vFxlUt3vwNfXXqQD+VBr+2g8qKK2NBYjIeQ7l+t
-         igQLsqblESgrGsMiQVL2RZecV6R7HgQg5A31BKoGtVopr4qlErLJhOLmPXt+AYfNQeF+
-         I9shoPRYs/MuEkdJnRt1N7PTT56udRke8GosBzsYMCRwSNhhCDnNCFG7IfZZroahSE2P
-         AJIdt4HxCSg+AaF6ZU2UhPU6HOqB1tKbhJy344PdXbY7WP1lyxkXmI38WEx37HywGCAt
-         +0Ng==
-X-Gm-Message-State: ABy/qLa8dGZnFmChI2RQntizoTHcfN/gUeRgzbBPr2AIIDpZSJ9myps+
-        zyO4xx3j55cAANQ6+aXH5gY=
-X-Google-Smtp-Source: APBJJlEgKciE33/chNIcAQ96G1OCtS5OCHSVQg/14SDAGAXKpbOq7gbtv6F6jd3XUXC5lStKovfWeQ==
-X-Received: by 2002:a17:903:2351:b0:1bb:d280:5e0b with SMTP id c17-20020a170903235100b001bbd2805e0bmr17334723plh.18.1691011587738;
-        Wed, 02 Aug 2023 14:26:27 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id jj6-20020a170903048600b001bba7aab826sm12880629plb.163.2023.08.02.14.26.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 14:26:26 -0700 (PDT)
-Message-ID: <64b9cfad-94db-9f18-72e7-f88da212b56c@gmail.com>
-Date:   Wed, 2 Aug 2023 14:26:23 -0700
+        d=1e100.net; s=20221208; t=1691011614; x=1691616414;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jUEKuWb/qRWGPcwpGm7URWDdQ7oovJb2rcmtaobVWAE=;
+        b=mE74ByK590kynAA0p0BgYbd2Zg8wY6Db/b1u/040J4JTmBGzGBG5NPpv8in9Mm2S8C
+         BBDxYTjkJulIC6r/INNX31+Eexn9NxDehQIWff+xhaOsysD0qV170xzS+sPhwM1MesEA
+         bwXs/DP7n3sUHOROf9XY2CFPi8yui1OXk0xnuuRKhVd0OMXGi6hegpNVkwZL8aHAfzb9
+         EGjcPuQamPEZkMZf/5WLmLkhcL6QomFfMSDvb6qP2SLxSJTZoJYiJKkvgHSoW1+HGun5
+         hKX2tcdw9zksUa77qbZMyqJPExGuBsz4dLevUp/0dE62LtPrcK+zTItZDj1IvcM+igh7
+         DGcA==
+X-Gm-Message-State: ABy/qLYWcoUe2DO/gFX4w0m0tRo/LmERu90QK62qWUhzeEmo9Jbp4HnS
+        BL/N++qLHbJ1qyC54o3QchgtiipAhTQKe3HIOncEJQ==
+X-Google-Smtp-Source: APBJJlEfMzUewc9dWiMhV1sSjAHIMUeF38rrKJ7dqV5L8zFEEuQ4WO4ftfNL1eREbhXHWSw8qo+hdp/PdFdD1O7e0SY=
+X-Received: by 2002:a05:6358:6f8d:b0:133:eff:39c with SMTP id
+ s13-20020a0563586f8d00b001330eff039cmr6979151rwn.20.1691011614061; Wed, 02
+ Aug 2023 14:26:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 5.15 000/153] 5.15.124-rc2 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230802065452.161574662@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230802065452.161574662@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20230802092647.3000666-1-sergio.paracuellos@gmail.com>
+In-Reply-To: <20230802092647.3000666-1-sergio.paracuellos@gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 2 Aug 2023 14:26:43 -0700
+Message-ID: <CAKwvOd=SvHUPd8+sWtqgxghPEciD5sqPiggZx+OOEqxtJrML6Q@mail.gmail.com>
+Subject: Re: [PATCH] clk: ralink: mtmips: quiet unused variable warning
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Cc:     linux-clk@vger.kernel.org, tsbogend@alpha.franken.de,
+        sboyd@kernel.org, mturquette@baylibre.com,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        clang-built-linux <llvm@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,29 +74,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/2/23 00:41, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.124 release.
-> There are 153 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 04 Aug 2023 06:54:22 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.124-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Wed, Aug 2, 2023 at 2:26=E2=80=AFAM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> When CONFIG_OF is disabled then the matching table is not referenced and
+> the following warning appears:
+>
+> drivers/clk/ralink/clk-mtmips.c:821:34: warning: unused variable 'mtmips_=
+of_match' [-Wunused-const-variable]
+> 821 |   static const struct of_device_id mtmips_of_match[] =3D {
+>     |                          ^
+>
+> Silence it declaring 'mtmips_of_match' with '__maybe_unused'.
+>
+> Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIPS =
+SoCs")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202307242310.CdOnd2py-lkp@i=
+ntel.com/
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+I think this is fine; Arnd or Nathan do you have a preference? or thoughts =
+here?
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+If not, thanks for the patch.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
+(I have a slight preference for wrapping the use in `#ifdef CONFIG_OF`
+since with the approach used by this patch, if all users are removed
+we will never get a warning for this var. But it's a weak preference;
+it's more important to me that we don't have -Werror promote this
+warning to a build breakage)
+
+> ---
+>  drivers/clk/ralink/clk-mtmips.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/clk/ralink/clk-mtmips.c b/drivers/clk/ralink/clk-mtm=
+ips.c
+> index 1e7991439527..6716394b28a3 100644
+> --- a/drivers/clk/ralink/clk-mtmips.c
+> +++ b/drivers/clk/ralink/clk-mtmips.c
+> @@ -820,7 +820,7 @@ static const struct mtmips_clk_data mt76x8_clk_data =
+=3D {
+>         .num_clk_periph =3D ARRAY_SIZE(mt76x8_pherip_clks),
+>  };
+>
+> -static const struct of_device_id mtmips_of_match[] =3D {
+> +static const __maybe_unused struct of_device_id mtmips_of_match[] =3D {
+>         {
+>                 .compatible =3D "ralink,rt2880-sysc",
+>                 .data =3D &rt2880_clk_data,
+> --
+> 2.25.1
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
