@@ -2,83 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A5176D82C
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B3DF76D82E
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 21:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbjHBTuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 15:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48938 "EHLO
+        id S231744AbjHBTvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 15:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbjHBTus (ORCPT
+        with ESMTP id S231616AbjHBTvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 15:50:48 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797AB1BD9;
-        Wed,  2 Aug 2023 12:50:46 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fe1fc8768aso2402545e9.1;
-        Wed, 02 Aug 2023 12:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691005845; x=1691610645;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GIsEdvHTkRHt69kFNg/UK9NrCtXb0lJcor4CbmeS9Hk=;
-        b=R5wZp/xcsv35BlfRKilsYrHF1dhaqJAiOM88mITtX2ac33Ys3k+SZ6hzpyoP/EncS0
-         PlQlnh1B7WsiB34wEYWeyPFGel3GTMWqUs22JBAS+xCX34/eQc8oHTV20pe079jQhUco
-         AldAYBl/7BQOilco0TIDkaCBEW0kNsLo3iTG/2CPGR1jfreq+IHr2a+e3MGq5JIKK8dg
-         SW7X+kfIrvWwvm0b7kU7zwCGGHiZ97UmhrFkkEnCt2Uyb9Ui9eqGZrbQPt1HyrL+vrBA
-         67CIrGTNbdPKee5Va56I3zOhucFhXGpEIe34NknlPMpPBl9onEfZdJ0qge0LONsurRXX
-         uSXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691005845; x=1691610645;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GIsEdvHTkRHt69kFNg/UK9NrCtXb0lJcor4CbmeS9Hk=;
-        b=A2u/RVhOGRAe2Y76PY1FWmC5Amv7pRAk8WqcHEB2/eSmnKwG00hsHjblqsIzi/rO3A
-         /1xCtLe2ShZoCyz0hKkgto2RAJDYPHzqKqGOFPH+dJru580m2KwEep4sA0M/coQcQOZa
-         rOt67Swj4sxOmsd3+aB7gLEGTPQ3V5ISyPjdxsxgP3Lh0NyQL2+bEqQHKty1CaMcvLlx
-         ubbQe3YHYPoTAmQFyNovN/C8/lZYe0XcF61qEJJTRaLMksWoXXAqe29kTLTZSnANJdrw
-         0Ar4mCmVnQVcR3X51Dk14cV7+PY63dqvabE4pBHAhQedrLntIHp1HegRyL5eZGHDHrhq
-         lmPA==
-X-Gm-Message-State: ABy/qLZFB4WDiPbFQLHaAScETyCmrO7JMtnWC4ksEW5j6ZjVaI0BcVsp
-        TNVRp+ec4c24wb0Y86ftaqs=
-X-Google-Smtp-Source: APBJJlHHgd2WIdq0IccJQZ2AKkE0gkK04uGb9tNRmFHgVwOqmlDWdtUcLWuRXjitS2H+CPmD7MrvSg==
-X-Received: by 2002:a1c:7511:0:b0:3fe:2f31:8bf7 with SMTP id o17-20020a1c7511000000b003fe2f318bf7mr2864638wmc.26.1691005844631;
-        Wed, 02 Aug 2023 12:50:44 -0700 (PDT)
-Received: from jernej-laptop.localnet (82-149-1-233.dynamic.telemach.net. [82.149.1.233])
-        by smtp.gmail.com with ESMTPSA id a23-20020a05600c225700b003fc01495383sm2418619wmm.6.2023.08.02.12.50.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Aug 2023 12:50:44 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     Maxim Kiselev <bigunclemax@gmail.com>
-Cc:     linux-spi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Mark Brown <broonie@kernel.org>,
-        Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] riscv: dts: allwinner: d1: Add QSPI pins node for pinmux
- PC port
-Date:   Wed, 02 Aug 2023 21:50:39 +0200
-Message-ID: <5956489.lOV4Wx5bFT@jernej-laptop>
-In-Reply-To: <CALHCpMgXy0pLiVR8V48Roi82EJ7Zrx-Xyc-6etjgkmN0B7pb8A@mail.gmail.com>
-References: <20230624131632.2972546-1-bigunclemax@gmail.com>
- <10311404.nUPlyArG6x@jernej-laptop>
- <CALHCpMgXy0pLiVR8V48Roi82EJ7Zrx-Xyc-6etjgkmN0B7pb8A@mail.gmail.com>
+        Wed, 2 Aug 2023 15:51:22 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5264CE5C
+        for <linux-kernel@vger.kernel.org>; Wed,  2 Aug 2023 12:51:20 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1691005879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z5KFJEczf5usaPoJVx8Ghw2gGhl8WC6z2yQZJUfs4gM=;
+        b=Gwtdf1RFGbHh0xNFoCjcszwAx2t0Aa4H3im4d00YLMm3i3pK4/F+6XYrIEIRcOBnQeKIbr
+        2O5zMo9ynIcrSkl7U6qRCxXUJ1O3zneASohaHGooZUV2mIjFAhaiGvE7+R2H9GxdvUwzYg
+        ZEVs/ZpYsNePU9MscnifEwBieUgPVYXfD7NBxTHhKHGOCW9ed68XXNh+0s9oC+EfGO3QQ/
+        WYDen8PUJKkKgVOn5D0DVAU6Va2ROK3urNB8pi/JF8fwt8meF6RpEE+qxnCx1oB3dyeyv5
+        C17V5X/v3X+PocXTPCqdZnTRFH2s0W7y7CeZ1f1pbmPDzrT7jxqyLYkJpoFaxA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1691005879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z5KFJEczf5usaPoJVx8Ghw2gGhl8WC6z2yQZJUfs4gM=;
+        b=yMvs9Xf/rQA6I84WuE5fFqLIgMkm4c8kgbuYyiKCeqmtxLKjPvp2C4a3QZ7pp5h+BCBcO6
+        MLctj9P7SoywYpDQ==
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Huang Rui <ray.huang@amd.com>, Juergen Gross <jgross@suse.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Subject: [patch V3a 30/40] x86/cpu: Provide an AMD/HYGON specific topology
+ parser
+In-Reply-To: <20230802101934.418143974@linutronix.de>
+References: <20230802101635.459108805@linutronix.de>
+ <20230802101934.418143974@linutronix.de>
+Date:   Wed, 02 Aug 2023 21:51:18 +0200
+Message-ID: <87il9xjk95.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,62 +62,366 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne ponedeljek, 31. julij 2023 ob 17:22:11 CEST je Maxim Kiselev napisal(a):
-> =D0=BF=D0=BD, 31 =D0=B8=D1=8E=D0=BB. 2023=E2=80=AF=D0=B3. =D0=B2 01:30, J=
-ernej =C5=A0krabec <jernej.skrabec@gmail.com>:
-> > Dne sobota, 24. junij 2023 ob 15:16:24 CEST je Maksim Kiselev napisal(a=
-):
-> > > Add pinmux node that describes pins on PC port which required for
-> > > QSPI mode.
-> > >=20
-> > > Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
-> > > ---
-> > >=20
-> > >  arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> > >=20
-> > > diff --git a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-> > > b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi index
-> > > 1bb1e5cae602..9f754dd03d85 100644
-> > > --- a/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-> > > +++ b/arch/riscv/boot/dts/allwinner/sunxi-d1s-t113.dtsi
-> > > @@ -131,6 +131,13 @@ uart3_pb_pins: uart3-pb-pins {
-> > >=20
-> > >                               pins =3D "PB6", "PB7";
-> > >                               function =3D "uart3";
-> > >                      =20
-> > >                       };
-> > >=20
-> > > +
-> > > +                     /omit-if-no-ref/
-> > > +                     qspi0_pc_pins: qspi0-pc-pins {
-> > > +                             pins =3D "PC2", "PC3", "PC4", "PC5",
-> >=20
-> > "PC6",
-> >=20
-> > > +                                    "PC7";
-> > > +                             function =3D "spi0";
-> > > +                     };
-> >=20
-> > Sorry for late review, but it seems I'm missing something. D1 manual sa=
-ys
-> > those are pins for ordinary SPI, with HOLD and WP signals. Can they be
-> > repurposed for quad SPI?
->=20
-> Yes, they can. Here is a quote from D1 datasheet (9.3.3.8 SPI
-> Quad-Input/Quad-Output Mode):
-> "Using the quad mode allows data to be transferred to or from the
-> device at 4 times the rate of standard single mode, the data can be
-> read
-> at fast speed using four data bits (MOSI, MISO, IO2 (WP#) and IO3
-> (HOLD#)) at the same time."
+AMD/HYGON uses various methods for topology evaluation:
 
-Alright then.
+  - Leaf 0x80000008 and 0x8000001e based with an optional leaf 0xb,
+    which is the preferred variant for modern CPUs.
 
-Acked-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+    Leaf 0xb will be superseded by leaf 0x80000026 soon, which is just
+    another variant of the Intel 0x1f leaf for whatever reasons.
+    
+  - Subleaf 0x80000008 and NODEID_MSR base
 
-Best regards,
-Jernej
+  - Legacy fallback
 
+That code is following the principle of random bits and pieces all over the
+place which results in multiple evaluations and impenetrable code flows in
+the same way as the Intel parsing did.
 
+Provide a sane implementation by clearly separating the three variants and
+bringing them in the proper preference order in one place.
 
+This provides the parsing for both AMD and HYGON because there is no point
+in having a separate HYGON parser which only differs by 3 lines of
+code. Any further divergence between AMD and HYGON can be handled in
+different functions, while still sharing the existing parsers.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+V3: Fix the off by one with leaf 0x8000001e::ebx::threads_per_cu - Michael
+V3a: Fix it for real.
+---
+ arch/x86/include/asm/topology.h       |    2 
+ arch/x86/kernel/cpu/Makefile          |    2 
+ arch/x86/kernel/cpu/amd.c             |    2 
+ arch/x86/kernel/cpu/cacheinfo.c       |    4 
+ arch/x86/kernel/cpu/cpu.h             |    2 
+ arch/x86/kernel/cpu/debugfs.c         |    2 
+ arch/x86/kernel/cpu/topology.h        |    6 +
+ arch/x86/kernel/cpu/topology_amd.c    |  180 ++++++++++++++++++++++++++++++++++
+ arch/x86/kernel/cpu/topology_common.c |   19 +++
+ 9 files changed, 212 insertions(+), 7 deletions(-)
+
+--- a/arch/x86/include/asm/topology.h
++++ b/arch/x86/include/asm/topology.h
+@@ -162,6 +162,8 @@ int topology_update_die_map(unsigned int
+ int topology_phys_to_logical_pkg(unsigned int pkg);
+ bool topology_smt_supported(void);
+ 
++extern unsigned int __amd_nodes_per_pkg;
++
+ static inline unsigned int topology_amd_nodes_per_pkg(void)
+ {
+ 	return __max_die_per_package;
+--- a/arch/x86/kernel/cpu/Makefile
++++ b/arch/x86/kernel/cpu/Makefile
+@@ -18,7 +18,7 @@ KMSAN_SANITIZE_common.o := n
+ KCSAN_SANITIZE_common.o := n
+ 
+ obj-y			:= cacheinfo.o scattered.o
+-obj-y			+= topology_common.o topology_ext.o topology.o
++obj-y			+= topology_common.o topology_ext.o topology_amd.o topology.o
+ obj-y			+= common.o
+ obj-y			+= rdrand.o
+ obj-y			+= match.o
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -423,7 +423,7 @@ static void amd_get_topology(struct cpui
+ 		if (!err)
+ 			c->x86_coreid_bits = get_count_order(c->x86_max_cores);
+ 
+-		cacheinfo_amd_init_llc_id(c);
++		cacheinfo_amd_init_llc_id(c, c->topo.die_id);
+ 
+ 	} else if (cpu_has(c, X86_FEATURE_NODEID_MSR)) {
+ 		u64 value;
+--- a/arch/x86/kernel/cpu/cacheinfo.c
++++ b/arch/x86/kernel/cpu/cacheinfo.c
+@@ -661,7 +661,7 @@ static int find_num_cache_leaves(struct
+ 	return i;
+ }
+ 
+-void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c)
++void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c, u16 die_id)
+ {
+ 	/*
+ 	 * We may have multiple LLCs if L3 caches exist, so check if we
+@@ -672,7 +672,7 @@ void cacheinfo_amd_init_llc_id(struct cp
+ 
+ 	if (c->x86 < 0x17) {
+ 		/* LLC is at the node level. */
+-		c->topo.llc_id = c->topo.die_id;
++		c->topo.llc_id = die_id;
+ 	} else if (c->x86 == 0x17 && c->x86_model <= 0x1F) {
+ 		/*
+ 		 * LLC is at the core complex level.
+--- a/arch/x86/kernel/cpu/cpu.h
++++ b/arch/x86/kernel/cpu/cpu.h
+@@ -79,7 +79,7 @@ extern void init_hygon_cacheinfo(struct
+ extern int detect_extended_topology(struct cpuinfo_x86 *c);
+ extern void check_null_seg_clears_base(struct cpuinfo_x86 *c);
+ 
+-void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c);
++void cacheinfo_amd_init_llc_id(struct cpuinfo_x86 *c, u16 die_id);
+ void cacheinfo_hygon_init_llc_id(struct cpuinfo_x86 *c);
+ 
+ unsigned int aperfmperf_get_khz(int cpu);
+--- a/arch/x86/kernel/cpu/debugfs.c
++++ b/arch/x86/kernel/cpu/debugfs.c
+@@ -26,6 +26,8 @@ static int cpu_debug_show(struct seq_fil
+ 	seq_printf(m, "logical_die_id:      %u\n", c->topo.logical_die_id);
+ 	seq_printf(m, "llc_id:              %u\n", c->topo.llc_id);
+ 	seq_printf(m, "l2c_id:              %u\n", c->topo.l2c_id);
++	seq_printf(m, "amd_node_id:         %u\n", c->topo.amd_node_id);
++	seq_printf(m, "amd_nodes_per_pkg:   %u\n", topology_amd_nodes_per_pkg());
+ 	seq_printf(m, "max_cores:           %u\n", c->x86_max_cores);
+ 	seq_printf(m, "max_die_per_pkg:     %u\n", __max_die_per_package);
+ 	seq_printf(m, "smp_num_siblings:    %u\n", smp_num_siblings);
+--- a/arch/x86/kernel/cpu/topology.h
++++ b/arch/x86/kernel/cpu/topology.h
+@@ -9,6 +9,10 @@ struct topo_scan {
+ 
+ 	// Legacy CPUID[1]:EBX[23:16] number of logical processors
+ 	unsigned int		ebx1_nproc_shift;
++
++	// AMD specific node ID which cannot be mapped into APIC space.
++	u16			amd_nodes_per_pkg;
++	u16			amd_node_id;
+ };
+ 
+ bool topo_is_converted(struct cpuinfo_x86 *c);
+@@ -17,6 +21,8 @@ void cpu_parse_topology(struct cpuinfo_x
+ void topology_set_dom(struct topo_scan *tscan, enum x86_topology_domains dom,
+ 		      unsigned int shift, unsigned int ncpus);
+ bool cpu_parse_topology_ext(struct topo_scan *tscan);
++void cpu_parse_topology_amd(struct topo_scan *tscan);
++void cpu_topology_fixup_amd(struct topo_scan *tscan);
+ 
+ static inline u32 topo_shift_apicid(u32 apicid, enum x86_topology_domains dom)
+ {
+--- /dev/null
++++ b/arch/x86/kernel/cpu/topology_amd.c
+@@ -0,0 +1,180 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/cpu.h>
++
++#include <asm/apic.h>
++#include <asm/memtype.h>
++#include <asm/processor.h>
++
++#include "cpu.h"
++
++static bool parse_8000_0008(struct topo_scan *tscan)
++{
++	struct {
++		u32	ncores		:  8,
++			__rsvd0		:  4,
++			apicidsize	:  4,
++			perftscsize	:  2,
++			__rsvd1		: 14;
++	} ecx;
++	unsigned int sft;
++
++	if (tscan->c->extended_cpuid_level < 0x80000008)
++		return false;
++
++	cpuid_leaf_reg(0x80000008, CPUID_ECX, &ecx);
++
++	/* If the APIC ID size is 0, then get the shift value from ecx.ncores */
++	sft = ecx.apicidsize;
++	if (!sft)
++		sft = get_count_order(ecx.ncores + 1);
++
++	topology_set_dom(tscan, TOPO_CORE_DOMAIN, sft, ecx.ncores + 1);
++	return true;
++}
++
++static void store_node(struct topo_scan *tscan, unsigned int nr_nodes, u16 node_id)
++{
++	/*
++	 * Starting with Fam 17h the DIE domain could probably be used to
++	 * retrieve the node info on AMD/HYGON. Analysis of CPUID dumps
++	 * suggests it's the topmost bit(s) of the CPU cores area, but
++	 * that's guess work and neither enumerated nor documented.
++	 *
++	 * Up to Fam 16h this does not work at all and the legacy node ID
++	 * has to be used.
++	 */
++	tscan->amd_nodes_per_pkg = nr_nodes;
++	tscan->amd_node_id = node_id;
++}
++
++static bool parse_8000_001e(struct topo_scan *tscan, bool has_0xb)
++{
++	struct {
++		// eax
++		u32	x2apic_id	: 32;
++		// ebx
++		u32	cuid		:  8,
++			threads_per_cu	:  8,
++			__rsvd0		: 16;
++		// ecx
++		u32	nodeid		:  8,
++			nodes_per_pkg	:  3,
++			__rsvd1		: 21;
++		// edx
++		u32	__rsvd2		: 32;
++	} leaf;
++
++	if (!boot_cpu_has(X86_FEATURE_TOPOEXT))
++		return false;
++
++	cpuid_leaf(0x8000001e, &leaf);
++
++	tscan->c->topo.initial_apicid = leaf.x2apic_id;
++
++	/*
++	 * If leaf 0xb is available, then SMT shift is set already. If not
++	 * take it from ecx.threads_per_cu and use topo_update_dom() -
++	 * topology_set_dom() would propagate and overwrite the already
++	 * propagated CORE level.
++	 */
++	if (!has_0xb) {
++		unsigned int nthreads = leaf.threads_per_cu + 1;
++
++		topology_update_dom(tscan, TOPO_SMT_DOMAIN, get_count_order(nthreads), nthreads);
++	}
++
++	store_node(tscan, leaf.nodes_per_pkg + 1, leaf.nodeid);
++
++	if (tscan->c->x86_vendor == X86_VENDOR_AMD) {
++		if (tscan->c->x86 == 0x15)
++			tscan->c->topo.cu_id = leaf.cuid;
++
++		cacheinfo_amd_init_llc_id(tscan->c, leaf.nodeid);
++	} else {
++		/*
++		 * Package ID is ApicId[6..] on Hygon CPUs. See commit
++		 * e0ceeae708ce for explanation. The topology info is
++		 * screwed up: The package shift is always 6 and the node
++		 * ID is bit [4:5]. Don't touch the latter without
++		 * confirmation from the Hygon developers.
++		 */
++		topology_set_dom(tscan, TOPO_CORE_DOMAIN, 6, tscan->dom_ncpus[TOPO_CORE_DOMAIN]);
++		cacheinfo_hygon_init_llc_id(tscan->c);
++	}
++	return true;
++}
++
++static bool parse_fam10h_node_id(struct topo_scan *tscan)
++{
++	struct {
++		union {
++			u64	node_id		:  3,
++				nodes_per_pkg	:  3,
++				unused		: 58;
++			u64	msr;
++		};
++	} nid;
++
++	if (!boot_cpu_has(X86_FEATURE_NODEID_MSR))
++		return false;
++
++	rdmsrl(MSR_FAM10H_NODE_ID, nid.msr);
++	store_node(tscan, nid.nodes_per_pkg + 1, nid.node_id);
++	tscan->c->topo.llc_id = nid.node_id;
++	return true;
++}
++
++static void legacy_set_llc(struct topo_scan *tscan)
++{
++	unsigned int apicid = tscan->c->topo.initial_apicid;
++
++	/* parse_8000_0008() set everything up except llc_id */
++	tscan->c->topo.llc_id = apicid >> tscan->dom_shifts[TOPO_CORE_DOMAIN];
++}
++
++static void parse_topology_amd(struct topo_scan *tscan)
++{
++	bool has_0xb = false;
++
++	/*
++	 * If the extended topology leaf 0x8000_001e is available
++	 * try to get SMT and CORE shift from leaf 0xb first, then
++	 * try to get the CORE shift from leaf 0x8000_0008.
++	 */
++	if (boot_cpu_has(X86_FEATURE_TOPOEXT))
++		has_0xb = cpu_parse_topology_ext(tscan);
++
++	if (!has_0xb && !parse_8000_0008(tscan))
++		return;
++
++	/* Prefer leaf 0x8000001e if available */
++	if (parse_8000_001e(tscan, has_0xb))
++		return;
++
++	/* Try the NODEID MSR */
++	if (parse_fam10h_node_id(tscan))
++		return;
++
++	legacy_set_llc(tscan);
++}
++
++void cpu_parse_topology_amd(struct topo_scan *tscan)
++{
++	tscan->amd_nodes_per_pkg = 1;
++	parse_topology_amd(tscan);
++
++	if (tscan->amd_nodes_per_pkg > 1)
++		set_cpu_cap(tscan->c, X86_FEATURE_AMD_DCM);
++}
++
++void cpu_topology_fixup_amd(struct topo_scan *tscan)
++{
++	struct cpuinfo_x86 *c = tscan->c;
++
++	/*
++	 * Adjust the core_id relative to the node when there is more than
++	 * one node.
++	 */
++	if (tscan->c->x86 < 0x17 && tscan->amd_nodes_per_pkg > 1)
++		c->topo.core_id %= tscan->dom_ncpus[TOPO_CORE_DOMAIN] / tscan->amd_nodes_per_pkg;
++}
+--- a/arch/x86/kernel/cpu/topology_common.c
++++ b/arch/x86/kernel/cpu/topology_common.c
+@@ -11,11 +11,13 @@
+ 
+ struct x86_topology_system x86_topo_system __ro_after_init;
+ 
++unsigned int __amd_nodes_per_pkg __ro_after_init;
++EXPORT_SYMBOL_GPL(__amd_nodes_per_pkg);
++
+ void topology_set_dom(struct topo_scan *tscan, enum x86_topology_domains dom,
+ 		      unsigned int shift, unsigned int ncpus)
+ {
+-	tscan->dom_shifts[dom] = shift;
+-	tscan->dom_ncpus[dom] = ncpus;
++	topology_update_dom(tscan, dom, shift, ncpus);
+ 
+ 	/* Propagate to the upper levels */
+ 	for (dom++; dom < TOPO_MAX_DOMAIN; dom++) {
+@@ -152,6 +154,13 @@ static void topo_set_ids(struct topo_sca
+ 
+ 	/* Relative core ID */
+ 	c->topo.core_id = topo_relative_domain_id(apicid, TOPO_CORE_DOMAIN);
++
++	/* Temporary workaround */
++	if (tscan->amd_nodes_per_pkg)
++		c->topo.amd_node_id = c->topo.die_id = tscan->amd_node_id;
++
++	if (c->x86_vendor == X86_VENDOR_AMD)
++		cpu_topology_fixup_amd(tscan);
+ }
+ 
+ static void topo_set_max_cores(struct topo_scan *tscan)
+@@ -236,4 +245,10 @@ void __init cpu_init_topology(struct cpu
+ 	 */
+ 	__max_die_per_package = tscan.dom_ncpus[TOPO_DIE_DOMAIN] /
+ 		tscan.dom_ncpus[TOPO_DIE_DOMAIN - 1];
++	/*
++	 * AMD systems have Nodes per package which cannot be mapped to
++	 * APIC ID (yet).
++	 */
++	if (c->x86_vendor == X86_VENDOR_AMD || c->x86_vendor == X86_VENDOR_HYGON)
++		__amd_nodes_per_pkg = __max_die_per_package = tscan.amd_nodes_per_pkg;
+ }
