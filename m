@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486E276CC20
-	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6DA76CC22
+	for <lists+linux-kernel@lfdr.de>; Wed,  2 Aug 2023 13:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234419AbjHBLzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 2 Aug 2023 07:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
+        id S234282AbjHBL4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 2 Aug 2023 07:56:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232209AbjHBLzY (ORCPT
+        with ESMTP id S232126AbjHBL4V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 2 Aug 2023 07:55:24 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B8610C1;
-        Wed,  2 Aug 2023 04:55:24 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52227884855so10286610a12.1;
-        Wed, 02 Aug 2023 04:55:23 -0700 (PDT)
+        Wed, 2 Aug 2023 07:56:21 -0400
+Received: from ustc.edu.cn (email.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E472E26B0;
+        Wed,  2 Aug 2023 04:56:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690977322; x=1691582122;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fg0YpcOtBUtEKMYPGJH2ccsPOpJLUWE6oV7KZ4RIkBY=;
-        b=sxL8jAWNHpZKH1kgVp7WtInxNhdYc10cPQtW3bdSnBLzYGpKwexkVHPruJSFotXs0T
-         LxjVyz0nsjFZgw0khNVJC8M822cUyaPZaoWmMtiam52oW82Fi48M3tsAbM0bbd76v5Oq
-         gsfvJtYlTlfoIhJDStqNNjrcs3VK7zNSUiR8NkUO4c4wMYDWRAp0/peP39FfNmF8PVnA
-         9qBjrofEzp5O9eQdTJAsDlNDdIznk+Gkc/Vc/ZYgc/F9Vsmzn3DqrHlalPiVc1/c9UBO
-         DFfm5uk4anZpqbGobIGzqC84wzWIK5yglQovCxQc9y7ziH/qTr0Lmk7ssHqjBvTB6lra
-         LQdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690977322; x=1691582122;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fg0YpcOtBUtEKMYPGJH2ccsPOpJLUWE6oV7KZ4RIkBY=;
-        b=OTUsAaeDctOwsDmyxoxZQW8G3K8PN/FfwuCoUXFEHWU8hskTAkW7NSl8cNLctuKrL8
-         SLujEA2R02qu+nfcBDXIo+HOzW5xitg6ifBiLBks0df4KJW1nNZsRM57bsx1jmZnyFPA
-         EDaHQm0PCSsELzch4rQjtM0dHNbgaxa0MObQkIV2pEG/J+9eeiTqVCqJUTdX9uUnaWxp
-         u7I+7kkvaRndPDKQsmnggAKa/fEBZ1nT1vnMFAXirVyvy/hKEGAwDJhVEmdYAq1gM1/F
-         ui7yBSK/1YoK2hjqTuBzTInkTWaKyC8oyZ532/s6WHN3mW5FV3DJbZ/zzy1LZow/batg
-         2OLA==
-X-Gm-Message-State: ABy/qLZxEC9//0C/uGijQSsrebdyPSwRd0zMQH7unqmixzLtJBqij+o1
-        uGiwhB4Gks0cgIB1etQKR57js9y7O9s=
-X-Google-Smtp-Source: APBJJlFAdvAaDjxvCM5PvcAsGwsuvHU/MEEusmZmMUEt48yqwiy3h8p/XqFqbmX/s9jRY4+xORcupw==
-X-Received: by 2002:a05:6402:8d5:b0:51d:d4c3:6858 with SMTP id d21-20020a05640208d500b0051dd4c36858mr5012317edz.12.1690977322422;
-        Wed, 02 Aug 2023 04:55:22 -0700 (PDT)
-Received: from [192.168.1.19] (62-73-122-38.ip.btc-net.bg. [62.73.122.38])
-        by smtp.gmail.com with ESMTPSA id g12-20020a056402180c00b00522ce914f51sm3823937edy.67.2023.08.02.04.55.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 02 Aug 2023 04:55:22 -0700 (PDT)
-Message-ID: <21fad6fd-eddf-9edd-6dd8-58a32b9be9ef@gmail.com>
-Date:   Wed, 2 Aug 2023 14:55:21 +0300
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:Reply-To:References:MIME-Version:Content-Type:
+        Content-Disposition:In-Reply-To; bh=msXnw5IG4jvKLMzQa2hmaHiEHyhn
+        q8MqCAoMVYtLez8=; b=vD/7w/cwOmZ3edXHeLLoku0r7UxarQs0TgHNr6vfjbOb
+        MavwZ+Xh04TxWTDwF9JLFH50mTDtrRMhgAI+0rf7TNlNIbDXDp2zhA4x2O/J5gEc
+        1VnpGNphY7VhaKAHy3tYxIzFKvWljEyWpPvjnWhWS9tOQOAYB0FJWxmvXa0Sbvo=
+Received: from localhost (unknown [139.224.204.105])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBn1BxRRMpkBIUTAA--.3970S2;
+        Wed, 02 Aug 2023 19:56:01 +0800 (CST)
+Date:   Wed, 2 Aug 2023 19:56:01 +0800
+From:   Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        linux-coco@lists.linux.dev
+Subject: Re: [Question] int3 instruction generates a #UD in SEV VM
+Message-ID: <ZMpEUVsv5hSmrcH8@iZuf6hx7901barev1c282cZ>
+Reply-To: Wu Zongyo <wuzongyo@mail.ustc.edu.cn>
+References: <8eb933fd-2cf3-d7a9-32fe-2a1d82eac42a@mail.ustc.edu.cn>
+ <ZMfFaF2M6Vrh/QdW@google.com>
+ <4ebb3e20-a043-8ad3-ef6c-f64c2443412c@amd.com>
+ <544b7f95-4b34-654d-a57b-3791a6f4fd5f@mail.ustc.edu.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] media: venus: firmware: Use of_reserved_mem_lookup()
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230529-venus-of-rmem-v1-1-dfcdc5047ffb@gerhold.net>
- <ZMoak_qaUSX-pkP2@gerhold.net>
-Content-Language: en-US, bg-BG
-From:   Stanimir Varbanov <stanimir.k.varbanov@gmail.com>
-In-Reply-To: <ZMoak_qaUSX-pkP2@gerhold.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <544b7f95-4b34-654d-a57b-3791a6f4fd5f@mail.ustc.edu.cn>
+X-CM-TRANSID: LkAmygBn1BxRRMpkBIUTAA--.3970S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr1xGw1kKFyfXw17Xr4Dtwb_yoW5Xry8pF
+        WxK3ZIkrs7Jrn3Zr4Dta1UAryFya9xGr47Xr18J3s8A3s0v3Za9ryIkrZ0k3ZrCrWfWw10
+        v3y0qF9F9a4DArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyYb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCF
+        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
+        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
+        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        W3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8
+        JbIYCTnIWIevJa73UjIFyTuYvjxUc_-PUUUUU
+X-CM-SenderInfo: pzx200xj1rqzxdloh3xvwfhvlgxou0/
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephan,
-
-On 2.08.23 г. 11:57 ч., Stephan Gerhold wrote:
-> Hi Stanimir,
+On Mon, Jul 31, 2023 at 11:45:29PM +0800, wuzongyong wrote:
 > 
-> I see that you already tagged the Venus updates for 6.6, but could you
-> try to still apply this patch as well for 6.6? It's a requirement for
-> some DT cleanup I'm working on and ideally needs to go in a kernel
-> release earlier to avoid bisect problems.
-> 
-> AFAICT it's been on the list for more than two months now with two
-> Reviewed-by, so should be fine to just apply it. :)
-> 
+> On 2023/7/31 23:03, Tom Lendacky wrote:
+> > On 7/31/23 09:30, Sean Christopherson wrote:
+> >> On Sat, Jul 29, 2023, wuzongyong wrote:
+> >>> Hi,
+> >>> I am writing a firmware in Rust to support SEV based on project td-shim[1].
+> >>> But when I create a SEV VM (just SEV, no SEV-ES and no SEV-SNP) with the firmware,
+> >>> the linux kernel crashed because the int3 instruction in int3_selftest() cause a
+> >>> #UD.
+> >>
+> >> ...
+> >>
+> >>> BTW, if a create a normal VM without SEV by qemu & OVMF, the int3 instruction always generates a
+> >>> #BP.
+> >>> So I am confused now about the behaviour of int3 instruction, could anyone help to explain the behaviour?
+> >>> Any suggestion is appreciated!
+> >>
+> >> Have you tried my suggestions from the other thread[*]?
+> Firstly, I'm sorry for sending muliple mails with the same content. I thought the mails I sent previously 
+> didn't be sent successfully.
+> And let's talk the problem here.
+> >>
+> >>    : > > I'm curious how this happend. I cannot find any condition that would
+> >>    : > > cause the int3 instruction generate a #UD according to the AMD's spec.
+> >>    :
+> >>    : One possibility is that the value from memory that gets executed diverges from the
+> >>    : value that is read out be the #UD handler, e.g. due to patching (doesn't seem to
+> >>    : be the case in this test), stale cache/tlb entries, etc.
+> >>    :
+> >>    : > > BTW, it worked nomarlly with qemu and ovmf.
+> >>    : >
+> >>    : > Does this happen every time you boot the guest with your firmware? What
+> >>    : > processor are you running on?
+> >>    :
+> Yes, every time.
+> The processor I used is EPYC 7T83.
+> >>    : And have you ruled out KVM as the culprit?  I.e. verified that KVM is NOT injecting
+> >>    : a #UD.  That obviously shouldn't happen, but it should be easy to check via KVM
+> >>    : tracepoints.
+> >
+> > I have a feeling that KVM is injecting the #UD, but it will take instrumenting KVM to see which path the #UD is being injected from.
+> >
+> > Wu Zongyo, can you add some instrumentation to figure that out if the trace points towards KVM injecting the #UD?
+> Ok, I will try to do that.
+You're right. The #UD is injected by KVM.
 
-Done, thanks for the reminder.
+The path I found is:
+    svm_vcpu_run
+        svm_complete_interrupts
+	    kvm_requeue_exception // vector = 3
+	        kvm_make_request
 
--- 
-regards,
-Stan
+    vcpu_enter_guest
+        kvm_check_and_inject_events
+	    svm_inject_exception
+	        svm_update_soft_interrupt_rip
+		    __svm_skip_emulated_instruction
+		        x86_emulate_instruction
+			    svm_can_emulate_instruction
+			        kvm_queue_exception(vcpu, UD_VECTOR)
+
+Does this mean a #PF intercept occur when the guest try to deliver a
+#BP through the IDT? But why?
+
+Thanks
+
+> >
+> > Thanks,
+> > Tom
+> >
+> >>
+> >> [*] https://lore.kernel.org/all/ZMFd5kkehlkIfnBA@google.com
+
